@@ -1,5 +1,4 @@
-﻿using BLL;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -11,8 +10,6 @@ namespace bsoft_dms_mw.Controllers
     {
         public ActionResult Index()
         {
-            Logic.Auth_login(string.Empty,string.Empty);
-        //    Logic.GetDocument1();
             return View();
         }
 
