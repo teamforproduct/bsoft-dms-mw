@@ -20,9 +20,12 @@ namespace DMS_WebAPI
 
             //TODO: Remove this when user auth will be implemented. Fill context from session
             var ctx = DmsResolver.Current.Get<IContext>();
-            ctx.CurrentDB.Address = @"..\..\..\..\BusinessLayer\BL.Database\DBFile\DmsLocalDB.mdf";
-            ctx.CurrentDB.IntegrateSecurity = true;
-            ctx.CurrentDB.ServerType = DatabaseType.SQLPortable;
+            ctx.CurrentDB = new DatabaseModel
+            {
+                Address = @"..\..\..\..\BusinessLayer\BL.Database\DBFile\DmsLocalDB.mdf",
+                IntegrateSecurity = true,
+                ServerType = DatabaseType.SQLPortable
+            };
         }
     }
 }
