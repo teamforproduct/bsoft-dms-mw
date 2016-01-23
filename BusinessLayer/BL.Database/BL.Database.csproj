@@ -83,12 +83,6 @@
     <Folder Include="DBModel\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="DBFile\DmsLocalDB.mdf" />
-    <Content Include="DBFile\DmsLocalDB_log.ldf">
-      <DependentUpon>DmsLocalDB.mdf</DependentUpon>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
       <Visible>False</Visible>
       <ProductName>.NET Framework 3.5 SP1</ProductName>
