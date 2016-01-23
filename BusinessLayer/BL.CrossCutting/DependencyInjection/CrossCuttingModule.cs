@@ -1,5 +1,6 @@
 ﻿using BL.CrossCutting.Context;
 using BL.CrossCutting.Interfaces;
+using BL.CrossCutting.Logging;
 using Ninject.Modules;
 
 namespace BL.CrossCutting.DependencyInjection
@@ -8,7 +9,7 @@ namespace BL.CrossCutting.DependencyInjection
     {
         public override void Load()
         {
-            Bind<ILogger>().To<Logging.Logger>().InSingletonScope();
+            Bind<ILogger>().To<Logger>().InSingletonScope();
 
             // TODO: remove in future and use Context separately for each user
             Bind<IContext>().To<DefaultContext>().InSingletonScope();
