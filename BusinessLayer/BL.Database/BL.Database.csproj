@@ -60,6 +60,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DBModel\Dictionary\DictionaryAgents.cs" />
+    <Compile Include="DBModel\Dictionary\DictionaryCompanies.cs" />
+    <Compile Include="DBModel\Dictionary\DictionaryDepartments.cs" />
+    <Compile Include="DBModel\Dictionary\DictionaryPositions.cs" />
     <Compile Include="DependencyInjection\DatabaseModule.cs" />
     <Compile Include="Factory\DatabaseFactory.cs" />
     <Compile Include="Factory\IDatabaseFactory.cs" />
@@ -80,7 +84,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="DBModel\" />
+    <Folder Include="DBModel\Admin\" />
+    <Folder Include="DBModel\Document\" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
