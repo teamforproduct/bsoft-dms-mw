@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace BL.Database.DBModel.Dictionary
 {
-    public partial class DictionaryPositions
+    public class DictionaryPositions
     {
         public DictionaryPositions()
         {
             this.ChildPositions = new HashSet<DictionaryPositions>();
-            this.ChiefDepartments = new HashSet<DictionaryDepartments>();
+            //this.ChiefDepartments = new HashSet<DictionaryDepartments>();
         }
 
         public int Id { get; set; }
@@ -20,13 +18,13 @@ namespace BL.Database.DBModel.Dictionary
         public int DepartmentId { get; set; }
         public Nullable<int> ExecutorAgentId { get; set; }
         public int LastChangeUserId { get; set; }
-        public System.DateTime LastChangeDate { get; set; }
+        public DateTime LastChangeDate { get; set; }
 
         public virtual DictionaryPositions ParentPosition { get; set; }
         public virtual ICollection<DictionaryPositions> ChildPositions { get; set; }
         public virtual DictionaryDepartments Department { get; set; }
         public virtual DictionaryAgents ExecutorAgent { get; set; }
-        public virtual ICollection<DictionaryDepartments> ChiefDepartments { get; set; }
+        //public virtual ICollection<DictionaryDepartments> ChiefDepartments { get; set; }
 
     }
 }

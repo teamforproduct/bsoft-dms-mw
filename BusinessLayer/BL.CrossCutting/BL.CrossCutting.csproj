@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\Command.cs" />
     <Compile Include="Context\DefaultContext.cs" />
     <Compile Include="DependencyInjection\CrossCuttingModule.cs" />
     <Compile Include="DependencyInjection\IResolver.cs" />

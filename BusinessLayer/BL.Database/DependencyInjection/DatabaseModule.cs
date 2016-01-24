@@ -1,4 +1,6 @@
-﻿using BL.Database.Factory;
+﻿using BL.Database.Documents;
+using BL.Database.Helpers;
+using BL.Database.Manager;
 using Ninject.Modules;
 
 namespace BL.Database.DependencyInjection
@@ -7,7 +9,16 @@ namespace BL.Database.DependencyInjection
     {
         public override void Load()
         {
-            Bind<IDatabaseFactory>().To<DatabaseFactory>().InSingletonScope();
+            InternalClassRegistration();
+
+            Bind<IDocumnetsDbProcess>().To<DocumnetsDbProcess>().InSingletonScope();
+        }
+
+        private void InternalClassRegistration()
+        {
+            // this class should be used only n DB layer
+            Bind<IConnectionStringHelper>().To<ConnectionStringHelper>().InSingletonScope();
+            Bind<IConnectionManager>().To<ConnectionManager>().InSingletonScope();
         }
     }
 }

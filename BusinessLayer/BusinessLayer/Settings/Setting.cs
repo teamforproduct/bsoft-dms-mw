@@ -18,13 +18,12 @@ namespace BL.Logic.Settings
         /// <returns>Typed setting value.</returns>
         public T GetSetting<T>(string settingName) where T : IConvertible
         {
-            var settingValue = _casheSettings[settingName];
-
-            if (settingValue == null)
+            if (!_casheSettings.ContainsKey(settingName))
             {
                 throw new ConfigurationErrorsException(string.Format("Configuration parameter {0} is not specified in configuration file.", settingName));
             }
 
+            var settingValue = _casheSettings[settingName];
             try
             {
                 return (T)((IConvertible)settingValue).ToType(typeof(T), null);
@@ -44,15 +43,14 @@ namespace BL.Logic.Settings
         /// <returns>Typed setting value or default value.</returns>
         public T GetSetting<T>(string settingName, T defaulValue) where T : IConvertible
         {
-            var settingValue = _casheSettings[settingName];
-
-            if (settingValue == null)
+            if (!_casheSettings.ContainsKey(settingName))
             {
                 return defaulValue;
             }
 
             try
             {
+                var settingValue = _casheSettings[settingName];
                 return (T)((IConvertible)settingValue).ToType(typeof(T), null);
             }
             catch (InvalidCastException)

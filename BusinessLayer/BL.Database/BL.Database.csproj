@@ -46,11 +46,20 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\..\Web\DMS_WebAPI\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\..\Web\DMS_WebAPI\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Ninject, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
       <HintPath>..\..\Web\DMS_WebAPI\packages\Ninject.3.2.2.0\lib\net45-full\Ninject.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -60,14 +69,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CoreDb\CoreDb.cs" />
+    <Compile Include="DatabaseContext\DmsContext.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryAgents.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryCompanies.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryDepartments.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryPositions.cs" />
     <Compile Include="DependencyInjection\DatabaseModule.cs" />
-    <Compile Include="Factory\DatabaseFactory.cs" />
-    <Compile Include="Factory\IDatabaseFactory.cs" />
-    <Compile Include="Helpers\ConnectionStringManager.cs" />
+    <Compile Include="Documents\DocumnetsDbProcess.cs" />
+    <Compile Include="Documents\IDocumnetsDbProcess.cs" />
+    <Compile Include="Helpers\IConnectionStringHelper.cs" />
+    <Compile Include="Manager\ConnectionManager.cs" />
+    <Compile Include="Manager\IConnectionManager.cs" />
+    <Compile Include="Helpers\ConnectionStringHelper.cs" />
+    <Compile Include="Migrations\201601241114209_InitialMigration.cs" />
+    <Compile Include="Migrations\201601241114209_InitialMigration.Designer.cs">
+      <DependentUpon>201601241114209_InitialMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -81,6 +100,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -93,6 +113,11 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201601241114209_InitialMigration.resx">
+      <DependentUpon>201601241114209_InitialMigration.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
