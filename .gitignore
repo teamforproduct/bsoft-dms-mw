@@ -181,3 +181,5 @@ GeneratedArtifacts/
 _Pvt_Extensions/
 ModelManifest.xml
 
+/Test
+/Web/DMS_WebAPI/packages
