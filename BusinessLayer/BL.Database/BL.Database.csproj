@@ -71,10 +71,29 @@
   <ItemGroup>
     <Compile Include="CoreDb\CoreDb.cs" />
     <Compile Include="DatabaseContext\DmsContext.cs" />
+    <Compile Include="DBModel\Admin\AdminAccessLevels.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryAgents.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryCompanies.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryDepartments.cs" />
+    <Compile Include="DBModel\Dictionary\DictionaryDocumentDirections.cs" />
+    <Compile Include="DBModel\Dictionary\DictionaryDocumentSubjects.cs" />
+    <Compile Include="DBModel\Dictionary\DictionaryDocumentTypes.cs" />
+    <Compile Include="DBModel\Dictionary\DictionaryEventTypes.cs" />
+    <Compile Include="DBModel\Dictionary\DictionaryImpotanceEventTypes.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryPositions.cs" />
+    <Compile Include="DBModel\Dictionary\DictionaryRegistrationJournals.cs" />
+    <Compile Include="DBModel\Dictionary\DictionarySendTypes.cs" />
+    <Compile Include="DBModel\Dictionary\DictionaryStandartSendListContents.cs" />
+    <Compile Include="DBModel\Dictionary\DictionaryStandartSendLists.cs" />
+    <Compile Include="DBModel\Dictionary\DictionarySubordinationTypes.cs" />
+    <Compile Include="DBModel\Document\DocumentAccesses.cs" />
+    <Compile Include="DBModel\Document\DocumentEvents.cs" />
+    <Compile Include="DBModel\Document\DocumentFiles.cs" />
+    <Compile Include="DBModel\Document\DocumentIncomingDetails.cs" />
+    <Compile Include="DBModel\Document\Documents.cs" />
+    <Compile Include="DBModel\Document\DocumentSendLists.cs" />
+    <Compile Include="DBModel\Template\TemplateDocumentIncomingDetails.cs" />
+    <Compile Include="DBModel\Template\TemplateDocuments.cs" />
     <Compile Include="DependencyInjection\DatabaseModule.cs" />
     <Compile Include="Documents\DocumnetsDbProcess.cs" />
     <Compile Include="Documents\IDocumnetsDbProcess.cs" />
@@ -103,10 +122,7 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="DBModel\Admin\" />
-    <Folder Include="DBModel\Document\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
       <Visible>False</Visible>
