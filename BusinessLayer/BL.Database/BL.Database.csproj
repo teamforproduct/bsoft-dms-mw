@@ -86,12 +86,9 @@
     <Compile Include="DBModel\Dictionary\DictionaryStandartSendListContents.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryStandartSendLists.cs" />
     <Compile Include="DBModel\Dictionary\DictionarySubordinationTypes.cs" />
-    <Compile Include="DBModel\Document\DocumentAccesses.cs" />
-    <Compile Include="DBModel\Document\DocumentEvents.cs" />
     <Compile Include="DBModel\Document\DocumentFiles.cs" />
     <Compile Include="DBModel\Document\DocumentIncomingDetails.cs" />
     <Compile Include="DBModel\Document\Documents.cs" />
-    <Compile Include="DBModel\Document\DocumentSendLists.cs" />
     <Compile Include="DBModel\Template\TemplateDocumentIncomingDetails.cs" />
     <Compile Include="DBModel\Template\TemplateDocuments.cs" />
     <Compile Include="DependencyInjection\DatabaseModule.cs" />
@@ -104,6 +101,10 @@
     <Compile Include="Migrations\201601241114209_InitialMigration.cs" />
     <Compile Include="Migrations\201601241114209_InitialMigration.Designer.cs">
       <DependentUpon>201601241114209_InitialMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201601251408559_AddDocumentsEnvironmentAndTemplate.cs" />
+    <Compile Include="Migrations\201601251408559_AddDocumentsEnvironmentAndTemplate.Designer.cs">
+      <DependentUpon>201601251408559_AddDocumentsEnvironmentAndTemplate.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -133,6 +134,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201601241114209_InitialMigration.resx">
       <DependentUpon>201601241114209_InitialMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201601251408559_AddDocumentsEnvironmentAndTemplate.resx">
+      <DependentUpon>201601251408559_AddDocumentsEnvironmentAndTemplate.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

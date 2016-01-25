@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BL.Database.DBModel.Template
 {
@@ -12,11 +8,12 @@ namespace BL.Database.DBModel.Template
         public Nullable<int> SenderAgentId { get; set; }
         public string SenderPerson { get; set; }
         public string SenderNumber { get; set; }
-        public Nullable<System.DateTime> SenderDate { get; set; }
+        public Nullable<DateTime> SenderDate { get; set; }
         public string Addressee { get; set; }
         public int LastChangeUserId { get; set; }
-        public System.DateTime LastChangeDate { get; set; }
+        public DateTime LastChangeDate { get; set; }
+        public int DocumentTemplateId { get; set; }
 
-        public virtual TemplateDocuments Document { get; set; }
+        public virtual TemplateDocuments DocumentTemplate { get; set; }
     }
 }

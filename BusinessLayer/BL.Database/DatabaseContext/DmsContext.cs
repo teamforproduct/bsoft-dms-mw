@@ -1,5 +1,4 @@
 ﻿using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
 using BL.Database.DBModel.Dictionary;
 using BL.Database.Helpers;
 using BL.Database.DBModel.Admin;
@@ -18,6 +17,20 @@ namespace BL.Database.DatabaseContext
         {
         }
 
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<DocumentIncomingDetails>()
+                  .HasRequired(a => a.Document)
+                  .WithMany()
+                  .HasForeignKey(u => u.DocumentId);
+
+            modelBuilder.Entity<TemplateDocumentIncomingDetails>()
+                  .HasRequired(a => a.DocumentTemplate)
+                  .WithMany()
+                  .HasForeignKey(u => u.DocumentTemplateId);
+        }
+
+        public virtual DbSet<DBModel.Document.Documents> DocumentsSet { get; set; }
         public virtual DbSet<AdminAccessLevels> AdminAccessLevelsSet { get; set; }
         public virtual DbSet<DictionaryAgents> DictionaryAgentsSet { get; set; }
         public virtual DbSet<DictionaryCompanies> DictionaryCompaniesSet { get; set; }
@@ -33,12 +46,9 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<DictionaryStandartSendLists> DictionaryStandartSendListsSet { get; set; }
         public virtual DbSet<DictionarySubordinationTypes> DictionarySubordinationTypesSet { get; set; }
 
-        public virtual DbSet<DocumentAccesses> DocumentAccessesSet { get; set; }
-        public virtual DbSet<DocumentEvents> DocumentEventsSet { get; set; }
         public virtual DbSet<DocumentFiles> DocumentFilesSet { get; set; }
         public virtual DbSet<DocumentIncomingDetails> DocumentIncomingDetailsSet { get; set; }
-        public virtual DbSet<BL.Database.DBModel.Document.Documents> DocumentsSet { get; set; }
-        public virtual DbSet<DocumentSendLists> DocumentSendListsSet { get; set; }
+
 
         public virtual DbSet<TemplateDocumentIncomingDetails> TemplateDocumentIncomingDetailsSet { get; set; }
         public virtual DbSet<TemplateDocuments> TemplateDocumentsSet { get; set; }
