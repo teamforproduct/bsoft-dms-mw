@@ -64,5 +64,32 @@ namespace BL.Database.Documents
                 DocumentDirection = x.DocumentDirection.Name
             }).ToList();
         }
+
+        public BaseDocument GetDocument(IContext ctx, int documentId)
+        {
+            var dbContext = GetUserDmsContext(ctx);
+
+            return dbContext.DocumentsSet.Where(x=>x.Id == documentId).Select(x => new BaseDocument
+            {
+                Id = x.Id,
+                DocumentTypeId = x.DocumentTypeId,
+                ExecutorPositionId = x.ExecutorPositionId,
+                DocumentDirectionId = x.DocumentDirectionId,
+                Description = x.Description,
+                TemplateDocumentId = x.TemplateDocumentId,
+                RegistrationDate = x.RegistrationDate,
+                DocumentSubjectId = x.DocumentSubjectId,
+                RegistrationNumber = x.RegistrationNumber,
+                RegistrationNumberPrefix = x.RegistrationNumberPrefix,
+                RegistrationNumberSuffix = x.RegistrationNumberSuffix,
+                LastChangeDate = x.LastChangeDate,
+                RegistrationJournalId = x.RegistrationJournalId,
+                CreateDate = x.CreateDate,
+                DocumentSubject = x.DocumentSubject.Name,
+                ExecutorName = x.ExecutorPosition.Name,
+                LastChangeUserId = x.LastChangeUserId,
+                DocumentDirection = x.DocumentDirection.Name
+            }).FirstOrDefault();
+        }
     }
 }

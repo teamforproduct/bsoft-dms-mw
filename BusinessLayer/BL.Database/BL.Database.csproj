@@ -72,6 +72,8 @@
     <Compile Include="CoreDb\CoreDb.cs" />
     <Compile Include="DatabaseContext\DmsContext.cs" />
     <Compile Include="DBModel\Admin\AdminAccessLevels.cs" />
+    <Compile Include="DBModel\System\SystemLogs.cs" />
+    <Compile Include="DBModel\System\SystemSettings.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryAgents.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryCompanies.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryDepartments.cs" />
@@ -106,6 +108,10 @@
     <Compile Include="Migrations\201601251408559_AddDocumentsEnvironmentAndTemplate.Designer.cs">
       <DependentUpon>201601251408559_AddDocumentsEnvironmentAndTemplate.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201601261654059_AddLogAndSetting.cs" />
+    <Compile Include="Migrations\201601261654059_AddLogAndSetting.Designer.cs">
+      <DependentUpon>201601261654059_AddLogAndSetting.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -137,6 +143,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201601251408559_AddDocumentsEnvironmentAndTemplate.resx">
       <DependentUpon>201601251408559_AddDocumentsEnvironmentAndTemplate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201601261654059_AddLogAndSetting.resx">
+      <DependentUpon>201601261654059_AddLogAndSetting.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
