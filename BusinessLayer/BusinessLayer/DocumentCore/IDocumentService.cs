@@ -6,7 +6,7 @@ namespace BL.Logic.DocumentCore
 {
     public interface IDocumentService
     {
-        void SaveDocument (IContext context, BaseDocument document);
+        int SaveDocument (IContext context, BaseDocument document);
         IEnumerable<BaseDocument> GetDocuments();
     }
 }

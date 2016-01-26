@@ -17,15 +17,16 @@ namespace BL.Logic.DocumentCore
             _document = document;
         }
 
-        public override void Execute(object parameter)
+        public override object Execute(object parameter)
         {
             throw new System.NotImplementedException();
         }
 
-        public override void Execute()
+        public override object Execute()
         {
             var documentDb = DmsResolver.Current.Get<IDocumnetsDbProcess>();
             documentDb.UpdateDocument(_context, _document);
+            return null;
         }
 
         public override bool CanExecute()

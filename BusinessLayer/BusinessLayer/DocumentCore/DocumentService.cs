@@ -7,7 +7,7 @@ namespace BL.Logic.DocumentCore
 {
     internal class DocumentService : IDocumentService
     {
-        public void SaveDocument (IContext context, BaseDocument document)
+        public int SaveDocument (IContext context, BaseDocument document)
         {
             Command cmd;
             if (document.Id == 0) // new document
@@ -23,6 +23,7 @@ namespace BL.Logic.DocumentCore
             {
                 cmd.Execute();
             }
+            return document.Id;
         }
 
         public IEnumerable<BaseDocument> GetDocuments()
