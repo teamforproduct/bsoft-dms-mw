@@ -183,3 +183,4 @@ ModelManifest.xml
 
 /Test
 /Web/DMS_WebAPI/packages
+/Web/DMS_WebAPI/.vs/config/applicationhost.config
