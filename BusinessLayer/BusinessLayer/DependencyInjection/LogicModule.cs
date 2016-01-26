@@ -10,7 +10,7 @@ namespace BusinessLayer.DependencyInjection
         public override void Load()
         {
             Bind<ISettings>().To<Setting>().InSingletonScope();
-            Bind<IDocumentProcessor>().To<DocumentProcessor>().InSingletonScope();
+            Bind<IDocumentService>().To<DocumentService>().InSingletonScope();
         }
     }
 }

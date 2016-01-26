@@ -1,10 +1,11 @@
-﻿using BL.CrossCutting.Common;
+﻿using System.Collections.Generic;
+using BL.CrossCutting.Common;
 using BL.CrossCutting.Interfaces;
 using BL.Model.DocumentCore;
 
 namespace BL.Logic.DocumentCore
 {
-    internal class DocumentProcessor : IDocumentProcessor
+    internal class DocumentService : IDocumentService
     {
         public void SaveDocument (IContext context, BaseDocument document)
         {
@@ -24,5 +25,9 @@ namespace BL.Logic.DocumentCore
             }
         }
 
+        public IEnumerable<BaseDocument> GetDocuments()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

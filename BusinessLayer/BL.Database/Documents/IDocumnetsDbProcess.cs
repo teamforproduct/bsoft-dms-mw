@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using BL.CrossCutting.Interfaces;
 using BL.Model.DocumentCore;
 
@@ -7,5 +8,6 @@ namespace BL.Database.Documents
     {
         void AddDocument(IContext ctx, BaseDocument document);
         void UpdateDocument(IContext ctx, BaseDocument document);
+        IEnumerable<BaseDocument> GetDocuments(IContext ctx);
     }
 }

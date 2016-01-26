@@ -2,7 +2,6 @@
 using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Documents;
-using BL.Database.Manager;
 using BL.Model.DocumentCore;
 
 namespace BL.Logic.DocumentCore 
