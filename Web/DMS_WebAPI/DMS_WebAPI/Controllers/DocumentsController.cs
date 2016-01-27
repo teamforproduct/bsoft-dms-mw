@@ -17,58 +17,28 @@ namespace DMS_WebAPI.Controllers
         //GET: api/Documents
         public IHttpActionResult Get()
         {
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var docs= docProc.GetDocuments(
-                new DefaultContext
-                {
-                    CurrentEmployee = new BL.Model.Users.Employee
-                    {
-                        Token = "1"
-                    }
-                }
-                );
+            var docs = docProc.GetDocuments(cxt);
             return new JsonResult(docs, this);
-            //return new DocumentsViewModel()
-            //{
-            //    Documents = new List<DocumentViewModel>() {
-            //        new DocumentViewModel() {
-            //            Id=10
-            //        },
-            //        new DocumentViewModel() {
-            //            Id=15,
-            //        }
-            //    }
-            //};
         }
 
         // GET: api/Documents/5
         public IHttpActionResult Get(int id)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
-
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var doc = docProc.GetDocument(
-                new DefaultContext
-                {
-                    CurrentEmployee = new BL.Model.Users.Employee
-                    {
-                        Token = "1"
-                    }
-                }, id);
+
+            var doc = docProc.GetDocument(cxt, id);
             return new JsonResult(doc, this);
         }
 
         // POST: api/Documents
         public IHttpActionResult Post(BaseDocument model)
         {
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            docProc.SaveDocument(new DefaultContext
-            {
-                CurrentEmployee = new BL.Model.Users.Employee
-                {
-                    Token = "1"
-                }
-            }, model);
+            docProc.SaveDocument(cxt, model);
             return Ok();
         }
 

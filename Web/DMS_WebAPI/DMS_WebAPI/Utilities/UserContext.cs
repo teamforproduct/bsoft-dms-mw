@@ -1,4 +1,5 @@
-﻿using BL.CrossCutting.Interfaces;
+﻿using BL.CrossCutting.Context;
+using BL.CrossCutting.Interfaces;
 using BL.Model.Database;
 using System;
 using System.Collections.Generic;
@@ -28,7 +29,15 @@ namespace DMS_WebAPI.Utilities
             string token = _Token;
             if (!_casheContexts.ContainsKey(token))
             {
-                throw new Exception();
+
+                Save(new DefaultContext
+                {
+                    CurrentEmployee = new BL.Model.Users.Employee
+                    {
+                        Token = token
+                    }
+                });
+                //throw new Exception();
             }
 
             var contextValue = _casheContexts[token];
@@ -45,7 +54,6 @@ namespace DMS_WebAPI.Utilities
 
         public void Save(IContext val)
         {
-
             _casheContexts.Add(_Token, new StoreInfo() { StoreObject = val, LastUsage = DateTime.Now });
         }
 
