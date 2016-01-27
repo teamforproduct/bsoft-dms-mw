@@ -5,6 +5,7 @@ using BL.Database.DBModel.Admin;
 using BL.Database.DBModel.Document;
 using BL.Database.DBModel.System;
 using BL.Database.DBModel.Template;
+using System.Data.Entity.ModelConfiguration.Conventions;
 
 namespace BL.Database.DatabaseContext
 {
@@ -17,9 +18,11 @@ namespace BL.Database.DatabaseContext
         public DmsContext(string connString) : base(connString)
         {
         }
-
+        
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+            modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
+            /*
             modelBuilder.Entity<DocumentIncomingDetails>()
                   .HasRequired(a => a.Document)
                   .WithMany()
@@ -28,8 +31,9 @@ namespace BL.Database.DatabaseContext
             modelBuilder.Entity<TemplateDocumentIncomingDetails>()
                   .HasRequired(a => a.DocumentTemplate)
                   .WithMany()
-                  .HasForeignKey(u => u.DocumentTemplateId);
+                  .HasForeignKey(u => u.DocumentTemplateId);*/
         }
+        
 
         public virtual DbSet<DBModel.Document.Documents> DocumentsSet { get; set; }
         public virtual DbSet<AdminAccessLevels> AdminAccessLevelsSet { get; set; }

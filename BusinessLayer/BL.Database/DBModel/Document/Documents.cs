@@ -20,7 +20,7 @@ namespace BL.Database.DBModel.Document
         }
 
         public int Id { get; set; }
-        public Nullable<int> TemplateDocumentId { get; set; }
+        public int TemplateDocumentId { get; set; }
         public int DocumentDirectionId { get; set; }
         public int DocumentTypeId { get; set; }
         public DateTime CreateDate { get; set; }

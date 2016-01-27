@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BL.Database.DBModel.Template
 {
@@ -12,8 +13,8 @@ namespace BL.Database.DBModel.Template
         public string Addressee { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
-        public int DocumentTemplateId { get; set; }
-
-        public virtual TemplateDocuments DocumentTemplate { get; set; }
+//        public int DocumentTemplateId { get; set; }
+//        [ForeignKey("Id")]
+//        public virtual TemplateDocuments Document { get; set; }
     }
 }
