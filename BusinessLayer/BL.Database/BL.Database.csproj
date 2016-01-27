@@ -112,6 +112,10 @@
     <Compile Include="Migrations\201601261654059_AddLogAndSetting.Designer.cs">
       <DependentUpon>201601261654059_AddLogAndSetting.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201601271146111_Corrections.cs" />
+    <Compile Include="Migrations\201601271146111_Corrections.Designer.cs">
+      <DependentUpon>201601271146111_Corrections.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -146,6 +150,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201601261654059_AddLogAndSetting.resx">
       <DependentUpon>201601261654059_AddLogAndSetting.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201601271146111_Corrections.resx">
+      <DependentUpon>201601271146111_Corrections.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

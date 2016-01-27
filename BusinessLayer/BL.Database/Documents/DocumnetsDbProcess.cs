@@ -17,7 +17,7 @@ namespace BL.Database.Documents
                 Description = document.Description,
                 Files = null,
                 LastChangeDate = DateTime.Now,
-                TemplateDocumentId = null,
+                TemplateDocumentId = 3,
                 RegistrationDate = null,
                 RegistrationNumber = 1,
                 DocumentSubjectId = null,
