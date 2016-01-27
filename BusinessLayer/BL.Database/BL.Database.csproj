@@ -100,6 +100,8 @@
     <Compile Include="DependencyInjection\DatabaseModule.cs" />
     <Compile Include="Documents\DocumnetsDbProcess.cs" />
     <Compile Include="Documents\IDocumnetsDbProcess.cs" />
+    <Compile Include="Documents\ITemplatesDbProcess.cs" />
+    <Compile Include="Documents\TemplatesDbProcess.cs" />
     <Compile Include="Helpers\IConnectionStringHelper.cs" />
     <Compile Include="Manager\ConnectionManager.cs" />
     <Compile Include="Manager\IConnectionManager.cs" />

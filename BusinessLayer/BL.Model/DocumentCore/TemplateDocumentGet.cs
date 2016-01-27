@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BL.Model.DocumentCore
 {
-    class TemplateDocumentGet
+    public class TemplateDocumentGet
     {
         public int Id { get; set; }
         public string Name { get; set; }

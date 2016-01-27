@@ -51,6 +51,8 @@
     <Compile Include="DocumentCore\BaseUpdateDocument.cs" />
     <Compile Include="DocumentCore\DocumentService.cs" />
     <Compile Include="DocumentCore\IDocumentService.cs" />
+    <Compile Include="DocumentCore\ITemplateDocumentService.cs" />
+    <Compile Include="DocumentCore\TemplateDocumentService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings\Setting.cs" />
   </ItemGroup>

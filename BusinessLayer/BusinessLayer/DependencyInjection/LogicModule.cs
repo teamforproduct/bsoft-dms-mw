@@ -11,6 +11,7 @@ namespace BusinessLayer.DependencyInjection
         {
             Bind<ISettings>().To<Setting>().InSingletonScope();
             Bind<IDocumentService>().To<DocumentService>().InSingletonScope();
+            Bind<ITemplateDocumentService>().To<TemplateDocumentService>().InSingletonScope();
         }
     }
 }

@@ -8,7 +8,7 @@ namespace BL.Database.Documents
     {
         void AddDocument(IContext ctx, BaseDocument document);
         void UpdateDocument(IContext ctx, BaseDocument document);
-        IEnumerable<BaseDocument> GetDocuments(IContext ctx);
-        BaseDocument GetDocument(IContext ctx, int documentId);
+        IEnumerable<FullDocument> GetDocuments(IContext ctx, DocumentFilter filters);
+        FullDocument GetDocument(IContext ctx, int documentId);
     }
 }

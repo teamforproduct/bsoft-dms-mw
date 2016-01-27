@@ -25,7 +25,7 @@ namespace DMS_WebAPI.Controllers
                     {
                         Token = "1"
                     }
-                }
+                }, new DocumentFilter()
                 );
             return new JsonResult(docs, this);
             //return new DocumentsViewModel()

@@ -28,13 +28,13 @@ namespace BL.Logic.DocumentCore
             return document.Id;
         }
 
-        public IEnumerable<BaseDocument> GetDocuments(IContext ctx)
+        public IEnumerable<FullDocument> GetDocuments(IContext ctx, DocumentFilter filters)
         {
             var documentDb = DmsResolver.Current.Get<IDocumnetsDbProcess>();
-            return documentDb.GetDocuments(ctx);
+            return documentDb.GetDocuments(ctx, filters);
         }
 
-        public BaseDocument GetDocument(IContext ctx, int documentId)
+        public FullDocument GetDocument(IContext ctx, int documentId)
         {
             var documentDb = DmsResolver.Current.Get<IDocumnetsDbProcess>();
             return documentDb.GetDocument(ctx, documentId);

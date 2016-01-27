@@ -5,7 +5,7 @@ using BL.Database.Manager;
 
 namespace BL.Database.CoreDb
 {
-    internal class CoreDb
+    public class CoreDb
     {
         protected DmsContext GetUserDmsContext(IContext ctx)
         {
