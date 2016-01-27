@@ -11,7 +11,7 @@ namespace BL.Database.Documents
         public void AddDocument(IContext ctx, BaseDocument document)
         {
             var dbContext = GetUserDmsContext(ctx);
-            dbContext.DocumentsSet.Add(new DBModel.Document.Documents
+            var doc= new DBModel.Document.Documents
             {
                 CreateDate = DateTime.Now,
                 Description = document.Description,
@@ -29,8 +29,10 @@ namespace BL.Database.Documents
                 ExecutorPositionId = document.ExecutorPositionId,
                 DocumentTypeId = document.DocumentTypeId
                 
-            });
+            };
+            dbContext.DocumentsSet.Add(doc);
             dbContext.SaveChanges();
+            document.Id = doc.Id;
         }
 
         public void UpdateDocument(IContext ctx, BaseDocument document)
@@ -43,26 +45,26 @@ namespace BL.Database.Documents
             var dbContext = GetUserDmsContext(ctx);
 
             return dbContext.DocumentsSet.Select(x => new BaseDocument
-            {
-                Id = x.Id,
-                DocumentTypeId = x.DocumentTypeId,
-                ExecutorPositionId = x.ExecutorPositionId,
-                DocumentDirectionId = x.DocumentDirectionId,
-                Description = x.Description,
-                TemplateDocumentId = x.TemplateDocumentId,
-                RegistrationDate = x.RegistrationDate,
-                DocumentSubjectId = x.DocumentSubjectId,
-                RegistrationNumber = x.RegistrationNumber,
-                RegistrationNumberPrefix = x.RegistrationNumberPrefix,
-                RegistrationNumberSuffix = x.RegistrationNumberSuffix,
-                LastChangeDate = x.LastChangeDate,
-                RegistrationJournalId = x.RegistrationJournalId,
-                CreateDate = x.CreateDate,
-                DocumentSubject = x.DocumentSubject.Name,
-                ExecutorName = x.ExecutorPosition.Name,
-                LastChangeUserId = x.LastChangeUserId,
-                DocumentDirection = x.DocumentDirection.Name
-            }).ToList();
+                {
+                    Id = x.Id,
+                    DocumentTypeId = x.DocumentTypeId,
+                    ExecutorPositionId = x.ExecutorPositionId,
+                    DocumentDirectionId = x.DocumentDirectionId,
+                    Description = x.Description,
+                    TemplateDocumentId = x.TemplateDocumentId,
+                    RegistrationDate = x.RegistrationDate,
+                    DocumentSubjectId = x.DocumentSubjectId,
+                    RegistrationNumber = x.RegistrationNumber,
+                    RegistrationNumberPrefix = x.RegistrationNumberPrefix,
+                    RegistrationNumberSuffix = x.RegistrationNumberSuffix,
+                    LastChangeDate = x.LastChangeDate,
+                    RegistrationJournalId = x.RegistrationJournalId,
+                    CreateDate = x.CreateDate,
+                    DocumentSubject = x.DocumentSubject.Name,
+                    ExecutorName = x.ExecutorPosition.Name,
+                    LastChangeUserId = x.LastChangeUserId,
+                    DocumentDirection = x.DocumentDirection.Name
+                }).ToList();
         }
 
         public BaseDocument GetDocument(IContext ctx, int documentId)
