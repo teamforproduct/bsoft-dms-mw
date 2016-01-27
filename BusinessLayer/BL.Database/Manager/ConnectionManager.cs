@@ -10,12 +10,12 @@ namespace BL.Database.Manager
     internal class ConnectionManager :IConnectionManager
     {
         private readonly IConnectionStringHelper _connectionStringHelper;
-        private readonly Dictionary<string, ConnectionStoreInfo> _connectionCach; 
+        private readonly Dictionary<string, StoreInfo> _connectionCach; 
 
         public ConnectionManager(IConnectionStringHelper connectionStringHelper)
         {
             _connectionStringHelper = connectionStringHelper;
-            _connectionCach = new Dictionary<string, ConnectionStoreInfo>();
+            _connectionCach = new Dictionary<string, StoreInfo>();
         }
 
         public DmsContext GetDbContext(IContext context)
@@ -23,15 +23,15 @@ namespace BL.Database.Manager
             if (_connectionCach.ContainsKey(context.CurrentEmployee.Token))
             {
                 var conn = _connectionCach[context.CurrentEmployee.Token];
-                conn.LastUsege = DateTime.Now;
-                return conn.ConnectionObject as DmsContext;
+                conn.LastUsage = DateTime.Now;
+                return conn.StoreObject as DmsContext;
             }
 
             var nconn = new DmsContext(_connectionStringHelper.GetConnectionString(context));
-            _connectionCach.Add(context.CurrentEmployee.Token, new ConnectionStoreInfo
+            _connectionCach.Add(context.CurrentEmployee.Token, new StoreInfo
             {
-                ConnectionObject = nconn,
-                LastUsege = DateTime.Now
+                StoreObject = nconn,
+                LastUsage = DateTime.Now
             });
             return nconn;
         }

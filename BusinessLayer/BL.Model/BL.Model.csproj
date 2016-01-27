@@ -41,7 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Database\ConnectionStoreInfo.cs" />
+    <Compile Include="Database\StoreInfo.cs" />
     <Compile Include="Database\DatabaseModel.cs" />
     <Compile Include="Database\DatabaseType.cs" />
     <Compile Include="DocumentCore\BaseDocument.cs" />

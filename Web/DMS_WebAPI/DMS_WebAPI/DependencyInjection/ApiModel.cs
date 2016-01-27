@@ -1,4 +1,5 @@
-﻿using Ninject.Modules;
+﻿using DMS_WebAPI.Utilities;
+using Ninject.Modules;
 
 namespace DMS_WebAPI.DependencyInjection
 {
@@ -6,7 +7,7 @@ namespace DMS_WebAPI.DependencyInjection
     {
         public override void Load()
         {
-
+            Bind<UserContext>().ToSelf().InSingletonScope();
         }
     }
 }

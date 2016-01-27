@@ -1,8 +1,11 @@
 ﻿using BL.CrossCutting.Context;
 using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
 using BL.Logic.DocumentCore;
 using BL.Model.DocumentCore;
 using DMS_WebAPI.Results;
+using DMS_WebAPI.Utilities;
+using System.Web;
 using System.Web.Http;
 
 namespace DMS_WebAPI.Controllers
@@ -41,6 +44,8 @@ namespace DMS_WebAPI.Controllers
         // GET: api/Documents/5
         public IHttpActionResult Get(int id)
         {
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var doc = docProc.GetDocument(
                 new DefaultContext
