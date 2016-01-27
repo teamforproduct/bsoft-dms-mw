@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BL.Database.DBModel.Dictionary
 {
@@ -18,10 +19,14 @@ namespace BL.Database.DBModel.Dictionary
         public int ChiefPositionId { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
-
+        [ForeignKey("ParentId")]
         public virtual DictionaryDepartments ParentDepartment { get; set; }
-        public virtual ICollection<DictionaryDepartments> ChildDepartments { get; set; }
+        [ForeignKey("CompanyId")]
         public virtual DictionaryCompanies Company { get; set; }
+        [ForeignKey("ChiefPositionId")]
+        public virtual DictionaryPositions ChiefPosition { get; set; }
+
+        public virtual ICollection<DictionaryDepartments> ChildDepartments { get; set; }
         //public virtual DictionaryPositions ChiefPosition { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BL.Database.DBModel.Document
 {
@@ -13,7 +14,7 @@ namespace BL.Database.DBModel.Document
         public bool IsAdditional { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
-
+        [ForeignKey("DocumentId")]
         public virtual Documents Document { get; set; }
     }
 }
