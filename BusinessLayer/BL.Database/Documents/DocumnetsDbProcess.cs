@@ -63,7 +63,7 @@ namespace BL.Database.Documents
                     DocumentSubject = x.DocumentSubject.Name,
                     ExecutorName = x.ExecutorPosition.Name,
                     LastChangeUserId = x.LastChangeUserId,
-                    DocumentDirection = x.DocumentDirection.Name
+                    DocumentDirection = x.TemplateDocument.DocumentDirection.Name
                 }).ToList();
         }
 
@@ -90,7 +90,7 @@ namespace BL.Database.Documents
                 DocumentSubject = x.DocumentSubject.Name,
                 ExecutorName = x.ExecutorPosition.Name,
                 LastChangeUserId = x.LastChangeUserId,
-                DocumentDirection = x.DocumentDirection.Name
+                DocumentDirection = x.TemplateDocument.DocumentDirection.Name
             }).FirstOrDefault();
         }
     }

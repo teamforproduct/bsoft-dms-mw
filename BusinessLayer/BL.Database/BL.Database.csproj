@@ -72,6 +72,9 @@
     <Compile Include="CoreDb\CoreDb.cs" />
     <Compile Include="DatabaseContext\DmsContext.cs" />
     <Compile Include="DBModel\Admin\AdminAccessLevels.cs" />
+    <Compile Include="DBModel\Document\DocumentAccesses.cs" />
+    <Compile Include="DBModel\Document\DocumentEvents.cs" />
+    <Compile Include="DBModel\Document\DocumentSendLists.cs" />
     <Compile Include="DBModel\System\SystemLogs.cs" />
     <Compile Include="DBModel\System\SystemSettings.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryAgents.cs" />
@@ -93,6 +96,7 @@
     <Compile Include="DBModel\Document\Documents.cs" />
     <Compile Include="DBModel\Template\TemplateDocumentIncomingDetails.cs" />
     <Compile Include="DBModel\Template\TemplateDocuments.cs" />
+    <Compile Include="DBModel\Template\TemplateDocumentSendLists.cs" />
     <Compile Include="DependencyInjection\DatabaseModule.cs" />
     <Compile Include="Documents\DocumnetsDbProcess.cs" />
     <Compile Include="Documents\IDocumnetsDbProcess.cs" />
@@ -115,6 +119,14 @@
     <Compile Include="Migrations\201601271146111_Corrections.cs" />
     <Compile Include="Migrations\201601271146111_Corrections.Designer.cs">
       <DependentUpon>201601271146111_Corrections.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201601271255103_ForeignKey.cs" />
+    <Compile Include="Migrations\201601271255103_ForeignKey.Designer.cs">
+      <DependentUpon>201601271255103_ForeignKey.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201601271302106_ForeignKeyIncomingDetails.cs" />
+    <Compile Include="Migrations\201601271302106_ForeignKeyIncomingDetails.Designer.cs">
+      <DependentUpon>201601271302106_ForeignKeyIncomingDetails.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -153,6 +165,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201601271146111_Corrections.resx">
       <DependentUpon>201601271146111_Corrections.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201601271255103_ForeignKey.resx">
+      <DependentUpon>201601271255103_ForeignKey.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201601271302106_ForeignKeyIncomingDetails.resx">
+      <DependentUpon>201601271302106_ForeignKeyIncomingDetails.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
