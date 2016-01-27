@@ -19,7 +19,7 @@ namespace DMS_WebAPI.Controllers
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var docs = docProc.GetDocuments(cxt);
+            var docs = docProc.GetDocuments(cxt, new DocumentFilter());
             return new JsonResult(docs, this);
         }
 
