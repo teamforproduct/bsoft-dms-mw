@@ -3,19 +3,22 @@ using BL.CrossCutting.DependencyInjection;
 using BL.Logic.DocumentCore;
 using BL.Model.DocumentCore;
 using DMS_WebAPI.Results;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Web.Http;
 
 namespace DMS_WebAPI.Controllers
 {
-    [Authorize]
-    [RoutePrefix("api/Documents")]
-    public class DocumentsController : ApiController
+    public class TemplateDocumentsController : ApiController
     {
-        //GET: api/Documents
+        // GET: api/TemplateDocuments
         public IHttpActionResult Get()
         {
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var docs= docProc.GetDocuments(
+            var docs = docProc.GetDocuments(
                 new DefaultContext
                 {
                     CurrentEmployee = new BL.Model.Users.Employee
@@ -38,7 +41,7 @@ namespace DMS_WebAPI.Controllers
             //};
         }
 
-        // GET: api/Documents/5
+        // GET: api/TemplateDocuments/5
         public IHttpActionResult Get(int id)
         {
             var docProc = DmsResolver.Current.Get<IDocumentService>();
@@ -53,7 +56,7 @@ namespace DMS_WebAPI.Controllers
             return new JsonResult(doc, this);
         }
 
-        // POST: api/Documents
+        // POST: api/TemplateDocuments
         public IHttpActionResult Post(BaseDocument model)
         {
             var docProc = DmsResolver.Current.Get<IDocumentService>();
@@ -67,12 +70,12 @@ namespace DMS_WebAPI.Controllers
             return Ok();
         }
 
-        // PUT: api/Documents/5
+        // PUT: api/TemplateDocuments/5
         public void Put(int id, [FromBody]string value)
         {
         }
 
-        // DELETE: api/Documents/5
+        // DELETE: api/TemplateDocuments/5
         public void Delete(int id)
         {
         }
