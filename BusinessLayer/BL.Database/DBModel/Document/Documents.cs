@@ -32,6 +32,7 @@ namespace BL.Database.DBModel.Document
         public string RegistrationNumberPrefix { get; set; }
         public Nullable<DateTime> RegistrationDate { get; set; }
         public int ExecutorPositionId { get; set; }
+        public int ExecutorAgentId { get; set; }
         public Nullable<int> RestrictedSendListId { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
@@ -42,6 +43,7 @@ namespace BL.Database.DBModel.Document
         public virtual DictionaryDocumentSubjects DocumentSubject { get; set; }
         public virtual DictionaryRegistrationJournals RegistrationJournal { get; set; }
         public virtual DictionaryPositions ExecutorPosition { get; set; }
+        public virtual DictionaryAgents ExecutorAgent { get; set; }
         public virtual DictionaryStandartSendLists RestrictedSendList { get; set; }
         //public virtual ICollection<DocumentSendLists> SendLists { get; set; }
         public virtual ICollection<DocumentFiles> Files { get; set; }

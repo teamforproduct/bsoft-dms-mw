@@ -9,7 +9,6 @@ namespace BL.Database.DBModel.Dictionary
     public class DictionaryRegistrationJournals
     {
         public int Id { get; set; }
-        public Nullable<int> ParentId { get; set; }
         public string Name { get; set; }
         public int DepartmentId { get; set; }
         public string Index { get; set; }
