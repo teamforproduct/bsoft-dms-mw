@@ -15,11 +15,11 @@ namespace DMS_WebAPI.Controllers
     public class DocumentsController : ApiController
     {
         //GET: api/Documents
-        public IHttpActionResult Get()
+        public IHttpActionResult Get([FromUri] DocumentFilter filters)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var docs = docProc.GetDocuments(cxt, new DocumentFilter());
+            var docs = docProc.GetDocuments(cxt, filters);
             return new JsonResult(docs, this);
         }
 
