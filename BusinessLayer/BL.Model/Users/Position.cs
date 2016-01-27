@@ -2,6 +2,6 @@
 {
     public class Position
     {
-         
+        public int PositionId { get; set; }
     }
 }
