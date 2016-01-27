@@ -6,7 +6,7 @@ namespace BL.Logic.DocumentCore
 {
     public interface ITemplateDocumentService
     {
-        IEnumerable<TemplateDocumentGet> GetDocumentTemplates(IContext context);
-        int AddOrUpdateTemplate(IContext context, TemplateDocumentGet template);
+        IEnumerable<FullTemplateDocument> GetTemplateDocuments(IContext context);
+        int AddOrUpdateTemplate(IContext context, FullTemplateDocument template);
     }
 }

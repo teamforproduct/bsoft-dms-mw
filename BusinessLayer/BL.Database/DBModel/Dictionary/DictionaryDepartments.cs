@@ -16,7 +16,7 @@ namespace BL.Database.DBModel.Dictionary
         public Nullable<int> ParentId { get; set; }
         public int CompanyId { get; set; }
         public string Name { get; set; }
-        public int ChiefPositionId { get; set; }
+        public int? ChiefPositionId { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
         [ForeignKey("ParentId")]

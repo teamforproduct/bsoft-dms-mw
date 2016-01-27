@@ -8,15 +8,15 @@ namespace BL.Logic.DocumentCore
 {
     public class TemplateDocumentService : ITemplateDocumentService
     {
-        public IEnumerable<TemplateDocumentGet> GetDocumentTemplates(IContext context)
+        public IEnumerable<FullTemplateDocument> GetTemplateDocuments(IContext context)
         {
-            var db = DmsResolver.Current.Get<ITemplatesDbProcess>();
-            return db.GetDocumentTemplates(context);
+            var db = DmsResolver.Current.Get<ITemplateDocumnetsDbProcess>();
+            return db.GetTemplateDocument(context);
         }
 
-        public int AddOrUpdateTemplate(IContext context, TemplateDocumentGet template)
+        public int AddOrUpdateTemplate(IContext context, FullTemplateDocument template)
         {
-            var db = DmsResolver.Current.Get<ITemplatesDbProcess>();
+            var db = DmsResolver.Current.Get<ITemplateDocumnetsDbProcess>();
             return db.AddOrUpdateTemplate(context, template);
         }
     }

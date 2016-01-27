@@ -12,7 +12,7 @@ namespace BL.Database.DependencyInjection
             InternalClassRegistration();
 
             Bind<IDocumnetsDbProcess>().To<DocumnetsDbProcess>().InSingletonScope();
-            Bind<ITemplatesDbProcess>().To<TemplatesDbProcess>().InSingletonScope();
+            Bind<ITemplateDocumnetsDbProcess>().To<TemplateDocumnetsDbProcess>().InSingletonScope();
         }
 
         private void InternalClassRegistration()

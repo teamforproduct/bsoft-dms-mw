@@ -16,14 +16,13 @@ namespace BL.Database.Documents
                 CreateDate = DateTime.Now,
                 Description = document.Description,
                 ExecutorAgentId = document.ExecutorAgentId,
-                Files = null,
                 RestrictedSendListId = document.RestrictedSendListId,
                 LastChangeDate = DateTime.Now,
                 TemplateDocumentId = document.TemplateDocumentId,
                 RegistrationNumber = 1,
-                DocumentDirectionId = document.DocumentDirectionId,
+                //DocumentDirectionId = document.DocumentDirectionId,
                 ExecutorPositionId = document.ExecutorPositionId,
-                DocumentTypeId = document.DocumentTypeId
+                //DocumentTypeId = document.DocumentTypeId
                 
             };
             dbContext.DocumentsSet.Add(doc);
@@ -41,9 +40,7 @@ namespace BL.Database.Documents
                 doc.LastChangeDate = DateTime.Now;
                 doc.TemplateDocumentId = document.TemplateDocumentId;
                 doc.ExecutorAgentId = document.ExecutorAgentId;
-                doc.DocumentDirectionId = document.DocumentDirectionId;
                 doc.ExecutorPositionId = document.ExecutorPositionId;
-                doc.DocumentTypeId = document.DocumentTypeId;
                 doc.RestrictedSendListId = document.RestrictedSendListId;
                 dbContext.SaveChanges();
             }
@@ -56,9 +53,9 @@ namespace BL.Database.Documents
             return dbContext.DocumentsSet.Select(x => new FullDocument
             {
                     Id = x.Id,
-                    DocumentTypeId = x.DocumentTypeId,
+                    DocumentTypeId = x.TemplateDocument.DocumentTypeId,
                     ExecutorPositionId = x.ExecutorPositionId,
-                    DocumentDirectionId = x.DocumentDirectionId,
+                    DocumentDirectionId = x.TemplateDocument.DocumentDirectionId,
                     Description = x.Description,
                     TemplateDocumentId = x.TemplateDocumentId,
                     RegistrationDate = x.RegistrationDate,
@@ -83,9 +80,9 @@ namespace BL.Database.Documents
             return dbContext.DocumentsSet.Where(x=>x.Id == documentId).Select(x => new FullDocument
             {
                 Id = x.Id,
-                DocumentTypeId = x.DocumentTypeId,
+                DocumentTypeId = x.TemplateDocument.DocumentTypeId,
                 ExecutorPositionId = x.ExecutorPositionId,
-                DocumentDirectionId = x.DocumentDirectionId,
+                DocumentDirectionId = x.TemplateDocument.DocumentDirectionId,
                 Description = x.Description,
                 TemplateDocumentId = x.TemplateDocumentId,
                 RegistrationDate = x.RegistrationDate,

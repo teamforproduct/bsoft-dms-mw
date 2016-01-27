@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using BL.CrossCutting.Common;
 using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
@@ -38,6 +39,24 @@ namespace BL.Logic.DocumentCore
         {
             var documentDb = DmsResolver.Current.Get<IDocumnetsDbProcess>();
             return documentDb.GetDocument(ctx, documentId);
+        }
+
+        public int AddDocumentByTemplateDocument(IContext context, int TemplateDocumentId)
+        {
+            // var documentDb = DmsResolver.Current.Get<ITemplateDocumnetsDbProcess>();
+            var db = DmsResolver.Current.Get<ITemplateDocumnetsDbProcess>();
+            var baseTemplateDocument = db.GetTemplateDocument(context, TemplateDocumentId);
+            var baseDocument = new BaseDocument {
+
+                                TemplateDocumentId = baseTemplateDocument.Id,
+                                DocumentSubjectId = baseTemplateDocument.DocumentSubjectId,
+                                Description = baseTemplateDocument.Description,
+                                RestrictedSendListId = baseTemplateDocument.RestrictedSendListId,
+                                ExecutorPositionId  = 0, ////
+                                ExecutorAgentId = 0///////
+
+            };
+            return SaveDocument (context, baseDocument);
         }
     }
 }
