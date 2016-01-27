@@ -13,7 +13,7 @@ namespace BL.Database.DBModel.Dictionary
         public string Name { get; set; }
         public int ImpotanceEventTypeId { get; set; }
         public int LastChangeUserId { get; set; }
-        public System.DateTime LastChangeDate { get; set; }
+        public DateTime LastChangeDate { get; set; }
         [ForeignKey("ImpotanceEventTypeId")]
         public virtual DictionaryImpotanceEventTypes ImpotanceEventType { get; set; }
     }

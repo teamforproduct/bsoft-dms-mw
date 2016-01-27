@@ -2,15 +2,8 @@
 using BL.CrossCutting.DependencyInjection;
 using BL.Logic.DocumentCore;
 using BL.Model.DocumentCore;
-using DMS_WebAPI.Models;
 using DMS_WebAPI.Results;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
-using System.Web.Http.Description;
 
 namespace DMS_WebAPI.Controllers
 {
@@ -22,7 +15,15 @@ namespace DMS_WebAPI.Controllers
         public IHttpActionResult Get()
         {
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var docs= docProc.GetDocuments();
+            var docs= docProc.GetDocuments(
+                new DefaultContext
+                {
+                    CurrentEmployee = new BL.Model.Users.Employee
+                    {
+                        Token = "1"
+                    }
+                }
+                );
             return new JsonResult(docs, this);
             //return new DocumentsViewModel()
             //{
@@ -41,7 +42,14 @@ namespace DMS_WebAPI.Controllers
         public IHttpActionResult Get(int id)
         {
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var doc = new { };
+            var doc = docProc.GetDocument(
+                new DefaultContext
+                {
+                    CurrentEmployee = new BL.Model.Users.Employee
+                    {
+                        Token = "1"
+                    }
+                }, id);
             //    docProc.GetDocument(new DefaultContext
             //{
             //    CurrentEmployee = new BL.Model.Users.Employee

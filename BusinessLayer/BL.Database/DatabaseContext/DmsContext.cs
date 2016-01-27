@@ -3,6 +3,7 @@ using BL.Database.DBModel.Dictionary;
 using BL.Database.Helpers;
 using BL.Database.DBModel.Admin;
 using BL.Database.DBModel.Document;
+using BL.Database.DBModel.System;
 using BL.Database.DBModel.Template;
 
 namespace BL.Database.DatabaseContext
@@ -52,6 +53,9 @@ namespace BL.Database.DatabaseContext
 
         public virtual DbSet<TemplateDocumentIncomingDetails> TemplateDocumentIncomingDetailsSet { get; set; }
         public virtual DbSet<TemplateDocuments> TemplateDocumentsSet { get; set; }
+
+        public virtual DbSet<SystemLogs> LogSet { get; set; }
+        public virtual DbSet<SystemSettings> SettingsSet { get; set; }
 
     }
 }
