@@ -3,6 +3,7 @@ using BL.CrossCutting.DependencyInjection;
 using BL.Logic.DocumentCore;
 using BL.Model.DocumentCore;
 using DMS_WebAPI.Results;
+using DMS_WebAPI.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,61 +13,34 @@ using System.Web.Http;
 
 namespace DMS_WebAPI.Controllers
 {
+    [Authorize]
+    [RoutePrefix("api/TemplateDocuments")]
     public class TemplateDocumentsController : ApiController
     {
         // GET: api/TemplateDocuments
         public IHttpActionResult Get()
         {
-            var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var docs = docProc.GetDocuments(
-                new DefaultContext
-                {
-                    CurrentEmployee = new BL.Model.Users.Employee
-                    {
-                        Token = "1"
-                    }
-                }, new DocumentFilter()
-                );
-            return new JsonResult(docs, this);
-            //return new DocumentsViewModel()
-            //{
-            //    Documents = new List<DocumentViewModel>() {
-            //        new DocumentViewModel() {
-            //            Id=10
-            //        },
-            //        new DocumentViewModel() {
-            //            Id=15,
-            //        }
-            //    }
-            //};
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
+            var tmpDocs = tmpDocProc.GetDocumentTemplates(cxt);
+            return new JsonResult(tmpDocs, this);
         }
 
         // GET: api/TemplateDocuments/5
         public IHttpActionResult Get(int id)
         {
-            var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var doc = docProc.GetDocument(
-                new DefaultContext
-                {
-                    CurrentEmployee = new BL.Model.Users.Employee
-                    {
-                        Token = "1"
-                    }
-                }, id);
-            return new JsonResult(doc, this);
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
+            var tmpDoc = tmpDocProc.GetDocumentTemplates(cxt).FirstOrDefault();
+            return new JsonResult(tmpDoc, this);
         }
 
         // POST: api/TemplateDocuments
-        public IHttpActionResult Post(BaseDocument model)
+        public IHttpActionResult Post(TemplateDocumentGet model)
         {
-            var docProc = DmsResolver.Current.Get<IDocumentService>();
-            docProc.SaveDocument(new DefaultContext
-            {
-                CurrentEmployee = new BL.Model.Users.Employee
-                {
-                    Token = "1"
-                }
-            }, model);
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<ITemplateDocumentService>();
+            docProc.AddOrUpdateTemplate(cxt, model);
             return Ok();
         }
 
