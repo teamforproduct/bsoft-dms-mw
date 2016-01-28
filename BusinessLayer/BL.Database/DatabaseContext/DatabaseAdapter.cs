@@ -10,36 +10,43 @@ namespace BL.Database.DatabaseContext
         {
             var doc = new DBModel.Document.Documents
             {
-                CreateDate = DateTime.Now,
-                Description = document.Description,
-                ExecutorAgentId = document.ExecutorAgentId,
-                RestrictedSendListId = document.RestrictedSendListId,
-                LastChangeDate = DateTime.Now,
                 TemplateDocumentId = document.TemplateDocumentId,
-                RegistrationNumber = 1,
-                //DocumentDirectionId = document.DocumentDirectionId,
+                CreateDate = document.CreateDate,
+                DocumentSubjectId = document.DocumentSubjectId,
+                Description = document.Description,
+                RegistrationJournalId = document.RegistrationJournalId,
+                RegistrationNumberSuffix = document.RegistrationNumberSuffix,
+                RegistrationNumberPrefix = document.RegistrationNumberPrefix,
+                RegistrationDate = document.RegistrationDate,
                 ExecutorPositionId = document.ExecutorPositionId,
-                //DocumentTypeId = document.DocumentTypeId
-
+                ExecutorAgentId = document.ExecutorAgentId,
+                LastChangeUserId = 0,
+                LastChangeDate = DateTime.Now
             };
             dbContext.DocumentsSet.Add(doc);
         }
 
-        public void UpdateBaseDocument(DmsContext dbContext, BaseDocument document)
+        public void UpdateDocument(DmsContext dbContext, BaseDocument document)
         {
             var doc = dbContext.DocumentsSet.FirstOrDefault(x => x.Id == document.Id);
             if (doc != null)
             {
-                doc.Description = document.Description;
-                doc.LastChangeDate = DateTime.Now;
                 doc.TemplateDocumentId = document.TemplateDocumentId;
-                doc.ExecutorAgentId = document.ExecutorAgentId;
+                doc.CreateDate = document.CreateDate;
+                doc.DocumentSubjectId = document.DocumentSubjectId;
+                doc.Description = document.Description;
+                doc.RegistrationJournalId = document.RegistrationJournalId;
+                doc.RegistrationNumberSuffix = document.RegistrationNumberSuffix;
+                doc.RegistrationNumberPrefix = document.RegistrationNumberPrefix;
+                doc.RegistrationDate = document.RegistrationDate;
                 doc.ExecutorPositionId = document.ExecutorPositionId;
-                doc.RestrictedSendListId = document.RestrictedSendListId;
+                doc.ExecutorAgentId = document.ExecutorAgentId;
+                doc.LastChangeUserId = 0;
+                doc.LastChangeDate = DateTime.Now;
             }
         }
 
-        public int AddTemplate(DmsContext dbContext, FullTemplateDocument template)
+        public int AddTemplate(DmsContext dbContext, BaseTemplateDocument template)
         {
             return 0;
         }

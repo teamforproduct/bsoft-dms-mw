@@ -15,7 +15,7 @@ namespace DMS_WebAPI.Controllers
     public class DocumentsController : ApiController
     {
         //GET: api/Documents
-        public IHttpActionResult Get([FromUri] DocumentFilter filters)
+        public IHttpActionResult Get([FromUri] FilterDocument filters)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
@@ -34,17 +34,21 @@ namespace DMS_WebAPI.Controllers
         }
 
         // POST: api/Documents
-        public IHttpActionResult Post(BaseDocument model)
+        public IHttpActionResult Post([FromBody]int templateId)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            docProc.SaveDocument(cxt, model);
-            return Ok();
+            docProc.AddDocumentByTemplateDocument(cxt, templateId);
+            return new JsonResult(null,this);
         }
 
         // PUT: api/Documents/5
-        public void Put(int id, [FromBody]string value)
+        public IHttpActionResult Put([FromBody]ModifyDocument model)
         {
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            docProc.ModifyDocument(cxt, model);
+            return new JsonResult(null, this);
         }
 
         // DELETE: api/Documents/5

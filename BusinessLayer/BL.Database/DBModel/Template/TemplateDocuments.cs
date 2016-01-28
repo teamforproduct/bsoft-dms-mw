@@ -11,6 +11,7 @@ namespace BL.Database.DBModel.Template
         {
             this.IncomingDetail = new HashSet<TemplateDocumentIncomingDetails>();
             this.SendLists = new HashSet<TemplateDocumentSendLists>();
+            this.RestrictedSendLists = new HashSet<TemplateDocumentRestrictedSendLists>();
         }
 
         public int Id { get; set; }
@@ -21,12 +22,12 @@ namespace BL.Database.DBModel.Template
         public Nullable<int> DocumentSubjectId { get; set; }
         public string Description { get; set; }
         public Nullable<int> RegistrationJournalId { get; set; }
-        public Nullable<int> RestrictedSendListId { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
 
         public virtual ICollection<TemplateDocumentIncomingDetails> IncomingDetail { get; set; }
         public virtual ICollection<TemplateDocumentSendLists> SendLists { get; set; }
+        public virtual ICollection<TemplateDocumentRestrictedSendLists> RestrictedSendLists { get; set; }
         [ForeignKey("DocumentDirectionId")]
         public virtual DictionaryDocumentDirections DocumentDirection { get; set; }
         [ForeignKey("DocumentTypeId")]
@@ -35,7 +36,5 @@ namespace BL.Database.DBModel.Template
         public virtual DictionaryDocumentSubjects DocumentSubject { get; set; }
         [ForeignKey("RegistrationJournalId")]
         public virtual DictionaryRegistrationJournals RegistrationJournal { get; set; }
-        [ForeignKey("RestrictedSendListId")]
-        public virtual DictionaryStandartSendLists RestrictedSendList { get; set; }
     }
 }

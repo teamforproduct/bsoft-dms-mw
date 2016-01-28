@@ -185,3 +185,6 @@ ModelManifest.xml
 /Web/DMS_WebAPI/packages
 /Web/DMS_WebAPI/.vs/config/applicationhost.config
 /OutRelease
+/packages
+/.vs
+/bsoft-dms-mw/log

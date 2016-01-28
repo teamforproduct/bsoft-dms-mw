@@ -1,5 +1,6 @@
 ﻿using BL.CrossCutting.DependencyInjection;
 using BL.Model.Users;
+using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System;
 using System.Collections.Generic;
@@ -16,10 +17,18 @@ namespace DMS_WebAPI.Controllers
     {
         // POST: api/Users/Position
         [Route("Position")]
-        public void Post(int positionId)
+        public IHttpActionResult Post([FromBody]int positionId)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             cxt.CurrentPosition = new List<Position>() { new Position { PositionId = positionId } };
+            return new JsonResult(null, this);
+        }
+        // GET: api/Users/Servers
+        [Route("Servers")]
+        public IHttpActionResult GetServers()
+        {
+            var readXml = new ReadXml("/servers.xml");
+            return new JsonResult(readXml.Read(), this);
         }
         // GET: api/Users
         public IEnumerable<string> Get()

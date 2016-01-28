@@ -9,13 +9,13 @@ namespace BL.Logic.DocumentCore
 {
     public class TemplateDocumentService : ITemplateDocumentService
     {
-        public IEnumerable<FullTemplateDocument> GetTemplateDocuments(IContext context)
+        public IEnumerable<BaseTemplateDocument> GetTemplateDocuments(IContext context)
         {
             var db = DmsResolver.Current.Get<ITemplateDocumnetsDbProcess>();
             return db.GetTemplateDocument(context);
         }
 
-        public int AddOrUpdateTemplate(IContext context, FullTemplateDocument template)
+        public int AddOrUpdateTemplate(IContext context, BaseTemplateDocument template)
         {
             var db = DmsResolver.Current.Get<ITemplateDocumnetsDbProcess>();
             return db.AddOrUpdateTemplate(context, template);

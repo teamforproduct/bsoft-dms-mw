@@ -9,5 +9,7 @@ namespace BL.CrossCutting.Interfaces
         Employee CurrentEmployee { get; set; }
         List<Position> CurrentPosition { get; set; }
         DatabaseModel CurrentDB { get; set; }
+        int CurrentPositionId { get; }
+        int CurrentAgentId { get; }
     }
 }
