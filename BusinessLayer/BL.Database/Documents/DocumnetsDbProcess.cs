@@ -67,23 +67,37 @@ namespace BL.Database.Documents
             return dbContext.DocumentsSet.Where(x=>x.Id == documentId).Select(x => new BaseDocument
             {
                 Id = x.Id,
-                DocumentTypeId = x.TemplateDocument.DocumentTypeId,
-                ExecutorPositionId = x.ExecutorPositionId,
-                DocumentDirectionId = x.TemplateDocument.DocumentDirectionId,
-                Description = x.Description,
                 TemplateDocumentId = x.TemplateDocumentId,
-                RegistrationDate = x.RegistrationDate,
+                CreateDate = x.CreateDate,
                 DocumentSubjectId = x.DocumentSubjectId,
+                Description = x.Description,
+                RegistrationJournalId = x.RegistrationJournalId,
                 RegistrationNumber = x.RegistrationNumber,
                 RegistrationNumberPrefix = x.RegistrationNumberPrefix,
                 RegistrationNumberSuffix = x.RegistrationNumberSuffix,
-                LastChangeDate = x.LastChangeDate,
-                RegistrationJournalId = x.RegistrationJournalId,
-                CreateDate = x.CreateDate,
-                DocumentSubjectName = x.DocumentSubject.Name,
-                ExecutorPositionName = x.ExecutorPosition.Name,
+                RegistrationDate = x.RegistrationDate,
+                ExecutorPositionId = x.ExecutorPositionId,
+                ExecutorAgentId = x.ExecutorAgentId,
                 LastChangeUserId = x.LastChangeUserId,
-                DocumentDirectionName = x.TemplateDocument.DocumentDirection.Name
+                LastChangeDate = x.LastChangeDate,
+                SenderAgentId = x.IncomingDetail.FirstOrDefault().SenderAgentId,
+                SenderPerson = x.IncomingDetail.FirstOrDefault().SenderPerson,
+                SenderNumber = x.IncomingDetail.FirstOrDefault().SenderNumber,
+                SenderDate = x.IncomingDetail.FirstOrDefault().SenderDate,
+                Addressee = x.IncomingDetail.FirstOrDefault().Addressee,
+                AccessLevelId = 30, //после добавления Access??? подумать
+                TemplateDocumentName = x.TemplateDocument.Name,
+                IsHard = x.TemplateDocument.IsHard,
+                DocumentDirectionId = x.TemplateDocument.DocumentDirectionId,
+                DocumentDirectionName = x.TemplateDocument.DocumentDirection.Name,
+                DocumentTypeId = x.TemplateDocument.DocumentTypeId,
+                DocumentTypeName = x.TemplateDocument.DocumentType.Name,
+                DocumentSubjectName = x.DocumentSubject.Name,
+                RegistrationJournalName = x.RegistrationJournal.Name,
+                ExecutorPositionName = x.ExecutorPosition.Name,
+                ExecutorAgentName = x.ExecutorAgent.Name,
+                SenderAgentName = x.IncomingDetail.FirstOrDefault().SenderAgent.Name,
+                AccessLevelName = null //после добавления Access??? подумать
             }).FirstOrDefault();
         }
     }

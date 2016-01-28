@@ -22,8 +22,6 @@ namespace BL.Model.DocumentCore
         public string Description { get; set; }
         public Nullable<int> RegistrationJournalId { get; set; }
         public string RegistrationJournalName { get; set; }
-        public Nullable<int> RestrictedSendListId { get; set; }
-        public string RestrictedSendListName { get; set; }
 
         public Nullable<int> SenderAgentId { get; set; }
         public string SenderAgentName { get; set; }

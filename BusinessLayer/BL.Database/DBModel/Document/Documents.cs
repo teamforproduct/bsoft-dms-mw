@@ -18,6 +18,7 @@ namespace BL.Database.DBModel.Document
             //this.Waits = new HashSet<DocumentWaits>();
             this.Events = new HashSet<DocumentEvents>();
             this.IncomingDetail = new HashSet<DocumentIncomingDetails>();
+            this.RestrictedSendLists = new HashSet<DocumentRestrictedSendLists>();
         }
 
         public int Id { get; set; }
@@ -32,7 +33,6 @@ namespace BL.Database.DBModel.Document
         public Nullable<DateTime> RegistrationDate { get; set; }
         public int ExecutorPositionId { get; set; }
         public int ExecutorAgentId { get; set; }
-        public Nullable<int> RestrictedSendListId { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
 
@@ -46,9 +46,6 @@ namespace BL.Database.DBModel.Document
         public virtual DictionaryPositions ExecutorPosition { get; set; }
         [ForeignKey("ExecutorAgentId")]
         public virtual DictionaryAgents ExecutorAgent { get; set; }
-        [ForeignKey("RestrictedSendListId")]
-        public virtual DictionaryStandartSendLists RestrictedSendList { get; set; }
-
 
 
         public virtual ICollection<DocumentSendLists> SendLists { get; set; }
@@ -60,6 +57,7 @@ namespace BL.Database.DBModel.Document
         public virtual ICollection<DocumentEvents> Events { get; set; }
 
         public virtual ICollection<DocumentIncomingDetails> IncomingDetail { get; set; }
+        public virtual ICollection<DocumentRestrictedSendLists> RestrictedSendLists { get; set; }
     }
 
 }

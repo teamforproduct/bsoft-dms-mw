@@ -53,7 +53,6 @@ namespace BL.Logic.DocumentCore
                 CreateDate = DateTime.Now,
                 DocumentSubjectId = baseTemplateDocument.DocumentSubjectId,
                 Description = baseTemplateDocument.Description,
-                RestrictedSendListId = baseTemplateDocument.RestrictedSendListId,
                 ExecutorPositionId = context.CurrentPositionId, ////
                 ExecutorAgentId = context.CurrentAgentId///////
             };
@@ -71,7 +70,6 @@ namespace BL.Logic.DocumentCore
                 Description = document.Description,
                 ExecutorPositionId = document.ExecutorPositionId,
                 ExecutorAgentId = document.ExecutorAgentId,
-                RestrictedSendListId = document.RestrictedSendListId,
                 SenderAgentId = document.SenderAgentId,
                 SenderPerson = document.SenderPerson,
                 SenderNumber = document.SenderNumber,

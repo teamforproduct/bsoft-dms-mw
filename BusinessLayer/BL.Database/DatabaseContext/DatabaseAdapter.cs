@@ -15,7 +15,6 @@ namespace BL.Database.DatabaseContext
                 DocumentSubjectId = document.DocumentSubjectId,
                 Description = document.Description,
                 RegistrationJournalId = document.RegistrationJournalId,
-                RestrictedSendListId = document.RestrictedSendListId,
                 RegistrationNumberSuffix = document.RegistrationNumberSuffix,
                 RegistrationNumberPrefix = document.RegistrationNumberPrefix,
                 RegistrationDate = document.RegistrationDate,
@@ -37,7 +36,6 @@ namespace BL.Database.DatabaseContext
                 doc.DocumentSubjectId = document.DocumentSubjectId;
                 doc.Description = document.Description;
                 doc.RegistrationJournalId = document.RegistrationJournalId;
-                doc.RestrictedSendListId = document.RestrictedSendListId;
                 doc.RegistrationNumberSuffix = document.RegistrationNumberSuffix;
                 doc.RegistrationNumberPrefix = document.RegistrationNumberPrefix;
                 doc.RegistrationDate = document.RegistrationDate;

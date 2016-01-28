@@ -40,7 +40,6 @@ namespace BL.Database.Documents
                 Description = x.Description,
                 DocumentSubjectId = x.DocumentSubjectId,
                 RegistrationJournalId = x.RegistrationJournalId,
-                RestrictedSendListId = x.RestrictedSendListId,
                 LastChangeUserId = x.LastChangeUserId,
                 LastChangeDate = x.LastChangeDate
             }).FirstOrDefault();

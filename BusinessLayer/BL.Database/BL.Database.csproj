@@ -76,6 +76,7 @@
     <Compile Include="DBModel\Admin\AdminAccessLevels.cs" />
     <Compile Include="DBModel\Document\DocumentAccesses.cs" />
     <Compile Include="DBModel\Document\DocumentEvents.cs" />
+    <Compile Include="DBModel\Document\DocumentRestrictedSendLists.cs" />
     <Compile Include="DBModel\Document\DocumentSendLists.cs" />
     <Compile Include="DBModel\System\SystemLogs.cs" />
     <Compile Include="DBModel\System\SystemSettings.cs" />
@@ -97,6 +98,7 @@
     <Compile Include="DBModel\Document\DocumentIncomingDetails.cs" />
     <Compile Include="DBModel\Document\Documents.cs" />
     <Compile Include="DBModel\Template\TemplateDocumentIncomingDetails.cs" />
+    <Compile Include="DBModel\Template\TemplateDocumentRestrictedSendLists.cs" />
     <Compile Include="DBModel\Template\TemplateDocuments.cs" />
     <Compile Include="DBModel\Template\TemplateDocumentSendLists.cs" />
     <Compile Include="DependencyInjection\DatabaseModule.cs" />
@@ -135,6 +137,10 @@
     <Compile Include="Migrations\201601272043368_DocumentsCorrection.cs" />
     <Compile Include="Migrations\201601272043368_DocumentsCorrection.Designer.cs">
       <DependentUpon>201601272043368_DocumentsCorrection.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201601281439074_RestrictedSendLists.cs" />
+    <Compile Include="Migrations\201601281439074_RestrictedSendLists.Designer.cs">
+      <DependentUpon>201601281439074_RestrictedSendLists.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -182,6 +188,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201601272043368_DocumentsCorrection.resx">
       <DependentUpon>201601272043368_DocumentsCorrection.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201601281439074_RestrictedSendLists.resx">
+      <DependentUpon>201601281439074_RestrictedSendLists.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
