@@ -18,6 +18,17 @@ namespace BL.CrossCutting.Context
                 }
                 return position.PositionId;
             } }
+        public int CurrentAgentId
+        {
+            get
+            {
+                if (!CurrentEmployee.AgentId.HasValue)
+                {
+                    throw new System.Exception();
+                }
+                return CurrentEmployee.AgentId.GetValueOrDefault();
+            }
+        }
         public DatabaseModel CurrentDB { get; set; }
     }
 }
