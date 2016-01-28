@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Web.Http;
 using Microsoft.Owin.Security.OAuth;
 using Newtonsoft.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace DMS_WebAPI
 {
@@ -25,6 +26,8 @@ namespace DMS_WebAPI
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+            var jsonConfig = config.Formatters.JsonFormatter;
+            jsonConfig.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
         }
     }
 }

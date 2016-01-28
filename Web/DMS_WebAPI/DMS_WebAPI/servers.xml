@@ -1,0 +1,14 @@
+<Servers>
+<Server>
+            <Name>Test server 1</Name>
+            <Address>109.197.217.79\SQLEXPRESS,1433</Address>
+            <MainDB>IRF_DMS</MainDB>
+            <IntegrationSecurity>False</IntegrationSecurity>
+            </Server>
+            <Server>
+            <Name>Test server 2</Name>
+            <Address>109.197.217.79\SQLEXPRESS,1433</Address>
+            <MainDB>IRF_DMS</MainDB>
+            <IntegrationSecurity>False</IntegrationSecurity>
+            </Server>
+			</Servers>
