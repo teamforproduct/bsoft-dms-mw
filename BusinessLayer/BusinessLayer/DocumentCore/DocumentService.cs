@@ -4,6 +4,8 @@ using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore;
+using System.Linq;
+using System;
 
 namespace BL.Logic.DocumentCore
 {
@@ -14,11 +16,11 @@ namespace BL.Logic.DocumentCore
             Command cmd;
             if (document.Id == 0) // new document
             {
-                cmd = new BaseSaveDocument(context, document);
+                cmd = new AddDocument(context, document);
             }
             else
             {
-                cmd = new BaseUpdateDocument(context, document);
+                cmd = new UpdateDocument(context, document);
             }
 
             if (cmd.CanExecute())
@@ -28,13 +30,13 @@ namespace BL.Logic.DocumentCore
             return document.Id;
         }
 
-        public IEnumerable<FullDocument> GetDocuments(IContext ctx, DocumentFilter filters)
+        public IEnumerable<BaseDocument> GetDocuments(IContext ctx, FilterDocument filters)
         {
             var documentDb = DmsResolver.Current.Get<IDocumnetsDbProcess>();
             return documentDb.GetDocuments(ctx, filters);
         }
 
-        public FullDocument GetDocument(IContext ctx, int documentId)
+        public BaseDocument GetDocument(IContext ctx, int documentId)
         {
             var documentDb = DmsResolver.Current.Get<IDocumnetsDbProcess>();
             return documentDb.GetDocument(ctx, documentId);
@@ -48,6 +50,7 @@ namespace BL.Logic.DocumentCore
             var baseDocument = new BaseDocument {
 
                                 TemplateDocumentId = baseTemplateDocument.Id,
+                                CreateDate = DateTime.Now,
                                 DocumentSubjectId = baseTemplateDocument.DocumentSubjectId,
                                 Description = baseTemplateDocument.Description,
                                 RestrictedSendListId = baseTemplateDocument.RestrictedSendListId,

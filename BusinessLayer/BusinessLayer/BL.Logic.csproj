@@ -47,8 +47,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DependencyInjection\LogicModule.cs" />
-    <Compile Include="DocumentCore\BaseSaveDocument.cs" />
-    <Compile Include="DocumentCore\BaseUpdateDocument.cs" />
+    <Compile Include="DocumentCore\AddDocument.cs" />
+    <Compile Include="DocumentCore\UpdateDocument.cs" />
     <Compile Include="DocumentCore\DocumentService.cs" />
     <Compile Include="DocumentCore\Interfaces\IDocumentService.cs" />
     <Compile Include="DocumentCore\Interfaces\ITemplateDocumentService.cs" />

@@ -35,6 +35,7 @@ namespace BL.Database.DBModel.Document
         public Nullable<int> RestrictedSendListId { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
+
         [ForeignKey("TemplateDocumentId")]
         public virtual TemplateDocuments TemplateDocument { get; set; }
         [ForeignKey("DocumentSubjectId")]

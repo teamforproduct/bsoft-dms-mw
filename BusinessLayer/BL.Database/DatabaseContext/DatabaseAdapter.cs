@@ -10,22 +10,29 @@ namespace BL.Database.DatabaseContext
         {
             var doc = new DBModel.Document.Documents
             {
-                CreateDate = DateTime.Now,
-                Description = document.Description,
-                ExecutorAgentId = document.ExecutorAgentId,
-                RestrictedSendListId = document.RestrictedSendListId,
-                LastChangeDate = DateTime.Now,
                 TemplateDocumentId = document.TemplateDocumentId,
-                RegistrationNumber = 1,
-                //DocumentDirectionId = document.DocumentDirectionId,
+                CreateDate = document.CreateDate,
+                DocumentSubjectId = document.DocumentSubjectId,
+                Description = document.Description,
+                RegistrationJournalId = document.RegistrationJournalId,
+                RestrictedSendListId = document.RestrictedSendListId,
+                RegistrationNumberSuffix = document.RegistrationNumberSuffix,
+                RegistrationNumberPrefix = document.RegistrationNumberPrefix,
+                RegistrationDate = document.RegistrationDate,
                 ExecutorPositionId = document.ExecutorPositionId,
+                ExecutorAgentId = document.ExecutorAgentId,
+                LastChangeUserId = 0,
+                LastChangeDate = DateTime.Now
+
+                //DocumentDirectionId = document.DocumentDirectionId,
+
                 //DocumentTypeId = document.DocumentTypeId
 
             };
             dbContext.DocumentsSet.Add(doc);
         }
 
-        public void UpdateBaseDocument(DmsContext dbContext, BaseDocument document)
+        public void UpdateDocument(DmsContext dbContext, BaseDocument document)
         {
             var doc = dbContext.DocumentsSet.FirstOrDefault(x => x.Id == document.Id);
             if (doc != null)
@@ -39,7 +46,7 @@ namespace BL.Database.DatabaseContext
             }
         }
 
-        public int AddTemplate(DmsContext dbContext, FullTemplateDocument template)
+        public int AddTemplate(DmsContext dbContext, BaseTemplateDocument template)
         {
             return 0;
         }

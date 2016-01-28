@@ -30,7 +30,7 @@ namespace DMS_WebAPI.Controllers
         }
 
         // POST: api/TemplateDocuments
-        public IHttpActionResult Post(FullTemplateDocument model)
+        public IHttpActionResult Post(BaseTemplateDocument model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<ITemplateDocumentService>();

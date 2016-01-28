@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace BL.Model.DocumentCore
 {
-    public class DocumentFilter
+    public class FilterDocument
     {
         public List<int> TemplateDocumentId { get; set; }
         public List<int> DocumentDirectionId { get; set; }

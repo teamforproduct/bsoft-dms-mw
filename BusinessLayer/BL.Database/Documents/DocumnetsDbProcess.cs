@@ -29,15 +29,15 @@ namespace BL.Database.Documents
         public void UpdateDocument(IContext ctx, BaseDocument document)
         {
             var dbContext = GetUserDmsContext(ctx);
-            _adapter.UpdateBaseDocument(dbContext, document);
+            _adapter.UpdateDocument(dbContext, document);
             dbContext.SaveChanges();
         }
 
-        public IEnumerable<FullDocument> GetDocuments(IContext ctx, DocumentFilter filters)
+        public IEnumerable<BaseDocument> GetDocuments(IContext ctx, FilterDocument filters)
         {
             var dbContext = GetUserDmsContext(ctx);
 
-            return dbContext.DocumentsSet.Select(x => new FullDocument
+            return dbContext.DocumentsSet.Select(x => new BaseDocument
             {
                     Id = x.Id,
                     DocumentTypeId = x.TemplateDocument.DocumentTypeId,
@@ -60,11 +60,11 @@ namespace BL.Database.Documents
                 }).ToList();
         }
 
-        public FullDocument GetDocument(IContext ctx, int documentId)
+        public BaseDocument GetDocument(IContext ctx, int documentId)
         {
             var dbContext = GetUserDmsContext(ctx);
 
-            return dbContext.DocumentsSet.Where(x=>x.Id == documentId).Select(x => new FullDocument
+            return dbContext.DocumentsSet.Where(x=>x.Id == documentId).Select(x => new BaseDocument
             {
                 Id = x.Id,
                 DocumentTypeId = x.TemplateDocument.DocumentTypeId,

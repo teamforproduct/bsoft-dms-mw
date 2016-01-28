@@ -15,7 +15,7 @@ namespace DMS_WebAPI.Controllers
     public class DocumentsController : ApiController
     {
         //GET: api/Documents
-        public IHttpActionResult Get([FromUri] DocumentFilter filters)
+        public IHttpActionResult Get([FromUri] FilterDocument filters)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();

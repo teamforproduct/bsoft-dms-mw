@@ -8,7 +8,7 @@ namespace BL.Logic.DocumentCore
     {
         int AddDocumentByTemplateDocument(IContext context, int TemplateDocumentId);
         int SaveDocument(IContext context, BaseDocument document);
-        IEnumerable<FullDocument> GetDocuments(IContext ctx, DocumentFilter filters);
-        FullDocument GetDocument(IContext ctx, int documentId);
+        IEnumerable<BaseDocument> GetDocuments(IContext ctx, FilterDocument filters);
+        BaseDocument GetDocument(IContext ctx, int documentId);
     }
 }
