@@ -48,8 +48,9 @@ namespace BL.Database.DatabaseContext
         }
         
 
-        public virtual DbSet<DBModel.Document.Documents> DocumentsSet { get; set; }
+
         public virtual DbSet<AdminAccessLevels> AdminAccessLevelsSet { get; set; }
+
         public virtual DbSet<DictionaryAgents> DictionaryAgentsSet { get; set; }
         public virtual DbSet<DictionaryCompanies> DictionaryCompaniesSet { get; set; }
         public virtual DbSet<DictionaryDepartments> DictionaryDepartmentsSet { get; set; }
@@ -60,14 +61,21 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<DictionaryImpotanceEventTypes> DictionaryImpotanceEventTypesSet { get; set; }
         public virtual DbSet<DictionaryPositions> DictionaryPositionsSet { get; set; }
         public virtual DbSet<DictionaryRegistrationJournals> DictionaryRegistrationJournalsSet { get; set; }
+        public virtual DbSet<DictionarySendTypes> DictionarySendTypesSet { get; set; }
         public virtual DbSet<DictionaryStandartSendListContents> DictionaryStandartSendListContentsSet { get; set; }
         public virtual DbSet<DictionaryStandartSendLists> DictionaryStandartSendListsSet { get; set; }
         public virtual DbSet<DictionarySubordinationTypes> DictionarySubordinationTypesSet { get; set; }
 
+        public virtual DbSet<DBModel.Document.Documents> DocumentsSet { get; set; }
         public virtual DbSet<DocumentFiles> DocumentFilesSet { get; set; }
         public virtual DbSet<DocumentIncomingDetails> DocumentIncomingDetailsSet { get; set; }
+        public virtual DbSet<DocumentAccesses> DocumentAccessesSet { get; set; }
+        public virtual DbSet<DocumentEvents> DocumentEventsSet { get; set; }
+        public virtual DbSet<DocumentRestrictedSendLists> DocumentRestrictedSendListsSet { get; set; }
+        public virtual DbSet<DocumentSendLists> DocumentSendListsSet { get; set; }
 
-
+        public virtual DbSet<TemplateDocumentSendLists> TemplateDocumentSendLists { get; set; }
+        public virtual DbSet<TemplateDocumentRestrictedSendLists> TemplateDocumentRestrictedSendLists { get; set; }
         public virtual DbSet<TemplateDocumentIncomingDetails> TemplateDocumentIncomingDetailsSet { get; set; }
         public virtual DbSet<TemplateDocuments> TemplateDocumentsSet { get; set; }
 

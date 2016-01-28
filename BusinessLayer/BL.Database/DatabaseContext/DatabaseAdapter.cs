@@ -20,7 +20,7 @@ namespace BL.Database.DatabaseContext
                 RegistrationDate = document.RegistrationDate,
                 ExecutorPositionId = document.ExecutorPositionId,
                 ExecutorAgentId = document.ExecutorAgentId,
-                LastChangeUserId = 0,
+                LastChangeUserId = dbContext.Context.CurrentAgentId,
                 LastChangeDate = DateTime.Now
             };
             dbContext.DocumentsSet.Add(doc);
@@ -32,7 +32,6 @@ namespace BL.Database.DatabaseContext
             if (doc != null)
             {
                 doc.TemplateDocumentId = document.TemplateDocumentId;
-                doc.CreateDate = document.CreateDate;
                 doc.DocumentSubjectId = document.DocumentSubjectId;
                 doc.Description = document.Description;
                 doc.RegistrationJournalId = document.RegistrationJournalId;
@@ -41,7 +40,7 @@ namespace BL.Database.DatabaseContext
                 doc.RegistrationDate = document.RegistrationDate;
                 doc.ExecutorPositionId = document.ExecutorPositionId;
                 doc.ExecutorAgentId = document.ExecutorAgentId;
-                doc.LastChangeUserId = 0;
+                doc.LastChangeUserId = dbContext.Context.CurrentAgentId;
                 doc.LastChangeDate = DateTime.Now;
             }
         }
