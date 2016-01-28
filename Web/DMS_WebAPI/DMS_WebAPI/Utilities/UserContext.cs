@@ -1,6 +1,7 @@
 ﻿using BL.CrossCutting.Context;
 using BL.CrossCutting.Interfaces;
 using BL.Model.Database;
+using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Core;
@@ -8,6 +9,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin.Security;
+using Microsoft.Owin.Security.Cookies;
+using Microsoft.Owin.Security.OAuth;
 
 namespace DMS_WebAPI.Utilities
 {
@@ -29,12 +36,16 @@ namespace DMS_WebAPI.Utilities
             string token = _Token;
             if (!_casheContexts.ContainsKey(token))
             {
+                var userManager = HttpContext.Current.Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
+                var user = userManager.FindById(HttpContext.Current.User.Identity.GetUserId());
+
 
                 Save(new DefaultContext
                 {
                     CurrentEmployee = new BL.Model.Users.Employee
                     {
-                        Token = token
+                        Token = token,
+                        AgentId = user.AgentId
                     }
                 });
                 //throw new Exception();
