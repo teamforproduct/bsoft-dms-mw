@@ -6,19 +6,32 @@ using BL.Database.DBModel.Document;
 using BL.Database.DBModel.System;
 using BL.Database.DBModel.Template;
 using System.Data.Entity.ModelConfiguration.Conventions;
+using BL.CrossCutting.Interfaces;
 
 namespace BL.Database.DatabaseContext
 {
     public class DmsContext :DbContext
     {
+        private readonly IContext _context;
+
+        internal IContext Context {
+            get { return _context; }
+        }
+
         public DmsContext() : base(ConnectionStringHelper.GetDefaultConnectionString())
         {
         }
 
         public DmsContext(string connString) : base(connString)
         {
+            _context = null;
         }
-        
+
+        public DmsContext(IContext context, string connString) : base(connString)
+        {
+            _context = context;
+        }
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();

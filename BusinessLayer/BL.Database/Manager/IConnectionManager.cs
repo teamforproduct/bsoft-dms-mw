@@ -6,5 +6,6 @@ namespace BL.Database.Manager
     public interface IConnectionManager
     {
         DmsContext GetDbContext(IContext context);
+        DmsContext GetSystemContext(IContext context);
     }
 }

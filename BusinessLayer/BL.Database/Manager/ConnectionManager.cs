@@ -27,13 +27,18 @@ namespace BL.Database.Manager
                 return conn.StoreObject as DmsContext;
             }
 
-            var nconn = new DmsContext(_connectionStringHelper.GetConnectionString(context));
+            var nconn = new DmsContext(context, _connectionStringHelper.GetConnectionString(context));
             _connectionCach.Add(context.CurrentEmployee.Token, new StoreInfo
             {
                 StoreObject = nconn,
                 LastUsage = DateTime.Now
             });
             return nconn;
+        }
+
+        public DmsContext GetSystemContext(IContext context)
+        {
+            throw new NotImplementedException();
         }
     }
 }
