@@ -34,12 +34,12 @@ namespace DMS_WebAPI.Controllers
         }
 
         // POST: api/Documents
-        public IHttpActionResult Post(int templateId)
+        public IHttpActionResult Post([FromBody]int templateId)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.AddDocumentByTemplateDocument(cxt, templateId);
-            return Ok();
+            return new JsonResult(null,this);
         }
 
         // PUT: api/Documents/5
