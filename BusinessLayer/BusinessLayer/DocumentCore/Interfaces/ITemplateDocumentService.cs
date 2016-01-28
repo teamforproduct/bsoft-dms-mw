@@ -8,5 +8,6 @@ namespace BL.Logic.DocumentCore
     {
         IEnumerable<FullTemplateDocument> GetTemplateDocuments(IContext context);
         int AddOrUpdateTemplate(IContext context, FullTemplateDocument template);
+        BaseTemplateDocument GetTemplateDocument(IContext context, int templateDocumentId);
     }
 }

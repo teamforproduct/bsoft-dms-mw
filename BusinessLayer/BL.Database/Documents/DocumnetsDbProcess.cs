@@ -1,49 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using BL.CrossCutting.Interfaces;
+using BL.Database.DatabaseContext;
+using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore;
 
 namespace BL.Database.Documents
 {
     internal class DocumnetsDbProcess : CoreDb.CoreDb, IDocumnetsDbProcess
     {
+        private readonly IDatabaseAdapter _adapter;
+
+        public DocumnetsDbProcess(IDatabaseAdapter adapter)
+        {
+            _adapter = adapter;
+        }
+
         public void AddDocument(IContext ctx, BaseDocument document)
         {
             var dbContext = GetUserDmsContext(ctx);
-            var doc= new DBModel.Document.Documents
-            {
-                CreateDate = DateTime.Now,
-                Description = document.Description,
-                ExecutorAgentId = document.ExecutorAgentId,
-                RestrictedSendListId = document.RestrictedSendListId,
-                LastChangeDate = DateTime.Now,
-                TemplateDocumentId = document.TemplateDocumentId,
-                RegistrationNumber = 1,
-                //DocumentDirectionId = document.DocumentDirectionId,
-                ExecutorPositionId = document.ExecutorPositionId,
-                //DocumentTypeId = document.DocumentTypeId
-                
-            };
-            dbContext.DocumentsSet.Add(doc);
+            _adapter.AddDocument(dbContext, document);
             dbContext.SaveChanges();
-            document.Id = doc.Id;
+            // here we should update doc ID 
         }
 
         public void UpdateDocument(IContext ctx, BaseDocument document)
         {
             var dbContext = GetUserDmsContext(ctx);
-            var doc = dbContext.DocumentsSet.FirstOrDefault(x => x.Id == document.Id);
-            if (doc != null)
-            {
-                doc.Description = document.Description;
-                doc.LastChangeDate = DateTime.Now;
-                doc.TemplateDocumentId = document.TemplateDocumentId;
-                doc.ExecutorAgentId = document.ExecutorAgentId;
-                doc.ExecutorPositionId = document.ExecutorPositionId;
-                doc.RestrictedSendListId = document.RestrictedSendListId;
-                dbContext.SaveChanges();
-            }
+            _adapter.UpdateBaseDocument(dbContext, document);
+            dbContext.SaveChanges();
         }
 
         public IEnumerable<FullDocument> GetDocuments(IContext ctx, DocumentFilter filters)

@@ -70,7 +70,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CoreDb\CoreDb.cs" />
+    <Compile Include="DatabaseContext\DatabaseAdapter.cs" />
     <Compile Include="DatabaseContext\DmsContext.cs" />
+    <Compile Include="DatabaseContext\IDatabaseAdapter.cs" />
     <Compile Include="DBModel\Admin\AdminAccessLevels.cs" />
     <Compile Include="DBModel\Document\DocumentAccesses.cs" />
     <Compile Include="DBModel\Document\DocumentEvents.cs" />

@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using BL.CrossCutting.Common;
 using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
-using BL.Database.Documents;
+using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore;
 
 namespace BL.Logic.DocumentCore

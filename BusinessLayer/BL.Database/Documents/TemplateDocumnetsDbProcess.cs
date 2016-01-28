@@ -2,6 +2,7 @@
 using BL.CrossCutting.Interfaces;
 using BL.Model.DocumentCore;
 using System.Linq;
+using BL.Database.Documents.Interfaces;
 
 namespace BL.Database.Documents
 {
@@ -26,10 +27,10 @@ namespace BL.Database.Documents
             }).ToList();
         }
 
-        public BaseTemplateDocument GetTemplateDocument(IContext context, int TemplateDocumentId)
+        public BaseTemplateDocument GetTemplateDocument(IContext context, int templateDocumentId)
         {
             var dbContext = GetUserDmsContext(context);
-            return dbContext.TemplateDocumentsSet.Where(x => x.Id == TemplateDocumentId).Select(x => new BaseTemplateDocument
+            return dbContext.TemplateDocumentsSet.Where(x => x.Id == templateDocumentId).Select(x => new BaseTemplateDocument
             {
                 Id = x.Id,
                 Name = x.Name,
@@ -47,7 +48,9 @@ namespace BL.Database.Documents
 
         public int AddOrUpdateTemplate(IContext context, FullTemplateDocument template)
         {
-            var dbContext = GetUserDmsContext(context);
+            // we should not implement it now
+            //var dbContext = GetUserDmsContext(context);
+
             return 0;
         }
     }

@@ -1,4 +1,6 @@
-﻿using BL.Database.Documents;
+﻿using BL.Database.DatabaseContext;
+using BL.Database.Documents;
+using BL.Database.Documents.Interfaces;
 using BL.Database.Helpers;
 using BL.Database.Manager;
 using Ninject.Modules;
@@ -11,6 +13,7 @@ namespace BL.Database.DependencyInjection
         {
             InternalClassRegistration();
 
+            Bind<IDatabaseAdapter>().To<DatabaseAdapter>().InSingletonScope();
             Bind<IDocumnetsDbProcess>().To<DocumnetsDbProcess>().InSingletonScope();
             Bind<ITemplateDocumnetsDbProcess>().To<TemplateDocumnetsDbProcess>().InSingletonScope();
         }

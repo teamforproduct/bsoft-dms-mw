@@ -2,6 +2,7 @@
 using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Documents;
+using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore;
 
 namespace BL.Logic.DocumentCore
@@ -18,6 +19,12 @@ namespace BL.Logic.DocumentCore
         {
             var db = DmsResolver.Current.Get<ITemplateDocumnetsDbProcess>();
             return db.AddOrUpdateTemplate(context, template);
+        }
+
+        public BaseTemplateDocument GetTemplateDocument(IContext context, int templateDocumentId)
+        {
+            var db = DmsResolver.Current.Get<ITemplateDocumnetsDbProcess>();
+            return db.GetTemplateDocument(context, templateDocumentId);
         }
     }
 }

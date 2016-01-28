@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using BL.CrossCutting.Interfaces;
 using BL.Model.DocumentCore;
 
-namespace BL.Database.Documents
+namespace BL.Database.Documents.Interfaces
 {
     public interface IDocumnetsDbProcess
     {

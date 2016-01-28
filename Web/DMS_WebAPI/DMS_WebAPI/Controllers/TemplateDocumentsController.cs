@@ -1,14 +1,8 @@
-﻿using BL.CrossCutting.Context;
-using BL.CrossCutting.DependencyInjection;
+﻿using BL.CrossCutting.DependencyInjection;
 using BL.Logic.DocumentCore;
 using BL.Model.DocumentCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 
 namespace DMS_WebAPI.Controllers
@@ -22,7 +16,7 @@ namespace DMS_WebAPI.Controllers
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpDocs = tmpDocProc.GetDocumentTemplates(cxt);
+            var tmpDocs = tmpDocProc.GetTemplateDocuments(cxt);
             return new JsonResult(tmpDocs, this);
         }
 
@@ -31,12 +25,12 @@ namespace DMS_WebAPI.Controllers
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpDoc = tmpDocProc.GetDocumentTemplates(cxt).FirstOrDefault();
+            var tmpDoc = tmpDocProc.GetTemplateDocument(cxt, id);
             return new JsonResult(tmpDoc, this);
         }
 
         // POST: api/TemplateDocuments
-        public IHttpActionResult Post(TemplateDocumentGet model)
+        public IHttpActionResult Post(FullTemplateDocument model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<ITemplateDocumentService>();
