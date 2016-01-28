@@ -34,11 +34,11 @@ namespace DMS_WebAPI.Controllers
         }
 
         // POST: api/Documents
-        public IHttpActionResult Post(BaseDocument model)
+        public IHttpActionResult Post(int templateId)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            docProc.SaveDocument(cxt, model);
+            docProc.AddDocumentByTemplateDocument(cxt, templateId);
             return Ok();
         }
 
