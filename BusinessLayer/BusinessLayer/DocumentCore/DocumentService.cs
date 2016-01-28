@@ -54,8 +54,8 @@ namespace BL.Logic.DocumentCore
                                 DocumentSubjectId = baseTemplateDocument.DocumentSubjectId,
                                 Description = baseTemplateDocument.Description,
                                 RestrictedSendListId = baseTemplateDocument.RestrictedSendListId,
-                                ExecutorPositionId  = 0, ////
-                                ExecutorAgentId = 0///////
+                                ExecutorPositionId  = context.CurrentPositionId, ////
+                                ExecutorAgentId = context.CurrentAgentId///////
 
             };
             return SaveDocument (context, baseDocument);

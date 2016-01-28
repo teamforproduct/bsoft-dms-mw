@@ -23,11 +23,6 @@ namespace BL.Database.DatabaseContext
                 ExecutorAgentId = document.ExecutorAgentId,
                 LastChangeUserId = 0,
                 LastChangeDate = DateTime.Now
-
-                //DocumentDirectionId = document.DocumentDirectionId,
-
-                //DocumentTypeId = document.DocumentTypeId
-
             };
             dbContext.DocumentsSet.Add(doc);
         }
@@ -37,12 +32,19 @@ namespace BL.Database.DatabaseContext
             var doc = dbContext.DocumentsSet.FirstOrDefault(x => x.Id == document.Id);
             if (doc != null)
             {
-                doc.Description = document.Description;
-                doc.LastChangeDate = DateTime.Now;
                 doc.TemplateDocumentId = document.TemplateDocumentId;
-                doc.ExecutorAgentId = document.ExecutorAgentId;
-                doc.ExecutorPositionId = document.ExecutorPositionId;
+                doc.CreateDate = document.CreateDate;
+                doc.DocumentSubjectId = document.DocumentSubjectId;
+                doc.Description = document.Description;
+                doc.RegistrationJournalId = document.RegistrationJournalId;
                 doc.RestrictedSendListId = document.RestrictedSendListId;
+                doc.RegistrationNumberSuffix = document.RegistrationNumberSuffix;
+                doc.RegistrationNumberPrefix = document.RegistrationNumberPrefix;
+                doc.RegistrationDate = document.RegistrationDate;
+                doc.ExecutorPositionId = document.ExecutorPositionId;
+                doc.ExecutorAgentId = document.ExecutorAgentId;
+                doc.LastChangeUserId = 0;
+                doc.LastChangeDate = DateTime.Now;
             }
         }
 
