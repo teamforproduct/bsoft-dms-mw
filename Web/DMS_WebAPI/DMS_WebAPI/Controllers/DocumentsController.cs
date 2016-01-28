@@ -43,8 +43,12 @@ namespace DMS_WebAPI.Controllers
         }
 
         // PUT: api/Documents/5
-        public void Put(int id, [FromBody]string value)
+        public IHttpActionResult Put([FromBody]ModifyDocument model)
         {
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            docProc.ModifyDocument(cxt, model);
+            return new JsonResult(null, this);
         }
 
         // DELETE: api/Documents/5
