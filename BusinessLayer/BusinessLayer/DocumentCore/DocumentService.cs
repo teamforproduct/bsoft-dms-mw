@@ -48,7 +48,6 @@ namespace BL.Logic.DocumentCore
             var db = DmsResolver.Current.Get<ITemplateDocumnetsDbProcess>();
             var baseTemplateDocument = db.GetTemplateDocument(context, TemplateDocumentId);
             var baseDocument = new BaseDocument {
-
                                 TemplateDocumentId = baseTemplateDocument.Id,
                                 CreateDate = DateTime.Now,
                                 DocumentSubjectId = baseTemplateDocument.DocumentSubjectId,
@@ -56,9 +55,13 @@ namespace BL.Logic.DocumentCore
                                 RestrictedSendListId = baseTemplateDocument.RestrictedSendListId,
                                 ExecutorPositionId  = context.CurrentPositionId, ////
                                 ExecutorAgentId = context.CurrentAgentId///////
-
             };
             return SaveDocument (context, baseDocument);
+        }
+
+        public int ModifyDocument(IContext context, ModifyDocument document)
+        {
+            throw new NotImplementedException();
         }
     }
 }
