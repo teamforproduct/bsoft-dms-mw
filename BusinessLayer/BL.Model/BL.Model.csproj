@@ -48,7 +48,9 @@
     <Compile Include="DocumentCore\BaseTemplateDocument.cs" />
     <Compile Include="DocumentCore\FilterDocument.cs" />
     <Compile Include="DocumentCore\ModifyDocument.cs" />
+    <Compile Include="DocumentCore\RegistrationDocument.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SystemCore\SystemUIElement.cs" />
     <Compile Include="Users\Employee.cs" />
     <Compile Include="Users\Position.cs" />
   </ItemGroup>
