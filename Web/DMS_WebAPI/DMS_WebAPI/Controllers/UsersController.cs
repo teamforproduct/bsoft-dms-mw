@@ -25,10 +25,11 @@ namespace DMS_WebAPI.Controllers
         }
         // GET: api/Users/Servers
         [Route("Servers")]
+        [AllowAnonymous]
         public IHttpActionResult GetServers()
         {
             var readXml = new ReadXml("/servers.xml");
-            return new JsonResult(readXml.Read(), this);
+            return new JsonResult(readXml.ReadDBsByUI(), this);
         }
         // GET: api/Users
         public IEnumerable<string> Get()

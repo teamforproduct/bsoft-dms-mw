@@ -33,22 +33,10 @@ namespace DMS_WebAPI.Utilities
         /// <returns>Typed setting value.</returns>
         public IContext Get()
         {
-            string token = _Token;
+            string token = _Token.ToLower();
             if (!_casheContexts.ContainsKey(token))
             {
-                var userManager = HttpContext.Current.Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
-                var user = userManager.FindById(HttpContext.Current.User.Identity.GetUserId());
-
-
-                Save(new DefaultContext
-                {
-                    CurrentEmployee = new BL.Model.Users.Employee
-                    {
-                        Token = token,
-                        AgentId = user.AgentId
-                    }
-                });
-                //throw new Exception();
+                throw new Exception();
             }
 
             var contextValue = _casheContexts[token];
@@ -62,10 +50,38 @@ namespace DMS_WebAPI.Utilities
                 throw new Exception();
             }
         }
-
-        public void Save(IContext val)
+        public IContext Set(string token, DatabaseModel db)
         {
-            _casheContexts.Add(_Token, new StoreInfo() { StoreObject = val, LastUsage = DateTime.Now });
+            token = token.ToLower();
+            if (!_casheContexts.ContainsKey(token))
+            {
+                var userManager = HttpContext.Current.Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
+                var user = userManager.FindById(HttpContext.Current.User.Identity.GetUserId());
+
+                var context = 
+                new DefaultContext
+                {
+                    CurrentEmployee = new BL.Model.Users.Employee
+                    {
+                        Token = token,
+                        AgentId = user.AgentId
+                    },
+                    CurrentDB = db
+                };
+                Save(token, context);
+                return context;
+            }
+
+            throw new ArgumentException();
+        }
+
+        private void Save(IContext val)
+        {
+            _casheContexts.Add(_Token.ToLower(), new StoreInfo() { StoreObject = val, LastUsage = DateTime.Now });
+        }
+        private void Save(string token, IContext val)
+        {
+            _casheContexts.Add(token.ToLower(), new StoreInfo() { StoreObject = val, LastUsage = DateTime.Now });
         }
 
         public void ClearCache()

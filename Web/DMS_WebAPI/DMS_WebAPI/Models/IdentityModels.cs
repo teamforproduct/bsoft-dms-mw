@@ -3,6 +3,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
+using BL.Model.Database;
+using System.Linq;
+using BL.Database.Helpers;
+using BL.CrossCutting.DependencyInjection;
+using DMS_WebAPI.Utilities;
 
 namespace DMS_WebAPI.Models
 {
@@ -25,9 +30,33 @@ namespace DMS_WebAPI.Models
             : base("DefaultConnection", throwIfV1Schema: false)
         {
         }
-        
+
+        public ApplicationDbContext(string nameOrConnectionString)
+            : base(nameOrConnectionString, throwIfV1Schema: false)
+        {
+        }
+
         public static ApplicationDbContext Create()
         {
+            if(System.Web.HttpContext.Current.Request.Path.Equals("/token"))
+            {
+                int dbId = int.Parse(System.Web.HttpContext.Current.Request.Headers["DatabaseId"]);
+                var readXml = new Utilities.ReadXml("/servers.xml");
+                var dbs = readXml.ReadDBs();
+                var db = dbs.FirstOrDefault(x => x.Id == dbId);
+                if (db==null)
+                {
+                    throw new System.Exception();
+                }
+                //var cxt = DmsResolver.Current.Get<UserContext>().Set(db);
+                return new ApplicationDbContext(db.ConnectionString);
+            }
+            else if (!string.IsNullOrEmpty(System.Web.HttpContext.Current.Request.Headers["Authorization"]))
+            {
+                var cxt = DmsResolver.Current.Get<UserContext>().Get();
+                return new ApplicationDbContext(cxt.CurrentDB.ConnectionString);
+            }
+            
             return new ApplicationDbContext();
         }
     }

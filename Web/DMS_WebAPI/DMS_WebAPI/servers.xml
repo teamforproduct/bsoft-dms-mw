@@ -1,14 +1,24 @@
 <Servers>
-<Server>
-            <Name>Test server 1</Name>
-            <Address>109.197.217.79\SQLEXPRESS,1433</Address>
-            <MainDB>IRF_DMS</MainDB>
-            <IntegrationSecurity>False</IntegrationSecurity>
-            </Server>
-            <Server>
-            <Name>Test server 2</Name>
-            <Address>109.197.217.79\SQLEXPRESS,1433</Address>
-            <MainDB>IRF_DMS</MainDB>
-            <IntegrationSecurity>False</IntegrationSecurity>
-            </Server>
-			</Servers>
+  <Server>
+    <Id>1</Id>
+    <Name>IRF_DMS</Name>
+    <Address>109.197.217.79\SQLEXPRESS,1433</Address>
+    <ServerType>SQLServer</ServerType>
+    <DefaultDatabase>IRF_DMS</DefaultDatabase>
+    <IntegrateSecurity>True</IntegrateSecurity>
+    <UserName>sa</UserName>
+    <UserPassword>Harm1969</UserPassword>
+    <ConnectionString>Data Source=109.197.217.79\SQLEXPRESS,1433;Initial Catalog=IRF_DMS;Persist Security Info=True;User ID=sa;Password=Harm1969</ConnectionString>
+  </Server>
+  <Server>
+    <Id>2</Id>
+    <Name>IRF_DMS_DEV</Name>
+    <Address>109.197.217.79\SQLEXPRESS,1433</Address>
+    <ServerType>SQLServer</ServerType>
+    <DefaultDatabase>IRF_DMS_DEV</DefaultDatabase>
+    <IntegrateSecurity>True</IntegrateSecurity>
+    <UserName>sa</UserName>
+    <UserPassword>Harm1969</UserPassword>
+    <ConnectionString>Data Source=109.197.217.79\SQLEXPRESS,1433;Initial Catalog=IRF_DMS_DEV;Persist Security Info=True;User ID=sa;Password=Harm1969</ConnectionString>
+  </Server>
+</Servers>

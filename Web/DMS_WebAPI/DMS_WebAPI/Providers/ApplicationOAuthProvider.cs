@@ -10,6 +10,8 @@ using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OAuth;
 using DMS_WebAPI.Models;
+using DMS_WebAPI.Utilities;
+using BL.CrossCutting.DependencyInjection;
 
 namespace DMS_WebAPI.Providers
 {
@@ -93,6 +95,23 @@ namespace DMS_WebAPI.Providers
                 { "userName", userName }
             };
             return new AuthenticationProperties(data);
+        }
+        public override Task TokenEndpointResponse(OAuthTokenEndpointResponseContext context)
+        {
+            var token = $"{context.Identity.AuthenticationType} {context.AccessToken}";
+            int dbId = int.Parse(System.Web.HttpContext.Current.Request.Headers["DatabaseId"]);
+            var readXml = new Utilities.ReadXml("/servers.xml");
+            var dbs = readXml.ReadDBs();
+            var db = dbs.FirstOrDefault(x => x.Id == dbId);
+            if (db == null)
+            {
+                throw new System.Exception();
+            }
+
+            var cxt = DmsResolver.Current.Get<UserContext>().Set(token, db);
+
+
+            return Task.FromResult<object>(null);
         }
     }
 }
