@@ -171,11 +171,11 @@ namespace BL.Database.Documents
                 ExecutorAgentId = x.ExecutorAgentId,
                 LastChangeUserId = x.LastChangeUserId,
                 LastChangeDate = x.LastChangeDate,
-                SenderAgentId = x.IncomingDetail.FirstOrDefault().SenderAgentId,
-                SenderPerson = x.IncomingDetail.FirstOrDefault().SenderPerson,
-                SenderNumber = x.IncomingDetail.FirstOrDefault().SenderNumber,
-                SenderDate = x.IncomingDetail.FirstOrDefault().SenderDate,
-                Addressee = x.IncomingDetail.FirstOrDefault().Addressee,
+                SenderAgentId = x.IncomingDetail.SenderAgentId,
+                SenderPerson = x.IncomingDetail.SenderPerson,
+                SenderNumber = x.IncomingDetail.SenderNumber,
+                SenderDate = x.IncomingDetail.SenderDate,
+                Addressee = x.IncomingDetail.Addressee,
                 AccessLevelId = 30, //после добавления Access??? подумать
                 TemplateDocumentName = x.TemplateDocument.Name,
                 IsHard = x.TemplateDocument.IsHard,
@@ -187,7 +187,7 @@ namespace BL.Database.Documents
                 RegistrationJournalName = x.RegistrationJournal.Name,
                 ExecutorPositionName = x.ExecutorPosition.Name,
                 ExecutorAgentName = x.ExecutorAgent.Name,
-                SenderAgentName = x.IncomingDetail.FirstOrDefault().SenderAgent.Name,
+                SenderAgentName = x.IncomingDetail.SenderAgent.Name,
                 AccessLevelName = null //после добавления Access??? подумать
             }).FirstOrDefault();
         }

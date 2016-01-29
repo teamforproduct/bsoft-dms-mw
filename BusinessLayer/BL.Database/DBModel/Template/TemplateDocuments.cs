@@ -9,7 +9,7 @@ namespace BL.Database.DBModel.Template
     {
         public TemplateDocuments()
         {
-            this.IncomingDetail = new HashSet<TemplateDocumentIncomingDetails>();
+            //this.IncomingDetail = new HashSet<TemplateDocumentIncomingDetails>();
             this.SendLists = new HashSet<TemplateDocumentSendLists>();
             this.RestrictedSendLists = new HashSet<TemplateDocumentRestrictedSendLists>();
         }
@@ -25,7 +25,8 @@ namespace BL.Database.DBModel.Template
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
 
-        public virtual ICollection<TemplateDocumentIncomingDetails> IncomingDetail { get; set; }
+        [ForeignKey("Id")]
+        public virtual TemplateDocumentIncomingDetails IncomingDetail { get; set; }
         public virtual ICollection<TemplateDocumentSendLists> SendLists { get; set; }
         public virtual ICollection<TemplateDocumentRestrictedSendLists> RestrictedSendLists { get; set; }
         [ForeignKey("DocumentDirectionId")]
