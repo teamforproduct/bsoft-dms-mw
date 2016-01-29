@@ -15,6 +15,7 @@ namespace DMS_WebAPI.Results
         HttpRequestMessage _request;
         bool _success;
         string _msg;
+        object _meta;
 
         public JsonResult(object data, ApiController controller)
         {
@@ -22,8 +23,17 @@ namespace DMS_WebAPI.Results
             _request = controller.Request;
             _success = true;
             _msg = string.Empty;
+            _meta = null;
         }
-        public JsonResult(object data, bool success, ApiController controller): this(data,controller)
+        public JsonResult(object data, object meta, ApiController controller) : this(data, controller)
+        {
+            _meta = meta;
+        }
+        public JsonResult(object data, bool success, ApiController controller) : this(data, controller)
+        {
+            _success = success;
+        }
+        public JsonResult(object data, object meta, bool success, ApiController controller) : this(data, meta, controller)
         {
             _success = success;
         }
@@ -31,13 +41,21 @@ namespace DMS_WebAPI.Results
         {
             _msg = msg;
         }
-        public JsonResult(object data, bool success, string msg, ApiController controller):this(data,success,controller)
+        public JsonResult(object data, object meta, string msg, ApiController controller) : this(data, meta, controller)
+        {
+            _msg = msg;
+        }
+        public JsonResult(object data, bool success, string msg, ApiController controller) : this(data, success, controller)
+        {
+            _msg = msg;
+        }
+        public JsonResult(object data, object meta, bool success, string msg, ApiController controller) : this(data, success, controller)
         {
             _msg = msg;
         }
         public Task<HttpResponseMessage> ExecuteAsync(CancellationToken cancellationToken)
         {
-            HttpResponseMessage response = _request.CreateResponse(HttpStatusCode.OK,new { success= _success, data= _data, msg= _msg });
+            HttpResponseMessage response = _request.CreateResponse(HttpStatusCode.OK, new { success = _success, data = _data, msg = _msg, meta = _meta });
             return Task.FromResult(response);
         }
     }
