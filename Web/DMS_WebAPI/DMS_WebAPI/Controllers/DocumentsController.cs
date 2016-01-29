@@ -7,6 +7,7 @@ using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Web;
 using System.Web.Http;
+using BL.Logic.DocumentCore.Interfaces;
 
 namespace DMS_WebAPI.Controllers
 {

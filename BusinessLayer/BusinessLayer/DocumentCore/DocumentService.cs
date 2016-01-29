@@ -4,8 +4,8 @@ using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore;
-using System.Linq;
 using System;
+using BL.Logic.DocumentCore.Interfaces;
 
 namespace BL.Logic.DocumentCore
 {
@@ -42,11 +42,10 @@ namespace BL.Logic.DocumentCore
             return documentDb.GetDocument(ctx, documentId);
         }
 
-        public int AddDocumentByTemplateDocument(IContext context, int TemplateDocumentId)
+        public int AddDocumentByTemplateDocument(IContext context, int templateDocumentId)
         {
-            // var documentDb = DmsResolver.Current.Get<ITemplateDocumnetsDbProcess>();
             var db = DmsResolver.Current.Get<ITemplateDocumnetsDbProcess>();
-            var baseTemplateDocument = db.GetTemplateDocument(context, TemplateDocumentId);
+            var baseTemplateDocument = db.GetTemplateDocument(context, templateDocumentId);
             var baseDocument = new BaseDocument
             {
                 TemplateDocumentId = baseTemplateDocument.Id,

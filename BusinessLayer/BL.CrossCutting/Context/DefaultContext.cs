@@ -10,14 +10,20 @@ namespace BL.CrossCutting.Context
     {
         public Employee CurrentEmployee { get; set; }
         public List<Position> CurrentPosition { get; set; }
-        public int CurrentPositionId { get {
-                var position =CurrentPosition.FirstOrDefault();
-                if(position == null)
+
+        public int CurrentPositionId
+        {
+            get
+            {
+                var position = CurrentPosition.FirstOrDefault();
+                if (position == null)
                 {
                     throw new System.Exception();
                 }
                 return position.PositionId;
-            } }
+            }
+        }
+
         public int CurrentAgentId
         {
             get
@@ -29,6 +35,7 @@ namespace BL.CrossCutting.Context
                 return CurrentEmployee.AgentId.GetValueOrDefault();
             }
         }
+
         public DatabaseModel CurrentDB { get; set; }
     }
 }
