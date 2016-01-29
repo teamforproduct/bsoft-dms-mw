@@ -35,6 +35,14 @@ namespace BL.Database.DatabaseContext
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
+
+            modelBuilder.Entity<DBModel.Document.Documents>()
+           .HasOptional(f => f.IncomingDetail)
+           .WithRequired(s => s.Document);
+            modelBuilder.Entity<TemplateDocuments>()
+           .HasOptional(f => f.IncomingDetail)
+           .WithRequired(s => s.Document);
+
             /*
             modelBuilder.Entity<DocumentIncomingDetails>()
                   .HasRequired(a => a.Document)

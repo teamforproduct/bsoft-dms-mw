@@ -2,11 +2,7 @@
 using BL.Model.Users;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 
 namespace DMS_WebAPI.Controllers
@@ -23,6 +19,7 @@ namespace DMS_WebAPI.Controllers
             cxt.CurrentPosition = new List<Position>() { new Position { PositionId = positionId } };
             return new JsonResult(null, this);
         }
+
         // GET: api/Users/Servers
         [Route("Servers")]
         [AllowAnonymous]
@@ -31,6 +28,7 @@ namespace DMS_WebAPI.Controllers
             var readXml = new ReadXml("/servers.xml");
             return new JsonResult(readXml.ReadDBsByUI(), this);
         }
+
         // GET: api/Users
         public IEnumerable<string> Get()
         {

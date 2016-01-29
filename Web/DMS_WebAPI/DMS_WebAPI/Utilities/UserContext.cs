@@ -1,20 +1,12 @@
 ﻿using BL.CrossCutting.Context;
 using BL.CrossCutting.Interfaces;
 using BL.Model.Database;
-using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity.Core;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web;
 
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
-using Microsoft.Owin.Security;
-using Microsoft.Owin.Security.Cookies;
-using Microsoft.Owin.Security.OAuth;
 
 namespace DMS_WebAPI.Utilities
 {
@@ -23,7 +15,7 @@ namespace DMS_WebAPI.Utilities
         private readonly Dictionary<string, StoreInfo> _casheContexts = new Dictionary<string, StoreInfo>();
         private const string _TOKEN_KEY = "Authorization";
         private const int _TIME_OUT = 14;
-        private string _Token { get { return HttpContext.Current.Request.Headers[_TOKEN_KEY]; } }
+        private string Token { get { return HttpContext.Current.Request.Headers[_TOKEN_KEY]; } }
 
         /// <summary>
         /// Gets setting value by its name.
@@ -33,7 +25,7 @@ namespace DMS_WebAPI.Utilities
         /// <returns>Typed setting value.</returns>
         public IContext Get()
         {
-            string token = _Token.ToLower();
+            string token = Token.ToLower();
             if (!_casheContexts.ContainsKey(token))
             {
                 throw new Exception();
@@ -50,6 +42,7 @@ namespace DMS_WebAPI.Utilities
                 throw new Exception();
             }
         }
+
         public IContext Set(string token, DatabaseModel db)
         {
             token = token.ToLower();
@@ -77,7 +70,7 @@ namespace DMS_WebAPI.Utilities
 
         private void Save(IContext val)
         {
-            _casheContexts.Add(_Token.ToLower(), new StoreInfo() { StoreObject = val, LastUsage = DateTime.Now });
+            _casheContexts.Add(Token.ToLower(), new StoreInfo() { StoreObject = val, LastUsage = DateTime.Now });
         }
         private void Save(string token, IContext val)
         {

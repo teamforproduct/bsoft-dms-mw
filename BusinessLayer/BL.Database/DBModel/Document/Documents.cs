@@ -17,7 +17,7 @@ namespace BL.Database.DBModel.Document
             //this.Subscriptions = new HashSet<DocumentSubscriptions>();
             //this.Waits = new HashSet<DocumentWaits>();
             this.Events = new HashSet<DocumentEvents>();
-            this.IncomingDetail = new HashSet<DocumentIncomingDetails>();
+            //this.IncomingDetail = new HashSet<DocumentIncomingDetails>();
             this.RestrictedSendLists = new HashSet<DocumentRestrictedSendLists>();
         }
 
@@ -46,6 +46,8 @@ namespace BL.Database.DBModel.Document
         public virtual DictionaryPositions ExecutorPosition { get; set; }
         [ForeignKey("ExecutorAgentId")]
         public virtual DictionaryAgents ExecutorAgent { get; set; }
+        [ForeignKey("Id")]
+        public virtual DocumentIncomingDetails IncomingDetail { get; set; }
 
 
         public virtual ICollection<DocumentSendLists> SendLists { get; set; }
@@ -56,7 +58,6 @@ namespace BL.Database.DBModel.Document
 //        public virtual ICollection<DocumentWaits> Waits { get; set; }
         public virtual ICollection<DocumentEvents> Events { get; set; }
 
-        public virtual ICollection<DocumentIncomingDetails> IncomingDetail { get; set; }
         public virtual ICollection<DocumentRestrictedSendLists> RestrictedSendLists { get; set; }
     }
 

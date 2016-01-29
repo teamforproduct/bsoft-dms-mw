@@ -7,7 +7,6 @@ namespace BL.Database.DBModel.Template
     public class TemplateDocumentIncomingDetails
     {
         public int Id { get; set; }
-        public int DocumentId { get; set; }
         public Nullable<int> SenderAgentId { get; set; }
         public string SenderPerson { get; set; }
         public string SenderNumber { get; set; }
@@ -16,7 +15,7 @@ namespace BL.Database.DBModel.Template
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
         //        public int DocumentTemplateId { get; set; }
-        [ForeignKey("DocumentId")]
+        [ForeignKey("Id")]
         public virtual TemplateDocuments Document { get; set; }
         [ForeignKey("SenderAgentId")]
         public virtual DictionaryAgents SenderAgent { get; set; }

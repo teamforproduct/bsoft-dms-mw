@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using BL.CrossCutting.Interfaces;
 using BL.Database.DatabaseContext;
@@ -21,9 +20,9 @@ namespace BL.Database.Documents
         public void AddDocument(IContext ctx, BaseDocument document)
         {
             var dbContext = GetUserDmsContext(ctx);
-            _adapter.AddDocument(dbContext, document);
+            var doc = _adapter.AddDocument(dbContext, document);
             dbContext.SaveChanges();
-            // here we should update doc ID 
+            document.Id = doc.Id;
         }
 
         public void UpdateDocument(IContext ctx, BaseDocument document)
@@ -36,8 +35,100 @@ namespace BL.Database.Documents
         public IEnumerable<BaseDocument> GetDocuments(IContext ctx, FilterDocument filters)
         {
             var dbContext = GetUserDmsContext(ctx);
+            var qry = dbContext.DocumentsSet.AsQueryable();
 
-            return dbContext.DocumentsSet.Select(x => new BaseDocument
+            if (filters.CreateFromDate.HasValue)
+            {
+                qry = qry.Where(x => x.CreateDate >= filters.CreateFromDate.Value);
+            }
+
+            if (filters.CreateToDate.HasValue)
+            {
+                qry = qry.Where(x => x.CreateDate <= filters.CreateToDate.Value);
+            }
+
+            if (filters.RegistrationFromDate.HasValue)
+            {
+                qry = qry.Where(x => x.RegistrationDate >= filters.RegistrationFromDate.Value);
+            }
+
+            if (filters.RegistrationToDate.HasValue)
+            {
+                qry = qry.Where(x => x.RegistrationDate <= filters.RegistrationToDate.Value);
+            }
+
+            //if (filters.SenderFromDate.HasValue)
+            //{
+            //    qry = qry.Where(x => x. >= filters.SenderFromDate.Value);
+            //}
+
+            //if (filters.SenderToDate.HasValue)
+            //{
+            //    qry = qry.Where(x => x. <= filters.SenderToDate.Value);
+            //}
+
+            if (!String.IsNullOrEmpty(filters.Description))
+            {
+                qry = qry.Where(x => x.Description.Contains(filters.Description));
+            }
+
+            if (!String.IsNullOrEmpty(filters.RegistrationNumber))
+            {
+                qry = qry.Where(x => (x.RegistrationNumberPrefix+x.RegistrationNumber.ToString()+x.RegistrationNumberSuffix).Contains(filters.RegistrationNumber));
+            }
+
+            //if (!String.IsNullOrEmpty(filters.Addressee))
+            //{
+            //    qry = qry.Where(x => x..Contains(filters.Addressee));
+            //}
+
+            //if (!String.IsNullOrEmpty(filters.SenderPerson))
+            //{
+            //    qry = qry.Where(x => x..Contains(filters.SenderPerson));
+            //}
+
+            //if (!String.IsNullOrEmpty(filters.SenderNumber))
+            //{
+            //    qry = qry.Where(x => x..Contains(filters.SenderNumber));
+            //}
+
+            if (filters.DocumentTypeId != null && filters.DocumentTypeId.Count > 0)
+            {
+                qry = qry.Where(x => filters.DocumentTypeId.Contains(x.TemplateDocument.DocumentTypeId));
+            }
+
+            if (filters.TemplateDocumentId != null && filters.TemplateDocumentId.Count > 0)
+            {
+                qry = qry.Where(x => filters.TemplateDocumentId.Contains(x.TemplateDocumentId));
+            }
+
+            if (filters.DocumentDirectionId != null && filters.DocumentDirectionId.Count > 0)
+            {
+                qry = qry.Where(x => filters.DocumentDirectionId.Contains(x.TemplateDocument.DocumentDirectionId));
+            }
+
+            if (filters.DocumentSubjectId != null && filters.DocumentSubjectId.Count > 0)
+            {
+                qry = qry.Where(x => x.DocumentSubjectId.HasValue && filters.DocumentSubjectId.Contains(x.DocumentSubjectId.Value));
+            }
+
+            if (filters.RegistrationJournalId != null && filters.RegistrationJournalId.Count > 0)
+            {
+                qry = qry.Where(x => x.RegistrationJournalId.HasValue && filters.RegistrationJournalId.Contains(x.RegistrationJournalId.Value));
+            }
+
+            if (filters.ExecutorPositionId != null && filters.ExecutorPositionId.Count > 0)
+            {
+                qry = qry.Where(x => filters.ExecutorPositionId.Contains(x.ExecutorPositionId));
+            }
+
+            //if (filters.SenderAgentId != null && filters.SenderAgentId.Count > 0)
+            //{
+            //    qry = qry.Where(x => filters.SenderAgentId.Contains(x.));
+            //}
+
+
+            return qry.Select(x => new BaseDocument
             {
                     Id = x.Id,
                     DocumentTypeId = x.TemplateDocument.DocumentTypeId,
@@ -80,11 +171,11 @@ namespace BL.Database.Documents
                 ExecutorAgentId = x.ExecutorAgentId,
                 LastChangeUserId = x.LastChangeUserId,
                 LastChangeDate = x.LastChangeDate,
-                SenderAgentId = x.IncomingDetail.FirstOrDefault().SenderAgentId,
-                SenderPerson = x.IncomingDetail.FirstOrDefault().SenderPerson,
-                SenderNumber = x.IncomingDetail.FirstOrDefault().SenderNumber,
-                SenderDate = x.IncomingDetail.FirstOrDefault().SenderDate,
-                Addressee = x.IncomingDetail.FirstOrDefault().Addressee,
+                SenderAgentId = x.IncomingDetail.SenderAgentId,
+                SenderPerson = x.IncomingDetail.SenderPerson,
+                SenderNumber = x.IncomingDetail.SenderNumber,
+                SenderDate = x.IncomingDetail.SenderDate,
+                Addressee = x.IncomingDetail.Addressee,
                 AccessLevelId = 30, //после добавления Access??? подумать
                 TemplateDocumentName = x.TemplateDocument.Name,
                 IsHard = x.TemplateDocument.IsHard,
@@ -96,7 +187,7 @@ namespace BL.Database.Documents
                 RegistrationJournalName = x.RegistrationJournal.Name,
                 ExecutorPositionName = x.ExecutorPosition.Name,
                 ExecutorAgentName = x.ExecutorAgent.Name,
-                SenderAgentName = x.IncomingDetail.FirstOrDefault().SenderAgent.Name,
+                SenderAgentName = x.IncomingDetail.SenderAgent.Name,
                 AccessLevelName = null //после добавления Access??? подумать
             }).FirstOrDefault();
         }

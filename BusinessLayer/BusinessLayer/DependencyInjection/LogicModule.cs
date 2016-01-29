@@ -1,5 +1,6 @@
 ﻿using BL.CrossCutting.Interfaces;
 using BL.Logic.DocumentCore;
+using BL.Logic.DocumentCore.Interfaces;
 using BL.Logic.Settings;
 using Ninject.Modules;
 

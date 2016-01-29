@@ -6,7 +6,7 @@ namespace BL.Database.DatabaseContext
 {
     public class DatabaseAdapter : IDatabaseAdapter
     {
-        public void AddDocument(DmsContext dbContext, BaseDocument document)
+        public DBModel.Document.Documents AddDocument(DmsContext dbContext, BaseDocument document)
         {
             var doc = new DBModel.Document.Documents
             {
@@ -24,6 +24,7 @@ namespace BL.Database.DatabaseContext
                 LastChangeDate = DateTime.Now
             };
             dbContext.DocumentsSet.Add(doc);
+            return doc;
         }
 
         public void UpdateDocument(DmsContext dbContext, BaseDocument document)
