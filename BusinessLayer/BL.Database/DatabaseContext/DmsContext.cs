@@ -1,11 +1,11 @@
 ﻿using System.Data.Entity;
 using BL.Database.DBModel.Dictionary;
-using BL.Database.Helpers;
 using BL.Database.DBModel.Admin;
 using BL.Database.DBModel.Document;
 using BL.Database.DBModel.System;
 using BL.Database.DBModel.Template;
 using System.Data.Entity.ModelConfiguration.Conventions;
+using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
 
 namespace BL.Database.DatabaseContext
@@ -47,7 +47,7 @@ namespace BL.Database.DatabaseContext
 
 
         public virtual DbSet<AdminAccessLevels> AdminAccessLevelsSet { get; set; }
-
+        public virtual DbSet<DictionaryAgentPersons> DictionaryAgentPersonsSet { get; set; }
         public virtual DbSet<DictionaryAgents> DictionaryAgentsSet { get; set; }
         public virtual DbSet<DictionaryCompanies> DictionaryCompaniesSet { get; set; }
         public virtual DbSet<DictionaryDepartments> DictionaryDepartmentsSet { get; set; }

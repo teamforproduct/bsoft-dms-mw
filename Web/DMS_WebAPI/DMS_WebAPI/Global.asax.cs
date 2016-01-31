@@ -18,14 +18,6 @@ namespace DMS_WebAPI
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
-            //TODO: Remove this when user auth will be implemented. Fill context from session
-            var ctx = DmsResolver.Current.Get<IContext>();
-            ctx.CurrentDB = new DatabaseModel
-            {
-                Address = @"..\..\..\..\BusinessLayer\BL.Database\DBFile\DmsLocalDB.mdf",
-                IntegrateSecurity = true,
-                ServerType = DatabaseType.SQLPortable
-            };
         }
     }
 }

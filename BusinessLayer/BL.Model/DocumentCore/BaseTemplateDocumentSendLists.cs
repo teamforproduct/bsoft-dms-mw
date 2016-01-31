@@ -1,15 +1,12 @@
-﻿using BL.Database.DBModel.Admin;
-using BL.Database.DBModel.Dictionary;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BL.Database.DBModel.Template
+namespace BL.Model.DocumentCore
 {
-    public class TemplateDocumentSendLists
+    public class BaseTemplateDocumentSendLists
     {
         public int Id { get; set; }
         public int DocumentId { get; set; }
@@ -22,13 +19,11 @@ namespace BL.Database.DBModel.Template
         public int AccessLevelId { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
-        [ForeignKey("DocumentId")]
-        public virtual TemplateDocuments Document { get; set; }
-        [ForeignKey("DocumentId")]
-        public virtual DictionarySendTypes SendType { get; set; }
-        [ForeignKey("DocumentId")]
-        public virtual DictionaryPositions TargetPosition { get; set; }
-        [ForeignKey("DocumentId")]
-        public virtual AdminAccessLevels AccessLevel { get; set; }
+
+        public string PositionName { get; set; }
+        public string AccessLevelName { get; set; }
+
+        public string GeneralInfo { get; set; }
+
     }
 }

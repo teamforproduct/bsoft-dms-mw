@@ -4,7 +4,9 @@ using BL.Model.Database;
 using System;
 using System.Collections.Generic;
 using System.Web;
-
+using BL.CrossCutting.DependencyInjection;
+using BL.Database.DatabaseContext;
+using BL.Logic.Secure;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 
@@ -50,7 +52,6 @@ namespace DMS_WebAPI.Utilities
             {
                 var userManager = HttpContext.Current.Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
                 var user = userManager.FindById(HttpContext.Current.User.Identity.GetUserId());
-
                 var context = 
                 new DefaultContext
                 {
@@ -61,6 +62,13 @@ namespace DMS_WebAPI.Utilities
                     },
                     CurrentDB = db
                 };
+
+                if (user.AgentId.HasValue)
+                {
+                    var agent = DmsResolver.Current.Get<ISecureService>().GetEmployee(context, user.AgentId.Value);
+                    context.CurrentEmployee.Name = agent.Name;
+                }
+
                 Save(token, context);
                 return context;
             }

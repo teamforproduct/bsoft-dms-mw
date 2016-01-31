@@ -70,10 +70,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CoreDb\CoreDb.cs" />
-    <Compile Include="DatabaseContext\DatabaseAdapter.cs" />
     <Compile Include="DatabaseContext\DmsContext.cs" />
-    <Compile Include="DatabaseContext\IDatabaseAdapter.cs" />
     <Compile Include="DBModel\Admin\AdminAccessLevels.cs" />
+    <Compile Include="DBModel\Dictionary\DictionaryAgentPersons.cs" />
     <Compile Include="DBModel\Document\DocumentAccesses.cs" />
     <Compile Include="DBModel\Document\DocumentEvents.cs" />
     <Compile Include="DBModel\Document\DocumentRestrictedSendLists.cs" />
@@ -106,10 +105,8 @@
     <Compile Include="Documents\Interfaces\IDocumnetsDbProcess.cs" />
     <Compile Include="Documents\Interfaces\ITemplateDocumnetsDbProcess.cs" />
     <Compile Include="Documents\TemplateDocumnetsDbProcess.cs" />
-    <Compile Include="Helpers\IConnectionStringHelper.cs" />
     <Compile Include="Manager\ConnectionManager.cs" />
     <Compile Include="Manager\IConnectionManager.cs" />
-    <Compile Include="Helpers\ConnectionStringHelper.cs" />
     <Compile Include="Migrations\201601241114209_InitialMigration.cs" />
     <Compile Include="Migrations\201601241114209_InitialMigration.Designer.cs">
       <DependentUpon>201601241114209_InitialMigration.cs</DependentUpon>
@@ -150,8 +147,29 @@
     <Compile Include="Migrations\201601291515455_AddForeignKeyForCreatingOneToOne.Designer.cs">
       <DependentUpon>201601291515455_AddForeignKeyForCreatingOneToOne.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201601302342240_Code.cs" />
+    <Compile Include="Migrations\201601302342240_Code.Designer.cs">
+      <DependentUpon>201601302342240_Code.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201601302346317_Code1.cs" />
+    <Compile Include="Migrations\201601302346317_Code1.Designer.cs">
+      <DependentUpon>201601302346317_Code1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201601310022316_Code2.cs" />
+    <Compile Include="Migrations\201601310022316_Code2.Designer.cs">
+      <DependentUpon>201601310022316_Code2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201601310028225_Code3.cs" />
+    <Compile Include="Migrations\201601310028225_Code3.Designer.cs">
+      <DependentUpon>201601310028225_Code3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201601310050174_TemplateDocumentSendLists.cs" />
+    <Compile Include="Migrations\201601310050174_TemplateDocumentSendLists.Designer.cs">
+      <DependentUpon>201601310050174_TemplateDocumentSendLists.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Security\ISecurityDbProcess.cs" />
     <Compile Include="Security\SecurityDbProcess.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -206,6 +224,21 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201601291515455_AddForeignKeyForCreatingOneToOne.resx">
       <DependentUpon>201601291515455_AddForeignKeyForCreatingOneToOne.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201601302342240_Code.resx">
+      <DependentUpon>201601302342240_Code.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201601302346317_Code1.resx">
+      <DependentUpon>201601302346317_Code1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201601310022316_Code2.resx">
+      <DependentUpon>201601310022316_Code2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201601310028225_Code3.resx">
+      <DependentUpon>201601310028225_Code3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201601310050174_TemplateDocumentSendLists.resx">
+      <DependentUpon>201601310050174_TemplateDocumentSendLists.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

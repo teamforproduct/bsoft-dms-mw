@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using BL.CrossCutting.Helpers;
 using BL.Database.DatabaseContext;
 using BL.CrossCutting.Interfaces;
 using BL.Model.Database;
-using BL.Database.Helpers;
 
 namespace BL.Database.Manager
 {

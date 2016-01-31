@@ -1,8 +1,8 @@
-﻿using BL.Database.DatabaseContext;
+﻿using BL.CrossCutting.Helpers;
 using BL.Database.Documents;
 using BL.Database.Documents.Interfaces;
-using BL.Database.Helpers;
 using BL.Database.Manager;
+using BL.Database.Security;
 using Ninject.Modules;
 
 namespace BL.Database.DependencyInjection
@@ -13,7 +13,7 @@ namespace BL.Database.DependencyInjection
         {
             InternalClassRegistration();
 
-            Bind<IDatabaseAdapter>().To<DatabaseAdapter>().InSingletonScope();
+            Bind<ISecurityDbProcess>().To<SecurityDbProcess>().InSingletonScope();
             Bind<IDocumnetsDbProcess>().To<DocumnetsDbProcess>().InSingletonScope();
             Bind<ITemplateDocumnetsDbProcess>().To<TemplateDocumnetsDbProcess>().InSingletonScope();
         }

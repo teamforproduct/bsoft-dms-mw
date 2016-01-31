@@ -6,6 +6,7 @@ namespace BL.Database.DBModel.Dictionary
     public class DictionarySendTypes
     {
         public int Id { get; set; }
+        public string Code { get; set; }
         public string Name { get; set; }
         public bool IsImpotant { get; set; }
         public int SubordinationTypeId { get; set; }

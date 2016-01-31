@@ -1,7 +1,7 @@
 ﻿using System;
 using BL.CrossCutting.Interfaces;
 
-namespace BL.CrossCutting.Logging
+namespace BL.Logic.Logging
 {
     public class Logger :ILogger
     {

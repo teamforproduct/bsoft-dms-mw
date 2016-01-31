@@ -52,10 +52,11 @@
     <Compile Include="DependencyInjection\NinjectResolver.cs" />
     <Compile Include="DependencyInjection\DmsResolver.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
+    <Compile Include="Helpers\ConnectionStringHelper.cs" />
+    <Compile Include="Helpers\IConnectionStringHelper.cs" />
     <Compile Include="Interfaces\IContext.cs" />
     <Compile Include="Interfaces\ILogger.cs" />
     <Compile Include="Interfaces\ISettings.cs" />
-    <Compile Include="Logging\Logger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

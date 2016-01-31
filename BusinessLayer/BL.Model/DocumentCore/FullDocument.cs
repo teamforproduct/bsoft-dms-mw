@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace BL.Model.DocumentCore
 {
@@ -47,6 +48,12 @@ namespace BL.Model.DocumentCore
 
         public string SenderAgentName { get; set; }
         public string AccessLevelName { get; set; }
+        public string GeneralInfo { get; set; }
+
+        public virtual ICollection<BaseDocumentRestrictedSendList> RestrictedSendLists { get; set; }
+        public virtual ICollection<BaseDocumentSendList> SendLists { get; set; }
+        public virtual ICollection<BaseDocumentEvent> Events { get; set; }
+
 
     }
 }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using BL.CrossCutting.Interfaces;
-using BL.Database.DatabaseContext;
 using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore;
 
@@ -10,17 +9,30 @@ namespace BL.Database.Documents
 {
     internal class DocumnetsDbProcess : CoreDb.CoreDb, IDocumnetsDbProcess
     {
-        private readonly IDatabaseAdapter _adapter;
-
-        public DocumnetsDbProcess(IDatabaseAdapter adapter)
+        public DocumnetsDbProcess()
         {
-            _adapter = adapter;
         }
 
         public void AddDocument(IContext ctx, FullDocument document)
         {
             var dbContext = GetUserDmsContext(ctx);
-            var doc = _adapter.AddDocument(dbContext, document);
+
+            var doc = new DBModel.Document.Documents
+            {
+                TemplateDocumentId = document.TemplateDocumentId,
+                CreateDate = document.CreateDate,
+                DocumentSubjectId = document.DocumentSubjectId,
+                Description = document.Description,
+                RegistrationJournalId = document.RegistrationJournalId,
+                RegistrationNumberSuffix = document.RegistrationNumberSuffix,
+                RegistrationNumberPrefix = document.RegistrationNumberPrefix,
+                RegistrationDate = document.RegistrationDate,
+                ExecutorPositionId = document.ExecutorPositionId,
+                ExecutorAgentId = document.ExecutorAgentId,
+                LastChangeUserId = dbContext.Context.CurrentAgentId,
+                LastChangeDate = DateTime.Now
+            };
+            dbContext.DocumentsSet.Add(doc);
             dbContext.SaveChanges();
             document.Id = doc.Id;
         }
@@ -28,7 +40,21 @@ namespace BL.Database.Documents
         public void UpdateDocument(IContext ctx, FullDocument document)
         {
             var dbContext = GetUserDmsContext(ctx);
-            _adapter.UpdateDocument(dbContext, document);
+            var doc = dbContext.DocumentsSet.FirstOrDefault(x => x.Id == document.Id);
+            if (doc != null)
+            {
+                doc.TemplateDocumentId = document.TemplateDocumentId;
+                doc.DocumentSubjectId = document.DocumentSubjectId;
+                doc.Description = document.Description;
+                doc.RegistrationJournalId = document.RegistrationJournalId;
+                doc.RegistrationNumberSuffix = document.RegistrationNumberSuffix;
+                doc.RegistrationNumberPrefix = document.RegistrationNumberPrefix;
+                doc.RegistrationDate = document.RegistrationDate;
+                doc.ExecutorPositionId = document.ExecutorPositionId;
+                doc.ExecutorAgentId = document.ExecutorAgentId;
+                doc.LastChangeUserId = dbContext.Context.CurrentAgentId;
+                doc.LastChangeDate = DateTime.Now;
+            }
             dbContext.SaveChanges();
         }
 
