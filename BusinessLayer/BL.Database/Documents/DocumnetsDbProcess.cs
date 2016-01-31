@@ -17,7 +17,7 @@ namespace BL.Database.Documents
             _adapter = adapter;
         }
 
-        public void AddDocument(IContext ctx, BaseDocument document)
+        public void AddDocument(IContext ctx, FullDocument document)
         {
             var dbContext = GetUserDmsContext(ctx);
             var doc = _adapter.AddDocument(dbContext, document);
@@ -25,14 +25,14 @@ namespace BL.Database.Documents
             document.Id = doc.Id;
         }
 
-        public void UpdateDocument(IContext ctx, BaseDocument document)
+        public void UpdateDocument(IContext ctx, FullDocument document)
         {
             var dbContext = GetUserDmsContext(ctx);
             _adapter.UpdateDocument(dbContext, document);
             dbContext.SaveChanges();
         }
 
-        public IEnumerable<BaseDocument> GetDocuments(IContext ctx, FilterDocument filters)
+        public IEnumerable<FullDocument> GetDocuments(IContext ctx, FilterDocument filters)
         {
             var dbContext = GetUserDmsContext(ctx);
             var qry = dbContext.DocumentsSet.AsQueryable();
@@ -128,7 +128,7 @@ namespace BL.Database.Documents
             //}
 
 
-            return qry.Select(x => new BaseDocument
+            return qry.Select(x => new FullDocument
             {
                     Id = x.Id,
                     DocumentTypeId = x.TemplateDocument.DocumentTypeId,
@@ -151,11 +151,11 @@ namespace BL.Database.Documents
                 }).ToList();
         }
 
-        public BaseDocument GetDocument(IContext ctx, int documentId)
+        public FullDocument GetDocument(IContext ctx, int documentId)
         {
             var dbContext = GetUserDmsContext(ctx);
 
-            return dbContext.DocumentsSet.Where(x=>x.Id == documentId).Select(x => new BaseDocument
+            return dbContext.DocumentsSet.Where(x=>x.Id == documentId).Select(x => new FullDocument
             {
                 Id = x.Id,
                 TemplateDocumentId = x.TemplateDocumentId,

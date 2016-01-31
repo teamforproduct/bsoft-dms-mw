@@ -6,7 +6,7 @@ namespace BL.Database.DatabaseContext
 {
     public class DatabaseAdapter : IDatabaseAdapter
     {
-        public DBModel.Document.Documents AddDocument(DmsContext dbContext, BaseDocument document)
+        public DBModel.Document.Documents AddDocument(DmsContext dbContext, FullDocument document)
         {
             var doc = new DBModel.Document.Documents
             {
@@ -27,7 +27,7 @@ namespace BL.Database.DatabaseContext
             return doc;
         }
 
-        public void UpdateDocument(DmsContext dbContext, BaseDocument document)
+        public void UpdateDocument(DmsContext dbContext, FullDocument document)
         {
             var doc = dbContext.DocumentsSet.FirstOrDefault(x => x.Id == document.Id);
             if (doc != null)

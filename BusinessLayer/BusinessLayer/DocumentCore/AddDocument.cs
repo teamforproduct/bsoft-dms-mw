@@ -1,7 +1,6 @@
 ﻿using BL.CrossCutting.Common;
 using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
-using BL.Database.Documents;
 using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore;
 
@@ -10,9 +9,9 @@ namespace BL.Logic.DocumentCore
     internal class AddDocument : Command
     {
         private readonly IContext _context;
-        private readonly BaseDocument _document;
+        private readonly FullDocument _document;
 
-        public AddDocument(IContext context,  BaseDocument document)
+        public AddDocument(IContext context,  FullDocument document)
         {
             _context = context;
             _document = document;

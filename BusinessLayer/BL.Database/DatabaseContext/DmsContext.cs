@@ -42,17 +42,6 @@ namespace BL.Database.DatabaseContext
             modelBuilder.Entity<TemplateDocuments>()
            .HasOptional(f => f.IncomingDetail)
            .WithRequired(s => s.Document);
-
-            /*
-            modelBuilder.Entity<DocumentIncomingDetails>()
-                  .HasRequired(a => a.Document)
-                  .WithMany()
-                  .HasForeignKey(u => u.DocumentId);
-
-            modelBuilder.Entity<TemplateDocumentIncomingDetails>()
-                  .HasRequired(a => a.DocumentTemplate)
-                  .WithMany()
-                  .HasForeignKey(u => u.DocumentTemplateId);*/
         }
         
 

@@ -44,7 +44,7 @@
     <Compile Include="Database\StoreInfo.cs" />
     <Compile Include="Database\DatabaseModel.cs" />
     <Compile Include="Database\DatabaseType.cs" />
-    <Compile Include="DocumentCore\BaseDocument.cs" />
+    <Compile Include="DocumentCore\FullDocument.cs" />
     <Compile Include="DocumentCore\BaseTemplateDocument.cs" />
     <Compile Include="DocumentCore\FilterDocument.cs" />
     <Compile Include="DocumentCore\ModifyDocument.cs" />

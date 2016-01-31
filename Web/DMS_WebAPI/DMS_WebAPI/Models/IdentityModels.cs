@@ -2,10 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
-using Microsoft.AspNet.Identity.Owin;
-using BL.Model.Database;
 using System.Linq;
-using BL.Database.Helpers;
 using BL.CrossCutting.DependencyInjection;
 using DMS_WebAPI.Utilities;
 

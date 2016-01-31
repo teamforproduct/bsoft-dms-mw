@@ -11,7 +11,7 @@ namespace BL.Logic.DocumentCore
 {
     internal class DocumentService : IDocumentService
     {
-        public int SaveDocument(IContext context, BaseDocument document)
+        public int SaveDocument(IContext context, FullDocument document)
         {
             Command cmd;
             if (document.Id == 0) // new document
@@ -30,13 +30,13 @@ namespace BL.Logic.DocumentCore
             return document.Id;
         }
 
-        public IEnumerable<BaseDocument> GetDocuments(IContext ctx, FilterDocument filters)
+        public IEnumerable<FullDocument> GetDocuments(IContext ctx, FilterDocument filters)
         {
             var documentDb = DmsResolver.Current.Get<IDocumnetsDbProcess>();
             return documentDb.GetDocuments(ctx, filters);
         }
 
-        public BaseDocument GetDocument(IContext ctx, int documentId)
+        public FullDocument GetDocument(IContext ctx, int documentId)
         {
             var documentDb = DmsResolver.Current.Get<IDocumnetsDbProcess>();
             return documentDb.GetDocument(ctx, documentId);
@@ -46,7 +46,7 @@ namespace BL.Logic.DocumentCore
         {
             var db = DmsResolver.Current.Get<ITemplateDocumnetsDbProcess>();
             var baseTemplateDocument = db.GetTemplateDocument(context, templateDocumentId);
-            var baseDocument = new BaseDocument
+            var baseDocument = new FullDocument
             {
                 TemplateDocumentId = baseTemplateDocument.Id,
                 CreateDate = DateTime.Now,
@@ -61,7 +61,7 @@ namespace BL.Logic.DocumentCore
         public int ModifyDocument(IContext context, ModifyDocument document)
         {
             var db = DmsResolver.Current.Get<ITemplateDocumnetsDbProcess>();
-            var baseDocument = new BaseDocument
+            var baseDocument = new FullDocument
             {
                 Id = document.Id,
                 TemplateDocumentId = document.TemplateDocumentId,

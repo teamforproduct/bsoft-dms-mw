@@ -6,9 +6,9 @@ namespace BL.Database.Documents.Interfaces
 {
     public interface IDocumnetsDbProcess
     {
-        void AddDocument(IContext ctx, BaseDocument document);
-        void UpdateDocument(IContext ctx, BaseDocument document);
-        IEnumerable<BaseDocument> GetDocuments(IContext ctx, FilterDocument filters);
-        BaseDocument GetDocument(IContext ctx, int documentId);
+        void AddDocument(IContext ctx, FullDocument document);
+        void UpdateDocument(IContext ctx, FullDocument document);
+        IEnumerable<FullDocument> GetDocuments(IContext ctx, FilterDocument filters);
+        FullDocument GetDocument(IContext ctx, int documentId);
     }
 }
