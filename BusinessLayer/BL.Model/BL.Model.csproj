@@ -45,14 +45,23 @@
     <Compile Include="Database\DatabaseModel.cs" />
     <Compile Include="Database\DatabaseType.cs" />
     <Compile Include="DocumentCore\BaseDocument.cs" />
+    <Compile Include="DocumentCore\BaseDocumentEvent.cs" />
+    <Compile Include="DocumentCore\BaseDocumentRestrictedSendList.cs" />
+    <Compile Include="DocumentCore\BaseDocumentSendList.cs" />
     <Compile Include="DocumentCore\BaseTemplateDocument.cs" />
+    <Compile Include="DocumentCore\DocumentAccess.cs" />
     <Compile Include="DocumentCore\FilterDocument.cs" />
     <Compile Include="DocumentCore\ModifyDocument.cs" />
+    <Compile Include="DocumentCore\ModifyDocumentRestrictedSendList.cs" />
+    <Compile Include="DocumentCore\ModifyDocumentSendList.cs" />
     <Compile Include="DocumentCore\RegistrationDocument.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SystemCore\SystemUIElement.cs" />
     <Compile Include="Users\Employee.cs" />
     <Compile Include="Users\Position.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="DictionaryCore\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

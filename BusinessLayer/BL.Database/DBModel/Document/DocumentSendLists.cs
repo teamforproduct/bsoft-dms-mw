@@ -16,7 +16,6 @@ namespace BL.Database.DBModel.Document
         public int OrderNumber { get; set; }
         public int SendTypeId { get; set; }
         public Nullable<int> TargetPositionId { get; set; }
-        public Nullable<int> TargetAgentId { get; set; }
         public string Description { get; set; }
         public Nullable<DateTime> DueDate { get; set; }
         public int DueDay { get; set; }
@@ -32,8 +31,6 @@ namespace BL.Database.DBModel.Document
         public virtual DictionarySendTypes SendType { get; set; }
         [ForeignKey("TargetPositionId")]
         public virtual DictionaryPositions TargetPosition { get; set; }
-        [ForeignKey("TargetAgentId")]
-        public virtual DictionaryAgents TargetAgent { get; set; }
         [ForeignKey("AccessLevelId")]
         public virtual AdminAccessLevels AccessLevel { get; set; }
         [ForeignKey("EventId")]

@@ -1,31 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace BL.Model.DocumentCore
 {
-    public class BaseDocument
+    public class BaseDocument : ModifyDocument
     {
-        public int Id { get; set; }
-        public int TemplateDocumentId { get; set; }
         public DateTime CreateDate { get; set; }
-        public int? DocumentSubjectId { get; set; }
-        public string Description { get; set; }
         public int? RegistrationJournalId { get; set; }
         public int? RegistrationNumber { get; set; }
         public string RegistrationNumberSuffix { get; set; }
         public string RegistrationNumberPrefix { get; set; }
         public DateTime? RegistrationDate { get; set; }
-        public int ExecutorPositionId { get; set; }
-        public int ExecutorAgentId { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
-
-        public int? SenderAgentId { get; set; }
-        public string SenderPerson { get; set; }
-        public string SenderNumber { get; set; }
-        public DateTime? SenderDate { get; set; }
-        public string Addressee { get; set; }
-
-        public int AccessLevelId { get; set; }
 
         public string TemplateDocumentName { get; set; }
         public int IsHard { get; set; }
@@ -41,6 +28,9 @@ namespace BL.Model.DocumentCore
 
         public string SenderAgentName { get; set; }
         public string AccessLevelName { get; set; }
+        public string GeneralInfo { get; set; }
+
+        public virtual ICollection<BaseDocumentEvent> Events { get; set; }
 
     }
 }

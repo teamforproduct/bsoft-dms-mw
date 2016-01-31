@@ -58,7 +58,7 @@ namespace BL.Database.DatabaseContext
 
 
         public virtual DbSet<AdminAccessLevels> AdminAccessLevelsSet { get; set; }
-
+        public virtual DbSet<DictionaryAgentPersons> DictionaryAgentPersonsSet { get; set; }
         public virtual DbSet<DictionaryAgents> DictionaryAgentsSet { get; set; }
         public virtual DbSet<DictionaryCompanies> DictionaryCompaniesSet { get; set; }
         public virtual DbSet<DictionaryDepartments> DictionaryDepartmentsSet { get; set; }

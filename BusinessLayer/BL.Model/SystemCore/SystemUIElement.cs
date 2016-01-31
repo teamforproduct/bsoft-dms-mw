@@ -14,7 +14,7 @@ namespace BL.Model.SystemCore
         public string ActionCode { get; set; }
         public string Code { get; set; }
         public string Description { get; set; }
-        public string Lable { get; set; }
+        public string Label { get; set; }
         public string Hint { get; set; }
         public Nullable<int> ValueTypeId { get; set; }
         public string ValueTypeCode { get; set; }
