@@ -49,6 +49,8 @@
     <Compile Include="DocumentCore\BaseDocumentRestrictedSendList.cs" />
     <Compile Include="DocumentCore\BaseDocumentSendList.cs" />
     <Compile Include="DocumentCore\BaseTemplateDocument.cs" />
+    <Compile Include="DocumentCore\BaseTemplateDocumentRestrictedSendLists.cs" />
+    <Compile Include="DocumentCore\BaseTemplateDocumentSendLists.cs" />
     <Compile Include="DocumentCore\DocumentAccess.cs" />
     <Compile Include="DocumentCore\FilterDocument.cs" />
     <Compile Include="DocumentCore\ModifyDocument.cs" />

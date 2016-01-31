@@ -159,6 +159,18 @@
     <Compile Include="Migrations\201601302346317_Code1.Designer.cs">
       <DependentUpon>201601302346317_Code1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201601310022316_Code2.cs" />
+    <Compile Include="Migrations\201601310022316_Code2.Designer.cs">
+      <DependentUpon>201601310022316_Code2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201601310028225_Code3.cs" />
+    <Compile Include="Migrations\201601310028225_Code3.Designer.cs">
+      <DependentUpon>201601310028225_Code3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201601310050174_TemplateDocumentSendLists.cs" />
+    <Compile Include="Migrations\201601310050174_TemplateDocumentSendLists.Designer.cs">
+      <DependentUpon>201601310050174_TemplateDocumentSendLists.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\SecurityDbProcess.cs" />
@@ -221,6 +233,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201601302346317_Code1.resx">
       <DependentUpon>201601302346317_Code1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201601310022316_Code2.resx">
+      <DependentUpon>201601310022316_Code2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201601310028225_Code3.resx">
+      <DependentUpon>201601310028225_Code3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201601310050174_TemplateDocumentSendLists.resx">
+      <DependentUpon>201601310050174_TemplateDocumentSendLists.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

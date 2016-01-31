@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace BL.Model.DocumentCore
 {
@@ -26,5 +27,10 @@ namespace BL.Model.DocumentCore
 
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
+
+        public string GeneralInfo { get; set; }
+
+        public virtual ICollection<BaseTemplateDocumentRestrictedSendLists> RestrictedSendLists { get; set; }
+        public virtual ICollection<BaseTemplateDocumentSendLists> SendLists { get; set; }
     }
 }
