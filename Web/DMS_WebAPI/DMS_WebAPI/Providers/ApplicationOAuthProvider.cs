@@ -98,18 +98,27 @@ namespace DMS_WebAPI.Providers
         }
         public override Task TokenEndpointResponse(OAuthTokenEndpointResponseContext context)
         {
-            var token = $"{context.Identity.AuthenticationType} {context.AccessToken}";
-            int dbId = int.Parse(System.Web.HttpContext.Current.Request.Headers["DatabaseId"]);
-            var readXml = new Utilities.ReadXml("/servers.xml");
-            var dbs = readXml.ReadDBs();
-            var db = dbs.FirstOrDefault(x => x.Id == dbId);
-            if (db == null)
+            if (context.Identity.IsAuthenticated)
             {
-                throw new System.Exception();
+                var token = $"{context.Identity.AuthenticationType} {context.AccessToken}";
+
+                int dbId = 0;
+
+                if (!int.TryParse(System.Web.HttpContext.Current.Request.Headers["DatabaseId"], out dbId))
+                {
+                    throw new System.Exception("Not set DatabaseId");
+                }
+
+                var readXml = new Utilities.ReadXml("/servers.xml");
+                var dbs = readXml.ReadDBs();
+                var db = dbs.FirstOrDefault(x => x.Id == dbId);
+                if (db == null)
+                {
+                    throw new System.Exception("Not found Database");
+                }
+
+                var cxt = DmsResolver.Current.Get<UserContext>().Set(token, db);
             }
-
-            var cxt = DmsResolver.Current.Get<UserContext>().Set(token, db);
-
 
             return Task.FromResult<object>(null);
         }

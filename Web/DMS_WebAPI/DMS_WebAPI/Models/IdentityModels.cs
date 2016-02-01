@@ -38,18 +38,23 @@ namespace DMS_WebAPI.Models
             var path = System.Web.HttpContext.Current.Request.Path;
             if (path.Equals("/token")|| path.Equals("/api/token"))
             {
-                int dbId = int.Parse(System.Web.HttpContext.Current.Request.Headers["DatabaseId"]);
+                int dbId = 0;
+
+                if (!int.TryParse(System.Web.HttpContext.Current.Request.Headers["DatabaseId"],out dbId))
+                {
+                    throw new System.Exception("Not set DatabaseId");
+                }
                 var readXml = new Utilities.ReadXml("/servers.xml");
                 var dbs = readXml.ReadDBs();
                 var db = dbs.FirstOrDefault(x => x.Id == dbId);
                 if (db==null)
                 {
-                    throw new System.Exception();
+                    throw new System.Exception("Not found Database");
                 }
                 //var cxt = DmsResolver.Current.Get<UserContext>().Set(db);
                 return new ApplicationDbContext(db.ConnectionString);
             }
-            else if (!string.IsNullOrEmpty(System.Web.HttpContext.Current.Request.Headers["Authorization"]))
+            else if ((System.Web.HttpContext.Current.User?.Identity?.IsAuthenticated ?? false) && !string.IsNullOrEmpty(System.Web.HttpContext.Current.Request.Headers["Authorization"]))
             {
                 var cxt = DmsResolver.Current.Get<UserContext>().Get();
                 return new ApplicationDbContext(cxt.CurrentDB.ConnectionString);

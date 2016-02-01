@@ -89,5 +89,17 @@ namespace BL.Logic.DocumentCore
             var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
             documentDb.DeleteRestrictedSendList(context, restrictedSendListId);
         }
+
+        public int AddSendList(IContext context, ModifyDocumentSendList sendList)
+        {
+            var documentDb = DmsResolver.Current.Get<IDocumnetsDbProcess>();
+            var id = documentDb.AddSendList(context, sendList);
+            return id;
+        }
+        public void DeleteSendList(IContext context, int sendListId)
+        {
+            var documentDb = DmsResolver.Current.Get<IDocumnetsDbProcess>();
+            documentDb.DeleteSendList(context, sendListId);
+        }
     }
 }
