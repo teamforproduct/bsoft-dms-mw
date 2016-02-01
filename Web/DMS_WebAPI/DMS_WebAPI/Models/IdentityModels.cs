@@ -35,7 +35,8 @@ namespace DMS_WebAPI.Models
 
         public static ApplicationDbContext Create()
         {
-            if(System.Web.HttpContext.Current.Request.Path.Equals("/token"))
+            var path = System.Web.HttpContext.Current.Request.Path;
+            if (path.Equals("/token")|| path.Equals("/api/token"))
             {
                 int dbId = int.Parse(System.Web.HttpContext.Current.Request.Headers["DatabaseId"]);
                 var readXml = new Utilities.ReadXml("/servers.xml");

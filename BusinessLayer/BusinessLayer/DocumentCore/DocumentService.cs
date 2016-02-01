@@ -6,6 +6,7 @@ using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore;
 using System;
 using BL.Logic.DocumentCore.Interfaces;
+using System.Linq;
 
 namespace BL.Logic.DocumentCore
 {
@@ -55,6 +56,15 @@ namespace BL.Logic.DocumentCore
                 ExecutorPositionId = context.CurrentPositionId, ////
                 ExecutorAgentId = context.CurrentAgentId///////
             };
+
+            if (baseTemplateDocument.RestrictedSendLists!=null&& baseTemplateDocument.RestrictedSendLists.Count>0)
+            {
+                baseDocument.RestrictedSendLists = baseTemplateDocument.RestrictedSendLists.Select(x => new BaseDocumentRestrictedSendList()
+                {
+                    PositionId = x.PositionId,
+                    AccessLevelId = x.AccessLevelId
+                }).ToList();
+            }
             return SaveDocument(context, baseDocument);
         }
 
@@ -77,6 +87,18 @@ namespace BL.Logic.DocumentCore
                 AccessLevelId = document.AccessLevelId
             };
             return SaveDocument(context, baseDocument);
+        }
+
+        public int AddRestrictedSendList(IContext context, ModifyDocumentRestrictedSendList restrictedSendList)
+        {
+            var documentDb = DmsResolver.Current.Get<IDocumnetsDbProcess>();
+            var id = documentDb.AddRestrictedSendList(context, restrictedSendList);
+            return id;
+        }
+        public void DeleteRestrictedSendList(IContext context, int restrictedSendListId)
+        {
+            var documentDb = DmsResolver.Current.Get<IDocumnetsDbProcess>();
+            documentDb.DeleteRestrictedSendList(context, restrictedSendListId);
         }
     }
 }

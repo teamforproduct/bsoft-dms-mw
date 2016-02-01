@@ -13,5 +13,8 @@ namespace BL.Logic.DocumentCore.Interfaces
 
         IEnumerable<FullDocument> GetDocuments(IContext ctx, FilterDocument filters);
         FullDocument GetDocument(IContext ctx, int documentId);
+
+        int AddRestrictedSendList(IContext context, ModifyDocumentRestrictedSendList restrictedSendList);
+        void DeleteRestrictedSendList(IContext context, int restrictedSendListId);
     }
 }
