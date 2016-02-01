@@ -29,7 +29,6 @@ namespace BL.Database.Documents
                 RegistrationNumberPrefix = document.RegistrationNumberPrefix,
                 RegistrationDate = document.RegistrationDate,
                 ExecutorPositionId = document.ExecutorPositionId,
-                ExecutorAgentId = document.ExecutorAgentId,
                 LastChangeUserId = dbContext.Context.CurrentAgentId,
                 LastChangeDate = DateTime.Now
             };
@@ -58,11 +57,11 @@ namespace BL.Database.Documents
                 doc.DocumentSubjectId = document.DocumentSubjectId;
                 doc.Description = document.Description;
                 doc.RegistrationJournalId = document.RegistrationJournalId;
+                doc.RegistrationNumber = document.RegistrationNumber;
                 doc.RegistrationNumberSuffix = document.RegistrationNumberSuffix;
                 doc.RegistrationNumberPrefix = document.RegistrationNumberPrefix;
                 doc.RegistrationDate = document.RegistrationDate;
                 doc.ExecutorPositionId = document.ExecutorPositionId;
-                doc.ExecutorAgentId = document.ExecutorAgentId;
                 doc.LastChangeUserId = dbContext.Context.CurrentAgentId;
                 doc.LastChangeDate = DateTime.Now;
             }
@@ -188,9 +187,12 @@ namespace BL.Database.Documents
                     CreateDate = x.CreateDate,
                     DocumentSubjectName = x.DocumentSubject.Name,
                     ExecutorPositionName = x.ExecutorPosition.Name,
+                    ExecutorPositionAgentName = x.ExecutorPosition.ExecutorAgent.Name,
                     LastChangeUserId = x.LastChangeUserId,
-                    DocumentDirectionName = x.TemplateDocument.DocumentDirection.Name
-                }).ToList();
+                    DocumentDirectionName = x.TemplateDocument.DocumentDirection.Name,
+                    DocumentTypeName = x.TemplateDocument.DocumentType.Name,
+                    DocumentDate = x.RegistrationDate?? x.CreateDate
+            }).ToList();
         }
 
         public FullDocument GetDocument(IContext ctx, int documentId)
@@ -210,7 +212,6 @@ namespace BL.Database.Documents
                 RegistrationNumberSuffix = x.RegistrationNumberSuffix,
                 RegistrationDate = x.RegistrationDate,
                 ExecutorPositionId = x.ExecutorPositionId,
-                ExecutorAgentId = x.ExecutorAgentId,
                 LastChangeUserId = x.LastChangeUserId,
                 LastChangeDate = x.LastChangeDate,
                 SenderAgentId = x.SenderAgentId,
@@ -228,9 +229,11 @@ namespace BL.Database.Documents
                 DocumentSubjectName = x.DocumentSubject.Name,
                 RegistrationJournalName = x.RegistrationJournal.Name,
                 ExecutorPositionName = x.ExecutorPosition.Name,
-                ExecutorAgentName = x.ExecutorAgent.Name,
+                ExecutorPositionAgentName = x.ExecutorPosition.ExecutorAgent.Name,
                 SenderAgentName = x.SenderAgent.Name,
                 SenderAgentPersonName = x.SenderAgentPerson.Name,
+                DocumentDate = x.RegistrationDate ?? x.CreateDate,
+                RegistrationFullNumber = x.RegistrationNumber != null? x.RegistrationNumber.ToString(): "#"+x.Id.ToString(),
                 AccessLevelName = null //после добавления Access??? подумать
             }).FirstOrDefault();
         }

@@ -54,7 +54,6 @@ namespace BL.Logic.DocumentCore
                 DocumentSubjectId = baseTemplateDocument.DocumentSubjectId,
                 Description = baseTemplateDocument.Description,
                 ExecutorPositionId = context.CurrentPositionId, ////
-                ExecutorAgentId = context.CurrentAgentId,///////
                 SenderAgentId = baseTemplateDocument.SenderAgentId,
                 SenderAgentPersonId = baseTemplateDocument.SenderAgentPersonId,
                 Addressee = baseTemplateDocument.Addressee
@@ -92,13 +91,13 @@ namespace BL.Logic.DocumentCore
 
         public int AddSendList(IContext context, ModifyDocumentSendList sendList)
         {
-            var documentDb = DmsResolver.Current.Get<IDocumnetsDbProcess>();
+            var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
             var id = documentDb.AddSendList(context, sendList);
             return id;
         }
         public void DeleteSendList(IContext context, int sendListId)
         {
-            var documentDb = DmsResolver.Current.Get<IDocumnetsDbProcess>();
+            var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
             documentDb.DeleteSendList(context, sendListId);
         }
     }

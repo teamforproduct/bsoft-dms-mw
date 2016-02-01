@@ -9,7 +9,7 @@ namespace BL.Model.DocumentCore
         public int? DocumentSubjectId { get; set; }
         public string Description { get; set; }
         public int ExecutorPositionId { get; set; }
-        public int ExecutorAgentId { get; set; }
+        //public int ExecutorAgentId { get; set; }
         public int? SenderAgentId { get; set; }
         public int? SenderAgentPersonId { get; set; }
         public string SenderNumber { get; set; }

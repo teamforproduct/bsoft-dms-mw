@@ -16,7 +16,6 @@ namespace BL.Model.DocumentCore
             DocumentSubjectId = document.DocumentSubjectId;
             Description = document.Description;
             ExecutorPositionId = document.ExecutorPositionId;
-            ExecutorAgentId = document.ExecutorAgentId;
             SenderAgentId = document.SenderAgentId;
             SenderAgentPersonId = document.SenderAgentPersonId;
             SenderNumber = document.SenderNumber;
@@ -44,11 +43,16 @@ namespace BL.Model.DocumentCore
         public string DocumentSubjectName { get; set; }
         public string RegistrationJournalName { get; set; }
         public string ExecutorPositionName { get; set; }
-        public string ExecutorAgentName { get; set; }
+        public string ExecutorPositionAgentName { get; set; }
+        //public string ExecutorAgentName { get; set; }
 
         public string SenderAgentName { get; set; }
         public string SenderAgentPersonName { get; set; }
         public string AccessLevelName { get; set; }
+
+        public DateTime DocumentDate { get; set; }
+        public string RegistrationFullNumber { get; set; }
+
         public string GeneralInfo { get; set; }
 
         public virtual IEnumerable<BaseDocumentRestrictedSendList> RestrictedSendLists { get; set; }
