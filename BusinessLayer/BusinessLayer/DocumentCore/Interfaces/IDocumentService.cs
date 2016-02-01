@@ -16,5 +16,8 @@ namespace BL.Logic.DocumentCore.Interfaces
 
         int AddRestrictedSendList(IContext context, ModifyDocumentRestrictedSendList restrictedSendList);
         void DeleteRestrictedSendList(IContext context, int restrictedSendListId);
+
+        int AddSendList(IContext ctx, ModifyDocumentSendList sendList);
+        void DeleteSendList(IContext context, int sendListId);
     }
 }

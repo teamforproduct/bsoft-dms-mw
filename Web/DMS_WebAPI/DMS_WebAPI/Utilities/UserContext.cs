@@ -30,7 +30,7 @@ namespace DMS_WebAPI.Utilities
             string token = Token.ToLower();
             if (!_casheContexts.ContainsKey(token))
             {
-                throw new Exception();
+                throw new Exception("User not found");
             }
 
             var contextValue = _casheContexts[token];

@@ -259,5 +259,36 @@ namespace BL.Database.Documents
             }
         }
         #endregion DocumentRestrictedSendLists
+
+        #region DocumentSendLists
+        public int AddSendList(IContext ctx, ModifyDocumentSendList sendList)
+        {
+            var dbContext = GetUserDmsContext(ctx);
+
+            //var sendList = new DBModel.Document.DocumentRestrictedSendLists
+            //{
+            //    DocumentId = restrictedSendList.DocumentId,
+            //    //PositionId = restrictedSendList.PositionId,
+            //    AccessLevelId = restrictedSendList.AccessLevelId,
+            //    LastChangeUserId = dbContext.Context.CurrentAgentId,
+            //    LastChangeDate = DateTime.Now
+            //};
+            //dbContext.DocumentRestrictedSendListsSet.Add(sendList);
+            //dbContext.SaveChanges();
+            //return sendList.Id;
+            return 0;
+        }
+
+        public void DeleteSendList(IContext ctx, int sendListId)
+        {
+            var dbContext = GetUserDmsContext(ctx);
+            //var sendList = dbContext.DocumentRestrictedSendListsSet.FirstOrDefault(x => x.Id == restrictedSendListId);
+            //if (sendList != null)
+            //{
+            //    dbContext.DocumentRestrictedSendListsSet.Remove(sendList);
+            //    dbContext.SaveChanges();
+            //}
+        }
+        #endregion DocumentSendLists
     }
 }

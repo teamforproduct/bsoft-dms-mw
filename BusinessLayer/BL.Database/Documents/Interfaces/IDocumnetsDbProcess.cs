@@ -12,5 +12,8 @@ namespace BL.Database.Documents.Interfaces
         FullDocument GetDocument(IContext ctx, int documentId);
         int AddRestrictedSendList(IContext ctx, ModifyDocumentRestrictedSendList restrictedSendList);
         void DeleteRestrictedSendList(IContext ctx, int restrictedSendListId);
+
+        int AddSendList(IContext ctx, ModifyDocumentSendList sendList);
+        void DeleteSendList(IContext ctx, int sendListId);
     }
 }
