@@ -4,7 +4,7 @@ using BL.Model.DocumentCore;
 
 namespace BL.Database.Documents.Interfaces
 {
-    public interface IDocumnetsDbProcess
+    public interface IDocumentsDbProcess
     {
         void AddDocument(IContext ctx, FullDocument document);
         void UpdateDocument(IContext ctx, FullDocument document);

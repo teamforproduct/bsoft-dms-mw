@@ -11,7 +11,7 @@ namespace BL.Model.DocumentCore
         public int ExecutorPositionId { get; set; }
         public int ExecutorAgentId { get; set; }
         public int? SenderAgentId { get; set; }
-        public string SenderPerson { get; set; }
+        public int? SenderAgentPersonId { get; set; }
         public string SenderNumber { get; set; }
         public DateTime? SenderDate { get; set; }
         public string Addressee { get; set; }

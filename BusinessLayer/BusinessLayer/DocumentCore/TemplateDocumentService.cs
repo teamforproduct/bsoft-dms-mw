@@ -11,19 +11,19 @@ namespace BL.Logic.DocumentCore
     {
         public IEnumerable<BaseTemplateDocument> GetTemplateDocuments(IContext context)
         {
-            var db = DmsResolver.Current.Get<ITemplateDocumnetsDbProcess>();
+            var db = DmsResolver.Current.Get<ITemplateDocumentsDbProcess>();
             return db.GetTemplateDocument(context);
         }
 
         public int AddOrUpdateTemplate(IContext context, BaseTemplateDocument template)
         {
-            var db = DmsResolver.Current.Get<ITemplateDocumnetsDbProcess>();
+            var db = DmsResolver.Current.Get<ITemplateDocumentsDbProcess>();
             return db.AddOrUpdateTemplate(context, template);
         }
 
         public BaseTemplateDocument GetTemplateDocument(IContext context, int templateDocumentId)
         {
-            var db = DmsResolver.Current.Get<ITemplateDocumnetsDbProcess>();
+            var db = DmsResolver.Current.Get<ITemplateDocumentsDbProcess>();
             return db.GetTemplateDocument(context, templateDocumentId);
         }
     }

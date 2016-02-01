@@ -22,11 +22,14 @@ namespace BL.Database.DBModel.Template
         public Nullable<int> DocumentSubjectId { get; set; }
         public string Description { get; set; }
         public Nullable<int> RegistrationJournalId { get; set; }
+        public Nullable<int> SenderAgentId { get; set; }
+        public Nullable<int> SenderAgentPersonId { get; set; }
+        public string SenderNumber { get; set; }
+        public Nullable<DateTime> SenderDate { get; set; }
+        public string Addressee { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
 
-        [ForeignKey("Id")]
-        public virtual TemplateDocumentIncomingDetails IncomingDetail { get; set; }
         public virtual ICollection<TemplateDocumentSendLists> SendLists { get; set; }
         public virtual ICollection<TemplateDocumentRestrictedSendLists> RestrictedSendLists { get; set; }
         [ForeignKey("DocumentDirectionId")]
@@ -37,5 +40,9 @@ namespace BL.Database.DBModel.Template
         public virtual DictionaryDocumentSubjects DocumentSubject { get; set; }
         [ForeignKey("RegistrationJournalId")]
         public virtual DictionaryRegistrationJournals RegistrationJournal { get; set; }
+        [ForeignKey("SenderAgentId")]
+        public virtual DictionaryAgents SenderAgent { get; set; }
+        [ForeignKey("SenderAgentPersonId")]
+        public virtual DictionaryAgentPersons SenderAgentPerson { get; set; }
     }
 }

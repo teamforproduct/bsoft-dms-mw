@@ -3,7 +3,7 @@ using BL.CrossCutting.Interfaces;
 using BL.Model.DocumentCore;
 using BL.Model.DictionaryCore;
 
-namespace BL.Database.Dictionary.Interfaces
+namespace BL.Database.Dictionaries.Interfaces
 {
     public interface IDictionariesDbProcess
     {

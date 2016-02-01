@@ -36,12 +36,12 @@ namespace BL.Database.DatabaseContext
         {
             modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
 
-            modelBuilder.Entity<DBModel.Document.Documents>()
-           .HasOptional(f => f.IncomingDetail)
-           .WithRequired(s => s.Document);
-            modelBuilder.Entity<TemplateDocuments>()
-           .HasOptional(f => f.IncomingDetail)
-           .WithRequired(s => s.Document);
+           // modelBuilder.Entity<DBModel.Document.Documents>()
+           //.HasOptional(f => f.IncomingDetail)
+           //.WithRequired(s => s.Document);
+           // modelBuilder.Entity<TemplateDocuments>()
+           //.HasOptional(f => f.IncomingDetail)
+           //.WithRequired(s => s.Document);
         }
         
 
@@ -65,7 +65,6 @@ namespace BL.Database.DatabaseContext
 
         public virtual DbSet<DBModel.Document.Documents> DocumentsSet { get; set; }
         public virtual DbSet<DocumentFiles> DocumentFilesSet { get; set; }
-        public virtual DbSet<DocumentIncomingDetails> DocumentIncomingDetailsSet { get; set; }
         public virtual DbSet<DocumentAccesses> DocumentAccessesSet { get; set; }
         public virtual DbSet<DocumentEvents> DocumentEventsSet { get; set; }
         public virtual DbSet<DocumentRestrictedSendLists> DocumentRestrictedSendListsSet { get; set; }
@@ -73,7 +72,6 @@ namespace BL.Database.DatabaseContext
 
         public virtual DbSet<TemplateDocumentSendLists> TemplateDocumentSendLists { get; set; }
         public virtual DbSet<TemplateDocumentRestrictedSendLists> TemplateDocumentRestrictedSendLists { get; set; }
-        public virtual DbSet<TemplateDocumentIncomingDetails> TemplateDocumentIncomingDetailsSet { get; set; }
         public virtual DbSet<TemplateDocuments> TemplateDocumentsSet { get; set; }
 
         public virtual DbSet<SystemLogs> LogSet { get; set; }

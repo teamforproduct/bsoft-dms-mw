@@ -1,6 +1,6 @@
 ﻿using BL.CrossCutting.Helpers;
-using BL.Database.Dictionary;
-using BL.Database.Dictionary.Interfaces;
+using BL.Database.Dictionaries;
+using BL.Database.Dictionaries.Interfaces;
 using BL.Database.Documents;
 using BL.Database.Documents.Interfaces;
 using BL.Database.Manager;
@@ -16,8 +16,8 @@ namespace BL.Database.DependencyInjection
             InternalClassRegistration();
 
             Bind<ISecurityDbProcess>().To<SecurityDbProcess>().InSingletonScope();
-            Bind<IDocumnetsDbProcess>().To<DocumnetsDbProcess>().InSingletonScope();
-            Bind<ITemplateDocumnetsDbProcess>().To<TemplateDocumnetsDbProcess>().InSingletonScope();
+            Bind<IDocumentsDbProcess>().To<DocumentsDbProcess>().InSingletonScope();
+            Bind<ITemplateDocumentsDbProcess>().To<TemplateDocumentsDbProcess>().InSingletonScope();
             Bind<IDictionariesDbProcess>().To<DictionariesDbProcess>().InSingletonScope();
 
         }

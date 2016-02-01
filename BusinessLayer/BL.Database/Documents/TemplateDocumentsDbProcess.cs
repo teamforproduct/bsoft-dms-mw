@@ -6,7 +6,7 @@ using BL.Database.Documents.Interfaces;
 
 namespace BL.Database.Documents
 {
-    public class TemplateDocumnetsDbProcess : CoreDb.CoreDb, ITemplateDocumnetsDbProcess
+    public class TemplateDocumentsDbProcess : CoreDb.CoreDb, ITemplateDocumentsDbProcess
     {
         public IEnumerable<BaseTemplateDocument> GetTemplateDocument(IContext context)
         {

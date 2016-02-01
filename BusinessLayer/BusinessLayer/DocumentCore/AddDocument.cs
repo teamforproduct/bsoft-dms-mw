@@ -19,7 +19,7 @@ namespace BL.Logic.DocumentCore
 
         public override object Execute()
         {
-            var documentDb = DmsResolver.Current.Get<IDocumnetsDbProcess>();
+            var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
             documentDb.AddDocument(_context, _document);
             return null;
         }

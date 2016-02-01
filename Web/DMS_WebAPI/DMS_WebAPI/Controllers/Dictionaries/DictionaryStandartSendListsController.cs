@@ -7,7 +7,7 @@ using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Web.Http;
 
-namespace DMS_WebAPI.Controllers.Dictionary
+namespace DMS_WebAPI.Controllers.Dictionaries
 {
     [Authorize]
     [RoutePrefix("api/DictionaryStandartSendLists")]

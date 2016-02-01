@@ -22,7 +22,9 @@ namespace BL.Model.DocumentCore
 
         public Nullable<int> SenderAgentId { get; set; }
         public string SenderAgentName { get; set; }
-        public string SenderPerson { get; set; }
+        public int? SenderAgentPersonId { get; set; }
+        public string SenderAgentPersonName { get; set; }
+
         public string Addressee { get; set; }
 
         public int LastChangeUserId { get; set; }
@@ -30,7 +32,7 @@ namespace BL.Model.DocumentCore
 
         public string GeneralInfo { get; set; }
 
-        public virtual ICollection<BaseTemplateDocumentRestrictedSendLists> RestrictedSendLists { get; set; }
-        public virtual ICollection<BaseTemplateDocumentSendLists> SendLists { get; set; }
+        public virtual IEnumerable<BaseTemplateDocumentRestrictedSendLists> RestrictedSendLists { get; set; }
+        public virtual IEnumerable<BaseTemplateDocumentSendLists> SendLists { get; set; }
     }
 }

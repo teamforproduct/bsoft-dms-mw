@@ -6,9 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using BL.CrossCutting.Interfaces;
 using BL.Model.DictionaryCore;
-using BL.Database.Dictionary.Interfaces;
+using BL.Database.Dictionaries.Interfaces;
 
-namespace BL.Database.Dictionary
+namespace BL.Database.Dictionaries
 {
     public class DictionariesDbProcess : CoreDb.CoreDb, IDictionariesDbProcess
     {

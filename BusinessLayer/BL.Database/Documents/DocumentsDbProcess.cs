@@ -8,9 +8,9 @@ using BL.Database.DBModel.Document;
 
 namespace BL.Database.Documents
 {
-    internal class DocumnetsDbProcess : CoreDb.CoreDb, IDocumnetsDbProcess
+    internal class DocumentsDbProcess : CoreDb.CoreDb, IDocumentsDbProcess
     {
-        public DocumnetsDbProcess()
+        public DocumentsDbProcess()
         {
         }
         #region Documents
@@ -33,7 +33,7 @@ namespace BL.Database.Documents
                 LastChangeUserId = dbContext.Context.CurrentAgentId,
                 LastChangeDate = DateTime.Now
             };
-            if (document.RestrictedSendLists != null && document.RestrictedSendLists.Count > 0)
+            if (document.RestrictedSendLists != null && document.RestrictedSendLists.Count() > 0)
             {
                 doc.RestrictedSendLists = document.RestrictedSendLists.Select(x => new DocumentRestrictedSendLists()
                 {
@@ -213,11 +213,11 @@ namespace BL.Database.Documents
                 ExecutorAgentId = x.ExecutorAgentId,
                 LastChangeUserId = x.LastChangeUserId,
                 LastChangeDate = x.LastChangeDate,
-                SenderAgentId = x.IncomingDetail.SenderAgentId,
-                SenderPerson = x.IncomingDetail.SenderPerson,
-                SenderNumber = x.IncomingDetail.SenderNumber,
-                SenderDate = x.IncomingDetail.SenderDate,
-                Addressee = x.IncomingDetail.Addressee,
+                SenderAgentId = x.SenderAgentId,
+                SenderAgentPersonId = x.SenderAgentPersonId,
+                SenderNumber = x.SenderNumber,
+                SenderDate = x.SenderDate,
+                Addressee = x.Addressee,
                 AccessLevelId = 30, //после добавления Access??? подумать
                 TemplateDocumentName = x.TemplateDocument.Name,
                 IsHard = x.TemplateDocument.IsHard,
@@ -229,7 +229,8 @@ namespace BL.Database.Documents
                 RegistrationJournalName = x.RegistrationJournal.Name,
                 ExecutorPositionName = x.ExecutorPosition.Name,
                 ExecutorAgentName = x.ExecutorAgent.Name,
-                SenderAgentName = x.IncomingDetail.SenderAgent.Name,
+                SenderAgentName = x.SenderAgent.Name,
+                SenderAgentPersonName = x.SenderAgentPerson.Name,
                 AccessLevelName = null //после добавления Access??? подумать
             }).FirstOrDefault();
         }

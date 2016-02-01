@@ -33,6 +33,11 @@ namespace BL.Database.DBModel.Document
         public Nullable<DateTime> RegistrationDate { get; set; }
         public int ExecutorPositionId { get; set; }
         public int ExecutorAgentId { get; set; }
+        public Nullable<int> SenderAgentId { get; set; }
+        public Nullable<int> SenderAgentPersonId { get; set; }
+        public string SenderNumber { get; set; }
+        public Nullable<DateTime> SenderDate { get; set; }
+        public string Addressee { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
 
@@ -46,8 +51,10 @@ namespace BL.Database.DBModel.Document
         public virtual DictionaryPositions ExecutorPosition { get; set; }
         [ForeignKey("ExecutorAgentId")]
         public virtual DictionaryAgents ExecutorAgent { get; set; }
-        [ForeignKey("Id")]
-        public virtual DocumentIncomingDetails IncomingDetail { get; set; }
+        [ForeignKey("SenderAgentId")]
+        public virtual DictionaryAgents SenderAgent { get; set; }
+        [ForeignKey("SenderAgentPersonId")]
+        public virtual DictionaryAgentPersons SenderAgentPerson { get; set; }
 
 
         public virtual ICollection<DocumentSendLists> SendLists { get; set; }

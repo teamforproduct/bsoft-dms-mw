@@ -4,7 +4,7 @@ using BL.Model.DocumentCore;
 
 namespace BL.Database.Documents.Interfaces
 {
-    public interface ITemplateDocumnetsDbProcess
+    public interface ITemplateDocumentsDbProcess
     {
         IEnumerable<BaseTemplateDocument> GetTemplateDocument(IContext context);
         BaseTemplateDocument GetTemplateDocument(IContext context, int templateDocumentId);

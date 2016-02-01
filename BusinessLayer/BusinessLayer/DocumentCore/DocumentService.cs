@@ -33,19 +33,19 @@ namespace BL.Logic.DocumentCore
 
         public IEnumerable<FullDocument> GetDocuments(IContext ctx, FilterDocument filters)
         {
-            var documentDb = DmsResolver.Current.Get<IDocumnetsDbProcess>();
+            var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
             return documentDb.GetDocuments(ctx, filters);
         }
 
         public FullDocument GetDocument(IContext ctx, int documentId)
         {
-            var documentDb = DmsResolver.Current.Get<IDocumnetsDbProcess>();
+            var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
             return documentDb.GetDocument(ctx, documentId);
         }
 
         public int AddDocumentByTemplateDocument(IContext context, int templateDocumentId)
         {
-            var db = DmsResolver.Current.Get<ITemplateDocumnetsDbProcess>();
+            var db = DmsResolver.Current.Get<ITemplateDocumentsDbProcess>();
             var baseTemplateDocument = db.GetTemplateDocument(context, templateDocumentId);
             var baseDocument = new FullDocument
             {
@@ -54,10 +54,13 @@ namespace BL.Logic.DocumentCore
                 DocumentSubjectId = baseTemplateDocument.DocumentSubjectId,
                 Description = baseTemplateDocument.Description,
                 ExecutorPositionId = context.CurrentPositionId, ////
-                ExecutorAgentId = context.CurrentAgentId///////
+                ExecutorAgentId = context.CurrentAgentId,///////
+                SenderAgentId = baseTemplateDocument.SenderAgentId,
+                SenderAgentPersonId = baseTemplateDocument.SenderAgentPersonId,
+                Addressee = baseTemplateDocument.Addressee
             };
 
-            if (baseTemplateDocument.RestrictedSendLists!=null&& baseTemplateDocument.RestrictedSendLists.Count>0)
+            if (baseTemplateDocument.RestrictedSendLists!=null&& baseTemplateDocument.RestrictedSendLists.Count()>0)
             {
                 baseDocument.RestrictedSendLists = baseTemplateDocument.RestrictedSendLists.Select(x => new BaseDocumentRestrictedSendList()
                 {
@@ -70,34 +73,20 @@ namespace BL.Logic.DocumentCore
 
         public int ModifyDocument(IContext context, ModifyDocument document)
         {
-            var db = DmsResolver.Current.Get<ITemplateDocumnetsDbProcess>();
-            var baseDocument = new FullDocument
-            {
-                Id = document.Id,
-                TemplateDocumentId = document.TemplateDocumentId,
-                DocumentSubjectId = document.DocumentSubjectId,
-                Description = document.Description,
-                ExecutorPositionId = document.ExecutorPositionId,
-                ExecutorAgentId = document.ExecutorAgentId,
-                SenderAgentId = document.SenderAgentId,
-                SenderPerson = document.SenderPerson,
-                SenderNumber = document.SenderNumber,
-                SenderDate = document.SenderDate,
-                Addressee = document.Addressee,
-                AccessLevelId = document.AccessLevelId
-            };
+            var db = DmsResolver.Current.Get<ITemplateDocumentsDbProcess>();
+            var baseDocument = new FullDocument(document);
             return SaveDocument(context, baseDocument);
         }
 
         public int AddRestrictedSendList(IContext context, ModifyDocumentRestrictedSendList restrictedSendList)
         {
-            var documentDb = DmsResolver.Current.Get<IDocumnetsDbProcess>();
+            var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
             var id = documentDb.AddRestrictedSendList(context, restrictedSendList);
             return id;
         }
         public void DeleteRestrictedSendList(IContext context, int restrictedSendListId)
         {
-            var documentDb = DmsResolver.Current.Get<IDocumnetsDbProcess>();
+            var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
             documentDb.DeleteRestrictedSendList(context, restrictedSendListId);
         }
     }
