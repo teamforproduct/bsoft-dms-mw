@@ -86,6 +86,23 @@ namespace BL.Logic.DocumentCore
                     AccessLevelId = x.AccessLevelId
                 }).ToList();
             }
+
+            if (baseTemplateDocument.SendLists != null && baseTemplateDocument.SendLists.Count() > 0)
+            {
+                baseDocument.SendLists = baseTemplateDocument.SendLists.Select(x => new BaseDocumentSendList()
+                {
+                    OrderNumber = x.OrderNumber,
+                    SendTypeId = x.SendTypeId,
+                    TargetPositionId = x.TargetPositionId,
+                    Description = x.Description,
+                    DueDate = x.DueDate,
+                    DueDay = x.DueDay,
+                    AccessLevelId = x.AccessLevelId,
+                    IsInitial = true,
+                    EventId = null
+                }).ToList();
+            }
+
             return SaveDocument(context, baseDocument);
         }
 

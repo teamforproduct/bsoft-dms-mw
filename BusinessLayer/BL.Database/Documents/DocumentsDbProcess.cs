@@ -65,6 +65,24 @@ namespace BL.Database.Documents
                 }).ToList();
             }
 
+            if (document.SendLists != null && document.SendLists.Count() > 0)
+            {
+                doc.SendLists = document.SendLists.Select(x => new DocumentSendLists()
+                {
+                    DocumentId = x.DocumentId,
+                    OrderNumber = x.OrderNumber,
+                    SendTypeId = x.SendTypeId,
+                    TargetPositionId = x.TargetPositionId,
+                    Description = x.Description,
+                    DueDate = x.DueDate,
+                    DueDay = x.DueDay,
+                    AccessLevelId = x.AccessLevelId,
+                    IsInitial = true,
+                    EventId = null,
+                    LastChangeUserId = dbContext.Context.CurrentAgentId,
+                    LastChangeDate = DateTime.Now
+                }).ToList();
+            }
             dbContext.DocumentsSet.Add(doc);
             dbContext.SaveChanges();
             document.Id = doc.Id;
@@ -375,29 +393,35 @@ namespace BL.Database.Documents
         {
             var dbContext = GetUserDmsContext(ctx);
 
-            //var sendList = new DBModel.Document.DocumentRestrictedSendLists
-            //{
-            //    DocumentId = restrictedSendList.DocumentId,
-            //    //PositionId = restrictedSendList.PositionId,
-            //    AccessLevelId = restrictedSendList.AccessLevelId,
-            //    LastChangeUserId = dbContext.Context.CurrentAgentId,
-            //    LastChangeDate = DateTime.Now
-            //};
-            //dbContext.DocumentRestrictedSendListsSet.Add(sendList);
-            //dbContext.SaveChanges();
-            //return sendList.Id;
-            return 0;
+            var sl = new DBModel.Document.DocumentSendLists
+            {
+                DocumentId = sendList.DocumentId,
+                OrderNumber = sendList.OrderNumber,
+                SendTypeId = sendList.SendTypeId,
+                TargetPositionId = sendList.TargetPositionId,
+                Description = sendList.Description,
+                DueDate = sendList.DueDate,
+                DueDay = sendList.DueDay,
+                AccessLevelId = sendList.AccessLevelId,
+                IsInitial = true,
+                EventId = null,
+                LastChangeUserId = dbContext.Context.CurrentAgentId,
+                LastChangeDate = DateTime.Now
+            };
+            dbContext.DocumentSendListsSet.Add(sl);
+            dbContext.SaveChanges();
+            return sl.Id;
         }
 
         public void DeleteSendList(IContext ctx, int sendListId)
         {
             var dbContext = GetUserDmsContext(ctx);
-            //var sendList = dbContext.DocumentRestrictedSendListsSet.FirstOrDefault(x => x.Id == restrictedSendListId);
-            //if (sendList != null)
-            //{
-            //    dbContext.DocumentRestrictedSendListsSet.Remove(sendList);
-            //    dbContext.SaveChanges();
-            //}
+            var sendList = dbContext.DocumentSendListsSet.FirstOrDefault(x => x.Id == sendListId);
+            if (sendList != null)
+            {
+                dbContext.DocumentSendListsSet.Remove(sendList);
+                dbContext.SaveChanges();
+            }
         }
         #endregion DocumentSendLists
     }
