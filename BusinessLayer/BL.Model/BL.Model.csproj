@@ -44,6 +44,9 @@
     <Compile Include="Database\StoreInfo.cs" />
     <Compile Include="Database\DatabaseModel.cs" />
     <Compile Include="Database\DatabaseType.cs" />
+    <Compile Include="DictionaryCore\BaseDictionaryStandartSendListContent.cs" />
+    <Compile Include="DictionaryCore\BaseDictionaryStandartSendList.cs" />
+    <Compile Include="DictionaryCore\FilterDictionaryStandartSendList.cs" />
     <Compile Include="DocumentCore\FullDocument.cs" />
     <Compile Include="DocumentCore\BaseDocumentEvent.cs" />
     <Compile Include="DocumentCore\BaseDocumentRestrictedSendList.cs" />
@@ -62,9 +65,7 @@
     <Compile Include="Users\Employee.cs" />
     <Compile Include="Users\Position.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="DictionaryCore\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

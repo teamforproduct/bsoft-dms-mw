@@ -5,6 +5,7 @@ namespace BL.Model.DocumentCore
 {
     public class FilterDocument
     {
+        public List<int> Id { get; set; }
         public List<int> TemplateDocumentId { get; set; }
         public List<int> DocumentDirectionId { get; set; }
         public List<int> DocumentTypeId { get; set; }

@@ -101,6 +101,8 @@
     <Compile Include="DBModel\Template\TemplateDocuments.cs" />
     <Compile Include="DBModel\Template\TemplateDocumentSendLists.cs" />
     <Compile Include="DependencyInjection\DatabaseModule.cs" />
+    <Compile Include="Dictionary\DictionariesDbProcess.cs" />
+    <Compile Include="Dictionary\Interfaces\IDictionariesDbProcess.cs" />
     <Compile Include="Documents\DocumnetsDbProcess.cs" />
     <Compile Include="Documents\Interfaces\IDocumnetsDbProcess.cs" />
     <Compile Include="Documents\Interfaces\ITemplateDocumnetsDbProcess.cs" />

@@ -123,6 +123,11 @@ namespace BL.Database.Documents
                 qry = qry.Where(x => filters.DocumentTypeId.Contains(x.TemplateDocument.DocumentTypeId));
             }
 
+            if (filters.Id != null && filters.Id.Count > 0)
+            {
+                qry = qry.Where(x => filters.Id.Contains(x.Id));
+            }
+
             if (filters.TemplateDocumentId != null && filters.TemplateDocumentId.Count > 0)
             {
                 qry = qry.Where(x => filters.TemplateDocumentId.Contains(x.TemplateDocumentId));
