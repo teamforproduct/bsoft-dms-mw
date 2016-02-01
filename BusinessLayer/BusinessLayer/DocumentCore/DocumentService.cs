@@ -68,6 +68,23 @@ namespace BL.Logic.DocumentCore
                     AccessLevelId = x.AccessLevelId
                 }).ToList();
             }
+
+            if (baseTemplateDocument.SendLists != null && baseTemplateDocument.SendLists.Count() > 0)
+            {
+                baseDocument.SendLists = baseTemplateDocument.SendLists.Select(x => new BaseDocumentSendList()
+                {
+                    OrderNumber = x.OrderNumber,
+                    SendTypeId = x.SendTypeId,
+                    TargetPositionId = x.TargetPositionId,
+                    Description = x.Description,
+                    DueDate = x.DueDate,
+                    DueDay = x.DueDay,
+                    AccessLevelId = x.AccessLevelId,
+                    IsInitial = true,
+                    EventId = null
+                }).ToList();
+            }
+
             return SaveDocument(context, baseDocument);
         }
 
@@ -92,13 +109,13 @@ namespace BL.Logic.DocumentCore
 
         public int AddSendList(IContext context, ModifyDocumentSendList sendList)
         {
-            var documentDb = DmsResolver.Current.Get<IDocumnetsDbProcess>();
+            var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
             var id = documentDb.AddSendList(context, sendList);
             return id;
         }
         public void DeleteSendList(IContext context, int sendListId)
         {
-            var documentDb = DmsResolver.Current.Get<IDocumnetsDbProcess>();
+            var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
             documentDb.DeleteSendList(context, sendListId);
         }
     }
