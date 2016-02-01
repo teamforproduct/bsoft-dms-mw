@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Web;
 using BL.CrossCutting.DependencyInjection;
-using BL.Database.DatabaseContext;
 using BL.Logic.Secure;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;

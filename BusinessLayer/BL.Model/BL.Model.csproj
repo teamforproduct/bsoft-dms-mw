@@ -45,7 +45,10 @@
     <Compile Include="Database\DatabaseType.cs" />
     <Compile Include="DictionaryCore\BaseDictionaryStandartSendListContent.cs" />
     <Compile Include="DictionaryCore\BaseDictionaryStandartSendList.cs" />
+    <Compile Include="DictionaryCore\DictionaryDocumentEventTypes.cs" />
+    <Compile Include="DictionaryCore\DocumentEventTypes.cs" />
     <Compile Include="DictionaryCore\FilterDictionaryStandartSendList.cs" />
+    <Compile Include="DictionaryCore\ImpotanceEventTypes.cs" />
     <Compile Include="DocumentCore\FullDocument.cs" />
     <Compile Include="DocumentCore\BaseDocumentEvent.cs" />
     <Compile Include="DocumentCore\BaseDocumentRestrictedSendList.cs" />

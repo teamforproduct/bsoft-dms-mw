@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore;
 using BL.Database.DBModel.Document;
+using BL.Database.Dictionaries.Interfaces;
 
 namespace BL.Database.Documents
 {
@@ -17,7 +19,7 @@ namespace BL.Database.Documents
         public void AddDocument(IContext ctx, FullDocument document)
         {
             var dbContext = GetUserDmsContext(ctx);
-
+            var dict = DmsResolver.Current.Get<IDictionariesDbProcess>();
             var doc = new DBModel.Document.Documents
             {
                 TemplateDocumentId = document.TemplateDocumentId,
@@ -33,7 +35,7 @@ namespace BL.Database.Documents
                 LastChangeUserId = dbContext.Context.CurrentAgentId,
                 LastChangeDate = DateTime.Now
             };
-            if (document.RestrictedSendLists != null && document.RestrictedSendLists.Count() > 0)
+            if (document.RestrictedSendLists != null && document.RestrictedSendLists.Any())
             {
                 doc.RestrictedSendLists = document.RestrictedSendLists.Select(x => new DocumentRestrictedSendLists()
                 {
@@ -43,6 +45,24 @@ namespace BL.Database.Documents
                     LastChangeDate = DateTime.Now
                 }).ToList();
             }
+
+            if (document.Events != null && document.Events.Any())
+            {
+                doc.Events = document.Events.Select(x => new DocumentEvents
+                {
+                    CreateDate = x.CreateDate,
+                    Date = x.Date,
+                    Description = x.Description,
+                    LastChangeDate = x.LastChangeDate,
+                    LastChangeUserId = x.LastChangeUserId,
+                    SourceAgentId = x.SourceAgentId,
+                    SourcePositionId = x.SourcePositionId,
+                    TargetAgentId = x.TargetAgentId,
+                    TargetPositionId = x.TargetPositionId,
+                    EventTypeId = dict.GetDocumentEventType(ctx, x.EventType).Id
+                }).ToList();
+            }
+
             dbContext.DocumentsSet.Add(doc);
             dbContext.SaveChanges();
             document.Id = doc.Id;

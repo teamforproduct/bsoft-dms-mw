@@ -1,9 +1,6 @@
-﻿using BL.Database.Documents.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using BL.CrossCutting.Interfaces;
 using BL.Model.DictionaryCore;
 using BL.Database.Dictionaries.Interfaces;
@@ -64,6 +61,22 @@ namespace BL.Database.Dictionaries
                 PositionId = x.PositionId,
                 PositionName = x.Position.Name
             }).ToList();
+        }
+
+        public DictionaryDocumentEventTypes GetDocumentEventType(IContext context, DocumentEventTypes eventType)
+        {
+            var dbContext = GetUserDmsContext(context);
+            return
+                dbContext.DictionaryEventTypesSet.Where(x => x.Code == eventType.ToString())
+                    .Select(x => new DictionaryDocumentEventTypes()
+                    {
+                        Id = x.Id,
+                        Code = x.Code,
+                        ImpotanceEventTypeId = x.ImpotanceEventTypeId,
+                        Name = x.Name,
+                        EventType = (DocumentEventTypes) Enum.Parse(typeof (DocumentEventTypes), x.Code)
+                    })
+                    .FirstOrDefault();
         }
 
     }
