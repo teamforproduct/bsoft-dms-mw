@@ -7,6 +7,7 @@ using BL.Model.DocumentCore;
 using System;
 using BL.Logic.DocumentCore.Interfaces;
 using System.Linq;
+using BL.Model.DictionaryCore;
 
 namespace BL.Logic.DocumentCore
 {
@@ -17,6 +18,22 @@ namespace BL.Logic.DocumentCore
             Command cmd;
             if (document.Id == 0) // new document
             {
+                var evt = new BaseDocumentEvent
+                {
+                    EventType = DocumentEventTypes.AddNewDocument,
+                    Description = "Creat",
+                    CreateDate = DateTime.Now,
+                    Date = DateTime.Now,
+                    LastChangeDate = DateTime.Now,
+                    LastChangeUserId = context.CurrentAgentId,
+                    SourceAgentId = context.CurrentAgentId,
+                    TargetAgentId = context.CurrentAgentId,
+                    TargetPositionId = context.CurrentPositionId,
+                    SourcePositionId = context.CurrentPositionId
+                };
+
+                document.Events = new List<BaseDocumentEvent> {evt};
+                
                 cmd = new AddDocument(context, document);
             }
             else
