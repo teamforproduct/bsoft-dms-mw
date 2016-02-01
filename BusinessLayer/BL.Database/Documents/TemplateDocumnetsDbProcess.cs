@@ -41,7 +41,11 @@ namespace BL.Database.Documents
                 DocumentSubjectId = x.DocumentSubjectId,
                 RegistrationJournalId = x.RegistrationJournalId,
                 LastChangeUserId = x.LastChangeUserId,
-                LastChangeDate = x.LastChangeDate
+                LastChangeDate = x.LastChangeDate,
+                RestrictedSendLists = x.RestrictedSendLists.Select(y=>new BaseTemplateDocumentRestrictedSendLists() {
+                    PositionId=y.PositionId,
+                    AccessLevelId = y.AccessLevelId
+                }).ToList()
             }).FirstOrDefault();
         }
 

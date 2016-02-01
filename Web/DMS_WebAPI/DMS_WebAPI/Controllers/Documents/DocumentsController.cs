@@ -11,7 +11,7 @@ using System.Web;
 using System.Web.Http;
 using BL.Logic.DocumentCore.Interfaces;
 
-namespace DMS_WebAPI.Controllers
+namespace DMS_WebAPI.Controllers.Documents
 {
     [Authorize]
     [RoutePrefix("api/Documents")]

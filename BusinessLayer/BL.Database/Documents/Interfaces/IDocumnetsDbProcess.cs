@@ -10,5 +10,7 @@ namespace BL.Database.Documents.Interfaces
         void UpdateDocument(IContext ctx, FullDocument document);
         IEnumerable<FullDocument> GetDocuments(IContext ctx, FilterDocument filters);
         FullDocument GetDocument(IContext ctx, int documentId);
+        int AddRestrictedSendList(IContext ctx, ModifyDocumentRestrictedSendList restrictedSendList);
+        void DeleteRestrictedSendList(IContext ctx, int restrictedSendListId);
     }
 }

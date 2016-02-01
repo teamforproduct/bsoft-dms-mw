@@ -4,6 +4,7 @@ using System.Linq;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore;
+using BL.Database.DBModel.Document;
 
 namespace BL.Database.Documents
 {
@@ -12,7 +13,7 @@ namespace BL.Database.Documents
         public DocumnetsDbProcess()
         {
         }
-
+        #region Documents
         public void AddDocument(IContext ctx, FullDocument document)
         {
             var dbContext = GetUserDmsContext(ctx);
@@ -32,6 +33,16 @@ namespace BL.Database.Documents
                 LastChangeUserId = dbContext.Context.CurrentAgentId,
                 LastChangeDate = DateTime.Now
             };
+            if (document.RestrictedSendLists != null && document.RestrictedSendLists.Count > 0)
+            {
+                doc.RestrictedSendLists = document.RestrictedSendLists.Select(x => new DocumentRestrictedSendLists()
+                {
+                    PositionId = x.PositionId,
+                    AccessLevelId = x.AccessLevelId,
+                    LastChangeUserId = dbContext.Context.CurrentAgentId,
+                    LastChangeDate = DateTime.Now
+                }).ToList();
+            }
             dbContext.DocumentsSet.Add(doc);
             dbContext.SaveChanges();
             document.Id = doc.Id;
@@ -217,5 +228,36 @@ namespace BL.Database.Documents
                 AccessLevelName = null //после добавления Access??? подумать
             }).FirstOrDefault();
         }
+        #endregion Documents
+
+        #region DocumentRestrictedSendLists
+        public int AddRestrictedSendList(IContext ctx, ModifyDocumentRestrictedSendList restrictedSendList)
+        {
+            var dbContext = GetUserDmsContext(ctx);
+
+            var sendList = new DBModel.Document.DocumentRestrictedSendLists
+            {
+                DocumentId = restrictedSendList.DocumentId,
+                PositionId = restrictedSendList.PositionId,
+                AccessLevelId = restrictedSendList.AccessLevelId,
+                LastChangeUserId = dbContext.Context.CurrentAgentId,
+                LastChangeDate = DateTime.Now
+            };
+            dbContext.DocumentRestrictedSendListsSet.Add(sendList);
+            dbContext.SaveChanges();
+            return sendList.Id;
+        }
+
+        public void DeleteRestrictedSendList(IContext ctx, int restrictedSendListId)
+        {
+            var dbContext = GetUserDmsContext(ctx);
+            var sendList = dbContext.DocumentRestrictedSendListsSet.FirstOrDefault(x => x.Id == restrictedSendListId);
+            if (sendList != null)
+            {
+                dbContext.DocumentRestrictedSendListsSet.Remove(sendList);
+                dbContext.SaveChanges();
+            }
+        }
+        #endregion DocumentRestrictedSendLists
     }
 }
