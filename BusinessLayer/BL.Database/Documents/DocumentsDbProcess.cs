@@ -280,7 +280,9 @@ namespace BL.Database.Documents
                 DocumentSubjectName = x.DocumentSubject.Name,
                 ExecutorPositionName = x.ExecutorPosition.Name,
                 LastChangeUserId = x.LastChangeUserId,
-                DocumentDirectionName = x.TemplateDocument.DocumentDirection.Name
+                DocumentDirectionName = x.TemplateDocument.DocumentDirection.Name,
+                DocumentTypeName = x.TemplateDocument.DocumentType.Name,
+                DocumentDate = x.RegistrationDate ?? x.CreateDate
             }).ToList();
             paging.TotalPageCount = res.Count(); //TODO pay attention to this when we will add paging
             return res;
@@ -325,8 +327,7 @@ namespace BL.Database.Documents
                 SenderAgentPersonName = x.SenderAgentPerson.Name,
                 AccessLevelName = null, //после добавления Access??? подумать
                 DocumentDate = x.RegistrationDate ?? x.CreateDate,
-                RegistrationFullNumber = x.RegistrationNumber != null? x.RegistrationNumber.ToString(): "#"+x.Id.ToString(),
-                AccessLevelName = null //после добавления Access??? подумать
+                RegistrationFullNumber = x.RegistrationNumber != null? x.RegistrationNumber.ToString(): "#"+x.Id.ToString()
             }).FirstOrDefault();
             if (doc != null)
             {

@@ -32,7 +32,7 @@ namespace BL.Database.DBModel.Document
         public string RegistrationNumberPrefix { get; set; }
         public Nullable<DateTime> RegistrationDate { get; set; }
         public int ExecutorPositionId { get; set; }
-        public int ExecutorAgentId { get; set; }
+        //public int ExecutorAgentId { get; set; }
         public Nullable<int> SenderAgentId { get; set; }
         public Nullable<int> SenderAgentPersonId { get; set; }
         public string SenderNumber { get; set; }
@@ -49,8 +49,8 @@ namespace BL.Database.DBModel.Document
         public virtual DictionaryRegistrationJournals RegistrationJournal { get; set; }
         [ForeignKey("ExecutorPositionId")]
         public virtual DictionaryPositions ExecutorPosition { get; set; }
-        [ForeignKey("ExecutorAgentId")]
-        public virtual DictionaryAgents ExecutorAgent { get; set; }
+        //[ForeignKey("ExecutorAgentId")]
+        //public virtual DictionaryAgents ExecutorAgent { get; set; }
         [ForeignKey("SenderAgentId")]
         public virtual DictionaryAgents SenderAgent { get; set; }
         [ForeignKey("SenderAgentPersonId")]

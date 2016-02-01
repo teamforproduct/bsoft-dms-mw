@@ -144,8 +144,8 @@ namespace DMS_WebAPI.Controllers.Documents
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            docProc.AddDocumentByTemplateDocument(cxt, templateId);
-            return new JsonResult(null,this);
+            return Get(docProc.AddDocumentByTemplateDocument(cxt, templateId));
+            //return new JsonResult(null,this);
         }
 
         // PUT: api/Documents/5
