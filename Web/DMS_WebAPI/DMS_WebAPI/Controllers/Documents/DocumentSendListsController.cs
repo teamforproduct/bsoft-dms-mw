@@ -46,7 +46,7 @@ namespace DMS_WebAPI.Controllers.Documents
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            docProc.DeleteRestrictedSendList(cxt, id);
+            docProc.DeleteSendList(cxt, id);
             return new JsonResult(null, this);
         }
     }

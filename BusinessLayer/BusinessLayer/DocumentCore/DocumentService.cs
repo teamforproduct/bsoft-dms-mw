@@ -7,6 +7,8 @@ using BL.Model.DocumentCore;
 using System;
 using BL.Logic.DocumentCore.Interfaces;
 using System.Linq;
+using BL.Model.DictionaryCore;
+using BL.Model.SystemCore;
 
 namespace BL.Logic.DocumentCore
 {
@@ -17,6 +19,22 @@ namespace BL.Logic.DocumentCore
             Command cmd;
             if (document.Id == 0) // new document
             {
+                var evt = new BaseDocumentEvent
+                {
+                    EventType = DocumentEventTypes.AddNewDocument,
+                    Description = "Creat",
+                    CreateDate = DateTime.Now,
+                    Date = DateTime.Now,
+                    LastChangeDate = DateTime.Now,
+                    LastChangeUserId = context.CurrentAgentId,
+                    SourceAgentId = context.CurrentAgentId,
+                    TargetAgentId = context.CurrentAgentId,
+                    TargetPositionId = context.CurrentPositionId,
+                    SourcePositionId = context.CurrentPositionId
+                };
+
+                document.Events = new List<BaseDocumentEvent> {evt};
+                
                 cmd = new AddDocument(context, document);
             }
             else
@@ -31,10 +49,10 @@ namespace BL.Logic.DocumentCore
             return document.Id;
         }
 
-        public IEnumerable<FullDocument> GetDocuments(IContext ctx, FilterDocument filters)
+        public IEnumerable<FullDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging)
         {
             var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
-            return documentDb.GetDocuments(ctx, filters);
+            return documentDb.GetDocuments(ctx, filters, paging);
         }
 
         public FullDocument GetDocument(IContext ctx, int documentId)
@@ -67,6 +85,23 @@ namespace BL.Logic.DocumentCore
                     AccessLevelId = x.AccessLevelId
                 }).ToList();
             }
+
+            if (baseTemplateDocument.SendLists != null && baseTemplateDocument.SendLists.Count() > 0)
+            {
+                baseDocument.SendLists = baseTemplateDocument.SendLists.Select(x => new BaseDocumentSendList()
+                {
+                    OrderNumber = x.OrderNumber,
+                    SendTypeId = x.SendTypeId,
+                    TargetPositionId = x.TargetPositionId,
+                    Description = x.Description,
+                    DueDate = x.DueDate,
+                    DueDay = x.DueDay,
+                    AccessLevelId = x.AccessLevelId,
+                    IsInitial = true,
+                    EventId = null
+                }).ToList();
+            }
+
             return SaveDocument(context, baseDocument);
         }
 

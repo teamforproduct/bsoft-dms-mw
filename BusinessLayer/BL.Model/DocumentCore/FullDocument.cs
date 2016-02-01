@@ -58,7 +58,5 @@ namespace BL.Model.DocumentCore
         public virtual IEnumerable<BaseDocumentRestrictedSendList> RestrictedSendLists { get; set; }
         public virtual IEnumerable<BaseDocumentSendList> SendLists { get; set; }
         public virtual IEnumerable<BaseDocumentEvent> Events { get; set; }
-
-
     }
 }

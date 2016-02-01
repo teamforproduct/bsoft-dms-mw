@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using BL.CrossCutting.Interfaces;
 using BL.Model.DocumentCore;
+using BL.Model.SystemCore;
 
 namespace BL.Logic.DocumentCore.Interfaces
 {
@@ -11,7 +12,7 @@ namespace BL.Logic.DocumentCore.Interfaces
         int AddDocumentByTemplateDocument(IContext context, int templateDocumentId);
         int ModifyDocument(IContext context, ModifyDocument document);
 
-        IEnumerable<FullDocument> GetDocuments(IContext ctx, FilterDocument filters);
+        IEnumerable<FullDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging);
         FullDocument GetDocument(IContext ctx, int documentId);
 
         int AddRestrictedSendList(IContext context, ModifyDocumentRestrictedSendList restrictedSendList);

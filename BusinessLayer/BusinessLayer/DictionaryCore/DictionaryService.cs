@@ -1,14 +1,9 @@
 ﻿
 using BL.Logic.DictionaryCore.Interfaces;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using BL.CrossCutting.Interfaces;
 using BL.Model.DictionaryCore;
 using BL.CrossCutting.DependencyInjection;
-using BL.Database.Documents.Interfaces;
 using BL.Database.Dictionaries.Interfaces;
 
 namespace BL.Logic.DictionaryCore
