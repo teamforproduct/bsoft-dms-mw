@@ -63,21 +63,6 @@ namespace BL.Database.Dictionaries
             }).ToList();
         }
 
-        public DictionaryDocumentEventTypes GetDocumentEventType(IContext context, DocumentEventTypes eventType)
-        {
-            var dbContext = GetUserDmsContext(context);
-            return
-                dbContext.DictionaryEventTypesSet.Where(x => x.Code == eventType.ToString())
-                    .Select(x => new DictionaryDocumentEventTypes()
-                    {
-                        Id = x.Id,
-                        Code = x.Code,
-                        ImpotanceEventTypeId = x.ImpotanceEventTypeId,
-                        Name = x.Name,
-                        EventType = (DocumentEventTypes) Enum.Parse(typeof (DocumentEventTypes), x.Code)
-                    })
-                    .FirstOrDefault();
-        }
 
     }
 }

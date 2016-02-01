@@ -1,13 +1,9 @@
-﻿using BL.CrossCutting.Context;
-using BL.CrossCutting.DependencyInjection;
-using BL.CrossCutting.Interfaces;
-using BL.Logic.DocumentCore;
+﻿using BL.CrossCutting.DependencyInjection;
 using BL.Model.DocumentCore;
 using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
-using System.Web;
 using System.Web.Http;
 using BL.Logic.DocumentCore.Interfaces;
 
@@ -22,7 +18,8 @@ namespace DMS_WebAPI.Controllers.Documents
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var docs = docProc.GetDocuments(cxt, filters);
+            var paging = new UIPaging();
+            var docs = docProc.GetDocuments(cxt, filters, paging);
             return new JsonResult(docs, this);
         }
 

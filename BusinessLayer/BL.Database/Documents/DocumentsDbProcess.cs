@@ -7,6 +7,8 @@ using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore;
 using BL.Database.DBModel.Document;
 using BL.Database.Dictionaries.Interfaces;
+using BL.Model.DictionaryCore;
+using BL.Model.SystemCore;
 
 namespace BL.Database.Documents
 {
@@ -59,7 +61,7 @@ namespace BL.Database.Documents
                     SourcePositionId = x.SourcePositionId,
                     TargetAgentId = x.TargetAgentId,
                     TargetPositionId = x.TargetPositionId,
-                    EventTypeId = dict.GetDocumentEventType(ctx, x.EventType).Id
+                    EventTypeId = (int)x.EventType
                 }).ToList();
             }
 
@@ -67,6 +69,8 @@ namespace BL.Database.Documents
             dbContext.SaveChanges();
             document.Id = doc.Id;
         }
+
+
 
         public void UpdateDocument(IContext ctx, FullDocument document)
         {
@@ -86,10 +90,49 @@ namespace BL.Database.Documents
                 doc.LastChangeUserId = dbContext.Context.CurrentAgentId;
                 doc.LastChangeDate = DateTime.Now;
             }
+
+            if (document.Events != null && document.Events.Any(x=>x.Id == 0))
+            {
+                // add only new events. New events should be without Id
+                doc.Events = document.Events.Where(x=>x.Id == 0).Select(x => new DocumentEvents
+                {
+                    CreateDate = x.CreateDate,
+                    Date = x.Date,
+                    Description = x.Description,
+                    LastChangeDate = x.LastChangeDate,
+                    LastChangeUserId = x.LastChangeUserId,
+                    SourceAgentId = x.SourceAgentId,
+                    SourcePositionId = x.SourcePositionId,
+                    TargetAgentId = x.TargetAgentId,
+                    TargetPositionId = x.TargetPositionId,
+                    EventTypeId = (int)x.EventType
+                }).ToList();
+            }
             dbContext.SaveChanges();
         }
 
-        public IEnumerable<FullDocument> GetDocuments(IContext ctx, FilterDocument filters)
+        public int AddDocumentEvent(IContext ctx, BaseDocumentEvent docEvent)
+        {
+            var dbContext = GetUserDmsContext(ctx);
+            var evt = new DocumentEvents
+            {
+                CreateDate = docEvent.CreateDate,
+                Date = docEvent.Date,
+                Description = docEvent.Description,
+                LastChangeDate = docEvent.LastChangeDate,
+                LastChangeUserId = docEvent.LastChangeUserId,
+                SourceAgentId = docEvent.SourceAgentId,
+                SourcePositionId = docEvent.SourcePositionId,
+                TargetAgentId = docEvent.TargetAgentId,
+                TargetPositionId = docEvent.TargetPositionId,
+                EventTypeId = (int) docEvent.EventType
+            };
+            dbContext.DocumentEventsSet.Add(evt);
+            dbContext.SaveChanges();
+            return evt.Id;
+        }
+
+        public IEnumerable<FullDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging)
         {
             var dbContext = GetUserDmsContext(ctx);
             var qry = dbContext.DocumentsSet.AsQueryable();
@@ -131,7 +174,11 @@ namespace BL.Database.Documents
 
             if (!String.IsNullOrEmpty(filters.RegistrationNumber))
             {
-                qry = qry.Where(x => (x.RegistrationNumberPrefix+x.RegistrationNumber.ToString()+x.RegistrationNumberSuffix).Contains(filters.RegistrationNumber));
+                qry =
+                    qry.Where(
+                        x =>
+                            (x.RegistrationNumberPrefix + x.RegistrationNumber.ToString() + x.RegistrationNumberSuffix)
+                                .Contains(filters.RegistrationNumber));
             }
 
             //if (!String.IsNullOrEmpty(filters.Addressee))
@@ -171,12 +218,20 @@ namespace BL.Database.Documents
 
             if (filters.DocumentSubjectId != null && filters.DocumentSubjectId.Count > 0)
             {
-                qry = qry.Where(x => x.DocumentSubjectId.HasValue && filters.DocumentSubjectId.Contains(x.DocumentSubjectId.Value));
+                qry =
+                    qry.Where(
+                        x =>
+                            x.DocumentSubjectId.HasValue &&
+                            filters.DocumentSubjectId.Contains(x.DocumentSubjectId.Value));
             }
 
             if (filters.RegistrationJournalId != null && filters.RegistrationJournalId.Count > 0)
             {
-                qry = qry.Where(x => x.RegistrationJournalId.HasValue && filters.RegistrationJournalId.Contains(x.RegistrationJournalId.Value));
+                qry =
+                    qry.Where(
+                        x =>
+                            x.RegistrationJournalId.HasValue &&
+                            filters.RegistrationJournalId.Contains(x.RegistrationJournalId.Value));
             }
 
             if (filters.ExecutorPositionId != null && filters.ExecutorPositionId.Count > 0)
@@ -189,35 +244,36 @@ namespace BL.Database.Documents
             //    qry = qry.Where(x => filters.SenderAgentId.Contains(x.));
             //}
 
-
-            return qry.Select(x => new FullDocument
+            var res = qry.Select(x => new FullDocument
             {
-                    Id = x.Id,
-                    DocumentTypeId = x.TemplateDocument.DocumentTypeId,
-                    ExecutorPositionId = x.ExecutorPositionId,
-                    DocumentDirectionId = x.TemplateDocument.DocumentDirectionId,
-                    Description = x.Description,
-                    TemplateDocumentId = x.TemplateDocumentId,
-                    RegistrationDate = x.RegistrationDate,
-                    DocumentSubjectId = x.DocumentSubjectId,
-                    RegistrationNumber = x.RegistrationNumber,
-                    RegistrationNumberPrefix = x.RegistrationNumberPrefix,
-                    RegistrationNumberSuffix = x.RegistrationNumberSuffix,
-                    LastChangeDate = x.LastChangeDate,
-                    RegistrationJournalId = x.RegistrationJournalId,
-                    CreateDate = x.CreateDate,
-                    DocumentSubjectName = x.DocumentSubject.Name,
-                    ExecutorPositionName = x.ExecutorPosition.Name,
-                    LastChangeUserId = x.LastChangeUserId,
-                    DocumentDirectionName = x.TemplateDocument.DocumentDirection.Name
-                }).ToList();
+                Id = x.Id,
+                DocumentTypeId = x.TemplateDocument.DocumentTypeId,
+                ExecutorPositionId = x.ExecutorPositionId,
+                DocumentDirectionId = x.TemplateDocument.DocumentDirectionId,
+                Description = x.Description,
+                TemplateDocumentId = x.TemplateDocumentId,
+                RegistrationDate = x.RegistrationDate,
+                DocumentSubjectId = x.DocumentSubjectId,
+                RegistrationNumber = x.RegistrationNumber,
+                RegistrationNumberPrefix = x.RegistrationNumberPrefix,
+                RegistrationNumberSuffix = x.RegistrationNumberSuffix,
+                LastChangeDate = x.LastChangeDate,
+                RegistrationJournalId = x.RegistrationJournalId,
+                CreateDate = x.CreateDate,
+                DocumentSubjectName = x.DocumentSubject.Name,
+                ExecutorPositionName = x.ExecutorPosition.Name,
+                LastChangeUserId = x.LastChangeUserId,
+                DocumentDirectionName = x.TemplateDocument.DocumentDirection.Name
+            }).ToList();
+            paging.TotalPageCount = res.Count(); //TODO pay attention to this when we will add paging
+            return res;
         }
 
         public FullDocument GetDocument(IContext ctx, int documentId)
         {
             var dbContext = GetUserDmsContext(ctx);
 
-            return dbContext.DocumentsSet.Where(x=>x.Id == documentId).Select(x => new FullDocument
+            var doc = dbContext.DocumentsSet.Where(x=>x.Id == documentId).Select(x => new FullDocument
             {
                 Id = x.Id,
                 TemplateDocumentId = x.TemplateDocumentId,
@@ -251,8 +307,36 @@ namespace BL.Database.Documents
                 ExecutorAgentName = x.ExecutorAgent.Name,
                 SenderAgentName = x.SenderAgent.Name,
                 SenderAgentPersonName = x.SenderAgentPerson.Name,
-                AccessLevelName = null //после добавления Access??? подумать
+                AccessLevelName = null, //после добавления Access??? подумать
             }).FirstOrDefault();
+            if (doc != null)
+            {
+                doc.Events =
+                    dbContext.DocumentEventsSet.Where(x => x.DocumentId == doc.Id).Select(y => new BaseDocumentEvent
+                    {
+                        Id = y.Id,
+                        DocumentId = y.DocumentId,
+                        Description = y.Description,
+                        EventType = (DocumentEventTypes) y.EventTypeId,
+                        ImpotanceEventType = (ImpotanceEventTypes)y.EventType.ImpotanceEventTypeId,
+                        CreateDate = y.CreateDate,
+                        Date = y.Date,
+                        EventTypeName = y.EventType.Name,
+                        EventImpotanceTypeName = y.EventType.ImpotanceEventType.Name,
+                        LastChangeUserId = y.LastChangeUserId,
+                        LastChangeDate = y.LastChangeDate,
+                        SourceAgenName = y.SourceAgent.Name,
+                        SourceAgentId = y.SourceAgentId,
+                        SourcePositionId = y.SourcePositionId,
+                        SourcePositionName = y.SourcePosition.Name,
+                        TargetAgenName = y.TargetAgent.Name,
+                        TargetAgentId = y.TargetAgentId,
+                        TargetPositionId = y.TargetPositionId,
+                        TargetPositionName = y.TargetPosition.Name,
+                        GeneralInfo = ""
+                    }).ToList();
+            }
+            return doc;
         }
         #endregion Documents
 

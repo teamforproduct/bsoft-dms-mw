@@ -8,6 +8,7 @@ using System;
 using BL.Logic.DocumentCore.Interfaces;
 using System.Linq;
 using BL.Model.DictionaryCore;
+using BL.Model.SystemCore;
 
 namespace BL.Logic.DocumentCore
 {
@@ -48,10 +49,10 @@ namespace BL.Logic.DocumentCore
             return document.Id;
         }
 
-        public IEnumerable<FullDocument> GetDocuments(IContext ctx, FilterDocument filters)
+        public IEnumerable<FullDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging)
         {
             var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
-            return documentDb.GetDocuments(ctx, filters);
+            return documentDb.GetDocuments(ctx, filters, paging);
         }
 
         public FullDocument GetDocument(IContext ctx, int documentId)

@@ -8,6 +8,7 @@ namespace BL.Model.DocumentCore
         public int Id { get; set; }
         public int DocumentId { get; set; }
         public DocumentEventTypes EventType { get; set; }
+        public ImpotanceEventTypes ImpotanceEventType { get; set; }
         public DateTime CreateDate { get; set; }
         public DateTime Date { get; set; }
         public string Description { get; set; }
