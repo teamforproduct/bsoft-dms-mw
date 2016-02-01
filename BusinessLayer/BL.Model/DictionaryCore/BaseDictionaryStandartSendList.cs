@@ -16,6 +16,6 @@ namespace BL.Model.DictionaryCore
 
         public string PositionName { get; set; }
 
-        public virtual ICollection<BaseDictionaryStandartSendListContent> StandartSendListContents { get; set; }
+        public virtual IEnumerable<BaseDictionaryStandartSendListContent> StandartSendListContents { get; set; }
     }
 }

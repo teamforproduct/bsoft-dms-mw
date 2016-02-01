@@ -1,4 +1,6 @@
 ﻿using BL.CrossCutting.Interfaces;
+using BL.Logic.DictionaryCore;
+using BL.Logic.DictionaryCore.Interfaces;
 using BL.Logic.DocumentCore;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Logic.Logging;
@@ -16,6 +18,7 @@ namespace BL.Logic.DependencyInjection
             Bind<ISettings>().To<Setting>().InSingletonScope();
             Bind<IDocumentService>().To<DocumentService>().InSingletonScope();
             Bind<ITemplateDocumentService>().To<TemplateDocumentService>().InSingletonScope();
+            Bind<IDictionaryService>().To<DictionaryService>().InSingletonScope();
             Bind<ISecureService>().To<SecureService>().InSingletonScope();
         }
     }

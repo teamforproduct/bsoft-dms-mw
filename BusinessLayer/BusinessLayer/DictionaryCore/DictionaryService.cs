@@ -9,6 +9,7 @@ using BL.CrossCutting.Interfaces;
 using BL.Model.DictionaryCore;
 using BL.CrossCutting.DependencyInjection;
 using BL.Database.Documents.Interfaces;
+using BL.Database.Dictionary.Interfaces;
 
 namespace BL.Logic.DictionaryCore
 {
