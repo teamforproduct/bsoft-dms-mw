@@ -185,6 +185,10 @@
     <Compile Include="Migrations\201602021557362_add_tables.Designer.cs">
       <DependentUpon>201602021557362_add_tables.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201602021700431_ChangeLoggingAndSetting.cs" />
+    <Compile Include="Migrations\201602021700431_ChangeLoggingAndSetting.Designer.cs">
+      <DependentUpon>201602021700431_ChangeLoggingAndSetting.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\ISecurityDbProcess.cs" />
@@ -268,6 +272,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201602021557362_add_tables.resx">
       <DependentUpon>201602021557362_add_tables.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602021700431_ChangeLoggingAndSetting.resx">
+      <DependentUpon>201602021700431_ChangeLoggingAndSetting.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

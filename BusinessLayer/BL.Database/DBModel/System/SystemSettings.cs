@@ -11,7 +11,7 @@ namespace BL.Database.DBModel.System
         public string Value { get; set; }
         public Nullable<int> ExecutorAgentId { get; set; }
 
-        [ForeignKey("AgentId")]
+        [ForeignKey("ExecutorAgentId")]
         public virtual DictionaryAgents ExecutorAgent { get; set; }
     }
 }

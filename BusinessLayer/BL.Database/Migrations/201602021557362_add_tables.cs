@@ -1,8 +1,7 @@
+using System.Data.Entity.Migrations;
+
 namespace BL.Database.Migrations
 {
-    using System;
-    using System.Data.Entity.Migrations;
-    
     public partial class add_tables : DbMigration
     {
         public override void Up()

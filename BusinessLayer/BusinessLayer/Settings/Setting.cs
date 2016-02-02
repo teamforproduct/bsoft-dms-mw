@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
+using BL.Database.System;
 
 
 namespace BL.Logic.Settings
@@ -20,7 +22,13 @@ namespace BL.Logic.Settings
         {
             if (!_casheSettings.ContainsKey(settingName))
             {
-                throw new ConfigurationErrorsException(string.Format("Configuration parameter {0} is not specified in configuration file.", settingName));
+                var db = DmsResolver.Current.Get<ISystemDbProcess>();
+                var val = db.GetSettingValue(ctx, settingName);
+                if (string.IsNullOrEmpty(val))
+                {
+                    throw new ConfigurationErrorsException(string.Format("Configuration parameter {0} is not specified in configuration file.", settingName));
+                }
+                _casheSettings.Add(settingName, val);
             }
 
             var settingValue = _casheSettings[settingName];
@@ -45,7 +53,13 @@ namespace BL.Logic.Settings
         {
             if (!_casheSettings.ContainsKey(settingName))
             {
-                return defaulValue;
+                var db = DmsResolver.Current.Get<ISystemDbProcess>();
+                var val = db.GetSettingValue(ctx, settingName);
+                if (string.IsNullOrEmpty(val))
+                {
+                    return defaulValue;
+                }
+                _casheSettings.Add(settingName, val);
             }
 
             try
@@ -61,6 +75,8 @@ namespace BL.Logic.Settings
 
         public void SaveSetting(IContext ctx, string key, object val)
         {
+            var db = DmsResolver.Current.Get<ISystemDbProcess>();
+            db.AddSetting(ctx, key, val.ToString());
             _casheSettings.Add(key, val);
         }
         

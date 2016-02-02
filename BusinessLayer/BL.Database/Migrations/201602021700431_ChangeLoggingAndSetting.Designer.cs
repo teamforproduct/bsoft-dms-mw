@@ -6,15 +6,14 @@ using System.Resources;
 
 namespace BL.Database.Migrations
 {
-    
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class add_tables : IMigrationMetadata
+    public sealed partial class ChangeLoggingAndSetting : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(add_tables));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(ChangeLoggingAndSetting));
         
         string IMigrationMetadata.Id
         {
-            get { return "201602021557362_add_tables"; }
+            get { return "201602021700431_ChangeLoggingAndSetting"; }
         }
         
         string IMigrationMetadata.Source

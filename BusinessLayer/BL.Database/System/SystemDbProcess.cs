@@ -14,6 +14,7 @@ namespace BL.Database.System
             {
                 ExecutorAgentId = log.AgentId,
                 LogDate = log.Date,
+                LogLevel = (int)log.LogType,
                 LogException = log.LogException,
                 LogTrace = log.LogObjects,
                 Message = log.Message
@@ -23,7 +24,7 @@ namespace BL.Database.System
             return nlog.Id;
         }
 
-        public int AddSetting(IContext context, string name, string value, int? agentId)
+        public int AddSetting(IContext context, string name, string value, int? agentId = null)
         {
             var dbContext = GetUserDmsContext(context);
             var nsett = new SystemSettings
@@ -37,7 +38,7 @@ namespace BL.Database.System
             return nsett.Id;
         }
 
-        public string GetSettingValue(IContext context, string name, int? agentId)
+        public string GetSettingValue(IContext context, string name, int? agentId = null)
         {
             var dbContext = GetUserDmsContext(context);
             if (agentId.HasValue)
