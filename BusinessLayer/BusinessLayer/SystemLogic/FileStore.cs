@@ -2,7 +2,7 @@
 using System.IO;
 using System.Security.Cryptography;
 
-namespace BL.Logic.System
+namespace BL.Logic.SystemLogic
 {
     public class FileStore
     {

@@ -4,7 +4,7 @@ using BL.Database.Documents;
 using BL.Database.Documents.Interfaces;
 using BL.Database.Manager;
 using BL.Database.Security;
-using BL.Database.System;
+using BL.Database.SystemDb;
 using Ninject.Modules;
 
 namespace BL.Database.DependencyInjection

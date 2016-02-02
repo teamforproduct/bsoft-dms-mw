@@ -3,7 +3,7 @@ using BL.CrossCutting.Interfaces;
 using BL.Database.DBModel.System;
 using BL.Model.SystemCore;
 
-namespace BL.Database.System
+namespace BL.Database.SystemDb
 {
     public class SystemDbProcess: CoreDb.CoreDb, ISystemDbProcess
     {

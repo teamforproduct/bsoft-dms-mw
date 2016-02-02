@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
-using BL.Database.System;
+using BL.Database.SystemDb;
 
 
 namespace BL.Logic.Settings

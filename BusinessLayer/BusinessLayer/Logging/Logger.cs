@@ -1,7 +1,7 @@
 ﻿using System;
 using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
-using BL.Database.System;
+using BL.Database.SystemDb;
 using BL.Model.SystemCore;
 
 namespace BL.Logic.Logging

@@ -1,7 +1,7 @@
 using BL.CrossCutting.Interfaces;
 using BL.Model.SystemCore;
 
-namespace BL.Database.System
+namespace BL.Database.SystemDb
 {
     public interface ISystemDbProcess
     {
