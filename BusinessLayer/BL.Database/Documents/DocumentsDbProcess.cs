@@ -17,11 +17,11 @@ namespace BL.Database.Documents
         public DocumentsDbProcess()
         {
         }
+
         #region Documents
         public void AddDocument(IContext ctx, FullDocument document)
         {
             var dbContext = GetUserDmsContext(ctx);
-            var dict = DmsResolver.Current.Get<IDictionariesDbProcess>();
             var doc = new DBModel.Document.Documents
             {
                 TemplateDocumentId = document.TemplateDocumentId,
@@ -64,7 +64,7 @@ namespace BL.Database.Documents
                 }).ToList();
             }
 
-            if (document.SendLists != null && document.SendLists.Count() > 0)
+            if (document.SendLists != null && document.SendLists.Any())
             {
                 doc.SendLists = document.SendLists.Select(x => new DocumentSendLists()
                 {
@@ -86,8 +86,6 @@ namespace BL.Database.Documents
             dbContext.SaveChanges();
             document.Id = doc.Id;
         }
-
-
 
         public void UpdateDocument(IContext ctx, FullDocument document)
         {
@@ -365,7 +363,7 @@ namespace BL.Database.Documents
         {
             var dbContext = GetUserDmsContext(ctx);
 
-            var sendList = new DBModel.Document.DocumentRestrictedSendLists
+            var sendList = new DocumentRestrictedSendLists
             {
                 DocumentId = restrictedSendList.DocumentId,
                 PositionId = restrictedSendList.PositionId,
@@ -377,13 +375,14 @@ namespace BL.Database.Documents
             dbContext.SaveChanges();
             return sendList.Id;
         }
+
         public void AddRestrictedSendList(IContext ctx, IEnumerable<ModifyDocumentRestrictedSendList> restrictedSendLists)
         {
             var dbContext = GetUserDmsContext(ctx);
 
             foreach(var restrictedSendList in restrictedSendLists)
             {
-                var sendList = new DBModel.Document.DocumentRestrictedSendLists
+                var sendList = new DocumentRestrictedSendLists
                 {
                     DocumentId = restrictedSendList.DocumentId,
                     PositionId = restrictedSendList.PositionId,
@@ -413,7 +412,7 @@ namespace BL.Database.Documents
         {
             var dbContext = GetUserDmsContext(ctx);
 
-            var sl = new DBModel.Document.DocumentSendLists
+            var sl = new DocumentSendLists
             {
                 DocumentId = sendList.DocumentId,
                 OrderNumber = sendList.OrderNumber,
@@ -432,12 +431,13 @@ namespace BL.Database.Documents
             dbContext.SaveChanges();
             return sl.Id;
         }
+
         public void AddSendList(IContext ctx, IEnumerable<ModifyDocumentSendList> sendLists)
         {
             var dbContext = GetUserDmsContext(ctx);
             foreach (var sendList in sendLists)
             {
-                var sl = new DBModel.Document.DocumentSendLists
+                var sl = new DocumentSendLists
                 {
                     DocumentId = sendList.DocumentId,
                     OrderNumber = sendList.OrderNumber,

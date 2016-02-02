@@ -79,7 +79,7 @@ namespace BL.Logic.DocumentCore
                 Addressee = baseTemplateDocument.Addressee
             };
 
-            if (baseTemplateDocument.RestrictedSendLists != null && baseTemplateDocument.RestrictedSendLists.Count() > 0)
+            if (baseTemplateDocument.RestrictedSendLists != null && baseTemplateDocument.RestrictedSendLists.Any())
             {
                 baseDocument.RestrictedSendLists = baseTemplateDocument.RestrictedSendLists.Select(x => new BaseDocumentRestrictedSendList()
                 {
@@ -88,7 +88,7 @@ namespace BL.Logic.DocumentCore
                 }).ToList();
             }
 
-            if (baseTemplateDocument.SendLists != null && baseTemplateDocument.SendLists.Count() > 0)
+            if (baseTemplateDocument.SendLists != null && baseTemplateDocument.SendLists.Any())
             {
                 baseDocument.SendLists = baseTemplateDocument.SendLists.Select(x => new BaseDocumentSendList()
                 {
@@ -122,6 +122,7 @@ namespace BL.Logic.DocumentCore
             var id = documentDb.AddRestrictedSendList(context, restrictedSendList);
             return id;
         }
+
         public void AddRestrictedSendListByStandartSendLists(IContext context, ModifyDocumentRestrictedSendListByStandartSendList model)
         {
             var dictDb = DmsResolver.Current.Get<IDictionariesDbProcess>();
@@ -135,6 +136,7 @@ namespace BL.Logic.DocumentCore
             var docDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
             docDb.AddRestrictedSendList(context, restrictedSendLists);
         }
+
         public void DeleteRestrictedSendList(IContext context, int restrictedSendListId)
         {
             var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
@@ -149,6 +151,7 @@ namespace BL.Logic.DocumentCore
             var id = documentDb.AddSendList(context, sendList);
             return id;
         }
+
         public void AddSendListByStandartSendLists(IContext context, ModifyDocumentSendListByStandartSendList model)
         {
             var dictDb = DmsResolver.Current.Get<IDictionariesDbProcess>();
@@ -168,6 +171,7 @@ namespace BL.Logic.DocumentCore
             var docDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
             docDb.AddSendList(context, sendLists);
         }
+
         public void DeleteSendList(IContext context, int sendListId)
         {
             var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
