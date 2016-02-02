@@ -73,10 +73,16 @@
     <Compile Include="DatabaseContext\DmsContext.cs" />
     <Compile Include="DBModel\Admin\AdminAccessLevels.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryAgentPersons.cs" />
+    <Compile Include="DBModel\Dictionary\DictionaryLinkTypes.cs" />
+    <Compile Include="DBModel\Dictionary\DictionaryResultTypes.cs" />
+    <Compile Include="DBModel\Document\DocumentSubscriptions.cs" />
     <Compile Include="DBModel\Document\DocumentAccesses.cs" />
     <Compile Include="DBModel\Document\DocumentEvents.cs" />
+    <Compile Include="DBModel\Document\DocumentLinks.cs" />
     <Compile Include="DBModel\Document\DocumentRestrictedSendLists.cs" />
+    <Compile Include="DBModel\Document\DocumentSavedFilters.cs" />
     <Compile Include="DBModel\Document\DocumentSendLists.cs" />
+    <Compile Include="DBModel\Document\DocumentWaits.cs" />
     <Compile Include="DBModel\System\SystemLogs.cs" />
     <Compile Include="DBModel\System\SystemSettings.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryAgents.cs" />
@@ -175,6 +181,10 @@
     <Compile Include="Migrations\201602012334302_del_exagent.Designer.cs">
       <DependentUpon>201602012334302_del_exagent.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201602021557362_add_tables.cs" />
+    <Compile Include="Migrations\201602021557362_add_tables.Designer.cs">
+      <DependentUpon>201602021557362_add_tables.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\ISecurityDbProcess.cs" />
@@ -253,6 +263,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201602012334302_del_exagent.resx">
       <DependentUpon>201602012334302_del_exagent.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602021557362_add_tables.resx">
+      <DependentUpon>201602021557362_add_tables.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
