@@ -75,7 +75,9 @@
     <Compile Include="DocumentCore\DocumentAccess.cs" />
     <Compile Include="DocumentCore\FilterDocument.cs" />
     <Compile Include="DocumentCore\ModifyDocument.cs" />
+    <Compile Include="DocumentCore\ModifyDocumentRestrictedSendListByStandartSendList.cs" />
     <Compile Include="DocumentCore\ModifyDocumentRestrictedSendList.cs" />
+    <Compile Include="DocumentCore\ModifyDocumentSendListByStandartSendList.cs" />
     <Compile Include="DocumentCore\ModifyDocumentSendList.cs" />
     <Compile Include="DocumentCore\RegistrationDocument.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -378,6 +378,24 @@ namespace BL.Database.Documents
             dbContext.SaveChanges();
             return sendList.Id;
         }
+        public void AddRestrictedSendList(IContext ctx, IEnumerable<ModifyDocumentRestrictedSendList> restrictedSendLists)
+        {
+            var dbContext = GetUserDmsContext(ctx);
+
+            foreach(var restrictedSendList in restrictedSendLists)
+            {
+                var sendList = new DBModel.Document.DocumentRestrictedSendLists
+                {
+                    DocumentId = restrictedSendList.DocumentId,
+                    PositionId = restrictedSendList.PositionId,
+                    AccessLevelId = restrictedSendList.AccessLevelId,
+                    LastChangeUserId = dbContext.Context.CurrentAgentId,
+                    LastChangeDate = DateTime.Now
+                };
+                dbContext.DocumentRestrictedSendListsSet.Add(sendList);
+            }
+            dbContext.SaveChanges();
+        }
 
         public void DeleteRestrictedSendList(IContext ctx, int restrictedSendListId)
         {
@@ -414,6 +432,30 @@ namespace BL.Database.Documents
             dbContext.DocumentSendListsSet.Add(sl);
             dbContext.SaveChanges();
             return sl.Id;
+        }
+        public void AddSendList(IContext ctx, IEnumerable<ModifyDocumentSendList> sendLists)
+        {
+            var dbContext = GetUserDmsContext(ctx);
+            foreach (var sendList in sendLists)
+            {
+                var sl = new DBModel.Document.DocumentSendLists
+                {
+                    DocumentId = sendList.DocumentId,
+                    OrderNumber = sendList.OrderNumber,
+                    SendTypeId = sendList.SendTypeId,
+                    TargetPositionId = sendList.TargetPositionId,
+                    Description = sendList.Description,
+                    DueDate = sendList.DueDate,
+                    DueDay = sendList.DueDay,
+                    AccessLevelId = sendList.AccessLevelId,
+                    IsInitial = true,
+                    EventId = null,
+                    LastChangeUserId = dbContext.Context.CurrentAgentId,
+                    LastChangeDate = DateTime.Now
+                };
+                dbContext.DocumentSendListsSet.Add(sl);
+            }
+            dbContext.SaveChanges();
         }
 
         public void DeleteSendList(IContext ctx, int sendListId)

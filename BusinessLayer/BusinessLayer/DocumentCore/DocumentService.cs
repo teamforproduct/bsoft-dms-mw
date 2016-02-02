@@ -9,12 +9,14 @@ using BL.Logic.DocumentCore.Interfaces;
 using System.Linq;
 using BL.Model.DictionaryCore;
 using BL.Model.SystemCore;
+using BL.Database.Dictionaries.Interfaces;
 using BL.Model.Enums;
 
 namespace BL.Logic.DocumentCore
 {
     internal class DocumentService : IDocumentService
     {
+        #region Documents
         public int SaveDocument(IContext context, FullDocument document)
         {
             Command cmd;
@@ -34,8 +36,8 @@ namespace BL.Logic.DocumentCore
                     SourcePositionId = context.CurrentPositionId
                 };
 
-                document.Events = new List<BaseDocumentEvent> {evt};
-                
+                document.Events = new List<BaseDocumentEvent> { evt };
+
                 cmd = new AddDocument(context, document);
             }
             else
@@ -78,7 +80,7 @@ namespace BL.Logic.DocumentCore
                 Addressee = baseTemplateDocument.Addressee
             };
 
-            if (baseTemplateDocument.RestrictedSendLists!=null&& baseTemplateDocument.RestrictedSendLists.Count()>0)
+            if (baseTemplateDocument.RestrictedSendLists != null && baseTemplateDocument.RestrictedSendLists.Count() > 0)
             {
                 baseDocument.RestrictedSendLists = baseTemplateDocument.RestrictedSendLists.Select(x => new BaseDocumentRestrictedSendList()
                 {
@@ -112,29 +114,66 @@ namespace BL.Logic.DocumentCore
             var baseDocument = new FullDocument(document);
             return SaveDocument(context, baseDocument);
         }
+        #endregion Documents
 
+        #region DocumentRestrictedSendLists
         public int AddRestrictedSendList(IContext context, ModifyDocumentRestrictedSendList restrictedSendList)
         {
             var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
             var id = documentDb.AddRestrictedSendList(context, restrictedSendList);
             return id;
         }
+        public void AddRestrictedSendListByStandartSendLists(IContext context, ModifyDocumentRestrictedSendListByStandartSendList model)
+        {
+            var dictDb = DmsResolver.Current.Get<IDictionariesDbProcess>();
+            var dicStandSendList = dictDb.GetDictionaryStandartSendList(context, model.StandartSendListId);
+
+            var restrictedSendLists = dicStandSendList.StandartSendListContents.Select(x=>new ModifyDocumentRestrictedSendList {
+                DocumentId = model.DocumentId,
+                PositionId = x.TargetPositionId,
+                AccessLevelId = x.AccessLevelId.GetValueOrDefault()
+            });
+            var docDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
+            docDb.AddRestrictedSendList(context, restrictedSendLists);
+        }
         public void DeleteRestrictedSendList(IContext context, int restrictedSendListId)
         {
             var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
             documentDb.DeleteRestrictedSendList(context, restrictedSendListId);
         }
+        #endregion DocumentRestrictedSendLists
 
+        #region DocumentSendLists
         public int AddSendList(IContext context, ModifyDocumentSendList sendList)
         {
             var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
             var id = documentDb.AddSendList(context, sendList);
             return id;
         }
+        public void AddSendListByStandartSendLists(IContext context, ModifyDocumentSendListByStandartSendList model)
+        {
+            var dictDb = DmsResolver.Current.Get<IDictionariesDbProcess>();
+            var dicStandSendList = dictDb.GetDictionaryStandartSendList(context, model.StandartSendListId);
+
+            var sendLists = dicStandSendList.StandartSendListContents.Select(x => new ModifyDocumentSendList
+            {
+                DocumentId = model.DocumentId,
+                OrderNumber = x.OrderNumber,
+                SendTypeId = x.SendTypeId,
+                TargetPositionId = x.TargetPositionId,
+                Description = x.Description,
+                DueDate = x.DueDate,
+                DueDay = x.DueDay.GetValueOrDefault(),
+                AccessLevelId = x.AccessLevelId.GetValueOrDefault(),
+            });
+            var docDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
+            docDb.AddSendList(context, sendLists);
+        }
         public void DeleteSendList(IContext context, int sendListId)
         {
             var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
             documentDb.DeleteSendList(context, sendListId);
         }
+        #endregion DocumentSendLists
     }
 }
