@@ -8,5 +8,8 @@ namespace BL.Database.Dictionaries.Interfaces
     {
         IEnumerable<BaseDictionaryStandartSendList> GetDictionaryStandartSendLists(IContext context, FilterDictionaryStandartSendList filter);
         BaseDictionaryStandartSendList GetDictionaryStandartSendList(IContext context, int id);
+
+        IEnumerable<BaseDictionaryAgent> GetDictionaryAgents(IContext context, FilterDictionaryAgent filter);
+        BaseDictionaryAgent GetDictionaryAgent(IContext context, int id);
     }
 }

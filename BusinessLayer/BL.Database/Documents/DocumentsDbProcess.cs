@@ -118,10 +118,10 @@ namespace BL.Database.Documents
                 doc.LastChangeDate = DateTime.Now;
             }
 
-            if (document.Events != null && document.Events.Any(x=>x.Id == 0))
+            if (document.Events != null && document.Events.Any(x => x.Id == 0))
             {
                 // add only new events. New events should be without Id
-                doc.Events = document.Events.Where(x=>x.Id == 0).Select(x => new DocumentEvents
+                doc.Events = document.Events.Where(x => x.Id == 0).Select(x => new DocumentEvents
                 {
                     CreateDate = x.CreateDate,
                     Date = x.Date,
@@ -164,7 +164,7 @@ namespace BL.Database.Documents
                 SourcePositionId = docEvent.SourcePositionId,
                 TargetAgentId = docEvent.TargetAgentId,
                 TargetPositionId = docEvent.TargetPositionId,
-                EventTypeId = (int) docEvent.EventType
+                EventTypeId = (int)docEvent.EventType
             };
             dbContext.DocumentEventsSet.Add(evt);
             dbContext.SaveChanges();
@@ -314,7 +314,7 @@ namespace BL.Database.Documents
         {
             var dbContext = GetUserDmsContext(ctx);
 
-            var doc = dbContext.DocumentsSet.Where(x=>x.Id == documentId).Select(x => new FullDocument
+            var doc = dbContext.DocumentsSet.Where(x => x.Id == documentId).Select(x => new FullDocument
             {
                 Id = x.Id,
                 TemplateDocumentId = x.TemplateDocumentId,
@@ -349,35 +349,69 @@ namespace BL.Database.Documents
                 SenderAgentPersonName = x.SenderAgentPerson.Name,
                 AccessLevelName = null, //после добавления Access??? подумать
                 DocumentDate = x.RegistrationDate ?? x.CreateDate,
-                RegistrationFullNumber = x.RegistrationNumber != null? x.RegistrationNumber.ToString(): "#"+x.Id.ToString()
+                RegistrationFullNumber = x.RegistrationNumber != null ? x.RegistrationNumber.ToString() : "#" + x.Id.ToString(),
+
+                Events = x.Events.Select(y => new BaseDocumentEvent
+                {
+                    Id = y.Id,
+                    DocumentId = y.DocumentId,
+                    Description = y.Description,
+                    EventType = (EnumEventTypes)y.EventTypeId,
+                    ImpotanceEventType = (EnumImpotanceEventTypes)y.EventType.ImpotanceEventTypeId,
+                    CreateDate = y.CreateDate,
+                    Date = y.Date,
+                    EventTypeName = y.EventType.Name,
+                    EventImpotanceTypeName = y.EventType.ImpotanceEventType.Name,
+                    LastChangeUserId = y.LastChangeUserId,
+                    LastChangeDate = y.LastChangeDate,
+                    SourceAgenName = y.SourceAgent.Name,
+                    SourceAgentId = y.SourceAgentId,
+                    SourcePositionId = y.SourcePositionId,
+                    SourcePositionName = y.SourcePosition.Name,
+                    TargetAgenName = y.TargetAgent.Name,
+                    TargetAgentId = y.TargetAgentId,
+                    TargetPositionId = y.TargetPositionId,
+                    TargetPositionName = y.TargetPosition.Name,
+                    GeneralInfo = ""
+                }).ToList(),
+
+                SendLists = x.SendLists.Select(y => new BaseDocumentSendList
+                {
+                    Id = y.Id,
+                    DocumentId = y.DocumentId,
+                    OrderNumber = y.OrderNumber,
+                    SendTypeId = y.SendTypeId,
+                    SendTypeName = y.SendType.Name,
+                    SendTypeCode = y.SendType.Code,
+                    SendTypeIsImpotant = y.SendType.IsImpotant,
+                    TargetPositionId = y.TargetPositionId,
+                    TargetPositionName = y.TargetPosition.Name,
+                    Description = y.Description,
+                    DueDate = y.DueDate,
+                    DueDay = y.DueDay,
+                    AccessLevelId = y.AccessLevelId,
+                    AccessLevelName = y.AccessLevel.Name,
+                    IsInitial = y.IsInitial,
+                    EventId = y.EventId,
+                    LastChangeUserId = y.LastChangeUserId,
+                    LastChangeDate = y.LastChangeDate,
+                    GeneralInfo = string.Empty
+                }).ToList(),
+
+                RestrictedSendLists = x.RestrictedSendLists.Select(y => new BaseDocumentRestrictedSendList
+                {
+                    Id = y.Id,
+                    DocumentId = y.DocumentId,
+                    PositionId = y.PositionId,
+                    PositionName = y.Position.Name,
+                    AccessLevelId = y.AccessLevelId,
+                    AccessLevelName = y.AccessLevel.Name,
+                    LastChangeUserId = y.LastChangeUserId,
+                    LastChangeDate = y.LastChangeDate,
+                    GeneralInfo = string.Empty
+                }).ToList()
+
             }).FirstOrDefault();
-            if (doc != null)
-            {
-                doc.Events =
-                    dbContext.DocumentEventsSet.Where(x => x.DocumentId == doc.Id).Select(y => new BaseDocumentEvent
-                    {
-                        Id = y.Id,
-                        DocumentId = y.DocumentId,
-                        Description = y.Description,
-                        EventType = (EnumEventTypes) y.EventTypeId,
-                        ImpotanceEventType = (EnumImpotanceEventTypes)y.EventType.ImpotanceEventTypeId,
-                        CreateDate = y.CreateDate,
-                        Date = y.Date,
-                        EventTypeName = y.EventType.Name,
-                        EventImpotanceTypeName = y.EventType.ImpotanceEventType.Name,
-                        LastChangeUserId = y.LastChangeUserId,
-                        LastChangeDate = y.LastChangeDate,
-                        SourceAgenName = y.SourceAgent.Name,
-                        SourceAgentId = y.SourceAgentId,
-                        SourcePositionId = y.SourcePositionId,
-                        SourcePositionName = y.SourcePosition.Name,
-                        TargetAgenName = y.TargetAgent.Name,
-                        TargetAgentId = y.TargetAgentId,
-                        TargetPositionId = y.TargetPositionId,
-                        TargetPositionName = y.TargetPosition.Name,
-                        GeneralInfo = ""
-                    }).ToList();
-            }
             return doc;
         }
         #endregion Documents
@@ -434,7 +468,7 @@ namespace BL.Database.Documents
         {
             var dbContext = GetUserDmsContext(ctx);
 
-            foreach(var restrictedSendList in restrictedSendLists)
+            foreach (var restrictedSendList in restrictedSendLists)
             {
                 var sendList = new DocumentRestrictedSendLists
                 {

@@ -6,6 +6,8 @@ using System.Web.Http;
 using Microsoft.Owin.Security.OAuth;
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
+using DMS_WebAPI.Areas.HelpPage;
+using System.Web;
 
 namespace DMS_WebAPI
 {
@@ -28,6 +30,8 @@ namespace DMS_WebAPI
             );
             var jsonConfig = config.Formatters.JsonFormatter;
             jsonConfig.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+
+            config.SetDocumentationProvider(new XmlDocumentationProvider(HttpContext.Current.Server.MapPath("~/App_Data/DMS_WebAPI.XML")));
         }
     }
 }
