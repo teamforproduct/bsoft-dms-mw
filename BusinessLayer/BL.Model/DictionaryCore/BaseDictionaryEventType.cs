@@ -1,10 +1,11 @@
-﻿using System;
+﻿using BL.Model.Enums;
+using System;
 
 namespace BL.Model.DictionaryCore
 {
-    public class DictionaryDocumentEventTypes
+    public class BaseDictionaryEventType
     {
-        public DocumentEventTypes EventType { get; set; }
+        public EnumEventTypes EventType { get; set; }
         public int Id { get; set; }
         public string Code { get; set; }
         public string Name { get; set; }

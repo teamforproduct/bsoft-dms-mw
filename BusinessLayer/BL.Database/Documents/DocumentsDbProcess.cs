@@ -9,6 +9,7 @@ using BL.Database.DBModel.Document;
 using BL.Database.Dictionaries.Interfaces;
 using BL.Model.DictionaryCore;
 using BL.Model.SystemCore;
+using BL.Model.Enums;
 
 namespace BL.Database.Documents
 {
@@ -337,8 +338,8 @@ namespace BL.Database.Documents
                         Id = y.Id,
                         DocumentId = y.DocumentId,
                         Description = y.Description,
-                        EventType = (DocumentEventTypes) y.EventTypeId,
-                        ImpotanceEventType = (ImpotanceEventTypes)y.EventType.ImpotanceEventTypeId,
+                        EventType = (EnumEventTypes) y.EventTypeId,
+                        ImpotanceEventType = (EnumImpotanceEventTypes)y.EventType.ImpotanceEventTypeId,
                         CreateDate = y.CreateDate,
                         Date = y.Date,
                         EventTypeName = y.EventType.Name,

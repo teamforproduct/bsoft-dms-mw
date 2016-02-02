@@ -1,5 +1,5 @@
 ﻿using System;
-using BL.Model.DictionaryCore;
+using BL.Model.Enums;
 
 namespace BL.Model.DocumentCore
 {
@@ -7,8 +7,8 @@ namespace BL.Model.DocumentCore
     {
         public int Id { get; set; }
         public int DocumentId { get; set; }
-        public DocumentEventTypes EventType { get; set; }
-        public ImpotanceEventTypes ImpotanceEventType { get; set; }
+        public EnumEventTypes EventType { get; set; }
+        public EnumImpotanceEventTypes ImpotanceEventType { get; set; }
         public DateTime CreateDate { get; set; }
         public DateTime Date { get; set; }
         public string Description { get; set; }
