@@ -60,6 +60,7 @@
     <Compile Include="Secure\ISecureService.cs" />
     <Compile Include="Secure\SecureService.cs" />
     <Compile Include="Settings\Setting.cs" />
+    <Compile Include="System\FileStore.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BL.CrossCutting\BL.CrossCutting.csproj">
