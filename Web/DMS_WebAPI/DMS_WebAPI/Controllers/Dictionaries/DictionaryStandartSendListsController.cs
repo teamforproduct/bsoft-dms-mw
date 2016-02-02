@@ -12,7 +12,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
     [RoutePrefix("api/DictionaryStandartSendLists")]
     public class DictionaryStandartSendListsController : ApiController
     {
-        // GET: api/TemplateDocuments
+        // GET: api/DictionaryStandartSendLists
         public IHttpActionResult Get([FromUri] FilterDictionaryStandartSendList filter)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
@@ -21,7 +21,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             return new JsonResult(tmpDicts, this);
         }
 
-        // GET: api/TemplateDocuments/5
+        // GET: api/DictionaryStandartSendLists/5
         public IHttpActionResult Get(int id)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
@@ -30,17 +30,17 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             return new JsonResult(tmpDict, this);
         }
 
-        // POST: api/TemplateDocuments
+        // POST: api/DictionaryStandartSendLists
         public void Post(BaseTemplateDocument model)
         {
         }
 
-        // PUT: api/TemplateDocuments/5
+        // PUT: api/DictionaryStandartSendLists/5
         public void Put(int id, [FromBody]string value)
         {
         }
 
-        // DELETE: api/TemplateDocuments/5
+        // DELETE: api/DictionaryStandartSendLists/5
         public void Delete(int id)
         {
         }

@@ -16,9 +16,11 @@ namespace BL.Logic.DocumentCore.Interfaces
         FullDocument GetDocument(IContext ctx, int documentId);
 
         int AddRestrictedSendList(IContext context, ModifyDocumentRestrictedSendList restrictedSendList);
+        void AddRestrictedSendListByStandartSendLists(IContext context, ModifyDocumentRestrictedSendListByStandartSendList model);
         void DeleteRestrictedSendList(IContext context, int restrictedSendListId);
 
         int AddSendList(IContext ctx, ModifyDocumentSendList sendList);
+        void AddSendListByStandartSendLists(IContext context, ModifyDocumentSendListByStandartSendList model);
         void DeleteSendList(IContext context, int sendListId);
     }
 }

@@ -30,12 +30,16 @@ namespace DMS_WebAPI.Controllers.Documents
             var restrictedSendListId = docProc.AddRestrictedSendList(cxt, model);
             return new Results.JsonResult(restrictedSendListId, this);
         }
-        /*
-        // PUT: api/DocumentRestrictedSendLists/5
-        public void Put(int id, [FromBody]string value)
+        
+        // PUT: api/DocumentRestrictedSendLists
+        public IHttpActionResult Put([FromBody]ModifyDocumentRestrictedSendListByStandartSendList model)
         {
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            docProc.AddRestrictedSendListByStandartSendLists(cxt, model);
+            return new Results.JsonResult(null, this);
         }
-        */
+        
         // DELETE: api/DocumentRestrictedSendLists/5
         public IHttpActionResult Delete(int id)
         {
