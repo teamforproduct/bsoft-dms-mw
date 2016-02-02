@@ -105,7 +105,7 @@ namespace BL.Logic.DocumentCore
 
             baseDocument.Events = new List<BaseDocumentEvent> { evt };
 
-            var acc = new DocumentAccess
+            var acc = new BaseDocumentAccess
             {
                 AccessType = EnumDocumentAccess.PersonalRefIO,
                 IsInWork = true,
@@ -114,7 +114,7 @@ namespace BL.Logic.DocumentCore
                 PositionId = context.CurrentPositionId,
             };
 
-            baseDocument.Accesses = new List<DocumentAccess>() { acc };
+            baseDocument.Accesses = new List<BaseDocumentAccess>() { acc };
 
             return SaveDocument(context, baseDocument);
         }

@@ -3,7 +3,7 @@ using BL.Model.Enums;
 
 namespace BL.Model.DocumentCore
 {
-    public class DocumentAccess
+    public class BaseDocumentAccess
     {
         public int Id { get; set; }
         public int DocumentId { get; set; }

@@ -418,7 +418,7 @@ namespace BL.Database.Documents
 
         #region Document Access
 
-        public int AddDocumentAccess(IContext ctx, DocumentAccess access)
+        public int AddDocumentAccess(IContext ctx, BaseDocumentAccess access)
         {
             var dbContext = GetUserDmsContext(ctx);
             var acc = new DocumentAccesses
@@ -434,7 +434,7 @@ namespace BL.Database.Documents
             return acc.Id;
         }
 
-        public void RemoveDocumentAccess(IContext ctx, DocumentAccess access)
+        public void RemoveDocumentAccess(IContext ctx, BaseDocumentAccess access)
         {
             var dbContext = GetUserDmsContext(ctx);
             var acc = dbContext.DocumentAccessesSet.FirstOrDefault(x => x.Id == access.Id);
