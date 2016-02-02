@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore;
 using BL.Database.DBModel.Document;
-using BL.Database.Dictionaries.Interfaces;
-using BL.Model.DictionaryCore;
 using BL.Model.SystemCore;
 using BL.Model.Enums;
 
@@ -20,6 +17,7 @@ namespace BL.Database.Documents
         }
 
         #region Documents
+
         public void AddDocument(IContext ctx, FullDocument document)
         {
             var dbContext = GetUserDmsContext(ctx);
@@ -61,7 +59,7 @@ namespace BL.Database.Documents
                     SourcePositionId = x.SourcePositionId,
                     TargetAgentId = x.TargetAgentId,
                     TargetPositionId = x.TargetPositionId,
-                    EventTypeId = (int)x.EventType
+                    EventTypeId = (int) x.EventType
                 }).ToList();
             }
 
@@ -83,7 +81,20 @@ namespace BL.Database.Documents
                     LastChangeDate = DateTime.Now
                 }).ToList();
             }
-            dbContext.DocumentsSet.Add(doc);
+
+            if (document.Accesses != null && document.Accesses.Any())
+            {
+                doc.Accesses = document.Accesses.Select(x => new DocumentAccesses
+                {
+                    LastChangeDate = x.LastChangeDate,
+                    IsInWork = x.IsInWork,
+                    LastChangeUserId = x.LastChangeUserId,
+                    PositionId = x.PositionId,
+                    AccessLevelId = (int) x.AccessType,
+                }).ToList();
+            }
+
+        dbContext.DocumentsSet.Add(doc);
             dbContext.SaveChanges();
             document.Id = doc.Id;
         }
@@ -122,6 +133,18 @@ namespace BL.Database.Documents
                     TargetAgentId = x.TargetAgentId,
                     TargetPositionId = x.TargetPositionId,
                     EventTypeId = (int)x.EventType
+                }).ToList();
+            }
+
+            if (document.Accesses != null && document.Accesses.Any(x => x.Id == 0))
+            {
+                doc.Accesses = document.Accesses.Where(x => x.Id == 0).Select(x => new DocumentAccesses
+                {
+                    LastChangeDate = x.LastChangeDate,
+                    IsInWork = x.IsInWork,
+                    LastChangeUserId = x.LastChangeUserId,
+                    PositionId = x.PositionId,
+                    AccessLevelId = (int)x.AccessType,
                 }).ToList();
             }
             dbContext.SaveChanges();
@@ -358,6 +381,36 @@ namespace BL.Database.Documents
             return doc;
         }
         #endregion Documents
+
+        #region Document Access
+
+        public int AddDocumentAccess(IContext ctx, DocumentAccess access)
+        {
+            var dbContext = GetUserDmsContext(ctx);
+            var acc = new DocumentAccesses
+            {
+                LastChangeDate = access.LastChangeDate,
+                IsInWork = access.IsInWork,
+                LastChangeUserId = access.LastChangeUserId,
+                PositionId = access.PositionId,
+                AccessLevelId = (int) access.AccessType,
+            };
+            dbContext.DocumentAccessesSet.Add(acc);
+            dbContext.SaveChanges();
+            return acc.Id;
+        }
+
+        public void RemoveDocumentAccess(IContext ctx, DocumentAccess access)
+        {
+            var dbContext = GetUserDmsContext(ctx);
+            var acc = dbContext.DocumentAccessesSet.FirstOrDefault(x => x.Id == access.Id);
+            if (acc != null)
+            {
+                dbContext.DocumentAccessesSet.Remove(acc);
+                dbContext.SaveChanges();
+            }
+        }
+        #endregion
 
         #region DocumentRestrictedSendLists
         public int AddRestrictedSendList(IContext ctx, ModifyDocumentRestrictedSendList restrictedSendList)

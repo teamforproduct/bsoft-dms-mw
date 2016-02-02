@@ -1,8 +1,8 @@
+using System;
+using System.Data.Entity.Migrations;
+
 namespace BL.Database.Migrations
 {
-    using System;
-    using System.Data.Entity.Migrations;
-    
     public partial class TemplateDocumentSendLists : DbMigration
     {
         public override void Up()

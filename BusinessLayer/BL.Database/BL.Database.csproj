@@ -179,6 +179,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\ISecurityDbProcess.cs" />
     <Compile Include="Security\SecurityDbProcess.cs" />
+    <Compile Include="System\ISystemDbProcess.cs" />
+    <Compile Include="System\SystemDbProcess.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BL.CrossCutting\BL.CrossCutting.csproj">

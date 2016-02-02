@@ -55,8 +55,9 @@ namespace BL.Model.DocumentCore
 
         public string GeneralInfo { get; set; }
 
-        public virtual IEnumerable<BaseDocumentRestrictedSendList> RestrictedSendLists { get; set; }
-        public virtual IEnumerable<BaseDocumentSendList> SendLists { get; set; }
-        public virtual IEnumerable<BaseDocumentEvent> Events { get; set; }
+        public IEnumerable<BaseDocumentRestrictedSendList> RestrictedSendLists { get; set; }
+        public IEnumerable<BaseDocumentSendList> SendLists { get; set; }
+        public IEnumerable<BaseDocumentEvent> Events { get; set; }
+        public IEnumerable<DocumentAccess> Accesses { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 using BL.Database.DBModel.Dictionary;
 
 namespace BL.Database.DBModel.System
@@ -7,10 +8,12 @@ namespace BL.Database.DBModel.System
     {
         public int Id { get; set; }
         public string Message { get; set; }
-        public string Trace { get; set; }
-        public Nullable<int> AgentId { get; set; }
+        public string LogTrace { get; set; }
+        public string LogException { get; set; }
+        public Nullable<int> ExecutorAgentId { get; set; }
         public DateTime LogDate { get; set; }
 
+        [ForeignKey("AgentId")]
         public virtual DictionaryAgents ExecutorAgent { get; set; }
     }
 }

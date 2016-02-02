@@ -1,5 +1,4 @@
-﻿using BL.CrossCutting.Context;
-using BL.CrossCutting.Interfaces;
+﻿using BL.CrossCutting.Helpers;
 using Ninject.Modules;
 
 namespace BL.CrossCutting.DependencyInjection
@@ -8,6 +7,7 @@ namespace BL.CrossCutting.DependencyInjection
     {
         public override void Load()
         {
+            Bind<IConnectionStringHelper>().To<ConnectionStringHelper>().InSingletonScope();
         }
     }
 }

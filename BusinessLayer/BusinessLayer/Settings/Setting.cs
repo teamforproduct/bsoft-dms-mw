@@ -16,7 +16,7 @@ namespace BL.Logic.Settings
         /// <typeparam name="T">Expected setting value type.</typeparam>
         /// <param key="settingName">Setting key.</param>
         /// <returns>Typed setting value.</returns>
-        public T GetSetting<T>(string settingName) where T : IConvertible
+        public T GetSetting<T>(IContext ctx, string settingName) where T : IConvertible
         {
             if (!_casheSettings.ContainsKey(settingName))
             {
@@ -41,7 +41,7 @@ namespace BL.Logic.Settings
         /// <param name="settingName">Setting name.</param>
         /// <param name="defaulValue">Expected default value.</param>
         /// <returns>Typed setting value or default value.</returns>
-        public T GetSetting<T>(string settingName, T defaulValue) where T : IConvertible
+        public T GetSetting<T>(IContext ctx, string settingName, T defaulValue) where T : IConvertible
         {
             if (!_casheSettings.ContainsKey(settingName))
             {
@@ -59,7 +59,7 @@ namespace BL.Logic.Settings
             }
         }
 
-        public void SaveSetting(string key, object val)
+        public void SaveSetting(IContext ctx, string key, object val)
         {
             _casheSettings.Add(key, val);
         }

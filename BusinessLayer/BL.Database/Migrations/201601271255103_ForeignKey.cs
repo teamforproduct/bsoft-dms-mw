@@ -1,8 +1,10 @@
+using System;
+using System.Data.Entity.Migrations;
+
+
 namespace BL.Database.Migrations
 {
-    using System;
-    using System.Data.Entity.Migrations;
-    
+   
     public partial class ForeignKey : DbMigration
     {
         public override void Up()

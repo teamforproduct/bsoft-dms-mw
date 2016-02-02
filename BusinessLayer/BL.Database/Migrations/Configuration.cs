@@ -1,10 +1,7 @@
+using System.Data.Entity.Migrations;
+
 namespace BL.Database.Migrations
 {
-    using System;
-    using System.Data.Entity;
-    using System.Data.Entity.Migrations;
-    using System.Linq;
-
     internal sealed class Configuration : DbMigrationsConfiguration<BL.Database.DatabaseContext.DmsContext>
     {
         public Configuration()
