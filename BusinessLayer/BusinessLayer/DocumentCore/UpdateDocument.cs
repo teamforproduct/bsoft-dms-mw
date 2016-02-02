@@ -4,6 +4,7 @@ using BL.CrossCutting.Interfaces;
 using BL.Database.Documents;
 using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore;
+using System;
 
 namespace BL.Logic.DocumentCore
 {
@@ -20,7 +21,7 @@ namespace BL.Logic.DocumentCore
 
         public override object Execute(object parameter)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public override object Execute()

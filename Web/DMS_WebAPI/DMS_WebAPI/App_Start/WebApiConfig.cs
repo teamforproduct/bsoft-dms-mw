@@ -31,7 +31,7 @@ namespace DMS_WebAPI
             var jsonConfig = config.Formatters.JsonFormatter;
             jsonConfig.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
 
-            config.SetDocumentationProvider(new XmlDocumentationProvider(HttpContext.Current.Server.MapPath("~/App_Data/DMS_WebAPI.XML")));
+            config.SetDocumentationProvider(new XmlDocumentationProvider(HttpContext.Current.Server.MapPath("~/bin/DMS_WebAPI.XML")));
         }
     }
 }

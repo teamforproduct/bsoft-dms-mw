@@ -35,15 +35,16 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>App_Data\DMS_WebAPI.XML</DocumentationFile>
+    <DocumentationFile>bin\DMS_WebAPI.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\..\OutRelease\</OutputPath>
+    <OutputPath>bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\DMS_WebAPI.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -213,6 +214,22 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\Dictionaries\DictionaryResultTypesController.cs" />
+    <Compile Include="Controllers\Dictionaries\DictionarySendTypesController.cs" />
+    <Compile Include="Controllers\Dictionaries\DictionaryStandartSendListContentsController.cs" />
+    <Compile Include="Controllers\Dictionaries\DictionarySubordinationTypesController.cs" />
+    <Compile Include="Controllers\Dictionaries\DictionaryRegistrationJournalsController.cs" />
+    <Compile Include="Controllers\Dictionaries\DictionaryPositionsController.cs" />
+    <Compile Include="Controllers\Dictionaries\DictionaryLinkTypesController.cs" />
+    <Compile Include="Controllers\Dictionaries\DictionaryImpotanceEventTypesController.cs" />
+    <Compile Include="Controllers\Dictionaries\DictionaryEventTypesController.cs" />
+    <Compile Include="Controllers\Dictionaries\DictionaryDocumentTypesController.cs" />
+    <Compile Include="Controllers\Dictionaries\DictionaryDocumentSubjectsController.cs" />
+    <Compile Include="Controllers\Dictionaries\DictionaryDocumentDirectionsController.cs" />
+    <Compile Include="Controllers\Dictionaries\DictionaryDepartmentsController.cs" />
+    <Compile Include="Controllers\Dictionaries\DictionaryCompaniesController.cs" />
+    <Compile Include="Controllers\Dictionaries\DictionaryAgentsController.cs" />
+    <Compile Include="Controllers\Dictionaries\DictionaryAgentPersonsController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryStandartSendListsController.cs" />
     <Compile Include="Controllers\Documents\DocumentRestrictedSendListsController.cs" />
     <Compile Include="Controllers\Documents\DocumentsController.cs" />

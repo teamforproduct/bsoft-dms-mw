@@ -9,24 +9,24 @@ using System.Web.Http;
 namespace DMS_WebAPI.Controllers.Dictionaries
 {
     [Authorize]
-    [RoutePrefix("api/DictionaryStandartSendLists")]
-    public class DictionaryStandartSendListsController : ApiController
+    [RoutePrefix("api/DictionarySendTypes")]
+    public class DictionarySendTypesController : ApiController
     {
-        // GET: api/DictionaryStandartSendLists
-        public IHttpActionResult Get([FromUri] FilterDictionaryStandartSendList filter)
+        // GET: api/DictionarySendTypes
+        public IHttpActionResult Get([FromUri] FilterDictionarySendType filter)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionaryStandartSendLists(cxt, filter);
+            var tmpDicts = tmpDictProc.GetDictionarySendTypes(cxt, filter);
             return new JsonResult(tmpDicts, this);
         }
 
-        // GET: api/DictionaryStandartSendLists/5
+        // GET: api/DictionarySendTypes/5
         public IHttpActionResult Get(int id)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDict = tmpDictProc.GetDictionaryStandartSendList(cxt, id);
+            var tmpDict = tmpDictProc.GetDictionarySendType(cxt, id);
             return new JsonResult(tmpDict, this);
         }
     }

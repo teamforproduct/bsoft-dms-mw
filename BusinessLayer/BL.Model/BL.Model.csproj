@@ -43,6 +43,8 @@
     <Compile Include="Database\StoreInfo.cs" />
     <Compile Include="Database\DatabaseModel.cs" />
     <Compile Include="Database\DatabaseType.cs" />
+    <Compile Include="DictionaryCore\BaseDictionaryLinkType.cs" />
+    <Compile Include="DictionaryCore\BaseDictionaryResultType.cs" />
     <Compile Include="DictionaryCore\BaseDictionarySubordinationType.cs" />
     <Compile Include="DictionaryCore\BaseDictionarySendType.cs" />
     <Compile Include="DictionaryCore\BaseDictionaryRegistrationJournal.cs" />
@@ -58,6 +60,18 @@
     <Compile Include="DictionaryCore\BaseDictionaryStandartSendListContent.cs" />
     <Compile Include="DictionaryCore\BaseDictionaryStandartSendList.cs" />
     <Compile Include="DictionaryCore\BaseDictionaryEventType.cs" />
+    <Compile Include="DictionaryCore\FilterDictionarySubordinationType.cs" />
+    <Compile Include="DictionaryCore\FilterDictionaryStandartSendListContent.cs" />
+    <Compile Include="DictionaryCore\FilterDictionarySendType.cs" />
+    <Compile Include="DictionaryCore\FilterDictionaryResultType.cs" />
+    <Compile Include="DictionaryCore\FilterDictionaryRegistrationJournal.cs" />
+    <Compile Include="DictionaryCore\FilterDictionaryPosition.cs" />
+    <Compile Include="DictionaryCore\FilterDictionaryLinkType.cs" />
+    <Compile Include="DictionaryCore\FilterDictionaryImpotanceEventType.cs" />
+    <Compile Include="DictionaryCore\FilterDictionaryEventType.cs" />
+    <Compile Include="DictionaryCore\FilterDictionaryDocumentType.cs" />
+    <Compile Include="DictionaryCore\FilterDictionaryDocumentSubject.cs" />
+    <Compile Include="DictionaryCore\FilterDictionaryDocumentDirection.cs" />
     <Compile Include="DictionaryCore\FilterDictionaryDepartment.cs" />
     <Compile Include="DictionaryCore\FilterDictionaryCompany.cs" />
     <Compile Include="DictionaryCore\FilterDictionaryAgentPerson.cs" />
