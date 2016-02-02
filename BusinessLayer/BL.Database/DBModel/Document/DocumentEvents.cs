@@ -9,10 +9,10 @@ namespace BL.Database.DBModel.Document
     {
         public DocumentEvents()
         {
-            //this.OnWaits = new HashSet<DocumentWaits>();
-            //this.OffWaits = new HashSet<DocumentWaits>();
-            //this.SendSubscriptions = new HashSet<DocumentSubscriptions>();
-            //this.DoneSubscriptions = new HashSet<DocumentSubscriptions>();
+            this.OnWaits = new HashSet<DocumentWaits>();
+            this.OffWaits = new HashSet<DocumentWaits>();
+            this.SendSubscriptions = new HashSet<DocumentSubscriptions>();
+            this.DoneSubscriptions = new HashSet<DocumentSubscriptions>();
             this.SendLists = new HashSet<DocumentSendLists>();
         }
 
@@ -41,10 +41,10 @@ namespace BL.Database.DBModel.Document
         public virtual DictionaryPositions TargetPosition { get; set; }
         [ForeignKey("TargetAgentId")]
         public virtual DictionaryAgents TargetAgent { get; set; }
-        //public virtual ICollection<DocumentWaits> OnWaits { get; set; }
-        //public virtual ICollection<DocumentWaits> OffWaits { get; set; }
-        //public virtual ICollection<DocumentSubscriptions> SendSubscriptions { get; set; }
-        //public virtual ICollection<DocumentSubscriptions> DoneSubscriptions { get; set; }
+        public virtual ICollection<DocumentWaits> OnWaits { get; set; }
+        public virtual ICollection<DocumentWaits> OffWaits { get; set; }
+        public virtual ICollection<DocumentSubscriptions> SendSubscriptions { get; set; }
+        public virtual ICollection<DocumentSubscriptions> DoneSubscriptions { get; set; }
         public virtual ICollection<DocumentSendLists> SendLists { get; set; }
     }
 }
