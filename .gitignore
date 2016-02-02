@@ -188,3 +188,4 @@ ModelManifest.xml
 /packages
 /.vs
 /bsoft-dms-mw/log
+/Web/DMS_WebAPI/DMS_WebAPI/App_Data/DMS_WebAPI.XML

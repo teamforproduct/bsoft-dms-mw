@@ -29,6 +29,8 @@ namespace DMS_WebAPI.Utilities
             string token = Token.ToLower();
             if (!_casheContexts.ContainsKey(token))
             {
+                HttpContext.Current.Response.StatusCode = 401;
+                HttpContext.Current.Response.End();
                 throw new HttpException(401, "Unauthorized access");
             }
 
