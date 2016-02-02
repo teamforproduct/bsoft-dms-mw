@@ -12,12 +12,11 @@ namespace BL.Database.DBModel.Document
         {
             this.SendLists = new HashSet<DocumentSendLists>();
             this.Files = new HashSet<DocumentFiles>();
-            //this.Links = new HashSet<DocumentLinks>();
+            this.Links = new HashSet<DocumentLinks>();
             this.Accesses = new HashSet<DocumentAccesses>();
-            //this.Subscriptions = new HashSet<DocumentSubscriptions>();
-            //this.Waits = new HashSet<DocumentWaits>();
+            this.Subscriptions = new HashSet<DocumentSubscriptions>();
+            this.Waits = new HashSet<DocumentWaits>();
             this.Events = new HashSet<DocumentEvents>();
-            //this.IncomingDetail = new HashSet<DocumentIncomingDetails>();
             this.RestrictedSendLists = new HashSet<DocumentRestrictedSendLists>();
         }
 
@@ -59,10 +58,10 @@ namespace BL.Database.DBModel.Document
 
         public virtual ICollection<DocumentSendLists> SendLists { get; set; }
         public virtual ICollection<DocumentFiles> Files { get; set; }
-//        public virtual ICollection<DocumentLinks> Links { get; set; }
+        public virtual ICollection<DocumentLinks> Links { get; set; }
         public virtual ICollection<DocumentAccesses> Accesses { get; set; }
-//        public virtual ICollection<DocumentSubscriptions> Subscriptions { get; set; }
-//        public virtual ICollection<DocumentWaits> Waits { get; set; }
+        public virtual ICollection<DocumentSubscriptions> Subscriptions { get; set; }
+        public virtual ICollection<DocumentWaits> Waits { get; set; }
         public virtual ICollection<DocumentEvents> Events { get; set; }
 
         public virtual ICollection<DocumentRestrictedSendLists> RestrictedSendLists { get; set; }

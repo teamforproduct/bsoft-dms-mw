@@ -50,6 +50,8 @@ namespace BL.Model.DocumentCore
         public string SenderAgentPersonName { get; set; }
         public string AccessLevelName { get; set; }
 
+        public bool IsFavourtite { get; set; }
+
         public DateTime DocumentDate { get; set; }
         public string RegistrationFullNumber { get; set; }
 
