@@ -10,6 +10,7 @@ using System.Linq;
 using BL.Model.DictionaryCore;
 using BL.Model.SystemCore;
 using BL.Database.Dictionaries.Interfaces;
+using BL.Model.Enums;
 
 namespace BL.Logic.DocumentCore
 {
@@ -23,7 +24,7 @@ namespace BL.Logic.DocumentCore
             {
                 var evt = new BaseDocumentEvent
                 {
-                    EventType = DocumentEventTypes.AddNewDocument,
+                    EventType = EnumEventTypes.AddNewDocument,
                     Description = "Creat",
                     CreateDate = DateTime.Now,
                     Date = DateTime.Now,

@@ -1,6 +1,6 @@
-﻿namespace BL.Model.DictionaryCore
+﻿namespace BL.Model.Enums
 {
-    public enum ImpotanceEventTypes
+    public enum EnumImpotanceEventTypes
     {
         DocumentMoovement = 1,  //Факты движения документов
         ImportantEvents = 2,//	Важные события
