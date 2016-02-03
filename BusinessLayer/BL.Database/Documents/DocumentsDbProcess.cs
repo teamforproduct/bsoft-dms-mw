@@ -350,7 +350,7 @@ namespace BL.Database.Documents
                 AccessLevelName = null, //после добавления Access??? подумать
                 DocumentDate = x.RegistrationDate ?? x.CreateDate,
                 RegistrationFullNumber = x.RegistrationNumber != null ? x.RegistrationNumber.ToString() : "#" + x.Id.ToString(),
-
+                GeneralInfo = x.TemplateDocument.DocumentDirection.Name + " " +  x.TemplateDocument.DocumentType.Name,
                 Events = x.Events.Select(y => new BaseDocumentEvent
                 {
                     Id = y.Id,
