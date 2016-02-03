@@ -66,12 +66,15 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<DictionarySubordinationTypes> DictionarySubordinationTypesSet { get; set; }
 
         public virtual DbSet<DBModel.Document.Documents> DocumentsSet { get; set; }
+        public virtual DbSet<DocumentSavedFilters> DocumentSavedFiltersSet { get; set; }
         public virtual DbSet<DocumentFiles> DocumentFilesSet { get; set; }
+        public virtual DbSet<DocumentLinks> DocumentLinksSet { get; set; }
         public virtual DbSet<DocumentAccesses> DocumentAccessesSet { get; set; }
         public virtual DbSet<DocumentEvents> DocumentEventsSet { get; set; }
         public virtual DbSet<DocumentRestrictedSendLists> DocumentRestrictedSendListsSet { get; set; }
         public virtual DbSet<DocumentSendLists> DocumentSendListsSet { get; set; }
-        public virtual DbSet<DocumentSavedFilters> DocumentSavedFiltersSet { get; set; }
+        public virtual DbSet<DocumentSubscriptions> DocumentSubscriptionsSet { get; set; }
+        public virtual DbSet<DocumentWaits> DocumentWaitsSet { get; set; }
 
         public virtual DbSet<TemplateDocumentSendLists> TemplateDocumentSendLists { get; set; }
         public virtual DbSet<TemplateDocumentRestrictedSendLists> TemplateDocumentRestrictedSendLists { get; set; }

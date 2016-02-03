@@ -199,6 +199,14 @@
     <Compile Include="Migrations\201602031012091_AddDocumentSavedFilters.Designer.cs">
       <DependentUpon>201602031012091_AddDocumentSavedFilters.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201602031631428_ChangeFKByIncorrectFields.cs" />
+    <Compile Include="Migrations\201602031631428_ChangeFKByIncorrectFields.Designer.cs">
+      <DependentUpon>201602031631428_ChangeFKByIncorrectFields.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201602031638082_Change2FKByIncorrectFields.cs" />
+    <Compile Include="Migrations\201602031638082_Change2FKByIncorrectFields.Designer.cs">
+      <DependentUpon>201602031638082_Change2FKByIncorrectFields.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\ISecurityDbProcess.cs" />
@@ -291,6 +299,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201602031012091_AddDocumentSavedFilters.resx">
       <DependentUpon>201602031012091_AddDocumentSavedFilters.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602031631428_ChangeFKByIncorrectFields.resx">
+      <DependentUpon>201602031631428_ChangeFKByIncorrectFields.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602031638082_Change2FKByIncorrectFields.resx">
+      <DependentUpon>201602031638082_Change2FKByIncorrectFields.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -34,6 +34,7 @@ namespace BL.Database.DBModel.Dictionary
         //public virtual ICollection<AdminSubordination> AddresseeSubordinations { get; set; }
         //public virtual ICollection<AdminSettings> Settings { get; set; }
         public virtual ICollection<DictionaryPositions> ChildPositions { get; set; }
+        [ForeignKey("ChiefPositionId")]
         public virtual ICollection<DictionaryDepartments> ChiefDepartments { get; set; }
         public virtual ICollection<DictionaryStandartSendLists> StandartSendLists { get; set; }
         public virtual ICollection<DocumentSavedFilters> DocumentSavedFilters { get; set; }
