@@ -59,7 +59,7 @@ namespace BL.Database.Documents
                     SourcePositionId = x.SourcePositionId,
                     TargetAgentId = x.TargetAgentId,
                     TargetPositionId = x.TargetPositionId,
-                    EventTypeId = (int) x.EventType
+                    EventTypeId = (int)x.EventType
                 }).ToList();
             }
 
@@ -90,11 +90,11 @@ namespace BL.Database.Documents
                     IsInWork = x.IsInWork,
                     LastChangeUserId = x.LastChangeUserId,
                     PositionId = x.PositionId,
-                    AccessLevelId = (int) x.AccessType,
+                    AccessLevelId = (int)x.AccessType,
                 }).ToList();
             }
 
-        dbContext.DocumentsSet.Add(doc);
+            dbContext.DocumentsSet.Add(doc);
             dbContext.SaveChanges();
             document.Id = doc.Id;
         }
@@ -350,7 +350,7 @@ namespace BL.Database.Documents
                 AccessLevelName = null, //после добавления Access??? подумать
                 DocumentDate = x.RegistrationDate ?? x.CreateDate,
                 RegistrationFullNumber = x.RegistrationNumber != null ? x.RegistrationNumber.ToString() : "#" + x.Id.ToString(),
-                GeneralInfo = x.TemplateDocument.DocumentDirection.Name + " " +  x.TemplateDocument.DocumentType.Name,
+                GeneralInfo = x.TemplateDocument.DocumentDirection.Name + " " + x.TemplateDocument.DocumentType.Name,
                 Events = x.Events.Select(y => new BaseDocumentEvent
                 {
                     Id = y.Id,
@@ -427,7 +427,7 @@ namespace BL.Database.Documents
                 IsInWork = access.IsInWork,
                 LastChangeUserId = access.LastChangeUserId,
                 PositionId = access.PositionId,
-                AccessLevelId = (int) access.AccessType,
+                AccessLevelId = (int)access.AccessType,
             };
             dbContext.DocumentAccessesSet.Add(acc);
             dbContext.SaveChanges();
@@ -556,5 +556,95 @@ namespace BL.Database.Documents
             }
         }
         #endregion DocumentSendLists
+
+        #region DocumentSavedFilters
+
+        public void AddSavedFilters(IContext ctx, ModifyDocumentSavedFilter savedFilter)
+        {
+            var dbContext = GetUserDmsContext(ctx);
+            var savFilter = new DocumentSavedFilters
+            {
+                PositionId = dbContext.Context.CurrentPositionId,
+                Icon = savedFilter.Icon,
+                Filter = savedFilter.Filter.ToString(),
+                IsCommon = savedFilter.IsCommon,
+                LastChangeUserId = dbContext.Context.CurrentAgentId,
+                LastChangeDate = DateTime.Now
+            };
+
+            dbContext.DocumentSavedFiltersSet.Add(savFilter);
+            dbContext.SaveChanges();
+            savedFilter.Id = savFilter.Id;
+        }
+
+        public void UpdateSavedFilters(IContext ctx, ModifyDocumentSavedFilter savedFilter)
+        {
+            var dbContext = GetUserDmsContext(ctx);
+            var savFilter = dbContext.DocumentSavedFiltersSet.FirstOrDefault(x => x.Id == savedFilter.Id);
+            if (savFilter != null)
+            {
+                savFilter.Id = savedFilter.Id;
+                savFilter.PositionId = dbContext.Context.CurrentPositionId;
+                savFilter.Icon = savedFilter.Icon;
+                savFilter.Filter = savedFilter.Filter.ToString();
+                savFilter.IsCommon = savedFilter.IsCommon;
+                savFilter.LastChangeUserId = dbContext.Context.CurrentAgentId;
+                savFilter.LastChangeDate = DateTime.Now;
+            }
+            dbContext.SaveChanges();
+        }
+
+        public IEnumerable<BaseDocumentSavedFilter> GetSavedFilters(IContext ctx)
+        {
+            var dbContext = GetUserDmsContext(ctx);
+            var qry = dbContext.DocumentSavedFiltersSet.AsQueryable();
+
+            //TODO: Uncomment to get the filters on the positions
+            //var positionId = dbContext.Context.CurrentPositionId;
+            //qry = qry.Where(x => x.PositionId == positionId);
+
+            var res = qry.Select(x => new BaseDocumentSavedFilter
+            {
+                Id = x.Id,
+                PositionId = x.PositionId,
+                Icon = x.Icon,
+                Filter = x.Filter,
+                IsCommon = x.IsCommon,
+                LastChangeUserId = x.LastChangeUserId,
+                LastChangeDate = x.LastChangeDate,
+                PositionName = x.Position.Name
+            }).ToList();
+            return res;
+        }
+
+        public BaseDocumentSavedFilter GetSavedFilter(IContext ctx, int savedFilterId)
+        {
+            var dbContext = GetUserDmsContext(ctx);
+
+            var savFilter = dbContext.DocumentSavedFiltersSet.Where(x => x.Id == savedFilterId).Select(x => new BaseDocumentSavedFilter
+            {
+                Id = x.Id,
+                PositionId = x.PositionId,
+                Icon = x.Icon,
+                Filter = x.Filter,
+                IsCommon = x.IsCommon,
+                LastChangeUserId = x.LastChangeUserId,
+                LastChangeDate = x.LastChangeDate,
+                PositionName = x.Position.Name
+            }).FirstOrDefault();
+            return savFilter;
+        }
+        public void DeleteSavedFilter(IContext ctx, int savedFilterId)
+        {
+            var dbContext = GetUserDmsContext(ctx);
+
+            var savFilter = dbContext.DocumentSavedFiltersSet.Where(x => x.Id == savedFilterId).FirstOrDefault();
+            if (savFilter != null)
+            {
+                dbContext.DocumentSavedFiltersSet.Remove(savFilter);
+                dbContext.SaveChanges();
+            }
+        }
+        #endregion DocumentSavedFilters
     }
 }

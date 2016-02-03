@@ -190,5 +190,39 @@ namespace BL.Logic.DocumentCore
             documentDb.DeleteSendList(context, sendListId);
         }
         #endregion DocumentSendLists
+
+        #region DocumentSavedFilters
+        public int SaveSavedFilter(IContext context, ModifyDocumentSavedFilter savedFilter)
+        {
+            var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
+            if (savedFilter.Id == 0) // new savedFilter
+            {
+                documentDb.AddSavedFilters(context, savedFilter);
+            }
+            else
+            {
+                documentDb.UpdateSavedFilters(context, savedFilter);
+            }
+
+            return savedFilter.Id;
+        }
+
+        public IEnumerable<BaseDocumentSavedFilter> GetSavedFilters(IContext ctx)
+        {
+            var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
+            return documentDb.GetSavedFilters(ctx);
+        }
+
+        public BaseDocumentSavedFilter GetSavedFilter(IContext ctx, int savedFilterId)
+        {
+            var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
+            return documentDb.GetSavedFilter(ctx, savedFilterId);
+        }
+        public void DeleteSavedFilter(IContext context, int savedFilterId)
+        {
+            var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
+            documentDb.DeleteSavedFilter(context, savedFilterId);
+        }
+        #endregion DocumentSavedFilters
     }
 }

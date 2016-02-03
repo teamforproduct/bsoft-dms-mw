@@ -23,5 +23,11 @@ namespace BL.Database.Documents.Interfaces
         int AddDocumentEvent(IContext ctx, BaseDocumentEvent docEvent);
         int AddDocumentAccess(IContext ctx, BaseDocumentAccess access);
         void RemoveDocumentAccess(IContext ctx, BaseDocumentAccess access);
+
+        void AddSavedFilters(IContext ctx, ModifyDocumentSavedFilter savedFilter);
+        void UpdateSavedFilters(IContext ctx, ModifyDocumentSavedFilter savedFilter);
+        IEnumerable<BaseDocumentSavedFilter> GetSavedFilters(IContext ctx);
+        BaseDocumentSavedFilter GetSavedFilter(IContext ctx, int savedFilterId);
+        void DeleteSavedFilter(IContext ctx, int savedFilterId);
     }
 }

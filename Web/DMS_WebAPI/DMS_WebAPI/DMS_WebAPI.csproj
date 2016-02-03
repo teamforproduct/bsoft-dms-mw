@@ -233,6 +233,7 @@
     <Compile Include="Controllers\Dictionaries\DictionaryAgentPersonsController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryStandartSendListsController.cs" />
     <Compile Include="Controllers\Documents\DocumentRestrictedSendListsController.cs" />
+    <Compile Include="Controllers\Documents\DocumentSavedFiltersController.cs" />
     <Compile Include="Controllers\Documents\DocumentsController.cs" />
     <Compile Include="Controllers\Documents\DocumentSendListsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />

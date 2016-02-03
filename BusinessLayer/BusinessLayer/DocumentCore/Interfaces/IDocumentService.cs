@@ -22,5 +22,10 @@ namespace BL.Logic.DocumentCore.Interfaces
         int AddSendList(IContext ctx, ModifyDocumentSendList sendList);
         void AddSendListByStandartSendLists(IContext context, ModifyDocumentSendListByStandartSendList model);
         void DeleteSendList(IContext context, int sendListId);
+
+        int SaveSavedFilter(IContext context, ModifyDocumentSavedFilter savedFilter);
+        IEnumerable<BaseDocumentSavedFilter> GetSavedFilters(IContext ctx);
+        BaseDocumentSavedFilter GetSavedFilter(IContext ctx, int savedFilterId);
+        void DeleteSavedFilter(IContext context, int savedFilterId);
     }
 }
