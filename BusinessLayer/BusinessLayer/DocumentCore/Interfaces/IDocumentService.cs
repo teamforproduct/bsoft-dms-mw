@@ -35,7 +35,7 @@ namespace BL.Logic.DocumentCore.Interfaces
         void AddDocumentComment(IContext context, AddNote note);
 
         void ChangeDocumentWorkStatus(IContext context, ChangeWorkStatus newStatus);
-        void AddDocumentToFavourite(IContext context, int documentId);
-        void RemoveDocumentFromFavourite(IContext context, int documentId);
+
+        void ChangeFavouritesForDocument(IContext context, ChangeFavourites model);
     }
 }
