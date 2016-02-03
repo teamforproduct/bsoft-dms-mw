@@ -40,6 +40,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdminCore\BaseAdminAccessLevel.cs" />
+    <Compile Include="AdminCore\FilterAdminAccessLevel.cs" />
     <Compile Include="Database\StoreInfo.cs" />
     <Compile Include="Database\DatabaseModel.cs" />
     <Compile Include="Database\DatabaseType.cs" />
