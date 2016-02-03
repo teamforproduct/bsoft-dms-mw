@@ -7,7 +7,6 @@ using BL.Model.DocumentCore;
 using System;
 using BL.Logic.DocumentCore.Interfaces;
 using System.Linq;
-using BL.Model.DictionaryCore;
 using BL.Model.SystemCore;
 using BL.Database.Dictionaries.Interfaces;
 using BL.Model.Enums;
@@ -93,9 +92,6 @@ namespace BL.Logic.DocumentCore
             {
                 EventType = EnumEventTypes.AddNewDocument,
                 Description = "Creat",
-                CreateDate = DateTime.Now,
-                Date = DateTime.Now,
-                LastChangeDate = DateTime.Now,
                 LastChangeUserId = context.CurrentAgentId,
                 SourceAgentId = context.CurrentAgentId,
                 TargetAgentId = context.CurrentAgentId,
@@ -190,5 +186,28 @@ namespace BL.Logic.DocumentCore
             documentDb.DeleteSendList(context, sendListId);
         }
         #endregion DocumentSendLists
+
+        #region DocumentEvents
+
+        public void AddDocumentComment(IContext context, int documentId, string comment)
+        {
+            var evt = new BaseDocumentEvent
+            {
+                DocumentId = documentId,
+                Description = comment,
+                EventType = EnumEventTypes.AddNote,
+                SourceAgentId = context.CurrentAgentId,
+                TargetAgentId = context.CurrentAgentId,
+                SourcePositionId = context.CurrentPositionId,
+                TargetPositionId = context.CurrentPositionId,
+                LastChangeUserId = context.CurrentAgentId,
+                
+            };
+
+            var db = DmsResolver.Current.Get<IDocumentsDbProcess>();
+            db.AddDocumentEvent(context, evt);
+        }
+
+        #endregion
     }
 }

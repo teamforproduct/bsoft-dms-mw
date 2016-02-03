@@ -22,5 +22,7 @@ namespace BL.Logic.DocumentCore.Interfaces
         int AddSendList(IContext ctx, ModifyDocumentSendList sendList);
         void AddSendListByStandartSendLists(IContext context, ModifyDocumentSendListByStandartSendList model);
         void DeleteSendList(IContext context, int sendListId);
+
+        void AddDocumentComment(IContext context, int documentId, string comment);
     }
 }

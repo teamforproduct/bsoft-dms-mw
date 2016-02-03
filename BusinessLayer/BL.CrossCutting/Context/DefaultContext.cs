@@ -3,6 +3,7 @@ using BL.CrossCutting.Interfaces;
 using BL.Model.Database;
 using BL.Model.Users;
 using System.Linq;
+using BL.Model.Exception;
 
 namespace BL.CrossCutting.Context
 {
@@ -18,7 +19,7 @@ namespace BL.CrossCutting.Context
                 var position = CurrentPosition.FirstOrDefault();
                 if (position == null)
                 {
-                    throw new System.Exception();
+                    throw new UserPositionIsNotDefined();
                 }
                 return position.PositionId;
             }
@@ -30,7 +31,7 @@ namespace BL.CrossCutting.Context
             {
                 if (!CurrentEmployee.AgentId.HasValue)
                 {
-                    throw new System.Exception();
+                    throw new UserNameIsNotDefined();
                 }
                 return CurrentEmployee.AgentId.GetValueOrDefault();
             }

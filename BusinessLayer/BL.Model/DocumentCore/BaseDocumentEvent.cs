@@ -5,6 +5,13 @@ namespace BL.Model.DocumentCore
 {
     public class BaseDocumentEvent
     {
+        public BaseDocumentEvent()
+        {
+            LastChangeDate = DateTime.Now;
+            Date = DateTime.Now;
+            CreateDate = DateTime.Now;
+        }
+
         public int Id { get; set; }
         public int DocumentId { get; set; }
         public EnumEventTypes EventType { get; set; }

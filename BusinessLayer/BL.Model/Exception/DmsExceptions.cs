@@ -25,4 +25,28 @@
         {
         }
     }
+
+    public class UserPositionIsNotDefined : DmsExceptions
+    {
+        private const string _MESSAGE = "Position for the current user could not be defined!";
+        public UserPositionIsNotDefined() : base(_MESSAGE)
+        {
+        }
+
+        public UserPositionIsNotDefined(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+    public class UserNameIsNotDefined : DmsExceptions
+    {
+        private const string _MESSAGE = "Employee for the current user could not be defined!";
+        public UserNameIsNotDefined() : base(_MESSAGE)
+        {
+        }
+
+        public UserNameIsNotDefined(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
 }
