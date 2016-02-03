@@ -13,6 +13,7 @@ namespace BL.Model.SystemCore
         public string ObjectCode { get; set; }
         public string ActionCode { get; set; }
         public string Code { get; set; }
+        public string TypeCode { get; set; }
         public string Description { get; set; }
         public string Label { get; set; }
         public string Hint { get; set; }
