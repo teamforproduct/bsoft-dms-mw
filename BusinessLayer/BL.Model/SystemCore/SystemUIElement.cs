@@ -25,7 +25,7 @@ namespace BL.Model.SystemCore
         public Nullable<int> SelectObjectId { get; set; }
         public Nullable<int> CustomDictionaryTypeId { get; set; }
         public string SelectAPI { get; set; }
-        public string SelectFiler { get; set; }
+        public string SelectFilter { get; set; }
         public Nullable<int> SelectFieldId { get; set; }
         public string SelectFieldCode { get; set; }
         public Nullable<int> SelectDescriptionFieldId { get; set; }
