@@ -37,6 +37,6 @@ namespace BL.Logic.DocumentCore.Interfaces
         void EndWorkWithDocument(IContext context, int documentId);
         void ResumeWorkWithDocument(IContext context, int documentId);
 
-        void ChangeFavouritesForDocument(IContext context, ChangeFavourites model)
+        void ChangeFavouritesForDocument(IContext context, ChangeFavourites model);
     }
 }
