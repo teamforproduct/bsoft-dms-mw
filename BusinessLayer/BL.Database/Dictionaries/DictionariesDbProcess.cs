@@ -81,7 +81,7 @@ namespace BL.Database.Dictionaries
         public BaseDictionaryAgentPerson GetDictionaryAgentPerson(IContext context, int id)
         {
             var dbContext = GetUserDmsContext(context);
-
+            
             return dbContext.DictionaryAgentPersonsSet.Where(x => x.Id == id).Select(x => new BaseDictionaryAgentPerson
             {
                 Id = x.Id,
@@ -98,6 +98,7 @@ namespace BL.Database.Dictionaries
         public IEnumerable<BaseDictionaryAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter)
         {
             var dbContext = GetUserDmsContext(context);
+
             var qry = dbContext.DictionaryAgentPersonsSet.AsQueryable();
 
             if (filter.Id?.Count > 0)
