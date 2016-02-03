@@ -43,7 +43,9 @@ namespace BL.Database.DBModel.Document
         public virtual DictionaryAgents TargetAgent { get; set; }
         public virtual ICollection<DocumentWaits> OnWaits { get; set; }
         public virtual ICollection<DocumentWaits> OffWaits { get; set; }
+        [ForeignKey("SendEventId")]
         public virtual ICollection<DocumentSubscriptions> SendSubscriptions { get; set; }
+        [ForeignKey("DoneEventId")]
         public virtual ICollection<DocumentSubscriptions> DoneSubscriptions { get; set; }
         public virtual ICollection<DocumentSendLists> SendLists { get; set; }
     }

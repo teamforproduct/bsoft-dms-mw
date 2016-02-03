@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BL.Database.DBModel.Dictionary
 {
@@ -8,7 +9,8 @@ namespace BL.Database.DBModel.Dictionary
         public DictionaryAgents()
         {
             this.Positions = new HashSet<DictionaryPositions>();
-            this.AgentPersons = new HashSet<DictionaryAgentPersons>();
+            this.AgentPersonsAgents = new HashSet<DictionaryAgentPersons>();
+            this.AgentPersonsPersonAgents = new HashSet<DictionaryAgentPersons>();
         }
 
         public int Id { get; set; }
@@ -20,6 +22,11 @@ namespace BL.Database.DBModel.Dictionary
         public DateTime LastChangeDate { get; set; }
 
         public virtual ICollection<DictionaryPositions> Positions { get; set; }
-        public virtual ICollection<DictionaryAgentPersons> AgentPersons { get; set; }
+
+        [ForeignKey("AgentId")]
+        public virtual ICollection<DictionaryAgentPersons> AgentPersonsAgents { get; set; }
+        
+        [ForeignKey("PersonAgentId")]
+        public virtual ICollection<DictionaryAgentPersons> AgentPersonsPersonAgents { get; set; }
     }
 }

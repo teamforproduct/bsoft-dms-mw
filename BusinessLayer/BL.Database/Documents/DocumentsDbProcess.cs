@@ -13,10 +13,6 @@ namespace BL.Database.Documents
 {
     internal class DocumentsDbProcess : CoreDb.CoreDb, IDocumentsDbProcess
     {
-        public DocumentsDbProcess()
-        {
-        }
-
         #region Documents
 
         public void AddDocument(IContext ctx, FullDocument document)
@@ -38,7 +34,7 @@ namespace BL.Database.Documents
             };
             if (document.RestrictedSendLists != null && document.RestrictedSendLists.Any())
             {
-                doc.RestrictedSendLists = document.RestrictedSendLists.Select(x => new DocumentRestrictedSendLists()
+                doc.RestrictedSendLists = document.RestrictedSendLists.Select(x => new DocumentRestrictedSendLists
                 {
                     PositionId = x.PositionId,
                     AccessLevelId = x.AccessLevelId,
@@ -60,7 +56,7 @@ namespace BL.Database.Documents
                     SourcePositionId = x.SourcePositionId,
                     TargetAgentId = x.TargetAgentId,
                     TargetPositionId = x.TargetPositionId,
-                    EventTypeId = (int) x.EventType
+                    EventTypeId = (int)x.EventType
                 }).ToList();
             }
 
@@ -91,11 +87,11 @@ namespace BL.Database.Documents
                     IsInWork = x.IsInWork,
                     LastChangeUserId = x.LastChangeUserId,
                     PositionId = x.PositionId,
-                    AccessLevelId = (int) x.AccessType,
+                    AccessLevelId = (int)x.AccessType,
                 }).ToList();
             }
 
-        dbContext.DocumentsSet.Add(doc);
+            dbContext.DocumentsSet.Add(doc);
             dbContext.SaveChanges();
             document.Id = doc.Id;
         }
@@ -117,61 +113,62 @@ namespace BL.Database.Documents
                 doc.ExecutorPositionId = document.ExecutorPositionId;
                 doc.LastChangeUserId = dbContext.Context.CurrentAgentId;
                 doc.LastChangeDate = DateTime.Now;
-            }
 
-            if (document.Events != null && document.Events.Any(x => x.Id == 0))
-            {
-                // add only new events. New events should be without Id
-                doc.Events = document.Events.Where(x => x.Id == 0).Select(x => new DocumentEvents
-                {
-                    CreateDate = x.CreateDate,
-                    Date = x.Date,
-                    Description = x.Description,
-                    LastChangeDate = x.LastChangeDate,
-                    LastChangeUserId = x.LastChangeUserId,
-                    SourceAgentId = x.SourceAgentId,
-                    SourcePositionId = x.SourcePositionId,
-                    TargetAgentId = x.TargetAgentId,
-                    TargetPositionId = x.TargetPositionId,
-                    EventTypeId = (int)x.EventType
-                }).ToList();
-            }
 
-            if (document.Accesses != null )
-            {
-                foreach (var acc in document.Accesses)
+                if (document.Events != null && document.Events.Any(x => x.Id == 0))
                 {
-                    foreach (var eacc in doc.Accesses.Where(x=>x.Id == acc.Id))
+                    // add only new events. New events should be without Id
+                    doc.Events = document.Events.Where(x => x.Id == 0).Select(x => new DocumentEvents
                     {
-                        if ((eacc.AccessLevelId != (int) acc.AccessType) || (eacc.IsFavourtite != acc.IsFavourite)
-                            || (eacc.IsInWork != acc.IsInWork) || (eacc.PositionId != acc.PositionId))
-                        {
-                            eacc.LastChangeDate = DateTime.Now;
-                            eacc.LastChangeUserId = ctx.CurrentAgentId;
-                            eacc.AccessLevelId = (int) acc.AccessType;
-                            eacc.IsFavourtite = acc.IsFavourite;
-                            eacc.IsInWork = acc.IsInWork;
-                            eacc.PositionId = acc.PositionId;
-                        }
-                    } 
-                }
-
-                //var rmv_acc = doc.Accesses.Where(x => !document.Accesses.Select(s => s.Id).Contains(x.Id)).ToList();
-                //dbContext.DocumentAccessesSet.RemoveRange(rmv_acc);
-
-                if (document.Accesses.Any(x => x.Id == 0))
-                {
-                    doc.Accesses = document.Accesses.Where(x => x.Id == 0).Select(x => new DocumentAccesses
-                    {
+                        CreateDate = x.CreateDate,
+                        Date = x.Date,
+                        Description = x.Description,
                         LastChangeDate = x.LastChangeDate,
-                        IsInWork = x.IsInWork,
                         LastChangeUserId = x.LastChangeUserId,
-                        PositionId = x.PositionId,
-                        AccessLevelId = (int) x.AccessType,
+                        SourceAgentId = x.SourceAgentId,
+                        SourcePositionId = x.SourcePositionId,
+                        TargetAgentId = x.TargetAgentId,
+                        TargetPositionId = x.TargetPositionId,
+                        EventTypeId = (int) x.EventType
                     }).ToList();
                 }
+
+                if (document.Accesses != null)
+                {
+                    foreach (var acc in document.Accesses)
+                    {
+                        foreach (var eacc in doc.Accesses.Where(x => x.Id == acc.Id))
+                        {
+                            if ((eacc.AccessLevelId != (int) acc.AccessType) || (eacc.IsFavourtite != acc.IsFavourite)
+                                || (eacc.IsInWork != acc.IsInWork) || (eacc.PositionId != acc.PositionId))
+                            {
+                                eacc.LastChangeDate = DateTime.Now;
+                                eacc.LastChangeUserId = ctx.CurrentAgentId;
+                                eacc.AccessLevelId = (int) acc.AccessType;
+                                eacc.IsFavourtite = acc.IsFavourite;
+                                eacc.IsInWork = acc.IsInWork;
+                                eacc.PositionId = acc.PositionId;
+                            }
+                        }
+                    }
+
+                    //var rmv_acc = doc.Accesses.Where(x => !document.Accesses.Select(s => s.Id).Contains(x.Id)).ToList();
+                    //dbContext.DocumentAccessesSet.RemoveRange(rmv_acc);
+
+                    if (document.Accesses.Any(x => x.Id == 0))
+                    {
+                        doc.Accesses = document.Accesses.Where(x => x.Id == 0).Select(x => new DocumentAccesses
+                        {
+                            LastChangeDate = x.LastChangeDate,
+                            IsInWork = x.IsInWork,
+                            LastChangeUserId = x.LastChangeUserId,
+                            PositionId = x.PositionId,
+                            AccessLevelId = (int) x.AccessType,
+                        }).ToList();
+                    }
+                }
+                dbContext.SaveChanges();
             }
-            dbContext.SaveChanges();
         }
 
         public int AddDocumentEvent(IContext ctx, BaseDocumentEvent docEvent)
@@ -333,12 +330,12 @@ namespace BL.Database.Documents
                 DocumentDate = x.Doc.RegistrationDate ?? x.Doc.CreateDate,
                 IsFavourtite = x.Acc.IsFavourtite,
                 IsInWork = x.Acc.IsInWork,
-                EventsCount = x.Doc.Events.Count(),
+                EventsCount = x.Doc.Events.Count,
                 NewEventCount = 0,//TODO
-                AttachedFilesCount = x.Doc.Files.Count(),
+                AttachedFilesCount = x.Doc.Files.Count,
                 LinkedDocumentsCount = 0//TODO
                 }).ToList();
-            paging.TotalPageCount = res.Count(); //TODO pay attention to this when we will add paging
+            paging.TotalPageCount = res.Count; //TODO pay attention to this when we will add paging
             return res;
         }
 
@@ -396,12 +393,12 @@ namespace BL.Database.Documents
 
                     IsFavourtite = x.Acc.IsFavourtite,
                     IsInWork = x.Acc.IsInWork,
-                    EventsCount = x.Doc.Events.Count(),
+                    EventsCount = x.Doc.Events.Count,
                     NewEventCount = 0, //TODO
-                    AttachedFilesCount = x.Doc.Files.Count(),
+                    AttachedFilesCount = x.Doc.Files.Count,
                     LinkedDocumentsCount = 0, //TODO
 
-                    Accesses = new List<BaseDocumentAccess>()
+                    Accesses = new List<BaseDocumentAccess>
                     {
                         new BaseDocumentAccess
                         {
@@ -494,7 +491,7 @@ namespace BL.Database.Documents
                 IsInWork = access.IsInWork,
                 LastChangeUserId = access.LastChangeUserId,
                 PositionId = access.PositionId,
-                AccessLevelId = (int) access.AccessType,
+                AccessLevelId = (int)access.AccessType,
                 IsFavourtite = access.IsFavourite
             };
             dbContext.DocumentAccessesSet.Add(acc);
@@ -662,5 +659,95 @@ namespace BL.Database.Documents
             }
         }
         #endregion DocumentSendLists
+
+        #region DocumentSavedFilters
+
+        public void AddSavedFilters(IContext ctx, ModifyDocumentSavedFilter savedFilter)
+        {
+            var dbContext = GetUserDmsContext(ctx);
+            var savFilter = new DocumentSavedFilters
+            {
+                PositionId = dbContext.Context.CurrentPositionId,
+                Icon = savedFilter.Icon,
+                Filter = savedFilter.Filter.ToString(),
+                IsCommon = savedFilter.IsCommon,
+                LastChangeUserId = dbContext.Context.CurrentAgentId,
+                LastChangeDate = DateTime.Now
+            };
+
+            dbContext.DocumentSavedFiltersSet.Add(savFilter);
+            dbContext.SaveChanges();
+            savedFilter.Id = savFilter.Id;
+        }
+
+        public void UpdateSavedFilters(IContext ctx, ModifyDocumentSavedFilter savedFilter)
+        {
+            var dbContext = GetUserDmsContext(ctx);
+            var savFilter = dbContext.DocumentSavedFiltersSet.FirstOrDefault(x => x.Id == savedFilter.Id);
+            if (savFilter != null)
+            {
+                savFilter.Id = savedFilter.Id;
+                savFilter.PositionId = dbContext.Context.CurrentPositionId;
+                savFilter.Icon = savedFilter.Icon;
+                savFilter.Filter = savedFilter.Filter.ToString();
+                savFilter.IsCommon = savedFilter.IsCommon;
+                savFilter.LastChangeUserId = dbContext.Context.CurrentAgentId;
+                savFilter.LastChangeDate = DateTime.Now;
+            }
+            dbContext.SaveChanges();
+        }
+
+        public IEnumerable<BaseDocumentSavedFilter> GetSavedFilters(IContext ctx)
+        {
+            var dbContext = GetUserDmsContext(ctx);
+            var qry = dbContext.DocumentSavedFiltersSet.AsQueryable();
+
+            //TODO: Uncomment to get the filters on the positions
+            //var positionId = dbContext.Context.CurrentPositionId;
+            //qry = qry.Where(x => x.PositionId == positionId);
+
+            var res = qry.Select(x => new BaseDocumentSavedFilter
+            {
+                Id = x.Id,
+                PositionId = x.PositionId,
+                Icon = x.Icon,
+                Filter = x.Filter,
+                IsCommon = x.IsCommon,
+                LastChangeUserId = x.LastChangeUserId,
+                LastChangeDate = x.LastChangeDate,
+                PositionName = x.Position.Name
+            }).ToList();
+            return res;
+        }
+
+        public BaseDocumentSavedFilter GetSavedFilter(IContext ctx, int savedFilterId)
+        {
+            var dbContext = GetUserDmsContext(ctx);
+
+            var savFilter = dbContext.DocumentSavedFiltersSet.Where(x => x.Id == savedFilterId).Select(x => new BaseDocumentSavedFilter
+            {
+                Id = x.Id,
+                PositionId = x.PositionId,
+                Icon = x.Icon,
+                Filter = x.Filter,
+                IsCommon = x.IsCommon,
+                LastChangeUserId = x.LastChangeUserId,
+                LastChangeDate = x.LastChangeDate,
+                PositionName = x.Position.Name
+            }).FirstOrDefault();
+            return savFilter;
+        }
+        public void DeleteSavedFilter(IContext ctx, int savedFilterId)
+        {
+            var dbContext = GetUserDmsContext(ctx);
+
+            var savFilter = dbContext.DocumentSavedFiltersSet.Where(x => x.Id == savedFilterId).FirstOrDefault();
+            if (savFilter != null)
+            {
+                dbContext.DocumentSavedFiltersSet.Remove(savFilter);
+                dbContext.SaveChanges();
+            }
+        }
+        #endregion DocumentSavedFilters
     }
 }

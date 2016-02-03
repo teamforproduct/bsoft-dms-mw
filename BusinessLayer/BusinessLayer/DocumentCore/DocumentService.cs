@@ -10,6 +10,7 @@ using System.Linq;
 using BL.Model.SystemCore;
 using BL.Database.Dictionaries.Interfaces;
 using BL.Model.Enums;
+using System.Web.Script.Serialization;
 
 namespace BL.Logic.DocumentCore
 {
@@ -137,7 +138,8 @@ namespace BL.Logic.DocumentCore
             var dictDb = DmsResolver.Current.Get<IDictionariesDbProcess>();
             var dicStandSendList = dictDb.GetDictionaryStandartSendList(context, model.StandartSendListId);
 
-            var restrictedSendLists = dicStandSendList.StandartSendListContents.Select(x=>new ModifyDocumentRestrictedSendList {
+            var restrictedSendLists = dicStandSendList.StandartSendListContents.Select(x => new ModifyDocumentRestrictedSendList
+            {
                 DocumentId = model.DocumentId,
                 PositionId = x.TargetPositionId,
                 AccessLevelId = x.AccessLevelId.GetValueOrDefault()
@@ -188,6 +190,61 @@ namespace BL.Logic.DocumentCore
         }
 
         #endregion DocumentSendLists
+
+        #region DocumentSavedFilters
+        public int SaveSavedFilter(IContext context, ModifyDocumentSavedFilter savedFilter)
+        {
+            var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
+            if (savedFilter.Id == 0) // new savedFilter
+            {
+                documentDb.AddSavedFilters(context, savedFilter);
+            }
+            else
+            {
+                documentDb.UpdateSavedFilters(context, savedFilter);
+            }
+
+            return savedFilter.Id;
+        }
+
+        public IEnumerable<BaseDocumentSavedFilter> GetSavedFilters(IContext ctx)
+        {
+            var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
+            var savedFilters = documentDb.GetSavedFilters(ctx).ToList();
+            var js = new JavaScriptSerializer();
+            for (int i = 0, l = savedFilters.Count; i < l; i++)
+            {
+                try
+                {
+                    savedFilters[i].Filter = js.DeserializeObject(savedFilters[i].Filter.ToString());
+                }
+                catch
+                {
+                }
+            }
+            return savedFilters;
+        }
+
+        public BaseDocumentSavedFilter GetSavedFilter(IContext ctx, int savedFilterId)
+        {
+            var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
+            var savedFilter = documentDb.GetSavedFilter(ctx, savedFilterId);
+            var js = new JavaScriptSerializer();
+            try
+            {
+                savedFilter.Filter = js.DeserializeObject(savedFilter.Filter.ToString());
+            }
+            catch
+            {
+            }
+            return savedFilter;
+        }
+        public void DeleteSavedFilter(IContext context, int savedFilterId)
+        {
+            var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
+            documentDb.DeleteSavedFilter(context, savedFilterId);
+        }
+        #endregion DocumentSavedFilters
 
         #region DocumentEvents
 

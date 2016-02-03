@@ -12,7 +12,8 @@ namespace BL.Database.DBModel.Document
         {
             this.SendLists = new HashSet<DocumentSendLists>();
             this.Files = new HashSet<DocumentFiles>();
-            this.Links = new HashSet<DocumentLinks>();
+            this.LinksDocuments = new HashSet<DocumentLinks>();
+            this.LinksParentDocuments = new HashSet<DocumentLinks>();
             this.Accesses = new HashSet<DocumentAccesses>();
             this.Subscriptions = new HashSet<DocumentSubscriptions>();
             this.Waits = new HashSet<DocumentWaits>();
@@ -58,7 +59,10 @@ namespace BL.Database.DBModel.Document
 
         public virtual ICollection<DocumentSendLists> SendLists { get; set; }
         public virtual ICollection<DocumentFiles> Files { get; set; }
-        public virtual ICollection<DocumentLinks> Links { get; set; }
+        [ForeignKey("DocumentId")]
+        public virtual ICollection<DocumentLinks> LinksDocuments { get; set; }
+        [ForeignKey("ParentDocumentId")]
+        public virtual ICollection<DocumentLinks> LinksParentDocuments { get; set; }
         public virtual ICollection<DocumentAccesses> Accesses { get; set; }
         public virtual ICollection<DocumentSubscriptions> Subscriptions { get; set; }
         public virtual ICollection<DocumentWaits> Waits { get; set; }

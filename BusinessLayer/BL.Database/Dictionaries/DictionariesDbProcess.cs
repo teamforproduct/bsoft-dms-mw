@@ -24,7 +24,18 @@ namespace BL.Database.Dictionaries
                 IsEmployee = x.IsEmployee,
                 LastChangeUserId = x.LastChangeUserId,
                 LastChangeDate = x.LastChangeDate,
-                AgentPersons = x.AgentPersons.Select(y => new BaseDictionaryAgentPerson
+                AgentPersonsAgents = x.AgentPersonsAgents.Select(y => new BaseDictionaryAgentPerson
+                {
+                    Id = y.Id,
+                    AgentId = y.AgentId,
+                    Name = y.Name,
+                    PersonAgentId = y.PersonAgentId,
+                    LastChangeUserId = y.LastChangeUserId,
+                    LastChangeDate = y.LastChangeDate,
+                    AgentName = y.Agent.Name,
+                    PersonAgentName = y.PersonAgent.Name
+                }),
+                AgentPersonsPersonAgents = x.AgentPersonsPersonAgents.Select(y => new BaseDictionaryAgentPerson
                 {
                     Id = y.Id,
                     AgentId = y.AgentId,

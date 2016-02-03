@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BL.Database.DBModel.Document;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -14,8 +15,8 @@ namespace BL.Database.DBModel.Dictionary
             //this.Settings = new HashSet<AdminSettings>();
             this.ChiefDepartments = new HashSet<DictionaryDepartments>();
             this.StandartSendLists = new HashSet<DictionaryStandartSendLists>();
+            this.DocumentSavedFilters = new HashSet<DocumentSavedFilters>();
         }
-
         public int Id { get; set; }
         public Nullable<int> ParentId { get; set; }
         public string Name { get; set; }
@@ -33,8 +34,10 @@ namespace BL.Database.DBModel.Dictionary
         //public virtual ICollection<AdminSubordination> AddresseeSubordinations { get; set; }
         //public virtual ICollection<AdminSettings> Settings { get; set; }
         public virtual ICollection<DictionaryPositions> ChildPositions { get; set; }
+        [ForeignKey("ChiefPositionId")]
         public virtual ICollection<DictionaryDepartments> ChiefDepartments { get; set; }
         public virtual ICollection<DictionaryStandartSendLists> StandartSendLists { get; set; }
+        public virtual ICollection<DocumentSavedFilters> DocumentSavedFilters { get; set; }
 
     }
 }
