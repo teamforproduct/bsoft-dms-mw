@@ -71,6 +71,7 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<DocumentEvents> DocumentEventsSet { get; set; }
         public virtual DbSet<DocumentRestrictedSendLists> DocumentRestrictedSendListsSet { get; set; }
         public virtual DbSet<DocumentSendLists> DocumentSendListsSet { get; set; }
+        public virtual DbSet<DocumentSavedFilters> DocumentSavedFiltersSet { get; set; }
 
         public virtual DbSet<TemplateDocumentSendLists> TemplateDocumentSendLists { get; set; }
         public virtual DbSet<TemplateDocumentRestrictedSendLists> TemplateDocumentRestrictedSendLists { get; set; }
