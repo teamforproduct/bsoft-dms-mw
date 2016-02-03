@@ -24,6 +24,6 @@ namespace BL.Model.DocumentCore
         public DateTime? SenderFromDate { get; set; }
         public DateTime? SenderToDate { get; set; }
         public string Addressee { get; set; }
-
+        public bool IsInWork { get; set; } // should be true by default
     }
 }

@@ -23,6 +23,14 @@ namespace BL.Logic.DocumentCore.Interfaces
         void AddSendListByStandartSendLists(IContext context, ModifyDocumentSendListByStandartSendList model);
         void DeleteSendList(IContext context, int sendListId);
 
+        int AddDocumentAccess(IContext ctx, BaseDocumentAccess access);
+        void RemoveDocumentAccess(IContext ctx, int accessId);
+
         void AddDocumentComment(IContext context, int documentId, string comment);
+
+        void EndWorkWithDocument(IContext context, int documentId);
+        void ResumeWorkWithDocument(IContext context, int documentId);
+        void AddDocumentToFavourite(IContext context, int documentId);
+        void RemoveDocumentFromFavourite(IContext context, int documentId);
     }
 }

@@ -105,6 +105,7 @@ namespace BL.Logic.DocumentCore
             {
                 AccessType = EnumDocumentAccess.PersonalRefIO,
                 IsInWork = true,
+                IsFavourite = false,
                 LastChangeDate = DateTime.Now,
                 LastChangeUserId = context.CurrentAgentId,
                 PositionId = context.CurrentPositionId,
@@ -185,6 +186,7 @@ namespace BL.Logic.DocumentCore
             var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
             documentDb.DeleteSendList(context, sendListId);
         }
+
         #endregion DocumentSendLists
 
         #region DocumentEvents
@@ -206,6 +208,58 @@ namespace BL.Logic.DocumentCore
 
             var db = DmsResolver.Current.Get<IDocumentsDbProcess>();
             db.AddDocumentEvent(context, evt);
+        }
+
+        #endregion
+
+        #region Operation with document
+        public int AddDocumentAccess(IContext ctx, BaseDocumentAccess access)
+        {
+            var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
+            return documentDb.AddDocumentAccess(ctx, access);
+        }
+
+        public void RemoveDocumentAccess(IContext ctx, int accessId)
+        {
+            var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
+            documentDb.RemoveDocumentAccess(ctx, accessId);
+        }
+
+
+        private void ChangeWorkWithDocument(IContext context, int documentId, bool state)
+        {
+            var db = DmsResolver.Current.Get<IDocumentsDbProcess>();
+            var acc = db.GetDocumentAccess(context, documentId);
+            acc.IsInWork = state;
+            db.UpdateDocumentAccess(context, acc);
+        }
+
+        public void EndWorkWithDocument(IContext context, int documentId)
+        {
+            ChangeWorkWithDocument(context, documentId, false);
+        }
+
+        public void ResumeWorkWithDocument(IContext context, int documentId)
+        {
+            ChangeWorkWithDocument(context, documentId, true);
+        }
+
+        private void ChangeFavouritesForDocument(IContext context, int documentId, bool state)
+        {
+            var db = DmsResolver.Current.Get<IDocumentsDbProcess>();
+            var acc = db.GetDocumentAccess(context, documentId);
+            acc.IsFavourite = state;
+            db.UpdateDocumentAccess(context, acc);
+        }
+
+        public void AddDocumentToFavourite(IContext context, int documentId)
+        {
+            ChangeFavouritesForDocument(context, documentId, true);
+        }
+
+        public void RemoveDocumentFromFavourite(IContext context, int documentId)
+        {
+            ChangeFavouritesForDocument(context, documentId, false);
         }
 
         #endregion

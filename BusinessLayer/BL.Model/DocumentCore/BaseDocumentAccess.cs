@@ -9,8 +9,10 @@ namespace BL.Model.DocumentCore
         public int DocumentId { get; set; }
         public int PositionId { get; set; }
         public EnumDocumentAccess AccessType { get; set; }
+        public string AccessLevelName { get; set; }
         public bool IsInWork { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
+        public bool IsFavourite { get; set; }
     }
 }

@@ -7,9 +7,11 @@ namespace BL.Model.DocumentCore
     {
         public FullDocument()
         {
+            CreateDate = DateTime.Now;
+            LastChangeDate = DateTime.Now;
         }
 
-        public FullDocument(ModifyDocument document)
+        public FullDocument(ModifyDocument document) :this()
         {
             Id = document.Id;
             TemplateDocumentId = document.TemplateDocumentId;
@@ -21,7 +23,7 @@ namespace BL.Model.DocumentCore
             SenderNumber = document.SenderNumber;
             SenderDate = document.SenderDate;
             Addressee = document.Addressee;
-            AccessLevelId = document.AccessLevelId;
+            AccessLevel = document.AccessLevel;
         }
 
         public DateTime CreateDate { get; set; }
@@ -44,18 +46,25 @@ namespace BL.Model.DocumentCore
         public string RegistrationJournalName { get; set; }
         public string ExecutorPositionName { get; set; }
         public string ExecutorPositionAgentName { get; set; }
-        //public string ExecutorAgentName { get; set; }
+        public string ExecutorAgentName { get; set; }
 
         public string SenderAgentName { get; set; }
         public string SenderAgentPersonName { get; set; }
         public string AccessLevelName { get; set; }
 
         public bool IsFavourtite { get; set; }
+        public bool IsInWork { get; set; }
 
         public DateTime DocumentDate { get; set; }
+        public DateTime DateOfControl { get; set; }
         public string RegistrationFullNumber { get; set; }
 
         public string GeneralInfo { get; set; }
+
+        public int EventsCount { get; set; }
+        public int NewEventCount { get; set; }
+        public int AttachedFilesCount { get; set; }
+        public int LinkedDocumentsCount { get; set; }
 
         public IEnumerable<BaseDocumentRestrictedSendList> RestrictedSendLists { get; set; }
         public IEnumerable<BaseDocumentSendList> SendLists { get; set; }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Documents.Interfaces;
@@ -136,16 +137,39 @@ namespace BL.Database.Documents
                 }).ToList();
             }
 
-            if (document.Accesses != null && document.Accesses.Any(x => x.Id == 0))
+            if (document.Accesses != null )
             {
-                doc.Accesses = document.Accesses.Where(x => x.Id == 0).Select(x => new DocumentAccesses
+                foreach (var acc in document.Accesses)
                 {
-                    LastChangeDate = x.LastChangeDate,
-                    IsInWork = x.IsInWork,
-                    LastChangeUserId = x.LastChangeUserId,
-                    PositionId = x.PositionId,
-                    AccessLevelId = (int)x.AccessType,
-                }).ToList();
+                    foreach (var eacc in doc.Accesses.Where(x=>x.Id == acc.Id))
+                    {
+                        if ((eacc.AccessLevelId != (int) acc.AccessType) || (eacc.IsFavourtite != acc.IsFavourite)
+                            || (eacc.IsInWork != acc.IsInWork) || (eacc.PositionId != acc.PositionId))
+                        {
+                            eacc.LastChangeDate = DateTime.Now;
+                            eacc.LastChangeUserId = ctx.CurrentAgentId;
+                            eacc.AccessLevelId = (int) acc.AccessType;
+                            eacc.IsFavourtite = acc.IsFavourite;
+                            eacc.IsInWork = acc.IsInWork;
+                            eacc.PositionId = acc.PositionId;
+                        }
+                    } 
+                }
+
+                //var rmv_acc = doc.Accesses.Where(x => !document.Accesses.Select(s => s.Id).Contains(x.Id)).ToList();
+                //dbContext.DocumentAccessesSet.RemoveRange(rmv_acc);
+
+                if (document.Accesses.Any(x => x.Id == 0))
+                {
+                    doc.Accesses = document.Accesses.Where(x => x.Id == 0).Select(x => new DocumentAccesses
+                    {
+                        LastChangeDate = x.LastChangeDate,
+                        IsInWork = x.IsInWork,
+                        LastChangeUserId = x.LastChangeUserId,
+                        PositionId = x.PositionId,
+                        AccessLevelId = (int) x.AccessType,
+                    }).ToList();
+                }
             }
             dbContext.SaveChanges();
         }
@@ -174,7 +198,8 @@ namespace BL.Database.Documents
         public IEnumerable<FullDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging)
         {
             var dbContext = GetUserDmsContext(ctx);
-            var qry = dbContext.DocumentsSet.AsQueryable();
+            var qry = dbContext.DocumentsSet.Include(x=>x.Accesses)
+                .Where(x => x.Accesses.All(a=>a.IsInWork == filters.IsInWork && a.PositionId == ctx.CurrentPositionId));
 
             if (filters.CreateFromDate.HasValue)
             {
@@ -283,29 +308,36 @@ namespace BL.Database.Documents
             //    qry = qry.Where(x => filters.SenderAgentId.Contains(x.));
             //}
 
-            var res = qry.Select(x => new FullDocument
+            var res = qry.Select(x => new { Doc = x, Acc = x.Accesses.FirstOrDefault() })
+                .Select(x => new FullDocument
             {
-                Id = x.Id,
-                DocumentTypeId = x.TemplateDocument.DocumentTypeId,
-                ExecutorPositionId = x.ExecutorPositionId,
-                DocumentDirectionId = x.TemplateDocument.DocumentDirectionId,
-                Description = x.Description,
-                TemplateDocumentId = x.TemplateDocumentId,
-                RegistrationDate = x.RegistrationDate,
-                DocumentSubjectId = x.DocumentSubjectId,
-                RegistrationNumber = x.RegistrationNumber,
-                RegistrationNumberPrefix = x.RegistrationNumberPrefix,
-                RegistrationNumberSuffix = x.RegistrationNumberSuffix,
-                LastChangeDate = x.LastChangeDate,
-                RegistrationJournalId = x.RegistrationJournalId,
-                CreateDate = x.CreateDate,
-                DocumentSubjectName = x.DocumentSubject.Name,
-                ExecutorPositionName = x.ExecutorPosition.Name,
-                LastChangeUserId = x.LastChangeUserId,
-                DocumentDirectionName = x.TemplateDocument.DocumentDirection.Name,
-                DocumentTypeName = x.TemplateDocument.DocumentType.Name,
-                DocumentDate = x.RegistrationDate ?? x.CreateDate
-            }).ToList();
+                Id = x.Doc.Id,
+                DocumentTypeId = x.Doc.TemplateDocument.DocumentTypeId,
+                ExecutorPositionId = x.Doc.ExecutorPositionId,
+                DocumentDirectionId = x.Doc.TemplateDocument.DocumentDirectionId,
+                Description = x.Doc.Description,
+                TemplateDocumentId = x.Doc.TemplateDocumentId,
+                RegistrationDate = x.Doc.RegistrationDate,
+                DocumentSubjectId = x.Doc.DocumentSubjectId,
+                RegistrationNumber = x.Doc.RegistrationNumber,
+                RegistrationNumberPrefix = x.Doc.RegistrationNumberPrefix,
+                RegistrationNumberSuffix = x.Doc.RegistrationNumberSuffix,
+                LastChangeDate = x.Doc.LastChangeDate,
+                RegistrationJournalId = x.Doc.RegistrationJournalId,
+                CreateDate = x.Doc.CreateDate,
+                DocumentSubjectName = x.Doc.DocumentSubject.Name,
+                ExecutorPositionName = x.Doc.ExecutorPosition.Name,
+                LastChangeUserId = x.Doc.LastChangeUserId,
+                DocumentDirectionName = x.Doc.TemplateDocument.DocumentDirection.Name,
+                DocumentTypeName = x.Doc.TemplateDocument.DocumentType.Name,
+                DocumentDate = x.Doc.RegistrationDate ?? x.Doc.CreateDate,
+                IsFavourtite = x.Acc.IsFavourtite,
+                IsInWork = x.Acc.IsInWork,
+                EventsCount = x.Doc.Events.Count(),
+                NewEventCount = 0,//TODO
+                AttachedFilesCount = x.Doc.Files.Count(),
+                LinkedDocumentsCount = 0//TODO
+                }).ToList();
             paging.TotalPageCount = res.Count(); //TODO pay attention to this when we will add paging
             return res;
         }
@@ -314,104 +346,139 @@ namespace BL.Database.Documents
         {
             var dbContext = GetUserDmsContext(ctx);
 
-            var doc = dbContext.DocumentsSet.Where(x => x.Id == documentId).Select(x => new FullDocument
-            {
-                Id = x.Id,
-                TemplateDocumentId = x.TemplateDocumentId,
-                CreateDate = x.CreateDate,
-                DocumentSubjectId = x.DocumentSubjectId,
-                Description = x.Description,
-                RegistrationJournalId = x.RegistrationJournalId,
-                RegistrationNumber = x.RegistrationNumber,
-                RegistrationNumberPrefix = x.RegistrationNumberPrefix,
-                RegistrationNumberSuffix = x.RegistrationNumberSuffix,
-                RegistrationDate = x.RegistrationDate,
-                ExecutorPositionId = x.ExecutorPositionId,
-                LastChangeUserId = x.LastChangeUserId,
-                LastChangeDate = x.LastChangeDate,
-                SenderAgentId = x.SenderAgentId,
-                SenderAgentPersonId = x.SenderAgentPersonId,
-                SenderNumber = x.SenderNumber,
-                SenderDate = x.SenderDate,
-                Addressee = x.Addressee,
-                AccessLevelId = 30, //после добавления Access??? подумать
-                TemplateDocumentName = x.TemplateDocument.Name,
-                IsHard = x.TemplateDocument.IsHard,
-                DocumentDirectionId = x.TemplateDocument.DocumentDirectionId,
-                DocumentDirectionName = x.TemplateDocument.DocumentDirection.Name,
-                DocumentTypeId = x.TemplateDocument.DocumentTypeId,
-                DocumentTypeName = x.TemplateDocument.DocumentType.Name,
-                DocumentSubjectName = x.DocumentSubject.Name,
-                RegistrationJournalName = x.RegistrationJournal.Name,
-                ExecutorPositionName = x.ExecutorPosition.Name,
-                ExecutorPositionAgentName = x.ExecutorPosition.ExecutorAgent.Name,
-                SenderAgentName = x.SenderAgent.Name,
-                SenderAgentPersonName = x.SenderAgentPerson.Name,
-                AccessLevelName = null, //после добавления Access??? подумать
-                DocumentDate = x.RegistrationDate ?? x.CreateDate,
-                RegistrationFullNumber = x.RegistrationNumber != null ? x.RegistrationNumber.ToString() : "#" + x.Id.ToString(),
-                GeneralInfo = x.TemplateDocument.DocumentDirection.Name + " " +  x.TemplateDocument.DocumentType.Name,
-                Events = x.Events.Select(y => new BaseDocumentEvent
+            var doc = dbContext.DocumentsSet
+                .Include(i => i.Accesses)
+                .Include(x => x.RestrictedSendLists)
+                .Include(x => x.SendLists)
+                .Where(x => x.Id == documentId && x.Accesses.All(a => a.PositionId == ctx.CurrentPositionId))
+                .Select(x => new {Doc = x, Acc = x.Accesses.FirstOrDefault()})
+                .Select(x => new FullDocument
                 {
-                    Id = y.Id,
-                    DocumentId = y.DocumentId,
-                    Description = y.Description,
-                    EventType = (EnumEventTypes)y.EventTypeId,
-                    ImpotanceEventType = (EnumImpotanceEventTypes)y.EventType.ImpotanceEventTypeId,
-                    CreateDate = y.CreateDate,
-                    Date = y.Date,
-                    EventTypeName = y.EventType.Name,
-                    EventImpotanceTypeName = y.EventType.ImpotanceEventType.Name,
-                    LastChangeUserId = y.LastChangeUserId,
-                    LastChangeDate = y.LastChangeDate,
-                    SourceAgenName = y.SourceAgent.Name,
-                    SourceAgentId = y.SourceAgentId,
-                    SourcePositionId = y.SourcePositionId,
-                    SourcePositionName = y.SourcePosition.Name,
-                    TargetAgenName = y.TargetAgent.Name,
-                    TargetAgentId = y.TargetAgentId,
-                    TargetPositionId = y.TargetPositionId,
-                    TargetPositionName = y.TargetPosition.Name,
-                    GeneralInfo = ""
-                }).ToList(),
+                    Id = x.Doc.Id,
+                    TemplateDocumentId = x.Doc.TemplateDocumentId,
+                    CreateDate = x.Doc.CreateDate,
+                    DocumentSubjectId = x.Doc.DocumentSubjectId,
+                    Description = x.Doc.Description,
+                    RegistrationJournalId = x.Doc.RegistrationJournalId,
+                    RegistrationNumber = x.Doc.RegistrationNumber,
+                    RegistrationNumberPrefix = x.Doc.RegistrationNumberPrefix,
+                    RegistrationNumberSuffix = x.Doc.RegistrationNumberSuffix,
+                    RegistrationDate = x.Doc.RegistrationDate,
+                    ExecutorPositionId = x.Doc.ExecutorPositionId,
+                    LastChangeUserId = x.Doc.LastChangeUserId,
+                    LastChangeDate = x.Doc.LastChangeDate,
+                    SenderAgentId = x.Doc.SenderAgentId,
+                    SenderAgentPersonId = x.Doc.SenderAgentPersonId,
+                    SenderNumber = x.Doc.SenderNumber,
+                    SenderDate = x.Doc.SenderDate,
+                    Addressee = x.Doc.Addressee,
+                    AccessLevel = (EnumDocumentAccess) x.Acc.AccessLevelId,
+                    TemplateDocumentName = x.Doc.TemplateDocument.Name,
+                    IsHard = x.Doc.TemplateDocument.IsHard,
+                    DocumentDirectionId = x.Doc.TemplateDocument.DocumentDirectionId,
+                    DocumentDirectionName = x.Doc.TemplateDocument.DocumentDirection.Name,
+                    DocumentTypeId = x.Doc.TemplateDocument.DocumentTypeId,
+                    DocumentTypeName = x.Doc.TemplateDocument.DocumentType.Name,
+                    DocumentSubjectName = x.Doc.DocumentSubject.Name,
+                    RegistrationJournalName = x.Doc.RegistrationJournal.Name,
+                    ExecutorPositionName = x.Doc.ExecutorPosition.Name,
+                    ExecutorPositionAgentName = x.Doc.ExecutorPosition.ExecutorAgent.Name,
+                    SenderAgentName = x.Doc.SenderAgent.Name,
+                    SenderAgentPersonName = x.Doc.SenderAgentPerson.Name,
+                    AccessLevelName = x.Acc.AccessLevel.Name,
+                    DocumentDate = x.Doc.RegistrationDate ?? x.Doc.CreateDate,
+                    RegistrationFullNumber =
+                        x.Doc.RegistrationNumber != null
+                            ? x.Doc.RegistrationNumber.ToString()
+                            : "#" + x.Doc.Id.ToString(),
+                    GeneralInfo =
+                        x.Doc.TemplateDocument.DocumentDirection.Name + " " + x.Doc.TemplateDocument.DocumentType.Name,
 
-                SendLists = x.SendLists.Select(y => new BaseDocumentSendList
-                {
-                    Id = y.Id,
-                    DocumentId = y.DocumentId,
-                    OrderNumber = y.OrderNumber,
-                    SendTypeId = y.SendTypeId,
-                    SendTypeName = y.SendType.Name,
-                    SendTypeCode = y.SendType.Code,
-                    SendTypeIsImpotant = y.SendType.IsImpotant,
-                    TargetPositionId = y.TargetPositionId,
-                    TargetPositionName = y.TargetPosition.Name,
-                    Description = y.Description,
-                    DueDate = y.DueDate,
-                    DueDay = y.DueDay,
-                    AccessLevelId = y.AccessLevelId,
-                    AccessLevelName = y.AccessLevel.Name,
-                    IsInitial = y.IsInitial,
-                    EventId = y.EventId,
-                    LastChangeUserId = y.LastChangeUserId,
-                    LastChangeDate = y.LastChangeDate,
-                    GeneralInfo = string.Empty
-                }).ToList(),
+                    IsFavourtite = x.Acc.IsFavourtite,
+                    IsInWork = x.Acc.IsInWork,
+                    EventsCount = x.Doc.Events.Count(),
+                    NewEventCount = 0, //TODO
+                    AttachedFilesCount = x.Doc.Files.Count(),
+                    LinkedDocumentsCount = 0, //TODO
 
-                RestrictedSendLists = x.RestrictedSendLists.Select(y => new BaseDocumentRestrictedSendList
-                {
-                    Id = y.Id,
-                    DocumentId = y.DocumentId,
-                    PositionId = y.PositionId,
-                    PositionName = y.Position.Name,
-                    AccessLevelId = y.AccessLevelId,
-                    AccessLevelName = y.AccessLevel.Name,
-                    LastChangeUserId = y.LastChangeUserId,
-                    LastChangeDate = y.LastChangeDate,
-                    GeneralInfo = string.Empty
-                }).ToList()
+                    Accesses = new List<BaseDocumentAccess>()
+                    {
+                        new BaseDocumentAccess
+                        {
+                            LastChangeDate = x.Acc.LastChangeDate,
+                            LastChangeUserId = x.Acc.LastChangeUserId,
+                            IsInWork = x.Acc.IsInWork,
+                            IsFavourite = x.Acc.IsFavourtite,
+                            PositionId = x.Acc.PositionId,
+                            AccessType = (EnumDocumentAccess) x.Acc.AccessLevelId,
+                            AccessLevelName = x.Acc.AccessLevel.Name,
+                            Id = x.Acc.Id,
+                            DocumentId = x.Acc.DocumentId
+                        }
+                    },
 
-            }).FirstOrDefault();
+                    Events = x.Doc.Events.Select(y => new BaseDocumentEvent
+                    {
+                        Id = y.Id,
+                        DocumentId = y.DocumentId,
+                        Description = y.Description,
+                        EventType = (EnumEventTypes) y.EventTypeId,
+                        ImpotanceEventType = (EnumImpotanceEventTypes) y.EventType.ImpotanceEventTypeId,
+                        CreateDate = y.CreateDate,
+                        Date = y.Date,
+                        EventTypeName = y.EventType.Name,
+                        EventImpotanceTypeName = y.EventType.ImpotanceEventType.Name,
+                        LastChangeUserId = y.LastChangeUserId,
+                        LastChangeDate = y.LastChangeDate,
+                        SourceAgenName = y.SourceAgent.Name,
+                        SourceAgentId = y.SourceAgentId,
+                        SourcePositionId = y.SourcePositionId,
+                        SourcePositionName = y.SourcePosition.Name,
+                        TargetAgenName = y.TargetAgent.Name,
+                        TargetAgentId = y.TargetAgentId,
+                        TargetPositionId = y.TargetPositionId,
+                        TargetPositionName = y.TargetPosition.Name,
+                        GeneralInfo = ""
+                    }).ToList(),
+
+                    SendLists = x.Doc.SendLists.Select(y => new BaseDocumentSendList
+                    {
+                        Id = y.Id,
+                        DocumentId = y.DocumentId,
+                        OrderNumber = y.OrderNumber,
+                        SendTypeId = y.SendTypeId,
+                        SendTypeName = y.SendType.Name,
+                        SendTypeCode = y.SendType.Code,
+                        SendTypeIsImpotant = y.SendType.IsImpotant,
+                        TargetPositionId = y.TargetPositionId,
+                        TargetPositionName = y.TargetPosition.Name,
+                        Description = y.Description,
+                        DueDate = y.DueDate,
+                        DueDay = y.DueDay,
+                        AccessLevelId = y.AccessLevelId,
+                        AccessLevelName = y.AccessLevel.Name,
+                        IsInitial = y.IsInitial,
+                        EventId = y.EventId,
+                        LastChangeUserId = y.LastChangeUserId,
+                        LastChangeDate = y.LastChangeDate,
+                        GeneralInfo = string.Empty
+                    }).ToList(),
+
+                    RestrictedSendLists = x.Doc.RestrictedSendLists.Select(y => new BaseDocumentRestrictedSendList
+                    {
+                        Id = y.Id,
+                        DocumentId = y.DocumentId,
+                        PositionId = y.PositionId,
+                        PositionName = y.Position.Name,
+                        AccessLevelId = y.AccessLevelId,
+                        AccessLevelName = y.AccessLevel.Name,
+                        LastChangeUserId = y.LastChangeUserId,
+                        LastChangeDate = y.LastChangeDate,
+                        GeneralInfo = string.Empty
+                    }).ToList()
+
+                }).FirstOrDefault();
+
             return doc;
         }
         #endregion Documents
@@ -428,21 +495,60 @@ namespace BL.Database.Documents
                 LastChangeUserId = access.LastChangeUserId,
                 PositionId = access.PositionId,
                 AccessLevelId = (int) access.AccessType,
+                IsFavourtite = access.IsFavourite
             };
             dbContext.DocumentAccessesSet.Add(acc);
             dbContext.SaveChanges();
             return acc.Id;
         }
 
-        public void RemoveDocumentAccess(IContext ctx, BaseDocumentAccess access)
+        public void RemoveDocumentAccess(IContext ctx, int accessId)
         {
             var dbContext = GetUserDmsContext(ctx);
-            var acc = dbContext.DocumentAccessesSet.FirstOrDefault(x => x.Id == access.Id);
+            var acc = dbContext.DocumentAccessesSet.FirstOrDefault(x => x.Id == accessId);
             if (acc != null)
             {
                 dbContext.DocumentAccessesSet.Remove(acc);
                 dbContext.SaveChanges();
             }
+        }
+
+        public void UpdateDocumentAccess(IContext ctx, BaseDocumentAccess access)
+        {
+            var dbContext = GetUserDmsContext(ctx);
+            var acc = dbContext.DocumentAccessesSet.FirstOrDefault(x => x.Id == access.Id);
+            if (acc != null)
+            {
+                acc.LastChangeDate = DateTime.Now;
+                acc.IsInWork = access.IsInWork;
+                acc.LastChangeUserId = ctx.CurrentAgentId;
+                acc.PositionId = access.PositionId;
+                acc.AccessLevelId = (int) access.AccessType;
+                acc.IsFavourtite = access.IsFavourite;
+                dbContext.SaveChanges();
+            }
+        }
+
+        public BaseDocumentAccess GetDocumentAccess(IContext ctx, int documentId)
+        {
+            var dbContext = GetUserDmsContext(ctx);
+            var acc = dbContext.DocumentAccessesSet.FirstOrDefault(x => x.DocumentId == documentId && x.PositionId == ctx.CurrentPositionId);
+            if (acc != null)
+            {
+                return new BaseDocumentAccess
+                {
+                    LastChangeDate = acc.LastChangeDate,
+                    LastChangeUserId = acc.LastChangeUserId,
+                    Id = acc.Id,
+                    PositionId = acc.PositionId,
+                    IsInWork = acc.IsInWork,
+                    DocumentId = acc.DocumentId,
+                    IsFavourite = acc.IsFavourtite,
+                    AccessType = (EnumDocumentAccess)acc.AccessLevelId,
+                    AccessLevelName = acc.AccessLevel.Name
+                };
+            }
+            return null;
         }
         #endregion
 

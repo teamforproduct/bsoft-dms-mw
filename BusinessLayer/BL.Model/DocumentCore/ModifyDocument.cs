@@ -1,4 +1,5 @@
 ﻿using System;
+using BL.Model.Enums;
 
 namespace BL.Model.DocumentCore
 {
@@ -15,6 +16,6 @@ namespace BL.Model.DocumentCore
         public string SenderNumber { get; set; }
         public DateTime? SenderDate { get; set; }
         public string Addressee { get; set; }
-        public int AccessLevelId { get; set; }
+        public EnumDocumentAccess AccessLevel { get; set; }
     }
 }

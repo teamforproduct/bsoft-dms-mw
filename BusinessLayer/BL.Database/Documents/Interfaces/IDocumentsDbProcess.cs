@@ -21,7 +21,10 @@ namespace BL.Database.Documents.Interfaces
         void DeleteSendList(IContext ctx, int sendListId);
 
         int AddDocumentEvent(IContext ctx, BaseDocumentEvent docEvent);
+
         int AddDocumentAccess(IContext ctx, BaseDocumentAccess access);
-        void RemoveDocumentAccess(IContext ctx, BaseDocumentAccess access);
+        void RemoveDocumentAccess(IContext ctx, int accessId);
+        void UpdateDocumentAccess(IContext ctx, BaseDocumentAccess access);
+        BaseDocumentAccess GetDocumentAccess(IContext ctx, int documentId);
     }
 }
