@@ -11,6 +11,9 @@ using BL.Model.SystemCore;
 using BL.Database.Dictionaries.Interfaces;
 using BL.Model.Enums;
 using System.Web.Script.Serialization;
+using BL.Model.Database;
+using BL.Model.DocumentCore.Actions;
+using BL.Model.Exception;
 
 namespace BL.Logic.DocumentCore
 {
@@ -119,7 +122,6 @@ namespace BL.Logic.DocumentCore
 
         public int ModifyDocument(IContext context, ModifyDocument document)
         {
-            var db = DmsResolver.Current.Get<ITemplateDocumentsDbProcess>();
             var baseDocument = new FullDocument(document);
             return SaveDocument(context, baseDocument);
         }
@@ -248,12 +250,12 @@ namespace BL.Logic.DocumentCore
 
         #region DocumentEvents
 
-        public void AddDocumentComment(IContext context, int documentId, string comment)
+        public void AddDocumentComment(IContext context, AddNote note)
         {
             var evt = new BaseDocumentEvent
             {
-                DocumentId = documentId,
-                Description = comment,
+                DocumentId = note.Id,
+                Description = note.Description,
                 EventType = EnumEventTypes.AddNote,
                 SourceAgentId = context.CurrentAgentId,
                 TargetAgentId = context.CurrentAgentId,
@@ -282,23 +284,32 @@ namespace BL.Logic.DocumentCore
             documentDb.RemoveDocumentAccess(ctx, accessId);
         }
 
-
-        private void ChangeWorkWithDocument(IContext context, int documentId, bool state)
+        public void ChangeDocumentWorkStatus(IContext context, ChangeWorkStatus newStatus)
         {
             var db = DmsResolver.Current.Get<IDocumentsDbProcess>();
-            var acc = db.GetDocumentAccess(context, documentId);
-            acc.IsInWork = state;
-            db.UpdateDocumentAccess(context, acc);
-        }
-
-        public void EndWorkWithDocument(IContext context, int documentId)
-        {
-            ChangeWorkWithDocument(context, documentId, false);
-        }
-
-        public void ResumeWorkWithDocument(IContext context, int documentId)
-        {
-            ChangeWorkWithDocument(context, documentId, true);
+            var acc = db.GetDocumentAccess(context, newStatus.Id);
+            if (acc == null)
+            {
+                throw new UserHasNoAccessToDocument();
+            }
+            acc.IsInWork = newStatus.IsInWork;
+            var ea = new EventAccessModel
+            {
+                DocumentAccess = acc,
+                DocumentEvent = new BaseDocumentEvent
+                {
+                    DocumentId = newStatus.Id,
+                    SourceAgentId = context.CurrentAgentId,
+                    TargetAgentId = context.CurrentAgentId,
+                    SourcePositionId = context.CurrentPositionId,
+                    TargetPositionId = context.CurrentPositionId,
+                    Description = newStatus.Description,
+                    EventType = newStatus.IsInWork ? EnumEventTypes.SetInWork : EnumEventTypes.SetOutWork,
+                    LastChangeUserId = context.CurrentAgentId
+                }
+            };
+            
+            db.SetDocumentInformation(context, ea);
         }
 
         private void ChangeFavouritesForDocument(IContext context, int documentId, bool state)

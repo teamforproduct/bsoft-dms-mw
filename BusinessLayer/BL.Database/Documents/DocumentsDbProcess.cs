@@ -6,6 +6,7 @@ using BL.CrossCutting.Interfaces;
 using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore;
 using BL.Database.DBModel.Document;
+using BL.Model.Database;
 using BL.Model.SystemCore;
 using BL.Model.Enums;
 
@@ -481,6 +482,36 @@ namespace BL.Database.Documents
         #endregion Documents
 
         #region Document Access
+
+        public void SetDocumentInformation(IContext ctx, EventAccessModel access)
+        {
+            var dbContext = GetUserDmsContext(ctx);
+            var acc = dbContext.DocumentAccessesSet.FirstOrDefault(x => x.Id == access.DocumentAccess.Id);
+            if (acc != null)
+            {
+                acc.LastChangeDate = DateTime.Now;
+                acc.IsInWork = access.DocumentAccess.IsInWork;
+                acc.LastChangeUserId = ctx.CurrentAgentId;
+                acc.PositionId = access.DocumentAccess.PositionId;
+                acc.AccessLevelId = (int)access.DocumentAccess.AccessType;
+                acc.IsFavourtite = access.DocumentAccess.IsFavourite;
+            }
+            var evt = new DocumentEvents
+            {
+                CreateDate = access.DocumentEvent.CreateDate,
+                Date = access.DocumentEvent.Date,
+                Description = access.DocumentEvent.Description,
+                LastChangeDate = access.DocumentEvent.LastChangeDate,
+                LastChangeUserId = access.DocumentEvent.LastChangeUserId,
+                SourceAgentId = access.DocumentEvent.SourceAgentId,
+                SourcePositionId = access.DocumentEvent.SourcePositionId,
+                TargetAgentId = access.DocumentEvent.TargetAgentId,
+                TargetPositionId = access.DocumentEvent.TargetPositionId,
+                EventTypeId = (int) access.DocumentEvent.EventType
+            };
+            dbContext.DocumentEventsSet.Add(evt);
+            dbContext.SaveChanges();
+        }
 
         public int AddDocumentAccess(IContext ctx, BaseDocumentAccess access)
         {

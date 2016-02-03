@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace BL.Model.DocumentCore.Actions
 {
@@ -12,6 +8,5 @@ namespace BL.Model.DocumentCore.Actions
         public List<int> Positions { get; set; }
         public string Description { get; set; }
         public bool IsAddPositionsInfo { get; set; }
-
     }
 }

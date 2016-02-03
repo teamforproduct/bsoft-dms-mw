@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using BL.CrossCutting.Interfaces;
+using BL.Model.Database;
 using BL.Model.DocumentCore;
 using BL.Model.SystemCore;
 
@@ -26,6 +27,8 @@ namespace BL.Database.Documents.Interfaces
         void RemoveDocumentAccess(IContext ctx, int accessId);
         void UpdateDocumentAccess(IContext ctx, BaseDocumentAccess access);
         BaseDocumentAccess GetDocumentAccess(IContext ctx, int documentId);
+
+        void SetDocumentInformation(IContext ctx, EventAccessModel access);
 
         void AddSavedFilters(IContext ctx, ModifyDocumentSavedFilter savedFilter);
         void UpdateSavedFilters(IContext ctx, ModifyDocumentSavedFilter savedFilter);
