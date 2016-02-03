@@ -2,6 +2,7 @@
 using BL.CrossCutting.Interfaces;
 using BL.Model.DocumentCore;
 using BL.Model.SystemCore;
+using BL.Model.DocumentCore.Actions;
 
 namespace BL.Logic.DocumentCore.Interfaces
 {
@@ -35,7 +36,7 @@ namespace BL.Logic.DocumentCore.Interfaces
 
         void EndWorkWithDocument(IContext context, int documentId);
         void ResumeWorkWithDocument(IContext context, int documentId);
-        void AddDocumentToFavourite(IContext context, int documentId);
-        void RemoveDocumentFromFavourite(IContext context, int documentId);
+
+        void ChangeFavouritesForDocument(IContext context, ChangeFavourites model)
     }
 }

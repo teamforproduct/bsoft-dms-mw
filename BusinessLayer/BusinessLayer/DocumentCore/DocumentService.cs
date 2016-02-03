@@ -11,6 +11,7 @@ using BL.Model.SystemCore;
 using BL.Database.Dictionaries.Interfaces;
 using BL.Model.Enums;
 using System.Web.Script.Serialization;
+using BL.Model.DocumentCore.Actions;
 
 namespace BL.Logic.DocumentCore
 {
@@ -301,22 +302,12 @@ namespace BL.Logic.DocumentCore
             ChangeWorkWithDocument(context, documentId, true);
         }
 
-        private void ChangeFavouritesForDocument(IContext context, int documentId, bool state)
+        public void ChangeFavouritesForDocument(IContext context, ChangeFavourites model)
         {
             var db = DmsResolver.Current.Get<IDocumentsDbProcess>();
-            var acc = db.GetDocumentAccess(context, documentId);
-            acc.IsFavourite = state;
+            var acc = db.GetDocumentAccess(context, model.DocumentId);
+            acc.IsFavourite = model.IsFavourite;
             db.UpdateDocumentAccess(context, acc);
-        }
-
-        public void AddDocumentToFavourite(IContext context, int documentId)
-        {
-            ChangeFavouritesForDocument(context, documentId, true);
-        }
-
-        public void RemoveDocumentFromFavourite(IContext context, int documentId)
-        {
-            ChangeFavouritesForDocument(context, documentId, false);
         }
 
         #endregion

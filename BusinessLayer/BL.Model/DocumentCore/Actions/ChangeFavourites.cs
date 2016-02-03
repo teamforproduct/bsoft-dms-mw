@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 
 namespace BL.Model.DocumentCore.Actions
 {
-    public class ControlOn
+    public class ChangeFavourites
     {
         public int DocumentId { get; set; }
-        public string Description { get; set; }
-        public DateTime? DueDate { get; set; }
-        public DateTime? AttentionDate { get; set; }
+        public bool IsFavourite { get; set; }
     }
 }

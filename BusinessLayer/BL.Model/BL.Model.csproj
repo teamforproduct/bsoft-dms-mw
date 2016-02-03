@@ -78,6 +78,8 @@
     <Compile Include="DictionaryCore\FilterDictionaryCompany.cs" />
     <Compile Include="DictionaryCore\FilterDictionaryAgentPerson.cs" />
     <Compile Include="DictionaryCore\FilterDictionaryAgent.cs" />
+    <Compile Include="DocumentCore\Actions\RemoveFavourite.cs" />
+    <Compile Include="DocumentCore\Actions\AddFavourite.cs" />
     <Compile Include="DocumentCore\Actions\SendMessage.cs" />
     <Compile Include="DocumentCore\Actions\AddDocumentLink.cs" />
     <Compile Include="DocumentCore\Actions\ChangeWorkStatus.cs" />

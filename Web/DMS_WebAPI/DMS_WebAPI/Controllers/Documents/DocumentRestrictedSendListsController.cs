@@ -7,21 +7,10 @@ using System.Web.Http;
 
 namespace DMS_WebAPI.Controllers.Documents
 {
+    [Authorize]
+    [RoutePrefix("api/DocumentRestrictedSendLists")]
     public class DocumentRestrictedSendListsController : ApiController
     {
-        /*
-        // GET: api/DocumentRestrictedSendLists
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
-        // GET: api/DocumentRestrictedSendLists/5
-        public string Get(int id)
-        {
-            return "value";
-        }
-        */
         // POST: api/DocumentRestrictedSendLists
         public IHttpActionResult Post([FromBody]ModifyDocumentRestrictedSendList model)
         {
