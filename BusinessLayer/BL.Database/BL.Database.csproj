@@ -105,6 +105,8 @@
     <Compile Include="DBModel\Template\TemplateDocuments.cs" />
     <Compile Include="DBModel\Template\TemplateDocumentSendLists.cs" />
     <Compile Include="DependencyInjection\DatabaseModule.cs" />
+    <Compile Include="Admins\AdminsDbProcess.cs" />
+    <Compile Include="Admins\Interfaces\IAdminsDbProcess.cs" />
     <Compile Include="Dictionaries\DictionariesDbProcess.cs" />
     <Compile Include="Dictionaries\Interfaces\IDictionariesDbProcess.cs" />
     <Compile Include="Documents\DocumentsDbProcess.cs" />
@@ -188,6 +190,14 @@
     <Compile Include="Migrations\201602021700431_ChangeLoggingAndSetting.cs" />
     <Compile Include="Migrations\201602021700431_ChangeLoggingAndSetting.Designer.cs">
       <DependentUpon>201602021700431_ChangeLoggingAndSetting.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201602031007479_ChangeFieldsDocumentSavedFiltersAndDocumentWaits.cs" />
+    <Compile Include="Migrations\201602031007479_ChangeFieldsDocumentSavedFiltersAndDocumentWaits.Designer.cs">
+      <DependentUpon>201602031007479_ChangeFieldsDocumentSavedFiltersAndDocumentWaits.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201602031012091_AddDocumentSavedFilters.cs" />
+    <Compile Include="Migrations\201602031012091_AddDocumentSavedFilters.Designer.cs">
+      <DependentUpon>201602031012091_AddDocumentSavedFilters.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -275,6 +285,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201602021700431_ChangeLoggingAndSetting.resx">
       <DependentUpon>201602021700431_ChangeLoggingAndSetting.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602031007479_ChangeFieldsDocumentSavedFiltersAndDocumentWaits.resx">
+      <DependentUpon>201602031007479_ChangeFieldsDocumentSavedFiltersAndDocumentWaits.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602031012091_AddDocumentSavedFilters.resx">
+      <DependentUpon>201602031012091_AddDocumentSavedFilters.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

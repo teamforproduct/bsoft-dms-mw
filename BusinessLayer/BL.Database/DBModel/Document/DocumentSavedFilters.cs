@@ -13,7 +13,7 @@ namespace BL.Database.DBModel.Document
         public int Id { get; set; }
         public Nullable<int> PositionId { get; set; }
         public string Icon { get; set; }
-        public int Filter { get; set; }
+        public string Filter { get; set; }
         public bool IsCommon { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }

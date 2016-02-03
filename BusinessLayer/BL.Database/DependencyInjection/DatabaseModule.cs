@@ -1,4 +1,6 @@
-﻿using BL.Database.Dictionaries;
+﻿using BL.Database.Admins;
+using BL.Database.Admins.Interfaces;
+using BL.Database.Dictionaries;
 using BL.Database.Dictionaries.Interfaces;
 using BL.Database.Documents;
 using BL.Database.Documents.Interfaces;
@@ -19,6 +21,7 @@ namespace BL.Database.DependencyInjection
             Bind<IDocumentsDbProcess>().To<DocumentsDbProcess>().InSingletonScope();
             Bind<ITemplateDocumentsDbProcess>().To<TemplateDocumentsDbProcess>().InSingletonScope();
             Bind<IDictionariesDbProcess>().To<DictionariesDbProcess>().InSingletonScope();
+            Bind<IAdminsDbProcess>().To<AdminsDbProcess>().InSingletonScope();
             Bind<ISystemDbProcess>().To<SystemDbProcess>().InSingletonScope();
         }
 

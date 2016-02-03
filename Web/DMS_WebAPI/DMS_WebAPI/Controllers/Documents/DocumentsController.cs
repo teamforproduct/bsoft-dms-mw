@@ -37,51 +37,12 @@ namespace DMS_WebAPI.Controllers.Documents
                 {
                     ObjectCode = "Documents",
                     ActionCode = "Modify",
-                    Code = "DocumentSubject",
-                    Description = "Описание что это",
-                    Label = "Тематика документа",
-                    Hint = "Выберите из словаря тематику документа",
-                    ValueTypeCode = "Number",
-                    IsMandatory = false,
-                    IsReadOnly = false,
-                    IsVisible = true,
-                    SelectAPI = "api/DictionaryDocumentSubjects",
-                    SelectFiler = "",
-                    SelectFieldCode = "Id",
-                    SelectDescriptionFieldCode = "Name",
-                    ValueFieldCode = "DocumentSubjectId",
-                    ValueDescriptionFieldCode = "DocumentSubjectName",
-                    Format = ""
-                },
-                new SystemUIElements()
-                {
-                    ObjectCode = "Documents",
-                    ActionCode = "Modify",
-                    Code = "Description",
-                    Description = "Описание что это",
-                    Label = "Краткое содержание",
-                    Hint = "Введите краткое содержание",
-                    ValueTypeCode = "String",
-                    IsMandatory = true,
-                    IsReadOnly = false,
-                    IsVisible = true,
-                    SelectAPI = "",
-                    SelectFiler = "",
-                    SelectFieldCode = "",
-                    SelectDescriptionFieldCode = "",
-                    ValueFieldCode = "Description",
-                    ValueDescriptionFieldCode = "Description",
-                    Format = ""
-                },
-                new SystemUIElements()
-                {
-                    ObjectCode = "Documents",
-                    ActionCode = "Modify",
                     Code = "GeneralInfo",
-                    Description = "Описание что это",
+                    TypeCode = "display_only_text",
+                    Description = "Общая информация",
                     Label = "",
                     Hint = "",
-                    ValueTypeCode = "String",
+                    ValueTypeCode = "text",
                     IsMandatory = false,
                     IsReadOnly = true,
                     IsVisible = true,
@@ -97,16 +58,59 @@ namespace DMS_WebAPI.Controllers.Documents
                 {
                     ObjectCode = "Documents",
                     ActionCode = "Modify",
+                    Code = "DocumentSubject",
+                    TypeCode = "select",
+                    Description = "Тематика документа",
+                    Label = "Тематика документа",
+                    Hint = "Выберите из словаря тематику документа",
+                    ValueTypeCode = "number",
+                    IsMandatory = false,
+                    IsReadOnly = false,
+                    IsVisible = true,
+                    SelectAPI = "DictionaryDocumentSubjects",
+                    SelectFiler = "",
+                    SelectFieldCode = "Id",
+                    SelectDescriptionFieldCode = "Name",
+                    ValueFieldCode = "DocumentSubjectId",
+                    ValueDescriptionFieldCode = "DocumentSubjectName",
+                    Format = ""
+                },
+                new SystemUIElements()
+                {
+                    ObjectCode = "Documents",
+                    ActionCode = "Modify",
+                    Code = "Description",
+                    TypeCode = "textarea",
+                    Description = "Краткое содержание",
+                    Label = "Краткое содержание",
+                    Hint = "Введите краткое содержание",
+                    ValueTypeCode = "text",
+                    IsMandatory = true,
+                    IsReadOnly = false,
+                    IsVisible = true,
+                    SelectAPI = "",
+                    SelectFiler = "",
+                    SelectFieldCode = "",
+                    SelectDescriptionFieldCode = "",
+                    ValueFieldCode = "Description",
+                    ValueDescriptionFieldCode = "Description",
+                    Format = ""
+                },
+                new SystemUIElements()
+                {
+                    ObjectCode = "Documents",
+                    ActionCode = "Modify",
                     Code = "SenderAgent",
-                    Description = "Описание что это",
+                    TypeCode = "select",
+                    Description = "Контрагент, от которого получен документ",
                     Label = "Организация",
                     Hint = "Контрагент, от которого получен документ",
-                    ValueTypeCode = "Number",
+                    ValueTypeCode = "number",
                     IsMandatory = true,
                     IsReadOnly = false,
                     IsVisible = doc.DocumentDirectionId == 1?true:false,
-                    SelectAPI = "api/DictionaryAgents",
-                    SelectFiler = "IsInner:False",
+                    SelectAPI = "DictionaryAgents",
+                    SelectFiler = "IsIndividual:False",
                     SelectFieldCode = "Id",
                     SelectDescriptionFieldCode = "Name",
                     ValueFieldCode = "SenderAgentId",
@@ -117,7 +121,92 @@ namespace DMS_WebAPI.Controllers.Documents
                 {
                     ObjectCode = "Documents",
                     ActionCode = "Modify",
-                    Code = "SenderPerson",
+                    Code = "SenderAgentPerson",
+                    TypeCode = "select",
+                    Description = "Контактное лицо в организации",
+                    Label = "Контакт",
+                    Hint = "Контактное лицо в организации, от которой получен документ",
+                    ValueTypeCode = "Number",
+                    IsMandatory = true,
+                    IsReadOnly = false,
+                    IsVisible = doc.DocumentDirectionId == 1?true:false,
+                    SelectAPI = "DictionaryAgentPerson",
+                    SelectFiler = "AgentId:@SenderAgent.SenderAgentId",
+                    SelectFieldCode = "Id",
+                    SelectDescriptionFieldCode = "Name",
+                    ValueFieldCode = "SenderAgentPersonId",
+                    ValueDescriptionFieldCode = "SenderAgentPersonName",
+                    Format = ""
+                },
+                new SystemUIElements()
+                {
+                    ObjectCode = "Documents",
+                    ActionCode = "Modify",
+                    Code = "SenderNumber",
+                    TypeCode = "input",
+                    Description = "Входящий номер",
+                    Label = "Входящий номер",
+                    Hint = "Входящий номер",
+                    ValueTypeCode = "text",
+                    IsMandatory = true,
+                    IsReadOnly = false,
+                    IsVisible = doc.DocumentDirectionId == 1?true:false,
+                    SelectAPI = "",
+                    SelectFiler = "",
+                    SelectFieldCode = "",
+                    SelectDescriptionFieldCode = "",
+                    ValueFieldCode = "SenderNumber",
+                    ValueDescriptionFieldCode = "SenderNumber",
+                    Format = ""
+                },
+                new SystemUIElements()
+                {
+                    ObjectCode = "Documents",
+                    ActionCode = "Modify",
+                    Code = "SenderDate",
+                    TypeCode = "input",
+                    Description = "Дата входящего документа",
+                    Label = "Дата входящего документа",
+                    Hint = "Дата входящего документа",
+                    ValueTypeCode = "date",
+                    IsMandatory = true,
+                    IsReadOnly = false,
+                    IsVisible = doc.DocumentDirectionId == 1?true:false,
+                    SelectAPI = "",
+                    SelectFiler = "",
+                    SelectFieldCode = "",
+                    SelectDescriptionFieldCode = "",
+                    ValueFieldCode = "SenderDate",
+                    ValueDescriptionFieldCode = "SenderDate",
+                    Format = ""
+                },
+                new SystemUIElements()
+                {
+                    ObjectCode = "Documents",
+                    ActionCode = "Modify",
+                    Code = "Addressee",
+                    TypeCode = "input",
+                    Description = "Кому адресован документ",
+                    Label = "Кому адресован документ",
+                    Hint = "Кому адресован документ",
+                    ValueTypeCode = "text",
+                    IsMandatory = true,
+                    IsReadOnly = false,
+                    IsVisible = doc.DocumentDirectionId == 1?true:false,
+                    SelectAPI = "",
+                    SelectFiler = "",
+                    SelectFieldCode = "",
+                    SelectDescriptionFieldCode = "",
+                    ValueFieldCode = "Addressee",
+                    ValueDescriptionFieldCode = "Addressee",
+                    Format = ""
+                },
+                new SystemUIElements()
+                {
+                    ObjectCode = "Documents",
+                    ActionCode = "Modify",
+                    Code = "AccessLevel",
+                    TypeCode = "select",
                     Description = "Описание что это",
                     Label = "Контакт",
                     Hint = "Контактное лицо в организации, от которой получен документ",
@@ -125,17 +214,15 @@ namespace DMS_WebAPI.Controllers.Documents
                     IsMandatory = true,
                     IsReadOnly = false,
                     IsVisible = doc.DocumentDirectionId == 1?true:false,
-                    SelectAPI = "api/DictionaryContactPerson",
-                    SelectFiler = "AgentId:@SenderAgent.SenderAgentId",
+                    SelectAPI = "AdminAccessLevels",
+                    SelectFiler = "",
                     SelectFieldCode = "Id",
                     SelectDescriptionFieldCode = "Name",
-                    ValueFieldCode = "SenderPersonId",
-                    ValueDescriptionFieldCode = "SenderPersonName",
+                    ValueFieldCode = "AccessLevelId",
+                    ValueDescriptionFieldCode = "AccessLevelName",
                     Format = ""
-                }
-
+                },
             };
-
             return new JsonResult(doc, metaData, this);
         }
 
@@ -154,7 +241,8 @@ namespace DMS_WebAPI.Controllers.Documents
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ModifyDocument(cxt, model);
-            return new JsonResult(null, this);
+            return Get(docProc.ModifyDocument(cxt, model));
+            //return new JsonResult(null, this);
         }
 
         // DELETE: api/Documents/5
