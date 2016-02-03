@@ -110,7 +110,7 @@ namespace DMS_WebAPI.Controllers.Documents
                     IsReadOnly = false,
                     IsVisible = doc.DocumentDirectionId == 1?true:false,
                     SelectAPI = "DictionaryAgents",
-                    SelectFiler = "IsIndividual:False",
+                    SelectFiler = "{“IsIndividual” : “False”}",
                     SelectFieldCode = "Id",
                     SelectDescriptionFieldCode = "Name",
                     ValueFieldCode = "SenderAgentId",
