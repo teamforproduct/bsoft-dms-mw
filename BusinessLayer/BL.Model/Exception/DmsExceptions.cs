@@ -50,6 +50,18 @@
         }
     }
 
+    public class WrongInformationAboutCorrespondent : DmsExceptions
+    {
+        private const string _MESSAGE = "Designation of information about correspondent is wrong!";
+        public WrongInformationAboutCorrespondent() : base(_MESSAGE)
+        {
+        }
+
+        public WrongInformationAboutCorrespondent(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
     public class UserNameIsNotDefined : DmsExceptions
     {
         private const string _MESSAGE = "Employee for the current user could not be defined!";

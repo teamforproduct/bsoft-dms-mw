@@ -12,6 +12,7 @@ namespace BL.Database.DBModel.Template
             //this.IncomingDetail = new HashSet<TemplateDocumentIncomingDetails>();
             this.SendLists = new HashSet<TemplateDocumentSendLists>();
             this.RestrictedSendLists = new HashSet<TemplateDocumentRestrictedSendLists>();
+            this.DocumentFiles = new HashSet<TemplateDocumentFiles>();
         }
 
         public int Id { get; set; }
@@ -29,9 +30,12 @@ namespace BL.Database.DBModel.Template
         public string Addressee { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
-
+        [ForeignKey("DocumentId")]
         public virtual ICollection<TemplateDocumentSendLists> SendLists { get; set; }
+        [ForeignKey("DocumentId")]
         public virtual ICollection<TemplateDocumentRestrictedSendLists> RestrictedSendLists { get; set; }
+        [ForeignKey("DocumentId")]
+        public virtual ICollection<TemplateDocumentFiles> DocumentFiles { get; set; }
         [ForeignKey("DocumentDirectionId")]
         public virtual DictionaryDocumentDirections DocumentDirection { get; set; }
         [ForeignKey("DocumentTypeId")]

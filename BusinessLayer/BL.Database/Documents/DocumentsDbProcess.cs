@@ -158,13 +158,13 @@ namespace BL.Database.Documents
                     {
                         foreach (var eacc in doc.Accesses.Where(x => x.Id == acc.Id))
                         {
-                            if ((eacc.AccessLevelId != (int)acc.AccessType) || (eacc.IsFavourtite != acc.IsFavourite)
+                            if ((eacc.AccessLevelId != (int)acc.AccessType) || (eacc.IsFavourite != acc.IsFavourite)
                                 || (eacc.IsInWork != acc.IsInWork) || (eacc.PositionId != acc.PositionId))
                             {
                                 eacc.LastChangeDate = DateTime.Now;
                                 eacc.LastChangeUserId = ctx.CurrentAgentId;
                                 eacc.AccessLevelId = (int)acc.AccessType;
-                                eacc.IsFavourtite = acc.IsFavourite;
+                                eacc.IsFavourite = acc.IsFavourite;
                                 eacc.IsInWork = acc.IsInWork;
                                 eacc.PositionId = acc.PositionId;
                             }
@@ -348,7 +348,7 @@ namespace BL.Database.Documents
                     DocumentDirectionName = x.Doc.TemplateDocument.DocumentDirection.Name,
                     DocumentTypeName = x.Doc.TemplateDocument.DocumentType.Name,
                     DocumentDate = x.Doc.RegistrationDate ?? x.Doc.CreateDate,
-                    IsFavourtite = x.Acc.IsFavourtite,
+                    IsFavourite = x.Acc.IsFavourite,
                     IsInWork = x.Acc.IsInWork,
                     EventsCount = x.Doc.Events.Count,
                     NewEventCount = 0,//TODO
@@ -408,7 +408,7 @@ namespace BL.Database.Documents
                     GeneralInfo =
                         x.Doc.TemplateDocument.DocumentDirection.Name + " " + x.Doc.TemplateDocument.DocumentType.Name,
 
-                    IsFavourtite = x.Acc.IsFavourtite,
+                    IsFavourite = x.Acc.IsFavourite,
                     IsInWork = x.Acc.IsInWork,
                     EventsCount = x.Doc.Events.Count,
                     NewEventCount = 0, //TODO
@@ -422,7 +422,7 @@ namespace BL.Database.Documents
                             LastChangeDate = x.Acc.LastChangeDate,
                             LastChangeUserId = x.Acc.LastChangeUserId,
                             IsInWork = x.Acc.IsInWork,
-                            IsFavourite = x.Acc.IsFavourtite,
+                            IsFavourite = x.Acc.IsFavourite,
                             PositionId = x.Acc.PositionId,
                             AccessType = (EnumDocumentAccess) x.Acc.AccessLevelId,
                             AccessLevelName = x.Acc.AccessLevel.Name,
@@ -515,7 +515,7 @@ namespace BL.Database.Documents
                 acc.LastChangeUserId = ctx.CurrentAgentId;
                 acc.PositionId = access.DocumentAccess.PositionId;
                 acc.AccessLevelId = (int)access.DocumentAccess.AccessType;
-                acc.IsFavourtite = access.DocumentAccess.IsFavourite;
+                acc.IsFavourite = access.DocumentAccess.IsFavourite;
             }
             var evt = new DocumentEvents
             {
@@ -544,7 +544,7 @@ namespace BL.Database.Documents
                 LastChangeUserId = access.LastChangeUserId,
                 PositionId = access.PositionId,
                 AccessLevelId = (int)access.AccessType,
-                IsFavourtite = access.IsFavourite
+                IsFavourite = access.IsFavourite
             };
             dbContext.DocumentAccessesSet.Add(acc);
             dbContext.SaveChanges();
@@ -573,7 +573,7 @@ namespace BL.Database.Documents
                 acc.LastChangeUserId = ctx.CurrentAgentId;
                 acc.PositionId = access.PositionId;
                 acc.AccessLevelId = (int)access.AccessType;
-                acc.IsFavourtite = access.IsFavourite;
+                acc.IsFavourite = access.IsFavourite;
                 dbContext.SaveChanges();
             }
         }
@@ -592,7 +592,7 @@ namespace BL.Database.Documents
                     PositionId = acc.PositionId,
                     IsInWork = acc.IsInWork,
                     DocumentId = acc.DocumentId,
-                    IsFavourite = acc.IsFavourtite,
+                    IsFavourite = acc.IsFavourite,
                     AccessType = (EnumDocumentAccess)acc.AccessLevelId,
                     AccessLevelName = acc.AccessLevel.Name
                 };

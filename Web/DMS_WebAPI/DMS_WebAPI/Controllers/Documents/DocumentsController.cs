@@ -216,7 +216,6 @@ namespace DMS_WebAPI.Controllers.Documents
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            docProc.ModifyDocument(cxt, model);
             return Get(docProc.ModifyDocument(cxt, model));
             //return new JsonResult(null, this);
         }

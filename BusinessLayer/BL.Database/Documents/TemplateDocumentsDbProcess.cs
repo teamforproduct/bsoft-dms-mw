@@ -45,6 +45,17 @@ namespace BL.Database.Documents
                 RestrictedSendLists = x.RestrictedSendLists.Select(y=>new BaseTemplateDocumentRestrictedSendLists() {
                     PositionId=y.PositionId,
                     AccessLevelId = y.AccessLevelId
+                }).ToList(),
+                SendLists = x.SendLists.Select(y => new BaseTemplateDocumentSendLists()
+                {
+                    SendTypeId = y.SendTypeId,
+                    TargetPositionId = y.TargetPositionId,
+                    Description = y.Description,
+                    DueDate = y.DueDate,
+                    OrderNumber = y.OrderNumber,
+
+                    DueDay = y.DueDay,
+                    AccessLevelId = y.AccessLevelId
                 }).ToList()
             }).FirstOrDefault();
         }

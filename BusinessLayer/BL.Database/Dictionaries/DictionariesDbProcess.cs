@@ -555,8 +555,6 @@ namespace BL.Database.Dictionaries
                 Name = x.Name,
                 DepartmentId = x.DepartmentId,
                 ExecutorAgentId = x.ExecutorAgentId,
-                LastChangeUserId = x.LastChangeUserId,
-                LastChangeDate = x.LastChangeDate,
                 ParentPositionName = x.ParentPosition.Name,
                 DepartmentName = x.Department.Name,
                 ExecutorAgentName = x.ExecutorAgent.Name
@@ -604,8 +602,6 @@ namespace BL.Database.Dictionaries
                 PrefixFormula = x.PrefixFormula,
                 SuffixFormula = x.SuffixFormula,
                 DirectionCodes = x.DirectionCodes,
-                LastChangeUserId = x.LastChangeUserId,
-                LastChangeDate = x.LastChangeDate,
                 DepartmentName = x.Department.Name
             }).ToList();
         }
@@ -641,9 +637,7 @@ namespace BL.Database.Dictionaries
             {
                 Id = x.Id,
                 Name = x.Name,
-                IsExecute = x.IsExecute,
-                LastChangeUserId = x.LastChangeUserId,
-                LastChangeDate = x.LastChangeDate,
+                IsExecute = x.IsExecute
             }).ToList();
         }
         #endregion DictionaryResultTypes
@@ -684,8 +678,6 @@ namespace BL.Database.Dictionaries
                 Name = x.Name,
                 IsImpotant = x.IsImpotant,
                 SubordinationTypeId = x.SubordinationTypeId,
-                LastChangeUserId = x.LastChangeUserId,
-                LastChangeDate = x.LastChangeDate,
                 SubordinationTypeName = x.SubordinationType.Name
             }).ToList();
         }
@@ -737,8 +729,6 @@ namespace BL.Database.Dictionaries
                 DueDate = x.DueDate,
                 DueDay = x.DueDay,
                 AccessLevelId = x.AccessLevelId,
-                LastChangeUserId = x.LastChangeUserId,
-                LastChangeDate = x.LastChangeDate,
                 SendTypeName = x.SendType.Name,
                 TargetPositionName = x.TargetPosition.Name,
                 AccessLevelName = x.AccessLevel.Name
@@ -770,8 +760,6 @@ namespace BL.Database.Dictionaries
                     DueDate = y.DueDate,
                     DueDay = y.DueDay,
                     AccessLevelId = y.AccessLevelId,
-                    LastChangeUserId = y.LastChangeUserId,
-                    LastChangeDate = y.LastChangeDate,
                     SendTypeName = y.SendType.Name,
                     TargetPositionName = y.TargetPosition.Name,
                     AccessLevelName = y.AccessLevel.Name
@@ -820,7 +808,7 @@ namespace BL.Database.Dictionaries
         public IEnumerable<BaseDictionarySubordinationType> GetDictionarySubordinationTypes(IContext context, FilterDictionarySubordinationType filter)
         {
             var dbContext = GetUserDmsContext(context);
-            var qry = dbContext.DictionarySendTypesSet.AsQueryable();
+            var qry = dbContext.DictionarySubordinationTypesSet.AsQueryable();
 
             if (filter.Id?.Count > 0)
             {
@@ -831,9 +819,7 @@ namespace BL.Database.Dictionaries
             {
                 Id = x.Id,
                 Code = x.Code,
-                Name = x.Name,
-                LastChangeUserId = x.LastChangeUserId,
-                LastChangeDate = x.LastChangeDate,
+                Name = x.Name
             }).ToList();
         }
         #endregion DictionarySubordinationTypes

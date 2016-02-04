@@ -52,7 +52,7 @@ namespace BL.Model.DocumentCore
         public string SenderAgentPersonName { get; set; }
         public string AccessLevelName { get; set; }
 
-        public bool IsFavourtite { get; set; }
+        public bool IsFavourite { get; set; }
         public bool IsInWork { get; set; }
 
         public DateTime DocumentDate { get; set; }

@@ -13,7 +13,6 @@ using BL.Model.Enums;
 using System.Web.Script.Serialization;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.Database;
-using BL.Model.DocumentCore.Actions;
 using BL.Model.Exception;
 
 namespace BL.Logic.DocumentCore
@@ -63,9 +62,9 @@ namespace BL.Logic.DocumentCore
                 DocumentSubjectId = baseTemplateDocument.DocumentSubjectId,
                 Description = baseTemplateDocument.Description,
                 ExecutorPositionId = context.CurrentPositionId, ////
-                SenderAgentId = baseTemplateDocument.SenderAgentId,
-                SenderAgentPersonId = baseTemplateDocument.SenderAgentPersonId,
-                Addressee = baseTemplateDocument.Addressee
+                SenderAgentId = baseTemplateDocument.DocumentDirectionId == (int)EnumDocumentDirections.External?baseTemplateDocument.SenderAgentId:null,
+                SenderAgentPersonId = baseTemplateDocument.DocumentDirectionId == (int)EnumDocumentDirections.External ? baseTemplateDocument.SenderAgentPersonId : null,
+                Addressee = baseTemplateDocument.DocumentDirectionId == (int)EnumDocumentDirections.External ? baseTemplateDocument.Addressee : null
             };
 
             if (baseTemplateDocument.RestrictedSendLists != null && baseTemplateDocument.RestrictedSendLists.Any())
@@ -96,7 +95,7 @@ namespace BL.Logic.DocumentCore
             var evt = new BaseDocumentEvent
             {
                 EventType = EnumEventTypes.AddNewDocument,
-                Description = "Creat",
+                Description = "Create",
                 LastChangeUserId = context.CurrentAgentId,
                 SourceAgentId = context.CurrentAgentId,
                 TargetAgentId = context.CurrentAgentId,
@@ -124,6 +123,40 @@ namespace BL.Logic.DocumentCore
         public int ModifyDocument(IContext context, ModifyDocument document)
         {
             var baseDocument = new FullDocument(document);
+            var db = DmsResolver.Current.Get<ITemplateDocumentsDbProcess>();
+            var baseTemplateDocument = db.GetTemplateDocument(context, baseDocument.TemplateDocumentId);
+            if (baseTemplateDocument.DocumentDirectionId == (int)EnumDocumentDirections.External)
+            {
+                throw new UserPositionIsNotDefined();
+            }
+            if ( 
+                (
+                        (baseTemplateDocument.DocumentDirectionId == (int)EnumDocumentDirections.Inner)
+                    &&
+                    (
+                        baseDocument.SenderAgentId != null || 
+                        baseDocument.SenderAgentPersonId != null || 
+                        !string.IsNullOrEmpty(baseDocument.SenderNumber) || 
+                        baseDocument.SenderDate != null || 
+                        !string.IsNullOrEmpty(baseDocument.Addressee)
+                    )
+                )
+                ||
+                (
+                        (baseTemplateDocument.DocumentDirectionId == (int)EnumDocumentDirections.External)
+                    &&
+                    (
+                        baseDocument.SenderAgentId == null ||
+                        baseDocument.SenderAgentPersonId == null ||
+                        string.IsNullOrEmpty(baseDocument.SenderNumber) ||
+                        baseDocument.SenderDate == null ||
+                        string.IsNullOrEmpty(baseDocument.Addressee)
+                    )
+                )
+                )
+            {
+                throw new WrongInformationAboutCorrespondent();
+            }
             return SaveDocument(context, baseDocument);
         }
         #endregion Documents

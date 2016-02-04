@@ -12,7 +12,7 @@ namespace BL.Database.DBModel.Document
         public int PositionId { get; set; }
         public int AccessLevelId { get; set; }
         public bool IsInWork { get; set; }
-        public bool IsFavourtite { get; set; }
+        public bool IsFavourite { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
 
