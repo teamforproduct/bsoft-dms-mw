@@ -11,3 +11,16 @@
     <ConnectionString>Data Source=109.197.217.79\SQLEXPRESS,1433;Initial Catalog=IRF_DMS;Persist Security Info=True;User ID=sa;Password=Harm1969</ConnectionString>
   </Server>
 </Servers>
+<!--<Servers>
+  <Server>
+    <Id>1</Id>
+    <Name>IRF_DMS</Name>
+    <Address>109.197.217.79\SQLEXPRESS,1433</Address>
+    <ServerType>SQLServer</ServerType>
+    <DefaultDatabase>IRF_DMS</DefaultDatabase>
+    <IntegrateSecurity>True</IntegrateSecurity>
+    <UserName>bsoft</UserName>
+    <UserPassword>TME3ZAf2MMqsPY</UserPassword>
+    <ConnectionString>Data Source=192.168.0.222\SQLEXPRESS;Initial Catalog=IRF_DMS;User ID=bsoft;Password=TME3ZAf2MMqsPY;Application Name=EntityFramework</ConnectionString>
+  </Server>
+</Servers>-->

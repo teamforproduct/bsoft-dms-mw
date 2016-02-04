@@ -9,6 +9,7 @@ using BL.Database.DBModel.Document;
 using BL.Model.Database;
 using BL.Model.SystemCore;
 using BL.Model.Enums;
+using BL.Model.Exception;
 
 namespace BL.Database.Documents
 {
@@ -100,7 +101,9 @@ namespace BL.Database.Documents
         public void UpdateDocument(IContext ctx, FullDocument document)
         {
             var dbContext = GetUserDmsContext(ctx);
-            var doc = dbContext.DocumentsSet.FirstOrDefault(x => x.Id == document.Id);
+            var doc = dbContext.DocumentsSet
+                .Include(x => x.Accesses)
+                .FirstOrDefault(x => x.Id == document.Id);
             if (doc != null)
             {
                 doc.TemplateDocumentId = document.TemplateDocumentId;
@@ -111,10 +114,14 @@ namespace BL.Database.Documents
                 doc.RegistrationNumberSuffix = document.RegistrationNumberSuffix;
                 doc.RegistrationNumberPrefix = document.RegistrationNumberPrefix;
                 doc.RegistrationDate = document.RegistrationDate;
-                doc.ExecutorPositionId = document.ExecutorPositionId;
+                //doc.ExecutorPositionId = document.ExecutorPositionId;
                 doc.LastChangeUserId = dbContext.Context.CurrentAgentId;
                 doc.LastChangeDate = DateTime.Now;
 
+                if (doc.Accesses.Any(x => x.PositionId == ctx.CurrentPositionId && x.AccessLevelId != (int)document.AccessLevel))
+                {
+                    doc.Accesses.FirstOrDefault(x => x.PositionId == ctx.CurrentPositionId).AccessLevelId = (int)document.AccessLevel;
+                }
 
                 if (document.Events != null && document.Events.Any(x => x.Id == 0))
                 {
@@ -168,6 +175,7 @@ namespace BL.Database.Documents
                         }).ToList();
                     }
                 }
+
                 dbContext.SaveChanges();
             }
         }
@@ -196,8 +204,8 @@ namespace BL.Database.Documents
         public IEnumerable<FullDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging)
         {
             var dbContext = GetUserDmsContext(ctx);
-            var qry = dbContext.DocumentsSet.Include(x => x.Accesses)
-                .Where(x => x.Accesses.All(a => a.IsInWork == filters.IsInWork && a.PositionId == ctx.CurrentPositionId));
+            var qry = dbContext.DocumentsSet
+                .Where(x => x.Accesses.Any(a => (!filters.IsInWork || filters.IsInWork && a.IsInWork == filters.IsInWork) && a.PositionId == ctx.CurrentPositionId));
 
             if (filters.CreateFromDate.HasValue)
             {
@@ -308,33 +316,33 @@ namespace BL.Database.Documents
 
             var res = qry.Select(x => new { Doc = x, Acc = x.Accesses.FirstOrDefault() })
                 .Select(x => new FullDocument
-            {
-                Id = x.Doc.Id,
-                DocumentTypeId = x.Doc.TemplateDocument.DocumentTypeId,
-                ExecutorPositionId = x.Doc.ExecutorPositionId,
-                DocumentDirectionId = x.Doc.TemplateDocument.DocumentDirectionId,
-                Description = x.Doc.Description,
-                TemplateDocumentId = x.Doc.TemplateDocumentId,
-                RegistrationDate = x.Doc.RegistrationDate,
-                DocumentSubjectId = x.Doc.DocumentSubjectId,
-                RegistrationNumber = x.Doc.RegistrationNumber,
-                RegistrationNumberPrefix = x.Doc.RegistrationNumberPrefix,
-                RegistrationNumberSuffix = x.Doc.RegistrationNumberSuffix,
-                LastChangeDate = x.Doc.LastChangeDate,
-                RegistrationJournalId = x.Doc.RegistrationJournalId,
-                CreateDate = x.Doc.CreateDate,
-                DocumentSubjectName = x.Doc.DocumentSubject.Name,
-                ExecutorPositionName = x.Doc.ExecutorPosition.Name,
-                LastChangeUserId = x.Doc.LastChangeUserId,
-                DocumentDirectionName = x.Doc.TemplateDocument.DocumentDirection.Name,
-                DocumentTypeName = x.Doc.TemplateDocument.DocumentType.Name,
-                DocumentDate = x.Doc.RegistrationDate ?? x.Doc.CreateDate,
-                IsFavourtite = x.Acc != null?x.Acc.IsFavourtite:false,
-                IsInWork = x.Acc != null ? x.Acc.IsInWork : false,
-                EventsCount = x.Doc.Events.Count,
-                NewEventCount = 0,//TODO
-                AttachedFilesCount = x.Doc.Files.Count,
-                LinkedDocumentsCount = 0//TODO
+                {
+                    Id = x.Doc.Id,
+                    DocumentTypeId = x.Doc.TemplateDocument.DocumentTypeId,
+                    ExecutorPositionId = x.Doc.ExecutorPositionId,
+                    DocumentDirectionId = x.Doc.TemplateDocument.DocumentDirectionId,
+                    Description = x.Doc.Description,
+                    TemplateDocumentId = x.Doc.TemplateDocumentId,
+                    RegistrationDate = x.Doc.RegistrationDate,
+                    DocumentSubjectId = x.Doc.DocumentSubjectId,
+                    RegistrationNumber = x.Doc.RegistrationNumber,
+                    RegistrationNumberPrefix = x.Doc.RegistrationNumberPrefix,
+                    RegistrationNumberSuffix = x.Doc.RegistrationNumberSuffix,
+                    LastChangeDate = x.Doc.LastChangeDate,
+                    RegistrationJournalId = x.Doc.RegistrationJournalId,
+                    CreateDate = x.Doc.CreateDate,
+                    DocumentSubjectName = x.Doc.DocumentSubject.Name,
+                    ExecutorPositionName = x.Doc.ExecutorPosition.Name,
+                    LastChangeUserId = x.Doc.LastChangeUserId,
+                    DocumentDirectionName = x.Doc.TemplateDocument.DocumentDirection.Name,
+                    DocumentTypeName = x.Doc.TemplateDocument.DocumentType.Name,
+                    DocumentDate = x.Doc.RegistrationDate ?? x.Doc.CreateDate,
+                    IsFavourtite = x.Acc.IsFavourtite,
+                    IsInWork = x.Acc.IsInWork,
+                    EventsCount = x.Doc.Events.Count,
+                    NewEventCount = 0,//TODO
+                    AttachedFilesCount = x.Doc.Files.Count,
+                    LinkedDocumentsCount = 0//TODO
                 }).ToList();
             paging.TotalPageCount = res.Count; //TODO pay attention to this when we will add paging
             return res;
@@ -345,10 +353,7 @@ namespace BL.Database.Documents
             var dbContext = GetUserDmsContext(ctx);
 
             var doc = dbContext.DocumentsSet
-                .Include(i => i.Accesses)
-                .Include(x => x.RestrictedSendLists)
-                .Include(x => x.SendLists)
-                .Where(x => x.Id == documentId && x.Accesses.All(a => a.PositionId == ctx.CurrentPositionId))
+                .Where(x => x.Id == documentId && x.Accesses.Any(a => a.PositionId == ctx.CurrentPositionId))
                 .Select(x => new { Doc = x, Acc = x.Accesses.FirstOrDefault() })
                 .Select(x => new FullDocument
                 {
@@ -437,7 +442,7 @@ namespace BL.Database.Documents
                         TargetPositionId = y.TargetPositionId,
                         TargetPositionName = y.TargetPosition.Name,
                         GeneralInfo = ""
-                    }).ToList(),
+                    }),
 
                     SendLists = x.Doc.SendLists.Select(y => new BaseDocumentSendList
                     {
@@ -460,7 +465,7 @@ namespace BL.Database.Documents
                         LastChangeUserId = y.LastChangeUserId,
                         LastChangeDate = y.LastChangeDate,
                         GeneralInfo = string.Empty
-                    }).ToList(),
+                    }),
 
                     RestrictedSendLists = x.Doc.RestrictedSendLists.Select(y => new BaseDocumentRestrictedSendList
                     {
@@ -473,9 +478,14 @@ namespace BL.Database.Documents
                         LastChangeUserId = y.LastChangeUserId,
                         LastChangeDate = y.LastChangeDate,
                         GeneralInfo = string.Empty
-                    }).ToList()
+                    })
 
                 }).FirstOrDefault();
+
+            if (doc == null)
+            {
+                throw new DocumentNotFoundOrUserHasNoAccess();
+            }
 
             return doc;
         }
@@ -802,8 +812,9 @@ namespace BL.Database.Documents
             };
             if (documentWait.OnEvent != null)
             {
-                docWait.OnEvent = new DocumentEvents {
-                    DocumentId= documentWait.OnEvent.DocumentId,
+                docWait.OnEvent = new DocumentEvents
+                {
+                    DocumentId = documentWait.OnEvent.DocumentId,
                     EventTypeId = (int)documentWait.OnEvent.EventType,
                     CreateDate = documentWait.OnEvent.CreateDate,
                     Date = documentWait.OnEvent.Date,

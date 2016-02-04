@@ -194,7 +194,7 @@ namespace DMS_WebAPI.Controllers.Documents
                     SelectAPI = "AdminAccessLevels",
                     SelectFieldCode = "Id",
                     SelectDescriptionFieldCode = "Name",
-                    ValueFieldCode = "AccessLevelId",
+                    ValueFieldCode = "AccessLevel",
                     ValueDescriptionFieldCode = "AccessLevelName",
                     Format = ""
                 },

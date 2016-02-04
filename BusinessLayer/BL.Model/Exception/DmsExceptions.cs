@@ -26,6 +26,18 @@
         }
     }
 
+    public class DocumentNotFoundOrUserHasNoAccess : DmsExceptions
+    {
+        private const string _MESSAGE = "User could not acceess this document!";
+        public DocumentNotFoundOrUserHasNoAccess() : base(_MESSAGE)
+        {
+        }
+
+        public DocumentNotFoundOrUserHasNoAccess(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
     public class UserPositionIsNotDefined : DmsExceptions
     {
         private const string _MESSAGE = "Position for the current user could not be defined!";
