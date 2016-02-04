@@ -329,8 +329,8 @@ namespace BL.Database.Documents
                 DocumentDirectionName = x.Doc.TemplateDocument.DocumentDirection.Name,
                 DocumentTypeName = x.Doc.TemplateDocument.DocumentType.Name,
                 DocumentDate = x.Doc.RegistrationDate ?? x.Doc.CreateDate,
-                IsFavourtite = x.Acc.IsFavourtite,
-                IsInWork = x.Acc.IsInWork,
+                IsFavourtite = x.Acc != null?x.Acc.IsFavourtite:false,
+                IsInWork = x.Acc != null ? x.Acc.IsInWork : false,
                 EventsCount = x.Doc.Events.Count,
                 NewEventCount = 0,//TODO
                 AttachedFilesCount = x.Doc.Files.Count,
