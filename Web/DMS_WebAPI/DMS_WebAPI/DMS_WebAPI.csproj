@@ -245,6 +245,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Infrastructure\ExceptionHandlingAttribute.cs" />
     <Compile Include="Migrations\201601281134357_addfieldAgentIdAspNetUser.cs" />
     <Compile Include="Migrations\201601281134357_addfieldAgentIdAspNetUser.Designer.cs">
       <DependentUpon>201601281134357_addfieldAgentIdAspNetUser.cs</DependentUpon>

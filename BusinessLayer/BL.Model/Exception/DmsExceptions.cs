@@ -61,4 +61,16 @@
         {
         }
     }
+
+    public class UserUnauthorized : DmsExceptions
+    {
+        private const string _MESSAGE = "Authorization has been denied for this request.";
+        public UserUnauthorized() : base(_MESSAGE)
+        {
+        }
+
+        public UserUnauthorized(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
 }

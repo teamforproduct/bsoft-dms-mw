@@ -8,6 +8,7 @@ using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
 using DMS_WebAPI.Areas.HelpPage;
 using System.Web;
+using DMS_WebAPI.Infrastructure;
 
 namespace DMS_WebAPI
 {
@@ -19,6 +20,8 @@ namespace DMS_WebAPI
             // Configure Web API to use only bearer token authentication.
             config.SuppressDefaultHostAuthentication();
             config.Filters.Add(new HostAuthenticationFilter(OAuthDefaults.AuthenticationType));
+
+            config.Filters.Add(new ExceptionHandlingAttribute());
 
             // Web API routes
             config.MapHttpAttributeRoutes();

@@ -8,6 +8,7 @@ using BL.CrossCutting.DependencyInjection;
 using BL.Logic.Secure;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
+using BL.Model.Exception;
 
 namespace DMS_WebAPI.Utilities
 {
@@ -29,9 +30,7 @@ namespace DMS_WebAPI.Utilities
             string token = Token.ToLower();
             if (!_casheContexts.ContainsKey(token))
             {
-                HttpContext.Current.Response.StatusCode = 401;
-                HttpContext.Current.Response.End();
-                throw new HttpException(401, "Unauthorized access");
+                throw new UserUnauthorized();
             }
 
             var contextValue = _casheContexts[token];
