@@ -22,6 +22,7 @@ namespace BL.Model.DictionaryCore
 
         public string SendTypeName { get; set; }
         public string TargetPositionName { get; set; }
+        public string TargetPositionExecutorAgentName { get; set; }
         public string AccessLevelName { get; set; }
 
     }
