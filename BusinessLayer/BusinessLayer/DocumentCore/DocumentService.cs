@@ -263,7 +263,7 @@ namespace BL.Logic.DocumentCore
                 SourcePositionId = context.CurrentPositionId,
                 TargetPositionId = context.CurrentPositionId,
                 LastChangeUserId = context.CurrentAgentId,
-                
+
             };
 
             var db = DmsResolver.Current.Get<IDocumentsDbProcess>();
@@ -309,7 +309,7 @@ namespace BL.Logic.DocumentCore
                     LastChangeUserId = context.CurrentAgentId
                 }
             };
-            
+
             db.SetDocumentInformation(context, ea);
         }
 
@@ -319,6 +319,31 @@ namespace BL.Logic.DocumentCore
             var acc = db.GetDocumentAccess(context, model.DocumentId);
             acc.IsFavourite = model.IsFavourite;
             db.UpdateDocumentAccess(context, acc);
+        }
+
+        public void ControlOn(IContext context, ControlOn model)
+        {
+            var db = DmsResolver.Current.Get<IDocumentsDbProcess>();
+
+            var docWait = new BaseDocumentWaits
+            {
+                DocumentId = model.DocumentId,
+                Description = model.Description,
+                DueDate = model.DueDate,
+                AttentionDate = model.AttentionDate,
+                OnEvent = new BaseDocumentEvent
+                {
+                    DocumentId = model.DocumentId,
+                    EventType = EnumEventTypes.ControlOn,
+                    CreateDate = DateTime.Now,
+                    Date = DateTime.Now,
+                    Description = model.Description,
+                    SourcePositionId = context.CurrentPositionId,
+                    SourceAgentId = context.CurrentAgentId,
+                    TargetPositionId = context.CurrentPositionId,
+                    TargetAgentId = context.CurrentAgentId
+                }
+            };
         }
 
         #endregion

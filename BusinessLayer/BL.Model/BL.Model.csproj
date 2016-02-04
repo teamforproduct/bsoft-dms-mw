@@ -87,6 +87,7 @@
     <Compile Include="DocumentCore\Actions\ControlOn.cs" />
     <Compile Include="DocumentCore\Actions\AddNote.cs" />
     <Compile Include="DocumentCore\BaseDocumentSavedFilter.cs" />
+    <Compile Include="DocumentCore\BaseDocumentWaits.cs" />
     <Compile Include="DocumentCore\ModifyDocumentSavedFilter.cs" />
     <Compile Include="Enums\EnumDocumentAccess.cs" />
     <Compile Include="Enums\EnumEventTypes.cs" />

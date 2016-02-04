@@ -35,5 +35,7 @@ namespace BL.Database.Documents.Interfaces
         IEnumerable<BaseDocumentSavedFilter> GetSavedFilters(IContext ctx);
         BaseDocumentSavedFilter GetSavedFilter(IContext ctx, int savedFilterId);
         void DeleteSavedFilter(IContext ctx, int savedFilterId);
+
+        void AddDocumentWait(IContext ctx, BaseDocumentWaits documentWait);
     }
 }

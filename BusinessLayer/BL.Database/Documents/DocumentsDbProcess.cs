@@ -130,7 +130,7 @@ namespace BL.Database.Documents
                         SourcePositionId = x.SourcePositionId,
                         TargetAgentId = x.TargetAgentId,
                         TargetPositionId = x.TargetPositionId,
-                        EventTypeId = (int) x.EventType
+                        EventTypeId = (int)x.EventType
                     }).ToList();
                 }
 
@@ -140,12 +140,12 @@ namespace BL.Database.Documents
                     {
                         foreach (var eacc in doc.Accesses.Where(x => x.Id == acc.Id))
                         {
-                            if ((eacc.AccessLevelId != (int) acc.AccessType) || (eacc.IsFavourtite != acc.IsFavourite)
+                            if ((eacc.AccessLevelId != (int)acc.AccessType) || (eacc.IsFavourtite != acc.IsFavourite)
                                 || (eacc.IsInWork != acc.IsInWork) || (eacc.PositionId != acc.PositionId))
                             {
                                 eacc.LastChangeDate = DateTime.Now;
                                 eacc.LastChangeUserId = ctx.CurrentAgentId;
-                                eacc.AccessLevelId = (int) acc.AccessType;
+                                eacc.AccessLevelId = (int)acc.AccessType;
                                 eacc.IsFavourtite = acc.IsFavourite;
                                 eacc.IsInWork = acc.IsInWork;
                                 eacc.PositionId = acc.PositionId;
@@ -164,7 +164,7 @@ namespace BL.Database.Documents
                             IsInWork = x.IsInWork,
                             LastChangeUserId = x.LastChangeUserId,
                             PositionId = x.PositionId,
-                            AccessLevelId = (int) x.AccessType,
+                            AccessLevelId = (int)x.AccessType,
                         }).ToList();
                     }
                 }
@@ -196,8 +196,8 @@ namespace BL.Database.Documents
         public IEnumerable<FullDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging)
         {
             var dbContext = GetUserDmsContext(ctx);
-            var qry = dbContext.DocumentsSet.Include(x=>x.Accesses)
-                .Where(x => x.Accesses.All(a=>a.IsInWork == filters.IsInWork && a.PositionId == ctx.CurrentPositionId));
+            var qry = dbContext.DocumentsSet.Include(x => x.Accesses)
+                .Where(x => x.Accesses.All(a => a.IsInWork == filters.IsInWork && a.PositionId == ctx.CurrentPositionId));
 
             if (filters.CreateFromDate.HasValue)
             {
@@ -308,33 +308,33 @@ namespace BL.Database.Documents
 
             var res = qry.Select(x => new { Doc = x, Acc = x.Accesses.FirstOrDefault() })
                 .Select(x => new FullDocument
-            {
-                Id = x.Doc.Id,
-                DocumentTypeId = x.Doc.TemplateDocument.DocumentTypeId,
-                ExecutorPositionId = x.Doc.ExecutorPositionId,
-                DocumentDirectionId = x.Doc.TemplateDocument.DocumentDirectionId,
-                Description = x.Doc.Description,
-                TemplateDocumentId = x.Doc.TemplateDocumentId,
-                RegistrationDate = x.Doc.RegistrationDate,
-                DocumentSubjectId = x.Doc.DocumentSubjectId,
-                RegistrationNumber = x.Doc.RegistrationNumber,
-                RegistrationNumberPrefix = x.Doc.RegistrationNumberPrefix,
-                RegistrationNumberSuffix = x.Doc.RegistrationNumberSuffix,
-                LastChangeDate = x.Doc.LastChangeDate,
-                RegistrationJournalId = x.Doc.RegistrationJournalId,
-                CreateDate = x.Doc.CreateDate,
-                DocumentSubjectName = x.Doc.DocumentSubject.Name,
-                ExecutorPositionName = x.Doc.ExecutorPosition.Name,
-                LastChangeUserId = x.Doc.LastChangeUserId,
-                DocumentDirectionName = x.Doc.TemplateDocument.DocumentDirection.Name,
-                DocumentTypeName = x.Doc.TemplateDocument.DocumentType.Name,
-                DocumentDate = x.Doc.RegistrationDate ?? x.Doc.CreateDate,
-                IsFavourtite = x.Acc.IsFavourtite,
-                IsInWork = x.Acc.IsInWork,
-                EventsCount = x.Doc.Events.Count,
-                NewEventCount = 0,//TODO
-                AttachedFilesCount = x.Doc.Files.Count,
-                LinkedDocumentsCount = 0//TODO
+                {
+                    Id = x.Doc.Id,
+                    DocumentTypeId = x.Doc.TemplateDocument.DocumentTypeId,
+                    ExecutorPositionId = x.Doc.ExecutorPositionId,
+                    DocumentDirectionId = x.Doc.TemplateDocument.DocumentDirectionId,
+                    Description = x.Doc.Description,
+                    TemplateDocumentId = x.Doc.TemplateDocumentId,
+                    RegistrationDate = x.Doc.RegistrationDate,
+                    DocumentSubjectId = x.Doc.DocumentSubjectId,
+                    RegistrationNumber = x.Doc.RegistrationNumber,
+                    RegistrationNumberPrefix = x.Doc.RegistrationNumberPrefix,
+                    RegistrationNumberSuffix = x.Doc.RegistrationNumberSuffix,
+                    LastChangeDate = x.Doc.LastChangeDate,
+                    RegistrationJournalId = x.Doc.RegistrationJournalId,
+                    CreateDate = x.Doc.CreateDate,
+                    DocumentSubjectName = x.Doc.DocumentSubject.Name,
+                    ExecutorPositionName = x.Doc.ExecutorPosition.Name,
+                    LastChangeUserId = x.Doc.LastChangeUserId,
+                    DocumentDirectionName = x.Doc.TemplateDocument.DocumentDirection.Name,
+                    DocumentTypeName = x.Doc.TemplateDocument.DocumentType.Name,
+                    DocumentDate = x.Doc.RegistrationDate ?? x.Doc.CreateDate,
+                    IsFavourtite = x.Acc.IsFavourtite,
+                    IsInWork = x.Acc.IsInWork,
+                    EventsCount = x.Doc.Events.Count,
+                    NewEventCount = 0,//TODO
+                    AttachedFilesCount = x.Doc.Files.Count,
+                    LinkedDocumentsCount = 0//TODO
                 }).ToList();
             paging.TotalPageCount = res.Count; //TODO pay attention to this when we will add paging
             return res;
@@ -349,7 +349,7 @@ namespace BL.Database.Documents
                 .Include(x => x.RestrictedSendLists)
                 .Include(x => x.SendLists)
                 .Where(x => x.Id == documentId && x.Accesses.All(a => a.PositionId == ctx.CurrentPositionId))
-                .Select(x => new {Doc = x, Acc = x.Accesses.FirstOrDefault()})
+                .Select(x => new { Doc = x, Acc = x.Accesses.FirstOrDefault() })
                 .Select(x => new FullDocument
                 {
                     Id = x.Doc.Id,
@@ -370,7 +370,7 @@ namespace BL.Database.Documents
                     SenderNumber = x.Doc.SenderNumber,
                     SenderDate = x.Doc.SenderDate,
                     Addressee = x.Doc.Addressee,
-                    AccessLevel = (EnumDocumentAccess) x.Acc.AccessLevelId,
+                    AccessLevel = (EnumDocumentAccess)x.Acc.AccessLevelId,
                     TemplateDocumentName = x.Doc.TemplateDocument.Name,
                     IsHard = x.Doc.TemplateDocument.IsHard,
                     DocumentDirectionId = x.Doc.TemplateDocument.DocumentDirectionId,
@@ -420,8 +420,8 @@ namespace BL.Database.Documents
                         Id = y.Id,
                         DocumentId = y.DocumentId,
                         Description = y.Description,
-                        EventType = (EnumEventTypes) y.EventTypeId,
-                        ImpotanceEventType = (EnumImpotanceEventTypes) y.EventType.ImpotanceEventTypeId,
+                        EventType = (EnumEventTypes)y.EventTypeId,
+                        ImpotanceEventType = (EnumImpotanceEventTypes)y.EventType.ImpotanceEventTypeId,
                         CreateDate = y.CreateDate,
                         Date = y.Date,
                         EventTypeName = y.EventType.Name,
@@ -507,7 +507,7 @@ namespace BL.Database.Documents
                 SourcePositionId = access.DocumentEvent.SourcePositionId,
                 TargetAgentId = access.DocumentEvent.TargetAgentId,
                 TargetPositionId = access.DocumentEvent.TargetPositionId,
-                EventTypeId = (int) access.DocumentEvent.EventType
+                EventTypeId = (int)access.DocumentEvent.EventType
             };
             dbContext.DocumentEventsSet.Add(evt);
             dbContext.SaveChanges();
@@ -551,7 +551,7 @@ namespace BL.Database.Documents
                 acc.IsInWork = access.IsInWork;
                 acc.LastChangeUserId = ctx.CurrentAgentId;
                 acc.PositionId = access.PositionId;
-                acc.AccessLevelId = (int) access.AccessType;
+                acc.AccessLevelId = (int)access.AccessType;
                 acc.IsFavourtite = access.IsFavourite;
                 dbContext.SaveChanges();
             }
@@ -780,5 +780,64 @@ namespace BL.Database.Documents
             }
         }
         #endregion DocumentSavedFilters
+
+        #region DocumentWaits
+
+        public void AddDocumentWait(IContext ctx, BaseDocumentWaits documentWait)
+        {
+            var dbContext = GetUserDmsContext(ctx);
+
+            var docWait = new DocumentWaits
+            {
+                DocumentId = documentWait.DocumentId,
+                ParentId = documentWait.ParentId,
+                OnEventId = documentWait.OnEventId,
+                OffEventId = documentWait.OffEventId,
+                ResultTypeId = documentWait.ResultTypeId,
+                Description = documentWait.Description,
+                DueDate = documentWait.DueDate,
+                AttentionDate = documentWait.AttentionDate,
+                LastChangeUserId = dbContext.Context.CurrentAgentId,
+                LastChangeDate = DateTime.Now
+            };
+            if (documentWait.OnEvent != null)
+            {
+                docWait.OnEvent = new DocumentEvents {
+                    DocumentId= documentWait.OnEvent.DocumentId,
+                    EventTypeId = (int)documentWait.OnEvent.EventType,
+                    CreateDate = documentWait.OnEvent.CreateDate,
+                    Date = documentWait.OnEvent.Date,
+                    Description = documentWait.OnEvent.Description,
+                    SourcePositionId = documentWait.OnEvent.SourcePositionId,
+                    SourceAgentId = documentWait.OnEvent.SourceAgentId,
+                    TargetPositionId = documentWait.OnEvent.TargetPositionId,
+                    TargetAgentId = documentWait.OnEvent.TargetAgentId,
+                    LastChangeUserId = dbContext.Context.CurrentAgentId,
+                    LastChangeDate = DateTime.Now
+                };
+            }
+            if (documentWait.OffEvent != null)
+            {
+                docWait.OffEvent = new DocumentEvents
+                {
+                    DocumentId = documentWait.OnEvent.DocumentId,
+                    EventTypeId = (int)documentWait.OnEvent.EventType,
+                    CreateDate = documentWait.OnEvent.CreateDate,
+                    Date = documentWait.OnEvent.Date,
+                    Description = documentWait.OnEvent.Description,
+                    SourcePositionId = documentWait.OnEvent.SourcePositionId,
+                    SourceAgentId = documentWait.OnEvent.SourceAgentId,
+                    TargetPositionId = documentWait.OnEvent.TargetPositionId,
+                    TargetAgentId = documentWait.OnEvent.TargetAgentId,
+                    LastChangeUserId = dbContext.Context.CurrentAgentId,
+                    LastChangeDate = DateTime.Now
+                };
+            }
+
+            dbContext.DocumentWaitsSet.Add(docWait);
+            dbContext.SaveChanges();
+            documentWait.Id = docWait.Id;
+        }
+        #endregion DocumentWaits
     }
 }

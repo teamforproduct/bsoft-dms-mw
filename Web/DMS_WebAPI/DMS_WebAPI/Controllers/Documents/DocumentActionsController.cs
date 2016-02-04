@@ -26,5 +26,38 @@ namespace DMS_WebAPI.Controllers.Documents
             docProc.ChangeFavouritesForDocument(cxt, model);
             return new JsonResult(null, this);
         }
+
+        // POST: api/DocumentActions/ChangeWorkStatus
+        [Route("ChangeWorkStatus")]
+        [HttpPost]
+        public IHttpActionResult ChangeWorkStatus(ChangeWorkStatus model)
+        {
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            docProc.ChangeDocumentWorkStatus(cxt, model);
+            return new JsonResult(null, this);
+        }
+
+        // POST: api/DocumentActions/AddNote
+        [Route("AddNote")]
+        [HttpPost]
+        public IHttpActionResult AddNote(AddNote model)
+        {
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            docProc.AddDocumentComment(cxt, model);
+            return new JsonResult(null, this);
+        }
+
+        // POST: api/DocumentActions/ControlOn
+        [Route("ControlOn")]
+        [HttpPost]
+        public IHttpActionResult ControlOn(ControlOn model)
+        {
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            docProc.ControlOn(cxt, model);
+            return new JsonResult(null, this);
+        }
     }
 }
