@@ -32,7 +32,12 @@ namespace BL.Database.Documents
                 RegistrationDate = document.RegistrationDate,
                 ExecutorPositionId = document.ExecutorPositionId,
                 LastChangeUserId = dbContext.Context.CurrentAgentId,
-                LastChangeDate = DateTime.Now
+                LastChangeDate = DateTime.Now,
+                SenderAgentId = document.SenderAgentId,
+                SenderAgentPersonId = document.SenderAgentPersonId,
+                SenderNumber = document.SenderNumber,
+                SenderDate = document.SenderDate,
+                Addressee = document.Addressee,
             };
             if (document.RestrictedSendLists != null && document.RestrictedSendLists.Any())
             {
@@ -117,6 +122,12 @@ namespace BL.Database.Documents
                 //doc.ExecutorPositionId = document.ExecutorPositionId;
                 doc.LastChangeUserId = dbContext.Context.CurrentAgentId;
                 doc.LastChangeDate = DateTime.Now;
+
+                doc.SenderAgentId = document.SenderAgentId;
+                doc.SenderAgentPersonId = document.SenderAgentPersonId;
+                doc.SenderNumber = document.SenderNumber;
+                doc.SenderDate = document.SenderDate;
+                doc.Addressee = document.Addressee;
 
                 if (doc.Accesses.Any(x => x.PositionId == ctx.CurrentPositionId && x.AccessLevelId != (int)document.AccessLevel))
                 {
