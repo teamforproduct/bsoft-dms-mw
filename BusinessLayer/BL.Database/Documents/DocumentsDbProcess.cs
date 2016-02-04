@@ -308,33 +308,33 @@ namespace BL.Database.Documents
 
             var res = qry.Select(x => new { Doc = x, Acc = x.Accesses.FirstOrDefault() })
                 .Select(x => new FullDocument
-                {
-                    Id = x.Doc.Id,
-                    DocumentTypeId = x.Doc.TemplateDocument.DocumentTypeId,
-                    ExecutorPositionId = x.Doc.ExecutorPositionId,
-                    DocumentDirectionId = x.Doc.TemplateDocument.DocumentDirectionId,
-                    Description = x.Doc.Description,
-                    TemplateDocumentId = x.Doc.TemplateDocumentId,
-                    RegistrationDate = x.Doc.RegistrationDate,
-                    DocumentSubjectId = x.Doc.DocumentSubjectId,
-                    RegistrationNumber = x.Doc.RegistrationNumber,
-                    RegistrationNumberPrefix = x.Doc.RegistrationNumberPrefix,
-                    RegistrationNumberSuffix = x.Doc.RegistrationNumberSuffix,
-                    LastChangeDate = x.Doc.LastChangeDate,
-                    RegistrationJournalId = x.Doc.RegistrationJournalId,
-                    CreateDate = x.Doc.CreateDate,
-                    DocumentSubjectName = x.Doc.DocumentSubject.Name,
-                    ExecutorPositionName = x.Doc.ExecutorPosition.Name,
-                    LastChangeUserId = x.Doc.LastChangeUserId,
-                    DocumentDirectionName = x.Doc.TemplateDocument.DocumentDirection.Name,
-                    DocumentTypeName = x.Doc.TemplateDocument.DocumentType.Name,
-                    DocumentDate = x.Doc.RegistrationDate ?? x.Doc.CreateDate,
-                    IsFavourtite = x.Acc.IsFavourtite,
-                    IsInWork = x.Acc.IsInWork,
-                    EventsCount = x.Doc.Events.Count,
-                    NewEventCount = 0,//TODO
-                    AttachedFilesCount = x.Doc.Files.Count,
-                    LinkedDocumentsCount = 0//TODO
+            {
+                Id = x.Doc.Id,
+                DocumentTypeId = x.Doc.TemplateDocument.DocumentTypeId,
+                ExecutorPositionId = x.Doc.ExecutorPositionId,
+                DocumentDirectionId = x.Doc.TemplateDocument.DocumentDirectionId,
+                Description = x.Doc.Description,
+                TemplateDocumentId = x.Doc.TemplateDocumentId,
+                RegistrationDate = x.Doc.RegistrationDate,
+                DocumentSubjectId = x.Doc.DocumentSubjectId,
+                RegistrationNumber = x.Doc.RegistrationNumber,
+                RegistrationNumberPrefix = x.Doc.RegistrationNumberPrefix,
+                RegistrationNumberSuffix = x.Doc.RegistrationNumberSuffix,
+                LastChangeDate = x.Doc.LastChangeDate,
+                RegistrationJournalId = x.Doc.RegistrationJournalId,
+                CreateDate = x.Doc.CreateDate,
+                DocumentSubjectName = x.Doc.DocumentSubject.Name,
+                ExecutorPositionName = x.Doc.ExecutorPosition.Name,
+                LastChangeUserId = x.Doc.LastChangeUserId,
+                DocumentDirectionName = x.Doc.TemplateDocument.DocumentDirection.Name,
+                DocumentTypeName = x.Doc.TemplateDocument.DocumentType.Name,
+                DocumentDate = x.Doc.RegistrationDate ?? x.Doc.CreateDate,
+                IsFavourtite = x.Acc != null?x.Acc.IsFavourtite:false,
+                IsInWork = x.Acc != null ? x.Acc.IsInWork : false,
+                EventsCount = x.Doc.Events.Count,
+                NewEventCount = 0,//TODO
+                AttachedFilesCount = x.Doc.Files.Count,
+                LinkedDocumentsCount = 0//TODO
                 }).ToList();
             paging.TotalPageCount = res.Count; //TODO pay attention to this when we will add paging
             return res;
