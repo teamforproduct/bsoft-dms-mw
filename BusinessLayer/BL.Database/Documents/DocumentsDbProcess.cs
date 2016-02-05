@@ -999,6 +999,16 @@ namespace BL.Database.Documents
             }
             if (registerDocument.RegistrationNumber == null)
             {   //get next number
+                var i = ((from doc in dbContext.DocumentsSet
+                         where doc.RegistrationJournalId == registerDocument.RegistrationJournalId
+                         && doc.RegistrationNumberPrefix == registerDocument.RegistrationNumberPrefix
+                         select doc.RegistrationNumber ?? 0)
+                         .Union
+                        (from doc in dbContext.DocumentTemporaryRegistrationsSet
+                         where doc.RegistrationJournalId == registerDocument.RegistrationJournalId
+                         && doc.RegistrationNumberPrefix == registerDocument.RegistrationNumberPrefix
+                         select doc.RegistrationNumber)).Max() + 1;
+
 
             }
 

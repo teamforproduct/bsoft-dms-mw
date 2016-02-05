@@ -441,12 +441,9 @@ namespace BL.Logic.DocumentCore
             return SaveDocument(context, document);
         }
 
-        #endregion
-    }
         public void RegisterDocument(IContext context, RegisterDocument model)
         {
             var docDB = DmsResolver.Current.Get<IDocumentsDbProcess>();
-
 
             if (model.RegistrationNumber == null|| string.IsNullOrEmpty(model.RegistrationNumberPrefix)|| model.IsOnlyGetNextNumber)
             {   //get next number
