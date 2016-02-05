@@ -360,10 +360,10 @@ namespace BL.Database.Documents
                 qry = qry.Where(x => filters.ExecutorPositionId.Contains(x.Doc.ExecutorPositionId));
             }
 
-            //if (filters.SenderAgentId != null && filters.SenderAgentId.Count > 0)
-            //{
-            //    qry = qry.Where(x => filters.SenderAgentId.Contains(x.Doc.));
-            //}
+            if (filters.SenderAgentId != null && filters.SenderAgentId.Count > 0)
+            {
+                qry = qry.Where(x => x.Doc.SenderAgentId.HasValue && filters.SenderAgentId.Contains(x.Doc.SenderAgentId.Value));
+            }
 
             var evnt =
                 dbContext.DocumentEventsSet.Join(qry, ev => ev.DocumentId, rs => rs.Doc.Id, (e, r) => new { ev = e })
@@ -379,6 +379,7 @@ namespace BL.Database.Documents
             {
                 Id = x.Doc.Id,
                 DocumentTypeId = x.Templ.DocumentTypeId,
+                AccessLevel = (EnumDocumentAccess)x.Acc.AccessLevelId,
                 ExecutorPositionId = x.Doc.ExecutorPositionId,
                 DocumentDirection = (EnumDocumentDirections)x.Templ.DocumentDirectionId,
                 Description = x.Doc.Description,
@@ -418,7 +419,7 @@ namespace BL.Database.Documents
             }
 
             paging.TotalPageCount = docs.Count; //TODO pay attention to this when we will add paging
-            return res;
+            return docs;
         }
 
         public FullDocument GetDocument(IContext ctx, int documentId)
