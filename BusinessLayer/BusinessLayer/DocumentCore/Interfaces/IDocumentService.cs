@@ -16,10 +16,12 @@ namespace BL.Logic.DocumentCore.Interfaces
         IEnumerable<FullDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging);
         FullDocument GetDocument(IContext ctx, int documentId);
 
+        void UpdateRestrictedSendList(IContext context, ModifyDocumentRestrictedSendList restrictedSendList);
         int AddRestrictedSendList(IContext context, ModifyDocumentRestrictedSendList restrictedSendList);
         void AddRestrictedSendListByStandartSendLists(IContext context, ModifyDocumentRestrictedSendListByStandartSendList model);
         void DeleteRestrictedSendList(IContext context, int restrictedSendListId);
 
+        void UpdateSendList(IContext context, ModifyDocumentSendList sendList);
         int AddSendList(IContext ctx, ModifyDocumentSendList sendList);
         void AddSendListByStandartSendLists(IContext context, ModifyDocumentSendListByStandartSendList model);
         void DeleteSendList(IContext context, int sendListId);

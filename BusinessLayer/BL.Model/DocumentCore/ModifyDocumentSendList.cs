@@ -1,10 +1,13 @@
 ﻿using System;
 using BL.Model.Enums;
+using System.Runtime.Serialization;
 
 namespace BL.Model.DocumentCore
 {
     public class ModifyDocumentSendList
     {
+        [IgnoreDataMember]
+        public int Id { get; set; }
         public int DocumentId { get; set; }
         public int? OrderNumber { get; set; }
         public EnumSendType SendType { get; set; }

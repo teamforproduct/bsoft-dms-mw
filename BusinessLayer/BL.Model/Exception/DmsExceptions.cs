@@ -85,4 +85,39 @@
         {
         }
     }
+
+    public class DocumentRestrictedSendListDuplication : DmsExceptions
+    {
+        private const string _MESSAGE = "Duplicate Entry DocumentRestrictSendList";
+        public DocumentRestrictedSendListDuplication() : base(_MESSAGE)
+        {
+        }
+
+        public DocumentRestrictedSendListDuplication(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+    public class DocumentSendListDuplication : DmsExceptions
+    {
+        private const string _MESSAGE = "Duplicate Entry DocumentSendList";
+        public DocumentSendListDuplication() : base(_MESSAGE)
+        {
+        }
+
+        public DocumentSendListDuplication(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+    public class DocumentSendListNotFoundInDocumentRestrictedSendList : DmsExceptions
+    {
+        private const string _MESSAGE = "DocumentSendList not found in DocumentRestrictedSendList";
+        public DocumentSendListNotFoundInDocumentRestrictedSendList() : base(_MESSAGE)
+        {
+        }
+
+        public DocumentSendListNotFoundInDocumentRestrictedSendList(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
 }

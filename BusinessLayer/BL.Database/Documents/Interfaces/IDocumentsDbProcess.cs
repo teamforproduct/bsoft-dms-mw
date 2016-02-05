@@ -14,12 +14,14 @@ namespace BL.Database.Documents.Interfaces
         IEnumerable<FullDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging);
         FullDocument GetDocument(IContext ctx, int documentId);
 
-        int AddRestrictedSendList(IContext ctx, ModifyDocumentRestrictedSendList restrictedSendList);
-        void AddRestrictedSendList(IContext ctx, IEnumerable<ModifyDocumentRestrictedSendList> restrictedSendLists);
+        IEnumerable<ModifyDocumentRestrictedSendList> GetRestrictedSendList(IContext ctx, int documentId);
+        void UpdateRestrictedSendList(IContext ctx, ModifyDocumentRestrictedSendList restrictedSendList);
+        IEnumerable<int> AddRestrictedSendList(IContext ctx, IEnumerable<ModifyDocumentRestrictedSendList> restrictedSendLists);
         void DeleteRestrictedSendList(IContext ctx, int restrictedSendListId);
 
-        int AddSendList(IContext ctx, ModifyDocumentSendList sendList);
-        void AddSendList(IContext ctx, IEnumerable<ModifyDocumentSendList> sendLists);
+        IEnumerable<ModifyDocumentSendList> GetSendList(IContext ctx, int documentId);
+        void UpdateSendList(IContext ctx, ModifyDocumentSendList sendList);
+        IEnumerable<int> AddSendList(IContext ctx, IEnumerable<ModifyDocumentSendList> sendLists);
         void DeleteSendList(IContext ctx, int sendListId);
 
         int AddDocumentEvent(IContext ctx, BaseDocumentEvent docEvent);

@@ -32,6 +32,15 @@ namespace DMS_WebAPI.Controllers.Documents
             docProc.AddSendListByStandartSendLists(cxt, model);
             return new Results.JsonResult(null, this);
         }
+        // PUT: api/DocumentSendLists/5
+        public IHttpActionResult Put(int id, [FromBody]ModifyDocumentSendList model)
+        {
+            model.Id = id;
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            docProc.UpdateSendList(cxt, model);
+            return new Results.JsonResult(null, this);
+        }
 
         // DELETE: api/DocumentSendLists/5
         public IHttpActionResult Delete(int id)

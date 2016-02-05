@@ -218,44 +218,44 @@ namespace BL.Database.Documents
             var dbContext = GetUserDmsContext(ctx);
 
             var qry = (from dc in dbContext.DocumentsSet
-                join acc in dbContext.DocumentAccessesSet on dc.Id equals acc.DocumentId
-                join tmpl in dbContext.TemplateDocumentsSet on dc.TemplateDocumentId equals tmpl.Id
-                join ddir in dbContext.DictionaryDocumentDirectionsSet on tmpl.DocumentDirectionId equals ddir.Id
-                join doctp in dbContext.DictionaryDocumentTypesSet on tmpl.DocumentTypeId equals doctp.Id
-                //join acl in dbContext.AdminAccessLevelsSet on acc.AccessLevelId equals acl.Id
-                join executor in dbContext.DictionaryPositionsSet on dc.ExecutorPositionId equals executor.Id
+                       join acc in dbContext.DocumentAccessesSet on dc.Id equals acc.DocumentId
+                       join tmpl in dbContext.TemplateDocumentsSet on dc.TemplateDocumentId equals tmpl.Id
+                       join ddir in dbContext.DictionaryDocumentDirectionsSet on tmpl.DocumentDirectionId equals ddir.Id
+                       join doctp in dbContext.DictionaryDocumentTypesSet on tmpl.DocumentTypeId equals doctp.Id
+                       //join acl in dbContext.AdminAccessLevelsSet on acc.AccessLevelId equals acl.Id
+                       join executor in dbContext.DictionaryPositionsSet on dc.ExecutorPositionId equals executor.Id
 
-                //join ea in dbContext.DictionaryAgentsSet on executor.ExecutorAgentId equals ea.Id into ea
-                //from exAg in ea.DefaultIfEmpty()
+                       //join ea in dbContext.DictionaryAgentsSet on executor.ExecutorAgentId equals ea.Id into ea
+                       //from exAg in ea.DefaultIfEmpty()
 
-                join z in dbContext.DictionaryDocumentSubjectsSet on dc.DocumentSubjectId equals z.Id into eg
-                from docsubj in eg.DefaultIfEmpty()
+                       join z in dbContext.DictionaryDocumentSubjectsSet on dc.DocumentSubjectId equals z.Id into eg
+                       from docsubj in eg.DefaultIfEmpty()
 
-                join g in dbContext.DictionaryRegistrationJournalsSet on dc.RegistrationJournalId equals g.Id into egg
-                from regj in egg.DefaultIfEmpty()
+                       join g in dbContext.DictionaryRegistrationJournalsSet on dc.RegistrationJournalId equals g.Id into egg
+                       from regj in egg.DefaultIfEmpty()
 
-                //join ag in dbContext.DictionaryAgentsSet on dc.SenderAgentId equals ag.Id into ag
-                //from sendAg in ag.DefaultIfEmpty()
+                           //join ag in dbContext.DictionaryAgentsSet on dc.SenderAgentId equals ag.Id into ag
+                           //from sendAg in ag.DefaultIfEmpty()
 
-                //join ap in dbContext.DictionaryAgentPersonsSet on dc.SenderAgentPersonId equals ap.Id into ap
-                //from sendAp in ap.DefaultIfEmpty()
+                           //join ap in dbContext.DictionaryAgentPersonsSet on dc.SenderAgentPersonId equals ap.Id into ap
+                           //from sendAp in ap.DefaultIfEmpty()
 
-                where acc.PositionId == ctx.CurrentPositionId && (!filters.IsInWork || filters.IsInWork && acc.IsInWork == filters.IsInWork)
-                select new
-                {
-                    Doc = dc,
-                    Acc = acc,
-                    Templ = tmpl,
-                    DirName = ddir.Name,
-                    //AccLevName = acl.Name,
-                    SubjName = docsubj.Name,
-                    DocTypeName = doctp.Name,
-                    RegJurnalName = regj.Name,
-                    ExecutorPosName = executor.Name,
-                    //ExecutorAgentName = exAg.Name,
-                    //SenderAgentname = sendAg.Name,
-                    //SenderPersonName = sendAp.Name
-                });
+                       where acc.PositionId == ctx.CurrentPositionId && (!filters.IsInWork || filters.IsInWork && acc.IsInWork == filters.IsInWork)
+                       select new
+                       {
+                           Doc = dc,
+                           Acc = acc,
+                           Templ = tmpl,
+                           DirName = ddir.Name,
+                           //AccLevName = acl.Name,
+                           SubjName = docsubj.Name,
+                           DocTypeName = doctp.Name,
+                           RegJurnalName = regj.Name,
+                           ExecutorPosName = executor.Name,
+                           //ExecutorAgentName = exAg.Name,
+                           //SenderAgentname = sendAg.Name,
+                           //SenderPersonName = sendAp.Name
+                       });
 
             if (filters.CreateFromDate.HasValue)
             {
@@ -366,14 +366,14 @@ namespace BL.Database.Documents
             //}
 
             var evnt =
-                dbContext.DocumentEventsSet.Join(qry, ev => ev.DocumentId, rs => rs.Doc.Id, (e, r) => new {ev = e})
+                dbContext.DocumentEventsSet.Join(qry, ev => ev.DocumentId, rs => rs.Doc.Id, (e, r) => new { ev = e })
                     .GroupBy(g => g.ev.DocumentId)
-                    .Select(s => new {DocID = s.Key, EvnCnt = s.Count()}).ToList();
+                    .Select(s => new { DocID = s.Key, EvnCnt = s.Count() }).ToList();
 
             var fls =
-                dbContext.DocumentFilesSet.Join(qry, fl => fl.DocumentId, rs => rs.Doc.Id, (f, r) => new {fil = f})
+                dbContext.DocumentFilesSet.Join(qry, fl => fl.DocumentId, rs => rs.Doc.Id, (f, r) => new { fil = f })
                     .GroupBy(g => g.fil.DocumentId)
-                    .Select(s => new {DocID = s.Key, FileCnt = s.Count()}).ToList();
+                    .Select(s => new { DocID = s.Key, FileCnt = s.Count() }).ToList();
 
             var res = qry.Select(x => new FullDocument
             {
@@ -407,7 +407,7 @@ namespace BL.Database.Documents
             });
 
             var docs = res.ToList();
-            foreach (var x1 in docs.Join(evnt, d => d.Id, e => e.DocID, (d, e) => new { doc = d, ev = e}))
+            foreach (var x1 in docs.Join(evnt, d => d.Id, e => e.DocID, (d, e) => new { doc = d, ev = e }))
             {
                 x1.doc.EventsCount = x1.ev.EvnCnt;
                 x1.doc.NewEventCount = 0;
@@ -540,8 +540,8 @@ namespace BL.Database.Documents
                     Id = y.Id,
                     DocumentId = y.DocumentId,
                     Description = y.Description,
-                    EventType = (EnumEventTypes) y.EventTypeId,
-                    ImpotanceEventType = (EnumImpotanceEventTypes) y.EventType.ImpotanceEventTypeId,
+                    EventType = (EnumEventTypes)y.EventTypeId,
+                    ImpotanceEventType = (EnumImpotanceEventTypes)y.EventType.ImpotanceEventTypeId,
                     CreateDate = y.CreateDate,
                     Date = y.Date,
                     EventTypeName = y.EventType.Name,
@@ -711,40 +711,57 @@ namespace BL.Database.Documents
         #endregion
 
         #region DocumentRestrictedSendLists
-        public int AddRestrictedSendList(IContext ctx, ModifyDocumentRestrictedSendList restrictedSendList)
+        public IEnumerable<ModifyDocumentRestrictedSendList> GetRestrictedSendList(IContext ctx, int documentId)
         {
             var dbContext = GetUserDmsContext(ctx);
 
-            var sendList = new DocumentRestrictedSendLists
+            var sendLists = dbContext.DocumentRestrictedSendListsSet
+                .Where(x => x.DocumentId == documentId)
+                .Select(x => new ModifyDocumentRestrictedSendList
+                {
+                    Id = x.Id,
+                    DocumentId = x.DocumentId,
+                    PositionId = x.PositionId,
+                    AccessLevelId = x.AccessLevelId,
+                }).ToList();
+
+            return sendLists;
+        }
+        public void UpdateRestrictedSendList(IContext ctx, ModifyDocumentRestrictedSendList restrictedSendList)
+        {
+            var dbContext = GetUserDmsContext(ctx);
+
+            var sendList = dbContext.DocumentRestrictedSendListsSet.FirstOrDefault(x => x.Id == restrictedSendList.Id);
+            if (sendList?.Id > 0)
             {
-                DocumentId = restrictedSendList.DocumentId,
-                PositionId = restrictedSendList.PositionId,
-                AccessLevelId = restrictedSendList.AccessLevelId,
-                LastChangeUserId = dbContext.Context.CurrentAgentId,
-                LastChangeDate = DateTime.Now
-            };
-            dbContext.DocumentRestrictedSendListsSet.Add(sendList);
-            dbContext.SaveChanges();
-            return sendList.Id;
+                sendList.DocumentId = restrictedSendList.DocumentId;
+                sendList.PositionId = restrictedSendList.PositionId;
+                sendList.AccessLevelId = restrictedSendList.AccessLevelId;
+                sendList.LastChangeUserId = dbContext.Context.CurrentAgentId;
+                sendList.LastChangeDate = DateTime.Now;
+
+                dbContext.SaveChanges();
+            }
         }
 
-        public void AddRestrictedSendList(IContext ctx, IEnumerable<ModifyDocumentRestrictedSendList> restrictedSendLists)
+        public IEnumerable<int> AddRestrictedSendList(IContext ctx, IEnumerable<ModifyDocumentRestrictedSendList> restrictedSendLists)
         {
             var dbContext = GetUserDmsContext(ctx);
 
-            foreach (var restrictedSendList in restrictedSendLists)
+            var sendLists = restrictedSendLists.Select(x => new DocumentRestrictedSendLists
             {
-                var sendList = new DocumentRestrictedSendLists
-                {
-                    DocumentId = restrictedSendList.DocumentId,
-                    PositionId = restrictedSendList.PositionId,
-                    AccessLevelId = restrictedSendList.AccessLevelId,
-                    LastChangeUserId = dbContext.Context.CurrentAgentId,
-                    LastChangeDate = DateTime.Now
-                };
-                dbContext.DocumentRestrictedSendListsSet.Add(sendList);
-            }
+                DocumentId = x.DocumentId,
+                PositionId = x.PositionId,
+                AccessLevelId = x.AccessLevelId,
+                LastChangeUserId = dbContext.Context.CurrentAgentId,
+                LastChangeDate = DateTime.Now
+            }).ToList();
+
+            dbContext.DocumentRestrictedSendListsSet.AddRange(sendLists);
+
             dbContext.SaveChanges();
+
+            return sendLists.Select(x => x.Id).ToList();
         }
 
         public void DeleteRestrictedSendList(IContext ctx, int restrictedSendListId)
@@ -760,53 +777,74 @@ namespace BL.Database.Documents
         #endregion DocumentRestrictedSendLists
 
         #region DocumentSendLists
-        public int AddSendList(IContext ctx, ModifyDocumentSendList sendList)
+        public IEnumerable<ModifyDocumentSendList> GetSendList(IContext ctx, int documentId)
         {
             var dbContext = GetUserDmsContext(ctx);
 
-            var sl = new DocumentSendLists
+            var sendLists = dbContext.DocumentSendListsSet
+                .Where(x => x.DocumentId == documentId)
+                .Select(x => new ModifyDocumentSendList
+                {
+                    Id = x.Id,
+                    DocumentId = x.DocumentId,
+                    OrderNumber = x.OrderNumber,
+                    SendType = (EnumSendType)x.SendTypeId,
+                    TargetPositionId = x.TargetPositionId,
+                    Description = x.Description,
+                    DueDate = x.DueDate,
+                    DueDay = x.DueDay,
+                    AccessLevel = (EnumDocumentAccess)x.AccessLevelId
+                }).ToList();
+
+            return sendLists;
+        }
+        public void UpdateSendList(IContext ctx, ModifyDocumentSendList sendList)
+        {
+            var dbContext = GetUserDmsContext(ctx);
+
+            var sl = dbContext.DocumentSendListsSet.FirstOrDefault(x => x.Id == sendList.Id);
+            if (sl?.Id > 0)
             {
-                DocumentId = sendList.DocumentId,
-                OrderNumber = sendList.OrderNumber,
-                SendTypeId = (int)sendList.SendType,
-                TargetPositionId = sendList.TargetPositionId,
-                Description = sendList.Description,
-                DueDate = sendList.DueDate,
-                DueDay = sendList.DueDay,
-                AccessLevelId = (int)sendList.AccessLevel,
+                sl.DocumentId = sendList.DocumentId;
+                sl.OrderNumber = sendList.OrderNumber;
+                sl.SendTypeId = (int)sendList.SendType;
+                sl.TargetPositionId = sendList.TargetPositionId;
+                sl.Description = sendList.Description;
+                sl.DueDate = sendList.DueDate;
+                sl.DueDay = sendList.DueDay;
+                sl.AccessLevelId = (int)sendList.AccessLevel;
+                sl.IsInitial = true;
+                sl.EventId = null;
+                sl.LastChangeUserId = dbContext.Context.CurrentAgentId;
+                sl.LastChangeDate = DateTime.Now;
+                dbContext.SaveChanges();
+            }
+        }
+
+        public IEnumerable<int> AddSendList(IContext ctx, IEnumerable<ModifyDocumentSendList> sendLists)
+        {
+            var dbContext = GetUserDmsContext(ctx);
+
+            var sls = sendLists.Select(x => new DocumentSendLists
+            {
+                DocumentId = x.DocumentId,
+                OrderNumber = x.OrderNumber,
+                SendTypeId = (int)x.SendType,
+                TargetPositionId = x.TargetPositionId,
+                Description = x.Description,
+                DueDate = x.DueDate,
+                DueDay = x.DueDay,
+                AccessLevelId = (int)x.AccessLevel,
                 IsInitial = true,
                 EventId = null,
                 LastChangeUserId = dbContext.Context.CurrentAgentId,
                 LastChangeDate = DateTime.Now
-            };
-            dbContext.DocumentSendListsSet.Add(sl);
-            dbContext.SaveChanges();
-            return sl.Id;
-        }
+            }).ToList();
 
-        public void AddSendList(IContext ctx, IEnumerable<ModifyDocumentSendList> sendLists)
-        {
-            var dbContext = GetUserDmsContext(ctx);
-            foreach (var sendList in sendLists)
-            {
-                var sl = new DocumentSendLists
-                {
-                    DocumentId = sendList.DocumentId,
-                    OrderNumber = sendList.OrderNumber,
-                    SendTypeId = (int)sendList.SendType,
-                    TargetPositionId = sendList.TargetPositionId,
-                    Description = sendList.Description,
-                    DueDate = sendList.DueDate,
-                    DueDay = sendList.DueDay,
-                    AccessLevelId = (int)sendList.AccessLevel,
-                    IsInitial = true,
-                    EventId = null,
-                    LastChangeUserId = dbContext.Context.CurrentAgentId,
-                    LastChangeDate = DateTime.Now
-                };
-                dbContext.DocumentSendListsSet.Add(sl);
-            }
+            dbContext.DocumentSendListsSet.AddRange(sls);
             dbContext.SaveChanges();
+
+            return sls.Select(x => x.Id).ToList();
         }
 
         public void DeleteSendList(IContext ctx, int sendListId)
@@ -1000,9 +1038,9 @@ namespace BL.Database.Documents
             if (registerDocument.RegistrationNumber == null)
             {   //get next number
                 var i = ((from doc in dbContext.DocumentsSet
-                         where doc.RegistrationJournalId == registerDocument.RegistrationJournalId
-                         && doc.RegistrationNumberPrefix == registerDocument.RegistrationNumberPrefix
-                         select doc.RegistrationNumber ?? 0)
+                          where doc.RegistrationJournalId == registerDocument.RegistrationJournalId
+                          && doc.RegistrationNumberPrefix == registerDocument.RegistrationNumberPrefix
+                          select doc.RegistrationNumber ?? 0)
                          .Union
                         (from doc in dbContext.DocumentTemporaryRegistrationsSet
                          where doc.RegistrationJournalId == registerDocument.RegistrationJournalId
