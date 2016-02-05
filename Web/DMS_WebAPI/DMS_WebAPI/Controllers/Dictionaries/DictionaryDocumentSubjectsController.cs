@@ -9,7 +9,6 @@ using System.Web.Http;
 namespace DMS_WebAPI.Controllers.Dictionaries
 {
     [Authorize]
-    [RoutePrefix("api/DictionaryDocumentSubjects")]
     public class DictionaryDocumentSubjectsController : ApiController
     {
         // GET: api/DictionaryDocumentSubjects

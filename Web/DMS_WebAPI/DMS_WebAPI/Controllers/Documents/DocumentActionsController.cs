@@ -13,7 +13,7 @@ using System.Web.Http;
 namespace DMS_WebAPI.Controllers.Documents
 {
     [Authorize]
-    [RoutePrefix("api/DocumentActions")]
+    [RoutePrefix("api/v2/DocumentActions")]
     public class DocumentActionsController : ApiController
     {
         // POST: api/DocumentActions/Favourite

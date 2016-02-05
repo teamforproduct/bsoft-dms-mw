@@ -13,7 +13,6 @@ using System.Web.Http;
 namespace DMS_WebAPI.Controllers.Documents
 {
     [Authorize]
-    [RoutePrefix("api/DocumentSendLists")]
     public class DocumentSendListsController : ApiController
     {
         // POST: api/DocumentSendLists

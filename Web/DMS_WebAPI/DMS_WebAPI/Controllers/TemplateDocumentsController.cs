@@ -8,7 +8,6 @@ using System.Web.Http;
 namespace DMS_WebAPI.Controllers
 {
     [Authorize]
-    [RoutePrefix("api/TemplateDocuments")]
     public class TemplateDocumentsController : ApiController
     {
         // GET: api/TemplateDocuments
@@ -36,16 +35,6 @@ namespace DMS_WebAPI.Controllers
             var docProc = DmsResolver.Current.Get<ITemplateDocumentService>();
             docProc.AddOrUpdateTemplate(cxt, model);
             return Ok();
-        }
-
-        // PUT: api/TemplateDocuments/5
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE: api/TemplateDocuments/5
-        public void Delete(int id)
-        {
         }
     }
 }

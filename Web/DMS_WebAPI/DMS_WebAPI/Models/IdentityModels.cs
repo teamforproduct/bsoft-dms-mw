@@ -36,7 +36,7 @@ namespace DMS_WebAPI.Models
         public static ApplicationDbContext Create()
         {
             var path = System.Web.HttpContext.Current.Request.Path;
-            if (path.Equals("/token")|| path.Equals("/api/token"))
+            if (path.Equals("/token")|| path.Equals("/api/token") || path.Equals("/api/v2/token"))
             {
                 int dbId = 0;
 

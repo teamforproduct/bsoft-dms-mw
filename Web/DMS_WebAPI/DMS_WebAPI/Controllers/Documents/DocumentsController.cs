@@ -11,7 +11,6 @@ using BL.Model.Enums;
 namespace DMS_WebAPI.Controllers.Documents
 {
     [Authorize]
-    [RoutePrefix("api/Documents")]
     public class DocumentsController : ApiController
     {
         //GET: api/Documents
@@ -221,9 +220,5 @@ namespace DMS_WebAPI.Controllers.Documents
             //return new JsonResult(null, this);
         }
 
-        // DELETE: api/Documents/5
-        public void Delete(int id)
-        {
-        }
     }
 }

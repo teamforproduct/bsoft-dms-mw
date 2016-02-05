@@ -19,7 +19,7 @@ using DMS_WebAPI.Results;
 namespace DMS_WebAPI.Controllers
 {
     [Authorize]
-    [RoutePrefix("api/Account")]
+    [RoutePrefix("api/v2/Account")]
     public class AccountController : ApiController
     {
         private const string LocalLoginProvider = "Local";

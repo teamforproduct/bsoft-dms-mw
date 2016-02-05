@@ -28,7 +28,7 @@ namespace DMS_WebAPI
 
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
-                routeTemplate: "api/{controller}/{id}",
+                routeTemplate: "api/v2/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
             var jsonConfig = config.Formatters.JsonFormatter;

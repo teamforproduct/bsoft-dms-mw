@@ -11,7 +11,6 @@ using System.Web.Http;
 namespace DMS_WebAPI.Controllers.Admins
 {
     [Authorize]
-    [RoutePrefix("api/AdminAccessLevels")]
     public class AdminAccessLevelsController : ApiController
     {
         // GET: api/AdminAccessLevels
