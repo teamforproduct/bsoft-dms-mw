@@ -62,9 +62,9 @@ namespace BL.Logic.DocumentCore
                 DocumentSubjectId = baseTemplateDocument.DocumentSubjectId,
                 Description = baseTemplateDocument.Description,
                 ExecutorPositionId = context.CurrentPositionId, ////
-                SenderAgentId = baseTemplateDocument.DocumentDirectionId == (int)EnumDocumentDirections.External?baseTemplateDocument.SenderAgentId:null,
-                SenderAgentPersonId = baseTemplateDocument.DocumentDirectionId == (int)EnumDocumentDirections.External ? baseTemplateDocument.SenderAgentPersonId : null,
-                Addressee = baseTemplateDocument.DocumentDirectionId == (int)EnumDocumentDirections.External ? baseTemplateDocument.Addressee : null
+                SenderAgentId = baseTemplateDocument.DocumentDirection == EnumDocumentDirections.External?baseTemplateDocument.SenderAgentId:null,
+                SenderAgentPersonId = baseTemplateDocument.DocumentDirection == EnumDocumentDirections.External ? baseTemplateDocument.SenderAgentPersonId : null,
+                Addressee = baseTemplateDocument.DocumentDirection == EnumDocumentDirections.External ? baseTemplateDocument.Addressee : null
             };
 
             if (baseTemplateDocument.RestrictedSendLists != null && baseTemplateDocument.RestrictedSendLists.Any())
@@ -72,21 +72,21 @@ namespace BL.Logic.DocumentCore
                 baseDocument.RestrictedSendLists = baseTemplateDocument.RestrictedSendLists.Select(x => new BaseDocumentRestrictedSendList()
                 {
                     PositionId = x.PositionId,
-                    AccessLevelId = x.AccessLevelId
+                    AccessLevelId = (int)x.AccessLevel
                 }).ToList();
             }
 
             if (baseTemplateDocument.SendLists != null && baseTemplateDocument.SendLists.Any())
             {
-                baseDocument.SendLists = baseTemplateDocument.SendLists.Select(x => new BaseDocumentSendList()
+                baseDocument.SendLists = baseTemplateDocument.SendLists.Select(x => new BaseDocumentSendList
                 {
                     OrderNumber = x.OrderNumber,
-                    SendTypeId = x.SendTypeId,
+                    SendType =x.SendType,
                     TargetPositionId = x.TargetPositionId,
                     Description = x.Description,
                     DueDate = x.DueDate,
                     DueDay = x.DueDay,
-                    AccessLevelId = x.AccessLevelId,
+                    AccessLevel = x.AccessLevel,
                     IsInitial = true,
                     EventId = null
                 }).ToList();
@@ -107,7 +107,7 @@ namespace BL.Logic.DocumentCore
 
             var acc = new BaseDocumentAccess
             {
-                AccessType = EnumDocumentAccess.PersonalRefIO,
+                AccessLevel = EnumDocumentAccess.PersonalRefIO,
                 IsInWork = true,
                 IsFavourite = false,
                 LastChangeDate = DateTime.Now,
@@ -125,13 +125,13 @@ namespace BL.Logic.DocumentCore
             var baseDocument = new FullDocument(document);
             var db = DmsResolver.Current.Get<ITemplateDocumentsDbProcess>();
             var baseTemplateDocument = db.GetTemplateDocument(context, baseDocument.TemplateDocumentId);
-            if (baseTemplateDocument.DocumentDirectionId == (int)EnumDocumentDirections.External)
+            if (baseTemplateDocument.DocumentDirection == EnumDocumentDirections.External)
             {
                 throw new UserPositionIsNotDefined();
             }
             if ( 
                 (
-                        (baseTemplateDocument.DocumentDirectionId == (int)EnumDocumentDirections.Inner)
+                        (baseTemplateDocument.DocumentDirection == EnumDocumentDirections.Inner)
                     &&
                     (
                         baseDocument.SenderAgentId != null || 
@@ -143,7 +143,7 @@ namespace BL.Logic.DocumentCore
                 )
                 ||
                 (
-                        (baseTemplateDocument.DocumentDirectionId == (int)EnumDocumentDirections.External)
+                        (baseTemplateDocument.DocumentDirection == EnumDocumentDirections.External)
                     &&
                     (
                         baseDocument.SenderAgentId == null ||
@@ -208,12 +208,12 @@ namespace BL.Logic.DocumentCore
             {
                 DocumentId = model.DocumentId,
                 OrderNumber = x.OrderNumber,
-                SendTypeId = x.SendTypeId,
+                SendType = (EnumSendType)x.SendTypeId,
                 TargetPositionId = x.TargetPositionId,
                 Description = x.Description,
                 DueDate = x.DueDate,
                 DueDay = x.DueDay.GetValueOrDefault(),
-                AccessLevelId = x.AccessLevelId.GetValueOrDefault(),
+                AccessLevel = (EnumDocumentAccess)x.AccessLevelId.GetValueOrDefault(),
             });
             var docDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
             docDb.AddSendList(context, sendLists);
@@ -379,6 +379,70 @@ namespace BL.Logic.DocumentCore
             };
         }
 
+        public int CopyDocument(IContext context, CopyDocument model)
+        {
+            var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
+
+            var document = documentDb.GetDocument(context, model.DocumentId);
+
+            document.Id = 0;
+            document.CreateDate = DateTime.Now;
+            document.IsFavourite = false;
+            document.RegistrationNumber = null;
+            document.RegistrationNumberPrefix = null;
+            document.RegistrationNumberSuffix = null;
+            document.RegistrationJournalId = null;
+
+            //if (document.RestrictedSendLists != null && document.RestrictedSendLists.Any())
+            //{
+            //    var restrictedSendLists = document.RestrictedSendLists.ToList();
+            //    for(int i=0,l= restrictedSendLists.Count;i< l;i++)
+            //    {
+            //        restrictedSendLists[i].Id = 0;
+            //    }
+            //    document.RestrictedSendLists = restrictedSendLists;
+            //}
+
+            //if (document.SendLists != null && document.SendLists.Any())
+            //{
+            //    var sendLists = document.SendLists.ToList();
+            //    for (int i = 0, l = sendLists.Count; i < l; i++)
+            //    {
+            //        sendLists[i].Id = 0;
+            //    }
+            //    document.SendLists = sendLists;
+            //}
+
+            var evt = new BaseDocumentEvent
+            {
+                EventType = EnumEventTypes.AddNewDocument,
+                Description = "Create",
+                LastChangeUserId = context.CurrentAgentId,
+                SourceAgentId = context.CurrentAgentId,
+                TargetAgentId = context.CurrentAgentId,
+                TargetPositionId = context.CurrentPositionId,
+                SourcePositionId = context.CurrentPositionId
+            };
+
+            document.Events = new List<BaseDocumentEvent> { evt };
+
+            var acc = new BaseDocumentAccess
+            {
+                AccessLevel = EnumDocumentAccess.PersonalRefIO,
+                IsInWork = true,
+                IsFavourite = false,
+                LastChangeDate = DateTime.Now,
+                LastChangeUserId = context.CurrentAgentId,
+                PositionId = context.CurrentPositionId,
+            };
+
+            document.Accesses = new List<BaseDocumentAccess>() { acc };
+
+            return SaveDocument(context, document);
+        }
+
+        #endregion
+    }
         public void RegisterDocument(IContext context, RegisterDocument model)
         {
             var docDB = DmsResolver.Current.Get<IDocumentsDbProcess>();

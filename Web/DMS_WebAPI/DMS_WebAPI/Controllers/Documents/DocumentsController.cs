@@ -6,6 +6,7 @@ using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
 using System.Web.Http;
 using BL.Logic.DocumentCore.Interfaces;
+using BL.Model.Enums;
 
 namespace DMS_WebAPI.Controllers.Documents
 {
@@ -97,7 +98,7 @@ namespace DMS_WebAPI.Controllers.Documents
                     ValueTypeCode = "number",
                     IsMandatory = true,
                     IsReadOnly = false,
-                    IsVisible = doc.DocumentDirectionId == 1?true:false,
+                    IsVisible = doc.DocumentDirection == EnumDocumentDirections.External,
                     SelectAPI = "DictionaryAgents",
                     SelectFilter = "{\"IsIndividual\" : \"False\"}",
                     SelectFieldCode = "Id",
@@ -118,7 +119,7 @@ namespace DMS_WebAPI.Controllers.Documents
                     ValueTypeCode = "Number",
                     IsMandatory = true,
                     IsReadOnly = false,
-                    IsVisible = doc.DocumentDirectionId == 1?true:false,
+                    IsVisible = doc.DocumentDirection == EnumDocumentDirections.External,
                     SelectAPI = "DictionaryAgentPersons",
                     SelectFilter = "{\"AgentId\" : \"@SenderAgentId\"}",
                     SelectFieldCode = "Id",
@@ -139,7 +140,7 @@ namespace DMS_WebAPI.Controllers.Documents
                     ValueTypeCode = "text",
                     IsMandatory = true,
                     IsReadOnly = false,
-                    IsVisible = doc.DocumentDirectionId == 1?true:false,
+                    IsVisible = doc.DocumentDirection == EnumDocumentDirections.External,
                     ValueFieldCode = "SenderNumber",
                     ValueDescriptionFieldCode = "SenderNumber",
                     Format = ""
@@ -156,7 +157,7 @@ namespace DMS_WebAPI.Controllers.Documents
                     ValueTypeCode = "date",
                     IsMandatory = true,
                     IsReadOnly = false,
-                    IsVisible = doc.DocumentDirectionId == 1?true:false,
+                    IsVisible = doc.DocumentDirection == EnumDocumentDirections.External,
                     ValueFieldCode = "SenderDate",
                     ValueDescriptionFieldCode = "SenderDate",
                     Format = ""
@@ -173,7 +174,7 @@ namespace DMS_WebAPI.Controllers.Documents
                     ValueTypeCode = "text",
                     IsMandatory = true,
                     IsReadOnly = false,
-                    IsVisible = doc.DocumentDirectionId == 1?true:false,
+                    IsVisible = doc.DocumentDirection == EnumDocumentDirections.External,
                     ValueFieldCode = "Addressee",
                     ValueDescriptionFieldCode = "Addressee",
                     Format = ""
@@ -190,7 +191,7 @@ namespace DMS_WebAPI.Controllers.Documents
                     ValueTypeCode = "Number",
                     IsMandatory = true,
                     IsReadOnly = false,
-                    IsVisible = doc.DocumentDirectionId == 1?true:false,
+                    IsVisible = doc.DocumentDirection == EnumDocumentDirections.External,
                     SelectAPI = "AdminAccessLevels",
                     SelectFieldCode = "Id",
                     SelectDescriptionFieldCode = "Name",

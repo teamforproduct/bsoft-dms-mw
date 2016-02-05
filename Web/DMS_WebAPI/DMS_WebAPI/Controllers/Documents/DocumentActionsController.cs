@@ -69,5 +69,17 @@ namespace DMS_WebAPI.Controllers.Documents
             docProc.ControlOn(cxt, model);
             return new JsonResult(null, this);
         }
+
+        // POST: api/DocumentActions/CopyDocument
+        [Route("CopyDocument")]
+        [HttpPost]
+        public IHttpActionResult Copy(CopyDocument model)
+        {
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            var ctrl = new DocumentsController();
+            ctrl.ControllerContext = ControllerContext;
+            return ctrl.Get(docProc.CopyDocument(cxt, model));
+        }
     }
 }
