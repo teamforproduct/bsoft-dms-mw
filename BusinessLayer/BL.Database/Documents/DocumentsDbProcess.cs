@@ -215,42 +215,80 @@ namespace BL.Database.Documents
         public IEnumerable<FullDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging)
         {
             var dbContext = GetUserDmsContext(ctx);
-            var qry = dbContext.DocumentsSet
-                .Where(x => x.Accesses.Any(a => (!filters.IsInWork || filters.IsInWork && a.IsInWork == filters.IsInWork) && a.PositionId == ctx.CurrentPositionId));
+
+            var qry = (from dc in dbContext.DocumentsSet
+                join acc in dbContext.DocumentAccessesSet on dc.Id equals acc.DocumentId
+                join tmpl in dbContext.TemplateDocumentsSet on dc.TemplateDocumentId equals tmpl.Id
+                join ddir in dbContext.DictionaryDocumentDirectionsSet on tmpl.DocumentDirectionId equals ddir.Id
+                join doctp in dbContext.DictionaryDocumentTypesSet on tmpl.DocumentTypeId equals doctp.Id
+                //join acl in dbContext.AdminAccessLevelsSet on acc.AccessLevelId equals acl.Id
+                join executor in dbContext.DictionaryPositionsSet on dc.ExecutorPositionId equals executor.Id
+
+                //join ea in dbContext.DictionaryAgentsSet on executor.ExecutorAgentId equals ea.Id into ea
+                //from exAg in ea.DefaultIfEmpty()
+
+                join z in dbContext.DictionaryDocumentSubjectsSet on dc.DocumentSubjectId equals z.Id into eg
+                from docsubj in eg.DefaultIfEmpty()
+
+                join g in dbContext.DictionaryRegistrationJournalsSet on dc.RegistrationJournalId equals g.Id into egg
+                from regj in egg.DefaultIfEmpty()
+
+                //join ag in dbContext.DictionaryAgentsSet on dc.SenderAgentId equals ag.Id into ag
+                //from sendAg in ag.DefaultIfEmpty()
+
+                //join ap in dbContext.DictionaryAgentPersonsSet on dc.SenderAgentPersonId equals ap.Id into ap
+                //from sendAp in ap.DefaultIfEmpty()
+
+                where acc.PositionId == ctx.CurrentPositionId && (!filters.IsInWork || filters.IsInWork && acc.IsInWork == filters.IsInWork)
+                select new
+                {
+                    Doc = dc,
+                    Acc = acc,
+                    Templ = tmpl,
+                    DirName = ddir.Name,
+                    //AccLevName = acl.Name,
+                    SubjName = docsubj.Name,
+                    DocTypeName = doctp.Name,
+                    RegJurnalName = regj.Name,
+                    ExecutorPosName = executor.Name,
+                    //ExecutorAgentName = exAg.Name,
+                    //SenderAgentname = sendAg.Name,
+                    //SenderPersonName = sendAp.Name
+                });
 
             if (filters.CreateFromDate.HasValue)
             {
-                qry = qry.Where(x => x.CreateDate >= filters.CreateFromDate.Value);
+                qry = qry.Where(x => x.Doc.CreateDate >= filters.CreateFromDate.Value);
             }
 
             if (filters.CreateToDate.HasValue)
             {
-                qry = qry.Where(x => x.CreateDate <= filters.CreateToDate.Value);
+                qry = qry.Where(x => x.Doc.CreateDate <= filters.CreateToDate.Value);
             }
 
             if (filters.RegistrationFromDate.HasValue)
             {
-                qry = qry.Where(x => x.RegistrationDate >= filters.RegistrationFromDate.Value);
+                qry = qry.Where(x => x.Doc.RegistrationDate >= filters.RegistrationFromDate.Value);
             }
 
             if (filters.RegistrationToDate.HasValue)
             {
-                qry = qry.Where(x => x.RegistrationDate <= filters.RegistrationToDate.Value);
+                qry = qry.Where(x => x.Doc.RegistrationDate <= filters.RegistrationToDate.Value);
             }
 
             //if (filters.SenderFromDate.HasValue)
             //{
-            //    qry = qry.Where(x => x. >= filters.SenderFromDate.Value);
+            //    qry = qry.Where(x => x.Doc. >= filters.SenderFromDate.Value);
             //}
 
             //if (filters.SenderToDate.HasValue)
             //{
-            //    qry = qry.Where(x => x. <= filters.SenderToDate.Value);
+            //    qry = qry.Where(x => x.Doc. <= filters.SenderToDate.Value);
             //}
 
             if (!String.IsNullOrEmpty(filters.Description))
             {
-                qry = qry.Where(x => x.Description.Contains(filters.Description));
+                qry = qry.Where(x => x.Doc.Description.Contains(filters.Description));
             }
 
             if (!String.IsNullOrEmpty(filters.RegistrationNumber))
@@ -258,43 +296,44 @@ namespace BL.Database.Documents
                 qry =
                     qry.Where(
                         x =>
-                            (x.RegistrationNumberPrefix + x.RegistrationNumber.ToString() + x.RegistrationNumberSuffix)
+                            (x.Doc.RegistrationNumberPrefix + x.Doc.RegistrationNumber.ToString() +
+                             x.Doc.RegistrationNumberSuffix)
                                 .Contains(filters.RegistrationNumber));
             }
 
             //if (!String.IsNullOrEmpty(filters.Addressee))
             //{
-            //    qry = qry.Where(x => x..Contains(filters.Addressee));
+            //    qry = qry.Where(x => x.Doc..Contains(filters.Addressee));
             //}
 
             //if (!String.IsNullOrEmpty(filters.SenderPerson))
             //{
-            //    qry = qry.Where(x => x..Contains(filters.SenderPerson));
+            //    qry = qry.Where(x => x.Doc..Contains(filters.SenderPerson));
             //}
 
             //if (!String.IsNullOrEmpty(filters.SenderNumber))
             //{
-            //    qry = qry.Where(x => x..Contains(filters.SenderNumber));
+            //    qry = qry.Where(x => x.Doc..Contains(filters.SenderNumber));
             //}
 
             if (filters.DocumentTypeId != null && filters.DocumentTypeId.Count > 0)
             {
-                qry = qry.Where(x => filters.DocumentTypeId.Contains(x.TemplateDocument.DocumentTypeId));
+                qry = qry.Where(x => filters.DocumentTypeId.Contains(x.Doc.TemplateDocument.DocumentTypeId));
             }
 
             if (filters.Id != null && filters.Id.Count > 0)
             {
-                qry = qry.Where(x => filters.Id.Contains(x.Id));
+                qry = qry.Where(x => filters.Id.Contains(x.Doc.Id));
             }
 
             if (filters.TemplateDocumentId != null && filters.TemplateDocumentId.Count > 0)
             {
-                qry = qry.Where(x => filters.TemplateDocumentId.Contains(x.TemplateDocumentId));
+                qry = qry.Where(x => filters.TemplateDocumentId.Contains(x.Doc.TemplateDocumentId));
             }
 
             if (filters.DocumentDirectionId != null && filters.DocumentDirectionId.Count > 0)
             {
-                qry = qry.Where(x => filters.DocumentDirectionId.Contains(x.TemplateDocument.DocumentDirectionId));
+                qry = qry.Where(x => filters.DocumentDirectionId.Contains(x.Templ.DocumentDirectionId));
             }
 
             if (filters.DocumentSubjectId != null && filters.DocumentSubjectId.Count > 0)
@@ -302,8 +341,8 @@ namespace BL.Database.Documents
                 qry =
                     qry.Where(
                         x =>
-                            x.DocumentSubjectId.HasValue &&
-                            filters.DocumentSubjectId.Contains(x.DocumentSubjectId.Value));
+                            x.Doc.DocumentSubjectId.HasValue &&
+                            filters.DocumentSubjectId.Contains(x.Doc.DocumentSubjectId.Value));
             }
 
             if (filters.RegistrationJournalId != null && filters.RegistrationJournalId.Count > 0)
@@ -311,51 +350,73 @@ namespace BL.Database.Documents
                 qry =
                     qry.Where(
                         x =>
-                            x.RegistrationJournalId.HasValue &&
-                            filters.RegistrationJournalId.Contains(x.RegistrationJournalId.Value));
+                            x.Doc.RegistrationJournalId.HasValue &&
+                            filters.RegistrationJournalId.Contains(x.Doc.RegistrationJournalId.Value));
             }
 
             if (filters.ExecutorPositionId != null && filters.ExecutorPositionId.Count > 0)
             {
-                qry = qry.Where(x => filters.ExecutorPositionId.Contains(x.ExecutorPositionId));
+                qry = qry.Where(x => filters.ExecutorPositionId.Contains(x.Doc.ExecutorPositionId));
             }
 
             //if (filters.SenderAgentId != null && filters.SenderAgentId.Count > 0)
             //{
-            //    qry = qry.Where(x => filters.SenderAgentId.Contains(x.));
+            //    qry = qry.Where(x => filters.SenderAgentId.Contains(x.Doc.));
             //}
 
-            var res = qry.Select(x => new { Doc = x, Acc = x.Accesses.FirstOrDefault() })
-                .Select(x => new FullDocument
-                {
-                    Id = x.Doc.Id,
-                    DocumentTypeId = x.Doc.TemplateDocument.DocumentTypeId,
-                    ExecutorPositionId = x.Doc.ExecutorPositionId,
-                    DocumentDirectionId = x.Doc.TemplateDocument.DocumentDirectionId,
-                    Description = x.Doc.Description,
-                    TemplateDocumentId = x.Doc.TemplateDocumentId,
-                    RegistrationDate = x.Doc.RegistrationDate,
-                    DocumentSubjectId = x.Doc.DocumentSubjectId,
-                    RegistrationNumber = x.Doc.RegistrationNumber,
-                    RegistrationNumberPrefix = x.Doc.RegistrationNumberPrefix,
-                    RegistrationNumberSuffix = x.Doc.RegistrationNumberSuffix,
-                    LastChangeDate = x.Doc.LastChangeDate,
-                    RegistrationJournalId = x.Doc.RegistrationJournalId,
-                    CreateDate = x.Doc.CreateDate,
-                    DocumentSubjectName = x.Doc.DocumentSubject.Name,
-                    ExecutorPositionName = x.Doc.ExecutorPosition.Name,
-                    LastChangeUserId = x.Doc.LastChangeUserId,
-                    DocumentDirectionName = x.Doc.TemplateDocument.DocumentDirection.Name,
-                    DocumentTypeName = x.Doc.TemplateDocument.DocumentType.Name,
-                    DocumentDate = x.Doc.RegistrationDate ?? x.Doc.CreateDate,
-                    IsFavourite = x.Acc.IsFavourite,
-                    IsInWork = x.Acc.IsInWork,
-                    EventsCount = x.Doc.Events.Count,
-                    NewEventCount = 0,//TODO
-                    AttachedFilesCount = x.Doc.Files.Count,
-                    LinkedDocumentsCount = 0//TODO
-                }).ToList();
-            paging.TotalPageCount = res.Count; //TODO pay attention to this when we will add paging
+            var evnt =
+                dbContext.DocumentEventsSet.Join(qry, ev => ev.DocumentId, rs => rs.Doc.Id, (e, r) => new {ev = e})
+                    .GroupBy(g => g.ev.DocumentId)
+                    .Select(s => new {DocID = s.Key, EvnCnt = s.Count()}).ToList();
+
+            var fls =
+                dbContext.DocumentFilesSet.Join(qry, fl => fl.DocumentId, rs => rs.Doc.Id, (f, r) => new {fil = f})
+                    .GroupBy(g => g.fil.DocumentId)
+                    .Select(s => new {DocID = s.Key, FileCnt = s.Count()}).ToList();
+
+            var res = qry.Select(x => new FullDocument
+            {
+                Id = x.Doc.Id,
+                DocumentTypeId = x.Templ.DocumentTypeId,
+                ExecutorPositionId = x.Doc.ExecutorPositionId,
+                DocumentDirectionId = x.Templ.DocumentDirectionId,
+                Description = x.Doc.Description,
+                TemplateDocumentId = x.Doc.TemplateDocumentId,
+                RegistrationDate = x.Doc.RegistrationDate,
+                DocumentSubjectId = x.Doc.DocumentSubjectId,
+                RegistrationNumber = x.Doc.RegistrationNumber,
+                RegistrationNumberPrefix = x.Doc.RegistrationNumberPrefix,
+                RegistrationNumberSuffix = x.Doc.RegistrationNumberSuffix,
+                LastChangeDate = x.Doc.LastChangeDate,
+                RegistrationJournalId = x.Doc.RegistrationJournalId,
+                RegistrationJournalName = x.RegJurnalName,
+                CreateDate = x.Doc.CreateDate,
+                DocumentSubjectName = x.SubjName,
+                ExecutorPositionName = x.ExecutorPosName,
+                LastChangeUserId = x.Doc.LastChangeUserId,
+                DocumentDirectionName = x.DirName,
+                DocumentTypeName = x.DocTypeName,
+                DocumentDate = x.Doc.RegistrationDate ?? x.Doc.CreateDate,
+                IsFavourite = x.Acc.IsFavourite,
+                IsInWork = x.Acc.IsInWork,
+                EventsCount = 0, //x.Doc.Events.Count,
+                NewEventCount = 0, //TODO
+                AttachedFilesCount = 0, // x.Doc.Files.Count,
+                LinkedDocumentsCount = 0 //TODO
+            });
+
+            var docs = res.ToList();
+            foreach (var x1 in docs.Join(evnt, d => d.Id, e => e.DocID, (d, e) => new { doc = d, ev = e}))
+            {
+                x1.doc.EventsCount = x1.ev.EvnCnt;
+                x1.doc.NewEventCount = 0;
+            }
+            foreach (var x1 in docs.Join(fls, d => d.Id, e => e.DocID, (d, e) => new { doc = d, ev = e }))
+            {
+                x1.doc.AttachedFilesCount = x1.ev.FileCnt;
+            }
+
+            paging.TotalPageCount = docs.Count; //TODO pay attention to this when we will add paging
             return res;
         }
 
@@ -363,123 +424,173 @@ namespace BL.Database.Documents
         {
             var dbContext = GetUserDmsContext(ctx);
 
-            var doc = dbContext.DocumentsSet
-                .Where(x => x.Id == documentId && x.Accesses.Any(a => a.PositionId == ctx.CurrentPositionId))
-                .Select(x => new { Doc = x, Acc = x.Accesses.FirstOrDefault() })
-                .Select(x => new FullDocument
-                {
-                    Id = x.Doc.Id,
-                    TemplateDocumentId = x.Doc.TemplateDocumentId,
-                    CreateDate = x.Doc.CreateDate,
-                    DocumentSubjectId = x.Doc.DocumentSubjectId,
-                    Description = x.Doc.Description,
-                    RegistrationJournalId = x.Doc.RegistrationJournalId,
-                    RegistrationNumber = x.Doc.RegistrationNumber,
-                    RegistrationNumberPrefix = x.Doc.RegistrationNumberPrefix,
-                    RegistrationNumberSuffix = x.Doc.RegistrationNumberSuffix,
-                    RegistrationDate = x.Doc.RegistrationDate,
-                    ExecutorPositionId = x.Doc.ExecutorPositionId,
-                    LastChangeUserId = x.Doc.LastChangeUserId,
-                    LastChangeDate = x.Doc.LastChangeDate,
-                    SenderAgentId = x.Doc.SenderAgentId,
-                    SenderAgentPersonId = x.Doc.SenderAgentPersonId,
-                    SenderNumber = x.Doc.SenderNumber,
-                    SenderDate = x.Doc.SenderDate,
-                    Addressee = x.Doc.Addressee,
-                    AccessLevel = (EnumDocumentAccess)x.Acc.AccessLevelId,
-                    TemplateDocumentName = x.Doc.TemplateDocument.Name,
-                    IsHard = x.Doc.TemplateDocument.IsHard,
-                    DocumentDirectionId = x.Doc.TemplateDocument.DocumentDirectionId,
-                    DocumentDirectionName = x.Doc.TemplateDocument.DocumentDirection.Name,
-                    DocumentTypeId = x.Doc.TemplateDocument.DocumentTypeId,
-                    DocumentTypeName = x.Doc.TemplateDocument.DocumentType.Name,
-                    DocumentSubjectName = x.Doc.DocumentSubject.Name,
-                    RegistrationJournalName = x.Doc.RegistrationJournal.Name,
-                    ExecutorPositionName = x.Doc.ExecutorPosition.Name,
-                    ExecutorPositionAgentName = x.Doc.ExecutorPosition.ExecutorAgent.Name,
-                    SenderAgentName = x.Doc.SenderAgent.Name,
-                    SenderAgentPersonName = x.Doc.SenderAgentPerson.Name,
-                    AccessLevelName = x.Acc.AccessLevel.Name,
-                    DocumentDate = x.Doc.RegistrationDate ?? x.Doc.CreateDate,
-                    RegistrationFullNumber =
-                        x.Doc.RegistrationNumber != null
-                            ? x.Doc.RegistrationNumber.ToString()
-                            : "#" + x.Doc.Id.ToString(),
-                    GeneralInfo =
-                        x.Doc.TemplateDocument.DocumentDirection.Name + " " + x.Doc.TemplateDocument.DocumentType.Name,
+            var dbDoc = (from dc in dbContext.DocumentsSet
+                         join acc in dbContext.DocumentAccessesSet on dc.Id equals acc.DocumentId
+                         join tmpl in dbContext.TemplateDocumentsSet on dc.TemplateDocumentId equals tmpl.Id
+                         join ddir in dbContext.DictionaryDocumentDirectionsSet on tmpl.DocumentDirectionId equals ddir.Id
+                         join doctp in dbContext.DictionaryDocumentTypesSet on tmpl.DocumentTypeId equals doctp.Id
+                         join acl in dbContext.AdminAccessLevelsSet on acc.AccessLevelId equals acl.Id
+                         join executor in dbContext.DictionaryPositionsSet on dc.ExecutorPositionId equals executor.Id
 
-                    IsFavourite = x.Acc.IsFavourite,
-                    IsInWork = x.Acc.IsInWork,
-                    EventsCount = x.Doc.Events.Count,
-                    NewEventCount = 0, //TODO
-                    AttachedFilesCount = x.Doc.Files.Count,
-                    LinkedDocumentsCount = 0, //TODO
+                         join ea in dbContext.DictionaryAgentsSet on executor.ExecutorAgentId equals ea.Id into ea
+                         from exAg in ea.DefaultIfEmpty()
 
-                    Accesses = new List<BaseDocumentAccess>
+                         join z in dbContext.DictionaryDocumentSubjectsSet on dc.DocumentSubjectId equals z.Id into eg
+                         from docsubj in eg.DefaultIfEmpty()
+
+                         join g in dbContext.DictionaryRegistrationJournalsSet on dc.RegistrationJournalId equals g.Id into egg
+                         from regj in egg.DefaultIfEmpty()
+
+                         join ag in dbContext.DictionaryAgentsSet on dc.SenderAgentId equals ag.Id into ag
+                         from sendAg in ag.DefaultIfEmpty()
+
+                         join ap in dbContext.DictionaryAgentPersonsSet on dc.SenderAgentPersonId equals ap.Id into ap
+                         from sendAp in ap.DefaultIfEmpty()
+
+                         where dc.Id == documentId && acc.PositionId == ctx.CurrentPositionId
+                         select new
+                         {
+                             Doc = dc,
+                             Acc = acc,
+                             Templ = tmpl,
+                             DirName = ddir.Name,
+                             AccLevName = acl.Name,
+                             SubjName = docsubj.Name,
+                             DocTypeName = doctp.Name,
+                             RegJurnalName = regj.Name,
+                             ExecutorPosName = executor.Name,
+                             ExecutorAgentName = exAg.Name,
+                             SenderAgentname = sendAg.Name,
+                             SenderPersonName = sendAp.Name
+                         }).FirstOrDefault();
+
+            if (dbDoc == null)
+            {
+                throw new DocumentNotFoundOrUserHasNoAccess();
+            }
+            var doc = new FullDocument
+            {
+                Id = dbDoc.Doc.Id,
+                TemplateDocumentId = dbDoc.Doc.TemplateDocumentId,
+                CreateDate = dbDoc.Doc.CreateDate,
+                DocumentSubjectId = dbDoc.Doc.DocumentSubjectId,
+                Description = dbDoc.Doc.Description,
+                RegistrationJournalId = dbDoc.Doc.RegistrationJournalId,
+                RegistrationJournalName = dbDoc.RegJurnalName,
+                RegistrationNumber = dbDoc.Doc.RegistrationNumber,
+                RegistrationNumberPrefix = dbDoc.Doc.RegistrationNumberPrefix,
+                RegistrationNumberSuffix = dbDoc.Doc.RegistrationNumberSuffix,
+                RegistrationDate = dbDoc.Doc.RegistrationDate,
+                ExecutorPositionId = dbDoc.Doc.ExecutorPositionId,
+                LastChangeUserId = dbDoc.Doc.LastChangeUserId,
+                LastChangeDate = dbDoc.Doc.LastChangeDate,
+                SenderAgentId = dbDoc.Doc.SenderAgentId,
+                SenderAgentPersonId = dbDoc.Doc.SenderAgentPersonId,
+                SenderNumber = dbDoc.Doc.SenderNumber,
+                SenderDate = dbDoc.Doc.SenderDate,
+                Addressee = dbDoc.Doc.Addressee,
+
+                AccessLevel = (EnumDocumentAccess)dbDoc.Acc.AccessLevelId,
+                AccessLevelName = dbDoc.AccLevName,
+
+                TemplateDocumentName = dbDoc.Templ.Name,
+                IsHard = dbDoc.Templ.IsHard,
+                DocumentDirectionId = dbDoc.Templ.DocumentDirectionId,
+                DocumentDirectionName = dbDoc.DirName,
+                DocumentTypeId = dbDoc.Templ.DocumentTypeId,
+                DocumentTypeName = dbDoc.DocTypeName,
+                DocumentSubjectName = dbDoc.SubjName,
+
+                DocumentDate = dbDoc.Doc.RegistrationDate ?? dbDoc.Doc.CreateDate,
+                RegistrationFullNumber =
+                        dbDoc.Doc.RegistrationNumber != null
+                            ? dbDoc.Doc.RegistrationNumber.ToString()
+                            : "#" + dbDoc.Doc.Id.ToString(),
+                GeneralInfo = dbDoc.DirName + " " + dbDoc.DocTypeName,
+
+                IsFavourite = dbDoc.Acc.IsFavourite,
+                IsInWork = dbDoc.Acc.IsInWork,
+                Accesses = new List<BaseDocumentAccess>
                     {
                         new BaseDocumentAccess
                         {
-                            LastChangeDate = x.Acc.LastChangeDate,
-                            LastChangeUserId = x.Acc.LastChangeUserId,
-                            IsInWork = x.Acc.IsInWork,
-                            IsFavourite = x.Acc.IsFavourite,
-                            PositionId = x.Acc.PositionId,
-                            AccessType = (EnumDocumentAccess) x.Acc.AccessLevelId,
-                            AccessLevelName = x.Acc.AccessLevel.Name,
-                            Id = x.Acc.Id,
-                            DocumentId = x.Acc.DocumentId
+                            LastChangeDate = dbDoc.Acc.LastChangeDate,
+                            LastChangeUserId = dbDoc.Acc.LastChangeUserId,
+                            IsInWork = dbDoc.Acc.IsInWork,
+                            IsFavourite = dbDoc.Acc.IsFavourite,
+                            PositionId = dbDoc.Acc.PositionId,
+                            AccessType = (EnumDocumentAccess) dbDoc.Acc.AccessLevelId,
+                            AccessLevelName = dbDoc.AccLevName,
+                            Id = dbDoc.Acc.Id,
+                            DocumentId = dbDoc.Acc.DocumentId
                         }
                     },
 
-                    Events = x.Doc.Events.Select(y => new BaseDocumentEvent
-                    {
-                        Id = y.Id,
-                        DocumentId = y.DocumentId,
-                        Description = y.Description,
-                        EventType = (EnumEventTypes)y.EventTypeId,
-                        ImpotanceEventType = (EnumImpotanceEventTypes)y.EventType.ImpotanceEventTypeId,
-                        CreateDate = y.CreateDate,
-                        Date = y.Date,
-                        EventTypeName = y.EventType.Name,
-                        EventImpotanceTypeName = y.EventType.ImpotanceEventType.Name,
-                        LastChangeUserId = y.LastChangeUserId,
-                        LastChangeDate = y.LastChangeDate,
-                        SourceAgenName = y.SourceAgent.Name,
-                        SourceAgentId = y.SourceAgentId,
-                        SourcePositionId = y.SourcePositionId,
-                        SourcePositionName = y.SourcePosition.Name,
-                        TargetAgenName = y.TargetAgent.Name,
-                        TargetAgentId = y.TargetAgentId,
-                        TargetPositionId = y.TargetPositionId,
-                        TargetPositionName = y.TargetPosition.Name,
-                        GeneralInfo = ""
-                    }),
+                ExecutorPositionName = dbDoc.ExecutorPosName,
+                SenderAgentName = dbDoc.SenderAgentname,
+                ExecutorPositionAgentName = dbDoc.ExecutorAgentName,
+                SenderAgentPersonName = dbDoc.SenderPersonName,
+            };
 
-                    SendLists = x.Doc.SendLists.Select(y => new BaseDocumentSendList
-                    {
-                        Id = y.Id,
-                        DocumentId = y.DocumentId,
-                        OrderNumber = y.OrderNumber,
-                        SendTypeId = y.SendTypeId,
-                        SendTypeName = y.SendType.Name,
-                        SendTypeCode = y.SendType.Code,
-                        SendTypeIsImpotant = y.SendType.IsImpotant,
-                        TargetPositionId = y.TargetPositionId,
-                        TargetPositionName = y.TargetPosition.Name,
-                        TargetPositionExecutorAgentName = y.TargetPosition.ExecutorAgent.Name,
-                        Description = y.Description,
-                        DueDate = y.DueDate,
-                        DueDay = y.DueDay,
-                        AccessLevelId = y.AccessLevelId,
-                        AccessLevelName = y.AccessLevel.Name,
-                        IsInitial = y.IsInitial,
-                        EventId = y.EventId,
-                        LastChangeUserId = y.LastChangeUserId,
-                        LastChangeDate = y.LastChangeDate,
-                        GeneralInfo = string.Empty
-                    }),
 
-                    RestrictedSendLists = x.Doc.RestrictedSendLists.Select(y => new BaseDocumentRestrictedSendList
+            doc.Events =
+                dbContext.DocumentEventsSet.Where(x => x.DocumentId == doc.Id).Select(y => new BaseDocumentEvent
+                {
+                    Id = y.Id,
+                    DocumentId = y.DocumentId,
+                    Description = y.Description,
+                    EventType = (EnumEventTypes) y.EventTypeId,
+                    ImpotanceEventType = (EnumImpotanceEventTypes) y.EventType.ImpotanceEventTypeId,
+                    CreateDate = y.CreateDate,
+                    Date = y.Date,
+                    EventTypeName = y.EventType.Name,
+                    EventImpotanceTypeName = y.EventType.ImpotanceEventType.Name,
+                    LastChangeUserId = y.LastChangeUserId,
+                    LastChangeDate = y.LastChangeDate,
+                    SourceAgenName = y.SourceAgent.Name,
+                    SourceAgentId = y.SourceAgentId,
+                    SourcePositionId = y.SourcePositionId,
+                    SourcePositionName = y.SourcePosition.Name,
+                    TargetAgenName = y.TargetAgent.Name,
+                    TargetAgentId = y.TargetAgentId,
+                    TargetPositionId = y.TargetPositionId,
+                    TargetPositionName = y.TargetPosition.Name,
+                    GeneralInfo = ""
+                }).ToList();
+
+            doc.EventsCount = doc.Events.Count();
+            doc.NewEventCount = 0;
+
+            doc.LinkedDocumentsCount = 0; //TODO
+
+            doc.SendLists =
+                dbContext.DocumentSendListsSet.Where(x => x.DocumentId == doc.Id).Select(y => new BaseDocumentSendList
+                {
+                    Id = y.Id,
+                    DocumentId = y.DocumentId,
+                    OrderNumber = y.OrderNumber,
+                    SendTypeId = y.SendTypeId,
+                    SendTypeName = y.SendType.Name,
+                    SendTypeCode = y.SendType.Code,
+                    SendTypeIsImpotant = y.SendType.IsImpotant,
+                    TargetPositionId = y.TargetPositionId,
+                    TargetPositionName = y.TargetPosition.Name,
+                    TargetPositionExecutorAgentName = y.TargetPosition.ExecutorAgent.Name,
+                    Description = y.Description,
+                    DueDate = y.DueDate,
+                    DueDay = y.DueDay,
+                    AccessLevelId = y.AccessLevelId,
+                    AccessLevelName = y.AccessLevel.Name,
+                    IsInitial = y.IsInitial,
+                    EventId = y.EventId,
+                    LastChangeUserId = y.LastChangeUserId,
+                    LastChangeDate = y.LastChangeDate,
+                    GeneralInfo = string.Empty
+                }).ToList();
+
+            doc.RestrictedSendLists =
+                dbContext.DocumentRestrictedSendListsSet.Where(x => x.DocumentId == doc.Id)
+                    .Select(y => new BaseDocumentRestrictedSendList
                     {
                         Id = y.Id,
                         DocumentId = y.DocumentId,
@@ -491,14 +602,9 @@ namespace BL.Database.Documents
                         LastChangeUserId = y.LastChangeUserId,
                         LastChangeDate = y.LastChangeDate,
                         GeneralInfo = string.Empty
-                    })
+                    }).ToList();
 
-                }).FirstOrDefault();
-
-            if (doc == null)
-            {
-                throw new DocumentNotFoundOrUserHasNoAccess();
-            }
+            doc.AttachedFilesCount = 0; // TODO select attached files
 
             return doc;
         }

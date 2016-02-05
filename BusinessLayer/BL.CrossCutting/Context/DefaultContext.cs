@@ -16,7 +16,7 @@ namespace BL.CrossCutting.Context
         {
             get
             {
-                var position = CurrentPosition.FirstOrDefault();
+                var position = CurrentPosition?.FirstOrDefault();
                 if (position == null)
                 {
                     throw new UserPositionIsNotDefined();
@@ -29,7 +29,7 @@ namespace BL.CrossCutting.Context
         {
             get
             {
-                if (!CurrentEmployee.AgentId.HasValue)
+                if (CurrentEmployee == null || !CurrentEmployee.AgentId.HasValue)
                 {
                     throw new UserNameIsNotDefined();
                 }
