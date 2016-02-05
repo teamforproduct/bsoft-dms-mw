@@ -39,5 +39,7 @@ namespace BL.Logic.DocumentCore.Interfaces
         void ChangeFavouritesForDocument(IContext context, ChangeFavourites model);
 
         void ControlOn(IContext context, ControlOn model);
+
+        int CopyDocument(IContext context, CopyDocument model);
     }
 }

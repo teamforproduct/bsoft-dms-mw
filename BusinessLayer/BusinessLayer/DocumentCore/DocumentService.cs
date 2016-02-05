@@ -379,6 +379,68 @@ namespace BL.Logic.DocumentCore
             };
         }
 
+        public int CopyDocument(IContext context, CopyDocument model)
+        {
+            var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
+
+            var document = documentDb.GetDocument(context, model.DocumentId);
+
+            document.Id = 0;
+            document.CreateDate = DateTime.Now;
+            document.IsFavourite = false;
+            document.RegistrationNumber = null;
+            document.RegistrationNumberPrefix = null;
+            document.RegistrationNumberSuffix = null;
+            document.RegistrationJournalId = null;
+
+            //if (document.RestrictedSendLists != null && document.RestrictedSendLists.Any())
+            //{
+            //    var restrictedSendLists = document.RestrictedSendLists.ToList();
+            //    for(int i=0,l= restrictedSendLists.Count;i< l;i++)
+            //    {
+            //        restrictedSendLists[i].Id = 0;
+            //    }
+            //    document.RestrictedSendLists = restrictedSendLists;
+            //}
+
+            //if (document.SendLists != null && document.SendLists.Any())
+            //{
+            //    var sendLists = document.SendLists.ToList();
+            //    for (int i = 0, l = sendLists.Count; i < l; i++)
+            //    {
+            //        sendLists[i].Id = 0;
+            //    }
+            //    document.SendLists = sendLists;
+            //}
+
+            var evt = new BaseDocumentEvent
+            {
+                EventType = EnumEventTypes.AddNewDocument,
+                Description = "Create",
+                LastChangeUserId = context.CurrentAgentId,
+                SourceAgentId = context.CurrentAgentId,
+                TargetAgentId = context.CurrentAgentId,
+                TargetPositionId = context.CurrentPositionId,
+                SourcePositionId = context.CurrentPositionId
+            };
+
+            document.Events = new List<BaseDocumentEvent> { evt };
+
+            var acc = new BaseDocumentAccess
+            {
+                AccessType = EnumDocumentAccess.PersonalRefIO,
+                IsInWork = true,
+                IsFavourite = false,
+                LastChangeDate = DateTime.Now,
+                LastChangeUserId = context.CurrentAgentId,
+                PositionId = context.CurrentPositionId,
+            };
+
+            document.Accesses = new List<BaseDocumentAccess>() { acc };
+
+            return SaveDocument(context, document);
+        }
+
         #endregion
     }
 }
