@@ -117,7 +117,9 @@ namespace DMS_WebAPI.Providers
                     throw new System.Exception("Not found Database");
                 }
 
-                var cxt = DmsResolver.Current.Get<UserContext>().Set(token, db);
+                var mngContext = DmsResolver.Current.Get<UserContext>();
+
+                var cxt = mngContext.Set(token, db);
             }
 
             return Task.FromResult<object>(null);

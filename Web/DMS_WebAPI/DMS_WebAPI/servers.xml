@@ -15,7 +15,7 @@
   <Server>
     <Id>1</Id>
     <Name>IRF_DMS</Name>
-    <Address>109.197.217.79\SQLEXPRESS,1433</Address>
+    <Address>192.168.0.222\SQLEXPRESS</Address>
     <ServerType>SQLServer</ServerType>
     <DefaultDatabase>IRF_DMS</DefaultDatabase>
     <IntegrateSecurity>True</IntegrateSecurity>
