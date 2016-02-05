@@ -1,4 +1,4 @@
-<!--<Servers>
+<Servers>
   <Server>
     <Id>1</Id>
     <Name>IRF_DMS</Name>
@@ -10,8 +10,8 @@
     <UserPassword>Harm1969</UserPassword>
     <ConnectionString>Data Source=109.197.217.79\SQLEXPRESS,1433;Initial Catalog=IRF_DMS;Persist Security Info=True;User ID=sa;Password=Harm1969</ConnectionString>
   </Server>
-</Servers>-->
-<Servers>
+</Servers>
+<!--<Servers>
   <Server>
     <Id>1</Id>
     <Name>IRF_DMS</Name>
@@ -23,4 +23,4 @@
     <UserPassword>TME3ZAf2MMqsPY</UserPassword>
     <ConnectionString>Data Source=192.168.0.222\SQLEXPRESS;Initial Catalog=IRF_DMS;User ID=bsoft;Password=TME3ZAf2MMqsPY;Application Name=EntityFramework</ConnectionString>
   </Server>
-</Servers>
+</Servers>-->
