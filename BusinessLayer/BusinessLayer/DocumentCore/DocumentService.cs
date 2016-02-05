@@ -81,12 +81,12 @@ namespace BL.Logic.DocumentCore
                 baseDocument.SendLists = baseTemplateDocument.SendLists.Select(x => new BaseDocumentSendList()
                 {
                     OrderNumber = x.OrderNumber,
-                    SendTypeId = x.SendTypeId,
+                    SendType = (EnumSendType)x.SendTypeId,
                     TargetPositionId = x.TargetPositionId,
                     Description = x.Description,
                     DueDate = x.DueDate,
                     DueDay = x.DueDay,
-                    AccessLevelId = x.AccessLevelId,
+                    AccessLevel = (EnumDocumentAccess)x.AccessLevelId,
                     IsInitial = true,
                     EventId = null
                 }).ToList();
@@ -208,12 +208,12 @@ namespace BL.Logic.DocumentCore
             {
                 DocumentId = model.DocumentId,
                 OrderNumber = x.OrderNumber,
-                SendTypeId = x.SendTypeId,
+                SendType = (EnumSendType)x.SendTypeId,
                 TargetPositionId = x.TargetPositionId,
                 Description = x.Description,
                 DueDate = x.DueDate,
                 DueDay = x.DueDay.GetValueOrDefault(),
-                AccessLevelId = x.AccessLevelId.GetValueOrDefault(),
+                AccessLevel = (EnumDocumentAccess)x.AccessLevelId.GetValueOrDefault(),
             });
             var docDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
             docDb.AddSendList(context, sendLists);

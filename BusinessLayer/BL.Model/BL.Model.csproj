@@ -110,6 +110,7 @@
     <Compile Include="DocumentCore\ModifyDocumentSendListByStandartSendList.cs" />
     <Compile Include="DocumentCore\ModifyDocumentSendList.cs" />
     <Compile Include="DocumentCore\Actions\RegistrationDocument.cs" />
+    <Compile Include="Enums\EnumSendType.cs" />
     <Compile Include="Exception\DmsExceptions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Enums\EnumLogType.cs" />
