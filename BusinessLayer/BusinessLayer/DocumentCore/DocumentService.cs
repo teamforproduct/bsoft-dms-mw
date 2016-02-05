@@ -379,6 +379,42 @@ namespace BL.Logic.DocumentCore
             };
         }
 
+        public void RegisterDocument(IContext context, RegisterDocument model)
+        {
+            var docDB = DmsResolver.Current.Get<IDocumentsDbProcess>();
+
+
+            if (model.RegistrationNumber == null|| string.IsNullOrEmpty(model.RegistrationNumberPrefix)|| model.IsOnlyGetNextNumber)
+            {   //get next number
+                var dictDB = DmsResolver.Current.Get<IDictionariesDbProcess>();
+                var dictRegJournal = dictDB.GetDictionaryRegistrationJournal(context, model.RegistrationJournalId);
+                model.RegistrationNumberPrefix = dictRegJournal.PrefixFormula;
+                model.RegistrationNumberSuffix = dictRegJournal.SuffixFormula;
+                model.RegistrationNumber = null;
+                docDB.AddTemporaryRegistration(context, model);
+            }
+            else
+            {
+                var registerDocument = docDB.GetTemporaryRegistration(context, model.Id);
+                if (registerDocument.RegistrationJournalId != model.RegistrationJournalId
+                        || registerDocument.RegistrationNumberPrefix != model.RegistrationNumberPrefix
+                        || registerDocument.RegistrationNumberSuffix != model.RegistrationNumberSuffix
+                        || registerDocument.RegistrationNumber != model.RegistrationNumber
+                        || registerDocument.RegistrationDate != model.RegistrationDate
+                    )
+                {
+                    docDB.AddTemporaryRegistration(context, model);
+                }
+            }
+
+
+
+            if (!model.IsOnlyGetNextNumber)
+            {   //проставляем 
+                docDB.SetDocumentRegistration(context, model.Id);
+            }
+        }
+
         #endregion
     }
 }

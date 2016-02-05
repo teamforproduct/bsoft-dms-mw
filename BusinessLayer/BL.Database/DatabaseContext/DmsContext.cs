@@ -36,9 +36,9 @@ namespace BL.Database.DatabaseContext
         {
             modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
 
-           // modelBuilder.Entity<DBModel.Document.Documents>()
-           //.HasOptional(f => f.IncomingDetail)
-           //.WithRequired(s => s.Document);
+            modelBuilder.Entity<DBModel.Document.Documents>()
+           .HasOptional(f => f.TemporaryRegistration)
+           .WithRequired(s => s.Document);
            // modelBuilder.Entity<TemplateDocuments>()
            //.HasOptional(f => f.IncomingDetail)
            //.WithRequired(s => s.Document);
@@ -75,6 +75,7 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<DocumentSendLists> DocumentSendListsSet { get; set; }
         public virtual DbSet<DocumentSubscriptions> DocumentSubscriptionsSet { get; set; }
         public virtual DbSet<DocumentWaits> DocumentWaitsSet { get; set; }
+        public virtual DbSet<DocumentTemporaryRegistrations> DocumentTemporaryRegistrationsSet { get; set; }
 
         public virtual DbSet<TemplateDocumentSendLists> TemplateDocumentSendLists { get; set; }
         public virtual DbSet<TemplateDocumentRestrictedSendLists> TemplateDocumentRestrictedSendLists { get; set; }

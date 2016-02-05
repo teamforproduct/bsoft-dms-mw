@@ -87,6 +87,7 @@
     <Compile Include="DocumentCore\Actions\ControlOn.cs" />
     <Compile Include="DocumentCore\Actions\AddNote.cs" />
     <Compile Include="DocumentCore\BaseDocumentSavedFilter.cs" />
+    <Compile Include="DocumentCore\BaseDocumentTemporaryRegistration.cs" />
     <Compile Include="DocumentCore\BaseDocumentWaits.cs" />
     <Compile Include="DocumentCore\ModifyDocumentSavedFilter.cs" />
     <Compile Include="Enums\EnumDocumentDirections.cs" />
@@ -108,7 +109,7 @@
     <Compile Include="DocumentCore\ModifyDocumentRestrictedSendList.cs" />
     <Compile Include="DocumentCore\ModifyDocumentSendListByStandartSendList.cs" />
     <Compile Include="DocumentCore\ModifyDocumentSendList.cs" />
-    <Compile Include="DocumentCore\Actions\RegistrationDocument.cs" />
+    <Compile Include="DocumentCore\Actions\RegisterDocument.cs" />
     <Compile Include="Exception\DmsExceptions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Enums\EnumLogType.cs" />

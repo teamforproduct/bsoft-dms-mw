@@ -2,10 +2,11 @@
 
 namespace BL.Model.DocumentCore.Actions
 {
-    public class RegistrationDocument
+    public class RegisterDocument
     {
         public int Id { get; set; }
         public int RegistrationJournalId { get; set; }
+        public bool IsOnlyGetNextNumber { get; set; }
         public int? RegistrationNumber { get; set; }
         public string RegistrationNumberSuffix { get; set; }
         public string RegistrationNumberPrefix { get; set; }

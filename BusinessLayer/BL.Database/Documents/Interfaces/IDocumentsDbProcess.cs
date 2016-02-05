@@ -3,6 +3,7 @@ using BL.CrossCutting.Interfaces;
 using BL.Model.Database;
 using BL.Model.DocumentCore;
 using BL.Model.SystemCore;
+using BL.Model.DocumentCore.Actions;
 
 namespace BL.Database.Documents.Interfaces
 {
@@ -37,5 +38,8 @@ namespace BL.Database.Documents.Interfaces
         void DeleteSavedFilter(IContext ctx, int savedFilterId);
 
         void AddDocumentWait(IContext ctx, BaseDocumentWaits documentWait);
+        RegisterDocument GetTemporaryRegistration(IContext ctx, int temporaryRegistrationsId);
+        int AddTemporaryRegistration(IContext ctx, RegisterDocument registerDocument);
+        void SetDocumentRegistration(IContext ctx, int temporaryRegistrationsId);
     }
 }

@@ -27,6 +27,16 @@ namespace DMS_WebAPI.Controllers.Documents
             return new JsonResult(null, this);
         }
 
+        [Route("RegisterDocument")]
+        [HttpPost]
+        public IHttpActionResult RegisterDocument(RegisterDocument model)
+        {
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            docProc.RegisterDocument(cxt, model);
+            return new JsonResult(null, this);
+        }
+
         // POST: api/DocumentActions/ChangeWorkStatus
         [Route("ChangeWorkStatus")]
         [HttpPost]
