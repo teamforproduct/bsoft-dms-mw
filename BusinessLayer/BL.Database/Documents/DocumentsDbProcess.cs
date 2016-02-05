@@ -94,7 +94,7 @@ namespace BL.Database.Documents
                     IsInWork = x.IsInWork,
                     LastChangeUserId = x.LastChangeUserId,
                     PositionId = x.PositionId,
-                    AccessLevelId = (int)x.AccessType,
+                    AccessLevelId = (int)x.AccessLevel,
                 }).ToList();
             }
 
@@ -158,12 +158,12 @@ namespace BL.Database.Documents
                     {
                         foreach (var eacc in doc.Accesses.Where(x => x.Id == acc.Id))
                         {
-                            if ((eacc.AccessLevelId != (int)acc.AccessType) || (eacc.IsFavourite != acc.IsFavourite)
+                            if ((eacc.AccessLevelId != (int)acc.AccessLevel) || (eacc.IsFavourite != acc.IsFavourite)
                                 || (eacc.IsInWork != acc.IsInWork) || (eacc.PositionId != acc.PositionId))
                             {
                                 eacc.LastChangeDate = DateTime.Now;
                                 eacc.LastChangeUserId = ctx.CurrentAgentId;
-                                eacc.AccessLevelId = (int)acc.AccessType;
+                                eacc.AccessLevelId = (int)acc.AccessLevel;
                                 eacc.IsFavourite = acc.IsFavourite;
                                 eacc.IsInWork = acc.IsInWork;
                                 eacc.PositionId = acc.PositionId;
@@ -182,7 +182,7 @@ namespace BL.Database.Documents
                             IsInWork = x.IsInWork,
                             LastChangeUserId = x.LastChangeUserId,
                             PositionId = x.PositionId,
-                            AccessLevelId = (int)x.AccessType,
+                            AccessLevelId = (int)x.AccessLevel,
                         }).ToList();
                     }
                 }
@@ -379,7 +379,7 @@ namespace BL.Database.Documents
                 Id = x.Doc.Id,
                 DocumentTypeId = x.Templ.DocumentTypeId,
                 ExecutorPositionId = x.Doc.ExecutorPositionId,
-                DocumentDirectionId = x.Templ.DocumentDirectionId,
+                DocumentDirection = (EnumDocumentDirections)x.Templ.DocumentDirectionId,
                 Description = x.Doc.Description,
                 TemplateDocumentId = x.Doc.TemplateDocumentId,
                 RegistrationDate = x.Doc.RegistrationDate,
@@ -495,7 +495,7 @@ namespace BL.Database.Documents
 
                 TemplateDocumentName = dbDoc.Templ.Name,
                 IsHard = dbDoc.Templ.IsHard,
-                DocumentDirectionId = dbDoc.Templ.DocumentDirectionId,
+                DocumentDirection = (EnumDocumentDirections)dbDoc.Templ.DocumentDirectionId,
                 DocumentDirectionName = dbDoc.DirName,
                 DocumentTypeId = dbDoc.Templ.DocumentTypeId,
                 DocumentTypeName = dbDoc.DocTypeName,
@@ -519,7 +519,7 @@ namespace BL.Database.Documents
                             IsInWork = dbDoc.Acc.IsInWork,
                             IsFavourite = dbDoc.Acc.IsFavourite,
                             PositionId = dbDoc.Acc.PositionId,
-                            AccessType = (EnumDocumentAccess) dbDoc.Acc.AccessLevelId,
+                            AccessLevel = (EnumDocumentAccess) dbDoc.Acc.AccessLevelId,
                             AccessLevelName = dbDoc.AccLevName,
                             Id = dbDoc.Acc.Id,
                             DocumentId = dbDoc.Acc.DocumentId
@@ -622,7 +622,7 @@ namespace BL.Database.Documents
                 acc.IsInWork = access.DocumentAccess.IsInWork;
                 acc.LastChangeUserId = ctx.CurrentAgentId;
                 acc.PositionId = access.DocumentAccess.PositionId;
-                acc.AccessLevelId = (int)access.DocumentAccess.AccessType;
+                acc.AccessLevelId = (int)access.DocumentAccess.AccessLevel;
                 acc.IsFavourite = access.DocumentAccess.IsFavourite;
             }
             var evt = new DocumentEvents
@@ -651,7 +651,7 @@ namespace BL.Database.Documents
                 IsInWork = access.IsInWork,
                 LastChangeUserId = access.LastChangeUserId,
                 PositionId = access.PositionId,
-                AccessLevelId = (int)access.AccessType,
+                AccessLevelId = (int)access.AccessLevel,
                 IsFavourite = access.IsFavourite
             };
             dbContext.DocumentAccessesSet.Add(acc);
@@ -680,7 +680,7 @@ namespace BL.Database.Documents
                 acc.IsInWork = access.IsInWork;
                 acc.LastChangeUserId = ctx.CurrentAgentId;
                 acc.PositionId = access.PositionId;
-                acc.AccessLevelId = (int)access.AccessType;
+                acc.AccessLevelId = (int)access.AccessLevel;
                 acc.IsFavourite = access.IsFavourite;
                 dbContext.SaveChanges();
             }
@@ -701,7 +701,7 @@ namespace BL.Database.Documents
                     IsInWork = acc.IsInWork,
                     DocumentId = acc.DocumentId,
                     IsFavourite = acc.IsFavourite,
-                    AccessType = (EnumDocumentAccess)acc.AccessLevelId,
+                    AccessLevel = (EnumDocumentAccess)acc.AccessLevelId,
                     AccessLevelName = acc.AccessLevel.Name
                 };
             }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using BL.Model.Enums;
 
 namespace BL.Model.DocumentCore
 {
@@ -37,7 +38,7 @@ namespace BL.Model.DocumentCore
 
         public string TemplateDocumentName { get; set; }
         public int IsHard { get; set; }
-        public int DocumentDirectionId { get; set; }
+        public EnumDocumentDirections DocumentDirection { get; set; }
         public string DocumentDirectionName { get; set; }
         public int DocumentTypeId { get; set; }
         public string DocumentTypeName { get; set; }

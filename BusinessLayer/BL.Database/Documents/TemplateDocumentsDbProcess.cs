@@ -3,6 +3,7 @@ using BL.CrossCutting.Interfaces;
 using BL.Model.DocumentCore;
 using System.Linq;
 using BL.Database.Documents.Interfaces;
+using BL.Model.Enums;
 
 namespace BL.Database.Documents
 {
@@ -14,7 +15,7 @@ namespace BL.Database.Documents
             return dbContext.TemplateDocumentsSet.Select(x => new BaseTemplateDocument
             {
                 Id = x.Id,
-                DocumentDirectionId = x.DocumentDirectionId,
+                DocumentDirection = (EnumDocumentDirections)x.DocumentDirectionId,
                 DocumentTypeId = x.DocumentTypeId,
                 Name = x.Name,
                 Description = x.Description,
@@ -35,7 +36,7 @@ namespace BL.Database.Documents
                 Id = x.Id,
                 Name = x.Name,
                 IsHard = x.IsHard,
-                DocumentDirectionId = x.DocumentDirectionId,
+                DocumentDirection = (EnumDocumentDirections)x.DocumentDirectionId,
                 DocumentTypeId = x.DocumentTypeId,
                 Description = x.Description,
                 DocumentSubjectId = x.DocumentSubjectId,
@@ -44,18 +45,18 @@ namespace BL.Database.Documents
                 LastChangeDate = x.LastChangeDate,
                 RestrictedSendLists = x.RestrictedSendLists.Select(y=>new BaseTemplateDocumentRestrictedSendLists() {
                     PositionId=y.PositionId,
-                    AccessLevelId = y.AccessLevelId
+                    AccessLevel = (EnumDocumentAccess)y.AccessLevelId
                 }).ToList(),
                 SendLists = x.SendLists.Select(y => new BaseTemplateDocumentSendLists()
                 {
-                    SendTypeId = y.SendTypeId,
+                    SendType = (EnumSendType)y.SendTypeId,
                     TargetPositionId = y.TargetPositionId,
                     Description = y.Description,
                     DueDate = y.DueDate,
                     OrderNumber = y.OrderNumber,
 
                     DueDay = y.DueDay,
-                    AccessLevelId = y.AccessLevelId
+                    AccessLevel = (EnumDocumentAccess)y.AccessLevelId
                 }).ToList()
             }).FirstOrDefault();
         }

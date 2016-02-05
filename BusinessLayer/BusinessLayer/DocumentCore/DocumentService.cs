@@ -62,9 +62,9 @@ namespace BL.Logic.DocumentCore
                 DocumentSubjectId = baseTemplateDocument.DocumentSubjectId,
                 Description = baseTemplateDocument.Description,
                 ExecutorPositionId = context.CurrentPositionId, ////
-                SenderAgentId = baseTemplateDocument.DocumentDirectionId == (int)EnumDocumentDirections.External?baseTemplateDocument.SenderAgentId:null,
-                SenderAgentPersonId = baseTemplateDocument.DocumentDirectionId == (int)EnumDocumentDirections.External ? baseTemplateDocument.SenderAgentPersonId : null,
-                Addressee = baseTemplateDocument.DocumentDirectionId == (int)EnumDocumentDirections.External ? baseTemplateDocument.Addressee : null
+                SenderAgentId = baseTemplateDocument.DocumentDirection == EnumDocumentDirections.External?baseTemplateDocument.SenderAgentId:null,
+                SenderAgentPersonId = baseTemplateDocument.DocumentDirection == EnumDocumentDirections.External ? baseTemplateDocument.SenderAgentPersonId : null,
+                Addressee = baseTemplateDocument.DocumentDirection == EnumDocumentDirections.External ? baseTemplateDocument.Addressee : null
             };
 
             if (baseTemplateDocument.RestrictedSendLists != null && baseTemplateDocument.RestrictedSendLists.Any())
@@ -72,21 +72,21 @@ namespace BL.Logic.DocumentCore
                 baseDocument.RestrictedSendLists = baseTemplateDocument.RestrictedSendLists.Select(x => new BaseDocumentRestrictedSendList()
                 {
                     PositionId = x.PositionId,
-                    AccessLevelId = x.AccessLevelId
+                    AccessLevelId = (int)x.AccessLevel
                 }).ToList();
             }
 
             if (baseTemplateDocument.SendLists != null && baseTemplateDocument.SendLists.Any())
             {
-                baseDocument.SendLists = baseTemplateDocument.SendLists.Select(x => new BaseDocumentSendList()
+                baseDocument.SendLists = baseTemplateDocument.SendLists.Select(x => new BaseDocumentSendList
                 {
                     OrderNumber = x.OrderNumber,
-                    SendType = (EnumSendType)x.SendTypeId,
+                    SendType =x.SendType,
                     TargetPositionId = x.TargetPositionId,
                     Description = x.Description,
                     DueDate = x.DueDate,
                     DueDay = x.DueDay,
-                    AccessLevel = (EnumDocumentAccess)x.AccessLevelId,
+                    AccessLevel = x.AccessLevel,
                     IsInitial = true,
                     EventId = null
                 }).ToList();
@@ -107,7 +107,7 @@ namespace BL.Logic.DocumentCore
 
             var acc = new BaseDocumentAccess
             {
-                AccessType = EnumDocumentAccess.PersonalRefIO,
+                AccessLevel = EnumDocumentAccess.PersonalRefIO,
                 IsInWork = true,
                 IsFavourite = false,
                 LastChangeDate = DateTime.Now,
@@ -125,13 +125,13 @@ namespace BL.Logic.DocumentCore
             var baseDocument = new FullDocument(document);
             var db = DmsResolver.Current.Get<ITemplateDocumentsDbProcess>();
             var baseTemplateDocument = db.GetTemplateDocument(context, baseDocument.TemplateDocumentId);
-            if (baseTemplateDocument.DocumentDirectionId == (int)EnumDocumentDirections.External)
+            if (baseTemplateDocument.DocumentDirection == EnumDocumentDirections.External)
             {
                 throw new UserPositionIsNotDefined();
             }
             if ( 
                 (
-                        (baseTemplateDocument.DocumentDirectionId == (int)EnumDocumentDirections.Inner)
+                        (baseTemplateDocument.DocumentDirection == EnumDocumentDirections.Inner)
                     &&
                     (
                         baseDocument.SenderAgentId != null || 
@@ -143,7 +143,7 @@ namespace BL.Logic.DocumentCore
                 )
                 ||
                 (
-                        (baseTemplateDocument.DocumentDirectionId == (int)EnumDocumentDirections.External)
+                        (baseTemplateDocument.DocumentDirection == EnumDocumentDirections.External)
                     &&
                     (
                         baseDocument.SenderAgentId == null ||
@@ -428,7 +428,7 @@ namespace BL.Logic.DocumentCore
 
             var acc = new BaseDocumentAccess
             {
-                AccessType = EnumDocumentAccess.PersonalRefIO,
+                AccessLevel = EnumDocumentAccess.PersonalRefIO,
                 IsInWork = true,
                 IsFavourite = false,
                 LastChangeDate = DateTime.Now,
