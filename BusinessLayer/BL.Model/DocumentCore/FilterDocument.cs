@@ -13,13 +13,14 @@ namespace BL.Model.DocumentCore
         public DateTime? CreateToDate { get; set; }
         public List<int> DocumentSubjectId { get; set; }
         public string Description { get; set; }
+        public bool? IsRegistered { get; set; }
         public List<int> RegistrationJournalId { get; set; }
         public string RegistrationNumber { get; set; }
         public DateTime? RegistrationFromDate { get; set; }
         public DateTime? RegistrationToDate { get; set; }
         public List<int> ExecutorPositionId { get; set; }
         public List<int> SenderAgentId { get; set; }
-        public string SenderPerson { get; set; }
+        public List<int> SenderAgentPersonId { get; set; }
         public string SenderNumber { get; set; }
         public DateTime? SenderFromDate { get; set; }
         public DateTime? SenderToDate { get; set; }

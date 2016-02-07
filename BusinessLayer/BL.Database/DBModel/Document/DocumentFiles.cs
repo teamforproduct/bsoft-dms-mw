@@ -10,7 +10,7 @@ namespace BL.Database.DBModel.Document
         public string Name { get; set; }
         public int OrderNumber { get; set; }
         public int Version { get; set; }
-        public string Extention { get; set; }
+        public string Extension { get; set; }
         public DateTime Date { get; set; }
         public byte[] Content { get; set; }
         public bool IsAdditional { get; set; }

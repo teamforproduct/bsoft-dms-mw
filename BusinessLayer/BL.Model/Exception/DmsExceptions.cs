@@ -38,6 +38,18 @@
         }
     }
 
+    public class DocumentCouldNotBeRegistered : DmsExceptions
+    {
+        private const string _MESSAGE = "Document registration has non been successfull! Try again!";
+        public DocumentCouldNotBeRegistered() : base(_MESSAGE)
+        {
+        }
+
+        public DocumentCouldNotBeRegistered(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
     public class UserPositionIsNotDefined : DmsExceptions
     {
         private const string _MESSAGE = "Position for the current user could not be defined!";

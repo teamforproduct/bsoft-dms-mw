@@ -26,6 +26,7 @@ namespace BL.Database.DBModel.Document
         public DateTime CreateDate { get; set; }
         public Nullable<int> DocumentSubjectId { get; set; }
         public string Description { get; set; }
+        public bool IsRegistered { get; set; }
         public Nullable<int> RegistrationJournalId { get; set; }
         public Nullable<int> RegistrationNumber { get; set; }
         public string RegistrationNumberSuffix { get; set; }

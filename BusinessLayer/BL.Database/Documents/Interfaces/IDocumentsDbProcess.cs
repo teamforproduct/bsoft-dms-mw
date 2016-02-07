@@ -40,8 +40,8 @@ namespace BL.Database.Documents.Interfaces
         void DeleteSavedFilter(IContext ctx, int savedFilterId);
 
         void AddDocumentWait(IContext ctx, BaseDocumentWaits documentWait);
-        RegisterDocument GetTemporaryRegistration(IContext ctx, int temporaryRegistrationsId);
-        int AddTemporaryRegistration(IContext ctx, RegisterDocument registerDocument);
-        void SetDocumentRegistration(IContext ctx, int temporaryRegistrationsId);
+//        FullDocument GetDocumentRegistration(IContext ctx, int Id);
+        bool VerifyDocumentRegistrationNumber(IContext ctx, RegisterDocument registerDocument);
+        bool SetDocumentRegistration(IContext ctx, RegisterDocument registerDocument);
     }
 }

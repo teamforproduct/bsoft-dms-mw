@@ -27,6 +27,7 @@ namespace BL.Database.Documents
                 CreateDate = document.CreateDate,
                 DocumentSubjectId = document.DocumentSubjectId,
                 Description = document.Description,
+                IsRegistered = false,
                 RegistrationJournalId = document.RegistrationJournalId,
                 RegistrationNumberSuffix = document.RegistrationNumberSuffix,
                 RegistrationNumberPrefix = document.RegistrationNumberPrefix,
@@ -257,6 +258,7 @@ namespace BL.Database.Documents
                            //SenderPersonName = sendAp.Name
                        });
 
+            #region DocumentsSetFilter
             if (filters.CreateFromDate.HasValue)
             {
                 qry = qry.Where(x => x.Doc.CreateDate >= filters.CreateFromDate.Value);
@@ -364,6 +366,7 @@ namespace BL.Database.Documents
             {
                 qry = qry.Where(x => x.Doc.SenderAgentId.HasValue && filters.SenderAgentId.Contains(x.Doc.SenderAgentId.Value));
             }
+            #endregion DocumentsSetFilter
 
             var evnt =
                 dbContext.DocumentEventsSet.Join(qry, ev => ev.DocumentId, rs => rs.Doc.Id, (e, r) => new { ev = e })
@@ -386,12 +389,17 @@ namespace BL.Database.Documents
                 TemplateDocumentId = x.Doc.TemplateDocumentId,
                 RegistrationDate = x.Doc.RegistrationDate,
                 DocumentSubjectId = x.Doc.DocumentSubjectId,
+                IsRegistered = x.Doc.IsRegistered,
                 RegistrationNumber = x.Doc.RegistrationNumber,
                 RegistrationNumberPrefix = x.Doc.RegistrationNumberPrefix,
                 RegistrationNumberSuffix = x.Doc.RegistrationNumberSuffix,
                 LastChangeDate = x.Doc.LastChangeDate,
                 RegistrationJournalId = x.Doc.RegistrationJournalId,
                 RegistrationJournalName = x.RegJurnalName,
+                RegistrationFullNumber = !x.Doc.IsRegistered ? "#" : "" +
+                        x.Doc.RegistrationNumber != null
+                            ? x.Doc.TemporaryRegistration.RegistrationNumberPrefix + x.Doc.TemporaryRegistration.RegistrationNumber.ToString() + x.Doc.TemporaryRegistration.RegistrationNumberSuffix
+                            : x.Doc.Id.ToString(),
                 CreateDate = x.Doc.CreateDate,
                 DocumentSubjectName = x.SubjName,
                 ExecutorPositionName = x.ExecutorPosName,
@@ -477,6 +485,7 @@ namespace BL.Database.Documents
                 CreateDate = dbDoc.Doc.CreateDate,
                 DocumentSubjectId = dbDoc.Doc.DocumentSubjectId,
                 Description = dbDoc.Doc.Description,
+                IsRegistered = dbDoc.Doc.IsRegistered,
                 RegistrationJournalId = dbDoc.Doc.RegistrationJournalId,
                 RegistrationJournalName = dbDoc.RegJurnalName,
                 RegistrationNumber = dbDoc.Doc.RegistrationNumber,
@@ -504,10 +513,10 @@ namespace BL.Database.Documents
                 DocumentSubjectName = dbDoc.SubjName,
 
                 DocumentDate = dbDoc.Doc.RegistrationDate ?? dbDoc.Doc.CreateDate,
-                RegistrationFullNumber =
+                RegistrationFullNumber = !dbDoc.Doc.IsRegistered ? "#" : "" +
                         dbDoc.Doc.RegistrationNumber != null
-                            ? dbDoc.Doc.RegistrationNumber.ToString()
-                            : "#" + dbDoc.Doc.Id.ToString(),
+                            ? dbDoc.Doc.TemporaryRegistration.RegistrationNumberPrefix + dbDoc.Doc.TemporaryRegistration.RegistrationNumber.ToString() + dbDoc.Doc.TemporaryRegistration.RegistrationNumberSuffix
+                            : dbDoc.Doc.Id.ToString(),
                 GeneralInfo = dbDoc.DirName + " " + dbDoc.DocTypeName,
 
                 IsFavourite = dbDoc.Acc.IsFavourite,
@@ -1011,14 +1020,15 @@ namespace BL.Database.Documents
         #endregion DocumentWaits
 
         #region DocumentTemporaryRegistrations
-        public RegisterDocument GetTemporaryRegistration(IContext ctx, int temporaryRegistrationsId)
+        public FullDocument GetDocumentRegistration(IContext ctx, int Id)
         {
             var dbContext = GetUserDmsContext(ctx);
-            return dbContext.DocumentTemporaryRegistrationsSet
-                        .Where(x => x.Id == temporaryRegistrationsId)
-                        .Select(x => new RegisterDocument
+            return dbContext.DocumentsSet
+                        .Where(x => x.Id == Id)
+                        .Select(x => new FullDocument
                         {
                             Id = x.Id,
+                            IsRegistered = x.IsRegistered,
                             RegistrationJournalId = x.RegistrationJournalId,
                             RegistrationNumber = x.RegistrationNumber,
                             RegistrationNumberSuffix = x.RegistrationNumberSuffix,
@@ -1027,7 +1037,7 @@ namespace BL.Database.Documents
                         }).FirstOrDefault();
         }
 
-        public int AddTemporaryRegistration(IContext ctx, RegisterDocument registerDocument)
+        public int AddTemporaryDocumentRegistration(IContext ctx, RegisterDocument registerDocument)
         {
             var dbContext = GetUserDmsContext(ctx);
             var temporaryRegistration = dbContext.DocumentTemporaryRegistrationsSet.FirstOrDefault(x => x.Id == registerDocument.Id);
@@ -1067,27 +1077,66 @@ namespace BL.Database.Documents
             return temporaryRegistration.Id;
         }
 
-        public void SetDocumentRegistration(IContext ctx, int temporaryRegistrationsId)
+        public bool VerifyDocumentRegistrationNumber(IContext ctx, RegisterDocument registerDocument)
         {
             var dbContext = GetUserDmsContext(ctx);
-            var temporaryRegistration = dbContext.DocumentTemporaryRegistrationsSet.FirstOrDefault(x => x.Id == temporaryRegistrationsId);
-            if (temporaryRegistration != null)
+            var doc = dbContext.DocumentsSet
+            .FirstOrDefault(x => x.RegistrationJournalId == registerDocument.RegistrationJournalId
+                                    && x.RegistrationNumberPrefix == registerDocument.RegistrationNumberPrefix
+                                    && x.RegistrationNumber == registerDocument.RegistrationNumber
+                                    && x.Id != registerDocument.Id
+                           );
+            return doc != null ? false : true;
+        }
+
+        public bool SetDocumentRegistration(IContext ctx, RegisterDocument registerDocument)
+        {
+            var dbContext = GetUserDmsContext(ctx);
+            var doc = dbContext.DocumentsSet.FirstOrDefault(x => x.Id == registerDocument.Id);
+            if (doc == null)
             {
-                var doc = dbContext.DocumentsSet
-                            .FirstOrDefault(x => x.Id == temporaryRegistration.Id);
-                if (doc != null)
-                {
-                    doc.RegistrationJournalId = temporaryRegistration.RegistrationJournalId;
-                    doc.RegistrationNumber = temporaryRegistration.RegistrationNumber;
-                    doc.RegistrationNumberSuffix = temporaryRegistration.RegistrationNumberSuffix;
-                    doc.RegistrationNumberPrefix = temporaryRegistration.RegistrationNumberPrefix;
-                    doc.RegistrationDate = temporaryRegistration.RegistrationDate;
-                    doc.LastChangeUserId = dbContext.Context.CurrentAgentId;
-                    doc.LastChangeDate = DateTime.Now;
-                    dbContext.DocumentTemporaryRegistrationsSet.Remove(temporaryRegistration);
-                    dbContext.SaveChanges();
-                }
+                throw new DocumentNotFoundOrUserHasNoAccess();
             }
+            var isNeedGenerateNumber = registerDocument.RegistrationNumber == null;
+            var isRepeat = true;
+            var isOk = false;
+            while (isRepeat)
+            {
+                if (isNeedGenerateNumber)
+                {   //get next number
+                    registerDocument.RegistrationNumber = (from docreg in dbContext.DocumentsSet
+                                                           where docreg.RegistrationJournalId == registerDocument.RegistrationJournalId
+                                                             && docreg.RegistrationNumberPrefix == registerDocument.RegistrationNumberPrefix
+                                                             && docreg.Id != registerDocument.Id
+                                                           select docreg.RegistrationNumber ?? 0).Max() + 1;
+
+                }
+                doc.IsRegistered = !registerDocument.IsOnlyGetNextNumber;
+                doc.RegistrationJournalId = registerDocument.RegistrationJournalId;
+                doc.RegistrationNumber = registerDocument.RegistrationNumber;
+                doc.RegistrationNumberSuffix = registerDocument.RegistrationNumberSuffix;
+                doc.RegistrationNumberPrefix = registerDocument.RegistrationNumberPrefix;
+                doc.RegistrationDate = registerDocument.RegistrationDate;
+                doc.LastChangeUserId = dbContext.Context.CurrentAgentId;
+                doc.LastChangeDate = DateTime.Now;
+                dbContext.SaveChanges();
+                isOk = VerifyDocumentRegistrationNumber(ctx, registerDocument);
+                isRepeat = !isOk || isNeedGenerateNumber;
+            }
+            if (!isOk)
+            {
+                doc.IsRegistered = false;
+                doc.RegistrationJournalId = null;
+                doc.RegistrationNumber = null;
+                doc.RegistrationNumberSuffix = null;
+                doc.RegistrationNumberPrefix = null;
+                doc.RegistrationDate = null;
+                doc.LastChangeUserId = dbContext.Context.CurrentAgentId;
+                doc.LastChangeDate = DateTime.Now;
+                dbContext.SaveChanges();
+                throw new DocumentCouldNotBeRegistered();
+            }
+            return isOk;
         }
         #endregion DocumentTemporaryRegistrations
 

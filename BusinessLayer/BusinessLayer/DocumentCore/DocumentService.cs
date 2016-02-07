@@ -517,28 +517,9 @@ namespace BL.Logic.DocumentCore
                 model.RegistrationNumberPrefix = dictRegJournal.PrefixFormula;
                 model.RegistrationNumberSuffix = dictRegJournal.SuffixFormula;
                 model.RegistrationNumber = null;
-                docDB.AddTemporaryRegistration(context, model);
+                docDB.SetDocumentRegistration(context, model);
             }
-            else
-            {
-                var registerDocument = docDB.GetTemporaryRegistration(context, model.Id);
-                if (registerDocument.RegistrationJournalId != model.RegistrationJournalId
-                        || registerDocument.RegistrationNumberPrefix != model.RegistrationNumberPrefix
-                        || registerDocument.RegistrationNumberSuffix != model.RegistrationNumberSuffix
-                        || registerDocument.RegistrationNumber != model.RegistrationNumber
-                        || registerDocument.RegistrationDate != model.RegistrationDate
-                    )
-                {
-                    docDB.AddTemporaryRegistration(context, model);
-                }
-            }
-
-
-
-            if (!model.IsOnlyGetNextNumber)
-            {   //проставляем 
-                docDB.SetDocumentRegistration(context, model.Id);
-            }
+            docDB.SetDocumentRegistration(context, model);
         }
 
         #endregion

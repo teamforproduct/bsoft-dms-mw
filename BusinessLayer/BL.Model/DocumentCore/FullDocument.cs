@@ -28,6 +28,7 @@ namespace BL.Model.DocumentCore
         }
 
         public DateTime CreateDate { get; set; }
+        public bool IsRegistered { get; set; }
         public int? RegistrationJournalId { get; set; }
         public int? RegistrationNumber { get; set; }
         public string RegistrationNumberSuffix { get; set; }
