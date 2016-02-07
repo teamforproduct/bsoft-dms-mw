@@ -9,20 +9,24 @@ namespace BL.Logic.Logging
 {
     public class Logger :ILogger
     {
-        private int loggerlevel;
-        public Logger(ISettings settings)
+        private readonly ISystemDbProcess _dbProcess;
+
+        private const string _LOG_LEVEL_KEY = "LOG_LEVEL";
+
+        public Logger(ISystemDbProcess dbProcess)
         {
-            loggerlevel = 1;//TODO Get it from settings
-        } 
+            _dbProcess = dbProcess;
+            
+        }
 
         private void AddLogToDb(IContext ctx, LogInfo info)
         {
-            if ((int) info.LogType >= loggerlevel)
+            int  loggerLevel = 1;//TODO Get it from settings
+            if ((int) info.LogType >= loggerLevel)
             {
-                var db = DmsResolver.Current.Get<ISystemDbProcess>();
                 info.Date = DateTime.Now;
                 info.AgentId = ctx.CurrentAgentId;
-                db.AddLog(ctx, info);
+                _dbProcess.AddLog(ctx, info);
             }
         }
 

@@ -111,7 +111,9 @@
     <Compile Include="Admins\Interfaces\IAdminsDbProcess.cs" />
     <Compile Include="Dictionaries\DictionariesDbProcess.cs" />
     <Compile Include="Dictionaries\Interfaces\IDictionariesDbProcess.cs" />
+    <Compile Include="Documents\DocumentFileDbProcess.cs" />
     <Compile Include="Documents\DocumentsDbProcess.cs" />
+    <Compile Include="Documents\IDocumentFileDbProcess.cs" />
     <Compile Include="Documents\Interfaces\IDocumentsDbProcess.cs" />
     <Compile Include="Documents\Interfaces\ITemplateDocumentsDbProcess.cs" />
     <Compile Include="Documents\TemplateDocumentsDbProcess.cs" />

@@ -16,11 +16,21 @@ namespace BL.Database.DependencyInjection
         public override void Load()
         {
             InternalClassRegistration();
+            RegistrateSystemProcess();
+            RegistrateDocumentProcess();
+        }
 
-            Bind<ISecurityDbProcess>().To<SecurityDbProcess>().InSingletonScope();
+        private void RegistrateDocumentProcess()
+        {
+            Bind<IDictionariesDbProcess>().To<DictionariesDbProcess>().InSingletonScope();
             Bind<IDocumentsDbProcess>().To<DocumentsDbProcess>().InSingletonScope();
             Bind<ITemplateDocumentsDbProcess>().To<TemplateDocumentsDbProcess>().InSingletonScope();
-            Bind<IDictionariesDbProcess>().To<DictionariesDbProcess>().InSingletonScope();
+            Bind<IDocumentFileDbProcess>().To<DocumentFileDbProcess>().InSingletonScope();
+        }
+
+        private void RegistrateSystemProcess()
+        {
+            Bind<ISecurityDbProcess>().To<SecurityDbProcess>().InSingletonScope();
             Bind<IAdminsDbProcess>().To<AdminsDbProcess>().InSingletonScope();
             Bind<ISystemDbProcess>().To<SystemDbProcess>().InSingletonScope();
         }
