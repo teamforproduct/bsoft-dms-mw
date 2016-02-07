@@ -27,15 +27,24 @@ namespace BL.Database.SystemDb
         public int AddSetting(IContext context, string name, string value, int? agentId = null)
         {
             var dbContext = GetUserDmsContext(context);
-            var nsett = new SystemSettings
+            var cset = dbContext.SettingsSet.FirstOrDefault(x => x.Key == name);
+            if (cset == null)
             {
-                ExecutorAgentId = agentId,
-                Key = name,
-                Value = value
-            };
-            dbContext.SettingsSet.Add(nsett);
+                var nsett = new SystemSettings
+                {
+                    ExecutorAgentId = agentId,
+                    Key = name,
+                    Value = value
+                };
+                dbContext.SettingsSet.Add(nsett);
+                dbContext.SaveChanges();
+                return nsett.Id;
+            }
+
+            cset.Value = value;
+            cset.ExecutorAgentId = agentId;
             dbContext.SaveChanges();
-            return nsett.Id;
+            return cset.Id;
         }
 
         public string GetSettingValue(IContext context, string name, int? agentId = null)

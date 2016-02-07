@@ -26,6 +26,54 @@
         }
     }
 
+    public class CannotSaveFile : DmsExceptions
+    {
+        private const string _MESSAGE = "Error when save user file!";
+        public CannotSaveFile() : base(_MESSAGE)
+        {
+        }
+
+        public CannotSaveFile(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+    public class UserFileNotExists : DmsExceptions
+    {
+        private const string _MESSAGE = "User file does not exists on Filestore!";
+        public UserFileNotExists() : base(_MESSAGE)
+        {
+        }
+
+        public UserFileNotExists(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+    public class UnknownDocumentFile : DmsExceptions
+    {
+        private const string _MESSAGE = "Could not find appropriate document file!";
+        public UnknownDocumentFile() : base(_MESSAGE)
+        {
+        }
+
+        public UnknownDocumentFile(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+    public class CannotAccessToFile : DmsExceptions
+    {
+        private const string _MESSAGE = "Cannot accss to user file!";
+        public CannotAccessToFile() : base(_MESSAGE)
+        {
+        }
+
+        public CannotAccessToFile(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
     public class DocumentNotFoundOrUserHasNoAccess : DmsExceptions
     {
         private const string _MESSAGE = "User could not acceess this document!";
@@ -109,6 +157,7 @@
         {
         }
     }
+
     public class DocumentSendListNotFoundInDocumentRestrictedSendList : DmsExceptions
     {
         private const string _MESSAGE = "DocumentSendList not found in DocumentRestrictedSendList";

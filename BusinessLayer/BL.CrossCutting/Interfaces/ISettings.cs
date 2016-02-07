@@ -7,6 +7,7 @@ namespace BL.CrossCutting.Interfaces
         TValue GetSetting<TValue>(IContext ctx, string settingName) where TValue : IConvertible;
         TValue GetSetting<TValue>(IContext ctx, string settingName, TValue defaulValue) where TValue : IConvertible;
         void SaveSetting(IContext ctx, string key, object val);
-        void ClearCache();
+        void ClearCache(IContext ctx);
+        void TotalClear();
     }
 }

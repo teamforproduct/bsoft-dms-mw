@@ -80,6 +80,7 @@
     <Compile Include="DictionaryCore\FilterDictionaryCompany.cs" />
     <Compile Include="DictionaryCore\FilterDictionaryAgentPerson.cs" />
     <Compile Include="DictionaryCore\FilterDictionaryAgent.cs" />
+    <Compile Include="DocumentAdditional\DocumentAttachedFile.cs" />
     <Compile Include="DocumentCore\Actions\ChangeFavourites.cs" />
     <Compile Include="DocumentCore\Actions\CopyDocument.cs" />
     <Compile Include="DocumentCore\Actions\SendMessage.cs" />

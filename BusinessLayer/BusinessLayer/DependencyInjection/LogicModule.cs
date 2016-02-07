@@ -8,6 +8,7 @@ using BL.Logic.DocumentCore.Interfaces;
 using BL.Logic.Logging;
 using BL.Logic.Secure;
 using BL.Logic.Settings;
+using BL.Logic.SystemLogic;
 using Ninject.Modules;
 
 namespace BL.Logic.DependencyInjection
@@ -23,6 +24,8 @@ namespace BL.Logic.DependencyInjection
             Bind<IDictionaryService>().To<DictionaryService>().InSingletonScope();
             Bind<IAdminService>().To<AdminService>().InSingletonScope();
             Bind<ISecureService>().To<SecureService>().InSingletonScope();
+            Bind<IFileStore>().To<FileStore>().InSingletonScope();
+            Bind<IDocumentFileService>().To<DocumentFileService>().InSingletonScope();
         }
     }
 }
