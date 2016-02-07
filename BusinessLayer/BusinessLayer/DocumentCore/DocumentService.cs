@@ -353,7 +353,7 @@ namespace BL.Logic.DocumentCore
         {
             var evt = new BaseDocumentEvent
             {
-                DocumentId = note.Id,
+                DocumentId = note.DocumentId,
                 Description = note.Description,
                 EventType = EnumEventTypes.AddNote,
                 SourceAgentId = context.CurrentAgentId,
@@ -386,7 +386,7 @@ namespace BL.Logic.DocumentCore
         public void ChangeDocumentWorkStatus(IContext context, ChangeWorkStatus newStatus)
         {
             var db = DmsResolver.Current.Get<IDocumentsDbProcess>();
-            var acc = db.GetDocumentAccess(context, newStatus.Id);
+            var acc = db.GetDocumentAccess(context, newStatus.DocumentId);
             if (acc == null)
             {
                 throw new UserHasNoAccessToDocument();
@@ -397,7 +397,7 @@ namespace BL.Logic.DocumentCore
                 DocumentAccess = acc,
                 DocumentEvent = new BaseDocumentEvent
                 {
-                    DocumentId = newStatus.Id,
+                    DocumentId = newStatus.DocumentId,
                     SourceAgentId = context.CurrentAgentId,
                     TargetAgentId = context.CurrentAgentId,
                     SourcePositionId = context.CurrentPositionId,
@@ -516,8 +516,7 @@ namespace BL.Logic.DocumentCore
                 var dictRegJournal = dictDB.GetDictionaryRegistrationJournal(context, model.RegistrationJournalId);
                 model.RegistrationNumberPrefix = dictRegJournal.PrefixFormula;
                 model.RegistrationNumberSuffix = dictRegJournal.SuffixFormula;
-                model.RegistrationNumber = null;
-                docDB.SetDocumentRegistration(context, model);
+                model.RegistrationNumber = null;                
             }
             docDB.SetDocumentRegistration(context, model);
         }

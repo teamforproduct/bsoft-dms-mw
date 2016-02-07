@@ -98,6 +98,18 @@
         }
     }
 
+    public class DocumentHasAlredyBeenRegistered : DmsExceptions
+    {
+        private const string _MESSAGE = "Document has already been registered!";
+        public DocumentHasAlredyBeenRegistered() : base(_MESSAGE)
+        {
+        }
+
+        public DocumentHasAlredyBeenRegistered(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
     public class UserPositionIsNotDefined : DmsExceptions
     {
         private const string _MESSAGE = "Position for the current user could not be defined!";

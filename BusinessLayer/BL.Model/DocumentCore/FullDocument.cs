@@ -8,8 +8,6 @@ namespace BL.Model.DocumentCore
     {
         public FullDocument()
         {
-            CreateDate = DateTime.Now;
-            LastChangeDate = DateTime.Now;
         }
 
         public FullDocument(ModifyDocument document) :this()
@@ -27,15 +25,15 @@ namespace BL.Model.DocumentCore
             AccessLevel = document.AccessLevel;
         }
 
-        public DateTime CreateDate { get; set; }
+        public DateTime? CreateDate { get; set; }
         public bool IsRegistered { get; set; }
         public int? RegistrationJournalId { get; set; }
         public int? RegistrationNumber { get; set; }
         public string RegistrationNumberSuffix { get; set; }
         public string RegistrationNumberPrefix { get; set; }
         public DateTime? RegistrationDate { get; set; }
-        public int LastChangeUserId { get; set; }
-        public DateTime LastChangeDate { get; set; }
+        public int? LastChangeUserId { get; set; }
+        public DateTime? LastChangeDate { get; set; }
 
         public string TemplateDocumentName { get; set; }
         public int IsHard { get; set; }

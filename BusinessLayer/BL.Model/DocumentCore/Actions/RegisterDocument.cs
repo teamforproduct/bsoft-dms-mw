@@ -4,7 +4,7 @@ namespace BL.Model.DocumentCore.Actions
 {
     public class RegisterDocument
     {
-        public int Id { get; set; }
+        public int DocumentId { get; set; }
         public int RegistrationJournalId { get; set; }
         public bool IsOnlyGetNextNumber { get; set; }
         public int? RegistrationNumber { get; set; }

@@ -34,7 +34,9 @@ namespace DMS_WebAPI.Controllers.Documents
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.RegisterDocument(cxt, model);
-            return new JsonResult(null, this);
+            var ctrl = new DocumentsController();
+            ctrl.ControllerContext = ControllerContext;
+            return ctrl.Get(model.DocumentId);
         }
 
         // POST: api/DocumentActions/ChangeWorkStatus
