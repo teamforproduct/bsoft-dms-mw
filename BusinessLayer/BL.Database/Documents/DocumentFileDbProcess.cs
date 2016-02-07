@@ -24,7 +24,7 @@ namespace BL.Database.Documents
                     Id = x.fl.Id,
                     Date = x.fl.Date,
                     DocumentId = x.fl.DocumentId,
-                    Extension = x.fl.Extention,
+                    Extension = x.fl.Extension,
                     FileData = x.fl.Content,
                     IsAdditional = x.fl.IsAdditional,
                     Hash = x.fl.Hash,
@@ -50,7 +50,7 @@ namespace BL.Database.Documents
                     Id = x.fl.Id,
                     Date = x.fl.Date,
                     DocumentId = x.fl.DocumentId,
-                    Extension = x.fl.Extention,
+                    Extension = x.fl.Extension,
                     FileData = x.fl.Content,
                     IsAdditional = x.fl.IsAdditional,
                     Hash = x.fl.Hash,
@@ -76,7 +76,7 @@ namespace BL.Database.Documents
                     Id = x.fl.Id,
                     Date = x.fl.Date,
                     DocumentId = x.fl.DocumentId,
-                    Extension = x.fl.Extention,
+                    Extension = x.fl.Extension,
                     FileData = x.fl.Content,
                     IsAdditional = x.fl.IsAdditional,
                     Hash = x.fl.Hash,
@@ -102,7 +102,7 @@ namespace BL.Database.Documents
                         Id = x.fl.Id,
                         Date = x.fl.Date,
                         DocumentId = x.fl.DocumentId,
-                        Extension = x.fl.Extention,
+                        Extension = x.fl.Extension,
                         FileData = x.fl.Content,
                         IsAdditional = x.fl.IsAdditional, 
                         Hash = x.fl.Hash, 
@@ -134,7 +134,7 @@ namespace BL.Database.Documents
                             Id = x.fl.Id,
                             Date = x.fl.Date,
                             DocumentId = x.fl.DocumentId,
-                            Extension = x.fl.Extention,
+                            Extension = x.fl.Extension,
                             FileData = x.fl.Content,
                             IsAdditional = x.fl.IsAdditional,
                             Hash = x.fl.Hash,
@@ -158,7 +158,7 @@ namespace BL.Database.Documents
                 Date = docFile.Date,
                 Content = null,
                 DocumentId = docFile.DocumentId,
-                Extention = docFile.Extension,
+                Extension = docFile.Extension,
                 Hash = docFile.Hash,
                 IsAdditional = docFile.IsAdditional,
                 LastChangeDate = docFile.LastChangeDate,
@@ -182,7 +182,7 @@ namespace BL.Database.Documents
             if (fl != null)
             {
                 fl.DocumentId = docFile.DocumentId;
-                fl.Extention = docFile.Extension;
+                fl.Extension = docFile.Extension;
                 fl.Hash = docFile.Hash;
                 fl.IsAdditional = docFile.IsAdditional;
                 fl.LastChangeDate = docFile.LastChangeDate;
