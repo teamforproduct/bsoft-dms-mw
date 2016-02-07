@@ -92,6 +92,7 @@
     <Compile Include="DocumentCore\BaseDocumentSavedFilter.cs" />
     <Compile Include="DocumentCore\BaseDocumentTemporaryRegistration.cs" />
     <Compile Include="DocumentCore\BaseDocumentWaits.cs" />
+    <Compile Include="DocumentCore\ModifyDocumentFile.cs" />
     <Compile Include="DocumentCore\ModifyDocumentSavedFilter.cs" />
     <Compile Include="Enums\EnumDocumentDirections.cs" />
     <Compile Include="Enums\EnumDocumentAccess.cs" />
