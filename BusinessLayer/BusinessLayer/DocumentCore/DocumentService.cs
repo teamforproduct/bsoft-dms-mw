@@ -94,6 +94,9 @@ namespace BL.Logic.DocumentCore
 
             var evt = new BaseDocumentEvent
             {
+                LastChangeDate = DateTime.Now,
+                Date = DateTime.Now,
+                CreateDate = DateTime.Now,
                 EventType = EnumEventTypes.AddNewDocument,
                 Description = "Create",
                 LastChangeUserId = context.CurrentAgentId,
@@ -361,6 +364,9 @@ namespace BL.Logic.DocumentCore
                 SourcePositionId = context.CurrentPositionId,
                 TargetPositionId = context.CurrentPositionId,
                 LastChangeUserId = context.CurrentAgentId,
+                LastChangeDate = DateTime.Now,
+                Date = DateTime.Now,
+                CreateDate = DateTime.Now,
 
             };
 
@@ -404,7 +410,11 @@ namespace BL.Logic.DocumentCore
                     TargetPositionId = context.CurrentPositionId,
                     Description = newStatus.Description,
                     EventType = newStatus.IsInWork ? EnumEventTypes.SetInWork : EnumEventTypes.SetOutWork,
-                    LastChangeUserId = context.CurrentAgentId
+                    LastChangeUserId = context.CurrentAgentId,
+                    LastChangeDate = DateTime.Now,
+                    Date = DateTime.Now,
+                    CreateDate = DateTime.Now,
+
                 }
             };
 
@@ -433,13 +443,15 @@ namespace BL.Logic.DocumentCore
                 {
                     DocumentId = model.DocumentId,
                     EventType = EnumEventTypes.ControlOn,
-                    CreateDate = DateTime.Now,
-                    Date = DateTime.Now,
                     Description = model.Description,
                     SourcePositionId = context.CurrentPositionId,
                     SourceAgentId = context.CurrentAgentId,
                     TargetPositionId = context.CurrentPositionId,
-                    TargetAgentId = context.CurrentAgentId
+                    TargetAgentId = context.CurrentAgentId,
+                    LastChangeDate = DateTime.Now,
+                    Date = DateTime.Now,
+                    CreateDate = DateTime.Now,
+
                 }
             };
         }
@@ -486,7 +498,11 @@ namespace BL.Logic.DocumentCore
                 SourceAgentId = context.CurrentAgentId,
                 TargetAgentId = context.CurrentAgentId,
                 TargetPositionId = context.CurrentPositionId,
-                SourcePositionId = context.CurrentPositionId
+                SourcePositionId = context.CurrentPositionId,
+                LastChangeDate = DateTime.Now,
+                Date = DateTime.Now,
+                CreateDate = DateTime.Now,
+
             };
 
             document.Events = new List<BaseDocumentEvent> { evt };
