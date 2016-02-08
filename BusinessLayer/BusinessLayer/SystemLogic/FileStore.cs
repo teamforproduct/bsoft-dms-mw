@@ -47,7 +47,7 @@ namespace BL.Logic.SystemLogic
                     File.Delete(localFilePath);
                 }
 
-                File.WriteAllBytes(localFilePath, attFile.FileData);
+                File.WriteAllBytes(localFilePath, attFile.FileContent);
                 attFile.Hash = FileToSha1(localFilePath);
                 return attFile.Hash;
             }
@@ -72,10 +72,10 @@ namespace BL.Logic.SystemLogic
                 var path = GetFullFilePath(ctx, attFile);
                 var localFilePath = path + "\\" + attFile.Name + "." + attFile.Extension;
 
-                attFile.FileData = File.ReadAllBytes(localFilePath);
+                attFile.FileContent = File.ReadAllBytes(localFilePath);
                 attFile.WasChangedExternal = attFile.Hash != FileToSha1(localFilePath);
 
-                return attFile.FileData;
+                return attFile.FileContent;
             }
             catch (Exception ex)
             {

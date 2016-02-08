@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using BL.Model.DocumentAdditional;
 using BL.Model.Enums;
 
 namespace BL.Model.DocumentCore
@@ -71,6 +72,7 @@ namespace BL.Model.DocumentCore
         public int SendListStagesCount { get; set; }
         public IEnumerable<BaseDocumentEvent> Events { get; set; }
         public IEnumerable<BaseDocumentAccess> Accesses { get; set; }
+        public IEnumerable<DocumentAttachedFile> DocumentFiles { get; set; }
 
         public int? TemporaryRegistrationJournalId { get; set; }
         public int? TemporaryRegistrationNumber { get; set; }

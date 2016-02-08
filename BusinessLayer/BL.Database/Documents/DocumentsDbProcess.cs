@@ -9,6 +9,7 @@ using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore;
 using BL.Database.DBModel.Document;
 using BL.Model.Database;
+using BL.Model.DocumentAdditional;
 using BL.Model.SystemCore;
 using BL.Model.Enums;
 using BL.Model.Exception;
@@ -44,7 +45,7 @@ namespace BL.Database.Documents
                     RegistrationNumberPrefix = document.RegistrationNumberPrefix,
                     RegistrationDate = document.RegistrationDate,
                     ExecutorPositionId = document.ExecutorPositionId,
-                    LastChangeUserId = dbContext.Context.CurrentAgentId,
+                    LastChangeUserId = ctx.CurrentAgentId,
                     LastChangeDate = DateTime.Now,
                     SenderAgentId = document.SenderAgentId,
                     SenderAgentPersonId = document.SenderAgentPersonId,
@@ -58,7 +59,7 @@ namespace BL.Database.Documents
                     {
                         PositionId = x.PositionId,
                         AccessLevelId = x.AccessLevelId,
-                        LastChangeUserId = dbContext.Context.CurrentAgentId,
+                        LastChangeUserId = ctx.CurrentAgentId,
                         LastChangeDate = DateTime.Now
                     }).ToList();
                 }
@@ -94,7 +95,7 @@ namespace BL.Database.Documents
                         AccessLevelId = (int) x.AccessLevel,
                         IsInitial = true,
                         EventId = null,
-                        LastChangeUserId = dbContext.Context.CurrentAgentId,
+                        LastChangeUserId = ctx.CurrentAgentId,
                         LastChangeDate = DateTime.Now
                     }).ToList();
                 }
@@ -135,7 +136,7 @@ namespace BL.Database.Documents
                     doc.RegistrationNumberPrefix = document.RegistrationNumberPrefix;
                     doc.RegistrationDate = document.RegistrationDate;
                     //doc.ExecutorPositionId = document.ExecutorPositionId;
-                    doc.LastChangeUserId = dbContext.Context.CurrentAgentId;
+                    doc.LastChangeUserId = ctx.CurrentAgentId;
                     doc.LastChangeDate = DateTime.Now;
 
                     doc.SenderAgentId = document.SenderAgentId;
@@ -301,15 +302,15 @@ namespace BL.Database.Documents
                     qry = qry.Where(x => x.Doc.RegistrationDate <= filters.RegistrationToDate.Value);
                 }
 
-                //if (filters.SenderFromDate.HasValue)
-                //{
-                //    qry = qry.Where(x => x.Doc. >= filters.SenderFromDate.Value);
-                //}
+                if (filters.SenderFromDate.HasValue)
+                {
+                    qry = qry.Where(x => x.Doc.SenderDate >= filters.SenderFromDate.Value);
+                }
 
-                //if (filters.SenderToDate.HasValue)
-                //{
-                //    qry = qry.Where(x => x.Doc. <= filters.SenderToDate.Value);
-                //}
+                if (filters.SenderToDate.HasValue)
+                {
+                    qry = qry.Where(x => x.Doc.SenderDate <= filters.SenderToDate.Value);
+                }
 
                 if (!String.IsNullOrEmpty(filters.Description))
                 {
@@ -326,20 +327,20 @@ namespace BL.Database.Documents
                                     .Contains(filters.RegistrationNumber));
                 }
 
-                //if (!String.IsNullOrEmpty(filters.Addressee))
-                //{
-                //    qry = qry.Where(x => x.Doc..Contains(filters.Addressee));
-                //}
+                if (!String.IsNullOrEmpty(filters.Addressee))
+                {
+                    qry = qry.Where(x => x.Doc.Addressee.Contains(filters.Addressee));
+                }
 
-                //if (!String.IsNullOrEmpty(filters.SenderPerson))
-                //{
-                //    qry = qry.Where(x => x.Doc..Contains(filters.SenderPerson));
-                //}
+                if (filters.SenderAgentPersonId!= null && filters.SenderAgentPersonId.Any())
+                {
+                    qry = qry.Where(x => x.Doc.SenderAgentPersonId.HasValue && filters.SenderAgentPersonId.Contains(x.Doc.SenderAgentPersonId.Value));
+                }
 
-                //if (!String.IsNullOrEmpty(filters.SenderNumber))
-                //{
-                //    qry = qry.Where(x => x.Doc..Contains(filters.SenderNumber));
-                //}
+                if (!String.IsNullOrEmpty(filters.SenderNumber))
+                {
+                    qry = qry.Where(x => x.Doc.SenderNumber.Contains(filters.SenderNumber));
+                }
 
                 if (filters.DocumentTypeId != null && filters.DocumentTypeId.Count > 0)
                 {
@@ -391,6 +392,11 @@ namespace BL.Database.Documents
                             x =>
                                 x.Doc.SenderAgentId.HasValue &&
                                 filters.SenderAgentId.Contains(x.Doc.SenderAgentId.Value));
+                }
+
+                if (filters.IsRegistered.HasValue)
+                {
+                    qry = qry.Where(x => x.Doc.IsRegistered == filters.IsRegistered.Value);
                 }
 
                 #endregion DocumentsSetFilter
@@ -656,7 +662,36 @@ namespace BL.Database.Documents
                             GeneralInfo = string.Empty
                         }).ToList();
 
-                doc.AttachedFilesCount = 0; // TODO select attached files
+                var sq = dbContext.DocumentFilesSet
+                                    .Where(x => x.DocumentId == documentId)
+                                    .GroupBy(g => new { g.DocumentId, g.OrderNumber })
+                                    .Select(x => new { DocId = x.Key.DocumentId, OrdId = x.Key.OrderNumber, MaxVers = x.Max(s => s.Version) });
+
+                doc.DocumentFiles = 
+                    sq.Join(dbContext.DocumentFilesSet, sub => new { sub.DocId, sub.OrdId, VerId = sub.MaxVers },
+                        fl => new { DocId = fl.DocumentId, OrdId = fl.OrderNumber, VerId = fl.Version },
+                        (s, f) => new { fl = f })
+                        .Join(dbContext.DictionaryAgentsSet, df => df.fl.LastChangeUserId, da => da.Id,
+                            (d, a) => new { d.fl, agName = a.Name })
+                        .Select(x => new DocumentAttachedFile
+                        {
+                            Id = x.fl.Id,
+                            Date = x.fl.Date,
+                            DocumentId = x.fl.DocumentId,
+                            Extension = x.fl.Extension,
+                            FileContent = x.fl.Content,
+                            IsAdditional = x.fl.IsAdditional,
+                            Hash = x.fl.Hash,
+                            LastChangeDate = x.fl.LastChangeDate,
+                            LastChangeUserId = x.fl.LastChangeUserId,
+                            LastChangeUserName = x.agName,
+                            Name = x.fl.Name,
+                            OrderInDocument = x.fl.OrderNumber,
+                            Version = x.fl.Version,
+                            WasChangedExternal = false
+                        }).ToList();
+
+                doc.AttachedFilesCount = doc.DocumentFiles.Count();
 
                 return doc;
             }
@@ -805,7 +840,7 @@ namespace BL.Database.Documents
                     sendList.DocumentId = restrictedSendList.DocumentId;
                     sendList.PositionId = restrictedSendList.PositionId;
                     sendList.AccessLevelId = restrictedSendList.AccessLevelId;
-                    sendList.LastChangeUserId = dbContext.Context.CurrentAgentId;
+                    sendList.LastChangeUserId = ctx.CurrentAgentId;
                     sendList.LastChangeDate = DateTime.Now;
 
                     dbContext.SaveChanges();
@@ -823,7 +858,7 @@ namespace BL.Database.Documents
                     DocumentId = x.DocumentId,
                     PositionId = x.PositionId,
                     AccessLevelId = x.AccessLevelId,
-                    LastChangeUserId = dbContext.Context.CurrentAgentId,
+                    LastChangeUserId = ctx.CurrentAgentId,
                     LastChangeDate = DateTime.Now
                 }).ToList();
 
@@ -892,7 +927,7 @@ namespace BL.Database.Documents
                     sl.AccessLevelId = (int) sendList.AccessLevel;
                     sl.IsInitial = true;
                     sl.EventId = null;
-                    sl.LastChangeUserId = dbContext.Context.CurrentAgentId;
+                    sl.LastChangeUserId = ctx.CurrentAgentId;
                     sl.LastChangeDate = DateTime.Now;
                     dbContext.SaveChanges();
                 }
@@ -916,7 +951,7 @@ namespace BL.Database.Documents
                     AccessLevelId = (int) x.AccessLevel,
                     IsInitial = true,
                     EventId = null,
-                    LastChangeUserId = dbContext.Context.CurrentAgentId,
+                    LastChangeUserId = ctx.CurrentAgentId,
                     LastChangeDate = DateTime.Now
                 }).ToList();
 
@@ -949,11 +984,11 @@ namespace BL.Database.Documents
             {
                 var savFilter = new DocumentSavedFilters
                 {
-                    PositionId = dbContext.Context.CurrentPositionId,
+                    PositionId = ctx.CurrentPositionId,
                     Icon = savedFilter.Icon,
                     Filter = savedFilter.Filter.ToString(),
                     IsCommon = savedFilter.IsCommon,
-                    LastChangeUserId = dbContext.Context.CurrentAgentId,
+                    LastChangeUserId = ctx.CurrentAgentId,
                     LastChangeDate = DateTime.Now
                 };
 
@@ -971,11 +1006,11 @@ namespace BL.Database.Documents
                 if (savFilter != null)
                 {
                     savFilter.Id = savedFilter.Id;
-                    savFilter.PositionId = dbContext.Context.CurrentPositionId;
+                    savFilter.PositionId = ctx.CurrentPositionId;
                     savFilter.Icon = savedFilter.Icon;
                     savFilter.Filter = savedFilter.Filter.ToString();
                     savFilter.IsCommon = savedFilter.IsCommon;
-                    savFilter.LastChangeUserId = dbContext.Context.CurrentAgentId;
+                    savFilter.LastChangeUserId = ctx.CurrentAgentId;
                     savFilter.LastChangeDate = DateTime.Now;
                 }
                 dbContext.SaveChanges();
@@ -1060,7 +1095,7 @@ namespace BL.Database.Documents
                     Description = documentWait.Description,
                     DueDate = documentWait.DueDate,
                     AttentionDate = documentWait.AttentionDate,
-                    LastChangeUserId = dbContext.Context.CurrentAgentId,
+                    LastChangeUserId = ctx.CurrentAgentId,
                     LastChangeDate = DateTime.Now
                 };
                 if (documentWait.OnEvent != null)
@@ -1076,7 +1111,7 @@ namespace BL.Database.Documents
                         SourceAgentId = documentWait.OnEvent.SourceAgentId,
                         TargetPositionId = documentWait.OnEvent.TargetPositionId,
                         TargetAgentId = documentWait.OnEvent.TargetAgentId,
-                        LastChangeUserId = dbContext.Context.CurrentAgentId,
+                        LastChangeUserId = ctx.CurrentAgentId,
                         LastChangeDate = DateTime.Now
                     };
                 }
@@ -1093,7 +1128,7 @@ namespace BL.Database.Documents
                         SourceAgentId = documentWait.OnEvent.SourceAgentId,
                         TargetPositionId = documentWait.OnEvent.TargetPositionId,
                         TargetAgentId = documentWait.OnEvent.TargetAgentId,
-                        LastChangeUserId = dbContext.Context.CurrentAgentId,
+                        LastChangeUserId = ctx.CurrentAgentId,
                         LastChangeDate = DateTime.Now
                     };
                 }
@@ -1156,7 +1191,7 @@ namespace BL.Database.Documents
                     doc.RegistrationNumberSuffix = registerDocument.RegistrationNumberSuffix;
                     doc.RegistrationNumberPrefix = registerDocument.RegistrationNumberPrefix;
                     doc.RegistrationDate = registerDocument.RegistrationDate;
-                    doc.LastChangeUserId = dbContext.Context.CurrentAgentId;
+                    doc.LastChangeUserId = ctx.CurrentAgentId;
                     doc.LastChangeDate = DateTime.Now;
                     dbContext.SaveChanges();
                     isOk = VerifyDocumentRegistrationNumber(ctx, registerDocument);
@@ -1170,7 +1205,7 @@ namespace BL.Database.Documents
                     doc.RegistrationNumberSuffix = null;
                     doc.RegistrationNumberPrefix = null;
                     doc.RegistrationDate = null;
-                    doc.LastChangeUserId = dbContext.Context.CurrentAgentId;
+                    doc.LastChangeUserId = ctx.CurrentAgentId;
                     doc.LastChangeDate = DateTime.Now;
                     dbContext.SaveChanges();
                     throw new DocumentCouldNotBeRegistered();

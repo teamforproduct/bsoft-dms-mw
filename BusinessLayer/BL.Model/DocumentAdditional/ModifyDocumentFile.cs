@@ -1,10 +1,9 @@
-﻿using System.Runtime.Serialization;
-
-namespace BL.Model.DocumentCore
+﻿namespace BL.Model.DocumentAdditional
 {
     public class ModifyDocumentFile
     {
         public int DocumentId { get; set; }
+        public int OrderInDocument { get; set; }
         public bool IsAdditional { get; set; }
         public string FileData { get; set; }
         public string FileName { get; set; }

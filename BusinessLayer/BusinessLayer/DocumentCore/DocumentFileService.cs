@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using BL.CrossCutting.Interfaces;
-using BL.Database.Documents;
 using BL.Database.Documents.Interfaces;
+using BL.Logic.DocumentCore.Interfaces;
 using BL.Logic.SystemLogic;
 using BL.Model.DocumentAdditional;
 using BL.Model.Exception;
-using BL.Model.DocumentCore;
 
 namespace BL.Logic.DocumentCore
 {
@@ -27,14 +26,19 @@ namespace BL.Logic.DocumentCore
             return _dbProcess.GetDocumentFiles(ctx, documentId);
         }
 
-        public IEnumerable<DocumentAttachedFile> GetDocumentFileVersions(IContext ctx, int documentId, int orderNumber)
+        public IEnumerable<DocumentAttachedFile> GetDocumentFileVersions(IContext ctx, DocumentFileIdentity fileIdent)
         {
-            return _dbProcess.GetDocumentFileVersions(ctx, documentId, orderNumber);
+            return _dbProcess.GetDocumentFileVersions(ctx, fileIdent.DocumentId, fileIdent.OrderInDocument);
         }
 
-        public DocumentAttachedFile GetDocumentFileVersion(IContext ctx, int documentId, int orderNumber, int versionNumber)
+        public DocumentAttachedFile GetDocumentFileVersion(IContext ctx, DocumentFileIdentity fileIdent)
         {
-            return GetDocumentFileVersion(ctx, documentId, orderNumber, versionNumber);
+            if (fileIdent.Version > 0)
+            {
+                return _dbProcess.GetDocumentFileVersion(ctx, fileIdent.DocumentId, fileIdent.OrderInDocument,
+                    fileIdent.Version);
+            }
+            return GetDocumentFileLatestVersion(ctx, fileIdent);
         }
 
         public DocumentAttachedFile GetDocumentFileVersion(IContext ctx, int id)
@@ -42,14 +46,14 @@ namespace BL.Logic.DocumentCore
             return _dbProcess.GetDocumentFileVersion(ctx, id);
         }
 
-        public DocumentAttachedFile GetDocumentFileLatestVersion(IContext ctx, int documentId, int orderNumber)
+        public DocumentAttachedFile GetDocumentFileLatestVersion(IContext ctx, DocumentFileIdentity fileIdent)
         {
-            return _dbProcess.GetDocumentFileLatestVersion(ctx, documentId, orderNumber);
+            return _dbProcess.GetDocumentFileLatestVersion(ctx, fileIdent.DocumentId, fileIdent.OrderInDocument);
         }
 
-        public void DeleteDocumentFile(IContext ctx, int documentId, int ordNumber)
+        public void DeleteDocumentFile(IContext ctx, DocumentFileIdentity fileIdent)
         {
-            var flList = _dbProcess.GetDocumentFileVersions(ctx, documentId, ordNumber);
+            var flList = _dbProcess.GetDocumentFileVersions(ctx, fileIdent.DocumentId, fileIdent.OrderInDocument);
             foreach (var fl in flList)
             {
                 _fStore.DeleteFile(ctx, fl);
@@ -57,9 +61,9 @@ namespace BL.Logic.DocumentCore
             }
         }
 
-        public void DeleteDocumentFileVersion(IContext ctx, int documentId, int ordNumber, int versionId)
+        public void DeleteDocumentFileVersion(IContext ctx, DocumentFileIdentity fileIdent)
         {
-            var fl = _dbProcess.GetDocumentFileVersion(ctx, documentId, ordNumber, versionId);
+            var fl = _dbProcess.GetDocumentFileVersion(ctx, fileIdent.DocumentId, fileIdent.OrderInDocument, fileIdent.Version);
             if (fl != null)
             {
                 _fStore.DeleteFile(ctx, fl);
@@ -67,55 +71,54 @@ namespace BL.Logic.DocumentCore
             }
         }
 
-        public byte[] GetUserFile(IContext ctx, DocumentAttachedFile attFile)
+        public DocumentAttachedFile GetUserFile(IContext ctx, DocumentFileIdentity fileIdent)
         {
             //TODO should we check if file exists in DB? 
-            return _fStore.GetFile(ctx, attFile);
+            var fl = GetDocumentFileVersion(ctx, fileIdent);
+            _fStore.GetFile(ctx, fl);
+            return fl;
         }
 
         public int AddUserFile(IContext ctx, ModifyDocumentFile model)
         {
-            return AddUserFile(ctx, model.DocumentId, model.FileName, Convert.FromBase64String(model.FileData), model.IsAdditional);
-        }
-
-        public int AddUserFile(IContext ctx, int documentId, string fileName, byte[] fileData, bool isAdditional)
-        {
             var att = new DocumentAttachedFile
             {
-                DocumentId = documentId,
+                DocumentId = model.DocumentId,
                 Date = DateTime.Now,
-                FileData = fileData,
-                IsAdditional   = isAdditional,
+                FileContent = Convert.FromBase64String(model.FileData),
+                IsAdditional = model.IsAdditional,
                 LastChangeUserId = ctx.CurrentAgentId,
                 LastChangeDate = DateTime.Now,
                 Version = 1,
-                OrderInDocument = _dbProcess.GetNextFileOrderNumber(ctx, documentId),
-                Name = Path.GetFileNameWithoutExtension(fileName),
-                Extension = Path.GetExtension(fileName).Replace(".",""),
+                FileType = model.FileType,
+                OrderInDocument = _dbProcess.GetNextFileOrderNumber(ctx, model.DocumentId),
+                Name = Path.GetFileNameWithoutExtension(model.FileName),
+                Extension = Path.GetExtension(model.FileName).Replace(".", ""),
                 WasChangedExternal = false
             };
             _fStore.SaveFile(ctx, att);
             return _dbProcess.AddNewFileOrVersion(ctx, att);
         }
 
-        public int AddNewVersion(IContext ctx, int documentId, int fileOrder, string fileName, byte[] fileData)
+        public int AddNewVersion(IContext ctx, ModifyDocumentFile model)
         {
             //TODO potential two user could add same new version in same time. Probably need to implement CheckOut flag in future
-            var fl = _dbProcess.GetDocumentFileLatestVersion(ctx, documentId, fileOrder);
+            var fl = _dbProcess.GetDocumentFileLatestVersion(ctx, model.DocumentId, model.OrderInDocument);
             if (fl != null)
             {
                 var att = new DocumentAttachedFile
                 {
-                    DocumentId = documentId,
+                    DocumentId = model.DocumentId,
                     Date = DateTime.Now,
-                    FileData = fileData,
+                    FileContent = Convert.FromBase64String(model.FileData),
                     IsAdditional = fl.IsAdditional,
                     LastChangeUserId = ctx.CurrentAgentId,
                     LastChangeDate = DateTime.Now,
                     Version = fl.Version + 1,
-                    OrderInDocument = fileOrder,
-                    Name = Path.GetFileNameWithoutExtension(fileName),
-                    Extension = Path.GetExtension(fileName).Replace(".", ""),
+                    FileType =  model.FileType,
+                    OrderInDocument = model.OrderInDocument,
+                    Name = Path.GetFileNameWithoutExtension(model.FileName),
+                    Extension = Path.GetExtension(model.FileName).Replace(".", ""),
                     WasChangedExternal = false
                 };
                 _fStore.SaveFile(ctx, att);
@@ -124,10 +127,10 @@ namespace BL.Logic.DocumentCore
             throw new UnknownDocumentFile();
         }
 
-        public bool UpdateCurrentFileVersion(IContext ctx, int documentId, int fileOrder, string fileName, byte[] fileData, int version = 0)
+        public bool UpdateCurrentFileVersion(IContext ctx, ModifyDocumentFile model)
         {
             //TODO potential two user could add same new version in same time. Probably need to implement CheckOut flag in future
-            var fl = _dbProcess.GetDocumentFileLatestVersion(ctx, documentId, fileOrder);
+            var fl = _dbProcess.GetDocumentFileLatestVersion(ctx, model.DocumentId, model.OrderInDocument);
             if (fl != null)
             {
                 _fStore.SaveFile(ctx, fl);

@@ -2,13 +2,10 @@
 
 namespace BL.Model.DocumentAdditional
 {
-    public class DocumentAttachedFile
+    public class DocumentAttachedFile: DocumentFileIdentity
     {
         public int Id { get; set; }
-        public int DocumentId { get; set; }
-        public int OrderInDocument { get; set; }
-        public int Version { get; set; }
-        public byte[] FileData { get; set; }
+        public byte[] FileContent { get; set; }
         public string Name { get; set; }
         public string Extension { get; set; }
         public string FileType { get; set; }
