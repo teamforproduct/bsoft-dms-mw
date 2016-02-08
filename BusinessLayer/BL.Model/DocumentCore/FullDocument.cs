@@ -68,6 +68,7 @@ namespace BL.Model.DocumentCore
 
         public IEnumerable<BaseDocumentRestrictedSendList> RestrictedSendLists { get; set; }
         public IEnumerable<BaseDocumentSendList> SendLists { get; set; }
+        public int SendListStagesCount { get; set; }
         public IEnumerable<BaseDocumentEvent> Events { get; set; }
         public IEnumerable<BaseDocumentAccess> Accesses { get; set; }
 

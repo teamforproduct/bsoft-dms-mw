@@ -81,7 +81,7 @@ namespace BL.Logic.DocumentCore
             {
                 baseDocument.SendLists = baseTemplateDocument.SendLists.Select(x => new BaseDocumentSendList
                 {
-                    OrderNumber = x.OrderNumber,
+                    Stage = x.Stage,
                     SendType =x.SendType,
                     TargetPositionId = x.TargetPositionId,
                     Description = x.Description,
@@ -270,7 +270,7 @@ namespace BL.Logic.DocumentCore
             var sendLists = dicStandSendList.StandartSendListContents.Select(x => new ModifyDocumentSendList
             {
                 DocumentId = model.DocumentId,
-                OrderNumber = x.OrderNumber,
+                Stage = x.Stage,
                 SendType = (EnumSendType)x.SendTypeId,
                 TargetPositionId = x.TargetPositionId,
                 Description = x.Description,

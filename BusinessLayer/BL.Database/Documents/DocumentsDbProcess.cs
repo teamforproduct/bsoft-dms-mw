@@ -85,7 +85,7 @@ namespace BL.Database.Documents
                     doc.SendLists = document.SendLists.Select(x => new DocumentSendLists()
                     {
                         DocumentId = x.DocumentId,
-                        OrderNumber = x.OrderNumber,
+                        Stage = x.Stage,
                         SendTypeId = (int) x.SendType,
                         TargetPositionId = x.TargetPositionId,
                         Description = x.Description,
@@ -616,7 +616,7 @@ namespace BL.Database.Documents
                         {
                             Id = y.Id,
                             DocumentId = y.DocumentId,
-                            OrderNumber = y.OrderNumber,
+                            Stage = y.Stage,
                             SendType = (EnumSendType) y.SendTypeId,
                             SendTypeName = y.SendType.Name,
                             SendTypeCode = y.SendType.Code,
@@ -635,6 +635,10 @@ namespace BL.Database.Documents
                             LastChangeDate = y.LastChangeDate,
                             GeneralInfo = string.Empty
                         }).ToList();
+
+                doc.SendListStagesCount = doc.SendLists.GroupBy(x => x.Stage).Count();
+
+
 
                 doc.RestrictedSendLists =
                     dbContext.DocumentRestrictedSendListsSet.Where(x => x.DocumentId == doc.Id)
@@ -857,7 +861,7 @@ namespace BL.Database.Documents
                     {
                         Id = x.Id,
                         DocumentId = x.DocumentId,
-                        OrderNumber = x.OrderNumber,
+                        Stage = x.Stage,
                         SendType = (EnumSendType) x.SendTypeId,
                         TargetPositionId = x.TargetPositionId,
                         Description = x.Description,
@@ -879,7 +883,7 @@ namespace BL.Database.Documents
                 if (sl?.Id > 0)
                 {
                     sl.DocumentId = sendList.DocumentId;
-                    sl.OrderNumber = sendList.OrderNumber;
+                    sl.Stage = sendList.Stage;
                     sl.SendTypeId = (int) sendList.SendType;
                     sl.TargetPositionId = sendList.TargetPositionId;
                     sl.Description = sendList.Description;
@@ -903,7 +907,7 @@ namespace BL.Database.Documents
                 var sls = sendLists.Select(x => new DocumentSendLists
                 {
                     DocumentId = x.DocumentId,
-                    OrderNumber = x.OrderNumber,
+                    Stage = x.Stage,
                     SendTypeId = (int) x.SendType,
                     TargetPositionId = x.TargetPositionId,
                     Description = x.Description,

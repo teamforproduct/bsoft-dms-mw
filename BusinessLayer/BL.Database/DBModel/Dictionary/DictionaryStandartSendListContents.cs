@@ -8,7 +8,7 @@ namespace BL.Database.DBModel.Dictionary
     {
         public int Id { get; set; }
         public int StandartSendListId { get; set; }
-        public int OrderNumber { get; set; }
+        public int Stage { get; set; }
         public int SendTypeId { get; set; }
         public Nullable<int> TargetPositionId { get; set; }
         public string Description { get; set; }

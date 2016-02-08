@@ -69,7 +69,7 @@ namespace BL.Database.Documents
                                 TargetPositionId = y.TargetPositionId,
                                 Description = y.Description,
                                 DueDate = y.DueDate,
-                                OrderNumber = y.OrderNumber,
+                                Stage = y.Stage,
 
                                 DueDay = y.DueDay,
                                 AccessLevel = (EnumDocumentAccess) y.AccessLevelId

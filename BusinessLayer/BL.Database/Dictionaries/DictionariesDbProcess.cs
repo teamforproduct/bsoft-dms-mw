@@ -756,7 +756,7 @@ namespace BL.Database.Dictionaries
                     {
                         Id = x.Id,
                         StandartSendListId = x.StandartSendListId,
-                        OrderNumber = x.OrderNumber,
+                        Stage = x.Stage,
                         SendTypeId = x.SendTypeId,
                         TargetPositionId = x.TargetPositionId,
                         Description = x.Description,
@@ -788,7 +788,7 @@ namespace BL.Database.Dictionaries
                 {
                     Id = x.Id,
                     StandartSendListId = x.StandartSendListId,
-                    OrderNumber = x.OrderNumber,
+                    Stage = x.Stage,
                     SendTypeId = x.SendTypeId,
                     TargetPositionId = x.TargetPositionId,
                     Description = x.Description,
@@ -823,7 +823,7 @@ namespace BL.Database.Dictionaries
                                 {
                                     Id = y.Id,
                                     StandartSendListId = y.StandartSendListId,
-                                    OrderNumber = y.OrderNumber,
+                                    Stage = y.Stage,
                                     SendTypeId = y.SendTypeId,
                                     TargetPositionId = y.TargetPositionId,
                                     Description = y.Description,

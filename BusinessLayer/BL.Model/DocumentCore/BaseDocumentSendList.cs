@@ -7,6 +7,7 @@ namespace BL.Model.DocumentCore
         public int Id { get; set; }
         public bool IsInitial { get; set; }
         public Nullable<int> EventId { get; set; }
+        public int Stage { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
 
