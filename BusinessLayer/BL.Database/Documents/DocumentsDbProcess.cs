@@ -9,6 +9,7 @@ using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore;
 using BL.Database.DBModel.Document;
 using BL.Model.Database;
+using BL.Model.DocumentAdditional;
 using BL.Model.SystemCore;
 using BL.Model.Enums;
 using BL.Model.Exception;
@@ -657,7 +658,36 @@ namespace BL.Database.Documents
                             GeneralInfo = string.Empty
                         }).ToList();
 
-                doc.AttachedFilesCount = 0; // TODO select attached files
+                var sq = dbContext.DocumentFilesSet
+                                    .Where(x => x.DocumentId == documentId)
+                                    .GroupBy(g => new { g.DocumentId, g.OrderNumber })
+                                    .Select(x => new { DocId = x.Key.DocumentId, OrdId = x.Key.OrderNumber, MaxVers = x.Max(s => s.Version) });
+
+                doc.DocumentFiles = 
+                    sq.Join(dbContext.DocumentFilesSet, sub => new { sub.DocId, sub.OrdId, VerId = sub.MaxVers },
+                        fl => new { DocId = fl.DocumentId, OrdId = fl.OrderNumber, VerId = fl.Version },
+                        (s, f) => new { fl = f })
+                        .Join(dbContext.DictionaryAgentsSet, df => df.fl.LastChangeUserId, da => da.Id,
+                            (d, a) => new { d.fl, agName = a.Name })
+                        .Select(x => new DocumentAttachedFile
+                        {
+                            Id = x.fl.Id,
+                            Date = x.fl.Date,
+                            DocumentId = x.fl.DocumentId,
+                            Extension = x.fl.Extension,
+                            FileContent = x.fl.Content,
+                            IsAdditional = x.fl.IsAdditional,
+                            Hash = x.fl.Hash,
+                            LastChangeDate = x.fl.LastChangeDate,
+                            LastChangeUserId = x.fl.LastChangeUserId,
+                            LastChangeUserName = x.agName,
+                            Name = x.fl.Name,
+                            OrderInDocument = x.fl.OrderNumber,
+                            Version = x.fl.Version,
+                            WasChangedExternal = false
+                        }).ToList();
+
+                doc.AttachedFilesCount = doc.DocumentFiles.Count();
 
                 return doc;
             }

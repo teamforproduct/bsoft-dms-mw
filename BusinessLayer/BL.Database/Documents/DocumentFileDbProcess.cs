@@ -41,6 +41,7 @@ namespace BL.Database.Documents
                             DocumentId = x.fl.DocumentId,
                             Extension = x.fl.Extension,
                             FileContent = x.fl.Content,
+                            FileType = x.fl.FileType,
                             IsAdditional = x.fl.IsAdditional,
                             Hash = x.fl.Hash,
                             LastChangeDate = x.fl.LastChangeDate,
@@ -76,6 +77,7 @@ namespace BL.Database.Documents
                             LastChangeUserId = x.fl.LastChangeUserId,
                             LastChangeUserName = x.agName,
                             Name = x.fl.Name,
+                            FileType = x.fl.FileType,
                             OrderInDocument = x.fl.OrderNumber,
                             Version = x.fl.Version,
                             WasChangedExternal = false
@@ -103,6 +105,7 @@ namespace BL.Database.Documents
                             FileContent = x.fl.Content,
                             IsAdditional = x.fl.IsAdditional,
                             Hash = x.fl.Hash,
+                            FileType = x.fl.FileType,
                             LastChangeDate = x.fl.LastChangeDate,
                             LastChangeUserId = x.fl.LastChangeUserId,
                             LastChangeUserName = x.agName,
@@ -136,6 +139,7 @@ namespace BL.Database.Documents
                             LastChangeUserId = x.fl.LastChangeUserId,
                             LastChangeUserName = x.agName,
                             Name = x.fl.Name,
+                            FileType = x.fl.FileType,
                             OrderInDocument = x.fl.OrderNumber,
                             Version = x.fl.Version,
                             WasChangedExternal = false
@@ -171,6 +175,7 @@ namespace BL.Database.Documents
                                 LastChangeUserId = x.fl.LastChangeUserId,
                                 LastChangeUserName = x.agName,
                                 Name = x.fl.Name,
+                                FileType = x.fl.FileType,
                                 OrderInDocument = x.fl.OrderNumber,
                                 Version = x.fl.Version,
                                 WasChangedExternal = false
@@ -195,6 +200,7 @@ namespace BL.Database.Documents
                     LastChangeDate = docFile.LastChangeDate,
                     LastChangeUserId = docFile.LastChangeUserId,
                     Name = docFile.Name,
+                    FileType = docFile.FileType,
                     OrderNumber = docFile.OrderInDocument,
                     Version = docFile.Version
                 };
@@ -218,6 +224,7 @@ namespace BL.Database.Documents
                     fl.DocumentId = docFile.DocumentId;
                     fl.Extension = docFile.Extension;
                     fl.Hash = docFile.Hash;
+                    fl.FileType = docFile.FileType;
                     fl.IsAdditional = docFile.IsAdditional;
                     fl.LastChangeDate = docFile.LastChangeDate;
                     fl.LastChangeUserId = docFile.LastChangeUserId;
