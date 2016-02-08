@@ -247,6 +247,10 @@
     <Compile Include="Migrations\201602081357065_system.Designer.cs">
       <DependentUpon>201602081357065_system.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201602081813404_ChangeSendLists.cs" />
+    <Compile Include="Migrations\201602081813404_ChangeSendLists.Designer.cs">
+      <DependentUpon>201602081813404_ChangeSendLists.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\ISecurityDbProcess.cs" />
@@ -369,6 +373,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201602081357065_system.resx">
       <DependentUpon>201602081357065_system.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602081813404_ChangeSendLists.resx">
+      <DependentUpon>201602081813404_ChangeSendLists.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
