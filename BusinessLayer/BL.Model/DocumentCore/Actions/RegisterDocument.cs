@@ -8,15 +8,18 @@ namespace BL.Model.DocumentCore.Actions
         /// <summary>
         /// ИД Документа
         /// </summary>
+        [Required]      
         public int DocumentId { get; set; }
         /// <summary>
         /// ИД Журнала регистрации
         /// </summary>
+        [Required]
         public int RegistrationJournalId { get; set; }
         /// <summary>
         /// Если 0 - регистрируется документ
         /// Если 1 - автоматически получается и резервируется новый регистрационный номер
         /// </summary>
+        [Required]
         public bool IsOnlyGetNextNumber { get; set; }
         /// <summary>
         /// Регистрационный номер.
@@ -34,6 +37,7 @@ namespace BL.Model.DocumentCore.Actions
         /// <summary>
         /// Дата регистрации документа
         /// </summary>
+        [Required]
         public DateTime RegistrationDate { get; set; }    
     }
 }
