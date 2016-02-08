@@ -14,11 +14,10 @@ namespace DMS_WebAPI.Controllers.Documents
     public class DocumentsController : ApiController
     {
         //GET: api/Documents
-        public IHttpActionResult Get([FromUri] FilterDocument filters)
+        public IHttpActionResult Get([FromUri] FilterDocument filters, [FromUri]UIPaging paging)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var paging = new UIPaging();
             var docs = docProc.GetDocuments(cxt, filters, paging);
             return new JsonResult(docs, this);
         }

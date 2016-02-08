@@ -5,6 +5,7 @@ using BL.Database.Documents;
 using BL.Logic.SystemLogic;
 using BL.Model.DocumentAdditional;
 using BL.Model.Exception;
+using BL.Model.DocumentCore;
 
 namespace BL.Logic.DocumentCore
 {
@@ -43,6 +44,11 @@ namespace BL.Logic.DocumentCore
         {
             //TODO should we check if file exists in DB? 
             return _fStore.GetFile(ctx, attFile);
+        }
+
+        public int AddUserFile(IContext ctx, ModifyDocumentFile model)
+        {
+            return AddUserFile(ctx, model.DocumentId, model.FileName, Convert.FromBase64String(model.FileData), model.IsAdditional);
         }
 
         public int AddUserFile(IContext ctx, int documentId, string fileName, byte[] fileData, bool isAdditional)

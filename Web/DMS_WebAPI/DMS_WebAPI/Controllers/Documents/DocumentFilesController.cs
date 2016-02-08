@@ -30,35 +30,16 @@ namespace DMS_WebAPI.Controllers.Documents
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docFileProc = DmsResolver.Current.Get<IDocumentFileService>();
-            return new JsonResult(docFileProc.GetUserFile(cxt,new DocumentAttachedFile()), this);
+            return new JsonResult(docFileProc.GetUserFile(cxt, new DocumentAttachedFile()), this);
         }
 
         // POST: api/DocumentFiles
-        public IHttpActionResult Post(int id, [FromUri]ModifyDocumentFile model)
+        public IHttpActionResult Post([FromBody]ModifyDocumentFile model)
         {
-            model.DocumentId = id;
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docFileProc = DmsResolver.Current.Get<IDocumentFileService>();
 
-            int fileId = 0;
-
-            var files = HttpContext.Current.Request.Files;
-            for (int i = 0, l = files.Count; i < l; i++)
-            {
-                var file = files[i];
-
-                byte[] fileData = null;
-                //postedFile.InputStream.Read(fileData, 0, postedFile.ContentLength);
-                using (var binaryReader = new BinaryReader(file.InputStream))
-                {
-                    fileData = binaryReader.ReadBytes(file.ContentLength);
-                }
-                string fileName = file.FileName;
-
-                fileId = docFileProc.AddUserFile(cxt, model.DocumentId, fileName, fileData, model.isAdditional);
-            }
-
-            return Get(fileId);
+            return Get(docFileProc.AddUserFile(cxt, model));
         }
 
         // PUT: api/DocumentFiles/5
@@ -67,12 +48,12 @@ namespace DMS_WebAPI.Controllers.Documents
         //}
 
         // DELETE: api/DocumentFiles/5
-        public IHttpActionResult Delete(int id)
+        public IHttpActionResult Delete(int id, [FromBody]int ordNumber)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docFileProc = DmsResolver.Current.Get<IDocumentFileService>();
 
-            docFileProc.DeleteDocumentFile(cxt, id, 0);
+            docFileProc.DeleteDocumentFile(cxt, id, ordNumber);
             return new JsonResult(null, this);
         }
     }
