@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BL.Model.SystemCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -16,6 +17,9 @@ namespace DMS_WebAPI.Results
         bool _success;
         string _msg;
         object _meta;
+        UIPaging _paging;
+
+        public UIPaging Paging { set { _paging = value; } }
 
         public JsonResult(object data, ApiController controller)
         {
@@ -24,6 +28,7 @@ namespace DMS_WebAPI.Results
             _success = true;
             _msg = string.Empty;
             _meta = null;
+            _paging = null;
         }
         public JsonResult(object data, object meta, ApiController controller) : this(data, controller)
         {
@@ -55,7 +60,7 @@ namespace DMS_WebAPI.Results
         }
         public Task<HttpResponseMessage> ExecuteAsync(CancellationToken cancellationToken)
         {
-            HttpResponseMessage response = _request.CreateResponse(HttpStatusCode.OK, new { success = _success, data = _data, msg = _msg, meta = _meta });
+            HttpResponseMessage response = _request.CreateResponse(HttpStatusCode.OK, new { success = _success, data = _data, msg = _msg, meta = _meta, paging= _paging });
             return Task.FromResult(response);
         }
     }
