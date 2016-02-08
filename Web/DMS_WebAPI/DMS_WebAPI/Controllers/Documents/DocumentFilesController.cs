@@ -1,11 +1,9 @@
 ﻿using BL.CrossCutting.DependencyInjection;
 using BL.Logic.DocumentCore;
-using BL.Model.DocumentCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
-using System.IO;
-using System.Web;
 using System.Web.Http;
+using BL.Logic.DocumentCore.Interfaces;
 using BL.Model.DocumentAdditional;
 
 namespace DMS_WebAPI.Controllers.Documents
@@ -54,13 +52,13 @@ namespace DMS_WebAPI.Controllers.Documents
         //{
         //}
 
-        // DELETE: api/DocumentFiles/5
-        public IHttpActionResult Delete(int id)
+        // DELETE: api/DocumentFiles
+        public IHttpActionResult Delete([FromBody]DocumentFileIdentity model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docFileProc = DmsResolver.Current.Get<IDocumentFileService>();
 
-            docFileProc.DeleteDocumentFile(cxt, id, 0);
+            docFileProc.DeleteDocumentFile(cxt, model);
             return new JsonResult(null, this);
         }
     }
