@@ -71,9 +71,6 @@ namespace BL.Database.DBModel.Document
 
         public virtual ICollection<DocumentRestrictedSendLists> RestrictedSendLists { get; set; }
 
-        [ForeignKey("Id")]
-        public virtual DocumentTemporaryRegistrations TemporaryRegistration { get; set; }
-
     }
 
 }

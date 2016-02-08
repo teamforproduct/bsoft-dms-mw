@@ -16,6 +16,16 @@ namespace DMS_WebAPI.Controllers.Documents
     [RoutePrefix("api/v2/DocumentActions")]
     public class DocumentActionsController : ApiController
     {
+
+        // GET: api/Documents/5
+        public IHttpActionResult Get(int id)
+        {
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            var doc = docProc.GetDocumentActions(cxt, id);
+            return new JsonResult(doc, this);
+        }
+
         // POST: api/DocumentActions/Favourite
         [Route("Favourite")]
         [HttpPost]

@@ -377,6 +377,11 @@ namespace BL.Logic.DocumentCore
         #endregion
 
         #region Operation with document
+        public int GetDocumentActions(IContext ctx, int documentId)
+        {
+            throw new NotImplementedException();
+        }
+
         public int AddDocumentAccess(IContext ctx, BaseDocumentAccess access)
         {
             var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
