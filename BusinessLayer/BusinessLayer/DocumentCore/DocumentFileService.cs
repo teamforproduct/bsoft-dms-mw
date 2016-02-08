@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Documents;
@@ -17,6 +18,31 @@ namespace BL.Logic.DocumentCore
         {
             _fStore = fStore;
             _dbProcess = dbProcess;
+        }
+
+        public IEnumerable<DocumentAttachedFile> GetDocumentFiles(IContext ctx, int documentId)
+        {
+            return _dbProcess.GetDocumentFiles(ctx, documentId);
+        }
+
+        public IEnumerable<DocumentAttachedFile> GetDocumentFileVersions(IContext ctx, int documentId, int orderNumber)
+        {
+            return _dbProcess.GetDocumentFileVersions(ctx, documentId, orderNumber);
+        }
+
+        public DocumentAttachedFile GetDocumentFileVersion(IContext ctx, int documentId, int orderNumber, int versionNumber)
+        {
+            return GetDocumentFileVersion(ctx, documentId, orderNumber, versionNumber);
+        }
+
+        public DocumentAttachedFile GetDocumentFileVersion(IContext ctx, int id)
+        {
+            return _dbProcess.GetDocumentFileVersion(ctx, id);
+        }
+
+        public DocumentAttachedFile GetDocumentFileLatestVersion(IContext ctx, int documentId, int orderNumber)
+        {
+            return _dbProcess.GetDocumentFileLatestVersion(ctx, documentId, orderNumber);
         }
 
         public void DeleteDocumentFile(IContext ctx, int documentId, int ordNumber)

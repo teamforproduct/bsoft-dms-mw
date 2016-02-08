@@ -209,15 +209,21 @@ namespace BL.Database.Documents
         public int GetNextFileOrderNumber(IContext ctx, int documentId)
         {
             var dbContext = GetUserDmsContext(ctx);
-            var max = dbContext.DocumentFilesSet.Where(x => x.DocumentId == documentId).Max(x => x.OrderNumber);
-            return max<=0 ? 1:max+1;
+            if (dbContext.DocumentFilesSet.Any(x => x.DocumentId == documentId))
+            {
+                return dbContext.DocumentFilesSet.Where(x => x.DocumentId == documentId).Max(x => x.OrderNumber)+1;
+            }
+            return 1;
         }
 
         public int GetFileNextVersion(IContext ctx, int documentId, int fileOrder)
         {
             var dbContext = GetUserDmsContext(ctx);
-            var max = dbContext.DocumentFilesSet.Where(x => x.DocumentId == documentId && x.OrderNumber == fileOrder).Max(x => x.Version);
-            return max <= 0 ? 1 : max+1;
+            if (dbContext.DocumentFilesSet.Any(x => x.DocumentId == documentId && x.OrderNumber == fileOrder))
+            {
+                return dbContext.DocumentFilesSet.Where(x => x.DocumentId == documentId && x.OrderNumber == fileOrder).Max(x => x.Version)+1;
+            }
+            return 1;
         }
     }
 }
