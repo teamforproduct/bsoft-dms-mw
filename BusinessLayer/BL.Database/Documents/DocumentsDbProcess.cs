@@ -244,10 +244,10 @@ namespace BL.Database.Documents
                     //join acl in dbContext.AdminAccessLevelsSet on acc.AccessLevelId equals acl.Id
                     join executor in dbContext.DictionaryPositionsSet on dc.ExecutorPositionId equals executor.Id
 
-                    //join ea in dbContext.DictionaryAgentsSet on executor.ExecutorAgentId equals ea.Id into ea
-                    //from exAg in ea.DefaultIfEmpty()
+                    join ea in dbContext.DictionaryAgentsSet on executor.ExecutorAgentId equals ea.Id into ea
+                           from exAg in ea.DefaultIfEmpty()
 
-                    join z in dbContext.DictionaryDocumentSubjectsSet on dc.DocumentSubjectId equals z.Id into eg
+                           join z in dbContext.DictionaryDocumentSubjectsSet on dc.DocumentSubjectId equals z.Id into eg
                     from docsubj in eg.DefaultIfEmpty()
 
                     join g in dbContext.DictionaryRegistrationJournalsSet on dc.RegistrationJournalId equals g.Id into
@@ -274,7 +274,7 @@ namespace BL.Database.Documents
                         DocTypeName = doctp.Name,
                         RegJurnalName = regj.Name,
                         ExecutorPosName = executor.Name,
-                        //ExecutorAgentName = exAg.Name,
+                        ExecutorAgentName = exAg.Name,
                         //SenderAgentname = sendAg.Name,
                         //SenderPersonName = sendAp.Name
                     });
@@ -430,6 +430,7 @@ namespace BL.Database.Documents
                     CreateDate = x.Doc.CreateDate,
                     DocumentSubjectName = x.SubjName,
                     ExecutorPositionName = x.ExecutorPosName,
+                    ExecutorPositionAgentName = x.ExecutorAgentName,
                     DocumentDirectionName = x.DirName,
                     DocumentTypeName = x.DocTypeName,
                     DocumentDate = x.Doc.RegistrationDate ?? x.Doc.CreateDate,
