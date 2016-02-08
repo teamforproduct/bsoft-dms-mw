@@ -1,6 +1,4 @@
-﻿using System;
-using BL.Model.Enums;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 
 namespace BL.Model.DocumentCore
 {

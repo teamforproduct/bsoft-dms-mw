@@ -1,28 +1,24 @@
 ﻿using BL.CrossCutting.DependencyInjection;
 using BL.Logic.DocumentCore;
-using BL.Model.DocumentAdditional;
 using BL.Model.DocumentCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
+using BL.Model.DocumentAdditional;
 
 namespace DMS_WebAPI.Controllers.Documents
 {
     [Authorize]
     public class DocumentFilesController : ApiController
     {
-        // GET: api/DocumentFiles
-        //public IEnumerable<string> Get()
+        ////GET: api/DocumentFiles
+        //public IHttpActionResult Get()
         //{
-        //    return new string[] { "value1", "value2" };
+        //    var cxt = DmsResolver.Current.Get<UserContext>().Get();
+        //    var docFileProc = DmsResolver.Current.Get<IDocumentFileService>();
+        //    return new JsonResult(docFileProc.Get(cxt, new DocumentAttachedFile()), this);
         //}
 
         // GET: api/DocumentFiles/5
@@ -30,7 +26,7 @@ namespace DMS_WebAPI.Controllers.Documents
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docFileProc = DmsResolver.Current.Get<IDocumentFileService>();
-            return new JsonResult(docFileProc.GetUserFile(cxt, new DocumentAttachedFile()), this);
+            return new JsonResult(docFileProc.GetDocumentFiles(cxt,id), this);
         }
 
         // POST: api/DocumentFiles
@@ -42,18 +38,29 @@ namespace DMS_WebAPI.Controllers.Documents
             return Get(docFileProc.AddUserFile(cxt, model));
         }
 
+        // POST: api/DocumentFiles/GetFileData
+        [Route("GetFileData")]
+        [HttpPost]
+        public IHttpActionResult GetFileData(DocumentAttachedFile model)
+        {
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var docFileProc = DmsResolver.Current.Get<IDocumentFileService>();
+            var res = docFileProc.GetUserFile(cxt, model);
+            return new JsonResult(res, this);
+        }
+
         // PUT: api/DocumentFiles/5
         //public void Put(int id, [FromBody]string value)
         //{
         //}
 
         // DELETE: api/DocumentFiles/5
-        public IHttpActionResult Delete(int id, [FromBody]int ordNumber)
+        public IHttpActionResult Delete(int id)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docFileProc = DmsResolver.Current.Get<IDocumentFileService>();
 
-            docFileProc.DeleteDocumentFile(cxt, id, ordNumber);
+            docFileProc.DeleteDocumentFile(cxt, id, 0);
             return new JsonResult(null, this);
         }
     }
