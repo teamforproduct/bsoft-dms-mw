@@ -36,9 +36,9 @@ namespace BL.Database.DatabaseContext
         {
             modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
 
-            modelBuilder.Entity<DBModel.Document.Documents>()
-           .HasOptional(f => f.TemporaryRegistration)
-           .WithRequired(s => s.Document);
+           // modelBuilder.Entity<DBModel.Document.Documents>()
+           //.HasOptional(f => f.TemporaryRegistration)
+           //.WithRequired(s => s.Document);
            // modelBuilder.Entity<TemplateDocuments>()
            //.HasOptional(f => f.IncomingDetail)
            //.WithRequired(s => s.Document);
@@ -47,6 +47,10 @@ namespace BL.Database.DatabaseContext
 
 
         public virtual DbSet<AdminAccessLevels> AdminAccessLevelsSet { get; set; }
+        public virtual DbSet<AdminRoleActions> AdminRoleActionsSet { get; set; }
+        public virtual DbSet<AdminRoles> AdminRolesSet { get; set; }
+        public virtual DbSet<AdminUserRoles> AdminUserRolesSet { get; set; }
+
         public virtual DbSet<DictionaryAgentPersons> DictionaryAgentPersonsSet { get; set; }
         public virtual DbSet<DictionaryAgents> DictionaryAgentsSet { get; set; }
         public virtual DbSet<DictionaryCompanies> DictionaryCompaniesSet { get; set; }
@@ -75,11 +79,15 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<DocumentSendLists> DocumentSendListsSet { get; set; }
         public virtual DbSet<DocumentSubscriptions> DocumentSubscriptionsSet { get; set; }
         public virtual DbSet<DocumentWaits> DocumentWaitsSet { get; set; }
-        public virtual DbSet<DocumentTemporaryRegistrations> DocumentTemporaryRegistrationsSet { get; set; }
 
         public virtual DbSet<TemplateDocumentSendLists> TemplateDocumentSendLists { get; set; }
         public virtual DbSet<TemplateDocumentRestrictedSendLists> TemplateDocumentRestrictedSendLists { get; set; }
         public virtual DbSet<TemplateDocuments> TemplateDocumentsSet { get; set; }
+
+        public virtual DbSet<SystemActions> SystemActionsSet { get; set; }
+        public virtual DbSet<SystemFields> SystemFieldsSet { get; set; }
+        public virtual DbSet<SystemObjects> SystemObjectsSet { get; set; }
+        public virtual DbSet<SystemValueTypes> SystemValueTypesSet { get; set; }
 
         public virtual DbSet<SystemLogs> LogSet { get; set; }
         public virtual DbSet<SystemSettings> SettingsSet { get; set; }

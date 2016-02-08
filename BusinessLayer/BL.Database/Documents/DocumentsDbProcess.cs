@@ -1097,7 +1097,7 @@ namespace BL.Database.Documents
         }
         #endregion DocumentWaits
 
-        #region DocumentTemporaryRegistrations
+        #region DocumentRegistration
 
         public bool VerifyDocumentRegistrationNumber(IContext ctx, RegisterDocument registerDocument)
         {
@@ -1170,7 +1170,7 @@ namespace BL.Database.Documents
                 return isOk;
             }
         }
-        #endregion DocumentTemporaryRegistrations
+        #endregion DocumentRegistration
 
     }
 }
