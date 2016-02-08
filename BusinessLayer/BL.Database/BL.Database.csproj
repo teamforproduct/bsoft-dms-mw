@@ -233,6 +233,10 @@
     <Compile Include="Migrations\201602071517200_IsReg.Designer.cs">
       <DependentUpon>201602071517200_IsReg.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201602081231540_file.cs" />
+    <Compile Include="Migrations\201602081231540_file.Designer.cs">
+      <DependentUpon>201602081231540_file.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\ISecurityDbProcess.cs" />
@@ -349,6 +353,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201602071517200_IsReg.resx">
       <DependentUpon>201602071517200_IsReg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602081231540_file.resx">
+      <DependentUpon>201602081231540_file.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

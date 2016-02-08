@@ -8,5 +8,6 @@ namespace BL.Model.DocumentCore
         public bool IsAdditional { get; set; }
         public string FileData { get; set; }
         public string FileName { get; set; }
+        public string FileType { get; set; }
     }
 }

@@ -11,6 +11,7 @@ namespace BL.Database.DBModel.Document
         public int OrderNumber { get; set; }
         public int Version { get; set; }
         public string Extension { get; set; }
+        public string FileType { get; set; }
         public DateTime Date { get; set; }
         public byte[] Content { get; set; }
         public bool IsAdditional { get; set; }

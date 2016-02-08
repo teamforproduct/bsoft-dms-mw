@@ -26,7 +26,14 @@ namespace DMS_WebAPI.Controllers.Documents
             docProc.ChangeFavouritesForDocument(cxt, model);
             return new JsonResult(null, this);
         }
-
+        /// <summary>
+        /// Регистрация документа
+        /// Возможности:
+        /// 1. Получить регистрационный номер
+        /// 2. Зарегистрировать документ
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Обновленный документ, по которому производилась регистрация</returns>
         [Route("RegisterDocument")]
         [HttpPost]
         public IHttpActionResult RegisterDocument(RegisterDocument model)

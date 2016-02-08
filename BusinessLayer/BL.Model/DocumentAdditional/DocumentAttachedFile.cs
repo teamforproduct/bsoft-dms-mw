@@ -11,6 +11,7 @@ namespace BL.Model.DocumentAdditional
         public byte[] FileData { get; set; }
         public string Name { get; set; }
         public string Extension { get; set; }
+        public string FileType { get; set; }
         public bool IsAdditional { get; set; }
         public DateTime Date { get; set; }
         public string Hash { get; set; }
