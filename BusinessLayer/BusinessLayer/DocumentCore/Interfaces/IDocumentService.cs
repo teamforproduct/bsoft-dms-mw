@@ -15,7 +15,7 @@ namespace BL.Logic.DocumentCore.Interfaces
 
         IEnumerable<FullDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging);
         FullDocument GetDocument(IContext ctx, int documentId);
-        int GetDocumentActions(IContext ctx, int documentId);
+
 
         void UpdateRestrictedSendList(IContext context, ModifyDocumentRestrictedSendList restrictedSendList);
         int AddRestrictedSendList(IContext context, ModifyDocumentRestrictedSendList restrictedSendList);
@@ -34,6 +34,8 @@ namespace BL.Logic.DocumentCore.Interfaces
 
         int AddDocumentAccess(IContext ctx, BaseDocumentAccess access);
         void RemoveDocumentAccess(IContext ctx, int accessId);
+
+        IEnumerable<BaseSystemAction> GetDocumentActions(IContext ctx, int documentId);
 
         void AddDocumentComment(IContext context, AddNote note);
 

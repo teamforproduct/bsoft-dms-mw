@@ -118,7 +118,9 @@
     <Compile Include="Exception\DmsExceptions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Enums\EnumLogType.cs" />
+    <Compile Include="SystemCore\FilterSystemAction.cs" />
     <Compile Include="SystemCore\LogInfo.cs" />
+    <Compile Include="SystemCore\BaseSystemAction.cs" />
     <Compile Include="SystemCore\SystemUIElement.cs" />
     <Compile Include="SystemCore\UIPaging.cs" />
     <Compile Include="Users\Employee.cs" />
