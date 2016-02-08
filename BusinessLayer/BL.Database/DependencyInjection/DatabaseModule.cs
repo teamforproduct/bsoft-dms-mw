@@ -4,7 +4,6 @@ using BL.Database.Dictionaries;
 using BL.Database.Dictionaries.Interfaces;
 using BL.Database.Documents;
 using BL.Database.Documents.Interfaces;
-using BL.Database.Manager;
 using BL.Database.Security;
 using BL.Database.SystemDb;
 using Ninject.Modules;
@@ -15,7 +14,6 @@ namespace BL.Database.DependencyInjection
     {
         public override void Load()
         {
-            InternalClassRegistration();
             RegistrateSystemProcess();
             RegistrateDocumentProcess();
         }
@@ -35,10 +33,5 @@ namespace BL.Database.DependencyInjection
             Bind<ISystemDbProcess>().To<SystemDbProcess>().InSingletonScope();
         }
 
-        private void InternalClassRegistration()
-        {
-            // this class should be used only n DB layer
-            Bind<IConnectionManager>().To<ConnectionManager>().InSingletonScope();
-        }
     }
 }

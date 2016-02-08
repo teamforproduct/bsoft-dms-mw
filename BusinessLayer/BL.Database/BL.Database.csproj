@@ -113,12 +113,10 @@
     <Compile Include="Dictionaries\Interfaces\IDictionariesDbProcess.cs" />
     <Compile Include="Documents\DocumentFileDbProcess.cs" />
     <Compile Include="Documents\DocumentsDbProcess.cs" />
-    <Compile Include="Documents\IDocumentFileDbProcess.cs" />
+    <Compile Include="Documents\Interfaces\IDocumentFileDbProcess.cs" />
     <Compile Include="Documents\Interfaces\IDocumentsDbProcess.cs" />
     <Compile Include="Documents\Interfaces\ITemplateDocumentsDbProcess.cs" />
     <Compile Include="Documents\TemplateDocumentsDbProcess.cs" />
-    <Compile Include="Manager\ConnectionManager.cs" />
-    <Compile Include="Manager\IConnectionManager.cs" />
     <Compile Include="Migrations\201601241114209_InitialMigration.cs" />
     <Compile Include="Migrations\201601241114209_InitialMigration.Designer.cs">
       <DependentUpon>201601241114209_InitialMigration.cs</DependentUpon>

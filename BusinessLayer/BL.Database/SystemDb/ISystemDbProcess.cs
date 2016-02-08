@@ -5,8 +5,8 @@ namespace BL.Database.SystemDb
 {
     public interface ISystemDbProcess
     {
-        int AddLog(IContext context, LogInfo log);
-        int AddSetting(IContext context, string name, string value, int? agentId = null);
-        string GetSettingValue(IContext context, string name, int? agentId = null);
+        int AddLog(IContext ctx, LogInfo log);
+        int AddSetting(IContext ctx, string name, string value, int? agentId = null);
+        string GetSettingValue(IContext ctx, string name, int? agentId = null);
     }
 }

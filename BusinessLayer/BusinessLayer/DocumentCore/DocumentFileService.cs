@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Documents;
+using BL.Database.Documents.Interfaces;
 using BL.Logic.SystemLogic;
 using BL.Model.DocumentAdditional;
 using BL.Model.Exception;

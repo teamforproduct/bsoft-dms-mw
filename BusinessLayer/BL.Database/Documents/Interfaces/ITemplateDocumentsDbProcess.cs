@@ -6,8 +6,8 @@ namespace BL.Database.Documents.Interfaces
 {
     public interface ITemplateDocumentsDbProcess
     {
-        IEnumerable<BaseTemplateDocument> GetTemplateDocument(IContext context);
-        BaseTemplateDocument GetTemplateDocument(IContext context, int templateDocumentId);
-        int AddOrUpdateTemplate(IContext context, BaseTemplateDocument template);
+        IEnumerable<BaseTemplateDocument> GetTemplateDocument(IContext ctx);
+        BaseTemplateDocument GetTemplateDocument(IContext ctx, int templateDocumentId);
+        int AddOrUpdateTemplate(IContext ctx, BaseTemplateDocument template);
     }
 }

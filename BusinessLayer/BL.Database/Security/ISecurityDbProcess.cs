@@ -6,7 +6,7 @@ namespace BL.Database.Security
 {
     public interface ISecurityDbProcess
     {
-        Employee GetEmployee(IContext context, int id);
+        Employee GetEmployee(IContext ctx, int id);
         IEnumerable<Position> GetPositionsByUser(Employee employee);
     }
 }
