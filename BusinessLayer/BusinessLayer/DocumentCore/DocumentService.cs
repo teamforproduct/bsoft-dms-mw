@@ -14,6 +14,7 @@ using System.Web.Script.Serialization;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.Database;
 using BL.Model.Exception;
+using BL.Database.SystemDb;
 
 namespace BL.Logic.DocumentCore
 {
@@ -377,6 +378,19 @@ namespace BL.Logic.DocumentCore
         #endregion
 
         #region Operation with document
+        public IEnumerable<BaseSystemAction> GetDocumentActions(IContext ctx, int documentId)
+        {
+            var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
+            var document =  documentDb.GetDocument(ctx, documentId);
+            var systemDb = DmsResolver.Current.Get<ISystemDbProcess>();
+            var actions = systemDb.GetSystemActions(ctx, new FilterSystemAction() { ObjectCode = "Documents" });
+            if (document.IsRegistered)
+            {
+                actions = actions.Where(x => x.Code != "ModifyDocument").ToList();
+            }
+            return actions;
+        }
+
         public int AddDocumentAccess(IContext ctx, BaseDocumentAccess access)
         {
             var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();

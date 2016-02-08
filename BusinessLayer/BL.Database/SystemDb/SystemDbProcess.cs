@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
 using BL.Database.DatabaseContext;
@@ -7,7 +9,7 @@ using BL.Model.SystemCore;
 
 namespace BL.Database.SystemDb
 {
-    public class SystemDbProcess: CoreDb.CoreDb, ISystemDbProcess
+    public class SystemDbProcess : CoreDb.CoreDb, ISystemDbProcess
     {
         private readonly IConnectionStringHelper _helper;
 
@@ -24,7 +26,7 @@ namespace BL.Database.SystemDb
                 {
                     ExecutorAgentId = log.AgentId,
                     LogDate = log.Date,
-                    LogLevel = (int) log.LogType,
+                    LogLevel = (int)log.LogType,
                     LogException = log.LogException,
                     LogTrace = log.LogObjects,
                     Message = log.Message
@@ -75,6 +77,38 @@ namespace BL.Database.SystemDb
                     dbContext.SettingsSet.Where(x => x.Key == name).OrderBy(x => x.ExecutorAgentId)
                         .Select(x => x.Value)
                         .FirstOrDefault();
+            }
+        }
+
+        public IEnumerable<BaseSystemAction> GetSystemActions(IContext ctx, FilterSystemAction filter)
+        {
+
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            {
+                var qry = dbContext.SystemActionsSet.AsQueryable();
+
+                if (filter.Id?.Count > 0)
+                {
+                    qry = qry.Where(x => filter.Id.Contains(x.Id));
+                }
+                if (!string.IsNullOrEmpty(filter.Code))
+                {
+                    qry = qry.Where(x => x.Code.Contains(filter.Code));
+                }
+                if (!string.IsNullOrEmpty(filter.ObjectCode))
+                {
+                    qry = qry.Where(x => x.Object.Code.Contains(filter.ObjectCode));
+                }
+
+                return qry.Select(x => new BaseSystemAction
+                {
+                    Id = x.Id,
+                    Code = x.Code,
+                    API = x.API,
+                    Description = x.Description,
+                    IsGrantable = x.IsGrantable,
+                    IsGrantableByRecordId = x.IsGrantableByRecordId
+                }).ToList();
             }
         }
     }

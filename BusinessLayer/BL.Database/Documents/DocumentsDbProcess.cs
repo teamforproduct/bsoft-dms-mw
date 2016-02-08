@@ -400,6 +400,10 @@ namespace BL.Database.Documents
 
                 #endregion DocumentsSetFilter
 
+                paging.TotalPageCount = qry.Count(); //TODO pay attention to this when we will add paging
+                qry = qry.OrderByDescending(x=>x.Doc.CreateDate)
+                    .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
+
                 var evnt =
                     dbContext.DocumentEventsSet.Join(qry, ev => ev.DocumentId, rs => rs.Doc.Id, (e, r) => new {ev = e})
                         .GroupBy(g => g.ev.DocumentId)
@@ -458,7 +462,7 @@ namespace BL.Database.Documents
                     x1.doc.AttachedFilesCount = x1.ev.FileCnt;
                 }
 
-                paging.TotalPageCount = docs.Count; //TODO pay attention to this when we will add paging
+                //paging.TotalPageCount = docs.Count; //TODO pay attention to this when we will add paging
                 return docs;
             }
         }
@@ -1102,7 +1106,7 @@ namespace BL.Database.Documents
         }
         #endregion DocumentWaits
 
-        #region DocumentTemporaryRegistrations
+        #region DocumentRegistration
 
         public bool VerifyDocumentRegistrationNumber(IContext ctx, RegisterDocument registerDocument)
         {
@@ -1175,7 +1179,7 @@ namespace BL.Database.Documents
                 return isOk;
             }
         }
-        #endregion DocumentTemporaryRegistrations
+        #endregion DocumentRegistration
 
     }
 }
