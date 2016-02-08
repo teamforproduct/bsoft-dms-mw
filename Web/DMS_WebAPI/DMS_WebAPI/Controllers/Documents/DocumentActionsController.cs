@@ -17,16 +17,24 @@ namespace DMS_WebAPI.Controllers.Documents
     public class DocumentActionsController : ApiController
     {
 
-        // GET: api/Documents/5
+        /// <summary>
+        /// Получение списка доступных команд по документу
+        /// </summary>
+        /// <param name="id">ИД документа</param>
+        /// <returns>Массив команд</returns>
         public IHttpActionResult Get(int id)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var doc = docProc.GetDocumentActions(cxt, id);
-            return new JsonResult(doc, this);
+            var actions = docProc.GetDocumentActions(cxt, id);
+            return new JsonResult(actions, this);
         }
 
-        // POST: api/DocumentActions/Favourite
+        /// <summary>
+        /// Изменение признака включения в Избранное
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Обновленный документ</returns>
         [Route("Favourite")]
         [HttpPost]
         public IHttpActionResult ChangeFavourites(ChangeFavourites model)
@@ -34,7 +42,9 @@ namespace DMS_WebAPI.Controllers.Documents
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ChangeFavouritesForDocument(cxt, model);
-            return new JsonResult(null, this);
+            var ctrl = new DocumentsController();
+            ctrl.ControllerContext = ControllerContext;
+            return ctrl.Get(model.DocumentId);
         }
         /// <summary>
         /// Регистрация документа
@@ -43,7 +53,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// 2. Зарегистрировать документ
         /// </summary>
         /// <param name="model"></param>
-        /// <returns>Обновленный документ, по которому производилась регистрация</returns>
+        /// <returns>Обновленный документ</returns>
         [Route("RegisterDocument")]
         [HttpPost]
         public IHttpActionResult RegisterDocument(RegisterDocument model)
