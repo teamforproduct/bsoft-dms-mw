@@ -30,35 +30,12 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         // POST: api/DocumentFiles
-        public IHttpActionResult Post(int id, [FromUri] ModifyDocumentFile model)
+        public IHttpActionResult Post([FromBody]ModifyDocumentFile model)
         {
-            model.DocumentId = id;
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docFileProc = DmsResolver.Current.Get<IDocumentFileService>();
 
-            int fileId = 0;
-
-            var files = HttpContext.Current.Request.Files;
-            for (int i = 0, l = files.Count; i < l; i++)
-            {
-                var file = files[i];
-
-                byte[] fileData = null;
-                //postedFile.InputStream.Read(fileData, 0, postedFile.ContentLength);
-                using (var binaryReader = new BinaryReader(file.InputStream))
-                {
-                    fileData = binaryReader.ReadBytes(file.ContentLength);
-                }
-                string fileName = file.FileName;
-
-                fileId = docFileProc.AddUserFile(cxt, model.DocumentId, fileName, fileData, model.isAdditional);
-            }
-
-            //string testpath = @"C:\IFRToolLog.txt";
-            //byte[] fileData = File.ReadAllBytes(testpath);
-            //int fileId = docFileProc.AddUserFile(cxt, model.DocumentId, Path.GetFileName(testpath), fileData, model.isAdditional);
-
-            return Get(fileId);
+            return Get(docFileProc.AddUserFile(cxt, model));
         }
 
         // POST: api/DocumentFiles/GetFileData

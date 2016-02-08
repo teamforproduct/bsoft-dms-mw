@@ -4,8 +4,9 @@ namespace BL.Model.DocumentCore
 {
     public class ModifyDocumentFile
     {
-        [IgnoreDataMember]
         public int DocumentId { get; set; }
-        public bool isAdditional { get; set; }
+        public bool IsAdditional { get; set; }
+        public string FileData { get; set; }
+        public string FileName { get; set; }
     }
 }
