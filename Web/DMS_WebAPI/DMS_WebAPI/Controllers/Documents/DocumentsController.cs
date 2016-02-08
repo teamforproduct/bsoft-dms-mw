@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Web.Http;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Model.Enums;
+using System.Web.Http.Description;
 
 namespace DMS_WebAPI.Controllers.Documents
 {
@@ -14,12 +15,15 @@ namespace DMS_WebAPI.Controllers.Documents
     public class DocumentsController : ApiController
     {
         //GET: api/Documents
+        [ResponseType(typeof(JsonResult))]
         public IHttpActionResult Get([FromUri] FilterDocument filters, [FromUri]UIPaging paging)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var docs = docProc.GetDocuments(cxt, filters, paging);
-            return new JsonResult(docs, this);
+            var res = new JsonResult(docs, this);
+            res.Paging = paging;
+            return res;
         }
 
         // GET: api/Documents/5
