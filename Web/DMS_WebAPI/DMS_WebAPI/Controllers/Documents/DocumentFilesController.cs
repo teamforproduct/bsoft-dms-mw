@@ -5,19 +5,32 @@ using DMS_WebAPI.Utilities;
 using System.Web.Http;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Model.DocumentAdditional;
+using System.Net.Http;
+using System.Net;
+using System.Net.Http.Headers;
+using System.IO;
 
 namespace DMS_WebAPI.Controllers.Documents
 {
     [Authorize]
     public class DocumentFilesController : ApiController
     {
-        ////GET: api/DocumentFiles
-        //public IHttpActionResult Get()
-        //{
-        //    var cxt = DmsResolver.Current.Get<UserContext>().Get();
-        //    var docFileProc = DmsResolver.Current.Get<IDocumentFileService>();
-        //    return new JsonResult(docFileProc.Get(cxt, new DocumentAttachedFile()), this);
-        //}
+        //GET: api/DocumentFiles
+        public HttpResponseMessage Get([FromUri]DocumentFileIdentity model)
+        {
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var docFileProc = DmsResolver.Current.Get<IDocumentFileService>();
+            var res = docFileProc.GetUserFile(cxt, model);
+
+            HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK);
+            response.Content = new ByteArrayContent(res.FileContent);
+            response.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment");
+            response.Content.Headers.ContentDisposition.FileName = $"{res.Name}.{res.Extension}";
+            response.Content.Headers.ContentType = new MediaTypeHeaderValue(res.FileType);
+            response.Content.Headers.ContentLength = res.FileContent.Length;
+            
+            return response;
+        }
 
         // GET: api/DocumentFiles/5
         public IHttpActionResult Get(int id)
@@ -33,24 +46,17 @@ namespace DMS_WebAPI.Controllers.Documents
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docFileProc = DmsResolver.Current.Get<IDocumentFileService>();
 
-            return Get(docFileProc.AddUserFile(cxt, model));
-        }
-
-        // POST: api/DocumentFiles/GetFileData
-        [Route("GetFileData")]
-        [HttpPost]
-        public IHttpActionResult GetFileData(DocumentAttachedFile model)
-        {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var docFileProc = DmsResolver.Current.Get<IDocumentFileService>();
-            var res = docFileProc.GetUserFile(cxt, model);
-            return new JsonResult(res, this);
+            return new JsonResult(docFileProc.AddUserFile(cxt, model), this);
         }
 
         // PUT: api/DocumentFiles/5
-        //public void Put(int id, [FromBody]string value)
-        //{
-        //}
+        public IHttpActionResult Put([FromBody]ModifyDocumentFile model)
+        {
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var docFileProc = DmsResolver.Current.Get<IDocumentFileService>();
+
+            return new JsonResult(docFileProc.UpdateCurrentFileVersion(cxt, model), this);
+        }
 
         // DELETE: api/DocumentFiles
         public IHttpActionResult Delete([FromBody]DocumentFileIdentity model)

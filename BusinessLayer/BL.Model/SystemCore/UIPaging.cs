@@ -1,4 +1,5 @@
 ﻿using System.Runtime.Serialization;
+using System.Xml.Serialization;
 
 namespace BL.Model.SystemCore
 {
@@ -6,7 +7,7 @@ namespace BL.Model.SystemCore
     {
         public int CurrentPage { get; set; } = 1;
         public int PageSize { get; set; } = 50;
-        [IgnoreDataMember]
+        [XmlIgnore]
         public int TotalPageCount { get; set; }
     }
 }
