@@ -17,7 +17,7 @@ namespace BL.Logic.DocumentCore.Interfaces
         void DeleteDocumentFileVersion(IContext ctx, DocumentFileIdentity fileIdent);
         DocumentAttachedFile GetUserFile(IContext ctx, DocumentFileIdentity fileIdent);
         int AddUserFile(IContext ctx, ModifyDocumentFile model);
-        int AddNewVersion(IContext ctx, ModifyDocumentFile model);
-        bool UpdateCurrentFileVersion(IContext ctx, ModifyDocumentFile model);
+        DocumentAttachedFile AddNewVersion(IContext ctx, ModifyDocumentFile model);
+        DocumentAttachedFile UpdateCurrentFileVersion(IContext ctx, ModifyDocumentFile model);
     }
 }

@@ -100,7 +100,7 @@ namespace BL.Logic.DocumentCore
             return _dbProcess.AddNewFileOrVersion(ctx, att);
         }
 
-        public int AddNewVersion(IContext ctx, ModifyDocumentFile model)
+        public DocumentAttachedFile AddNewVersion(IContext ctx, ModifyDocumentFile model)
         {
             //TODO potential two user could add same new version in same time. Probably need to implement CheckOut flag in future
             var fl = _dbProcess.GetDocumentFileLatestVersion(ctx, model.DocumentId, model.OrderInDocument);
@@ -122,22 +122,29 @@ namespace BL.Logic.DocumentCore
                     WasChangedExternal = false
                 };
                 _fStore.SaveFile(ctx, att);
-                return _dbProcess.AddNewFileOrVersion(ctx, att);
+                _dbProcess.AddNewFileOrVersion(ctx, att);
+                return att;
             }
             throw new UnknownDocumentFile();
         }
 
-        public bool UpdateCurrentFileVersion(IContext ctx, ModifyDocumentFile model)
+        public DocumentAttachedFile UpdateCurrentFileVersion(IContext ctx, ModifyDocumentFile model)
         {
             //TODO potential two user could add same new version in same time. Probably need to implement CheckOut flag in future
             var fl = _dbProcess.GetDocumentFileLatestVersion(ctx, model.DocumentId, model.OrderInDocument);
             if (fl != null)
             {
+                fl.FileContent = Convert.FromBase64String(model.FileData);
+                fl.FileType = model.FileType;
+                fl.Extension = Path.GetExtension(model.FileName).Replace(".", "");
+                fl.Name = Path.GetFileNameWithoutExtension(model.FileName);
+                fl.IsAdditional = fl.IsAdditional;
+                fl.Date = DateTime.Now;
                 _fStore.SaveFile(ctx, fl);
                 fl.LastChangeDate = DateTime.Now;
                 fl.LastChangeUserId = ctx.CurrentAgentId;
                 _dbProcess.UpdateFileOrVersion(ctx,fl);
-                return true;
+                return fl;
             }
             throw new UnknownDocumentFile();
         }
