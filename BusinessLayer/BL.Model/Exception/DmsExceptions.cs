@@ -1,6 +1,6 @@
 ﻿namespace BL.Model.Exception
 {
-    public class DmsExceptions :System.Exception
+    public class DmsExceptions : System.Exception
     {
 
         public DmsExceptions(string message) : base(message)
@@ -17,7 +17,7 @@
     public class UserHasNoAccessToDocument : DmsExceptions
     {
         private const string _MESSAGE = "User could not acceess this document!";
-        public UserHasNoAccessToDocument():base(_MESSAGE)
+        public UserHasNoAccessToDocument() : base(_MESSAGE)
         {
         }
 
@@ -82,6 +82,18 @@
         }
 
         public DocumentNotFoundOrUserHasNoAccess(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+    public class TemplateDocumentNotFoundOrUserHasNoAccess : DmsExceptions
+    {
+        private const string _MESSAGE = "User could not acceess this template document!";
+        public TemplateDocumentNotFoundOrUserHasNoAccess() : base(_MESSAGE)
+        {
+        }
+
+        public TemplateDocumentNotFoundOrUserHasNoAccess(System.Exception ex) : base(_MESSAGE, ex)
         {
         }
     }
@@ -190,6 +202,29 @@
         }
 
         public DocumentSendListNotFoundInDocumentRestrictedSendList(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+    public class DocumentSendListDoesNotMatchTheTemplate : DmsExceptions
+    {
+        private const string _MESSAGE = "Document SendList does not match the template";
+        public DocumentSendListDoesNotMatchTheTemplate() : base(_MESSAGE)
+        {
+        }
+
+        public DocumentSendListDoesNotMatchTheTemplate(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+    public class DocumentRestrictedSendListDoesNotMatchTheTemplate : DmsExceptions
+    {
+        private const string _MESSAGE = "Document Restricted SendList does not match the template";
+        public DocumentRestrictedSendListDoesNotMatchTheTemplate() : base(_MESSAGE)
+        {
+        }
+
+        public DocumentRestrictedSendListDoesNotMatchTheTemplate(System.Exception ex) : base(_MESSAGE, ex)
         {
         }
     }

@@ -810,6 +810,24 @@ namespace BL.Database.Documents
         #endregion
 
         #region DocumentRestrictedSendLists
+        public ModifyDocumentRestrictedSendList GetRestrictedSendListById(IContext ctx, int id)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            {
+
+                var sendList = dbContext.DocumentRestrictedSendListsSet
+                    .Where(x => x.Id == id)
+                    .Select(x => new ModifyDocumentRestrictedSendList
+                    {
+                        Id = x.Id,
+                        DocumentId = x.DocumentId,
+                        PositionId = x.PositionId,
+                        AccessLevelId = x.AccessLevelId,
+                    }).FirstOrDefault();
+
+                return sendList;
+            }
+        }
         public IEnumerable<ModifyDocumentRestrictedSendList> GetRestrictedSendList(IContext ctx, int documentId)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
@@ -904,6 +922,30 @@ namespace BL.Database.Documents
                         DueDay = x.DueDay,
                         AccessLevel = (EnumDocumentAccess) x.AccessLevelId
                     }).ToList();
+
+                return sendLists;
+            }
+        }
+
+        public ModifyDocumentSendList GetSendListById(IContext ctx, int id)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            {
+
+                var sendLists = dbContext.DocumentSendListsSet
+                    .Where(x => x.Id == id)
+                    .Select(x => new ModifyDocumentSendList
+                    {
+                        Id = x.Id,
+                        DocumentId = x.DocumentId,
+                        Stage = x.Stage,
+                        SendType = (EnumSendType)x.SendTypeId,
+                        TargetPositionId = x.TargetPositionId,
+                        Description = x.Description,
+                        DueDate = x.DueDate,
+                        DueDay = x.DueDay,
+                        AccessLevel = (EnumDocumentAccess)x.AccessLevelId
+                    }).FirstOrDefault();
 
                 return sendLists;
             }
