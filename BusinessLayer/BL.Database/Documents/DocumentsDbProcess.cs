@@ -127,7 +127,7 @@ namespace BL.Database.Documents
                     .FirstOrDefault(x => x.Id == document.Id);
                 if (doc != null)
                 {
-                    doc.TemplateDocumentId = document.TemplateDocumentId;
+                    //doc.TemplateDocumentId = document.TemplateDocumentId;
                     doc.DocumentSubjectId = document.DocumentSubjectId;
                     doc.Description = document.Description;
                     doc.RegistrationJournalId = document.RegistrationJournalId;

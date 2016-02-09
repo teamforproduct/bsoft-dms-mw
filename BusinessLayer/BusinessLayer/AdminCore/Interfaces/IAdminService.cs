@@ -11,6 +11,7 @@ namespace BL.Logic.AdminCore.Interfaces
 
         IEnumerable<BaseAdminAccessLevel> GetAdminAccessLevels(IContext context, FilterAdminAccessLevel filter);
         #endregion AdminAccessLevels
+        IEnumerable<BaseAdminUserRole> GetPositionsByCurrentUser(IContext context);
 
     }
 }

@@ -16,6 +16,7 @@ namespace BL.Logic.DocumentCore.Interfaces
         IEnumerable<FullDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging);
         FullDocument GetDocument(IContext ctx, int documentId);
 
+        IEnumerable<BaseSystemUIElement> GetModifyMetaData(IContext cxt, FullDocument doc);
 
         void UpdateRestrictedSendList(IContext context, ModifyDocumentRestrictedSendList restrictedSendList);
         int AddRestrictedSendList(IContext context, ModifyDocumentRestrictedSendList restrictedSendList);

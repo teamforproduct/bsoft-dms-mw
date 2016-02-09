@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
@@ -56,5 +57,33 @@ namespace BL.Database.Admins
             }
         }
         #endregion AdminAccessLevels
+
+        public IEnumerable<BaseAdminUserRole> GetPositionsByUser(IContext ctx, FilterAdminUserRole filter)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            {
+                var qry = dbContext.AdminUserRolesSet.AsQueryable();
+
+                if (filter.Id?.Count > 0)
+                {
+                    qry = qry.Where(x => filter.Id.Contains(x.Id));
+                }
+                if (filter.UserId?.Count > 0)
+                {
+                    qry = qry.Where(x => filter.UserId.Contains(x.UserId));
+                }
+                if (filter.RoleId?.Count > 0)
+                {
+                    qry = qry.Where(x => filter.UserId.Contains(x.RoleId));
+                }
+                return qry.Distinct().Select(x => new BaseAdminUserRole
+                {
+                    RolePositionId = x.Role.Position.Id,
+                    RolePositionName = x.Role.Position.Name,
+                    RolePositionExecutorAgentName = x.Role.Position.ExecutorAgent.Name
+                }).Distinct().ToList();
+            }
+        }
+
     }
 }

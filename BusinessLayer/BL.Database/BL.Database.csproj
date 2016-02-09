@@ -256,6 +256,10 @@
     <Compile Include="Migrations\201602091111571_SystemUIElements.Designer.cs">
       <DependentUpon>201602091111571_SystemUIElements.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201602091929309_SystemUIElementsCorr.cs" />
+    <Compile Include="Migrations\201602091929309_SystemUIElementsCorr.Designer.cs">
+      <DependentUpon>201602091929309_SystemUIElementsCorr.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\ISecurityDbProcess.cs" />
@@ -384,6 +388,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201602091111571_SystemUIElements.resx">
       <DependentUpon>201602091111571_SystemUIElements.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602091929309_SystemUIElementsCorr.resx">
+      <DependentUpon>201602091929309_SystemUIElementsCorr.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

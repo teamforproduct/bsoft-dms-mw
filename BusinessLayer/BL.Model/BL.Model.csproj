@@ -43,7 +43,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdminCore\BaseAdminUserRole.cs" />
     <Compile Include="AdminCore\BaseAdminAccessLevel.cs" />
+    <Compile Include="AdminCore\FilterAdminUserRole.cs" />
     <Compile Include="AdminCore\FilterAdminAccessLevel.cs" />
     <Compile Include="Database\EventAccessModel.cs" />
     <Compile Include="Database\StoreInfo.cs" />
@@ -121,10 +123,11 @@
     <Compile Include="Exception\DmsExceptions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Enums\EnumLogType.cs" />
+    <Compile Include="SystemCore\FilterSystemUIElement.cs" />
     <Compile Include="SystemCore\FilterSystemAction.cs" />
     <Compile Include="SystemCore\LogInfo.cs" />
     <Compile Include="SystemCore\BaseSystemAction.cs" />
-    <Compile Include="SystemCore\SystemUIElement.cs" />
+    <Compile Include="SystemCore\BaseSystemUIElement.cs" />
     <Compile Include="SystemCore\UIPaging.cs" />
     <Compile Include="Users\Employee.cs" />
     <Compile Include="Users\Position.cs" />

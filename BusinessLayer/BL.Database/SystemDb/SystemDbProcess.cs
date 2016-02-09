@@ -111,5 +111,54 @@ namespace BL.Database.SystemDb
                 }).ToList();
             }
         }
+
+        public IEnumerable<BaseSystemUIElement> GetSystemUIElements(IContext ctx, FilterSystemUIElement filter)
+        {
+            {
+
+                using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+                {
+                    var qry = dbContext.SystemUIElementsSet.AsQueryable();
+
+                    if (filter.Id?.Count > 0)
+                    {
+                        qry = qry.Where(x => filter.Id.Contains(x.Id));
+                    }
+                    if (!string.IsNullOrEmpty(filter.Code))
+                    {
+                        qry = qry.Where(x => x.Code.Contains(filter.Code));
+                    }
+                    if (!string.IsNullOrEmpty(filter.ObjectCode))
+                    {
+                        qry = qry.Where(x => x.Action.Object.Code.Contains(filter.ObjectCode));
+                    }
+                    if (!string.IsNullOrEmpty(filter.ActionCode))
+                    {
+                        qry = qry.Where(x => x.Action.Code.Contains(filter.ActionCode));
+                    }
+                    return qry.Select(x => new BaseSystemUIElement
+                    {
+                        Id = x.Id,
+                        ObjectCode = x.Action.Object.Code,
+                        ActionCode = x.Action.Code,
+                        Code = x.Code,
+                        TypeCode = x.TypeCode,
+                        Label = x.Label,
+                        Hint = x.Hint,
+                        ValueTypeCode = x.ValueType.Code,
+                        IsMandatory = x.IsMandatory,
+                        IsReadOnly = x.IsReadOnly,
+                        IsVisible = x.IsVisible,
+                        SelectAPI = x.SelectAPI,
+                        SelectFilter = x.SelectFilter,
+                        SelectFieldCode = x.SelectFieldCode,
+                        SelectDescriptionFieldCode = x.SelectDescriptionFieldCode,
+                        ValueFieldCode = x.ValueFieldCode,
+                        ValueDescriptionFieldCode = x.ValueDescriptionFieldCode,
+                        Format = x.Format
+    }).ToList();
+                }
+            }
+        }
     }
 }

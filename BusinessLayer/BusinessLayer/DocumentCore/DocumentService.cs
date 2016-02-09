@@ -163,6 +163,19 @@ namespace BL.Logic.DocumentCore
             }
             return SaveDocument(context, baseDocument);
         }
+
+        public IEnumerable<BaseSystemUIElement> GetModifyMetaData(IContext ctx, FullDocument doc)
+        {
+            var systemDb = DmsResolver.Current.Get<ISystemDbProcess>();
+            var uiElements = systemDb.GetSystemUIElements(ctx, new FilterSystemUIElement() { ObjectCode = "Documents", ActionCode = "Modify" });
+            if (doc.DocumentDirection != EnumDocumentDirections.External)
+            {
+                var senderElem = new List<String>() { "SenderAgent", "SenderAgentPerson", "SenderNumber", "SenderDate", "Addressee" };
+                uiElements = uiElements.Where(x => !senderElem.Contains(x.Code)).ToList();
+            }
+            return uiElements;
+        }
+
         #endregion Documents
 
         #region DocumentRestrictedSendLists

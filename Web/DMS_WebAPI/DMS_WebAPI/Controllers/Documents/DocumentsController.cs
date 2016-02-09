@@ -14,29 +14,38 @@ namespace DMS_WebAPI.Controllers.Documents
     [Authorize]
     public class DocumentsController : ApiController
     {
-        //GET: api/Documents
+        /// <summary>
+        /// Получение списка документов
+        /// </summary>
+        /// <param name="filter">модель фильтра документов</param>
+        /// <param name="paging">paging</param>
+        /// <returns></returns>
         [ResponseType(typeof(JsonResult))]
-        public IHttpActionResult Get([FromUri] FilterDocument filters, [FromUri]UIPaging paging)
+        public IHttpActionResult Get([FromUri] FilterDocument filter, [FromUri]UIPaging paging)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var docs = docProc.GetDocuments(cxt, filters, paging);
+            var docs = docProc.GetDocuments(cxt, filter, paging);
             var res = new JsonResult(docs, this);
             res.Paging = paging;
             return res;
         }
 
-        // GET: api/Documents/5
+        /// <summary>
+        /// Получение документа по ИД
+        /// </summary>
+        /// <param name="id">ИД Документа</param>
+        /// <returns>Документ</returns>
         public IHttpActionResult Get(int id)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
 
             var doc = docProc.GetDocument(cxt, id);
-
-            var metaData = new List<SystemUIElements>()
+            var metaData = docProc.GetModifyMetaData(cxt, doc);
+            /* metaData = new List<BaseSystemUIElement>()
             {
-                new SystemUIElements()
+                new BaseSystemUIElement()
                 {
                     ObjectCode = "Documents",
                     ActionCode = "Modify",
@@ -51,7 +60,7 @@ namespace DMS_WebAPI.Controllers.Documents
                     ValueDescriptionFieldCode = "GeneralInfo",
                     Format = ""
                 },
-                new SystemUIElements()
+                new BaseSystemUIElement()
                 {
                     ObjectCode = "Documents",
                     ActionCode = "Modify",
@@ -71,7 +80,7 @@ namespace DMS_WebAPI.Controllers.Documents
                     ValueDescriptionFieldCode = "DocumentSubjectName",
                     Format = ""
                 },
-                new SystemUIElements()
+                new BaseSystemUIElement()
                 {
                     ObjectCode = "Documents",
                     ActionCode = "Modify",
@@ -88,7 +97,7 @@ namespace DMS_WebAPI.Controllers.Documents
                     ValueDescriptionFieldCode = "Description",
                     Format = ""
                 },
-                new SystemUIElements()
+                new BaseSystemUIElement()
                 {
                     ObjectCode = "Documents",
                     ActionCode = "Modify",
@@ -109,7 +118,7 @@ namespace DMS_WebAPI.Controllers.Documents
                     ValueDescriptionFieldCode = "SenderAgentName",
                     Format = ""
                 },
-                new SystemUIElements()
+                new BaseSystemUIElement()
                 {
                     ObjectCode = "Documents",
                     ActionCode = "Modify",
@@ -118,7 +127,7 @@ namespace DMS_WebAPI.Controllers.Documents
                     Description = "Контактное лицо в организации",
                     Label = "Контакт",
                     Hint = "Контактное лицо в организации, от которой получен документ",
-                    ValueTypeCode = "Number",
+                    ValueTypeCode = "number",
                     IsMandatory = true,
                     IsReadOnly = false,
                     IsVisible = doc.DocumentDirection == EnumDocumentDirections.External,
@@ -130,7 +139,7 @@ namespace DMS_WebAPI.Controllers.Documents
                     ValueDescriptionFieldCode = "SenderAgentPersonName",
                     Format = ""
                 },
-                new SystemUIElements()
+                new BaseSystemUIElement()
                 {
                     ObjectCode = "Documents",
                     ActionCode = "Modify",
@@ -147,7 +156,7 @@ namespace DMS_WebAPI.Controllers.Documents
                     ValueDescriptionFieldCode = "SenderNumber",
                     Format = ""
                 },
-                new SystemUIElements()
+                new BaseSystemUIElement()
                 {
                     ObjectCode = "Documents",
                     ActionCode = "Modify",
@@ -164,7 +173,7 @@ namespace DMS_WebAPI.Controllers.Documents
                     ValueDescriptionFieldCode = "SenderDate",
                     Format = ""
                 },
-                new SystemUIElements()
+                new BaseSystemUIElement()
                 {
                     ObjectCode = "Documents",
                     ActionCode = "Modify",
@@ -181,7 +190,7 @@ namespace DMS_WebAPI.Controllers.Documents
                     ValueDescriptionFieldCode = "Addressee",
                     Format = ""
                 },
-                new SystemUIElements()
+                new BaseSystemUIElement()
                 {
                     ObjectCode = "Documents",
                     ActionCode = "Modify",
@@ -190,10 +199,10 @@ namespace DMS_WebAPI.Controllers.Documents
                     Description = "Описание что это",
                     Label = "Контакт",
                     Hint = "Контактное лицо в организации, от которой получен документ",
-                    ValueTypeCode = "Number",
+                    ValueTypeCode = "number",
                     IsMandatory = true,
                     IsReadOnly = false,
-                    IsVisible = doc.DocumentDirection == EnumDocumentDirections.External,
+                    IsVisible = true,
                     SelectAPI = "AdminAccessLevels",
                     SelectFieldCode = "Id",
                     SelectDescriptionFieldCode = "Name",
@@ -201,11 +210,15 @@ namespace DMS_WebAPI.Controllers.Documents
                     ValueDescriptionFieldCode = "AccessLevelName",
                     Format = ""
                 },
-            };
+            };*/
             return new JsonResult(doc, metaData, this);
         }
 
-        // POST: api/Documents
+        /// <summary>
+        /// Добавление документа по шаблону
+        /// </summary>
+        /// <param name="templateId">ИД Документа</param>
+        /// <returns>Добавленный документ</returns>
         public IHttpActionResult Post([FromBody]int templateId)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
@@ -214,7 +227,11 @@ namespace DMS_WebAPI.Controllers.Documents
             //return new JsonResult(null,this);
         }
 
-        // PUT: api/Documents/5
+        /// <summary>
+        /// Модификация документа 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Обновленный документ</returns>
         public IHttpActionResult Put([FromBody]ModifyDocument model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();

@@ -14,10 +14,10 @@ namespace BL.Model.DocumentCore
         public FullDocument(ModifyDocument document) :this()
         {
             Id = document.Id;
-            TemplateDocumentId = document.TemplateDocumentId;
+            //TemplateDocumentId = document.TemplateDocumentId;
             DocumentSubjectId = document.DocumentSubjectId;
             Description = document.Description;
-            ExecutorPositionId = document.ExecutorPositionId;
+            //ExecutorPositionId = document.ExecutorPositionId;
             SenderAgentId = document.SenderAgentId;
             SenderAgentPersonId = document.SenderAgentPersonId;
             SenderNumber = document.SenderNumber;
@@ -25,7 +25,8 @@ namespace BL.Model.DocumentCore
             Addressee = document.Addressee;
             AccessLevel = document.AccessLevel;
         }
-
+        public int TemplateDocumentId { get; set; }
+        public int ExecutorPositionId { get; set; }
         public DateTime? CreateDate { get; set; }
         public bool IsRegistered { get; set; }
         public int? RegistrationJournalId { get; set; }
