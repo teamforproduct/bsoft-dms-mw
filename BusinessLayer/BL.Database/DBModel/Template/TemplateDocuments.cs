@@ -17,7 +17,7 @@ namespace BL.Database.DBModel.Template
 
         public int Id { get; set; }
         public string Name { get; set; }
-        public int IsHard { get; set; }
+        public bool IsHard { get; set; }
         public int DocumentDirectionId { get; set; }
         public int DocumentTypeId { get; set; }
         public Nullable<int> DocumentSubjectId { get; set; }

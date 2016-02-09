@@ -77,6 +77,7 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<SystemFields> SystemFieldsSet { get; set; }
         public virtual DbSet<SystemObjects> SystemObjectsSet { get; set; }
         public virtual DbSet<SystemValueTypes> SystemValueTypesSet { get; set; }
+        public virtual DbSet<SystemUIElements> SystemUIElementsSet { get; set; }
 
         public virtual DbSet<SystemLogs> LogSet { get; set; }
         public virtual DbSet<SystemSettings> SettingsSet { get; set; }
