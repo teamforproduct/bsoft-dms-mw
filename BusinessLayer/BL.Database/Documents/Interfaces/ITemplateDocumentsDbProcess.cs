@@ -8,6 +8,7 @@ namespace BL.Database.Documents.Interfaces
     {
         IEnumerable<BaseTemplateDocument> GetTemplateDocument(IContext ctx);
         BaseTemplateDocument GetTemplateDocument(IContext ctx, int templateDocumentId);
+        BaseTemplateDocument GetTemplateDocumentByDocumentId(IContext ctx, int documentId);
         int AddOrUpdateTemplate(IContext ctx, BaseTemplateDocument template);
     }
 }

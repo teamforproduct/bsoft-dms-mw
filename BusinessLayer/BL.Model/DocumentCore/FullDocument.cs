@@ -37,7 +37,7 @@ namespace BL.Model.DocumentCore
         public DateTime? LastChangeDate { get; set; }
 
         public string TemplateDocumentName { get; set; }
-        public int IsHard { get; set; }
+        public bool IsHard { get; set; }
         public EnumDocumentDirections DocumentDirection { get; set; }
         public string DocumentDirectionName { get; set; }
         public int DocumentTypeId { get; set; }

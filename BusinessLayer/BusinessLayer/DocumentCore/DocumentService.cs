@@ -63,7 +63,7 @@ namespace BL.Logic.DocumentCore
                 DocumentSubjectId = baseTemplateDocument.DocumentSubjectId,
                 Description = baseTemplateDocument.Description,
                 ExecutorPositionId = context.CurrentPositionId, ////
-                SenderAgentId = baseTemplateDocument.DocumentDirection == EnumDocumentDirections.External?baseTemplateDocument.SenderAgentId:null,
+                SenderAgentId = baseTemplateDocument.DocumentDirection == EnumDocumentDirections.External ? baseTemplateDocument.SenderAgentId : null,
                 SenderAgentPersonId = baseTemplateDocument.DocumentDirection == EnumDocumentDirections.External ? baseTemplateDocument.SenderAgentPersonId : null,
                 Addressee = baseTemplateDocument.DocumentDirection == EnumDocumentDirections.External ? baseTemplateDocument.Addressee : null
             };
@@ -82,7 +82,7 @@ namespace BL.Logic.DocumentCore
                 baseDocument.SendLists = baseTemplateDocument.SendLists.Select(x => new BaseDocumentSendList
                 {
                     Stage = x.Stage,
-                    SendType =x.SendType,
+                    SendType = x.SendType,
                     TargetPositionId = x.TargetPositionId,
                     Description = x.Description,
                     DueDate = x.DueDate,
@@ -133,15 +133,15 @@ namespace BL.Logic.DocumentCore
             {
                 throw new UserPositionIsNotDefined();
             }
-            if ( 
+            if (
                 (
                         (baseTemplateDocument.DocumentDirection == EnumDocumentDirections.Inner)
                     &&
                     (
-                        baseDocument.SenderAgentId != null || 
-                        baseDocument.SenderAgentPersonId != null || 
-                        !string.IsNullOrEmpty(baseDocument.SenderNumber) || 
-                        baseDocument.SenderDate != null || 
+                        baseDocument.SenderAgentId != null ||
+                        baseDocument.SenderAgentPersonId != null ||
+                        !string.IsNullOrEmpty(baseDocument.SenderNumber) ||
+                        baseDocument.SenderDate != null ||
                         !string.IsNullOrEmpty(baseDocument.Addressee)
                     )
                 )
@@ -166,21 +166,14 @@ namespace BL.Logic.DocumentCore
         #endregion Documents
 
         #region DocumentRestrictedSendLists
-        public void ValidRestrictedSendLists(IEnumerable<ModifyDocumentRestrictedSendList> restrictedSendLists)
-        {
-            if (restrictedSendLists.GroupBy(x=>new { x.DocumentId, x.PositionId }).Any(x=>x.Count()>1))
-            {
-                throw new DocumentRestrictedSendListDuplication();
-            }
-        }
         public void UpdateRestrictedSendList(IContext context, ModifyDocumentRestrictedSendList restrictedSendList)
         {
             var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
 
-            var validRestrictedSendLists = documentDb.GetRestrictedSendList(context,restrictedSendList.DocumentId).ToList();
+            var validRestrictedSendLists = documentDb.GetRestrictedSendList(context, restrictedSendList.DocumentId).ToList();
             validRestrictedSendLists.Remove(validRestrictedSendLists.FirstOrDefault(x => x.Id == restrictedSendList.Id));
             validRestrictedSendLists.Add(restrictedSendList);
-            ValidRestrictedSendLists(validRestrictedSendLists);
+            ValidSendListsByRestrictedSendLists(context, restrictedSendList.DocumentId, validRestrictedSendLists);
 
             documentDb.UpdateRestrictedSendList(context, restrictedSendList);
         }
@@ -190,7 +183,7 @@ namespace BL.Logic.DocumentCore
 
             var validRestrictedSendLists = documentDb.GetRestrictedSendList(context, restrictedSendList.DocumentId).ToList();
             validRestrictedSendLists.Add(restrictedSendList);
-            ValidRestrictedSendLists(validRestrictedSendLists);
+            ValidSendListsByRestrictedSendLists(context, restrictedSendList.DocumentId, validRestrictedSendLists);
 
             var id = documentDb.AddRestrictedSendList(context, new List<ModifyDocumentRestrictedSendList> { restrictedSendList }).FirstOrDefault();
             return id;
@@ -211,7 +204,7 @@ namespace BL.Logic.DocumentCore
 
             var validRestrictedSendLists = documentDb.GetRestrictedSendList(context, model.DocumentId).ToList();
             validRestrictedSendLists.AddRange(restrictedSendLists);
-            ValidRestrictedSendLists(validRestrictedSendLists);
+            ValidSendListsByRestrictedSendLists(context, model.DocumentId, validRestrictedSendLists);
 
             documentDb.AddRestrictedSendList(context, restrictedSendLists);
         }
@@ -219,33 +212,98 @@ namespace BL.Logic.DocumentCore
         public void DeleteRestrictedSendList(IContext context, int restrictedSendListId)
         {
             var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
+
+            var restrictedSendList = documentDb.GetRestrictedSendListById(context, restrictedSendListId);
+
+            var validRestrictedSendLists = documentDb.GetRestrictedSendList(context, restrictedSendList.DocumentId).ToList();
+            validRestrictedSendLists.Remove(validRestrictedSendLists.FirstOrDefault(x => x.Id == restrictedSendList.Id));
+            ValidSendListsByRestrictedSendLists(context, restrictedSendList.DocumentId, validRestrictedSendLists);
+
             documentDb.DeleteRestrictedSendList(context, restrictedSendListId);
         }
         #endregion DocumentRestrictedSendLists
 
-        #region DocumentSendLists
+        #region Valid SendLists
 
-        public void ValidSendLists(IEnumerable<ModifyDocumentSendList> sendLists, IEnumerable<ModifyDocumentRestrictedSendList> restrictedSendLists)
+        public void ValidSendListsBySendLists(IContext context, int documentId
+            , IEnumerable<ModifyDocumentSendList> sendLists)
         {
+            var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
+            var restrictedSendLists = documentDb.GetRestrictedSendList(context, documentId);
+
+            ValidSendLists(context, documentId, sendLists, restrictedSendLists);
+        }
+        public void ValidSendListsByRestrictedSendLists(IContext context, int documentId
+            , IEnumerable<ModifyDocumentRestrictedSendList> restrictedSendLists)
+        {
+            var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
+            var sendLists = documentDb.GetSendList(context, documentId);
+
+            ValidSendLists(context, documentId, sendLists, restrictedSendLists);
+        }
+        public void ValidSendLists(IContext context, int documentId
+            , IEnumerable<ModifyDocumentSendList> sendLists
+            , IEnumerable<ModifyDocumentRestrictedSendList> restrictedSendLists)
+        {
+
+            if (restrictedSendLists.GroupBy(x => new { x.DocumentId, x.PositionId }).Any(x => x.Count() > 1))
+            {
+                throw new DocumentRestrictedSendListDuplication();
+            }
+
             if (sendLists.GroupBy(x => new { x.DocumentId, x.TargetPositionId, x.SendType }).Any(x => x.Count() > 1))
             {
                 throw new DocumentSendListDuplication();
             }
 
-            if (restrictedSendLists?.Count() > 0&& sendLists.GroupJoin(restrictedSendLists, sl => sl.TargetPositionId, rsl => rsl.PositionId, (sl, rsls) => new { sl, rsls }).Any(x => x.rsls.Count()==0))
+            if (restrictedSendLists?.Count() > 0 
+                && sendLists.GroupJoin(restrictedSendLists
+                    , sl => sl.TargetPositionId
+                    , rsl => rsl.PositionId
+                    , (sl, rsls) => new { sl, rsls }).Any(x => x.rsls.Count() == 0))
             {
                 throw new DocumentSendListNotFoundInDocumentRestrictedSendList();
             }
+
+            var templateDocumentDb = DmsResolver.Current.Get<ITemplateDocumentsDbProcess>();
+            var templateDocument = templateDocumentDb.GetTemplateDocumentByDocumentId(context, documentId);
+
+            if (templateDocument == null)
+            {
+                throw new TemplateDocumentNotFoundOrUserHasNoAccess();
+            }
+
+            if (templateDocument.IsHard)
+            {
+                if (templateDocument.RestrictedSendLists.Count()>0
+                    && templateDocument.RestrictedSendLists.GroupJoin(restrictedSendLists
+                        , trsl => trsl.PositionId
+                        , rsl=> rsl.PositionId
+                        , (trsl, rsls)=> new { trsl, rsls }).Any(x=>x.rsls.Count()==0))
+                {
+                    throw new DocumentRestrictedSendListDoesNotMatchTheTemplate();
+                }
+
+                if (templateDocument.SendLists.Count() > 0
+                    && templateDocument.SendLists.GroupJoin(sendLists
+                        , trsl => new { trsl.TargetPositionId, trsl.SendType }
+                        , rsl => new {rsl.TargetPositionId, rsl.SendType }
+                        , (trsl, rsls) => new { trsl, rsls }).Any(x => x.rsls.Count() == 0))
+                {
+                    throw new DocumentSendListDoesNotMatchTheTemplate();
+                }
+            }
         }
+        #endregion
+        #region DocumentSendLists
         public void UpdateSendList(IContext context, ModifyDocumentSendList sendList)
         {
             var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
 
-            var validRestrictedSendLists = documentDb.GetRestrictedSendList(context, sendList.DocumentId).ToList();
             var validSendLists = documentDb.GetSendList(context, sendList.DocumentId).ToList();
             validSendLists.Remove(validSendLists.FirstOrDefault(x => x.Id == sendList.Id));
             validSendLists.Add(sendList);
-            ValidSendLists(validSendLists, validRestrictedSendLists);
+            ValidSendListsBySendLists(context, sendList.DocumentId, validSendLists);
 
             documentDb.UpdateSendList(context, sendList);
         }
@@ -253,10 +311,9 @@ namespace BL.Logic.DocumentCore
         {
             var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
 
-            var validRestrictedSendLists = documentDb.GetRestrictedSendList(context, sendList.DocumentId).ToList();
             var validSendLists = documentDb.GetSendList(context, sendList.DocumentId).ToList();
             validSendLists.Add(sendList);
-            ValidSendLists(validSendLists, validRestrictedSendLists);
+            ValidSendListsBySendLists(context, sendList.DocumentId, validSendLists);
 
             var id = documentDb.AddSendList(context, new List<ModifyDocumentSendList> { sendList }).FirstOrDefault();
             return id;
@@ -280,10 +337,9 @@ namespace BL.Logic.DocumentCore
             });
             var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
 
-            var validRestrictedSendLists = documentDb.GetRestrictedSendList(context, model.DocumentId).ToList();
             var validSendLists = documentDb.GetSendList(context, model.DocumentId).ToList();
             validSendLists.AddRange(sendLists);
-            ValidSendLists(validSendLists, validRestrictedSendLists);
+            ValidSendListsBySendLists(context, model.DocumentId, validSendLists);
 
             documentDb.AddSendList(context, sendLists);
         }
@@ -291,6 +347,13 @@ namespace BL.Logic.DocumentCore
         public void DeleteSendList(IContext context, int sendListId)
         {
             var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
+
+            var sendList = documentDb.GetSendListById(context, sendListId);
+
+            var validSendLists = documentDb.GetSendList(context, sendList.DocumentId).ToList();
+            validSendLists.Remove(validSendLists.FirstOrDefault(x => x.Id == sendList.Id));
+            ValidSendListsBySendLists(context, sendList.DocumentId, validSendLists);
+
             documentDb.DeleteSendList(context, sendListId);
         }
 
@@ -381,7 +444,7 @@ namespace BL.Logic.DocumentCore
         public IEnumerable<BaseSystemAction> GetDocumentActions(IContext ctx, int documentId)
         {
             var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
-            var document =  documentDb.GetDocument(ctx, documentId);
+            var document = documentDb.GetDocument(ctx, documentId);
             var systemDb = DmsResolver.Current.Get<ISystemDbProcess>();
             var actions = systemDb.GetSystemActions(ctx, new FilterSystemAction() { ObjectCode = "Documents" });
             if (document.IsRegistered)
@@ -540,13 +603,13 @@ namespace BL.Logic.DocumentCore
         {
             var docDB = DmsResolver.Current.Get<IDocumentsDbProcess>();
 
-            if (model.RegistrationNumber == null|| string.IsNullOrEmpty(model.RegistrationNumberPrefix)|| model.IsOnlyGetNextNumber)
+            if (model.RegistrationNumber == null || string.IsNullOrEmpty(model.RegistrationNumberPrefix) || model.IsOnlyGetNextNumber)
             {   //get next number
                 var dictDB = DmsResolver.Current.Get<IDictionariesDbProcess>();
                 var dictRegJournal = dictDB.GetDictionaryRegistrationJournal(context, model.RegistrationJournalId);
                 model.RegistrationNumberPrefix = dictRegJournal.PrefixFormula;
                 model.RegistrationNumberSuffix = dictRegJournal.SuffixFormula;
-                model.RegistrationNumber = null;                
+                model.RegistrationNumber = null;
             }
             docDB.SetDocumentRegistration(context, model);
         }

@@ -39,6 +39,17 @@ namespace BL.Database.Documents
             }
         }
 
+        public BaseTemplateDocument GetTemplateDocumentByDocumentId(IContext ctx, int documentId)
+        {
+            int templateDocumentId = 0;
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            {
+                templateDocumentId = dbContext.DocumentsSet.Where(x => x.Id == documentId).Select(x => x.TemplateDocumentId).FirstOrDefault();
+            }
+
+            return GetTemplateDocument(ctx, templateDocumentId);
+        }
+
         public BaseTemplateDocument GetTemplateDocument(IContext ctx, int templateDocumentId)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
