@@ -89,14 +89,6 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
-                var qry = dbContext.AdminRoleActionsSet
-                          .Where(x => x.Action.Code == acc.ActionCode
-                                    && x.Action.Object.Code == acc.ObjectCode
-                                    && x.Action.IsGrantable
-                                    && (!x.Action.IsGrantableByRecordId || (x.RecordId == acc.RecordId))
-                                    && x.Role.UserRoles.Any(y => y.UserId == acc.UserId)
-                                ).AsQueryable();
-
                 return dbContext.AdminRoleActionsSet
                           .Any(x => x.Action.Code == acc.ActionCode
                                     && x.Action.Object.Code == acc.ObjectCode

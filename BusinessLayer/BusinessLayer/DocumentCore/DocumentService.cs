@@ -169,6 +169,17 @@ namespace BL.Logic.DocumentCore
             return SaveDocument(context, baseDocument);
         }
 
+        public void DeleteDocument(IContext context, int id)
+        {
+            var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
+            var document = documentDb.GetDocument(context, id);
+            Command cmd = new DeleteDocument(context, document);
+            if (cmd.CanExecute())
+            {
+                cmd.Execute();
+            }
+        }
+
         public IEnumerable<BaseSystemUIElement> GetModifyMetaData(IContext ctx, FullDocument doc)
         {
             var systemDb = DmsResolver.Current.Get<ISystemDbProcess>();
@@ -539,7 +550,7 @@ namespace BL.Logic.DocumentCore
             var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
             var document = documentDb.GetDocument(ctx, documentId);
             var systemDb = DmsResolver.Current.Get<ISystemDbProcess>();
-            var actions = systemDb.GetSystemActions(ctx, new FilterSystemAction() { ObjectCode = "Documents" });
+            var actions = systemDb.GetSystemActions(ctx, new FilterSystemAction() { ObjectCode = "Documents", IsAvailabel = true });
             if (document.IsRegistered)
             {
                 actions = actions.Where(x => x.Code != "ModifyDocument").ToList();
@@ -706,6 +717,8 @@ namespace BL.Logic.DocumentCore
             }
             docDB.SetDocumentRegistration(context, model);
         }
+
+
 
         #endregion
     }

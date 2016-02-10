@@ -209,6 +209,18 @@ namespace BL.Database.Documents
             }
         }
 
+        public void DeleteDocument(IContext ctx, int id)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            {
+                //ADD OTHER TABLES!!!!
+                dbContext.DocumentEventsSet.RemoveRange(dbContext.DocumentEventsSet.Where(x => x.DocumentId == id));
+                dbContext.DocumentAccessesSet.RemoveRange(dbContext.DocumentAccessesSet.Where(x => x.DocumentId == id));
+                dbContext.DocumentsSet.RemoveRange(dbContext.DocumentsSet.Where(x => x.Id == id));
+                dbContext.SaveChanges();
+            }
+        }
+
         public IEnumerable<FullDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
@@ -1337,6 +1349,8 @@ namespace BL.Database.Documents
                 return isOk;
             }
         }
+
+
         #endregion DocumentRegistration
 
     }

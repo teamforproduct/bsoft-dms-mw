@@ -12,6 +12,7 @@ namespace BL.Logic.DocumentCore.Interfaces
 
         int AddDocumentByTemplateDocument(IContext context, int templateDocumentId);
         int ModifyDocument(IContext context, ModifyDocument document);
+        void DeleteDocument(IContext cxt, int id);
 
         IEnumerable<FullDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging);
         FullDocument GetDocument(IContext ctx, int documentId);
@@ -52,5 +53,6 @@ namespace BL.Logic.DocumentCore.Interfaces
 
         int CopyDocument(IContext context, CopyDocument model);
         void RegisterDocument(IContext context, RegisterDocument model);
+
     }
 }
