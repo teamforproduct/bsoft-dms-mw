@@ -49,7 +49,9 @@ namespace BL.Logic.DocumentCore
         public FullDocument GetDocument(IContext ctx, int documentId)
         {
             var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
-            return documentDb.GetDocument(ctx, documentId);
+            var doc = documentDb.GetDocument(ctx, documentId);
+            doc.SendListStages = GetSendListStage(doc.SendLists);
+            return doc;
         }
 
         public int AddDocumentByTemplateDocument(IContext context, int templateDocumentId)
@@ -269,7 +271,7 @@ namespace BL.Logic.DocumentCore
                 throw new DocumentSendListDuplication();
             }
 
-            if (restrictedSendLists?.Count() > 0 
+            if (restrictedSendLists?.Count() > 0
                 && sendLists.GroupJoin(restrictedSendLists
                     , sl => sl.TargetPositionId
                     , rsl => rsl.PositionId
@@ -288,11 +290,11 @@ namespace BL.Logic.DocumentCore
 
             if (templateDocument.IsHard)
             {
-                if (templateDocument.RestrictedSendLists.Count()>0
+                if (templateDocument.RestrictedSendLists.Count() > 0
                     && templateDocument.RestrictedSendLists.GroupJoin(restrictedSendLists
                         , trsl => trsl.PositionId
-                        , rsl=> rsl.PositionId
-                        , (trsl, rsls)=> new { trsl, rsls }).Any(x=>x.rsls.Count()==0))
+                        , rsl => rsl.PositionId
+                        , (trsl, rsls) => new { trsl, rsls }).Any(x => x.rsls.Count() == 0))
                 {
                     throw new DocumentRestrictedSendListDoesNotMatchTheTemplate();
                 }
@@ -300,7 +302,7 @@ namespace BL.Logic.DocumentCore
                 if (templateDocument.SendLists.Count() > 0
                     && templateDocument.SendLists.GroupJoin(sendLists
                         , trsl => new { trsl.TargetPositionId, trsl.SendType }
-                        , rsl => new {rsl.TargetPositionId, rsl.SendType }
+                        , rsl => new { rsl.TargetPositionId, rsl.SendType }
                         , (trsl, rsls) => new { trsl, rsls }).Any(x => x.rsls.Count() == 0))
                 {
                     throw new DocumentSendListDoesNotMatchTheTemplate();
@@ -309,6 +311,37 @@ namespace BL.Logic.DocumentCore
         }
         #endregion
         #region DocumentSendLists
+        private IEnumerable<BaseDocumentSendListStage> GetSendListStage(IEnumerable<BaseDocumentSendList> sendLists)
+        {
+            if (sendLists?.Count() > 0)
+            {
+                return Enumerable.Range(0, sendLists.Max(x => x.Stage)+1)
+                    .GroupJoin(sendLists, s => s, sl => sl.Stage
+                    , (s, sls) => new { s, sls = sls.Where(x => x.Id > 0) })
+                    .Select (x=>new BaseDocumentSendListStage
+                    {
+                        Stage = x.s,
+                        SendLists = x.sls.ToList()
+                    }).ToList();
+
+            }
+            else
+                return new List<BaseDocumentSendListStage>();
+        }
+        public IEnumerable<BaseDocumentSendListStage> GetSendListStage(IContext context, int documentId, bool isLastStage = false)
+        {
+            var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
+
+            var sendLists = documentDb.GetSendListBase(context, documentId).ToList();
+
+            if (isLastStage)
+            {
+                int lastStage = sendLists.Max(x => x.Stage) + 1;
+                sendLists.Add(new BaseDocumentSendList { Id = 0, Stage = lastStage });
+            }
+
+            return GetSendListStage(sendLists);
+        }
         public void UpdateSendList(IContext context, ModifyDocumentSendList sendList)
         {
             var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
@@ -368,6 +401,49 @@ namespace BL.Logic.DocumentCore
             ValidSendListsBySendLists(context, sendList.DocumentId, validSendLists);
 
             documentDb.DeleteSendList(context, sendListId);
+        }
+
+        public bool AddSendListStage(IContext context, ModifyDocumentSendListStage model)
+        {
+            if (model.Stage >= 0)
+            {
+                var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
+
+                var sendLists = documentDb.GetSendList(context, model.DocumentId);
+
+                sendLists = sendLists.Where(x => x.Stage >= model.Stage);
+
+                if (sendLists?.Count() > 0)
+                    foreach (var sendList in sendLists)
+                    {
+                        sendList.Stage++;
+                        documentDb.UpdateSendList(context, sendList);
+                    }
+                else
+                    return true;
+            }
+            return false;
+        }
+
+        public void DeleteSendListStage(IContext context, ModifyDocumentSendListStage model)
+        {
+            var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
+
+            var sendLists = documentDb.GetSendList(context, model.DocumentId);
+
+            ValidSendListsBySendLists(context, model.DocumentId, sendLists.Where(x => x.Stage != model.Stage));
+
+            foreach (var sendList in sendLists.Where(x => x.Stage == model.Stage))
+            {
+                documentDb.DeleteSendList(context, sendList.Id);
+            }
+
+            foreach (var sendList in sendLists.Where(x => x.Stage > model.Stage))
+            {
+                sendList.Stage--;
+                documentDb.UpdateSendList(context, sendList);
+            }
+
         }
 
         #endregion DocumentSendLists

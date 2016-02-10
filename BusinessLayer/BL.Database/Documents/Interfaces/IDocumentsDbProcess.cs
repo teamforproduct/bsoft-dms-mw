@@ -21,6 +21,7 @@ namespace BL.Database.Documents.Interfaces
         void DeleteRestrictedSendList(IContext ctx, int restrictedSendListId);
 
         IEnumerable<ModifyDocumentSendList> GetSendList(IContext ctx, int documentId);
+        IEnumerable<BaseDocumentSendList> GetSendListBase(IContext ctx, int documentId);
         ModifyDocumentSendList GetSendListById(IContext ctx, int id);
         void UpdateSendList(IContext ctx, ModifyDocumentSendList sendList);
         IEnumerable<int> AddSendList(IContext ctx, IEnumerable<ModifyDocumentSendList> sendLists);

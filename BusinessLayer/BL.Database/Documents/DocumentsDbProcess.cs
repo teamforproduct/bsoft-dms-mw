@@ -642,7 +642,7 @@ namespace BL.Database.Documents
                             GeneralInfo = string.Empty
                         }).ToList();
 
-                doc.SendListStagesCount = doc.SendLists.GroupBy(x => x.Stage).Count();
+                doc.SendListStageMax = doc.SendLists.Max(x => x.Stage);
 
 
 
@@ -921,6 +921,41 @@ namespace BL.Database.Documents
                         DueDate = x.DueDate,
                         DueDay = x.DueDay,
                         AccessLevel = (EnumDocumentAccess) x.AccessLevelId
+                    }).ToList();
+
+                return sendLists;
+            }
+        }
+
+        public IEnumerable<BaseDocumentSendList> GetSendListBase(IContext ctx, int documentId)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            {
+
+                var sendLists = dbContext.DocumentSendListsSet
+                    .Where(x => x.DocumentId == documentId)
+                    .Select(x => new BaseDocumentSendList
+                    {
+                        Id = x.Id,
+                        DocumentId = x.DocumentId,
+                        Stage = x.Stage,
+                        SendType = (EnumSendType)x.SendTypeId,
+                        SendTypeName = x.SendType.Name,
+                        SendTypeCode = x.SendType.Code,
+                        SendTypeIsImpotant = x.SendType.IsImpotant,
+                        TargetPositionId = x.TargetPositionId,
+                        TargetPositionName = x.TargetPosition.Name,
+                        TargetPositionExecutorAgentName = x.TargetPosition.ExecutorAgent.Name,
+                        Description = x.Description,
+                        DueDate = x.DueDate,
+                        DueDay = x.DueDay,
+                        AccessLevel = (EnumDocumentAccess)x.AccessLevelId,
+                        AccessLevelName = x.AccessLevel.Name,
+                        IsInitial = x.IsInitial,
+                        EventId = x.EventId,
+                        LastChangeUserId = x.LastChangeUserId,
+                        LastChangeDate = x.LastChangeDate,
+                        GeneralInfo = string.Empty
                     }).ToList();
 
                 return sendLists;

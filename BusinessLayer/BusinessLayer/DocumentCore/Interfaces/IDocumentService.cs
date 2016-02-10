@@ -23,10 +23,14 @@ namespace BL.Logic.DocumentCore.Interfaces
         void AddRestrictedSendListByStandartSendLists(IContext context, ModifyDocumentRestrictedSendListByStandartSendList model);
         void DeleteRestrictedSendList(IContext context, int restrictedSendListId);
 
+        IEnumerable<BaseDocumentSendListStage> GetSendListStage(IContext context, int documentId, bool isLastStage = false);
         void UpdateSendList(IContext context, ModifyDocumentSendList sendList);
         int AddSendList(IContext ctx, ModifyDocumentSendList sendList);
         void AddSendListByStandartSendLists(IContext context, ModifyDocumentSendListByStandartSendList model);
         void DeleteSendList(IContext context, int sendListId);
+
+        bool AddSendListStage(IContext context, ModifyDocumentSendListStage model);
+        void DeleteSendListStage(IContext context, ModifyDocumentSendListStage model);
 
         int SaveSavedFilter(IContext context, ModifyDocumentSavedFilter savedFilter);
         IEnumerable<BaseDocumentSavedFilter> GetSavedFilters(IContext ctx);

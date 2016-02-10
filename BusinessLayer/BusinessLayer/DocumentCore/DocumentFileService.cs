@@ -7,6 +7,7 @@ using BL.Logic.DocumentCore.Interfaces;
 using BL.Logic.SystemLogic;
 using BL.Model.DocumentAdditional;
 using BL.Model.Exception;
+using System.Linq;
 
 namespace BL.Logic.DocumentCore
 {
@@ -98,6 +99,34 @@ namespace BL.Logic.DocumentCore
             };
             _fStore.SaveFile(ctx, att);
             return _dbProcess.AddNewFileOrVersion(ctx, att);
+        }
+        public IEnumerable<int> AddUserFile(IContext ctx, ModifyDocumentFiles model)
+        {
+            var files = _dbProcess.GetDocumentFiles(ctx, model.DocumentId);
+
+            var ids = new List<int>();
+            foreach (var file in model.Files)
+            {
+                var att = new DocumentAttachedFile
+                {
+                    DocumentId = model.DocumentId,
+                    Date = DateTime.Now,
+                    FileContent = Convert.FromBase64String(file.FileData),
+                    IsAdditional = file.IsAdditional,
+                    LastChangeUserId = ctx.CurrentAgentId,
+                    LastChangeDate = DateTime.Now,
+                    Version = 1,
+                    FileType = file.FileType,
+                    OrderInDocument = _dbProcess.GetNextFileOrderNumber(ctx, model.DocumentId),
+                    Name = Path.GetFileNameWithoutExtension(file.FileName),
+                    Extension = Path.GetExtension(file.FileName).Replace(".", ""),
+                    WasChangedExternal = false
+                };
+                _fStore.SaveFile(ctx, att);
+                ids.Add(_dbProcess.AddNewFileOrVersion(ctx, att));
+            }
+
+            return ids;
         }
 
         public DocumentAttachedFile AddNewVersion(IContext ctx, ModifyDocumentFile model)

@@ -41,7 +41,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         // POST: api/DocumentFiles
-        public IHttpActionResult Post([FromBody]ModifyDocumentFile model)
+        public IHttpActionResult Post([FromBody]ModifyDocumentFiles model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docFileProc = DmsResolver.Current.Get<IDocumentFileService>();

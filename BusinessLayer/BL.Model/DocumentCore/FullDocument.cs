@@ -2,16 +2,17 @@
 using System.Collections.Generic;
 using BL.Model.DocumentAdditional;
 using BL.Model.Enums;
+using System.Linq;
 
 namespace BL.Model.DocumentCore
 {
-    public class FullDocument: ModifyDocument
+    public class FullDocument : ModifyDocument
     {
         public FullDocument()
         {
         }
 
-        public FullDocument(ModifyDocument document) :this()
+        public FullDocument(ModifyDocument document) : this()
         {
             Id = document.Id;
             //TemplateDocumentId = document.TemplateDocumentId;
@@ -70,7 +71,8 @@ namespace BL.Model.DocumentCore
 
         public IEnumerable<BaseDocumentRestrictedSendList> RestrictedSendLists { get; set; }
         public IEnumerable<BaseDocumentSendList> SendLists { get; set; }
-        public int SendListStagesCount { get; set; }
+        public IEnumerable<BaseDocumentSendListStage> SendListStages { get; set; }
+        public int SendListStageMax { get; set; }
         public IEnumerable<BaseDocumentEvent> Events { get; set; }
         public IEnumerable<BaseDocumentAccess> Accesses { get; set; }
         public IEnumerable<DocumentAttachedFile> DocumentFiles { get; set; }

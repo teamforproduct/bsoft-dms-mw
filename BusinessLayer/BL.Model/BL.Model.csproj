@@ -85,6 +85,7 @@
     <Compile Include="DictionaryCore\FilterDictionaryAgentPerson.cs" />
     <Compile Include="DictionaryCore\FilterDictionaryAgent.cs" />
     <Compile Include="DocumentAdditional\DocumentAttachedFile.cs" />
+    <Compile Include="DocumentAdditional\ModifyDocumentFiles.cs" />
     <Compile Include="DocumentCore\Actions\ChangeFavourites.cs" />
     <Compile Include="DocumentCore\Actions\CopyDocument.cs" />
     <Compile Include="DocumentCore\Actions\SendMessage.cs" />
@@ -94,11 +95,13 @@
     <Compile Include="DocumentCore\Actions\ControlOn.cs" />
     <Compile Include="DocumentCore\Actions\AddNote.cs" />
     <Compile Include="DocumentCore\BaseDocumentSavedFilter.cs" />
+    <Compile Include="DocumentCore\BaseDocumentStageSendList.cs" />
     <Compile Include="DocumentCore\BaseDocumentTemporaryRegistration.cs" />
     <Compile Include="DocumentCore\BaseDocumentWaits.cs" />
     <Compile Include="DocumentAdditional\DocumentFileIdentity.cs" />
     <Compile Include="DocumentAdditional\ModifyDocumentFile.cs" />
     <Compile Include="DocumentCore\ModifyDocumentSavedFilter.cs" />
+    <Compile Include="DocumentCore\ModifyDocumentSendListStage.cs" />
     <Compile Include="Enums\EnumDocumentDirections.cs" />
     <Compile Include="Enums\EnumDocumentAccess.cs" />
     <Compile Include="Enums\EnumEventTypes.cs" />
