@@ -10,7 +10,10 @@ namespace DMS_WebAPI.Controllers
     [Authorize]
     public class TemplateDocumentsController : ApiController
     {
-        // GET: api/TemplateDocuments
+        /// <summary>
+        /// Получение списка шаблонов документов
+        /// </summary>
+        /// <returns>Список шаблонов документов</returns>
         public IHttpActionResult Get()
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
@@ -19,7 +22,11 @@ namespace DMS_WebAPI.Controllers
             return new JsonResult(tmpDocs, this);
         }
 
-        // GET: api/TemplateDocuments/5
+        /// <summary>
+        /// Получение шаблона документа по ИД
+        /// </summary>
+        /// <param name="id">ИД шаблона документа</param>
+        /// <returns>Шаблон документа</returns>
         public IHttpActionResult Get(int id)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
@@ -28,13 +35,13 @@ namespace DMS_WebAPI.Controllers
             return new JsonResult(tmpDoc, this);
         }
 
-        // POST: api/TemplateDocuments
-        public IHttpActionResult Post(BaseTemplateDocument model)
-        {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var docProc = DmsResolver.Current.Get<ITemplateDocumentService>();
-            docProc.AddOrUpdateTemplate(cxt, model);
-            return Ok();
-        }
+
+        //public IHttpActionResult Post(BaseTemplateDocument model)
+        //{
+        //    var cxt = DmsResolver.Current.Get<UserContext>().Get();
+        //    var docProc = DmsResolver.Current.Get<ITemplateDocumentService>();
+        //    docProc.AddOrUpdateTemplate(cxt, model);
+        //    return Ok();
+        //}
     }
 }

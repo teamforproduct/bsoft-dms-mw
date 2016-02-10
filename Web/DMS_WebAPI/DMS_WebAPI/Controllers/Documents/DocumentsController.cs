@@ -217,7 +217,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <summary>
         /// Добавление документа по шаблону
         /// </summary>
-        /// <param name="templateId">ИД Документа</param>
+        /// <param name="templateId">ИД шаблона документа</param>
         /// <returns>Добавленный документ</returns>
         public IHttpActionResult Post([FromBody]int templateId)
         {
@@ -230,7 +230,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <summary>
         /// Модификация документа 
         /// </summary>
-        /// <param name="model"></param>
+        /// <param name="model">Модель для обновления документа</param>
         /// <returns>Обновленный документ</returns>
         public IHttpActionResult Put([FromBody]ModifyDocument model)
         {

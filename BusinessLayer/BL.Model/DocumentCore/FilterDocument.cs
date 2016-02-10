@@ -4,16 +4,16 @@ using System.Collections.Generic;
 namespace BL.Model.DocumentCore
 {
     /// <summary>
-    /// Модель фильтра документа
+    /// Фильтра документов
     /// </summary>
     public class FilterDocument
     {
         /// <summary>
-        /// Массив ИД длкументов
+        /// Массив ИД документов
         /// </summary>
         public List<int> Id { get; set; }
         /// <summary>
-        /// Массив ИД шаблонов
+        /// Массив ИД шаблонов документов
         /// </summary>
         public List<int> TemplateDocumentId { get; set; }
         /// <summary>

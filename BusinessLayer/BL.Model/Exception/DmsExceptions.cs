@@ -1,4 +1,6 @@
-﻿namespace BL.Model.Exception
+﻿using BL.Model.AdminCore;
+
+namespace BL.Model.Exception
 {
     public class DmsExceptions : System.Exception
     {
@@ -13,6 +15,17 @@
         }
     }
 
+    public class AccessIsDenied : DmsExceptions
+    {
+        private const string _MESSAGE = "Access is Denied!";
+        public AccessIsDenied() : base(_MESSAGE)
+        {
+        }
+
+        public AccessIsDenied(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
 
     public class UserHasNoAccessToDocument : DmsExceptions
     {

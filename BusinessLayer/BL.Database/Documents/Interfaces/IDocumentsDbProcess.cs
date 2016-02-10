@@ -27,6 +27,7 @@ namespace BL.Database.Documents.Interfaces
         void DeleteSendList(IContext ctx, int sendListId);
 
         int AddDocumentEvent(IContext ctx, BaseDocumentEvent docEvent);
+        IEnumerable<BaseDocumentEvent> GetDocumentEvents(IContext ctx, FilterDocumentEvent filter);
 
         int AddDocumentAccess(IContext ctx, BaseDocumentAccess access);
         void RemoveDocumentAccess(IContext ctx, int accessId);

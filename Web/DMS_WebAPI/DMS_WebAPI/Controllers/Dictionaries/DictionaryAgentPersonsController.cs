@@ -11,7 +11,11 @@ namespace DMS_WebAPI.Controllers.Dictionaries
     [Authorize]
     public class DictionaryAgentPersonsController : ApiController
     {
-        // GET: api/DictionaryAgentPersons
+        /// <summary>
+        /// Получение словаря контактов посторонней организации
+        /// </summary>
+        /// <param name="filter">фильтр</param>
+        /// <returns>Список контактов посторонних организаций</returns>
         public IHttpActionResult Get([FromUri] FilterDictionaryAgentPerson filter)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
@@ -20,7 +24,11 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             return new JsonResult(tmpDicts, this);
         }
 
-        // GET: api/DictionaryAgentPersons/5
+        /// <summary>
+        /// Получение словаря контактов посторонней организации по ИД
+        /// </summary>
+        /// <param name="id">ИД контакта</param>
+        /// <returns>Контакт</returns>
         public IHttpActionResult Get(int id)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
