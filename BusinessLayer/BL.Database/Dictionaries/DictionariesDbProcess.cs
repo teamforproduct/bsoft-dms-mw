@@ -430,11 +430,24 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
-                var qry = dbContext.DictionaryEventTypesSet.AsQueryable();
+                var qry = dbContext.DictionaryEventTypesSet.AsQueryable();        
 
                 if (filter.Id?.Count > 0)
                 {
                     qry = qry.Where(x => filter.Id.Contains(x.Id));
+                }
+
+                if (filter.ImpotanceEventTypeId?.Count > 0)
+                {
+                    qry = qry.Where(x => filter.ImpotanceEventTypeId.Contains(x.ImpotanceEventTypeId));
+                }
+
+                if (filter.DocumentId?.Count > 0)
+                {
+                    qry = qry.Where(x =>
+                            dbContext.DocumentEventsSet
+                                .Where(y => filter.DocumentId.Contains(y.DocumentId)).Select(y => y.EventTypeId).Contains(x.Id)
+                                );
                 }
 
                 return qry.Select(x => new BaseDictionaryEventType
@@ -474,11 +487,19 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
-                var qry = dbContext.DictionaryEventTypesSet.AsQueryable();
+                var qry = dbContext.DictionaryImpotanceEventTypesSet.AsQueryable();
 
                 if (filter.Id?.Count > 0)
                 {
                     qry = qry.Where(x => filter.Id.Contains(x.Id));
+                }
+
+                if (filter.DocumentId?.Count > 0)
+                {
+                    qry = qry.Where(x =>
+                            dbContext.DocumentEventsSet
+                                .Where(y => filter.DocumentId.Contains(y.DocumentId)).Select(y => y.EventType.ImpotanceEventTypeId).Contains(x.Id)
+                                );
                 }
 
                 return qry.Select(x => new BaseDictionaryImpotanceEventType
@@ -598,6 +619,17 @@ namespace BL.Database.Dictionaries
                 if (filter.Id?.Count > 0)
                 {
                     qry = qry.Where(x => filter.Id.Contains(x.Id));
+                }
+
+                if (filter.DocumentId?.Count > 0)
+                {
+                    qry = qry.Where(x =>
+                            dbContext.DocumentEventsSet
+                                .Where(y => filter.DocumentId.Contains(y.DocumentId)).Select(y => y.SourcePositionId).Contains(x.Id)
+                                ||
+                                dbContext.DocumentEventsSet
+                                .Where(y => filter.DocumentId.Contains(y.DocumentId)).Select(y => y.TargetPositionId).Contains(x.Id)
+                                );
                 }
 
                 return qry.Select(x => new BaseDictionaryPosition

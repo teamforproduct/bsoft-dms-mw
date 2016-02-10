@@ -4,19 +4,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BL.Model.DictionaryCore
+namespace BL.Model.DocumentCore
 {
     /// <summary>
-    /// Фильтр словаря должностей
+    /// Фильтр событий документов
     /// </summary>
-    public class FilterDictionaryPosition
+    public class FilterDocumentEvent
     {
         /// <summary>
-        /// Массив ИД должностей
+        /// Массив ИД событий документов
         /// </summary>
         public List<int> Id { get; set; }
         /// <summary>
-        /// Массив ИД документов для поиска корреспондентов в событиях
+        /// Массив ИД документов
         /// </summary>
         public List<int> DocumentId { get; set; }
     }

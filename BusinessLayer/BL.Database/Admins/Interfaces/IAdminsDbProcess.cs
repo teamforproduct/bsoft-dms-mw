@@ -13,5 +13,8 @@ namespace BL.Database.Admins.Interfaces
         #endregion AdminAccessLevels
 
         IEnumerable<BaseAdminUserRole> GetPositionsByUser(IContext ctx, FilterAdminUserRole filter);
+
+        bool VerifyAccess(IContext context, VerifyAccess acc);
+
     }
 }

@@ -15,6 +15,7 @@ using BL.Model.DocumentCore.Actions;
 using BL.Model.Database;
 using BL.Model.Exception;
 using BL.Database.SystemDb;
+using BL.Logic.AdminCore.Interfaces;
 
 namespace BL.Logic.DocumentCore
 {
@@ -56,6 +57,8 @@ namespace BL.Logic.DocumentCore
 
         public int AddDocumentByTemplateDocument(IContext context, int templateDocumentId)
         {
+            var adm = DmsResolver.Current.Get<IAdminService>();
+            adm.VerifyAccessForCurrentUser(context,"Documents", "AddDocument");
             var db = DmsResolver.Current.Get<ITemplateDocumentsDbProcess>();
             var baseTemplateDocument = db.GetTemplateDocument(context, templateDocumentId);
             var baseDocument = new FullDocument
@@ -310,6 +313,7 @@ namespace BL.Logic.DocumentCore
             }
         }
         #endregion
+
         #region DocumentSendLists
         private IEnumerable<BaseDocumentSendListStage> GetSendListStage(IEnumerable<BaseDocumentSendList> sendLists)
         {

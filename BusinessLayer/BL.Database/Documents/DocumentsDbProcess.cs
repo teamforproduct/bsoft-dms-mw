@@ -27,7 +27,7 @@ namespace BL.Database.Documents
             _helper = helper;
         }
 
-        #region Documents
+        #region Document
 
         public void AddDocument(IContext ctx, FullDocument document)
         {
@@ -206,29 +206,6 @@ namespace BL.Database.Documents
 
                     dbContext.SaveChanges();
                 }
-            }
-        }
-
-        public int AddDocumentEvent(IContext ctx, BaseDocumentEvent docEvent)
-        {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
-            {
-                var evt = new DocumentEvents
-                {
-                    CreateDate = docEvent.CreateDate,
-                    Date = docEvent.Date,
-                    Description = docEvent.Description,
-                    LastChangeDate = docEvent.LastChangeDate,
-                    LastChangeUserId = docEvent.LastChangeUserId,
-                    SourceAgentId = docEvent.SourceAgentId,
-                    SourcePositionId = docEvent.SourcePositionId,
-                    TargetAgentId = docEvent.TargetAgentId,
-                    TargetPositionId = docEvent.TargetPositionId,
-                    EventTypeId = (int) docEvent.EventType
-                };
-                dbContext.DocumentEventsSet.Add(evt);
-                dbContext.SaveChanges();
-                return evt.Id;
             }
         }
 
@@ -696,7 +673,77 @@ namespace BL.Database.Documents
                 return doc;
             }
         }
-        #endregion Documents
+        #endregion Document
+
+        #region Document Event
+
+        public int AddDocumentEvent(IContext ctx, BaseDocumentEvent docEvent)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            {
+                var evt = new DocumentEvents
+                {
+                    CreateDate = docEvent.CreateDate,
+                    Date = docEvent.Date,
+                    Description = docEvent.Description,
+                    LastChangeDate = docEvent.LastChangeDate,
+                    LastChangeUserId = docEvent.LastChangeUserId,
+                    SourceAgentId = docEvent.SourceAgentId,
+                    SourcePositionId = docEvent.SourcePositionId,
+                    TargetAgentId = docEvent.TargetAgentId,
+                    TargetPositionId = docEvent.TargetPositionId,
+                    EventTypeId = (int)docEvent.EventType
+                };
+                dbContext.DocumentEventsSet.Add(evt);
+                dbContext.SaveChanges();
+                return evt.Id;
+            }
+        }
+
+        public IEnumerable<BaseDocumentEvent> GetDocumentEvents(IContext ctx, FilterDocumentEvent filter)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            {
+                var qry = dbContext.DocumentEventsSet.AsQueryable();
+
+                if (filter.Id?.Count > 0)
+                {
+                    qry = qry.Where(x => filter.Id.Contains(x.Id));
+                }
+
+                if (filter.DocumentId?.Count > 0)
+                {
+                    qry = qry.Where(x => filter.DocumentId.Contains(x.DocumentId));
+                }
+
+                return qry.Select(x => new BaseDocumentEvent
+                {
+                    Id = x.Id,
+                    DocumentId = x.DocumentId,
+                    Description = x.Description,
+                    EventType = (EnumEventTypes)x.EventTypeId,
+                    ImpotanceEventType = (EnumImpotanceEventTypes)x.EventType.ImpotanceEventTypeId,
+                    CreateDate = x.CreateDate,
+                    Date = x.Date,
+                    EventTypeName = x.EventType.Name,
+                    EventImpotanceTypeName = x.EventType.ImpotanceEventType.Name,
+                    LastChangeUserId = x.LastChangeUserId,
+                    LastChangeDate = x.LastChangeDate,
+                    SourceAgenName = x.SourceAgent.Name,
+                    SourceAgentId = x.SourceAgentId,
+                    SourcePositionId = x.SourcePositionId,
+                    SourcePositionName = x.SourcePosition.Name,
+                    TargetAgenName = x.TargetAgent.Name,
+                    TargetAgentId = x.TargetAgentId,
+                    TargetPositionId = x.TargetPositionId,
+                    TargetPositionName = x.TargetPosition.Name,
+                    GeneralInfo = ""
+                }).ToList();
+            }
+        }
+
+        #endregion Document Event
+
 
         #region Document Access
 

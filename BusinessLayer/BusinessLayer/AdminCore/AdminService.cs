@@ -5,6 +5,7 @@ using BL.Logic.AdminCore.Interfaces;
 using BL.Database.Admins.Interfaces;
 using BL.Model.AdminCore;
 using System;
+using BL.Model.Exception;
 
 namespace BL.Logic.AdminCore
 {
@@ -30,5 +31,21 @@ namespace BL.Logic.AdminCore
             var admDb = DmsResolver.Current.Get<IAdminsDbProcess>();
             return admDb.GetPositionsByUser(context, new FilterAdminUserRole() { UserId  = new List<int>() { context.CurrentAgentId } });
         }
+        /// <summary>
+        /// Проверка прав доступа для действия
+        /// </summary>
+        /// <param name="context">контекст</param>
+        /// <param name="obj">Объект системы</param>
+        /// <param name="act">Действие</param>
+        /// <param name="id">ИД записи при выдаче доступа по каждой записи</param>
+        public void VerifyAccessForCurrentUser(IContext context, string obj, string act, int? id = null)
+        {
+            var admDb = DmsResolver.Current.Get<IAdminsDbProcess>();
+            if (!(admDb.VerifyAccess(context, new VerifyAccess() { UserId = context.CurrentAgentId, ObjectCode = obj, ActionCode = act, RecordId = id })))
+            {
+                throw new AccessIsDenied(); //!!!Как красиво передать string obj, string act, int? id = null в сообщение?
+            }
+        }
+
     }
 }
