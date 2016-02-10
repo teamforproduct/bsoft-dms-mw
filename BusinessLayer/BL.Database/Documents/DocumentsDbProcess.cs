@@ -390,7 +390,7 @@ namespace BL.Database.Documents
 
                 #endregion DocumentsSetFilter
 
-                paging.TotalPageCount = qry.Count(); //TODO pay attention to this when we will add paging
+                paging.TotalItemsCount = qry.Count(); //TODO pay attention to this when we will add paging
                 qry = qry.OrderByDescending(x=>x.Doc.CreateDate)
                     .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
 
