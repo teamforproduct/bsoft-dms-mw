@@ -11,6 +11,7 @@ namespace BL.Model.SystemCore
         public List<int> Id { get; set; }
         public string Code { get; set; }
         public string ObjectCode { get; set; }
+        public bool? IsAvailabel { get; set; }
 
 
     }

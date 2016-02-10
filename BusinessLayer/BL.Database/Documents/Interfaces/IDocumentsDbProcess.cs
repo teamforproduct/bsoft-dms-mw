@@ -46,5 +46,6 @@ namespace BL.Database.Documents.Interfaces
 
         bool VerifyDocumentRegistrationNumber(IContext ctx, RegisterDocument registerDocument);
         bool SetDocumentRegistration(IContext ctx, RegisterDocument registerDocument);
+        void DeleteDocument(IContext context, int id);
     }
 }

@@ -240,5 +240,18 @@ namespace DMS_WebAPI.Controllers.Documents
             //return new JsonResult(null, this);
         }
 
+        /// <summary>
+        /// Удаление документа 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public IHttpActionResult Delete(int id)
+        {
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            docProc.DeleteDocument(cxt, id);
+            return new JsonResult(null, this);
+        }
+
     }
 }

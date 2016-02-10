@@ -52,6 +52,7 @@
     <Compile Include="AdminCore\Interfaces\IAdminService.cs" />
     <Compile Include="DictionaryCore\DictionaryService.cs" />
     <Compile Include="DictionaryCore\Interfaces\IDictionaryService.cs" />
+    <Compile Include="DocumentCore\DeleteDocument.cs" />
     <Compile Include="DocumentCore\AddDocument.cs" />
     <Compile Include="DocumentCore\DocumentFileService.cs" />
     <Compile Include="DocumentCore\Interfaces\IDocumentFileService.cs" />

@@ -100,6 +100,11 @@ namespace BL.Database.SystemDb
                     qry = qry.Where(x => x.Object.Code.Contains(filter.ObjectCode));
                 }
 
+                if (filter.IsAvailabel??false)
+                {
+                    qry = qry.Where(x => !x.IsGrantable || (x.RoleActions.Any(y => y.Role.UserRoles.Any(z => z.UserId == ctx.CurrentAgentId))) );
+                }
+
                 return qry.Select(x => new BaseSystemAction
                 {
                     Id = x.Id,

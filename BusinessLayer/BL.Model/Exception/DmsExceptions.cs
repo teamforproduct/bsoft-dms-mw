@@ -27,6 +27,18 @@ namespace BL.Model.Exception
         }
     }
 
+    public class DocumentCannotBeModifiedOrDeleted : DmsExceptions
+    {
+        private const string _MESSAGE = "Document Can't Be Modified Or Deleted!";
+        public DocumentCannotBeModifiedOrDeleted() : base(_MESSAGE)
+        {
+        }
+
+        public DocumentCannotBeModifiedOrDeleted(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
     public class UserHasNoAccessToDocument : DmsExceptions
     {
         private const string _MESSAGE = "User could not acceess this document!";
