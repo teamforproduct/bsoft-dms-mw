@@ -58,7 +58,7 @@
     <Compile Include="DictionaryCore\BaseDictionarySendType.cs" />
     <Compile Include="DictionaryCore\BaseDictionaryRegistrationJournal.cs" />
     <Compile Include="DictionaryCore\BaseDictionaryPosition.cs" />
-    <Compile Include="DictionaryCore\BaseDictionaryImpotanceEventType.cs" />
+    <Compile Include="DictionaryCore\BaseDictionaryImportanceEventType.cs" />
     <Compile Include="DictionaryCore\BaseDictionaryDocumentType.cs" />
     <Compile Include="DictionaryCore\BaseDictionaryDocumentSubject.cs" />
     <Compile Include="DictionaryCore\BaseDictionaryDocumentDirection.cs" />
@@ -76,7 +76,7 @@
     <Compile Include="DictionaryCore\FilterDictionaryRegistrationJournal.cs" />
     <Compile Include="DictionaryCore\FilterDictionaryPosition.cs" />
     <Compile Include="DictionaryCore\FilterDictionaryLinkType.cs" />
-    <Compile Include="DictionaryCore\FilterDictionaryImpotanceEventType.cs" />
+    <Compile Include="DictionaryCore\FilterDictionaryImportanceEventType.cs" />
     <Compile Include="DictionaryCore\FilterDictionaryEventType.cs" />
     <Compile Include="DictionaryCore\FilterDictionaryDocumentType.cs" />
     <Compile Include="DictionaryCore\FilterDictionaryDocumentSubject.cs" />
@@ -108,7 +108,7 @@
     <Compile Include="Enums\EnumDocumentAccess.cs" />
     <Compile Include="Enums\EnumEventTypes.cs" />
     <Compile Include="DictionaryCore\FilterDictionaryStandartSendList.cs" />
-    <Compile Include="Enums\EnumImpotanceEventTypes.cs" />
+    <Compile Include="Enums\EnumImportanceEventTypes.cs" />
     <Compile Include="DocumentCore\FullDocument.cs" />
     <Compile Include="DocumentCore\BaseDocumentEvent.cs" />
     <Compile Include="DocumentCore\BaseDocumentRestrictedSendList.cs" />

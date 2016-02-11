@@ -3,7 +3,7 @@
 
 namespace BL.Database.DBModel.Dictionary
 {
-    public class DictionaryImpotanceEventTypes
+    public class DictionaryImportanceEventTypes
     {
 
         public int Id { get; set; }

@@ -48,7 +48,7 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<DictionaryDocumentSubjects> DictionaryDocumentSubjectsSet { get; set; }
         public virtual DbSet<DictionaryDocumentTypes> DictionaryDocumentTypesSet { get; set; }
         public virtual DbSet<DictionaryEventTypes> DictionaryEventTypesSet { get; set; }
-        public virtual DbSet<DictionaryImpotanceEventTypes> DictionaryImpotanceEventTypesSet { get; set; }
+        public virtual DbSet<DictionaryImportanceEventTypes> DictionaryImportanceEventTypesSet { get; set; }
         public virtual DbSet<DictionaryLinkTypes> DictionaryLinkTypesSet { get; set; }
         public virtual DbSet<DictionaryPositions> DictionaryPositionsSet { get; set; }
         public virtual DbSet<DictionaryRegistrationJournals> DictionaryRegistrationJournalsSet { get; set; }

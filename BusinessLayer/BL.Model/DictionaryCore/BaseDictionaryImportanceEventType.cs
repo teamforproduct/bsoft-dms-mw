@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace BL.Model.DictionaryCore
 {
-    public class BaseDictionaryImpotanceEventType
+    public class BaseDictionaryImportanceEventType
     {
         public int Id { get; set; }
         public string Code { get; set; }

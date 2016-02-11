@@ -98,7 +98,7 @@
     <Compile Include="DBModel\Dictionary\DictionaryDocumentSubjects.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryDocumentTypes.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryEventTypes.cs" />
-    <Compile Include="DBModel\Dictionary\DictionaryImpotanceEventTypes.cs" />
+    <Compile Include="DBModel\Dictionary\DictionaryImportanceEventTypes.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryPositions.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryRegistrationJournals.cs" />
     <Compile Include="DBModel\Dictionary\DictionarySendTypes.cs" />
@@ -264,6 +264,14 @@
     <Compile Include="Migrations\201602111527404_DocumMisc.Designer.cs">
       <DependentUpon>201602111527404_DocumMisc.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201602111551448_DDictEvImp.cs" />
+    <Compile Include="Migrations\201602111551448_DDictEvImp.Designer.cs">
+      <DependentUpon>201602111551448_DDictEvImp.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201602111612452_DicImp.cs" />
+    <Compile Include="Migrations\201602111612452_DicImp.Designer.cs">
+      <DependentUpon>201602111612452_DicImp.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\ISecurityDbProcess.cs" />
@@ -398,6 +406,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201602111527404_DocumMisc.resx">
       <DependentUpon>201602111527404_DocumMisc.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602111551448_DDictEvImp.resx">
+      <DependentUpon>201602111551448_DDictEvImp.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602111612452_DicImp.resx">
+      <DependentUpon>201602111612452_DicImp.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

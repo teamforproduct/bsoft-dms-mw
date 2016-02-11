@@ -418,10 +418,10 @@ namespace BL.Database.Dictionaries
                     Id = x.Id,
                     Code = x.Code,
                     Name = x.Name,
-                    ImpotanceEventTypeId = x.ImpotanceEventTypeId,
+                    ImportanceEventTypeId = x.ImportanceEventTypeId,
                     LastChangeUserId = x.LastChangeUserId,
                     LastChangeDate = x.LastChangeDate,
-                    ImpotanceEventTypeName = x.ImpotanceEventType.Name
+                    ImportanceEventTypeName = x.ImportanceEventType.Name
                 }).FirstOrDefault();
             }
         }
@@ -437,9 +437,9 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(x => filter.Id.Contains(x.Id));
                 }
 
-                if (filter.ImpotanceEventTypeId?.Count > 0)
+                if (filter.ImportanceEventTypeId?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.ImpotanceEventTypeId.Contains(x.ImpotanceEventTypeId));
+                    qry = qry.Where(x => filter.ImportanceEventTypeId.Contains(x.ImportanceEventTypeId));
                 }
 
                 if (filter.DocumentId?.Count > 0)
@@ -456,23 +456,23 @@ namespace BL.Database.Dictionaries
                     Id = x.Id,
                     Code = x.Code,
                     Name = x.Name,
-                    ImpotanceEventTypeId = x.ImpotanceEventTypeId,
+                    ImportanceEventTypeId = x.ImportanceEventTypeId,
                     LastChangeUserId = x.LastChangeUserId,
                     LastChangeDate = x.LastChangeDate,
-                    ImpotanceEventTypeName = x.ImpotanceEventType.Name
+                    ImportanceEventTypeName = x.ImportanceEventType.Name
                 }).ToList();
             }
         }
         #endregion DictionaryEventTypes
 
-        #region DictionaryImpotanceEventTypes
-        public BaseDictionaryImpotanceEventType GetDictionaryImpotanceEventType(IContext context, int id)
+        #region DictionaryImportanceEventTypes
+        public BaseDictionaryImportanceEventType GetDictionaryImportanceEventType(IContext context, int id)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
 
-                return dbContext.DictionaryImpotanceEventTypesSet.Where(x => x.Id == id)
-                    .Select(x => new BaseDictionaryImpotanceEventType
+                return dbContext.DictionaryImportanceEventTypesSet.Where(x => x.Id == id)
+                    .Select(x => new BaseDictionaryImportanceEventType
                     {
                         Id = x.Id,
                         Code = x.Code,
@@ -483,11 +483,11 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<BaseDictionaryImpotanceEventType> GetDictionaryImpotanceEventTypes(IContext context, FilterDictionaryImpotanceEventType filter)
+        public IEnumerable<BaseDictionaryImportanceEventType> GetDictionaryImportanceEventTypes(IContext context, FilterDictionaryImportanceEventType filter)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
-                var qry = dbContext.DictionaryImpotanceEventTypesSet.AsQueryable();
+                var qry = dbContext.DictionaryImportanceEventTypesSet.AsQueryable();
 
                 if (filter.Id?.Count > 0)
                 {
@@ -498,11 +498,11 @@ namespace BL.Database.Dictionaries
                 {
                     qry = qry.Where(x =>
                             dbContext.DocumentEventsSet
-                                .Where(y => filter.DocumentId.Contains(y.DocumentId)).Select(y => y.EventType.ImpotanceEventTypeId).Contains(x.Id)
+                                .Where(y => filter.DocumentId.Contains(y.DocumentId)).Select(y => y.EventType.ImportanceEventTypeId).Contains(x.Id)
                                 );
                 }
 
-                return qry.Select(x => new BaseDictionaryImpotanceEventType
+                return qry.Select(x => new BaseDictionaryImportanceEventType
                 {
                     Id = x.Id,
                     Code = x.Code,
@@ -512,7 +512,7 @@ namespace BL.Database.Dictionaries
                 }).ToList();
             }
         }
-        #endregion DictionaryImpotanceEventTypes
+        #endregion DictionaryImportanceEventTypes
 
         #region DictionaryLinkTypes
         public BaseDictionaryLinkType GetDictionaryLinkType(IContext context, int id)
@@ -524,7 +524,7 @@ namespace BL.Database.Dictionaries
                     {
                         Id = x.Id,
                         Name = x.Name,
-                        IsImpotant = x.IsImpotant,
+                        IsImportant = x.IsImportant,
                         LastChangeUserId = x.LastChangeUserId,
                         LastChangeDate = x.LastChangeDate
                     }).FirstOrDefault();
@@ -546,7 +546,7 @@ namespace BL.Database.Dictionaries
                 {
                     Id = x.Id,
                     Name = x.Name,
-                    IsImpotant = x.IsImpotant,
+                    IsImportant = x.IsImportant,
                     LastChangeUserId = x.LastChangeUserId,
                     LastChangeDate = x.LastChangeDate
                 }).ToList();
@@ -746,7 +746,7 @@ namespace BL.Database.Dictionaries
                         Id = x.Id,
                         Code = x.Code,
                         Name = x.Name,
-                        IsImpotant = x.IsImpotant,
+                        IsImportant = x.IsImportant,
                         SubordinationTypeId = x.SubordinationTypeId,
                         LastChangeUserId = x.LastChangeUserId,
                         LastChangeDate = x.LastChangeDate,
@@ -771,7 +771,7 @@ namespace BL.Database.Dictionaries
                     Id = x.Id,
                     Code = x.Code,
                     Name = x.Name,
-                    IsImpotant = x.IsImpotant,
+                    IsImportant = x.IsImportant,
                     SubordinationTypeId = x.SubordinationTypeId,
                     SubordinationTypeName = x.SubordinationType.Name
                 }).ToList();

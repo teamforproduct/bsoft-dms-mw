@@ -8,10 +8,10 @@ namespace BL.Database.DBModel.Dictionary
         public int Id { get; set; }
         public string Code { get; set; }
         public string Name { get; set; }
-        public int ImpotanceEventTypeId { get; set; }
+        public int ImportanceEventTypeId { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
-        [ForeignKey("ImpotanceEventTypeId")]
-        public virtual DictionaryImpotanceEventTypes ImpotanceEventType { get; set; }
+        [ForeignKey("ImportanceEventTypeId")]
+        public virtual DictionaryImportanceEventTypes ImportanceEventType { get; set; }
     }
 }

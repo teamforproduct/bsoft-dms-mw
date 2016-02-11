@@ -9,7 +9,7 @@ namespace BL.Model.DictionaryCore
     /// <summary>
     ///  Фильтр словаря типов важности событий
     /// </summary>
-    public class FilterDictionaryImpotanceEventType
+    public class FilterDictionaryImportanceEventType
     {
         /// <summary>
         /// Массив ИД типов важности событий

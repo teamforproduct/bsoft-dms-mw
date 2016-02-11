@@ -1,6 +1,6 @@
 ﻿namespace BL.Model.Enums
 {
-    public enum EnumImpotanceEventTypes
+    public enum EnumImportanceEventTypes
     {
         DocumentMoovement = 1,  //Факты движения документов
         ImportantEvents = 2,//	Важные события

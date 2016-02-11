@@ -122,19 +122,19 @@ namespace BL.Logic.DictionaryCore
         }
         #endregion DictionaryEventTypes
 
-        #region DictionaryImpotanceEventTypes
-        public BaseDictionaryImpotanceEventType GetDictionaryImpotanceEventType(IContext context, int id)
+        #region DictionaryImportanceEventTypes
+        public BaseDictionaryImportanceEventType GetDictionaryImportanceEventType(IContext context, int id)
         {
             var dictDb = DmsResolver.Current.Get<IDictionariesDbProcess>();
-            return dictDb.GetDictionaryImpotanceEventType(context, id);
+            return dictDb.GetDictionaryImportanceEventType(context, id);
         }
 
-        public IEnumerable<BaseDictionaryImpotanceEventType> GetDictionaryImpotanceEventTypes(IContext context, FilterDictionaryImpotanceEventType filter)
+        public IEnumerable<BaseDictionaryImportanceEventType> GetDictionaryImportanceEventTypes(IContext context, FilterDictionaryImportanceEventType filter)
         {
             var dictDb = DmsResolver.Current.Get<IDictionariesDbProcess>();
-            return dictDb.GetDictionaryImpotanceEventTypes(context, filter);
+            return dictDb.GetDictionaryImportanceEventTypes(context, filter);
         }
-        #endregion DictionaryImpotanceEventTypes
+        #endregion DictionaryImportanceEventTypes
 
         #region DictionaryLinkTypes
         public BaseDictionaryLinkType GetDictionaryLinkType(IContext context, int id)

@@ -9,23 +9,23 @@ using System.Web.Http;
 namespace DMS_WebAPI.Controllers.Dictionaries
 {
     [Authorize]
-    public class DictionaryImpotanceEventTypesController : ApiController
+    public class DictionaryImportanceEventTypesController : ApiController
     {
-        // GET: api/DictionaryImpotanceEventTypes
-        public IHttpActionResult Get([FromUri] FilterDictionaryImpotanceEventType filter)
+        // GET: api/DictionaryImportanceEventTypes
+        public IHttpActionResult Get([FromUri] FilterDictionaryImportanceEventType filter)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionaryImpotanceEventTypes(cxt, filter);
+            var tmpDicts = tmpDictProc.GetDictionaryImportanceEventTypes(cxt, filter);
             return new JsonResult(tmpDicts, this);
         }
 
-        // GET: api/DictionaryImpotanceEventTypes/5
+        // GET: api/DictionaryImportanceEventTypes/5
         public IHttpActionResult Get(int id)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDict = tmpDictProc.GetDictionaryImpotanceEventType(cxt, id);
+            var tmpDict = tmpDictProc.GetDictionaryImportanceEventType(cxt, id);
             return new JsonResult(tmpDict, this);
         }
     }

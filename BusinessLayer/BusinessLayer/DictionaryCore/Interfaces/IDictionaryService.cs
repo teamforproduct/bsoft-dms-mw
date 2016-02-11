@@ -58,11 +58,11 @@ namespace BL.Logic.DictionaryCore.Interfaces
         IEnumerable<BaseDictionaryEventType> GetDictionaryEventTypes(IContext context, FilterDictionaryEventType filter);
         #endregion DictionaryEventTypes
 
-        #region DictionaryImpotanceEventTypes
-        BaseDictionaryImpotanceEventType GetDictionaryImpotanceEventType(IContext context, int id);
+        #region DictionaryImportanceEventTypes
+        BaseDictionaryImportanceEventType GetDictionaryImportanceEventType(IContext context, int id);
 
-        IEnumerable<BaseDictionaryImpotanceEventType> GetDictionaryImpotanceEventTypes(IContext context, FilterDictionaryImpotanceEventType filter);
-        #endregion DictionaryImpotanceEventTypes
+        IEnumerable<BaseDictionaryImportanceEventType> GetDictionaryImportanceEventTypes(IContext context, FilterDictionaryImportanceEventType filter);
+        #endregion DictionaryImportanceEventTypes
 
         #region DictionaryLinkTypes
         BaseDictionaryLinkType GetDictionaryLinkType(IContext context, int id);

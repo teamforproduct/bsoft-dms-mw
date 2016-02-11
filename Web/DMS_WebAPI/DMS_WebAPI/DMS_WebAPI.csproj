@@ -223,7 +223,7 @@
     <Compile Include="Controllers\Dictionaries\DictionaryRegistrationJournalsController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryPositionsController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryLinkTypesController.cs" />
-    <Compile Include="Controllers\Dictionaries\DictionaryImpotanceEventTypesController.cs" />
+    <Compile Include="Controllers\Dictionaries\DictionaryImportanceEventTypesController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryEventTypesController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryDocumentTypesController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryDocumentSubjectsController.cs" />

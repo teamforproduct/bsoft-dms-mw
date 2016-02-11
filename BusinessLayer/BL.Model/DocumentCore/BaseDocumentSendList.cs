@@ -14,7 +14,7 @@ namespace BL.Model.DocumentCore
 
         public string SendTypeName { get; set; }
         public string SendTypeCode { get; set; }
-        public bool SendTypeIsImpotant { get; set; }
+        public bool SendTypeIsImportant { get; set; }
         public string TargetPositionName { get; set; }
         public string TargetPositionExecutorAgentName { get; set; }
         public string AccessLevelName { get; set; }
