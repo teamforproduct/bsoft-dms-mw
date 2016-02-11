@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace BL.Model.DocumentCore.Actions
 {
+    /// <summary>
+    /// Модель для изменения признака фаворита
+    /// </summary>
     public class ChangeFavourites
     {
         /// <summary>

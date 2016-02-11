@@ -77,7 +77,7 @@ namespace BL.Database.Documents
                         SourcePositionId = x.SourcePositionId,
                         TargetAgentId = x.TargetAgentId,
                         TargetPositionId = x.TargetPositionId,
-                        EventTypeId = (int) x.EventType
+                        EventTypeId = (int)x.EventType
                     }).ToList();
                 }
 
@@ -87,12 +87,12 @@ namespace BL.Database.Documents
                     {
                         DocumentId = x.DocumentId,
                         Stage = x.Stage,
-                        SendTypeId = (int) x.SendType,
+                        SendTypeId = (int)x.SendType,
                         TargetPositionId = x.TargetPositionId,
                         Description = x.Description,
                         DueDate = x.DueDate,
                         DueDay = x.DueDay,
-                        AccessLevelId = (int) x.AccessLevel,
+                        AccessLevelId = (int)x.AccessLevel,
                         IsInitial = true,
                         StartEventId = null,
                         CloseEventId = null,
@@ -109,7 +109,7 @@ namespace BL.Database.Documents
                         IsInWork = x.IsInWork,
                         LastChangeUserId = x.LastChangeUserId,
                         PositionId = x.PositionId,
-                        AccessLevelId = (int) x.AccessLevel,
+                        AccessLevelId = (int)x.AccessLevel,
                     }).ToList();
                 }
 
@@ -146,9 +146,9 @@ namespace BL.Database.Documents
                     doc.SenderDate = document.SenderDate;
                     doc.Addressee = document.Addressee;
 
-                    if (doc.Accesses.Any(x => x.PositionId == ctx.CurrentPositionId && x.AccessLevelId != (int) document.AccessLevel))
+                    if (doc.Accesses.Any(x => x.PositionId == ctx.CurrentPositionId && x.AccessLevelId != (int)document.AccessLevel))
                     {
-                        doc.Accesses.FirstOrDefault(x => x.PositionId == ctx.CurrentPositionId).AccessLevelId = (int) document.AccessLevel;
+                        doc.Accesses.FirstOrDefault(x => x.PositionId == ctx.CurrentPositionId).AccessLevelId = (int)document.AccessLevel;
                     }
 
                     if (document.Events != null && document.Events.Any(x => x.Id == 0))
@@ -165,7 +165,7 @@ namespace BL.Database.Documents
                             SourcePositionId = x.SourcePositionId,
                             TargetAgentId = x.TargetAgentId,
                             TargetPositionId = x.TargetPositionId,
-                            EventTypeId = (int) x.EventType
+                            EventTypeId = (int)x.EventType
                         }).ToList();
                     }
 
@@ -175,13 +175,13 @@ namespace BL.Database.Documents
                         {
                             foreach (var eacc in doc.Accesses.Where(x => x.Id == acc.Id))
                             {
-                                if ((eacc.AccessLevelId != (int) acc.AccessLevel) ||
+                                if ((eacc.AccessLevelId != (int)acc.AccessLevel) ||
                                     (eacc.IsFavourite != acc.IsFavourite)
                                     || (eacc.IsInWork != acc.IsInWork) || (eacc.PositionId != acc.PositionId))
                                 {
                                     eacc.LastChangeDate = DateTime.Now;
                                     eacc.LastChangeUserId = ctx.CurrentAgentId;
-                                    eacc.AccessLevelId = (int) acc.AccessLevel;
+                                    eacc.AccessLevelId = (int)acc.AccessLevel;
                                     eacc.IsFavourite = acc.IsFavourite;
                                     eacc.IsInWork = acc.IsInWork;
                                     eacc.PositionId = acc.PositionId;
@@ -200,7 +200,7 @@ namespace BL.Database.Documents
                                 IsInWork = x.IsInWork,
                                 LastChangeUserId = x.LastChangeUserId,
                                 PositionId = x.PositionId,
-                                AccessLevelId = (int) x.AccessLevel,
+                                AccessLevelId = (int)x.AccessLevel,
                             }).ToList();
                         }
                     }
@@ -228,47 +228,47 @@ namespace BL.Database.Documents
             {
 
                 var qry = (from dc in dbContext.DocumentsSet
-                    join acc in dbContext.DocumentAccessesSet on dc.Id equals acc.DocumentId
-                    join tmpl in dbContext.TemplateDocumentsSet on dc.TemplateDocumentId equals tmpl.Id
-                    join ddir in dbContext.DictionaryDocumentDirectionsSet on tmpl.DocumentDirectionId equals ddir.Id
-                    join doctp in dbContext.DictionaryDocumentTypesSet on tmpl.DocumentTypeId equals doctp.Id
-                    //join acl in dbContext.AdminAccessLevelsSet on acc.AccessLevelId equals acl.Id
-                    join executor in dbContext.DictionaryPositionsSet on dc.ExecutorPositionId equals executor.Id
+                           join acc in dbContext.DocumentAccessesSet on dc.Id equals acc.DocumentId
+                           join tmpl in dbContext.TemplateDocumentsSet on dc.TemplateDocumentId equals tmpl.Id
+                           join ddir in dbContext.DictionaryDocumentDirectionsSet on tmpl.DocumentDirectionId equals ddir.Id
+                           join doctp in dbContext.DictionaryDocumentTypesSet on tmpl.DocumentTypeId equals doctp.Id
+                           //join acl in dbContext.AdminAccessLevelsSet on acc.AccessLevelId equals acl.Id
+                           join executor in dbContext.DictionaryPositionsSet on dc.ExecutorPositionId equals executor.Id
 
-                    join ea in dbContext.DictionaryAgentsSet on executor.ExecutorAgentId equals ea.Id into ea
+                           join ea in dbContext.DictionaryAgentsSet on executor.ExecutorAgentId equals ea.Id into ea
                            from exAg in ea.DefaultIfEmpty()
 
                            join z in dbContext.DictionaryDocumentSubjectsSet on dc.DocumentSubjectId equals z.Id into eg
-                    from docsubj in eg.DefaultIfEmpty()
+                           from docsubj in eg.DefaultIfEmpty()
 
-                    join g in dbContext.DictionaryRegistrationJournalsSet on dc.RegistrationJournalId equals g.Id into
-                        egg
-                    from regj in egg.DefaultIfEmpty()
+                           join g in dbContext.DictionaryRegistrationJournalsSet on dc.RegistrationJournalId equals g.Id into
+                               egg
+                           from regj in egg.DefaultIfEmpty()
 
-                    //join ag in dbContext.DictionaryAgentsSet on dc.SenderAgentId equals ag.Id into ag
-                    //from sendAg in ag.DefaultIfEmpty()
+                               //join ag in dbContext.DictionaryAgentsSet on dc.SenderAgentId equals ag.Id into ag
+                               //from sendAg in ag.DefaultIfEmpty()
 
-                    //join ap in dbContext.DictionaryAgentPersonsSet on dc.SenderAgentPersonId equals ap.Id into ap
-                    //from sendAp in ap.DefaultIfEmpty()
+                               //join ap in dbContext.DictionaryAgentPersonsSet on dc.SenderAgentPersonId equals ap.Id into ap
+                               //from sendAp in ap.DefaultIfEmpty()
 
-                    where
-                        acc.PositionId == ctx.CurrentPositionId &&
-                        (!filters.IsInWork || filters.IsInWork && acc.IsInWork == filters.IsInWork)
-                    select new
-                    {
-                        Doc = dc,
-                        Acc = acc,
-                        Templ = tmpl,
-                        DirName = ddir.Name,
-                        //AccLevName = acl.Name,
-                        SubjName = docsubj.Name,
-                        DocTypeName = doctp.Name,
-                        RegJurnalName = regj.Name,
-                        ExecutorPosName = executor.Name,
-                        ExecutorAgentName = exAg.Name,
-                        //SenderAgentname = sendAg.Name,
-                        //SenderPersonName = sendAp.Name
-                    });
+                           where
+                               acc.PositionId == ctx.CurrentPositionId &&
+                               (!filters.IsInWork || filters.IsInWork && acc.IsInWork == filters.IsInWork)
+                           select new
+                           {
+                               Doc = dc,
+                               Acc = acc,
+                               Templ = tmpl,
+                               DirName = ddir.Name,
+                               //AccLevName = acl.Name,
+                               SubjName = docsubj.Name,
+                               DocTypeName = doctp.Name,
+                               RegJurnalName = regj.Name,
+                               ExecutorPosName = executor.Name,
+                               ExecutorAgentName = exAg.Name,
+                               //SenderAgentname = sendAg.Name,
+                               //SenderPersonName = sendAp.Name
+                           });
 
                 #region DocumentsSetFilter
 
@@ -322,7 +322,7 @@ namespace BL.Database.Documents
                     qry = qry.Where(x => x.Doc.Addressee.Contains(filters.Addressee));
                 }
 
-                if (filters.SenderAgentPersonId!= null && filters.SenderAgentPersonId.Any())
+                if (filters.SenderAgentPersonId != null && filters.SenderAgentPersonId.Any())
                 {
                     qry = qry.Where(x => x.Doc.SenderAgentPersonId.HasValue && filters.SenderAgentPersonId.Contains(x.Doc.SenderAgentPersonId.Value));
                 }
@@ -392,26 +392,26 @@ namespace BL.Database.Documents
                 #endregion DocumentsSetFilter
 
                 paging.TotalItemsCount = qry.Count(); //TODO pay attention to this when we will add paging
-                qry = qry.OrderByDescending(x=>x.Doc.CreateDate)
+                qry = qry.OrderByDescending(x => x.Doc.CreateDate)
                     .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
 
                 var evnt =
-                    dbContext.DocumentEventsSet.Join(qry, ev => ev.DocumentId, rs => rs.Doc.Id, (e, r) => new {ev = e})
+                    dbContext.DocumentEventsSet.Join(qry, ev => ev.DocumentId, rs => rs.Doc.Id, (e, r) => new { ev = e })
                         .GroupBy(g => g.ev.DocumentId)
-                        .Select(s => new {DocID = s.Key, EvnCnt = s.Count()}).ToList();
+                        .Select(s => new { DocID = s.Key, EvnCnt = s.Count() }).ToList();
 
                 var fls =
-                    dbContext.DocumentFilesSet.Join(qry, fl => fl.DocumentId, rs => rs.Doc.Id, (f, r) => new {fil = f})
+                    dbContext.DocumentFilesSet.Join(qry, fl => fl.DocumentId, rs => rs.Doc.Id, (f, r) => new { fil = f })
                         .GroupBy(g => g.fil.DocumentId)
-                        .Select(s => new {DocID = s.Key, FileCnt = s.Count()}).ToList();
+                        .Select(s => new { DocID = s.Key, FileCnt = s.Count() }).ToList();
 
                 var res = qry.Select(x => new FullDocument
                 {
                     Id = x.Doc.Id,
                     DocumentTypeId = x.Templ.DocumentTypeId,
-                    AccessLevel = (EnumDocumentAccess) x.Acc.AccessLevelId,
+                    AccessLevel = (EnumDocumentAccess)x.Acc.AccessLevelId,
                     ExecutorPositionId = x.Doc.ExecutorPositionId,
-                    DocumentDirection = (EnumDocumentDirections) x.Templ.DocumentDirectionId,
+                    DocumentDirection = (EnumDocumentDirections)x.Templ.DocumentDirectionId,
                     Description = x.Doc.Description,
                     TemplateDocumentId = x.Doc.TemplateDocumentId,
                     RegistrationDate = x.Doc.RegistrationDate,
@@ -443,12 +443,12 @@ namespace BL.Database.Documents
                 });
 
                 var docs = res.ToList();
-                foreach (var x1 in docs.Join(evnt, d => d.Id, e => e.DocID, (d, e) => new {doc = d, ev = e}))
+                foreach (var x1 in docs.Join(evnt, d => d.Id, e => e.DocID, (d, e) => new { doc = d, ev = e }))
                 {
                     x1.doc.EventsCount = x1.ev.EvnCnt;
                     x1.doc.NewEventCount = 0;
                 }
-                foreach (var x1 in docs.Join(fls, d => d.Id, e => e.DocID, (d, e) => new {doc = d, ev = e}))
+                foreach (var x1 in docs.Join(fls, d => d.Id, e => e.DocID, (d, e) => new { doc = d, ev = e }))
                 {
                     x1.doc.AttachedFilesCount = x1.ev.FileCnt;
                 }
@@ -463,45 +463,45 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
                 var dbDoc = (from dc in dbContext.DocumentsSet
-                    join acc in dbContext.DocumentAccessesSet on dc.Id equals acc.DocumentId
-                    join tmpl in dbContext.TemplateDocumentsSet on dc.TemplateDocumentId equals tmpl.Id
-                    join ddir in dbContext.DictionaryDocumentDirectionsSet on tmpl.DocumentDirectionId equals ddir.Id
-                    join doctp in dbContext.DictionaryDocumentTypesSet on tmpl.DocumentTypeId equals doctp.Id
-                    join acl in dbContext.AdminAccessLevelsSet on acc.AccessLevelId equals acl.Id
-                    join executor in dbContext.DictionaryPositionsSet on dc.ExecutorPositionId equals executor.Id
+                             join acc in dbContext.DocumentAccessesSet on dc.Id equals acc.DocumentId
+                             join tmpl in dbContext.TemplateDocumentsSet on dc.TemplateDocumentId equals tmpl.Id
+                             join ddir in dbContext.DictionaryDocumentDirectionsSet on tmpl.DocumentDirectionId equals ddir.Id
+                             join doctp in dbContext.DictionaryDocumentTypesSet on tmpl.DocumentTypeId equals doctp.Id
+                             join acl in dbContext.AdminAccessLevelsSet on acc.AccessLevelId equals acl.Id
+                             join executor in dbContext.DictionaryPositionsSet on dc.ExecutorPositionId equals executor.Id
 
-                    join ea in dbContext.DictionaryAgentsSet on executor.ExecutorAgentId equals ea.Id into ea
-                    from exAg in ea.DefaultIfEmpty()
+                             join ea in dbContext.DictionaryAgentsSet on executor.ExecutorAgentId equals ea.Id into ea
+                             from exAg in ea.DefaultIfEmpty()
 
-                    join z in dbContext.DictionaryDocumentSubjectsSet on dc.DocumentSubjectId equals z.Id into eg
-                    from docsubj in eg.DefaultIfEmpty()
+                             join z in dbContext.DictionaryDocumentSubjectsSet on dc.DocumentSubjectId equals z.Id into eg
+                             from docsubj in eg.DefaultIfEmpty()
 
-                    join g in dbContext.DictionaryRegistrationJournalsSet on dc.RegistrationJournalId equals g.Id into
-                        egg
-                    from regj in egg.DefaultIfEmpty()
+                             join g in dbContext.DictionaryRegistrationJournalsSet on dc.RegistrationJournalId equals g.Id into
+                                 egg
+                             from regj in egg.DefaultIfEmpty()
 
-                    join ag in dbContext.DictionaryAgentsSet on dc.SenderAgentId equals ag.Id into ag
-                    from sendAg in ag.DefaultIfEmpty()
+                             join ag in dbContext.DictionaryAgentsSet on dc.SenderAgentId equals ag.Id into ag
+                             from sendAg in ag.DefaultIfEmpty()
 
-                    join ap in dbContext.DictionaryAgentPersonsSet on dc.SenderAgentPersonId equals ap.Id into ap
-                    from sendAp in ap.DefaultIfEmpty()
+                             join ap in dbContext.DictionaryAgentPersonsSet on dc.SenderAgentPersonId equals ap.Id into ap
+                             from sendAp in ap.DefaultIfEmpty()
 
-                    where dc.Id == documentId && acc.PositionId == ctx.CurrentPositionId
-                    select new
-                    {
-                        Doc = dc,
-                        Acc = acc,
-                        Templ = tmpl,
-                        DirName = ddir.Name,
-                        AccLevName = acl.Name,
-                        SubjName = docsubj.Name,
-                        DocTypeName = doctp.Name,
-                        RegJurnalName = regj.Name,
-                        ExecutorPosName = executor.Name,
-                        ExecutorAgentName = exAg.Name,
-                        SenderAgentname = sendAg.Name,
-                        SenderPersonName = sendAp.Name
-                    }).FirstOrDefault();
+                             where dc.Id == documentId && acc.PositionId == ctx.CurrentPositionId
+                             select new
+                             {
+                                 Doc = dc,
+                                 Acc = acc,
+                                 Templ = tmpl,
+                                 DirName = ddir.Name,
+                                 AccLevName = acl.Name,
+                                 SubjName = docsubj.Name,
+                                 DocTypeName = doctp.Name,
+                                 RegJurnalName = regj.Name,
+                                 ExecutorPosName = executor.Name,
+                                 ExecutorAgentName = exAg.Name,
+                                 SenderAgentname = sendAg.Name,
+                                 SenderPersonName = sendAp.Name
+                             }).FirstOrDefault();
 
                 if (dbDoc == null)
                 {
@@ -531,12 +531,12 @@ namespace BL.Database.Documents
                     SenderDate = dbDoc.Doc.SenderDate,
                     Addressee = dbDoc.Doc.Addressee,
 
-                    AccessLevel = (EnumDocumentAccess) dbDoc.Acc.AccessLevelId,
+                    AccessLevel = (EnumDocumentAccess)dbDoc.Acc.AccessLevelId,
                     AccessLevelName = dbDoc.AccLevName,
 
                     TemplateDocumentName = dbDoc.Templ.Name,
                     IsHard = dbDoc.Templ.IsHard,
-                    DocumentDirection = (EnumDocumentDirections) dbDoc.Templ.DocumentDirectionId,
+                    DocumentDirection = (EnumDocumentDirections)dbDoc.Templ.DocumentDirectionId,
                     DocumentDirectionName = dbDoc.DirName,
                     DocumentTypeId = dbDoc.Templ.DocumentTypeId,
                     DocumentTypeName = dbDoc.DocTypeName,
@@ -583,8 +583,8 @@ namespace BL.Database.Documents
                         Id = y.Id,
                         DocumentId = y.DocumentId,
                         Description = y.Description,
-                        EventType = (EnumEventTypes) y.EventTypeId,
-                        ImportanceEventType = (EnumImportanceEventTypes) y.EventType.ImportanceEventTypeId,
+                        EventType = (EnumEventTypes)y.EventTypeId,
+                        ImportanceEventType = (EnumImportanceEventTypes)y.EventType.ImportanceEventTypeId,
                         CreateDate = y.CreateDate,
                         Date = y.Date,
                         EventTypeName = y.EventType.Name,
@@ -614,7 +614,7 @@ namespace BL.Database.Documents
                             Id = y.Id,
                             DocumentId = y.DocumentId,
                             Stage = y.Stage,
-                            SendType = (EnumSendType) y.SendTypeId,
+                            SendType = (EnumSendType)y.SendTypeId,
                             SendTypeName = y.SendType.Name,
                             SendTypeCode = y.SendType.Code,
                             SendTypeIsImportant = y.SendType.IsImportant,
@@ -624,7 +624,7 @@ namespace BL.Database.Documents
                             Description = y.Description,
                             DueDate = y.DueDate,
                             DueDay = y.DueDay,
-                            AccessLevel = (EnumDocumentAccess) y.AccessLevelId,
+                            AccessLevel = (EnumDocumentAccess)y.AccessLevelId,
                             AccessLevelName = y.AccessLevel.Name,
                             IsInitial = y.IsInitial,
                             StartEventId = y.StartEventId,
@@ -659,7 +659,7 @@ namespace BL.Database.Documents
                                     .GroupBy(g => new { g.DocumentId, g.OrderNumber })
                                     .Select(x => new { DocId = x.Key.DocumentId, OrdId = x.Key.OrderNumber, MaxVers = x.Max(s => s.Version) });
 
-                doc.DocumentFiles = 
+                doc.DocumentFiles =
                     sq.Join(dbContext.DocumentFilesSet, sub => new { sub.DocId, sub.OrdId, VerId = sub.MaxVers },
                         fl => new { DocId = fl.DocumentId, OrdId = fl.OrderNumber, VerId = fl.Version },
                         (s, f) => new { fl = f })
@@ -773,7 +773,7 @@ namespace BL.Database.Documents
                     acc.IsInWork = access.DocumentAccess.IsInWork;
                     acc.LastChangeUserId = ctx.CurrentAgentId;
                     acc.PositionId = access.DocumentAccess.PositionId;
-                    acc.AccessLevelId = (int) access.DocumentAccess.AccessLevel;
+                    acc.AccessLevelId = (int)access.DocumentAccess.AccessLevel;
                     acc.IsFavourite = access.DocumentAccess.IsFavourite;
                 }
                 var evt = new DocumentEvents
@@ -787,7 +787,7 @@ namespace BL.Database.Documents
                     SourcePositionId = access.DocumentEvent.SourcePositionId,
                     TargetAgentId = access.DocumentEvent.TargetAgentId,
                     TargetPositionId = access.DocumentEvent.TargetPositionId,
-                    EventTypeId = (int) access.DocumentEvent.EventType
+                    EventTypeId = (int)access.DocumentEvent.EventType
                 };
                 dbContext.DocumentEventsSet.Add(evt);
                 dbContext.SaveChanges();
@@ -804,7 +804,7 @@ namespace BL.Database.Documents
                     IsInWork = access.IsInWork,
                     LastChangeUserId = access.LastChangeUserId,
                     PositionId = access.PositionId,
-                    AccessLevelId = (int) access.AccessLevel,
+                    AccessLevelId = (int)access.AccessLevel,
                     IsFavourite = access.IsFavourite
                 };
                 dbContext.DocumentAccessesSet.Add(acc);
@@ -837,7 +837,7 @@ namespace BL.Database.Documents
                     acc.IsInWork = access.IsInWork;
                     acc.LastChangeUserId = ctx.CurrentAgentId;
                     acc.PositionId = access.PositionId;
-                    acc.AccessLevelId = (int) access.AccessLevel;
+                    acc.AccessLevelId = (int)access.AccessLevel;
                     acc.IsFavourite = access.IsFavourite;
                     dbContext.SaveChanges();
                 }
@@ -862,7 +862,7 @@ namespace BL.Database.Documents
                         IsInWork = acc.IsInWork,
                         DocumentId = acc.DocumentId,
                         IsFavourite = acc.IsFavourite,
-                        AccessLevel = (EnumDocumentAccess) acc.AccessLevelId,
+                        AccessLevel = (EnumDocumentAccess)acc.AccessLevelId,
                         AccessLevelName = acc.AccessLevel.Name
                     };
                 }
@@ -977,12 +977,12 @@ namespace BL.Database.Documents
                         Id = x.Id,
                         DocumentId = x.DocumentId,
                         Stage = x.Stage,
-                        SendType = (EnumSendType) x.SendTypeId,
+                        SendType = (EnumSendType)x.SendTypeId,
                         TargetPositionId = x.TargetPositionId,
                         Description = x.Description,
                         DueDate = x.DueDate,
                         DueDay = x.DueDay,
-                        AccessLevel = (EnumDocumentAccess) x.AccessLevelId
+                        AccessLevel = (EnumDocumentAccess)x.AccessLevelId
                     }).ToList();
 
                 return sendLists;
@@ -1059,12 +1059,12 @@ namespace BL.Database.Documents
                 {
                     sl.DocumentId = sendList.DocumentId;
                     sl.Stage = sendList.Stage;
-                    sl.SendTypeId = (int) sendList.SendType;
+                    sl.SendTypeId = (int)sendList.SendType;
                     sl.TargetPositionId = sendList.TargetPositionId;
                     sl.Description = sendList.Description;
                     sl.DueDate = sendList.DueDate;
                     sl.DueDay = sendList.DueDay;
-                    sl.AccessLevelId = (int) sendList.AccessLevel;
+                    sl.AccessLevelId = (int)sendList.AccessLevel;
                     sl.IsInitial = true;
                     sl.StartEventId = null;
                     sl.CloseEventId = null;
@@ -1084,12 +1084,12 @@ namespace BL.Database.Documents
                 {
                     DocumentId = x.DocumentId,
                     Stage = x.Stage,
-                    SendTypeId = (int) x.SendType,
+                    SendTypeId = (int)x.SendType,
                     TargetPositionId = x.TargetPositionId,
                     Description = x.Description,
                     DueDate = x.DueDate,
                     DueDay = x.DueDay,
-                    AccessLevelId = (int) x.AccessLevel,
+                    AccessLevelId = (int)x.AccessLevel,
                     IsInitial = true,
                     StartEventId = null,
                     CloseEventId = null,
@@ -1245,7 +1245,7 @@ namespace BL.Database.Documents
                     docWait.OnEvent = new DocumentEvents
                     {
                         DocumentId = documentWait.OnEvent.DocumentId,
-                        EventTypeId = (int) documentWait.OnEvent.EventType,
+                        EventTypeId = (int)documentWait.OnEvent.EventType,
                         CreateDate = documentWait.OnEvent.CreateDate,
                         Date = documentWait.OnEvent.Date,
                         Description = documentWait.OnEvent.Description,
@@ -1262,7 +1262,7 @@ namespace BL.Database.Documents
                     docWait.OffEvent = new DocumentEvents
                     {
                         DocumentId = documentWait.OnEvent.DocumentId,
-                        EventTypeId = (int) documentWait.OnEvent.EventType,
+                        EventTypeId = (int)documentWait.OnEvent.EventType,
                         CreateDate = documentWait.OnEvent.CreateDate,
                         Date = documentWait.OnEvent.Date,
                         Description = documentWait.OnEvent.Description,
@@ -1290,6 +1290,7 @@ namespace BL.Database.Documents
             {
                 var doc = dbContext.DocumentsSet
                     .FirstOrDefault(x => x.RegistrationJournalId == registerDocument.RegistrationJournalId
+                                         && x.NumerationPrefixFormula == registerDocument.NumerationPrefixFormula
                                          && x.RegistrationNumberPrefix == registerDocument.RegistrationNumberPrefix
                                          && x.RegistrationNumber == registerDocument.RegistrationNumber
                                          && x.Id != registerDocument.DocumentId
@@ -1320,16 +1321,17 @@ namespace BL.Database.Documents
                     {
                         //get next number
                         var maxNumber = (from docreg in dbContext.DocumentsSet
-                            where docreg.RegistrationJournalId == registerDocument.RegistrationJournalId
-                                  && docreg.RegistrationNumberPrefix == registerDocument.RegistrationNumberPrefix
-                                  && docreg.Id != registerDocument.DocumentId
-                            select docreg.RegistrationNumber).Max();
+                                         where docreg.RegistrationJournalId == registerDocument.RegistrationJournalId
+                                               && docreg.NumerationPrefixFormula == registerDocument.NumerationPrefixFormula
+                                               && docreg.Id != registerDocument.DocumentId
+                                         select docreg.RegistrationNumber).Max();
                         registerDocument.RegistrationNumber = (maxNumber ?? 0) + 1;
 
                     }
                     doc.IsRegistered = !registerDocument.IsOnlyGetNextNumber;
                     doc.RegistrationJournalId = registerDocument.RegistrationJournalId;
                     doc.RegistrationNumber = registerDocument.RegistrationNumber;
+                    doc.NumerationPrefixFormula = registerDocument.NumerationPrefixFormula;
                     doc.RegistrationNumberSuffix = registerDocument.RegistrationNumberSuffix;
                     doc.RegistrationNumberPrefix = registerDocument.RegistrationNumberPrefix;
                     doc.RegistrationDate = registerDocument.RegistrationDate;
@@ -1343,6 +1345,7 @@ namespace BL.Database.Documents
                 {
                     doc.IsRegistered = false;
                     doc.RegistrationJournalId = null;
+                    doc.NumerationPrefixFormula = null;
                     doc.RegistrationNumber = null;
                     doc.RegistrationNumberSuffix = null;
                     doc.RegistrationNumberPrefix = null;
@@ -1358,6 +1361,27 @@ namespace BL.Database.Documents
 
 
         #endregion DocumentRegistration
+
+        #region DocumentLink    
+
+        public void AddDocumentLink(IContext context, AddDocumentLink model)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var link = new DocumentLinks
+                {
+                    DocumentId = model.DocumentId,
+                    ParentDocumentId = model.ParentDocumentId,
+                    LinkTypeId = model.LinkTypeId,
+                    LastChangeUserId = context.CurrentAgentId,
+                    LastChangeDate = DateTime.Now,
+                };
+                dbContext.DocumentLinksSet.Add(link);
+                dbContext.SaveChanges();
+            }
+        }
+
+        #endregion DocumentLink
 
     }
 }

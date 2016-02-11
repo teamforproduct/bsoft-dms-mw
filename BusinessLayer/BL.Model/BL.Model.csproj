@@ -98,6 +98,7 @@
     <Compile Include="DocumentCore\BaseDocumentSavedFilter.cs" />
     <Compile Include="DocumentCore\BaseDocumentStageSendList.cs" />
     <Compile Include="DocumentCore\BaseDocumentTemporaryRegistration.cs" />
+    <Compile Include="DocumentCore\BaseDocumentLink.cs" />
     <Compile Include="DocumentCore\BaseDocumentWaits.cs" />
     <Compile Include="DocumentAdditional\DocumentFileIdentity.cs" />
     <Compile Include="DocumentAdditional\ModifyDocumentFile.cs" />

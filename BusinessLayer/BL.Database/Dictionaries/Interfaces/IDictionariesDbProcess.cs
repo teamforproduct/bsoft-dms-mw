@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using BL.CrossCutting.Interfaces;
 using BL.Model.DictionaryCore;
+using BL.Model.DocumentCore.Actions;
 
 namespace BL.Database.Dictionaries.Interfaces
 {
@@ -106,6 +107,7 @@ namespace BL.Database.Dictionaries.Interfaces
         BaseDictionarySubordinationType GetDictionarySubordinationType(IContext context, int id);
 
         IEnumerable<BaseDictionarySubordinationType> GetDictionarySubordinationTypes(IContext context, FilterDictionarySubordinationType filter);
+
         #endregion DictionarySubordinationTypes
     }
 }

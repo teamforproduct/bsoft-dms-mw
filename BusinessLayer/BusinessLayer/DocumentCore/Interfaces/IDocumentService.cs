@@ -53,6 +53,6 @@ namespace BL.Logic.DocumentCore.Interfaces
 
         int CopyDocument(IContext context, CopyDocument model);
         void RegisterDocument(IContext context, RegisterDocument model);
-
+        void AddDocumentLink(IContext cxt, AddDocumentLink model);
     }
 }

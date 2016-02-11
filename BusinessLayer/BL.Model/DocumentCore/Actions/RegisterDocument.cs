@@ -1,8 +1,13 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
+using System.Xml.Serialization;
 
 namespace BL.Model.DocumentCore.Actions
 {
+    /// <summary>
+    /// Модель для регистрации документа
+    /// </summary>
     public class RegisterDocument
     {
         /// <summary>
@@ -38,6 +43,13 @@ namespace BL.Model.DocumentCore.Actions
         /// Дата регистрации документа
         /// </summary>
         [Required]
-        public DateTime RegistrationDate { get; set; }    
+        public DateTime RegistrationDate { get; set; }
+        /// <summary>
+        /// Не запонять!!!
+        /// Префикс для нумерации
+        /// </summary>
+        [XmlIgnore]
+        [IgnoreDataMember]
+        public string NumerationPrefixFormula { get; set; }
     }
 }

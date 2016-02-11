@@ -65,6 +65,22 @@ namespace DMS_WebAPI.Controllers.Documents
             ctrl.ControllerContext = ControllerContext;
             return ctrl.Get(model.DocumentId);
         }
+        /// <summary>
+        /// Добавление связи между документами
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Обновленный документ</returns>
+        [Route("AddDocumentLink")]
+        [HttpPost]
+        public IHttpActionResult AddDocumentLink(AddDocumentLink model)
+        {
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            docProc.AddDocumentLink(cxt, model);
+            var ctrl = new DocumentsController();
+            ctrl.ControllerContext = ControllerContext;
+            return ctrl.Get(model.DocumentId);
+        }
 
         // POST: api/DocumentActions/ChangeWorkStatus
         [Route("ChangeWorkStatus")]

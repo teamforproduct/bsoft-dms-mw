@@ -706,17 +706,25 @@ namespace BL.Logic.DocumentCore
 
         public void RegisterDocument(IContext context, RegisterDocument model)
         {
+            var dictDB = DmsResolver.Current.Get<IDictionariesDbProcess>();
+            var dictRegJournal = dictDB.GetDictionaryRegistrationJournal(context, model.RegistrationJournalId);
+            model.NumerationPrefixFormula = dictRegJournal.NumerationPrefixFormula;
+
             var docDB = DmsResolver.Current.Get<IDocumentsDbProcess>();
 
-            if (model.RegistrationNumber == null || string.IsNullOrEmpty(model.RegistrationNumberPrefix) || model.IsOnlyGetNextNumber)
+            if (model.RegistrationNumber == null || model.IsOnlyGetNextNumber)
             {   //get next number
-                var dictDB = DmsResolver.Current.Get<IDictionariesDbProcess>();
-                var dictRegJournal = dictDB.GetDictionaryRegistrationJournal(context, model.RegistrationJournalId);
                 model.RegistrationNumberPrefix = dictRegJournal.PrefixFormula;
                 model.RegistrationNumberSuffix = dictRegJournal.SuffixFormula;
                 model.RegistrationNumber = null;
             }
             docDB.SetDocumentRegistration(context, model);
+        }
+
+        public void AddDocumentLink(IContext context, AddDocumentLink model)
+        {
+            var docDB = DmsResolver.Current.Get<IDocumentsDbProcess>();
+            docDB.AddDocumentLink(context, model);
         }
 
 
