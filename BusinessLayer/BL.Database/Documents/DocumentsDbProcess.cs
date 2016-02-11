@@ -94,7 +94,8 @@ namespace BL.Database.Documents
                         DueDay = x.DueDay,
                         AccessLevelId = (int) x.AccessLevel,
                         IsInitial = true,
-                        EventId = null,
+                        StartEventId = null,
+                        CloseEventId = null,
                         LastChangeUserId = ctx.CurrentAgentId,
                         LastChangeDate = DateTime.Now
                     }).ToList();
@@ -516,6 +517,7 @@ namespace BL.Database.Documents
                     IsRegistered = dbDoc.Doc.IsRegistered,
                     RegistrationJournalId = dbDoc.Doc.RegistrationJournalId,
                     RegistrationJournalName = dbDoc.RegJurnalName,
+                    NumerationPrefixFormula = dbDoc.Doc.NumerationPrefixFormula,
                     RegistrationNumber = dbDoc.Doc.RegistrationNumber,
                     RegistrationNumberPrefix = dbDoc.Doc.RegistrationNumberPrefix,
                     RegistrationNumberSuffix = dbDoc.Doc.RegistrationNumberSuffix,
@@ -625,7 +627,8 @@ namespace BL.Database.Documents
                             AccessLevel = (EnumDocumentAccess) y.AccessLevelId,
                             AccessLevelName = y.AccessLevel.Name,
                             IsInitial = y.IsInitial,
-                            EventId = y.EventId,
+                            StartEventId = y.StartEventId,
+                            CloseEventId = y.CloseEventId,
                             LastChangeUserId = y.LastChangeUserId,
                             LastChangeDate = y.LastChangeDate,
                             GeneralInfo = string.Empty
@@ -1011,7 +1014,8 @@ namespace BL.Database.Documents
                         AccessLevel = (EnumDocumentAccess)x.AccessLevelId,
                         AccessLevelName = x.AccessLevel.Name,
                         IsInitial = x.IsInitial,
-                        EventId = x.EventId,
+                        StartEventId = x.StartEventId,
+                        CloseEventId = x.CloseEventId,
                         LastChangeUserId = x.LastChangeUserId,
                         LastChangeDate = x.LastChangeDate,
                         GeneralInfo = string.Empty
@@ -1062,7 +1066,8 @@ namespace BL.Database.Documents
                     sl.DueDay = sendList.DueDay;
                     sl.AccessLevelId = (int) sendList.AccessLevel;
                     sl.IsInitial = true;
-                    sl.EventId = null;
+                    sl.StartEventId = null;
+                    sl.CloseEventId = null;
                     sl.LastChangeUserId = ctx.CurrentAgentId;
                     sl.LastChangeDate = DateTime.Now;
                     dbContext.SaveChanges();
@@ -1086,7 +1091,8 @@ namespace BL.Database.Documents
                     DueDay = x.DueDay,
                     AccessLevelId = (int) x.AccessLevel,
                     IsInitial = true,
-                    EventId = null,
+                    StartEventId = null,
+                    CloseEventId = null,
                     LastChangeUserId = ctx.CurrentAgentId,
                     LastChangeDate = DateTime.Now
                 }).ToList();

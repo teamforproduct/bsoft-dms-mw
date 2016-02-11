@@ -31,12 +31,14 @@ namespace BL.Model.DocumentCore
         public DateTime? CreateDate { get; set; }
         public bool IsRegistered { get; set; }
         public int? RegistrationJournalId { get; set; }
+        public string NumerationPrefixFormula { get; set; }
         public int? RegistrationNumber { get; set; }
         public string RegistrationNumberSuffix { get; set; }
         public string RegistrationNumberPrefix { get; set; }
         public DateTime? RegistrationDate { get; set; }
         public int? LastChangeUserId { get; set; }
         public DateTime? LastChangeDate { get; set; }
+        public int? LinkId { get; set; }
 
         public string TemplateDocumentName { get; set; }
         public bool IsHard { get; set; }

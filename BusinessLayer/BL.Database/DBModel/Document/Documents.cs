@@ -28,6 +28,7 @@ namespace BL.Database.DBModel.Document
         public string Description { get; set; }
         public bool IsRegistered { get; set; }
         public Nullable<int> RegistrationJournalId { get; set; }
+        public string NumerationPrefixFormula { get; set; }
         public Nullable<int> RegistrationNumber { get; set; }
         public string RegistrationNumberSuffix { get; set; }
         public string RegistrationNumberPrefix { get; set; }
@@ -39,6 +40,7 @@ namespace BL.Database.DBModel.Document
         public string SenderNumber { get; set; }
         public Nullable<DateTime> SenderDate { get; set; }
         public string Addressee { get; set; }
+        public int? LinkId { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
 

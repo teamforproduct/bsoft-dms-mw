@@ -94,7 +94,8 @@ namespace BL.Logic.DocumentCore
                     DueDay = x.DueDay,
                     AccessLevel = x.AccessLevel,
                     IsInitial = true,
-                    EventId = null
+                    StartEventId = null,
+                    CloseEventId = null
                 }).ToList();
             }
 

@@ -21,7 +21,8 @@ namespace BL.Database.DBModel.Document
         public int? DueDay { get; set; }
         public int AccessLevelId { get; set; }
         public bool IsInitial { get; set; }
-        public Nullable<int> EventId { get; set; }
+        public Nullable<int> StartEventId { get; set; }
+        public Nullable<int> CloseEventId { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
 
@@ -33,7 +34,9 @@ namespace BL.Database.DBModel.Document
         public virtual DictionaryPositions TargetPosition { get; set; }
         [ForeignKey("AccessLevelId")]
         public virtual AdminAccessLevels AccessLevel { get; set; }
-        [ForeignKey("EventId")]
-        public virtual DocumentEvents Event { get; set; }
+        [ForeignKey("StartEventId")]
+        public virtual DocumentEvents StartEvent { get; set; }
+        [ForeignKey("CloseEventId")]
+        public virtual DocumentEvents CloseEvent { get; set; }
     }
 }

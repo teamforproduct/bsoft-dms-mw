@@ -9,11 +9,12 @@ namespace BL.Database.DBModel.Document
     {
         public DocumentEvents()
         {
-            this.OnWaits = new HashSet<DocumentWaits>();
-            this.OffWaits = new HashSet<DocumentWaits>();
-            this.SendSubscriptions = new HashSet<DocumentSubscriptions>();
-            this.DoneSubscriptions = new HashSet<DocumentSubscriptions>();
-            this.SendLists = new HashSet<DocumentSendLists>();
+            this.OnWait = new HashSet<DocumentWaits>();
+            this.OffWait = new HashSet<DocumentWaits>();
+            this.SendSubscription = new HashSet<DocumentSubscriptions>();
+            this.DoneSubscription = new HashSet<DocumentSubscriptions>();
+            this.StartSendList = new HashSet<DocumentSendLists>();
+            this.CloseSendList = new HashSet<DocumentSendLists>();
         }
 
         public int Id { get; set; }
@@ -41,12 +42,19 @@ namespace BL.Database.DBModel.Document
         public virtual DictionaryPositions TargetPosition { get; set; }
         [ForeignKey("TargetAgentId")]
         public virtual DictionaryAgents TargetAgent { get; set; }
-        public virtual ICollection<DocumentWaits> OnWaits { get; set; }
-        public virtual ICollection<DocumentWaits> OffWaits { get; set; }
+
+        [ForeignKey("OnEventId")]
+        public virtual ICollection<DocumentWaits> OnWait { get; set; }
+        [ForeignKey("OffEventId")]
+        public virtual ICollection<DocumentWaits> OffWait { get; set; }
+
         [ForeignKey("SendEventId")]
-        public virtual ICollection<DocumentSubscriptions> SendSubscriptions { get; set; }
+        public virtual ICollection<DocumentSubscriptions> SendSubscription { get; set; }
         [ForeignKey("DoneEventId")]
-        public virtual ICollection<DocumentSubscriptions> DoneSubscriptions { get; set; }
-        public virtual ICollection<DocumentSendLists> SendLists { get; set; }
+        public virtual ICollection<DocumentSubscriptions> DoneSubscription { get; set; }
+        [ForeignKey("StartEventId")]
+        public virtual ICollection<DocumentSendLists> StartSendList { get; set; }
+        [ForeignKey("CloseEventId")]
+        public virtual ICollection<DocumentSendLists> CloseSendList { get; set; }
     }
 }

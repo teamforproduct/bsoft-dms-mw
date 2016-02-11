@@ -659,6 +659,7 @@ namespace BL.Database.Dictionaries
                         Name = x.Name,
                         DepartmentId = x.DepartmentId,
                         Index = x.Index,
+                        NumerationPrefixFormula = x.NumerationPrefixFormula,
                         PrefixFormula = x.PrefixFormula,
                         SuffixFormula = x.SuffixFormula,
                         DirectionCodes = x.DirectionCodes,
