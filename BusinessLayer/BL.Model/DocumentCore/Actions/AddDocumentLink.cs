@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BL.Model.Users;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +10,7 @@ namespace BL.Model.DocumentCore.Actions
     /// <summary>
     /// Модель для связывания документов
     /// </summary>
-    public class AddDocumentLink
+    public class AddDocumentLink : CurrentPosition
     {
         /// <summary>
         /// ИД документа

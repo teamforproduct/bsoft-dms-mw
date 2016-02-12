@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BL.Model.Users;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace BL.Model.DocumentCore.Actions
     /// <summary>
     /// Модель для изменения признака фаворита
     /// </summary>
-    public class ChangeFavourites
+    public class ChangeFavourites : CurrentPosition
     {
         /// <summary>
         /// ИД документа

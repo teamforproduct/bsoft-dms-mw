@@ -1,10 +1,14 @@
 ﻿using System;
 using BL.Model.Enums;
 using System.ComponentModel.DataAnnotations;
+using BL.Model.Users;
 
 namespace BL.Model.DocumentCore
 {
-    public class ModifyDocument
+    /// <summary>
+    /// Модель для модификации документа
+    /// </summary>
+    public class ModifyDocument: CurrentPosition
     {
         /// <summary>
         /// ИД Документа

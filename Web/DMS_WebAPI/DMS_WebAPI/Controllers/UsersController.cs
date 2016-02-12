@@ -33,7 +33,7 @@ namespace DMS_WebAPI.Controllers
         public IHttpActionResult Post([FromBody]int positionId)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            cxt.CurrentPosition = new List<Position>() { new Position { PositionId = positionId } };
+            cxt.CurrentPosition = new List<CurrentPosition>() { new CurrentPosition { CurrentPositionId = positionId } };
             return new JsonResult(null, this);
         }
 

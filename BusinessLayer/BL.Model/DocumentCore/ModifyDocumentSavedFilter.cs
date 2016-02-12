@@ -1,8 +1,9 @@
-﻿using System;
+﻿using BL.Model.Users;
+using System;
 
 namespace BL.Model.DocumentCore
 {
-    public class ModifyDocumentSavedFilter
+    public class ModifyDocumentSavedFilter : CurrentPosition
     {
         public int Id { get; set; }
         public string Icon { get; set; }

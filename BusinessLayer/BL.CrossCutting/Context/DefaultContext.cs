@@ -10,7 +10,7 @@ namespace BL.CrossCutting.Context
     public class DefaultContext :IContext
     {
         public Employee CurrentEmployee { get; set; }
-        public List<Position> CurrentPosition { get; set; }
+        public List<CurrentPosition> CurrentPosition { get; set; }
 
         public int CurrentPositionId
         {
@@ -21,7 +21,7 @@ namespace BL.CrossCutting.Context
                 {
                     throw new UserPositionIsNotDefined();
                 }
-                return position.PositionId;
+                return position.CurrentPositionId;
             }
         }
 

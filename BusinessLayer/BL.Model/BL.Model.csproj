@@ -136,7 +136,7 @@
     <Compile Include="SystemCore\BaseSystemUIElement.cs" />
     <Compile Include="SystemCore\UIPaging.cs" />
     <Compile Include="Users\Employee.cs" />
-    <Compile Include="Users\Position.cs" />
+    <Compile Include="Users\CurrentPosition.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

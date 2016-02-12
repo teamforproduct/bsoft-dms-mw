@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BL.Model.Users;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using System.Xml.Serialization;
@@ -8,7 +9,7 @@ namespace BL.Model.DocumentCore.Actions
     /// <summary>
     /// Модель для регистрации документа
     /// </summary>
-    public class RegisterDocument
+    public class RegisterDocument : CurrentPosition
     {
         /// <summary>
         /// ИД Документа

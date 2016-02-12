@@ -1,6 +1,8 @@
-﻿namespace BL.Model.DocumentCore.Actions
+﻿using BL.Model.Users;
+
+namespace BL.Model.DocumentCore.Actions
 {
-    public class ChangeWorkStatus
+    public class ChangeWorkStatus : CurrentPosition
     {
         public int DocumentId { get; set; }
         public bool IsInWork { get; set; }

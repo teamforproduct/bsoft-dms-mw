@@ -7,6 +7,6 @@ namespace BL.Logic.Secure
     public interface ISecureService
     {
         Employee GetEmployee(IContext context, int id);
-        IEnumerable<Position> GetPositionsByUser(Employee employee);
+        IEnumerable<CurrentPosition> GetPositionsByUser(Employee employee);
     }
 }

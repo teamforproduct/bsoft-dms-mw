@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using BL.Model.Users;
+using System.Collections.Generic;
 
 namespace BL.Model.DocumentCore.Actions
 {
-    public class SendMessage
+    public class SendMessage : CurrentPosition
     {
         public int DocumentId { get; set; }
         public List<int> Positions { get; set; }

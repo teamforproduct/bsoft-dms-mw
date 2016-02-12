@@ -1,10 +1,11 @@
 ﻿using System;
 using BL.Model.Enums;
 using System.Runtime.Serialization;
+using BL.Model.Users;
 
 namespace BL.Model.DocumentCore
 {
-    public class ModifyDocumentSendList
+    public class ModifyDocumentSendList : CurrentPosition
     {
         [IgnoreDataMember]
         public int Id { get; set; }

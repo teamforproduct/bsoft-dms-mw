@@ -1,9 +1,10 @@
-﻿using System;
+﻿using BL.Model.Users;
+using System;
 using System.Runtime.Serialization;
 
 namespace BL.Model.DocumentCore
 {
-    public class ModifyDocumentRestrictedSendList
+    public class ModifyDocumentRestrictedSendList : CurrentPosition
     {
         [IgnoreDataMember]
         public int Id { get; set; }

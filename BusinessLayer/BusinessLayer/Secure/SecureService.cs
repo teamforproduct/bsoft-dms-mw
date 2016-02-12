@@ -14,7 +14,7 @@ namespace BL.Logic.Secure
             return db.GetEmployee(context, id);
         }
 
-        public IEnumerable<Position> GetPositionsByUser(Employee employee)
+        public IEnumerable<CurrentPosition> GetPositionsByUser(Employee employee)
         {
             var db = DmsResolver.Current.Get<ISecurityDbProcess>();
             return db.GetPositionsByUser(employee);

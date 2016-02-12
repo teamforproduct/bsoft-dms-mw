@@ -1,8 +1,9 @@
-﻿using System;
+﻿using BL.Model.Users;
+using System;
 
 namespace BL.Model.DocumentCore.Actions
 {
-    public class ControlOn
+    public class ControlOn : CurrentPosition
     {
         public int DocumentId { get; set; }
         public string Description { get; set; }

@@ -1377,6 +1377,28 @@ namespace BL.Database.Documents
                     LastChangeDate = DateTime.Now,
                 };
                 dbContext.DocumentLinksSet.Add(link);
+                var parentDoc = dbContext.DocumentsSet.FirstOrDefault(x => x.Id == model.ParentDocumentId);
+                if (parentDoc == null)
+                {
+                    throw new DocumentNotFoundOrUserHasNoAccess();
+                }
+                if (!parentDoc.LinkId.HasValue)
+                {
+                    parentDoc.LinkId = model.ParentDocumentId;
+                }
+                var doc = dbContext.DocumentsSet.FirstOrDefault(x => x.Id == model.DocumentId);
+                if (doc == null)
+                {
+                    throw new DocumentNotFoundOrUserHasNoAccess();
+                }
+                if (!doc.LinkId.HasValue)
+                {
+                    parentDoc.LinkId = model.ParentDocumentId;
+                }
+                else
+                {
+                    dbContext.DocumentsSet.Where(x => x.LinkId == doc.LinkId).ToList().ForEach(x => x.LinkId = model.ParentDocumentId);
+                }
                 dbContext.SaveChanges();
             }
         }

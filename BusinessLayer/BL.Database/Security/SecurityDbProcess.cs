@@ -29,7 +29,7 @@ namespace BL.Database.Security
             }
         }
 
-        public IEnumerable<Position> GetPositionsByUser(Employee employee)
+        public IEnumerable<CurrentPosition> GetPositionsByUser(Employee employee)
         {
             return null;
         }
