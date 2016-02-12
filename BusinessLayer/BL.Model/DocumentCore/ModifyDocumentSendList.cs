@@ -5,7 +5,7 @@ using BL.Model.Users;
 
 namespace BL.Model.DocumentCore
 {
-    public class ModifyDocumentSendList : CurrentPosition
+    public class ModifyDocumentSendList
     {
         [IgnoreDataMember]
         public int Id { get; set; }

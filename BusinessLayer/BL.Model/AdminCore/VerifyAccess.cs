@@ -12,5 +12,7 @@ namespace BL.Model.AdminCore
         public string ObjectCode { get; set; }
         public string ActionCode { get; set; }
         public int? RecordId { get; set; }
+        public int? PositionId { get; set; }
+        public List<int> PositionsIdList { get; set; }
     }
 }

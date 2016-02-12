@@ -31,17 +31,43 @@ namespace BL.Logic.AdminCore
             var admDb = DmsResolver.Current.Get<IAdminsDbProcess>();
             return admDb.GetPositionsByUser(context, new FilterAdminUserRole() { UserId  = new List<int>() { context.CurrentAgentId } });
         }
+
         /// <summary>
-        /// Проверка прав доступа для действия
+        /// Проверка доступа к должностям для текущего пользователя
+        /// </summary>
+        /// <param name="cxt"></param>
+        /// <param name="positionsIdList"></param>
+        public void VerifyAccessForCurrentUser(IContext context, List<int> positionsIdList)
+        {
+            var admDb = DmsResolver.Current.Get<IAdminsDbProcess>();
+            if (!(admDb.VerifyAccess(context, new VerifyAccess() { UserId = context.CurrentAgentId, PositionsIdList = positionsIdList })))
+            {
+                throw new AccessIsDenied(); //!!!Как красиво передать string obj, string act, int? id = null в сообщение?
+            }
+
+            // throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Проверка прав доступа на действия для текущего пользователя
         /// </summary>
         /// <param name="context">контекст</param>
         /// <param name="obj">Объект системы</param>
         /// <param name="act">Действие</param>
+        /// <param name="positionId">Ид должности, если нужно проверять доступ учитывая конкретную должность</param>
         /// <param name="id">ИД записи при выдаче доступа по каждой записи</param>
-        public void VerifyAccessForCurrentUser(IContext context, string obj, string act, int? id = null)
+        public void VerifyAccessForCurrentUser(IContext context, string obj, string act, int? positionId = null, int? id = null)
         {
             var admDb = DmsResolver.Current.Get<IAdminsDbProcess>();
-            if (!(admDb.VerifyAccess(context, new VerifyAccess() { UserId = context.CurrentAgentId, ObjectCode = obj, ActionCode = act, RecordId = id })))
+            if (positionId.HasValue && !context.CurrentPositionsIdList.Contains((int)positionId))
+            {
+                throw new UserPositionIsNotDefined();
+            };
+            if (!(admDb.VerifyAccess(context, new VerifyAccess()
+                                            {   UserId = context.CurrentAgentId,
+                                                PositionsIdList = context.CurrentPositionsIdList,
+                                                ObjectCode = obj, ActionCode = act,
+                                                RecordId = id, PositionId = positionId })))
             {
                 throw new AccessIsDenied(); //!!!Как красиво передать string obj, string act, int? id = null в сообщение?
             }

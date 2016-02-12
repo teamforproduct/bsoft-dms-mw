@@ -39,7 +39,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult ChangeFavourites(ChangeFavourites model)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ChangeFavouritesForDocument(cxt, model);
             var ctrl = new DocumentsController();
@@ -58,7 +58,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult RegisterDocument(RegisterDocument model)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.RegisterDocument(cxt, model);
             var ctrl = new DocumentsController();
@@ -87,7 +87,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult ChangeWorkStatus(ChangeWorkStatus model)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ChangeDocumentWorkStatus(cxt, model);
             return new JsonResult(null, this);
@@ -98,7 +98,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult AddNote(AddNote model)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.AddDocumentComment(cxt, model);
             return new JsonResult(null, this);
@@ -109,7 +109,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult ControlOn(ControlOn model)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ControlOn(cxt, model);
             return new JsonResult(null, this);
@@ -120,7 +120,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult Copy(CopyDocument model)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var ctrl = new DocumentsController();
             ctrl.ControllerContext = ControllerContext;

@@ -89,13 +89,26 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
-                return dbContext.AdminRoleActionsSet
-                          .Any(x => x.Action.Code == acc.ActionCode
-                                    && x.Action.Object.Code == acc.ObjectCode
-                                    && x.Action.IsGrantable
-                                    && (!x.Action.IsGrantableByRecordId || (x.RecordId == acc.RecordId))
-                                    && x.Role.UserRoles.Any(y => y.UserId == acc.UserId)
-                                );
+                if (!string.IsNullOrEmpty(acc.ObjectCode) && !string.IsNullOrEmpty(acc.ActionCode))
+                {
+                    return dbContext.AdminRoleActionsSet
+                              .Any(x => x.Action.Code == acc.ActionCode
+                                        && x.Action.Object.Code == acc.ObjectCode
+                                        && x.Action.IsGrantable
+                                        && (!x.Action.IsGrantableByRecordId || (x.RecordId == acc.RecordId))
+                                        && (((acc.PositionId == null) && (acc.PositionsIdList.Contains(x.Role.PositionId))) || (x.Role.PositionId == acc.PositionId))
+                                        && x.Role.UserRoles.Any(y => y.UserId == acc.UserId)
+                                    );
+                }
+                else if (acc.PositionsIdList != null && acc.PositionsIdList.Count > 0)
+                {
+                    var noAcc = acc.PositionsIdList.Except(dbContext.AdminUserRolesSet.Where(x => (x.UserId == acc.UserId)).Select(x => x.Role.PositionId).ToList()).ToList();
+                    return ((noAcc == null) || (noAcc.Count() == 0));
+                }
+                else
+                {
+                    return false;
+                }
             }
         }
     }

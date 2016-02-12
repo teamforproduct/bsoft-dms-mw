@@ -55,19 +55,19 @@ namespace BL.Logic.DocumentCore
             return doc;
         }
 
-        public int AddDocumentByTemplateDocument(IContext context, int templateDocumentId)
+        public int AddDocumentByTemplateDocument(IContext context, AddDocumentByTemplateDocument model)
         {
             var adm = DmsResolver.Current.Get<IAdminService>();
-            adm.VerifyAccessForCurrentUser(context,"Documents", "AddDocument");
+            adm.VerifyAccessForCurrentUser(context,"Documents", "AddDocument", model.CurrentPositionId);
             var db = DmsResolver.Current.Get<ITemplateDocumentsDbProcess>();
-            var baseTemplateDocument = db.GetTemplateDocument(context, templateDocumentId);
+            var baseTemplateDocument = db.GetTemplateDocument(context, model.TemplateDocumentId);
             var baseDocument = new FullDocument
             {
                 TemplateDocumentId = baseTemplateDocument.Id,
                 CreateDate = DateTime.Now,
                 DocumentSubjectId = baseTemplateDocument.DocumentSubjectId,
                 Description = baseTemplateDocument.Description,
-                ExecutorPositionId = context.CurrentPositionId, ////
+                ExecutorPositionId = model.CurrentPositionId, ////
                 SenderAgentId = baseTemplateDocument.DocumentDirection == EnumDocumentDirections.External ? baseTemplateDocument.SenderAgentId : null,
                 SenderAgentPersonId = baseTemplateDocument.DocumentDirection == EnumDocumentDirections.External ? baseTemplateDocument.SenderAgentPersonId : null,
                 Addressee = baseTemplateDocument.DocumentDirection == EnumDocumentDirections.External ? baseTemplateDocument.Addressee : null
@@ -110,7 +110,7 @@ namespace BL.Logic.DocumentCore
                 SourceAgentId = context.CurrentAgentId,
                 TargetAgentId = context.CurrentAgentId,
                 TargetPositionId = context.CurrentPositionId,
-                SourcePositionId = context.CurrentPositionId
+                SourcePositionId = (int)context.CurrentPositionId
             };
 
             baseDocument.Events = new List<BaseDocumentEvent> { evt };
@@ -122,7 +122,7 @@ namespace BL.Logic.DocumentCore
                 IsFavourite = false,
                 LastChangeDate = DateTime.Now,
                 LastChangeUserId = context.CurrentAgentId,
-                PositionId = context.CurrentPositionId,
+                PositionId = (int)context.CurrentPositionId,
             };
 
             baseDocument.Accesses = new List<BaseDocumentAccess>() { acc };
@@ -132,13 +132,13 @@ namespace BL.Logic.DocumentCore
 
         public int ModifyDocument(IContext context, ModifyDocument document)
         {
+            var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
+            var fullDocument = documentDb.GetDocument(context, document.Id);
+            var adm = DmsResolver.Current.Get<IAdminService>();
+            adm.VerifyAccessForCurrentUser(context, "Documents", "ModifyDocument", fullDocument.ExecutorPositionId);
             var baseDocument = new FullDocument(document);
-            var db = DmsResolver.Current.Get<ITemplateDocumentsDbProcess>();
-            var baseTemplateDocument = db.GetTemplateDocument(context, baseDocument.TemplateDocumentId);
-            if (baseTemplateDocument.DocumentDirection == EnumDocumentDirections.External)
-            {
-                throw new UserPositionIsNotDefined();
-            }
+            var templateDb = DmsResolver.Current.Get<ITemplateDocumentsDbProcess>();
+            var baseTemplateDocument = templateDb.GetTemplateDocument(context, baseDocument.TemplateDocumentId);
             if (
                 (
                         (baseTemplateDocument.DocumentDirection == EnumDocumentDirections.Inner)
@@ -174,6 +174,8 @@ namespace BL.Logic.DocumentCore
         {
             var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
             var document = documentDb.GetDocument(context, id);
+            var adm = DmsResolver.Current.Get<IAdminService>();
+            adm.VerifyAccessForCurrentUser(context, "Documents", "DeleteDocument", document.ExecutorPositionId);
             Command cmd = new DeleteDocument(context, document);
             if (cmd.CanExecute())
             {
@@ -530,7 +532,7 @@ namespace BL.Logic.DocumentCore
                 EventType = EnumEventTypes.AddNote,
                 SourceAgentId = context.CurrentAgentId,
                 TargetAgentId = context.CurrentAgentId,
-                SourcePositionId = context.CurrentPositionId,
+                SourcePositionId = (int)context.CurrentPositionId,
                 TargetPositionId = context.CurrentPositionId,
                 LastChangeUserId = context.CurrentAgentId,
                 LastChangeDate = DateTime.Now,
@@ -551,7 +553,7 @@ namespace BL.Logic.DocumentCore
             var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
             var document = documentDb.GetDocument(ctx, documentId);
             var systemDb = DmsResolver.Current.Get<ISystemDbProcess>();
-            var actions = systemDb.GetSystemActions(ctx, new FilterSystemAction() { ObjectCode = "Documents", IsAvailabel = true });
+            var actions = systemDb.GetSystemActions(ctx, new FilterSystemAction() { ObjectCode = "Documents", IsAvailabel = true, PositionsIdList = ctx.CurrentPositionsIdList });
             if (document.IsRegistered)
             {
                 actions = actions.Where(x => x.Code != "ModifyDocument").ToList();
@@ -588,7 +590,7 @@ namespace BL.Logic.DocumentCore
                     DocumentId = newStatus.DocumentId,
                     SourceAgentId = context.CurrentAgentId,
                     TargetAgentId = context.CurrentAgentId,
-                    SourcePositionId = context.CurrentPositionId,
+                    SourcePositionId = (int)context.CurrentPositionId,
                     TargetPositionId = context.CurrentPositionId,
                     Description = newStatus.Description,
                     EventType = newStatus.IsInWork ? EnumEventTypes.SetInWork : EnumEventTypes.SetOutWork,
@@ -626,7 +628,7 @@ namespace BL.Logic.DocumentCore
                     DocumentId = model.DocumentId,
                     EventType = EnumEventTypes.ControlOn,
                     Description = model.Description,
-                    SourcePositionId = context.CurrentPositionId,
+                    SourcePositionId = (int)context.CurrentPositionId,
                     SourceAgentId = context.CurrentAgentId,
                     TargetPositionId = context.CurrentPositionId,
                     TargetAgentId = context.CurrentAgentId,
@@ -680,7 +682,7 @@ namespace BL.Logic.DocumentCore
                 SourceAgentId = context.CurrentAgentId,
                 TargetAgentId = context.CurrentAgentId,
                 TargetPositionId = context.CurrentPositionId,
-                SourcePositionId = context.CurrentPositionId,
+                SourcePositionId = (int)context.CurrentPositionId,
                 LastChangeDate = DateTime.Now,
                 Date = DateTime.Now,
                 CreateDate = DateTime.Now,
@@ -696,7 +698,7 @@ namespace BL.Logic.DocumentCore
                 IsFavourite = false,
                 LastChangeDate = DateTime.Now,
                 LastChangeUserId = context.CurrentAgentId,
-                PositionId = context.CurrentPositionId,
+                PositionId = (int)context.CurrentPositionId,
             };
 
             document.Accesses = new List<BaseDocumentAccess>() { acc };
@@ -723,8 +725,11 @@ namespace BL.Logic.DocumentCore
 
         public void AddDocumentLink(IContext context, AddDocumentLink model)
         {
-            var docDB = DmsResolver.Current.Get<IDocumentsDbProcess>();
-            docDB.AddDocumentLink(context, model);
+            var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
+            var fullDocument = documentDb.GetDocument(context, model.DocumentId);
+            var adm = DmsResolver.Current.Get<IAdminService>();
+            adm.VerifyAccessForCurrentUser(context, "Documents", "ModifyDocument", fullDocument.ExecutorPositionId);
+            documentDb.AddDocumentLink(context, model);
         }
 
 

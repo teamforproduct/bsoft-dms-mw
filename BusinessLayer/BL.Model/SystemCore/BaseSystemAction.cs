@@ -15,7 +15,9 @@ namespace BL.Model.SystemCore
         public string Description { get; set; }
         public bool IsGrantable { get; set; }
         public bool IsGrantableByRecordId { get; set; }
-
+        public int PositionId { get; set; }
+        public string PositionName { get; set; }
+        public string PositionAgentName { get; set; }
         public string ObjectName { get; set; }
 
     }

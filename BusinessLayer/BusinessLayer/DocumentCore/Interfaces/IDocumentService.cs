@@ -10,7 +10,7 @@ namespace BL.Logic.DocumentCore.Interfaces
     {
         int SaveDocument(IContext context, FullDocument document);
 
-        int AddDocumentByTemplateDocument(IContext context, int templateDocumentId);
+        int AddDocumentByTemplateDocument(IContext context, AddDocumentByTemplateDocument addDocumentByTemplateDocument);
         int ModifyDocument(IContext context, ModifyDocument document);
         void DeleteDocument(IContext cxt, int id);
 

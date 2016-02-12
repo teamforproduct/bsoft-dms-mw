@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BL.Model.DocumentCore
 {
-    public class ModifyDocumentRestrictedSendListByStandartSendList : CurrentPosition
+    public class ModifyDocumentRestrictedSendListByStandartSendList
     {
         public int StandartSendListId { get; set; }
         public int DocumentId { get; set; }

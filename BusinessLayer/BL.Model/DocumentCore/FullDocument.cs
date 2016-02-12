@@ -51,7 +51,6 @@ namespace BL.Model.DocumentCore
         public string RegistrationJournalName { get; set; }
         public string ExecutorPositionName { get; set; }
         public string ExecutorPositionAgentName { get; set; }
-        public string ExecutorAgentName { get; set; }
 
         public string SenderAgentName { get; set; }
         public string SenderAgentPersonName { get; set; }

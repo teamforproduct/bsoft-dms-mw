@@ -9,19 +9,40 @@ namespace BL.CrossCutting.Context
 {
     public class DefaultContext :IContext
     {
+        private int? _currentPositionId;
+        private List<int> _currentPositionsIdList;
         public Employee CurrentEmployee { get; set; }
-        public List<CurrentPosition> CurrentPosition { get; set; }
-
-        public int CurrentPositionId
+        public List<int> CurrentPositionsIdList
         {
             get
             {
-                var position = CurrentPosition?.FirstOrDefault();
-                if (position == null)
+                //var position = CurrentPositions?.FirstOrDefault();
+                if ((_currentPositionsIdList == null)||(_currentPositionsIdList.Count()==0))
                 {
                     throw new UserPositionIsNotDefined();
                 }
-                return position.CurrentPositionId;
+                return _currentPositionsIdList;
+            }
+            set
+            {
+                _currentPositionsIdList = value;
+            }
+        }
+
+        public int? CurrentPositionId
+        {
+            get
+            {
+                //var position = CurrentPositions?.FirstOrDefault();
+                if (_currentPositionId == null)
+                {
+                    throw new UserPositionIsNotDefined();
+                }
+                return _currentPositionId;
+            }
+            set
+            {
+                _currentPositionId = value;
             }
         }
 

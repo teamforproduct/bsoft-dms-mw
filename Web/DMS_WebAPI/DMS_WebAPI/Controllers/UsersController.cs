@@ -15,9 +15,10 @@ namespace DMS_WebAPI.Controllers
         /// <summary>
         /// Получение списка должностей, доступных текущего для пользователя
         /// </summary>
-        /// <returns></returns>
-        [Route("Position")]
-        public IHttpActionResult Get()
+        /// <returns>список должностей</returns>
+        [Route("AvailablePositions")]
+        [HttpGet]
+        public IHttpActionResult AvailablePositions()
         {
             var context = DmsResolver.Current.Get<UserContext>().Get();
             var admProc = DmsResolver.Current.Get<IAdminService>();
@@ -25,15 +26,30 @@ namespace DMS_WebAPI.Controllers
         }
 
         /// <summary>
-        /// Установка должности, от которой будет работать текущий пользователь
+        /// Получение массива ИД должностей, выбранных текущим пользователем
         /// </summary>
-        /// <param name="positionId">ИД должности</param>
-        /// <returns></returns>
-        [Route("Position")]
-        public IHttpActionResult Post([FromBody]int positionId)
+        /// <returns>массива ИД должностей</returns>
+        [Route("ChoosenPositions")]
+        [HttpGet]
+        public IHttpActionResult ChoosenPositions()
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            cxt.CurrentPosition = new List<CurrentPosition>() { new CurrentPosition { CurrentPositionId = positionId } };
+            var context = DmsResolver.Current.Get<UserContext>().Get();
+            return new JsonResult(context.CurrentPositionsIdList, this);
+        }
+
+        /// <summary>
+        /// Установка должностей, от которых будет работать текущий пользователь
+        /// </summary>
+        /// <param name="positionsIdList">ИД должности</param>
+        /// <returns></returns>
+        [Route("ChoosenPositions")]
+        public IHttpActionResult Post([FromBody]List<int> positionsIdList)
+        {
+            var context = DmsResolver.Current.Get<UserContext>().Get();
+            var admProc = DmsResolver.Current.Get<IAdminService>();
+            admProc.VerifyAccessForCurrentUser(context, positionsIdList);
+            context.CurrentPositionsIdList = positionsIdList;
+            //cxt.CurrentPositions = new List<CurrentPosition>() { new CurrentPosition { CurrentPositionId = positionId } };
             return new JsonResult(null, this);
         }
 

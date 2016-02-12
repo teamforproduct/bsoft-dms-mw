@@ -82,38 +82,54 @@ namespace BL.Database.SystemDb
 
         public IEnumerable<BaseSystemAction> GetSystemActions(IContext ctx, FilterSystemAction filter)
         {
-
+            var res = new List<BaseSystemAction>();
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-                var qry = dbContext.SystemActionsSet.AsQueryable();
+                foreach (int posId in filter.PositionsIdList)
+                {
+                    var qry = dbContext.SystemActionsSet.AsQueryable();
 
-                if (filter.Id?.Count > 0)
-                {
-                    qry = qry.Where(x => filter.Id.Contains(x.Id));
-                }
-                if (!string.IsNullOrEmpty(filter.Code))
-                {
-                    qry = qry.Where(x => x.Code.Contains(filter.Code));
-                }
-                if (!string.IsNullOrEmpty(filter.ObjectCode))
-                {
-                    qry = qry.Where(x => x.Object.Code.Contains(filter.ObjectCode));
-                }
 
-                if (filter.IsAvailabel??false)
-                {
-                    qry = qry.Where(x => !x.IsGrantable || (x.RoleActions.Any(y => y.Role.UserRoles.Any(z => z.UserId == ctx.CurrentAgentId))) );
-                }
+                    if (filter.Id?.Count > 0)
+                    {
+                        qry = qry.Where(x => filter.Id.Contains(x.Id));
+                    }
+                    if (!string.IsNullOrEmpty(filter.Code))
+                    {
+                        qry = qry.Where(x => x.Code.Contains(filter.Code));
+                    }
+                    if (!string.IsNullOrEmpty(filter.ObjectCode))
+                    {
+                        qry = qry.Where(x => x.Object.Code.Contains(filter.ObjectCode));
+                    }
 
-                return qry.Select(x => new BaseSystemAction
-                {
-                    Id = x.Id,
-                    Code = x.Code,
-                    API = x.API,
-                    Description = x.Description,
-                    IsGrantable = x.IsGrantable,
-                    IsGrantableByRecordId = x.IsGrantableByRecordId
-                }).ToList();
+                    if (filter.IsAvailabel ?? false)
+                    {
+                        qry = qry.Where(x => !x.IsGrantable
+                                                || (x.RoleActions.Any(y => (posId == y.Role.PositionId)
+                                                                            &&
+                                                                            y.Role.UserRoles.Any(z => z.UserId == ctx.CurrentAgentId))));
+                    }
+
+
+                    res.AddRange(qry.Join
+                              (dbContext.DictionaryPositionsSet.Where(y => y.Id == posId),
+                              a => 1,
+                              p => 1,
+                              (a, p) => new BaseSystemAction
+                              {
+                                  Id = a.Id,
+                                  Code = a.Code,
+                                  API = a.API,
+                                  Description = a.Description,
+                                  IsGrantable = a.IsGrantable,
+                                  IsGrantableByRecordId = a.IsGrantableByRecordId,
+                                  PositionId = posId,
+                                  PositionName = p.Name,
+                                  PositionAgentName = p.ExecutorAgent.Name
+                              }).ToList());
+                }
+                return res;
             }
         }
 

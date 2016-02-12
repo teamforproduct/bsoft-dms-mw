@@ -5,7 +5,7 @@ using BL.Model.Users;
 
 namespace BL.Model.DocumentCore
 {
-    public class ModifyDocumentSendListStage : CurrentPosition
+    public class ModifyDocumentSendListStage
     {
         public int DocumentId { get; set; }
         public int Stage { get; set; }

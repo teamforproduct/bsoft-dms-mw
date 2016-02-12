@@ -10,7 +10,7 @@ namespace BL.Model.DocumentCore.Actions
     /// <summary>
     /// Модель для связывания документов
     /// </summary>
-    public class AddDocumentLink : CurrentPosition
+    public class AddDocumentLink
     {
         /// <summary>
         /// ИД документа

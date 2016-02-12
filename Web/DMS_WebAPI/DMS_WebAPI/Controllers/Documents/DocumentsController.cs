@@ -217,13 +217,13 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <summary>
         /// Добавление документа по шаблону
         /// </summary>
-        /// <param name="templateId">ИД шаблона документа</param>
+        /// <param name="model"></param>
         /// <returns>Добавленный документ</returns>
-        public IHttpActionResult Post([FromBody]int templateId)
+        public IHttpActionResult Post([FromBody]AddDocumentByTemplateDocument model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            return Get(docProc.AddDocumentByTemplateDocument(cxt, templateId));
+            return Get(docProc.AddDocumentByTemplateDocument(cxt, model));
             //return new JsonResult(null,this);
         }
 
@@ -243,7 +243,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <summary>
         /// Удаление документа 
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">ИД документа</param>
         /// <returns></returns>
         public IHttpActionResult Delete(int id)
         {

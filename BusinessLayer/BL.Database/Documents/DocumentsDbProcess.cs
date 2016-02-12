@@ -252,7 +252,7 @@ namespace BL.Database.Documents
                                //from sendAp in ap.DefaultIfEmpty()
 
                            where
-                               acc.PositionId == ctx.CurrentPositionId &&
+                               ctx.CurrentPositionsIdList.Contains(acc.PositionId) &&
                                (!filters.IsInWork || filters.IsInWork && acc.IsInWork == filters.IsInWork)
                            select new
                            {
@@ -486,7 +486,7 @@ namespace BL.Database.Documents
                              join ap in dbContext.DictionaryAgentPersonsSet on dc.SenderAgentPersonId equals ap.Id into ap
                              from sendAp in ap.DefaultIfEmpty()
 
-                             where dc.Id == documentId && acc.PositionId == ctx.CurrentPositionId
+                             where dc.Id == documentId && ctx.CurrentPositionsIdList.Contains(acc.PositionId)
                              select new
                              {
                                  Doc = dc,

@@ -8,7 +8,7 @@ namespace BL.Model.DocumentCore
     /// <summary>
     /// Модель для модификации документа
     /// </summary>
-    public class ModifyDocument: CurrentPosition
+    public class ModifyDocument
     {
         /// <summary>
         /// ИД Документа

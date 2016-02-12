@@ -25,7 +25,7 @@ namespace DMS_WebAPI.Utilities
         /// <typeparam name="T">Expected setting value type.</typeparam>
         /// <param key="settingName">Setting key.</param>
         /// <returns>Typed setting value.</returns>
-        public IContext Get()
+        public IContext Get(int? currentPositionId = null)
         {
             string token = Token.ToLower();
             if (!_casheContexts.ContainsKey(token))
@@ -37,7 +37,9 @@ namespace DMS_WebAPI.Utilities
             try
             {
                 contextValue.LastUsage = DateTime.Now;
-                return (IContext)(contextValue.StoreObject);
+                var cxt = (IContext)(contextValue.StoreObject);
+                cxt.CurrentPositionId = currentPositionId;
+                return cxt;
             }
             catch (InvalidCastException invalidCastException)
             {

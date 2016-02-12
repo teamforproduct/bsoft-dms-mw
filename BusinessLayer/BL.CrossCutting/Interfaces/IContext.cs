@@ -7,9 +7,9 @@ namespace BL.CrossCutting.Interfaces
     public interface IContext
     {
         Employee CurrentEmployee { get; set; }
-        List<CurrentPosition> CurrentPosition { get; set; }
+        List<int> CurrentPositionsIdList { get; set; }
         DatabaseModel CurrentDB { get; set; }
-        int CurrentPositionId { get; }
+        int? CurrentPositionId { get; set; }
         int CurrentAgentId { get; }
     }
 }

@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 
 namespace BL.Model.DocumentCore
 {
-    public class ModifyDocumentRestrictedSendList : CurrentPosition
+    public class ModifyDocumentRestrictedSendList
     {
         [IgnoreDataMember]
         public int Id { get; set; }

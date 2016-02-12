@@ -102,6 +102,7 @@
     <Compile Include="DocumentCore\BaseDocumentWaits.cs" />
     <Compile Include="DocumentAdditional\DocumentFileIdentity.cs" />
     <Compile Include="DocumentAdditional\ModifyDocumentFile.cs" />
+    <Compile Include="DocumentCore\AddDocumentByTemplateDocument.cs" />
     <Compile Include="DocumentCore\FilterDocumentEvent.cs" />
     <Compile Include="DocumentCore\ModifyDocumentSavedFilter.cs" />
     <Compile Include="DocumentCore\ModifyDocumentSendListStage.cs" />
