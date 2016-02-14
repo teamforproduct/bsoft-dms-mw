@@ -16,6 +16,7 @@ using BL.Model.Database;
 using BL.Model.Exception;
 using BL.Database.SystemDb;
 using BL.Logic.AdminCore.Interfaces;
+using BL.Logic.DocumentCore.Commands;
 
 namespace BL.Logic.DocumentCore
 {
@@ -67,7 +68,7 @@ namespace BL.Logic.DocumentCore
                 CreateDate = DateTime.Now,
                 DocumentSubjectId = baseTemplateDocument.DocumentSubjectId,
                 Description = baseTemplateDocument.Description,
-                ExecutorPositionId = model.CurrentPositionId, ////
+                ExecutorPositionId = (int)context.CurrentPositionId, ////
                 SenderAgentId = baseTemplateDocument.DocumentDirection == EnumDocumentDirections.External ? baseTemplateDocument.SenderAgentId : null,
                 SenderAgentPersonId = baseTemplateDocument.DocumentDirection == EnumDocumentDirections.External ? baseTemplateDocument.SenderAgentPersonId : null,
                 Addressee = baseTemplateDocument.DocumentDirection == EnumDocumentDirections.External ? baseTemplateDocument.Addressee : null
@@ -130,13 +131,14 @@ namespace BL.Logic.DocumentCore
             return SaveDocument(context, baseDocument);
         }
 
-        public int ModifyDocument(IContext context, ModifyDocument document)
+        public int ModifyDocument(IContext context, ModifyDocument model)
         {
-            var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
-            var fullDocument = documentDb.GetDocument(context, document.Id);
+            var docDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
+            var fullDoc = docDb.GetDocument(context, model.Id);
             var adm = DmsResolver.Current.Get<IAdminService>();
-            adm.VerifyAccessForCurrentUser(context, "Documents", "ModifyDocument", fullDocument.ExecutorPositionId);
-            var baseDocument = new FullDocument(document);
+            adm.VerifyAccessForCurrentUser(context, "Documents", "ModifyDocument", fullDoc.ExecutorPositionId);
+            context.CurrentPositionId = fullDoc.ExecutorPositionId;
+            var baseDocument = new FullDocument(model);
             var templateDb = DmsResolver.Current.Get<ITemplateDocumentsDbProcess>();
             var baseTemplateDocument = templateDb.GetTemplateDocument(context, baseDocument.TemplateDocumentId);
             if (
@@ -484,8 +486,8 @@ namespace BL.Logic.DocumentCore
 
         public IEnumerable<BaseDocumentSavedFilter> GetSavedFilters(IContext ctx)
         {
-            var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
-            var savedFilters = documentDb.GetSavedFilters(ctx).ToList();
+            var docDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
+            var savedFilters = docDb.GetSavedFilters(ctx).ToList();
             var js = new JavaScriptSerializer();
             for (int i = 0, l = savedFilters.Count; i < l; i++)
             {

@@ -1,22 +1,28 @@
 ﻿using BL.CrossCutting.Common;
 using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
-using BL.Database.Documents;
 using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore;
 using System;
 
-namespace BL.Logic.DocumentCore
+namespace BL.Logic.DocumentCore.Commands
 {
-    internal class UpdateDocument : Command
+    internal class AddDocument : Command
     {
         private readonly IContext _context;
         private readonly FullDocument _document;
 
-        public UpdateDocument(IContext context, FullDocument document)
+        public AddDocument(IContext context,  FullDocument document)
         {
             _context = context;
             _document = document;
+        }
+
+        public override object Execute()
+        {
+            var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
+            documentDb.AddDocument(_context, _document);
+            return null;
         }
 
         public override object Execute(object parameter)
@@ -24,17 +30,9 @@ namespace BL.Logic.DocumentCore
             throw new NotImplementedException();
         }
 
-        public override object Execute()
-        {
-            var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
-            documentDb.UpdateDocument(_context, _document);
-            return null;
-        }
-
         public override bool CanExecute()
         {
             return true;
         }
-
     }
 }

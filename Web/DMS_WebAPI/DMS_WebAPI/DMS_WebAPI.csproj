@@ -213,7 +213,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
-    <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\System\AccountController.cs" />
     <Compile Include="Controllers\Admins\AdminAccessLevelsController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryAgentsController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryResultTypesController.cs" />
@@ -239,10 +239,9 @@
     <Compile Include="Controllers\Documents\DocumentsController.cs" />
     <Compile Include="Controllers\Documents\DocumentSendListStagesController.cs" />
     <Compile Include="Controllers\Documents\DocumentSendListsController.cs" />
-    <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\TemplateDocumentsController.cs" />
-    <Compile Include="Controllers\UsersController.cs" />
-    <Compile Include="Controllers\ValuesController.cs" />
+    <Compile Include="Controllers\System\HomeController.cs" />
+    <Compile Include="Controllers\Documents\TemplateDocumentsController.cs" />
+    <Compile Include="Controllers\System\UsersController.cs" />
     <Compile Include="DependencyInjection\ApiModel.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

@@ -10,34 +10,58 @@ namespace DMS_WebAPI.Controllers.Documents
     [Authorize]
     public class DocumentSendListsController : ApiController
     {
-        // POST: api/DocumentSendLists
+        /// <summary>
+        /// Добавление записи плана работы над документом
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Измененный документ</returns>
         public IHttpActionResult Post([FromBody]ModifyDocumentSendList model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var restrictedSendListId = docProc.AddSendList(cxt, model);
-            return new Results.JsonResult(restrictedSendListId, this);
+            var ctrl = new DocumentsController();
+            ctrl.ControllerContext = ControllerContext;
+            return ctrl.Get(model.DocumentId);
         }
-        
-        // PUT: api/DocumentSendLists
+
+        /// <summary>
+        /// Добавление плана работы над документом по стандартному списку
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Измененный документ</returns>
         public IHttpActionResult Put([FromBody]ModifyDocumentSendListByStandartSendList model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.AddSendListByStandartSendLists(cxt, model);
-            return new Results.JsonResult(null, this);
+            var ctrl = new DocumentsController();
+            ctrl.ControllerContext = ControllerContext;
+            return ctrl.Get(model.DocumentId);
         }
-        // PUT: api/DocumentSendLists/5
+
+        /// <summary>
+        /// Изменение записи плана работы над документом
+        /// </summary>
+        /// <param name="id">ИД записи плана работы над документом</param>
+        /// <param name="model"></param>
+        /// <returns>Измененный документ</returns>
         public IHttpActionResult Put(int id, [FromBody]ModifyDocumentSendList model)
         {
             model.Id = id;
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.UpdateSendList(cxt, model);
-            return new Results.JsonResult(null, this);
+            var ctrl = new DocumentsController();
+            ctrl.ControllerContext = ControllerContext;
+            return ctrl.Get(model.DocumentId);
         }
 
-        // DELETE: api/DocumentSendLists/5
+        /// <summary>
+        /// Удаление записи плана работы над документом
+        /// </summary>
+        /// <param name="id">ИД записи плана работы над документом</param>
+        /// <returns></returns>
         public IHttpActionResult Delete(int id)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();

@@ -7,8 +7,14 @@ using System.Threading.Tasks;
 
 namespace BL.Model.DocumentCore.Actions
 {
+    /// <summary>
+    /// Модель для копирования документа
+    /// </summary>
     public class CopyDocument : CurrentPosition
     {
+        /// <summary>
+        /// ИД Документа
+        /// </summary>
         public int DocumentId { get; set; }
     }
 }

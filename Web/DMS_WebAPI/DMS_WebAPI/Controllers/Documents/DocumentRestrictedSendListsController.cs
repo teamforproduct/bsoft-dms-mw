@@ -10,25 +10,42 @@ namespace DMS_WebAPI.Controllers.Documents
     [Authorize]
     public class DocumentRestrictedSendListsController : ApiController
     {
-        // POST: api/DocumentRestrictedSendLists
+        /// <summary>
+        /// Добавление записи ограничительного списка
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Измененный документ</returns>
         public IHttpActionResult Post([FromBody]ModifyDocumentRestrictedSendList model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var restrictedSendListId = docProc.AddRestrictedSendList(cxt, model);
-            return new Results.JsonResult(restrictedSendListId, this);
+            var ctrl = new DocumentsController();
+            ctrl.ControllerContext = ControllerContext;
+            return ctrl.Get(model.DocumentId);
         }
-        
-        // PUT: api/DocumentRestrictedSendLists
+
+        /// <summary>
+        /// Добавление ограничительного списка по стандартному списку
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Измененный документ</returns>
         public IHttpActionResult Put([FromBody]ModifyDocumentRestrictedSendListByStandartSendList model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.AddRestrictedSendListByStandartSendLists(cxt, model);
-            return new Results.JsonResult(null, this);
+            var ctrl = new DocumentsController();
+            ctrl.ControllerContext = ControllerContext;
+            return ctrl.Get(model.DocumentId);
         }
-
-        // PUT: api/DocumentRestrictedSendLists/5
+        /*
+        /// <summary>
+        /// Добавление ограничительного списка
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="model"></param>
+        /// <returns>Измененный документ</returns>
         public IHttpActionResult Put(int id, [FromBody]ModifyDocumentRestrictedSendList model)
         {
             model.Id = id;
@@ -37,8 +54,12 @@ namespace DMS_WebAPI.Controllers.Documents
             docProc.UpdateRestrictedSendList(cxt, model);
             return new Results.JsonResult(null, this);
         }
-
-        // DELETE: api/DocumentRestrictedSendLists/5
+        */
+        /// <summary>
+        /// Удаление записи ограничительного списка
+        /// </summary>
+        /// <param name="id">ИД записи ограничительного списка</param>
+        /// <returns></returns>
         public IHttpActionResult Delete(int id)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();

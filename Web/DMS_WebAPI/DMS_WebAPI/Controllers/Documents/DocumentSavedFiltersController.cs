@@ -36,7 +36,7 @@ namespace DMS_WebAPI.Controllers.Documents
         // POST: api/DocumentSavedFilters
         public IHttpActionResult Post([FromBody]ModifyDocumentSavedFilter model)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             return Get(docProc.SaveSavedFilter(cxt, model));
         }
@@ -44,7 +44,7 @@ namespace DMS_WebAPI.Controllers.Documents
         // PUT: api/DocumentSavedFilters/5
         public IHttpActionResult Put(int id, [FromBody]ModifyDocumentSavedFilter model)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             return Get(docProc.SaveSavedFilter(cxt, model));
         }

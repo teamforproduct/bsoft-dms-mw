@@ -13,22 +13,30 @@ namespace DMS_WebAPI.Controllers.Admins
     [Authorize]
     public class AdminAccessLevelsController : ApiController
     {
-        // GET: api/AdminAccessLevels
+        /// <summary>
+        /// Получение словаря уровней доступа
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns>Список уровней доступа</returns>
         public IHttpActionResult Get([FromUri] FilterAdminAccessLevel filter)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var tmpAdminProc = DmsResolver.Current.Get<IAdminService>();
-            var tmpAdmin = tmpAdminProc.GetAdminAccessLevels(cxt, filter);
-            return new JsonResult(tmpAdmin, this);
+            var admProc = DmsResolver.Current.Get<IAdminService>();
+            var accLevels = admProc.GetAdminAccessLevels(cxt, filter);
+            return new JsonResult(accLevels, this);
         }
 
-        // GET: api/AdminAccessLevels/5
+        /// <summary>
+        /// Получение словаря уровней доступа по ИД
+        /// </summary>
+        /// <param name="id">ИД уровня доступа</param>
+        /// <returns>Уровень доуступа</returns>
         public IHttpActionResult Get(int id)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var tmpAdminProc = DmsResolver.Current.Get<IAdminService>();
-            var tmpAdmin = tmpAdminProc.GetAdminAccessLevel(cxt, id);
-            return new JsonResult(tmpAdmin, this);
+            var admProc = DmsResolver.Current.Get<IAdminService>();
+            var accLevel = admProc.GetAdminAccessLevel(cxt, id);
+            return new JsonResult(accLevel, this);
         }
     }
 }

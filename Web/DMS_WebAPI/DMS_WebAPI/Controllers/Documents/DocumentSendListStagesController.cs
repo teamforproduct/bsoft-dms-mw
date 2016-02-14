@@ -10,17 +10,24 @@ namespace DMS_WebAPI.Controllers.Documents
     [Authorize]
     public class DocumentSendListStagesController : ApiController
     {
-        // POST: api/DocumentSendListStages
+        /// <summary>
+        /// Добавление этапа плана работы над документом
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public IHttpActionResult Post([FromBody]ModifyDocumentSendListStage model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            bool isLastStage =docProc.AddSendListStage(cxt, model);
-
+            bool isLastStage = docProc.AddSendListStage(cxt, model);
             return Get(model.DocumentId, isLastStage);
         }
 
-        // DELETE: api/DocumentSendListStages/5
+        /// <summary>
+        /// Удаление этапа плана работы над документом
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public IHttpActionResult Delete([FromBody]ModifyDocumentSendListStage model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
@@ -30,6 +37,12 @@ namespace DMS_WebAPI.Controllers.Documents
             return Get(model.DocumentId);
         }
 
+        /// <summary>
+        /// Получение плана работы над документом
+        /// </summary>
+        /// <param name="DocumentId">ИД документа</param>
+        /// <param name="isLastStage"></param>
+        /// <returns>План работы над документом</returns>
         private IHttpActionResult Get(int DocumentId, bool isLastStage = false)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();

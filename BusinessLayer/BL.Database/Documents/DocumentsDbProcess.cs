@@ -634,7 +634,7 @@ namespace BL.Database.Documents
                             GeneralInfo = string.Empty
                         }).ToList();
 
-                doc.SendListStageMax = doc.SendLists.Max(x => x.Stage);
+                doc.SendListStageMax = (doc.SendLists == null) || (doc.SendLists.Count() == 0) ? 0 : doc.SendLists.Max(x => x.Stage);
 
 
 

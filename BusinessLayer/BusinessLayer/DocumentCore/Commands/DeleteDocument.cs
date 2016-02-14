@@ -6,7 +6,7 @@ using BL.Model.DocumentCore;
 using BL.Model.Exception;
 using System;
 
-namespace BL.Logic.DocumentCore 
+namespace BL.Logic.DocumentCore.Commands
 {
     internal class DeleteDocument : Command
     {

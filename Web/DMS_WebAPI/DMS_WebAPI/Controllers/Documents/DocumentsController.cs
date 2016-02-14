@@ -221,7 +221,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns>Добавленный документ</returns>
         public IHttpActionResult Post([FromBody]AddDocumentByTemplateDocument model)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             return Get(docProc.AddDocumentByTemplateDocument(cxt, model));
             //return new JsonResult(null,this);

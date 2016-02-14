@@ -33,7 +33,6 @@ namespace BL.CrossCutting.Context
         {
             get
             {
-                //var position = CurrentPositions?.FirstOrDefault();
                 if (_currentPositionId == null)
                 {
                     throw new UserPositionIsNotDefined();
