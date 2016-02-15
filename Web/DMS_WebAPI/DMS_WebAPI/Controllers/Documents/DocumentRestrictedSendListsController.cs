@@ -11,33 +11,50 @@ namespace DMS_WebAPI.Controllers.Documents
     public class DocumentRestrictedSendListsController : ApiController
     {
         /// <summary>
+        /// Получение записи ограничительного списка
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>Запись ограничительного списка</returns>
+        private IHttpActionResult Get(int id)
+        {
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            return new JsonResult(docProc.GetRestrictedSendList(cxt, id), this);
+        }
+        /// <summary>
+        /// Получение записей ограничительного списка
+        /// </summary>
+        /// <param name="documentId"></param>
+        /// <returns>Записи ограничительного списка</returns>
+        private IHttpActionResult GetByDocument(int documentId)
+        {
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            return new JsonResult(docProc.GetRestrictedSendLists(cxt, documentId), this);
+        }
+        /// <summary>
         /// Добавление записи ограничительного списка
         /// </summary>
         /// <param name="model"></param>
-        /// <returns>Измененный документ</returns>
+        /// <returns>Измененные записи ограничительного списка</returns>
         public IHttpActionResult Post([FromBody]ModifyDocumentRestrictedSendList model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var restrictedSendListId = docProc.AddRestrictedSendList(cxt, model);
-            var ctrl = new DocumentsController();
-            ctrl.ControllerContext = ControllerContext;
-            return ctrl.Get(model.DocumentId);
+            return Get(docProc.AddRestrictedSendList(cxt, model));
         }
 
         /// <summary>
         /// Добавление ограничительного списка по стандартному списку
         /// </summary>
         /// <param name="model"></param>
-        /// <returns>Измененный документ</returns>
+        /// <returns>Измененная записи ограничительного списка</returns>
         public IHttpActionResult Put([FromBody]ModifyDocumentRestrictedSendListByStandartSendList model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.AddRestrictedSendListByStandartSendLists(cxt, model);
-            var ctrl = new DocumentsController();
-            ctrl.ControllerContext = ControllerContext;
-            return ctrl.Get(model.DocumentId);
+            return GetByDocument(model.DocumentId);
         }
         /*
         /// <summary>

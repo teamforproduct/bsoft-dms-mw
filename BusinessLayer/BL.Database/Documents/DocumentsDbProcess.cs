@@ -890,6 +890,30 @@ namespace BL.Database.Documents
                 return sendList;
             }
         }
+        public BaseDocumentRestrictedSendList GetRestrictedSendListBaseById(IContext ctx, int id)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            {
+                //TODO: Refactoring
+                var sendList = dbContext.DocumentRestrictedSendListsSet
+                    .Where(x => x.Id == id)
+                    .Select(x => new BaseDocumentRestrictedSendList
+                    {
+                        Id = x.Id,
+                        DocumentId = x.DocumentId,
+                        PositionId = x.PositionId,
+                        PositionName = x.Position.Name,
+                        PositionExecutorAgentName = x.Position.ExecutorAgent.Name,
+                        AccessLevelId = x.AccessLevelId,
+                        AccessLevelName = x.AccessLevel.Name,
+                        LastChangeUserId = x.LastChangeUserId,
+                        LastChangeDate = x.LastChangeDate,
+                        GeneralInfo = string.Empty
+                    }).FirstOrDefault();
+
+                return sendList;
+            }
+        }
         public IEnumerable<ModifyDocumentRestrictedSendList> GetRestrictedSendList(IContext ctx, int documentId)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
@@ -908,6 +932,32 @@ namespace BL.Database.Documents
                 return sendLists;
             }
         }
+
+        public IEnumerable<BaseDocumentRestrictedSendList> GetRestrictedSendListBase(IContext ctx, int documentId)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            {
+
+                var sendLists = dbContext.DocumentRestrictedSendListsSet
+                    .Where(x => x.DocumentId == documentId)
+                    .Select(x => new BaseDocumentRestrictedSendList
+                    {
+                        Id = x.Id,
+                        DocumentId = x.DocumentId,
+                        PositionId = x.PositionId,
+                        PositionName = x.Position.Name,
+                        PositionExecutorAgentName = x.Position.ExecutorAgent.Name,
+                        AccessLevelId = x.AccessLevelId,
+                        AccessLevelName = x.AccessLevel.Name,
+                        LastChangeUserId = x.LastChangeUserId,
+                        LastChangeDate = x.LastChangeDate,
+                        GeneralInfo = string.Empty
+                    }).ToList();
+
+                return sendLists;
+            }
+        }
+
         public void UpdateRestrictedSendList(IContext ctx, ModifyDocumentRestrictedSendList restrictedSendList)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
@@ -1043,6 +1093,42 @@ namespace BL.Database.Documents
                         DueDate = x.DueDate,
                         DueDay = x.DueDay,
                         AccessLevel = (EnumDocumentAccess)x.AccessLevelId
+                    }).FirstOrDefault();
+
+                return sendLists;
+            }
+        }
+
+        public BaseDocumentSendList GetSendListBaseById(IContext ctx, int id)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            {
+                //TODO: Refactoring
+                var sendLists = dbContext.DocumentSendListsSet
+                    .Where(x => x.Id == id)
+                    .Select(x => new BaseDocumentSendList
+                    {
+                        Id = x.Id,
+                        DocumentId = x.DocumentId,
+                        Stage = x.Stage,
+                        SendType = (EnumSendType)x.SendTypeId,
+                        SendTypeName = x.SendType.Name,
+                        SendTypeCode = x.SendType.Code,
+                        SendTypeIsImportant = x.SendType.IsImportant,
+                        TargetPositionId = x.TargetPositionId,
+                        TargetPositionName = x.TargetPosition.Name,
+                        TargetPositionExecutorAgentName = x.TargetPosition.ExecutorAgent.Name,
+                        Description = x.Description,
+                        DueDate = x.DueDate,
+                        DueDay = x.DueDay,
+                        AccessLevel = (EnumDocumentAccess)x.AccessLevelId,
+                        AccessLevelName = x.AccessLevel.Name,
+                        IsInitial = x.IsInitial,
+                        StartEventId = x.StartEventId,
+                        CloseEventId = x.CloseEventId,
+                        LastChangeUserId = x.LastChangeUserId,
+                        LastChangeDate = x.LastChangeDate,
+                        GeneralInfo = string.Empty
                     }).FirstOrDefault();
 
                 return sendLists;
