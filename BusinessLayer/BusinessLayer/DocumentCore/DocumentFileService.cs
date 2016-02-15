@@ -100,11 +100,11 @@ namespace BL.Logic.DocumentCore
             _fStore.SaveFile(ctx, att);
             return _dbProcess.AddNewFileOrVersion(ctx, att);
         }
-        public IEnumerable<int> AddUserFile(IContext ctx, ModifyDocumentFiles model)
+        public IEnumerable<DocumentAttachedFile> AddUserFile(IContext ctx, ModifyDocumentFiles model)
         {
             var files = _dbProcess.GetDocumentFiles(ctx, model.DocumentId);
 
-            var ids = new List<int>();
+            var res = new List<DocumentAttachedFile>();
             foreach (var file in model.Files)
             {
                 var att = new DocumentAttachedFile
@@ -123,10 +123,10 @@ namespace BL.Logic.DocumentCore
                     WasChangedExternal = false
                 };
                 _fStore.SaveFile(ctx, att);
-                ids.Add(_dbProcess.AddNewFileOrVersion(ctx, att));
+                res.Add(_dbProcess.GetDocumentFileVersion(ctx,_dbProcess.AddNewFileOrVersion(ctx, att)));
             }
 
-            return ids;
+            return res;
         }
 
         public DocumentAttachedFile AddNewVersion(IContext ctx, ModifyDocumentFile model)
