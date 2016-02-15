@@ -19,12 +19,16 @@ namespace BL.Logic.DocumentCore.Interfaces
 
         IEnumerable<BaseSystemUIElement> GetModifyMetaData(IContext cxt, FullDocument doc);
 
+        BaseDocumentRestrictedSendList GetRestrictedSendList(IContext context, int restrictedSendListId);
+        IEnumerable<BaseDocumentRestrictedSendList> GetRestrictedSendLists(IContext context, int documentId);
         void UpdateRestrictedSendList(IContext context, ModifyDocumentRestrictedSendList restrictedSendList);
         int AddRestrictedSendList(IContext context, ModifyDocumentRestrictedSendList restrictedSendList);
         void AddRestrictedSendListByStandartSendLists(IContext context, ModifyDocumentRestrictedSendListByStandartSendList model);
         void DeleteRestrictedSendList(IContext context, int restrictedSendListId);
 
         IEnumerable<BaseDocumentSendListStage> GetSendListStage(IContext context, int documentId, bool isLastStage = false);
+        BaseDocumentSendList GetSendList(IContext context, int sendListId);
+        IEnumerable<BaseDocumentSendList> GetSendLists(IContext context, int documentId);
         void UpdateSendList(IContext context, ModifyDocumentSendList sendList);
         int AddSendList(IContext ctx, ModifyDocumentSendList sendList);
         void AddSendListByStandartSendLists(IContext context, ModifyDocumentSendListByStandartSendList model);

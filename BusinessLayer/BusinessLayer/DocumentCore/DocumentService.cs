@@ -200,6 +200,21 @@ namespace BL.Logic.DocumentCore
         #endregion Documents
 
         #region DocumentRestrictedSendLists
+
+        public BaseDocumentRestrictedSendList GetRestrictedSendList(IContext context, int restrictedSendListId)
+        {
+            var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
+
+            return documentDb.GetRestrictedSendListBaseById(context,restrictedSendListId);
+        }
+
+        public IEnumerable<BaseDocumentRestrictedSendList> GetRestrictedSendLists(IContext context, int documentId)
+        {
+            var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
+
+            return documentDb.GetRestrictedSendListBase(context, documentId);
+        }
+
         public void UpdateRestrictedSendList(IContext context, ModifyDocumentRestrictedSendList restrictedSendList)
         {
             var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
@@ -362,6 +377,21 @@ namespace BL.Logic.DocumentCore
 
             return GetSendListStage(sendLists);
         }
+
+        public BaseDocumentSendList GetSendList(IContext context, int sendListId)
+        {
+            var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
+
+            return documentDb.GetSendListBaseById(context, sendListId);
+        }
+
+        public IEnumerable<BaseDocumentSendList> GetSendLists(IContext context, int documentId)
+        {
+            var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
+
+            return documentDb.GetSendListBase(context, documentId).ToList();
+        }
+
         public void UpdateSendList(IContext context, ModifyDocumentSendList sendList)
         {
             var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
