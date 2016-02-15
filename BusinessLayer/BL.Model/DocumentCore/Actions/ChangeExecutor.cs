@@ -1,13 +1,14 @@
-﻿using BL.Model.Users;
+﻿using BL.Model.Enums;
+using BL.Model.Users;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace BL.Model.DocumentCore.Actions
 {
     /// <summary>
-    /// Модель для отправки сообщения членам рабочей группы
+    /// Модель для передачи управления над документом
     /// </summary>
-    public class SendMessage : CurrentPosition
+    public class ChangeExecutor
     {
         /// <summary>
         /// ИД документа
@@ -15,19 +16,19 @@ namespace BL.Model.DocumentCore.Actions
         [Required]
         public int DocumentId { get; set; }
         /// <summary>
-        /// массив ИД должностей, которым направляется сообщение
+        /// ИД должности кому передается управление
         /// </summary>
         [Required]
-        public List<int> Positions { get; set; }
+        public int PositionId { get; set; }
         /// <summary>
-        /// Сообщение
+        /// Комментарий
         /// </summary>
         [Required]
         public string Description { get; set; }
         /// <summary>
-        /// Добавлять ли в сообщение информацию о всех получателях сообщения
+        /// ИД уровня доступа
         /// </summary>
         [Required]
-        public bool IsAddPositionsInfo { get; set; }
+        public EnumDocumentAccess AccessLevel { get; set; }
     }
 }

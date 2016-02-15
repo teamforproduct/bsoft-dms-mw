@@ -18,11 +18,25 @@ namespace BL.Model.Exception
     public class AccessIsDenied : DmsExceptions
     {
         private const string _MESSAGE = "Access is Denied!";
+        //TODO:передавать параметры
         public AccessIsDenied() : base(_MESSAGE)
         {
         }
 
         public AccessIsDenied(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+    public class DocumentHasAlreadyHadLink : DmsExceptions
+    {
+        private const string _MESSAGE = "Document Has Already Had Link!";
+        //TODO:передавать параметры
+        public DocumentHasAlreadyHadLink() : base(_MESSAGE)
+        {
+        }
+
+        public DocumentHasAlreadyHadLink(System.Exception ex) : base(_MESSAGE, ex)
         {
         }
     }

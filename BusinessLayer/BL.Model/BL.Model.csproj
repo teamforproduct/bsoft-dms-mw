@@ -89,6 +89,7 @@
     <Compile Include="DocumentAdditional\ModifyDocumentFiles.cs" />
     <Compile Include="DocumentCore\Actions\ChangeFavourites.cs" />
     <Compile Include="DocumentCore\Actions\CopyDocument.cs" />
+    <Compile Include="DocumentCore\Actions\ChangeExecutor.cs" />
     <Compile Include="DocumentCore\Actions\SendMessage.cs" />
     <Compile Include="DocumentCore\Actions\AddDocumentLink.cs" />
     <Compile Include="DocumentCore\Actions\ChangeWorkStatus.cs" />
@@ -97,7 +98,6 @@
     <Compile Include="DocumentCore\Actions\AddNote.cs" />
     <Compile Include="DocumentCore\BaseDocumentSavedFilter.cs" />
     <Compile Include="DocumentCore\BaseDocumentStageSendList.cs" />
-    <Compile Include="DocumentCore\BaseDocumentTemporaryRegistration.cs" />
     <Compile Include="DocumentCore\BaseDocumentLink.cs" />
     <Compile Include="DocumentCore\BaseDocumentWaits.cs" />
     <Compile Include="DocumentAdditional\DocumentFileIdentity.cs" />

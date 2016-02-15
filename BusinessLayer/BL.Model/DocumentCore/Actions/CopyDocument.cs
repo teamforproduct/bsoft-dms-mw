@@ -1,6 +1,7 @@
 ﻿using BL.Model.Users;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,6 +16,7 @@ namespace BL.Model.DocumentCore.Actions
         /// <summary>
         /// ИД Документа
         /// </summary>
+        [Required]
         public int DocumentId { get; set; }
     }
 }

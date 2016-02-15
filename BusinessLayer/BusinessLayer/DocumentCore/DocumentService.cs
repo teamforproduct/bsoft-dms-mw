@@ -727,11 +727,17 @@ namespace BL.Logic.DocumentCore
 
         public void AddDocumentLink(IContext context, AddDocumentLink model)
         {
-            var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
-            var fullDocument = documentDb.GetDocument(context, model.DocumentId);
+            var docDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
+            var docLink = new ВaseDocumentLink(model);
+            docLink.Document = docDb.GetDocument(context, docLink.DocumentId);
             var adm = DmsResolver.Current.Get<IAdminService>();
-            adm.VerifyAccessForCurrentUser(context, "Documents", "ModifyDocument", fullDocument.ExecutorPositionId);
-            documentDb.AddDocumentLink(context, model);
+            adm.VerifyAccessForCurrentUser(context, "Documents", "ModifyDocument", docLink.Document.ExecutorPositionId);
+            docLink.ParentDocument = docDb.GetDocument(context, docLink.ParentDocumentId);
+            if ( (docLink.Document.LinkId.HasValue) && (docLink.ParentDocument.LinkId.HasValue) && (docLink.Document.LinkId == docLink.ParentDocument.LinkId))
+            {
+                throw new DocumentHasAlreadyHadLink();
+            }        
+            docDb.AddDocumentLink(context, docLink);
         }
 
 
