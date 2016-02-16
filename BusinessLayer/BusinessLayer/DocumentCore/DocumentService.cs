@@ -59,33 +59,33 @@ namespace BL.Logic.DocumentCore
         public int AddDocumentByTemplateDocument(IContext context, AddDocumentByTemplateDocument model)
         {
             var adm = DmsResolver.Current.Get<IAdminService>();
-            adm.VerifyAccessForCurrentUser(context,"Documents", "AddDocument", model.CurrentPositionId);
-            var db = DmsResolver.Current.Get<ITemplateDocumentsDbProcess>();
-            var baseTemplateDocument = db.GetTemplateDocument(context, model.TemplateDocumentId);
+            adm.VerifyAccessForCurrentUser(context, "Documents", "AddDocument", model.CurrentPositionId);
+            var templDb = DmsResolver.Current.Get<ITemplateDocumentsDbProcess>();
+            var docTemplate = templDb.GetTemplateDocument(context, model.TemplateDocumentId);
             var baseDocument = new FullDocument
             {
-                TemplateDocumentId = baseTemplateDocument.Id,
+                TemplateDocumentId = docTemplate.Id,
                 CreateDate = DateTime.Now,
-                DocumentSubjectId = baseTemplateDocument.DocumentSubjectId,
-                Description = baseTemplateDocument.Description,
+                DocumentSubjectId = docTemplate.DocumentSubjectId,
+                Description = docTemplate.Description,
                 ExecutorPositionId = (int)context.CurrentPositionId, ////
-                SenderAgentId = baseTemplateDocument.DocumentDirection == EnumDocumentDirections.External ? baseTemplateDocument.SenderAgentId : null,
-                SenderAgentPersonId = baseTemplateDocument.DocumentDirection == EnumDocumentDirections.External ? baseTemplateDocument.SenderAgentPersonId : null,
-                Addressee = baseTemplateDocument.DocumentDirection == EnumDocumentDirections.External ? baseTemplateDocument.Addressee : null
+                SenderAgentId = docTemplate.DocumentDirection == EnumDocumentDirections.External ? docTemplate.SenderAgentId : null,
+                SenderAgentPersonId = docTemplate.DocumentDirection == EnumDocumentDirections.External ? docTemplate.SenderAgentPersonId : null,
+                Addressee = docTemplate.DocumentDirection == EnumDocumentDirections.External ? docTemplate.Addressee : null
             };
 
-            if (baseTemplateDocument.RestrictedSendLists != null && baseTemplateDocument.RestrictedSendLists.Any())
+            if (docTemplate.RestrictedSendLists != null && docTemplate.RestrictedSendLists.Any())
             {
-                baseDocument.RestrictedSendLists = baseTemplateDocument.RestrictedSendLists.Select(x => new BaseDocumentRestrictedSendList()
+                baseDocument.RestrictedSendLists = docTemplate.RestrictedSendLists.Select(x => new BaseDocumentRestrictedSendList()
                 {
                     PositionId = x.PositionId,
                     AccessLevelId = (int)x.AccessLevel
                 }).ToList();
             }
 
-            if (baseTemplateDocument.SendLists != null && baseTemplateDocument.SendLists.Any())
+            if (docTemplate.SendLists != null && docTemplate.SendLists.Any())
             {
-                baseDocument.SendLists = baseTemplateDocument.SendLists.Select(x => new BaseDocumentSendList
+                baseDocument.SendLists = docTemplate.SendLists.Select(x => new BaseDocumentSendList
                 {
                     Stage = x.Stage,
                     SendType = x.SendType,
@@ -134,51 +134,22 @@ namespace BL.Logic.DocumentCore
         public int ModifyDocument(IContext context, ModifyDocument model)
         {
             var docDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
-            var fullDoc = docDb.GetDocument(context, model.Id);
+            var doc = docDb.GetDocument(context, model.Id);
             var adm = DmsResolver.Current.Get<IAdminService>();
-            adm.VerifyAccessForCurrentUser(context, "Documents", "ModifyDocument", fullDoc.ExecutorPositionId);
-            context.CurrentPositionId = fullDoc.ExecutorPositionId;
-            var baseDocument = new FullDocument(model);
-            var templateDb = DmsResolver.Current.Get<ITemplateDocumentsDbProcess>();
-            var baseTemplateDocument = templateDb.GetTemplateDocument(context, baseDocument.TemplateDocumentId);
-            if (
-                (
-                        (baseTemplateDocument.DocumentDirection == EnumDocumentDirections.Inner)
-                    &&
-                    (
-                        baseDocument.SenderAgentId != null ||
-                        baseDocument.SenderAgentPersonId != null ||
-                        !string.IsNullOrEmpty(baseDocument.SenderNumber) ||
-                        baseDocument.SenderDate != null ||
-                        !string.IsNullOrEmpty(baseDocument.Addressee)
-                    )
-                )
-                ||
-                (
-                        (baseTemplateDocument.DocumentDirection == EnumDocumentDirections.External)
-                    &&
-                    (
-                        baseDocument.SenderAgentId == null ||
-                        baseDocument.SenderAgentPersonId == null ||
-                        string.IsNullOrEmpty(baseDocument.SenderNumber) ||
-                        baseDocument.SenderDate == null ||
-                        string.IsNullOrEmpty(baseDocument.Addressee)
-                    )
-                )
-                )
-            {
-                throw new WrongInformationAboutCorrespondent();
-            }
-            return SaveDocument(context, baseDocument);
+            adm.VerifyAccessForCurrentUser(context, "Documents", "ModifyDocument", doc.ExecutorPositionId);
+            context.CurrentPositionId = doc.ExecutorPositionId;
+            var docUpd = new FullDocument(model, doc);
+            VerifyDocument(context, docUpd, null);
+            return SaveDocument(context, docUpd);
         }
 
         public void DeleteDocument(IContext context, int id)
         {
-            var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
-            var document = documentDb.GetDocument(context, id);
+            var docDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
+            var doc = docDb.GetDocument(context, id);
             var adm = DmsResolver.Current.Get<IAdminService>();
-            adm.VerifyAccessForCurrentUser(context, "Documents", "DeleteDocument", document.ExecutorPositionId);
-            Command cmd = new DeleteDocument(context, document);
+            adm.VerifyAccessForCurrentUser(context, "Documents", "DeleteDocument", doc.ExecutorPositionId);
+            Command cmd = new DeleteDocument(context, doc);
             if (cmd.CanExecute())
             {
                 cmd.Execute();
@@ -187,12 +158,72 @@ namespace BL.Logic.DocumentCore
 
         public IEnumerable<BaseSystemUIElement> GetModifyMetaData(IContext ctx, FullDocument doc)
         {
-            var systemDb = DmsResolver.Current.Get<ISystemDbProcess>();
-            var uiElements = systemDb.GetSystemUIElements(ctx, new FilterSystemUIElement() { ObjectCode = "Documents", ActionCode = "Modify" });
+            var sysDb = DmsResolver.Current.Get<ISystemDbProcess>();
+            var uiElements = sysDb.GetSystemUIElements(ctx, new FilterSystemUIElement() { ObjectCode = "Documents", ActionCode = "Modify" });
+            uiElements = VerifyDocument(ctx, doc, uiElements);
+            return uiElements;
+        }
+
+        private IEnumerable<BaseSystemUIElement> VerifyDocument(IContext ctx, FullDocument doc,  IEnumerable<BaseSystemUIElement> uiElements)
+        {
             if (doc.DocumentDirection != EnumDocumentDirections.External)
             {
-                var senderElem = new List<String>() { "SenderAgent", "SenderAgentPerson", "SenderNumber", "SenderDate", "Addressee" };
-                uiElements = uiElements.Where(x => !senderElem.Contains(x.Code)).ToList();
+                if (uiElements != null)
+                {
+                    var senderElements = new List<String>() { "SenderAgent", "SenderAgentPerson", "SenderNumber", "SenderDate", "Addressee" };
+                    uiElements = uiElements.Where(x => !senderElements.Contains(x.Code)).ToList();
+                }
+                doc.SenderAgentId = null;
+                doc.SenderAgentPersonId = null;
+                doc.SenderNumber = null;
+                doc.SenderDate = null;
+                doc.Addressee = null;
+            }
+            if ((doc.DocumentDirection != EnumDocumentDirections.External) && (uiElements == null)
+                    &&
+                    (
+                        doc.SenderAgentId == null ||
+                        doc.SenderAgentPersonId == null ||
+                        string.IsNullOrEmpty(doc.SenderNumber) ||
+                        doc.SenderDate == null ||
+                        string.IsNullOrEmpty(doc.Addressee)
+                    )
+                )
+            {
+                throw new NeedInformationAboutCorrespondent();
+            }
+            if (doc.IsHard)
+            {
+                var templDb = DmsResolver.Current.Get<ITemplateDocumentsDbProcess>();
+                var docTemplate = templDb.GetTemplateDocument(ctx, doc.TemplateDocumentId);
+
+                if (docTemplate.DocumentSubjectId.HasValue)
+                {
+                    if (uiElements != null)
+                    {
+                        uiElements.Where(x => x.Code.Equals("DocumentSubject", StringComparison.OrdinalIgnoreCase)).ToList().ForEach(x => x.IsReadOnly = true);
+                    }
+                    doc.DocumentSubjectId = docTemplate.DocumentSubjectId;
+                }
+                if (doc.DocumentDirection == EnumDocumentDirections.External)
+                {
+                    if (docTemplate.SenderAgentId.HasValue)
+                    {
+                        if (uiElements != null)
+                        {
+                            uiElements.Where(x => x.Code.Equals("SenderAgent", StringComparison.OrdinalIgnoreCase)).ToList().ForEach(x => x.IsReadOnly = true);
+                        }
+                        doc.SenderAgentId = docTemplate.SenderAgentId;
+                    }
+                    if (docTemplate.SenderAgentPersonId.HasValue)
+                    {
+                        if (uiElements != null)
+                        {
+                            uiElements.Where(x => x.Code.Equals("SenderAgentPerson", StringComparison.OrdinalIgnoreCase)).ToList().ForEach(x => x.IsReadOnly = true);
+                        }
+                        doc.SenderAgentPersonId = docTemplate.SenderAgentPersonId;
+                    }
+                }
             }
             return uiElements;
         }
@@ -205,7 +236,7 @@ namespace BL.Logic.DocumentCore
         {
             var documentDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
 
-            return documentDb.GetRestrictedSendListBaseById(context,restrictedSendListId);
+            return documentDb.GetRestrictedSendListBaseById(context, restrictedSendListId);
         }
 
         public IEnumerable<BaseDocumentRestrictedSendList> GetRestrictedSendLists(IContext context, int documentId)
@@ -350,10 +381,10 @@ namespace BL.Logic.DocumentCore
         {
             if (sendLists?.Count() > 0)
             {
-                return Enumerable.Range(0, sendLists.Max(x => x.Stage)+1)
+                return Enumerable.Range(0, sendLists.Max(x => x.Stage) + 1)
                     .GroupJoin(sendLists, s => s, sl => sl.Stage
                     , (s, sls) => new { s, sls = sls.Where(x => x.Id > 0) })
-                    .Select (x=>new BaseDocumentSendListStage
+                    .Select(x => new BaseDocumentSendListStage
                     {
                         Stage = x.s,
                         SendLists = x.sls.ToList()
@@ -763,10 +794,10 @@ namespace BL.Logic.DocumentCore
             var adm = DmsResolver.Current.Get<IAdminService>();
             adm.VerifyAccessForCurrentUser(context, "Documents", "ModifyDocument", docLink.Document.ExecutorPositionId);
             docLink.ParentDocument = docDb.GetDocument(context, docLink.ParentDocumentId);
-            if ( (docLink.Document.LinkId.HasValue) && (docLink.ParentDocument.LinkId.HasValue) && (docLink.Document.LinkId == docLink.ParentDocument.LinkId))
+            if ((docLink.Document.LinkId.HasValue) && (docLink.ParentDocument.LinkId.HasValue) && (docLink.Document.LinkId == docLink.ParentDocument.LinkId))
             {
                 throw new DocumentHasAlreadyHadLink();
-            }        
+            }
             docDb.AddDocumentLink(context, docLink);
         }
 

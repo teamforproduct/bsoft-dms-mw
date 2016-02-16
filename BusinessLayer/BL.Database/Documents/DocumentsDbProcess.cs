@@ -612,7 +612,7 @@ namespace BL.Database.Documents
                 doc.EventsCount = doc.Events.Count();
                 doc.NewEventCount = 0;
 
-                doc.LinkedDocuments = dbContext.DocumentsSet.Where(x => x.LinkId == doc.LinkId)
+                doc.LinkedDocuments = dbContext.DocumentsSet.Where(x => (doc.LinkId.HasValue && x.LinkId == doc.LinkId))
                         .Select(y => new FullDocument
                         {
                             Id = y.Id,
@@ -792,7 +792,6 @@ namespace BL.Database.Documents
         }
 
         #endregion Document Event
-
 
         #region Document Access
 
