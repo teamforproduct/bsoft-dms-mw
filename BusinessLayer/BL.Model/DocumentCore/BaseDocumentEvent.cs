@@ -28,5 +28,8 @@ namespace BL.Model.DocumentCore
 
         public string GeneralInfo { get; set; }
 
+        public BaseDocumentWaits OnWaits { get; set; }
+        public BaseDocumentWaits OffWaits { get; set; }
+
     }
 }

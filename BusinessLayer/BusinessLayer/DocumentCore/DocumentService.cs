@@ -670,6 +670,68 @@ namespace BL.Logic.DocumentCore
 
                 }
             };
+            db.AddDocumentWait(context, docWait);
+        }
+
+        public void ControlChange(IContext context, ControlChange model)
+        {
+            var db = DmsResolver.Current.Get<IDocumentsDbProcess>();
+
+            var oldWait = db.GetDocumentWaitByOnEventId(context, model.EventId);
+
+            oldWait.OnEvent = null;
+            oldWait.OffEvent = new BaseDocumentEvent
+            {
+                DocumentId = model.DocumentId,
+                EventType = EnumEventTypes.ControlChange,
+                Description = model.Description,
+                SourcePositionId = (int)context.CurrentPositionId,
+                SourceAgentId = context.CurrentAgentId,
+                TargetPositionId = context.CurrentPositionId,
+                TargetAgentId = context.CurrentAgentId,
+                LastChangeDate = DateTime.Now,
+                Date = DateTime.Now,
+                CreateDate = DateTime.Now,
+            };
+
+            db.UpdateDocumentWait(context,oldWait);
+
+            var newWait = new BaseDocumentWaits
+            {
+                ParentId = oldWait.Id,
+                DocumentId = model.DocumentId,
+                Description = model.Description,
+                DueDate = model.DueDate,
+                AttentionDate = model.AttentionDate,
+                OnEventId = oldWait.OffEvent.Id
+            };
+            db.AddDocumentWait(context, newWait);
+        }
+
+        public void ControlOff(IContext context, ControlOff model)
+        {
+            var db = DmsResolver.Current.Get<IDocumentsDbProcess>();
+
+            var docWait = db.GetDocumentWaitByOnEventId(context, model.EventId);
+
+            docWait.ResultTypeId = model.ResultTypeId;
+
+            docWait.OnEvent = null;
+            docWait.OffEvent = new BaseDocumentEvent
+            {
+                DocumentId = model.DocumentId,
+                EventType = EnumEventTypes.ControlOff,
+                Description = model.Description,
+                SourcePositionId = (int)context.CurrentPositionId,
+                SourceAgentId = context.CurrentAgentId,
+                TargetPositionId = context.CurrentPositionId,
+                TargetAgentId = context.CurrentAgentId,
+                LastChangeDate = DateTime.Now,
+                Date = DateTime.Now,
+                CreateDate = DateTime.Now,
+            };
+
+            db.UpdateDocumentWait(context, docWait);
         }
 
         public int CopyDocument(IContext context, CopyDocument model)

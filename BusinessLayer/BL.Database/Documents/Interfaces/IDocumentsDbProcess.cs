@@ -46,7 +46,9 @@ namespace BL.Database.Documents.Interfaces
         BaseDocumentSavedFilter GetSavedFilter(IContext ctx, int savedFilterId);
         void DeleteSavedFilter(IContext ctx, int savedFilterId);
 
+        BaseDocumentWaits GetDocumentWaitByOnEventId(IContext ctx, int eventId);
         void AddDocumentWait(IContext ctx, BaseDocumentWaits documentWait);
+        void UpdateDocumentWait(IContext ctx, BaseDocumentWaits documentWait);
 
         bool VerifyDocumentRegistrationNumber(IContext ctx, RegisterDocument registerDocument);
         bool SetDocumentRegistration(IContext ctx, RegisterDocument registerDocument);

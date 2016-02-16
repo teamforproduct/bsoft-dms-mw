@@ -756,7 +756,6 @@ namespace BL.Database.Documents
                 }).ToList();
             }
         }
-
         #endregion Document Event
 
 
@@ -1307,7 +1306,66 @@ namespace BL.Database.Documents
         #endregion DocumentSavedFilters
 
         #region DocumentWaits
+        public BaseDocumentWaits GetDocumentWaitByOnEventId(IContext ctx, int eventId)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            {
+                //TODO: Refactoring
+                var waitDb = dbContext.DocumentWaitsSet
+                    .Where(x => x.OnEventId == eventId)
+                    .Select(x => new { Wait = x, OnEvent = x.OnEvent, OffEvent = x.OffEvent })
+                    .FirstOrDefault();
 
+                var wait = new BaseDocumentWaits
+                {
+                    Id = waitDb.Wait.Id,
+                    DocumentId = waitDb.Wait.DocumentId,
+                    ParentId = waitDb.Wait.ParentId,
+                    OnEventId = waitDb.Wait.OnEventId,
+                    OffEventId = waitDb.Wait.OffEventId,
+                    ResultTypeId = waitDb.Wait.ResultTypeId,
+                    Description = waitDb.Wait.Description,
+                    DueDate = waitDb.Wait.DueDate,
+                    AttentionDate = waitDb.Wait.AttentionDate
+                };
+                if (waitDb.OnEvent?.Id>0)
+                {
+                    wait.OnEvent = new BaseDocumentEvent
+                    {
+                        Id = waitDb.Wait.OnEvent.Id,
+                        CreateDate = waitDb.Wait.OnEvent.CreateDate,
+                        Date = waitDb.Wait.OnEvent.Date,
+                        Description = waitDb.Wait.OnEvent.Description,
+                        LastChangeDate = waitDb.Wait.OnEvent.LastChangeDate,
+                        LastChangeUserId = waitDb.Wait.OnEvent.LastChangeUserId,
+                        SourceAgentId = waitDb.Wait.OnEvent.SourceAgentId,
+                        SourcePositionId = waitDb.Wait.OnEvent.SourcePositionId,
+                        TargetAgentId = waitDb.Wait.OnEvent.TargetAgentId,
+                        TargetPositionId = waitDb.Wait.OnEvent.TargetPositionId,
+                        EventType = (EnumEventTypes)waitDb.Wait.OnEvent.EventTypeId
+                    };
+                }
+                if (waitDb.OffEvent?.Id > 0)
+                {
+                    wait.OffEvent = new BaseDocumentEvent
+                    {
+                        Id = waitDb.Wait.OffEvent?.Id ?? 0,
+                        CreateDate = waitDb.Wait.OffEvent.CreateDate,
+                        Date = waitDb.Wait.OffEvent.Date,
+                        Description = waitDb.Wait.OffEvent.Description,
+                        LastChangeDate = waitDb.Wait.OffEvent.LastChangeDate,
+                        LastChangeUserId = waitDb.Wait.OffEvent.LastChangeUserId,
+                        SourceAgentId = waitDb.Wait.OffEvent.SourceAgentId,
+                        SourcePositionId = waitDb.Wait.OffEvent.SourcePositionId,
+                        TargetAgentId = waitDb.Wait.OffEvent.TargetAgentId,
+                        TargetPositionId = waitDb.Wait.OffEvent.TargetPositionId,
+                        EventType = (EnumEventTypes)waitDb.Wait.OffEvent.EventTypeId
+                    };
+                }
+
+                return wait;
+            }
+        }
         public void AddDocumentWait(IContext ctx, BaseDocumentWaits documentWait)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
@@ -1326,44 +1384,92 @@ namespace BL.Database.Documents
                     LastChangeUserId = ctx.CurrentAgentId,
                     LastChangeDate = DateTime.Now
                 };
-                if (documentWait.OnEvent != null)
-                {
-                    docWait.OnEvent = new DocumentEvents
-                    {
-                        DocumentId = documentWait.OnEvent.DocumentId,
-                        EventTypeId = (int)documentWait.OnEvent.EventType,
-                        CreateDate = documentWait.OnEvent.CreateDate,
-                        Date = documentWait.OnEvent.Date,
-                        Description = documentWait.OnEvent.Description,
-                        SourcePositionId = documentWait.OnEvent.SourcePositionId,
-                        SourceAgentId = documentWait.OnEvent.SourceAgentId,
-                        TargetPositionId = documentWait.OnEvent.TargetPositionId,
-                        TargetAgentId = documentWait.OnEvent.TargetAgentId,
-                        LastChangeUserId = ctx.CurrentAgentId,
-                        LastChangeDate = DateTime.Now
-                    };
-                }
-                if (documentWait.OffEvent != null)
-                {
-                    docWait.OffEvent = new DocumentEvents
-                    {
-                        DocumentId = documentWait.OnEvent.DocumentId,
-                        EventTypeId = (int)documentWait.OnEvent.EventType,
-                        CreateDate = documentWait.OnEvent.CreateDate,
-                        Date = documentWait.OnEvent.Date,
-                        Description = documentWait.OnEvent.Description,
-                        SourcePositionId = documentWait.OnEvent.SourcePositionId,
-                        SourceAgentId = documentWait.OnEvent.SourceAgentId,
-                        TargetPositionId = documentWait.OnEvent.TargetPositionId,
-                        TargetAgentId = documentWait.OnEvent.TargetAgentId,
-                        LastChangeUserId = ctx.CurrentAgentId,
-                        LastChangeDate = DateTime.Now
-                    };
-                }
+
+                UpdateDocumentWaitEvents(ctx, docWait, documentWait);
 
                 dbContext.DocumentWaitsSet.Add(docWait);
                 dbContext.SaveChanges();
                 documentWait.Id = docWait.Id;
+                if (docWait.OnEvent?.Id > 0 && documentWait.OnEvent != null)
+                {
+                    documentWait.OnEvent.Id = docWait.OnEvent.Id;
+                }
+                if (docWait.OffEvent?.Id > 0 && documentWait.OffEvent != null)
+                {
+                    documentWait.OffEvent.Id = docWait.OffEvent.Id;
+                }
+            }
+        }
+        public void UpdateDocumentWait(IContext ctx, BaseDocumentWaits documentWait)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            {
+                var docWait = dbContext.DocumentWaitsSet.Where(x => x.Id == documentWait.Id).FirstOrDefault();
+                if (docWait?.Id > 0)
+                {
+                    docWait.DocumentId = documentWait.DocumentId;
+                    docWait.ParentId = documentWait.ParentId;
+                    docWait.OnEventId = documentWait.OnEventId;
+                    docWait.OffEventId = documentWait.OffEventId;
+                    docWait.ResultTypeId = documentWait.ResultTypeId;
+                    docWait.Description = documentWait.Description;
+                    docWait.DueDate = documentWait.DueDate;
+                    docWait.AttentionDate = documentWait.AttentionDate;
+                    docWait.LastChangeUserId = ctx.CurrentAgentId;
+                    docWait.LastChangeDate = DateTime.Now;
+
+                    UpdateDocumentWaitEvents(ctx, docWait, documentWait);
+
+                    dbContext.SaveChanges();
+
+                    if (docWait.OnEvent?.Id > 0 && documentWait.OnEvent != null)
+                    {
+                        documentWait.OnEvent.Id = docWait.OnEvent.Id;
+                    }
+                    if (docWait.OffEvent?.Id > 0 && documentWait.OffEvent != null)
+                    {
+                        documentWait.OffEvent.Id = docWait.OffEvent.Id;
+                    }
+                }
+            }
+        }
+        private void UpdateDocumentWaitEvents(IContext ctx, DocumentWaits docWait, BaseDocumentWaits documentWait)
+        {
+            if (documentWait.OnEvent != null)
+            {
+                    docWait.OnEvent = new DocumentEvents
+                    {
+                        Id=documentWait.Id,
+                        DocumentId = documentWait.OnEvent.DocumentId,
+                        EventTypeId = (int)documentWait.OnEvent.EventType,
+                        CreateDate = documentWait.OnEvent.CreateDate,
+                        Date = documentWait.OnEvent.Date,
+                        Description = documentWait.OnEvent.Description,
+                        SourcePositionId = documentWait.OnEvent.SourcePositionId,
+                        SourceAgentId = documentWait.OnEvent.SourceAgentId,
+                        TargetPositionId = documentWait.OnEvent.TargetPositionId,
+                        TargetAgentId = documentWait.OnEvent.TargetAgentId,
+                        LastChangeUserId = ctx.CurrentAgentId,
+                        LastChangeDate = DateTime.Now
+                    };
+            }
+            if (documentWait.OffEvent != null)
+            {
+                    docWait.OffEvent = new DocumentEvents
+                    {
+                        Id = documentWait.OffEvent.Id,
+                        DocumentId = documentWait.OffEvent.DocumentId,
+                        EventTypeId = (int)documentWait.OffEvent.EventType,
+                        CreateDate = documentWait.OffEvent.CreateDate,
+                        Date = documentWait.OffEvent.Date,
+                        Description = documentWait.OffEvent.Description,
+                        SourcePositionId = documentWait.OffEvent.SourcePositionId,
+                        SourceAgentId = documentWait.OffEvent.SourceAgentId,
+                        TargetPositionId = documentWait.OffEvent.TargetPositionId,
+                        TargetAgentId = documentWait.OffEvent.TargetAgentId,
+                        LastChangeUserId = ctx.CurrentAgentId,
+                        LastChangeDate = DateTime.Now
+                    };
             }
         }
         #endregion DocumentWaits
