@@ -4,6 +4,7 @@
     {
         AddNewDocument = 110, //Создан проект
         ControlOn = 300,//Взят на контроль
+        ControlChange = 310,//Изменить контроль
         ControlOff = 301,//Снят с контроля
         AddNote = 600,//Примечание
         SetInWork = 998,//	Работа возобновлена

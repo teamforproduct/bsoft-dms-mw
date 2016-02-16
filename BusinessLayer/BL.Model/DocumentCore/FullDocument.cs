@@ -88,6 +88,7 @@ namespace BL.Model.DocumentCore
         public IEnumerable<DocumentAttachedFile> DocumentFiles { get; set; }
         public IEnumerable<FullDocument> LinkedDocuments { get; set; }
         public IEnumerable<ВaseDocumentLink> Links { get; set; }
+        public IEnumerable<BaseDocumentWaits> DocumentWaits { get; set; }
 
     }
 }

@@ -33,7 +33,7 @@ namespace BL.CrossCutting.Context
         {
             get
             {
-                if (_currentPositionId == null)
+                if (!_currentPositionId.HasValue)
                 {
                     throw new UserPositionIsNotDefined();
                 }

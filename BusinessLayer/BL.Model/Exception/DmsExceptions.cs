@@ -267,4 +267,15 @@ namespace BL.Model.Exception
         {
         }
     }
+    public class EventNotFoundOrUserHasNoAccess : DmsExceptions
+    {
+        private const string _MESSAGE = "User could not acceess this event!";
+        public EventNotFoundOrUserHasNoAccess() : base(_MESSAGE)
+        {
+        }
+
+        public EventNotFoundOrUserHasNoAccess(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
 }

@@ -134,6 +134,40 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
+        /// Изменить контроль
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("ControlChange")]
+        [HttpPost]
+        public IHttpActionResult ControlChange(ControlChange model)
+        {
+            var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            docProc.ControlChange(cxt, model);
+            var ctrl = new DocumentsController();
+            ctrl.ControllerContext = ControllerContext;
+            return ctrl.Get(model.DocumentId);
+        }
+
+        /// <summary>
+        /// Снять с контроль
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("ControlOff")]
+        [HttpPost]
+        public IHttpActionResult ControlOff(ControlOff model)
+        {
+            var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            docProc.ControlOff(cxt, model);
+            var ctrl = new DocumentsController();
+            ctrl.ControllerContext = ControllerContext;
+            return ctrl.Get(model.DocumentId);
+        }
+
+        /// <summary>
         /// Копирование документа
         /// </summary>
         /// <param name="model"></param>
