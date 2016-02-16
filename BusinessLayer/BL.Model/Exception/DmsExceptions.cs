@@ -278,4 +278,16 @@ namespace BL.Model.Exception
         {
         }
     }
+
+    public class WaitNotFoundOrUserHasNoAccess : DmsExceptions
+    {
+        private const string _MESSAGE = "User could not acceess this wait!";
+        public WaitNotFoundOrUserHasNoAccess() : base(_MESSAGE)
+        {
+        }
+
+        public WaitNotFoundOrUserHasNoAccess(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
 }
