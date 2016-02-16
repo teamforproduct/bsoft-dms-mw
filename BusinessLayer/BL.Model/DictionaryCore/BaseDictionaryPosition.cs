@@ -1,5 +1,4 @@
-﻿using BL.Model.Enums;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace BL.Model.DictionaryCore
@@ -8,10 +7,10 @@ namespace BL.Model.DictionaryCore
     {
 
         public int Id { get; set; }
-        public Nullable<int> ParentId { get; set; }
+        public int? ParentId { get; set; }
         public string Name { get; set; }
         public int DepartmentId { get; set; }
-        public Nullable<int> ExecutorAgentId { get; set; }
+        public int? ExecutorAgentId { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
 

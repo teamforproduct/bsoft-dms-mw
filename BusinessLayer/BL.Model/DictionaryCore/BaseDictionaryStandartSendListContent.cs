@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BL.Model.DictionaryCore
 {
@@ -12,11 +8,11 @@ namespace BL.Model.DictionaryCore
         public int StandartSendListId { get; set; }
         public int Stage { get; set; }
         public int SendTypeId { get; set; }
-        public Nullable<int> TargetPositionId { get; set; }
+        public int? TargetPositionId { get; set; }
         public string Description { get; set; }
-        public Nullable<DateTime> DueDate { get; set; }
+        public DateTime? DueDate { get; set; }
         public int? DueDay { get; set; }
-        public Nullable<int> AccessLevelId { get; set; }
+        public int? AccessLevelId { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
 

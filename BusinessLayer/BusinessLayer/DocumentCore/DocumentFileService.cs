@@ -7,7 +7,6 @@ using BL.Logic.DocumentCore.Interfaces;
 using BL.Logic.SystemLogic;
 using BL.Model.DocumentAdditional;
 using BL.Model.Exception;
-using System.Linq;
 
 namespace BL.Logic.DocumentCore
 {

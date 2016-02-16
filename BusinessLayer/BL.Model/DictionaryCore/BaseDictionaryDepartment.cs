@@ -1,5 +1,4 @@
-﻿using BL.Model.Enums;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace BL.Model.DictionaryCore
@@ -7,7 +6,7 @@ namespace BL.Model.DictionaryCore
     public class BaseDictionaryDepartment
     {
         public int Id { get; set; }
-        public Nullable<int> ParentId { get; set; }
+        public int? ParentId { get; set; }
         public int CompanyId { get; set; }
         public string Name { get; set; }
         public int? ChiefPositionId { get; set; }

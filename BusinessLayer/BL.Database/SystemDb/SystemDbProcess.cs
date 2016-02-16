@@ -103,7 +103,7 @@ namespace BL.Database.SystemDb
                         qry = qry.Where(x => x.Object.Code.Contains(filter.ObjectCode));
                     }
 
-                    if (filter.IsAvailabel ?? false)
+                    if (filter.IsAvailable ?? false)
                     {
                         qry = qry.Where(x => !x.IsGrantable
                                                 || (x.RoleActions.Any(y => (posId == y.Role.PositionId)

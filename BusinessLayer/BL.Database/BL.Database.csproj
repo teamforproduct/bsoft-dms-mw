@@ -119,7 +119,10 @@
     <Compile Include="Dictionaries\DictionariesDbProcess.cs" />
     <Compile Include="Dictionaries\Interfaces\IDictionariesDbProcess.cs" />
     <Compile Include="Documents\DocumentFileDbProcess.cs" />
+    <Compile Include="Documents\DocumentFiltersDbProcess.cs" />
+    <Compile Include="Documents\DocumentOperationsDbProcess.cs" />
     <Compile Include="Documents\DocumentsDbProcess.cs" />
+    <Compile Include="Documents\DocumentSendListsDbProcess.cs" />
     <Compile Include="Documents\Interfaces\IDocumentFileDbProcess.cs" />
     <Compile Include="Documents\Interfaces\IDocumentsDbProcess.cs" />
     <Compile Include="Documents\Interfaces\ITemplateDocumentsDbProcess.cs" />

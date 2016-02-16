@@ -1,6 +1,4 @@
 ﻿using BL.Model.Enums;
-using BL.Model.Users;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace BL.Model.DocumentCore.Actions

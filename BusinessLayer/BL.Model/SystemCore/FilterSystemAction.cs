@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace BL.Model.SystemCore
 {
@@ -11,7 +7,7 @@ namespace BL.Model.SystemCore
         public List<int> Id { get; set; }
         public string Code { get; set; }
         public string ObjectCode { get; set; }
-        public bool? IsAvailabel { get; set; }
+        public bool? IsAvailable { get; set; }
         public List<int> PositionsIdList { get; set; }
 
 

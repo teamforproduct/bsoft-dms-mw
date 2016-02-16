@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using BL.Model.DocumentAdditional;
 using BL.Model.Enums;
-using System.Linq;
 
 namespace BL.Model.DocumentCore
 {
