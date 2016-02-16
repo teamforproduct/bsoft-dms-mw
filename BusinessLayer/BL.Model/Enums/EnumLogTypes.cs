@@ -1,6 +1,6 @@
 ﻿namespace BL.Model.Enums
 {
-    public enum EnumLogType
+    public enum EnumLogTypes
     {
         Information = 0,
         Trace = 1,

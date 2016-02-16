@@ -5,7 +5,7 @@ namespace BL.Model.SystemCore
 {
     public class LogInfo
     {
-        public EnumLogType LogType { get; set; }
+        public EnumLogTypes LogType { get; set; }
         public string Message { get; set; }
         public string LogObjects { get; set; }
         public string LogException { get; set; }

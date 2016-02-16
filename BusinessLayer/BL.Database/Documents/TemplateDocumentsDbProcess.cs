@@ -75,18 +75,18 @@ namespace BL.Database.Documents
                                 x.RestrictedSendLists.Select(y => new BaseTemplateDocumentRestrictedSendLists()
                                 {
                                     PositionId = y.PositionId,
-                                    AccessLevel = (EnumDocumentAccess) y.AccessLevelId
+                                    AccessLevel = (EnumDocumentAccesses) y.AccessLevelId
                                 }).ToList(),
                             SendLists = x.SendLists.Select(y => new BaseTemplateDocumentSendLists()
                             {
-                                SendType = (EnumSendType) y.SendTypeId,
+                                SendType = (EnumSendTypes) y.SendTypeId,
                                 TargetPositionId = y.TargetPositionId,
                                 Description = y.Description,
                                 DueDate = y.DueDate,
                                 Stage = y.Stage,
 
                                 DueDay = y.DueDay,
-                                AccessLevel = (EnumDocumentAccess) y.AccessLevelId
+                                AccessLevel = (EnumDocumentAccesses) y.AccessLevelId
                             }).ToList()
                         }).FirstOrDefault();
             }

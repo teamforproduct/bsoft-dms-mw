@@ -122,7 +122,7 @@ namespace BL.Logic.DocumentCore
 
             var acc = new BaseDocumentAccess
             {
-                AccessLevel = EnumDocumentAccess.PersonalRefIO,
+                AccessLevel = EnumDocumentAccesses.PersonalRefIO,
                 IsInWork = true,
                 IsFavourite = false,
                 LastChangeDate = DateTime.Now,

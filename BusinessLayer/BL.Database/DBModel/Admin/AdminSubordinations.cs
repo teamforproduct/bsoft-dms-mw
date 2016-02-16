@@ -11,16 +11,16 @@ namespace BL.Database.DBModel.Admin
     public class AdminSubordinations
     {
         public int Id { get; set; }
-        public int PositionId { get; set; }
-        public int AddresseePositionId { get; set; }
+        public int SourcePositionId { get; set; }
+        public int TargetPositionId { get; set; }
         public int SubordinationTypeId { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
 
-        [ForeignKey("PositionId")]
-        public virtual DictionaryPositions Position { get; set; }
-        [ForeignKey("AddresseePositionId")]
-        public virtual DictionaryPositions AddresseePosition { get; set; }
+        [ForeignKey("SourcePositionId")]
+        public virtual DictionaryPositions SourcePosition { get; set; }
+        [ForeignKey("TargetPositionId")]
+        public virtual DictionaryPositions TargetPosition { get; set; }
         [ForeignKey("SubordinationTypeId")]
         public virtual DictionarySubordinationTypes SubordinationType { get; set; }
     }

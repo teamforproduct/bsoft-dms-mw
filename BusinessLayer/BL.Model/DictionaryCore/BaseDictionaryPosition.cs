@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BL.Model.Enums;
+using System;
 using System.Collections.Generic;
 
 namespace BL.Model.DictionaryCore
@@ -17,6 +18,7 @@ namespace BL.Model.DictionaryCore
         public string ParentPositionName { get; set; }
         public string DepartmentName { get; set; }
         public string ExecutorAgentName { get; set; }
+        public int? MaxSubordinationTypeId { get; set; }
 
         public virtual IEnumerable<BaseDictionaryPosition> ChildPositions { get; set; }
         public virtual IEnumerable<BaseDictionaryDepartment> ChiefDepartments { get; set; }

@@ -103,8 +103,9 @@
     <Compile Include="DocumentCore\FilterDocumentEvent.cs" />
     <Compile Include="DocumentCore\ModifyDocumentSavedFilter.cs" />
     <Compile Include="DocumentCore\ModifyDocumentSendListStage.cs" />
+    <Compile Include="Enums\EnumSubordinationTypes.cs" />
     <Compile Include="Enums\EnumDocumentDirections.cs" />
-    <Compile Include="Enums\EnumDocumentAccess.cs" />
+    <Compile Include="Enums\EnumDocumentAccesses.cs" />
     <Compile Include="Enums\EnumEventTypes.cs" />
     <Compile Include="DictionaryCore\FilterDictionaryStandartSendList.cs" />
     <Compile Include="Enums\EnumImportanceEventTypes.cs" />
@@ -123,10 +124,10 @@
     <Compile Include="DocumentCore\ModifyDocumentSendListByStandartSendList.cs" />
     <Compile Include="DocumentCore\ModifyDocumentSendList.cs" />
     <Compile Include="DocumentCore\Actions\RegisterDocument.cs" />
-    <Compile Include="Enums\EnumSendType.cs" />
+    <Compile Include="Enums\EnumSendTypes.cs" />
     <Compile Include="Exception\DmsExceptions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Enums\EnumLogType.cs" />
+    <Compile Include="Enums\EnumLogTypes.cs" />
     <Compile Include="SystemCore\FilterSystemUIElement.cs" />
     <Compile Include="SystemCore\FilterSystemAction.cs" />
     <Compile Include="SystemCore\LogInfo.cs" />

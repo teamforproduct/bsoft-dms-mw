@@ -413,7 +413,7 @@ namespace BL.Database.Documents
                 {
                     Id = x.Doc.Id,
                     DocumentTypeId = x.Templ.DocumentTypeId,
-                    AccessLevel = (EnumDocumentAccess)x.Acc.AccessLevelId,
+                    AccessLevel = (EnumDocumentAccesses)x.Acc.AccessLevelId,
                     ExecutorPositionId = x.Doc.ExecutorPositionId,
                     DocumentDirection = (EnumDocumentDirections)x.Templ.DocumentDirectionId,
                     Description = x.Doc.Description,
@@ -542,7 +542,7 @@ namespace BL.Database.Documents
                     SenderDate = dbDoc.Doc.SenderDate,
                     Addressee = dbDoc.Doc.Addressee,
 
-                    AccessLevel = (EnumDocumentAccess)dbDoc.Acc.AccessLevelId,
+                    AccessLevel = (EnumDocumentAccesses)dbDoc.Acc.AccessLevelId,
                     AccessLevelName = dbDoc.AccLevName,
 
                     TemplateDocumentName = dbDoc.Templ.Name,
@@ -572,7 +572,7 @@ namespace BL.Database.Documents
                             IsInWork = dbDoc.Acc.IsInWork,
                             IsFavourite = dbDoc.Acc.IsFavourite,
                             PositionId = dbDoc.Acc.PositionId,
-                            AccessLevel = (EnumDocumentAccess) dbDoc.Acc.AccessLevelId,
+                            AccessLevel = (EnumDocumentAccesses) dbDoc.Acc.AccessLevelId,
                             AccessLevelName = dbDoc.AccLevName,
                             Id = dbDoc.Acc.Id,
                             DocumentId = dbDoc.Acc.DocumentId
@@ -650,7 +650,7 @@ namespace BL.Database.Documents
                             Id = y.Id,
                             DocumentId = y.DocumentId,
                             Stage = y.Stage,
-                            SendType = (EnumSendType)y.SendTypeId,
+                            SendType = (EnumSendTypes)y.SendTypeId,
                             SendTypeName = y.SendType.Name,
                             SendTypeCode = y.SendType.Code,
                             SendTypeIsImportant = y.SendType.IsImportant,
@@ -660,7 +660,7 @@ namespace BL.Database.Documents
                             Description = y.Description,
                             DueDate = y.DueDate,
                             DueDay = y.DueDay,
-                            AccessLevel = (EnumDocumentAccess)y.AccessLevelId,
+                            AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
                             AccessLevelName = y.AccessLevel.Name,
                             IsInitial = y.IsInitial,
                             StartEventId = y.StartEventId,
@@ -900,7 +900,7 @@ namespace BL.Database.Documents
                         IsInWork = acc.IsInWork,
                         DocumentId = acc.DocumentId,
                         IsFavourite = acc.IsFavourite,
-                        AccessLevel = (EnumDocumentAccess)acc.AccessLevelId,
+                        AccessLevel = (EnumDocumentAccesses)acc.AccessLevelId,
                         AccessLevelName = acc.AccessLevel.Name
                     };
                 }
@@ -1065,12 +1065,12 @@ namespace BL.Database.Documents
                         Id = x.Id,
                         DocumentId = x.DocumentId,
                         Stage = x.Stage,
-                        SendType = (EnumSendType)x.SendTypeId,
+                        SendType = (EnumSendTypes)x.SendTypeId,
                         TargetPositionId = x.TargetPositionId,
                         Description = x.Description,
                         DueDate = x.DueDate,
                         DueDay = x.DueDay,
-                        AccessLevel = (EnumDocumentAccess)x.AccessLevelId
+                        AccessLevel = (EnumDocumentAccesses)x.AccessLevelId
                     }).ToList();
 
                 return sendLists;
@@ -1089,7 +1089,7 @@ namespace BL.Database.Documents
                         Id = x.Id,
                         DocumentId = x.DocumentId,
                         Stage = x.Stage,
-                        SendType = (EnumSendType)x.SendTypeId,
+                        SendType = (EnumSendTypes)x.SendTypeId,
                         SendTypeName = x.SendType.Name,
                         SendTypeCode = x.SendType.Code,
                         SendTypeIsImportant = x.SendType.IsImportant,
@@ -1099,7 +1099,7 @@ namespace BL.Database.Documents
                         Description = x.Description,
                         DueDate = x.DueDate,
                         DueDay = x.DueDay,
-                        AccessLevel = (EnumDocumentAccess)x.AccessLevelId,
+                        AccessLevel = (EnumDocumentAccesses)x.AccessLevelId,
                         AccessLevelName = x.AccessLevel.Name,
                         IsInitial = x.IsInitial,
                         StartEventId = x.StartEventId,
@@ -1125,12 +1125,12 @@ namespace BL.Database.Documents
                         Id = x.Id,
                         DocumentId = x.DocumentId,
                         Stage = x.Stage,
-                        SendType = (EnumSendType)x.SendTypeId,
+                        SendType = (EnumSendTypes)x.SendTypeId,
                         TargetPositionId = x.TargetPositionId,
                         Description = x.Description,
                         DueDate = x.DueDate,
                         DueDay = x.DueDay,
-                        AccessLevel = (EnumDocumentAccess)x.AccessLevelId
+                        AccessLevel = (EnumDocumentAccesses)x.AccessLevelId
                     }).FirstOrDefault();
 
                 return sendLists;
@@ -1149,7 +1149,7 @@ namespace BL.Database.Documents
                         Id = x.Id,
                         DocumentId = x.DocumentId,
                         Stage = x.Stage,
-                        SendType = (EnumSendType)x.SendTypeId,
+                        SendType = (EnumSendTypes)x.SendTypeId,
                         SendTypeName = x.SendType.Name,
                         SendTypeCode = x.SendType.Code,
                         SendTypeIsImportant = x.SendType.IsImportant,
@@ -1159,7 +1159,7 @@ namespace BL.Database.Documents
                         Description = x.Description,
                         DueDate = x.DueDate,
                         DueDay = x.DueDay,
-                        AccessLevel = (EnumDocumentAccess)x.AccessLevelId,
+                        AccessLevel = (EnumDocumentAccesses)x.AccessLevelId,
                         AccessLevelName = x.AccessLevel.Name,
                         IsInitial = x.IsInitial,
                         StartEventId = x.StartEventId,

@@ -18,5 +18,9 @@ namespace BL.Model.DictionaryCore
         /// Массив ИД документов для поиска корреспондентов в событиях
         /// </summary>
         public List<int> DocumentId { get; set; }
+        /// <summary>
+        /// Массив ИД должностей для проверки субординации
+        /// </summary>
+        public List<int> SubordinatedPositions { get; set; }
     }
 }

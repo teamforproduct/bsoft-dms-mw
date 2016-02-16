@@ -1,6 +1,6 @@
 ﻿namespace BL.Model.Enums
 {
-    public enum EnumDocumentAccess
+    public enum EnumDocumentAccesses
     {
         NoAccess = 0,
         Personal = 10,

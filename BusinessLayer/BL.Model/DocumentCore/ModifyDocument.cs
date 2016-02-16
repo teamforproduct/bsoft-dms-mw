@@ -48,6 +48,6 @@ namespace BL.Model.DocumentCore
         /// ИД уровня доступа
         /// </summary>
         [Required]
-        public EnumDocumentAccess AccessLevel { get; set; }
+        public EnumDocumentAccesses AccessLevel { get; set; }
     }
 }

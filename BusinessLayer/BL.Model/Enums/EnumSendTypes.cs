@@ -1,6 +1,6 @@
 ﻿namespace BL.Model.Enums
 {
-    public enum EnumSendType
+    public enum EnumSendTypes
     {
         OtvIspolnitel = 10,
         OnCotrol = 20,

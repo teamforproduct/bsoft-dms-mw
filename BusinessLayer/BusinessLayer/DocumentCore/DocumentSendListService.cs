@@ -219,12 +219,12 @@ namespace BL.Logic.DocumentCore
             {
                 DocumentId = model.DocumentId,
                 Stage = x.Stage,
-                SendType = (EnumSendType)x.SendTypeId,
+                SendType = (EnumSendTypes)x.SendTypeId,
                 TargetPositionId = x.TargetPositionId,
                 Description = x.Description,
                 DueDate = x.DueDate,
                 DueDay = x.DueDay.GetValueOrDefault(),
-                AccessLevel = (EnumDocumentAccess)x.AccessLevelId.GetValueOrDefault(),
+                AccessLevel = (EnumDocumentAccesses)x.AccessLevelId.GetValueOrDefault(),
             });
 
             var validSendLists = _documentDb.GetSendList(context, model.DocumentId).ToList();

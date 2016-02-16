@@ -634,6 +634,11 @@ namespace BL.Database.Dictionaries
                                 );
                 }
 
+                if (filter.SubordinatedPositions?.Count > 0)
+                {
+                    qry = qry.Where(x => dbContext.AdminSubordinationsSet.Any(y=>y.TargetPositionId == x.Id && filter.SubordinatedPositions.Contains(y.SourcePositionId)));
+                }
+
                 return qry.Select(x => new BaseDictionaryPosition
                 {
                     Id = x.Id,
@@ -643,7 +648,8 @@ namespace BL.Database.Dictionaries
                     ExecutorAgentId = x.ExecutorAgentId,
                     ParentPositionName = x.ParentPosition.Name,
                     DepartmentName = x.Department.Name,
-                    ExecutorAgentName = x.ExecutorAgent.Name
+                    ExecutorAgentName = x.ExecutorAgent.Name,
+                   // MaxSubordinationTypeId = dbContext.AdminSubordinationsSet.Where(y => y.TargetPositionId == x.Id && filter.SubordinatedPositions.Contains(y.SourcePositionId)).Max(y=>y.SubordinationTypeId)
                 }).ToList();
             }
         }
@@ -749,7 +755,7 @@ namespace BL.Database.Dictionaries
                         Code = x.Code,
                         Name = x.Name,
                         IsImportant = x.IsImportant,
-                        SubordinationTypeId = x.SubordinationTypeId,
+                        SubordinationType = (EnumSubordinationTypes)x.SubordinationTypeId,
                         LastChangeUserId = x.LastChangeUserId,
                         LastChangeDate = x.LastChangeDate,
                         SubordinationTypeName = x.SubordinationType.Name
@@ -774,7 +780,7 @@ namespace BL.Database.Dictionaries
                     Code = x.Code,
                     Name = x.Name,
                     IsImportant = x.IsImportant,
-                    SubordinationTypeId = x.SubordinationTypeId,
+                    SubordinationType = (EnumSubordinationTypes)x.SubordinationTypeId,
                     SubordinationTypeName = x.SubordinationType.Name
                 }).ToList();
             }

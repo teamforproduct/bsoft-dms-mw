@@ -34,7 +34,7 @@ namespace BL.Logic.Logging
         {
             AddLogToDb(ctx, new LogInfo
             {
-                LogType = EnumLogType.Trace,
+                LogType = EnumLogTypes.Trace,
                 Message =  message,
                 LogObjects = string.Format("",args)
             });
@@ -45,7 +45,7 @@ namespace BL.Logic.Logging
         {
             AddLogToDb(ctx, new LogInfo
             {
-                LogType = EnumLogType.Information,
+                LogType = EnumLogTypes.Information,
                 Message = message
             });
         }
@@ -54,7 +54,7 @@ namespace BL.Logic.Logging
         {
             AddLogToDb(ctx, new LogInfo
             {
-                LogType = EnumLogType.Warning,
+                LogType = EnumLogTypes.Warning,
                 Message = message,
                 LogObjects = string.Format("", args)
             });
@@ -64,7 +64,7 @@ namespace BL.Logic.Logging
         {
             AddLogToDb(ctx, new LogInfo
             {
-                LogType = EnumLogType.Error,
+                LogType = EnumLogTypes.Error,
                 Message = message,
                 LogObjects = string.Format("", args)
             });
@@ -74,7 +74,7 @@ namespace BL.Logic.Logging
         {
             AddLogToDb(ctx, new LogInfo
             {
-                LogType = EnumLogType.Error,
+                LogType = EnumLogTypes.Error,
                 Message = message,
                 LogException = string.Format("{0} // {1} // {2} // {3}", exception.GetType(),exception.Message, exception.Data, exception.StackTrace),
                 LogObjects = string.Format("", args)
@@ -85,7 +85,7 @@ namespace BL.Logic.Logging
         {
             AddLogToDb(ctx, new LogInfo
             {
-                LogType = EnumLogType.Fatal,
+                LogType = EnumLogTypes.Fatal,
                 Message = message,
                 LogObjects = string.Format("", args)
             });
@@ -95,7 +95,7 @@ namespace BL.Logic.Logging
         {
             AddLogToDb(ctx, new LogInfo
             {
-                LogType = EnumLogType.Fatal,
+                LogType = EnumLogTypes.Fatal,
                 Message = message,
                 LogException = string.Format("{0} // {1} // {2} // {3}", exception.GetType(), exception.Message, exception.Data, exception.StackTrace),
                 LogObjects = string.Format("", args)
