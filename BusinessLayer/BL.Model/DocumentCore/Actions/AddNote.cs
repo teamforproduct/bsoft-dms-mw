@@ -1,4 +1,5 @@
 ﻿using BL.Model.Users;
+using System.ComponentModel.DataAnnotations;
 
 namespace BL.Model.DocumentCore.Actions
 {
@@ -10,10 +11,12 @@ namespace BL.Model.DocumentCore.Actions
         /// <summary>
         /// ИД Документа
         /// </summary>
+        [Required]
         public int DocumentId { get; set; }
         /// <summary>
         /// Примечание
         /// </summary>
+        [Required]
         public string Description { get; set; }
      
     }

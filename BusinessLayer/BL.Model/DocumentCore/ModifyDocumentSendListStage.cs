@@ -2,6 +2,7 @@
 using BL.Model.Enums;
 using System.Runtime.Serialization;
 using BL.Model.Users;
+using System.ComponentModel.DataAnnotations;
 
 namespace BL.Model.DocumentCore
 {
@@ -13,10 +14,12 @@ namespace BL.Model.DocumentCore
         /// <summary>
         /// ИД документа
         /// </summary>
+        [Required]
         public int DocumentId { get; set; }
         /// <summary>
         /// Этап
         /// </summary>
+        [Required]
         public int Stage { get; set; }
     }
 }

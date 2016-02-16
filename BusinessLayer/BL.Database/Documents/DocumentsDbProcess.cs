@@ -394,7 +394,7 @@ namespace BL.Database.Documents
                 paging.TotalItemsCount = qry.Count(); //TODO pay attention to this when we will add paging
                 qry = qry.OrderByDescending(x => x.Doc.CreateDate)
                     .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
-
+                //TODO GroupJoin
                 var evnt =
                     dbContext.DocumentEventsSet.Join(qry, ev => ev.DocumentId, rs => rs.Doc.Id, (e, r) => new { ev = e })
                         .GroupBy(g => g.ev.DocumentId)
@@ -404,6 +404,9 @@ namespace BL.Database.Documents
                     dbContext.DocumentFilesSet.Join(qry, fl => fl.DocumentId, rs => rs.Doc.Id, (f, r) => new { fil = f })
                         .GroupBy(g => g.fil.DocumentId)
                         .Select(s => new { DocID = s.Key, FileCnt = s.Count() }).ToList();
+
+                var links = qry.GroupJoin(dbContext.DocumentsSet.Where(x => x.LinkId.HasValue), dl => dl.Doc.LinkId, d => d.LinkId,
+                                            (dl, ds) => new { DocID = dl.Doc.Id, LinkCnt = ds.Count() }).ToList();
 
                 var res = qry.Select(x => new FullDocument
                 {
@@ -422,11 +425,12 @@ namespace BL.Database.Documents
                     RegistrationNumberSuffix = x.Doc.RegistrationNumberSuffix,
                     RegistrationJournalId = x.Doc.RegistrationJournalId,
                     RegistrationJournalName = x.RegJurnalName,
-                    RegistrationFullNumber = (!x.Doc.IsRegistered ? "#" : "") +
-                                             (x.Doc.RegistrationNumber != null
-                                                 ? x.Doc.RegistrationNumberPrefix + x.Doc.RegistrationNumber.ToString() +
-                                                   x.Doc.RegistrationNumberSuffix
-                                                 : "#" + x.Doc.Id.ToString()),
+                    RegistrationFullNumber = 
+                                                (!x.Doc.IsRegistered? "#": "") +
+                                                (x.Doc.RegistrationNumber != null
+                                                        ? (x.Doc.RegistrationNumberPrefix + x.Doc.RegistrationNumber.ToString() + x.Doc.RegistrationNumberSuffix)
+                                                        : ("#" + x.Doc.Id.ToString())),
+
                     CreateDate = x.Doc.CreateDate,
                     DocumentSubjectName = x.SubjName,
                     ExecutorPositionName = x.ExecutorPosName,
@@ -436,6 +440,7 @@ namespace BL.Database.Documents
                     DocumentDate = x.Doc.RegistrationDate ?? x.Doc.CreateDate,
                     IsFavourite = x.Acc.IsFavourite,
                     IsInWork = x.Acc.IsInWork,
+                    LinkId = x.Doc.LinkId,
                     EventsCount = 0, //x.Doc.Events.Count,
                     NewEventCount = 0, //TODO
                     AttachedFilesCount = 0, // x.Doc.Files.Count,
@@ -451,6 +456,10 @@ namespace BL.Database.Documents
                 foreach (var x1 in docs.Join(fls, d => d.Id, e => e.DocID, (d, e) => new { doc = d, ev = e }))
                 {
                     x1.doc.AttachedFilesCount = x1.ev.FileCnt;
+                }
+                foreach (var x1 in docs.Join(links, d => d.Id, e => e.DocID, (d, e) => new { doc = d, ev = e }))
+                {
+                    x1.doc.LinkedDocumentsCount = x1.ev.LinkCnt;
                 }
 
                 //paging.TotalPageCount = docs.Count; //TODO pay attention to this when we will add paging
@@ -543,15 +552,13 @@ namespace BL.Database.Documents
                     DocumentSubjectName = dbDoc.SubjName,
 
                     DocumentDate = dbDoc.Doc.RegistrationDate ?? dbDoc.Doc.CreateDate,
-                    RegistrationFullNumber = !dbDoc.Doc.IsRegistered
-                        ? "#"
-                        : "" +
-                          dbDoc.Doc.RegistrationNumber != null
-                            ? dbDoc.Doc.RegistrationNumberPrefix + dbDoc.Doc.RegistrationNumber.ToString() +
-                              dbDoc.Doc.RegistrationNumberSuffix
-                            : "#" + dbDoc.Doc.Id.ToString(),
+                    RegistrationFullNumber =
+                                                (!dbDoc.Doc.IsRegistered ? "#" : "") +
+                                                (dbDoc.Doc.RegistrationNumber != null
+                                                        ? (dbDoc.Doc.RegistrationNumberPrefix + dbDoc.Doc.RegistrationNumber.ToString() + dbDoc.Doc.RegistrationNumberSuffix)
+                                                        : ("#" + dbDoc.Doc.Id.ToString())),
                     GeneralInfo = dbDoc.DirName + " " + dbDoc.DocTypeName,
-
+                    LinkId = dbDoc.Doc.LinkId,
                     IsFavourite = dbDoc.Acc.IsFavourite,
                     IsInWork = dbDoc.Acc.IsInWork,
                     Accesses = new List<BaseDocumentAccess>
@@ -605,7 +612,34 @@ namespace BL.Database.Documents
                 doc.EventsCount = doc.Events.Count();
                 doc.NewEventCount = 0;
 
-                doc.LinkedDocumentsCount = 0; //TODO
+                doc.LinkedDocuments = dbContext.DocumentsSet.Where(x => x.LinkId == doc.LinkId)
+                        .Select(y => new FullDocument
+                        {
+                            Id = y.Id,
+                            GeneralInfo = y.TemplateDocument.DocumentDirection.Name + " " + y.TemplateDocument.DocumentType.Name,
+                            RegistrationFullNumber =
+                                                (!y.IsRegistered ? "#" : "") +
+                                                (y.RegistrationNumber != null
+                                                        ? (y.RegistrationNumberPrefix + y.RegistrationNumber.ToString() + y.RegistrationNumberSuffix)
+                                                        : ("#" + y.Id.ToString())),
+                            DocumentDate = y.RegistrationDate ?? y.CreateDate,
+                            Description = y.Description,
+                            Links = dbContext.DocumentLinksSet.Where(z => z.DocumentId == y.Id).
+                                Select(z => new ВaseDocumentLink
+                                {
+                                    Id = z.Id,
+                                    DocumentId = z.DocumentId,
+                                    ParentDocumentId = z.ParentDocumentId,
+                                    GeneralInfo = z.LinkType.Name + " " +
+                                                (!z.ParentDocument.IsRegistered ? "#" : "") +
+                                                (z.ParentDocument.RegistrationNumber != null
+                                                        ? (z.ParentDocument.RegistrationNumberPrefix + z.ParentDocument.RegistrationNumber.ToString() + z.ParentDocument.RegistrationNumberSuffix)
+                                                        : ("#" + z.ParentDocument.Id.ToString()))
+                                    + " " + (z.ParentDocument.RegistrationDate ?? z.ParentDocument.CreateDate).ToString()
+                                    //TODO String.Format("{0:dd.MM.yyyy}", (z.ParentDocument.RegistrationDate ?? z.ParentDocument.CreateDate))
+                                }).ToList()
+                        }).ToList();
+                doc.LinkedDocumentsCount = doc.LinkedDocuments.Count();
 
                 doc.SendLists =
                     dbContext.DocumentSendListsSet.Where(x => x.DocumentId == doc.Id)
@@ -1556,7 +1590,7 @@ namespace BL.Database.Documents
 
         #region DocumentLink    
 
-        public void AddDocumentLink(IContext context, AddDocumentLink model)
+        public void AddDocumentLink(IContext context, ВaseDocumentLink model)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
@@ -1569,27 +1603,17 @@ namespace BL.Database.Documents
                     LastChangeDate = DateTime.Now,
                 };
                 dbContext.DocumentLinksSet.Add(link);
-                var parentDoc = dbContext.DocumentsSet.FirstOrDefault(x => x.Id == model.ParentDocumentId);
-                if (parentDoc == null)
+                if (!model.ParentDocument.LinkId.HasValue)
                 {
-                    throw new DocumentNotFoundOrUserHasNoAccess();
+                    dbContext.DocumentsSet.Where(x => x.Id == model.ParentDocumentId).ToList().ForEach(x => x.LinkId = model.ParentDocumentId);
                 }
-                if (!parentDoc.LinkId.HasValue)
+                if (!model.Document.LinkId.HasValue)
                 {
-                    parentDoc.LinkId = model.ParentDocumentId;
-                }
-                var doc = dbContext.DocumentsSet.FirstOrDefault(x => x.Id == model.DocumentId);
-                if (doc == null)
-                {
-                    throw new DocumentNotFoundOrUserHasNoAccess();
-                }
-                if (!doc.LinkId.HasValue)
-                {
-                    parentDoc.LinkId = model.ParentDocumentId;
+                    dbContext.DocumentsSet.Where(x => x.Id == model.DocumentId).ToList().ForEach(x => x.LinkId = model.ParentDocumentId);
                 }
                 else
                 {
-                    dbContext.DocumentsSet.Where(x => x.LinkId == doc.LinkId).ToList().ForEach(x => x.LinkId = model.ParentDocumentId);
+                    dbContext.DocumentsSet.Where(x => x.LinkId == model.Document.LinkId).ToList().ForEach(x => x.LinkId = model.ParentDocumentId);
                 }
                 dbContext.SaveChanges();
             }

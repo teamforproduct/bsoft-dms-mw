@@ -1,5 +1,6 @@
 ﻿using BL.Model.Users;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
 namespace BL.Model.DocumentCore
@@ -17,14 +18,17 @@ namespace BL.Model.DocumentCore
         /// <summary>
         /// ИД документа
         /// </summary>
+        [Required]
         public int DocumentId { get; set; }
         /// <summary>
         /// ИД должности
         /// </summary>
+        [Required]
         public Nullable<int> PositionId { get; set; }
         /// <summary>
         /// ИД уровня доступа
         /// </summary>
+        [Required]
         public int AccessLevelId { get; set; }
     }
 }

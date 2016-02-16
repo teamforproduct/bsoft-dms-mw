@@ -77,11 +77,8 @@ namespace BL.Model.DocumentCore
         public IEnumerable<BaseDocumentEvent> Events { get; set; }
         public IEnumerable<BaseDocumentAccess> Accesses { get; set; }
         public IEnumerable<DocumentAttachedFile> DocumentFiles { get; set; }
+        public IEnumerable<FullDocument> LinkedDocuments { get; set; }
+        public IEnumerable<ВaseDocumentLink> Links { get; set; }
 
-        public int? TemporaryRegistrationJournalId { get; set; }
-        public int? TemporaryRegistrationNumber { get; set; }
-        public string TemporaryRegistrationNumberSuffix { get; set; }
-        public string TemporaryRegistrationNumberPrefix { get; set; }
-        public DateTime? TemporaryRegistrationDate { get; set; }
     }
 }
