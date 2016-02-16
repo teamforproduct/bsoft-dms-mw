@@ -719,6 +719,21 @@ namespace BL.Database.Documents
 
                 doc.AttachedFilesCount = doc.DocumentFiles.Count();
 
+                doc.DocumentWaits =
+                    dbContext.DocumentWaitsSet.Where(x => x.DocumentId == doc.Id)
+                        .Select(x => new BaseDocumentWaits
+                        {
+                            Id = x.Id,
+                            DocumentId = x.DocumentId,
+                            ParentId = x.ParentId,
+                            OnEventId = x.OnEventId,
+                            OffEventId = x.OffEventId,
+                            ResultTypeId = x.ResultTypeId,
+                            Description = x.Description,
+                            DueDate = x.DueDate,
+                            AttentionDate = x.AttentionDate
+                        }).ToList();
+
                 return doc;
             }
         }
