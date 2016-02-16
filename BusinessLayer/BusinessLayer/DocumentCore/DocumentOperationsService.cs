@@ -20,10 +20,12 @@ namespace BL.Logic.DocumentCore
     public class DocumentOperationsService : IDocumentOperationsService
     {
         private readonly IDocumentsDbProcess _documentDb;
+        private readonly IDocumentOperationsDbProcess _operationDb;
 
-        public DocumentOperationsService(IDocumentsDbProcess documentDb)
+        public DocumentOperationsService(IDocumentsDbProcess documentDb, IDocumentOperationsDbProcess operationDb)
         {
             _documentDb = documentDb;
+            _operationDb = operationDb;
         }
 
         #region DocumentEvents
@@ -46,7 +48,7 @@ namespace BL.Logic.DocumentCore
 
             };
 
-            _documentDb.AddDocumentEvent(context, evt);
+            _operationDb.AddDocumentEvent(context, evt);
         }
 
         #endregion
@@ -66,17 +68,17 @@ namespace BL.Logic.DocumentCore
 
         public int AddDocumentAccess(IContext ctx, BaseDocumentAccess access)
         {
-            return _documentDb.AddDocumentAccess(ctx, access);
+            return _operationDb.AddDocumentAccess(ctx, access);
         }
 
         public void RemoveDocumentAccess(IContext ctx, int accessId)
         {
-            _documentDb.RemoveDocumentAccess(ctx, accessId);
+            _operationDb.RemoveDocumentAccess(ctx, accessId);
         }
 
         public void ChangeDocumentWorkStatus(IContext context, ChangeWorkStatus newStatus)
         {
-            var acc = _documentDb.GetDocumentAccess(context, newStatus.DocumentId);
+            var acc = _operationDb.GetDocumentAccess(context, newStatus.DocumentId);
             if (acc == null)
             {
                 throw new UserHasNoAccessToDocument();
@@ -102,14 +104,14 @@ namespace BL.Logic.DocumentCore
                 }
             };
 
-            _documentDb.SetDocumentInformation(context, ea);
+            _operationDb.SetDocumentInformation(context, ea);
         }
 
         public void ChangeFavouritesForDocument(IContext context, ChangeFavourites model)
         {
-            var acc = _documentDb.GetDocumentAccess(context, model.DocumentId);
+            var acc = _operationDb.GetDocumentAccess(context, model.DocumentId);
             acc.IsFavourite = model.IsFavourite;
-            _documentDb.UpdateDocumentAccess(context, acc);
+            _operationDb.UpdateDocumentAccess(context, acc);
         }
 
         public void ControlOn(IContext context, ControlOn model)
@@ -135,12 +137,12 @@ namespace BL.Logic.DocumentCore
 
                 }
             };
-            _documentDb.AddDocumentWait(context, docWait);
+            _operationDb.AddDocumentWait(context, docWait);
         }
 
         public void ControlChange(IContext context, ControlChange model)
         {
-            var oldWait = _documentDb.GetDocumentWaitByOnEventId(context, model.EventId);
+            var oldWait = _operationDb.GetDocumentWaitByOnEventId(context, model.EventId);
 
             oldWait.OnEvent = null;
             oldWait.OffEvent = new BaseDocumentEvent
@@ -157,7 +159,7 @@ namespace BL.Logic.DocumentCore
                 CreateDate = DateTime.Now,
             };
 
-            _documentDb.UpdateDocumentWait(context, oldWait);
+            _operationDb.UpdateDocumentWait(context, oldWait);
 
             var newWait = new BaseDocumentWaits
             {
@@ -168,12 +170,12 @@ namespace BL.Logic.DocumentCore
                 AttentionDate = model.AttentionDate,
                 OnEventId = oldWait.OffEvent.Id
             };
-            _documentDb.AddDocumentWait(context, newWait);
+            _operationDb.AddDocumentWait(context, newWait);
         }
 
         public void ControlOff(IContext context, ControlOff model)
         {
-            var docWait = _documentDb.GetDocumentWaitByOnEventId(context, model.EventId);
+            var docWait = _operationDb.GetDocumentWaitByOnEventId(context, model.EventId);
 
             docWait.ResultTypeId = model.ResultTypeId;
 
@@ -192,7 +194,7 @@ namespace BL.Logic.DocumentCore
                 CreateDate = DateTime.Now,
             };
 
-            _documentDb.UpdateDocumentWait(context, docWait);
+            _operationDb.UpdateDocumentWait(context, docWait);
         }
 
         public int CopyDocument(IContext context, CopyDocument model)
@@ -272,7 +274,7 @@ namespace BL.Logic.DocumentCore
                 model.RegistrationNumberSuffix = dictRegJournal.SuffixFormula;
                 model.RegistrationNumber = null;
             }
-            _documentDb.SetDocumentRegistration(context, model);
+            _operationDb.SetDocumentRegistration(context, model);
         }
 
         public void AddDocumentLink(IContext context, AddDocumentLink model)
@@ -286,7 +288,7 @@ namespace BL.Logic.DocumentCore
             {
                 throw new DocumentHasAlreadyHadLink();
             }
-            _documentDb.AddDocumentLink(context, docLink);
+            _operationDb.AddDocumentLink(context, docLink);
         }
 
         #endregion         

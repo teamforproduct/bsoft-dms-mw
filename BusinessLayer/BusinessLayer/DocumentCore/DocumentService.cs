@@ -180,6 +180,7 @@ namespace BL.Logic.DocumentCore
                 doc.SenderDate = null;
                 doc.Addressee = null;
             }
+
             if ((doc.DocumentDirection != EnumDocumentDirections.External) && (uiElements == null)
                     &&
                     (
@@ -193,6 +194,7 @@ namespace BL.Logic.DocumentCore
             {
                 throw new NeedInformationAboutCorrespondent();
             }
+
             if (doc.IsHard)
             {
                 var docTemplate = _templateDb.GetTemplateDocument(ctx, doc.TemplateDocumentId);
@@ -205,6 +207,7 @@ namespace BL.Logic.DocumentCore
                     }
                     doc.DocumentSubjectId = docTemplate.DocumentSubjectId;
                 }
+
                 if (doc.DocumentDirection == EnumDocumentDirections.External)
                 {
                     if (docTemplate.SenderAgentId.HasValue)

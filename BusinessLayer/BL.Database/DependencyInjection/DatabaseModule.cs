@@ -24,6 +24,10 @@ namespace BL.Database.DependencyInjection
             Bind<IDocumentsDbProcess>().To<DocumentsDbProcess>().InSingletonScope();
             Bind<ITemplateDocumentsDbProcess>().To<TemplateDocumentsDbProcess>().InSingletonScope();
             Bind<IDocumentFileDbProcess>().To<DocumentFileDbProcess>().InSingletonScope();
+
+            Bind<IDocumentSendListsDbProcess>().To<DocumentSendListsDbProcess>().InSingletonScope();
+            Bind<IDocumentFiltersDbProcess>().To<DocumentFiltersDbProcess>().InSingletonScope();
+            Bind<IDocumentOperationsDbProcess>().To<DocumentOperationsDbProcess>().InSingletonScope();
         }
 
         private void RegistrateSystemProcess()

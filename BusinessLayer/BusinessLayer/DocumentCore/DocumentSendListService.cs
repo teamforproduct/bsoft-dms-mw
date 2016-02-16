@@ -13,9 +13,9 @@ namespace BL.Logic.DocumentCore
 {
     public class DocumentSendListService : IDocumentSendListService
     {
-        private readonly IDocumentsDbProcess _documentDb;
+        private readonly IDocumentSendListsDbProcess _documentDb;
 
-        public DocumentSendListService(IDocumentsDbProcess documentDb)
+        public DocumentSendListService(IDocumentSendListsDbProcess documentDb)
         {
             _documentDb = documentDb;
         }
@@ -253,7 +253,7 @@ namespace BL.Logic.DocumentCore
 
                 sendLists = sendLists.Where(x => x.Stage >= model.Stage);
 
-                if (sendLists?.Count() > 0)
+                if (sendLists.Any())
                     foreach (var sendList in sendLists)
                     {
                         sendList.Stage++;
@@ -267,7 +267,7 @@ namespace BL.Logic.DocumentCore
 
         public void DeleteSendListStage(IContext context, ModifyDocumentSendListStage model)
         {
-            var sendLists = _documentDb.GetSendList(context, model.DocumentId);
+            var sendLists = _documentDb.GetSendList(context, model.DocumentId).ToList();
 
             ValidSendListsBySendLists(context, model.DocumentId, sendLists.Where(x => x.Stage != model.Stage));
 

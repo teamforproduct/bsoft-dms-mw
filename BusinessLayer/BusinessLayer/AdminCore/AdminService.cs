@@ -69,7 +69,7 @@ namespace BL.Logic.AdminCore
                                                 ObjectCode = obj, ActionCode = act,
                                                 RecordId = id, PositionId = positionId })))
             {
-                throw new AccessIsDenied(); //!!!Как красиво передать string obj, string act, int? id = null в сообщение?
+                throw new AccessIsDenied(); //TODO !!!Как красиво передать string obj, string act, int? id = null в сообщение?
             }
         }
 

@@ -124,6 +124,9 @@
     <Compile Include="Documents\DocumentOperationsDbProcess.cs" />
     <Compile Include="Documents\DocumentsDbProcess.cs" />
     <Compile Include="Documents\DocumentSendListsDbProcess.cs" />
+    <Compile Include="Documents\Interfaces\IDocumentOperationsDbProcess.cs" />
+    <Compile Include="Documents\Interfaces\IDocumentFiltersDbProcess.cs" />
+    <Compile Include="Documents\Interfaces\IDocumentSendListsDbProcess.cs" />
     <Compile Include="Documents\Interfaces\IDocumentFileDbProcess.cs" />
     <Compile Include="Documents\Interfaces\IDocumentsDbProcess.cs" />
     <Compile Include="Documents\Interfaces\ITemplateDocumentsDbProcess.cs" />

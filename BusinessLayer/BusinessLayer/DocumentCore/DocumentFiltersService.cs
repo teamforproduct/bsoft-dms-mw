@@ -10,9 +10,9 @@ namespace BL.Logic.DocumentCore
 {
     public class DocumentFiltersService : IDocumentFiltersService
     {
-        private readonly IDocumentsDbProcess _documentDb;
+        private readonly IDocumentFiltersDbProcess _documentDb;
 
-        public DocumentFiltersService(IDocumentsDbProcess documentDb)
+        public DocumentFiltersService(IDocumentFiltersDbProcess documentDb)
         {
             _documentDb = documentDb;
         }

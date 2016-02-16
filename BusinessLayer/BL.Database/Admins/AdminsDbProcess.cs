@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
@@ -100,15 +99,14 @@ namespace BL.Database.Admins
                                         && x.Role.UserRoles.Any(y => y.UserId == acc.UserId)
                                     );
                 }
-                else if (acc.PositionsIdList != null && acc.PositionsIdList.Count > 0)
+
+                if (acc.PositionsIdList != null && acc.PositionsIdList.Count > 0)
                 {
                     var noAcc = acc.PositionsIdList.Except(dbContext.AdminUserRolesSet.Where(x => (x.UserId == acc.UserId)).Select(x => x.Role.PositionId).ToList()).ToList();
-                    return ((noAcc == null) || (noAcc.Count() == 0));
+                    return (!noAcc.Any());
                 }
-                else
-                {
-                    return false;
-                }
+
+                return false;
             }
         }
     }
