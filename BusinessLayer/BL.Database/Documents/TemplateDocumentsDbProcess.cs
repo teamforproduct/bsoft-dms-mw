@@ -66,6 +66,8 @@ namespace BL.Database.Documents
                             Description = x.Description,
                             DocumentSubjectId = x.DocumentSubjectId,
                             RegistrationJournalId = x.RegistrationJournalId,
+                            SenderAgentId = x.SenderAgentId,
+                            SenderAgentPersonId = x.SenderAgentPersonId,
                             LastChangeUserId = x.LastChangeUserId,
                             LastChangeDate = x.LastChangeDate,
                             RestrictedSendLists =
