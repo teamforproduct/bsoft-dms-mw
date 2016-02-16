@@ -3,6 +3,6 @@
     public enum EnumDocumentDirections
     {
         External = 1,
-        Inner = 3
+        Internal = 3
     }
 }

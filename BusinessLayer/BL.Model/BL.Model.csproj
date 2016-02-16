@@ -84,6 +84,7 @@
     <Compile Include="DocumentAdditional\DocumentAttachedFile.cs" />
     <Compile Include="DocumentAdditional\ModifyDocumentFiles.cs" />
     <Compile Include="DocumentCore\Actions\ChangeFavourites.cs" />
+    <Compile Include="DocumentCore\Actions\ControlChange.cs" />
     <Compile Include="DocumentCore\Actions\CopyDocument.cs" />
     <Compile Include="DocumentCore\Actions\ChangeExecutor.cs" />
     <Compile Include="DocumentCore\Actions\SendMessage.cs" />

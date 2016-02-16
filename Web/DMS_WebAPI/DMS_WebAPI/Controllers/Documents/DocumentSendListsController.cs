@@ -18,7 +18,7 @@ namespace DMS_WebAPI.Controllers.Documents
         private IHttpActionResult Get(int id)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
             return new JsonResult(docProc.GetSendList(cxt, id),this);
         }
 
@@ -30,7 +30,7 @@ namespace DMS_WebAPI.Controllers.Documents
         private IHttpActionResult GetByDocument(int documentId)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
             return new JsonResult(docProc.GetSendLists(cxt, documentId), this);
         }
 
@@ -42,7 +42,7 @@ namespace DMS_WebAPI.Controllers.Documents
         public IHttpActionResult Post([FromBody]ModifyDocumentSendList model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
             return Get(docProc.AddSendList(cxt, model));
         }
 
@@ -54,7 +54,7 @@ namespace DMS_WebAPI.Controllers.Documents
         public IHttpActionResult Put([FromBody]ModifyDocumentSendListByStandartSendList model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
             docProc.AddSendListByStandartSendLists(cxt, model);
             return GetByDocument(model.DocumentId);
         }
@@ -69,7 +69,7 @@ namespace DMS_WebAPI.Controllers.Documents
         {
             model.Id = id;
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
             docProc.UpdateSendList(cxt, model);
             return Get(id);
         }
@@ -82,7 +82,7 @@ namespace DMS_WebAPI.Controllers.Documents
         public IHttpActionResult Delete(int id)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
             docProc.DeleteSendList(cxt, id);
             return new JsonResult(null, this);
         }

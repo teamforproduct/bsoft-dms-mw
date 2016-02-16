@@ -18,7 +18,7 @@ namespace DMS_WebAPI.Controllers.Documents
         private IHttpActionResult Get(int id)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
             return new JsonResult(docProc.GetRestrictedSendList(cxt, id), this);
         }
         /// <summary>
@@ -29,7 +29,7 @@ namespace DMS_WebAPI.Controllers.Documents
         private IHttpActionResult GetByDocument(int documentId)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
             return new JsonResult(docProc.GetRestrictedSendLists(cxt, documentId), this);
         }
         /// <summary>
@@ -40,7 +40,7 @@ namespace DMS_WebAPI.Controllers.Documents
         public IHttpActionResult Post([FromBody]ModifyDocumentRestrictedSendList model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
             return Get(docProc.AddRestrictedSendList(cxt, model));
         }
 
@@ -52,7 +52,7 @@ namespace DMS_WebAPI.Controllers.Documents
         public IHttpActionResult Put([FromBody]ModifyDocumentRestrictedSendListByStandartSendList model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
             docProc.AddRestrictedSendListByStandartSendLists(cxt, model);
             return GetByDocument(model.DocumentId);
         }
@@ -80,7 +80,7 @@ namespace DMS_WebAPI.Controllers.Documents
         public IHttpActionResult Delete(int id)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
             docProc.DeleteRestrictedSendList(cxt, id);
             return new JsonResult(null, this);
         }

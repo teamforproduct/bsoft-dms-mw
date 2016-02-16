@@ -173,14 +173,14 @@ namespace BL.Model.Exception
         }
     }
 
-    public class WrongInformationAboutCorrespondent : DmsExceptions
+    public class NeedInformationAboutCorrespondent : DmsExceptions
     {
-        private const string _MESSAGE = "Designation of information about correspondent is wrong!";
-        public WrongInformationAboutCorrespondent() : base(_MESSAGE)
+        private const string _MESSAGE = "Need information about correspondent!";
+        public NeedInformationAboutCorrespondent() : base(_MESSAGE)
         {
         }
 
-        public WrongInformationAboutCorrespondent(System.Exception ex) : base(_MESSAGE, ex)
+        public NeedInformationAboutCorrespondent(System.Exception ex) : base(_MESSAGE, ex)
         {
         }
     }
@@ -264,6 +264,17 @@ namespace BL.Model.Exception
         }
 
         public DocumentRestrictedSendListDoesNotMatchTheTemplate(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+    public class EventNotFoundOrUserHasNoAccess : DmsExceptions
+    {
+        private const string _MESSAGE = "User could not acceess this event!";
+        public EventNotFoundOrUserHasNoAccess() : base(_MESSAGE)
+        {
+        }
+
+        public EventNotFoundOrUserHasNoAccess(System.Exception ex) : base(_MESSAGE, ex)
         {
         }
     }

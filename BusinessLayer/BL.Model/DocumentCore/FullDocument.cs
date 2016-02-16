@@ -11,19 +11,28 @@ namespace BL.Model.DocumentCore
         {
         }
 
-        public FullDocument(ModifyDocument document) : this()
+        public FullDocument(ModifyDocument model, FullDocument doc) : this()
         {
-            Id = document.Id;
-            //TemplateDocumentId = document.TemplateDocumentId;
-            DocumentSubjectId = document.DocumentSubjectId;
-            Description = document.Description;
-            //ExecutorPositionId = document.ExecutorPositionId;
-            SenderAgentId = document.SenderAgentId;
-            SenderAgentPersonId = document.SenderAgentPersonId;
-            SenderNumber = document.SenderNumber;
-            SenderDate = document.SenderDate;
-            Addressee = document.Addressee;
-            AccessLevel = document.AccessLevel;
+            if (model != null)
+            {
+                Id = model.Id;
+                DocumentSubjectId = model.DocumentSubjectId;
+                Description = model.Description;
+                SenderAgentId = model.SenderAgentId;
+                SenderAgentPersonId = model.SenderAgentPersonId;
+                SenderNumber = model.SenderNumber;
+                SenderDate = model.SenderDate;
+                Addressee = model.Addressee;
+                AccessLevel = model.AccessLevel;
+            }
+            if (doc != null)
+            {
+                TemplateDocumentId = doc.TemplateDocumentId;
+                IsHard = doc.IsHard;
+                ExecutorPositionId = doc.ExecutorPositionId;
+                DocumentDirection = doc.DocumentDirection;
+                DocumentTypeId = doc.DocumentTypeId;
+            }
         }
         public int TemplateDocumentId { get; set; }
         public int ExecutorPositionId { get; set; }
@@ -78,6 +87,7 @@ namespace BL.Model.DocumentCore
         public IEnumerable<DocumentAttachedFile> DocumentFiles { get; set; }
         public IEnumerable<FullDocument> LinkedDocuments { get; set; }
         public IEnumerable<ВaseDocumentLink> Links { get; set; }
+        public IEnumerable<BaseDocumentWaits> DocumentWaits { get; set; }
 
     }
 }

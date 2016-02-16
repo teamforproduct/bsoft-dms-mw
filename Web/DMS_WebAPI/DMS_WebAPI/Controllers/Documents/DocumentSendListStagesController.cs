@@ -18,7 +18,7 @@ namespace DMS_WebAPI.Controllers.Documents
         public IHttpActionResult Post([FromBody]ModifyDocumentSendListStage model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
             bool isLastStage = docProc.AddSendListStage(cxt, model);
             return Get(model.DocumentId, isLastStage);
         }
@@ -31,7 +31,7 @@ namespace DMS_WebAPI.Controllers.Documents
         public IHttpActionResult Delete([FromBody]ModifyDocumentSendListStage model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
             docProc.DeleteSendListStage(cxt, model);
 
             return Get(model.DocumentId);
@@ -46,7 +46,7 @@ namespace DMS_WebAPI.Controllers.Documents
         private IHttpActionResult Get(int DocumentId, bool isLastStage = false)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
             return new JsonResult(docProc.GetSendListStage(cxt, DocumentId, isLastStage), this);
         }
     }

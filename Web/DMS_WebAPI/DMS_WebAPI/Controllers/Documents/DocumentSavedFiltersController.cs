@@ -19,7 +19,7 @@ namespace DMS_WebAPI.Controllers.Documents
         public IHttpActionResult Get()
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            var docProc = DmsResolver.Current.Get<IDocumentFiltersService>();
             var savFilters = docProc.GetSavedFilters(cxt);
             return new JsonResult(savFilters, this);
         }
@@ -28,7 +28,7 @@ namespace DMS_WebAPI.Controllers.Documents
         public IHttpActionResult Get(int id)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            var docProc = DmsResolver.Current.Get<IDocumentFiltersService>();
             var savFilter = docProc.GetSavedFilter(cxt, id);
             return new JsonResult(savFilter, this);
         }
@@ -37,7 +37,7 @@ namespace DMS_WebAPI.Controllers.Documents
         public IHttpActionResult Post([FromBody]ModifyDocumentSavedFilter model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
-            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            var docProc = DmsResolver.Current.Get<IDocumentFiltersService>();
             return Get(docProc.SaveSavedFilter(cxt, model));
         }
 
@@ -45,7 +45,7 @@ namespace DMS_WebAPI.Controllers.Documents
         public IHttpActionResult Put(int id, [FromBody]ModifyDocumentSavedFilter model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
-            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            var docProc = DmsResolver.Current.Get<IDocumentFiltersService>();
             return Get(docProc.SaveSavedFilter(cxt, model));
         }
 
@@ -53,7 +53,7 @@ namespace DMS_WebAPI.Controllers.Documents
         public IHttpActionResult Delete(int id)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            var docProc = DmsResolver.Current.Get<IDocumentFiltersService>();
             docProc.DeleteSavedFilter(cxt, id);
             return new JsonResult(null, this);
         }

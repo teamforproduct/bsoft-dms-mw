@@ -55,9 +55,12 @@
     <Compile Include="DocumentCore\Commands\DeleteDocument.cs" />
     <Compile Include="DocumentCore\Commands\AddDocument.cs" />
     <Compile Include="DocumentCore\DocumentFileService.cs" />
-    <Compile Include="DocumentCore\DocumentFilters.cs" />
-    <Compile Include="DocumentCore\DocumentOperations.cs" />
-    <Compile Include="DocumentCore\DocumentSendList.cs" />
+    <Compile Include="DocumentCore\DocumentFiltersService.cs" />
+    <Compile Include="DocumentCore\DocumentOperationsService.cs" />
+    <Compile Include="DocumentCore\DocumentSendListService.cs" />
+    <Compile Include="DocumentCore\Interfaces\IDocumentSendListService.cs" />
+    <Compile Include="DocumentCore\Interfaces\IDocumentFiltersService.cs" />
+    <Compile Include="DocumentCore\Interfaces\IDocumentOperationsService.cs" />
     <Compile Include="DocumentCore\Interfaces\IDocumentFileService.cs" />
     <Compile Include="DocumentCore\Commands\UpdateDocument.cs" />
     <Compile Include="DocumentCore\DocumentService.cs" />
