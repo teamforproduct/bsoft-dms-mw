@@ -223,6 +223,14 @@ namespace BL.Logic.DocumentCore
                         }
                         doc.SenderAgentPersonId = docTemplate.SenderAgentPersonId;
                     }
+                    if (!string.IsNullOrEmpty(docTemplate.Addressee))
+                    {
+                        if (uiElements != null)
+                        {
+                            uiElements.Where(x => x.Code.Equals("Addressee", StringComparison.OrdinalIgnoreCase)).ToList().ForEach(x => x.IsReadOnly = true);
+                        }
+                        doc.Addressee = docTemplate.Addressee;
+                    }
                 }
             }
             return uiElements;

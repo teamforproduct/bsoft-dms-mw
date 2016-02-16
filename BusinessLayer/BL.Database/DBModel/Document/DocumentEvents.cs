@@ -27,6 +27,7 @@ namespace BL.Database.DBModel.Document
         public int SourceAgentId { get; set; }
         public Nullable<int> TargetPositionId { get; set; }
         public Nullable<int> TargetAgentId { get; set; }
+        public Nullable<DateTime> ReadDate { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
 

@@ -68,6 +68,7 @@ namespace BL.Database.Documents
                             RegistrationJournalId = x.RegistrationJournalId,
                             SenderAgentId = x.SenderAgentId,
                             SenderAgentPersonId = x.SenderAgentPersonId,
+                            Addressee = x.Addressee,
                             LastChangeUserId = x.LastChangeUserId,
                             LastChangeDate = x.LastChangeDate,
                             RestrictedSendLists =
