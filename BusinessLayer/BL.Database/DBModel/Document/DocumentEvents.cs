@@ -28,6 +28,7 @@ namespace BL.Database.DBModel.Document
         public Nullable<int> TargetPositionId { get; set; }
         public Nullable<int> TargetAgentId { get; set; }
         public Nullable<DateTime> ReadDate { get; set; }
+        public Nullable<int> ReadAgentId { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
 
@@ -43,6 +44,8 @@ namespace BL.Database.DBModel.Document
         public virtual DictionaryPositions TargetPosition { get; set; }
         [ForeignKey("TargetAgentId")]
         public virtual DictionaryAgents TargetAgent { get; set; }
+        [ForeignKey("ReadAgentId")]
+        public virtual DictionaryAgents ReadAgent { get; set; }
 
         [ForeignKey("OnEventId")]
         public virtual ICollection<DocumentWaits> OnWait { get; set; }

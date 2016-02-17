@@ -58,6 +58,7 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<DictionaryStandartSendListContents> DictionaryStandartSendListContentsSet { get; set; }
         public virtual DbSet<DictionaryStandartSendLists> DictionaryStandartSendListsSet { get; set; }
         public virtual DbSet<DictionarySubordinationTypes> DictionarySubordinationTypesSet { get; set; }
+        public virtual DbSet<DictionaryTags> DictionaryTagsSet { get; set; }
 
         public virtual DbSet<DBModel.Document.Documents> DocumentsSet { get; set; }
         public virtual DbSet<DocumentSavedFilters> DocumentSavedFiltersSet { get; set; }
@@ -69,6 +70,7 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<DocumentSendLists> DocumentSendListsSet { get; set; }
         public virtual DbSet<DocumentSubscriptions> DocumentSubscriptionsSet { get; set; }
         public virtual DbSet<DocumentWaits> DocumentWaitsSet { get; set; }
+        public virtual DbSet<DocumentTags> DocumentTagsSet { get; set; }
 
         public virtual DbSet<TemplateDocumentSendLists> TemplateDocumentSendLists { get; set; }
         public virtual DbSet<TemplateDocumentRestrictedSendLists> TemplateDocumentRestrictedSendLists { get; set; }

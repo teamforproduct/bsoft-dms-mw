@@ -59,7 +59,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         // DELETE: api/DocumentFiles
-        public IHttpActionResult Delete([FromBody]DocumentFileIdentity model)
+        public IHttpActionResult Delete([FromUri]DocumentFileIdentity model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docFileProc = DmsResolver.Current.Get<IDocumentFileService>();

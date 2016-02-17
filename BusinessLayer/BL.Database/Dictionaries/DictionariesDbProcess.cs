@@ -616,40 +616,46 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
-                var qry = dbContext.DictionaryPositionsSet.AsQueryable();
+                var qry = dbContext.DictionaryPositionsSet.Select(x=> new { pos = x, subordMax = 0}).AsQueryable();
 
                 if (filter.Id?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.Id.Contains(x.Id));
+                    qry = qry.Where(x => filter.Id.Contains(x.pos.Id));
                 }
 
                 if (filter.DocumentId?.Count > 0)
                 {
                     qry = qry.Where(x =>
                             dbContext.DocumentEventsSet
-                                .Where(y => filter.DocumentId.Contains(y.DocumentId)).Select(y => y.SourcePositionId).Contains(x.Id)
+                                .Where(y => filter.DocumentId.Contains(y.DocumentId)).Select(y => y.SourcePositionId).Contains(x.pos.Id)
                                 ||
                                 dbContext.DocumentEventsSet
-                                .Where(y => filter.DocumentId.Contains(y.DocumentId)).Select(y => y.TargetPositionId).Contains(x.Id)
+                                .Where(y => filter.DocumentId.Contains(y.DocumentId)).Select(y => y.TargetPositionId).Contains(x.pos.Id)
                                 );
                 }
 
                 if (filter.SubordinatedPositions?.Count > 0)
                 {
-                    qry = qry.Where(x => dbContext.AdminSubordinationsSet.Any(y=>y.TargetPositionId == x.Id && filter.SubordinatedPositions.Contains(y.SourcePositionId)));
+                    qry = qry.GroupJoin(
+                                        dbContext.AdminSubordinationsSet.Where(y=> filter.SubordinatedPositions.Contains(y.SourcePositionId)),
+                                        x => x.pos.Id,
+                                        y => y.TargetPositionId,
+                                        (x, y) => new { pos = x.pos, subordMax = y.Max(z=>z.SubordinationTypeId) }
+                                        )
+                             .Where(x=>x.subordMax>0);
                 }
 
                 return qry.Select(x => new BaseDictionaryPosition
                 {
-                    Id = x.Id,
-                    ParentId = x.ParentId,
-                    Name = x.Name,
-                    DepartmentId = x.DepartmentId,
-                    ExecutorAgentId = x.ExecutorAgentId,
-                    ParentPositionName = x.ParentPosition.Name,
-                    DepartmentName = x.Department.Name,
-                    ExecutorAgentName = x.ExecutorAgent.Name,
-                   // MaxSubordinationTypeId = dbContext.AdminSubordinationsSet.Where(y => y.TargetPositionId == x.Id && filter.SubordinatedPositions.Contains(y.SourcePositionId)).Max(y=>y.SubordinationTypeId)
+                    Id = x.pos.Id,
+                    ParentId = x.pos.ParentId,
+                    Name = x.pos.Name,
+                    DepartmentId = x.pos.DepartmentId,
+                    ExecutorAgentId = x.pos.ExecutorAgentId,
+                    ParentPositionName = x.pos.ParentPosition.Name,
+                    DepartmentName = x.pos.Department.Name,
+                    ExecutorAgentName = x.pos.ExecutorAgent.Name,
+                    MaxSubordinationTypeId = (x.subordMax > 0 ? (int?)x.subordMax : null)
                 }).ToList();
             }
         }

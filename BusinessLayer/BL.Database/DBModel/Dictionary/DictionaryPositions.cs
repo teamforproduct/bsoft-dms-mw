@@ -16,6 +16,7 @@ namespace BL.Database.DBModel.Dictionary
             this.ChiefDepartments = new HashSet<DictionaryDepartments>();
             this.StandartSendLists = new HashSet<DictionaryStandartSendLists>();
             this.DocumentSavedFilters = new HashSet<DocumentSavedFilters>();
+            this.Tags = new HashSet<DictionaryTags>();
         }
         public int Id { get; set; }
         public Nullable<int> ParentId { get; set; }
@@ -38,6 +39,7 @@ namespace BL.Database.DBModel.Dictionary
         public virtual ICollection<DictionaryDepartments> ChiefDepartments { get; set; }
         public virtual ICollection<DictionaryStandartSendLists> StandartSendLists { get; set; }
         public virtual ICollection<DocumentSavedFilters> DocumentSavedFilters { get; set; }
+        public virtual ICollection<DictionaryTags> Tags { get; set; }
 
     }
 }

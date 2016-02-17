@@ -19,6 +19,7 @@ namespace BL.Database.DBModel.Document
             this.Waits = new HashSet<DocumentWaits>();
             this.Events = new HashSet<DocumentEvents>();
             this.RestrictedSendLists = new HashSet<DocumentRestrictedSendLists>();
+            this.Tags = new HashSet<DocumentTags>();
         }
 
         public int Id { get; set; }
@@ -72,6 +73,7 @@ namespace BL.Database.DBModel.Document
         public virtual ICollection<DocumentEvents> Events { get; set; }
 
         public virtual ICollection<DocumentRestrictedSendLists> RestrictedSendLists { get; set; }
+        public virtual ICollection<DocumentTags> Tags { get; set; }
 
     }
 
