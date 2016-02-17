@@ -285,7 +285,6 @@ namespace BL.Logic.DocumentCore
         {
             var docLink = new ВaseDocumentLink(model);
             docLink.Document = _documentDb.GetDocument(context, docLink.DocumentId);
-            var adm = DmsResolver.Current.Get<IAdminService>();
             _adminDb.VerifyAccess(context, new VerifyAccess() { ActionCode = EnumActions.ModifyDocument, PositionId = docLink.Document.ExecutorPositionId });
             docLink.ParentDocument = _documentDb.GetDocument(context, docLink.ParentDocumentId);
             if ((docLink.Document.LinkId.HasValue) && (docLink.ParentDocument.LinkId.HasValue) && (docLink.Document.LinkId == docLink.ParentDocument.LinkId))
