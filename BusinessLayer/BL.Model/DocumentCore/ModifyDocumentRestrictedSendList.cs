@@ -1,5 +1,4 @@
-﻿using BL.Model.Users;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
