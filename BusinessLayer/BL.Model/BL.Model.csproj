@@ -44,6 +44,7 @@
     <Compile Include="AdminCore\FilterAdminUserRole.cs" />
     <Compile Include="AdminCore\FilterAdminAccessLevel.cs" />
     <Compile Include="AdminCore\VerifyAccess.cs" />
+    <Compile Include="AdminCore\VerifySubordination.cs" />
     <Compile Include="Database\EventAccessModel.cs" />
     <Compile Include="Database\StoreInfo.cs" />
     <Compile Include="Database\DatabaseModel.cs" />

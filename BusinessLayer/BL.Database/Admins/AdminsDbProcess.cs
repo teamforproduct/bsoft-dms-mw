@@ -5,6 +5,9 @@ using BL.CrossCutting.Interfaces;
 using BL.Database.Admins.Interfaces;
 using BL.Database.DatabaseContext;
 using BL.Model.AdminCore;
+using BL.CrossCutting.DependencyInjection;
+using BL.Database.Dictionaries.Interfaces;
+using BL.Model.DictionaryCore;
 
 namespace BL.Database.Admins
 {
@@ -84,30 +87,56 @@ namespace BL.Database.Admins
             }
         }
 
-        public bool VerifyAccess(IContext context, VerifyAccess acc)
+        /// <summary>
+        /// Проверка прав на действие
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public bool VerifyAccess(IContext context, VerifyAccess model)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
-                if (!string.IsNullOrEmpty(acc.ObjectCode) && !string.IsNullOrEmpty(acc.ActionCode))
+                if (!string.IsNullOrEmpty(model.ObjectCode) && !string.IsNullOrEmpty(model.ActionCode))
                 {
                     return dbContext.AdminRoleActionsSet
-                              .Any(x => x.Action.Code == acc.ActionCode
-                                        && x.Action.Object.Code == acc.ObjectCode
+                              .Any(x => x.Action.Code == model.ActionCode
+                                        && x.Action.Object.Code == model.ObjectCode
                                         && x.Action.IsGrantable
-                                        && (!x.Action.IsGrantableByRecordId || (x.RecordId == acc.RecordId))
-                                        && (((acc.PositionId == null) && (acc.PositionsIdList.Contains(x.Role.PositionId))) || (x.Role.PositionId == acc.PositionId))
-                                        && x.Role.UserRoles.Any(y => y.UserId == acc.UserId)
+                                        && (!x.Action.IsGrantableByRecordId || (x.RecordId == model.RecordId))
+                                        && (((model.PositionId == null) && (model.PositionsIdList.Contains(x.Role.PositionId))) || (x.Role.PositionId == model.PositionId))
+                                        && x.Role.UserRoles.Any(y => y.UserId == model.UserId)
                                     );
                 }
 
-                if (acc.PositionsIdList != null && acc.PositionsIdList.Count > 0)
+                if (model.PositionsIdList != null && model.PositionsIdList.Count > 0)
                 {
-                    var noAcc = acc.PositionsIdList.Except(dbContext.AdminUserRolesSet.Where(x => (x.UserId == acc.UserId)).Select(x => x.Role.PositionId).ToList()).ToList();
+                    var noAcc = model.PositionsIdList.Except(dbContext.AdminUserRolesSet.Where(x => (x.UserId == model.UserId)).Select(x => x.Role.PositionId).ToList()).ToList();
                     return (!noAcc.Any());
                 }
 
                 return false;
             }
         }
+        /// <summary>
+        /// Проверка соблюдения субординации
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public bool VerifySubordination(IContext context, VerifySubordination model)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var dictDb = DmsResolver.Current.Get<IDictionariesDbProcess>();
+                var pos = dictDb.GetDictionaryPositions(context, new FilterDictionaryPosition() { Id = new List<int> { model.TargetPosition }, SubordinatedPositions = model.SourcePositions}).FirstOrDefault();
+                if (pos == null || pos.MaxSubordinationTypeId < (int)model.SubordinationType)
+                {
+                    return false;
+                }
+                return true;
+            }
+        }
+
     }
 }
