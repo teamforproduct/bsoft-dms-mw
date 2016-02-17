@@ -14,7 +14,7 @@ namespace BL.Database.Admins.Interfaces
 
         IEnumerable<BaseAdminUserRole> GetPositionsByUser(IContext ctx, FilterAdminUserRole filter);
 
-        bool VerifyAccess(IContext context, VerifyAccess acc);
+        void VerifyAccess(IContext context, VerifyAccess acc);
 
     }
 }

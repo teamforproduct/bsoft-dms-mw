@@ -14,6 +14,8 @@ using BL.Model.DocumentCore.Actions;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
+using BL.Database.Admins.Interfaces;
+using BL.Model.AdminCore;
 
 namespace BL.Logic.DocumentCore
 {
@@ -21,9 +23,11 @@ namespace BL.Logic.DocumentCore
     {
         private readonly IDocumentsDbProcess _documentDb;
         private readonly IDocumentOperationsDbProcess _operationDb;
+        private readonly IAdminsDbProcess _adminDb;
 
-        public DocumentOperationsService(IDocumentsDbProcess documentDb, IDocumentOperationsDbProcess operationDb)
+        public DocumentOperationsService(IDocumentsDbProcess documentDb, IDocumentOperationsDbProcess operationDb, IAdminsDbProcess adminDb)
         {
+            _adminDb = adminDb;
             _documentDb = documentDb;
             _operationDb = operationDb;
         }
@@ -282,7 +286,7 @@ namespace BL.Logic.DocumentCore
             var docLink = new ВaseDocumentLink(model);
             docLink.Document = _documentDb.GetDocument(context, docLink.DocumentId);
             var adm = DmsResolver.Current.Get<IAdminService>();
-            adm.VerifyAccessForCurrentUser(context, "Documents", "ModifyDocument", docLink.Document.ExecutorPositionId);
+            _adminDb.VerifyAccess(context, new VerifyAccess() { ActionCode = EnumActions.ModifyDocument, PositionId = docLink.Document.ExecutorPositionId });
             docLink.ParentDocument = _documentDb.GetDocument(context, docLink.ParentDocumentId);
             if ((docLink.Document.LinkId.HasValue) && (docLink.ParentDocument.LinkId.HasValue) && (docLink.Document.LinkId == docLink.ParentDocument.LinkId))
             {

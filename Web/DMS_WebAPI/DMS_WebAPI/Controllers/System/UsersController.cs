@@ -1,5 +1,6 @@
 ﻿using BL.CrossCutting.DependencyInjection;
 using BL.Logic.AdminCore.Interfaces;
+using BL.Model.AdminCore;
 using BL.Model.Users;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
@@ -47,7 +48,7 @@ namespace DMS_WebAPI.Controllers
         {
             var context = DmsResolver.Current.Get<UserContext>().Get();
             var admProc = DmsResolver.Current.Get<IAdminService>();
-            admProc.VerifyAccessForCurrentUser(context, positionsIdList);
+            admProc.VerifyAccess(context, new VerifyAccess() { PositionsIdList = positionsIdList });
             context.CurrentPositionsIdList = positionsIdList;
             //cxt.CurrentPositions = new List<CurrentPosition>() { new CurrentPosition { CurrentPositionId = positionId } };
             return new JsonResult(null, this);

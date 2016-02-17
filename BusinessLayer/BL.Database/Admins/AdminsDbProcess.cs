@@ -8,6 +8,7 @@ using BL.Model.AdminCore;
 using BL.CrossCutting.DependencyInjection;
 using BL.Database.Dictionaries.Interfaces;
 using BL.Model.DictionaryCore;
+using BL.Model.Exception;
 
 namespace BL.Database.Admins
 {
@@ -93,29 +94,38 @@ namespace BL.Database.Admins
         /// <param name="context"></param>
         /// <param name="model"></param>
         /// <returns></returns>
-        public bool VerifyAccess(IContext context, VerifyAccess model)
+        public void VerifyAccess(IContext context, VerifyAccess model)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
-                if (!string.IsNullOrEmpty(model.ObjectCode) && !string.IsNullOrEmpty(model.ActionCode))
+                if (model.UserId == 0)
                 {
-                    return dbContext.AdminRoleActionsSet
-                              .Any(x => x.Action.Code == model.ActionCode
-                                        && x.Action.Object.Code == model.ObjectCode
+                    model.UserId = context.CurrentAgentId;
+                }
+                if (model.PositionsIdList == null || model.PositionsIdList.Count == 0)
+                {
+                    model.PositionsIdList = context.CurrentPositionsIdList;
+                }
+                bool res = false;
+                if (model.ActionCode.HasValue)
+                {
+                    res = dbContext.AdminRoleActionsSet
+                              .Any(x => x.Action.Id == (int)model.ActionCode
                                         && x.Action.IsGrantable
                                         && (!x.Action.IsGrantableByRecordId || (x.RecordId == model.RecordId))
                                         && (((model.PositionId == null) && (model.PositionsIdList.Contains(x.Role.PositionId))) || (x.Role.PositionId == model.PositionId))
                                         && x.Role.UserRoles.Any(y => y.UserId == model.UserId)
                                     );
                 }
-
-                if (model.PositionsIdList != null && model.PositionsIdList.Count > 0)
+                else
                 {
                     var noAcc = model.PositionsIdList.Except(dbContext.AdminUserRolesSet.Where(x => (x.UserId == model.UserId)).Select(x => x.Role.PositionId).ToList()).ToList();
-                    return (!noAcc.Any());
+                    res = !noAcc.Any();
                 }
-
-                return false;
+                if (!res)
+                {
+                    throw new AccessIsDenied(); //!!!Как красиво передать string obj, string act, int? id = null в сообщение?
+                }
             }
         }
         /// <summary>
@@ -129,7 +139,7 @@ namespace BL.Database.Admins
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
                 var dictDb = DmsResolver.Current.Get<IDictionariesDbProcess>();
-                var pos = dictDb.GetDictionaryPositions(context, new FilterDictionaryPosition() { Id = new List<int> { model.TargetPosition }, SubordinatedPositions = model.SourcePositions}).FirstOrDefault();
+                var pos = dictDb.GetDictionaryPositions(context, new FilterDictionaryPosition() { Id = new List<int> { model.TargetPosition }, SubordinatedPositions = model.SourcePositions }).FirstOrDefault();
                 if (pos == null || pos.MaxSubordinationTypeId < (int)model.SubordinationType)
                 {
                     return false;

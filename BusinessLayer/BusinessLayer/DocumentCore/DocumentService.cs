@@ -13,19 +13,21 @@ using BL.Model.Exception;
 using BL.Database.SystemDb;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.DocumentCore.Commands;
+using BL.Database.Admins.Interfaces;
+using BL.Model.AdminCore;
 
 namespace BL.Logic.DocumentCore
 {
     internal class DocumentService : IDocumentService
     {
         private readonly IDocumentsDbProcess _documentDb;
-        private readonly IAdminService _adminService;
+        private readonly IAdminsDbProcess _adminDb;
         private readonly ITemplateDocumentsDbProcess _templateDb;
 
-        public DocumentService(IDocumentsDbProcess documentDb, IAdminService adminService, ITemplateDocumentsDbProcess templateDb)
+        public DocumentService(IDocumentsDbProcess documentDb, IAdminsDbProcess adminDb, ITemplateDocumentsDbProcess templateDb)
         {
             _documentDb = documentDb;
-            _adminService = adminService;
+            _adminDb = adminDb;
             _templateDb = templateDb;
         }
 
@@ -64,7 +66,7 @@ namespace BL.Logic.DocumentCore
 
         public int AddDocumentByTemplateDocument(IContext context, AddDocumentByTemplateDocument model)
         {
-            _adminService.VerifyAccessForCurrentUser(context, "Documents", "AddDocument", model.CurrentPositionId);
+            _adminDb.VerifyAccess(context, new VerifyAccess() { ActionCode = EnumActions.AddDocument, PositionId = model.CurrentPositionId });
             var docTemplate = _templateDb.GetTemplateDocument(context, model.TemplateDocumentId);
             var baseDocument = new FullDocument
             {
@@ -139,7 +141,7 @@ namespace BL.Logic.DocumentCore
         {
             //TODO make with command
             var doc = _documentDb.GetDocument(context, model.Id);
-            _adminService.VerifyAccessForCurrentUser(context, "Documents", "ModifyDocument", doc.ExecutorPositionId);
+            _adminDb.VerifyAccess(context, new VerifyAccess() { ActionCode = EnumActions.ModifyDocument, PositionId = doc.ExecutorPositionId });
             context.CurrentPositionId = doc.ExecutorPositionId;
             var docUpd = new FullDocument(model, doc);
             VerifyDocument(context, docUpd, null);
@@ -149,7 +151,7 @@ namespace BL.Logic.DocumentCore
         public void DeleteDocument(IContext context, int id)
         {
             var doc = _documentDb.GetDocument(context, id);
-            _adminService.VerifyAccessForCurrentUser(context, "Documents", "DeleteDocument", doc.ExecutorPositionId);
+            _adminDb.VerifyAccess(context, new VerifyAccess() { ActionCode = EnumActions.DeleteDocument, PositionId = doc.ExecutorPositionId });
             Command cmd = new DeleteDocument(context, doc);
             if (cmd.CanExecute())
             {

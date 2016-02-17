@@ -104,6 +104,8 @@
     <Compile Include="DocumentCore\FilterDocumentEvent.cs" />
     <Compile Include="DocumentCore\ModifyDocumentSavedFilter.cs" />
     <Compile Include="DocumentCore\ModifyDocumentSendListStage.cs" />
+    <Compile Include="Enums\EnumActions.cs" />
+    <Compile Include="Enums\EnumObjects.cs" />
     <Compile Include="Enums\EnumSubordinationTypes.cs" />
     <Compile Include="Enums\EnumDocumentDirections.cs" />
     <Compile Include="Enums\EnumDocumentAccesses.cs" />
