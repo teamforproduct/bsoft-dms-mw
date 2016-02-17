@@ -97,7 +97,7 @@ namespace BL.Logic.DocumentCore
             ValidSendLists(context, documentId, sendLists, restrictedSendLists);
         }
 
-        public void ValidSendLists(IContext context, int documentId, IEnumerable<ModifyDocumentSendList> sendLists            , IEnumerable<ModifyDocumentRestrictedSendList> restrictedSendLists)
+        public void ValidSendLists(IContext context, int documentId, IEnumerable<ModifyDocumentSendList> sendLists, IEnumerable<ModifyDocumentRestrictedSendList> restrictedSendLists)
         {
 
             if (restrictedSendLists.GroupBy(x => new { x.DocumentId, x.PositionId }).Any(x => x.Count() > 1))
@@ -175,7 +175,7 @@ namespace BL.Logic.DocumentCore
 
             if (isLastStage)
             {
-                int lastStage = sendLists.Max(x => x.Stage) + 1;
+                int lastStage = sendLists.Count > 0 ? sendLists.Max(x => x.Stage) + 1 : 0;
                 sendLists.Add(new BaseDocumentSendList { Id = 0, Stage = lastStage });
             }
 
