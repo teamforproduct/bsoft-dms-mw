@@ -79,6 +79,7 @@
     <Compile Include="DBModel\Dictionary\DictionaryAgentPersons.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryLinkTypes.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryResultTypes.cs" />
+    <Compile Include="DBModel\Dictionary\DictionaryTags.cs" />
     <Compile Include="DBModel\Document\DocumentSubscriptions.cs" />
     <Compile Include="DBModel\Document\DocumentAccesses.cs" />
     <Compile Include="DBModel\Document\DocumentEvents.cs" />
@@ -86,6 +87,7 @@
     <Compile Include="DBModel\Document\DocumentRestrictedSendLists.cs" />
     <Compile Include="DBModel\Document\DocumentSavedFilters.cs" />
     <Compile Include="DBModel\Document\DocumentSendLists.cs" />
+    <Compile Include="DBModel\Document\DocumentTags.cs" />
     <Compile Include="DBModel\Document\DocumentWaits.cs" />
     <Compile Include="DBModel\System\SystemActions.cs" />
     <Compile Include="DBModel\System\SystemFields.cs" />
@@ -287,6 +289,10 @@
     <Compile Include="Migrations\201602161704109_Subordination.Designer.cs">
       <DependentUpon>201602161704109_Subordination.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201602171004544_Tags.cs" />
+    <Compile Include="Migrations\201602171004544_Tags.Designer.cs">
+      <DependentUpon>201602171004544_Tags.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\ISecurityDbProcess.cs" />
@@ -433,6 +439,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201602161704109_Subordination.resx">
       <DependentUpon>201602161704109_Subordination.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602171004544_Tags.resx">
+      <DependentUpon>201602171004544_Tags.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

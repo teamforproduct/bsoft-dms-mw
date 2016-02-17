@@ -649,7 +649,7 @@ namespace BL.Database.Dictionaries
                     ParentPositionName = x.ParentPosition.Name,
                     DepartmentName = x.Department.Name,
                     ExecutorAgentName = x.ExecutorAgent.Name,
-                   // MaxSubordinationTypeId = dbContext.AdminSubordinationsSet.Where(y => y.TargetPositionId == x.Id && filter.SubordinatedPositions.Contains(y.SourcePositionId)).Max(y=>y.SubordinationTypeId)
+                    //MaxSubordinationTypeId = dbContext.AdminSubordinationsSet.Where(y => y.TargetPositionId == x.Id && filter.SubordinatedPositions.Contains(y.SourcePositionId)).Max(y=>y.SubordinationTypeId)
                 }).ToList();
             }
         }
