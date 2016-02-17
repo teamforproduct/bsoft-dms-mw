@@ -10,9 +10,9 @@ namespace BL.Logic.DocumentCore.Commands
     internal class AddDocument : Command
     {
         private readonly IContext _context;
-        private readonly FullDocument _document;
+        private readonly FrontDocument _document;
 
-        public AddDocument(IContext context,  FullDocument document)
+        public AddDocument(IContext context,  FrontDocument document)
         {
             _context = context;
             _document = document;

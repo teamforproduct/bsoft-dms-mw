@@ -1,12 +1,12 @@
 ﻿namespace BL.Model.DocumentCore
 {
-    public class FullDocument : InternalDocument
+    public class FrontDocument : InternalDocument
     {
-        public FullDocument()
+        public FrontDocument()
         {
         }
 
-        public FullDocument(ModifyDocument model, FullDocument doc) : this()
+        public FrontDocument(ModifyDocument model, FrontDocument doc) : this()
         {
             if (model != null)
             {
@@ -29,6 +29,8 @@
                 DocumentTypeId = doc.DocumentTypeId;
             }
         }
+
+        public string TemplateDocumentName { get; set; }
 
         public string DocumentDirectionName { get; set; }
         public string DocumentTypeName { get; set; }

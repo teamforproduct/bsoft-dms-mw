@@ -11,9 +11,9 @@ namespace BL.Logic.DocumentCore.Commands
     internal class DeleteDocument : Command
     {
         private readonly IContext _context;
-        private readonly FullDocument _document;
+        private readonly FrontDocument _document;
 
-        public DeleteDocument(IContext context,  FullDocument document)
+        public DeleteDocument(IContext context,  FrontDocument document)
         {
             _context = context;
             _document = document;

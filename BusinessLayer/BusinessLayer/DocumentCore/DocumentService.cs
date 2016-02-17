@@ -32,7 +32,7 @@ namespace BL.Logic.DocumentCore
         }
 
         #region Documents
-        public int SaveDocument(IContext context, FullDocument document)
+        public int SaveDocument(IContext context, FrontDocument document)
         {
             Command cmd;
             if (document.Id == 0) // new document
@@ -51,12 +51,12 @@ namespace BL.Logic.DocumentCore
             return document.Id;
         }
 
-        public IEnumerable<FullDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging)
+        public IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging)
         {
             return _documentDb.GetDocuments(ctx, filters, paging);
         }
 
-        public FullDocument GetDocument(IContext ctx, int documentId)
+        public FrontDocument GetDocument(IContext ctx, int documentId)
         {
             var doc = _documentDb.GetDocument(ctx, documentId);
             var sslService = DmsResolver.Current.Get<IDocumentSendListService>();
@@ -68,7 +68,7 @@ namespace BL.Logic.DocumentCore
         {
             _adminDb.VerifyAccess(context, new VerifyAccess() { ActionCode = EnumActions.AddDocument, PositionId = model.CurrentPositionId });
             var docTemplate = _templateDb.GetTemplateDocument(context, model.TemplateDocumentId);
-            var baseDocument = new FullDocument
+            var baseDocument = new FrontDocument
             {
                 TemplateDocumentId = docTemplate.Id,
                 CreateDate = DateTime.Now,
@@ -143,7 +143,7 @@ namespace BL.Logic.DocumentCore
             var doc = _documentDb.GetDocument(context, model.Id);
             _adminDb.VerifyAccess(context, new VerifyAccess() { ActionCode = EnumActions.ModifyDocument, PositionId = doc.ExecutorPositionId });
             context.CurrentPositionId = doc.ExecutorPositionId;
-            var docUpd = new FullDocument(model, doc);
+            var docUpd = new FrontDocument(model, doc);
             VerifyDocument(context, docUpd, null);
             return SaveDocument(context, docUpd);
         }
@@ -159,7 +159,7 @@ namespace BL.Logic.DocumentCore
             }
         }
 
-        public IEnumerable<BaseSystemUIElement> GetModifyMetaData(IContext ctx, FullDocument doc)
+        public IEnumerable<BaseSystemUIElement> GetModifyMetaData(IContext ctx, FrontDocument doc)
         {
             var sysDb = DmsResolver.Current.Get<ISystemDbProcess>();
             var uiElements = sysDb.GetSystemUIElements(ctx, new FilterSystemUIElement() { ObjectCode = "Documents", ActionCode = "Modify" });
@@ -167,7 +167,7 @@ namespace BL.Logic.DocumentCore
             return uiElements;
         }
 
-        private IEnumerable<BaseSystemUIElement> VerifyDocument(IContext ctx, FullDocument doc,  IEnumerable<BaseSystemUIElement> uiElements)
+        private IEnumerable<BaseSystemUIElement> VerifyDocument(IContext ctx, FrontDocument doc,  IEnumerable<BaseSystemUIElement> uiElements)
         {
             if (doc.DocumentDirection != EnumDocumentDirections.External)
             {

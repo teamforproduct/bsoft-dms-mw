@@ -3,6 +3,7 @@ using BL.CrossCutting.Interfaces;
 using BL.Model.Database;
 using BL.Model.DocumentCore;
 using BL.Model.DocumentCore.Actions;
+using BL.Model.InternalModel;
 
 namespace BL.Database.Documents.Interfaces
 {
@@ -10,7 +11,7 @@ namespace BL.Database.Documents.Interfaces
     {
         bool VerifyDocumentRegistrationNumber(IContext ctx, RegisterDocument registerDocument);
         bool SetDocumentRegistration(IContext ctx, RegisterDocument registerDocument);
-        void AddDocumentLink(IContext context, ВaseDocumentLink model);
+        void AddDocumentLink(IContext context, InternalLinkedDocument model);
 
         BaseDocumentWaits GetDocumentWaitByOnEventId(IContext ctx, int eventId);
         void AddDocumentWait(IContext ctx, BaseDocumentWaits documentWait);
@@ -25,6 +26,7 @@ namespace BL.Database.Documents.Interfaces
         BaseDocumentAccess GetDocumentAccess(IContext ctx, int documentId);
 
         void SetDocumentInformation(IContext ctx, EventAccessModel access);
+        InternalLinkedDocument GetLinkedDocument(IContext context, AddDocumentLink model);
 
     }
 }

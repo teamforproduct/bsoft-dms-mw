@@ -203,15 +203,7 @@ namespace BL.Logic.DocumentCore
 
         public int CopyDocument(IContext context, CopyDocument model)
         {
-            var document = _documentDb.GetDocument(context, model.DocumentId);
-
-            document.Id = 0;
-            document.CreateDate = DateTime.Now;
-            document.IsFavourite = false;
-            document.RegistrationNumber = null;
-            document.RegistrationNumberPrefix = null;
-            document.RegistrationNumberSuffix = null;
-            document.RegistrationJournalId = null;
+            var document = _documentDb.GetDocumentCopy(context, model.DocumentId);
 
             //if (document.RestrictedSendLists != null && document.RestrictedSendLists.Any())
             //{
@@ -260,6 +252,9 @@ namespace BL.Logic.DocumentCore
                 PositionId = (int)context.CurrentPositionId,
             };
 
+            //TODO process files
+            document.DocumentFiles = null;
+
             document.Accesses = new List<BaseDocumentAccess>() { acc };
             //TODO make it with Actions
             var docService = DmsResolver.Current.Get<IDocumentService>();
@@ -268,6 +263,17 @@ namespace BL.Logic.DocumentCore
 
         public void RegisterDocument(IContext context, RegisterDocument model)
         {
+            var doc = _documentDb.GetCheckRegistration(context, model.DocumentId);
+
+            if (doc == null)
+            {
+                throw new DocumentNotFoundOrUserHasNoAccess();
+            }
+            if (doc.IsRegistered)
+            {
+                throw new DocumentHasAlredyBeenRegistered();
+            }
+
             var dictDB = DmsResolver.Current.Get<IDictionariesDbProcess>();
             var dictRegJournal = dictDB.GetDictionaryRegistrationJournal(context, model.RegistrationJournalId);
             model.NumerationPrefixFormula = dictRegJournal.NumerationPrefixFormula;
@@ -283,11 +289,9 @@ namespace BL.Logic.DocumentCore
 
         public void AddDocumentLink(IContext context, AddDocumentLink model)
         {
-            var docLink = new ВaseDocumentLink(model);
-            docLink.Document = _documentDb.GetDocument(context, docLink.DocumentId);
-            _adminDb.VerifyAccess(context, new VerifyAccess() { ActionCode = EnumActions.ModifyDocument, PositionId = docLink.Document.ExecutorPositionId });
-            docLink.ParentDocument = _documentDb.GetDocument(context, docLink.ParentDocumentId);
-            if ((docLink.Document.LinkId.HasValue) && (docLink.ParentDocument.LinkId.HasValue) && (docLink.Document.LinkId == docLink.ParentDocument.LinkId))
+            var docLink = _operationDb.GetLinkedDocument(context, model);
+            _adminDb.VerifyAccess(context, new VerifyAccess() { ActionCode = EnumActions.ModifyDocument, PositionId = docLink.ExecutorPositionId });
+            if ((docLink.DocumentLinkId.HasValue) && (docLink.ParentDocumentLinkId.HasValue) && (docLink.DocumentLinkId == docLink.ParentDocumentLinkId))
             {
                 throw new DocumentHasAlreadyHadLink();
             }

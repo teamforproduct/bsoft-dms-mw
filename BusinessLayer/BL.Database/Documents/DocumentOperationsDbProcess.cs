@@ -11,6 +11,7 @@ using BL.Model.Database;
 using BL.Model.DocumentCore;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.Exception;
+using BL.Model.InternalModel;
 
 namespace BL.Database.Documents
 {
@@ -45,14 +46,7 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
                 var doc = dbContext.DocumentsSet.FirstOrDefault(x => x.Id == registerDocument.DocumentId);
-                if (doc == null)
-                {
-                    throw new DocumentNotFoundOrUserHasNoAccess();
-                }
-                if (doc.IsRegistered)
-                {
-                    throw new DocumentHasAlredyBeenRegistered();
-                }
+
                 var isNeedGenerateNumber = registerDocument.RegistrationNumber == null;
                 var isRepeat = true;
                 var isOk = false;
@@ -103,8 +97,26 @@ namespace BL.Database.Documents
         #endregion DocumentRegistration
 
         #region DocumentLink    
+        public InternalLinkedDocument GetLinkedDocument(IContext context, AddDocumentLink model)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var doc = dbContext.DocumentsSet.FirstOrDefault(x => x.Id == model.DocumentId);
+                var par = dbContext.DocumentsSet.FirstOrDefault(x => x.Id == model.ParentDocumentId);
 
-        public void AddDocumentLink(IContext context, ВaseDocumentLink model)
+                return new InternalLinkedDocument()
+                {
+                    DocumentId = model.DocumentId,
+                    ParentDocumentId = model.ParentDocumentId,
+                    DocumentLinkId = doc.LinkId,
+                    ParentDocumentLinkId = par.LinkId,
+                    LinkTypeId = model.LinkTypeId,
+                    ExecutorPositionId = doc.ExecutorPositionId
+                };
+            }
+        }
+
+        public void AddDocumentLink(IContext context, InternalLinkedDocument model)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
@@ -117,17 +129,17 @@ namespace BL.Database.Documents
                     LastChangeDate = DateTime.Now,
                 };
                 dbContext.DocumentLinksSet.Add(link);
-                if (!model.ParentDocument.LinkId.HasValue)
+                if (!model.ParentDocumentLinkId.HasValue)
                 {
                     dbContext.DocumentsSet.Where(x => x.Id == model.ParentDocumentId).ToList().ForEach(x => x.LinkId = model.ParentDocumentId);
                 }
-                if (!model.Document.LinkId.HasValue)
+                if (!model.DocumentLinkId.HasValue)
                 {
                     dbContext.DocumentsSet.Where(x => x.Id == model.DocumentId).ToList().ForEach(x => x.LinkId = model.ParentDocumentId);
                 }
                 else
                 {
-                    dbContext.DocumentsSet.Where(x => x.LinkId == model.Document.LinkId).ToList().ForEach(x => x.LinkId = model.ParentDocumentId);
+                    dbContext.DocumentsSet.Where(x => x.LinkId == model.DocumentLinkId).ToList().ForEach(x => x.LinkId = model.ParentDocumentId);
                 }
                 dbContext.SaveChanges();
             }
@@ -189,7 +201,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-                var docWait = dbContext.DocumentWaitsSet.Where(x => x.Id == documentWait.Id).FirstOrDefault();
+                var docWait = dbContext.DocumentWaitsSet.FirstOrDefault(x => x.Id == documentWait.Id);
                 if (docWait?.Id > 0)
                 {
                     docWait.DocumentId = documentWait.DocumentId;

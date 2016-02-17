@@ -21,7 +21,6 @@ namespace BL.Model.DocumentCore
         public DateTime? LastChangeDate { get; set; }
         public int? LinkId { get; set; }
 
-        public string TemplateDocumentName { get; set; }
         public bool IsHard { get; set; }
         public EnumDocumentDirections DocumentDirection { get; set; }
         public int DocumentTypeId { get; set; }
@@ -45,8 +44,8 @@ namespace BL.Model.DocumentCore
         public IEnumerable<BaseDocumentEvent> Events { get; set; }
         public IEnumerable<BaseDocumentAccess> Accesses { get; set; }
         public IEnumerable<DocumentAttachedFile> DocumentFiles { get; set; }
-        public IEnumerable<FullDocument> LinkedDocuments { get; set; }
-        public IEnumerable<ВaseDocumentLink> Links { get; set; }
+        public IEnumerable<FrontDocument> LinkedDocuments { get; set; }
+        public IEnumerable<FrontDocumentLink> Links { get; set; }
         public IEnumerable<BaseDocumentWaits> DocumentWaits { get; set; }
     }
 }

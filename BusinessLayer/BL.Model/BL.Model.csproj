@@ -114,7 +114,7 @@
     <Compile Include="Enums\EnumEventTypes.cs" />
     <Compile Include="DictionaryCore\FilterDictionaryStandartSendList.cs" />
     <Compile Include="Enums\EnumImportanceEventTypes.cs" />
-    <Compile Include="DocumentCore\FullDocument.cs" />
+    <Compile Include="DocumentCore\FrontDocument.cs" />
     <Compile Include="DocumentCore\BaseDocumentEvent.cs" />
     <Compile Include="DocumentCore\BaseDocumentRestrictedSendList.cs" />
     <Compile Include="DocumentCore\BaseDocumentSendList.cs" />
@@ -131,6 +131,7 @@
     <Compile Include="DocumentCore\Actions\RegisterDocument.cs" />
     <Compile Include="Enums\EnumSendTypes.cs" />
     <Compile Include="Exception\DmsExceptions.cs" />
+    <Compile Include="InternalModel\InternalLinkedDocument.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Enums\EnumLogTypes.cs" />
     <Compile Include="SystemCore\FilterSystemUIElement.cs" />

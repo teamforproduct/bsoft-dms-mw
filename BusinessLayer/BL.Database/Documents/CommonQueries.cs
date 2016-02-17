@@ -236,10 +236,10 @@ namespace BL.Database.Documents
 
         }
 
-        public static IEnumerable<FullDocument> GetLinkedDocuments(DmsContext dbContext, int documentId)
+        public static IEnumerable<FrontDocument> GetLinkedDocuments(DmsContext dbContext, int documentId)
         {
             return dbContext.DocumentsSet.Where(x => (x.LinkId == documentId))
-                        .Select(y => new FullDocument
+                        .Select(y => new FrontDocument
                         {
                             Id = y.Id,
                             GeneralInfo = y.TemplateDocument.DocumentDirection.Name + " " + y.TemplateDocument.DocumentType.Name,
@@ -251,11 +251,9 @@ namespace BL.Database.Documents
                             DocumentDate = y.RegistrationDate ?? y.CreateDate,
                             Description = y.Description,
                             Links = dbContext.DocumentLinksSet.Where(z => z.DocumentId == y.Id).
-                                Select(z => new ВaseDocumentLink
+                                Select(z => new FrontDocumentLink
                                 {
                                     Id = z.Id,
-                                    DocumentId = z.DocumentId,
-                                    ParentDocumentId = z.ParentDocumentId,
                                     GeneralInfo = z.LinkType.Name + " " +
                                                 (!z.ParentDocument.IsRegistered ? "#" : "") +
                                                 (z.ParentDocument.RegistrationNumber != null

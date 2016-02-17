@@ -11,9 +11,9 @@ namespace BL.Logic.DocumentCore.Commands
     internal class UpdateDocument : Command
     {
         private readonly IContext _context;
-        private readonly FullDocument _document;
+        private readonly FrontDocument _document;
 
-        public UpdateDocument(IContext context, FullDocument document)
+        public UpdateDocument(IContext context, FrontDocument document)
         {
             _context = context;
             _document = document;
