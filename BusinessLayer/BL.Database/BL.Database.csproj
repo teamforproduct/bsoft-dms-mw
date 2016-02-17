@@ -89,6 +89,7 @@
     <Compile Include="DBModel\Document\DocumentSendLists.cs" />
     <Compile Include="DBModel\Document\DocumentTags.cs" />
     <Compile Include="DBModel\Document\DocumentWaits.cs" />
+    <Compile Include="DBModel\InternalModel\DocumentQuery.cs" />
     <Compile Include="DBModel\System\SystemActions.cs" />
     <Compile Include="DBModel\System\SystemFields.cs" />
     <Compile Include="DBModel\System\SystemLogs.cs" />
@@ -121,6 +122,7 @@
     <Compile Include="Admins\Interfaces\IAdminsDbProcess.cs" />
     <Compile Include="Dictionaries\DictionariesDbProcess.cs" />
     <Compile Include="Dictionaries\Interfaces\IDictionariesDbProcess.cs" />
+    <Compile Include="Documents\CommonQueries.cs" />
     <Compile Include="Documents\DocumentFileDbProcess.cs" />
     <Compile Include="Documents\DocumentFiltersDbProcess.cs" />
     <Compile Include="Documents\DocumentOperationsDbProcess.cs" />

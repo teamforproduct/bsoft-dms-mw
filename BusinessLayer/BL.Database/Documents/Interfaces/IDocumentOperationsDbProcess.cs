@@ -1,8 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
+﻿using System.Collections.Generic;
 using BL.CrossCutting.Interfaces;
-using BL.Database.DBModel.Document;
 using BL.Model.Database;
 using BL.Model.DocumentCore;
 using BL.Model.DocumentCore.Actions;
@@ -13,11 +10,7 @@ namespace BL.Database.Documents.Interfaces
     {
         bool VerifyDocumentRegistrationNumber(IContext ctx, RegisterDocument registerDocument);
         bool SetDocumentRegistration(IContext ctx, RegisterDocument registerDocument);
-        void AddDocumentLink(IContext context, �aseDocumentLink model);
-
-        IEnumerable<BaseDocumentWaits> GetDocumentWaits(IContext ctx,
-            Expression<Func<DocumentWaits, bool>> filter,
-            Expression<Func<BaseDocumentWaits, BaseDocumentWaits>> select);
+        void AddDocumentLink(IContext context, ВaseDocumentLink model);
 
         BaseDocumentWaits GetDocumentWaitByOnEventId(IContext ctx, int eventId);
         void AddDocumentWait(IContext ctx, BaseDocumentWaits documentWait);

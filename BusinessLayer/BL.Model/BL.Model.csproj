@@ -43,6 +43,7 @@
     <Compile Include="AdminCore\BaseAdminAccessLevel.cs" />
     <Compile Include="AdminCore\FilterAdminUserRole.cs" />
     <Compile Include="AdminCore\FilterAdminAccessLevel.cs" />
+    <Compile Include="AdminCore\FilterDocumentWaits.cs" />
     <Compile Include="AdminCore\VerifyAccess.cs" />
     <Compile Include="AdminCore\VerifySubordination.cs" />
     <Compile Include="Database\EventAccessModel.cs" />
@@ -102,6 +103,7 @@
     <Compile Include="DocumentAdditional\ModifyDocumentFile.cs" />
     <Compile Include="DocumentCore\AddDocumentByTemplateDocument.cs" />
     <Compile Include="DocumentCore\FilterDocumentEvent.cs" />
+    <Compile Include="DocumentCore\InternalDocument.cs" />
     <Compile Include="DocumentCore\ModifyDocumentSavedFilter.cs" />
     <Compile Include="DocumentCore\ModifyDocumentSendListStage.cs" />
     <Compile Include="Enums\EnumActions.cs" />

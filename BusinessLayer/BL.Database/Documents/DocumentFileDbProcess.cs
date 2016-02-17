@@ -22,36 +22,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-                var sq = dbContext.DocumentFilesSet
-                    .Where(x => x.DocumentId == documentId)
-                    .GroupBy(g => new {g.DocumentId, g.OrderNumber})
-                    .Select(
-                        x => new {DocId = x.Key.DocumentId, OrdId = x.Key.OrderNumber, MaxVers = x.Max(s => s.Version)});
-
-                return
-                    sq.Join(dbContext.DocumentFilesSet, sub => new {sub.DocId, sub.OrdId, VerId = sub.MaxVers},
-                        fl => new {DocId = fl.DocumentId, OrdId = fl.OrderNumber, VerId = fl.Version},
-                        (s, f) => new {fl = f})
-                        .Join(dbContext.DictionaryAgentsSet, df => df.fl.LastChangeUserId, da => da.Id,
-                            (d, a) => new {d.fl, agName = a.Name})
-                        .Select(x => new DocumentAttachedFile
-                        {
-                            Id = x.fl.Id,
-                            Date = x.fl.Date,
-                            DocumentId = x.fl.DocumentId,
-                            Extension = x.fl.Extension,
-                            FileContent = x.fl.Content,
-                            FileType = x.fl.FileType,
-                            IsAdditional = x.fl.IsAdditional,
-                            Hash = x.fl.Hash,
-                            LastChangeDate = x.fl.LastChangeDate,
-                            LastChangeUserId = x.fl.LastChangeUserId,
-                            LastChangeUserName = x.agName,
-                            Name = x.fl.Name,
-                            OrderInDocument = x.fl.OrderNumber,
-                            Version = x.fl.Version,
-                            WasChangedExternal = false
-                        }).ToList();
+                return CommonQueries.GetDocumentFiles(dbContext, documentId);
             }
         }
 
