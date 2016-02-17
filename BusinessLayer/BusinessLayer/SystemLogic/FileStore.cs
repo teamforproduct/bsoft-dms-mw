@@ -91,7 +91,7 @@ namespace BL.Logic.SystemLogic
             try
             {
                 var path = GetFullFilePath(ctx, attFile);
-                Directory.Delete(path);
+                Directory.Delete(path, true);
             }
             catch (Exception ex)
             {
