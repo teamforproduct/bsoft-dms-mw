@@ -70,22 +70,30 @@ namespace BL.Logic.DocumentCore
         public int AddDocumentByTemplateDocument(IContext context, AddDocumentByTemplateDocument model)
         {
             _adminDb.VerifyAccess(context, new VerifyAccess() { ActionCode = EnumActions.AddDocument, PositionId = model.CurrentPositionId });
-            var newDoc = _documentDb.AddDocumentByTemplateDocumentPrepare(context, model.TemplateDocumentId);
-            newDoc.CreateDate = DateTime.Now;
-            newDoc.ExecutorPositionId = context.CurrentPositionId.Value;
-            newDoc.IsRegistered = false;
-            newDoc.LastChangeDate = DateTime.Now;
-            newDoc.LastChangeUserId = context.CurrentAgentId;
-            newDoc.SendLists.ToList().ForEach(x =>
-                {
-                    x.IsInitial = true;
-                    x.StartEventId = null;
-                    x.CloseEventId = null;
-                });
-            newDoc.Events = GetEventForNewDocument(context);
-            newDoc.Accesses = GetAccessesForNewDocument(context);
-
-            return SaveDocument(context, newDoc);
+            var document = _documentDb.AddDocumentByTemplateDocumentPrepare(context, model.TemplateDocumentId);
+            document.CreateDate = DateTime.Now;
+            document.ExecutorPositionId = context.CurrentPositionId.Value;
+            document.IsRegistered = false;
+            document.LastChangeDate = DateTime.Now;
+            document.LastChangeUserId = context.CurrentAgentId;
+            foreach (var sl in document.SendLists)
+            {
+                sl.IsInitial = true;
+                sl.StartEventId = null;
+                sl.CloseEventId = null;
+                sl.LastChangeDate = DateTime.Now;
+                sl.LastChangeUserId = context.CurrentAgentId;
+            }
+            foreach (var sl in document.RestrictedSendLists)
+            {
+                sl.LastChangeDate = DateTime.Now;
+                sl.LastChangeUserId = context.CurrentAgentId;
+            }
+            document.Events = GetEventForNewDocument(context);
+            document.Accesses = GetAccessesForNewDocument(context);
+            //TODO process files
+            document.DocumentFiles = null;
+            return SaveDocument(context, document);
         }
 
         public int ModifyDocument(IContext context, ModifyDocument model)
@@ -211,12 +219,15 @@ namespace BL.Logic.DocumentCore
             }
 
             document.CreateDate = DateTime.Now;
+            document.ExecutorPositionId = context.CurrentPositionId.Value;
+            document.IsRegistered = false;
             document.LastChangeDate = DateTime.Now;
             document.LastChangeUserId = context.CurrentAgentId;
-            document.IsRegistered = false;
 
             foreach (var sl in document.SendLists)
             {
+                sl.StartEventId = null;
+                sl.CloseEventId = null;
                 sl.LastChangeDate = DateTime.Now;
                 sl.LastChangeUserId = context.CurrentAgentId;
             }

@@ -546,8 +546,6 @@ namespace BL.Database.Documents
                         TemplateDocumentId = x.Doc.TemplateDocumentId,
                         DocumentSubjectId = x.Doc.DocumentSubjectId,
                         Description = x.Doc.Description,
-                        ExecutorPositionId = ctx.CurrentPositionId.Value,
-                        LastChangeUserId = ctx.CurrentAgentId,
                         SenderAgentId = x.Doc.SenderAgentId,
                         SenderAgentPersonId = x.Doc.SenderAgentPersonId,
                         Addressee = x.Doc.Addressee,
@@ -568,8 +566,6 @@ namespace BL.Database.Documents
                             DueDay = y.DueDay,
                             AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
                             IsInitial = y.IsInitial,
-                            StartEventId = y.StartEventId,
-                            CloseEventId = y.CloseEventId,
                         }).ToList();
                 doc.RestrictedSendLists = dbContext.DocumentRestrictedSendListsSet.Where(x => x.DocumentId == documentId)
                         .Select(y => new InternalDocumentRestrictedSendLists
