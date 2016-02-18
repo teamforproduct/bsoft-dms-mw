@@ -3,7 +3,7 @@ using BL.Model.Enums;
 
 namespace BL.Model.DocumentCore.FrontModel
 {
-    public class BaseDocumentEvent
+    public class FrontDocumentEvent
     {
         public int Id { get; set; }
         public int DocumentId { get; set; }
@@ -28,8 +28,8 @@ namespace BL.Model.DocumentCore.FrontModel
 
         public string GeneralInfo { get; set; }
 
-        public BaseDocumentWaits OnWaits { get; set; }
-        public BaseDocumentWaits OffWaits { get; set; }
+        public FrontDocumentWaits OnWaits { get; set; }
+        public FrontDocumentWaits OffWaits { get; set; }
 
     }
 }

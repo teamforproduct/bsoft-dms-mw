@@ -15,17 +15,17 @@ namespace BL.Logic.DocumentCore
             _templateDb = templateDb;
         }
 
-        public IEnumerable<BaseTemplateDocument> GetTemplateDocuments(IContext context)
+        public IEnumerable<FrontTemplateDocument> GetTemplateDocuments(IContext context)
         {
             return _templateDb.GetTemplateDocument(context);
         }
 
-        public int AddOrUpdateTemplate(IContext context, BaseTemplateDocument template)
+        public int AddOrUpdateTemplate(IContext context, FrontTemplateDocument template)
         {
             return _templateDb.AddOrUpdateTemplate(context, template);
         }
 
-        public BaseTemplateDocument GetTemplateDocument(IContext context, int templateDocumentId)
+        public FrontTemplateDocument GetTemplateDocument(IContext context, int templateDocumentId)
         {
             return _templateDb.GetTemplateDocument(context, templateDocumentId);
         }

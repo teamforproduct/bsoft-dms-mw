@@ -27,7 +27,7 @@ namespace BL.Model.DocumentCore.InternalModel
 
                 TemplateDocumentId = model.TemplateDocumentId;
                 ExecutorPositionId = model.ExecutorPositionId;
-                CreateDate = model.CreateDate;
+                CreateDate = model.CreateDate.Value;
                 IsRegistered = model.IsRegistered;
                 RegistrationJournalId = model.RegistrationJournalId;
                 NumerationPrefixFormula = model.NumerationPrefixFormula;
@@ -35,8 +35,8 @@ namespace BL.Model.DocumentCore.InternalModel
                 RegistrationNumberSuffix = model.RegistrationNumberSuffix;
                 RegistrationNumberPrefix = model.RegistrationNumberPrefix;
                 RegistrationDate = model.RegistrationDate;
-                LastChangeUserId = model.LastChangeUserId;
-                LastChangeDate = model.LastChangeDate;
+                LastChangeUserId = model.LastChangeUserId.Value;
+                LastChangeDate = model.LastChangeDate.Value;
                 LinkId = model.LinkId;
 
                 IsHard = model.IsHard;
@@ -97,7 +97,7 @@ namespace BL.Model.DocumentCore.InternalModel
 
         public int TemplateDocumentId { get; set; }
         public int ExecutorPositionId { get; set; }
-        public DateTime? CreateDate { get; set; }
+        public DateTime CreateDate { get; set; }
         public bool IsRegistered { get; set; }
         public int? RegistrationJournalId { get; set; }
         public string NumerationPrefixFormula { get; set; }
@@ -105,8 +105,8 @@ namespace BL.Model.DocumentCore.InternalModel
         public string RegistrationNumberSuffix { get; set; }
         public string RegistrationNumberPrefix { get; set; }
         public DateTime? RegistrationDate { get; set; }
-        public int? LastChangeUserId { get; set; }
-        public DateTime? LastChangeDate { get; set; }
+        public int LastChangeUserId { get; set; }
+        public DateTime LastChangeDate { get; set; }
         public int? LinkId { get; set; }
 
         public bool IsHard { get; set; }
@@ -125,15 +125,15 @@ namespace BL.Model.DocumentCore.InternalModel
         public int AttachedFilesCount { get; set; }
         public int LinkedDocumentsCount { get; set; }
 
-        public IEnumerable<BaseDocumentRestrictedSendList> RestrictedSendLists { get; set; }
-        public IEnumerable<BaseDocumentSendList> SendLists { get; set; }
-        public IEnumerable<BaseDocumentSendListStage> SendListStages { get; set; }
+        public IEnumerable<InternalDocumentRestrictedSendLists> RestrictedSendLists { get; set; }
+        public IEnumerable<InternalDocumentSendLists> SendLists { get; set; }
+        public IEnumerable<InternalDocumentSendListStage> SendListStages { get; set; }
         public int SendListStageMax { get; set; }
-        public IEnumerable<BaseDocumentEvent> Events { get; set; }
-        public IEnumerable<BaseDocumentAccess> Accesses { get; set; }
-        public IEnumerable<DocumentAttachedFile> DocumentFiles { get; set; }
-        public IEnumerable<FrontDocument> LinkedDocuments { get; set; }
+        public IEnumerable<InternalDocumentEvents> Events { get; set; }
+        public IEnumerable<InternalDocumentAccesses> Accesses { get; set; }
+        public IEnumerable<InternalDocumentAttachedFile> DocumentFiles { get; set; }
+        public IEnumerable<InternalDocument> LinkedDocuments { get; set; }
         public IEnumerable<FrontDocumentLink> Links { get; set; }
-        public IEnumerable<BaseDocumentWaits> DocumentWaits { get; set; }
+        public IEnumerable<InternalDocumentWaits> DocumentWaits { get; set; }
     }
 }

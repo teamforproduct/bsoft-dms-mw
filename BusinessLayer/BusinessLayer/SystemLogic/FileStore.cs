@@ -27,14 +27,14 @@ namespace BL.Logic.SystemLogic
             }
         }
 
-        private string GetFullFilePath(IContext ctx, DocumentAttachedFile attFile)
+        private string GetFullFilePath(IContext ctx, FrontDocumentAttachedFile attFile)
         {
             var path = GetStorePath(ctx);
             path = Path.Combine(new string[] { path, ctx.CurrentAgentId.ToString(), attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString(), attFile.Version.ToString() });
             return path;
         }
 
-        public string SaveFile(IContext ctx, DocumentAttachedFile attFile, bool isOverride = true)
+        public string SaveFile(IContext ctx, FrontDocumentAttachedFile attFile, bool isOverride = true)
         {
             try
             {
@@ -65,7 +65,7 @@ namespace BL.Logic.SystemLogic
             //webPath = String.Format(@"{0}/{1}/{2}/{3}/{4}", date.Year, date.Month, date.Day, time, hash);
         }
 
-        public byte[] GetFile(IContext ctx, DocumentAttachedFile attFile)
+        public byte[] GetFile(IContext ctx, FrontDocumentAttachedFile attFile)
         {
             try
             {
@@ -86,7 +86,7 @@ namespace BL.Logic.SystemLogic
             }
         }
 
-        public void DeleteFile(IContext ctx, DocumentAttachedFile attFile)
+        public void DeleteFile(IContext ctx, FrontDocumentAttachedFile attFile)
         {
             try
             {

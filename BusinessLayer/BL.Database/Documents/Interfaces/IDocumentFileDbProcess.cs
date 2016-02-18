@@ -6,15 +6,15 @@ namespace BL.Database.Documents.Interfaces
 {
     public interface IDocumentFileDbProcess
     {
-        IEnumerable<DocumentAttachedFile> GetDocumentFiles(IContext ctx, int documentId);
-        IEnumerable<DocumentAttachedFile> GetDocumentFileVersions(IContext ctx, int documentId, int orderNumber);
-        DocumentAttachedFile GetDocumentFileVersion(IContext ctx, int documentId, int orderNumber, int versionNumber);
-        DocumentAttachedFile GetDocumentFileVersion(IContext ctx, int id);
-        DocumentAttachedFile GetDocumentFileLatestVersion(IContext ctx, int documentId, int orderNumber);
+        IEnumerable<FrontDocumentAttachedFile> GetDocumentFiles(IContext ctx, int documentId);
+        IEnumerable<FrontDocumentAttachedFile> GetDocumentFileVersions(IContext ctx, int documentId, int orderNumber);
+        FrontDocumentAttachedFile GetDocumentFileVersion(IContext ctx, int documentId, int orderNumber, int versionNumber);
+        FrontDocumentAttachedFile GetDocumentFileVersion(IContext ctx, int id);
+        FrontDocumentAttachedFile GetDocumentFileLatestVersion(IContext ctx, int documentId, int orderNumber);
 
-        int AddNewFileOrVersion(IContext ctx, DocumentAttachedFile docFile);
-        void UpdateFileOrVersion(IContext ctx, DocumentAttachedFile docFile);
-        void DeleteAttachedFile(IContext ctx, DocumentAttachedFile docFile);
+        int AddNewFileOrVersion(IContext ctx, FrontDocumentAttachedFile docFile);
+        void UpdateFileOrVersion(IContext ctx, FrontDocumentAttachedFile docFile);
+        void DeleteAttachedFile(IContext ctx, FrontDocumentAttachedFile docFile);
         int GetNextFileOrderNumber(IContext ctx, int documentId);
         int GetFileNextVersion(IContext ctx, int documentId, int fileOrder);
     }

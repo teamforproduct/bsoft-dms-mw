@@ -14,6 +14,7 @@ using BL.Database.SystemDb;
 using BL.Logic.DocumentCore.Commands;
 using BL.Database.Admins.Interfaces;
 using BL.Model.AdminCore;
+using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DocumentCore.InternalModel;
@@ -69,74 +70,22 @@ namespace BL.Logic.DocumentCore
         public int AddDocumentByTemplateDocument(IContext context, AddDocumentByTemplateDocument model)
         {
             _adminDb.VerifyAccess(context, new VerifyAccess() { ActionCode = EnumActions.AddDocument, PositionId = model.CurrentPositionId });
-            var docTemplate = _templateDb.GetTemplateDocument(context, model.TemplateDocumentId);
-            var baseDocument = new InternalDocument
-            {
-                TemplateDocumentId = docTemplate.Id,
-                CreateDate = DateTime.Now,
-                DocumentSubjectId = docTemplate.DocumentSubjectId,
-                Description = docTemplate.Description,
-                ExecutorPositionId = (int)context.CurrentPositionId, ////
-                SenderAgentId = docTemplate.DocumentDirection == EnumDocumentDirections.External ? docTemplate.SenderAgentId : null,
-                SenderAgentPersonId = docTemplate.DocumentDirection == EnumDocumentDirections.External ? docTemplate.SenderAgentPersonId : null,
-                Addressee = docTemplate.DocumentDirection == EnumDocumentDirections.External ? docTemplate.Addressee : null
-            };
-
-            if (docTemplate.RestrictedSendLists != null && docTemplate.RestrictedSendLists.Any())
-            {
-                baseDocument.RestrictedSendLists = docTemplate.RestrictedSendLists.Select(x => new BaseDocumentRestrictedSendList()
+            var newDoc = _documentDb.AddDocumentByTemplateDocumentPrepare(context, model.TemplateDocumentId);
+            newDoc.CreateDate = DateTime.Now;
+            newDoc.ExecutorPositionId = context.CurrentPositionId.Value;
+            newDoc.IsRegistered = false;
+            newDoc.LastChangeDate = DateTime.Now;
+            newDoc.LastChangeUserId = context.CurrentAgentId;
+            newDoc.SendLists.ToList().ForEach(x =>
                 {
-                    PositionId = x.PositionId,
-                    AccessLevelId = (int)x.AccessLevel
-                }).ToList();
-            }
+                    x.IsInitial = true;
+                    x.StartEventId = null;
+                    x.CloseEventId = null;
+                });
+            newDoc.Events = GetEventForNewDocument(context);
+            newDoc.Accesses = GetAccessesForNewDocument(context);
 
-            if (docTemplate.SendLists != null && docTemplate.SendLists.Any())
-            {
-                baseDocument.SendLists = docTemplate.SendLists.Select(x => new BaseDocumentSendList
-                {
-                    Stage = x.Stage,
-                    SendType = x.SendType,
-                    TargetPositionId = x.TargetPositionId,
-                    Description = x.Description,
-                    DueDate = x.DueDate,
-                    DueDay = x.DueDay,
-                    AccessLevel = x.AccessLevel,
-                    IsInitial = true,
-                    StartEventId = null,
-                    CloseEventId = null
-                }).ToList();
-            }
-
-            var evt = new BaseDocumentEvent
-            {
-                LastChangeDate = DateTime.Now,
-                Date = DateTime.Now,
-                CreateDate = DateTime.Now,
-                EventType = EnumEventTypes.AddNewDocument,
-                Description = "Create",
-                LastChangeUserId = context.CurrentAgentId,
-                SourceAgentId = context.CurrentAgentId,
-                TargetAgentId = context.CurrentAgentId,
-                TargetPositionId = context.CurrentPositionId,
-                SourcePositionId = (int)context.CurrentPositionId
-            };
-
-            baseDocument.Events = new List<BaseDocumentEvent> { evt };
-
-            var acc = new BaseDocumentAccess
-            {
-                AccessLevel = EnumDocumentAccesses.PersonalRefIO,
-                IsInWork = true,
-                IsFavourite = false,
-                LastChangeDate = DateTime.Now,
-                LastChangeUserId = context.CurrentAgentId,
-                PositionId = (int)context.CurrentPositionId,
-            };
-
-            baseDocument.Accesses = new List<BaseDocumentAccess>() { acc };
-
-            return SaveDocument(context, baseDocument);
+            return SaveDocument(context, newDoc);
         }
 
         public int ModifyDocument(IContext context, ModifyDocument model)
@@ -178,7 +127,7 @@ namespace BL.Logic.DocumentCore
             return uiElements;
         }
 
-        private IEnumerable<BaseSystemUIElement> VerifyDocument(IContext ctx, FrontDocument doc,  IEnumerable<BaseSystemUIElement> uiElements)
+        private IEnumerable<BaseSystemUIElement> VerifyDocument(IContext ctx, FrontDocument doc, IEnumerable<BaseSystemUIElement> uiElements)
         {
             if (doc.DocumentDirection != EnumDocumentDirections.External)
             {
@@ -194,7 +143,7 @@ namespace BL.Logic.DocumentCore
                 doc.Addressee = null;
             }
 
-            if ((doc.DocumentDirection != EnumDocumentDirections.External) && (uiElements == null)
+            if ((doc.DocumentDirection == EnumDocumentDirections.External) && (uiElements == null)
                     &&
                     (
                         doc.SenderAgentId == null ||
@@ -252,7 +201,74 @@ namespace BL.Logic.DocumentCore
             return uiElements;
         }
 
+        public int CopyDocument(IContext context, CopyDocument model)
+        {
+            var document = _documentDb.CopyDocumentPrepare(context, model.DocumentId);
+
+            foreach (var sl in document.SendLists)
+            {
+                sl.LastChangeDate = DateTime.Now;
+                sl.LastChangeUserId = context.CurrentAgentId;
+            }
+
+            foreach (var sl in document.RestrictedSendLists)
+            {
+                sl.LastChangeDate = DateTime.Now;
+                sl.LastChangeUserId = context.CurrentAgentId;
+            }
+
+            document.Events = GetEventForNewDocument(context);
+            document.Accesses = GetAccessesForNewDocument(context);
+
+            //TODO process files
+            document.DocumentFiles = null;
+
+            //TODO make it with Actions
+            var docService = DmsResolver.Current.Get<IDocumentService>();
+            return docService.SaveDocument(context, document);
+        }
+
         #endregion Documents
 
+        #region help methods
+
+        private List<InternalDocumentEvents> GetEventForNewDocument(IContext context)
+        {
+            return new List<InternalDocumentEvents>
+            {
+                new InternalDocumentEvents
+                {
+                    EventType = EnumEventTypes.AddNewDocument,
+                    Description = "Create",
+                    LastChangeUserId = context.CurrentAgentId,
+                    SourceAgentId = context.CurrentAgentId,
+                    TargetAgentId = context.CurrentAgentId,
+                    TargetPositionId = context.CurrentPositionId,
+                    SourcePositionId = (int) context.CurrentPositionId,
+                    LastChangeDate = DateTime.Now,
+                    Date = DateTime.Now,
+                    CreateDate = DateTime.Now,
+                }
+
+            };
+        }
+
+        private List<InternalDocumentAccesses> GetAccessesForNewDocument(IContext context)
+        {
+            return new List<InternalDocumentAccesses>
+            {
+                new InternalDocumentAccesses
+                {
+                    AccessLevel = EnumDocumentAccesses.PersonalRefIO,
+                    IsInWork = true,
+                    IsFavourite = false,
+                    LastChangeDate = DateTime.Now,
+                    LastChangeUserId = context.CurrentAgentId,
+                    PositionId = (int) context.CurrentPositionId,
+                }
+            };
+        }
+
+        #endregion
     }
 }

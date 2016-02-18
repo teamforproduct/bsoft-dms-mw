@@ -8,8 +8,8 @@ namespace BL.Logic.DocumentCore.Interfaces
 {
     public interface IDocumentSendListService
     {
-        BaseDocumentRestrictedSendList GetRestrictedSendList(IContext context, int restrictedSendListId);
-        IEnumerable<BaseDocumentRestrictedSendList> GetRestrictedSendLists(IContext context, int documentId);
+        FrontDocumentRestrictedSendList GetRestrictedSendList(IContext context, int restrictedSendListId);
+        IEnumerable<FrontDocumentRestrictedSendList> GetRestrictedSendLists(IContext context, int documentId);
         void UpdateRestrictedSendList(IContext context, ModifyDocumentRestrictedSendList restrictedSendList);
         int AddRestrictedSendList(IContext context, ModifyDocumentRestrictedSendList restrictedSendList);
         void AddRestrictedSendListByStandartSendLists(IContext context, ModifyDocumentRestrictedSendListByStandartSendList model);
@@ -17,10 +17,10 @@ namespace BL.Logic.DocumentCore.Interfaces
         void ValidSendListsBySendLists(IContext context, int documentId, IEnumerable<ModifyDocumentSendList> sendLists);
         void ValidSendListsByRestrictedSendLists(IContext context, int documentId, IEnumerable<ModifyDocumentRestrictedSendList> restrictedSendLists);
         void ValidSendLists(IContext context, int documentId, IEnumerable<ModifyDocumentSendList> sendLists            , IEnumerable<ModifyDocumentRestrictedSendList> restrictedSendLists);
-        IEnumerable<BaseDocumentSendListStage> GetSendListStage(IContext context, int documentId, bool isLastStage = false);
-        IEnumerable<BaseDocumentSendListStage> GetSendListStage(IEnumerable<BaseDocumentSendList> sendLists);
-        BaseDocumentSendList GetSendList(IContext context, int sendListId);
-        IEnumerable<BaseDocumentSendList> GetSendLists(IContext context, int documentId);
+        IEnumerable<FrontDocumentSendListStage> GetSendListStage(IContext context, int documentId, bool isLastStage = false);
+        IEnumerable<FrontDocumentSendListStage> GetSendListStage(IEnumerable<FrontDocumentSendList> sendLists);
+        FrontDocumentSendList GetSendList(IContext context, int sendListId);
+        IEnumerable<FrontDocumentSendList> GetSendLists(IContext context, int documentId);
         void UpdateSendList(IContext context, ModifyDocumentSendList sendList);
         int AddSendList(IContext context, ModifyDocumentSendList sendList);
         void AddSendListByStandartSendLists(IContext context, ModifyDocumentSendListByStandartSendList model);

@@ -8,7 +8,6 @@ using BL.Database.Documents.Interfaces;
 using BL.Database.SystemDb;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Model.Database;
-using BL.Model.DocumentCore;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.Enums;
 using BL.Model.Exception;
@@ -16,6 +15,7 @@ using BL.Model.SystemCore;
 using BL.Database.Admins.Interfaces;
 using BL.Model.AdminCore;
 using BL.Model.DocumentCore.FrontModel;
+
 
 namespace BL.Logic.DocumentCore
 {
@@ -36,7 +36,7 @@ namespace BL.Logic.DocumentCore
 
         public void AddDocumentComment(IContext context, AddNote note)
         {
-            var evt = new BaseDocumentEvent
+            var evt = new FrontDocumentEvent
             {
                 DocumentId = note.DocumentId,
                 Description = note.Description,
@@ -70,7 +70,7 @@ namespace BL.Logic.DocumentCore
             return actions;
         }
 
-        public int AddDocumentAccess(IContext ctx, BaseDocumentAccess access)
+        public int AddDocumentAccess(IContext ctx, FrontDocumentAccess access)
         {
             return _operationDb.AddDocumentAccess(ctx, access);
         }
@@ -91,7 +91,7 @@ namespace BL.Logic.DocumentCore
             var ea = new EventAccessModel
             {
                 DocumentAccess = acc,
-                DocumentEvent = new BaseDocumentEvent
+                DocumentEvent = new FrontDocumentEvent
                 {
                     DocumentId = newStatus.DocumentId,
                     SourceAgentId = context.CurrentAgentId,
@@ -120,13 +120,13 @@ namespace BL.Logic.DocumentCore
 
         public void ControlOn(IContext context, ControlOn model)
         {
-            var docWait = new BaseDocumentWaits
+            var docWait = new FrontDocumentWaits
             {
                 DocumentId = model.DocumentId,
                 Description = model.Description,
                 DueDate = model.DueDate,
                 AttentionDate = model.AttentionDate,
-                OnEvent = new BaseDocumentEvent
+                OnEvent = new FrontDocumentEvent
                 {
                     DocumentId = model.DocumentId,
                     EventType = EnumEventTypes.ControlOn,
@@ -149,7 +149,7 @@ namespace BL.Logic.DocumentCore
             var oldWait = _operationDb.GetDocumentWaitByOnEventId(context, model.EventId);
 
             oldWait.OnEvent = null;
-            oldWait.OffEvent = new BaseDocumentEvent
+            oldWait.OffEvent = new FrontDocumentEvent
             {
                 DocumentId = model.DocumentId,
                 EventType = EnumEventTypes.ControlChange,
@@ -165,7 +165,7 @@ namespace BL.Logic.DocumentCore
 
             _operationDb.UpdateDocumentWait(context, oldWait);
 
-            var newWait = new BaseDocumentWaits
+            var newWait = new FrontDocumentWaits
             {
                 ParentId = oldWait.Id,
                 DocumentId = model.DocumentId,
@@ -184,7 +184,7 @@ namespace BL.Logic.DocumentCore
             docWait.ResultTypeId = model.ResultTypeId;
 
             docWait.OnEvent = null;
-            docWait.OffEvent = new BaseDocumentEvent
+            docWait.OffEvent = new FrontDocumentEvent
             {
                 DocumentId = model.DocumentId,
                 EventType = EnumEventTypes.ControlOff,
@@ -201,69 +201,9 @@ namespace BL.Logic.DocumentCore
             _operationDb.UpdateDocumentWait(context, docWait);
         }
 
-        public int CopyDocument(IContext context, CopyDocument model)
-        {
-            var document = _documentDb.GetDocumentCopy(context, model.DocumentId);
-
-            //if (document.RestrictedSendLists != null && document.RestrictedSendLists.Any())
-            //{
-            //    var restrictedSendLists = document.RestrictedSendLists.ToList();
-            //    for(int i=0,l= restrictedSendLists.Count;i< l;i++)
-            //    {
-            //        restrictedSendLists[i].Id = 0;
-            //    }
-            //    document.RestrictedSendLists = restrictedSendLists;
-            //}
-
-            //if (document.SendLists != null && document.SendLists.Any())
-            //{
-            //    var sendLists = document.SendLists.ToList();
-            //    for (int i = 0, l = sendLists.Count; i < l; i++)
-            //    {
-            //        sendLists[i].Id = 0;
-            //    }
-            //    document.SendLists = sendLists;
-            //}
-
-            var evt = new BaseDocumentEvent
-            {
-                EventType = EnumEventTypes.AddNewDocument,
-                Description = "Create",
-                LastChangeUserId = context.CurrentAgentId,
-                SourceAgentId = context.CurrentAgentId,
-                TargetAgentId = context.CurrentAgentId,
-                TargetPositionId = context.CurrentPositionId,
-                SourcePositionId = (int)context.CurrentPositionId,
-                LastChangeDate = DateTime.Now,
-                Date = DateTime.Now,
-                CreateDate = DateTime.Now,
-
-            };
-
-            document.Events = new List<BaseDocumentEvent> { evt };
-
-            var acc = new BaseDocumentAccess
-            {
-                AccessLevel = EnumDocumentAccesses.PersonalRefIO,
-                IsInWork = true,
-                IsFavourite = false,
-                LastChangeDate = DateTime.Now,
-                LastChangeUserId = context.CurrentAgentId,
-                PositionId = (int)context.CurrentPositionId,
-            };
-
-            //TODO process files
-            document.DocumentFiles = null;
-
-            document.Accesses = new List<BaseDocumentAccess>() { acc };
-            //TODO make it with Actions
-            var docService = DmsResolver.Current.Get<IDocumentService>();
-            return docService.SaveDocument(context, document);
-        }
-
         public void RegisterDocument(IContext context, RegisterDocument model)
         {
-            var doc = _documentDb.GetCheckRegistration(context, model.DocumentId);
+            var doc = _documentDb.RegisterDocumentPrepare(context, model.DocumentId);
 
             if (doc == null)
             {
@@ -289,7 +229,7 @@ namespace BL.Logic.DocumentCore
 
         public void AddDocumentLink(IContext context, AddDocumentLink model)
         {
-            var docLink = _operationDb.GetLinkedDocument(context, model);
+            var docLink = _operationDb.AddDocumentLinkPrepare(context, model);
             _adminDb.VerifyAccess(context, new VerifyAccess() { ActionCode = EnumActions.ModifyDocument, PositionId = docLink.ExecutorPositionId });
             if ((docLink.DocumentLinkId.HasValue) && (docLink.ParentDocumentLinkId.HasValue) && (docLink.DocumentLinkId == docLink.ParentDocumentLinkId))
             {

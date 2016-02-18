@@ -60,7 +60,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public IEnumerable<BaseDocumentSavedFilter> GetSavedFilters(IContext ctx)
+        public IEnumerable<FrontDocumentSavedFilter> GetSavedFilters(IContext ctx)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
@@ -70,7 +70,7 @@ namespace BL.Database.Documents
                 //var positionId = dbContext.Context.CurrentPositionId;
                 //qry = qry.Where(x => x.PositionId == positionId);
 
-                var res = qry.Select(x => new BaseDocumentSavedFilter
+                var res = qry.Select(x => new FrontDocumentSavedFilter
                 {
                     Id = x.Id,
                     PositionId = x.PositionId,
@@ -85,14 +85,14 @@ namespace BL.Database.Documents
             }
         }
 
-        public BaseDocumentSavedFilter GetSavedFilter(IContext ctx, int savedFilterId)
+        public FrontDocumentSavedFilter GetSavedFilter(IContext ctx, int savedFilterId)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
 
                 var savFilter =
                     dbContext.DocumentSavedFiltersSet.Where(x => x.Id == savedFilterId)
-                        .Select(x => new BaseDocumentSavedFilter
+                        .Select(x => new FrontDocumentSavedFilter
                         {
                             Id = x.Id,
                             PositionId = x.PositionId,

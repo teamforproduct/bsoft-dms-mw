@@ -10,8 +10,8 @@ namespace BL.Database.Documents.Interfaces
     {
         void AddSavedFilters(IContext ctx, ModifyDocumentSavedFilter savedFilter);
         void UpdateSavedFilters(IContext ctx, ModifyDocumentSavedFilter savedFilter);
-        IEnumerable<BaseDocumentSavedFilter> GetSavedFilters(IContext ctx);
-        BaseDocumentSavedFilter GetSavedFilter(IContext ctx, int savedFilterId);
+        IEnumerable<FrontDocumentSavedFilter> GetSavedFilters(IContext ctx);
+        FrontDocumentSavedFilter GetSavedFilter(IContext ctx, int savedFilterId);
         void DeleteSavedFilter(IContext ctx, int savedFilterId);
     }
 }

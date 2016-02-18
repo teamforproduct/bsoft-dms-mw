@@ -2,7 +2,7 @@
 
 namespace BL.Model.DocumentCore.FrontModel
 {
-    public class BaseDocumentSavedFilter
+    public class FrontDocumentSavedFilter
     {
         public int Id { get; set; }
         public Nullable<int> PositionId { get; set; }

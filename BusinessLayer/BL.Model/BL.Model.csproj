@@ -87,6 +87,7 @@
     <Compile Include="DictionaryCore\FilterDictionaryCompany.cs" />
     <Compile Include="DictionaryCore\FilterDictionaryAgentPerson.cs" />
     <Compile Include="DictionaryCore\FilterDictionaryAgent.cs" />
+    <Compile Include="DocumentCore\FrontModel\FrontDocumentAttachedFile.cs" />
     <Compile Include="DocumentCore\FrontModel\BaseDocumentTag.cs" />
     <Compile Include="DocumentCore\FrontModel\DocumentAttachedFile.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentFiles.cs" />
@@ -100,18 +101,29 @@
     <Compile Include="DocumentCore\Actions\ControlOff.cs" />
     <Compile Include="DocumentCore\Actions\ControlOn.cs" />
     <Compile Include="DocumentCore\Actions\AddNote.cs" />
-    <Compile Include="DocumentCore\FrontModel\BaseDocumentSavedFilter.cs" />
-    <Compile Include="DocumentCore\FrontModel\BaseDocumentStageSendList.cs" />
-    <Compile Include="DocumentCore\FrontModel\BaseDocumentLink.cs" />
-    <Compile Include="DocumentCore\FrontModel\BaseDocumentWaits.cs" />
+    <Compile Include="DocumentCore\FrontModel\FrontDocumentSavedFilter.cs" />
+    <Compile Include="DocumentCore\FrontModel\FrontDocumentSendListStage.cs" />
+    <Compile Include="DocumentCore\FrontModel\FrontDocumentLink.cs" />
+    <Compile Include="DocumentCore\FrontModel\FrontDocumentWaits.cs" />
     <Compile Include="DocumentCore\IncomingModel\DocumentFileIdentity.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentFile.cs" />
     <Compile Include="DocumentCore\IncomingModel\AddDocumentByTemplateDocument.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentTag.cs" />
+    <Compile Include="DocumentCore\InternalModel\InternalDocumentAttachedFile.cs" />
+    <Compile Include="DocumentCore\InternalModel\InternalTemplateDocument.cs" />
+    <Compile Include="DocumentCore\InternalModel\InternalTemplateDocumentRestrictedSendLists.cs" />
+    <Compile Include="DocumentCore\InternalModel\InternalTemplateDocumentSendLists.cs" />
     <Compile Include="DocumentCore\InternalModel\FilterDocumentEvent.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocument.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentSavedFilter.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentSendListStage.cs" />
+    <Compile Include="DocumentCore\InternalModel\InternalDocumentAccesses.cs" />
+    <Compile Include="DocumentCore\InternalModel\InternalDocumentEvents.cs" />
+    <Compile Include="DocumentCore\InternalModel\InternalDocumentRestrictedSendLists.cs" />
+    <Compile Include="DocumentCore\InternalModel\InternalDocumentSendLists.cs" />
+    <Compile Include="DocumentCore\InternalModel\InternalDocumentSendListStage.cs" />
+    <Compile Include="DocumentCore\InternalModel\InternalDocumentSubscriptions.cs" />
+    <Compile Include="DocumentCore\InternalModel\InternalDocumentWaits.cs" />
     <Compile Include="Enums\EnumActions.cs" />
     <Compile Include="Enums\EnumObjects.cs" />
     <Compile Include="Enums\EnumSubordinationTypes.cs" />
@@ -121,13 +133,13 @@
     <Compile Include="DictionaryCore\FilterDictionaryStandartSendList.cs" />
     <Compile Include="Enums\EnumImportanceEventTypes.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocument.cs" />
-    <Compile Include="DocumentCore\FrontModel\BaseDocumentEvent.cs" />
-    <Compile Include="DocumentCore\FrontModel\BaseDocumentRestrictedSendList.cs" />
-    <Compile Include="DocumentCore\FrontModel\BaseDocumentSendList.cs" />
-    <Compile Include="DocumentCore\FrontModel\BaseTemplateDocument.cs" />
-    <Compile Include="DocumentCore\FrontModel\BaseTemplateDocumentRestrictedSendLists.cs" />
-    <Compile Include="DocumentCore\FrontModel\BaseTemplateDocumentSendLists.cs" />
-    <Compile Include="DocumentCore\FrontModel\BaseDocumentAccess.cs" />
+    <Compile Include="DocumentCore\FrontModel\FrontDocumentEvent.cs" />
+    <Compile Include="DocumentCore\FrontModel\FrontDocumentRestrictedSendList.cs" />
+    <Compile Include="DocumentCore\FrontModel\FrontDocumentSendList.cs" />
+    <Compile Include="DocumentCore\FrontModel\FrontTemplateDocument.cs" />
+    <Compile Include="DocumentCore\FrontModel\FrontTemplateDocumentRestrictedSendLists.cs" />
+    <Compile Include="DocumentCore\FrontModel\FrontTemplateDocumentSendLists.cs" />
+    <Compile Include="DocumentCore\FrontModel\FrontDocumentAccess.cs" />
     <Compile Include="DocumentCore\IncomingModel\FilterDocument.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocument.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentRestrictedSendListByStandartSendList.cs" />
@@ -137,7 +149,7 @@
     <Compile Include="DocumentCore\Actions\RegisterDocument.cs" />
     <Compile Include="Enums\EnumSendTypes.cs" />
     <Compile Include="Exception\DmsExceptions.cs" />
-    <Compile Include="InternalModel\InternalLinkedDocument.cs" />
+    <Compile Include="DocumentCore\InternalModel\InternalLinkedDocument.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Enums\EnumLogTypes.cs" />
     <Compile Include="SystemCore\FilterSystemUIElement.cs" />
@@ -149,9 +161,7 @@
     <Compile Include="Users\Employee.cs" />
     <Compile Include="Users\CurrentPosition.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="DocumentAdditional\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

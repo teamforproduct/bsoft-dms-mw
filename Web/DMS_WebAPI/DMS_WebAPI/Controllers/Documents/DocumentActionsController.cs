@@ -172,7 +172,7 @@ namespace DMS_WebAPI.Controllers.Documents
         public IHttpActionResult CopyDocument(CopyDocument model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
-            var docProc = DmsResolver.Current.Get<IDocumentOperationsService>();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
             var ctrl = new DocumentsController();
             ctrl.ControllerContext = ControllerContext;
             return ctrl.Get(docProc.CopyDocument(cxt, model));

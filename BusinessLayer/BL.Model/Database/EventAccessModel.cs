@@ -5,7 +5,7 @@ namespace BL.Model.Database
 {
     public class EventAccessModel
     {
-        public BaseDocumentAccess DocumentAccess { get; set; }
-        public BaseDocumentEvent DocumentEvent { get; set; }
+        public FrontDocumentAccess DocumentAccess { get; set; }
+        public FrontDocumentEvent DocumentEvent { get; set; }
     }
 }

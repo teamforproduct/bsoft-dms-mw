@@ -2,7 +2,7 @@
 
 namespace BL.Model.DocumentCore.FrontModel
 {
-    public class BaseDocumentWaits
+    public class FrontDocumentWaits
     {
         public int Id { get; set; }
         public int DocumentId { get; set; }
@@ -13,7 +13,7 @@ namespace BL.Model.DocumentCore.FrontModel
         public string Description { get; set; }
         public DateTime? DueDate { get; set; }
         public DateTime? AttentionDate { get; set; }
-        public BaseDocumentEvent OnEvent { get; set; }
-        public BaseDocumentEvent OffEvent { get; set; }
+        public FrontDocumentEvent OnEvent { get; set; }
+        public FrontDocumentEvent OffEvent { get; set; }
     }
 }

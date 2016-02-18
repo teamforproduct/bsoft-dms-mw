@@ -2,9 +2,9 @@
 
 namespace BL.Model.DocumentCore.FrontModel
 {
-    public class BaseDocumentSendListStage
+    public class FrontDocumentSendListStage
     {
         public int Stage { get; set; }
-        public IEnumerable<BaseDocumentSendList> SendLists { get; set; }
+        public IEnumerable<FrontDocumentSendList> SendLists { get; set; }
     }
 }
