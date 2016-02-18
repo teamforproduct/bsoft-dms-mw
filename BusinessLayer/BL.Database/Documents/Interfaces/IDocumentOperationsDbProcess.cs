@@ -28,7 +28,7 @@ namespace BL.Database.Documents.Interfaces
         FrontDocumentAccess GetDocumentAccess(IContext ctx, int documentId);
 
         void SetDocumentInformation(IContext ctx, EventAccessModel access);
-        InternalLinkedDocument GetLinkedDocument(IContext context, AddDocumentLink model);
+        InternalLinkedDocument AddDocumentLinkPrepare(IContext context, AddDocumentLink model);
 
     }
 }

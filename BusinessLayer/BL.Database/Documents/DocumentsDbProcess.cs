@@ -233,7 +233,7 @@ namespace BL.Database.Documents
                         x =>
                             ctx.CurrentPositionsIdList.Contains(x.Acc.PositionId) &&
                             (!filters.IsInWork || filters.IsInWork && x.Acc.IsInWork == filters.IsInWork));
-                   
+
                 #region DocumentsSetFilter
 
                 if (filters.CreateFromDate.HasValue)
@@ -510,7 +510,7 @@ namespace BL.Database.Documents
                 };
 
 
-                doc.Events = CommonQueries.GetDocumentEvents(dbContext, new FilterDocumentEvent {DocumentId = new List<int> { doc.Id } });
+                doc.Events = CommonQueries.GetDocumentEvents(dbContext, new FilterDocumentEvent { DocumentId = new List<int> { doc.Id } });
                 doc.EventsCount = doc.Events.Count();
                 doc.NewEventCount = 0;
 
@@ -522,7 +522,7 @@ namespace BL.Database.Documents
 
 
                 doc.SendLists = CommonQueries.GetDocumentSendList(dbContext, documentId);
-                    
+
 
                 doc.SendListStageMax = (doc.SendLists == null) || (!doc.SendLists.Any()) ? 0 : doc.SendLists.Max(x => x.Stage);
 
@@ -531,13 +531,13 @@ namespace BL.Database.Documents
                 doc.DocumentFiles = CommonQueries.GetDocumentFiles(dbContext, documentId);
                 doc.AttachedFilesCount = doc.DocumentFiles.Count();
 
-                doc.DocumentWaits = CommonQueries.GetDocumentWaits(dbContext, new FilterDocumentWaits {DocumentId = documentId});
+                doc.DocumentWaits = CommonQueries.GetDocumentWaits(dbContext, new FilterDocumentWaits { DocumentId = documentId });
 
                 return doc;
             }
         }
 
-        public InternalDocument GetDocumentCopy(IContext ctx, int documentId)
+        public InternalDocument CopyDocumentPrepare(IContext ctx, int documentId)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
@@ -611,7 +611,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public InternalDocument GetCheckRegistration(IContext ctx, int documentId)
+        public InternalDocument RegisterDocumentPrepare(IContext ctx, int documentId)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
@@ -620,6 +620,73 @@ namespace BL.Database.Documents
                 {
                     IsRegistered = qry.Doc.IsRegistered
                 };
+            }
+        }
+
+        public InternalDocument AddDocumentByTemplateDocumentPrepare(IContext context, int templateDocumentId)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                return
+                dbContext.TemplateDocumentsSet.Where(x => x.Id == templateDocumentId)
+                    .Select(x => new InternalDocument
+                    {
+                        TemplateDocumentId = x.Id,
+                        CreateDate = DateTime.Now,
+                        DocumentSubjectId = x.DocumentSubjectId,
+                        Description = x.Description,
+                        ExecutorPositionId = context.CurrentPositionId.Value, ////
+                        SenderAgentId = x.SenderAgentId,
+                        SenderAgentPersonId = x.SenderAgentPersonId,
+                        Addressee = x.Addressee,
+
+                        RestrictedSendLists =
+                            x.RestrictedSendLists.Select(y => new InternalDocumentRestrictedSendLists()
+                            {
+                                PositionId = y.PositionId,
+                                AccessLevel = (EnumDocumentAccesses)y.AccessLevelId
+                            }).ToList(),
+                        SendLists = x.SendLists.Select(y => new InternalDocumentSendLists()
+                        {
+                            SendType = (EnumSendTypes)y.SendTypeId,
+                            TargetPositionId = y.TargetPositionId,
+                            Description = y.Description,
+                            Stage = y.Stage,
+                            DueDay = y.DueDay,
+                            AccessLevel = (EnumDocumentAccesses)y.AccessLevelId
+                        }
+
+                        ).ToList(),
+                        Events = new List<InternalDocumentEvents>
+                        {
+                           new InternalDocumentEvents
+                            {
+                                LastChangeDate = DateTime.Now,
+                                Date = DateTime.Now,
+                                CreateDate = DateTime.Now,
+                                EventType = EnumEventTypes.AddNewDocument,
+                                Description = "Create",
+                                LastChangeUserId = context.CurrentAgentId,
+                                SourceAgentId = context.CurrentAgentId,
+                                TargetAgentId = context.CurrentAgentId,
+                                TargetPositionId = context.CurrentPositionId,
+                                SourcePositionId = (int)context.CurrentPositionId
+                            }
+                        },
+                        Accesses = new List<InternalDocumentAccesses>()
+                        { 
+                                new InternalDocumentAccesses
+                            {
+                                AccessLevel = EnumDocumentAccesses.PersonalRefIO,
+                                IsInWork = true,
+                                IsFavourite = false,
+                                LastChangeDate = DateTime.Now,
+                                LastChangeUserId = context.CurrentAgentId,
+                                PositionId = (int)context.CurrentPositionId,
+                            }
+                        }
+
+                    }).FirstOrDefault();
             }
         }
 
