@@ -36,17 +36,17 @@ namespace BL.Database.Documents
                 var doc = new DBModel.Document.Documents
                 {
                     TemplateDocumentId = document.TemplateDocumentId,
-                    CreateDate = document.CreateDate ?? DateTime.Now,
+                    CreateDate = document.CreateDate,
                     DocumentSubjectId = document.DocumentSubjectId,
                     Description = document.Description,
-                    IsRegistered = false,
+                    IsRegistered = document.IsRegistered,
                     RegistrationJournalId = document.RegistrationJournalId,
                     RegistrationNumberSuffix = document.RegistrationNumberSuffix,
                     RegistrationNumberPrefix = document.RegistrationNumberPrefix,
                     RegistrationDate = document.RegistrationDate,
                     ExecutorPositionId = document.ExecutorPositionId,
-                    LastChangeUserId = ctx.CurrentAgentId,
-                    LastChangeDate = document.LastChangeDate.Value,
+                    LastChangeUserId = document.LastChangeUserId,
+                    LastChangeDate = document.LastChangeDate,
                     SenderAgentId = document.SenderAgentId,
                     SenderAgentPersonId = document.SenderAgentPersonId,
                     SenderNumber = document.SenderNumber,
@@ -93,9 +93,9 @@ namespace BL.Database.Documents
                         DueDate = x.DueDate,
                         DueDay = x.DueDay,
                         AccessLevelId = (int)x.AccessLevel,
-                        IsInitial = true,
-                        StartEventId = null,
-                        CloseEventId = null,
+                        IsInitial = x.IsInitial,
+                        StartEventId = x.StartEventId,
+                        CloseEventId = x.CloseEventId,
                         LastChangeUserId = x.LastChangeUserId,
                         LastChangeDate = x.LastChangeDate
                     }).ToList();
@@ -112,7 +112,6 @@ namespace BL.Database.Documents
                         AccessLevelId = (int)x.AccessLevel,
                     }).ToList();
                 }
-
                 dbContext.DocumentsSet.Add(doc);
                 dbContext.SaveChanges();
                 document.Id = doc.Id;
@@ -645,65 +644,35 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
+                var restrictedSendLists = dbContext.TemplateDocumentRestrictedSendLists.Where(y => y.Id == templateDocumentId)
+                    .Select(y => new InternalDocumentRestrictedSendLists()
+                {
+                    PositionId = y.PositionId,
+                    AccessLevel = (EnumDocumentAccesses)y.AccessLevelId
+                }).ToList();
+                var sendLists = dbContext.TemplateDocumentSendLists.Where(y => y.Id == templateDocumentId)
+                    .Select(y => new InternalDocumentSendLists()
+                {
+                    SendType = (EnumSendTypes)y.SendTypeId,
+                    TargetPositionId = y.TargetPositionId,
+                    Description = y.Description,
+                    Stage = y.Stage,
+                    DueDay = y.DueDay,
+                    AccessLevel = (EnumDocumentAccesses)y.AccessLevelId
+                }
+                    ).ToList();
                 return
                 dbContext.TemplateDocumentsSet.Where(x => x.Id == templateDocumentId)
                     .Select(x => new InternalDocument
                     {
                         TemplateDocumentId = x.Id,
-                        CreateDate = DateTime.Now,
                         DocumentSubjectId = x.DocumentSubjectId,
                         Description = x.Description,
-                        ExecutorPositionId = context.CurrentPositionId.Value, ////
                         SenderAgentId = x.SenderAgentId,
                         SenderAgentPersonId = x.SenderAgentPersonId,
                         Addressee = x.Addressee,
-
-                        RestrictedSendLists =
-                            x.RestrictedSendLists.Select(y => new InternalDocumentRestrictedSendLists()
-                            {
-                                PositionId = y.PositionId,
-                                AccessLevel = (EnumDocumentAccesses)y.AccessLevelId
-                            }).ToList(),
-                        SendLists = x.SendLists.Select(y => new InternalDocumentSendLists()
-                        {
-                            SendType = (EnumSendTypes)y.SendTypeId,
-                            TargetPositionId = y.TargetPositionId,
-                            Description = y.Description,
-                            Stage = y.Stage,
-                            DueDay = y.DueDay,
-                            AccessLevel = (EnumDocumentAccesses)y.AccessLevelId
-                        }
-
-                        ).ToList(),
-                        Events = new List<InternalDocumentEvents>
-                        {
-                           new InternalDocumentEvents
-                            {
-                                LastChangeDate = DateTime.Now,
-                                Date = DateTime.Now,
-                                CreateDate = DateTime.Now,
-                                EventType = EnumEventTypes.AddNewDocument,
-                                Description = "Create",
-                                LastChangeUserId = context.CurrentAgentId,
-                                SourceAgentId = context.CurrentAgentId,
-                                TargetAgentId = context.CurrentAgentId,
-                                TargetPositionId = context.CurrentPositionId,
-                                SourcePositionId = (int)context.CurrentPositionId
-                            }
-                        },
-                        Accesses = new List<InternalDocumentAccesses>()
-                        { 
-                                new InternalDocumentAccesses
-                            {
-                                AccessLevel = EnumDocumentAccesses.PersonalRefIO,
-                                IsInWork = true,
-                                IsFavourite = false,
-                                LastChangeDate = DateTime.Now,
-                                LastChangeUserId = context.CurrentAgentId,
-                                PositionId = (int)context.CurrentPositionId,
-                            }
-                        }
-
+                        RestrictedSendLists = restrictedSendLists,
+                        SendLists = sendLists
                     }).FirstOrDefault();
             }
         }

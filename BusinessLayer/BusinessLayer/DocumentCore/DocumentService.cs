@@ -71,6 +71,46 @@ namespace BL.Logic.DocumentCore
         {
             _adminDb.VerifyAccess(context, new VerifyAccess() { ActionCode = EnumActions.AddDocument, PositionId = model.CurrentPositionId });
             var newDoc = _documentDb.AddDocumentByTemplateDocumentPrepare(context, model.TemplateDocumentId);
+            newDoc.CreateDate = DateTime.Now;
+            newDoc.ExecutorPositionId = context.CurrentPositionId.Value;
+            newDoc.IsRegistered = false;
+            newDoc.LastChangeDate = DateTime.Now;
+            newDoc.LastChangeUserId = context.CurrentAgentId;
+            newDoc.SendLists.ToList().ForEach(x =>
+                {
+                    x.IsInitial = true;
+                    x.StartEventId = null;
+                    x.CloseEventId = null;
+                });
+            newDoc.Events = new List<InternalDocumentEvents>
+            {
+                new InternalDocumentEvents
+                {
+                    LastChangeDate = DateTime.Now,
+                    Date = DateTime.Now,
+                    CreateDate = DateTime.Now,
+                    EventType = EnumEventTypes.AddNewDocument,
+                    Description = "Create",
+                    LastChangeUserId = context.CurrentAgentId,
+                    SourceAgentId = context.CurrentAgentId,
+                    TargetAgentId = context.CurrentAgentId,
+                    TargetPositionId = context.CurrentPositionId,
+                    SourcePositionId = (int) context.CurrentPositionId
+                }
+            };
+            newDoc.Accesses = new List<InternalDocumentAccesses>()
+            {
+                new InternalDocumentAccesses
+                {
+                    AccessLevel = EnumDocumentAccesses.PersonalRefIO,
+                    IsInWork = true,
+                    IsFavourite = false,
+                    LastChangeDate = DateTime.Now,
+                    LastChangeUserId = context.CurrentAgentId,
+                    PositionId = (int) context.CurrentPositionId,
+                }
+            };
+
             return SaveDocument(context, newDoc);
         }
 
@@ -113,7 +153,7 @@ namespace BL.Logic.DocumentCore
             return uiElements;
         }
 
-        private IEnumerable<BaseSystemUIElement> VerifyDocument(IContext ctx, FrontDocument doc,  IEnumerable<BaseSystemUIElement> uiElements)
+        private IEnumerable<BaseSystemUIElement> VerifyDocument(IContext ctx, FrontDocument doc, IEnumerable<BaseSystemUIElement> uiElements)
         {
             if (doc.DocumentDirection != EnumDocumentDirections.External)
             {
