@@ -205,6 +205,16 @@ namespace BL.Logic.DocumentCore
         {
             var document = _documentDb.CopyDocumentPrepare(context, model.DocumentId);
 
+            if (document == null)
+            {
+                throw  new DocumentNotFoundOrUserHasNoAccess();
+            }
+
+            document.CreateDate = DateTime.Now;
+            document.LastChangeDate = DateTime.Now;
+            document.LastChangeUserId = context.CurrentAgentId;
+            document.IsRegistered = false;
+
             foreach (var sl in document.SendLists)
             {
                 sl.LastChangeDate = DateTime.Now;
@@ -244,7 +254,7 @@ namespace BL.Logic.DocumentCore
                     SourceAgentId = context.CurrentAgentId,
                     TargetAgentId = context.CurrentAgentId,
                     TargetPositionId = context.CurrentPositionId,
-                    SourcePositionId = (int) context.CurrentPositionId,
+                    SourcePositionId = context.CurrentPositionId.Value,
                     LastChangeDate = DateTime.Now,
                     Date = DateTime.Now,
                     CreateDate = DateTime.Now,
@@ -264,7 +274,7 @@ namespace BL.Logic.DocumentCore
                     IsFavourite = false,
                     LastChangeDate = DateTime.Now,
                     LastChangeUserId = context.CurrentAgentId,
-                    PositionId = (int) context.CurrentPositionId,
+                    PositionId = context.CurrentPositionId.Value
                 }
             };
         }

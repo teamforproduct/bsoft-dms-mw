@@ -540,22 +540,22 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-                var dbDoc = CommonQueries.GetDocumentQuery(dbContext).FirstOrDefault(x => x.Doc.Id == documentId);
-                var doc = new InternalDocument
-                {
-                    TemplateDocumentId = dbDoc.Doc.TemplateDocumentId,
-                    CreateDate = DateTime.Now,
-                    DocumentSubjectId = dbDoc.Doc.DocumentSubjectId,
-                    Description = dbDoc.Doc.Description,
-                    IsRegistered = false,
-                    ExecutorPositionId = ctx.CurrentPositionId.Value,
-                    LastChangeUserId = ctx.CurrentAgentId,
-                    LastChangeDate = DateTime.Now,
-                    SenderAgentId = dbDoc.Doc.SenderAgentId,
-                    SenderAgentPersonId = dbDoc.Doc.SenderAgentPersonId,
-                    Addressee = dbDoc.Doc.Addressee,
-                    AccessLevel = (EnumDocumentAccesses)dbDoc.Acc.AccessLevelId,
-                };
+                var doc = CommonQueries.GetDocumentQuery(dbContext).Where(x => x.Doc.Id == documentId)
+                    .Select(x => new InternalDocument
+                    {
+                        TemplateDocumentId = x.Doc.TemplateDocumentId,
+                        DocumentSubjectId = x.Doc.DocumentSubjectId,
+                        Description = x.Doc.Description,
+                        ExecutorPositionId = ctx.CurrentPositionId.Value,
+                        LastChangeUserId = ctx.CurrentAgentId,
+                        SenderAgentId = x.Doc.SenderAgentId,
+                        SenderAgentPersonId = x.Doc.SenderAgentPersonId,
+                        Addressee = x.Doc.Addressee,
+                        AccessLevel = (EnumDocumentAccesses) x.Acc.AccessLevelId,
+                    }).FirstOrDefault();
+
+                if (doc == null)
+                    return null;
 
                 doc.SendLists = dbContext.DocumentSendListsSet.Where(x => x.DocumentId == documentId)
                         .Select(y => new InternalDocumentSendLists
