@@ -14,6 +14,7 @@ using BL.Database.SystemDb;
 using BL.Logic.DocumentCore.Commands;
 using BL.Database.Admins.Interfaces;
 using BL.Model.AdminCore;
+using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DocumentCore.InternalModel;
@@ -184,6 +185,59 @@ namespace BL.Logic.DocumentCore
                 }
             }
             return uiElements;
+        }
+
+        public int CopyDocument(IContext context, CopyDocument model)
+        {
+            var document = _documentDb.CopyDocumentPrepare(context, model.DocumentId);
+
+            foreach (var sl in document.SendLists)
+            {
+                sl.LastChangeDate = DateTime.Now;
+                sl.LastChangeUserId = context.CurrentAgentId;
+            }
+
+            foreach (var sl in document.RestrictedSendLists)
+            {
+                sl.LastChangeDate = DateTime.Now;
+                sl.LastChangeUserId = context.CurrentAgentId;
+            }
+
+            var evt = new InternalDocumentEvents
+            {
+                EventType = EnumEventTypes.AddNewDocument,
+                Description = "Create",
+                LastChangeUserId = context.CurrentAgentId,
+                SourceAgentId = context.CurrentAgentId,
+                TargetAgentId = context.CurrentAgentId,
+                TargetPositionId = context.CurrentPositionId,
+                SourcePositionId = (int)context.CurrentPositionId,
+                LastChangeDate = DateTime.Now,
+                Date = DateTime.Now,
+                CreateDate = DateTime.Now,
+
+            };
+
+            document.Events = new List<InternalDocumentEvents> { evt };
+
+            var acc = new InternalDocumentAccesses
+            {
+                AccessLevel = EnumDocumentAccesses.PersonalRefIO,
+                IsInWork = true,
+                IsFavourite = false,
+                LastChangeDate = DateTime.Now,
+                LastChangeUserId = context.CurrentAgentId,
+                PositionId = (int)context.CurrentPositionId,
+            };
+
+            document.Accesses = new List<InternalDocumentAccesses> { acc };
+
+            //TODO process files
+            document.DocumentFiles = null;
+
+            //TODO make it with Actions
+            var docService = DmsResolver.Current.Get<IDocumentService>();
+            return docService.SaveDocument(context, document);
         }
 
         #endregion Documents

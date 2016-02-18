@@ -558,8 +558,26 @@ namespace BL.Database.Documents
                     AccessLevel = (EnumDocumentAccesses)dbDoc.Acc.AccessLevelId,
                 };
 
-                doc.SendLists = CommonQueries.GetInternalDocumentSendList(dbContext, documentId);
-                doc.RestrictedSendLists = CommonQueries.GetInternalDocumentRestrictedSendList(dbContext, documentId);
+                doc.SendLists = dbContext.DocumentSendListsSet.Where(x => x.DocumentId == documentId)
+                        .Select(y => new InternalDocumentSendLists
+                        {
+                            Stage = y.Stage,
+                            SendType = (EnumSendTypes)y.SendTypeId,
+                            TargetPositionId = y.TargetPositionId,
+                            Description = y.Description,
+                            DueDate = y.DueDate,
+                            DueDay = y.DueDay,
+                            AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
+                            IsInitial = y.IsInitial,
+                            StartEventId = y.StartEventId,
+                            CloseEventId = y.CloseEventId,
+                        }).ToList();
+                doc.RestrictedSendLists = dbContext.DocumentRestrictedSendListsSet.Where(x => x.DocumentId == documentId)
+                        .Select(y => new InternalDocumentRestrictedSendLists
+                        {
+                            PositionId = y.PositionId,
+                            AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
+                        }).ToList();
                 doc.DocumentFiles = CommonQueries.GetDocumentFiles(dbContext, documentId);
 
                 return doc;

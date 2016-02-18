@@ -8,7 +8,6 @@ using BL.Database.Documents.Interfaces;
 using BL.Database.SystemDb;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Model.Database;
-using BL.Model.DocumentCore;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.Enums;
 using BL.Model.Exception;
@@ -16,7 +15,7 @@ using BL.Model.SystemCore;
 using BL.Database.Admins.Interfaces;
 using BL.Model.AdminCore;
 using BL.Model.DocumentCore.FrontModel;
-using BL.Model.DocumentCore.InternalModel;
+
 
 namespace BL.Logic.DocumentCore
 {
@@ -200,67 +199,6 @@ namespace BL.Logic.DocumentCore
             };
 
             _operationDb.UpdateDocumentWait(context, docWait);
-        }
-
-        public int CopyDocument(IContext context, CopyDocument model)
-        {
-            var document = _documentDb.CopyDocumentPrepare(context, model.DocumentId);
-            //TODO RestrictedSendLists and SendLists
-            //if (document.RestrictedSendLists != null && document.RestrictedSendLists.Any())
-            //{
-            //    var restrictedSendLists = document.RestrictedSendLists.ToList();
-            //    for(int i=0,l= restrictedSendLists.Count;i< l;i++)
-            //    {
-            //        restrictedSendLists[i].Id = 0;
-            //    }
-            //    document.RestrictedSendLists = restrictedSendLists;
-            //}
-
-            //if (document.SendLists != null && document.SendLists.Any())
-            //{
-            //    var sendLists = document.SendLists.ToList();
-            //    for (int i = 0, l = sendLists.Count; i < l; i++)
-            //    {
-            //        sendLists[i].Id = 0;
-            //    }
-            //    document.SendLists = sendLists;
-            //}
-
-            var evt = new InternalDocumentEvents
-            {
-                EventType = EnumEventTypes.AddNewDocument,
-                Description = "Create",
-                LastChangeUserId = context.CurrentAgentId,
-                SourceAgentId = context.CurrentAgentId,
-                TargetAgentId = context.CurrentAgentId,
-                TargetPositionId = context.CurrentPositionId,
-                SourcePositionId = (int)context.CurrentPositionId,
-                LastChangeDate = DateTime.Now,
-                Date = DateTime.Now,
-                CreateDate = DateTime.Now,
-
-            };
-
-            document.Events = new List<InternalDocumentEvents> { evt };
-
-            var acc = new InternalDocumentAccesses
-            {
-                AccessLevel = EnumDocumentAccesses.PersonalRefIO,
-                IsInWork = true,
-                IsFavourite = false,
-                LastChangeDate = DateTime.Now,
-                LastChangeUserId = context.CurrentAgentId,
-                PositionId = (int)context.CurrentPositionId,
-            };
-
-            document.Accesses = new List<InternalDocumentAccesses> { acc };
-
-            //TODO process files
-            document.DocumentFiles = null;
-
-            //TODO make it with Actions
-            var docService = DmsResolver.Current.Get<IDocumentService>();
-            return docService.SaveDocument(context, document);
         }
 
         public void RegisterDocument(IContext context, RegisterDocument model)
