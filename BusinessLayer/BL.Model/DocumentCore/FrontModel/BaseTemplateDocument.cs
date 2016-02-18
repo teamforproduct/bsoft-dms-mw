@@ -15,13 +15,13 @@ namespace BL.Model.DocumentCore.FrontModel
         public int DocumentTypeId { get; set; }
         public string DocumentTypeName { get; set; }
 
-        public Nullable<int> DocumentSubjectId { get; set; }
+        public int? DocumentSubjectId { get; set; }
         public string DocumentSubjectName { get; set; }
         public string Description { get; set; }
-        public Nullable<int> RegistrationJournalId { get; set; }
+        public int? RegistrationJournalId { get; set; }
         public string RegistrationJournalName { get; set; }
 
-        public Nullable<int> SenderAgentId { get; set; }
+        public int? SenderAgentId { get; set; }
         public string SenderAgentName { get; set; }
         public int? SenderAgentPersonId { get; set; }
         public string SenderAgentPersonName { get; set; }

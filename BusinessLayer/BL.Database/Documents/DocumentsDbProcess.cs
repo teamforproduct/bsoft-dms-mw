@@ -58,7 +58,7 @@ namespace BL.Database.Documents
                     doc.RestrictedSendLists = document.RestrictedSendLists.Select(x => new DocumentRestrictedSendLists
                     {
                         PositionId = x.PositionId,
-                        AccessLevelId = x.AccessLevelId,
+                        AccessLevelId = (int)x.AccessLevel,
                         LastChangeUserId = x.LastChangeUserId,
                         LastChangeDate = x.LastChangeDate
                     }).ToList();
@@ -558,8 +558,8 @@ namespace BL.Database.Documents
                     AccessLevel = (EnumDocumentAccesses)dbDoc.Acc.AccessLevelId,
                 };
 
-                doc.SendLists = CommonQueries.GetDocumentSendList(dbContext, documentId);
-                doc.RestrictedSendLists = CommonQueries.GetDocumentRestrictedSendList(dbContext, documentId);
+                doc.SendLists = CommonQueries.GetInternalDocumentSendList(dbContext, documentId);
+                doc.RestrictedSendLists = CommonQueries.GetInternalDocumentRestrictedSendList(dbContext, documentId);
                 doc.DocumentFiles = CommonQueries.GetDocumentFiles(dbContext, documentId);
 
                 return doc;

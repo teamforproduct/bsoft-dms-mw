@@ -16,6 +16,7 @@ using BL.Model.SystemCore;
 using BL.Database.Admins.Interfaces;
 using BL.Model.AdminCore;
 using BL.Model.DocumentCore.FrontModel;
+using BL.Model.DocumentCore.InternalModel;
 
 namespace BL.Logic.DocumentCore
 {
@@ -225,7 +226,7 @@ namespace BL.Logic.DocumentCore
             //    document.SendLists = sendLists;
             //}
 
-            var evt = new BaseDocumentEvent
+            var evt = new InternalDocumentEvents
             {
                 EventType = EnumEventTypes.AddNewDocument,
                 Description = "Create",
@@ -240,9 +241,9 @@ namespace BL.Logic.DocumentCore
 
             };
 
-            document.Events = new List<BaseDocumentEvent> { evt };
+            document.Events = new List<InternalDocumentEvents> { evt };
 
-            var acc = new BaseDocumentAccess
+            var acc = new InternalDocumentAccesses
             {
                 AccessLevel = EnumDocumentAccesses.PersonalRefIO,
                 IsInWork = true,
@@ -252,10 +253,11 @@ namespace BL.Logic.DocumentCore
                 PositionId = (int)context.CurrentPositionId,
             };
 
+            document.Accesses = new List<InternalDocumentAccesses> { acc };
+
             //TODO process files
             document.DocumentFiles = null;
 
-            document.Accesses = new List<BaseDocumentAccess>() { acc };
             //TODO make it with Actions
             var docService = DmsResolver.Current.Get<IDocumentService>();
             return docService.SaveDocument(context, document);

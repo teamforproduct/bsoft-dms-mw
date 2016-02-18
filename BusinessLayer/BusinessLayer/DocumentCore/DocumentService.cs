@@ -84,16 +84,16 @@ namespace BL.Logic.DocumentCore
 
             if (docTemplate.RestrictedSendLists != null && docTemplate.RestrictedSendLists.Any())
             {
-                baseDocument.RestrictedSendLists = docTemplate.RestrictedSendLists.Select(x => new BaseDocumentRestrictedSendList()
+                baseDocument.RestrictedSendLists = docTemplate.RestrictedSendLists.Select(x => new InternalDocumentRestrictedSendLists
                 {
                     PositionId = x.PositionId,
-                    AccessLevelId = (int)x.AccessLevel
+                    AccessLevel = x.AccessLevel
                 }).ToList();
             }
 
             if (docTemplate.SendLists != null && docTemplate.SendLists.Any())
             {
-                baseDocument.SendLists = docTemplate.SendLists.Select(x => new BaseDocumentSendList
+                baseDocument.SendLists = docTemplate.SendLists.Select(x => new InternalDocumentSendLists
                 {
                     Stage = x.Stage,
                     SendType = x.SendType,
@@ -108,7 +108,7 @@ namespace BL.Logic.DocumentCore
                 }).ToList();
             }
 
-            var evt = new BaseDocumentEvent
+            var evt = new InternalDocumentEvents
             {
                 LastChangeDate = DateTime.Now,
                 Date = DateTime.Now,
@@ -122,9 +122,9 @@ namespace BL.Logic.DocumentCore
                 SourcePositionId = (int)context.CurrentPositionId
             };
 
-            baseDocument.Events = new List<BaseDocumentEvent> { evt };
+            baseDocument.Events = new List<InternalDocumentEvents> { evt };
 
-            var acc = new BaseDocumentAccess
+            var acc = new InternalDocumentAccesses
             {
                 AccessLevel = EnumDocumentAccesses.PersonalRefIO,
                 IsInWork = true,
@@ -134,7 +134,7 @@ namespace BL.Logic.DocumentCore
                 PositionId = (int)context.CurrentPositionId,
             };
 
-            baseDocument.Accesses = new List<BaseDocumentAccess>() { acc };
+            baseDocument.Accesses = new List<InternalDocumentAccesses>() { acc };
 
             return SaveDocument(context, baseDocument);
         }
