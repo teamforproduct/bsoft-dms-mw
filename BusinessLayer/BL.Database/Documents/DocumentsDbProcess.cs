@@ -577,7 +577,7 @@ namespace BL.Database.Documents
                             PositionId = y.PositionId,
                             AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
                         }).ToList();
-                doc.DocumentFiles = CommonQueries.GetDocumentFiles(dbContext, documentId);
+                doc.DocumentFiles = CommonQueries.GetInternalDocumentFiles(dbContext, documentId);
 
                 return doc;
             }
@@ -650,6 +650,7 @@ namespace BL.Database.Documents
                     PositionId = y.PositionId,
                     AccessLevel = (EnumDocumentAccesses)y.AccessLevelId
                 }).ToList();
+
                 var sendLists = dbContext.TemplateDocumentSendLists.Where(y => y.Id == templateDocumentId)
                     .Select(y => new InternalDocumentSendLists()
                 {
@@ -659,10 +660,9 @@ namespace BL.Database.Documents
                     Stage = y.Stage,
                     DueDay = y.DueDay,
                     AccessLevel = (EnumDocumentAccesses)y.AccessLevelId
-                }
-                    ).ToList();
-                return
-                dbContext.TemplateDocumentsSet.Where(x => x.Id == templateDocumentId)
+                }).ToList();
+
+                return dbContext.TemplateDocumentsSet.Where(x => x.Id == templateDocumentId)
                     .Select(x => new InternalDocument
                     {
                         TemplateDocumentId = x.Id,

@@ -82,34 +82,8 @@ namespace BL.Logic.DocumentCore
                     x.StartEventId = null;
                     x.CloseEventId = null;
                 });
-            newDoc.Events = new List<InternalDocumentEvents>
-            {
-                new InternalDocumentEvents
-                {
-                    LastChangeDate = DateTime.Now,
-                    Date = DateTime.Now,
-                    CreateDate = DateTime.Now,
-                    EventType = EnumEventTypes.AddNewDocument,
-                    Description = "Create",
-                    LastChangeUserId = context.CurrentAgentId,
-                    SourceAgentId = context.CurrentAgentId,
-                    TargetAgentId = context.CurrentAgentId,
-                    TargetPositionId = context.CurrentPositionId,
-                    SourcePositionId = (int) context.CurrentPositionId
-                }
-            };
-            newDoc.Accesses = new List<InternalDocumentAccesses>()
-            {
-                new InternalDocumentAccesses
-                {
-                    AccessLevel = EnumDocumentAccesses.PersonalRefIO,
-                    IsInWork = true,
-                    IsFavourite = false,
-                    LastChangeDate = DateTime.Now,
-                    LastChangeUserId = context.CurrentAgentId,
-                    PositionId = (int) context.CurrentPositionId,
-                }
-            };
+            newDoc.Events = GetEventForNewDocument(context);
+            newDoc.Accesses = GetAccessesForNewDocument(context);
 
             return SaveDocument(context, newDoc);
         }
@@ -243,34 +217,8 @@ namespace BL.Logic.DocumentCore
                 sl.LastChangeUserId = context.CurrentAgentId;
             }
 
-            var evt = new InternalDocumentEvents
-            {
-                EventType = EnumEventTypes.AddNewDocument,
-                Description = "Create",
-                LastChangeUserId = context.CurrentAgentId,
-                SourceAgentId = context.CurrentAgentId,
-                TargetAgentId = context.CurrentAgentId,
-                TargetPositionId = context.CurrentPositionId,
-                SourcePositionId = (int)context.CurrentPositionId,
-                LastChangeDate = DateTime.Now,
-                Date = DateTime.Now,
-                CreateDate = DateTime.Now,
-
-            };
-
-            document.Events = new List<InternalDocumentEvents> { evt };
-
-            var acc = new InternalDocumentAccesses
-            {
-                AccessLevel = EnumDocumentAccesses.PersonalRefIO,
-                IsInWork = true,
-                IsFavourite = false,
-                LastChangeDate = DateTime.Now,
-                LastChangeUserId = context.CurrentAgentId,
-                PositionId = (int)context.CurrentPositionId,
-            };
-
-            document.Accesses = new List<InternalDocumentAccesses> { acc };
+            document.Events = GetEventForNewDocument(context);
+            document.Accesses = GetAccessesForNewDocument(context);
 
             //TODO process files
             document.DocumentFiles = null;
@@ -282,5 +230,45 @@ namespace BL.Logic.DocumentCore
 
         #endregion Documents
 
+        #region help methods
+
+        private List<InternalDocumentEvents> GetEventForNewDocument(IContext context)
+        {
+            return new List<InternalDocumentEvents>
+            {
+                new InternalDocumentEvents
+                {
+                    EventType = EnumEventTypes.AddNewDocument,
+                    Description = "Create",
+                    LastChangeUserId = context.CurrentAgentId,
+                    SourceAgentId = context.CurrentAgentId,
+                    TargetAgentId = context.CurrentAgentId,
+                    TargetPositionId = context.CurrentPositionId,
+                    SourcePositionId = (int) context.CurrentPositionId,
+                    LastChangeDate = DateTime.Now,
+                    Date = DateTime.Now,
+                    CreateDate = DateTime.Now,
+                }
+
+            };
+        }
+
+        private List<InternalDocumentAccesses> GetAccessesForNewDocument(IContext context)
+        {
+            return new List<InternalDocumentAccesses>
+            {
+                new InternalDocumentAccesses
+                {
+                    AccessLevel = EnumDocumentAccesses.PersonalRefIO,
+                    IsInWork = true,
+                    IsFavourite = false,
+                    LastChangeDate = DateTime.Now,
+                    LastChangeUserId = context.CurrentAgentId,
+                    PositionId = (int) context.CurrentPositionId,
+                }
+            };
+        }
+
+        #endregion
     }
 }

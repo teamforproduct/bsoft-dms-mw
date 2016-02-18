@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 
-namespace BL.Model.DocumentCore
+namespace BL.Model.DocumentCore.FrontModel
 {
     public class FrontDocument : ModifyDocument
     {
@@ -128,7 +127,7 @@ namespace BL.Model.DocumentCore
         public int SendListStageMax { get; set; }
         public IEnumerable<FrontDocumentEvent> Events { get; set; }
         public IEnumerable<FrontDocumentAccess> Accesses { get; set; }
-        public IEnumerable<DocumentAttachedFile> DocumentFiles { get; set; }
+        public IEnumerable<FrontDocumentAttachedFile> DocumentFiles { get; set; }
         public IEnumerable<FrontDocument> LinkedDocuments { get; set; }
         public IEnumerable<FrontDocumentLink> Links { get; set; }
         public IEnumerable<FrontDocumentWaits> DocumentWaits { get; set; }
