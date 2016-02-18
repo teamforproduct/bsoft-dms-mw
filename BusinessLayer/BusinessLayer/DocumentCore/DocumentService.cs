@@ -183,7 +183,7 @@ namespace BL.Logic.DocumentCore
                 doc.Addressee = null;
             }
 
-            if ((doc.DocumentDirection != EnumDocumentDirections.External) && (uiElements == null)
+            if ((doc.DocumentDirection == EnumDocumentDirections.External) && (uiElements == null)
                     &&
                     (
                         doc.SenderAgentId == null ||
