@@ -27,7 +27,7 @@ namespace BL.Model.DocumentCore.InternalModel
 
                 TemplateDocumentId = model.TemplateDocumentId;
                 ExecutorPositionId = model.ExecutorPositionId;
-                CreateDate = model.CreateDate;
+                CreateDate = model.CreateDate.Value;
                 IsRegistered = model.IsRegistered;
                 RegistrationJournalId = model.RegistrationJournalId;
                 NumerationPrefixFormula = model.NumerationPrefixFormula;
@@ -35,8 +35,8 @@ namespace BL.Model.DocumentCore.InternalModel
                 RegistrationNumberSuffix = model.RegistrationNumberSuffix;
                 RegistrationNumberPrefix = model.RegistrationNumberPrefix;
                 RegistrationDate = model.RegistrationDate;
-                LastChangeUserId = model.LastChangeUserId;
-                LastChangeDate = model.LastChangeDate;
+                LastChangeUserId = model.LastChangeUserId.Value;
+                LastChangeDate = model.LastChangeDate.Value;
                 LinkId = model.LinkId;
 
                 IsHard = model.IsHard;
@@ -97,7 +97,7 @@ namespace BL.Model.DocumentCore.InternalModel
 
         public int TemplateDocumentId { get; set; }
         public int ExecutorPositionId { get; set; }
-        public DateTime? CreateDate { get; set; }
+        public DateTime CreateDate { get; set; }
         public bool IsRegistered { get; set; }
         public int? RegistrationJournalId { get; set; }
         public string NumerationPrefixFormula { get; set; }
@@ -105,8 +105,8 @@ namespace BL.Model.DocumentCore.InternalModel
         public string RegistrationNumberSuffix { get; set; }
         public string RegistrationNumberPrefix { get; set; }
         public DateTime? RegistrationDate { get; set; }
-        public int? LastChangeUserId { get; set; }
-        public DateTime? LastChangeDate { get; set; }
+        public int LastChangeUserId { get; set; }
+        public DateTime LastChangeDate { get; set; }
         public int? LinkId { get; set; }
 
         public bool IsHard { get; set; }
