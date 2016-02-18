@@ -57,7 +57,9 @@
     <Compile Include="DocumentCore\DocumentFileService.cs" />
     <Compile Include="DocumentCore\DocumentFiltersService.cs" />
     <Compile Include="DocumentCore\DocumentOperationsService.cs" />
+    <Compile Include="DocumentCore\DocumentTagService.cs" />
     <Compile Include="DocumentCore\DocumentSendListService.cs" />
+    <Compile Include="DocumentCore\Interfaces\IDocumentTagService.cs" />
     <Compile Include="DocumentCore\Interfaces\IDocumentSendListService.cs" />
     <Compile Include="DocumentCore\Interfaces\IDocumentFiltersService.cs" />
     <Compile Include="DocumentCore\Interfaces\IDocumentOperationsService.cs" />

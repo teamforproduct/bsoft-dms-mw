@@ -111,5 +111,11 @@ namespace BL.Logic.DictionaryCore.Interfaces
 
         IEnumerable<BaseDictionarySubordinationType> GetDictionarySubordinationTypes(IContext context, FilterDictionarySubordinationType filter);
         #endregion DictionarySubordinationTypes
+
+        #region DictionaryTags
+        IEnumerable<BaseDictionaryTag> GetDictionaryTags(IContext context, FilterDictionaryTag filter);
+
+        BaseDictionaryTag GetDictionaryTag(IContext context, int id);
+        #endregion DictionaryTags
     }
 }

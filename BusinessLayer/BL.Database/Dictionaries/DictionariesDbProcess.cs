@@ -975,13 +975,18 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<BaseDictionaryTag> GetDictionaryTags(IContext context)
+        public IEnumerable<BaseDictionaryTag> GetDictionaryTags(IContext context, FilterDictionaryTag filter)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
                 var qry = dbContext.DictionaryTagsSet.AsQueryable();
 
                 qry = qry.Where(x => !x.PositionId.HasValue || context.CurrentPositionsIdList.Contains(x.PositionId ?? 0));
+
+                if (filter.Id?.Count>0)
+                {
+                    qry = qry.Where(x => filter.Id.Contains(x.Id));
+                }
 
                 return qry.Select(x => new BaseDictionaryTag
                 {

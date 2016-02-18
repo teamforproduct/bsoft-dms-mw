@@ -53,6 +53,7 @@
     <Compile Include="Database\DatabaseType.cs" />
     <Compile Include="DictionaryCore\BaseDictionaryLinkType.cs" />
     <Compile Include="DictionaryCore\BaseDictionaryResultType.cs" />
+    <Compile Include="DictionaryCore\FilterDictionaryTag.cs" />
     <Compile Include="DictionaryCore\ModifyDictionaryTag.cs" />
     <Compile Include="DictionaryCore\BaseDictionaryTag.cs" />
     <Compile Include="DictionaryCore\BaseDictionarySubordinationType.cs" />
@@ -86,6 +87,7 @@
     <Compile Include="DictionaryCore\FilterDictionaryCompany.cs" />
     <Compile Include="DictionaryCore\FilterDictionaryAgentPerson.cs" />
     <Compile Include="DictionaryCore\FilterDictionaryAgent.cs" />
+    <Compile Include="DocumentCore\FrontModel\BaseDocumentTag.cs" />
     <Compile Include="DocumentCore\FrontModel\DocumentAttachedFile.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentFiles.cs" />
     <Compile Include="DocumentCore\Actions\ChangeFavourites.cs" />
@@ -105,6 +107,7 @@
     <Compile Include="DocumentCore\IncomingModel\DocumentFileIdentity.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentFile.cs" />
     <Compile Include="DocumentCore\IncomingModel\AddDocumentByTemplateDocument.cs" />
+    <Compile Include="DocumentCore\IncomingModel\ModifyDocumentTag.cs" />
     <Compile Include="DocumentCore\InternalModel\FilterDocumentEvent.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocument.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentSavedFilter.cs" />
