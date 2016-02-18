@@ -89,7 +89,6 @@
     <Compile Include="DictionaryCore\FilterDictionaryAgent.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentAttachedFile.cs" />
     <Compile Include="DocumentCore\FrontModel\BaseDocumentTag.cs" />
-    <Compile Include="DocumentCore\FrontModel\DocumentAttachedFile.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentFiles.cs" />
     <Compile Include="DocumentCore\Actions\ChangeFavourites.cs" />
     <Compile Include="DocumentCore\Actions\ControlChange.cs" />
