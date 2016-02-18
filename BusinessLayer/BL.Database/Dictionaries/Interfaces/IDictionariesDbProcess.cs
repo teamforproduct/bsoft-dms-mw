@@ -109,5 +109,16 @@ namespace BL.Database.Dictionaries.Interfaces
         IEnumerable<BaseDictionarySubordinationType> GetDictionarySubordinationTypes(IContext context, FilterDictionarySubordinationType filter);
 
         #endregion DictionarySubordinationTypes
+
+        #region DictionaryTags
+        BaseDictionaryTag GetDictionaryTag(IContext context, int id);
+
+        IEnumerable<BaseDictionaryTag> GetDictionaryTags(IContext context, FilterDictionaryTag filter);
+
+        BaseDictionaryTag AddDictionaryTag(IContext context, ModifyDictionaryTag model);
+
+        BaseDictionaryTag UpdateDictionaryTag(IContext context, ModifyDictionaryTag model);
+
+        #endregion DictionaryTags
     }
 }

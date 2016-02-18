@@ -254,5 +254,17 @@ namespace BL.Logic.DictionaryCore
         }
         #endregion DictionarySubordinationTypes
 
+        #region DictionaryTags
+        public IEnumerable<BaseDictionaryTag> GetDictionaryTags(IContext context, FilterDictionaryTag filter)
+        {
+            return _dictDb.GetDictionaryTags(context, filter);
+        }
+
+        public BaseDictionaryTag GetDictionaryTag(IContext context, int id)
+        {
+            return _dictDb.GetDictionaryTag(context, id);
+        }
+        #endregion DictionaryTags
+
     }
 }
