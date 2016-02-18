@@ -644,14 +644,29 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
-                var restrictedSendLists = dbContext.TemplateDocumentRestrictedSendLists.Where(y => y.Id == templateDocumentId)
+
+                var doc = dbContext.TemplateDocumentsSet.Where(x => x.Id == templateDocumentId)
+                    .Select(x => new InternalDocument
+                    {
+                        TemplateDocumentId = x.Id,
+                        DocumentSubjectId = x.DocumentSubjectId,
+                        Description = x.Description,
+                        SenderAgentId = x.SenderAgentId,
+                        SenderAgentPersonId = x.SenderAgentPersonId,
+                        Addressee = x.Addressee,
+                    }).FirstOrDefault();
+
+                if (doc == null)
+                    return null;
+
+                doc.RestrictedSendLists = dbContext.TemplateDocumentRestrictedSendLists.Where(y => y.Id == templateDocumentId)
                     .Select(y => new InternalDocumentRestrictedSendLists()
                 {
                     PositionId = y.PositionId,
                     AccessLevel = (EnumDocumentAccesses)y.AccessLevelId
                 }).ToList();
 
-                var sendLists = dbContext.TemplateDocumentSendLists.Where(y => y.Id == templateDocumentId)
+                doc.SendLists = dbContext.TemplateDocumentSendLists.Where(y => y.Id == templateDocumentId)
                     .Select(y => new InternalDocumentSendLists()
                 {
                     SendType = (EnumSendTypes)y.SendTypeId,
@@ -662,18 +677,7 @@ namespace BL.Database.Documents
                     AccessLevel = (EnumDocumentAccesses)y.AccessLevelId
                 }).ToList();
 
-                return dbContext.TemplateDocumentsSet.Where(x => x.Id == templateDocumentId)
-                    .Select(x => new InternalDocument
-                    {
-                        TemplateDocumentId = x.Id,
-                        DocumentSubjectId = x.DocumentSubjectId,
-                        Description = x.Description,
-                        SenderAgentId = x.SenderAgentId,
-                        SenderAgentPersonId = x.SenderAgentPersonId,
-                        Addressee = x.Addressee,
-                        RestrictedSendLists = restrictedSendLists,
-                        SendLists = sendLists
-                    }).FirstOrDefault();
+                return doc;
             }
         }
 
