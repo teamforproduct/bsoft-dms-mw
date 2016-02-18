@@ -5,6 +5,7 @@ using System.Linq;
 using BL.CrossCutting.Helpers;
 using BL.Database.DatabaseContext;
 using BL.Database.Documents.Interfaces;
+using BL.Model.DocumentCore.FrontModel;
 using BL.Model.Enums;
 
 namespace BL.Database.Documents

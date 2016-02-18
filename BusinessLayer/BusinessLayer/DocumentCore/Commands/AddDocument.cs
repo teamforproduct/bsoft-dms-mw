@@ -4,15 +4,16 @@ using BL.CrossCutting.Interfaces;
 using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore;
 using System;
+using BL.Model.DocumentCore.InternalModel;
 
 namespace BL.Logic.DocumentCore.Commands
 {
     internal class AddDocument : Command
     {
         private readonly IContext _context;
-        private readonly FrontDocument _document;
+        private readonly InternalDocument _document;
 
-        public AddDocument(IContext context,  FrontDocument document)
+        public AddDocument(IContext context,  InternalDocument document)
         {
             _context = context;
             _document = document;

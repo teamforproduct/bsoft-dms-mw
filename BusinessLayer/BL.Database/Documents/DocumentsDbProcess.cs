@@ -9,6 +9,8 @@ using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore;
 using BL.Database.DBModel.Document;
 using BL.Model.AdminCore;
+using BL.Model.DocumentCore.FrontModel;
+using BL.Model.DocumentCore.InternalModel;
 using BL.Model.SystemCore;
 using BL.Model.Enums;
 using BL.Model.Exception;
@@ -27,7 +29,7 @@ namespace BL.Database.Documents
 
         #region Document
 
-        public void AddDocument(IContext ctx, FrontDocument document)
+        public void AddDocument(IContext ctx, InternalDocument document)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
@@ -117,7 +119,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public void UpdateDocument(IContext ctx, FrontDocument document)
+        public void UpdateDocument(IContext ctx, InternalDocument document)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {

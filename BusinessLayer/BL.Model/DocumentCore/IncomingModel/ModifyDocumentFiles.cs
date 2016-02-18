@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace BL.Model.DocumentAdditional
+namespace BL.Model.DocumentCore.IncomingModel
 {
     public class ModifyDocumentFiles
     {

@@ -7,6 +7,8 @@ using BL.Database.DatabaseContext;
 using BL.Database.DBModel.Document;
 using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore;
+using BL.Model.DocumentCore.FrontModel;
+using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.Enums;
 
 namespace BL.Database.Documents

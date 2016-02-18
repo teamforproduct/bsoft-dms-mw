@@ -17,19 +17,20 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\OutDebug\</OutputPath>
+    <OutputPath>..\..\OutDebug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\..\OutDebug\BL.Model.XML</DocumentationFile>
+    <DocumentationFile>..\..\OutDebug\BL.Model.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\..\OutRelease\</OutputPath>
+    <OutputPath>..\..\OutRelease\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\OutRelease\BL.Model.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -83,8 +84,8 @@
     <Compile Include="DictionaryCore\FilterDictionaryCompany.cs" />
     <Compile Include="DictionaryCore\FilterDictionaryAgentPerson.cs" />
     <Compile Include="DictionaryCore\FilterDictionaryAgent.cs" />
-    <Compile Include="DocumentAdditional\DocumentAttachedFile.cs" />
-    <Compile Include="DocumentAdditional\ModifyDocumentFiles.cs" />
+    <Compile Include="DocumentCore\FrontModel\DocumentAttachedFile.cs" />
+    <Compile Include="DocumentCore\IncomingModel\ModifyDocumentFiles.cs" />
     <Compile Include="DocumentCore\Actions\ChangeFavourites.cs" />
     <Compile Include="DocumentCore\Actions\ControlChange.cs" />
     <Compile Include="DocumentCore\Actions\CopyDocument.cs" />
@@ -95,17 +96,17 @@
     <Compile Include="DocumentCore\Actions\ControlOff.cs" />
     <Compile Include="DocumentCore\Actions\ControlOn.cs" />
     <Compile Include="DocumentCore\Actions\AddNote.cs" />
-    <Compile Include="DocumentCore\BaseDocumentSavedFilter.cs" />
-    <Compile Include="DocumentCore\BaseDocumentStageSendList.cs" />
-    <Compile Include="DocumentCore\BaseDocumentLink.cs" />
-    <Compile Include="DocumentCore\BaseDocumentWaits.cs" />
-    <Compile Include="DocumentAdditional\DocumentFileIdentity.cs" />
-    <Compile Include="DocumentAdditional\ModifyDocumentFile.cs" />
-    <Compile Include="DocumentCore\AddDocumentByTemplateDocument.cs" />
-    <Compile Include="DocumentCore\FilterDocumentEvent.cs" />
-    <Compile Include="DocumentCore\InternalDocument.cs" />
-    <Compile Include="DocumentCore\ModifyDocumentSavedFilter.cs" />
-    <Compile Include="DocumentCore\ModifyDocumentSendListStage.cs" />
+    <Compile Include="DocumentCore\FrontModel\BaseDocumentSavedFilter.cs" />
+    <Compile Include="DocumentCore\FrontModel\BaseDocumentStageSendList.cs" />
+    <Compile Include="DocumentCore\FrontModel\BaseDocumentLink.cs" />
+    <Compile Include="DocumentCore\FrontModel\BaseDocumentWaits.cs" />
+    <Compile Include="DocumentCore\IncomingModel\DocumentFileIdentity.cs" />
+    <Compile Include="DocumentCore\IncomingModel\ModifyDocumentFile.cs" />
+    <Compile Include="DocumentCore\IncomingModel\AddDocumentByTemplateDocument.cs" />
+    <Compile Include="DocumentCore\InternalModel\FilterDocumentEvent.cs" />
+    <Compile Include="DocumentCore\InternalModel\InternalDocument.cs" />
+    <Compile Include="DocumentCore\IncomingModel\ModifyDocumentSavedFilter.cs" />
+    <Compile Include="DocumentCore\IncomingModel\ModifyDocumentSendListStage.cs" />
     <Compile Include="Enums\EnumActions.cs" />
     <Compile Include="Enums\EnumObjects.cs" />
     <Compile Include="Enums\EnumSubordinationTypes.cs" />
@@ -114,20 +115,20 @@
     <Compile Include="Enums\EnumEventTypes.cs" />
     <Compile Include="DictionaryCore\FilterDictionaryStandartSendList.cs" />
     <Compile Include="Enums\EnumImportanceEventTypes.cs" />
-    <Compile Include="DocumentCore\FrontDocument.cs" />
-    <Compile Include="DocumentCore\BaseDocumentEvent.cs" />
-    <Compile Include="DocumentCore\BaseDocumentRestrictedSendList.cs" />
-    <Compile Include="DocumentCore\BaseDocumentSendList.cs" />
-    <Compile Include="DocumentCore\BaseTemplateDocument.cs" />
-    <Compile Include="DocumentCore\BaseTemplateDocumentRestrictedSendLists.cs" />
-    <Compile Include="DocumentCore\BaseTemplateDocumentSendLists.cs" />
-    <Compile Include="DocumentCore\BaseDocumentAccess.cs" />
-    <Compile Include="DocumentCore\FilterDocument.cs" />
-    <Compile Include="DocumentCore\ModifyDocument.cs" />
-    <Compile Include="DocumentCore\ModifyDocumentRestrictedSendListByStandartSendList.cs" />
-    <Compile Include="DocumentCore\ModifyDocumentRestrictedSendList.cs" />
-    <Compile Include="DocumentCore\ModifyDocumentSendListByStandartSendList.cs" />
-    <Compile Include="DocumentCore\ModifyDocumentSendList.cs" />
+    <Compile Include="DocumentCore\FrontModel\FrontDocument.cs" />
+    <Compile Include="DocumentCore\FrontModel\BaseDocumentEvent.cs" />
+    <Compile Include="DocumentCore\FrontModel\BaseDocumentRestrictedSendList.cs" />
+    <Compile Include="DocumentCore\FrontModel\BaseDocumentSendList.cs" />
+    <Compile Include="DocumentCore\FrontModel\BaseTemplateDocument.cs" />
+    <Compile Include="DocumentCore\FrontModel\BaseTemplateDocumentRestrictedSendLists.cs" />
+    <Compile Include="DocumentCore\FrontModel\BaseTemplateDocumentSendLists.cs" />
+    <Compile Include="DocumentCore\FrontModel\BaseDocumentAccess.cs" />
+    <Compile Include="DocumentCore\IncomingModel\FilterDocument.cs" />
+    <Compile Include="DocumentCore\IncomingModel\ModifyDocument.cs" />
+    <Compile Include="DocumentCore\IncomingModel\ModifyDocumentRestrictedSendListByStandartSendList.cs" />
+    <Compile Include="DocumentCore\IncomingModel\ModifyDocumentRestrictedSendList.cs" />
+    <Compile Include="DocumentCore\IncomingModel\ModifyDocumentSendListByStandartSendList.cs" />
+    <Compile Include="DocumentCore\IncomingModel\ModifyDocumentSendList.cs" />
     <Compile Include="DocumentCore\Actions\RegisterDocument.cs" />
     <Compile Include="Enums\EnumSendTypes.cs" />
     <Compile Include="Exception\DmsExceptions.cs" />
@@ -143,7 +144,9 @@
     <Compile Include="Users\Employee.cs" />
     <Compile Include="Users\CurrentPosition.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="DocumentAdditional\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

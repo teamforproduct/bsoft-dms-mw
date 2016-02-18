@@ -1,7 +1,6 @@
 ﻿using System;
 using BL.Model.Enums;
 using System.ComponentModel.DataAnnotations;
-using BL.Model.Users;
 
 namespace BL.Model.DocumentCore
 {

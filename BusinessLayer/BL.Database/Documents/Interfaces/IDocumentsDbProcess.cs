@@ -1,14 +1,15 @@
 using System.Collections.Generic;
 using BL.CrossCutting.Interfaces;
 using BL.Model.DocumentCore;
+using BL.Model.DocumentCore.InternalModel;
 using BL.Model.SystemCore;
 
 namespace BL.Database.Documents.Interfaces
 {
     public interface IDocumentsDbProcess
     {
-        void AddDocument(IContext ctx, FrontDocument document);
-        void UpdateDocument(IContext ctx, FrontDocument document);
+        void AddDocument(IContext ctx, InternalDocument document);
+        void UpdateDocument(IContext ctx, InternalDocument document);
         IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging);
         FrontDocument GetDocument(IContext ctx, int documentId);
         InternalDocument GetInternalDocument(IContext ctx, int documentId);

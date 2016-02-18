@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using BL.CrossCutting.Interfaces;
 using BL.Model.DocumentCore;
+using BL.Model.DocumentCore.FrontModel;
 
 namespace BL.Database.Documents.Interfaces
 {

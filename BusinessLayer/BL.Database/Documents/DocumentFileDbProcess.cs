@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using BL.CrossCutting.Interfaces;
-using BL.Model.DocumentAdditional;
 using System.Linq;
 using BL.CrossCutting.Helpers;
 using BL.Database.DatabaseContext;
 using BL.Database.Documents.Interfaces;
+using BL.Model.DocumentCore.FrontModel;
 
 
 namespace BL.Database.Documents

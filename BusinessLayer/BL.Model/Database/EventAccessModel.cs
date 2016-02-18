@@ -1,4 +1,5 @@
 ﻿using BL.Model.DocumentCore;
+using BL.Model.DocumentCore.FrontModel;
 
 namespace BL.Model.Database
 {

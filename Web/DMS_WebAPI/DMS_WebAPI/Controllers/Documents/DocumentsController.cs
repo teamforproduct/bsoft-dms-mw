@@ -3,11 +3,10 @@ using BL.Model.DocumentCore;
 using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
-using System.Collections.Generic;
 using System.Web.Http;
 using BL.Logic.DocumentCore.Interfaces;
-using BL.Model.Enums;
 using System.Web.Http.Description;
+using BL.Model.DocumentCore.IncomingModel;
 
 namespace DMS_WebAPI.Controllers.Documents
 {

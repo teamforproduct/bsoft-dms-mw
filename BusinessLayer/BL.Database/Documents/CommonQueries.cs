@@ -4,8 +4,9 @@ using BL.CrossCutting.Interfaces;
 using BL.Database.DatabaseContext;
 using BL.Database.DBModel.InternalModel;
 using BL.Model.AdminCore;
-using BL.Model.DocumentAdditional;
 using BL.Model.DocumentCore;
+using BL.Model.DocumentCore.FrontModel;
+using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 
 namespace BL.Database.Documents

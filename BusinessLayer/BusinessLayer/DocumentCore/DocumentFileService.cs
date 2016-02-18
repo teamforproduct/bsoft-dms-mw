@@ -5,7 +5,8 @@ using BL.CrossCutting.Interfaces;
 using BL.Database.Documents.Interfaces;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Logic.SystemLogic;
-using BL.Model.DocumentAdditional;
+using BL.Model.DocumentCore.FrontModel;
+using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.Exception;
 
 namespace BL.Logic.DocumentCore

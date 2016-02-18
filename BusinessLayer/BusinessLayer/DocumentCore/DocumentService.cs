@@ -11,10 +11,12 @@ using BL.Model.SystemCore;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Database.SystemDb;
-using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.DocumentCore.Commands;
 using BL.Database.Admins.Interfaces;
 using BL.Model.AdminCore;
+using BL.Model.DocumentCore.FrontModel;
+using BL.Model.DocumentCore.IncomingModel;
+using BL.Model.DocumentCore.InternalModel;
 
 namespace BL.Logic.DocumentCore
 {
@@ -32,7 +34,7 @@ namespace BL.Logic.DocumentCore
         }
 
         #region Documents
-        public int SaveDocument(IContext context, FrontDocument document)
+        public int SaveDocument(IContext context, InternalDocument document)
         {
             Command cmd;
             if (document.Id == 0) // new document
@@ -68,7 +70,7 @@ namespace BL.Logic.DocumentCore
         {
             _adminDb.VerifyAccess(context, new VerifyAccess() { ActionCode = EnumActions.AddDocument, PositionId = model.CurrentPositionId });
             var docTemplate = _templateDb.GetTemplateDocument(context, model.TemplateDocumentId);
-            var baseDocument = new FrontDocument
+            var baseDocument = new InternalDocument
             {
                 TemplateDocumentId = docTemplate.Id,
                 CreateDate = DateTime.Now,
@@ -140,12 +142,21 @@ namespace BL.Logic.DocumentCore
         public int ModifyDocument(IContext context, ModifyDocument model)
         {
             //TODO make with command
-            var doc = _documentDb.GetDocument(context, model.Id);
+            var doc = _documentDb.GetInternalDocument(context, model.Id);
             _adminDb.VerifyAccess(context, new VerifyAccess() { ActionCode = EnumActions.ModifyDocument, PositionId = doc.ExecutorPositionId });
             context.CurrentPositionId = doc.ExecutorPositionId;
-            var docUpd = new FrontDocument(model, doc);
-            VerifyDocument(context, docUpd, null);
-            return SaveDocument(context, docUpd);
+            //var docUpd = new InternalDocument(model, doc);
+            doc.Description = model.Description;
+            doc.DocumentSubjectId = model.DocumentSubjectId;
+            doc.SenderAgentId = model.SenderAgentId;
+            doc.SenderAgentPersonId = model.SenderAgentPersonId;
+            doc.SenderNumber = model.SenderNumber;
+            doc.SenderDate = model.SenderDate;
+            doc.Addressee = model.Addressee;
+            doc.AccessLevel = model.AccessLevel;
+
+            VerifyDocument(context, new FrontDocument(doc), null);
+            return SaveDocument(context, doc);
         }
 
         public void DeleteDocument(IContext context, int id)

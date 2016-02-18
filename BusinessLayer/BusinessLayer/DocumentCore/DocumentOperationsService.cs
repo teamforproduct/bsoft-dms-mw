@@ -6,7 +6,6 @@ using BL.CrossCutting.Interfaces;
 using BL.Database.Dictionaries.Interfaces;
 using BL.Database.Documents.Interfaces;
 using BL.Database.SystemDb;
-using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Model.Database;
 using BL.Model.DocumentCore;
@@ -16,6 +15,7 @@ using BL.Model.Exception;
 using BL.Model.SystemCore;
 using BL.Database.Admins.Interfaces;
 using BL.Model.AdminCore;
+using BL.Model.DocumentCore.FrontModel;
 
 namespace BL.Logic.DocumentCore
 {

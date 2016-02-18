@@ -1,6 +1,7 @@
 ﻿using System;
+using BL.Model.DocumentCore.IncomingModel;
 
-namespace BL.Model.DocumentAdditional
+namespace BL.Model.DocumentCore.FrontModel
 {
     public class DocumentAttachedFile: DocumentFileIdentity
     {

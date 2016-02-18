@@ -10,6 +10,8 @@ using BL.Model.AdminCore;
 using BL.Model.Database;
 using BL.Model.DocumentCore;
 using BL.Model.DocumentCore.Actions;
+using BL.Model.DocumentCore.FrontModel;
+using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.InternalModel;
 

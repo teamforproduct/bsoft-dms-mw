@@ -2,6 +2,7 @@
 using BL.CrossCutting.Interfaces;
 using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore;
+using BL.Model.DocumentCore.FrontModel;
 
 namespace BL.Logic.DocumentCore
 {

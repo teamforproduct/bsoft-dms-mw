@@ -4,11 +4,11 @@ using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Web.Http;
 using BL.Logic.DocumentCore.Interfaces;
-using BL.Model.DocumentAdditional;
 using System.Net.Http;
 using System.Net;
 using System.Net.Http.Headers;
 using System.IO;
+using BL.Model.DocumentCore.IncomingModel;
 
 namespace DMS_WebAPI.Controllers.Documents
 {
