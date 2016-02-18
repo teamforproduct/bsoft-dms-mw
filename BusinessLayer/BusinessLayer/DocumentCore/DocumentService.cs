@@ -69,74 +69,8 @@ namespace BL.Logic.DocumentCore
         public int AddDocumentByTemplateDocument(IContext context, AddDocumentByTemplateDocument model)
         {
             _adminDb.VerifyAccess(context, new VerifyAccess() { ActionCode = EnumActions.AddDocument, PositionId = model.CurrentPositionId });
-            var docTemplate = _templateDb.GetTemplateDocument(context, model.TemplateDocumentId);
-            var baseDocument = new InternalDocument
-            {
-                TemplateDocumentId = docTemplate.Id,
-                CreateDate = DateTime.Now,
-                DocumentSubjectId = docTemplate.DocumentSubjectId,
-                Description = docTemplate.Description,
-                ExecutorPositionId = (int)context.CurrentPositionId, ////
-                SenderAgentId = docTemplate.DocumentDirection == EnumDocumentDirections.External ? docTemplate.SenderAgentId : null,
-                SenderAgentPersonId = docTemplate.DocumentDirection == EnumDocumentDirections.External ? docTemplate.SenderAgentPersonId : null,
-                Addressee = docTemplate.DocumentDirection == EnumDocumentDirections.External ? docTemplate.Addressee : null
-            };
-
-            if (docTemplate.RestrictedSendLists != null && docTemplate.RestrictedSendLists.Any())
-            {
-                baseDocument.RestrictedSendLists = docTemplate.RestrictedSendLists.Select(x => new InternalDocumentRestrictedSendLists
-                {
-                    PositionId = x.PositionId,
-                    AccessLevel = x.AccessLevel
-                }).ToList();
-            }
-
-            if (docTemplate.SendLists != null && docTemplate.SendLists.Any())
-            {
-                baseDocument.SendLists = docTemplate.SendLists.Select(x => new InternalDocumentSendLists
-                {
-                    Stage = x.Stage,
-                    SendType = x.SendType,
-                    TargetPositionId = x.TargetPositionId,
-                    Description = x.Description,
-                    DueDate = x.DueDate,
-                    DueDay = x.DueDay,
-                    AccessLevel = x.AccessLevel,
-                    IsInitial = true,
-                    StartEventId = null,
-                    CloseEventId = null
-                }).ToList();
-            }
-
-            var evt = new InternalDocumentEvents
-            {
-                LastChangeDate = DateTime.Now,
-                Date = DateTime.Now,
-                CreateDate = DateTime.Now,
-                EventType = EnumEventTypes.AddNewDocument,
-                Description = "Create",
-                LastChangeUserId = context.CurrentAgentId,
-                SourceAgentId = context.CurrentAgentId,
-                TargetAgentId = context.CurrentAgentId,
-                TargetPositionId = context.CurrentPositionId,
-                SourcePositionId = (int)context.CurrentPositionId
-            };
-
-            baseDocument.Events = new List<InternalDocumentEvents> { evt };
-
-            var acc = new InternalDocumentAccesses
-            {
-                AccessLevel = EnumDocumentAccesses.PersonalRefIO,
-                IsInWork = true,
-                IsFavourite = false,
-                LastChangeDate = DateTime.Now,
-                LastChangeUserId = context.CurrentAgentId,
-                PositionId = (int)context.CurrentPositionId,
-            };
-
-            baseDocument.Accesses = new List<InternalDocumentAccesses>() { acc };
-
-            return SaveDocument(context, baseDocument);
+            var newDoc = _documentDb.AddDocumentByTemplateDocumentPrepare(context, model.TemplateDocumentId);
+            return SaveDocument(context, newDoc);
         }
 
         public int ModifyDocument(IContext context, ModifyDocument model)

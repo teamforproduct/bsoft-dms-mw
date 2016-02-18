@@ -10,12 +10,16 @@ namespace BL.Database.Documents.Interfaces
     {
         void AddDocument(IContext ctx, InternalDocument document);
         void UpdateDocument(IContext ctx, InternalDocument document);
-        IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging);
-        FrontDocument GetDocument(IContext ctx, int documentId);
-        InternalDocument GetInternalDocument(IContext ctx, int documentId);
         void DeleteDocument(IContext context, int id);
 
-        InternalDocument GetCheckRegistration(IContext ctx, int documentId);
-        InternalDocument GetDocumentCopy(IContext ctx, int documentId);
+        IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging);
+        FrontDocument GetDocument(IContext ctx, int documentId);
+
+        InternalDocument GetInternalDocument(IContext ctx, int documentId);
+
+
+        InternalDocument RegisterDocumentPrepare(IContext ctx, int documentId);
+        InternalDocument CopyDocumentPrepare(IContext ctx, int documentId);
+        InternalDocument AddDocumentByTemplateDocumentPrepare(IContext context, int templateDocumentId);
     }
 }

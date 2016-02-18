@@ -99,7 +99,7 @@ namespace BL.Database.Documents
         #endregion DocumentRegistration
 
         #region DocumentLink    
-        public InternalLinkedDocument GetLinkedDocument(IContext context, AddDocumentLink model)
+        public InternalLinkedDocument AddDocumentLinkPrepare(IContext context, AddDocumentLink model)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {

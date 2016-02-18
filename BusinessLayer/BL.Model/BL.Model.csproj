@@ -105,6 +105,9 @@
     <Compile Include="DocumentCore\IncomingModel\DocumentFileIdentity.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentFile.cs" />
     <Compile Include="DocumentCore\IncomingModel\AddDocumentByTemplateDocument.cs" />
+    <Compile Include="DocumentCore\InternalModel\InternalTemplateDocument.cs" />
+    <Compile Include="DocumentCore\InternalModel\InternalTemplateDocumentRestrictedSendLists.cs" />
+    <Compile Include="DocumentCore\InternalModel\InternalTemplateDocumentSendLists.cs" />
     <Compile Include="DocumentCore\InternalModel\FilterDocumentEvent.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocument.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentSavedFilter.cs" />

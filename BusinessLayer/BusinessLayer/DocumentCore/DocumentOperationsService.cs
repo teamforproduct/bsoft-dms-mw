@@ -204,8 +204,8 @@ namespace BL.Logic.DocumentCore
 
         public int CopyDocument(IContext context, CopyDocument model)
         {
-            var document = _documentDb.GetDocumentCopy(context, model.DocumentId);
-
+            var document = _documentDb.CopyDocumentPrepare(context, model.DocumentId);
+            //TODO RestrictedSendLists and SendLists
             //if (document.RestrictedSendLists != null && document.RestrictedSendLists.Any())
             //{
             //    var restrictedSendLists = document.RestrictedSendLists.ToList();
@@ -265,7 +265,7 @@ namespace BL.Logic.DocumentCore
 
         public void RegisterDocument(IContext context, RegisterDocument model)
         {
-            var doc = _documentDb.GetCheckRegistration(context, model.DocumentId);
+            var doc = _documentDb.RegisterDocumentPrepare(context, model.DocumentId);
 
             if (doc == null)
             {
@@ -291,7 +291,7 @@ namespace BL.Logic.DocumentCore
 
         public void AddDocumentLink(IContext context, AddDocumentLink model)
         {
-            var docLink = _operationDb.GetLinkedDocument(context, model);
+            var docLink = _operationDb.AddDocumentLinkPrepare(context, model);
             _adminDb.VerifyAccess(context, new VerifyAccess() { ActionCode = EnumActions.ModifyDocument, PositionId = docLink.ExecutorPositionId });
             if ((docLink.DocumentLinkId.HasValue) && (docLink.ParentDocumentLinkId.HasValue) && (docLink.DocumentLinkId == docLink.ParentDocumentLinkId))
             {
