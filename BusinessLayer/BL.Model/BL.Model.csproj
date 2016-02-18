@@ -110,8 +110,11 @@
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentSavedFilter.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentSendListStage.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentAccesses.cs" />
+    <Compile Include="DocumentCore\InternalModel\InternalDocumentEvents.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentRestrictedSendLists.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentSendLists.cs" />
+    <Compile Include="DocumentCore\InternalModel\InternalDocumentSubscriptions.cs" />
+    <Compile Include="DocumentCore\InternalModel\InternalDocumentWaits.cs" />
     <Compile Include="Enums\EnumActions.cs" />
     <Compile Include="Enums\EnumObjects.cs" />
     <Compile Include="Enums\EnumSubordinationTypes.cs" />
