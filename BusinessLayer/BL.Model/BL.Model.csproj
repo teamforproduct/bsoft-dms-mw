@@ -50,6 +50,8 @@
     <Compile Include="Database\DatabaseType.cs" />
     <Compile Include="DictionaryCore\BaseDictionaryLinkType.cs" />
     <Compile Include="DictionaryCore\BaseDictionaryResultType.cs" />
+    <Compile Include="DictionaryCore\ModifyDictionaryTag.cs" />
+    <Compile Include="DictionaryCore\BaseDictionaryTag.cs" />
     <Compile Include="DictionaryCore\BaseDictionarySubordinationType.cs" />
     <Compile Include="DictionaryCore\BaseDictionarySendType.cs" />
     <Compile Include="DictionaryCore\BaseDictionaryRegistrationJournal.cs" />
