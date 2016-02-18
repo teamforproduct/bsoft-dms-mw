@@ -8,6 +8,8 @@ using BL.Database.Dictionaries.Interfaces;
 using BL.Model.Enums;
 using BL.Model.DocumentCore.Actions;
 using System;
+using BL.Database.DBModel.Dictionary;
+using BL.Model.Exception;
 
 namespace BL.Database.Dictionaries
 {
@@ -416,7 +418,7 @@ namespace BL.Database.Dictionaries
             {
                 return dbContext.DictionaryEventTypesSet.Where(x => x.Id == id).Select(x => new BaseDictionaryEventType
                 {
-                    EventType = (EnumEventTypes) x.Id,
+                    EventType = (EnumEventTypes)x.Id,
                     Id = x.Id,
                     Code = x.Code,
                     Name = x.Name,
@@ -432,7 +434,7 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
-                var qry = dbContext.DictionaryEventTypesSet.AsQueryable();        
+                var qry = dbContext.DictionaryEventTypesSet.AsQueryable();
 
                 if (filter.Id?.Count > 0)
                 {
@@ -454,7 +456,7 @@ namespace BL.Database.Dictionaries
 
                 return qry.Select(x => new BaseDictionaryEventType
                 {
-                    EventType = (EnumEventTypes) x.Id,
+                    EventType = (EnumEventTypes)x.Id,
                     Id = x.Id,
                     Code = x.Code,
                     Name = x.Name,
@@ -948,5 +950,92 @@ namespace BL.Database.Dictionaries
         }
 
         #endregion DictionarySubordinationTypes
+
+        #region DictionaryTags
+        public BaseDictionaryTag GetDictionaryTag(IContext context, int id)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var item = dbContext.DictionaryTagsSet
+                    .Where(x => x.Id == id)
+                    .Where(x => !x.PositionId.HasValue || context.CurrentPositionsIdList.Contains(x.PositionId ?? 0))
+                    .Select(x => new BaseDictionaryTag
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        PositionId = x.PositionId,
+                        Color = x.Color,
+                        PositionName = x.Position.Name
+                    }).FirstOrDefault();
+                if (item?.Id > 0)
+                {
+                    return item;
+                }
+                throw new DictionaryTagNotFoundOrUserHasNoAccess();
+            }
+        }
+
+        public IEnumerable<BaseDictionaryTag> GetDictionaryTags(IContext context)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var qry = dbContext.DictionaryTagsSet.AsQueryable();
+
+                qry = qry.Where(x => !x.PositionId.HasValue || context.CurrentPositionsIdList.Contains(x.PositionId ?? 0));
+
+                return qry.Select(x => new BaseDictionaryTag
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    PositionId = x.PositionId,
+                    Color = x.Color,
+                    PositionName = x.Position.Name
+                }).ToList();
+            }
+        }
+
+        public BaseDictionaryTag AddDictionaryTag(IContext context, ModifyDictionaryTag model)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var savTag = new DictionaryTags
+                {
+                    Name = model.Name,
+                    PositionId = context.CurrentPositionId,
+                    Color = model.Color,
+                    LastChangeUserId = context.CurrentAgentId,
+                    LastChangeDate = DateTime.Now
+                };
+
+                dbContext.DictionaryTagsSet.Add(savTag);
+                dbContext.SaveChanges();
+                return GetDictionaryTag(context, savTag.Id);
+            }
+        }
+
+        public BaseDictionaryTag UpdateDictionaryTag(IContext context, ModifyDictionaryTag model)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var savTag = dbContext.DictionaryTagsSet
+                    .Where(x => x.Id == model.Id)
+                    .Where(x => !x.PositionId.HasValue || context.CurrentPositionsIdList.Contains(x.PositionId ?? 0))
+                    .FirstOrDefault();
+
+                if (savTag?.Id > 0)
+                {
+                    savTag.Name = model.Name;
+                    savTag.Color = model.Color;
+                    savTag.LastChangeUserId = context.CurrentAgentId;
+                    savTag.LastChangeDate = DateTime.Now;
+                    dbContext.SaveChanges();
+
+                    return GetDictionaryTag(context, savTag.Id);
+                }
+                throw new DictionaryTagNotFoundOrUserHasNoAccess();
+            }
+        }
+
+        #endregion DictionaryTags
     }
 }

@@ -290,4 +290,16 @@ namespace BL.Model.Exception
         {
         }
     }
+
+    public class DictionaryTagNotFoundOrUserHasNoAccess : DmsExceptions
+    {
+        private const string _MESSAGE = "User could not acceess this tag!";
+        public DictionaryTagNotFoundOrUserHasNoAccess() : base(_MESSAGE)
+        {
+        }
+
+        public DictionaryTagNotFoundOrUserHasNoAccess(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
 }
