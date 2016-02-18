@@ -41,14 +41,14 @@ namespace BL.Database.Documents
                 return sendList;
             }
         }
-        public BaseDocumentRestrictedSendList GetRestrictedSendListBaseById(IContext ctx, int id)
+        public FrontDocumentRestrictedSendList GetRestrictedSendListBaseById(IContext ctx, int id)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
                 //TODO: Refactoring
                 var sendList = dbContext.DocumentRestrictedSendListsSet
                     .Where(x => x.Id == id)
-                    .Select(x => new BaseDocumentRestrictedSendList
+                    .Select(x => new FrontDocumentRestrictedSendList
                     {
                         Id = x.Id,
                         DocumentId = x.DocumentId,
@@ -84,7 +84,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public IEnumerable<BaseDocumentRestrictedSendList> GetRestrictedSendListBase(IContext ctx, int documentId)
+        public IEnumerable<FrontDocumentRestrictedSendList> GetRestrictedSendListBase(IContext ctx, int documentId)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
@@ -173,7 +173,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public IEnumerable<BaseDocumentSendList> GetSendListBase(IContext ctx, int documentId)
+        public IEnumerable<FrontDocumentSendList> GetSendListBase(IContext ctx, int documentId)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
@@ -205,14 +205,14 @@ namespace BL.Database.Documents
             }
         }
 
-        public BaseDocumentSendList GetSendListBaseById(IContext ctx, int id)
+        public FrontDocumentSendList GetSendListBaseById(IContext ctx, int id)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
                 //TODO: Refactoring
                 var sendLists = dbContext.DocumentSendListsSet
                     .Where(x => x.Id == id)
-                    .Select(x => new BaseDocumentSendList
+                    .Select(x => new FrontDocumentSendList
                     {
                         Id = x.Id,
                         DocumentId = x.DocumentId,

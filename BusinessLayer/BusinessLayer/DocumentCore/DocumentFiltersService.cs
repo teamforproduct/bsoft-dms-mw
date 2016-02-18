@@ -33,7 +33,7 @@ namespace BL.Logic.DocumentCore
             return savedFilter.Id;
         }
 
-        public IEnumerable<BaseDocumentSavedFilter> GetSavedFilters(IContext ctx)
+        public IEnumerable<FrontDocumentSavedFilter> GetSavedFilters(IContext ctx)
         {
             var savedFilters = _documentDb.GetSavedFilters(ctx).ToList();
             var js = new JavaScriptSerializer();
@@ -50,7 +50,7 @@ namespace BL.Logic.DocumentCore
             return savedFilters;
         }
 
-        public BaseDocumentSavedFilter GetSavedFilter(IContext ctx, int savedFilterId)
+        public FrontDocumentSavedFilter GetSavedFilter(IContext ctx, int savedFilterId)
         {
             var savedFilter = _documentDb.GetSavedFilter(ctx, savedFilterId);
             var js = new JavaScriptSerializer();

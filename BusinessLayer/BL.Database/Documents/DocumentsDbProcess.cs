@@ -487,9 +487,9 @@ namespace BL.Database.Documents
                     LinkId = dbDoc.Doc.LinkId,
                     IsFavourite = dbDoc.Acc.IsFavourite,
                     IsInWork = dbDoc.Acc.IsInWork,
-                    Accesses = new List<BaseDocumentAccess>
+                    Accesses = new List<FrontDocumentAccess>
                     {
-                        new BaseDocumentAccess
+                        new FrontDocumentAccess
                         {
                             LastChangeDate = dbDoc.Acc.LastChangeDate,
                             LastChangeUserId = dbDoc.Acc.LastChangeUserId,

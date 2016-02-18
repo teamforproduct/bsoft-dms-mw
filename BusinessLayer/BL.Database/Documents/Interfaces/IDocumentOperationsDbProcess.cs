@@ -15,17 +15,17 @@ namespace BL.Database.Documents.Interfaces
         bool SetDocumentRegistration(IContext ctx, RegisterDocument registerDocument);
         void AddDocumentLink(IContext context, InternalLinkedDocument model);
 
-        BaseDocumentWaits GetDocumentWaitByOnEventId(IContext ctx, int eventId);
-        void AddDocumentWait(IContext ctx, BaseDocumentWaits documentWait);
-        void UpdateDocumentWait(IContext ctx, BaseDocumentWaits documentWait);
+        FrontDocumentWaits GetDocumentWaitByOnEventId(IContext ctx, int eventId);
+        void AddDocumentWait(IContext ctx, FrontDocumentWaits documentWait);
+        void UpdateDocumentWait(IContext ctx, FrontDocumentWaits documentWait);
 
-        int AddDocumentEvent(IContext ctx, BaseDocumentEvent docEvent);
-        IEnumerable<BaseDocumentEvent> GetDocumentEvents(IContext ctx, FilterDocumentEvent filter);
+        int AddDocumentEvent(IContext ctx, FrontDocumentEvent docEvent);
+        IEnumerable<FrontDocumentEvent> GetDocumentEvents(IContext ctx, FilterDocumentEvent filter);
 
-        int AddDocumentAccess(IContext ctx, BaseDocumentAccess access);
+        int AddDocumentAccess(IContext ctx, FrontDocumentAccess access);
         void RemoveDocumentAccess(IContext ctx, int accessId);
-        void UpdateDocumentAccess(IContext ctx, BaseDocumentAccess access);
-        BaseDocumentAccess GetDocumentAccess(IContext ctx, int documentId);
+        void UpdateDocumentAccess(IContext ctx, FrontDocumentAccess access);
+        FrontDocumentAccess GetDocumentAccess(IContext ctx, int documentId);
 
         void SetDocumentInformation(IContext ctx, EventAccessModel access);
         InternalLinkedDocument GetLinkedDocument(IContext context, AddDocumentLink model);

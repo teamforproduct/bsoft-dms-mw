@@ -24,12 +24,12 @@ namespace BL.Logic.DocumentCore
 
         #region DocumentRestrictedSendLists
 
-        public BaseDocumentRestrictedSendList GetRestrictedSendList(IContext context, int restrictedSendListId)
+        public FrontDocumentRestrictedSendList GetRestrictedSendList(IContext context, int restrictedSendListId)
         {
             return _documentDb.GetRestrictedSendListBaseById(context, restrictedSendListId);
         }
 
-        public IEnumerable<BaseDocumentRestrictedSendList> GetRestrictedSendLists(IContext context, int documentId)
+        public IEnumerable<FrontDocumentRestrictedSendList> GetRestrictedSendLists(IContext context, int documentId)
         {
             return _documentDb.GetRestrictedSendListBase(context, documentId);
         }
@@ -153,14 +153,14 @@ namespace BL.Logic.DocumentCore
         #endregion
 
         #region DocumentSendLists
-        public IEnumerable<BaseDocumentSendListStage> GetSendListStage(IEnumerable<BaseDocumentSendList> sendLists)
+        public IEnumerable<FrontDocumentSendListStage> GetSendListStage(IEnumerable<FrontDocumentSendList> sendLists)
         {
             if (sendLists?.Count() > 0)
             {
                 return Enumerable.Range(0, sendLists.Max(x => x.Stage) + 1)
                     .GroupJoin(sendLists, s => s, sl => sl.Stage
                     , (s, sls) => new { s, sls = sls.Where(x => x.Id > 0) })
-                    .Select(x => new BaseDocumentSendListStage
+                    .Select(x => new FrontDocumentSendListStage
                     {
                         Stage = x.s,
                         SendLists = x.sls.ToList()
@@ -168,9 +168,9 @@ namespace BL.Logic.DocumentCore
 
             }
             else
-                return new List<BaseDocumentSendListStage>();
+                return new List<FrontDocumentSendListStage>();
         }
-        public IEnumerable<BaseDocumentSendListStage> GetSendListStage(IContext context, int documentId, bool isLastStage = false)
+        public IEnumerable<FrontDocumentSendListStage> GetSendListStage(IContext context, int documentId, bool isLastStage = false)
         {
 
             var sendLists = _documentDb.GetSendListBase(context, documentId).ToList();
@@ -178,18 +178,18 @@ namespace BL.Logic.DocumentCore
             if (isLastStage)
             {
                 int lastStage = sendLists.Count > 0 ? sendLists.Max(x => x.Stage) + 1 : 0;
-                sendLists.Add(new BaseDocumentSendList { Id = 0, Stage = lastStage });
+                sendLists.Add(new FrontDocumentSendList { Id = 0, Stage = lastStage });
             }
 
             return GetSendListStage(sendLists);
         }
 
-        public BaseDocumentSendList GetSendList(IContext context, int sendListId)
+        public FrontDocumentSendList GetSendList(IContext context, int sendListId)
         {
             return _documentDb.GetSendListBaseById(context, sendListId);
         }
 
-        public IEnumerable<BaseDocumentSendList> GetSendLists(IContext context, int documentId)
+        public IEnumerable<FrontDocumentSendList> GetSendLists(IContext context, int documentId)
         {
             return _documentDb.GetSendListBase(context, documentId).ToList();
         }

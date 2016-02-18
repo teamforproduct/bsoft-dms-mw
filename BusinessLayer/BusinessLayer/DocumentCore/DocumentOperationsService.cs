@@ -37,7 +37,7 @@ namespace BL.Logic.DocumentCore
 
         public void AddDocumentComment(IContext context, AddNote note)
         {
-            var evt = new BaseDocumentEvent
+            var evt = new FrontDocumentEvent
             {
                 DocumentId = note.DocumentId,
                 Description = note.Description,
@@ -71,7 +71,7 @@ namespace BL.Logic.DocumentCore
             return actions;
         }
 
-        public int AddDocumentAccess(IContext ctx, BaseDocumentAccess access)
+        public int AddDocumentAccess(IContext ctx, FrontDocumentAccess access)
         {
             return _operationDb.AddDocumentAccess(ctx, access);
         }
@@ -92,7 +92,7 @@ namespace BL.Logic.DocumentCore
             var ea = new EventAccessModel
             {
                 DocumentAccess = acc,
-                DocumentEvent = new BaseDocumentEvent
+                DocumentEvent = new FrontDocumentEvent
                 {
                     DocumentId = newStatus.DocumentId,
                     SourceAgentId = context.CurrentAgentId,
@@ -121,13 +121,13 @@ namespace BL.Logic.DocumentCore
 
         public void ControlOn(IContext context, ControlOn model)
         {
-            var docWait = new BaseDocumentWaits
+            var docWait = new FrontDocumentWaits
             {
                 DocumentId = model.DocumentId,
                 Description = model.Description,
                 DueDate = model.DueDate,
                 AttentionDate = model.AttentionDate,
-                OnEvent = new BaseDocumentEvent
+                OnEvent = new FrontDocumentEvent
                 {
                     DocumentId = model.DocumentId,
                     EventType = EnumEventTypes.ControlOn,
@@ -150,7 +150,7 @@ namespace BL.Logic.DocumentCore
             var oldWait = _operationDb.GetDocumentWaitByOnEventId(context, model.EventId);
 
             oldWait.OnEvent = null;
-            oldWait.OffEvent = new BaseDocumentEvent
+            oldWait.OffEvent = new FrontDocumentEvent
             {
                 DocumentId = model.DocumentId,
                 EventType = EnumEventTypes.ControlChange,
@@ -166,7 +166,7 @@ namespace BL.Logic.DocumentCore
 
             _operationDb.UpdateDocumentWait(context, oldWait);
 
-            var newWait = new BaseDocumentWaits
+            var newWait = new FrontDocumentWaits
             {
                 ParentId = oldWait.Id,
                 DocumentId = model.DocumentId,
@@ -185,7 +185,7 @@ namespace BL.Logic.DocumentCore
             docWait.ResultTypeId = model.ResultTypeId;
 
             docWait.OnEvent = null;
-            docWait.OffEvent = new BaseDocumentEvent
+            docWait.OffEvent = new FrontDocumentEvent
             {
                 DocumentId = model.DocumentId,
                 EventType = EnumEventTypes.ControlOff,

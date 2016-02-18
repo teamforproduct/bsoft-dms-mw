@@ -122,16 +122,16 @@ namespace BL.Model.DocumentCore
         public int AttachedFilesCount { get; set; }
         public int LinkedDocumentsCount { get; set; }
 
-        public IEnumerable<BaseDocumentRestrictedSendList> RestrictedSendLists { get; set; }
-        public IEnumerable<BaseDocumentSendList> SendLists { get; set; }
-        public IEnumerable<BaseDocumentSendListStage> SendListStages { get; set; }
+        public IEnumerable<FrontDocumentRestrictedSendList> RestrictedSendLists { get; set; }
+        public IEnumerable<FrontDocumentSendList> SendLists { get; set; }
+        public IEnumerable<FrontDocumentSendListStage> SendListStages { get; set; }
         public int SendListStageMax { get; set; }
-        public IEnumerable<BaseDocumentEvent> Events { get; set; }
-        public IEnumerable<BaseDocumentAccess> Accesses { get; set; }
+        public IEnumerable<FrontDocumentEvent> Events { get; set; }
+        public IEnumerable<FrontDocumentAccess> Accesses { get; set; }
         public IEnumerable<DocumentAttachedFile> DocumentFiles { get; set; }
         public IEnumerable<FrontDocument> LinkedDocuments { get; set; }
         public IEnumerable<FrontDocumentLink> Links { get; set; }
-        public IEnumerable<BaseDocumentWaits> DocumentWaits { get; set; }
+        public IEnumerable<FrontDocumentWaits> DocumentWaits { get; set; }
 
     }
 }

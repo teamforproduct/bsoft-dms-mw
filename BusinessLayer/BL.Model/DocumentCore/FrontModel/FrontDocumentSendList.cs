@@ -3,7 +3,7 @@ using BL.Model.DocumentCore.IncomingModel;
 
 namespace BL.Model.DocumentCore.FrontModel
 {
-    public class BaseDocumentSendList: ModifyDocumentSendList
+    public class FrontDocumentSendList: ModifyDocumentSendList
     {
         public bool IsInitial { get; set; }
         public int? StartEventId { get; set; }

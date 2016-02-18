@@ -19,11 +19,11 @@ namespace BL.Database.Documents
             _helper = helper;
         }
 
-        public IEnumerable<BaseTemplateDocument> GetTemplateDocument(IContext ctx)
+        public IEnumerable<FrontTemplateDocument> GetTemplateDocument(IContext ctx)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-                return dbContext.TemplateDocumentsSet.Select(x => new BaseTemplateDocument
+                return dbContext.TemplateDocumentsSet.Select(x => new FrontTemplateDocument
                 {
                     Id = x.Id,
                     DocumentDirection = (EnumDocumentDirections) x.DocumentDirectionId,
@@ -40,7 +40,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public BaseTemplateDocument GetTemplateDocumentByDocumentId(IContext ctx, int documentId)
+        public FrontTemplateDocument GetTemplateDocumentByDocumentId(IContext ctx, int documentId)
         {
             int templateDocumentId = 0;
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
@@ -51,13 +51,13 @@ namespace BL.Database.Documents
             return GetTemplateDocument(ctx, templateDocumentId);
         }
 
-        public BaseTemplateDocument GetTemplateDocument(IContext ctx, int templateDocumentId)
+        public FrontTemplateDocument GetTemplateDocument(IContext ctx, int templateDocumentId)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
                 return
                     dbContext.TemplateDocumentsSet.Where(x => x.Id == templateDocumentId)
-                        .Select(x => new BaseTemplateDocument
+                        .Select(x => new FrontTemplateDocument
                         {
                             Id = x.Id,
                             Name = x.Name,
@@ -73,12 +73,12 @@ namespace BL.Database.Documents
                             LastChangeUserId = x.LastChangeUserId,
                             LastChangeDate = x.LastChangeDate,
                             RestrictedSendLists =
-                                x.RestrictedSendLists.Select(y => new BaseTemplateDocumentRestrictedSendLists()
+                                x.RestrictedSendLists.Select(y => new FrontTemplateDocumentRestrictedSendLists()
                                 {
                                     PositionId = y.PositionId,
                                     AccessLevel = (EnumDocumentAccesses) y.AccessLevelId
                                 }).ToList(),
-                            SendLists = x.SendLists.Select(y => new BaseTemplateDocumentSendLists()
+                            SendLists = x.SendLists.Select(y => new FrontTemplateDocumentSendLists()
                             {
                                 SendType = (EnumSendTypes) y.SendTypeId,
                                 TargetPositionId = y.TargetPositionId,
@@ -93,7 +93,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public int AddOrUpdateTemplate(IContext ctx, BaseTemplateDocument template)
+        public int AddOrUpdateTemplate(IContext ctx, FrontTemplateDocument template)
         {
             // we should not implement it now
             //var dbContext = GetUserDmsContext(context);

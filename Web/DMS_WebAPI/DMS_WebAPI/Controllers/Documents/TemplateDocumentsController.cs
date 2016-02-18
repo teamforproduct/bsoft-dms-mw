@@ -36,7 +36,7 @@ namespace DMS_WebAPI.Controllers
         }
 
 
-        //public IHttpActionResult Post(BaseTemplateDocument model)
+        //public IHttpActionResult Post(FrontTemplateDocument model)
         //{
         //    var cxt = DmsResolver.Current.Get<UserContext>().Get();
         //    var docProc = DmsResolver.Current.Get<ITemplateDocumentService>();

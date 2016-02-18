@@ -151,7 +151,7 @@ namespace BL.Database.Documents
 
         #region DocumentWaits
 
-        public BaseDocumentWaits GetDocumentWaitByOnEventId(IContext ctx, int eventId)
+        public FrontDocumentWaits GetDocumentWaitByOnEventId(IContext ctx, int eventId)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
@@ -164,7 +164,7 @@ namespace BL.Database.Documents
             throw new WaitNotFoundOrUserHasNoAccess();
         }
 
-        public void AddDocumentWait(IContext ctx, BaseDocumentWaits documentWait)
+        public void AddDocumentWait(IContext ctx, FrontDocumentWaits documentWait)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
@@ -199,7 +199,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public void UpdateDocumentWait(IContext ctx, BaseDocumentWaits documentWait)
+        public void UpdateDocumentWait(IContext ctx, FrontDocumentWaits documentWait)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
@@ -233,7 +233,7 @@ namespace BL.Database.Documents
             }
         }
 
-        private void UpdateDocumentWaitEvents(IContext ctx, DocumentWaits docWait, BaseDocumentWaits documentWait)
+        private void UpdateDocumentWaitEvents(IContext ctx, DocumentWaits docWait, FrontDocumentWaits documentWait)
         {
             if (documentWait.OnEvent != null)
             {
@@ -276,7 +276,7 @@ namespace BL.Database.Documents
 
         #region Document Event
 
-        public int AddDocumentEvent(IContext ctx, BaseDocumentEvent docEvent)
+        public int AddDocumentEvent(IContext ctx, FrontDocumentEvent docEvent)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
@@ -299,7 +299,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public IEnumerable<BaseDocumentEvent> GetDocumentEvents(IContext ctx, FilterDocumentEvent filter)
+        public IEnumerable<FrontDocumentEvent> GetDocumentEvents(IContext ctx, FilterDocumentEvent filter)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
@@ -342,7 +342,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public int AddDocumentAccess(IContext ctx, BaseDocumentAccess access)
+        public int AddDocumentAccess(IContext ctx, FrontDocumentAccess access)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
@@ -374,7 +374,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public void UpdateDocumentAccess(IContext ctx, BaseDocumentAccess access)
+        public void UpdateDocumentAccess(IContext ctx, FrontDocumentAccess access)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
@@ -392,7 +392,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public BaseDocumentAccess GetDocumentAccess(IContext ctx, int documentId)
+        public FrontDocumentAccess GetDocumentAccess(IContext ctx, int documentId)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {

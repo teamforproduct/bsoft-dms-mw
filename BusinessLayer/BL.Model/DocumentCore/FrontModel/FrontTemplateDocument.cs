@@ -4,7 +4,7 @@ using BL.Model.Enums;
 
 namespace BL.Model.DocumentCore.FrontModel
 {
-    public class BaseTemplateDocument
+    public class FrontTemplateDocument
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -33,7 +33,7 @@ namespace BL.Model.DocumentCore.FrontModel
 
         public string GeneralInfo { get; set; }
 
-        public virtual IEnumerable<BaseTemplateDocumentRestrictedSendLists> RestrictedSendLists { get; set; }
-        public virtual IEnumerable<BaseTemplateDocumentSendLists> SendLists { get; set; }
+        public virtual IEnumerable<FrontTemplateDocumentRestrictedSendLists> RestrictedSendLists { get; set; }
+        public virtual IEnumerable<FrontTemplateDocumentSendLists> SendLists { get; set; }
     }
 }

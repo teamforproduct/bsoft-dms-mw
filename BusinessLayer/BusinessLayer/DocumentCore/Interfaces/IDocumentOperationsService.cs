@@ -13,7 +13,7 @@ namespace BL.Logic.DocumentCore.Interfaces
 
         void AddDocumentComment(IContext context, AddNote note);
 
-        int AddDocumentAccess(IContext ctx, BaseDocumentAccess access);
+        int AddDocumentAccess(IContext ctx, FrontDocumentAccess access);
         void RemoveDocumentAccess(IContext ctx, int accessId);
 
         void ChangeDocumentWorkStatus(IContext context, ChangeWorkStatus newStatus);

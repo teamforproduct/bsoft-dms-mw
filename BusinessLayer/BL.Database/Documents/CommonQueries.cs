@@ -91,7 +91,7 @@ namespace BL.Database.Documents
                     }).ToList();
         }
 
-        public static BaseDocumentAccess GetDocumentAccess(IContext ctx, DmsContext dbContext, int documentId)
+        public static FrontDocumentAccess GetDocumentAccess(IContext ctx, DmsContext dbContext, int documentId)
         {
 
             var acc =
@@ -99,7 +99,7 @@ namespace BL.Database.Documents
                     x => x.DocumentId == documentId && x.PositionId == ctx.CurrentPositionId);
             if (acc != null)
             {
-                return new BaseDocumentAccess
+                return new FrontDocumentAccess
                 {
                     LastChangeDate = acc.LastChangeDate,
                     LastChangeUserId = acc.LastChangeUserId,
@@ -140,7 +140,7 @@ namespace BL.Database.Documents
             return null;
         }
 
-        public static IEnumerable<BaseDocumentEvent> GetDocumentEvents(DmsContext dbContext,FilterDocumentEvent filter)
+        public static IEnumerable<FrontDocumentEvent> GetDocumentEvents(DmsContext dbContext,FilterDocumentEvent filter)
         {
             var qry = dbContext.DocumentEventsSet.AsQueryable();
 
@@ -156,7 +156,7 @@ namespace BL.Database.Documents
                     qry = qry.Where(x => filter.DocumentId.Contains(x.DocumentId));
                 }
             }
-            return qry.Select(x => new BaseDocumentEvent
+            return qry.Select(x => new FrontDocumentEvent
             {
                 Id = x.Id,
                 DocumentId = x.DocumentId,
@@ -217,7 +217,7 @@ namespace BL.Database.Documents
 
         }
 
-        public static IEnumerable<BaseDocumentWaits> GetDocumentWaits(DmsContext dbContext, FilterDocumentWaits filter)
+        public static IEnumerable<FrontDocumentWaits> GetDocumentWaits(DmsContext dbContext, FilterDocumentWaits filter)
         {
             //TODO: Refactoring
             var waitsDb = dbContext.DocumentWaitsSet.AsQueryable();
@@ -247,7 +247,7 @@ namespace BL.Database.Documents
 
             var waitsRes = waitsDb.Select(x => new {Wait = x, OnEvent = x.OnEvent, OffEvent = x.OffEvent});
 
-            var waits = waitsRes.Select(x => new BaseDocumentWaits
+            var waits = waitsRes.Select(x => new FrontDocumentWaits
             {
                 Id = x.Wait.Id,
                 DocumentId = x.Wait.DocumentId,
@@ -260,7 +260,7 @@ namespace BL.Database.Documents
                 AttentionDate = x.Wait.AttentionDate,
                 OnEvent = x.OnEvent == null
                     ? null
-                    : new BaseDocumentEvent
+                    : new FrontDocumentEvent
                     {
                         Id = x.OnEvent.Id,
                         CreateDate = x.OnEvent.CreateDate,
@@ -276,7 +276,7 @@ namespace BL.Database.Documents
                     },
                 OffEvent = x.OffEvent == null
                     ? null
-                    : new BaseDocumentEvent
+                    : new FrontDocumentEvent
                     {
                         Id = x.OffEvent.Id,
                         CreateDate = x.OffEvent.CreateDate,
@@ -404,10 +404,10 @@ namespace BL.Database.Documents
                         }).ToList();
         }
 
-        public static IEnumerable<BaseDocumentSendList> GetDocumentSendList(DmsContext dbContext, int documentId)
+        public static IEnumerable<FrontDocumentSendList> GetDocumentSendList(DmsContext dbContext, int documentId)
         {
             return dbContext.DocumentSendListsSet.Where(x => x.DocumentId == documentId)
-                        .Select(y => new BaseDocumentSendList
+                        .Select(y => new FrontDocumentSendList
                         {
                             Id = y.Id,
                             DocumentId = y.DocumentId,
@@ -455,10 +455,10 @@ namespace BL.Database.Documents
                         }).ToList();
         }
 
-        public static IEnumerable<BaseDocumentRestrictedSendList> GetDocumentRestrictedSendList(DmsContext dbContext, int documentId)
+        public static IEnumerable<FrontDocumentRestrictedSendList> GetDocumentRestrictedSendList(DmsContext dbContext, int documentId)
         {
             return dbContext.DocumentRestrictedSendListsSet.Where(x => x.DocumentId == documentId)
-                        .Select(y => new BaseDocumentRestrictedSendList
+                        .Select(y => new FrontDocumentRestrictedSendList
                         {
                             Id = y.Id,
                             DocumentId = y.DocumentId,
