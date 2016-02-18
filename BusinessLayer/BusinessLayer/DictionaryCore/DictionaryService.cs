@@ -1,10 +1,14 @@
-﻿
+﻿using System;
 using BL.Logic.DictionaryCore.Interfaces;
 using System.Collections.Generic;
 using BL.CrossCutting.Interfaces;
 using BL.Model.DictionaryCore;
-using BL.CrossCutting.DependencyInjection;
 using BL.Database.Dictionaries.Interfaces;
+using System.Linq;
+using BL.Model.DictionaryCore.FrontModel;
+using BL.Model.DictionaryCore.IncomingModel;
+using BL.Model.DictionaryCore.InternalModel;
+using BL.Model.Exception;
 
 namespace BL.Logic.DictionaryCore
 {
@@ -98,18 +102,69 @@ namespace BL.Logic.DictionaryCore
             
             return _dictDb.GetDictionaryDocumentSubjects(context, filter);
         }
+
+        public void ModifyDictionaryDocumentType(IContext context, ModifyDictionaryDocumentType docType)
+        {
+            var spr = _dictDb.GetInternalDictionaryDocumentType(context, new FilterDictionaryDocumentType { Name = docType.Name });
+            if (spr != null)
+            {
+                throw new DictionaryRecordNotUnique();
+            }
+            try
+            {
+                var newDocType = new InternalDictionaryDocumentType
+                {
+                    Id = docType.Id,
+                    Name = docType.Name,
+                    LastChangeDate = DateTime.Now,
+                    LastChangeUserId = context.CurrentAgentId,
+                };
+                _dictDb.UpdateDictionaryDocumentType(context, newDocType);
+            }
+            catch (DictionaryRecordWasNotFound)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new DatabaseError(ex);
+            }
+        }
+
+        public int AddDictionaryDocumentType(IContext context, ModifyDictionaryDocumentType docType)
+        {
+            var spr = _dictDb.GetInternalDictionaryDocumentType(context,new FilterDictionaryDocumentType {Name = docType.Name});
+            if (spr != null)
+            {
+                throw new DictionaryRecordNotUnique();
+            }
+            try
+            {
+                var newDocType = new InternalDictionaryDocumentType
+                {
+                    Name = docType.Name,
+                    LastChangeDate = DateTime.Now,
+                    LastChangeUserId = context.CurrentAgentId,
+                };
+                return _dictDb.AddDictionaryDocumentType(context, newDocType);
+            }
+            catch (Exception ex)
+            {
+                throw new DictionaryRecordCouldNotBeAdded(ex);
+            }
+        }
+
         #endregion DictionaryDocumentSubjects
 
         #region DictionaryDocumentTypes
-        public BaseDictionaryDocumentType GetDictionaryDocumentType(IContext context, int id)
+        // следить за списком полей необхдимых в каждом конкретном случае
+        public FrontDictionaryDocumentType GetDictionaryDocumentType(IContext context, int id)
         {
-            
-            return _dictDb.GetDictionaryDocumentType(context, id);
+            return _dictDb.GetDictionaryDocumentTypes(context, new FilterDictionaryDocumentType {Id = new List<int> {id} }).FirstOrDefault();
         }
 
-        public IEnumerable<BaseDictionaryDocumentType> GetDictionaryDocumentTypes(IContext context, FilterDictionaryDocumentType filter)
+        public IEnumerable<FrontDictionaryDocumentType> GetDictionaryDocumentTypes(IContext context, FilterDictionaryDocumentType filter)
         {
-            
             return _dictDb.GetDictionaryDocumentTypes(context, filter);
         }
         #endregion DictionaryDocumentSubjects

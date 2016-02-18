@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using BL.CrossCutting.Interfaces;
 using BL.Model.DictionaryCore;
-using BL.Model.DocumentCore.Actions;
+using BL.Model.DictionaryCore.FrontModel;
+using BL.Model.DictionaryCore.InternalModel;
 
 namespace BL.Database.Dictionaries.Interfaces
 {
@@ -44,9 +45,12 @@ namespace BL.Database.Dictionaries.Interfaces
         #endregion DictionaryDocumentSubjects
 
         #region DictionaryDocumentTypes
-        BaseDictionaryDocumentType GetDictionaryDocumentType(IContext context, int id);
 
-        IEnumerable<BaseDictionaryDocumentType> GetDictionaryDocumentTypes(IContext context, FilterDictionaryDocumentType filter);
+        InternalDictionaryDocumentType GetInternalDictionaryDocumentType(IContext context,
+            FilterDictionaryDocumentType filter);
+        void UpdateDictionaryDocumentType(IContext context, InternalDictionaryDocumentType docType);
+        int AddDictionaryDocumentType(IContext context, InternalDictionaryDocumentType docType);
+        IEnumerable<FrontDictionaryDocumentType> GetDictionaryDocumentTypes(IContext context, FilterDictionaryDocumentType filter);
         #endregion DictionaryDocumentSubjects
 
         #region DictionaryEventTypes

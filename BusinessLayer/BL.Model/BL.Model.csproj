@@ -54,6 +54,8 @@
     <Compile Include="DictionaryCore\BaseDictionaryLinkType.cs" />
     <Compile Include="DictionaryCore\BaseDictionaryResultType.cs" />
     <Compile Include="DictionaryCore\FilterDictionaryTag.cs" />
+    <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryDocumentType.cs" />
+    <Compile Include="DictionaryCore\InternalModel\InternalDictionaryDocumentType.cs" />
     <Compile Include="DictionaryCore\ModifyDictionaryTag.cs" />
     <Compile Include="DictionaryCore\BaseDictionaryTag.cs" />
     <Compile Include="DictionaryCore\BaseDictionarySubordinationType.cs" />
@@ -61,7 +63,7 @@
     <Compile Include="DictionaryCore\BaseDictionaryRegistrationJournal.cs" />
     <Compile Include="DictionaryCore\BaseDictionaryPosition.cs" />
     <Compile Include="DictionaryCore\BaseDictionaryImportanceEventType.cs" />
-    <Compile Include="DictionaryCore\BaseDictionaryDocumentType.cs" />
+    <Compile Include="DictionaryCore\FrontModel\FrontDictionaryDocumentType.cs" />
     <Compile Include="DictionaryCore\BaseDictionaryDocumentSubject.cs" />
     <Compile Include="DictionaryCore\BaseDictionaryDocumentDirection.cs" />
     <Compile Include="DictionaryCore\BaseDictionaryDepartment.cs" />
