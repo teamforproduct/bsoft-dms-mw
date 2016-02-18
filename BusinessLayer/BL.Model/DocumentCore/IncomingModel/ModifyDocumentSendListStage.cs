@@ -1,8 +1,4 @@
-﻿using System;
-using BL.Model.Enums;
-using System.Runtime.Serialization;
-using BL.Model.Users;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace BL.Model.DocumentCore
 {

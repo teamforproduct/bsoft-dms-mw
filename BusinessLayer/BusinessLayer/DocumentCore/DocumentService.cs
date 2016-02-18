@@ -11,26 +11,30 @@ using BL.Model.SystemCore;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Database.SystemDb;
-using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.DocumentCore.Commands;
+using BL.Database.Admins.Interfaces;
+using BL.Model.AdminCore;
+using BL.Model.DocumentCore.FrontModel;
+using BL.Model.DocumentCore.IncomingModel;
+using BL.Model.DocumentCore.InternalModel;
 
 namespace BL.Logic.DocumentCore
 {
     internal class DocumentService : IDocumentService
     {
         private readonly IDocumentsDbProcess _documentDb;
-        private readonly IAdminService _adminService;
+        private readonly IAdminsDbProcess _adminDb;
         private readonly ITemplateDocumentsDbProcess _templateDb;
 
-        public DocumentService(IDocumentsDbProcess documentDb, IAdminService adminService, ITemplateDocumentsDbProcess templateDb)
+        public DocumentService(IDocumentsDbProcess documentDb, IAdminsDbProcess adminDb, ITemplateDocumentsDbProcess templateDb)
         {
             _documentDb = documentDb;
-            _adminService = adminService;
+            _adminDb = adminDb;
             _templateDb = templateDb;
         }
 
         #region Documents
-        public int SaveDocument(IContext context, FullDocument document)
+        public int SaveDocument(IContext context, InternalDocument document)
         {
             Command cmd;
             if (document.Id == 0) // new document
@@ -49,12 +53,12 @@ namespace BL.Logic.DocumentCore
             return document.Id;
         }
 
-        public IEnumerable<FullDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging)
+        public IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging)
         {
             return _documentDb.GetDocuments(ctx, filters, paging);
         }
 
-        public FullDocument GetDocument(IContext ctx, int documentId)
+        public FrontDocument GetDocument(IContext ctx, int documentId)
         {
             var doc = _documentDb.GetDocument(ctx, documentId);
             var sslService = DmsResolver.Current.Get<IDocumentSendListService>();
@@ -64,9 +68,9 @@ namespace BL.Logic.DocumentCore
 
         public int AddDocumentByTemplateDocument(IContext context, AddDocumentByTemplateDocument model)
         {
-            _adminService.VerifyAccessForCurrentUser(context, "Documents", "AddDocument", model.CurrentPositionId);
+            _adminDb.VerifyAccess(context, new VerifyAccess() { ActionCode = EnumActions.AddDocument, PositionId = model.CurrentPositionId });
             var docTemplate = _templateDb.GetTemplateDocument(context, model.TemplateDocumentId);
-            var baseDocument = new FullDocument
+            var baseDocument = new InternalDocument
             {
                 TemplateDocumentId = docTemplate.Id,
                 CreateDate = DateTime.Now,
@@ -138,18 +142,27 @@ namespace BL.Logic.DocumentCore
         public int ModifyDocument(IContext context, ModifyDocument model)
         {
             //TODO make with command
-            var doc = _documentDb.GetDocument(context, model.Id);
-            _adminService.VerifyAccessForCurrentUser(context, "Documents", "ModifyDocument", doc.ExecutorPositionId);
+            var doc = _documentDb.GetInternalDocument(context, model.Id);
+            _adminDb.VerifyAccess(context, new VerifyAccess() { ActionCode = EnumActions.ModifyDocument, PositionId = doc.ExecutorPositionId });
             context.CurrentPositionId = doc.ExecutorPositionId;
-            var docUpd = new FullDocument(model, doc);
-            VerifyDocument(context, docUpd, null);
-            return SaveDocument(context, docUpd);
+            //var docUpd = new InternalDocument(model, doc);
+            doc.Description = model.Description;
+            doc.DocumentSubjectId = model.DocumentSubjectId;
+            doc.SenderAgentId = model.SenderAgentId;
+            doc.SenderAgentPersonId = model.SenderAgentPersonId;
+            doc.SenderNumber = model.SenderNumber;
+            doc.SenderDate = model.SenderDate;
+            doc.Addressee = model.Addressee;
+            doc.AccessLevel = model.AccessLevel;
+
+            VerifyDocument(context, new FrontDocument(doc), null);
+            return SaveDocument(context, doc);
         }
 
         public void DeleteDocument(IContext context, int id)
         {
             var doc = _documentDb.GetDocument(context, id);
-            _adminService.VerifyAccessForCurrentUser(context, "Documents", "DeleteDocument", doc.ExecutorPositionId);
+            _adminDb.VerifyAccess(context, new VerifyAccess() { ActionCode = EnumActions.DeleteDocument, PositionId = doc.ExecutorPositionId });
             Command cmd = new DeleteDocument(context, doc);
             if (cmd.CanExecute())
             {
@@ -157,7 +170,7 @@ namespace BL.Logic.DocumentCore
             }
         }
 
-        public IEnumerable<BaseSystemUIElement> GetModifyMetaData(IContext ctx, FullDocument doc)
+        public IEnumerable<BaseSystemUIElement> GetModifyMetaData(IContext ctx, FrontDocument doc)
         {
             var sysDb = DmsResolver.Current.Get<ISystemDbProcess>();
             var uiElements = sysDb.GetSystemUIElements(ctx, new FilterSystemUIElement() { ObjectCode = "Documents", ActionCode = "Modify" });
@@ -165,7 +178,7 @@ namespace BL.Logic.DocumentCore
             return uiElements;
         }
 
-        private IEnumerable<BaseSystemUIElement> VerifyDocument(IContext ctx, FullDocument doc,  IEnumerable<BaseSystemUIElement> uiElements)
+        private IEnumerable<BaseSystemUIElement> VerifyDocument(IContext ctx, FrontDocument doc,  IEnumerable<BaseSystemUIElement> uiElements)
         {
             if (doc.DocumentDirection != EnumDocumentDirections.External)
             {

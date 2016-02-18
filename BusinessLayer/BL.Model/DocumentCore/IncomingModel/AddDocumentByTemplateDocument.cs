@@ -1,11 +1,7 @@
-﻿using BL.Model.Users;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
+using BL.Model.Users;
 
-namespace BL.Model.DocumentCore
+namespace BL.Model.DocumentCore.IncomingModel
 {
     /// <summary>
     /// Модель для добавление документа по шаблону

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BL.Model.DocumentCore
+namespace BL.Model.DocumentCore.FrontModel
 {
     public class BaseDocumentSavedFilter
     {

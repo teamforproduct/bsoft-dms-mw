@@ -1,10 +1,9 @@
 ﻿using System;
-using BL.Model.Enums;
-using System.Runtime.Serialization;
-using BL.Model.Users;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
+using BL.Model.Enums;
 
-namespace BL.Model.DocumentCore
+namespace BL.Model.DocumentCore.IncomingModel
 {
     /// <summary>
     /// Модель для добавления/изменения записи плана работы над документом

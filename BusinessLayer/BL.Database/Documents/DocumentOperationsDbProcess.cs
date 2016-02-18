@@ -1,17 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
 using BL.Database.DatabaseContext;
 using BL.Database.DBModel.Document;
 using BL.Database.Documents.Interfaces;
+using BL.Model.AdminCore;
 using BL.Model.Database;
 using BL.Model.DocumentCore;
 using BL.Model.DocumentCore.Actions;
-using BL.Model.Enums;
+using BL.Model.DocumentCore.FrontModel;
+using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Exception;
+using BL.Model.InternalModel;
 
 namespace BL.Database.Documents
 {
@@ -46,14 +48,7 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
                 var doc = dbContext.DocumentsSet.FirstOrDefault(x => x.Id == registerDocument.DocumentId);
-                if (doc == null)
-                {
-                    throw new DocumentNotFoundOrUserHasNoAccess();
-                }
-                if (doc.IsRegistered)
-                {
-                    throw new DocumentHasAlredyBeenRegistered();
-                }
+
                 var isNeedGenerateNumber = registerDocument.RegistrationNumber == null;
                 var isRepeat = true;
                 var isOk = false;
@@ -100,11 +95,30 @@ namespace BL.Database.Documents
                 return isOk;
             }
         }
+
         #endregion DocumentRegistration
 
         #region DocumentLink    
+        public InternalLinkedDocument GetLinkedDocument(IContext context, AddDocumentLink model)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var doc = dbContext.DocumentsSet.FirstOrDefault(x => x.Id == model.DocumentId);
+                var par = dbContext.DocumentsSet.FirstOrDefault(x => x.Id == model.ParentDocumentId);
 
-        public void AddDocumentLink(IContext context, ВaseDocumentLink model)
+                return new InternalLinkedDocument()
+                {
+                    DocumentId = model.DocumentId,
+                    ParentDocumentId = model.ParentDocumentId,
+                    DocumentLinkId = doc.LinkId,
+                    ParentDocumentLinkId = par.LinkId,
+                    LinkTypeId = model.LinkTypeId,
+                    ExecutorPositionId = doc.ExecutorPositionId
+                };
+            }
+        }
+
+        public void AddDocumentLink(IContext context, InternalLinkedDocument model)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
@@ -117,17 +131,17 @@ namespace BL.Database.Documents
                     LastChangeDate = DateTime.Now,
                 };
                 dbContext.DocumentLinksSet.Add(link);
-                if (!model.ParentDocument.LinkId.HasValue)
+                if (!model.ParentDocumentLinkId.HasValue)
                 {
                     dbContext.DocumentsSet.Where(x => x.Id == model.ParentDocumentId).ToList().ForEach(x => x.LinkId = model.ParentDocumentId);
                 }
-                if (!model.Document.LinkId.HasValue)
+                if (!model.DocumentLinkId.HasValue)
                 {
                     dbContext.DocumentsSet.Where(x => x.Id == model.DocumentId).ToList().ForEach(x => x.LinkId = model.ParentDocumentId);
                 }
                 else
                 {
-                    dbContext.DocumentsSet.Where(x => x.LinkId == model.Document.LinkId).ToList().ForEach(x => x.LinkId = model.ParentDocumentId);
+                    dbContext.DocumentsSet.Where(x => x.LinkId == model.DocumentLinkId).ToList().ForEach(x => x.LinkId = model.ParentDocumentId);
                 }
                 dbContext.SaveChanges();
             }
@@ -136,74 +150,17 @@ namespace BL.Database.Documents
         #endregion DocumentLink         
 
         #region DocumentWaits
-        public IEnumerable<BaseDocumentWaits> GetDocumentWaits(IContext ctx,
-            Expression<Func<DocumentWaits, bool>> filter,
-            Expression<Func<BaseDocumentWaits, BaseDocumentWaits>> select)
-        {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
-            {
-                //TODO: Refactoring
-                var waitsDb = dbContext.DocumentWaitsSet
-                    .Where(filter)
-                    .Select(x => new { Wait = x, OnEvent = x.OnEvent, OffEvent = x.OffEvent });
-
-                var waits = waitsDb.Select(x => new BaseDocumentWaits
-                {
-                    Id = x.Wait.Id,
-                    DocumentId = x.Wait.DocumentId,
-                    ParentId = x.Wait.ParentId,
-                    OnEventId = x.Wait.OnEventId,
-                    OffEventId = x.Wait.OffEventId,
-                    ResultTypeId = x.Wait.ResultTypeId,
-                    Description = x.Wait.Description,
-                    DueDate = x.Wait.DueDate,
-                    AttentionDate = x.Wait.AttentionDate,
-                    OnEvent = x.OnEvent == null ? null :
-                        new BaseDocumentEvent
-                        {
-                            Id = x.OnEvent.Id,
-                            CreateDate = x.OnEvent.CreateDate,
-                            Date = x.OnEvent.Date,
-                            Description = x.OnEvent.Description,
-                            LastChangeDate = x.OnEvent.LastChangeDate,
-                            LastChangeUserId = x.OnEvent.LastChangeUserId,
-                            SourceAgentId = x.OnEvent.SourceAgentId,
-                            SourcePositionId = x.OnEvent.SourcePositionId,
-                            TargetAgentId = x.OnEvent.TargetAgentId,
-                            TargetPositionId = x.OnEvent.TargetPositionId,
-                            EventType = (EnumEventTypes)x.OnEvent.EventTypeId
-                        },
-                    OffEvent = x.OffEvent == null ? null :
-                        new BaseDocumentEvent
-                        {
-                            Id = x.OffEvent.Id,
-                            CreateDate = x.OffEvent.CreateDate,
-                            Date = x.OffEvent.Date,
-                            Description = x.OffEvent.Description,
-                            LastChangeDate = x.OffEvent.LastChangeDate,
-                            LastChangeUserId = x.OffEvent.LastChangeUserId,
-                            SourceAgentId = x.OffEvent.SourceAgentId,
-                            SourcePositionId = x.OffEvent.SourcePositionId,
-                            TargetAgentId = x.OffEvent.TargetAgentId,
-                            TargetPositionId = x.OffEvent.TargetPositionId,
-                            EventType = (EnumEventTypes)x.OffEvent.EventTypeId
-                        }
-                })
-                .Select(select)
-                .ToList();
-
-                return waits;
-            }
-        }
 
         public BaseDocumentWaits GetDocumentWaitByOnEventId(IContext ctx, int eventId)
         {
-            var wait = GetDocumentWaits(ctx, x => x.OnEventId == eventId, x => x).FirstOrDefault();
-            if (wait?.Id > 0)
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-                return wait;
+                var wait = CommonQueries.GetDocumentWaits(dbContext, new FilterDocumentWaits() {OnEventId = eventId}).FirstOrDefault();
+                if (wait?.Id > 0)
+                {
+                    return wait;
+                }
             }
-
             throw new WaitNotFoundOrUserHasNoAccess();
         }
 
@@ -242,12 +199,11 @@ namespace BL.Database.Documents
             }
         }
 
-
         public void UpdateDocumentWait(IContext ctx, BaseDocumentWaits documentWait)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-                var docWait = dbContext.DocumentWaitsSet.Where(x => x.Id == documentWait.Id).FirstOrDefault();
+                var docWait = dbContext.DocumentWaitsSet.FirstOrDefault(x => x.Id == documentWait.Id);
                 if (docWait?.Id > 0)
                 {
                     docWait.DocumentId = documentWait.DocumentId;
@@ -347,41 +303,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-                var qry = dbContext.DocumentEventsSet.AsQueryable();
-
-                if (filter.Id?.Count > 0)
-                {
-                    qry = qry.Where(x => filter.Id.Contains(x.Id));
-                }
-
-                if (filter.DocumentId?.Count > 0)
-                {
-                    qry = qry.Where(x => filter.DocumentId.Contains(x.DocumentId));
-                }
-
-                return qry.Select(x => new BaseDocumentEvent
-                {
-                    Id = x.Id,
-                    DocumentId = x.DocumentId,
-                    Description = x.Description,
-                    EventType = (EnumEventTypes)x.EventTypeId,
-                    ImportanceEventType = (EnumImportanceEventTypes)x.EventType.ImportanceEventTypeId,
-                    CreateDate = x.CreateDate,
-                    Date = x.Date,
-                    EventTypeName = x.EventType.Name,
-                    EventImportanceTypeName = x.EventType.ImportanceEventType.Name,
-                    LastChangeUserId = x.LastChangeUserId,
-                    LastChangeDate = x.LastChangeDate,
-                    SourceAgenName = x.SourceAgent.Name,
-                    SourceAgentId = x.SourceAgentId,
-                    SourcePositionId = x.SourcePositionId,
-                    SourcePositionName = x.SourcePosition.Name,
-                    TargetAgenName = x.TargetAgent.Name,
-                    TargetAgentId = x.TargetAgentId,
-                    TargetPositionId = x.TargetPositionId,
-                    TargetPositionName = x.TargetPosition.Name,
-                    GeneralInfo = ""
-                }).ToList();
+                return CommonQueries.GetDocumentEvents(dbContext, filter);
             }
         }
         #endregion Document Event
@@ -474,26 +396,8 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-                var acc =
-                    dbContext.DocumentAccessesSet.FirstOrDefault(
-                        x => x.DocumentId == documentId && x.PositionId == ctx.CurrentPositionId);
-                if (acc != null)
-                {
-                    return new BaseDocumentAccess
-                    {
-                        LastChangeDate = acc.LastChangeDate,
-                        LastChangeUserId = acc.LastChangeUserId,
-                        Id = acc.Id,
-                        PositionId = acc.PositionId,
-                        IsInWork = acc.IsInWork,
-                        DocumentId = acc.DocumentId,
-                        IsFavourite = acc.IsFavourite,
-                        AccessLevel = (EnumDocumentAccesses)acc.AccessLevelId,
-                        AccessLevelName = acc.AccessLevel.Name
-                    };
-                }
+                return CommonQueries.GetDocumentAccess(ctx, dbContext, documentId);
             }
-            return null;
         }
         #endregion
     }

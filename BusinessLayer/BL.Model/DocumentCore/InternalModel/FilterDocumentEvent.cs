@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
-namespace BL.Model.DocumentCore
+namespace BL.Model.DocumentCore.InternalModel
 {
     /// <summary>
     /// Фильтр событий документов

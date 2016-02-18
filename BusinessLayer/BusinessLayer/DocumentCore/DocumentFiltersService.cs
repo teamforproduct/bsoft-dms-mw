@@ -4,7 +4,8 @@ using System.Web.Script.Serialization;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Documents.Interfaces;
 using BL.Logic.DocumentCore.Interfaces;
-using BL.Model.DocumentCore;
+using BL.Model.DocumentCore.FrontModel;
+using BL.Model.DocumentCore.IncomingModel;
 
 namespace BL.Logic.DocumentCore
 {

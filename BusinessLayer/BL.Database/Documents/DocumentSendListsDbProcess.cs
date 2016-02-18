@@ -7,6 +7,8 @@ using BL.Database.DatabaseContext;
 using BL.Database.DBModel.Document;
 using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore;
+using BL.Model.DocumentCore.FrontModel;
+using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.Enums;
 
 namespace BL.Database.Documents
@@ -86,24 +88,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-
-                var sendLists = dbContext.DocumentRestrictedSendListsSet
-                    .Where(x => x.DocumentId == documentId)
-                    .Select(x => new BaseDocumentRestrictedSendList
-                    {
-                        Id = x.Id,
-                        DocumentId = x.DocumentId,
-                        PositionId = x.PositionId,
-                        PositionName = x.Position.Name,
-                        PositionExecutorAgentName = x.Position.ExecutorAgent.Name,
-                        AccessLevelId = x.AccessLevelId,
-                        AccessLevelName = x.AccessLevel.Name,
-                        LastChangeUserId = x.LastChangeUserId,
-                        LastChangeDate = x.LastChangeDate,
-                        GeneralInfo = string.Empty
-                    }).ToList();
-
-                return sendLists;
+                return CommonQueries.GetDocumentRestrictedSendList(dbContext, documentId);
             }
         }
 
@@ -192,35 +177,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-
-                var sendLists = dbContext.DocumentSendListsSet
-                    .Where(x => x.DocumentId == documentId)
-                    .Select(x => new BaseDocumentSendList
-                    {
-                        Id = x.Id,
-                        DocumentId = x.DocumentId,
-                        Stage = x.Stage,
-                        SendType = (EnumSendTypes)x.SendTypeId,
-                        SendTypeName = x.SendType.Name,
-                        SendTypeCode = x.SendType.Code,
-                        SendTypeIsImportant = x.SendType.IsImportant,
-                        TargetPositionId = x.TargetPositionId,
-                        TargetPositionName = x.TargetPosition.Name,
-                        TargetPositionExecutorAgentName = x.TargetPosition.ExecutorAgent.Name,
-                        Description = x.Description,
-                        DueDate = x.DueDate,
-                        DueDay = x.DueDay,
-                        AccessLevel = (EnumDocumentAccesses)x.AccessLevelId,
-                        AccessLevelName = x.AccessLevel.Name,
-                        IsInitial = x.IsInitial,
-                        StartEventId = x.StartEventId,
-                        CloseEventId = x.CloseEventId,
-                        LastChangeUserId = x.LastChangeUserId,
-                        LastChangeDate = x.LastChangeDate,
-                        GeneralInfo = string.Empty
-                    }).ToList();
-
-                return sendLists;
+                return CommonQueries.GetDocumentSendList(dbContext, documentId);
             }
         }
 

@@ -1,14 +1,13 @@
 ﻿using System;
+using BL.Model.DocumentCore.IncomingModel;
 
-namespace BL.Model.DocumentCore
+namespace BL.Model.DocumentCore.FrontModel
 {
     public class BaseDocumentSendList: ModifyDocumentSendList
     {
-        public int Id { get; set; }
         public bool IsInitial { get; set; }
-        public Nullable<int> StartEventId { get; set; }
-        public Nullable<int> CloseEventId { get; set; }
-        public int Stage { get; set; }
+        public int? StartEventId { get; set; }
+        public int? CloseEventId { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
 

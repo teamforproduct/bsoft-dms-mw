@@ -1,9 +1,8 @@
-﻿using BL.Model.Users;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
-namespace BL.Model.DocumentCore
+namespace BL.Model.DocumentCore.IncomingModel
 {
     /// <summary>
     /// Модель для модификации ограничительного списка

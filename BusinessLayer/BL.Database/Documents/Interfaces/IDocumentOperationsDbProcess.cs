@@ -1,11 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
+ï»¿using System.Collections.Generic;
 using BL.CrossCutting.Interfaces;
-using BL.Database.DBModel.Document;
 using BL.Model.Database;
 using BL.Model.DocumentCore;
 using BL.Model.DocumentCore.Actions;
+using BL.Model.DocumentCore.FrontModel;
+using BL.Model.DocumentCore.InternalModel;
+using BL.Model.InternalModel;
 
 namespace BL.Database.Documents.Interfaces
 {
@@ -13,11 +13,7 @@ namespace BL.Database.Documents.Interfaces
     {
         bool VerifyDocumentRegistrationNumber(IContext ctx, RegisterDocument registerDocument);
         bool SetDocumentRegistration(IContext ctx, RegisterDocument registerDocument);
-        void AddDocumentLink(IContext context, ÂaseDocumentLink model);
-
-        IEnumerable<BaseDocumentWaits> GetDocumentWaits(IContext ctx,
-            Expression<Func<DocumentWaits, bool>> filter,
-            Expression<Func<BaseDocumentWaits, BaseDocumentWaits>> select);
+        void AddDocumentLink(IContext context, InternalLinkedDocument model);
 
         BaseDocumentWaits GetDocumentWaitByOnEventId(IContext ctx, int eventId);
         void AddDocumentWait(IContext ctx, BaseDocumentWaits documentWait);
@@ -32,6 +28,7 @@ namespace BL.Database.Documents.Interfaces
         BaseDocumentAccess GetDocumentAccess(IContext ctx, int documentId);
 
         void SetDocumentInformation(IContext ctx, EventAccessModel access);
+        InternalLinkedDocument GetLinkedDocument(IContext context, AddDocumentLink model);
 
     }
 }

@@ -37,41 +37,10 @@ namespace BL.Logic.AdminCore
         /// </summary>
         /// <param name="cxt"></param>
         /// <param name="positionsIdList"></param>
-        public void VerifyAccessForCurrentUser(IContext context, List<int> positionsIdList)
+        public void VerifyAccess(IContext context, VerifyAccess model)
         {
             var admDb = DmsResolver.Current.Get<IAdminsDbProcess>();
-            if (!(admDb.VerifyAccess(context, new VerifyAccess() { UserId = context.CurrentAgentId, PositionsIdList = positionsIdList })))
-            {
-                throw new AccessIsDenied(); //!!!Как красиво передать string obj, string act, int? id = null в сообщение?
-            }
-
-            // throw new NotImplementedException();
+            admDb.VerifyAccess(context, model);
         }
-
-        /// <summary>
-        /// Проверка прав доступа на действия для текущего пользователя
-        /// </summary>
-        /// <param name="context">контекст</param>
-        /// <param name="obj">Объект системы</param>
-        /// <param name="act">Действие</param>
-        /// <param name="positionId">Ид должности, если нужно проверять доступ учитывая конкретную должность</param>
-        /// <param name="id">ИД записи при выдаче доступа по каждой записи</param>
-        public void VerifyAccessForCurrentUser(IContext context, string obj, string act, int? positionId = null, int? id = null)
-        {
-            var admDb = DmsResolver.Current.Get<IAdminsDbProcess>();
-            if (positionId.HasValue && !context.CurrentPositionsIdList.Contains((int)positionId))
-            {
-                throw new UserPositionIsNotDefined();
-            };
-            if (!(admDb.VerifyAccess(context, new VerifyAccess()
-                                            {   UserId = context.CurrentAgentId,
-                                                PositionsIdList = context.CurrentPositionsIdList,
-                                                ObjectCode = obj, ActionCode = act,
-                                                RecordId = id, PositionId = positionId })))
-            {
-                throw new AccessIsDenied(); //TODO !!!Как красиво передать string obj, string act, int? id = null в сообщение?
-            }
-        }
-
     }
 }

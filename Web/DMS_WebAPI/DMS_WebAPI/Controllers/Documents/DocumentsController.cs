@@ -3,11 +3,10 @@ using BL.Model.DocumentCore;
 using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
-using System.Collections.Generic;
 using System.Web.Http;
 using BL.Logic.DocumentCore.Interfaces;
-using BL.Model.Enums;
 using System.Web.Http.Description;
+using BL.Model.DocumentCore.IncomingModel;
 
 namespace DMS_WebAPI.Controllers.Documents
 {
@@ -20,7 +19,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <param name="filter">модель фильтра документов</param>
         /// <param name="paging">paging</param>
         /// <returns></returns>
-        [ResponseType(typeof(FullDocument))]
+        [ResponseType(typeof(FrontDocument))]
         public IHttpActionResult Get([FromUri] FilterDocument filter, [FromUri]UIPaging paging)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
