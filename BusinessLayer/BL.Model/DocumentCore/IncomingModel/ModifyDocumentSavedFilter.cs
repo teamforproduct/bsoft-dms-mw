@@ -1,7 +1,6 @@
 ﻿using BL.Model.Users;
-using System;
 
-namespace BL.Model.DocumentCore
+namespace BL.Model.DocumentCore.IncomingModel
 {
     public class ModifyDocumentSavedFilter : CurrentPosition
     {

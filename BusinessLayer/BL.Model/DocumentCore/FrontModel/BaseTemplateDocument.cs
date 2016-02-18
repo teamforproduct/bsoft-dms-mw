@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using BL.Model.Enums;
 
-namespace BL.Model.DocumentCore
+namespace BL.Model.DocumentCore.FrontModel
 {
     public class BaseTemplateDocument
     {

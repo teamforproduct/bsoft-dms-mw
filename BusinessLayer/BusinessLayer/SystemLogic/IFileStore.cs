@@ -1,5 +1,5 @@
 using BL.CrossCutting.Interfaces;
-using BL.Model.DocumentAdditional;
+using BL.Model.DocumentCore.FrontModel;
 
 namespace BL.Logic.SystemLogic
 {

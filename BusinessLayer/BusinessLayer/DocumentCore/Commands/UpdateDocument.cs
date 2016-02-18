@@ -1,19 +1,18 @@
 ﻿using BL.CrossCutting.Common;
 using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
-using BL.Database.Documents;
 using BL.Database.Documents.Interfaces;
-using BL.Model.DocumentCore;
 using System;
+using BL.Model.DocumentCore.InternalModel;
 
 namespace BL.Logic.DocumentCore.Commands
 {
     internal class UpdateDocument : Command
     {
         private readonly IContext _context;
-        private readonly FullDocument _document;
+        private readonly InternalDocument _document;
 
-        public UpdateDocument(IContext context, FullDocument document)
+        public UpdateDocument(IContext context, InternalDocument document)
         {
             _context = context;
             _document = document;

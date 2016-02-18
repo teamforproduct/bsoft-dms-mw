@@ -1,4 +1,4 @@
-﻿namespace BL.Model.DocumentAdditional
+﻿namespace BL.Model.DocumentCore.IncomingModel
 {
     /// <summary>
     /// Модель для получения вложения

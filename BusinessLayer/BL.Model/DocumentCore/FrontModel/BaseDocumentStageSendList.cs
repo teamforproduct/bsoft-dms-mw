@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace BL.Model.DocumentCore
+namespace BL.Model.DocumentCore.FrontModel
 {
     public class BaseDocumentSendListStage
     {

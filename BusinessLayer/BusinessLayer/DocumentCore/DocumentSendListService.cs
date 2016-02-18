@@ -6,6 +6,8 @@ using BL.Database.Dictionaries.Interfaces;
 using BL.Database.Documents.Interfaces;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Model.DocumentCore;
+using BL.Model.DocumentCore.FrontModel;
+using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
 

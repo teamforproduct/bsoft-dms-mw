@@ -9,6 +9,8 @@ using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore;
 using BL.Database.DBModel.Document;
 using BL.Model.AdminCore;
+using BL.Model.DocumentCore.FrontModel;
+using BL.Model.DocumentCore.InternalModel;
 using BL.Model.SystemCore;
 using BL.Model.Enums;
 using BL.Model.Exception;
@@ -27,7 +29,7 @@ namespace BL.Database.Documents
 
         #region Document
 
-        public void AddDocument(IContext ctx, FullDocument document)
+        public void AddDocument(IContext ctx, InternalDocument document)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
@@ -44,7 +46,7 @@ namespace BL.Database.Documents
                     RegistrationDate = document.RegistrationDate,
                     ExecutorPositionId = document.ExecutorPositionId,
                     LastChangeUserId = ctx.CurrentAgentId,
-                    LastChangeDate = DateTime.Now,
+                    LastChangeDate = document.LastChangeDate.Value,
                     SenderAgentId = document.SenderAgentId,
                     SenderAgentPersonId = document.SenderAgentPersonId,
                     SenderNumber = document.SenderNumber,
@@ -57,8 +59,8 @@ namespace BL.Database.Documents
                     {
                         PositionId = x.PositionId,
                         AccessLevelId = x.AccessLevelId,
-                        LastChangeUserId = ctx.CurrentAgentId,
-                        LastChangeDate = DateTime.Now
+                        LastChangeUserId = x.LastChangeUserId,
+                        LastChangeDate = x.LastChangeDate
                     }).ToList();
                 }
 
@@ -94,8 +96,8 @@ namespace BL.Database.Documents
                         IsInitial = true,
                         StartEventId = null,
                         CloseEventId = null,
-                        LastChangeUserId = ctx.CurrentAgentId,
-                        LastChangeDate = DateTime.Now
+                        LastChangeUserId = x.LastChangeUserId,
+                        LastChangeDate = x.LastChangeDate
                     }).ToList();
                 }
 
@@ -117,7 +119,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public void UpdateDocument(IContext ctx, FullDocument document)
+        public void UpdateDocument(IContext ctx, InternalDocument document)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
@@ -220,7 +222,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public IEnumerable<FullDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging)
+        public IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
@@ -370,7 +372,7 @@ namespace BL.Database.Documents
                 var links = qry.GroupJoin(dbContext.DocumentsSet.Where(x => x.LinkId.HasValue), dl => dl.Doc.LinkId, d => d.LinkId,
                                             (dl, ds) => new { DocID = dl.Doc.Id, LinkCnt = ds.Count() }).ToList();
 
-                var res = qry.Select(x => new FullDocument
+                var res = qry.Select(x => new FrontDocument
                 {
                     Id = x.Doc.Id,
                     DocumentTypeId = x.Templ.DocumentTypeId,
@@ -429,7 +431,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public FullDocument GetDocument(IContext ctx, int documentId)
+        public FrontDocument GetDocument(IContext ctx, int documentId)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
@@ -440,7 +442,7 @@ namespace BL.Database.Documents
                     throw new DocumentNotFoundOrUserHasNoAccess();
                 }
 
-                var doc = new FullDocument
+                var doc = new FrontDocument
                 {
                     Id = dbDoc.Doc.Id,
                     TemplateDocumentId = dbDoc.Doc.TemplateDocumentId,
@@ -535,6 +537,35 @@ namespace BL.Database.Documents
             }
         }
 
+        public InternalDocument GetDocumentCopy(IContext ctx, int documentId)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            {
+                var dbDoc = CommonQueries.GetDocumentQuery(dbContext).FirstOrDefault(x => x.Doc.Id == documentId);
+                var doc = new InternalDocument
+                {
+                    TemplateDocumentId = dbDoc.Doc.TemplateDocumentId,
+                    CreateDate = DateTime.Now,
+                    DocumentSubjectId = dbDoc.Doc.DocumentSubjectId,
+                    Description = dbDoc.Doc.Description,
+                    IsRegistered = false,
+                    ExecutorPositionId = ctx.CurrentPositionId.Value,
+                    LastChangeUserId = ctx.CurrentAgentId,
+                    LastChangeDate = DateTime.Now,
+                    SenderAgentId = dbDoc.Doc.SenderAgentId,
+                    SenderAgentPersonId = dbDoc.Doc.SenderAgentPersonId,
+                    Addressee = dbDoc.Doc.Addressee,
+                    AccessLevel = (EnumDocumentAccesses)dbDoc.Acc.AccessLevelId,
+                };
+
+                doc.SendLists = CommonQueries.GetDocumentSendList(dbContext, documentId);
+                doc.RestrictedSendLists = CommonQueries.GetDocumentRestrictedSendList(dbContext, documentId);
+                doc.DocumentFiles = CommonQueries.GetDocumentFiles(dbContext, documentId);
+
+                return doc;
+            }
+        }
+
         public InternalDocument GetInternalDocument(IContext ctx, int documentId)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
@@ -568,40 +599,27 @@ namespace BL.Database.Documents
                     SenderNumber = dbDoc.Doc.SenderNumber,
                     SenderDate = dbDoc.Doc.SenderDate,
                     Addressee = dbDoc.Doc.Addressee,
-
                     AccessLevel = (EnumDocumentAccesses)dbDoc.Acc.AccessLevelId,
-
-                    TemplateDocumentName = dbDoc.Templ.Name,
                     IsHard = dbDoc.Templ.IsHard,
                     DocumentDirection = (EnumDocumentDirections)dbDoc.Templ.DocumentDirectionId,
                     DocumentTypeId = dbDoc.Templ.DocumentTypeId,
                     DocumentDate = dbDoc.Doc.RegistrationDate ?? dbDoc.Doc.CreateDate,
-                    RegistrationFullNumber =
-                                                (!dbDoc.Doc.IsRegistered ? "#" : "") +
-                                                (dbDoc.Doc.RegistrationNumber != null
-                                                        ? (dbDoc.Doc.RegistrationNumberPrefix + dbDoc.Doc.RegistrationNumber.ToString() + dbDoc.Doc.RegistrationNumberSuffix)
-                                                        : ("#" + dbDoc.Doc.Id.ToString())),
                     LinkId = dbDoc.Doc.LinkId,
-                    IsFavourite = dbDoc.Acc.IsFavourite,
-                    IsInWork = dbDoc.Acc.IsInWork,
-                    Accesses = new List<BaseDocumentAccess>
-                    {
-                        new BaseDocumentAccess
-                        {
-                            LastChangeDate = dbDoc.Acc.LastChangeDate,
-                            LastChangeUserId = dbDoc.Acc.LastChangeUserId,
-                            IsInWork = dbDoc.Acc.IsInWork,
-                            IsFavourite = dbDoc.Acc.IsFavourite,
-                            PositionId = dbDoc.Acc.PositionId,
-                            AccessLevel = (EnumDocumentAccesses) dbDoc.Acc.AccessLevelId,
-                            AccessLevelName = dbDoc.AccLevName,
-                            Id = dbDoc.Acc.Id,
-                            DocumentId = dbDoc.Acc.DocumentId
-                        }
-                    }
                 };
 
                 return doc;
+            }
+        }
+
+        public InternalDocument GetCheckRegistration(IContext ctx, int documentId)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            {
+                var qry = CommonQueries.GetDocumentQuery(dbContext).FirstOrDefault(x => x.Doc.Id == documentId);
+                return new InternalDocument
+                {
+                    IsRegistered = qry.Doc.IsRegistered
+                };
             }
         }
 

@@ -1,6 +1,7 @@
 ﻿using System;
+using BL.Model.DocumentCore.IncomingModel;
 
-namespace BL.Model.DocumentCore
+namespace BL.Model.DocumentCore.FrontModel
 {
     public class BaseDocumentSendList: ModifyDocumentSendList
     {
