@@ -36,8 +36,8 @@ namespace DMS_WebAPI.Controllers.Documents
             var res = new JsonResult(docs, this);
             res.Paging = paging;
             timeM.Stop();
-            SaveToFile("M: DocumentsController Get List", timeM.Elapsed.ToString("G"));
-            SaveToFile("DB: IDocumentService GetDocuments", timeDB.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentService GetDocuments User: " + cxt.CurrentAgentId, timeDB.Elapsed.ToString("G"));
+            SaveToFile("M: DocumentsController Get List User: "+cxt.CurrentAgentId, timeM.Elapsed.ToString("G"));
             return res;
         }
 
@@ -90,10 +90,11 @@ namespace DMS_WebAPI.Controllers.Documents
             timeDB.Stop();
 
             timeM.Stop();
-            SaveToFile("M: DocumentsController Get By Id", timeM.Elapsed.ToString("G"));
-            SaveToFile("DB: IDocumentService GetDocument and GetModifyMetaData", timeDB.Elapsed.ToString("G"));
-            SaveToFile("DB1: IDocumentService GetDocument", timeDB1.Elapsed.ToString("G"));
-            SaveToFile("DB2: IDocumentService GetModifyMetaData", timeDB2.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentService GetDocument and GetModifyMetaData User: " + cxt.CurrentAgentId, timeDB.Elapsed.ToString("G"));
+            SaveToFile("DB1: IDocumentService GetDocument User: " + cxt.CurrentAgentId, timeDB1.Elapsed.ToString("G"));
+            SaveToFile("DB2: IDocumentService GetModifyMetaData User: " + cxt.CurrentAgentId, timeDB2.Elapsed.ToString("G"));
+            SaveToFile("M: DocumentsController Get By Id User: " + cxt.CurrentAgentId, timeM.Elapsed.ToString("G"));
+
             return new JsonResult(doc, metaData, this);
         }
 
@@ -116,8 +117,8 @@ namespace DMS_WebAPI.Controllers.Documents
             timeDB.Stop();
 
             timeM.Stop();
-            SaveToFile("M: DocumentsController Post", timeM.Elapsed.ToString("G"));
-            SaveToFile("DB: IDocumentService AddDocumentByTemplateDocument", timeDB.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentService AddDocumentByTemplateDocument User: " + cxt.CurrentAgentId, timeDB.Elapsed.ToString("G"));
+            SaveToFile("M: DocumentsController Post User: " + cxt.CurrentAgentId, timeM.Elapsed.ToString("G"));
             return Get(docId);
             //return new JsonResult(null,this);
         }
@@ -140,8 +141,9 @@ namespace DMS_WebAPI.Controllers.Documents
             var docId = docProc.ModifyDocument(cxt, model);
             timeDB.Stop();
             timeM.Stop();
-            SaveToFile("M: DocumentsController Put", timeM.Elapsed.ToString("G"));
-            SaveToFile("DB: IDocumentService ModifyDocument", timeDB.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentService ModifyDocument User: " + cxt.CurrentAgentId, timeDB.Elapsed.ToString("G"));
+            SaveToFile("M: DocumentsController Put User: " + cxt.CurrentAgentId, timeM.Elapsed.ToString("G"));
+
 
             return Get(docId);
             //return new JsonResult(null, this);
@@ -164,9 +166,8 @@ namespace DMS_WebAPI.Controllers.Documents
             docProc.DeleteDocument(cxt, id);
             timeDB.Stop();
             timeM.Stop();
-            SaveToFile("M: DocumentsController Delete", timeM.Elapsed.ToString("G"));
-            SaveToFile("DB: IDocumentService DeleteDocument", timeDB.Elapsed.ToString("G"));
-
+            SaveToFile("DB: IDocumentService DeleteDocument User: " + cxt.CurrentAgentId, timeDB.Elapsed.ToString("G"));
+            SaveToFile("M: DocumentsController Delete  User: " + cxt.CurrentAgentId, timeM.Elapsed.ToString("G"));
             return new JsonResult(null, this);
         }
 
