@@ -19,6 +19,7 @@ using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DocumentCore.InternalModel;
+using BL.Database.Dictionaries.Interfaces;
 
 namespace BL.Logic.DocumentCore
 {
@@ -67,85 +68,6 @@ namespace BL.Logic.DocumentCore
             var sslService = DmsResolver.Current.Get<IDocumentSendListService>();
             doc.SendListStages = sslService.GetSendListStage(doc.SendLists);
             return doc;
-        }
-
-        public int AddDocumentByTemplateDocument(IContext context, AddDocumentByTemplateDocument model)
-        {
-            _adminDb.VerifyAccess(context, new VerifyAccess() { ActionCode = EnumActions.AddDocument, PositionId = model.CurrentPositionId });
-            var document = _documentDb.AddDocumentByTemplateDocumentPrepare(context, model.TemplateDocumentId);
-            if (document == null)
-            {
-                throw new DocumentNotFoundOrUserHasNoAccess();
-            }
-            document.CreateDate = DateTime.Now;
-            document.ExecutorPositionId = context.CurrentPositionId.Value;
-            document.IsRegistered = false;
-            document.LastChangeDate = DateTime.Now;
-            document.LastChangeUserId = context.CurrentAgentId;
-            foreach (var sl in document.SendLists)
-            {
-                sl.IsInitial = true;
-                sl.StartEventId = null;
-                sl.CloseEventId = null;
-                sl.LastChangeDate = DateTime.Now;
-                sl.LastChangeUserId = context.CurrentAgentId;
-            }
-            foreach (var sl in document.RestrictedSendLists)
-            {
-                sl.LastChangeDate = DateTime.Now;
-                sl.LastChangeUserId = context.CurrentAgentId;
-            }
-            document.Events = GetEventForNewDocument(context);
-            document.Accesses = GetAccessesForNewDocument(context);
-            //TODO process files
-            document.DocumentFiles = null;
-            return SaveDocument(context, document);
-        }
-
-        public int ModifyDocument(IContext context, ModifyDocument model)
-        {
-            //TODO make with command
-            var document = _documentDb.ModifyDocumentPrepare(context, model.Id);
-            if (document == null)
-            {
-                throw new DocumentNotFoundOrUserHasNoAccess();
-            }
-
-            _adminDb.VerifyAccess(context, new VerifyAccess() { ActionCode = EnumActions.ModifyDocument, PositionId = document.ExecutorPositionId });
-
-            context.CurrentPositionId = document.ExecutorPositionId;
-            document.Description = model.Description;
-            document.DocumentSubjectId = model.DocumentSubjectId;
-            document.SenderAgentId = model.SenderAgentId;
-            document.SenderAgentPersonId = model.SenderAgentPersonId;
-            document.SenderNumber = model.SenderNumber;
-            document.SenderDate = model.SenderDate;
-            document.Addressee = model.Addressee;
-            document.AccessLevel = model.AccessLevel;
-            document.LastChangeDate = DateTime.Now;
-            document.LastChangeUserId = context.CurrentAgentId;
-
-            VerifyDocument(context, new FrontDocument(document), null);
-
-            return SaveDocument(context, document);
-        }
-
-        public void DeleteDocument(IContext context, int id)
-        {
-            var document = _documentDb.DeleteDocumentPrepare(context, id);
-
-            if (document == null)
-            {
-                throw new DocumentNotFoundOrUserHasNoAccess();
-            }
-
-            _adminDb.VerifyAccess(context, new VerifyAccess() { ActionCode = EnumActions.DeleteDocument, PositionId = document.ExecutorPositionId });
-
-            Command cmd = new DeleteDocument(context, document);
-            if (cmd.CanExecute())
-            {
-                cmd.Execute();
-            }
         }
 
         public IEnumerable<BaseSystemUIElement> GetModifyMetaData(IContext ctx, FrontDocument doc)
@@ -218,6 +140,37 @@ namespace BL.Logic.DocumentCore
             return uiElements;
         }
 
+        public int AddDocumentByTemplateDocument(IContext context, AddDocumentByTemplateDocument model)
+        {
+            _adminDb.VerifyAccess(context, new VerifyAccess() { ActionCode = EnumActions.AddDocument, PositionId = model.CurrentPositionId });
+            var document = _documentDb.AddDocumentByTemplateDocumentPrepare(context, model.TemplateDocumentId);
+            if (document == null)
+            {
+                throw new DocumentNotFoundOrUserHasNoAccess();
+            }
+
+            SetAtrributesForNewDocument(context, document);
+
+            foreach (var sl in document.SendLists)
+            {
+                sl.IsInitial = true;
+                sl.StartEventId = null;
+                sl.CloseEventId = null;
+                sl.LastChangeDate = DateTime.Now;
+                sl.LastChangeUserId = context.CurrentAgentId;
+            }
+            foreach (var sl in document.RestrictedSendLists)
+            {
+                sl.LastChangeDate = DateTime.Now;
+                sl.LastChangeUserId = context.CurrentAgentId;
+            }
+            document.Events = GetEventForNewDocument(context);
+            document.Accesses = GetAccessesForNewDocument(context);
+            //TODO process files
+            document.DocumentFiles = null;
+            return SaveDocument(context, document);
+        }
+
         public int CopyDocument(IContext context, CopyDocument model)
         {
             _adminDb.VerifyAccess(context, new VerifyAccess() { ActionCode = EnumActions.AddDocument, PositionId = model.CurrentPositionId });
@@ -225,14 +178,10 @@ namespace BL.Logic.DocumentCore
 
             if (document == null)
             {
-                throw  new DocumentNotFoundOrUserHasNoAccess();
+                throw new DocumentNotFoundOrUserHasNoAccess();
             }
 
-            document.CreateDate = DateTime.Now;
-            document.ExecutorPositionId = context.CurrentPositionId.Value;
-            document.IsRegistered = false;
-            document.LastChangeDate = DateTime.Now;
-            document.LastChangeUserId = context.CurrentAgentId;
+            SetAtrributesForNewDocument(context, document);
 
             foreach (var sl in document.SendLists)
             {
@@ -259,9 +208,138 @@ namespace BL.Logic.DocumentCore
             return docService.SaveDocument(context, document);
         }
 
+        public int ModifyDocument(IContext context, ModifyDocument model)
+        {
+            //TODO make with command
+            var document = _documentDb.ModifyDocumentPrepare(context, model.Id);
+            if (document == null)
+            {
+                throw new DocumentNotFoundOrUserHasNoAccess();
+            }
+
+            _adminDb.VerifyAccess(context, new VerifyAccess() { ActionCode = EnumActions.ModifyDocument, PositionId = document.ExecutorPositionId });
+            context.CurrentPositionId = document.ExecutorPositionId;
+
+            document.Description = model.Description;
+            document.DocumentSubjectId = model.DocumentSubjectId;
+            document.SenderAgentId = model.SenderAgentId;
+            document.SenderAgentPersonId = model.SenderAgentPersonId;
+            document.SenderNumber = model.SenderNumber;
+            document.SenderDate = model.SenderDate;
+            document.Addressee = model.Addressee;
+            document.AccessLevel = model.AccessLevel;
+
+            SetLastChangeForDocument(context, document);
+
+            VerifyDocument(context, new FrontDocument(document), null);
+
+            return SaveDocument(context, document);
+        }
+
+        public void DeleteDocument(IContext context, int id)
+        {
+            var document = _documentDb.DeleteDocumentPrepare(context, id);
+
+            if (document == null)
+            {
+                throw new DocumentNotFoundOrUserHasNoAccess();
+            }
+
+            _adminDb.VerifyAccess(context, new VerifyAccess() { ActionCode = EnumActions.DeleteDocument, PositionId = document.ExecutorPositionId });
+
+            Command cmd = new DeleteDocument(context, document);
+            if (cmd.CanExecute())
+            {
+                cmd.Execute();
+            }
+        }
+
+        public int RegisterDocument(IContext context, RegisterDocument model)
+        {
+            _adminDb.VerifyAccess(context, new VerifyAccess() { ActionCode = EnumActions.RegisterDocument, PositionId = context.CurrentPositionId });
+
+            var document = _documentDb.RegisterDocumentPrepare(context, model);
+
+            if (document == null)
+            {
+                throw new DocumentNotFoundOrUserHasNoAccess();
+            }
+            if (!document.RegistrationJournalId.HasValue)
+            {
+                throw new DictionaryRecordWasNotFound();
+            }
+            if (document.IsRegistered)
+            {
+                throw new DocumentHasAlredyBeenRegistered();
+            }
+
+            SetLastChangeForDocument(context, document);
+            document.IsRegistered = !model.IsOnlyGetNextNumber;
+            document.RegistrationDate = model.RegistrationDate;
+            bool isNeedGenerateNumber;
+            if (model.RegistrationNumber == null || model.IsOnlyGetNextNumber)
+            {
+                document.RegistrationNumberPrefix = document.RegistrationJournalPrefixFormula;
+                document.RegistrationNumberSuffix = document.RegistrationJournalSuffixFormula;
+                document.RegistrationNumber = null;
+                isNeedGenerateNumber = true;
+            }
+            else
+            {
+                document.RegistrationNumberPrefix = model.RegistrationNumberPrefix;
+                document.RegistrationNumberSuffix = model.RegistrationNumberSuffix;
+                document.RegistrationNumber = model.RegistrationNumber;
+                isNeedGenerateNumber = false;
+            }
+            var isRepeat = true;
+            var isOk = false;
+
+            while (isRepeat)
+            {
+                if (isNeedGenerateNumber)
+                {
+                    _documentDb.SetNextDocumentRegistrationNumber(context, document);
+
+                }
+                SaveDocument(context, document);
+                isOk = _documentDb.VerifyDocumentRegistrationNumber(context, document);
+                isRepeat = isOk ? !isOk : isNeedGenerateNumber;
+            }
+            if (!isOk)
+            {
+                document.IsRegistered = false;
+                document.RegistrationJournalId = null;
+                document.NumerationPrefixFormula = null;
+                document.RegistrationNumber = null;
+                document.RegistrationNumberSuffix = null;
+                document.RegistrationNumberPrefix = null;
+                document.RegistrationDate = null;
+                SaveDocument(context, document);
+                throw new DocumentCouldNotBeRegistered();
+            }
+            return model.DocumentId;
+
+        }
+
+
         #endregion Documents
 
         #region help methods
+
+        private void SetLastChangeForDocument(IContext context, InternalDocument document)
+        {
+            document.LastChangeDate = DateTime.Now;
+            document.LastChangeUserId = context.CurrentAgentId;
+        }
+
+        private void SetAtrributesForNewDocument(IContext context, InternalDocument document)
+        {
+            document.CreateDate = DateTime.Now;
+            document.ExecutorPositionId = context.CurrentPositionId.Value;
+            document.IsRegistered = false;
+            document.LinkId = null;
+            SetLastChangeForDocument(context, document);
+        }
 
         private List<InternalDocumentEvents> GetEventForNewDocument(IContext context)
         {

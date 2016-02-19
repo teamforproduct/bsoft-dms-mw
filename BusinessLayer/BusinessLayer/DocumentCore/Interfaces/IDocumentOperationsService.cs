@@ -24,7 +24,7 @@ namespace BL.Logic.DocumentCore.Interfaces
         void ControlChange(IContext context, ControlChange model);
         void ControlOff(IContext context, ControlOff model);
         
-        void RegisterDocument(IContext context, RegisterDocument model);
+
         void AddDocumentLink(IContext cxt, AddDocumentLink model);
     }
 }

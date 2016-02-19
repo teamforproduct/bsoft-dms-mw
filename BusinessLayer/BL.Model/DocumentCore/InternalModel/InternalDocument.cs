@@ -48,7 +48,7 @@ namespace BL.Model.DocumentCore.InternalModel
 
                 DocumentDate = model.DocumentDate;
                 DateOfControl = model.DateOfControl;
-                RegistrationFullNumber = model.RegistrationFullNumber;
+                //RegistrationFullNumber = model.RegistrationFullNumber;
 
                 EventsCount = model.EventsCount;
                 NewEventCount = model.NewEventCount;
@@ -93,7 +93,7 @@ namespace BL.Model.DocumentCore.InternalModel
         /// <summary>
         /// ИД уровня доступа
         /// </summary>
-        public EnumDocumentAccesses AccessLevel { get; set; }
+        public EnumDocumentAccesses? AccessLevel { get; set; }
 
         public int TemplateDocumentId { get; set; }
         public int ExecutorPositionId { get; set; }
@@ -116,9 +116,12 @@ namespace BL.Model.DocumentCore.InternalModel
         public bool IsFavourite { get; set; }
         public bool IsInWork { get; set; }
 
+        public string RegistrationJournalPrefixFormula { get; set; }
+        public string RegistrationJournalSuffixFormula { get; set; }
+
         public DateTime DocumentDate { get; set; }
         public DateTime DateOfControl { get; set; }
-        public string RegistrationFullNumber { get; set; }
+  //      public string RegistrationFullNumber { get; set; }
 
         public int EventsCount { get; set; }
         public int NewEventCount { get; set; }

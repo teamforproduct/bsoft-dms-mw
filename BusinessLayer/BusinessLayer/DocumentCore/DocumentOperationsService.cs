@@ -201,33 +201,6 @@ namespace BL.Logic.DocumentCore
             _operationDb.UpdateDocumentWait(context, docWait);
         }
 
-        public void RegisterDocument(IContext context, RegisterDocument model)
-        {
-            _adminDb.VerifyAccess(context, new VerifyAccess() { ActionCode = EnumActions.RegisterDocument, PositionId = model.CurrentPositionId });
-
-            var document = _documentDb.RegisterDocumentPrepare(context, model.DocumentId);
-
-            if (document == null)
-            {
-                throw new DocumentNotFoundOrUserHasNoAccess();
-            }
-            if (document.IsRegistered)
-            {
-                throw new DocumentHasAlredyBeenRegistered();
-            }
-
-            var dictDB = DmsResolver.Current.Get<IDictionariesDbProcess>();
-            var dictRegJournal = dictDB.GetDictionaryRegistrationJournal(context, model.RegistrationJournalId);
-            model.NumerationPrefixFormula = dictRegJournal.NumerationPrefixFormula;
-
-            if (model.RegistrationNumber == null || model.IsOnlyGetNextNumber)
-            {   //get next number
-                model.RegistrationNumberPrefix = dictRegJournal.PrefixFormula;
-                model.RegistrationNumberSuffix = dictRegJournal.SuffixFormula;
-                model.RegistrationNumber = null;
-            }
-            _operationDb.SetDocumentRegistration(context, model);
-        }
 
         public void AddDocumentLink(IContext context, AddDocumentLink model)
         {

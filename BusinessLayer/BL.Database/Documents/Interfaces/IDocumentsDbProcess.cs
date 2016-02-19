@@ -5,6 +5,7 @@ using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.SystemCore;
+using BL.Model.DocumentCore.Actions;
 
 namespace BL.Database.Documents.Interfaces
 {
@@ -20,7 +21,10 @@ namespace BL.Database.Documents.Interfaces
         InternalDocument GetInternalDocument(IContext ctx, int documentId);
 
 
-        InternalDocument RegisterDocumentPrepare(IContext ctx, int documentId);
+        InternalDocument RegisterDocumentPrepare(IContext ctx, RegisterDocument model);
+        void SetNextDocumentRegistrationNumber(IContext ctx, InternalDocument document);
+        bool VerifyDocumentRegistrationNumber(IContext ctx, InternalDocument document);
+
         InternalDocument CopyDocumentPrepare(IContext ctx, int documentId);
         InternalDocument AddDocumentByTemplateDocumentPrepare(IContext context, int templateDocumentId);
         InternalDocument DeleteDocumentPrepare(IContext context, int documentId);
