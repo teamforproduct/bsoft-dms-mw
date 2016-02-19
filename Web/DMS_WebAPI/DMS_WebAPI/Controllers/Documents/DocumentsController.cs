@@ -8,6 +8,7 @@ using BL.Logic.DocumentCore.Interfaces;
 using System.Web.Http.Description;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
+using System;
 
 namespace DMS_WebAPI.Controllers.Documents
 {
@@ -23,12 +24,43 @@ namespace DMS_WebAPI.Controllers.Documents
         [ResponseType(typeof(FrontDocument))]
         public IHttpActionResult Get([FromUri] FilterDocument filter, [FromUri]UIPaging paging)
         {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            timeM.Start();
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
+            timeDB.Start();
             var docs = docProc.GetDocuments(cxt, filter, paging);
+            timeDB.Stop();
             var res = new JsonResult(docs, this);
             res.Paging = paging;
+            timeM.Stop();
+            SaveToFile("M: DocumentsController Get List", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentService GetDocuments", timeDB.Elapsed.ToString("G"));
             return res;
+        }
+
+        private void SaveToFile(string method, string time)
+        {
+            try
+            {
+                System.IO.StreamWriter sw = System.IO.File.AppendText(System.Web.HttpContext.Current.Server.MapPath("~/SiteLog.txt"));
+                try
+                {
+                    string line = $"{DateTime.Now.ToString("o")}\r\n method: {method}\r\n time:{time}";
+                    sw.WriteLine(line);
+                }
+                catch
+                {
+                }
+                finally
+                {
+                    sw.Close();
+                }
+            }
+            catch
+            {
+            }
         }
 
         /// <summary>
