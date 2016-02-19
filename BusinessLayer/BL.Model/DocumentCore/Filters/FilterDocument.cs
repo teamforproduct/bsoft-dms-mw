@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace BL.Model.DocumentCore
+namespace BL.Model.DocumentCore.Filters
 {
     /// <summary>
     /// Фильтра документов

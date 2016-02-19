@@ -5,6 +5,7 @@ using BL.CrossCutting.Interfaces;
 using BL.Database.Documents.Interfaces;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Logic.SystemLogic;
+using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.Exception;
@@ -22,17 +23,17 @@ namespace BL.Logic.DocumentCore
             _dbProcess = dbProcess;
         }
 
-        public IEnumerable<FrontDocumentAttachedFile> GetDocumentFiles(IContext ctx, int documentId)
+        public IEnumerable<FrontFilterDocumentAttachedFile> GetDocumentFiles(IContext ctx, int documentId)
         {
             return _dbProcess.GetDocumentFiles(ctx, documentId);
         }
 
-        public IEnumerable<FrontDocumentAttachedFile> GetDocumentFileVersions(IContext ctx, DocumentFileIdentity fileIdent)
+        public IEnumerable<FrontFilterDocumentAttachedFile> GetDocumentFileVersions(IContext ctx, FilterDocumentFileIdentity fileIdent)
         {
             return _dbProcess.GetDocumentFileVersions(ctx, fileIdent.DocumentId, fileIdent.OrderInDocument);
         }
 
-        public FrontDocumentAttachedFile GetDocumentFileVersion(IContext ctx, DocumentFileIdentity fileIdent)
+        public FrontFilterDocumentAttachedFile GetDocumentFileVersion(IContext ctx, FilterDocumentFileIdentity fileIdent)
         {
             if (fileIdent.Version > 0)
             {
@@ -42,17 +43,17 @@ namespace BL.Logic.DocumentCore
             return GetDocumentFileLatestVersion(ctx, fileIdent);
         }
 
-        public FrontDocumentAttachedFile GetDocumentFileVersion(IContext ctx, int id)
+        public FrontFilterDocumentAttachedFile GetDocumentFileVersion(IContext ctx, int id)
         {
             return _dbProcess.GetDocumentFileVersion(ctx, id);
         }
 
-        public FrontDocumentAttachedFile GetDocumentFileLatestVersion(IContext ctx, DocumentFileIdentity fileIdent)
+        public FrontFilterDocumentAttachedFile GetDocumentFileLatestVersion(IContext ctx, FilterDocumentFileIdentity fileIdent)
         {
             return _dbProcess.GetDocumentFileLatestVersion(ctx, fileIdent.DocumentId, fileIdent.OrderInDocument);
         }
 
-        public void DeleteDocumentFile(IContext ctx, DocumentFileIdentity fileIdent)
+        public void DeleteDocumentFile(IContext ctx, FilterDocumentFileIdentity fileIdent)
         {
             var flList = _dbProcess.GetDocumentFileVersions(ctx, fileIdent.DocumentId, fileIdent.OrderInDocument);
             foreach (var fl in flList)
@@ -62,7 +63,7 @@ namespace BL.Logic.DocumentCore
             }
         }
 
-        public void DeleteDocumentFileVersion(IContext ctx, DocumentFileIdentity fileIdent)
+        public void DeleteDocumentFileVersion(IContext ctx, FilterDocumentFileIdentity fileIdent)
         {
             var fl = _dbProcess.GetDocumentFileVersion(ctx, fileIdent.DocumentId, fileIdent.OrderInDocument, fileIdent.Version);
             if (fl != null)
@@ -72,7 +73,7 @@ namespace BL.Logic.DocumentCore
             }
         }
 
-        public FrontDocumentAttachedFile GetUserFile(IContext ctx, DocumentFileIdentity fileIdent)
+        public FrontFilterDocumentAttachedFile GetUserFile(IContext ctx, FilterDocumentFileIdentity fileIdent)
         {
             //TODO should we check if file exists in DB? 
             var fl = GetDocumentFileVersion(ctx, fileIdent);
@@ -82,7 +83,7 @@ namespace BL.Logic.DocumentCore
 
         public int AddUserFile(IContext ctx, ModifyDocumentFile model)
         {
-            var att = new FrontDocumentAttachedFile
+            var att = new FrontFilterDocumentAttachedFile
             {
                 DocumentId = model.DocumentId,
                 Date = DateTime.Now,
@@ -100,14 +101,14 @@ namespace BL.Logic.DocumentCore
             _fStore.SaveFile(ctx, att);
             return _dbProcess.AddNewFileOrVersion(ctx, att);
         }
-        public IEnumerable<FrontDocumentAttachedFile> AddUserFile(IContext ctx, ModifyDocumentFiles model)
+        public IEnumerable<FrontFilterDocumentAttachedFile> AddUserFile(IContext ctx, ModifyDocumentFiles model)
         {
             var files = _dbProcess.GetDocumentFiles(ctx, model.DocumentId);
 
-            var res = new List<FrontDocumentAttachedFile>();
+            var res = new List<FrontFilterDocumentAttachedFile>();
             foreach (var file in model.Files)
             {
-                var att = new FrontDocumentAttachedFile
+                var att = new FrontFilterDocumentAttachedFile
                 {
                     DocumentId = model.DocumentId,
                     Date = DateTime.Now,
@@ -129,13 +130,13 @@ namespace BL.Logic.DocumentCore
             return res;
         }
 
-        public FrontDocumentAttachedFile AddNewVersion(IContext ctx, ModifyDocumentFile model)
+        public FrontFilterDocumentAttachedFile AddNewVersion(IContext ctx, ModifyDocumentFile model)
         {
             //TODO potential two user could add same new version in same time. Probably need to implement CheckOut flag in future
             var fl = _dbProcess.GetDocumentFileLatestVersion(ctx, model.DocumentId, model.OrderInDocument);
             if (fl != null)
             {
-                var att = new FrontDocumentAttachedFile
+                var att = new FrontFilterDocumentAttachedFile
                 {
                     DocumentId = model.DocumentId,
                     Date = DateTime.Now,
@@ -157,7 +158,7 @@ namespace BL.Logic.DocumentCore
             throw new UnknownDocumentFile();
         }
 
-        public FrontDocumentAttachedFile UpdateCurrentFileVersion(IContext ctx, ModifyDocumentFile model)
+        public FrontFilterDocumentAttachedFile UpdateCurrentFileVersion(IContext ctx, ModifyDocumentFile model)
         {
             //TODO potential two user could add same new version in same time. Probably need to implement CheckOut flag in future
             var fl = _dbProcess.GetDocumentFileLatestVersion(ctx, model.DocumentId, model.OrderInDocument);

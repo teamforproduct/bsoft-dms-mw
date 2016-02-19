@@ -18,7 +18,7 @@ namespace BL.Database.Documents
             _helper = helper;
         }
 
-        public IEnumerable<FrontDocumentAttachedFile> GetDocumentFiles(IContext ctx, int documentId)
+        public IEnumerable<FrontFilterDocumentAttachedFile> GetDocumentFiles(IContext ctx, int documentId)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
@@ -26,7 +26,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public IEnumerable<FrontDocumentAttachedFile> GetDocumentFileVersions(IContext ctx, int documentId, int orderNumber)
+        public IEnumerable<FrontFilterDocumentAttachedFile> GetDocumentFileVersions(IContext ctx, int documentId, int orderNumber)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
@@ -35,7 +35,7 @@ namespace BL.Database.Documents
                         .Where(x => x.DocumentId == documentId && x.OrderNumber == orderNumber)
                         .Join(dbContext.DictionaryAgentsSet, df => df.LastChangeUserId, da => da.Id,
                             (d, a) => new {fl = d, agName = a.Name})
-                        .Select(x => new FrontDocumentAttachedFile
+                        .Select(x => new FrontFilterDocumentAttachedFile
                         {
                             Id = x.fl.Id,
                             Date = x.fl.Date,
@@ -56,7 +56,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public FrontDocumentAttachedFile GetDocumentFileVersion(IContext ctx, int documentId, int orderNumber, int versionNumber)
+        public FrontFilterDocumentAttachedFile GetDocumentFileVersion(IContext ctx, int documentId, int orderNumber, int versionNumber)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
@@ -67,7 +67,7 @@ namespace BL.Database.Documents
                                 x.DocumentId == documentId && x.Version == versionNumber && x.OrderNumber == orderNumber)
                         .Join(dbContext.DictionaryAgentsSet, df => df.LastChangeUserId, da => da.Id,
                             (d, a) => new {fl = d, agName = a.Name})
-                        .Select(x => new FrontDocumentAttachedFile
+                        .Select(x => new FrontFilterDocumentAttachedFile
                         {
                             Id = x.fl.Id,
                             Date = x.fl.Date,
@@ -88,7 +88,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public FrontDocumentAttachedFile GetDocumentFileVersion(IContext ctx, int id)
+        public FrontFilterDocumentAttachedFile GetDocumentFileVersion(IContext ctx, int id)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
@@ -97,7 +97,7 @@ namespace BL.Database.Documents
                         .Where(x => x.Id == id)
                         .Join(dbContext.DictionaryAgentsSet, df => df.LastChangeUserId, da => da.Id,
                             (d, a) => new {fl = d, agName = a.Name})
-                        .Select(x => new FrontDocumentAttachedFile
+                        .Select(x => new FrontFilterDocumentAttachedFile
                         {
                             Id = x.fl.Id,
                             Date = x.fl.Date,
@@ -118,7 +118,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public FrontDocumentAttachedFile GetDocumentFileLatestVersion(IContext ctx, int documentId, int orderNumber)
+        public FrontFilterDocumentAttachedFile GetDocumentFileLatestVersion(IContext ctx, int documentId, int orderNumber)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
@@ -133,7 +133,7 @@ namespace BL.Database.Documents
                                 x => x.DocumentId == documentId && x.Version == maxVer && x.OrderNumber == orderNumber)
                             .Join(dbContext.DictionaryAgentsSet, df => df.LastChangeUserId, da => da.Id,
                                 (d, a) => new {fl = d, agName = a.Name})
-                            .Select(x => new FrontDocumentAttachedFile
+                            .Select(x => new FrontFilterDocumentAttachedFile
                             {
                                 Id = x.fl.Id,
                                 Date = x.fl.Date,
@@ -156,7 +156,7 @@ namespace BL.Database.Documents
             return null;
         }
 
-        public int AddNewFileOrVersion(IContext ctx, FrontDocumentAttachedFile docFile)
+        public int AddNewFileOrVersion(IContext ctx, FrontFilterDocumentAttachedFile docFile)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
@@ -181,7 +181,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public void UpdateFileOrVersion(IContext ctx, FrontDocumentAttachedFile docFile)
+        public void UpdateFileOrVersion(IContext ctx, FrontFilterDocumentAttachedFile docFile)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
@@ -205,7 +205,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public void DeleteAttachedFile(IContext ctx, FrontDocumentAttachedFile docFile)
+        public void DeleteAttachedFile(IContext ctx, FrontFilterDocumentAttachedFile docFile)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {

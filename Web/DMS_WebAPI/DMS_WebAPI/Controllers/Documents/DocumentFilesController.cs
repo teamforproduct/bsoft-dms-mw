@@ -8,6 +8,7 @@ using System.Net.Http;
 using System.Net;
 using System.Net.Http.Headers;
 using System.IO;
+using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.IncomingModel;
 
 namespace DMS_WebAPI.Controllers.Documents
@@ -16,7 +17,7 @@ namespace DMS_WebAPI.Controllers.Documents
     public class DocumentFilesController : ApiController
     {
         //GET: api/DocumentFiles
-        public HttpResponseMessage Get([FromUri]DocumentFileIdentity model)
+        public HttpResponseMessage Get([FromUri]FilterDocumentFileIdentity model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docFileProc = DmsResolver.Current.Get<IDocumentFileService>();
@@ -59,7 +60,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         // DELETE: api/DocumentFiles
-        public IHttpActionResult Delete([FromUri]DocumentFileIdentity model)
+        public IHttpActionResult Delete([FromUri]FilterDocumentFileIdentity model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docFileProc = DmsResolver.Current.Get<IDocumentFileService>();

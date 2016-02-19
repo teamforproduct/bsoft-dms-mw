@@ -5,15 +5,16 @@ using BL.Database.Documents.Interfaces;
 using BL.Model.Exception;
 using System;
 using BL.Model.DocumentCore.FrontModel;
+using BL.Model.DocumentCore.InternalModel;
 
 namespace BL.Logic.DocumentCore.Commands
 {
     internal class DeleteDocument : Command
     {
         private readonly IContext _context;
-        private readonly FrontDocument _document;
+        private readonly InternalDocument _document;
 
-        public DeleteDocument(IContext context,  FrontDocument document)
+        public DeleteDocument(IContext context, InternalDocument document)
         {
             _context = context;
             _document = document;
@@ -33,7 +34,7 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanExecute()
         {
-            //ОСТАЛЬНЫЕ ПРОВЕРКИ!
+            //TODO ОСТАЛЬНЫЕ ПРОВЕРКИ!
             if (_document.IsRegistered)
             {
                 throw new DocumentCannotBeModifiedOrDeleted();

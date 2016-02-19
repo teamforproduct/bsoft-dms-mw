@@ -5,8 +5,8 @@ namespace BL.Logic.SystemLogic
 {
     public interface IFileStore
     {
-        string SaveFile(IContext ctx, FrontDocumentAttachedFile attFile, bool isOverride = true);
-        byte[] GetFile(IContext ctx, FrontDocumentAttachedFile attFile);
-        void DeleteFile(IContext ctx, FrontDocumentAttachedFile attFile);
+        string SaveFile(IContext ctx, FrontFilterDocumentAttachedFile attFile, bool isOverride = true);
+        byte[] GetFile(IContext ctx, FrontFilterDocumentAttachedFile attFile);
+        void DeleteFile(IContext ctx, FrontFilterDocumentAttachedFile attFile);
     }
 }

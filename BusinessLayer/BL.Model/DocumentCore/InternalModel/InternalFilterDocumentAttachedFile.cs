@@ -1,9 +1,10 @@
 ﻿using System;
+using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.IncomingModel;
 
 namespace BL.Model.DocumentCore.InternalModel
 {
-    public class InternalDocumentAttachedFile : DocumentFileIdentity
+    public class InternalFilterDocumentAttachedFile : FilterDocumentFileIdentity
     {
         public int Id { get; set; }
         public byte[] FileContent { get; set; }

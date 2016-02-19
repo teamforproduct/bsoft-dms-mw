@@ -87,7 +87,7 @@
     <Compile Include="DictionaryCore\FilterDictionaryCompany.cs" />
     <Compile Include="DictionaryCore\FilterDictionaryAgentPerson.cs" />
     <Compile Include="DictionaryCore\FilterDictionaryAgent.cs" />
-    <Compile Include="DocumentCore\FrontModel\FrontDocumentAttachedFile.cs" />
+    <Compile Include="DocumentCore\FrontModel\FrontFilterDocumentAttachedFile.cs" />
     <Compile Include="DocumentCore\FrontModel\BaseDocumentTag.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentFiles.cs" />
     <Compile Include="DocumentCore\Actions\ChangeFavourites.cs" />
@@ -104,15 +104,15 @@
     <Compile Include="DocumentCore\FrontModel\FrontDocumentSendListStage.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentLink.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentWaits.cs" />
-    <Compile Include="DocumentCore\IncomingModel\DocumentFileIdentity.cs" />
+    <Compile Include="DocumentCore\Filters\FilterDocumentFileIdentity.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentFile.cs" />
     <Compile Include="DocumentCore\IncomingModel\AddDocumentByTemplateDocument.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentTag.cs" />
-    <Compile Include="DocumentCore\InternalModel\InternalDocumentAttachedFile.cs" />
+    <Compile Include="DocumentCore\InternalModel\InternalFilterDocumentAttachedFile.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalTemplateDocument.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalTemplateDocumentRestrictedSendLists.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalTemplateDocumentSendLists.cs" />
-    <Compile Include="DocumentCore\InternalModel\FilterDocumentEvent.cs" />
+    <Compile Include="DocumentCore\Filters\FilterDocumentEvent.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocument.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentSavedFilter.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentSendListStage.cs" />
@@ -139,7 +139,7 @@
     <Compile Include="DocumentCore\FrontModel\FrontTemplateDocumentRestrictedSendLists.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontTemplateDocumentSendLists.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentAccess.cs" />
-    <Compile Include="DocumentCore\IncomingModel\FilterDocument.cs" />
+    <Compile Include="DocumentCore\Filters\FilterDocument.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocument.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentRestrictedSendListByStandartSendList.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentRestrictedSendList.cs" />
