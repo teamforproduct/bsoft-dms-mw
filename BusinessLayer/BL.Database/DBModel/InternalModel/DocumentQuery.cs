@@ -12,7 +12,11 @@ namespace BL.Database.DBModel.InternalModel
         public string AccLevName { get; set; }
         public string SubjName { get; set; }
         public string DocTypeName { get; set; }
-        public string RegJurnalName { get; set; }
+        public string RegistrationJournalName { get; set; }
+        public string RegistrationJournalNumerationPrefixFormula { get; set; }
+        public string RegistrationJournalPrefixFormula { get; set; }
+        public string RegistrationJournalSuffixFormula { get; set; }
+
         public string ExecutorPosName { get; set; }
         public string ExecutorAgentName { get; set; }
         public string SenderAgentname { get; set; }

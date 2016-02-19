@@ -33,14 +33,13 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-                var doc = dbContext.DocumentsSet
-                    .FirstOrDefault(x => x.RegistrationJournalId == registerDocument.RegistrationJournalId
+                return dbContext.DocumentsSet
+                                .Any(x => x.RegistrationJournalId == registerDocument.RegistrationJournalId
                                          && x.NumerationPrefixFormula == registerDocument.NumerationPrefixFormula
                                          && x.RegistrationNumberPrefix == registerDocument.RegistrationNumberPrefix
                                          && x.RegistrationNumber == registerDocument.RegistrationNumber
                                          && x.Id != registerDocument.DocumentId
                     );
-                return doc == null;
             }
         }
 
@@ -156,7 +155,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-                var wait = CommonQueries.GetDocumentWaits(dbContext, new FilterDocumentWaits() {OnEventId = eventId}).FirstOrDefault();
+                var wait = CommonQueries.GetDocumentWaits(dbContext, new FilterDocumentWaits() { OnEventId = eventId }).FirstOrDefault();
                 if (wait?.Id > 0)
                 {
                     return wait;

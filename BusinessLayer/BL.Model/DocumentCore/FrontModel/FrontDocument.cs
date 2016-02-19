@@ -23,7 +23,7 @@ namespace BL.Model.DocumentCore.FrontModel
                 SenderNumber = model.SenderNumber;
                 SenderDate = model.SenderDate;
                 Addressee = model.Addressee;
-                AccessLevel = model.AccessLevel;
+                if (model.AccessLevel != null) AccessLevel = (EnumDocumentAccesses) model.AccessLevel;
 
                 TemplateDocumentId = model.TemplateDocumentId;
                 ExecutorPositionId = model.ExecutorPositionId;
@@ -48,7 +48,7 @@ namespace BL.Model.DocumentCore.FrontModel
 
                 DocumentDate = model.DocumentDate;
                 DateOfControl = model.DateOfControl;
-                RegistrationFullNumber = model.RegistrationFullNumber;
+            //    RegistrationFullNumber = model.RegistrationFullNumber;
 
                 EventsCount = model.EventsCount;
                 NewEventCount = model.NewEventCount;

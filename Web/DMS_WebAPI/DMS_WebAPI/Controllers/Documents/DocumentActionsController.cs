@@ -99,7 +99,7 @@ namespace DMS_WebAPI.Controllers.Documents
             timeM.Start();
 
             var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
-            var docProc = DmsResolver.Current.Get<IDocumentOperationsService>();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
             docProc.RegisterDocument(cxt, model);
             timeDB.Stop();

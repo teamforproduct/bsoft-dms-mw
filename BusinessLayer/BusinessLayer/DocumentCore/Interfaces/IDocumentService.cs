@@ -22,6 +22,6 @@ namespace BL.Logic.DocumentCore.Interfaces
         FrontDocument GetDocument(IContext ctx, int documentId);
         int CopyDocument(IContext context, CopyDocument model);
         IEnumerable<BaseSystemUIElement> GetModifyMetaData(IContext cxt, FrontDocument doc);
-
+        int RegisterDocument(IContext context, RegisterDocument model);
     }
 }
