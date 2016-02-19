@@ -1,6 +1,7 @@
 ﻿using BL.CrossCutting.DependencyInjection;
 using BL.Logic.DictionaryCore.Interfaces;
 using BL.Model.DictionaryCore;
+using BL.Model.DictionaryCore.IncomingModel;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Web.Http;
@@ -27,5 +28,33 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             var tmpDict = tmpDictProc.GetDictionaryDocumentType(cxt, id);
             return new JsonResult(tmpDict, this);
         }
+
+        /// <summary>
+        /// Добавление словаря тип документа
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Измененный запись словаря типа документа</returns>
+        public IHttpActionResult Post([FromBody]ModifyDictionaryDocumentType model)
+        {
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
+            return Get(tmpDict.AddDictionaryDocumentType(cxt, model));
+        }
+
+        /// <summary>
+        /// Изменение словаря тип документа 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="model"></param>
+        /// <returns>Измененный запись словаря типа документа</returns>
+        public IHttpActionResult Put(int id, [FromBody]ModifyDictionaryDocumentType model)
+        {
+            model.Id = id;
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
+            tmpDict.ModifyDictionaryDocumentType(cxt, model);
+            return Get(model.Id);
+        }
+
     }
 }

@@ -11,7 +11,28 @@ namespace DMS_WebAPI.Controllers.Documents
     [RoutePrefix("api/v2/DocumentActions")]
     public class DocumentActionsController : ApiController
     {
-
+        private void SaveToFile(string method, string time)
+        {
+            try
+            {
+                System.IO.StreamWriter sw = System.IO.File.AppendText(System.Web.HttpContext.Current.Server.MapPath("~/SiteLog.txt"));
+                try
+                {
+                    string line = $"{System.DateTime.Now.ToString("o")}\r\n method: {method}\r\n time:{time}";
+                    sw.WriteLine(line);
+                }
+                catch
+                {
+                }
+                finally
+                {
+                    sw.Close();
+                }
+            }
+            catch
+            {
+            }
+        }
         /// <summary>
         /// Получение списка доступных команд по документу
         /// </summary>
@@ -19,9 +40,18 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns>Массив команд</returns>
         public IHttpActionResult Get(int id)
         {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            timeM.Start();
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentOperationsService>();
+            timeDB.Start();
             var actions = docProc.GetDocumentActions(cxt, id);
+            timeDB.Stop();
+            timeM.Stop();
+            SaveToFile("M: DocumentActionsController Get List", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentOperationsService GetDocumentActions", timeDB.Elapsed.ToString("G"));
+
             return new JsonResult(actions, this);
         }
 
@@ -34,9 +64,20 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult ChangeFavourites(ChangeFavourites model)
         {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            timeM.Start();
+
             var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentOperationsService>();
+            timeDB.Start();
             docProc.ChangeFavouritesForDocument(cxt, model);
+            timeDB.Stop();
+
+            timeM.Stop();
+            SaveToFile("M: DocumentActionsController ChangeFavourites", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentOperationsService ChangeFavouritesForDocument", timeDB.Elapsed.ToString("G"));
+
             var ctrl = new DocumentsController();
             ctrl.ControllerContext = ControllerContext;
             return ctrl.Get(model.DocumentId);
@@ -53,9 +94,20 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult RegisterDocument(RegisterDocument model)
         {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            timeM.Start();
+
             var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentOperationsService>();
+            timeDB.Start();
             docProc.RegisterDocument(cxt, model);
+            timeDB.Stop();
+
+            timeM.Stop();
+            SaveToFile("M: DocumentActionsController RegisterDocument", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentOperationsService RegisterDocument", timeDB.Elapsed.ToString("G"));
+
             var ctrl = new DocumentsController();
             ctrl.ControllerContext = ControllerContext;
             return ctrl.Get(model.DocumentId);
@@ -69,9 +121,19 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult AddDocumentLink(AddDocumentLink model)
         {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            timeM.Start();
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentOperationsService>();
+            timeDB.Start();
             docProc.AddDocumentLink(cxt, model);
+            timeDB.Stop();
+
+            timeM.Stop();
+            SaveToFile("M: DocumentActionsController AddDocumentLink", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentOperationsService AddDocumentLink", timeDB.Elapsed.ToString("G"));
+
             var ctrl = new DocumentsController();
             ctrl.ControllerContext = ControllerContext;
             return ctrl.Get(model.DocumentId);
@@ -86,9 +148,19 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult ChangeWorkStatus(ChangeWorkStatus model)
         {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            timeM.Start();
             var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentOperationsService>();
+            timeDB.Start();
             docProc.ChangeDocumentWorkStatus(cxt, model);
+            timeDB.Stop();
+
+            timeM.Stop();
+            SaveToFile("M: DocumentActionsController ChangeWorkStatus", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentOperationsService ChangeDocumentWorkStatus", timeDB.Elapsed.ToString("G"));
+
             var ctrl = new DocumentsController();
             ctrl.ControllerContext = ControllerContext;
             return ctrl.Get(model.DocumentId);
@@ -103,9 +175,19 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult AddNote(AddNote model)
         {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            timeM.Start();
             var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentOperationsService>();
+            timeDB.Start();
             docProc.AddDocumentComment(cxt, model);
+            timeDB.Stop();
+
+            timeM.Stop();
+            SaveToFile("M: DocumentActionsController AddNote", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentOperationsService AddDocumentComment", timeDB.Elapsed.ToString("G"));
+
             var ctrl = new DocumentsController();
             ctrl.ControllerContext = ControllerContext;
             return ctrl.Get(model.DocumentId);
@@ -120,9 +202,19 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult ControlOn(ControlOn model)
         {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            timeM.Start();
             var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentOperationsService>();
+            timeDB.Start();
             docProc.ControlOn(cxt, model);
+            timeDB.Stop();
+
+            timeM.Stop();
+            SaveToFile("M: DocumentActionsController ControlOn", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentOperationsService ControlOn", timeDB.Elapsed.ToString("G"));
+
             var ctrl = new DocumentsController();
             ctrl.ControllerContext = ControllerContext;
             return ctrl.Get(model.DocumentId);
@@ -137,9 +229,19 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult ControlChange(ControlChange model)
         {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            timeM.Start();
             var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentOperationsService>();
+            timeDB.Start();
             docProc.ControlChange(cxt, model);
+            timeDB.Stop();
+
+            timeM.Stop();
+            SaveToFile("M: DocumentActionsController ControlChange", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentOperationsService ControlChange", timeDB.Elapsed.ToString("G"));
+
             var ctrl = new DocumentsController();
             ctrl.ControllerContext = ControllerContext;
             return ctrl.Get(model.DocumentId);
@@ -154,9 +256,19 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult ControlOff(ControlOff model)
         {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            timeM.Start();
             var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentOperationsService>();
+            timeDB.Start();
             docProc.ControlOff(cxt, model);
+            timeDB.Stop();
+
+            timeM.Stop();
+            SaveToFile("M: DocumentActionsController ControlOff", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentOperationsService ControlOff", timeDB.Elapsed.ToString("G"));
+
             var ctrl = new DocumentsController();
             ctrl.ControllerContext = ControllerContext;
             return ctrl.Get(model.DocumentId);
@@ -171,11 +283,22 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult CopyDocument(CopyDocument model)
         {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            timeM.Start();
             var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
+            timeDB.Start();
+            var docId = docProc.CopyDocument(cxt, model);
+            timeDB.Stop();
+
+            timeM.Stop();
+            SaveToFile("M: DocumentActionsController CopyDocument", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentOperationsService CopyDocument", timeDB.Elapsed.ToString("G"));
+
             var ctrl = new DocumentsController();
             ctrl.ControllerContext = ControllerContext;
-            return ctrl.Get(docProc.CopyDocument(cxt, model));
+            return ctrl.Get(docId);
         }
     }
 }

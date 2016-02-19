@@ -119,7 +119,7 @@ namespace DMS_WebAPI.Providers
 
                 var mngContext = DmsResolver.Current.Get<UserContext>();
 
-                var cxt = mngContext.Set(token, db);
+                var cxt = mngContext.Set(token, db, context.Identity.GetUserId());
             }
 
             return Task.FromResult<object>(null);

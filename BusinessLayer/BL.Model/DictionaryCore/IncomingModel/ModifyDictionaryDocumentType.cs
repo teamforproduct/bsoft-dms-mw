@@ -1,4 +1,6 @@
-﻿namespace BL.Model.DictionaryCore.IncomingModel
+﻿using System.Runtime.Serialization;
+
+namespace BL.Model.DictionaryCore.IncomingModel
 {
     /// <summary>
     /// Модель для добавления/редактирования
@@ -8,6 +10,7 @@
         /// <summary>
         /// ID
         /// </summary>
+        [IgnoreDataMember]
         public int Id { get; set; }
         /// <summary>
         /// Название типа документа. Отображается в документе

@@ -9,6 +9,7 @@ using System.Web.Http.Description;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
+using System;
 
 namespace DMS_WebAPI.Controllers.Documents
 {
@@ -24,12 +25,43 @@ namespace DMS_WebAPI.Controllers.Documents
         [ResponseType(typeof(FrontDocument))]
         public IHttpActionResult Get([FromUri] FilterDocument filter, [FromUri]UIPaging paging)
         {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            timeM.Start();
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
+            timeDB.Start();
             var docs = docProc.GetDocuments(cxt, filter, paging);
+            timeDB.Stop();
             var res = new JsonResult(docs, this);
             res.Paging = paging;
+            timeM.Stop();
+            SaveToFile("M: DocumentsController Get List", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentService GetDocuments", timeDB.Elapsed.ToString("G"));
             return res;
+        }
+
+        private void SaveToFile(string method, string time)
+        {
+            try
+            {
+                System.IO.StreamWriter sw = System.IO.File.AppendText(System.Web.HttpContext.Current.Server.MapPath("~/SiteLog.txt"));
+                try
+                {
+                    string line = $"{DateTime.Now.ToString("o")}\r\n method: {method}\r\n time:{time}";
+                    sw.WriteLine(line);
+                }
+                catch
+                {
+                }
+                finally
+                {
+                    sw.Close();
+                }
+            }
+            catch
+            {
+            }
         }
 
         /// <summary>
@@ -39,11 +71,29 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns>Документ</returns>
         public IHttpActionResult Get(int id)
         {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            var timeDB1 = new System.Diagnostics.Stopwatch();
+            var timeDB2 = new System.Diagnostics.Stopwatch();
+            timeM.Start();
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
 
+            timeDB.Start();
+            timeDB1.Start();
             var doc = docProc.GetDocument(cxt, id);
+            timeDB1.Stop();
+
+            timeDB2.Start();
             var metaData = docProc.GetModifyMetaData(cxt, doc);
+            timeDB2.Stop();
+            timeDB.Stop();
+
+            timeM.Stop();
+            SaveToFile("M: DocumentsController Get By Id", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentService GetDocument and GetModifyMetaData", timeDB.Elapsed.ToString("G"));
+            SaveToFile("DB1: IDocumentService GetDocument", timeDB1.Elapsed.ToString("G"));
+            SaveToFile("DB2: IDocumentService GetModifyMetaData", timeDB2.Elapsed.ToString("G"));
             return new JsonResult(doc, metaData, this);
         }
 
@@ -54,9 +104,21 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns>Добавленный документ</returns>
         public IHttpActionResult Post([FromBody]AddDocumentByTemplateDocument model)
         {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            timeM.Start();
+
             var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            return Get(docProc.AddDocumentByTemplateDocument(cxt, model));
+
+            timeDB.Start();
+            var docId = docProc.AddDocumentByTemplateDocument(cxt, model);
+            timeDB.Stop();
+
+            timeM.Stop();
+            SaveToFile("M: DocumentsController Post", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentService AddDocumentByTemplateDocument", timeDB.Elapsed.ToString("G"));
+            return Get(docId);
             //return new JsonResult(null,this);
         }
 
@@ -67,9 +129,21 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns>Обновленный документ</returns>
         public IHttpActionResult Put([FromBody]ModifyDocument model)
         {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            timeM.Start();
+
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            return Get(docProc.ModifyDocument(cxt, model));
+
+            timeDB.Start();
+            var docId = docProc.ModifyDocument(cxt, model);
+            timeDB.Stop();
+            timeM.Stop();
+            SaveToFile("M: DocumentsController Put", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentService ModifyDocument", timeDB.Elapsed.ToString("G"));
+
+            return Get(docId);
             //return new JsonResult(null, this);
         }
 
@@ -80,9 +154,19 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns></returns>
         public IHttpActionResult Delete(int id)
         {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            timeM.Start();
+
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
+            timeDB.Start();
             docProc.DeleteDocument(cxt, id);
+            timeDB.Stop();
+            timeM.Stop();
+            SaveToFile("M: DocumentsController Delete", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentService DeleteDocument", timeDB.Elapsed.ToString("G"));
+
             return new JsonResult(null, this);
         }
 
