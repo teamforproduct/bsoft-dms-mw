@@ -2,7 +2,7 @@
 
 namespace BL.Model.DocumentCore.FrontModel
 {
-    public class FrontDocumentAttachedFile: InternalDocumentAttachedFile
+    public class FrontFilterDocumentAttachedFile: InternalFilterDocumentAttachedFile
     {
         public string LastChangeUserName { get; set; }
     }

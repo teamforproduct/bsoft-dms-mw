@@ -15,6 +15,7 @@ using BL.Logic.DocumentCore.Commands;
 using BL.Database.Admins.Interfaces;
 using BL.Model.AdminCore;
 using BL.Model.DocumentCore.Actions;
+using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DocumentCore.InternalModel;
@@ -99,26 +100,27 @@ namespace BL.Logic.DocumentCore
         public int ModifyDocument(IContext context, ModifyDocument model)
         {
             //TODO make with command
-            var doc = _documentDb.GetInternalDocument(context, model.Id);
-            _adminDb.VerifyAccess(context, new VerifyAccess() { ActionCode = EnumActions.ModifyDocument, PositionId = doc.ExecutorPositionId });
-            context.CurrentPositionId = doc.ExecutorPositionId;
-            //var docUpd = new InternalDocument(model, doc);
-            doc.Description = model.Description;
-            doc.DocumentSubjectId = model.DocumentSubjectId;
-            doc.SenderAgentId = model.SenderAgentId;
-            doc.SenderAgentPersonId = model.SenderAgentPersonId;
-            doc.SenderNumber = model.SenderNumber;
-            doc.SenderDate = model.SenderDate;
-            doc.Addressee = model.Addressee;
-            doc.AccessLevel = model.AccessLevel;
+            var document = _documentDb.ModifyDocumentPrepare(context, model.Id);
+            _adminDb.VerifyAccess(context, new VerifyAccess() { ActionCode = EnumActions.ModifyDocument, PositionId = document.ExecutorPositionId });
+            context.CurrentPositionId = document.ExecutorPositionId;
+            document.Description = model.Description;
+            document.DocumentSubjectId = model.DocumentSubjectId;
+            document.SenderAgentId = model.SenderAgentId;
+            document.SenderAgentPersonId = model.SenderAgentPersonId;
+            document.SenderNumber = model.SenderNumber;
+            document.SenderDate = model.SenderDate;
+            document.Addressee = model.Addressee;
+            document.AccessLevel = model.AccessLevel;
+            document.LastChangeDate = DateTime.Now;
+            document.LastChangeUserId = context.CurrentAgentId;
 
-            VerifyDocument(context, new FrontDocument(doc), null);
-            return SaveDocument(context, doc);
+            VerifyDocument(context, new FrontDocument(document), null);
+            return SaveDocument(context, document);
         }
 
         public void DeleteDocument(IContext context, int id)
         {
-            var doc = _documentDb.GetDocument(context, id);
+            var doc = _documentDb.DeleteDocumentPrepare(context, id);
             _adminDb.VerifyAccess(context, new VerifyAccess() { ActionCode = EnumActions.DeleteDocument, PositionId = doc.ExecutorPositionId });
             Command cmd = new DeleteDocument(context, doc);
             if (cmd.CanExecute())
@@ -141,7 +143,7 @@ namespace BL.Logic.DocumentCore
             {
                 if (uiElements != null)
                 {
-                    var senderElements = new List<String>() { "SenderAgent", "SenderAgentPerson", "SenderNumber", "SenderDate", "Addressee" };
+                    var senderElements = new List<string>() { "SenderAgent", "SenderAgentPerson", "SenderNumber", "SenderDate", "Addressee" };
                     uiElements = uiElements.Where(x => !senderElements.Contains(x.Code)).ToList();
                 }
                 doc.SenderAgentId = null;
@@ -171,10 +173,7 @@ namespace BL.Logic.DocumentCore
 
                 if (docTemplate.DocumentSubjectId.HasValue)
                 {
-                    if (uiElements != null)
-                    {
-                        uiElements.Where(x => x.Code.Equals("DocumentSubject", StringComparison.OrdinalIgnoreCase)).ToList().ForEach(x => x.IsReadOnly = true);
-                    }
+                    uiElements?.Where(x => x.Code.Equals("DocumentSubject", StringComparison.OrdinalIgnoreCase)).ToList().ForEach(x => x.IsReadOnly = true);
                     doc.DocumentSubjectId = docTemplate.DocumentSubjectId;
                 }
 
@@ -182,26 +181,17 @@ namespace BL.Logic.DocumentCore
                 {
                     if (docTemplate.SenderAgentId.HasValue)
                     {
-                        if (uiElements != null)
-                        {
-                            uiElements.Where(x => x.Code.Equals("SenderAgent", StringComparison.OrdinalIgnoreCase)).ToList().ForEach(x => x.IsReadOnly = true);
-                        }
+                        uiElements?.Where(x => x.Code.Equals("SenderAgent", StringComparison.OrdinalIgnoreCase)).ToList().ForEach(x => x.IsReadOnly = true);
                         doc.SenderAgentId = docTemplate.SenderAgentId;
                     }
                     if (docTemplate.SenderAgentPersonId.HasValue)
                     {
-                        if (uiElements != null)
-                        {
-                            uiElements.Where(x => x.Code.Equals("SenderAgentPerson", StringComparison.OrdinalIgnoreCase)).ToList().ForEach(x => x.IsReadOnly = true);
-                        }
+                        uiElements?.Where(x => x.Code.Equals("SenderAgentPerson", StringComparison.OrdinalIgnoreCase)).ToList().ForEach(x => x.IsReadOnly = true);
                         doc.SenderAgentPersonId = docTemplate.SenderAgentPersonId;
                     }
                     if (!string.IsNullOrEmpty(docTemplate.Addressee))
                     {
-                        if (uiElements != null)
-                        {
-                            uiElements.Where(x => x.Code.Equals("Addressee", StringComparison.OrdinalIgnoreCase)).ToList().ForEach(x => x.IsReadOnly = true);
-                        }
+                        uiElements?.Where(x => x.Code.Equals("Addressee", StringComparison.OrdinalIgnoreCase)).ToList().ForEach(x => x.IsReadOnly = true);
                         doc.Addressee = docTemplate.Addressee;
                     }
                 }

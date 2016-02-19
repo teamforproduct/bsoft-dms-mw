@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using BL.CrossCutting.Interfaces;
 using BL.Model.DocumentCore;
+using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.SystemCore;
@@ -22,5 +23,7 @@ namespace BL.Database.Documents.Interfaces
         InternalDocument RegisterDocumentPrepare(IContext ctx, int documentId);
         InternalDocument CopyDocumentPrepare(IContext ctx, int documentId);
         InternalDocument AddDocumentByTemplateDocumentPrepare(IContext context, int templateDocumentId);
+        InternalDocument DeleteDocumentPrepare(IContext context, int documentId);
+        InternalDocument ModifyDocumentPrepare(IContext context, int id);
     }
 }

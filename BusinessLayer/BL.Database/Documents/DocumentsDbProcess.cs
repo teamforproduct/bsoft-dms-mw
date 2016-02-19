@@ -9,6 +9,7 @@ using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore;
 using BL.Database.DBModel.Document;
 using BL.Model.AdminCore;
+using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.SystemCore;
@@ -127,7 +128,6 @@ namespace BL.Database.Documents
                     .FirstOrDefault(x => x.Id == document.Id);
                 if (doc != null)
                 {
-                    //doc.TemplateDocumentId = document.TemplateDocumentId;
                     doc.DocumentSubjectId = document.DocumentSubjectId;
                     doc.Description = document.Description;
                     doc.RegistrationJournalId = document.RegistrationJournalId;
@@ -672,6 +672,61 @@ namespace BL.Database.Documents
                     DueDay = y.DueDay,
                     AccessLevel = (EnumDocumentAccesses)y.AccessLevelId
                 }).ToList();
+
+                return doc;
+            }
+        }
+
+        public InternalDocument DeleteDocumentPrepare(IContext context, int documentId)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var doc = CommonQueries.GetDocumentQuery(dbContext).Where(x => x.Doc.Id == documentId)
+                    .Select(x => new InternalDocument
+                    {
+                        Id = x.Doc.Id,
+                        IsRegistered = x.Doc.IsRegistered,
+                        ExecutorPositionId = x.Doc.ExecutorPositionId,
+                        //TODO к Сергею количество ожиданий и подписей 
+                    }).FirstOrDefault();
+
+                if (doc == null)
+                    return null;
+
+
+                return doc;
+            }
+        }
+
+        public InternalDocument ModifyDocumentPrepare(IContext context, int documentId)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var dbDoc = CommonQueries.GetDocumentQuery(dbContext).FirstOrDefault(x => x.Doc.Id == documentId && context.CurrentPositionsIdList.Contains(x.Acc.PositionId));
+
+                if (dbDoc == null)
+                {
+                    throw new DocumentNotFoundOrUserHasNoAccess();
+                }
+
+                var doc = new InternalDocument
+                {
+                    Id = dbDoc.Doc.Id,
+                    TemplateDocumentId = dbDoc.Doc.TemplateDocumentId,
+                    CreateDate = dbDoc.Doc.CreateDate,
+                    IsRegistered = dbDoc.Doc.IsRegistered,
+                    RegistrationJournalId = dbDoc.Doc.RegistrationJournalId,
+                    NumerationPrefixFormula = dbDoc.Doc.NumerationPrefixFormula,
+                    RegistrationNumber = dbDoc.Doc.RegistrationNumber,
+                    RegistrationNumberPrefix = dbDoc.Doc.RegistrationNumberPrefix,
+                    RegistrationNumberSuffix = dbDoc.Doc.RegistrationNumberSuffix,
+                    RegistrationDate = dbDoc.Doc.RegistrationDate,
+                    ExecutorPositionId = dbDoc.Doc.ExecutorPositionId,
+                    AccessLevel = (EnumDocumentAccesses)dbDoc.Acc.AccessLevelId,
+                    IsHard = dbDoc.Templ.IsHard,
+                    DocumentDirection = (EnumDocumentDirections)dbDoc.Templ.DocumentDirectionId,
+                    LinkId = dbDoc.Doc.LinkId,
+                };
 
                 return doc;
             }

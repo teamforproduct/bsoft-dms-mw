@@ -6,6 +6,7 @@ using DMS_WebAPI.Utilities;
 using System.Web.Http;
 using BL.Logic.DocumentCore.Interfaces;
 using System.Web.Http.Description;
+using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
 using System;

@@ -1,9 +1,9 @@
-﻿namespace BL.Model.DocumentCore.IncomingModel
+﻿namespace BL.Model.DocumentCore.Filters
 {
     /// <summary>
     /// Модель для получения вложения
     /// </summary>
-    public class DocumentFileIdentity
+    public class FilterDocumentFileIdentity
     {
         /// <summary>
         /// ИД документа

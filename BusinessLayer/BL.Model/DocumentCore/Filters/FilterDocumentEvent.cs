@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace BL.Model.DocumentCore.InternalModel
+namespace BL.Model.DocumentCore.Filters
 {
     /// <summary>
     /// Фильтр событий документов
