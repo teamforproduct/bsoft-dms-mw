@@ -203,13 +203,15 @@ namespace BL.Logic.DocumentCore
 
         public void RegisterDocument(IContext context, RegisterDocument model)
         {
-            var doc = _documentDb.RegisterDocumentPrepare(context, model.DocumentId);
+            _adminDb.VerifyAccess(context, new VerifyAccess() { ActionCode = EnumActions.RegisterDocument, PositionId = model.CurrentPositionId });
 
-            if (doc == null)
+            var document = _documentDb.RegisterDocumentPrepare(context, model.DocumentId);
+
+            if (document == null)
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
-            if (doc.IsRegistered)
+            if (document.IsRegistered)
             {
                 throw new DocumentHasAlredyBeenRegistered();
             }

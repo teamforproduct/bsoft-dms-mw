@@ -214,6 +214,7 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
                 //ADD OTHER TABLES!!!!
+                //TODO к Сергею разобраться с аттачами
                 dbContext.DocumentEventsSet.RemoveRange(dbContext.DocumentEventsSet.Where(x => x.DocumentId == id));
                 dbContext.DocumentAccessesSet.RemoveRange(dbContext.DocumentAccessesSet.Where(x => x.DocumentId == id));
                 dbContext.DocumentsSet.RemoveRange(dbContext.DocumentsSet.Where(x => x.Id == id));
@@ -536,49 +537,6 @@ namespace BL.Database.Documents
             }
         }
 
-        public InternalDocument CopyDocumentPrepare(IContext ctx, int documentId)
-        {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
-            {
-                var doc = CommonQueries.GetDocumentQuery(dbContext).Where(x => x.Doc.Id == documentId)
-                    .Select(x => new InternalDocument
-                    {
-                        TemplateDocumentId = x.Doc.TemplateDocumentId,
-                        DocumentSubjectId = x.Doc.DocumentSubjectId,
-                        Description = x.Doc.Description,
-                        SenderAgentId = x.Doc.SenderAgentId,
-                        SenderAgentPersonId = x.Doc.SenderAgentPersonId,
-                        Addressee = x.Doc.Addressee,
-                        AccessLevel = (EnumDocumentAccesses) x.Acc.AccessLevelId,
-                    }).FirstOrDefault();
-
-                if (doc == null)
-                    return null;
-
-                doc.SendLists = dbContext.DocumentSendListsSet.Where(x => x.DocumentId == documentId)
-                        .Select(y => new InternalDocumentSendLists
-                        {
-                            Stage = y.Stage,
-                            SendType = (EnumSendTypes)y.SendTypeId,
-                            TargetPositionId = y.TargetPositionId,
-                            Description = y.Description,
-                            DueDate = y.DueDate,
-                            DueDay = y.DueDay,
-                            AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
-                            IsInitial = y.IsInitial,
-                        }).ToList();
-                doc.RestrictedSendLists = dbContext.DocumentRestrictedSendListsSet.Where(x => x.DocumentId == documentId)
-                        .Select(y => new InternalDocumentRestrictedSendLists
-                        {
-                            PositionId = y.PositionId,
-                            AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
-                        }).ToList();
-                doc.DocumentFiles = CommonQueries.GetInternalDocumentFiles(dbContext, documentId);
-
-                return doc;
-            }
-        }
-
         public InternalDocument GetInternalDocument(IContext ctx, int documentId)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
@@ -587,7 +545,7 @@ namespace BL.Database.Documents
 
                 if (dbDoc == null)
                 {
-                    throw new DocumentNotFoundOrUserHasNoAccess();
+                    return null;
                 }
 
                 var doc = new InternalDocument
@@ -624,15 +582,69 @@ namespace BL.Database.Documents
             }
         }
 
-        public InternalDocument RegisterDocumentPrepare(IContext ctx, int documentId)
+        public InternalDocument CopyDocumentPrepare(IContext ctx, int documentId)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-                var qry = CommonQueries.GetDocumentQuery(dbContext).FirstOrDefault(x => x.Doc.Id == documentId);
-                return new InternalDocument
+                var doc = CommonQueries.GetDocumentQuery(dbContext).Where(x => x.Doc.Id == documentId)
+                    .Select(x => new InternalDocument
+                    {
+                        TemplateDocumentId = x.Doc.TemplateDocumentId,
+                        DocumentSubjectId = x.Doc.DocumentSubjectId,
+                        Description = x.Doc.Description,
+                        SenderAgentId = x.Doc.SenderAgentId,
+                        SenderAgentPersonId = x.Doc.SenderAgentPersonId,
+                        Addressee = x.Doc.Addressee,
+                        AccessLevel = (EnumDocumentAccesses)x.Acc.AccessLevelId,
+                    }).FirstOrDefault();
+
+                if (doc == null)
                 {
-                    IsRegistered = qry.Doc.IsRegistered
+                    return null;
+                }
+
+                doc.SendLists = dbContext.DocumentSendListsSet.Where(x => x.DocumentId == documentId)
+                        .Select(y => new InternalDocumentSendLists
+                        {
+                            Stage = y.Stage,
+                            SendType = (EnumSendTypes)y.SendTypeId,
+                            TargetPositionId = y.TargetPositionId,
+                            Description = y.Description,
+                            DueDate = y.DueDate,
+                            DueDay = y.DueDay,
+                            AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
+                            IsInitial = y.IsInitial,
+                        }).ToList();
+                doc.RestrictedSendLists = dbContext.DocumentRestrictedSendListsSet.Where(x => x.DocumentId == documentId)
+                        .Select(y => new InternalDocumentRestrictedSendLists
+                        {
+                            PositionId = y.PositionId,
+                            AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
+                        }).ToList();
+                doc.DocumentFiles = CommonQueries.GetInternalDocumentFiles(dbContext, documentId);
+
+                return doc;
+            }
+        }
+
+        public InternalDocument RegisterDocumentPrepare(IContext context, int documentId)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var dbDoc = CommonQueries.GetDocumentQuery(dbContext)
+                    .FirstOrDefault(x => x.Doc.Id == documentId && context.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId));
+
+                if (dbDoc == null)
+                {
+                    return null;
+                }
+
+                var doc = new InternalDocument
+                {
+                    Id = dbDoc.Doc.Id,
+                    IsRegistered = dbDoc.Doc.IsRegistered,
                 };
+                return doc;
             }
         }
 
@@ -653,25 +665,27 @@ namespace BL.Database.Documents
                     }).FirstOrDefault();
 
                 if (doc == null)
+                {
                     return null;
+                }
 
                 doc.RestrictedSendLists = dbContext.TemplateDocumentRestrictedSendLists.Where(y => y.Id == templateDocumentId)
                     .Select(y => new InternalDocumentRestrictedSendLists()
-                {
-                    PositionId = y.PositionId,
-                    AccessLevel = (EnumDocumentAccesses)y.AccessLevelId
-                }).ToList();
+                    {
+                        PositionId = y.PositionId,
+                        AccessLevel = (EnumDocumentAccesses)y.AccessLevelId
+                    }).ToList();
 
                 doc.SendLists = dbContext.TemplateDocumentSendLists.Where(y => y.Id == templateDocumentId)
                     .Select(y => new InternalDocumentSendLists()
-                {
-                    SendType = (EnumSendTypes)y.SendTypeId,
-                    TargetPositionId = y.TargetPositionId,
-                    Description = y.Description,
-                    Stage = y.Stage,
-                    DueDay = y.DueDay,
-                    AccessLevel = (EnumDocumentAccesses)y.AccessLevelId
-                }).ToList();
+                    {
+                        SendType = (EnumSendTypes)y.SendTypeId,
+                        TargetPositionId = y.TargetPositionId,
+                        Description = y.Description,
+                        Stage = y.Stage,
+                        DueDay = y.DueDay,
+                        AccessLevel = (EnumDocumentAccesses)y.AccessLevelId
+                    }).ToList();
 
                 return doc;
             }
@@ -681,18 +695,21 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext).Where(x => x.Doc.Id == documentId)
-                    .Select(x => new InternalDocument
-                    {
-                        Id = x.Doc.Id,
-                        IsRegistered = x.Doc.IsRegistered,
-                        ExecutorPositionId = x.Doc.ExecutorPositionId,
-                        //TODO к Сергею количество ожиданий и подписей 
-                    }).FirstOrDefault();
+                var dbDoc = CommonQueries.GetDocumentQuery(dbContext)
+                    .FirstOrDefault(x => x.Doc.Id == documentId && context.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId));
 
-                if (doc == null)
+                if (dbDoc == null)
+                {
                     return null;
+                }
 
+                var doc = new InternalDocument
+                {
+                    Id = dbDoc.Doc.Id,
+                    IsRegistered = dbDoc.Doc.IsRegistered,
+                    ExecutorPositionId = dbDoc.Doc.ExecutorPositionId,
+                    //TODO к Сергею количество ожиданий и подписей 
+                };
 
                 return doc;
             }
@@ -702,11 +719,12 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
-                var dbDoc = CommonQueries.GetDocumentQuery(dbContext).FirstOrDefault(x => x.Doc.Id == documentId && context.CurrentPositionsIdList.Contains(x.Acc.PositionId));
+                var dbDoc = CommonQueries.GetDocumentQuery(dbContext)
+                    .FirstOrDefault(x => x.Doc.Id == documentId && context.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId));
 
                 if (dbDoc == null)
                 {
-                    throw new DocumentNotFoundOrUserHasNoAccess();
+                    return null;
                 }
 
                 var doc = new InternalDocument

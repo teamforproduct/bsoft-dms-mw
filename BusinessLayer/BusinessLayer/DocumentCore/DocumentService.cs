@@ -36,6 +36,7 @@ namespace BL.Logic.DocumentCore
         }
 
         #region Documents
+
         public int SaveDocument(IContext context, InternalDocument document)
         {
             Command cmd;
@@ -72,6 +73,10 @@ namespace BL.Logic.DocumentCore
         {
             _adminDb.VerifyAccess(context, new VerifyAccess() { ActionCode = EnumActions.AddDocument, PositionId = model.CurrentPositionId });
             var document = _documentDb.AddDocumentByTemplateDocumentPrepare(context, model.TemplateDocumentId);
+            if (document == null)
+            {
+                throw new DocumentNotFoundOrUserHasNoAccess();
+            }
             document.CreateDate = DateTime.Now;
             document.ExecutorPositionId = context.CurrentPositionId.Value;
             document.IsRegistered = false;
@@ -101,7 +106,13 @@ namespace BL.Logic.DocumentCore
         {
             //TODO make with command
             var document = _documentDb.ModifyDocumentPrepare(context, model.Id);
+            if (document == null)
+            {
+                throw new DocumentNotFoundOrUserHasNoAccess();
+            }
+
             _adminDb.VerifyAccess(context, new VerifyAccess() { ActionCode = EnumActions.ModifyDocument, PositionId = document.ExecutorPositionId });
+
             context.CurrentPositionId = document.ExecutorPositionId;
             document.Description = model.Description;
             document.DocumentSubjectId = model.DocumentSubjectId;
@@ -115,14 +126,22 @@ namespace BL.Logic.DocumentCore
             document.LastChangeUserId = context.CurrentAgentId;
 
             VerifyDocument(context, new FrontDocument(document), null);
+
             return SaveDocument(context, document);
         }
 
         public void DeleteDocument(IContext context, int id)
         {
-            var doc = _documentDb.DeleteDocumentPrepare(context, id);
-            _adminDb.VerifyAccess(context, new VerifyAccess() { ActionCode = EnumActions.DeleteDocument, PositionId = doc.ExecutorPositionId });
-            Command cmd = new DeleteDocument(context, doc);
+            var document = _documentDb.DeleteDocumentPrepare(context, id);
+
+            if (document == null)
+            {
+                throw new DocumentNotFoundOrUserHasNoAccess();
+            }
+
+            _adminDb.VerifyAccess(context, new VerifyAccess() { ActionCode = EnumActions.DeleteDocument, PositionId = document.ExecutorPositionId });
+
+            Command cmd = new DeleteDocument(context, document);
             if (cmd.CanExecute())
             {
                 cmd.Execute();
@@ -201,6 +220,7 @@ namespace BL.Logic.DocumentCore
 
         public int CopyDocument(IContext context, CopyDocument model)
         {
+            _adminDb.VerifyAccess(context, new VerifyAccess() { ActionCode = EnumActions.AddDocument, PositionId = model.CurrentPositionId });
             var document = _documentDb.CopyDocumentPrepare(context, model.DocumentId);
 
             if (document == null)
