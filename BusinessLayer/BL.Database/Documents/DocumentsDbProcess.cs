@@ -802,10 +802,10 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-                return dbContext.DocumentsSet
+                return !dbContext.DocumentsSet
                                 .Any(x => x.RegistrationJournalId == document.RegistrationJournalId
                                          && x.NumerationPrefixFormula == document.NumerationPrefixFormula
-                                         && x.RegistrationNumberPrefix == document.RegistrationNumberPrefix
+                                         //&& x.RegistrationNumberPrefix == document.RegistrationNumberPrefix
                                          && x.RegistrationNumber == document.RegistrationNumber
                                          && x.Id != document.Id
                     );
