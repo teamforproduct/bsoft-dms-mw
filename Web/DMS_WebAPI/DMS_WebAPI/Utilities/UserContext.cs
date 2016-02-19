@@ -47,13 +47,13 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        public IContext Set(string token, DatabaseModel db)
+        public IContext Set(string token, DatabaseModel db, string userId)
         {
             token = token.ToLower();
             if (!_casheContexts.ContainsKey(token))
             {
                 var userManager = HttpContext.Current.Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
-                var user = userManager.FindById(HttpContext.Current.User.Identity.GetUserId());
+                var user = userManager.FindById(userId);
                 var context = 
                 new DefaultContext
                 {
