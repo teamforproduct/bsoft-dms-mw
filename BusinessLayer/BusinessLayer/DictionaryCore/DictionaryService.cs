@@ -102,6 +102,19 @@ namespace BL.Logic.DictionaryCore
             
             return _dictDb.GetDictionaryDocumentSubjects(context, filter);
         }
+        #endregion DictionaryDocumentSubjects
+
+        #region DictionaryDocumentTypes
+        // следить за списком полей необхдимых в каждом конкретном случае
+        public FrontDictionaryDocumentType GetDictionaryDocumentType(IContext context, int id)
+        {
+            return _dictDb.GetDictionaryDocumentTypes(context, new FilterDictionaryDocumentType {Id = new List<int> {id} }).FirstOrDefault();
+        }
+
+        public IEnumerable<FrontDictionaryDocumentType> GetDictionaryDocumentTypes(IContext context, FilterDictionaryDocumentType filter)
+        {
+            return _dictDb.GetDictionaryDocumentTypes(context, filter);
+        }
 
         public void ModifyDictionaryDocumentType(IContext context, ModifyDictionaryDocumentType docType)
         {
@@ -133,7 +146,7 @@ namespace BL.Logic.DictionaryCore
 
         public int AddDictionaryDocumentType(IContext context, ModifyDictionaryDocumentType docType)
         {
-            var spr = _dictDb.GetInternalDictionaryDocumentType(context,new FilterDictionaryDocumentType {Name = docType.Name});
+            var spr = _dictDb.GetInternalDictionaryDocumentType(context, new FilterDictionaryDocumentType { Name = docType.Name });
             if (spr != null)
             {
                 throw new DictionaryRecordNotUnique();
@@ -154,19 +167,6 @@ namespace BL.Logic.DictionaryCore
             }
         }
 
-        #endregion DictionaryDocumentSubjects
-
-        #region DictionaryDocumentTypes
-        // следить за списком полей необхдимых в каждом конкретном случае
-        public FrontDictionaryDocumentType GetDictionaryDocumentType(IContext context, int id)
-        {
-            return _dictDb.GetDictionaryDocumentTypes(context, new FilterDictionaryDocumentType {Id = new List<int> {id} }).FirstOrDefault();
-        }
-
-        public IEnumerable<FrontDictionaryDocumentType> GetDictionaryDocumentTypes(IContext context, FilterDictionaryDocumentType filter)
-        {
-            return _dictDb.GetDictionaryDocumentTypes(context, filter);
-        }
         #endregion DictionaryDocumentSubjects
 
         #region DictionaryEventTypes
@@ -310,15 +310,64 @@ namespace BL.Logic.DictionaryCore
         #endregion DictionarySubordinationTypes
 
         #region DictionaryTags
-        public IEnumerable<BaseDictionaryTag> GetDictionaryTags(IContext context, FilterDictionaryTag filter)
+        public IEnumerable<FrontDictionaryTag> GetDictionaryTags(IContext context, FilterDictionaryTag filter)
         {
             return _dictDb.GetDictionaryTags(context, filter);
         }
 
-        public BaseDictionaryTag GetDictionaryTag(IContext context, int id)
+        public FrontDictionaryTag GetDictionaryTag(IContext context, int id)
         {
-            return _dictDb.GetDictionaryTag(context, id);
+            return _dictDb.GetDictionaryTags(context, new FilterDictionaryTag { Id = new List<int> { id } }).FirstOrDefault();
         }
+
+        public int AddDictionaryTag(IContext context, ModifyDictionaryTag model)
+        {
+            try
+            {
+                var item = new InternalDictionaryTag
+                {
+                    PositionId = context.CurrentPositionId,
+                    Color = model.Color,
+                    Name = model.Name,
+                    LastChangeDate = DateTime.Now,
+                    LastChangeUserId = context.CurrentAgentId,
+                };
+                return _dictDb.AddDictionaryTag(context, item);
+            }
+            catch (Exception ex)
+            {
+                throw new DictionaryRecordCouldNotBeAdded(ex);
+            }
+        }
+
+        public void ModifyDictionaryTag(IContext context, ModifyDictionaryTag model)
+        {
+            try
+            {
+                var item = new InternalDictionaryTag
+                {
+                    Id = model.Id,
+                    Name = model.Name,
+                    Color = model.Color,
+                    LastChangeDate = DateTime.Now,
+                    LastChangeUserId = context.CurrentAgentId,
+                };
+                _dictDb.UpdateDictionaryTag(context, item);
+            }
+            catch (DictionaryRecordWasNotFound)
+            {
+                throw;
+            }
+            catch(DictionaryTagNotFoundOrUserHasNoAccess)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new DatabaseError(ex);
+            }
+        }
+
         #endregion DictionaryTags
 
     }

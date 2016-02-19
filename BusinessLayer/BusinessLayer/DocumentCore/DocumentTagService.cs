@@ -10,6 +10,8 @@ using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
+using System;
+using BL.Model.DocumentCore.InternalModel;
 
 namespace BL.Logic.DocumentCore
 {
@@ -25,14 +27,29 @@ namespace BL.Logic.DocumentCore
         #endregion System
 
         #region DocumentTags
-        public BaseDocumentTag GetTag(IContext context, int id)
-        {
-            return _tagDb.GetTag(context, id);
-        }
 
-        public IEnumerable<BaseDocumentTag> GetTags(IContext context, int documentId)
+        public IEnumerable<FrontDocumentTag> GetTags(IContext context, int documentId)
         {
             return _tagDb.GetTags(context, documentId).ToList();
+        }
+
+        public void ModifyDocumentTags(IContext context, ModifyDocumentTags model)
+        {
+            try
+            {
+                var item = new InternalDocumentTags
+                {
+                    DocumentId = model.DocumentId,
+                    Tags = model.Tags,
+                    LastChangeDate = DateTime.Now,
+                    LastChangeUserId = context.CurrentAgentId,
+                };
+                _tagDb.ModifyDocumentTags(context, item);
+            }
+            catch (Exception ex)
+            {
+                throw new DatabaseError(ex);
+            }
         }
 
         #endregion DocumentTags         

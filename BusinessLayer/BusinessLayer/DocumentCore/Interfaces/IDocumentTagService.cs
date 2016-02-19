@@ -9,10 +9,11 @@ namespace BL.Logic.DocumentCore.Interfaces
     public interface IDocumentTagService
     {
         #region DocumentTags
-        BaseDocumentTag GetTag(IContext context, int id);
 
-        IEnumerable<BaseDocumentTag> GetTags(IContext context, int documentId);
+        IEnumerable<FrontDocumentTag> GetTags(IContext context, int documentId);
 
-        #endregion DocumentTags     
+        void ModifyDocumentTags(IContext context, ModifyDocumentTags model);
+
+        #endregion DocumentTags         
     }
 }

@@ -996,30 +996,31 @@ namespace BL.Database.Dictionaries
         #endregion DictionarySubordinationTypes
 
         #region DictionaryTags
-        public BaseDictionaryTag GetDictionaryTag(IContext context, int id)
+
+        public InternalDictionaryTag GetInternalDictionaryTags(IContext context, FilterDictionaryTag filter)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
-                var item = dbContext.DictionaryTagsSet
-                    .Where(x => x.Id == id)
-                    .Where(x => !x.PositionId.HasValue || context.CurrentPositionsIdList.Contains(x.PositionId ?? 0))
-                    .Select(x => new BaseDictionaryTag
-                    {
-                        Id = x.Id,
-                        Name = x.Name,
-                        PositionId = x.PositionId,
-                        Color = x.Color,
-                        PositionName = x.Position.Name
-                    }).FirstOrDefault();
-                if (item?.Id > 0)
+                var qry = dbContext.DictionaryTagsSet.AsQueryable();
+
+                qry = qry.Where(x => !x.PositionId.HasValue || context.CurrentPositionsIdList.Contains(x.PositionId ?? 0));
+
+                if (filter.Id?.Count > 0)
                 {
-                    return item;
+                    qry = qry.Where(x => filter.Id.Contains(x.Id));
                 }
-                throw new DictionaryTagNotFoundOrUserHasNoAccess();
+
+                return qry.Select(x => new InternalDictionaryTag
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    PositionId = x.PositionId,
+                    Color = x.Color,
+                }).FirstOrDefault();
             }
         }
 
-        public IEnumerable<BaseDictionaryTag> GetDictionaryTags(IContext context, FilterDictionaryTag filter)
+        public IEnumerable<FrontDictionaryTag> GetDictionaryTags(IContext context, FilterDictionaryTag filter)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
@@ -1032,18 +1033,19 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(x => filter.Id.Contains(x.Id));
                 }
 
-                return qry.Select(x => new BaseDictionaryTag
+                return qry.Select(x => new FrontDictionaryTag
                 {
                     Id = x.Id,
                     Name = x.Name,
                     PositionId = x.PositionId,
+                    IsSystem = !x.PositionId.HasValue,
                     Color = x.Color,
                     PositionName = x.Position.Name
                 }).ToList();
             }
         }
 
-        public BaseDictionaryTag AddDictionaryTag(IContext context, ModifyDictionaryTag model)
+        public int AddDictionaryTag(IContext context, InternalDictionaryTag model)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
@@ -1058,17 +1060,17 @@ namespace BL.Database.Dictionaries
 
                 dbContext.DictionaryTagsSet.Add(savTag);
                 dbContext.SaveChanges();
-                return GetDictionaryTag(context, savTag.Id);
+                model.Id = savTag.Id;
+                return savTag.Id;
             }
         }
-
-        public BaseDictionaryTag UpdateDictionaryTag(IContext context, ModifyDictionaryTag model)
+        public void UpdateDictionaryTag(IContext context, InternalDictionaryTag model)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
                 var savTag = dbContext.DictionaryTagsSet
                     .Where(x => x.Id == model.Id)
-                    .Where(x => !x.PositionId.HasValue || context.CurrentPositionsIdList.Contains(x.PositionId ?? 0))
+                    .Where(x => context.CurrentPositionsIdList.Contains(x.PositionId ?? 0))
                     .FirstOrDefault();
 
                 if (savTag?.Id > 0)
@@ -1078,10 +1080,11 @@ namespace BL.Database.Dictionaries
                     savTag.LastChangeUserId = context.CurrentAgentId;
                     savTag.LastChangeDate = DateTime.Now;
                     dbContext.SaveChanges();
-
-                    return GetDictionaryTag(context, savTag.Id);
                 }
-                throw new DictionaryTagNotFoundOrUserHasNoAccess();
+                else
+                {
+                    throw new DictionaryTagNotFoundOrUserHasNoAccess();
+                }
             }
         }
 
