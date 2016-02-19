@@ -2,28 +2,24 @@
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using BL.Model.Enums;
+using System.Collections.Generic;
 
 namespace BL.Model.DocumentCore.IncomingModel
 {
     /// <summary>
-    /// Модель для добавления/изменения записи тегов документа
+    /// Модель для перезаписи списка тегов документа
     /// </summary>
-    public class ModifyDocumentTag
+    public class ModifyDocumentTags
     {
-        /// <summary>
-        /// ИД записи тегов
-        /// </summary>
-        [IgnoreDataMember]
-        public int Id { get; set; }
         /// <summary>
         /// ИД документа
         /// </summary>
         [Required]
         public int DocumentId { get; set; }
         /// <summary>
-        /// ИД тега
+        /// Список ИД тегов
         /// </summary>
         [Required]
-        public int TagId { get; set; }
+        public List<int> Tags { get; set; }
     }
 }

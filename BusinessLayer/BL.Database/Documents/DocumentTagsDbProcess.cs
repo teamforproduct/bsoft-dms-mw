@@ -10,6 +10,7 @@ using BL.Model.DocumentCore;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.Enums;
+using BL.Model.DocumentCore.InternalModel;
 
 namespace BL.Database.Documents
 {
@@ -23,7 +24,7 @@ namespace BL.Database.Documents
         }
 
         #region DocumentTags
-        public IEnumerable<BaseDocumentTag> GetTags(IContext ctx, int documentId)
+        public IEnumerable<FrontDocumentTag> GetTags(IContext ctx, int documentId)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
@@ -31,37 +32,55 @@ namespace BL.Database.Documents
                 var items = dbContext.DocumentTagsSet
                     .Where(x => x.DocumentId == documentId)
                     .Where(x => !x.Tag.PositionId.HasValue || ctx.CurrentPositionsIdList.Contains(x.Tag.PositionId ?? 0))
-                    .Select(x => new BaseDocumentTag
+                    .Select(x => new FrontDocumentTag
                     {
-                        Id = x.Id,
-                        DocumentId = x.DocumentId,
                         TagId = x.TagId,
+                        DocumentId = x.DocumentId,
+                        PositionId = x.Tag.PositionId,
+                        PositionName = x.Tag.Position.Name,
                         Color = x.Tag.Color,
-                        Name = x.Tag.Name
+                        Name = x.Tag.Name,
+                        IsSystem = !x.Tag.PositionId.HasValue
                     }).ToList();
 
                 return items;
             }
         }
-
-        public BaseDocumentTag GetTag(IContext ctx, int id)
+        public void ModifyDocumentTags(IContext context, InternalDocumentTags model)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
+                var dictionaryTags = dbContext.DictionaryTagsSet
+                    .Where(x => !x.PositionId.HasValue || context.CurrentPositionsIdList.Contains(x.PositionId ?? 0))
+                    .Where(x => model.Tags.Contains(x.Id))
+                    .Select(x=>x.Id)
+                    .ToList();
 
-                var item = dbContext.DocumentTagsSet
-                    .Where(x => x.Id == id)
-                    .Where(x => !x.Tag.PositionId.HasValue || ctx.CurrentPositionsIdList.Contains(x.Tag.PositionId ?? 0))
-                    .Select(x => new BaseDocumentTag
+                var documentTags = dbContext.DocumentTagsSet
+                    .Where(x => x.DocumentId == model.DocumentId)
+                    .Where(x => !x.Tag.PositionId.HasValue || context.CurrentPositionsIdList.Contains(x.Tag.PositionId ?? 0))
+                    .Select(x=>x.TagId)
+                    .ToList();
+
+                //Удаляем теги которые не присутствуют в списке
+                dbContext.DocumentTagsSet
+                    .RemoveRange(dbContext.DocumentTagsSet
+                        .Where(x=>x.DocumentId==model.DocumentId 
+                            && documentTags.Where(y => !dictionaryTags.Contains(y)).Contains(x.TagId)));
+
+                var newDictionaryTags = dictionaryTags
+                    .Where(x => !documentTags.Contains(x))
+                    .Select(x => new DocumentTags
                     {
-                        Id = x.Id,
-                        DocumentId = x.DocumentId,
-                        TagId = x.TagId,
-                        Color = x.Tag.Color,
-                        Name = x.Tag.Name
-                    }).FirstOrDefault();
+                        DocumentId = model.DocumentId,
+                        TagId = x,
+                        LastChangeUserId = model.LastChangeUserId,
+                        LastChangeDate = model.LastChangeDate
+                    });
 
-                return item;
+                dbContext.DocumentTagsSet.AddRange(newDictionaryTags);
+
+                dbContext.SaveChanges();
             }
         }
         #endregion DocumentTags         

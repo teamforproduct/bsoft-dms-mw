@@ -34,3 +34,9 @@
 2016-02-19T20:16:32.8124125+02:00
  method: DB: IDocumentOperationsService GetDocumentActionsPrepare
  time:0:00:01:15,4554853
+2016-02-19T20:29:31.2488647+02:00
+ method: M: DocumentActionsController Get List
+ time:0:00:00:06,0582866
+2016-02-19T20:29:31.2513513+02:00
+ method: DB: IDocumentOperationsService GetDocumentActionsPrepare
+ time:0:00:00:06,0556395

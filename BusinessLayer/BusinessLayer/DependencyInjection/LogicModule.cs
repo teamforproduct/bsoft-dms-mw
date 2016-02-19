@@ -30,6 +30,7 @@ namespace BL.Logic.DependencyInjection
             Bind<IDocumentOperationsService>().To<DocumentOperationsService>().InSingletonScope();
             Bind<IDocumentFiltersService>().To<DocumentFiltersService>().InSingletonScope();
             Bind<IDocumentSendListService>().To<DocumentSendListService>().InSingletonScope();
+            Bind<IDocumentTagService>().To<DocumentTagService>().InSingletonScope();
         }
     }
 }

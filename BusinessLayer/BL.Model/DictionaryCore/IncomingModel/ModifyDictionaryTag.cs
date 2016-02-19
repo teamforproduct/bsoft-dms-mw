@@ -2,7 +2,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace BL.Model.DictionaryCore
+namespace BL.Model.DictionaryCore.IncomingModel
 {
     public class ModifyDictionaryTag: CurrentPosition
     {

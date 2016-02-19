@@ -54,11 +54,12 @@
     <Compile Include="DictionaryCore\BaseDictionaryLinkType.cs" />
     <Compile Include="DictionaryCore\BaseDictionaryResultType.cs" />
     <Compile Include="DictionaryCore\FilterDictionaryTag.cs" />
+    <Compile Include="DictionaryCore\FrontModel\FrontDictionaryTag.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryDocumentType.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryPositionWithActions.cs" />
+    <Compile Include="DictionaryCore\InternalModel\InternalDictionaryTag.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryDocumentType.cs" />
-    <Compile Include="DictionaryCore\ModifyDictionaryTag.cs" />
-    <Compile Include="DictionaryCore\BaseDictionaryTag.cs" />
+    <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryTag.cs" />
     <Compile Include="DictionaryCore\BaseDictionarySubordinationType.cs" />
     <Compile Include="DictionaryCore\BaseDictionarySendType.cs" />
     <Compile Include="DictionaryCore\BaseDictionaryRegistrationJournal.cs" />
@@ -90,8 +91,8 @@
     <Compile Include="DictionaryCore\FilterDictionaryCompany.cs" />
     <Compile Include="DictionaryCore\FilterDictionaryAgentPerson.cs" />
     <Compile Include="DictionaryCore\FilterDictionaryAgent.cs" />
+    <Compile Include="DocumentCore\FrontModel\FrontDocumentTag.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontFilterDocumentAttachedFile.cs" />
-    <Compile Include="DocumentCore\FrontModel\BaseDocumentTag.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentFiles.cs" />
     <Compile Include="DocumentCore\Actions\ChangeFavourites.cs" />
     <Compile Include="DocumentCore\Actions\ControlChange.cs" />
@@ -110,7 +111,8 @@
     <Compile Include="DocumentCore\Filters\FilterDocumentFileIdentity.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentFile.cs" />
     <Compile Include="DocumentCore\IncomingModel\AddDocumentByTemplateDocument.cs" />
-    <Compile Include="DocumentCore\IncomingModel\ModifyDocumentTag.cs" />
+    <Compile Include="DocumentCore\IncomingModel\ModifyDocumentTags.cs" />
+    <Compile Include="DocumentCore\InternalModel\InternalDocumentTags.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalActionRecord.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalFilterDocumentAttachedFile.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalTemplateDocument.cs" />
