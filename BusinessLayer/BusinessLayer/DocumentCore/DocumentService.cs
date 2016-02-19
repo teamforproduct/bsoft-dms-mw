@@ -321,7 +321,6 @@ namespace BL.Logic.DocumentCore
 
         }
 
-
         #endregion Documents
 
         #region help methods

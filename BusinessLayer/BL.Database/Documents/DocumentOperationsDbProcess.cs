@@ -15,6 +15,7 @@ using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.InternalModel;
+using BL.Model.SystemCore;
 
 namespace BL.Database.Documents
 {
@@ -27,76 +28,36 @@ namespace BL.Database.Documents
             _helper = helper;
         }
 
-        #region DocumentRegistration
-
-        public bool VerifyDocumentRegistrationNumber(IContext ctx, RegisterDocument registerDocument)
+        public InternalDocument GetDocumentActionsPrepare(IContext context, int documentId)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
-                return dbContext.DocumentsSet
-                                .Any(x => x.RegistrationJournalId == registerDocument.RegistrationJournalId
-                                         && x.NumerationPrefixFormula == registerDocument.NumerationPrefixFormula
-                                         && x.RegistrationNumberPrefix == registerDocument.RegistrationNumberPrefix
-                                         && x.RegistrationNumber == registerDocument.RegistrationNumber
-                                         && x.Id != registerDocument.DocumentId
-                    );
-            }
-        }
-
-        public bool SetDocumentRegistration(IContext ctx, RegisterDocument registerDocument)
-        {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
-            {
-                var doc = dbContext.DocumentsSet.FirstOrDefault(x => x.Id == registerDocument.DocumentId);
-
-                var isNeedGenerateNumber = registerDocument.RegistrationNumber == null;
-                var isRepeat = true;
-                var isOk = false;
-                while (isRepeat)
-                {
-                    if (isNeedGenerateNumber)
+                var doc = CommonQueries.GetDocumentQuery(dbContext)
+                    .Where(x => x.Doc.Id == documentId && context.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId))
+                    .Select(x => new InternalDocument
                     {
-                        //get next number
-                        var maxNumber = (from docreg in dbContext.DocumentsSet
-                                         where docreg.RegistrationJournalId == registerDocument.RegistrationJournalId
-                                               && docreg.NumerationPrefixFormula == registerDocument.NumerationPrefixFormula
-                                               && docreg.Id != registerDocument.DocumentId
-                                         select docreg.RegistrationNumber).Max();
-                        registerDocument.RegistrationNumber = (maxNumber ?? 0) + 1;
-
-                    }
-                    doc.IsRegistered = !registerDocument.IsOnlyGetNextNumber;
-                    doc.RegistrationJournalId = registerDocument.RegistrationJournalId;
-                    doc.RegistrationNumber = registerDocument.RegistrationNumber;
-                    doc.NumerationPrefixFormula = registerDocument.NumerationPrefixFormula;
-                    doc.RegistrationNumberSuffix = registerDocument.RegistrationNumberSuffix;
-                    doc.RegistrationNumberPrefix = registerDocument.RegistrationNumberPrefix;
-                    doc.RegistrationDate = registerDocument.RegistrationDate;
-                    doc.LastChangeUserId = ctx.CurrentAgentId;
-                    doc.LastChangeDate = DateTime.Now;
-                    dbContext.SaveChanges();
-                    isOk = VerifyDocumentRegistrationNumber(ctx, registerDocument);
-                    isRepeat = isOk ? !isOk : isNeedGenerateNumber;
-                }
-                if (!isOk)
-                {
-                    doc.IsRegistered = false;
-                    doc.RegistrationJournalId = null;
-                    doc.NumerationPrefixFormula = null;
-                    doc.RegistrationNumber = null;
-                    doc.RegistrationNumberSuffix = null;
-                    doc.RegistrationNumberPrefix = null;
-                    doc.RegistrationDate = null;
-                    doc.LastChangeUserId = ctx.CurrentAgentId;
-                    doc.LastChangeDate = DateTime.Now;
-                    dbContext.SaveChanges();
-                    throw new DocumentCouldNotBeRegistered();
-                }
-                return isOk;
+                        Id = x.Doc.Id,
+                        //DocumentSubjectId = x.Doc.DocumentSubjectId,
+                        //Description = x.Doc.Description,
+                        IsRegistered = x.Doc.IsRegistered,
+                        //RegistrationJournalId = x.Doc.RegistrationJournalId,
+                        //NumerationPrefixFormula = x.Doc.NumerationPrefixFormula,
+                        //RegistrationNumber = x.Doc.RegistrationNumber,
+                        //RegistrationNumberSuffix = x.Doc.RegistrationNumberSuffix,
+                        //RegistrationNumberPrefix = x.Doc.RegistrationNumberPrefix,
+                        //RegistrationDate = x.Doc.RegistrationDate,
+                        ExecutorPositionId = x.Doc.ExecutorPositionId,
+                        //SenderAgentId = x.Doc.SenderAgentId,
+                        //SenderAgentPersonId = x.Doc.SenderAgentPersonId,
+                        //SenderNumber = x.Doc.SenderNumber,
+                        //SenderDate = x.Doc.SenderDate,
+                        //Addressee = x.Doc.Addressee,
+                        LinkId = x.Doc.LinkId,
+                    }).FirstOrDefault();
+                   return doc;
             }
         }
 
-        #endregion DocumentRegistration
 
         #region DocumentLink    
         public InternalLinkedDocument AddDocumentLinkPrepare(IContext context, AddDocumentLink model)
@@ -399,6 +360,8 @@ namespace BL.Database.Documents
                 return CommonQueries.GetDocumentAccess(ctx, dbContext, documentId);
             }
         }
+
+
         #endregion
     }
 }

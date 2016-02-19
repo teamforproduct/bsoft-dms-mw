@@ -55,6 +55,7 @@
     <Compile Include="DictionaryCore\BaseDictionaryResultType.cs" />
     <Compile Include="DictionaryCore\FilterDictionaryTag.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryDocumentType.cs" />
+    <Compile Include="DictionaryCore\InternalModel\InternalDictionaryPositionWithActions.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryDocumentType.cs" />
     <Compile Include="DictionaryCore\ModifyDictionaryTag.cs" />
     <Compile Include="DictionaryCore\BaseDictionaryTag.cs" />
@@ -110,6 +111,7 @@
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentFile.cs" />
     <Compile Include="DocumentCore\IncomingModel\AddDocumentByTemplateDocument.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentTag.cs" />
+    <Compile Include="DocumentCore\InternalModel\InternalActionRecord.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalFilterDocumentAttachedFile.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalTemplateDocument.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalTemplateDocumentRestrictedSendLists.cs" />
@@ -155,8 +157,9 @@
     <Compile Include="Enums\EnumLogTypes.cs" />
     <Compile Include="SystemCore\FilterSystemUIElement.cs" />
     <Compile Include="SystemCore\FilterSystemAction.cs" />
+    <Compile Include="SystemCore\InternalSystemAction.cs" />
     <Compile Include="SystemCore\LogInfo.cs" />
-    <Compile Include="SystemCore\BaseSystemAction.cs" />
+    <Compile Include="DocumentCore\FrontModel\FrontSystemAction.cs" />
     <Compile Include="SystemCore\BaseSystemUIElement.cs" />
     <Compile Include="SystemCore\UIPaging.cs" />
     <Compile Include="Users\Employee.cs" />

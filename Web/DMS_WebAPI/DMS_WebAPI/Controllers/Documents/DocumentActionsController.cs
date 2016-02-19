@@ -50,7 +50,7 @@ namespace DMS_WebAPI.Controllers.Documents
             timeDB.Stop();
             timeM.Stop();
             SaveToFile("M: DocumentActionsController Get List", timeM.Elapsed.ToString("G"));
-            SaveToFile("DB: IDocumentOperationsService GetDocumentActions", timeDB.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentOperationsService GetDocumentActionsPrepare", timeDB.Elapsed.ToString("G"));
 
             return new JsonResult(actions, this);
         }

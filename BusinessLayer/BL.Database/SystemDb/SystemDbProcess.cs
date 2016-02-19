@@ -5,7 +5,9 @@ using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
 using BL.Database.DatabaseContext;
 using BL.Database.DBModel.System;
+using BL.Model.DocumentCore.FrontModel;
 using BL.Model.SystemCore;
+using BL.Model.Enums;
 
 namespace BL.Database.SystemDb
 {
@@ -80,29 +82,27 @@ namespace BL.Database.SystemDb
             }
         }
 
-        public IEnumerable<BaseSystemAction> GetSystemActions(IContext ctx, FilterSystemAction filter)
+        public IEnumerable<InternalSystemAction> GetSystemActions(IContext ctx, FilterSystemAction filter)
         {
-            var res = new List<BaseSystemAction>();
+            var res = new List<InternalSystemAction>();
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
                 foreach (int posId in filter.PositionsIdList)
                 {
                     var qry = dbContext.SystemActionsSet.AsQueryable();
 
-
                     if (filter.Id?.Count > 0)
                     {
                         qry = qry.Where(x => filter.Id.Contains(x.Id));
                     }
-                    if (!string.IsNullOrEmpty(filter.Code))
+                    if (filter.Action.HasValue)
                     {
-                        qry = qry.Where(x => x.Code.Contains(filter.Code));
+                        qry = qry.Where(x => x.Id == (int)filter.Action);
                     }
-                    if (!string.IsNullOrEmpty(filter.ObjectCode))
+                    if (filter.Object.HasValue)
                     {
-                        qry = qry.Where(x => x.Object.Code.Contains(filter.ObjectCode));
+                        qry = qry.Where(x => x.ObjectId == (int)filter.Object);
                     }
-
                     if (filter.IsAvailable ?? false)
                     {
                         qry = qry.Where(x => !x.IsGrantable
@@ -110,23 +110,15 @@ namespace BL.Database.SystemDb
                                                                             &&
                                                                             y.Role.UserRoles.Any(z => z.UserId == ctx.CurrentAgentId))));
                     }
-
-
-                    res.AddRange(qry.Join
-                              (dbContext.DictionaryPositionsSet.Where(y => y.Id == posId),
-                              a => 1,
-                              p => 1,
-                              (a, p) => new BaseSystemAction
+                    res.AddRange(qry.Select(
+                              a => new InternalSystemAction
                               {
-                                  Id = a.Id,
-                                  Code = a.Code,
+                                  Action = (EnumActions)a.Id,
+                                  Object = (EnumObjects)a.ObjectId,
+                                  ActionCode = a.Code,
+                                  ObjectCode = a.Object.Code,
                                   API = a.API,
                                   Description = a.Description,
-                                  IsGrantable = a.IsGrantable,
-                                  IsGrantableByRecordId = a.IsGrantableByRecordId,
-                                  PositionId = posId,
-                                  PositionName = p.Name,
-                                  PositionAgentName = p.ExecutorAgent.Name
                               }).ToList());
                 }
                 return res;
@@ -177,7 +169,7 @@ namespace BL.Database.SystemDb
                         ValueFieldCode = x.ValueFieldCode,
                         ValueDescriptionFieldCode = x.ValueDescriptionFieldCode,
                         Format = x.Format
-    }).ToList();
+                    }).ToList();
                 }
             }
         }

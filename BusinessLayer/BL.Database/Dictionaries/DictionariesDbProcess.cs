@@ -705,6 +705,53 @@ namespace BL.Database.Dictionaries
                 }).ToList();
             }
         }
+
+        public IEnumerable<InternalDictionaryPositionWithActions> GetDictionaryPositionsWithActions(IContext context,
+            FilterDictionaryPosition filter)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var qry = dbContext.DictionaryPositionsSet.Select(x => new { pos = x, subordMax = 0 }).AsQueryable();
+
+                if (filter.Id?.Count > 0)
+                {
+                    qry = qry.Where(x => filter.Id.Contains(x.pos.Id));
+                }
+
+                if (filter.DocumentId?.Count > 0)
+                {
+                    qry = qry.Where(x =>
+                            dbContext.DocumentEventsSet
+                                .Where(y => filter.DocumentId.Contains(y.DocumentId)).Select(y => y.SourcePositionId).Contains(x.pos.Id)
+                                ||
+                                dbContext.DocumentEventsSet
+                                .Where(y => filter.DocumentId.Contains(y.DocumentId)).Select(y => y.TargetPositionId).Contains(x.pos.Id)
+                                );
+                }
+
+                if (filter.SubordinatedPositions?.Count > 0)
+                {
+                    qry = qry.GroupJoin(
+                                        dbContext.AdminSubordinationsSet.Where(y => filter.SubordinatedPositions.Contains(y.SourcePositionId)),
+                                        x => x.pos.Id,
+                                        y => y.TargetPositionId,
+                                        (x, y) => new { pos = x.pos, subordMax = y.Max(z => z.SubordinationTypeId) }
+                                        )
+                             .Where(x => x.subordMax > 0);
+                }
+
+                return qry.Select(x => new InternalDictionaryPositionWithActions
+                {
+                    Id = x.pos.Id,
+                    Name = x.pos.Name,
+                    DepartmentId = x.pos.DepartmentId,
+                    ExecutorAgentId = x.pos.ExecutorAgentId,
+                    DepartmentName = x.pos.Department.Name,
+                    ExecutorAgentName = x.pos.ExecutorAgent.Name,
+                }).ToList();
+            }
+        }
+
         #endregion DictionaryPositions
 
         #region DictionaryRegistrationJournals

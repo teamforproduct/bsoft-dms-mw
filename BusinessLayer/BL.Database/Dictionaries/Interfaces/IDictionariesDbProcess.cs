@@ -75,6 +75,7 @@ namespace BL.Database.Dictionaries.Interfaces
         BaseDictionaryPosition GetDictionaryPosition(IContext context, int id);
 
         IEnumerable<BaseDictionaryPosition> GetDictionaryPositions(IContext context, FilterDictionaryPosition filter);
+        IEnumerable<InternalDictionaryPositionWithActions> GetDictionaryPositionsWithActions(IContext context, FilterDictionaryPosition filter);
         #endregion DictionaryPositions
 
         #region DictionaryRegistrationJournals

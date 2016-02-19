@@ -7,13 +7,12 @@ using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.InternalModel;
+using BL.Model.SystemCore;
 
 namespace BL.Database.Documents.Interfaces
 {
     public interface IDocumentOperationsDbProcess
     {
-        bool VerifyDocumentRegistrationNumber(IContext ctx, RegisterDocument registerDocument);
-        bool SetDocumentRegistration(IContext ctx, RegisterDocument registerDocument);
         void AddDocumentLink(IContext context, InternalLinkedDocument model);
 
         FrontDocumentWaits GetDocumentWaitByOnEventId(IContext ctx, int eventId);
@@ -30,6 +29,6 @@ namespace BL.Database.Documents.Interfaces
 
         void SetDocumentInformation(IContext ctx, EventAccessModel access);
         InternalLinkedDocument AddDocumentLinkPrepare(IContext context, AddDocumentLink model);
-
+        InternalDocument GetDocumentActionsPrepare(IContext context, int documentId);
     }
 }

@@ -14,8 +14,10 @@ using BL.Model.Exception;
 using BL.Model.SystemCore;
 using BL.Database.Admins.Interfaces;
 using BL.Model.AdminCore;
+using BL.Model.DictionaryCore;
 using BL.Model.DocumentCore.FrontModel;
-
+using BL.Model.DictionaryCore.InternalModel;
+using BL.Model.DocumentCore.InternalModel;
 
 namespace BL.Logic.DocumentCore
 {
@@ -58,16 +60,38 @@ namespace BL.Logic.DocumentCore
         #endregion
 
         #region Operation with document
-        public IEnumerable<BaseSystemAction> GetDocumentActions(IContext ctx, int documentId)
+        public IEnumerable<InternalDictionaryPositionWithActions> GetDocumentActions(IContext ctx, int documentId)
         {
-            var document = _documentDb.GetDocument(ctx, documentId);
+
+            var document = _operationDb.GetDocumentActionsPrepare(ctx, documentId);
+            var dictDb = DmsResolver.Current.Get<IDictionariesDbProcess>();
+            var positions = dictDb.GetDictionaryPositionsWithActions(ctx, new FilterDictionaryPosition { Id = ctx.CurrentPositionsIdList });
             var systemDb = DmsResolver.Current.Get<ISystemDbProcess>();
-            var actions = systemDb.GetSystemActions(ctx, new FilterSystemAction() { ObjectCode = "Documents", IsAvailable = true, PositionsIdList = ctx.CurrentPositionsIdList });
-            if (document.IsRegistered)
+            foreach (var position in positions)
             {
-                actions = actions.Where(x => x.Code != "ModifyDocument").ToList();
+                position.Actions = systemDb.GetSystemActions(ctx, new FilterSystemAction() { Object = EnumObjects.Documents, IsAvailable = true, PositionsIdList = new List<int> { position.Id } });
+                if (document.IsRegistered || position.Id != document.ExecutorPositionId)
+                {
+                    position.Actions = position.Actions.Where(x => x.Action != EnumActions.ModifyDocument).ToList();
+                    position.Actions = position.Actions.Where(x => x.Action != EnumActions.DeleteDocument).ToList();
+                }
+                if (document.IsRegistered)
+                {
+                    position.Actions = position.Actions.Where(x => x.Action != EnumActions.RegisterDocument).ToList();
+                    position.Actions = position.Actions.Where(x => x.Action != EnumActions.ChangeExecutor).ToList();
+                }
+                position.Actions.Where(x => x.Action == EnumActions.ControlOff).ToList()
+                    .ForEach(x =>
+                    {
+                        x.ActionRecords = new List<InternalActionRecord>()
+                        {
+                            new InternalActionRecord() {Id = 1, Description = "TEST1"},
+                            new InternalActionRecord() {Id = 2, Description = "TEST2"}
+                        };
+                    });
             }
-            return actions;
+
+            return positions;//actions;
         }
 
         public int AddDocumentAccess(IContext ctx, FrontDocumentAccess access)

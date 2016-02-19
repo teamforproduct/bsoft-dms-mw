@@ -10,3 +10,27 @@
 2016-02-19T12:29:23.8031953+02:00
  method: DB: IDocumentService GetDocuments
  time:0:00:00:01,1772226
+2016-02-19T20:14:43.2715438+02:00
+ method: DB: IDocumentService GetDocuments User: 1040
+ time:0:00:00:00,6705208
+2016-02-19T20:14:43.2750493+02:00
+ method: M: DocumentsController Get List User: 1040
+ time:0:00:00:00,6736760
+2016-02-19T20:14:53.4102322+02:00
+ method: DB: IDocumentService GetDocument and GetModifyMetaData User: 1040
+ time:0:00:00:00,6421435
+2016-02-19T20:14:53.4132147+02:00
+ method: DB1: IDocumentService GetDocument User: 1040
+ time:0:00:00:00,5455162
+2016-02-19T20:14:53.4142154+02:00
+ method: DB2: IDocumentService GetModifyMetaData User: 1040
+ time:0:00:00:00,0966244
+2016-02-19T20:14:53.4152171+02:00
+ method: M: DocumentsController Get By Id User: 1040
+ time:0:00:00:00,6422769
+2016-02-19T20:16:32.8094089+02:00
+ method: M: DocumentActionsController Get List
+ time:0:00:01:15,4583227
+2016-02-19T20:16:32.8124125+02:00
+ method: DB: IDocumentOperationsService GetDocumentActionsPrepare
+ time:0:00:01:15,4554853
