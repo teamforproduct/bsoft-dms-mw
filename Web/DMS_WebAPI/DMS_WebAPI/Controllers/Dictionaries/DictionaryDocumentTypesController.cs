@@ -49,6 +49,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns>Измененный запись словаря типа документа</returns>
         public IHttpActionResult Put(int id, [FromBody]ModifyDictionaryDocumentType model)
         {
+            model.Id = id;
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
             tmpDict.ModifyDictionaryDocumentType(cxt, model);

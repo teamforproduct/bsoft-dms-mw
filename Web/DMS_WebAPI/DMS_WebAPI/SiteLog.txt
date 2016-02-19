@@ -4,3 +4,9 @@
 2016-02-19T11:43:34.1091523+02:00
  method: DB: IDocumentService GetDocuments
  time:0:00:00:03,6235752
+2016-02-19T12:29:23.7961828+02:00
+ method: M: DocumentsController Get List
+ time:0:00:00:01,1803270
+2016-02-19T12:29:23.8031953+02:00
+ method: DB: IDocumentService GetDocuments
+ time:0:00:00:01,1772226

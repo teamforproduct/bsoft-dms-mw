@@ -71,11 +71,29 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns>Документ</returns>
         public IHttpActionResult Get(int id)
         {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            var timeDB1 = new System.Diagnostics.Stopwatch();
+            var timeDB2 = new System.Diagnostics.Stopwatch();
+            timeM.Start();
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
 
+            timeDB.Start();
+            timeDB1.Start();
             var doc = docProc.GetDocument(cxt, id);
+            timeDB1.Stop();
+
+            timeDB2.Start();
             var metaData = docProc.GetModifyMetaData(cxt, doc);
+            timeDB2.Stop();
+            timeDB.Stop();
+
+            timeM.Stop();
+            SaveToFile("M: DocumentsController Get By Id", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentService GetDocument and GetModifyMetaData", timeDB.Elapsed.ToString("G"));
+            SaveToFile("DB1: IDocumentService GetDocument", timeDB1.Elapsed.ToString("G"));
+            SaveToFile("DB2: IDocumentService GetModifyMetaData", timeDB2.Elapsed.ToString("G"));
             return new JsonResult(doc, metaData, this);
         }
 
@@ -86,9 +104,21 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns>Добавленный документ</returns>
         public IHttpActionResult Post([FromBody]AddDocumentByTemplateDocument model)
         {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            timeM.Start();
+
             var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            return Get(docProc.AddDocumentByTemplateDocument(cxt, model));
+
+            timeDB.Start();
+            var docId = docProc.AddDocumentByTemplateDocument(cxt, model);
+            timeDB.Stop();
+
+            timeM.Stop();
+            SaveToFile("M: DocumentsController Post", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentService AddDocumentByTemplateDocument", timeDB.Elapsed.ToString("G"));
+            return Get(docId);
             //return new JsonResult(null,this);
         }
 
@@ -99,9 +129,21 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns>Обновленный документ</returns>
         public IHttpActionResult Put([FromBody]ModifyDocument model)
         {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            timeM.Start();
+
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            return Get(docProc.ModifyDocument(cxt, model));
+
+            timeDB.Start();
+            var docId = docProc.ModifyDocument(cxt, model);
+            timeDB.Stop();
+            timeM.Stop();
+            SaveToFile("M: DocumentsController Put", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentService ModifyDocument", timeDB.Elapsed.ToString("G"));
+
+            return Get(docId);
             //return new JsonResult(null, this);
         }
 
@@ -112,9 +154,19 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns></returns>
         public IHttpActionResult Delete(int id)
         {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            timeM.Start();
+
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
+            timeDB.Start();
             docProc.DeleteDocument(cxt, id);
+            timeDB.Stop();
+            timeM.Stop();
+            SaveToFile("M: DocumentsController Delete", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentService DeleteDocument", timeDB.Elapsed.ToString("G"));
+
             return new JsonResult(null, this);
         }
 
