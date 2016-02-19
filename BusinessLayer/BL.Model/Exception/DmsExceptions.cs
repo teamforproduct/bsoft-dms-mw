@@ -1,6 +1,4 @@
-﻿using BL.Model.AdminCore;
-
-namespace BL.Model.Exception
+﻿namespace BL.Model.Exception
 {
     public class DmsExceptions : System.Exception
     {
@@ -12,6 +10,21 @@ namespace BL.Model.Exception
         public DmsExceptions(string message, System.Exception ex) : base(message, ex)
         {
 
+        }
+    }
+
+    /// <summary>
+    /// Сообщение при ошибке работы с базой данных
+    /// </summary>
+    public class DatabaseError : DmsExceptions
+    {
+        private const string _MESSAGE = "Ошибка при обращении к базе данных!";
+        public DatabaseError() : base(_MESSAGE)
+        {
+        }
+
+        public DatabaseError(System.Exception ex) : base(_MESSAGE, ex)
+        {
         }
     }
 
@@ -256,6 +269,7 @@ namespace BL.Model.Exception
         {
         }
     }
+
     public class DocumentRestrictedSendListDoesNotMatchTheTemplate : DmsExceptions
     {
         private const string _MESSAGE = "Document Restricted SendList does not match the template";
@@ -267,6 +281,7 @@ namespace BL.Model.Exception
         {
         }
     }
+
     public class EventNotFoundOrUserHasNoAccess : DmsExceptions
     {
         private const string _MESSAGE = "User could not acceess this event!";
@@ -299,6 +314,53 @@ namespace BL.Model.Exception
         }
 
         public DictionaryTagNotFoundOrUserHasNoAccess(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+
+
+    /// <summary>
+    /// Сообщение об ошибке, когда невозможно добавить данные в справочник
+    /// </summary>
+    public class DictionaryRecordCouldNotBeAdded : DmsExceptions
+    {
+        private const string _MESSAGE = "You could not add this dictionary data!";
+        public DictionaryRecordCouldNotBeAdded() : base(_MESSAGE)
+        {
+        }
+
+        public DictionaryRecordCouldNotBeAdded(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+    /// <summary>
+    /// Сообщение об ошибке, когда пытаются обновить несуществующую строку справочника в БД
+    /// </summary>
+    public class DictionaryRecordWasNotFound : DmsExceptions
+    {
+        private const string _MESSAGE = "Dictionary record was not found!";
+        public DictionaryRecordWasNotFound() : base(_MESSAGE)
+        {
+        }
+
+        public DictionaryRecordWasNotFound(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+    /// <summary>
+    /// Сообщение об ошибке, когда пытаются обновить несуществующую строку справочника в БД
+    /// </summary>
+    public class DictionaryRecordNotUnique : DmsExceptions
+    {
+        private const string _MESSAGE = "Dictionary record should be unique!";
+        public DictionaryRecordNotUnique() : base(_MESSAGE)
+        {
+        }
+
+        public DictionaryRecordNotUnique(System.Exception ex) : base(_MESSAGE, ex)
         {
         }
     }

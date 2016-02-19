@@ -6,9 +6,10 @@ using BL.Database.DatabaseContext;
 using BL.Model.DictionaryCore;
 using BL.Database.Dictionaries.Interfaces;
 using BL.Model.Enums;
-using BL.Model.DocumentCore.Actions;
 using System;
 using BL.Database.DBModel.Dictionary;
+using BL.Model.DictionaryCore.FrontModel;
+using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Exception;
 
 namespace BL.Database.Dictionaries
@@ -372,23 +373,43 @@ namespace BL.Database.Dictionaries
         #endregion DictionaryDocumentSubjects
 
         #region DictionaryDocumentTypes
-        public BaseDictionaryDocumentType GetDictionaryDocumentType(IContext context, int id)
+        public void UpdateDictionaryDocumentType(IContext context, InternalDictionaryDocumentType docType)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
-                return dbContext.DictionaryDocumentTypesSet.Where(x => x.Id == id)
-                        .Select(x => new BaseDictionaryDocumentType
-                        {
-                            Id = x.Id,
-                            Name = x.Name,
-                            DirectionCodes = x.DirectionCodes,
-                            LastChangeUserId = x.LastChangeUserId,
-                            LastChangeDate = x.LastChangeDate,
-                        }).FirstOrDefault();
+                var ddt = dbContext.DictionaryDocumentTypesSet.FirstOrDefault(x => x.Id == docType.Id);
+                if (ddt != null)
+                {
+                    ddt.Name = docType.Name;
+                    ddt.LastChangeDate = docType.LastChangeDate;
+                    ddt.LastChangeUserId = docType.LastChangeUserId;
+                    dbContext.SaveChanges();
+                }
+                else
+                {
+                    throw new DictionaryRecordWasNotFound();
+                }
             }
         }
 
-        public IEnumerable<BaseDictionaryDocumentType> GetDictionaryDocumentTypes(IContext context, FilterDictionaryDocumentType filter)
+        public int AddDictionaryDocumentType(IContext context, InternalDictionaryDocumentType docType)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var ddt = new DictionaryDocumentTypes
+                {
+                    Name = docType.Name,
+                    LastChangeDate = docType.LastChangeDate,
+                    LastChangeUserId = docType.LastChangeUserId
+                };
+                dbContext.DictionaryDocumentTypesSet.Add(ddt);
+                dbContext.SaveChanges();
+                docType.Id = ddt.Id;
+                return ddt.Id;
+            }
+        }
+
+        public InternalDictionaryDocumentType GetInternalDictionaryDocumentType(IContext context, FilterDictionaryDocumentType filter)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
@@ -399,13 +420,36 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(x => filter.Id.Contains(x.Id));
                 }
 
-                return qry.Select(x => new BaseDictionaryDocumentType
+                if (!String.IsNullOrEmpty (filter.Name))
+                {
+                    qry = qry.Where(x => filter.Name == x.Name);
+                }
+
+                return qry.Select(x => new InternalDictionaryDocumentType
                 {
                     Id = x.Id,
                     Name = x.Name,
-                    DirectionCodes = x.DirectionCodes,
-                    LastChangeUserId = x.LastChangeUserId,
                     LastChangeDate = x.LastChangeDate,
+                    LastChangeUserId = x.LastChangeUserId
+                }).FirstOrDefault();
+            }
+        }
+
+        public IEnumerable<FrontDictionaryDocumentType> GetDictionaryDocumentTypes(IContext context, FilterDictionaryDocumentType filter)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var qry = dbContext.DictionaryDocumentTypesSet.AsQueryable();
+
+                if (filter.Id?.Count > 0)
+                {
+                    qry = qry.Where(x => filter.Id.Contains(x.Id));
+                }
+
+                return qry.Select(x => new FrontDictionaryDocumentType
+                {
+                    Id = x.Id,
+                    Name = x.Name,
                 }).ToList();
             }
         }
