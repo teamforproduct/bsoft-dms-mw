@@ -7,7 +7,6 @@ using BL.Database.Dictionaries.Interfaces;
 using BL.Database.Documents.Interfaces;
 using BL.Database.SystemDb;
 using BL.Logic.DocumentCore.Interfaces;
-using BL.Model.Database;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.Enums;
 using BL.Model.Exception;
@@ -30,30 +29,6 @@ namespace BL.Logic.DocumentCore
             _adminDb = adminDb;
             _operationDb = operationDb;
         }
-
-        #region DocumentEvents
-
-        public void AddDocumentComment(IContext context, AddNote note)
-        {
-            var evt = new InternalDocumentEvents
-            {
-                DocumentId = note.DocumentId,
-                Description = note.Description,
-                EventType = EnumEventTypes.AddNote,
-                SourceAgentId = context.CurrentAgentId,
-                TargetAgentId = context.CurrentAgentId,
-                SourcePositionId = context.CurrentPositionId,
-                TargetPositionId = context.CurrentPositionId,
-                LastChangeUserId = context.CurrentAgentId,
-                LastChangeDate = DateTime.Now,
-                Date = DateTime.Now,
-                CreateDate = DateTime.Now
-            };
-
-            _operationDb.AddDocumentEvent(context, evt);
-        }
-
-        #endregion
 
         #region Operation with document
         public IEnumerable<InternalDictionaryPositionWithActions> GetDocumentActions(IContext ctx, int documentId)
@@ -89,130 +64,6 @@ namespace BL.Logic.DocumentCore
 
             return positions;//actions;
         }
-
-        public void ChangeDocumentWorkStatus(IContext context, ChangeWorkStatus newStatus)
-        {
-            var acc = _operationDb.GetDocumentAccess(context, newStatus.DocumentId);
-            if (acc == null)
-            {
-                throw new UserHasNoAccessToDocument();
-            }
-            acc.IsInWork = newStatus.IsInWork;
-            var ea = new EventAccessModel
-            {
-                DocumentAccess = acc,
-                DocumentEvent = new InternalDocumentEvents
-                {
-                    DocumentId = newStatus.DocumentId,
-                    SourceAgentId = context.CurrentAgentId,
-                    TargetAgentId = context.CurrentAgentId,
-                    SourcePositionId = context.CurrentPositionId,
-                    TargetPositionId = context.CurrentPositionId,
-                    Description = newStatus.Description,
-                    EventType = newStatus.IsInWork ? EnumEventTypes.SetInWork : EnumEventTypes.SetOutWork,
-                    LastChangeUserId = context.CurrentAgentId,
-                    LastChangeDate = DateTime.Now,
-                    Date = DateTime.Now,
-                    CreateDate = DateTime.Now,
-                }
-            };
-
-            _operationDb.SetDocumentInformation(context, ea);
-        }
-
-        public void ChangeFavouritesForDocument(IContext context, ChangeFavourites model)
-        {
-            //TODO check access to document
-            var acc = _operationDb.GetDocumentAccess(context, model.DocumentId);
-            acc.IsFavourite = model.IsFavourite;
-            _operationDb.UpdateDocumentAccess(context, acc);
-        }
-
-        public void ControlOn(IContext context, ControlOn model)
-        {
-            var docWait = new InternalDocumentWaits
-            {
-                DocumentId = model.DocumentId,
-                Description = model.Description,
-                DueDate = model.DueDate,
-                AttentionDate = model.AttentionDate,
-                LastChangeUserId = context.CurrentAgentId,
-                LastChangeDate = DateTime.Now,
-                OnEvent = new InternalDocumentEvents
-                {
-                    DocumentId = model.DocumentId,
-                    EventType = EnumEventTypes.ControlOn,
-                    Description = model.Description,
-                    SourcePositionId = context.CurrentPositionId,
-                    SourceAgentId = context.CurrentAgentId,
-                    TargetPositionId = context.CurrentPositionId,
-                    TargetAgentId = context.CurrentAgentId,
-                    LastChangeDate = DateTime.Now,
-                    Date = DateTime.Now,
-                    CreateDate = DateTime.Now,
-                    LastChangeUserId = context.CurrentAgentId
-                }
-            };
-            _operationDb.AddDocumentWait(context, docWait);
-        }
-
-        public void ControlChange(IContext context, ControlChange model)
-        {
-            var oldWait = _operationDb.GetDocumentWaitByOnEventId(context, model.EventId);
-
-            oldWait.OnEvent = null;
-            oldWait.OffEvent = new InternalDocumentEvents
-            {
-                DocumentId = model.DocumentId,
-                EventType = EnumEventTypes.ControlChange,
-                Description = model.Description,
-                SourcePositionId = context.CurrentPositionId,
-                SourceAgentId = context.CurrentAgentId,
-                TargetPositionId = context.CurrentPositionId,
-                TargetAgentId = context.CurrentAgentId,
-                LastChangeDate = DateTime.Now,
-                Date = DateTime.Now,
-                CreateDate = DateTime.Now,
-            };
-
-            _operationDb.UpdateDocumentWait(context, oldWait);
-            // TODO Stas check that oldWait.OffEvent.Id filled during the update operation
-            var newWait = new InternalDocumentWaits
-            {
-                ParentId = oldWait.Id,
-                DocumentId = model.DocumentId,
-                Description = model.Description,
-                DueDate = model.DueDate,
-                AttentionDate = model.AttentionDate,
-                OnEventId = oldWait.OffEvent.Id
-            };
-            _operationDb.AddDocumentWait(context, newWait);
-        }
-
-        public void ControlOff(IContext context, ControlOff model)
-        {
-            var docWait = _operationDb.GetDocumentWaitByOnEventId(context, model.EventId);
-
-            docWait.ResultTypeId = model.ResultTypeId;
-
-            docWait.OnEvent = null;
-            docWait.OffEvent = new InternalDocumentEvents
-            {
-                DocumentId = model.DocumentId,
-                EventType = EnumEventTypes.ControlOff,
-                Description = model.Description,
-                SourcePositionId = (int)context.CurrentPositionId,
-                SourceAgentId = context.CurrentAgentId,
-                TargetPositionId = context.CurrentPositionId,
-                TargetAgentId = context.CurrentAgentId,
-                LastChangeDate = DateTime.Now,
-                Date = DateTime.Now,
-                CreateDate = DateTime.Now,
-            };
-
-            _operationDb.UpdateDocumentWait(context, docWait);
-        }
-
 
         public void AddDocumentLink(IContext context, AddDocumentLink model)
         {

@@ -47,13 +47,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\CommonDocumentUtilities.cs" />
     <Compile Include="DependencyInjection\LogicModule.cs" />
     <Compile Include="AdminCore\AdminService.cs" />
     <Compile Include="AdminCore\Interfaces\IAdminService.cs" />
     <Compile Include="DictionaryCore\DictionaryService.cs" />
     <Compile Include="DictionaryCore\Interfaces\IDictionaryService.cs" />
-    <Compile Include="DocumentCore\Commands\DeleteDocument.cs" />
-    <Compile Include="DocumentCore\Commands\AddDocument.cs" />
+    <Compile Include="DocumentCore\Commands\AddFavouriteCommand.cs" />
+    <Compile Include="DocumentCore\Commands\AddNoteCommand.cs" />
+    <Compile Include="DocumentCore\Commands\ChangeExecutorCommand.cs" />
+    <Compile Include="DocumentCore\Commands\ControlOnCommand.cs" />
+    <Compile Include="DocumentCore\Commands\CommandFactory.cs" />
+    <Compile Include="DocumentCore\Commands\CommandService.cs" />
+    <Compile Include="DocumentCore\Commands\ControlChangeCommand.cs" />
+    <Compile Include="DocumentCore\Commands\ControlOffCommand.cs" />
+    <Compile Include="DocumentCore\Commands\CopyDocumentCommand.cs" />
+    <Compile Include="DocumentCore\Commands\DeleteDocumentCommand.cs" />
+    <Compile Include="DocumentCore\Commands\AddDocumentCommand.cs" />
+    <Compile Include="DocumentCore\Commands\DeleteFavouriteCommand.cs" />
+    <Compile Include="DocumentCore\Commands\FinishWorkCommand.cs" />
+    <Compile Include="DocumentCore\Interfaces\ICommandService.cs" />
+    <Compile Include="DocumentCore\Commands\RegisterDocumentCommand.cs" />
+    <Compile Include="DocumentCore\Commands\SendMessageCommand.cs" />
+    <Compile Include="DocumentCore\Commands\StartWorkCommand.cs" />
     <Compile Include="DocumentCore\DocumentFileService.cs" />
     <Compile Include="DocumentCore\DocumentFiltersService.cs" />
     <Compile Include="DocumentCore\DocumentOperationsService.cs" />
@@ -64,7 +80,7 @@
     <Compile Include="DocumentCore\Interfaces\IDocumentFiltersService.cs" />
     <Compile Include="DocumentCore\Interfaces\IDocumentOperationsService.cs" />
     <Compile Include="DocumentCore\Interfaces\IDocumentFileService.cs" />
-    <Compile Include="DocumentCore\Commands\UpdateDocument.cs" />
+    <Compile Include="DocumentCore\Commands\UpdateDocumentCommand.cs" />
     <Compile Include="DocumentCore\DocumentService.cs" />
     <Compile Include="DocumentCore\Interfaces\IDocumentService.cs" />
     <Compile Include="DocumentCore\Interfaces\ITemplateDocumentService.cs" />

@@ -10,6 +10,7 @@ using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
 using System;
+using BL.Model.Enums;
 
 namespace DMS_WebAPI.Controllers.Documents
 {
@@ -113,7 +114,7 @@ namespace DMS_WebAPI.Controllers.Documents
             var docProc = DmsResolver.Current.Get<IDocumentService>();
 
             timeDB.Start();
-            var docId = docProc.AddDocumentByTemplateDocument(cxt, model);
+            var docId = (int)docProc.ExecuteAction(EnumActions.AddDocument, cxt, model);
             timeDB.Stop();
 
             timeM.Stop();
@@ -138,7 +139,7 @@ namespace DMS_WebAPI.Controllers.Documents
             var docProc = DmsResolver.Current.Get<IDocumentService>();
 
             timeDB.Start();
-            var docId = docProc.ModifyDocument(cxt, model);
+            var docId = (int)docProc.ExecuteAction(EnumActions.ModifyDocument, cxt, model);
             timeDB.Stop();
             timeM.Stop();
             SaveToFile("DB: IDocumentService ModifyDocument User: " + cxt.CurrentAgentId, timeDB.Elapsed.ToString("G"));
@@ -163,7 +164,7 @@ namespace DMS_WebAPI.Controllers.Documents
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            docProc.DeleteDocument(cxt, id);
+            docProc.ExecuteAction(EnumActions.DeleteDocument, cxt, id);
             timeDB.Stop();
             timeM.Stop();
             SaveToFile("DB: IDocumentService DeleteDocument User: " + cxt.CurrentAgentId, timeDB.Elapsed.ToString("G"));

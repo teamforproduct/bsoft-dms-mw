@@ -1,7 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.Runtime.Serialization;
-using BL.Model.Enums;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
 
 namespace BL.Model.DocumentCore.IncomingModel

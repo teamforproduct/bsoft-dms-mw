@@ -28,6 +28,36 @@
         }
     }
 
+    /// <summary>
+    /// Искомой комманды не существует или она не описана
+    /// </summary>
+    public class CommandNotDefinedError : DmsExceptions
+    {
+        private const string _MESSAGE = "Искомой комманды не найдено";
+        public CommandNotDefinedError() : base(_MESSAGE)
+        {
+        }
+
+        public CommandNotDefinedError(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+    /// <summary>
+    /// Параметр комманды неверного типа
+    /// </summary>
+    public class WrongParameterTypeError : DmsExceptions
+    {
+        private const string _MESSAGE = "Тип параметра комманды указан неверно!";
+        public WrongParameterTypeError() : base(_MESSAGE)
+        {
+        }
+
+        public WrongParameterTypeError(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
     public class AccessIsDenied : DmsExceptions
     {
         private const string _MESSAGE = "Access is Denied!";

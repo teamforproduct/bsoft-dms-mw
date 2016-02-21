@@ -4,6 +4,7 @@ using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.DictionaryCore;
 using BL.Logic.DictionaryCore.Interfaces;
 using BL.Logic.DocumentCore;
+using BL.Logic.DocumentCore.Commands;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Logic.Logging;
 using BL.Logic.Secure;
@@ -31,6 +32,32 @@ namespace BL.Logic.DependencyInjection
             Bind<IDocumentFiltersService>().To<DocumentFiltersService>().InSingletonScope();
             Bind<IDocumentSendListService>().To<DocumentSendListService>().InSingletonScope();
             Bind<IDocumentTagService>().To<DocumentTagService>().InSingletonScope();
+
+            Bind<ICommandService>().To<CommandService>().InSingletonScope();
+            LoadCommands();
+        }
+
+        private void LoadCommands()
+        {
+            Bind<ICommand>().To<AddDocumentCommand>();
+            Bind<ICommand>().To<DeleteDocumentCommand>();
+            Bind<ICommand>().To<UpdateDocumentCommand>();
+            Bind<ICommand>().To<CopyDocumentCommand>();
+
+            Bind<ICommand>().To<ControlChangeCommand>();
+            Bind<ICommand>().To<ControlOnCommand>();
+            Bind<ICommand>().To<ControlOffCommand>();
+
+            Bind<ICommand>().To<AddFavouriteCommand>();
+            Bind<ICommand>().To<DeleteFavouriteCommand>();
+
+            Bind<ICommand>().To<StartWorkCommand>();
+            Bind<ICommand>().To<FinishWorkCommand>();
+
+            Bind<ICommand>().To<AddNoteCommand>();
+            Bind<ICommand>().To<SendMessageCommand>();
+            Bind<ICommand>().To<ChangeExecutorCommand>();
+            Bind<ICommand>().To<RegisterDocumentCommand>();
         }
     }
 }
