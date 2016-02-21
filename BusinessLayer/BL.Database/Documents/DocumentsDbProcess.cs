@@ -6,7 +6,6 @@ using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
 using BL.Database.DatabaseContext;
 using BL.Database.Documents.Interfaces;
-using BL.Model.DocumentCore;
 using BL.Database.DBModel.Document;
 using BL.Model.AdminCore;
 using BL.Model.DocumentCore.Filters;
@@ -16,9 +15,6 @@ using BL.Model.SystemCore;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using DocumentAccesses = BL.Database.DBModel.Document.DocumentAccesses;
-using BL.CrossCutting.DependencyInjection;
-using System.ComponentModel.Design;
-using BL.Database.Dictionaries.Interfaces;
 using BL.Model.DocumentCore.Actions;
 
 namespace BL.Database.Documents
@@ -58,65 +54,28 @@ namespace BL.Database.Documents
                     SenderDate = document.SenderDate,
                     Addressee = document.Addressee,
                 };
-                if (document.RestrictedSendLists != null && document.RestrictedSendLists.Any())
+
+
+                if (document.Accesses != null && document.Accesses.Any())
                 {
-                    doc.RestrictedSendLists = document.RestrictedSendLists.Select(x => new DocumentRestrictedSendLists
-                    {
-                        PositionId = x.PositionId,
-                        AccessLevelId = (int)x.AccessLevel,
-                        LastChangeUserId = x.LastChangeUserId,
-                        LastChangeDate = x.LastChangeDate
-                    }).ToList();
+                    doc.Accesses = CommonQueries.GetDbDocumentAccesses(document.Accesses).ToList();
                 }
 
                 if (document.Events != null && document.Events.Any())
                 {
-                    doc.Events = document.Events.Select(x => new DocumentEvents
-                    {
-                        CreateDate = x.CreateDate,
-                        Date = x.Date,
-                        Description = x.Description,
-                        LastChangeDate = x.LastChangeDate,
-                        LastChangeUserId = x.LastChangeUserId,
-                        SourceAgentId = x.SourceAgentId,
-                        SourcePositionId = x.SourcePositionId,
-                        TargetAgentId = x.TargetAgentId,
-                        TargetPositionId = x.TargetPositionId,
-                        EventTypeId = (int)x.EventType
-                    }).ToList();
+                    doc.Events = CommonQueries.GetDbDocumentEvents(document.Events).ToList();
+                }
+
+                if (document.RestrictedSendLists != null && document.RestrictedSendLists.Any())
+                {
+                    doc.RestrictedSendLists = CommonQueries.AddDocumentRestrictedSendList(dbContext, document.RestrictedSendLists).ToList();
                 }
 
                 if (document.SendLists != null && document.SendLists.Any())
                 {
-                    doc.SendLists = document.SendLists.Select(x => new DocumentSendLists()
-                    {
-                        DocumentId = x.DocumentId,
-                        Stage = x.Stage,
-                        SendTypeId = (int)x.SendType,
-                        TargetPositionId = x.TargetPositionId,
-                        Description = x.Description,
-                        DueDate = x.DueDate,
-                        DueDay = x.DueDay,
-                        AccessLevelId = (int)x.AccessLevel,
-                        IsInitial = x.IsInitial,
-                        StartEventId = x.StartEventId,
-                        CloseEventId = x.CloseEventId,
-                        LastChangeUserId = x.LastChangeUserId,
-                        LastChangeDate = x.LastChangeDate
-                    }).ToList();
+                    doc.SendLists = CommonQueries.AddDocumentSendList(dbContext, document.SendLists).ToList();
                 }
 
-                if (document.Accesses != null && document.Accesses.Any())
-                {
-                    doc.Accesses = document.Accesses.Select(x => new DocumentAccesses
-                    {
-                        LastChangeDate = x.LastChangeDate,
-                        IsInWork = x.IsInWork,
-                        LastChangeUserId = x.LastChangeUserId,
-                        PositionId = x.PositionId,
-                        AccessLevelId = (int)x.AccessLevel,
-                    }).ToList();
-                }
                 dbContext.DocumentsSet.Add(doc);
                 dbContext.SaveChanges();
                 document.Id = doc.Id;
@@ -746,12 +705,6 @@ namespace BL.Database.Documents
                         DocumentSubjectId = x.Doc.DocumentSubjectId,
                         Description = x.Doc.Description,
                         IsRegistered = x.Doc.IsRegistered,
-                        //RegistrationJournalId = x.Doc.RegistrationJournalId,
-                        //NumerationPrefixFormula = x.Doc.NumerationPrefixFormula,
-                        //RegistrationNumber = x.Doc.RegistrationNumber,
-                        //RegistrationNumberSuffix = x.Doc.RegistrationNumberSuffix,
-                        //RegistrationNumberPrefix = x.Doc.RegistrationNumberPrefix,
-                        //RegistrationDate = x.Doc.RegistrationDate,
                         ExecutorPositionId = x.Doc.ExecutorPositionId,
                         SenderAgentId = x.Doc.SenderAgentId,
                         SenderAgentPersonId = x.Doc.SenderAgentPersonId,

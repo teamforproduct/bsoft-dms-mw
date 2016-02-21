@@ -37,8 +37,8 @@ namespace DMS_WebAPI.Utilities
             try
             {
                 contextValue.LastUsage = DateTime.Now;
-                var cxt = (IContext)(contextValue.StoreObject);
-                cxt.CurrentPositionId = currentPositionId;
+                var cxt = (IContext)contextValue.StoreObject;
+                cxt.SetCurrentPosition(currentPositionId);
                 return cxt;
             }
             catch (InvalidCastException invalidCastException)

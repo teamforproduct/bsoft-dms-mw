@@ -1,11 +1,10 @@
-﻿using BL.Model.DocumentCore;
-using BL.Model.DocumentCore.FrontModel;
+﻿using BL.Model.DocumentCore.InternalModel;
 
 namespace BL.Model.Database
 {
     public class EventAccessModel
     {
-        public FrontDocumentAccess DocumentAccess { get; set; }
-        public FrontDocumentEvent DocumentEvent { get; set; }
+        public InternalDocumentAccesses DocumentAccess { get; set; }
+        public InternalDocumentEvents DocumentEvent { get; set; }
     }
 }

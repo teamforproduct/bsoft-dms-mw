@@ -15,7 +15,6 @@ using BL.Model.SystemCore;
 using BL.Database.Admins.Interfaces;
 using BL.Model.AdminCore;
 using BL.Model.DictionaryCore;
-using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.DocumentCore.InternalModel;
 
@@ -23,14 +22,12 @@ namespace BL.Logic.DocumentCore
 {
     public class DocumentOperationsService : IDocumentOperationsService
     {
-        private readonly IDocumentsDbProcess _documentDb;
         private readonly IDocumentOperationsDbProcess _operationDb;
         private readonly IAdminsDbProcess _adminDb;
 
-        public DocumentOperationsService(IDocumentsDbProcess documentDb, IDocumentOperationsDbProcess operationDb, IAdminsDbProcess adminDb)
+        public DocumentOperationsService(IDocumentOperationsDbProcess operationDb, IAdminsDbProcess adminDb)
         {
             _adminDb = adminDb;
-            _documentDb = documentDb;
             _operationDb = operationDb;
         }
 
@@ -38,20 +35,19 @@ namespace BL.Logic.DocumentCore
 
         public void AddDocumentComment(IContext context, AddNote note)
         {
-            var evt = new FrontDocumentEvent
+            var evt = new InternalDocumentEvents
             {
                 DocumentId = note.DocumentId,
                 Description = note.Description,
                 EventType = EnumEventTypes.AddNote,
                 SourceAgentId = context.CurrentAgentId,
                 TargetAgentId = context.CurrentAgentId,
-                SourcePositionId = (int)context.CurrentPositionId,
+                SourcePositionId = context.CurrentPositionId,
                 TargetPositionId = context.CurrentPositionId,
                 LastChangeUserId = context.CurrentAgentId,
                 LastChangeDate = DateTime.Now,
                 Date = DateTime.Now,
-                CreateDate = DateTime.Now,
-
+                CreateDate = DateTime.Now
             };
 
             _operationDb.AddDocumentEvent(context, evt);
@@ -94,16 +90,6 @@ namespace BL.Logic.DocumentCore
             return positions;//actions;
         }
 
-        public int AddDocumentAccess(IContext ctx, FrontDocumentAccess access)
-        {
-            return _operationDb.AddDocumentAccess(ctx, access);
-        }
-
-        public void RemoveDocumentAccess(IContext ctx, int accessId)
-        {
-            _operationDb.RemoveDocumentAccess(ctx, accessId);
-        }
-
         public void ChangeDocumentWorkStatus(IContext context, ChangeWorkStatus newStatus)
         {
             var acc = _operationDb.GetDocumentAccess(context, newStatus.DocumentId);
@@ -115,12 +101,12 @@ namespace BL.Logic.DocumentCore
             var ea = new EventAccessModel
             {
                 DocumentAccess = acc,
-                DocumentEvent = new FrontDocumentEvent
+                DocumentEvent = new InternalDocumentEvents
                 {
                     DocumentId = newStatus.DocumentId,
                     SourceAgentId = context.CurrentAgentId,
                     TargetAgentId = context.CurrentAgentId,
-                    SourcePositionId = (int)context.CurrentPositionId,
+                    SourcePositionId = context.CurrentPositionId,
                     TargetPositionId = context.CurrentPositionId,
                     Description = newStatus.Description,
                     EventType = newStatus.IsInWork ? EnumEventTypes.SetInWork : EnumEventTypes.SetOutWork,
@@ -128,7 +114,6 @@ namespace BL.Logic.DocumentCore
                     LastChangeDate = DateTime.Now,
                     Date = DateTime.Now,
                     CreateDate = DateTime.Now,
-
                 }
             };
 
@@ -137,6 +122,7 @@ namespace BL.Logic.DocumentCore
 
         public void ChangeFavouritesForDocument(IContext context, ChangeFavourites model)
         {
+            //TODO check access to document
             var acc = _operationDb.GetDocumentAccess(context, model.DocumentId);
             acc.IsFavourite = model.IsFavourite;
             _operationDb.UpdateDocumentAccess(context, acc);
@@ -144,25 +130,27 @@ namespace BL.Logic.DocumentCore
 
         public void ControlOn(IContext context, ControlOn model)
         {
-            var docWait = new FrontDocumentWaits
+            var docWait = new InternalDocumentWaits
             {
                 DocumentId = model.DocumentId,
                 Description = model.Description,
                 DueDate = model.DueDate,
                 AttentionDate = model.AttentionDate,
-                OnEvent = new FrontDocumentEvent
+                LastChangeUserId = context.CurrentAgentId,
+                LastChangeDate = DateTime.Now,
+                OnEvent = new InternalDocumentEvents
                 {
                     DocumentId = model.DocumentId,
                     EventType = EnumEventTypes.ControlOn,
                     Description = model.Description,
-                    SourcePositionId = (int)context.CurrentPositionId,
+                    SourcePositionId = context.CurrentPositionId,
                     SourceAgentId = context.CurrentAgentId,
                     TargetPositionId = context.CurrentPositionId,
                     TargetAgentId = context.CurrentAgentId,
                     LastChangeDate = DateTime.Now,
                     Date = DateTime.Now,
                     CreateDate = DateTime.Now,
-
+                    LastChangeUserId = context.CurrentAgentId
                 }
             };
             _operationDb.AddDocumentWait(context, docWait);
@@ -173,12 +161,12 @@ namespace BL.Logic.DocumentCore
             var oldWait = _operationDb.GetDocumentWaitByOnEventId(context, model.EventId);
 
             oldWait.OnEvent = null;
-            oldWait.OffEvent = new FrontDocumentEvent
+            oldWait.OffEvent = new InternalDocumentEvents
             {
                 DocumentId = model.DocumentId,
                 EventType = EnumEventTypes.ControlChange,
                 Description = model.Description,
-                SourcePositionId = (int)context.CurrentPositionId,
+                SourcePositionId = context.CurrentPositionId,
                 SourceAgentId = context.CurrentAgentId,
                 TargetPositionId = context.CurrentPositionId,
                 TargetAgentId = context.CurrentAgentId,
@@ -188,8 +176,8 @@ namespace BL.Logic.DocumentCore
             };
 
             _operationDb.UpdateDocumentWait(context, oldWait);
-
-            var newWait = new FrontDocumentWaits
+            // TODO Stas check that oldWait.OffEvent.Id filled during the update operation
+            var newWait = new InternalDocumentWaits
             {
                 ParentId = oldWait.Id,
                 DocumentId = model.DocumentId,
@@ -208,7 +196,7 @@ namespace BL.Logic.DocumentCore
             docWait.ResultTypeId = model.ResultTypeId;
 
             docWait.OnEvent = null;
-            docWait.OffEvent = new FrontDocumentEvent
+            docWait.OffEvent = new InternalDocumentEvents
             {
                 DocumentId = model.DocumentId,
                 EventType = EnumEventTypes.ControlOff,
@@ -229,11 +217,12 @@ namespace BL.Logic.DocumentCore
         public void AddDocumentLink(IContext context, AddDocumentLink model)
         {
             var docLink = _operationDb.AddDocumentLinkPrepare(context, model);
-            _adminDb.VerifyAccess(context, new VerifyAccess() { ActionCode = EnumActions.ModifyDocument, PositionId = docLink.ExecutorPositionId });
-            if ((docLink.DocumentLinkId.HasValue) && (docLink.ParentDocumentLinkId.HasValue) && (docLink.DocumentLinkId == docLink.ParentDocumentLinkId))
+            _adminDb.VerifyAccess(context, new VerifyAccess { ActionCode = EnumActions.ModifyDocument, PositionId = docLink.ExecutorPositionId });
+            if (docLink.DocumentLinkId.HasValue && docLink.ParentDocumentLinkId.HasValue && (docLink.DocumentLinkId == docLink.ParentDocumentLinkId))
             {
                 throw new DocumentHasAlreadyHadLink();
             }
+            docLink.LastChangeDate = DateTime.Now;
             _operationDb.AddDocumentLink(context, docLink);
         }
 

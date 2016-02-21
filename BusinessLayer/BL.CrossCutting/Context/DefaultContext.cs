@@ -17,7 +17,7 @@ namespace BL.CrossCutting.Context
             get
             {
                 //var position = CurrentPositions?.FirstOrDefault();
-                if ((_currentPositionsIdList == null)||(_currentPositionsIdList.Count()==0))
+                if ((_currentPositionsIdList == null)||!_currentPositionsIdList.Any())
                 {
                     throw new UserPositionIsNotDefined();
                 }
@@ -29,7 +29,7 @@ namespace BL.CrossCutting.Context
             }
         }
 
-        public int? CurrentPositionId
+        public int CurrentPositionId
         {
             get
             {
@@ -37,24 +37,27 @@ namespace BL.CrossCutting.Context
                 {
                     throw new UserPositionIsNotDefined();
                 }
-                return _currentPositionId;
-            }
-            set
-            {
-                _currentPositionId = value;
+                return _currentPositionId.Value;
             }
         }
+
+        
 
         public int CurrentAgentId
         {
             get
             {
-                if (CurrentEmployee == null || !CurrentEmployee.AgentId.HasValue)
+                if (CurrentEmployee?.AgentId == null)
                 {
                     throw new UserNameIsNotDefined();
                 }
                 return CurrentEmployee.AgentId.GetValueOrDefault();
             }
+        }
+
+        public void SetCurrentPosition(int? position)
+        {
+            _currentPositionId = position;
         }
 
         public DatabaseModel CurrentDB { get; set; }

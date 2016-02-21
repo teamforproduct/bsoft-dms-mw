@@ -1,13 +1,10 @@
 ﻿using System.Collections.Generic;
 using BL.CrossCutting.Interfaces;
 using BL.Model.Database;
-using BL.Model.DocumentCore;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.InternalModel;
-using BL.Model.InternalModel;
-using BL.Model.SystemCore;
 
 namespace BL.Database.Documents.Interfaces
 {
@@ -15,17 +12,17 @@ namespace BL.Database.Documents.Interfaces
     {
         void AddDocumentLink(IContext context, InternalLinkedDocument model);
 
-        FrontDocumentWaits GetDocumentWaitByOnEventId(IContext ctx, int eventId);
-        void AddDocumentWait(IContext ctx, FrontDocumentWaits documentWait);
-        void UpdateDocumentWait(IContext ctx, FrontDocumentWaits documentWait);
+        InternalDocumentWaits GetDocumentWaitByOnEventId(IContext ctx, int eventId);
+        void AddDocumentWait(IContext ctx, InternalDocumentWaits documentWait);
+        void UpdateDocumentWait(IContext ctx, InternalDocumentWaits documentWait);
 
-        int AddDocumentEvent(IContext ctx, FrontDocumentEvent docEvent);
+        int AddDocumentEvent(IContext ctx, InternalDocumentEvents docEvent);
         IEnumerable<FrontDocumentEvent> GetDocumentEvents(IContext ctx, FilterDocumentEvent filter);
 
-        int AddDocumentAccess(IContext ctx, FrontDocumentAccess access);
+        int AddDocumentAccess(IContext ctx, InternalDocumentAccesses access);
         void RemoveDocumentAccess(IContext ctx, int accessId);
-        void UpdateDocumentAccess(IContext ctx, FrontDocumentAccess access);
-        FrontDocumentAccess GetDocumentAccess(IContext ctx, int documentId);
+        void UpdateDocumentAccess(IContext ctx, InternalDocumentAccesses access);
+        InternalDocumentAccesses GetDocumentAccess(IContext ctx, int documentId);
 
         void SetDocumentInformation(IContext ctx, EventAccessModel access);
         InternalLinkedDocument AddDocumentLinkPrepare(IContext context, AddDocumentLink model);

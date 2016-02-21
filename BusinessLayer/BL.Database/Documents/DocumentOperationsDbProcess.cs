@@ -8,14 +8,11 @@ using BL.Database.DBModel.Document;
 using BL.Database.Documents.Interfaces;
 using BL.Model.AdminCore;
 using BL.Model.Database;
-using BL.Model.DocumentCore;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Exception;
-using BL.Model.InternalModel;
-using BL.Model.SystemCore;
 
 namespace BL.Database.Documents
 {
@@ -37,21 +34,8 @@ namespace BL.Database.Documents
                     .Select(x => new InternalDocument
                     {
                         Id = x.Doc.Id,
-                        //DocumentSubjectId = x.Doc.DocumentSubjectId,
-                        //Description = x.Doc.Description,
                         IsRegistered = x.Doc.IsRegistered,
-                        //RegistrationJournalId = x.Doc.RegistrationJournalId,
-                        //NumerationPrefixFormula = x.Doc.NumerationPrefixFormula,
-                        //RegistrationNumber = x.Doc.RegistrationNumber,
-                        //RegistrationNumberSuffix = x.Doc.RegistrationNumberSuffix,
-                        //RegistrationNumberPrefix = x.Doc.RegistrationNumberPrefix,
-                        //RegistrationDate = x.Doc.RegistrationDate,
                         ExecutorPositionId = x.Doc.ExecutorPositionId,
-                        //SenderAgentId = x.Doc.SenderAgentId,
-                        //SenderAgentPersonId = x.Doc.SenderAgentPersonId,
-                        //SenderNumber = x.Doc.SenderNumber,
-                        //SenderDate = x.Doc.SenderDate,
-                        //Addressee = x.Doc.Addressee,
                         LinkId = x.Doc.LinkId,
                     }).FirstOrDefault();
                    return doc;
@@ -89,7 +73,7 @@ namespace BL.Database.Documents
                     ParentDocumentId = model.ParentDocumentId,
                     LinkTypeId = model.LinkTypeId,
                     LastChangeUserId = context.CurrentAgentId,
-                    LastChangeDate = DateTime.Now,
+                    LastChangeDate = model.LastChangeDate,
                 };
                 dbContext.DocumentLinksSet.Add(link);
                 if (!model.ParentDocumentLinkId.HasValue)
@@ -112,11 +96,11 @@ namespace BL.Database.Documents
 
         #region DocumentWaits
 
-        public FrontDocumentWaits GetDocumentWaitByOnEventId(IContext ctx, int eventId)
+        public InternalDocumentWaits GetDocumentWaitByOnEventId(IContext ctx, int eventId)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-                var wait = CommonQueries.GetDocumentWaits(dbContext, new FilterDocumentWaits() { OnEventId = eventId }).FirstOrDefault();
+                var wait = CommonQueries.GetInternalDocumentWaits(dbContext, new FilterDocumentWaits() { OnEventId = eventId }).FirstOrDefault();
                 if (wait?.Id > 0)
                 {
                     return wait;
@@ -125,29 +109,16 @@ namespace BL.Database.Documents
             throw new WaitNotFoundOrUserHasNoAccess();
         }
 
-        public void AddDocumentWait(IContext ctx, FrontDocumentWaits documentWait)
+        public void AddDocumentWait(IContext ctx, InternalDocumentWaits documentWait)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-
-                var docWait = new DocumentWaits
-                {
-                    DocumentId = documentWait.DocumentId,
-                    ParentId = documentWait.ParentId,
-                    OnEventId = documentWait.OnEventId,
-                    OffEventId = documentWait.OffEventId,
-                    ResultTypeId = documentWait.ResultTypeId,
-                    Description = documentWait.Description,
-                    DueDate = documentWait.DueDate,
-                    AttentionDate = documentWait.AttentionDate,
-                    LastChangeUserId = ctx.CurrentAgentId,
-                    LastChangeDate = DateTime.Now
-                };
-
-                UpdateDocumentWaitEvents(ctx, docWait, documentWait);
+                var docWait = CommonQueries.GetDbDocumentWait(documentWait);
+                UpdateDocumentWaitEvents(docWait, documentWait);
 
                 dbContext.DocumentWaitsSet.Add(docWait);
                 dbContext.SaveChanges();
+
                 documentWait.Id = docWait.Id;
                 if (docWait.OnEvent?.Id > 0 && documentWait.OnEvent != null)
                 {
@@ -160,100 +131,64 @@ namespace BL.Database.Documents
             }
         }
 
-        public void UpdateDocumentWait(IContext ctx, FrontDocumentWaits documentWait)
+        public void UpdateDocumentWait(IContext ctx, InternalDocumentWaits documentWait)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
                 var docWait = dbContext.DocumentWaitsSet.FirstOrDefault(x => x.Id == documentWait.Id);
-                if (docWait?.Id > 0)
+
+                if (!(docWait?.Id > 0)) return;
+
+                docWait.DocumentId = documentWait.DocumentId;
+                docWait.ParentId = documentWait.ParentId;
+                docWait.OnEventId = documentWait.OnEventId;
+                docWait.OffEventId = documentWait.OffEventId;
+                docWait.ResultTypeId = documentWait.ResultTypeId;
+                docWait.Description = documentWait.Description;
+                docWait.DueDate = documentWait.DueDate;
+                docWait.AttentionDate = documentWait.AttentionDate;
+                docWait.LastChangeUserId = documentWait.LastChangeUserId;
+                docWait.LastChangeDate = documentWait.LastChangeDate;
+
+                // UpdateDocumentWaitEvents создает новые БД ивент сущности для вейта. что происхдит со старыми ивент сущностями, если они уже есть в БД??
+                // при переопределении они удаляются или они обновляются или они остаются но будут ни к чему не привязаны? 
+                //TODO CHECK IT
+                UpdateDocumentWaitEvents(docWait, documentWait);
+
+                dbContext.SaveChanges();
+
+                if (docWait.OnEvent?.Id > 0 && documentWait.OnEvent != null)
                 {
-                    docWait.DocumentId = documentWait.DocumentId;
-                    docWait.ParentId = documentWait.ParentId;
-                    docWait.OnEventId = documentWait.OnEventId;
-                    docWait.OffEventId = documentWait.OffEventId;
-                    docWait.ResultTypeId = documentWait.ResultTypeId;
-                    docWait.Description = documentWait.Description;
-                    docWait.DueDate = documentWait.DueDate;
-                    docWait.AttentionDate = documentWait.AttentionDate;
-                    docWait.LastChangeUserId = ctx.CurrentAgentId;
-                    docWait.LastChangeDate = DateTime.Now;
-
-                    UpdateDocumentWaitEvents(ctx, docWait, documentWait);
-
-                    dbContext.SaveChanges();
-
-                    if (docWait.OnEvent?.Id > 0 && documentWait.OnEvent != null)
-                    {
-                        documentWait.OnEvent.Id = docWait.OnEvent.Id;
-                    }
-                    if (docWait.OffEvent?.Id > 0 && documentWait.OffEvent != null)
-                    {
-                        documentWait.OffEvent.Id = docWait.OffEvent.Id;
-                    }
+                    documentWait.OnEvent.Id = docWait.OnEvent.Id;
+                }
+                if (docWait.OffEvent?.Id > 0 && documentWait.OffEvent != null)
+                {
+                    documentWait.OffEvent.Id = docWait.OffEvent.Id;
                 }
             }
         }
 
-        private void UpdateDocumentWaitEvents(IContext ctx, DocumentWaits docWait, FrontDocumentWaits documentWait)
+
+        private void UpdateDocumentWaitEvents(DocumentWaits docWait, InternalDocumentWaits documentWait)
         {
             if (documentWait.OnEvent != null)
             {
-                docWait.OnEvent = new DocumentEvents
-                {
-                    Id = documentWait.Id,
-                    DocumentId = documentWait.OnEvent.DocumentId,
-                    EventTypeId = (int)documentWait.OnEvent.EventType,
-                    CreateDate = documentWait.OnEvent.CreateDate,
-                    Date = documentWait.OnEvent.Date,
-                    Description = documentWait.OnEvent.Description,
-                    SourcePositionId = documentWait.OnEvent.SourcePositionId,
-                    SourceAgentId = documentWait.OnEvent.SourceAgentId,
-                    TargetPositionId = documentWait.OnEvent.TargetPositionId,
-                    TargetAgentId = documentWait.OnEvent.TargetAgentId,
-                    LastChangeUserId = ctx.CurrentAgentId,
-                    LastChangeDate = DateTime.Now
-                };
+                docWait.OnEvent = CommonQueries.GetDbDocumentEvent(documentWait.OnEvent);
             }
             if (documentWait.OffEvent != null)
             {
-                docWait.OffEvent = new DocumentEvents
-                {
-                    Id = documentWait.OffEvent.Id,
-                    DocumentId = documentWait.OffEvent.DocumentId,
-                    EventTypeId = (int)documentWait.OffEvent.EventType,
-                    CreateDate = documentWait.OffEvent.CreateDate,
-                    Date = documentWait.OffEvent.Date,
-                    Description = documentWait.OffEvent.Description,
-                    SourcePositionId = documentWait.OffEvent.SourcePositionId,
-                    SourceAgentId = documentWait.OffEvent.SourceAgentId,
-                    TargetPositionId = documentWait.OffEvent.TargetPositionId,
-                    TargetAgentId = documentWait.OffEvent.TargetAgentId,
-                    LastChangeUserId = ctx.CurrentAgentId,
-                    LastChangeDate = DateTime.Now
-                };
+                docWait.OffEvent = CommonQueries.GetDbDocumentEvent(documentWait.OffEvent);
             }
         }
         #endregion DocumentWaits
 
         #region Document Event
 
-        public int AddDocumentEvent(IContext ctx, FrontDocumentEvent docEvent)
+        public int AddDocumentEvent(IContext ctx, InternalDocumentEvents docEvent)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-                var evt = new DocumentEvents
-                {
-                    CreateDate = docEvent.CreateDate,
-                    Date = docEvent.Date,
-                    Description = docEvent.Description,
-                    LastChangeDate = docEvent.LastChangeDate,
-                    LastChangeUserId = docEvent.LastChangeUserId,
-                    SourceAgentId = docEvent.SourceAgentId,
-                    SourcePositionId = docEvent.SourcePositionId,
-                    TargetAgentId = docEvent.TargetAgentId,
-                    TargetPositionId = docEvent.TargetPositionId,
-                    EventTypeId = (int)docEvent.EventType
-                };
+                var evt = CommonQueries.GetDbDocumentEvent(docEvent);
                 dbContext.DocumentEventsSet.Add(evt);
                 dbContext.SaveChanges();
                 return evt.Id;
@@ -278,44 +213,23 @@ namespace BL.Database.Documents
                 var acc = dbContext.DocumentAccessesSet.FirstOrDefault(x => x.Id == access.DocumentAccess.Id);
                 if (acc != null)
                 {
-                    acc.LastChangeDate = DateTime.Now;
+                    acc.LastChangeDate = access.DocumentAccess.LastChangeDate;
                     acc.IsInWork = access.DocumentAccess.IsInWork;
-                    acc.LastChangeUserId = ctx.CurrentAgentId;
+                    acc.LastChangeUserId = access.DocumentAccess.LastChangeUserId;
                     acc.PositionId = access.DocumentAccess.PositionId;
                     acc.AccessLevelId = (int)access.DocumentAccess.AccessLevel;
                     acc.IsFavourite = access.DocumentAccess.IsFavourite;
                 }
-                var evt = new DocumentEvents
-                {
-                    CreateDate = access.DocumentEvent.CreateDate,
-                    Date = access.DocumentEvent.Date,
-                    Description = access.DocumentEvent.Description,
-                    LastChangeDate = access.DocumentEvent.LastChangeDate,
-                    LastChangeUserId = access.DocumentEvent.LastChangeUserId,
-                    SourceAgentId = access.DocumentEvent.SourceAgentId,
-                    SourcePositionId = access.DocumentEvent.SourcePositionId,
-                    TargetAgentId = access.DocumentEvent.TargetAgentId,
-                    TargetPositionId = access.DocumentEvent.TargetPositionId,
-                    EventTypeId = (int)access.DocumentEvent.EventType
-                };
-                dbContext.DocumentEventsSet.Add(evt);
+                dbContext.DocumentEventsSet.Add(CommonQueries.GetDbDocumentEvent(access.DocumentEvent));
                 dbContext.SaveChanges();
             }
         }
 
-        public int AddDocumentAccess(IContext ctx, FrontDocumentAccess access)
+        public int AddDocumentAccess(IContext ctx, InternalDocumentAccesses access)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-                var acc = new DocumentAccesses
-                {
-                    LastChangeDate = access.LastChangeDate,
-                    IsInWork = access.IsInWork,
-                    LastChangeUserId = access.LastChangeUserId,
-                    PositionId = access.PositionId,
-                    AccessLevelId = (int)access.AccessLevel,
-                    IsFavourite = access.IsFavourite
-                };
+                var acc = CommonQueries.GetDbDocumentAccess(access);
                 dbContext.DocumentAccessesSet.Add(acc);
                 dbContext.SaveChanges();
                 return acc.Id;
@@ -335,16 +249,16 @@ namespace BL.Database.Documents
             }
         }
 
-        public void UpdateDocumentAccess(IContext ctx, FrontDocumentAccess access)
+        public void UpdateDocumentAccess(IContext ctx, InternalDocumentAccesses access)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
                 var acc = dbContext.DocumentAccessesSet.FirstOrDefault(x => x.Id == access.Id);
                 if (acc != null)
                 {
-                    acc.LastChangeDate = DateTime.Now;
+                    acc.LastChangeDate = access.LastChangeDate;
                     acc.IsInWork = access.IsInWork;
-                    acc.LastChangeUserId = ctx.CurrentAgentId;
+                    acc.LastChangeUserId = access.LastChangeUserId;
                     acc.PositionId = access.PositionId;
                     acc.AccessLevelId = (int)access.AccessLevel;
                     acc.IsFavourite = access.IsFavourite;
@@ -353,11 +267,11 @@ namespace BL.Database.Documents
             }
         }
 
-        public FrontDocumentAccess GetDocumentAccess(IContext ctx, int documentId)
+        public InternalDocumentAccesses GetDocumentAccess(IContext ctx, int documentId)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-                return CommonQueries.GetDocumentAccess(ctx, dbContext, documentId);
+                return CommonQueries.GetInternalDocumentAccess(ctx, dbContext, documentId);
             }
         }
 

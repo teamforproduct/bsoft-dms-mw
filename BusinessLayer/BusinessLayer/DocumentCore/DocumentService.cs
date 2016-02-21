@@ -19,7 +19,6 @@ using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DocumentCore.InternalModel;
-using BL.Database.Dictionaries.Interfaces;
 
 namespace BL.Logic.DocumentCore
 {
@@ -173,7 +172,7 @@ namespace BL.Logic.DocumentCore
 
         public int CopyDocument(IContext context, CopyDocument model)
         {
-            _adminDb.VerifyAccess(context, new VerifyAccess() { ActionCode = EnumActions.AddDocument, PositionId = model.CurrentPositionId });
+            _adminDb.VerifyAccess(context, new VerifyAccess { ActionCode = EnumActions.AddDocument, PositionId = model.CurrentPositionId });
             var document = _documentDb.CopyDocumentPrepare(context, model.DocumentId);
 
             if (document == null)
@@ -217,9 +216,9 @@ namespace BL.Logic.DocumentCore
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
 
-            _adminDb.VerifyAccess(context, new VerifyAccess() { ActionCode = EnumActions.ModifyDocument, PositionId = document.ExecutorPositionId });
-            context.CurrentPositionId = document.ExecutorPositionId;
+            _adminDb.VerifyAccess(context, new VerifyAccess { ActionCode = EnumActions.ModifyDocument, PositionId = document.ExecutorPositionId });
 
+            context.SetCurrentPosition(document.ExecutorPositionId);
             document.Description = model.Description;
             document.DocumentSubjectId = model.DocumentSubjectId;
             document.SenderAgentId = model.SenderAgentId;
@@ -334,7 +333,7 @@ namespace BL.Logic.DocumentCore
         private void SetAtrributesForNewDocument(IContext context, InternalDocument document)
         {
             document.CreateDate = DateTime.Now;
-            document.ExecutorPositionId = context.CurrentPositionId.Value;
+            document.ExecutorPositionId = context.CurrentPositionId;
             document.IsRegistered = false;
             document.LinkId = null;
             SetLastChangeForDocument(context, document);
@@ -352,7 +351,7 @@ namespace BL.Logic.DocumentCore
                     SourceAgentId = context.CurrentAgentId,
                     TargetAgentId = context.CurrentAgentId,
                     TargetPositionId = context.CurrentPositionId,
-                    SourcePositionId = context.CurrentPositionId.Value,
+                    SourcePositionId = context.CurrentPositionId,
                     LastChangeDate = DateTime.Now,
                     Date = DateTime.Now,
                     CreateDate = DateTime.Now,
@@ -372,7 +371,7 @@ namespace BL.Logic.DocumentCore
                     IsFavourite = false,
                     LastChangeDate = DateTime.Now,
                     LastChangeUserId = context.CurrentAgentId,
-                    PositionId = context.CurrentPositionId.Value
+                    PositionId = context.CurrentPositionId
                 }
             };
         }
