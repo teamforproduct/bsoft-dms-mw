@@ -5,6 +5,10 @@ namespace BL.Model.DocumentCore.FrontModel
 {
     public class FrontDocumentSendList: ModifyDocumentSendList
     {
+        /// <summary>
+        /// ИД записи
+        /// </summary>
+        public int Id { get; set; }
         public bool IsInitial { get; set; }
         public int? StartEventId { get; set; }
         public int? CloseEventId { get; set; }
