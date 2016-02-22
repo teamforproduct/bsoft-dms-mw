@@ -9,11 +9,11 @@ using BL.Model.Exception;
 
 namespace BL.Logic.DocumentCore.Commands
 {
-    public class FinishWorkCommand: BaseCommand
+    public class FinishWorkDocumentCommand: BaseDocumentCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
 
-        public FinishWorkCommand(IDocumentOperationsDbProcess operationDb)
+        public FinishWorkDocumentCommand(IDocumentOperationsDbProcess operationDb)
         {
             _operationDb = operationDb;
         }
@@ -69,5 +69,7 @@ namespace BL.Logic.DocumentCore.Commands
             _operationDb.SetDocumentInformation(_context, ea);
             return null;
         }
+
+        public override EnumDocumentActions CommandType { get { return EnumDocumentActions.FinishWork; } }
     }
 }

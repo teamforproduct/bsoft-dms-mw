@@ -47,9 +47,9 @@ namespace BL.Logic.DocumentCore
             return uiElements;
         }
 
-        public object ExecuteAction(EnumActions act, IContext context, object param)
+        public object ExecuteAction(EnumDocumentActions act, IContext context, object param)
         {
-            var cmd = CommandFactory.GetDocumentCommand(act, context, null, param);
+            var cmd = DocumentCommandFactory.GetDocumentCommand(act, context, null, param);
             var res = _commandService.ExecuteCommand(cmd);
             return res;
         }

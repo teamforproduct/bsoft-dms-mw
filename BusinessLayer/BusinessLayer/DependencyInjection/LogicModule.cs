@@ -2,6 +2,7 @@
 using BL.Logic.AdminCore;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.DictionaryCore;
+using BL.Logic.DictionaryCore.DocumentType;
 using BL.Logic.DictionaryCore.Interfaces;
 using BL.Logic.DocumentCore;
 using BL.Logic.DocumentCore.Commands;
@@ -34,30 +35,37 @@ namespace BL.Logic.DependencyInjection
             Bind<IDocumentTagService>().To<DocumentTagService>().InSingletonScope();
 
             Bind<ICommandService>().To<CommandService>().InSingletonScope();
-            LoadCommands();
+            LoadDocumentCommands();
+            LoadDictionaryCommands();
         }
 
-        private void LoadCommands()
+        private void LoadDictionaryCommands()
         {
-            Bind<ICommand>().To<AddDocumentCommand>();
-            Bind<ICommand>().To<DeleteDocumentCommand>();
-            Bind<ICommand>().To<UpdateDocumentCommand>();
-            Bind<ICommand>().To<CopyDocumentCommand>();
+            Bind<IDictionaryCommand>().To<AddDictionaryDocumentTypeCommand>();
+            Bind<IDictionaryCommand>().To<ModifyDictionaryDocumentTypeCommand>();
+        }
 
-            Bind<ICommand>().To<ControlChangeCommand>();
-            Bind<ICommand>().To<ControlOnCommand>();
-            Bind<ICommand>().To<ControlOffCommand>();
+        private void LoadDocumentCommands()
+        {
+            Bind<IDocumentCommand>().To<AddDocumentCommand>();
+            Bind<IDocumentCommand>().To<DeleteDocumentCommand>();
+            Bind<IDocumentCommand>().To<UpdateDocumentCommand>();
+            Bind<IDocumentCommand>().To<CopyDocumentCommand>();
 
-            Bind<ICommand>().To<AddFavouriteCommand>();
-            Bind<ICommand>().To<DeleteFavouriteCommand>();
+            Bind<IDocumentCommand>().To<ControlChangeDocumentCommand>();
+            Bind<IDocumentCommand>().To<ControlOnDocumentCommand>();
+            Bind<IDocumentCommand>().To<ControlOffDocumentCommand>();
 
-            Bind<ICommand>().To<StartWorkCommand>();
-            Bind<ICommand>().To<FinishWorkCommand>();
+            Bind<IDocumentCommand>().To<AddFavouriteDocumentCommand>();
+            Bind<IDocumentCommand>().To<DeleteFavouriteDocumentCommand>();
 
-            Bind<ICommand>().To<AddNoteCommand>();
-            Bind<ICommand>().To<SendMessageCommand>();
-            Bind<ICommand>().To<ChangeExecutorCommand>();
-            Bind<ICommand>().To<RegisterDocumentCommand>();
+            Bind<IDocumentCommand>().To<StartWorkDocumentCommand>();
+            Bind<IDocumentCommand>().To<FinishWorkDocumentCommand>();
+
+            Bind<IDocumentCommand>().To<AddNoteDocumentCommand>();
+            Bind<IDocumentCommand>().To<SendMessageDocumentCommand>();
+            Bind<IDocumentCommand>().To<ChangeExecutorDocumentCommand>();
+            Bind<IDocumentCommand>().To<RegisterDocumentCommand>();
         }
     }
 }

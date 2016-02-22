@@ -72,7 +72,7 @@ namespace DMS_WebAPI.Controllers.Documents
             var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            docProc.ExecuteAction(model.IsFavourite? EnumActions.AddFavourite: EnumActions.DeleteFavourite, cxt, model);
+            docProc.ExecuteAction(model.IsFavourite? EnumDocumentActions.AddFavourite: EnumDocumentActions.DeleteFavourite, cxt, model);
             timeDB.Stop();
 
             timeM.Stop();
@@ -102,7 +102,7 @@ namespace DMS_WebAPI.Controllers.Documents
             var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            docProc.ExecuteAction(EnumActions.RegisterDocument, cxt, model);
+            docProc.ExecuteAction(EnumDocumentActions.RegisterDocument, cxt, model);
             timeDB.Stop();
 
             timeM.Stop();
@@ -155,7 +155,7 @@ namespace DMS_WebAPI.Controllers.Documents
             var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            docProc.ExecuteAction(model.IsInWork? EnumActions.StartWork: EnumActions.FinishWork, cxt, model);
+            docProc.ExecuteAction(model.IsInWork? EnumDocumentActions.StartWork: EnumDocumentActions.FinishWork, cxt, model);
             timeDB.Stop();
 
             timeM.Stop();
@@ -182,7 +182,7 @@ namespace DMS_WebAPI.Controllers.Documents
             var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            docProc.ExecuteAction(EnumActions.AddNote, cxt, model);
+            docProc.ExecuteAction(EnumDocumentActions.AddNote, cxt, model);
             timeDB.Stop();
 
             timeM.Stop();
@@ -209,7 +209,7 @@ namespace DMS_WebAPI.Controllers.Documents
             var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            docProc.ExecuteAction(EnumActions.ControlOn, cxt, model);
+            docProc.ExecuteAction(EnumDocumentActions.ControlOn, cxt, model);
             timeDB.Stop();
 
             timeM.Stop();
@@ -236,7 +236,7 @@ namespace DMS_WebAPI.Controllers.Documents
             var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            docProc.ExecuteAction(EnumActions.ControlChange,cxt, model);
+            docProc.ExecuteAction(EnumDocumentActions.ControlChange,cxt, model);
             timeDB.Stop();
 
             timeM.Stop();
@@ -263,7 +263,7 @@ namespace DMS_WebAPI.Controllers.Documents
             var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            docProc.ExecuteAction(EnumActions.ControlOff, cxt, model);
+            docProc.ExecuteAction(EnumDocumentActions.ControlOff, cxt, model);
             timeDB.Stop();
 
             timeM.Stop();
@@ -290,7 +290,7 @@ namespace DMS_WebAPI.Controllers.Documents
             var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            var docId = (int)docProc.ExecuteAction(EnumActions.CopyDocument, cxt, model);
+            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.CopyDocument, cxt, model);
             timeDB.Stop();
 
             timeM.Stop();
@@ -318,7 +318,7 @@ namespace DMS_WebAPI.Controllers.Documents
             var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            docProc.ExecuteAction(EnumActions.ChangeExecutor, cxt, model);
+            docProc.ExecuteAction(EnumDocumentActions.ChangeExecutor, cxt, model);
             timeDB.Stop();
 
             timeM.Stop();

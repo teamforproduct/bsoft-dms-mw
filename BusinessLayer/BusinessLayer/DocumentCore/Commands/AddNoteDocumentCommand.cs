@@ -8,11 +8,11 @@ using BL.Model.Exception;
 
 namespace BL.Logic.DocumentCore.Commands
 {
-    public class AddNoteCommand: BaseCommand
+    public class AddNoteDocumentCommand: BaseDocumentCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
 
-        public AddNoteCommand(IDocumentOperationsDbProcess operationDb)
+        public AddNoteDocumentCommand(IDocumentOperationsDbProcess operationDb)
         {
             _operationDb = operationDb;
         }
@@ -25,7 +25,7 @@ namespace BL.Logic.DocumentCore.Commands
                 {
                     throw new WrongParameterTypeError();
                 }
-                return _param as AddNote;
+                return (AddNote) _param;
             }
         }
 
@@ -58,5 +58,7 @@ namespace BL.Logic.DocumentCore.Commands
             _operationDb.AddDocumentEvent(_context, evt);
             return null;
         }
+
+        public override EnumDocumentActions CommandType { get { return EnumDocumentActions.AddNote; } }
     }
 }

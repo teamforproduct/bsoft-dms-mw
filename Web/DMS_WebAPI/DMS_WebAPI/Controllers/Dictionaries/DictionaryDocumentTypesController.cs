@@ -5,6 +5,7 @@ using BL.Model.DictionaryCore.IncomingModel;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Web.Http;
+using BL.Model.Enums;
 
 namespace DMS_WebAPI.Controllers.Dictionaries
 {
@@ -38,7 +39,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
-            return Get(tmpDict.AddDictionaryDocumentType(cxt, model));
+            return Get((int)tmpDict.ExecuteAction(EnumDictionaryAction.AddDocumentType,  cxt, model));
         }
 
         /// <summary>
@@ -52,7 +53,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             model.Id = id;
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
-            tmpDict.ModifyDictionaryDocumentType(cxt, model);
+            tmpDict.ExecuteAction(EnumDictionaryAction.ModifyDocumentType, cxt, model);
             return Get(model.Id);
         }
 

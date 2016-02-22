@@ -5,9 +5,12 @@ using BL.CrossCutting.Interfaces;
 using BL.Model.DictionaryCore;
 using BL.Database.Dictionaries.Interfaces;
 using System.Linq;
+using BL.Logic.DocumentCore.Commands;
+using BL.Logic.DocumentCore.Interfaces;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.InternalModel;
+using BL.Model.Enums;
 using BL.Model.Exception;
 
 namespace BL.Logic.DictionaryCore
@@ -15,11 +18,21 @@ namespace BL.Logic.DictionaryCore
     public class DictionaryService : IDictionaryService
     {
         private readonly IDictionariesDbProcess _dictDb;
+        private readonly ICommandService _commandService;
 
-        public DictionaryService(IDictionariesDbProcess dictDb)
+        public DictionaryService(IDictionariesDbProcess dictDb, ICommandService commandService)
         {
             _dictDb = dictDb;
+            _commandService = commandService;
         }
+
+        public object ExecuteAction(EnumDictionaryAction act, IContext context, object param)
+        {
+            var cmd = DictionaryCommandFactory.GetDictionaryCommand(act, context, param);
+            var res = _commandService.ExecuteCommand(cmd);
+            return res;
+        }
+
         #region DictionaryAgents
         public BaseDictionaryAgent GetDictionaryAgent(IContext context, int id)
         {
@@ -114,57 +127,6 @@ namespace BL.Logic.DictionaryCore
         public IEnumerable<FrontDictionaryDocumentType> GetDictionaryDocumentTypes(IContext context, FilterDictionaryDocumentType filter)
         {
             return _dictDb.GetDictionaryDocumentTypes(context, filter);
-        }
-
-        public void ModifyDictionaryDocumentType(IContext context, ModifyDictionaryDocumentType docType)
-        {
-            var spr = _dictDb.GetInternalDictionaryDocumentType(context, new FilterDictionaryDocumentType { Name = docType.Name });
-            if (spr != null)
-            {
-                throw new DictionaryRecordNotUnique();
-            }
-            try
-            {
-                var newDocType = new InternalDictionaryDocumentType
-                {
-                    Id = docType.Id,
-                    Name = docType.Name,
-                    LastChangeDate = DateTime.Now,
-                    LastChangeUserId = context.CurrentAgentId,
-                };
-                _dictDb.UpdateDictionaryDocumentType(context, newDocType);
-            }
-            catch (DictionaryRecordWasNotFound)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw new DatabaseError(ex);
-            }
-        }
-
-        public int AddDictionaryDocumentType(IContext context, ModifyDictionaryDocumentType docType)
-        {
-            var spr = _dictDb.GetInternalDictionaryDocumentType(context, new FilterDictionaryDocumentType { Name = docType.Name });
-            if (spr != null)
-            {
-                throw new DictionaryRecordNotUnique();
-            }
-            try
-            {
-                var newDocType = new InternalDictionaryDocumentType
-                {
-                    Name = docType.Name,
-                    LastChangeDate = DateTime.Now,
-                    LastChangeUserId = context.CurrentAgentId,
-                };
-                return _dictDb.AddDictionaryDocumentType(context, newDocType);
-            }
-            catch (Exception ex)
-            {
-                throw new DictionaryRecordCouldNotBeAdded(ex);
-            }
         }
 
         #endregion DictionaryDocumentSubjects

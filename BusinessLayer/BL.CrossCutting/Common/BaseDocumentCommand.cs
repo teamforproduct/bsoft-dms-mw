@@ -1,9 +1,10 @@
 ﻿using BL.CrossCutting.Interfaces;
 using BL.Model.DocumentCore.InternalModel;
+using BL.Model.Enums;
 
 namespace BL.CrossCutting.Common
 {
-    public abstract class BaseCommand:ICommand
+    public abstract class BaseDocumentCommand: IDocumentCommand
     {
         protected IContext _context;
         protected InternalDocument _document;
@@ -25,5 +26,6 @@ namespace BL.CrossCutting.Common
         public abstract bool CanExecute();
         public abstract object Execute();
 
+        public abstract EnumDocumentActions CommandType { get; }
     }
 }

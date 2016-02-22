@@ -3,11 +3,14 @@ using BL.Model.DictionaryCore;
 using System.Collections.Generic;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.IncomingModel;
+using BL.Model.Enums;
 
 namespace BL.Logic.DictionaryCore.Interfaces
 {
     public interface IDictionaryService
     {
+        object ExecuteAction(EnumDictionaryAction act, IContext context, object param);
+
         #region DictionaryAgents
         BaseDictionaryAgent GetDictionaryAgent(IContext context, int id);
 
@@ -45,9 +48,6 @@ namespace BL.Logic.DictionaryCore.Interfaces
         #endregion DictionaryDocumentSubjects
 
         #region DictionaryDocumentTypes
-        void ModifyDictionaryDocumentType(IContext context, ModifyDictionaryDocumentType docType);
-        int AddDictionaryDocumentType(IContext context, ModifyDictionaryDocumentType docType);
-
         FrontDictionaryDocumentType GetDictionaryDocumentType(IContext context, int id);
 
         IEnumerable<FrontDictionaryDocumentType> GetDictionaryDocumentTypes(IContext context, FilterDictionaryDocumentType filter);

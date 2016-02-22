@@ -95,9 +95,9 @@ namespace BL.Database.SystemDb
                     {
                         qry = qry.Where(x => filter.Id.Contains(x.Id));
                     }
-                    if (filter.Action.HasValue)
+                    if (filter.DocumentAction.HasValue)
                     {
-                        qry = qry.Where(x => x.Id == (int)filter.Action);
+                        qry = qry.Where(x => x.Id == (int)filter.DocumentAction);
                     }
                     if (filter.Object.HasValue)
                     {
@@ -113,7 +113,7 @@ namespace BL.Database.SystemDb
                     res.AddRange(qry.Select(
                               a => new InternalSystemAction
                               {
-                                  Action = (EnumActions)a.Id,
+                                  DocumentAction = (EnumDocumentActions)a.Id,
                                   Object = (EnumObjects)a.ObjectId,
                                   ActionCode = a.Code,
                                   ObjectCode = a.Object.Code,
