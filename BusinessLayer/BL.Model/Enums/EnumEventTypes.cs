@@ -10,6 +10,6 @@
         SetInWork = 998,//	Работа возобновлена
         SetOutWork = 999,//	Работа завершена
         SendMessage = 500,//	Направлено сообщение
-        ChangeExecutor = 440
+        ChangeExecutor = 205,// Изменение исполнителя по документу
     }
 }

@@ -795,60 +795,14 @@ namespace BL.Database.Documents
                 {
                     doc.ExecutorPositionId = document.ExecutorPositionId;
 
-                    //TODO Add new events
                     if (document.Events != null && document.Events.Any(x => x.Id == 0))
                     {
-                        // add only new events. New events should be without Id
-                        doc.Events = document.Events.Where(x => x.Id == 0).Select(x => new DocumentEvents
-                        {
-                            CreateDate = x.CreateDate,
-                            Date = x.Date,
-                            Description = x.Description,
-                            LastChangeDate = x.LastChangeDate,
-                            LastChangeUserId = x.LastChangeUserId,
-                            SourceAgentId = x.SourceAgentId,
-                            SourcePositionId = x.SourcePositionId,
-                            TargetAgentId = x.TargetAgentId,
-                            TargetPositionId = x.TargetPositionId,
-                            EventTypeId = (int)x.EventType
-                        }).ToList();
+                        doc.Events = CommonQueries.GetDbDocumentEvents(document.Events.Where(x => x.Id == 0)).ToList();
                     }
 
-                    if (document.Accesses != null)
+                    if (document.Accesses != null && document.Accesses.Any())
                     {
-                        foreach (var acc in document.Accesses)
-                        {
-                            foreach (var eacc in doc.Accesses.Where(x => x.Id == acc.Id))
-                            {
-                                if ((eacc.AccessLevelId != (int)acc.AccessLevel) ||
-                                    (eacc.IsFavourite != acc.IsFavourite)
-                                    || (eacc.IsInWork != acc.IsInWork) || (eacc.PositionId != acc.PositionId))
-                                {
-                                    eacc.LastChangeDate = acc.LastChangeDate;
-                                    eacc.LastChangeUserId = acc.LastChangeUserId;
-                                    eacc.AccessLevelId = (int)acc.AccessLevel;
-                                    eacc.IsFavourite = acc.IsFavourite;
-                                    eacc.IsInWork = acc.IsInWork;
-                                    eacc.PositionId = acc.PositionId;
-                                }
-                            }
-                        }
-
-                        //TODO Uncomment
-                        //var rmv_acc = doc.Accesses.Where(x => !document.Accesses.Select(s => s.Id).Contains(x.Id)).ToList();
-                        //dbContext.DocumentAccessesSet.RemoveRange(rmv_acc);
-
-                        if (document.Accesses.Any(x => x.Id == 0))
-                        {
-                            doc.Accesses = document.Accesses.Where(x => x.Id == 0).Select(x => new DocumentAccesses
-                            {
-                                LastChangeDate = x.LastChangeDate,
-                                IsInWork = x.IsInWork,
-                                LastChangeUserId = x.LastChangeUserId,
-                                PositionId = x.PositionId,
-                                AccessLevelId = (int)x.AccessLevel,
-                            }).ToList();
-                        }
+                        doc.Accesses = CommonQueries.GetDbDocumentAccesses(dbContext, document.Accesses, doc.Id).ToList();
                     }
 
                     dbContext.SaveChanges();
