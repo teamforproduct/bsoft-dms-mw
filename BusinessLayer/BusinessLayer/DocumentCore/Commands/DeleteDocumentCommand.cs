@@ -7,7 +7,7 @@ using BL.Model.Enums;
 
 namespace BL.Logic.DocumentCore.Commands
 {
-    internal class DeleteDocumentCommand : BaseCommand
+    internal class DeleteDocumentCommand : BaseDocumentCommand
     {
         private readonly IDocumentsDbProcess _documentDb;
         private readonly IAdminsDbProcess _adminDb;
@@ -30,13 +30,15 @@ namespace BL.Logic.DocumentCore.Commands
             return null;
         }
 
+        public override EnumDocumentActions CommandType { get { return EnumDocumentActions.DeleteDocument; } }
+
         public override bool CanExecute()
         {
             if (!CanBeDisplayed())
             {
                 throw new DocumentCannotBeModifiedOrDeleted();
             }
-            _adminDb.VerifyAccess(_context, new VerifyAccess { ActionCode = EnumActions.DeleteDocument, PositionId = _document.ExecutorPositionId });
+            _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = EnumDocumentActions.DeleteDocument, PositionId = _document.ExecutorPositionId });
 
             return true;
         }

@@ -12,6 +12,6 @@ namespace BL.Logic.DocumentCore.Interfaces
         IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging);
         FrontDocument GetDocument(IContext ctx, int documentId);
         IEnumerable<BaseSystemUIElement> GetModifyMetaData(IContext cxt, FrontDocument doc);
-        object ExecuteAction(EnumActions act, IContext context, object param);
+        object ExecuteAction(EnumDocumentActions act, IContext context, object param);
     }
 }

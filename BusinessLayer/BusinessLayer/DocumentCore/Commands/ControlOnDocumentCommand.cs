@@ -1,7 +1,6 @@
 ﻿using System;
 using BL.CrossCutting.Common;
 using BL.Database.Documents.Interfaces;
-using BL.Model.Database;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
@@ -9,24 +8,24 @@ using BL.Model.Exception;
 
 namespace BL.Logic.DocumentCore.Commands
 {
-    public class StartWorkCommand: BaseCommand
+    public class ControlOnDocumentCommand: BaseDocumentCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
 
-        public StartWorkCommand(IDocumentOperationsDbProcess operationDb)
+        public ControlOnDocumentCommand(IDocumentOperationsDbProcess operationDb)
         {
             _operationDb = operationDb;
         }
 
-        private ChangeWorkStatus Model
+        private ControlOn Model
         {
             get
             {
-                if (!(_param is ChangeWorkStatus))
+                if (!(_param is ControlOn))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ChangeWorkStatus)_param;
+                return (ControlOn) _param;
             }
         }
 
@@ -42,32 +41,33 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override object Execute()
         {
-            var acc = _operationDb.GetDocumentAccess(_context, Model.DocumentId);
-            if (acc == null)
+            var docWait = new InternalDocumentWaits
             {
-                throw new UserHasNoAccessToDocument();
-            }
-            acc.IsInWork = true;
-            var ea = new EventAccessModel
-            {
-                DocumentAccess = acc,
-                DocumentEvent = new InternalDocumentEvents
+                DocumentId = Model.DocumentId,
+                Description = Model.Description,
+                DueDate = Model.DueDate,
+                AttentionDate = Model.AttentionDate,
+                LastChangeUserId = _context.CurrentAgentId,
+                LastChangeDate = DateTime.Now,
+                OnEvent = new InternalDocumentEvents
                 {
                     DocumentId = Model.DocumentId,
-                    SourceAgentId = _context.CurrentAgentId,
-                    TargetAgentId = _context.CurrentAgentId,
-                    SourcePositionId = _context.CurrentPositionId,
-                    TargetPositionId = _context.CurrentPositionId,
+                    EventType = EnumEventTypes.ControlOn,
                     Description = Model.Description,
-                    EventType = EnumEventTypes.SetInWork,
-                    LastChangeUserId = _context.CurrentAgentId,
+                    SourcePositionId = _context.CurrentPositionId,
+                    SourceAgentId = _context.CurrentAgentId,
+                    TargetPositionId = _context.CurrentPositionId,
+                    TargetAgentId = _context.CurrentAgentId,
                     LastChangeDate = DateTime.Now,
                     Date = DateTime.Now,
                     CreateDate = DateTime.Now,
+                    LastChangeUserId = _context.CurrentAgentId
                 }
             };
-            _operationDb.SetDocumentInformation(_context, ea);
+            _operationDb.AddDocumentWait(_context, docWait);
             return null;
         }
+
+        public override EnumDocumentActions CommandType { get { return EnumDocumentActions.ControlOn; } }
     }
 }

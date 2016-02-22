@@ -1,6 +1,6 @@
 ﻿namespace BL.Model.Enums
 {
-    public enum EnumActions
+    public enum EnumDocumentActions
     {
         AddDocument = 11, // Создать документ по шаблону
         CopyDocument = 13, // Создать документ копированием

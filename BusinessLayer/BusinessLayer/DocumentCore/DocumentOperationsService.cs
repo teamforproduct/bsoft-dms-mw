@@ -43,15 +43,15 @@ namespace BL.Logic.DocumentCore
                 position.Actions = systemDb.GetSystemActions(ctx, new FilterSystemAction() { Object = EnumObjects.Documents, IsAvailable = true, PositionsIdList = new List<int> { position.Id } });
                 if (document.IsRegistered || position.Id != document.ExecutorPositionId)
                 {
-                    position.Actions = position.Actions.Where(x => x.Action != EnumActions.ModifyDocument).ToList();
-                    position.Actions = position.Actions.Where(x => x.Action != EnumActions.DeleteDocument).ToList();
+                    position.Actions = position.Actions.Where(x => x.DocumentAction != EnumDocumentActions.ModifyDocument).ToList();
+                    position.Actions = position.Actions.Where(x => x.DocumentAction != EnumDocumentActions.DeleteDocument).ToList();
                 }
                 if (document.IsRegistered)
                 {
-                    position.Actions = position.Actions.Where(x => x.Action != EnumActions.RegisterDocument).ToList();
-                    position.Actions = position.Actions.Where(x => x.Action != EnumActions.ChangeExecutor).ToList();
+                    position.Actions = position.Actions.Where(x => x.DocumentAction != EnumDocumentActions.RegisterDocument).ToList();
+                    position.Actions = position.Actions.Where(x => x.DocumentAction != EnumDocumentActions.ChangeExecutor).ToList();
                 }
-                position.Actions.Where(x => x.Action == EnumActions.ControlOff).ToList()
+                position.Actions.Where(x => x.DocumentAction == EnumDocumentActions.ControlOff).ToList()
                     .ForEach(x =>
                     {
                         x.ActionRecords = new List<InternalActionRecord>()
@@ -68,7 +68,7 @@ namespace BL.Logic.DocumentCore
         public void AddDocumentLink(IContext context, AddDocumentLink model)
         {
             var docLink = _operationDb.AddDocumentLinkPrepare(context, model);
-            _adminDb.VerifyAccess(context, new VerifyAccess { ActionCode = EnumActions.ModifyDocument, PositionId = docLink.ExecutorPositionId });
+            _adminDb.VerifyAccess(context, new VerifyAccess { DocumentActionCode = EnumDocumentActions.ModifyDocument, PositionId = docLink.ExecutorPositionId });
             if (docLink.DocumentLinkId.HasValue && docLink.ParentDocumentLinkId.HasValue && (docLink.DocumentLinkId == docLink.ParentDocumentLinkId))
             {
                 throw new DocumentHasAlreadyHadLink();

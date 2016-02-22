@@ -22,7 +22,7 @@ namespace BL.Model.AdminCore
         /// <summary>
         /// Код действия
         /// </summary>
-        public EnumActions? ActionCode { get; set; }
+        public EnumDocumentActions? DocumentActionCode { get; set; }
         /// <summary>
         /// ИД записи, если права должны раздавать в разрезе каждой записи объекта
         /// </summary>

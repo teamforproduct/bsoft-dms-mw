@@ -1,8 +1,9 @@
 ﻿using BL.CrossCutting.Common;
+using BL.Model.Enums;
 
 namespace BL.Logic.DocumentCore.Commands
 {
-    public class SendMessageCommand: BaseCommand
+    public class SendMessageDocumentCommand: BaseDocumentCommand
     {
         public override bool CanBeDisplayed()
         {
@@ -18,5 +19,7 @@ namespace BL.Logic.DocumentCore.Commands
         {
             throw new System.NotImplementedException();
         }
+
+        public override EnumDocumentActions CommandType { get { return EnumDocumentActions.SendMessage; } }
     }
 }

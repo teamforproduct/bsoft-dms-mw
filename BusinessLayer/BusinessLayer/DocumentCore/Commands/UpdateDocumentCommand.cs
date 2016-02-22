@@ -10,7 +10,7 @@ using BL.Model.Exception;
 
 namespace BL.Logic.DocumentCore.Commands
 {
-    internal class UpdateDocumentCommand : BaseCommand
+    internal class UpdateDocumentCommand : BaseDocumentCommand
     {
         private readonly IDocumentsDbProcess _documentDb;
         private readonly IAdminsDbProcess _adminDb;
@@ -29,7 +29,7 @@ namespace BL.Logic.DocumentCore.Commands
                 {
                     throw new WrongParameterTypeError();
                 }
-                return _param as ModifyDocument;
+                return (ModifyDocument) _param;
             }
         }
 
@@ -46,7 +46,7 @@ namespace BL.Logic.DocumentCore.Commands
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
 
-            _adminDb.VerifyAccess(_context, new VerifyAccess { ActionCode = EnumActions.ModifyDocument, PositionId = _document.ExecutorPositionId });
+            _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = EnumDocumentActions.ModifyDocument, PositionId = _document.ExecutorPositionId });
             return true;
         }
 
@@ -68,5 +68,7 @@ namespace BL.Logic.DocumentCore.Commands
             _documentDb.UpdateDocument(_context, _document);
             return _document.Id;
         }
+
+        public override EnumDocumentActions CommandType { get { return EnumDocumentActions.ModifyDocument; } }
     }
 }

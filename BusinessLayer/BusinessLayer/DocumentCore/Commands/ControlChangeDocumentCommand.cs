@@ -8,11 +8,11 @@ using BL.Model.Exception;
 
 namespace BL.Logic.DocumentCore.Commands
 {
-    public class ControlChangeCommand: BaseCommand
+    public class ControlChangeDocumentCommand: BaseDocumentCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
 
-        public ControlChangeCommand(IDocumentOperationsDbProcess operationDb)
+        public ControlChangeDocumentCommand(IDocumentOperationsDbProcess operationDb)
         {
             _operationDb = operationDb;
         }
@@ -25,7 +25,7 @@ namespace BL.Logic.DocumentCore.Commands
                 {
                     throw new WrongParameterTypeError();
                 }
-                return _param as ControlChange;
+                return (ControlChange) _param;
             }
         }
 
@@ -72,5 +72,7 @@ namespace BL.Logic.DocumentCore.Commands
             _operationDb.AddDocumentWait(_context, newWait);
             return null;
         }
+
+        public override EnumDocumentActions CommandType { get { return EnumDocumentActions.ControlChange; } }
     }
 }
