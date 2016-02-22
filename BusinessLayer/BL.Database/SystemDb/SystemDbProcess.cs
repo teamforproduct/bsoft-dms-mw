@@ -105,8 +105,9 @@ namespace BL.Database.SystemDb
                     }
                     if (filter.IsAvailable ?? false)
                     {
-                        qry = qry.Where(x => !x.IsGrantable
-                                                || (x.RoleActions.Any(y => (posId == y.Role.PositionId)
+                        qry = qry.Where(x =>  x.IsVisible &&
+                                              (!x.IsGrantable
+                                                || x.RoleActions.Any(y => (posId == y.Role.PositionId)
                                                                             &&
                                                                             y.Role.UserRoles.Any(z => z.UserId == ctx.CurrentAgentId))));
                     }

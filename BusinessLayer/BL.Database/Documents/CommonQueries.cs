@@ -334,7 +334,7 @@ namespace BL.Database.Documents
                 OnEventId = x.Wait.OnEventId,
                 OffEventId = x.Wait.OffEventId,
                 ResultTypeId = x.Wait.ResultTypeId,
-                Description = x.Wait.Description,
+                Task = x.Wait.Task,
                 DueDate = x.Wait.DueDate,
                 AttentionDate = x.Wait.AttentionDate,
                 OnEvent = x.OnEvent == null
@@ -413,7 +413,7 @@ namespace BL.Database.Documents
                 OnEventId = x.Wait.OnEventId,
                 OffEventId = x.Wait.OffEventId,
                 ResultTypeId = x.Wait.ResultTypeId,
-                Description = x.Wait.Description,
+                Task = x.Wait.Task,
                 DueDate = x.Wait.DueDate,
                 AttentionDate = x.Wait.AttentionDate,
                 OnEvent = x.OnEvent == null
@@ -459,7 +459,7 @@ namespace BL.Database.Documents
             return new DocumentWaits
             {
                 AttentionDate = docWait.AttentionDate,
-                Description = docWait.Description,
+                Task = docWait.Task,
                 DocumentId = docWait.DocumentId,
                 DueDate = docWait.DueDate,
                 LastChangeDate = docWait.LastChangeDate,
@@ -514,7 +514,7 @@ namespace BL.Database.Documents
                 OnEventId = x.Wait.OnEventId,
                 OffEventId = x.Wait.OffEventId,
                 ResultTypeId = x.Wait.ResultTypeId,
-                Description = x.Wait.Description,
+                Task = x.Wait.Task,
                 DueDate = x.Wait.DueDate,
                 AttentionDate = x.Wait.AttentionDate,
                 OnEvent = x.OnEvent == null

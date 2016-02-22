@@ -297,6 +297,10 @@
     <Compile Include="Migrations\201602171004544_Tags.Designer.cs">
       <DependentUpon>201602171004544_Tags.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201602221508072_corr.cs" />
+    <Compile Include="Migrations\201602221508072_corr.Designer.cs">
+      <DependentUpon>201602221508072_corr.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\ISecurityDbProcess.cs" />
@@ -446,6 +450,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201602171004544_Tags.resx">
       <DependentUpon>201602171004544_Tags.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602221508072_corr.resx">
+      <DependentUpon>201602221508072_corr.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

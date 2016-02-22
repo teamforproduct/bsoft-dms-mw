@@ -13,6 +13,10 @@ namespace BL.Model.DocumentCore.Actions
         /// </summary>
         public int DocumentId { get; set; }
         /// <summary>
+        /// Задача
+        /// </summary>
+        public string Task { get; set; }
+        /// <summary>
         /// Комментарий
         /// </summary>
         public string Description { get; set; }

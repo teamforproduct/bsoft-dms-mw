@@ -25,6 +25,7 @@ namespace BL.Database.DBModel.System
         public string Description { get; set; }
         public bool IsGrantable { get; set; }
         public bool IsGrantableByRecordId { get; set; }
+        public bool IsVisible { get; set; }
         public Nullable<int> GrantId { get; set; }
         [ForeignKey("ObjectId")]
         public virtual SystemObjects Object { get; set; }

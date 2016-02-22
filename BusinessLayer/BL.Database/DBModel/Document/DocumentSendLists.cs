@@ -12,6 +12,7 @@ namespace BL.Database.DBModel.Document
         public int Stage { get; set; }
         public int SendTypeId { get; set; }
         public Nullable<int> TargetPositionId { get; set; }
+        public string Task { get; set; }
         public string Description { get; set; }
         public Nullable<DateTime> DueDate { get; set; }
         public int? DueDay { get; set; }

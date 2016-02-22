@@ -144,7 +144,7 @@ namespace BL.Database.Documents
                 docWait.OnEventId = documentWait.OnEventId;
                 docWait.OffEventId = documentWait.OffEventId;
                 docWait.ResultTypeId = documentWait.ResultTypeId;
-                docWait.Description = documentWait.Description;
+                docWait.Task = documentWait.Task;
                 docWait.DueDate = documentWait.DueDate;
                 docWait.AttentionDate = documentWait.AttentionDate;
                 docWait.LastChangeUserId = documentWait.LastChangeUserId;

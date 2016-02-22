@@ -44,7 +44,7 @@ namespace BL.Logic.DocumentCore.Commands
             var docWait = new InternalDocumentWaits
             {
                 DocumentId = Model.DocumentId,
-                Description = Model.Description,
+                Task = Model.Task,
                 DueDate = Model.DueDate,
                 AttentionDate = Model.AttentionDate,
                 LastChangeUserId = _context.CurrentAgentId,
@@ -53,7 +53,7 @@ namespace BL.Logic.DocumentCore.Commands
                 {
                     DocumentId = Model.DocumentId,
                     EventType = EnumEventTypes.ControlOn,
-                    Description = Model.Description,
+                    Description = Model.Task+" / "+Model.Description,
                     SourcePositionId = _context.CurrentPositionId,
                     SourceAgentId = _context.CurrentAgentId,
                     TargetPositionId = _context.CurrentPositionId,
