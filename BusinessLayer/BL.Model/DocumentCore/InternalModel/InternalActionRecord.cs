@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BL.Model.DocumentCore.InternalModel
+﻿namespace BL.Model.DocumentCore.InternalModel
 {
     public class InternalActionRecord
     {

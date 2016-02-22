@@ -53,7 +53,7 @@
     <Compile Include="Database\DatabaseType.cs" />
     <Compile Include="DictionaryCore\BaseDictionaryLinkType.cs" />
     <Compile Include="DictionaryCore\BaseDictionaryResultType.cs" />
-    <Compile Include="DictionaryCore\FilterDictionaryTag.cs" />
+    <Compile Include="DictionaryCore\FilterModel\FilterDictionaryTag.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryTag.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryDocumentType.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryPositionWithActions.cs" />
@@ -165,6 +165,7 @@
     <Compile Include="SystemCore\LogInfo.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontSystemAction.cs" />
     <Compile Include="SystemCore\BaseSystemUIElement.cs" />
+    <Compile Include="SystemCore\InternalPositionInfo.cs" />
     <Compile Include="SystemCore\UIPaging.cs" />
     <Compile Include="Users\Employee.cs" />
     <Compile Include="Users\CurrentPosition.cs" />

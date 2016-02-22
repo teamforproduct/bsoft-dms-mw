@@ -40,7 +40,7 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override object Execute()
         {
-            var acc = _operationDb.GetDocumentAccess(_context, Model.DocumentId);
+            var acc = _operationDb.GetDocumentAccessForUserPosition(_context, Model.DocumentId);
             acc.IsFavourite = true;
             acc.LastChangeDate = DateTime.Now;
             acc.LastChangeUserId = _context.CurrentAgentId;

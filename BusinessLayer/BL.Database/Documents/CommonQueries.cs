@@ -9,6 +9,7 @@ using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
+using BL.Model.SystemCore;
 
 namespace BL.Database.Documents
 {
@@ -200,6 +201,33 @@ namespace BL.Database.Documents
             return null;
         }
 
+        public static IEnumerable<InternalDocumentAccesses> GetInternalDocumentAccesses(DmsContext dbContext, int documentId)
+        {
+            return dbContext.DocumentAccessesSet.Where(
+                x => x.DocumentId == documentId).Select(acc => new InternalDocumentAccesses
+                {
+                    LastChangeDate = acc.LastChangeDate,
+                    LastChangeUserId = acc.LastChangeUserId,
+                    Id = acc.Id,
+                    PositionId = acc.PositionId,
+                    IsInWork = acc.IsInWork,
+                    DocumentId = acc.DocumentId,
+                    IsFavourite = acc.IsFavourite,
+                    AccessLevel = (EnumDocumentAccesses) acc.AccessLevelId
+                }).ToList();
+        }
+
+        public static IEnumerable<InternalPositionInfo> GetInternalPositionsInfo(DmsContext dbContext, List<int> positionIds)
+        {
+            return dbContext.DictionaryPositionsSet.Where(x => positionIds.Contains(x.Id)).Select(x => new InternalPositionInfo
+            {
+                PositionId = x.Id,
+                PositionName = x.Name,
+                AgentId = x.ExecutorAgentId.HasValue? x.ExecutorAgentId.Value:0,
+                AgentName = x.ExecutorAgentId.HasValue ? x.ExecutorAgent.Name:""
+                }).ToList();
+        }
+
         public static IEnumerable<FrontDocumentEvent> GetDocumentEvents(DmsContext dbContext,FilterDocumentEvent filter)
         {
             var qry = dbContext.DocumentEventsSet.AsQueryable();
@@ -304,7 +332,6 @@ namespace BL.Database.Documents
 
         public static IEnumerable<InternalDocumentWaits> GetInternalDocumentWaits(DmsContext dbContext, FilterDocumentWaits filter)
         {
-            //TODO: Refactoring
             var waitsDb = dbContext.DocumentWaitsSet.AsQueryable();
 
             if (filter != null)
@@ -383,7 +410,6 @@ namespace BL.Database.Documents
 
         public static IEnumerable<FrontDocumentWaits> GetDocumentWaits(DmsContext dbContext, FilterDocumentWaits filter)
         {
-            //TODO: Refactoring
             var waitsDb = dbContext.DocumentWaitsSet.AsQueryable();
 
             if (filter != null)
@@ -480,85 +506,6 @@ namespace BL.Database.Documents
         public static IEnumerable<DocumentWaits> GetDbDocumentWaitses(IEnumerable<InternalDocumentWaits> docWaits)
         {
             return docWaits.Select(GetDbDocumentWait);
-        }
-
-        public static IEnumerable<InternalDocumentWaits> GetInternalDocumentWaitses(DmsContext dbContext, FilterDocumentWaits filter)
-        {
-            //TODO: Refactoring
-            var waitsDb = dbContext.DocumentWaitsSet.AsQueryable();
-
-            if (filter != null)
-            {
-                if (filter.DocumentId.HasValue)
-                {
-                    waitsDb = waitsDb.Where(x => x.DocumentId == filter.DocumentId.Value);
-                }
-
-                if (filter.OnEventId.HasValue)
-                {
-                    waitsDb = waitsDb.Where(x => x.OnEventId == filter.OnEventId.Value);
-                }
-
-                if (filter.OffEventId.HasValue)
-                {
-                    waitsDb = waitsDb.Where(x => x.OffEventId.HasValue && x.OffEventId.Value == filter.OffEventId.Value);
-                }
-
-                if (filter.Opened)
-                {
-                    waitsDb = waitsDb.Where(x => !x.OffEventId.HasValue);
-                }
-            }
-
-            var waitsRes = waitsDb.Select(x => new { Wait = x, OnEvent = x.OnEvent, OffEvent = x.OffEvent });
-
-            var waits = waitsRes.Select(x => new InternalDocumentWaits
-            {
-                Id = x.Wait.Id,
-                DocumentId = x.Wait.DocumentId,
-                ParentId = x.Wait.ParentId,
-                OnEventId = x.Wait.OnEventId,
-                OffEventId = x.Wait.OffEventId,
-                ResultTypeId = x.Wait.ResultTypeId,
-                Task = x.Wait.Task,
-                DueDate = x.Wait.DueDate,
-                AttentionDate = x.Wait.AttentionDate,
-                OnEvent = x.OnEvent == null
-                    ? null
-                    : new InternalDocumentEvents
-                    {
-                        Id = x.OnEvent.Id,
-                        CreateDate = x.OnEvent.CreateDate,
-                        Date = x.OnEvent.Date,
-                        Description = x.OnEvent.Description,
-                        LastChangeDate = x.OnEvent.LastChangeDate,
-                        LastChangeUserId = x.OnEvent.LastChangeUserId,
-                        SourceAgentId = x.OnEvent.SourceAgentId,
-                        SourcePositionId = x.OnEvent.SourcePositionId,
-                        TargetAgentId = x.OnEvent.TargetAgentId,
-                        TargetPositionId = x.OnEvent.TargetPositionId,
-                        EventType = (EnumEventTypes)x.OnEvent.EventTypeId
-                    },
-                OffEvent = x.OffEvent == null
-                    ? null
-                    : new InternalDocumentEvents
-                    {
-                        Id = x.OffEvent.Id,
-                        CreateDate = x.OffEvent.CreateDate,
-                        Date = x.OffEvent.Date,
-                        Description = x.OffEvent.Description,
-                        LastChangeDate = x.OffEvent.LastChangeDate,
-                        LastChangeUserId = x.OffEvent.LastChangeUserId,
-                        SourceAgentId = x.OffEvent.SourceAgentId,
-                        SourcePositionId = x.OffEvent.SourcePositionId,
-                        TargetAgentId = x.OffEvent.TargetAgentId,
-                        TargetPositionId = x.OffEvent.TargetPositionId,
-                        EventType = (EnumEventTypes)x.OffEvent.EventTypeId
-                    }
-            }).ToList();
-
-            return waits;
-
         }
 
         public static IEnumerable<FrontDocument> GetLinkedDocuments(DmsContext dbContext, int documentId)

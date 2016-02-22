@@ -168,6 +168,33 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
+        /// Отправка сообщения группе
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("SendMessage")]
+        [HttpPost]
+        public IHttpActionResult SendMessage(SendMessage model)
+        {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            timeM.Start();
+            var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            timeDB.Start();
+            docProc.ExecuteAction(EnumDocumentActions.SendMessage, cxt, model);
+            timeDB.Stop();
+
+            timeM.Stop();
+            SaveToFile("M: DocumentActionsController SendMessage", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentOperationsService SendMessage", timeDB.Elapsed.ToString("G"));
+
+            var ctrl = new DocumentsController();
+            ctrl.ControllerContext = ControllerContext;
+            return ctrl.Get(model.DocumentId);
+        }
+
+        /// <summary>
         /// Добавление примечания
         /// </summary>
         /// <param name="model"></param>
