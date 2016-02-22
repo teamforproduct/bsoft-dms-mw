@@ -107,10 +107,10 @@ namespace BL.Database.Admins
                     model.PositionsIdList = context.CurrentPositionsIdList;
                 }
                 bool res = false;
-                if (model.ActionCode.HasValue)
+                if (model.DocumentActionCode.HasValue)
                 {
                     res = dbContext.AdminRoleActionsSet
-                              .Any(x => x.Action.Id == (int)model.ActionCode
+                              .Any(x => x.Action.Id == (int)model.DocumentActionCode
                                         && x.Action.IsGrantable
                                         && (!x.Action.IsGrantableByRecordId || (x.RecordId == model.RecordId))
                                         && (((model.PositionId == null) && (model.PositionsIdList.Contains(x.Role.PositionId))) || (x.Role.PositionId == model.PositionId))

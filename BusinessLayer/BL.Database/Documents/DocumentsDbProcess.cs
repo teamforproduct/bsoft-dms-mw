@@ -720,7 +720,7 @@ namespace BL.Database.Documents
                 }
                 var regJournal = dbContext.DictionaryRegistrationJournalsSet
                     .Where(x => x.Id == model.RegistrationJournalId)
-                    .Select(x => new {x.Id, x.NumerationPrefixFormula, x.PrefixFormula, x.SuffixFormula}).FirstOrDefault();
+                    .Select(x => new { x.Id, x.NumerationPrefixFormula, x.PrefixFormula, x.SuffixFormula }).FirstOrDefault();
 
                 if (regJournal != null)
                 {
@@ -762,6 +762,51 @@ namespace BL.Database.Documents
                                          && x.RegistrationNumber == document.RegistrationNumber
                                          && x.Id != document.Id
                     );
+            }
+        }
+
+        public InternalDocument ChangeExecutorDocumentPrepare(IContext context, ChangeExecutor model)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var doc = CommonQueries.GetDocumentQuery(dbContext)
+                    .Where(x => x.Doc.Id == model.DocumentId && context.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId))
+                    .Select(x => new InternalDocument
+                    {
+                        Id = x.Doc.Id,
+                        ExecutorPositionId = x.Doc.ExecutorPositionId,
+                    }).FirstOrDefault();
+
+                if (doc == null)
+                {
+                    return null;
+                }
+                return doc;
+            }
+        }
+
+        public void ChangeExecutorDocument(IContext ctx, InternalDocument document)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            {
+                var doc = dbContext.DocumentsSet
+                    .FirstOrDefault(x => x.Id == document.Id);
+                if (doc != null)
+                {
+                    doc.ExecutorPositionId = document.ExecutorPositionId;
+
+                    if (document.Events != null && document.Events.Any(x => x.Id == 0))
+                    {
+                        doc.Events = CommonQueries.GetDbDocumentEvents(document.Events.Where(x => x.Id == 0)).ToList();
+                    }
+
+                    if (document.Accesses != null && document.Accesses.Any())
+                    {
+                        doc.Accesses = CommonQueries.GetDbDocumentAccesses(dbContext, document.Accesses, doc.Id).ToList();
+                    }
+
+                    dbContext.SaveChanges();
+                }
             }
         }
 

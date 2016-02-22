@@ -10,7 +10,7 @@ using BL.Model.Exception;
 
 namespace BL.Logic.DocumentCore.Commands
 {
-    public class CopyDocumentCommand: BaseCommand
+    public class CopyDocumentCommand: BaseDocumentCommand
     {
 
         private readonly IDocumentsDbProcess _documentDb;
@@ -30,7 +30,7 @@ namespace BL.Logic.DocumentCore.Commands
                 {
                     throw new WrongParameterTypeError();
                 }
-                return _param as CopyDocument;
+                return (CopyDocument) _param;
             }
         }
 
@@ -38,7 +38,7 @@ namespace BL.Logic.DocumentCore.Commands
         {
             try
             {
-                _adminDb.VerifyAccess(_context, new VerifyAccess { ActionCode = EnumActions.AddDocument, PositionId = _context.CurrentPositionId });
+                _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = EnumDocumentActions.AddDocument, PositionId = _context.CurrentPositionId });
                 return true;
             }
             catch
@@ -49,7 +49,7 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanExecute()
         {
-            _adminDb.VerifyAccess(_context, new VerifyAccess { ActionCode = EnumActions.AddDocument, PositionId = Model.CurrentPositionId });
+            _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = EnumDocumentActions.AddDocument, PositionId = Model.CurrentPositionId });
             _document = _documentDb.CopyDocumentPrepare(_context, Model.DocumentId);
 
             if (_document == null)
@@ -87,5 +87,7 @@ namespace BL.Logic.DocumentCore.Commands
             _documentDb.AddDocument(_context, _document);
             return _document.Id;
         }
+
+        public override EnumDocumentActions CommandType { get { return EnumDocumentActions.CopyDocument; } }
     }
 }

@@ -170,6 +170,12 @@ namespace BL.Database.Documents
             return docAccesses.Select(GetDbDocumentAccess);
         }
 
+        public static IEnumerable<DocumentAccesses> GetDbDocumentAccesses(DmsContext dbContext, IEnumerable<InternalDocumentAccesses> docAccesses, int documentId)
+        {
+            var accPositions = dbContext.DocumentAccessesSet.Where(x => x.DocumentId == documentId).Select(x => x.PositionId);
+            return docAccesses.Where(x=>!accPositions.Contains(x.PositionId)).Select(GetDbDocumentAccess);
+        }
+
         public static InternalDocumentAccesses GetInternalDocumentAccess(IContext ctx, DmsContext dbContext, int documentId)
         {
 

@@ -9,11 +9,11 @@ using BL.Model.Exception;
 
 namespace BL.Logic.DocumentCore.Commands
 {
-    public class StartWorkCommand: BaseCommand
+    public class StartWorkDocumentCommand: BaseDocumentCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
 
-        public StartWorkCommand(IDocumentOperationsDbProcess operationDb)
+        public StartWorkDocumentCommand(IDocumentOperationsDbProcess operationDb)
         {
             _operationDb = operationDb;
         }
@@ -69,5 +69,7 @@ namespace BL.Logic.DocumentCore.Commands
             _operationDb.SetDocumentInformation(_context, ea);
             return null;
         }
+
+        public override EnumDocumentActions CommandType { get { return EnumDocumentActions.StartWork; } }
     }
 }

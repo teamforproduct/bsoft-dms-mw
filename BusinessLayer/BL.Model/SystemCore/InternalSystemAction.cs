@@ -6,7 +6,7 @@ namespace BL.Model.SystemCore
 {
     public class InternalSystemAction
     {
-        public EnumActions Action { get; set; }
+        public EnumDocumentActions DocumentAction { get; set; }
         public EnumObjects Object { get; set; }
         public string ActionCode { get; set; }
         public string ObjectCode { get; set; }

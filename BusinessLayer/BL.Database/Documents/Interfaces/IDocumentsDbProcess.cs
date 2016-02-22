@@ -29,5 +29,8 @@ namespace BL.Database.Documents.Interfaces
         InternalDocument AddDocumentByTemplateDocumentPrepare(IContext context, int templateDocumentId);
         InternalDocument DeleteDocumentPrepare(IContext context, int documentId);
         InternalDocument ModifyDocumentPrepare(IContext context, int id);
+
+        InternalDocument ChangeExecutorDocumentPrepare(IContext ctx, ChangeExecutor model);
+        void ChangeExecutorDocument(IContext ctx, InternalDocument document);
     }
 }

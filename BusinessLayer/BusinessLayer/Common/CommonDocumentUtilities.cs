@@ -9,6 +9,7 @@ using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
+using BL.Model.DocumentCore.Actions;
 
 namespace BL.Logic.Common
 {
@@ -50,6 +51,27 @@ namespace BL.Logic.Common
             };
         }
 
+        public static List<InternalDocumentEvents> GetEventForChangeExecutorDocument(IContext context, ChangeExecutor model)
+        {
+            return new List<InternalDocumentEvents>
+            {
+                new InternalDocumentEvents
+                {
+                    EventType = EnumEventTypes.ChangeExecutor,
+                    Description = model.Description,
+                    LastChangeUserId = context.CurrentAgentId,
+                    SourceAgentId = context.CurrentAgentId,
+                    TargetAgentId = context.CurrentAgentId,
+                    TargetPositionId = model.PositionId,
+                    SourcePositionId = context.CurrentPositionId,
+                    LastChangeDate = DateTime.Now,
+                    Date = DateTime.Now,
+                    CreateDate = DateTime.Now,
+                }
+
+            };
+        }
+
         public static List<InternalDocumentAccesses> GetAccessesForNewDocument(IContext context)
         {
             return new List<InternalDocumentAccesses>
@@ -62,6 +84,22 @@ namespace BL.Logic.Common
                     LastChangeDate = DateTime.Now,
                     LastChangeUserId = context.CurrentAgentId,
                     PositionId = context.CurrentPositionId
+                }
+            };
+        }
+
+        public static List<InternalDocumentAccesses> GetAccessesForChangeExecutorDocument(IContext context, ChangeExecutor model)
+        {
+            return new List<InternalDocumentAccesses>
+            {
+                new InternalDocumentAccesses
+                {
+                    AccessLevel = model.AccessLevel,
+                    IsInWork = true,
+                    IsFavourite = false,
+                    LastChangeDate = DateTime.Now,
+                    LastChangeUserId = context.CurrentAgentId,
+                    PositionId = model.PositionId
                 }
             };
         }

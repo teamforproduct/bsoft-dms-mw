@@ -2,15 +2,16 @@
 using BL.CrossCutting.Common;
 using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore.Actions;
+using BL.Model.Enums;
 using BL.Model.Exception;
 
 namespace BL.Logic.DocumentCore.Commands
 {
-    public class DeleteFavouriteCommand: BaseCommand
+    public class AddFavouriteDocumentCommand: BaseDocumentCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
 
-        public DeleteFavouriteCommand(IDocumentOperationsDbProcess operationDb)
+        public AddFavouriteDocumentCommand(IDocumentOperationsDbProcess operationDb)
         {
             _operationDb = operationDb;
         }
@@ -23,7 +24,7 @@ namespace BL.Logic.DocumentCore.Commands
                 {
                     throw new WrongParameterTypeError();
                 }
-                return _param as ChangeFavourites;
+                return (ChangeFavourites) _param;
             }
         }
 
@@ -40,11 +41,13 @@ namespace BL.Logic.DocumentCore.Commands
         public override object Execute()
         {
             var acc = _operationDb.GetDocumentAccess(_context, Model.DocumentId);
-            acc.IsFavourite = false;
+            acc.IsFavourite = true;
             acc.LastChangeDate = DateTime.Now;
             acc.LastChangeUserId = _context.CurrentAgentId;
             _operationDb.UpdateDocumentAccess(_context, acc);
             return null;
         }
+
+        public override EnumDocumentActions CommandType { get { return EnumDocumentActions.AddFavourite; } }
     }
 }

@@ -48,6 +48,7 @@ namespace BL.Database.Documents
         }
         public void ModifyDocumentTags(IContext context, InternalDocumentTags model)
         {
+            // TODO к Сергею проверить нужно ли разнести этот метод
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
                 var dictionaryTags = dbContext.DictionaryTagsSet
