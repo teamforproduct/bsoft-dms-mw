@@ -720,7 +720,7 @@ namespace BL.Database.Documents
                 }
                 var regJournal = dbContext.DictionaryRegistrationJournalsSet
                     .Where(x => x.Id == model.RegistrationJournalId)
-                    .Select(x => new {x.Id, x.NumerationPrefixFormula, x.PrefixFormula, x.SuffixFormula}).FirstOrDefault();
+                    .Select(x => new { x.Id, x.NumerationPrefixFormula, x.PrefixFormula, x.SuffixFormula }).FirstOrDefault();
 
                 if (regJournal != null)
                 {
@@ -762,6 +762,97 @@ namespace BL.Database.Documents
                                          && x.RegistrationNumber == document.RegistrationNumber
                                          && x.Id != document.Id
                     );
+            }
+        }
+
+        public InternalDocument ChangeExecutorDocumentPrepare(IContext context, ChangeExecutor model)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var doc = CommonQueries.GetDocumentQuery(dbContext)
+                    .Where(x => x.Doc.Id == model.DocumentId && context.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId))
+                    .Select(x => new InternalDocument
+                    {
+                        Id = x.Doc.Id,
+                        ExecutorPositionId = x.Doc.ExecutorPositionId,
+                    }).FirstOrDefault();
+
+                if (doc == null)
+                {
+                    return null;
+                }
+                return doc;
+            }
+        }
+
+        public void ChangeExecutorDocument(IContext ctx, InternalDocument document)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            {
+                var doc = dbContext.DocumentsSet
+                    .FirstOrDefault(x => x.Id == document.Id);
+                if (doc != null)
+                {
+                    doc.ExecutorPositionId = document.ExecutorPositionId;
+
+                    //TODO Add new events
+                    if (document.Events != null && document.Events.Any(x => x.Id == 0))
+                    {
+                        // add only new events. New events should be without Id
+                        doc.Events = document.Events.Where(x => x.Id == 0).Select(x => new DocumentEvents
+                        {
+                            CreateDate = x.CreateDate,
+                            Date = x.Date,
+                            Description = x.Description,
+                            LastChangeDate = x.LastChangeDate,
+                            LastChangeUserId = x.LastChangeUserId,
+                            SourceAgentId = x.SourceAgentId,
+                            SourcePositionId = x.SourcePositionId,
+                            TargetAgentId = x.TargetAgentId,
+                            TargetPositionId = x.TargetPositionId,
+                            EventTypeId = (int)x.EventType
+                        }).ToList();
+                    }
+
+                    if (document.Accesses != null)
+                    {
+                        foreach (var acc in document.Accesses)
+                        {
+                            foreach (var eacc in doc.Accesses.Where(x => x.Id == acc.Id))
+                            {
+                                if ((eacc.AccessLevelId != (int)acc.AccessLevel) ||
+                                    (eacc.IsFavourite != acc.IsFavourite)
+                                    || (eacc.IsInWork != acc.IsInWork) || (eacc.PositionId != acc.PositionId))
+                                {
+                                    eacc.LastChangeDate = acc.LastChangeDate;
+                                    eacc.LastChangeUserId = acc.LastChangeUserId;
+                                    eacc.AccessLevelId = (int)acc.AccessLevel;
+                                    eacc.IsFavourite = acc.IsFavourite;
+                                    eacc.IsInWork = acc.IsInWork;
+                                    eacc.PositionId = acc.PositionId;
+                                }
+                            }
+                        }
+
+                        //TODO Uncomment
+                        //var rmv_acc = doc.Accesses.Where(x => !document.Accesses.Select(s => s.Id).Contains(x.Id)).ToList();
+                        //dbContext.DocumentAccessesSet.RemoveRange(rmv_acc);
+
+                        if (document.Accesses.Any(x => x.Id == 0))
+                        {
+                            doc.Accesses = document.Accesses.Where(x => x.Id == 0).Select(x => new DocumentAccesses
+                            {
+                                LastChangeDate = x.LastChangeDate,
+                                IsInWork = x.IsInWork,
+                                LastChangeUserId = x.LastChangeUserId,
+                                PositionId = x.PositionId,
+                                AccessLevelId = (int)x.AccessLevel,
+                            }).ToList();
+                        }
+                    }
+
+                    dbContext.SaveChanges();
+                }
             }
         }
 

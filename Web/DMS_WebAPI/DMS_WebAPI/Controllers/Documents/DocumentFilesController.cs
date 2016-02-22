@@ -23,15 +23,6 @@ namespace DMS_WebAPI.Controllers.Documents
             var docFileProc = DmsResolver.Current.Get<IDocumentFileService>();
             var res = docFileProc.GetUserFile(cxt, model);
 
-            //HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK);
-            //response.Content = new ByteArrayContent(res.FileContent);
-            //response.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment");
-            //response.Content.Headers.ContentDisposition.FileName = $"{res.Name}.{res.Extension}";
-            //response.Content.Headers.ContentType = new MediaTypeHeaderValue(res.FileType);
-            //response.Content.Headers.ContentLength = res.FileContent.Length;
-
-            //return response;
-
             return new JsonResult(res, this);
         }
 

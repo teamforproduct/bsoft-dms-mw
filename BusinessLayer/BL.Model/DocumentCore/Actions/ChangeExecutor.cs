@@ -1,4 +1,5 @@
 ﻿using BL.Model.Enums;
+using BL.Model.Users;
 using System.ComponentModel.DataAnnotations;
 
 namespace BL.Model.DocumentCore.Actions
@@ -6,7 +7,7 @@ namespace BL.Model.DocumentCore.Actions
     /// <summary>
     /// Модель для передачи управления над документом
     /// </summary>
-    public class ChangeExecutor
+    public class ChangeExecutor: CurrentPosition
     {
         /// <summary>
         /// ИД документа

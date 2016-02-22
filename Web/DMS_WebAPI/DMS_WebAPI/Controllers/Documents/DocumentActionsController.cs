@@ -301,5 +301,33 @@ namespace DMS_WebAPI.Controllers.Documents
             ctrl.ControllerContext = ControllerContext;
             return ctrl.Get(docId);
         }
+        /// <summary>
+        /// Изменение исполнителя по документу
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Обновленный документ</returns>
+        [Route("ChangeExecutor")]
+        [HttpPost]
+        public IHttpActionResult ChangeExecutor(ChangeExecutor model)
+        {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            timeM.Start();
+
+            //TODO: Проверить позицию
+            var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            timeDB.Start();
+            docProc.ExecuteAction(EnumActions.ChangeExecutor, cxt, model);
+            timeDB.Stop();
+
+            timeM.Stop();
+            SaveToFile("M: DocumentActionsController ChangeExecutor", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentOperationsService ChangeExecutor", timeDB.Elapsed.ToString("G"));
+
+            var ctrl = new DocumentsController();
+            ctrl.ControllerContext = ControllerContext;
+            return ctrl.Get(model.DocumentId);
+        }
     }
 }
