@@ -10,12 +10,12 @@ using BL.Model.Exception;
 
 namespace BL.Logic.DocumentCore.Commands
 {
-    internal class UpdateDocumentCommand : BaseDocumentCommand
+    internal class ModifyDocumentCommand : BaseDocumentCommand
     {
         private readonly IDocumentsDbProcess _documentDb;
         private readonly IAdminsDbProcess _adminDb;
 
-        public UpdateDocumentCommand(IDocumentsDbProcess documentDb, IAdminsDbProcess adminDb)
+        public ModifyDocumentCommand(IDocumentsDbProcess documentDb, IAdminsDbProcess adminDb)
         {
             _documentDb = documentDb;
             _adminDb = adminDb;
@@ -45,14 +45,14 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
-
-            _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = EnumDocumentActions.ModifyDocument, PositionId = _document.ExecutorPositionId });
+            _context.SetCurrentPosition(_document.ExecutorPositionId);
+            _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = CommandType.ToString()});
             return true;
         }
 
         public override object Execute()
         {
-            _context.SetCurrentPosition(_document.ExecutorPositionId);
+            CommonDocumentUtilities.SetLastChangeForDocument(_context, _document);
             _document.Description = Model.Description;
             _document.DocumentSubjectId = Model.DocumentSubjectId;
             _document.SenderAgentId = Model.SenderAgentId;
@@ -62,10 +62,8 @@ namespace BL.Logic.DocumentCore.Commands
             _document.Addressee = Model.Addressee;
             _document.AccessLevel = Model.AccessLevel;
 
-            CommonDocumentUtilities.SetLastChangeForDocument(_context, _document);
-
-            CommonDocumentUtilities.VerifyDocument(_context, new FrontDocument(_document), null);
-            _documentDb.UpdateDocument(_context, _document);
+           CommonDocumentUtilities.VerifyDocument(_context, new FrontDocument(_document), null);
+            _documentDb.ModifyDocument(_context, _document);
             return _document.Id;
         }
 

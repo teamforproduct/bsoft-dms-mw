@@ -41,6 +41,7 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override object Execute()
         {
+            //TODO переделать под общую схему с оптимизацией выборки
             var docWait = new InternalDocumentWaits
             {
                 DocumentId = Model.DocumentId,

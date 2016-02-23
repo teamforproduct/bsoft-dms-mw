@@ -38,7 +38,7 @@ namespace BL.Logic.DocumentCore.Commands
         {
             try
             {
-                _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = EnumDocumentActions.AddDocument, PositionId = _context.CurrentPositionId });
+                _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = CommandType.ToString() });
                 return true;
             }
             catch
@@ -49,7 +49,7 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanExecute()
         {
-            _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = EnumDocumentActions.AddDocument, PositionId = Model.CurrentPositionId });
+            _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = CommandType.ToString()});
             _document = _documentDb.CopyDocumentPrepare(_context, Model.DocumentId);
 
             if (_document == null)

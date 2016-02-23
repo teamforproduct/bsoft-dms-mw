@@ -7,7 +7,7 @@ namespace BL.Model.DocumentCore.Actions
     /// <summary>
     /// Модель для передачи управления над документом
     /// </summary>
-    public class ChangeExecutor: CurrentPosition
+    public class ChangeExecutor
     {
         /// <summary>
         /// ИД документа

@@ -82,7 +82,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public void UpdateDocument(IContext ctx, InternalDocument document)
+        public void ModifyDocument(IContext ctx, InternalDocument document)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
@@ -764,12 +764,9 @@ namespace BL.Database.Documents
                     {
                         Id = x.Doc.Id,
                         ExecutorPositionId = x.Doc.ExecutorPositionId,
+                        IsRegistered = x.Doc.IsRegistered
                     }).FirstOrDefault();
 
-                if (doc == null)
-                {
-                    return null;
-                }
                 return doc;
             }
         }
@@ -825,7 +822,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public InternalDocument PlanDocumentPrepare(IContext context, int documentId)
+        public InternalDocument ChangeIsLaunchPlanDocumentPrepare(IContext context, int documentId)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
@@ -838,39 +835,21 @@ namespace BL.Database.Documents
                         IsLaunchPlan = x.Doc.IsLaunchPlan
                     }).FirstOrDefault();
 
-                if (doc == null)
-                {
-                    return null;
-                }
                 return doc;
             }
         }
 
-        public void LaunchPlanDocument(IContext ctx, int documentId)
+        public void ChangeIsLaunchPlanDocument(IContext ctx, InternalDocument document)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
                 var doc = dbContext.DocumentsSet
-                    .FirstOrDefault(x => x.Id == documentId);
-                if (doc != null)
-                {
-                    doc.IsLaunchPlan = true;
-                    dbContext.SaveChanges();
-                }
-            }
-        }
-
-        public void StopPlanDocument(IContext ctx, int documentId)
-        {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
-            {
-                var doc = dbContext.DocumentsSet
-                    .FirstOrDefault(x => x.Id == documentId);
-                if (doc != null)
-                {
-                    doc.IsLaunchPlan = false;
-                    dbContext.SaveChanges();
-                }
+                    .FirstOrDefault(x => x.Id == document.Id);
+                if (doc == null) return;
+                doc.IsLaunchPlan = document.IsLaunchPlan;
+                doc.LastChangeUserId = document.LastChangeUserId;
+                doc.LastChangeDate = document.LastChangeDate;
+                dbContext.SaveChanges();
             }
         }
 

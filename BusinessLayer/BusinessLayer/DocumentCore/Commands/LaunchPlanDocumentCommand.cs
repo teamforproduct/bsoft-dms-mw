@@ -37,7 +37,7 @@ namespace BL.Logic.DocumentCore.Commands
             //TODO ОСТАЛЬНЫЕ ПРОВЕРКИ!
             try
             {
-                _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = EnumDocumentActions.LaunchPlan, PositionId = _context.CurrentPositionId });
+                _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = CommandType.ToString()});
                 if (_document == null || _document.ExecutorPositionId != _context.CurrentPositionId)
                 {
                     return false;
@@ -53,31 +53,29 @@ namespace BL.Logic.DocumentCore.Commands
         public override bool CanExecute()
         {
             //TODO ОСТАЛЬНЫЕ ПРОВЕРКИ!
-            try
+            _document = _documentDb.ChangeIsLaunchPlanDocumentPrepare(_context, Model);
+            if (_document == null)
             {
-                _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = EnumDocumentActions.LaunchPlan, PositionId = _context.CurrentPositionId });
-                _document = _documentDb.PlanDocumentPrepare(_context, Model);
-                if (_document == null || _document.ExecutorPositionId != _context.CurrentPositionId)
-                {
-                    throw new DocumentNotFoundOrUserHasNoAccess();
-                }
-                return true;
+                throw new DocumentNotFoundOrUserHasNoAccess();
             }
-            catch
+            if (_document.IsLaunchPlan)
             {
-                return false;
+                throw new CouldNotChangeAttributeLaunchPlan();
             }
+            _context.SetCurrentPosition(_document.ExecutorPositionId);
+            _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = CommandType.ToString()});
+
+            return true;
         }
 
         public override object Execute()
         {
             CommonDocumentUtilities.SetLastChangeForDocument(_context, _document);
-
-            _documentDb.LaunchPlanDocument(_context, Model);
-
+            _document.IsLaunchPlan = true;
+            _documentDb.ChangeIsLaunchPlanDocument(_context, _document);
             return Model;
         }
 
-        public override EnumDocumentActions CommandType { get { return EnumDocumentActions.LaunchPlan; } }
+        public override EnumDocumentActions CommandType => EnumDocumentActions.LaunchPlan;
     }
 }

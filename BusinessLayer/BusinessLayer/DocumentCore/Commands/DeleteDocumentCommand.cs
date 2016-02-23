@@ -18,10 +18,39 @@ namespace BL.Logic.DocumentCore.Commands
             _adminDb = adminDb;
         }
 
+        private int Model
+        {
+            get
+            {
+                if (!(_param is int))
+                {
+                    throw new WrongParameterTypeError();
+                }
+                return (int)_param;
+            }
+        }
+
         public override bool CanBeDisplayed()
         {
             //TODO ОСТАЛЬНЫЕ ПРОВЕРКИ!
             return !_document.IsRegistered;
+        }
+
+        public override bool CanExecute()
+        {
+            _document = _documentDb.ModifyDocumentPrepare(_context, Model);
+            if (_document == null)
+            {
+                throw new DocumentNotFoundOrUserHasNoAccess();
+            }
+            _context.SetCurrentPosition(_document.ExecutorPositionId);
+            _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = CommandType.ToString() });
+
+           if (!CanBeDisplayed())
+            {
+                throw new DocumentCannotBeModifiedOrDeleted();
+            }
+            return true;
         }
 
         public override object Execute()
@@ -32,15 +61,5 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override EnumDocumentActions CommandType { get { return EnumDocumentActions.DeleteDocument; } }
 
-        public override bool CanExecute()
-        {
-            if (!CanBeDisplayed())
-            {
-                throw new DocumentCannotBeModifiedOrDeleted();
-            }
-            _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = EnumDocumentActions.DeleteDocument, PositionId = _document.ExecutorPositionId });
-
-            return true;
-        }
     }
 }

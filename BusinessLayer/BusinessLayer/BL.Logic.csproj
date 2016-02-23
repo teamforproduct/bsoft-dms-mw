@@ -89,7 +89,7 @@
     <Compile Include="DocumentCore\Interfaces\IDocumentFiltersService.cs" />
     <Compile Include="DocumentCore\Interfaces\IDocumentOperationsService.cs" />
     <Compile Include="DocumentCore\Interfaces\IDocumentFileService.cs" />
-    <Compile Include="DocumentCore\Commands\UpdateDocumentCommand.cs" />
+    <Compile Include="DocumentCore\Commands\ModifyDocumentCommand.cs" />
     <Compile Include="DocumentCore\DocumentService.cs" />
     <Compile Include="DocumentCore\Interfaces\IDocumentService.cs" />
     <Compile Include="DocumentCore\Interfaces\ITemplateDocumentService.cs" />

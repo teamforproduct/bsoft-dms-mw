@@ -40,6 +40,7 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override object Execute()
         {
+            //TODO переделать под общую схему с оптимизацией выборки
             var acc = _operationDb.GetDocumentAccessForUserPosition(_context, Model.DocumentId);
             acc.IsFavourite = true;
             acc.LastChangeDate = DateTime.Now;
@@ -48,6 +49,6 @@ namespace BL.Logic.DocumentCore.Commands
             return null;
         }
 
-        public override EnumDocumentActions CommandType { get { return EnumDocumentActions.AddFavourite; } }
+        public override EnumDocumentActions CommandType => EnumDocumentActions.AddFavourite;
     }
 }

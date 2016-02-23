@@ -341,7 +341,7 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
 
-            var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
             docProc.ExecuteAction(EnumDocumentActions.ChangeExecutor, cxt, model);

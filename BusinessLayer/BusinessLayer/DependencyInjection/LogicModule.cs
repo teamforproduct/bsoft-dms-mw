@@ -51,7 +51,7 @@ namespace BL.Logic.DependencyInjection
         {
             Bind<IDocumentCommand>().To<AddDocumentCommand>();
             Bind<IDocumentCommand>().To<DeleteDocumentCommand>();
-            Bind<IDocumentCommand>().To<UpdateDocumentCommand>();
+            Bind<IDocumentCommand>().To<ModifyDocumentCommand>();
             Bind<IDocumentCommand>().To<CopyDocumentCommand>();
 
             Bind<IDocumentCommand>().To<ControlChangeDocumentCommand>();

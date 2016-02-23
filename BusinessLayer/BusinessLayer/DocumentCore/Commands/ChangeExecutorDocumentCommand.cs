@@ -28,16 +28,17 @@ namespace BL.Logic.DocumentCore.Commands
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ChangeExecutor) _param;
+                return (ChangeExecutor)_param;
             }
         }
 
         public override bool CanBeDisplayed()
         {
-            //TODO ОСТАЛЬНЫЕ ПРОВЕРКИ!
+            //TODO ПЕРЕДЕЛКА
             try
             {
-                _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = EnumDocumentActions.ChangeExecutor, PositionId = _context.CurrentPositionId });
+                _document = _documentDb.ChangeExecutorDocumentPrepare(_context, Model);
+                _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = CommandType.ToString()});
                 if (_document == null || _document.ExecutorPositionId != _context.CurrentPositionId)
                 {
                     return false;
@@ -53,20 +54,18 @@ namespace BL.Logic.DocumentCore.Commands
         public override bool CanExecute()
         {
             //TODO ОСТАЛЬНЫЕ ПРОВЕРКИ!
-            try
+            _document = _documentDb.ChangeExecutorDocumentPrepare(_context, Model);
+            if (_document == null)
             {
-                _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = EnumDocumentActions.ChangeExecutor, PositionId = _context.CurrentPositionId });
-                _document = _documentDb.ChangeExecutorDocumentPrepare(_context, Model);
-                if (_document == null || _document.ExecutorPositionId != _context.CurrentPositionId)
-                {
-                    throw new DocumentNotFoundOrUserHasNoAccess();
-                }
-                return true;
+                throw new DocumentNotFoundOrUserHasNoAccess();
             }
-            catch
+            if (_document.IsRegistered)
             {
-                return false;
+                throw new DocumentHasAlredyBeenRegistered();
             }
+            _context.SetCurrentPosition(_document.ExecutorPositionId);
+            _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = CommandType.ToString()});
+            return true;
         }
 
         public override object Execute()
@@ -85,6 +84,6 @@ namespace BL.Logic.DocumentCore.Commands
             return Model.DocumentId;
         }
 
-        public override EnumDocumentActions CommandType { get { return EnumDocumentActions.ChangeExecutor; } }
+        public override EnumDocumentActions CommandType => EnumDocumentActions.ChangeExecutor;
     }
 }
