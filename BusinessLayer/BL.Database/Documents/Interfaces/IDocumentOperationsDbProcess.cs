@@ -27,10 +27,12 @@ namespace BL.Database.Documents.Interfaces
         void RemoveDocumentAccess(IContext ctx, int accessId);
         void UpdateDocumentAccess(IContext ctx, InternalDocumentAccesses access);
         InternalDocumentAccesses GetDocumentAccessForUserPosition(IContext ctx, int documentId);
+        InternalDocumentAccesses ChangeIsFavouriteAccessPrepare(IContext _context, int documentId);
         IEnumerable<InternalDocumentAccesses> GetDocumentAccesses(IContext ctx, int documentId);
 
         void SetDocumentInformation(IContext ctx, EventAccessModel access);
         InternalLinkedDocument AddDocumentLinkPrepare(IContext context, AddDocumentLink model);
         InternalDocument GetDocumentActionsPrepare(IContext context, int documentId);
+        void ChangeIsFavouriteAccess(IContext _context, InternalDocumentAccesses docAccess);
     }
 }

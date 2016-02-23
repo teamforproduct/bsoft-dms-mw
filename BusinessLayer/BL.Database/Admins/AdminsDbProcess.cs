@@ -98,6 +98,7 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
+                var res = false;
                 if (model.UserId == 0)
                 {
                     model.UserId = context.CurrentAgentId;
@@ -106,13 +107,12 @@ namespace BL.Database.Admins
                 {
                     model.PositionsIdList = context.CurrentPositionsIdList;
                 }
-                if (model.IsPositionFromContext)
-                {
-                    model.PositionId = context.CurrentPositionId;
-                }
-                bool res = false;
                 if (!string.IsNullOrEmpty(model.DocumentActionCode))
                 {
+                    if (model.IsPositionFromContext)
+                    {
+                        model.PositionId = context.CurrentPositionId;
+                    }
                     res = dbContext.AdminRoleActionsSet
                               .Any(x => x.Action.Code == model.DocumentActionCode
                                         && x.Action.IsGrantable //TODO как отработать не грантебл

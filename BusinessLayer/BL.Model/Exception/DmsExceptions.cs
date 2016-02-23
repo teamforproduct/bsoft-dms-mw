@@ -204,6 +204,18 @@
         }
     }
 
+    public class CouldNotChangeFavourite : DmsExceptions
+    {
+        private const string _MESSAGE = "Could n't change attribute LaunchPlan";
+        public CouldNotChangeFavourite() : base(_MESSAGE)
+        {
+        }
+
+        public CouldNotChangeFavourite(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
     public class DocumentHasAlredyBeenRegistered : DmsExceptions
     {
         private const string _MESSAGE = "Document has already been registered!";

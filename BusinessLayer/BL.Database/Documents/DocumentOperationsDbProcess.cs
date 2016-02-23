@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
 using BL.Database.DatabaseContext;
@@ -38,7 +40,7 @@ namespace BL.Database.Documents
                         ExecutorPositionId = x.Doc.ExecutorPositionId,
                         LinkId = x.Doc.LinkId,
                     }).FirstOrDefault();
-                   return doc;
+                return doc;
             }
         }
 
@@ -69,8 +71,8 @@ namespace BL.Database.Documents
             {
                 var link = new DocumentLinks
                 {
-                    DocumentId = model.DocumentId,
-                    ParentDocumentId = model.ParentDocumentId,
+                    DocumentId = model.DocumentId.Value,
+                    ParentDocumentId = model.ParentDocumentId.Value,
                     LinkTypeId = model.LinkTypeId,
                     LastChangeUserId = model.LastChangeUserId,
                     LastChangeDate = model.LastChangeDate,
@@ -99,7 +101,7 @@ namespace BL.Database.Documents
                 else
                 {
                     dbContext.DocumentsSet.Where(x => x.LinkId == model.DocumentLinkId).ToList()
-                        .ForEach(x => 
+                        .ForEach(x =>
                         {
                             x.LinkId = model.ParentDocumentId;
                             x.LastChangeUserId = model.LastChangeUserId;
@@ -316,6 +318,37 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
                 return CommonQueries.GetInternalPositionsInfo(dbContext, positionIds);
+            }
+        }
+
+        public void ChangeIsFavouriteAccess(IContext context, InternalDocumentAccesses docAccess)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var acc = dbContext.DocumentAccessesSet.FirstOrDefault(x => x.Id == docAccess.Id);
+                if (acc != null)
+                {
+                    acc.LastChangeDate = docAccess.LastChangeDate;
+                    acc.LastChangeUserId = docAccess.LastChangeUserId;
+                    acc.IsFavourite = docAccess.IsFavourite;
+                    dbContext.SaveChanges();
+                }
+            }
+        }
+
+        public InternalDocumentAccesses ChangeIsFavouriteAccessPrepare(IContext context, int documentId)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var acc = dbContext.DocumentAccessesSet
+                    .Where(x => x.DocumentId == documentId && x.PositionId == context.CurrentPositionId)
+                    .Select(x => new InternalDocumentAccesses
+                    {
+                        Id = x.Id,
+                        IsFavourite = x.IsFavourite,
+                    }).FirstOrDefault();
+                return acc;
+
             }
         }
 

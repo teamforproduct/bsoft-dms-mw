@@ -15,7 +15,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         private readonly IDocumentOperationsDbProcess _operationDb;
         private readonly IAdminsDbProcess _adminDb;
 
-        protected InternalLinkedDocument _docLink;
+        protected InternalLinkedDocument DocLink;
 
         public AddDocumentLinkCommand(IDocumentOperationsDbProcess operationDb, IAdminsDbProcess adminDb)
         {
@@ -42,22 +42,25 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override bool CanExecute()
         {
-            _docLink = _operationDb.AddDocumentLinkPrepare(_context, Model);
-            _context.SetCurrentPosition(_document.ExecutorPositionId);
-            _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = CommandType.ToString()});
-            if (_docLink.DocumentLinkId.HasValue && _docLink.ParentDocumentLinkId.HasValue && (_docLink.DocumentLinkId == _docLink.ParentDocumentLinkId))
+            DocLink = _operationDb.AddDocumentLinkPrepare(_context, Model);
+            if (DocLink.DocumentId == null || DocLink.ParentDocumentId == null)
+            {
+                throw new DocumentNotFoundOrUserHasNoAccess();
+            }
+            if (DocLink.DocumentLinkId.HasValue && DocLink.ParentDocumentLinkId.HasValue && (DocLink.DocumentLinkId == DocLink.ParentDocumentLinkId))
             {
                 throw new DocumentHasAlreadyHadLink();
             }
-
+            _context.SetCurrentPosition(DocLink.ExecutorPositionId);
+            _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = CommandType.ToString()});
             return true;
         }
 
         public override object Execute()
         {
-            _docLink.LastChangeUserId = _context.CurrentAgentId;
-            _docLink.LastChangeDate = DateTime.Now;
-            _operationDb.AddDocumentLink(_context, _docLink);
+            DocLink.LastChangeUserId = _context.CurrentAgentId;
+            DocLink.LastChangeDate = DateTime.Now;
+            _operationDb.AddDocumentLink(_context, DocLink);
             return null;
         }
 

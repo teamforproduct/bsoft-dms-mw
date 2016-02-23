@@ -4,16 +4,23 @@ using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.Enums;
 using BL.Model.Exception;
+using BL.Database.Admins.Interfaces;
+using BL.Model.AdminCore;
+using BL.Model.DocumentCore.InternalModel;
 
 namespace BL.Logic.DocumentCore.Commands
 {
     public class DeleteFavouriteDocumentCommand: BaseDocumentCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
+        private readonly IAdminsDbProcess _adminDb;
 
-        public DeleteFavouriteDocumentCommand(IDocumentOperationsDbProcess operationDb)
+        protected InternalDocumentAccesses DocAccess;
+
+        public DeleteFavouriteDocumentCommand(IDocumentOperationsDbProcess operationDb, IAdminsDbProcess adminDb)
         {
             _operationDb = operationDb;
+            _adminDb = adminDb;
         }
 
         private ChangeFavourites Model
@@ -35,19 +42,28 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanExecute()
         {
+            _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = CommandType.ToString() });
+            DocAccess = _operationDb.ChangeIsFavouriteAccessPrepare(_context, Model.DocumentId);
+            if (DocAccess == null)
+            {
+                throw new DocumentNotFoundOrUserHasNoAccess();
+            }
+            if (!DocAccess.IsFavourite)
+            {
+                throw new CouldNotChangeFavourite();
+            }
             return true;
         }
 
         public override object Execute()
         {
-            var acc = _operationDb.GetDocumentAccessForUserPosition(_context, Model.DocumentId);
-            acc.IsFavourite = false;
-            acc.LastChangeDate = DateTime.Now;
-            acc.LastChangeUserId = _context.CurrentAgentId;
-            _operationDb.UpdateDocumentAccess(_context, acc);
+            DocAccess.IsFavourite = false;
+            DocAccess.LastChangeDate = DateTime.Now;
+            DocAccess.LastChangeUserId = _context.CurrentAgentId;
+            _operationDb.ChangeIsFavouriteAccess(_context, DocAccess);
             return null;
         }
 
-        public override EnumDocumentActions CommandType { get { return EnumDocumentActions.DeleteFavourite; } }
+        public override EnumDocumentActions CommandType => EnumDocumentActions.DeleteFavourite;
     }
 }
