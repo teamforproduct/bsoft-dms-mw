@@ -22,6 +22,10 @@ namespace BL.CrossCutting.Common
             _param = param;
         }
 
+        public InternalDocument Document { get { return _document; } }
+        public IContext Context { get { return _context; } }
+        public object Parameters { get { return _param; } }
+
         public abstract bool CanBeDisplayed();
         public abstract bool CanExecute();
         public abstract object Execute();
