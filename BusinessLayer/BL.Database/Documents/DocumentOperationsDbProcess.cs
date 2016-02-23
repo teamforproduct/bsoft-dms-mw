@@ -325,14 +325,12 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
-                var acc = dbContext.DocumentAccessesSet.FirstOrDefault(x => x.Id == docAccess.Id);
-                if (acc != null)
-                {
-                    acc.LastChangeDate = docAccess.LastChangeDate;
-                    acc.LastChangeUserId = docAccess.LastChangeUserId;
-                    acc.IsFavourite = docAccess.IsFavourite;
-                    dbContext.SaveChanges();
-                }
+                var acc = new DocumentAccesses {Id = docAccess.Id, IsFavourite = !docAccess .IsFavourite};
+                dbContext.DocumentAccessesSet.Attach(acc);
+                acc.LastChangeDate = docAccess.LastChangeDate;
+                acc.LastChangeUserId = docAccess.LastChangeUserId;
+                acc.IsFavourite = docAccess.IsFavourite;
+                dbContext.SaveChanges();
             }
         }
 
