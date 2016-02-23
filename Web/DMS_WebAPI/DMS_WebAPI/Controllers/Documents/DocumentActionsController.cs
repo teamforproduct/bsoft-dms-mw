@@ -341,7 +341,6 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
 
-            //TODO: Проверить позицию
             var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
@@ -355,6 +354,64 @@ namespace DMS_WebAPI.Controllers.Documents
             var ctrl = new DocumentsController();
             ctrl.ControllerContext = ControllerContext;
             return ctrl.Get(model.DocumentId);
+        }
+
+        /// <summary>
+        /// Запустить план
+        /// </summary>
+        /// <param name="id">ИД документа</param>
+        /// <returns></returns>
+        [Route("LaunchPlan")]
+        [HttpPost]
+        public IHttpActionResult LaunchPlan(int id)
+        {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            timeM.Start();
+
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            timeDB.Start();
+            //TODO change
+            docProc.ExecuteAction(EnumDocumentActions.ChangeExecutor, cxt, id);
+            timeDB.Stop();
+
+            timeM.Stop();
+            SaveToFile("M: DocumentActionsController LaunchPlan", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentOperationsService LaunchPlan", timeDB.Elapsed.ToString("G"));
+
+            var ctrl = new DocumentsController();
+            ctrl.ControllerContext = ControllerContext;
+            return ctrl.Get(id);
+        }
+
+        /// <summary>
+        /// Остановить план
+        /// </summary>
+        /// <param name="id">ИД документа</param>>
+        /// <returns>Обновленный документ</returns>
+        [Route("StopPlan")]
+        [HttpPost]
+        public IHttpActionResult StopPlan(int id)
+        {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            timeM.Start();
+
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            timeDB.Start();
+            //TODO change
+            docProc.ExecuteAction(EnumDocumentActions.ChangeExecutor, cxt, id);
+            timeDB.Stop();
+
+            timeM.Stop();
+            SaveToFile("M: DocumentActionsController StopPlan", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentOperationsService StopPlan", timeDB.Elapsed.ToString("G"));
+
+            var ctrl = new DocumentsController();
+            ctrl.ControllerContext = ControllerContext;
+            return ctrl.Get(id);
         }
     }
 }

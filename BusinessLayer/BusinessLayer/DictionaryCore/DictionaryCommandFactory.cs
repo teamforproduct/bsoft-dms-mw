@@ -1,6 +1,7 @@
 ﻿using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
 using BL.Logic.DictionaryCore.DocumentType;
+using BL.Logic.DictionaryCore.Tag;
 using BL.Model.Enums;
 using BL.Model.Exception;
 
@@ -18,6 +19,12 @@ namespace BL.Logic.DictionaryCore
                     break;
                 case EnumDictionaryAction.AddDocumentType:
                     cmd = DmsResolver.Current.Get<AddDictionaryDocumentTypeCommand>();
+                    break;
+                case EnumDictionaryAction.ModifyTag:
+                    cmd = DmsResolver.Current.Get<ModifyDictionaryTagCommand>();
+                    break;
+                case EnumDictionaryAction.AddTag:
+                    cmd = DmsResolver.Current.Get<AddDictionaryTagCommand>();
                     break;
                 default:
                     throw new CommandNotDefinedError();

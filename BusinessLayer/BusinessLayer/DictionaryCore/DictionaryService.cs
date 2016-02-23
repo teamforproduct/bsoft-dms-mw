@@ -43,7 +43,7 @@ namespace BL.Logic.DictionaryCore
 
         public IEnumerable<BaseDictionaryAgent> GetDictionaryAgents(IContext context, FilterDictionaryAgent filter)
         {
-            
+
             return _dictDb.GetDictionaryAgents(context, filter);
         }
         #endregion DictionaryAgents
@@ -51,13 +51,13 @@ namespace BL.Logic.DictionaryCore
         #region DictionaryAgentPersons
         public BaseDictionaryAgentPerson GetDictionaryAgentPerson(IContext context, int id)
         {
-            
+
             return _dictDb.GetDictionaryAgentPerson(context, id);
         }
 
         public IEnumerable<BaseDictionaryAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter)
         {
-            
+
             return _dictDb.GetDictionaryAgentPersons(context, filter);
         }
         #endregion DictionaryAgentPersons
@@ -65,13 +65,13 @@ namespace BL.Logic.DictionaryCore
         #region DictionaryCompanies
         public BaseDictionaryCompany GetDictionaryCompany(IContext context, int id)
         {
-            
+
             return _dictDb.GetDictionaryCompany(context, id);
         }
 
         public IEnumerable<BaseDictionaryCompany> GetDictionaryCompanies(IContext context, FilterDictionaryCompany filter)
         {
-            
+
             return _dictDb.GetDictionaryCompanies(context, filter);
         }
         #endregion DictionaryCompanies
@@ -79,13 +79,13 @@ namespace BL.Logic.DictionaryCore
         #region DictionaryDepartments
         public BaseDictionaryDepartment GetDictionaryDepartment(IContext context, int id)
         {
-            
+
             return _dictDb.GetDictionaryDepartment(context, id);
         }
 
         public IEnumerable<BaseDictionaryDepartment> GetDictionaryDepartments(IContext context, FilterDictionaryDepartment filter)
         {
-            
+
             return _dictDb.GetDictionaryDepartments(context, filter);
         }
         #endregion DictionaryDepartments
@@ -93,13 +93,13 @@ namespace BL.Logic.DictionaryCore
         #region DictionaryDocumentDirections
         public BaseDictionaryDocumentDirection GetDictionaryDocumentDirection(IContext context, int id)
         {
-            
+
             return _dictDb.GetDictionaryDocumentDirection(context, id);
         }
 
         public IEnumerable<BaseDictionaryDocumentDirection> GetDictionaryDocumentDirections(IContext context, FilterDictionaryDocumentDirection filter)
         {
-            
+
             return _dictDb.GetDictionaryDocumentDirections(context, filter);
         }
         #endregion DictionaryDepartments
@@ -107,13 +107,13 @@ namespace BL.Logic.DictionaryCore
         #region DictionaryDocumentSubjects
         public BaseDictionaryDocumentSubject GetDictionaryDocumentSubject(IContext context, int id)
         {
-            
+
             return _dictDb.GetDictionaryDocumentSubject(context, id);
         }
 
         public IEnumerable<BaseDictionaryDocumentSubject> GetDictionaryDocumentSubjects(IContext context, FilterDictionaryDocumentSubject filter)
         {
-            
+
             return _dictDb.GetDictionaryDocumentSubjects(context, filter);
         }
         #endregion DictionaryDocumentSubjects
@@ -122,7 +122,7 @@ namespace BL.Logic.DictionaryCore
         // следить за списком полей необхдимых в каждом конкретном случае
         public FrontDictionaryDocumentType GetDictionaryDocumentType(IContext context, int id)
         {
-            return _dictDb.GetDictionaryDocumentTypes(context, new FilterDictionaryDocumentType {Id = new List<int> {id} }).FirstOrDefault();
+            return _dictDb.GetDictionaryDocumentTypes(context, new FilterDictionaryDocumentType { Id = new List<int> { id } }).FirstOrDefault();
         }
 
         public IEnumerable<FrontDictionaryDocumentType> GetDictionaryDocumentTypes(IContext context, FilterDictionaryDocumentType filter)
@@ -135,13 +135,13 @@ namespace BL.Logic.DictionaryCore
         #region DictionaryEventTypes
         public BaseDictionaryEventType GetDictionaryEventType(IContext context, int id)
         {
-            
+
             return _dictDb.GetDictionaryEventType(context, id);
         }
 
         public IEnumerable<BaseDictionaryEventType> GetDictionaryEventTypes(IContext context, FilterDictionaryEventType filter)
         {
-            
+
             return _dictDb.GetDictionaryEventTypes(context, filter);
         }
         #endregion DictionaryEventTypes
@@ -149,13 +149,13 @@ namespace BL.Logic.DictionaryCore
         #region DictionaryImportanceEventTypes
         public BaseDictionaryImportanceEventType GetDictionaryImportanceEventType(IContext context, int id)
         {
-            
+
             return _dictDb.GetDictionaryImportanceEventType(context, id);
         }
 
         public IEnumerable<BaseDictionaryImportanceEventType> GetDictionaryImportanceEventTypes(IContext context, FilterDictionaryImportanceEventType filter)
         {
-            
+
             return _dictDb.GetDictionaryImportanceEventTypes(context, filter);
         }
         #endregion DictionaryImportanceEventTypes
@@ -163,13 +163,13 @@ namespace BL.Logic.DictionaryCore
         #region DictionaryLinkTypes
         public BaseDictionaryLinkType GetDictionaryLinkType(IContext context, int id)
         {
-            
+
             return _dictDb.GetDictionaryLinkType(context, id);
         }
 
         public IEnumerable<BaseDictionaryLinkType> GetDictionaryLinkTypes(IContext context, FilterDictionaryLinkType filter)
         {
-            
+
             return _dictDb.GetDictionaryLinkTypes(context, filter);
         }
         #endregion DictionaryLinkTypes
@@ -177,13 +177,13 @@ namespace BL.Logic.DictionaryCore
         #region DictionaryPositions
         public BaseDictionaryPosition GetDictionaryPosition(IContext context, int id)
         {
-            
+
             return _dictDb.GetDictionaryPosition(context, id);
         }
 
         public IEnumerable<BaseDictionaryPosition> GetDictionaryPositions(IContext context, FilterDictionaryPosition filter)
         {
-            
+
             return _dictDb.GetDictionaryPositions(context, filter);
         }
         #endregion DictionaryPositions
@@ -191,13 +191,13 @@ namespace BL.Logic.DictionaryCore
         #region DictionaryRegistrationJournals
         public BaseDictionaryRegistrationJournal GetDictionaryRegistrationJournal(IContext context, int id)
         {
-            
+
             return _dictDb.GetDictionaryRegistrationJournal(context, id);
         }
 
         public IEnumerable<BaseDictionaryRegistrationJournal> GetDictionaryRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter)
         {
-            
+
             return _dictDb.GetDictionaryRegistrationJournals(context, filter);
         }
         #endregion DictionaryRegistrationJournals
@@ -205,13 +205,13 @@ namespace BL.Logic.DictionaryCore
         #region DictionaryResultTypes
         public BaseDictionaryResultType GetDictionaryResultType(IContext context, int id)
         {
-            
+
             return _dictDb.GetDictionaryResultType(context, id);
         }
 
         public IEnumerable<BaseDictionaryResultType> GetDictionaryResultTypes(IContext context, FilterDictionaryResultType filter)
         {
-            
+
             return _dictDb.GetDictionaryResultTypes(context, filter);
         }
         #endregion DictionaryResultTypes
@@ -219,13 +219,13 @@ namespace BL.Logic.DictionaryCore
         #region DictionarySendTypes
         public BaseDictionarySendType GetDictionarySendType(IContext context, int id)
         {
-            
+
             return _dictDb.GetDictionarySendType(context, id);
         }
 
         public IEnumerable<BaseDictionarySendType> GetDictionarySendTypes(IContext context, FilterDictionarySendType filter)
         {
-            
+
             return _dictDb.GetDictionarySendTypes(context, filter);
         }
         #endregion DictionarySendTypes
@@ -233,13 +233,13 @@ namespace BL.Logic.DictionaryCore
         #region DictionaryStandartSendListContents
         public BaseDictionaryStandartSendListContent GetDictionaryStandartSendListContent(IContext context, int id)
         {
-            
+
             return _dictDb.GetDictionaryStandartSendListContent(context, id);
         }
 
         public IEnumerable<BaseDictionaryStandartSendListContent> GetDictionaryStandartSendListContents(IContext context, FilterDictionaryStandartSendListContent filter)
         {
-            
+
             return _dictDb.GetDictionaryStandartSendListContents(context, filter);
         }
         #endregion DictionaryStandartSendListContents
@@ -247,13 +247,13 @@ namespace BL.Logic.DictionaryCore
         #region DictionaryStandartSendLists
         public BaseDictionaryStandartSendList GetDictionaryStandartSendList(IContext context, int id)
         {
-            
+
             return _dictDb.GetDictionaryStandartSendList(context, id);
         }
 
         public IEnumerable<BaseDictionaryStandartSendList> GetDictionaryStandartSendLists(IContext context, FilterDictionaryStandartSendList filter)
         {
-            
+
             return _dictDb.GetDictionaryStandartSendLists(context, filter);
         }
         #endregion DictionaryStandartSendList
@@ -261,13 +261,13 @@ namespace BL.Logic.DictionaryCore
         #region DictionarySubordinationTypes
         public BaseDictionarySubordinationType GetDictionarySubordinationType(IContext context, int id)
         {
-            
+
             return _dictDb.GetDictionarySubordinationType(context, id);
         }
 
         public IEnumerable<BaseDictionarySubordinationType> GetDictionarySubordinationTypes(IContext context, FilterDictionarySubordinationType filter)
         {
-            
+
             return _dictDb.GetDictionarySubordinationTypes(context, filter);
         }
         #endregion DictionarySubordinationTypes
@@ -282,55 +282,6 @@ namespace BL.Logic.DictionaryCore
         {
             return _dictDb.GetDictionaryTags(context, new FilterDictionaryTag { Id = new List<int> { id } }).FirstOrDefault();
         }
-
-        public int AddDictionaryTag(IContext context, ModifyDictionaryTag model)
-        {
-            try
-            {
-                var item = new InternalDictionaryTag
-                {
-                    PositionId = context.CurrentPositionId,
-                    Color = model.Color,
-                    Name = model.Name,
-                    LastChangeDate = DateTime.Now,
-                    LastChangeUserId = context.CurrentAgentId,
-                };
-                return _dictDb.AddDictionaryTag(context, item);
-            }
-            catch (Exception ex)
-            {
-                throw new DictionaryRecordCouldNotBeAdded(ex);
-            }
-        }
-
-        public void ModifyDictionaryTag(IContext context, ModifyDictionaryTag model)
-        {
-            try
-            {
-                var item = new InternalDictionaryTag
-                {
-                    Id = model.Id,
-                    Name = model.Name,
-                    Color = model.Color,
-                    LastChangeDate = DateTime.Now,
-                    LastChangeUserId = context.CurrentAgentId,
-                };
-                _dictDb.UpdateDictionaryTag(context, item);
-            }
-            catch (DictionaryRecordWasNotFound)
-            {
-                throw;
-            }
-            catch(DictionaryTagNotFoundOrUserHasNoAccess)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw new DatabaseError(ex);
-            }
-        }
-
         #endregion DictionaryTags
 
     }

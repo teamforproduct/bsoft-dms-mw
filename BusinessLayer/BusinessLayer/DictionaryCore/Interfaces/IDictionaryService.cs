@@ -117,8 +117,6 @@ namespace BL.Logic.DictionaryCore.Interfaces
         #region DictionaryTags
         IEnumerable<FrontDictionaryTag> GetDictionaryTags(IContext context, FilterDictionaryTag filter);
         FrontDictionaryTag GetDictionaryTag(IContext context, int id);
-        int AddDictionaryTag(IContext context, ModifyDictionaryTag model);
-        void ModifyDictionaryTag(IContext context, ModifyDictionaryTag model);
         #endregion DictionaryTags
     }
 }
