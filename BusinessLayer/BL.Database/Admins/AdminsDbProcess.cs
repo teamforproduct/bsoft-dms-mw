@@ -109,6 +109,7 @@ namespace BL.Database.Admins
                 bool res = false;
                 if (model.DocumentActionCode.HasValue)
                 {
+                    //TODO Не работает проверка прав для изменения исполнителя
                     res = dbContext.AdminRoleActionsSet
                               .Any(x => x.Action.Id == (int)model.DocumentActionCode
                                         && x.Action.IsGrantable
