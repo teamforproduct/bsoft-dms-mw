@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace BL.Model.DictionaryCore
+namespace BL.Model.DictionaryCore.FilterModel
 {
     /// <summary>
     ///  Фильтр словаря типов важности событий

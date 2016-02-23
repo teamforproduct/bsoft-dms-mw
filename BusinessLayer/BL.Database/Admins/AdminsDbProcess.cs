@@ -7,8 +7,8 @@ using BL.Database.DatabaseContext;
 using BL.Model.AdminCore;
 using BL.CrossCutting.DependencyInjection;
 using BL.Database.Dictionaries.Interfaces;
-using BL.Model.DictionaryCore;
 using BL.Model.Exception;
+using BL.Model.DictionaryCore.FilterModel;
 
 namespace BL.Database.Admins
 {

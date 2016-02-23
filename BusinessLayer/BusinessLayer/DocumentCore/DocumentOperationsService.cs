@@ -1,4 +1,4 @@
-﻿using System;
+﻿
 using System.Collections.Generic;
 using System.Linq;
 using BL.CrossCutting.DependencyInjection;
@@ -7,15 +7,12 @@ using BL.Database.Dictionaries.Interfaces;
 using BL.Database.Documents.Interfaces;
 using BL.Database.SystemDb;
 using BL.Logic.DocumentCore.Interfaces;
-using BL.Model.DocumentCore.Actions;
 using BL.Model.Enums;
-using BL.Model.Exception;
 using BL.Model.SystemCore;
 using BL.Database.Admins.Interfaces;
-using BL.Model.AdminCore;
-using BL.Model.DictionaryCore;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.DocumentCore.InternalModel;
+using BL.Model.DictionaryCore.FilterModel;
 
 namespace BL.Logic.DocumentCore
 {
