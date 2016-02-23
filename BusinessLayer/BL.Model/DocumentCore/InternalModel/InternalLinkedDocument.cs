@@ -10,6 +10,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public int? ParentDocumentLinkId { get; set; }
         public int ExecutorPositionId { get; set; }
         public int LinkTypeId { get; set; }
+        public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
     }
 }

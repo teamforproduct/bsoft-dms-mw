@@ -26,7 +26,7 @@ namespace BL.Logic.DocumentCore
 
         public DocumentOperationsService(IDocumentOperationsDbProcess operationDb, IAdminsDbProcess adminDb)
         {
-            _adminDb = adminDb;
+
             _operationDb = operationDb;
         }
 
@@ -65,17 +65,6 @@ namespace BL.Logic.DocumentCore
             return positions;//actions;
         }
 
-        public void AddDocumentLink(IContext context, AddDocumentLink model)
-        {
-            var docLink = _operationDb.AddDocumentLinkPrepare(context, model);
-            _adminDb.VerifyAccess(context, new VerifyAccess { DocumentActionCode = EnumDocumentActions.ModifyDocument, PositionId = docLink.ExecutorPositionId });
-            if (docLink.DocumentLinkId.HasValue && docLink.ParentDocumentLinkId.HasValue && (docLink.DocumentLinkId == docLink.ParentDocumentLinkId))
-            {
-                throw new DocumentHasAlreadyHadLink();
-            }
-            docLink.LastChangeDate = DateTime.Now;
-            _operationDb.AddDocumentLink(context, docLink);
-        }
 
         #endregion         
     }

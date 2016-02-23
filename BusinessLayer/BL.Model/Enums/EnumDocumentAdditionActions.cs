@@ -14,8 +14,8 @@
         AddDocumentFile = 104001, // Добавить файл
         ModifyDocumentFile = 104005, // Изменить файл
         DeleteDocumentFile = 104009, // Удалить файл
-        AddDocumentLinks = 105001, // Добавить связь между документами
-        DeleteDocumentLinks = 105009, // Удалить связь между документами
+        AddDocumentLink = 105001, // Добавить связь между документами
+        DeleteDocumentLink = 105009, // Удалить связь между документами
         ModifyDocumentTags = 192005, // Изменить тэги по документу
     }
 }

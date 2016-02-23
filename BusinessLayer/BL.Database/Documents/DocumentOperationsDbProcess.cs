@@ -72,21 +72,39 @@ namespace BL.Database.Documents
                     DocumentId = model.DocumentId,
                     ParentDocumentId = model.ParentDocumentId,
                     LinkTypeId = model.LinkTypeId,
-                    LastChangeUserId = context.CurrentAgentId,
+                    LastChangeUserId = model.LastChangeUserId,
                     LastChangeDate = model.LastChangeDate,
                 };
                 dbContext.DocumentLinksSet.Add(link);
                 if (!model.ParentDocumentLinkId.HasValue)
                 {
-                    dbContext.DocumentsSet.Where(x => x.Id == model.ParentDocumentId).ToList().ForEach(x => x.LinkId = model.ParentDocumentId);
+                    dbContext.DocumentsSet.Where(x => x.Id == model.ParentDocumentId).ToList()
+                        .ForEach(x =>
+                        {
+                            x.LinkId = model.ParentDocumentId;
+                            x.LastChangeUserId = model.LastChangeUserId;
+                            x.LastChangeDate = model.LastChangeDate;
+                        });
                 }
                 if (!model.DocumentLinkId.HasValue)
                 {
-                    dbContext.DocumentsSet.Where(x => x.Id == model.DocumentId).ToList().ForEach(x => x.LinkId = model.ParentDocumentId);
+                    dbContext.DocumentsSet.Where(x => x.Id == model.DocumentId).ToList()
+                        .ForEach(x =>
+                        {
+                            x.LinkId = model.ParentDocumentId;
+                            x.LastChangeUserId = model.LastChangeUserId;
+                            x.LastChangeDate = model.LastChangeDate;
+                        });
                 }
                 else
                 {
-                    dbContext.DocumentsSet.Where(x => x.LinkId == model.DocumentLinkId).ToList().ForEach(x => x.LinkId = model.ParentDocumentId);
+                    dbContext.DocumentsSet.Where(x => x.LinkId == model.DocumentLinkId).ToList()
+                        .ForEach(x => 
+                        {
+                            x.LinkId = model.ParentDocumentId;
+                            x.LastChangeUserId = model.LastChangeUserId;
+                            x.LastChangeDate = model.LastChangeDate;
+                        });
                 }
                 dbContext.SaveChanges();
             }

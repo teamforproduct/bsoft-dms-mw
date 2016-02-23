@@ -1,10 +1,12 @@
-﻿using BL.CrossCutting.Interfaces;
+﻿using System;
+using BL.CrossCutting.Interfaces;
 using BL.Logic.AdminCore;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.DictionaryCore;
 using BL.Logic.DictionaryCore.DocumentType;
 using BL.Logic.DictionaryCore.Interfaces;
 using BL.Logic.DocumentCore;
+using BL.Logic.DocumentCore.AdditionalCommands;
 using BL.Logic.DocumentCore.Commands;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Logic.Logging;
@@ -36,9 +38,9 @@ namespace BL.Logic.DependencyInjection
 
             Bind<ICommandService>().To<CommandService>().InSingletonScope();
             LoadDocumentCommands();
+            LoadDocumentAdditionCommands();
             LoadDictionaryCommands();
         }
-
         private void LoadDictionaryCommands()
         {
             Bind<IDictionaryCommand>().To<AddDictionaryDocumentTypeCommand>();
@@ -66,6 +68,14 @@ namespace BL.Logic.DependencyInjection
             Bind<IDocumentCommand>().To<SendMessageDocumentCommand>();
             Bind<IDocumentCommand>().To<ChangeExecutorDocumentCommand>();
             Bind<IDocumentCommand>().To<RegisterDocumentCommand>();
+
         }
+
+        private void LoadDocumentAdditionCommands()
+        {
+            Bind<IDocumentAdditionCommand>().To<AddDocumentLinkCommand>();
+
+        }
+
     }
 }

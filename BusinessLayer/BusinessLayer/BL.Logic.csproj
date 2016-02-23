@@ -58,12 +58,14 @@
     <Compile Include="DictionaryCore\DocumentType\AddDictionaryDocumentTypeCommand.cs" />
     <Compile Include="DictionaryCore\DocumentType\ModifyDictionaryDocumentTypeCommand.cs" />
     <Compile Include="DictionaryCore\Interfaces\IDictionaryService.cs" />
+    <Compile Include="DocumentCore\AdditionalCommands\AddDocumentLinkCommand.cs" />
     <Compile Include="DocumentCore\Commands\AddFavouriteDocumentCommand.cs" />
     <Compile Include="DocumentCore\Commands\AddNoteDocumentCommand.cs" />
     <Compile Include="DocumentCore\Commands\ChangeExecutorDocumentCommand.cs" />
     <Compile Include="DocumentCore\Commands\ControlOnDocumentCommand.cs" />
-    <Compile Include="DocumentCore\Commands\DocumentCommandFactory.cs" />
-    <Compile Include="DocumentCore\Commands\CommandService.cs" />
+    <Compile Include="DocumentCore\DocumentAdditionCommandFactory.cs" />
+    <Compile Include="DocumentCore\DocumentCommandFactory.cs" />
+    <Compile Include="DocumentCore\CommandService.cs" />
     <Compile Include="DocumentCore\Commands\ControlChangeDocumentCommand.cs" />
     <Compile Include="DocumentCore\Commands\ControlOffDocumentCommand.cs" />
     <Compile Include="DocumentCore\Commands\CopyDocumentCommand.cs" />

@@ -1,7 +1,7 @@
 ﻿using BL.CrossCutting.Interfaces;
 using BL.Logic.DocumentCore.Interfaces;
 
-namespace BL.Logic.DocumentCore.Commands
+namespace BL.Logic.DocumentCore
 {
     public class CommandService : ICommandService
     {

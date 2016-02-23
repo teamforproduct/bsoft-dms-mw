@@ -9,6 +9,5 @@ namespace BL.Logic.DocumentCore.Interfaces
     public interface IDocumentOperationsService
     {
         IEnumerable<InternalDictionaryPositionWithActions> GetDocumentActions(IContext ctx, int documentId);
-        void AddDocumentLink(IContext cxt, AddDocumentLink model);
     }
 }
