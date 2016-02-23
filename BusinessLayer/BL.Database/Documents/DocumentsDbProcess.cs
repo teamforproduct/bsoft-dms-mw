@@ -93,24 +93,13 @@ namespace BL.Database.Documents
                 {
                     doc.DocumentSubjectId = document.DocumentSubjectId;
                     doc.Description = document.Description;
-                    doc.IsRegistered = document.IsRegistered;
-                    doc.RegistrationJournalId = document.RegistrationJournalId;
-                    doc.NumerationPrefixFormula = document.NumerationPrefixFormula;
-                    doc.RegistrationNumber = document.RegistrationNumber;
-                    doc.RegistrationNumberSuffix = document.RegistrationNumberSuffix;
-                    doc.RegistrationNumberPrefix = document.RegistrationNumberPrefix;
-                    doc.RegistrationDate = document.RegistrationDate;
-                    doc.ExecutorPositionId = document.ExecutorPositionId;
                     doc.LastChangeUserId = document.LastChangeUserId;
                     doc.LastChangeDate = document.LastChangeDate;
-
                     doc.SenderAgentId = document.SenderAgentId;
                     doc.SenderAgentPersonId = document.SenderAgentPersonId;
                     doc.SenderNumber = document.SenderNumber;
                     doc.SenderDate = document.SenderDate;
                     doc.Addressee = document.Addressee;
-                    doc.LinkId = document.LinkId;
-
 
                     if (document.AccessLevel.HasValue && doc.Accesses.Any(x => x.PositionId == ctx.CurrentPositionId && x.AccessLevelId != (int)document.AccessLevel))
                     {
@@ -549,7 +538,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public InternalDocument AddDocumentByTemplateDocumentPrepare(IContext context, int templateDocumentId)
+        public InternalDocument AddDocumentPrepare(IContext context, int templateDocumentId)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
@@ -651,20 +640,20 @@ namespace BL.Database.Documents
                         Id = x.Doc.Id,
                         //DocumentSubjectId = x.Doc.DocumentSubjectId,
                         //Description = x.Doc.Description,
-                        IsRegistered = x.Doc.IsRegistered,
-                        RegistrationJournalId = x.Doc.RegistrationJournalId,
-                        NumerationPrefixFormula = x.Doc.NumerationPrefixFormula,
-                        RegistrationNumber = x.Doc.RegistrationNumber,
-                        RegistrationNumberSuffix = x.Doc.RegistrationNumberSuffix,
-                        RegistrationNumberPrefix = x.Doc.RegistrationNumberPrefix,
-                        RegistrationDate = x.Doc.RegistrationDate,
+                        //IsRegistered = x.Doc.IsRegistered,
+                        //RegistrationJournalId = x.Doc.RegistrationJournalId,
+                        //NumerationPrefixFormula = x.Doc.NumerationPrefixFormula,
+                        //RegistrationNumber = x.Doc.RegistrationNumber,
+                        //RegistrationNumberSuffix = x.Doc.RegistrationNumberSuffix,
+                        //RegistrationNumberPrefix = x.Doc.RegistrationNumberPrefix,
+                        //RegistrationDate = x.Doc.RegistrationDate,
                         ExecutorPositionId = x.Doc.ExecutorPositionId,
                         //SenderAgentId = x.Doc.SenderAgentId,
                         //SenderAgentPersonId = x.Doc.SenderAgentPersonId,
                         //SenderNumber = x.Doc.SenderNumber,
                         //SenderDate = x.Doc.SenderDate,
                         //Addressee = x.Doc.Addressee,
-                        LinkId = x.Doc.LinkId,
+                        //LinkId = x.Doc.LinkId,
 
                         TemplateDocumentId = x.Doc.TemplateDocumentId,
                         IsHard = x.Templ.IsHard,
@@ -737,7 +726,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public void SetNextDocumentRegistrationNumber(IContext ctx, InternalDocument document)
+        public void GetNextDocumentRegistrationNumber(IContext ctx, InternalDocument document)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
@@ -794,6 +783,8 @@ namespace BL.Database.Documents
                 if (doc != null)
                 {
                     doc.ExecutorPositionId = document.ExecutorPositionId;
+                    doc.LastChangeUserId = document.LastChangeUserId;
+                    doc.LastChangeDate = document.LastChangeDate;
 
                     if (document.Events != null && document.Events.Any(x => x.Id == 0))
                     {
@@ -804,6 +795,30 @@ namespace BL.Database.Documents
                     {
                         doc.Accesses = CommonQueries.GetDbDocumentAccesses(dbContext, document.Accesses, doc.Id).ToList();
                     }
+
+                    dbContext.SaveChanges();
+                }
+            }
+        }
+
+        public void RegisterDocument(IContext ctx, InternalDocument document)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            {
+                var doc = dbContext.DocumentsSet
+                    .Include(x => x.Accesses)
+                    .FirstOrDefault(x => x.Id == document.Id);
+                if (doc != null)
+                {
+                    doc.IsRegistered = document.IsRegistered;
+                    doc.RegistrationJournalId = document.RegistrationJournalId;
+                    doc.NumerationPrefixFormula = document.NumerationPrefixFormula;
+                    doc.RegistrationNumber = document.RegistrationNumber;
+                    doc.RegistrationNumberSuffix = document.RegistrationNumberSuffix;
+                    doc.RegistrationNumberPrefix = document.RegistrationNumberPrefix;
+                    doc.RegistrationDate = document.RegistrationDate;
+                    doc.LastChangeUserId = document.LastChangeUserId;
+                    doc.LastChangeDate = document.LastChangeDate;
 
                     dbContext.SaveChanges();
                 }

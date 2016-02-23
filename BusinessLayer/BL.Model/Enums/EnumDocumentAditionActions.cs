@@ -1,6 +1,6 @@
 ﻿namespace BL.Model.Enums
 {
-    public enum EnumDocumentAditionActions
+    public enum EnumDocumentAdditionActions
     {
         AddDocumentRestrictedSendList = 102001, // Добавить ограничение рассылки
         AddByStandartSendListDocumentRestrictedSendList = 102002, // Добавить ограничения рассылки по стандартному списку
