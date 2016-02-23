@@ -3,6 +3,7 @@ using BL.Logic.DictionaryCore.Interfaces;
 using BL.Model.DictionaryCore;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DocumentCore;
+using BL.Model.Enums;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Web.Http;
@@ -49,7 +50,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            return Get(tmpDictProc.AddDictionaryTag(cxt, model));
+            return Get((int)tmpDictProc.ExecuteAction(EnumDictionaryAction.AddTag, cxt, model));
         }
 
         /// <summary>
@@ -66,7 +67,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             model.Id = id;
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            tmpDictProc.ModifyDictionaryTag(cxt, model);
+            tmpDictProc.ExecuteAction(EnumDictionaryAction.ModifyTag, cxt, model);
             return Get(model.Id);
         }
     }

@@ -4,5 +4,7 @@
     {
         AddDocumentType,
         ModifyDocumentType,
+        AddTag,
+        ModifyTag,
     }
 }
