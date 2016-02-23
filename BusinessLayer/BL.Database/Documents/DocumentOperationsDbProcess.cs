@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
@@ -13,6 +12,7 @@ using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Exception;
+using BL.Model.SystemCore;
 
 namespace BL.Database.Documents
 {
@@ -144,7 +144,7 @@ namespace BL.Database.Documents
                 docWait.OnEventId = documentWait.OnEventId;
                 docWait.OffEventId = documentWait.OffEventId;
                 docWait.ResultTypeId = documentWait.ResultTypeId;
-                docWait.Description = documentWait.Description;
+                docWait.Task = documentWait.Task;
                 docWait.DueDate = documentWait.DueDate;
                 docWait.AttentionDate = documentWait.AttentionDate;
                 docWait.LastChangeUserId = documentWait.LastChangeUserId;
@@ -192,6 +192,16 @@ namespace BL.Database.Documents
                 dbContext.DocumentEventsSet.Add(evt);
                 dbContext.SaveChanges();
                 return evt.Id;
+            }
+        }
+
+        public void AddDocumentEvents(IContext ctx, IEnumerable<InternalDocumentEvents> docEvents)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            {
+                var evt = CommonQueries.GetDbDocumentEvents(docEvents);
+                dbContext.DocumentEventsSet.AddRange(evt);
+                dbContext.SaveChanges();
             }
         }
 
@@ -267,7 +277,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public InternalDocumentAccesses GetDocumentAccess(IContext ctx, int documentId)
+        public InternalDocumentAccesses GetDocumentAccessForUserPosition(IContext ctx, int documentId)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
@@ -275,6 +285,21 @@ namespace BL.Database.Documents
             }
         }
 
+        public IEnumerable<InternalDocumentAccesses> GetDocumentAccesses(IContext ctx, int documentId)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            {
+                return CommonQueries.GetInternalDocumentAccesses(dbContext, documentId);
+            }
+        }
+
+        public IEnumerable<InternalPositionInfo> GetInternalPositionsInfo(IContext ctx, List<int> positionIds)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            {
+                return CommonQueries.GetInternalPositionsInfo(dbContext, positionIds);
+            }
+        }
 
         #endregion
     }

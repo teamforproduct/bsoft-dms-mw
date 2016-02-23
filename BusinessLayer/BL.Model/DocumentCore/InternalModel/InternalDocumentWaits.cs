@@ -11,7 +11,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public int? OffEventId { get; set; }
         public int? ResultTypeId { get; set; }
         public int LastChangeUserId { get; set; }
-        public string Description { get; set; }
+        public string Task { get; set; }
         public DateTime? DueDate { get; set; }
         public DateTime? AttentionDate { get; set; }
         public DateTime LastChangeDate { get; set; }

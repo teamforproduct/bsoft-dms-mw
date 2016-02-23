@@ -108,7 +108,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
         public int? LinkId { get; set; }
-
+        public bool IsLaunchPlan { get; set; }
         public bool IsHard { get; set; }
         public EnumDocumentDirections DocumentDirection { get; set; }
         public int DocumentTypeId { get; set; }

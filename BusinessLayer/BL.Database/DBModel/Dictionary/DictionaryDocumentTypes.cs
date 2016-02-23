@@ -6,7 +6,6 @@ namespace BL.Database.DBModel.Dictionary
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string DirectionCodes { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
     }

@@ -42,6 +42,7 @@ namespace BL.Database.DBModel.Document
         public Nullable<DateTime> SenderDate { get; set; }
         public string Addressee { get; set; }
         public int? LinkId { get; set; }
+        public bool IsLaunchPlan { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
 

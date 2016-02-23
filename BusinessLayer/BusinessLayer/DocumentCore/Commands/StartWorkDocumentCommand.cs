@@ -42,7 +42,7 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override object Execute()
         {
-            var acc = _operationDb.GetDocumentAccess(_context, Model.DocumentId);
+            var acc = _operationDb.GetDocumentAccessForUserPosition(_context, Model.DocumentId);
             if (acc == null)
             {
                 throw new UserHasNoAccessToDocument();

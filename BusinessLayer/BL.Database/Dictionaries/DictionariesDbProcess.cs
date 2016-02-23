@@ -8,6 +8,7 @@ using BL.Database.Dictionaries.Interfaces;
 using BL.Model.Enums;
 using System;
 using BL.Database.DBModel.Dictionary;
+using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Exception;
