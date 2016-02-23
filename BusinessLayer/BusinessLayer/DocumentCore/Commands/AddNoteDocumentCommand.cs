@@ -40,6 +40,7 @@ namespace BL.Logic.DocumentCore.Commands
         }
         public override object Execute()
         {
+            //TODO переделать под общую схему с оптимизацией
             var evt = new InternalDocumentEvents
             {
                 DocumentId = Model.DocumentId,
@@ -59,6 +60,6 @@ namespace BL.Logic.DocumentCore.Commands
             return null;
         }
 
-        public override EnumDocumentActions CommandType { get { return EnumDocumentActions.AddNote; } }
+        public override EnumDocumentActions CommandType => EnumDocumentActions.AddNote;
     }
 }

@@ -106,13 +106,16 @@ namespace BL.Database.Admins
                 {
                     model.PositionsIdList = context.CurrentPositionsIdList;
                 }
-                bool res = false;
-                if (model.DocumentActionCode.HasValue)
+                if (model.IsPositionFromContext)
                 {
-                    //TODO Не работает проверка прав для изменения исполнителя
+                    model.PositionId = context.CurrentPositionId;
+                }
+                bool res = false;
+                if (!string.IsNullOrEmpty(model.DocumentActionCode))
+                {
                     res = dbContext.AdminRoleActionsSet
-                              .Any(x => x.Action.Id == (int)model.DocumentActionCode
-                                        && x.Action.IsGrantable
+                              .Any(x => x.Action.Code == model.DocumentActionCode
+                                        && x.Action.IsGrantable //TODO как отработать не грантебл
                                         && (!x.Action.IsGrantableByRecordId || (x.RecordId == model.RecordId))
                                         && (((model.PositionId == null) && (model.PositionsIdList.Contains(x.Role.PositionId))) || (x.Role.PositionId == model.PositionId))
                                         && x.Role.UserRoles.Any(y => y.UserId == model.UserId)
@@ -125,7 +128,7 @@ namespace BL.Database.Admins
                 }
                 if (!res)
                 {
-                    throw new AccessIsDenied(); //!!!Как красиво передать string obj, string act, int? id = null в сообщение?
+                    throw new AccessIsDenied(); //TODO Сергей!!!Как красиво передать string obj, string act, int? id = null в сообщение?
                 }
             }
         }

@@ -10,6 +10,7 @@ namespace BL.Model.AdminCore
     {
         public VerifyAccess()
         {
+            IsPositionFromContext = true;
         }
         public VerifyAccess(int userId)
         {
@@ -22,11 +23,15 @@ namespace BL.Model.AdminCore
         /// <summary>
         /// Код действия
         /// </summary>
-        public EnumDocumentActions? DocumentActionCode { get; set; }
+        public string DocumentActionCode { get; set; }
         /// <summary>
         /// ИД записи, если права должны раздавать в разрезе каждой записи объекта
         /// </summary>
         public int? RecordId { get; set; }
+        /// <summary>
+        /// Взять текущую должность из контекста
+        /// </summary>
+        public bool IsPositionFromContext  { get; set; } 
         /// <summary>
         /// ИД должности, для которой нужно проверить права
         /// </summary>
