@@ -508,6 +508,40 @@ namespace BL.Database.Documents
             return docWaits.Select(GetDbDocumentWait);
         }
 
+        public static IEnumerable<FrontDocumentTag> GetDocumentTags(DmsContext dbContext, FilterDocumentTags filter)
+        {
+            var tagsDb = dbContext.DocumentTagsSet.AsQueryable();
+
+            if (filter != null)
+            {
+                if (filter.DocumentId.HasValue)
+                {
+                    tagsDb = tagsDb.Where(x => x.DocumentId == filter.DocumentId.Value);
+                }
+
+                if(filter.CurrentPositionsId?.Count>0)
+                {
+                    tagsDb = tagsDb.Where(x => !x.Tag.PositionId.HasValue || filter.CurrentPositionsId.Contains(x.Tag.PositionId ?? 0));
+                }
+            }
+
+            var tagsRes = tagsDb;
+
+            var tags = tagsRes.Select(x => new FrontDocumentTag
+            {
+                TagId = x.TagId,
+                DocumentId = x.DocumentId,
+                PositionId = x.Tag.PositionId,
+                PositionName = x.Tag.Position.Name,
+                Color = x.Tag.Color,
+                Name = x.Tag.Name,
+                IsSystem = !x.Tag.PositionId.HasValue
+            }).ToList();
+
+            return tags;
+
+        }
+
         public static IEnumerable<FrontDocument> GetLinkedDocuments(DmsContext dbContext, int documentId)
         {
             return dbContext.DocumentsSet.Where(x => (x.LinkId == documentId))
