@@ -36,7 +36,7 @@ namespace BL.Logic.DocumentCore
 
             var document = _operationDb.GetDocumentActionsPrepare(ctx, documentId);
             var dictDb = DmsResolver.Current.Get<IDictionariesDbProcess>();
-            var positions = dictDb.GetDictionaryPositionsWithActions(ctx, new FilterDictionaryPosition { Id = ctx.CurrentPositionsIdList });
+            var positions = dictDb.GetDictionaryPositionsWithActions(ctx, new FilterDictionaryPosition { PositionId = ctx.CurrentPositionsIdList });
             var systemDb = DmsResolver.Current.Get<ISystemDbProcess>();
             foreach (var position in positions)
             {

@@ -10,7 +10,7 @@ namespace BL.Model.DictionaryCore
         /// <summary>
         /// Массив ИД типов событий
         /// </summary>
-        public List<int> Id { get; set; }
+        public List<int> EventTypeId { get; set; }
         /// <summary>
         /// Массив ИД типов важности событий
         /// </summary>

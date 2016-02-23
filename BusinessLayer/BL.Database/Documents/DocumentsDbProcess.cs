@@ -257,9 +257,9 @@ namespace BL.Database.Documents
                     qry = qry.Where(x => filters.DocumentTypeId.Contains(x.Doc.TemplateDocument.DocumentTypeId));
                 }
 
-                if (filters.Id != null && filters.Id.Count > 0)
+                if (filters.DocumentId != null && filters.DocumentId.Count > 0)
                 {
-                    qry = qry.Where(x => filters.Id.Contains(x.Doc.Id));
+                    qry = qry.Where(x => filters.DocumentId.Contains(x.Doc.Id));
                 }
 
                 if (filters.TemplateDocumentId != null && filters.TemplateDocumentId.Count > 0)

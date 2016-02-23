@@ -4,6 +4,6 @@ namespace BL.Model.DictionaryCore
 {
     public class FilterDictionaryStandartSendListContent
     {
-        public List<int> Id { get; set; }
+        public List<int> StandartSendListContentId { get; set; }
     }
 }

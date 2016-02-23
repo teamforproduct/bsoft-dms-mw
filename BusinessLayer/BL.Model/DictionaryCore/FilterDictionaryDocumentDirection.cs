@@ -4,6 +4,6 @@ namespace BL.Model.DictionaryCore
 {
     public class FilterDictionaryDocumentDirection
     {
-        public List<int> Id { get; set; }
+        public List<int> DocumentDirectionId { get; set; }
     }
 }

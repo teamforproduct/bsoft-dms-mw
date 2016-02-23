@@ -10,7 +10,7 @@ namespace BL.Model.DictionaryCore
         /// <summary>
         /// Массив ИД должностей
         /// </summary>
-        public List<int> Id { get; set; }
+        public List<int> PositionId { get; set; }
         /// <summary>
         /// Массив ИД документов для поиска корреспондентов в событиях
         /// </summary>

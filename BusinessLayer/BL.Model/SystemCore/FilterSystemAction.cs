@@ -5,7 +5,7 @@ namespace BL.Model.SystemCore
 {
     public class FilterSystemAction
     {
-        public List<int> Id { get; set; }
+        public List<int> ActionId { get; set; }
         public EnumDocumentActions? DocumentAction { get; set; }
         public EnumObjects? Object { get; set; }
         public bool? IsAvailable { get; set; }

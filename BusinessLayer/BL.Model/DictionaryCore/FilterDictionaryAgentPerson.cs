@@ -10,7 +10,7 @@ namespace BL.Model.DictionaryCore
         /// <summary>
         /// Массив ИД контактов
         /// </summary>
-        public List<int> Id { get; set; }
+        public List<int> AgentPersonId { get; set; }
         /// <summary>
         /// Массив ИД посторонних организаций
         /// </summary>

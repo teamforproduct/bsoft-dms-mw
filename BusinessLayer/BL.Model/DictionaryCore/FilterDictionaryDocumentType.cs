@@ -4,7 +4,7 @@ namespace BL.Model.DictionaryCore
 {
     public class FilterDictionaryDocumentType
     {
-        public List<int> Id { get; set; }
+        public List<int> DocumentTypeId { get; set; }
         public string Name { get; set; }
     }
 }

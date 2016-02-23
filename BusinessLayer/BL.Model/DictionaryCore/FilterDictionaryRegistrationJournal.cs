@@ -4,6 +4,6 @@ namespace BL.Model.DictionaryCore
 {
     public class FilterDictionaryRegistrationJournal
     {
-        public List<int> Id { get; set; }
+        public List<int> RegistrationJournalId { get; set; }
     }
 }
