@@ -13,5 +13,8 @@ namespace BL.Model.DocumentCore.InternalModel
         public bool IsFavourite { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
+
+        public InternalDocumentEvents DocumentEvent { get; set; }
+
     }
 }

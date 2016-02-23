@@ -236,25 +236,6 @@ namespace BL.Database.Documents
 
         #region Document Access
 
-        public void SetDocumentInformation(IContext ctx, EventAccessModel access)
-        {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
-            {
-                var acc = dbContext.DocumentAccessesSet.FirstOrDefault(x => x.Id == access.DocumentAccess.Id);
-                if (acc != null)
-                {
-                    acc.LastChangeDate = access.DocumentAccess.LastChangeDate;
-                    acc.IsInWork = access.DocumentAccess.IsInWork;
-                    acc.LastChangeUserId = access.DocumentAccess.LastChangeUserId;
-                    acc.PositionId = access.DocumentAccess.PositionId;
-                    acc.AccessLevelId = (int)access.DocumentAccess.AccessLevel;
-                    acc.IsFavourite = access.DocumentAccess.IsFavourite;
-                }
-                dbContext.DocumentEventsSet.Add(CommonQueries.GetDbDocumentEvent(access.DocumentEvent));
-                dbContext.SaveChanges();
-            }
-        }
-
         public int AddDocumentAccess(IContext ctx, InternalDocumentAccesses access)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
@@ -294,14 +275,6 @@ namespace BL.Database.Documents
                     acc.IsFavourite = access.IsFavourite;
                     dbContext.SaveChanges();
                 }
-            }
-        }
-
-        public InternalDocumentAccesses GetDocumentAccessForUserPosition(IContext ctx, int documentId)
-        {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
-            {
-                return CommonQueries.GetInternalDocumentAccess(ctx, dbContext, documentId);
             }
         }
 
@@ -349,6 +322,40 @@ namespace BL.Database.Documents
 
             }
         }
+
+        public void ChangeIsInWorkAccess(IContext ctx, InternalDocumentAccesses access)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            {
+                var acc = dbContext.DocumentAccessesSet.FirstOrDefault(x => x.Id == access.Id);
+                if (acc != null)
+                {
+                    acc.LastChangeDate = access.LastChangeDate;
+                    acc.LastChangeUserId = access.LastChangeUserId;
+                    acc.IsInWork = access.IsInWork;
+                }
+                dbContext.DocumentEventsSet.Add(CommonQueries.GetDbDocumentEvent(access.DocumentEvent));
+                dbContext.SaveChanges();
+            }
+        }
+
+        public InternalDocumentAccesses ChangeIsInWorkAccessPrepare(IContext context, int documentId)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var acc = dbContext.DocumentAccessesSet
+                    .Where(x => x.DocumentId == documentId && x.PositionId == context.CurrentPositionId)
+                    .Select(x => new InternalDocumentAccesses
+                    {
+                        Id = x.Id,
+                        IsInWork = x.IsInWork,
+                    }).FirstOrDefault();
+                return acc;
+
+            }
+        }
+
+
 
         #endregion
     }
