@@ -22,16 +22,17 @@ namespace BL.Database.Documents.Interfaces
 
 
         InternalDocument RegisterDocumentPrepare(IContext ctx, RegisterDocument model);
-        void SetNextDocumentRegistrationNumber(IContext ctx, InternalDocument document);
+        void GetNextDocumentRegistrationNumber(IContext ctx, InternalDocument document);
         bool VerifyDocumentRegistrationNumber(IContext ctx, InternalDocument document);
 
         InternalDocument CopyDocumentPrepare(IContext ctx, int documentId);
-        InternalDocument AddDocumentByTemplateDocumentPrepare(IContext context, int templateDocumentId);
+        InternalDocument AddDocumentPrepare(IContext context, int templateDocumentId);
         InternalDocument DeleteDocumentPrepare(IContext context, int documentId);
         InternalDocument ModifyDocumentPrepare(IContext context, int id);
 
         InternalDocument ChangeExecutorDocumentPrepare(IContext ctx, ChangeExecutor model);
         void ChangeExecutorDocument(IContext ctx, InternalDocument document);
+        void RegisterDocument(IContext _context, InternalDocument _document);
 
         InternalDocument PlanDocumentPrepare(IContext context, int documentId);
 

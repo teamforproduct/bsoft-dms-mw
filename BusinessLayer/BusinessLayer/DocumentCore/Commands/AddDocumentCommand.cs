@@ -50,7 +50,7 @@ namespace BL.Logic.DocumentCore.Commands
         {
             _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = EnumDocumentActions.AddDocument, PositionId = _context.CurrentPositionId });
 
-            _document = _documentDb.AddDocumentByTemplateDocumentPrepare(_context, Model.TemplateDocumentId);
+            _document = _documentDb.AddDocumentPrepare(_context, Model.TemplateDocumentId);
             if (_document == null)
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();

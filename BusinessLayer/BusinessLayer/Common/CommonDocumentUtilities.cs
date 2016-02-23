@@ -26,6 +26,7 @@ namespace BL.Logic.Common
             document.CreateDate = DateTime.Now;
             document.ExecutorPositionId = context.CurrentPositionId;
             document.IsRegistered = false;
+            document.IsLaunchPlan = false;
             document.LinkId = null;
             SetLastChangeForDocument(context, document);
         }

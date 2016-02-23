@@ -100,10 +100,10 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 if (isNeedGenerateNumber)
                 {
-                    _documentDb.SetNextDocumentRegistrationNumber(_context, _document);
+                    _documentDb.GetNextDocumentRegistrationNumber(_context, _document);
 
                 }
-                _documentDb.UpdateDocument(_context, _document);
+                _documentDb.RegisterDocument(_context, _document);
                 isOk = _documentDb.VerifyDocumentRegistrationNumber(_context, _document);
                 isRepeat = isOk ? !isOk : isNeedGenerateNumber;
             }
@@ -116,7 +116,7 @@ namespace BL.Logic.DocumentCore.Commands
                 _document.RegistrationNumberSuffix = null;
                 _document.RegistrationNumberPrefix = null;
                 _document.RegistrationDate = null;
-                _documentDb.UpdateDocument(_context, _document);
+                _documentDb.RegisterDocument(_context, _document);
                 throw new DocumentCouldNotBeRegistered();
             }
             return Model.DocumentId;
