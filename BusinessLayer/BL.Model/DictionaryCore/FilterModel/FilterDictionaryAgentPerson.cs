@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace BL.Model.DictionaryCore
+namespace BL.Model.DictionaryCore.FilterModel
 {
     /// <summary>
     /// Фильтр словаря контактов посторонних организаций
@@ -10,7 +10,7 @@ namespace BL.Model.DictionaryCore
         /// <summary>
         /// Массив ИД контактов
         /// </summary>
-        public List<int> Id { get; set; }
+        public List<int> AgentPersonId { get; set; }
         /// <summary>
         /// Массив ИД посторонних организаций
         /// </summary>

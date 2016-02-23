@@ -192,6 +192,18 @@
         }
     }
 
+    public class CouldNotChangeAttributeLaunchPlan : DmsExceptions
+    {
+        private const string _MESSAGE = "Could n't change attribute LaunchPlan";
+        public CouldNotChangeAttributeLaunchPlan() : base(_MESSAGE)
+        {
+        }
+
+        public CouldNotChangeAttributeLaunchPlan(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
     public class DocumentHasAlredyBeenRegistered : DmsExceptions
     {
         private const string _MESSAGE = "Document has already been registered!";

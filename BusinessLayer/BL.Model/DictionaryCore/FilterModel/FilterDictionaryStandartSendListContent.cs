@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 
-namespace BL.Model.DictionaryCore
+namespace BL.Model.DictionaryCore.FilterModel
 {
     public class FilterDictionaryStandartSendListContent
     {
-        public List<int> Id { get; set; }
+        public List<int> StandartSendListContentId { get; set; }
     }
 }

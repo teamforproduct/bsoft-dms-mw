@@ -91,9 +91,9 @@ namespace BL.Database.SystemDb
                 {
                     var qry = dbContext.SystemActionsSet.AsQueryable();
 
-                    if (filter.Id?.Count > 0)
+                    if (filter.ActionId?.Count > 0)
                     {
-                        qry = qry.Where(x => filter.Id.Contains(x.Id));
+                        qry = qry.Where(x => filter.ActionId.Contains(x.Id));
                     }
                     if (filter.DocumentAction.HasValue)
                     {
@@ -134,9 +134,9 @@ namespace BL.Database.SystemDb
                 {
                     var qry = dbContext.SystemUIElementsSet.AsQueryable();
 
-                    if (filter.Id?.Count > 0)
+                    if (filter.UIElementId?.Count > 0)
                     {
-                        qry = qry.Where(x => filter.Id.Contains(x.Id));
+                        qry = qry.Where(x => filter.UIElementId.Contains(x.Id));
                     }
                     if (!string.IsNullOrEmpty(filter.Code))
                     {

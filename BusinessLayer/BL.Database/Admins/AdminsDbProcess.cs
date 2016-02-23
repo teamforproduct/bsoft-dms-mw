@@ -7,8 +7,8 @@ using BL.Database.DatabaseContext;
 using BL.Model.AdminCore;
 using BL.CrossCutting.DependencyInjection;
 using BL.Database.Dictionaries.Interfaces;
-using BL.Model.DictionaryCore;
 using BL.Model.Exception;
+using BL.Model.DictionaryCore.FilterModel;
 
 namespace BL.Database.Admins
 {
@@ -44,9 +44,9 @@ namespace BL.Database.Admins
             {
                 var qry = dbContext.AdminAccessLevelsSet.AsQueryable();
 
-                if (filter.Id?.Count > 0)
+                if (filter.AccessLevelId?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.Id.Contains(x.Id));
+                    qry = qry.Where(x => filter.AccessLevelId.Contains(x.Id));
                 }
 
                 return qry.Select(x => new BaseAdminAccessLevel
@@ -67,9 +67,9 @@ namespace BL.Database.Admins
             {
                 var qry = dbContext.AdminUserRolesSet.AsQueryable();
 
-                if (filter.Id?.Count > 0)
+                if (filter.UserRoleId?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.Id.Contains(x.Id));
+                    qry = qry.Where(x => filter.UserRoleId.Contains(x.Id));
                 }
                 if (filter.UserId?.Count > 0)
                 {
@@ -106,13 +106,16 @@ namespace BL.Database.Admins
                 {
                     model.PositionsIdList = context.CurrentPositionsIdList;
                 }
-                bool res = false;
-                if (model.DocumentActionCode.HasValue)
+                if (model.IsPositionFromContext)
                 {
-                    //TODO Не работает проверка прав для изменения исполнителя
+                    model.PositionId = context.CurrentPositionId;
+                }
+                bool res = false;
+                if (!string.IsNullOrEmpty(model.DocumentActionCode))
+                {
                     res = dbContext.AdminRoleActionsSet
-                              .Any(x => x.Action.Id == (int)model.DocumentActionCode
-                                        && x.Action.IsGrantable
+                              .Any(x => x.Action.Code == model.DocumentActionCode
+                                        && x.Action.IsGrantable //TODO как отработать не грантебл
                                         && (!x.Action.IsGrantableByRecordId || (x.RecordId == model.RecordId))
                                         && (((model.PositionId == null) && (model.PositionsIdList.Contains(x.Role.PositionId))) || (x.Role.PositionId == model.PositionId))
                                         && x.Role.UserRoles.Any(y => y.UserId == model.UserId)
@@ -125,7 +128,7 @@ namespace BL.Database.Admins
                 }
                 if (!res)
                 {
-                    throw new AccessIsDenied(); //!!!Как красиво передать string obj, string act, int? id = null в сообщение?
+                    throw new AccessIsDenied(); //TODO Сергей!!!Как красиво передать string obj, string act, int? id = null в сообщение?
                 }
             }
         }
@@ -140,7 +143,7 @@ namespace BL.Database.Admins
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
                 var dictDb = DmsResolver.Current.Get<IDictionariesDbProcess>();
-                var pos = dictDb.GetDictionaryPositions(context, new FilterDictionaryPosition() { Id = new List<int> { model.TargetPosition }, SubordinatedPositions = model.SourcePositions }).FirstOrDefault();
+                var pos = dictDb.GetDictionaryPositions(context, new FilterDictionaryPosition() { PositionId = new List<int> { model.TargetPosition }, SubordinatedPositions = model.SourcePositions }).FirstOrDefault();
                 if (pos == null || pos.MaxSubordinationTypeId < (int)model.SubordinationType)
                 {
                     return false;

@@ -18,7 +18,7 @@ namespace BL.Logic.DocumentCore
                     cmd = DmsResolver.Current.Get<AddDocumentCommand>();
                     break;
                 case EnumDocumentActions.ModifyDocument:
-                    cmd = DmsResolver.Current.Get<UpdateDocumentCommand>();
+                    cmd = DmsResolver.Current.Get<ModifyDocumentCommand>();
                     break;
                 case EnumDocumentActions.DeleteDocument:
                     cmd = DmsResolver.Current.Get<DeleteDocumentCommand>();

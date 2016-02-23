@@ -12,7 +12,7 @@ namespace BL.Database.Documents.Interfaces
     public interface IDocumentsDbProcess
     {
         void AddDocument(IContext ctx, InternalDocument document);
-        void UpdateDocument(IContext ctx, InternalDocument document);
+        void ModifyDocument(IContext ctx, InternalDocument document);
         void DeleteDocument(IContext context, int id);
 
         IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging);
@@ -32,12 +32,10 @@ namespace BL.Database.Documents.Interfaces
 
         InternalDocument ChangeExecutorDocumentPrepare(IContext ctx, ChangeExecutor model);
         void ChangeExecutorDocument(IContext ctx, InternalDocument document);
-        void RegisterDocument(IContext _context, InternalDocument _document);
+        void RegisterDocument(IContext context, InternalDocument document);
 
-        InternalDocument PlanDocumentPrepare(IContext context, int documentId);
+        InternalDocument ChangeIsLaunchPlanDocumentPrepare(IContext context, int documentId);
 
-        void LaunchPlanDocument(IContext ctx, int documentId);
-
-        void StopPlanDocument(IContext ctx, int documentId);
+        void ChangeIsLaunchPlanDocument(IContext ctx, InternalDocument document);
     }
 }

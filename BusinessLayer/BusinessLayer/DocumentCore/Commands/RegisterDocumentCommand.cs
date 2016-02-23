@@ -37,7 +37,7 @@ namespace BL.Logic.DocumentCore.Commands
         {
             try
             {
-                _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = EnumDocumentActions.RegisterDocument, PositionId = _context.CurrentPositionId });
+                _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = CommandType.ToString()});
                 if (_document == null || !_document.RegistrationJournalId.HasValue || _document.IsRegistered)
                 {
                     return false;
@@ -52,11 +52,8 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanExecute()
         {
-            _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = EnumDocumentActions.RegisterDocument, PositionId = _context.CurrentPositionId });
-            if (_document == null)
-            {
-                _document = _documentDb.RegisterDocumentPrepare(_context, Model);
-            }
+            _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = CommandType.ToString() });
+            _document = _documentDb.RegisterDocumentPrepare(_context, Model);
 
             if (_document == null)
             {
@@ -122,6 +119,6 @@ namespace BL.Logic.DocumentCore.Commands
             return Model.DocumentId;
         }
 
-        public override EnumDocumentActions CommandType { get { return EnumDocumentActions.RegisterDocument; } }
+        public override EnumDocumentActions CommandType => EnumDocumentActions.RegisterDocument;
     }
 }

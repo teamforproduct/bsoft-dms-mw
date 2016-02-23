@@ -41,6 +41,7 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override object Execute()
         {
+            //TODO переделать под общую схему с оптимизацией выборки
             var docWait = _operationDb.GetDocumentWaitByOnEventId(_context, Model.EventId);
 
             docWait.ResultTypeId = Model.ResultTypeId;

@@ -7,7 +7,7 @@ namespace BL.Model.SystemCore
 {
     public class FilterSystemUIElement
     {
-        public List<int> Id { get; set; }
+        public List<int> UIElementId { get; set; }
         public string Code { get; set; }
         public string ActionCode { get; set; }
         public string ObjectCode { get; set; }

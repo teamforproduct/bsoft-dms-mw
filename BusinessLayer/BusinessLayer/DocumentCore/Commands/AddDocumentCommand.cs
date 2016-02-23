@@ -36,7 +36,7 @@ namespace BL.Logic.DocumentCore.Commands
         {
             try
             {
-                _adminDb.VerifyAccess(_context,new VerifyAccess {DocumentActionCode = EnumDocumentActions.AddDocument, PositionId = _context.CurrentPositionId});
+                _adminDb.VerifyAccess(_context,new VerifyAccess {DocumentActionCode = CommandType.ToString()});
                 return true;
             }
             catch
@@ -48,7 +48,7 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanExecute()
         {
-            _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = EnumDocumentActions.AddDocument, PositionId = _context.CurrentPositionId });
+            _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = CommandType.ToString()});
 
             _document = _documentDb.AddDocumentPrepare(_context, Model.TemplateDocumentId);
             if (_document == null)
@@ -83,8 +83,6 @@ namespace BL.Logic.DocumentCore.Commands
             return _document.Id;
         }
 
-        public override EnumDocumentActions CommandType {
-            get { return EnumDocumentActions.AddDocument; }
-        }
+        public override EnumDocumentActions CommandType => EnumDocumentActions.AddDocument;
     }
 }

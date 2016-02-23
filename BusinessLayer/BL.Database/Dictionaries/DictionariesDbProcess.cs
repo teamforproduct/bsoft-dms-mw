@@ -71,9 +71,9 @@ namespace BL.Database.Dictionaries
             {
                 var qry = dbContext.DictionaryAgentsSet.AsQueryable();
 
-                if (filter.Id?.Count > 0)
+                if (filter.AgentId?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.Id.Contains(x.Id));
+                    qry = qry.Where(x => filter.AgentId.Contains(x.Id));
                 }
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
@@ -134,9 +134,9 @@ namespace BL.Database.Dictionaries
 
                 var qry = dbContext.DictionaryAgentPersonsSet.AsQueryable();
 
-                if (filter.Id?.Count > 0)
+                if (filter.AgentPersonId?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.Id.Contains(x.Id));
+                    qry = qry.Where(x => filter.AgentPersonId.Contains(x.Id));
                 }
                 if (filter.AgentId?.Count > 0)
                 {
@@ -192,9 +192,9 @@ namespace BL.Database.Dictionaries
             {
                 var qry = dbContext.DictionaryCompaniesSet.AsQueryable();
 
-                if (filter.Id?.Count > 0)
+                if (filter.CompanyId?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.Id.Contains(x.Id));
+                    qry = qry.Where(x => filter.CompanyId.Contains(x.Id));
                 }
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
@@ -254,9 +254,9 @@ namespace BL.Database.Dictionaries
             {
                 var qry = dbContext.DictionaryDepartmentsSet.AsQueryable();
 
-                if (filter.Id?.Count > 0)
+                if (filter.DepartmentId?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.Id.Contains(x.Id));
+                    qry = qry.Where(x => filter.DepartmentId.Contains(x.Id));
                 }
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
@@ -304,9 +304,9 @@ namespace BL.Database.Dictionaries
             {
                 var qry = dbContext.DictionaryDocumentDirectionsSet.AsQueryable();
 
-                if (filter.Id?.Count > 0)
+                if (filter.DocumentDirectionId?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.Id.Contains(x.Id));
+                    qry = qry.Where(x => filter.DocumentDirectionId.Contains(x.Id));
                 }
 
                 return qry.Select(x => new BaseDictionaryDocumentDirection
@@ -355,9 +355,9 @@ namespace BL.Database.Dictionaries
             {
                 var qry = dbContext.DictionaryDocumentSubjectsSet.AsQueryable();
 
-                if (filter.Id?.Count > 0)
+                if (filter.DocumentSubjectId?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.Id.Contains(x.Id));
+                    qry = qry.Where(x => filter.DocumentSubjectId.Contains(x.Id));
                 }
 
                 return qry.Select(x => new BaseDictionaryDocumentSubject
@@ -416,9 +416,9 @@ namespace BL.Database.Dictionaries
             {
                 var qry = dbContext.DictionaryDocumentTypesSet.AsQueryable();
 
-                if (filter.Id?.Count > 0)
+                if (filter.DocumentTypeId?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.Id.Contains(x.Id));
+                    qry = qry.Where(x => filter.DocumentTypeId.Contains(x.Id));
                 }
 
                 if (!String.IsNullOrEmpty (filter.Name))
@@ -442,9 +442,9 @@ namespace BL.Database.Dictionaries
             {
                 var qry = dbContext.DictionaryDocumentTypesSet.AsQueryable();
 
-                if (filter.Id?.Count > 0)
+                if (filter.DocumentTypeId?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.Id.Contains(x.Id));
+                    qry = qry.Where(x => filter.DocumentTypeId.Contains(x.Id));
                 }
 
                 return qry.Select(x => new FrontDictionaryDocumentType
@@ -481,9 +481,9 @@ namespace BL.Database.Dictionaries
             {
                 var qry = dbContext.DictionaryEventTypesSet.AsQueryable();
 
-                if (filter.Id?.Count > 0)
+                if (filter.EventTypeId?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.Id.Contains(x.Id));
+                    qry = qry.Where(x => filter.EventTypeId.Contains(x.Id));
                 }
 
                 if (filter.ImportanceEventTypeId?.Count > 0)
@@ -538,9 +538,9 @@ namespace BL.Database.Dictionaries
             {
                 var qry = dbContext.DictionaryImportanceEventTypesSet.AsQueryable();
 
-                if (filter.Id?.Count > 0)
+                if (filter.ImportanceEventTypeId?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.Id.Contains(x.Id));
+                    qry = qry.Where(x => filter.ImportanceEventTypeId.Contains(x.Id));
                 }
 
                 if (filter.DocumentId?.Count > 0)
@@ -586,9 +586,9 @@ namespace BL.Database.Dictionaries
             {
                 var qry = dbContext.DictionaryLinkTypesSet.AsQueryable();
 
-                if (filter.Id?.Count > 0)
+                if (filter.LinkTypeId?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.Id.Contains(x.Id));
+                    qry = qry.Where(x => filter.LinkTypeId.Contains(x.Id));
                 }
 
                 return qry.Select(x => new BaseDictionaryLinkType
@@ -665,9 +665,9 @@ namespace BL.Database.Dictionaries
             {
                 var qry = dbContext.DictionaryPositionsSet.Select(x=> new { pos = x, subordMax = 0}).AsQueryable();
 
-                if (filter.Id?.Count > 0)
+                if (filter.PositionId?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.Id.Contains(x.pos.Id));
+                    qry = qry.Where(x => filter.PositionId.Contains(x.pos.Id));
                 }
 
                 if (filter.DocumentId?.Count > 0)
@@ -714,9 +714,9 @@ namespace BL.Database.Dictionaries
             {
                 var qry = dbContext.DictionaryPositionsSet.Select(x => new { pos = x, subordMax = 0 }).AsQueryable();
 
-                if (filter.Id?.Count > 0)
+                if (filter.PositionId?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.Id.Contains(x.pos.Id));
+                    qry = qry.Where(x => filter.PositionId.Contains(x.pos.Id));
                 }
 
                 if (filter.DocumentId?.Count > 0)
@@ -784,9 +784,9 @@ namespace BL.Database.Dictionaries
             {
                 var qry = dbContext.DictionaryRegistrationJournalsSet.AsQueryable();
 
-                if (filter.Id?.Count > 0)
+                if (filter.RegistrationJournalId?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.Id.Contains(x.Id));
+                    qry = qry.Where(x => filter.RegistrationJournalId.Contains(x.Id));
                 }
 
                 return qry.Select(x => new BaseDictionaryRegistrationJournal
@@ -828,9 +828,9 @@ namespace BL.Database.Dictionaries
             {
                 var qry = dbContext.DictionaryResultTypesSet.AsQueryable();
 
-                if (filter.Id?.Count > 0)
+                if (filter.ResultTypeId?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.Id.Contains(x.Id));
+                    qry = qry.Where(x => filter.ResultTypeId.Contains(x.Id));
                 }
 
                 return qry.Select(x => new BaseDictionaryResultType
@@ -869,9 +869,9 @@ namespace BL.Database.Dictionaries
             {
                 var qry = dbContext.DictionarySendTypesSet.AsQueryable();
 
-                if (filter.Id?.Count > 0)
+                if (filter.SendTypeId?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.Id.Contains(x.Id));
+                    qry = qry.Where(x => filter.SendTypeId.Contains(x.Id));
                 }
 
                 return qry.Select(x => new BaseDictionarySendType
@@ -920,9 +920,9 @@ namespace BL.Database.Dictionaries
             {
                 var qry = dbContext.DictionaryStandartSendListContentsSet.AsQueryable();
 
-                if (filter.Id?.Count > 0)
+                if (filter.StandartSendListContentId?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.Id.Contains(x.Id));
+                    qry = qry.Where(x => filter.StandartSendListContentId.Contains(x.Id));
                 }
 
                 return qry.Select(x => new BaseDictionaryStandartSendListContent
@@ -985,9 +985,9 @@ namespace BL.Database.Dictionaries
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
                 var qry = dbContext.DictionaryStandartSendListsSet.AsQueryable();
-                if (filter.Id != null && filter.Id.Count > 0)
+                if (filter.StandartSendListId != null && filter.StandartSendListId.Count > 0)
                 {
-                    qry = qry.Where(x => filter.Id.Contains(x.Id));
+                    qry = qry.Where(x => filter.StandartSendListId.Contains(x.Id));
                 }
                 if (filter.PositionId != null && filter.PositionId.Count > 0)
                 {
@@ -1027,9 +1027,9 @@ namespace BL.Database.Dictionaries
             {
                 var qry = dbContext.DictionarySubordinationTypesSet.AsQueryable();
 
-                if (filter.Id?.Count > 0)
+                if (filter.SubordinationTypeId?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.Id.Contains(x.Id));
+                    qry = qry.Where(x => filter.SubordinationTypeId.Contains(x.Id));
                 }
 
                 return qry.Select(x => new BaseDictionarySubordinationType
@@ -1053,9 +1053,9 @@ namespace BL.Database.Dictionaries
 
                 qry = qry.Where(x => !x.PositionId.HasValue || context.CurrentPositionsIdList.Contains(x.PositionId ?? 0));
 
-                if (filter.Id?.Count > 0)
+                if (filter.TagId?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.Id.Contains(x.Id));
+                    qry = qry.Where(x => filter.TagId.Contains(x.Id));
                 }
 
                 return qry.Select(x => new InternalDictionaryTag
@@ -1076,9 +1076,9 @@ namespace BL.Database.Dictionaries
 
                 qry = qry.Where(x => !x.PositionId.HasValue || context.CurrentPositionsIdList.Contains(x.PositionId ?? 0));
 
-                if (filter.Id?.Count>0)
+                if (filter.TagId?.Count>0)
                 {
-                    qry = qry.Where(x => filter.Id.Contains(x.Id));
+                    qry = qry.Where(x => filter.TagId.Contains(x.Id));
                 }
 
                 return qry.Select(x => new FrontDictionaryTag

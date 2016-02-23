@@ -43,7 +43,8 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         public override bool CanExecute()
         {
             _docLink = _operationDb.AddDocumentLinkPrepare(_context, Model);
-            _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = EnumDocumentActions.ModifyDocument, PositionId = _docLink.ExecutorPositionId });
+            _context.SetCurrentPosition(_document.ExecutorPositionId);
+            _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = CommandType.ToString()});
             if (_docLink.DocumentLinkId.HasValue && _docLink.ParentDocumentLinkId.HasValue && (_docLink.DocumentLinkId == _docLink.ParentDocumentLinkId))
             {
                 throw new DocumentHasAlreadyHadLink();

@@ -4,6 +4,9 @@ namespace BL.Model.DictionaryCore.FilterModel
 {
     public class FilterDictionaryTag
     {
-        public List<int> Id { get; set; }
+        /// <summary>
+        /// Массив ИД тегов
+        /// </summary>
+        public List<int> TagId { get; set; }
     }
 }
