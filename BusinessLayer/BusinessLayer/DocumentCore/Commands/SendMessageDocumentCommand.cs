@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using BL.CrossCutting.Common;
+using BL.Logic.Common;
 using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.Enums;

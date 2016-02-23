@@ -1,4 +1,4 @@
-﻿namespace BL.CrossCutting.Helpers
+﻿namespace BL.Logic.Helpers
 {
     public static class DmsUtilities
     {

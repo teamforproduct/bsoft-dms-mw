@@ -2,34 +2,34 @@
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 
-namespace BL.CrossCutting.Common
+namespace BL.Logic.Common
 {
-    public abstract class BaseDocumentCommand: IDocumentCommand
+    public abstract class BaseDictionaryCommand: IDictionaryCommand
     {
         protected IContext _context;
-        protected InternalDocument _document;
         protected object _param;
 
-        public void InitializeCommand(IContext ctx, InternalDocument doc)
+        public void InitializeCommand(IContext ctx)
         {
-            InitializeCommand(ctx, doc, null);
+            InitializeCommand(ctx, null);
         }
 
-        public void InitializeCommand(IContext ctx, InternalDocument doc, object param)
+        public void InitializeCommand(IContext ctx, object param)
         {
             _context = ctx;
-            _document = doc;
             _param = param;
         }
 
-        public InternalDocument Document { get { return _document; } }
+        public InternalDocument Document { get { return null; } }
         public IContext Context { get { return _context; } }
         public object Parameters { get { return _param; } }
 
         public abstract bool CanBeDisplayed();
+
         public abstract bool CanExecute();
+
         public abstract object Execute();
 
-        public abstract EnumDocumentActions CommandType { get; }
+        public abstract EnumDictionaryAction CommandType { get; }
     }
 }

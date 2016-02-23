@@ -1,4 +1,4 @@
-﻿using BL.CrossCutting.DependencyInjection;
+﻿using BL.Logic.DependencyInjection;
 using BL.Logic.DocumentCore;
 using BL.Model.DocumentCore;
 using DMS_WebAPI.Results;

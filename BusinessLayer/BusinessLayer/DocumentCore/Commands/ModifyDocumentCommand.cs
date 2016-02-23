@@ -1,5 +1,5 @@
 ﻿using BL.Database.Documents.Interfaces;
-using BL.CrossCutting.Common;
+using BL.Logic.Common;
 using BL.Database.Admins.Interfaces;
 using BL.Logic.Common;
 using BL.Model.AdminCore;

@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
+using BL.Database.Common;
+using BL.Logic.Helpers;
 using BL.Database.DatabaseContext;
 using BL.Database.DBModel.Document;
 using BL.Database.Documents.Interfaces;

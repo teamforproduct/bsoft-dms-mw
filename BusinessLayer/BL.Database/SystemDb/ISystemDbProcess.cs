@@ -1,6 +1,6 @@
-using BL.CrossCutting.Interfaces;
 using BL.Model.SystemCore;
 using System.Collections.Generic;
+using BL.CrossCutting.Interfaces;
 using BL.Model.DocumentCore.FrontModel;
 
 namespace BL.Database.SystemDb

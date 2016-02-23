@@ -1,11 +1,10 @@
 ﻿using System;
-using BL.CrossCutting.Common;
 using BL.Database.Dictionaries.Interfaces;
-using BL.Model.DictionaryCore;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
+using BaseDictionaryCommand = BL.Logic.Common.BaseDictionaryCommand;
 
 namespace BL.Logic.DictionaryCore.Tag
 {

@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
-using BL.CrossCutting.Interfaces;
 using BL.Model.Database;
 using BL.Model.Users;
 using System.Linq;
+using BL.CrossCutting.Interfaces;
 using BL.Model.Exception;
 
-namespace BL.CrossCutting.Context
+namespace BL.Logic.Context
 {
     public class DefaultContext :IContext
     {

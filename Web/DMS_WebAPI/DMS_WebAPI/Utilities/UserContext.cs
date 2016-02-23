@@ -1,10 +1,10 @@
-﻿using BL.CrossCutting.Context;
-using BL.CrossCutting.Interfaces;
+﻿using BL.Logic.Context;
 using BL.Model.Database;
 using System;
 using System.Collections.Generic;
 using System.Web;
-using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
+using BL.Logic.DependencyInjection;
 using BL.Logic.Secure;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;

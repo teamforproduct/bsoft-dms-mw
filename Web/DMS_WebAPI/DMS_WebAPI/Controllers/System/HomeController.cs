@@ -1,6 +1,6 @@
 ﻿using System.Web.Mvc;
-using BL.CrossCutting.Context;
-using BL.CrossCutting.DependencyInjection;
+using BL.Logic.Context;
+using BL.Logic.DependencyInjection;
 using BL.Logic.DocumentCore;
 using BL.Model.DocumentCore;
 

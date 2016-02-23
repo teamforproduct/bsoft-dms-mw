@@ -1,6 +1,6 @@
-﻿using BL.CrossCutting.Interfaces;
-using BL.Model.AdminCore;
+﻿using BL.Model.AdminCore;
 using System.Collections.Generic;
+using BL.CrossCutting.Interfaces;
 
 namespace BL.Logic.AdminCore.Interfaces
 {

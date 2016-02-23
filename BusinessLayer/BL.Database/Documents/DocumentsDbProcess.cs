@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
+using BL.Database.Common;
+using BL.Logic.Helpers;
 using BL.Database.DatabaseContext;
 using BL.Database.Documents.Interfaces;
 using BL.Database.DBModel.Document;
@@ -58,22 +59,22 @@ namespace BL.Database.Documents
 
                 if (document.Accesses != null && document.Accesses.Any())
                 {
-                    doc.Accesses = CommonQueries.GetDbDocumentAccesses(document.Accesses).ToList();
+                    doc.Accesses = ModelConverter.GetDbDocumentAccesses(document.Accesses).ToList();
                 }
 
                 if (document.Events != null && document.Events.Any())
                 {
-                    doc.Events = CommonQueries.GetDbDocumentEvents(document.Events).ToList();
+                    doc.Events = ModelConverter.GetDbDocumentEvents(document.Events).ToList();
                 }
 
                 if (document.RestrictedSendLists != null && document.RestrictedSendLists.Any())
                 {
-                    doc.RestrictedSendLists = CommonQueries.AddDocumentRestrictedSendList(dbContext, document.RestrictedSendLists).ToList();
+                    doc.RestrictedSendLists = ModelConverter.AddDocumentRestrictedSendList(document.RestrictedSendLists).ToList();
                 }
 
                 if (document.SendLists != null && document.SendLists.Any())
                 {
-                    doc.SendLists = CommonQueries.AddDocumentSendList(dbContext, document.SendLists).ToList();
+                    doc.SendLists = ModelConverter.AddDocumentSendList(document.SendLists).ToList();
                 }
 
                 dbContext.DocumentsSet.Add(doc);
@@ -787,7 +788,7 @@ namespace BL.Database.Documents
 
                     if (document.Events != null && document.Events.Any(x => x.Id == 0))
                     {
-                        doc.Events = CommonQueries.GetDbDocumentEvents(document.Events.Where(x => x.Id == 0)).ToList();
+                        doc.Events = ModelConverter.GetDbDocumentEvents(document.Events.Where(x => x.Id == 0)).ToList();
                     }
 
                     if (document.Accesses != null && document.Accesses.Any())

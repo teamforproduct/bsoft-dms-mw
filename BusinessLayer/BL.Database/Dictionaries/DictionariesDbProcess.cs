@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using BL.CrossCutting.Helpers;
-using BL.CrossCutting.Interfaces;
+using BL.Logic.Helpers;
 using BL.Database.DatabaseContext;
 using BL.Model.DictionaryCore;
 using BL.Database.Dictionaries.Interfaces;
 using BL.Model.Enums;
 using System;
+using BL.CrossCutting.Interfaces;
 using BL.Database.DBModel.Dictionary;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;

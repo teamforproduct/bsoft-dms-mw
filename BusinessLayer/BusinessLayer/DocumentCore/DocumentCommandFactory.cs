@@ -1,5 +1,5 @@
-﻿using BL.CrossCutting.DependencyInjection;
-using BL.CrossCutting.Interfaces;
+﻿using BL.CrossCutting.Interfaces;
+using BL.Logic.DependencyInjection;
 using BL.Logic.DocumentCore.Commands;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;

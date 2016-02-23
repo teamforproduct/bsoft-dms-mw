@@ -1,9 +1,8 @@
 ﻿using System;
-using BL.CrossCutting.Common;
+using BL.Logic.Common;
 using BL.Database.Admins.Interfaces;
 using BL.Database.Documents.Interfaces;
 using BL.Model.AdminCore;
-using BL.Model.Database;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;

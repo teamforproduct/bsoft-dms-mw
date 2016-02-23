@@ -1,5 +1,5 @@
-﻿using BL.CrossCutting.Context;
-using BL.CrossCutting.Interfaces;
+﻿using BL.CrossCutting.Interfaces;
+using BL.Logic.Context;
 
 namespace DMS_WebAPI.Utilities
 {

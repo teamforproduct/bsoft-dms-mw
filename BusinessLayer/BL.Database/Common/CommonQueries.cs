@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using BL.CrossCutting.Interfaces;
 using BL.Database.DatabaseContext;
@@ -11,7 +12,7 @@ using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.SystemCore;
 
-namespace BL.Database.Documents
+namespace BL.Database.Common
 {
     internal static class CommonQueries
     {
@@ -152,29 +153,10 @@ namespace BL.Database.Documents
             return null;
         }
 
-        public static DocumentAccesses GetDbDocumentAccess(InternalDocumentAccesses docAccess)
-        {
-            return new DocumentAccesses
-            {
-                LastChangeDate = docAccess.LastChangeDate,
-                LastChangeUserId = docAccess.LastChangeUserId,
-                DocumentId = docAccess.DocumentId,
-                IsFavourite = docAccess.IsFavourite,
-                IsInWork = docAccess.IsInWork,
-                AccessLevelId = (int)docAccess.AccessLevel,
-                PositionId = docAccess.PositionId
-            };
-        }
-
-        public static IEnumerable<DocumentAccesses> GetDbDocumentAccesses(IEnumerable<InternalDocumentAccesses> docAccesses)
-        {
-            return docAccesses.Select(GetDbDocumentAccess);
-        }
-
         public static IEnumerable<DocumentAccesses> GetDbDocumentAccesses(DmsContext dbContext, IEnumerable<InternalDocumentAccesses> docAccesses, int documentId)
         {
             var accPositions = dbContext.DocumentAccessesSet.Where(x => x.DocumentId == documentId).Select(x => x.PositionId);
-            return docAccesses.Where(x=>!accPositions.Contains(x.PositionId)).Select(GetDbDocumentAccess);
+            return docAccesses.Where(x=>!accPositions.Contains(x.PositionId)).Select(ModelConverter.GetDbDocumentAccess);
         }
 
         public static InternalDocumentAccesses GetInternalDocumentAccess(IContext ctx, DmsContext dbContext, int documentId)
@@ -305,31 +287,6 @@ namespace BL.Database.Documents
 
         }
 
-        public static DocumentEvents GetDbDocumentEvent(InternalDocumentEvents evt)
-        {
-            return new DocumentEvents
-            {
-                Description = evt.Description,
-                Date = evt.Date,
-                CreateDate = evt.CreateDate,
-                DocumentId = evt.DocumentId,
-                EventTypeId = (int) evt.EventType,
-                LastChangeDate = evt.LastChangeDate,
-                LastChangeUserId = evt.LastChangeUserId,
-                TargetAgentId = evt.TargetAgentId,
-                TargetPositionId = evt.TargetPositionId,
-                SourceAgentId = evt.SourceAgentId,
-                SourcePositionId = evt.SourcePositionId,
-                ReadAgentId = evt.ReadAgentId,
-                ReadDate = evt.ReadDate
-            };
-        }
-
-        public static IEnumerable<DocumentEvents> GetDbDocumentEvents(IEnumerable<InternalDocumentEvents> events)
-        {
-            return events.Select(GetDbDocumentEvent);
-        }
-
         public static IEnumerable<InternalDocumentWaits> GetInternalDocumentWaits(DmsContext dbContext, FilterDocumentWaits filter)
         {
             var waitsDb = dbContext.DocumentWaitsSet.AsQueryable();
@@ -357,7 +314,7 @@ namespace BL.Database.Documents
                 }
             }
 
-            var waitsRes = waitsDb.Select(x => new { Wait = x, OnEvent = x.OnEvent, OffEvent = x.OffEvent });
+            var waitsRes = waitsDb.Select(x => new { Wait = x, x.OnEvent, x.OffEvent });
 
             var waits = waitsRes.Select(x => new InternalDocumentWaits
             {
@@ -435,7 +392,7 @@ namespace BL.Database.Documents
                 }
             }
 
-            var waitsRes = waitsDb.Select(x => new {Wait = x, OnEvent = x.OnEvent, OffEvent = x.OffEvent});
+            var waitsRes = waitsDb.Select(x => new {Wait = x, x.OnEvent, x.OffEvent});
 
             var waits = waitsRes.Select(x => new FrontDocumentWaits
             {
@@ -484,28 +441,6 @@ namespace BL.Database.Documents
 
             return waits;
 
-        }
-
-        public static DocumentWaits GetDbDocumentWait(InternalDocumentWaits docWait)
-        {
-            return new DocumentWaits
-            {
-                AttentionDate = docWait.AttentionDate,
-                Task = docWait.Task,
-                DocumentId = docWait.DocumentId,
-                DueDate = docWait.DueDate,
-                LastChangeDate = docWait.LastChangeDate,
-                LastChangeUserId = docWait.LastChangeUserId,
-                OffEventId = docWait.OffEventId,
-                OnEventId = docWait.OnEventId,
-                ParentId = docWait.ParentId,
-                ResultTypeId = docWait.ResultTypeId
-            };
-        }
-
-        public static IEnumerable<DocumentWaits> GetDbDocumentWaitses(IEnumerable<InternalDocumentWaits> docWaits)
-        {
-            return docWaits.Select(GetDbDocumentWait);
         }
 
         public static IEnumerable<FrontDocumentTag> GetDocumentTags(DmsContext dbContext, FilterDocumentTags filter)
@@ -565,7 +500,7 @@ namespace BL.Database.Documents
                                                 (z.ParentDocument.RegistrationNumber != null
                                                         ? (z.ParentDocument.RegistrationNumberPrefix + z.ParentDocument.RegistrationNumber.ToString() + z.ParentDocument.RegistrationNumberSuffix)
                                                         : ("#" + z.ParentDocument.Id.ToString()))
-                                    + " " + (z.ParentDocument.RegistrationDate ?? z.ParentDocument.CreateDate).ToString()
+                                    + " " + (z.ParentDocument.RegistrationDate ?? z.ParentDocument.CreateDate).ToString(CultureInfo.InvariantCulture)
                                     //TODO String.Format("{0:dd.MM.yyyy}", (z.ParentDocument.RegistrationDate ?? z.ParentDocument.CreateDate))
                                 }).ToList()
                         }).ToList();
@@ -598,26 +533,6 @@ namespace BL.Database.Documents
                             LastChangeDate = y.LastChangeDate,
                             GeneralInfo = string.Empty
                         }).ToList();
-        }
-
-        public static IEnumerable<DocumentSendLists> AddDocumentSendList(DmsContext dbContext, IEnumerable<InternalDocumentSendLists> docSendList)
-        {
-            return docSendList.Select(sl => new DocumentSendLists()
-            {
-                DocumentId = sl.DocumentId,
-                Stage = sl.Stage,
-                SendTypeId = (int) sl.SendType,
-                TargetPositionId = sl.TargetPositionId,
-                Description = sl.Description,
-                DueDate = sl.DueDate,
-                DueDay = sl.DueDay,
-                AccessLevelId = (int) sl.AccessLevel,
-                IsInitial = sl.IsInitial,
-                StartEventId = sl.StartEventId,
-                CloseEventId = sl.CloseEventId,
-                LastChangeUserId = sl.LastChangeUserId,
-                LastChangeDate = sl.LastChangeDate
-            });
         }
 
         public static IEnumerable<InternalDocumentSendLists> GetInternalDocumentSendList(DmsContext dbContext, int documentId)
@@ -658,18 +573,6 @@ namespace BL.Database.Documents
                             LastChangeDate = y.LastChangeDate,
                             GeneralInfo = string.Empty
                         }).ToList();
-        }
-
-        public static IEnumerable<DocumentRestrictedSendLists> AddDocumentRestrictedSendList(DmsContext dbContext,IEnumerable<InternalDocumentRestrictedSendLists> docRestrictedSendList)
-        {
-            return docRestrictedSendList.Select(sl => new DocumentRestrictedSendLists
-            {
-                PositionId = sl.PositionId,
-                AccessLevelId = (int) sl.AccessLevel,
-                LastChangeUserId = sl.LastChangeUserId,
-                LastChangeDate = sl.LastChangeDate,
-                DocumentId = sl.DocumentId,
-            });
         }
 
         public static IEnumerable<InternalDocumentRestrictedSendLists> GetInternalDocumentRestrictedSendList(DmsContext dbContext, int documentId)

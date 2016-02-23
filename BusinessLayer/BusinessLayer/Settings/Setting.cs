@@ -2,8 +2,8 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.Configuration;
-using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
+using BL.Logic.DependencyInjection;
 using BL.Database.SystemDb;
 
 

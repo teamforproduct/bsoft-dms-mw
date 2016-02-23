@@ -47,6 +47,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\BaseDictionaryCommand.cs" />
+    <Compile Include="Common\BaseDocumentAdditionCommand.cs" />
+    <Compile Include="Common\BaseDocumentCommand.cs" />
     <Compile Include="Common\CommonDocumentUtilities.cs" />
     <Compile Include="DependencyInjection\LogicModule.cs" />
     <Compile Include="AdminCore\AdminService.cs" />
@@ -81,13 +84,11 @@
     <Compile Include="DocumentCore\Commands\StartWorkDocumentCommand.cs" />
     <Compile Include="DocumentCore\DocumentFileService.cs" />
     <Compile Include="DocumentCore\DocumentFiltersService.cs" />
-    <Compile Include="DocumentCore\DocumentOperationsService.cs" />
     <Compile Include="DocumentCore\DocumentTagService.cs" />
     <Compile Include="DocumentCore\DocumentSendListService.cs" />
     <Compile Include="DocumentCore\Interfaces\IDocumentTagService.cs" />
     <Compile Include="DocumentCore\Interfaces\IDocumentSendListService.cs" />
     <Compile Include="DocumentCore\Interfaces\IDocumentFiltersService.cs" />
-    <Compile Include="DocumentCore\Interfaces\IDocumentOperationsService.cs" />
     <Compile Include="DocumentCore\Interfaces\IDocumentFileService.cs" />
     <Compile Include="DocumentCore\Commands\ModifyDocumentCommand.cs" />
     <Compile Include="DocumentCore\DocumentService.cs" />

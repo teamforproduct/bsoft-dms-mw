@@ -2,9 +2,9 @@
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 
-namespace BL.CrossCutting.Common
+namespace BL.Logic.Common
 {
-    public abstract class BaseDocumentAdditionCommand: IDocumentAdditionCommand
+    public abstract class BaseDocumentCommand: IDocumentCommand
     {
         protected IContext _context;
         protected InternalDocument _document;
@@ -30,6 +30,6 @@ namespace BL.CrossCutting.Common
         public abstract bool CanExecute();
         public abstract object Execute();
 
-        public abstract EnumDocumentAdditionActions CommandType { get; }
+        public abstract EnumDocumentActions CommandType { get; }
     }
 }

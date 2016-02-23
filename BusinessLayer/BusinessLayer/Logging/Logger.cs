@@ -1,6 +1,6 @@
 ﻿using System;
-using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
+using BL.Logic.DependencyInjection;
 using BL.Database.SystemDb;
 using BL.Model.Enums;
 using BL.Model.SystemCore;

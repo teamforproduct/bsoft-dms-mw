@@ -1,4 +1,4 @@
-﻿using BL.CrossCutting.Common;
+﻿using BL.Logic.Common;
 using BL.Database.Admins.Interfaces;
 using BL.Database.Documents.Interfaces;
 using BL.Logic.Common;
