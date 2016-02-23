@@ -70,7 +70,7 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override object Execute()
         {
-            CommonDocumentUtilities.SetLastChangeForDocument(_context, _document);
+            CommonDocumentUtilities.SetLastChange(_context, _document);
 
             _document.ExecutorPositionId = Model.PositionId;
             _document.AccessLevel = Model.AccessLevel;

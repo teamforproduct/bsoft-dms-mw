@@ -52,7 +52,7 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override object Execute()
         {
-            CommonDocumentUtilities.SetLastChangeForDocument(_context, _document);
+            CommonDocumentUtilities.SetLastChange(_context, _document);
             _document.Description = Model.Description;
             _document.DocumentSubjectId = Model.DocumentSubjectId;
             _document.SenderAgentId = Model.SenderAgentId;

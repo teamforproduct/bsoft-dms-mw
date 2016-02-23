@@ -72,7 +72,7 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override object Execute()
         {
-            CommonDocumentUtilities.SetLastChangeForDocument(_context, _document);
+            CommonDocumentUtilities.SetLastChange(_context, _document);
             _document.IsRegistered = !Model.IsOnlyGetNextNumber;
             _document.RegistrationDate = Model.RegistrationDate;
             bool isNeedGenerateNumber;
