@@ -7,8 +7,8 @@ using BL.Database.DatabaseContext;
 using BL.Model.AdminCore;
 using BL.CrossCutting.DependencyInjection;
 using BL.Database.Dictionaries.Interfaces;
-using BL.Model.DictionaryCore;
 using BL.Model.Exception;
+using BL.Model.DictionaryCore.FilterModel;
 
 namespace BL.Database.Admins
 {
@@ -44,9 +44,9 @@ namespace BL.Database.Admins
             {
                 var qry = dbContext.AdminAccessLevelsSet.AsQueryable();
 
-                if (filter.Id?.Count > 0)
+                if (filter.AccessLevelId?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.Id.Contains(x.Id));
+                    qry = qry.Where(x => filter.AccessLevelId.Contains(x.Id));
                 }
 
                 return qry.Select(x => new BaseAdminAccessLevel
@@ -67,9 +67,9 @@ namespace BL.Database.Admins
             {
                 var qry = dbContext.AdminUserRolesSet.AsQueryable();
 
-                if (filter.Id?.Count > 0)
+                if (filter.UserRoleId?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.Id.Contains(x.Id));
+                    qry = qry.Where(x => filter.UserRoleId.Contains(x.Id));
                 }
                 if (filter.UserId?.Count > 0)
                 {
@@ -143,7 +143,7 @@ namespace BL.Database.Admins
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
                 var dictDb = DmsResolver.Current.Get<IDictionariesDbProcess>();
-                var pos = dictDb.GetDictionaryPositions(context, new FilterDictionaryPosition() { Id = new List<int> { model.TargetPosition }, SubordinatedPositions = model.SourcePositions }).FirstOrDefault();
+                var pos = dictDb.GetDictionaryPositions(context, new FilterDictionaryPosition() { PositionId = new List<int> { model.TargetPosition }, SubordinatedPositions = model.SourcePositions }).FirstOrDefault();
                 if (pos == null || pos.MaxSubordinationTypeId < (int)model.SubordinationType)
                 {
                     return false;

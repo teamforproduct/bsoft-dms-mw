@@ -234,9 +234,9 @@ namespace BL.Database.Documents
 
             if (filter != null)
             {
-                if (filter.Id?.Count > 0)
+                if (filter.EventId?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.Id.Contains(x.Id));
+                    qry = qry.Where(x => filter.EventId.Contains(x.Id));
                 }
 
                 if (filter.DocumentId?.Count > 0)
@@ -276,9 +276,9 @@ namespace BL.Database.Documents
 
             if (filter != null)
             {
-                if (filter.Id?.Count > 0)
+                if (filter.EventId?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.Id.Contains(x.Id));
+                    qry = qry.Where(x => filter.EventId.Contains(x.Id));
                 }
 
                 if (filter.DocumentId?.Count > 0)

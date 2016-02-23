@@ -11,7 +11,7 @@ namespace BL.Model.DocumentCore.Filters
         /// <summary>
         /// Массив ИД документов
         /// </summary>
-        public List<int> Id { get; set; }
+        public List<int> DocumentId { get; set; }
         /// <summary>
         /// Массив ИД шаблонов документов
         /// </summary>

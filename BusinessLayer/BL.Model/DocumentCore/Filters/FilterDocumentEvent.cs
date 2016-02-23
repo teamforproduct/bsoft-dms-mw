@@ -10,7 +10,7 @@ namespace BL.Model.DocumentCore.Filters
         /// <summary>
         /// Массив ИД событий документов
         /// </summary>
-        public List<int> Id { get; set; }
+        public List<int> EventId { get; set; }
         /// <summary>
         /// Массив ИД документов
         /// </summary>

@@ -10,6 +10,6 @@ namespace BL.Model.AdminCore
         /// <summary>
         /// Массив ИД уровней доступа
         /// </summary>
-        public List<int> Id { get; set; }
+        public List<int> AccessLevelId { get; set; }
     }
 }

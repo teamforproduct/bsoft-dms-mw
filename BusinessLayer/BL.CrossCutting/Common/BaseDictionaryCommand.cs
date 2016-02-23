@@ -1,4 +1,5 @@
 ﻿using BL.CrossCutting.Interfaces;
+using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 
 namespace BL.CrossCutting.Common
@@ -18,6 +19,10 @@ namespace BL.CrossCutting.Common
             _context = ctx;
             _param = param;
         }
+
+        public InternalDocument Document { get { return null; } }
+        public IContext Context { get { return _context; } }
+        public object Parameters { get { return _param; } }
 
         public abstract bool CanBeDisplayed();
 

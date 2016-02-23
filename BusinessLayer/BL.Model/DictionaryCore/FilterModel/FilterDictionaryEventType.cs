@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace BL.Model.DictionaryCore
+namespace BL.Model.DictionaryCore.FilterModel
 {
     /// <summary>
     /// Фильтр словаря типов событий
@@ -10,7 +10,7 @@ namespace BL.Model.DictionaryCore
         /// <summary>
         /// Массив ИД типов событий
         /// </summary>
-        public List<int> Id { get; set; }
+        public List<int> EventTypeId { get; set; }
         /// <summary>
         /// Массив ИД типов важности событий
         /// </summary>

@@ -122,7 +122,7 @@ namespace BL.Logic.DictionaryCore
         // следить за списком полей необхдимых в каждом конкретном случае
         public FrontDictionaryDocumentType GetDictionaryDocumentType(IContext context, int id)
         {
-            return _dictDb.GetDictionaryDocumentTypes(context, new FilterDictionaryDocumentType { Id = new List<int> { id } }).FirstOrDefault();
+            return _dictDb.GetDictionaryDocumentTypes(context, new FilterDictionaryDocumentType { DocumentTypeId = new List<int> { id } }).FirstOrDefault();
         }
 
         public IEnumerable<FrontDictionaryDocumentType> GetDictionaryDocumentTypes(IContext context, FilterDictionaryDocumentType filter)
@@ -280,7 +280,7 @@ namespace BL.Logic.DictionaryCore
 
         public FrontDictionaryTag GetDictionaryTag(IContext context, int id)
         {
-            return _dictDb.GetDictionaryTags(context, new FilterDictionaryTag { Id = new List<int> { id } }).FirstOrDefault();
+            return _dictDb.GetDictionaryTags(context, new FilterDictionaryTag { TagId = new List<int> { id } }).FirstOrDefault();
         }
         #endregion DictionaryTags
 
