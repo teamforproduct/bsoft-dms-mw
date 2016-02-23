@@ -373,7 +373,7 @@ namespace DMS_WebAPI.Controllers.Documents
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
             //TODO change
-            docProc.ExecuteAction(EnumDocumentActions.ChangeExecutor, cxt, id);
+            docProc.ExecuteAction(EnumDocumentActions.LaunchPlan, cxt, id);
             timeDB.Stop();
 
             timeM.Stop();
@@ -402,7 +402,7 @@ namespace DMS_WebAPI.Controllers.Documents
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
             //TODO change
-            docProc.ExecuteAction(EnumDocumentActions.ChangeExecutor, cxt, id);
+            docProc.ExecuteAction(EnumDocumentActions.StopPlan, cxt, id);
             timeDB.Stop();
 
             timeM.Stop();
