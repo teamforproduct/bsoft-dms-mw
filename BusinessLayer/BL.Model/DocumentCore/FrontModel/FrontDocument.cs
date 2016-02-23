@@ -131,6 +131,7 @@ namespace BL.Model.DocumentCore.FrontModel
         public IEnumerable<FrontDocument> LinkedDocuments { get; set; }
         public IEnumerable<FrontDocumentLink> Links { get; set; }
         public IEnumerable<FrontDocumentWaits> DocumentWaits { get; set; }
+        public IEnumerable<FrontDocumentTag> DocumentTags { get; set; }
 
     }
 }

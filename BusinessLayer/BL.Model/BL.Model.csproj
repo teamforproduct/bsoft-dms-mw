@@ -91,6 +91,7 @@
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryCompany.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryAgentPerson.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryAgent.cs" />
+    <Compile Include="DocumentCore\Filters\FilterDocumentTags.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentTag.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontFilterDocumentAttachedFile.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentFiles.cs" />

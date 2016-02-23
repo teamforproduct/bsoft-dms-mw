@@ -489,6 +489,8 @@ namespace BL.Database.Documents
 
                 doc.DocumentWaits = CommonQueries.GetDocumentWaits(dbContext, new FilterDocumentWaits { DocumentId = documentId });
 
+                doc.DocumentTags = CommonQueries.GetDocumentTags(dbContext, new FilterDocumentTags { DocumentId = documentId, CurrentPositionsId = ctx.CurrentPositionsIdList });
+
                 return doc;
             }
         }
