@@ -61,6 +61,8 @@
     <Compile Include="DocumentCore\AdditionalCommands\AddDocumentLinkCommand.cs" />
     <Compile Include="DocumentCore\Commands\AddFavouriteDocumentCommand.cs" />
     <Compile Include="DocumentCore\Commands\AddNoteDocumentCommand.cs" />
+    <Compile Include="DocumentCore\Commands\StopPlanDocumentCommand.cs" />
+    <Compile Include="DocumentCore\Commands\LaunchPlanDocumentCommand.cs" />
     <Compile Include="DocumentCore\Commands\ChangeExecutorDocumentCommand.cs" />
     <Compile Include="DocumentCore\Commands\ControlOnDocumentCommand.cs" />
     <Compile Include="DocumentCore\DocumentAdditionCommandFactory.cs" />

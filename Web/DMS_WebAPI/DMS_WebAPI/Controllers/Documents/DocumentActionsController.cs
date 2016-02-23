@@ -361,7 +361,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// </summary>
         /// <param name="id">ИД документа</param>
         /// <returns></returns>
-        [Route("LaunchPlan")]
+        [Route("LaunchPlan/{id}")]
         [HttpPost]
         public IHttpActionResult LaunchPlan(int id)
         {
@@ -373,7 +373,7 @@ namespace DMS_WebAPI.Controllers.Documents
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
             //TODO change
-            docProc.ExecuteAction(EnumDocumentActions.ChangeExecutor, cxt, id);
+            docProc.ExecuteAction(EnumDocumentActions.LaunchPlan, cxt, id);
             timeDB.Stop();
 
             timeM.Stop();
@@ -390,7 +390,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// </summary>
         /// <param name="id">ИД документа</param>>
         /// <returns>Обновленный документ</returns>
-        [Route("StopPlan")]
+        [Route("StopPlan/{id}")]
         [HttpPost]
         public IHttpActionResult StopPlan(int id)
         {
@@ -402,7 +402,7 @@ namespace DMS_WebAPI.Controllers.Documents
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
             //TODO change
-            docProc.ExecuteAction(EnumDocumentActions.ChangeExecutor, cxt, id);
+            docProc.ExecuteAction(EnumDocumentActions.StopPlan, cxt, id);
             timeDB.Stop();
 
             timeM.Stop();

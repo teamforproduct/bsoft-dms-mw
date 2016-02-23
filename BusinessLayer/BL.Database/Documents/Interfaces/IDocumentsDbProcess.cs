@@ -33,5 +33,11 @@ namespace BL.Database.Documents.Interfaces
         InternalDocument ChangeExecutorDocumentPrepare(IContext ctx, ChangeExecutor model);
         void ChangeExecutorDocument(IContext ctx, InternalDocument document);
         void RegisterDocument(IContext _context, InternalDocument _document);
+
+        InternalDocument PlanDocumentPrepare(IContext context, int documentId);
+
+        void LaunchPlanDocument(IContext ctx, int documentId);
+
+        void StopPlanDocument(IContext ctx, int documentId);
     }
 }

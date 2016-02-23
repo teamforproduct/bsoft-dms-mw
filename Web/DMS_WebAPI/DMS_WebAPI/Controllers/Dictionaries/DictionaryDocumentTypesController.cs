@@ -12,6 +12,11 @@ namespace DMS_WebAPI.Controllers.Dictionaries
     [Authorize]
     public class DictionaryDocumentTypesController : ApiController
     {
+        /// <summary>
+        /// Возвращает список типов документов
+        /// </summary>
+        /// <param name="filter">Параметры для фильтрации типов документа</param>
+        /// <returns>Cписок типов документов</returns>
         // GET: api/DictionaryDocumentTypes
         public IHttpActionResult Get([FromUri] FilterDictionaryDocumentType filter)
         {

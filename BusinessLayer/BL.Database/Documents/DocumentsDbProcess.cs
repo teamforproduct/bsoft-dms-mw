@@ -825,6 +825,55 @@ namespace BL.Database.Documents
             }
         }
 
+        public InternalDocument PlanDocumentPrepare(IContext context, int documentId)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var doc = CommonQueries.GetDocumentQuery(dbContext)
+                    .Where(x => x.Doc.Id == documentId && context.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId))
+                    .Select(x => new InternalDocument
+                    {
+                        Id = x.Doc.Id,
+                        ExecutorPositionId = x.Doc.ExecutorPositionId,
+                        IsLaunchPlan = x.Doc.IsLaunchPlan
+                    }).FirstOrDefault();
+
+                if (doc == null)
+                {
+                    return null;
+                }
+                return doc;
+            }
+        }
+
+        public void LaunchPlanDocument(IContext ctx, int documentId)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            {
+                var doc = dbContext.DocumentsSet
+                    .FirstOrDefault(x => x.Id == documentId);
+                if (doc != null)
+                {
+                    doc.IsLaunchPlan = true;
+                    dbContext.SaveChanges();
+                }
+            }
+        }
+
+        public void StopPlanDocument(IContext ctx, int documentId)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            {
+                var doc = dbContext.DocumentsSet
+                    .FirstOrDefault(x => x.Id == documentId);
+                if (doc != null)
+                {
+                    doc.IsLaunchPlan = false;
+                    dbContext.SaveChanges();
+                }
+            }
+        }
+
         #endregion Document
 
     }
