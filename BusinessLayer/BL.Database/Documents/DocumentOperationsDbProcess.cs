@@ -15,6 +15,8 @@ using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
+using BL.Model.Enums;
+using BL.Model.DocumentCore.IncomingModel;
 
 namespace BL.Database.Documents
 {
@@ -353,5 +355,76 @@ namespace BL.Database.Documents
         }
 
         #endregion
+
+        #region DocumentSendList    
+        public InternalDocument ChangeDocumentSendListPrepare(IContext context, int documentId)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var docDb = (from doc in dbContext.DocumentsSet.Where(x => x.Id == documentId)
+                             join tmp in dbContext.TemplateDocumentsSet on doc.TemplateDocumentId equals tmp.Id
+                             select new { doc, tmp })
+                             .GroupJoin(dbContext.DocumentRestrictedSendListsSet, x => x.doc.Id, y => y.DocumentId, (x, y) => new { x.doc, x.tmp, rsls = y })
+                             .GroupJoin(dbContext.DocumentSendListsSet, x => x.doc.Id, y => y.DocumentId, (x, y) => new { x.doc, x.tmp, x.rsls, sls = y })
+                             .GroupJoin(dbContext.TemplateDocumentRestrictedSendLists, x => x.tmp.Id, y => y.DocumentId, (x, y) => new { x.doc, x.tmp, x.rsls, x.sls, trsls = y })
+                             .GroupJoin(dbContext.TemplateDocumentSendLists, x => x.tmp.Id, y => y.DocumentId, (x, y) => new { x.doc, x.tmp, x.rsls, x.sls, x.trsls, tsls = y });
+
+                var docRes = docDb.Select(x => new InternalDocument
+                {
+                    Id = x.doc.Id,
+                    ExecutorPositionId = x.doc.ExecutorPositionId,
+                    TemplateDocumentId = x.tmp.Id,
+                    IsHard = x.tmp.IsHard,
+
+                    RestrictedSendLists = x.rsls.Select(y => new InternalDocumentRestrictedSendLists
+                    {
+                        DocumentId = y.DocumentId,
+                        PositionId = y.PositionId
+                    }),
+
+                    SendLists = x.sls.Select(y => new InternalDocumentSendLists
+                    {
+                        DocumentId = y.DocumentId,
+                        TargetPositionId = y.TargetPositionId,
+                        SendType = (EnumSendTypes)y.SendTypeId
+                    }),
+                    TemplateDocument = !x.tmp.IsHard ? null :
+                      new InternalTemplateDocument
+                      {
+                          RestrictedSendLists = x.trsls.Select(y => new InternalTemplateDocumentRestrictedSendLists
+                          {
+                              PositionId = y.PositionId
+                          }),
+                          SendLists = x.tsls.Select(y => new InternalTemplateDocumentSendLists
+                          {
+                              TargetPositionId = y.TargetPositionId,
+                              SendType = (EnumSendTypes)y.SendTypeId
+                          }),
+                      }
+                }).FirstOrDefault();
+
+                return docRes;
+            }
+        }
+
+        public void AddDocumentRestrictedSendList(IContext context, IEnumerable<InternalDocumentRestrictedSendLists> model)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var items = model.Select(x=> new DocumentRestrictedSendLists
+                {
+                    AccessLevelId = (int)x.AccessLevel,
+                    DocumentId = x.DocumentId,
+                    PositionId = x.PositionId,
+                    LastChangeUserId = x.LastChangeUserId,
+                    LastChangeDate = x.LastChangeDate
+                }).ToList();
+                
+                dbContext.DocumentRestrictedSendListsSet.AddRange(items);
+                dbContext.SaveChanges();
+            }
+        }
+
+        #endregion DocumentSendList         
     }
 }

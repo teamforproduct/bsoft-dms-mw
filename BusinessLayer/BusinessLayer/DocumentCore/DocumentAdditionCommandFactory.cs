@@ -17,7 +17,9 @@ namespace BL.Logic.DocumentCore
                 case EnumDocumentAdditionActions.AddDocumentLink:
                     cmd = DmsResolver.Current.Get<AddDocumentLinkCommand>();
                     break;
-
+                case EnumDocumentAdditionActions.AddDocumentRestrictedSendList:
+                    cmd = DmsResolver.Current.Get<AddDocumentRestrictedSendListCommand>();
+                    break;
 
                 default:
                     throw new CommandNotDefinedError();

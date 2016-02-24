@@ -34,5 +34,8 @@ namespace BL.Database.Documents.Interfaces
         InternalLinkedDocument AddDocumentLinkPrepare(IContext context, AddDocumentLink model);
         InternalDocument GetDocumentActionsPrepare(IContext context, int documentId);
         void ChangeIsFavouriteAccess(IContext _context, InternalDocumentAccesses docAccess);
+
+        InternalDocument ChangeDocumentSendListPrepare(IContext context, int documentId);
+        void AddDocumentRestrictedSendList(IContext context, IEnumerable<InternalDocumentRestrictedSendLists> model);
     }
 }

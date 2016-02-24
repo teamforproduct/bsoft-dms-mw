@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BL.Model.Enums;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
@@ -28,6 +29,6 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// ИД уровня доступа
         /// </summary>
         [Required]
-        public int AccessLevelId { get; set; }
+        public EnumDocumentAccesses AccessLevel { get; set; }
     }
 }

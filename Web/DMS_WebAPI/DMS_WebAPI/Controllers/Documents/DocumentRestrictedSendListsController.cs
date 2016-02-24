@@ -4,6 +4,7 @@ using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Web.Http;
 using BL.Model.DocumentCore.IncomingModel;
+using BL.Model.Enums;
 
 namespace DMS_WebAPI.Controllers.Documents
 {
@@ -40,8 +41,9 @@ namespace DMS_WebAPI.Controllers.Documents
         public IHttpActionResult Post([FromBody]ModifyDocumentRestrictedSendList model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
-            return Get(docProc.AddRestrictedSendList(cxt, model));
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            docProc.ExecuteAdditionAction(EnumDocumentAdditionActions.AddDocumentRestrictedSendList, cxt, model);
+            return GetByDocument(model.DocumentId);
         }
 
         /// <summary>

@@ -58,6 +58,7 @@
     <Compile Include="DictionaryCore\DocumentType\AddDictionaryDocumentTypeCommand.cs" />
     <Compile Include="DictionaryCore\DocumentType\ModifyDictionaryDocumentTypeCommand.cs" />
     <Compile Include="DictionaryCore\Interfaces\IDictionaryService.cs" />
+    <Compile Include="DocumentCore\AdditionalCommands\AddDocumentRestrictedSendListCommand.cs" />
     <Compile Include="DocumentCore\AdditionalCommands\AddDocumentLinkCommand.cs" />
     <Compile Include="DocumentCore\Commands\AddFavouriteDocumentCommand.cs" />
     <Compile Include="DocumentCore\Commands\AddNoteDocumentCommand.cs" />

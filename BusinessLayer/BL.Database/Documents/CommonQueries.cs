@@ -652,7 +652,7 @@ namespace BL.Database.Documents
                             PositionId = y.PositionId,
                             PositionName = y.Position.Name,
                             PositionExecutorAgentName = y.Position.ExecutorAgent.Name,
-                            AccessLevelId = y.AccessLevelId,
+                            AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
                             AccessLevelName = y.AccessLevel.Name,
                             LastChangeUserId = y.LastChangeUserId,
                             LastChangeDate = y.LastChangeDate,
