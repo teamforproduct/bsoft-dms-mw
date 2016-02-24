@@ -1,9 +1,10 @@
 ﻿using System;
+using BL.Model.Common;
 using BL.Model.Enums;
 
 namespace BL.Model.DocumentCore.InternalModel
 {
-    public class InternalDocumentEvents
+    public class InternalDocumentEvents : LastChangeInfo
     {
         public int Id { get; set; }
         public int DocumentId { get; set; }
@@ -18,7 +19,6 @@ namespace BL.Model.DocumentCore.InternalModel
         public int? TargetAgentId { get; set; }
         public DateTime? ReadDate { get; set; }
         public int? ReadAgentId { get; set; }
-        public int LastChangeUserId { get; set; }
-        public DateTime LastChangeDate { get; set; }
+
     }
 }

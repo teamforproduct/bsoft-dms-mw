@@ -71,14 +71,13 @@ namespace BL.Logic.DocumentCore.Commands
             }
             foreach (var sl in _document.RestrictedSendLists)
             {
-                sl.LastChangeDate = DateTime.Now;
-                sl.LastChangeUserId = _context.CurrentAgentId;
+                CommonDocumentUtilities.SetLastChange(Context, sl);
             }
-            _document.Events = CommonDocumentUtilities.GetNewDocumentEvent(_context,EnumEventTypes.AddNewDocument, "Create");
-            _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccess(_context);
+            _document.Events = CommonDocumentUtilities.GetNewDocumentEvent(Context,EnumEventTypes.AddNewDocument, "Create");
+            _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccess(Context);
             //TODO process files
             _document.DocumentFiles = null;
-            _documentDb.AddDocument(_context, _document);
+            _documentDb.AddDocument(Context, Document);
             return _document.Id;
         }
 

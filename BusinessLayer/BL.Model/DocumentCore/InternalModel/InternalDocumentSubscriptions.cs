@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BL.Model.Common;
 
 namespace BL.Model.DocumentCore.InternalModel
 {
-    public class InternalDocumentSubscriptions
+    public class InternalDocumentSubscriptions : LastChangeInfo
     {
         public int Id { get; set; }
         public int DocumentId { get; set; }
@@ -15,7 +16,5 @@ namespace BL.Model.DocumentCore.InternalModel
         public string Description { get; set; }
         public string Hash { get; set; }
         public string ChangedHash { get; set; }
-        public int LastChangeUserId { get; set; }
-        public DateTime LastChangeDate { get; set; }
     }
 }

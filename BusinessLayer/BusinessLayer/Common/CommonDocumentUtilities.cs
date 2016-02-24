@@ -4,6 +4,7 @@ using System.Linq;
 using BL.CrossCutting.Interfaces;
 using BL.Logic.DependencyInjection;
 using BL.Database.Documents.Interfaces;
+using BL.Model.Common;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
@@ -26,13 +27,7 @@ namespace BL.Logic.Common
             SetLastChange(context, document);
         }
 
-        public static void SetLastChange(IContext context, InternalDocument document)
-        {
-            document.LastChangeDate = DateTime.Now;
-            document.LastChangeUserId = context.CurrentAgentId;
-        }
-
-        public static void SetLastChange(IContext context, InternalDocumentAccesses document)
+        public static void SetLastChange(IContext context, LastChangeInfo document)
         {
             document.LastChangeDate = DateTime.Now;
             document.LastChangeUserId = context.CurrentAgentId;

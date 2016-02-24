@@ -4,7 +4,7 @@ using BL.Model.DocumentCore.IncomingModel;
 
 namespace BL.Model.DocumentCore.InternalModel
 {
-    public class InternalFilterDocumentAttachedFile : FilterDocumentFileIdentity
+    public class InternalFilterDocumentAttachedFile : FilterDocumentFileIdentity //TODO : LastChangeInfo?
     {
         public int Id { get; set; }
         public byte[] FileContent { get; set; }
