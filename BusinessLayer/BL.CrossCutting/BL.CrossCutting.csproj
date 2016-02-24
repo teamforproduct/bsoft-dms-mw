@@ -49,7 +49,7 @@
     <Compile Include="Helpers\ConnectionStringHelper.cs" />
     <Compile Include="Helpers\DmsUtilities.cs" />
     <Compile Include="Helpers\IConnectionStringHelper.cs" />
-    <Compile Include="Interfaces\Observers\ICommandObserver.cs" />
+    <Compile Include="Interfaces\ICommandObserver.cs" />
     <Compile Include="Interfaces\IContext.cs" />
     <Compile Include="Interfaces\IDictionaryCommand.cs" />
     <Compile Include="Interfaces\IDocumentAdditionCommand.cs" />

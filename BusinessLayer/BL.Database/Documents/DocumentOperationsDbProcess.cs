@@ -17,7 +17,6 @@ using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
 using BL.Model.Enums;
-using BL.Model.DocumentCore.IncomingModel;
 
 namespace BL.Database.Documents
 {
