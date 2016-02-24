@@ -38,13 +38,13 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanExecute()
         {
-            _document = _documentDb.ModifyDocumentPrepare(_context, Model);
+            _document = _documentDb.DeleteDocumentPrepare(_context, Model);
             if (_document == null)
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
             _context.SetCurrentPosition(_document.ExecutorPositionId);
-            _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = CommandType.ToString() });
+            _adminDb.VerifyAccess(_context, CommandType);
 
            if (!CanBeDisplayed())
             {
@@ -59,7 +59,6 @@ namespace BL.Logic.DocumentCore.Commands
             return null;
         }
 
-        public override EnumDocumentActions CommandType { get { return EnumDocumentActions.DeleteDocument; } }
-
+        public override EnumDocumentActions CommandType => EnumDocumentActions.DeleteDocument;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
@@ -51,33 +52,43 @@ namespace BL.Database.Documents
 
 
         #region DocumentLink    
-        public InternalLinkedDocument AddDocumentLinkPrepare(IContext context, AddDocumentLink model)
+        public InternalDocument AddDocumentLinkPrepare(IContext context, AddDocumentLink model)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
-                var doc = dbContext.DocumentsSet.FirstOrDefault(x => x.Id == model.DocumentId);
-                var par = dbContext.DocumentsSet.FirstOrDefault(x => x.Id == model.ParentDocumentId);
+                var doc = CommonQueries.GetDocumentQuery(dbContext)
+                    .Where(x => x.Doc.Id == model.DocumentId && context.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId))
+                    .Select(x => new InternalDocument
+                    {
+                        Id = x.Doc.Id,
+                        ExecutorPositionId = x.Doc.ExecutorPositionId,
+                        LinkId = x.Doc.LinkId,
+                        LinkTypeId = model.LinkTypeId,
+                    }).FirstOrDefault();
 
-                return new InternalLinkedDocument()
-                {
-                    DocumentId = model.DocumentId,
-                    ParentDocumentId = model.ParentDocumentId,
-                    DocumentLinkId = doc.LinkId,
-                    ParentDocumentLinkId = par.LinkId,
-                    LinkTypeId = model.LinkTypeId,
-                    ExecutorPositionId = doc.ExecutorPositionId
-                };
+                if (doc == null) return null;
+
+                var par = CommonQueries.GetDocumentQuery(dbContext)
+                    .Where(x => x.Doc.Id == model.ParentDocumentId)
+                    .Select(x => new { Id = x.Doc.Id, LinkId = x.Doc.LinkId }).FirstOrDefault();
+
+                if (par == null) return null;
+
+                doc.ParentDocumentId = par.Id;
+                doc.ParentDocumentLinkId = par.LinkId;
+
+                return doc;
             }
         }
 
-        public void AddDocumentLink(IContext context, InternalLinkedDocument model)
+        public void AddDocumentLink(IContext context, InternalDocument model)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
                 var link = new DocumentLinks
                 {
-                    DocumentId = model.DocumentId.Value,
-                    ParentDocumentId = model.ParentDocumentId.Value,
+                    DocumentId = model.Id,
+                    ParentDocumentId = model.ParentDocumentId,
                     LinkTypeId = model.LinkTypeId,
                     LastChangeUserId = model.LastChangeUserId,
                     LastChangeDate = model.LastChangeDate,
@@ -93,9 +104,9 @@ namespace BL.Database.Documents
                             x.LastChangeDate = model.LastChangeDate;
                         });
                 }
-                if (!model.DocumentLinkId.HasValue)
+                if (!model.LinkId.HasValue)
                 {
-                    dbContext.DocumentsSet.Where(x => x.Id == model.DocumentId).ToList()
+                    dbContext.DocumentsSet.Where(x => x.Id == model.Id).ToList()
                         .ForEach(x =>
                         {
                             x.LinkId = model.ParentDocumentId;
@@ -105,7 +116,7 @@ namespace BL.Database.Documents
                 }
                 else
                 {
-                    dbContext.DocumentsSet.Where(x => x.LinkId == model.DocumentLinkId).ToList()
+                    dbContext.DocumentsSet.Where(x => x.LinkId == model.LinkId).ToList()
                         .ForEach(x =>
                         {
                             x.LinkId = model.ParentDocumentId;
@@ -312,48 +323,65 @@ namespace BL.Database.Documents
             }
         }
 
-        public InternalDocumentAccesses ChangeIsFavouriteAccessPrepare(IContext context, int documentId)
+        public InternalDocument ChangeIsFavouriteAccessPrepare(IContext context, int documentId)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
                 var acc = dbContext.DocumentAccessesSet
                     .Where(x => x.DocumentId == documentId && x.PositionId == context.CurrentPositionId)
-                    .Select(x => new InternalDocumentAccesses
+                    .Select(x => new InternalDocument
                     {
                         Id = x.Id,
-                        IsFavourite = x.IsFavourite,
+                        Accesses = new List<InternalDocumentAccesses>
+                                    {
+                                        new InternalDocumentAccesses
+                                        {
+                                            Id = x.Id,
+                                            IsFavourite = x.IsFavourite,
+                                        }
+                                    }
+
                     }).FirstOrDefault();
                 return acc;
 
             }
         }
 
-        public void ChangeIsInWorkAccess(IContext ctx, InternalDocumentAccesses access)
+        public void ChangeIsInWorkAccess(IContext ctx, InternalDocument document)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-                var acc = dbContext.DocumentAccessesSet.FirstOrDefault(x => x.Id == access.Id);
+                var docAcc = document.Accesses.FirstOrDefault();
+                var acc = dbContext.DocumentAccessesSet.FirstOrDefault(x => x.Id == docAcc.Id);
                 if (acc != null)
                 {
-                    acc.LastChangeDate = access.LastChangeDate;
-                    acc.LastChangeUserId = access.LastChangeUserId;
-                    acc.IsInWork = access.IsInWork;
+                    acc.LastChangeDate = docAcc.LastChangeDate;
+                    acc.LastChangeUserId = docAcc.LastChangeUserId;
+                    acc.IsInWork = docAcc.IsInWork;
                 }
-                dbContext.DocumentEventsSet.Add(ModelConverter.GetDbDocumentEvent(access.DocumentEvent));
+                dbContext.DocumentEventsSet.Add(ModelConverter.GetDbDocumentEvent(document.Events.FirstOrDefault()));
                 dbContext.SaveChanges();
             }
         }
 
-        public InternalDocumentAccesses ChangeIsInWorkAccessPrepare(IContext context, int documentId)
+        public InternalDocument ChangeIsInWorkAccessPrepare(IContext context, int documentId)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
                 var acc = dbContext.DocumentAccessesSet
                     .Where(x => x.DocumentId == documentId && x.PositionId == context.CurrentPositionId)
-                    .Select(x => new InternalDocumentAccesses
+                    .Select(x => new InternalDocument
                     {
                         Id = x.Id,
-                        IsInWork = x.IsInWork,
+                        Accesses = new List<InternalDocumentAccesses>
+                                    {
+                                        new InternalDocumentAccesses
+                                        {
+                                            Id = x.Id,
+                                            IsInWork = x.IsInWork,
+                                        }
+                                    }
+
                     }).FirstOrDefault();
                 return acc;
 

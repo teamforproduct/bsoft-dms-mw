@@ -11,7 +11,7 @@ namespace BL.Database.Documents.Interfaces
 {
     public interface IDocumentOperationsDbProcess
     {
-        void AddDocumentLink(IContext context, InternalLinkedDocument model);
+        void AddDocumentLink(IContext context, InternalDocument model);
 
         IEnumerable<InternalPositionInfo> GetInternalPositionsInfo(IContext ctx, List<int> positionIds);
 
@@ -27,12 +27,12 @@ namespace BL.Database.Documents.Interfaces
         void RemoveDocumentAccess(IContext ctx, int accessId);
         void UpdateDocumentAccess(IContext ctx, InternalDocumentAccesses access);
 
-        InternalDocumentAccesses ChangeIsInWorkAccessPrepare(IContext context, int documentId);
-        InternalDocumentAccesses ChangeIsFavouriteAccessPrepare(IContext context, int documentId);
+        InternalDocument ChangeIsInWorkAccessPrepare(IContext context, int documentId);
+        InternalDocument ChangeIsFavouriteAccessPrepare(IContext context, int documentId);
         IEnumerable<InternalDocumentAccesses> GetDocumentAccesses(IContext ctx, int documentId);
 
-        void ChangeIsInWorkAccess(IContext ctx, InternalDocumentAccesses access);
-        InternalLinkedDocument AddDocumentLinkPrepare(IContext context, AddDocumentLink model);
+        void ChangeIsInWorkAccess(IContext ctx, InternalDocument access);
+        InternalDocument AddDocumentLinkPrepare(IContext context, AddDocumentLink model);
         InternalDocument GetDocumentActionsPrepare(IContext context, int documentId);
         void ChangeIsFavouriteAccess(IContext context, InternalDocumentAccesses docAccess);
 

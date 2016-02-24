@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using BL.CrossCutting.Interfaces;
 using BL.Model.AdminCore;
+using BL.Model.Enums;
 
 namespace BL.Database.Admins.Interfaces
 {
@@ -13,8 +14,9 @@ namespace BL.Database.Admins.Interfaces
         #endregion AdminAccessLevels
 
         IEnumerable<BaseAdminUserRole> GetPositionsByUser(IContext ctx, FilterAdminUserRole filter);
-
-        void VerifyAccess(IContext context, VerifyAccess acc);
-
+        bool VerifyAccess(IContext context, EnumDocumentAdditionActions action, bool isThrowExeception = true);
+        bool VerifyAccess(IContext context, EnumDocumentActions action, bool isThrowExeception = true);
+        bool VerifyAccess(IContext context, VerifyAccess acc, bool isThrowExeception = true);
+        bool VerifyAccess(IContext context, string actionCode, bool isThrowExeception = true);
     }
 }

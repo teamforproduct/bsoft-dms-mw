@@ -51,10 +51,10 @@ namespace BL.Model.DocumentCore.FrontModel
                 DateOfControl = model.DateOfControl;
             //    RegistrationFullNumber = model.RegistrationFullNumber;
 
-                EventsCount = model.EventsCount;
-                NewEventCount = model.NewEventCount;
-                AttachedFilesCount = model.AttachedFilesCount;
-                LinkedDocumentsCount = model.LinkedDocumentsCount;
+            //    EventsCount = model.EventsCount;
+            //    NewEventCount = model.NewEventCount;
+            //    AttachedFilesCount = model.AttachedFilesCount;
+            //    LinkedDocumentsCount = model.LinkedDocumentsCount;
 
             }
         }

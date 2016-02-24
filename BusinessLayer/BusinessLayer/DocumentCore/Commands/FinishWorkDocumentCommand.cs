@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Linq;
 using BL.Logic.Common;
 using BL.Database.Admins.Interfaces;
 using BL.Database.Documents.Interfaces;
+using BL.Model.AdminCore;
 using BL.Model.Database;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.InternalModel;
@@ -17,9 +19,10 @@ namespace BL.Logic.DocumentCore.Commands
 
         protected InternalDocumentAccesses DocAccess;
 
-        public FinishWorkDocumentCommand(IDocumentOperationsDbProcess operationDb)
+        public FinishWorkDocumentCommand(IDocumentOperationsDbProcess operationDb, IAdminsDbProcess adminDb)
         {
             _operationDb = operationDb;
+            _adminDb = adminDb;
         }
 
         private ChangeWorkStatus Model
@@ -41,38 +44,29 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanExecute()
         {
+            _adminDb.VerifyAccess(_context, CommandType);
+            _document = _operationDb.ChangeIsInWorkAccessPrepare(_context, Model.DocumentId);
+            if (_document?.Accesses == null)
+            {
+                throw new DocumentNotFoundOrUserHasNoAccess();
+            }
+            DocAccess = _document.Accesses.FirstOrDefault();
+            if (!DocAccess.IsInWork)
+            {
+                throw new CouldNotChangeIsInWork();
+            }
             return true;
         }
 
         public override object Execute()
         {
-            var acc = _operationDb.ChangeIsInWorkAccessPrepare(_context, Model.DocumentId);
-            if (acc == null)
-            {
-                throw new UserHasNoAccessToDocument();
-            }
-            acc.IsInWork = false;
-            var ea = new EventAccessModel
-            {
-                DocumentAccess = acc,
-                DocumentEvent = new InternalDocumentEvents
-                {
-                    DocumentId = Model.DocumentId,
-                    SourceAgentId = _context.CurrentAgentId,
-                    SourcePositionId = _context.CurrentPositionId,
-                    TargetPositionId = _context.CurrentPositionId,
-                    Description = Model.Description,
-                    EventType = EnumEventTypes.SetOutWork,
-                    LastChangeUserId = _context.CurrentAgentId,
-                    LastChangeDate = DateTime.Now,
-                    Date = DateTime.Now,
-                    CreateDate = DateTime.Now,
-                }
-            };
-            _operationDb.ChangeIsInWorkAccess(_context, DocAccess);
+            DocAccess.IsInWork = false;
+            CommonDocumentUtilities.SetLastChange(_context, DocAccess);
+            _document.Events = CommonDocumentUtilities.GetNewDocumentEvent(_context, EnumEventTypes.SetOutWork, Model.Description, idDocument : Model.DocumentId);
+             _operationDb.ChangeIsInWorkAccess(_context, _document);
             return null;
         }
 
-        public override EnumDocumentActions CommandType { get { return EnumDocumentActions.FinishWork; } }
+        public override EnumDocumentActions CommandType => EnumDocumentActions.FinishWork;
     }
 }

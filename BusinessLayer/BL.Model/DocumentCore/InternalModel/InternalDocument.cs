@@ -51,10 +51,10 @@ namespace BL.Model.DocumentCore.InternalModel
                 DateOfControl = model.DateOfControl;
                 //RegistrationFullNumber = model.RegistrationFullNumber;
 
-                EventsCount = model.EventsCount;
-                NewEventCount = model.NewEventCount;
-                AttachedFilesCount = model.AttachedFilesCount;
-                LinkedDocumentsCount = model.LinkedDocumentsCount;
+               // EventsCount = model.EventsCount;
+               // NewEventCount = model.NewEventCount;
+               // AttachedFilesCount = model.AttachedFilesCount;
+               // LinkedDocumentsCount = model.LinkedDocumentsCount;
 
             }
         }
@@ -120,12 +120,16 @@ namespace BL.Model.DocumentCore.InternalModel
 
         public DateTime DocumentDate { get; set; }
         public DateTime DateOfControl { get; set; }
-  //      public string RegistrationFullNumber { get; set; }
+        //      public string RegistrationFullNumber { get; set; }
 
-        public int EventsCount { get; set; }
-        public int NewEventCount { get; set; }
-        public int AttachedFilesCount { get; set; }
-        public int LinkedDocumentsCount { get; set; }
+        public int ParentDocumentId { get; set; }
+        public int? ParentDocumentLinkId { get; set; }
+        public int LinkTypeId { get; set; }
+
+       // public int EventsCount { get; set; }
+       // public int NewEventCount { get; set; }
+       // public int AttachedFilesCount { get; set; }
+       // public int LinkedDocumentsCount { get; set; }
 
         public InternalTemplateDocument TemplateDocument { get; set; }
         public IEnumerable<InternalDocumentRestrictedSendLists> RestrictedSendLists { get; set; }

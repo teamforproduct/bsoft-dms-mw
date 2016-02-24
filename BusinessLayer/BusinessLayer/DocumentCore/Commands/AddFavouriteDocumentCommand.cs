@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using BL.Logic.Common;
 using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore.Actions;
@@ -42,12 +43,13 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanExecute()
         {
-            _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = CommandType.ToString() });
-            DocAccess = _operationDb.ChangeIsFavouriteAccessPrepare(_context, Model.DocumentId);
-            if (DocAccess == null)
+            _adminDb.VerifyAccess(_context, CommandType);
+            _document = _operationDb.ChangeIsFavouriteAccessPrepare(_context, Model.DocumentId);
+            if (_document?.Accesses == null)
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
+            DocAccess = _document.Accesses.FirstOrDefault();
             if (DocAccess.IsFavourite)
             {
                 throw new CouldNotChangeFavourite();
@@ -58,8 +60,7 @@ namespace BL.Logic.DocumentCore.Commands
         public override object Execute()
         {
             DocAccess.IsFavourite = true;
-            DocAccess.LastChangeDate = DateTime.Now;
-            DocAccess.LastChangeUserId = _context.CurrentAgentId;
+            CommonDocumentUtilities.SetLastChange(_context, DocAccess);
             _operationDb.ChangeIsFavouriteAccess(_context, DocAccess);
             return null;
         }
