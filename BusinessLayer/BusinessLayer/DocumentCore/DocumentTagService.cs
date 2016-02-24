@@ -33,25 +33,6 @@ namespace BL.Logic.DocumentCore
             return _tagDb.GetTags(context, documentId).ToList();
         }
 
-        public void ModifyDocumentTags(IContext context, ModifyDocumentTags model)
-        {
-            try
-            {
-                var item = new InternalDocumentTags
-                {
-                    DocumentId = model.DocumentId,
-                    Tags = model.Tags,
-                    LastChangeDate = DateTime.Now,
-                    LastChangeUserId = context.CurrentAgentId,
-                };
-                _tagDb.ModifyDocumentTags(context, item);
-            }
-            catch (Exception ex)
-            {
-                throw new DatabaseError(ex);
-            }
-        }
-
         #endregion DocumentTags         
     }
 }

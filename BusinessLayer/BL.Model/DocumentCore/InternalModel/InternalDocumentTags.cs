@@ -1,19 +1,19 @@
-﻿using BL.Model.DocumentCore.IncomingModel;
+﻿using BL.Model.Common;
+using BL.Model.DocumentCore.IncomingModel;
 using System;
 using System.Collections.Generic;
 
 namespace BL.Model.DocumentCore.InternalModel
 {
-    public class InternalDocumentTags : ModifyDocumentTags //TODO Сергей: LastChangeInfo?
+    public class InternalDocumentTags : LastChangeInfo
     {
         /// <summary>
-        /// ИД. пользователя, изменившего запись
+        /// ИД документа
         /// </summary>
-        public int LastChangeUserId { get; set; }
-
+        public int DocumentId { get; set; }
         /// <summary>
-        /// Дата последнего изменения записи
+        /// Список ИД тегов
         /// </summary>
-        public DateTime LastChangeDate { get; set; }
+        public List<int> Tags { get; set; }
     }
 }

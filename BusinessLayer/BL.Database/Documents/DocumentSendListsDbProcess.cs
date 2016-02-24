@@ -23,25 +23,6 @@ namespace BL.Database.Documents
             _helper = helper;
         }
         #region DocumentRestrictedSendLists
-        public ModifyDocumentRestrictedSendList GetRestrictedSendListById(IContext ctx, int id)
-        {
-
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
-            {
-
-                var sendList = dbContext.DocumentRestrictedSendListsSet
-                    .Where(x => x.Id == id)
-                    .Select(x => new ModifyDocumentRestrictedSendList
-                    {
-                        Id = x.Id,
-                        DocumentId = x.DocumentId,
-                        PositionId = x.PositionId,
-                        AccessLevel = (EnumDocumentAccesses)x.AccessLevelId,
-                    }).FirstOrDefault();
-
-                return sendList;
-            }
-        }
         public FrontDocumentRestrictedSendList GetRestrictedSendListBaseById(IContext ctx, int id)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
@@ -66,24 +47,6 @@ namespace BL.Database.Documents
                 return sendList;
             }
         }
-        public IEnumerable<ModifyDocumentRestrictedSendList> GetRestrictedSendList(IContext ctx, int documentId)
-        {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
-            {
-
-                var sendLists = dbContext.DocumentRestrictedSendListsSet
-                    .Where(x => x.DocumentId == documentId)
-                    .Select(x => new ModifyDocumentRestrictedSendList
-                    {
-                        Id = x.Id,
-                        DocumentId = x.DocumentId,
-                        PositionId = x.PositionId,
-                        AccessLevel = (EnumDocumentAccesses)x.AccessLevelId,
-                    }).ToList();
-
-                return sendLists;
-            }
-        }
 
         public IEnumerable<FrontDocumentRestrictedSendList> GetRestrictedSendListBase(IContext ctx, int documentId)
         {
@@ -92,117 +55,15 @@ namespace BL.Database.Documents
                 return CommonQueries.GetDocumentRestrictedSendList(dbContext, documentId);
             }
         }
-
-        public void UpdateRestrictedSendList(IContext ctx, ModifyDocumentRestrictedSendList restrictedSendList)
-        {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
-            {
-
-                var sendList =
-                    dbContext.DocumentRestrictedSendListsSet.FirstOrDefault(x => x.Id == restrictedSendList.Id);
-                if (sendList?.Id > 0)
-                {
-                    sendList.DocumentId = restrictedSendList.DocumentId;
-                    sendList.PositionId = restrictedSendList.PositionId;
-                    sendList.AccessLevelId = (int)restrictedSendList.AccessLevel;
-                    sendList.LastChangeUserId = ctx.CurrentAgentId;
-                    sendList.LastChangeDate = DateTime.Now;
-
-                    dbContext.SaveChanges();
-                }
-            }
-        }
-
-        public IEnumerable<int> AddRestrictedSendList(IContext ctx, IEnumerable<ModifyDocumentRestrictedSendList> restrictedSendLists)
-        {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
-            {
-
-                var sendLists = restrictedSendLists.Select(x => new DocumentRestrictedSendLists
-                {
-                    DocumentId = x.DocumentId,
-                    PositionId = x.PositionId,
-                    AccessLevelId = (int)x.AccessLevel,
-                    LastChangeUserId = ctx.CurrentAgentId,
-                    LastChangeDate = DateTime.Now
-                }).ToList();
-
-                dbContext.DocumentRestrictedSendListsSet.AddRange(sendLists);
-
-                dbContext.SaveChanges();
-
-                return sendLists.Select(x => x.Id).ToList();
-            }
-        }
-
-        public void DeleteRestrictedSendList(IContext ctx, int restrictedSendListId)
-        {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
-            {
-                var sendList = dbContext.DocumentRestrictedSendListsSet.FirstOrDefault(x => x.Id == restrictedSendListId);
-                if (sendList != null)
-                {
-                    dbContext.DocumentRestrictedSendListsSet.Remove(sendList);
-                    dbContext.SaveChanges();
-                }
-            }
-        }
         #endregion DocumentRestrictedSendLists
 
         #region DocumentSendLists
-        public IEnumerable<ModifyDocumentSendList> GetSendList(IContext ctx, int documentId)
-        {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
-            {
-
-                var sendLists = dbContext.DocumentSendListsSet
-                    .Where(x => x.DocumentId == documentId)
-                    .Select(x => new ModifyDocumentSendList
-                    {
-                        Id = x.Id,
-                        DocumentId = x.DocumentId,
-                        Stage = x.Stage,
-                        SendType = (EnumSendTypes)x.SendTypeId,
-                        TargetPositionId = x.TargetPositionId,
-                        Description = x.Description,
-                        DueDate = x.DueDate,
-                        DueDay = x.DueDay,
-                        AccessLevel = (EnumDocumentAccesses)x.AccessLevelId
-                    }).ToList();
-
-                return sendLists;
-            }
-        }
 
         public IEnumerable<FrontDocumentSendList> GetSendListBase(IContext ctx, int documentId)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
                 return CommonQueries.GetDocumentSendList(dbContext, documentId);
-            }
-        }
-
-        public ModifyDocumentSendList GetSendListById(IContext ctx, int id)
-        {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
-            {
-
-                var sendLists = dbContext.DocumentSendListsSet
-                    .Where(x => x.Id == id)
-                    .Select(x => new ModifyDocumentSendList
-                    {
-                        Id = x.Id,
-                        DocumentId = x.DocumentId,
-                        Stage = x.Stage,
-                        SendType = (EnumSendTypes)x.SendTypeId,
-                        TargetPositionId = x.TargetPositionId,
-                        Description = x.Description,
-                        DueDate = x.DueDate,
-                        DueDay = x.DueDay,
-                        AccessLevel = (EnumDocumentAccesses)x.AccessLevelId
-                    }).FirstOrDefault();
-
-                return sendLists;
             }
         }
 
@@ -239,74 +100,6 @@ namespace BL.Database.Documents
                     }).FirstOrDefault();
 
                 return sendLists;
-            }
-        }
-
-        public void UpdateSendList(IContext ctx, ModifyDocumentSendList sendList)
-        {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
-            {
-
-                var sl = dbContext.DocumentSendListsSet.FirstOrDefault(x => x.Id == sendList.Id);
-                if (sl?.Id > 0)
-                {
-                    sl.DocumentId = sendList.DocumentId;
-                    sl.Stage = sendList.Stage;
-                    sl.SendTypeId = (int)sendList.SendType;
-                    sl.TargetPositionId = sendList.TargetPositionId;
-                    sl.Description = sendList.Description;
-                    sl.DueDate = sendList.DueDate;
-                    sl.DueDay = sendList.DueDay;
-                    sl.AccessLevelId = (int)sendList.AccessLevel;
-                    sl.IsInitial = true;
-                    sl.StartEventId = null;
-                    sl.CloseEventId = null;
-                    sl.LastChangeUserId = ctx.CurrentAgentId;
-                    sl.LastChangeDate = DateTime.Now;
-                    dbContext.SaveChanges();
-                }
-            }
-        }
-
-        public IEnumerable<int> AddSendList(IContext ctx, IEnumerable<ModifyDocumentSendList> sendLists)
-        {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
-            {
-
-                var sls = sendLists.Select(x => new DocumentSendLists
-                {
-                    DocumentId = x.DocumentId,
-                    Stage = x.Stage,
-                    SendTypeId = (int)x.SendType,
-                    TargetPositionId = x.TargetPositionId,
-                    Description = x.Description,
-                    DueDate = x.DueDate,
-                    DueDay = x.DueDay,
-                    AccessLevelId = (int)x.AccessLevel,
-                    IsInitial = true,
-                    StartEventId = null,
-                    CloseEventId = null,
-                    LastChangeUserId = ctx.CurrentAgentId,
-                    LastChangeDate = DateTime.Now
-                }).ToList();
-
-                dbContext.DocumentSendListsSet.AddRange(sls);
-                dbContext.SaveChanges();
-
-                return sls.Select(x => x.Id).ToList();
-            }
-        }
-
-        public void DeleteSendList(IContext ctx, int sendListId)
-        {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
-            {
-                var sendList = dbContext.DocumentSendListsSet.FirstOrDefault(x => x.Id == sendListId);
-                if (sendList != null)
-                {
-                    dbContext.DocumentSendListsSet.Remove(sendList);
-                    dbContext.SaveChanges();
-                }
             }
         }
         #endregion DocumentSendLists         

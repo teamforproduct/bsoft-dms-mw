@@ -41,7 +41,7 @@ namespace BL.Logic.DocumentCore
         {
             var doc = _documentDb.GetDocument(ctx, documentId);
             var sslService = DmsResolver.Current.Get<IDocumentSendListService>();
-            doc.SendListStages = sslService.GetSendListStage(doc.SendLists);
+            doc.SendListStages = CommonDocumentUtilities.GetSendListStage(doc.SendLists);
             return doc;
         }
 

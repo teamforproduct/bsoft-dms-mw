@@ -57,5 +57,7 @@ namespace BL.Database.Documents.Interfaces
         InternalDocument AddDocumentSendListStagePrepare(IContext context, int documentId);
 
         void ChangeDocumentSendListStage(IContext context, IEnumerable<InternalDocumentSendLists> model);
+
+        void ModifyDocumentTags(IContext context, InternalDocumentTags model);
     }
 }
