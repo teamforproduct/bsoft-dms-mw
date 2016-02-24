@@ -1,11 +1,11 @@
 ﻿using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 
-namespace BL.CrossCutting.Interfaces.Observers
+namespace BL.CrossCutting.Interfaces
 {
     public interface ICommandObserver
     {
-        EnumCommandType ObserverType { get; }
+        EnumObserverType ObserverType { get; }
         void Inform(IContext context, InternalDocument document, EnumDocumentActions previousAction, object previousParameter);
     }
 }

@@ -132,11 +132,11 @@
     <Compile Include="DocumentCore\InternalModel\InternalDocumentSendListStage.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentSubscriptions.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentWaits.cs" />
-    <Compile Include="Enums\EnumCommandType.cs" />
     <Compile Include="Enums\EnumDictionaryAction.cs" />
     <Compile Include="Enums\EnumDocumentAdditionActions.cs" />
     <Compile Include="Enums\EnumDocumentActions.cs" />
     <Compile Include="Enums\EnumObjects.cs" />
+    <Compile Include="Enums\EnumObserverType.cs" />
     <Compile Include="Enums\EnumSubordinationTypes.cs" />
     <Compile Include="Enums\EnumDocumentDirections.cs" />
     <Compile Include="Enums\EnumDocumentAccesses.cs" />

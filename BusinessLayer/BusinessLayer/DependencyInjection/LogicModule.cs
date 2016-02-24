@@ -1,5 +1,4 @@
-﻿using System;
-using BL.CrossCutting.Interfaces;
+﻿using BL.CrossCutting.Interfaces;
 using BL.Logic.AdminCore;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.DictionaryCore;
@@ -10,6 +9,7 @@ using BL.Logic.DocumentCore.AdditionalCommands;
 using BL.Logic.DocumentCore.Commands;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Logic.Logging;
+using BL.Logic.Observers;
 using BL.Logic.Secure;
 using BL.Logic.Settings;
 using BL.Logic.SystemLogic;
@@ -39,7 +39,14 @@ namespace BL.Logic.DependencyInjection
             LoadDocumentCommands();
             LoadDocumentAdditionCommands();
             LoadDictionaryCommands();
+            LoadObservers();
         }
+
+        private void LoadObservers()
+        {
+            Bind<ICommandObserver>().To<AfterDocumentAddObserver>();
+        }
+
         private void LoadDictionaryCommands()
         {
             Bind<IDictionaryCommand>().To<AddDictionaryDocumentTypeCommand>();
