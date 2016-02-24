@@ -44,6 +44,16 @@ namespace BL.Logic.DocumentCore
                 case EnumDocumentAdditionActions.DeleteDocumentSendListStage:
                     cmd = DmsResolver.Current.Get<DeleteDocumentSendListStageCommand>();
                     break;
+
+                case EnumDocumentAdditionActions.DeleteDocumentFile:
+                    cmd = DmsResolver.Current.Get<DeleteDocumentFileCommand>();
+                    break;
+                case EnumDocumentAdditionActions.AddDocumentFile:
+                    cmd = DmsResolver.Current.Get<AddDocumentFileCommand>();
+                    break;
+                case EnumDocumentAdditionActions.ModifyDocumentFile:
+                    cmd = DmsResolver.Current.Get<ModifyDocumentFileCommand>();
+                    break;
                 default:
                     throw new CommandNotDefinedError();
             }

@@ -1,12 +1,9 @@
-﻿using System;
-using BL.Database.Documents.Interfaces;
+﻿using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore.Actions;
-using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Database.Admins.Interfaces;
 using BL.Logic.Common;
-using BL.Model.AdminCore;
 
 
 namespace BL.Logic.DocumentCore.AdditionalCommands
