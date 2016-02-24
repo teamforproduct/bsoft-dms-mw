@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using BL.CrossCutting.DependencyInjection;
-using BL.Model.Users;
 using BL.CrossCutting.Interfaces;
+using BL.Logic.DependencyInjection;
+using BL.Model.Users;
 using BL.Database.Security;
 
 namespace BL.Logic.Secure

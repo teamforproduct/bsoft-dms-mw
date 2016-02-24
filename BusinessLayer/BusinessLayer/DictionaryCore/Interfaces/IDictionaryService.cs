@@ -1,6 +1,6 @@
-﻿using BL.CrossCutting.Interfaces;
-using BL.Model.DictionaryCore;
+﻿using BL.Model.DictionaryCore;
 using System.Collections.Generic;
+using BL.CrossCutting.Interfaces;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.IncomingModel;

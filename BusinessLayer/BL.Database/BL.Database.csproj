@@ -61,14 +61,9 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\ModelConverter.cs" />
     <Compile Include="CoreDb\CoreDb.cs" />
     <Compile Include="DatabaseContext\DmsContext.cs" />
     <Compile Include="DBModel\Admin\AdminAccessLevels.cs" />
@@ -122,7 +117,7 @@
     <Compile Include="Admins\Interfaces\IAdminsDbProcess.cs" />
     <Compile Include="Dictionaries\DictionariesDbProcess.cs" />
     <Compile Include="Dictionaries\Interfaces\IDictionariesDbProcess.cs" />
-    <Compile Include="Documents\CommonQueries.cs" />
+    <Compile Include="Common\CommonQueries.cs" />
     <Compile Include="Documents\DocumentFileDbProcess.cs" />
     <Compile Include="Documents\DocumentFiltersDbProcess.cs" />
     <Compile Include="Documents\DocumentOperationsDbProcess.cs" />

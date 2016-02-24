@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Ninject;
 
-namespace BL.CrossCutting.DependencyInjection
+namespace BL.Logic.DependencyInjection
 {
     public interface IResolver
     {

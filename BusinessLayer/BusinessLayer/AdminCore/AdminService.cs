@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using BL.CrossCutting.Interfaces;
-using BL.CrossCutting.DependencyInjection;
+using BL.Logic.DependencyInjection;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Database.Admins.Interfaces;
 using BL.Model.AdminCore;
 using System;
+using BL.CrossCutting.Interfaces;
 using BL.Model.Exception;
 
 namespace BL.Logic.AdminCore

@@ -1,6 +1,6 @@
 ﻿using BL.Database.Documents.Interfaces;
 using BL.Model.Exception;
-using BL.CrossCutting.Common;
+using BL.Logic.Common;
 using BL.Database.Admins.Interfaces;
 using BL.Model.AdminCore;
 using BL.Model.Enums;

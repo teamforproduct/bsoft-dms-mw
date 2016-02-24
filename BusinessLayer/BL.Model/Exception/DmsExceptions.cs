@@ -194,7 +194,7 @@
 
     public class CouldNotChangeAttributeLaunchPlan : DmsExceptions
     {
-        private const string _MESSAGE = "Could n't change attribute LaunchPlan";
+        private const string _MESSAGE = "Couldn't change attribute LaunchPlan";
         public CouldNotChangeAttributeLaunchPlan() : base(_MESSAGE)
         {
         }
@@ -206,12 +206,24 @@
 
     public class CouldNotChangeFavourite : DmsExceptions
     {
-        private const string _MESSAGE = "Could n't change attribute LaunchPlan";
+        private const string _MESSAGE = "Couldn't change attribute Favourite";
         public CouldNotChangeFavourite() : base(_MESSAGE)
         {
         }
 
         public CouldNotChangeFavourite(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+    public class CouldNotChangeIsInWork : DmsExceptions
+    {
+        private const string _MESSAGE = "Couldn't change attribute IsInWork";
+        public CouldNotChangeIsInWork() : base(_MESSAGE)
+        {
+        }
+
+        public CouldNotChangeIsInWork(System.Exception ex) : base(_MESSAGE, ex)
         {
         }
     }

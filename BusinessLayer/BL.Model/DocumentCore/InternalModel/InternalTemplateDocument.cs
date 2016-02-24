@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using BL.Model.Common;
 using BL.Model.Enums;
 
 namespace BL.Model.DocumentCore.InternalModel
 {
-    public class InternalTemplateDocument
+    public class InternalTemplateDocument : LastChangeInfo
     {
         public int Id { get; set; }
         public bool IsHard { get; set; }
@@ -16,8 +17,6 @@ namespace BL.Model.DocumentCore.InternalModel
         public int? SenderAgentId { get; set; }
         public int? SenderAgentPersonId { get; set; }
         public string Addressee { get; set; }
-        public int LastChangeUserId { get; set; }
-        public DateTime LastChangeDate { get; set; }
         public virtual IEnumerable<InternalTemplateDocumentRestrictedSendLists> RestrictedSendLists { get; set; }
         public virtual IEnumerable<InternalTemplateDocumentSendLists> SendLists { get; set; }
     }

@@ -1,5 +1,5 @@
 ﻿using System;
-using BL.CrossCutting.Common;
+using BL.Logic.Common;
 using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.InternalModel;
@@ -53,7 +53,6 @@ namespace BL.Logic.DocumentCore.Commands
                 SourcePositionId = _context.CurrentPositionId,
                 SourceAgentId = _context.CurrentAgentId,
                 TargetPositionId = _context.CurrentPositionId,
-                TargetAgentId = _context.CurrentAgentId,
                 LastChangeDate = DateTime.Now,
                 Date = DateTime.Now,
                 CreateDate = DateTime.Now,

@@ -1,10 +1,10 @@
 ﻿using System;
 using BL.Logic.DictionaryCore.Interfaces;
 using System.Collections.Generic;
-using BL.CrossCutting.Interfaces;
 using BL.Model.DictionaryCore;
 using BL.Database.Dictionaries.Interfaces;
 using System.Linq;
+using BL.CrossCutting.Interfaces;
 using BL.Logic.DocumentCore.Commands;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Model.DictionaryCore.FilterModel;

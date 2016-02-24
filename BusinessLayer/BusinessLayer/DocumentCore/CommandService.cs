@@ -5,6 +5,7 @@ namespace BL.Logic.DocumentCore
 {
     public class CommandService : ICommandService
     {
+
         public object ExecuteCommand(ICommand cmd)
         {
             if (cmd.CanExecute())

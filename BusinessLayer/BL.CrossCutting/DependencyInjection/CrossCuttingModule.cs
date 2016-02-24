@@ -1,7 +1,7 @@
-﻿using BL.CrossCutting.Helpers;
+﻿using BL.Logic.Helpers;
 using Ninject.Modules;
 
-namespace BL.CrossCutting.DependencyInjection
+namespace BL.Logic.DependencyInjection
 {
     public class CrossCuttingModule : NinjectModule
     {

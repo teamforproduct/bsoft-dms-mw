@@ -1,5 +1,6 @@
 ﻿using System;
-using BL.CrossCutting.Common;
+using BL.Logic.Common;
+using BL.Database.Admins.Interfaces;
 using BL.Database.Documents.Interfaces;
 using BL.Model.Database;
 using BL.Model.DocumentCore.Actions;
@@ -12,6 +13,9 @@ namespace BL.Logic.DocumentCore.Commands
     public class FinishWorkDocumentCommand: BaseDocumentCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
+        private readonly IAdminsDbProcess _adminDb;
+
+        protected InternalDocumentAccesses DocAccess;
 
         public FinishWorkDocumentCommand(IDocumentOperationsDbProcess operationDb)
         {
@@ -42,7 +46,7 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override object Execute()
         {
-            var acc = _operationDb.GetDocumentAccessForUserPosition(_context, Model.DocumentId);
+            var acc = _operationDb.ChangeIsInWorkAccessPrepare(_context, Model.DocumentId);
             if (acc == null)
             {
                 throw new UserHasNoAccessToDocument();
@@ -55,7 +59,6 @@ namespace BL.Logic.DocumentCore.Commands
                 {
                     DocumentId = Model.DocumentId,
                     SourceAgentId = _context.CurrentAgentId,
-                    TargetAgentId = _context.CurrentAgentId,
                     SourcePositionId = _context.CurrentPositionId,
                     TargetPositionId = _context.CurrentPositionId,
                     Description = Model.Description,
@@ -66,7 +69,7 @@ namespace BL.Logic.DocumentCore.Commands
                     CreateDate = DateTime.Now,
                 }
             };
-            _operationDb.SetDocumentInformation(_context, ea);
+            _operationDb.ChangeIsInWorkAccess(_context, DocAccess);
             return null;
         }
 

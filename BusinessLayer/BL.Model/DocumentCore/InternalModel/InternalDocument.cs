@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using BL.Model.Common;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.Enums;
 
 namespace BL.Model.DocumentCore.InternalModel
 {
-    public class InternalDocument
+    public class InternalDocument : LastChangeInfo
     {
         public InternalDocument()
         {
@@ -105,8 +106,6 @@ namespace BL.Model.DocumentCore.InternalModel
         public string RegistrationNumberSuffix { get; set; }
         public string RegistrationNumberPrefix { get; set; }
         public DateTime? RegistrationDate { get; set; }
-        public int LastChangeUserId { get; set; }
-        public DateTime LastChangeDate { get; set; }
         public int? LinkId { get; set; }
         public bool IsLaunchPlan { get; set; }
         public bool IsHard { get; set; }

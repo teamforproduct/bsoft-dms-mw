@@ -1,4 +1,4 @@
-﻿using BL.CrossCutting.DependencyInjection;
+﻿using BL.Logic.DependencyInjection;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Model.AdminCore;
 using BL.Model.Users;

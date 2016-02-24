@@ -1,5 +1,5 @@
 ﻿using System;
-using BL.CrossCutting.Common;
+using BL.Logic.Common;
 using BL.Database.Admins.Interfaces;
 using BL.Database.Documents.Interfaces;
 using BL.Logic.Common;
@@ -77,8 +77,8 @@ namespace BL.Logic.DocumentCore.Commands
                 sl.LastChangeUserId = _context.CurrentAgentId;
             }
 
-            _document.Events = CommonDocumentUtilities.GetEventForNewDocument(_context);
-            _document.Accesses = CommonDocumentUtilities.GetAccessesForNewDocument(_context);
+            _document.Events = CommonDocumentUtilities.GetNewDocumentEvent(_context,EnumEventTypes.AddNewDocument, "Copy");
+            _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccess(_context);
 
             //TODO process files
             _document.DocumentFiles = null;

@@ -11,7 +11,7 @@ using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OAuth;
 using DMS_WebAPI.Models;
 using DMS_WebAPI.Utilities;
-using BL.CrossCutting.DependencyInjection;
+using BL.Logic.DependencyInjection;
 
 namespace DMS_WebAPI.Providers
 {

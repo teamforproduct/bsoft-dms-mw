@@ -1,6 +1,6 @@
 ﻿using System;
-using BL.CrossCutting.Common;
 using BL.Database.Dictionaries.Interfaces;
+using BL.Logic.Common;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Enums;

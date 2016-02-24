@@ -5,7 +5,7 @@ using BL.Database.DBModel.Document;
 using BL.Database.DBModel.System;
 using BL.Database.DBModel.Template;
 using System.Data.Entity.ModelConfiguration.Conventions;
-using BL.CrossCutting.Helpers;
+using BL.Logic.Helpers;
 
 namespace BL.Database.DatabaseContext
 {

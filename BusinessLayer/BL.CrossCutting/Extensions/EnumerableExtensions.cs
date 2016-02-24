@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace BL.CrossCutting.Extensions
+namespace BL.Logic.Extensions
 {
     public static class EnumerableExtensions
     {

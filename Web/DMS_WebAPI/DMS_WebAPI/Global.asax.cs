@@ -2,8 +2,7 @@
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
-using BL.CrossCutting.DependencyInjection;
-using BL.CrossCutting.Interfaces;
+using BL.Logic.DependencyInjection;
 using BL.Model.Database;
 
 namespace DMS_WebAPI

@@ -1,9 +1,7 @@
-﻿using BL.CrossCutting.Common;
+﻿using BL.Logic.Common;
 using BL.Database.Admins.Interfaces;
 using BL.Database.Documents.Interfaces;
-using BL.Logic.Common;
 using BL.Model.AdminCore;
-using BL.Model.DocumentCore.Actions;
 using BL.Model.Enums;
 using BL.Model.Exception;
 
@@ -70,7 +68,7 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override object Execute()
         {
-            CommonDocumentUtilities.SetLastChangeForDocument(_context, _document);
+            CommonDocumentUtilities.SetLastChange(_context, _document);
             _document.IsLaunchPlan = false;
             _documentDb.ChangeIsLaunchPlanDocument(_context, _document);
 

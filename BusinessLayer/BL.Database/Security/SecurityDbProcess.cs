@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using BL.Model.Users;
-using BL.CrossCutting.Interfaces;
 using System.Linq;
-using BL.CrossCutting.Helpers;
+using BL.CrossCutting.Interfaces;
+using BL.Logic.Helpers;
 using BL.Database.DatabaseContext;
 
 namespace BL.Database.Security

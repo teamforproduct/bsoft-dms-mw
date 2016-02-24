@@ -1,4 +1,4 @@
-﻿using BL.CrossCutting.DependencyInjection;
+﻿using BL.Logic.DependencyInjection;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Model.DocumentCore.Actions;
 using DMS_WebAPI.Results;
@@ -45,7 +45,7 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentOperationsService>();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
             var actions = docProc.GetDocumentActions(cxt, id);
             timeDB.Stop();

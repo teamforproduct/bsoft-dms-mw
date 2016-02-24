@@ -1,8 +1,7 @@
 ﻿using System;
-using BL.CrossCutting.Common;
+using BL.Logic.Common;
 using BL.Database.Admins.Interfaces;
 using BL.Database.Documents.Interfaces;
-using BL.Logic.Common;
 using BL.Model.AdminCore;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.Enums;
@@ -72,14 +71,13 @@ namespace BL.Logic.DocumentCore.Commands
             }
             foreach (var sl in _document.RestrictedSendLists)
             {
-                sl.LastChangeDate = DateTime.Now;
-                sl.LastChangeUserId = _context.CurrentAgentId;
+                CommonDocumentUtilities.SetLastChange(Context, sl);
             }
-            _document.Events = CommonDocumentUtilities.GetEventForNewDocument(_context);
-            _document.Accesses = CommonDocumentUtilities.GetAccessesForNewDocument(_context);
+            _document.Events = CommonDocumentUtilities.GetNewDocumentEvent(Context,EnumEventTypes.AddNewDocument, "Create");
+            _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccess(Context);
             //TODO process files
             _document.DocumentFiles = null;
-            _documentDb.AddDocument(_context, _document);
+            _documentDb.AddDocument(Context, Document);
             return _document.Id;
         }
 

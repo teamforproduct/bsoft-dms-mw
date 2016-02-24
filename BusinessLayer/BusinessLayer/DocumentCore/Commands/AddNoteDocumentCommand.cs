@@ -1,5 +1,5 @@
 ﻿using System;
-using BL.CrossCutting.Common;
+using BL.Logic.Common;
 using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.InternalModel;
@@ -47,7 +47,6 @@ namespace BL.Logic.DocumentCore.Commands
                 Description = Model.Description,
                 EventType = EnumEventTypes.AddNote,
                 SourceAgentId = _context.CurrentAgentId,
-                TargetAgentId = _context.CurrentAgentId,
                 SourcePositionId = _context.CurrentPositionId,
                 TargetPositionId = _context.CurrentPositionId,
                 LastChangeUserId = _context.CurrentAgentId,

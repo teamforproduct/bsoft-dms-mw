@@ -1,6 +1,6 @@
-﻿using BL.Model.Database;
+﻿using System.Collections.Generic;
+using BL.Model.Database;
 using BL.Model.Users;
-using System.Collections.Generic;
 
 namespace BL.CrossCutting.Interfaces
 {

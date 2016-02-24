@@ -1,7 +1,8 @@
 ﻿using System;
-using BL.CrossCutting.Common;
+using BL.Logic.Common;
+using BL.Database.Admins.Interfaces;
 using BL.Database.Documents.Interfaces;
-using BL.Model.Database;
+using BL.Model.AdminCore;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
@@ -12,10 +13,14 @@ namespace BL.Logic.DocumentCore.Commands
     public class StartWorkDocumentCommand: BaseDocumentCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
+        private readonly IAdminsDbProcess _adminDb;
 
-        public StartWorkDocumentCommand(IDocumentOperationsDbProcess operationDb)
+        protected InternalDocumentAccesses DocAccess;
+
+        public StartWorkDocumentCommand(IDocumentOperationsDbProcess operationDb, IAdminsDbProcess adminDb)
         {
             _operationDb = operationDb;
+            _adminDb = adminDb;
         }
 
         private ChangeWorkStatus Model
@@ -37,25 +42,28 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanExecute()
         {
+            _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = CommandType.ToString() });
+            DocAccess = _operationDb.ChangeIsInWorkAccessPrepare(_context, Model.DocumentId);
+            if (DocAccess == null)
+            {
+                throw new DocumentNotFoundOrUserHasNoAccess();
+            }
+            if (DocAccess.IsInWork)
+            {
+                throw new CouldNotChangeIsInWork();
+            }
             return true;
         }
 
         public override object Execute()
         {
-            var acc = _operationDb.GetDocumentAccessForUserPosition(_context, Model.DocumentId);
-            if (acc == null)
-            {
-                throw new UserHasNoAccessToDocument();
-            }
-            acc.IsInWork = true;
-            var ea = new EventAccessModel
-            {
-                DocumentAccess = acc,
-                DocumentEvent = new InternalDocumentEvents
+            DocAccess.IsInWork = true;
+            DocAccess.LastChangeDate = DateTime.Now;
+            DocAccess.LastChangeUserId = _context.CurrentAgentId;
+            DocAccess.DocumentEvent = new InternalDocumentEvents
                 {
                     DocumentId = Model.DocumentId,
                     SourceAgentId = _context.CurrentAgentId,
-                    TargetAgentId = _context.CurrentAgentId,
                     SourcePositionId = _context.CurrentPositionId,
                     TargetPositionId = _context.CurrentPositionId,
                     Description = Model.Description,
@@ -64,12 +72,11 @@ namespace BL.Logic.DocumentCore.Commands
                     LastChangeDate = DateTime.Now,
                     Date = DateTime.Now,
                     CreateDate = DateTime.Now,
-                }
-            };
-            _operationDb.SetDocumentInformation(_context, ea);
+                };
+            _operationDb.ChangeIsInWorkAccess(_context, DocAccess);
             return null;
         }
 
-        public override EnumDocumentActions CommandType { get { return EnumDocumentActions.StartWork; } }
+        public override EnumDocumentActions CommandType => EnumDocumentActions.StartWork;
     }
 }

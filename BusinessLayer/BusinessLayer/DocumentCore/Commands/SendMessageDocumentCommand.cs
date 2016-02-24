@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using BL.CrossCutting.Common;
+using BL.Logic.Common;
 using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.Enums;
@@ -64,7 +64,6 @@ namespace BL.Logic.DocumentCore.Commands
                         LastChangeUserId = _context.CurrentAgentId,
                         SourceAgentId = _context.CurrentAgentId,
                         SourcePositionId = _context.CurrentPositionId,
-                        TargetAgentId = posInfos.First(x => x.PositionId == pos).AgentId,
                         TargetPositionId = pos,
                         LastChangeDate = DateTime.Now,
                         Date = DateTime.Now,

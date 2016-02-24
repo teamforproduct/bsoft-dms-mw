@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
+using BL.Logic.DependencyInjection;
 using BL.Database.Dictionaries.Interfaces;
 using BL.Database.Documents.Interfaces;
 using BL.Logic.DocumentCore.Interfaces;

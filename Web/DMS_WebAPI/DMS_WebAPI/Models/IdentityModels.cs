@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System.Linq;
-using BL.CrossCutting.DependencyInjection;
+using BL.Logic.DependencyInjection;
 using DMS_WebAPI.Utilities;
 
 namespace DMS_WebAPI.Models

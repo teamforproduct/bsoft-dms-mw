@@ -1,5 +1,4 @@
 ﻿using System;
-using BL.CrossCutting.Common;
 using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.InternalModel;

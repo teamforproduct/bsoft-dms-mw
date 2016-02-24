@@ -1,9 +1,10 @@
 ﻿using System;
+using BL.Model.Common;
 using BL.Model.Enums;
 
 namespace BL.Model.DocumentCore.InternalModel
 {
-    public class InternalDocumentSendLists
+    public class InternalDocumentSendLists : LastChangeInfo
     {
         public int Id { get; set; }
         public int DocumentId { get; set; }
@@ -17,7 +18,6 @@ namespace BL.Model.DocumentCore.InternalModel
         public bool IsInitial { get; set; }
         public int? StartEventId { get; set; }
         public int? CloseEventId { get; set; }
-        public int LastChangeUserId { get; set; }
-        public DateTime LastChangeDate { get; set; }
+
     }
 }

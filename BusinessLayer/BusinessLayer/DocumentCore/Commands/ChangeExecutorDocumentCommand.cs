@@ -1,7 +1,6 @@
-﻿using BL.CrossCutting.Common;
+﻿using BL.Logic.Common;
 using BL.Database.Admins.Interfaces;
 using BL.Database.Documents.Interfaces;
-using BL.Logic.Common;
 using BL.Model.AdminCore;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.Enums;
@@ -70,14 +69,14 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override object Execute()
         {
-            CommonDocumentUtilities.SetLastChangeForDocument(_context, _document);
+            CommonDocumentUtilities.SetLastChange(_context, _document);
 
             _document.ExecutorPositionId = Model.PositionId;
             _document.AccessLevel = Model.AccessLevel;
 
-            _document.Events = CommonDocumentUtilities.GetEventForChangeExecutorDocument(_context, Model);
+            _document.Events = CommonDocumentUtilities.GetNewDocumentEvent(_context, EnumEventTypes.ChangeExecutor, Model.Description,Model.PositionId);
 
-            _document.Accesses = CommonDocumentUtilities.GetAccessesForChangeExecutorDocument(_context, Model);
+            _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccess(_context, Model.AccessLevel, Model.PositionId);
 
             _documentDb.ChangeExecutorDocument(_context, _document);
 

@@ -3,7 +3,7 @@ using BL.Model.DictionaryCore.IncomingModel;
 
 namespace BL.Model.DictionaryCore.InternalModel
 {
-    public class InternalDictionaryDocumentType : ModifyDictionaryDocumentType
+    public class InternalDictionaryDocumentType : ModifyDictionaryDocumentType //TODO : LastChangeInfo
     {
         /// <summary>
         /// ID
