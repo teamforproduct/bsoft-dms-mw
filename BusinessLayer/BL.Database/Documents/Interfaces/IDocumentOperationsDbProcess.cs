@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using BL.CrossCutting.Interfaces;
-using BL.Model.Database;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.SystemCore;
+using BL.Model.DocumentCore.IncomingModel;
 
 namespace BL.Database.Documents.Interfaces
 {
@@ -35,5 +35,28 @@ namespace BL.Database.Documents.Interfaces
         InternalDocument AddDocumentLinkPrepare(IContext context, AddDocumentLink model);
         InternalDocument GetDocumentActionsPrepare(IContext context, int documentId);
         void ChangeIsFavouriteAccess(IContext context, InternalDocumentAccesses docAccess);
+
+        InternalDocument ChangeDocumentSendListPrepare(IContext context, int documentId);
+        void AddDocumentRestrictedSendList(IContext context, IEnumerable<InternalDocumentRestrictedSendLists> model);
+
+        IEnumerable<InternalDocumentRestrictedSendLists> AddByStandartSendListDocumentRestrictedSendListPrepare(IContext context, ModifyDocumentRestrictedSendListByStandartSendList model);
+
+        InternalDocumentRestrictedSendLists DeleteDocumentRestrictedSendListPrepare(IContext context, int restSendListId);
+
+        void DeleteDocumentRestrictedSendList(IContext context, int restSendListId);
+
+        void AddDocumentSendList(IContext context, IEnumerable<InternalDocumentSendLists> model);
+
+        IEnumerable<InternalDocumentSendLists> AddByStandartSendListDocumentSendListPrepare(IContext context, ModifyDocumentSendListByStandartSendList model);
+
+        void ModifyDocumentSendList(IContext context, InternalDocumentSendLists model);
+
+        InternalDocumentSendLists DeleteDocumentSendListPrepare(IContext context, int sendListId);
+
+        void DeleteDocumentSendList(IContext context, int sendListId);
+
+        InternalDocument AddDocumentSendListStagePrepare(IContext context, int documentId);
+
+        void ChangeDocumentSendListStage(IContext context, IEnumerable<InternalDocumentSendLists> model);
     }
 }

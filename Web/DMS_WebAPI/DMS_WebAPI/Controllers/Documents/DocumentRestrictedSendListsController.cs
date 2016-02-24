@@ -4,6 +4,7 @@ using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Web.Http;
 using BL.Model.DocumentCore.IncomingModel;
+using BL.Model.Enums;
 
 namespace DMS_WebAPI.Controllers.Documents
 {
@@ -40,8 +41,9 @@ namespace DMS_WebAPI.Controllers.Documents
         public IHttpActionResult Post([FromBody]ModifyDocumentRestrictedSendList model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
-            return Get(docProc.AddRestrictedSendList(cxt, model));
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            docProc.ExecuteAdditionAction(EnumDocumentAdditionActions.AddDocumentRestrictedSendList, cxt, model);
+            return GetByDocument(model.DocumentId);
         }
 
         /// <summary>
@@ -52,26 +54,10 @@ namespace DMS_WebAPI.Controllers.Documents
         public IHttpActionResult Put([FromBody]ModifyDocumentRestrictedSendListByStandartSendList model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
-            docProc.AddRestrictedSendListByStandartSendLists(cxt, model);
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            docProc.ExecuteAdditionAction(EnumDocumentAdditionActions.AddByStandartSendListDocumentRestrictedSendList, cxt, model);
             return GetByDocument(model.DocumentId);
         }
-        /*
-        /// <summary>
-        /// Добавление ограничительного списка
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="model"></param>
-        /// <returns>Измененный документ</returns>
-        public IHttpActionResult Put(int id, [FromBody]ModifyDocumentRestrictedSendList model)
-        {
-            model.Id = id;
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentService>();
-            docProc.UpdateRestrictedSendList(cxt, model);
-            return new Results.JsonResult(null, this);
-        }
-        */
         /// <summary>
         /// Удаление записи ограничительного списка
         /// </summary>
@@ -80,9 +66,9 @@ namespace DMS_WebAPI.Controllers.Documents
         public IHttpActionResult Delete(int id)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
-            docProc.DeleteRestrictedSendList(cxt, id);
-            return new JsonResult(null, this);
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            int docId = (int)docProc.ExecuteAdditionAction(EnumDocumentAdditionActions.DeleteDocumentRestrictedSendList, cxt, id);
+            return GetByDocument(docId);
         }
         
     }

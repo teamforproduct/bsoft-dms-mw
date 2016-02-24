@@ -1,6 +1,7 @@
 ﻿using BL.Logic.DependencyInjection;
 using BL.Logic.DocumentCore.Interfaces;
-using BL.Model.DocumentCore;
+using BL.Model.DocumentCore.IncomingModel;
+using BL.Model.Enums;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Web.Http;
@@ -18,8 +19,8 @@ namespace DMS_WebAPI.Controllers.Documents
         public IHttpActionResult Post([FromBody]ModifyDocumentSendListStage model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
-            bool isLastStage = docProc.AddSendListStage(cxt, model);
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            var isLastStage = (bool)docProc.ExecuteAdditionAction(EnumDocumentAdditionActions.AddDocumentSendListStage, cxt, model);
             return Get(model.DocumentId, isLastStage);
         }
 
@@ -31,9 +32,8 @@ namespace DMS_WebAPI.Controllers.Documents
         public IHttpActionResult Delete([FromUri]ModifyDocumentSendListStage model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
-            docProc.DeleteSendListStage(cxt, model);
-
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            docProc.ExecuteAdditionAction(EnumDocumentAdditionActions.DeleteDocumentSendListStage, cxt, model);
             return Get(model.DocumentId);
         }
 

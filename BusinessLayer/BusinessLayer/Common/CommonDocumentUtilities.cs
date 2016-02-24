@@ -168,5 +168,49 @@ namespace BL.Logic.Common
             return uiElements;
         }
 
+        public static void VerifySendLists(InternalDocument doc)
+        {
+
+            if (doc.RestrictedSendLists.GroupBy(x => new { x.DocumentId, x.PositionId }).Any(x => x.Count() > 1))
+            {
+                throw new DocumentRestrictedSendListDuplication();
+            }
+
+            if (doc.SendLists.GroupBy(x => new { x.DocumentId, x.TargetPositionId, x.SendType }).Any(x => x.Count() > 1))
+            {
+                throw new DocumentSendListDuplication();
+            }
+
+            if (doc.RestrictedSendLists?.Count() > 0
+                && doc.SendLists.GroupJoin(doc.RestrictedSendLists
+                    , sl => sl.TargetPositionId
+                    , rsl => rsl.PositionId
+                    , (sl, rsls) => new { sl, rsls }).Any(x => x.rsls.Count() == 0))
+            {
+                throw new DocumentSendListNotFoundInDocumentRestrictedSendList();
+            }
+
+            if (doc.IsHard)
+            {
+                if (doc.TemplateDocument.RestrictedSendLists.Any()
+                    && doc.TemplateDocument.RestrictedSendLists.GroupJoin(doc.RestrictedSendLists
+                        , trsl => trsl.PositionId
+                        , rsl => rsl.PositionId
+                        , (trsl, rsls) => new { trsl, rsls }).Any(x => x.rsls.Count() == 0))
+                {
+                    throw new DocumentRestrictedSendListDoesNotMatchTheTemplate();
+                }
+
+                if (doc.TemplateDocument.SendLists.Any()
+                    && doc.TemplateDocument.SendLists.GroupJoin(doc.SendLists
+                        , trsl => new { trsl.TargetPositionId, trsl.SendType }
+                        , rsl => new { rsl.TargetPositionId, rsl.SendType }
+                        , (trsl, rsls) => new { trsl, rsls }).Any(x => x.rsls.Count() == 0))
+                {
+                    throw new DocumentSendListDoesNotMatchTheTemplate();
+                }
+            }
+        }
+
     }
 }

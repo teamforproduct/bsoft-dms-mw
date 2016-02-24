@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
+using BL.Model.DocumentCore.IncomingModel;
 
 namespace BL.Model.DocumentCore.FrontModel
 {

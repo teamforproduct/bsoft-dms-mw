@@ -61,7 +61,7 @@ namespace BL.Logic.DocumentCore
             {
                 DocumentId = model.DocumentId,
                 PositionId = x.TargetPositionId,
-                AccessLevelId = x.AccessLevelId.GetValueOrDefault()
+                AccessLevel = (EnumDocumentAccesses)x.AccessLevelId.GetValueOrDefault()
             });
 
             var validRestrictedSendLists = _documentDb.GetRestrictedSendList(context, model.DocumentId).ToList();

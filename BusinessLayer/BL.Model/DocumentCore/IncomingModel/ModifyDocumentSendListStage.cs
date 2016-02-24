@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BL.Model.DocumentCore
+namespace BL.Model.DocumentCore.IncomingModel
 {
     /// <summary>
     /// Модель для модификации плана работы над документом

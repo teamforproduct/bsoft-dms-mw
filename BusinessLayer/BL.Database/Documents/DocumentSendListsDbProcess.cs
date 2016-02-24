@@ -36,7 +36,7 @@ namespace BL.Database.Documents
                         Id = x.Id,
                         DocumentId = x.DocumentId,
                         PositionId = x.PositionId,
-                        AccessLevelId = x.AccessLevelId,
+                        AccessLevel = (EnumDocumentAccesses)x.AccessLevelId,
                     }).FirstOrDefault();
 
                 return sendList;
@@ -56,7 +56,7 @@ namespace BL.Database.Documents
                         PositionId = x.PositionId,
                         PositionName = x.Position.Name,
                         PositionExecutorAgentName = x.Position.ExecutorAgent.Name,
-                        AccessLevelId = x.AccessLevelId,
+                        AccessLevel = (EnumDocumentAccesses)x.AccessLevelId,
                         AccessLevelName = x.AccessLevel.Name,
                         LastChangeUserId = x.LastChangeUserId,
                         LastChangeDate = x.LastChangeDate,
@@ -78,7 +78,7 @@ namespace BL.Database.Documents
                         Id = x.Id,
                         DocumentId = x.DocumentId,
                         PositionId = x.PositionId,
-                        AccessLevelId = x.AccessLevelId,
+                        AccessLevel = (EnumDocumentAccesses)x.AccessLevelId,
                     }).ToList();
 
                 return sendLists;
@@ -104,7 +104,7 @@ namespace BL.Database.Documents
                 {
                     sendList.DocumentId = restrictedSendList.DocumentId;
                     sendList.PositionId = restrictedSendList.PositionId;
-                    sendList.AccessLevelId = restrictedSendList.AccessLevelId;
+                    sendList.AccessLevelId = (int)restrictedSendList.AccessLevel;
                     sendList.LastChangeUserId = ctx.CurrentAgentId;
                     sendList.LastChangeDate = DateTime.Now;
 
@@ -122,7 +122,7 @@ namespace BL.Database.Documents
                 {
                     DocumentId = x.DocumentId,
                     PositionId = x.PositionId,
-                    AccessLevelId = x.AccessLevelId,
+                    AccessLevelId = (int)x.AccessLevel,
                     LastChangeUserId = ctx.CurrentAgentId,
                     LastChangeDate = DateTime.Now
                 }).ToList();

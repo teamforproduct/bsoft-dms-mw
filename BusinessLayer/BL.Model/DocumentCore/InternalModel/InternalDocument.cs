@@ -131,6 +131,7 @@ namespace BL.Model.DocumentCore.InternalModel
        // public int AttachedFilesCount { get; set; }
        // public int LinkedDocumentsCount { get; set; }
 
+        public InternalTemplateDocument TemplateDocument { get; set; }
         public IEnumerable<InternalDocumentRestrictedSendLists> RestrictedSendLists { get; set; }
         public IEnumerable<InternalDocumentSendLists> SendLists { get; set; }
         public IEnumerable<InternalDocumentSendListStage> SendListStages { get; set; }

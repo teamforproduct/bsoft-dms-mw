@@ -9,7 +9,6 @@ using BL.Model.SystemCore;
 using BL.Model.Enums;
 using BL.Database.SystemDb;
 using BL.Logic.Common;
-using BL.Logic.DocumentCore.Commands;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.DocumentCore.Filters;
