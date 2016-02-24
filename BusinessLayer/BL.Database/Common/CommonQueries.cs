@@ -71,7 +71,7 @@ namespace BL.Database.Common
                 .Select(x => new FilterDocumentFileIdentity  { DocumentId = x.Key.DocumentId, OrderInDocument = x.Key.OrderNumber, Version = x.Max(s => s.Version) });
         }
 
-        public static IEnumerable<FrontFilterDocumentAttachedFile> GetDocumentFiles(DmsContext dbContext, int documentId)
+        public static IEnumerable<FrontDocumentAttachedFile> GetDocumentFiles(DmsContext dbContext, int documentId)
         {
             var sq = GetDocumentFilesMaxVersion(dbContext, documentId);
 
@@ -81,7 +81,7 @@ namespace BL.Database.Common
                     (s, f) => new {fl = f})
                     .Join(dbContext.DictionaryAgentsSet, df => df.fl.LastChangeUserId, da => da.Id,
                         (d, a) => new {d.fl, agName = a.Name})
-                    .Select(x => new FrontFilterDocumentAttachedFile
+                    .Select(x => new FrontDocumentAttachedFile
                     {
                         Id = x.fl.Id,
                         Date = x.fl.Date,
@@ -101,7 +101,7 @@ namespace BL.Database.Common
                     }).ToList();
         }
 
-        public static IEnumerable<InternalFilterDocumentAttachedFile> GetInternalDocumentFiles(DmsContext dbContext, int documentId)
+        public static IEnumerable<InternalDocumentAttachedFile> GetInternalDocumentFiles(DmsContext dbContext, int documentId)
         {
             var sq = GetDocumentFilesMaxVersion(dbContext, documentId);
 
@@ -109,7 +109,7 @@ namespace BL.Database.Common
                 sq.Join(dbContext.DocumentFilesSet, sub => new { sub.DocumentId, OrderNumber = sub.OrderInDocument, sub.Version },
                     fl => new { fl.DocumentId, fl.OrderNumber, fl.Version },
                     (s, f) => new { fl = f })
-                    .Select(x => new InternalFilterDocumentAttachedFile
+                    .Select(x => new InternalDocumentAttachedFile
                     {
                         Id = x.fl.Id,
                         Date = x.fl.Date,

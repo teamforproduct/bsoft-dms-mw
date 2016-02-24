@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Net.Sockets;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Common;
 using BL.Logic.Helpers;
@@ -10,7 +7,6 @@ using BL.Database.DatabaseContext;
 using BL.Database.DBModel.Document;
 using BL.Database.Documents.Interfaces;
 using BL.Model.AdminCore;
-using BL.Model.Database;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
@@ -18,7 +14,6 @@ using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
 using BL.Model.Enums;
-using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.DocumentCore.IncomingModel;
 using System.Data.Entity;
 
@@ -303,11 +298,18 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
-                var acc = new DocumentAccesses { Id = docAccess.Id, IsFavourite = !docAccess.IsFavourite };
+                var acc = new DocumentAccesses
+                {
+                    Id = docAccess.Id,
+                    IsFavourite = docAccess.IsFavourite,
+                    LastChangeDate = docAccess.LastChangeDate,
+                    LastChangeUserId = docAccess.LastChangeUserId
+                };
                 dbContext.DocumentAccessesSet.Attach(acc);
-                acc.LastChangeDate = docAccess.LastChangeDate;
-                acc.LastChangeUserId = docAccess.LastChangeUserId;
-                acc.IsFavourite = docAccess.IsFavourite;
+                var entry = dbContext.Entry(acc);
+                entry.Property(x => x.LastChangeDate).IsModified = true;
+                entry.Property(x => x.LastChangeUserId).IsModified = true;
+                entry.Property(x => x.IsFavourite).IsModified = true;
                 dbContext.SaveChanges();
             }
         }

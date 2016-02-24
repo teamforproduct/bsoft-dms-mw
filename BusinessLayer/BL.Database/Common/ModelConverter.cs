@@ -105,5 +105,23 @@ namespace BL.Database.Common
             });
         }
 
+        public static DocumentFiles GetDbDocumentFile(InternalDocumentAttachedFile docFile)
+        {
+            return  new DocumentFiles
+            {
+                Id = docFile.Id,
+                DocumentId = docFile.DocumentId,
+                OrderNumber = docFile.OrderInDocument,
+                Version = docFile.Version,
+                Extension = docFile.Extension,
+                Hash = docFile.Hash,
+                FileType = docFile.FileType,
+                IsAdditional = docFile.IsAdditional,
+                LastChangeDate = docFile.LastChangeDate,
+                LastChangeUserId = docFile.LastChangeUserId,
+                Name = docFile.Name,
+                Date = docFile.Date
+            };
+        }
     }
 }

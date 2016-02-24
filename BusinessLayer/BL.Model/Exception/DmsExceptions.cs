@@ -46,6 +46,21 @@
     /// <summary>
     /// Параметр комманды неверного типа
     /// </summary>
+    public class WrongParameterValueError : DmsExceptions
+    {
+        private const string _MESSAGE = "Параметры комманды неверные!";
+        public WrongParameterValueError() : base(_MESSAGE)
+        {
+        }
+
+        public WrongParameterValueError(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+    /// <summary>
+    /// Параметр комманды неверного типа
+    /// </summary>
     public class WrongParameterTypeError : DmsExceptions
     {
         private const string _MESSAGE = "Тип параметра комманды указан неверно!";

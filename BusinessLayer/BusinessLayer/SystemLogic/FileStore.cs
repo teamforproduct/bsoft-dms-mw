@@ -3,7 +3,7 @@ using System.IO;
 using System.Security.Cryptography;
 using BL.CrossCutting.Interfaces;
 using BL.Logic.DependencyInjection;
-using BL.Model.DocumentCore.FrontModel;
+using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Exception;
 
 namespace BL.Logic.SystemLogic
@@ -27,19 +27,22 @@ namespace BL.Logic.SystemLogic
             }
         }
 
-        private string GetFullFilePath(IContext ctx, FrontFilterDocumentAttachedFile attFile)
+        private string GetFullDocumentFilePath(IContext ctx, InternalDocumentAttachedFile attFile)
         {
             var path = GetStorePath(ctx);
             path = Path.Combine(new string[] { path, ctx.CurrentAgentId.ToString(), attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString(), attFile.Version.ToString() });
             return path;
         }
 
-        public string SaveFile(IContext ctx, FrontFilterDocumentAttachedFile attFile, bool isOverride = true)
+        public string SaveFile(IContext ctx, InternalDocumentAttachedFile attFile, bool isOverride = true)
         {
             try
             {
-                var path = GetFullFilePath(ctx, attFile);
-                var dir = Directory.CreateDirectory(path);
+                var path = GetFullDocumentFilePath(ctx, attFile);
+                if (!Directory.Exists(path))
+                {
+                    var dir = Directory.CreateDirectory(path);
+                }
                 var localFilePath = path + "\\" + attFile.Name + "." + attFile.Extension;
 
                 if (File.Exists(localFilePath) && isOverride)
@@ -65,11 +68,11 @@ namespace BL.Logic.SystemLogic
             //webPath = String.Format(@"{0}/{1}/{2}/{3}/{4}", date.Year, date.Month, date.Day, time, hash);
         }
 
-        public byte[] GetFile(IContext ctx, FrontFilterDocumentAttachedFile attFile)
+        public byte[] GetFile(IContext ctx, InternalDocumentAttachedFile attFile)
         {
             try
             {
-                var path = GetFullFilePath(ctx, attFile);
+                var path = GetFullDocumentFilePath(ctx, attFile);
                 var localFilePath = path + "\\" + attFile.Name + "." + attFile.Extension;
 
                 attFile.FileContent = File.ReadAllBytes(localFilePath);
@@ -86,11 +89,60 @@ namespace BL.Logic.SystemLogic
             }
         }
 
-        public void DeleteFile(IContext ctx, FrontFilterDocumentAttachedFile attFile)
+        /// <summary>
+        /// delete all file for the specific document
+        /// </summary>
+        /// <param name="ctx"></param>
+        /// <param name="attFile"></param>
+        public void DeleteAllFileInDocument(IContext ctx, int documentId)
         {
             try
             {
-                var path = GetFullFilePath(ctx, attFile);
+                var path = GetStorePath(ctx);
+                path = Path.Combine(new string[] { path, ctx.CurrentAgentId.ToString(), documentId.ToString() });
+
+                Directory.Delete(path, true);
+            }
+            catch (Exception ex)
+            {
+                var log = DmsResolver.Current.Get<ILogger>();
+                log.Error(ctx, ex, "Cannot access to user file", Environment.StackTrace);
+                throw new CannotAccessToFile(ex);
+            }
+        }
+
+        /// <summary>
+        /// delete all file versions
+        /// </summary>
+        /// <param name="ctx"></param>
+        /// <param name="attFile"></param>
+        public void DeleteFile(IContext ctx, InternalDocumentAttachedFile attFile)
+        {
+            try
+            {
+                var path = GetStorePath(ctx);
+                path = Path.Combine(new string[] { path, ctx.CurrentAgentId.ToString(), attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString() });
+
+                Directory.Delete(path, true);
+            }
+            catch (Exception ex)
+            {
+                var log = DmsResolver.Current.Get<ILogger>();
+                log.Error(ctx, ex, "Cannot access to user file", Environment.StackTrace);
+                throw new CannotAccessToFile(ex);
+            }
+        }
+
+        /// <summary>
+        /// delete specific file version.
+        /// </summary>
+        /// <param name="ctx"></param>
+        /// <param name="attFile"></param>
+        public void DeleteFileVersion(IContext ctx, InternalDocumentAttachedFile attFile)
+        {
+            try
+            {
+                var path = GetFullDocumentFilePath(ctx, attFile);
                 Directory.Delete(path, true);
             }
             catch (Exception ex)

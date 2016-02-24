@@ -15,7 +15,6 @@ using BL.Model.DocumentCore.InternalModel;
 using BL.Model.SystemCore;
 using BL.Model.Enums;
 using BL.Model.Exception;
-using DocumentAccesses = BL.Database.DBModel.Document.DocumentAccesses;
 using BL.Model.DocumentCore.Actions;
 
 namespace BL.Database.Documents
@@ -590,7 +589,7 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
                 var doc = CommonQueries.GetDocumentQuery(dbContext)
-                    .Where(x => x.Doc.Id == documentId)
+                    .Where(x => x.Doc.Id == documentId && ctx.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId))
                     .Select(x => new InternalDocument
                     {
                         TemplateDocumentId = x.Doc.TemplateDocumentId,

@@ -128,7 +128,7 @@ namespace BL.Model.DocumentCore.FrontModel
         public int SendListStageMax { get; set; }
         public IEnumerable<FrontDocumentEvent> Events { get; set; }
         public IEnumerable<FrontDocumentAccess> Accesses { get; set; }
-        public IEnumerable<FrontFilterDocumentAttachedFile> DocumentFiles { get; set; }
+        public IEnumerable<FrontDocumentAttachedFile> DocumentFiles { get; set; }
         public IEnumerable<FrontDocument> LinkedDocuments { get; set; }
         public IEnumerable<FrontDocumentLink> Links { get; set; }
         public IEnumerable<FrontDocumentWaits> DocumentWaits { get; set; }

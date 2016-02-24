@@ -1,15 +1,12 @@
 ﻿using BL.Logic.DependencyInjection;
-using BL.Logic.DocumentCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Web.Http;
 using BL.Logic.DocumentCore.Interfaces;
-using System.Net.Http;
-using System.Net;
-using System.Net.Http.Headers;
-using System.IO;
 using BL.Model.DocumentCore.Filters;
+using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
+using BL.Model.Enums;
 
 namespace DMS_WebAPI.Controllers.Documents
 {
@@ -38,27 +35,27 @@ namespace DMS_WebAPI.Controllers.Documents
         public IHttpActionResult Post([FromBody]ModifyDocumentFiles model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var docFileProc = DmsResolver.Current.Get<IDocumentFileService>();
-
-            return new JsonResult(docFileProc.AddUserFile(cxt, model), this);
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            var fl = (int)docProc.ExecuteAdditionAction(EnumDocumentAdditionActions.AddDocumentFile, cxt, model);
+            return new JsonResult(fl, this);
         }
 
         // PUT: api/DocumentFiles/5
         public IHttpActionResult Put([FromBody]ModifyDocumentFile model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var docFileProc = DmsResolver.Current.Get<IDocumentFileService>();
-
-            return new JsonResult(docFileProc.UpdateCurrentFileVersion(cxt, model), this);
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            var fl = (FrontDocumentAttachedFile)docProc.ExecuteAdditionAction(EnumDocumentAdditionActions.ModifyDocumentFile, cxt, model);
+           
+            return new JsonResult(fl, this);
         }
 
         // DELETE: api/DocumentFiles
         public IHttpActionResult Delete([FromUri]FilterDocumentFileIdentity model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var docFileProc = DmsResolver.Current.Get<IDocumentFileService>();
-
-            docFileProc.DeleteDocumentFile(cxt, model);
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            docProc.ExecuteAdditionAction(EnumDocumentAdditionActions.DeleteDocumentFile, cxt, model);
             return new JsonResult(null, this);
         }
     }
