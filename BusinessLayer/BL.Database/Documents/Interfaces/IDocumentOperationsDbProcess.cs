@@ -19,7 +19,6 @@ namespace BL.Database.Documents.Interfaces
         void AddDocumentWait(IContext ctx, InternalDocumentWaits documentWait);
         void UpdateDocumentWait(IContext ctx, InternalDocumentWaits documentWait);
 
-        int AddDocumentEvent(IContext ctx, InternalDocumentEvents docEvent);
         void AddDocumentEvents(IContext ctx, IEnumerable<InternalDocumentEvents> docEvents);
         IEnumerable<FrontDocumentEvent> GetDocumentEvents(IContext ctx, FilterDocumentEvent filter);
 

@@ -37,5 +37,6 @@ namespace BL.Database.Documents.Interfaces
         InternalDocument ChangeIsLaunchPlanDocumentPrepare(IContext context, int documentId);
 
         void ChangeIsLaunchPlanDocument(IContext ctx, InternalDocument document);
+        InternalDocument GetBlankDocumentId(IContext context, int documentId);
     }
 }

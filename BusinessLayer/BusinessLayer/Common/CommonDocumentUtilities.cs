@@ -33,7 +33,7 @@ namespace BL.Logic.Common
             document.LastChangeUserId = context.CurrentAgentId;
         }
 
-        public static List<InternalDocumentEvents> GetNewDocumentEvent(IContext context, EnumEventTypes eventType, string description, int? idDocument = null)
+        public static IEnumerable<InternalDocumentEvents> GetNewDocumentEvent(IContext context, EnumEventTypes eventType, string description, int? idDocument = null)
         {
             return new List<InternalDocumentEvents>
             {
@@ -53,7 +53,7 @@ namespace BL.Logic.Common
             };
         }
 
-        public static List<InternalDocumentEvents> GetNewDocumentEvent(IContext context, EnumEventTypes eventType, string description, int targetPositionId, int? idDocument = null)
+        public static IEnumerable<InternalDocumentEvents> GetNewDocumentEvent(IContext context, EnumEventTypes eventType, string description, int targetPositionId, int? idDocument = null)
         {
             return new List<InternalDocumentEvents>
             {
@@ -73,7 +73,7 @@ namespace BL.Logic.Common
             };
         }
 
-        public static List<InternalDocumentAccesses> GetNewDocumentAccess(IContext context)
+        public static IEnumerable<InternalDocumentAccesses> GetNewDocumentAccess(IContext context)
         {
             return new List<InternalDocumentAccesses>
             {
@@ -89,7 +89,7 @@ namespace BL.Logic.Common
             };
         }
 
-        public static List<InternalDocumentAccesses> GetNewDocumentAccess(IContext context, EnumDocumentAccesses accessLevel, int positionId)
+        public static IEnumerable<InternalDocumentAccesses> GetNewDocumentAccess(IContext context, EnumDocumentAccesses accessLevel, int positionId)
         {
             return new List<InternalDocumentAccesses>
             {

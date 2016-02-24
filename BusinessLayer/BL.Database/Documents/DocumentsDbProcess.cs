@@ -856,6 +856,21 @@ namespace BL.Database.Documents
             }
         }
 
+        public InternalDocument GetBlankDocumentId(IContext context, int documentId)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var doc = CommonQueries.GetDocumentQuery(dbContext)
+                    .Where(x => x.Doc.Id == documentId && context.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId))
+                    .Select(x => new InternalDocument
+                    {
+                        Id = x.Doc.Id,
+                    }).FirstOrDefault();
+
+                return doc;
+            }
+        }
+
         #endregion Document
 
     }

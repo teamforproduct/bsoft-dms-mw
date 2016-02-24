@@ -220,17 +220,6 @@ namespace BL.Database.Documents
 
         #region Document Event
 
-        public int AddDocumentEvent(IContext ctx, InternalDocumentEvents docEvent)
-        {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
-            {
-                var evt = ModelConverter.GetDbDocumentEvent(docEvent);
-                dbContext.DocumentEventsSet.Add(evt);
-                dbContext.SaveChanges();
-                return evt.Id;
-            }
-        }
-
         public void AddDocumentEvents(IContext ctx, IEnumerable<InternalDocumentEvents> docEvents)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
