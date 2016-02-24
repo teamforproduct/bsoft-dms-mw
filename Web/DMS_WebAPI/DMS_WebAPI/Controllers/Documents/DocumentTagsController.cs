@@ -4,6 +4,7 @@ using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Web.Http;
 using BL.Model.DocumentCore.IncomingModel;
+using BL.Model.Enums;
 
 namespace DMS_WebAPI.Controllers.Documents
 {
@@ -32,8 +33,8 @@ namespace DMS_WebAPI.Controllers.Documents
         public IHttpActionResult Post([FromBody]ModifyDocumentTags model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var tagProc = DmsResolver.Current.Get<IDocumentTagService>();
-            tagProc.ModifyDocumentTags(cxt, model);
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            docProc.ExecuteAdditionAction(EnumDocumentAdditionActions.ModifyDocumentTags, cxt, model);
             return Get(model.DocumentId);
         }
     }

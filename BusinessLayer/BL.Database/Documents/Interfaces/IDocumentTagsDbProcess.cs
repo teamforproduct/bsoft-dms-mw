@@ -9,7 +9,6 @@ namespace BL.Database.Documents.Interfaces
     {
         #region DocumentTags
         IEnumerable<FrontDocumentTag> GetTags(IContext ctx, int documentId);
-        void ModifyDocumentTags(IContext context, InternalDocumentTags model);
         #endregion DocumentTags         
     }
 }

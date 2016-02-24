@@ -66,6 +66,7 @@
     <Compile Include="DocumentCore\AdditionalCommands\DeleteDocumentSendListStageCommand.cs" />
     <Compile Include="DocumentCore\AdditionalCommands\AddDocumentSendListStageCommand.cs" />
     <Compile Include="DocumentCore\AdditionalCommands\DeleteDocumentSendListCommand.cs" />
+    <Compile Include="DocumentCore\AdditionalCommands\ModifyDocumentTagsCommand.cs" />
     <Compile Include="DocumentCore\AdditionalCommands\ModifyDocumentSendListCommand.cs" />
     <Compile Include="DocumentCore\AdditionalCommands\AddDocumentSendListCommand.cs" />
     <Compile Include="DocumentCore\AdditionalCommands\DeleteDocumentRestrictedSendListCommand.cs" />

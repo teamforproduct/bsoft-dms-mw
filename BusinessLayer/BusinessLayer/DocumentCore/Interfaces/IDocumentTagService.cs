@@ -12,8 +12,6 @@ namespace BL.Logic.DocumentCore.Interfaces
 
         IEnumerable<FrontDocumentTag> GetTags(IContext context, int documentId);
 
-        void ModifyDocumentTags(IContext context, ModifyDocumentTags model);
-
         #endregion DocumentTags         
     }
 }
