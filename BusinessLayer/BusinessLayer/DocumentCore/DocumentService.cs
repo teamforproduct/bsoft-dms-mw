@@ -59,12 +59,6 @@ namespace BL.Logic.DocumentCore
             var res = _commandService.ExecuteCommand(cmd);
             return res;
         }
-        public object ExecuteAdditionAction(EnumDocumentAdditionActions act, IContext context, object param)
-        {
-            var cmd = DocumentAdditionCommandFactory.GetDocumentCommand(act, context, null, param);
-            var res = _commandService.ExecuteCommand(cmd);
-            return res;
-        }
 
         #endregion Documents
 

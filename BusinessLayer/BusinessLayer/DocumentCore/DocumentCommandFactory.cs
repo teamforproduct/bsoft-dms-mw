@@ -1,5 +1,6 @@
 ﻿using BL.CrossCutting.Interfaces;
 using BL.Logic.DependencyInjection;
+using BL.Logic.DocumentCore.AdditionalCommands;
 using BL.Logic.DocumentCore.Commands;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
@@ -59,6 +60,50 @@ namespace BL.Logic.DocumentCore
                     break;
                 case EnumDocumentActions.SendMessage:
                     cmd = DmsResolver.Current.Get<SendMessageDocumentCommand>();
+                    break;
+
+                case EnumDocumentActions.AddDocumentLink:
+                    cmd = DmsResolver.Current.Get<AddDocumentLinkCommand>();
+                    break;
+                case EnumDocumentActions.AddDocumentRestrictedSendList:
+                    cmd = DmsResolver.Current.Get<AddDocumentRestrictedSendListCommand>();
+                    break;
+                case EnumDocumentActions.AddByStandartSendListDocumentRestrictedSendList:
+                    cmd = DmsResolver.Current.Get<AddByStandartSendListDocumentRestrictedSendListCommand>();
+                    break;
+                case EnumDocumentActions.DeleteDocumentRestrictedSendList:
+                    cmd = DmsResolver.Current.Get<DeleteDocumentRestrictedSendListCommand>();
+                    break;
+                case EnumDocumentActions.AddDocumentSendList:
+                    cmd = DmsResolver.Current.Get<AddDocumentSendListCommand>();
+                    break;
+                case EnumDocumentActions.AddByStandartSendListDocumentSendList:
+                    cmd = DmsResolver.Current.Get<AddByStandartSendListDocumentSendListCommand>();
+                    break;
+                case EnumDocumentActions.ModifyDocumentSendList:
+                    cmd = DmsResolver.Current.Get<ModifyDocumentSendListCommand>();
+                    break;
+                case EnumDocumentActions.DeleteDocumentSendList:
+                    cmd = DmsResolver.Current.Get<DeleteDocumentRestrictedSendListCommand>();
+                    break;
+                case EnumDocumentActions.AddDocumentSendListStage:
+                    cmd = DmsResolver.Current.Get<AddDocumentSendListStageCommand>();
+                    break;
+                case EnumDocumentActions.DeleteDocumentSendListStage:
+                    cmd = DmsResolver.Current.Get<DeleteDocumentSendListStageCommand>();
+                    break;
+                case EnumDocumentActions.ModifyDocumentTags:
+                    cmd = DmsResolver.Current.Get<ModifyDocumentTagsCommand>();
+                    break;
+
+                case EnumDocumentActions.DeleteDocumentFile:
+                    cmd = DmsResolver.Current.Get<DeleteDocumentFileCommand>();
+                    break;
+                case EnumDocumentActions.AddDocumentFile:
+                    cmd = DmsResolver.Current.Get<AddDocumentFileCommand>();
+                    break;
+                case EnumDocumentActions.ModifyDocumentFile:
+                    cmd = DmsResolver.Current.Get<ModifyDocumentFileCommand>();
                     break;
 
                 default:

@@ -128,7 +128,7 @@ namespace DMS_WebAPI.Controllers.Documents
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            docProc.ExecuteAdditionAction(EnumDocumentAdditionActions.AddDocumentLink, cxt, model);
+            docProc.ExecuteAction(EnumDocumentActions.AddDocumentLink, cxt, model);
             timeDB.Stop();
 
             timeM.Stop();

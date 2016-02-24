@@ -13,7 +13,7 @@ using BL.Model.Exception;
 
 namespace BL.Logic.DocumentCore.AdditionalCommands
 {
-    public class ModifyDocumentFileCommand: BaseDocumentAdditionCommand
+    public class ModifyDocumentFileCommand: BaseDocumentCommand
     {
         private readonly IAdminsDbProcess _adminDb;
         private readonly IDocumentFileDbProcess _operationDb;
@@ -79,6 +79,6 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             return new FrontDocumentAttachedFile(fl);
         }
 
-        public override EnumDocumentAdditionActions CommandType => EnumDocumentAdditionActions.ModifyDocumentFile;
+        public override EnumDocumentActions CommandType => EnumDocumentActions.ModifyDocumentFile;
     }
 }

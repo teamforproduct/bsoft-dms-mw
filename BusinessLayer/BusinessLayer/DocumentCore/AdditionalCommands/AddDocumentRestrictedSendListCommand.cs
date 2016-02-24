@@ -1,8 +1,5 @@
-﻿using System;
-using BL.Database.Documents.Interfaces;
-using BL.Model.DocumentCore.Actions;
+﻿using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore.InternalModel;
-using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Database.Admins.Interfaces;
 using BL.Model.AdminCore;
@@ -10,10 +7,11 @@ using BL.Model.DocumentCore.IncomingModel;
 using System.Linq;
 using BL.Logic.Common;
 using System.Collections.Generic;
+using BL.Model.Enums;
 
 namespace BL.Logic.DocumentCore.AdditionalCommands
 {
-    public class AddDocumentRestrictedSendListCommand : BaseDocumentAdditionCommand
+    public class AddDocumentRestrictedSendListCommand : BaseDocumentCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
         private readonly IAdminsDbProcess _adminDb;
@@ -46,7 +44,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         public override bool CanExecute()
         {
             _context.SetCurrentPosition(_document.ExecutorPositionId);
-            _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = CommandType.ToString() });
+            _adminDb.VerifyAccess(_context, CommandType);
 
             _document = _operationDb.ChangeDocumentSendListPrepare(_context, Model.DocumentId);
 
@@ -71,6 +69,6 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             return null;
         }
 
-        public override EnumDocumentAdditionActions CommandType => EnumDocumentAdditionActions.AddDocumentRestrictedSendList;
+        public override EnumDocumentActions CommandType => EnumDocumentActions.AddDocumentRestrictedSendList;
     }
 }

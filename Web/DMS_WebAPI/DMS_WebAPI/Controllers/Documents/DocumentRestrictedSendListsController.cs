@@ -42,7 +42,7 @@ namespace DMS_WebAPI.Controllers.Documents
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            docProc.ExecuteAdditionAction(EnumDocumentAdditionActions.AddDocumentRestrictedSendList, cxt, model);
+            docProc.ExecuteAction(EnumDocumentActions.AddDocumentRestrictedSendList, cxt, model);
             return GetByDocument(model.DocumentId);
         }
 
@@ -55,7 +55,7 @@ namespace DMS_WebAPI.Controllers.Documents
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            docProc.ExecuteAdditionAction(EnumDocumentAdditionActions.AddByStandartSendListDocumentRestrictedSendList, cxt, model);
+            docProc.ExecuteAction(EnumDocumentActions.AddByStandartSendListDocumentRestrictedSendList, cxt, model);
             return GetByDocument(model.DocumentId);
         }
         /// <summary>
@@ -67,7 +67,7 @@ namespace DMS_WebAPI.Controllers.Documents
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            int docId = (int)docProc.ExecuteAdditionAction(EnumDocumentAdditionActions.DeleteDocumentRestrictedSendList, cxt, id);
+            int docId = (int)docProc.ExecuteAction(EnumDocumentActions.DeleteDocumentRestrictedSendList, cxt, id);
             return GetByDocument(docId);
         }
         

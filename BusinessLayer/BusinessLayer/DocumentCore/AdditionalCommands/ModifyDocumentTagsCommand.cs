@@ -1,19 +1,15 @@
-﻿using System;
-using BL.Database.Documents.Interfaces;
-using BL.Model.DocumentCore.Actions;
+﻿using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore.InternalModel;
-using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Database.Admins.Interfaces;
 using BL.Model.AdminCore;
 using BL.Model.DocumentCore.IncomingModel;
-using System.Linq;
 using BL.Logic.Common;
-using System.Collections.Generic;
+using BL.Model.Enums;
 
 namespace BL.Logic.DocumentCore.AdditionalCommands
 {
-    public class ModifyDocumentTagsCommand : BaseDocumentAdditionCommand
+    public class ModifyDocumentTagsCommand : BaseDocumentCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
         private readonly IAdminsDbProcess _adminDb;
@@ -46,7 +42,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         public override bool CanExecute()
         {
             _context.SetCurrentPosition(_document.ExecutorPositionId);
-            _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = CommandType.ToString() });
+            _adminDb.VerifyAccess(_context, CommandType);
 
             DocTags = new InternalDocumentTags
             {
@@ -64,6 +60,6 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             return null;
         }
 
-        public override EnumDocumentAdditionActions CommandType => EnumDocumentAdditionActions.ModifyDocumentTags;
+        public override EnumDocumentActions CommandType => EnumDocumentActions.ModifyDocumentTags;
     }
 }

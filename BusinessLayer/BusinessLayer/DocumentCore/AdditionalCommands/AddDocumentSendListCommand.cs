@@ -11,7 +11,7 @@ using System.Collections.Generic;
 
 namespace BL.Logic.DocumentCore.AdditionalCommands
 {
-    public class AddDocumentSendListCommand : BaseDocumentAdditionCommand
+    public class AddDocumentSendListCommand : BaseDocumentCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
         private readonly IAdminsDbProcess _adminDb;
@@ -44,7 +44,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         public override bool CanExecute()
         {
             _context.SetCurrentPosition(_document.ExecutorPositionId);
-            _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = CommandType.ToString() });
+            _adminDb.VerifyAccess(_context, CommandType);
 
             _document = _operationDb.ChangeDocumentSendListPrepare(_context, Model.DocumentId);
 
@@ -75,6 +75,6 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             return null;
         }
 
-        public override EnumDocumentAdditionActions CommandType => EnumDocumentAdditionActions.AddDocumentSendList;
+        public override EnumDocumentActions CommandType => EnumDocumentActions.AddDocumentSendList;
     }
 }

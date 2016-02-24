@@ -10,7 +10,7 @@ using BL.Model.Exception;
 
 namespace BL.Logic.DocumentCore.AdditionalCommands
 {
-    public class DeleteDocumentFileCommand: BaseDocumentAdditionCommand
+    public class DeleteDocumentFileCommand: BaseDocumentCommand
     {
         private readonly IAdminsDbProcess _adminDb;
         private readonly IDocumentFileDbProcess _operationDb;
@@ -73,6 +73,6 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             return null;
         }
 
-        public override EnumDocumentAdditionActions CommandType => EnumDocumentAdditionActions.DeleteDocumentFile;
+        public override EnumDocumentActions CommandType => EnumDocumentActions.DeleteDocumentFile;
     }
 }

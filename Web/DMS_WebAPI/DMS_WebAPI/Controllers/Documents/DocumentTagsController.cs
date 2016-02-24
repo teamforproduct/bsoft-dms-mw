@@ -34,7 +34,7 @@ namespace DMS_WebAPI.Controllers.Documents
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            docProc.ExecuteAdditionAction(EnumDocumentAdditionActions.ModifyDocumentTags, cxt, model);
+            docProc.ExecuteAction(EnumDocumentActions.ModifyDocumentTags, cxt, model);
             return Get(model.DocumentId);
         }
     }

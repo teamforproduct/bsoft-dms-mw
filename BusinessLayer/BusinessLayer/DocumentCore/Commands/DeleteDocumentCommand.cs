@@ -2,7 +2,6 @@
 using BL.Model.Exception;
 using BL.Logic.Common;
 using BL.Database.Admins.Interfaces;
-using BL.Model.AdminCore;
 using BL.Model.Enums;
 
 namespace BL.Logic.DocumentCore.Commands

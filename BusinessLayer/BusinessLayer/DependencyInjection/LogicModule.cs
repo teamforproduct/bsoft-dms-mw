@@ -37,7 +37,6 @@ namespace BL.Logic.DependencyInjection
 
             Bind<ICommandService>().To<CommandService>().InSingletonScope();
             LoadDocumentCommands();
-            LoadDocumentAdditionCommands();
             LoadDictionaryCommands();
             LoadObservers();
         }
@@ -74,12 +73,11 @@ namespace BL.Logic.DependencyInjection
             Bind<IDocumentCommand>().To<SendMessageDocumentCommand>();
             Bind<IDocumentCommand>().To<ChangeExecutorDocumentCommand>();
             Bind<IDocumentCommand>().To<RegisterDocumentCommand>();
+            Bind<IDocumentCommand>().To<AddDocumentLinkCommand>();
 
-        }
-
-        private void LoadDocumentAdditionCommands()
-        {
-            Bind<IDocumentAdditionCommand>().To<AddDocumentLinkCommand>();
+            Bind<IDocumentCommand>().To<AddDocumentFileCommand>();
+            Bind<IDocumentCommand>().To<DeleteDocumentFileCommand>();
+            Bind<IDocumentCommand>().To<ModifyDocumentFileCommand>();
 
         }
 

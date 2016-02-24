@@ -20,7 +20,7 @@ namespace DMS_WebAPI.Controllers.Documents
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var isLastStage = (bool)docProc.ExecuteAdditionAction(EnumDocumentAdditionActions.AddDocumentSendListStage, cxt, model);
+            var isLastStage = (bool)docProc.ExecuteAction(EnumDocumentActions.AddDocumentSendListStage, cxt, model);
             return Get(model.DocumentId, isLastStage);
         }
 
@@ -33,7 +33,7 @@ namespace DMS_WebAPI.Controllers.Documents
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            docProc.ExecuteAdditionAction(EnumDocumentAdditionActions.DeleteDocumentSendListStage, cxt, model);
+            docProc.ExecuteAction(EnumDocumentActions.DeleteDocumentSendListStage, cxt, model);
             return Get(model.DocumentId);
         }
 

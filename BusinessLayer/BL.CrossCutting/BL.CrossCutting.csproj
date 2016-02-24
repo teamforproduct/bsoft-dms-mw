@@ -52,7 +52,6 @@
     <Compile Include="Interfaces\ICommandObserver.cs" />
     <Compile Include="Interfaces\IContext.cs" />
     <Compile Include="Interfaces\IDictionaryCommand.cs" />
-    <Compile Include="Interfaces\IDocumentAdditionCommand.cs" />
     <Compile Include="Interfaces\IDocumentCommand.cs" />
     <Compile Include="Interfaces\ILogger.cs" />
     <Compile Include="Interfaces\ISettings.cs" />

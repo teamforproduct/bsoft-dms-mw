@@ -36,7 +36,7 @@ namespace DMS_WebAPI.Controllers.Documents
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var fl = (int)docProc.ExecuteAdditionAction(EnumDocumentAdditionActions.AddDocumentFile, cxt, model);
+            var fl = (int)docProc.ExecuteAction(EnumDocumentActions.AddDocumentFile, cxt, model);
             return new JsonResult(fl, this);
         }
 
@@ -45,7 +45,7 @@ namespace DMS_WebAPI.Controllers.Documents
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var fl = (FrontDocumentAttachedFile)docProc.ExecuteAdditionAction(EnumDocumentAdditionActions.ModifyDocumentFile, cxt, model);
+            var fl = (FrontDocumentAttachedFile)docProc.ExecuteAction(EnumDocumentActions.ModifyDocumentFile, cxt, model);
            
             return new JsonResult(fl, this);
         }
@@ -55,7 +55,7 @@ namespace DMS_WebAPI.Controllers.Documents
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            docProc.ExecuteAdditionAction(EnumDocumentAdditionActions.DeleteDocumentFile, cxt, model);
+            docProc.ExecuteAction(EnumDocumentActions.DeleteDocumentFile, cxt, model);
             return new JsonResult(null, this);
         }
     }

@@ -8,7 +8,7 @@ using BL.Logic.Common;
 
 namespace BL.Logic.DocumentCore.AdditionalCommands
 {
-    public class AddDocumentLinkCommand: BaseDocumentAdditionCommand
+    public class AddDocumentLinkCommand: BaseDocumentCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
         private readonly IAdminsDbProcess _adminDb;
@@ -59,6 +59,6 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             return null;
         }
 
-        public override EnumDocumentAdditionActions CommandType => EnumDocumentAdditionActions.AddDocumentLink;
+        public override EnumDocumentActions CommandType => EnumDocumentActions.AddDocumentLink;
     }
 }

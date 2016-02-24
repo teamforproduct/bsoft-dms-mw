@@ -14,8 +14,6 @@ namespace BL.Logic.DocumentCore.Interfaces
         FrontDocument GetDocument(IContext ctx, int documentId);
         IEnumerable<BaseSystemUIElement> GetModifyMetaData(IContext cxt, FrontDocument doc);
         object ExecuteAction(EnumDocumentActions act, IContext context, object param);
-        object ExecuteAdditionAction(EnumDocumentAdditionActions act, IContext context, object param);
-
 
         IEnumerable<InternalDictionaryPositionWithActions> GetDocumentActions(IContext ctx, int documentId);
     }

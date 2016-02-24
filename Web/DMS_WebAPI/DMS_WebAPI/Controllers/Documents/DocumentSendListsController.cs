@@ -1,6 +1,5 @@
 ﻿using BL.Logic.DependencyInjection;
 using BL.Logic.DocumentCore.Interfaces;
-using BL.Model.DocumentCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Web.Http;
@@ -45,7 +44,7 @@ namespace DMS_WebAPI.Controllers.Documents
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            docProc.ExecuteAdditionAction(EnumDocumentAdditionActions.AddDocumentSendList, cxt, model);
+            docProc.ExecuteAction(EnumDocumentActions.AddDocumentSendList, cxt, model);
             return GetByDocument(model.DocumentId);
         }
 
@@ -58,7 +57,7 @@ namespace DMS_WebAPI.Controllers.Documents
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            docProc.ExecuteAdditionAction(EnumDocumentAdditionActions.AddByStandartSendListDocumentSendList, cxt, model);
+            docProc.ExecuteAction(EnumDocumentActions.AddByStandartSendListDocumentSendList, cxt, model);
             return GetByDocument(model.DocumentId);
         }
 
@@ -73,7 +72,7 @@ namespace DMS_WebAPI.Controllers.Documents
             model.Id = id;
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            docProc.ExecuteAdditionAction(EnumDocumentAdditionActions.ModifyDocumentSendList, cxt, model);
+            docProc.ExecuteAction(EnumDocumentActions.ModifyDocumentSendList, cxt, model);
             return GetByDocument(model.DocumentId);
         }
 
@@ -86,7 +85,7 @@ namespace DMS_WebAPI.Controllers.Documents
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            int docId = (int)docProc.ExecuteAdditionAction(EnumDocumentAdditionActions.DeleteDocumentSendList, cxt, id);
+            int docId = (int)docProc.ExecuteAction(EnumDocumentActions.DeleteDocumentSendList, cxt, id);
             return GetByDocument(docId);
         }
     }

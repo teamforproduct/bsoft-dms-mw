@@ -13,7 +13,7 @@ using BL.Model.Exception;
 
 namespace BL.Logic.DocumentCore.AdditionalCommands
 {
-    public class AddDocumentFileCommand: BaseDocumentAdditionCommand
+    public class AddDocumentFileCommand: BaseDocumentCommand
     {
         private readonly IAdminsDbProcess _adminDb;
         private readonly IDocumentFileDbProcess _operationDb;
@@ -84,6 +84,6 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             return res;
         }
 
-        public override EnumDocumentAdditionActions CommandType => EnumDocumentAdditionActions.AddDocumentFile;
+        public override EnumDocumentActions CommandType => EnumDocumentActions.AddDocumentFile;
     }
 }
