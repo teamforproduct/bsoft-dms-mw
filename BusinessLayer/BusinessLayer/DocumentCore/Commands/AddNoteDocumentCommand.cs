@@ -1,4 +1,5 @@
 ﻿using System;
+using BL.Database.Admins.Interfaces;
 using BL.Logic.Common;
 using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore.Actions;
@@ -10,11 +11,15 @@ namespace BL.Logic.DocumentCore.Commands
 {
     public class AddNoteDocumentCommand: BaseDocumentCommand
     {
+        private readonly IDocumentsDbProcess _documentDb;
         private readonly IDocumentOperationsDbProcess _operationDb;
+        private readonly IAdminsDbProcess _adminDb;
 
-        public AddNoteDocumentCommand(IDocumentOperationsDbProcess operationDb)
+        public AddNoteDocumentCommand(IDocumentsDbProcess documentDb, IDocumentOperationsDbProcess operationDb, IAdminsDbProcess adminDb)
         {
+            _documentDb = documentDb;
             _operationDb = operationDb;
+            _adminDb = adminDb;
         }
 
         private AddNote Model
@@ -36,26 +41,19 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanExecute()
         {
+            _adminDb.VerifyAccess(_context, CommandType);
+            _document = _documentDb.GetBlankDocumentId(_context, Model.DocumentId);
+
+            if (_document == null)
+            {
+                throw new DocumentNotFoundOrUserHasNoAccess();
+            }
             return true;
         }
         public override object Execute()
         {
-            //TODO переделать под общую схему с оптимизацией
-            var evt = new InternalDocumentEvents
-            {
-                DocumentId = Model.DocumentId,
-                Description = Model.Description,
-                EventType = EnumEventTypes.AddNote,
-                SourceAgentId = _context.CurrentAgentId,
-                SourcePositionId = _context.CurrentPositionId,
-                TargetPositionId = _context.CurrentPositionId,
-                LastChangeUserId = _context.CurrentAgentId,
-                LastChangeDate = DateTime.Now,
-                Date = DateTime.Now,
-                CreateDate = DateTime.Now
-            };
-
-            _operationDb.AddDocumentEvent(_context, evt);
+            var events = CommonDocumentUtilities.GetNewDocumentEvent(_context, EnumEventTypes.AddNote, Model.Description, idDocument: Model.DocumentId);
+            _operationDb.AddDocumentEvents(_context, events);
             return null;
         }
 

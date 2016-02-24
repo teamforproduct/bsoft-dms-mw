@@ -33,7 +33,7 @@ namespace BL.Logic.Common
             document.LastChangeUserId = context.CurrentAgentId;
         }
 
-        public static List<InternalDocumentEvents> GetNewDocumentEvent(IContext context, EnumEventTypes eventType, string description, int? idDocument = null)
+        public static IEnumerable<InternalDocumentEvents> GetNewDocumentEvent(IContext context, EnumEventTypes eventType, string description, int? idDocument = null)
         {
             return new List<InternalDocumentEvents>
             {
@@ -53,7 +53,7 @@ namespace BL.Logic.Common
             };
         }
 
-        public static List<InternalDocumentEvents> GetNewDocumentEvent(IContext context, EnumEventTypes eventType, string description, int targetPositionId, int? idDocument = null)
+        public static IEnumerable<InternalDocumentEvents> GetNewDocumentEvent(IContext context, EnumEventTypes eventType, string description, int targetPositionId, int? idDocument = null)
         {
             return new List<InternalDocumentEvents>
             {
@@ -73,7 +73,7 @@ namespace BL.Logic.Common
             };
         }
 
-        public static List<InternalDocumentAccesses> GetNewDocumentAccess(IContext context)
+        public static IEnumerable<InternalDocumentAccesses> GetNewDocumentAccess(IContext context)
         {
             return new List<InternalDocumentAccesses>
             {
@@ -89,7 +89,7 @@ namespace BL.Logic.Common
             };
         }
 
-        public static List<InternalDocumentAccesses> GetNewDocumentAccess(IContext context, EnumDocumentAccesses accessLevel, int positionId)
+        public static IEnumerable<InternalDocumentAccesses> GetNewDocumentAccess(IContext context, EnumDocumentAccesses accessLevel, int positionId)
         {
             return new List<InternalDocumentAccesses>
             {
@@ -212,5 +212,22 @@ namespace BL.Logic.Common
             }
         }
 
+        public static IEnumerable<FrontDocumentSendListStage> GetSendListStage(IEnumerable<FrontDocumentSendList> sendLists)
+        {
+            if (sendLists?.Count() > 0)
+            {
+                return Enumerable.Range(0, sendLists.Max(x => x.Stage) + 1)
+                    .GroupJoin(sendLists, s => s, sl => sl.Stage
+                    , (s, sls) => new { s, sls = sls.Where(x => x.Id > 0) })
+                    .Select(x => new FrontDocumentSendListStage
+                    {
+                        Stage = x.s,
+                        SendLists = x.sls.ToList()
+                    }).ToList();
+
+            }
+            else
+                return new List<FrontDocumentSendListStage>();
+        }
     }
 }

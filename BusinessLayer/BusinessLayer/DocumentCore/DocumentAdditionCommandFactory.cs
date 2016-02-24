@@ -44,6 +44,9 @@ namespace BL.Logic.DocumentCore
                 case EnumDocumentAdditionActions.DeleteDocumentSendListStage:
                     cmd = DmsResolver.Current.Get<DeleteDocumentSendListStageCommand>();
                     break;
+                case EnumDocumentAdditionActions.ModifyDocumentTags:
+                    cmd = DmsResolver.Current.Get<ModifyDocumentTagsCommand>();
+                    break;
 
                 case EnumDocumentAdditionActions.DeleteDocumentFile:
                     cmd = DmsResolver.Current.Get<DeleteDocumentFileCommand>();

@@ -16,7 +16,7 @@ namespace BL.Logic.DocumentCore.Commands
         private readonly IDocumentOperationsDbProcess _operationDb;
         private readonly IAdminsDbProcess _adminDb;
 
-        protected InternalDocumentAccesses DocAccess;
+        private InternalDocumentAccesses _docAccess;
 
         public StartWorkDocumentCommand(IDocumentOperationsDbProcess operationDb, IAdminsDbProcess adminDb)
         {
@@ -49,19 +49,19 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
-            DocAccess = _document.Accesses.FirstOrDefault();
-            if (DocAccess.IsInWork)
+            _docAccess = _document.Accesses.FirstOrDefault();
+            if (_docAccess.IsInWork)
             {
                 throw new CouldNotChangeIsInWork();
             }
-            DocAccess = _document.Accesses.FirstOrDefault();
+            _docAccess = _document.Accesses.FirstOrDefault();
             return true;
         }
 
         public override object Execute()
         {
-            DocAccess.IsInWork = true;
-            CommonDocumentUtilities.SetLastChange(_context, DocAccess);
+            _docAccess.IsInWork = true;
+            CommonDocumentUtilities.SetLastChange(_context, _docAccess);
             _document.Events = CommonDocumentUtilities.GetNewDocumentEvent(_context, EnumEventTypes.SetInWork, Model.Description, idDocument: Model.DocumentId);
             _operationDb.ChangeIsInWorkAccess(_context, _document);
             return null;

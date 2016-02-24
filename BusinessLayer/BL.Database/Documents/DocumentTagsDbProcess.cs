@@ -46,44 +46,6 @@ namespace BL.Database.Documents
                 return items;
             }
         }
-        public void ModifyDocumentTags(IContext context, InternalDocumentTags model)
-        {
-            // TODO к Сергею проверить нужно ли разнести этот метод
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
-            {
-                var dictionaryTags = dbContext.DictionaryTagsSet
-                    .Where(x => !x.PositionId.HasValue || context.CurrentPositionsIdList.Contains(x.PositionId ?? 0))
-                    .Where(x => model.Tags.Contains(x.Id))
-                    .Select(x=>x.Id)
-                    .ToList();
-
-                var documentTags = dbContext.DocumentTagsSet
-                    .Where(x => x.DocumentId == model.DocumentId)
-                    .Where(x => !x.Tag.PositionId.HasValue || context.CurrentPositionsIdList.Contains(x.Tag.PositionId ?? 0))
-                    .Select(x=>x.TagId)
-                    .ToList();
-
-                //Удаляем теги которые не присутствуют в списке
-                dbContext.DocumentTagsSet
-                    .RemoveRange(dbContext.DocumentTagsSet
-                        .Where(x=>x.DocumentId==model.DocumentId 
-                            && documentTags.Where(y => !dictionaryTags.Contains(y)).Contains(x.TagId)));
-
-                var newDictionaryTags = dictionaryTags
-                    .Where(x => !documentTags.Contains(x))
-                    .Select(x => new DocumentTags
-                    {
-                        DocumentId = model.DocumentId,
-                        TagId = x,
-                        LastChangeUserId = model.LastChangeUserId,
-                        LastChangeDate = model.LastChangeDate
-                    });
-
-                dbContext.DocumentTagsSet.AddRange(newDictionaryTags);
-
-                dbContext.SaveChanges();
-            }
-        }
         #endregion DocumentTags         
     }
 }

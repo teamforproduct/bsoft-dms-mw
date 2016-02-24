@@ -16,7 +16,7 @@ namespace BL.Logic.DocumentCore.Commands
         private readonly IDocumentOperationsDbProcess _operationDb;
         private readonly IAdminsDbProcess _adminDb;
 
-        protected InternalDocumentAccesses DocAccess;
+        private InternalDocumentAccesses _docAccess;
 
         public AddFavouriteDocumentCommand(IDocumentOperationsDbProcess operationDb, IAdminsDbProcess adminDb)
         {
@@ -49,8 +49,8 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
-            DocAccess = _document.Accesses.FirstOrDefault();
-            if (DocAccess.IsFavourite)
+            _docAccess = _document.Accesses.FirstOrDefault();
+            if (_docAccess.IsFavourite)
             {
                 throw new CouldNotChangeFavourite();
             }
@@ -59,9 +59,9 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override object Execute()
         {
-            DocAccess.IsFavourite = true;
-            CommonDocumentUtilities.SetLastChange(_context, DocAccess);
-            _operationDb.ChangeIsFavouriteAccess(_context, DocAccess);
+            _docAccess.IsFavourite = true;
+            CommonDocumentUtilities.SetLastChange(_context, _docAccess);
+            _operationDb.ChangeIsFavouriteAccess(_context, _docAccess);
             return null;
         }
 

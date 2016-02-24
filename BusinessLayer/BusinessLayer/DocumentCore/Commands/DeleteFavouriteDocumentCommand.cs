@@ -16,7 +16,7 @@ namespace BL.Logic.DocumentCore.Commands
         private readonly IDocumentOperationsDbProcess _operationDb;
         private readonly IAdminsDbProcess _adminDb;
 
-        protected InternalDocumentAccesses DocAccess;
+        private InternalDocumentAccesses _docAccess;
 
         public DeleteFavouriteDocumentCommand(IDocumentOperationsDbProcess operationDb, IAdminsDbProcess adminDb)
         {
@@ -53,15 +53,15 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new CouldNotChangeFavourite();
             }
-            DocAccess = _document.Accesses.FirstOrDefault();
+            _docAccess = _document.Accesses.FirstOrDefault();
             return true;
         }
 
         public override object Execute()
         {
-            DocAccess.IsFavourite = false;
-            CommonDocumentUtilities.SetLastChange(_context, DocAccess);
-            _operationDb.ChangeIsFavouriteAccess(_context, DocAccess);
+            _docAccess.IsFavourite = false;
+            CommonDocumentUtilities.SetLastChange(_context, _docAccess);
+            _operationDb.ChangeIsFavouriteAccess(_context, _docAccess);
             return null;
         }
 
