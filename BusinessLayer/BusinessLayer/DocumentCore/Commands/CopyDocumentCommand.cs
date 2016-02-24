@@ -49,7 +49,7 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanExecute()
         {
-            _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = CommandType.ToString()});
+            _adminDb.VerifyAccess(_context, CommandType);
             _document = _documentDb.CopyDocumentPrepare(_context, Model.DocumentId);
 
             if (_document == null)
@@ -88,6 +88,6 @@ namespace BL.Logic.DocumentCore.Commands
             return _document.Id;
         }
 
-        public override EnumDocumentActions CommandType { get { return EnumDocumentActions.CopyDocument; } }
+        public override EnumDocumentActions CommandType => EnumDocumentActions.CopyDocument;
     }
 }

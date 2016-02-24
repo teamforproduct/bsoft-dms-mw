@@ -48,7 +48,6 @@
     <Compile Include="AdminCore\VerifyAccess.cs" />
     <Compile Include="AdminCore\VerifySubordination.cs" />
     <Compile Include="Common\LastChangeInfo.cs" />
-    <Compile Include="Database\EventAccessModel.cs" />
     <Compile Include="Database\StoreInfo.cs" />
     <Compile Include="Database\DatabaseModel.cs" />
     <Compile Include="Database\DatabaseType.cs" />
@@ -159,7 +158,6 @@
     <Compile Include="DocumentCore\Actions\RegisterDocument.cs" />
     <Compile Include="Enums\EnumSendTypes.cs" />
     <Compile Include="Exception\DmsExceptions.cs" />
-    <Compile Include="DocumentCore\InternalModel\InternalLinkedDocument.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Enums\EnumLogTypes.cs" />
     <Compile Include="SystemCore\FilterSystemUIElement.cs" />

@@ -33,23 +33,15 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanBeDisplayed()
         {
-            try
-            {
-                _adminDb.VerifyAccess(_context,new VerifyAccess {DocumentActionCode = CommandType.ToString()});
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-            
+            return true;
+
         }
 
         public override bool CanExecute()
         {
-            _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = CommandType.ToString()});
+            _adminDb.VerifyAccess(Context, CommandType);
 
-            _document = _documentDb.AddDocumentPrepare(_context, Model.TemplateDocumentId);
+            _document = _documentDb.AddDocumentPrepare(Context, Model.TemplateDocumentId);
             if (_document == null)
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
@@ -59,26 +51,25 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override object Execute()
         {
-            CommonDocumentUtilities.SetAtrributesForNewDocument(_context, _document);
+            CommonDocumentUtilities.SetAtrributesForNewDocument(Context, _document);
 
             foreach (var sl in _document.SendLists)
             {
                 sl.IsInitial = true;
                 sl.StartEventId = null;
                 sl.CloseEventId = null;
-                sl.LastChangeDate = DateTime.Now;
-                sl.LastChangeUserId = _context.CurrentAgentId;
+                CommonDocumentUtilities.SetLastChange(Context, sl);
             }
             foreach (var sl in _document.RestrictedSendLists)
             {
                 CommonDocumentUtilities.SetLastChange(Context, sl);
             }
-            _document.Events = CommonDocumentUtilities.GetNewDocumentEvent(Context,EnumEventTypes.AddNewDocument, "Create");
-            _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccess(Context);
+            Document.Events = CommonDocumentUtilities.GetNewDocumentEvent(Context,EnumEventTypes.AddNewDocument, "Create");
+            Document.Accesses = CommonDocumentUtilities.GetNewDocumentAccess(Context);
             //TODO process files
-            _document.DocumentFiles = null;
+            Document.DocumentFiles = null;
             _documentDb.AddDocument(Context, Document);
-            return _document.Id;
+            return Document.Id;
         }
 
         public override EnumDocumentActions CommandType => EnumDocumentActions.AddDocument;

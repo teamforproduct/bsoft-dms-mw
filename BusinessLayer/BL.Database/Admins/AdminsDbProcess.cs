@@ -9,6 +9,7 @@ using BL.Logic.DependencyInjection;
 using BL.Database.Dictionaries.Interfaces;
 using BL.Model.Exception;
 using BL.Model.DictionaryCore.FilterModel;
+using BL.Model.Enums;
 
 namespace BL.Database.Admins
 {
@@ -88,13 +89,29 @@ namespace BL.Database.Admins
             }
         }
 
+        public bool VerifyAccess(IContext context, EnumDocumentAdditionActions action, bool isThrowExeception = true)
+        {
+            return VerifyAccess(context, new VerifyAccess { DocumentActionCode = action.ToString() });
+        }
+
+        public bool VerifyAccess(IContext context,  EnumDocumentActions action, bool isThrowExeception = true)
+        {
+            return VerifyAccess(context, new VerifyAccess { DocumentActionCode = action.ToString() });
+        }
+
+        public bool VerifyAccess(IContext context, string actionCode, bool isThrowExeception = true)
+        {
+            return VerifyAccess(context, new VerifyAccess {DocumentActionCode = actionCode });
+        }
+
         /// <summary>
         /// Проверка прав на действие
         /// </summary>
         /// <param name="context"></param>
         /// <param name="model"></param>
+        /// <param name="isThrowExeception"></param>
         /// <returns></returns>
-        public void VerifyAccess(IContext context, VerifyAccess model)
+        public bool VerifyAccess(IContext context, VerifyAccess model, bool isThrowExeception = true)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
@@ -126,10 +143,11 @@ namespace BL.Database.Admins
                     var noAcc = model.PositionsIdList.Except(dbContext.AdminUserRolesSet.Where(x => (x.UserId == model.UserId)).Select(x => x.Role.PositionId).ToList()).ToList();
                     res = !noAcc.Any();
                 }
-                if (!res)
+                if (!res && isThrowExeception)
                 {
                     throw new AccessIsDenied(); //TODO Сергей!!!Как красиво передать string obj, string act, int? id = null в сообщение?
                 }
+                return res;
             }
         }
         /// <summary>

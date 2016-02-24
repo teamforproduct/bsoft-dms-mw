@@ -16,8 +16,6 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         private readonly IDocumentOperationsDbProcess _operationDb;
         private readonly IAdminsDbProcess _adminDb;
 
-        protected InternalLinkedDocument DocLink;
-
         public AddDocumentLinkCommand(IDocumentOperationsDbProcess operationDb, IAdminsDbProcess adminDb)
         {
             _adminDb = adminDb;
@@ -43,25 +41,24 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override bool CanExecute()
         {
-            DocLink = _operationDb.AddDocumentLinkPrepare(_context, Model);
-            if (DocLink.DocumentId == null || DocLink.ParentDocumentId == null)
+            _document = _operationDb.AddDocumentLinkPrepare(_context, Model);
+            if (_document?.Id == null || _document?.ParentDocumentId == null)
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
-            if (DocLink.DocumentLinkId.HasValue && DocLink.ParentDocumentLinkId.HasValue && (DocLink.DocumentLinkId == DocLink.ParentDocumentLinkId))
+            if (_document.LinkId.HasValue && _document.ParentDocumentLinkId.HasValue && (_document.LinkId == _document.ParentDocumentLinkId))
             {
                 throw new DocumentHasAlreadyHadLink();
             }
-            _context.SetCurrentPosition(DocLink.ExecutorPositionId);
-            _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = CommandType.ToString()});
+            _context.SetCurrentPosition(_document.ExecutorPositionId);
+            _adminDb.VerifyAccess(_context, CommandType);
             return true;
         }
 
         public override object Execute()
         {
-            DocLink.LastChangeUserId = _context.CurrentAgentId;
-            DocLink.LastChangeDate = DateTime.Now;
-            _operationDb.AddDocumentLink(_context, DocLink);
+            CommonDocumentUtilities.SetLastChange(_context, _document);
+            _operationDb.AddDocumentLink(_context, _document);
             return null;
         }
 

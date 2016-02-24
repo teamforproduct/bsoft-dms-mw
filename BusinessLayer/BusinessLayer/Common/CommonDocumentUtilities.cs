@@ -33,12 +33,13 @@ namespace BL.Logic.Common
             document.LastChangeUserId = context.CurrentAgentId;
         }
 
-        public static List<InternalDocumentEvents> GetNewDocumentEvent(IContext context, EnumEventTypes eventType, string description)
+        public static List<InternalDocumentEvents> GetNewDocumentEvent(IContext context, EnumEventTypes eventType, string description, int? idDocument = null)
         {
             return new List<InternalDocumentEvents>
             {
                 new InternalDocumentEvents
                 {
+                    DocumentId = idDocument??0,
                     EventType = eventType,
                     Description = description,
                     SourceAgentId = context.CurrentAgentId,
@@ -52,12 +53,13 @@ namespace BL.Logic.Common
             };
         }
 
-        public static List<InternalDocumentEvents> GetNewDocumentEvent(IContext context, EnumEventTypes eventType, string description, int targetPositionId)
+        public static List<InternalDocumentEvents> GetNewDocumentEvent(IContext context, EnumEventTypes eventType, string description, int targetPositionId, int? idDocument = null)
         {
             return new List<InternalDocumentEvents>
             {
                 new InternalDocumentEvents
                 {
+                    DocumentId = idDocument??0,
                     EventType = eventType,
                     Description = description,
                     SourceAgentId = context.CurrentAgentId,

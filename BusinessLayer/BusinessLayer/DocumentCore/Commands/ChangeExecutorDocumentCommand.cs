@@ -33,21 +33,7 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanBeDisplayed()
         {
-            //TODO ПЕРЕДЕЛКА
-            try
-            {
-                _document = _documentDb.ChangeExecutorDocumentPrepare(_context, Model);
-                _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = CommandType.ToString()});
-                if (_document == null || _document.ExecutorPositionId != _context.CurrentPositionId)
-                {
-                    return false;
-                }
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            return true;
         }
 
         public override bool CanExecute()
@@ -63,7 +49,7 @@ namespace BL.Logic.DocumentCore.Commands
                 throw new DocumentHasAlredyBeenRegistered();
             }
             _context.SetCurrentPosition(_document.ExecutorPositionId);
-            _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = CommandType.ToString()});
+            _adminDb.VerifyAccess(_context, CommandType);
             return true;
         }
 
@@ -74,7 +60,7 @@ namespace BL.Logic.DocumentCore.Commands
             _document.ExecutorPositionId = Model.PositionId;
             _document.AccessLevel = Model.AccessLevel;
 
-            _document.Events = CommonDocumentUtilities.GetNewDocumentEvent(_context, EnumEventTypes.ChangeExecutor, Model.Description,Model.PositionId);
+            _document.Events = CommonDocumentUtilities.GetNewDocumentEvent(_context, EnumEventTypes.ChangeExecutor, Model.Description,Model.PositionId, Model.DocumentId);
 
             _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccess(_context, Model.AccessLevel, Model.PositionId);
 

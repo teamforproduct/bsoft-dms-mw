@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using BL.Logic.Common;
 using BL.Database.Admins.Interfaces;
 using BL.Database.Documents.Interfaces;
@@ -42,38 +43,27 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanExecute()
         {
-            _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = CommandType.ToString() });
-            DocAccess = _operationDb.ChangeIsInWorkAccessPrepare(_context, Model.DocumentId);
-            if (DocAccess == null)
+            _adminDb.VerifyAccess(_context, CommandType);
+            _document = _operationDb.ChangeIsInWorkAccessPrepare(_context, Model.DocumentId);
+            if (_document?.Accesses == null)
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
+            DocAccess = _document.Accesses.FirstOrDefault();
             if (DocAccess.IsInWork)
             {
                 throw new CouldNotChangeIsInWork();
             }
+            DocAccess = _document.Accesses.FirstOrDefault();
             return true;
         }
 
         public override object Execute()
         {
             DocAccess.IsInWork = true;
-            DocAccess.LastChangeDate = DateTime.Now;
-            DocAccess.LastChangeUserId = _context.CurrentAgentId;
-            DocAccess.DocumentEvent = new InternalDocumentEvents
-                {
-                    DocumentId = Model.DocumentId,
-                    SourceAgentId = _context.CurrentAgentId,
-                    SourcePositionId = _context.CurrentPositionId,
-                    TargetPositionId = _context.CurrentPositionId,
-                    Description = Model.Description,
-                    EventType = EnumEventTypes.SetInWork,
-                    LastChangeUserId = _context.CurrentAgentId,
-                    LastChangeDate = DateTime.Now,
-                    Date = DateTime.Now,
-                    CreateDate = DateTime.Now,
-                };
-            _operationDb.ChangeIsInWorkAccess(_context, DocAccess);
+            CommonDocumentUtilities.SetLastChange(_context, DocAccess);
+            _document.Events = CommonDocumentUtilities.GetNewDocumentEvent(_context, EnumEventTypes.SetInWork, Model.Description, idDocument: Model.DocumentId);
+            _operationDb.ChangeIsInWorkAccess(_context, _document);
             return null;
         }
 
