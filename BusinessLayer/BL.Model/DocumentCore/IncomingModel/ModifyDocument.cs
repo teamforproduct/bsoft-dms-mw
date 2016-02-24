@@ -2,7 +2,7 @@
 using BL.Model.Enums;
 using System.ComponentModel.DataAnnotations;
 
-namespace BL.Model.DocumentCore
+namespace BL.Model.DocumentCore.IncomingModel
 {
     /// <summary>
     /// Модель для модификации документа

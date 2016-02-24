@@ -61,6 +61,14 @@
     <Compile Include="DictionaryCore\DocumentType\AddDictionaryDocumentTypeCommand.cs" />
     <Compile Include="DictionaryCore\DocumentType\ModifyDictionaryDocumentTypeCommand.cs" />
     <Compile Include="DictionaryCore\Interfaces\IDictionaryService.cs" />
+    <Compile Include="DocumentCore\AdditionalCommands\AddByStandartSendListDocumentSendListCommand.cs" />
+    <Compile Include="DocumentCore\AdditionalCommands\AddByStandartSendListDocumentRestrictedSendListCommand.cs" />
+    <Compile Include="DocumentCore\AdditionalCommands\DeleteDocumentSendListStageCommand.cs" />
+    <Compile Include="DocumentCore\AdditionalCommands\AddDocumentSendListStageCommand.cs" />
+    <Compile Include="DocumentCore\AdditionalCommands\DeleteDocumentSendListCommand.cs" />
+    <Compile Include="DocumentCore\AdditionalCommands\ModifyDocumentSendListCommand.cs" />
+    <Compile Include="DocumentCore\AdditionalCommands\AddDocumentSendListCommand.cs" />
+    <Compile Include="DocumentCore\AdditionalCommands\DeleteDocumentRestrictedSendListCommand.cs" />
     <Compile Include="DocumentCore\AdditionalCommands\AddDocumentRestrictedSendListCommand.cs" />
     <Compile Include="DocumentCore\AdditionalCommands\AddDocumentLinkCommand.cs" />
     <Compile Include="DocumentCore\Commands\AddFavouriteDocumentCommand.cs" />

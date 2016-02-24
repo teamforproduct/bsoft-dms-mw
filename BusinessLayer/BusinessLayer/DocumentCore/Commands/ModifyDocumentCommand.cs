@@ -1,12 +1,11 @@
 ﻿using BL.Database.Documents.Interfaces;
 using BL.Logic.Common;
 using BL.Database.Admins.Interfaces;
-using BL.Logic.Common;
 using BL.Model.AdminCore;
-using BL.Model.DocumentCore;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
+using BL.Model.DocumentCore.IncomingModel;
 
 namespace BL.Logic.DocumentCore.Commands
 {

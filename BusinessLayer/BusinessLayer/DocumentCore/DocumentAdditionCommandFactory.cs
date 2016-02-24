@@ -20,7 +20,30 @@ namespace BL.Logic.DocumentCore
                 case EnumDocumentAdditionActions.AddDocumentRestrictedSendList:
                     cmd = DmsResolver.Current.Get<AddDocumentRestrictedSendListCommand>();
                     break;
-
+                case EnumDocumentAdditionActions.AddByStandartSendListDocumentRestrictedSendList:
+                    cmd = DmsResolver.Current.Get<AddByStandartSendListDocumentRestrictedSendListCommand>();
+                    break;
+                case EnumDocumentAdditionActions.DeleteDocumentRestrictedSendList:
+                    cmd = DmsResolver.Current.Get<DeleteDocumentRestrictedSendListCommand>();
+                    break;
+                case EnumDocumentAdditionActions.AddDocumentSendList:
+                    cmd = DmsResolver.Current.Get<AddDocumentSendListCommand>();
+                    break;
+                case EnumDocumentAdditionActions.AddByStandartSendListDocumentSendList:
+                    cmd = DmsResolver.Current.Get<AddByStandartSendListDocumentSendListCommand>();
+                    break;
+                case EnumDocumentAdditionActions.ModifyDocumentSendList:
+                    cmd = DmsResolver.Current.Get<ModifyDocumentSendListCommand>();
+                    break;
+                case EnumDocumentAdditionActions.DeleteDocumentSendList:
+                    cmd = DmsResolver.Current.Get<DeleteDocumentRestrictedSendListCommand>();
+                    break;
+                case EnumDocumentAdditionActions.AddDocumentSendListStage:
+                    cmd = DmsResolver.Current.Get<AddDocumentSendListStageCommand>();
+                    break;
+                case EnumDocumentAdditionActions.DeleteDocumentSendListStage:
+                    cmd = DmsResolver.Current.Get<DeleteDocumentSendListStageCommand>();
+                    break;
                 default:
                     throw new CommandNotDefinedError();
             }

@@ -57,6 +57,7 @@
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryTag.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryTag.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryDocumentType.cs" />
+    <Compile Include="DictionaryCore\InternalModel\InternalDictionaryStandartSendListContent.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryPositionWithActions.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryTag.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryDocumentType.cs" />

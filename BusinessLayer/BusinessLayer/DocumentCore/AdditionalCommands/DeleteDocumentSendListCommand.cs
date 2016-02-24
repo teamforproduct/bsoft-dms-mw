@@ -13,28 +13,28 @@ using System.Collections.Generic;
 
 namespace BL.Logic.DocumentCore.AdditionalCommands
 {
-    public class AddDocumentRestrictedSendListCommand : BaseDocumentAdditionCommand
+    public class DeleteDocumentSendListCommand : BaseDocumentAdditionCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
         private readonly IAdminsDbProcess _adminDb;
 
-        protected InternalDocumentRestrictedSendLists DocRestSendList;
+        protected InternalDocumentSendLists DocSendList;
 
-        public AddDocumentRestrictedSendListCommand(IDocumentOperationsDbProcess operationDb, IAdminsDbProcess adminDb)
+        public DeleteDocumentSendListCommand(IDocumentOperationsDbProcess operationDb, IAdminsDbProcess adminDb)
         {
             _adminDb = adminDb;
             _operationDb = operationDb;
         }
 
-        private ModifyDocumentRestrictedSendList Model
+        private int Model
         {
             get
             {
-                if (!(_param is ModifyDocumentRestrictedSendList))
+                if (!(_param is int))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ModifyDocumentRestrictedSendList)_param;
+                return (int)_param;
             }
         }
 
@@ -48,16 +48,11 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             _context.SetCurrentPosition(_document.ExecutorPositionId);
             _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = CommandType.ToString() });
 
-            _document = _operationDb.ChangeDocumentSendListPrepare(_context, Model.DocumentId);
+            DocSendList = _operationDb.DeleteDocumentSendListPrepare(_context, Model);
 
-            DocRestSendList = new InternalDocumentRestrictedSendLists
-            {
-                AccessLevel = Model.AccessLevel,
-                DocumentId = Model.DocumentId,
-                PositionId = Model.PositionId
-            };
+            _document = _operationDb.ChangeDocumentSendListPrepare(_context, DocSendList.DocumentId);
 
-            _document.RestrictedSendLists.ToList().Add(DocRestSendList);
+            _document.SendLists.ToList().Remove(_document.SendLists.FirstOrDefault(x => x.Id == Model));
 
             CommonDocumentUtilities.VerifySendLists(_document);
 
@@ -66,11 +61,10 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override object Execute()
         {
-            CommonDocumentUtilities.SetLastChange(_context, DocRestSendList);
-            _operationDb.AddDocumentRestrictedSendList(_context, new List<InternalDocumentRestrictedSendLists> { DocRestSendList });
-            return null;
+            _operationDb.DeleteDocumentSendList(_context, Model);
+            return DocSendList.DocumentId;
         }
 
-        public override EnumDocumentAdditionActions CommandType => EnumDocumentAdditionActions.AddDocumentRestrictedSendList;
+        public override EnumDocumentAdditionActions CommandType => EnumDocumentAdditionActions.DeleteDocumentSendList;
     }
 }
