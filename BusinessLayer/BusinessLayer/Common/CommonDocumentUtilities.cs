@@ -38,7 +38,7 @@ namespace BL.Logic.Common
             document.LastChangeUserId = context.CurrentAgentId;
         }
 
-        public static List<InternalDocumentEvents> GetNewEvent(IContext context, EnumEventTypes eventType, string description)
+        public static List<InternalDocumentEvents> GetNewDocumentEvent(IContext context, EnumEventTypes eventType, string description)
         {
             return new List<InternalDocumentEvents>
             {
@@ -47,7 +47,6 @@ namespace BL.Logic.Common
                     EventType = eventType,
                     Description = description,
                     SourceAgentId = context.CurrentAgentId,
-                    TargetAgentId = context.CurrentAgentId,
                     TargetPositionId = context.CurrentPositionId,
                     SourcePositionId = context.CurrentPositionId,
                     LastChangeUserId = context.CurrentAgentId,
@@ -58,28 +57,26 @@ namespace BL.Logic.Common
             };
         }
 
-        public static List<InternalDocumentEvents> GetEventForChangeExecutorDocument(IContext context, ChangeExecutor model)
+        public static List<InternalDocumentEvents> GetNewDocumentEvent(IContext context, EnumEventTypes eventType, string description, int targetPositionId)
         {
             return new List<InternalDocumentEvents>
             {
                 new InternalDocumentEvents
                 {
-                    EventType = EnumEventTypes.ChangeExecutor,
-                    Description = model.Description,
-                    LastChangeUserId = context.CurrentAgentId,
+                    EventType = eventType,
+                    Description = description,
                     SourceAgentId = context.CurrentAgentId,
-                    TargetAgentId = context.CurrentAgentId,
-                    TargetPositionId = model.PositionId,
                     SourcePositionId = context.CurrentPositionId,
+                    TargetPositionId = targetPositionId,
+                    LastChangeUserId = context.CurrentAgentId,
                     LastChangeDate = DateTime.Now,
                     Date = DateTime.Now,
                     CreateDate = DateTime.Now,
                 }
-
             };
         }
 
-        public static List<InternalDocumentAccesses> GetAccessesForNewDocument(IContext context)
+        public static List<InternalDocumentAccesses> GetNewDocumentAccess(IContext context)
         {
             return new List<InternalDocumentAccesses>
             {
@@ -95,18 +92,18 @@ namespace BL.Logic.Common
             };
         }
 
-        public static List<InternalDocumentAccesses> GetAccessesForChangeExecutorDocument(IContext context, ChangeExecutor model)
+        public static List<InternalDocumentAccesses> GetNewDocumentAccess(IContext context, EnumDocumentAccesses accessLevel, int positionId)
         {
             return new List<InternalDocumentAccesses>
             {
                 new InternalDocumentAccesses
                 {
-                    AccessLevel = model.AccessLevel,
+                    AccessLevel = accessLevel,
                     IsInWork = true,
                     IsFavourite = false,
                     LastChangeDate = DateTime.Now,
                     LastChangeUserId = context.CurrentAgentId,
-                    PositionId = model.PositionId
+                    PositionId = positionId
                 }
             };
         }

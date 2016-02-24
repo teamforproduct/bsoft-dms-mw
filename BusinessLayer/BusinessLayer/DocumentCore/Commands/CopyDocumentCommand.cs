@@ -77,8 +77,8 @@ namespace BL.Logic.DocumentCore.Commands
                 sl.LastChangeUserId = _context.CurrentAgentId;
             }
 
-            _document.Events = CommonDocumentUtilities.GetNewEvent(_context,EnumEventTypes.AddNewDocument, "Copy");
-            _document.Accesses = CommonDocumentUtilities.GetAccessesForNewDocument(_context);
+            _document.Events = CommonDocumentUtilities.GetNewDocumentEvent(_context,EnumEventTypes.AddNewDocument, "Copy");
+            _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccess(_context);
 
             //TODO process files
             _document.DocumentFiles = null;

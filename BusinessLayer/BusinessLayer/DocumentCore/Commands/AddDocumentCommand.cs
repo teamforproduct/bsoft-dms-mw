@@ -74,8 +74,8 @@ namespace BL.Logic.DocumentCore.Commands
                 sl.LastChangeDate = DateTime.Now;
                 sl.LastChangeUserId = _context.CurrentAgentId;
             }
-            _document.Events = CommonDocumentUtilities.GetNewEvent(_context,EnumEventTypes.AddNewDocument, "Create");
-            _document.Accesses = CommonDocumentUtilities.GetAccessesForNewDocument(_context);
+            _document.Events = CommonDocumentUtilities.GetNewDocumentEvent(_context,EnumEventTypes.AddNewDocument, "Create");
+            _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccess(_context);
             //TODO process files
             _document.DocumentFiles = null;
             _documentDb.AddDocument(_context, _document);

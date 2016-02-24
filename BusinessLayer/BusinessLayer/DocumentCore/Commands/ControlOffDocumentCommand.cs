@@ -55,7 +55,6 @@ namespace BL.Logic.DocumentCore.Commands
                 SourcePositionId = (int)_context.CurrentPositionId,
                 SourceAgentId = _context.CurrentAgentId,
                 TargetPositionId = _context.CurrentPositionId,
-                TargetAgentId = _context.CurrentAgentId,
                 LastChangeDate = DateTime.Now,
                 Date = DateTime.Now,
                 CreateDate = DateTime.Now,
@@ -65,6 +64,6 @@ namespace BL.Logic.DocumentCore.Commands
             return null;
         }
 
-        public override EnumDocumentActions CommandType { get { return EnumDocumentActions.ControlOff; } }
+        public override EnumDocumentActions CommandType => EnumDocumentActions.ControlOff;
     }
 }

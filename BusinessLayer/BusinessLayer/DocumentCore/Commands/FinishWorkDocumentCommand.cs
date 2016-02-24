@@ -59,7 +59,6 @@ namespace BL.Logic.DocumentCore.Commands
                 {
                     DocumentId = Model.DocumentId,
                     SourceAgentId = _context.CurrentAgentId,
-                    TargetAgentId = _context.CurrentAgentId,
                     SourcePositionId = _context.CurrentPositionId,
                     TargetPositionId = _context.CurrentPositionId,
                     Description = Model.Description,
