@@ -7,16 +7,16 @@ namespace BL.Database.Migrations
     {
         public override void Up()
         {
-            AddColumn("dbo.DocumentWaits", "Description", c => c.String());
-            AddColumn("dbo.DocumentWaits", "DueDate", c => c.DateTime());
-            AddColumn("dbo.DocumentWaits", "AttentionDate", c => c.DateTime());
+            AddColumn("dbo.Waits", "Description", c => c.String());
+            AddColumn("dbo.Waits", "DueDate", c => c.DateTime());
+            AddColumn("dbo.Waits", "AttentionDate", c => c.DateTime());
         }
         
         public override void Down()
         {
-            DropColumn("dbo.DocumentWaits", "AttentionDate");
-            DropColumn("dbo.DocumentWaits", "DueDate");
-            DropColumn("dbo.DocumentWaits", "Description");
+            DropColumn("dbo.Waits", "AttentionDate");
+            DropColumn("dbo.Waits", "DueDate");
+            DropColumn("dbo.Waits", "Description");
         }
     }
 }

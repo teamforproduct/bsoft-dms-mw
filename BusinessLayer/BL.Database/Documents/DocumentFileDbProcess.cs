@@ -140,7 +140,7 @@ namespace BL.Database.Documents
 
                     if (doc == null) return null;
 
-                    doc.DocumentFiles =  dbContext.DocumentFilesSet
+                    doc.Files =  dbContext.DocumentFilesSet
                             .Where(
                                 x => x.DocumentId == documentId && x.Version == maxVer && x.OrderNumber == orderNumber)
                             .Join(dbContext.DictionaryAgentsSet, df => df.LastChangeUserId, da => da.Id,
@@ -252,7 +252,7 @@ namespace BL.Database.Documents
                     }).FirstOrDefault();
                 if (doc == null) return null;
 
-                doc.DocumentFiles =
+                doc.Files =
                     dbContext.DocumentFilesSet.Where(
                         x => x.DocumentId == flIdent.DocumentId && x.OrderNumber == flIdent.OrderInDocument)
                         .Select(x => new InternalDocumentAttachedFile {Id = x.Id});

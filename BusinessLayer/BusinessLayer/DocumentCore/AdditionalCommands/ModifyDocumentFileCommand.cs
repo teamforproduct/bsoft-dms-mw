@@ -55,11 +55,11 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             {
                 throw new UserHasNoAccessToDocument();
             }
-            if (_document.DocumentFiles == null || !_document.DocumentFiles.Any())
+            if (_document.Files == null || !_document.Files.Any())
             {
                 throw new UnknownDocumentFile();
             }
-            fl = _document.DocumentFiles.First();
+            fl = _document.Files.First();
             return true;
         }
 

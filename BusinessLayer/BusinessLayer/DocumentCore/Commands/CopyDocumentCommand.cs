@@ -81,7 +81,7 @@ namespace BL.Logic.DocumentCore.Commands
             _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccess(_context);
 
             //TODO process files
-            _document.DocumentFiles = null;
+            _document.Files = null;
 
             //TODO make it with Actions
             _documentDb.AddDocument(_context, _document);

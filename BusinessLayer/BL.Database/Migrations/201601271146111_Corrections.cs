@@ -17,7 +17,7 @@ namespace BL.Database.Migrations
             DropForeignKey("dbo.DictionaryStandartSendListContents", "StandartSendListId", "dbo.DictionaryStandartSendLists");
             DropForeignKey("dbo.DictionarySendTypes", "SubordinationTypeId", "dbo.DictionarySubordinationTypes");
             DropForeignKey("dbo.DictionaryStandartSendLists", "PositionId", "dbo.DictionaryPositions");
-            DropForeignKey("dbo.DocumentFiles", "DocumentId", "dbo.Documents");
+            DropForeignKey("dbo.Files", "DocumentId", "dbo.Documents");
             DropForeignKey("dbo.Documents", "DocumentDirectionId", "dbo.DictionaryDocumentDirections");
             DropForeignKey("dbo.Documents", "DocumentTypeId", "dbo.DictionaryDocumentTypes");
             DropForeignKey("dbo.Documents", "ExecutorPositionId", "dbo.DictionaryPositions");
@@ -53,7 +53,7 @@ namespace BL.Database.Migrations
             AddForeignKey("dbo.DictionaryStandartSendListContents", "StandartSendListId", "dbo.DictionaryStandartSendLists", "Id");
             AddForeignKey("dbo.DictionarySendTypes", "SubordinationTypeId", "dbo.DictionarySubordinationTypes", "Id");
             AddForeignKey("dbo.DictionaryStandartSendLists", "PositionId", "dbo.DictionaryPositions", "Id");
-            AddForeignKey("dbo.DocumentFiles", "DocumentId", "dbo.Documents", "Id");
+            AddForeignKey("dbo.Files", "DocumentId", "dbo.Documents", "Id");
             AddForeignKey("dbo.Documents", "DocumentDirectionId", "dbo.DictionaryDocumentDirections", "Id");
             AddForeignKey("dbo.Documents", "DocumentTypeId", "dbo.DictionaryDocumentTypes", "Id");
             AddForeignKey("dbo.Documents", "ExecutorPositionId", "dbo.DictionaryPositions", "Id");
@@ -76,7 +76,7 @@ namespace BL.Database.Migrations
             DropForeignKey("dbo.Documents", "ExecutorPositionId", "dbo.DictionaryPositions");
             DropForeignKey("dbo.Documents", "DocumentTypeId", "dbo.DictionaryDocumentTypes");
             DropForeignKey("dbo.Documents", "DocumentDirectionId", "dbo.DictionaryDocumentDirections");
-            DropForeignKey("dbo.DocumentFiles", "DocumentId", "dbo.Documents");
+            DropForeignKey("dbo.Files", "DocumentId", "dbo.Documents");
             DropForeignKey("dbo.DictionaryStandartSendLists", "PositionId", "dbo.DictionaryPositions");
             DropForeignKey("dbo.DictionarySendTypes", "SubordinationTypeId", "dbo.DictionarySubordinationTypes");
             DropForeignKey("dbo.DictionaryStandartSendListContents", "StandartSendListId", "dbo.DictionaryStandartSendLists");
@@ -112,7 +112,7 @@ namespace BL.Database.Migrations
             AddForeignKey("dbo.Documents", "ExecutorPositionId", "dbo.DictionaryPositions", "Id", cascadeDelete: true);
             AddForeignKey("dbo.Documents", "DocumentTypeId", "dbo.DictionaryDocumentTypes", "Id", cascadeDelete: true);
             AddForeignKey("dbo.Documents", "DocumentDirectionId", "dbo.DictionaryDocumentDirections", "Id", cascadeDelete: true);
-            AddForeignKey("dbo.DocumentFiles", "DocumentId", "dbo.Documents", "Id", cascadeDelete: true);
+            AddForeignKey("dbo.Files", "DocumentId", "dbo.Documents", "Id", cascadeDelete: true);
             AddForeignKey("dbo.DictionaryStandartSendLists", "PositionId", "dbo.DictionaryPositions", "Id", cascadeDelete: true);
             AddForeignKey("dbo.DictionarySendTypes", "SubordinationTypeId", "dbo.DictionarySubordinationTypes", "Id", cascadeDelete: true);
             AddForeignKey("dbo.DictionaryStandartSendListContents", "StandartSendListId", "dbo.DictionaryStandartSendLists", "Id", cascadeDelete: true);

@@ -125,7 +125,7 @@ namespace BL.Database.Documents
 
         #endregion DocumentLink         
 
-        #region DocumentWaits
+        #region Waits
 
         public InternalDocumentWait GetDocumentWaitByOnEventId(IContext ctx, int eventId)
         {
@@ -187,7 +187,35 @@ namespace BL.Database.Documents
             }
         }
 
-        #endregion DocumentWaits
+        public InternalDocument ControlOffDocumentPrepare(IContext context, int eventId)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var doc = dbContext.DocumentWaitsSet
+                    .Where(x => x.OnEventId == eventId)
+                    .Select(x => new InternalDocument
+                    {
+                        Id = x.DocumentId,
+                        Waits = new List<InternalDocumentWait>
+                                    {
+                                        new InternalDocumentWait
+                                        {
+                                            Id = x.Id,
+                                            OnEvent = new InternalDocumentEvent
+                                            {
+                                                Id = x.OnEvent.Id,
+                                                SourcePositionId = x.OnEvent.SourcePositionId
+                                            }
+                                           
+                                        }
+                                    }
+                    }).FirstOrDefault();
+                return doc;
+
+            }
+        }
+
+        #endregion Waits
 
         #region Document Event
 
@@ -266,7 +294,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
-                var acc = dbContext.DocumentAccessesSet
+                var doc = dbContext.DocumentAccessesSet
                     .Where(x => x.DocumentId == documentId && x.PositionId == context.CurrentPositionId)
                     .Select(x => new InternalDocument
                     {
@@ -281,7 +309,7 @@ namespace BL.Database.Documents
                                     }
 
                     }).FirstOrDefault();
-                return acc;
+                return doc;
 
             }
         }

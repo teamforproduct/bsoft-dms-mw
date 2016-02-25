@@ -67,7 +67,7 @@ namespace BL.Logic.DocumentCore.Commands
             Document.Events = CommonDocumentUtilities.GetNewDocumentEvent(Context,EnumEventTypes.AddNewDocument, "Create");
             Document.Accesses = CommonDocumentUtilities.GetNewDocumentAccess(Context);
             //TODO process files
-            Document.DocumentFiles = null;
+            Document.Files = null;
             _documentDb.AddDocument(Context, Document);
             return Document.Id;
         }

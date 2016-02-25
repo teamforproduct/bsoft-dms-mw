@@ -35,7 +35,7 @@ namespace BL.Database.Migrations
                 .Index(t => t.DocumentEvents_Id1);
             
             CreateTable(
-                "dbo.DocumentWaits",
+                "dbo.Waits",
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
@@ -50,7 +50,7 @@ namespace BL.Database.Migrations
                         DocumentEvents_Id1 = c.Int(),
                     })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.DocumentWaits", t => t.ParentId)
+                .ForeignKey("dbo.Waits", t => t.ParentId)
                 .ForeignKey("dbo.Documents", t => t.DocumentId)
                 .ForeignKey("dbo.DocumentEvents", t => t.OffEventId)
                 .ForeignKey("dbo.DocumentEvents", t => t.OnEventId)
@@ -121,13 +121,13 @@ namespace BL.Database.Migrations
             DropForeignKey("dbo.DocumentLinks", "LinkTypeId", "dbo.DictionaryLinkTypes");
             DropForeignKey("dbo.DocumentLinks", "DocumentId", "dbo.Documents");
             DropForeignKey("dbo.DocumentSubscriptions", "DocumentEvents_Id1", "dbo.DocumentEvents");
-            DropForeignKey("dbo.DocumentWaits", "DocumentEvents_Id1", "dbo.DocumentEvents");
-            DropForeignKey("dbo.DocumentWaits", "DocumentEvents_Id", "dbo.DocumentEvents");
-            DropForeignKey("dbo.DocumentWaits", "ResultTypeId", "dbo.DictionaryResultTypes");
-            DropForeignKey("dbo.DocumentWaits", "OnEventId", "dbo.DocumentEvents");
-            DropForeignKey("dbo.DocumentWaits", "OffEventId", "dbo.DocumentEvents");
-            DropForeignKey("dbo.DocumentWaits", "DocumentId", "dbo.Documents");
-            DropForeignKey("dbo.DocumentWaits", "ParentId", "dbo.DocumentWaits");
+            DropForeignKey("dbo.Waits", "DocumentEvents_Id1", "dbo.DocumentEvents");
+            DropForeignKey("dbo.Waits", "DocumentEvents_Id", "dbo.DocumentEvents");
+            DropForeignKey("dbo.Waits", "ResultTypeId", "dbo.DictionaryResultTypes");
+            DropForeignKey("dbo.Waits", "OnEventId", "dbo.DocumentEvents");
+            DropForeignKey("dbo.Waits", "OffEventId", "dbo.DocumentEvents");
+            DropForeignKey("dbo.Waits", "DocumentId", "dbo.Documents");
+            DropForeignKey("dbo.Waits", "ParentId", "dbo.Waits");
             DropForeignKey("dbo.DocumentSubscriptions", "DocumentEvents_Id", "dbo.DocumentEvents");
             DropForeignKey("dbo.DocumentSubscriptions", "SendEventId", "dbo.DocumentEvents");
             DropForeignKey("dbo.DocumentSubscriptions", "DoneEventId", "dbo.DocumentEvents");
@@ -136,13 +136,13 @@ namespace BL.Database.Migrations
             DropIndex("dbo.DocumentLinks", new[] { "LinkTypeId" });
             DropIndex("dbo.DocumentLinks", new[] { "ParentDocumentId" });
             DropIndex("dbo.DocumentLinks", new[] { "DocumentId" });
-            DropIndex("dbo.DocumentWaits", new[] { "DocumentEvents_Id1" });
-            DropIndex("dbo.DocumentWaits", new[] { "DocumentEvents_Id" });
-            DropIndex("dbo.DocumentWaits", new[] { "ResultTypeId" });
-            DropIndex("dbo.DocumentWaits", new[] { "OffEventId" });
-            DropIndex("dbo.DocumentWaits", new[] { "OnEventId" });
-            DropIndex("dbo.DocumentWaits", new[] { "ParentId" });
-            DropIndex("dbo.DocumentWaits", new[] { "DocumentId" });
+            DropIndex("dbo.Waits", new[] { "DocumentEvents_Id1" });
+            DropIndex("dbo.Waits", new[] { "DocumentEvents_Id" });
+            DropIndex("dbo.Waits", new[] { "ResultTypeId" });
+            DropIndex("dbo.Waits", new[] { "OffEventId" });
+            DropIndex("dbo.Waits", new[] { "OnEventId" });
+            DropIndex("dbo.Waits", new[] { "ParentId" });
+            DropIndex("dbo.Waits", new[] { "DocumentId" });
             DropIndex("dbo.DocumentSubscriptions", new[] { "DocumentEvents_Id1" });
             DropIndex("dbo.DocumentSubscriptions", new[] { "DocumentEvents_Id" });
             DropIndex("dbo.DocumentSubscriptions", new[] { "DoneEventId" });
@@ -152,7 +152,7 @@ namespace BL.Database.Migrations
             DropTable("dbo.DictionaryLinkTypes");
             DropTable("dbo.DocumentLinks");
             DropTable("dbo.DictionaryResultTypes");
-            DropTable("dbo.DocumentWaits");
+            DropTable("dbo.Waits");
             DropTable("dbo.DocumentSubscriptions");
         }
     }

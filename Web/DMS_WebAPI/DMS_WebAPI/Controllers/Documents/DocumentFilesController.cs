@@ -13,7 +13,7 @@ namespace DMS_WebAPI.Controllers.Documents
     [Authorize]
     public class DocumentFilesController : ApiController
     {
-        //GET: api/DocumentFiles
+        //GET: api/Files
         public IHttpActionResult Get([FromUri]FilterDocumentFileIdentity model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
@@ -23,7 +23,7 @@ namespace DMS_WebAPI.Controllers.Documents
             return new JsonResult(res, this);
         }
 
-        // GET: api/DocumentFiles/5
+        // GET: api/Files/5
         public IHttpActionResult Get(int id)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
@@ -31,7 +31,7 @@ namespace DMS_WebAPI.Controllers.Documents
             return new JsonResult(docFileProc.GetDocumentFiles(cxt,id), this);
         }
 
-        // POST: api/DocumentFiles
+        // POST: api/Files
         public IHttpActionResult Post([FromBody]ModifyDocumentFiles model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
@@ -40,7 +40,7 @@ namespace DMS_WebAPI.Controllers.Documents
             return new JsonResult(fl, this);
         }
 
-        // PUT: api/DocumentFiles/5
+        // PUT: api/Files/5
         public IHttpActionResult Put([FromBody]ModifyDocumentFile model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
@@ -50,7 +50,7 @@ namespace DMS_WebAPI.Controllers.Documents
             return new JsonResult(fl, this);
         }
 
-        // DELETE: api/DocumentFiles
+        // DELETE: api/Files
         public IHttpActionResult Delete([FromUri]FilterDocumentFileIdentity model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();

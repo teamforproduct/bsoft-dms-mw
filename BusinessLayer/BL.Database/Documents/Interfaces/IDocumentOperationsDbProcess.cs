@@ -28,6 +28,7 @@ namespace BL.Database.Documents.Interfaces
 
         InternalDocument ChangeIsInWorkAccessPrepare(IContext context, int documentId);
         InternalDocument ChangeIsFavouriteAccessPrepare(IContext context, int documentId);
+        InternalDocument ControlOffDocumentPrepare(IContext _context, int eventId);
         IEnumerable<InternalDocumentAccess> GetDocumentAccesses(IContext ctx, int documentId);
 
         void ChangeIsInWorkAccess(IContext ctx, InternalDocument access);

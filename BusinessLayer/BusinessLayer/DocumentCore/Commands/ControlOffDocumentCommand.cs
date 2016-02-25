@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using BL.Database.Admins.Interfaces;
 using BL.Logic.Common;
 using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore.Actions;
@@ -10,11 +12,15 @@ namespace BL.Logic.DocumentCore.Commands
 {
     public class ControlOffDocumentCommand: BaseDocumentCommand
     {
+        private readonly IDocumentsDbProcess _documentDb;
         private readonly IDocumentOperationsDbProcess _operationDb;
+        private readonly IAdminsDbProcess _adminDb;
 
-        public ControlOffDocumentCommand(IDocumentOperationsDbProcess operationDb)
+        public ControlOffDocumentCommand(IDocumentsDbProcess documentDb, IDocumentOperationsDbProcess operationDb, IAdminsDbProcess adminDb)
         {
+            _documentDb = documentDb;
             _operationDb = operationDb;
+            _adminDb = adminDb;
         }
 
         private ControlOff Model
@@ -36,12 +42,19 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanExecute()
         {
+            _document = _operationDb.ControlOffDocumentPrepare(_context, Model.EventId);
+            var internalDocumentWait = _document.Waits?.FirstOrDefault();
+            if (internalDocumentWait != null && internalDocumentWait.OnEvent?.SourcePositionId == null)
+            {
+                throw new EventNotFoundOrUserHasNoAccess();
+            }
+            _context.SetCurrentPosition(_document.Events.First().SourcePositionId);
+            _adminDb.VerifyAccess(_context, CommandType);
             return true;
         }
 
         public override object Execute()
         {
-            //TODO переделать под общую схему с оптимизацией выборки
             var docWait = _operationDb.GetDocumentWaitByOnEventId(_context, Model.EventId);
 
             docWait.ResultTypeId = Model.ResultTypeId;

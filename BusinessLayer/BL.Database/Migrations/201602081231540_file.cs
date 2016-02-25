@@ -7,12 +7,12 @@ namespace BL.Database.Migrations
     {
         public override void Up()
         {
-            AddColumn("dbo.DocumentFiles", "FileType", c => c.String());
+            AddColumn("dbo.Files", "FileType", c => c.String());
         }
         
         public override void Down()
         {
-            DropColumn("dbo.DocumentFiles", "FileType");
+            DropColumn("dbo.Files", "FileType");
         }
     }
 }

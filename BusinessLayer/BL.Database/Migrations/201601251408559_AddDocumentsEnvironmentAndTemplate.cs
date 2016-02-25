@@ -174,7 +174,7 @@ namespace BL.Database.Migrations
                 .Index(t => t.PositionId);
             
             CreateTable(
-                "dbo.DocumentFiles",
+                "dbo.Files",
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
@@ -298,7 +298,7 @@ namespace BL.Database.Migrations
             DropForeignKey("dbo.Documents", "RegistrationJournalId", "dbo.DictionaryRegistrationJournals");
             DropForeignKey("dbo.Documents", "IncomingDetail_Id", "dbo.DocumentIncomingDetails");
             DropForeignKey("dbo.DocumentIncomingDetails", "DocumentId", "dbo.Documents");
-            DropForeignKey("dbo.DocumentFiles", "DocumentId", "dbo.Documents");
+            DropForeignKey("dbo.Files", "DocumentId", "dbo.Documents");
             DropForeignKey("dbo.Documents", "ExecutorPositionId", "dbo.DictionaryPositions");
             DropForeignKey("dbo.Documents", "DocumentTypeId", "dbo.DictionaryDocumentTypes");
             DropForeignKey("dbo.Documents", "DocumentSubjectId", "dbo.DictionaryDocumentSubjects");
@@ -324,7 +324,7 @@ namespace BL.Database.Migrations
             DropIndex("dbo.Documents", new[] { "DocumentTypeId" });
             DropIndex("dbo.Documents", new[] { "DocumentDirectionId" });
             DropIndex("dbo.Documents", new[] { "TemplateDocumentId" });
-            DropIndex("dbo.DocumentFiles", new[] { "DocumentId" });
+            DropIndex("dbo.Files", new[] { "DocumentId" });
             DropIndex("dbo.DictionaryStandartSendLists", new[] { "PositionId" });
             DropIndex("dbo.DictionarySendTypes", new[] { "SubordinationTypeId" });
             DropIndex("dbo.DictionaryStandartSendListContents", new[] { "TargetAgents_Id" });
@@ -339,7 +339,7 @@ namespace BL.Database.Migrations
             DropTable("dbo.TemplateDocuments");
             DropTable("dbo.DocumentIncomingDetails");
             DropTable("dbo.Documents");
-            DropTable("dbo.DocumentFiles");
+            DropTable("dbo.Files");
             DropTable("dbo.DictionaryStandartSendLists");
             DropTable("dbo.DictionarySubordinationTypes");
             DropTable("dbo.DictionarySendTypes");

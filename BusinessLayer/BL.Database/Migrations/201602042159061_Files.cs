@@ -25,18 +25,18 @@ namespace BL.Database.Migrations
                 .ForeignKey("dbo.TemplateDocuments", t => t.DocumentId)
                 .Index(t => t.DocumentId);
             
-            AddColumn("dbo.DocumentFiles", "OrderNumber", c => c.Int(nullable: false));
-            AddColumn("dbo.DocumentFiles", "Version", c => c.Int(nullable: false));
-            AddColumn("dbo.DocumentFiles", "Hash", c => c.String());
+            AddColumn("dbo.Files", "OrderNumber", c => c.Int(nullable: false));
+            AddColumn("dbo.Files", "Version", c => c.Int(nullable: false));
+            AddColumn("dbo.Files", "Hash", c => c.String());
         }
         
         public override void Down()
         {
             DropForeignKey("dbo.TemplateDocumentFiles", "DocumentId", "dbo.TemplateDocuments");
             DropIndex("dbo.TemplateDocumentFiles", new[] { "DocumentId" });
-            DropColumn("dbo.DocumentFiles", "Hash");
-            DropColumn("dbo.DocumentFiles", "Version");
-            DropColumn("dbo.DocumentFiles", "OrderNumber");
+            DropColumn("dbo.Files", "Hash");
+            DropColumn("dbo.Files", "Version");
+            DropColumn("dbo.Files", "OrderNumber");
             DropTable("dbo.TemplateDocumentFiles");
         }
     }
