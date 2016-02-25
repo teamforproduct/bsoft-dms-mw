@@ -375,6 +375,7 @@
         }
     }
 
+
     public class WaitNotFoundOrUserHasNoAccess : DmsExceptions
     {
         private const string _MESSAGE = "User could not acceess this wait!";
@@ -383,6 +384,18 @@
         }
 
         public WaitNotFoundOrUserHasNoAccess(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+    public class WaitHasAlreadyClosed : DmsExceptions
+    {
+        private const string _MESSAGE = "Wait Has Already Closed!";
+        public WaitHasAlreadyClosed() : base(_MESSAGE)
+        {
+        }
+
+        public WaitHasAlreadyClosed(System.Exception ex) : base(_MESSAGE, ex)
         {
         }
     }

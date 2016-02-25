@@ -15,10 +15,7 @@ namespace BL.Database.Documents.Interfaces
 
         IEnumerable<InternalPositionInfo> GetInternalPositionsInfo(IContext ctx, List<int> positionIds);
 
-        InternalDocumentWait GetDocumentWaitByOnEventId(IContext ctx, int eventId);
         void AddDocumentWaits(IContext ctx, IEnumerable<InternalDocumentWait> documentWaits);
-
-        void UpdateDocumentWait(IContext ctx, InternalDocumentWait documentWait);
 
         void AddDocumentEvents(IContext ctx, IEnumerable<InternalDocumentEvent> docEvents);
         IEnumerable<FrontDocumentEvent> GetDocumentEvents(IContext ctx, FilterDocumentEvent filter);
@@ -28,7 +25,7 @@ namespace BL.Database.Documents.Interfaces
 
         InternalDocument ChangeIsInWorkAccessPrepare(IContext context, int documentId);
         InternalDocument ChangeIsFavouriteAccessPrepare(IContext context, int documentId);
-        InternalDocument ControlOffDocumentPrepare(IContext _context, int eventId);
+        InternalDocument ControlOffDocumentPrepare(IContext context, int eventId);
         IEnumerable<InternalDocumentAccess> GetDocumentAccesses(IContext ctx, int documentId);
 
         void ChangeIsInWorkAccess(IContext ctx, InternalDocument access);
@@ -42,7 +39,7 @@ namespace BL.Database.Documents.Interfaces
         IEnumerable<InternalDocumentRestrictedSendList> AddByStandartSendListDocumentRestrictedSendListPrepare(IContext context, ModifyDocumentRestrictedSendListByStandartSendList model);
 
         InternalDocumentRestrictedSendList DeleteDocumentRestrictedSendListPrepare(IContext context, int restSendListId);
-
+        void CloseDocumentWait(IContext context, InternalDocumentWait docWait);
         void DeleteDocumentRestrictedSendList(IContext context, int restSendListId);
 
         void AddDocumentSendList(IContext context, IEnumerable<InternalDocumentSendList> model);
@@ -60,5 +57,6 @@ namespace BL.Database.Documents.Interfaces
         void ChangeDocumentSendListStage(IContext context, IEnumerable<InternalDocumentSendList> model);
 
         void ModifyDocumentTags(IContext context, InternalDocumentTag model);
+        void ChangeDocumentWait(IContext context, IEnumerable<InternalDocumentWait> waits);
     }
 }

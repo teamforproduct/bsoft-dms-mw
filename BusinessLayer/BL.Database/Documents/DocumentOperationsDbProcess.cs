@@ -127,19 +127,6 @@ namespace BL.Database.Documents
 
         #region Waits
 
-        public InternalDocumentWait GetDocumentWaitByOnEventId(IContext ctx, int eventId)
-        {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
-            {
-                var wait = CommonQueries.GetInternalDocumentWaits(dbContext, new FilterDocumentWaits() { OnEventId = eventId }).FirstOrDefault();
-                if (wait?.Id > 0)
-                {
-                    return wait;
-                }
-            }
-            throw new WaitNotFoundOrUserHasNoAccess();
-        }
-
         public void AddDocumentWaits(IContext ctx, IEnumerable<InternalDocumentWait> documentWaits)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
@@ -150,40 +137,52 @@ namespace BL.Database.Documents
             }
         }
 
-        public void UpdateDocumentWait(IContext ctx, InternalDocumentWait documentWait)
+        public void ChangeDocumentWait(IContext ctx, IEnumerable<InternalDocumentWait> documentWaits)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-                var docWait = dbContext.DocumentWaitsSet.FirstOrDefault(x => x.Id == documentWait.Id);
 
-                if (!(docWait?.Id > 0)) return;
+                var documentWait = documentWaits.First(x => x.Id != 0);
+                var oldWait = new DocumentWaits
+                {
+                    Id = documentWait.Id,
+                    LastChangeDate = documentWait.LastChangeDate,
+                    LastChangeUserId = documentWait.LastChangeUserId
+                };
+                dbContext.DocumentWaitsSet.Attach(oldWait);
+                oldWait.OffEvent = ModelConverter.GetDbDocumentEvent(documentWait.OffEvent);
+                var entry = dbContext.Entry(oldWait);
 
-                docWait.DocumentId = documentWait.DocumentId;
-                docWait.ParentId = documentWait.ParentId;
-                docWait.OnEventId = documentWait.OnEventId;
-                docWait.OffEventId = documentWait.OffEventId;
-                docWait.ResultTypeId = documentWait.ResultTypeId;
-                docWait.Task = documentWait.Task;
-                docWait.DueDate = documentWait.DueDate;
-                docWait.AttentionDate = documentWait.AttentionDate;
-                docWait.LastChangeUserId = documentWait.LastChangeUserId;
-                docWait.LastChangeDate = documentWait.LastChangeDate;
+                entry.Property(x => x.Id).IsModified = true;
+                entry.Property(x => x.LastChangeDate).IsModified = true;
+                entry.Property(x => x.LastChangeUserId).IsModified = true;
 
-                // UpdateDbDocumentWaitByEvents создает новые БД ивент сущности для вейта. что происхдит со старыми ивент сущностями, если они уже есть в БД??
-                // при переопределении они удаляются или они обновляются или они остаются но будут ни к чему не привязаны? 
-                //TODO CHECK IT
-                ModelConverter.UpdateDbDocumentWaitByEvents(docWait, documentWait);
+                var newWait = ModelConverter.GetDbDocumentWait(documentWaits.First(x => x.Id == 0));
+                newWait.OnEvent = oldWait.OffEvent;
 
+                dbContext.DocumentWaitsSet.Add(newWait);
                 dbContext.SaveChanges();
+            }
+        }
 
-                if (docWait.OnEvent?.Id > 0 && documentWait.OnEvent != null)
+        public void CloseDocumentWait(IContext ctx, InternalDocumentWait docWait)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            {
+                var wait = new DocumentWaits
                 {
-                    documentWait.OnEvent.Id = docWait.OnEvent.Id;
-                }
-                if (docWait.OffEvent?.Id > 0 && documentWait.OffEvent != null)
-                {
-                    documentWait.OffEvent.Id = docWait.OffEvent.Id;
-                }
+                    Id = docWait.Id,
+                    LastChangeDate = docWait.LastChangeDate,
+                    LastChangeUserId = docWait.LastChangeUserId
+                };
+                dbContext.DocumentWaitsSet.Attach(wait);
+                wait.OffEvent = ModelConverter.GetDbDocumentEvent(docWait.OffEvent);
+                var entry = dbContext.Entry(wait);
+
+                entry.Property(x => x.Id).IsModified = true;
+                entry.Property(x => x.LastChangeDate).IsModified = true;
+                entry.Property(x => x.LastChangeUserId).IsModified = true;
+                dbContext.SaveChanges();
             }
         }
 
@@ -201,12 +200,16 @@ namespace BL.Database.Documents
                                         new InternalDocumentWait
                                         {
                                             Id = x.Id,
+                                            Task = x.Task,
+                                            DocumentId = x.DocumentId,
+                                            OffEventId = x.OffEventId,
                                             OnEvent = new InternalDocumentEvent
                                             {
                                                 Id = x.OnEvent.Id,
-                                                SourcePositionId = x.OnEvent.SourcePositionId
+                                                SourcePositionId = x.OnEvent.SourcePositionId,
+                                                TargetPositionId = x.OnEvent.TargetPositionId,
+                                                Description = x.OnEvent.Description
                                             }
-                                           
                                         }
                                     }
                     }).FirstOrDefault();
@@ -673,7 +676,7 @@ namespace BL.Database.Documents
         }
 
         #endregion DocumentSendList     
-        
-            
+
+
     }
 }

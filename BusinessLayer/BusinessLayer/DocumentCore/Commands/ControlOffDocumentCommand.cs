@@ -16,6 +16,8 @@ namespace BL.Logic.DocumentCore.Commands
         private readonly IDocumentOperationsDbProcess _operationDb;
         private readonly IAdminsDbProcess _adminDb;
 
+        private InternalDocumentWait _docWait;
+
         public ControlOffDocumentCommand(IDocumentsDbProcess documentDb, IDocumentOperationsDbProcess operationDb, IAdminsDbProcess adminDb)
         {
             _documentDb = documentDb;
@@ -43,38 +45,33 @@ namespace BL.Logic.DocumentCore.Commands
         public override bool CanExecute()
         {
             _document = _operationDb.ControlOffDocumentPrepare(_context, Model.EventId);
-            var internalDocumentWait = _document.Waits?.FirstOrDefault();
-            if (internalDocumentWait != null && internalDocumentWait.OnEvent?.SourcePositionId == null)
+            _docWait = _document.Waits.FirstOrDefault();
+            if (_docWait?.OnEvent?.SourcePositionId == null)
             {
                 throw new EventNotFoundOrUserHasNoAccess();
             }
-            _context.SetCurrentPosition(_document.Events.First().SourcePositionId);
+            if (_docWait.OffEventId != null)
+            {
+                throw new WaitHasAlreadyClosed(); 
+            }
+            _context.SetCurrentPosition(_docWait.OnEvent.SourcePositionId);
             _adminDb.VerifyAccess(_context, CommandType);
             return true;
         }
 
         public override object Execute()
         {
-            var docWait = _operationDb.GetDocumentWaitByOnEventId(_context, Model.EventId);
 
-            docWait.ResultTypeId = Model.ResultTypeId;
+            _docWait.ResultTypeId = Model.ResultTypeId;
 
-            docWait.OnEvent = null;
-            docWait.OffEvent = new InternalDocumentEvent
-            {
-//TODO                DocumentId = Model.DocumentId,
-                EventType = EnumEventTypes.ControlOff,
-                Description = docWait.Task +" / "+Model.Description,
-                SourcePositionId = (int)_context.CurrentPositionId,
-                SourceAgentId = _context.CurrentAgentId,
-                TargetPositionId = _context.CurrentPositionId,
-                LastChangeDate = DateTime.Now,
-                Date = DateTime.Now,
-                CreateDate = DateTime.Now,
-            };
+            _docWait.OffEvent =
+                CommonDocumentUtilities.GetNewDocumentEvent(_context, EnumEventTypes.ControlOff,
+                    _docWait.Task +" / "+ Model.Description, _docWait.OnEvent.TargetPositionId, _docWait.DocumentId)
+                    .FirstOrDefault();
 
-            _operationDb.UpdateDocumentWait(_context, docWait);
-            return null;
+            CommonDocumentUtilities.SetLastChange(_context, _docWait);
+            _operationDb.CloseDocumentWait(_context, _docWait);
+            return _docWait.DocumentId;
         }
 
         public override EnumDocumentActions CommandType => EnumDocumentActions.ControlOff;

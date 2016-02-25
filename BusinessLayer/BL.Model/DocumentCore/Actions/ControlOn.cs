@@ -8,6 +8,19 @@ namespace BL.Model.DocumentCore.Actions
     /// </summary>
     public class ControlOn : CurrentPosition
     {
+        public ControlOn()
+        {
+        }
+
+        public ControlOn(ControlChange controlChange, int documentId, string task)
+        {
+            DocumentId = documentId;
+            Task = task;
+            Description = controlChange.Description;
+            DueDate = controlChange.DueDate;
+            AttentionDate = controlChange.AttentionDate;
+        }
+
         /// <summary>
         /// ИД документа
         /// </summary>

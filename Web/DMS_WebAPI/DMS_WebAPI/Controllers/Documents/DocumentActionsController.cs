@@ -34,6 +34,7 @@ namespace DMS_WebAPI.Controllers.Documents
             {
             }
         }
+
         /// <summary>
         /// Получение списка доступных команд по документу
         /// </summary>
@@ -79,8 +80,7 @@ namespace DMS_WebAPI.Controllers.Documents
             SaveToFile("M: DocumentActionsController ChangeFavourites", timeM.Elapsed.ToString("G"));
             SaveToFile("DB: IDocumentOperationsService ChangeFavouritesForDocument", timeDB.Elapsed.ToString("G"));
 
-            var ctrl = new DocumentsController();
-            ctrl.ControllerContext = ControllerContext;
+            var ctrl = new DocumentsController {ControllerContext = ControllerContext};
             return ctrl.Get(model.DocumentId);
         }
         /// <summary>
@@ -109,8 +109,7 @@ namespace DMS_WebAPI.Controllers.Documents
             SaveToFile("M: DocumentActionsController RegisterDocument", timeM.Elapsed.ToString("G"));
             SaveToFile("DB: IDocumentOperationsService RegisterDocument", timeDB.Elapsed.ToString("G"));
 
-            var ctrl = new DocumentsController();
-            ctrl.ControllerContext = ControllerContext;
+            var ctrl = new DocumentsController {ControllerContext = ControllerContext};
             return ctrl.Get(model.DocumentId);
         }
         /// <summary>
@@ -135,8 +134,7 @@ namespace DMS_WebAPI.Controllers.Documents
             SaveToFile("M: DocumentActionsController AddDocumentLink", timeM.Elapsed.ToString("G"));
             SaveToFile("DB: IDocumentOperationsService AddDocumentLink", timeDB.Elapsed.ToString("G"));
 
-            var ctrl = new DocumentsController();
-            ctrl.ControllerContext = ControllerContext;
+            var ctrl = new DocumentsController {ControllerContext = ControllerContext};
             return ctrl.Get(model.DocumentId);
         }
 
@@ -162,8 +160,7 @@ namespace DMS_WebAPI.Controllers.Documents
             SaveToFile("M: DocumentActionsController ChangeWorkStatus", timeM.Elapsed.ToString("G"));
             SaveToFile("DB: IDocumentOperationsService ChangeDocumentWorkStatus", timeDB.Elapsed.ToString("G"));
 
-            var ctrl = new DocumentsController();
-            ctrl.ControllerContext = ControllerContext;
+            var ctrl = new DocumentsController {ControllerContext = ControllerContext};
             return ctrl.Get(model.DocumentId);
         }
 
@@ -189,8 +186,7 @@ namespace DMS_WebAPI.Controllers.Documents
             SaveToFile("M: DocumentActionsController SendMessage", timeM.Elapsed.ToString("G"));
             SaveToFile("DB: IDocumentOperationsService SendMessage", timeDB.Elapsed.ToString("G"));
 
-            var ctrl = new DocumentsController();
-            ctrl.ControllerContext = ControllerContext;
+            var ctrl = new DocumentsController {ControllerContext = ControllerContext};
             return ctrl.Get(model.DocumentId);
         }
 
@@ -216,8 +212,7 @@ namespace DMS_WebAPI.Controllers.Documents
             SaveToFile("M: DocumentActionsController AddNote", timeM.Elapsed.ToString("G"));
             SaveToFile("DB: IDocumentOperationsService AddDocumentComment", timeDB.Elapsed.ToString("G"));
 
-            var ctrl = new DocumentsController();
-            ctrl.ControllerContext = ControllerContext;
+            var ctrl = new DocumentsController {ControllerContext = ControllerContext};
             return ctrl.Get(model.DocumentId);
         }
 
@@ -243,8 +238,7 @@ namespace DMS_WebAPI.Controllers.Documents
             SaveToFile("M: DocumentActionsController ControlOn", timeM.Elapsed.ToString("G"));
             SaveToFile("DB: IDocumentOperationsService ControlOn", timeDB.Elapsed.ToString("G"));
 
-            var ctrl = new DocumentsController();
-            ctrl.ControllerContext = ControllerContext;
+            var ctrl = new DocumentsController {ControllerContext = ControllerContext};
             return ctrl.Get(model.DocumentId);
         }
 
@@ -263,16 +257,15 @@ namespace DMS_WebAPI.Controllers.Documents
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            docProc.ExecuteAction(EnumDocumentActions.ControlChange,cxt, model);
+            var documentId = (int)docProc.ExecuteAction(EnumDocumentActions.ControlChange,cxt, model);
             timeDB.Stop();
 
             timeM.Stop();
             SaveToFile("M: DocumentActionsController ControlChange", timeM.Elapsed.ToString("G"));
             SaveToFile("DB: IDocumentOperationsService ControlChange", timeDB.Elapsed.ToString("G"));
 
-            var ctrl = new DocumentsController();
-            ctrl.ControllerContext = ControllerContext;
-            return null;//TODO ctrl.Get(model.DocumentId);
+            var ctrl = new DocumentsController {ControllerContext = ControllerContext};
+            return ctrl.Get(documentId);
         }
 
         /// <summary>
@@ -290,16 +283,15 @@ namespace DMS_WebAPI.Controllers.Documents
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            docProc.ExecuteAction(EnumDocumentActions.ControlOff, cxt, model);
+            var documentId = (int)docProc.ExecuteAction(EnumDocumentActions.ControlOff, cxt, model);
             timeDB.Stop();
 
             timeM.Stop();
             SaveToFile("M: DocumentActionsController ControlOff", timeM.Elapsed.ToString("G"));
             SaveToFile("DB: IDocumentOperationsService ControlOff", timeDB.Elapsed.ToString("G"));
 
-            var ctrl = new DocumentsController();
-            ctrl.ControllerContext = ControllerContext;
-            return null;//TODO ctrl.Get(model.DocumentId);
+            var ctrl = new DocumentsController {ControllerContext = ControllerContext};
+            return ctrl.Get(documentId);
         }
 
         /// <summary>
@@ -324,8 +316,7 @@ namespace DMS_WebAPI.Controllers.Documents
             SaveToFile("M: DocumentActionsController CopyDocument", timeM.Elapsed.ToString("G"));
             SaveToFile("DB: IDocumentOperationsService CopyDocument", timeDB.Elapsed.ToString("G"));
 
-            var ctrl = new DocumentsController();
-            ctrl.ControllerContext = ControllerContext;
+            var ctrl = new DocumentsController {ControllerContext = ControllerContext};
             return ctrl.Get(docId);
         }
         /// <summary>
@@ -351,8 +342,7 @@ namespace DMS_WebAPI.Controllers.Documents
             SaveToFile("M: DocumentActionsController ChangeExecutor", timeM.Elapsed.ToString("G"));
             SaveToFile("DB: IDocumentOperationsService ChangeExecutor", timeDB.Elapsed.ToString("G"));
 
-            var ctrl = new DocumentsController();
-            ctrl.ControllerContext = ControllerContext;
+            var ctrl = new DocumentsController {ControllerContext = ControllerContext};
             return ctrl.Get(model.DocumentId);
         }
 
@@ -380,8 +370,7 @@ namespace DMS_WebAPI.Controllers.Documents
             SaveToFile("M: DocumentActionsController LaunchPlan", timeM.Elapsed.ToString("G"));
             SaveToFile("DB: IDocumentOperationsService LaunchPlan", timeDB.Elapsed.ToString("G"));
 
-            var ctrl = new DocumentsController();
-            ctrl.ControllerContext = ControllerContext;
+            var ctrl = new DocumentsController {ControllerContext = ControllerContext};
             return ctrl.Get(id);
         }
 
@@ -409,8 +398,7 @@ namespace DMS_WebAPI.Controllers.Documents
             SaveToFile("M: DocumentActionsController StopPlan", timeM.Elapsed.ToString("G"));
             SaveToFile("DB: IDocumentOperationsService StopPlan", timeDB.Elapsed.ToString("G"));
 
-            var ctrl = new DocumentsController();
-            ctrl.ControllerContext = ControllerContext;
+            var ctrl = new DocumentsController {ControllerContext = ControllerContext};
             return ctrl.Get(id);
         }
     }

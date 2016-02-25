@@ -510,8 +510,6 @@ namespace BL.Database.Documents
                             PositionId = y.PositionId,
                             AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
                         }).ToList();
-                doc.Files = CommonQueries.GetInternalDocumentFiles(dbContext, documentId);
-
                 doc.DocumentFiles = CommonQueries.GetInternalDocumentFiles(dbContext, documentId);
 
                 return doc;

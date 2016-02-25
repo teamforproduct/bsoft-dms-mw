@@ -85,7 +85,7 @@ namespace BL.Logic.Common
             };
         }
 
-        public static IEnumerable<InternalDocumentWait> GetNewDocumentWait(IContext context, ControlOn controlOnModel, EnumEventTypes eventType, int? targetPositionId = null)
+        public static IEnumerable<InternalDocumentWait> GetNewDocumentWait(IContext context, ControlOn controlOnModel, EnumEventTypes? eventType = null, int? targetPositionId = null)
         {
             return new List<InternalDocumentWait>
             {
@@ -97,7 +97,7 @@ namespace BL.Logic.Common
                 AttentionDate = controlOnModel.AttentionDate,
                 LastChangeUserId = context.CurrentAgentId,
                 LastChangeDate = DateTime.Now,
-                OnEvent = GetNewDocumentEvent(context, eventType, controlOnModel.Task + " / " + controlOnModel.Description, targetPositionId, controlOnModel.DocumentId).FirstOrDefault()
+                OnEvent = eventType ==null ? null:GetNewDocumentEvent(context, eventType.Value, controlOnModel.Task + " / " + controlOnModel.Description, targetPositionId, controlOnModel.DocumentId).FirstOrDefault()
                 }
             };
         }

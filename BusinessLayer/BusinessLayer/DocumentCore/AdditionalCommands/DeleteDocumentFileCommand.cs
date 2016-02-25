@@ -52,7 +52,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             {
                 throw new UserHasNoAccessToDocument();
             }
-            if (_document.Files == null || !_document.Files.Any())
+            if (_document.DocumentFiles == null || !_document.DocumentFiles.Any())
             {
                 throw new UnknownDocumentFile();
             }
