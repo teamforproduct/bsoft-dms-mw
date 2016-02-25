@@ -14,7 +14,9 @@ namespace BL.Database.DBModel.Template
         public string Name { get; set; }
         public int OrderNumber { get; set; }
         public string Extention { get; set; }
+        public string FileType { get; set; }
         public byte[] Content { get; set; }
+        public bool IsAdditional { get; set; }
         public string Hash { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
