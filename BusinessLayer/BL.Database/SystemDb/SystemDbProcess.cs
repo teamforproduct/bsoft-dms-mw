@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
-using BL.Logic.Helpers;
 using BL.Database.DatabaseContext;
 using BL.Database.DBModel.System;
-using BL.Model.DocumentCore.FrontModel;
 using BL.Model.SystemCore;
 using BL.Model.Enums;
 

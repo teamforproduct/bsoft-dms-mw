@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Common;
-using BL.Logic.Helpers;
 using BL.Database.DatabaseContext;
-using BL.Database.DBModel.Document;
 using BL.Database.Documents.Interfaces;
-using BL.Model.DocumentCore;
 using BL.Model.DocumentCore.FrontModel;
-using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.Enums;
 
 namespace BL.Database.Documents

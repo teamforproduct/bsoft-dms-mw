@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using BL.Logic.Common;
 using BL.Database.Admins.Interfaces;
 using BL.Database.Documents.Interfaces;
-using BL.Model.AdminCore;
+using BL.Logic.SystemLogic;
 using BL.Model.DocumentCore.IncomingModel;
+using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
 
@@ -13,11 +16,13 @@ namespace BL.Logic.DocumentCore.Commands
     {
         private readonly IDocumentsDbProcess _documentDb;
         private readonly IAdminsDbProcess _adminDb;
+        private readonly IFileStore _fStore;
 
-        public AddDocumentCommand(IDocumentsDbProcess documentDb, IAdminsDbProcess adminDb)
+        public AddDocumentCommand(IDocumentsDbProcess documentDb, IAdminsDbProcess adminDb, IFileStore fStore)
         {
             _documentDb = documentDb;
             _adminDb = adminDb;
+            _fStore = fStore;
         }
 
         private AddDocumentByTemplateDocument Model {
@@ -66,9 +71,50 @@ namespace BL.Logic.DocumentCore.Commands
             }
             Document.Events = CommonDocumentUtilities.GetNewDocumentEvent(Context,EnumEventTypes.AddNewDocument, "Create");
             Document.Accesses = CommonDocumentUtilities.GetNewDocumentAccess(Context);
-            //TODO process files
-            Document.DocumentFiles = null;
+
+            // prepare file list in Document. It will save it with document in DB
+            var toCopy = new Dictionary<InternalDocumentAttachedFile, InternalTemplateAttachedFile>();
+            int newOrdNum = 1;
+             _document.DocumentFiles.ToList().ForEach(x =>
+             {
+                 var fileToCopy = new InternalTemplateAttachedFile
+                 {
+                     Id = x.Id,
+                     DocumentId = x.DocumentId,
+                     Extension = x.Extension,
+                     Name = x.Name,
+                     FileType = x.FileType,
+                     OrderInDocument = x.OrderInDocument,
+                     IsAdditional = x.IsAdditional,
+                     Hash = x.Hash
+                 };
+                 var newDoc = new InternalDocumentAttachedFile
+                 {
+                     Extension = x.Extension,
+                     Name = x.Name,
+                     FileType = x.FileType,
+                     IsAdditional = x.IsAdditional,
+                     OrderInDocument = newOrdNum,
+                     Date = DateTime.Now,
+                     Version = 1,
+                     WasChangedExternal = false
+                 };
+                 newOrdNum++;
+                 toCopy.Add(newDoc, fileToCopy);
+             });
+
+            // assign new created list of files to document
+            _document.DocumentFiles = toCopy.Keys;
             _documentDb.AddDocument(Context, Document);
+
+            //after saving document in filelist it should be filled DocumentId field. So we can phisical copy files
+            foreach (var fl in _document.DocumentFiles)
+            {
+                var dest = toCopy.Keys.FirstOrDefault(x => x.OrderInDocument == fl.OrderInDocument);
+                var src = toCopy[dest];
+                _fStore.CopyFile(_context, src, fl);
+            }
+
             return Document.Id;
         }
 

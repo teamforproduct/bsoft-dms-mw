@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Common;
-using BL.Logic.Helpers;
 using BL.Database.DatabaseContext;
 using BL.Database.Documents.Interfaces;
 using BL.Database.DBModel.Document;
@@ -76,9 +76,21 @@ namespace BL.Database.Documents
                     doc.SendLists = ModelConverter.AddDocumentSendList(document.SendLists).ToList();
                 }
 
+                if (document.DocumentFiles != null && document.DocumentFiles.Any())
+                {
+                    doc.Files = ModelConverter.GetDbDocumentFiles(document.DocumentFiles).ToList();
+                }
+
                 dbContext.DocumentsSet.Add(doc);
                 dbContext.SaveChanges();
                 document.Id = doc.Id;
+
+                //TODO we schould check if it needed or not? 
+                if (document.DocumentFiles != null)
+                    foreach (var fl in document.DocumentFiles)
+                    {
+                        fl.DocumentId = doc.Id;
+                    }
             }
         }
 
@@ -580,6 +592,18 @@ namespace BL.Database.Documents
                         AccessLevel = (EnumDocumentAccesses)y.AccessLevelId
                     }).ToList();
 
+                doc.DocumentFiles = dbContext.TemplateDocumentFilesSet.Where(x=>x.DocumentId == templateDocumentId).Select(x=> new InternalDocumentAttachedFile
+                {
+                    Id = x.Id,
+                    DocumentId = x.DocumentId,
+                    Extension = x.Extention,
+                    Name = x.Name,
+                    FileType = x.FileType,
+                    OrderInDocument = x.OrderNumber,
+                    IsAdditional = x.IsAdditional,
+                    Hash = x.Hash                    
+                }).ToList();
+
                 return doc;
             }
         }
@@ -625,6 +649,7 @@ namespace BL.Database.Documents
                             PositionId = y.PositionId,
                             AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
                         }).ToList();
+
                 doc.DocumentFiles = CommonQueries.GetInternalDocumentFiles(dbContext, documentId);
 
                 return doc;

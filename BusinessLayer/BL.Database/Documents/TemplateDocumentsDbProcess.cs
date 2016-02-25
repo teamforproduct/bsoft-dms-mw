@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
-using BL.Model.DocumentCore;
 using System.Linq;
+using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
-using BL.Logic.Helpers;
 using BL.Database.DatabaseContext;
 using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore.FrontModel;
