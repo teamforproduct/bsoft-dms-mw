@@ -97,7 +97,7 @@ namespace BL.Logic.Common
                 AttentionDate = controlOnModel.AttentionDate,
                 LastChangeUserId = context.CurrentAgentId,
                 LastChangeDate = DateTime.Now,
-                OnEvent = eventType ==null ? null:GetNewDocumentEvent(context, eventType.Value, controlOnModel.Task + " / " + controlOnModel.Description, targetPositionId, controlOnModel.DocumentId).FirstOrDefault()
+                OnEvent = eventType ==null ? null:GetNewDocumentEvent(context, eventType.Value, $"{controlOnModel.Task} / {controlOnModel.Description}", targetPositionId, controlOnModel.DocumentId).FirstOrDefault()
                 }
             };
         }

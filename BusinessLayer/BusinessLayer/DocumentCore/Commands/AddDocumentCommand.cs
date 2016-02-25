@@ -105,6 +105,7 @@ namespace BL.Logic.DocumentCore.Commands
 
             // assign new created list of files to document
             _document.DocumentFiles = toCopy.Keys;
+
             _documentDb.AddDocument(Context, Document);
 
             //after saving document in filelist it should be filled DocumentId field. So we can phisical copy files

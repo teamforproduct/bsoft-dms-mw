@@ -66,7 +66,7 @@ namespace BL.Logic.DocumentCore.Commands
 
             _docWait.OffEvent =
                 CommonDocumentUtilities.GetNewDocumentEvent(_context, EnumEventTypes.ControlOff,
-                    _docWait.Task +" / "+ Model.Description, _docWait.OnEvent.TargetPositionId, _docWait.DocumentId)
+                    $"{_docWait.Task} / {Model.Description}", _docWait.OnEvent.TargetPositionId, _docWait.DocumentId)
                     .FirstOrDefault();
 
             CommonDocumentUtilities.SetLastChange(_context, _docWait);

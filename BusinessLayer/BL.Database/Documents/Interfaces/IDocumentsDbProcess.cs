@@ -6,6 +6,7 @@ using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.SystemCore;
 using BL.Model.DocumentCore.Actions;
+using BL.Model.DocumentCore.IncomingModel;
 
 namespace BL.Database.Documents.Interfaces
 {
@@ -27,8 +28,8 @@ namespace BL.Database.Documents.Interfaces
 
         InternalDocument CopyDocumentPrepare(IContext ctx, int documentId);
         InternalDocument AddDocumentPrepare(IContext context, int templateDocumentId);
+        InternalDocument ModifyDocumentPrepare(IContext context, ModifyDocument model);
         InternalDocument DeleteDocumentPrepare(IContext context, int documentId);
-        InternalDocument ModifyDocumentPrepare(IContext context, int id);
 
         InternalDocument ChangeExecutorDocumentPrepare(IContext ctx, ChangeExecutor model);
         void ChangeExecutorDocument(IContext ctx, InternalDocument document);

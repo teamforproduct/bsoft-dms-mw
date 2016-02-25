@@ -20,9 +20,6 @@ namespace BL.Database.Documents.Interfaces
         void AddDocumentEvents(IContext ctx, IEnumerable<InternalDocumentEvent> docEvents);
         IEnumerable<FrontDocumentEvent> GetDocumentEvents(IContext ctx, FilterDocumentEvent filter);
 
-        int AddDocumentAccess(IContext ctx, InternalDocumentAccess access);
-
-
         InternalDocument ChangeIsInWorkAccessPrepare(IContext context, int documentId);
         InternalDocument ChangeIsFavouriteAccessPrepare(IContext context, int documentId);
         InternalDocument ControlOffDocumentPrepare(IContext context, int eventId);

@@ -39,7 +39,7 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanExecute()
         {
-            _document = _documentDb.ModifyDocumentPrepare(_context, Model.Id);
+            _document = _documentDb.ModifyDocumentPrepare(_context, Model);
             if (_document == null)
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
@@ -62,6 +62,7 @@ namespace BL.Logic.DocumentCore.Commands
             _document.AccessLevel = Model.AccessLevel;
 
            CommonDocumentUtilities.VerifyDocument(_context, new FrontDocument(_document), null);    //TODO отвязаться от фронт-модели
+
             _documentDb.ModifyDocument(_context, _document);
             return _document.Id;
         }

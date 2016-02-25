@@ -220,7 +220,7 @@ namespace BL.Database.Documents
 
         #endregion Waits
 
-        #region Document Event
+        #region Events
 
         public void AddDocumentEvents(IContext ctx, IEnumerable<InternalDocumentEvent> docEvents)
         {
@@ -242,19 +242,6 @@ namespace BL.Database.Documents
 
         #endregion Document Event
 
-        #region Document Access
-
-        public int AddDocumentAccess(IContext ctx, InternalDocumentAccess access)
-        {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
-            {
-                var acc = ModelConverter.GetDbDocumentAccess(access);
-                dbContext.DocumentAccessesSet.Add(acc);
-                dbContext.SaveChanges();
-                return acc.Id;
-            }
-        }
-
         public IEnumerable<InternalDocumentAccess> GetDocumentAccesses(IContext ctx, int documentId)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
@@ -262,8 +249,6 @@ namespace BL.Database.Documents
                 return CommonQueries.GetInternalDocumentAccesses(dbContext, documentId);
             }
         }
-
-        #endregion
 
         public IEnumerable<InternalPositionInfo> GetInternalPositionsInfo(IContext ctx, List<int> positionIds)
         {
@@ -321,14 +306,19 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-                var docAcc = document.Accesses.FirstOrDefault();
-                var acc = dbContext.DocumentAccessesSet.FirstOrDefault(x => x.Id == docAcc.Id);
-                if (acc != null)
+                var docAccess = document.Accesses.FirstOrDefault();
+                var acc = new DocumentAccesses
                 {
-                    acc.LastChangeDate = docAcc.LastChangeDate;
-                    acc.LastChangeUserId = docAcc.LastChangeUserId;
-                    acc.IsInWork = docAcc.IsInWork;
-                }
+                    Id = docAccess.Id,
+                    IsInWork = docAccess.IsInWork,
+                    LastChangeDate = docAccess.LastChangeDate,
+                    LastChangeUserId = docAccess.LastChangeUserId
+                };
+                dbContext.DocumentAccessesSet.Attach(acc);
+                var entry = dbContext.Entry(acc);
+                entry.Property(x => x.LastChangeDate).IsModified = true;
+                entry.Property(x => x.LastChangeUserId).IsModified = true;
+                entry.Property(x => x.IsInWork).IsModified = true;
                 dbContext.DocumentEventsSet.Add(ModelConverter.GetDbDocumentEvent(document.Events.FirstOrDefault()));
                 dbContext.SaveChanges();
             }
@@ -396,8 +386,6 @@ namespace BL.Database.Documents
                 dbContext.SaveChanges();
             }
         }
-
-
 
         #region DocumentSendList    
         public InternalDocument ChangeDocumentSendListPrepare(IContext context, int documentId)

@@ -16,6 +16,7 @@ using BL.Model.SystemCore;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Model.DocumentCore.Actions;
+using BL.Model.DocumentCore.IncomingModel;
 
 namespace BL.Database.Documents
 {
@@ -27,8 +28,6 @@ namespace BL.Database.Documents
         {
             _helper = helper;
         }
-
-        #region Document
 
         public void AddDocument(IContext ctx, InternalDocument document)
         {
@@ -453,7 +452,7 @@ namespace BL.Database.Documents
                         AccessLevel = (EnumDocumentAccesses)y.AccessLevelId
                     }).ToList();
 
-                doc.DocumentFiles = dbContext.TemplateDocumentFilesSet.Where(x=>x.DocumentId == templateDocumentId).Select(x=> new InternalDocumentAttachedFile
+                doc.DocumentFiles = dbContext.TemplateDocumentFilesSet.Where(x => x.DocumentId == templateDocumentId).Select(x => new InternalDocumentAttachedFile
                 {
                     Id = x.Id,
                     DocumentId = x.DocumentId,
@@ -462,7 +461,7 @@ namespace BL.Database.Documents
                     FileType = x.FileType,
                     OrderInDocument = x.OrderNumber,
                     IsAdditional = x.IsAdditional,
-                    Hash = x.Hash                    
+                    Hash = x.Hash
                 }).ToList();
 
                 return doc;
@@ -516,12 +515,12 @@ namespace BL.Database.Documents
             }
         }
 
-        public InternalDocument ModifyDocumentPrepare(IContext context, int documentId)
+        public InternalDocument ModifyDocumentPrepare(IContext context, ModifyDocument model)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
                 var doc = CommonQueries.GetDocumentQuery(dbContext)
-                    .Where(x => x.Doc.Id == documentId && context.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId))
+                    .Where(x => x.Doc.Id == model.Id && context.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId))
                     .Select(x => new InternalDocument
                     {
                         Id = x.Doc.Id,
@@ -547,7 +546,15 @@ namespace BL.Database.Documents
                         DocumentDirection = (EnumDocumentDirections)x.Templ.DocumentDirectionId,
 
                     }).FirstOrDefault();
+                if (doc == null) return null;
 
+                doc.Accesses = dbContext.DocumentAccessesSet
+                    .Where(x => x.DocumentId == model.Id && x.PositionId == doc.ExecutorPositionId && x.AccessLevelId != (int)model.AccessLevel)
+                    .Select(x => new InternalDocumentAccess
+                    {
+                        Id = x.Id,
+                        AccessLevel = (EnumDocumentAccesses)x.AccessLevelId
+                    });
                 return doc;
             }
         }
@@ -556,28 +563,49 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-                var doc = dbContext.DocumentsSet
-                    .Include(x => x.Accesses)
-                    .FirstOrDefault(x => x.Id == document.Id);  //TODO OPTIMIZE
-                if (doc != null)
+                var doc = new DBModel.Document.Documents
                 {
-                    doc.DocumentSubjectId = document.DocumentSubjectId;
-                    doc.Description = document.Description;
-                    doc.LastChangeUserId = document.LastChangeUserId;
-                    doc.LastChangeDate = document.LastChangeDate;
-                    doc.SenderAgentId = document.SenderAgentId;
-                    doc.SenderAgentPersonId = document.SenderAgentPersonId;
-                    doc.SenderNumber = document.SenderNumber;
-                    doc.SenderDate = document.SenderDate;
-                    doc.Addressee = document.Addressee;
+                    Id = document.Id,
+                    DocumentSubjectId = document.DocumentSubjectId,
+                    Description = document.Description,
+                    SenderAgentId = document.SenderAgentId,
+                    SenderAgentPersonId = document.SenderAgentPersonId,
+                    SenderNumber = document.SenderNumber,
+                    SenderDate = document.SenderDate,
+                    Addressee = document.Addressee,
+                    LastChangeDate = document.LastChangeDate,
+                    LastChangeUserId = document.LastChangeUserId
+                };
+                dbContext.DocumentsSet.Attach(doc);
+                var entry = dbContext.Entry(doc);
+                entry.Property(x => x.LastChangeDate).IsModified = true;
+                entry.Property(x => x.LastChangeUserId).IsModified = true;
+                entry.Property(x => x.DocumentSubjectId).IsModified = true;
+                entry.Property(x => x.Description).IsModified = true;
+                entry.Property(x => x.SenderAgentId).IsModified = true;
+                entry.Property(x => x.SenderAgentPersonId).IsModified = true;
+                entry.Property(x => x.SenderNumber).IsModified = true;
+                entry.Property(x => x.SenderDate).IsModified = true;
+                entry.Property(x => x.Addressee).IsModified = true;
 
-                    if (document.AccessLevel.HasValue && doc.Accesses.Any(x => x.PositionId == ctx.CurrentPositionId && x.AccessLevelId != (int)document.AccessLevel))
+                var docAccess = document.Accesses.First();
+                if (docAccess != null)
+                {
+                    var acc = new DocumentAccesses
                     {
-                        doc.Accesses.FirstOrDefault(x => x.PositionId == ctx.CurrentPositionId).AccessLevelId = (int)document.AccessLevel;
-                    }
-
-                    dbContext.SaveChanges();
+                        Id = docAccess.Id,
+                        AccessLevelId = (int)docAccess.AccessLevel,
+                        LastChangeDate = docAccess.LastChangeDate,
+                        LastChangeUserId = docAccess.LastChangeUserId
+                    };
+                    dbContext.DocumentAccessesSet.Attach(acc);
+                    var entryAcc = dbContext.Entry(acc);
+                    entryAcc.Property(x => x.LastChangeDate).IsModified = true;
+                    entryAcc.Property(x => x.LastChangeUserId).IsModified = true;
+                    entryAcc.Property(x => x.AccessLevelId).IsModified = true;
                 }
+                dbContext.SaveChanges();
+
             }
         }
 
@@ -665,22 +693,32 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-                var doc = dbContext.DocumentsSet
-                    .FirstOrDefault(x => x.Id == document.Id);  //TODO OPTIMIZE
-                if (doc != null)
+                var doc = new DBModel.Document.Documents
                 {
-                    doc.IsRegistered = document.IsRegistered;
-                    doc.RegistrationJournalId = document.RegistrationJournalId;
-                    doc.NumerationPrefixFormula = document.NumerationPrefixFormula;
-                    doc.RegistrationNumber = document.RegistrationNumber;
-                    doc.RegistrationNumberSuffix = document.RegistrationNumberSuffix;
-                    doc.RegistrationNumberPrefix = document.RegistrationNumberPrefix;
-                    doc.RegistrationDate = document.RegistrationDate;
-                    doc.LastChangeUserId = document.LastChangeUserId;
-                    doc.LastChangeDate = document.LastChangeDate;
+                    Id = document.Id,
+                    IsRegistered = document.IsRegistered,
+                    RegistrationJournalId = document.RegistrationJournalId,
+                    NumerationPrefixFormula = document.NumerationPrefixFormula,
+                    RegistrationNumber = document.RegistrationNumber,
+                    RegistrationNumberSuffix = document.RegistrationNumberSuffix,
+                    RegistrationNumberPrefix = document.RegistrationNumberPrefix,
+                    RegistrationDate = document.RegistrationDate,
+                    LastChangeDate = document.LastChangeDate,
+                    LastChangeUserId = document.LastChangeUserId
+                };
+                dbContext.DocumentsSet.Attach(doc);
+                var entry = dbContext.Entry(doc);
+                entry.Property(x => x.LastChangeDate).IsModified = true;
+                entry.Property(x => x.LastChangeUserId).IsModified = true;
+                entry.Property(x => x.IsRegistered).IsModified = true;
+                entry.Property(x => x.RegistrationJournalId).IsModified = true;
+                entry.Property(x => x.NumerationPrefixFormula).IsModified = true;
+                entry.Property(x => x.RegistrationNumber).IsModified = true;
+                entry.Property(x => x.RegistrationNumberSuffix).IsModified = true;
+                entry.Property(x => x.RegistrationNumberPrefix).IsModified = true;
+                entry.Property(x => x.RegistrationDate).IsModified = true;
 
-                    dbContext.SaveChanges();
-                }
+                dbContext.SaveChanges();
             }
         }
 
@@ -732,26 +770,32 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-                var doc = dbContext.DocumentsSet
-                    .FirstOrDefault(x => x.Id == document.Id);  //TODO OPTIMIZE
-                if (doc != null)
+
+                var doc = new DBModel.Document.Documents
                 {
-                    doc.ExecutorPositionId = document.ExecutorPositionId;
-                    doc.LastChangeUserId = document.LastChangeUserId;
-                    doc.LastChangeDate = document.LastChangeDate;
+                    Id = document.Id,
+                    ExecutorPositionId = document.ExecutorPositionId,
+                    LastChangeDate = document.LastChangeDate,
+                    LastChangeUserId = document.LastChangeUserId
+                };
+                dbContext.DocumentsSet.Attach(doc);
+                var entry = dbContext.Entry(doc);
+                entry.Property(x => x.LastChangeDate).IsModified = true;
+                entry.Property(x => x.LastChangeUserId).IsModified = true;
+                entry.Property(x => x.ExecutorPositionId).IsModified = true;
 
-                    if (document.Events != null && document.Events.Any(x => x.Id == 0))
-                    {
-                        doc.Events = ModelConverter.GetDbDocumentEvents(document.Events.Where(x => x.Id == 0)).ToList();
-                    }
-
-                    if (document.Accesses != null && document.Accesses.Any())
-                    {
-                        doc.Accesses = CommonQueries.GetDbDocumentAccesses(dbContext, document.Accesses, doc.Id).ToList();
-                    }
-
-                    dbContext.SaveChanges();
+                if (document.Events != null && document.Events.Any(x => x.Id == 0))
+                {
+                    doc.Events = ModelConverter.GetDbDocumentEvents(document.Events.Where(x => x.Id == 0)).ToList();
                 }
+
+                if (document.Accesses != null && document.Accesses.Any())
+                {
+                    doc.Accesses = CommonQueries.GetDbDocumentAccesses(dbContext, document.Accesses, doc.Id).ToList();
+                }
+
+                dbContext.SaveChanges();
+
             }
         }
 
@@ -776,12 +820,19 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-                var doc = dbContext.DocumentsSet
-                    .FirstOrDefault(x => x.Id == document.Id);//TODO OPTIMIZE
-                if (doc == null) return;
-                doc.IsLaunchPlan = document.IsLaunchPlan;
-                doc.LastChangeUserId = document.LastChangeUserId;
-                doc.LastChangeDate = document.LastChangeDate;
+                var doc = new DBModel.Document.Documents
+                {
+                    Id = document.Id,
+                    IsLaunchPlan = document.IsLaunchPlan,
+                    LastChangeDate = document.LastChangeDate,
+                    LastChangeUserId = document.LastChangeUserId
+                };
+                dbContext.DocumentsSet.Attach(doc);
+                var entry = dbContext.Entry(doc);
+                entry.Property(x => x.LastChangeDate).IsModified = true;
+                entry.Property(x => x.LastChangeUserId).IsModified = true;
+                entry.Property(x => x.IsLaunchPlan).IsModified = true;
+
                 dbContext.SaveChanges();
             }
         }
@@ -800,8 +851,6 @@ namespace BL.Database.Documents
                 return doc;
             }
         }
-
-        #endregion Document
 
     }
 }
