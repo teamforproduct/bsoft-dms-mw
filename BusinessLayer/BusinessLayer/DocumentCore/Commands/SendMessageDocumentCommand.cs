@@ -6,17 +6,22 @@ using BL.Model.DocumentCore.Actions;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using System.Linq;
+using BL.Database.Admins.Interfaces;
 using BL.Model.DocumentCore.InternalModel;
 
 namespace BL.Logic.DocumentCore.Commands
 {
-    public class SendMessageDocumentCommand: BaseDocumentCommand
+    public class SendMessageDocumentCommand : BaseDocumentCommand
     {
-        private readonly IDocumentOperationsDbProcess _documentDb;
+        private readonly IDocumentsDbProcess _documentDb;
+        private readonly IDocumentOperationsDbProcess _operationDb;
+        private readonly IAdminsDbProcess _adminDb;
 
-        public SendMessageDocumentCommand(IDocumentOperationsDbProcess documentDb)
+        public SendMessageDocumentCommand(IDocumentsDbProcess documentDb, IDocumentOperationsDbProcess operationDb, IAdminsDbProcess adminDb)
         {
             _documentDb = documentDb;
+            _operationDb = operationDb;
+            _adminDb = adminDb;
         }
 
         private SendMessage Model
@@ -38,43 +43,35 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanExecute()
         {
+            _adminDb.VerifyAccess(_context, CommandType);
+            _document = _documentDb.GetBlankInternalDocumentById(_context, Model.DocumentId);
+
             return true;
         }
 
         public override object Execute()
         {
-            var accList = _documentDb.GetDocumentAccesses(_context, Model.DocumentId);
+            var accList = _operationDb.GetDocumentAccesses(_context, Model.DocumentId);
             var actuelPosList = Model.Positions.Where(x => accList.Select(s => s.PositionId).Contains(x)).ToList();
-            if (actuelPosList.Any())
+            if (!actuelPosList.Any()) return null;
             {
-                var posInfos = _documentDb.GetInternalPositionsInfo(_context, actuelPosList);
+                var posInfos = _operationDb.GetInternalPositionsInfo(_context, actuelPosList);
                 var evtToAdd = new List<InternalDocumentEvents>();
 
-                string descr = Model.Description + (
+                var description = Model.Description + (
                     Model.IsAddPositionsInfo
-                    ? "[" + String.Join(", ", posInfos.Select(x => x.PositionName)) + "]"
-                    : "");
+                        ? "[" + string.Join(", ", posInfos.Select(x => x.PositionName)) + "]"
+                        : "");
 
-                foreach (var pos in actuelPosList)
+                foreach (var targetPositionId in actuelPosList)
                 {
-                    evtToAdd.Add(new InternalDocumentEvents
-                    {
-                        EventType = EnumEventTypes.SendMessage,
-                        Description = descr,
-                        LastChangeUserId = _context.CurrentAgentId,
-                        SourceAgentId = _context.CurrentAgentId,
-                        SourcePositionId = _context.CurrentPositionId,
-                        TargetPositionId = pos,
-                        LastChangeDate = DateTime.Now,
-                        Date = DateTime.Now,
-                        CreateDate = DateTime.Now,
-                    });
+                    evtToAdd.AddRange(CommonDocumentUtilities.GetNewDocumentEvent(_context, EnumEventTypes.SendMessage, description, targetPositionId, Model.DocumentId));
                 }
-                _documentDb.AddDocumentEvents(_context, evtToAdd);
+                _operationDb.AddDocumentEvents(_context, evtToAdd);
             }
             return null;
         }
 
-        public override EnumDocumentActions CommandType { get { return EnumDocumentActions.SendMessage; } }
+        public override EnumDocumentActions CommandType => EnumDocumentActions.SendMessage;
     }
 }

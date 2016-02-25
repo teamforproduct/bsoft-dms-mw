@@ -205,7 +205,7 @@ namespace BL.Database.Common
             {
                 PositionId = x.Id,
                 PositionName = x.Name,
-                AgentId = x.ExecutorAgentId.HasValue? x.ExecutorAgentId.Value:0,
+                AgentId = x.ExecutorAgentId ?? 0,
                 AgentName = x.ExecutorAgentId.HasValue ? x.ExecutorAgent.Name:""
                 }).ToList();
         }

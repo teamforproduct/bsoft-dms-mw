@@ -51,7 +51,7 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanExecute()
         {
-            _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = CommandType.ToString() });
+            _adminDb.VerifyAccess(_context, CommandType);
             _document = _documentDb.RegisterDocumentPrepare(_context, Model);
 
             if (_document == null)
@@ -101,7 +101,7 @@ namespace BL.Logic.DocumentCore.Commands
                 }
                 _documentDb.RegisterDocument(_context, _document);
                 isOk = _documentDb.VerifyDocumentRegistrationNumber(_context, _document);
-                isRepeat = isOk ? !isOk : isNeedGenerateNumber;
+                isRepeat = !isOk && isNeedGenerateNumber;
             }
             if (!isOk)
             {

@@ -45,7 +45,7 @@ namespace BL.Logic.DocumentCore.Commands
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
             _context.SetCurrentPosition(_document.ExecutorPositionId);
-            _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = CommandType.ToString()});
+            _adminDb.VerifyAccess(_context, CommandType);
             return true;
         }
 
@@ -61,11 +61,11 @@ namespace BL.Logic.DocumentCore.Commands
             _document.Addressee = Model.Addressee;
             _document.AccessLevel = Model.AccessLevel;
 
-           CommonDocumentUtilities.VerifyDocument(_context, new FrontDocument(_document), null);
+           CommonDocumentUtilities.VerifyDocument(_context, new FrontDocument(_document), null);    //TODO отвязаться от фронт-модели
             _documentDb.ModifyDocument(_context, _document);
             return _document.Id;
         }
 
-        public override EnumDocumentActions CommandType { get { return EnumDocumentActions.ModifyDocument; } }
+        public override EnumDocumentActions CommandType => EnumDocumentActions.ModifyDocument;
     }
 }

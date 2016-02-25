@@ -18,7 +18,7 @@ namespace BL.Database.Documents.Interfaces
         IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging);
         FrontDocument GetDocument(IContext ctx, int documentId);
 
-        InternalDocument GetInternalDocument(IContext ctx, int documentId);
+
 
 
         InternalDocument RegisterDocumentPrepare(IContext ctx, RegisterDocument model);
@@ -37,6 +37,6 @@ namespace BL.Database.Documents.Interfaces
         InternalDocument ChangeIsLaunchPlanDocumentPrepare(IContext context, int documentId);
 
         void ChangeIsLaunchPlanDocument(IContext ctx, InternalDocument document);
-        InternalDocument GetBlankDocumentId(IContext context, int documentId);
+        InternalDocument GetBlankInternalDocumentById(IContext context, int documentId);
     }
 }
