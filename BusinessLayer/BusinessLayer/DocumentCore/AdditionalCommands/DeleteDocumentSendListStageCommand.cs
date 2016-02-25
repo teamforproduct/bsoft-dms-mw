@@ -16,7 +16,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         private readonly IDocumentOperationsDbProcess _operationDb;
         private readonly IAdminsDbProcess _adminDb;
 
-        protected IEnumerable<InternalDocumentSendLists> DocSendLists;
+        protected IEnumerable<InternalDocumentSendList> DocSendLists;
 
         public DeleteDocumentSendListStageCommand(IDocumentOperationsDbProcess operationDb, IAdminsDbProcess adminDb)
         {

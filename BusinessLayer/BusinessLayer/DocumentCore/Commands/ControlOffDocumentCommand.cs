@@ -47,9 +47,9 @@ namespace BL.Logic.DocumentCore.Commands
             docWait.ResultTypeId = Model.ResultTypeId;
 
             docWait.OnEvent = null;
-            docWait.OffEvent = new InternalDocumentEvents
+            docWait.OffEvent = new InternalDocumentEvent
             {
-                DocumentId = Model.DocumentId,
+//TODO                DocumentId = Model.DocumentId,
                 EventType = EnumEventTypes.ControlOff,
                 Description = docWait.Task +" / "+Model.Description,
                 SourcePositionId = (int)_context.CurrentPositionId,

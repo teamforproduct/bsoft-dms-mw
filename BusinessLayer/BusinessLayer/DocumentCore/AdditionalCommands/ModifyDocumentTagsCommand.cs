@@ -14,7 +14,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         private readonly IDocumentOperationsDbProcess _operationDb;
         private readonly IAdminsDbProcess _adminDb;
 
-        protected InternalDocumentTags DocTags;
+        protected InternalDocumentTag DocTags;
 
         public ModifyDocumentTagsCommand(IDocumentOperationsDbProcess operationDb, IAdminsDbProcess adminDb)
         {
@@ -44,7 +44,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             _context.SetCurrentPosition(_document.ExecutorPositionId);
             _adminDb.VerifyAccess(_context, CommandType);
 
-            DocTags = new InternalDocumentTags
+            DocTags = new InternalDocumentTag
             {
                 DocumentId = Model.DocumentId,
                 Tags = Model.Tags

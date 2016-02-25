@@ -153,13 +153,13 @@ namespace BL.Database.Common
             return null;
         }
 
-        public static IEnumerable<DocumentAccesses> GetDbDocumentAccesses(DmsContext dbContext, IEnumerable<InternalDocumentAccesses> docAccesses, int documentId)
+        public static IEnumerable<DocumentAccesses> GetDbDocumentAccesses(DmsContext dbContext, IEnumerable<InternalDocumentAccess> docAccesses, int documentId)
         {
             var accPositions = dbContext.DocumentAccessesSet.Where(x => x.DocumentId == documentId).Select(x => x.PositionId);
             return docAccesses.Where(x=>!accPositions.Contains(x.PositionId)).Select(ModelConverter.GetDbDocumentAccess);
         }
 
-        public static InternalDocumentAccesses GetInternalDocumentAccess(IContext ctx, DmsContext dbContext, int documentId)
+        public static InternalDocumentAccess GetInternalDocumentAccess(IContext ctx, DmsContext dbContext, int documentId)
         {
 
             var acc =
@@ -167,7 +167,7 @@ namespace BL.Database.Common
                     x => x.DocumentId == documentId && x.PositionId == ctx.CurrentPositionId);
             if (acc != null)
             {
-                return new InternalDocumentAccesses
+                return new InternalDocumentAccess
                 {
                     LastChangeDate = acc.LastChangeDate,
                     LastChangeUserId = acc.LastChangeUserId,
@@ -183,10 +183,10 @@ namespace BL.Database.Common
             return null;
         }
 
-        public static IEnumerable<InternalDocumentAccesses> GetInternalDocumentAccesses(DmsContext dbContext, int documentId)
+        public static IEnumerable<InternalDocumentAccess> GetInternalDocumentAccesses(DmsContext dbContext, int documentId)
         {
             return dbContext.DocumentAccessesSet.Where(
-                x => x.DocumentId == documentId).Select(acc => new InternalDocumentAccesses
+                x => x.DocumentId == documentId).Select(acc => new InternalDocumentAccess
                 {
                     LastChangeDate = acc.LastChangeDate,
                     LastChangeUserId = acc.LastChangeUserId,
@@ -252,7 +252,7 @@ namespace BL.Database.Common
 
         }
 
-        public static IEnumerable<InternalDocumentEvents> GetInternalDocumentEvents(DmsContext dbContext, FilterDocumentEvent filter)
+        public static IEnumerable<InternalDocumentEvent> GetInternalDocumentEvents(DmsContext dbContext, FilterDocumentEvent filter)
         {
             var qry = dbContext.DocumentEventsSet.AsQueryable();
 
@@ -268,7 +268,7 @@ namespace BL.Database.Common
                     qry = qry.Where(x => filter.DocumentId.Contains(x.DocumentId));
                 }
             }
-            return qry.Select(x => new InternalDocumentEvents
+            return qry.Select(x => new InternalDocumentEvent
             {
                 Id = x.Id,
                 DocumentId = x.DocumentId,
@@ -287,7 +287,7 @@ namespace BL.Database.Common
 
         }
 
-        public static IEnumerable<InternalDocumentWaits> GetInternalDocumentWaits(DmsContext dbContext, FilterDocumentWaits filter)
+        public static IEnumerable<InternalDocumentWait> GetInternalDocumentWaits(DmsContext dbContext, FilterDocumentWaits filter)
         {
             var waitsDb = dbContext.DocumentWaitsSet.AsQueryable();
 
@@ -316,7 +316,7 @@ namespace BL.Database.Common
 
             var waitsRes = waitsDb.Select(x => new { Wait = x, x.OnEvent, x.OffEvent });
 
-            var waits = waitsRes.Select(x => new InternalDocumentWaits
+            var waits = waitsRes.Select(x => new InternalDocumentWait
             {
                 Id = x.Wait.Id,
                 DocumentId = x.Wait.DocumentId,
@@ -329,7 +329,7 @@ namespace BL.Database.Common
                 AttentionDate = x.Wait.AttentionDate,
                 OnEvent = x.OnEvent == null
                     ? null
-                    : new InternalDocumentEvents
+                    : new InternalDocumentEvent
                     {
                         Id = x.OnEvent.Id,
                         CreateDate = x.OnEvent.CreateDate,
@@ -345,7 +345,7 @@ namespace BL.Database.Common
                     },
                 OffEvent = x.OffEvent == null
                     ? null
-                    : new InternalDocumentEvents
+                    : new InternalDocumentEvent
                     {
                         Id = x.OffEvent.Id,
                         CreateDate = x.OffEvent.CreateDate,
@@ -443,7 +443,7 @@ namespace BL.Database.Common
 
         }
 
-        public static IEnumerable<FrontDocumentTag> GetDocumentTags(DmsContext dbContext, FilterDocumentTags filter)
+        public static IEnumerable<FrontDocumentTag> GetDocumentTags(DmsContext dbContext, FilterDocumentTag filter)
         {
             var tagsDb = dbContext.DocumentTagsSet.AsQueryable();
 
@@ -500,7 +500,7 @@ namespace BL.Database.Common
                                                 (z.ParentDocument.RegistrationNumber != null
                                                         ? (z.ParentDocument.RegistrationNumberPrefix + z.ParentDocument.RegistrationNumber.ToString() + z.ParentDocument.RegistrationNumberSuffix)
                                                         : ("#" + z.ParentDocument.Id.ToString()))
-                                    + " " + (z.ParentDocument.RegistrationDate ?? z.ParentDocument.CreateDate).ToString(CultureInfo.InvariantCulture)
+                                    + " " + (z.ParentDocument.RegistrationDate ?? z.ParentDocument.CreateDate).ToString()
                                     //TODO String.Format("{0:dd.MM.yyyy}", (z.ParentDocument.RegistrationDate ?? z.ParentDocument.CreateDate))
                                 }).ToList()
                         }).ToList();
@@ -535,10 +535,10 @@ namespace BL.Database.Common
                         }).ToList();
         }
 
-        public static IEnumerable<InternalDocumentSendLists> GetInternalDocumentSendList(DmsContext dbContext, int documentId)
+        public static IEnumerable<InternalDocumentSendList> GetInternalDocumentSendList(DmsContext dbContext, int documentId)
         {
             return dbContext.DocumentSendListsSet.Where(x => x.DocumentId == documentId)
-                        .Select(y => new InternalDocumentSendLists
+                        .Select(y => new InternalDocumentSendList
                         {
                             Id = y.Id,
                             DocumentId = y.DocumentId,
@@ -575,10 +575,10 @@ namespace BL.Database.Common
                         }).ToList();
         }
 
-        public static IEnumerable<InternalDocumentRestrictedSendLists> GetInternalDocumentRestrictedSendList(DmsContext dbContext, int documentId)
+        public static IEnumerable<InternalDocumentRestrictedSendList> GetInternalDocumentRestrictedSendList(DmsContext dbContext, int documentId)
         {
             return dbContext.DocumentRestrictedSendListsSet.Where(x => x.DocumentId == documentId)
-                        .Select(y => new InternalDocumentRestrictedSendLists
+                        .Select(y => new InternalDocumentRestrictedSendList
                         {
                             Id = y.Id,
                             DocumentId = y.DocumentId,

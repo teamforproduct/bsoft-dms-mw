@@ -5,7 +5,7 @@ namespace BL.Model.DocumentCore.Filters
     /// <summary>
     ///Фильтр ожиданий по документу
     /// </summary>
-    public class FilterDocumentTags
+    public class FilterDocumentTag
     {
         /// <summary>
         /// ИД. Документа

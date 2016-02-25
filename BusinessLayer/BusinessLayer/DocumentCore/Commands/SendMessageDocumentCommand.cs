@@ -56,7 +56,7 @@ namespace BL.Logic.DocumentCore.Commands
             if (!actuelPosList.Any()) return null;
             {
                 var posInfos = _operationDb.GetInternalPositionsInfo(_context, actuelPosList);
-                var evtToAdd = new List<InternalDocumentEvents>();
+                var evtToAdd = new List<InternalDocumentEvent>();
 
                 var description = Model.Description + (
                     Model.IsAddPositionsInfo

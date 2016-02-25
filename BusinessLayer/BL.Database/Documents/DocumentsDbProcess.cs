@@ -343,7 +343,7 @@ namespace BL.Database.Documents
 
                 doc.DocumentWaits = CommonQueries.GetDocumentWaits(dbContext, new FilterDocumentWaits { DocumentId = documentId });
 
-                doc.DocumentTags = CommonQueries.GetDocumentTags(dbContext, new FilterDocumentTags { DocumentId = documentId, CurrentPositionsId = ctx.CurrentPositionsIdList });
+                doc.DocumentTags = CommonQueries.GetDocumentTags(dbContext, new FilterDocumentTag { DocumentId = documentId, CurrentPositionsId = ctx.CurrentPositionsIdList });
 
                 return doc;
             }
@@ -372,14 +372,14 @@ namespace BL.Database.Documents
                 }
 
                 doc.RestrictedSendLists = dbContext.TemplateDocumentRestrictedSendLists.Where(y => y.Id == templateDocumentId)
-                    .Select(y => new InternalDocumentRestrictedSendLists()
+                    .Select(y => new InternalDocumentRestrictedSendList()
                     {
                         PositionId = y.PositionId,
                         AccessLevel = (EnumDocumentAccesses)y.AccessLevelId
                     }).ToList();
 
                 doc.SendLists = dbContext.TemplateDocumentSendLists.Where(y => y.Id == templateDocumentId)
-                    .Select(y => new InternalDocumentSendLists()
+                    .Select(y => new InternalDocumentSendList()
                     {
                         SendType = (EnumSendTypes)y.SendTypeId,
                         TargetPositionId = y.TargetPositionId,
@@ -469,7 +469,7 @@ namespace BL.Database.Documents
                 }
 
                 doc.SendLists = dbContext.DocumentSendListsSet.Where(x => x.DocumentId == documentId)
-                        .Select(y => new InternalDocumentSendLists
+                        .Select(y => new InternalDocumentSendList
                         {
                             Stage = y.Stage,
                             SendType = (EnumSendTypes)y.SendTypeId,
@@ -481,7 +481,7 @@ namespace BL.Database.Documents
                             IsInitial = y.IsInitial,
                         }).ToList();
                 doc.RestrictedSendLists = dbContext.DocumentRestrictedSendListsSet.Where(x => x.DocumentId == documentId)
-                        .Select(y => new InternalDocumentRestrictedSendLists
+                        .Select(y => new InternalDocumentRestrictedSendList
                         {
                             PositionId = y.PositionId,
                             AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
@@ -636,7 +636,6 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
                 var doc = dbContext.DocumentsSet
-                    .Include(x => x.Accesses)
                     .FirstOrDefault(x => x.Id == document.Id);  //TODO OPTIMIZE
                 if (doc != null)
                 {

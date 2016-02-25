@@ -45,9 +45,9 @@ namespace BL.Logic.DocumentCore.Commands
             var oldWait = _operationDb.GetDocumentWaitByOnEventId(_context, Model.EventId);
 
             oldWait.OnEvent = null;
-            oldWait.OffEvent = new InternalDocumentEvents
+            oldWait.OffEvent = new InternalDocumentEvent
             {
-                DocumentId = Model.DocumentId,
+                //TODO         DocumentId = Model.DocumentId,
                 EventType = EnumEventTypes.ControlChange,
                 Description = oldWait.Task+" / "+Model.Description,
                 SourcePositionId = _context.CurrentPositionId,
@@ -60,19 +60,19 @@ namespace BL.Logic.DocumentCore.Commands
 
             _operationDb.UpdateDocumentWait(_context, oldWait);
             // TODO Stas check that oldWait.OffEvent.Id filled during the update operation
-            var newWait = new InternalDocumentWaits
+            var newWait = new InternalDocumentWait
             {
                 ParentId = oldWait.Id,
-                DocumentId = Model.DocumentId,
-                Task = Model.Task,
+                //TODO      DocumentId = Model.DocumentId,
+                //TODO     Task = Model.Task,
                 DueDate = Model.DueDate,
                 AttentionDate = Model.AttentionDate,
                 OnEventId = oldWait.OffEvent.Id
             };
-            _operationDb.AddDocumentWait(_context, newWait);
+          //  _operationDb.AddDocumentWait(_context, newWait);
             return null;
         }
 
-        public override EnumDocumentActions CommandType { get { return EnumDocumentActions.ControlChange; } }
+        public override EnumDocumentActions CommandType => EnumDocumentActions.ControlChange;
     }
 }

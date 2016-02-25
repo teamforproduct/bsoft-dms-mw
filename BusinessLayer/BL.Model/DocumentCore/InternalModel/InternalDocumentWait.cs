@@ -3,7 +3,7 @@ using BL.Model.Common;
 
 namespace BL.Model.DocumentCore.InternalModel
 {
-    public class InternalDocumentWaits: LastChangeInfo
+    public class InternalDocumentWait: LastChangeInfo
     {
         public int Id { get; set; }
         public int DocumentId { get; set; }
@@ -14,7 +14,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public string Task { get; set; }
         public DateTime? DueDate { get; set; }
         public DateTime? AttentionDate { get; set; }
-        public InternalDocumentEvents OnEvent { get; set; }
-        public InternalDocumentEvents OffEvent { get; set; }
+        public InternalDocumentEvent OnEvent { get; set; }
+        public InternalDocumentEvent OffEvent { get; set; }
     }
 }

@@ -16,7 +16,7 @@ namespace BL.Logic.DocumentCore.Commands
         private readonly IDocumentOperationsDbProcess _operationDb;
         private readonly IAdminsDbProcess _adminDb;
 
-        private InternalDocumentAccesses _docAccess;
+        private InternalDocumentAccess _docAccess;
 
         public StartWorkDocumentCommand(IDocumentOperationsDbProcess operationDb, IAdminsDbProcess adminDb)
         {

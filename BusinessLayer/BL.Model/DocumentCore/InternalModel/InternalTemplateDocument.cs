@@ -17,7 +17,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public int? SenderAgentId { get; set; }
         public int? SenderAgentPersonId { get; set; }
         public string Addressee { get; set; }
-        public virtual IEnumerable<InternalTemplateDocumentRestrictedSendLists> RestrictedSendLists { get; set; }
-        public virtual IEnumerable<InternalTemplateDocumentSendLists> SendLists { get; set; }
+        public virtual IEnumerable<InternalTemplateDocumentRestrictedSendList> RestrictedSendLists { get; set; }
+        public virtual IEnumerable<InternalTemplateDocumentSendList> SendLists { get; set; }
     }
 }

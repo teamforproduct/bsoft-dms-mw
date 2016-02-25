@@ -132,15 +132,15 @@ namespace BL.Model.DocumentCore.InternalModel
        // public int LinkedDocumentsCount { get; set; }
 
         public InternalTemplateDocument TemplateDocument { get; set; }
-        public IEnumerable<InternalDocumentRestrictedSendLists> RestrictedSendLists { get; set; }
-        public IEnumerable<InternalDocumentSendLists> SendLists { get; set; }
+        public IEnumerable<InternalDocumentRestrictedSendList> RestrictedSendLists { get; set; }
+        public IEnumerable<InternalDocumentSendList> SendLists { get; set; }
         public IEnumerable<InternalDocumentSendListStage> SendListStages { get; set; }
         public int SendListStageMax { get; set; }
-        public IEnumerable<InternalDocumentEvents> Events { get; set; }
-        public IEnumerable<InternalDocumentAccesses> Accesses { get; set; }
+        public IEnumerable<InternalDocumentEvent> Events { get; set; }
+        public IEnumerable<InternalDocumentAccess> Accesses { get; set; }
         public IEnumerable<InternalDocumentAttachedFile> DocumentFiles { get; set; }
         public IEnumerable<InternalDocument> LinkedDocuments { get; set; }
         public IEnumerable<FrontDocumentLink> Links { get; set; }
-        public IEnumerable<InternalDocumentWaits> DocumentWaits { get; set; }
+        public IEnumerable<InternalDocumentWait> DocumentWaits { get; set; }
     }
 }

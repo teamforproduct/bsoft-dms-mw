@@ -4,7 +4,7 @@ using BL.Model.Enums;
 
 namespace BL.Model.DocumentCore.InternalModel
 {
-    public class InternalTemplateDocumentSendLists : LastChangeInfo
+    public class InternalTemplateDocumentSendList : LastChangeInfo
     {
         public int Id { get; set; }
         public int DocumentId { get; set; }

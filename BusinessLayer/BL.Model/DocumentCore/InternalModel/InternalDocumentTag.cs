@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace BL.Model.DocumentCore.InternalModel
 {
-    public class InternalDocumentTags : LastChangeInfo
+    public class InternalDocumentTag : LastChangeInfo
     {
         /// <summary>
         /// ИД документа
