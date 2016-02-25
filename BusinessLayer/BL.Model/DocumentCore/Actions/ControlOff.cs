@@ -8,13 +8,26 @@ using System.Threading.Tasks;
 
 namespace BL.Model.DocumentCore.Actions
 {
-    public class ControlOff : CurrentPosition
+    public class ControlOff
     {
+        /// <summary>
+        /// ИД события, породившего контроль
+        /// </summary>
         [Required]
         public int EventId { get; set; }
-        public int DocumentId { get; set; }
+        /// <summary>
+        /// ИД типа результата
+        /// </summary>
+        [Required]
         public int ResultTypeId { get; set; }
+        /// <summary>
+        /// Комментарий
+        /// </summary>
+        [Required]
         public string Description { get; set; }
+        /// <summary>
+        /// Каскадное закрытие контроля
+        /// </summary>
         public bool IsCascade { get; set; }
     }
 }

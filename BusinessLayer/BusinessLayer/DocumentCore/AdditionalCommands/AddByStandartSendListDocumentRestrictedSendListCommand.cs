@@ -16,7 +16,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         private readonly IDocumentOperationsDbProcess _operationDb;
         private readonly IAdminsDbProcess _adminDb;
 
-        protected IEnumerable<InternalDocumentRestrictedSendLists> DocRestSendLists;
+        protected IEnumerable<InternalDocumentRestrictedSendList> DocRestSendLists;
 
         public AddByStandartSendListDocumentRestrictedSendListCommand(IDocumentOperationsDbProcess operationDb, IAdminsDbProcess adminDb)
         {

@@ -42,7 +42,7 @@ namespace BL.Logic.DocumentCore.Commands
         public override bool CanExecute()
         {
             _adminDb.VerifyAccess(_context, CommandType);
-            _document = _documentDb.GetBlankDocumentId(_context, Model.DocumentId);
+            _document = _documentDb.GetBlankInternalDocumentById(_context, Model.DocumentId);
 
             if (_document == null)
             {

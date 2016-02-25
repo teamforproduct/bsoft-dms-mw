@@ -260,7 +260,7 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeM = new System.Diagnostics.Stopwatch();
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
-            var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
             docProc.ExecuteAction(EnumDocumentActions.ControlChange,cxt, model);
@@ -272,7 +272,7 @@ namespace DMS_WebAPI.Controllers.Documents
 
             var ctrl = new DocumentsController();
             ctrl.ControllerContext = ControllerContext;
-            return ctrl.Get(model.DocumentId);
+            return null;//TODO ctrl.Get(model.DocumentId);
         }
 
         /// <summary>
@@ -287,7 +287,7 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeM = new System.Diagnostics.Stopwatch();
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
-            var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
             docProc.ExecuteAction(EnumDocumentActions.ControlOff, cxt, model);
@@ -299,7 +299,7 @@ namespace DMS_WebAPI.Controllers.Documents
 
             var ctrl = new DocumentsController();
             ctrl.ControllerContext = ControllerContext;
-            return ctrl.Get(model.DocumentId);
+            return null;//TODO ctrl.Get(model.DocumentId);
         }
 
         /// <summary>

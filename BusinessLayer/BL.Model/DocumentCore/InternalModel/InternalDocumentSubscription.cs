@@ -7,7 +7,7 @@ using BL.Model.Common;
 
 namespace BL.Model.DocumentCore.InternalModel
 {
-    public class InternalDocumentSubscriptions : LastChangeInfo
+    public class InternalDocumentSubscription : LastChangeInfo
     {
         public int Id { get; set; }
         public int DocumentId { get; set; }

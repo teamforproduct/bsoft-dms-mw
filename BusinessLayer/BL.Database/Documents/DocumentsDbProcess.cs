@@ -94,104 +94,9 @@ namespace BL.Database.Documents
             }
         }
 
-        public void ModifyDocument(IContext ctx, InternalDocument document)
-        {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
-            {
-                var doc = dbContext.DocumentsSet
-                    .Include(x => x.Accesses)
-                    .FirstOrDefault(x => x.Id == document.Id);
-                if (doc != null)
-                {
-                    doc.DocumentSubjectId = document.DocumentSubjectId;
-                    doc.Description = document.Description;
-                    doc.LastChangeUserId = document.LastChangeUserId;
-                    doc.LastChangeDate = document.LastChangeDate;
-                    doc.SenderAgentId = document.SenderAgentId;
-                    doc.SenderAgentPersonId = document.SenderAgentPersonId;
-                    doc.SenderNumber = document.SenderNumber;
-                    doc.SenderDate = document.SenderDate;
-                    doc.Addressee = document.Addressee;
-
-                    if (document.AccessLevel.HasValue && doc.Accesses.Any(x => x.PositionId == ctx.CurrentPositionId && x.AccessLevelId != (int)document.AccessLevel))
-                    {
-                        doc.Accesses.FirstOrDefault(x => x.PositionId == ctx.CurrentPositionId).AccessLevelId = (int)document.AccessLevel;
-                    }
-
-                    if (document.Events != null && document.Events.Any(x => x.Id == 0))
-                    {
-                        // add only new events. New events should be without Id
-                        doc.Events = document.Events.Where(x => x.Id == 0).Select(x => new DocumentEvents
-                        {
-                            CreateDate = x.CreateDate,
-                            Date = x.Date,
-                            Description = x.Description,
-                            LastChangeDate = x.LastChangeDate,
-                            LastChangeUserId = x.LastChangeUserId,
-                            SourceAgentId = x.SourceAgentId,
-                            SourcePositionId = x.SourcePositionId,
-                            TargetAgentId = x.TargetAgentId,
-                            TargetPositionId = x.TargetPositionId,
-                            EventTypeId = (int)x.EventType
-                        }).ToList();
-                    }
-
-                    if (document.Accesses != null)
-                    {
-                        foreach (var acc in document.Accesses)
-                        {
-                            foreach (var eacc in doc.Accesses.Where(x => x.Id == acc.Id))
-                            {
-                                if ((eacc.AccessLevelId != (int)acc.AccessLevel) ||
-                                    (eacc.IsFavourite != acc.IsFavourite)
-                                    || (eacc.IsInWork != acc.IsInWork) || (eacc.PositionId != acc.PositionId))
-                                {
-                                    eacc.LastChangeDate = acc.LastChangeDate;
-                                    eacc.LastChangeUserId = acc.LastChangeUserId;
-                                    eacc.AccessLevelId = (int)acc.AccessLevel;
-                                    eacc.IsFavourite = acc.IsFavourite;
-                                    eacc.IsInWork = acc.IsInWork;
-                                    eacc.PositionId = acc.PositionId;
-                                }
-                            }
-                        }
-
-                        //var rmv_acc = doc.Accesses.Where(x => !document.Accesses.Select(s => s.Id).Contains(x.Id)).ToList();
-                        //dbContext.DocumentAccessesSet.RemoveRange(rmv_acc);
-
-                        if (document.Accesses.Any(x => x.Id == 0))
-                        {
-                            doc.Accesses = document.Accesses.Where(x => x.Id == 0).Select(x => new DocumentAccesses
-                            {
-                                LastChangeDate = x.LastChangeDate,
-                                IsInWork = x.IsInWork,
-                                LastChangeUserId = x.LastChangeUserId,
-                                PositionId = x.PositionId,
-                                AccessLevelId = (int)x.AccessLevel,
-                            }).ToList();
-                        }
-                    }
-
-                    dbContext.SaveChanges();
-                }
-            }
-        }
-
-        public void DeleteDocument(IContext ctx, int id)
-        {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
-            {
-                //ADD OTHER TABLES!!!!
-                //TODO к Сергею разобраться с аттачами
-                dbContext.DocumentEventsSet.RemoveRange(dbContext.DocumentEventsSet.Where(x => x.DocumentId == id));
-                dbContext.DocumentAccessesSet.RemoveRange(dbContext.DocumentAccessesSet.Where(x => x.DocumentId == id));
-                dbContext.DocumentsSet.RemoveRange(dbContext.DocumentsSet.Where(x => x.Id == id));
-                dbContext.SaveChanges();
-            }
-        }
-
         public IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging)
         {
+            //TODO OPTIMIZE
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
 
@@ -401,6 +306,7 @@ namespace BL.Database.Documents
 
         public FrontDocument GetDocument(IContext ctx, int documentId)
         {
+            //TODO OPIMIZE
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
                 var dbDoc = CommonQueries.GetDocumentQuery(dbContext).FirstOrDefault(x => x.Doc.Id == documentId && ctx.CurrentPositionsIdList.Contains(x.Acc.PositionId));
@@ -501,52 +407,7 @@ namespace BL.Database.Documents
 
                 doc.DocumentWaits = CommonQueries.GetDocumentWaits(dbContext, new FilterDocumentWaits { DocumentId = documentId });
 
-                doc.DocumentTags = CommonQueries.GetDocumentTags(dbContext, new FilterDocumentTags { DocumentId = documentId, CurrentPositionsId = ctx.CurrentPositionsIdList });
-
-                return doc;
-            }
-        }
-
-        public InternalDocument GetInternalDocument(IContext ctx, int documentId)
-        {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
-            {
-                var dbDoc = CommonQueries.GetDocumentQuery(dbContext).FirstOrDefault(x => x.Doc.Id == documentId && ctx.CurrentPositionsIdList.Contains(x.Acc.PositionId));
-
-                if (dbDoc == null)
-                {
-                    return null;
-                }
-
-                var doc = new InternalDocument
-                {
-                    Id = dbDoc.Doc.Id,
-                    TemplateDocumentId = dbDoc.Doc.TemplateDocumentId,
-                    CreateDate = dbDoc.Doc.CreateDate,
-                    DocumentSubjectId = dbDoc.Doc.DocumentSubjectId,
-                    Description = dbDoc.Doc.Description,
-                    IsRegistered = dbDoc.Doc.IsRegistered,
-                    RegistrationJournalId = dbDoc.Doc.RegistrationJournalId,
-                    NumerationPrefixFormula = dbDoc.Doc.NumerationPrefixFormula,
-                    RegistrationNumber = dbDoc.Doc.RegistrationNumber,
-                    RegistrationNumberPrefix = dbDoc.Doc.RegistrationNumberPrefix,
-                    RegistrationNumberSuffix = dbDoc.Doc.RegistrationNumberSuffix,
-                    RegistrationDate = dbDoc.Doc.RegistrationDate,
-                    ExecutorPositionId = dbDoc.Doc.ExecutorPositionId,
-                    LastChangeUserId = dbDoc.Doc.LastChangeUserId,
-                    LastChangeDate = dbDoc.Doc.LastChangeDate,
-                    SenderAgentId = dbDoc.Doc.SenderAgentId,
-                    SenderAgentPersonId = dbDoc.Doc.SenderAgentPersonId,
-                    SenderNumber = dbDoc.Doc.SenderNumber,
-                    SenderDate = dbDoc.Doc.SenderDate,
-                    Addressee = dbDoc.Doc.Addressee,
-                    AccessLevel = (EnumDocumentAccesses)dbDoc.Acc.AccessLevelId,
-                    IsHard = dbDoc.Templ.IsHard,
-                    DocumentDirection = (EnumDocumentDirections)dbDoc.Templ.DocumentDirectionId,
-                    DocumentTypeId = dbDoc.Templ.DocumentTypeId,
-                    DocumentDate = dbDoc.Doc.RegistrationDate ?? dbDoc.Doc.CreateDate,
-                    LinkId = dbDoc.Doc.LinkId,
-                };
+                doc.DocumentTags = CommonQueries.GetDocumentTags(dbContext, new FilterDocumentTag { DocumentId = documentId, CurrentPositionsId = ctx.CurrentPositionsIdList });
 
                 return doc;
             }
@@ -575,14 +436,14 @@ namespace BL.Database.Documents
                 }
 
                 doc.RestrictedSendLists = dbContext.TemplateDocumentRestrictedSendLists.Where(y => y.Id == templateDocumentId)
-                    .Select(y => new InternalDocumentRestrictedSendLists()
+                    .Select(y => new InternalDocumentRestrictedSendList()
                     {
                         PositionId = y.PositionId,
                         AccessLevel = (EnumDocumentAccesses)y.AccessLevelId
                     }).ToList();
 
                 doc.SendLists = dbContext.TemplateDocumentSendLists.Where(y => y.Id == templateDocumentId)
-                    .Select(y => new InternalDocumentSendLists()
+                    .Select(y => new InternalDocumentSendList()
                     {
                         SendType = (EnumSendTypes)y.SendTypeId,
                         TargetPositionId = y.TargetPositionId,
@@ -632,7 +493,7 @@ namespace BL.Database.Documents
                 }
 
                 doc.SendLists = dbContext.DocumentSendListsSet.Where(x => x.DocumentId == documentId)
-                        .Select(y => new InternalDocumentSendLists
+                        .Select(y => new InternalDocumentSendList
                         {
                             Stage = y.Stage,
                             SendType = (EnumSendTypes)y.SendTypeId,
@@ -644,7 +505,7 @@ namespace BL.Database.Documents
                             IsInitial = y.IsInitial,
                         }).ToList();
                 doc.RestrictedSendLists = dbContext.DocumentRestrictedSendListsSet.Where(x => x.DocumentId == documentId)
-                        .Select(y => new InternalDocumentRestrictedSendLists
+                        .Select(y => new InternalDocumentRestrictedSendList
                         {
                             PositionId = y.PositionId,
                             AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
@@ -692,6 +553,35 @@ namespace BL.Database.Documents
             }
         }
 
+        public void ModifyDocument(IContext ctx, InternalDocument document)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            {
+                var doc = dbContext.DocumentsSet
+                    .Include(x => x.Accesses)
+                    .FirstOrDefault(x => x.Id == document.Id);  //TODO OPTIMIZE
+                if (doc != null)
+                {
+                    doc.DocumentSubjectId = document.DocumentSubjectId;
+                    doc.Description = document.Description;
+                    doc.LastChangeUserId = document.LastChangeUserId;
+                    doc.LastChangeDate = document.LastChangeDate;
+                    doc.SenderAgentId = document.SenderAgentId;
+                    doc.SenderAgentPersonId = document.SenderAgentPersonId;
+                    doc.SenderNumber = document.SenderNumber;
+                    doc.SenderDate = document.SenderDate;
+                    doc.Addressee = document.Addressee;
+
+                    if (document.AccessLevel.HasValue && doc.Accesses.Any(x => x.PositionId == ctx.CurrentPositionId && x.AccessLevelId != (int)document.AccessLevel))
+                    {
+                        doc.Accesses.FirstOrDefault(x => x.PositionId == ctx.CurrentPositionId).AccessLevelId = (int)document.AccessLevel;
+                    }
+
+                    dbContext.SaveChanges();
+                }
+            }
+        }
+
         public InternalDocument DeleteDocumentPrepare(IContext context, int documentId)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
@@ -706,6 +596,19 @@ namespace BL.Database.Documents
                         //TODO к Сергею количество ожиданий и подписей 
                     }).FirstOrDefault();
                 return doc;
+            }
+        }
+
+        public void DeleteDocument(IContext ctx, int id)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            {
+                //ADD OTHER TABLES!!!!
+                //TODO к Сергею разобраться с аттачами
+                dbContext.DocumentEventsSet.RemoveRange(dbContext.DocumentEventsSet.Where(x => x.DocumentId == id));
+                dbContext.DocumentAccessesSet.RemoveRange(dbContext.DocumentAccessesSet.Where(x => x.DocumentId == id));
+                dbContext.DocumentsSet.RemoveRange(dbContext.DocumentsSet.Where(x => x.Id == id));
+                dbContext.SaveChanges();
             }
         }
 
@@ -753,6 +656,29 @@ namespace BL.Database.Documents
             }
         }
 
+        public void RegisterDocument(IContext ctx, InternalDocument document)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            {
+                var doc = dbContext.DocumentsSet
+                    .FirstOrDefault(x => x.Id == document.Id);  //TODO OPTIMIZE
+                if (doc != null)
+                {
+                    doc.IsRegistered = document.IsRegistered;
+                    doc.RegistrationJournalId = document.RegistrationJournalId;
+                    doc.NumerationPrefixFormula = document.NumerationPrefixFormula;
+                    doc.RegistrationNumber = document.RegistrationNumber;
+                    doc.RegistrationNumberSuffix = document.RegistrationNumberSuffix;
+                    doc.RegistrationNumberPrefix = document.RegistrationNumberPrefix;
+                    doc.RegistrationDate = document.RegistrationDate;
+                    doc.LastChangeUserId = document.LastChangeUserId;
+                    doc.LastChangeDate = document.LastChangeDate;
+
+                    dbContext.SaveChanges();
+                }
+            }
+        }
+
         public void GetNextDocumentRegistrationNumber(IContext ctx, InternalDocument document)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
@@ -774,7 +700,6 @@ namespace BL.Database.Documents
                 return !dbContext.DocumentsSet
                                 .Any(x => x.RegistrationJournalId == document.RegistrationJournalId
                                          && x.NumerationPrefixFormula == document.NumerationPrefixFormula
-                                         //&& x.RegistrationNumberPrefix == document.RegistrationNumberPrefix
                                          && x.RegistrationNumber == document.RegistrationNumber
                                          && x.Id != document.Id
                     );
@@ -803,7 +728,7 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
                 var doc = dbContext.DocumentsSet
-                    .FirstOrDefault(x => x.Id == document.Id);
+                    .FirstOrDefault(x => x.Id == document.Id);  //TODO OPTIMIZE
                 if (doc != null)
                 {
                     doc.ExecutorPositionId = document.ExecutorPositionId;
@@ -819,30 +744,6 @@ namespace BL.Database.Documents
                     {
                         doc.Accesses = CommonQueries.GetDbDocumentAccesses(dbContext, document.Accesses, doc.Id).ToList();
                     }
-
-                    dbContext.SaveChanges();
-                }
-            }
-        }
-
-        public void RegisterDocument(IContext ctx, InternalDocument document)
-        {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
-            {
-                var doc = dbContext.DocumentsSet
-                    .Include(x => x.Accesses)
-                    .FirstOrDefault(x => x.Id == document.Id);
-                if (doc != null)
-                {
-                    doc.IsRegistered = document.IsRegistered;
-                    doc.RegistrationJournalId = document.RegistrationJournalId;
-                    doc.NumerationPrefixFormula = document.NumerationPrefixFormula;
-                    doc.RegistrationNumber = document.RegistrationNumber;
-                    doc.RegistrationNumberSuffix = document.RegistrationNumberSuffix;
-                    doc.RegistrationNumberPrefix = document.RegistrationNumberPrefix;
-                    doc.RegistrationDate = document.RegistrationDate;
-                    doc.LastChangeUserId = document.LastChangeUserId;
-                    doc.LastChangeDate = document.LastChangeDate;
 
                     dbContext.SaveChanges();
                 }
@@ -871,7 +772,7 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
                 var doc = dbContext.DocumentsSet
-                    .FirstOrDefault(x => x.Id == document.Id);
+                    .FirstOrDefault(x => x.Id == document.Id);//TODO OPTIMIZE
                 if (doc == null) return;
                 doc.IsLaunchPlan = document.IsLaunchPlan;
                 doc.LastChangeUserId = document.LastChangeUserId;
@@ -880,7 +781,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public InternalDocument GetBlankDocumentId(IContext context, int documentId)
+        public InternalDocument GetBlankInternalDocumentById(IContext context, int documentId)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {

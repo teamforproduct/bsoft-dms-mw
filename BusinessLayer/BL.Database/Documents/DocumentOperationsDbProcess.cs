@@ -91,7 +91,7 @@ namespace BL.Database.Documents
                 dbContext.DocumentLinksSet.Add(link);
                 if (!model.ParentDocumentLinkId.HasValue)
                 {
-                    dbContext.DocumentsSet.Where(x => x.Id == model.ParentDocumentId).ToList()
+                    dbContext.DocumentsSet.Where(x => x.Id == model.ParentDocumentId).ToList()  //TODO OPTIMIZE
                         .ForEach(x =>
                         {
                             x.LinkId = model.ParentDocumentId;
@@ -127,7 +127,7 @@ namespace BL.Database.Documents
 
         #region DocumentWaits
 
-        public InternalDocumentWaits GetDocumentWaitByOnEventId(IContext ctx, int eventId)
+        public InternalDocumentWait GetDocumentWaitByOnEventId(IContext ctx, int eventId)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
@@ -140,29 +140,17 @@ namespace BL.Database.Documents
             throw new WaitNotFoundOrUserHasNoAccess();
         }
 
-        public void AddDocumentWait(IContext ctx, InternalDocumentWaits documentWait)
+        public void AddDocumentWaits(IContext ctx, IEnumerable<InternalDocumentWait> documentWaits)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-                var docWait = ModelConverter.GetDbDocumentWait(documentWait);
-                UpdateDocumentWaitEvents(docWait, documentWait);
-
-                dbContext.DocumentWaitsSet.Add(docWait);
+                var docWaits = ModelConverter.GetDbDocumentWaits(documentWaits);
+                dbContext.DocumentWaitsSet.AddRange(docWaits);
                 dbContext.SaveChanges();
-
-                documentWait.Id = docWait.Id;
-                if (docWait.OnEvent?.Id > 0 && documentWait.OnEvent != null)
-                {
-                    documentWait.OnEvent.Id = docWait.OnEvent.Id;
-                }
-                if (docWait.OffEvent?.Id > 0 && documentWait.OffEvent != null)
-                {
-                    documentWait.OffEvent.Id = docWait.OffEvent.Id;
-                }
             }
         }
 
-        public void UpdateDocumentWait(IContext ctx, InternalDocumentWaits documentWait)
+        public void UpdateDocumentWait(IContext ctx, InternalDocumentWait documentWait)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
@@ -181,10 +169,10 @@ namespace BL.Database.Documents
                 docWait.LastChangeUserId = documentWait.LastChangeUserId;
                 docWait.LastChangeDate = documentWait.LastChangeDate;
 
-                // UpdateDocumentWaitEvents создает новые БД ивент сущности для вейта. что происхдит со старыми ивент сущностями, если они уже есть в БД??
+                // UpdateDbDocumentWaitByEvents создает новые БД ивент сущности для вейта. что происхдит со старыми ивент сущностями, если они уже есть в БД??
                 // при переопределении они удаляются или они обновляются или они остаются но будут ни к чему не привязаны? 
                 //TODO CHECK IT
-                UpdateDocumentWaitEvents(docWait, documentWait);
+                ModelConverter.UpdateDbDocumentWaitByEvents(docWait, documentWait);
 
                 dbContext.SaveChanges();
 
@@ -199,23 +187,11 @@ namespace BL.Database.Documents
             }
         }
 
-
-        private void UpdateDocumentWaitEvents(DocumentWaits docWait, InternalDocumentWaits documentWait)
-        {
-            if (documentWait.OnEvent != null)
-            {
-                docWait.OnEvent = ModelConverter.GetDbDocumentEvent(documentWait.OnEvent);
-            }
-            if (documentWait.OffEvent != null)
-            {
-                docWait.OffEvent = ModelConverter.GetDbDocumentEvent(documentWait.OffEvent);
-            }
-        }
         #endregion DocumentWaits
 
         #region Document Event
 
-        public void AddDocumentEvents(IContext ctx, IEnumerable<InternalDocumentEvents> docEvents)
+        public void AddDocumentEvents(IContext ctx, IEnumerable<InternalDocumentEvent> docEvents)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
@@ -232,11 +208,12 @@ namespace BL.Database.Documents
                 return CommonQueries.GetDocumentEvents(dbContext, filter);
             }
         }
+
         #endregion Document Event
 
         #region Document Access
 
-        public int AddDocumentAccess(IContext ctx, InternalDocumentAccesses access)
+        public int AddDocumentAccess(IContext ctx, InternalDocumentAccess access)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
@@ -247,44 +224,15 @@ namespace BL.Database.Documents
             }
         }
 
-        public void RemoveDocumentAccess(IContext ctx, int accessId)
-        {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
-            {
-                var acc = dbContext.DocumentAccessesSet.FirstOrDefault(x => x.Id == accessId);
-                if (acc != null)
-                {
-                    dbContext.DocumentAccessesSet.Remove(acc);
-                    dbContext.SaveChanges();
-                }
-            }
-        }
-
-        public void UpdateDocumentAccess(IContext ctx, InternalDocumentAccesses access)
-        {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
-            {
-                var acc = dbContext.DocumentAccessesSet.FirstOrDefault(x => x.Id == access.Id);
-                if (acc != null)
-                {
-                    acc.LastChangeDate = access.LastChangeDate;
-                    acc.IsInWork = access.IsInWork;
-                    acc.LastChangeUserId = access.LastChangeUserId;
-                    acc.PositionId = access.PositionId;
-                    acc.AccessLevelId = (int)access.AccessLevel;
-                    acc.IsFavourite = access.IsFavourite;
-                    dbContext.SaveChanges();
-                }
-            }
-        }
-
-        public IEnumerable<InternalDocumentAccesses> GetDocumentAccesses(IContext ctx, int documentId)
+        public IEnumerable<InternalDocumentAccess> GetDocumentAccesses(IContext ctx, int documentId)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
                 return CommonQueries.GetInternalDocumentAccesses(dbContext, documentId);
             }
         }
+
+        #endregion
 
         public IEnumerable<InternalPositionInfo> GetInternalPositionsInfo(IContext ctx, List<int> positionIds)
         {
@@ -294,7 +242,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public void ChangeIsFavouriteAccess(IContext context, InternalDocumentAccesses docAccess)
+        public void ChangeIsFavouriteAccess(IContext context, InternalDocumentAccess docAccess)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
@@ -323,9 +271,9 @@ namespace BL.Database.Documents
                     .Select(x => new InternalDocument
                     {
                         Id = x.Id,
-                        Accesses = new List<InternalDocumentAccesses>
+                        Accesses = new List<InternalDocumentAccess>
                                     {
-                                        new InternalDocumentAccesses
+                                        new InternalDocumentAccess
                                         {
                                             Id = x.Id,
                                             IsFavourite = x.IsFavourite,
@@ -364,9 +312,9 @@ namespace BL.Database.Documents
                     .Select(x => new InternalDocument
                     {
                         Id = x.Id,
-                        Accesses = new List<InternalDocumentAccesses>
+                        Accesses = new List<InternalDocumentAccess>
                                     {
-                                        new InternalDocumentAccesses
+                                        new InternalDocumentAccess
                                         {
                                             Id = x.Id,
                                             IsInWork = x.IsInWork,
@@ -379,288 +327,7 @@ namespace BL.Database.Documents
             }
         }
 
-
-
-        #endregion
-
-        #region DocumentSendList    
-        public InternalDocument ChangeDocumentSendListPrepare(IContext context, int documentId)
-        {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
-            {
-                var docDb = (from doc in dbContext.DocumentsSet.Where(x => x.Id == documentId)
-                             join tmp in dbContext.TemplateDocumentsSet on doc.TemplateDocumentId equals tmp.Id
-                             select new { doc, tmp })
-                             .GroupJoin(dbContext.DocumentRestrictedSendListsSet, x => x.doc.Id, y => y.DocumentId, (x, y) => new { x.doc, x.tmp, rsls = y })
-                             .GroupJoin(dbContext.DocumentSendListsSet, x => x.doc.Id, y => y.DocumentId, (x, y) => new { x.doc, x.tmp, x.rsls, sls = y })
-                             .GroupJoin(dbContext.TemplateDocumentRestrictedSendLists, x => x.tmp.Id, y => y.DocumentId, (x, y) => new { x.doc, x.tmp, x.rsls, x.sls, trsls = y })
-                             .GroupJoin(dbContext.TemplateDocumentSendLists, x => x.tmp.Id, y => y.DocumentId, (x, y) => new { x.doc, x.tmp, x.rsls, x.sls, x.trsls, tsls = y });
-
-                var docRes = docDb.Select(x => new InternalDocument
-                {
-                    Id = x.doc.Id,
-                    ExecutorPositionId = x.doc.ExecutorPositionId,
-                    TemplateDocumentId = x.tmp.Id,
-                    IsHard = x.tmp.IsHard,
-
-                    RestrictedSendLists = x.rsls.Select(y => new InternalDocumentRestrictedSendLists
-                    {
-                        Id = y.Id,
-                        DocumentId = y.DocumentId,
-                        PositionId = y.PositionId
-                    }),
-
-                    SendLists = x.sls.Select(y => new InternalDocumentSendLists
-                    {
-                        Id = y.Id,
-                        DocumentId = y.DocumentId,
-                        TargetPositionId = y.TargetPositionId,
-                        SendType = (EnumSendTypes)y.SendTypeId,
-                        Stage = y.Stage
-                    }),
-                    TemplateDocument = !x.tmp.IsHard ? null :
-                      new InternalTemplateDocument
-                      {
-                          RestrictedSendLists = x.trsls.Select(y => new InternalTemplateDocumentRestrictedSendLists
-                          {
-                              Id = y.Id,
-                              PositionId = y.PositionId
-                          }),
-                          SendLists = x.tsls.Select(y => new InternalTemplateDocumentSendLists
-                          {
-                              Id = y.Id,
-                              TargetPositionId = y.TargetPositionId,
-                              SendType = (EnumSendTypes)y.SendTypeId
-                          }),
-                      }
-                }).FirstOrDefault();
-
-                return docRes;
-            }
-        }
-
-        public void AddDocumentRestrictedSendList(IContext context, IEnumerable<InternalDocumentRestrictedSendLists> model)
-        {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
-            {
-                var items = model.Select(x => new DocumentRestrictedSendLists
-                {
-                    AccessLevelId = (int)x.AccessLevel,
-                    DocumentId = x.DocumentId,
-                    PositionId = x.PositionId,
-                    LastChangeUserId = x.LastChangeUserId,
-                    LastChangeDate = x.LastChangeDate
-                }).ToList();
-
-                dbContext.DocumentRestrictedSendListsSet.AddRange(items);
-                dbContext.SaveChanges();
-            }
-        }
-
-        public IEnumerable<InternalDocumentRestrictedSendLists> AddByStandartSendListDocumentRestrictedSendListPrepare(IContext context, ModifyDocumentRestrictedSendListByStandartSendList model)
-        {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
-            {
-
-                var items = dbContext.DictionaryStandartSendListContentsSet.Where(x => x.StandartSendListId == model.StandartSendListId)
-                 .Select(x => new InternalDocumentRestrictedSendLists
-                 {
-                     DocumentId = model.DocumentId,
-                     PositionId = x.TargetPositionId,
-                     AccessLevel = (EnumDocumentAccesses)(x.AccessLevelId ?? (int)EnumDocumentAccesses.PersonalRefIO)
-                 });
-
-                return items;
-            }
-        }
-
-        public InternalDocumentRestrictedSendLists DeleteDocumentRestrictedSendListPrepare(IContext context, int restSendListId)
-        {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
-            {
-
-                var item = dbContext.DocumentRestrictedSendListsSet.Where(x => x.Id == restSendListId)
-                 .Select(x => new InternalDocumentRestrictedSendLists
-                 {
-                     Id = x.Id,
-                     DocumentId = x.DocumentId
-                 }).FirstOrDefault();
-
-                return item;
-            }
-        }
-
-        public void DeleteDocumentRestrictedSendList(IContext context, int restSendListId)
-        {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
-            {
-                var item = dbContext.DocumentRestrictedSendListsSet.FirstOrDefault(x => x.Id == restSendListId);
-                if (item != null)
-                {
-                    dbContext.DocumentRestrictedSendListsSet.Remove(item);
-                    dbContext.SaveChanges();
-                }
-            }
-        }
-
-        public void AddDocumentSendList(IContext context, IEnumerable<InternalDocumentSendLists> model)
-        {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
-            {
-                var items = model.Select(x => new DocumentSendLists
-                {
-                    DocumentId = x.DocumentId,
-                    Stage = x.Stage,
-                    SendTypeId = (int)x.SendType,
-                    TargetPositionId = x.TargetPositionId,
-                    Description = x.Description,
-                    DueDate = x.DueDate,
-                    DueDay = x.DueDay,
-                    AccessLevelId = (int)x.AccessLevel,
-                    IsInitial = x.IsInitial,
-                    StartEventId = null,
-                    CloseEventId = null,
-                    LastChangeUserId = x.LastChangeUserId,
-                    LastChangeDate = x.LastChangeDate
-                }).ToList();
-
-                dbContext.DocumentSendListsSet.AddRange(items);
-                dbContext.SaveChanges();
-            }
-        }
-
-        public IEnumerable<InternalDocumentSendLists> AddByStandartSendListDocumentSendListPrepare(IContext context, ModifyDocumentSendListByStandartSendList model)
-        {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
-            {
-
-                var items = dbContext.DictionaryStandartSendListContentsSet.Where(x => x.StandartSendListId == model.StandartSendListId)
-                 .Select(x => new InternalDocumentSendLists
-                 {
-                     DocumentId = model.DocumentId,
-                     Stage = x.Stage,
-                     SendType = (EnumSendTypes)x.SendTypeId,
-                     TargetPositionId = x.TargetPositionId,
-                     Description = x.Description,
-                     DueDate = x.DueDate,
-                     DueDay = x.DueDay,
-                     AccessLevel = (EnumDocumentAccesses)(x.AccessLevelId ?? (int)EnumDocumentAccesses.PersonalRefIO)
-                 });
-
-                return items;
-            }
-        }
-
-        public void ModifyDocumentSendList(IContext context, InternalDocumentSendLists model)
-        {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
-            {
-                var item = new DocumentSendLists
-                {
-                    Id = model.Id,
-                    Stage = model.Stage,
-                    SendTypeId = (int)model.SendType,
-                    TargetPositionId = model.TargetPositionId,
-                    Description = model.Description,
-                    DueDate = model.DueDate,
-                    DueDay = model.DueDay,
-                    AccessLevelId = (int)model.AccessLevel,
-                    LastChangeUserId = model.LastChangeUserId,
-                    LastChangeDate = model.LastChangeDate
-                };
-                dbContext.DocumentSendListsSet.Attach(item);
-
-                dbContext.Entry(item).State = EntityState.Modified;
-                //TODO OR
-                //var entry = dbContext.Entry(item);
-                //entry.Property(e => e.Stage).IsModified = true;
-                //// other changed properties
-
-                dbContext.SaveChanges();
-            }
-        }
-
-        public InternalDocumentSendLists DeleteDocumentSendListPrepare(IContext context, int sendListId)
-        {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
-            {
-
-                var item = dbContext.DocumentSendListsSet.Where(x => x.Id == sendListId)
-                 .Select(x => new InternalDocumentSendLists
-                 {
-                     Id = x.Id,
-                     DocumentId = x.DocumentId
-                 }).FirstOrDefault();
-
-                return item;
-            }
-        }
-
-        public void DeleteDocumentSendList(IContext context, int sendListId)
-        {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
-            {
-                var item = dbContext.DocumentSendListsSet.FirstOrDefault(x => x.Id == sendListId);
-                if (item != null)
-                {
-                    dbContext.DocumentSendListsSet.Remove(item);
-                    dbContext.SaveChanges();
-                }
-            }
-        }
-
-
-        public InternalDocument AddDocumentSendListStagePrepare(IContext context, int documentId)
-        {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
-            {
-                var docDb = (from doc in dbContext.DocumentsSet.Where(x => x.Id == documentId)
-                             select new { doc })
-                             .GroupJoin(dbContext.DocumentSendListsSet, x => x.doc.Id, y => y.DocumentId, (x, y) => new { x.doc, sls = y });
-
-                var docRes = docDb.Select(x => new InternalDocument
-                {
-                    Id = x.doc.Id,
-                    ExecutorPositionId = x.doc.ExecutorPositionId,
-
-                    SendLists = x.sls.Select(y => new InternalDocumentSendLists
-                    {
-                        Id = y.Id,
-                        Stage = y.Stage
-                    }),
-                }).FirstOrDefault();
-
-                return docRes;
-            }
-        }
-
-        public void ChangeDocumentSendListStage(IContext context, IEnumerable<InternalDocumentSendLists> model)
-        {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
-            {
-                foreach (var sl in model)
-                {
-                    var item = new DocumentSendLists
-                    {
-                        Id = sl.Id,
-                        Stage = sl.Stage,
-                        LastChangeUserId = sl.LastChangeUserId,
-                        LastChangeDate = sl.LastChangeDate
-                    };
-                    dbContext.DocumentSendListsSet.Attach(item);
-
-                    dbContext.Entry(item).State = EntityState.Modified;
-                    //TODO OR
-                    //var entry = dbContext.Entry(item);
-                    //entry.Property(e => e.Stage).IsModified = true;
-                    //// other changed properties
-                }
-
-                dbContext.SaveChanges();
-            }
-        }
-
-        public void ModifyDocumentTags(IContext context, InternalDocumentTags model)
+        public void ModifyDocumentTags(IContext context, InternalDocumentTag model)
         {
             // TODO к Сергею проверить нужно ли разнести этот метод
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
@@ -699,6 +366,286 @@ namespace BL.Database.Documents
             }
         }
 
-        #endregion DocumentSendList         
+
+
+        #region DocumentSendList    
+        public InternalDocument ChangeDocumentSendListPrepare(IContext context, int documentId)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var docDb = (from doc in dbContext.DocumentsSet.Where(x => x.Id == documentId)
+                             join tmp in dbContext.TemplateDocumentsSet on doc.TemplateDocumentId equals tmp.Id
+                             select new { doc, tmp })
+                             .GroupJoin(dbContext.DocumentRestrictedSendListsSet, x => x.doc.Id, y => y.DocumentId, (x, y) => new { x.doc, x.tmp, rsls = y })
+                             .GroupJoin(dbContext.DocumentSendListsSet, x => x.doc.Id, y => y.DocumentId, (x, y) => new { x.doc, x.tmp, x.rsls, sls = y })
+                             .GroupJoin(dbContext.TemplateDocumentRestrictedSendLists, x => x.tmp.Id, y => y.DocumentId, (x, y) => new { x.doc, x.tmp, x.rsls, x.sls, trsls = y })
+                             .GroupJoin(dbContext.TemplateDocumentSendLists, x => x.tmp.Id, y => y.DocumentId, (x, y) => new { x.doc, x.tmp, x.rsls, x.sls, x.trsls, tsls = y });
+
+                var docRes = docDb.Select(x => new InternalDocument
+                {
+                    Id = x.doc.Id,
+                    ExecutorPositionId = x.doc.ExecutorPositionId,
+                    TemplateDocumentId = x.tmp.Id,
+                    IsHard = x.tmp.IsHard,
+
+                    RestrictedSendLists = x.rsls.Select(y => new InternalDocumentRestrictedSendList
+                    {
+                        Id = y.Id,
+                        DocumentId = y.DocumentId,
+                        PositionId = y.PositionId
+                    }),
+
+                    SendLists = x.sls.Select(y => new InternalDocumentSendList
+                    {
+                        Id = y.Id,
+                        DocumentId = y.DocumentId,
+                        TargetPositionId = y.TargetPositionId,
+                        SendType = (EnumSendTypes)y.SendTypeId,
+                        Stage = y.Stage
+                    }),
+                    TemplateDocument = !x.tmp.IsHard ? null :
+                      new InternalTemplateDocument
+                      {
+                          RestrictedSendLists = x.trsls.Select(y => new InternalTemplateDocumentRestrictedSendList
+                          {
+                              Id = y.Id,
+                              PositionId = y.PositionId
+                          }),
+                          SendLists = x.tsls.Select(y => new InternalTemplateDocumentSendList
+                          {
+                              Id = y.Id,
+                              TargetPositionId = y.TargetPositionId,
+                              SendType = (EnumSendTypes)y.SendTypeId
+                          }),
+                      }
+                }).FirstOrDefault();
+
+                return docRes;
+            }
+        }
+
+        public void AddDocumentRestrictedSendList(IContext context, IEnumerable<InternalDocumentRestrictedSendList> model)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var items = model.Select(x => new DocumentRestrictedSendLists
+                {
+                    AccessLevelId = (int)x.AccessLevel,
+                    DocumentId = x.DocumentId,
+                    PositionId = x.PositionId,
+                    LastChangeUserId = x.LastChangeUserId,
+                    LastChangeDate = x.LastChangeDate
+                }).ToList();
+
+                dbContext.DocumentRestrictedSendListsSet.AddRange(items);
+                dbContext.SaveChanges();
+            }
+        }
+
+        public IEnumerable<InternalDocumentRestrictedSendList> AddByStandartSendListDocumentRestrictedSendListPrepare(IContext context, ModifyDocumentRestrictedSendListByStandartSendList model)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+
+                var items = dbContext.DictionaryStandartSendListContentsSet.Where(x => x.StandartSendListId == model.StandartSendListId)
+                 .Select(x => new InternalDocumentRestrictedSendList
+                 {
+                     DocumentId = model.DocumentId,
+                     PositionId = x.TargetPositionId,
+                     AccessLevel = (EnumDocumentAccesses)(x.AccessLevelId ?? (int)EnumDocumentAccesses.PersonalRefIO)
+                 });
+
+                return items;
+            }
+        }
+
+        public InternalDocumentRestrictedSendList DeleteDocumentRestrictedSendListPrepare(IContext context, int restSendListId)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+
+                var item = dbContext.DocumentRestrictedSendListsSet.Where(x => x.Id == restSendListId)
+                 .Select(x => new InternalDocumentRestrictedSendList
+                 {
+                     Id = x.Id,
+                     DocumentId = x.DocumentId
+                 }).FirstOrDefault();
+
+                return item;
+            }
+        }
+
+        public void DeleteDocumentRestrictedSendList(IContext context, int restSendListId)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var item = dbContext.DocumentRestrictedSendListsSet.FirstOrDefault(x => x.Id == restSendListId);
+                if (item != null)
+                {
+                    dbContext.DocumentRestrictedSendListsSet.Remove(item);
+                    dbContext.SaveChanges();
+                }
+            }
+        }
+
+        public void AddDocumentSendList(IContext context, IEnumerable<InternalDocumentSendList> model)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var items = model.Select(x => new DocumentSendLists
+                {
+                    DocumentId = x.DocumentId,
+                    Stage = x.Stage,
+                    SendTypeId = (int)x.SendType,
+                    TargetPositionId = x.TargetPositionId,
+                    Description = x.Description,
+                    DueDate = x.DueDate,
+                    DueDay = x.DueDay,
+                    AccessLevelId = (int)x.AccessLevel,
+                    IsInitial = x.IsInitial,
+                    StartEventId = null,
+                    CloseEventId = null,
+                    LastChangeUserId = x.LastChangeUserId,
+                    LastChangeDate = x.LastChangeDate
+                }).ToList();
+
+                dbContext.DocumentSendListsSet.AddRange(items);
+                dbContext.SaveChanges();
+            }
+        }
+
+        public IEnumerable<InternalDocumentSendList> AddByStandartSendListDocumentSendListPrepare(IContext context, ModifyDocumentSendListByStandartSendList model)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+
+                var items = dbContext.DictionaryStandartSendListContentsSet.Where(x => x.StandartSendListId == model.StandartSendListId)
+                 .Select(x => new InternalDocumentSendList
+                 {
+                     DocumentId = model.DocumentId,
+                     Stage = x.Stage,
+                     SendType = (EnumSendTypes)x.SendTypeId,
+                     TargetPositionId = x.TargetPositionId,
+                     Description = x.Description,
+                     DueDate = x.DueDate,
+                     DueDay = x.DueDay,
+                     AccessLevel = (EnumDocumentAccesses)(x.AccessLevelId ?? (int)EnumDocumentAccesses.PersonalRefIO)
+                 });
+
+                return items;
+            }
+        }
+
+        public void ModifyDocumentSendList(IContext context, InternalDocumentSendList model)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var item = new DocumentSendLists
+                {
+                    Id = model.Id,
+                    Stage = model.Stage,
+                    SendTypeId = (int)model.SendType,
+                    TargetPositionId = model.TargetPositionId,
+                    Description = model.Description,
+                    DueDate = model.DueDate,
+                    DueDay = model.DueDay,
+                    AccessLevelId = (int)model.AccessLevel,
+                    LastChangeUserId = model.LastChangeUserId,
+                    LastChangeDate = model.LastChangeDate
+                };
+                dbContext.DocumentSendListsSet.Attach(item);
+
+                dbContext.Entry(item).State = EntityState.Modified;
+                //TODO OR
+                //var entry = dbContext.Entry(item);
+                //entry.Property(e => e.Stage).IsModified = true;
+                //// other changed properties
+
+                dbContext.SaveChanges();
+            }
+        }
+
+        public InternalDocumentSendList DeleteDocumentSendListPrepare(IContext context, int sendListId)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+
+                var item = dbContext.DocumentSendListsSet.Where(x => x.Id == sendListId)
+                 .Select(x => new InternalDocumentSendList
+                 {
+                     Id = x.Id,
+                     DocumentId = x.DocumentId
+                 }).FirstOrDefault();
+
+                return item;
+            }
+        }
+
+        public void DeleteDocumentSendList(IContext context, int sendListId)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var item = dbContext.DocumentSendListsSet.FirstOrDefault(x => x.Id == sendListId);
+                if (item != null)
+                {
+                    dbContext.DocumentSendListsSet.Remove(item);
+                    dbContext.SaveChanges();
+                }
+            }
+        }
+
+        public InternalDocument AddDocumentSendListStagePrepare(IContext context, int documentId)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var docDb = (from doc in dbContext.DocumentsSet.Where(x => x.Id == documentId)
+                             select new { doc })
+                             .GroupJoin(dbContext.DocumentSendListsSet, x => x.doc.Id, y => y.DocumentId, (x, y) => new { x.doc, sls = y });
+
+                var docRes = docDb.Select(x => new InternalDocument
+                {
+                    Id = x.doc.Id,
+                    ExecutorPositionId = x.doc.ExecutorPositionId,
+
+                    SendLists = x.sls.Select(y => new InternalDocumentSendList
+                    {
+                        Id = y.Id,
+                        Stage = y.Stage
+                    }),
+                }).FirstOrDefault();
+
+                return docRes;
+            }
+        }
+
+        public void ChangeDocumentSendListStage(IContext context, IEnumerable<InternalDocumentSendList> model)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                foreach (var sl in model)
+                {
+                    var item = new DocumentSendLists
+                    {
+                        Id = sl.Id,
+                        Stage = sl.Stage,
+                        LastChangeUserId = sl.LastChangeUserId,
+                        LastChangeDate = sl.LastChangeDate
+                    };
+                    dbContext.DocumentSendListsSet.Attach(item);
+
+                    dbContext.Entry(item).State = EntityState.Modified;
+                    //TODO OR
+                    //var entry = dbContext.Entry(item);
+                    //entry.Property(e => e.Stage).IsModified = true;
+                    //// other changed properties
+                }
+
+                dbContext.SaveChanges();
+            }
+        }
+
+        #endregion DocumentSendList     
+        
+            
     }
 }

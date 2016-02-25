@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using BL.Database.Admins.Interfaces;
 using BL.Logic.Common;
 using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore.Actions;
@@ -10,11 +12,15 @@ namespace BL.Logic.DocumentCore.Commands
 {
     public class ControlOnDocumentCommand: BaseDocumentCommand
     {
+        private readonly IDocumentsDbProcess _documentDb;
         private readonly IDocumentOperationsDbProcess _operationDb;
+        private readonly IAdminsDbProcess _adminDb;
 
-        public ControlOnDocumentCommand(IDocumentOperationsDbProcess operationDb)
+        public ControlOnDocumentCommand(IDocumentsDbProcess documentDb, IDocumentOperationsDbProcess operationDb, IAdminsDbProcess adminDb)
         {
+            _documentDb = documentDb;
             _operationDb = operationDb;
+            _adminDb = adminDb;
         }
 
         private ControlOn Model
@@ -36,38 +42,19 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanExecute()
         {
+            _adminDb.VerifyAccess(_context, CommandType);
+            _document = _documentDb.GetBlankInternalDocumentById(_context, Model.DocumentId);
+            //TODO проверка на контроль с одинаковыми задачами
             return true;
         }
 
         public override object Execute()
         {
-            //TODO переделать под общую схему с оптимизацией выборки
-            var docWait = new InternalDocumentWaits
-            {
-                DocumentId = Model.DocumentId,
-                Task = Model.Task,
-                DueDate = Model.DueDate,
-                AttentionDate = Model.AttentionDate,
-                LastChangeUserId = _context.CurrentAgentId,
-                LastChangeDate = DateTime.Now,
-                OnEvent = new InternalDocumentEvents
-                {
-                    DocumentId = Model.DocumentId,
-                    EventType = EnumEventTypes.ControlOn,
-                    Description = Model.Task+" / "+Model.Description,
-                    SourcePositionId = _context.CurrentPositionId,
-                    SourceAgentId = _context.CurrentAgentId,
-                    TargetPositionId = _context.CurrentPositionId,
-                    LastChangeDate = DateTime.Now,
-                    Date = DateTime.Now,
-                    CreateDate = DateTime.Now,
-                    LastChangeUserId = _context.CurrentAgentId
-                }
-            };
-            _operationDb.AddDocumentWait(_context, docWait);
+            var docWaits = CommonDocumentUtilities.GetNewDocumentWait(_context, Model, EnumEventTypes.ControlOn);
+            _operationDb.AddDocumentWaits(_context, docWaits);
             return null;
         }
 
-        public override EnumDocumentActions CommandType { get { return EnumDocumentActions.ControlOn; } }
+        public override EnumDocumentActions CommandType => EnumDocumentActions.ControlOn;
     }
 }

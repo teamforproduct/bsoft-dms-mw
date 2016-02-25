@@ -16,7 +16,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         private readonly IDocumentOperationsDbProcess _operationDb;
         private readonly IAdminsDbProcess _adminDb;
 
-        protected InternalDocumentSendLists DocSendList;
+        protected InternalDocumentSendList DocSendList;
 
         public AddDocumentSendListCommand(IDocumentOperationsDbProcess operationDb, IAdminsDbProcess adminDb)
         {
@@ -48,7 +48,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
             _document = _operationDb.ChangeDocumentSendListPrepare(_context, Model.DocumentId);
 
-            DocSendList = new InternalDocumentSendLists
+            DocSendList = new InternalDocumentSendList
             {
                 DocumentId = Model.DocumentId,
                 Stage = Model.Stage,
@@ -71,7 +71,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         public override object Execute()
         {
             CommonDocumentUtilities.SetLastChange(_context, DocSendList);
-            _operationDb.AddDocumentSendList(_context, new List<InternalDocumentSendLists> { DocSendList });
+            _operationDb.AddDocumentSendList(_context, new List<InternalDocumentSendList> { DocSendList });
             return null;
         }
 

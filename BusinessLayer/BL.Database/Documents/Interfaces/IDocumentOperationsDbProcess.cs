@@ -15,49 +15,49 @@ namespace BL.Database.Documents.Interfaces
 
         IEnumerable<InternalPositionInfo> GetInternalPositionsInfo(IContext ctx, List<int> positionIds);
 
-        InternalDocumentWaits GetDocumentWaitByOnEventId(IContext ctx, int eventId);
-        void AddDocumentWait(IContext ctx, InternalDocumentWaits documentWait);
-        void UpdateDocumentWait(IContext ctx, InternalDocumentWaits documentWait);
+        InternalDocumentWait GetDocumentWaitByOnEventId(IContext ctx, int eventId);
+        void AddDocumentWaits(IContext ctx, IEnumerable<InternalDocumentWait> documentWaits);
 
-        void AddDocumentEvents(IContext ctx, IEnumerable<InternalDocumentEvents> docEvents);
+        void UpdateDocumentWait(IContext ctx, InternalDocumentWait documentWait);
+
+        void AddDocumentEvents(IContext ctx, IEnumerable<InternalDocumentEvent> docEvents);
         IEnumerable<FrontDocumentEvent> GetDocumentEvents(IContext ctx, FilterDocumentEvent filter);
 
-        int AddDocumentAccess(IContext ctx, InternalDocumentAccesses access);
-        void RemoveDocumentAccess(IContext ctx, int accessId);
-        void UpdateDocumentAccess(IContext ctx, InternalDocumentAccesses access);
+        int AddDocumentAccess(IContext ctx, InternalDocumentAccess access);
+
 
         InternalDocument ChangeIsInWorkAccessPrepare(IContext context, int documentId);
         InternalDocument ChangeIsFavouriteAccessPrepare(IContext context, int documentId);
-        IEnumerable<InternalDocumentAccesses> GetDocumentAccesses(IContext ctx, int documentId);
+        IEnumerable<InternalDocumentAccess> GetDocumentAccesses(IContext ctx, int documentId);
 
         void ChangeIsInWorkAccess(IContext ctx, InternalDocument access);
         InternalDocument AddDocumentLinkPrepare(IContext context, AddDocumentLink model);
         InternalDocument GetDocumentActionsPrepare(IContext context, int documentId);
-        void ChangeIsFavouriteAccess(IContext context, InternalDocumentAccesses docAccess);
+        void ChangeIsFavouriteAccess(IContext context, InternalDocumentAccess docAccess);
 
         InternalDocument ChangeDocumentSendListPrepare(IContext context, int documentId);
-        void AddDocumentRestrictedSendList(IContext context, IEnumerable<InternalDocumentRestrictedSendLists> model);
+        void AddDocumentRestrictedSendList(IContext context, IEnumerable<InternalDocumentRestrictedSendList> model);
 
-        IEnumerable<InternalDocumentRestrictedSendLists> AddByStandartSendListDocumentRestrictedSendListPrepare(IContext context, ModifyDocumentRestrictedSendListByStandartSendList model);
+        IEnumerable<InternalDocumentRestrictedSendList> AddByStandartSendListDocumentRestrictedSendListPrepare(IContext context, ModifyDocumentRestrictedSendListByStandartSendList model);
 
-        InternalDocumentRestrictedSendLists DeleteDocumentRestrictedSendListPrepare(IContext context, int restSendListId);
+        InternalDocumentRestrictedSendList DeleteDocumentRestrictedSendListPrepare(IContext context, int restSendListId);
 
         void DeleteDocumentRestrictedSendList(IContext context, int restSendListId);
 
-        void AddDocumentSendList(IContext context, IEnumerable<InternalDocumentSendLists> model);
+        void AddDocumentSendList(IContext context, IEnumerable<InternalDocumentSendList> model);
 
-        IEnumerable<InternalDocumentSendLists> AddByStandartSendListDocumentSendListPrepare(IContext context, ModifyDocumentSendListByStandartSendList model);
+        IEnumerable<InternalDocumentSendList> AddByStandartSendListDocumentSendListPrepare(IContext context, ModifyDocumentSendListByStandartSendList model);
 
-        void ModifyDocumentSendList(IContext context, InternalDocumentSendLists model);
+        void ModifyDocumentSendList(IContext context, InternalDocumentSendList model);
 
-        InternalDocumentSendLists DeleteDocumentSendListPrepare(IContext context, int sendListId);
+        InternalDocumentSendList DeleteDocumentSendListPrepare(IContext context, int sendListId);
 
         void DeleteDocumentSendList(IContext context, int sendListId);
 
         InternalDocument AddDocumentSendListStagePrepare(IContext context, int documentId);
 
-        void ChangeDocumentSendListStage(IContext context, IEnumerable<InternalDocumentSendLists> model);
+        void ChangeDocumentSendListStage(IContext context, IEnumerable<InternalDocumentSendList> model);
 
-        void ModifyDocumentTags(IContext context, InternalDocumentTags model);
+        void ModifyDocumentTags(IContext context, InternalDocumentTag model);
     }
 }

@@ -8,53 +8,56 @@ namespace BL.Database.Common
 {
     public static class ModelConverter
     {
-        public static DocumentAccesses GetDbDocumentAccess(InternalDocumentAccesses docAccess)
+        public static DocumentAccesses GetDbDocumentAccess(InternalDocumentAccess docAccess)
         {
-            return new DocumentAccesses
-            {
-                LastChangeDate = docAccess.LastChangeDate,
-                LastChangeUserId = docAccess.LastChangeUserId,
-                DocumentId = docAccess.DocumentId,
-                IsFavourite = docAccess.IsFavourite,
-                IsInWork = docAccess.IsInWork,
-                AccessLevelId = (int)docAccess.AccessLevel,
-                PositionId = docAccess.PositionId
-            };
+            return docAccess == null ? null :
+                new DocumentAccesses
+                {
+                    LastChangeDate = docAccess.LastChangeDate,
+                    LastChangeUserId = docAccess.LastChangeUserId,
+                    DocumentId = docAccess.DocumentId,
+                    IsFavourite = docAccess.IsFavourite,
+                    IsInWork = docAccess.IsInWork,
+                    AccessLevelId = (int)docAccess.AccessLevel,
+                    PositionId = docAccess.PositionId
+                };
         }
 
-        public static IEnumerable<DocumentAccesses> GetDbDocumentAccesses(IEnumerable<InternalDocumentAccesses> docAccesses)
+        public static IEnumerable<DocumentAccesses> GetDbDocumentAccesses(IEnumerable<InternalDocumentAccess> docAccesses)
         {
             return docAccesses.Select(GetDbDocumentAccess);
         }
 
-        public static DocumentEvents GetDbDocumentEvent(InternalDocumentEvents evt)
+        public static DocumentEvents GetDbDocumentEvent(InternalDocumentEvent evt)
         {
-            return new DocumentEvents
-            {
-                Description = evt.Description,
-                Date = evt.Date,
-                CreateDate = evt.CreateDate,
-                DocumentId = evt.DocumentId,
-                EventTypeId = (int)evt.EventType,
-                LastChangeDate = evt.LastChangeDate,
-                LastChangeUserId = evt.LastChangeUserId,
-                TargetAgentId = evt.TargetAgentId,
-                TargetPositionId = evt.TargetPositionId,
-                SourceAgentId = evt.SourceAgentId,
-                SourcePositionId = evt.SourcePositionId,
-                ReadAgentId = evt.ReadAgentId,
-                ReadDate = evt.ReadDate
-            };
+            return evt == null ? null :
+                new DocumentEvents
+                {
+                    Description = evt.Description,
+                    Date = evt.Date,
+                    CreateDate = evt.CreateDate,
+                    DocumentId = evt.DocumentId,
+                    EventTypeId = (int)evt.EventType,
+                    LastChangeDate = evt.LastChangeDate,
+                    LastChangeUserId = evt.LastChangeUserId,
+                    TargetAgentId = evt.TargetAgentId,
+                    TargetPositionId = evt.TargetPositionId,
+                    SourceAgentId = evt.SourceAgentId,
+                    SourcePositionId = evt.SourcePositionId,
+                    ReadAgentId = evt.ReadAgentId,
+                    ReadDate = evt.ReadDate
+                };
         }
 
-        public static IEnumerable<DocumentEvents> GetDbDocumentEvents(IEnumerable<InternalDocumentEvents> events)
+        public static IEnumerable<DocumentEvents> GetDbDocumentEvents(IEnumerable<InternalDocumentEvent> events)
         {
             return events.Select(GetDbDocumentEvent);
         }
 
-        public static DocumentWaits GetDbDocumentWait(InternalDocumentWaits docWait)
+        public static DocumentWaits GetDbDocumentWait(InternalDocumentWait docWait)
         {
-            return new DocumentWaits
+            return docWait == null ? null :
+                new DocumentWaits
             {
                 AttentionDate = docWait.AttentionDate,
                 Task = docWait.Task,
@@ -65,16 +68,30 @@ namespace BL.Database.Common
                 OffEventId = docWait.OffEventId,
                 OnEventId = docWait.OnEventId,
                 ParentId = docWait.ParentId,
-                ResultTypeId = docWait.ResultTypeId
+                ResultTypeId = docWait.ResultTypeId,
+                OnEvent = GetDbDocumentEvent(docWait.OnEvent),
+                OffEvent = GetDbDocumentEvent(docWait.OffEvent),
             };
         }
 
-        public static IEnumerable<DocumentWaits> GetDbDocumentWaitses(IEnumerable<InternalDocumentWaits> docWaits)
+        public static IEnumerable<DocumentWaits> GetDbDocumentWaits(IEnumerable<InternalDocumentWait> docWaits)
         {
             return docWaits.Select(GetDbDocumentWait);
         }
 
-        public static IEnumerable<DocumentSendLists> AddDocumentSendList(IEnumerable<InternalDocumentSendLists> docSendList)
+        public static void UpdateDbDocumentWaitByEvents(DocumentWaits docWait, InternalDocumentWait documentWait)
+        {
+            if (documentWait.OnEvent != null)
+            {
+                docWait.OnEvent = GetDbDocumentEvent(documentWait.OnEvent);
+            }
+            if (documentWait.OffEvent != null)
+            {
+                docWait.OffEvent = GetDbDocumentEvent(documentWait.OffEvent);
+            }
+        }
+
+        public static IEnumerable<DocumentSendLists> AddDocumentSendList(IEnumerable<InternalDocumentSendList> docSendList)
         {
             return docSendList.Select(sl => new DocumentSendLists()
             {
@@ -94,7 +111,7 @@ namespace BL.Database.Common
             });
         }
 
-        public static IEnumerable<DocumentRestrictedSendLists> AddDocumentRestrictedSendList(IEnumerable<InternalDocumentRestrictedSendLists> docRestrictedSendList)
+        public static IEnumerable<DocumentRestrictedSendLists> AddDocumentRestrictedSendList(IEnumerable<InternalDocumentRestrictedSendList> docRestrictedSendList)
         {
             return docRestrictedSendList.Select(sl => new DocumentRestrictedSendLists
             {
@@ -108,7 +125,7 @@ namespace BL.Database.Common
 
         public static DocumentFiles GetDbDocumentFile(InternalDocumentAttachedFile docFile)
         {
-            return  new DocumentFiles
+            return new DocumentFiles
             {
                 Id = docFile.Id,
                 DocumentId = docFile.DocumentId,
