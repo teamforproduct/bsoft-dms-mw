@@ -5,7 +5,7 @@ using BL.Database.DBModel.Document;
 using BL.Database.DBModel.System;
 using BL.Database.DBModel.Template;
 using System.Data.Entity.ModelConfiguration.Conventions;
-using BL.Logic.Helpers;
+using BL.CrossCutting.Helpers;
 
 namespace BL.Database.DatabaseContext
 {
@@ -75,6 +75,7 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<TemplateDocumentSendLists> TemplateDocumentSendLists { get; set; }
         public virtual DbSet<TemplateDocumentRestrictedSendLists> TemplateDocumentRestrictedSendLists { get; set; }
         public virtual DbSet<TemplateDocuments> TemplateDocumentsSet { get; set; }
+        public virtual DbSet<TemplateDocumentFiles> TemplateDocumentFilesSet { get; set; }
 
         public virtual DbSet<SystemActions> SystemActionsSet { get; set; }
         public virtual DbSet<SystemFields> SystemFieldsSet { get; set; }

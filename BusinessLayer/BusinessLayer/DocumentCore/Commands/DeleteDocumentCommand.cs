@@ -1,7 +1,9 @@
-﻿using BL.Database.Documents.Interfaces;
+﻿using System.Linq;
+using BL.Database.Documents.Interfaces;
 using BL.Model.Exception;
 using BL.Logic.Common;
 using BL.Database.Admins.Interfaces;
+using BL.Logic.SystemLogic;
 using BL.Model.Enums;
 
 namespace BL.Logic.DocumentCore.Commands
@@ -10,11 +12,13 @@ namespace BL.Logic.DocumentCore.Commands
     {
         private readonly IDocumentsDbProcess _documentDb;
         private readonly IAdminsDbProcess _adminDb;
+        private readonly IFileStore _fStore;
 
-        public DeleteDocumentCommand(IDocumentsDbProcess documentDb, IAdminsDbProcess adminDb)
+        public DeleteDocumentCommand(IDocumentsDbProcess documentDb, IAdminsDbProcess adminDb, IFileStore fStore)
         {
             _documentDb = documentDb;
             _adminDb = adminDb;
+            _fStore = fStore;
         }
 
         private int Model
@@ -54,6 +58,11 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override object Execute()
         {
+            if (_document.DocumentFiles != null && _document.DocumentFiles.Any())
+            {
+                _fStore.DeleteAllFileInDocument(_context, _document.Id);
+            }
+
             _documentDb.DeleteDocument(_context, _document.Id);
             return null;
         }

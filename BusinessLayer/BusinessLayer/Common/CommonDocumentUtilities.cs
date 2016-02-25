@@ -5,12 +5,12 @@ using BL.CrossCutting.Interfaces;
 using BL.Logic.DependencyInjection;
 using BL.Database.Documents.Interfaces;
 using BL.Model.Common;
+using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
-using BL.Model.DocumentCore.Actions;
 
 namespace BL.Logic.Common
 {

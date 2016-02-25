@@ -95,6 +95,7 @@
     <Compile Include="DocumentCore\Filters\FilterDocumentTag.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentTag.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentAttachedFile.cs" />
+    <Compile Include="DocumentCore\FrontModel\FrontTemplateAttachedFile.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentFiles.cs" />
     <Compile Include="DocumentCore\Actions\ChangeFavourites.cs" />
     <Compile Include="DocumentCore\Actions\ControlChange.cs" />
@@ -117,6 +118,7 @@
     <Compile Include="DocumentCore\InternalModel\InternalDocumentTag.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalActionRecord.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentAttachedFile.cs" />
+    <Compile Include="DocumentCore\InternalModel\InternalTemplateAttachedFile.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalTemplateDocument.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalTemplateDocumentRestrictedSendList.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalTemplateDocumentSendList.cs" />
