@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using BL.Database.DBModel.Document;
 using BL.Model.DocumentCore.InternalModel;
@@ -139,6 +140,11 @@ namespace BL.Database.Common
                 Name = docFile.Name,
                 Date = docFile.Date
             };
+        }
+
+        public static IEnumerable<DocumentFiles> GetDbDocumentFiles(IEnumerable<InternalDocumentAttachedFile> docFile)
+        {
+            return docFile.Select(GetDbDocumentFile);
         }
     }
 }

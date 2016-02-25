@@ -1,6 +1,6 @@
 ﻿using BL.CrossCutting.Interfaces;
 
-namespace BL.Logic.Helpers
+namespace BL.CrossCutting.Helpers
 {
     public interface IConnectionStringHelper
     {

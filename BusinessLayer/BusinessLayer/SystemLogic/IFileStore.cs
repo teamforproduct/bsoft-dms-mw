@@ -5,10 +5,13 @@ namespace BL.Logic.SystemLogic
 {
     public interface IFileStore
     {
-        string SaveFile(IContext ctx, InternalDocumentAttachedFile attFile, bool isOverride = true);
-        byte[] GetFile(IContext ctx, InternalDocumentAttachedFile attFile);
+        string SaveFile(IContext ctx, InternalTemplateAttachedFile attFile, bool isOverride = true);
+        byte[] GetFile(IContext ctx, InternalTemplateAttachedFile attFile);
         void DeleteAllFileInDocument(IContext ctx, int documentId);
-        void DeleteFile(IContext ctx, InternalDocumentAttachedFile attFile);
+        void DeleteAllFileInTemplate(IContext ctx, int templateId);
+        void DeleteFile(IContext ctx, InternalTemplateAttachedFile attFile);
         void DeleteFileVersion(IContext ctx, InternalDocumentAttachedFile attFile);
+        void CopyFile(IContext ctx, InternalTemplateAttachedFile fromTempl, InternalTemplateAttachedFile toTempl);
+        //IEnumerable<InternalTemplateAttachedFile> CopyFiles(IContext ctx, IEnumerable<InternalTemplateAttachedFile> fromTempl,int newDocNumber, bool newIsTemplate = false);
     }
 }

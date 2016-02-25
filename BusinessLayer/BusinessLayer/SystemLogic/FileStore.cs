@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using BL.CrossCutting.Interfaces;
+using BL.Logic.Common;
 using BL.Logic.DependencyInjection;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Exception;
@@ -12,6 +14,9 @@ namespace BL.Logic.SystemLogic
     {
         private const string _FILE_STORE_PATH = "IRF_DMS_FILESTORE_PATH";
         private const string _FILE_STORE_DEFAULT_PATH = @"c:\IRF_DMS_FILESTORE";
+        private const string _FILE_STORE_DOCUEMENT_FOLDER = @"DOCUMENT";
+        private const string _FILE_STORE_TEMPLATE_FOLDER = @"TEMPLATE";
+
 
         private string GetStorePath(IContext ctx)
         {
@@ -30,15 +35,24 @@ namespace BL.Logic.SystemLogic
         private string GetFullDocumentFilePath(IContext ctx, InternalDocumentAttachedFile attFile)
         {
             var path = GetStorePath(ctx);
-            path = Path.Combine(new string[] { path, ctx.CurrentAgentId.ToString(), attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString(), attFile.Version.ToString() });
+            path = Path.Combine(new string[] { path, _FILE_STORE_DOCUEMENT_FOLDER, ctx.CurrentAgentId.ToString(), attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString(), attFile.Version.ToString() });
             return path;
         }
 
-        public string SaveFile(IContext ctx, InternalDocumentAttachedFile attFile, bool isOverride = true)
+        private string GetFullDocumentFilePath(IContext ctx, InternalTemplateAttachedFile attFile)
+        {
+            var path = GetStorePath(ctx);
+            path = Path.Combine(new string[] { path, _FILE_STORE_TEMPLATE_FOLDER, ctx.CurrentAgentId.ToString(), attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString() });
+            return path;
+        }
+
+        public string SaveFile(IContext ctx, InternalTemplateAttachedFile attFile, bool isOverride = true)
         {
             try
             {
-                var path = GetFullDocumentFilePath(ctx, attFile);
+                var docFile = attFile as InternalDocumentAttachedFile;
+                var path = (docFile == null)?GetFullDocumentFilePath(ctx, attFile): GetFullDocumentFilePath(ctx, docFile);
+
                 if (!Directory.Exists(path))
                 {
                     var dir = Directory.CreateDirectory(path);
@@ -60,29 +74,49 @@ namespace BL.Logic.SystemLogic
                 log.Error(ctx, ex, "Cannot save user file", Environment.StackTrace);
                 throw new CannotSaveFile(ex);
             }
-
-            //var date = DateTime.Now;
-            //var hash = FileToSha1(localFilePath);
-            //var minutes = date.Minute > 30 ? "30" : "00";
-            //var time = date.Hour.ToString("00") + "-" + minutes;
-            //webPath = String.Format(@"{0}/{1}/{2}/{3}/{4}", date.Year, date.Month, date.Day, time, hash);
         }
 
-        public byte[] GetFile(IContext ctx, InternalDocumentAttachedFile attFile)
+        public byte[] GetFile(IContext ctx, InternalTemplateAttachedFile attFile)
         {
             try
             {
-                var path = GetFullDocumentFilePath(ctx, attFile);
+                var docFile = attFile as InternalDocumentAttachedFile;
+                string path = (docFile == null) ? GetFullDocumentFilePath(ctx, attFile) : GetFullDocumentFilePath(ctx, docFile);
+
                 var localFilePath = path + "\\" + attFile.Name + "." + attFile.Extension;
 
                 attFile.FileContent = File.ReadAllBytes(localFilePath);
-                attFile.WasChangedExternal = attFile.Hash != FileToSha1(localFilePath);
-
+                if (docFile != null)
+                {
+                    docFile.WasChangedExternal = docFile.Hash != FileToSha1(localFilePath);
+                }
                 return attFile.FileContent;
             }
             catch (Exception ex)
             {
                 //TODO check if file exists
+                var log = DmsResolver.Current.Get<ILogger>();
+                log.Error(ctx, ex, "Cannot access to user file", Environment.StackTrace);
+                throw new CannotAccessToFile(ex);
+            }
+        }
+
+        /// <summary>
+        /// delete all file for the specific template
+        /// </summary>
+        /// <param name="ctx"></param>
+        /// <param name="attFile"></param>
+        public void DeleteAllFileInTemplate(IContext ctx, int templateId)
+        {
+            try
+            {
+                var path = GetStorePath(ctx);
+                path = Path.Combine(new string[] { path, _FILE_STORE_TEMPLATE_FOLDER, ctx.CurrentAgentId.ToString(), templateId.ToString() });
+
+                Directory.Delete(path, true);
+            }
+            catch (Exception ex)
+            {
                 var log = DmsResolver.Current.Get<ILogger>();
                 log.Error(ctx, ex, "Cannot access to user file", Environment.StackTrace);
                 throw new CannotAccessToFile(ex);
@@ -99,7 +133,7 @@ namespace BL.Logic.SystemLogic
             try
             {
                 var path = GetStorePath(ctx);
-                path = Path.Combine(new string[] { path, ctx.CurrentAgentId.ToString(), documentId.ToString() });
+                path = Path.Combine(new string[] { path, _FILE_STORE_DOCUEMENT_FOLDER, ctx.CurrentAgentId.ToString(), documentId.ToString() });
 
                 Directory.Delete(path, true);
             }
@@ -112,16 +146,16 @@ namespace BL.Logic.SystemLogic
         }
 
         /// <summary>
-        /// delete all file versions
+        /// delete file
         /// </summary>
         /// <param name="ctx"></param>
         /// <param name="attFile"></param>
-        public void DeleteFile(IContext ctx, InternalDocumentAttachedFile attFile)
+        public void DeleteFile(IContext ctx, InternalTemplateAttachedFile attFile)
         {
             try
             {
                 var path = GetStorePath(ctx);
-                path = Path.Combine(new string[] { path, ctx.CurrentAgentId.ToString(), attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString() });
+                path = Path.Combine(new string[] { path, ((attFile is InternalDocumentAttachedFile)? _FILE_STORE_DOCUEMENT_FOLDER:_FILE_STORE_TEMPLATE_FOLDER), ctx.CurrentAgentId.ToString(), attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString() });
 
                 Directory.Delete(path, true);
             }
@@ -152,6 +186,105 @@ namespace BL.Logic.SystemLogic
                 throw new CannotAccessToFile(ex);
             }
         }
+
+        public void CopyFile(IContext ctx, InternalTemplateAttachedFile fromTempl,InternalTemplateAttachedFile toTempl)
+        {
+            try
+            {
+                var fromDoc = fromTempl as InternalDocumentAttachedFile;
+                var toDoc = toTempl as InternalDocumentAttachedFile;
+                var fromPath = (fromDoc == null)
+                    ? GetFullDocumentFilePath(ctx, fromTempl)
+                    : GetFullDocumentFilePath(ctx, fromDoc);
+                var toPath = (toDoc == null)
+                    ? GetFullDocumentFilePath(ctx, toTempl)
+                    : GetFullDocumentFilePath(ctx, toDoc);
+
+                if (!Directory.Exists(toPath))
+                {
+                    var dir = Directory.CreateDirectory(toPath);
+                }
+                var localFromPath = fromPath + "\\" + fromTempl.Name + "." + fromTempl.Extension;
+                var localToPath = toPath + "\\" + toTempl.Name + "." + toTempl.Extension;
+
+                File.Copy(localFromPath, localToPath, true);
+                toTempl.Hash = FileToSha1(localToPath);
+            }
+            catch (Exception ex)
+            {
+                var log = DmsResolver.Current.Get<ILogger>();
+                log.Error(ctx, ex, "Cannot access to one of file", Environment.StackTrace);
+                throw new CannotAccessToFile(ex);
+            }
+        }
+
+        ///// <summary>
+        ///// Copy all files (with versions possible) from one document or template to another
+        ///// </summary>
+        ///// <param name="ctx"></param>
+        ///// <param name="fromTempl"></param>
+        ///// <param name="newDocNumber"></param>
+        ///// <param name="newIsTemplate"></param>
+        //public IEnumerable<InternalTemplateAttachedFile> CopyFiles(IContext ctx, IEnumerable<InternalTemplateAttachedFile> fromTempl, int newDocNumber, bool newIsTemplate = false)
+        //{
+        //    try
+        //    {
+        //        var res = new List<InternalTemplateAttachedFile>();
+        //        int newOrdNum = 1;
+        //        foreach (var fl in fromTempl)
+        //        {
+        //            var fromDoc = fl as InternalDocumentAttachedFile;
+
+        //            // file from document could not be copied to template
+        //            if (fromDoc != null && newIsTemplate)
+        //            {
+        //                throw new AccessIsDenied();
+        //            }
+
+        //            if (newIsTemplate)
+        //            {
+        //                var newTempl = new InternalTemplateAttachedFile
+        //                {
+        //                    DocumentId = newDocNumber,
+        //                    Extension = fl.Extension,
+        //                    Name = fl.Name,
+        //                    FileType = fl.FileType,
+        //                    IsAdditional = fl.IsAdditional,
+        //                    OrderInDocument = newOrdNum
+        //                };
+        //                CommonDocumentUtilities.SetLastChange(ctx, newTempl);
+        //                CopyFile(ctx, fl, newTempl);
+        //                res.Add(newTempl);
+        //            }
+        //            else
+        //            {
+        //                var newDoc = new InternalDocumentAttachedFile
+        //                {
+        //                    DocumentId = newDocNumber,
+        //                    Extension = fl.Extension,
+        //                    Name = fl.Name,
+        //                    FileType = fl.FileType,
+        //                    IsAdditional = fl.IsAdditional,
+        //                    OrderInDocument = newOrdNum,
+        //                    Date = DateTime.Now,
+        //                    Version = 1,
+        //                    WasChangedExternal = false
+        //                };
+        //                CommonDocumentUtilities.SetLastChange(ctx, newDoc);
+        //                CopyFile(ctx, fromDoc, newDoc);
+        //                res.Add(newDoc);
+        //            }
+
+        //        }
+        //        return res;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        var log = DmsResolver.Current.Get<ILogger>();
+        //        log.Error(ctx, ex, "Cannot access to one of file", Environment.StackTrace);
+        //        throw new CannotAccessToFile(ex);
+        //    }
+        //}
 
         private string FileToSha1(string sourceFileName)
         {

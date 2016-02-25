@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Common;
-using BL.Logic.Helpers;
 using BL.Database.DatabaseContext;
 using BL.Database.Documents.Interfaces;
 using BL.Database.DBModel.Document;
@@ -29,6 +29,70 @@ namespace BL.Database.Documents
         }
 
         #region Document
+
+        public void AddDocument(IContext ctx, InternalDocument document)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            {
+                var doc = new DBModel.Document.Documents
+                {
+                    TemplateDocumentId = document.TemplateDocumentId,
+                    CreateDate = document.CreateDate,
+                    DocumentSubjectId = document.DocumentSubjectId,
+                    Description = document.Description,
+                    IsRegistered = document.IsRegistered,
+                    RegistrationJournalId = document.RegistrationJournalId,
+                    RegistrationNumberSuffix = document.RegistrationNumberSuffix,
+                    RegistrationNumberPrefix = document.RegistrationNumberPrefix,
+                    RegistrationDate = document.RegistrationDate,
+                    ExecutorPositionId = document.ExecutorPositionId,
+                    LastChangeUserId = document.LastChangeUserId,
+                    LastChangeDate = document.LastChangeDate,
+                    SenderAgentId = document.SenderAgentId,
+                    SenderAgentPersonId = document.SenderAgentPersonId,
+                    SenderNumber = document.SenderNumber,
+                    SenderDate = document.SenderDate,
+                    Addressee = document.Addressee,
+                };
+
+
+                if (document.Accesses != null && document.Accesses.Any())
+                {
+                    doc.Accesses = ModelConverter.GetDbDocumentAccesses(document.Accesses).ToList();
+                }
+
+                if (document.Events != null && document.Events.Any())
+                {
+                    doc.Events = ModelConverter.GetDbDocumentEvents(document.Events).ToList();
+                }
+
+                if (document.RestrictedSendLists != null && document.RestrictedSendLists.Any())
+                {
+                    doc.RestrictedSendLists = ModelConverter.AddDocumentRestrictedSendList(document.RestrictedSendLists).ToList();
+                }
+
+                if (document.SendLists != null && document.SendLists.Any())
+                {
+                    doc.SendLists = ModelConverter.AddDocumentSendList(document.SendLists).ToList();
+                }
+
+                if (document.DocumentFiles != null && document.DocumentFiles.Any())
+                {
+                    doc.Files = ModelConverter.GetDbDocumentFiles(document.DocumentFiles).ToList();
+                }
+
+                dbContext.DocumentsSet.Add(doc);
+                dbContext.SaveChanges();
+                document.Id = doc.Id;
+
+                //TODO we schould check if it needed or not? 
+                if (document.DocumentFiles != null)
+                    foreach (var fl in document.DocumentFiles)
+                    {
+                        fl.DocumentId = doc.Id;
+                    }
+            }
+        }
 
         public IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging)
         {
@@ -389,59 +453,19 @@ namespace BL.Database.Documents
                         AccessLevel = (EnumDocumentAccesses)y.AccessLevelId
                     }).ToList();
 
+                doc.DocumentFiles = dbContext.TemplateDocumentFilesSet.Where(x=>x.DocumentId == templateDocumentId).Select(x=> new InternalDocumentAttachedFile
+                {
+                    Id = x.Id,
+                    DocumentId = x.DocumentId,
+                    Extension = x.Extention,
+                    Name = x.Name,
+                    FileType = x.FileType,
+                    OrderInDocument = x.OrderNumber,
+                    IsAdditional = x.IsAdditional,
+                    Hash = x.Hash                    
+                }).ToList();
+
                 return doc;
-            }
-        }
-
-        public void AddDocument(IContext ctx, InternalDocument document)
-        {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
-            {
-                var doc = new DBModel.Document.Documents
-                {
-                    TemplateDocumentId = document.TemplateDocumentId,
-                    CreateDate = document.CreateDate,
-                    DocumentSubjectId = document.DocumentSubjectId,
-                    Description = document.Description,
-                    IsRegistered = document.IsRegistered,
-                    RegistrationJournalId = document.RegistrationJournalId,
-                    RegistrationNumberSuffix = document.RegistrationNumberSuffix,
-                    RegistrationNumberPrefix = document.RegistrationNumberPrefix,
-                    RegistrationDate = document.RegistrationDate,
-                    ExecutorPositionId = document.ExecutorPositionId,
-                    LastChangeUserId = document.LastChangeUserId,
-                    LastChangeDate = document.LastChangeDate,
-                    SenderAgentId = document.SenderAgentId,
-                    SenderAgentPersonId = document.SenderAgentPersonId,
-                    SenderNumber = document.SenderNumber,
-                    SenderDate = document.SenderDate,
-                    Addressee = document.Addressee,
-                };
-
-
-                if (document.Accesses != null && document.Accesses.Any())
-                {
-                    doc.Accesses = ModelConverter.GetDbDocumentAccesses(document.Accesses).ToList();
-                }
-
-                if (document.Events != null && document.Events.Any())
-                {
-                    doc.Events = ModelConverter.GetDbDocumentEvents(document.Events).ToList();
-                }
-
-                if (document.RestrictedSendLists != null && document.RestrictedSendLists.Any())
-                {
-                    doc.RestrictedSendLists = ModelConverter.AddDocumentRestrictedSendList(document.RestrictedSendLists).ToList();
-                }
-
-                if (document.SendLists != null && document.SendLists.Any())
-                {
-                    doc.SendLists = ModelConverter.AddDocumentSendList(document.SendLists).ToList();
-                }
-
-                dbContext.DocumentsSet.Add(doc);
-                dbContext.SaveChanges();
-                document.Id = doc.Id;
             }
         }
 
@@ -487,6 +511,8 @@ namespace BL.Database.Documents
                             AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
                         }).ToList();
                 doc.Files = CommonQueries.GetInternalDocumentFiles(dbContext, documentId);
+
+                doc.DocumentFiles = CommonQueries.GetInternalDocumentFiles(dbContext, documentId);
 
                 return doc;
             }
@@ -570,6 +596,11 @@ namespace BL.Database.Documents
                         ExecutorPositionId = x.Doc.ExecutorPositionId,
                         //TODO к Сергею количество ожиданий и подписей 
                     }).FirstOrDefault();
+
+                if (doc == null) return null;
+
+                doc.DocumentFiles = CommonQueries.GetInternalDocumentFiles(dbContext, doc.Id);
+
                 return doc;
             }
         }
@@ -582,6 +613,7 @@ namespace BL.Database.Documents
                 //TODO к Сергею разобраться с аттачами
                 dbContext.DocumentEventsSet.RemoveRange(dbContext.DocumentEventsSet.Where(x => x.DocumentId == id));
                 dbContext.DocumentAccessesSet.RemoveRange(dbContext.DocumentAccessesSet.Where(x => x.DocumentId == id));
+                dbContext.DocumentFilesSet.RemoveRange(dbContext.DocumentFilesSet.Where(x => x.DocumentId == id));
                 dbContext.DocumentsSet.RemoveRange(dbContext.DocumentsSet.Where(x => x.Id == id));
                 dbContext.SaveChanges();
             }
