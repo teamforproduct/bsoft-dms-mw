@@ -595,6 +595,11 @@ namespace BL.Database.Documents
                         ExecutorPositionId = x.Doc.ExecutorPositionId,
                         //TODO к Сергею количество ожиданий и подписей 
                     }).FirstOrDefault();
+
+                if (doc == null) return null;
+
+                doc.DocumentFiles = CommonQueries.GetInternalDocumentFiles(dbContext, doc.Id);
+
                 return doc;
             }
         }
@@ -607,6 +612,7 @@ namespace BL.Database.Documents
                 //TODO к Сергею разобраться с аттачами
                 dbContext.DocumentEventsSet.RemoveRange(dbContext.DocumentEventsSet.Where(x => x.DocumentId == id));
                 dbContext.DocumentAccessesSet.RemoveRange(dbContext.DocumentAccessesSet.Where(x => x.DocumentId == id));
+                dbContext.DocumentFilesSet.RemoveRange(dbContext.DocumentFilesSet.Where(x => x.DocumentId == id));
                 dbContext.DocumentsSet.RemoveRange(dbContext.DocumentsSet.Where(x => x.Id == id));
                 dbContext.SaveChanges();
             }
