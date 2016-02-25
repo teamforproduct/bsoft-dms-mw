@@ -1,10 +1,7 @@
-﻿using System;
-using System.Linq;
-using BL.Database.Admins.Interfaces;
+﻿using BL.Database.Admins.Interfaces;
 using BL.Logic.Common;
 using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore.Actions;
-using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
 
