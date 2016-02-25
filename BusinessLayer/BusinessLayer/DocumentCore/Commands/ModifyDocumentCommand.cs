@@ -1,4 +1,5 @@
-﻿using BL.Database.Documents.Interfaces;
+﻿using System.Linq;
+using BL.Database.Documents.Interfaces;
 using BL.Logic.Common;
 using BL.Database.Admins.Interfaces;
 using BL.Model.AdminCore;
@@ -60,8 +61,13 @@ namespace BL.Logic.DocumentCore.Commands
             _document.SenderDate = Model.SenderDate;
             _document.Addressee = Model.Addressee;
             _document.AccessLevel = Model.AccessLevel;
-
-           CommonDocumentUtilities.VerifyDocument(_context, new FrontDocument(_document), null);    //TODO отвязаться от фронт-модели
+            if (_document.Accesses != null)
+            {
+                var docAcc = _document.Accesses.First();
+                CommonDocumentUtilities.SetLastChange(_context, docAcc);
+                docAcc.AccessLevel = Model.AccessLevel;
+            }
+            CommonDocumentUtilities.VerifyDocument(_context, new FrontDocument(_document), null);    //TODO отвязаться от фронт-модели
 
             _documentDb.ModifyDocument(_context, _document);
             return _document.Id;

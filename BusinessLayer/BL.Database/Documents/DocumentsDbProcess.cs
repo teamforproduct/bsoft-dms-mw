@@ -554,7 +554,7 @@ namespace BL.Database.Documents
                     {
                         Id = x.Id,
                         AccessLevel = (EnumDocumentAccesses)x.AccessLevelId
-                    });
+                    }).ToList();
                 return doc;
             }
         }
