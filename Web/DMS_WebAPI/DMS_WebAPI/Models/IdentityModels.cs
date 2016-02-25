@@ -42,7 +42,15 @@ namespace DMS_WebAPI.Models
 
                 if (!int.TryParse(System.Web.HttpContext.Current.Request.Headers["DatabaseId"],out dbId))
                 {
-                    throw new System.Exception("Not set DatabaseId");
+                    if (System.Web.HttpContext.Current.IsDebuggingEnabled)
+                    {
+                        System.Web.HttpContext.Current.Request.Headers["DatabaseId"] = "1";
+                        dbId = 1;
+                    }
+                    else
+                    {
+                        throw new System.Exception("Not set DatabaseId");
+                    }
                 }
                 var readXml = new Utilities.ReadXml("/servers.xml");
                 var dbs = readXml.ReadDBs();
