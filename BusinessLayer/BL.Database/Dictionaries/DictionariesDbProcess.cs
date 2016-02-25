@@ -378,18 +378,22 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
-                var ddt = dbContext.DictionaryDocumentTypesSet.FirstOrDefault(x => x.Id == docType.Id);
-                if (ddt != null)
+                var ddt = new DictionaryDocumentTypes
                 {
-                    ddt.Name = docType.Name;
-                    ddt.LastChangeDate = docType.LastChangeDate;
-                    ddt.LastChangeUserId = docType.LastChangeUserId;
-                    dbContext.SaveChanges();
-                }
-                else
-                {
-                    throw new DictionaryRecordWasNotFound();
-                }
+                    Id = docType.Id,
+                    LastChangeDate = docType.LastChangeDate,
+                    LastChangeUserId = docType.LastChangeUserId,
+                    Name = docType.Name
+                };
+                dbContext.DictionaryDocumentTypesSet.Attach(ddt);
+                var entity = dbContext.Entry(ddt);
+                entity.State = System.Data.Entity.EntityState.Modified; // you can set there if all field should be updated
+
+                // otherwise you should set IsModified for each field which should be updated
+                //entity.Property(x => x.Name).IsModified = true;
+                //entity.Property(x => x.LastChangeDate).IsModified = true;
+                //entity.Property(x => x.LastChangeUserId).IsModified = true;
+                dbContext.SaveChanges();
             }
         }
 

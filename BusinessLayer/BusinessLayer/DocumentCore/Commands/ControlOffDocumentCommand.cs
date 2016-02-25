@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using BL.Database.Admins.Interfaces;
 using BL.Logic.Common;
 using BL.Database.Documents.Interfaces;
@@ -12,15 +11,13 @@ namespace BL.Logic.DocumentCore.Commands
 {
     public class ControlOffDocumentCommand: BaseDocumentCommand
     {
-        private readonly IDocumentsDbProcess _documentDb;
         private readonly IDocumentOperationsDbProcess _operationDb;
         private readonly IAdminsDbProcess _adminDb;
 
         private InternalDocumentWait _docWait;
 
-        public ControlOffDocumentCommand(IDocumentsDbProcess documentDb, IDocumentOperationsDbProcess operationDb, IAdminsDbProcess adminDb)
+        public ControlOffDocumentCommand(IDocumentOperationsDbProcess operationDb, IAdminsDbProcess adminDb)
         {
-            _documentDb = documentDb;
             _operationDb = operationDb;
             _adminDb = adminDb;
         }

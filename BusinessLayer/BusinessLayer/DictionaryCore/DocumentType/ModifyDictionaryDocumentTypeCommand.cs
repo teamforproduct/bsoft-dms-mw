@@ -52,10 +52,9 @@ namespace BL.Logic.DictionaryCore.DocumentType
                 var newDocType = new InternalDictionaryDocumentType
                 {
                     Id = Model.Id,
-                    Name = Model.Name,
-                    LastChangeDate = DateTime.Now,
-                    LastChangeUserId = _context.CurrentAgentId,
+                    Name = Model.Name
                 };
+                CommonDocumentUtilities.SetLastChange(_context, newDocType);
                 _dictDb.UpdateDictionaryDocumentType(_context, newDocType);
             }
             catch (DictionaryRecordWasNotFound)
