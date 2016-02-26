@@ -8,10 +8,7 @@ namespace BL.Database.Documents.Interfaces
 {
     public interface IDocumentFiltersDbProcess
     {
-        void AddSavedFilters(IContext ctx, ModifyDocumentSavedFilter savedFilter);
-        void UpdateSavedFilters(IContext ctx, ModifyDocumentSavedFilter savedFilter);
         IEnumerable<FrontDocumentSavedFilter> GetSavedFilters(IContext ctx);
         FrontDocumentSavedFilter GetSavedFilter(IContext ctx, int savedFilterId);
-        void DeleteSavedFilter(IContext ctx, int savedFilterId);
     }
 }

@@ -63,6 +63,9 @@
     <Compile Include="DocumentCore\AdditionalCommands\AddByStandartSendListDocumentSendListCommand.cs" />
     <Compile Include="DocumentCore\AdditionalCommands\AddByStandartSendListDocumentRestrictedSendListCommand.cs" />
     <Compile Include="DocumentCore\AdditionalCommands\AddDocumentFileCommand.cs" />
+    <Compile Include="DocumentCore\AdditionalCommands\DeleteSavedFilterCommand.cs" />
+    <Compile Include="DocumentCore\AdditionalCommands\ModifySavedFilterCommand.cs" />
+    <Compile Include="DocumentCore\AdditionalCommands\AddSavedFilterCommand.cs" />
     <Compile Include="DocumentCore\AdditionalCommands\DeleteDocumentFileCommand.cs" />
     <Compile Include="DocumentCore\AdditionalCommands\DeleteDocumentSendListStageCommand.cs" />
     <Compile Include="DocumentCore\AdditionalCommands\AddDocumentSendListStageCommand.cs" />

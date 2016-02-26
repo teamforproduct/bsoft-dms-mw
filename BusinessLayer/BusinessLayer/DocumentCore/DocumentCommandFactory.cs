@@ -111,6 +111,16 @@ namespace BL.Logic.DocumentCore
                     cmd = DmsResolver.Current.Get<SendForInformationDocumentCommand>();
                     break;
 
+                case EnumDocumentActions.AddSavedFilter:
+                    cmd = DmsResolver.Current.Get<AddSavedFilterCommand>();
+                    break;
+                case EnumDocumentActions.DeleteSavedFilter:
+                    cmd = DmsResolver.Current.Get<DeleteSavedFilterCommand>();
+                    break;
+                case EnumDocumentActions.ModifySavedFilter:
+                    cmd = DmsResolver.Current.Get<ModifySavedFilterCommand>();
+                    break;
+
                 default:
                     throw new CommandNotDefinedError();
             }

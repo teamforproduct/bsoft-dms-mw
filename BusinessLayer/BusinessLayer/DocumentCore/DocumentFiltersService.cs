@@ -19,19 +19,6 @@ namespace BL.Logic.DocumentCore
         }
 
         #region DocumentSavedFilters
-        public int SaveSavedFilter(IContext context, ModifyDocumentSavedFilter savedFilter)
-        {
-            if (savedFilter.Id == 0) // new savedFilter
-            {
-                _documentDb.AddSavedFilters(context, savedFilter);
-            }
-            else
-            {
-                _documentDb.UpdateSavedFilters(context, savedFilter);
-            }
-
-            return savedFilter.Id;
-        }
 
         public IEnumerable<FrontDocumentSavedFilter> GetSavedFilters(IContext ctx)
         {
@@ -62,11 +49,6 @@ namespace BL.Logic.DocumentCore
             {
             }
             return savedFilter;
-        }
-
-        public void DeleteSavedFilter(IContext context, int savedFilterId)
-        {
-            _documentDb.DeleteSavedFilter(context, savedFilterId);
         }
 
         #endregion DocumentSavedFilters

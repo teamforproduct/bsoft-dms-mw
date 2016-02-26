@@ -693,6 +693,68 @@ namespace BL.Database.Documents
 
         #endregion DocumentSendList     
 
+        #region DocumentSavedFilter
 
+        public List<int> AddSavedFilter(IContext context, IEnumerable<InternalDocumentSavedFilter> model)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var items = model.Select(x => new DocumentSavedFilters
+                {
+                    PositionId = x.PositionId,
+                    Icon = x.Icon,
+                    Filter = x.Filter,
+                    IsCommon = x.IsCommon,
+                    LastChangeUserId = x.LastChangeUserId,
+                    LastChangeDate = x.LastChangeDate
+                }).ToList();
+
+                dbContext.DocumentSavedFiltersSet.AddRange(items);
+                dbContext.SaveChanges();
+
+                return items.Select(x => x.Id).ToList();
+            }
+        }
+
+        public void ModifySavedFilter(IContext context, InternalDocumentSavedFilter model)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var item = new DocumentSavedFilters
+                {
+                    Id = model.Id,
+                    PositionId = model.PositionId,
+                    Icon = model.Icon,
+                    Filter = model.Filter,
+                    IsCommon = model.IsCommon,
+                    LastChangeUserId = model.LastChangeUserId,
+                    LastChangeDate = model.LastChangeDate
+                };
+                dbContext.DocumentSavedFiltersSet.Attach(item);
+
+                dbContext.Entry(item).State = EntityState.Modified;
+                //TODO OR
+                //var entry = dbContext.Entry(item);
+                //entry.Property(e => e.Stage).IsModified = true;
+                //// other changed properties
+
+                dbContext.SaveChanges();
+            }
+        }
+
+        public void DeleteSavedFilter(IContext context, int id)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var item = dbContext.DocumentSavedFiltersSet.FirstOrDefault(x => x.Id == id);
+                if (item != null)
+                {
+                    dbContext.DocumentSavedFiltersSet.Remove(item);
+                    dbContext.SaveChanges();
+                }
+            }
+        }
+
+        #endregion DocumentSavedFilter
     }
 }

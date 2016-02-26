@@ -285,6 +285,10 @@
         /// </summary>
         DeleteDocumentLink = 105009,
 
+        AddSavedFilter = 191001, // Добавить сохраненный фильтр
+        ModifySavedFilter = 191005, // Изменить сохраненный фильтр
+        DeleteSavedFilter = 191009, // Удалить сохраненный фильтр
+
         /// <summary>
         /// Изменить тэги по документу
         /// </summary>

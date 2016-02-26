@@ -21,45 +21,6 @@ namespace BL.Database.Documents
         }
         #region DocumentSavedFilters
 
-        public void AddSavedFilters(IContext ctx, ModifyDocumentSavedFilter savedFilter)
-        {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
-            {
-                var savFilter = new DocumentSavedFilters
-                {
-                    PositionId = ctx.CurrentPositionId,
-                    Icon = savedFilter.Icon,
-                    Filter = savedFilter.Filter.ToString(),
-                    IsCommon = savedFilter.IsCommon,
-                    LastChangeUserId = ctx.CurrentAgentId,
-                    LastChangeDate = DateTime.Now
-                };
-
-                dbContext.DocumentSavedFiltersSet.Add(savFilter);
-                dbContext.SaveChanges();
-                savedFilter.Id = savFilter.Id;
-            }
-        }
-
-        public void UpdateSavedFilters(IContext ctx, ModifyDocumentSavedFilter savedFilter)
-        {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
-            {
-                var savFilter = dbContext.DocumentSavedFiltersSet.FirstOrDefault(x => x.Id == savedFilter.Id);
-                if (savFilter != null)
-                {
-                    savFilter.Id = savedFilter.Id;
-                    savFilter.PositionId = ctx.CurrentPositionId;
-                    savFilter.Icon = savedFilter.Icon;
-                    savFilter.Filter = savedFilter.Filter.ToString();
-                    savFilter.IsCommon = savedFilter.IsCommon;
-                    savFilter.LastChangeUserId = ctx.CurrentAgentId;
-                    savFilter.LastChangeDate = DateTime.Now;
-                }
-                dbContext.SaveChanges();
-            }
-        }
-
         public IEnumerable<FrontDocumentSavedFilter> GetSavedFilters(IContext ctx)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
@@ -104,19 +65,6 @@ namespace BL.Database.Documents
                             PositionName = x.Position.Name
                         }).FirstOrDefault();
                 return savFilter;
-            }
-        }
-        public void DeleteSavedFilter(IContext ctx, int savedFilterId)
-        {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
-            {
-
-                var savFilter = dbContext.DocumentSavedFiltersSet.Where(x => x.Id == savedFilterId).FirstOrDefault();
-                if (savFilter != null)
-                {
-                    dbContext.DocumentSavedFiltersSet.Remove(savFilter);
-                    dbContext.SaveChanges();
-                }
             }
         }
         #endregion DocumentSavedFilters         
