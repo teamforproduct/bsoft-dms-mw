@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using BL.Database.Admins.Interfaces;
 using BL.Logic.Common;
 using BL.Database.Documents.Interfaces;
@@ -59,13 +60,12 @@ namespace BL.Logic.DocumentCore.Commands
         public override object Execute()
         {
             _docWait.OffEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, _docWait.DocumentId, EnumEventTypes.ControlChange,
-                                    $"{_docWait.Task} / {Model.Description}", _docWait.OnEvent.TargetPositionId)
-                                    .FirstOrDefault();
+                                    $"{_docWait.Task} / {Model.Description}", _docWait.OnEvent.TargetPositionId);
             CommonDocumentUtilities.SetLastChange(_context, _docWait);
             var controlOn = new ControlOn(Model, _docWait.DocumentId, _docWait.Task);
-            var waits = CommonDocumentUtilities.GetNewDocumentWait(_context, controlOn).ToList();
-            waits.First().ParentId = _docWait.Id;
-            waits.Add(_docWait);
+            var wait = CommonDocumentUtilities.GetNewDocumentWait(_context, controlOn);
+            wait.ParentId = _docWait.Id;
+            var waits = new List<InternalDocumentWait> { wait, _docWait};
             _operationDb.ChangeDocumentWait(_context, waits);
             return _docWait.DocumentId;
         }

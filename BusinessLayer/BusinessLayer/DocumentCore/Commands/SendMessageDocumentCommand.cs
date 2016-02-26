@@ -51,24 +51,32 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override object Execute()
         {
-            var accList = _operationDb.GetDocumentAccesses(_context, Model.DocumentId);
-            var actuelPosList = Model.Positions.Where(x => accList.Select(s => s.PositionId).Contains(x)).ToList();
-            if (!actuelPosList.Any()) return null;
+            var evtToAdd = new List<InternalDocumentEvent>();
+            if (Model?.Positions.Count == 0)
             {
+                var evt = CommonDocumentUtilities.GetNewDocumentEvent(_context, Model.DocumentId,
+                    EnumEventTypes.SendMessage, Model.Description, null);
+                evt.TargetPositionId = null;
+                evtToAdd.Add(evt);
+            }
+            else
+            {
+                var accList = _operationDb.GetDocumentAccesses(_context, Model.DocumentId);
+                var actuelPosList = Model.Positions.Where(x => accList.Select(s => s.PositionId).Contains(x)).ToList();
+                if (!actuelPosList.Any()) return null;
+
                 var posInfos = _operationDb.GetInternalPositionsInfo(_context, actuelPosList);
-                var evtToAdd = new List<InternalDocumentEvent>();
 
                 var description = Model.Description + (
                     Model.IsAddPositionsInfo
                         ? "[" + string.Join(", ", posInfos.Select(x => x.PositionName)) + "]"
                         : "");
 
-                foreach (var targetPositionId in actuelPosList)
-                {
-                    evtToAdd.AddRange(CommonDocumentUtilities.GetNewDocumentEvent(_context, Model.DocumentId, EnumEventTypes.SendMessage, description, targetPositionId));
-                }
-                _operationDb.AddDocumentEvents(_context, evtToAdd);
+                evtToAdd.AddRange(actuelPosList.Select(targetPositionId => 
+                            CommonDocumentUtilities.GetNewDocumentEvent(_context, Model.DocumentId, EnumEventTypes.SendMessage, description, targetPositionId)));
             }
+            _operationDb.AddDocumentEvents(_context, evtToAdd);
+
             return null;
         }
 

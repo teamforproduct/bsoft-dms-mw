@@ -69,8 +69,8 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 CommonDocumentUtilities.SetLastChange(Context, sl);
             }
-            Document.Events = CommonDocumentUtilities.GetNewDocumentEvent(Context,null, EnumEventTypes.AddNewDocument, "Create");
-            Document.Accesses = CommonDocumentUtilities.GetNewDocumentAccess(Context);
+            Document.Events = CommonDocumentUtilities.GetNewDocumentEvents(Context,null, EnumEventTypes.AddNewDocument, "Create");
+            Document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(Context);
 
             // prepare file list in Document. It will save it with document in DB
             var toCopy = new Dictionary<InternalDocumentAttachedFile, InternalTemplateAttachedFile>();

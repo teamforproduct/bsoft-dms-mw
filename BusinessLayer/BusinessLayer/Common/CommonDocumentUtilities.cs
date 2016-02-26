@@ -33,72 +33,93 @@ namespace BL.Logic.Common
             document.LastChangeUserId = context.CurrentAgentId;
         }
 
-        public static IEnumerable<InternalDocumentAccess> GetNewDocumentAccess(IContext context)
+        public static InternalDocumentAccess GetNewDocumentAccess(IContext context)
         {
-            return new List<InternalDocumentAccess>
+            return new InternalDocumentAccess
             {
-                new InternalDocumentAccess
-                {
-                    AccessLevel = EnumDocumentAccesses.PersonalRefIO,
-                    IsInWork = true,
-                    IsFavourite = false,
-                    LastChangeDate = DateTime.Now,
-                    LastChangeUserId = context.CurrentAgentId,
-                    PositionId = context.CurrentPositionId
-                }
+                AccessLevel = EnumDocumentAccesses.PersonalRefIO,
+                IsInWork = true,
+                IsFavourite = false,
+                LastChangeDate = DateTime.Now,
+                LastChangeUserId = context.CurrentAgentId,
+                PositionId = context.CurrentPositionId
             };
         }
 
-        public static IEnumerable<InternalDocumentAccess> GetNewDocumentAccess(IContext context, EnumDocumentAccesses accessLevel, int positionId)
+        public static IEnumerable<InternalDocumentAccess> GetNewDocumentAccesses(IContext context)
         {
             return new List<InternalDocumentAccess>
             {
-                new InternalDocumentAccess
-                {
-                    AccessLevel = accessLevel,
-                    IsInWork = true,
-                    IsFavourite = false,
-                    LastChangeDate = DateTime.Now,
-                    LastChangeUserId = context.CurrentAgentId,
-                    PositionId = positionId
-                }
+                GetNewDocumentAccess(context),
             };
         }
 
-        public static IEnumerable<InternalDocumentEvent> GetNewDocumentEvent(IContext context, int? idDocument, EnumEventTypes eventType, string description, int? targetPositionId = null)
+        public static InternalDocumentAccess GetNewDocumentAccess(IContext context, int? documentId, EnumDocumentAccesses accessLevel, int positionId)
+        {
+            return new InternalDocumentAccess
+            {
+                DocumentId = documentId ?? 0,
+                AccessLevel = accessLevel,
+                IsInWork = true,
+                IsFavourite = false,
+                LastChangeDate = DateTime.Now,
+                LastChangeUserId = context.CurrentAgentId,
+                PositionId = positionId
+            };
+        }
+
+        public static IEnumerable<InternalDocumentAccess> GetNewDocumentAccesses(IContext context, int? documentId, EnumDocumentAccesses accessLevel, int positionId)
+        {
+            return new List<InternalDocumentAccess>
+            {
+                GetNewDocumentAccess(context,documentId,accessLevel,positionId),
+            };
+        }
+
+        public static InternalDocumentEvent GetNewDocumentEvent(IContext context, int? documentId, EnumEventTypes eventType, string description, int? targetPositionId = null)
+        {
+            return new InternalDocumentEvent
+            {
+                DocumentId = documentId ?? 0,
+                EventType = eventType,
+                Description = description,
+                SourceAgentId = context.CurrentAgentId,
+                SourcePositionId = context.CurrentPositionId,
+                TargetPositionId = targetPositionId ?? context.CurrentPositionId,
+                LastChangeUserId = context.CurrentAgentId,
+                LastChangeDate = DateTime.Now,
+                Date = DateTime.Now,
+                CreateDate = DateTime.Now,
+            };
+        }
+
+        public static IEnumerable<InternalDocumentEvent> GetNewDocumentEvents(IContext context, int? documentId, EnumEventTypes eventType, string description, int? targetPositionId = null)
         {
             return new List<InternalDocumentEvent>
             {
-                new InternalDocumentEvent
-                {
-                    DocumentId = idDocument??0,
-                    EventType = eventType,
-                    Description = description,
-                    SourceAgentId = context.CurrentAgentId,
-                    SourcePositionId = context.CurrentPositionId,
-                    TargetPositionId = targetPositionId??context.CurrentPositionId,
-                    LastChangeUserId = context.CurrentAgentId,
-                    LastChangeDate = DateTime.Now,
-                    Date = DateTime.Now,
-                    CreateDate = DateTime.Now,
-                }
+                GetNewDocumentEvent(context,documentId,eventType,description,targetPositionId),
             };
         }
 
-        public static IEnumerable<InternalDocumentWait> GetNewDocumentWait(IContext context, ControlOn controlOnModel, EnumEventTypes? eventType = null, int? targetPositionId = null)
+        public static InternalDocumentWait GetNewDocumentWait(IContext context, ControlOn controlOnModel, EnumEventTypes? eventType = null, int? targetPositionId = null)
         {
-            return new List<InternalDocumentWait>
+            return new InternalDocumentWait
             {
-                new InternalDocumentWait
-                {
                 DocumentId = controlOnModel.DocumentId,
                 Task = controlOnModel.Task,
                 DueDate = controlOnModel.DueDate,
                 AttentionDate = controlOnModel.AttentionDate,
                 LastChangeUserId = context.CurrentAgentId,
                 LastChangeDate = DateTime.Now,
-                OnEvent = eventType ==null ? null:GetNewDocumentEvent(context, controlOnModel.DocumentId, eventType.Value, $"{controlOnModel.Task} / {controlOnModel.Description}", targetPositionId).FirstOrDefault()
-                }
+                OnEvent = eventType == null ? null : GetNewDocumentEvent(context, controlOnModel.DocumentId, eventType.Value, $"{controlOnModel.Task} / {controlOnModel.Description}", targetPositionId)
+            };
+        }
+
+        public static IEnumerable<InternalDocumentWait> GetNewDocumentWaits(IContext context, ControlOn controlOnModel, EnumEventTypes? eventType = null, int? targetPositionId = null)
+        {
+            return new List<InternalDocumentWait>
+            {
+                GetNewDocumentWait(context,controlOnModel,eventType,targetPositionId),
             };
         }
 
