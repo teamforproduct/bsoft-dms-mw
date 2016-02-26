@@ -65,7 +65,7 @@ namespace BL.Logic.DocumentCore.Commands
 
                 foreach (var targetPositionId in actuelPosList)
                 {
-                    evtToAdd.AddRange(CommonDocumentUtilities.GetNewDocumentEvent(_context, EnumEventTypes.SendMessage, description, targetPositionId, Model.DocumentId));
+                    evtToAdd.AddRange(CommonDocumentUtilities.GetNewDocumentEvent(_context, Model.DocumentId, EnumEventTypes.SendMessage, description, targetPositionId));
                 }
                 _operationDb.AddDocumentEvents(_context, evtToAdd);
             }

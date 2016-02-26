@@ -75,6 +75,7 @@
     <Compile Include="DocumentCore\AdditionalCommands\AddDocumentRestrictedSendListCommand.cs" />
     <Compile Include="DocumentCore\AdditionalCommands\AddDocumentLinkCommand.cs" />
     <Compile Include="DocumentCore\Commands\AddFavouriteDocumentCommand.cs" />
+    <Compile Include="DocumentCore\Commands\SendForInformationDocumentCommand.cs" />
     <Compile Include="DocumentCore\Commands\AddNoteDocumentCommand.cs" />
     <Compile Include="DocumentCore\Commands\StopPlanDocumentCommand.cs" />
     <Compile Include="DocumentCore\Commands\LaunchPlanDocumentCommand.cs" />

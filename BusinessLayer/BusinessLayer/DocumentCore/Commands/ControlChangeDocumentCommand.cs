@@ -58,8 +58,8 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override object Execute()
         {
-            _docWait.OffEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, EnumEventTypes.ControlChange,
-                                    $"{_docWait.Task} / {Model.Description}", _docWait.OnEvent.TargetPositionId, _docWait.DocumentId)
+            _docWait.OffEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, _docWait.DocumentId, EnumEventTypes.ControlChange,
+                                    $"{_docWait.Task} / {Model.Description}", _docWait.OnEvent.TargetPositionId)
                                     .FirstOrDefault();
             CommonDocumentUtilities.SetLastChange(_context, _docWait);
             var controlOn = new ControlOn(Model, _docWait.DocumentId, _docWait.Task);

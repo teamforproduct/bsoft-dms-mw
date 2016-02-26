@@ -82,7 +82,7 @@ namespace BL.Logic.DocumentCore.Commands
                 sl.LastChangeUserId = _context.CurrentAgentId;
             }
 
-            _document.Events = CommonDocumentUtilities.GetNewDocumentEvent(_context,EnumEventTypes.AddNewDocument, "Copy");
+            _document.Events = CommonDocumentUtilities.GetNewDocumentEvent(_context,null, EnumEventTypes.AddNewDocument, "Copy");
             _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccess(_context);
 
             // prepare file list in Document. It will save it with document in DB

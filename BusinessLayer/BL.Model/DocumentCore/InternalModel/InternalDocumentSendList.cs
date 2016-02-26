@@ -18,6 +18,8 @@ namespace BL.Model.DocumentCore.InternalModel
         public bool IsInitial { get; set; }
         public int? StartEventId { get; set; }
         public int? CloseEventId { get; set; }
+        public InternalDocumentEvent StartEvent { get; set; }
+        public InternalDocumentEvent CloseEvent { get; set; }
 
     }
 }

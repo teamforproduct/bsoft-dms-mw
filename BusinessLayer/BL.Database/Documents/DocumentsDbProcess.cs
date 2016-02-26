@@ -832,7 +832,10 @@ namespace BL.Database.Documents
                 entry.Property(x => x.LastChangeDate).IsModified = true;
                 entry.Property(x => x.LastChangeUserId).IsModified = true;
                 entry.Property(x => x.IsLaunchPlan).IsModified = true;
-
+                if (document.Events != null && document.Events.Any(x => x.Id == 0))
+                {
+                    doc.Events = ModelConverter.GetDbDocumentEvents(document.Events.Where(x => x.Id == 0)).ToList();
+                }
                 dbContext.SaveChanges();
             }
         }

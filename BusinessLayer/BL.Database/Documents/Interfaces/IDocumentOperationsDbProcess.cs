@@ -55,5 +55,6 @@ namespace BL.Database.Documents.Interfaces
 
         void ModifyDocumentTags(IContext context, InternalDocumentTag model);
         void ChangeDocumentWait(IContext context, IEnumerable<InternalDocumentWait> waits);
+        void SendForInformation(IContext context, InternalDocument document);
     }
 }
