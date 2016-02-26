@@ -17,6 +17,7 @@ using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.IncomingModel;
+using BL.Model.DictionaryCore.FilterModel;
 
 namespace BL.Database.Documents
 {
@@ -408,7 +409,7 @@ namespace BL.Database.Documents
 
                 doc.DocumentTags = CommonQueries.GetDocumentTags(dbContext, new FilterDocumentTag { DocumentId = documentId, CurrentPositionsId = ctx.CurrentPositionsIdList });
 
-                doc.DocumentWorkGroup = CommonQueries.GetDocumentWorkGroup(dbContext, new FilterDictionaryPosition { DocumentId = documentId });
+                doc.DocumentWorkGroup = CommonQueries.GetDocumentWorkGroup(dbContext, new FilterDictionaryPosition { DocumentId = new List<int> { documentId } });
 
                 return doc;
             }
