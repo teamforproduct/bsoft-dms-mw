@@ -13,7 +13,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public bool IsInWork { get; set; }
         public bool IsFavourite { get; set; }
 
-        public InternalDocumentEvent DocumentEvent { get; set; }
+      //  public InternalDocumentEvent DocumentEvent { get; set; }
 
     }
 }

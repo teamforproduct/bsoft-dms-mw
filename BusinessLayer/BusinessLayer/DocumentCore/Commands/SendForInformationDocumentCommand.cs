@@ -32,6 +32,11 @@ namespace BL.Logic.DocumentCore.Commands
                 {
                     throw new WrongParameterTypeError();
                 }
+                var model = (InternalDocumentSendList) _param;
+                if (model.SendType!=EnumSendTypes.SendForInformation && model.SendType != EnumSendTypes.SendForConsideration)
+                {
+                    throw new WrongParameterTypeError();
+                }
                 return (InternalDocumentSendList)_param;
             }
         }
@@ -52,24 +57,28 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new PlanPointHasAlredyBeenLaunched();
             }
+            if (1 == 1) //TODO нужна проверка на Source
+            {
+                _context.SetCurrentPosition(_document.ExecutorPositionId);
+            }
             return true;
         }
         public override object Execute()
         {
             if (Model.TargetPositionId.HasValue)
             {
-                _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccess(_context, Model.AccessLevel, Model.TargetPositionId.Value);
+                _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, Model.DocumentId, Model.AccessLevel, Model.TargetPositionId.Value);
             }
-            _document.Events = CommonDocumentUtilities.GetNewDocumentEvent(_context, Model.DocumentId, _eventType, Model.Description);
-            Model.StartEvent = _document.Events.First();
-            Model.CloseEvent = _document.Events.First();
+            var evt = CommonDocumentUtilities.GetNewDocumentEvent(_context, Model.DocumentId, _eventType, Model.Description);
+            Model.StartEvent = evt;
+            Model.CloseEvent = evt;
             CommonDocumentUtilities.SetLastChange(_context,Model);
             _document.SendLists = new List<InternalDocumentSendList> { Model };
             _operationDb.SendForInformation(_context, _document);
             return null;
         }
 
-        private EnumEventTypes _eventType => (EnumEventTypes)Enum.Parse(typeof(EnumDocumentActions), Model.SendType.ToString());
+        private EnumEventTypes _eventType => (EnumEventTypes)Enum.Parse(typeof(EnumEventTypes), Model.SendType.ToString());
         public override EnumDocumentActions CommandType => (EnumDocumentActions)Enum.Parse(typeof(EnumDocumentActions), Model.SendType.ToString());
     }
 }

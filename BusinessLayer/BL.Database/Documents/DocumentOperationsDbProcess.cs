@@ -366,8 +366,7 @@ namespace BL.Database.Documents
                 entry.Property(x => x.LastChangeUserId).IsModified = true;
                 if (document.Accesses != null && document.Accesses.Any())
                 {
-                    var acc = ModelConverter.GetDbDocumentAccesses(document.Accesses);
-                    dbContext.DocumentAccessesSet.AddRange(acc);
+                    dbContext.DocumentAccessesSet.AddRange(CommonQueries.GetDbDocumentAccesses(dbContext, document.Accesses, document.Id).ToList());
                 }
                 dbContext.SaveChanges();
             }

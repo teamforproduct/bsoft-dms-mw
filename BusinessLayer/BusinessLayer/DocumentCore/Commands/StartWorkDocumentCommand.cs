@@ -62,7 +62,7 @@ namespace BL.Logic.DocumentCore.Commands
         {
             _docAccess.IsInWork = true;
             CommonDocumentUtilities.SetLastChange(_context, _docAccess);
-            _document.Events = CommonDocumentUtilities.GetNewDocumentEvent(_context, Model.DocumentId, EnumEventTypes.SetInWork, Model.Description);
+            _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, Model.DocumentId, EnumEventTypes.SetInWork, Model.Description);
             _operationDb.ChangeIsInWorkAccess(_context, _document);
             return null;
         }

@@ -854,6 +854,7 @@ namespace BL.Database.Documents
                     .Select(x => new InternalDocument
                     {
                         Id = x.Doc.Id,
+                        ExecutorPositionId = x.Doc.ExecutorPositionId
                     }).FirstOrDefault();
 
                 return doc;

@@ -29,5 +29,9 @@ namespace BL.Model.DocumentCore.Actions
         /// </summary>
         [Required]
         public bool IsAddPositionsInfo { get; set; }
+        /// <summary>
+        /// Постоянное сообщение для всех участников рабочей группы(которые есть и будут)
+        /// </summary>
+        public bool IsForAllWorkGorupMember { get; set; }
     }
 }

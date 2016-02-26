@@ -82,8 +82,8 @@ namespace BL.Logic.DocumentCore.Commands
                 sl.LastChangeUserId = _context.CurrentAgentId;
             }
 
-            _document.Events = CommonDocumentUtilities.GetNewDocumentEvent(_context,null, EnumEventTypes.AddNewDocument, "Copy");
-            _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccess(_context);
+            _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context,null, EnumEventTypes.AddNewDocument, "Copy");
+            _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context);
 
             // prepare file list in Document. It will save it with document in DB
             var toCopy = new Dictionary<InternalDocumentAttachedFile, InternalDocumentAttachedFile>();

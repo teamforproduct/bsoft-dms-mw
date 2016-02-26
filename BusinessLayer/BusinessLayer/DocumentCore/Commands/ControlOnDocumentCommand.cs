@@ -47,7 +47,7 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override object Execute()
         {
-            var docWaits = CommonDocumentUtilities.GetNewDocumentWait(_context, Model, EnumEventTypes.ControlOn);
+            var docWaits = CommonDocumentUtilities.GetNewDocumentWaits(_context, Model, EnumEventTypes.ControlOn);
             _operationDb.AddDocumentWaits(_context, docWaits);
             return null;
         }
