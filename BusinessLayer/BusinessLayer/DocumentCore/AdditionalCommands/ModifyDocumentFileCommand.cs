@@ -67,6 +67,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         {
             fl.FileContent = Convert.FromBase64String(Model.FileData);
             fl.FileType = Model.FileType;
+            fl.FileSize = Model.FileSize;
             fl.Extension = Path.GetExtension(Model.FileName).Replace(".", "");
             fl.Name = Path.GetFileNameWithoutExtension(Model.FileName);
             fl.IsAdditional = fl.IsAdditional;

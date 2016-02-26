@@ -42,9 +42,13 @@ namespace BL.Model.DocumentCore.InternalModel
         public string FileType { get; set; }
 
         /// <summary>
+        /// Размер файла
+        /// </summary>
+        public int FileSize { get; set; }
+
+        /// <summary>
         /// Хэш файла. для проверки целостности файла в хранилище
         /// </summary>
         public string Hash { get; set; }
-
     }
 }

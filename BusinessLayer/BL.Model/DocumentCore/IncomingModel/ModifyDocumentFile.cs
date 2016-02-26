@@ -33,5 +33,9 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// Тип файла.
         /// </summary>
         public string FileType { get; set; }
+        /// <summary>
+        /// Размер файла
+        /// </summary>
+        public int FileSize { get; set; }
     }
 }

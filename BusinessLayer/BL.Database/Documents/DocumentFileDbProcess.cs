@@ -52,6 +52,7 @@ namespace BL.Database.Documents
                             LastChangeUserName = x.agName,
                             Name = x.fl.Name,
                             FileType = x.fl.FileType,
+                            FileSize = x.fl.FileSize,
                             OrderInDocument = x.fl.OrderNumber,
                             Version = x.fl.Version,
                             WasChangedExternal = false
@@ -80,6 +81,7 @@ namespace BL.Database.Documents
                             IsAdditional = x.fl.IsAdditional,
                             Hash = x.fl.Hash,
                             FileType = x.fl.FileType,
+                            FileSize = x.fl.FileSize,
                             LastChangeDate = x.fl.LastChangeDate,
                             LastChangeUserId = x.fl.LastChangeUserId,
                             LastChangeUserName = x.agName,
@@ -114,6 +116,7 @@ namespace BL.Database.Documents
                             LastChangeUserName = x.agName,
                             Name = x.fl.Name,
                             FileType = x.fl.FileType,
+                            FileSize = x.fl.FileSize,
                             OrderInDocument = x.fl.OrderNumber,
                             Version = x.fl.Version,
                             WasChangedExternal = false
@@ -187,6 +190,7 @@ namespace BL.Database.Documents
                                 LastChangeUserName = x.agName,
                                 Name = x.fl.Name,
                                 FileType = x.fl.FileType,
+                                FileSize = x.fl.FileSize,
                                 OrderInDocument = x.fl.OrderNumber,
                                 Version = x.fl.Version,
                                 WasChangedExternal = false
@@ -231,6 +235,7 @@ namespace BL.Database.Documents
                 entry.Property(x => x.Name).IsModified = true;
                 entry.Property(x => x.Extension).IsModified = true;
                 entry.Property(x => x.FileType).IsModified = true;
+                entry.Property(x => x.FileSize).IsModified = true;
                 entry.Property(x => x.IsAdditional).IsModified = true;
                 entry.Property(x => x.LastChangeDate).IsModified = true;
                 entry.Property(x => x.LastChangeUserId).IsModified = true;

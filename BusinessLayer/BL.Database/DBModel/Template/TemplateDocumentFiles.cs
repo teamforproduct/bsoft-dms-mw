@@ -15,6 +15,7 @@ namespace BL.Database.DBModel.Template
         public int OrderNumber { get; set; }
         public string Extention { get; set; }
         public string FileType { get; set; }
+        public int FileSize { get; set; }
         public byte[] Content { get; set; }
         public bool IsAdditional { get; set; }
         public string Hash { get; set; }

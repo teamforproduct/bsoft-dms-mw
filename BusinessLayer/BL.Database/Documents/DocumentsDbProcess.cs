@@ -459,6 +459,7 @@ namespace BL.Database.Documents
                     Extension = x.Extention,
                     Name = x.Name,
                     FileType = x.FileType,
+                    FileSize = x.FileSize,
                     OrderInDocument = x.OrderNumber,
                     IsAdditional = x.IsAdditional,
                     Hash = x.Hash

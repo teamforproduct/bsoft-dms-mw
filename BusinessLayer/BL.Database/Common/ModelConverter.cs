@@ -135,6 +135,7 @@ namespace BL.Database.Common
                 Extension = docFile.Extension,
                 Hash = docFile.Hash,
                 FileType = docFile.FileType,
+                FileSize = docFile.FileSize,
                 IsAdditional = docFile.IsAdditional,
                 LastChangeDate = docFile.LastChangeDate,
                 LastChangeUserId = docFile.LastChangeUserId,

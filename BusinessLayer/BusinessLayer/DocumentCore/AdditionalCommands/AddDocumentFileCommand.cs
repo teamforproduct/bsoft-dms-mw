@@ -67,6 +67,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                     IsAdditional = file.IsAdditional,
                     Version = 1,
                     FileType = file.FileType,
+                    FileSize = file.FileSize,
                     OrderInDocument = _operationDb.GetNextFileOrderNumber(_context, Model.DocumentId),
                     Name = Path.GetFileNameWithoutExtension(file.FileName),
                     Extension = Path.GetExtension(file.FileName).Replace(".", ""),

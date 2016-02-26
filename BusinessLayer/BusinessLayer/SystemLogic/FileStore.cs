@@ -249,6 +249,7 @@ namespace BL.Logic.SystemLogic
         //                    Extension = fl.Extension,
         //                    Name = fl.Name,
         //                    FileType = fl.FileType,
+        //                    FileSize = fl.FileSize,
         //                    IsAdditional = fl.IsAdditional,
         //                    OrderInDocument = newOrdNum
         //                };
@@ -264,6 +265,7 @@ namespace BL.Logic.SystemLogic
         //                    Extension = fl.Extension,
         //                    Name = fl.Name,
         //                    FileType = fl.FileType,
+        //                    FileSize = fl.FileSize,
         //                    IsAdditional = fl.IsAdditional,
         //                    OrderInDocument = newOrdNum,
         //                    Date = DateTime.Now,
