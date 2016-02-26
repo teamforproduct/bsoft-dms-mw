@@ -84,6 +84,7 @@ namespace BL.Logic.DocumentCore.Commands
                      Extension = x.Extension,
                      Name = x.Name,
                      FileType = x.FileType,
+                     FileSize = x.FileSize,
                      OrderInDocument = x.OrderInDocument,
                      IsAdditional = x.IsAdditional,
                      Hash = x.Hash
@@ -93,6 +94,7 @@ namespace BL.Logic.DocumentCore.Commands
                      Extension = x.Extension,
                      Name = x.Name,
                      FileType = x.FileType,
+                     FileSize = x.FileSize,
                      IsAdditional = x.IsAdditional,
                      OrderInDocument = newOrdNum,
                      Date = DateTime.Now,

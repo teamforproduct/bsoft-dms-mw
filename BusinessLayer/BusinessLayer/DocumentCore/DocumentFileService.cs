@@ -87,6 +87,7 @@ namespace BL.Logic.DocumentCore
         //            LastChangeDate = DateTime.Now,
         //            Version = fl.Version + 1,
         //            FileType =  model.FileType,
+        //            FileSize =  model.FileSize,
         //            OrderInDocument = model.OrderInDocument,
         //            Name = Path.GetFileNameWithoutExtension(model.FileName),
         //            Extension = Path.GetExtension(model.FileName).Replace(".", ""),

@@ -17,6 +17,7 @@ using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.IncomingModel;
+using BL.Model.DictionaryCore.FilterModel;
 
 namespace BL.Database.Documents
 {
@@ -408,6 +409,8 @@ namespace BL.Database.Documents
 
                 doc.DocumentTags = CommonQueries.GetDocumentTags(dbContext, new FilterDocumentTag { DocumentId = documentId, CurrentPositionsId = ctx.CurrentPositionsIdList });
 
+                doc.DocumentWorkGroup = CommonQueries.GetDocumentWorkGroup(dbContext, new FilterDictionaryPosition { DocumentId = new List<int> { documentId } });
+
                 return doc;
             }
         }
@@ -459,6 +462,7 @@ namespace BL.Database.Documents
                     Extension = x.Extention,
                     Name = x.Name,
                     FileType = x.FileType,
+                    FileSize = x.FileSize,
                     OrderInDocument = x.OrderNumber,
                     IsAdditional = x.IsAdditional,
                     Hash = x.Hash
@@ -497,6 +501,7 @@ namespace BL.Database.Documents
                             Stage = y.Stage,
                             SendType = (EnumSendTypes)y.SendTypeId,
                             TargetPositionId = y.TargetPositionId,
+                            Task = y.Task,
                             Description = y.Description,
                             DueDate = y.DueDate,
                             DueDay = y.DueDay,

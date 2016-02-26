@@ -11,6 +11,8 @@ using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.SystemCore;
+using BL.Model.DictionaryCore.FilterModel;
+using BL.Model.DictionaryCore;
 
 namespace BL.Database.Common
 {
@@ -89,6 +91,7 @@ namespace BL.Database.Common
                         Extension = x.fl.Extension,
                         FileContent = x.fl.Content,
                         FileType = x.fl.FileType,
+                        FileSize = x.fl.FileSize,
                         IsAdditional = x.fl.IsAdditional,
                         Hash = x.fl.Hash,
                         LastChangeDate = x.fl.LastChangeDate,
@@ -117,6 +120,7 @@ namespace BL.Database.Common
                         Extension = x.fl.Extension,
                         FileContent = x.fl.Content,
                         FileType = x.fl.FileType,
+                        FileSize = x.fl.FileSize,
                         IsAdditional = x.fl.IsAdditional,
                         Hash = x.fl.Hash,
                         LastChangeDate = x.fl.LastChangeDate,
@@ -477,6 +481,55 @@ namespace BL.Database.Common
 
         }
 
+        public static IEnumerable<BaseDictionaryPosition> GetDocumentWorkGroup(DmsContext dbContext, FilterDictionaryPosition filter)
+        {
+            var qry = dbContext.DictionaryPositionsSet.Select(x => new { pos = x, subordMax = 0 }).AsQueryable();
+
+            if (filter!=null)
+            {
+                if (filter.PositionId?.Count > 0)
+                {
+                    qry = qry.Where(x => filter.PositionId.Contains(x.pos.Id));
+                }
+
+                if (filter.DocumentId?.Count > 0)
+                {
+                    qry = qry.Where(x =>
+                            dbContext.DocumentEventsSet
+                                .Where(y => filter.DocumentId.Contains(y.DocumentId)).Select(y => y.SourcePositionId).Contains(x.pos.Id)
+                                ||
+                                dbContext.DocumentEventsSet
+                                .Where(y => filter.DocumentId.Contains(y.DocumentId)).Select(y => y.TargetPositionId).Contains(x.pos.Id)
+                                );
+                }
+
+                if (filter.SubordinatedPositions?.Count > 0)
+                {
+                    qry = qry.GroupJoin(
+                                        dbContext.AdminSubordinationsSet.Where(y => filter.SubordinatedPositions.Contains(y.SourcePositionId)),
+                                        x => x.pos.Id,
+                                        y => y.TargetPositionId,
+                                        (x, y) => new { pos = x.pos, subordMax = y.Max(z => z.SubordinationTypeId) }
+                                        )
+                             .Where(x => x.subordMax > 0);
+                }
+            }
+
+            return qry.Select(x => new BaseDictionaryPosition
+            {
+                Id = x.pos.Id,
+                ParentId = x.pos.ParentId,
+                Name = x.pos.Name,
+                DepartmentId = x.pos.DepartmentId,
+                ExecutorAgentId = x.pos.ExecutorAgentId,
+                ParentPositionName = x.pos.ParentPosition.Name,
+                DepartmentName = x.pos.Department.Name,
+                ExecutorAgentName = x.pos.ExecutorAgent.Name,
+                MaxSubordinationTypeId = (x.subordMax > 0 ? (int?)x.subordMax : null)
+            }).ToList();
+
+        }
+
         public static IEnumerable<FrontDocument> GetLinkedDocuments(DmsContext dbContext, int documentId)
         {
             return dbContext.DocumentsSet.Where(x => (x.LinkId == documentId))
@@ -521,6 +574,7 @@ namespace BL.Database.Common
                             TargetPositionId = y.TargetPositionId,
                             TargetPositionName = y.TargetPosition.Name,
                             TargetPositionExecutorAgentName = y.TargetPosition.ExecutorAgent.Name,
+                            Task = y.Task,
                             Description = y.Description,
                             DueDate = y.DueDate,
                             DueDay = y.DueDay,
@@ -545,6 +599,7 @@ namespace BL.Database.Common
                             Stage = y.Stage,
                             SendType = (EnumSendTypes)y.SendTypeId,
                             TargetPositionId = y.TargetPositionId,
+                            Task = y.Task,
                             Description = y.Description,
                             DueDate = y.DueDate,
                             DueDay = y.DueDay,

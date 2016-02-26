@@ -1,5 +1,6 @@
 ﻿using BL.Model.Users;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
 
 namespace BL.Model.DocumentCore.Actions
 {
@@ -13,10 +14,5 @@ namespace BL.Model.DocumentCore.Actions
         /// </summary>
         [Required]
         public int DocumentId { get; set; }
-        /// <summary>
-        /// Признак фаворита
-        /// </summary>
-        [Required]
-        public bool IsFavourite { get; set; }
     }
 }

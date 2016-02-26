@@ -54,6 +54,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                 Stage = Model.Stage,
                 SendType = Model.SendType,
                 TargetPositionId = Model.TargetPositionId,
+                Task = Model.Task,
                 Description = Model.Description,
                 DueDate = Model.DueDate,
                 DueDay = Model.DueDay,

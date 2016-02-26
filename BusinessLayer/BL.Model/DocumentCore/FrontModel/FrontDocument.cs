@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.DocumentCore.IncomingModel;
+using BL.Model.DictionaryCore;
 
 namespace BL.Model.DocumentCore.FrontModel
 {
@@ -133,6 +134,8 @@ namespace BL.Model.DocumentCore.FrontModel
         public IEnumerable<FrontDocumentLink> Links { get; set; }
         public IEnumerable<FrontDocumentWaits> DocumentWaits { get; set; }
         public IEnumerable<FrontDocumentTag> DocumentTags { get; set; }
+
+        public IEnumerable<BaseDictionaryPosition> DocumentWorkGroup { get; set; }
 
     }
 }

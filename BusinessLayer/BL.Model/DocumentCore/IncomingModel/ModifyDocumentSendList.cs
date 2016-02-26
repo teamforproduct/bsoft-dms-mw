@@ -35,6 +35,7 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// </summary>
         [Required]
         public Nullable<int> TargetPositionId { get; set; }
+        public string Task { get; set; }
         /// <summary>
         /// Комментарий
         /// </summary>
