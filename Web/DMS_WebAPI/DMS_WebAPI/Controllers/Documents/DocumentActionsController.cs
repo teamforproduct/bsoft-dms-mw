@@ -59,13 +59,13 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Изменение признака включения в Избранное
+        /// Удаление в Избранного
         /// </summary>
         /// <param name="model"></param>
         /// <returns>Обновленный документ</returns>
-        [Route("ChangeFavourites")]
+        [Route("DeleteFavourite")]
         [HttpPost]
-        public IHttpActionResult ChangeFavourites(ChangeFavourites model)
+        public IHttpActionResult DeleteFavourite(ChangeFavourites model)
         {
             var timeM = new System.Diagnostics.Stopwatch();
             var timeDB = new System.Diagnostics.Stopwatch();
@@ -74,14 +74,40 @@ namespace DMS_WebAPI.Controllers.Documents
             var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            docProc.ExecuteAction(model.IsFavourite? EnumDocumentActions.AddFavourite: EnumDocumentActions.DeleteFavourite, cxt, model);
+            docProc.ExecuteAction(EnumDocumentActions.DeleteFavourite, cxt, model);
             timeDB.Stop();
 
             timeM.Stop();
-            SaveToFile("M: DocumentActionsController ChangeFavourites", timeM.Elapsed.ToString("G"));
-            SaveToFile("DB: IDocumentOperationsService ChangeFavouritesForDocument", timeDB.Elapsed.ToString("G"));
+            SaveToFile("M: DocumentActionsController DeleteFavourite", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentOperationsService DeleteFavourite", timeDB.Elapsed.ToString("G"));
 
             var ctrl = new DocumentsController {ControllerContext = ControllerContext};
+            return ctrl.Get(model.DocumentId);
+        }
+        /// <summary>
+        /// Добавление в Избранное
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Обновленный документ</returns>
+        [Route("AddFavourite")]
+        [HttpPost]
+        public IHttpActionResult AddFavourite(ChangeFavourites model)
+        {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            timeM.Start();
+
+            var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            timeDB.Start();
+            docProc.ExecuteAction(EnumDocumentActions.AddFavourite, cxt, model);
+            timeDB.Stop();
+
+            timeM.Stop();
+            SaveToFile("M: DocumentActionsController AddFavourite", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentOperationsService AddFavourite", timeDB.Elapsed.ToString("G"));
+
+            var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(model.DocumentId);
         }
         /// <summary>
