@@ -99,6 +99,7 @@ namespace BL.Database.Common
                 Stage = sl.Stage,
                 SendTypeId = (int)sl.SendType,
                 TargetPositionId = sl.TargetPositionId,
+                Task= sl.Task,
                 Description = sl.Description,
                 DueDate = sl.DueDate,
                 DueDay = sl.DueDay,

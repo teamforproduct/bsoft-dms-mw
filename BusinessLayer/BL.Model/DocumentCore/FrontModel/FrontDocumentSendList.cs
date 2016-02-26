@@ -20,6 +20,7 @@ namespace BL.Model.DocumentCore.FrontModel
         public bool SendTypeIsImportant { get; set; }
         public string TargetPositionName { get; set; }
         public string TargetPositionExecutorAgentName { get; set; }
+        public string Task { get; set; }
         public string AccessLevelName { get; set; }
 
         public string GeneralInfo { get; set; }

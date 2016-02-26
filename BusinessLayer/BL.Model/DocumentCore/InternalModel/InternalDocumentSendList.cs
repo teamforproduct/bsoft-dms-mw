@@ -11,6 +11,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public int Stage { get; set; }
         public EnumSendTypes SendType { get; set; }
         public int? TargetPositionId { get; set; }
+        public string Task { get; set; }
         public string Description { get; set; }
         public DateTime? DueDate { get; set; }
         public int? DueDay { get; set; }

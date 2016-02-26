@@ -497,6 +497,7 @@ namespace BL.Database.Documents
                             Stage = y.Stage,
                             SendType = (EnumSendTypes)y.SendTypeId,
                             TargetPositionId = y.TargetPositionId,
+                            Task = y.Task,
                             Description = y.Description,
                             DueDate = y.DueDate,
                             DueDay = y.DueDay,

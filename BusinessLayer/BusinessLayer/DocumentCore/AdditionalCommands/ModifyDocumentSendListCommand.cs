@@ -51,6 +51,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             DocSendList.Stage = Model.Stage;
             DocSendList.SendType = Model.SendType;
             DocSendList.TargetPositionId = Model.TargetPositionId;
+            DocSendList.Task = Model.Task;
             DocSendList.Description = Model.Description;
             DocSendList.DueDate = Model.DueDate;
             DocSendList.DueDay = Model.DueDay;

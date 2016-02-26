@@ -82,6 +82,7 @@ namespace BL.Database.Documents
                         TargetPositionId = x.TargetPositionId,
                         TargetPositionName = x.TargetPosition.Name,
                         TargetPositionExecutorAgentName = x.TargetPosition.ExecutorAgent.Name,
+                        Task = x.Task,
                         Description = x.Description,
                         DueDate = x.DueDate,
                         DueDay = x.DueDay,

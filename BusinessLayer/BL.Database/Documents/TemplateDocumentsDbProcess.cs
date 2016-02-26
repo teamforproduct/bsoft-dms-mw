@@ -83,7 +83,7 @@ namespace BL.Database.Documents
                                 TargetPositionId = y.TargetPositionId,
                                 Description = y.Description,
                                 Stage = y.Stage,
-
+                                Task = y.Task,
                                 DueDay = y.DueDay,
                                 AccessLevel = (EnumDocumentAccesses) y.AccessLevelId
                             }).ToList()
