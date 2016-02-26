@@ -14,11 +14,6 @@ namespace BL.Model.DocumentCore.Actions
         [Required]
         public int DocumentId { get; set; }
         /// <summary>
-        /// Признак не в работе / в работе
-        /// </summary>
-        [Required]
-        public bool IsInWork { get; set; }
-        /// <summary>
         /// Комментарий к действию
         /// </summary>
         [Required]

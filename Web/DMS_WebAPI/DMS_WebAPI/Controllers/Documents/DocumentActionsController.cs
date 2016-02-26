@@ -166,13 +166,13 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Окончание/возобновление работы с документом
+        /// Возобновление работы с документом
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [Route("ChangeWorkStatus")]
+        [Route("StartWork")]
         [HttpPost]
-        public IHttpActionResult ChangeWorkStatus(ChangeWorkStatus model)
+        public IHttpActionResult StartWork(ChangeWorkStatus model)
         {
             var timeM = new System.Diagnostics.Stopwatch();
             var timeDB = new System.Diagnostics.Stopwatch();
@@ -180,14 +180,40 @@ namespace DMS_WebAPI.Controllers.Documents
             var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            docProc.ExecuteAction(model.IsInWork? EnumDocumentActions.StartWork: EnumDocumentActions.FinishWork, cxt, model);
+            docProc.ExecuteAction(EnumDocumentActions.StartWork, cxt, model);
             timeDB.Stop();
 
             timeM.Stop();
-            SaveToFile("M: DocumentActionsController ChangeWorkStatus", timeM.Elapsed.ToString("G"));
-            SaveToFile("DB: IDocumentOperationsService ChangeDocumentWorkStatus", timeDB.Elapsed.ToString("G"));
+            SaveToFile("M: DocumentActionsController StartWork", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentOperationsService StartWork", timeDB.Elapsed.ToString("G"));
 
             var ctrl = new DocumentsController {ControllerContext = ControllerContext};
+            return ctrl.Get(model.DocumentId);
+        }
+
+        /// <summary>
+        /// Окончание работы с документом
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("FinishWork")]
+        [HttpPost]
+        public IHttpActionResult FinishWork(ChangeWorkStatus model)
+        {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            timeM.Start();
+            var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            timeDB.Start();
+            docProc.ExecuteAction(EnumDocumentActions.FinishWork, cxt, model);
+            timeDB.Stop();
+
+            timeM.Stop();
+            SaveToFile("M: DocumentActionsController FinishWork", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentOperationsService FinishWork", timeDB.Elapsed.ToString("G"));
+
+            var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(model.DocumentId);
         }
 
