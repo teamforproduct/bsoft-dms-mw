@@ -408,6 +408,8 @@ namespace BL.Database.Documents
 
                 doc.DocumentTags = CommonQueries.GetDocumentTags(dbContext, new FilterDocumentTag { DocumentId = documentId, CurrentPositionsId = ctx.CurrentPositionsIdList });
 
+                doc.DocumentWorkGroup = CommonQueries.GetDocumentWorkGroup(dbContext, new FilterDictionaryPosition { DocumentId = documentId });
+
                 return doc;
             }
         }
