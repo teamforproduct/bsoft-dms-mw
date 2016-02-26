@@ -255,6 +255,18 @@
         }
     }
 
+    public class PlanPointHasAlredyBeenLaunched : DmsExceptions
+    {
+        private const string _MESSAGE = "Plan Point has already been Launched!";
+        public PlanPointHasAlredyBeenLaunched() : base(_MESSAGE)
+        {
+        }
+
+        public PlanPointHasAlredyBeenLaunched(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
     public class UserPositionIsNotDefined : DmsExceptions
     {
         private const string _MESSAGE = "Position for the current user could not be defined!";

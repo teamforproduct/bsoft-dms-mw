@@ -61,7 +61,6 @@ namespace BL.Logic.DocumentCore
                 case EnumDocumentActions.SendMessage:
                     cmd = DmsResolver.Current.Get<SendMessageDocumentCommand>();
                     break;
-
                 case EnumDocumentActions.AddDocumentLink:
                     cmd = DmsResolver.Current.Get<AddDocumentLinkCommand>();
                     break;
@@ -104,6 +103,12 @@ namespace BL.Logic.DocumentCore
                     break;
                 case EnumDocumentActions.ModifyDocumentFile:
                     cmd = DmsResolver.Current.Get<ModifyDocumentFileCommand>();
+                    break;
+                case EnumDocumentActions.SendForInformation:
+                    cmd = DmsResolver.Current.Get<SendForInformationDocumentCommand>();
+                    break;
+                case EnumDocumentActions.SendForConsideration:
+                    cmd = DmsResolver.Current.Get<SendForInformationDocumentCommand>();
                     break;
 
                 default:

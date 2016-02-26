@@ -69,7 +69,7 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 CommonDocumentUtilities.SetLastChange(Context, sl);
             }
-            Document.Events = CommonDocumentUtilities.GetNewDocumentEvent(Context,EnumEventTypes.AddNewDocument, "Create");
+            Document.Events = CommonDocumentUtilities.GetNewDocumentEvent(Context,null, EnumEventTypes.AddNewDocument, "Create");
             Document.Accesses = CommonDocumentUtilities.GetNewDocumentAccess(Context);
 
             // prepare file list in Document. It will save it with document in DB

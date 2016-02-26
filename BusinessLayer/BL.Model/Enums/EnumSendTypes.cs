@@ -2,14 +2,14 @@
 {
     public enum EnumSendTypes
     {
-        OtvIspolnitel = 10,
-        OnCotrol = 20,
-        ForExecute = 30,
-        ForInformation = 40,
-        ForConsideration = 50,
-        OnSight = 250,
-        OnCoordination = 260,
-        OnApproval = 270,
-        OnSign = 280
+        SendForResponsibleExecution = 10,
+        SendForControl = 20,
+        SendForExecution = 30,
+        SendForInformation = 40,
+        SendForConsideration = 50,
+        SendForVisaing = 250,
+        SendForАgreement = 260,
+        SendForАpproval = 270,
+        SendForSigning = 280
     }
 }

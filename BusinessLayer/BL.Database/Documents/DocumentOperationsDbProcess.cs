@@ -346,6 +346,33 @@ namespace BL.Database.Documents
             }
         }
 
+        public void SendForInformation(IContext ctx, InternalDocument document)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            {
+                var sendList = document.SendLists.First();
+                var sendListDb = new DocumentSendLists
+                {
+                    Id = sendList.Id,
+                    LastChangeDate = sendList.LastChangeDate,
+                    LastChangeUserId = sendList.LastChangeUserId
+                };
+                dbContext.DocumentSendListsSet.Attach(sendListDb);
+                sendListDb.StartEvent = ModelConverter.GetDbDocumentEvent(sendList.StartEvent);
+                sendListDb.CloseEvent = sendListDb.StartEvent;
+                var entry = dbContext.Entry(sendListDb);
+                entry.Property(x => x.Id).IsModified = true;
+                entry.Property(x => x.LastChangeDate).IsModified = true;
+                entry.Property(x => x.LastChangeUserId).IsModified = true;
+                if (document.Accesses != null && document.Accesses.Any())
+                {
+                    var acc = ModelConverter.GetDbDocumentAccesses(document.Accesses);
+                    dbContext.DocumentAccessesSet.AddRange(acc);
+                }
+                dbContext.SaveChanges();
+            }
+        }
+
         public void ModifyDocumentTags(IContext context, InternalDocumentTag model)
         {
             // TODO к Сергею проверить нужно ли разнести этот метод
