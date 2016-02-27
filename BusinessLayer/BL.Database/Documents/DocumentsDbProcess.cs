@@ -448,12 +448,15 @@ namespace BL.Database.Documents
                     .Select(y => new InternalDocumentSendList()
                     {
                         SendType = (EnumSendTypes)y.SendTypeId,
+                        SourcePositionId = y.SourcePositionId,
                         TargetPositionId = y.TargetPositionId,
+                        TargetAgentId = y.TargetAgentId,
                         Description = y.Description,
                         Stage = y.Stage,
                         DueDay = y.DueDay,
-                        AccessLevel = (EnumDocumentAccesses)y.AccessLevelId
-                    }).ToList();
+                        AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
+
+            }).ToList();
 
                 doc.DocumentFiles = dbContext.TemplateDocumentFilesSet.Where(x => x.DocumentId == templateDocumentId).Select(x => new InternalDocumentAttachedFile
                 {
@@ -500,7 +503,9 @@ namespace BL.Database.Documents
                         {
                             Stage = y.Stage,
                             SendType = (EnumSendTypes)y.SendTypeId,
+                            SourcePositionId = y.SourcePositionId,
                             TargetPositionId = y.TargetPositionId,
+                            TargetAgentId = y.TargetAgentId,
                             Task = y.Task,
                             Description = y.Description,
                             DueDate = y.DueDate,

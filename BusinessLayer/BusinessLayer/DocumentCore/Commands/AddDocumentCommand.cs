@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using BL.Logic.Common;
 using BL.Database.Admins.Interfaces;
 using BL.Database.Documents.Interfaces;
@@ -45,9 +46,9 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanExecute()
         {
-            _adminDb.VerifyAccess(Context, CommandType);
+            _adminDb.VerifyAccess(_context, CommandType);
 
-            _document = _documentDb.AddDocumentPrepare(Context, Model.TemplateDocumentId);
+            _document = _documentDb.AddDocumentPrepare(_context, Model.TemplateDocumentId);
             if (_document == null)
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
@@ -57,24 +58,25 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override object Execute()
         {
-            CommonDocumentUtilities.SetAtrributesForNewDocument(Context, _document);
-
+            CommonDocumentUtilities.SetAtrributesForNewDocument(_context, _document);
             foreach (var sl in _document.SendLists)
             {
                 sl.IsInitial = true;
-                sl.StartEventId = null;
-                sl.CloseEventId = null;
+                if (sl.SourcePositionId == null)
+                {
+                    sl.SourcePositionId = _context.CurrentPositionId;
+                }
+                sl.SourceAgentId = _context.CurrentAgentId;
                 CommonDocumentUtilities.SetLastChange(Context, sl);
             }
+            CommonDocumentUtilities.SetLastChange(_context, _document.RestrictedSendLists);
 
-            CommonDocumentUtilities.SetLastChange(Context, _document.RestrictedSendLists);
-
-            Document.Events = CommonDocumentUtilities.GetNewDocumentEvents(Context, null, EnumEventTypes.AddNewDocument, "Create");
-            Document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(Context);
+            Document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, null, EnumEventTypes.AddNewDocument, "Create");
+            Document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context);
 
             // prepare file list in Document. It will save it with document in DB
             var toCopy = new Dictionary<InternalDocumentAttachedFile, InternalTemplateAttachedFile>();
-            int newOrdNum = 1;
+            var newOrdNum = 1;
             _document.DocumentFiles.ToList().ForEach(x =>
             {
                 var fileToCopy = new InternalTemplateAttachedFile
@@ -108,7 +110,7 @@ namespace BL.Logic.DocumentCore.Commands
             // assign new created list of files to document
             _document.DocumentFiles = toCopy.Keys;
 
-            _documentDb.AddDocument(Context, Document);
+            _documentDb.AddDocument(_context, Document);
 
             //after saving document in filelist it should be filled DocumentId field. So we can phisical copy files
             foreach (var fl in _document.DocumentFiles)

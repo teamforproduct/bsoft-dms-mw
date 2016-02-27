@@ -85,7 +85,25 @@ namespace BL.Logic.Common
             };
         }
 
-        public static InternalDocumentEvent GetNewDocumentEvent(IContext context, int? documentId, EnumEventTypes eventType, string description, int? targetPositionId = null)
+        public static InternalDocumentEvent GetNewDocumentEvent(IContext context, InternalDocumentSendList model)
+        {
+            return new InternalDocumentEvent
+            {
+                DocumentId = model.DocumentId != 0 ? model.DocumentId: 0,
+                EventType = (EnumEventTypes)Enum.Parse(typeof(EnumEventTypes), model.SendType.ToString()),
+                Description = $"{model.Description} / {model.Task}",
+                SourceAgentId = context.CurrentAgentId,
+                SourcePositionId = context.CurrentPositionId,
+                TargetPositionId = model.TargetPositionId,
+                TargetAgentId = model.TargetAgentId,
+                LastChangeUserId = context.CurrentAgentId,
+                LastChangeDate = DateTime.Now,
+                Date = DateTime.Now,
+                CreateDate = DateTime.Now,
+            };
+        }
+
+        public static InternalDocumentEvent GetNewDocumentEvent(IContext context, int? documentId, EnumEventTypes eventType, string description, int? targetPositionId = null, int? targetAgentId = null)
         {
             return new InternalDocumentEvent
             {
@@ -95,6 +113,7 @@ namespace BL.Logic.Common
                 SourceAgentId = context.CurrentAgentId,
                 SourcePositionId = context.CurrentPositionId,
                 TargetPositionId = targetPositionId ?? context.CurrentPositionId,
+                TargetAgentId = targetAgentId,
                 LastChangeUserId = context.CurrentAgentId,
                 LastChangeDate = DateTime.Now,
                 Date = DateTime.Now,

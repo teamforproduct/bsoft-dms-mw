@@ -2,6 +2,7 @@
 using BL.Logic.DependencyInjection;
 using BL.Logic.DocumentCore.AdditionalCommands;
 using BL.Logic.DocumentCore.Commands;
+using BL.Logic.DocumentCore.SendListCommands;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;

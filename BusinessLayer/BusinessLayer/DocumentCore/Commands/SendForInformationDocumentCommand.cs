@@ -32,8 +32,8 @@ namespace BL.Logic.DocumentCore.Commands
                 {
                     throw new WrongParameterTypeError();
                 }
-                var model = (InternalDocumentSendList) _param;
-                if (model.SendType!=EnumSendTypes.SendForInformation && model.SendType != EnumSendTypes.SendForConsideration)
+                var model = (InternalDocumentSendList)_param;
+                if (model.SendType != EnumSendTypes.SendForInformation && model.SendType != EnumSendTypes.SendForConsideration)
                 {
                     throw new WrongParameterTypeError();
                 }
@@ -48,6 +48,8 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanExecute()
         {
+            _context.SetCurrentPosition(Model.SourcePositionId);
+            _adminDb.VerifyAccess(_context, CommandType);
             _document = _documentDb.GetBlankInternalDocumentById(_context, Model.DocumentId);
             if (_document == null)
             {
@@ -57,10 +59,8 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new PlanPointHasAlredyBeenLaunched();
             }
-            if (1 == 1) //TODO нужна проверка на Source
-            {
-                _context.SetCurrentPosition(_document.ExecutorPositionId);
-            }
+
+
             return true;
         }
         public override object Execute()
@@ -69,16 +69,15 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, Model.DocumentId, Model.AccessLevel, Model.TargetPositionId.Value);
             }
-            var evt = CommonDocumentUtilities.GetNewDocumentEvent(_context, Model.DocumentId, _eventType, Model.Description);
+            var evt = CommonDocumentUtilities.GetNewDocumentEvent(_context, Model);
             Model.StartEvent = evt;
             Model.CloseEvent = evt;
-            CommonDocumentUtilities.SetLastChange(_context,Model);
+            CommonDocumentUtilities.SetLastChange(_context, Model);
             _document.SendLists = new List<InternalDocumentSendList> { Model };
             _operationDb.SendForInformation(_context, _document);
             return null;
         }
 
-        private EnumEventTypes _eventType => (EnumEventTypes)Enum.Parse(typeof(EnumEventTypes), Model.SendType.ToString());
         public override EnumDocumentActions CommandType => (EnumDocumentActions)Enum.Parse(typeof(EnumDocumentActions), Model.SendType.ToString());
     }
 }

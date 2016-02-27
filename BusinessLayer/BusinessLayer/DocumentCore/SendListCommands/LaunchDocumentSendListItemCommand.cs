@@ -1,20 +1,22 @@
-﻿using BL.Database.Documents.Interfaces;
-using BL.Model.DocumentCore.InternalModel;
-using BL.Model.Exception;
-using BL.Database.Admins.Interfaces;
-using BL.Model.AdminCore;
+﻿using System;
 using System.Linq;
+using BL.Database.Admins.Interfaces;
+using BL.Database.Documents.Interfaces;
 using BL.Logic.Common;
+using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
+using BL.Model.Exception;
+using BL.Logic.DependencyInjection;
+using BL.Logic.DocumentCore.Interfaces;
 
-namespace BL.Logic.DocumentCore.AdditionalCommands
+namespace BL.Logic.DocumentCore.SendListCommands
 {
     public class LaunchDocumentSendListItemCommand : BaseDocumentCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
         private readonly IAdminsDbProcess _adminDb;
 
-        protected InternalDocumentSendList DocSendList;
+        private InternalDocumentSendList _sendList;
 
         public LaunchDocumentSendListItemCommand(IDocumentOperationsDbProcess operationDb, IAdminsDbProcess adminDb)
         {
@@ -42,23 +44,21 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         public override bool CanExecute()
         {
             _document = _operationDb.LaunchDocumentSendListPrepare(_context, Model);
+            if (_document?.SendLists == null || !_document.SendLists.Any())
+            {
+                throw new DocumentNotFoundOrUserHasNoAccess();
+            }
+            _sendList = _document.SendLists.First();
+            _context.SetCurrentPosition(_sendList.SourcePositionId);
             _adminDb.VerifyAccess(_context, CommandType);
-            //TODO проверить Source
-            DocSendList = _operationDb.DeleteDocumentSendListPrepare(_context, Model);
-
-            _document = _operationDb.ChangeDocumentSendListPrepare(_context, DocSendList.DocumentId);
-
-            _document.SendLists.ToList().Remove(_document.SendLists.FirstOrDefault(x => x.Id == Model));
-
-            CommonDocumentUtilities.VerifySendLists(_document);
 
             return true;
         }
 
         public override object Execute()
         {
-
-
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            docProc.ExecuteAction((EnumDocumentActions)Enum.Parse(typeof(EnumDocumentActions), _sendList.SendType.ToString()), _context, _sendList);
             return _document.Id;
         }
 

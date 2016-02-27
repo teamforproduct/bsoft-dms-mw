@@ -698,12 +698,12 @@ namespace BL.Database.Documents
             }
         }
 
-        public InternalDocument LaunchDocumentSendListPrepare(IContext context, int Id)
+        public InternalDocument LaunchDocumentSendListPrepare(IContext context, int id)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
                 var doc = dbContext.DocumentSendListsSet
-                    .Where(x => x.Id == Id)
+                    .Where(x => x.Id == id)
                     .Select(x => new InternalDocument
                     {
                         Id = x.DocumentId,
@@ -712,7 +712,20 @@ namespace BL.Database.Documents
                                         new InternalDocumentSendList
                                         {
                                             Id = x.Id,
-                                            //TODO ALL
+                                            DocumentId = x.DocumentId,
+                                            Stage = x.Stage,
+                                            SendType = (EnumSendTypes)x.SendTypeId,
+                                            SourcePositionId = x.SourcePositionId,
+                                            SourceAgentId = x.SourceAgentId,
+                                            TargetPositionId = x.TargetPositionId,
+                                            TargetAgentId = x.TargetAgentId,
+                                            Task = x.Task,
+                                            Description = x.Description,
+                                            DueDay = x.DueDay,
+                                            DueDate = x.DueDate,
+                                            AccessLevel = (EnumDocumentAccesses)x.AccessLevelId,
+                                            StartEventId = x.StartEventId,
+                                            CloseEventId = x.CloseEventId
                                         }
                                     }
                     }).FirstOrDefault();

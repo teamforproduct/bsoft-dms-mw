@@ -1,15 +1,14 @@
-﻿using BL.Database.Documents.Interfaces;
-using BL.Model.DocumentCore.InternalModel;
-using BL.Model.Exception;
-using BL.Database.Admins.Interfaces;
-using BL.Model.AdminCore;
-using BL.Model.DocumentCore.IncomingModel;
+﻿using System.Collections.Generic;
 using System.Linq;
+using BL.Database.Admins.Interfaces;
+using BL.Database.Documents.Interfaces;
 using BL.Logic.Common;
-using System.Collections.Generic;
+using BL.Model.DocumentCore.IncomingModel;
+using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
+using BL.Model.Exception;
 
-namespace BL.Logic.DocumentCore.AdditionalCommands
+namespace BL.Logic.DocumentCore.SendListCommands
 {
     public class AddDocumentRestrictedSendListCommand : BaseDocumentCommand
     {
