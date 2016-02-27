@@ -121,6 +121,10 @@ namespace BL.Logic.DocumentCore
                     cmd = DmsResolver.Current.Get<ModifySavedFilterCommand>();
                     break;
 
+                case EnumDocumentActions.LaunchDocumentSendListItem:
+                    cmd = DmsResolver.Current.Get<LaunchDocumentSendListItemCommand>();
+                    break;
+
                 default:
                     throw new CommandNotDefinedError();
             }

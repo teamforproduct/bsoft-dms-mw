@@ -1,7 +1,6 @@
-﻿using BL.Model.Enums;
-using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
+using BL.Model.Enums;
 
 namespace BL.Model.DocumentCore.IncomingModel
 {
@@ -24,7 +23,7 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// ИД должности
         /// </summary>
         [Required]
-        public Nullable<int> PositionId { get; set; }
+        public int? PositionId { get; set; }
         /// <summary>
         /// ИД уровня доступа
         /// </summary>

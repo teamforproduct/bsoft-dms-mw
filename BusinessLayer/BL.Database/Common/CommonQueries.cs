@@ -573,7 +573,7 @@ namespace BL.Database.Common
                             SendTypeIsImportant = y.SendType.IsImportant,
                             TargetPositionId = y.TargetPositionId,
                             TargetPositionName = y.TargetPosition.Name,
-                            TargetPositionExecutorAgentName = y.TargetPosition.ExecutorAgent.Name,
+                            TargetAgentName = y.TargetPosition.ExecutorAgent.Name,
                             Task = y.Task,
                             Description = y.Description,
                             DueDate = y.DueDate,

@@ -81,7 +81,7 @@ namespace BL.Database.Documents
                         SendTypeIsImportant = x.SendType.IsImportant,
                         TargetPositionId = x.TargetPositionId,
                         TargetPositionName = x.TargetPosition.Name,
-                        TargetPositionExecutorAgentName = x.TargetPosition.ExecutorAgent.Name,
+                        TargetAgentName = x.TargetPosition.ExecutorAgent.Name??x.TargetAgent.Name,
                         Task = x.Task,
                         Description = x.Description,
                         DueDate = x.DueDate,

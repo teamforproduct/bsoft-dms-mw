@@ -9,6 +9,7 @@ namespace BL.Model.DictionaryCore
         public int Stage { get; set; }
         public int SendTypeId { get; set; }
         public int? TargetPositionId { get; set; }
+        public int? TargetAgentId { get; set; }
         public string Task { get; set; }
         public string Description { get; set; }
         public DateTime? DueDate { get; set; }
@@ -19,7 +20,7 @@ namespace BL.Model.DictionaryCore
 
         public string SendTypeName { get; set; }
         public string TargetPositionName { get; set; }
-        public string TargetPositionExecutorAgentName { get; set; }
+        public string TargetAgentName { get; set; }
         public string AccessLevelName { get; set; }
 
     }

@@ -13,7 +13,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public DateTime CreateDate { get; set; }
         public DateTime Date { get; set; }
         public string Description { get; set; }
-        public int SourcePositionId { get; set; }
+        public int? SourcePositionId { get; set; }
         public int SourceAgentId { get; set; }
         public int? TargetPositionId { get; set; }
         public int? TargetAgentId { get; set; }

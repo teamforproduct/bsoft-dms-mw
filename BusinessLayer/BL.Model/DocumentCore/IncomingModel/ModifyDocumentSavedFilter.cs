@@ -1,5 +1,5 @@
-﻿using BL.Model.Users;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
+using BL.Model.Users;
 
 namespace BL.Model.DocumentCore.IncomingModel
 {

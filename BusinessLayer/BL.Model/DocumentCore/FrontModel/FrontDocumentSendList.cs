@@ -18,8 +18,10 @@ namespace BL.Model.DocumentCore.FrontModel
         public string SendTypeName { get; set; }
         public string SendTypeCode { get; set; }
         public bool SendTypeIsImportant { get; set; }
+        public string SourcePositionName { get; set; }
+        public string SourceAgentName { get; set; }
         public string TargetPositionName { get; set; }
-        public string TargetPositionExecutorAgentName { get; set; }
+        public string TargetAgentName { get; set; }
         public string Task { get; set; }
         public string AccessLevelName { get; set; }
 

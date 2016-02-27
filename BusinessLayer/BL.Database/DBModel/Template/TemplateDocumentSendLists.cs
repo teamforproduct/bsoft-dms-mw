@@ -14,7 +14,9 @@ namespace BL.Database.DBModel.Template
         public int Id { get; set; }
         public int DocumentId { get; set; }
         public int SendTypeId { get; set; }
+        public int? SourcePositionId { get; set; }
         public Nullable<int> TargetPositionId { get; set; }
+        public Nullable<int> TargetAgentId { get; set; }
         public string Task { get; set; }
         public string Description { get; set; }
         public int Stage { get; set; }
@@ -26,8 +28,12 @@ namespace BL.Database.DBModel.Template
         public virtual TemplateDocuments Document { get; set; }
         [ForeignKey("SendTypeId")]
         public virtual DictionarySendTypes SendType { get; set; }
+        [ForeignKey("SourcePositionId")]
+        public virtual DictionaryAgents SourceAgent { get; set; }
         [ForeignKey("TargetPositionId")]
         public virtual DictionaryPositions TargetPosition { get; set; }
+        [ForeignKey("TargetAgentId")]
+        public virtual DictionaryAgents TargetAgent { get; set; }
         [ForeignKey("AccessLevelId")]
         public virtual AdminAccessLevels AccessLevel { get; set; }
         

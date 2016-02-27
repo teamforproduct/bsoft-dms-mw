@@ -1,6 +1,6 @@
 ﻿using System;
-using BL.Model.Enums;
 using System.ComponentModel.DataAnnotations;
+using BL.Model.Enums;
 
 namespace BL.Model.DocumentCore.IncomingModel
 {

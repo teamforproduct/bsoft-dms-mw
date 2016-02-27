@@ -913,7 +913,7 @@ namespace BL.Database.Dictionaries
                         LastChangeDate = x.LastChangeDate,
                         SendTypeName = x.SendType.Name,
                         TargetPositionName = x.TargetPosition.Name,
-                        TargetPositionExecutorAgentName = x.TargetPosition.ExecutorAgent.Name,
+                        TargetAgentName = x.TargetPosition.ExecutorAgent.Name??x.TargetAgent.Name,
                         AccessLevelName = x.AccessLevel.Name
                     }).FirstOrDefault();
             }
@@ -944,7 +944,7 @@ namespace BL.Database.Dictionaries
                     AccessLevelId = x.AccessLevelId,
                     SendTypeName = x.SendType.Name,
                     TargetPositionName = x.TargetPosition.Name,
-                    TargetPositionExecutorAgentName = x.TargetPosition.ExecutorAgent.Name,
+                    TargetAgentName = x.TargetPosition.ExecutorAgent.Name??x.TargetAgent.Name,
                     AccessLevelName = x.AccessLevel.Name
                 }).ToList();
             }
@@ -980,7 +980,7 @@ namespace BL.Database.Dictionaries
                                     AccessLevelId = y.AccessLevelId,
                                     SendTypeName = y.SendType.Name,
                                     TargetPositionName = y.TargetPosition.Name,
-                                    TargetPositionExecutorAgentName = y.TargetPosition.ExecutorAgent.Name,
+                                    TargetAgentName = y.TargetPosition.ExecutorAgent.Name??y.TargetAgent.Name,
                                     AccessLevelName = y.AccessLevel.Name
                                 })
                         }).FirstOrDefault();

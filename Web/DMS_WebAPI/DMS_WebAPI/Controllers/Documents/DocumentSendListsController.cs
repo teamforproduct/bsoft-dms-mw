@@ -88,5 +88,20 @@ namespace DMS_WebAPI.Controllers.Documents
             int docId = (int)docProc.ExecuteAction(EnumDocumentActions.DeleteDocumentSendList, cxt, id);
             return GetByDocument(docId);
         }
+
+        /// <summary>
+        /// Ручной запуск записи плана работы на исполнение
+        /// </summary>
+        /// <param name="id">ИД пункта плана</param>
+        /// <returns></returns>
+        [Route("LaunchItem/{id}")]
+        [HttpPost]
+        public IHttpActionResult LaunchItem(int id)
+        {
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            int docId = (int)docProc.ExecuteAction(EnumDocumentActions.LaunchDocumentSendListItem, cxt, id);
+            return GetByDocument(docId);
+        }
     }
 }

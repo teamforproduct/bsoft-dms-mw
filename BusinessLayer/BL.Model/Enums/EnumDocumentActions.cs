@@ -28,12 +28,16 @@
         /// <summary>
         /// Запустить выполнение плана
         /// </summary>
-        LaunchPlan = 100005, 
+        LaunchPlan = 100005,
+        /// <summary>
+        /// Добавить пункт плана
+        /// </summary>
+        AddDocumentSendListItem = 100006, 
 
         /// <summary>
         /// Остановить выполнение плана
         /// </summary>
-        StopPlan = 100006, 
+        StopPlan = 100007, 
 
         /// <summary>
         /// Передать управление
@@ -259,7 +263,10 @@
         /// Удалить этап плана
         /// </summary>
         DeleteDocumentSendListStage = 103019,
-
+        /// <summary>
+        /// Запустить пункт плана на исполнение
+        /// </summary>
+        LaunchDocumentSendListItem = 103021,
         /// <summary>
         /// Добавить файл
         /// </summary>

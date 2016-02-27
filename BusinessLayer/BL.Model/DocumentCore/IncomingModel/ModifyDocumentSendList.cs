@@ -31,10 +31,20 @@ namespace BL.Model.DocumentCore.IncomingModel
         [Required]
         public EnumSendTypes SendType { get; set; }
         /// <summary>
+        /// ИД должности от кого идет рассылка
+        /// </summary>
+        public int? SourcePositionId { get; set; }
+        /// <summary>
         /// ИД должности кому направлена рассылка
         /// </summary>
-        [Required]
-        public Nullable<int> TargetPositionId { get; set; }
+        public int? TargetPositionId { get; set; }
+        /// <summary>
+        /// ИД внешнего агента кому направлена рассылка
+        /// </summary>
+        public int? TargetAgentId { get; set; }
+        /// <summary>
+        /// Задача
+        /// </summary>
         public string Task { get; set; }
         /// <summary>
         /// Комментарий
@@ -44,7 +54,7 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// <summary>
         /// Срок исполнения (дата)
         /// </summary>
-        public Nullable<DateTime> DueDate { get; set; }
+        public DateTime? DueDate { get; set; }
         /// <summary>
         /// Срок исполнения (дни)
         /// </summary>

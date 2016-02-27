@@ -11,7 +11,10 @@ namespace BL.Database.DBModel.Document
         public int DocumentId { get; set; }
         public int Stage { get; set; }
         public int SendTypeId { get; set; }
+        public int? SourcePositionId { get; set; }
+        public int SourceAgentId { get; set; }
         public Nullable<int> TargetPositionId { get; set; }
+        public Nullable<int> TargetAgentId { get; set; }
         public string Task { get; set; }
         public string Description { get; set; }
         public Nullable<DateTime> DueDate { get; set; }
@@ -27,8 +30,14 @@ namespace BL.Database.DBModel.Document
         public virtual Documents Document { get; set; }
         [ForeignKey("SendTypeId")]
         public virtual DictionarySendTypes SendType { get; set; }
+        [ForeignKey("SourcePositionId")]
+        public virtual DictionaryPositions SourcePosition { get; set; }
+        [ForeignKey("SourceAgentId")]
+        public virtual DictionaryAgents SourceAgent { get; set; }
         [ForeignKey("TargetPositionId")]
         public virtual DictionaryPositions TargetPosition { get; set; }
+        [ForeignKey("TargetAgentId")]
+        public virtual DictionaryAgents TargetAgent { get; set; }
         [ForeignKey("AccessLevelId")]
         public virtual AdminAccessLevels AccessLevel { get; set; }
         [ForeignKey("StartEventId")]

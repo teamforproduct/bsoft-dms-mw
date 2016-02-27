@@ -690,6 +690,30 @@ namespace BL.Database.Documents
             }
         }
 
+        public InternalDocument LaunchDocumentSendListPrepare(IContext context, int Id)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var doc = dbContext.DocumentSendListsSet
+                    .Where(x => x.Id == Id)
+                    .Select(x => new InternalDocument
+                    {
+                        Id = x.DocumentId,
+                        SendLists = new List<InternalDocumentSendList>
+                                    {
+                                        new InternalDocumentSendList
+                                        {
+                                            Id = x.Id,
+                                            //TODO ALL
+                                        }
+                                    }
+                    }).FirstOrDefault();
+                return doc;
+
+            }
+        }
+
+
         #endregion DocumentSendList     
 
         #region DocumentSavedFilter

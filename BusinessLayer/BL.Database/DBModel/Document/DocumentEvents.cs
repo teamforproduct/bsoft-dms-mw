@@ -23,7 +23,7 @@ namespace BL.Database.DBModel.Document
         public DateTime CreateDate { get; set; }
         public DateTime Date { get; set; }
         public string Description { get; set; }
-        public int SourcePositionId { get; set; }
+        public int? SourcePositionId { get; set; }
         public int SourceAgentId { get; set; }
         public Nullable<int> TargetPositionId { get; set; }
         public Nullable<int> TargetAgentId { get; set; }
