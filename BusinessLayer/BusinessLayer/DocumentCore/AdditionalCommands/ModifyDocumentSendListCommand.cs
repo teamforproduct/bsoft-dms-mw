@@ -42,12 +42,14 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override bool CanExecute()
         {
-            _context.SetCurrentPosition(_document.ExecutorPositionId);
-            _adminDb.VerifyAccess(_context, CommandType);
-
             _document = _operationDb.ChangeDocumentSendListPrepare(_context, Model.DocumentId);
 
             DocSendList = _document.SendLists.FirstOrDefault(x => x.Id == Model.Id);
+
+            _context.SetCurrentPosition(DocSendList.SourcePositionId);
+            _adminDb.VerifyAccess(_context, CommandType);
+
+
             DocSendList.Stage = Model.Stage;
             DocSendList.SendType = Model.SendType;
             DocSendList.TargetPositionId = Model.TargetPositionId;

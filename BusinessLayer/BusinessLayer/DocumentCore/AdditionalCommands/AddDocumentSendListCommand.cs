@@ -43,25 +43,12 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override bool CanExecute()
         {
-            _context.SetCurrentPosition(_document.ExecutorPositionId);
+
             _adminDb.VerifyAccess(_context, CommandType);
-
             _document = _operationDb.ChangeDocumentSendListPrepare(_context, Model.DocumentId);
+            Model.IsInitial = !_document.IsLaunchPlan;
 
-            DocSendList = new InternalDocumentSendList
-            {
-                DocumentId = Model.DocumentId,
-                Stage = Model.Stage,
-                SendType = Model.SendType,
-                TargetPositionId = Model.TargetPositionId,
-                Task = Model.Task,
-                Description = Model.Description,
-                DueDate = Model.DueDate,
-                DueDay = Model.DueDay,
-                AccessLevel = Model.AccessLevel,
-                IsInitial = true
-            };
-
+            DocSendList = CommonDocumentUtilities.GetNewDocumentSendList(_context, Model);
             _document.SendLists.ToList().Add(DocSendList);
 
             CommonDocumentUtilities.VerifySendLists(_document);
@@ -71,7 +58,6 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override object Execute()
         {
-            CommonDocumentUtilities.SetLastChange(_context, DocSendList);
             _operationDb.AddDocumentSendList(_context, new List<InternalDocumentSendList> { DocSendList });
             return null;
         }

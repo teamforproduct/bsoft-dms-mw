@@ -25,14 +25,15 @@ namespace BL.Logic.DocumentCore.Commands
             _fStore = fStore;
         }
 
-        private AddDocumentByTemplateDocument Model {
+        private AddDocumentByTemplateDocument Model
+        {
             get
             {
                 if (!(_param is AddDocumentByTemplateDocument))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (AddDocumentByTemplateDocument) _param;
+                return (AddDocumentByTemplateDocument)_param;
             }
         }
 
@@ -65,45 +66,44 @@ namespace BL.Logic.DocumentCore.Commands
                 sl.CloseEventId = null;
                 CommonDocumentUtilities.SetLastChange(Context, sl);
             }
-            foreach (var sl in _document.RestrictedSendLists)
-            {
-                CommonDocumentUtilities.SetLastChange(Context, sl);
-            }
-            Document.Events = CommonDocumentUtilities.GetNewDocumentEvents(Context,null, EnumEventTypes.AddNewDocument, "Create");
+
+            CommonDocumentUtilities.SetLastChange(Context, _document.RestrictedSendLists);
+
+            Document.Events = CommonDocumentUtilities.GetNewDocumentEvents(Context, null, EnumEventTypes.AddNewDocument, "Create");
             Document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(Context);
 
             // prepare file list in Document. It will save it with document in DB
             var toCopy = new Dictionary<InternalDocumentAttachedFile, InternalTemplateAttachedFile>();
             int newOrdNum = 1;
-             _document.DocumentFiles.ToList().ForEach(x =>
-             {
-                 var fileToCopy = new InternalTemplateAttachedFile
-                 {
-                     Id = x.Id,
-                     DocumentId = x.DocumentId,
-                     Extension = x.Extension,
-                     Name = x.Name,
-                     FileType = x.FileType,
-                     FileSize = x.FileSize,
-                     OrderInDocument = x.OrderInDocument,
-                     IsAdditional = x.IsAdditional,
-                     Hash = x.Hash
-                 };
-                 var newDoc = new InternalDocumentAttachedFile
-                 {
-                     Extension = x.Extension,
-                     Name = x.Name,
-                     FileType = x.FileType,
-                     FileSize = x.FileSize,
-                     IsAdditional = x.IsAdditional,
-                     OrderInDocument = newOrdNum,
-                     Date = DateTime.Now,
-                     Version = 1,
-                     WasChangedExternal = false
-                 };
-                 newOrdNum++;
-                 toCopy.Add(newDoc, fileToCopy);
-             });
+            _document.DocumentFiles.ToList().ForEach(x =>
+            {
+                var fileToCopy = new InternalTemplateAttachedFile
+                {
+                    Id = x.Id,
+                    DocumentId = x.DocumentId,
+                    Extension = x.Extension,
+                    Name = x.Name,
+                    FileType = x.FileType,
+                    FileSize = x.FileSize,
+                    OrderInDocument = x.OrderInDocument,
+                    IsAdditional = x.IsAdditional,
+                    Hash = x.Hash
+                };
+                var newDoc = new InternalDocumentAttachedFile
+                {
+                    Extension = x.Extension,
+                    Name = x.Name,
+                    FileType = x.FileType,
+                    FileSize = x.FileSize,
+                    IsAdditional = x.IsAdditional,
+                    OrderInDocument = newOrdNum,
+                    Date = DateTime.Now,
+                    Version = 1,
+                    WasChangedExternal = false
+                };
+                newOrdNum++;
+                toCopy.Add(newDoc, fileToCopy);
+            });
 
             // assign new created list of files to document
             _document.DocumentFiles = toCopy.Keys;

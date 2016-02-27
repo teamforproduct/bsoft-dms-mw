@@ -43,15 +43,14 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override bool CanExecute()
         {
-            _context.SetCurrentPosition(_document.ExecutorPositionId);
-            _adminDb.VerifyAccess(_context, CommandType);
-
             _document = _operationDb.ChangeDocumentSendListPrepare(_context, Model.DocumentId);
 
             DocSendLists = _document.SendLists.Where(x => x.Stage == Model.Stage).ToList();
 
             foreach(var sl in DocSendLists)
             {
+                _context.SetCurrentPosition(sl.SourcePositionId);
+                _adminDb.VerifyAccess(_context, CommandType);
                 _document.SendLists.ToList().Remove(sl);
             }
 
@@ -62,7 +61,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override object Execute()
         {
-
+            //TODO все должно быть в одной транзакции!!!
             foreach (var sl in DocSendLists)
             {
                 _operationDb.DeleteDocumentSendList(_context, sl.Id);

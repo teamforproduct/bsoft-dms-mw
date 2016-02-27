@@ -1,14 +1,16 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
+using System.Xml.Serialization;
 using BL.Model.Enums;
+using BL.Model.Users;
 
 namespace BL.Model.DocumentCore.IncomingModel
 {
     /// <summary>
     /// Модель для добавления/изменения записи плана работы над документом
     /// </summary>
-    public class ModifyDocumentSendList
+    public class ModifyDocumentSendList: CurrentPosition
     {
         /// <summary>
         /// ИЗ записи плана
@@ -64,5 +66,12 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// </summary>
         [Required]
         public EnumDocumentAccesses AccessLevel { get; set; }
+        /// <summary>
+        /// Не запонять!!!
+        /// Признак первоначальный пункт
+        /// </summary>
+        [XmlIgnore]
+        [IgnoreDataMember]
+        public bool IsInitial { get; set; }
     }
 }

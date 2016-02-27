@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Common;
@@ -430,6 +431,7 @@ namespace BL.Database.Documents
                     ExecutorPositionId = x.doc.ExecutorPositionId,
                     TemplateDocumentId = x.tmp.Id,
                     IsHard = x.tmp.IsHard,
+                    IsLaunchPlan = x.doc.IsLaunchPlan,
 
                     RestrictedSendLists = x.rsls.Select(y => new InternalDocumentRestrictedSendList
                     {
@@ -569,12 +571,17 @@ namespace BL.Database.Documents
                      DocumentId = model.DocumentId,
                      Stage = x.Stage,
                      SendType = (EnumSendTypes)x.SendTypeId,
+                     SourcePositionId = context.CurrentPositionId,
+                     SourceAgentId = context.CurrentAgentId,
                      TargetPositionId = x.TargetPositionId,
                      Task = x.Task,
                      Description = x.Description,
                      DueDate = x.DueDate,
                      DueDay = x.DueDay,
-                     AccessLevel = (EnumDocumentAccesses)(x.AccessLevelId ?? (int)EnumDocumentAccesses.PersonalRefIO)
+                     IsInitial = model.IsInitial,
+                     AccessLevel = (EnumDocumentAccesses)(x.AccessLevelId ?? (int)EnumDocumentAccesses.PersonalRefIO),
+                     LastChangeUserId = context.CurrentAgentId,
+                     LastChangeDate = DateTime.Now,
                  });
 
                 return items;
@@ -620,7 +627,8 @@ namespace BL.Database.Documents
                  .Select(x => new InternalDocumentSendList
                  {
                      Id = x.Id,
-                     DocumentId = x.DocumentId
+                     DocumentId = x.DocumentId,
+                     SourcePositionId = x.SourcePositionId
                  }).FirstOrDefault();
 
                 return item;

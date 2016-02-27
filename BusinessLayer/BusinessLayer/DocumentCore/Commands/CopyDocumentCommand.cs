@@ -72,15 +72,10 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 sl.StartEventId = null;
                 sl.CloseEventId = null;
-                sl.LastChangeDate = DateTime.Now;
-                sl.LastChangeUserId = _context.CurrentAgentId;
+                CommonDocumentUtilities.SetLastChange(_context, sl);
             }
 
-            foreach (var sl in _document.RestrictedSendLists)
-            {
-                sl.LastChangeDate = DateTime.Now;
-                sl.LastChangeUserId = _context.CurrentAgentId;
-            }
+            CommonDocumentUtilities.SetLastChange(_context, _document.RestrictedSendLists);
 
             _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context,null, EnumEventTypes.AddNewDocument, "Copy");
             _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context);

@@ -1,11 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
+using System.Xml.Serialization;
+using BL.Model.Users;
 
 namespace BL.Model.DocumentCore.IncomingModel
 {
     /// <summary>
     /// Модель для добавления плана работы над документом по стандартному списку
     /// </summary>
-    public class ModifyDocumentSendListByStandartSendList
+    public class ModifyDocumentSendListByStandartSendList: CurrentPosition
     {
         /// <summary>
         /// ИД стандартного списка
@@ -17,5 +20,12 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// </summary>
         [Required]
         public int DocumentId { get; set; }
+        /// <summary>
+        /// Не запонять!!!
+        /// Признак первоначальный пункт
+        /// </summary>
+        [XmlIgnore]
+        [IgnoreDataMember]
+        public bool IsInitial { get; set; }
     }
 }

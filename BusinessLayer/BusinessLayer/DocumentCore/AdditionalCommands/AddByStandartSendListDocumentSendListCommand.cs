@@ -43,10 +43,11 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override bool CanExecute()
         {
-            _context.SetCurrentPosition(_document.ExecutorPositionId);
+
             _adminDb.VerifyAccess(_context, CommandType);
 
             _document = _operationDb.ChangeDocumentSendListPrepare(_context, Model.DocumentId);
+            Model.IsInitial = !_document.IsLaunchPlan;
 
             DocSendLists = _operationDb.AddByStandartSendListDocumentSendListPrepare(_context, Model);
 
@@ -59,10 +60,6 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override object Execute()
         {
-            foreach(var rsl in DocSendLists)
-            {
-                CommonDocumentUtilities.SetLastChange(_context, rsl);
-            }
             _operationDb.AddDocumentSendList(_context, DocSendLists);
             return null;
         }

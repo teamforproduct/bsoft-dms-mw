@@ -7,6 +7,7 @@ using BL.Database.Documents.Interfaces;
 using BL.Model.Common;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.FrontModel;
+using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
@@ -31,6 +32,14 @@ namespace BL.Logic.Common
         {
             document.LastChangeDate = DateTime.Now;
             document.LastChangeUserId = context.CurrentAgentId;
+        }
+
+        public static void SetLastChange(IContext context, IEnumerable<LastChangeInfo> documents)
+        {
+            foreach (var doc in documents)
+            {
+                SetLastChange(context, doc);
+            }
         }
 
         public static InternalDocumentAccess GetNewDocumentAccess(IContext context)
@@ -114,6 +123,31 @@ namespace BL.Logic.Common
                 OnEvent = eventType == null ? null : GetNewDocumentEvent(context, controlOnModel.DocumentId, eventType.Value, $"{controlOnModel.Task} / {controlOnModel.Description}", targetPositionId)
             };
         }
+
+
+        public static InternalDocumentSendList GetNewDocumentSendList(IContext context, ModifyDocumentSendList model)
+        {
+            return new InternalDocumentSendList
+            {
+                DocumentId = model.DocumentId,
+                Stage = model.Stage,
+                SendType = model.SendType,
+                SourcePositionId = context.CurrentPositionId,
+                SourceAgentId = context.CurrentAgentId,
+                TargetPositionId = model.TargetPositionId,
+                Task = model.Task,
+                Description = model.Description,
+                DueDate = model.DueDate,
+                DueDay = model.DueDay,
+                AccessLevel = model.AccessLevel,
+                IsInitial = model.IsInitial,
+
+                LastChangeUserId = context.CurrentAgentId,
+                LastChangeDate = DateTime.Now,
+
+            };
+        }
+
 
         public static IEnumerable<InternalDocumentWait> GetNewDocumentWaits(IContext context, ControlOn controlOnModel, EnumEventTypes? eventType = null, int? targetPositionId = null)
         {
