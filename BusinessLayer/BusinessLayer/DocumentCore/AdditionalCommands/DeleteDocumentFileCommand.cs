@@ -1,6 +1,6 @@
 ﻿using System.Linq;
-using BL.Database.Admins.Interfaces;
 using BL.Database.Documents.Interfaces;
+using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.Common;
 using BL.Logic.SystemLogic;
 using BL.Model.DocumentCore.Filters;
@@ -12,13 +12,13 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 {
     public class DeleteDocumentFileCommand: BaseDocumentCommand
     {
-        private readonly IAdminsDbProcess _adminDb;
+        private readonly IAdminService _admin;
         private readonly IDocumentFileDbProcess _operationDb;
         private readonly IFileStore _fStore;
 
-        public DeleteDocumentFileCommand(IAdminsDbProcess adminDb, IDocumentFileDbProcess operationDb, IFileStore fStore)
+        public DeleteDocumentFileCommand(IAdminService admin, IDocumentFileDbProcess operationDb, IFileStore fStore)
         {
-            _adminDb = adminDb;
+            _admin = admin;
             _operationDb = operationDb;
             _fStore = fStore;
         }
@@ -46,7 +46,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             {
                 throw new WrongParameterValueError();
             }
-            _adminDb.VerifyAccess(_context, CommandType);
+            _admin.VerifyAccess(_context, CommandType);
             _document = _operationDb.DeleteDocumentFilePrepare(_context, Model);
             if (_document == null)
             {

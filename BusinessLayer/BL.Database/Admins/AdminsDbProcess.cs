@@ -89,16 +89,6 @@ namespace BL.Database.Admins
             }
         }
 
-        public bool VerifyAccess(IContext context,  EnumDocumentActions action, bool isThrowExeception = true)
-        {
-            return VerifyAccess(context, new VerifyAccess { DocumentActionCode = action.ToString() });
-        }
-
-        public bool VerifyAccess(IContext context, string actionCode, bool isThrowExeception = true)
-        {
-            return VerifyAccess(context, new VerifyAccess {DocumentActionCode = actionCode });
-        }
-
         /// <summary>
         /// Проверка прав на действие
         /// </summary>

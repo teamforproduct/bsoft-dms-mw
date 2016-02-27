@@ -1,9 +1,8 @@
 ﻿using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Exception;
-using BL.Database.Admins.Interfaces;
-using BL.Model.AdminCore;
 using System.Linq;
+using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.Common;
 using BL.Model.Enums;
 
@@ -12,13 +11,13 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
     public class LaunchDocumentSendListItemCommand : BaseDocumentCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
-        private readonly IAdminsDbProcess _adminDb;
+        private readonly IAdminService _admin;
 
         protected InternalDocumentSendList DocSendList;
 
-        public LaunchDocumentSendListItemCommand(IDocumentOperationsDbProcess operationDb, IAdminsDbProcess adminDb)
+        public LaunchDocumentSendListItemCommand(IDocumentOperationsDbProcess operationDb, IAdminService admin)
         {
-            _adminDb = adminDb;
+            _admin = admin;
             _operationDb = operationDb;
         }
 
@@ -42,7 +41,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         public override bool CanExecute()
         {
             _document = _operationDb.LaunchDocumentSendListPrepare(_context, Model);
-            _adminDb.VerifyAccess(_context, CommandType);
+            _admin.VerifyAccess(_context, CommandType);
             //TODO проверить Source
             DocSendList = _operationDb.DeleteDocumentSendListPrepare(_context, Model);
 

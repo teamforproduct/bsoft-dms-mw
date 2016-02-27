@@ -1,5 +1,4 @@
-﻿using BL.Model.Enums;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace BL.Model.AdminCore
 {
@@ -12,6 +11,7 @@ namespace BL.Model.AdminCore
         {
             IsPositionFromContext = true;
         }
+
         public VerifyAccess(int userId)
         {
             UserId = userId;

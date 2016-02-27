@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using BL.Logic.Common;
 using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using System.Linq;
-using BL.Database.Admins.Interfaces;
+using BL.Logic.AdminCore.Interfaces;
 using BL.Model.DocumentCore.InternalModel;
 
 namespace BL.Logic.DocumentCore.Commands
@@ -15,13 +14,13 @@ namespace BL.Logic.DocumentCore.Commands
     {
         private readonly IDocumentsDbProcess _documentDb;
         private readonly IDocumentOperationsDbProcess _operationDb;
-        private readonly IAdminsDbProcess _adminDb;
+        private readonly IAdminService _admin;
 
-        public SendMessageDocumentCommand(IDocumentsDbProcess documentDb, IDocumentOperationsDbProcess operationDb, IAdminsDbProcess adminDb)
+        public SendMessageDocumentCommand(IDocumentsDbProcess documentDb, IDocumentOperationsDbProcess operationDb, IAdminService admin)
         {
             _documentDb = documentDb;
             _operationDb = operationDb;
-            _adminDb = adminDb;
+            _admin = admin;
         }
 
         private SendMessage Model
@@ -43,7 +42,7 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanExecute()
         {
-            _adminDb.VerifyAccess(_context, CommandType);
+            _admin.VerifyAccess(_context, CommandType);
             _document = _documentDb.GetBlankInternalDocumentById(_context, Model.DocumentId);
 
             return true;

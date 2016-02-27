@@ -2,25 +2,24 @@
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
-using BL.Database.Admins.Interfaces;
-using BL.Model.AdminCore;
 using BL.Model.DocumentCore.IncomingModel;
 using System.Linq;
 using BL.Logic.Common;
 using System.Collections.Generic;
+using BL.Logic.AdminCore.Interfaces;
 
 namespace BL.Logic.DocumentCore.AdditionalCommands
 {
     public class AddSavedFilterCommand : BaseDocumentCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
-        private readonly IAdminsDbProcess _adminDb;
+        private readonly IAdminService _admin;
 
         protected InternalDocumentSavedFilter DocSavedFilter;
 
-        public AddSavedFilterCommand(IDocumentOperationsDbProcess operationDb, IAdminsDbProcess adminDb)
+        public AddSavedFilterCommand(IDocumentOperationsDbProcess operationDb, IAdminService admin)
         {
-            _adminDb = adminDb;
+            _admin = admin;
             _operationDb = operationDb;
         }
 
@@ -45,7 +44,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         {
             //TODO Добавить проверки
             //_context.SetCurrentPosition(_document.ExecutorPositionId);
-            //_adminDb.VerifyAccess(_context, CommandType);
+            //_admin.VerifyAccess(_context, CommandType);
 
             DocSavedFilter = new InternalDocumentSavedFilter
             {

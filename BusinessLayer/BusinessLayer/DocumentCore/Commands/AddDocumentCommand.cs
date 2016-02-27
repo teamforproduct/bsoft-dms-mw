@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using BL.Logic.Common;
-using BL.Database.Admins.Interfaces;
 using BL.Database.Documents.Interfaces;
+using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.SystemLogic;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DocumentCore.InternalModel;
@@ -15,13 +15,13 @@ namespace BL.Logic.DocumentCore.Commands
     internal class AddDocumentCommand : BaseDocumentCommand
     {
         private readonly IDocumentsDbProcess _documentDb;
-        private readonly IAdminsDbProcess _adminDb;
+        private readonly IAdminService _admin;
         private readonly IFileStore _fStore;
 
-        public AddDocumentCommand(IDocumentsDbProcess documentDb, IAdminsDbProcess adminDb, IFileStore fStore)
+        public AddDocumentCommand(IDocumentsDbProcess documentDb, IAdminService admin, IFileStore fStore)
         {
             _documentDb = documentDb;
-            _adminDb = adminDb;
+            _admin = admin;
             _fStore = fStore;
         }
 
@@ -45,7 +45,7 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanExecute()
         {
-            _adminDb.VerifyAccess(Context, CommandType);
+            _admin.VerifyAccess(Context, CommandType);
 
             _document = _documentDb.AddDocumentPrepare(Context, Model.TemplateDocumentId);
             if (_document == null)

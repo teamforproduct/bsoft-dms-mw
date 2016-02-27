@@ -2,7 +2,7 @@
 using BL.Model.DocumentCore.Actions;
 using BL.Model.Enums;
 using BL.Model.Exception;
-using BL.Database.Admins.Interfaces;
+using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.Common;
 
 
@@ -11,11 +11,11 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
     public class AddDocumentLinkCommand: BaseDocumentCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
-        private readonly IAdminsDbProcess _adminDb;
+        private readonly IAdminService _admin;
 
-        public AddDocumentLinkCommand(IDocumentOperationsDbProcess operationDb, IAdminsDbProcess adminDb)
+        public AddDocumentLinkCommand(IDocumentOperationsDbProcess operationDb, IAdminService admin)
         {
-            _adminDb = adminDb;
+            _admin = admin;
             _operationDb = operationDb;
         }
 
@@ -48,7 +48,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                 throw new DocumentHasAlreadyHadLink();
             }
             _context.SetCurrentPosition(_document.ExecutorPositionId);
-            _adminDb.VerifyAccess(_context, CommandType);
+            _admin.VerifyAccess(_context, CommandType);
             return true;
         }
 

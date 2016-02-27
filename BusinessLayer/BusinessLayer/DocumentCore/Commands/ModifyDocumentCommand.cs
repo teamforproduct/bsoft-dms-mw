@@ -1,8 +1,7 @@
 ﻿using System.Linq;
 using BL.Database.Documents.Interfaces;
 using BL.Logic.Common;
-using BL.Database.Admins.Interfaces;
-using BL.Model.AdminCore;
+using BL.Logic.AdminCore.Interfaces;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
@@ -13,12 +12,12 @@ namespace BL.Logic.DocumentCore.Commands
     internal class ModifyDocumentCommand : BaseDocumentCommand
     {
         private readonly IDocumentsDbProcess _documentDb;
-        private readonly IAdminsDbProcess _adminDb;
+        private readonly IAdminService _admin;
 
-        public ModifyDocumentCommand(IDocumentsDbProcess documentDb, IAdminsDbProcess adminDb)
+        public ModifyDocumentCommand(IDocumentsDbProcess documentDb, IAdminService admin)
         {
             _documentDb = documentDb;
-            _adminDb = adminDb;
+            _admin = admin;
         }
 
         private ModifyDocument Model
@@ -46,7 +45,7 @@ namespace BL.Logic.DocumentCore.Commands
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
             _context.SetCurrentPosition(_document.ExecutorPositionId);
-            _adminDb.VerifyAccess(_context, CommandType);
+            _admin.VerifyAccess(_context, CommandType);
             return true;
         }
 

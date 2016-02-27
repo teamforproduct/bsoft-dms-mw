@@ -1,7 +1,6 @@
 ﻿using BL.Logic.Common;
-using BL.Database.Admins.Interfaces;
 using BL.Database.Documents.Interfaces;
-using BL.Model.AdminCore;
+using BL.Logic.AdminCore.Interfaces;
 using BL.Model.Enums;
 using BL.Model.Exception;
 
@@ -10,12 +9,12 @@ namespace BL.Logic.DocumentCore.Commands
     public class StopPlanDocumentCommand : BaseDocumentCommand
     {
         private readonly IDocumentsDbProcess _documentDb;
-        private readonly IAdminsDbProcess _adminDb;
+        private readonly IAdminService _admin;
 
-        public StopPlanDocumentCommand(IDocumentsDbProcess documentDb, IAdminsDbProcess adminDb)
+        public StopPlanDocumentCommand(IDocumentsDbProcess documentDb, IAdminService admin)
         {
             _documentDb = documentDb;
-            _adminDb = adminDb;
+            _admin = admin;
         }
 
         private int Model
@@ -35,7 +34,7 @@ namespace BL.Logic.DocumentCore.Commands
             //TODO ОСТАЛЬНЫЕ ПРОВЕРКИ!
             try
             {
-                _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = CommandType.ToString() });
+                _admin.VerifyAccess(_context, CommandType);
                 if (_document == null || _document.ExecutorPositionId != _context.CurrentPositionId)
                 {
                     return false;
@@ -61,7 +60,7 @@ namespace BL.Logic.DocumentCore.Commands
                 throw new CouldNotChangeAttributeLaunchPlan();
             }
             _context.SetCurrentPosition(_document.ExecutorPositionId);
-            _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = CommandType.ToString() });
+            _admin.VerifyAccess(_context, CommandType);
             return true;
 
         }

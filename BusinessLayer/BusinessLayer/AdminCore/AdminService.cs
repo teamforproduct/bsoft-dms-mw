@@ -5,6 +5,7 @@ using BL.Database.Admins.Interfaces;
 using BL.Model.AdminCore;
 using System;
 using BL.CrossCutting.Interfaces;
+using BL.Model.Enums;
 using BL.Model.Exception;
 
 namespace BL.Logic.AdminCore
@@ -35,12 +36,18 @@ namespace BL.Logic.AdminCore
         /// <summary>
         /// Проверка доступа к должностям для текущего пользователя
         /// </summary>
-        /// <param name="cxt"></param>
-        /// <param name="positionsIdList"></param>
-        public void VerifyAccess(IContext context, VerifyAccess model)
+        /// <param name="model"></param>
+        /// <param name="isThrowExeception"></param>
+        /// <param name="context"></param>
+        public bool VerifyAccess(IContext context, VerifyAccess model, bool isThrowExeception = true)
         {
             var admDb = DmsResolver.Current.Get<IAdminsDbProcess>();
-            admDb.VerifyAccess(context, model);
+            return admDb.VerifyAccess(context, model, isThrowExeception);
+        }
+
+        public bool VerifyAccess(IContext context, EnumDocumentActions action, bool isThrowExeception = true)
+        {
+            return VerifyAccess(context, new VerifyAccess { DocumentActionCode = action.ToString() }, isThrowExeception);
         }
     }
 }

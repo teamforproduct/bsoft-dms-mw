@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using BL.Logic.Common;
-using BL.Database.Admins.Interfaces;
 using BL.Database.Documents.Interfaces;
+using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.SystemLogic;
-using BL.Model.AdminCore;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
@@ -17,13 +16,13 @@ namespace BL.Logic.DocumentCore.Commands
     {
 
         private readonly IDocumentsDbProcess _documentDb;
-        private readonly IAdminsDbProcess _adminDb;
+        private readonly IAdminService _admin;
         private readonly IFileStore _fStore;
 
-        public CopyDocumentCommand(IDocumentsDbProcess documentDb, IAdminsDbProcess adminDb, IFileStore fStore)
+        public CopyDocumentCommand(IDocumentsDbProcess documentDb, IAdminService admin, IFileStore fStore)
         {
             _documentDb = documentDb;
-            _adminDb = adminDb;
+            _admin = admin;
             _fStore = fStore;
         }
 
@@ -43,7 +42,7 @@ namespace BL.Logic.DocumentCore.Commands
         {
             try
             {
-                _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = CommandType.ToString() });
+                _admin.VerifyAccess(_context, CommandType);
                 return true;
             }
             catch
@@ -54,7 +53,7 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanExecute()
         {
-            _adminDb.VerifyAccess(_context, CommandType);
+            _admin.VerifyAccess(_context, CommandType);
             _document = _documentDb.CopyDocumentPrepare(_context, Model.DocumentId);
 
             if (_document == null)

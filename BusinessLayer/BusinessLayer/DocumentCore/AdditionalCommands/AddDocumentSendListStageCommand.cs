@@ -1,10 +1,9 @@
 ﻿using BL.Database.Documents.Interfaces;
 using BL.Model.Enums;
 using BL.Model.Exception;
-using BL.Database.Admins.Interfaces;
-using BL.Model.AdminCore;
 using BL.Model.DocumentCore.IncomingModel;
 using System.Linq;
+using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.Common;
 
 namespace BL.Logic.DocumentCore.AdditionalCommands
@@ -12,11 +11,11 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
     public class AddDocumentSendListStageCommand : BaseDocumentCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
-        private readonly IAdminsDbProcess _adminDb;
+        private readonly IAdminService _admin;
 
-        public AddDocumentSendListStageCommand(IDocumentOperationsDbProcess operationDb, IAdminsDbProcess adminDb)
+        public AddDocumentSendListStageCommand(IDocumentOperationsDbProcess operationDb, IAdminService admin)
         {
-            _adminDb = adminDb;
+            _admin = admin;
             _operationDb = operationDb;
         }
 
@@ -40,7 +39,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         public override bool CanExecute()
         {
             _context.SetCurrentPosition(_document.ExecutorPositionId);
-            _adminDb.VerifyAccess(_context, CommandType);
+            _admin.VerifyAccess(_context, CommandType);
 
             _document = _operationDb.AddDocumentSendListStagePrepare(_context, Model.DocumentId);
 
