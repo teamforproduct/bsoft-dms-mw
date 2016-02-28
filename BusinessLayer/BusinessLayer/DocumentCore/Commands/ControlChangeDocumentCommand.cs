@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using BL.Database.Admins.Interfaces;
 using BL.Logic.Common;
 using BL.Database.Documents.Interfaces;
+using BL.Logic.AdminCore.Interfaces;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
@@ -13,14 +13,14 @@ namespace BL.Logic.DocumentCore.Commands
     public class ControlChangeDocumentCommand : BaseDocumentCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
-        private readonly IAdminsDbProcess _adminDb;
+        private readonly IAdminService _admin;
 
         private InternalDocumentWait _docWait;
 
-        public ControlChangeDocumentCommand(IDocumentOperationsDbProcess operationDb, IAdminsDbProcess adminDb)
+        public ControlChangeDocumentCommand(IDocumentOperationsDbProcess operationDb, IAdminService admin)
         {
             _operationDb = operationDb;
-            _adminDb = adminDb;
+            _admin = admin;
         }
 
         private ControlChange Model
@@ -53,7 +53,7 @@ namespace BL.Logic.DocumentCore.Commands
                 throw new WaitHasAlreadyClosed();
             }
             _context.SetCurrentPosition(_docWait.OnEvent.SourcePositionId);
-            _adminDb.VerifyAccess(_context, CommandType);
+            _admin.VerifyAccess(_context, CommandType);
             return true;
         }
 

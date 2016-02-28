@@ -15,6 +15,8 @@ using BL.Model.Enums;
 using BL.Model.DocumentCore.IncomingModel;
 using System.Data.Entity;
 using BL.CrossCutting.Helpers;
+using BL.Model.AdminCore;
+using BL.Model.DictionaryCore.InternalModel;
 
 namespace BL.Database.Documents
 {
@@ -25,6 +27,61 @@ namespace BL.Database.Documents
         public DocumentOperationsDbProcess(IConnectionStringHelper helper)
         {
             _helper = helper;
+        }
+
+        public DocumentActionsModel GetDocumentActionsModelPrepare(IContext context, int documentId)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var res = new DocumentActionsModel();
+                res.ActionsList = new Dictionary<int, List<InternalSystemAction>>();
+
+                res.Document = CommonQueries.GetDocumentQuery(dbContext)
+                    .Where(x => x.Doc.Id == documentId && context.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId))
+                    .Select(x => new InternalDocument
+                    {
+                        Id = x.Doc.Id,
+                        IsRegistered = x.Doc.IsRegistered,
+                        ExecutorPositionId = x.Doc.ExecutorPositionId,
+                        LinkId = x.Doc.LinkId,
+                        IsInWork = x.Acc.IsInWork,
+                        IsFavourite = x.Acc.IsFavourite,
+                    }).FirstOrDefault();
+
+                res.PositionWithActions = dbContext.DictionaryPositionsSet.Where(x => context.CurrentPositionsIdList.Contains(x.Id))
+                        .Select(x => new InternalDictionaryPositionWithActions
+                        {
+                            Id = x.Id,
+                            Name = x.Name,
+                            DepartmentId = x.DepartmentId,
+                            ExecutorAgentId = x.ExecutorAgentId,
+                            DepartmentName = x.Department.Name,
+                            ExecutorAgentName = x.ExecutorAgent.Name,
+                        }).ToList();
+
+
+                    foreach (int posId in context.CurrentPositionsIdList)
+                    {
+                        var qry = dbContext.SystemActionsSet.Where(x => x.ObjectId == (int)EnumObjects.Documents
+                        && x.IsVisible &&
+                        (!x.IsGrantable || 
+                            x.RoleActions.Any(y => (posId == y.Role.PositionId) && y.Role.UserRoles.Any(z => z.UserId == context.CurrentAgentId)))
+                        );
+
+                    var actLst = qry.Select(a => new InternalSystemAction
+                                  {
+                                      DocumentAction = (EnumDocumentActions)a.Id,
+                                      Object = (EnumObjects)a.ObjectId,
+                                      ActionCode = a.Code,
+                                      ObjectCode = a.Object.Code,
+                                      API = a.API,
+                                      Description = a.Description,
+                                  }).ToList();
+                        res.ActionsList.Add(posId, actLst);
+
+                    }
+                    return res;
+            }
         }
 
         public InternalDocument GetDocumentActionsPrepare(IContext context, int documentId)

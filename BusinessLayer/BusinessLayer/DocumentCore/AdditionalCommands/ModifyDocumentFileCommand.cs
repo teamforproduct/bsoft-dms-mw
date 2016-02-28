@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using BL.Database.Admins.Interfaces;
 using BL.Database.Documents.Interfaces;
+using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.Common;
 using BL.Logic.SystemLogic;
 using BL.Model.DocumentCore.FrontModel;
@@ -15,15 +15,15 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 {
     public class ModifyDocumentFileCommand: BaseDocumentCommand
     {
-        private readonly IAdminsDbProcess _adminDb;
+        private readonly IAdminService _admin;
         private readonly IDocumentFileDbProcess _operationDb;
         private readonly IFileStore _fStore;
 
         private InternalDocumentAttachedFile fl;
 
-        public ModifyDocumentFileCommand(IAdminsDbProcess adminDb, IDocumentFileDbProcess operationDb, IFileStore fStore)
+        public ModifyDocumentFileCommand(IAdminService admin, IDocumentFileDbProcess operationDb, IFileStore fStore)
         {
-            _adminDb = adminDb;
+            _admin = admin;
             _operationDb = operationDb;
             _fStore = fStore;
         }
@@ -47,7 +47,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override bool CanExecute()
         {
-            _adminDb.VerifyAccess(_context, CommandType);
+            _admin.VerifyAccess(_context, CommandType);
 
             //TODO potential two user could add same new version in same time. Probably need to implement CheckOut flag in future
             _document = _operationDb.ModifyDocumentFilePrepare(_context, Model.DocumentId, Model.OrderInDocument);

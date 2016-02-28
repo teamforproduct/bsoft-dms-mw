@@ -1,7 +1,6 @@
 ﻿using BL.Logic.DependencyInjection;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Model.AdminCore;
-using BL.Model.Users;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;

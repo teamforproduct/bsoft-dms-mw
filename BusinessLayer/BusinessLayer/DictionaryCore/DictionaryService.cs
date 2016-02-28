@@ -1,18 +1,14 @@
-﻿using System;
-using BL.Logic.DictionaryCore.Interfaces;
+﻿using BL.Logic.DictionaryCore.Interfaces;
 using System.Collections.Generic;
 using BL.Model.DictionaryCore;
 using BL.Database.Dictionaries.Interfaces;
 using System.Linq;
 using BL.CrossCutting.Interfaces;
-using BL.Logic.DocumentCore.Commands;
 using BL.Logic.DocumentCore.Interfaces;
+using BL.Model.AdminCore;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;
-using BL.Model.DictionaryCore.IncomingModel;
-using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Enums;
-using BL.Model.Exception;
 
 namespace BL.Logic.DictionaryCore
 {
@@ -284,5 +280,17 @@ namespace BL.Logic.DictionaryCore
         }
         #endregion DictionaryTags
 
+        #region AdminAccessLevels
+        public FrontAdminAccessLevel GetAdminAccessLevel(IContext context, int id)
+        {
+            return _dictDb.GetAdminAccessLevel(context, id);
+        }
+
+        public IEnumerable<FrontAdminAccessLevel> GetAdminAccessLevels(IContext context, FilterAdminAccessLevel filter)
+        {
+            return _dictDb.GetAdminAccessLevels(context, filter);
+        }
+
+        #endregion AdminAccessLevels
     }
 }

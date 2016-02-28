@@ -6,19 +6,23 @@ using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
+using BL.Logic.AdminCore.Interfaces;
+using BL.Model.DocumentCore.IncomingModel;
+using BL.Logic.Common;
+using BL.Model.Enums;
 
 namespace BL.Logic.DocumentCore.SendListCommands
 {
     public class ModifyDocumentSendListCommand : BaseDocumentCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
-        private readonly IAdminsDbProcess _adminDb;
+        private readonly IAdminService _admin;
 
         protected InternalDocumentSendList DocSendList;
 
-        public ModifyDocumentSendListCommand(IDocumentOperationsDbProcess operationDb, IAdminsDbProcess adminDb)
+        public ModifyDocumentSendListCommand(IDocumentOperationsDbProcess operationDb, IAdminService admin)
         {
-            _adminDb = adminDb;
+            _admin = admin;
             _operationDb = operationDb;
         }
 
@@ -46,7 +50,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
             DocSendList = _document.SendLists.FirstOrDefault(x => x.Id == Model.Id);
 
             _context.SetCurrentPosition(DocSendList.SourcePositionId);
-            _adminDb.VerifyAccess(_context, CommandType);
+            _admin.VerifyAccess(_context, CommandType);
 
 
             DocSendList.Stage = Model.Stage;

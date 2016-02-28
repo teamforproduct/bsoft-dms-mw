@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Dictionaries.Interfaces;
@@ -7,7 +6,6 @@ using BL.Database.Documents.Interfaces;
 using BL.Database.SystemDb;
 using BL.Logic.DependencyInjection;
 using BL.Logic.DocumentCore.Interfaces;
-using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Enums;
 
@@ -61,8 +59,11 @@ namespace BL.Logic.DocumentCore
 
         public IEnumerable<InternalDictionaryPositionWithActions> GetDocumentActions(IContext ctx, int documentId)
         {
-            var document = _operationDb.GetDocumentActionsPrepare(ctx, documentId);
-            var positions = _dictDb.GetDictionaryPositionsWithActions(ctx, new FilterDictionaryPosition { PositionId = ctx.CurrentPositionsIdList });
+            var model = _operationDb.GetDocumentActionsModelPrepare(ctx, documentId);
+            
+            
+            
+            //var positions = _dictDb.GetDictionaryPositionsWithActions(ctx, new FilterDictionaryPosition { PositionId = ctx.CurrentPositionsIdList });
             //var systemDb = DmsResolver.Current.Get<ISystemDbProcess>();
             //foreach (var position in positions)
             //{
@@ -88,11 +89,11 @@ namespace BL.Logic.DocumentCore
             //        });
             //}
 
-            var cmdList = Enum.GetValues(typeof (EnumDocumentActions)).Cast<EnumDocumentActions>()
-                .Select(da => DocumentCommandFactory.GetDocumentCommand(da, ctx, document, null))
-                .Where(cmd => cmd.CanBeDisplayed()).Cast<ICommand>().ToList();
+            //var cmdList = Enum.GetValues(typeof (EnumDocumentActions)).Cast<EnumDocumentActions>()
+            //    .Select(da => DocumentCommandFactory.GetDocumentCommand(da, ctx, document, null))
+            //    .Where(cmd => cmd.CanBeDisplayed()).Cast<ICommand>().ToList();
 
-            return positions;//actions;
+            return model.PositionWithActions;//actions;
         }
     }
 }

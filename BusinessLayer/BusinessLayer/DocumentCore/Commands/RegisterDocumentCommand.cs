@@ -1,7 +1,6 @@
 ﻿using BL.Logic.Common;
-using BL.Database.Admins.Interfaces;
 using BL.Database.Documents.Interfaces;
-using BL.Model.AdminCore;
+using BL.Logic.AdminCore.Interfaces;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.Enums;
 using BL.Model.Exception;
@@ -12,12 +11,12 @@ namespace BL.Logic.DocumentCore.Commands
     {
 
         private readonly IDocumentsDbProcess _documentDb;
-        private readonly IAdminsDbProcess _adminDb;
+        private readonly IAdminService _admin;
 
-        public RegisterDocumentCommand(IDocumentsDbProcess documentDb, IAdminsDbProcess adminDb)
+        public RegisterDocumentCommand(IDocumentsDbProcess documentDb, IAdminService admin)
         {
             _documentDb = documentDb;
-            _adminDb = adminDb;
+            _admin = admin;
         }
 
         private RegisterDocument Model
@@ -36,7 +35,7 @@ namespace BL.Logic.DocumentCore.Commands
         {
             try
             {
-                _adminDb.VerifyAccess(_context, new VerifyAccess { DocumentActionCode = CommandType.ToString()});
+                _admin.VerifyAccess(_context, CommandType);
                 if (_document == null || !_document.RegistrationJournalId.HasValue || _document.IsRegistered)
                 {
                     return false;
@@ -51,7 +50,7 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanExecute()
         {
-            _adminDb.VerifyAccess(_context, CommandType);
+            _admin.VerifyAccess(_context, CommandType);
             _document = _documentDb.RegisterDocumentPrepare(_context, Model);
 
             if (_document == null)

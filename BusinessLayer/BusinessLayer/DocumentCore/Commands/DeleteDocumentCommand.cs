@@ -2,7 +2,7 @@
 using BL.Database.Documents.Interfaces;
 using BL.Model.Exception;
 using BL.Logic.Common;
-using BL.Database.Admins.Interfaces;
+using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.SystemLogic;
 using BL.Model.Enums;
 
@@ -11,13 +11,13 @@ namespace BL.Logic.DocumentCore.Commands
     internal class DeleteDocumentCommand : BaseDocumentCommand
     {
         private readonly IDocumentsDbProcess _documentDb;
-        private readonly IAdminsDbProcess _adminDb;
+        private readonly IAdminService _admin;
         private readonly IFileStore _fStore;
 
-        public DeleteDocumentCommand(IDocumentsDbProcess documentDb, IAdminsDbProcess adminDb, IFileStore fStore)
+        public DeleteDocumentCommand(IDocumentsDbProcess documentDb, IAdminService admin, IFileStore fStore)
         {
             _documentDb = documentDb;
-            _adminDb = adminDb;
+            _admin = admin;
             _fStore = fStore;
         }
 
@@ -47,7 +47,7 @@ namespace BL.Logic.DocumentCore.Commands
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
             _context.SetCurrentPosition(_document.ExecutorPositionId);
-            _adminDb.VerifyAccess(_context, CommandType);
+            _admin.VerifyAccess(_context, CommandType);
 
            if (!CanBeDisplayed())
             {

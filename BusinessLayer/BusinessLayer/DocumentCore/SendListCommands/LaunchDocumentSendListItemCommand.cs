@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Linq;
-using BL.Database.Admins.Interfaces;
 using BL.Database.Documents.Interfaces;
 using BL.Logic.Common;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
+using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.DependencyInjection;
 using BL.Logic.DocumentCore.Interfaces;
 
@@ -14,13 +14,13 @@ namespace BL.Logic.DocumentCore.SendListCommands
     public class LaunchDocumentSendListItemCommand : BaseDocumentCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
-        private readonly IAdminsDbProcess _adminDb;
+        private readonly IAdminService _admin;
 
         private InternalDocumentSendList _sendList;
 
-        public LaunchDocumentSendListItemCommand(IDocumentOperationsDbProcess operationDb, IAdminsDbProcess adminDb)
+        public LaunchDocumentSendListItemCommand(IDocumentOperationsDbProcess operationDb, IAdminService admin)
         {
-            _adminDb = adminDb;
+            _admin = admin;
             _operationDb = operationDb;
         }
 
@@ -50,7 +50,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
             }
             _sendList = _document.SendLists.First();
             _context.SetCurrentPosition(_sendList.SourcePositionId);
-            _adminDb.VerifyAccess(_context, CommandType);
+            _admin.VerifyAccess(_context, CommandType);
 
             return true;
         }

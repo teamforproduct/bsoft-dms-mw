@@ -1,5 +1,4 @@
-﻿using BL.Model.Enums;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace BL.Model.AdminCore
 {
@@ -12,6 +11,7 @@ namespace BL.Model.AdminCore
         {
             IsPositionFromContext = true;
         }
+
         public VerifyAccess(int userId)
         {
             UserId = userId;
@@ -23,7 +23,7 @@ namespace BL.Model.AdminCore
         /// <summary>
         /// Код действия
         /// </summary>
-        public string DocumentActionCode { get; set; }
+        public int? DocumentActionId { get; set; }
         /// <summary>
         /// ИД записи, если права должны раздавать в разрезе каждой записи объекта
         /// </summary>

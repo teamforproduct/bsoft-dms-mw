@@ -7,19 +7,25 @@ using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
+using BL.Model.DocumentCore.IncomingModel;
+using System.Linq;
+using BL.Logic.Common;
+using System.Collections.Generic;
+using BL.Logic.AdminCore.Interfaces;
+using BL.Model.Enums;
 
 namespace BL.Logic.DocumentCore.SendListCommands
 {
     public class AddByStandartSendListDocumentSendListCommand : BaseDocumentCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
-        private readonly IAdminsDbProcess _adminDb;
+        private readonly IAdminService _admin;
 
         protected IEnumerable<InternalDocumentSendList> DocSendLists;
 
-        public AddByStandartSendListDocumentSendListCommand(IDocumentOperationsDbProcess operationDb, IAdminsDbProcess adminDb)
+        public AddByStandartSendListDocumentSendListCommand(IDocumentOperationsDbProcess operationDb, IAdminService admin)
         {
-            _adminDb = adminDb;
+            _admin = admin;
             _operationDb = operationDb;
         }
 
@@ -43,7 +49,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
         public override bool CanExecute()
         {
 
-            _adminDb.VerifyAccess(_context, CommandType);
+            _admin.VerifyAccess(_context, CommandType);
 
             _document = _operationDb.ChangeDocumentSendListPrepare(_context, Model.DocumentId);
             Model.IsInitial = !_document.IsLaunchPlan;

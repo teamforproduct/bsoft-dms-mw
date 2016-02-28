@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using BL.CrossCutting.Interfaces;
+using BL.Model.AdminCore;
 using BL.Model.DictionaryCore;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;
@@ -123,5 +124,13 @@ namespace BL.Database.Dictionaries.Interfaces
         int AddDictionaryTag(IContext context, InternalDictionaryTag model);
         void UpdateDictionaryTag(IContext context, InternalDictionaryTag model);
         #endregion DictionaryTags
+
+        #region Admins
+        #region AdminAccessLevels
+        FrontAdminAccessLevel GetAdminAccessLevel(IContext ctx, int id);
+
+        IEnumerable<FrontAdminAccessLevel> GetAdminAccessLevels(IContext ctx, FilterAdminAccessLevel filter);
+        #endregion AdminAccessLevels
+        #endregion
     }
 }

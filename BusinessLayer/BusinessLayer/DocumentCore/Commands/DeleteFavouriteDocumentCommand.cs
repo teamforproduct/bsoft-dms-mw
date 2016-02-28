@@ -1,12 +1,10 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using BL.Logic.Common;
 using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.Enums;
 using BL.Model.Exception;
-using BL.Database.Admins.Interfaces;
-using BL.Model.AdminCore;
+using BL.Logic.AdminCore.Interfaces;
 using BL.Model.DocumentCore.InternalModel;
 
 namespace BL.Logic.DocumentCore.Commands
@@ -14,14 +12,14 @@ namespace BL.Logic.DocumentCore.Commands
     public class DeleteFavouriteDocumentCommand: BaseDocumentCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
-        private readonly IAdminsDbProcess _adminDb;
+        private readonly IAdminService _admin;
 
         private InternalDocumentAccess _docAccess;
 
-        public DeleteFavouriteDocumentCommand(IDocumentOperationsDbProcess operationDb, IAdminsDbProcess adminDb)
+        public DeleteFavouriteDocumentCommand(IDocumentOperationsDbProcess operationDb, IAdminService admin)
         {
             _operationDb = operationDb;
-            _adminDb = adminDb;
+            _admin = admin;
         }
 
         private ChangeFavourites Model
@@ -43,7 +41,7 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanExecute()
         {
-            _adminDb.VerifyAccess(_context, CommandType);
+            _admin.VerifyAccess(_context, CommandType);
             _document = _operationDb.ChangeIsFavouriteAccessPrepare(_context, Model.DocumentId);
             if (_document == null)
             {
