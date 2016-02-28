@@ -1,12 +1,16 @@
-﻿using BL.Database.Documents.Interfaces;
+﻿using System.Linq;
+using BL.Database.Admins.Interfaces;
+using BL.Database.Documents.Interfaces;
+using BL.Logic.Common;
 using BL.Model.DocumentCore.InternalModel;
+using BL.Model.Enums;
 using BL.Model.Exception;
 using System.Linq;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.Common;
 using BL.Model.Enums;
 
-namespace BL.Logic.DocumentCore.AdditionalCommands
+namespace BL.Logic.DocumentCore.SendListCommands
 {
     public class DeleteDocumentRestrictedSendListCommand : BaseDocumentCommand
     {

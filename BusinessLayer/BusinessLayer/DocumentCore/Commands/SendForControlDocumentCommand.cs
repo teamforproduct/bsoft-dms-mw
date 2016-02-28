@@ -9,13 +9,13 @@ using BL.Model.Exception;
 
 namespace BL.Logic.DocumentCore.Commands
 {
-    public class SendForInformationDocumentCommand : BaseDocumentCommand
+    public class SendForControlDocumentCommand : BaseDocumentCommand
     {
         private readonly IDocumentsDbProcess _documentDb;
         private readonly IDocumentOperationsDbProcess _operationDb;
         private readonly IAdminService _admin;
 
-        public SendForInformationDocumentCommand(IDocumentsDbProcess documentDb, IDocumentOperationsDbProcess operationDb, IAdminService admin)
+        public SendForControlDocumentCommand(IDocumentsDbProcess documentDb, IDocumentOperationsDbProcess operationDb, IAdminService admin)
         {
             _documentDb = documentDb;
             _operationDb = operationDb;
@@ -31,7 +31,7 @@ namespace BL.Logic.DocumentCore.Commands
                     throw new WrongParameterTypeError();
                 }
                 var model = (InternalDocumentSendList)_param;
-                if (model.SendType != EnumSendTypes.SendForInformation && model.SendType != EnumSendTypes.SendForConsideration)
+                if (model.SendType != EnumSendTypes.SendForControl)
                 {
                     throw new WrongParameterTypeError();
                 }
@@ -63,13 +63,12 @@ namespace BL.Logic.DocumentCore.Commands
         }
         public override object Execute()
         {
-            if (Model.TargetPositionId.HasValue)
-            {
-                _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, Model.DocumentId, Model.AccessLevel, Model.TargetPositionId.Value);
-            }
+            _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, Model.DocumentId, Model.AccessLevel, Model.TargetPositionId.Value);
             Model.CloseEvent = Model.StartEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, Model);
             CommonDocumentUtilities.SetLastChange(_context, Model);
             _document.SendLists = new List<InternalDocumentSendList> { Model };
+            _document.Waits = CommonDocumentUtilities.GetNewDocumentWaits(_context, Model, EnumEventTypes.ControlOn);
+
             _operationDb.SendForInformation(_context, _document);
             return null;
         }

@@ -59,7 +59,7 @@ namespace BL.Logic.DocumentCore.Commands
             _document.ExecutorPositionId = Model.PositionId;
             _document.AccessLevel = Model.AccessLevel;
 
-            _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, Model.DocumentId, EnumEventTypes.ChangeExecutor, Model.Description, Model.PositionId);
+            _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, Model.DocumentId, EnumEventTypes.ChangeExecutor, Model.Description, null, Model.PositionId);
 
             _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, Model.DocumentId, Model.AccessLevel, Model.PositionId);
 

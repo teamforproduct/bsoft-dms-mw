@@ -455,18 +455,5 @@ namespace DMS_WebAPI.Controllers.Documents
             return ctrl.Get(id);
         }
 
-        /// <summary>
-        /// АПИ для теста отработки внутренних процессов
-        /// </summary>
-        [Route("SendForInformation")]
-        [HttpPost]
-        public IHttpActionResult SendForInformation(InternalDocumentSendList model)
-        {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentService>();
-            docProc.ExecuteAction(EnumDocumentActions.SendForInformation, cxt, model);
-            var ctrl = new DocumentsController { ControllerContext = ControllerContext };
-            return ctrl.Get(model.DocumentId);
-        }
     }
 }

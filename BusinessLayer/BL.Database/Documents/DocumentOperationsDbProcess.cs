@@ -183,12 +183,11 @@ namespace BL.Database.Documents
 
         #region Waits
 
-        public void AddDocumentWaits(IContext ctx, IEnumerable<InternalDocumentWait> documentWaits)
+        public void AddDocumentWaits(IContext ctx, InternalDocument document)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-                var docWaits = ModelConverter.GetDbDocumentWaits(documentWaits);
-                dbContext.DocumentWaitsSet.AddRange(docWaits);
+                dbContext.DocumentWaitsSet.AddRange(ModelConverter.GetDbDocumentWaits(document.Waits));
                 dbContext.SaveChanges();
             }
         }
@@ -256,7 +255,6 @@ namespace BL.Database.Documents
                                         new InternalDocumentWait
                                         {
                                             Id = x.Id,
-                                            Task = x.Task,
                                             DocumentId = x.DocumentId,
                                             OffEventId = x.OffEventId,
                                             OnEvent = new InternalDocumentEvent
@@ -264,7 +262,9 @@ namespace BL.Database.Documents
                                                 Id = x.OnEvent.Id,
                                                 SourcePositionId = x.OnEvent.SourcePositionId,
                                                 TargetPositionId = x.OnEvent.TargetPositionId,
+                                                Task = x.OnEvent.Task,
                                                 Description = x.OnEvent.Description
+
                                             }
                                         }
                                     }
@@ -416,16 +416,16 @@ namespace BL.Database.Documents
                     LastChangeUserId = sendList.LastChangeUserId
                 };
                 dbContext.DocumentSendListsSet.Attach(sendListDb);
-                sendListDb.StartEvent = ModelConverter.GetDbDocumentEvent(sendList.StartEvent);
-                sendListDb.CloseEvent = sendListDb.StartEvent;
+                sendListDb.CloseEvent = sendListDb.StartEvent = ModelConverter.GetDbDocumentEvent(sendList.StartEvent);
                 var entry = dbContext.Entry(sendListDb);
                 entry.Property(x => x.Id).IsModified = true;
                 entry.Property(x => x.LastChangeDate).IsModified = true;
                 entry.Property(x => x.LastChangeUserId).IsModified = true;
-                if (document.Accesses != null && document.Accesses.Any())
-                {
-                    dbContext.DocumentAccessesSet.AddRange(CommonQueries.GetDbDocumentAccesses(dbContext, document.Accesses, document.Id).ToList());
-                }
+
+                dbContext.DocumentAccessesSet.AddRange(CommonQueries.GetDbDocumentAccesses(dbContext, document.Accesses, document.Id).ToList());
+
+                dbContext.DocumentWaitsSet.AddRange(ModelConverter.GetDbDocumentWaits(document.Waits));
+
                 dbContext.SaveChanges();
             }
         }
@@ -755,12 +755,12 @@ namespace BL.Database.Documents
             }
         }
 
-        public InternalDocument LaunchDocumentSendListPrepare(IContext context, int Id)
+        public InternalDocument LaunchDocumentSendListPrepare(IContext context, int id)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
                 var doc = dbContext.DocumentSendListsSet
-                    .Where(x => x.Id == Id)
+                    .Where(x => x.Id == id)
                     .Select(x => new InternalDocument
                     {
                         Id = x.DocumentId,
@@ -769,7 +769,20 @@ namespace BL.Database.Documents
                                         new InternalDocumentSendList
                                         {
                                             Id = x.Id,
-                                            //TODO ALL
+                                            DocumentId = x.DocumentId,
+                                            Stage = x.Stage,
+                                            SendType = (EnumSendTypes)x.SendTypeId,
+                                            SourcePositionId = x.SourcePositionId,
+                                            SourceAgentId = x.SourceAgentId,
+                                            TargetPositionId = x.TargetPositionId,
+                                            TargetAgentId = x.TargetAgentId,
+                                            Task = x.Task,
+                                            Description = x.Description,
+                                            DueDay = x.DueDay,
+                                            DueDate = x.DueDate,
+                                            AccessLevel = (EnumDocumentAccesses)x.AccessLevelId,
+                                            StartEventId = x.StartEventId,
+                                            CloseEventId = x.CloseEventId
                                         }
                                     }
                     }).FirstOrDefault();

@@ -1,21 +1,25 @@
-﻿using BL.Database.Documents.Interfaces;
+﻿using System.Linq;
+using BL.Database.Admins.Interfaces;
+using BL.Database.Documents.Interfaces;
+using BL.Logic.Common;
 using BL.Model.DocumentCore.InternalModel;
+using BL.Model.Enums;
 using BL.Model.Exception;
 using System.Linq;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.Common;
 using BL.Model.Enums;
 
-namespace BL.Logic.DocumentCore.AdditionalCommands
+namespace BL.Logic.DocumentCore.SendListCommands
 {
-    public class LaunchDocumentSendListItemCommand : BaseDocumentCommand
+    public class DeleteDocumentSendListCommand : BaseDocumentCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
         private readonly IAdminService _admin;
 
         protected InternalDocumentSendList DocSendList;
 
-        public LaunchDocumentSendListItemCommand(IDocumentOperationsDbProcess operationDb, IAdminService admin)
+        public DeleteDocumentSendListCommand(IDocumentOperationsDbProcess operationDb, IAdminService admin)
         {
             _admin = admin;
             _operationDb = operationDb;
@@ -40,10 +44,10 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override bool CanExecute()
         {
-            _document = _operationDb.LaunchDocumentSendListPrepare(_context, Model);
-            _admin.VerifyAccess(_context, CommandType);
-            //TODO проверить Source
             DocSendList = _operationDb.DeleteDocumentSendListPrepare(_context, Model);
+
+            _context.SetCurrentPosition(DocSendList.SourcePositionId);
+            _admin.VerifyAccess(_context, CommandType);
 
             _document = _operationDb.ChangeDocumentSendListPrepare(_context, DocSendList.DocumentId);
 
@@ -56,11 +60,10 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override object Execute()
         {
-
-
-            return _document.Id;
+            _operationDb.DeleteDocumentSendList(_context, Model);
+            return DocSendList.DocumentId;
         }
 
-        public override EnumDocumentActions CommandType => EnumDocumentActions.LaunchDocumentSendListItem;
+        public override EnumDocumentActions CommandType => EnumDocumentActions.DeleteDocumentSendList;
     }
 }

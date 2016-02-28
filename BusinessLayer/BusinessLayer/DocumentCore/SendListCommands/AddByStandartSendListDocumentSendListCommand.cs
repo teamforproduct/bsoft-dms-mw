@@ -1,4 +1,9 @@
-﻿using BL.Database.Documents.Interfaces;
+﻿using System.Collections.Generic;
+using System.Linq;
+using BL.Database.Admins.Interfaces;
+using BL.Database.Documents.Interfaces;
+using BL.Logic.Common;
+using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
@@ -7,31 +12,32 @@ using System.Linq;
 using BL.Logic.Common;
 using System.Collections.Generic;
 using BL.Logic.AdminCore.Interfaces;
+using BL.Model.Enums;
 
-namespace BL.Logic.DocumentCore.AdditionalCommands
+namespace BL.Logic.DocumentCore.SendListCommands
 {
-    public class AddDocumentSendListCommand : BaseDocumentCommand
+    public class AddByStandartSendListDocumentSendListCommand : BaseDocumentCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
         private readonly IAdminService _admin;
 
-        protected InternalDocumentSendList DocSendList;
+        protected IEnumerable<InternalDocumentSendList> DocSendLists;
 
-        public AddDocumentSendListCommand(IDocumentOperationsDbProcess operationDb, IAdminService admin)
+        public AddByStandartSendListDocumentSendListCommand(IDocumentOperationsDbProcess operationDb, IAdminService admin)
         {
             _admin = admin;
             _operationDb = operationDb;
         }
 
-        private ModifyDocumentSendList Model
+        private ModifyDocumentSendListByStandartSendList Model
         {
             get
             {
-                if (!(_param is ModifyDocumentSendList))
+                if (!(_param is ModifyDocumentSendListByStandartSendList))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ModifyDocumentSendList)_param;
+                return (ModifyDocumentSendListByStandartSendList)_param;
             }
         }
 
@@ -44,11 +50,13 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         {
 
             _admin.VerifyAccess(_context, CommandType);
+
             _document = _operationDb.ChangeDocumentSendListPrepare(_context, Model.DocumentId);
             Model.IsInitial = !_document.IsLaunchPlan;
 
-            DocSendList = CommonDocumentUtilities.GetNewDocumentSendList(_context, Model);
-            _document.SendLists.ToList().Add(DocSendList);
+            DocSendLists = _operationDb.AddByStandartSendListDocumentSendListPrepare(_context, Model);
+
+            _document.SendLists.ToList().AddRange(DocSendLists);
 
             CommonDocumentUtilities.VerifySendLists(_document);
 
@@ -57,10 +65,10 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override object Execute()
         {
-            _operationDb.AddDocumentSendList(_context, new List<InternalDocumentSendList> { DocSendList });
+            _operationDb.AddDocumentSendList(_context, DocSendLists);
             return null;
         }
 
-        public override EnumDocumentActions CommandType => EnumDocumentActions.AddDocumentSendList;
+        public override EnumDocumentActions CommandType => EnumDocumentActions.AddByStandartSendListDocumentSendList;
     }
 }

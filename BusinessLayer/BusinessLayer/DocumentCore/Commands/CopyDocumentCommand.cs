@@ -71,6 +71,7 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 sl.StartEventId = null;
                 sl.CloseEventId = null;
+                sl.SourceAgentId = _context.CurrentAgentId;
                 CommonDocumentUtilities.SetLastChange(_context, sl);
             }
 

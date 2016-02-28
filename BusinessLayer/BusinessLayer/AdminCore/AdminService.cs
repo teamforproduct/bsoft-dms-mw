@@ -47,7 +47,7 @@ namespace BL.Logic.AdminCore
                 StoreObject = nlst
             };
             accList.Add(key, nso);
-            return nlst as AdminAccessInfo;
+            return nlst;
         }
 
         public IEnumerable<BaseAdminUserRole> GetPositionsByCurrentUser(IContext context)
@@ -63,7 +63,6 @@ namespace BL.Logic.AdminCore
         /// <param name="context"></param>
         public bool VerifyAccess(IContext context, VerifyAccess model, bool isThrowExeception = true)
         {
-            //return _adminDb.VerifyAccess(context, model, isThrowExeception);
             var data = GetAccInfo(context);
             var res = false;
             if (model.UserId == 0)
@@ -84,20 +83,11 @@ namespace BL.Logic.AdminCore
                 var qry = data.ActionAccess
                     .Join(data.Actions, aa => aa.ActionId, ac => ac.Id,(aa, ac) => new {ActAccess = aa, Act = ac})
                     .Join(data.Roles, aa => aa.ActAccess.RoleId, r => r.Id,(aa, r) => new {aa.ActAccess, aa.Act, Role = r});
-                //var q1 = qry.Where(x => x.Act.Id == model.DocumentActionId && x.Act.IsGrantable );
-                //var q2 = q1.Where(x => (!x.Act.IsGrantableByRecordId || (x.ActAccess.RecordId == model.RecordId)));
-                //var q3 = q2.Where( x =>
-                //            (((model.PositionId == null) && (model.PositionsIdList.Contains(x.Role.PositionId))) ||
-                //             (x.Role.PositionId == model.PositionId)));
-                //var q4 = q3.Where(x => data.UserRoles.Where(s => s.RoleId == x.Role.Id).Any(y => y.UserId == model.UserId));
-                //res = q4.Any();
                 // test it really good!
                 res = qry.Any(x => x.Act.Id == model.DocumentActionId
-                                    && x.Act.IsGrantable //TODO как отработать не грантебл
-                                    && (!x.Act.IsGrantableByRecordId || (x.ActAccess.RecordId == model.RecordId))
-                                    && (((model.PositionId == null) && (model.PositionsIdList.Contains(x.Role.PositionId))) || (x.Role.PositionId == model.PositionId))
-                                    && data.UserRoles.Where(s => s.RoleId == x.Role.Id).Any(y => y.UserId == model.UserId)
-                                );
+                && data.UserRoles.Where(s => s.RoleId == x.Role.Id).Any(y => y.UserId == model.UserId)
+                && (((model.PositionId == null) && (model.PositionsIdList.Contains(x.Role.PositionId))) || (x.Role.PositionId == model.PositionId))
+                && (!x.Act.IsGrantable || (x.Act.IsGrantable && (!x.Act.IsGrantableByRecordId || x.ActAccess.RecordId == 0 || x.ActAccess.RecordId == model.RecordId))));
             }
             else
             {

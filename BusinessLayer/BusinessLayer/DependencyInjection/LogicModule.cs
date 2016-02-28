@@ -8,6 +8,7 @@ using BL.Logic.DocumentCore;
 using BL.Logic.DocumentCore.AdditionalCommands;
 using BL.Logic.DocumentCore.Commands;
 using BL.Logic.DocumentCore.Interfaces;
+using BL.Logic.DocumentCore.SendListCommands;
 using BL.Logic.Logging;
 using BL.Logic.Observers;
 using BL.Logic.Secure;
