@@ -37,6 +37,9 @@ namespace BL.Database.Documents.Interfaces
 
         InternalDocumentRestrictedSendList DeleteDocumentRestrictedSendListPrepare(IContext context, int restSendListId);
         void CloseDocumentWait(IContext context, InternalDocumentWait docWait);
+
+        InternalDocument SendForExecutionDocumentPrepare(IContext context, InternalDocumentSendList sendList);
+
         void DeleteDocumentRestrictedSendList(IContext context, int restSendListId);
 
         void AddDocumentSendList(IContext context, IEnumerable<InternalDocumentSendList> model);
@@ -55,7 +58,7 @@ namespace BL.Database.Documents.Interfaces
 
         void ModifyDocumentTags(IContext context, InternalDocumentTag model);
         void ChangeDocumentWait(IContext context, IEnumerable<InternalDocumentWait> waits);
-        void SendForInformation(IContext context, InternalDocument document);
+        void SendBySendList(IContext context, InternalDocument document);
 
         List<int> AddSavedFilter(IContext context, IEnumerable<InternalDocumentSavedFilter> model);
         void ModifySavedFilter(IContext context, InternalDocumentSavedFilter model);

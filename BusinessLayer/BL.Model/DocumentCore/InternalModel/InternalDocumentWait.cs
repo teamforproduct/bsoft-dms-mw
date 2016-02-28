@@ -15,5 +15,6 @@ namespace BL.Model.DocumentCore.InternalModel
         public DateTime? AttentionDate { get; set; }
         public InternalDocumentEvent OnEvent { get; set; }
         public InternalDocumentEvent OffEvent { get; set; }
+        public InternalDocumentWait ParentWait { get; set; }
     }
 }

@@ -72,7 +72,7 @@ namespace BL.Logic.DocumentCore.Commands
             Model.CloseEvent = Model.StartEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, Model);
             CommonDocumentUtilities.SetLastChange(_context, Model);
             _document.SendLists = new List<InternalDocumentSendList> { Model };
-            _operationDb.SendForInformation(_context, _document);
+            _operationDb.SendBySendList(_context, _document);
             return null;
         }
 

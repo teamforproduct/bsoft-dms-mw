@@ -217,6 +217,29 @@ namespace BL.Database.Documents
             }
         }
 
+        public InternalDocument SendForExecutionDocumentPrepare(IContext context, InternalDocumentSendList sendList)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var doc = dbContext.DocumentEventsSet
+                    .Where(x => x.DocumentId == sendList.DocumentId && x.Task == sendList.Task && x.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecution)
+                    .Select(x => new InternalDocument
+                    {
+                        Id = x.DocumentId,
+                        Events = new List<InternalDocumentEvent>
+                                    {
+                                        new InternalDocumentEvent
+                                        {
+                                                Id = x.Id,
+                                                TargetPositionId = x.TargetPositionId,
+                                        }
+                                    }
+                    }).FirstOrDefault();
+                return doc;
+
+            }
+        }
+
         #endregion Waits
 
         #region Events
@@ -347,7 +370,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public void SendForInformation(IContext ctx, InternalDocument document)
+        public void SendBySendList(IContext ctx, InternalDocument document)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {

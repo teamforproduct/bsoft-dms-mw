@@ -71,8 +71,8 @@ namespace BL.Logic.Common
                 EventType = (EnumEventTypes)Enum.Parse(typeof(EnumEventTypes), model.SendType.ToString()),
                 Task = model.Task,
                 Description = model.Description,
-                SourceAgentId = context.CurrentAgentId,
-                SourcePositionId = context.CurrentPositionId,
+                SourceAgentId = model.SourceAgentId,
+                SourcePositionId = model.SourcePositionId,
                 TargetPositionId = model.TargetPositionId,
                 TargetAgentId = model.TargetAgentId,
                 LastChangeUserId = context.CurrentAgentId,
@@ -130,7 +130,7 @@ namespace BL.Logic.Common
             };
         }
 
-        public static IEnumerable<InternalDocumentWait> GetNewDocumentWaits(IContext context, ControlOn controlOnModel, EnumEventTypes? eventType = null)
+        public static IEnumerable<InternalDocumentWait> GetNewDocumentWaits(IContext context, ControlOn controlOnModel, EnumEventTypes? eventType = null, EnumEventCorrespondentType? eventCorrespondentType = null)
         {
             return new List<InternalDocumentWait>
             {
@@ -138,7 +138,7 @@ namespace BL.Logic.Common
             };
         }
 
-        public static InternalDocumentWait GetNewDocumentWait(IContext context, InternalDocumentSendList sendListModel, EnumEventTypes? eventType = null)
+        public static InternalDocumentWait GetNewDocumentWait(IContext context, InternalDocumentSendList sendListModel, EnumEventTypes? eventType = null, EnumEventCorrespondentType? eventCorrespondentType = null)
         {
             return new InternalDocumentWait
             {
@@ -148,15 +148,22 @@ namespace BL.Logic.Common
                 LastChangeUserId = context.CurrentAgentId,
                 LastChangeDate = DateTime.Now,
                 OnEvent = eventType == null ? null :
-                            GetNewDocumentEvent(context, sendListModel.DocumentId, eventType.Value, sendListModel.Description, sendListModel.Task, sendListModel.TargetPositionId,null, sendListModel.TargetPositionId, sendListModel.SourceAgentId)
+                            GetNewDocumentEvent
+                            (
+                                context, sendListModel.DocumentId, eventType.Value, sendListModel.Description, sendListModel.Task,
+                                eventCorrespondentType == EnumEventCorrespondentType.FromSourceToSource? sendListModel.SourcePositionId: sendListModel.TargetPositionId, 
+                                null,
+                                eventCorrespondentType == EnumEventCorrespondentType.FromTargetToTarget ? sendListModel.TargetPositionId : sendListModel.SourcePositionId,
+                                sendListModel.SourceAgentId
+                            )
             };
         }
 
-        public static IEnumerable<InternalDocumentWait> GetNewDocumentWaits(IContext context, InternalDocumentSendList sendListModel, EnumEventTypes? eventType = null)
+        public static IEnumerable<InternalDocumentWait> GetNewDocumentWaits(IContext context, InternalDocumentSendList sendListModel, EnumEventTypes? eventType = null, EnumEventCorrespondentType? eventCorrespondentType = null)
         {
             return new List<InternalDocumentWait>
             {
-                GetNewDocumentWait(context,sendListModel,eventType),
+                GetNewDocumentWait(context,sendListModel,eventType,eventCorrespondentType)
             };
         }
 

@@ -327,6 +327,18 @@
         }
     }
 
+    public class WrongDocumentSendListEntry : DmsExceptions
+    {
+        private const string _MESSAGE = "Duplicate Entry DocumentSendList";
+        public WrongDocumentSendListEntry() : base(_MESSAGE)
+        {
+        }
+
+        public WrongDocumentSendListEntry(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
     public class DocumentSendListDuplication : DmsExceptions
     {
         private const string _MESSAGE = "Duplicate Entry DocumentSendList";

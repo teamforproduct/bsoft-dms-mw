@@ -11,13 +11,13 @@ using BL.Model.Exception;
 
 namespace BL.Logic.DocumentCore.Commands
 {
-    public class SendForControlDocumentCommand : BaseDocumentCommand
+    public class SendForResponsibleExecutionDocumentCommand : BaseDocumentCommand
     {
         private readonly IDocumentsDbProcess _documentDb;
         private readonly IDocumentOperationsDbProcess _operationDb;
         private readonly IAdminsDbProcess _adminDb;
 
-        public SendForControlDocumentCommand(IDocumentsDbProcess documentDb, IDocumentOperationsDbProcess operationDb, IAdminsDbProcess adminDb)
+        public SendForResponsibleExecutionDocumentCommand(IDocumentsDbProcess documentDb, IDocumentOperationsDbProcess operationDb, IAdminsDbProcess adminDb)
         {
             _documentDb = documentDb;
             _operationDb = operationDb;
@@ -33,7 +33,7 @@ namespace BL.Logic.DocumentCore.Commands
                     throw new WrongParameterTypeError();
                 }
                 var model = (InternalDocumentSendList)_param;
-                if (model.SendType != EnumSendTypes.SendForControl)
+                if (model.SendType != EnumSendTypes.SendForResponsibleExecution)
                 {
                     throw new WrongParameterTypeError();
                 }
@@ -70,12 +70,20 @@ namespace BL.Logic.DocumentCore.Commands
         {
             _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, Model.DocumentId, Model.AccessLevel, Model.TargetPositionId.Value);
 
-            Model.CloseEvent = Model.StartEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, Model);
+            var waitSource = CommonDocumentUtilities.GetNewDocumentWait(_context, Model, EnumEventTypes.ControlOn,EnumEventCorrespondentType.FromSourceToSource);
+            var waitTarget = CommonDocumentUtilities.GetNewDocumentWait(_context, Model, EnumEventTypes.SendForResponsibleExecution, EnumEventCorrespondentType.FromSourceToTarget);
+
+            Model.StartEvent = waitSource.OnEvent;
+            waitTarget.ParentWait = waitSource;
+
             CommonDocumentUtilities.SetLastChange(_context, Model);
+
             _document.SendLists = new List<InternalDocumentSendList> { Model };
-            _document.Waits = CommonDocumentUtilities.GetNewDocumentWaits(_context, Model, EnumEventTypes.ControlOn,EnumEventCorrespondentType.FromTargetToTarget);
+
+            _document.Waits = new List<InternalDocumentWait> { waitSource, waitTarget };
 
             _operationDb.SendBySendList(_context, _document);
+
             return null;
         }
 

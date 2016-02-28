@@ -81,6 +81,8 @@ namespace BL.Logic.DependencyInjection
             Bind<IDocumentCommand>().To<ModifyDocumentFileCommand>();
 
             Bind<IDocumentCommand>().To<SendForInformationDocumentCommand>();
+            Bind<IDocumentCommand>().To<SendForControlDocumentCommand>();
+            Bind<IDocumentCommand>().To<SendForResponsibleExecutionDocumentCommand>();
 
             Bind<IDocumentCommand>().To<AddSavedFilterCommand>();
             Bind<IDocumentCommand>().To<DeleteSavedFilterCommand>();
