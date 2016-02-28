@@ -8,6 +8,7 @@ using System;
 using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
 using BL.Database.DBModel.Dictionary;
+using BL.Model.AdminCore;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.InternalModel;
@@ -1144,5 +1145,47 @@ namespace BL.Database.Dictionaries
         }
 
         #endregion DictionaryTags
+
+        #region Admins
+        #region AdminAccessLevels
+        public FrontAdminAccessLevel GetAdminAccessLevel(IContext ctx, int id)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            {
+
+                return dbContext.AdminAccessLevelsSet.Where(x => x.Id == id).Select(x => new FrontAdminAccessLevel
+                {
+                    Id = x.Id,
+                    Code = x.Code,
+                    Name = x.Name,
+                    LastChangeUserId = x.LastChangeUserId,
+                    LastChangeDate = x.LastChangeDate,
+                }).FirstOrDefault();
+            }
+        }
+
+        public IEnumerable<FrontAdminAccessLevel> GetAdminAccessLevels(IContext ctx, FilterAdminAccessLevel filter)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            {
+                var qry = dbContext.AdminAccessLevelsSet.AsQueryable();
+
+                if (filter.AccessLevelId?.Count > 0)
+                {
+                    qry = qry.Where(x => filter.AccessLevelId.Contains(x.Id));
+                }
+
+                return qry.Select(x => new FrontAdminAccessLevel
+                {
+                    Id = x.Id,
+                    Code = x.Code,
+                    Name = x.Name,
+                    LastChangeUserId = x.LastChangeUserId,
+                    LastChangeDate = x.LastChangeDate,
+                }).ToList();
+            }
+        }
+        #endregion AdminAccessLevels
+        #endregion
     }
 }

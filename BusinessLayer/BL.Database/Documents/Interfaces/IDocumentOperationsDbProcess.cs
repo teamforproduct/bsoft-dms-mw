@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using BL.CrossCutting.Interfaces;
+using BL.Model.AdminCore;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
@@ -27,7 +28,6 @@ namespace BL.Database.Documents.Interfaces
         InternalDocument LaunchDocumentSendListPrepare(IContext _context, int model);
         void ChangeIsInWorkAccess(IContext ctx, InternalDocument access);
         InternalDocument AddDocumentLinkPrepare(IContext context, AddDocumentLink model);
-        InternalDocument GetDocumentActionsPrepare(IContext context, int documentId);
         void ChangeIsFavouriteAccess(IContext context, InternalDocumentAccess docAccess);
 
         InternalDocument ChangeDocumentSendListPrepare(IContext context, int documentId);
@@ -60,5 +60,8 @@ namespace BL.Database.Documents.Interfaces
         List<int> AddSavedFilter(IContext context, IEnumerable<InternalDocumentSavedFilter> model);
         void ModifySavedFilter(IContext context, InternalDocumentSavedFilter model);
         void DeleteSavedFilter(IContext context, int id);
+
+        DocumentActionsModel GetDocumentActionsModelPrepare(IContext context, int documentId);
+        InternalDocument GetDocumentActionsPrepare(IContext context, int documentId);
     }
 }

@@ -27,7 +27,6 @@ namespace BL.Logic.DocumentCore
 
         public FrontDocumentAttachedFile GetUserFile(IContext ctx, FilterDocumentFileIdentity fileIdent)
         {
-            //TODO should we check if file exists in DB? 
             var fl = _dbProcess.GetDocumentFileVersion(ctx, fileIdent.DocumentId, fileIdent.OrderInDocument, 1);
             if (fl == null)
             {

@@ -61,8 +61,11 @@ namespace BL.Logic.DocumentCore
 
         public IEnumerable<InternalDictionaryPositionWithActions> GetDocumentActions(IContext ctx, int documentId)
         {
-            var document = _operationDb.GetDocumentActionsPrepare(ctx, documentId);
-            var positions = _dictDb.GetDictionaryPositionsWithActions(ctx, new FilterDictionaryPosition { PositionId = ctx.CurrentPositionsIdList });
+            var model = _operationDb.GetDocumentActionsModelPrepare(ctx, documentId);
+            
+            
+            
+            //var positions = _dictDb.GetDictionaryPositionsWithActions(ctx, new FilterDictionaryPosition { PositionId = ctx.CurrentPositionsIdList });
             //var systemDb = DmsResolver.Current.Get<ISystemDbProcess>();
             //foreach (var position in positions)
             //{

@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BL.Database.DBModel.Admin
 {
     using Dictionary;
     using global::System.ComponentModel.DataAnnotations.Schema;
-    using System;
 
     public partial class AdminRoles
     {

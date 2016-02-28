@@ -1,9 +1,9 @@
 ﻿using BL.Model.DictionaryCore;
 using System.Collections.Generic;
 using BL.CrossCutting.Interfaces;
+using BL.Model.AdminCore;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;
-using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.Enums;
 
 namespace BL.Logic.DictionaryCore.Interfaces
@@ -118,5 +118,14 @@ namespace BL.Logic.DictionaryCore.Interfaces
         IEnumerable<FrontDictionaryTag> GetDictionaryTags(IContext context, FilterDictionaryTag filter);
         FrontDictionaryTag GetDictionaryTag(IContext context, int id);
         #endregion DictionaryTags
+
+        #region Dictionary Admin
+        #region AdminAccessLevels
+        FrontAdminAccessLevel GetAdminAccessLevel(IContext context, int id);
+
+        IEnumerable<FrontAdminAccessLevel> GetAdminAccessLevels(IContext context, FilterAdminAccessLevel filter);
+        #endregion AdminAccessLevels
+
+        #endregion
     }
 }

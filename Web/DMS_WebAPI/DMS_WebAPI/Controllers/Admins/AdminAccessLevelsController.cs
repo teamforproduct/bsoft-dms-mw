@@ -1,12 +1,9 @@
 ﻿using BL.Logic.DependencyInjection;
-using BL.Logic.AdminCore.Interfaces;
-using BL.Logic.DictionaryCore.Interfaces;
 using BL.Model.AdminCore;
-using BL.Model.DictionaryCore;
-using BL.Model.DocumentCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Web.Http;
+using BL.Logic.DictionaryCore.Interfaces;
 
 namespace DMS_WebAPI.Controllers.Admins
 {
@@ -21,8 +18,8 @@ namespace DMS_WebAPI.Controllers.Admins
         public IHttpActionResult Get([FromUri] FilterAdminAccessLevel filter)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var admProc = DmsResolver.Current.Get<IAdminService>();
-            var accLevels = admProc.GetAdminAccessLevels(cxt, filter);
+            var dictSrv = DmsResolver.Current.Get<IDictionaryService>();
+            var accLevels = dictSrv.GetAdminAccessLevels(cxt, filter);
             return new JsonResult(accLevels, this);
         }
 
@@ -34,8 +31,8 @@ namespace DMS_WebAPI.Controllers.Admins
         public IHttpActionResult Get(int id)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var admProc = DmsResolver.Current.Get<IAdminService>();
-            var accLevel = admProc.GetAdminAccessLevel(cxt, id);
+            var dictSrv = DmsResolver.Current.Get<IDictionaryService>();
+            var accLevel = dictSrv.GetAdminAccessLevel(cxt, id);
             return new JsonResult(accLevel, this);
         }
     }

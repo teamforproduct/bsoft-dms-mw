@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
@@ -231,7 +230,7 @@ namespace BL.Database.Documents
                 paging.TotalItemsCount = qry.Count(); //TODO pay attention to this when we will add paging
                 qry = qry.OrderByDescending(x => x.Doc.CreateDate)
                     .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
-                //TODO GroupJoin
+
                 var evnt =
                     dbContext.DocumentEventsSet.Join(qry, ev => ev.DocumentId, rs => rs.Doc.Id, (e, r) => new { ev = e })
                         .GroupBy(g => g.ev.DocumentId)
@@ -299,14 +298,12 @@ namespace BL.Database.Documents
                     x1.doc.LinkedDocumentsCount = x1.ev.LinkCnt;
                 }
 
-                //paging.TotalPageCount = docs.Count; //TODO pay attention to this when we will add paging
                 return docs;
             }
         }
 
         public FrontDocument GetDocument(IContext ctx, int documentId)
         {
-            //TODO OPIMIZE
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
                 var dbDoc = CommonQueries.GetDocumentQuery(dbContext).FirstOrDefault(x => x.Doc.Id == documentId && ctx.CurrentPositionsIdList.Contains(x.Acc.PositionId));
@@ -355,8 +352,8 @@ namespace BL.Database.Documents
                     RegistrationFullNumber =
                                                 (!dbDoc.Doc.IsRegistered ? "#" : "") +
                                                 (dbDoc.Doc.RegistrationNumber != null
-                                                        ? (dbDoc.Doc.RegistrationNumberPrefix + dbDoc.Doc.RegistrationNumber.ToString() + dbDoc.Doc.RegistrationNumberSuffix)
-                                                        : ("#" + dbDoc.Doc.Id.ToString())),
+                                                        ? (dbDoc.Doc.RegistrationNumberPrefix + dbDoc.Doc.RegistrationNumber + dbDoc.Doc.RegistrationNumberSuffix)
+                                                        : ("#" + dbDoc.Doc.Id)),
                     GeneralInfo = dbDoc.DirName + " " + dbDoc.DocTypeName,
                     LinkId = dbDoc.Doc.LinkId,
                     IsFavourite = dbDoc.Acc.IsFavourite,
@@ -641,7 +638,6 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
                 //ADD OTHER TABLES!!!!
-                //TODO к Сергею разобраться с аттачами
                 dbContext.DocumentEventsSet.RemoveRange(dbContext.DocumentEventsSet.Where(x => x.DocumentId == id));
                 dbContext.DocumentAccessesSet.RemoveRange(dbContext.DocumentAccessesSet.Where(x => x.DocumentId == id));
                 dbContext.DocumentFilesSet.RemoveRange(dbContext.DocumentFilesSet.Where(x => x.DocumentId == id));
