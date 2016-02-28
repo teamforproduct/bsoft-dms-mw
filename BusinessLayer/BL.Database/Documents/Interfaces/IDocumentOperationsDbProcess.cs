@@ -15,7 +15,7 @@ namespace BL.Database.Documents.Interfaces
 
         IEnumerable<InternalPositionInfo> GetInternalPositionsInfo(IContext ctx, List<int> positionIds);
 
-        void AddDocumentWaits(IContext ctx, IEnumerable<InternalDocumentWait> documentWaits);
+        void AddDocumentWaits(IContext ctx, InternalDocument documentWaits);
 
         void AddDocumentEvents(IContext ctx, IEnumerable<InternalDocumentEvent> docEvents);
         IEnumerable<FrontDocumentEvent> GetDocumentEvents(IContext ctx, FilterDocumentEvent filter);
@@ -24,7 +24,7 @@ namespace BL.Database.Documents.Interfaces
         InternalDocument ChangeIsFavouriteAccessPrepare(IContext context, int documentId);
         InternalDocument ControlOffDocumentPrepare(IContext context, int eventId);
         IEnumerable<InternalDocumentAccess> GetDocumentAccesses(IContext ctx, int documentId);
-        InternalDocument LaunchDocumentSendListPrepare(IContext _context, int model);
+        InternalDocument LaunchDocumentSendListPrepare(IContext context, int model);
         void ChangeIsInWorkAccess(IContext ctx, InternalDocument access);
         InternalDocument AddDocumentLinkPrepare(IContext context, AddDocumentLink model);
         InternalDocument GetDocumentActionsPrepare(IContext context, int documentId);

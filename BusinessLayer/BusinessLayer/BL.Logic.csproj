@@ -60,6 +60,7 @@
     <Compile Include="DictionaryCore\DocumentType\AddDictionaryDocumentTypeCommand.cs" />
     <Compile Include="DictionaryCore\DocumentType\ModifyDictionaryDocumentTypeCommand.cs" />
     <Compile Include="DictionaryCore\Interfaces\IDictionaryService.cs" />
+    <Compile Include="DocumentCore\Commands\SendForControlDocumentCommand.cs" />
     <Compile Include="DocumentCore\SendListCommands\AddByStandartSendListDocumentSendListCommand.cs" />
     <Compile Include="DocumentCore\SendListCommands\AddByStandartSendListDocumentRestrictedSendListCommand.cs" />
     <Compile Include="DocumentCore\AdditionalCommands\AddDocumentFileCommand.cs" />

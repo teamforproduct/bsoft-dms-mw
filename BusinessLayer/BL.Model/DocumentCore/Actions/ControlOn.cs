@@ -1,5 +1,7 @@
 ﻿using BL.Model.Users;
 using System;
+using System.Linq;
+using BL.Model.DocumentCore.InternalModel;
 
 namespace BL.Model.DocumentCore.Actions
 {
@@ -19,6 +21,14 @@ namespace BL.Model.DocumentCore.Actions
             Description = controlChange.Description;
             DueDate = controlChange.DueDate;
             AttentionDate = controlChange.AttentionDate;
+        }
+
+        public ControlOn(InternalDocumentSendList sendList)
+        {
+            DocumentId = sendList.DocumentId;
+            Task = sendList.Task;
+            Description = sendList.Description;
+            DueDate = new[] {sendList.DueDate ?? DateTime.Now, DateTime.Now.AddDays(sendList.DueDay ?? 0)}.Max();
         }
 
         /// <summary>

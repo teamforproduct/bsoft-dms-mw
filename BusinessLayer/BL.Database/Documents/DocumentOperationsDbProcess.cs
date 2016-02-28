@@ -126,12 +126,11 @@ namespace BL.Database.Documents
 
         #region Waits
 
-        public void AddDocumentWaits(IContext ctx, IEnumerable<InternalDocumentWait> documentWaits)
+        public void AddDocumentWaits(IContext ctx, InternalDocument document)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-                var docWaits = ModelConverter.GetDbDocumentWaits(documentWaits);
-                dbContext.DocumentWaitsSet.AddRange(docWaits);
+                dbContext.DocumentWaitsSet.AddRange(ModelConverter.GetDbDocumentWaits(document.Waits));
                 dbContext.SaveChanges();
             }
         }
@@ -359,8 +358,7 @@ namespace BL.Database.Documents
                     LastChangeUserId = sendList.LastChangeUserId
                 };
                 dbContext.DocumentSendListsSet.Attach(sendListDb);
-                sendListDb.StartEvent = ModelConverter.GetDbDocumentEvent(sendList.StartEvent);
-                sendListDb.CloseEvent = sendListDb.StartEvent;
+                sendListDb.CloseEvent = sendListDb.StartEvent = ModelConverter.GetDbDocumentEvent(sendList.StartEvent);
                 var entry = dbContext.Entry(sendListDb);
                 entry.Property(x => x.Id).IsModified = true;
                 entry.Property(x => x.LastChangeDate).IsModified = true;
@@ -369,6 +367,7 @@ namespace BL.Database.Documents
                 {
                     dbContext.DocumentAccessesSet.AddRange(CommonQueries.GetDbDocumentAccesses(dbContext, document.Accesses, document.Id).ToList());
                 }
+                dbContext.DocumentWaitsSet.AddRange(ModelConverter.GetDbDocumentWaits(document.Waits));
                 dbContext.SaveChanges();
             }
         }

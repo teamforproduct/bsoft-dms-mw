@@ -11,13 +11,13 @@ using BL.Model.Exception;
 
 namespace BL.Logic.DocumentCore.Commands
 {
-    public class SendForInformationDocumentCommand : BaseDocumentCommand
+    public class SendForControlDocumentCommand : BaseDocumentCommand
     {
         private readonly IDocumentsDbProcess _documentDb;
         private readonly IDocumentOperationsDbProcess _operationDb;
         private readonly IAdminsDbProcess _adminDb;
 
-        public SendForInformationDocumentCommand(IDocumentsDbProcess documentDb, IDocumentOperationsDbProcess operationDb, IAdminsDbProcess adminDb)
+        public SendForControlDocumentCommand(IDocumentsDbProcess documentDb, IDocumentOperationsDbProcess operationDb, IAdminsDbProcess adminDb)
         {
             _documentDb = documentDb;
             _operationDb = operationDb;
@@ -33,7 +33,7 @@ namespace BL.Logic.DocumentCore.Commands
                     throw new WrongParameterTypeError();
                 }
                 var model = (InternalDocumentSendList)_param;
-                if (model.SendType != EnumSendTypes.SendForInformation && model.SendType != EnumSendTypes.SendForConsideration)
+                if (model.SendType != EnumSendTypes.SendForControl)
                 {
                     throw new WrongParameterTypeError();
                 }
@@ -72,6 +72,9 @@ namespace BL.Logic.DocumentCore.Commands
             Model.CloseEvent = Model.StartEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, Model);
             CommonDocumentUtilities.SetLastChange(_context, Model);
             _document.SendLists = new List<InternalDocumentSendList> { Model };
+            var controlOn = new ControlOn();    //TODO разобраться с Soure
+            _document.Waits = CommonDocumentUtilities.GetNewDocumentWaits(_context, new ControlOn(Model), EnumEventTypes.ControlOn,Model.TargetPositionId);
+
             _operationDb.SendForInformation(_context, _document);
             return null;
         }

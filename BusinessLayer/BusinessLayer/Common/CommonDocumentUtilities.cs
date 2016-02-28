@@ -42,42 +42,21 @@ namespace BL.Logic.Common
             }
         }
 
-        public static InternalDocumentAccess GetNewDocumentAccess(IContext context)
-        {
-            return new InternalDocumentAccess
-            {
-                AccessLevel = EnumDocumentAccesses.PersonalRefIO,
-                IsInWork = true,
-                IsFavourite = false,
-                LastChangeDate = DateTime.Now,
-                LastChangeUserId = context.CurrentAgentId,
-                PositionId = context.CurrentPositionId
-            };
-        }
-
-        public static IEnumerable<InternalDocumentAccess> GetNewDocumentAccesses(IContext context)
-        {
-            return new List<InternalDocumentAccess>
-            {
-                GetNewDocumentAccess(context),
-            };
-        }
-
-        public static InternalDocumentAccess GetNewDocumentAccess(IContext context, int? documentId, EnumDocumentAccesses accessLevel, int positionId)
+        public static InternalDocumentAccess GetNewDocumentAccess(IContext context, int? documentId = null, EnumDocumentAccesses? accessLevel = null, int? positionId = null)
         {
             return new InternalDocumentAccess
             {
                 DocumentId = documentId ?? 0,
-                AccessLevel = accessLevel,
+                AccessLevel = accessLevel??EnumDocumentAccesses.PersonalRefIO,
                 IsInWork = true,
                 IsFavourite = false,
                 LastChangeDate = DateTime.Now,
                 LastChangeUserId = context.CurrentAgentId,
-                PositionId = positionId
+                PositionId = positionId?? context.CurrentPositionId
             };
         }
 
-        public static IEnumerable<InternalDocumentAccess> GetNewDocumentAccesses(IContext context, int? documentId, EnumDocumentAccesses accessLevel, int positionId)
+        public static IEnumerable<InternalDocumentAccess> GetNewDocumentAccesses(IContext context, int? documentId = null, EnumDocumentAccesses? accessLevel = null, int? positionId = null)
         {
             return new List<InternalDocumentAccess>
             {
@@ -100,6 +79,14 @@ namespace BL.Logic.Common
                 LastChangeDate = DateTime.Now,
                 Date = DateTime.Now,
                 CreateDate = DateTime.Now,
+            };
+        }
+
+        public static IEnumerable<InternalDocumentEvent> GetNewDocumentEvents(IContext context, InternalDocumentSendList model)
+        {
+            return new List<InternalDocumentEvent>
+            {
+                GetNewDocumentEvent(context,model),
             };
         }
 
