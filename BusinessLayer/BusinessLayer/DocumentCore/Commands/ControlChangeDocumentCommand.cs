@@ -59,10 +59,9 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override object Execute()
         {
-            _docWait.OffEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, _docWait.DocumentId, EnumEventTypes.ControlChange,
-                                    $"{_docWait.Task} / {Model.Description}", _docWait.OnEvent.TargetPositionId);
+            _docWait.OffEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, _docWait.DocumentId, EnumEventTypes.ControlChange, Model.Description, _docWait.OnEvent.Task, _docWait.OnEvent.TargetPositionId);
             CommonDocumentUtilities.SetLastChange(_context, _docWait);
-            var controlOn = new ControlOn(Model, _docWait.DocumentId, _docWait.Task);
+            var controlOn = new ControlOn(Model, _docWait.DocumentId, _docWait.OnEvent.Task);
             var wait = CommonDocumentUtilities.GetNewDocumentWait(_context, controlOn);
             wait.ParentId = _docWait.Id;
             var waits = new List<InternalDocumentWait> { wait, _docWait};

@@ -65,15 +65,11 @@ namespace BL.Logic.DocumentCore.Commands
         }
         public override object Execute()
         {
-            if (Model.TargetPositionId.HasValue)
-            {
-                _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, Model.DocumentId, Model.AccessLevel, Model.TargetPositionId.Value);
-            }
+            _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, Model.DocumentId, Model.AccessLevel, Model.TargetPositionId.Value);
             Model.CloseEvent = Model.StartEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, Model);
             CommonDocumentUtilities.SetLastChange(_context, Model);
             _document.SendLists = new List<InternalDocumentSendList> { Model };
-            var controlOn = new ControlOn();    //TODO разобраться с Soure
-            _document.Waits = CommonDocumentUtilities.GetNewDocumentWaits(_context, new ControlOn(Model), EnumEventTypes.ControlOn,Model.TargetPositionId);
+            _document.Waits = CommonDocumentUtilities.GetNewDocumentWaits(_context, Model, EnumEventTypes.ControlOn);
 
             _operationDb.SendForInformation(_context, _document);
             return null;

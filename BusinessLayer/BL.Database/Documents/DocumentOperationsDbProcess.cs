@@ -198,7 +198,6 @@ namespace BL.Database.Documents
                                         new InternalDocumentWait
                                         {
                                             Id = x.Id,
-                                            Task = x.Task,
                                             DocumentId = x.DocumentId,
                                             OffEventId = x.OffEventId,
                                             OnEvent = new InternalDocumentEvent
@@ -206,7 +205,9 @@ namespace BL.Database.Documents
                                                 Id = x.OnEvent.Id,
                                                 SourcePositionId = x.OnEvent.SourcePositionId,
                                                 TargetPositionId = x.OnEvent.TargetPositionId,
+                                                Task = x.OnEvent.Task,
                                                 Description = x.OnEvent.Description
+
                                             }
                                         }
                                     }
@@ -363,11 +364,11 @@ namespace BL.Database.Documents
                 entry.Property(x => x.Id).IsModified = true;
                 entry.Property(x => x.LastChangeDate).IsModified = true;
                 entry.Property(x => x.LastChangeUserId).IsModified = true;
-                if (document.Accesses != null && document.Accesses.Any())
-                {
-                    dbContext.DocumentAccessesSet.AddRange(CommonQueries.GetDbDocumentAccesses(dbContext, document.Accesses, document.Id).ToList());
-                }
+
+                dbContext.DocumentAccessesSet.AddRange(CommonQueries.GetDbDocumentAccesses(dbContext, document.Accesses, document.Id).ToList());
+
                 dbContext.DocumentWaitsSet.AddRange(ModelConverter.GetDbDocumentWaits(document.Waits));
+
                 dbContext.SaveChanges();
             }
         }

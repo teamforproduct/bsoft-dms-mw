@@ -11,7 +11,6 @@ namespace BL.Model.DocumentCore.InternalModel
         public int OnEventId { get; set; }
         public int? OffEventId { get; set; }
         public int? ResultTypeId { get; set; }
-        public string Task { get; set; }
         public DateTime? DueDate { get; set; }
         public DateTime? AttentionDate { get; set; }
         public InternalDocumentEvent OnEvent { get; set; }

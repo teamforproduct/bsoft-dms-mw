@@ -73,7 +73,7 @@ namespace BL.Logic.DocumentCore.Commands
                         : "");
 
                 evtToAdd.AddRange(actuelPosList.Select(targetPositionId => 
-                            CommonDocumentUtilities.GetNewDocumentEvent(_context, Model.DocumentId, EnumEventTypes.SendMessage, description, targetPositionId)));
+                            CommonDocumentUtilities.GetNewDocumentEvent(_context, Model.DocumentId, EnumEventTypes.SendMessage, description, null, targetPositionId)));
             }
             _operationDb.AddDocumentEvents(_context, evtToAdd);
 

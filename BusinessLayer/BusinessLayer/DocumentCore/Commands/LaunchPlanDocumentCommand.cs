@@ -72,7 +72,7 @@ namespace BL.Logic.DocumentCore.Commands
         {
             CommonDocumentUtilities.SetLastChange(_context, _document);
             _document.IsLaunchPlan = true;
-            _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, _document.Id, EnumEventTypes.LaunchPlan, EnumEventTypes.LaunchPlan.ToString());
+            _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, _document.Id, EnumEventTypes.LaunchPlan);
             _documentDb.ChangeIsLaunchPlanDocument(_context, _document);
             return Model;
         }

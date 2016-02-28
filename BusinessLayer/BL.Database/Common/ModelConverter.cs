@@ -33,6 +33,7 @@ namespace BL.Database.Common
             return evt == null ? null :
                 new DocumentEvents
                 {
+                    Task = evt.Task,
                     Description = evt.Description,
                     Date = evt.Date,
                     CreateDate = evt.CreateDate,
@@ -60,7 +61,6 @@ namespace BL.Database.Common
                 new DocumentWaits
             {
                 AttentionDate = docWait.AttentionDate,
-                Task = docWait.Task,
                 DocumentId = docWait.DocumentId,
                 DueDate = docWait.DueDate,
                 LastChangeDate = docWait.LastChangeDate,

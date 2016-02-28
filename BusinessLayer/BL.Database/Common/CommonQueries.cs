@@ -159,6 +159,7 @@ namespace BL.Database.Common
 
         public static IEnumerable<DocumentAccesses> GetDbDocumentAccesses(DmsContext dbContext, IEnumerable<InternalDocumentAccess> docAccesses, int documentId)
         {
+            if (docAccesses == null || !docAccesses.Any()) return null;
             var accPositions = dbContext.DocumentAccessesSet.Where(x => x.DocumentId == documentId).Select(x => x.PositionId);
             return docAccesses.Where(x=>!accPositions.Contains(x.PositionId)).Select(ModelConverter.GetDbDocumentAccess);
         }
@@ -328,7 +329,6 @@ namespace BL.Database.Common
                 OnEventId = x.Wait.OnEventId,
                 OffEventId = x.Wait.OffEventId,
                 ResultTypeId = x.Wait.ResultTypeId,
-                Task = x.Wait.Task,
                 DueDate = x.Wait.DueDate,
                 AttentionDate = x.Wait.AttentionDate,
                 OnEvent = x.OnEvent == null
@@ -406,7 +406,6 @@ namespace BL.Database.Common
                 OnEventId = x.Wait.OnEventId,
                 OffEventId = x.Wait.OffEventId,
                 ResultTypeId = x.Wait.ResultTypeId,
-                Task = x.Wait.Task,
                 DueDate = x.Wait.DueDate,
                 AttentionDate = x.Wait.AttentionDate,
                 OnEvent = x.OnEvent == null
