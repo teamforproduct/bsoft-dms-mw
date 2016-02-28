@@ -4,6 +4,7 @@ using System.Linq;
 using BL.Database.Admins.Interfaces;
 using BL.Logic.Common;
 using BL.Database.Documents.Interfaces;
+using BL.Logic.AdminCore.Interfaces;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
@@ -15,13 +16,13 @@ namespace BL.Logic.DocumentCore.Commands
     {
         private readonly IDocumentsDbProcess _documentDb;
         private readonly IDocumentOperationsDbProcess _operationDb;
-        private readonly IAdminsDbProcess _adminDb;
+        private readonly IAdminService _admin;
 
-        public SendForResponsibleExecutionDocumentCommand(IDocumentsDbProcess documentDb, IDocumentOperationsDbProcess operationDb, IAdminsDbProcess adminDb)
+        public SendForResponsibleExecutionDocumentCommand(IDocumentsDbProcess documentDb, IDocumentOperationsDbProcess operationDb, IAdminService admin)
         {
             _documentDb = documentDb;
             _operationDb = operationDb;
-            _adminDb = adminDb;
+            _admin = admin;
         }
 
         private InternalDocumentSendList Model
@@ -49,7 +50,7 @@ namespace BL.Logic.DocumentCore.Commands
         public override bool CanExecute()
         {
             _context.SetCurrentPosition(Model.SourcePositionId);
-            _adminDb.VerifyAccess(_context, CommandType);   //TODO без позиций
+            _admin.VerifyAccess(_context, CommandType);   //TODO без позиций
             _document = _documentDb.GetBlankInternalDocumentById(_context, Model.DocumentId);
             if (_document == null)
             {
