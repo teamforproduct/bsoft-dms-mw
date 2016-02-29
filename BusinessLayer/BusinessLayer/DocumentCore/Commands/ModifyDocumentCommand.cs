@@ -60,7 +60,7 @@ namespace BL.Logic.DocumentCore.Commands
             _document.SenderDate = Model.SenderDate;
             _document.Addressee = Model.Addressee;
             _document.AccessLevel = Model.AccessLevel;
-            if (_document.Accesses != null)
+            if (_document.Accesses?.Count() >0 )
             {
                 var docAcc = _document.Accesses.First();
                 CommonDocumentUtilities.SetLastChange(_context, docAcc);
