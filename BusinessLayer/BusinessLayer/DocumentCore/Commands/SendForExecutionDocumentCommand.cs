@@ -60,30 +60,32 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new PlanPointHasAlredyBeenLaunched();
             }
-            if (!Model.TargetPositionId.HasValue || _document.Events == null)
+            if (!Model.TargetPositionId.HasValue || _document.Waits == null|| _document.Waits.Count()>1)
             {
                 throw new WrongDocumentSendListEntry();
             }
 
             return true;
         }
+
         public override object Execute()
         {
             _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, Model.DocumentId, Model.AccessLevel, Model.TargetPositionId.Value);
 
-/*
-            Model.StartEvent = waitSource.OnEvent;
-
+            Model.CloseEvent = Model.StartEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, Model);
+            CommonDocumentUtilities.SetLastChange(_context, Model);
 
             var waitTarget = CommonDocumentUtilities.GetNewDocumentWait(_context, Model, EnumEventTypes.SendForExecution, EnumEventCorrespondentType.FromSourceToTarget);
-            waitTarget.ParentWait = waitSource;
 
-            CommonDocumentUtilities.SetLastChange(_context, Model);
+            var waitSource = _document.Waits.First();
+
+            waitTarget.ParentWait = waitSource;
+            waitTarget.OnEvent.SourcePositionId = waitSource.OnEvent.TargetPositionId;
 
             _document.SendLists = new List<InternalDocumentSendList> { Model };
 
-            _document.Waits = new List<InternalDocumentWait> { waitSource, waitTarget };
-*/
+            _document.Waits = new List<InternalDocumentWait> {  waitTarget };
+
             _operationDb.SendBySendList(_context, _document);
 
             return null;

@@ -51,7 +51,7 @@ namespace BL.Logic.DocumentCore.Commands
         {
             _context.SetCurrentPosition(Model.SourcePositionId);
             _admin.VerifyAccess(_context, CommandType);   //TODO без позиций
-            _document = _documentDb.GetBlankInternalDocumentById(_context, Model.DocumentId);
+            _document = _operationDb.SendForExecutionDocumentPrepare(_context, Model);
             if (_document == null)
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
@@ -60,7 +60,7 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new PlanPointHasAlredyBeenLaunched();
             }
-            if (!Model.TargetPositionId.HasValue)
+            if (!Model.TargetPositionId.HasValue || _document.Waits != null)
             {
                 throw new WrongDocumentSendListEntry();
             }
