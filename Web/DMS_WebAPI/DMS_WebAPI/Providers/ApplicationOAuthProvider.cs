@@ -106,6 +106,7 @@ namespace DMS_WebAPI.Providers
 
                 if (!int.TryParse(System.Web.HttpContext.Current.Request.Headers["DatabaseId"], out dbId))
                 {
+                    //TODO Remove
                     if (System.Web.HttpContext.Current.IsDebuggingEnabled)
                     {
                         System.Web.HttpContext.Current.Request.Headers["DatabaseId"] = "1";

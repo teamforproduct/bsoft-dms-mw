@@ -129,8 +129,9 @@ namespace DMS_WebAPI.Controllers.Documents
         /// </summary>
         /// <param name="model">Модель для обновления документа</param>
         /// <returns>Обновленный документ</returns>
-        public IHttpActionResult Put([FromBody]ModifyDocument model)
+        public IHttpActionResult Put(int id, [FromBody]ModifyDocument model)
         {
+            model.Id = id;
             var timeM = new System.Diagnostics.Stopwatch();
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();

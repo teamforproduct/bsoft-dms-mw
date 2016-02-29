@@ -366,6 +366,7 @@ namespace BL.Database.Documents
                     .Select(x => new InternalDocument
                     {
                         Id = x.Id,
+                        IsFavourite =x.IsFavourite,
                         Accesses = new List<InternalDocumentAccess>
                                     {
                                         new InternalDocumentAccess

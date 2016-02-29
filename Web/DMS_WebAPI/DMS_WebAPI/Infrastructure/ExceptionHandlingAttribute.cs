@@ -13,6 +13,11 @@ namespace DMS_WebAPI.Infrastructure
         {
             HttpContext.Current.Response.Clear();
             HttpContext.Current.Response.StatusCode = (int)HttpStatusCode.OK;
+            //TODO Remove
+            if (System.Web.HttpContext.Current.IsDebuggingEnabled)
+            {
+                HttpContext.Current.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            }          
             HttpContext.Current.Response.ContentType = "application/json";
             if (context.Exception is DmsExceptions)
             {

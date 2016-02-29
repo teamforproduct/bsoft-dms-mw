@@ -595,7 +595,7 @@ namespace BL.Database.Documents
                 entry.Property(x => x.SenderDate).IsModified = true;
                 entry.Property(x => x.Addressee).IsModified = true;
 
-                var docAccess = document.Accesses.First();
+                var docAccess = document.Accesses.FirstOrDefault();
                 if (docAccess != null)
                 {
                     var acc = new DocumentAccesses
@@ -795,9 +795,12 @@ namespace BL.Database.Documents
                     doc.Events = ModelConverter.GetDbDocumentEvents(document.Events.Where(x => x.Id == 0)).ToList();
                 }
 
+                //TODO При получении документа возвращаеться только один Accesses
                 if (document.Accesses != null && document.Accesses.Any())
                 {
-                    doc.Accesses = CommonQueries.GetDbDocumentAccesses(dbContext, document.Accesses, doc.Id).ToList();
+                    //TODO Не сохраняеться через свойства
+                    //doc.Accesses = CommonQueries.GetDbDocumentAccesses(dbContext, document.Accesses, doc.Id).ToList();
+                    dbContext.DocumentAccessesSet.AddRange(CommonQueries.GetDbDocumentAccesses(dbContext, document.Accesses, doc.Id).ToList());
                 }
 
                 dbContext.SaveChanges();
