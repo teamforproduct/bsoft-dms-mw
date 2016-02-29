@@ -68,14 +68,18 @@ namespace BL.Logic.DocumentCore.Commands
         {
             _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, Model.DocumentId, Model.AccessLevel, Model.TargetPositionId.Value);
 
+            _document.Waits = CommonDocumentUtilities.GetNewDocumentWaits(_context, Model, EnumEventTypes.ControlOn, EnumEventCorrespondentType.FromTargetToTarget);
+
             Model.CloseEvent = Model.StartEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, Model);
             CommonDocumentUtilities.SetLastChange(_context, Model);
             _document.SendLists = new List<InternalDocumentSendList> { Model };
-            _document.Waits = CommonDocumentUtilities.GetNewDocumentWaits(_context, Model, EnumEventTypes.ControlOn,EnumEventCorrespondentType.FromTargetToTarget);
 
             _operationDb.SendBySendList(_context, _document);
+
             return null;
         }
+
+        private EnumEventTypes _eventType => (EnumEventTypes)Enum.Parse(typeof(EnumEventTypes), Model.SendType.ToString());
 
         public override EnumDocumentActions CommandType => (EnumDocumentActions)Enum.Parse(typeof(EnumDocumentActions), Model.SendType.ToString());
     }

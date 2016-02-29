@@ -274,37 +274,6 @@ namespace BL.Database.Documents
             }
         }
 
-        public InternalDocument SendForExecutionDocumentPrepare(IContext context, InternalDocumentSendList sendList)
-        {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
-            {
-                var doc = CommonQueries.GetDocumentQuery(dbContext)
-                    .Where(x => x.Doc.Id == sendList.DocumentId && context.CurrentPositionsIdList.Contains(x.Acc.PositionId))
-                    .Select(x => new InternalDocument
-                    {
-                        Id = x.Doc.Id
-                    }).FirstOrDefault();
-                if (doc == null) return null;
-
-                doc.Waits = dbContext.DocumentWaitsSet
-                    .Where(x => x.DocumentId == sendList.DocumentId && x.OnEvent.Task == sendList.Task && x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecution)
-                    .Select(x => new List<InternalDocumentWait>
-                                    {
-                                        new InternalDocumentWait
-                                        {
-                                                Id = x.Id,
-                                                OnEvent = new InternalDocumentEvent
-                                                {
-                                                    TargetPositionId = x.OnEvent.TargetPositionId
-                                                }
-                                        }
-                                    }
-                    ).FirstOrDefault();
-                return doc;
-  
-            }
-        }
-
         #endregion Waits
 
         #region Events
@@ -455,7 +424,9 @@ namespace BL.Database.Documents
 
                 dbContext.DocumentAccessesSet.AddRange(CommonQueries.GetDbDocumentAccesses(dbContext, document.Accesses, document.Id).ToList());
 
+                dbContext.DocumentEventsSet.AddRange(ModelConverter.GetDbDocumentEvents(document.Events));
                 dbContext.DocumentWaitsSet.AddRange(ModelConverter.GetDbDocumentWaits(document.Waits));
+                dbContext.DocumentSubscriptionsSet.AddRange(ModelConverter.GetDbDocumentSubscriptions(document.Subscriptions));
 
                 dbContext.SaveChanges();
             }
@@ -497,6 +468,69 @@ namespace BL.Database.Documents
                 dbContext.DocumentTagsSet.AddRange(newDictionaryTags);
 
                 dbContext.SaveChanges();
+            }
+        }
+
+        public InternalDocument SendForExecutionDocumentPrepare(IContext context, InternalDocumentSendList sendList)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var doc = CommonQueries.GetDocumentQuery(dbContext)
+                    .Where(x => x.Doc.Id == sendList.DocumentId && context.CurrentPositionsIdList.Contains(x.Acc.PositionId))
+                    .Select(x => new InternalDocument
+                    {
+                        Id = x.Doc.Id
+                    }).FirstOrDefault();
+                if (doc == null) return null;
+
+                doc.Waits = dbContext.DocumentWaitsSet
+                    .Where(x => x.DocumentId == sendList.DocumentId && x.OnEvent.Task == sendList.Task && x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecution)
+                    .Select(x => new List<InternalDocumentWait>
+                                    {
+                                        new InternalDocumentWait
+                                        {
+                                                Id = x.Id,
+                                                OnEvent = new InternalDocumentEvent
+                                                {
+                                                    TargetPositionId = x.OnEvent.TargetPositionId
+                                                }
+                                        }
+                                    }
+                    ).FirstOrDefault();
+                return doc;
+
+            }
+        }
+
+        public InternalDocument SendForSigningDocumentPrepare(IContext context, InternalDocumentSendList sendList)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var doc = CommonQueries.GetDocumentQuery(dbContext)
+                    .Where(x => x.Doc.Id == sendList.DocumentId && context.CurrentPositionsIdList.Contains(x.Acc.PositionId))
+                    .Select(x => new InternalDocument
+                    {
+                        Id = x.Doc.Id
+                    }).FirstOrDefault();
+                if (doc == null) return null;
+                /*
+                doc.Waits = dbContext.DocumentWaitsSet
+                    .Where(x => x.DocumentId == sendList.DocumentId && x.OnEvent.Task == sendList.Task && x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecution)
+                    .Select(x => new List<InternalDocumentWait>
+                                    {
+                                        new InternalDocumentWait
+                                        {
+                                                Id = x.Id,
+                                                OnEvent = new InternalDocumentEvent
+                                                {
+                                                    TargetPositionId = x.OnEvent.TargetPositionId
+                                                }
+                                        }
+                                    }
+                    ).FirstOrDefault();
+                    */
+                return doc;
+
             }
         }
 

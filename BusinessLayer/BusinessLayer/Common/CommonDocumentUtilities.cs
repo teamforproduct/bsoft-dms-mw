@@ -143,7 +143,7 @@ namespace BL.Logic.Common
             return new InternalDocumentWait
             {
                 DocumentId = sendListModel.DocumentId,
-                DueDate = new[] { sendListModel.DueDate ?? DateTime.Now, DateTime.Now.AddDays(sendListModel.DueDay ?? 0) }.Max(),
+                DueDate = new[] { sendListModel.DueDate, ( !sendListModel.DueDay.HasValue|| sendListModel.DueDay.Value < 0 ) ? null : (DateTime?)DateTime.Now.AddDays(sendListModel.DueDay.Value) }.Max(),
                 //AttentionDate = sendListModel.AttentionDate,
                 LastChangeUserId = context.CurrentAgentId,
                 LastChangeDate = DateTime.Now,
@@ -164,6 +164,33 @@ namespace BL.Logic.Common
             return new List<InternalDocumentWait>
             {
                 GetNewDocumentWait(context,sendListModel,eventType,eventCorrespondentType)
+            };
+        }
+
+        public static InternalDocumentSubscription GetNewDocumentSubscription(IContext context, InternalDocumentSendList sendListModel, EnumEventTypes? eventType = null)
+        {
+            return new InternalDocumentSubscription
+            {
+                DocumentId = sendListModel.DocumentId,
+                LastChangeUserId = context.CurrentAgentId,
+                LastChangeDate = DateTime.Now,
+                SendEvent = eventType == null ? null :
+                            GetNewDocumentEvent
+                            (
+                                context, sendListModel.DocumentId, eventType.Value, sendListModel.Description, sendListModel.Task,
+                                sendListModel.TargetPositionId,
+                                null,
+                                sendListModel.SourcePositionId,
+                                sendListModel.SourceAgentId
+                            )
+            };
+        }
+
+        public static IEnumerable<InternalDocumentSubscription> GetNewDocumentSubscriptions(IContext context, InternalDocumentSendList sendListModel, EnumEventTypes? eventType = null)
+        {
+            return new List<InternalDocumentSubscription>
+            {
+                GetNewDocumentSubscription(context,sendListModel,eventType)
             };
         }
 

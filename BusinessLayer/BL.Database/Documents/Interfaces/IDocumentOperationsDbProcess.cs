@@ -36,6 +36,7 @@ namespace BL.Database.Documents.Interfaces
         IEnumerable<InternalDocumentRestrictedSendList> AddByStandartSendListDocumentRestrictedSendListPrepare(IContext context, ModifyDocumentRestrictedSendListByStandartSendList model);
 
         InternalDocumentRestrictedSendList DeleteDocumentRestrictedSendListPrepare(IContext context, int restSendListId);
+        InternalDocument SendForSigningDocumentPrepare(IContext _context, InternalDocumentSendList model);
         void CloseDocumentWait(IContext context, InternalDocumentWait docWait);
 
         InternalDocument SendForExecutionDocumentPrepare(IContext context, InternalDocumentSendList sendList);

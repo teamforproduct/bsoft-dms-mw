@@ -12,13 +12,13 @@ using BL.Model.Exception;
 
 namespace BL.Logic.DocumentCore.Commands
 {
-    public class SendForExecutionDocumentCommand : BaseDocumentCommand
+    public class SendForSigningDocumentCommand : BaseDocumentCommand
     {
         private readonly IDocumentsDbProcess _documentDb;
         private readonly IDocumentOperationsDbProcess _operationDb;
         private readonly IAdminService _admin;
 
-        public SendForExecutionDocumentCommand(IDocumentsDbProcess documentDb, IDocumentOperationsDbProcess operationDb, IAdminService admin)
+        public SendForSigningDocumentCommand(IDocumentsDbProcess documentDb, IDocumentOperationsDbProcess operationDb, IAdminService admin)
         {
             _documentDb = documentDb;
             _operationDb = operationDb;
@@ -34,7 +34,11 @@ namespace BL.Logic.DocumentCore.Commands
                     throw new WrongParameterTypeError();
                 }
                 var model = (InternalDocumentSendList)_param;
-                if (model.SendType != EnumSendTypes.SendForExecution)
+                if (model.SendType != EnumSendTypes.SendForSigning
+                    || model.SendType != EnumSendTypes.SendForVisaing
+                    || model.SendType != EnumSendTypes.SendForАgreement
+                    || model.SendType != EnumSendTypes.SendForАpproval
+                    )
                 {
                     throw new WrongParameterTypeError();
                 }
@@ -51,7 +55,7 @@ namespace BL.Logic.DocumentCore.Commands
         {
             _context.SetCurrentPosition(Model.SourcePositionId);
             _admin.VerifyAccess(_context, CommandType);   //TODO без позиций
-            _document = _operationDb.SendForExecutionDocumentPrepare(_context, Model);
+            _document = _operationDb.SendForSigningDocumentPrepare(_context, Model);
             if (_document == null)
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
@@ -60,28 +64,22 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new PlanPointHasAlredyBeenLaunched();
             }
-            if (!Model.TargetPositionId.HasValue || _document.Waits == null|| _document.Waits.Count()>1)
+            if (!Model.TargetPositionId.HasValue || _document.Waits != null)
             {
                 throw new WrongDocumentSendListEntry();
             }
-
             return true;
         }
-
         public override object Execute()
         {
             _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, Model.DocumentId, Model.AccessLevel, Model.TargetPositionId.Value);
 
-            var waitParent = _document.Waits.First();
             var waitTarget = CommonDocumentUtilities.GetNewDocumentWait(_context, Model, _eventType, EnumEventCorrespondentType.FromSourceToTarget);
-            waitTarget.ParentWait = waitParent;
-            waitTarget.OnEvent.SourcePositionId = waitParent.OnEvent.TargetPositionId;
-            _document.Waits = new List<InternalDocumentWait> {  waitTarget };
 
-            if (Model.SourcePositionId != waitParent.OnEvent.TargetPositionId)
-            {
-                _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, Model);
-            }
+            var subscription = CommonDocumentUtilities.GetNewDocumentSubscription(_context, Model, _eventType);
+            subscription.SendEvent = waitTarget.OnEvent;
+
+            _document.Subscriptions = new List<InternalDocumentSubscription> { subscription };
 
             Model.StartEvent = waitTarget.OnEvent;
             CommonDocumentUtilities.SetLastChange(_context, Model);
