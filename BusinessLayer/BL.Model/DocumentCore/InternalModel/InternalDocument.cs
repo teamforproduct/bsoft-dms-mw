@@ -142,5 +142,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public IEnumerable<InternalDocument> LinkedDocuments { get; set; }
         public IEnumerable<FrontDocumentLink> Links { get; set; }
         public IEnumerable<InternalDocumentWait> Waits { get; set; }
+        public IEnumerable<InternalDocumentSubscription> Subscriptions { get; set; }
+
     }
 }

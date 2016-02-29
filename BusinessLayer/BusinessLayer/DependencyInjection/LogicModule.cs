@@ -66,7 +66,6 @@ namespace BL.Logic.DependencyInjection
 
             Bind<IDocumentCommand>().To<AddFavouriteDocumentCommand>();
             Bind<IDocumentCommand>().To<DeleteFavouriteDocumentCommand>();
-
             Bind<IDocumentCommand>().To<StartWorkDocumentCommand>();
             Bind<IDocumentCommand>().To<FinishWorkDocumentCommand>();
 
@@ -74,6 +73,9 @@ namespace BL.Logic.DependencyInjection
             Bind<IDocumentCommand>().To<SendMessageDocumentCommand>();
             Bind<IDocumentCommand>().To<ChangeExecutorDocumentCommand>();
             Bind<IDocumentCommand>().To<RegisterDocumentCommand>();
+            Bind<IDocumentCommand>().To<LaunchPlanDocumentCommand>();
+            Bind<IDocumentCommand>().To<StopPlanDocumentCommand>();
+
             Bind<IDocumentCommand>().To<AddDocumentLinkCommand>();
 
             Bind<IDocumentCommand>().To<AddDocumentFileCommand>();
@@ -83,6 +85,8 @@ namespace BL.Logic.DependencyInjection
             Bind<IDocumentCommand>().To<SendForInformationDocumentCommand>();
             Bind<IDocumentCommand>().To<SendForControlDocumentCommand>();
             Bind<IDocumentCommand>().To<SendForResponsibleExecutionDocumentCommand>();
+            Bind<IDocumentCommand>().To<SendForExecutionDocumentCommand>();
+            Bind<IDocumentCommand>().To<SendForSigningDocumentCommand>();
 
             Bind<IDocumentCommand>().To<AddSavedFilterCommand>();
             Bind<IDocumentCommand>().To<DeleteSavedFilterCommand>();

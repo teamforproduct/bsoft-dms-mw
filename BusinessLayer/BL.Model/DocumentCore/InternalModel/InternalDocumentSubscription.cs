@@ -12,9 +12,11 @@ namespace BL.Model.DocumentCore.InternalModel
         public int Id { get; set; }
         public int DocumentId { get; set; }
         public int SendEventId { get; set; }
-        public Nullable<int> DoneEventId { get; set; }
+        public int? DoneEventId { get; set; }
         public string Description { get; set; }
         public string Hash { get; set; }
         public string ChangedHash { get; set; }
+        public InternalDocumentEvent SendEvent { get; set; }
+        public InternalDocumentEvent DoneEvent { get; set; }
     }
 }

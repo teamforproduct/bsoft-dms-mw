@@ -79,6 +79,29 @@ namespace BL.Database.Common
             return docWaits.Select(GetDbDocumentWait);
         }
 
+        public static DocumentSubscriptions GetDbDocumentSubscription(InternalDocumentSubscription docSubscription)
+        {
+            return docSubscription == null ? null :
+                new DocumentSubscriptions
+                {
+                    DocumentId = docSubscription.DocumentId,
+                    LastChangeDate = docSubscription.LastChangeDate,
+                    LastChangeUserId = docSubscription.LastChangeUserId,
+                    DoneEventId = docSubscription.DoneEventId,
+                    DoneEvent = GetDbDocumentEvent(docSubscription.DoneEvent),
+                    SendEventId = docSubscription.SendEventId,
+                    SendEvent = GetDbDocumentEvent(docSubscription.SendEvent),
+                    Description = docSubscription.Description,
+                    Hash = docSubscription.Hash,
+                    ChangedHash = docSubscription.ChangedHash,
+                };
+        }
+
+        public static IEnumerable<DocumentSubscriptions> GetDbDocumentSubscriptions(IEnumerable<InternalDocumentSubscription> docSubscriptions)
+        {
+            return docSubscriptions.Select(GetDbDocumentSubscription);
+        }
+
         public static void UpdateDbDocumentWaitByEvents(DocumentWaits docWait, InternalDocumentWait documentWait)
         {
             if (documentWait.OnEvent != null)

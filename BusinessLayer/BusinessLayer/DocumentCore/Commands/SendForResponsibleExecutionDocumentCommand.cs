@@ -51,7 +51,7 @@ namespace BL.Logic.DocumentCore.Commands
         {
             _context.SetCurrentPosition(Model.SourcePositionId);
             _admin.VerifyAccess(_context, CommandType);   //TODO без позиций
-            _document = _documentDb.GetBlankInternalDocumentById(_context, Model.DocumentId);
+            _document = _operationDb.SendForExecutionDocumentPrepare(_context, Model);
             if (_document == null)
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
@@ -60,7 +60,7 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new PlanPointHasAlredyBeenLaunched();
             }
-            if (!Model.TargetPositionId.HasValue)
+            if (!Model.TargetPositionId.HasValue || _document.Waits != null)
             {
                 throw new WrongDocumentSendListEntry();
             }
@@ -71,22 +71,22 @@ namespace BL.Logic.DocumentCore.Commands
         {
             _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, Model.DocumentId, Model.AccessLevel, Model.TargetPositionId.Value);
 
-            var waitSource = CommonDocumentUtilities.GetNewDocumentWait(_context, Model, EnumEventTypes.ControlOn,EnumEventCorrespondentType.FromSourceToSource);
-            var waitTarget = CommonDocumentUtilities.GetNewDocumentWait(_context, Model, EnumEventTypes.SendForResponsibleExecution, EnumEventCorrespondentType.FromSourceToTarget);
+//            var waitSource = CommonDocumentUtilities.GetNewDocumentWait(_context, Model, EnumEventTypes.ControlOn,EnumEventCorrespondentType.FromSourceToSource);
+            var waitTarget = CommonDocumentUtilities.GetNewDocumentWait(_context, Model, _eventType, EnumEventCorrespondentType.FromSourceToTarget);
 
-            Model.StartEvent = waitSource.OnEvent;
-            waitTarget.ParentWait = waitSource;
+            _document.Waits = new List<InternalDocumentWait> { /*waitSource,*/ waitTarget };
 
+            Model.StartEvent = waitTarget.OnEvent;
             CommonDocumentUtilities.SetLastChange(_context, Model);
-
             _document.SendLists = new List<InternalDocumentSendList> { Model };
 
-            _document.Waits = new List<InternalDocumentWait> { waitSource, waitTarget };
 
             _operationDb.SendBySendList(_context, _document);
 
             return null;
         }
+
+        private EnumEventTypes _eventType => (EnumEventTypes)Enum.Parse(typeof(EnumEventTypes), Model.SendType.ToString());
 
         public override EnumDocumentActions CommandType => (EnumDocumentActions)Enum.Parse(typeof(EnumDocumentActions), Model.SendType.ToString());
     }
