@@ -34,10 +34,10 @@ namespace DMS_WebAPI.Controllers.Documents
         // POST: api/Files
         public IHttpActionResult Post([FromBody]ModifyDocumentFiles model)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var fl = (int)docProc.ExecuteAction(EnumDocumentActions.AddDocumentFile, cxt, model);
-            return new JsonResult(fl, this);
+            docProc.ExecuteAction(EnumDocumentActions.AddDocumentFile, cxt, model);
+            return Get(model.DocumentId);
         }
 
         // PUT: api/Files/5

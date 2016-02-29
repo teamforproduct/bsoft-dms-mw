@@ -337,6 +337,8 @@ namespace BL.Database.Documents
                     SenderDate = dbDoc.Doc.SenderDate,
                     Addressee = dbDoc.Doc.Addressee,
 
+                    IsLaunchPlan = dbDoc.Doc.IsLaunchPlan,
+
                     AccessLevel = (EnumDocumentAccesses)dbDoc.Acc.AccessLevelId,
                     AccessLevelName = dbDoc.AccLevName,
 

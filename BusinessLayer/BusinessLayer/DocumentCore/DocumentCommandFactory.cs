@@ -126,6 +126,13 @@ namespace BL.Logic.DocumentCore
                     cmd = DmsResolver.Current.Get<LaunchDocumentSendListItemCommand>();
                     break;
 
+                case EnumDocumentActions.LaunchPlan:
+                    cmd = DmsResolver.Current.Get<LaunchPlanDocumentCommand>();
+                    break;
+                case EnumDocumentActions.StopPlan:
+                    cmd = DmsResolver.Current.Get<StopPlanDocumentCommand>();
+                    break;
+
                 default:
                     throw new CommandNotDefinedError();
             }
