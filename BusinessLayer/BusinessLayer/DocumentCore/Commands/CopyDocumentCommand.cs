@@ -84,18 +84,7 @@ namespace BL.Logic.DocumentCore.Commands
             var toCopy = new Dictionary<InternalDocumentAttachedFile, InternalDocumentAttachedFile>();
             _document.DocumentFiles.ToList().ForEach(x =>
             {
-                var newDoc = new InternalDocumentAttachedFile
-                {
-                    Extension = x.Extension,
-                    Name = x.Name,
-                    FileType = x.FileType,
-                    FileSize = x.FileSize,
-                    IsAdditional = x.IsAdditional,
-                    OrderInDocument = x.OrderInDocument,
-                    Date = DateTime.Now,
-                    Version = x.Version,
-                    WasChangedExternal = false
-                };
+                var newDoc = CommonDocumentUtilities.GetNewDocumentAttachedFile(x);
                 toCopy.Add(newDoc, x);
             });
 
