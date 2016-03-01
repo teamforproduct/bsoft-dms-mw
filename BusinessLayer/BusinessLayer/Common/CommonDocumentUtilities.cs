@@ -204,13 +204,14 @@ namespace BL.Logic.Common
                 SourcePositionId = context.CurrentPositionId,
                 SourceAgentId = context.CurrentAgentId,
                 TargetPositionId = model.TargetPositionId,
+                TargetAgentId = model.TargetAgentId,
                 Task = model.Task,
                 Description = model.Description,
                 DueDate = model.DueDate,
                 DueDay = model.DueDay,
                 AccessLevel = model.AccessLevel,
                 IsInitial = model.IsInitial,
-
+                
                 LastChangeUserId = context.CurrentAgentId,
                 LastChangeDate = DateTime.Now,
 
@@ -338,8 +339,40 @@ namespace BL.Logic.Common
                     }).ToList();
 
             }
-            else
-                return new List<FrontDocumentSendListStage>();
+            return new List<FrontDocumentSendListStage>();
+        }
+
+        public static InternalTemplateAttachedFile GetNewTemplateAttachedFile(InternalTemplateAttachedFile src, int? newOrderNumber = null)
+        {
+            return new InternalTemplateAttachedFile
+            {
+                Extension = src.Extension,
+                Name = src.Name,
+                FileType = src.FileType,
+                FileSize = src.FileSize,
+                IsAdditional = src.IsAdditional,
+                FileContent = src.FileContent,
+                OrderInDocument = newOrderNumber ?? src.OrderInDocument,
+                Hash = src.Hash
+            };
+        }
+
+        public static InternalDocumentAttachedFile GetNewDocumentAttachedFile(InternalDocumentAttachedFile src, int? newOrderNumber = null, int? newVersion = null)
+        {
+            return new InternalDocumentAttachedFile
+            {
+                Extension = src.Extension,
+                Name = src.Name,
+                FileType = src.FileType,
+                FileSize = src.FileSize,
+                IsAdditional = src.IsAdditional,
+                FileContent = src.FileContent,
+                Hash = src.Hash,
+                OrderInDocument = newOrderNumber??src.OrderInDocument,
+                Date = DateTime.Now,
+                Version = newVersion??1,
+                WasChangedExternal = false
+            };
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using BL.Model.Users;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace BL.Model.DocumentCore.IncomingModel
@@ -6,7 +7,7 @@ namespace BL.Model.DocumentCore.IncomingModel
     /// <summary>
     /// Модель для перезаписи списка тегов документа
     /// </summary>
-    public class ModifyDocumentTags
+    public class ModifyDocumentTags: CurrentPosition
     {
         /// <summary>
         /// ИД документа

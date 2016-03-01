@@ -44,14 +44,15 @@ namespace BL.Logic.DocumentCore.SendListCommands
 
         public override bool CanExecute()
         {
+            DocRestSendList = _operationDb.DeleteDocumentRestrictedSendListPrepare(_context, Model);
+            _document = _operationDb.ChangeDocumentSendListPrepare(_context, DocRestSendList.DocumentId);
+
             _context.SetCurrentPosition(_document.ExecutorPositionId);
             _admin.VerifyAccess(_context, CommandType);
 
-            DocRestSendList = _operationDb.DeleteDocumentRestrictedSendListPrepare(_context, Model);
-
-            _document = _operationDb.ChangeDocumentSendListPrepare(_context, DocRestSendList.DocumentId);
-
-            _document.RestrictedSendLists.ToList().Remove(_document.RestrictedSendLists.FirstOrDefault(x => x.Id == Model));
+            var restrictedSendLists = _document.RestrictedSendLists.ToList();
+            restrictedSendLists.Remove(_document.RestrictedSendLists.FirstOrDefault(x => x.Id == Model));
+            _document.RestrictedSendLists = restrictedSendLists;
 
             CommonDocumentUtilities.VerifySendLists(_document);
 

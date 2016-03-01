@@ -56,7 +56,9 @@ namespace BL.Logic.DocumentCore.SendListCommands
 
             DocSendLists = _operationDb.AddByStandartSendListDocumentSendListPrepare(_context, Model);
 
-            _document.SendLists.ToList().AddRange(DocSendLists);
+            var sendLists = _document.SendLists.ToList();
+            sendLists.AddRange(DocSendLists);
+            _document.SendLists = sendLists;
 
             CommonDocumentUtilities.VerifySendLists(_document);
 

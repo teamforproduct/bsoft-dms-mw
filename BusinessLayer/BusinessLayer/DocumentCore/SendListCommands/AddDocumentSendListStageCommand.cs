@@ -42,10 +42,10 @@ namespace BL.Logic.DocumentCore.SendListCommands
 
         public override bool CanExecute()
         {
+            _document = _operationDb.AddDocumentSendListStagePrepare(_context, Model.DocumentId);
+
             _context.SetCurrentPosition(_document.ExecutorPositionId);
             _admin.VerifyAccess(_context, CommandType);
-
-            _document = _operationDb.AddDocumentSendListStagePrepare(_context, Model.DocumentId);
 
             return true;
         }

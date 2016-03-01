@@ -12,8 +12,6 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         private readonly IDocumentOperationsDbProcess _operationDb;
         private readonly IAdminService _admin;
 
-        protected InternalDocumentSendList DocSendList;
-
         public DeleteSavedFilterCommand(IDocumentOperationsDbProcess operationDb, IAdminService admin)
         {
             _admin = admin;
@@ -49,7 +47,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         public override object Execute()
         {
             _operationDb.DeleteSavedFilter(_context, Model);
-            return DocSendList.DocumentId;
+            return null;
         }
 
         public override EnumDocumentActions CommandType => EnumDocumentActions.DeleteSavedFilter;

@@ -32,7 +32,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns>Измененная запись плана работы над документом</returns>
         public IHttpActionResult Post([FromBody]ModifyDocumentTags model)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.ModifyDocumentTags, cxt, model);
             return Get(model.DocumentId);

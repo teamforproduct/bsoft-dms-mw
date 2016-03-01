@@ -389,6 +389,7 @@ namespace BL.Database.Documents
                     .Select(x => new InternalDocument
                     {
                         Id = x.Id,
+                        IsFavourite =x.IsFavourite,
                         Accesses = new List<InternalDocumentAccess>
                                     {
                                         new InternalDocumentAccess
@@ -605,13 +606,9 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
-                var docDb = (from doc in dbContext.DocumentsSet.Where(x => x.Id == documentId)
-                             join tmp in dbContext.TemplateDocumentsSet on doc.TemplateDocumentId equals tmp.Id
-                             select new { doc, tmp })
-                             .GroupJoin(dbContext.DocumentRestrictedSendListsSet, x => x.doc.Id, y => y.DocumentId, (x, y) => new { x.doc, x.tmp, rsls = y })
-                             .GroupJoin(dbContext.DocumentSendListsSet, x => x.doc.Id, y => y.DocumentId, (x, y) => new { x.doc, x.tmp, x.rsls, sls = y })
-                             .GroupJoin(dbContext.TemplateDocumentRestrictedSendLists, x => x.tmp.Id, y => y.DocumentId, (x, y) => new { x.doc, x.tmp, x.rsls, x.sls, trsls = y })
-                             .GroupJoin(dbContext.TemplateDocumentSendLists, x => x.tmp.Id, y => y.DocumentId, (x, y) => new { x.doc, x.tmp, x.rsls, x.sls, x.trsls, tsls = y });
+                var docDb = from doc in dbContext.DocumentsSet.Where(x => x.Id == documentId)
+                            join tmp in dbContext.TemplateDocumentsSet on doc.TemplateDocumentId equals tmp.Id
+                            select new { doc, tmp };
 
                 var docRes = docDb.Select(x => new InternalDocument
                 {
@@ -619,40 +616,52 @@ namespace BL.Database.Documents
                     ExecutorPositionId = x.doc.ExecutorPositionId,
                     TemplateDocumentId = x.tmp.Id,
                     IsHard = x.tmp.IsHard,
-                    IsLaunchPlan = x.doc.IsLaunchPlan,
-
-                    RestrictedSendLists = x.rsls.Select(y => new InternalDocumentRestrictedSendList
-                    {
-                        Id = y.Id,
-                        DocumentId = y.DocumentId,
-                        PositionId = y.PositionId
-                    }),
-
-                    SendLists = x.sls.Select(y => new InternalDocumentSendList
-                    {
-                        Id = y.Id,
-                        DocumentId = y.DocumentId,
-                        TargetPositionId = y.TargetPositionId,
-                        SendType = (EnumSendTypes)y.SendTypeId,
-                        Stage = y.Stage
-                    }),
-                    TemplateDocument = !x.tmp.IsHard ? null :
-                      new InternalTemplateDocument
-                      {
-                          RestrictedSendLists = x.trsls.Select(y => new InternalTemplateDocumentRestrictedSendList
-                          {
-                              Id = y.Id,
-                              PositionId = y.PositionId
-                          }),
-                          SendLists = x.tsls.Select(y => new InternalTemplateDocumentSendList
-                          {
-                              Id = y.Id,
-                              TargetPositionId = y.TargetPositionId,
-                              SendType = (EnumSendTypes)y.SendTypeId
-                          }),
-                      }
+                    IsLaunchPlan = x.doc.IsLaunchPlan
                 }).FirstOrDefault();
 
+                if (docRes != null)
+                {
+                    docRes.RestrictedSendLists = dbContext.DocumentRestrictedSendListsSet.Where(x => x.DocumentId == docRes.Id)
+                        .Select(x => new InternalDocumentRestrictedSendList
+                        {
+                            Id = x.Id,
+                            DocumentId = x.DocumentId,
+                            PositionId = x.PositionId
+                        }).ToList();
+
+
+                    docRes.SendLists = dbContext.DocumentSendListsSet.Where(x => x.DocumentId == docRes.Id)
+                        .Select(x => new InternalDocumentSendList
+                        {
+                            Id = x.Id,
+                            DocumentId = x.DocumentId,
+                            TargetPositionId = x.TargetPositionId,
+                            SendType = (EnumSendTypes)x.SendTypeId,
+                            Stage = x.Stage
+                        }).ToList();
+
+                    if (docRes.IsHard)
+                    {
+                        docRes.TemplateDocument = new InternalTemplateDocument();
+
+                        docRes.TemplateDocument.RestrictedSendLists = dbContext.TemplateDocumentRestrictedSendLists
+                            .Where(x => x.DocumentId == docRes.TemplateDocumentId)
+                            .Select(x => new InternalTemplateDocumentRestrictedSendList
+                            {
+                                Id = x.Id,
+                                PositionId = x.PositionId
+                            }).ToList();
+
+                        docRes.TemplateDocument.SendLists = dbContext.TemplateDocumentSendLists
+                            .Where(x => x.DocumentId == docRes.TemplateDocumentId)
+                            .Select(x => new InternalTemplateDocumentSendList
+                            {
+                                Id = x.Id,
+                                TargetPositionId = x.TargetPositionId,
+                                SendType = (EnumSendTypes)x.SendTypeId
+                            }).ToList();
+                    }
+                }
                 return docRes;
             }
         }
@@ -686,7 +695,7 @@ namespace BL.Database.Documents
                      DocumentId = model.DocumentId,
                      PositionId = x.TargetPositionId,
                      AccessLevel = (EnumDocumentAccesses)(x.AccessLevelId ?? (int)EnumDocumentAccesses.PersonalRefIO)
-                 });
+                 }).ToList();
 
                 return items;
             }
@@ -725,23 +734,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
-                var items = model.Select(x => new DocumentSendLists
-                {
-                    DocumentId = x.DocumentId,
-                    Stage = x.Stage,
-                    SendTypeId = (int)x.SendType,
-                    TargetPositionId = x.TargetPositionId,
-                    Task = x.Task,
-                    Description = x.Description,
-                    DueDate = x.DueDate,
-                    DueDay = x.DueDay,
-                    AccessLevelId = (int)x.AccessLevel,
-                    IsInitial = x.IsInitial,
-                    StartEventId = null,
-                    CloseEventId = null,
-                    LastChangeUserId = x.LastChangeUserId,
-                    LastChangeDate = x.LastChangeDate
-                }).ToList();
+                var items = ModelConverter.AddDocumentSendList(model);
 
                 dbContext.DocumentSendListsSet.AddRange(items);
                 dbContext.SaveChanges();
@@ -770,7 +763,7 @@ namespace BL.Database.Documents
                      AccessLevel = (EnumDocumentAccesses)(x.AccessLevelId ?? (int)EnumDocumentAccesses.PersonalRefIO),
                      LastChangeUserId = context.CurrentAgentId,
                      LastChangeDate = DateTime.Now,
-                 });
+                 }).ToList();
 
                 return items;
             }
@@ -796,11 +789,17 @@ namespace BL.Database.Documents
                 };
                 dbContext.DocumentSendListsSet.Attach(item);
 
-                dbContext.Entry(item).State = EntityState.Modified;
-                //TODO OR
-                //var entry = dbContext.Entry(item);
-                //entry.Property(e => e.Stage).IsModified = true;
-                //// other changed properties
+                var entry = dbContext.Entry(item);
+                entry.Property(e => e.Stage).IsModified = true;
+                entry.Property(e => e.SendTypeId).IsModified = true;
+                entry.Property(e => e.TargetPositionId).IsModified = true;
+                entry.Property(e => e.Task).IsModified = true;
+                entry.Property(e => e.Description).IsModified = true;
+                entry.Property(e => e.DueDate).IsModified = true;
+                entry.Property(e => e.DueDay).IsModified = true;
+                entry.Property(e => e.AccessLevelId).IsModified = true;
+                entry.Property(e => e.LastChangeUserId).IsModified = true;
+                entry.Property(e => e.LastChangeDate).IsModified = true;
 
                 dbContext.SaveChanges();
             }
@@ -875,11 +874,10 @@ namespace BL.Database.Documents
                     };
                     dbContext.DocumentSendListsSet.Attach(item);
 
-                    dbContext.Entry(item).State = EntityState.Modified;
-                    //TODO OR
-                    //var entry = dbContext.Entry(item);
-                    //entry.Property(e => e.Stage).IsModified = true;
-                    //// other changed properties
+                    var entry = dbContext.Entry(item);
+                    entry.Property(e => e.Stage).IsModified = true;
+                    entry.Property(e => e.LastChangeUserId).IsModified = true;
+                    entry.Property(e => e.LastChangeDate).IsModified = true;
                 }
 
                 dbContext.SaveChanges();
@@ -964,11 +962,13 @@ namespace BL.Database.Documents
                 };
                 dbContext.DocumentSavedFiltersSet.Attach(item);
 
-                dbContext.Entry(item).State = EntityState.Modified;
-                //TODO OR
-                //var entry = dbContext.Entry(item);
-                //entry.Property(e => e.Stage).IsModified = true;
-                //// other changed properties
+                var entry = dbContext.Entry(item);
+                entry.Property(e => e.PositionId).IsModified = true;
+                entry.Property(e => e.Icon).IsModified = true;
+                entry.Property(e => e.Filter).IsModified = true;
+                entry.Property(e => e.IsCommon).IsModified = true;
+                entry.Property(e => e.LastChangeUserId).IsModified = true;
+                entry.Property(e => e.LastChangeDate).IsModified = true;
 
                 dbContext.SaveChanges();
             }

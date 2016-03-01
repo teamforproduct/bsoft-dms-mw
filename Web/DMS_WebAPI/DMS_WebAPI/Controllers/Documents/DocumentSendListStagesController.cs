@@ -29,7 +29,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public IHttpActionResult Delete([FromUri]ModifyDocumentSendListStage model)
+        public IHttpActionResult Delete([FromBody]ModifyDocumentSendListStage model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();

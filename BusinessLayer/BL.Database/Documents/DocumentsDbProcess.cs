@@ -337,6 +337,8 @@ namespace BL.Database.Documents
                     SenderDate = dbDoc.Doc.SenderDate,
                     Addressee = dbDoc.Doc.Addressee,
 
+                    IsLaunchPlan = dbDoc.Doc.IsLaunchPlan,
+
                     AccessLevel = (EnumDocumentAccesses)dbDoc.Acc.AccessLevelId,
                     AccessLevelName = dbDoc.AccLevName,
 
@@ -434,14 +436,14 @@ namespace BL.Database.Documents
                     return null;
                 }
 
-                doc.RestrictedSendLists = dbContext.TemplateDocumentRestrictedSendLists.Where(y => y.Id == templateDocumentId)
+                doc.RestrictedSendLists = dbContext.TemplateDocumentRestrictedSendLists.Where(y => y.DocumentId == templateDocumentId)
                     .Select(y => new InternalDocumentRestrictedSendList()
                     {
                         PositionId = y.PositionId,
                         AccessLevel = (EnumDocumentAccesses)y.AccessLevelId
                     }).ToList();
 
-                doc.SendLists = dbContext.TemplateDocumentSendLists.Where(y => y.Id == templateDocumentId)
+                doc.SendLists = dbContext.TemplateDocumentSendLists.Where(y => y.DocumentId == templateDocumentId)
                     .Select(y => new InternalDocumentSendList()
                     {
                         SendType = (EnumSendTypes)y.SendTypeId,
@@ -595,7 +597,7 @@ namespace BL.Database.Documents
                 entry.Property(x => x.SenderDate).IsModified = true;
                 entry.Property(x => x.Addressee).IsModified = true;
 
-                var docAccess = document.Accesses.First();
+                var docAccess = document.Accesses.FirstOrDefault();
                 if (docAccess != null)
                 {
                     var acc = new DocumentAccesses
@@ -795,9 +797,12 @@ namespace BL.Database.Documents
                     doc.Events = ModelConverter.GetDbDocumentEvents(document.Events.Where(x => x.Id == 0)).ToList();
                 }
 
+                //TODO При получении документа возвращаеться только один Accesses
                 if (document.Accesses != null && document.Accesses.Any())
                 {
-                    doc.Accesses = CommonQueries.GetDbDocumentAccesses(dbContext, document.Accesses, doc.Id).ToList();
+                    //TODO Не сохраняеться через свойства
+                    //doc.Accesses = CommonQueries.GetDbDocumentAccesses(dbContext, document.Accesses, doc.Id).ToList();
+                    dbContext.DocumentAccessesSet.AddRange(CommonQueries.GetDbDocumentAccesses(dbContext, document.Accesses, doc.Id).ToList());
                 }
 
                 dbContext.SaveChanges();

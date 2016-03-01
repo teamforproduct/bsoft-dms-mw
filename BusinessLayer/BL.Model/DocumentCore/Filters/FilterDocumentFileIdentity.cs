@@ -1,9 +1,11 @@
-﻿namespace BL.Model.DocumentCore.Filters
+﻿using BL.Model.Users;
+
+namespace BL.Model.DocumentCore.Filters
 {
     /// <summary>
     /// Модель для получения вложения
     /// </summary>
-    public class FilterDocumentFileIdentity
+    public class FilterDocumentFileIdentity : CurrentPosition
     {
         /// <summary>
         /// ИД документа
