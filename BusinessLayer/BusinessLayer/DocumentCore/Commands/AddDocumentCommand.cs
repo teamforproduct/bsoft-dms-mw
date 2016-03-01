@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
 using BL.Logic.Common;
 using BL.Database.Documents.Interfaces;
 using BL.Logic.AdminCore.Interfaces;
@@ -79,30 +78,10 @@ namespace BL.Logic.DocumentCore.Commands
             var newOrdNum = 1;
             _document.DocumentFiles.ToList().ForEach(x =>
             {
-                var fileToCopy = new InternalTemplateAttachedFile
-                {
-                    Id = x.Id,
-                    DocumentId = x.DocumentId,
-                    Extension = x.Extension,
-                    Name = x.Name,
-                    FileType = x.FileType,
-                    FileSize = x.FileSize,
-                    OrderInDocument = x.OrderInDocument,
-                    IsAdditional = x.IsAdditional,
-                    Hash = x.Hash
-                };
-                var newDoc = new InternalDocumentAttachedFile
-                {
-                    Extension = x.Extension,
-                    Name = x.Name,
-                    FileType = x.FileType,
-                    FileSize = x.FileSize,
-                    IsAdditional = x.IsAdditional,
-                    OrderInDocument = newOrdNum,
-                    Date = DateTime.Now,
-                    Version = 1,
-                    WasChangedExternal = false
-                };
+                var fileToCopy = CommonDocumentUtilities.GetNewTemplateAttachedFile(x);
+
+                var newDoc = CommonDocumentUtilities.GetNewDocumentAttachedFile(x, newOrdNum, 1);
+
                 newOrdNum++;
                 toCopy.Add(newDoc, fileToCopy);
             });
