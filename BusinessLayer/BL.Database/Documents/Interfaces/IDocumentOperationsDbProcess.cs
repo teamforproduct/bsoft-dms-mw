@@ -25,7 +25,8 @@ namespace BL.Database.Documents.Interfaces
         InternalDocument ChangeIsFavouriteAccessPrepare(IContext context, int documentId);
         InternalDocument ControlOffDocumentPrepare(IContext context, int eventId);
         IEnumerable<InternalDocumentAccess> GetDocumentAccesses(IContext ctx, int documentId);
-        InternalDocument LaunchDocumentSendListPrepare(IContext context, int model);
+        InternalDocument LaunchDocumentSendListItemPrepare(IContext context, int model);
+        InternalDocument ControlChangeDocumentPrepare(IContext _context, int eventId);
         void ChangeIsInWorkAccess(IContext ctx, InternalDocument access);
         InternalDocument AddDocumentLinkPrepare(IContext context, AddDocumentLink model);
         void ChangeIsFavouriteAccess(IContext context, InternalDocumentAccess docAccess);

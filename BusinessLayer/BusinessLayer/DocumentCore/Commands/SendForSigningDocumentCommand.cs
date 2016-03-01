@@ -76,7 +76,7 @@ namespace BL.Logic.DocumentCore.Commands
 
             var waitTarget = CommonDocumentUtilities.GetNewDocumentWait(_context, Model, _eventType, EnumEventCorrespondentType.FromSourceToTarget);
 
-            var subscription = CommonDocumentUtilities.GetNewDocumentSubscription(_context, Model, _eventType);
+            var subscription = CommonDocumentUtilities.GetNewDocumentSubscription(_context, Model);
             subscription.SendEvent = waitTarget.OnEvent;
 
             _document.Subscriptions = new List<InternalDocumentSubscription> { subscription };

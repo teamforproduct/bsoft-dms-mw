@@ -43,7 +43,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
 
         public override bool CanExecute()
         {
-            _document = _operationDb.LaunchDocumentSendListPrepare(_context, Model);
+            _document = _operationDb.LaunchDocumentSendListItemPrepare(_context, Model);
             if (_document?.SendLists == null || !_document.SendLists.Any())
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();

@@ -105,11 +105,30 @@ namespace BL.Logic.DocumentCore
                 case EnumDocumentActions.ModifyDocumentFile:
                     cmd = DmsResolver.Current.Get<ModifyDocumentFileCommand>();
                     break;
+
                 case EnumDocumentActions.SendForInformation:
                     cmd = DmsResolver.Current.Get<SendForInformationDocumentCommand>();
                     break;
                 case EnumDocumentActions.SendForConsideration:
                     cmd = DmsResolver.Current.Get<SendForInformationDocumentCommand>();
+                    break;
+                case EnumDocumentActions.SendForResponsibleExecution:
+                    cmd = DmsResolver.Current.Get<SendForResponsibleExecutionDocumentCommand>();
+                    break;
+                case EnumDocumentActions.SendForExecution:
+                    cmd = DmsResolver.Current.Get<SendForExecutionDocumentCommand>();
+                    break;
+                case EnumDocumentActions.SendForSigning:
+                    cmd = DmsResolver.Current.Get<SendForSigningDocumentCommand>();
+                    break;
+                case EnumDocumentActions.SendForVisaing:
+                    cmd = DmsResolver.Current.Get<SendForSigningDocumentCommand>();
+                    break;
+                case EnumDocumentActions.SendForАgreement:
+                    cmd = DmsResolver.Current.Get<SendForSigningDocumentCommand>();
+                    break;
+                case EnumDocumentActions.SendForАpproval:
+                    cmd = DmsResolver.Current.Get<SendForSigningDocumentCommand>();
                     break;
 
                 case EnumDocumentActions.AddSavedFilter:

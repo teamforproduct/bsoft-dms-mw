@@ -71,10 +71,9 @@ namespace BL.Logic.DocumentCore.Commands
         {
             _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, Model.DocumentId, Model.AccessLevel, Model.TargetPositionId.Value);
 
-//            var waitSource = CommonDocumentUtilities.GetNewDocumentWait(_context, Model, EnumEventTypes.ControlOn,EnumEventCorrespondentType.FromSourceToSource);
             var waitTarget = CommonDocumentUtilities.GetNewDocumentWait(_context, Model, _eventType, EnumEventCorrespondentType.FromSourceToTarget);
 
-            _document.Waits = new List<InternalDocumentWait> { /*waitSource,*/ waitTarget };
+            _document.Waits = new List<InternalDocumentWait> { waitTarget };
 
             Model.StartEvent = waitTarget.OnEvent;
             CommonDocumentUtilities.SetLastChange(_context, Model);
