@@ -48,10 +48,10 @@ namespace BL.Logic.DocumentCore.SendListCommands
 
         public override bool CanExecute()
         {
+            _document = _operationDb.ChangeDocumentSendListPrepare(_context, Model.DocumentId);
+
             _context.SetCurrentPosition(_document.ExecutorPositionId);
             _admin.VerifyAccess(_context, CommandType);
-
-            _document = _operationDb.ChangeDocumentSendListPrepare(_context, Model.DocumentId);
 
             DocRestSendList = new InternalDocumentRestrictedSendList
             {
@@ -60,7 +60,9 @@ namespace BL.Logic.DocumentCore.SendListCommands
                 PositionId = Model.PositionId
             };
 
-            _document.RestrictedSendLists.ToList().Add(DocRestSendList);
+            var restrictedSendLists = _document.RestrictedSendLists.ToList();
+            restrictedSendLists.Add(DocRestSendList);
+            _document.RestrictedSendLists = restrictedSendLists;
 
             CommonDocumentUtilities.VerifySendLists(_document);
 

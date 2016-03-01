@@ -84,7 +84,7 @@ namespace BL.Logic.DocumentCore
                     cmd = DmsResolver.Current.Get<ModifyDocumentSendListCommand>();
                     break;
                 case EnumDocumentActions.DeleteDocumentSendList:
-                    cmd = DmsResolver.Current.Get<DeleteDocumentRestrictedSendListCommand>();
+                    cmd = DmsResolver.Current.Get<DeleteDocumentSendListCommand>();
                     break;
                 case EnumDocumentActions.AddDocumentSendListStage:
                     cmd = DmsResolver.Current.Get<AddDocumentSendListStageCommand>();

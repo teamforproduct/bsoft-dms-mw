@@ -9,6 +9,7 @@ using BL.Model.Enums;
 namespace DMS_WebAPI.Controllers.Documents
 {
     [Authorize]
+    [RoutePrefix("api/v2/DocumentSendLists")]
     public class DocumentSendListsController : ApiController
     {
         /// <summary>

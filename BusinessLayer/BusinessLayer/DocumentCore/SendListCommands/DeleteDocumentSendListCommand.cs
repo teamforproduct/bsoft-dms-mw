@@ -51,7 +51,9 @@ namespace BL.Logic.DocumentCore.SendListCommands
 
             _document = _operationDb.ChangeDocumentSendListPrepare(_context, DocSendList.DocumentId);
 
-            _document.SendLists.ToList().Remove(_document.SendLists.FirstOrDefault(x => x.Id == Model));
+            var sendLists = _document.SendLists.ToList();
+            sendLists.Remove(_document.SendLists.FirstOrDefault(x => x.Id == Model));
+            _document.SendLists = sendLists;
 
             CommonDocumentUtilities.VerifySendLists(_document);
 

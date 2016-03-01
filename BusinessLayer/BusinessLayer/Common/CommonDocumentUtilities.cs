@@ -204,13 +204,14 @@ namespace BL.Logic.Common
                 SourcePositionId = context.CurrentPositionId,
                 SourceAgentId = context.CurrentAgentId,
                 TargetPositionId = model.TargetPositionId,
+                TargetAgentId = model.TargetAgentId,
                 Task = model.Task,
                 Description = model.Description,
                 DueDate = model.DueDate,
                 DueDay = model.DueDay,
                 AccessLevel = model.AccessLevel,
                 IsInitial = model.IsInitial,
-
+                
                 LastChangeUserId = context.CurrentAgentId,
                 LastChangeDate = DateTime.Now,
 

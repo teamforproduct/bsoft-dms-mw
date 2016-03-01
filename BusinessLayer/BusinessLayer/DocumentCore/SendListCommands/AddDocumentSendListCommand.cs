@@ -53,7 +53,9 @@ namespace BL.Logic.DocumentCore.SendListCommands
             Model.IsInitial = !_document.IsLaunchPlan;
 
             DocSendList = CommonDocumentUtilities.GetNewDocumentSendList(_context, Model);
-            _document.SendLists.ToList().Add(DocSendList);
+            var sendLists = _document.SendLists.ToList();
+            sendLists.Add(DocSendList);
+            _document.SendLists = sendLists;
 
             CommonDocumentUtilities.VerifySendLists(_document);
 
