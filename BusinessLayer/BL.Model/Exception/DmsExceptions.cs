@@ -482,4 +482,16 @@
         {
         }
     }
+
+    public class IncomingModelIsNotValid : DmsExceptions
+    {
+        private const string _MESSAGE = "Incoming Model is not valid!";
+        public IncomingModelIsNotValid() : base(_MESSAGE)
+        {
+        }
+
+        public IncomingModelIsNotValid(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
 }

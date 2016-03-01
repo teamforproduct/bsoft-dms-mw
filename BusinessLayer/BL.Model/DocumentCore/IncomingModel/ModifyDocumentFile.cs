@@ -1,11 +1,12 @@
-﻿using System.Runtime.Serialization;
+﻿using BL.Model.Users;
+using System.Runtime.Serialization;
 
 namespace BL.Model.DocumentCore.IncomingModel
 {
     /// <summary>
     /// Добавляемый или редактируемый файл документа
     /// </summary>
-    public class ModifyDocumentFile
+    public class ModifyDocumentFile : CurrentPosition
     {
         [IgnoreDataMember]
         public int Id { get; set; }

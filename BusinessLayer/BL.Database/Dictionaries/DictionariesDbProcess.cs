@@ -388,7 +388,7 @@ namespace BL.Database.Dictionaries
                 };
                 dbContext.DictionaryDocumentTypesSet.Attach(ddt);
                 var entity = dbContext.Entry(ddt);
-                entity.State = System.Data.Entity.EntityState.Modified; // you can set there if all field should be updated
+                //entity.State = System.Data.Entity.EntityState.Modified; // you can set there if all field should be updated
 
                 // otherwise you should set IsModified for each field which should be updated
                 //entity.Property(x => x.Name).IsModified = true;

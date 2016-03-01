@@ -436,14 +436,14 @@ namespace BL.Database.Documents
                     return null;
                 }
 
-                doc.RestrictedSendLists = dbContext.TemplateDocumentRestrictedSendLists.Where(y => y.Id == templateDocumentId)
+                doc.RestrictedSendLists = dbContext.TemplateDocumentRestrictedSendLists.Where(y => y.DocumentId == templateDocumentId)
                     .Select(y => new InternalDocumentRestrictedSendList()
                     {
                         PositionId = y.PositionId,
                         AccessLevel = (EnumDocumentAccesses)y.AccessLevelId
                     }).ToList();
 
-                doc.SendLists = dbContext.TemplateDocumentSendLists.Where(y => y.Id == templateDocumentId)
+                doc.SendLists = dbContext.TemplateDocumentSendLists.Where(y => y.DocumentId == templateDocumentId)
                     .Select(y => new InternalDocumentSendList()
                     {
                         SendType = (EnumSendTypes)y.SendTypeId,

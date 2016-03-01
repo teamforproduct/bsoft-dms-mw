@@ -43,7 +43,7 @@ namespace DMS_WebAPI.Controllers.Documents
         // PUT: api/Files/5
         public IHttpActionResult Put([FromBody]ModifyDocumentFile model)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var fl = (FrontDocumentAttachedFile)docProc.ExecuteAction(EnumDocumentActions.ModifyDocumentFile, cxt, model);
            
@@ -51,9 +51,9 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         // DELETE: api/Files
-        public IHttpActionResult Delete([FromUri]FilterDocumentFileIdentity model)
+        public IHttpActionResult Delete([FromBody]FilterDocumentFileIdentity model)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.DeleteDocumentFile, cxt, model);
             return new JsonResult(null, this);

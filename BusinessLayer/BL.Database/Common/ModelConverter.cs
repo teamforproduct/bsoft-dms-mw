@@ -130,6 +130,11 @@ namespace BL.Database.Common
                 IsInitial = sl.IsInitial,
                 StartEventId = sl.StartEventId,
                 CloseEventId = sl.CloseEventId,
+
+                SourceAgentId = sl.SourceAgentId,
+                SourcePositionId = sl.SourcePositionId,
+                TargetAgentId = sl.TargetAgentId,
+
                 LastChangeUserId = sl.LastChangeUserId,
                 LastChangeDate = sl.LastChangeDate
             });

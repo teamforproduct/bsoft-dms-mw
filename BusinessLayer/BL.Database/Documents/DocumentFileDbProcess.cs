@@ -259,7 +259,7 @@ namespace BL.Database.Documents
                 doc.DocumentFiles =
                     dbContext.DocumentFilesSet.Where(
                         x => x.DocumentId == flIdent.DocumentId && x.OrderNumber == flIdent.OrderInDocument)
-                        .Select(x => new InternalDocumentAttachedFile {Id = x.Id});
+                        .Select(x => new InternalDocumentAttachedFile {Id = x.Id}).ToList();
                 return doc;
             }
         }

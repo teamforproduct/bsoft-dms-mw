@@ -22,6 +22,7 @@ namespace DMS_WebAPI
             config.Filters.Add(new HostAuthenticationFilter(OAuthDefaults.AuthenticationType));
 
             config.Filters.Add(new ExceptionHandlingAttribute());
+            config.Filters.Add(new ModelValidationErrorHandlerFilterAttribute());
 
             // Web API routes
             config.MapHttpAttributeRoutes();
