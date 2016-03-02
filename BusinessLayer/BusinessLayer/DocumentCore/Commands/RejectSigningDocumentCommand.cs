@@ -11,14 +11,14 @@ using System;
 
 namespace BL.Logic.DocumentCore.Commands
 {
-    public class RejectResultDocumentCommand : BaseDocumentCommand
+    public class RejectSigningDocumentCommand : BaseDocumentCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
         private readonly IAdminService _admin;
 
         private InternalDocumentWait _docWait;
 
-        public RejectResultDocumentCommand(IDocumentOperationsDbProcess operationDb, IAdminService admin)
+        public RejectSigningDocumentCommand(IDocumentOperationsDbProcess operationDb, IAdminService admin)
         {
             _operationDb = operationDb;
             _admin = admin;
@@ -57,6 +57,7 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new WaitHasAlreadyClosed();
             }
+            _operationDb.ControlOffSubscriptionPrepare(_context, _document);
             _context.SetCurrentPosition(_docWait.OnEvent.TargetPositionId);
             _admin.VerifyAccess(_context, CommandType);
             return true;
@@ -64,13 +65,17 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override object Execute()
         {
-            _docWait.OffEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, _docWait.DocumentId, EnumEventTypes.RejectResult, Model.Description, _docWait.OnEvent.Task, _docWait.OnEvent.SourcePositionId, null, _docWait.OnEvent.TargetPositionId);
+            _docWait.OffEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, _docWait.DocumentId, _eventType, Model.Description, _docWait.OnEvent.Task, _docWait.OnEvent.SourcePositionId, null, _docWait.OnEvent.TargetPositionId);
             CommonDocumentUtilities.SetLastChange(_context, _docWait);
+            var subscription = _document.Subscriptions.First();
+            subscription.Description = CommandType.ToString();
+            subscription.DoneEvent = null;
+            CommonDocumentUtilities.SetLastChange(Context, _document.Subscriptions);
             _operationDb.CloseDocumentWait(_context, _document);
             return _document.Id;
         }
 
+        private EnumEventTypes _eventType => (EnumEventTypes)Enum.Parse(typeof(EnumEventTypes), CommandType.ToString());
 
-        public override EnumDocumentActions CommandType => EnumDocumentActions.MarkExecution;
     }
 }

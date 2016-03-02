@@ -124,6 +124,9 @@ namespace BL.Logic.DocumentCore
                 case EnumDocumentActions.RejectResult:
                     cmd = DmsResolver.Current.Get<RejectResultDocumentCommand>();
                     break;
+                case EnumDocumentActions.AcceptResult:
+                    cmd = DmsResolver.Current.Get<AcceptResultDocumentCommand>();
+                    break;
 
                 case EnumDocumentActions.SendForSigning:
                     cmd = DmsResolver.Current.Get<SendForSigningDocumentCommand>();
@@ -136,6 +139,45 @@ namespace BL.Logic.DocumentCore
                     break;
                 case EnumDocumentActions.SendForАpproval:
                     cmd = DmsResolver.Current.Get<SendForSigningDocumentCommand>();
+                    break;
+
+                case EnumDocumentActions.RejectSigning:
+                    cmd = DmsResolver.Current.Get<RejectSigningDocumentCommand>();
+                    break;
+                case EnumDocumentActions.RejectVisaing:
+                    cmd = DmsResolver.Current.Get<RejectSigningDocumentCommand>();
+                    break;
+                case EnumDocumentActions.RejectАgreement:
+                    cmd = DmsResolver.Current.Get<RejectSigningDocumentCommand>();
+                    break;
+                case EnumDocumentActions.RejectАpproval:
+                    cmd = DmsResolver.Current.Get<RejectSigningDocumentCommand>();
+                    break;
+
+                case EnumDocumentActions.WithdrawSigning:
+                    cmd = DmsResolver.Current.Get<WithdrawSigningDocumentCommand>();
+                    break;
+                case EnumDocumentActions.WithdrawVisaing:
+                    cmd = DmsResolver.Current.Get<WithdrawSigningDocumentCommand>();
+                    break;
+                case EnumDocumentActions.WithdrawАgreement:
+                    cmd = DmsResolver.Current.Get<WithdrawSigningDocumentCommand>();
+                    break;
+                case EnumDocumentActions.WithdrawАpproval:
+                    cmd = DmsResolver.Current.Get<WithdrawSigningDocumentCommand>();
+                    break;
+
+                case EnumDocumentActions.AffixSigning:
+                    cmd = DmsResolver.Current.Get<AffixSigningDocumentCommand>();
+                    break;
+                case EnumDocumentActions.AffixVisaing:
+                    cmd = DmsResolver.Current.Get<AffixSigningDocumentCommand>();
+                    break;
+                case EnumDocumentActions.AffixАgreement:
+                    cmd = DmsResolver.Current.Get<WithdrawSigningDocumentCommand>();
+                    break;
+                case EnumDocumentActions.AffixАpproval:
+                    cmd = DmsResolver.Current.Get<AffixSigningDocumentCommand>();
                     break;
 
                 case EnumDocumentActions.AddSavedFilter:
@@ -162,7 +204,7 @@ namespace BL.Logic.DocumentCore
                 default:
                     throw new CommandNotDefinedError();
             }
-            cmd.InitializeCommand(ctx, doc, param);
+            cmd.InitializeCommand(ctx, doc, param, act);
             return cmd;
         }
     }

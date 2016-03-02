@@ -5,6 +5,7 @@
     /// </summary>
     public enum EnumDocumentActions
     {
+        Undefined = 0,
         /// <summary>
         /// Создать документ по шаблону
         /// </summary>

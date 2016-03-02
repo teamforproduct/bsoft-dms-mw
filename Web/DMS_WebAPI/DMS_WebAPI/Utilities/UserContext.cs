@@ -4,8 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Web;
 using BL.CrossCutting.Interfaces;
+using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.DependencyInjection;
-using BL.Logic.Secure;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using BL.Model.Exception;
@@ -67,7 +67,7 @@ namespace DMS_WebAPI.Utilities
 
                 if (user.AgentId.HasValue)
                 {
-                    var agent = DmsResolver.Current.Get<ISecureService>().GetEmployee(context, user.AgentId.Value);
+                    var agent = DmsResolver.Current.Get<IAdminService>().GetEmployee(context, user.AgentId.Value);
                     context.CurrentEmployee.Name = agent.Name;
                 }
 

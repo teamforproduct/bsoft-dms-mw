@@ -11,28 +11,28 @@ using System;
 
 namespace BL.Logic.DocumentCore.Commands
 {
-    public class RejectResultDocumentCommand : BaseDocumentCommand
+    public class AffixSigningDocumentCommand : BaseDocumentCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
         private readonly IAdminService _admin;
 
         private InternalDocumentWait _docWait;
 
-        public RejectResultDocumentCommand(IDocumentOperationsDbProcess operationDb, IAdminService admin)
+        public AffixSigningDocumentCommand(IDocumentOperationsDbProcess operationDb, IAdminService admin)
         {
             _operationDb = operationDb;
             _admin = admin;
         }
 
-        private SendEventMessage Model
+        private AffixSigning Model
         {
             get
             {
-                if (!(_param is SendEventMessage))
+                if (!(_param is AffixSigning))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (SendEventMessage)_param;
+                return (AffixSigning)_param;
             }
         }
 
@@ -57,6 +57,8 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new WaitHasAlreadyClosed();
             }
+            _operationDb.ControlOffSendListPrepare(_context, _document);
+            _operationDb.ControlOffSubscriptionPrepare(_context, _document);
             _context.SetCurrentPosition(_docWait.OnEvent.TargetPositionId);
             _admin.VerifyAccess(_context, CommandType);
             return true;
@@ -64,13 +66,19 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override object Execute()
         {
-            _docWait.OffEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, _docWait.DocumentId, EnumEventTypes.RejectResult, Model.Description, _docWait.OnEvent.Task, _docWait.OnEvent.SourcePositionId, null, _docWait.OnEvent.TargetPositionId);
-            CommonDocumentUtilities.SetLastChange(_context, _docWait);
+            _docWait.OffEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, _docWait.DocumentId, _eventType, Model.Description, _docWait.OnEvent.Task, _docWait.OnEvent.TargetPositionId, null, _docWait.OnEvent.SourcePositionId);
+            CommonDocumentUtilities.SetLastChange(_context, _document.Waits);
+            CommonDocumentUtilities.SetLastChange(Context, _document.SendLists);
+            var subscription = _document.Subscriptions.First();
+            subscription.Description = Model.VisaText;
+            subscription.DoneEvent = _docWait.OffEvent;
+            //TODO HASH!!!!
+            CommonDocumentUtilities.SetLastChange(Context, _document.Subscriptions);
             _operationDb.CloseDocumentWait(_context, _document);
             return _document.Id;
         }
 
+        private EnumEventTypes _eventType => (EnumEventTypes)Enum.Parse(typeof(EnumEventTypes), CommandType.ToString());
 
-        public override EnumDocumentActions CommandType => EnumDocumentActions.MarkExecution;
     }
 }

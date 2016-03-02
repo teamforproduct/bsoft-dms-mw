@@ -19,10 +19,30 @@
 
         SendForInformation = 200,//	Направлен для сведения
         SendForConsideration = 220,//	Направлен для рассмотрения
+
         SendForVisaing = 250,// Направить для визирования 
         SendForАgreement = 260,// Направить для согласование 
         SendForАpproval = 270,// Направить для утверждения 
         SendForSigning = 280,// Направить для подписи 
+
+
+
+        AffixVisaing = 251,//	Завизирован
+        RejectVisaing = 252,//	Отказано в визировании
+        WithdrawVisaing = 253,//	Отозван с визирования
+
+        AffixАgreement = 261,//	Согласован
+        RejectАgreement = 262,//	Отказано в согласовании
+        WithdrawАgreement = 263,//	Отозван с согласования
+
+        AffixАpproval = 271,//	Утвержден
+        RejectАpproval = 272,//	Отказано в утверждении
+        WithdrawАpproval = 273,//	Отозван с утверждения
+
+        AffixSigning = 281,//	Подписан
+        RejectSigning = 282,//	Отказано в подписании
+        WithdrawSigning = 283,//	Отозван с подписания
+
         SendForExecution = 210,//   Направлен для исполнения
         SendForControl = 212,//    Направлен для исполнения (на контроль)
         SendForResponsibleExecution = 214,//  Направлен для исполнения (отв. исполнитель)
