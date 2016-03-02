@@ -637,7 +637,9 @@ namespace BL.Database.Documents
                             DocumentId = x.DocumentId,
                             TargetPositionId = x.TargetPositionId,
                             SendType = (EnumSendTypes)x.SendTypeId,
-                            Stage = x.Stage
+                            Stage = x.Stage,
+                            SourcePositionId =x.SourcePositionId
+
                         }).ToList();
 
                     if (docRes.IsHard)

@@ -49,7 +49,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
 
             DocSendList = _document.SendLists.FirstOrDefault(x => x.Id == Model.Id);
 
-            _context.SetCurrentPosition(_document.ExecutorPositionId);
+            _context.SetCurrentPosition(DocSendList.SourcePositionId);
             _admin.VerifyAccess(_context, CommandType);
 
 

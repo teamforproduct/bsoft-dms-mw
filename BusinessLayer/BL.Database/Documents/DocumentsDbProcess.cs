@@ -302,7 +302,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public FrontDocument GetDocument(IContext ctx, int documentId)
+        public FrontDocument GetDocument(IContext ctx, int documentId, FilterDocumentById filter)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
@@ -382,16 +382,22 @@ namespace BL.Database.Documents
                     SenderAgentPersonName = dbDoc.SenderPersonName,
                 };
 
-
-                doc.Events = CommonQueries.GetDocumentEvents(dbContext, new FilterDocumentEvent { DocumentId = new List<int> { doc.Id } });
-                doc.EventsCount = doc.Events.Count();
-                doc.NewEventCount = 0;
+                var docIds = new List<int> { doc.Id };
 
                 if (doc.LinkId.HasValue)
                 {
                     doc.LinkedDocuments = CommonQueries.GetLinkedDocuments(dbContext, doc.LinkId.Value);
                     doc.LinkedDocumentsCount = doc.LinkedDocuments.Count();
+
+                    if (filter?.IsShowInfoByLinkDocument ?? false)
+                    {
+                        docIds = doc.LinkedDocuments.Select(x => x.Id).ToList();
+                    }
                 }
+
+                doc.Events = CommonQueries.GetDocumentEvents(dbContext, new FilterDocumentEvent { DocumentId = docIds });
+                doc.EventsCount = doc.Events.Count();
+                doc.NewEventCount = 0;
 
 
                 doc.SendLists = CommonQueries.GetDocumentSendList(dbContext, documentId);
@@ -401,14 +407,14 @@ namespace BL.Database.Documents
 
                 doc.RestrictedSendLists = CommonQueries.GetDocumentRestrictedSendList(dbContext, documentId);
 
-                doc.DocumentFiles = CommonQueries.GetDocumentFiles(dbContext, documentId);
+                doc.DocumentFiles = CommonQueries.GetDocumentFiles(dbContext, new FilterDocumentAttachedFile { DocumentId = docIds });
                 doc.AttachedFilesCount = doc.DocumentFiles.Count();
 
-                doc.DocumentWaits = CommonQueries.GetDocumentWaits(dbContext, new FilterDocumentWaits { DocumentId = documentId });
+                doc.DocumentWaits = CommonQueries.GetDocumentWaits(dbContext, new FilterDocumentWaits { DocumentId = docIds });
 
-                doc.DocumentTags = CommonQueries.GetDocumentTags(dbContext, new FilterDocumentTag { DocumentId = documentId, CurrentPositionsId = ctx.CurrentPositionsIdList });
+                doc.DocumentTags = CommonQueries.GetDocumentTags(dbContext, new FilterDocumentTag { DocumentId = docIds, CurrentPositionsId = ctx.CurrentPositionsIdList });
 
-                doc.DocumentWorkGroup = CommonQueries.GetDocumentWorkGroup(dbContext, new FilterDictionaryPosition { DocumentId = new List<int> { documentId } });
+                doc.DocumentWorkGroup = CommonQueries.GetDocumentWorkGroup(dbContext, new FilterDictionaryPosition { DocumentId = docIds });
 
                 return doc;
             }
@@ -447,7 +453,7 @@ namespace BL.Database.Documents
                     .Select(y => new InternalDocumentSendList()
                     {
                         SendType = (EnumSendTypes)y.SendTypeId,
-                        SourcePositionId = y.SourcePositionId??0, 
+                        SourcePositionId = y.SourcePositionId ?? 0,
                         TargetPositionId = y.TargetPositionId,
                         TargetAgentId = y.TargetAgentId,
                         Description = y.Description,
@@ -455,7 +461,7 @@ namespace BL.Database.Documents
                         DueDay = y.DueDay,
                         AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
 
-            }).ToList();
+                    }).ToList();
 
                 doc.DocumentFiles = dbContext.TemplateDocumentFilesSet.Where(x => x.DocumentId == templateDocumentId).Select(x => new InternalDocumentAttachedFile
                 {

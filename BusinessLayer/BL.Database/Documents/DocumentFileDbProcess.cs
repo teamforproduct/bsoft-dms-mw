@@ -25,7 +25,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-                return CommonQueries.GetDocumentFiles(dbContext, documentId);
+                return CommonQueries.GetDocumentFiles(dbContext, new FilterDocumentAttachedFile { DocumentId = new List<int> { documentId } });
             }
         }
 
@@ -37,7 +37,7 @@ namespace BL.Database.Documents
                     dbContext.DocumentFilesSet
                         .Where(x => x.DocumentId == documentId && x.OrderNumber == orderNumber)
                         .Join(dbContext.DictionaryAgentsSet, df => df.LastChangeUserId, da => da.Id,
-                            (d, a) => new {fl = d, agName = a.Name})
+                            (d, a) => new { fl = d, agName = a.Name })
                         .Select(x => new FrontDocumentAttachedFile
                         {
                             Id = x.fl.Id,
@@ -70,7 +70,7 @@ namespace BL.Database.Documents
                             x =>
                                 x.DocumentId == documentId && x.Version == versionNumber && x.OrderNumber == orderNumber)
                         .Join(dbContext.DictionaryAgentsSet, df => df.LastChangeUserId, da => da.Id,
-                            (d, a) => new {fl = d, agName = a.Name})
+                            (d, a) => new { fl = d, agName = a.Name })
                         .Select(x => new FrontDocumentAttachedFile
                         {
                             Id = x.fl.Id,
@@ -101,7 +101,7 @@ namespace BL.Database.Documents
                     dbContext.DocumentFilesSet
                         .Where(x => x.Id == id)
                         .Join(dbContext.DictionaryAgentsSet, df => df.LastChangeUserId, da => da.Id,
-                            (d, a) => new {fl = d, agName = a.Name})
+                            (d, a) => new { fl = d, agName = a.Name })
                         .Select(x => new FrontDocumentAttachedFile
                         {
                             Id = x.fl.Id,
@@ -142,7 +142,7 @@ namespace BL.Database.Documents
 
                     if (doc == null) return null;
 
-                    doc.DocumentFiles =  dbContext.DocumentFilesSet
+                    doc.DocumentFiles = dbContext.DocumentFilesSet
                             .Where(
                                 x => x.DocumentId == documentId && x.Version == maxVer && x.OrderNumber == orderNumber)
                             .Join(dbContext.DictionaryAgentsSet, df => df.LastChangeUserId, da => da.Id,
@@ -175,7 +175,7 @@ namespace BL.Database.Documents
                             .Where(
                                 x => x.DocumentId == documentId && x.Version == maxVer && x.OrderNumber == orderNumber)
                             .Join(dbContext.DictionaryAgentsSet, df => df.LastChangeUserId, da => da.Id,
-                                (d, a) => new {fl = d, agName = a.Name})
+                                (d, a) => new { fl = d, agName = a.Name })
                             .Select(x => new FrontDocumentAttachedFile
                             {
                                 Id = x.fl.Id,
@@ -259,7 +259,7 @@ namespace BL.Database.Documents
                 doc.DocumentFiles =
                     dbContext.DocumentFilesSet.Where(
                         x => x.DocumentId == flIdent.DocumentId && x.OrderNumber == flIdent.OrderInDocument)
-                        .Select(x => new InternalDocumentAttachedFile {Id = x.Id}).ToList();
+                        .Select(x => new InternalDocumentAttachedFile { Id = x.Id }).ToList();
                 return doc;
             }
         }

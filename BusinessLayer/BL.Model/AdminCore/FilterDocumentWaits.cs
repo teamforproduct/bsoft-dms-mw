@@ -1,4 +1,6 @@
-﻿namespace BL.Model.AdminCore
+﻿using System.Collections.Generic;
+
+namespace BL.Model.AdminCore
 {
     /// <summary>
     ///Фильтр ожиданий по документу
@@ -6,9 +8,9 @@
     public class FilterDocumentWaits
     {
         /// <summary>
-        /// ИД. Документа
+        /// Массив ИД документов
         /// </summary>
-        public int? DocumentId { get; set; }
+        public List<int> DocumentId { get; set; }
         /// <summary>
         /// ИД. инициирующего события
         /// </summary>
