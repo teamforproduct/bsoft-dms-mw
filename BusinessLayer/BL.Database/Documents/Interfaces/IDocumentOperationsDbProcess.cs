@@ -68,5 +68,8 @@ namespace BL.Database.Documents.Interfaces
 
         DocumentActionsModel GetDocumentActionsModelPrepare(IContext context, int documentId);
         InternalDocument GetDocumentActionsPrepare(IContext context, int documentId);
+        void ControlOffSendListPrepare(IContext context, InternalDocument document);
+        void ControlOffSubscriptionPrepare(IContext context, InternalDocument document);
+        void ControlOffMarkExecutionWaitPrepare(IContext context, InternalDocument document);
     }
 }

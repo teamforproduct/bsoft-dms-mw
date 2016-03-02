@@ -57,6 +57,7 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new WaitHasAlreadyClosed();
             }
+            _operationDb.ControlOffSubscriptionPrepare(_context, _document);
             _context.SetCurrentPosition(_docWait.OnEvent.TargetPositionId);
             _admin.VerifyAccess(_context, CommandType);
             return true;
@@ -66,6 +67,10 @@ namespace BL.Logic.DocumentCore.Commands
         {
             _docWait.OffEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, _docWait.DocumentId, _eventType, Model.Description, _docWait.OnEvent.Task, _docWait.OnEvent.SourcePositionId, null, _docWait.OnEvent.TargetPositionId);
             CommonDocumentUtilities.SetLastChange(_context, _docWait);
+            var subscription = _document.Subscriptions.First();
+            subscription.Description = CommandType.ToString();
+            subscription.DoneEvent = null;
+            CommonDocumentUtilities.SetLastChange(Context, _document.Subscriptions);
             _operationDb.CloseDocumentWait(_context, _document);
             return _document.Id;
         }

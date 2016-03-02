@@ -57,6 +57,8 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new WaitHasAlreadyClosed();
             }
+            _operationDb.ControlOffSendListPrepare(_context, _document);
+            _operationDb.ControlOffMarkExecutionWaitPrepare(_context, _document);
             _context.SetCurrentPosition(_docWait.OnEvent.TargetPositionId);
             _admin.VerifyAccess(_context, CommandType);
             return true;

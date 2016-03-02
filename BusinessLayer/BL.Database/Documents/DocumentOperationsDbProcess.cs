@@ -276,7 +276,10 @@ namespace BL.Database.Documents
                         LastChangeUserId = subscription.LastChangeUserId
                     };
                     dbContext.DocumentSubscriptionsSet.Attach(subscriptionDb);
-                    subscriptionDb.DoneEvent = offEvent;
+                    if (subscription.DoneEvent != null)
+                    {
+                        subscriptionDb.DoneEvent = offEvent;
+                    }
                     var entry = dbContext.Entry(subscriptionDb);
                     entry.Property(x => x.Id).IsModified = true;
                     entry.Property(x => x.Hash).IsModified = true;
@@ -329,7 +332,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public InternalDocument ControlOffDocumentPrepare(IContext context, int eventId) //TODO развести запросы по разным процедурам
+        public InternalDocument ControlOffDocumentPrepare(IContext context, int eventId) 
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
@@ -357,9 +360,17 @@ namespace BL.Database.Documents
                                         }
                                     }
                     }).FirstOrDefault();
-                if (doc == null) return null;
-                var waitsId = doc.Waits.Select(x => x.Id).ToList();
-                var eventsId = doc.Waits.Select(x => x.OnEventId).ToList();
+
+                 return doc;
+
+            }
+        }
+
+        public void ControlOffSendListPrepare(IContext context, InternalDocument document)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var eventsId = document.Waits.Select(x => x.OnEventId).ToList();
 
                 var sendLists = dbContext.DocumentSendListsSet
                     .Where(x => x.StartEventId.HasValue && !x.CloseEventId.HasValue && eventsId.Contains(x.StartEventId.Value))
@@ -368,16 +379,15 @@ namespace BL.Database.Documents
                         Id = x.Id,
                     }
                     ).ToList();
-                doc.SendLists.ToList().AddRange(sendLists);
+                document.SendLists.ToList().AddRange(sendLists);
+            }
+        }
 
-                var subscriptions = dbContext.DocumentSubscriptionsSet
-                    .Where(x => !x.DoneEventId.HasValue && eventsId.Contains(x.SendEventId))
-                    .Select(x => new InternalDocumentSubscription
-                    {
-                        Id = x.Id,
-                    }
-                    ).ToList();
-                doc.Subscriptions.ToList().AddRange(subscriptions);
+        public void ControlOffMarkExecutionWaitPrepare(IContext context, InternalDocument document)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var waitsId = document.Waits.Select(x => x.Id).ToList();
 
                 var waitRes = dbContext.DocumentWaitsSet
                     .Where(x => x.ParentId.HasValue && !x.OffEventId.HasValue && waitsId.Contains(x.ParentId.Value) && x.OnEvent.EventTypeId == (int)EnumEventTypes.MarkExecution)
@@ -397,12 +407,27 @@ namespace BL.Database.Documents
                         }
                     }
                     ).ToList();
-                doc.Waits.ToList().AddRange(waitRes);
-
-                return doc;
-
+                document.Waits.ToList().AddRange(waitRes);
             }
         }
+
+        public void ControlOffSubscriptionPrepare(IContext context, InternalDocument document)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var eventsId = document.Waits.Select(x => x.OnEventId).ToList();
+
+                var subscriptions = dbContext.DocumentSubscriptionsSet
+                    .Where(x => !x.DoneEventId.HasValue && eventsId.Contains(x.SendEventId))
+                    .Select(x => new InternalDocumentSubscription
+                    {
+                        Id = x.Id,
+                    }
+                    ).ToList();
+                document.Subscriptions.ToList().AddRange(subscriptions);
+            }
+        }
+
 
         #endregion Waits
 
