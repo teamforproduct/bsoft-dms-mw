@@ -60,6 +60,9 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<DictionarySubordinationTypes> DictionarySubordinationTypesSet { get; set; }
         public virtual DbSet<DictionaryTags> DictionaryTagsSet { get; set; }
 
+        public virtual DbSet<CustomDictionaries> CustomDictionariesSet { get; set; }
+        public virtual DbSet<CustomDictionaryTypes> CustomDictionaryTypesSet { get; set; }
+
         public virtual DbSet<DBModel.Document.Documents> DocumentsSet { get; set; }
         public virtual DbSet<DocumentSavedFilters> DocumentSavedFiltersSet { get; set; }
         public virtual DbSet<DocumentFiles> DocumentFilesSet { get; set; }

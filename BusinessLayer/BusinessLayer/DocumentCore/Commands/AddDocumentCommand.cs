@@ -61,7 +61,7 @@ namespace BL.Logic.DocumentCore.Commands
             foreach (var sl in _document.SendLists)
             {
                 sl.IsInitial = true;
-                if (sl.SourcePositionId == null)
+                if (sl.SourcePositionId == 0)
                 {
                     sl.SourcePositionId = _context.CurrentPositionId;
                 }

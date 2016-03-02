@@ -447,7 +447,7 @@ namespace BL.Database.Documents
                     .Select(y => new InternalDocumentSendList()
                     {
                         SendType = (EnumSendTypes)y.SendTypeId,
-                        SourcePositionId = y.SourcePositionId,
+                        SourcePositionId = y.SourcePositionId??0, 
                         TargetPositionId = y.TargetPositionId,
                         TargetAgentId = y.TargetAgentId,
                         Description = y.Description,

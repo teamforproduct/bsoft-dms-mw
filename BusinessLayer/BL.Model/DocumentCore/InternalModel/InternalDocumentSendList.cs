@@ -11,7 +11,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public int Stage { get; set; }
         public EnumSendTypes SendType { get; set; }
 
-        public int? SourcePositionId { get; set; }
+        public int SourcePositionId { get; set; }
         public int SourceAgentId { get; set; }
 
         public int? TargetPositionId { get; set; }

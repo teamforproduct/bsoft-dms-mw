@@ -71,6 +71,8 @@
     <Compile Include="DBModel\Admin\AdminRoles.cs" />
     <Compile Include="DBModel\Admin\AdminSubordinations.cs" />
     <Compile Include="DBModel\Admin\AdminUserRoles.cs" />
+    <Compile Include="DBModel\Dictionary\CustomDictionaries.cs" />
+    <Compile Include="DBModel\Dictionary\CustomDictionaryTypes.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryAgentPersons.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryLinkTypes.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryResultTypes.cs" />
@@ -316,6 +318,10 @@
     <Compile Include="Migrations\201602281904432_Task.Designer.cs">
       <DependentUpon>201602281904432_Task.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201603020954490_CustomDictionary.cs" />
+    <Compile Include="Migrations\201603020954490_CustomDictionary.Designer.cs">
+      <DependentUpon>201603020954490_CustomDictionary.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\ISecurityDbProcess.cs" />
@@ -483,6 +489,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201602281904432_Task.resx">
       <DependentUpon>201602281904432_Task.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201603020954490_CustomDictionary.resx">
+      <DependentUpon>201603020954490_CustomDictionary.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
