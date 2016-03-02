@@ -38,7 +38,7 @@ namespace DMS_WebAPI.Controllers.Documents
             res.Paging = paging;
             timeM.Stop();
             SaveToFile("DB: IDocumentService GetDocuments User: " + cxt.CurrentAgentId, timeDB.Elapsed.ToString("G"));
-            SaveToFile("M: DocumentsController Get List User: "+cxt.CurrentAgentId, timeM.Elapsed.ToString("G"));
+            SaveToFile("M: DocumentsController Get List User: " + cxt.CurrentAgentId, timeM.Elapsed.ToString("G"));
             return res;
         }
 
@@ -70,7 +70,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// </summary>
         /// <param name="id">ИД Документа</param>
         /// <returns>Документ</returns>
-        public IHttpActionResult Get(int id)
+        public IHttpActionResult Get(int id, [FromUri]FilterDocumentById filter = null)
         {
             var timeM = new System.Diagnostics.Stopwatch();
             var timeDB = new System.Diagnostics.Stopwatch();
@@ -82,7 +82,7 @@ namespace DMS_WebAPI.Controllers.Documents
 
             timeDB.Start();
             timeDB1.Start();
-            var doc = docProc.GetDocument(cxt, id);
+            var doc = docProc.GetDocument(cxt, id, filter);
             timeDB1.Stop();
 
             timeDB2.Start();

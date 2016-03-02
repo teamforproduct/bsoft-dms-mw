@@ -17,7 +17,7 @@ namespace BL.Database.Documents.Interfaces
         void DeleteDocument(IContext context, int id);
 
         IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging);
-        FrontDocument GetDocument(IContext ctx, int documentId);
+        FrontDocument GetDocument(IContext ctx, int documentId, FilterDocumentById filter);
 
 
 

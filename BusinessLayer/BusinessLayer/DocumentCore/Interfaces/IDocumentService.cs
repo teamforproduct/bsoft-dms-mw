@@ -11,7 +11,7 @@ namespace BL.Logic.DocumentCore.Interfaces
     public interface IDocumentService
     {
         IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging);
-        FrontDocument GetDocument(IContext ctx, int documentId);
+        FrontDocument GetDocument(IContext ctx, int documentId, FilterDocumentById filter);
         IEnumerable<BaseSystemUIElement> GetModifyMetaData(IContext cxt, FrontDocument doc);
         object ExecuteAction(EnumDocumentActions act, IContext context, object param);
 

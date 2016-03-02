@@ -303,10 +303,11 @@ namespace BL.Logic.Common
                 throw new DocumentRestrictedSendListDuplication();
             }
 
-            if (doc.SendLists.GroupBy(x => new { x.DocumentId, x.TargetPositionId, x.SendType }).Any(x => x.Count() > 1))
-            {
-                throw new DocumentSendListDuplication();
-            }
+            //TODO Малинин. Решить вопрос
+            //if (doc.SendLists.GroupBy(x => new { x.DocumentId, x.TargetPositionId, x.SendType }).Any(x => x.Count() > 1))
+            //{
+            //    throw new DocumentSendListDuplication();
+            //}
 
             if (doc.RestrictedSendLists?.Count() > 0
                 && doc.SendLists.GroupJoin(doc.RestrictedSendLists

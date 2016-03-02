@@ -37,9 +37,9 @@ namespace BL.Logic.DocumentCore
             return _documentDb.GetDocuments(ctx, filters, paging);
         }
 
-        public FrontDocument GetDocument(IContext ctx, int documentId)
+        public FrontDocument GetDocument(IContext ctx, int documentId, FilterDocumentById filter)
         {
-            var doc = _documentDb.GetDocument(ctx, documentId);
+            var doc = _documentDb.GetDocument(ctx, documentId, filter);
             var sslService = DmsResolver.Current.Get<IDocumentSendListService>();
             doc.SendListStages = CommonDocumentUtilities.GetSendListStage(doc.SendLists);
             return doc;

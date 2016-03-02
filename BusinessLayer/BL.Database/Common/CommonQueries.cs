@@ -65,24 +65,38 @@ namespace BL.Database.Common
             return qry;
         }
 
-        public static IQueryable<FilterDocumentFileIdentity> GetDocumentFilesMaxVersion(DmsContext dbContext, int documentId)
+        public static IQueryable<FilterDocumentFileIdentity> GetDocumentFilesMaxVersion(DmsContext dbContext, FilterDocumentAttachedFile filter)
         {
+            var qry = dbContext.DocumentFilesSet.AsQueryable();
+
+            if (filter != null)
+            {
+                if (filter.AttachedFileId?.Count > 0)
+                {
+                    qry = qry.Where(x => filter.AttachedFileId.Contains(x.Id));
+                }
+
+                if (filter.DocumentId?.Count > 0)
+                {
+                    qry = qry.Where(x => filter.DocumentId.Contains(x.DocumentId));
+                }
+            }
+
             return dbContext.DocumentFilesSet
-                .Where(x => x.DocumentId == documentId)
                 .GroupBy(g => new { g.DocumentId, g.OrderNumber })
-                .Select(x => new FilterDocumentFileIdentity  { DocumentId = x.Key.DocumentId, OrderInDocument = x.Key.OrderNumber, Version = x.Max(s => s.Version) });
+                .Select(x => new FilterDocumentFileIdentity { DocumentId = x.Key.DocumentId, OrderInDocument = x.Key.OrderNumber, Version = x.Max(s => s.Version) });
         }
 
-        public static IEnumerable<FrontDocumentAttachedFile> GetDocumentFiles(DmsContext dbContext, int documentId)
+        public static IEnumerable<FrontDocumentAttachedFile> GetDocumentFiles(DmsContext dbContext, FilterDocumentAttachedFile filter)
         {
-            var sq = GetDocumentFilesMaxVersion(dbContext, documentId);
+            var sq = GetDocumentFilesMaxVersion(dbContext, filter);
 
             return
                 sq.Join(dbContext.DocumentFilesSet, sub => new { sub.DocumentId, OrderNumber = sub.OrderInDocument, sub.Version },
                     fl => new { fl.DocumentId, fl.OrderNumber, fl.Version },
-                    (s, f) => new {fl = f})
+                    (s, f) => new { fl = f })
                     .Join(dbContext.DictionaryAgentsSet, df => df.fl.LastChangeUserId, da => da.Id,
-                        (d, a) => new {d.fl, agName = a.Name})
+                        (d, a) => new { d.fl, agName = a.Name })
                     .Select(x => new FrontDocumentAttachedFile
                     {
                         Id = x.fl.Id,
@@ -106,7 +120,7 @@ namespace BL.Database.Common
 
         public static IEnumerable<InternalDocumentAttachedFile> GetInternalDocumentFiles(DmsContext dbContext, int documentId)
         {
-            var sq = GetDocumentFilesMaxVersion(dbContext, documentId);
+            var sq = GetDocumentFilesMaxVersion(dbContext,new FilterDocumentAttachedFile { DocumentId = new List<int> { documentId } });
 
             return
                 sq.Join(dbContext.DocumentFilesSet, sub => new { sub.DocumentId, OrderNumber = sub.OrderInDocument, sub.Version },
@@ -149,7 +163,7 @@ namespace BL.Database.Common
                     IsInWork = acc.IsInWork,
                     DocumentId = acc.DocumentId,
                     IsFavourite = acc.IsFavourite,
-                    AccessLevel = (EnumDocumentAccesses) acc.AccessLevelId,
+                    AccessLevel = (EnumDocumentAccesses)acc.AccessLevelId,
                     AccessLevelName = acc.AccessLevel.Name
                 };
             }
@@ -161,7 +175,7 @@ namespace BL.Database.Common
         {
             if (docAccesses == null || !docAccesses.Any()) return null;
             var accPositions = dbContext.DocumentAccessesSet.Where(x => x.DocumentId == documentId).Select(x => x.PositionId);
-            return docAccesses.Where(x=>!accPositions.Contains(x.PositionId)).Select(ModelConverter.GetDbDocumentAccess);
+            return docAccesses.Where(x => !accPositions.Contains(x.PositionId)).Select(ModelConverter.GetDbDocumentAccess);
         }
 
         public static InternalDocumentAccess GetInternalDocumentAccess(IContext ctx, DmsContext dbContext, int documentId)
@@ -200,7 +214,7 @@ namespace BL.Database.Common
                     IsInWork = acc.IsInWork,
                     DocumentId = acc.DocumentId,
                     IsFavourite = acc.IsFavourite,
-                    AccessLevel = (EnumDocumentAccesses) acc.AccessLevelId
+                    AccessLevel = (EnumDocumentAccesses)acc.AccessLevelId
                 }).ToList();
         }
 
@@ -211,11 +225,11 @@ namespace BL.Database.Common
                 PositionId = x.Id,
                 PositionName = x.Name,
                 AgentId = x.ExecutorAgentId ?? 0,
-                AgentName = x.ExecutorAgentId.HasValue ? x.ExecutorAgent.Name:""
-                }).ToList();
+                AgentName = x.ExecutorAgentId.HasValue ? x.ExecutorAgent.Name : ""
+            }).ToList();
         }
 
-        public static IEnumerable<FrontDocumentEvent> GetDocumentEvents(DmsContext dbContext,FilterDocumentEvent filter)
+        public static IEnumerable<FrontDocumentEvent> GetDocumentEvents(DmsContext dbContext, FilterDocumentEvent filter)
         {
             var qry = dbContext.DocumentEventsSet.AsQueryable();
 
@@ -236,8 +250,8 @@ namespace BL.Database.Common
                 Id = x.Id,
                 DocumentId = x.DocumentId,
                 Description = x.Description,
-                EventType = (EnumEventTypes) x.EventTypeId,
-                ImportanceEventType = (EnumImportanceEventTypes) x.EventType.ImportanceEventTypeId,
+                EventType = (EnumEventTypes)x.EventTypeId,
+                ImportanceEventType = (EnumImportanceEventTypes)x.EventType.ImportanceEventTypeId,
                 CreateDate = x.CreateDate,
                 Date = x.Date,
                 EventTypeName = x.EventType.Name,
@@ -301,9 +315,9 @@ namespace BL.Database.Common
 
             if (filter != null)
             {
-                if (filter.DocumentId.HasValue)
+                if (filter?.DocumentId?.Count()>0)
                 {
-                    waitsDb = waitsDb.Where(x => x.DocumentId == filter.DocumentId.Value);
+                    waitsDb = waitsDb.Where(x => filter.DocumentId.Contains(x.DocumentId));
                 }
 
                 if (filter.OnEventId.HasValue)
@@ -378,9 +392,9 @@ namespace BL.Database.Common
 
             if (filter != null)
             {
-                if (filter.DocumentId.HasValue)
+                if (filter?.DocumentId?.Count()>0)
                 {
-                    waitsDb = waitsDb.Where(x => x.DocumentId == filter.DocumentId.Value);
+                    waitsDb = waitsDb.Where(x => filter.DocumentId.Contains(x.DocumentId));
                 }
 
                 if (filter.OnEventId.HasValue)
@@ -399,7 +413,7 @@ namespace BL.Database.Common
                 }
             }
 
-            var waitsRes = waitsDb.Select(x => new {Wait = x, x.OnEvent, x.OffEvent});
+            var waitsRes = waitsDb.Select(x => new { Wait = x, x.OnEvent, x.OffEvent });
 
             var waits = waitsRes.Select(x => new FrontDocumentWaits
             {
@@ -425,7 +439,7 @@ namespace BL.Database.Common
                         SourcePositionId = x.OnEvent.SourcePositionId,
                         TargetAgentId = x.OnEvent.TargetAgentId,
                         TargetPositionId = x.OnEvent.TargetPositionId,
-                        EventType = (EnumEventTypes) x.OnEvent.EventTypeId
+                        EventType = (EnumEventTypes)x.OnEvent.EventTypeId
                     },
                 OffEvent = x.OffEvent == null
                     ? null
@@ -441,7 +455,7 @@ namespace BL.Database.Common
                         SourcePositionId = x.OffEvent.SourcePositionId,
                         TargetAgentId = x.OffEvent.TargetAgentId,
                         TargetPositionId = x.OffEvent.TargetPositionId,
-                        EventType = (EnumEventTypes) x.OffEvent.EventTypeId
+                        EventType = (EnumEventTypes)x.OffEvent.EventTypeId
                     }
             }).ToList();
 
@@ -455,12 +469,12 @@ namespace BL.Database.Common
 
             if (filter != null)
             {
-                if (filter.DocumentId.HasValue)
+                if (filter?.DocumentId?.Count()>0)
                 {
-                    tagsDb = tagsDb.Where(x => x.DocumentId == filter.DocumentId.Value);
+                    tagsDb = tagsDb.Where(x => filter.DocumentId.Contains(x.DocumentId));
                 }
 
-                if(filter.CurrentPositionsId?.Count>0)
+                if (filter.CurrentPositionsId?.Count > 0)
                 {
                     tagsDb = tagsDb.Where(x => !x.Tag.PositionId.HasValue || filter.CurrentPositionsId.Contains(x.Tag.PositionId ?? 0));
                 }
@@ -487,7 +501,7 @@ namespace BL.Database.Common
         {
             var qry = dbContext.DictionaryPositionsSet.Select(x => new { pos = x, subordMax = 0 }).AsQueryable();
 
-            if (filter!=null)
+            if (filter != null)
             {
                 if (filter.PositionId?.Count > 0)
                 {

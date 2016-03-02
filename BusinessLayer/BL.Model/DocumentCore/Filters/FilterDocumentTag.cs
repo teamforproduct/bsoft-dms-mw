@@ -8,9 +8,9 @@ namespace BL.Model.DocumentCore.Filters
     public class FilterDocumentTag
     {
         /// <summary>
-        /// ИД. Документа
+        /// Массив ИД документов
         /// </summary>
-        public int? DocumentId { get; set; }
+        public List<int> DocumentId { get; set; }
 
         /// <summary>
         /// Список ИД. Позиций
