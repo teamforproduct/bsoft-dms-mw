@@ -225,23 +225,45 @@ namespace BL.Database.Documents
             }
         }
 
-        public void CloseDocumentWait(IContext ctx, InternalDocumentWait docWait)
+        public void CloseDocumentWait(IContext ctx, InternalDocument document)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-                var wait = new DocumentWaits
+                var offEvent = ModelConverter.GetDbDocumentEvent(document.Waits.First().OffEvent);
+                foreach (var docWait in document.Waits)
                 {
-                    Id = docWait.Id,
-                    LastChangeDate = docWait.LastChangeDate,
-                    LastChangeUserId = docWait.LastChangeUserId
-                };
-                dbContext.DocumentWaitsSet.Attach(wait);
-                wait.OffEvent = ModelConverter.GetDbDocumentEvent(docWait.OffEvent);
-                var entry = dbContext.Entry(wait);
+                    var wait = new DocumentWaits
+                    {
+                        Id = docWait.Id,
+                        ResultTypeId = docWait.ResultTypeId,
+                        LastChangeDate = docWait.LastChangeDate,
+                        LastChangeUserId = docWait.LastChangeUserId
+                    };
+                    dbContext.DocumentWaitsSet.Attach(wait);
+                    wait.OffEvent = offEvent;
+                    var entry = dbContext.Entry(wait);
 
-                entry.Property(x => x.Id).IsModified = true;
-                entry.Property(x => x.LastChangeDate).IsModified = true;
-                entry.Property(x => x.LastChangeUserId).IsModified = true;
+                    entry.Property(x => x.Id).IsModified = true;
+                    entry.Property(x => x.ResultTypeId).IsModified = true;
+                    entry.Property(x => x.LastChangeDate).IsModified = true;
+                    entry.Property(x => x.LastChangeUserId).IsModified = true;
+                }
+                var sendList = document.SendLists.FirstOrDefault();
+                if (sendList != null)
+                {
+                    var sendListDb = new DocumentSendLists
+                    {
+                        Id = sendList.Id,
+                        LastChangeDate = sendList.LastChangeDate,
+                        LastChangeUserId = sendList.LastChangeUserId
+                    };
+                    dbContext.DocumentSendListsSet.Attach(sendListDb);
+                    sendListDb.CloseEvent = offEvent;
+                    var entry = dbContext.Entry(sendListDb);
+                    entry.Property(x => x.Id).IsModified = true;
+                    entry.Property(x => x.LastChangeDate).IsModified = true;
+                    entry.Property(x => x.LastChangeUserId).IsModified = true;
+                }
                 dbContext.SaveChanges();
             }
         }
@@ -308,6 +330,7 @@ namespace BL.Database.Documents
                                             {
                                                 Id = x.OnEvent.Id,
                                                 DocumentId = x.OnEvent.DocumentId,
+                                                EventType = (EnumEventTypes)x.OnEvent.EventTypeId,
                                                 SourcePositionId = x.OnEvent.SourcePositionId,
                                                 TargetPositionId = x.OnEvent.TargetPositionId,
                                                 Task = x.OnEvent.Task,
@@ -315,6 +338,39 @@ namespace BL.Database.Documents
                                         }
                                     }
                     }).FirstOrDefault();
+                if (doc == null) return null;
+                var waitsId = doc.Waits.Select(x => x.Id).ToList();
+                var eventsId = doc.Waits.Select(x => x.OnEventId).ToList();
+                
+                var sendLists = dbContext.DocumentSendListsSet
+                    .Where(x => x.StartEventId.HasValue && !x.CloseEventId.HasValue && eventsId.Contains(x.StartEventId.Value))
+                    .Select(x => new InternalDocumentSendList
+                    {
+                        Id = x.Id,
+                    }
+                    ).ToList();
+                doc.SendLists.ToList().AddRange(sendLists);
+
+                var waitRes = dbContext.DocumentWaitsSet
+                    .Where(x => x.ParentId.HasValue&&!x.OffEventId.HasValue && waitsId.Contains(x.ParentId.Value) && x.OnEvent.EventTypeId == (int)EnumEventTypes.MarkExecution)
+                    .Select(x => new InternalDocumentWait
+                    {
+                        Id = x.OnEvent.Id,
+                        ParentId = x.ParentId,
+                        DocumentId = x.OnEvent.DocumentId,
+                        OnEvent = new InternalDocumentEvent
+                        {
+                            Id = x.OnEvent.Id,
+                            DocumentId = x.OnEvent.DocumentId,
+                            EventType = (EnumEventTypes)x.OnEvent.EventTypeId,
+                            SourcePositionId = x.OnEvent.SourcePositionId,
+                            TargetPositionId = x.OnEvent.TargetPositionId,
+                            Task = x.OnEvent.Task,
+                        }
+                    }
+                    ).ToList();
+                doc.Waits.ToList().AddRange(waitRes);
+                
                 return doc;
 
             }
@@ -389,7 +445,7 @@ namespace BL.Database.Documents
                     .Select(x => new InternalDocument
                     {
                         Id = x.Id,
-                        IsFavourite =x.IsFavourite,
+                        IsFavourite = x.IsFavourite,
                         Accesses = new List<InternalDocumentAccess>
                                     {
                                         new InternalDocumentAccess

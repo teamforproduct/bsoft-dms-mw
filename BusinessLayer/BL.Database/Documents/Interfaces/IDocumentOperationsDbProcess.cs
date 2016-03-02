@@ -26,7 +26,7 @@ namespace BL.Database.Documents.Interfaces
         InternalDocument ControlOffDocumentPrepare(IContext context, int eventId);
         IEnumerable<InternalDocumentAccess> GetDocumentAccesses(IContext ctx, int documentId);
         InternalDocument LaunchDocumentSendListItemPrepare(IContext context, int model);
-        InternalDocument ControlChangeDocumentPrepare(IContext _context, int eventId);
+        InternalDocument ControlChangeDocumentPrepare(IContext context, int eventId);
         void ChangeIsInWorkAccess(IContext ctx, InternalDocument access);
         InternalDocument AddDocumentLinkPrepare(IContext context, AddDocumentLink model);
         void ChangeIsFavouriteAccess(IContext context, InternalDocumentAccess docAccess);
@@ -38,7 +38,7 @@ namespace BL.Database.Documents.Interfaces
 
         InternalDocumentRestrictedSendList DeleteDocumentRestrictedSendListPrepare(IContext context, int restSendListId);
         InternalDocument SendForSigningDocumentPrepare(IContext _context, InternalDocumentSendList model);
-        void CloseDocumentWait(IContext context, InternalDocumentWait docWait);
+        void CloseDocumentWait(IContext context, InternalDocument document);
 
         InternalDocument SendForExecutionDocumentPrepare(IContext context, InternalDocumentSendList sendList);
 

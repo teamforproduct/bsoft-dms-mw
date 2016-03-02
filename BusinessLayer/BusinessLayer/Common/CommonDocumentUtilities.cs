@@ -29,8 +29,11 @@ namespace BL.Logic.Common
 
         public static void SetLastChange(IContext context, LastChangeInfo document)
         {
-            document.LastChangeDate = DateTime.Now;
-            document.LastChangeUserId = context.CurrentAgentId;
+            if (document != null)
+            {
+                document.LastChangeDate = DateTime.Now;
+                document.LastChangeUserId = context.CurrentAgentId;
+            }
         }
 
         public static void SetLastChange(IContext context, IEnumerable<LastChangeInfo> documents)

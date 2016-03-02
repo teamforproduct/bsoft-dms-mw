@@ -42,6 +42,10 @@ namespace BL.Logic.DocumentCore.Commands
         public override bool CanExecute()
         {
             _document = _operationDb.ControlOffDocumentPrepare(_context, Model.EventId);
+            if (_document == null)
+            {
+                throw new DocumentNotFoundOrUserHasNoAccess();
+            }
             _docWait = _document.Waits.FirstOrDefault();
             if (_docWait?.OnEvent?.SourcePositionId == null)
             {
@@ -64,7 +68,7 @@ namespace BL.Logic.DocumentCore.Commands
             _docWait.OffEvent =
                 CommonDocumentUtilities.GetNewDocumentEvent(_context, _docWait.DocumentId, EnumEventTypes.ControlOff,Model.Description, _docWait.OnEvent.Task, _docWait.OnEvent.TargetPositionId);
             CommonDocumentUtilities.SetLastChange(_context, _docWait);
-            _operationDb.CloseDocumentWait(_context, _docWait);
+            _operationDb.CloseDocumentWait(_context, _document);
             return _docWait.DocumentId;
         }
 

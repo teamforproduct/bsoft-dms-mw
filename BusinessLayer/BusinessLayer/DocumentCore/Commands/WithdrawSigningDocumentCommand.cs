@@ -11,14 +11,14 @@ using System;
 
 namespace BL.Logic.DocumentCore.Commands
 {
-    public class RejectResultDocumentCommand : BaseDocumentCommand
+    public class WithdrawSigningDocumentCommand : BaseDocumentCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
         private readonly IAdminService _admin;
 
         private InternalDocumentWait _docWait;
 
-        public RejectResultDocumentCommand(IDocumentOperationsDbProcess operationDb, IAdminService admin)
+        public WithdrawSigningDocumentCommand(IDocumentOperationsDbProcess operationDb, IAdminService admin)
         {
             _operationDb = operationDb;
             _admin = admin;
@@ -64,13 +64,13 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override object Execute()
         {
-            _docWait.OffEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, _docWait.DocumentId, EnumEventTypes.RejectResult, Model.Description, _docWait.OnEvent.Task, _docWait.OnEvent.SourcePositionId, null, _docWait.OnEvent.TargetPositionId);
+            _docWait.OffEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, _docWait.DocumentId, _eventType, Model.Description, _docWait.OnEvent.Task, _docWait.OnEvent.TargetPositionId, null, _docWait.OnEvent.SourcePositionId);
             CommonDocumentUtilities.SetLastChange(_context, _docWait);
             _operationDb.CloseDocumentWait(_context, _document);
             return _document.Id;
         }
 
+        private EnumEventTypes _eventType => (EnumEventTypes)Enum.Parse(typeof(EnumEventTypes), CommandType.ToString());
 
-        public override EnumDocumentActions CommandType => EnumDocumentActions.MarkExecution;
     }
 }

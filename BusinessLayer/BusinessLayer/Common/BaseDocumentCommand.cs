@@ -9,17 +9,19 @@ namespace BL.Logic.Common
         protected IContext _context;
         protected InternalDocument _document;
         protected object _param;
+        protected EnumDocumentActions _action;
 
         public void InitializeCommand(IContext ctx, InternalDocument doc)
         {
-            InitializeCommand(ctx, doc, null);
+            InitializeCommand(ctx, doc, null, null);
         }
 
-        public void InitializeCommand(IContext ctx, InternalDocument doc, object param)
+        public void InitializeCommand(IContext ctx, InternalDocument doc, object param, EnumDocumentActions? action)
         {
             _context = ctx;
             _document = doc;
             _param = param;
+            _action = action?? EnumDocumentActions.Undefined;
         }
 
         public InternalDocument Document { get { return _document; } }
@@ -30,6 +32,6 @@ namespace BL.Logic.Common
         public abstract bool CanExecute();
         public abstract object Execute();
 
-        public abstract EnumDocumentActions CommandType { get; }
+        public virtual EnumDocumentActions CommandType { get { return _action; } }
     }
 }
