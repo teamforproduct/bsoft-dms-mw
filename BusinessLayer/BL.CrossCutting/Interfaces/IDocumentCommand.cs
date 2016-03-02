@@ -6,7 +6,7 @@ namespace BL.CrossCutting.Interfaces
     public interface IDocumentCommand:ICommand
     {
         void InitializeCommand(IContext ctx, InternalDocument doc);
-        void InitializeCommand(IContext ctx, InternalDocument doc, object param);
+        void InitializeCommand(IContext ctx, InternalDocument doc, object param, EnumDocumentActions? action = null);
 
         EnumDocumentActions CommandType { get; }
     }

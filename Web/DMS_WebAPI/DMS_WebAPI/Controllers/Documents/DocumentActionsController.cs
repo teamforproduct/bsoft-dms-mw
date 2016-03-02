@@ -533,5 +533,207 @@ namespace DMS_WebAPI.Controllers.Documents
             return ctrl.Get(docId);
         }
 
+        /// <summary>
+        /// Отклонить подписание
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("RejectSigning")]
+        [HttpPost]
+        public IHttpActionResult RejectSigning(SendEventMessage model)
+        {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            timeM.Start();
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            timeDB.Start();
+            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.RejectSigning, cxt, model);
+            timeDB.Stop();
+
+            timeM.Stop();
+            SaveToFile("M: DocumentActionsController RejectSigning", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentOperationsService RejectSigning", timeDB.Elapsed.ToString("G"));
+
+            var ctrl = new DocumentsController { ControllerContext = ControllerContext };
+            return ctrl.Get(docId);
+        }
+        /// <summary>
+        /// Отклонить визирование
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("RejectVisaing")]
+        [HttpPost]
+        public IHttpActionResult RejectVisaing(SendEventMessage model)
+        {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            timeM.Start();
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            timeDB.Start();
+            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.RejectVisaing, cxt, model);
+            timeDB.Stop();
+
+            timeM.Stop();
+            SaveToFile("M: DocumentActionsController RejectVisaing", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentOperationsService RejectVisaing", timeDB.Elapsed.ToString("G"));
+
+            var ctrl = new DocumentsController { ControllerContext = ControllerContext };
+            return ctrl.Get(docId);
+        }
+        /// <summary>
+        /// Отклонить согласование
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("RejectАgreement")]
+        [HttpPost]
+        public IHttpActionResult RejectАgreement(SendEventMessage model)
+        {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            timeM.Start();
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            timeDB.Start();
+            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.RejectАgreement, cxt, model);
+            timeDB.Stop();
+
+            timeM.Stop();
+            SaveToFile("M: DocumentActionsController RejectАgreement", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentOperationsService RejectАgreement", timeDB.Elapsed.ToString("G"));
+
+            var ctrl = new DocumentsController { ControllerContext = ControllerContext };
+            return ctrl.Get(docId);
+        }
+        /// <summary>
+        /// Отклонить утверждение
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("RejectАpproval")]
+        [HttpPost]
+        public IHttpActionResult RejectАpproval(SendEventMessage model)
+        {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            timeM.Start();
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            timeDB.Start();
+            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.RejectАpproval, cxt, model);
+            timeDB.Stop();
+
+            timeM.Stop();
+            SaveToFile("M: DocumentActionsController RejectАpproval", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentOperationsService RejectАpproval", timeDB.Elapsed.ToString("G"));
+
+            var ctrl = new DocumentsController { ControllerContext = ControllerContext };
+            return ctrl.Get(docId);
+        }
+
+        /// <summary>
+        /// Отозвать с подписания
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("WithdrawSigning")]
+        [HttpPost]
+        public IHttpActionResult WithdrawSigning(SendEventMessage model)
+        {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            timeM.Start();
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            timeDB.Start();
+            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.WithdrawSigning, cxt, model);
+            timeDB.Stop();
+
+            timeM.Stop();
+            SaveToFile("M: DocumentActionsController WithdrawSigning", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentOperationsService WithdrawSigning", timeDB.Elapsed.ToString("G"));
+
+            var ctrl = new DocumentsController { ControllerContext = ControllerContext };
+            return ctrl.Get(docId);
+        }
+        /// <summary>
+        /// Отозвать с визирования
+        ///  </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("WithdrawVisaing")]
+        [HttpPost]
+        public IHttpActionResult WithdrawVisaing(SendEventMessage model)
+        {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            timeM.Start();
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            timeDB.Start();
+            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.WithdrawVisaing, cxt, model);
+            timeDB.Stop();
+
+            timeM.Stop();
+            SaveToFile("M: DocumentActionsController WithdrawVisaing", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentOperationsService WithdrawVisaing", timeDB.Elapsed.ToString("G"));
+
+            var ctrl = new DocumentsController { ControllerContext = ControllerContext };
+            return ctrl.Get(docId);
+        }
+        /// <summary>
+        /// Отозвать с согласования
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("WithdrawАgreement")]
+        [HttpPost]
+        public IHttpActionResult WithdrawАgreement(SendEventMessage model)
+        {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            timeM.Start();
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            timeDB.Start();
+            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.WithdrawАgreement, cxt, model);
+            timeDB.Stop();
+
+            timeM.Stop();
+            SaveToFile("M: DocumentActionsController WithdrawАgreement", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentOperationsService WithdrawАgreement", timeDB.Elapsed.ToString("G"));
+
+            var ctrl = new DocumentsController { ControllerContext = ControllerContext };
+            return ctrl.Get(docId);
+        }
+        /// <summary>
+        /// Отозвать с утверждения
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("WithdrawАpproval")]
+        [HttpPost]
+        public IHttpActionResult WithdrawАpproval(SendEventMessage model)
+        {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            timeM.Start();
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            timeDB.Start();
+            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.WithdrawАpproval, cxt, model);
+            timeDB.Stop();
+
+            timeM.Stop();
+            SaveToFile("M: DocumentActionsController WithdrawАpproval", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentOperationsService WithdrawАpproval", timeDB.Elapsed.ToString("G"));
+
+            var ctrl = new DocumentsController { ControllerContext = ControllerContext };
+            return ctrl.Get(docId);
+        }
+
     }
 }

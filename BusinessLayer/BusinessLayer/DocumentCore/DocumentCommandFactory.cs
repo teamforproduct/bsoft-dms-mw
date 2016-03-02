@@ -141,6 +141,32 @@ namespace BL.Logic.DocumentCore
                     cmd = DmsResolver.Current.Get<SendForSigningDocumentCommand>();
                     break;
 
+                case EnumDocumentActions.RejectSigning:
+                    cmd = DmsResolver.Current.Get<RejectSigningDocumentCommand>();
+                    break;
+                case EnumDocumentActions.RejectVisaing:
+                    cmd = DmsResolver.Current.Get<RejectSigningDocumentCommand>();
+                    break;
+                case EnumDocumentActions.RejectАgreement:
+                    cmd = DmsResolver.Current.Get<RejectSigningDocumentCommand>();
+                    break;
+                case EnumDocumentActions.RejectАpproval:
+                    cmd = DmsResolver.Current.Get<RejectSigningDocumentCommand>();
+                    break;
+
+                case EnumDocumentActions.WithdrawSigning:
+                    cmd = DmsResolver.Current.Get<WithdrawSigningDocumentCommand>();
+                    break;
+                case EnumDocumentActions.WithdrawVisaing:
+                    cmd = DmsResolver.Current.Get<WithdrawSigningDocumentCommand>();
+                    break;
+                case EnumDocumentActions.WithdrawАgreement:
+                    cmd = DmsResolver.Current.Get<WithdrawSigningDocumentCommand>();
+                    break;
+                case EnumDocumentActions.WithdrawАpproval:
+                    cmd = DmsResolver.Current.Get<WithdrawSigningDocumentCommand>();
+                    break;
+
                 case EnumDocumentActions.AddSavedFilter:
                     cmd = DmsResolver.Current.Get<AddSavedFilterCommand>();
                     break;
@@ -165,7 +191,7 @@ namespace BL.Logic.DocumentCore
                 default:
                     throw new CommandNotDefinedError();
             }
-            cmd.InitializeCommand(ctx, doc, param);
+            cmd.InitializeCommand(ctx, doc, param, act);
             return cmd;
         }
     }

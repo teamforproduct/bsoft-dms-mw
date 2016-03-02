@@ -91,6 +91,9 @@ namespace BL.Logic.DependencyInjection
             Bind<IDocumentCommand>().To<AcceptResultDocumentCommand>();
 
             Bind<IDocumentCommand>().To<SendForSigningDocumentCommand>();
+            Bind<IDocumentCommand>().To<RejectResultDocumentCommand>();
+            Bind<IDocumentCommand>().To<WithdrawSigningDocumentCommand>();
+
 
             Bind<IDocumentCommand>().To<AddSavedFilterCommand>();
             Bind<IDocumentCommand>().To<DeleteSavedFilterCommand>();
