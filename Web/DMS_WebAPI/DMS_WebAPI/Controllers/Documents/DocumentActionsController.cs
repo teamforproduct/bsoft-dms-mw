@@ -475,7 +475,7 @@ namespace DMS_WebAPI.Controllers.Documents
 
             timeM.Stop();
             SaveToFile("M: DocumentActionsController MarkExecution", timeM.Elapsed.ToString("G"));
-            SaveToFile("DB: IDocumentOperationsService AddDocumentComment", timeDB.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentOperationsService MarkExecution", timeDB.Elapsed.ToString("G"));
 
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(docId);
@@ -486,7 +486,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [Route("MarkExecution")]
+        [Route("RejectResult")]
         [HttpPost]
         public IHttpActionResult RejectResult(SendEventMessage model)
         {
@@ -500,8 +500,34 @@ namespace DMS_WebAPI.Controllers.Documents
             timeDB.Stop();
 
             timeM.Stop();
-            SaveToFile("M: DocumentActionsController MarkExecution", timeM.Elapsed.ToString("G"));
-            SaveToFile("DB: IDocumentOperationsService AddDocumentComment", timeDB.Elapsed.ToString("G"));
+            SaveToFile("M: DocumentActionsController RejectResult", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentOperationsService RejectResult", timeDB.Elapsed.ToString("G"));
+
+            var ctrl = new DocumentsController { ControllerContext = ControllerContext };
+            return ctrl.Get(docId);
+        }
+
+        /// <summary>
+        /// Отклонить прием результата
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("AcceptResult")]
+        [HttpPost]
+        public IHttpActionResult AcceptResult(ControlOff model)
+        {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            timeM.Start();
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            timeDB.Start();
+            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.AcceptResult, cxt, model);
+            timeDB.Stop();
+
+            timeM.Stop();
+            SaveToFile("M: DocumentActionsController AcceptResult", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentOperationsService AcceptResult", timeDB.Elapsed.ToString("G"));
 
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(docId);
