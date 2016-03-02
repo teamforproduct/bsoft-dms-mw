@@ -167,6 +167,19 @@ namespace BL.Logic.DocumentCore
                     cmd = DmsResolver.Current.Get<WithdrawSigningDocumentCommand>();
                     break;
 
+                case EnumDocumentActions.AffixSigning:
+                    cmd = DmsResolver.Current.Get<AffixSigningDocumentCommand>();
+                    break;
+                case EnumDocumentActions.AffixVisaing:
+                    cmd = DmsResolver.Current.Get<AffixSigningDocumentCommand>();
+                    break;
+                case EnumDocumentActions.AffixАgreement:
+                    cmd = DmsResolver.Current.Get<WithdrawSigningDocumentCommand>();
+                    break;
+                case EnumDocumentActions.AffixАpproval:
+                    cmd = DmsResolver.Current.Get<AffixSigningDocumentCommand>();
+                    break;
+
                 case EnumDocumentActions.AddSavedFilter:
                     cmd = DmsResolver.Current.Get<AddSavedFilterCommand>();
                     break;

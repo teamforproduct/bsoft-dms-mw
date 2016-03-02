@@ -264,6 +264,25 @@ namespace BL.Database.Documents
                     entry.Property(x => x.LastChangeDate).IsModified = true;
                     entry.Property(x => x.LastChangeUserId).IsModified = true;
                 }
+
+                var subscription = document.Subscriptions.FirstOrDefault();
+                if (subscription != null)
+                {
+                    var subscriptionDb = new DocumentSubscriptions
+                    {
+                        Id = subscription.Id,
+                        Hash = subscription.Hash,
+                        LastChangeDate = subscription.LastChangeDate,
+                        LastChangeUserId = subscription.LastChangeUserId
+                    };
+                    dbContext.DocumentSubscriptionsSet.Attach(subscriptionDb);
+                    subscriptionDb.DoneEvent = offEvent;
+                    var entry = dbContext.Entry(subscriptionDb);
+                    entry.Property(x => x.Id).IsModified = true;
+                    entry.Property(x => x.Hash).IsModified = true;
+                    entry.Property(x => x.LastChangeDate).IsModified = true;
+                    entry.Property(x => x.LastChangeUserId).IsModified = true;
+                }
                 dbContext.SaveChanges();
             }
         }
@@ -310,7 +329,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public InternalDocument ControlOffDocumentPrepare(IContext context, int eventId)
+        public InternalDocument ControlOffDocumentPrepare(IContext context, int eventId) //TODO развести запросы по разным процедурам
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
@@ -341,7 +360,7 @@ namespace BL.Database.Documents
                 if (doc == null) return null;
                 var waitsId = doc.Waits.Select(x => x.Id).ToList();
                 var eventsId = doc.Waits.Select(x => x.OnEventId).ToList();
-                
+
                 var sendLists = dbContext.DocumentSendListsSet
                     .Where(x => x.StartEventId.HasValue && !x.CloseEventId.HasValue && eventsId.Contains(x.StartEventId.Value))
                     .Select(x => new InternalDocumentSendList
@@ -351,8 +370,17 @@ namespace BL.Database.Documents
                     ).ToList();
                 doc.SendLists.ToList().AddRange(sendLists);
 
+                var subscriptions = dbContext.DocumentSubscriptionsSet
+                    .Where(x => !x.DoneEventId.HasValue && eventsId.Contains(x.SendEventId))
+                    .Select(x => new InternalDocumentSubscription
+                    {
+                        Id = x.Id,
+                    }
+                    ).ToList();
+                doc.Subscriptions.ToList().AddRange(subscriptions);
+
                 var waitRes = dbContext.DocumentWaitsSet
-                    .Where(x => x.ParentId.HasValue&&!x.OffEventId.HasValue && waitsId.Contains(x.ParentId.Value) && x.OnEvent.EventTypeId == (int)EnumEventTypes.MarkExecution)
+                    .Where(x => x.ParentId.HasValue && !x.OffEventId.HasValue && waitsId.Contains(x.ParentId.Value) && x.OnEvent.EventTypeId == (int)EnumEventTypes.MarkExecution)
                     .Select(x => new InternalDocumentWait
                     {
                         Id = x.OnEvent.Id,
@@ -370,7 +398,7 @@ namespace BL.Database.Documents
                     }
                     ).ToList();
                 doc.Waits.ToList().AddRange(waitRes);
-                
+
                 return doc;
 
             }

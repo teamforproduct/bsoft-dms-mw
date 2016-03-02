@@ -735,5 +735,105 @@ namespace DMS_WebAPI.Controllers.Documents
             return ctrl.Get(docId);
         }
 
+        /// <summary>
+        /// Подписать
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("AffixSigning")]
+        [HttpPost]
+        public IHttpActionResult AffixSigning(AffixSigning model)
+        {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            timeM.Start();
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            timeDB.Start();
+            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.AffixSigning, cxt, model);
+            timeDB.Stop();
+
+            timeM.Stop();
+            SaveToFile("M: DocumentActionsController AffixSigning", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentOperationsService AffixSigning", timeDB.Elapsed.ToString("G"));
+
+            var ctrl = new DocumentsController { ControllerContext = ControllerContext };
+            return ctrl.Get(docId);
+        }
+        /// <summary>
+        /// Завизировать
+        ///  </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("AffixVisaing")]
+        [HttpPost]
+        public IHttpActionResult AffixVisaing(AffixSigning model)
+        {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            timeM.Start();
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            timeDB.Start();
+            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.AffixVisaing, cxt, model);
+            timeDB.Stop();
+
+            timeM.Stop();
+            SaveToFile("M: DocumentActionsController AffixVisaing", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentOperationsService AffixVisaing", timeDB.Elapsed.ToString("G"));
+
+            var ctrl = new DocumentsController { ControllerContext = ControllerContext };
+            return ctrl.Get(docId);
+        }
+        /// <summary>
+        /// Согласовать
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("AffixАgreement")]
+        [HttpPost]
+        public IHttpActionResult AffixАgreement(AffixSigning model)
+        {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            timeM.Start();
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            timeDB.Start();
+            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.AffixАgreement, cxt, model);
+            timeDB.Stop();
+
+            timeM.Stop();
+            SaveToFile("M: DocumentActionsController AffixАgreement", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentOperationsService AffixАgreement", timeDB.Elapsed.ToString("G"));
+
+            var ctrl = new DocumentsController { ControllerContext = ControllerContext };
+            return ctrl.Get(docId);
+        }
+        /// <summary>
+        /// Утвердить
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("AffixАpproval")]
+        [HttpPost]
+        public IHttpActionResult AffixАpproval(AffixSigning model)
+        {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            timeM.Start();
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            timeDB.Start();
+            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.AffixАpproval, cxt, model);
+            timeDB.Stop();
+
+            timeM.Stop();
+            SaveToFile("M: DocumentActionsController AffixАpproval", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentOperationsService AffixАpproval", timeDB.Elapsed.ToString("G"));
+
+            var ctrl = new DocumentsController { ControllerContext = ControllerContext };
+            return ctrl.Get(docId);
+        }
     }
 }
