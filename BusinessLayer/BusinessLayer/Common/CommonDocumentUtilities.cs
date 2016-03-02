@@ -117,6 +117,17 @@ namespace BL.Logic.Common
             };
         }
 
+        public static InternalDocumentWait GetNewDocumentWait(IContext context, int documentId, InternalDocumentEvent onEvent = null)
+        {
+            return new InternalDocumentWait
+            {
+                DocumentId = documentId,
+                OnEvent = onEvent,
+                LastChangeUserId = context.CurrentAgentId,
+                LastChangeDate = DateTime.Now,
+            };
+        }
+
         public static InternalDocumentWait GetNewDocumentWait(IContext context, ControlOn controlOnModel, EnumEventTypes? eventType = null)
         {
             return new InternalDocumentWait

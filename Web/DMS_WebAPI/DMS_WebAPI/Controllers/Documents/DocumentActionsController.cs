@@ -455,5 +455,31 @@ namespace DMS_WebAPI.Controllers.Documents
             return ctrl.Get(id);
         }
 
+        /// <summary>
+        /// Отметить выполнение поручения
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("MarkExecution")]
+        [HttpPost]
+        public IHttpActionResult MarkExecution(SendEventMessage model)
+        {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            timeM.Start();
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            timeDB.Start();
+            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.MarkExecution, cxt, model);
+            timeDB.Stop();
+
+            timeM.Stop();
+            SaveToFile("M: DocumentActionsController MarkExecution", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentOperationsService AddDocumentComment", timeDB.Elapsed.ToString("G"));
+
+            var ctrl = new DocumentsController { ControllerContext = ControllerContext };
+            return ctrl.Get(docId);
+        }
+
     }
 }
