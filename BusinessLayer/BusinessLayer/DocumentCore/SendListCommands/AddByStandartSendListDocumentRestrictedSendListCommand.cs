@@ -13,6 +13,7 @@ using BL.Logic.Common;
 using System.Collections.Generic;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Model.Enums;
+using BL.Model.SystemCore;
 
 namespace BL.Logic.DocumentCore.SendListCommands
 {
@@ -41,7 +42,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
             }
         }
 
-        public override bool CanBeDisplayed()
+        public override bool CanBeDisplayed(int positionId, InternalSystemAction action)
         {
             return true;
         }

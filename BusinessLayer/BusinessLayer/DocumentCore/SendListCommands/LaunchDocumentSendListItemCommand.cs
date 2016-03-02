@@ -8,6 +8,7 @@ using BL.Model.Exception;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.DependencyInjection;
 using BL.Logic.DocumentCore.Interfaces;
+using BL.Model.SystemCore;
 
 namespace BL.Logic.DocumentCore.SendListCommands
 {
@@ -36,7 +37,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
             }
         }
 
-        public override bool CanBeDisplayed()
+        public override bool CanBeDisplayed(int positionId, InternalSystemAction action)
         {
             return true;
         }

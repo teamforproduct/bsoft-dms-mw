@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using BL.Logic.Common;
 using BL.Database.Documents.Interfaces;
 using BL.Logic.AdminCore.Interfaces;
-using BL.Logic.SystemLogic;
+using BL.Logic.FileWorker;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
+using BL.Model.SystemCore;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -38,17 +38,9 @@ namespace BL.Logic.DocumentCore.Commands
             }
         }
 
-        public override bool CanBeDisplayed()
+        public override bool CanBeDisplayed(int positionId, InternalSystemAction action)
         {
-            try
-            {
-                _admin.VerifyAccess(_context, CommandType);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            return action.DocumentAction == CommandType;
         }
 
         public override bool CanExecute()
@@ -104,6 +96,5 @@ namespace BL.Logic.DocumentCore.Commands
             return _document.Id;
         }
 
-        public override EnumDocumentActions CommandType => EnumDocumentActions.CopyDocument;
     }
 }

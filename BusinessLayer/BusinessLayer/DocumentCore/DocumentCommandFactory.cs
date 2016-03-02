@@ -201,6 +201,12 @@ namespace BL.Logic.DocumentCore
                     cmd = DmsResolver.Current.Get<StopPlanDocumentCommand>();
                     break;
 
+                case EnumDocumentActions.AddDocumentSendListItem:
+                case EnumDocumentActions.MarkReception:
+                case EnumDocumentActions.SendForControl:
+                case EnumDocumentActions.DeleteDocumentLink:
+                    return null;
+                    break;
                 default:
                     throw new CommandNotDefinedError();
             }

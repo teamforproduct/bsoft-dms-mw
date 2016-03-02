@@ -1,6 +1,7 @@
 ﻿using BL.CrossCutting.Interfaces;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
+using BL.Model.SystemCore;
 
 namespace BL.Logic.Common
 {
@@ -24,14 +25,14 @@ namespace BL.Logic.Common
             _action = action?? EnumDocumentActions.Undefined;
         }
 
-        public InternalDocument Document { get { return _document; } }
-        public IContext Context { get { return _context; } }
-        public object Parameters { get { return _param; } }
+        public InternalDocument Document => _document;
+        public IContext Context => _context;
+        public object Parameters => _param;
 
-        public abstract bool CanBeDisplayed();
+        public abstract bool CanBeDisplayed(int positionId, InternalSystemAction action);
         public abstract bool CanExecute();
         public abstract object Execute();
 
-        public virtual EnumDocumentActions CommandType { get { return _action; } }
+        public virtual EnumDocumentActions CommandType => _action;
     }
 }

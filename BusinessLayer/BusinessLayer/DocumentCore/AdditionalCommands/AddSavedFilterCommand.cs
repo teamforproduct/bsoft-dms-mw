@@ -7,6 +7,7 @@ using System.Linq;
 using BL.Logic.Common;
 using System.Collections.Generic;
 using BL.Logic.AdminCore.Interfaces;
+using BL.Model.SystemCore;
 
 namespace BL.Logic.DocumentCore.AdditionalCommands
 {
@@ -35,7 +36,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             }
         }
 
-        public override bool CanBeDisplayed()
+        public override bool CanBeDisplayed(int positionId, InternalSystemAction action)
         {
             return true;
         }

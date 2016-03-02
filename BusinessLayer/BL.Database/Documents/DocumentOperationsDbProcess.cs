@@ -45,8 +45,14 @@ namespace BL.Database.Documents
                         ExecutorPositionId = x.Doc.ExecutorPositionId,
                         LinkId = x.Doc.LinkId,
                         IsInWork = x.Acc.IsInWork,
-                        IsFavourite = x.Acc.IsFavourite,
+                        IsFavourite = x.Acc.IsFavourite
                     }).FirstOrDefault();
+
+                if (res.Document != null)
+                {
+                    res.Document.Events = CommonQueries.GetInternalDocumentEvents(dbContext, new FilterDocumentEvent {DocumentId = new List<int> { documentId}});
+                    res.Document.Waits = CommonQueries.GetInternalDocumentWaits(dbContext,new FilterDocumentWaits {DocumentId = documentId});
+                }
 
                 res.PositionWithActions = dbContext.DictionaryPositionsSet.Where(x => context.CurrentPositionsIdList.Contains(x.Id))
                         .Select(x => new InternalDictionaryPositionWithActions

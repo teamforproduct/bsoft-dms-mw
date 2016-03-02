@@ -288,6 +288,9 @@ namespace BL.Database.Common
                 SourcePositionId = x.SourcePositionId,
                 TargetAgentId = x.TargetAgentId,
                 TargetPositionId = x.TargetPositionId,
+                Task = x.Task,
+                ReadAgentId = x.ReadAgentId,
+                ReadDate = x.ReadDate
             }).ToList();
 
         }

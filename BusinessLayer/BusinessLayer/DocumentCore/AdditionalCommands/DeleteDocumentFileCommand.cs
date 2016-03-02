@@ -2,11 +2,12 @@
 using BL.Database.Documents.Interfaces;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.Common;
-using BL.Logic.SystemLogic;
+using BL.Logic.FileWorker;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
+using BL.Model.SystemCore;
 
 namespace BL.Logic.DocumentCore.AdditionalCommands
 {
@@ -35,7 +36,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             }
         }
 
-        public override bool CanBeDisplayed()
+        public override bool CanBeDisplayed(int positionId, InternalSystemAction action)
         {
             return true;
         }

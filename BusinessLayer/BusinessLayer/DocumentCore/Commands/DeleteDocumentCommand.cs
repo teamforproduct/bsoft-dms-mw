@@ -3,8 +3,8 @@ using BL.Database.Documents.Interfaces;
 using BL.Model.Exception;
 using BL.Logic.Common;
 using BL.Logic.AdminCore.Interfaces;
-using BL.Logic.SystemLogic;
-using BL.Model.Enums;
+using BL.Logic.FileWorker;
+using BL.Model.SystemCore;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -33,10 +33,10 @@ namespace BL.Logic.DocumentCore.Commands
             }
         }
 
-        public override bool CanBeDisplayed()
+        public override bool CanBeDisplayed(int positionId, InternalSystemAction action)
         {
             //TODO ОСТАЛЬНЫЕ ПРОВЕРКИ!
-            return !_document.IsRegistered;
+            return action.DocumentAction == CommandType && !_document.IsRegistered;
         }
 
         public override bool CanExecute()
@@ -49,7 +49,7 @@ namespace BL.Logic.DocumentCore.Commands
             _context.SetCurrentPosition(_document.ExecutorPositionId);
             _admin.VerifyAccess(_context, CommandType);
 
-           if (!CanBeDisplayed())
+           if (_document.IsRegistered)
             {
                 throw new DocumentCannotBeModifiedOrDeleted();
             }
@@ -67,6 +67,5 @@ namespace BL.Logic.DocumentCore.Commands
             return null;
         }
 
-        public override EnumDocumentActions CommandType => EnumDocumentActions.DeleteDocument;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using BL.Model.DocumentCore.InternalModel;
+using BL.Model.SystemCore;
 
 namespace BL.CrossCutting.Interfaces
 {
@@ -8,7 +9,7 @@ namespace BL.CrossCutting.Interfaces
         IContext Context { get; }
         object Parameters { get; }
 
-        bool CanBeDisplayed();
+        bool CanBeDisplayed(int positionId, InternalSystemAction action);
         bool CanExecute();
         object Execute();
         

@@ -4,6 +4,7 @@ using BL.Model.Exception;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.Common;
 using BL.Model.Enums;
+using BL.Model.SystemCore;
 
 namespace BL.Logic.DocumentCore.AdditionalCommands
 {
@@ -30,7 +31,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             }
         }
 
-        public override bool CanBeDisplayed()
+        public override bool CanBeDisplayed(int positionId, InternalSystemAction action)
         {
             return true;
         }

@@ -8,6 +8,7 @@ using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using System;
+using BL.Model.SystemCore;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -36,7 +37,7 @@ namespace BL.Logic.DocumentCore.Commands
             }
         }
 
-        public override bool CanBeDisplayed()
+        public override bool CanBeDisplayed(int positionId, InternalSystemAction action)
         {
             return true;
         }

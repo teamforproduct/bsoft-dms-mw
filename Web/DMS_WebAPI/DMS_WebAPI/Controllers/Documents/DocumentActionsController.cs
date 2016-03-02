@@ -5,7 +5,6 @@ using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Web.Http;
 using BL.Model.Enums;
-using BL.Model.DocumentCore.InternalModel;
 
 namespace DMS_WebAPI.Controllers.Documents
 {
@@ -47,9 +46,9 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            var cmdService = DmsResolver.Current.Get<ICommandService>();
             timeDB.Start();
-            var actions = docProc.GetDocumentActions(cxt, id);
+            var actions = cmdService.GetDocumentActions(cxt, id);
             timeDB.Stop();
             timeM.Stop();
             SaveToFile("M: DocumentActionsController Get List", timeM.Elapsed.ToString("G"));

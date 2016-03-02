@@ -5,6 +5,7 @@ using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
+using BL.Model.SystemCore;
 
 
 namespace BL.Logic.DictionaryCore.Tag
@@ -30,7 +31,7 @@ namespace BL.Logic.DictionaryCore.Tag
             }
         }
 
-        public override bool CanBeDisplayed()
+        public override bool CanBeDisplayed(int positionId, InternalSystemAction action)
         {
             return true;
         }

@@ -9,11 +9,11 @@ using BL.Logic.DocumentCore.AdditionalCommands;
 using BL.Logic.DocumentCore.Commands;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Logic.DocumentCore.SendListCommands;
+using BL.Logic.FileWorker;
 using BL.Logic.Logging;
 using BL.Logic.MailWorker;
 using BL.Logic.Observers;
 using BL.Logic.Settings;
-using BL.Logic.SystemLogic;
 using BL.Model.Enums;
 using Ninject.Modules;
 

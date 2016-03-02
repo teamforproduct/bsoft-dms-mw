@@ -1,6 +1,7 @@
 ﻿using BL.CrossCutting.Interfaces;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
+using BL.Model.SystemCore;
 
 namespace BL.Logic.Common
 {
@@ -24,7 +25,7 @@ namespace BL.Logic.Common
         public IContext Context { get { return _context; } }
         public object Parameters { get { return _param; } }
 
-        public abstract bool CanBeDisplayed();
+        public abstract bool CanBeDisplayed(int positionId, InternalSystemAction action);
 
         public abstract bool CanExecute();
 

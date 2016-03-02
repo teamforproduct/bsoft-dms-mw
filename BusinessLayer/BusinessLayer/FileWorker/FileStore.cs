@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using BL.CrossCutting.Interfaces;
-using BL.Logic.Common;
 using BL.Logic.DependencyInjection;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Exception;
 
-namespace BL.Logic.SystemLogic
+namespace BL.Logic.FileWorker
 {
     public class FileStore : IFileStore
     {
