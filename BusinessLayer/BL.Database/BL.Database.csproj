@@ -324,8 +324,6 @@
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Security\ISecurityDbProcess.cs" />
-    <Compile Include="Security\SecurityDbProcess.cs" />
     <Compile Include="SystemDb\ISystemDbProcess.cs" />
     <Compile Include="SystemDb\SystemDbProcess.cs" />
   </ItemGroup>

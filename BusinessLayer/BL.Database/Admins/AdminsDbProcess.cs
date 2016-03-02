@@ -10,6 +10,7 @@ using BL.Database.Dictionaries.Interfaces;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Enums;
+using BL.Model.Users;
 
 namespace BL.Database.Admins
 {
@@ -157,6 +158,23 @@ namespace BL.Database.Admins
                 }
                 return true;
             }
+        }
+
+        public Employee GetEmployee(IContext ctx, int id)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            {
+                return dbContext.DictionaryAgentsSet.Where(x => x.Id == id).Select(x => new Employee
+                {
+                    AgentId = x.Id,
+                    Name = x.Name
+                }).FirstOrDefault();
+            }
+        }
+
+        public IEnumerable<CurrentPosition> GetPositionsByUser(Employee employee)
+        {
+            return null;
         }
 
     }

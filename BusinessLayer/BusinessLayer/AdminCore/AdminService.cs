@@ -5,9 +5,11 @@ using BL.Logic.AdminCore.Interfaces;
 using BL.Database.Admins.Interfaces;
 using BL.Model.AdminCore;
 using BL.CrossCutting.Interfaces;
+using BL.Logic.Common;
 using BL.Model.Database;
 using BL.Model.Enums;
 using BL.Model.Exception;
+using BL.Model.Users;
 
 namespace BL.Logic.AdminCore
 {
@@ -27,7 +29,7 @@ namespace BL.Logic.AdminCore
 
         private AdminAccessInfo GetAccInfo(IContext context)
         {
-            var key = $"{context.CurrentDB.Address}/{context.CurrentDB.DefaultDatabase}";
+            var key = CommonSystemUtilities.GetServerKey(context);
             if (accList.ContainsKey(key))
             {
                 var so = accList[key];
@@ -107,5 +109,16 @@ namespace BL.Logic.AdminCore
         {
             return VerifyAccess(context, new VerifyAccess { DocumentActionId = (int)action }, isThrowExeception);
         }
+
+        public Employee GetEmployee(IContext context, int id)
+        {
+            return _adminDb.GetEmployee(context, id);
+        }
+
+        public IEnumerable<CurrentPosition> GetPositionsByUser(Employee employee)
+        {
+            return _adminDb.GetPositionsByUser(employee);
+        }
+
     }
 }
