@@ -10,10 +10,11 @@ using BL.Logic.DocumentCore.Commands;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Logic.DocumentCore.SendListCommands;
 using BL.Logic.Logging;
+using BL.Logic.MailWorker;
 using BL.Logic.Observers;
-using BL.Logic.Secure;
 using BL.Logic.Settings;
 using BL.Logic.SystemLogic;
+using BL.Model.Enums;
 using Ninject.Modules;
 
 namespace BL.Logic.DependencyInjection
@@ -28,7 +29,6 @@ namespace BL.Logic.DependencyInjection
             Bind<ITemplateDocumentService>().To<TemplateDocumentService>().InSingletonScope();
             Bind<IDictionaryService>().To<DictionaryService>().InSingletonScope();
             Bind<IAdminService>().To<AdminService>().InSingletonScope();
-            Bind<ISecureService>().To<SecureService>().InSingletonScope();
             Bind<IFileStore>().To<FileStore>().InSingletonScope();
             Bind<IDocumentFileService>().To<DocumentFileService>().InSingletonScope();
 
@@ -40,6 +40,13 @@ namespace BL.Logic.DependencyInjection
             LoadDocumentCommands();
             LoadDictionaryCommands();
             LoadObservers();
+            LoadMailService();
+        }
+
+        private void LoadMailService()
+        {
+            Bind<IMailSender>().To<SSLMailSender>().InSingletonScope().Named(MailServerType.SSLServer.ToString());
+            Bind<IMailSender>().To<BasicSmtpMailSender>().InSingletonScope().Named(MailServerType.BasicSmtp.ToString());
         }
 
         private void LoadObservers()

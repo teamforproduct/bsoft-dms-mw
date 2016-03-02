@@ -4,7 +4,6 @@ using BL.Database.Dictionaries;
 using BL.Database.Dictionaries.Interfaces;
 using BL.Database.Documents;
 using BL.Database.Documents.Interfaces;
-using BL.Database.Security;
 using BL.Database.SystemDb;
 using Ninject.Modules;
 
@@ -35,7 +34,6 @@ namespace BL.Database.DependencyInjection
 
         private void RegistrateSystemProcess()
         {
-            Bind<ISecurityDbProcess>().To<SecurityDbProcess>().InSingletonScope();
             Bind<IAdminsDbProcess>().To<AdminsDbProcess>().InSingletonScope();
             Bind<ISystemDbProcess>().To<SystemDbProcess>().InSingletonScope();
         }
