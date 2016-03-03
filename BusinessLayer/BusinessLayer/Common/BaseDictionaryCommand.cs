@@ -9,14 +9,16 @@ namespace BL.Logic.Common
     {
         protected IContext _context;
         protected object _param;
+        private EnumDictionaryAction _action;
 
-        public void InitializeCommand(IContext ctx)
+        public void InitializeCommand(EnumDictionaryAction action, IContext ctx)
         {
-            InitializeCommand(ctx, null);
+            InitializeCommand(action,ctx, null);
         }
 
-        public void InitializeCommand(IContext ctx, object param)
+        public void InitializeCommand(EnumDictionaryAction action, IContext ctx, object param)
         {
+            _action = action;
             _context = ctx;
             _param = param;
         }
@@ -31,6 +33,6 @@ namespace BL.Logic.Common
 
         public abstract object Execute();
 
-        public abstract EnumDictionaryAction CommandType { get; }
+        public virtual EnumDictionaryAction CommandType => _action;
     }
 }

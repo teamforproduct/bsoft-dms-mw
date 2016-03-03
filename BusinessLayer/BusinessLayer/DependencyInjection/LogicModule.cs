@@ -25,13 +25,29 @@ namespace BL.Logic.DependencyInjection
     {
         public override void Load()
         {
+            LoadSystemModule();
+            LoadDocumentModule();
+            LoadDocumentCommands();
+            LoadDictionaryCommands();
+            LoadObservers();
+            LoadMailService();
+        }
+
+        private void LoadSystemModule()
+        {
             Bind<ILogger>().To<Logger>().InSingletonScope();
             Bind<ISettings>().To<Setting>().InSingletonScope();
+            Bind<ICommandService>().To<CommandService>().InSingletonScope();
+            Bind<IFileStore>().To<FileStore>().InSingletonScope();
+            Bind<IAdminService>().To<AdminService>().InSingletonScope();
+            Bind<IMailService>().To<MailService>().InSingletonScope();
+        }
+
+        private void LoadDocumentModule()
+        {
             Bind<IDocumentService>().To<DocumentService>().InSingletonScope();
             Bind<ITemplateDocumentService>().To<TemplateDocumentService>().InSingletonScope();
             Bind<IDictionaryService>().To<DictionaryService>().InSingletonScope();
-            Bind<IAdminService>().To<AdminService>().InSingletonScope();
-            Bind<IFileStore>().To<FileStore>().InSingletonScope();
             Bind<IDocumentFileService>().To<DocumentFileService>().InSingletonScope();
 
             Bind<IDocumentFiltersService>().To<DocumentFiltersService>().InSingletonScope();
@@ -39,10 +55,6 @@ namespace BL.Logic.DependencyInjection
             Bind<IDocumentTagService>().To<DocumentTagService>().InSingletonScope();
 
             Bind<ICommandService>().To<CommandService>().InSingletonScope();
-            LoadDocumentCommands();
-            LoadDictionaryCommands();
-            LoadObservers();
-            LoadMailService();
         }
 
         private void LoadMailService()

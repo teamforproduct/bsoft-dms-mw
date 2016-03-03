@@ -63,7 +63,5 @@ namespace BL.Logic.DictionaryCore.CustomDictionary
                 throw new DictionaryRecordCouldNotBeAdded(ex);
             }
         }
-
-        public override EnumDictionaryAction CommandType { get { return EnumDictionaryAction.AddCustomDictionaryType; } }
     }
 }

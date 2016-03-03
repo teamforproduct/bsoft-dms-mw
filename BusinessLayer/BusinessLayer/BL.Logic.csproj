@@ -134,6 +134,7 @@
     <Compile Include="MailWorker\BaseMailSender.cs" />
     <Compile Include="MailWorker\BasicSmtpMailSender.cs" />
     <Compile Include="MailWorker\IMailSender.cs" />
+    <Compile Include="MailWorker\IMailService.cs" />
     <Compile Include="MailWorker\MailService.cs" />
     <Compile Include="MailWorker\SSLMailSender.cs" />
     <Compile Include="Observers\AfterDocumentAddObserver.cs" />

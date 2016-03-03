@@ -2,13 +2,16 @@
 using BL.CrossCutting.Interfaces;
 using BL.Logic.Common;
 using BL.Logic.DependencyInjection;
+using BL.Model.Database;
 using BL.Model.Enums;
 using BL.Model.SystemCore;
 using Ninject;
+using System.Linq;
+using BL.CrossCutting.Context;
 
 namespace BL.Logic.MailWorker
 {
-    public class MailService
+    public class MailService : IMailService
     {
         string _MAIL_SERVER_TYPE = "MAILSERVER_TYPE";
         string _MAIL_SERVER_NAME = "MAILSERVER_NAME";
@@ -16,9 +19,12 @@ namespace BL.Logic.MailWorker
         string _MAIL_SERVER_LOGIN = "MAILSERVER_LOGIN";
         string _MAIL_SERVER_PASS = "MAILSERVER_PASSWORD";
         string _MAIL_SERVER_SYSTEMMAIL = "MAILSERVER_SYSTEMMAIL";
+        string _MAIL_TIMEOUT_MIN = "MAILSERVER_TIMEOUT_MINUTE";
 
         private Dictionary<string, SendMailData> _serverSettings; 
         private readonly ISettings _settings;
+        List<AdminContext> _serverContext;
+
 
         public MailService(ISettings settings)
         {
@@ -26,7 +32,13 @@ namespace BL.Logic.MailWorker
             _serverSettings = new Dictionary<string, SendMailData>();
         }
 
-        public void SendMessage(IContext ctx)
+        public void Initialize(IEnumerable<DatabaseModel> dbList)
+        {
+            _serverContext = dbList.Select(x => new AdminContext(x)).ToList();
+            
+        }
+
+        private void SendMessage(IContext ctx)
         {
             var key = CommonSystemUtilities.GetServerKey(ctx);
             SendMailData msSetting;

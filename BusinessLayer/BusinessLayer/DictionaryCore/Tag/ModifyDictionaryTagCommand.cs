@@ -70,10 +70,5 @@ namespace BL.Logic.DictionaryCore.Tag
             }
             return null;
         }
-
-        public override EnumDictionaryAction CommandType
-        {
-            get { return EnumDictionaryAction.ModifyTag; }
-        }
     }
 }

@@ -62,7 +62,5 @@ namespace BL.Logic.DictionaryCore.DocumentType
                 throw new DictionaryRecordCouldNotBeAdded(ex);
             }
         }
-
-        public override EnumDictionaryAction CommandType { get { return EnumDictionaryAction.AddDocumentType; } }
     }
 }

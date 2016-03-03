@@ -48,10 +48,13 @@ namespace BL.Logic.DictionaryCore
                 case EnumDictionaryAction.DeleteCustomDictionary:
                     cmd = DmsResolver.Current.Get<DeleteCustomDictionaryCommand>();
                     break;
+                case EnumDictionaryAction.DeleteTag:
+                    return null;
+                    break;
                 default:
                     throw new CommandNotDefinedError();
             }
-            cmd.InitializeCommand(ctx, param);
+            cmd.InitializeCommand(act, ctx, param);
             return cmd;
         }
     }

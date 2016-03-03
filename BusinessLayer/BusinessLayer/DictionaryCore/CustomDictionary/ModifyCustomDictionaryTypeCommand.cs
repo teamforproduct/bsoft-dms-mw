@@ -69,7 +69,5 @@ namespace BL.Logic.DictionaryCore.CustomDictionary
             }
             return null;
         }
-
-        public override EnumDictionaryAction CommandType { get { return EnumDictionaryAction.ModifyCustomDictionaryType; } }
     }
 }

@@ -60,8 +60,6 @@ namespace BL.Logic.DictionaryCore.DocumentType
                 throw new DictionaryRecordCouldNotBeDeleted(ex);
             }
         }
-
-        public override EnumDictionaryAction CommandType { get { return EnumDictionaryAction.DeleteDocumentType; } }
     }
 
 }
