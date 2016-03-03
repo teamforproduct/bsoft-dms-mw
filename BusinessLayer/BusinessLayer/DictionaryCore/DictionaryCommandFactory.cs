@@ -21,6 +21,9 @@ namespace BL.Logic.DictionaryCore
                 case EnumDictionaryAction.AddDocumentType:
                     cmd = DmsResolver.Current.Get<AddDictionaryDocumentTypeCommand>();
                     break;
+                case EnumDictionaryAction.DeleteDocumentType:
+                    cmd = DmsResolver.Current.Get<DeleteDictionaryDocumentTypeCommand>();
+                    break;
                 case EnumDictionaryAction.ModifyTag:
                     cmd = DmsResolver.Current.Get<ModifyDictionaryTagCommand>();
                     break;

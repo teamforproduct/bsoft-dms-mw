@@ -51,6 +51,7 @@ namespace BL.Database.Dictionaries.Interfaces
         InternalDictionaryDocumentType GetInternalDictionaryDocumentType(IContext context,
             FilterDictionaryDocumentType filter);
         void UpdateDictionaryDocumentType(IContext context, InternalDictionaryDocumentType docType);
+        void DeleteDictionaryDocumentType(IContext context, InternalDictionaryDocumentType docType);
         int AddDictionaryDocumentType(IContext context, InternalDictionaryDocumentType docType);
         IEnumerable<FrontDictionaryDocumentType> GetDictionaryDocumentTypes(IContext context, FilterDictionaryDocumentType filter);
         #endregion DictionaryDocumentSubjects

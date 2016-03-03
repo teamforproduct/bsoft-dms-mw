@@ -397,6 +397,21 @@ namespace BL.Database.Dictionaries
             }
         }
 
+
+        public void DeleteDictionaryDocumentType(IContext context, InternalDictionaryDocumentType docType)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                
+                var ddt = dbContext.DictionaryDocumentTypesSet.FirstOrDefault(x => x.Id == docType.Id);
+                if (ddt != null)
+                {
+                    dbContext.DictionaryDocumentTypesSet.Remove(ddt);
+                    dbContext.SaveChanges();
+                }
+            }
+        }
+
         public int AddDictionaryDocumentType(IContext context, InternalDictionaryDocumentType docType)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))

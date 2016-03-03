@@ -454,11 +454,11 @@
     }
 
     /// <summary>
-    /// Сообщение об ошибке, когда невозможно удалить данные в справочник
+    /// Сообщение о невозможности удаления записи из справочника
     /// </summary>
     public class DictionaryRecordCouldNotBeDeleted : DmsExceptions
     {
-        private const string _MESSAGE = "You could not delete this dictionary data!";
+        private const string _MESSAGE = "You could not delete from this dictionary data!";
         public DictionaryRecordCouldNotBeDeleted() : base(_MESSAGE)
         {
         }
@@ -467,6 +467,7 @@
         {
         }
     }
+
 
     /// <summary>
     /// Сообщение об ошибке, когда пытаются обновить несуществующую строку справочника в БД
