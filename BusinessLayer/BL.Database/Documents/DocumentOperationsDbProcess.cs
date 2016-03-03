@@ -51,7 +51,7 @@ namespace BL.Database.Documents
                 if (res.Document != null)
                 {
                     res.Document.Events = CommonQueries.GetInternalDocumentEvents(dbContext, new FilterDocumentEvent {DocumentId = new List<int> { documentId}});
-                    res.Document.Waits = CommonQueries.GetInternalDocumentWaits(dbContext,new FilterDocumentWaits {DocumentId = documentId});
+                    res.Document.Waits = CommonQueries.GetInternalDocumentWaits(dbContext,new FilterDocumentWait { DocumentId = new List<int> { documentId } });
                 }
 
                 res.PositionWithActions = dbContext.DictionaryPositionsSet.Where(x => context.CurrentPositionsIdList.Contains(x.Id))

@@ -7,7 +7,6 @@ using BL.Database.Common;
 using BL.Database.DatabaseContext;
 using BL.Database.Documents.Interfaces;
 using BL.Database.DBModel.Document;
-using BL.Model.AdminCore;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.InternalModel;
@@ -410,11 +409,13 @@ namespace BL.Database.Documents
                 doc.DocumentFiles = CommonQueries.GetDocumentFiles(dbContext, new FilterDocumentAttachedFile { DocumentId = docIds });
                 doc.AttachedFilesCount = doc.DocumentFiles.Count();
 
-                doc.DocumentWaits = CommonQueries.GetDocumentWaits(dbContext, new FilterDocumentWaits { DocumentId = docIds });
+                doc.DocumentWaits = CommonQueries.GetDocumentWaits(dbContext, new FilterDocumentWait { DocumentId = docIds });
 
                 doc.DocumentTags = CommonQueries.GetDocumentTags(dbContext, new FilterDocumentTag { DocumentId = docIds, CurrentPositionsId = ctx.CurrentPositionsIdList });
 
                 doc.DocumentWorkGroup = CommonQueries.GetDocumentWorkGroup(dbContext, new FilterDictionaryPosition { DocumentId = docIds });
+
+                doc.DocumentSubscriptions = CommonQueries.GetDocumentSubscriptions(dbContext, new FilterDocumentSubscription { DocumentId = docIds });
 
                 return doc;
             }

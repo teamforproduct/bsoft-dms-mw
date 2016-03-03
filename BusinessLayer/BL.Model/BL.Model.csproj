@@ -46,7 +46,8 @@
     <Compile Include="DictionaryCore\FrontModel\FrontAdminAccessLevel.cs" />
     <Compile Include="AdminCore\FilterAdminUserRole.cs" />
     <Compile Include="AdminCore\FilterAdminAccessLevel.cs" />
-    <Compile Include="AdminCore\FilterDocumentWaits.cs" />
+    <Compile Include="DocumentCore\Filters\FilterDocumentSubscription.cs" />
+    <Compile Include="DocumentCore\Filters\FilterDocumentWait.cs" />
     <Compile Include="AdminCore\VerifyAccess.cs" />
     <Compile Include="AdminCore\VerifySubordination.cs" />
     <Compile Include="Common\LastChangeInfo.cs" />
@@ -105,6 +106,7 @@
     <Compile Include="DocumentCore\FrontModel\FrontDocumentTag.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentAttachedFile.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontTemplateAttachedFile.cs" />
+    <Compile Include="DocumentCore\FrontModel\FrontDocumentSubscription.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentFiles.cs" />
     <Compile Include="DocumentCore\Actions\ChangeFavourites.cs" />
     <Compile Include="DocumentCore\Actions\ControlChange.cs" />

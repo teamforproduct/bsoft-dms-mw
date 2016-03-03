@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 
-namespace BL.Model.AdminCore
+namespace BL.Model.DocumentCore.Filters
 {
     /// <summary>
     ///Фильтр ожиданий по документу
     /// </summary>
-    public class FilterDocumentWaits
+    public class FilterDocumentWait
     {
         /// <summary>
         /// Массив ИД документов

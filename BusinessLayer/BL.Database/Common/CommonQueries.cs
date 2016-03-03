@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using BL.CrossCutting.Interfaces;
 using BL.Database.DatabaseContext;
 using BL.Database.DBModel.Document;
 using BL.Database.DBModel.InternalModel;
-using BL.Model.AdminCore;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.InternalModel;
@@ -120,7 +118,7 @@ namespace BL.Database.Common
 
         public static IEnumerable<InternalDocumentAttachedFile> GetInternalDocumentFiles(DmsContext dbContext, int documentId)
         {
-            var sq = GetDocumentFilesMaxVersion(dbContext,new FilterDocumentAttachedFile { DocumentId = new List<int> { documentId } });
+            var sq = GetDocumentFilesMaxVersion(dbContext, new FilterDocumentAttachedFile { DocumentId = new List<int> { documentId } });
 
             return
                 sq.Join(dbContext.DocumentFilesSet, sub => new { sub.DocumentId, OrderNumber = sub.OrderInDocument, sub.Version },
@@ -309,13 +307,13 @@ namespace BL.Database.Common
 
         }
 
-        public static IEnumerable<InternalDocumentWait> GetInternalDocumentWaits(DmsContext dbContext, FilterDocumentWaits filter)
+        public static IEnumerable<InternalDocumentWait> GetInternalDocumentWaits(DmsContext dbContext, FilterDocumentWait filter)
         {
             var waitsDb = dbContext.DocumentWaitsSet.AsQueryable();
 
             if (filter != null)
             {
-                if (filter?.DocumentId?.Count()>0)
+                if (filter?.DocumentId?.Count() > 0)
                 {
                     waitsDb = waitsDb.Where(x => filter.DocumentId.Contains(x.DocumentId));
                 }
@@ -386,13 +384,13 @@ namespace BL.Database.Common
 
         }
 
-        public static IEnumerable<FrontDocumentWaits> GetDocumentWaits(DmsContext dbContext, FilterDocumentWaits filter)
+        public static IEnumerable<FrontDocumentWaits> GetDocumentWaits(DmsContext dbContext, FilterDocumentWait filter)
         {
             var waitsDb = dbContext.DocumentWaitsSet.AsQueryable();
 
             if (filter != null)
             {
-                if (filter?.DocumentId?.Count()>0)
+                if (filter?.DocumentId?.Count() > 0)
                 {
                     waitsDb = waitsDb.Where(x => filter.DocumentId.Contains(x.DocumentId));
                 }
@@ -463,13 +461,74 @@ namespace BL.Database.Common
 
         }
 
+        public static IEnumerable<FrontDocumentSubscription> GetDocumentSubscriptions(DmsContext dbContext, FilterDocumentSubscription filter)
+        {
+            var subscriptionsDb = dbContext.DocumentSubscriptionsSet.AsQueryable();
+
+            if (filter != null)
+            {
+                if (filter?.DocumentId?.Count() > 0)
+                {
+                    subscriptionsDb = subscriptionsDb.Where(x => filter.DocumentId.Contains(x.DocumentId));
+                }
+            }
+
+            var subscriptionsRes = subscriptionsDb.Select(x => new { Subscription = x, x.SendEvent, x.DoneEvent });
+
+            var subscriptions = subscriptionsRes.Select(x => new FrontDocumentSubscription
+            {
+                Id = x.Subscription.Id,
+                DocumentId = x.Subscription.DocumentId,
+                SendEventId = x.Subscription.SendEventId,
+                DoneEventId = x.Subscription.DoneEventId,
+                Description = x.Subscription.Description,
+                Hash = x.Subscription.Hash,
+                ChangedHash = x.Subscription.ChangedHash,
+                SendEvent = x.SendEvent == null
+                    ? null
+                    : new FrontDocumentEvent
+                    {
+                        Id = x.SendEvent.Id,
+                        CreateDate = x.SendEvent.CreateDate,
+                        Date = x.SendEvent.Date,
+                        Description = x.SendEvent.Description,
+                        LastChangeDate = x.SendEvent.LastChangeDate,
+                        LastChangeUserId = x.SendEvent.LastChangeUserId,
+                        SourceAgentId = x.SendEvent.SourceAgentId,
+                        SourcePositionId = x.SendEvent.SourcePositionId,
+                        TargetAgentId = x.SendEvent.TargetAgentId,
+                        TargetPositionId = x.SendEvent.TargetPositionId,
+                        EventType = (EnumEventTypes)x.SendEvent.EventTypeId
+                    },
+                DoneEvent = x.DoneEvent == null
+                    ? null
+                    : new FrontDocumentEvent
+                    {
+                        Id = x.DoneEvent.Id,
+                        CreateDate = x.DoneEvent.CreateDate,
+                        Date = x.DoneEvent.Date,
+                        Description = x.DoneEvent.Description,
+                        LastChangeDate = x.DoneEvent.LastChangeDate,
+                        LastChangeUserId = x.DoneEvent.LastChangeUserId,
+                        SourceAgentId = x.DoneEvent.SourceAgentId,
+                        SourcePositionId = x.DoneEvent.SourcePositionId,
+                        TargetAgentId = x.DoneEvent.TargetAgentId,
+                        TargetPositionId = x.DoneEvent.TargetPositionId,
+                        EventType = (EnumEventTypes)x.DoneEvent.EventTypeId
+                    }
+            }).ToList();
+
+            return subscriptions;
+
+        }
+
         public static IEnumerable<FrontDocumentTag> GetDocumentTags(DmsContext dbContext, FilterDocumentTag filter)
         {
             var tagsDb = dbContext.DocumentTagsSet.AsQueryable();
 
             if (filter != null)
             {
-                if (filter?.DocumentId?.Count()>0)
+                if (filter?.DocumentId?.Count() > 0)
                 {
                     tagsDb = tagsDb.Where(x => filter.DocumentId.Contains(x.DocumentId));
                 }
