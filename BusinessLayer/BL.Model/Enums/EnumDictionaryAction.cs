@@ -9,5 +9,12 @@
         AddTag = 291001, // Добавить тэг
         ModifyTag = 291005, // Изменить тэг
         DeleteTag = 291009, // Удалить тэг
+
+        AddCustomDictionaryType,
+        ModifyCustomDictionaryType,
+        DeleteCustomDictionaryType,
+        AddCustomDictionary,
+        ModifyCustomDictionary,
+        DeleteCustomDictionary,
     }
 }

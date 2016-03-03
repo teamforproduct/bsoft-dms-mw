@@ -2,8 +2,10 @@
 using BL.Logic.AdminCore;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.DictionaryCore;
+using BL.Logic.DictionaryCore.CustomDictionary;
 using BL.Logic.DictionaryCore.DocumentType;
 using BL.Logic.DictionaryCore.Interfaces;
+using BL.Logic.DictionaryCore.Tag;
 using BL.Logic.DocumentCore;
 using BL.Logic.DocumentCore.AdditionalCommands;
 using BL.Logic.DocumentCore.Commands;
@@ -58,6 +60,17 @@ namespace BL.Logic.DependencyInjection
         {
             Bind<IDictionaryCommand>().To<AddDictionaryDocumentTypeCommand>();
             Bind<IDictionaryCommand>().To<ModifyDictionaryDocumentTypeCommand>();
+
+            Bind<IDictionaryCommand>().To<AddDictionaryTagCommand>();
+            Bind<IDictionaryCommand>().To<ModifyDictionaryTagCommand>();
+
+            Bind<IDictionaryCommand>().To<AddCustomDictionaryCommand>();
+            Bind<IDictionaryCommand>().To<ModifyCustomDictionaryCommand>();
+            Bind<IDictionaryCommand>().To<DeleteCustomDictionaryCommand>();
+
+            Bind<IDictionaryCommand>().To<AddCustomDictionaryTypeCommand>();
+            Bind<IDictionaryCommand>().To<ModifyCustomDictionaryTypeCommand>();
+            Bind<IDictionaryCommand>().To<DeleteCustomDictionaryTypeCommand>();
         }
 
         private void LoadDocumentCommands()

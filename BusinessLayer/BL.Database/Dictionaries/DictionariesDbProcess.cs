@@ -13,6 +13,7 @@ using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Exception;
+using System.Transactions;
 
 namespace BL.Database.Dictionaries
 {
@@ -388,7 +389,7 @@ namespace BL.Database.Dictionaries
                 };
                 dbContext.DictionaryDocumentTypesSet.Attach(ddt);
                 var entity = dbContext.Entry(ddt);
-                
+
                 entity.Property(x => x.Name).IsModified = true;
                 entity.Property(x => x.LastChangeDate).IsModified = true;
                 entity.Property(x => x.LastChangeUserId).IsModified = true;
@@ -424,7 +425,7 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(x => filter.DocumentTypeId.Contains(x.Id));
                 }
 
-                if (!String.IsNullOrEmpty (filter.Name))
+                if (!String.IsNullOrEmpty(filter.Name))
                 {
                     qry = qry.Where(x => filter.Name == x.Name);
                 }
@@ -666,7 +667,7 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
-                var qry = dbContext.DictionaryPositionsSet.Select(x=> new { pos = x, subordMax = 0}).AsQueryable();
+                var qry = dbContext.DictionaryPositionsSet.Select(x => new { pos = x, subordMax = 0 }).AsQueryable();
 
                 if (filter.PositionId?.Count > 0)
                 {
@@ -687,12 +688,12 @@ namespace BL.Database.Dictionaries
                 if (filter.SubordinatedPositions?.Count > 0)
                 {
                     qry = qry.GroupJoin(
-                                        dbContext.AdminSubordinationsSet.Where(y=> filter.SubordinatedPositions.Contains(y.SourcePositionId)),
+                                        dbContext.AdminSubordinationsSet.Where(y => filter.SubordinatedPositions.Contains(y.SourcePositionId)),
                                         x => x.pos.Id,
                                         y => y.TargetPositionId,
-                                        (x, y) => new { pos = x.pos, subordMax = y.Max(z=>z.SubordinationTypeId) }
+                                        (x, y) => new { pos = x.pos, subordMax = y.Max(z => z.SubordinationTypeId) }
                                         )
-                             .Where(x=>x.subordMax>0);
+                             .Where(x => x.subordMax > 0);
                 }
 
                 return qry.Select(x => new BaseDictionaryPosition
@@ -912,7 +913,7 @@ namespace BL.Database.Dictionaries
                         LastChangeDate = x.LastChangeDate,
                         SendTypeName = x.SendType.Name,
                         TargetPositionName = x.TargetPosition.Name,
-                        TargetAgentName = x.TargetPosition.ExecutorAgent.Name??x.TargetAgent.Name,
+                        TargetAgentName = x.TargetPosition.ExecutorAgent.Name ?? x.TargetAgent.Name,
                         AccessLevelName = x.AccessLevel.Name
                     }).FirstOrDefault();
             }
@@ -943,7 +944,7 @@ namespace BL.Database.Dictionaries
                     AccessLevelId = x.AccessLevelId,
                     SendTypeName = x.SendType.Name,
                     TargetPositionName = x.TargetPosition.Name,
-                    TargetAgentName = x.TargetPosition.ExecutorAgent.Name??x.TargetAgent.Name,
+                    TargetAgentName = x.TargetPosition.ExecutorAgent.Name ?? x.TargetAgent.Name,
                     AccessLevelName = x.AccessLevel.Name
                 }).ToList();
             }
@@ -979,7 +980,7 @@ namespace BL.Database.Dictionaries
                                     AccessLevelId = y.AccessLevelId,
                                     SendTypeName = y.SendType.Name,
                                     TargetPositionName = y.TargetPosition.Name,
-                                    TargetAgentName = y.TargetPosition.ExecutorAgent.Name??y.TargetAgent.Name,
+                                    TargetAgentName = y.TargetPosition.ExecutorAgent.Name ?? y.TargetAgent.Name,
                                     AccessLevelName = y.AccessLevel.Name
                                 })
                         }).FirstOrDefault();
@@ -1082,7 +1083,7 @@ namespace BL.Database.Dictionaries
 
                 qry = qry.Where(x => !x.PositionId.HasValue || context.CurrentPositionsIdList.Contains(x.PositionId ?? 0));
 
-                if (filter.TagId?.Count>0)
+                if (filter.TagId?.Count > 0)
                 {
                     qry = qry.Where(x => filter.TagId.Contains(x.Id));
                 }
@@ -1185,5 +1186,280 @@ namespace BL.Database.Dictionaries
         }
         #endregion AdminAccessLevels
         #endregion
+
+        #region CustomDictionaryTypes
+        public void UpdateCustomDictionaryType(IContext context, InternalCustomDictionaryType model)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var item = new CustomDictionaryTypes
+                {
+                    Id = model.Id,
+                    Code = model.Code,
+                    Description = model.Description,
+                    LastChangeDate = model.LastChangeDate,
+                    LastChangeUserId = model.LastChangeUserId,
+                };
+                dbContext.CustomDictionaryTypesSet.Attach(item);
+                var entity = dbContext.Entry(item);
+
+                entity.Property(x => x.Code).IsModified = true;
+                entity.Property(x => x.Description).IsModified = true;
+                entity.Property(x => x.LastChangeDate).IsModified = true;
+                entity.Property(x => x.LastChangeUserId).IsModified = true;
+                dbContext.SaveChanges();
+            }
+        }
+
+        public int AddCustomDictionaryType(IContext context, InternalCustomDictionaryType model)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var item = new CustomDictionaryTypes
+                {
+                    Code = model.Code,
+                    Description = model.Description,
+                    LastChangeDate = model.LastChangeDate,
+                    LastChangeUserId = model.LastChangeUserId
+                };
+                dbContext.CustomDictionaryTypesSet.Add(item);
+                dbContext.SaveChanges();
+                model.Id = item.Id;
+                return item.Id;
+            }
+        }
+
+        public void DeleteCustomDictionaryType(IContext context, int id)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var item = dbContext.CustomDictionaryTypesSet.FirstOrDefault(x => x.Id == id);
+                if (item != null)
+                {
+                    dbContext.CustomDictionariesSet.RemoveRange(item.CustomDictionaries);
+                    dbContext.CustomDictionaryTypesSet.Remove(item);
+                    dbContext.SaveChanges();
+                }
+            }
+        }
+
+        public InternalCustomDictionaryType GetInternalCustomDictionaryType(IContext context, FilterCustomDictionaryType filter)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var qry = dbContext.CustomDictionaryTypesSet.AsQueryable();
+
+                if (filter != null)
+                {
+                    if (filter.CustomDictionaryTypeId?.Count > 0)
+                    {
+                        qry = qry.Where(x => filter.CustomDictionaryTypeId.Contains(x.Id));
+                    }
+
+                    if (!string.IsNullOrEmpty(filter.Code))
+                    {
+                        qry = qry.Where(x => filter.Code.Equals(x.Code, StringComparison.OrdinalIgnoreCase));
+                    }
+                }
+
+                var items = qry.Select(x => new InternalCustomDictionaryType
+                {
+                    Id = x.Id,
+                    Code = x.Code,
+                    Description = x.Description
+                }).FirstOrDefault();
+
+                return items;
+            }
+        }
+
+        public FrontCustomDictionaryType GetCustomDictionaryType(IContext context, int id)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var qry = dbContext.CustomDictionaryTypesSet.AsQueryable();
+
+                qry = qry.Where(x => x.Id == id);
+
+                var item = qry.Select(x => new FrontCustomDictionaryType
+                {
+                    Id = x.Id,
+                    Code = x.Code,
+                    Description = x.Description
+                }).FirstOrDefault();
+
+                item.CustomDictionaries = dbContext.CustomDictionariesSet.Where(x => x.DictionaryTypeId == item.Id)
+                    .Select(x => new FrontCustomDictionary
+                    {
+                        Id = x.Id,
+                        Code = x.Code,
+                        Description = x.Description,
+                        DictionaryTypeId = item.Id
+                    }).ToList();
+
+                return item;
+            }
+        }
+
+        public IEnumerable<FrontCustomDictionaryType> GetCustomDictionaryTypes(IContext context, FilterCustomDictionaryType filter)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var qry = dbContext.CustomDictionaryTypesSet.AsQueryable();
+
+                if (filter != null)
+                {
+                    if (filter.CustomDictionaryTypeId?.Count > 0)
+                    {
+                        qry = qry.Where(x => filter.CustomDictionaryTypeId.Contains(x.Id));
+                    }
+                }
+
+                var items = qry.Select(x => new FrontCustomDictionaryType
+                {
+                    Id = x.Id,
+                    Code = x.Code,
+                    Description = x.Description
+                }).ToList();
+
+                return items;
+            }
+        }
+        #endregion CustomDictionaryTypes
+
+        #region CustomDictionaries
+        public void UpdateCustomDictionary(IContext context, InternalCustomDictionary model)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var item = new CustomDictionaries
+                {
+                    Id = model.Id,
+                    Code = model.Code,
+                    Description = model.Description,
+                    DictionaryTypeId = model.DictionaryTypeId,
+                    LastChangeDate = model.LastChangeDate,
+                    LastChangeUserId = model.LastChangeUserId,
+                };
+                dbContext.CustomDictionariesSet.Attach(item);
+                var entity = dbContext.Entry(item);
+
+                entity.Property(x => x.Code).IsModified = true;
+                entity.Property(x => x.Description).IsModified = true;
+                entity.Property(x => x.LastChangeDate).IsModified = true;
+                entity.Property(x => x.LastChangeUserId).IsModified = true;
+                dbContext.SaveChanges();
+            }
+        }
+
+        public int AddCustomDictionary(IContext context, InternalCustomDictionary model)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var item = new CustomDictionaries
+                {
+                    Code = model.Code,
+                    Description = model.Description,
+                    DictionaryTypeId = model.DictionaryTypeId,
+                    LastChangeDate = model.LastChangeDate,
+                    LastChangeUserId = model.LastChangeUserId
+                };
+                dbContext.CustomDictionariesSet.Add(item);
+                dbContext.SaveChanges();
+                model.Id = item.Id;
+                return item.Id;
+            }
+        }
+
+        public void DeleteCustomDictionary(IContext context, int id)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var item = dbContext.CustomDictionariesSet.FirstOrDefault(x => x.Id == id);
+                if (item != null)
+                {
+                    dbContext.CustomDictionariesSet.Remove(item);
+                    dbContext.SaveChanges();
+                }
+            }
+        }
+
+        public InternalCustomDictionary GetInternalCustomDictionary(IContext context, FilterCustomDictionary filter)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var qry = dbContext.CustomDictionariesSet.AsQueryable();
+
+                if (filter != null)
+                {
+                    if (filter.CustomDictionaryTypeId?.Count > 0)
+                    {
+                        qry = qry.Where(x => filter.CustomDictionaryTypeId.Contains(x.Id));
+                    }
+
+                    if (!string.IsNullOrEmpty(filter.Code))
+                    {
+                        qry = qry.Where(x => filter.Code.Equals(x.Code, StringComparison.OrdinalIgnoreCase));
+                    }
+                }
+
+                var items = qry.Select(x => new InternalCustomDictionary
+                {
+                    Id = x.Id,
+                    Code = x.Code,
+                    Description = x.Description,
+                    DictionaryTypeId = x.DictionaryTypeId
+                }).FirstOrDefault();
+
+                return items;
+            }
+        }
+
+        public FrontCustomDictionary GetCustomDictionary(IContext context, int id)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var qry = dbContext.CustomDictionariesSet.AsQueryable();
+
+                qry = qry.Where(x => x.Id == id);
+
+                var item = qry.Select(x => new FrontCustomDictionary
+                {
+                    Id = x.Id,
+                    Code = x.Code,
+                    Description = x.Description,
+                    DictionaryTypeId = x.DictionaryTypeId
+                }).FirstOrDefault();
+
+                return item;
+            }
+        }
+
+        public IEnumerable<FrontCustomDictionary> GetCustomDictionaries(IContext context, FilterCustomDictionary filter)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var qry = dbContext.CustomDictionariesSet.AsQueryable();
+
+                if (filter != null)
+                {
+                    if (filter.CustomDictionaryTypeId?.Count > 0)
+                    {
+                        qry = qry.Where(x => filter.CustomDictionaryTypeId.Contains(x.DictionaryTypeId));
+                    }
+                }
+
+                var items = qry.Select(x => new FrontCustomDictionary
+                {
+                    Id = x.Id,
+                    Code = x.Code,
+                    Description = x.Description,
+                    DictionaryTypeId = x.DictionaryTypeId
+                }).ToList();
+
+                return items;
+            }
+        }
+        #endregion CustomDictionaries
     }
 }

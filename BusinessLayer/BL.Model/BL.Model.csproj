@@ -42,10 +42,18 @@
   <ItemGroup>
     <Compile Include="AdminCore\AdminAccessInfo.cs" />
     <Compile Include="AdminCore\BaseAdminUserRole.cs" />
+    <Compile Include="DictionaryCore\FilterModel\FilterCustomDictionary.cs" />
+    <Compile Include="DictionaryCore\FilterModel\FilterCustomDictionaryType.cs" />
+    <Compile Include="DictionaryCore\FrontModel\FrontCustomDictionary.cs" />
+    <Compile Include="DictionaryCore\FrontModel\FrontCustomDictionaryType.cs" />
+    <Compile Include="DictionaryCore\IncomingModel\ModifyCustomDictionary.cs" />
+    <Compile Include="DictionaryCore\IncomingModel\ModifyCustomDictionaryType.cs" />
+    <Compile Include="DictionaryCore\InternalModel\InternalCustomDictionary.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAdminRoleActions.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontAdminAccessLevel.cs" />
     <Compile Include="AdminCore\FilterAdminUserRole.cs" />
     <Compile Include="AdminCore\FilterAdminAccessLevel.cs" />
+    <Compile Include="DictionaryCore\InternalModel\InternalCustomDictionaryType.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentSubscription.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentWait.cs" />
     <Compile Include="AdminCore\VerifyAccess.cs" />

@@ -127,5 +127,17 @@ namespace BL.Logic.DictionaryCore.Interfaces
         #endregion AdminAccessLevels
 
         #endregion
+
+        #region CustomDictionaryTypes
+        IEnumerable<FrontCustomDictionaryType> GetCustomDictionaryTypes(IContext context, FilterCustomDictionaryType filter);
+
+        FrontCustomDictionaryType GetCustomDictionaryType(IContext context, int id);
+        #endregion CustomDictionaryTypes
+
+        #region CustomDictionaries
+        IEnumerable<FrontCustomDictionary> GetCustomDictionaries(IContext context, FilterCustomDictionary filter);
+
+        FrontCustomDictionary GetCustomDictionary(IContext context, int id);
+        #endregion CustomDictionaries
     }
 }

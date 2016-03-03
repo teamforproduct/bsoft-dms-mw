@@ -1,5 +1,6 @@
 ﻿using BL.CrossCutting.Interfaces;
 using BL.Logic.DependencyInjection;
+using BL.Logic.DictionaryCore.CustomDictionary;
 using BL.Logic.DictionaryCore.DocumentType;
 using BL.Logic.DictionaryCore.Tag;
 using BL.Model.Enums;
@@ -25,6 +26,24 @@ namespace BL.Logic.DictionaryCore
                     break;
                 case EnumDictionaryAction.AddTag:
                     cmd = DmsResolver.Current.Get<AddDictionaryTagCommand>();
+                    break;
+                case EnumDictionaryAction.AddCustomDictionaryType:
+                    cmd = DmsResolver.Current.Get<AddCustomDictionaryTypeCommand>();
+                    break;
+                case EnumDictionaryAction.ModifyCustomDictionaryType:
+                    cmd = DmsResolver.Current.Get<ModifyCustomDictionaryTypeCommand>();
+                    break;
+                case EnumDictionaryAction.DeleteCustomDictionaryType:
+                    cmd = DmsResolver.Current.Get<DeleteCustomDictionaryTypeCommand>();
+                    break;
+                case EnumDictionaryAction.AddCustomDictionary:
+                    cmd = DmsResolver.Current.Get<AddCustomDictionaryCommand>();
+                    break;
+                case EnumDictionaryAction.ModifyCustomDictionary:
+                    cmd = DmsResolver.Current.Get<ModifyCustomDictionaryCommand>();
+                    break;
+                case EnumDictionaryAction.DeleteCustomDictionary:
+                    cmd = DmsResolver.Current.Get<DeleteCustomDictionaryCommand>();
                     break;
                 default:
                     throw new CommandNotDefinedError();
