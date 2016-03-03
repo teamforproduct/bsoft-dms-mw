@@ -297,6 +297,11 @@ namespace BL.Database.Documents
                     x1.doc.LinkedDocumentsCount = x1.ev.LinkCnt;
                 }
 
+                docs.GroupJoin(CommonQueries.GetDocumentTags(dbContext, new FilterDocumentTag { DocumentId = docs.Select(x => x.Id).ToList() }),
+                    d => d.Id,
+                    t => t.DocumentId,
+                    (d, t) => d.DocumentTags = t);
+
                 return docs;
             }
         }
