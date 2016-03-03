@@ -1,6 +1,7 @@
 ﻿using BL.Logic.DependencyInjection;
 using BL.Logic.DictionaryCore.Interfaces;
 using BL.Model.DictionaryCore.IncomingModel;
+using BL.Model.DictionaryCore.FrontModel;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Web.Http;
@@ -60,6 +61,23 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
             tmpDict.ExecuteAction(EnumDictionaryAction.ModifyDocumentType, cxt, model);
             return Get(model.Id);
+        }
+
+        /// <summary>
+        /// Удаляет из справочника запись
+        /// </summary>
+        /// <returns>Возвращает id удаленного документа</returns> 
+        public IHttpActionResult Delete([FromUri] int id)
+        {
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
+
+            tmpDict.ExecuteAction(EnumDictionaryAction.DeleteDocumentType, cxt, id);
+            FrontDictionaryDocumentType tmp = new FrontDictionaryDocumentType();
+            tmp.Id = id;
+
+            return new JsonResult(tmp, this);
+            
         }
 
     }

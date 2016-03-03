@@ -57,6 +57,7 @@
     <Compile Include="AdminCore\Interfaces\IAdminService.cs" />
     <Compile Include="DictionaryCore\DictionaryCommandFactory.cs" />
     <Compile Include="DictionaryCore\DictionaryService.cs" />
+    <Compile Include="DictionaryCore\DocumentType\DeleteDictionaryDocumentTypeCommand.cs" />
     <Compile Include="DictionaryCore\Tag\AddDictionaryTagCommand.cs" />
     <Compile Include="DictionaryCore\Tag\ModifyDictionaryTagCommand.cs" />
     <Compile Include="DictionaryCore\DocumentType\AddDictionaryDocumentTypeCommand.cs" />
