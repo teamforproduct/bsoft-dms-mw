@@ -35,23 +35,27 @@ namespace BL.Logic.DocumentCore.Commands
             }
         }
 
-        public override bool CanBeDisplayed(int positionId, InternalSystemAction action)
+        public override bool CanBeDisplayed(int positionId)
         {
-            return action.DocumentAction == CommandType && !Document.IsInWork;
+            if (!_document.Accesses.Any(x => x.PositionId == positionId && x.IsInWork)
+                )
+            {
+                return false;
+            }
+
+            return true;
         }
 
         public override bool CanExecute()
         {
             _admin.VerifyAccess(_context, CommandType);
             _document = _operationDb.ChangeIsInWorkAccessPrepare(_context, Model.DocumentId);
-            if (_document?.Accesses == null)
+            _docAccess = _document?.Accesses.FirstOrDefault();
+            if (_docAccess == null
+                || !CanBeDisplayed(_docAccess.PositionId)
+                )
             {
-                throw new DocumentNotFoundOrUserHasNoAccess();
-            }
-            _docAccess = _document.Accesses.FirstOrDefault();
-            if (!_docAccess.IsInWork)
-            {
-                throw new CouldNotChangeIsInWork();
+                throw new CouldNotPerformThisOperation();
             }
             return true;
         }

@@ -30,7 +30,7 @@ namespace BL.Logic.DictionaryCore.DocumentType
             }
         }
 
-        public override bool CanBeDisplayed(int positionId, InternalSystemAction action)
+        public override bool CanBeDisplayed(int positionId)
         {
             return true;
         }

@@ -181,7 +181,6 @@
     <Compile Include="DocumentCore\Actions\RegisterDocument.cs" />
     <Compile Include="Enums\EnumSendTypes.cs" />
     <Compile Include="Enums\MailServerType.cs" />
-    <Compile Include="Enums\PermissibleEventTypesForAction.cs" />
     <Compile Include="Exception\DmsExceptions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Enums\EnumLogTypes.cs" />

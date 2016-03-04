@@ -32,7 +32,7 @@ namespace BL.Logic.DocumentCore.Commands
             }
         }
 
-        public override bool CanBeDisplayed(int positionId, InternalSystemAction action)
+        public override bool CanBeDisplayed(int positionId)
         {
             if ( _document.IsRegistered
                 )
@@ -56,7 +56,7 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new DictionaryRecordWasNotFound();
             }
-            if (!CanBeDisplayed(_context.CurrentPositionId, null))
+            if (!CanBeDisplayed(_context.CurrentPositionId))
             {
                 throw new DocumentHasAlredyBeenRegistered();
             }

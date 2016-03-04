@@ -37,7 +37,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
             }
         }
 
-        public override bool CanBeDisplayed(int positionId, InternalSystemAction action)
+        public override bool CanBeDisplayed(int positionId)
         {
             return true;
         }

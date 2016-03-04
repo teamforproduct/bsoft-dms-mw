@@ -83,8 +83,9 @@ namespace BL.Logic.DocumentCore
                         if (cmd != null)
                         {
                             // each command should add to action list of entries, where that action can be executed
-                            if (cmd.CanBeDisplayed(pos.Id, act))
+                            if (cmd.CanBeDisplayed(pos.Id))
                             {
+                                act.ActionRecords = cmd.ActionRecords;
                                 resultActions.Add(act);
                             }
                         }

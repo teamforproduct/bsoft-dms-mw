@@ -7,7 +7,6 @@ using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
-using BL.Model.SystemCore;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -36,19 +35,20 @@ namespace BL.Logic.DocumentCore.Commands
             }
         }
 
-        public override bool CanBeDisplayed(int positionId, InternalSystemAction action)
+        public override bool CanBeDisplayed(int positionId)
         {
-            action.ActionRecords =
+            _actionRecords =
                 _document.Waits.Where(
                     x =>
                         x.OnEvent.SourcePositionId == positionId &&
-                        AccordanceDictionaries.PermissibleEventTypesForAction[CommandType].Contains(x.OnEvent.EventType))
+                        x.OffEventId == null &&
+                        CommonDocumentUtilities.PermissibleEventTypesForAction[CommandType].Contains(x.OnEvent.EventType))
                         .Select( x=>new InternalActionRecord
                         {
                             EventId = x.OnEvent.Id,
-                            Description = x.OnEvent.GeneralInfo
+                            WaitId = x.Id
                         });
-            if (!action.ActionRecords.Any())
+            if (!_actionRecords.Any())
             {
                 return false;
             }
@@ -58,14 +58,12 @@ namespace BL.Logic.DocumentCore.Commands
         public override bool CanExecute()
         {
             _document = _operationDb.ControlChangeDocumentPrepare(_context, Model.EventId);
-            _docWait = _document.Waits.FirstOrDefault();
-            if (_docWait?.OnEvent?.SourcePositionId == null || _docWait?.OnEvent?.SourcePositionId != _docWait?.OnEvent?.TargetPositionId)
+            _docWait = _document?.Waits?.FirstOrDefault();
+            if (_docWait?.OnEvent?.SourcePositionId == null 
+                || !CanBeDisplayed(_docWait.OnEvent.SourcePositionId.Value)
+                )
             {
-                throw new EventNotFoundOrUserHasNoAccess();
-            }
-            if (_docWait.OffEventId != null)
-            {
-                throw new WaitHasAlreadyClosed();
+                throw new CouldNotPerformThisOperation();
             }
             _context.SetCurrentPosition(_docWait.OnEvent.SourcePositionId);
             _admin.VerifyAccess(_context, CommandType);

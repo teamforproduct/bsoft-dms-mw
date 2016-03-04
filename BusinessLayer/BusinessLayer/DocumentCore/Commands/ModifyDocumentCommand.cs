@@ -33,7 +33,7 @@ namespace BL.Logic.DocumentCore.Commands
             }
         }
 
-        public override bool CanBeDisplayed(int positionId, InternalSystemAction action)
+        public override bool CanBeDisplayed(int positionId)
         {
             if (_document.ExecutorPositionId != positionId
                 || _document.IsRegistered
@@ -54,7 +54,7 @@ namespace BL.Logic.DocumentCore.Commands
             }
             _context.SetCurrentPosition(_document.ExecutorPositionId);
             _admin.VerifyAccess(_context, CommandType);
-            if (!CanBeDisplayed(_context.CurrentPositionId, null))
+            if (!CanBeDisplayed(_context.CurrentPositionId))
             {
                 throw new DocumentCannotBeModifiedOrDeleted();
             }

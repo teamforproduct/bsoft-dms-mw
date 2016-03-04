@@ -17,6 +17,34 @@ namespace BL.Logic.Common
 {
     public static class CommonDocumentUtilities
     {
+
+        public static Dictionary<EnumDocumentActions, List<EnumEventTypes>> PermissibleEventTypesForAction =
+    new Dictionary<EnumDocumentActions, List<EnumEventTypes>>
+        {
+                { EnumDocumentActions.ControlChange, new List<EnumEventTypes> { EnumEventTypes.ControlOn, EnumEventTypes.ControlChange } },
+                { EnumDocumentActions.ControlOff, new List<EnumEventTypes> { EnumEventTypes.ControlOn, EnumEventTypes.ControlChange } },
+
+                { EnumDocumentActions.MarkExecution, new List<EnumEventTypes> { EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution } },
+                { EnumDocumentActions.AcceptResult, new List<EnumEventTypes> { EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution } },
+                { EnumDocumentActions.RejectResult, new List<EnumEventTypes> { EnumEventTypes.MarkExecution} },
+
+                { EnumDocumentActions.RejectSigning, new List<EnumEventTypes> { EnumEventTypes.SendForSigning} },
+                { EnumDocumentActions.RejectАpproval, new List<EnumEventTypes> { EnumEventTypes.SendForАpproval } },
+                { EnumDocumentActions.RejectVisaing, new List<EnumEventTypes> { EnumEventTypes.SendForVisaing } },
+                { EnumDocumentActions.RejectАgreement, new List<EnumEventTypes> { EnumEventTypes.SendForАgreement } },
+
+                { EnumDocumentActions.WithdrawSigning, new List<EnumEventTypes> { EnumEventTypes.SendForSigning} },
+                { EnumDocumentActions.WithdrawАpproval, new List<EnumEventTypes> { EnumEventTypes.SendForАpproval } },
+                { EnumDocumentActions.WithdrawVisaing, new List<EnumEventTypes> { EnumEventTypes.SendForVisaing } },
+                { EnumDocumentActions.WithdrawАgreement, new List<EnumEventTypes> { EnumEventTypes.SendForАgreement } },
+
+                { EnumDocumentActions.AffixSigning, new List<EnumEventTypes> { EnumEventTypes.SendForSigning} },
+                { EnumDocumentActions.AffixАpproval, new List<EnumEventTypes> { EnumEventTypes.SendForАpproval } },
+                { EnumDocumentActions.AffixVisaing, new List<EnumEventTypes> { EnumEventTypes.SendForVisaing } },
+                { EnumDocumentActions.AffixАgreement, new List<EnumEventTypes> { EnumEventTypes.SendForАgreement } },
+
+        };
+
         public static void SetAtrributesForNewDocument(IContext context, InternalDocument document)
         {
             document.CreateDate = DateTime.Now;
@@ -157,7 +185,7 @@ namespace BL.Logic.Common
             return new InternalDocumentWait
             {
                 DocumentId = sendListModel.DocumentId,
-                DueDate = new[] { sendListModel.DueDate, ( !sendListModel.DueDay.HasValue|| sendListModel.DueDay.Value < 0 ) ? null : (DateTime?)DateTime.Now.AddDays(sendListModel.DueDay.Value) }.Max(),
+                DueDate = new[] { sendListModel.DueDate, (!sendListModel.DueDay.HasValue || sendListModel.DueDay.Value < 0) ? null : (DateTime?)DateTime.Now.AddDays(sendListModel.DueDay.Value) }.Max(),
                 //AttentionDate = sendListModel.AttentionDate,
                 LastChangeUserId = context.CurrentAgentId,
                 LastChangeDate = DateTime.Now,
@@ -165,7 +193,7 @@ namespace BL.Logic.Common
                             GetNewDocumentEvent
                             (
                                 context, sendListModel.DocumentId, eventType.Value, sendListModel.Description, sendListModel.Task,
-                                eventCorrespondentType == EnumEventCorrespondentType.FromSourceToSource? sendListModel.SourcePositionId: sendListModel.TargetPositionId, 
+                                eventCorrespondentType == EnumEventCorrespondentType.FromSourceToSource ? sendListModel.SourcePositionId : sendListModel.TargetPositionId,
                                 null,
                                 eventCorrespondentType == EnumEventCorrespondentType.FromTargetToTarget ? sendListModel.TargetPositionId : sendListModel.SourcePositionId,
                                 sendListModel.SourceAgentId
@@ -225,7 +253,7 @@ namespace BL.Logic.Common
                 DueDay = model.DueDay,
                 AccessLevel = model.AccessLevel,
                 IsInitial = model.IsInitial,
-                
+
                 LastChangeUserId = context.CurrentAgentId,
                 LastChangeDate = DateTime.Now,
 
@@ -383,9 +411,9 @@ namespace BL.Logic.Common
                 IsAdditional = src.IsAdditional,
                 FileContent = src.FileContent,
                 Hash = src.Hash,
-                OrderInDocument = newOrderNumber??src.OrderInDocument,
+                OrderInDocument = newOrderNumber ?? src.OrderInDocument,
                 Date = DateTime.Now,
-                Version = newVersion??1,
+                Version = newVersion ?? 1,
                 WasChangedExternal = false
             };
         }

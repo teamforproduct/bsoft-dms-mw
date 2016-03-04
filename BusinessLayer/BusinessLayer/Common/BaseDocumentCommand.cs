@@ -2,6 +2,7 @@
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.SystemCore;
+using System.Collections.Generic;
 
 namespace BL.Logic.Common
 {
@@ -11,6 +12,7 @@ namespace BL.Logic.Common
         protected InternalDocument _document;
         protected object _param;
         protected EnumDocumentActions _action;
+        protected IEnumerable<InternalActionRecord> _actionRecords;
 
         public void InitializeCommand(IContext ctx, InternalDocument doc)
         {
@@ -28,8 +30,9 @@ namespace BL.Logic.Common
         public InternalDocument Document => _document;
         public IContext Context => _context;
         public object Parameters => _param;
+        public IEnumerable<InternalActionRecord> ActionRecords => _actionRecords;
 
-        public abstract bool CanBeDisplayed(int positionId, InternalSystemAction action);
+        public abstract bool CanBeDisplayed(int positionId);
         public abstract bool CanExecute();
         public abstract object Execute();
 

@@ -27,7 +27,7 @@ namespace BL.Logic.Common
         public IContext Context { get { return _context; } }
         public object Parameters { get { return _param; } }
 
-        public abstract bool CanBeDisplayed(int positionId, InternalSystemAction action);
+        public abstract bool CanBeDisplayed(int positionId);
 
         public abstract bool CanExecute();
 
