@@ -9,6 +9,28 @@ namespace BL.CrossCutting.Context
     public class AdminContext : IContext
     {
         private int? _currentPositionId;
+        private const string _USER_NAME = "DmsAdmin";
+        private const string _USER_PASS = "UkrPr0100_th3B3ssTC0nTry";
+
+        public AdminContext(DatabaseModel dbModel)
+        {
+            CurrentDB = new DatabaseModel
+            {
+                Id = dbModel.Id,
+                Name = dbModel.Name,
+                ServerType = dbModel.ServerType,
+                IntegrateSecurity = false,
+                Address = dbModel.Address,
+                DefaultDatabase = dbModel.DefaultDatabase,
+                UserName = _USER_NAME,
+                UserPassword = _USER_PASS
+            };
+            CurrentEmployee = new Employee
+            {
+                Name = "System user",
+                AgentId = -1
+            };
+        }
 
         public AdminContext(IContext ctx)
         {
@@ -23,8 +45,8 @@ namespace BL.CrossCutting.Context
                     IntegrateSecurity = false,
                     Address = ctx.CurrentDB.Address,
                     DefaultDatabase = ctx.CurrentDB.DefaultDatabase,
-                    UserName = "DmsAdmin",
-                    UserPassword = "UkrPr0100_th3B3ssTC0nTry"
+                    UserName = _USER_NAME,
+                    UserPassword = _USER_PASS
                 };
                 CurrentEmployee = new Employee
                 {

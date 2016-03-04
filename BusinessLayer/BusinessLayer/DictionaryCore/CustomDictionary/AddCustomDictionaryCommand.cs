@@ -7,27 +7,28 @@ using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.SystemCore;
+using System.Collections.Generic;
 
-namespace BL.Logic.DictionaryCore.DocumentType
+namespace BL.Logic.DictionaryCore.CustomDictionary
 {
-    public class AddDictionaryDocumentTypeCommand : BaseDictionaryCommand
+    public class AddCustomDictionaryCommand : BaseDictionaryCommand
     {
         private readonly IDictionariesDbProcess _dictDb;
 
-        public AddDictionaryDocumentTypeCommand(IDictionariesDbProcess dictDb)
+        public AddCustomDictionaryCommand(IDictionariesDbProcess dictDb)
         {
             _dictDb = dictDb;
         }
 
-        private ModifyDictionaryDocumentType Model
+        private ModifyCustomDictionary Model
         {
             get
             {
-                if (!(_param is ModifyDictionaryDocumentType))
+                if (!(_param is ModifyCustomDictionary))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ModifyDictionaryDocumentType)_param;
+                return (ModifyCustomDictionary)_param;
             }
         }
 
@@ -38,8 +39,8 @@ namespace BL.Logic.DictionaryCore.DocumentType
 
         public override bool CanExecute()
         {
-            var spr = _dictDb.GetInternalDictionaryDocumentType(_context, new FilterDictionaryDocumentType { Name = Model.Name });
-            if (spr != null)
+            var cd = _dictDb.GetInternalCustomDictionary(_context, new FilterCustomDictionary { CustomDictionaryTypeId = new List<int> { Model.DictionaryTypeId }, Code = Model.Code });
+            if (cd != null)
             {
                 throw new DictionaryRecordNotUnique();
             }
@@ -50,12 +51,14 @@ namespace BL.Logic.DictionaryCore.DocumentType
         {
             try
             {
-                var newDocType = new InternalDictionaryDocumentType
+                var newItem = new InternalCustomDictionary
                 {
-                    Name = Model.Name
+                    Code = Model.Code,
+                    Description = Model.Description,
+                    DictionaryTypeId = Model.DictionaryTypeId
                 };
-                CommonDocumentUtilities.SetLastChange(_context,newDocType);
-                return _dictDb.AddDictionaryDocumentType(_context, newDocType);
+                CommonDocumentUtilities.SetLastChange(_context, newItem);
+                return _dictDb.AddCustomDictionary(_context, newItem);
             }
             catch (Exception ex)
             {

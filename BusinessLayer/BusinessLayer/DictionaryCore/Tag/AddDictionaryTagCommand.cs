@@ -60,7 +60,5 @@ namespace BL.Logic.DictionaryCore.Tag
                 throw new DictionaryRecordCouldNotBeAdded(ex);
             }
         }
-
-        public override EnumDictionaryAction CommandType { get { return EnumDictionaryAction.AddTag; } }
     }
 }

@@ -292,5 +292,29 @@ namespace BL.Logic.DictionaryCore
         }
 
         #endregion AdminAccessLevels
+
+        #region CustomDictionaryTypes
+        public IEnumerable<FrontCustomDictionaryType> GetCustomDictionaryTypes(IContext context, FilterCustomDictionaryType filter)
+        {
+            return _dictDb.GetCustomDictionaryTypes(context, filter);
+        }
+
+        public FrontCustomDictionaryType GetCustomDictionaryType(IContext context, int id)
+        {
+            return _dictDb.GetCustomDictionaryType(context, id);
+        }
+        #endregion CustomDictionaryTypes
+
+        #region CustomDictionaries
+        public IEnumerable<FrontCustomDictionary> GetCustomDictionaries(IContext context, FilterCustomDictionary filter)
+        {
+            return _dictDb.GetCustomDictionaries(context, filter);
+        }
+
+        public FrontCustomDictionary GetCustomDictionary(IContext context, int id)
+        {
+            return _dictDb.GetCustomDictionary(context, id);
+        }
+        #endregion CustomDictionaries
     }
 }

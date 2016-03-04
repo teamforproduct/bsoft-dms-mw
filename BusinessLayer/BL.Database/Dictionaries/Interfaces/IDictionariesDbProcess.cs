@@ -51,6 +51,7 @@ namespace BL.Database.Dictionaries.Interfaces
         InternalDictionaryDocumentType GetInternalDictionaryDocumentType(IContext context,
             FilterDictionaryDocumentType filter);
         void UpdateDictionaryDocumentType(IContext context, InternalDictionaryDocumentType docType);
+        void DeleteDictionaryDocumentType(IContext context, InternalDictionaryDocumentType docType);
         int AddDictionaryDocumentType(IContext context, InternalDictionaryDocumentType docType);
         IEnumerable<FrontDictionaryDocumentType> GetDictionaryDocumentTypes(IContext context, FilterDictionaryDocumentType filter);
         #endregion DictionaryDocumentSubjects
@@ -132,5 +133,33 @@ namespace BL.Database.Dictionaries.Interfaces
         IEnumerable<FrontAdminAccessLevel> GetAdminAccessLevels(IContext ctx, FilterAdminAccessLevel filter);
         #endregion AdminAccessLevels
         #endregion
+
+        #region CustomDictionaryTypes
+        void UpdateCustomDictionaryType(IContext context, InternalCustomDictionaryType model);
+
+        int AddCustomDictionaryType(IContext context, InternalCustomDictionaryType model);
+
+        void DeleteCustomDictionaryType(IContext context, int id);
+
+        InternalCustomDictionaryType GetInternalCustomDictionaryType(IContext context, FilterCustomDictionaryType filter);
+
+        FrontCustomDictionaryType GetCustomDictionaryType(IContext context, int id);
+
+        IEnumerable<FrontCustomDictionaryType> GetCustomDictionaryTypes(IContext context, FilterCustomDictionaryType filter);
+        #endregion CustomDictionaryTypes
+
+        #region CustomDictionaries
+        void UpdateCustomDictionary(IContext context, InternalCustomDictionary model);
+
+        int AddCustomDictionary(IContext context, InternalCustomDictionary model);
+
+        void DeleteCustomDictionary(IContext context, int id);
+
+        InternalCustomDictionary GetInternalCustomDictionary(IContext context, FilterCustomDictionary filter);
+
+        FrontCustomDictionary GetCustomDictionary(IContext context, int id);
+
+        IEnumerable<FrontCustomDictionary> GetCustomDictionaries(IContext context, FilterCustomDictionary filter);
+        #endregion CustomDictionaries
     }
 }

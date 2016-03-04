@@ -1,33 +1,32 @@
 ﻿using System;
 using BL.Database.Dictionaries.Interfaces;
 using BL.Logic.Common;
-using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
-using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.SystemCore;
 
 namespace BL.Logic.DictionaryCore.DocumentType
 {
-    public class AddDictionaryDocumentTypeCommand : BaseDictionaryCommand
+    public class DeleteDictionaryDocumentTypeCommand : BaseDictionaryCommand
+   
     {
         private readonly IDictionariesDbProcess _dictDb;
 
-        public AddDictionaryDocumentTypeCommand(IDictionariesDbProcess dictDb)
+        public DeleteDictionaryDocumentTypeCommand(IDictionariesDbProcess dictDb)
         {
             _dictDb = dictDb;
         }
 
-        private ModifyDictionaryDocumentType Model
+        private int Model
         {
             get
             {
-                if (!(_param is ModifyDictionaryDocumentType))
+                if (!(_param is int))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ModifyDictionaryDocumentType)_param;
+                return (int)_param;
             }
         }
 
@@ -36,13 +35,11 @@ namespace BL.Logic.DictionaryCore.DocumentType
             return true;
         }
 
+
         public override bool CanExecute()
         {
-            var spr = _dictDb.GetInternalDictionaryDocumentType(_context, new FilterDictionaryDocumentType { Name = Model.Name });
-            if (spr != null)
-            {
-                throw new DictionaryRecordNotUnique();
-            }
+            //TODO: Проверка возможности удаления записи
+            //      Удаление возможно только если отсутствуют документы этого типа. + есть грант на удаление
             return true;
         }
 
@@ -52,15 +49,18 @@ namespace BL.Logic.DictionaryCore.DocumentType
             {
                 var newDocType = new InternalDictionaryDocumentType
                 {
-                    Name = Model.Name
+                    Id = Model
+                  
                 };
-                CommonDocumentUtilities.SetLastChange(_context,newDocType);
-                return _dictDb.AddDictionaryDocumentType(_context, newDocType);
+                _dictDb.DeleteDictionaryDocumentType(_context, newDocType);
+                return null;
             }
             catch (Exception ex)
             {
-                throw new DictionaryRecordCouldNotBeAdded(ex);
+                throw new DictionaryRecordCouldNotBeDeleted(ex);
             }
         }
     }
+
 }
+

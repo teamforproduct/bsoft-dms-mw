@@ -55,8 +55,15 @@
     <Compile Include="DependencyInjection\LogicModule.cs" />
     <Compile Include="AdminCore\AdminService.cs" />
     <Compile Include="AdminCore\Interfaces\IAdminService.cs" />
+    <Compile Include="DictionaryCore\CustomDictionary\DeleteCustomDictionaryCommand.cs" />
+    <Compile Include="DictionaryCore\CustomDictionary\AddCustomDictionaryCommand.cs" />
+    <Compile Include="DictionaryCore\CustomDictionary\DeleteCustomDictionaryTypeCommand.cs" />
+    <Compile Include="DictionaryCore\CustomDictionary\AddCustomDictionaryTypeCommand.cs" />
+    <Compile Include="DictionaryCore\CustomDictionary\ModifyCustomDictionaryCommand.cs" />
+    <Compile Include="DictionaryCore\CustomDictionary\ModifyCustomDictionaryTypeCommand.cs" />
     <Compile Include="DictionaryCore\DictionaryCommandFactory.cs" />
     <Compile Include="DictionaryCore\DictionaryService.cs" />
+    <Compile Include="DictionaryCore\DocumentType\DeleteDictionaryDocumentTypeCommand.cs" />
     <Compile Include="DictionaryCore\Tag\AddDictionaryTagCommand.cs" />
     <Compile Include="DictionaryCore\Tag\ModifyDictionaryTagCommand.cs" />
     <Compile Include="DictionaryCore\DocumentType\AddDictionaryDocumentTypeCommand.cs" />
@@ -127,6 +134,7 @@
     <Compile Include="MailWorker\BaseMailSender.cs" />
     <Compile Include="MailWorker\BasicSmtpMailSender.cs" />
     <Compile Include="MailWorker\IMailSender.cs" />
+    <Compile Include="MailWorker\IMailService.cs" />
     <Compile Include="MailWorker\MailService.cs" />
     <Compile Include="MailWorker\SSLMailSender.cs" />
     <Compile Include="Observers\AfterDocumentAddObserver.cs" />

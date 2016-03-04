@@ -68,9 +68,5 @@ namespace BL.Logic.DictionaryCore.DocumentType
             }
             return null;
         }
-
-        public override EnumDictionaryAction CommandType {
-            get { return EnumDictionaryAction.ModifyDocumentType;}
-        }
     }
 }

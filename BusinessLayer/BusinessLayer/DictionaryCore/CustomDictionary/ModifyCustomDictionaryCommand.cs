@@ -5,29 +5,30 @@ using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
+using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.SystemCore;
+using System.Collections.Generic;
 
-
-namespace BL.Logic.DictionaryCore.Tag
+namespace BL.Logic.DictionaryCore.CustomDictionary
 {
-    public class ModifyDictionaryTagCommand : BaseDictionaryCommand
+    public class ModifyCustomDictionaryCommand : BaseDictionaryCommand
     {
         private readonly IDictionariesDbProcess _dictDb;
 
-        public ModifyDictionaryTagCommand(IDictionariesDbProcess dictDb)
+        public ModifyCustomDictionaryCommand(IDictionariesDbProcess dictDb)
         {
             _dictDb = dictDb;
         }
 
-        private ModifyDictionaryTag Model
+        private ModifyCustomDictionary Model
         {
             get
             {
-                if (!(_param is ModifyDictionaryTag))
+                if (!(_param is ModifyCustomDictionary))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ModifyDictionaryTag)_param;
+                return (ModifyCustomDictionary)_param;
             }
         }
 
@@ -38,7 +39,11 @@ namespace BL.Logic.DictionaryCore.Tag
 
         public override bool CanExecute()
         {
-            //TODO добавить проверки
+            var cd = _dictDb.GetInternalCustomDictionary(_context, new FilterCustomDictionary { CustomDictionaryTypeId = new List<int> { Model.DictionaryTypeId }, Code = Model.Code });
+            if (cd != null && cd.Id != Model.Id)
+            {
+                throw new DictionaryRecordNotUnique();
+            }
             return true;
         }
 
@@ -46,21 +51,17 @@ namespace BL.Logic.DictionaryCore.Tag
         {
             try
             {
-                var item = new InternalDictionaryTag
+                var newItem = new InternalCustomDictionary
                 {
                     Id = Model.Id,
-                    Name = Model.Name,
-                    Color = Model.Color,
-                    LastChangeDate = DateTime.Now,
-                    LastChangeUserId = _context.CurrentAgentId,
+                    Code = Model.Code,
+                    Description = Model.Description,
+                    DictionaryTypeId = Model.DictionaryTypeId
                 };
-                _dictDb.UpdateDictionaryTag(_context, item);
+                CommonDocumentUtilities.SetLastChange(_context, newItem);
+                _dictDb.UpdateCustomDictionary(_context, newItem);
             }
             catch (DictionaryRecordWasNotFound)
-            {
-                throw;
-            }
-            catch (DictionaryTagNotFoundOrUserHasNoAccess)
             {
                 throw;
             }
