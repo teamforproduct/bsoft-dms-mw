@@ -50,6 +50,17 @@ namespace BL.Database.Documents
 
                 if (res.Document != null)
                 {
+
+                    res.Document.Accesses = dbContext.DocumentAccessesSet.Where(x => x.DocumentId == documentId)
+                                    .Select(x => new InternalDocumentAccess
+                                    {
+                                        Id = x.Id,
+                                        PositionId = x.PositionId,
+                                        IsInWork = x.IsInWork,
+                                        IsFavourite = x.IsFavourite,
+                                    }
+                                    ).ToList();
+
                     res.Document.Events = dbContext.DocumentEventsSet.Where(x => x.DocumentId == documentId)
                                                         .Select(x => new InternalDocumentEvent
                                                         {
@@ -71,10 +82,10 @@ namespace BL.Database.Documents
                                                                 //TargetPositionName = x.OnEvent.TargetPosition.Name,
                                                                 //SourcePositionExecutorAgentName = x.OnEvent.SourcePosition.ExecutorAgent.Name,
                                                                 //TargetPositionExecutorAgentName = x.OnEvent.TargetPosition.ExecutorAgent.Name,
-                                                                EventType = (EnumEventTypes)x.OnEventId,
+                                                                EventType = (EnumEventTypes)x.OnEvent.EventTypeId,
                                                                 //GeneralInfo = $"от {x.OnEvent.SourcePosition.ExecutorAgent.Name} к {x.OnEvent.TargetPosition.ExecutorAgent.Name} {x.OnEvent.Task}"
                                                             }
-                                                            
+
                                                         }
                                                         ).ToList();
 
@@ -231,8 +242,11 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-                dbContext.DocumentWaitsSet.AddRange(ModelConverter.GetDbDocumentWaits(document.Waits));
-                dbContext.SaveChanges();
+                if (document.Waits?.Any() ?? false)
+                {
+                    dbContext.DocumentWaitsSet.AddRange(ModelConverter.GetDbDocumentWaits(document.Waits));
+                    dbContext.SaveChanges();
+                }
             }
         }
 
@@ -392,6 +406,7 @@ namespace BL.Database.Documents
                                             Id = x.Id,
                                             DocumentId = x.DocumentId,
                                             OffEventId = x.OffEventId,
+                                            OnEventId = x.OnEventId,
                                             OnEvent = new InternalDocumentEvent
                                             {
                                                 Id = x.OnEvent.Id,
@@ -416,14 +431,13 @@ namespace BL.Database.Documents
             {
                 var eventsId = document.Waits.Select(x => x.OnEventId).ToList();
 
-                var sendLists = dbContext.DocumentSendListsSet
+                document.SendLists = dbContext.DocumentSendListsSet
                     .Where(x => x.StartEventId.HasValue && !x.CloseEventId.HasValue && eventsId.Contains(x.StartEventId.Value))
                     .Select(x => new InternalDocumentSendList
                     {
                         Id = x.Id,
                     }
                     ).ToList();
-                document.SendLists.ToList().AddRange(sendLists);
             }
         }
 
@@ -461,14 +475,13 @@ namespace BL.Database.Documents
             {
                 var eventsId = document.Waits.Select(x => x.OnEventId).ToList();
 
-                var subscriptions = dbContext.DocumentSubscriptionsSet
+                document.Subscriptions = dbContext.DocumentSubscriptionsSet
                     .Where(x => !x.DoneEventId.HasValue && eventsId.Contains(x.SendEventId))
                     .Select(x => new InternalDocumentSubscription
                     {
                         Id = x.Id,
                     }
                     ).ToList();
-                document.Subscriptions.ToList().AddRange(subscriptions);
             }
         }
 
@@ -481,9 +494,11 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-                var evt = ModelConverter.GetDbDocumentEvents(docEvents);
-                dbContext.DocumentEventsSet.AddRange(evt);
-                dbContext.SaveChanges();
+                if (docEvents?.Any() ?? false)
+                {
+                    dbContext.DocumentEventsSet.AddRange(ModelConverter.GetDbDocumentEvents(docEvents));
+                    dbContext.SaveChanges();
+                }
             }
         }
 
@@ -627,26 +642,32 @@ namespace BL.Database.Documents
                 entry.Property(x => x.LastChangeUserId).IsModified = true;
 
                 dbContext.DocumentAccessesSet.AddRange(CommonQueries.GetDbDocumentAccesses(dbContext, document.Accesses, document.Id).ToList());
-                dbContext.DocumentEventsSet.AddRange(ModelConverter.GetDbDocumentEvents(document.Events));
-
-                var newWait = ModelConverter.GetDbDocumentWaits(document.Waits).First();
-                if (newWait != null)
+                var events = ModelConverter.GetDbDocumentEvents(document.Events);
+                if (document.Events?.Any() ?? false)
                 {
-                    if (document.Waits.First().OnEvent == sendList.StartEvent)
-                    {
-                        newWait.OnEvent = sendListDb.StartEvent;
-                    }
-                    dbContext.DocumentWaitsSet.Add(newWait);
+                    dbContext.DocumentEventsSet.AddRange(ModelConverter.GetDbDocumentEvents(document.Events));
                 }
 
-                var newSubscription = ModelConverter.GetDbDocumentSubscriptions(document.Subscriptions).First();
-                if (newSubscription != null)
+                if (document.Waits?.Any() ?? false)
                 {
-                    if (document.Subscriptions.First().SendEvent == sendList.StartEvent)
+                    var wait = document.Waits.First();
+                    var waitDb = ModelConverter.GetDbDocumentWait(wait);
+                    if (wait.OnEvent == sendList.StartEvent)
                     {
-                        newSubscription.SendEvent = sendListDb.StartEvent;
+                        waitDb.OnEvent = sendListDb.StartEvent;
                     }
-                    dbContext.DocumentSubscriptionsSet.Add(newSubscription);
+                    dbContext.DocumentWaitsSet.Add(waitDb);
+                }
+
+                if (document.Subscriptions?.Any() ?? false)
+                {
+                    var subscription = document.Subscriptions.First();
+                    var subscriptionDb = ModelConverter.GetDbDocumentSubscription(subscription);
+                    if (subscription.SendEvent == sendList.StartEvent)
+                    {
+                        subscriptionDb.SendEvent = sendListDb.StartEvent;
+                    }
+                    dbContext.DocumentSubscriptionsSet.Add(subscriptionDb);
                 }
                 dbContext.SaveChanges();
             }
