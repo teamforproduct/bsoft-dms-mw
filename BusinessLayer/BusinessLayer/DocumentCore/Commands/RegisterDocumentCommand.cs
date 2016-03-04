@@ -34,19 +34,13 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanBeDisplayed(int positionId, InternalSystemAction action)
         {
-            try
-            {
-                _admin.VerifyAccess(_context, CommandType);
-                if (_document == null || !_document.RegistrationJournalId.HasValue || _document.IsRegistered)
-                {
-                    return false;
-                }
-                return true;
-            }
-            catch
+            if ( _document.IsRegistered
+                )
             {
                 return false;
             }
+
+            return true;
         }
 
         public override bool CanExecute()
@@ -62,7 +56,7 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new DictionaryRecordWasNotFound();
             }
-            if (_document.IsRegistered)
+            if (!CanBeDisplayed(_context.CurrentPositionId, null))
             {
                 throw new DocumentHasAlredyBeenRegistered();
             }

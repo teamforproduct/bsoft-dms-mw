@@ -45,7 +45,7 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanBeDisplayed(int positionId, InternalSystemAction action)
         {
-            return true;
+            return false;
         }
 
         public override bool CanExecute()

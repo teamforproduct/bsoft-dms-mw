@@ -56,6 +56,7 @@ namespace BL.Model.DocumentCore.InternalModel
                // AttachedFilesCount = model.AttachedFilesCount;
                // LinkedDocumentsCount = model.LinkedDocumentsCount;
 
+
             }
         }
 
@@ -126,10 +127,13 @@ namespace BL.Model.DocumentCore.InternalModel
         public int? ParentDocumentLinkId { get; set; }
         public int LinkTypeId { get; set; }
 
-       // public int EventsCount { get; set; }
-       // public int NewEventCount { get; set; }
-       // public int AttachedFilesCount { get; set; }
-       // public int LinkedDocumentsCount { get; set; }
+        public int? WaitsCount { get; set; }
+        public int? SendListsCount { get; set; }
+        public int? SubscriptionsCount { get; set; }
+        // public int EventsCount { get; set; }
+        // public int NewEventCount { get; set; }
+        // public int AttachedFilesCount { get; set; }
+        // public int LinkedDocumentsCount { get; set; }
 
         public InternalTemplateDocument TemplateDocument { get; set; }
         public IEnumerable<InternalDocumentRestrictedSendList> RestrictedSendLists { get; set; }

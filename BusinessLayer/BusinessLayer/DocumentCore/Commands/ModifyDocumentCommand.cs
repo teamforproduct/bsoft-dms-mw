@@ -29,12 +29,19 @@ namespace BL.Logic.DocumentCore.Commands
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ModifyDocument) _param;
+                return (ModifyDocument)_param;
             }
         }
 
         public override bool CanBeDisplayed(int positionId, InternalSystemAction action)
         {
+            if (_document.ExecutorPositionId != positionId
+                || _document.IsRegistered
+                )
+            {
+                return false;
+            }
+
             return true;
         }
 
@@ -47,6 +54,10 @@ namespace BL.Logic.DocumentCore.Commands
             }
             _context.SetCurrentPosition(_document.ExecutorPositionId);
             _admin.VerifyAccess(_context, CommandType);
+            if (!CanBeDisplayed(_context.CurrentPositionId, null))
+            {
+                throw new DocumentCannotBeModifiedOrDeleted();
+            }
             return true;
         }
 
@@ -61,7 +72,7 @@ namespace BL.Logic.DocumentCore.Commands
             _document.SenderDate = Model.SenderDate;
             _document.Addressee = Model.Addressee;
             _document.AccessLevel = Model.AccessLevel;
-            if (_document.Accesses?.Count() >0 )
+            if (_document.Accesses?.Count() > 0)
             {
                 var docAcc = _document.Accesses.First();
                 CommonDocumentUtilities.SetLastChange(_context, docAcc);

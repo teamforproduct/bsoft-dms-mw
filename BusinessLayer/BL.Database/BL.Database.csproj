@@ -87,6 +87,9 @@
     <Compile Include="DBModel\Document\DocumentTags.cs" />
     <Compile Include="DBModel\Document\DocumentWaits.cs" />
     <Compile Include="DBModel\InternalModel\DocumentQuery.cs" />
+    <Compile Include="DBModel\System\Properties.cs" />
+    <Compile Include="DBModel\System\PropertyLinks.cs" />
+    <Compile Include="DBModel\System\PropertyValues.cs" />
     <Compile Include="DBModel\System\SystemActions.cs" />
     <Compile Include="DBModel\System\SystemFields.cs" />
     <Compile Include="DBModel\System\SystemLogs.cs" />
@@ -322,6 +325,10 @@
     <Compile Include="Migrations\201603020954490_CustomDictionary.Designer.cs">
       <DependentUpon>201603020954490_CustomDictionary.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201603041001270_Properties.cs" />
+    <Compile Include="Migrations\201603041001270_Properties.Designer.cs">
+      <DependentUpon>201603041001270_Properties.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SystemDb\ISystemDbProcess.cs" />
@@ -490,6 +497,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201603020954490_CustomDictionary.resx">
       <DependentUpon>201603020954490_CustomDictionary.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201603041001270_Properties.resx">
+      <DependentUpon>201603041001270_Properties.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

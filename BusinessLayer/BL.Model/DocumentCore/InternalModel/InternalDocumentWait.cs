@@ -16,5 +16,6 @@ namespace BL.Model.DocumentCore.InternalModel
         public InternalDocumentEvent OnEvent { get; set; }
         public InternalDocumentEvent OffEvent { get; set; }
         public InternalDocumentWait ParentWait { get; set; }
+        public string GeneralInfo { get; set; }
     }
 }

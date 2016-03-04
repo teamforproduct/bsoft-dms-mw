@@ -1,4 +1,5 @@
-﻿using BL.Logic.Common;
+﻿using System.Linq;
+using BL.Logic.Common;
 using BL.Database.Documents.Interfaces;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Model.Enums;
@@ -32,20 +33,14 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanBeDisplayed(int positionId, InternalSystemAction action)
         {
-            //TODO ОСТАЛЬНЫЕ ПРОВЕРКИ!
-            try
-            {
-                _admin.VerifyAccess(_context, CommandType);
-                if (_document == null || _document.ExecutorPositionId != _context.CurrentPositionId)
-                {
-                    return false;
-                }
-                return true;
-            }
-            catch
+            if (_document.ExecutorPositionId != positionId
+                || _document.IsLaunchPlan
+                )
             {
                 return false;
             }
+
+            return true;
         }
 
         public override bool CanExecute()
@@ -56,7 +51,7 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
-            if (_document.IsLaunchPlan)
+            if (!CanBeDisplayed(_context.CurrentPositionId, null))
             {
                 throw new CouldNotChangeAttributeLaunchPlan();
             }

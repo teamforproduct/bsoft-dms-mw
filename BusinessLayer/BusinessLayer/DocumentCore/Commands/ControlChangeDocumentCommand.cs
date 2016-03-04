@@ -38,6 +38,20 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanBeDisplayed(int positionId, InternalSystemAction action)
         {
+            action.ActionRecords =
+                _document.Waits.Where(
+                    x =>
+                        x.OnEvent.SourcePositionId == positionId &&
+                        AccordanceDictionaries.PermissibleEventTypesForAction[CommandType].Contains(x.OnEvent.EventType))
+                        .Select( x=>new InternalActionRecord
+                        {
+                            EventId = x.OnEvent.Id,
+                            Description = x.OnEvent.GeneralInfo
+                        });
+            if (!action.ActionRecords.Any())
+            {
+                return false;
+            }
             return true;
         }
 
@@ -87,6 +101,6 @@ namespace BL.Logic.DocumentCore.Commands
             return _docWait.DocumentId;
         }
 
-        public override EnumDocumentActions CommandType => EnumDocumentActions.ControlChange;
+//        public override EnumDocumentActions CommandType => EnumDocumentActions.ControlChange;
     }
 }
