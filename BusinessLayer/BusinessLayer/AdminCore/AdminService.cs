@@ -110,6 +110,11 @@ namespace BL.Logic.AdminCore
             return VerifyAccess(context, new VerifyAccess { DocumentActionId = (int)action }, isThrowExeception);
         }
 
+        public bool VerifyAccess(IContext context, EnumDictionaryAction action, bool isThrowExeception = true)
+        {
+            return VerifyAccess(context, new VerifyAccess { DocumentActionId = (int)action }, isThrowExeception);
+        }
+
         public Employee GetEmployee(IContext context, int id)
         {
             return _adminDb.GetEmployee(context, id);

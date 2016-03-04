@@ -2,6 +2,7 @@
 using BL.Database.Dictionaries.Interfaces;
 using BL.Logic.Common;
 using BL.Model.DictionaryCore.InternalModel;
+using BL.Logic.AdminCore.Interfaces;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
@@ -12,10 +13,12 @@ namespace BL.Logic.DictionaryCore.DocumentType
    
     {
         private readonly IDictionariesDbProcess _dictDb;
+        private readonly IAdminService _admin;
 
-        public DeleteDictionaryDocumentTypeCommand(IDictionariesDbProcess dictDb)
+        public DeleteDictionaryDocumentTypeCommand(IDictionariesDbProcess dictDb, IAdminService admin)
         {
             _dictDb = dictDb;
+            _admin = admin;
         }
 
         private int Model
@@ -38,8 +41,7 @@ namespace BL.Logic.DictionaryCore.DocumentType
 
         public override bool CanExecute()
         {
-            //TODO: Проверка возможности удаления записи
-            //      Удаление возможно только если отсутствуют документы этого типа. + есть грант на удаление
+            _admin.VerifyAccess(_context, CommandType );
             return true;
         }
 
