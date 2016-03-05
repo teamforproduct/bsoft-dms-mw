@@ -4,6 +4,7 @@ using BL.Logic.AdminCore.Interfaces;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
+using System.Linq;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -30,22 +31,16 @@ namespace BL.Logic.DocumentCore.Commands
             }
         }
 
-        public override bool CanBeDisplayed(int positionId, InternalSystemAction action)
+        public override bool CanBeDisplayed(int positionId)
         {
-            //TODO ОСТАЛЬНЫЕ ПРОВЕРКИ!
-            try
-            {
-                _admin.VerifyAccess(_context, CommandType);
-                if (_document == null || _document.ExecutorPositionId != _context.CurrentPositionId)
-                {
-                    return false;
-                }
-                return true;
-            }
-            catch
+            if (_document.ExecutorPositionId != positionId
+                || !_document.IsLaunchPlan
+                )
             {
                 return false;
             }
+
+            return true;
         }
 
         public override bool CanExecute()
@@ -56,7 +51,7 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
-            if (!_document.IsLaunchPlan)
+            if (!CanBeDisplayed(_context.CurrentPositionId))
             {
                 throw new CouldNotChangeAttributeLaunchPlan();
             }

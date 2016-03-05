@@ -641,12 +641,14 @@ namespace BL.Database.Documents
                         Id = x.Doc.Id,
                         IsRegistered = x.Doc.IsRegistered,
                         ExecutorPositionId = x.Doc.ExecutorPositionId,
-                        //TODO к Сергею количество ожиданий и подписей 
+                        WaitsCount = x.Doc.Waits.Count,
+                        SubscriptionsCount = x.Doc.Subscriptions.Count,
                     }).FirstOrDefault();
 
                 if (doc == null) return null;
 
-                doc.DocumentFiles = CommonQueries.GetInternalDocumentFiles(dbContext, doc.Id);
+
+                doc.DocumentFiles = CommonQueries.GetInternalDocumentFiles(dbContext, doc.Id); //TODO к Сергею OPTIMIZE!!!
 
                 return doc;
             }
@@ -836,7 +838,14 @@ namespace BL.Database.Documents
                         ExecutorPositionId = x.Doc.ExecutorPositionId,
                         IsLaunchPlan = x.Doc.IsLaunchPlan
                     }).FirstOrDefault();
-
+                if (doc == null) return null;
+                doc.SendLists = dbContext.DocumentSendListsSet
+                                    .Where(x => x.DocumentId == documentId)
+                                    .Select(x => new InternalDocumentSendList
+                                    {
+                                        Id = x.Id,
+                                    }
+                                    ).ToList();
                 return doc;
             }
         }

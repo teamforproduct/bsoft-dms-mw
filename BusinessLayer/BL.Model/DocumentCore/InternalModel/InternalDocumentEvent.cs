@@ -20,6 +20,10 @@ namespace BL.Model.DocumentCore.InternalModel
         public int? TargetAgentId { get; set; }
         public DateTime? ReadDate { get; set; }
         public int? ReadAgentId { get; set; }
-
+        public string GeneralInfo { get; set; }
+        public string SourcePositionName { get; set; }
+        public string TargetPositionName { get; set; }
+        public string SourcePositionExecutorAgentName { get; set; }
+        public string TargetPositionExecutorAgentName { get; set; }
     }
 }

@@ -31,7 +31,7 @@ namespace BL.Logic.DictionaryCore.Tag
             }
         }
 
-        public override bool CanBeDisplayed(int positionId, InternalSystemAction action)
+        public override bool CanBeDisplayed(int positionId)
         {
             return true;
         }

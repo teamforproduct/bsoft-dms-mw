@@ -399,6 +399,17 @@
         }
     }
 
+    public class CouldNotPerformThisOperation : DmsExceptions
+    {
+        private const string _MESSAGE = "Could Not Perform This Operation!";
+        public CouldNotPerformThisOperation() : base(_MESSAGE)
+        {
+        }
+
+        public CouldNotPerformThisOperation(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
 
     public class WaitNotFoundOrUserHasNoAccess : DmsExceptions
     {

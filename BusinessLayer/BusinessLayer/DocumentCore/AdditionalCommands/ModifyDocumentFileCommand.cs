@@ -41,7 +41,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             }
         }
 
-        public override bool CanBeDisplayed(int positionId, InternalSystemAction action)
+        public override bool CanBeDisplayed(int positionId)
         {
             return true;
         }

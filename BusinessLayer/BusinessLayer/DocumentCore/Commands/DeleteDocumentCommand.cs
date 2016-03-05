@@ -33,10 +33,18 @@ namespace BL.Logic.DocumentCore.Commands
             }
         }
 
-        public override bool CanBeDisplayed(int positionId, InternalSystemAction action)
+        public override bool CanBeDisplayed(int positionId)
         {
-            //TODO ОСТАЛЬНЫЕ ПРОВЕРКИ!
-            return action.DocumentAction == CommandType && !_document.IsRegistered;
+            if (_document.ExecutorPositionId != positionId
+                || _document.IsRegistered
+                || (_document.WaitsCount ?? 0) > 0 || _document.Waits.Any()
+                || (_document.SubscriptionsCount ?? 0) > 0 || _document.Subscriptions.Any()
+                )
+            {
+                return false;
+            }
+
+            return true;
         }
 
         public override bool CanExecute()
@@ -49,7 +57,7 @@ namespace BL.Logic.DocumentCore.Commands
             _context.SetCurrentPosition(_document.ExecutorPositionId);
             _admin.VerifyAccess(_context, CommandType);
 
-           if (_document.IsRegistered)
+            if (!CanBeDisplayed(_context.CurrentPositionId))
             {
                 throw new DocumentCannotBeModifiedOrDeleted();
             }

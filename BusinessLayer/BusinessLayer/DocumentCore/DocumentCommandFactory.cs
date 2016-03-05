@@ -174,7 +174,7 @@ namespace BL.Logic.DocumentCore
                     cmd = DmsResolver.Current.Get<AffixSigningDocumentCommand>();
                     break;
                 case EnumDocumentActions.AffixАgreement:
-                    cmd = DmsResolver.Current.Get<WithdrawSigningDocumentCommand>();
+                    cmd = DmsResolver.Current.Get<AffixSigningDocumentCommand>();
                     break;
                 case EnumDocumentActions.AffixАpproval:
                     cmd = DmsResolver.Current.Get<AffixSigningDocumentCommand>();

@@ -8,24 +8,24 @@ namespace BL.Database.Common
 {
     public static class ModelConverter
     {
-        public static DocumentAccesses GetDbDocumentAccess(InternalDocumentAccess docAccess)
+        public static DocumentAccesses GetDbDocumentAccess(InternalDocumentAccess access)
         {
-            return docAccess == null ? null :
+            return access == null ? null :
                 new DocumentAccesses
                 {
-                    LastChangeDate = docAccess.LastChangeDate,
-                    LastChangeUserId = docAccess.LastChangeUserId,
-                    DocumentId = docAccess.DocumentId,
-                    IsFavourite = docAccess.IsFavourite,
-                    IsInWork = docAccess.IsInWork,
-                    AccessLevelId = (int)docAccess.AccessLevel,
-                    PositionId = docAccess.PositionId
+                    LastChangeDate = access.LastChangeDate,
+                    LastChangeUserId = access.LastChangeUserId,
+                    DocumentId = access.DocumentId,
+                    IsFavourite = access.IsFavourite,
+                    IsInWork = access.IsInWork,
+                    AccessLevelId = (int)access.AccessLevel,
+                    PositionId = access.PositionId
                 };
         }
 
-        public static IEnumerable<DocumentAccesses> GetDbDocumentAccesses(IEnumerable<InternalDocumentAccess> docAccesses)
+        public static IEnumerable<DocumentAccesses> GetDbDocumentAccesses(IEnumerable<InternalDocumentAccess> accesses)
         {
-            return docAccesses.Select(GetDbDocumentAccess);
+            return accesses?.Any() ?? false ? accesses.Select(GetDbDocumentAccess) : null;
         }
 
         public static DocumentEvents GetDbDocumentEvent(InternalDocumentEvent evt)
@@ -52,54 +52,54 @@ namespace BL.Database.Common
 
         public static IEnumerable<DocumentEvents> GetDbDocumentEvents(IEnumerable<InternalDocumentEvent> events)
         {
-            return events.Select(GetDbDocumentEvent);
+            return events?.Any() ?? false ? events.Select(GetDbDocumentEvent) : null;
         }
 
-        public static DocumentWaits GetDbDocumentWait(InternalDocumentWait docWait)
+        public static DocumentWaits GetDbDocumentWait(InternalDocumentWait wait)
         {
-            return docWait == null ? null :
+            return wait == null ? null :
                 new DocumentWaits
-            {
-                AttentionDate = docWait.AttentionDate,
-                DocumentId = docWait.DocumentId,
-                DueDate = docWait.DueDate,
-                LastChangeDate = docWait.LastChangeDate,
-                LastChangeUserId = docWait.LastChangeUserId,
-                OffEventId = docWait.OffEventId,
-                OnEventId = docWait.OnEventId,
-                ParentId = docWait.ParentId,
-                ResultTypeId = docWait.ResultTypeId,
-                OnEvent = GetDbDocumentEvent(docWait.OnEvent),
-                OffEvent = GetDbDocumentEvent(docWait.OffEvent),
-            };
-        }
-
-        public static IEnumerable<DocumentWaits> GetDbDocumentWaits(IEnumerable<InternalDocumentWait> docWaits)
-        {
-            return docWaits.Select(GetDbDocumentWait);
-        }
-
-        public static DocumentSubscriptions GetDbDocumentSubscription(InternalDocumentSubscription docSubscription)
-        {
-            return docSubscription == null ? null :
-                new DocumentSubscriptions
                 {
-                    DocumentId = docSubscription.DocumentId,
-                    LastChangeDate = docSubscription.LastChangeDate,
-                    LastChangeUserId = docSubscription.LastChangeUserId,
-                    DoneEventId = docSubscription.DoneEventId,
-                    DoneEvent = GetDbDocumentEvent(docSubscription.DoneEvent),
-                    SendEventId = docSubscription.SendEventId,
-                    SendEvent = GetDbDocumentEvent(docSubscription.SendEvent),
-                    Description = docSubscription.Description,
-                    Hash = docSubscription.Hash,
-                    ChangedHash = docSubscription.ChangedHash,
+                    AttentionDate = wait.AttentionDate,
+                    DocumentId = wait.DocumentId,
+                    DueDate = wait.DueDate,
+                    LastChangeDate = wait.LastChangeDate,
+                    LastChangeUserId = wait.LastChangeUserId,
+                    OffEventId = wait.OffEventId,
+                    OnEventId = wait.OnEventId,
+                    ParentId = wait.ParentId,
+                    ResultTypeId = wait.ResultTypeId,
+                    OnEvent = GetDbDocumentEvent(wait.OnEvent),
+                    OffEvent = GetDbDocumentEvent(wait.OffEvent),
                 };
         }
 
-        public static IEnumerable<DocumentSubscriptions> GetDbDocumentSubscriptions(IEnumerable<InternalDocumentSubscription> docSubscriptions)
+        public static IEnumerable<DocumentWaits> GetDbDocumentWaits(IEnumerable<InternalDocumentWait> waits)
         {
-            return docSubscriptions.Select(GetDbDocumentSubscription);
+            return waits?.Any() ?? false ? waits.Select(GetDbDocumentWait) : null;
+        }
+
+        public static DocumentSubscriptions GetDbDocumentSubscription(InternalDocumentSubscription subscription)
+        {
+            return subscription == null ? null :
+                new DocumentSubscriptions
+                {
+                    DocumentId = subscription.DocumentId,
+                    LastChangeDate = subscription.LastChangeDate,
+                    LastChangeUserId = subscription.LastChangeUserId,
+                    DoneEventId = subscription.DoneEventId,
+                    DoneEvent = GetDbDocumentEvent(subscription.DoneEvent),
+                    SendEventId = subscription.SendEventId,
+                    SendEvent = GetDbDocumentEvent(subscription.SendEvent),
+                    Description = subscription.Description,
+                    Hash = subscription.Hash,
+                    ChangedHash = subscription.ChangedHash,
+                };
+        }
+
+        public static IEnumerable<DocumentSubscriptions> GetDbDocumentSubscriptions(IEnumerable<InternalDocumentSubscription> subscriptions)
+        {
+            return subscriptions?.Any() ?? false ? subscriptions.Select(GetDbDocumentSubscription) : null;
         }
 
         public static void UpdateDbDocumentWaitByEvents(DocumentWaits docWait, InternalDocumentWait documentWait)
@@ -122,7 +122,7 @@ namespace BL.Database.Common
                 Stage = sl.Stage,
                 SendTypeId = (int)sl.SendType,
                 TargetPositionId = sl.TargetPositionId,
-                Task= sl.Task,
+                Task = sl.Task,
                 Description = sl.Description,
                 DueDate = sl.DueDate,
                 DueDay = sl.DueDay,

@@ -37,29 +37,38 @@ namespace BL.Logic.DocumentCore.Commands
             }
         }
 
-        public override bool CanBeDisplayed(int positionId, InternalSystemAction action)
+        public override bool CanBeDisplayed(int positionId)
         {
+            _actionRecords =
+                _document.Waits.Where(
+                    x =>
+                        x.OnEvent.SourcePositionId == positionId &&
+                        x.OffEventId == null &&
+                        CommonDocumentUtilities.PermissibleEventTypesForAction[CommandType].Contains(x.OnEvent.EventType))
+                        .Select(x => new InternalActionRecord
+                        {
+                            EventId = x.OnEvent.Id,
+                            WaitId = x.Id
+                        });
+            if (!_actionRecords.Any())
+            {
+                return false;
+            }
             return true;
         }
 
         public override bool CanExecute()
         {
             _document = _operationDb.ControlOffDocumentPrepare(_context, Model.EventId);
-            if (_document == null)
+            _docWait = _document?.Waits.FirstOrDefault();
+            if (_docWait?.OnEvent?.SourcePositionId == null
+                || !CanBeDisplayed(_docWait.OnEvent.SourcePositionId.Value)
+                )
             {
-                throw new DocumentNotFoundOrUserHasNoAccess();
-            }
-            _docWait = _document.Waits.FirstOrDefault();
-            if (_docWait?.OnEvent?.SourcePositionId == null || _docWait?.OnEvent?.TargetPositionId == null)
-            {
-                throw new EventNotFoundOrUserHasNoAccess();
-            }
-            if (_docWait.OffEventId != null)
-            {
-                throw new WaitHasAlreadyClosed();
+                throw new CouldNotPerformThisOperation();
             }
             _operationDb.ControlOffSubscriptionPrepare(_context, _document);
-            _context.SetCurrentPosition(_docWait.OnEvent.TargetPositionId);
+            _context.SetCurrentPosition(_docWait.OnEvent.SourcePositionId);
             _admin.VerifyAccess(_context, CommandType);
             return true;
         }

@@ -31,8 +31,14 @@ namespace BL.Logic.DocumentCore.Commands
             }
         }
 
-        public override bool CanBeDisplayed(int positionId, InternalSystemAction action)
+        public override bool CanBeDisplayed(int positionId)
         {
+            if (_document.ExecutorPositionId != positionId
+                )
+            {
+                return false;
+            }
+
             return true;
         }
 
@@ -43,10 +49,6 @@ namespace BL.Logic.DocumentCore.Commands
             if (_document == null)
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
-            }
-            if (_document.IsRegistered)
-            {
-                throw new DocumentHasAlredyBeenRegistered();
             }
             _context.SetCurrentPosition(_document.ExecutorPositionId);
             _admin.VerifyAccess(_context, CommandType);

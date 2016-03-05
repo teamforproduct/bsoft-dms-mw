@@ -9,7 +9,7 @@ namespace BL.CrossCutting.Interfaces
         IContext Context { get; }
         object Parameters { get; }
 
-        bool CanBeDisplayed(int positionId, InternalSystemAction action);
+        bool CanBeDisplayed(int positionId);
         bool CanExecute();
         object Execute();
         

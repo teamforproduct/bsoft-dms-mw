@@ -36,9 +36,9 @@ namespace BL.Logic.DocumentCore.Commands
                 }
                 var model = (InternalDocumentSendList)_param;
                 if (model.SendType != EnumSendTypes.SendForSigning
-                    || model.SendType != EnumSendTypes.SendForVisaing
-                    || model.SendType != EnumSendTypes.SendForАgreement
-                    || model.SendType != EnumSendTypes.SendForАpproval
+                    && model.SendType != EnumSendTypes.SendForVisaing
+                    && model.SendType != EnumSendTypes.SendForАgreement
+                    && model.SendType != EnumSendTypes.SendForАpproval
                     )
                 {
                     throw new WrongParameterTypeError();
@@ -47,9 +47,9 @@ namespace BL.Logic.DocumentCore.Commands
             }
         }
 
-        public override bool CanBeDisplayed(int positionId, InternalSystemAction action)
+        public override bool CanBeDisplayed(int positionId)
         {
-            return true;
+            return false;
         }
 
         public override bool CanExecute()
@@ -76,6 +76,7 @@ namespace BL.Logic.DocumentCore.Commands
             _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, Model.DocumentId, Model.AccessLevel, Model.TargetPositionId.Value);
 
             var waitTarget = CommonDocumentUtilities.GetNewDocumentWait(_context, Model, _eventType, EnumEventCorrespondentType.FromSourceToTarget);
+            _document.Waits = new List<InternalDocumentWait> { waitTarget };
 
             var subscription = CommonDocumentUtilities.GetNewDocumentSubscription(_context, Model);
             subscription.SendEvent = waitTarget.OnEvent;

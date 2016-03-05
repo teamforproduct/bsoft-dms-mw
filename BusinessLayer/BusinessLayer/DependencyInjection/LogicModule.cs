@@ -54,7 +54,7 @@ namespace BL.Logic.DependencyInjection
             Bind<IDocumentSendListService>().To<DocumentSendListService>().InSingletonScope();
             Bind<IDocumentTagService>().To<DocumentTagService>().InSingletonScope();
 
-            Bind<ICommandService>().To<CommandService>().InSingletonScope();
+//            Bind<ICommandService>().To<CommandService>().InSingletonScope();
         }
 
         private void LoadMailService()
