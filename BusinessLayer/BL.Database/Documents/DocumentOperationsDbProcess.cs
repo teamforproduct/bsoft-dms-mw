@@ -306,7 +306,7 @@ namespace BL.Database.Documents
                     entry.Property(x => x.LastChangeDate).IsModified = true;
                     entry.Property(x => x.LastChangeUserId).IsModified = true;
                 }
-                var sendList = document.SendLists.FirstOrDefault();
+                var sendList = document.SendLists?.FirstOrDefault();
                 if (sendList != null)
                 {
                     var sendListDb = new DocumentSendLists
@@ -323,12 +323,13 @@ namespace BL.Database.Documents
                     entry.Property(x => x.LastChangeUserId).IsModified = true;
                 }
 
-                var subscription = document.Subscriptions.FirstOrDefault();
+                var subscription = document.Subscriptions?.FirstOrDefault();
                 if (subscription != null)
                 {
                     var subscriptionDb = new DocumentSubscriptions
                     {
                         Id = subscription.Id,
+                        Description =  subscription.Description,
                         Hash = subscription.Hash,
                         LastChangeDate = subscription.LastChangeDate,
                         LastChangeUserId = subscription.LastChangeUserId
@@ -340,6 +341,7 @@ namespace BL.Database.Documents
                     }
                     var entry = dbContext.Entry(subscriptionDb);
                     entry.Property(x => x.Id).IsModified = true;
+                    entry.Property(x => x.Description).IsModified = true;
                     entry.Property(x => x.Hash).IsModified = true;
                     entry.Property(x => x.LastChangeDate).IsModified = true;
                     entry.Property(x => x.LastChangeUserId).IsModified = true;
@@ -623,6 +625,12 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
+                var eventsDb = ModelConverter.GetDbDocumentEvents(document.Events);
+                if (document.Events?.Any() ?? false)
+                {
+                    dbContext.DocumentEventsSet.AddRange(eventsDb);
+                }
+
                 var sendList = document.SendLists.First();
                 var sendListDb = new DocumentSendLists
                 {
@@ -642,11 +650,6 @@ namespace BL.Database.Documents
                 entry.Property(x => x.LastChangeUserId).IsModified = true;
 
                 dbContext.DocumentAccessesSet.AddRange(CommonQueries.GetDbDocumentAccesses(dbContext, document.Accesses, document.Id).ToList());
-                var events = ModelConverter.GetDbDocumentEvents(document.Events);
-                if (document.Events?.Any() ?? false)
-                {
-                    dbContext.DocumentEventsSet.AddRange(ModelConverter.GetDbDocumentEvents(document.Events));
-                }
 
                 if (document.Waits?.Any() ?? false)
                 {
