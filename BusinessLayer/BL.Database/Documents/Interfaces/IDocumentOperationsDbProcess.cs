@@ -59,7 +59,7 @@ namespace BL.Database.Documents.Interfaces
         void ChangeDocumentSendListStage(IContext context, IEnumerable<InternalDocumentSendList> model);
 
         void ModifyDocumentTags(IContext context, InternalDocumentTag model);
-        void ChangeDocumentWait(IContext context, IEnumerable<InternalDocumentWait> waits);
+        void ChangeDocumentWait(IContext context, InternalDocumentWait wait);
         void SendBySendList(IContext context, InternalDocument document);
 
         List<int> AddSavedFilter(IContext context, IEnumerable<InternalDocumentSavedFilter> model);

@@ -255,36 +255,64 @@ namespace BL.Database.Documents
             }
         }
 
-        public void ChangeDocumentWait(IContext ctx, IEnumerable<InternalDocumentWait> documentWaits)
+        public void ChangeDocumentWait(IContext ctx, InternalDocumentWait wait)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-
-                var documentWait = documentWaits.First(x => x.Id != 0);
-                var oldWait = new DocumentWaits
+                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
                 {
-                    Id = documentWait.Id,
-                    OffEventId = documentWait.OffEventId,
-                    LastChangeDate = documentWait.LastChangeDate,
-                    LastChangeUserId = documentWait.LastChangeUserId
-                };
-                dbContext.DocumentWaitsSet.Attach(oldWait);
-                oldWait.OnEvent = ModelConverter.GetDbDocumentEvent(documentWait.OnEvent);
-                var entry = dbContext.Entry(oldWait);
-                entry.Property(x => x.Id).IsModified = true;
-                entry.Property(x => x.OffEventId).IsModified = true;
-                entry.Property(x => x.LastChangeDate).IsModified = true;
-                entry.Property(x => x.LastChangeUserId).IsModified = true;
 
-                var modEvent = ModelConverter.GetDbDocumentEvent(documentWait.OffEvent);
-                modEvent.Id = documentWait.OffEventId.Value;
-                dbContext.DocumentEventsSet.Attach(modEvent);
-                dbContext.Entry(modEvent).State = EntityState.Modified;
+                    var waitParentDb = ModelConverter.GetDbDocumentWait(wait.ParentWait);
+                    dbContext.DocumentWaitsSet.Add(waitParentDb);
+                    dbContext.SaveChanges();
 
-                var newWait = ModelConverter.GetDbDocumentWait(documentWaits.First(x => x.Id == 0));
 
-                dbContext.DocumentWaitsSet.Add(newWait);
-                dbContext.SaveChanges();
+                    var eventDb = ModelConverter.GetDbDocumentEvent(wait.OnEvent);
+                    eventDb.Id = wait.OnEvent.Id;
+                    dbContext.DocumentEventsSet.Attach(eventDb);
+                    dbContext.Entry(eventDb).State = EntityState.Modified;
+                    dbContext.SaveChanges();
+
+                    wait.OnEvent = null;
+
+                    var waitDb = ModelConverter.GetDbDocumentWait(wait);
+                    waitDb.Id = wait.Id;
+                    waitDb.ParentId = waitParentDb.Id;
+                    waitDb.ParentWait = null;
+                    dbContext.DocumentWaitsSet.Attach(waitDb);
+                    dbContext.Entry(waitDb).State = EntityState.Modified;
+                    dbContext.SaveChanges();
+
+
+                    /*
+                    var documentWait = documentWaits.First(x => x.Id != 0);
+                    var oldWait = new DocumentWaits
+                    {
+                        Id = documentWait.Id,
+                        OffEventId = documentWait.OffEventId,
+                        LastChangeDate = documentWait.LastChangeDate,
+                        LastChangeUserId = documentWait.LastChangeUserId
+                    };
+                    dbContext.DocumentWaitsSet.Attach(oldWait);
+                    oldWait.OnEvent = ModelConverter.GetDbDocumentEvent(documentWait.OnEvent);
+                    var entry = dbContext.Entry(oldWait);
+                    entry.Property(x => x.Id).IsModified = true;
+                    entry.Property(x => x.OffEventId).IsModified = true;
+                    entry.Property(x => x.LastChangeDate).IsModified = true;
+                    entry.Property(x => x.LastChangeUserId).IsModified = true;
+
+                    var modEvent = ModelConverter.GetDbDocumentEvent(documentWait.OffEvent);
+                    modEvent.Id = documentWait.OffEventId.Value;
+                    dbContext.DocumentEventsSet.Attach(modEvent);
+                    dbContext.Entry(modEvent).State = EntityState.Modified;
+
+                    var newWait = ModelConverter.GetDbDocumentWait(documentWaits.First(x => x.Id == 0));
+
+                    dbContext.DocumentWaitsSet.Add(newWait);
+                    */
+
+                    transaction.Complete();
+                }
             }
         }
 
@@ -334,7 +362,7 @@ namespace BL.Database.Documents
                     var subscriptionDb = new DocumentSubscriptions
                     {
                         Id = subscription.Id,
-                        Description =  subscription.Description,
+                        Description = subscription.Description,
                         Hash = subscription.Hash,
                         LastChangeDate = subscription.LastChangeDate,
                         LastChangeUserId = subscription.LastChangeUserId
@@ -370,7 +398,11 @@ namespace BL.Database.Documents
                                         {
                                             Id = x.Id,
                                             DocumentId = x.DocumentId,
+                                            ParentId = x.ParentId,
+                                            OnEventId = x.OnEventId,
                                             OffEventId = x.OffEventId,
+                                            DueDate = x.DueDate,
+                                            AttentionDate = x.AttentionDate,
                                             OnEvent = new InternalDocumentEvent
                                             {
                                                 Id = x.OnEvent.Id,
@@ -386,8 +418,10 @@ namespace BL.Database.Documents
                                                 Date = x.OnEvent.Date,
                                                 LastChangeUserId = x.OnEvent.LastChangeUserId,
                                                 LastChangeDate = x.OnEvent.LastChangeDate,
+                                                SendDate = x.OnEvent.SendDate,
                                                 ReadDate = x.OnEvent.ReadDate,
                                                 ReadAgentId = x.OnEvent.ReadAgentId,
+
                                             }
                                         }
                                     }
@@ -630,7 +664,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions {IsolationLevel = IsolationLevel.ReadCommitted}))
+                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
                 {
                     var sendList = document.SendLists.First();
                     var sendListDb = new DocumentSendLists
@@ -652,6 +686,7 @@ namespace BL.Database.Documents
 
                     dbContext.DocumentAccessesSet.AddRange(
                         CommonQueries.GetDbDocumentAccesses(dbContext, document.Accesses, document.Id).ToList());
+                    dbContext.SaveChanges();
 
                     if (document.Waits?.Any() ?? false)
                     {
@@ -659,10 +694,12 @@ namespace BL.Database.Documents
                         var waitDb = ModelConverter.GetDbDocumentWait(wait);
                         if (wait.OnEvent == sendList.StartEvent)
                         {
-                            waitDb.OnEvent = sendListDb.StartEvent;
+                            waitDb.OnEventId = sendListDb.StartEventId.Value;
+                            waitDb.OnEvent = null;
                         }
                         dbContext.DocumentWaitsSet.Add(waitDb);
                     }
+                    dbContext.SaveChanges();
 
                     if (document.Subscriptions?.Any() ?? false)
                     {
@@ -670,7 +707,8 @@ namespace BL.Database.Documents
                         var subscriptionDb = ModelConverter.GetDbDocumentSubscription(subscription);
                         if (subscription.SendEvent == sendList.StartEvent)
                         {
-                            subscriptionDb.SendEvent = sendListDb.StartEvent;
+                            subscriptionDb.SendEventId = sendListDb.StartEventId.Value;
+                            subscriptionDb.SendEvent = null;
                         }
                         dbContext.DocumentSubscriptionsSet.Add(subscriptionDb);
                     }

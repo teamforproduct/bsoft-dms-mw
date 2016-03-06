@@ -112,6 +112,10 @@ namespace BL.Logic.DocumentCore
                 case EnumDocumentActions.SendForConsideration:
                     cmd = DmsResolver.Current.Get<SendForInformationDocumentCommand>();
                     break;
+                case EnumDocumentActions.SendForControl:
+                    cmd = DmsResolver.Current.Get<SendForControlDocumentCommand>();
+                    break;
+
                 case EnumDocumentActions.SendForResponsibleExecution:
                     cmd = DmsResolver.Current.Get<SendForResponsibleExecutionDocumentCommand>();
                     break;
@@ -203,7 +207,6 @@ namespace BL.Logic.DocumentCore
 
                 case EnumDocumentActions.AddDocumentSendListItem:
                 case EnumDocumentActions.MarkReception:
-                case EnumDocumentActions.SendForControl:
                 case EnumDocumentActions.DeleteDocumentLink:
                     return null;
                     break;
