@@ -84,6 +84,5 @@ namespace BL.Logic.DocumentCore.Commands
             return _document.Id;
         }
 
-        public override EnumDocumentActions CommandType => EnumDocumentActions.ModifyDocument;
     }
 }

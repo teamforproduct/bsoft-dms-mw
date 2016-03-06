@@ -80,6 +80,5 @@ namespace BL.Logic.DocumentCore.Commands
             return _docWait.DocumentId;
         }
 
-        public override EnumDocumentActions CommandType => EnumDocumentActions.ControlOff;
     }
 }

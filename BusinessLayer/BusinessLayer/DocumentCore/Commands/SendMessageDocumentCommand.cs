@@ -80,6 +80,5 @@ namespace BL.Logic.DocumentCore.Commands
             return null;
         }
 
-        public override EnumDocumentActions CommandType => EnumDocumentActions.SendMessage;
     }
 }
