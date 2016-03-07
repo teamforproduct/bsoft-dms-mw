@@ -37,7 +37,7 @@ namespace BL.Logic.PropertyCore
                 case EnumPropertyAction.DeletePropertyValue:
                     cmd = DmsResolver.Current.Get<DeletePropertyValueCommand>();
                     break;
-                case EnumPropertyAction.ModifyPropertyValue:
+                case EnumPropertyAction.ModifyPropertyValues:
                     cmd = DmsResolver.Current.Get<ModifyPropertyValueCommand>();
                     break;
                 default:

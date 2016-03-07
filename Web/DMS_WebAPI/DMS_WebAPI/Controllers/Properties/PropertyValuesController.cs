@@ -41,7 +41,7 @@ namespace DMS_WebAPI.Controllers.Properties
             model.Id = id;
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpServ = DmsResolver.Current.Get<IPropertyService>();
-            tmpServ.ExecuteAction(EnumPropertyAction.ModifyPropertyValue, cxt, model);
+            tmpServ.ExecuteAction(EnumPropertyAction.ModifyPropertyValues, cxt, model);
             return Get(model.Id);
         }
 
