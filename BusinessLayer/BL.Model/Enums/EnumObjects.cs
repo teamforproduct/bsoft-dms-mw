@@ -15,5 +15,10 @@
         DocumentTags = 192, // Документы - тэги
         DictionaryDocumentType = 201, // Типы документов
         DictionaryTag = 291, // Теги
+        CustomDictionaryTypes = 301, // Типы пользовательских словарей
+        CustomDictionaries = 302, // Пользовательские словари
+        Properties = 311, // Динамические аттрибуты
+        PropertyLinks = 312, // Связи динамических аттрибутов с объектами системы
+        PropertyValues = 313, // Значения динамических аттрибутов
     }
 }

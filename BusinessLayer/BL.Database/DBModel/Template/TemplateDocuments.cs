@@ -26,6 +26,7 @@ namespace BL.Database.DBModel.Template
         public Nullable<int> SenderAgentId { get; set; }
         public Nullable<int> SenderAgentPersonId { get; set; }
         public string Addressee { get; set; }
+        public bool IsActive { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
         [ForeignKey("DocumentId")]

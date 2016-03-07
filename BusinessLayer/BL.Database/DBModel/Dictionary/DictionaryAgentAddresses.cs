@@ -7,16 +7,20 @@ using System.Threading.Tasks;
 
 namespace BL.Database.DBModel.Dictionary
 {
-    public class CustomDictionaries
+    public partial class DictionaryAgentAddresses
     {
         public int Id { get; set; }
-        public int DictionaryTypeId { get; set; }
-        public string Code { get; set; }
+        public int AgentId { get; set; }
+        public int AdressTypeId { get; set; }
+        public string PostCode { get; set; }
+        public string Address { get; set; }
         public string Description { get; set; }
         public bool IsActive { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
-        [ForeignKey("DictionaryTypeId")]
-        public virtual CustomDictionaryTypes CustomDictionaryType { get; set; }
+        [ForeignKey("AgentId")]
+        public virtual DictionaryAgents Agent { get; set; }
+        [ForeignKey("AdressTypeId")]
+        public virtual DictionaryAddressTypes AddressType { get; set; }
     }
 }

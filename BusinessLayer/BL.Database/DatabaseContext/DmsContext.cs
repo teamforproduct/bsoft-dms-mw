@@ -9,7 +9,7 @@ using BL.CrossCutting.Helpers;
 
 namespace BL.Database.DatabaseContext
 {
-    public class DmsContext :DbContext
+    public class DmsContext : DbContext
     {
 
         public DmsContext() : base(ConnectionStringHelper.GetDefaultConnectionString())
@@ -25,14 +25,24 @@ namespace BL.Database.DatabaseContext
         {
             modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
 
-           // modelBuilder.Entity<DBModel.Document.Documents>()
-           //.HasOptional(f => f.TemporaryRegistration)
-           //.WithRequired(s => s.Document);
-           // modelBuilder.Entity<TemplateDocuments>()
-           //.HasOptional(f => f.IncomingDetail)
-           //.WithRequired(s => s.Document);
+            modelBuilder.Entity<DictionaryAgents>()
+            .HasOptional(f => f.AgentPerson)
+            .WithRequired(s => s.Agent);
+
+            modelBuilder.Entity<DictionaryAgents>()
+            .HasOptional(f => f.AgentCompany)
+            .WithRequired(s => s.Agent);
+
+            modelBuilder.Entity<DictionaryAgents>()
+.HasOptional(f => f.AgentBank)
+.WithRequired(s => s.Agent);
+
+            modelBuilder.Entity<DictionaryAgents>()
+.HasOptional(f => f.AgentEmployee)
+.WithRequired(s => s.Agent);
+
         }
-        
+
 
 
         public virtual DbSet<AdminAccessLevels> AdminAccessLevelsSet { get; set; }
@@ -42,7 +52,20 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<AdminSubordinations> AdminSubordinationsSet { get; set; }
 
         public virtual DbSet<DictionaryAgentPersons> DictionaryAgentPersonsSet { get; set; }
+        public virtual DbSet<DictionaryAgentCompanies> DictionaryAgentCompaniesSet { get; set; }
+        public virtual DbSet<DictionaryAgentBanks> DictionaryAgentBanksSet { get; set; }
+        public virtual DbSet<DictionaryAgentEmployees> DictionaryAgentEmployeesSet { get; set; }
+
+        public virtual DbSet<DictionaryAgentAccounts> DictionaryAgentAccountsSet { get; set; }
+        public virtual DbSet<DictionaryAgentAddresses> DictionaryAgentAddressesSet { get; set; }
+        public virtual DbSet<DictionaryAgentPhoneNumbers> DictionaryAgentPhoneNumbersSet { get; set; }
+
         public virtual DbSet<DictionaryAgents> DictionaryAgentsSet { get; set; }
+
+        public virtual DbSet<DictionaryResidentTypes> DictionaryResidentTypesSet { get; set; }
+        public virtual DbSet<DictionaryPhoneNumberTypes> DictionaryPhoneNumberTypesSet { get; set; }
+        public virtual DbSet<DictionaryAddressTypes> DictionaryAddressTypesSet { get; set; }
+
         public virtual DbSet<DictionaryCompanies> DictionaryCompaniesSet { get; set; }
         public virtual DbSet<DictionaryDepartments> DictionaryDepartmentsSet { get; set; }
         public virtual DbSet<DictionaryDocumentDirections> DictionaryDocumentDirectionsSet { get; set; }

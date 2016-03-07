@@ -13,6 +13,7 @@ namespace BL.Database.DBModel.Dictionary
         public string PrefixFormula { get; set; }
         public string SuffixFormula { get; set; }
         public string DirectionCodes { get; set; }
+        public bool IsActive { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
         [ForeignKey("DepartmentId")]

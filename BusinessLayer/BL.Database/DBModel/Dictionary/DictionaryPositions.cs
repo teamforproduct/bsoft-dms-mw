@@ -21,8 +21,11 @@ namespace BL.Database.DBModel.Dictionary
         public int Id { get; set; }
         public Nullable<int> ParentId { get; set; }
         public string Name { get; set; }
+        public string FullName { get; set; }
         public int DepartmentId { get; set; }
         public Nullable<int> ExecutorAgentId { get; set; }
+        public Nullable<int> MainExecutorAgentId { get; set; }
+        public bool IsActive { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
         [ForeignKey("ParentId")]
@@ -31,6 +34,8 @@ namespace BL.Database.DBModel.Dictionary
         public virtual DictionaryDepartments Department { get; set; }
         [ForeignKey("ExecutorAgentId")]
         public virtual DictionaryAgents ExecutorAgent { get; set; }
+        [ForeignKey("MainExecutorAgentId")]
+        public virtual DictionaryAgents MainExecutorAgent { get; set; }
         //public virtual ICollection<AdminSubordination> Subordinations { get; set; }
         //public virtual ICollection<AdminSubordination> AddresseeSubordinations { get; set; }
         //public virtual ICollection<AdminSettings> Settings { get; set; }

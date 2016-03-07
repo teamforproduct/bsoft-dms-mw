@@ -36,12 +36,11 @@ namespace BL.Database.Dictionaries
                 {
                     Id = x.Id,
                     Name = x.Name,
-                    TaxCode = x.TaxCode,
                     IsIndividual = x.IsIndividual,
                     IsEmployee = x.IsEmployee,
                     LastChangeUserId = x.LastChangeUserId,
                     LastChangeDate = x.LastChangeDate,
-                    AgentPersonsAgents = x.AgentPersonsAgents.Select(y => new BaseDictionaryAgentPerson
+                    /*AgentPersonsAgents = x.AgentPersonsAgents.Select(y => new BaseDictionaryAgentPerson
                     {
                         Id = y.Id,
                         AgentId = y.AgentId,
@@ -62,7 +61,7 @@ namespace BL.Database.Dictionaries
                         LastChangeDate = y.LastChangeDate,
                         AgentName = y.Agent.Name,
                         PersonAgentName = y.PersonAgent.Name
-                    })
+                    })*/
                 }).FirstOrDefault();
             }
         }
@@ -81,10 +80,6 @@ namespace BL.Database.Dictionaries
                 {
                     qry = qry.Where(x => x.Name.Contains(filter.Name));
                 }
-                if (!string.IsNullOrEmpty(filter.TaxCode))
-                {
-                    qry = qry.Where(x => x.TaxCode.Contains(filter.TaxCode));
-                }
                 if (filter.IsIndividual.HasValue)
                 {
                     qry = qry.Where(x => x.IsIndividual == filter.IsIndividual);
@@ -98,7 +93,6 @@ namespace BL.Database.Dictionaries
                 {
                     Id = x.Id,
                     Name = x.Name,
-                    TaxCode = x.TaxCode,
                     IsIndividual = x.IsIndividual,
                     IsEmployee = x.IsEmployee,
                     LastChangeUserId = x.LastChangeUserId,
@@ -118,13 +112,13 @@ namespace BL.Database.Dictionaries
                     dbContext.DictionaryAgentPersonsSet.Where(x => x.Id == id).Select(x => new BaseDictionaryAgentPerson
                     {
                         Id = x.Id,
-                        AgentId = x.AgentId,
-                        Name = x.Name,
-                        PersonAgentId = x.PersonAgentId,
+                       // AgentId = x.AgentId,
+                        Name = x.FullName,
+                    //    PersonAgentId = x.PersonAgentId,
                         LastChangeUserId = x.LastChangeUserId,
                         LastChangeDate = x.LastChangeDate,
-                        AgentName = x.Agent.Name,
-                        PersonAgentName = x.PersonAgent.Name
+                     //   AgentName = x.Agent.Name,
+                     //   PersonAgentName = x.PersonAgent.Name
                     }).FirstOrDefault();
             }
         }
@@ -140,33 +134,33 @@ namespace BL.Database.Dictionaries
                 {
                     qry = qry.Where(x => filter.AgentPersonId.Contains(x.Id));
                 }
-                if (filter.AgentId?.Count > 0)
+               /* if (filter.AgentId?.Count > 0)
                 {
                     qry = qry.Where(x => filter.AgentId.Contains(x.AgentId));
-                }
+                }*/
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
-                    qry = qry.Where(x => x.Name.Contains(filter.Name));
+                    qry = qry.Where(x => x.FullName.Contains(filter.Name));
                 }
-                if (!string.IsNullOrEmpty(filter.AgentName))
+            /*    if (!string.IsNullOrEmpty(filter.AgentName))
                 {
                     qry = qry.Where(x => x.Agent.Name.Contains(filter.AgentName));
-                }
-                if (!string.IsNullOrEmpty(filter.PersonAgentName))
+                }*/
+             /*   if (!string.IsNullOrEmpty(filter.PersonAgentName))
                 {
                     qry = qry.Where(x => x.PersonAgent.Name.Contains(filter.PersonAgentName));
-                }
+                }*/
 
                 return qry.Select(x => new BaseDictionaryAgentPerson
                 {
                     Id = x.Id,
-                    AgentId = x.AgentId,
-                    Name = x.Name,
-                    PersonAgentId = x.PersonAgentId,
+                  //  AgentId = x.AgentId,
+                    Name = x.FullName,
+                  //  PersonAgentId = x.PersonAgentId,
                     LastChangeUserId = x.LastChangeUserId,
                     LastChangeDate = x.LastChangeDate,
-                    AgentName = x.Agent.Name,
-                    PersonAgentName = x.PersonAgent.Name
+                 //   AgentName = x.Agent.Name,
+                 //   PersonAgentName = x.PersonAgent.Name
                 }).ToList();
             }
         }

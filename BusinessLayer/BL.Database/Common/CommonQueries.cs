@@ -58,7 +58,7 @@ namespace BL.Database.Common
                           ExecutorPosName = executor.Name,
                           ExecutorAgentName = exAg.Name,
                           SenderAgentname = sendAg.Name,
-                          SenderPersonName = sendAp.Name
+                          SenderPersonName = sendAp.FullName
                       };
             return qry;
         }

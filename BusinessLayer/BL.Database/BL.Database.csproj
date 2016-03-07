@@ -74,8 +74,17 @@
     <Compile Include="DBModel\Admin\AdminUserRoles.cs" />
     <Compile Include="DBModel\Dictionary\CustomDictionaries.cs" />
     <Compile Include="DBModel\Dictionary\CustomDictionaryTypes.cs" />
+    <Compile Include="DBModel\Dictionary\DictionaryAddressTypes.cs" />
+    <Compile Include="DBModel\Dictionary\DictionaryAgentAccounts.cs" />
+    <Compile Include="DBModel\Dictionary\DictionaryAgentAddresses.cs" />
+    <Compile Include="DBModel\Dictionary\DictionaryAgentBanks.cs" />
+    <Compile Include="DBModel\Dictionary\DictionaryAgentCompanies.cs" />
+    <Compile Include="DBModel\Dictionary\DictionaryAgentEmploeyes.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryAgentPersons.cs" />
+    <Compile Include="DBModel\Dictionary\DictionaryAgentPhoneNumbers.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryLinkTypes.cs" />
+    <Compile Include="DBModel\Dictionary\DictionaryPhoneNumberTypes.cs" />
+    <Compile Include="DBModel\Dictionary\DictionaryResidentTypes.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryResultTypes.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryTags.cs" />
     <Compile Include="DBModel\Document\DocumentSubscriptions.cs" />
@@ -330,6 +339,22 @@
     <Compile Include="Migrations\201603041001270_Properties.Designer.cs">
       <DependentUpon>201603041001270_Properties.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201603072034551_agent1to2.cs" />
+    <Compile Include="Migrations\201603072034551_agent1to2.Designer.cs">
+      <DependentUpon>201603072034551_agent1to2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201603072037384_agent1to1.cs" />
+    <Compile Include="Migrations\201603072037384_agent1to1.Designer.cs">
+      <DependentUpon>201603072037384_agent1to1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201603072247181_agent.cs" />
+    <Compile Include="Migrations\201603072247181_agent.Designer.cs">
+      <DependentUpon>201603072247181_agent.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201603072305287_dictionaries.cs" />
+    <Compile Include="Migrations\201603072305287_dictionaries.Designer.cs">
+      <DependentUpon>201603072305287_dictionaries.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SystemDb\ISystemDbProcess.cs" />
@@ -501,6 +526,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201603041001270_Properties.resx">
       <DependentUpon>201603041001270_Properties.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201603072034551_agent1to2.resx">
+      <DependentUpon>201603072034551_agent1to2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201603072037384_agent1to1.resx">
+      <DependentUpon>201603072037384_agent1to1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201603072247181_agent.resx">
+      <DependentUpon>201603072247181_agent.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201603072305287_dictionaries.resx">
+      <DependentUpon>201603072305287_dictionaries.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
