@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BL.Model.SystemCore
+namespace BL.Model.SystemCore.Filters
 {
     public class FilterSystemUIElement
     {

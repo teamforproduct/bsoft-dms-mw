@@ -10,16 +10,15 @@ using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.InternalModel;
-using BL.Model.SystemCore;
 using BL.Model.Enums;
 using BL.Model.DocumentCore.IncomingModel;
 using System.Data.Entity;
 using System.Transactions;
 using BL.CrossCutting.Helpers;
-using BL.Database.Migrations;
 using BL.Model.AdminCore;
 using BL.Model.DictionaryCore.InternalModel;
 using DocumentAccesses = BL.Database.DBModel.Document.DocumentAccesses;
+using BL.Model.SystemCore.InternalModel;
 
 namespace BL.Database.Documents
 {

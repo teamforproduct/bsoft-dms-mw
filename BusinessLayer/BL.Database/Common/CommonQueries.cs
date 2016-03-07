@@ -8,9 +8,11 @@ using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
-using BL.Model.SystemCore;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore;
+using BL.Model.SystemCore.InternalModel;
+using BL.Model.SystemCore.Filters;
+using BL.Model.SystemCore.FrontModel;
 
 namespace BL.Database.Common
 {
@@ -553,6 +555,54 @@ namespace BL.Database.Common
             }).ToList();
 
             return tags;
+
+        }
+
+        public static IEnumerable<FrontPropertyValue> GetPropertyValues(DmsContext dbContext, FilterPropertyValue filter)
+        {
+            var itemsDb = dbContext.PropertyValuesSet.AsQueryable();
+
+            if (filter != null)
+            {
+                if (filter.Object?.Count() > 0)
+                {
+                    itemsDb = itemsDb.Where(x => filter.Object.Contains((EnumObjects)x.PropertyLink.ObjectId));
+                }
+
+                if (filter.RecordId?.Count > 0)
+                {
+                    itemsDb = itemsDb.Where(x => filter.RecordId.Contains(x.RecordId));
+                }
+            }
+
+            var itemsRes = itemsDb;
+
+            var items = itemsRes.Select(x => new FrontPropertyValue
+            {
+                Id = x.Id,
+                RecordId = x.Id,
+                PropertyLinkId = x.PropertyLinkId,
+                Value = x.ValueString,
+                PropertyId = x.PropertyLink.PropertyId,
+                ObjectId = x.PropertyLink.ObjectId,
+                Filers = x.PropertyLink.Filers,
+                IsMandatory = x.PropertyLink.IsMandatory,
+                PropertyCode = x.PropertyLink.Property.Code,
+                PropertyDescription = x.PropertyLink.Property.Description,
+                PropertyLabel = x.PropertyLink.Property.Label,
+                PropertyHint = x.PropertyLink.Property.Hint,
+                PropertyValueTypeId = x.PropertyLink.Property.ValueTypeId,
+                PropertyOutFormat = x.PropertyLink.Property.OutFormat,
+                PropertyInputFormat = x.PropertyLink.Property.InputFormat,
+                PropertySelectAPI = x.PropertyLink.Property.SelectAPI,
+                PropertySelectFilter = x.PropertyLink.Property.SelectFilter,
+                PropertySelectFieldCode = x.PropertyLink.Property.SelectFieldCode,
+                PropertySelectDescriptionFieldCode = x.PropertyLink.Property.SelectDescriptionFieldCode,
+                PropertyValueTypeCode = x.PropertyLink.Property.ValueType.Code,
+                PropertyValueTypeDescription = x.PropertyLink.Property.ValueType.Description,
+            }).ToList();
+
+            return items;
 
         }
 

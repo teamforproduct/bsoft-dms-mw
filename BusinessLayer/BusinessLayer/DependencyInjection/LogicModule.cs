@@ -15,6 +15,9 @@ using BL.Logic.FileWorker;
 using BL.Logic.Logging;
 using BL.Logic.MailWorker;
 using BL.Logic.Observers;
+using BL.Logic.PropertyCore;
+using BL.Logic.PropertyCore.Commands;
+using BL.Logic.PropertyCore.Interfaces;
 using BL.Logic.Settings;
 using BL.Model.Enums;
 using Ninject.Modules;
@@ -54,7 +57,9 @@ namespace BL.Logic.DependencyInjection
             Bind<IDocumentSendListService>().To<DocumentSendListService>().InSingletonScope();
             Bind<IDocumentTagService>().To<DocumentTagService>().InSingletonScope();
 
-//            Bind<ICommandService>().To<CommandService>().InSingletonScope();
+            //Bind<ICommandService>().To<CommandService>().InSingletonScope();
+
+            Bind<IPropertyService>().To<PropertyService>().InSingletonScope();
         }
 
         private void LoadMailService()
@@ -66,6 +71,21 @@ namespace BL.Logic.DependencyInjection
         private void LoadObservers()
         {
             Bind<ICommandObserver>().To<AfterDocumentAddObserver>();
+        }
+
+        private void LoadPropertyCommands()
+        {
+            Bind<IPropertyCommand>().To<AddPropertyCommand>();
+            Bind<IPropertyCommand>().To<DeletePropertyCommand>();
+            Bind<IPropertyCommand>().To<ModifyPropertyCommand>();
+
+            Bind<IPropertyCommand>().To<AddPropertyLinkCommand>();
+            Bind<IPropertyCommand>().To<DeletePropertyLinkCommand>();
+            Bind<IPropertyCommand>().To<ModifyPropertyLinkCommand>();
+
+            Bind<IPropertyCommand>().To<AddPropertyValueCommand>();
+            Bind<IPropertyCommand>().To<DeletePropertyValueCommand>();
+            Bind<IPropertyCommand>().To<ModifyPropertyValueCommand>();
         }
 
         private void LoadDictionaryCommands()

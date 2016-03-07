@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.DocumentCore.InternalModel;
-using BL.Model.SystemCore;
+using BL.Model.SystemCore.InternalModel;
 
 namespace BL.Model.AdminCore
 {

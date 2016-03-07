@@ -4,6 +4,7 @@ using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DictionaryCore;
+using BL.Model.SystemCore.FrontModel;
 
 namespace BL.Model.DocumentCore.FrontModel
 {
@@ -137,6 +138,8 @@ namespace BL.Model.DocumentCore.FrontModel
 
         public IEnumerable<BaseDictionaryPosition> DocumentWorkGroup { get; set; }
         public IEnumerable<FrontDocumentSubscription> DocumentSubscriptions { get; set; }
+
+        public IEnumerable<FrontPropertyValue> PropertyValues { get; set; }
 
     }
 }

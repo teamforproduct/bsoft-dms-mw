@@ -7,6 +7,11 @@ using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.SystemCore;
+using BL.Model.DocumentCore.InternalModel;
+using System.Collections.Generic;
+using BL.Model.SystemCore.IncomingModel;
+using BL.Logic.PropertyCore.Interfaces;
+using BL.Model.SystemCore.InternalModel;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -14,11 +19,13 @@ namespace BL.Logic.DocumentCore.Commands
     {
         private readonly IDocumentsDbProcess _documentDb;
         private readonly IAdminService _admin;
+        private readonly IPropertyService _prop;
 
-        public ModifyDocumentCommand(IDocumentsDbProcess documentDb, IAdminService admin)
+        public ModifyDocumentCommand(IDocumentsDbProcess documentDb, IAdminService admin, IPropertyService prop)
         {
             _documentDb = documentDb;
             _admin = admin;
+            _prop = prop;
         }
 
         private ModifyDocument Model
@@ -78,9 +85,30 @@ namespace BL.Logic.DocumentCore.Commands
                 CommonDocumentUtilities.SetLastChange(_context, docAcc);
                 docAcc.AccessLevel = Model.AccessLevel;
             }
+
             CommonDocumentUtilities.VerifyDocument(_context, new FrontDocument(_document), null);    //TODO отвязаться от фронт-модели
 
             _documentDb.ModifyDocument(_context, _document);
+
+            try
+            {
+                if (Model.Properties?.Count() > 0)
+                {
+                    var propertiesModel = new InternalPropertyValues
+                    {
+                        Object = EnumObjects.Documents,
+                        RecordId = Model.Id,
+                        PropertyValues = Model.Properties.Select(x => new InternalPropertyValue
+                        {
+                            PropertyLinkId = x.PropertyLinkId,
+                            ValueString = x.Value
+                        }).ToList()
+                    };
+
+                    _prop.ExecuteAction(EnumPropertyAction.ModifyPropertyValues, _context, propertiesModel);
+                }
+            }
+            catch { }
             return _document.Id;
         }
 
