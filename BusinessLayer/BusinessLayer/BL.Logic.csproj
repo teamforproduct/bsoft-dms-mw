@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\BasePropertCommand.cs" />
     <Compile Include="Common\BaseDictionaryCommand.cs" />
     <Compile Include="Common\BaseDocumentCommand.cs" />
     <Compile Include="Common\CommonDocumentUtilities.cs" />
@@ -139,6 +140,18 @@
     <Compile Include="MailWorker\SSLMailSender.cs" />
     <Compile Include="Observers\AfterDocumentAddObserver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PropertyCore\Commands\AddPropertyValueCommand.cs" />
+    <Compile Include="PropertyCore\Commands\AddPropertyLinkCommand.cs" />
+    <Compile Include="PropertyCore\Commands\AddPropertyCommand.cs" />
+    <Compile Include="PropertyCore\Commands\DeletePropertyValueCommand.cs" />
+    <Compile Include="PropertyCore\Commands\DeletePropertyLinkCommand.cs" />
+    <Compile Include="PropertyCore\Commands\DeletePropertyCommand.cs" />
+    <Compile Include="PropertyCore\Commands\ModifyPropertyValueCommand.cs" />
+    <Compile Include="PropertyCore\Commands\ModifyPropertyLinkCommand.cs" />
+    <Compile Include="PropertyCore\Commands\ModifyPropertyCommand.cs" />
+    <Compile Include="PropertyCore\PropertyCommandFactory.cs" />
+    <Compile Include="PropertyCore\Interfaces\IPropertyService.cs" />
+    <Compile Include="PropertyCore\PropertyService.cs" />
     <Compile Include="Settings\Setting.cs" />
     <Compile Include="FileWorker\FileStore.cs" />
     <Compile Include="FileWorker\IFileStore.cs" />

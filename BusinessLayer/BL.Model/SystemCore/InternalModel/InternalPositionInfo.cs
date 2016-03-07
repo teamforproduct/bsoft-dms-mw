@@ -1,4 +1,4 @@
-﻿namespace BL.Model.SystemCore
+﻿namespace BL.Model.SystemCore.InternalModel
 {
     public class InternalPositionInfo
     {

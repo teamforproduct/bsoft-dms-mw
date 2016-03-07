@@ -1,4 +1,4 @@
-﻿using BL.Model.SystemCore;
+﻿using BL.Model.SystemCore.InternalModel;
 using System.Collections.Generic;
 
 namespace BL.Model.DictionaryCore.InternalModel

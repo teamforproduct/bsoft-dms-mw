@@ -5,8 +5,8 @@ using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.InternalModel;
-using BL.Model.SystemCore;
 using BL.Model.DocumentCore.IncomingModel;
+using BL.Model.SystemCore.InternalModel;
 
 namespace BL.Database.Documents.Interfaces
 {
