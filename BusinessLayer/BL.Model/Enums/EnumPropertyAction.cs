@@ -12,6 +12,7 @@
 
         AddPropertyValue,
         DeletePropertyValue,
-        ModifyPropertyValue
+        ModifyPropertyValue,
+        ModifyPropertyValues,
     }
 }

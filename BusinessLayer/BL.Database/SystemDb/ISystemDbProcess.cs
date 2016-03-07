@@ -50,7 +50,7 @@ namespace BL.Database.SystemDb
 
         #endregion PropertyLinks
 
-        #region PropertyLinks
+        #region PropertyValues
 
         InternalPropertyValue GetPropertyValue(IContext context, FilterPropertyValue filter);
 
@@ -58,10 +58,12 @@ namespace BL.Database.SystemDb
 
         int AddPropertyValue(IContext context, InternalPropertyValue model);
 
+        void ModifyPropertyValues(IContext context, InternalPropertyValues model);
+
         void UpdatePropertyValue(IContext context, InternalPropertyValue model);
 
         void DeletePropertyValue(IContext context, InternalPropertyValue model);
 
-        #endregion PropertyLinks
+        #endregion PropertyValues
     }
 }

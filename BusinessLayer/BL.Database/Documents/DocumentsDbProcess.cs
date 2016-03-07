@@ -16,6 +16,7 @@ using BL.Model.Exception;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DictionaryCore.FilterModel;
+using BL.Model.SystemCore.Filters;
 
 namespace BL.Database.Documents
 {
@@ -421,6 +422,8 @@ namespace BL.Database.Documents
                 doc.DocumentWorkGroup = CommonQueries.GetDocumentWorkGroup(dbContext, new FilterDictionaryPosition { DocumentId = docIds });
 
                 doc.DocumentSubscriptions = CommonQueries.GetDocumentSubscriptions(dbContext, new FilterDocumentSubscription { DocumentId = docIds });
+
+                doc.PropertyValues = CommonQueries.GetPropertyValues(dbContext, new FilterPropertyValue { RecordId = docIds, Object = new List<EnumObjects> { EnumObjects.Documents } });
 
                 return doc;
             }

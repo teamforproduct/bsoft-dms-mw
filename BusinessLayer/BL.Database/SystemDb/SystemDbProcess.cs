@@ -9,6 +9,8 @@ using BL.Model.Enums;
 using BL.Model.SystemCore.InternalModel;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.FrontModel;
+using BL.Model.DocumentCore.InternalModel;
+using BL.Model.SystemCore.IncomingModel;
 
 namespace BL.Database.SystemDb
 {
@@ -457,7 +459,7 @@ namespace BL.Database.SystemDb
 
         #endregion PropertyLinks
 
-        #region PropertyLinks
+        #region PropertyValues
 
         public InternalPropertyValue GetPropertyValue(IContext context, FilterPropertyValue filter)
         {
@@ -500,9 +502,7 @@ namespace BL.Database.SystemDb
                     Id = x.Id,
                     PropertyLinkId = x.PropertyLinkId,
                     RecordId = x.RecordId,
-                    ValueString = x.ValueString,
-                    ValueDate = x.ValueDate,
-                    ValueNumeric = x.ValueNumeric,
+                    Value= x.ValueString
                 }).ToList();
             }
         }
@@ -526,6 +526,79 @@ namespace BL.Database.SystemDb
                 dbContext.SaveChanges();
                 model.Id = item.Id;
                 return item.Id;
+            }
+        }
+
+        public void ModifyPropertyValues(IContext context, InternalPropertyValues model)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var propertyValues = dbContext.PropertyValuesSet.
+                    Where(x => x.PropertyLink.ObjectId == (int)model.Object && x.RecordId == model.RecordId)
+                    .Select(x=> new { x.Id, x.PropertyLinkId }).ToList();
+
+                var groupJoinItems = propertyValues
+                   .GroupJoin(model.PropertyValues,
+                       x => x.PropertyLinkId,
+                       y => y.PropertyLinkId,
+                       (x, y) => new { propertyValueId = x.Id, values = y })
+                   .ToList();
+
+                #region modify
+                var modifyItems = groupJoinItems
+                    .Where(x=>x.values.Count()>0)
+                    .Select(x=>new { x.propertyValueId, value = x.values.First() })
+                    .Select(x => new PropertyValues
+                    {
+                        Id = x.propertyValueId,
+                        ValueString = x.value.ValueString,
+                        ValueDate = x.value.ValueDate,
+                        ValueNumeric = x.value.ValueNumeric,
+                        LastChangeDate = x.value.LastChangeDate,
+                        LastChangeUserId = x.value.LastChangeUserId,
+                    });
+
+                foreach(var item in modifyItems)
+                {
+                    dbContext.PropertyValuesSet.Attach(item);
+                    var entry = dbContext.Entry(item);
+                    entry.Property(x => x.ValueString).IsModified = true;
+                    entry.Property(x => x.ValueDate).IsModified = true;
+                    entry.Property(x => x.ValueNumeric).IsModified = true;
+                    entry.Property(x => x.LastChangeDate).IsModified = true;
+                    entry.Property(x => x.LastChangeUserId).IsModified = true;
+                }
+
+                #endregion
+
+                #region add
+
+                var newItems = model.PropertyValues
+                    .Where(x => !propertyValues.Select(y => y.PropertyLinkId).Contains(x.PropertyLinkId))
+                    .Select(x => new PropertyValues
+                    {
+                        PropertyLinkId = x.PropertyLinkId,
+                        RecordId = model.RecordId,
+                        ValueString = x.ValueString,
+                        ValueDate = x.ValueDate,
+                        ValueNumeric = x.ValueNumeric,
+                        LastChangeDate = x.LastChangeDate,
+                        LastChangeUserId = x.LastChangeUserId,
+                    }).ToList();
+
+                dbContext.PropertyValuesSet.AddRange(newItems);
+
+                #endregion
+
+                #region delete
+                foreach (var item in groupJoinItems.Where(x => x.values.Count() == 0).Select(x=>x.propertyValueId))
+                {
+                    var itemAtt = dbContext.PropertyValuesSet.Attach(new PropertyValues { Id = item });
+                    dbContext.Entry(itemAtt).State = System.Data.Entity.EntityState.Deleted;
+                }
+                #endregion
+
+                dbContext.SaveChanges();
             }
         }
 
@@ -565,6 +638,6 @@ namespace BL.Database.SystemDb
             }
         }
 
-        #endregion PropertyLinks
+        #endregion PropertyValues
     }
 }

@@ -140,6 +140,7 @@
     <Compile Include="MailWorker\SSLMailSender.cs" />
     <Compile Include="Observers\AfterDocumentAddObserver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PropertyCore\Commands\ModifyPropertyValuesCommand.cs" />
     <Compile Include="PropertyCore\Commands\AddPropertyValueCommand.cs" />
     <Compile Include="PropertyCore\Commands\AddPropertyLinkCommand.cs" />
     <Compile Include="PropertyCore\Commands\AddPropertyCommand.cs" />
