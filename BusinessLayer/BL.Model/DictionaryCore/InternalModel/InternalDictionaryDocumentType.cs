@@ -13,5 +13,6 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// Название типа документа. Отображается в документе
         /// </summary>
         public string Name { get; set; }
+        public int IsActive { get; set; }
     }
 }

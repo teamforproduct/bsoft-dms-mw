@@ -16,5 +16,9 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// Название типа документа. Отображается в документе
         /// </summary>
         public string Name { get; set; }
+        /// <summary>
+        /// Признак активности
+        /// </summary>
+        public int IsActive { get; set; }
     }
 }

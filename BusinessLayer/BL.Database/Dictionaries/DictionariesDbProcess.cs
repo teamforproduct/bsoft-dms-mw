@@ -385,7 +385,8 @@ namespace BL.Database.Dictionaries
                     Id = docType.Id,
                     LastChangeDate = docType.LastChangeDate,
                     LastChangeUserId = docType.LastChangeUserId,
-                    Name = docType.Name
+                    Name = docType.Name,
+                    IsActive= docType.IsActive
                 };
                 dbContext.DictionaryDocumentTypesSet.Attach(ddt);
                 var entity = dbContext.Entry(ddt);
@@ -393,6 +394,7 @@ namespace BL.Database.Dictionaries
                 entity.Property(x => x.Name).IsModified = true;
                 entity.Property(x => x.LastChangeDate).IsModified = true;
                 entity.Property(x => x.LastChangeUserId).IsModified = true;
+                entity.Property(x => x.IsActive).IsModified = true;
                 dbContext.SaveChanges();
             }
         }
