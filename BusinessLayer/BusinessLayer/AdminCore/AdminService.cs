@@ -105,9 +105,14 @@ namespace BL.Logic.AdminCore
 
         }
 
-        public bool VerifyAccess(IContext context, EnumDocumentActions action, bool isThrowExeception = true)
+        public bool VerifyAccess(IContext context, EnumDocumentActions action, bool isPositionFromContext = true, bool isThrowExeception = true)
         {
-            return VerifyAccess(context, new VerifyAccess { DocumentActionId = (int)action }, isThrowExeception);
+            return VerifyAccess(context, new VerifyAccess { DocumentActionId = (int)action, IsPositionFromContext = isPositionFromContext }, isThrowExeception);
+        }
+
+        public bool VerifyAccess(IContext context, EnumDictionaryAction action, bool isPositionFromContext = true, bool isThrowExeception = true)
+        {
+            return VerifyAccess(context, new VerifyAccess { DocumentActionId = (int)action, IsPositionFromContext = isPositionFromContext }, isThrowExeception);
         }
 
         public bool VerifyAccess(IContext context, EnumDictionaryAction action, bool isThrowExeception = true)
