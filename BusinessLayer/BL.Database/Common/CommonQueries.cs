@@ -18,6 +18,55 @@ namespace BL.Database.Common
 {
     internal static class CommonQueries
     {
+        public static IQueryable<FrontDocumentQuery> GetFrontDocumentQuery(DmsContext dbContext, IQueryable<FrontDocumentAccess> userAccesses)
+        {
+            var qry = from dc in dbContext.DocumentsSet
+                      //join acc in userAccesses on dc.Id equals acc.DocumentId
+                      join tmpl in dbContext.TemplateDocumentsSet on dc.TemplateDocumentId equals tmpl.Id
+                      join ddir in dbContext.DictionaryDocumentDirectionsSet on tmpl.DocumentDirectionId equals ddir.Id
+                      join doctp in dbContext.DictionaryDocumentTypesSet on tmpl.DocumentTypeId equals doctp.Id
+                      //join acl in dbContext.AdminAccessLevelsSet on acc.AccessLevelId equals acl.Id
+                      join executor in dbContext.DictionaryPositionsSet on dc.ExecutorPositionId equals executor.Id
+
+                      join ea in dbContext.DictionaryAgentsSet on executor.ExecutorAgentId equals ea.Id into ea
+                      from exAg in ea.DefaultIfEmpty()
+
+                      join z in dbContext.DictionaryDocumentSubjectsSet on dc.DocumentSubjectId equals z.Id into eg
+                      from docsubj in eg.DefaultIfEmpty()
+
+                      join g in dbContext.DictionaryRegistrationJournalsSet on dc.RegistrationJournalId equals g.Id into
+                          egg
+                      from regj in egg.DefaultIfEmpty()
+
+                      join ag in dbContext.DictionaryAgentsSet on dc.SenderAgentId equals ag.Id into ag
+                      from sendAg in ag.DefaultIfEmpty()
+
+                      join ap in dbContext.DictionaryAgentPersonsSet on dc.SenderAgentPersonId equals ap.Id into ap
+                      from sendAp in ap.DefaultIfEmpty()
+
+                      where userAccesses.Select(x=>x.DocumentId).Contains(dc.Id)
+
+                      select new FrontDocumentQuery
+                      {
+                          Doc = dc,
+                          //Acc = acc,
+                          Templ = tmpl,
+                          DirName = ddir.Name,
+                          //AccLevName = acl.Name,
+                          SubjName = docsubj.Name,
+                          DocTypeName = doctp.Name,
+                          RegistrationJournalName = regj.Name,
+                          RegistrationJournalNumerationPrefixFormula = regj.NumerationPrefixFormula,
+                          RegistrationJournalPrefixFormula = regj.PrefixFormula,
+                          RegistrationJournalSuffixFormula = regj.SuffixFormula,
+                          ExecutorPosName = executor.Name,
+                          ExecutorAgentName = exAg.Name,
+                          SenderAgentname = sendAg.Name,
+                          SenderPersonName = sendAp.FullName
+                      };
+            return qry;
+        }
+
         public static IQueryable<DocumentQuery> GetDocumentQuery(DmsContext dbContext)
         {
             var qry = from dc in dbContext.DocumentsSet
@@ -146,15 +195,11 @@ namespace BL.Database.Common
                     }).ToList();
         }
 
-        public static FrontDocumentAccess GetDocumentAccess(IContext ctx, DmsContext dbContext, int documentId)
+        public static IQueryable<FrontDocumentAccess> GetDocumentAccesses(IContext ctx, DmsContext dbContext)
         {
-
-            var acc =
-                dbContext.DocumentAccessesSet.FirstOrDefault(
-                    x => x.DocumentId == documentId && x.PositionId == ctx.CurrentPositionId);
-            if (acc != null)
-            {
-                return new FrontDocumentAccess
+            return 
+                dbContext.DocumentAccessesSet.Where(x => ctx.CurrentPositionsIdList.Contains(x.PositionId ))
+                .Select(acc=> new FrontDocumentAccess
                 {
                     LastChangeDate = acc.LastChangeDate,
                     LastChangeUserId = acc.LastChangeUserId,
@@ -165,10 +210,7 @@ namespace BL.Database.Common
                     IsFavourite = acc.IsFavourite,
                     AccessLevel = (EnumDocumentAccesses)acc.AccessLevelId,
                     AccessLevelName = acc.AccessLevel.Name
-                };
-            }
-
-            return null;
+                });
         }
 
         public static IEnumerable<DocumentAccesses> GetDbDocumentAccesses(DmsContext dbContext, IEnumerable<InternalDocumentAccess> docAccesses, int documentId)
