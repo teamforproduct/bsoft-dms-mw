@@ -24,6 +24,12 @@ namespace BL.Logic.DictionaryCore.Interfaces
         IEnumerable<BaseDictionaryAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter);
         #endregion DictionaryAgentPersons
 
+        #region DictionaryAddressTypes
+        FrontDictionaryAddressType GetDictionaryAddressType(IContext context, int id);
+
+        IEnumerable<FrontDictionaryAddressType> GetDictionaryAddressTypes(IContext context, FilterDictionaryAddressType filter);
+        #endregion
+
         #region DictionaryCompanies
         BaseDictionaryCompany GetDictionaryCompany(IContext context, int id);
 

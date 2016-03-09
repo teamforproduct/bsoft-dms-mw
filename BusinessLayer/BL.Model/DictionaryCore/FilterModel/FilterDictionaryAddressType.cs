@@ -2,9 +2,9 @@
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
-    public class FilterDictionaryDocumentType
+    public class FilterDictionaryAddressType
     {
-        public List<int> DocumentTypeId { get; set; }
+        public List<int> AddressTypeId { get; set; }
         public string Name { get; set; }
         public int IsActive { get; set; }
     }

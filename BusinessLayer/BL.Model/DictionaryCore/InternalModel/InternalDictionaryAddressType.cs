@@ -2,7 +2,7 @@
 
 namespace BL.Model.DictionaryCore.InternalModel
 {
-    public class InternalDictionaryDocumentType :  LastChangeInfo
+    public class InternalDictionaryAddressType : LastChangeInfo
     {
         /// <summary>
         /// ID

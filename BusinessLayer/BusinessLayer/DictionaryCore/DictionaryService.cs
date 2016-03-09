@@ -58,6 +58,22 @@ namespace BL.Logic.DictionaryCore
         }
         #endregion DictionaryAgentPersons
 
+        #region DictionaryAddressTypes
+
+        public FrontDictionaryAddressType GetDictionaryAddressType(IContext context, int id)
+        {
+            return _dictDb.GetDictionaryAddressTypes(context, new FilterDictionaryAddressType { AddressTypeId = new List<int> { id } }).FirstOrDefault();
+        }
+
+        public IEnumerable<FrontDictionaryAddressType> GetDictionaryAddressTypes(IContext context, FilterDictionaryAddressType filter)
+        {
+            return _dictDb.GetDictionaryAddressTypes(context, filter);
+        }
+
+
+        #endregion
+
+
         #region DictionaryCompanies
         public BaseDictionaryCompany GetDictionaryCompany(IContext context, int id)
         {

@@ -172,6 +172,122 @@ namespace BL.Database.Dictionaries
         }
         #endregion DictionaryAgentPersons
 
+        #region DictionaryAddressTypes
+
+        public void UpdateDictionaryAddressType(IContext context, InternalDictionaryAddressType addrType)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var ddt = new DictionaryAddressTypes
+                {
+                    Id = addrType.Id,
+                    LastChangeDate = addrType.LastChangeDate,
+                    LastChangeUserId = addrType.LastChangeUserId,
+                    Name = addrType.Name,
+                    IsActive = addrType.IsActive
+                };
+                dbContext.DictionaryAddressTypesSet.Attach(ddt);
+                var entity = dbContext.Entry(ddt);
+
+                entity.Property(x => x.Name).IsModified = true;
+                entity.Property(x => x.LastChangeDate).IsModified = true;
+                entity.Property(x => x.LastChangeUserId).IsModified = true;
+                entity.Property(x => x.IsActive).IsModified = true;
+                dbContext.SaveChanges();
+            }
+        }
+
+
+        public void DeleteDictionaryAddressType(IContext context, InternalDictionaryAddressType addrType)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+
+                var ddt = dbContext.DictionaryAddressTypesSet.FirstOrDefault(x => x.Id == addrType.Id);
+                if (ddt != null)
+                {
+                    dbContext.DictionaryAddressTypesSet.Remove(ddt);
+                    dbContext.SaveChanges();
+                }
+            }
+        }
+
+        public int AddDictionaryAddressType(IContext context, InternalDictionaryAddressType addrType)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var ddt = new DictionaryAddressTypes
+                {
+                    Name = addrType.Name,
+                    IsActive=addrType.IsActive,
+                    LastChangeDate = addrType.LastChangeDate,
+                    LastChangeUserId = addrType.LastChangeUserId
+                };
+                dbContext.DictionaryAddressTypesSet.Add(ddt);
+                dbContext.SaveChanges();
+                addrType.Id = ddt.Id;
+                return ddt.Id;
+            }
+        }
+
+        public InternalDictionaryAddressType GetInternalDictionaryAddressType(IContext context, FilterDictionaryAddressType filter)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var qry = dbContext.DictionaryDocumentTypesSet.AsQueryable();
+
+                if (filter.AddressTypeId?.Count > 0)
+                {
+                    qry = qry.Where(x => filter.AddressTypeId.Contains(x.Id));
+                }
+
+                if (!String.IsNullOrEmpty(filter.Name))
+                {
+                    qry = qry.Where(x => filter.Name == x.Name);
+                }
+
+                if (!String.IsNullOrEmpty(filter.Name))
+                {
+                    qry = qry.Where(x => filter.IsActive == x.IsActive);
+                }
+
+                return qry.Select(x => new InternalDictionaryAddressType
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    IsActive=x.IsActive,
+                    LastChangeDate = x.LastChangeDate,
+                    LastChangeUserId = x.LastChangeUserId
+                }).FirstOrDefault();
+            }
+        }
+
+        public IEnumerable<FrontDictionaryAddressType> GetDictionaryAddressTypes(IContext context, FilterDictionaryAddressType filter)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var qry = dbContext.DictionaryAddressTypesSet.AsQueryable();
+
+                if (filter.AddressTypeId?.Count > 0)
+                {
+                    qry = qry.Where(x => filter.AddressTypeId.Contains(x.Id));
+                }
+
+                if (!String.IsNullOrEmpty(filter.Name))
+                {
+                    qry = qry.Where(x => filter.IsActive == x.IsActive);
+                }
+
+                return qry.Select(x => new FrontDictionaryAddressType
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    IsActive=x.IsActive
+                }).ToList();
+            }
+        }
+        #endregion
+
         #region DictionaryCompanies
         public BaseDictionaryCompany GetDictionaryCompany(IContext context, int id)
         {
@@ -421,6 +537,7 @@ namespace BL.Database.Dictionaries
                 var ddt = new DictionaryDocumentTypes
                 {
                     Name = docType.Name,
+                    IsActive=docType.IsActive,
                     LastChangeDate = docType.LastChangeDate,
                     LastChangeUserId = docType.LastChangeUserId
                 };
@@ -447,10 +564,16 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(x => filter.Name == x.Name);
                 }
 
+                if (!String.IsNullOrEmpty(filter.Name))
+                {
+                    qry = qry.Where(x => filter.IsActive == x.IsActive);
+                }
+
                 return qry.Select(x => new InternalDictionaryDocumentType
                 {
                     Id = x.Id,
                     Name = x.Name,
+                    IsActive=x.IsActive,
                     LastChangeDate = x.LastChangeDate,
                     LastChangeUserId = x.LastChangeUserId
                 }).FirstOrDefault();
@@ -468,10 +591,16 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(x => filter.DocumentTypeId.Contains(x.Id));
                 }
 
+                if (!String.IsNullOrEmpty(filter.Name))
+                {
+                    qry = qry.Where(x => filter.IsActive == x.IsActive);
+                }
+
                 return qry.Select(x => new FrontDictionaryDocumentType
                 {
                     Id = x.Id,
                     Name = x.Name,
+                    IsActive=x.IsActive
                 }).ToList();
             }
         }
