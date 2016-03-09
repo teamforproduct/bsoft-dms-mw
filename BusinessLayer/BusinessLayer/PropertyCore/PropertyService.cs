@@ -66,18 +66,5 @@ namespace BL.Logic.PropertyCore
         }
 
         #endregion PropertyLinks
-
-        #region PropertyValues
-        public FrontPropertyValue GetPropertyValue(IContext context, int id)
-        {
-            return _systDb.GetPropertyValues(context, new FilterPropertyValue { PropertyValuesId = new List<int> { id } }).FirstOrDefault();
-        }
-
-        public IEnumerable<FrontPropertyValue> GetPropertyValues(IContext context, FilterPropertyValue filter)
-        {
-            return _systDb.GetPropertyValues(context, filter);
-        }
-
-        #endregion PropertyValues
     }
 }

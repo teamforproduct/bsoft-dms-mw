@@ -1,4 +1,5 @@
 ﻿using BL.Model.Common;
+using BL.Model.Enums;
 
 namespace BL.Model.SystemCore.InternalModel
 {
@@ -6,12 +7,10 @@ namespace BL.Model.SystemCore.InternalModel
     {
         public int Id { get; set; }
         public int PropertyId { get; set; }
-        public int ObjectId { get; set; }
+        public EnumObjects Object { get; set; }
         public string Filers { get; set; }
         public bool IsMandatory { get; set; }
         
         public InternalProperty Property { get; set; }
-        
-        public InternalSystemObject Object { get; set; }
     }
 }

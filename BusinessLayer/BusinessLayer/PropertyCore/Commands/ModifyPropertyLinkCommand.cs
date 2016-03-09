@@ -48,7 +48,7 @@ namespace BL.Logic.PropertyCore.Commands
                 {
                     Id = Model.Id,
                     PropertyId = Model.PropertyId,
-                    ObjectId = Model.ObjectId,
+                    Object = Model.Object,
                     Filers = Model.Filers,
                     IsMandatory = Model.IsMandatory,
                 };

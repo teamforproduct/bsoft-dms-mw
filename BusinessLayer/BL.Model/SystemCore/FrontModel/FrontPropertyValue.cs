@@ -2,7 +2,7 @@
 
 namespace BL.Model.SystemCore.FrontModel
 {
-    public class FrontPropertyValue : ModifyPropertyValue
+    public class FrontPropertyValue
     {
         public int Id { get; set; }
 
