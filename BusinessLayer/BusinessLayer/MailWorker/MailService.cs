@@ -4,14 +4,14 @@ using BL.CrossCutting.Interfaces;
 using BL.Logic.DependencyInjection;
 using BL.Model.Database;
 using BL.Model.Enums;
-using BL.Model.SystemCore;
 using Ninject;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BL.CrossCutting.Context;
-
-
+using BL.Database.SystemDb;
+using BL.Logic.Common;
+using BL.Model.SystemCore.InternalModel;
 
 namespace BL.Logic.MailWorker
 {
@@ -25,106 +25,118 @@ namespace BL.Logic.MailWorker
         string _MAIL_SERVER_SYSTEMMAIL = "MAILSERVER_SYSTEMMAIL";
         string _MAIL_TIMEOUT_MIN = "MAILSERVER_TIMEOUT_MINUTE";
 
-        private Dictionary<Timer, SendMailData> _serverSettings; 
+        private readonly ISystemDbProcess _sysDb;
         private readonly ISettings _settings;
         private readonly ILogger _logger;
         private object _lockObject;
-        List<AdminContext> _serverContext;
-        Task _checkingThread;
-        List<Timer> _timers;
-
-        private void AddMailData(Timer key, SendMailData data)
+        private readonly Dictionary<string, AdminContext> _serverContext;
+        private Task _checkingThread;
+        private readonly List<Timer> _timers;
+        
+        public MailService(ISystemDbProcess sysDb, ISettings settings, ILogger logger)
         {
-            lock (_lockObject)
-            {
-                if (_serverSettings.ContainsKey(key))
-                {
-                    _serverSettings[key] = data;
-                }
-                else
-                {
-                    _serverSettings.Add(key, data);
-                }
-            }
+            _sysDb = sysDb;
+            _settings = settings;
+            _logger = logger;
+            _lockObject = new object();
+            _serverContext = new Dictionary<string, AdminContext>();
+            _timers = new List<Timer>();
         }
 
-        private SendMailData GetMailData(Timer key)
+        private AdminContext GetAdminContext(string key)
         {
-            SendMailData res = null;
+            AdminContext res = null;
             lock (_lockObject)
             {
-                if (_serverSettings.ContainsKey(key))
-                {
-                    res = _serverSettings[key];
-                }
+                if (_serverContext.ContainsKey(key))
+                    res = _serverContext[key];
             }
             return res;
         }
 
-        public MailService(ISettings settings, ILogger logger)
-        {
-            _settings = settings;
-            _logger = logger;
-            _serverSettings = new Dictionary<Timer, SendMailData>();
-            _timers = new List<Timer>();
-        }
-
         public void Initialize(IEnumerable<DatabaseModel> dbList)
         {
-            _serverContext = dbList.Select(x => new AdminContext(x)).ToList();
+            dbList.Select(x => new AdminContext(x)).ToList().ForEach(
+                x=> _serverContext.Add(CommonSystemUtilities.GetServerKey(x),x));
+            
             _checkingThread = Task.Factory.StartNew(InitializeServers);
         }
 
         private void InitializeServers()
         {
-            foreach (var ctx in _serverContext)
+            foreach (var keyValuePair in _serverContext)
             {
                 try
                 {
-                    var checkInterval = _settings.GetSetting<int>(ctx, _MAIL_TIMEOUT_MIN);
+                    var checkInterval = _settings.GetSetting<int>(keyValuePair.Value, _MAIL_TIMEOUT_MIN);
 
-                    var msSetting = new SendMailData
+                    var msSetting = new InternalSendMailServerParameters
                     {
-                        ServerType = (MailServerType)_settings.GetSetting<int>(ctx, _MAIL_SERVER_TYPE),
-                        FromAddress = _settings.GetSetting<string>(ctx, _MAIL_SERVER_SYSTEMMAIL),
-                        Login = _settings.GetSetting<string>(ctx, _MAIL_SERVER_LOGIN),
-                        Pass = _settings.GetSetting<string>(ctx, _MAIL_SERVER_PASS),
-                        Server = _settings.GetSetting<string>(ctx, _MAIL_SERVER_NAME),
-                        Port = _settings.GetSetting<int>(ctx, _MAIL_SERVER_PORT)
+                        DatabaseKey = keyValuePair.Key,
+                        ServerType = (MailServerType)_settings.GetSetting<int>(keyValuePair.Value, _MAIL_SERVER_TYPE),
+                        FromAddress = _settings.GetSetting<string>(keyValuePair.Value, _MAIL_SERVER_SYSTEMMAIL),
+                        Login = _settings.GetSetting<string>(keyValuePair.Value, _MAIL_SERVER_LOGIN),
+                        Pass = _settings.GetSetting<string>(keyValuePair.Value, _MAIL_SERVER_PASS),
+                        Server = _settings.GetSetting<string>(keyValuePair.Value, _MAIL_SERVER_NAME),
+                        Port = _settings.GetSetting<int>(keyValuePair.Value, _MAIL_SERVER_PORT)
                     };
 
                     var tmr = new Timer(CheckForNewMessages, msSetting, 1000, checkInterval*1000);
-                    //AddMailData(key, msSetting);
                     _timers.Add(tmr);
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error(ctx, "Could not start MeilSender for server", ex);
+                    _logger.Error(keyValuePair.Value, "Could not start MeilSender for server", ex);
                 }
             }
         }
-
-
-
+        
         private void CheckForNewMessages(object state)
         {
-            var md = state as SendMailData;
-            if (md != null)
+            
+            var md = state as InternalSendMailServerParameters;
+
+            if (md == null) return;
+
+            var ctx = GetAdminContext(md.DatabaseKey);
+
+            if (ctx == null) return;
+            try
             {
-                SendMessage(md);
+                var processed = new InternalMailProcessed();
+                var newEvents = _sysDb.GetNewActionsForMailing(ctx);
+                foreach (var evt in newEvents)
+                {
+                    var mailParam = new InternalSendMailParameters(md);
+                    //TODO make correct subject and body!
+                    mailParam.ToAddress = evt.DestinationAgentEmail;
+                    mailParam.Subject = "Automatic notification";
+                    mailParam.Body = "You have new event: " + evt.Description;
+                    SendMessage(ctx, mailParam);
+                    processed.ProcessedEventIds.Add(evt.EventId);
+                }
+                _sysDb.MarkActionsLikeMailSended(ctx, processed);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ctx, "Error while processing new events and sending EMails", ex);
             }
         }
 
 
-        private void SendMessage(SendMailData msSetting)
+        private void SendMessage(IContext ctx, InternalSendMailParameters msSetting)
         {
-
             var sender = DmsResolver.Current.Kernel.Get<IMailSender>(msSetting.ServerType.ToString());
-            if (sender != null)
-            {
-                var sendData = new SendMailData(msSetting);
 
-                //sender.SendMail(sendData);
+            if (sender == null) return;
+
+            try
+            {
+                sender.SendMail(null, msSetting);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ctx, "Cannot send email!", msSetting, ex);
             }
         }
 

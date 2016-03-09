@@ -49,5 +49,11 @@ namespace BL.Database.SystemDb
         void DeletePropertyLink(IContext context, InternalPropertyLink model);
 
         #endregion PropertyLinks
+
+        #region Mailing
+
+        IEnumerable<InternalDataForMail> GetNewActionsForMailing(IContext ctx);
+        void MarkActionsLikeMailSended(IContext ctx, InternalMailProcessed mailProcessed);
+        #endregion
     }
 }

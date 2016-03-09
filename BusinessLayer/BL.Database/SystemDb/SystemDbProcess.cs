@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
 using BL.Database.DatabaseContext;
+using BL.Database.DBModel.Document;
 using BL.Database.DBModel.System;
 using BL.Model.SystemCore;
 using BL.Model.Enums;
@@ -22,6 +24,7 @@ namespace BL.Database.SystemDb
             _helper = helper;
         }
 
+        #region Log
         public int AddLog(IContext ctx, LogInfo log)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
@@ -40,7 +43,9 @@ namespace BL.Database.SystemDb
                 return nlog.Id;
             }
         }
+        #endregion
 
+        #region Settings
         public int AddSetting(IContext ctx, string name, string value, int? agentId = null)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
@@ -83,6 +88,7 @@ namespace BL.Database.SystemDb
                         .FirstOrDefault();
             }
         }
+        #endregion
 
         public IEnumerable<InternalSystemAction> GetSystemActions(IContext ctx, FilterSystemAction filter)
         {
@@ -556,5 +562,57 @@ namespace BL.Database.SystemDb
             }
         }
         #endregion PropertyValues
+
+        #region Mailing
+
+        public IEnumerable<InternalDataForMail> GetNewActionsForMailing(IContext ctx)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            {
+                return dbContext.DocumentEventsSet
+                    .Where(x => (x.SendDate == null || x.SendDate < x.LastChangeDate)
+                    && ((x.TargetAgentId != null && x.SourceAgentId != x.TargetAgentId)
+                    || (x.TargetPositionId != null && x.SourcePositionId != x.TargetPositionId)))
+                    .Select(x => new InternalDataForMail
+                    {
+                        EventId = x.Id,
+                        Date = x.Date,
+                        Description = x.Description,
+                        DocumentId = x.DocumentId,
+                        DocumentName = x.Document.Description,
+                        EventType = (EnumEventTypes)x.EventTypeId,
+                        DestinationAgentId = x.TargetAgentId ?? 0,
+                        DestinationAgentName = (x.TargetAgent == null)?"":x.TargetAgent.Name,
+                        DestinationPositionId = x.TargetPositionId??0,
+                        DestinationPositionName = (x.TargetPosition == null)?"": x.TargetPosition.Name,
+                        SourceAgentId = x.SourceAgentId,
+                        SourceAgentName = x.SourceAgent.Name,
+                        SourcePositiontId = x.SourcePositionId??0,
+                        SourcePositionName = x.SourcePosition == null?"":x.SourcePosition.Name,
+                        WasUpdated = !(x.SendDate == null),
+                        DestinationAgentEmail = "sanyok.malinin@gmail.com"
+                    }).ToList();
+            }
+        }
+
+        public void MarkActionsLikeMailSended(IContext ctx, InternalMailProcessed mailProcessed)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            {
+                //TODO будет ли это работать?? 
+                var upd = new List<DbEntityEntry>();
+                mailProcessed.ProcessedEventIds.ForEach(x =>
+                {
+                    var evt = new DocumentEvents {Id = x, SendDate = mailProcessed.ProcessedDate};
+                    dbContext.DocumentEventsSet.Attach(evt);
+                    var entry = dbContext.Entry(evt);
+                    entry.Property(p => p.SendDate).IsModified = true;
+                    upd.Add(entry);
+                });
+                dbContext.SaveChanges();
+            }
+        }
+
+        #endregion
     }
 }
