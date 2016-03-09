@@ -82,6 +82,10 @@ namespace BL.Model.DocumentCore.FrontModel
                 AccessLevel = model.AccessLevel;
             }
         }
+        /// <summary>
+        /// ИД Документа
+        /// </summary>
+        public int Id { get; set; }
 
         public string TemplateDocumentName { get; set; }
 

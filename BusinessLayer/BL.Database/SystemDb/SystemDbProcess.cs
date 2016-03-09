@@ -220,6 +220,7 @@ namespace BL.Database.SystemDb
 
                 return qry.Select(x => new BaseSystemUIElement
                 {
+                    PropertyLinkId = x.Id,
                     ObjectCode = x.Object.Code,
                     ActionCode = x.Property.Code,
                     Code = x.Property.Code,
