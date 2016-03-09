@@ -5,8 +5,8 @@ using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.InternalModel;
-using BL.Model.SystemCore;
 using BL.Model.DocumentCore.IncomingModel;
+using BL.Model.SystemCore.InternalModel;
 
 namespace BL.Database.Documents.Interfaces
 {
@@ -59,7 +59,7 @@ namespace BL.Database.Documents.Interfaces
         void ChangeDocumentSendListStage(IContext context, IEnumerable<InternalDocumentSendList> model);
 
         void ModifyDocumentTags(IContext context, InternalDocumentTag model);
-        void ChangeDocumentWait(IContext context, IEnumerable<InternalDocumentWait> waits);
+        void ChangeDocumentWait(IContext context, InternalDocumentWait wait);
         void SendBySendList(IContext context, InternalDocument document);
 
         List<int> AddSavedFilter(IContext context, IEnumerable<InternalDocumentSavedFilter> model);

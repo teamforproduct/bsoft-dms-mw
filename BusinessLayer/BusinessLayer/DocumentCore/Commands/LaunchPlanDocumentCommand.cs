@@ -70,6 +70,5 @@ namespace BL.Logic.DocumentCore.Commands
             return Model;
         }
 
-        public override EnumDocumentActions CommandType => EnumDocumentActions.LaunchPlan;
     }
 }

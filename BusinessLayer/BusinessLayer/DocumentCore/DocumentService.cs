@@ -14,6 +14,7 @@ using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.InternalModel;
+using BL.Model.SystemCore.Filters;
 
 namespace BL.Logic.DocumentCore
 {

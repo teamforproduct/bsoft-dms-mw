@@ -39,12 +39,15 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanBeDisplayed(int positionId)
         {
+            var markExecWaitId =
+                _document.Waits.Where(x => x.OnEvent.EventType == EnumEventTypes.MarkExecution).Select(x => x.ParentId).ToList();
             _actionRecords =
                 _document.Waits.Where(
                     x =>
                         x.OnEvent.TargetPositionId == positionId &&
                         x.OnEvent.TargetPositionId != x.OnEvent.SourcePositionId &&
                         x.OffEventId == null &&
+                        !markExecWaitId.Contains(x.Id) &&
                         CommonDocumentUtilities.PermissibleEventTypesForAction[CommandType].Contains(x.OnEvent.EventType))
                         .Select(x => new InternalActionRecord
                         {
@@ -62,6 +65,7 @@ namespace BL.Logic.DocumentCore.Commands
         {
             _document = _operationDb.ControlOffDocumentPrepare(_context, Model.EventId);
             _docWait = _document?.Waits.FirstOrDefault();
+            _operationDb.ControlOffMarkExecutionWaitPrepare(_context, _document);
             if (_docWait?.OnEvent?.TargetPositionId == null
                 || !CanBeDisplayed(_docWait.OnEvent.TargetPositionId.Value)
                 )
@@ -88,6 +92,5 @@ namespace BL.Logic.DocumentCore.Commands
         }
 
 
-        public override EnumDocumentActions CommandType => EnumDocumentActions.MarkExecution;
     }
 }

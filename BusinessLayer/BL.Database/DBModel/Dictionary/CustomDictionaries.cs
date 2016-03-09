@@ -13,6 +13,7 @@ namespace BL.Database.DBModel.Dictionary
         public int DictionaryTypeId { get; set; }
         public string Code { get; set; }
         public string Description { get; set; }
+        public bool IsActive { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
         [ForeignKey("DictionaryTypeId")]

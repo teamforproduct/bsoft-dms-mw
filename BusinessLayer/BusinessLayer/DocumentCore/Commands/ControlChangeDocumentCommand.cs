@@ -74,31 +74,29 @@ namespace BL.Logic.DocumentCore.Commands
         {
             var controlOn = new ControlOn(Model, _docWait.DocumentId, _docWait.OnEvent.Task);
             var newWait = CommonDocumentUtilities.GetNewDocumentWait(_context, controlOn);
+            newWait.Id = _docWait.Id;
 
-            var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, _docWait.DocumentId, EnumEventTypes.ControlChange, Model.Description, _docWait.OnEvent.Task, _docWait.OnEvent.TargetPositionId);
+            var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, _docWait.DocumentId, _docWait.OnEvent.EventType, Model.Description, _docWait.OnEvent.Task, _docWait.OnEvent.TargetPositionId);
             var oldEvent = _docWait.OnEvent;
 
             newEvent.Id = newWait.OnEventId = oldEvent.Id;
 
-            //newWait.OnEvent = newEvent;
-            newWait.ParentId = _docWait.Id;
+            newWait.OnEvent = newEvent;
 
+
+            newWait.ParentWait = _docWait;
+
+            _docWait.Id = 0;
             oldEvent.Id = _docWait.OnEventId = 0;
             _docWait.OffEventId = newEvent.Id;
-            _docWait.OffEvent = newEvent;
+           // _docWait.OffEvent = newEvent;
             CommonDocumentUtilities.SetLastChange(_context, _docWait);
 
-            var waits = new List<InternalDocumentWait> { newWait, _docWait };
-            //_docWait.OffEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, _docWait.DocumentId, EnumEventTypes.ControlChange, Model.Description, _docWait.OnEvent.Task, _docWait.OnEvent.TargetPositionId);
-            //CommonDocumentUtilities.SetLastChange(_context, _docWait);
-            //var controlOn = new ControlOn(Model, _docWait.DocumentId, _docWait.OnEvent.Task);
-            //var wait = CommonDocumentUtilities.GetNewDocumentWait(_context, controlOn);
-            //wait.ParentId = _docWait.Id;
-            //var waits = new List<InternalDocumentWait> { wait, _docWait};
-            _operationDb.ChangeDocumentWait(_context, waits);
+            //var waits = new List<InternalDocumentWait> { newWait };
+
+            _operationDb.ChangeDocumentWait(_context, newWait);
             return _docWait.DocumentId;
         }
 
-//        public override EnumDocumentActions CommandType => EnumDocumentActions.ControlChange;
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using BL.Model.DocumentCore.InternalModel;
 
-namespace BL.Model.SystemCore
+namespace BL.Model.SystemCore.InternalModel
 {
     public class InternalSystemAction
     {

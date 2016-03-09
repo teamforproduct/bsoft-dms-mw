@@ -10,13 +10,15 @@ using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.InternalModel;
-using BL.Model.SystemCore;
 using BL.Model.Enums;
 using BL.Model.DocumentCore.IncomingModel;
 using System.Data.Entity;
+using System.Transactions;
 using BL.CrossCutting.Helpers;
 using BL.Model.AdminCore;
 using BL.Model.DictionaryCore.InternalModel;
+using DocumentAccesses = BL.Database.DBModel.Document.DocumentAccesses;
+using BL.Model.SystemCore.InternalModel;
 
 namespace BL.Database.Documents
 {
@@ -72,6 +74,8 @@ namespace BL.Database.Documents
                                                         .Select(x => new InternalDocumentWait
                                                         {
                                                             Id = x.Id,
+                                                            OffEventId = x.OffEventId,
+                                                            ParentId = x.ParentId,
                                                             OnEvent = new InternalDocumentEvent
                                                             {
                                                                 Id = x.OnEvent.Id,
@@ -250,36 +254,64 @@ namespace BL.Database.Documents
             }
         }
 
-        public void ChangeDocumentWait(IContext ctx, IEnumerable<InternalDocumentWait> documentWaits)
+        public void ChangeDocumentWait(IContext ctx, InternalDocumentWait wait)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-
-                var documentWait = documentWaits.First(x => x.Id != 0);
-                var oldWait = new DocumentWaits
+                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
                 {
-                    Id = documentWait.Id,
-                    OffEventId = documentWait.OffEventId,
-                    LastChangeDate = documentWait.LastChangeDate,
-                    LastChangeUserId = documentWait.LastChangeUserId
-                };
-                dbContext.DocumentWaitsSet.Attach(oldWait);
-                oldWait.OnEvent = ModelConverter.GetDbDocumentEvent(documentWait.OnEvent);
-                var entry = dbContext.Entry(oldWait);
-                entry.Property(x => x.Id).IsModified = true;
-                entry.Property(x => x.OffEventId).IsModified = true;
-                entry.Property(x => x.LastChangeDate).IsModified = true;
-                entry.Property(x => x.LastChangeUserId).IsModified = true;
 
-                var modEvent = ModelConverter.GetDbDocumentEvent(documentWait.OffEvent);
-                modEvent.Id = documentWait.OffEventId.Value;
-                dbContext.DocumentEventsSet.Attach(modEvent);
-                dbContext.Entry(modEvent).State = EntityState.Modified;
+                    var waitParentDb = ModelConverter.GetDbDocumentWait(wait.ParentWait);
+                    dbContext.DocumentWaitsSet.Add(waitParentDb);
+                    dbContext.SaveChanges();
 
-                var newWait = ModelConverter.GetDbDocumentWait(documentWaits.First(x => x.Id == 0));
 
-                dbContext.DocumentWaitsSet.Add(newWait);
-                dbContext.SaveChanges();
+                    var eventDb = ModelConverter.GetDbDocumentEvent(wait.OnEvent);
+                    eventDb.Id = wait.OnEvent.Id;
+                    dbContext.DocumentEventsSet.Attach(eventDb);
+                    dbContext.Entry(eventDb).State = EntityState.Modified;
+                    dbContext.SaveChanges();
+
+                    wait.OnEvent = null;
+
+                    var waitDb = ModelConverter.GetDbDocumentWait(wait);
+                    waitDb.Id = wait.Id;
+                    waitDb.ParentId = waitParentDb.Id;
+                    waitDb.ParentWait = null;
+                    dbContext.DocumentWaitsSet.Attach(waitDb);
+                    dbContext.Entry(waitDb).State = EntityState.Modified;
+                    dbContext.SaveChanges();
+
+
+                    /*
+                    var documentWait = documentWaits.First(x => x.Id != 0);
+                    var oldWait = new DocumentWaits
+                    {
+                        Id = documentWait.Id,
+                        OffEventId = documentWait.OffEventId,
+                        LastChangeDate = documentWait.LastChangeDate,
+                        LastChangeUserId = documentWait.LastChangeUserId
+                    };
+                    dbContext.DocumentWaitsSet.Attach(oldWait);
+                    oldWait.OnEvent = ModelConverter.GetDbDocumentEvent(documentWait.OnEvent);
+                    var entry = dbContext.Entry(oldWait);
+                    entry.Property(x => x.Id).IsModified = true;
+                    entry.Property(x => x.OffEventId).IsModified = true;
+                    entry.Property(x => x.LastChangeDate).IsModified = true;
+                    entry.Property(x => x.LastChangeUserId).IsModified = true;
+
+                    var modEvent = ModelConverter.GetDbDocumentEvent(documentWait.OffEvent);
+                    modEvent.Id = documentWait.OffEventId.Value;
+                    dbContext.DocumentEventsSet.Attach(modEvent);
+                    dbContext.Entry(modEvent).State = EntityState.Modified;
+
+                    var newWait = ModelConverter.GetDbDocumentWait(documentWaits.First(x => x.Id == 0));
+
+                    dbContext.DocumentWaitsSet.Add(newWait);
+                    */
+
+                    transaction.Complete();
+                }
             }
         }
 
@@ -329,7 +361,7 @@ namespace BL.Database.Documents
                     var subscriptionDb = new DocumentSubscriptions
                     {
                         Id = subscription.Id,
-                        Description =  subscription.Description,
+                        Description = subscription.Description,
                         Hash = subscription.Hash,
                         LastChangeDate = subscription.LastChangeDate,
                         LastChangeUserId = subscription.LastChangeUserId
@@ -365,7 +397,11 @@ namespace BL.Database.Documents
                                         {
                                             Id = x.Id,
                                             DocumentId = x.DocumentId,
+                                            ParentId = x.ParentId,
+                                            OnEventId = x.OnEventId,
                                             OffEventId = x.OffEventId,
+                                            DueDate = x.DueDate,
+                                            AttentionDate = x.AttentionDate,
                                             OnEvent = new InternalDocumentEvent
                                             {
                                                 Id = x.OnEvent.Id,
@@ -381,8 +417,10 @@ namespace BL.Database.Documents
                                                 Date = x.OnEvent.Date,
                                                 LastChangeUserId = x.OnEvent.LastChangeUserId,
                                                 LastChangeDate = x.OnEvent.LastChangeDate,
+                                                SendDate = x.OnEvent.SendDate,
                                                 ReadDate = x.OnEvent.ReadDate,
                                                 ReadAgentId = x.OnEvent.ReadAgentId,
+
                                             }
                                         }
                                     }
@@ -453,7 +491,7 @@ namespace BL.Database.Documents
                     .Where(x => x.ParentId.HasValue && !x.OffEventId.HasValue && waitsId.Contains(x.ParentId.Value) && x.OnEvent.EventTypeId == (int)EnumEventTypes.MarkExecution)
                     .Select(x => new InternalDocumentWait
                     {
-                        Id = x.OnEvent.Id,
+                        Id = x.Id,
                         ParentId = x.ParentId,
                         DocumentId = x.OnEvent.DocumentId,
                         OnEvent = new InternalDocumentEvent
@@ -467,7 +505,7 @@ namespace BL.Database.Documents
                         }
                     }
                     ).ToList();
-                document.Waits.ToList().AddRange(waitRes);
+                ((List<InternalDocumentWait>)document.Waits).AddRange(waitRes);
             }
         }
 
@@ -625,54 +663,67 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-                var eventsDb = ModelConverter.GetDbDocumentEvents(document.Events);
-                if (document.Events?.Any() ?? false)
+                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
                 {
-                    dbContext.DocumentEventsSet.AddRange(eventsDb);
-                }
-
-                var sendList = document.SendLists.First();
-                var sendListDb = new DocumentSendLists
-                {
-                    Id = sendList.Id,
-                    LastChangeDate = sendList.LastChangeDate,
-                    LastChangeUserId = sendList.LastChangeUserId
-                };
-                dbContext.DocumentSendListsSet.Attach(sendListDb);
-                sendListDb.StartEvent = ModelConverter.GetDbDocumentEvent(sendList.StartEvent);
-                if (sendList.CloseEvent != null)
-                {
-                    sendListDb.CloseEvent = sendListDb.StartEvent;
-                }
-                var entry = dbContext.Entry(sendListDb);
-                entry.Property(x => x.Id).IsModified = true;
-                entry.Property(x => x.LastChangeDate).IsModified = true;
-                entry.Property(x => x.LastChangeUserId).IsModified = true;
-
-                dbContext.DocumentAccessesSet.AddRange(CommonQueries.GetDbDocumentAccesses(dbContext, document.Accesses, document.Id).ToList());
-
-                if (document.Waits?.Any() ?? false)
-                {
-                    var wait = document.Waits.First();
-                    var waitDb = ModelConverter.GetDbDocumentWait(wait);
-                    if (wait.OnEvent == sendList.StartEvent)
+                    var sendList = document.SendLists.First();
+                    var sendListDb = new DocumentSendLists
                     {
-                        waitDb.OnEvent = sendListDb.StartEvent;
-                    }
-                    dbContext.DocumentWaitsSet.Add(waitDb);
-                }
-
-                if (document.Subscriptions?.Any() ?? false)
-                {
-                    var subscription = document.Subscriptions.First();
-                    var subscriptionDb = ModelConverter.GetDbDocumentSubscription(subscription);
-                    if (subscription.SendEvent == sendList.StartEvent)
+                        Id = sendList.Id,
+                        LastChangeDate = sendList.LastChangeDate,
+                        LastChangeUserId = sendList.LastChangeUserId
+                    };
+                    dbContext.DocumentSendListsSet.Attach(sendListDb);
+                    sendListDb.StartEvent = ModelConverter.GetDbDocumentEvent(sendList.StartEvent);
+                    if (sendList.CloseEvent != null)
                     {
-                        subscriptionDb.SendEvent = sendListDb.StartEvent;
+                        sendListDb.CloseEvent = sendListDb.StartEvent;
                     }
-                    dbContext.DocumentSubscriptionsSet.Add(subscriptionDb);
+                    var entry = dbContext.Entry(sendListDb);
+                    entry.Property(x => x.Id).IsModified = true;
+                    entry.Property(x => x.LastChangeDate).IsModified = true;
+                    entry.Property(x => x.LastChangeUserId).IsModified = true;
+
+                    dbContext.DocumentAccessesSet.AddRange(
+                        CommonQueries.GetDbDocumentAccesses(dbContext, document.Accesses, document.Id).ToList());
+                    dbContext.SaveChanges();
+
+                    if (document.Waits?.Any() ?? false)
+                    {
+                        var wait = document.Waits.First();
+                        var waitDb = ModelConverter.GetDbDocumentWait(wait);
+                        if (wait.OnEvent == sendList.StartEvent)
+                        {
+                            waitDb.OnEventId = sendListDb.StartEventId.Value;
+                            waitDb.OnEvent = null;
+                        }
+                        dbContext.DocumentWaitsSet.Add(waitDb);
+                    }
+                    dbContext.SaveChanges();
+
+                    if (document.Subscriptions?.Any() ?? false)
+                    {
+                        var subscription = document.Subscriptions.First();
+                        var subscriptionDb = ModelConverter.GetDbDocumentSubscription(subscription);
+                        if (subscription.SendEvent == sendList.StartEvent)
+                        {
+                            subscriptionDb.SendEventId = sendListDb.StartEventId.Value;
+                            subscriptionDb.SendEvent = null;
+                        }
+                        dbContext.DocumentSubscriptionsSet.Add(subscriptionDb);
+                    }
+                    dbContext.SaveChanges();
+
+                    var eventsDb = ModelConverter.GetDbDocumentEvents(document.Events);
+                    if (document.Events?.Any() ?? false)
+                    {
+                        //dbContext.DocumentEventsSet.AddRange(eventsDb);
+                        dbContext.DocumentEventsSet.Attach(eventsDb.First());
+                        dbContext.Entry(eventsDb.First()).State = EntityState.Added;
+                    }
+                    dbContext.SaveChanges();
+
+                    transaction.Complete();
                 }
-                dbContext.SaveChanges();
             }
         }
 

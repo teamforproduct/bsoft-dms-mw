@@ -6,7 +6,7 @@ using BL.Logic.DependencyInjection;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Enums;
-using BL.Model.SystemCore;
+using BL.Model.SystemCore.InternalModel;
 
 namespace BL.Logic.DocumentCore
 {

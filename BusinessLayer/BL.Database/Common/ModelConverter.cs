@@ -57,7 +57,7 @@ namespace BL.Database.Common
 
         public static DocumentWaits GetDbDocumentWait(InternalDocumentWait wait)
         {
-            return wait == null ? null :
+            var waitDb = wait == null ? null :
                 new DocumentWaits
                 {
                     AttentionDate = wait.AttentionDate,
@@ -69,9 +69,11 @@ namespace BL.Database.Common
                     OnEventId = wait.OnEventId,
                     ParentId = wait.ParentId,
                     ResultTypeId = wait.ResultTypeId,
+                    ParentWait = GetDbDocumentWait(wait.ParentWait),
                     OnEvent = GetDbDocumentEvent(wait.OnEvent),
                     OffEvent = GetDbDocumentEvent(wait.OffEvent),
                 };
+            return waitDb;
         }
 
         public static IEnumerable<DocumentWaits> GetDbDocumentWaits(IEnumerable<InternalDocumentWait> waits)

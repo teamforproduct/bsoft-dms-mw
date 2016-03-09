@@ -1,7 +1,7 @@
 ﻿using BL.Model.Enums;
 using System.Collections.Generic;
 
-namespace BL.Model.SystemCore
+namespace BL.Model.SystemCore.Filters
 {
     public class FilterSystemAction
     {
