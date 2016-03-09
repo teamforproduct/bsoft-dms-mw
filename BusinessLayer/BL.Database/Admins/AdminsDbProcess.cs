@@ -84,11 +84,11 @@ namespace BL.Database.Admins
                 {
                     qry = qry.Where(x => filter.UserId.Contains(x.RoleId));
                 }
-                return qry.Distinct().Select(x => new BaseAdminUserRole
+                return qry.Distinct().SelectMany(x=>x.Role.PositionRoles).Select(x => new BaseAdminUserRole
                 {
-                    RolePositionId = x.Role.Position.Id,
-                    RolePositionName = x.Role.Position.Name,
-                    RolePositionExecutorAgentName = x.Role.Position.ExecutorAgent.Name
+                    RolePositionId = x.PositionId,
+                    RolePositionName = x.Position.Name,
+                    RolePositionExecutorAgentName = x.Position.ExecutorAgent.Name
                 }).Distinct().ToList();
             }
         }

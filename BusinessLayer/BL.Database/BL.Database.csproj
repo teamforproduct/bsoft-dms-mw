@@ -68,6 +68,7 @@
     <Compile Include="CoreDb\CoreDb.cs" />
     <Compile Include="DatabaseContext\DmsContext.cs" />
     <Compile Include="DBModel\Admin\AdminAccessLevels.cs" />
+    <Compile Include="DBModel\Admin\AdminPositionRoles.cs" />
     <Compile Include="DBModel\Admin\AdminRoleActions.cs" />
     <Compile Include="DBModel\Admin\AdminRoles.cs" />
     <Compile Include="DBModel\Admin\AdminSubordinations.cs" />
