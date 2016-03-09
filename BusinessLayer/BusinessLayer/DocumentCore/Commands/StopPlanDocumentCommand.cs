@@ -1,22 +1,17 @@
 ﻿using BL.Logic.Common;
 using BL.Database.Documents.Interfaces;
-using BL.Logic.AdminCore.Interfaces;
 using BL.Model.Enums;
 using BL.Model.Exception;
-using BL.Model.SystemCore;
-using System.Linq;
 
 namespace BL.Logic.DocumentCore.Commands
 {
     public class StopPlanDocumentCommand : BaseDocumentCommand
     {
         private readonly IDocumentsDbProcess _documentDb;
-        private readonly IAdminService _admin;
 
-        public StopPlanDocumentCommand(IDocumentsDbProcess documentDb, IAdminService admin)
+        public StopPlanDocumentCommand(IDocumentsDbProcess documentDb)
         {
             _documentDb = documentDb;
-            _admin = admin;
         }
 
         private int Model

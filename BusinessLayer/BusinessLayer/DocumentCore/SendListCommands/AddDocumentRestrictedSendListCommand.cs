@@ -6,21 +6,17 @@ using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
-using BL.Logic.AdminCore.Interfaces;
-using BL.Model.SystemCore;
 
 namespace BL.Logic.DocumentCore.SendListCommands
 {
     public class AddDocumentRestrictedSendListCommand : BaseDocumentCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
-        private readonly IAdminService _admin;
 
         protected InternalDocumentRestrictedSendList DocRestSendList;
 
-        public AddDocumentRestrictedSendListCommand(IDocumentOperationsDbProcess operationDb, IAdminService admin)
+        public AddDocumentRestrictedSendListCommand(IDocumentOperationsDbProcess operationDb)
         {
-            _admin = admin;
             _operationDb = operationDb;
         }
 

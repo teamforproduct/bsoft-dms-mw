@@ -1,16 +1,10 @@
 ﻿using System.Linq;
 using BL.Database.Documents.Interfaces;
 using BL.Logic.Common;
-using BL.Logic.AdminCore.Interfaces;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Model.DocumentCore.IncomingModel;
-using BL.Model.SystemCore;
-using BL.Model.DocumentCore.InternalModel;
-using System.Collections.Generic;
-using BL.Model.SystemCore.IncomingModel;
-using BL.Logic.PropertyCore.Interfaces;
 using BL.Model.SystemCore.InternalModel;
 
 namespace BL.Logic.DocumentCore.Commands
@@ -18,12 +12,10 @@ namespace BL.Logic.DocumentCore.Commands
     internal class ModifyDocumentCommand : BaseDocumentCommand
     {
         private readonly IDocumentsDbProcess _documentDb;
-        private readonly IAdminService _admin;
 
-        public ModifyDocumentCommand(IDocumentsDbProcess documentDb, IAdminService admin)
+        public ModifyDocumentCommand(IDocumentsDbProcess documentDb)
         {
             _documentDb = documentDb;
-            _admin = admin;
         }
 
         private ModifyDocument Model

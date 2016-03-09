@@ -2,22 +2,18 @@
 using BL.Database.Documents.Interfaces;
 using BL.Model.Exception;
 using BL.Logic.Common;
-using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.FileWorker;
-using BL.Model.SystemCore;
 
 namespace BL.Logic.DocumentCore.Commands
 {
     internal class DeleteDocumentCommand : BaseDocumentCommand
     {
         private readonly IDocumentsDbProcess _documentDb;
-        private readonly IAdminService _admin;
         private readonly IFileStore _fStore;
 
-        public DeleteDocumentCommand(IDocumentsDbProcess documentDb, IAdminService admin, IFileStore fStore)
+        public DeleteDocumentCommand(IDocumentsDbProcess documentDb, IFileStore fStore)
         {
             _documentDb = documentDb;
-            _admin = admin;
             _fStore = fStore;
         }
 

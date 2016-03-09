@@ -1,29 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using BL.Database.Admins.Interfaces;
 using BL.Logic.Common;
 using BL.Database.Documents.Interfaces;
-using BL.Logic.AdminCore.Interfaces;
-using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
-using BL.Model.SystemCore;
 
 namespace BL.Logic.DocumentCore.Commands
 {
     public class SendForResponsibleExecutionDocumentCommand : BaseDocumentCommand
     {
-        private readonly IDocumentsDbProcess _documentDb;
         private readonly IDocumentOperationsDbProcess _operationDb;
-        private readonly IAdminService _admin;
 
-        public SendForResponsibleExecutionDocumentCommand(IDocumentsDbProcess documentDb, IDocumentOperationsDbProcess operationDb, IAdminService admin)
+        public SendForResponsibleExecutionDocumentCommand(IDocumentOperationsDbProcess operationDb)
         {
-            _documentDb = documentDb;
             _operationDb = operationDb;
-            _admin = admin;
         }
 
         private InternalDocumentSendList Model

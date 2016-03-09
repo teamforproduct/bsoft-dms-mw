@@ -1,26 +1,22 @@
 ﻿using System.Linq;
 using BL.Logic.Common;
 using BL.Database.Documents.Interfaces;
-using BL.Logic.AdminCore.Interfaces;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
-using BL.Model.SystemCore;
 
 namespace BL.Logic.DocumentCore.Commands
 {
     public class ControlOffDocumentCommand: BaseDocumentCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
-        private readonly IAdminService _admin;
 
         private InternalDocumentWait _docWait;
 
-        public ControlOffDocumentCommand(IDocumentOperationsDbProcess operationDb, IAdminService admin)
+        public ControlOffDocumentCommand(IDocumentOperationsDbProcess operationDb)
         {
             _operationDb = operationDb;
-            _admin = admin;
         }
 
         private ControlOff Model
