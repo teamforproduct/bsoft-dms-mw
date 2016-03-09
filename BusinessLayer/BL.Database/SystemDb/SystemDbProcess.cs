@@ -153,7 +153,7 @@ namespace BL.Database.SystemDb
                     {
                         qry = qry.Where(x => x.Action.Code.Contains(filter.ActionCode));
                     }
-                    return qry.Select(x => new BaseSystemUIElement
+                    var res = qry.Select(x => new BaseSystemUIElement
                     {
                         Id = x.Id,
                         ObjectCode = x.Action.Object.Code,
@@ -174,6 +174,8 @@ namespace BL.Database.SystemDb
                         ValueDescriptionFieldCode = x.ValueDescriptionFieldCode,
                         Format = x.Format
                     }).ToList();
+
+                    return res;
                 }
             }
         }
@@ -205,6 +207,40 @@ namespace BL.Database.SystemDb
 
         #region Properties
 
+        public IEnumerable<BaseSystemUIElement> GetPropertyUIElements(IContext context, FilterPropertyLink filter)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var qry = dbContext.PropertyLinksSet.AsQueryable();
+
+                if (filter.PropertyLinkId?.Count > 0)
+                {
+                    qry = qry.Where(x => filter.PropertyLinkId.Contains(x.Id));
+                }
+
+                return qry.Select(x => new BaseSystemUIElement
+                {
+                    ObjectCode = x.Object.Code,
+                    ActionCode = x.Property.Code,
+                    Code = x.Property.Code,
+                    TypeCode = x.Property.TypeCode,
+                    Label = x.Property.Label,
+                    Hint = x.Property.Hint,
+                    ValueTypeCode = x.Property.ValueType.Code,
+                    IsMandatory = x.IsMandatory,
+                    IsReadOnly = false,
+                    IsVisible = true,
+                    SelectAPI = x.Property.SelectAPI,
+                    SelectFilter = x.Property.SelectFilter,
+                    SelectFieldCode = x.Property.SelectFieldCode,
+                    SelectDescriptionFieldCode = x.Property.SelectDescriptionFieldCode,
+                    ValueFieldCode = x.Property.ValueType.Code,
+                    ValueDescriptionFieldCode = x.Property.ValueType.Description,
+                    Format = x.Property.OutFormat,
+                }).ToList();
+            }
+        }
+
         public InternalProperty GetProperty(IContext context, FilterProperty filter)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
@@ -220,6 +256,7 @@ namespace BL.Database.SystemDb
                 {
                     Id = x.Id,
                     Code = x.Code,
+                    TypeCode = x.TypeCode,
                     Description = x.Description,
                     Label = x.Label,
                     Hint = x.Hint,
@@ -259,6 +296,7 @@ namespace BL.Database.SystemDb
                 {
                     Id = x.Id,
                     Code = x.Code,
+                    TypeCode = x.TypeCode,
                     Description = x.Description,
                     Label = x.Label,
                     Hint = x.Hint,
@@ -288,6 +326,7 @@ namespace BL.Database.SystemDb
                 var item = new Properties
                 {
                     Code = model.Code,
+                    TypeCode = model.TypeCode,
                     Description = model.Description,
                     Label = model.Label,
                     Hint = model.Hint,
@@ -317,6 +356,7 @@ namespace BL.Database.SystemDb
                 {
                     Id = model.Id,
                     Code = model.Code,
+                    TypeCode = model.TypeCode,
                     Description = model.Description,
                     Label = model.Label,
                     Hint = model.Hint,
@@ -370,7 +410,7 @@ namespace BL.Database.SystemDb
                 {
                     Id = x.Id,
                     PropertyId = x.PropertyId,
-                    ObjectId = x.ObjectId,
+                    Object = (EnumObjects)x.ObjectId,
                     Filers = x.Filers,
                     IsMandatory = x.IsMandatory,
                     LastChangeDate = x.LastChangeDate,
@@ -385,18 +425,27 @@ namespace BL.Database.SystemDb
             {
                 var qry = dbContext.PropertyLinksSet.AsQueryable();
 
-                if (filter.PropertyLinkId?.Count > 0)
+                if (filter != null)
                 {
-                    qry = qry.Where(x => filter.PropertyLinkId.Contains(x.Id));
+                    if (filter.PropertyLinkId?.Count > 0)
+                    {
+                        qry = qry.Where(x => filter.PropertyLinkId.Contains(x.Id));
+                    }
+
+                    if (filter.Object?.Count > 0)
+                    {
+                        qry = qry.Where(x => filter.Object.Select(y=>(int)y).Contains(x.ObjectId));
+                    }
                 }
 
                 return qry.Select(x => new FrontPropertyLink
                 {
                     Id = x.Id,
                     PropertyId = x.PropertyId,
-                    ObjectId = x.ObjectId,
+                    Object = (EnumObjects)x.ObjectId,
                     Filers = x.Filers,
-                    IsMandatory = x.IsMandatory
+                    IsMandatory = x.IsMandatory,
+                    SystemObject = new FrontSystemObject { Code = x.Object.Code }
                 }).ToList();
             }
         }
@@ -408,7 +457,7 @@ namespace BL.Database.SystemDb
                 var item = new PropertyLinks
                 {
                     PropertyId = model.PropertyId,
-                    ObjectId = model.ObjectId,
+                    ObjectId = (int)model.Object,
                     Filers = model.Filers,
                     IsMandatory = model.IsMandatory,
                     LastChangeDate = model.LastChangeDate,
@@ -430,7 +479,7 @@ namespace BL.Database.SystemDb
                 {
                     Id = model.Id,
                     PropertyId = model.PropertyId,
-                    ObjectId = model.ObjectId,
+                    ObjectId = (int)model.Object,
                     Filers = model.Filers,
                     IsMandatory = model.IsMandatory,
                     LastChangeDate = model.LastChangeDate,
@@ -506,138 +555,6 @@ namespace BL.Database.SystemDb
                 }).ToList();
             }
         }
-
-        public int AddPropertyValue(IContext context, InternalPropertyValue model)
-        {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
-            {
-                var item = new PropertyValues
-                {
-                    PropertyLinkId = model.PropertyLinkId,
-                    RecordId = model.RecordId,
-                    ValueString = model.ValueString,
-                    ValueDate = model.ValueDate,
-                    ValueNumeric = model.ValueNumeric,
-                    LastChangeDate = model.LastChangeDate,
-                    LastChangeUserId = model.LastChangeUserId,
-                };
-                dbContext.PropertyValuesSet.Attach(item);
-
-                dbContext.SaveChanges();
-                model.Id = item.Id;
-                return item.Id;
-            }
-        }
-
-        public void ModifyPropertyValues(IContext context, InternalPropertyValues model)
-        {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
-            {
-                var propertyValues = dbContext.PropertyValuesSet.
-                    Where(x => x.PropertyLink.ObjectId == (int)model.Object && x.RecordId == model.RecordId)
-                    .Select(x=> new { x.Id, x.PropertyLinkId }).ToList();
-
-                var groupJoinItems = propertyValues
-                   .GroupJoin(model.PropertyValues,
-                       x => x.PropertyLinkId,
-                       y => y.PropertyLinkId,
-                       (x, y) => new { propertyValueId = x.Id, values = y })
-                   .ToList();
-
-                #region modify
-                var modifyItems = groupJoinItems
-                    .Where(x=>x.values.Count()>0)
-                    .Select(x=>new { x.propertyValueId, value = x.values.First() })
-                    .Select(x => new PropertyValues
-                    {
-                        Id = x.propertyValueId,
-                        ValueString = x.value.ValueString,
-                        ValueDate = x.value.ValueDate,
-                        ValueNumeric = x.value.ValueNumeric,
-                        LastChangeDate = x.value.LastChangeDate,
-                        LastChangeUserId = x.value.LastChangeUserId,
-                    });
-
-                foreach(var item in modifyItems)
-                {
-                    dbContext.PropertyValuesSet.Attach(item);
-                    var entry = dbContext.Entry(item);
-                    entry.Property(x => x.ValueString).IsModified = true;
-                    entry.Property(x => x.ValueDate).IsModified = true;
-                    entry.Property(x => x.ValueNumeric).IsModified = true;
-                    entry.Property(x => x.LastChangeDate).IsModified = true;
-                    entry.Property(x => x.LastChangeUserId).IsModified = true;
-                }
-
-                #endregion
-
-                #region add
-
-                var newItems = model.PropertyValues
-                    .Where(x => !propertyValues.Select(y => y.PropertyLinkId).Contains(x.PropertyLinkId))
-                    .Select(x => new PropertyValues
-                    {
-                        PropertyLinkId = x.PropertyLinkId,
-                        RecordId = model.RecordId,
-                        ValueString = x.ValueString,
-                        ValueDate = x.ValueDate,
-                        ValueNumeric = x.ValueNumeric,
-                        LastChangeDate = x.LastChangeDate,
-                        LastChangeUserId = x.LastChangeUserId,
-                    }).ToList();
-
-                dbContext.PropertyValuesSet.AddRange(newItems);
-
-                #endregion
-
-                #region delete
-                foreach (var item in groupJoinItems.Where(x => x.values.Count() == 0).Select(x=>x.propertyValueId))
-                {
-                    var itemAtt = dbContext.PropertyValuesSet.Attach(new PropertyValues { Id = item });
-                    dbContext.Entry(itemAtt).State = System.Data.Entity.EntityState.Deleted;
-                }
-                #endregion
-
-                dbContext.SaveChanges();
-            }
-        }
-
-        public void UpdatePropertyValue(IContext context, InternalPropertyValue model)
-        {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
-            {
-                var item = new PropertyValues
-                {
-                    Id = model.Id,
-                    PropertyLinkId = model.PropertyLinkId,
-                    RecordId = model.RecordId,
-                    ValueString = model.ValueString,
-                    ValueDate = model.ValueDate,
-                    ValueNumeric = model.ValueNumeric,
-                    LastChangeDate = model.LastChangeDate,
-                    LastChangeUserId = model.LastChangeUserId,
-                };
-                dbContext.PropertyValuesSet.Attach(item);
-                dbContext.Entry(item).State = System.Data.Entity.EntityState.Modified;
-
-                dbContext.SaveChanges();
-            }
-        }
-
-        public void DeletePropertyValue(IContext context, InternalPropertyValue model)
-        {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
-            {
-
-                var item = dbContext.PropertyValuesSet.FirstOrDefault(x => x.Id == model.Id);
-                if (item != null)
-                {
-                    dbContext.PropertyValuesSet.Remove(item);
-                    dbContext.SaveChanges();
-                }
-            }
-        }
-
         #endregion PropertyValues
     }
 }

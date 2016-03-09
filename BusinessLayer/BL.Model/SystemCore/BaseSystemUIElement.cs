@@ -28,5 +28,6 @@ namespace BL.Model.SystemCore
         public string ValueFieldCode { get; set; }
         public string ValueDescriptionFieldCode { get; set; }
         public string Format { get; set; }
+        public int? PropertyLinkId { get; set; }
     }
 }

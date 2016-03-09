@@ -7,7 +7,6 @@ namespace BL.Model.SystemCore.FrontModel
         public int Id { get; set; }
         
         public FrontProperty Property { get; set; }
-
-        public FrontSystemObject Object { get; set; }
+        public FrontSystemObject SystemObject { get; set; }
     }
 }

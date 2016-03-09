@@ -30,12 +30,5 @@ namespace BL.Logic.PropertyCore.Interfaces
         IEnumerable<FrontPropertyLink> GetPropertyLinks(IContext context, FilterPropertyLink filter);
 
         #endregion PropertyLinks
-
-        #region PropertyValues
-        FrontPropertyValue GetPropertyValue(IContext context, int id);
-
-        IEnumerable<FrontPropertyValue> GetPropertyValues(IContext context, FilterPropertyValue filter);
-
-        #endregion PropertyValues
     }
 }

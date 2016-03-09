@@ -82,10 +82,6 @@ namespace BL.Logic.DependencyInjection
             Bind<IPropertyCommand>().To<AddPropertyLinkCommand>();
             Bind<IPropertyCommand>().To<DeletePropertyLinkCommand>();
             Bind<IPropertyCommand>().To<ModifyPropertyLinkCommand>();
-
-            Bind<IPropertyCommand>().To<AddPropertyValueCommand>();
-            Bind<IPropertyCommand>().To<DeletePropertyValueCommand>();
-            Bind<IPropertyCommand>().To<ModifyPropertyValueCommand>();
         }
 
         private void LoadDictionaryCommands()

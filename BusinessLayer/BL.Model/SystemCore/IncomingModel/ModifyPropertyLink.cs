@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using BL.Model.Enums;
+using System.Runtime.Serialization;
 
 namespace BL.Model.SystemCore.IncomingModel
 {
@@ -7,7 +8,7 @@ namespace BL.Model.SystemCore.IncomingModel
         [IgnoreDataMember]
         public int Id { get; set; }
         public int PropertyId { get; set; }
-        public int ObjectId { get; set; }
+        public EnumObjects Object { get; set; }
         public string Filers { get; set; }
         public bool IsMandatory { get; set; }
     }

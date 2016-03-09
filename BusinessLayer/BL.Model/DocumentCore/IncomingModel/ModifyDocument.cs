@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using BL.Model.Enums;
 using System.Collections.Generic;
+using BL.Model.SystemCore.IncomingModel;
 
 namespace BL.Model.DocumentCore.IncomingModel
 {
@@ -50,6 +51,6 @@ namespace BL.Model.DocumentCore.IncomingModel
         [Required]
         public EnumDocumentAccesses AccessLevel { get; set; }
 
-        public IEnumerable<ModifyDocumentProperty> Properties { get; set; }
+        public IEnumerable<ModifyPropertyValue> Properties { get; set; }
     }
 }
