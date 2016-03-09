@@ -9,8 +9,7 @@ using BL.Model.Enums;
 using BL.Model.SystemCore.InternalModel;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.FrontModel;
-using BL.Model.DocumentCore.InternalModel;
-using BL.Model.SystemCore.IncomingModel;
+
 
 namespace BL.Database.SystemDb
 {

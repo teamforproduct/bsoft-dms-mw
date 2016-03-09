@@ -74,5 +74,6 @@ namespace BL.Model.SystemCore
         /// Type of the connection to server
         /// </summary>
         public MailServerType ServerType { get; set; }
+
     }
 }
