@@ -31,6 +31,7 @@ namespace BL.Logic.MailWorker
         private object _lockObject;
         List<AdminContext> _serverContext;
         Task _checkingThread;
+        List<Timer> _timers;
 
         private void AddMailData(Timer key, SendMailData data)
         {
@@ -65,6 +66,7 @@ namespace BL.Logic.MailWorker
             _settings = settings;
             _logger = logger;
             _serverSettings = new Dictionary<Timer, SendMailData>();
+            _timers = new List<Timer>();
         }
 
         public void Initialize(IEnumerable<DatabaseModel> dbList)
@@ -83,7 +85,7 @@ namespace BL.Logic.MailWorker
 
                     var msSetting = new SendMailData
                     {
-                        ServerType = _settings.GetSetting<MailServerType>(ctx, _MAIL_SERVER_TYPE),
+                        ServerType = (MailServerType)_settings.GetSetting<int>(ctx, _MAIL_SERVER_TYPE),
                         FromAddress = _settings.GetSetting<string>(ctx, _MAIL_SERVER_SYSTEMMAIL),
                         Login = _settings.GetSetting<string>(ctx, _MAIL_SERVER_LOGIN),
                         Pass = _settings.GetSetting<string>(ctx, _MAIL_SERVER_PASS),
@@ -91,8 +93,9 @@ namespace BL.Logic.MailWorker
                         Port = _settings.GetSetting<int>(ctx, _MAIL_SERVER_PORT)
                     };
 
-                    var key = new Timer(CheckForNewMessages, msSetting, 1000, checkInterval*1000);
-                    AddMailData(key, msSetting);
+                    var tmr = new Timer(CheckForNewMessages, msSetting, 1000, checkInterval*1000);
+                    //AddMailData(key, msSetting);
+                    _timers.Add(tmr);
                 }
                 catch (Exception ex)
                 {
@@ -105,15 +108,10 @@ namespace BL.Logic.MailWorker
 
         private void CheckForNewMessages(object state)
         {
-            Timer currTimer = state as Timer;
-            if (currTimer != null)
-            {
-                var param = GetMailData(currTimer);
-
-            }
             var md = state as SendMailData;
             if (md != null)
             {
+                SendMessage(md);
             }
         }
 
@@ -132,7 +130,11 @@ namespace BL.Logic.MailWorker
 
         public void Dispose()
         {
-            
+            _timers.ForEach(x =>
+            {
+                x.Change(Timeout.Infinite, Timeout.Infinite);
+                x.Dispose();
+            });
         }
     }
 }
