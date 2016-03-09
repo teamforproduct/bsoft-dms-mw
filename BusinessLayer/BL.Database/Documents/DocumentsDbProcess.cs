@@ -17,6 +17,7 @@ using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.SystemCore.Filters;
+using BL.Model.SystemCore.InternalModel;
 
 namespace BL.Database.Documents
 {
@@ -428,7 +429,7 @@ namespace BL.Database.Documents
 
                 doc.DocumentSubscriptions = CommonQueries.GetDocumentSubscriptions(dbContext, new FilterDocumentSubscription { DocumentId = docIds });
 
-                doc.PropertyValues = CommonQueries.GetPropertyValues(dbContext, new FilterPropertyValue { RecordId = docIds, Object = new List<EnumObjects> { EnumObjects.Documents } });
+                doc.Properties = CommonQueries.GetPropertyValues(dbContext, new FilterPropertyValue { RecordId = new List<int> { documentId }, Object = new List<EnumObjects> { EnumObjects.Documents } });
 
                 return doc;
             }
@@ -633,6 +634,12 @@ namespace BL.Database.Documents
                     entryAcc.Property(x => x.LastChangeUserId).IsModified = true;
                     entryAcc.Property(x => x.AccessLevelId).IsModified = true;
                 }
+
+                if(document.Properties?.Count()>0)
+                {
+                    CommonQueries.ModifyPropertyValues(dbContext, new InternalPropertyValues { Object = EnumObjects.Documents, RecordId = document.Id, PropertyValues = document.Properties });
+                }
+
                 dbContext.SaveChanges();
 
             }

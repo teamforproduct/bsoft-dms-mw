@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using BL.Model.Common;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.Enums;
+using BL.Model.SystemCore.InternalModel;
 
 namespace BL.Model.DocumentCore.InternalModel
 {
@@ -147,6 +148,8 @@ namespace BL.Model.DocumentCore.InternalModel
         public IEnumerable<FrontDocumentLink> Links { get; set; }
         public IEnumerable<InternalDocumentWait> Waits { get; set; }
         public IEnumerable<InternalDocumentSubscription> Subscriptions { get; set; }
+
+        public IEnumerable<InternalPropertyValue> Properties { get; set; }
 
     }
 }

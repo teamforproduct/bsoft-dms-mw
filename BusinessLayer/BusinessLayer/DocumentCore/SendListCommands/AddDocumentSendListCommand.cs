@@ -46,7 +46,8 @@ namespace BL.Logic.DocumentCore.SendListCommands
 
             _admin.VerifyAccess(_context, CommandType);
             _document = _operationDb.ChangeDocumentSendListPrepare(_context, Model.DocumentId);
-            Model.IsInitial = !_document.IsLaunchPlan;
+
+            //Model.IsInitial = !_document.IsLaunchPlan;
 
             DocSendList = CommonDocumentUtilities.GetNewDocumentSendList(_context, Model);
             var sendLists = _document.SendLists.ToList();

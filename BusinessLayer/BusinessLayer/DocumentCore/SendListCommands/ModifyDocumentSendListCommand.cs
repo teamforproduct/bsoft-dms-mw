@@ -58,6 +58,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
             DocSendList.DueDate = Model.DueDate;
             DocSendList.DueDay = Model.DueDay;
             DocSendList.AccessLevel = Model.AccessLevel;
+            DocSendList.IsInitial = Model.IsInitial;
 
             CommonDocumentUtilities.VerifySendLists(_document);
 

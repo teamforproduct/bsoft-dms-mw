@@ -5,6 +5,7 @@ using BL.Model.Enums;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DictionaryCore;
 using BL.Model.SystemCore.FrontModel;
+using System.Linq;
 
 namespace BL.Model.DocumentCore.FrontModel
 {
@@ -58,6 +59,11 @@ namespace BL.Model.DocumentCore.FrontModel
                 //    AttachedFilesCount = model.AttachedFilesCount;
                 //    LinkedDocumentsCount = model.LinkedDocumentsCount;
 
+
+                if (model.Properties?.Count() > 0)
+                {
+                    Properties = model.Properties.Select(x => new FrontPropertyValue { PropertyLinkId = x.PropertyLinkId, Value = x.ValueString }).ToList();
+                }
             }
         }
 
@@ -76,6 +82,10 @@ namespace BL.Model.DocumentCore.FrontModel
                 AccessLevel = model.AccessLevel;
             }
         }
+        /// <summary>
+        /// ИД Документа
+        /// </summary>
+        public int Id { get; set; }
 
         public string TemplateDocumentName { get; set; }
 
@@ -139,7 +149,7 @@ namespace BL.Model.DocumentCore.FrontModel
         public IEnumerable<BaseDictionaryPosition> DocumentWorkGroup { get; set; }
         public IEnumerable<FrontDocumentSubscription> DocumentSubscriptions { get; set; }
 
-        public IEnumerable<FrontPropertyValue> PropertyValues { get; set; }
+        public IEnumerable<FrontPropertyValue> Properties { get; set; }
 
     }
 }

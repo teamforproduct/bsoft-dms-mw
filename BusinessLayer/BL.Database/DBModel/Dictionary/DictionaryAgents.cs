@@ -18,9 +18,11 @@ namespace BL.Database.DBModel.Dictionary
         public int Id { get; set; }
         public string Name { get; set; }
         public Nullable<int> ResidentTypeId { get; set; }
+        public bool IsCompany { get; set; }
         public bool IsIndividual { get; set; }
         public bool IsEmployee { get; set; }
         public bool IsBank { get; set; }
+        public bool IsUser { get; set; }
         public string Description { get; set; }
         public bool IsActive { get; set; }
         public int LastChangeUserId { get; set; }

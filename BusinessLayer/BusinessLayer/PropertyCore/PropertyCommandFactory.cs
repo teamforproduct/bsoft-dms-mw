@@ -31,15 +31,6 @@ namespace BL.Logic.PropertyCore
                 case EnumPropertyAction.ModifyPropertyLink:
                     cmd = DmsResolver.Current.Get<ModifyPropertyLinkCommand>();
                     break;
-                case EnumPropertyAction.AddPropertyValue:
-                    cmd = DmsResolver.Current.Get<AddPropertyValueCommand>();
-                    break;
-                case EnumPropertyAction.DeletePropertyValue:
-                    cmd = DmsResolver.Current.Get<DeletePropertyValueCommand>();
-                    break;
-                case EnumPropertyAction.ModifyPropertyValues:
-                    cmd = DmsResolver.Current.Get<ModifyPropertyValueCommand>();
-                    break;
                 default:
                     throw new CommandNotDefinedError();
             }

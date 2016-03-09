@@ -2,6 +2,9 @@
 using System.ComponentModel.DataAnnotations;
 using BL.Model.Enums;
 using System.Collections.Generic;
+using BL.Model.SystemCore.IncomingModel;
+using System.Xml.Serialization;
+using System.Runtime.Serialization;
 
 namespace BL.Model.DocumentCore.IncomingModel
 {
@@ -13,7 +16,8 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// <summary>
         /// ИД Документа
         /// </summary>
-        [Required]
+        [XmlIgnore]
+        [IgnoreDataMember]
         public int Id { get; set; }
         /// <summary>
         /// ИД Тематики документа
@@ -50,6 +54,6 @@ namespace BL.Model.DocumentCore.IncomingModel
         [Required]
         public EnumDocumentAccesses AccessLevel { get; set; }
 
-        public IEnumerable<ModifyDocumentProperty> Properties { get; set; }
+        public IEnumerable<ModifyPropertyValue> Properties { get; set; }
     }
 }

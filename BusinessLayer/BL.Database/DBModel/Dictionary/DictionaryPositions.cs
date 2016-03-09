@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using BL.Database.DBModel.Admin;
 
 namespace BL.Database.DBModel.Dictionary
 {
@@ -17,6 +18,7 @@ namespace BL.Database.DBModel.Dictionary
             this.StandartSendLists = new HashSet<DictionaryStandartSendLists>();
             this.DocumentSavedFilters = new HashSet<DocumentSavedFilters>();
             this.Tags = new HashSet<DictionaryTags>();
+            this.PositionRoles = new HashSet<AdminPositionRoles>();
         }
         public int Id { get; set; }
         public Nullable<int> ParentId { get; set; }
@@ -45,6 +47,7 @@ namespace BL.Database.DBModel.Dictionary
         public virtual ICollection<DictionaryStandartSendLists> StandartSendLists { get; set; }
         public virtual ICollection<DocumentSavedFilters> DocumentSavedFilters { get; set; }
         public virtual ICollection<DictionaryTags> Tags { get; set; }
+        public virtual ICollection<AdminPositionRoles> PositionRoles { get; set; }
 
     }
 }

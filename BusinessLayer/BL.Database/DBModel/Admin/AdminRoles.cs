@@ -12,6 +12,7 @@ namespace BL.Database.DBModel.Admin
         {
             this.UserRoles = new HashSet<AdminUserRoles>();
             this.RoleActions = new HashSet<AdminRoleActions>();
+            this.PositionRoles = new HashSet<AdminPositionRoles>();
         }
 
         public int Id { get; set; }
@@ -24,9 +25,6 @@ namespace BL.Database.DBModel.Admin
         public virtual ICollection<AdminUserRoles> UserRoles { get; set; }
         public virtual ICollection<AdminRoleActions> RoleActions { get; set; }
 
-        [ForeignKey("AccessLevelId")]
-        public virtual AdminAccessLevels AccessLevel { get; set; }
-        [ForeignKey("PositionId")]
-        public virtual DictionaryPositions Position { get; set; }
+        public virtual ICollection<AdminPositionRoles> PositionRoles { get; set; }
     }
 }
