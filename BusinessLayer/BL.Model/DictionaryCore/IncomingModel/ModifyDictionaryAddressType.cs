@@ -19,6 +19,6 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// Признак активности
         /// </summary>
-        public int IsActive { get; set; }
+        public bool IsActive { get; set; }
     }
 }

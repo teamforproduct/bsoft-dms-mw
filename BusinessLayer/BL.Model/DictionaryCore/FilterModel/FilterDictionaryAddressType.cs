@@ -6,6 +6,6 @@ namespace BL.Model.DictionaryCore.FilterModel
     {
         public List<int> AddressTypeId { get; set; }
         public string Name { get; set; }
-        public int IsActive { get; set; }
+        public bool IsActive { get; set; }
     }
 }

@@ -61,15 +61,10 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<DictionaryAgentPhoneNumbers> DictionaryAgentPhoneNumbersSet { get; set; }
 
         public virtual DbSet<DictionaryAgents> DictionaryAgentsSet { get; set; }
-<<<<<<< HEAD
-        public virtual DbSet<DictionaryAddressTypes> DictionaryAddressTypesSet { get; set; }
-=======
 
+        public virtual DbSet<DictionaryAddressTypes> DictionaryAddressTypesSet { get; set; }
         public virtual DbSet<DictionaryResidentTypes> DictionaryResidentTypesSet { get; set; }
         public virtual DbSet<DictionaryPhoneNumberTypes> DictionaryPhoneNumberTypesSet { get; set; }
-        public virtual DbSet<DictionaryAddressTypes> DictionaryAddressTypesSet { get; set; }
-
->>>>>>> DMS_Base
         public virtual DbSet<DictionaryCompanies> DictionaryCompaniesSet { get; set; }
         public virtual DbSet<DictionaryDepartments> DictionaryDepartmentsSet { get; set; }
         public virtual DbSet<DictionaryDocumentDirections> DictionaryDocumentDirectionsSet { get; set; }

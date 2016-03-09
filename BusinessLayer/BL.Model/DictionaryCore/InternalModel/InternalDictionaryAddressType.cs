@@ -16,6 +16,6 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// <summary>
         /// Признак активности
         /// </summary>
-        public int IsActive { get; set; }
+        public bool IsActive { get; set; }
     }
 }
