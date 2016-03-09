@@ -56,6 +56,9 @@
     <Compile Include="DependencyInjection\LogicModule.cs" />
     <Compile Include="AdminCore\AdminService.cs" />
     <Compile Include="AdminCore\Interfaces\IAdminService.cs" />
+    <Compile Include="DictionaryCore\AddressType\AddDictionaryAddressTypeCommand.cs" />
+    <Compile Include="DictionaryCore\AddressType\DeleteDictionaryAddressTypeCommand.cs" />
+    <Compile Include="DictionaryCore\AddressType\ModifyDictionaryAddressTypeCommand.cs" />
     <Compile Include="DictionaryCore\CustomDictionary\DeleteCustomDictionaryCommand.cs" />
     <Compile Include="DictionaryCore\CustomDictionary\AddCustomDictionaryCommand.cs" />
     <Compile Include="DictionaryCore\CustomDictionary\DeleteCustomDictionaryTypeCommand.cs" />

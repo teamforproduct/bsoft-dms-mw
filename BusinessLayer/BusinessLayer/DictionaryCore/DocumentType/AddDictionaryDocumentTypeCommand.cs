@@ -52,7 +52,8 @@ namespace BL.Logic.DictionaryCore.DocumentType
             {
                 var newDocType = new InternalDictionaryDocumentType
                 {
-                    Name = Model.Name
+                    Name = Model.Name,
+                    IsActive=Model.IsActive
                 };
                 CommonDocumentUtilities.SetLastChange(_context,newDocType);
                 return _dictDb.AddDictionaryDocumentType(_context, newDocType);

@@ -10,24 +10,24 @@ using BL.Model.SystemCore;
 
 namespace BL.Logic.DictionaryCore.DocumentType
 {
-    public class ModifyDictionaryDocumentTypeCommand : BaseDictionaryCommand
+    public class AddDictionaryAddressTypeCommand : BaseDictionaryCommand
     {
         private readonly IDictionariesDbProcess _dictDb;
 
-        public ModifyDictionaryDocumentTypeCommand(IDictionariesDbProcess dictDb)
+        public AddDictionaryAddressTypeCommand(IDictionariesDbProcess dictDb)
         {
             _dictDb = dictDb;
         }
 
-        private ModifyDictionaryDocumentType Model
+        private ModifyDictionaryAddressType Model
         {
             get
             {
-                if (!(_param is ModifyDictionaryDocumentType))
+                if (!(_param is ModifyDictionaryAddressType))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ModifyDictionaryDocumentType)_param;
+                return (ModifyDictionaryAddressType)_param;
             }
         }
 
@@ -38,7 +38,7 @@ namespace BL.Logic.DictionaryCore.DocumentType
 
         public override bool CanExecute()
         {
-            var spr = _dictDb.GetInternalDictionaryDocumentType(_context, new FilterDictionaryDocumentType { Name = Model.Name });
+            var spr = _dictDb.GetInternalDictionaryAddressType(_context, new FilterDictionaryAddressType { Name = Model.Name });
             if (spr != null)
             {
                 throw new DictionaryRecordNotUnique();
@@ -50,24 +50,18 @@ namespace BL.Logic.DictionaryCore.DocumentType
         {
             try
             {
-                var newDocType = new InternalDictionaryDocumentType
+                var newAddrType = new InternalDictionaryAddressType
                 {
-                    Id = Model.Id,
                     Name = Model.Name,
                     IsActive=Model.IsActive
                 };
-                CommonDocumentUtilities.SetLastChange(_context, newDocType);
-                _dictDb.UpdateDictionaryDocumentType(_context, newDocType);
-            }
-            catch (DictionaryRecordWasNotFound)
-            {
-                throw;
+                CommonDocumentUtilities.SetLastChange(_context, newAddrType);
+                return _dictDb.AddDictionaryAddressType(_context, newAddrType);
             }
             catch (Exception ex)
             {
-                throw new DatabaseError(ex);
+                throw new DictionaryRecordCouldNotBeAdded(ex);
             }
-            return null;
         }
     }
 }
