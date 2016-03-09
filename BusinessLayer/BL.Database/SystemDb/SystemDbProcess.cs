@@ -115,7 +115,7 @@ namespace BL.Database.SystemDb
                     {
                         qry = qry.Where(x => x.IsVisible &&
                                               (!x.IsGrantable
-                                                || x.RoleActions.Any(y => (posId == y.Role.PositionId)
+                                                || x.RoleActions.Any(y => y.Role.PositionRoles.Any(pr=>pr.PositionId == posId) 
                                                                             &&
                                                                             y.Role.UserRoles.Any(z => z.UserId == ctx.CurrentAgentId))));
                     }

@@ -36,11 +36,18 @@ namespace BL.Database.Admins
                     UserId = x.UserId
                 }).ToList();
 
-                res.Roles = dbContext.AdminUserRolesSet.Select(x => new InternalDictionaryAdminRoles
+                res.Roles = dbContext.AdminRolesSet.Select(x => new InternalDictionaryAdminRoles
                 {
-                    Id = x.Role.Id,
-                    AccessLevel = (EnumDocumentAccesses)x.Role.AccessLevelId,
-                    PositionId = x.Role.PositionId
+                    Id = x.Id
+
+                }).ToList();
+
+                res.PositionRoles = dbContext.AdminPositionRolesSet.Select(x => new InternalDictionaryAdminPositionRoles
+                {
+                    AccessLevel = (EnumDocumentAccesses)x.AccessLevelId,
+                    PositionId = x.PositionId,
+                    Id = x.Id,
+                    RoleId = x.RoleId
                 }).ToList();
 
                 res.Actions = dbContext.SystemActionsSet.Select(x => new InternalDictionarySystemActions

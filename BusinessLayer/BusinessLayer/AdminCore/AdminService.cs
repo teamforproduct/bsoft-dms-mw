@@ -75,6 +75,7 @@ namespace BL.Logic.AdminCore
             {
                 model.PositionsIdList = context.CurrentPositionsIdList;
             }
+
             if (model.DocumentActionId.HasValue)
             {
                 if (model.IsPositionFromContext)
@@ -84,7 +85,7 @@ namespace BL.Logic.AdminCore
 
                 var qry = data.ActionAccess
                     .Join(data.Actions, aa => aa.ActionId, ac => ac.Id,(aa, ac) => new {ActAccess = aa, Act = ac})
-                    .Join(data.Roles, aa => aa.ActAccess.RoleId, r => r.Id,(aa, r) => new {aa.ActAccess, aa.Act, Role = r});
+                    .Join(data.PositionRoles, aa => aa.ActAccess.RoleId, r => r.Id,(aa, r) => new {aa.ActAccess, aa.Act, Role = r});
                 // test it really good!
                 res = qry.Any(x => x.Act.Id == model.DocumentActionId
                 && data.UserRoles.Where(s => s.RoleId == x.Role.Id).Any(y => y.UserId == model.UserId)
@@ -93,9 +94,9 @@ namespace BL.Logic.AdminCore
             }
             else
             {
-                var qry = data.UserRoles.Join(data.Roles, ur => ur.RoleId, r => r.Id, (u, r) => new {URole = u, Rl = r});
+                var qry = data.UserRoles.Join(data.PositionRoles, ur => ur.RoleId, r => r.RoleId, (u, r) => new {URole = u, PR = r});
 
-                res = !model.PositionsIdList.Except(qry.Where(x => x.URole.UserId == model.UserId).Select(x => x.Rl.PositionId)).Any();
+                res = !model.PositionsIdList.Except(qry.Where(x => x.URole.UserId == model.UserId).Select(x => x.PR.PositionId)).Any();
             }
             if (!res && isThrowExeception)
             {
