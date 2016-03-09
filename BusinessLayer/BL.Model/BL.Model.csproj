@@ -155,7 +155,7 @@
     <Compile Include="DocumentCore\InternalModel\InternalDocumentSubscription.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentWait.cs" />
     <Compile Include="Enums\EnumPropertyAction.cs" />
-    <Compile Include="Enums\EnumDictionaryAction.cs" />
+    <Compile Include="Enums\EnumDictionaryActions.cs" />
     <Compile Include="Enums\EnumDocumentActions.cs" />
     <Compile Include="Enums\EnumObjects.cs" />
     <Compile Include="Enums\EnumObserverType.cs" />

@@ -1,6 +1,6 @@
 ﻿namespace BL.Model.Enums
 {
-    public enum EnumDictionaryAction
+    public enum EnumDictionaryActions
     {
         AddDocumentType = 201001, // Добавить тип документа
         ModifyDocumentType = 201005, // Изменить тип документа
