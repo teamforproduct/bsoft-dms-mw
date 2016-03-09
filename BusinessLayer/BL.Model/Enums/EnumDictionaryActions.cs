@@ -1,20 +1,59 @@
 ﻿namespace BL.Model.Enums
 {
+    /// <summary>
+    /// Список экшенов по словарям
+    /// </summary>
     public enum EnumDictionaryActions
     {
-        AddDocumentType = 201001, // Добавить тип документа
-        ModifyDocumentType = 201005, // Изменить тип документа
-        DeleteDocumentType = 201009, // Удалить тип документа
+        /// <summary>
+        /// Добавить тип документа
+        /// </summary>
+        AddDocumentType = 201001, 
+        /// <summary>
+        /// Изменить тип документа
+        /// </summary>
+        ModifyDocumentType = 201005, 
+        /// <summary>
+        /// Удалить тип документа
+        /// </summary>
+        DeleteDocumentType = 201009, 
 
-        AddTag = 291001, // Добавить тэг
-        ModifyTag = 291005, // Изменить тэг
-        DeleteTag = 291009, // Удалить тэг
+        /// <summary>
+        /// Добавить тэг
+        /// </summary>
+        AddTag = 291001, 
+        /// <summary>
+        /// Изменить тэг
+        /// </summary>
+        ModifyTag = 291005, 
+        /// <summary>
+        /// Удалить тэг
+        /// </summary>
+        DeleteTag = 291009, 
 
+        /// <summary>
+        /// Добавить тип пользовательского словаря
+        /// </summary>
         AddCustomDictionaryType,
+        /// <summary>
+        /// Редактировать тип пользовательского словаря
+        /// </summary>
         ModifyCustomDictionaryType,
+        /// <summary>
+        /// Удалить тип пользовательского словаря
+        /// </summary>
         DeleteCustomDictionaryType,
+        /// <summary>
+        /// Добавит пользовательсткий словать
+        /// </summary>
         AddCustomDictionary,
+        /// <summary>
+        /// Редактировать пользовательский словарь
+        /// </summary>
         ModifyCustomDictionary,
+        /// <summary>
+        /// Удалить пользовательский словарь
+        /// </summary>
         DeleteCustomDictionary,
     }
 }
