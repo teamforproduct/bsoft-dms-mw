@@ -10,45 +10,45 @@ namespace BL.Logic.DictionaryCore
 {
     public static class DictionaryCommandFactory
     {
-        public static IDictionaryCommand GetDictionaryCommand(EnumDictionaryAction act, IContext ctx, object param)
+        public static IDictionaryCommand GetDictionaryCommand(EnumDictionaryActions act, IContext ctx, object param)
         {
             IDictionaryCommand cmd;
             switch (act)
             {
-                case EnumDictionaryAction.ModifyDocumentType:
+                case EnumDictionaryActions.ModifyDocumentType:
                     cmd = DmsResolver.Current.Get<ModifyDictionaryDocumentTypeCommand>();
                     break;
-                case EnumDictionaryAction.AddDocumentType:
+                case EnumDictionaryActions.AddDocumentType:
                     cmd = DmsResolver.Current.Get<AddDictionaryDocumentTypeCommand>();
                     break;
-                case EnumDictionaryAction.DeleteDocumentType:
+                case EnumDictionaryActions.DeleteDocumentType:
                     cmd = DmsResolver.Current.Get<DeleteDictionaryDocumentTypeCommand>();
                     break;
-                case EnumDictionaryAction.ModifyTag:
+                case EnumDictionaryActions.ModifyTag:
                     cmd = DmsResolver.Current.Get<ModifyDictionaryTagCommand>();
                     break;
-                case EnumDictionaryAction.AddTag:
+                case EnumDictionaryActions.AddTag:
                     cmd = DmsResolver.Current.Get<AddDictionaryTagCommand>();
                     break;
-                case EnumDictionaryAction.AddCustomDictionaryType:
+                case EnumDictionaryActions.AddCustomDictionaryType:
                     cmd = DmsResolver.Current.Get<AddCustomDictionaryTypeCommand>();
                     break;
-                case EnumDictionaryAction.ModifyCustomDictionaryType:
+                case EnumDictionaryActions.ModifyCustomDictionaryType:
                     cmd = DmsResolver.Current.Get<ModifyCustomDictionaryTypeCommand>();
                     break;
-                case EnumDictionaryAction.DeleteCustomDictionaryType:
+                case EnumDictionaryActions.DeleteCustomDictionaryType:
                     cmd = DmsResolver.Current.Get<DeleteCustomDictionaryTypeCommand>();
                     break;
-                case EnumDictionaryAction.AddCustomDictionary:
+                case EnumDictionaryActions.AddCustomDictionary:
                     cmd = DmsResolver.Current.Get<AddCustomDictionaryCommand>();
                     break;
-                case EnumDictionaryAction.ModifyCustomDictionary:
+                case EnumDictionaryActions.ModifyCustomDictionary:
                     cmd = DmsResolver.Current.Get<ModifyCustomDictionaryCommand>();
                     break;
-                case EnumDictionaryAction.DeleteCustomDictionary:
+                case EnumDictionaryActions.DeleteCustomDictionary:
                     cmd = DmsResolver.Current.Get<DeleteCustomDictionaryCommand>();
                     break;
-                case EnumDictionaryAction.DeleteTag:
+                case EnumDictionaryActions.DeleteTag:
                     return null;
                     break;
                 default:

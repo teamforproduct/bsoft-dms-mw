@@ -10,7 +10,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
 {
     public interface IDictionaryService
     {
-        object ExecuteAction(EnumDictionaryAction act, IContext context, object param);
+        object ExecuteAction(EnumDictionaryActions act, IContext context, object param);
 
         #region DictionaryAgents
         BaseDictionaryAgent GetDictionaryAgent(IContext context, int id);
