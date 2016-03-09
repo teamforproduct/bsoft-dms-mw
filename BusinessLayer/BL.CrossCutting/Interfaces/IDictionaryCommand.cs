@@ -4,8 +4,8 @@ namespace BL.CrossCutting.Interfaces
 {
     public interface IDictionaryCommand:ICommand
     {
-        void InitializeCommand(EnumDictionaryAction action, IContext ctx);
-        void InitializeCommand(EnumDictionaryAction action, IContext ctx, object param);
-        EnumDictionaryAction CommandType { get; }
+        void InitializeCommand(EnumDictionaryActions action, IContext ctx);
+        void InitializeCommand(EnumDictionaryActions action, IContext ctx, object param);
+        EnumDictionaryActions CommandType { get; }
     }
 }

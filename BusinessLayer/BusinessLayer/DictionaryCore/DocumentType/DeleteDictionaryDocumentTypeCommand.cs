@@ -1,23 +1,12 @@
 ﻿using System;
-using BL.Database.Dictionaries.Interfaces;
 using BL.Logic.Common;
 using BL.Model.DictionaryCore.InternalModel;
-using BL.Model.Enums;
 using BL.Model.Exception;
-using BL.Model.SystemCore;
 
 namespace BL.Logic.DictionaryCore.DocumentType
 {
     public class DeleteDictionaryDocumentTypeCommand : BaseDictionaryCommand
-   
     {
-        private readonly IDictionariesDbProcess _dictDb;
-
-        public DeleteDictionaryDocumentTypeCommand(IDictionariesDbProcess dictDb)
-        {
-            _dictDb = dictDb;
-        }
-
         private int Model
         {
             get

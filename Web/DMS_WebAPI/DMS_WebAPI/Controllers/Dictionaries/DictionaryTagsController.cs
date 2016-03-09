@@ -49,7 +49,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            return Get((int)tmpDictProc.ExecuteAction(EnumDictionaryAction.AddTag, cxt, model));
+            return Get((int)tmpDictProc.ExecuteAction(EnumDictionaryActions.AddTag, cxt, model));
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             model.Id = id;
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            tmpDictProc.ExecuteAction(EnumDictionaryAction.ModifyTag, cxt, model);
+            tmpDictProc.ExecuteAction(EnumDictionaryActions.ModifyTag, cxt, model);
             return Get(model.Id);
         }
     }

@@ -45,7 +45,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
-            return Get((int)tmpDict.ExecuteAction(EnumDictionaryAction.AddDocumentType,  cxt, model));
+            return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.AddDocumentType,  cxt, model));
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             model.Id = id;
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
-            tmpDict.ExecuteAction(EnumDictionaryAction.ModifyDocumentType, cxt, model);
+            tmpDict.ExecuteAction(EnumDictionaryActions.ModifyDocumentType, cxt, model);
             return Get(model.Id);
         }
 
@@ -72,7 +72,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
 
-            tmpDict.ExecuteAction(EnumDictionaryAction.DeleteDocumentType, cxt, id);
+            tmpDict.ExecuteAction(EnumDictionaryActions.DeleteDocumentType, cxt, id);
             FrontDictionaryDocumentType tmp = new FrontDictionaryDocumentType();
             tmp.Id = id;
 

@@ -100,12 +100,8 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
 
-                var qry = CommonQueries.GetDocumentQuery(dbContext);
-
-                qry = qry.Where(
-                        x =>
-                            ctx.CurrentPositionsIdList.Contains(x.Acc.PositionId) &&
-                            (!filters.IsInWork || filters.IsInWork && x.Acc.IsInWork == filters.IsInWork));
+                var acc = CommonQueries.GetDocumentAccesses(ctx, dbContext).Where(x=> (!filters.IsInWork || filters.IsInWork && x.IsInWork == filters.IsInWork));
+                var qry = CommonQueries.GetFrontDocumentQuery(dbContext, acc);
 
                 #region DocumentsSetFilter
 
@@ -228,7 +224,8 @@ namespace BL.Database.Documents
 
                 #endregion DocumentsSetFilter
 
-                paging.TotalItemsCount = qry.Count(); //TODO pay attention to this when we will add paging
+                paging.TotalItemsCount = qry.Count();
+
                 qry = qry.OrderByDescending(x => x.Doc.CreateDate)
                     .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
 
@@ -249,7 +246,6 @@ namespace BL.Database.Documents
                 {
                     Id = x.Doc.Id,
                     DocumentTypeId = x.Templ.DocumentTypeId,
-                    AccessLevel = (EnumDocumentAccesses)x.Acc.AccessLevelId,
                     ExecutorPositionId = x.Doc.ExecutorPositionId,
                     DocumentDirection = (EnumDocumentDirections)x.Templ.DocumentDirectionId,
                     Description = x.Doc.Description,
@@ -275,8 +271,6 @@ namespace BL.Database.Documents
                     DocumentDirectionName = x.DirName,
                     DocumentTypeName = x.DocTypeName,
                     DocumentDate = x.Doc.RegistrationDate ?? x.Doc.CreateDate,
-                    IsFavourite = x.Acc.IsFavourite,
-                    IsInWork = x.Acc.IsInWork,
                     LinkId = x.Doc.LinkId,
                     EventsCount = 0, //x.Doc.Events.Count,
                     NewEventCount = 0, //TODO
@@ -285,6 +279,17 @@ namespace BL.Database.Documents
                 });
 
                 var docs = res.ToList();
+                var accs = acc.ToList();
+
+                foreach (var doc in docs)
+                {
+                    doc.Accesses = accs.Where(x => x.DocumentId == doc.Id).ToList();
+                    doc.IsFavourite = doc.Accesses.Any(x => x.IsFavourite);
+                    doc.IsInWork = doc.Accesses.Any(x => x.IsInWork);
+                    doc.AccessLevel = doc.Accesses.Max(x => x.AccessLevel);
+                    doc.AccessLevelName = doc.Accesses.FirstOrDefault(x => x.AccessLevel == doc.AccessLevel).AccessLevelName;
+                }
+
                 foreach (var x1 in docs.Join(evnt, d => d.Id, e => e.DocID, (d, e) => new { doc = d, ev = e }))
                 {
                     x1.doc.EventsCount = x1.ev.EvnCnt;
