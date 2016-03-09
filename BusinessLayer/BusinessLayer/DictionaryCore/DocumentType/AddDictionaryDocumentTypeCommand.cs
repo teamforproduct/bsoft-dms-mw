@@ -1,27 +1,14 @@
 ﻿using System;
-using BL.Database.Dictionaries.Interfaces;
-using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.Common;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.InternalModel;
-using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Model.DictionaryCore.FilterModel;
-using BL.Model.SystemCore;
 
 namespace BL.Logic.DictionaryCore.DocumentType
 {
     public class AddDictionaryDocumentTypeCommand : BaseDictionaryCommand
     {
-        private readonly IDictionariesDbProcess _dictDb;
-        private readonly IAdminService _admin;
-
-        public AddDictionaryDocumentTypeCommand(IDictionariesDbProcess dictDb, IAdminService admin)
-        {
-            _dictDb = dictDb;
-            _admin = admin;
-        }
-
         private ModifyDictionaryDocumentType Model
         {
             get

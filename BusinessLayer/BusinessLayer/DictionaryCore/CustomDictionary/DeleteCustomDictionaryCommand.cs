@@ -1,21 +1,11 @@
 ﻿using System;
-using BL.Database.Dictionaries.Interfaces;
 using BL.Logic.Common;
-using BL.Model.Enums;
 using BL.Model.Exception;
-using BL.Model.SystemCore;
 
 namespace BL.Logic.DictionaryCore.CustomDictionary
 {
     public class DeleteCustomDictionaryCommand : BaseDictionaryCommand
     {
-        private readonly IDictionariesDbProcess _dictDb;
-
-        public DeleteCustomDictionaryCommand(IDictionariesDbProcess dictDb)
-        {
-            _dictDb = dictDb;
-        }
-
         private int Model
         {
             get

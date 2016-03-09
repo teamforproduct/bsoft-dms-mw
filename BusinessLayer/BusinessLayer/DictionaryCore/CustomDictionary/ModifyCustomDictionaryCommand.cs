@@ -1,25 +1,15 @@
 ﻿using System;
-using BL.Database.Dictionaries.Interfaces;
 using BL.Logic.Common;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.InternalModel;
-using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Model.DictionaryCore.FilterModel;
-using BL.Model.SystemCore;
 using System.Collections.Generic;
 
 namespace BL.Logic.DictionaryCore.CustomDictionary
 {
     public class ModifyCustomDictionaryCommand : BaseDictionaryCommand
     {
-        private readonly IDictionariesDbProcess _dictDb;
-
-        public ModifyCustomDictionaryCommand(IDictionariesDbProcess dictDb)
-        {
-            _dictDb = dictDb;
-        }
-
         private ModifyCustomDictionary Model
         {
             get
