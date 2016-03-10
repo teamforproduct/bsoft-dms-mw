@@ -1,12 +1,12 @@
 ﻿using System.Linq;
 using System.Net.Mail;
-using BL.Model.SystemCore;
+using BL.Model.SystemCore.InternalModel;
 
 namespace BL.Logic.MailWorker
 {
     public class BasicSmtpMailSender : BaseMailSender
     {
-        protected override void Send(SendMailData mailData)
+        protected override void Send(InternalSendMailParameters mailData)
         {
             using (SmtpClient client = new SmtpClient(mailData.Server, mailData.Port))
             {

@@ -16,7 +16,7 @@ namespace BL.Database.SystemDb
         IEnumerable<BaseSystemUIElement> GetSystemUIElements(IContext ctx, FilterSystemUIElement filter);
 
         #region Properties
-
+        IEnumerable<BaseSystemUIElement> GetPropertyUIElements(IContext context, FilterPropertyLink filter);
         InternalProperty GetProperty(IContext context, FilterProperty filter);
 
         IEnumerable<FrontProperty> GetProperties(IContext context, FilterProperty filter);
@@ -50,20 +50,10 @@ namespace BL.Database.SystemDb
 
         #endregion PropertyLinks
 
-        #region PropertyValues
+        #region Mailing
 
-        InternalPropertyValue GetPropertyValue(IContext context, FilterPropertyValue filter);
-
-        IEnumerable<FrontPropertyValue> GetPropertyValues(IContext context, FilterPropertyValue filter);
-
-        int AddPropertyValue(IContext context, InternalPropertyValue model);
-
-        void ModifyPropertyValues(IContext context, InternalPropertyValues model);
-
-        void UpdatePropertyValue(IContext context, InternalPropertyValue model);
-
-        void DeletePropertyValue(IContext context, InternalPropertyValue model);
-
-        #endregion PropertyValues
+        IEnumerable<InternalDataForMail> GetNewActionsForMailing(IContext ctx);
+        void MarkActionsLikeMailSended(IContext ctx, InternalMailProcessed mailProcessed);
+        #endregion
     }
 }

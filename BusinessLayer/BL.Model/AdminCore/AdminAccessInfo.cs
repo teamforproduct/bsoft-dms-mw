@@ -8,6 +8,7 @@ namespace BL.Model.AdminCore
         public List<InternalDictionaryAdminRoleActions> ActionAccess { get; set; }
         public List<InternalDictionaryAdminUserRoles> UserRoles { get; set; }
         public List<InternalDictionaryAdminRoles> Roles { get; set; }
+        public List<InternalDictionaryAdminPositionRoles> PositionRoles { get; set; }
         public List<InternalDictionarySystemActions> Actions { get; set; }
     }
 }

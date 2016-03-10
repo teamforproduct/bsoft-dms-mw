@@ -23,7 +23,7 @@ namespace BL.Logic.DictionaryCore
             _commandService = commandService;
         }
 
-        public object ExecuteAction(EnumDictionaryAction act, IContext context, object param)
+        public object ExecuteAction(EnumDictionaryActions act, IContext context, object param)
         {
             var cmd = DictionaryCommandFactory.GetDictionaryCommand(act, context, param);
             var res = _commandService.ExecuteCommand(cmd);

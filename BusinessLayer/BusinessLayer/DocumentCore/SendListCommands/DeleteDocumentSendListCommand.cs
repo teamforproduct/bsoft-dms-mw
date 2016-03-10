@@ -4,21 +4,17 @@ using BL.Logic.Common;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
-using BL.Logic.AdminCore.Interfaces;
-using BL.Model.SystemCore;
 
 namespace BL.Logic.DocumentCore.SendListCommands
 {
     public class DeleteDocumentSendListCommand : BaseDocumentCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
-        private readonly IAdminService _admin;
 
         protected InternalDocumentSendList DocSendList;
 
-        public DeleteDocumentSendListCommand(IDocumentOperationsDbProcess operationDb, IAdminService admin)
+        public DeleteDocumentSendListCommand(IDocumentOperationsDbProcess operationDb)
         {
-            _admin = admin;
             _operationDb = operationDb;
         }
 

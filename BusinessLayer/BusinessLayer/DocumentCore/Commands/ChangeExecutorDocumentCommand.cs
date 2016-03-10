@@ -1,22 +1,18 @@
 ﻿using BL.Logic.Common;
 using BL.Database.Documents.Interfaces;
-using BL.Logic.AdminCore.Interfaces;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.Enums;
 using BL.Model.Exception;
-using BL.Model.SystemCore;
 
 namespace BL.Logic.DocumentCore.Commands
 {
     public class ChangeExecutorDocumentCommand : BaseDocumentCommand
     {
         private readonly IDocumentsDbProcess _documentDb;
-        private readonly IAdminService _admin;
 
-        public ChangeExecutorDocumentCommand(IDocumentsDbProcess documentDb, IAdminService admin)
+        public ChangeExecutorDocumentCommand(IDocumentsDbProcess documentDb)
         {
             _documentDb = documentDb;
-            _admin = admin;
         }
 
         private ChangeExecutor Model

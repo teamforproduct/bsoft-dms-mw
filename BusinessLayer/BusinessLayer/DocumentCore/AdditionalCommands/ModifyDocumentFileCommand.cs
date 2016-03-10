@@ -2,7 +2,6 @@
 using System.IO;
 using System.Linq;
 using BL.Database.Documents.Interfaces;
-using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.Common;
 using BL.Logic.FileWorker;
 using BL.Model.DocumentCore.FrontModel;
@@ -10,21 +9,18 @@ using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
-using BL.Model.SystemCore;
 
 namespace BL.Logic.DocumentCore.AdditionalCommands
 {
     public class ModifyDocumentFileCommand: BaseDocumentCommand
     {
-        private readonly IAdminService _admin;
         private readonly IDocumentFileDbProcess _operationDb;
         private readonly IFileStore _fStore;
 
         private InternalDocumentAttachedFile fl;
 
-        public ModifyDocumentFileCommand(IAdminService admin, IDocumentFileDbProcess operationDb, IFileStore fStore)
+        public ModifyDocumentFileCommand(IDocumentFileDbProcess operationDb, IFileStore fStore)
         {
-            _admin = admin;
             _operationDb = operationDb;
             _fStore = fStore;
         }

@@ -67,11 +67,8 @@ namespace BL.Model.DocumentCore.IncomingModel
         [Required]
         public EnumDocumentAccesses AccessLevel { get; set; }
         /// <summary>
-        /// Не запонять!!!
         /// Признак первоначальный пункт
         /// </summary>
-        [XmlIgnore]
-        [IgnoreDataMember]
         public bool IsInitial { get; set; }
     }
 }

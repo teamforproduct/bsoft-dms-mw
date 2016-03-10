@@ -1,12 +1,12 @@
 ﻿using System.Linq;
 using System.Web.Mail;
-using BL.Model.SystemCore;
+using BL.Model.SystemCore.InternalModel;
 
 namespace BL.Logic.MailWorker
 {
     public class SSLMailSender: BaseMailSender
     {
-        protected override void Send(SendMailData mailData)
+        protected override void Send(InternalSendMailParameters mailData)
         {
             var myMail = new MailMessage();
             myMail.Fields.Add("http://schemas.microsoft.com/cdo/configuration/smtpserver", mailData.Server);

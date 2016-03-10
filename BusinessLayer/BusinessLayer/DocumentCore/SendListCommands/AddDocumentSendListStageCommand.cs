@@ -4,19 +4,15 @@ using BL.Logic.Common;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
-using BL.Logic.AdminCore.Interfaces;
-using BL.Model.SystemCore;
 
 namespace BL.Logic.DocumentCore.SendListCommands
 {
     public class AddDocumentSendListStageCommand : BaseDocumentCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
-        private readonly IAdminService _admin;
 
-        public AddDocumentSendListStageCommand(IDocumentOperationsDbProcess operationDb, IAdminService admin)
+        public AddDocumentSendListStageCommand(IDocumentOperationsDbProcess operationDb)
         {
-            _admin = admin;
             _operationDb = operationDb;
         }
 

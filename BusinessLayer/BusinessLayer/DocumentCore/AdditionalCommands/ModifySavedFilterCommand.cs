@@ -4,21 +4,17 @@ using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Logic.Common;
-using BL.Logic.AdminCore.Interfaces;
-using BL.Model.SystemCore;
 
 namespace BL.Logic.DocumentCore.AdditionalCommands
 {
     public class ModifySavedFilterCommand : BaseDocumentCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
-        private readonly IAdminService _admin;
 
         protected InternalDocumentSavedFilter DocSavedFilter;
 
-        public ModifySavedFilterCommand(IDocumentOperationsDbProcess operationDb, IAdminService admin)
+        public ModifySavedFilterCommand(IDocumentOperationsDbProcess operationDb)
         {
-            _admin = admin;
             _operationDb = operationDb;
         }
 

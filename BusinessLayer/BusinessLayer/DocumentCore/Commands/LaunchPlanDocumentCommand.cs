@@ -1,22 +1,17 @@
-﻿using System.Linq;
-using BL.Logic.Common;
+﻿using BL.Logic.Common;
 using BL.Database.Documents.Interfaces;
-using BL.Logic.AdminCore.Interfaces;
 using BL.Model.Enums;
 using BL.Model.Exception;
-using BL.Model.SystemCore;
 
 namespace BL.Logic.DocumentCore.Commands
 {
     public class LaunchPlanDocumentCommand : BaseDocumentCommand
     {
         private readonly IDocumentsDbProcess _documentDb;
-        private readonly IAdminService _admin;
 
-        public LaunchPlanDocumentCommand(IDocumentsDbProcess documentDb, IAdminService admin)
+        public LaunchPlanDocumentCommand(IDocumentsDbProcess documentDb)
         {
             _documentDb = documentDb;
-            _admin = admin;
         }
 
         private int Model
@@ -51,12 +46,13 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
+            _context.SetCurrentPosition(_document.ExecutorPositionId);
+            _admin.VerifyAccess(_context, CommandType);
             if (!CanBeDisplayed(_context.CurrentPositionId))
             {
                 throw new CouldNotChangeAttributeLaunchPlan();
             }
-            _context.SetCurrentPosition(_document.ExecutorPositionId);
-            _admin.VerifyAccess(_context, CommandType);
+
 
             return true;
         }

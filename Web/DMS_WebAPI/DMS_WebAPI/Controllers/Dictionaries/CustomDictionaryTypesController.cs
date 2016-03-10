@@ -42,7 +42,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
-            return Get((int)tmpDict.ExecuteAction(EnumDictionaryAction.AddCustomDictionaryType,  cxt, model));
+            return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.AddCustomDictionaryType,  cxt, model));
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             model.Id = id;
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
-            tmpDict.ExecuteAction(EnumDictionaryAction.ModifyCustomDictionaryType, cxt, model);
+            tmpDict.ExecuteAction(EnumDictionaryActions.ModifyCustomDictionaryType, cxt, model);
             return Get(model.Id);
         }
 
@@ -64,7 +64,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
-            tmpDict.ExecuteAction(EnumDictionaryAction.DeleteCustomDictionaryType, cxt, id);
+            tmpDict.ExecuteAction(EnumDictionaryActions.DeleteCustomDictionaryType, cxt, id);
             return new JsonResult(null, this);
         }
     }

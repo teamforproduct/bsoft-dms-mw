@@ -5,21 +5,17 @@ using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
-using BL.Logic.AdminCore.Interfaces;
-using BL.Model.SystemCore;
 
 namespace BL.Logic.DocumentCore.SendListCommands
 {
     public class ModifyDocumentSendListCommand : BaseDocumentCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
-        private readonly IAdminService _admin;
 
         protected InternalDocumentSendList DocSendList;
 
-        public ModifyDocumentSendListCommand(IDocumentOperationsDbProcess operationDb, IAdminService admin)
+        public ModifyDocumentSendListCommand(IDocumentOperationsDbProcess operationDb)
         {
-            _admin = admin;
             _operationDb = operationDb;
         }
 
@@ -58,6 +54,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
             DocSendList.DueDate = Model.DueDate;
             DocSendList.DueDay = Model.DueDay;
             DocSendList.AccessLevel = Model.AccessLevel;
+            DocSendList.IsInitial = Model.IsInitial;
 
             CommonDocumentUtilities.VerifySendLists(_document);
 

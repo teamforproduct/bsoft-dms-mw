@@ -68,6 +68,7 @@
     <Compile Include="CoreDb\CoreDb.cs" />
     <Compile Include="DatabaseContext\DmsContext.cs" />
     <Compile Include="DBModel\Admin\AdminAccessLevels.cs" />
+    <Compile Include="DBModel\Admin\AdminPositionRoles.cs" />
     <Compile Include="DBModel\Admin\AdminRoleActions.cs" />
     <Compile Include="DBModel\Admin\AdminRoles.cs" />
     <Compile Include="DBModel\Admin\AdminSubordinations.cs" />
@@ -356,6 +357,14 @@
     <Compile Include="Migrations\201603072305287_dictionaries.Designer.cs">
       <DependentUpon>201603072305287_dictionaries.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201603091445367_AddFieldTypeCodeInProperties.cs" />
+    <Compile Include="Migrations\201603091445367_AddFieldTypeCodeInProperties.Designer.cs">
+      <DependentUpon>201603091445367_AddFieldTypeCodeInProperties.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201603091552556_AdminPositionRoles.cs" />
+    <Compile Include="Migrations\201603091552556_AdminPositionRoles.Designer.cs">
+      <DependentUpon>201603091552556_AdminPositionRoles.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SystemDb\ISystemDbProcess.cs" />
@@ -539,6 +548,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201603072305287_dictionaries.resx">
       <DependentUpon>201603072305287_dictionaries.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201603091445367_AddFieldTypeCodeInProperties.resx">
+      <DependentUpon>201603091445367_AddFieldTypeCodeInProperties.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201603091552556_AdminPositionRoles.resx">
+      <DependentUpon>201603091552556_AdminPositionRoles.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

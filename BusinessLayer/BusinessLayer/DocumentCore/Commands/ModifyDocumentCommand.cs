@@ -1,16 +1,10 @@
 ﻿using System.Linq;
 using BL.Database.Documents.Interfaces;
 using BL.Logic.Common;
-using BL.Logic.AdminCore.Interfaces;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Model.DocumentCore.IncomingModel;
-using BL.Model.SystemCore;
-using BL.Model.DocumentCore.InternalModel;
-using System.Collections.Generic;
-using BL.Model.SystemCore.IncomingModel;
-using BL.Logic.PropertyCore.Interfaces;
 using BL.Model.SystemCore.InternalModel;
 
 namespace BL.Logic.DocumentCore.Commands
@@ -18,14 +12,10 @@ namespace BL.Logic.DocumentCore.Commands
     internal class ModifyDocumentCommand : BaseDocumentCommand
     {
         private readonly IDocumentsDbProcess _documentDb;
-        private readonly IAdminService _admin;
-        private readonly IPropertyService _prop;
 
-        public ModifyDocumentCommand(IDocumentsDbProcess documentDb, IAdminService admin, IPropertyService prop)
+        public ModifyDocumentCommand(IDocumentsDbProcess documentDb)
         {
             _documentDb = documentDb;
-            _admin = admin;
-            _prop = prop;
         }
 
         private ModifyDocument Model
@@ -86,29 +76,30 @@ namespace BL.Logic.DocumentCore.Commands
                 docAcc.AccessLevel = Model.AccessLevel;
             }
 
+            if (Model.Properties?.Count() > 0)
+            {
+                _document.Properties = Model.Properties.Select(x =>
+                {
+                    var item = new InternalPropertyValue
+                    {
+                        PropertyLinkId = x.PropertyLinkId,
+                        ValueString = x.Value
+                    };
+                    CommonDocumentUtilities.SetLastChange(_context, item);
+                    return item;
+                }).ToList();
+
+                var model = new InternalPropertyValues { Object = EnumObjects.Documents, PropertyValues = _document.Properties };
+
+                CommonSystemUtilities.VerifyPropertyValues(_context, model, new string[] { $"{nameof(_document.DocumentTypeId)}={_document.DocumentTypeId}", $"{nameof(_document.DocumentDirection)}={_document.DocumentDirection}", $"{nameof(_document.DocumentSubjectId)}={_document.DocumentSubjectId}" });
+
+                _document.Properties = model.PropertyValues;
+            }
+
             CommonDocumentUtilities.VerifyDocument(_context, new FrontDocument(_document), null);    //TODO отвязаться от фронт-модели
 
             _documentDb.ModifyDocument(_context, _document);
 
-            try
-            {
-                if (Model.Properties?.Count() > 0)
-                {
-                    var propertiesModel = new InternalPropertyValues
-                    {
-                        Object = EnumObjects.Documents,
-                        RecordId = Model.Id,
-                        PropertyValues = Model.Properties.Select(x => new InternalPropertyValue
-                        {
-                            PropertyLinkId = x.PropertyLinkId,
-                            ValueString = x.Value
-                        }).ToList()
-                    };
-
-                    _prop.ExecuteAction(EnumPropertyAction.ModifyPropertyValues, _context, propertiesModel);
-                }
-            }
-            catch { }
             return _document.Id;
         }
 

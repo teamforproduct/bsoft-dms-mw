@@ -521,4 +521,16 @@
         {
         }
     }
+
+    public class NotFilledWithAdditionalRequiredAttributes : DmsExceptions
+    {
+        private const string _MESSAGE = "Not filled with additional required attributes!";
+        public NotFilledWithAdditionalRequiredAttributes() : base(_MESSAGE)
+        {
+        }
+
+        public NotFilledWithAdditionalRequiredAttributes(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
 }

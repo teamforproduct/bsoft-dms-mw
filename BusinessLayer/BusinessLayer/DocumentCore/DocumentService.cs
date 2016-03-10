@@ -15,6 +15,7 @@ using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.SystemCore.Filters;
+using BL.Model.SystemCore.InternalModel;
 
 namespace BL.Logic.DocumentCore
 {
@@ -49,8 +50,11 @@ namespace BL.Logic.DocumentCore
         public IEnumerable<BaseSystemUIElement> GetModifyMetaData(IContext ctx, FrontDocument doc)
         {
             var sysDb = DmsResolver.Current.Get<ISystemDbProcess>();
-            var uiElements = sysDb.GetSystemUIElements(ctx, new FilterSystemUIElement() { ObjectCode = "Documents", ActionCode = "Modify" });
-            uiElements = CommonDocumentUtilities.VerifyDocument(ctx, doc, uiElements);
+            var uiElements = sysDb.GetSystemUIElements(ctx, new FilterSystemUIElement() { ObjectCode = "Documents", ActionCode = "Modify" }).ToList();
+            uiElements = CommonDocumentUtilities.VerifyDocument(ctx, doc, uiElements).ToList();
+
+            uiElements.AddRange(CommonSystemUtilities.GetPropertyUIElements(ctx,EnumObjects.Documents, new string[] { $"{nameof(doc.DocumentTypeId)}={doc.DocumentTypeId}", $"{nameof(doc.DocumentDirection)}={doc.DocumentDirection}", $"{nameof(doc.DocumentSubjectId)}={doc.DocumentSubjectId}" }));
+
             return uiElements;
         }
 
