@@ -48,9 +48,11 @@
     <Compile Include="DictionaryCore\FrontModel\FrontCustomDictionary.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontCustomDictionaryType.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAddressType.cs" />
+    <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgent.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyCustomDictionary.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyCustomDictionaryType.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAddressType.cs" />
+    <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgent.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalCustomDictionary.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAdminPositionRoles.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAdminRoleActions.cs" />

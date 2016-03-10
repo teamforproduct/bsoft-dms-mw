@@ -11,10 +11,10 @@ namespace DMS_WebAPI.Controllers.Dictionaries
     public class DictionaryAgentsController : ApiController
     {
         /// <summary>
-        /// Получение словаря агентов
+        /// Получение словаря контрагентов
         /// </summary>
         /// <param name="filter">фильтр</param>
-        /// <returns>Список агентов</returns>
+        /// <returns>Список контрагентов</returns>
         public IHttpActionResult Get([FromUri] FilterDictionaryAgent filter)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
