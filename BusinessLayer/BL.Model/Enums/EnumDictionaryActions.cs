@@ -16,7 +16,9 @@
         /// <summary>
         /// Удалить тип документа
         /// </summary>
-        DeleteDocumentType = 201009, 
+        DeleteDocumentType = 201009,
+
+        #region DictionaryAddressType
         /// <summary>
         /// Добавить тип адреса
         /// </summary>
@@ -28,8 +30,23 @@
         /// <summary>
         /// Удалить тип адреса
         /// </summary>       
-        DeleteAddressType = 202009,  
+        DeleteAddressType = 202009,
+        #endregion DictionaryAddressType
 
+        #region DictionaryDocumentSubject
+        /// <summary>
+        /// Добавить тип адреса
+        /// </summary>
+        AddDocumentSubject = 203001,
+        /// <summary>
+        /// Изменить тип адреса
+        /// </summary>       
+        ModifyDocumentSubject = 203005,
+        /// <summary>
+        /// Удалить тип адреса
+        /// </summary>       
+        DeleteDocumentSubject = 203009,
+        #endregion DictionaryDocumentSubject
 
         /// <summary>
         /// Добавить тэг
