@@ -7,6 +7,11 @@ using System.Web.Http;
 
 namespace DMS_WebAPI.Controllers.Dictionaries
 {
+    /// <summary>
+    /// Работа с общим представлением контрагента (Наименование, признак активности, список текущих типов)
+    /// От списка текущих типов в интерфейсе отходы на другие контроллеры, возвращающие детальную информацию,
+    /// соответствующую выбранному типу
+    /// </summary>
     [Authorize]
     public class DictionaryAgentsController : ApiController
     {
@@ -14,9 +19,13 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// Получение словаря контрагентов
         /// </summary>
         /// <param name="filter">фильтр</param>
-        /// <returns>Список контрагентов</returns>
+        /// <returns>Список контрагентов
+        /// </returns>
         public IHttpActionResult Get([FromUri] FilterDictionaryAgent filter)
         {
+            //TODO Краткий формат если фильтр не указан или содержит несколько типов
+            //     Формат конкретного типа, если тип явно указан в фильтре
+
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
             var tmpDicts = tmpDictProc.GetDictionaryAgents(cxt, filter);

@@ -23,10 +23,16 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// </summary>
         public string Name { get; set; }
 
+
+        /// <summary>
+        /// Список контактов контрагента
+        /// </summary>
+        public IEnumerable<FrontDictionaryContact> Contacts { get; set; }
+        
         /// <summary>
         /// Кем в данный момент является контрагент
         /// </summary>
-        public IEnumerable<EnumDictionaryAgentTypes> ActualTypes { get; set; }
+        public IEnumerable<FrontDictionaryAgentType> ActualTypes { get; set; }
 
         //public bool IsIndividual { get; set; }
         //public bool IsEmployee { get; set; }
@@ -37,7 +43,7 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// <summary>
         /// Резидентность
         /// </summary>
-        public int ResidentTypeId { get; set; }
+        public int? ResidentTypeId { get; set; }
         /// <summary>
         /// Дополнительная информация
         /// </summary>

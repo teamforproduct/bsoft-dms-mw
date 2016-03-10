@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using BL.Model.Enums;
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
@@ -15,13 +16,22 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// Отрывок наименования агента
         /// </summary>
         public string Name { get; set; }
+
         /// <summary>
-        /// Признак является ли агент физическим лицом
+        /// Признак активности агента
         /// </summary>
-        public bool? IsIndividual { get; set; }
+        public bool? IsActive { get; set; }
+
         /// <summary>
-        /// Признак является ли агент сотрудником
+        /// Контакт агента
+        /// Тип контакта не учитываем, ищем только по значению
         /// </summary>
-        public bool? IsEmployee { get; set; }
+        public string Contact { get; set; }
+        /// <summary>
+        /// Коллекция доступных типов агентов
+        /// </summary>
+        public IEnumerable<EnumDictionaryAgentTypes> ActualTypes { get; set; }
+        
+        
     }
 }

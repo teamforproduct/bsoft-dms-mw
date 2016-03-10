@@ -49,6 +49,8 @@
     <Compile Include="DictionaryCore\FrontModel\FrontCustomDictionaryType.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAddressType.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgent.cs" />
+    <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentType.cs" />
+    <Compile Include="DictionaryCore\FrontModel\FrontDictionaryContact.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyCustomDictionary.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyCustomDictionaryType.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAddressType.cs" />
@@ -61,6 +63,7 @@
     <Compile Include="AdminCore\FilterAdminAccessLevel.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalCustomDictionaryType.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAddressType.cs" />
+    <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAgent.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentSubscription.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentWait.cs" />
     <Compile Include="AdminCore\VerifyAccess.cs" />
@@ -160,6 +163,8 @@
     <Compile Include="DocumentCore\InternalModel\InternalDocumentSendListStage.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentSubscription.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentWait.cs" />
+    <Compile Include="Enums\EnumContactTypes.cs" />
+    <Compile Include="Enums\EnumDictionaryAgentTypes.cs" />
     <Compile Include="Enums\EnumPropertyAction.cs" />
     <Compile Include="Enums\EnumDictionaryActions.cs" />
     <Compile Include="Enums\EnumDocumentActions.cs" />

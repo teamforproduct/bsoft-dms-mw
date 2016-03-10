@@ -31,13 +31,13 @@ namespace BL.Logic.DictionaryCore
         }
 
         #region DictionaryAgents
-        public BaseDictionaryAgent GetDictionaryAgent(IContext context, int id)
+        public FrontDictionaryAgent GetDictionaryAgent(IContext context, int id)
         {
 
             return _dictDb.GetDictionaryAgent(context, id);
         }
 
-        public IEnumerable<BaseDictionaryAgent> GetDictionaryAgents(IContext context, FilterDictionaryAgent filter)
+        public IEnumerable<Model.DictionaryCore.FrontModel.FrontDictionaryAgent> GetDictionaryAgents(IContext context, FilterDictionaryAgent filter)
         {
 
             return _dictDb.GetDictionaryAgents(context, filter);

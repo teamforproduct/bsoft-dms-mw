@@ -13,9 +13,8 @@ namespace BL.Logic.DictionaryCore.Interfaces
         object ExecuteAction(EnumDictionaryActions act, IContext context, object param);
 
         #region DictionaryAgents
-        BaseDictionaryAgent GetDictionaryAgent(IContext context, int id);
-
-        IEnumerable<BaseDictionaryAgent> GetDictionaryAgents(IContext context, FilterDictionaryAgent filter);
+        FrontDictionaryAgent GetDictionaryAgent(IContext context, int id);
+        IEnumerable<Model.DictionaryCore.FrontModel.FrontDictionaryAgent> GetDictionaryAgents(IContext context, FilterDictionaryAgent filter);
         #endregion DictionaryAgents
 
         #region DictionaryAgentPersons
