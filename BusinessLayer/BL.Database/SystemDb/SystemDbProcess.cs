@@ -213,7 +213,7 @@ namespace BL.Database.SystemDb
             {
                 var qry = dbContext.PropertyLinksSet.AsQueryable();
 
-                if (filter.PropertyLinkId?.Count > 0)
+                if (filter.PropertyLinkId != null)
                 {
                     qry = qry.Where(x => filter.PropertyLinkId.Contains(x.Id));
                 }
