@@ -2,26 +2,23 @@
 using System.Linq;
 using BL.Logic.Common;
 using BL.Database.Documents.Interfaces;
-using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.FileWorker;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
-using BL.Model.SystemCore;
 
 namespace BL.Logic.DocumentCore.Commands
 {
     internal class AddDocumentCommand : BaseDocumentCommand
     {
         private readonly IDocumentsDbProcess _documentDb;
-        private readonly IAdminService _admin;
+        
         private readonly IFileStore _fStore;
 
-        public AddDocumentCommand(IDocumentsDbProcess documentDb, IAdminService admin, IFileStore fStore)
+        public AddDocumentCommand(IDocumentsDbProcess documentDb, IFileStore fStore)
         {
             _documentDb = documentDb;
-            _admin = admin;
             _fStore = fStore;
         }
 

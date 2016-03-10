@@ -2,25 +2,20 @@
 using BL.Logic.Common;
 using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore.Actions;
-using BL.Model.Enums;
 using BL.Model.Exception;
-using BL.Logic.AdminCore.Interfaces;
 using BL.Model.DocumentCore.InternalModel;
-using BL.Model.SystemCore;
 
 namespace BL.Logic.DocumentCore.Commands
 {
     public class AddFavouriteDocumentCommand: BaseDocumentCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
-        private readonly IAdminService _admin;
 
         private InternalDocumentAccess _docAccess;
 
-        public AddFavouriteDocumentCommand(IDocumentOperationsDbProcess operationDb, IAdminService admin)
+        public AddFavouriteDocumentCommand(IDocumentOperationsDbProcess operationDb)
         {
             _operationDb = operationDb;
-            _admin = admin;
         }
 
         private ChangeFavourites Model

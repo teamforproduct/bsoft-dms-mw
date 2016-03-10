@@ -1,25 +1,21 @@
 ﻿using System.Linq;
 using BL.Database.Documents.Interfaces;
-using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.Common;
 using BL.Logic.FileWorker;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
-using BL.Model.SystemCore;
 
 namespace BL.Logic.DocumentCore.AdditionalCommands
 {
     public class DeleteDocumentFileCommand: BaseDocumentCommand
     {
-        private readonly IAdminService _admin;
         private readonly IDocumentFileDbProcess _operationDb;
         private readonly IFileStore _fStore;
 
-        public DeleteDocumentFileCommand(IAdminService admin, IDocumentFileDbProcess operationDb, IFileStore fStore)
+        public DeleteDocumentFileCommand(IDocumentFileDbProcess operationDb, IFileStore fStore)
         {
-            _admin = admin;
             _operationDb = operationDb;
             _fStore = fStore;
         }

@@ -1,21 +1,16 @@
 ﻿using BL.Database.Documents.Interfaces;
-using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Exception;
-using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.Common;
 using BL.Model.Enums;
-using BL.Model.SystemCore;
 
 namespace BL.Logic.DocumentCore.AdditionalCommands
 {
     public class DeleteSavedFilterCommand : BaseDocumentCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
-        private readonly IAdminService _admin;
 
-        public DeleteSavedFilterCommand(IDocumentOperationsDbProcess operationDb, IAdminService admin)
+        public DeleteSavedFilterCommand(IDocumentOperationsDbProcess operationDb)
         {
-            _admin = admin;
             _operationDb = operationDb;
         }
 

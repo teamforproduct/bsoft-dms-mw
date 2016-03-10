@@ -1,28 +1,23 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using BL.Logic.Common;
 using BL.Database.Documents.Interfaces;
-using BL.Logic.AdminCore.Interfaces;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using System;
-using BL.Model.SystemCore;
 
 namespace BL.Logic.DocumentCore.Commands
 {
     public class AffixSigningDocumentCommand : BaseDocumentCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
-        private readonly IAdminService _admin;
 
         private InternalDocumentWait _docWait;
 
-        public AffixSigningDocumentCommand(IDocumentOperationsDbProcess operationDb, IAdminService admin)
+        public AffixSigningDocumentCommand(IDocumentOperationsDbProcess operationDb)
         {
             _operationDb = operationDb;
-            _admin = admin;
         }
 
         private AffixSigning Model

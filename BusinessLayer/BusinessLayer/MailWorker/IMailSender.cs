@@ -1,13 +1,12 @@
-﻿using System;
-using BL.Model.SystemCore;
+﻿using BL.Model.SystemCore.InternalModel;
 
 namespace BL.Logic.MailWorker
 {
     public interface IMailSender
     {
-        event Action<object, Exception> OnErrorMailSend;
-        event Action<object> OnSuccessMailSend;
+        //event Action<object, Exception> OnErrorMailSend;
+        //event Action<object> OnSuccessMailSend;
 
-        void SendMail(object senderId, SendMailData mailData);
+        void SendMail(object senderId, InternalSendMailParameters mailData);
     }
 }

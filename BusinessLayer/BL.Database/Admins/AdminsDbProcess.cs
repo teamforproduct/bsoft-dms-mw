@@ -36,11 +36,18 @@ namespace BL.Database.Admins
                     UserId = x.UserId
                 }).ToList();
 
-                res.Roles = dbContext.AdminUserRolesSet.Select(x => new InternalDictionaryAdminRoles
+                res.Roles = dbContext.AdminRolesSet.Select(x => new InternalDictionaryAdminRoles
                 {
-                    Id = x.Role.Id,
-                    AccessLevel = (EnumDocumentAccesses)x.Role.AccessLevelId,
-                    PositionId = x.Role.PositionId
+                    Id = x.Id
+
+                }).ToList();
+
+                res.PositionRoles = dbContext.AdminPositionRolesSet.Select(x => new InternalDictionaryAdminPositionRoles
+                {
+                    AccessLevel = (EnumDocumentAccesses)x.AccessLevelId,
+                    PositionId = x.PositionId,
+                    Id = x.Id,
+                    RoleId = x.RoleId
                 }).ToList();
 
                 res.Actions = dbContext.SystemActionsSet.Select(x => new InternalDictionarySystemActions
@@ -84,11 +91,11 @@ namespace BL.Database.Admins
                 {
                     qry = qry.Where(x => filter.UserId.Contains(x.RoleId));
                 }
-                return qry.Distinct().Select(x => new BaseAdminUserRole
+                return qry.Distinct().SelectMany(x=>x.Role.PositionRoles).Select(x => new BaseAdminUserRole
                 {
-                    RolePositionId = x.Role.Position.Id,
-                    RolePositionName = x.Role.Position.Name,
-                    RolePositionExecutorAgentName = x.Role.Position.ExecutorAgent.Name
+                    RolePositionId = x.PositionId,
+                    RolePositionName = x.Position.Name,
+                    RolePositionExecutorAgentName = x.Position.ExecutorAgent.Name
                 }).Distinct().ToList();
             }
         }

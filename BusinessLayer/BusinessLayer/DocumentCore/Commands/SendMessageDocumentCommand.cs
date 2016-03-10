@@ -5,9 +5,7 @@ using BL.Model.DocumentCore.Actions;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using System.Linq;
-using BL.Logic.AdminCore.Interfaces;
 using BL.Model.DocumentCore.InternalModel;
-using BL.Model.SystemCore;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -15,13 +13,11 @@ namespace BL.Logic.DocumentCore.Commands
     {
         private readonly IDocumentsDbProcess _documentDb;
         private readonly IDocumentOperationsDbProcess _operationDb;
-        private readonly IAdminService _admin;
 
-        public SendMessageDocumentCommand(IDocumentsDbProcess documentDb, IDocumentOperationsDbProcess operationDb, IAdminService admin)
+        public SendMessageDocumentCommand(IDocumentsDbProcess documentDb, IDocumentOperationsDbProcess operationDb)
         {
             _documentDb = documentDb;
             _operationDb = operationDb;
-            _admin = admin;
         }
 
         private SendMessage Model

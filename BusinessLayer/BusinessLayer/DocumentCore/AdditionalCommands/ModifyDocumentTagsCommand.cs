@@ -1,24 +1,20 @@
 ﻿using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Exception;
-using BL.Logic.AdminCore.Interfaces;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Logic.Common;
 using BL.Model.Enums;
-using BL.Model.SystemCore;
 
 namespace BL.Logic.DocumentCore.AdditionalCommands
 {
     public class ModifyDocumentTagsCommand : BaseDocumentCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
-        private readonly IAdminService _admin;
 
         protected InternalDocumentTag DocTags;
 
-        public ModifyDocumentTagsCommand(IDocumentOperationsDbProcess operationDb, IAdminService admin)
+        public ModifyDocumentTagsCommand(IDocumentOperationsDbProcess operationDb)
         {
-            _admin = admin;
             _operationDb = operationDb;
         }
 

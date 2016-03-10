@@ -6,21 +6,17 @@ using BL.Model.DocumentCore.IncomingModel;
 using System.Linq;
 using BL.Logic.Common;
 using System.Collections.Generic;
-using BL.Logic.AdminCore.Interfaces;
-using BL.Model.SystemCore;
 
 namespace BL.Logic.DocumentCore.AdditionalCommands
 {
     public class AddSavedFilterCommand : BaseDocumentCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
-        private readonly IAdminService _admin;
 
         protected InternalDocumentSavedFilter DocSavedFilter;
 
-        public AddSavedFilterCommand(IDocumentOperationsDbProcess operationDb, IAdminService admin)
+        public AddSavedFilterCommand(IDocumentOperationsDbProcess operationDb)
         {
-            _admin = admin;
             _operationDb = operationDb;
         }
 

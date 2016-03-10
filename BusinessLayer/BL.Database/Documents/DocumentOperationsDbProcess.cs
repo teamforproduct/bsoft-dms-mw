@@ -124,7 +124,7 @@ namespace BL.Database.Documents
                     var qry = dbContext.SystemActionsSet.Where(x => x.ObjectId == (int)EnumObjects.Documents
                     && x.IsVisible &&
                     (!x.IsGrantable ||
-                        x.RoleActions.Any(y => (posId == y.Role.PositionId) && y.Role.UserRoles.Any(z => z.UserId == context.CurrentAgentId)))
+                        x.RoleActions.Any(y => y.Role.PositionRoles.Any(pr=>pr.PositionId == posId) && y.Role.UserRoles.Any(z => z.UserId == context.CurrentAgentId)))
                     );
 
                     var actLst = qry.Select(a => new InternalSystemAction

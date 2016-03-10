@@ -49,6 +49,7 @@
     <Compile Include="DictionaryCore\IncomingModel\ModifyCustomDictionary.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyCustomDictionaryType.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalCustomDictionary.cs" />
+    <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAdminPositionRoles.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAdminRoleActions.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontAdminAccessLevel.cs" />
     <Compile Include="AdminCore\FilterAdminUserRole.cs" />
@@ -198,8 +199,11 @@
     <Compile Include="SystemCore\IncomingModel\ModifyPropertyValue.cs" />
     <Compile Include="SystemCore\IncomingModel\ModifyPropertyLink.cs" />
     <Compile Include="SystemCore\IncomingModel\ModifyProperty.cs" />
+    <Compile Include="SystemCore\InternalModel\InternalDataForMail.cs" />
+    <Compile Include="SystemCore\InternalModel\InternalMailProcessed.cs" />
     <Compile Include="SystemCore\InternalModel\InternalPropertyValues.cs" />
     <Compile Include="SystemCore\InternalModel\InternalPropertyValue.cs" />
+    <Compile Include="SystemCore\InternalModel\InternalSendMailServerParameters.cs" />
     <Compile Include="SystemCore\InternalModel\InternalSystemObject.cs" />
     <Compile Include="SystemCore\InternalModel\InternalPropertyLink.cs" />
     <Compile Include="SystemCore\InternalModel\InternalProperty.cs" />
@@ -209,7 +213,7 @@
     <Compile Include="AdminCore\DocumentActionsModel.cs" />
     <Compile Include="SystemCore\BaseSystemUIElement.cs" />
     <Compile Include="SystemCore\InternalModel\InternalPositionInfo.cs" />
-    <Compile Include="SystemCore\SendMailData.cs" />
+    <Compile Include="SystemCore\InternalModel\InternalSendMailParameters.cs" />
     <Compile Include="SystemCore\UIPaging.cs" />
     <Compile Include="Users\Employee.cs" />
     <Compile Include="Users\CurrentPosition.cs" />
