@@ -25,16 +25,16 @@ namespace BL.Logic.DictionaryCore
                     cmd = DmsResolver.Current.Get<DeleteDictionaryDocumentTypeCommand>();
                     break;
                 
-                case EnumDictionaryAction.ModifyAddressType:
+                case EnumDictionaryActions.ModifyAddressType:
                     cmd = DmsResolver.Current.Get<ModifyDictionaryAddressTypeCommand>();
                     break;
-                case EnumDictionaryAction.AddAddressType:
+                case EnumDictionaryActions.AddAddressType:
                     cmd = DmsResolver.Current.Get<AddDictionaryAddressTypeCommand>();
                     break;
-                case EnumDictionaryAction.DeleteAddressType:
+                case EnumDictionaryActions.DeleteAddressType:
                     cmd = DmsResolver.Current.Get<DeleteDictionaryAddressTypeCommand>();
                     break;
-                case EnumDictionaryAction.ModifyTag:
+                case EnumDictionaryActions.ModifyTag:
                     cmd = DmsResolver.Current.Get<ModifyDictionaryTagCommand>();
                     break;
                 case EnumDictionaryActions.AddTag:

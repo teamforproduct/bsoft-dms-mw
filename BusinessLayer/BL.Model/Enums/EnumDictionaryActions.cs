@@ -67,6 +67,6 @@
         /// <summary>
         /// Удалить пользовательский словарь
         /// </summary>
-        DeleteCustomDictionary,
+        DeleteCustomDictionary
     }
 }

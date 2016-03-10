@@ -11,13 +11,8 @@ namespace BL.Logic.DictionaryCore.DocumentType
    
     {
         private readonly IDictionariesDbProcess _dictDb;
-        private readonly IAdminService _admin;
 
-        public DeleteDictionaryDocumentTypeCommand(IDictionariesDbProcess dictDb, IAdminService admin)
-        {
-            _dictDb = dictDb;
-            _admin = admin;
-        }
+
 
         private int Model
         {

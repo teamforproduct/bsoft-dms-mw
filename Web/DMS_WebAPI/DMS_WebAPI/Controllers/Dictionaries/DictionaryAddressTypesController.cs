@@ -49,7 +49,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
-            return Get((int)tmpDict.ExecuteAction(EnumDictionaryAction.AddAddressType, cxt, model));
+            return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.AddAddressType, cxt, model));
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             model.Id = id;
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
-            tmpDict.ExecuteAction(EnumDictionaryAction.ModifyAddressType, cxt, model);
+            tmpDict.ExecuteAction(EnumDictionaryActions.ModifyAddressType, cxt, model);
             return Get(model.Id);
         }
 
@@ -76,7 +76,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
 
-            tmpDict.ExecuteAction(EnumDictionaryAction.DeleteAddressType, cxt, id);
+            tmpDict.ExecuteAction(EnumDictionaryActions.DeleteAddressType, cxt, id);
             FrontDictionaryAddressType tmp = new FrontDictionaryAddressType();
             tmp.Id = id;
 
