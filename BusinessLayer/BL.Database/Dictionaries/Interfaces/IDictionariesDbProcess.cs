@@ -39,6 +39,15 @@ namespace BL.Database.Dictionaries.Interfaces
         IEnumerable<BaseDictionaryCompany> GetDictionaryCompanies(IContext context, FilterDictionaryCompany filter);
         #endregion DictionaryCompanies
 
+        #region DictionaryContacts
+        InternalDictionaryContact GetInternalDictionaryContact(IContext context,
+           FilterDictionaryContact filter);
+        void UpdateDictionaryContact(IContext context, InternalDictionaryContact contact);
+        void DeleteDictionaryContact(IContext context, InternalDictionaryContact contact);
+        int AddDictionaryContact(IContext context, InternalDictionaryContact contact);
+        IEnumerable<FrontDictionaryContact> GetDictionaryContacts(IContext context, FilterDictionaryContact filter);
+        #endregion
+
         #region DictionaryDepartments
         BaseDictionaryDepartment GetDictionaryDepartment(IContext context, int id);
 
@@ -65,7 +74,8 @@ namespace BL.Database.Dictionaries.Interfaces
         void DeleteDictionaryDocumentType(IContext context, InternalDictionaryDocumentType docType);
         int AddDictionaryDocumentType(IContext context, InternalDictionaryDocumentType docType);
         IEnumerable<FrontDictionaryDocumentType> GetDictionaryDocumentTypes(IContext context, FilterDictionaryDocumentType filter);
-        #endregion DictionaryDocumentSubjects
+        #endregion
+        
 
         #region DictionaryEventTypes
         BaseDictionaryEventType GetDictionaryEventType(IContext context, int id);

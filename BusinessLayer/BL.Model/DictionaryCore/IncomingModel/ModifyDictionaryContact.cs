@@ -4,17 +4,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BL.Model.Enums;
+using System.Runtime.Serialization;
 
-namespace BL.Model.DictionaryCore.FrontModel
+namespace BL.Model.DictionaryCore.IncomingModel
 {
     /// <summary>
     /// Контакт агента
     /// </summary>
-    public class FrontDictionaryContact
+    public class ModifyDictionaryContact
     {
         /// <summary>
         /// ИД
         /// </summary>
+        [IgnoreDataMember]
         public int Id { get; set; }
         /// <summary>
         /// ID агента
@@ -36,5 +38,6 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// Дополнительная информация
         /// </summary>
         public string Description { get; set; }
+
     }
 }

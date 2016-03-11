@@ -324,6 +324,26 @@ namespace BL.Database.Dictionaries
         }
         #endregion DictionaryCompanies
 
+        #region DictionaryContacts
+
+        public InternalDictionaryContact GetInternalDictionaryContact(IContext context,
+          FilterDictionaryContact filter)
+        {
+            return null;
+        }
+
+        public void UpdateDictionaryContact(IContext context, InternalDictionaryContact contact)
+        {
+            
+        }
+        public void DeleteDictionaryContact(IContext context, InternalDictionaryContact contact)
+        { }
+        public int AddDictionaryContact(IContext context, InternalDictionaryContact contact)
+        { return 0; }
+        public IEnumerable<FrontDictionaryContact> GetDictionaryContacts(IContext context, FilterDictionaryContact filter)
+        { return null; }
+        #endregion
+
         #region DictionaryDepartments
         public BaseDictionaryDepartment GetDictionaryDepartment(IContext context, int id)
         {

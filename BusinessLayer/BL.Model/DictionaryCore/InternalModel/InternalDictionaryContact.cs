@@ -4,13 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BL.Model.Enums;
+using BL.Model.Common;
 
-namespace BL.Model.DictionaryCore.FrontModel
+namespace BL.Model.DictionaryCore.InternalModel
 {
-    /// <summary>
-    /// Контакт агента
-    /// </summary>
-    public class FrontDictionaryContact
+    public class InternalDictionaryContact : LastChangeInfo
     {
         /// <summary>
         /// ИД

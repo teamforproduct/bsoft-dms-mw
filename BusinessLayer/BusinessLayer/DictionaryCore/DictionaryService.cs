@@ -89,6 +89,18 @@ namespace BL.Logic.DictionaryCore
         }
         #endregion DictionaryCompanies
 
+        #region DictionaryContacts
+        public FrontDictionaryContact GetDictionaryContact(IContext context, int id)
+        {
+            return _dictDb.GetDictionaryContacts(context, new FilterDictionaryContact { Id = id }).FirstOrDefault();
+        }
+
+        public IEnumerable<FrontDictionaryContact> GetDictionaryContacts(IContext context, FilterDictionaryContact filter)
+        {
+            return _dictDb.GetDictionaryContacts(context, filter);  
+        }
+        #endregion
+
         #region DictionaryDepartments
         public BaseDictionaryDepartment GetDictionaryDepartment(IContext context, int id)
         {

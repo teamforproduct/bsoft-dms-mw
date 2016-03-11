@@ -30,6 +30,11 @@ namespace BL.Logic.DictionaryCore.Interfaces
         IEnumerable<FrontDictionaryAddressType> GetDictionaryAddressTypes(IContext context, FilterDictionaryAddressType filter);
         #endregion
 
+        #region DictionaryContacts
+        FrontDictionaryContact GetDictionaryContact(IContext context, int id);
+
+        IEnumerable<FrontDictionaryContact> GetDictionaryContacts(IContext context, FilterDictionaryContact filter);
+        #endregion
         #region DictionaryCompanies
         BaseDictionaryCompany GetDictionaryCompany(IContext context, int id);
 

@@ -84,5 +84,11 @@ namespace BL.Model.DictionaryCore.FrontModel
             }
 
         }
+
+        /// <summary>
+        /// Список контактов
+        /// </summary>
+        public List<FrontDictionaryContact> Contacts { get; set; }
+
     }
 }

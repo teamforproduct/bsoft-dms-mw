@@ -29,7 +29,18 @@
         /// Удалить тип адреса
         /// </summary>       
         DeleteAddressType = 202009,  
-
+        /// <summary>
+        /// Добавить контакт
+        /// </summary>
+        AddContact,
+        /// <summary>
+        /// Изменить контакт
+        /// </summary>
+        ModifyContact,
+        /// <summary>
+        /// Удалить контакт
+        /// </summary>
+        DeleteContact,
 
         /// <summary>
         /// Добавить тэг
