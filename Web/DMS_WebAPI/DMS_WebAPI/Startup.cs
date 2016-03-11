@@ -1,5 +1,6 @@
 ﻿using BL.Logic.DependencyInjection;
-using BL.Logic.MailWorker;
+using BL.Logic.SystemServices.FullTextSearch;
+using BL.Logic.SystemServices.MailWorker;
 using Microsoft.Owin;
 using Owin;
 
@@ -12,10 +13,19 @@ namespace DMS_WebAPI
         public void Configuration(IAppBuilder app)
         {
             ConfigureAuth(app);
-            //var mailService = DmsResolver.Current.Get<IMailService>();
             //var readXml = new Utilities.ReadXml("/servers.xml");
             //var dbs = readXml.ReadDBs();
+
+            //foreach (var srv in DmsResolver.Current.GetAll<ISystemWorkerService>())
+            //{
+            //    srv.Initialize(dbs);
+            //}
+
+            //var mailService = DmsResolver.Current.Get<MailSenderWorkerService>();
             //mailService.Initialize(dbs);
+
+            //var indexService = DmsResolver.Current.Get<FullTextSearchService>();
+            //indexService.Initialize(dbs);
         }
     }
 }

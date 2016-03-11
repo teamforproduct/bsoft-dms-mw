@@ -3,6 +3,7 @@ using System.IO;
 using System.Security.Cryptography;
 using BL.CrossCutting.Interfaces;
 using BL.Logic.DependencyInjection;
+using BL.Model.Constants;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Exception;
 
@@ -10,37 +11,31 @@ namespace BL.Logic.FileWorker
 {
     public class FileStore : IFileStore
     {
-        private const string _FILE_STORE_PATH = "IRF_DMS_FILESTORE_PATH";
-        private const string _FILE_STORE_DEFAULT_PATH = @"c:\IRF_DMS_FILESTORE";
-        private const string _FILE_STORE_DOCUEMENT_FOLDER = @"DOCUMENT";
-        private const string _FILE_STORE_TEMPLATE_FOLDER = @"TEMPLATE";
-
-
         private string GetStorePath(IContext ctx)
         {
             var sett = DmsResolver.Current.Get<ISettings>();
             try
             {
-                return sett.GetSetting<string>(ctx, _FILE_STORE_PATH);
+                return sett.GetSetting<string>(ctx, SettingConstants.FILE_STORE_PATH);
             }
             catch
             {
-                sett.SaveSetting(ctx, _FILE_STORE_PATH, _FILE_STORE_DEFAULT_PATH);
-                return sett.GetSetting<string>(ctx, _FILE_STORE_PATH);
+                sett.SaveSetting(ctx, SettingConstants.FILE_STORE_PATH, SettingConstants.FILE_STORE_DEFAULT_PATH);
+                return sett.GetSetting<string>(ctx, SettingConstants.FILE_STORE_PATH);
             }
         }
 
         private string GetFullDocumentFilePath(IContext ctx, InternalDocumentAttachedFile attFile)
         {
             var path = GetStorePath(ctx);
-            path = Path.Combine(new string[] { path, _FILE_STORE_DOCUEMENT_FOLDER, ctx.CurrentAgentId.ToString(), attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString(), attFile.Version.ToString() });
+            path = Path.Combine(new string[] { path, SettingConstants.FILE_STORE_DOCUEMENT_FOLDER, ctx.CurrentAgentId.ToString(), attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString(), attFile.Version.ToString() });
             return path;
         }
 
         private string GetFullDocumentFilePath(IContext ctx, InternalTemplateAttachedFile attFile)
         {
             var path = GetStorePath(ctx);
-            path = Path.Combine(new string[] { path, _FILE_STORE_TEMPLATE_FOLDER, ctx.CurrentAgentId.ToString(), attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString() });
+            path = Path.Combine(new string[] { path, SettingConstants.FILE_STORE_TEMPLATE_FOLDER, ctx.CurrentAgentId.ToString(), attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString() });
             return path;
         }
 
@@ -109,7 +104,7 @@ namespace BL.Logic.FileWorker
             try
             {
                 var path = GetStorePath(ctx);
-                path = Path.Combine(new string[] { path, _FILE_STORE_TEMPLATE_FOLDER, ctx.CurrentAgentId.ToString(), templateId.ToString() });
+                path = Path.Combine(new string[] { path, SettingConstants.FILE_STORE_TEMPLATE_FOLDER, ctx.CurrentAgentId.ToString(), templateId.ToString() });
 
                 Directory.Delete(path, true);
             }
@@ -131,7 +126,7 @@ namespace BL.Logic.FileWorker
             try
             {
                 var path = GetStorePath(ctx);
-                path = Path.Combine(new string[] { path, _FILE_STORE_DOCUEMENT_FOLDER, ctx.CurrentAgentId.ToString(), documentId.ToString() });
+                path = Path.Combine(new string[] { path, SettingConstants.FILE_STORE_DOCUEMENT_FOLDER, ctx.CurrentAgentId.ToString(), documentId.ToString() });
 
                 Directory.Delete(path, true);
             }
@@ -153,7 +148,7 @@ namespace BL.Logic.FileWorker
             try
             {
                 var path = GetStorePath(ctx);
-                path = Path.Combine(new string[] { path, ((attFile is InternalDocumentAttachedFile)? _FILE_STORE_DOCUEMENT_FOLDER:_FILE_STORE_TEMPLATE_FOLDER), ctx.CurrentAgentId.ToString(), attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString() });
+                path = Path.Combine(new string[] { path, ((attFile is InternalDocumentAttachedFile)? SettingConstants.FILE_STORE_DOCUEMENT_FOLDER : SettingConstants.FILE_STORE_TEMPLATE_FOLDER), ctx.CurrentAgentId.ToString(), attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString() });
 
                 Directory.Delete(path, true);
             }
