@@ -48,6 +48,17 @@ namespace BL.Database.Dictionaries.Interfaces
         IEnumerable<FrontDictionaryContact> GetDictionaryContacts(IContext context, FilterDictionaryContact filter);
         #endregion
 
+        #region DictionaryContactTypes
+        InternalDictionaryContactType GetInternalDictionaryContactType(IContext context,FilterDictionaryContactType filter);
+        void UpdateDictionaryContactType(IContext context, InternalDictionaryContactType contactType);
+        void DeleteDictionaryContactType(IContext context, InternalDictionaryContactType contactType);
+        int AddDictionaryContactType(IContext context, InternalDictionaryContactType contactType);
+        IEnumerable<FrontDictionaryContactType> GetDictionaryContactTypes(IContext context, FilterDictionaryContactType filter);
+        #endregion
+
+
+
+
         #region DictionaryDepartments
         BaseDictionaryDepartment GetDictionaryDepartment(IContext context, int id);
 

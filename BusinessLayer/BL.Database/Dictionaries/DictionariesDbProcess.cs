@@ -240,7 +240,7 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(x => filter.Name == x.Name);
                 }
 
-                if (!String.IsNullOrEmpty(filter.Name))
+                if (filter.IsActive !=null)
                 {
                     qry = qry.Where(x => filter.IsActive == x.IsActive);
                 }
@@ -269,7 +269,12 @@ namespace BL.Database.Dictionaries
 
                 if (!String.IsNullOrEmpty(filter.Name))
                 {
-                    qry = qry.Where(x => filter.IsActive == x.IsActive);
+                    qry = qry.Where(x => x.Name.Contains(filter.Name));
+                }
+
+                if (filter.IsActive != null)
+                {
+                    qry = qry.Where(x => x.IsActive == filter.IsActive);
                 }
 
                 return qry.Select(x => new FrontDictionaryAddressType
@@ -323,6 +328,23 @@ namespace BL.Database.Dictionaries
             }
         }
         #endregion DictionaryCompanies
+
+        #region DictionaryContactTypes
+        public InternalDictionaryContactType GetInternalDictionaryContactType(IContext context, FilterDictionaryContactType filter)
+        {
+            return new InternalDictionaryContactType();
+        }
+        public void UpdateDictionaryContactType(IContext context, InternalDictionaryContactType contactType) { }
+        public void DeleteDictionaryContactType(IContext context, InternalDictionaryContactType contactType) { }
+        public int AddDictionaryContactType(IContext context, InternalDictionaryContactType contactType)
+        {
+            return 0;
+        }
+        public IEnumerable<FrontDictionaryContactType> GetDictionaryContactTypes(IContext context, FilterDictionaryContactType filter)
+        {
+            return  null;
+        }
+        #endregion
 
         #region DictionaryContacts
 
@@ -575,10 +597,10 @@ namespace BL.Database.Dictionaries
 
                 if (!String.IsNullOrEmpty(filter.Name))
                 {
-                    qry = qry.Where(x => filter.Name == x.Name);
+                    qry = qry.Where(x =>  x.Name.Contains(filter.Name));
                 }
 
-                if (!String.IsNullOrEmpty(filter.Name))
+                if (filter.IsActive!=null)
                 {
                     qry = qry.Where(x => filter.IsActive == x.IsActive);
                 }
@@ -607,10 +629,15 @@ namespace BL.Database.Dictionaries
 
                 if (!String.IsNullOrEmpty(filter.Name))
                 {
-                    qry = qry.Where(x => filter.IsActive == x.IsActive);
+                    qry = qry.Where(x => filter.Name.Contains(x.Name));
                 }
 
-                return qry.Select(x => new FrontDictionaryDocumentType
+                if (filter.IsActive != null)
+                { 
+                qry = qry.Where(x => x.IsActive==filter.IsActive);
+                }
+
+            return qry.Select(x => new FrontDictionaryDocumentType
                 {
                     Id = x.Id,
                     Name = x.Name,

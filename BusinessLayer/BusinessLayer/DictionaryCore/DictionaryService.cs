@@ -101,6 +101,19 @@ namespace BL.Logic.DictionaryCore
         }
         #endregion
 
+        #region DictionaryContactTypes
+        public FrontDictionaryContactType GetDictionaryContactType(IContext context, int id)
+        {
+            return _dictDb.GetDictionaryContactTypes(context, new FilterDictionaryContactType { ContactTypeId = new List<int> { id } }).FirstOrDefault();
+        }
+
+        public IEnumerable<FrontDictionaryContactType> GetDictionaryContactTypes(IContext context, FilterDictionaryContactType filter)
+        {
+            return _dictDb.GetDictionaryContactTypes(context, filter);
+        }
+        #endregion
+
+      
         #region DictionaryDepartments
         public BaseDictionaryDepartment GetDictionaryDepartment(IContext context, int id)
         {

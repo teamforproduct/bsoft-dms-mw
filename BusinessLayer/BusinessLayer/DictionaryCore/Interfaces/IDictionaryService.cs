@@ -35,6 +35,13 @@ namespace BL.Logic.DictionaryCore.Interfaces
 
         IEnumerable<FrontDictionaryContact> GetDictionaryContacts(IContext context, FilterDictionaryContact filter);
         #endregion
+
+        #region DictionaryContactTypes
+        FrontDictionaryContactType GetDictionaryContactType(IContext context, int id);
+
+        IEnumerable<FrontDictionaryContactType> GetDictionaryContactTypes(IContext context, FilterDictionaryContactType filter);
+        #endregion
+
         #region DictionaryCompanies
         BaseDictionaryCompany GetDictionaryCompany(IContext context, int id);
 

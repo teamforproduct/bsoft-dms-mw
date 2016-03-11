@@ -42,6 +42,11 @@
         /// </summary>
         DeleteContact,
 
+        AddContactType,
+        ModifyContactType,
+        DeleteContactType,
+
+
         /// <summary>
         /// Добавить тэг
         /// </summary>

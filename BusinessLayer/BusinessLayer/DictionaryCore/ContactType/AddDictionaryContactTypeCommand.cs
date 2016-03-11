@@ -5,19 +5,19 @@ using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.DictionaryCore.FilterModel;
 
-namespace BL.Logic.DictionaryCore.Contact
+namespace BL.Logic.DictionaryCore.ContactType
 {
-    public class AddDictionaryContact : BaseDictionaryCommand
+    public class AddDictionaryContactTypeCommand : BaseDictionaryCommand
     {
-        private ModifyDictionaryContact Model
+        private ModifyDictionaryContactType Model
         {
             get
             {
-                if (!(_param is ModifyDictionaryContact))
+                if (!(_param is ModifyDictionaryContactType))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ModifyDictionaryContact)_param;
+                return (ModifyDictionaryContactType)_param;
             }
         }
 
@@ -29,7 +29,8 @@ namespace BL.Logic.DictionaryCore.Contact
         public override bool CanExecute()
         {
             _admin.VerifyAccess(_context, CommandType, false);
-            var spr = _dictDb.GetInternalDictionaryContact(_context, new FilterDictionaryContact { Value = Model.Value, AgentId=Model.AgentId });
+            var spr = _dictDb.GetInternalDictionaryContactType(_context, 
+                   new FilterDictionaryContactType { Name = Model.Name });
             if (spr != null)
             {
                 throw new DictionaryRecordNotUnique();
@@ -43,16 +44,14 @@ namespace BL.Logic.DictionaryCore.Contact
         {
             try
             {
-                var newContact = new InternalDictionaryContact
+                var newContactType = new InternalDictionaryContactType
                 {
-                    AgentId=Model.AgentId,
-                    ContactType=Model.ContactType,
-                    Value = Model.Value,
-                    IsActive = Model.IsActive,
-                    Description=Model.Description
+                    Id = Model.Id,
+                    Name = Model.Name,
+                    InputMask=Model.InputMask
                 };
-                CommonDocumentUtilities.SetLastChange(_context, newContact);
-                return _dictDb.AddDictionaryContact(_context, newContact);
+                CommonDocumentUtilities.SetLastChange(_context, newContactType);
+                return _dictDb.AddDictionaryContactType(_context, newContactType);
             }
             catch (Exception ex)
             {

@@ -34,6 +34,28 @@ namespace BL.Logic.DictionaryCore
                 case EnumDictionaryActions.DeleteAddressType:
                     cmd = DmsResolver.Current.Get<DeleteDictionaryAddressTypeCommand>();
                     break;
+
+
+                case EnumDictionaryActions.ModifyContact:
+                    cmd = DmsResolver.Current.Get<ModifyDictionaryContactCommand>();
+                    break;
+                case EnumDictionaryActions.AddContact:
+                    cmd = DmsResolver.Current.Get<AddDictionaryContactCommand>();
+                    break;
+                case EnumDictionaryActions.DeleteContact:
+                    cmd = DmsResolver.Current.Get<DeleteDictionaryContactCommand>();
+                    break;
+
+                case EnumDictionaryActions.ModifyContactType:
+                    cmd = DmsResolver.Current.Get<ModifyDictionaryContactTypeCommand>();
+                    break;
+                case EnumDictionaryActions.AddContactType:
+                    cmd = DmsResolver.Current.Get<AddDictionaryContactTypeCommand>();
+                    break;
+                case EnumDictionaryActions.DeleteContactType:
+                    cmd = DmsResolver.Current.Get<DeleteDictionaryContactTypeCommand>();
+                    break;
+
                 case EnumDictionaryActions.ModifyTag:
                     cmd = DmsResolver.Current.Get<ModifyDictionaryTagCommand>();
                     break;
