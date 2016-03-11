@@ -189,6 +189,7 @@
     <Compile Include="FullTextSerach\EnumSearchObjectType.cs" />
     <Compile Include="FullTextSerach\FullTextSearchResult.cs" />
     <Compile Include="FullTextSerach\FullTextSettings.cs" />
+    <Compile Include="FullTextSerach\FullTextUpdateCashInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Enums\EnumLogTypes.cs" />
     <Compile Include="SystemCore\Filters\FilterPropertyValue.cs" />
