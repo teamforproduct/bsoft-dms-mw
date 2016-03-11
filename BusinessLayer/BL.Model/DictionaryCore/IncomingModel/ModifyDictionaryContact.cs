@@ -25,7 +25,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// Тип контакта
         /// </summary>
-        public string ContactType { get; set; }
+        public int ContactType { get; set; }
         /// <summary>
         /// Значение
         /// </summary>
