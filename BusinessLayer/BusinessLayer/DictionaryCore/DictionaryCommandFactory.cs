@@ -2,6 +2,8 @@
 using BL.Logic.DependencyInjection;
 using BL.Logic.DictionaryCore.CustomDictionary;
 using BL.Logic.DictionaryCore.DocumentType;
+using BL.Logic.DictionaryCore.Contact;
+using BL.Logic.DictionaryCore.ContactType;
 using BL.Logic.DictionaryCore.Tag;
 using BL.Model.Enums;
 using BL.Model.Exception;

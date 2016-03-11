@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BL.Logic.DictionaryCore.Contact
 {
-    class DeleteDictionaryContactCommand
+    public class DeleteDictionaryContactCommand : BaseDictionaryCommand
     {
     }
 }

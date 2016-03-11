@@ -59,7 +59,12 @@
     <Compile Include="DictionaryCore\AddressType\AddDictionaryAddressTypeCommand.cs" />
     <Compile Include="DictionaryCore\AddressType\DeleteDictionaryAddressTypeCommand.cs" />
     <Compile Include="DictionaryCore\AddressType\ModifyDictionaryAddressTypeCommand.cs" />
-    <Compile Include="DictionaryCore\Contact\AddDictionaryContact.cs" />
+    <Compile Include="DictionaryCore\ContactType\AddDictionaryContactTypeCommand.cs" />
+    <Compile Include="DictionaryCore\ContactType\DeleteDictionaryContactTypeCommand.cs" />
+    <Compile Include="DictionaryCore\ContactType\ModifyDictionaryContactTypeCommand.cs" />
+    <Compile Include="DictionaryCore\Contact\AddDictionaryContactCommand.cs" />
+    <Compile Include="DictionaryCore\Contact\DeleteDictionaryContactCommand.cs" />
+    <Compile Include="DictionaryCore\Contact\ModifyDictionaryContactCommand.cs" />
     <Compile Include="DictionaryCore\CustomDictionary\DeleteCustomDictionaryCommand.cs" />
     <Compile Include="DictionaryCore\CustomDictionary\AddCustomDictionaryCommand.cs" />
     <Compile Include="DictionaryCore\CustomDictionary\DeleteCustomDictionaryTypeCommand.cs" />
