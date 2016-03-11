@@ -53,7 +53,7 @@ namespace BL.Logic.DocumentCore.Commands
             _admin.VerifyAccess(_context, CommandType);
             if (!CanBeDisplayed(_context.CurrentPositionId))
             {
-                throw new DocumentCannotBeModifiedOrDeleted();
+                throw new CouldNotPerformThisOperation();
             }
             return true;
         }

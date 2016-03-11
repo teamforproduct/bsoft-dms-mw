@@ -91,8 +91,6 @@ namespace BL.Database.Documents
                         IsInitial = x.IsInitial,
                         StartEventId = x.StartEventId,
                         CloseEventId = x.CloseEventId,
-                        LastChangeUserId = x.LastChangeUserId,
-                        LastChangeDate = x.LastChangeDate,
                         GeneralInfo = string.Empty
                     }).FirstOrDefault();
 

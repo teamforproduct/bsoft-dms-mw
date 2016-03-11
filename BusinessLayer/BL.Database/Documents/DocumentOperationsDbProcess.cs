@@ -44,6 +44,7 @@ namespace BL.Database.Documents
                     {
                         Id = x.Doc.Id,
                         IsRegistered = x.Doc.IsRegistered,
+                        IsLaunchPlan = x.Doc.IsLaunchPlan,
                         ExecutorPositionId = x.Doc.ExecutorPositionId,
                         LinkId = x.Doc.LinkId,
                         IsInWork = x.Acc.IsInWork,
@@ -54,77 +55,88 @@ namespace BL.Database.Documents
                 {
 
                     res.Document.Accesses = dbContext.DocumentAccessesSet.Where(x => x.DocumentId == documentId)
-                                    .Select(x => new InternalDocumentAccess
-                                    {
-                                        Id = x.Id,
-                                        PositionId = x.PositionId,
-                                        IsInWork = x.IsInWork,
-                                        IsFavourite = x.IsFavourite,
-                                    }
-                                    ).ToList();
-
-                    res.Document.Events = dbContext.DocumentEventsSet.Where(x => x.DocumentId == documentId)
-                                                        .Select(x => new InternalDocumentEvent
-                                                        {
-                                                            Id = x.Id,
-                                                        }
-                                                        ).ToList();
-
-                    res.Document.Waits = dbContext.DocumentWaitsSet.Where(x => x.DocumentId == documentId)
-                                                        .Select(x => new InternalDocumentWait
-                                                        {
-                                                            Id = x.Id,
-                                                            OffEventId = x.OffEventId,
-                                                            ParentId = x.ParentId,
-                                                            OnEvent = new InternalDocumentEvent
-                                                            {
-                                                                Id = x.OnEvent.Id,
-                                                                Task = x.OnEvent.Task,
-                                                                SourcePositionId = x.OnEvent.SourcePositionId,
-                                                                TargetPositionId = x.OnEvent.TargetPositionId,
-                                                                //SourcePositionName = x.OnEvent.SourcePosition.Name,
-                                                                //TargetPositionName = x.OnEvent.TargetPosition.Name,
-                                                                //SourcePositionExecutorAgentName = x.OnEvent.SourcePosition.ExecutorAgent.Name,
-                                                                //TargetPositionExecutorAgentName = x.OnEvent.TargetPosition.ExecutorAgent.Name,
-                                                                EventType = (EnumEventTypes)x.OnEvent.EventTypeId,
-                                                                //GeneralInfo = $"от {x.OnEvent.SourcePosition.ExecutorAgent.Name} к {x.OnEvent.TargetPosition.ExecutorAgent.Name} {x.OnEvent.Task}"
-                                                            }
-
-                                                        }
-                                                        ).ToList();
-
-                    res.Document.Subscriptions = dbContext.DocumentSubscriptionsSet.Where(x => x.DocumentId == documentId)
-                                                        .Select(x => new InternalDocumentSubscription
-                                                        {
-                                                            Id = x.Id,
-                                                        }
-                                                        ).ToList();
-                    res.Document.SendLists = dbContext.DocumentSendListsSet.Where(x => x.DocumentId == documentId)
-                                    .Select(x => new InternalDocumentSendList
-                                    {
-                                        Id = x.Id,
-                                    }
-                                    ).ToList();
-                }
-
-                res.PositionWithActions = dbContext.DictionaryPositionsSet.Where(x => context.CurrentPositionsIdList.Contains(x.Id))
-                        .Select(x => new InternalDictionaryPositionWithActions
+                        .Select(x => new InternalDocumentAccess
                         {
                             Id = x.Id,
-                            Name = x.Name,
-                            DepartmentId = x.DepartmentId,
-                            ExecutorAgentId = x.ExecutorAgentId,
-                            DepartmentName = x.Department.Name,
-                            ExecutorAgentName = x.ExecutorAgent.Name,
-                        }).ToList();
+                            PositionId = x.PositionId,
+                            IsInWork = x.IsInWork,
+                            IsFavourite = x.IsFavourite,
+                        }
+                        ).ToList();
+
+                    res.Document.Events = dbContext.DocumentEventsSet.Where(x => x.DocumentId == documentId)
+                        .Select(x => new InternalDocumentEvent
+                        {
+                            Id = x.Id,
+                        }
+                        ).ToList();
+
+                    res.Document.Waits = dbContext.DocumentWaitsSet.Where(x => x.DocumentId == documentId)
+                        .Select(x => new InternalDocumentWait
+                        {
+                            Id = x.Id,
+                            OffEventId = x.OffEventId,
+                            ParentId = x.ParentId,
+                            OnEvent = new InternalDocumentEvent
+                            {
+                                Id = x.OnEvent.Id,
+                                Task = x.OnEvent.Task,
+                                SourcePositionId = x.OnEvent.SourcePositionId,
+                                TargetPositionId = x.OnEvent.TargetPositionId,
+                                //SourcePositionName = x.OnEvent.SourcePosition.Name,
+                                //TargetPositionName = x.OnEvent.TargetPosition.Name,
+                                //SourcePositionExecutorAgentName = x.OnEvent.SourcePosition.ExecutorAgent.Name,
+                                //TargetPositionExecutorAgentName = x.OnEvent.TargetPosition.ExecutorAgent.Name,
+                                EventType = (EnumEventTypes)x.OnEvent.EventTypeId,
+                                //GeneralInfo = $"от {x.OnEvent.SourcePosition.ExecutorAgent.Name} к {x.OnEvent.TargetPosition.ExecutorAgent.Name} {x.OnEvent.Task}"
+                            }
+
+                        }
+                        ).ToList();
+
+                    res.Document.Subscriptions =
+                        dbContext.DocumentSubscriptionsSet.Where(x => x.DocumentId == documentId)
+                            .Select(x => new InternalDocumentSubscription
+                            {
+                                Id = x.Id,
+                            }
+                            ).ToList();
+                    res.Document.SendLists = dbContext.DocumentSendListsSet.Where(x => x.DocumentId == documentId)
+                        .Select(x => new InternalDocumentSendList
+                        {
+                            Id = x.Id,
+                        }
+                        ).ToList();
 
 
+
+                    var posAcc = res.Document?.Accesses.Select(y => y.PositionId).ToList();
+
+                    if (posAcc.Any())
+                    {
+                        res.PositionWithActions = dbContext.DictionaryPositionsSet
+                            .Where(
+                                x =>
+                                    context.CurrentPositionsIdList.Contains(x.Id) &&
+                                    posAcc.Contains(x.Id))
+                            .Select(x => new InternalDictionaryPositionWithActions
+                            {
+                                Id = x.Id,
+                                Name = x.Name,
+                                DepartmentId = x.DepartmentId,
+                                ExecutorAgentId = x.ExecutorAgentId,
+                                DepartmentName = x.Department.Name,
+                                ExecutorAgentName = x.ExecutorAgent.Name,
+                            }).ToList();
+                    }
+
+                }
                 foreach (int posId in context.CurrentPositionsIdList)
                 {
                     var qry = dbContext.SystemActionsSet.Where(x => x.ObjectId == (int)EnumObjects.Documents
                     && x.IsVisible &&
                     (!x.IsGrantable ||
-                        x.RoleActions.Any(y => y.Role.PositionRoles.Any(pr=>pr.PositionId == posId) && y.Role.UserRoles.Any(z => z.UserId == context.CurrentAgentId)))
+                        x.RoleActions.Any(y => y.Role.PositionRoles.Any(pr => pr.PositionId == posId) && y.Role.UserRoles.Any(z => z.UserId == context.CurrentAgentId)))
                     );
 
                     var actLst = qry.Select(a => new InternalSystemAction
@@ -143,12 +155,15 @@ namespace BL.Database.Documents
             }
         }
 
-        public InternalDocument GetDocumentActionsPrepare(IContext context, int documentId)
+        public DocumentActionsModel GetDocumentSendListActionsModelPrepare(IContext context, int documentId)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext)
-                    .Where(x => x.Doc.Id == documentId && context.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId))
+                var res = new DocumentActionsModel();
+                res.ActionsList = new Dictionary<int, List<InternalSystemAction>>();
+
+                res.Document = CommonQueries.GetDocumentQuery(dbContext)
+                    .Where(x => x.Doc.Id == documentId && context.CurrentPositionsIdList.Contains(x.Acc.PositionId))
                     .Select(x => new InternalDocument
                     {
                         Id = x.Doc.Id,
@@ -156,7 +171,71 @@ namespace BL.Database.Documents
                         ExecutorPositionId = x.Doc.ExecutorPositionId,
                         LinkId = x.Doc.LinkId,
                     }).FirstOrDefault();
-                return doc;
+
+                if (res.Document != null)
+                {
+
+                    res.Document.Accesses = dbContext.DocumentAccessesSet.Where(x => x.DocumentId == documentId)
+                        .Select(x => new InternalDocumentAccess
+                        {
+                            Id = x.Id,
+                            PositionId = x.PositionId,
+                        }
+                        ).ToList();
+
+                    res.Document.SendLists = dbContext.DocumentSendListsSet.Where(x => x.DocumentId == documentId)
+                         .Select(x => new InternalDocumentSendList
+                         {
+                             Id = x.Id,
+                             SourcePositionId = x.SourcePositionId,
+                             StartEventId = x.StartEventId,
+                             CloseEventId = x.CloseEventId,
+                         }
+                         ).ToList();
+
+
+                    var posAcc = res.Document?.Accesses.Select(y => y.PositionId).ToList();
+
+                    if (posAcc.Any())
+                    {
+                        res.PositionWithActions = dbContext.DictionaryPositionsSet
+                            .Where(
+                                x =>
+                                    context.CurrentPositionsIdList.Contains(x.Id) &&
+                                    posAcc.Contains(x.Id))
+                            .Select(x => new InternalDictionaryPositionWithActions
+                            {
+                                Id = x.Id,
+                                Name = x.Name,
+                                DepartmentId = x.DepartmentId,
+                                ExecutorAgentId = x.ExecutorAgentId,
+                                DepartmentName = x.Department.Name,
+                                ExecutorAgentName = x.ExecutorAgent.Name,
+                            }).ToList();
+                    }
+                }
+
+                foreach (int posId in context.CurrentPositionsIdList)
+                {
+                    var qry = dbContext.SystemActionsSet.Where(x => x.ObjectId == (int)EnumObjects.DocumentSendLists
+                    && x.IsVisible &&
+                    (!x.IsGrantable ||
+                        x.RoleActions.Any(y => y.Role.PositionRoles.Any(pr => pr.PositionId == posId) && y.Role.UserRoles.Any(z => z.UserId == context.CurrentAgentId)))
+                    );
+
+                    var actLst = qry.Select(a => new InternalSystemAction
+                    {
+                        DocumentAction = (EnumDocumentActions)a.Id,
+                        Object = (EnumObjects)a.ObjectId,
+                        ActionCode = a.Code,
+                        ObjectCode = a.Object.Code,
+                        API = a.API,
+                        Description = a.Description,
+                    }).ToList();
+                    res.ActionsList.Add(posId, actLst);
+
+                }
+                return res;
             }
         }
 
@@ -1035,20 +1114,28 @@ namespace BL.Database.Documents
             }
         }
 
-        public InternalDocumentSendList DeleteDocumentSendListPrepare(IContext context, int sendListId)
+        public InternalDocument DeleteDocumentSendListPrepare(IContext context, int sendListId)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
-
-                var item = dbContext.DocumentSendListsSet.Where(x => x.Id == sendListId)
-                 .Select(x => new InternalDocumentSendList
-                 {
-                     Id = x.Id,
-                     DocumentId = x.DocumentId,
-                     SourcePositionId = x.SourcePositionId
-                 }).FirstOrDefault();
-
-                return item;
+                var doc = dbContext.DocumentSendListsSet
+                            .Where(x => x.Id == sendListId)
+                            .Select(x => new InternalDocument
+                            {
+                                Id = x.DocumentId,
+                                SendLists = new List<InternalDocumentSendList>
+                                {
+                                        new InternalDocumentSendList
+                                        {
+                                            Id = x.Id,
+                                            DocumentId = x.DocumentId,
+                                            SourcePositionId = x.SourcePositionId,
+                                            StartEventId = x.StartEventId,
+                                            CloseEventId = x.CloseEventId
+                                        }
+                                }
+                            }).FirstOrDefault();
+                return doc;
             }
         }
 

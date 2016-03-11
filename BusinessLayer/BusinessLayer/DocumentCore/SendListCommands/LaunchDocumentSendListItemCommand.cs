@@ -35,17 +35,30 @@ namespace BL.Logic.DocumentCore.SendListCommands
 
         public override bool CanBeDisplayed(int positionId)
         {
+            _actionRecords =
+                _document.SendLists.Where(
+                    x =>
+                        x.SourcePositionId == positionId
+                        && x.StartEventId == null && x.CloseEventId == null)
+                                                .Select(x => new InternalActionRecord
+                                                {
+                                                    SendListId = x.Id,
+                                                });
+            if (!_actionRecords.Any())
+            {
+                return false;
+            }
             return true;
         }
 
         public override bool CanExecute()
         {
             _document = _operationDb.LaunchDocumentSendListItemPrepare(_context, Model);
-            if (_document?.SendLists == null || !_document.SendLists.Any())
+            _sendList = _document?.SendLists.FirstOrDefault();
+            if (_sendList == null || !CanBeDisplayed(_sendList.SourcePositionId))
             {
-                throw new DocumentNotFoundOrUserHasNoAccess();
+                throw new CouldNotPerformThisOperation();
             }
-            _sendList = _document.SendLists.First();
             _context.SetCurrentPosition(_sendList.SourcePositionId);
             _admin.VerifyAccess(_context, CommandType);
 
