@@ -12,8 +12,10 @@ namespace BL.Database.DBModel.Document
         public int Stage { get; set; }
         public int SendTypeId { get; set; }
         public int SourcePositionId { get; set; }
+        public int SourcePositionExecutorAgentId { get; set; }
         public int SourceAgentId { get; set; }
         public Nullable<int> TargetPositionId { get; set; }
+        public Nullable<int> TargetPositionExecutorAgentId { get; set; }
         public Nullable<int> TargetAgentId { get; set; }
         public string Task { get; set; }
         public string Description { get; set; }
