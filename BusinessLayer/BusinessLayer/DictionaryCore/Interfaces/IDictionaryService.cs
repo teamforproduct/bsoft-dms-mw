@@ -4,6 +4,7 @@ using BL.CrossCutting.Interfaces;
 using BL.Model.AdminCore;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;
+using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Enums;
 
 namespace BL.Logic.DictionaryCore.Interfaces
@@ -13,14 +14,14 @@ namespace BL.Logic.DictionaryCore.Interfaces
         object ExecuteAction(EnumDictionaryActions act, IContext context, object param);
 
         #region DictionaryAgents
-        FrontDictionaryAgent GetDictionaryAgent(IContext context, int id);
-        IEnumerable<Model.DictionaryCore.FrontModel.FrontDictionaryAgent> GetDictionaryAgents(IContext context, FilterDictionaryAgent filter);
+        BaseDictionaryAgent GetDictionaryAgent(IContext context, int id);
+        IEnumerable<BaseDictionaryAgent> GetDictionaryAgents(IContext context, FilterDictionaryAgent filter);
         #endregion DictionaryAgents
 
         #region DictionaryAgentPersons
-        BaseDictionaryAgentPerson GetDictionaryAgentPerson(IContext context, int id);
+        InternalDictionaryAgentPerson GetDictionaryAgentPerson(IContext context, int id);
 
-        IEnumerable<BaseDictionaryAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter);
+        IEnumerable<InternalDictionaryAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter);
         #endregion DictionaryAgentPersons
 
         #region DictionaryAddressTypes

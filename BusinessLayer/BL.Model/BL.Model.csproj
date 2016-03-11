@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="AdminCore\AdminAccessInfo.cs" />
     <Compile Include="AdminCore\BaseAdminUserRole.cs" />
+    <Compile Include="DictionaryCore\BaseDictionaryAgentPerson.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterCustomDictionary.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterCustomDictionaryType.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryAddressType.cs" />
@@ -51,10 +52,12 @@
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgent.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentType.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryContact.cs" />
+    <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentPerson.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyCustomDictionary.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyCustomDictionaryType.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAddressType.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgent.cs" />
+    <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentPerson.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalCustomDictionary.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAdminPositionRoles.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAdminRoleActions.cs" />
@@ -64,6 +67,7 @@
     <Compile Include="DictionaryCore\InternalModel\InternalCustomDictionaryType.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAddressType.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAgent.cs" />
+    <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAgentPerson.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentSubscription.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentWait.cs" />
     <Compile Include="AdminCore\VerifyAccess.cs" />
@@ -96,7 +100,6 @@
     <Compile Include="DictionaryCore\BaseDictionaryDepartment.cs" />
     <Compile Include="DictionaryCore\BaseDictionaryCompany.cs" />
     <Compile Include="DictionaryCore\BaseDictionaryAgent.cs" />
-    <Compile Include="DictionaryCore\BaseDictionaryAgentPerson.cs" />
     <Compile Include="DictionaryCore\BaseDictionaryStandartSendListContent.cs" />
     <Compile Include="DictionaryCore\BaseDictionaryStandartSendList.cs" />
     <Compile Include="DictionaryCore\BaseDictionaryEventType.cs" />

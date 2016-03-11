@@ -80,7 +80,7 @@ namespace BL.Database.Dictionaries
                 {
                     qry = qry.Where(x => x.Name.Contains(filter.Name));
                 }
-                if (filter.IsIndividual.HasValue)
+        /*        if (filter.IsIndividual.HasValue)
                 {
                     qry = qry.Where(x => x.IsIndividual == filter.IsIndividual);
                 }
@@ -88,7 +88,7 @@ namespace BL.Database.Dictionaries
                 {
                     qry = qry.Where(x => x.IsEmployee == filter.IsEmployee);
                 }
-
+*/
                 return qry.Select(x => new BaseDictionaryAgent
                 {
                     Id = x.Id,
@@ -103,17 +103,17 @@ namespace BL.Database.Dictionaries
         #endregion DictionaryAgents
 
         #region DictionaryAgentPersons
-        public BaseDictionaryAgentPerson GetDictionaryAgentPerson(IContext context, int id)
+        public InternalDictionaryAgentPerson GetDictionaryAgentPerson(IContext context, int id)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
 
                 return
-                    dbContext.DictionaryAgentPersonsSet.Where(x => x.Id == id).Select(x => new BaseDictionaryAgentPerson
+                    dbContext.DictionaryAgentPersonsSet.Where(x => x.Id == id).Select(x => new InternalDictionaryAgentPerson
                     {
                         Id = x.Id,
                        // AgentId = x.AgentId,
-                        Name = x.FullName,
+                        FirstName = x.FirstName,
                     //    PersonAgentId = x.PersonAgentId,
                         LastChangeUserId = x.LastChangeUserId,
                         LastChangeDate = x.LastChangeDate,
@@ -123,24 +123,24 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<BaseDictionaryAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter)
+        public IEnumerable<InternalDictionaryAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
 
                 var qry = dbContext.DictionaryAgentPersonsSet.AsQueryable();
-
-                if (filter.AgentPersonId?.Count > 0)
+                /* 
+                               if (filter.AgentPersonId?.Count > 0)
+                               {
+                                   qry = qry.Where(x => filter.AgentPersonId.Contains(x.Id));
+                               }
+                             if (filter.AgentId?.Count > 0)
+                               {
+                                   qry = qry.Where(x => filter.AgentId.Contains(x.AgentId));
+                               }*/
+                if (!string.IsNullOrEmpty(filter.FullName))
                 {
-                    qry = qry.Where(x => filter.AgentPersonId.Contains(x.Id));
-                }
-               /* if (filter.AgentId?.Count > 0)
-                {
-                    qry = qry.Where(x => filter.AgentId.Contains(x.AgentId));
-                }*/
-                if (!string.IsNullOrEmpty(filter.Name))
-                {
-                    qry = qry.Where(x => x.FullName.Contains(filter.Name));
+                    qry = qry.Where(x => x.FullName.Contains(filter.FullName));
                 }
             /*    if (!string.IsNullOrEmpty(filter.AgentName))
                 {
@@ -151,11 +151,11 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(x => x.PersonAgent.Name.Contains(filter.PersonAgentName));
                 }*/
 
-                return qry.Select(x => new BaseDictionaryAgentPerson
+                return qry.Select(x => new InternalDictionaryAgentPerson
                 {
                     Id = x.Id,
                   //  AgentId = x.AgentId,
-                    Name = x.FullName,
+                    FirstName = x.FirstName,
                   //  PersonAgentId = x.PersonAgentId,
                     LastChangeUserId = x.LastChangeUserId,
                     LastChangeDate = x.LastChangeDate,

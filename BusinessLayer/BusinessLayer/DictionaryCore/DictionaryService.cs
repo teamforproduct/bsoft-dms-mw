@@ -7,6 +7,7 @@ using BL.CrossCutting.Interfaces;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Model.AdminCore;
 using BL.Model.DictionaryCore.FilterModel;
+using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.Enums;
 
@@ -31,13 +32,13 @@ namespace BL.Logic.DictionaryCore
         }
 
         #region DictionaryAgents
-        public FrontDictionaryAgent GetDictionaryAgent(IContext context, int id)
+        public BaseDictionaryAgent GetDictionaryAgent(IContext context, int id)
         {
 
             return _dictDb.GetDictionaryAgent(context, id);
         }
 
-        public IEnumerable<Model.DictionaryCore.FrontModel.FrontDictionaryAgent> GetDictionaryAgents(IContext context, FilterDictionaryAgent filter)
+        public IEnumerable<BaseDictionaryAgent> GetDictionaryAgents(IContext context, FilterDictionaryAgent filter)
         {
 
             return _dictDb.GetDictionaryAgents(context, filter);
@@ -45,13 +46,13 @@ namespace BL.Logic.DictionaryCore
         #endregion DictionaryAgents
 
         #region DictionaryAgentPersons
-        public BaseDictionaryAgentPerson GetDictionaryAgentPerson(IContext context, int id)
+        public InternalDictionaryAgentPerson GetDictionaryAgentPerson(IContext context, int id)
         {
 
             return _dictDb.GetDictionaryAgentPerson(context, id);
         }
 
-        public IEnumerable<BaseDictionaryAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter)
+        public IEnumerable<InternalDictionaryAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter)
         {
 
             return _dictDb.GetDictionaryAgentPersons(context, filter);

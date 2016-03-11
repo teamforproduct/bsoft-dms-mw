@@ -10,10 +10,7 @@ namespace BL.Logic.DictionaryCore.DocumentType
     public class DeleteDictionaryDocumentTypeCommand : BaseDictionaryCommand
    
     {
-        private readonly IDictionariesDbProcess _dictDb;
-
-
-
+       
         private int Model
         {
             get
