@@ -52,12 +52,24 @@ namespace BL.Logic.DictionaryCore
             return _dictDb.GetDictionaryAgentPerson(context, id);
         }
 
-        public IEnumerable<InternalDictionaryAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter)
+        public IEnumerable<FrontDictionaryAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter)
         {
 
             return _dictDb.GetDictionaryAgentPersons(context, filter);
         }
         #endregion DictionaryAgentPersons
+
+        #region DictionaryAgentAdress
+        public FrontDictionaryAgentAddress GetDictionaryAgentAddress(IContext context, int id)
+        {
+            return _dictDb.GetDictionaryAgentAddress(context, id);
+        }
+
+        public IEnumerable<FrontDictionaryAgentAddress> GetDictionaryAgentAddresses(IContext context, FilterDictionaryAgentAddress filter)
+        {
+            return _dictDb.GetDictionaryAgentAddresses(context, filter);
+        }
+        #endregion
 
         #region DictionaryAddressTypes
 

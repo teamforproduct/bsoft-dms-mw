@@ -23,7 +23,7 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// <summary>
         /// Тип контакта
         /// </summary>
-        public FrontDictionaryContact ContactType { get; set; }
+        public FrontDictionaryContactType ContactType { get; set; }
         /// <summary>
         /// Значение
         /// </summary>

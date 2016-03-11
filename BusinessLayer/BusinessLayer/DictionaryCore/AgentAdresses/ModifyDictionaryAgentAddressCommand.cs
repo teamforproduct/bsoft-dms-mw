@@ -4,21 +4,22 @@ using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.DictionaryCore.FilterModel;
+using System.Collections.Generic;
 
 
-namespace BL.Logic.DictionaryCore.Contact
+namespace BL.Logic.DictionaryCore.AgentAdresses 
 {
-    public class ModifyDictionaryContactCommand : BaseDictionaryCommand
+    public class ModifyDictionaryAgentAddressCommand : BaseDictionaryCommand
     {
-        private ModifyDictionaryContact Model
+        private ModifyDictionaryAgentAddress Model
         {
             get
             {
-                if (!(_param is ModifyDictionaryContact))
+                if (!(_param is ModifyDictionaryAgentAddress))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ModifyDictionaryContact)_param;
+                return (ModifyDictionaryAgentAddress)_param;
             }
         }
 
@@ -29,11 +30,13 @@ namespace BL.Logic.DictionaryCore.Contact
 
         public override bool CanExecute()
         {
-            var spr = _dictDb.GetInternalDictionaryContact(_context,
-                new FilterDictionaryContact {
-                    Value = Model.Value,
-                    ContactTypeId = Model.ContactType,
-                    AgentId = Model.AgentId });
+            var spr = _dictDb.GetDictionaryAgentAddresses(_context,
+                new FilterDictionaryAgentAddress {
+                    PostCode = Model.PostCode,
+                    Address = Model.Address,
+                    AddressTypeId = new List<int> { Model.AddressTypeId } ,
+                    AgentId = new List<int> { Model.AgentId }
+                    });
             if (spr != null)
             {
                 throw new DictionaryRecordNotUnique();
@@ -48,18 +51,17 @@ namespace BL.Logic.DictionaryCore.Contact
         {
             try
             {
-                 
-                var newContact = new InternalDictionaryContact
+                var newAddr = new InternalDictionaryAgentAddress
                 {
+                    Id = Model.Id,
                     AgentId=Model.AgentId,
-                    ContactType=Model.ContactType,
-                    Value = Model.Value,
-                    IsActive = Model.IsActive,
-                    Description=Model.Description
+                    AddressTypeID=Model.AddressTypeId,
+                    PostCode=Model.PostCode,
+                    Address = Model.Address,
+                    IsActive = Model.IsActive
                 };
-            
-                CommonDocumentUtilities.SetLastChange(_context, newContact);
-                _dictDb.UpdateDictionaryContact(_context, newContact);
+                CommonDocumentUtilities.SetLastChange(_context, newAddr);
+                _dictDb.UpdateDictionaryAgentAddress(_context, newAddr);
             }
             catch (DictionaryRecordWasNotFound)
             {

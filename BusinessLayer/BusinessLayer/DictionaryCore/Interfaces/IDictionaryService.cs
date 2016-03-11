@@ -21,8 +21,14 @@ namespace BL.Logic.DictionaryCore.Interfaces
         #region DictionaryAgentPersons
         InternalDictionaryAgentPerson GetDictionaryAgentPerson(IContext context, int id);
 
-        IEnumerable<InternalDictionaryAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter);
+        IEnumerable<FrontDictionaryAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter);
         #endregion DictionaryAgentPersons
+
+        #region DictionaryAgentAdress
+        FrontDictionaryAgentAddress GetDictionaryAgentAddress(IContext context, int id);
+
+        IEnumerable<FrontDictionaryAgentAddress> GetDictionaryAgentAddresses(IContext context, FilterDictionaryAgentAddress filter);
+        #endregion
 
         #region DictionaryAddressTypes
         FrontDictionaryAddressType GetDictionaryAddressType(IContext context, int id);

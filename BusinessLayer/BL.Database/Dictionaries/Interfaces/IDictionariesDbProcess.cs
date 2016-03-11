@@ -19,8 +19,18 @@ namespace BL.Database.Dictionaries.Interfaces
         #region DictionaryAgentPersons
         InternalDictionaryAgentPerson GetDictionaryAgentPerson(IContext context, int id);
 
-        IEnumerable<InternalDictionaryAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter);
+        IEnumerable<FrontDictionaryAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter);
         #endregion DictionaryAgentPersons
+
+        #region DictionaryAgentAddress
+
+        FrontDictionaryAgentAddress GetDictionaryAgentAddress(IContext context, int id);
+        void UpdateDictionaryAgentAddress(IContext context, InternalDictionaryAgentAddress addr);
+        void DeleteDictionaryAgentAddress(IContext context, InternalDictionaryAgentAddress addr);
+        int AddDictionaryAgentAddress(IContext context, InternalDictionaryAgentAddress addr);
+        IEnumerable<FrontDictionaryAgentAddress> GetDictionaryAgentAddresses(IContext context, FilterDictionaryAgentAddress filter);
+        
+        #endregion
 
         #region DicionaryAddressTypes
 

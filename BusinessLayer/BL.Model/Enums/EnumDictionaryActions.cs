@@ -45,7 +45,9 @@
         AddContactType,
         ModifyContactType,
         DeleteContactType,
-
+        AddAgentAddress,
+        ModifyAgentAddress,
+        DeleteAgentAddress,
 
         /// <summary>
         /// Добавить тэг

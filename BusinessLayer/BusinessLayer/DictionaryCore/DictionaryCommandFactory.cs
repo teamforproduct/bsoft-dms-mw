@@ -4,6 +4,7 @@ using BL.Logic.DictionaryCore.CustomDictionary;
 using BL.Logic.DictionaryCore.DocumentType;
 using BL.Logic.DictionaryCore.Contact;
 using BL.Logic.DictionaryCore.ContactType;
+using BL.Logic.DictionaryCore.AgentAdresses;
 using BL.Logic.DictionaryCore.Tag;
 using BL.Model.Enums;
 using BL.Model.Exception;
@@ -26,7 +27,17 @@ namespace BL.Logic.DictionaryCore
                 case EnumDictionaryActions.DeleteDocumentType:
                     cmd = DmsResolver.Current.Get<DeleteDictionaryDocumentTypeCommand>();
                     break;
-                
+
+                case EnumDictionaryActions.ModifyAgentAddress:
+                    cmd = DmsResolver.Current.Get<ModifyDictionaryAgentAddressCommand>();
+                    break;
+                case EnumDictionaryActions.AddAgentAddress:
+                    cmd = DmsResolver.Current.Get<AddDictionaryAgentAddressCommand>();
+                    break;
+                case EnumDictionaryActions.DeleteAgentAddress:
+                    cmd = DmsResolver.Current.Get<DeleteDictionaryAgentAddressCommand>();
+                    break;
+
                 case EnumDictionaryActions.ModifyAddressType:
                     cmd = DmsResolver.Current.Get<ModifyDictionaryAddressTypeCommand>();
                     break;

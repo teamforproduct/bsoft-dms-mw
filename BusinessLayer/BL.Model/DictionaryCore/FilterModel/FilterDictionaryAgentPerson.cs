@@ -27,6 +27,6 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// <summary>
         /// Пол (true - мужской)
         /// </summary>
-        public bool IsMale { get; set; }
+        public bool? IsMale { get; set; }
     }
 }

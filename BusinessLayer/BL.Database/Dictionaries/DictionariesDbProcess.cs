@@ -123,7 +123,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<InternalDictionaryAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter)
+        public IEnumerable<FrontDictionaryAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
@@ -151,20 +151,151 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(x => x.PersonAgent.Name.Contains(filter.PersonAgentName));
                 }*/
 
-                return qry.Select(x => new InternalDictionaryAgentPerson
+                return qry.Select(x => new FrontDictionaryAgentPerson
                 {
                     Id = x.Id,
                   //  AgentId = x.AgentId,
                     FirstName = x.FirstName,
                   //  PersonAgentId = x.PersonAgentId,
-                    LastChangeUserId = x.LastChangeUserId,
-                    LastChangeDate = x.LastChangeDate,
+                  
                  //   AgentName = x.Agent.Name,
                  //   PersonAgentName = x.PersonAgent.Name
                 }).ToList();
             }
         }
         #endregion DictionaryAgentPersons
+
+        #region DictionaryAgentAddress
+        public FrontDictionaryAgentAddress GetDictionaryAgentAddress(IContext context, int id)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var qry = dbContext.DictionaryAgentAddressesSet.AsQueryable();
+
+                return qry.Select(x => new FrontDictionaryAgentAddress
+                {
+                    Id = x.Id,
+                    AgentId = x.AgentId,
+                    AddressType= new FrontDictionaryAddressType { Id = x.AdressTypeId, Name = x.AddressType.Name },
+                    PostCode=x.PostCode,
+                    Address=x.Address,
+                    Description=x.Description,
+                    IsActive = x.IsActive,
+                }).FirstOrDefault();
+            }
+        }
+
+        public void UpdateDictionaryAgentAddress(IContext context, InternalDictionaryAgentAddress addr)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var ddt = new DictionaryAgentAddresses
+                {
+                    Id = addr.Id,
+                    AgentId=addr.AgentId,
+                    AddressType= new DictionaryAddressTypes { Id = addr.AddressTypeID },
+                    PostCode=addr.PostCode,
+                    Address=addr.Address,
+                    Description=addr.Description,
+                    LastChangeDate = addr.LastChangeDate,
+                    LastChangeUserId = addr.LastChangeUserId,
+                    IsActive = addr.IsActive
+                };
+                dbContext.DictionaryAgentAddressesSet.Attach(ddt);
+                var entity = dbContext.Entry(ddt);
+
+                entity.Property(x => x.AgentId).IsModified = true;
+                entity.Property(x => x.Address).IsModified = true;
+                entity.Property(x => x.AddressType).IsModified = true;
+                entity.Property(x => x.PostCode).IsModified = true;
+                entity.Property(x => x.Description).IsModified = true;
+                entity.Property(x => x.LastChangeDate).IsModified = true;
+                entity.Property(x => x.LastChangeUserId).IsModified = true;
+                entity.Property(x => x.IsActive).IsModified = true;
+                dbContext.SaveChanges();
+            }
+        }
+
+        public void DeleteDictionaryAgentAddress(IContext context, InternalDictionaryAgentAddress addr)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+
+                var ddt = dbContext.DictionaryAgentAddressesSet.FirstOrDefault(x => x.Id == addr.Id);
+                if (ddt != null)
+                {
+                    dbContext.DictionaryAgentAddressesSet.Remove(ddt);
+                    dbContext.SaveChanges();
+                }
+            }
+        }
+
+        public int AddDictionaryAgentAddress(IContext context, InternalDictionaryAgentAddress addr)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var ddt = new DictionaryAgentAddresses
+                {
+                    AgentId = addr.AgentId,
+                    AddressType = new DictionaryAddressTypes { Id = addr.AddressTypeID },
+                    PostCode = addr.PostCode,
+                    Address = addr.Address,
+                    Description = addr.Description,
+                    LastChangeDate = addr.LastChangeDate,
+                    LastChangeUserId = addr.LastChangeUserId,
+                    IsActive = addr.IsActive
+                };
+                dbContext.DictionaryAgentAddressesSet.Add(ddt);
+                dbContext.SaveChanges();
+                addr.Id = ddt.Id;
+                return ddt.Id;
+            }
+        }
+
+        public IEnumerable<FrontDictionaryAgentAddress> GetDictionaryAgentAddresses(IContext context, FilterDictionaryAgentAddress filter)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var qry = dbContext.DictionaryAgentAddressesSet.AsQueryable();
+
+                if (filter.AddressTypeId?.Count > 0)
+                {
+                    qry = qry.Where(x => filter.AddressTypeId.Contains(x.AdressTypeId));
+                }
+
+                if (filter.AgentId?.Count > 0)
+                {
+                    qry = qry.Where(x => filter.AgentId.Contains(x.AgentId));
+                }
+
+                if (!String.IsNullOrEmpty(filter.PostCode))
+                {
+                    qry = qry.Where(x => x.PostCode.Contains(filter.PostCode));
+                }
+
+                if (!String.IsNullOrEmpty(filter.Address))
+                {
+                    qry = qry.Where(x => x.Address.Contains(filter.Address));
+                }
+
+                if (filter.IsActive != null)
+                {
+                    qry = qry.Where(x => x.IsActive == filter.IsActive);
+                }
+
+                return qry.Select(x => new FrontDictionaryAgentAddress
+                {
+                    Id = x.Id,
+                    AgentId=x.AgentId,
+                    AddressType=new FrontDictionaryAddressType { Id = x.AddressType.Id, Name = x.AddressType.Name },
+                    Address=x.Address,
+                    PostCode=x.PostCode,
+                    Description=x.Description,
+                    IsActive = x.IsActive
+                }).ToList();
+            }
+        }
+        #endregion
 
         #region DictionaryAddressTypes
 
