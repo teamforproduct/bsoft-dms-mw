@@ -13,12 +13,13 @@ using BL.Logic.DocumentCore.Interfaces;
 using BL.Logic.DocumentCore.SendListCommands;
 using BL.Logic.FileWorker;
 using BL.Logic.Logging;
-using BL.Logic.MailWorker;
 using BL.Logic.Observers;
 using BL.Logic.PropertyCore;
 using BL.Logic.PropertyCore.Commands;
 using BL.Logic.PropertyCore.Interfaces;
 using BL.Logic.Settings;
+using BL.Logic.SystemServices.FullTextSearch;
+using BL.Logic.SystemServices.MailWorker;
 using BL.Model.Enums;
 using Ninject.Modules;
 
@@ -43,7 +44,8 @@ namespace BL.Logic.DependencyInjection
             Bind<ICommandService>().To<CommandService>().InSingletonScope();
             Bind<IFileStore>().To<FileStore>().InSingletonScope();
             Bind<IAdminService>().To<AdminService>().InSingletonScope();
-            Bind<IMailService>().To<MailService>().InSingletonScope();
+            Bind<ISystemWorkerService>().To<MailSenderWorkerService>().InSingletonScope();
+            Bind<IFullTextSearchService>().To<FullTextSearchService>().InSingletonScope();
         }
 
         private void LoadDocumentModule()

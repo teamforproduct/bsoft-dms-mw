@@ -96,5 +96,51 @@ namespace BL.Logic.DocumentCore
 
             return model.PositionWithActions;
         }
+
+        public IEnumerable<InternalDictionaryPositionWithActions> GetDocumentSendListActions(IContext ctx, int documentId)
+        {
+            var model = _operationDb.GetDocumentSendListActionsModelPrepare(ctx, documentId);
+
+            // total list of type for possible actions we could process
+            var totalCommandListType = new List<EnumDocumentActions>();
+
+            foreach (var cmd in model.ActionsList.Values)
+            {
+                var newCmd = cmd.Select(x => x.DocumentAction).Except(totalCommandListType).ToList();
+                totalCommandListType.AddRange(newCmd);
+            }
+
+            // create full list of possible commands in case to avoid creating duplicate command multiple time
+            var totalCommandList = new List<IDocumentCommand>();
+            totalCommandListType.ForEach(x => totalCommandList.Add(DocumentCommandFactory.GetDocumentCommand(x, ctx, model.Document, null)));
+            totalCommandList = totalCommandList.Where(x => x != null).ToList(); //TODO remove when all command will be implemented
+
+            //for each position check his actions
+            foreach (var pos in model.PositionWithActions)
+            {
+                var actionList = model.ActionsList[pos.Id];
+                var resultActions = new List<InternalSystemAction>();
+                if (actionList != null)
+                {
+                    foreach (var act in actionList)
+                    {
+                        var cmd = totalCommandList.FirstOrDefault(x => x.CommandType == act.DocumentAction);
+                        if (cmd != null)
+                        {
+                            // each command should add to action list of entries, where that action can be executed
+                            if (cmd.CanBeDisplayed(pos.Id))
+                            {
+                                act.ActionRecords = cmd.ActionRecords;
+                                resultActions.Add(act);
+                            }
+                        }
+                    }
+                    pos.Actions = resultActions;
+                }
+            }
+
+            return model.PositionWithActions;
+        }
+
     }
 }

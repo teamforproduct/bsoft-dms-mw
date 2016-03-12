@@ -13,7 +13,6 @@ using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Exception;
-using System.Transactions;
 
 namespace BL.Database.Dictionaries
 {

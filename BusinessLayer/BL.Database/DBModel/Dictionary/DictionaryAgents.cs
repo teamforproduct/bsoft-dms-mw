@@ -10,7 +10,7 @@ namespace BL.Database.DBModel.Dictionary
         {
        //     this.Positions = new HashSet<DictionaryPositions>();
             this.AgentAddresses = new HashSet<DictionaryAgentAddresses>();
-            this.AgentPhoneNumbers = new HashSet<DictionaryAgentPhoneNumbers>();
+            this.AgentContacts = new HashSet<DictionaryAgentContacts>();
             this.AgentAccounts = new HashSet<DictionaryAgentAccounts>();
 
         }
@@ -43,7 +43,7 @@ namespace BL.Database.DBModel.Dictionary
 
         public virtual ICollection<DictionaryAgentAddresses> AgentAddresses { get; set; }
 
-        public virtual ICollection<DictionaryAgentPhoneNumbers> AgentPhoneNumbers { get; set; }
+        public virtual ICollection<DictionaryAgentContacts> AgentContacts { get; set; }
 
         public virtual ICollection<DictionaryAgentAccounts> AgentAccounts { get; set; }
 
