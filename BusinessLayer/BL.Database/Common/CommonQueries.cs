@@ -19,6 +19,7 @@ namespace BL.Database.Common
 {
     internal static class CommonQueries
     {
+        // pss Здесь представлены варианты запросов с использованием from, join...
         public static IQueryable<FrontDocumentQuery> GetFrontDocumentQuery(DmsContext dbContext, IQueryable<FrontDocumentAccess> userAccesses)
         {
             var qry = from dc in dbContext.DocumentsSet

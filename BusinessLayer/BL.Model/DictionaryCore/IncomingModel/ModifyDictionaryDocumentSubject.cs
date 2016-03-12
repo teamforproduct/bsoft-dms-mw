@@ -5,6 +5,8 @@ namespace BL.Model.DictionaryCore.IncomingModel
     /// <summary>
     /// Модель для добавления/редактирования записи справочника "Тематики документов"
     /// </summary>
+    // В модели перечислены поля, на значения которых можно повлиять из интерфейса. Например поля таблицы LastChangeUserId и LastChangeDate в этой модели отсутствуют
+    // Если в таблице поля объявлены как Nullable то поля в этом классе нужно объявлять Nullable
     public class ModifyDictionaryDocumentSubject
     {
         /// <summary>
@@ -22,7 +24,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// Ссылка на родителя (Id).
         /// </summary>
-        public int ParentId { get; set; }
+        public int? ParentId { get; set; }
 
         /// <summary>
         /// Название тематики документа.

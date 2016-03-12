@@ -25,6 +25,6 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// <summary>
         /// Ссылка на родителя.
         /// </summary>
-        public int ParentId { get; set; }
+        public int? ParentId { get; set; }
     }
 }

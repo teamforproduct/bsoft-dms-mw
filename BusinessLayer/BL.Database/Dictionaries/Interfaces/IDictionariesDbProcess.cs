@@ -52,9 +52,9 @@ namespace BL.Database.Dictionaries.Interfaces
         #endregion DictionaryDepartments
 
         #region DictionaryDocumentSubjects
-        BaseDictionaryDocumentSubject GetDictionaryDocumentSubject(IContext context, int id);
+        FrontDictionaryDocumentSubject GetDictionaryDocumentSubject(IContext context, int id);
 
-        IEnumerable<BaseDictionaryDocumentSubject> GetDictionaryDocumentSubjects(IContext context, FilterDictionaryDocumentSubject filter);
+        IEnumerable<FrontDictionaryDocumentSubject> GetDictionaryDocumentSubjects(IContext context, FilterDictionaryDocumentSubject filter);
         #endregion DictionaryDocumentSubjects
 
         #region DictionaryDocumentTypes

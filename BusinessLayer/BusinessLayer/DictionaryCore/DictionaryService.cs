@@ -117,13 +117,13 @@ namespace BL.Logic.DictionaryCore
         #endregion DictionaryDepartments
 
         #region DictionaryDocumentSubjects
-        public BaseDictionaryDocumentSubject GetDictionaryDocumentSubject(IContext context, int id)
+        public FrontDictionaryDocumentSubject GetDictionaryDocumentSubject(IContext context, int id)
         {
 
             return _dictDb.GetDictionaryDocumentSubject(context, id);
         }
 
-        public IEnumerable<BaseDictionaryDocumentSubject> GetDictionaryDocumentSubjects(IContext context, FilterDictionaryDocumentSubject filter)
+        public IEnumerable<FrontDictionaryDocumentSubject> GetDictionaryDocumentSubjects(IContext context, FilterDictionaryDocumentSubject filter)
         {
 
             return _dictDb.GetDictionaryDocumentSubjects(context, filter);
