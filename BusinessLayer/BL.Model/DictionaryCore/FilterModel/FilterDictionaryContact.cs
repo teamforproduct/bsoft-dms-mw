@@ -9,9 +9,9 @@ namespace BL.Model.DictionaryCore.FilterModel
     public class FilterDictionaryContact
     {
         public int Id { get; set; }
-        public int AgentId { get; set; }
-        public int ContactTypeId { get; set; }
+        public List<int> AgentId { get; set; }
+        public List<int> ContactTypeId { get; set; }
         public string Value { get; set; }
-        public bool IsActive { get; set; }
+        public bool? IsActive { get; set; }
     }
 }

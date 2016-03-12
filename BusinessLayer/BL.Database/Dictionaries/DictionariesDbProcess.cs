@@ -200,17 +200,11 @@ namespace BL.Database.Dictionaries
                     LastChangeUserId = addr.LastChangeUserId,
                     IsActive = addr.IsActive
                 };
+  
                 dbContext.DictionaryAgentAddressesSet.Attach(ddt);
                 var entity = dbContext.Entry(ddt);
-
-                entity.Property(x => x.AgentId).IsModified = true;
-                entity.Property(x => x.Address).IsModified = true;
-                entity.Property(x => x.AddressType).IsModified = true;
-                entity.Property(x => x.PostCode).IsModified = true;
-                entity.Property(x => x.Description).IsModified = true;
-                entity.Property(x => x.LastChangeDate).IsModified = true;
-                entity.Property(x => x.LastChangeUserId).IsModified = true;
-                entity.Property(x => x.IsActive).IsModified = true;
+                entity.State = System.Data.Entity.EntityState.Modified;
+              
                 dbContext.SaveChanges();
             }
         }
@@ -236,7 +230,7 @@ namespace BL.Database.Dictionaries
                 var ddt = new DictionaryAgentAddresses
                 {
                     AgentId = addr.AgentId,
-                    AddressType = new DictionaryAddressTypes { Id = addr.AddressTypeID },
+                    AdressTypeId =  addr.AddressTypeID,
                     PostCode = addr.PostCode,
                     Address = addr.Address,
                     Description = addr.Description,
@@ -478,22 +472,119 @@ namespace BL.Database.Dictionaries
 
         #region DictionaryContacts
 
-        public InternalDictionaryContact GetInternalDictionaryContact(IContext context,
+        public FrontDictionaryContact GetDictionaryContact(IContext context,
           FilterDictionaryContact filter)
         {
-            return null;
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var qry = dbContext.DictionaryAgentContactsSet.AsQueryable();
+
+                return qry.Select(x => new FrontDictionaryContact
+                {
+                    Id = x.Id,
+                    AgentId = x.AgentId,
+                    ContactType = new FrontDictionaryContactType { Id = x.ContactTypeId, Name = x.ContactType.Name },
+                    Value = x.Contact,
+                    Description = x.Description,
+                    IsActive = x.IsActive,
+                }).FirstOrDefault();
+            }
         }
 
         public void UpdateDictionaryContact(IContext context, InternalDictionaryContact contact)
         {
-            
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var ddt = new DictionaryAgentContacts
+                {
+                    Id = contact.Id,
+                    AgentId = contact.AgentId,
+                    ContactTypeId=contact.ContactTypeId,
+                    Contact=contact.Value,
+                    Description = contact.Description,
+                    LastChangeDate = contact.LastChangeDate,
+                    LastChangeUserId = contact.LastChangeUserId,
+                    IsActive = contact.IsActive
+                };
+
+                dbContext.DictionaryAgentContactsSet.Attach(ddt);
+                var entity = dbContext.Entry(ddt);
+                entity.State = System.Data.Entity.EntityState.Modified;
+
+                dbContext.SaveChanges();
+            }
         }
         public void DeleteDictionaryContact(IContext context, InternalDictionaryContact contact)
-        { }
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+
+                var ddt = dbContext.DictionaryAgentAddressesSet.FirstOrDefault(x => x.Id == contact.Id);
+                if (ddt != null)
+                {
+                    dbContext.DictionaryAgentAddressesSet.Remove(ddt);
+                    dbContext.SaveChanges();
+                }
+            }
+        }
         public int AddDictionaryContact(IContext context, InternalDictionaryContact contact)
-        { return 0; }
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var ddt = new DictionaryAgentContacts
+                {
+                    AgentId = contact.AgentId,
+                    ContactTypeId = contact.ContactTypeId,
+                    Contact = contact.Value,
+                    Description = contact.Description,
+                    LastChangeDate = contact.LastChangeDate,
+                    LastChangeUserId = contact.LastChangeUserId,
+                    IsActive = contact.IsActive
+                };
+                dbContext.DictionaryAgentContactsSet.Add(ddt);
+                dbContext.SaveChanges();
+                contact.Id = ddt.Id;
+                return ddt.Id;
+            }
+        }
         public IEnumerable<FrontDictionaryContact> GetDictionaryContacts(IContext context, FilterDictionaryContact filter)
-        { return null; }
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var qry = dbContext.DictionaryAgentContactsSet.AsQueryable();
+
+                if (filter.ContactTypeId?.Count > 0)
+                {
+                    qry = qry.Where(x => filter.ContactTypeId.Contains(x.ContactTypeId));
+                }
+
+                if (filter.AgentId?.Count > 0)
+                {
+                    qry = qry.Where(x => filter.AgentId.Contains(x.AgentId));
+                }
+
+
+                if (!String.IsNullOrEmpty(filter.Value))
+                {
+                    qry = qry.Where(x => x.Contact.Contains(filter.Value));
+                }
+
+                if (filter.IsActive != null)
+                {
+                    qry = qry.Where(x => x.IsActive == filter.IsActive);
+                }
+
+                return qry.Select(x => new FrontDictionaryContact
+                {
+                    Id = x.Id,
+                    AgentId = x.AgentId,
+                    ContactType = new FrontDictionaryContactType { Id = x.ContactType.Id, Name = x.ContactType.Name },
+                    Value = x.Contact,
+                    Description = x.Description,
+                    IsActive = x.IsActive
+                }).ToList();
+            }
+        }
         #endregion
 
         #region DictionaryDepartments

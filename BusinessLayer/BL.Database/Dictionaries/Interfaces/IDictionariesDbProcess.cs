@@ -50,7 +50,7 @@ namespace BL.Database.Dictionaries.Interfaces
         #endregion DictionaryCompanies
 
         #region DictionaryContacts
-        InternalDictionaryContact GetInternalDictionaryContact(IContext context,
+        FrontDictionaryContact GetDictionaryContact(IContext context,
            FilterDictionaryContact filter);
         void UpdateDictionaryContact(IContext context, InternalDictionaryContact contact);
         void DeleteDictionaryContact(IContext context, InternalDictionaryContact contact);
