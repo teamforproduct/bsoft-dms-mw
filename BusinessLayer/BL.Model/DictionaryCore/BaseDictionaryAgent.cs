@@ -12,7 +12,7 @@ namespace BL.Model.DictionaryCore
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
 
-        public virtual IEnumerable<BaseDictionaryAgentPerson> AgentPersonsAgents { get; set; }
-        public virtual IEnumerable<BaseDictionaryAgentPerson> AgentPersonsPersonAgents { get; set; }
+   //     public virtual IEnumerable<BaseDictionaryAgentPerson> AgentPersonsAgents { get; set; }
+   //     public virtual IEnumerable<BaseDictionaryAgentPerson> AgentPersonsPersonAgents { get; set; }
     }
 }
