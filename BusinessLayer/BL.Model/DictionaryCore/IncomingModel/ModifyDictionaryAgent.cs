@@ -20,19 +20,23 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// </summary>
         public string Name { get; set; }
 
-//       /// <summary>
-//       /// Резидентность
-//       /// </summary>
-//        public int ResidentTypeId { get; set; }
+       /// <summary>
+       /// Резидентность
+       /// </summary>
+        public int? ResidentTypeId { get; set; }
 
         /// <summary>
         /// Дополнительная информация
         /// </summary>
         public string Description { get; set; }
-        
         /// <summary>
-        /// Список контактов
+        /// Признак активности
         /// </summary>
-        public List<ModifyDictionaryContact> Contacts { get; set; }
+        public bool IsActive { get; set; }
+
+        public bool? IsCompany { get; set; }
+        public bool? IsIndividual { get; set; }
+        public bool? IsEmployee { get; set; }
+        public bool? IsBank { get; set; }
     }
 }

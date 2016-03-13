@@ -9,7 +9,7 @@ namespace BL.Model.DictionaryCore.FrontModel
     /// <summary>
     /// Контрагент - физическое лицо
     /// </summary>
-    public class FrontDictionaryAgentPerson
+    public class FrontDictionaryAgentPerson : FrontDictionaryAgent
     {
         /// <summary>
         /// ID
@@ -58,7 +58,7 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// <summary>
         /// Дополнительная информация
         /// </summary>
-        public string Description { get; set; }
+        public override string Description { get; set; }
         /// <summary>
         /// Полное имя
         /// </summary>
@@ -83,12 +83,7 @@ namespace BL.Model.DictionaryCore.FrontModel
                 return PassportSerial.Trim() + "-" + PassportNumber.Trim() + " выдан " + PassportText.Trim() + " " + PassportDate.Date;
             }
 
-        }
-
-        /// <summary>
-        /// Список контактов
-        /// </summary>
-        public List<FrontDictionaryContact> Contacts { get; set; }
+        }   
 
     }
 }
