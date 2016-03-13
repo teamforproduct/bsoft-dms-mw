@@ -10,5 +10,7 @@ namespace BL.Model.DictionaryCore.FilterModel
     {
         public List<int> ContactTypeId { get; set; }
         public string Name { get; set; }
+
+        public bool? IsActive { get; set; }
     }
 }

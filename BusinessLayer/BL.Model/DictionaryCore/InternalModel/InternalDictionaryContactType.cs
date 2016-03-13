@@ -15,5 +15,7 @@ namespace BL.Model.DictionaryCore.InternalModel
         public string Name { get; set; }
    
         public string InputMask { get; set; }
+
+        public bool IsActive { get; set; }
     }
 }

@@ -307,10 +307,7 @@ namespace BL.Database.Dictionaries
                 dbContext.DictionaryAddressTypesSet.Attach(ddt);
                 var entity = dbContext.Entry(ddt);
 
-                entity.Property(x => x.Name).IsModified = true;
-                entity.Property(x => x.LastChangeDate).IsModified = true;
-                entity.Property(x => x.LastChangeUserId).IsModified = true;
-                entity.Property(x => x.IsActive).IsModified = true;
+                entity.State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
             }
         }
@@ -454,19 +451,87 @@ namespace BL.Database.Dictionaries
         #endregion DictionaryCompanies
 
         #region DictionaryContactTypes
-        public InternalDictionaryContactType GetInternalDictionaryContactType(IContext context, FilterDictionaryContactType filter)
+        public FrontDictionaryContactType GetInternalDictionaryContactType(IContext context, FilterDictionaryContactType filter)
         {
-            return new InternalDictionaryContactType();
+            return new FrontDictionaryContactType();
         }
-        public void UpdateDictionaryContactType(IContext context, InternalDictionaryContactType contactType) { }
-        public void DeleteDictionaryContactType(IContext context, InternalDictionaryContactType contactType) { }
+        public void UpdateDictionaryContactType(IContext context, InternalDictionaryContactType contactType)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var ddt = new DictionaryContactTypes
+                {
+                    Id = contactType.Id,
+                    LastChangeDate = contactType.LastChangeDate,
+                    LastChangeUserId = contactType.LastChangeUserId,
+                    Name = contactType.Name,
+                    IsActive = contactType.IsActive
+                };
+                dbContext.DictionaryContactTypesSet.Attach(ddt);
+                var entity = dbContext.Entry(ddt);
+
+                entity.State = System.Data.Entity.EntityState.Modified;
+                dbContext.SaveChanges();
+            }
+        }
+        public void DeleteDictionaryContactType(IContext context, InternalDictionaryContactType contactType)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+
+                var ddt = dbContext.DictionaryContactTypesSet.FirstOrDefault(x => x.Id == contactType.Id);
+                if (ddt != null)
+                {
+                    dbContext.DictionaryContactTypesSet.Remove(ddt);
+                    dbContext.SaveChanges();
+                }
+            }
+        }
         public int AddDictionaryContactType(IContext context, InternalDictionaryContactType contactType)
         {
-            return 0;
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var ddt = new DictionaryContactTypes
+                {
+                    Name = contactType.Name,
+                    IsActive = contactType.IsActive,
+                    LastChangeDate = contactType.LastChangeDate,
+                    LastChangeUserId = contactType.LastChangeUserId
+                };
+                dbContext.DictionaryContactTypesSet.Add(ddt);
+                dbContext.SaveChanges();
+                contactType.Id = ddt.Id;
+                return ddt.Id;
+            }
         }
         public IEnumerable<FrontDictionaryContactType> GetDictionaryContactTypes(IContext context, FilterDictionaryContactType filter)
         {
-            return  null;
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var qry = dbContext.DictionaryContactTypesSet.AsQueryable();
+
+                if (filter.ContactTypeId?.Count > 0)
+                {
+                    qry = qry.Where(x => filter.ContactTypeId.Contains(x.Id));
+                }
+
+                if (!String.IsNullOrEmpty(filter.Name))
+                {
+                    qry = qry.Where(x => x.Name.Contains(filter.Name));
+                }
+
+                if (filter.IsActive != null)
+                {
+                    qry = qry.Where(x => x.IsActive == filter.IsActive);
+                }
+
+                return qry.Select(x => new FrontDictionaryContactType
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    IsActive = x.IsActive
+                }).ToList();
+            }
         }
         #endregion
 

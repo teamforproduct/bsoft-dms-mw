@@ -59,7 +59,7 @@ namespace BL.Database.Dictionaries.Interfaces
         #endregion
 
         #region DictionaryContactTypes
-        InternalDictionaryContactType GetInternalDictionaryContactType(IContext context,FilterDictionaryContactType filter);
+        FrontDictionaryContactType GetInternalDictionaryContactType(IContext context,FilterDictionaryContactType filter);
         void UpdateDictionaryContactType(IContext context, InternalDictionaryContactType contactType);
         void DeleteDictionaryContactType(IContext context, InternalDictionaryContactType contactType);
         int AddDictionaryContactType(IContext context, InternalDictionaryContactType contactType);
