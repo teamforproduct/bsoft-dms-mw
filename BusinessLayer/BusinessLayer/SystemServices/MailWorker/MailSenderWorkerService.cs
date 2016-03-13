@@ -38,14 +38,23 @@ namespace BL.Logic.SystemServices.MailWorker
 
         protected override void InitializeServers()
         {
+            try
+            {
+                Dispose();
+            }
+            catch
+            {
+                // ignored
+            }
+
             foreach (var keyValuePair in _serverContext)
             {
                 try
                 {
                     var msSetting = new InternalSendMailServerParameters
                     {
-                        CheckInterval = _settings.GetSetting<int>(keyValuePair.Value, SettingConstants.MAIL_TIMEOUT_MIN),
                         DatabaseKey = keyValuePair.Key,
+                        CheckInterval = _settings.GetSetting<int>(keyValuePair.Value, SettingConstants.MAIL_TIMEOUT_MIN),
                         ServerType = (MailServerType)_settings.GetSetting<int>(keyValuePair.Value, SettingConstants.MAIL_SERVER_TYPE),
                         FromAddress = _settings.GetSetting<string>(keyValuePair.Value, SettingConstants.MAIL_SERVER_SYSTEMMAIL),
                         Login = _settings.GetSetting<string>(keyValuePair.Value, SettingConstants.MAIL_SERVER_LOGIN),
@@ -125,7 +134,7 @@ namespace BL.Logic.SystemServices.MailWorker
                 tmr.Change(Timeout.Infinite, Timeout.Infinite);
                 tmr.Dispose();
             }
-            
+            _timers.Clear();
         }
     }
 }
