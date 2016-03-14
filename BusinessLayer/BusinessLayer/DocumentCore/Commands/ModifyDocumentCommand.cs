@@ -6,6 +6,7 @@ using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.SystemCore.InternalModel;
+using System;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -76,7 +77,7 @@ namespace BL.Logic.DocumentCore.Commands
                 docAcc.AccessLevel = Model.AccessLevel;
             }
 
-            if (Model.Properties?.Count() > 0)
+            if (Model.Properties!=null)
             {
                 _document.Properties = Model.Properties.Select(x =>
                 {
@@ -85,6 +86,18 @@ namespace BL.Logic.DocumentCore.Commands
                         PropertyLinkId = x.PropertyLinkId,
                         ValueString = x.Value
                     };
+                    double tmpNumeric;
+                    if (double.TryParse(x.Value, out tmpNumeric))
+                    {
+                        item.ValueString = null;
+                        item.ValueNumeric = tmpNumeric;
+                    }
+                    DateTime tmpDate;
+                    if (DateTime.TryParse(x.Value, out tmpDate))
+                    {
+                        item.ValueString = null;
+                        item.ValueDate = tmpDate;
+                    }
                     CommonDocumentUtilities.SetLastChange(_context, item);
                     return item;
                 }).ToList();

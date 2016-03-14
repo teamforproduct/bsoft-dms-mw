@@ -47,8 +47,6 @@ namespace BL.Logic.PropertyCore.Commands
                 var item = new InternalPropertyLink
                 {
                     Id = Model.Id,
-                    PropertyId = Model.PropertyId,
-                    Object = Model.Object,
                     Filers = Model.Filers,
                     IsMandatory = Model.IsMandatory,
                 };

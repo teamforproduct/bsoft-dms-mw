@@ -62,7 +62,7 @@ namespace BL.Model.DocumentCore.FrontModel
 
                 if (model.Properties?.Count() > 0)
                 {
-                    Properties = model.Properties.Select(x => new FrontPropertyValue { PropertyLinkId = x.PropertyLinkId, Value = x.ValueString }).ToList();
+                    Properties = model.Properties.Select(x => new FrontPropertyValue { PropertyLinkId = x.PropertyLinkId, Value = x.ValueString != null ? x.ValueString : (x.ValueNumeric.HasValue ? x.ValueNumeric.ToString() : (x.ValueDate.HasValue ? x.ValueDate.ToString() : null)) }).ToList();
                 }
             }
         }

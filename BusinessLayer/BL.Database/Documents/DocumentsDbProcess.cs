@@ -18,6 +18,7 @@ using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.InternalModel;
+using System.Data.Entity.SqlServer;
 
 namespace BL.Database.Documents
 {
@@ -100,7 +101,7 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
 
-                var acc = CommonQueries.GetDocumentAccesses(ctx, dbContext).Where(x=> (!filters.IsInWork || filters.IsInWork && x.IsInWork == filters.IsInWork));
+                var acc = CommonQueries.GetDocumentAccesses(ctx, dbContext).Where(x => (!filters.IsInWork || filters.IsInWork && x.IsInWork == filters.IsInWork));
                 var qry = CommonQueries.GetFrontDocumentQuery(dbContext, acc);
 
                 #region DocumentsSetFilter
@@ -222,41 +223,49 @@ namespace BL.Database.Documents
                     qry = qry.Where(x => x.Doc.IsRegistered == filters.IsRegistered.Value);
                 }
 
-                if(filters.FilterProperties?.Count()>0)
+                if (filters.FilterProperties?.Count() > 0)
                 {
-                    var qryProp = dbContext.PropertyLinksSet
-                        .Where(x => filters.FilterProperties.Select(y => y.PropertyId).Contains(x.PropertyId) && x.ObjectId == (int)EnumObjects.Documents)
-                        .SelectMany(x => x.PropertyValues).AsQueryable();
-
-                    foreach(var filterProperty  in filters.FilterProperties)
+                    foreach (var filterProperty in filters.FilterProperties)
                     {
+                        var qryTmp = from Doc in qry
+                                     join pv in dbContext.PropertyValuesSet on new { RecordId = Doc.Doc.Id, PropertyLinkId = filterProperty.PropertyLinkId }
+                                        equals new { RecordId = pv.RecordId, PropertyLinkId = pv.PropertyLinkId }
+                                     select new { Doc, pv };
                         switch (filterProperty.ValueType)
                         {
                             case EnumValueTypes.Text:
-                                qryProp = qryProp
-                                    .Where(x => x.PropertyLink.PropertyId == filterProperty.PropertyId 
-                                                && x.ValueString.Contains(filterProperty.Text));
+                                qryTmp = qryTmp.Where(x => x.pv.ValueString.Contains(filterProperty.Text));
                                 break;
                             case EnumValueTypes.Number:
-                                qryProp = qryProp
-                                    .Where(x => x.PropertyLink.PropertyId == filterProperty.PropertyId
-                                                && (!filterProperty.NumberFrom.HasValue || filterProperty.NumberFrom <= int.Parse(x.ValueString))
-                                                && (!filterProperty.NumberTo.HasValue || filterProperty.NumberTo >= int.Parse(x.ValueString)));
+                                if (filterProperty.NumberFrom.HasValue)
+                                {
+                                    qryTmp = qryTmp.Where(x => filterProperty.NumberFrom <= x.pv.ValueNumeric);
+                                }
+                                if (filterProperty.NumberTo.HasValue)
+                                {
+                                    qryTmp = qryTmp.Where(x => filterProperty.NumberTo >= x.pv.ValueNumeric);
+                                }
                                 break;
                             case EnumValueTypes.Date:
-                                qryProp = qryProp
-                                    .Where(x => x.PropertyLink.PropertyId == filterProperty.PropertyId
-                                                && (!filterProperty.DateFrom.HasValue || filterProperty.DateFrom <= DateTime.Parse(x.ValueString))
-                                                && (!filterProperty.DateTo.HasValue || filterProperty.DateTo >= DateTime.Parse(x.ValueString)));
+                                if (filterProperty.DateFrom.HasValue)
+                                {
+                                    qryTmp = qryTmp.Where(x => filterProperty.DateFrom <= x.pv.ValueDate);
+                                }
+                                if (filterProperty.DateTo.HasValue)
+                                {
+                                    qryTmp = qryTmp.Where(x => filterProperty.DateTo >= x.pv.ValueDate);
+                                }
                                 break;
                             case EnumValueTypes.Api:
-                                qryProp = qryProp
-                                    .Where(x => x.PropertyLink.PropertyId == filterProperty.PropertyId
-                                                && filterProperty.Ids.Select(y => y.ToString()).Contains(x.ValueString));
+                                if (!(filterProperty.Ids?.Count()>0))
+                                {
+                                    filterProperty.Ids = new List<int>();
+                                }
+                                var ids = filterProperty.Ids.Select(y => (double?)y).ToList();
+                                qryTmp = qryTmp.Where(x => ids.Contains(x.pv.ValueNumeric));
                                 break;
                         }
-
-                        qry = qry.Where(x => qryProp.GroupBy(y => y.RecordId).Select(y => y.Key).Contains(x.Doc.Id));
+                        qry = qryTmp.Select(x => x.Doc);
                     }
                 }
                 #endregion DocumentsSetFilter
@@ -672,7 +681,7 @@ namespace BL.Database.Documents
                     entryAcc.Property(x => x.AccessLevelId).IsModified = true;
                 }
 
-                if(document.Properties?.Count()>0)
+                if (document.Properties!=null)
                 {
                     CommonQueries.ModifyPropertyValues(dbContext, new InternalPropertyValues { Object = EnumObjects.Documents, RecordId = document.Id, PropertyValues = document.Properties });
                 }

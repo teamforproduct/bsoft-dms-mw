@@ -11,7 +11,7 @@ using BL.Model.Enums;
 using BL.Model.SystemCore.InternalModel;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.FrontModel;
-
+using System.Data.Entity;
 
 namespace BL.Database.SystemDb
 {
@@ -347,6 +347,7 @@ namespace BL.Database.SystemDb
                     LastChangeUserId = model.LastChangeUserId,
                 };
                 dbContext.PropertiesSet.Attach(item);
+                dbContext.Entry(item).State = EntityState.Added;
 
                 dbContext.SaveChanges();
                 model.Id = item.Id;
@@ -377,7 +378,7 @@ namespace BL.Database.SystemDb
                     LastChangeUserId = model.LastChangeUserId,
                 };
                 dbContext.PropertiesSet.Attach(item);
-                dbContext.Entry(item).State = System.Data.Entity.EntityState.Modified;
+                dbContext.Entry(item).State = EntityState.Modified;
 
                 dbContext.SaveChanges();
             }
@@ -470,6 +471,7 @@ namespace BL.Database.SystemDb
                     LastChangeUserId = model.LastChangeUserId,
                 };
                 dbContext.PropertyLinksSet.Attach(item);
+                dbContext.Entry(item).State = EntityState.Added;
 
                 dbContext.SaveChanges();
                 model.Id = item.Id;
@@ -484,15 +486,17 @@ namespace BL.Database.SystemDb
                 var item = new PropertyLinks
                 {
                     Id = model.Id,
-                    PropertyId = model.PropertyId,
-                    ObjectId = (int)model.Object,
                     Filers = model.Filers,
                     IsMandatory = model.IsMandatory,
                     LastChangeDate = model.LastChangeDate,
                     LastChangeUserId = model.LastChangeUserId,
                 };
                 dbContext.PropertyLinksSet.Attach(item);
-                dbContext.Entry(item).State = System.Data.Entity.EntityState.Modified;
+                var entry = dbContext.Entry(item);
+                entry.Property(p => p.Filers).IsModified = true;
+                entry.Property(p => p.IsMandatory).IsModified = true;
+                entry.Property(p => p.LastChangeDate).IsModified = true;
+                entry.Property(p => p.LastChangeUserId).IsModified = true;
 
                 dbContext.SaveChanges();
             }
@@ -557,7 +561,7 @@ namespace BL.Database.SystemDb
                     Id = x.Id,
                     PropertyLinkId = x.PropertyLinkId,
                     RecordId = x.RecordId,
-                    Value = x.ValueString
+                    Value = x.ValueString != null ? x.ValueString : (x.ValueNumeric.HasValue ? x.ValueNumeric.ToString() : (x.ValueDate.HasValue ? x.ValueDate.ToString() : null))
                 }).ToList();
             }
         }
@@ -624,25 +628,23 @@ namespace BL.Database.SystemDb
 
                 qry = qry.Where(x => x.ObjectId == (int)filter.Object);
 
-                var resQry = qry.GroupBy(x => x.Property).Select(x => x.Key);
-
-                return resQry.Select(x => new BaseSystemUIElement
+                return qry.Select(x => new BaseSystemUIElement
                 {
-                    PropertyId = x.Id,
+                    PropertyLinkId = x.Id,
                     ObjectCode = filter.Object.ToString(),
-                    ActionCode = x.Code,
-                    Code = x.Code,
-                    TypeCode = x.TypeCode,
-                    Label = x.Label,
-                    Hint = x.Hint,
-                    ValueTypeCode = x.ValueType.Code,
-                    SelectAPI = x.SelectAPI,
-                    SelectFilter = x.SelectFilter,
-                    SelectFieldCode = x.SelectFieldCode,
-                    SelectDescriptionFieldCode = x.SelectDescriptionFieldCode,
-                    ValueFieldCode = x.ValueType.Code,
-                    ValueDescriptionFieldCode = x.ValueType.Description,
-                    Format = x.OutFormat,
+                    ActionCode = x.Property.Code,
+                    Code = x.Property.Code,
+                    TypeCode = x.Property.TypeCode,
+                    Label = x.Property.Label,
+                    Hint = x.Property.Hint,
+                    ValueTypeCode = x.Property.ValueType.Code,
+                    SelectAPI = x.Property.SelectAPI,
+                    SelectFilter = x.Property.SelectFilter,
+                    SelectFieldCode = x.Property.SelectFieldCode,
+                    SelectDescriptionFieldCode = x.Property.SelectDescriptionFieldCode,
+                    ValueFieldCode = x.Property.ValueType.Code,
+                    ValueDescriptionFieldCode = x.Property.ValueType.Description,
+                    Format = x.Property.OutFormat,
                 }).ToList();
             }
         }
