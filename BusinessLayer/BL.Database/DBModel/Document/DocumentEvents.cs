@@ -42,10 +42,14 @@ namespace BL.Database.DBModel.Document
         public virtual DictionaryEventTypes EventType { get; set; }
         [ForeignKey("SourcePositionId")]
         public virtual DictionaryPositions SourcePosition { get; set; }
+        [ForeignKey("SourcePositionExecutorAgentId")]
+        public virtual DictionaryAgents SourcePositionExecutorAgent { get; set; }
         [ForeignKey("SourceAgentId")]
         public virtual DictionaryAgents SourceAgent { get; set; }
         [ForeignKey("TargetPositionId")]
         public virtual DictionaryPositions TargetPosition { get; set; }
+        [ForeignKey("TargetPositionExecutorAgentId")]
+        public virtual DictionaryAgents TargetPositionExecutorAgent { get; set; }
         [ForeignKey("TargetAgentId")]
         public virtual DictionaryAgents TargetAgent { get; set; }
         [ForeignKey("ReadAgentId")]
