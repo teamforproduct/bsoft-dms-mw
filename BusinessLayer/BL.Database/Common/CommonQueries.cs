@@ -272,47 +272,47 @@ namespace BL.Database.Common
             }).ToList();
         }
 
-        public static IEnumerable<FrontDocumentEvent> GetDocumentEvents(DmsContext dbContext, FilterDocumentEvent filter)
-        {
-            var qry = dbContext.DocumentEventsSet.AsQueryable();
+//        public static IEnumerable<FrontDocumentEvent> GetDocumentEvents(DmsContext dbContext, FilterDocumentEvent filter)
+//        {
+//            var qry = dbContext.DocumentEventsSet.AsQueryable();
 
-            if (filter != null)
-            {
-                if (filter.EventId?.Count > 0)
-                {
-                    qry = qry.Where(x => filter.EventId.Contains(x.Id));
-                }
+//            if (filter != null)
+//            {
+//                if (filter.EventId?.Count > 0)
+//                {
+//                    qry = qry.Where(x => filter.EventId.Contains(x.Id));
+//                }
 
-                if (filter.DocumentId?.Count > 0)
-                {
-                    qry = qry.Where(x => filter.DocumentId.Contains(x.DocumentId));
-                }
-            }
-            return qry.Select(x => new FrontDocumentEvent
-            {
-                Id = x.Id,
-                DocumentId = x.DocumentId,
-                Task = x.Task,
-                Description = x.Description,
-                EventType = (EnumEventTypes)x.EventTypeId,
-                EventTypeName = x.EventType.Name,
-                ImportanceEventType = (EnumImportanceEventTypes)x.EventType.ImportanceEventTypeId,
-//                EventImportanceTypeName = x.EventType.ImportanceEventType.Name,
-                CreateDate = x.CreateDate,
-                Date = x.Date,
-                SourceAgentName = x.SourceAgent.Name,
-                SourceAgentId = x.SourceAgentId,
-                SourcePositionId = x.SourcePositionId,
-                SourcePositionName = x.SourcePosition.Name,
-                SourcePositionExecutorAgentName = x.SourcePosition.ExecutorAgent.Name,
-                TargetAgentName = x.TargetAgent.Name,
-                TargetAgentId = x.TargetAgentId,
-                TargetPositionId = x.TargetPositionId,
-                TargetPositionName = x.TargetPosition.Name,
-                TargetPositionExecutorAgentName = x.TargetPosition.ExecutorAgent.Name,
-            }).ToList();
+//                if (filter.DocumentId?.Count > 0)
+//                {
+//                    qry = qry.Where(x => filter.DocumentId.Contains(x.DocumentId));
+//                }
+//            }
+//            return qry.Select(x => new FrontDocumentEvent
+//            {
+//                Id = x.Id,
+//                DocumentId = x.DocumentId,
+//                Task = x.Task,
+//                Description = x.Description,
+//                EventType = (EnumEventTypes)x.EventTypeId,
+//                EventTypeName = x.EventType.Name,
+//                ImportanceEventType = (EnumImportanceEventTypes)x.EventType.ImportanceEventTypeId,
+////                EventImportanceTypeName = x.EventType.ImportanceEventType.Name,
+//                CreateDate = x.CreateDate,
+//                Date = x.Date,
+//                SourceAgentName = x.SourceAgent.Name,
+//                SourceAgentId = x.SourceAgentId,
+//                SourcePositionId = x.SourcePositionId,
+//                SourcePositionName = x.SourcePosition.Name,
+//                SourcePositionExecutorAgentName = x.SourcePosition.ExecutorAgent.Name,
+//                TargetAgentName = x.TargetAgent.Name,
+//                TargetAgentId = x.TargetAgentId,
+//                TargetPositionId = x.TargetPositionId,
+//                TargetPositionName = x.TargetPosition.Name,
+//                TargetPositionExecutorAgentName = x.TargetPosition.ExecutorAgent.Name,
+//            }).ToList();
 
-        }
+//        }
 
         public static IEnumerable<FrontDocumentWaits> GetDocumentWaits(DmsContext dbContext, FilterDocumentWait filter)
         {

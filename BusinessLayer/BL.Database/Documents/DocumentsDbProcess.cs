@@ -406,7 +406,7 @@ namespace BL.Database.Documents
                     }
                 }
 
-                doc.Events = CommonQueries.GetDocumentEvents(dbContext, new FilterDocumentEvent { DocumentId = docIds });
+                //doc.Events = CommonQueries.GetDocumentEvents(dbContext, new FilterDocumentEvent { DocumentId = docIds });
                 doc.EventsCount = doc.Events.Count();
                 doc.NewEventCount = 0;
 
