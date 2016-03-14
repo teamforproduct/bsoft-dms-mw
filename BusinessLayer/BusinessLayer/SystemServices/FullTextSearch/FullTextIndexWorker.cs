@@ -44,5 +44,10 @@ namespace BL.Logic.SystemServices.FullTextSearch
         {
             return null;
         }
+
+        public void Dispose()
+        {
+            
+        }
     }
 }
