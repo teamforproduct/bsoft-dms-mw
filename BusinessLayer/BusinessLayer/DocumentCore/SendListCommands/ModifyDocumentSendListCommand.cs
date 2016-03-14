@@ -12,7 +12,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
 
-        protected InternalDocumentSendList DocSendList;
+        private InternalDocumentSendList _sendList;
 
         public ModifyDocumentSendListCommand(IDocumentOperationsDbProcess operationDb)
         {
@@ -33,6 +33,19 @@ namespace BL.Logic.DocumentCore.SendListCommands
 
         public override bool CanBeDisplayed(int positionId)
         {
+            _actionRecords =
+                _document.SendLists.Where(
+                    x =>
+                        x.SourcePositionId == positionId
+                        && x.StartEventId == null && x.CloseEventId == null)
+                                                .Select(x => new InternalActionRecord
+                                                {
+                                                    SendListId = x.Id,
+                                                });
+            if (!_actionRecords.Any())
+            {
+                return false;
+            }
             return true;
         }
 
@@ -40,21 +53,23 @@ namespace BL.Logic.DocumentCore.SendListCommands
         {
             _document = _operationDb.ChangeDocumentSendListPrepare(_context, Model.DocumentId);
 
-            DocSendList = _document.SendLists.FirstOrDefault(x => x.Id == Model.Id);
-
-            _context.SetCurrentPosition(DocSendList.SourcePositionId);
+            _sendList = _document?.SendLists.FirstOrDefault(x => x.Id == Model.Id);
+            if (_sendList == null || !CanBeDisplayed(_sendList.SourcePositionId))
+            {
+                throw new CouldNotPerformThisOperation();
+            }
+            _context.SetCurrentPosition(_sendList.SourcePositionId);
             _admin.VerifyAccess(_context, CommandType);
-
-
-            DocSendList.Stage = Model.Stage;
-            DocSendList.SendType = Model.SendType;
-            DocSendList.TargetPositionId = Model.TargetPositionId;
-            DocSendList.Task = Model.Task;
-            DocSendList.Description = Model.Description;
-            DocSendList.DueDate = Model.DueDate;
-            DocSendList.DueDay = Model.DueDay;
-            DocSendList.AccessLevel = Model.AccessLevel;
-            DocSendList.IsInitial = Model.IsInitial;
+            
+            _sendList.Stage = Model.Stage;
+            _sendList.SendType = Model.SendType;
+            _sendList.TargetPositionId = Model.TargetPositionId;
+            _sendList.Task = Model.Task;
+            _sendList.Description = Model.Description;
+            _sendList.DueDate = Model.DueDate;
+            _sendList.DueDay = Model.DueDay;
+            _sendList.AccessLevel = Model.AccessLevel;
+            _sendList.IsInitial = Model.IsInitial;
 
             CommonDocumentUtilities.VerifySendLists(_document);
 
@@ -63,8 +78,8 @@ namespace BL.Logic.DocumentCore.SendListCommands
 
         public override object Execute()
         {
-            CommonDocumentUtilities.SetLastChange(_context, DocSendList);
-            _operationDb.ModifyDocumentSendList(_context, DocSendList);
+            CommonDocumentUtilities.SetLastChange(_context, _sendList);
+            _operationDb.ModifyDocumentSendList(_context, _sendList);
             return null;
         }
 

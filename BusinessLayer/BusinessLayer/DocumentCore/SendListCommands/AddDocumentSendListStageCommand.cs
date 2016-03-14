@@ -30,16 +30,28 @@ namespace BL.Logic.DocumentCore.SendListCommands
 
         public override bool CanBeDisplayed(int positionId)
         {
+            if (_document.ExecutorPositionId != positionId
+                )
+            {
+                return false;
+            }
+
             return true;
         }
 
         public override bool CanExecute()
         {
             _document = _operationDb.AddDocumentSendListStagePrepare(_context, Model.DocumentId);
-
+            if (_document == null)
+            {
+                throw new DocumentNotFoundOrUserHasNoAccess();
+            }
             _context.SetCurrentPosition(_document.ExecutorPositionId);
             _admin.VerifyAccess(_context, CommandType);
-
+            if (!CanBeDisplayed(_context.CurrentPositionId))
+            {
+                throw new CouldNotPerformThisOperation();
+            }
             return true;
         }
 

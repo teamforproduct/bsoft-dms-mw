@@ -35,6 +35,7 @@ namespace BL.Database.DBModel.Document
         public string RegistrationNumberPrefix { get; set; }
         public Nullable<DateTime> RegistrationDate { get; set; }
         public int ExecutorPositionId { get; set; }
+        public int ExecutorPositionExecutorAgentId { get; set; }
         //public int ExecutorAgentId { get; set; }
         public Nullable<int> SenderAgentId { get; set; }
         public Nullable<int> SenderAgentPersonId { get; set; }

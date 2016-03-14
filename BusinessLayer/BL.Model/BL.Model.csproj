@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="AdminCore\AdminAccessInfo.cs" />
     <Compile Include="AdminCore\BaseAdminUserRole.cs" />
+    <Compile Include="Constants\SettingConstants.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterCustomDictionary.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterCustomDictionaryType.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontCustomDictionary.cs" />
@@ -184,6 +185,11 @@
     <Compile Include="Enums\EnumSendTypes.cs" />
     <Compile Include="Enums\MailServerType.cs" />
     <Compile Include="Exception\DmsExceptions.cs" />
+    <Compile Include="FullTextSerach\EnumOperationType.cs" />
+    <Compile Include="FullTextSerach\EnumSearchObjectType.cs" />
+    <Compile Include="FullTextSerach\FullTextSearchResult.cs" />
+    <Compile Include="FullTextSerach\FullTextSettings.cs" />
+    <Compile Include="FullTextSerach\FullTextUpdateCashInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Enums\EnumLogTypes.cs" />
     <Compile Include="SystemCore\Filters\FilterPropertyValue.cs" />

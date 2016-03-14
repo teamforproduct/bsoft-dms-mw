@@ -82,9 +82,9 @@
     <Compile Include="DBModel\Dictionary\DictionaryAgentCompanies.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryAgentEmploeyes.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryAgentPersons.cs" />
-    <Compile Include="DBModel\Dictionary\DictionaryAgentPhoneNumbers.cs" />
+    <Compile Include="DBModel\Dictionary\DictionaryAgentContacts.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryLinkTypes.cs" />
-    <Compile Include="DBModel\Dictionary\DictionaryPhoneNumberTypes.cs" />
+    <Compile Include="DBModel\Dictionary\DictionaryContactTypes.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryResidentTypes.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryResultTypes.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryTags.cs" />
@@ -365,6 +365,10 @@
     <Compile Include="Migrations\201603091552556_AdminPositionRoles.Designer.cs">
       <DependentUpon>201603091552556_AdminPositionRoles.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201603111855522_Contacts.cs" />
+    <Compile Include="Migrations\201603111855522_Contacts.Designer.cs">
+      <DependentUpon>201603111855522_Contacts.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SystemDb\ISystemDbProcess.cs" />
@@ -554,6 +558,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201603091552556_AdminPositionRoles.resx">
       <DependentUpon>201603091552556_AdminPositionRoles.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201603111855522_Contacts.resx">
+      <DependentUpon>201603111855522_Contacts.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

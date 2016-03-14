@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 
 namespace BL.Database.DBModel.Dictionary
 {
-    public class DictionaryPhoneNumberTypes
+    public class DictionaryContactTypes
     {
         public int Id { get; set; }
+        public string Code { get; set; }
         public string Name { get; set; }
+        public string InputMask { get; set; }
         public bool IsActive { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }

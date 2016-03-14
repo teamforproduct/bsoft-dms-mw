@@ -2,7 +2,7 @@
 using System.Web.Mail;
 using BL.Model.SystemCore.InternalModel;
 
-namespace BL.Logic.MailWorker
+namespace BL.Logic.SystemServices.MailWorker
 {
     public class SSLMailSender: BaseMailSender
     {

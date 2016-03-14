@@ -41,5 +41,10 @@ namespace BL.Model.SystemCore.InternalModel
         /// Sender email address
         /// </summary> 
         public string FromAddress { get; set; }
+
+        /// <summary>
+        /// Time in minutes how often check the new events for mail
+        /// </summary>
+        public int CheckInterval { get; set; }
     }
 }

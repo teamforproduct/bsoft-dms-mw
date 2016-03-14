@@ -243,7 +243,7 @@ intellisense.annotate(jQuery, {
   },
   'isXMLDoc': function() {
     /// <signature>
-    ///   <summary>Check to see if a DOM node is within an XML document (or is an XML document).</summary>
+    ///   <summary>Check to see if a DOM node is within an XML document (or is an XML Document).</summary>
     ///   <param name="node" type="Element">The DOM node that will be checked to see if it's in an XML document.</param>
     ///   <returns type="Boolean" />
     /// </signature>

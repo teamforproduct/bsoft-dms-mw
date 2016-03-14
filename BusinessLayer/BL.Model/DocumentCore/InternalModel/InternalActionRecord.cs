@@ -7,7 +7,8 @@
         public int? WaitId { get; set; }
         public int? EventId { get; set; }
         public int? SubscriptionId { get; set; }
-        
+        public int? SendListId { get; set; }
+
         public string Description { get; set; }
 
     }
