@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BL.Database.DBModel.Dictionary;
 
 namespace BL.Database.DBModel.Document
 {
@@ -14,6 +15,7 @@ namespace BL.Database.DBModel.Document
         public int SendEventId { get; set; }
         public Nullable<int> DoneEventId { get; set; }
         public string Description { get; set; }
+        public Nullable<int> SubscriptionStateId { get; set; }
         public string Hash { get; set; }
         public string ChangedHash { get; set; }
         public int LastChangeUserId { get; set; }
@@ -24,5 +26,7 @@ namespace BL.Database.DBModel.Document
         public virtual DocumentEvents SendEvent { get; set; }
         [ForeignKey("DoneEventId")]
         public virtual DocumentEvents DoneEvent { get; set; }
+        [ForeignKey("SubscriptionStateId")]
+        public virtual DictionarySubscriptionStates SubscriptionState { get; set; }
     }
 }
