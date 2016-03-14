@@ -45,7 +45,7 @@ namespace BL.Logic.DependencyInjection
             Bind<IFileStore>().To<FileStore>().InSingletonScope();
             Bind<IAdminService>().To<AdminService>().InSingletonScope();
             Bind<ISystemWorkerService>().To<MailSenderWorkerService>().InSingletonScope();
-            Bind<ISystemWorkerService>().To<FullTextSearchService>().InSingletonScope();
+            Bind<IFullTextSearchService>().To<FullTextSearchService>().InSingletonScope();
         }
 
         private void LoadDocumentModule()

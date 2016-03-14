@@ -10,11 +10,11 @@
         /// </summary>
         public int DocumentId { get; set; }
         /// <summary>
-        /// Type if document part, where text was found (i.e. document, event etc.)
+        /// Type if document part, where text was found (i.e. Document, event etc.)
         /// </summary>
         public EnumSearchObjectType ObjectType { get; set; }
         /// <summary>
-        /// ID of document part. 0 if it was document itself. 
+        /// ID of document part. 0 if it was Document itself. 
         /// </summary>
         public int ObjectId { get; set; }
     }
