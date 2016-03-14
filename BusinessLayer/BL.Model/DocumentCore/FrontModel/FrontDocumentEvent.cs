@@ -3,6 +3,9 @@ using BL.Model.Enums;
 
 namespace BL.Model.DocumentCore.FrontModel
 {
+    /// <summary>
+    /// Describe the display model for the Document events.
+    /// </summary>
     public class FrontDocumentEvent
     {
         public int Id { get; set; }

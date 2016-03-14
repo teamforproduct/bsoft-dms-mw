@@ -47,6 +47,7 @@ namespace BL.Database.Documents
                     RegistrationNumberPrefix = document.RegistrationNumberPrefix,
                     RegistrationDate = document.RegistrationDate,
                     ExecutorPositionId = document.ExecutorPositionId,
+                    ExecutorPositionExecutorAgentId = document.ExecutorPositionExecutorAgentId,
                     LastChangeUserId = document.LastChangeUserId,
                     LastChangeDate = document.LastChangeDate,
                     SenderAgentId = document.SenderAgentId,
@@ -452,7 +453,7 @@ namespace BL.Database.Documents
                     }
                 }
 
-                doc.Events = CommonQueries.GetDocumentEvents(dbContext, new FilterDocumentEvent { DocumentId = docIds });
+                //doc.Events = CommonQueries.GetDocumentEvents(dbContext, new FilterDocumentEvent { DocumentId = docIds });
                 doc.EventsCount = doc.Events.Count();
                 doc.NewEventCount = 0;
 
@@ -564,7 +565,7 @@ namespace BL.Database.Documents
                     return null;
                 }
 
-                doc.SendLists = dbContext.DocumentSendListsSet.Where(x => x.DocumentId == documentId)
+                doc.SendLists = dbContext.DocumentSendListsSet.Where(x => x.DocumentId == documentId && x.IsInitial)
                         .Select(y => new InternalDocumentSendList
                         {
                             Stage = y.Stage,
@@ -860,6 +861,7 @@ namespace BL.Database.Documents
                 {
                     Id = document.Id,
                     ExecutorPositionId = document.ExecutorPositionId,
+                    ExecutorPositionExecutorAgentId = document.ExecutorPositionExecutorAgentId,
                     LastChangeDate = document.LastChangeDate,
                     LastChangeUserId = document.LastChangeUserId
                 };

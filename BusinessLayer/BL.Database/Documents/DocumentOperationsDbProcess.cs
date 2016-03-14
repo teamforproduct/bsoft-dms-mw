@@ -17,6 +17,7 @@ using System.Transactions;
 using BL.CrossCutting.Helpers;
 using BL.Model.AdminCore;
 using BL.Model.DictionaryCore.InternalModel;
+using BL.Model.SystemCore;
 using DocumentAccesses = BL.Database.DBModel.Document.DocumentAccesses;
 using BL.Model.SystemCore.InternalModel;
 
@@ -486,7 +487,9 @@ namespace BL.Database.Documents
                                                 Id = x.OnEvent.Id,
                                                 DocumentId = x.OnEvent.DocumentId,
                                                 SourcePositionId = x.OnEvent.SourcePositionId,
+                                                SourcePositionExecutorAgentId = x.OnEvent.SourcePositionExecutorAgentId,
                                                 TargetPositionId = x.OnEvent.TargetPositionId,
+                                                TargetPositionExecutorAgentId = x.OnEvent.TargetPositionExecutorAgentId,
                                                 SourceAgentId = x.OnEvent.SourceAgentId,
                                                 TargetAgentId = x.OnEvent.TargetAgentId,
                                                 Task = x.OnEvent.Task,
@@ -621,11 +624,109 @@ namespace BL.Database.Documents
             }
         }
 
-        public IEnumerable<FrontDocumentEvent> GetDocumentEvents(IContext ctx, FilterDocumentEvent filter)
+        public IEnumerable<FrontDocumentEvent> GetDocumentEvents(IContext ctx, FilterDocumentEvent filter, UIPaging paging)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-                return CommonQueries.GetDocumentEvents(dbContext, filter);
+                var qry = dbContext.DocumentEventsSet
+                    .Where(x=>(x.TargetPositionId.HasValue && ctx.CurrentPositionsIdList.Contains(x.TargetPositionId.Value)) 
+                    || (x.SourcePositionId.HasValue && ctx.CurrentPositionsIdList.Contains(x.SourcePositionId.Value))
+                    || ctx.CurrentAgentId == x.SourceAgentId 
+                    || (x.TargetAgentId.HasValue && ctx.CurrentAgentId == x.TargetAgentId.Value))
+                    .AsQueryable();
+
+                if (filter != null)
+                {
+                    if (filter.EventId?.Count > 0)
+                    {
+                        qry = qry.Where(x => filter.EventId.Contains(x.Id));
+                    }
+
+                    if (filter.DocumentId.HasValue)
+                    {
+                        qry = qry.Where(x => filter.DocumentId.Value == x.DocumentId);
+                    }
+
+                    if (filter.ListDocumentId?.Count > 0)
+                    {
+                        qry = qry.Where(x => filter.ListDocumentId.Contains(x.DocumentId));
+                    }
+
+                    if (!String.IsNullOrEmpty(filter.Description))
+                    {
+                        qry = qry.Where(x => x.Description.Contains(filter.Description));
+                    }
+
+                    if (filter.EventType.HasValue)
+                    {
+                        qry = qry.Where(x => x.EventTypeId == (int) filter.EventType.Value);
+                    }
+
+                    if (filter.Importance.HasValue)
+                    {
+                        qry = qry.Where(x => x.EventType.ImportanceEventTypeId == (int)filter.Importance.Value);
+                    }
+
+                    if (filter.AgentId.HasValue)
+                    {
+                        qry =
+                            qry.Where(
+                                x =>
+                                    x.TargetAgentId == filter.AgentId.Value || x.SourceAgentId == filter.AgentId.Value ||
+                                    (x.ReadAgentId.HasValue && x.ReadAgentId.Value == filter.AgentId.Value)
+                                    || (x.SourcePositionExecutorAgentId.HasValue && x.SourcePositionExecutorAgentId.Value == filter.AgentId.Value)
+                                    || (x.TargetPositionExecutorAgentId.HasValue && x.TargetPositionExecutorAgentId.Value == filter.AgentId.Value));
+                    }
+
+                    if (filter.PositionId.HasValue)
+                    {
+                        qry =
+                            qry.Where(
+                                x =>
+                                    (x.SourcePositionId.HasValue && x.SourcePositionId.Value == filter.PositionId.Value) ||
+                                    (x.TargetPositionId.HasValue && x.TargetPositionId.Value == filter.PositionId.Value));
+                    }
+                }
+
+                if (paging != null)
+                {
+                    paging.TotalItemsCount = qry.Count();
+
+                    qry =qry.OrderByDescending(x => x.Id)
+                            .Skip(paging.PageSize*(paging.CurrentPage - 1))
+                            .Take(paging.PageSize);
+                }
+
+                return qry.Select(x => new FrontDocumentEvent
+                {
+                    Id = x.Id,
+                    DocumentId = x.DocumentId,
+                    Task = x.Task,
+                    Description = x.Description,
+                    EventType = (EnumEventTypes)x.EventTypeId,
+                    EventTypeName = x.EventType.Name,
+                    ImportanceEventType = (EnumImportanceEventTypes)x.EventType.ImportanceEventTypeId,
+                    EventImportanceTypeName = x.EventType.ImportanceEventType.Name,
+                    CreateDate = x.CreateDate,
+                    Date = x.Date,
+                    SourceAgentName = x.SourceAgent.Name,
+                    SourceAgentId = x.SourceAgentId,
+                    SourcePositionId = x.SourcePositionId,
+                    SourcePositionName = x.SourcePosition.Name,
+                    SourcePositionExecutorAgentName = x.SourcePosition.ExecutorAgent.Name,
+                    TargetAgentName = x.TargetAgent.Name,
+                    TargetAgentId = x.TargetAgentId,
+                    TargetPositionId = x.TargetPositionId,
+                    TargetPositionName = x.TargetPosition.Name,
+                    TargetPositionExecutorAgentName = x.TargetPosition.ExecutorAgent.Name,
+                }).ToList();
+            }
+        }
+
+        public void MarkDocumentEventsAsRead(IContext ctx, int documentId)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            {
             }
         }
 

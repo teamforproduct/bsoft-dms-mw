@@ -6,6 +6,7 @@ using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.DocumentCore.IncomingModel;
+using BL.Model.SystemCore;
 using BL.Model.SystemCore.InternalModel;
 
 namespace BL.Database.Documents.Interfaces
@@ -19,7 +20,8 @@ namespace BL.Database.Documents.Interfaces
         void AddDocumentWaits(IContext ctx, InternalDocument documentWaits);
 
         void AddDocumentEvents(IContext ctx, IEnumerable<InternalDocumentEvent> docEvents);
-        IEnumerable<FrontDocumentEvent> GetDocumentEvents(IContext ctx, FilterDocumentEvent filter);
+        IEnumerable<FrontDocumentEvent> GetDocumentEvents(IContext ctx, FilterDocumentEvent filter, UIPaging paging);
+        void MarkDocumentEventsAsRead(IContext ctx, int documentId);
 
         InternalDocument ChangeIsInWorkAccessPrepare(IContext context, int documentId);
         InternalDocument ChangeIsFavouriteAccessPrepare(IContext context, int documentId);

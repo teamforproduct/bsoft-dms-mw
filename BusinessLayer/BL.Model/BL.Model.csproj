@@ -161,6 +161,7 @@
     <Compile Include="Enums\EnumObjects.cs" />
     <Compile Include="Enums\EnumObserverType.cs" />
     <Compile Include="Enums\EnumEventCorrespondentType.cs" />
+    <Compile Include="Enums\EnumSubscriptionStates.cs" />
     <Compile Include="Enums\EnumValueTypes.cs" />
     <Compile Include="Enums\EnumSubordinationTypes.cs" />
     <Compile Include="Enums\EnumDocumentDirections.cs" />

@@ -616,6 +616,17 @@ namespace BL.Database.Dictionaries
         #endregion DictionaryLinkTypes
 
         #region DictionaryPositions
+
+        public int? GetExecutorAgentIdByPositionId(IContext context, int id)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                return dbContext.DictionaryPositionsSet.Where(x => x.Id == id)
+                    .Select(x => x.ExecutorAgentId).FirstOrDefault();
+            }
+        }
+
+
         public BaseDictionaryPosition GetDictionaryPosition(IContext context, int id)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))

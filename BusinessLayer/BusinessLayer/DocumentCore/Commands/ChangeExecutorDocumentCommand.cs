@@ -1,4 +1,5 @@
-﻿using BL.Logic.Common;
+﻿using BL.Database.Dictionaries.Interfaces;
+using BL.Logic.Common;
 using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.Enums;
@@ -48,6 +49,15 @@ namespace BL.Logic.DocumentCore.Commands
             }
             _context.SetCurrentPosition(_document.ExecutorPositionId);
             _admin.VerifyAccess(_context, CommandType);
+            var executorPositionExecutorAgentId = CommonDocumentUtilities.GetExecutorAgentIdByPositionId(_context, Model.PositionId);
+            if (executorPositionExecutorAgentId.HasValue)
+            {
+                _document.ExecutorPositionExecutorAgentId = executorPositionExecutorAgentId.Value;
+            }
+            else
+            {
+                throw new ExecutorAgentForPositionIsNotDefined();
+            }
             return true;
         }
 
