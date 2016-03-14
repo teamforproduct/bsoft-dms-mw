@@ -43,8 +43,10 @@ namespace BL.Database.Common
                     LastChangeUserId = evt.LastChangeUserId,
                     TargetAgentId = evt.TargetAgentId,
                     TargetPositionId = evt.TargetPositionId,
+                    TargetPositionExecutorAgentId = evt.TargetPositionExecutorAgentId,
                     SourceAgentId = evt.SourceAgentId,
                     SourcePositionId = evt.SourcePositionId,
+                    SourcePositionExecutorAgentId = evt.SourcePositionExecutorAgentId,
                     ReadAgentId = evt.ReadAgentId,
                     ReadDate = evt.ReadDate
                 };
@@ -123,7 +125,7 @@ namespace BL.Database.Common
                 DocumentId = sl.DocumentId,
                 Stage = sl.Stage,
                 SendTypeId = (int)sl.SendType,
-                TargetPositionId = sl.TargetPositionId,
+
                 Task = sl.Task,
                 Description = sl.Description,
                 DueDate = sl.DueDate,
@@ -135,8 +137,10 @@ namespace BL.Database.Common
 
                 SourceAgentId = sl.SourceAgentId,
                 SourcePositionId = sl.SourcePositionId,
+                SourcePositionExecutorAgentId = sl.SourcePositionExecutorAgentId,
                 TargetAgentId = sl.TargetAgentId,
-
+                TargetPositionId = sl.TargetPositionId,
+                TargetPositionExecutorAgentId = sl.TargetPositionExecutorAgentId,
                 LastChangeUserId = sl.LastChangeUserId,
                 LastChangeDate = sl.LastChangeDate
             });

@@ -75,6 +75,8 @@ namespace BL.Database.Dictionaries.Interfaces
         #endregion DictionaryLinkTypes
 
         #region DictionaryPositions
+
+        int? GetExecutorAgentIdByPositionId(IContext context, int id);
         BaseDictionaryPosition GetDictionaryPosition(IContext context, int id);
 
         IEnumerable<BaseDictionaryPosition> GetDictionaryPositions(IContext context, FilterDictionaryPosition filter);

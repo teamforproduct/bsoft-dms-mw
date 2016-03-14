@@ -447,7 +447,17 @@
         }
     }
 
+    public class ExecutorAgentForPositionIsNotDefined : DmsExceptions
+    {
+        private const string _MESSAGE = "Executor Agent For Position Is Not Defined!";
+        public ExecutorAgentForPositionIsNotDefined() : base(_MESSAGE)
+        {
+        }
 
+        public ExecutorAgentForPositionIsNotDefined(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
 
     /// <summary>
     /// Сообщение об ошибке, когда невозможно добавить данные в справочник
