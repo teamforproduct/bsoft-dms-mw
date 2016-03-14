@@ -16,11 +16,14 @@ namespace BL.Database.Dictionaries.Interfaces
         IEnumerable<BaseDictionaryAgent> GetDictionaryAgents(IContext context, FilterDictionaryAgent filter);
         #endregion DictionaryAgents
 
-        #region DictionaryAgentPersons
-        InternalDictionaryAgentPerson GetDictionaryAgentPerson(IContext context, int id);
+        #region DictionaryAgentPerson
 
+        FrontDictionaryAgentPerson GetDictionaryAgentPerson(IContext context, int id);
+        void UpdateDictionaryAgentPerson(IContext context, InternalDictionaryAgentPerson addr);
+        void DeleteDictionaryAgentPerson(IContext context, InternalDictionaryAgentPerson addr);
+        int AddDictionaryAgentPerson(IContext context, InternalDictionaryAgentPerson addr);
         IEnumerable<FrontDictionaryAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter);
-        #endregion DictionaryAgentPersons
+        #endregion DictionaryAgentPerson
 
         #region DictionaryAgentAddress
 

@@ -26,6 +26,34 @@ namespace BL.Database.Dictionaries
         }
 
         #region DictionaryAgents
+
+        private bool IsAgentOneRole(IContext context,int id,EnumDictionaryAgentTypes source)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var agent = GetDictionaryAgent(context, id);
+
+                switch (source)
+                {
+                    case EnumDictionaryAgentTypes.isEmployee:
+                        if (!agent.IsIndividual && !agent.IsCompany && !agent.IsBank) { return true; }
+                        break;
+                    case EnumDictionaryAgentTypes.isCompany:
+                        if (!agent.IsIndividual && !agent.IsEmployee && !agent.IsBank) { return true; }
+                        break;
+                    case EnumDictionaryAgentTypes.isIndividual:
+                        if (!agent.IsEmployee && !agent.IsCompany && !agent.IsBank) { return true; }
+                        break;
+                    case EnumDictionaryAgentTypes.isBank:
+                        if (!agent.IsEmployee && !agent.IsCompany && !agent.IsIndividual) { return true; }
+                        break;
+                }
+                return false;
+            }
+        }
+
+
+
         public BaseDictionaryAgent GetDictionaryAgent(IContext context, int id)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
@@ -101,23 +129,27 @@ namespace BL.Database.Dictionaries
         }
         #endregion DictionaryAgents
 
-        #region DictionaryAgentPersons
-        public InternalDictionaryAgentPerson GetDictionaryAgentPerson(IContext context, int id)
+        #region DictionaryAgentPerson
+        public FrontDictionaryAgentPerson GetDictionaryAgentPerson(IContext context, int id)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
 
                 return
-                    dbContext.DictionaryAgentPersonsSet.Where(x => x.Id == id).Select(x => new InternalDictionaryAgentPerson
+                    dbContext.DictionaryAgentPersonsSet.Where(x => x.Id == id).Select(x => new FrontDictionaryAgentPerson
                     {
                         Id = x.Id,
-                       // AgentId = x.AgentId,
                         FirstName = x.FirstName,
-                    //    PersonAgentId = x.PersonAgentId,
-                        LastChangeUserId = x.LastChangeUserId,
-                        LastChangeDate = x.LastChangeDate,
-                     //   AgentName = x.Agent.Name,
-                     //   PersonAgentName = x.PersonAgent.Name
+                        LastName = x.LastName,
+                        MiddleName = x.MiddleName,
+                        TaxCode=x.TaxCode,
+                        IsMale=x.IsMale,
+                        PassportSerial=x.PassportSerial,
+                        PassportNumber=x.PassportNumber,
+                        PassportText=x.PassportText,
+                        PassportDate=x.PassportDate,
+                        BirthDate=x.BirthDate,
+                        Description=x.Description
                     }).FirstOrDefault();
             }
         }
@@ -128,41 +160,89 @@ namespace BL.Database.Dictionaries
             {
 
                 var qry = dbContext.DictionaryAgentPersonsSet.AsQueryable();
-                /* 
-                               if (filter.AgentPersonId?.Count > 0)
-                               {
-                                   qry = qry.Where(x => filter.AgentPersonId.Contains(x.Id));
-                               }
-                             if (filter.AgentId?.Count > 0)
-                               {
-                                   qry = qry.Where(x => filter.AgentId.Contains(x.AgentId));
-                               }*/
-                if (!string.IsNullOrEmpty(filter.FullName))
+                
+                if (filter.AgentId?.Count > 0)
                 {
-                    qry = qry.Where(x => x.FullName.Contains(filter.FullName));
+                   qry = qry.Where(x => filter.AgentId.Contains(x.Id));
                 }
-            /*    if (!string.IsNullOrEmpty(filter.AgentName))
+                if (!string.IsNullOrEmpty(filter.Name))
                 {
-                    qry = qry.Where(x => x.Agent.Name.Contains(filter.AgentName));
-                }*/
-             /*   if (!string.IsNullOrEmpty(filter.PersonAgentName))
+                    qry = qry.Where(x => x.FullName.Contains(filter.Name));
+                }
+                if (!string.IsNullOrEmpty(filter.Passport))
                 {
-                    qry = qry.Where(x => x.PersonAgent.Name.Contains(filter.PersonAgentName));
-                }*/
+                    qry = qry.Where(x => x.Passport.Contains(filter.Passport));
+                }
+                if (!string.IsNullOrEmpty(filter.TaxCode))
+                {
+                    qry = qry.Where(x => x.TaxCode.Contains(filter.TaxCode));
+                }
+                if (filter.BirthDate!=null )
+                {
+                    qry = qry.Where(x => x.BirthDate == filter.BirthDate);
+                }
 
                 return qry.Select(x => new FrontDictionaryAgentPerson
                 {
                     Id = x.Id,
-                  //  AgentId = x.AgentId,
                     FirstName = x.FirstName,
-                  //  PersonAgentId = x.PersonAgentId,
-                  
-                 //   AgentName = x.Agent.Name,
-                 //   PersonAgentName = x.PersonAgent.Name
+                    LastName = x.LastName,
+                    MiddleName = x.MiddleName,
+                    TaxCode = x.TaxCode,
+                    IsMale = x.IsMale,
+                    PassportSerial = x.PassportSerial,
+                    PassportNumber = x.PassportNumber,
+                    PassportText = x.PassportText,
+                    PassportDate = x.PassportDate,
+                    BirthDate = x.BirthDate,
+                    Description = x.Description
                 }).ToList();
             }
         }
-        #endregion DictionaryAgentPersons
+
+        public void UpdateDictionaryAgentPerson(IContext context, InternalDictionaryAgentPerson person) {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var ddt = new DictionaryAgentPersons
+                {
+                    Id = person.Id,
+                    FirstName=person.FirstName,
+                    LastName=person.LastName,
+                    MiddleName=person.MiddleName,
+                    FullName=person.LastName + " " + person.FirstName + " " + person.MiddleName,
+                    TaxCode=person.TaxCode,
+                    IsMale=person.IsMale,
+                    PassportSerial=person.PassportSerial,
+                    PassportNumber=person.PassportNumber,
+                    PassportText=person.PassportText,
+                    PassportDate=person.PassportDate,
+                    BirthDate=person.BirthDate,
+                    Description = person.Description,
+                    LastChangeDate = person.LastChangeDate,
+                    LastChangeUserId = person.LastChangeUserId,
+                    IsActive = person.IsActive
+                };
+
+                if (IsAgentOneRole(context, person.Id, EnumDictionaryAgentTypes.isEmployee))
+                {
+                    
+                }
+
+
+                dbContext.DictionaryAgentPersonsSet.Attach(ddt);
+                var entity = dbContext.Entry(ddt);
+                entity.State = System.Data.Entity.EntityState.Modified;
+
+                dbContext.SaveChanges();
+            }
+        }
+
+
+
+        public void DeleteDictionaryAgentPerson(IContext context, InternalDictionaryAgentPerson addr) { }
+        public int AddDictionaryAgentPerson(IContext context, InternalDictionaryAgentPerson addr) { return 0; }
+
+        #endregion DictionaryAgentPerson
 
         #region DictionaryAgentAddress
         public FrontDictionaryAgentAddress GetDictionaryAgentAddress(IContext context, int id)

@@ -48,6 +48,9 @@
         AddAgentAddress,
         ModifyAgentAddress,
         DeleteAgentAddress,
+        AddAgentPerson,
+        ModifyAgentPerson,
+        DeleteAgentPerson,
 
         /// <summary>
         /// Добавить тэг

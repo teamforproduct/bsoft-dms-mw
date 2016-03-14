@@ -19,7 +19,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
         #endregion DictionaryAgents
 
         #region DictionaryAgentPersons
-        InternalDictionaryAgentPerson GetDictionaryAgentPerson(IContext context, int id);
+        FrontDictionaryAgentPerson GetDictionaryAgentPerson(IContext context, int id);
 
         IEnumerable<FrontDictionaryAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter);
         #endregion DictionaryAgentPersons

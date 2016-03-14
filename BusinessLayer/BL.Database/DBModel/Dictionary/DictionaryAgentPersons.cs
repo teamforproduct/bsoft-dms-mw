@@ -27,6 +27,15 @@ namespace BL.Database.DBModel.Dictionary
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
 
+        public string Passport
+        {
+            get
+            {
+                return PassportSerial.Trim() + "-" + PassportNumber.ToString() + " выдан " + PassportText.Trim() + " " + PassportDate?.Date;
+            }
+
+        }
+
         [ForeignKey("Id")]
         public virtual DictionaryAgents Agent { get; set; }
         [ForeignKey("AgentCompanyId")]
