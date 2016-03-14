@@ -115,7 +115,7 @@ namespace BL.Database.SystemDb
                     {
                         qry = qry.Where(x => x.IsVisible &&
                                               (!x.IsGrantable
-                                                || x.RoleActions.Any(y => y.Role.PositionRoles.Any(pr=>pr.PositionId == posId) 
+                                                || x.RoleActions.Any(y => y.Role.PositionRoles.Any(pr => pr.PositionId == posId)
                                                                             &&
                                                                             y.Role.UserRoles.Any(z => z.UserId == ctx.CurrentAgentId))));
                     }
@@ -293,7 +293,7 @@ namespace BL.Database.SystemDb
             {
                 var qry = dbContext.PropertiesSet.AsQueryable();
 
-                if (filter.PropertyId?.Count > 0)
+                if (filter.PropertyId != null)
                 {
                     qry = qry.Where(x => filter.PropertyId.Contains(x.Id));
                 }
@@ -440,7 +440,7 @@ namespace BL.Database.SystemDb
 
                     if (filter.Object?.Count > 0)
                     {
-                        qry = qry.Where(x => filter.Object.Select(y=>(int)y).Contains(x.ObjectId));
+                        qry = qry.Where(x => filter.Object.Select(y => (int)y).Contains(x.ObjectId));
                     }
                 }
 
@@ -557,7 +557,7 @@ namespace BL.Database.SystemDb
                     Id = x.Id,
                     PropertyLinkId = x.PropertyLinkId,
                     RecordId = x.RecordId,
-                    Value= x.ValueString
+                    Value = x.ValueString
                 }).ToList();
             }
         }
@@ -582,13 +582,13 @@ namespace BL.Database.SystemDb
                         DocumentName = x.Document.Description,
                         EventType = (EnumEventTypes)x.EventTypeId,
                         DestinationAgentId = x.TargetAgentId ?? 0,
-                        DestinationAgentName = (x.TargetAgent == null)?"":x.TargetAgent.Name,
-                        DestinationPositionId = x.TargetPositionId??0,
-                        DestinationPositionName = (x.TargetPosition == null)?"": x.TargetPosition.Name,
+                        DestinationAgentName = (x.TargetAgent == null) ? "" : x.TargetAgent.Name,
+                        DestinationPositionId = x.TargetPositionId ?? 0,
+                        DestinationPositionName = (x.TargetPosition == null) ? "" : x.TargetPosition.Name,
                         SourceAgentId = x.SourceAgentId,
                         SourceAgentName = x.SourceAgent.Name,
-                        SourcePositiontId = x.SourcePositionId??0,
-                        SourcePositionName = x.SourcePosition == null?"":x.SourcePosition.Name,
+                        SourcePositiontId = x.SourcePositionId ?? 0,
+                        SourcePositionName = x.SourcePosition == null ? "" : x.SourcePosition.Name,
                         WasUpdated = !(x.SendDate == null),
                         DestinationAgentEmail = "sanyok.malinin@gmail.com"
                     }).ToList();
@@ -603,7 +603,7 @@ namespace BL.Database.SystemDb
                 var upd = new List<DbEntityEntry>();
                 mailProcessed.ProcessedEventIds.ForEach(x =>
                 {
-                    var evt = new DocumentEvents {Id = x, SendDate = mailProcessed.ProcessedDate};
+                    var evt = new DocumentEvents { Id = x, SendDate = mailProcessed.ProcessedDate };
                     dbContext.DocumentEventsSet.Attach(evt);
                     var entry = dbContext.Entry(evt);
                     entry.Property(p => p.SendDate).IsModified = true;
@@ -614,5 +614,38 @@ namespace BL.Database.SystemDb
         }
 
         #endregion
+
+        #region Filter Properties
+        public IEnumerable<BaseSystemUIElement> GetFilterProperties(IContext context, FilterProperties filter)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var qry = dbContext.PropertyLinksSet.AsQueryable();
+
+                qry = qry.Where(x => x.ObjectId == (int)filter.Object);
+
+                var resQry = qry.GroupBy(x => x.Property).Select(x => x.Key);
+
+                return resQry.Select(x => new BaseSystemUIElement
+                {
+                    PropertyId = x.Id,
+                    ObjectCode = filter.Object.ToString(),
+                    ActionCode = x.Code,
+                    Code = x.Code,
+                    TypeCode = x.TypeCode,
+                    Label = x.Label,
+                    Hint = x.Hint,
+                    ValueTypeCode = x.ValueType.Code,
+                    SelectAPI = x.SelectAPI,
+                    SelectFilter = x.SelectFilter,
+                    SelectFieldCode = x.SelectFieldCode,
+                    SelectDescriptionFieldCode = x.SelectDescriptionFieldCode,
+                    ValueFieldCode = x.ValueType.Code,
+                    ValueDescriptionFieldCode = x.ValueType.Description,
+                    Format = x.OutFormat,
+                }).ToList();
+            }
+        }
+        #endregion Filter Properties
     }
 }

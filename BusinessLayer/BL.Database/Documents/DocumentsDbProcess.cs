@@ -222,6 +222,43 @@ namespace BL.Database.Documents
                     qry = qry.Where(x => x.Doc.IsRegistered == filters.IsRegistered.Value);
                 }
 
+                if(filters.FilterProperties?.Count()>0)
+                {
+                    var qryProp = dbContext.PropertyLinksSet
+                        .Where(x => filters.FilterProperties.Select(y => y.PropertyId).Contains(x.PropertyId) && x.ObjectId == (int)EnumObjects.Documents)
+                        .SelectMany(x => x.PropertyValues).AsQueryable();
+
+                    foreach(var filterProperty  in filters.FilterProperties)
+                    {
+                        switch (filterProperty.ValueType)
+                        {
+                            case EnumValueTypes.Text:
+                                qryProp = qryProp
+                                    .Where(x => x.PropertyLink.PropertyId == filterProperty.PropertyId 
+                                                && x.ValueString.Contains(filterProperty.Text));
+                                break;
+                            case EnumValueTypes.Number:
+                                qryProp = qryProp
+                                    .Where(x => x.PropertyLink.PropertyId == filterProperty.PropertyId
+                                                && (!filterProperty.NumberFrom.HasValue || filterProperty.NumberFrom <= int.Parse(x.ValueString))
+                                                && (!filterProperty.NumberTo.HasValue || filterProperty.NumberTo >= int.Parse(x.ValueString)));
+                                break;
+                            case EnumValueTypes.Date:
+                                qryProp = qryProp
+                                    .Where(x => x.PropertyLink.PropertyId == filterProperty.PropertyId
+                                                && (!filterProperty.DateFrom.HasValue || filterProperty.DateFrom <= DateTime.Parse(x.ValueString))
+                                                && (!filterProperty.DateTo.HasValue || filterProperty.DateTo >= DateTime.Parse(x.ValueString)));
+                                break;
+                            case EnumValueTypes.Api:
+                                qryProp = qryProp
+                                    .Where(x => x.PropertyLink.PropertyId == filterProperty.PropertyId
+                                                && filterProperty.Ids.Select(y => y.ToString()).Contains(x.ValueString));
+                                break;
+                        }
+
+                        qry = qry.Where(x => qryProp.GroupBy(y => y.RecordId).Select(y => y.Key).Contains(x.Doc.Id));
+                    }
+                }
                 #endregion DocumentsSetFilter
 
                 paging.TotalItemsCount = qry.Count();

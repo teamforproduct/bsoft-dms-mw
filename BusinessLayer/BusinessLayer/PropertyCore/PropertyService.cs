@@ -7,6 +7,7 @@ using BL.Database.SystemDb;
 using BL.Logic.PropertyCore.Interfaces;
 using BL.Model.SystemCore.FrontModel;
 using BL.Model.SystemCore.Filters;
+using BL.Model.SystemCore;
 
 namespace BL.Logic.PropertyCore
 {
@@ -66,5 +67,12 @@ namespace BL.Logic.PropertyCore
         }
 
         #endregion PropertyLinks
+
+        #region Filter Properties
+        public IEnumerable<BaseSystemUIElement> GetFilterProperties(IContext context, FilterProperties filter)
+        {
+            return _systDb.GetFilterProperties(context, filter);
+        }
+        #endregion Filter Properties
     }
 }
