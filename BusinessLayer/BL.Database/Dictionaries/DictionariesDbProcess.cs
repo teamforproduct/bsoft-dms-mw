@@ -27,7 +27,7 @@ namespace BL.Database.Dictionaries
 
         #region DictionaryAgents
 
-        private bool IsAgentOneRole(IContext context,int id,EnumDictionaryAgentTypes source)
+        public bool IsAgentOneRole(IContext context,int id,EnumDictionaryAgentTypes source)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
@@ -53,6 +53,20 @@ namespace BL.Database.Dictionaries
         }
 
 
+        public IEnumerable<EnumDictionaryAgentTypes> GetAgentRoles(IContext context, int id)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                List<EnumDictionaryAgentTypes> list = new List<EnumDictionaryAgentTypes>();
+                var agent = GetDictionaryAgent(context, id);
+                if (agent.IsBank) { list.Add(EnumDictionaryAgentTypes.isBank); }
+                if (agent.IsEmployee) { list.Add(EnumDictionaryAgentTypes.isEmployee); }
+                if (agent.IsIndividual) { list.Add(EnumDictionaryAgentTypes.isIndividual); }
+                if (agent.IsCompany) { list.Add(EnumDictionaryAgentTypes.isCompany); }
+
+                return list;
+            }
+        }
 
         public BaseDictionaryAgent GetDictionaryAgent(IContext context, int id)
         {
@@ -223,24 +237,77 @@ namespace BL.Database.Dictionaries
                     IsActive = person.IsActive
                 };
 
-                if (IsAgentOneRole(context, person.Id, EnumDictionaryAgentTypes.isEmployee))
-                {
-                    
-                }
-
-
                 dbContext.DictionaryAgentPersonsSet.Attach(ddt);
                 var entity = dbContext.Entry(ddt);
                 entity.State = System.Data.Entity.EntityState.Modified;
+
+                if (IsAgentOneRole(context, person.Id, EnumDictionaryAgentTypes.isIndividual))
+                {
+                    
+                }
 
                 dbContext.SaveChanges();
             }
         }
 
 
+        public void DeleteDictionaryAgentPerson(IContext context, InternalDictionaryAgentPerson person)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
 
-        public void DeleteDictionaryAgentPerson(IContext context, InternalDictionaryAgentPerson addr) { }
-        public int AddDictionaryAgentPerson(IContext context, InternalDictionaryAgentPerson addr) { return 0; }
+                var ddt = dbContext.DictionaryAgentPersonsSet.FirstOrDefault(x => x.Id == person.Id);
+                if (ddt != null)
+                {
+                    dbContext.DictionaryAgentPersonsSet.Remove(ddt);
+                    
+
+                    if (IsAgentOneRole(context,person.Id,EnumDictionaryAgentTypes.isIndividual)) {
+
+                    }
+
+                    dbContext.SaveChanges();
+                }
+
+            }
+        }
+
+        public int AddDictionaryAgentPerson(IContext context, InternalDictionaryAgentPerson person)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var ddt = new DictionaryAgentPersons
+                {
+                    FirstName = person.FirstName,
+                    LastName = person.LastName,
+                    MiddleName = person.MiddleName,
+                    FullName = person.LastName + " " + person.FirstName + " " + person.MiddleName,
+                    TaxCode = person.TaxCode,
+                    IsMale = person.IsMale,
+                    PassportSerial = person.PassportSerial,
+                    PassportNumber = person.PassportNumber,
+                    PassportText = person.PassportText,
+                    PassportDate = person.PassportDate,
+                    BirthDate = person.BirthDate,
+                    Description = person.Description,
+                    LastChangeDate = person.LastChangeDate,
+                    LastChangeUserId = person.LastChangeUserId,
+                    IsActive = person.IsActive
+                };
+                dbContext.DictionaryAgentPersonsSet.Add(ddt);
+
+                var agent = GetDictionaryAgent(context, person.Id); 
+                if (agent==null)
+                {
+
+                }
+                else { }
+
+                dbContext.SaveChanges();
+                person.Id = ddt.Id;
+                return ddt.Id;
+            }
+        }
 
         #endregion DictionaryAgentPerson
 
