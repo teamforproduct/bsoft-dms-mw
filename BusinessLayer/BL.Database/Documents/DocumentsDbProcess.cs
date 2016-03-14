@@ -46,6 +46,7 @@ namespace BL.Database.Documents
                     RegistrationNumberPrefix = document.RegistrationNumberPrefix,
                     RegistrationDate = document.RegistrationDate,
                     ExecutorPositionId = document.ExecutorPositionId,
+                    ExecutorPositionExecutorAgentId = document.ExecutorPositionExecutorAgentId,
                     LastChangeUserId = document.LastChangeUserId,
                     LastChangeDate = document.LastChangeDate,
                     SenderAgentId = document.SenderAgentId,
@@ -100,7 +101,7 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
 
-                var acc = CommonQueries.GetDocumentAccesses(ctx, dbContext).Where(x=> (!filters.IsInWork || filters.IsInWork && x.IsInWork == filters.IsInWork));
+                var acc = CommonQueries.GetDocumentAccesses(ctx, dbContext).Where(x => (!filters.IsInWork || filters.IsInWork && x.IsInWork == filters.IsInWork));
                 var qry = CommonQueries.GetFrontDocumentQuery(dbContext, acc);
 
                 #region DocumentsSetFilter
@@ -518,7 +519,7 @@ namespace BL.Database.Documents
                     return null;
                 }
 
-                doc.SendLists = dbContext.DocumentSendListsSet.Where(x => x.DocumentId == documentId)
+                doc.SendLists = dbContext.DocumentSendListsSet.Where(x => x.DocumentId == documentId && x.IsInitial)
                         .Select(y => new InternalDocumentSendList
                         {
                             Stage = y.Stage,
@@ -635,7 +636,7 @@ namespace BL.Database.Documents
                     entryAcc.Property(x => x.AccessLevelId).IsModified = true;
                 }
 
-                if(document.Properties?.Count()>0)
+                if (document.Properties?.Count() > 0)
                 {
                     CommonQueries.ModifyPropertyValues(dbContext, new InternalPropertyValues { Object = EnumObjects.Documents, RecordId = document.Id, PropertyValues = document.Properties });
                 }
@@ -814,6 +815,7 @@ namespace BL.Database.Documents
                 {
                     Id = document.Id,
                     ExecutorPositionId = document.ExecutorPositionId,
+                    ExecutorPositionExecutorAgentId = document.ExecutorPositionExecutorAgentId,
                     LastChangeDate = document.LastChangeDate,
                     LastChangeUserId = document.LastChangeUserId
                 };

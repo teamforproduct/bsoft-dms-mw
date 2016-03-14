@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using BL.CrossCutting.Interfaces;
+using BL.Database.Dictionaries.Interfaces;
 using BL.Logic.DependencyInjection;
 using BL.Database.Documents.Interfaces;
 using BL.Model.Common;
@@ -55,6 +56,51 @@ namespace BL.Logic.Common
             SetLastChange(context, document);
         }
 
+        public static void SetSendListAtrributesForNewDocument(IContext context, IEnumerable<InternalDocumentSendList> sendLists, int _executorPositionExecutorAgentId, bool? isInitial)
+        {
+            foreach (var sl in sendLists)
+            {
+                if (isInitial.HasValue)
+                {
+                    sl.IsInitial = isInitial.Value;
+                }
+                if (sl.SourcePositionId == 0)
+                {
+                    sl.SourcePositionId = context.CurrentPositionId;
+                    sl.SourcePositionExecutorAgentId = _executorPositionExecutorAgentId;
+                }
+                else
+                {
+                    var positionExecutorAgentId = GetExecutorAgentIdByPositionId(context, sl.SourcePositionId);
+                    if (positionExecutorAgentId.HasValue)
+                    {
+                        sl.SourcePositionExecutorAgentId = positionExecutorAgentId.Value;
+                    }
+                    else
+                    {
+                        throw new ExecutorAgentForPositionIsNotDefined();
+                    }
+                }
+                if (sl.TargetPositionId.HasValue)
+                {
+                    var positionExecutorAgentId = CommonDocumentUtilities.GetExecutorAgentIdByPositionId(context, sl.TargetPositionId);
+                    if (positionExecutorAgentId.HasValue)
+                    {
+                        sl.TargetPositionExecutorAgentId = positionExecutorAgentId.Value;
+                    }
+                    else
+                    {
+                        throw new ExecutorAgentForPositionIsNotDefined();
+                    }
+
+                }
+                sl.StartEventId = null;
+                sl.CloseEventId = null;
+                sl.SourceAgentId = context.CurrentAgentId;
+                SetLastChange(context, sl);
+            }
+        }
+
         public static void SetLastChange(IContext context, LastChangeInfo document)
         {
             if (document != null)
@@ -104,7 +150,9 @@ namespace BL.Logic.Common
                 Description = model.Description,
                 SourceAgentId = model.SourceAgentId,
                 SourcePositionId = model.SourcePositionId,
+                SourcePositionExecutorAgentId = GetExecutorAgentIdByPositionId(context, model.SourcePositionId),
                 TargetPositionId = model.TargetPositionId,
+                TargetPositionExecutorAgentId = GetExecutorAgentIdByPositionId(context, model.TargetPositionId),
                 TargetAgentId = model.TargetAgentId,
                 LastChangeUserId = context.CurrentAgentId,
                 LastChangeDate = DateTime.Now,
@@ -131,7 +179,9 @@ namespace BL.Logic.Common
                 Task = task,
                 SourceAgentId = sourceAgentId ?? context.CurrentAgentId,
                 SourcePositionId = sourcePositionId ?? context.CurrentPositionId,
+                SourcePositionExecutorAgentId = GetExecutorAgentIdByPositionId(context, sourcePositionId ?? context.CurrentPositionId),
                 TargetPositionId = targetPositionId ?? context.CurrentPositionId,
+                TargetPositionExecutorAgentId = GetExecutorAgentIdByPositionId(context, targetPositionId ?? context.CurrentPositionId),
                 TargetAgentId = targetAgentId,
                 LastChangeUserId = context.CurrentAgentId,
                 LastChangeDate = DateTime.Now,
@@ -238,14 +288,21 @@ namespace BL.Logic.Common
 
         public static InternalDocumentSendList GetNewDocumentSendList(IContext context, ModifyDocumentSendList model)
         {
+            var executorPositionExecutorAgentId = CommonDocumentUtilities.GetExecutorAgentIdByPositionId(context, context.CurrentPositionId);
+            if (!executorPositionExecutorAgentId.HasValue)
+            {
+                throw new ExecutorAgentForPositionIsNotDefined();
+            }
             return new InternalDocumentSendList
             {
                 DocumentId = model.DocumentId,
                 Stage = model.Stage,
                 SendType = model.SendType,
                 SourcePositionId = context.CurrentPositionId,
+                SourcePositionExecutorAgentId = executorPositionExecutorAgentId.Value,
                 SourceAgentId = context.CurrentAgentId,
                 TargetPositionId = model.TargetPositionId,
+                TargetPositionExecutorAgentId = GetExecutorAgentIdByPositionId(context, model.TargetPositionId),
                 TargetAgentId = model.TargetAgentId,
                 Task = model.Task,
                 Description = model.Description,
@@ -259,6 +316,9 @@ namespace BL.Logic.Common
 
             };
         }
+
+
+
 
         public static IEnumerable<BaseSystemUIElement> VerifyDocument(IContext ctx, FrontDocument doc, IEnumerable<BaseSystemUIElement> uiElements)
         {
@@ -417,5 +477,17 @@ namespace BL.Logic.Common
                 WasChangedExternal = false
             };
         }
+
+        public static int? GetExecutorAgentIdByPositionId(IContext context, int? positionId)
+        {
+            if (positionId.HasValue)
+            {
+                var dict = DmsResolver.Current.Get<IDictionariesDbProcess>();
+                return dict.GetExecutorAgentIdByPositionId(context, positionId.Value);
+            }
+            else
+                return null;
+        }
+
     }
 }
