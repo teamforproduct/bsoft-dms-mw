@@ -31,7 +31,7 @@ namespace BL.Database.Common
         public static IQueryable<FrontDocumentQuery> GetFrontDocumentQuery(DmsContext dbContext, IQueryable<FrontDocumentAccess> userAccesses)
         {
             var qry = from dc in dbContext.DocumentsSet
-                      //join acc in userAccesses on dc.Id equals acc.DocumentId
+                          //join acc in userAccesses on dc.Id equals acc.DocumentId
                       join tmpl in dbContext.TemplateDocumentsSet on dc.TemplateDocumentId equals tmpl.Id
                       join ddir in dbContext.DictionaryDocumentDirectionsSet on tmpl.DocumentDirectionId equals ddir.Id
                       join doctp in dbContext.DictionaryDocumentTypesSet on tmpl.DocumentTypeId equals doctp.Id
@@ -54,7 +54,7 @@ namespace BL.Database.Common
                       join ap in dbContext.DictionaryAgentPersonsSet on dc.SenderAgentPersonId equals ap.Id into ap
                       from sendAp in ap.DefaultIfEmpty()
 
-                      where userAccesses.Select(x=>x.DocumentId).Contains(dc.Id)
+                      where userAccesses.Select(x => x.DocumentId).Contains(dc.Id)
 
                       select new FrontDocumentQuery
                       {
@@ -207,9 +207,9 @@ namespace BL.Database.Common
 
         public static IQueryable<FrontDocumentAccess> GetDocumentAccesses(IContext ctx, DmsContext dbContext)
         {
-            return 
-                dbContext.DocumentAccessesSet.Where(x => ctx.CurrentPositionsIdList.Contains(x.PositionId ))
-                .Select(acc=> new FrontDocumentAccess
+            return
+                dbContext.DocumentAccessesSet.Where(x => ctx.CurrentPositionsIdList.Contains(x.PositionId))
+                .Select(acc => new FrontDocumentAccess
                 {
                     LastChangeDate = acc.LastChangeDate,
                     LastChangeUserId = acc.LastChangeUserId,
@@ -564,9 +564,9 @@ namespace BL.Database.Common
             var items = itemsRes.Select(x => new FrontPropertyValue
             {
                 Id = x.Id,
-                RecordId = x.Id,
+                RecordId = x.RecordId,
                 PropertyLinkId = x.PropertyLinkId,
-                Value = x.ValueString,
+                Value = x.ValueString != null ? x.ValueString : (x.ValueNumeric.HasValue ? x.ValueNumeric.ToString() : (x.ValueDate.HasValue ? x.ValueDate.ToString() : null)),
                 PropertyId = x.PropertyLink.PropertyId,
                 ObjectId = x.PropertyLink.ObjectId,
                 Filers = x.PropertyLink.Filers,
