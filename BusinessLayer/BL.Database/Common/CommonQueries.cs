@@ -19,6 +19,15 @@ namespace BL.Database.Common
 {
     internal static class CommonQueries
     {
+        public static string GetDocumentNumber(DBModel.Document.Documents doc)
+        {
+            return (!doc.IsRegistered ? "#" : "") +
+                   (doc.RegistrationNumber != null
+                       ? doc.RegistrationNumberPrefix + doc.RegistrationNumber +
+                         doc.RegistrationNumberSuffix
+                       : "#" + doc.Id);
+        }
+
         public static IQueryable<FrontDocumentQuery> GetFrontDocumentQuery(DmsContext dbContext, IQueryable<FrontDocumentAccess> userAccesses)
         {
             var qry = from dc in dbContext.DocumentsSet
@@ -270,6 +279,16 @@ namespace BL.Database.Common
                 AgentId = x.ExecutorAgentId ?? 0,
                 AgentName = x.ExecutorAgentId.HasValue ? x.ExecutorAgent.Name : ""
             }).ToList();
+        }
+
+        public static IQueryable<DocumentEvents> GetDocumentEventsQuery(IContext ctx, DmsContext dbContext)
+        {
+            return dbContext.DocumentEventsSet
+                    .Where(x => (x.TargetPositionId.HasValue && ctx.CurrentPositionsIdList.Contains(x.TargetPositionId.Value))
+                    || (x.SourcePositionId.HasValue && ctx.CurrentPositionsIdList.Contains(x.SourcePositionId.Value))
+                    || ctx.CurrentAgentId == x.SourceAgentId
+                    || (x.TargetAgentId.HasValue && ctx.CurrentAgentId == x.TargetAgentId.Value))
+                    .AsQueryable();
         }
 
 //        public static IEnumerable<FrontDocumentEvent> GetDocumentEvents(DmsContext dbContext, FilterDocumentEvent filter)

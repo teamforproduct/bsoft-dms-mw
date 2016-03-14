@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using BL.CrossCutting.Interfaces;
 using BL.Logic.DependencyInjection;
@@ -10,6 +11,7 @@ using BL.Database.SystemDb;
 using BL.Logic.Common;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
+using BL.Model.DocumentCore.InternalModel;
 using BL.Model.SystemCore.Filters;
 
 namespace BL.Logic.DocumentCore
@@ -59,24 +61,35 @@ namespace BL.Logic.DocumentCore
             return res;
         }
 
-        public FrontDocumentEvent GetDocumentEvent(IContext ctx, int eventId)
+        public FrontDocumentEventDeteil GetDocumentEvent(IContext ctx, int eventId)
         {
-            return _operationDb.GetDocumentEvents(ctx, new FilterDocumentEvent { EventId = new List<int> { eventId} }, null).FirstOrDefault();
+            return _operationDb.GetDocumentEvent(ctx, eventId);
         }
 
-        public IEnumerable<FrontDocumentEvent> GetDocumentEvents(IContext ctx, FilterDocumentEvent filter, UIPaging paging)
+        public IEnumerable<FrontDocumentEventList> GetDocumentEvents(IContext ctx, FilterDocumentEvent filter, UIPaging paging)
         {
             return _operationDb.GetDocumentEvents(ctx, filter, paging);
         }
 
-        public IEnumerable<FrontDocumentEvent> GetEventsForDocument(IContext ctx, int documentId, UIPaging paging)
+        public IEnumerable<FrontDocumentEventList> GetEventsForDocument(IContext ctx, int documentId, UIPaging paging)
         {
             return _operationDb.GetDocumentEvents(ctx, new FilterDocumentEvent {DocumentId = documentId}, paging);
         }
 
         public void MarkDocumentEventsAsRead(IContext ctx, int documentId)
         {
-            _operationDb.MarkDocumentEventsAsRead(ctx, documentId);
+            var events = _operationDb.MarkDocumentEventsAsReadPrepare(ctx, documentId) as List<InternalDocumentEvent>;
+            if (events != null)
+            {
+                events.ForEach(x =>
+                {
+                    x.LastChangeUserId = ctx.CurrentAgentId;
+                    x.LastChangeDate = DateTime.Now;
+                    x.ReadDate = DateTime.Now;
+                    x.ReadAgentId = ctx.CurrentAgentId;
+                });
+                _operationDb.MarkDocumentEventAsRead(ctx, events);
+            }
         }
 
         #endregion Documents

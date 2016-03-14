@@ -624,17 +624,36 @@ namespace BL.Database.Documents
             }
         }
 
-        public IEnumerable<FrontDocumentEvent> GetDocumentEvents(IContext ctx, FilterDocumentEvent filter, UIPaging paging)
+        public FrontDocumentEventDeteil GetDocumentEvent(IContext ctx, int eventId)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-                var qry = dbContext.DocumentEventsSet
-                    .Where(x=>(x.TargetPositionId.HasValue && ctx.CurrentPositionsIdList.Contains(x.TargetPositionId.Value)) 
-                    || (x.SourcePositionId.HasValue && ctx.CurrentPositionsIdList.Contains(x.SourcePositionId.Value))
-                    || ctx.CurrentAgentId == x.SourceAgentId 
-                    || (x.TargetAgentId.HasValue && ctx.CurrentAgentId == x.TargetAgentId.Value))
-                    .AsQueryable();
+                return CommonQueries.GetDocumentEventsQuery(ctx, dbContext).Where(x => x.Id == eventId)
+                    .Select(x => new FrontDocumentEventDeteil
+                    {
+                        Id = x.Id,
+                        DocumentDescription = x.Document.Description,
+                        DocumentTypeName = x.Document.TemplateDocument.DocumentType.Name,
+                        ReadAgentName = x.ReadAgent.Name,
+                        ReadDate = x.ReadDate,
+                        SourceAgentName = x.SourceAgent.Name,
+                        SourcePositionName = x.SourcePosition.Name,
+                        TargetPositionName = x.TargetPosition.Name,
+                        SourcePositionExecutorAgentName = x.SourcePosition.ExecutorAgent.Name,
+                        TargetPositionExecutorAgentName = x.TargetPosition.ExecutorAgent.Name,
+                        SourcePositionPhone = "",
+                        TargetPositionPhone = ""
+                    }).FirstOrDefault();
+            }
+        }
 
+        public IEnumerable<FrontDocumentEventList> GetDocumentEvents(IContext ctx, FilterDocumentEvent filter, UIPaging paging)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            {
+                var qry = CommonQueries.GetDocumentEventsQuery(ctx, dbContext);
+
+                #region filters
                 if (filter != null)
                 {
                     if (filter.EventId?.Count > 0)
@@ -687,6 +706,7 @@ namespace BL.Database.Documents
                                     (x.TargetPositionId.HasValue && x.TargetPositionId.Value == filter.PositionId.Value));
                     }
                 }
+                #endregion
 
                 if (paging != null)
                 {
@@ -697,36 +717,60 @@ namespace BL.Database.Documents
                             .Take(paging.PageSize);
                 }
 
-                return qry.Select(x => new FrontDocumentEvent
+                return qry.Select(x => new FrontDocumentEventList
                 {
                     Id = x.Id,
                     DocumentId = x.DocumentId,
                     Task = x.Task,
                     Description = x.Description,
-                    EventType = (EnumEventTypes)x.EventTypeId,
                     EventTypeName = x.EventType.Name,
-                    ImportanceEventType = (EnumImportanceEventTypes)x.EventType.ImportanceEventTypeId,
-                    EventImportanceTypeName = x.EventType.ImportanceEventType.Name,
-                    CreateDate = x.CreateDate,
                     Date = x.Date,
                     SourceAgentName = x.SourceAgent.Name,
-                    SourceAgentId = x.SourceAgentId,
-                    SourcePositionId = x.SourcePositionId,
-                    SourcePositionName = x.SourcePosition.Name,
-                    SourcePositionExecutorAgentName = x.SourcePosition.ExecutorAgent.Name,
                     TargetAgentName = x.TargetAgent.Name,
-                    TargetAgentId = x.TargetAgentId,
-                    TargetPositionId = x.TargetPositionId,
-                    TargetPositionName = x.TargetPosition.Name,
-                    TargetPositionExecutorAgentName = x.TargetPosition.ExecutorAgent.Name,
+                    DocumentDate = x.Document.CreateDate,
+                    DocumentNumber = CommonQueries.GetDocumentNumber(x.Document),
+                    DueDate = null,
                 }).ToList();
             }
         }
 
-        public void MarkDocumentEventsAsRead(IContext ctx, int documentId)
+        public IEnumerable<InternalDocumentEvent> MarkDocumentEventsAsReadPrepare(IContext ctx, int documentId)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
+                var qry = CommonQueries.GetDocumentEventsQuery(ctx, dbContext).Where(x=>x.DocumentId == documentId 
+                && !x.ReadDate.HasValue
+                && x.TargetPositionId.HasValue
+                && ctx.CurrentPositionsIdList.Contains(x.TargetPositionId.Value));
+
+                return qry.Select(x => new InternalDocumentEvent
+                {
+                    Id = x.Id
+                }).ToList();
+            }
+        }
+
+        public void MarkDocumentEventAsRead(IContext ctx, IEnumerable<InternalDocumentEvent> eventList)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            {
+                foreach (var bdev in eventList.Select(evt => new DocumentEvents
+                {
+                    Id = evt.Id,
+                    ReadAgentId = evt.ReadAgentId,
+                    ReadDate = evt.ReadDate,
+                    LastChangeDate = evt.LastChangeDate,
+                    LastChangeUserId = evt.LastChangeUserId
+                }))
+                {
+                    dbContext.DocumentEventsSet.Attach(bdev);
+                    var entry = dbContext.Entry(bdev);
+                    entry.Property(x => x.LastChangeDate).IsModified = true;
+                    entry.Property(x => x.LastChangeUserId).IsModified = true;
+                    entry.Property(x => x.ReadAgentId).IsModified = true;
+                    entry.Property(x => x.ReadDate).IsModified = true;
+                }
+                dbContext.SaveChanges();
             }
         }
 

@@ -19,7 +19,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <param name="filter">модель фильтра ивентов</param>
         /// <param name="paging">paging</param>
         /// <returns>список ивентов</returns>
-        [ResponseType(typeof(FrontDocumentEvent))]
+        [ResponseType(typeof(FrontDocumentEventList))]
         public IHttpActionResult Get([FromUri] FilterDocumentEvent filter, [FromUri]UIPaging paging)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
@@ -27,7 +27,6 @@ namespace DMS_WebAPI.Controllers.Documents
             var events = docProc.GetDocumentEvents(cxt, filter, paging);
             var res = new JsonResult(events, this);
             res.Paging = paging;
-
             return res;
         }
 
@@ -44,9 +43,7 @@ namespace DMS_WebAPI.Controllers.Documents
             var evt = docProc.GetDocumentEvent(cxt, id);
             var res = new JsonResult(evt, this);
             return res;
-
         }
-
 
         /// <summary>
         /// получение всех ивентов по одному документу
@@ -61,7 +58,6 @@ namespace DMS_WebAPI.Controllers.Documents
             var events = docProc.GetEventsForDocument(cxt, id, paging);
             var res = new JsonResult(events, this);
             return res;
-
         }
 
         /// <summary>
@@ -69,6 +65,8 @@ namespace DMS_WebAPI.Controllers.Documents
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        [Route("MarkDocumentEventAsRead")]
+        [HttpPost]
         public IHttpActionResult MarkDocumentEventAsRead(int id)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();

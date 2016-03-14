@@ -38,8 +38,5 @@ namespace BL.Model.DocumentCore.FrontModel
 
         public string GeneralInfo { get; set; }
 
-        public FrontDocumentWaits OnWaits { get; set; }
-        public FrontDocumentWaits OffWaits { get; set; }
-
     }
 }

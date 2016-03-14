@@ -85,7 +85,7 @@ namespace BL.Model.DocumentCore.FrontModel
         /// <summary>
         /// ИД Документа
         /// </summary>
-        public int Id { get; set; }
+        public new int Id { get; set; }
 
         public string TemplateDocumentName { get; set; }
 
@@ -138,7 +138,7 @@ namespace BL.Model.DocumentCore.FrontModel
         public IEnumerable<FrontDocumentSendList> SendLists { get; set; }
         public IEnumerable<FrontDocumentSendListStage> SendListStages { get; set; }
         public int SendListStageMax { get; set; }
-        public IEnumerable<FrontDocumentEvent> Events { get; set; }
+        //public IEnumerable<FrontDocumentEvent> Events { get; set; }
         public IEnumerable<FrontDocumentAccess> Accesses { get; set; }
         public IEnumerable<FrontDocumentAttachedFile> DocumentFiles { get; set; }
         public IEnumerable<FrontDocument> LinkedDocuments { get; set; }
@@ -149,7 +149,7 @@ namespace BL.Model.DocumentCore.FrontModel
         public IEnumerable<BaseDictionaryPosition> DocumentWorkGroup { get; set; }
         public IEnumerable<FrontDocumentSubscription> DocumentSubscriptions { get; set; }
 
-        public IEnumerable<FrontPropertyValue> Properties { get; set; }
+        public new IEnumerable<FrontPropertyValue> Properties { get; set; }
 
     }
 }

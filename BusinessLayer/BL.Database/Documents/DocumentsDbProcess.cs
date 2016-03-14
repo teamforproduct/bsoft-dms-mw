@@ -259,11 +259,7 @@ namespace BL.Database.Documents
                     RegistrationNumberSuffix = x.Doc.RegistrationNumberSuffix,
                     RegistrationJournalId = x.Doc.RegistrationJournalId,
                     RegistrationJournalName = x.RegistrationJournalName,
-                    RegistrationFullNumber =
-                                                (!x.Doc.IsRegistered ? "#" : "") +
-                                                (x.Doc.RegistrationNumber != null
-                                                        ? (x.Doc.RegistrationNumberPrefix + x.Doc.RegistrationNumber.ToString() + x.Doc.RegistrationNumberSuffix)
-                                                        : ("#" + x.Doc.Id.ToString())),
+                    RegistrationFullNumber = CommonQueries.GetDocumentNumber(x.Doc),
 
                     CreateDate = x.Doc.CreateDate,
                     DocumentSubjectName = x.SubjName,
@@ -363,11 +359,7 @@ namespace BL.Database.Documents
                     DocumentSubjectName = dbDoc.SubjName,
 
                     DocumentDate = dbDoc.Doc.RegistrationDate ?? dbDoc.Doc.CreateDate,
-                    RegistrationFullNumber =
-                                                (!dbDoc.Doc.IsRegistered ? "#" : "") +
-                                                (dbDoc.Doc.RegistrationNumber != null
-                                                        ? (dbDoc.Doc.RegistrationNumberPrefix + dbDoc.Doc.RegistrationNumber + dbDoc.Doc.RegistrationNumberSuffix)
-                                                        : ("#" + dbDoc.Doc.Id)),
+                    RegistrationFullNumber = CommonQueries.GetDocumentNumber(dbDoc.Doc),
                     GeneralInfo = dbDoc.DirName + " " + dbDoc.DocTypeName,
                     LinkId = dbDoc.Doc.LinkId,
                     IsFavourite = dbDoc.Acc.IsFavourite,
@@ -408,7 +400,7 @@ namespace BL.Database.Documents
                 }
 
                 //doc.Events = CommonQueries.GetDocumentEvents(dbContext, new FilterDocumentEvent { DocumentId = docIds });
-                doc.EventsCount = doc.Events.Count();
+                doc.EventsCount = dbContext.DocumentEventsSet.Count(x => x.DocumentId == doc.Id);
                 doc.NewEventCount = 0;
 
 
