@@ -55,6 +55,8 @@ namespace BL.Database.DBModel.Document
         public virtual DictionaryRegistrationJournals RegistrationJournal { get; set; }
         [ForeignKey("ExecutorPositionId")]
         public virtual DictionaryPositions ExecutorPosition { get; set; }
+        [ForeignKey("ExecutorPositionExecutorAgentId")]
+        public virtual DictionaryAgents ExecutorPositionExecutorAgent { get; set; }
         //[ForeignKey("ExecutorAgentId")]
         //public virtual DictionaryAgents ExecutorAgent { get; set; }
         [ForeignKey("SenderAgentId")]
