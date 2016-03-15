@@ -23,10 +23,13 @@ namespace BL.Model.DictionaryCore.FilterModel
         public bool? IsActive { get; set; }
 
         /// <summary>
-        /// Контакт агента
-        /// Тип контакта не учитываем, ищем только по значению
+        /// Список контактов агента
         /// </summary>
-        public string Contact { get; set; }
+        public IEnumerable<string> Contacts { get; set; }
+        /// <summary>
+        /// Список адресов агента
+        /// </summary>
+        public IEnumerable<string> Addresses { get; set; }
         /// <summary>
         /// Коллекция доступных типов агентов
         /// </summary>

@@ -16,11 +16,14 @@ namespace BL.Database.Dictionaries.Interfaces
         IEnumerable<BaseDictionaryAgent> GetDictionaryAgents(IContext context, FilterDictionaryAgent filter);
         #endregion DictionaryAgents
 
-        #region DictionaryAgentPersons
-        InternalDictionaryAgentPerson GetDictionaryAgentPerson(IContext context, int id);
+        #region DictionaryAgentPerson
 
+        FrontDictionaryAgentPerson GetDictionaryAgentPerson(IContext context, int id);
+        void UpdateDictionaryAgentPerson(IContext context, InternalDictionaryAgentPerson addr);
+        void DeleteDictionaryAgentPerson(IContext context, InternalDictionaryAgentPerson addr);
+        int AddDictionaryAgentPerson(IContext context, InternalDictionaryAgentPerson addr);
         IEnumerable<FrontDictionaryAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter);
-        #endregion DictionaryAgentPersons
+        #endregion DictionaryAgentPerson
 
         #region DictionaryAgentAddress
 
@@ -50,7 +53,7 @@ namespace BL.Database.Dictionaries.Interfaces
         #endregion DictionaryCompanies
 
         #region DictionaryContacts
-        InternalDictionaryContact GetInternalDictionaryContact(IContext context,
+        FrontDictionaryContact GetDictionaryContact(IContext context,
            FilterDictionaryContact filter);
         void UpdateDictionaryContact(IContext context, InternalDictionaryContact contact);
         void DeleteDictionaryContact(IContext context, InternalDictionaryContact contact);
@@ -59,7 +62,7 @@ namespace BL.Database.Dictionaries.Interfaces
         #endregion
 
         #region DictionaryContactTypes
-        InternalDictionaryContactType GetInternalDictionaryContactType(IContext context,FilterDictionaryContactType filter);
+        FrontDictionaryContactType GetInternalDictionaryContactType(IContext context,FilterDictionaryContactType filter);
         void UpdateDictionaryContactType(IContext context, InternalDictionaryContactType contactType);
         void DeleteDictionaryContactType(IContext context, InternalDictionaryContactType contactType);
         int AddDictionaryContactType(IContext context, InternalDictionaryContactType contactType);

@@ -51,6 +51,15 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
         protected override void InitializeServers()
         {
+            try
+            {
+                Dispose();
+            }
+            catch
+            {
+                // ignored
+            }
+
             foreach (var keyValuePair in _serverContext)
             {
                 try
@@ -151,9 +160,29 @@ namespace BL.Logic.SystemServices.FullTextSearch
         {
             foreach (var tmr in _timers.Values)
             {
-                tmr.Change(Timeout.Infinite, Timeout.Infinite);
-                tmr.Dispose();
+                try
+                {
+                    tmr.Change(Timeout.Infinite, Timeout.Infinite);
+                    tmr.Dispose();
+                }
+                catch
+                {
+                    // ignored
+                }
             }
+            _timers.Clear();
+
+            _workers.ForEach(x =>
+            {
+                try
+                {
+                    x.Dispose();
+                }
+                catch
+                {
+                    // ignored
+                }});
+            _workers.Clear();
         }
     }
 }

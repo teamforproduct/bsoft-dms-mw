@@ -46,7 +46,7 @@ namespace BL.Logic.DictionaryCore
         #endregion DictionaryAgents
 
         #region DictionaryAgentPersons
-        public InternalDictionaryAgentPerson GetDictionaryAgentPerson(IContext context, int id)
+        public FrontDictionaryAgentPerson GetDictionaryAgentPerson(IContext context, int id)
         {
 
             return _dictDb.GetDictionaryAgentPerson(context, id);

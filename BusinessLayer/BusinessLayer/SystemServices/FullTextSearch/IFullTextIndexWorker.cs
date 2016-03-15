@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using BL.Model.FullTextSerach;
 
 namespace BL.Logic.SystemServices.FullTextSearch
 {
-    public interface IFullTextIndexWorker
+    public interface IFullTextIndexWorker: IDisposable
     {
         string ServerKey { get; }
 

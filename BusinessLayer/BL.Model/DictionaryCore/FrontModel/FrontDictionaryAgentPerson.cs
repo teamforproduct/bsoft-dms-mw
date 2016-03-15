@@ -9,7 +9,7 @@ namespace BL.Model.DictionaryCore.FrontModel
     /// <summary>
     /// Контрагент - физическое лицо
     /// </summary>
-    public class FrontDictionaryAgentPerson
+    public class FrontDictionaryAgentPerson : FrontDictionaryAgent
     {
         /// <summary>
         /// ID
@@ -42,11 +42,11 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// <summary>
         /// Номер паспорта
         /// </summary>
-        public string PassportNumber { get; set; }
+        public int? PassportNumber { get; set; }
         /// <summary>
         /// Дата выдачи паспорта
         /// </summary>
-        public DateTime PassportDate { get; set; }
+        public DateTime? PassportDate { get; set; }
         /// <summary>
         /// Кем выдан паспорт
         /// </summary>
@@ -54,11 +54,11 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// <summary>
         /// Дата рождения
         /// </summary>
-        public DateTime BirthDate { get; set; }
+        public DateTime? BirthDate { get; set; }
         /// <summary>
         /// Дополнительная информация
         /// </summary>
-        public string Description { get; set; }
+        public override string Description { get; set; }
         /// <summary>
         /// Полное имя
         /// </summary>
@@ -80,15 +80,36 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// </summary>
         public string Passport  { get
             {
-                return PassportSerial.Trim() + "-" + PassportNumber.Trim() + " выдан " + PassportText.Trim() + " " + PassportDate.Date;
+                return PassportSerial.Trim() + "-" + PassportNumber.ToString() + " выдан " + PassportText.Trim() + " " + PassportDate?.Date;
             }
 
         }
 
-        /// <summary>
-        /// Список контактов
-        /// </summary>
-        public List<FrontDictionaryContact> Contacts { get; set; }
+        public override bool IsCompany {
+            get  {
+                return false;
+            }
+        }
 
+        public override bool IsBank
+        {
+            get  {
+                return false;
+            }
+        }
+        public override bool IsEmployee
+        {
+            get
+            {
+                return false;
+            }
+        }
+        public override bool IsIndividual
+        {
+            get
+            {
+                return true;
+            }
+        }
     }
 }

@@ -44,11 +44,11 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// Номер паспорта
         /// </summary>
-        public string PassportNumber { get; set; }
+        public int? PassportNumber { get; set; }
         /// <summary>
         /// Дата выдачи паспорта
         /// </summary>
-        public DateTime PassportDate { get; set; }
+        public DateTime? PassportDate { get; set; }
         /// <summary>
         /// Кем выдан паспорт
         /// </summary>
@@ -56,13 +56,14 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// Дата рождения
         /// </summary>
-        public DateTime BirthDate { get; set; }
+        public DateTime? BirthDate { get; set; }
         /// <summary>
         /// Дополнительная информация
         /// </summary>
         public string Description { get; set; }
         /// <summary>
-        /// Полное имя
+        ///Признак активности
         /// </summary>
+        public bool IsActive { get; set; }
     }
 }

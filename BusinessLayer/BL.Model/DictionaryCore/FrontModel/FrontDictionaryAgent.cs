@@ -8,7 +8,6 @@ using BL.Model.Enums;
 namespace BL.Model.DictionaryCore.FrontModel
 {
 
-
     /// <summary>
     /// ОСНОВНОЙ. Справочник контрагентов
     /// </summary>
@@ -22,23 +21,20 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// ФИО, Название, ...
         /// </summary>
         public string Name { get; set; }
-
-
+        
         /// <summary>
         /// Список контактов контрагента
         /// </summary>
         public IEnumerable<FrontDictionaryContact> Contacts { get; set; }
-        
         /// <summary>
-        /// Кем в данный момент является контрагент
-        /// </summary>
-        public IEnumerable<FrontDictionaryAgentType> ActualTypes { get; set; }
-
-        //public bool IsIndividual { get; set; }
-        //public bool IsEmployee { get; set; }
-        //public bool IsBank { get; set; }
-        //public bool IsCompany { get; set; }
-        //public bool IsActive { get; set; }
+         /// Список адресов контрагента
+         /// </summary>
+        public IEnumerable<FrontDictionaryAgentAddress> Addresses { get; set; }
+        
+        public virtual bool IsIndividual { get; set; }
+        public virtual bool IsEmployee { get; set; }
+        public virtual bool IsBank { get; set; }
+        public virtual bool IsCompany { get; set; }
 
         /// <summary>
         /// Резидентность
@@ -47,7 +43,10 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// <summary>
         /// Дополнительная информация
         /// </summary>
-        public string Description { get; set; }
-      
+        public virtual string Description { get; set; }
+        /// <summary>
+        /// Признак активности
+        /// </summary>
+        public virtual bool IsActive { get; set; }
     }
 }

@@ -65,6 +65,9 @@
         /// </summary>       
         DeleteDocumentSubject = 203009,
         #endregion DictionaryDocumentSubject
+        AddAgentPerson,
+        ModifyAgentPerson,
+        DeleteAgentPerson,
 
         /// <summary>
         /// Добавить тэг

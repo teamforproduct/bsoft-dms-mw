@@ -22,5 +22,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// Признак активности
         /// </summary>
         public string InputMask { get; set; }
+
+        public bool IsActive { get; set; }
     }
 }
