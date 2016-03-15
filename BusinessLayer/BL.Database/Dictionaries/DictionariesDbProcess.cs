@@ -1162,6 +1162,20 @@ namespace BL.Database.Dictionaries
             }
         }
 
+        public void DeleteDictionaryTag(IContext context, InternalDictionaryTag model)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+
+                var item = dbContext.DictionaryTagsSet.FirstOrDefault(x => x.Id == model.Id);
+                if (item != null)
+                {
+                    dbContext.DictionaryTagsSet.Remove(item);
+                    dbContext.SaveChanges();
+                }
+            }
+        }
+
         #endregion DictionaryTags
 
         #region Admins
