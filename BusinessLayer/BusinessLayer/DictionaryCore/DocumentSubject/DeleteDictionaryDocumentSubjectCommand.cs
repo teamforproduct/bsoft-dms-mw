@@ -40,12 +40,12 @@ namespace BL.Logic.DictionaryCore.DocumentType
         {
             try
             {
-                var newAddrType = new InternalDictionaryDocumentSubject
+                var dds = new InternalDictionaryDocumentSubject
                 {
                     Id = Model
 
                 };
-                _dictDb.DeleteDictionaryAddressType(_context, newAddrType);
+                _dictDb.DeleteDictionaryDocumentSubject(_context, dds);
                 return null;
             }
             catch (Exception ex)

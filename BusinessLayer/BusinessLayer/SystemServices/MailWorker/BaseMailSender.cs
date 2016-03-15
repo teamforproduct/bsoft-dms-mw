@@ -1,7 +1,6 @@
-﻿//using System;
-using BL.Model.SystemCore.InternalModel;
+﻿using BL.Model.SystemCore.InternalModel;
 
-namespace BL.Logic.MailWorker
+namespace BL.Logic.SystemServices.MailWorker
 {
     public abstract class BaseMailSender : IMailSender
     {

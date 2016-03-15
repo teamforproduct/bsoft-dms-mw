@@ -11,7 +11,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
 
-        protected InternalDocumentSendList DocSendList;
+        private InternalDocumentSendList _sendList;
 
         public DeleteDocumentSendListCommand(IDocumentOperationsDbProcess operationDb)
         {
@@ -32,17 +32,35 @@ namespace BL.Logic.DocumentCore.SendListCommands
 
         public override bool CanBeDisplayed(int positionId)
         {
+            _actionRecords =
+                _document.SendLists.Where(
+                    x =>
+                        x.SourcePositionId == positionId
+                        && x.StartEventId == null && x.CloseEventId == null)
+                                                .Select(x => new InternalActionRecord
+                                                {
+                                                    SendListId = x.Id,
+                                                });
+            if (!_actionRecords.Any())
+            {
+                return false;
+            }
             return true;
         }
 
         public override bool CanExecute()
         {
-            DocSendList = _operationDb.DeleteDocumentSendListPrepare(_context, Model);
 
-            _context.SetCurrentPosition(DocSendList.SourcePositionId);
+            _document = _operationDb.DeleteDocumentSendListPrepare(_context, Model);
+            _sendList = _document?.SendLists.FirstOrDefault(x => x.Id == Model);
+            if (_sendList == null || !CanBeDisplayed(_sendList.SourcePositionId))
+            {
+                throw new CouldNotPerformThisOperation();
+            }
+            _context.SetCurrentPosition(_sendList.SourcePositionId);
             _admin.VerifyAccess(_context, CommandType);
 
-            _document = _operationDb.ChangeDocumentSendListPrepare(_context, DocSendList.DocumentId);
+            _document = _operationDb.ChangeDocumentSendListPrepare(_context, _sendList.DocumentId);
 
             var sendLists = _document.SendLists.ToList();
             sendLists.Remove(_document.SendLists.FirstOrDefault(x => x.Id == Model));
@@ -56,7 +74,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
         public override object Execute()
         {
             _operationDb.DeleteDocumentSendList(_context, Model);
-            return DocSendList.DocumentId;
+            return _sendList.DocumentId;
         }
 
         public override EnumDocumentActions CommandType => EnumDocumentActions.DeleteDocumentSendList;

@@ -44,14 +44,14 @@ namespace BL.Logic.DictionaryCore.DocumentType
         {
             try
             {
-                var newAddrType = new InternalDictionaryDocumentSubject
+                var dds = new InternalDictionaryDocumentSubject
                 {
                     Id = Model.Id,
                     Name = Model.Name,
                     IsActive=Model.IsActive
                 };
-                CommonDocumentUtilities.SetLastChange(_context, newAddrType);
-                _dictDb.UpdateDictionaryAddressType(_context, newAddrType);
+                CommonDocumentUtilities.SetLastChange(_context, dds);
+                _dictDb.UpdateDictionaryDocumentSubject(_context, dds);
             }
             catch (DictionaryRecordWasNotFound)
             {

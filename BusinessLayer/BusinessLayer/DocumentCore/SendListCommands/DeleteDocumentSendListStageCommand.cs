@@ -34,6 +34,12 @@ namespace BL.Logic.DocumentCore.SendListCommands
 
         public override bool CanBeDisplayed(int positionId)
         {
+            if (_document.ExecutorPositionId != positionId
+                )
+            {
+                return false;
+            }
+
             return true;
         }
 
@@ -47,6 +53,10 @@ namespace BL.Logic.DocumentCore.SendListCommands
             {
                 _context.SetCurrentPosition(sl.SourcePositionId);
                 _admin.VerifyAccess(_context, CommandType);
+                if (!CanBeDisplayed(_context.CurrentPositionId))
+                {
+                    throw new CouldNotPerformThisOperation();
+                }
                 _document.SendLists.ToList().Remove(sl);
             }
 

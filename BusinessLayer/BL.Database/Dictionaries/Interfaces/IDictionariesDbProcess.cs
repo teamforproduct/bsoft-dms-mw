@@ -17,10 +17,20 @@ namespace BL.Database.Dictionaries.Interfaces
         #endregion DictionaryAgents
 
         #region DictionaryAgentPersons
-        BaseDictionaryAgentPerson GetDictionaryAgentPerson(IContext context, int id);
+        InternalDictionaryAgentPerson GetDictionaryAgentPerson(IContext context, int id);
 
-        IEnumerable<BaseDictionaryAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter);
+        IEnumerable<FrontDictionaryAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter);
         #endregion DictionaryAgentPersons
+
+        #region DictionaryAgentAddress
+
+        FrontDictionaryAgentAddress GetDictionaryAgentAddress(IContext context, int id);
+        void UpdateDictionaryAgentAddress(IContext context, InternalDictionaryAgentAddress addr);
+        void DeleteDictionaryAgentAddress(IContext context, InternalDictionaryAgentAddress addr);
+        int AddDictionaryAgentAddress(IContext context, InternalDictionaryAgentAddress addr);
+        IEnumerable<FrontDictionaryAgentAddress> GetDictionaryAgentAddresses(IContext context, FilterDictionaryAgentAddress filter);
+        
+        #endregion
 
         #region DicionaryAddressTypes
 
@@ -39,6 +49,26 @@ namespace BL.Database.Dictionaries.Interfaces
         IEnumerable<BaseDictionaryCompany> GetDictionaryCompanies(IContext context, FilterDictionaryCompany filter);
         #endregion DictionaryCompanies
 
+        #region DictionaryContacts
+        InternalDictionaryContact GetInternalDictionaryContact(IContext context,
+           FilterDictionaryContact filter);
+        void UpdateDictionaryContact(IContext context, InternalDictionaryContact contact);
+        void DeleteDictionaryContact(IContext context, InternalDictionaryContact contact);
+        int AddDictionaryContact(IContext context, InternalDictionaryContact contact);
+        IEnumerable<FrontDictionaryContact> GetDictionaryContacts(IContext context, FilterDictionaryContact filter);
+        #endregion
+
+        #region DictionaryContactTypes
+        InternalDictionaryContactType GetInternalDictionaryContactType(IContext context,FilterDictionaryContactType filter);
+        void UpdateDictionaryContactType(IContext context, InternalDictionaryContactType contactType);
+        void DeleteDictionaryContactType(IContext context, InternalDictionaryContactType contactType);
+        int AddDictionaryContactType(IContext context, InternalDictionaryContactType contactType);
+        IEnumerable<FrontDictionaryContactType> GetDictionaryContactTypes(IContext context, FilterDictionaryContactType filter);
+        #endregion
+
+
+
+
         #region DictionaryDepartments
         BaseDictionaryDepartment GetDictionaryDepartment(IContext context, int id);
 
@@ -51,12 +81,18 @@ namespace BL.Database.Dictionaries.Interfaces
         IEnumerable<BaseDictionaryDocumentDirection> GetDictionaryDocumentDirections(IContext context, FilterDictionaryDocumentDirection filter);
         #endregion DictionaryDepartments
 
+        // Тематики документов
         #region DictionaryDocumentSubjects
+        int AddDictionaryDocumentSubject(IContext context, InternalDictionaryDocumentSubject docType);
+        void UpdateDictionaryDocumentSubject(IContext context, InternalDictionaryDocumentSubject docType);
+        void DeleteDictionaryDocumentSubject(IContext context, InternalDictionaryDocumentSubject docType);
+        
         FrontDictionaryDocumentSubject GetDictionaryDocumentSubject(IContext context, int id);
 
         IEnumerable<FrontDictionaryDocumentSubject> GetDictionaryDocumentSubjects(IContext context, FilterDictionaryDocumentSubject filter);
         #endregion DictionaryDocumentSubjects
 
+        // Типы документов
         #region DictionaryDocumentTypes
 
         InternalDictionaryDocumentType GetInternalDictionaryDocumentType(IContext context,
@@ -65,7 +101,8 @@ namespace BL.Database.Dictionaries.Interfaces
         void DeleteDictionaryDocumentType(IContext context, InternalDictionaryDocumentType docType);
         int AddDictionaryDocumentType(IContext context, InternalDictionaryDocumentType docType);
         IEnumerable<FrontDictionaryDocumentType> GetDictionaryDocumentTypes(IContext context, FilterDictionaryDocumentType filter);
-        #endregion DictionaryDocumentSubjects
+        #endregion
+        
 
         #region DictionaryEventTypes
         BaseDictionaryEventType GetDictionaryEventType(IContext context, int id);

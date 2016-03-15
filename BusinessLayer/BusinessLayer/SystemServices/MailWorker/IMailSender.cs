@@ -1,6 +1,6 @@
 ﻿using BL.Model.SystemCore.InternalModel;
 
-namespace BL.Logic.MailWorker
+namespace BL.Logic.SystemServices.MailWorker
 {
     public interface IMailSender
     {

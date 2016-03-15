@@ -61,6 +61,9 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns>Измененный запись словаря типа документа</returns>
         public IHttpActionResult Put(int id, [FromBody]ModifyDictionaryDocumentSubject model)
         {
+
+            // Спецификация REST требует отдельного указания ID, несмотря на то, что параметр ID есть в ModifyDictionaryDocumentSubject
+            
             model.Id = id;
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();

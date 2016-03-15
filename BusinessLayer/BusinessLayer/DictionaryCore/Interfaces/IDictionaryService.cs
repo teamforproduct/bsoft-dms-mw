@@ -4,6 +4,7 @@ using BL.CrossCutting.Interfaces;
 using BL.Model.AdminCore;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;
+using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Enums;
 
 namespace BL.Logic.DictionaryCore.Interfaces
@@ -14,20 +15,37 @@ namespace BL.Logic.DictionaryCore.Interfaces
 
         #region DictionaryAgents
         BaseDictionaryAgent GetDictionaryAgent(IContext context, int id);
-
         IEnumerable<BaseDictionaryAgent> GetDictionaryAgents(IContext context, FilterDictionaryAgent filter);
         #endregion DictionaryAgents
 
         #region DictionaryAgentPersons
-        BaseDictionaryAgentPerson GetDictionaryAgentPerson(IContext context, int id);
+        InternalDictionaryAgentPerson GetDictionaryAgentPerson(IContext context, int id);
 
-        IEnumerable<BaseDictionaryAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter);
+        IEnumerable<FrontDictionaryAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter);
         #endregion DictionaryAgentPersons
+
+        #region DictionaryAgentAdress
+        FrontDictionaryAgentAddress GetDictionaryAgentAddress(IContext context, int id);
+
+        IEnumerable<FrontDictionaryAgentAddress> GetDictionaryAgentAddresses(IContext context, FilterDictionaryAgentAddress filter);
+        #endregion
 
         #region DictionaryAddressTypes
         FrontDictionaryAddressType GetDictionaryAddressType(IContext context, int id);
 
         IEnumerable<FrontDictionaryAddressType> GetDictionaryAddressTypes(IContext context, FilterDictionaryAddressType filter);
+        #endregion
+
+        #region DictionaryContacts
+        FrontDictionaryContact GetDictionaryContact(IContext context, int id);
+
+        IEnumerable<FrontDictionaryContact> GetDictionaryContacts(IContext context, FilterDictionaryContact filter);
+        #endregion
+
+        #region DictionaryContactTypes
+        FrontDictionaryContactType GetDictionaryContactType(IContext context, int id);
+
+        IEnumerable<FrontDictionaryContactType> GetDictionaryContactTypes(IContext context, FilterDictionaryContactType filter);
         #endregion
 
         #region DictionaryCompanies

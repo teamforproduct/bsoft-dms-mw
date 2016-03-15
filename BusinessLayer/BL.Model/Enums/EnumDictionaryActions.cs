@@ -32,7 +32,25 @@
         /// </summary>       
         DeleteAddressType = 202009,
         #endregion DictionaryAddressType
+        /// <summary>
+        /// Добавить контакт
+        /// </summary>
+        AddContact,
+        /// <summary>
+        /// Изменить контакт
+        /// </summary>
+        ModifyContact,
+        /// <summary>
+        /// Удалить контакт
+        /// </summary>
+        DeleteContact,
 
+ 		AddContactType,
+        ModifyContactType,
+        DeleteContactType,
+        AddAgentAddress,
+        ModifyAgentAddress,
+        DeleteAgentAddress,
         #region DictionaryDocumentSubject
         /// <summary>
         /// Добавить тип адреса

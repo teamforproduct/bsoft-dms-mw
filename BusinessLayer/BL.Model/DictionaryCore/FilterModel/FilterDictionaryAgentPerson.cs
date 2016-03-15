@@ -1,31 +1,32 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
     /// <summary>
-    /// Фильтр словаря контактов посторонних организаций
+    /// Фильтр словаря физических лиц
     /// </summary>
     public class FilterDictionaryAgentPerson
     {
         /// <summary>
-        /// Массив ИД контактов
-        /// </summary>
-        public List<int> AgentPersonId { get; set; }
-        /// <summary>
-        /// Массив ИД посторонних организаций
+        /// Массив ИД контрагентов
         /// </summary>
         public List<int> AgentId { get; set; }
         /// <summary>
-        /// Отрывок наименования контакта
+        /// Отрывок из ФИО
         /// </summary>
-        public string Name { get; set; }
+        public string FullName { get; set; }
         /// <summary>
-        /// Отрывок наименования посторонней организации
+        /// Отрывок из паспортных данных
         /// </summary>
-        public string AgentName { get; set; }
+        public string Passport { get; set; }
         /// <summary>
-        /// Отрывок наименования агента, связанного с контактом
+        /// Дата рождения
         /// </summary>
-        public string PersonAgentName { get; set; }
+        public DateTime BirthDate { get; set; }
+        /// <summary>
+        /// Пол (true - мужской)
+        /// </summary>
+        public bool? IsMale { get; set; }
     }
 }

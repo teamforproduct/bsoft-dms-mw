@@ -7,6 +7,7 @@ using BL.CrossCutting.Interfaces;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Model.AdminCore;
 using BL.Model.DictionaryCore.FilterModel;
+using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.Enums;
 
@@ -45,18 +46,30 @@ namespace BL.Logic.DictionaryCore
         #endregion DictionaryAgents
 
         #region DictionaryAgentPersons
-        public BaseDictionaryAgentPerson GetDictionaryAgentPerson(IContext context, int id)
+        public InternalDictionaryAgentPerson GetDictionaryAgentPerson(IContext context, int id)
         {
 
             return _dictDb.GetDictionaryAgentPerson(context, id);
         }
 
-        public IEnumerable<BaseDictionaryAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter)
+        public IEnumerable<FrontDictionaryAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter)
         {
 
             return _dictDb.GetDictionaryAgentPersons(context, filter);
         }
         #endregion DictionaryAgentPersons
+
+        #region DictionaryAgentAdress
+        public FrontDictionaryAgentAddress GetDictionaryAgentAddress(IContext context, int id)
+        {
+            return _dictDb.GetDictionaryAgentAddress(context, id);
+        }
+
+        public IEnumerable<FrontDictionaryAgentAddress> GetDictionaryAgentAddresses(IContext context, FilterDictionaryAgentAddress filter)
+        {
+            return _dictDb.GetDictionaryAgentAddresses(context, filter);
+        }
+        #endregion
 
         #region DictionaryAddressTypes
 
@@ -88,6 +101,31 @@ namespace BL.Logic.DictionaryCore
         }
         #endregion DictionaryCompanies
 
+        #region DictionaryContacts
+        public FrontDictionaryContact GetDictionaryContact(IContext context, int id)
+        {
+            return _dictDb.GetDictionaryContacts(context, new FilterDictionaryContact { Id = id }).FirstOrDefault();
+        }
+
+        public IEnumerable<FrontDictionaryContact> GetDictionaryContacts(IContext context, FilterDictionaryContact filter)
+        {
+            return _dictDb.GetDictionaryContacts(context, filter);  
+        }
+        #endregion
+
+        #region DictionaryContactTypes
+        public FrontDictionaryContactType GetDictionaryContactType(IContext context, int id)
+        {
+            return _dictDb.GetDictionaryContactTypes(context, new FilterDictionaryContactType { ContactTypeId = new List<int> { id } }).FirstOrDefault();
+        }
+
+        public IEnumerable<FrontDictionaryContactType> GetDictionaryContactTypes(IContext context, FilterDictionaryContactType filter)
+        {
+            return _dictDb.GetDictionaryContactTypes(context, filter);
+        }
+        #endregion
+
+      
         #region DictionaryDepartments
         public BaseDictionaryDepartment GetDictionaryDepartment(IContext context, int id)
         {

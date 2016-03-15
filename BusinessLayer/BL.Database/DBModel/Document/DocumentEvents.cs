@@ -25,8 +25,10 @@ namespace BL.Database.DBModel.Document
         public string Task { get; set; }
         public string Description { get; set; }
         public int? SourcePositionId { get; set; }
+        public Nullable<int> SourcePositionExecutorAgentId { get; set; }
         public int SourceAgentId { get; set; }
         public Nullable<int> TargetPositionId { get; set; }
+        public Nullable<int> TargetPositionExecutorAgentId { get; set; }
         public Nullable<int> TargetAgentId { get; set; }
         public Nullable<DateTime> SendDate { get; set; }
         public Nullable<DateTime> ReadDate { get; set; }

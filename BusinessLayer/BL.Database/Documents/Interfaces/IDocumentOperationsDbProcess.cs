@@ -50,7 +50,7 @@ namespace BL.Database.Documents.Interfaces
 
         void ModifyDocumentSendList(IContext context, InternalDocumentSendList model);
 
-        InternalDocumentSendList DeleteDocumentSendListPrepare(IContext context, int sendListId);
+        InternalDocument DeleteDocumentSendListPrepare(IContext context, int sendListId);
 
         void DeleteDocumentSendList(IContext context, int sendListId);
 
@@ -67,7 +67,8 @@ namespace BL.Database.Documents.Interfaces
         void DeleteSavedFilter(IContext context, int id);
 
         DocumentActionsModel GetDocumentActionsModelPrepare(IContext context, int documentId);
-        InternalDocument GetDocumentActionsPrepare(IContext context, int documentId);
+        DocumentActionsModel GetDocumentSendListActionsModelPrepare(IContext context, int documentId);
+
         void ControlOffSendListPrepare(IContext context, InternalDocument document);
         void ControlOffSubscriptionPrepare(IContext context, InternalDocument document);
         void ControlOffMarkExecutionWaitPrepare(IContext context, InternalDocument document);

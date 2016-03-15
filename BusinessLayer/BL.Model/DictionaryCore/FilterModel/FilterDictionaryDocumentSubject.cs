@@ -14,5 +14,7 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// Сужение по активности элементов. Если IsActive == Null, то в запросе не учавствует
         /// </summary>
         public bool? IsActive { get; set; }
+
+        public int? ParentId { get; set; }
     }
 }

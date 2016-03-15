@@ -32,7 +32,7 @@ namespace BL.Logic.DictionaryCore.DocumentType
 
         public override bool CanExecute()
         {
-            var spr = _dictDb.GetInternalDictionaryAddressType(_context, new FilterDictionaryAddressType { Name = Model.Name });
+            var spr = _dictDb.GetDictionaryDocumentSubjects(_context, new FilterDictionaryDocumentSubject { Name = Model.Name });
             if (spr != null)
             {
                 throw new DictionaryRecordNotUnique();
@@ -45,13 +45,14 @@ namespace BL.Logic.DictionaryCore.DocumentType
         {
             try
             {
-                var newAddrType = new InternalDictionaryDocumentSubject
+                var dds = new InternalDictionaryDocumentSubject
                 {
                     Name = Model.Name,
-                    IsActive=Model.IsActive
+                    IsActive=Model.IsActive,
+                    ParentId = Model.ParentId
                 };
-                CommonDocumentUtilities.SetLastChange(_context, newAddrType);
-                return _dictDb.AddDictionaryAddressType(_context, newAddrType);
+                CommonDocumentUtilities.SetLastChange(_context, dds);
+                return _dictDb.AddDictionaryDocumentSubject(_context, dds);
             }
             catch (Exception ex)
             {
