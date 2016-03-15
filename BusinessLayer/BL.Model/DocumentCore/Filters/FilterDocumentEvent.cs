@@ -22,14 +22,29 @@ namespace BL.Model.DocumentCore.Filters
         /// </summary>
         public int? DocumentId { get; set; }
 
-        public int? AgentId { get; set; }
+        /// <summary>
+        /// список агентов, для которых ищуться ивенты
+        /// </summary>
+        public List<int> AgentId { get; set; }
 
-        public int? PositionId { get; set; }
+        /// <summary>
+        /// список позиций, для которых ищеться ивенты
+        /// </summary>
+        public List<int> PositionId { get; set; }
 
-        public EnumEventTypes? EventType { get; set; }
+        /// <summary>
+        /// тип события
+        /// </summary>
+        public List<EnumEventTypes> EventType { get; set; }
 
-        public EnumImportanceEventTypes? Importance { get; set; }
+        /// <summary>
+        /// Тип важности события
+        /// </summary>
+        public List<EnumImportanceEventTypes> Importance { get; set; }
 
+        /// <summary>
+        /// Поиск значения в описании ивента (по совпадению) 
+        /// </summary>
         public string Description { get; set; }
     }
 }

@@ -414,18 +414,18 @@ namespace BL.Database.Documents
                     IsFavourite = accs.Any(x=>x.IsFavourite),
                     IsInWork = accs.Any(x=>x.IsInWork),
 
-                    Accesses = accs.Select(x=> 
+                    Accesses = qry.Select(x=> 
                         new FrontDocumentAccess
                         {
-                            LastChangeDate = doc.Acc.LastChangeDate,
-                            LastChangeUserId = doc.Acc.LastChangeUserId,
-                            IsInWork = doc.Acc.IsInWork,
-                            IsFavourite = doc.Acc.IsFavourite,
-                            PositionId = doc.Acc.PositionId,
-                            AccessLevel = (EnumDocumentAccesses) doc.Acc.AccessLevelId,
-                            AccessLevelName = doc.AccLevName,
-                            Id = doc.Acc.Id,
-                            DocumentId = doc.Acc.DocumentId
+                            LastChangeDate = x.Acc.LastChangeDate,
+                            LastChangeUserId = x.Acc.LastChangeUserId,
+                            IsInWork = x.Acc.IsInWork,
+                            IsFavourite = x.Acc.IsFavourite,
+                            PositionId = x.Acc.PositionId,
+                            AccessLevel = (EnumDocumentAccesses) x.Acc.AccessLevelId,
+                            AccessLevelName = x.AccLevName,
+                            Id = x.Acc.Id,
+                            DocumentId = x.Acc.DocumentId
                         }
                     ).ToList(),
                 };
