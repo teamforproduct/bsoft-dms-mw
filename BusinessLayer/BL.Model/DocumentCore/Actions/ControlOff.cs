@@ -29,5 +29,9 @@ namespace BL.Model.DocumentCore.Actions
         /// Каскадное закрытие контроля
         /// </summary>
         public bool IsCascade { get; set; }
+        /// <summary>
+        /// Дата события
+        /// </summary>
+        public DateTime? EventDate { get; set; }
     }
 }

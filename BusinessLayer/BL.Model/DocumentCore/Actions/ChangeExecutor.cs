@@ -1,4 +1,5 @@
-﻿using BL.Model.Enums;
+﻿using System;
+using BL.Model.Enums;
 using BL.Model.Users;
 using System.ComponentModel.DataAnnotations;
 
@@ -29,5 +30,9 @@ namespace BL.Model.DocumentCore.Actions
         /// </summary>
         [Required]
         public EnumDocumentAccesses AccessLevel { get; set; }
+        /// <summary>
+        /// Дата события
+        /// </summary>
+        public DateTime? EventDate { get; set; }
     }
 }

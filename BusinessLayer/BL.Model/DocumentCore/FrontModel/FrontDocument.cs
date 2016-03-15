@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace BL.Model.DocumentCore.FrontModel
 {
-    public class FrontDocument : ModifyDocument
+    public class FrontDocument 
     {
         public FrontDocument()
         {
@@ -87,6 +87,36 @@ namespace BL.Model.DocumentCore.FrontModel
         /// </summary>
         public new int Id { get; set; }
 
+        public int? DocumentSubjectId { get; set; }
+        /// <summary>
+        /// Краткое содержание
+        /// </summary>
+        public string Description { get; set; }
+        /// <summary>
+        /// ИД организации, обязательное для внешних документов
+        /// </summary>
+        public int? SenderAgentId { get; set; }
+        /// <summary>
+        /// ИД контакта, обязательное для внешних документов
+        /// </summary>
+        public int? SenderAgentPersonId { get; set; }
+        /// <summary>
+        /// Входящий номер документа
+        /// </summary>
+        public string SenderNumber { get; set; }
+        /// <summary>
+        /// Дата входящего документа
+        /// </summary>
+        public DateTime? SenderDate { get; set; }
+        /// <summary>
+        /// Кому адресован документ
+        /// </summary>
+        public string Addressee { get; set; }
+        /// <summary>
+        /// ИД уровня доступа
+        /// </summary>
+        public EnumDocumentAccesses AccessLevel { get; set; }
+
         public string TemplateDocumentName { get; set; }
 
         public string DocumentDirectionName { get; set; }
@@ -95,7 +125,9 @@ namespace BL.Model.DocumentCore.FrontModel
         public string DocumentSubjectName { get; set; }
         public string RegistrationJournalName { get; set; }
         public string ExecutorPositionName { get; set; }
+        public string ExecutorPositionExecutorAgentName { get; set; }
         public string ExecutorPositionAgentName { get; set; }
+        public string ExecutorPositionAgentPhoneNumber { get; set; }
 
         public string SenderAgentName { get; set; }
         public string SenderAgentPersonName { get; set; }
@@ -130,6 +162,10 @@ namespace BL.Model.DocumentCore.FrontModel
         public string RegistrationFullNumber { get; set; }
 
         public int EventsCount { get; set; }
+        public int WaitOpenCount { get; set; }
+        public int WaitOverdueCount { get; set; }
+
+
         public int NewEventCount { get; set; }
         public int AttachedFilesCount { get; set; }
         public int LinkedDocumentsCount { get; set; }
@@ -149,7 +185,7 @@ namespace BL.Model.DocumentCore.FrontModel
         public IEnumerable<BaseDictionaryPosition> DocumentWorkGroup { get; set; }
         public IEnumerable<FrontDocumentSubscription> DocumentSubscriptions { get; set; }
 
-        public new IEnumerable<FrontPropertyValue> Properties { get; set; }
+        public IEnumerable<FrontPropertyValue> Properties { get; set; }
 
     }
 }

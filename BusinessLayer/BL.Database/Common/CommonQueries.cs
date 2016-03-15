@@ -61,6 +61,7 @@ namespace BL.Database.Common
                           RegistrationJournalPrefixFormula = regj.PrefixFormula,
                           RegistrationJournalSuffixFormula = regj.SuffixFormula,
                           ExecutorPosName = executor.Name,
+                          ExecutorPositionExecutorAgentName = executor.ExecutorAgent.Name,
                           ExecutorAgentName = exAg.Name,
                           SenderAgentname = sendAg.Name,
                           SenderPersonName = sendAp.FullName
@@ -108,6 +109,7 @@ namespace BL.Database.Common
                           RegistrationJournalPrefixFormula = regj.PrefixFormula,
                           RegistrationJournalSuffixFormula = regj.SuffixFormula,
                           ExecutorPosName = executor.Name,
+                          ExecutorPositionExecutorAgentName = executor.ExecutorAgent.Name,
                           ExecutorAgentName = exAg.Name,
                           SenderAgentname = sendAg.Name,
                           SenderPersonName = sendAp.FullName

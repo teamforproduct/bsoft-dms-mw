@@ -1,4 +1,5 @@
-﻿using BL.Model.Users;
+﻿using System;
+using BL.Model.Users;
 using System.ComponentModel.DataAnnotations;
 
 namespace BL.Model.DocumentCore.Actions
@@ -14,10 +15,14 @@ namespace BL.Model.DocumentCore.Actions
         [Required]
         public int DocumentId { get; set; }
         /// <summary>
-        /// Примечание
+        /// Комментарий
         /// </summary>
         [Required]
         public string Description { get; set; }
-     
+        /// <summary>
+        /// Дата события
+        /// </summary>
+        public DateTime? EventDate { get; set; }
+
     }
 }
