@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using BL.CrossCutting.Interfaces;
 using BL.Logic.DependencyInjection;
@@ -11,7 +10,6 @@ using BL.Database.SystemDb;
 using BL.Logic.Common;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
-using BL.Model.DocumentCore.InternalModel;
 using BL.Model.SystemCore.Filters;
 
 namespace BL.Logic.DocumentCore
@@ -75,23 +73,6 @@ namespace BL.Logic.DocumentCore
         {
             return _operationDb.GetDocumentEvents(ctx, new FilterDocumentEvent {DocumentId = documentId}, paging);
         }
-
-        public void MarkDocumentEventsAsRead(IContext ctx, int documentId)
-        {
-            var events = _operationDb.MarkDocumentEventsAsReadPrepare(ctx, documentId) as List<InternalDocumentEvent>;
-            if (events != null)
-            {
-                events.ForEach(x =>
-                {
-                    x.LastChangeUserId = ctx.CurrentAgentId;
-                    x.LastChangeDate = DateTime.Now;
-                    x.ReadDate = DateTime.Now;
-                    x.ReadAgentId = ctx.CurrentAgentId;
-                });
-                _operationDb.MarkDocumentEventAsRead(ctx, events);
-            }
-        }
-
         #endregion Documents
 
     }

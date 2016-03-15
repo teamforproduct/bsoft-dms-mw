@@ -281,6 +281,13 @@ namespace BL.Database.Documents
                         .GroupBy(g => g.ev.DocumentId)
                         .Select(s => new { DocID = s.Key, EvnCnt = s.Count() }).ToList();
 
+                var newevnt =
+                    dbContext.DocumentEventsSet.Join(qry, ev => ev.DocumentId, rs => rs.Doc.Id, (e, r) => new { ev = e })
+                    .Where(x=> !x.ev.ReadDate.HasValue && x.ev.TargetPositionId.HasValue && x.ev.TargetPositionId != x.ev.SourcePositionId
+                             && ctx.CurrentPositionsIdList.Contains(x.ev.TargetPositionId.Value))
+                        .GroupBy(g => g.ev.DocumentId)
+                        .Select(s => new { DocID = s.Key, EvnCnt = s.Count() }).ToList();
+
                 var fls =
                     dbContext.DocumentFilesSet.Join(qry, fl => fl.DocumentId, rs => rs.Doc.Id, (f, r) => new { fil = f })
                         .GroupBy(g => g.fil.DocumentId)
@@ -337,15 +344,22 @@ namespace BL.Database.Documents
                     doc.AccessLevelName = doc.Accesses.FirstOrDefault(x => x.AccessLevel == doc.AccessLevel).AccessLevelName;
                 }
 
+                
                 foreach (var x1 in docs.Join(evnt, d => d.Id, e => e.DocID, (d, e) => new { doc = d, ev = e }))
                 {
                     x1.doc.EventsCount = x1.ev.EvnCnt;
-                    x1.doc.NewEventCount = 0;
                 }
+
+                foreach (var x1 in docs.Join(newevnt, d => d.Id, e => e.DocID, (d, e) => new { doc = d, ev = e }))
+                {
+                    x1.doc.NewEventCount = x1.ev.EvnCnt;
+                }
+
                 foreach (var x1 in docs.Join(fls, d => d.Id, e => e.DocID, (d, e) => new { doc = d, ev = e }))
                 {
                     x1.doc.AttachedFilesCount = x1.ev.FileCnt;
                 }
+
                 foreach (var x1 in docs.Join(links, d => d.Id, e => e.DocID, (d, e) => new { doc = d, ev = e }))
                 {
                     x1.doc.LinkedDocumentsCount = x1.ev.LinkCnt;
@@ -455,7 +469,9 @@ namespace BL.Database.Documents
 
                 //doc.Events = CommonQueries.GetDocumentEvents(dbContext, new FilterDocumentEvent { DocumentId = docIds });
                 doc.EventsCount = dbContext.DocumentEventsSet.Count(x => x.DocumentId == doc.Id);
-                doc.NewEventCount = 0;
+                doc.NewEventCount = dbContext.DocumentEventsSet.Count(x => x.DocumentId == doc.Id && !x.ReadDate.HasValue 
+                && x.TargetPositionId.HasValue && x.TargetPositionId!=x.SourcePositionId
+                && ctx.CurrentPositionsIdList.Contains(x.TargetPositionId.Value));
 
 
                 doc.SendLists = CommonQueries.GetDocumentSendList(dbContext, documentId);

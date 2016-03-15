@@ -738,19 +738,22 @@ namespace BL.Database.Documents
             }
         }
 
-        public IEnumerable<InternalDocumentEvent> MarkDocumentEventsAsReadPrepare(IContext ctx, int documentId)
+        public InternalDocument MarkDocumentEventsAsReadPrepare(IContext ctx, int documentId)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
+                var res = new InternalDocument {Id = documentId };
                 var qry = CommonQueries.GetDocumentEventsQuery(ctx, dbContext).Where(x=>x.DocumentId == documentId 
                 && !x.ReadDate.HasValue
-                && x.TargetPositionId.HasValue
+                && x.TargetPositionId.HasValue && x.TargetPositionId != x.SourcePositionId
                 && ctx.CurrentPositionsIdList.Contains(x.TargetPositionId.Value));
 
-                return qry.Select(x => new InternalDocumentEvent
+                res.Events = qry.Select(x => new InternalDocumentEvent
                 {
                     Id = x.Id
                 }).ToList();
+
+                return res;
             }
         }
 

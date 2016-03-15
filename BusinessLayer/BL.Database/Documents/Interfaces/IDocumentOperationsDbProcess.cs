@@ -22,7 +22,7 @@ namespace BL.Database.Documents.Interfaces
         void AddDocumentEvents(IContext ctx, IEnumerable<InternalDocumentEvent> docEvents);
         FrontDocumentEventDeteil GetDocumentEvent(IContext ctx, int eventId);
         IEnumerable<FrontDocumentEventList> GetDocumentEvents(IContext ctx, FilterDocumentEvent filter, UIPaging paging);
-        IEnumerable<InternalDocumentEvent> MarkDocumentEventsAsReadPrepare(IContext ctx, int documentId);
+        InternalDocument MarkDocumentEventsAsReadPrepare(IContext ctx, int documentId);
         void MarkDocumentEventAsRead(IContext ctx, IEnumerable<InternalDocumentEvent> eventList);
 
         InternalDocument ChangeIsInWorkAccessPrepare(IContext context, int documentId);

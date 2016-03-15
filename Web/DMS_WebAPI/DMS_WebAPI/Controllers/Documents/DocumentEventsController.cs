@@ -59,21 +59,5 @@ namespace DMS_WebAPI.Controllers.Documents
             var res = new JsonResult(events, this);
             return res;
         }
-
-        /// <summary>
-        /// mark event in document as read for that user.
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [Route("MarkDocumentEventAsRead")]
-        [HttpPost]
-        public IHttpActionResult MarkDocumentEventAsRead(int id)
-        {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentService>();
-            docProc.MarkDocumentEventsAsRead(cxt, id);
-            var ctrl = new DocumentsController { ControllerContext = ControllerContext };
-            return ctrl.Get(id);
-        }
     }
 }

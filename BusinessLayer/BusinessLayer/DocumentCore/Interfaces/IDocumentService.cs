@@ -16,6 +16,5 @@ namespace BL.Logic.DocumentCore.Interfaces
         FrontDocumentEventDeteil GetDocumentEvent(IContext ctx, int eventId);
         IEnumerable<FrontDocumentEventList> GetDocumentEvents(IContext ctx, FilterDocumentEvent filter, UIPaging paging);
         IEnumerable<FrontDocumentEventList> GetEventsForDocument(IContext ctx, int documentId, UIPaging paging);
-        void MarkDocumentEventsAsRead(IContext ctx, int documentId);
     }
 }
