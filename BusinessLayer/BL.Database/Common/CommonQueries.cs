@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using BL.CrossCutting.Interfaces;
 using BL.Database.DatabaseContext;
@@ -285,47 +286,47 @@ namespace BL.Database.Common
                     .AsQueryable();
         }
 
-//        public static IEnumerable<FrontDocumentEvent> GetDocumentEvents(DmsContext dbContext, FilterDocumentEvent filter)
-//        {
-//            var qry = dbContext.DocumentEventsSet.AsQueryable();
+        //        public static IEnumerable<FrontDocumentEvent> GetDocumentEvents(DmsContext dbContext, FilterDocumentEvent filter)
+        //        {
+        //            var qry = dbContext.DocumentEventsSet.AsQueryable();
 
-//            if (filter != null)
-//            {
-//                if (filter.EventId?.Count > 0)
-//                {
-//                    qry = qry.Where(x => filter.EventId.Contains(x.Id));
-//                }
+        //            if (filter != null)
+        //            {
+        //                if (filter.EventId?.Count > 0)
+        //                {
+        //                    qry = qry.Where(x => filter.EventId.Contains(x.Id));
+        //                }
 
-//                if (filter.DocumentId?.Count > 0)
-//                {
-//                    qry = qry.Where(x => filter.DocumentId.Contains(x.DocumentId));
-//                }
-//            }
-//            return qry.Select(x => new FrontDocumentEvent
-//            {
-//                Id = x.Id,
-//                DocumentId = x.DocumentId,
-//                Task = x.Task,
-//                Description = x.Description,
-//                EventType = (EnumEventTypes)x.EventTypeId,
-//                EventTypeName = x.EventType.Name,
-//                ImportanceEventType = (EnumImportanceEventTypes)x.EventType.ImportanceEventTypeId,
-////                EventImportanceTypeName = x.EventType.ImportanceEventType.Name,
-//                CreateDate = x.CreateDate,
-//                Date = x.Date,
-//                SourceAgentName = x.SourceAgent.Name,
-//                SourceAgentId = x.SourceAgentId,
-//                SourcePositionId = x.SourcePositionId,
-//                SourcePositionName = x.SourcePosition.Name,
-//                SourcePositionExecutorAgentName = x.SourcePosition.ExecutorAgent.Name,
-//                TargetAgentName = x.TargetAgent.Name,
-//                TargetAgentId = x.TargetAgentId,
-//                TargetPositionId = x.TargetPositionId,
-//                TargetPositionName = x.TargetPosition.Name,
-//                TargetPositionExecutorAgentName = x.TargetPosition.ExecutorAgent.Name,
-//            }).ToList();
+        //                if (filter.DocumentId?.Count > 0)
+        //                {
+        //                    qry = qry.Where(x => filter.DocumentId.Contains(x.DocumentId));
+        //                }
+        //            }
+        //            return qry.Select(x => new FrontDocumentEvent
+        //            {
+        //                Id = x.Id,
+        //                DocumentId = x.DocumentId,
+        //                Task = x.Task,
+        //                Description = x.Description,
+        //                EventType = (EnumEventTypes)x.EventTypeId,
+        //                EventTypeName = x.EventType.Name,
+        //                ImportanceEventType = (EnumImportanceEventTypes)x.EventType.ImportanceEventTypeId,
+        ////                EventImportanceTypeName = x.EventType.ImportanceEventType.Name,
+        //                CreateDate = x.CreateDate,
+        //                Date = x.Date,
+        //                SourceAgentName = x.SourceAgent.Name,
+        //                SourceAgentId = x.SourceAgentId,
+        //                SourcePositionId = x.SourcePositionId,
+        //                SourcePositionName = x.SourcePosition.Name,
+        //                SourcePositionExecutorAgentName = x.SourcePosition.ExecutorAgent.Name,
+        //                TargetAgentName = x.TargetAgent.Name,
+        //                TargetAgentId = x.TargetAgentId,
+        //                TargetPositionId = x.TargetPositionId,
+        //                TargetPositionName = x.TargetPosition.Name,
+        //                TargetPositionExecutorAgentName = x.TargetPosition.ExecutorAgent.Name,
+        //            }).ToList();
 
-//        }
+        //        }
 
         public static IEnumerable<FrontDocumentWaits> GetDocumentWaits(DmsContext dbContext, FilterDocumentWait filter)
         {
@@ -367,6 +368,18 @@ namespace BL.Database.Common
                 ResultTypeName = x.Wait.ResultType.Name,
                 DueDate = x.Wait.DueDate,
                 AttentionDate = x.Wait.AttentionDate,
+                TargetDescription = x.Wait.TargetDescription,
+                TargetAttentionDate = x.Wait.TargetAttentionDate,
+                OverdueTerm = (x.OffEvent!= null && x.OffEvent.Date != null && x.Wait.DueDate.HasValue) ? (int?) ((x.OffEvent.Date - x.Wait.DueDate).Value.Days) : null,
+                IsClosed = x.OffEvent != null,
+                DocumentDate = x.Wait.Document.RegistrationDate ?? x.Wait.Document.CreateDate,
+                RegistrationFullNumber = (x.Wait.Document.RegistrationNumber != null
+                                           ? x.Wait.Document.RegistrationNumberPrefix + x.Wait.Document.RegistrationNumber +
+                                             x.Wait.Document.RegistrationNumberSuffix
+                                           : "#" + x.Wait.Document.Id),
+                DocumentDescription = x.Wait.Document.Description,
+                DocumentTypeName = x.Wait.Document.TemplateDocument.DocumentType.Name,
+                DocumentDirectionName = x.Wait.Document.TemplateDocument.DocumentDirection.Name,
                 OnEvent = x.OnEvent == null
                     ? null
                     : new FrontDocumentEvent
@@ -375,22 +388,23 @@ namespace BL.Database.Common
                         DocumentId = x.OnEvent.DocumentId,
                         Task = x.OnEvent.Task,
                         Description = x.OnEvent.Description,
-                        EventType = (EnumEventTypes)x.OnEvent.EventTypeId,
+                        EventType = x.OnEvent.EventTypeId,
                         EventTypeName = x.OnEvent.EventType.Name,
-                        ImportanceEventType = (EnumImportanceEventTypes)x.OnEvent.EventType.ImportanceEventTypeId,
-                        //                EventImportanceTypeName = x.EventType.ImportanceEventType.Name,
-                        CreateDate = x.OnEvent.CreateDate,
                         Date = x.OnEvent.Date,
+                        SourcePositionExecutorAgentName = x.OnEvent.SourcePositionExecutorAgent.Name,
+                        TargetPositionExecutorAgentName = x.OnEvent.TargetPositionExecutorAgent.Name,
+
+                        ReadAgentName = x.OnEvent.ReadAgent.Name,
+                        ReadDate = x.OnEvent.ReadDate,
                         SourceAgentName = x.OnEvent.SourceAgent.Name,
-                        SourceAgentId = x.OnEvent.SourceAgentId,
-                        SourcePositionId = x.OnEvent.SourcePositionId,
+
                         SourcePositionName = x.OnEvent.SourcePosition.Name,
-                        SourcePositionExecutorAgentName = x.OnEvent.SourcePosition.ExecutorAgent.Name,
-                        TargetAgentName = x.OnEvent.TargetAgent.Name,
-                        TargetAgentId = x.OnEvent.TargetAgentId,
-                        TargetPositionId = x.OnEvent.TargetPositionId,
                         TargetPositionName = x.OnEvent.TargetPosition.Name,
-                        TargetPositionExecutorAgentName = x.OnEvent.TargetPosition.ExecutorAgent.Name,
+                        SourcePositionExecutorNowAgentName = x.OnEvent.SourcePosition.ExecutorAgent.Name,
+                        TargetPositionExecutorNowAgentName = x.OnEvent.TargetPosition.ExecutorAgent.Name,
+                        SourcePositionPhone = "SourcePositionPhone", //TODO 
+                        TargetPositionPhone = "TargetPositionPhone", //TODO 
+
                     },
                 OffEvent = x.OffEvent == null
                     ? null
@@ -398,24 +412,17 @@ namespace BL.Database.Common
                     {
                         Id = x.OffEvent.Id,
                         DocumentId = x.OffEvent.DocumentId,
-                        Task = x.OffEvent.Task,
                         Description = x.OffEvent.Description,
-                        EventType = (EnumEventTypes)x.OffEvent.EventTypeId,
+                        EventType = x.OffEvent.EventTypeId,
                         EventTypeName = x.OffEvent.EventType.Name,
-                        ImportanceEventType = (EnumImportanceEventTypes)x.OffEvent.EventType.ImportanceEventTypeId,
-                        //                EventImportanceTypeName = x.EventType.ImportanceEventType.Name,
-                        CreateDate = x.OffEvent.CreateDate,
                         Date = x.OffEvent.Date,
+                        SourcePositionExecutorAgentName = x.OffEvent.SourcePositionExecutorAgent.Name,
+                        TargetPositionExecutorAgentName = x.OffEvent.TargetPositionExecutorAgent.Name,
+
+                        ReadAgentName = x.OnEvent.ReadAgent.Name,
+                        ReadDate = x.OnEvent.ReadDate,
                         SourceAgentName = x.OffEvent.SourceAgent.Name,
-                        SourceAgentId = x.OffEvent.SourceAgentId,
-                        SourcePositionId = x.OffEvent.SourcePositionId,
-                        SourcePositionName = x.OffEvent.SourcePosition.Name,
-                        SourcePositionExecutorAgentName = x.OffEvent.SourcePosition.ExecutorAgent.Name,
-                        TargetAgentName = x.OffEvent.TargetAgent.Name,
-                        TargetAgentId = x.OffEvent.TargetAgentId,
-                        TargetPositionId = x.OffEvent.TargetPositionId,
-                        TargetPositionName = x.OffEvent.TargetPosition.Name,
-                        TargetPositionExecutorAgentName = x.OffEvent.TargetPosition.ExecutorAgent.Name,
+
                     }
             }).ToList();
 
@@ -454,7 +461,7 @@ namespace BL.Database.Common
                         DocumentId = x.SendEvent.DocumentId,
                         Task = x.SendEvent.Task,
                         Description = x.SendEvent.Description,
-                        EventType = (EnumEventTypes)x.SendEvent.EventTypeId,
+     /*                   EventType = (EnumEventTypes)x.SendEvent.EventTypeId,
                         EventTypeName = x.SendEvent.EventType.Name,
                         ImportanceEventType = (EnumImportanceEventTypes)x.SendEvent.EventType.ImportanceEventTypeId,
                         //                EventImportanceTypeName = x.EventType.ImportanceEventType.Name,
@@ -467,7 +474,7 @@ namespace BL.Database.Common
                         SourcePositionExecutorAgentName = x.SendEvent.SourcePosition.ExecutorAgent.Name,
                         TargetAgentName = x.SendEvent.TargetAgent.Name,
                         TargetAgentId = x.SendEvent.TargetAgentId,
-                        TargetPositionId = x.SendEvent.TargetPositionId,
+                        TargetPositionId = x.SendEvent.TargetPositionId,*/
                         TargetPositionName = x.SendEvent.TargetPosition.Name,
                         TargetPositionExecutorAgentName = x.SendEvent.TargetPosition.ExecutorAgent.Name,
                     },
@@ -479,7 +486,7 @@ namespace BL.Database.Common
                         DocumentId = x.DoneEvent.DocumentId,
                         Task = x.DoneEvent.Task,
                         Description = x.DoneEvent.Description,
-                        EventType = (EnumEventTypes)x.DoneEvent.EventTypeId,
+                   /*     EventType = (EnumEventTypes)x.DoneEvent.EventTypeId,
                         EventTypeName = x.DoneEvent.EventType.Name,
                         ImportanceEventType = (EnumImportanceEventTypes)x.DoneEvent.EventType.ImportanceEventTypeId,
                         //                EventImportanceTypeName = x.EventType.ImportanceEventType.Name,
@@ -492,7 +499,7 @@ namespace BL.Database.Common
                         SourcePositionExecutorAgentName = x.DoneEvent.SourcePosition.ExecutorAgent.Name,
                         TargetAgentName = x.DoneEvent.TargetAgent.Name,
                         TargetAgentId = x.DoneEvent.TargetAgentId,
-                        TargetPositionId = x.DoneEvent.TargetPositionId,
+                        TargetPositionId = x.DoneEvent.TargetPositionId,*/
                         TargetPositionName = x.DoneEvent.TargetPosition.Name,
                         TargetPositionExecutorAgentName = x.DoneEvent.TargetPosition.ExecutorAgent.Name,
                     }
