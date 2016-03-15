@@ -52,7 +52,6 @@ namespace BL.Database.Dictionaries
             }
         }
 
-
         public IEnumerable<EnumDictionaryAgentTypes> GetAgentRoles(IContext context, int id)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
@@ -346,13 +345,23 @@ namespace BL.Database.Dictionaries
                 dbContext.DictionaryAgentPersonsSet.Attach(ddt);
                 var entity = dbContext.Entry(ddt);
                 entity.State = System.Data.Entity.EntityState.Modified;
+                dbContext.SaveChanges();
 
                 if (IsAgentOneRole(context, person.Id, EnumDictionaryAgentTypes.isIndividual))
                 {
-                    
+                    var agent = new InternalDictionaryAgent
+                    {
+                        Id = person.Id,
+                        Name = person.LastName.Trim() + " " + person.FirstName.Trim() + " " + person.MiddleName.Trim(),
+                        IsActive=person.IsActive,
+                        Description=person.Description,
+                        IsBank=false,
+                        IsCompany=false,
+                        IsEmployee=false,
+                        IsIndividual=true
+                    };
+                    UpdateDictionaryAgent(context, agent);
                 }
-
-                dbContext.SaveChanges();
             }
         }
 
@@ -369,7 +378,7 @@ namespace BL.Database.Dictionaries
                     
 
                     if (IsAgentOneRole(context,person.Id,EnumDictionaryAgentTypes.isIndividual)) {
-
+                        DeleteDictionaryAgent(context, new InternalDictionaryAgent { Id = person.Id });
                     }
 
                     dbContext.SaveChanges();
@@ -405,9 +414,38 @@ namespace BL.Database.Dictionaries
                 var agent = GetDictionaryAgent(context, person.Id); 
                 if (agent==null)
                 {
+                    var newAgent = new InternalDictionaryAgent
+                    {
+                        Id = person.Id,
+                        Name = person.LastName.Trim() + " " + person.FirstName.Trim() + " " + person.MiddleName.Trim(),
+                        IsActive = person.IsActive,
+                        Description = person.Description,
+                        IsBank = false,
+                        IsCompany = false,
+                        IsEmployee = false,
+                        IsIndividual = true
+                    };
+                    AddDictionaryAgent(context, newAgent);
+                }
+                else {
+                    var curAgent = GetDictionaryAgent(context, person.Id);
+                    curAgent.IsIndividual = true;
+                    UpdateDictionaryAgent(context, new InternalDictionaryAgent
+                    {
+                        Id = curAgent.Id,
+                        Name = curAgent.Name,
+                        IsActive = curAgent.IsActive,
+                        Description = curAgent.Description,
+                        IsBank = curAgent.IsBank,
+                        IsCompany = curAgent.IsCompany,
+                        IsEmployee = curAgent.IsEmployee,
+                        IsIndividual = curAgent.IsIndividual,
+                        ResidentTypeId = curAgent.ResidentTypeId ?? 0,
+                        LastChangeDate = person.LastChangeDate,
+                        LastChangeUserId = person.LastChangeUserId
+                    });
 
                 }
-                else { }
 
                 dbContext.SaveChanges();
                 person.Id = ddt.Id;
