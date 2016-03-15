@@ -19,15 +19,6 @@ namespace BL.Database.Common
 {
     internal static class CommonQueries
     {
-        public static string GetDocumentNumber(DBModel.Document.Documents doc)
-        {
-            return (!doc.IsRegistered ? "#" : "") +
-                   (doc.RegistrationNumber != null
-                       ? doc.RegistrationNumberPrefix + doc.RegistrationNumber +
-                         doc.RegistrationNumberSuffix
-                       : "#" + doc.Id);
-        }
-
         public static IQueryable<FrontDocumentQuery> GetFrontDocumentQuery(DmsContext dbContext, IQueryable<FrontDocumentAccess> userAccesses)
         {
             var qry = from dc in dbContext.DocumentsSet

@@ -305,7 +305,11 @@ namespace BL.Database.Documents
                     RegistrationNumberSuffix = x.Doc.RegistrationNumberSuffix,
                     RegistrationJournalId = x.Doc.RegistrationJournalId,
                     RegistrationJournalName = x.RegistrationJournalName,
-                    RegistrationFullNumber = CommonQueries.GetDocumentNumber(x.Doc),
+                    RegistrationFullNumber = (!x.Doc.IsRegistered ? "#" : "") +
+                   (x.Doc.RegistrationNumber != null
+                       ? x.Doc.RegistrationNumberPrefix + x.Doc.RegistrationNumber +
+                         x.Doc.RegistrationNumberSuffix
+                       : "#" + x.Doc.Id),
 
                     CreateDate = x.Doc.CreateDate,
                     DocumentSubjectName = x.SubjName,
@@ -405,7 +409,11 @@ namespace BL.Database.Documents
                     DocumentSubjectName = dbDoc.SubjName,
 
                     DocumentDate = dbDoc.Doc.RegistrationDate ?? dbDoc.Doc.CreateDate,
-                    RegistrationFullNumber = CommonQueries.GetDocumentNumber(dbDoc.Doc),
+                    RegistrationFullNumber = (!dbDoc.Doc.IsRegistered ? "#" : "") +
+                                               (dbDoc.Doc.RegistrationNumber != null
+                                                   ? dbDoc.Doc.RegistrationNumberPrefix + dbDoc.Doc.RegistrationNumber +
+                                                     dbDoc.Doc.RegistrationNumberSuffix
+                                                   : "#" + dbDoc.Doc.Id),
                     GeneralInfo = dbDoc.DirName + " " + dbDoc.DocTypeName,
                     LinkId = dbDoc.Doc.LinkId,
                     IsFavourite = dbDoc.Acc.IsFavourite,

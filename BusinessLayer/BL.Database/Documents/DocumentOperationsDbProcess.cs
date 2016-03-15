@@ -728,7 +728,11 @@ namespace BL.Database.Documents
                     SourceAgentName = x.SourceAgent.Name,
                     TargetAgentName = x.TargetAgent.Name,
                     DocumentDate = x.Document.CreateDate,
-                    DocumentNumber = CommonQueries.GetDocumentNumber(x.Document),
+                    DocumentNumber = (!x.Document.IsRegistered ? "#" : "") +
+                                       (x.Document.RegistrationNumber != null
+                                           ? x.Document.RegistrationNumberPrefix + x.Document.RegistrationNumber +
+                                             x.Document.RegistrationNumberSuffix
+                                           : "#" + x.Document.Id),
                     DueDate = null,
                 }).ToList();
             }
