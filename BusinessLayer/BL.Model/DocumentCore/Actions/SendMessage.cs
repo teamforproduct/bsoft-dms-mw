@@ -1,4 +1,5 @@
-﻿using BL.Model.Users;
+﻿using System;
+using BL.Model.Users;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -33,5 +34,9 @@ namespace BL.Model.DocumentCore.Actions
         /// Постоянное сообщение для всех участников рабочей группы(которые есть и будут)
         /// </summary>
         public bool IsForAllWorkGorupMember { get; set; }
+        /// <summary>
+        /// Дата события
+        /// </summary>
+        public DateTime? EventDate { get; set; }
     }
 }
