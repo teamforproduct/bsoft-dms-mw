@@ -676,40 +676,37 @@ namespace BL.Database.Documents
                     {
                         qry = qry.Where(x => x.Description.Contains(filter.Description));
                     }
-                    /*
-                    if (filter.EventType.HasValue)
+
+                    if (filter.EventType?.Count > 0)
                     {
-                        qry = qry.Where(x => x.EventTypeId == (int) filter.EventType.Value);
+                        qry = qry.Where(x => filter.EventType.Cast<int>().Contains(x.EventTypeId));
                     }
 
-                    if (filter.Importance.HasValue)
+                    if (filter.Importance?.Count > 0)
                     {
-                        qry = qry.Where(x => x.EventType.ImportanceEventTypeId == (int)filter.Importance.Value);
+                        qry = qry.Where(x => filter.Importance.Cast<int>().Contains(x.EventType.ImportanceEventTypeId));
                     }
 
-                    if (filter.AgentId.HasValue)
+                    if (filter.AgentId?.Count > 0)
                     {
                         qry =
                             qry.Where(
                                 x =>
-                                    x.TargetAgentId == filter.AgentId.Value || x.SourceAgentId == filter.AgentId.Value ||
-                                    (x.ReadAgentId.HasValue && x.ReadAgentId.Value == filter.AgentId.Value)
-                                    || (x.SourcePositionExecutorAgentId.HasValue && x.SourcePositionExecutorAgentId.Value == filter.AgentId.Value)
-                                    || (x.TargetPositionExecutorAgentId.HasValue && x.TargetPositionExecutorAgentId.Value == filter.AgentId.Value));
+                                    (x.TargetAgentId.HasValue && filter.AgentId.Contains(x.TargetAgentId.Value)) || filter.AgentId.Contains(x.SourceAgentId) ||
+                                    (x.ReadAgentId.HasValue && filter.AgentId.Contains(x.ReadAgentId.Value))
+                                    || (x.SourcePositionExecutorAgentId.HasValue && filter.AgentId.Contains(x.SourcePositionExecutorAgentId.Value))
+                                    || (x.TargetPositionExecutorAgentId.HasValue && filter.AgentId.Contains(x.TargetPositionExecutorAgentId.Value)));
                     }
 
-                    if (filter.PositionId.HasValue)
+                    if (filter.PositionId?.Count > 0)
                     {
                         qry =
                             qry.Where(
                                 x =>
-                                    (x.SourcePositionId.HasValue && x.SourcePositionId.Value == filter.PositionId.Value) ||
-                                    (x.TargetPositionId.HasValue && x.TargetPositionId.Value == filter.PositionId.Value));
+                                    (x.SourcePositionId.HasValue && filter.PositionId.Contains(x.SourcePositionId.Value)) ||
+                                    (x.TargetPositionId.HasValue && filter.PositionId.Contains(x.TargetPositionId.Value)));
                     }
-                    */
                 }
-
-                
                 #endregion
 
                 if (paging != null)
