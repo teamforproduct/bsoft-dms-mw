@@ -113,7 +113,7 @@
     <Compile Include="DocumentCore\Filters\FilterDocumentById.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentAttachedFile.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentTag.cs" />
-    <Compile Include="DocumentCore\FrontModel\FrontDocumentEventDeteil.cs" />
+    <Compile Include="DocumentCore\FrontModel\FrontDocumentEventDetail.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentEventList.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentTag.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentAttachedFile.cs" />

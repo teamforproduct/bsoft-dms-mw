@@ -624,25 +624,26 @@ namespace BL.Database.Documents
             }
         }
 
-        public FrontDocumentEventDeteil GetDocumentEvent(IContext ctx, int eventId)
+        public FrontDocumentEventDetail GetDocumentEvent(IContext ctx, int eventId)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
                 return CommonQueries.GetDocumentEventsQuery(ctx, dbContext).Where(x => x.Id == eventId)
-                    .Select(x => new FrontDocumentEventDeteil
+                    .Select(x => new FrontDocumentEventDetail
                     {
                         Id = x.Id,
                         DocumentDescription = x.Document.Description,
                         DocumentTypeName = x.Document.TemplateDocument.DocumentType.Name,
+                        DocumentDirectionName = x.Document.TemplateDocument.DocumentDirection.Name,
                         ReadAgentName = x.ReadAgent.Name,
                         ReadDate = x.ReadDate,
                         SourceAgentName = x.SourceAgent.Name,
                         SourcePositionName = x.SourcePosition.Name,
                         TargetPositionName = x.TargetPosition.Name,
-                        SourcePositionExecutorAgentName = x.SourcePosition.ExecutorAgent.Name,
-                        TargetPositionExecutorAgentName = x.TargetPosition.ExecutorAgent.Name,
-                        SourcePositionPhone = "",
-                        TargetPositionPhone = ""
+                        SourcePositionExecutorNowAgentName = x.SourcePosition.ExecutorAgent.Name,
+                        TargetPositionExecutorNowAgentName = x.TargetPosition.ExecutorAgent.Name,
+                        SourcePositionPhone = "SourcePositionPhone", //TODO 
+                        TargetPositionPhone = "TargetPositionPhone", //TODO 
                     }).FirstOrDefault();
             }
         }
@@ -721,19 +722,19 @@ namespace BL.Database.Documents
                 {
                     Id = x.Id,
                     DocumentId = x.DocumentId,
-                    Task = x.Task,
-                    Description = x.Description,
                     EventTypeName = x.EventType.Name,
                     Date = x.Date,
-                    SourceAgentName = x.SourceAgent.Name,
-                    TargetAgentName = x.TargetAgent.Name,
-                    DocumentDate = x.Document.CreateDate,
-                    DocumentNumber = (!x.Document.IsRegistered ? "#" : "") +
-                                       (x.Document.RegistrationNumber != null
+                    Task = x.Task,
+                    Description = x.Description,
+
+                    SourcePositionExecutorAgentName = x.SourcePositionExecutorAgent.Name,
+                    TargetPositionExecutorAgentName = x.TargetPositionExecutorAgent.Name??x.TargetAgent.Name,
+                    DocumentDate = x.Document.RegistrationDate ?? x.Document.CreateDate,
+                    RegistrationFullNumber = (x.Document.RegistrationNumber != null
                                            ? x.Document.RegistrationNumberPrefix + x.Document.RegistrationNumber +
                                              x.Document.RegistrationNumberSuffix
                                            : "#" + x.Document.Id),
-                    DueDate = null,
+                    DueDate = null, //TODO 
                 }).ToList();
             }
         }

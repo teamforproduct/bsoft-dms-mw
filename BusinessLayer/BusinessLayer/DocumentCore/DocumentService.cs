@@ -59,7 +59,7 @@ namespace BL.Logic.DocumentCore
             return res;
         }
 
-        public FrontDocumentEventDeteil GetDocumentEvent(IContext ctx, int eventId)
+        public FrontDocumentEventDetail GetDocumentEvent(IContext ctx, int eventId)
         {
             return _operationDb.GetDocumentEvent(ctx, eventId);
         }

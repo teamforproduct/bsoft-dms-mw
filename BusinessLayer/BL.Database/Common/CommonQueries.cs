@@ -279,8 +279,9 @@ namespace BL.Database.Common
             return dbContext.DocumentEventsSet
                     .Where(x => (x.TargetPositionId.HasValue && ctx.CurrentPositionsIdList.Contains(x.TargetPositionId.Value))
                     || (x.SourcePositionId.HasValue && ctx.CurrentPositionsIdList.Contains(x.SourcePositionId.Value))
-                    || ctx.CurrentAgentId == x.SourceAgentId
-                    || (x.TargetAgentId.HasValue && ctx.CurrentAgentId == x.TargetAgentId.Value))
+                    //|| ctx.CurrentAgentId == x.SourceAgentId
+                    //|| (x.TargetAgentId.HasValue && ctx.CurrentAgentId == x.TargetAgentId.Value)
+                    )
                     .AsQueryable();
         }
 
