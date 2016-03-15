@@ -9,19 +9,19 @@ using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.SystemCore;
 
 
-namespace BL.Logic.DictionaryCore.AgentPerson 
+namespace BL.Logic.DictionaryCore.Agent
 {
-    public class AddDictionaryAgentPersonCommand : BaseDictionaryCommand
+    public class AddDictionaryAgentCommand : BaseDictionaryCommand
     {
-        private ModifyDictionaryAgentPerson Model
+        private ModifyDictionaryAgent Model
         {
             get
             {
-                if (!(_param is ModifyDictionaryAgentPerson))
+                if (!(_param is ModifyDictionaryAgent))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ModifyDictionaryAgentPerson)_param;
+                return (ModifyDictionaryAgent)_param;
             }
         }
 
@@ -32,7 +32,7 @@ namespace BL.Logic.DictionaryCore.AgentPerson
 
         public override bool CanExecute()
         {
-            
+           
             _admin.VerifyAccess(_context, CommandType);
             return true;
         }
@@ -41,19 +41,24 @@ namespace BL.Logic.DictionaryCore.AgentPerson
         {
             try
             {
-                var newPerson = new InternalDictionaryAgentPerson
+                var newAgent = new InternalDictionaryAgent
                 {
-                    FirstName = Model.FirstName,
-                    IsActive = Model.IsActive
+                    Name = Model.Name,
+                    IsBank=Model.IsBank,
+                    IsIndividual=Model.IsIndividual,
+                    IsCompany=Model.IsCompany,
+                    IsEmployee=Model.IsEmployee,
+                    Description=Model.Description,
+                    IsActive = Model.IsActive,
+                    ResidentTypeId=Model.ResidentTypeId ?? 0
                 };
-                CommonDocumentUtilities.SetLastChange(_context, newPerson);
-                return _dictDb.AddDictionaryAgentPerson(_context, newPerson);
+                CommonDocumentUtilities.SetLastChange(_context, newAgent);
+                return _dictDb.AddDictionaryAgent(_context, newAgent);
             }
             catch (Exception ex)
             {
                 throw new DictionaryRecordCouldNotBeAdded(ex);
             }
         }
-
     }
 }

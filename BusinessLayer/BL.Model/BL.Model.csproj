@@ -110,7 +110,6 @@
     <Compile Include="DictionaryCore\BaseDictionaryDocumentDirection.cs" />
     <Compile Include="DictionaryCore\BaseDictionaryDepartment.cs" />
     <Compile Include="DictionaryCore\BaseDictionaryCompany.cs" />
-    <Compile Include="DictionaryCore\BaseDictionaryAgent.cs" />
     <Compile Include="DictionaryCore\BaseDictionaryStandartSendListContent.cs" />
     <Compile Include="DictionaryCore\BaseDictionaryStandartSendList.cs" />
     <Compile Include="DictionaryCore\BaseDictionaryEventType.cs" />

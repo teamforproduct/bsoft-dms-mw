@@ -51,6 +51,9 @@
         AddAgentPerson,
         ModifyAgentPerson,
         DeleteAgentPerson,
+        AddAgent,
+        ModifyAgent,
+        DeleteAgent,
 
         /// <summary>
         /// Добавить тэг

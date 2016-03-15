@@ -11,9 +11,11 @@ namespace BL.Database.Dictionaries.Interfaces
     public interface IDictionariesDbProcess
     {
         #region DictionaryAgents
-        BaseDictionaryAgent GetDictionaryAgent(IContext context, int id);
-
-        IEnumerable<BaseDictionaryAgent> GetDictionaryAgents(IContext context, FilterDictionaryAgent filter);
+        FrontDictionaryAgent GetDictionaryAgent(IContext context, int id);
+        void UpdateDictionaryAgent(IContext context, InternalDictionaryAgent addr);
+        void DeleteDictionaryAgent(IContext context, InternalDictionaryAgent addr);
+        int AddDictionaryAgent(IContext context, InternalDictionaryAgent addr);
+        IEnumerable<FrontDictionaryAgent> GetDictionaryAgents(IContext context, FilterDictionaryAgent filter);
         #endregion DictionaryAgents
 
         #region DictionaryAgentPerson
