@@ -35,18 +35,19 @@ namespace BL.Logic.DictionaryCore.DocumentType
         {
             // Находим запись с таким-же именем в этой-же папке
             // Устно договорились НЕ упроцедуривать new FilterDictionaryDocumentSubject { Name = Model.Name, ParentId = Model.ParentId, NotDocumentSubjectId = new List<int> { Model.Id }} в Modify и Add коммандах.
-            
+
 
             //var spr = _dictDb.GetDictionaryDocumentSubjects(_context, new FilterDictionaryDocumentSubject { Name = Model.Name, ParentId = Model.ParentId, NotContainsId = new List<int> {Model.Id}}) ;
             // если запрос пуст - то лист все равно будет создан, но пустой
             // if (spr != null && spr?.Count() == 0)
 
+            _admin.VerifyAccess(_context, CommandType, false);
 
             if (_dictDb.ExistsDictionaryDocumentSubject(_context, new FilterDictionaryDocumentSubject { Name = Model.Name, ParentId = Model.ParentId, NotContainsId = new List<int> { Model.Id } }))
             {
                 throw new DictionaryRecordNotUnique();
             }
-            _admin.VerifyAccess(_context, CommandType);
+            
             return true;
         }
 

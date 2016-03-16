@@ -35,7 +35,6 @@ namespace BL.Logic.DictionaryCore.DocumentType
                 throw new DictionaryRecordNotUnique();
             }
 
-            _admin.VerifyAccess(_context, CommandType);
             return true;
         }
 

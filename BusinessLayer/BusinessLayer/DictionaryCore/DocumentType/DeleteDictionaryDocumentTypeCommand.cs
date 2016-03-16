@@ -31,7 +31,7 @@ namespace BL.Logic.DictionaryCore.DocumentType
 
         public override bool CanExecute()
         {
-            _admin.VerifyAccess(_context, CommandType );
+            _admin.VerifyAccess(_context, CommandType, false);
             return true;
         }
 

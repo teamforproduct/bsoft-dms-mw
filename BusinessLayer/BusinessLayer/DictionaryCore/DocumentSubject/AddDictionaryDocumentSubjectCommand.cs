@@ -32,13 +32,15 @@ namespace BL.Logic.DictionaryCore.DocumentType
 
         public override bool CanExecute()
         {
+
+            _admin.VerifyAccess(_context, CommandType, false);
             // Находим запись с таким-же именем в этой-же папке
             //var spr = _dictDb.GetDictionaryDocumentSubjects(_context, new FilterDictionaryDocumentSubject { Name = Model.Name, ParentId = Model.ParentId });
             if (_dictDb.ExistsDictionaryDocumentSubject(_context, new FilterDictionaryDocumentSubject { Name = Model.Name, ParentId = Model.ParentId }))
             {
                 throw new DictionaryRecordNotUnique();
             }
-            _admin.VerifyAccess(_context, CommandType);
+         
             return true;
         }
 
