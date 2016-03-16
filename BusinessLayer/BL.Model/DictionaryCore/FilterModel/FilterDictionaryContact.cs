@@ -13,5 +13,6 @@ namespace BL.Model.DictionaryCore.FilterModel
         public List<int> ContactTypeId { get; set; }
         public string Value { get; set; }
         public bool? IsActive { get; set; }
+        public List<int> NotContainsId { get; set; }
     }
 }

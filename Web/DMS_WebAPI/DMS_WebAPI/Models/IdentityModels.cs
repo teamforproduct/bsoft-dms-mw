@@ -52,9 +52,7 @@ namespace DMS_WebAPI.Models
                         throw new System.Exception("Not set DatabaseId");
                     }
                 }
-                var readXml = new Utilities.ReadXml("/servers.xml");
-                var dbs = readXml.ReadDBs();
-                var db = dbs.FirstOrDefault(x => x.Id == dbId);
+                var db = new Utilities.Servers().GetServers().FirstOrDefault(x => x.Id == dbId);
                 if (db==null)
                 {
                     throw new System.Exception("Not found Database");

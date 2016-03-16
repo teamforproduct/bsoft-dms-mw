@@ -19,15 +19,12 @@ namespace BL.Database.Common
 {
     internal static class CommonQueries
     {
-        // pss Здесь представлены варианты запросов с использованием from, join...
-        public static IQueryable<FrontDocumentQuery> GetFrontDocumentQuery(DmsContext dbContext, IQueryable<FrontDocumentAccess> userAccesses)
+        public static IQueryable<DocumentQuery> GetDocumentQuery(DmsContext dbContext, IContext ctx, IQueryable<FrontDocumentAccess> userAccesses = null)
         {
             var qry = from dc in dbContext.DocumentsSet
-                      //join acc in userAccesses on dc.Id equals acc.DocumentId
                       join tmpl in dbContext.TemplateDocumentsSet on dc.TemplateDocumentId equals tmpl.Id
                       join ddir in dbContext.DictionaryDocumentDirectionsSet on tmpl.DocumentDirectionId equals ddir.Id
                       join doctp in dbContext.DictionaryDocumentTypesSet on tmpl.DocumentTypeId equals doctp.Id
-                      //join acl in dbContext.AdminAccessLevelsSet on acc.AccessLevelId equals acl.Id
                       join executor in dbContext.DictionaryPositionsSet on dc.ExecutorPositionId equals executor.Id
 
                       join ea in dbContext.DictionaryAgentsSet on executor.ExecutorAgentId equals ea.Id into ea
@@ -46,62 +43,13 @@ namespace BL.Database.Common
                       join ap in dbContext.DictionaryAgentPersonsSet on dc.SenderAgentPersonId equals ap.Id into ap
                       from sendAp in ap.DefaultIfEmpty()
 
-                      where userAccesses.Select(x=>x.DocumentId).Contains(dc.Id)
-
-                      select new FrontDocumentQuery
-                      {
-                          Doc = dc,
-                          //Acc = acc,
-                          Templ = tmpl,
-                          DirName = ddir.Name,
-                          //AccLevName = acl.Name,
-                          SubjName = docsubj.Name,
-                          DocTypeName = doctp.Name,
-                          RegistrationJournalName = regj.Name,
-                          RegistrationJournalNumerationPrefixFormula = regj.NumerationPrefixFormula,
-                          RegistrationJournalPrefixFormula = regj.PrefixFormula,
-                          RegistrationJournalSuffixFormula = regj.SuffixFormula,
-                          ExecutorPosName = executor.Name,
-                          ExecutorAgentName = exAg.Name,
-                          SenderAgentname = sendAg.Name,
-                          SenderPersonName = sendAp.FullName
-                      };
-            return qry;
-        }
-
-        public static IQueryable<DocumentQuery> GetDocumentQuery(DmsContext dbContext)
-        {
-            var qry = from dc in dbContext.DocumentsSet
-                      join acc in dbContext.DocumentAccessesSet on dc.Id equals acc.DocumentId
-                      join tmpl in dbContext.TemplateDocumentsSet on dc.TemplateDocumentId equals tmpl.Id
-                      join ddir in dbContext.DictionaryDocumentDirectionsSet on tmpl.DocumentDirectionId equals ddir.Id
-                      join doctp in dbContext.DictionaryDocumentTypesSet on tmpl.DocumentTypeId equals doctp.Id
-                      join acl in dbContext.AdminAccessLevelsSet on acc.AccessLevelId equals acl.Id
-                      join executor in dbContext.DictionaryPositionsSet on dc.ExecutorPositionId equals executor.Id
-
-                      join ea in dbContext.DictionaryAgentsSet on executor.ExecutorAgentId equals ea.Id into ea
-                      from exAg in ea.DefaultIfEmpty()
-
-                      join z in dbContext.DictionaryDocumentSubjectsSet on dc.DocumentSubjectId equals z.Id into eg
-                      from docsubj in eg.DefaultIfEmpty()
-
-                      join g in dbContext.DictionaryRegistrationJournalsSet on dc.RegistrationJournalId equals g.Id into
-                          egg
-                      from regj in egg.DefaultIfEmpty()
-
-                      join ag in dbContext.DictionaryAgentsSet on dc.SenderAgentId equals ag.Id into ag
-                      from sendAg in ag.DefaultIfEmpty()
-
-                      join ap in dbContext.DictionaryAgentPersonsSet on dc.SenderAgentPersonId equals ap.Id into ap
-                      from sendAp in ap.DefaultIfEmpty()
+                      where dbContext.DocumentAccessesSet.Where(x=>ctx.CurrentPositionsIdList.Contains(x.PositionId)).Select(x=>x.DocumentId).Contains(dc.Id)
 
                       select new DocumentQuery
                       {
                           Doc = dc,
-                          Acc = acc,
                           Templ = tmpl,
                           DirName = ddir.Name,
-                          AccLevName = acl.Name,
                           SubjName = docsubj.Name,
                           DocTypeName = doctp.Name,
                           RegistrationJournalName = regj.Name,
@@ -109,10 +57,16 @@ namespace BL.Database.Common
                           RegistrationJournalPrefixFormula = regj.PrefixFormula,
                           RegistrationJournalSuffixFormula = regj.SuffixFormula,
                           ExecutorPosName = executor.Name,
-                          ExecutorAgentName = exAg.Name,
+                          ExecutorPositionExecutorAgentName = dc.ExecutorPositionExecutorAgent.Name,
+                          //ExecutorPositionExecutorNowAgentName = executor.ExecutorAgent.Name,
+                          ExecutorPositionExecutorNowAgentName = exAg.Name,
                           SenderAgentname = sendAg.Name,
                           SenderPersonName = sendAp.FullName
                       };
+            if (userAccesses != null)
+            {
+                qry = qry.Where(x => userAccesses.Select(a => a.DocumentId).Contains(x.Doc.Id));
+            }
             return qry;
         }
 
@@ -133,7 +87,7 @@ namespace BL.Database.Common
                 }
             }
 
-            return dbContext.DocumentFilesSet
+            return qry
                 .GroupBy(g => new { g.DocumentId, g.OrderNumber })
                 .Select(x => new FilterDocumentFileIdentity { DocumentId = x.Key.DocumentId, OrderInDocument = x.Key.OrderNumber, Version = x.Max(s => s.Version) });
         }
@@ -199,12 +153,10 @@ namespace BL.Database.Common
 
         public static IQueryable<FrontDocumentAccess> GetDocumentAccesses(IContext ctx, DmsContext dbContext)
         {
-            return 
-                dbContext.DocumentAccessesSet.Where(x => ctx.CurrentPositionsIdList.Contains(x.PositionId ))
-                .Select(acc=> new FrontDocumentAccess
+            return
+                dbContext.DocumentAccessesSet.Where(x => ctx.CurrentPositionsIdList.Contains(x.PositionId))
+                .Select(acc => new FrontDocumentAccess
                 {
-                    LastChangeDate = acc.LastChangeDate,
-                    LastChangeUserId = acc.LastChangeUserId,
                     Id = acc.Id,
                     PositionId = acc.PositionId,
                     IsInWork = acc.IsInWork,
@@ -246,6 +198,16 @@ namespace BL.Database.Common
             return null;
         }
 
+        public static IQueryable<DocumentAccesses> GetDocumentAccessesesQry(DmsContext dbContext, int documentId, IContext ctx = null)
+        {
+            var qry = dbContext.DocumentAccessesSet.Where(x => x.DocumentId == documentId);
+            if (ctx != null)
+            {
+                qry = qry.Where(x => ctx.CurrentPositionsIdList.Contains(x.PositionId));
+            }
+            return qry;
+        }
+
         public static IEnumerable<InternalDocumentAccess> GetInternalDocumentAccesses(DmsContext dbContext, int documentId)
         {
             return dbContext.DocumentAccessesSet.Where(
@@ -273,47 +235,58 @@ namespace BL.Database.Common
             }).ToList();
         }
 
-        public static IEnumerable<FrontDocumentEvent> GetDocumentEvents(DmsContext dbContext, FilterDocumentEvent filter)
+        public static IQueryable<DocumentEvents> GetDocumentEventsQuery(IContext ctx, DmsContext dbContext)
         {
-            var qry = dbContext.DocumentEventsSet.AsQueryable();
-
-            if (filter != null)
-            {
-                if (filter.EventId?.Count > 0)
-                {
-                    qry = qry.Where(x => filter.EventId.Contains(x.Id));
-                }
-
-                if (filter.DocumentId?.Count > 0)
-                {
-                    qry = qry.Where(x => filter.DocumentId.Contains(x.DocumentId));
-                }
-            }
-            return qry.Select(x => new FrontDocumentEvent
-            {
-                Id = x.Id,
-                DocumentId = x.DocumentId,
-                Task = x.Task,
-                Description = x.Description,
-                EventType = (EnumEventTypes)x.EventTypeId,
-                EventTypeName = x.EventType.Name,
-                ImportanceEventType = (EnumImportanceEventTypes)x.EventType.ImportanceEventTypeId,
-//                EventImportanceTypeName = x.EventType.ImportanceEventType.Name,
-                CreateDate = x.CreateDate,
-                Date = x.Date,
-                SourceAgentName = x.SourceAgent.Name,
-                SourceAgentId = x.SourceAgentId,
-                SourcePositionId = x.SourcePositionId,
-                SourcePositionName = x.SourcePosition.Name,
-                SourcePositionExecutorAgentName = x.SourcePosition.ExecutorAgent.Name,
-                TargetAgentName = x.TargetAgent.Name,
-                TargetAgentId = x.TargetAgentId,
-                TargetPositionId = x.TargetPositionId,
-                TargetPositionName = x.TargetPosition.Name,
-                TargetPositionExecutorAgentName = x.TargetPosition.ExecutorAgent.Name,
-            }).ToList();
-
+            return dbContext.DocumentEventsSet
+                    .Where(x => (x.TargetPositionId.HasValue && ctx.CurrentPositionsIdList.Contains(x.TargetPositionId.Value))
+                    || (x.SourcePositionId.HasValue && ctx.CurrentPositionsIdList.Contains(x.SourcePositionId.Value))
+                    //|| ctx.CurrentAgentId == x.SourceAgentId
+                    //|| (x.TargetAgentId.HasValue && ctx.CurrentAgentId == x.TargetAgentId.Value)
+                    )
+                    .AsQueryable();
         }
+
+        //        public static IEnumerable<FrontDocumentEvent> GetDocumentEvents(DmsContext dbContext, FilterDocumentEvent filter)
+        //        {
+        //            var qry = dbContext.DocumentEventsSet.AsQueryable();
+
+        //            if (filter != null)
+        //            {
+        //                if (filter.EventId?.Count > 0)
+        //                {
+        //                    qry = qry.Where(x => filter.EventId.Contains(x.Id));
+        //                }
+
+        //                if (filter.DocumentId?.Count > 0)
+        //                {
+        //                    qry = qry.Where(x => filter.DocumentId.Contains(x.DocumentId));
+        //                }
+        //            }
+        //            return qry.Select(x => new FrontDocumentEvent
+        //            {
+        //                Id = x.Id,
+        //                DocumentId = x.DocumentId,
+        //                Task = x.Task,
+        //                Description = x.Description,
+        //                EventType = (EnumEventTypes)x.EventTypeId,
+        //                EventTypeName = x.EventType.Name,
+        //                ImportanceEventType = (EnumImportanceEventTypes)x.EventType.ImportanceEventTypeId,
+        ////                EventImportanceTypeName = x.EventType.ImportanceEventType.Name,
+        //                CreateDate = x.CreateDate,
+        //                Date = x.Date,
+        //                SourceAgentName = x.SourceAgent.Name,
+        //                SourceAgentId = x.SourceAgentId,
+        //                SourcePositionId = x.SourcePositionId,
+        //                SourcePositionName = x.SourcePosition.Name,
+        //                SourcePositionExecutorAgentName = x.SourcePosition.ExecutorAgent.Name,
+        //                TargetAgentName = x.TargetAgent.Name,
+        //                TargetAgentId = x.TargetAgentId,
+        //                TargetPositionId = x.TargetPositionId,
+        //                TargetPositionName = x.TargetPosition.Name,
+        //                TargetPositionExecutorAgentName = x.TargetPosition.ExecutorAgent.Name,
+        //            }).ToList();
+
+        //        }
 
         public static IEnumerable<FrontDocumentWaits> GetDocumentWaits(DmsContext dbContext, FilterDocumentWait filter)
         {
@@ -355,6 +328,17 @@ namespace BL.Database.Common
                 ResultTypeName = x.Wait.ResultType.Name,
                 DueDate = x.Wait.DueDate,
                 AttentionDate = x.Wait.AttentionDate,
+                TargetDescription = x.Wait.TargetDescription,
+                TargetAttentionDate = x.Wait.TargetAttentionDate,
+                IsClosed = x.OffEvent != null,
+                DocumentDate = x.Wait.Document.RegistrationDate ?? x.Wait.Document.CreateDate,
+                RegistrationFullNumber = (x.Wait.Document.RegistrationNumber != null
+                                           ? x.Wait.Document.RegistrationNumberPrefix + x.Wait.Document.RegistrationNumber +
+                                             x.Wait.Document.RegistrationNumberSuffix
+                                           : "#" + x.Wait.Document.Id),
+                DocumentDescription = x.Wait.Document.Description,
+                DocumentTypeName = x.Wait.Document.TemplateDocument.DocumentType.Name,
+                DocumentDirectionName = x.Wait.Document.TemplateDocument.DocumentDirection.Name,
                 OnEvent = x.OnEvent == null
                     ? null
                     : new FrontDocumentEvent
@@ -363,22 +347,23 @@ namespace BL.Database.Common
                         DocumentId = x.OnEvent.DocumentId,
                         Task = x.OnEvent.Task,
                         Description = x.OnEvent.Description,
-                        EventType = (EnumEventTypes)x.OnEvent.EventTypeId,
+                        EventType = x.OnEvent.EventTypeId,
                         EventTypeName = x.OnEvent.EventType.Name,
-                        ImportanceEventType = (EnumImportanceEventTypes)x.OnEvent.EventType.ImportanceEventTypeId,
-                        //                EventImportanceTypeName = x.EventType.ImportanceEventType.Name,
-                        CreateDate = x.OnEvent.CreateDate,
                         Date = x.OnEvent.Date,
+                        SourcePositionExecutorAgentName = x.OnEvent.SourcePositionExecutorAgent.Name,
+                        TargetPositionExecutorAgentName = x.OnEvent.TargetPositionExecutorAgent.Name,
+
+                        ReadAgentName = x.OnEvent.ReadAgent.Name,
+                        ReadDate = x.OnEvent.ReadDate,
                         SourceAgentName = x.OnEvent.SourceAgent.Name,
-                        SourceAgentId = x.OnEvent.SourceAgentId,
-                        SourcePositionId = x.OnEvent.SourcePositionId,
+
                         SourcePositionName = x.OnEvent.SourcePosition.Name,
-                        SourcePositionExecutorAgentName = x.OnEvent.SourcePosition.ExecutorAgent.Name,
-                        TargetAgentName = x.OnEvent.TargetAgent.Name,
-                        TargetAgentId = x.OnEvent.TargetAgentId,
-                        TargetPositionId = x.OnEvent.TargetPositionId,
                         TargetPositionName = x.OnEvent.TargetPosition.Name,
-                        TargetPositionExecutorAgentName = x.OnEvent.TargetPosition.ExecutorAgent.Name,
+                        SourcePositionExecutorNowAgentName = x.OnEvent.SourcePosition.ExecutorAgent.Name,
+                        TargetPositionExecutorNowAgentName = x.OnEvent.TargetPosition.ExecutorAgent.Name,
+                        SourcePositionExecutorAgentPhoneNumber = "SourcePositionAgentPhoneNumber", //TODO 
+                        TargetPositionExecutorAgentPhoneNumber = "TargetPositionAgentPhoneNumber", //TODO 
+
                     },
                 OffEvent = x.OffEvent == null
                     ? null
@@ -386,24 +371,25 @@ namespace BL.Database.Common
                     {
                         Id = x.OffEvent.Id,
                         DocumentId = x.OffEvent.DocumentId,
-                        Task = x.OffEvent.Task,
+                        Task = null,
                         Description = x.OffEvent.Description,
-                        EventType = (EnumEventTypes)x.OffEvent.EventTypeId,
+                        EventType = x.OffEvent.EventTypeId,
                         EventTypeName = x.OffEvent.EventType.Name,
-                        ImportanceEventType = (EnumImportanceEventTypes)x.OffEvent.EventType.ImportanceEventTypeId,
-                        //                EventImportanceTypeName = x.EventType.ImportanceEventType.Name,
-                        CreateDate = x.OffEvent.CreateDate,
                         Date = x.OffEvent.Date,
+                        SourcePositionExecutorAgentName = x.OffEvent.SourcePositionExecutorAgent.Name,
+                        TargetPositionExecutorAgentName = x.OffEvent.TargetPositionExecutorAgent.Name,
+
+                        ReadAgentName = x.OnEvent.ReadAgent.Name,
+                        ReadDate = x.OnEvent.ReadDate,
                         SourceAgentName = x.OffEvent.SourceAgent.Name,
-                        SourceAgentId = x.OffEvent.SourceAgentId,
-                        SourcePositionId = x.OffEvent.SourcePositionId,
-                        SourcePositionName = x.OffEvent.SourcePosition.Name,
-                        SourcePositionExecutorAgentName = x.OffEvent.SourcePosition.ExecutorAgent.Name,
-                        TargetAgentName = x.OffEvent.TargetAgent.Name,
-                        TargetAgentId = x.OffEvent.TargetAgentId,
-                        TargetPositionId = x.OffEvent.TargetPositionId,
-                        TargetPositionName = x.OffEvent.TargetPosition.Name,
-                        TargetPositionExecutorAgentName = x.OffEvent.TargetPosition.ExecutorAgent.Name,
+
+                        SourcePositionName = null,
+                        TargetPositionName = null,
+                        SourcePositionExecutorNowAgentName = null,
+                        TargetPositionExecutorNowAgentName = null,
+                        SourcePositionExecutorAgentPhoneNumber = null,
+                        TargetPositionExecutorAgentPhoneNumber = null,
+
                     }
             }).ToList();
 
@@ -431,33 +417,40 @@ namespace BL.Database.Common
                 DocumentId = x.Subscription.DocumentId,
                 SendEventId = x.Subscription.SendEventId,
                 DoneEventId = x.Subscription.DoneEventId,
+                SubscriptionStatesId = x.Subscription.SubscriptionStateId,
+                SubscriptionStatesName = x.Subscription.SubscriptionState.Name,
                 Description = x.Subscription.Description,
-                //Hash = x.Subscription.Hash,
-                //ChangedHash = x.Subscription.ChangedHash,
+                DocumentDate = x.Subscription.Document.RegistrationDate ?? x.Subscription.Document.CreateDate,
+                RegistrationFullNumber = (x.Subscription.Document.RegistrationNumber != null
+                                           ? x.Subscription.Document.RegistrationNumberPrefix + x.Subscription.Document.RegistrationNumber +
+                                             x.Subscription.Document.RegistrationNumberSuffix
+                                           : "#" + x.Subscription.Document.Id),
+                DocumentDescription = x.Subscription.Document.Description,
+                DocumentTypeName = x.Subscription.Document.TemplateDocument.DocumentType.Name,
+                DocumentDirectionName = x.Subscription.Document.TemplateDocument.DocumentDirection.Name,
                 SendEvent = x.SendEvent == null
                     ? null
                     : new FrontDocumentEvent
                     {
                         Id = x.SendEvent.Id,
                         DocumentId = x.SendEvent.DocumentId,
-                        Task = x.SendEvent.Task,
-                        Description = x.SendEvent.Description,
-                        EventType = (EnumEventTypes)x.SendEvent.EventTypeId,
                         EventTypeName = x.SendEvent.EventType.Name,
-                        ImportanceEventType = (EnumImportanceEventTypes)x.SendEvent.EventType.ImportanceEventTypeId,
-                        //                EventImportanceTypeName = x.EventType.ImportanceEventType.Name,
-                        CreateDate = x.SendEvent.CreateDate,
+                        TargetPositionExecutorAgentName = x.SendEvent.TargetPositionExecutorAgent.Name,
+                        DueDate = x.Subscription.SendEvent.OnWait.FirstOrDefault().DueDate,
+
                         Date = x.SendEvent.Date,
+                        SourcePositionExecutorAgentName = x.SendEvent.SourcePositionExecutorAgent.Name,
+                        Description = x.SendEvent.Description,
+                        ReadAgentName = x.SendEvent.ReadAgent.Name,
+                        ReadDate = x.SendEvent.ReadDate,
                         SourceAgentName = x.SendEvent.SourceAgent.Name,
-                        SourceAgentId = x.SendEvent.SourceAgentId,
-                        SourcePositionId = x.SendEvent.SourcePositionId,
                         SourcePositionName = x.SendEvent.SourcePosition.Name,
-                        SourcePositionExecutorAgentName = x.SendEvent.SourcePosition.ExecutorAgent.Name,
-                        TargetAgentName = x.SendEvent.TargetAgent.Name,
-                        TargetAgentId = x.SendEvent.TargetAgentId,
-                        TargetPositionId = x.SendEvent.TargetPositionId,
                         TargetPositionName = x.SendEvent.TargetPosition.Name,
-                        TargetPositionExecutorAgentName = x.SendEvent.TargetPosition.ExecutorAgent.Name,
+                        SourcePositionExecutorNowAgentName = x.SendEvent.SourcePosition.ExecutorAgent.Name,
+                        TargetPositionExecutorNowAgentName = x.SendEvent.TargetPosition.ExecutorAgent.Name,
+                        SourcePositionExecutorAgentPhoneNumber = "SourcePositionAgentPhoneNumber", //TODO 
+                        TargetPositionExecutorAgentPhoneNumber = "TargetPositionAgentPhoneNumber", //TODO 
+
                     },
                 DoneEvent = x.DoneEvent == null
                     ? null
@@ -465,24 +458,25 @@ namespace BL.Database.Common
                     {
                         Id = x.DoneEvent.Id,
                         DocumentId = x.DoneEvent.DocumentId,
-                        Task = x.DoneEvent.Task,
-                        Description = x.DoneEvent.Description,
-                        EventType = (EnumEventTypes)x.DoneEvent.EventTypeId,
                         EventTypeName = x.DoneEvent.EventType.Name,
-                        ImportanceEventType = (EnumImportanceEventTypes)x.DoneEvent.EventType.ImportanceEventTypeId,
-                        //                EventImportanceTypeName = x.EventType.ImportanceEventType.Name,
-                        CreateDate = x.DoneEvent.CreateDate,
+                        TargetPositionExecutorAgentName = x.DoneEvent.TargetPositionExecutorAgent.Name,
+                        DueDate = null,
                         Date = x.DoneEvent.Date,
-                        SourceAgentName = x.DoneEvent.SourceAgent.Name,
-                        SourceAgentId = x.DoneEvent.SourceAgentId,
-                        SourcePositionId = x.DoneEvent.SourcePositionId,
-                        SourcePositionName = x.DoneEvent.SourcePosition.Name,
-                        SourcePositionExecutorAgentName = x.DoneEvent.SourcePosition.ExecutorAgent.Name,
-                        TargetAgentName = x.DoneEvent.TargetAgent.Name,
-                        TargetAgentId = x.DoneEvent.TargetAgentId,
-                        TargetPositionId = x.DoneEvent.TargetPositionId,
-                        TargetPositionName = x.DoneEvent.TargetPosition.Name,
-                        TargetPositionExecutorAgentName = x.DoneEvent.TargetPosition.ExecutorAgent.Name,
+                        SourcePositionExecutorAgentName = null,
+                        Description = x.DoneEvent.Description,
+
+
+                        ReadAgentName = x.SendEvent.ReadAgent.Name,
+                        ReadDate = x.SendEvent.ReadDate,
+                        SourceAgentName = x.SendEvent.SourceAgent.Name,
+
+                        SourcePositionName = null,
+                        TargetPositionName = null,
+
+                        SourcePositionExecutorNowAgentName = x.SendEvent.SourcePosition.ExecutorAgent.Name,
+                        TargetPositionExecutorNowAgentName = null,
+                        SourcePositionExecutorAgentPhoneNumber = null,
+                        TargetPositionExecutorAgentPhoneNumber = null,
                     }
             }).ToList();
 
@@ -496,7 +490,7 @@ namespace BL.Database.Common
 
             if (filter != null)
             {
-                if (filter?.DocumentId?.Count() > 0)
+                if (filter.DocumentId?.Count() > 0)
                 {
                     tagsDb = tagsDb.Where(x => filter.DocumentId.Contains(x.DocumentId));
                 }
@@ -546,9 +540,9 @@ namespace BL.Database.Common
             var items = itemsRes.Select(x => new FrontPropertyValue
             {
                 Id = x.Id,
-                RecordId = x.Id,
+                RecordId = x.RecordId,
                 PropertyLinkId = x.PropertyLinkId,
-                Value = x.ValueString,
+                Value = x.ValueString != null ? x.ValueString : (x.ValueNumeric.HasValue ? x.ValueNumeric.ToString() : (x.ValueDate.HasValue ? x.ValueDate.ToString() : null)),
                 PropertyId = x.PropertyLink.PropertyId,
                 ObjectId = x.PropertyLink.ObjectId,
                 Filers = x.PropertyLink.Filers,
@@ -609,43 +603,45 @@ namespace BL.Database.Common
             return qry.Select(x => new BaseDictionaryPosition
             {
                 Id = x.pos.Id,
-                ParentId = x.pos.ParentId,
                 Name = x.pos.Name,
                 DepartmentId = x.pos.DepartmentId,
                 ExecutorAgentId = x.pos.ExecutorAgentId,
-                ParentPositionName = x.pos.ParentPosition.Name,
                 DepartmentName = x.pos.Department.Name,
                 ExecutorAgentName = x.pos.ExecutorAgent.Name,
+                PositionPhone = "PositionPhone",
                 MaxSubordinationTypeId = (x.subordMax > 0 ? (int?)x.subordMax : null)
             }).ToList();
 
         }
 
-        public static IEnumerable<FrontDocument> GetLinkedDocuments(DmsContext dbContext, int documentId)
+        public static IEnumerable<FrontDocument> GetLinkedDocuments(IContext context, DmsContext dbContext, int linkId)
         {
-            return dbContext.DocumentsSet.Where(x => (x.LinkId == documentId))
+            return CommonQueries.GetDocumentQuery(dbContext, context)
+                    .Where(x => x.Doc.LinkId == linkId /*&& context.CurrentPositionsIdList.Contains(x.Acc.PositionId)*/)
                         .Select(y => new FrontDocument
                         {
-                            Id = y.Id,
-                            GeneralInfo = y.TemplateDocument.DocumentDirection.Name + " " + y.TemplateDocument.DocumentType.Name,
-                            RegistrationFullNumber =
-                                                (!y.IsRegistered ? "#" : "") +
-                                                (y.RegistrationNumber != null
-                                                        ? (y.RegistrationNumberPrefix + y.RegistrationNumber.ToString() + y.RegistrationNumberSuffix)
-                                                        : ("#" + y.Id.ToString())),
-                            DocumentDate = y.RegistrationDate ?? y.CreateDate,
-                            Description = y.Description,
-                            Links = dbContext.DocumentLinksSet.Where(z => z.DocumentId == y.Id).
+                            Id = y.Doc.Id,
+                            DocumentDirectionName = y.DirName,
+                            DocumentTypeName = y.DocTypeName,
+                            RegistrationFullNumber =   (y.Doc.RegistrationNumber != null
+                                                           ? y.Doc.RegistrationNumberPrefix + y.Doc.RegistrationNumber +
+                                                             y.Doc.RegistrationNumberSuffix
+                                                           : "#" + y.Doc.Id),
+                            DocumentDate = y.Doc.RegistrationDate ?? y.Doc.CreateDate,
+                            IsRegistered = y.Doc.IsRegistered,
+                            Description = y.Doc.Description,
+                            ExecutorPositionExecutorAgentName = y.ExecutorPositionExecutorAgentName,
+                            ExecutorPositionName = y.ExecutorPosName,
+                            Links = dbContext.DocumentLinksSet.Where(z => z.DocumentId == y.Doc.Id).
                                 Select(z => new FrontDocumentLink
                                 {
                                     Id = z.Id,
-                                    GeneralInfo = z.LinkType.Name + " " +
-                                                (!z.ParentDocument.IsRegistered ? "#" : "") +
+                                    LinkTypeName = z.LinkType.Name,
+                                    RegistrationFullNumber = 
                                                 (z.ParentDocument.RegistrationNumber != null
                                                         ? (z.ParentDocument.RegistrationNumberPrefix + z.ParentDocument.RegistrationNumber.ToString() + z.ParentDocument.RegistrationNumberSuffix)
-                                                        : ("#" + z.ParentDocument.Id.ToString()))
-                                    + " " + (z.ParentDocument.RegistrationDate ?? z.ParentDocument.CreateDate).ToString()
-                                    //TODO String.Format("{0:dd.MM.yyyy}", (z.ParentDocument.RegistrationDate ?? z.ParentDocument.CreateDate))
+                                                        : ("#" + z.ParentDocument.Id.ToString())),
+                                    DocumentDate = (z.ParentDocument.RegistrationDate ?? z.ParentDocument.CreateDate),
                                 }).ToList()
                         }).ToList();
         }
@@ -662,29 +658,55 @@ namespace BL.Database.Common
                             SendTypeName = y.SendType.Name,
                             SendTypeCode = y.SendType.Code,
                             SendTypeIsImportant = y.SendType.IsImportant,
-
-                            SourceAgentName = y.SourceAgent.Name,
-                            SourceAgentId = y.SourceAgentId,
-                            SourcePositionId = y.SourcePositionId,
-                            SourcePositionName = y.SourcePosition.Name,
                             SourcePositionExecutorAgentName = y.SourcePosition.ExecutorAgent.Name,
-                            TargetAgentName = y.TargetAgent.Name,
-                            TargetAgentId = y.TargetAgentId,
-                            TargetPositionId = y.TargetPositionId,
-                            TargetPositionName = y.TargetPosition.Name,
-                            TargetPositionExecutorAgentName = y.TargetPosition.ExecutorAgent.Name,
+                            TargetPositionExecutorAgentName = y.TargetPosition.ExecutorAgent.Name ?? y.TargetAgent.Name,
 
                             Task = y.Task,
                             Description = y.Description,
                             DueDate = y.DueDate,
                             DueDay = y.DueDay,
-                            AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
-                            AccessLevelName = y.AccessLevel.Name,
-                            IsInitial = y.IsInitial,
                             StartEventId = y.StartEventId,
                             CloseEventId = y.CloseEventId,
-                            GeneralInfo = string.Empty,
+                            IsInitial = y.IsInitial,
 
+                            SourceAgentName = y.SourceAgent.Name,
+
+                            SourceAgentId = y.SourceAgentId,
+                            SourcePositionId = y.SourcePositionId,
+
+                            TargetAgentId = y.TargetAgentId,
+                            TargetPositionId = y.TargetPositionId,
+
+                            SourcePositionName = y.SourcePosition.Name,
+                            TargetPositionName = y.TargetPosition.Name,
+                            SourcePositionExecutorNowAgentName = y.SourcePosition.ExecutorAgent.Name,
+                            TargetPositionExecutorNowAgentName = y.TargetPosition.ExecutorAgent.Name,
+                            SourcePositionExecutorAgentPhoneNumber = "SourcePositionAgentPhoneNumber", //TODO 
+                            TargetPositionExecutorAgentPhoneNumber = "TargetPositionAgentPhoneNumber", //TODO 
+                            AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
+                            AccessLevelName = y.AccessLevel.Name,
+                            StartEvent = y.StartEvent == null
+                                        ? null
+                                        : new FrontDocumentEvent
+                                        {
+                                            Id = y.StartEvent.Id,
+                                            EventTypeName = y.StartEvent.EventType.Name,
+                                            Date = y.StartEvent.Date,
+                                            SourcePositionExecutorAgentName = y.StartEvent.SourcePositionExecutorAgent.Name,
+                                            TargetPositionExecutorAgentName = y.StartEvent.TargetPositionExecutorAgent.Name ?? y.StartEvent.TargetAgent.Name,
+                                            Description = y.StartEvent.Description,
+                                        },
+                            CloseEvent = y.CloseEvent == null|| y.StartEventId == y.CloseEventId
+                                        ? null
+                                        : new FrontDocumentEvent
+                                        {
+                                            Id = y.CloseEvent.Id,
+                                            EventTypeName = y.CloseEvent.EventType.Name,
+                                            Date = y.CloseEvent.Date,
+                                            SourcePositionExecutorAgentName = y.CloseEvent.SourcePositionExecutorAgent.Name,
+                                            TargetPositionExecutorAgentName = y.CloseEvent.TargetPositionExecutorAgent.Name ?? y.StartEvent.TargetAgent.Name,
+                                            Description = y.CloseEvent.Description,
+                                        },
                         }).ToList();
         }
 
@@ -698,11 +720,10 @@ namespace BL.Database.Common
                             PositionId = y.PositionId,
                             PositionName = y.Position.Name,
                             PositionExecutorAgentName = y.Position.ExecutorAgent.Name,
+                            PositionExecutorAgentPhoneNumber = "PositionAgentPhone",
                             AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
                             AccessLevelName = y.AccessLevel.Name,
-                            LastChangeUserId = y.LastChangeUserId,
-                            LastChangeDate = y.LastChangeDate,
-                            GeneralInfo = string.Empty
+
                         }).ToList();
         }
 

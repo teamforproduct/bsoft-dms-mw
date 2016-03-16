@@ -20,5 +20,6 @@ namespace BL.Database.DBModel.System
         public virtual Properties Property { get; set; }
         [ForeignKey("ObjectId")]
         public virtual SystemObjects Object { get; set; }
+        public virtual ICollection<PropertyValues> PropertyValues { get; set; }
     }
 }

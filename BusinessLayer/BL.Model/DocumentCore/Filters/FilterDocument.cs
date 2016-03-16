@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BL.Model.SystemCore.Filters;
+using System;
 using System.Collections.Generic;
 
 namespace BL.Model.DocumentCore.Filters
@@ -92,5 +93,7 @@ namespace BL.Model.DocumentCore.Filters
         /// Признак в работе
         /// </summary>
         public bool IsInWork { get; set; } // should be true by default
+
+        public List<FilterPropertyByRecord> FilterProperties { get; set; }
     }
 }

@@ -23,5 +23,9 @@ namespace BL.Model.DocumentCore.Actions
         /// Срок включения режима постоянное внимание
         /// </summary>
         public DateTime? AttentionDate { get; set; }
+        /// <summary>
+        /// Дата события
+        /// </summary>
+        public DateTime? EventDate { get; set; }
     }
 }

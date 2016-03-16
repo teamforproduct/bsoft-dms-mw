@@ -220,7 +220,9 @@
     <Compile Include="Controllers\Dictionaries\DictionaryContactsController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryContactTypesController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryTagsController.cs" />
+    <Compile Include="Controllers\Documents\DocumentEventsController.cs" />
     <Compile Include="Controllers\Documents\DocumentTagsController.cs" />
+    <Compile Include="Controllers\Properties\FilterPropertiesController.cs" />
     <Compile Include="Controllers\Properties\PropertyLinksController.cs" />
     <Compile Include="Controllers\Properties\PropertiesController.cs" />
     <Compile Include="Controllers\System\AccountController.cs" />
@@ -251,6 +253,7 @@
     <Compile Include="Controllers\Documents\DocumentSendListsController.cs" />
     <Compile Include="Controllers\System\HomeController.cs" />
     <Compile Include="Controllers\Documents\TemplateDocumentsController.cs" />
+    <Compile Include="Controllers\System\ServersController.cs" />
     <Compile Include="Controllers\System\UsersController.cs" />
     <Compile Include="DependencyInjection\ApiModel.cs" />
     <Compile Include="Global.asax.cs">
@@ -277,6 +280,7 @@
     <Compile Include="Startup.cs" />
     <Compile Include="Utilities\ReadXml.cs" />
     <Compile Include="Utilities\UserContext.cs" />
+    <Compile Include="Utilities\Servers.cs" />
     <Compile Include="Utilities\Utilities.cs" />
   </ItemGroup>
   <ItemGroup>

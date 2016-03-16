@@ -22,19 +22,11 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// </summary>
         public bool? IsActive { get; set; }
 
-        /// <summary>
-        /// Список контактов агента
-        /// </summary>
-        public IEnumerable<string> Contacts { get; set; }
-        /// <summary>
-        /// Список адресов агента
-        /// </summary>
-        public IEnumerable<string> Addresses { get; set; }
-        /// <summary>
-        /// Коллекция доступных типов агентов
-        /// </summary>
-        public IEnumerable<EnumDictionaryAgentTypes> ActualTypes { get; set; }
-        
-        
+        public bool? IsIndividual { get; set; }
+        public bool? IsCompany { get; set; }
+        public bool? IsEmployee { get; set; }
+        public bool? IsBank { get; set; }
+        public List<int> NotContainsId { get; set; }
+
     }
 }

@@ -6,6 +6,7 @@ using BL.Logic.DictionaryCore.Contact;
 using BL.Logic.DictionaryCore.ContactType;
 using BL.Logic.DictionaryCore.AgentAdresses;
 using BL.Logic.DictionaryCore.AgentPerson;
+using BL.Logic.DictionaryCore.Agent;
 using BL.Logic.DictionaryCore.Tag;
 using BL.Model.Enums;
 using BL.Model.Exception;
@@ -27,6 +28,17 @@ namespace BL.Logic.DictionaryCore
                     break;
                 case EnumDictionaryActions.DeleteDocumentType:
                     cmd = DmsResolver.Current.Get<DeleteDictionaryDocumentTypeCommand>();
+                    break;
+
+
+                case EnumDictionaryActions.ModifyAgent:
+                    cmd = DmsResolver.Current.Get<ModifyDictionaryAgentCommand>();
+                    break;
+                case EnumDictionaryActions.AddAgent:
+                    cmd = DmsResolver.Current.Get<AddDictionaryAgentCommand>();
+                    break;
+                case EnumDictionaryActions.DeleteAgent:
+                    cmd = DmsResolver.Current.Get<DeleteDictionaryAgentCommand>();
                     break;
 
                 case EnumDictionaryActions.ModifyAgentPerson:
@@ -105,7 +117,7 @@ namespace BL.Logic.DictionaryCore
                     cmd = DmsResolver.Current.Get<DeleteCustomDictionaryCommand>();
                     break;
                 case EnumDictionaryActions.DeleteTag:
-                    return null;
+                    cmd = DmsResolver.Current.Get<DeleteDictionaryTagCommand>();
                     break;
 
                 // Тематики документов

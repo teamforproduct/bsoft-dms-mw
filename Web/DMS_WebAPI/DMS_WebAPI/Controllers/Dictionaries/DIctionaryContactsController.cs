@@ -15,18 +15,19 @@ namespace DMS_WebAPI.Controllers.Dictionaries
     [Authorize]
     public class DictionaryContactsController : ApiController
     {
-        
+
         /// <summary>
         /// Возвращает список контактов
         /// </summary>
+        /// <param name="agentId">ID контрагента</param>
         /// <param name="filter">Параметры для фильтрации контактов</param>
         /// <returns>Cписок контактов контрагента</returns>
         // GET: api/DictionaryAddressTypes
-        public IHttpActionResult Get([FromUri] FilterDictionaryContact filter)
+        public IHttpActionResult Get(int agentId,[FromUri] FilterDictionaryContact filter)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionaryContacts(cxt, filter);
+            var tmpDicts = tmpDictProc.GetDictionaryContacts(cxt, agentId, filter);
             return new JsonResult(tmpDicts, this);
         }
 

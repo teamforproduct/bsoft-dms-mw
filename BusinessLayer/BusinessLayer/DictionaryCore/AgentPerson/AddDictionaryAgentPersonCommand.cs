@@ -32,11 +32,7 @@ namespace BL.Logic.DictionaryCore.AgentPerson
 
         public override bool CanExecute()
         {
-            var spr = _dictDb.GetDictionaryAgentPerson(_context, Model.Id );
-            if (spr != null)
-            {
-                throw new DictionaryRecordNotUnique();
-            }
+            
             _admin.VerifyAccess(_context, CommandType);
             return true;
         }

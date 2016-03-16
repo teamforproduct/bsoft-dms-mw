@@ -1,9 +1,12 @@
 ﻿using BL.Logic.DependencyInjection;
 using BL.Logic.DictionaryCore.Interfaces;
-using BL.Model.DictionaryCore.FilterModel;
+using BL.Model.DictionaryCore.IncomingModel;
+using BL.Model.DictionaryCore.FrontModel;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Web.Http;
+using BL.Model.Enums;
+using BL.Model.DictionaryCore.FilterModel;
 
 namespace DMS_WebAPI.Controllers.Dictionaries
 {
@@ -44,5 +47,37 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             var tmpDict = tmpDictProc.GetDictionaryAgent(cxt, id);
             return new JsonResult(tmpDict, this);
         }
+
+        public IHttpActionResult Post([FromBody]ModifyDictionaryAgent model)
+        {
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
+            return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.AddAgent, cxt, model));
+        }
+
+        public IHttpActionResult Put(int id, [FromBody]ModifyDictionaryAgent model)
+        {
+            model.Id = id;
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
+            tmpDict.ExecuteAction(EnumDictionaryActions.ModifyAgent, cxt, model);
+            return Get(model.Id);
+        }
+
+
+        public IHttpActionResult Delete([FromUri] int id)
+        {
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
+
+            tmpDict.ExecuteAction(EnumDictionaryActions.DeleteAgent, cxt, id);
+            FrontDictionaryAgent tmp = new FrontDictionaryAgent();
+            tmp.Id = id;
+
+            return new JsonResult(tmp, this);
+
+        }
+
+
     }
 }

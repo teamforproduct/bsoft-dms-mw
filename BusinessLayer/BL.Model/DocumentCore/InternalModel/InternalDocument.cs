@@ -12,7 +12,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public InternalDocument()
         {
         }
-
+/*
         public InternalDocument(FrontDocument model)
         {
             if (model != null)
@@ -49,7 +49,7 @@ namespace BL.Model.DocumentCore.InternalModel
                 IsInWork = model.IsInWork;
 
                 DocumentDate = model.DocumentDate;
-                DateOfControl = model.DateOfControl;
+
                 //RegistrationFullNumber = model.RegistrationFullNumber;
 
                // EventsCount = model.EventsCount;
@@ -60,7 +60,7 @@ namespace BL.Model.DocumentCore.InternalModel
 
             }
         }
-
+*/
         /// <summary>
         /// ИД Документа
         /// </summary>
@@ -100,6 +100,7 @@ namespace BL.Model.DocumentCore.InternalModel
 
         public int TemplateDocumentId { get; set; }
         public int ExecutorPositionId { get; set; }
+        public int ExecutorPositionExecutorAgentId { get; set; }
         public DateTime CreateDate { get; set; }
         public bool IsRegistered { get; set; }
         public int? RegistrationJournalId { get; set; }

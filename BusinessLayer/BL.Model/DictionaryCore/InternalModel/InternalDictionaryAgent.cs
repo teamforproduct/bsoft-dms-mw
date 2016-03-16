@@ -7,7 +7,7 @@ using BL.Model.Common;
 
 namespace BL.Model.DictionaryCore.InternalModel
 {
-    class InternalDictionaryAgent : LastChangeInfo
+    public class InternalDictionaryAgent : LastChangeInfo
     {
 
         public int Id { get; set; }

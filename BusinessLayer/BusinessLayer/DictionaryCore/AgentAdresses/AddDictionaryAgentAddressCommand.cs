@@ -5,6 +5,7 @@ using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.DictionaryCore.FilterModel;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BL.Logic.DictionaryCore.AgentAdresses
 {
@@ -30,19 +31,19 @@ namespace BL.Logic.DictionaryCore.AgentAdresses
         public override bool CanExecute()
         {
             _admin.VerifyAccess(_context, CommandType, false);
-            var spr = _dictDb.GetDictionaryAgentAddresses(_context, new FilterDictionaryAgentAddress
+            var spr = _dictDb.GetDictionaryAgentAddresses(_context, Model.AgentId,new FilterDictionaryAgentAddress
             {
                 PostCode = Model.PostCode,
                 Address = Model.Address,
                 AddressTypeId = new List<int> { Model.AddressTypeId },
-                AgentId = new List<int> { Model.AgentId }
+                AgentId = Model.AgentId
             });
-            if (spr != null)
+            if (spr.Count() != 0)
             {
                 throw new DictionaryRecordNotUnique();
             }
 
-            _admin.VerifyAccess(_context, CommandType);
+            _admin.VerifyAccess(_context, CommandType,false,true);
             return true;
         }
 

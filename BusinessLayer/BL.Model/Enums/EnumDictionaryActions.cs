@@ -42,29 +42,29 @@
         /// <summary>
         /// Добавить контакт
         /// </summary>
-        AddContact,
+        AddContact = 207001,
         /// <summary>
         /// Изменить контакт
         /// </summary>
-        ModifyContact,
+        ModifyContact = 207005,
         /// <summary>
         /// Удалить контакт
         /// </summary>
-        DeleteContact,
+        DeleteContact = 207009,
         #endregion Contact
 
         // ContactType
         #region ContactType
-        AddContactType,
-        ModifyContactType,
-        DeleteContactType,
-        #endregion ContactType
+        AddContactType = 205001,
+        ModifyContactType = 205005,
+        DeleteContactType = 205009,
+		#endregion ContactType
 
-        // AgentAddress
+		// AgentAddress
         #region AgentAddress
-        AddAgentAddress,
-        ModifyAgentAddress,
-        DeleteAgentAddress,
+        AddAgentAddress =208001,
+        ModifyAgentAddress=208005,
+        DeleteAgentAddress=208009,
         #endregion AgentAddress
 
         // AgentPerson,
@@ -89,6 +89,9 @@
         /// </summary>       
         DeleteDocumentSubject = 203009,
         #endregion DictionaryDocumentSubject
+        AddAgent = 206001,
+        ModifyAgent = 206005,
+        DeleteAgent = 206009,
 
         // RegistrationJournal
         #region DictionaryRegistrationJournal

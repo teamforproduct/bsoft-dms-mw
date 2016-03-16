@@ -3,6 +3,7 @@ using BL.CrossCutting.Interfaces;
 using BL.Model.Enums;
 using BL.Model.SystemCore.FrontModel;
 using BL.Model.SystemCore.Filters;
+using BL.Model.SystemCore;
 
 namespace BL.Logic.PropertyCore.Interfaces
 {
@@ -30,5 +31,9 @@ namespace BL.Logic.PropertyCore.Interfaces
         IEnumerable<FrontPropertyLink> GetPropertyLinks(IContext context, FilterPropertyLink filter);
 
         #endregion PropertyLinks
+
+        #region Filter Properties
+        IEnumerable<BaseSystemUIElement> GetFilterProperties(IContext context, FilterProperties filter);
+        #endregion Filter Properties
     }
 }

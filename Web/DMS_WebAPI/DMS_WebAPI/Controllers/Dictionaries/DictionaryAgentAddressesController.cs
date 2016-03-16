@@ -14,11 +14,11 @@ namespace DMS_WebAPI.Controllers.Dictionaries
     public class DictionaryAgentAddressesController : ApiController
     {
        
-        public IHttpActionResult Get([FromUri] FilterDictionaryAgentAddress filter)
+        public IHttpActionResult Get(int agentId,[FromUri] FilterDictionaryAgentAddress filter)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionaryAgentAddresses(cxt, filter);
+            var tmpDicts = tmpDictProc.GetDictionaryAgentAddresses(cxt, agentId,filter);
             return new JsonResult(tmpDicts, this);
         }
 

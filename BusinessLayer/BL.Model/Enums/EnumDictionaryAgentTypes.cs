@@ -11,7 +11,6 @@ namespace BL.Model.Enums
     /// </summary>
     public enum EnumDictionaryAgentTypes
     {
-        //TODO: После добавления таблицы и данных в нее, прописать значения
         /// <summary>
         /// Юридическое лицо
         /// </summary>

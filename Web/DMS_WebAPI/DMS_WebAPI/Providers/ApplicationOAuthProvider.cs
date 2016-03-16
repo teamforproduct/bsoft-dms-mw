@@ -118,9 +118,7 @@ namespace DMS_WebAPI.Providers
                     }
                 }
 
-                var readXml = new Utilities.ReadXml("/servers.xml");
-                var dbs = readXml.ReadDBs();
-                var db = dbs.FirstOrDefault(x => x.Id == dbId);
+                var db = new Servers().GetServers().FirstOrDefault(x => x.Id == dbId);
                 if (db == null)
                 {
                     throw new System.Exception("Not found Database");

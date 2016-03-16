@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using BL.CrossCutting.Interfaces;
-using BL.Model.DocumentCore;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.InternalModel;
@@ -18,9 +17,6 @@ namespace BL.Database.Documents.Interfaces
 
         IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging);
         FrontDocument GetDocument(IContext ctx, int documentId, FilterDocumentById filter);
-
-
-
 
         InternalDocument RegisterDocumentPrepare(IContext ctx, RegisterDocument model);
         void GetNextDocumentRegistrationNumber(IContext ctx, InternalDocument document);

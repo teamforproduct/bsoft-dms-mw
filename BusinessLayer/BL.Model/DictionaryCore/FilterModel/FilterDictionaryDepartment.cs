@@ -9,6 +9,6 @@ namespace BL.Model.DictionaryCore.FilterModel
         public int? CompanyId { get; set; }
         public string Name { get; set; }
         public int? ChiefPositionId { get; set; }
-
+        public List<int> NotContainsId { get; set; }
     }
 }

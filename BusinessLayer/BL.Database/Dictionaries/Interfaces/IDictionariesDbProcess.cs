@@ -11,9 +11,11 @@ namespace BL.Database.Dictionaries.Interfaces
     public interface IDictionariesDbProcess
     {
         #region DictionaryAgents
-        BaseDictionaryAgent GetDictionaryAgent(IContext context, int id);
-
-        IEnumerable<BaseDictionaryAgent> GetDictionaryAgents(IContext context, FilterDictionaryAgent filter);
+        FrontDictionaryAgent GetDictionaryAgent(IContext context, int id);
+        void UpdateDictionaryAgent(IContext context, InternalDictionaryAgent addr);
+        void DeleteDictionaryAgent(IContext context, InternalDictionaryAgent addr);
+        int AddDictionaryAgent(IContext context, InternalDictionaryAgent addr);
+        IEnumerable<FrontDictionaryAgent> GetDictionaryAgents(IContext context, FilterDictionaryAgent filter);
         #endregion DictionaryAgents
 
         #region DictionaryAgentPerson
@@ -31,7 +33,7 @@ namespace BL.Database.Dictionaries.Interfaces
         void UpdateDictionaryAgentAddress(IContext context, InternalDictionaryAgentAddress addr);
         void DeleteDictionaryAgentAddress(IContext context, InternalDictionaryAgentAddress addr);
         int AddDictionaryAgentAddress(IContext context, InternalDictionaryAgentAddress addr);
-        IEnumerable<FrontDictionaryAgentAddress> GetDictionaryAgentAddresses(IContext context, FilterDictionaryAgentAddress filter);
+        IEnumerable<FrontDictionaryAgentAddress> GetDictionaryAgentAddresses(IContext context,int agentId, FilterDictionaryAgentAddress filter);
         
         #endregion
 
@@ -58,7 +60,7 @@ namespace BL.Database.Dictionaries.Interfaces
         void UpdateDictionaryContact(IContext context, InternalDictionaryContact contact);
         void DeleteDictionaryContact(IContext context, InternalDictionaryContact contact);
         int AddDictionaryContact(IContext context, InternalDictionaryContact contact);
-        IEnumerable<FrontDictionaryContact> GetDictionaryContacts(IContext context, FilterDictionaryContact filter);
+        IEnumerable<FrontDictionaryContact> GetDictionaryContacts(IContext context, int agentId, FilterDictionaryContact filter);
         #endregion
 
         #region DictionaryContactTypes
@@ -119,6 +121,8 @@ namespace BL.Database.Dictionaries.Interfaces
         #endregion DictionaryLinkTypes
 
         #region DictionaryPositions
+
+        int? GetExecutorAgentIdByPositionId(IContext context, int id);
         BaseDictionaryPosition GetDictionaryPosition(IContext context, int id);
 
         IEnumerable<BaseDictionaryPosition> GetDictionaryPositions(IContext context, FilterDictionaryPosition filter);
@@ -172,6 +176,7 @@ namespace BL.Database.Dictionaries.Interfaces
         IEnumerable<FrontDictionaryTag> GetDictionaryTags(IContext context, FilterDictionaryTag filter);
         int AddDictionaryTag(IContext context, InternalDictionaryTag model);
         void UpdateDictionaryTag(IContext context, InternalDictionaryTag model);
+        void DeleteDictionaryTag(IContext context, InternalDictionaryTag model);
         #endregion DictionaryTags
 
         #region Admins
