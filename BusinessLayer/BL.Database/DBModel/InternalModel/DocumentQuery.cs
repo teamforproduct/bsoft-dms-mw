@@ -16,7 +16,8 @@ namespace BL.Database.DBModel.InternalModel
 
         public string ExecutorPosName { get; set; }
         public string ExecutorPositionExecutorAgentName { get; set; }
-        public string ExecutorAgentName { get; set; }
+        public string ExecutorPositionExecutorNowAgentName { get; set; }
+        //public string ExecutorAgentName { get; set; }
         public string SenderAgentname { get; set; }
         public string SenderPersonName { get; set; }
     }

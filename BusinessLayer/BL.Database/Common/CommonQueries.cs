@@ -57,8 +57,9 @@ namespace BL.Database.Common
                           RegistrationJournalPrefixFormula = regj.PrefixFormula,
                           RegistrationJournalSuffixFormula = regj.SuffixFormula,
                           ExecutorPosName = executor.Name,
-                          ExecutorPositionExecutorAgentName = executor.ExecutorAgent.Name,
-                          ExecutorAgentName = exAg.Name,
+                          ExecutorPositionExecutorAgentName = dc.ExecutorPositionExecutorAgent.Name,
+                          //ExecutorPositionExecutorNowAgentName = executor.ExecutorAgent.Name,
+                          ExecutorPositionExecutorNowAgentName = exAg.Name,
                           SenderAgentname = sendAg.Name,
                           SenderPersonName = sendAp.FullName
                       };
@@ -156,8 +157,6 @@ namespace BL.Database.Common
                 dbContext.DocumentAccessesSet.Where(x => ctx.CurrentPositionsIdList.Contains(x.PositionId))
                 .Select(acc => new FrontDocumentAccess
                 {
-                    LastChangeDate = acc.LastChangeDate,
-                    LastChangeUserId = acc.LastChangeUserId,
                     Id = acc.Id,
                     PositionId = acc.PositionId,
                     IsInWork = acc.IsInWork,
@@ -641,30 +640,34 @@ namespace BL.Database.Common
 
         }
 
-        public static IEnumerable<FrontDocument> GetLinkedDocuments(DmsContext dbContext, int documentId)
+        public static IEnumerable<FrontDocument> GetLinkedDocuments(IContext context, DmsContext dbContext, int linkId)
         {
-            return dbContext.DocumentsSet.Where(x => (x.LinkId == documentId))
+            return CommonQueries.GetDocumentQuery(dbContext, context)
+                    .Where(x => x.Doc.LinkId == linkId /*&& context.CurrentPositionsIdList.Contains(x.Acc.PositionId)*/)
                         .Select(y => new FrontDocument
                         {
-                            Id = y.Id,
-                            GeneralInfo = y.TemplateDocument.DocumentDirection.Name + " " + y.TemplateDocument.DocumentType.Name,
-                            RegistrationFullNumber =
-                                                (!y.IsRegistered ? "#" : "") +
-                                                (y.RegistrationNumber != null
-                                                        ? (y.RegistrationNumberPrefix + y.RegistrationNumber.ToString() + y.RegistrationNumberSuffix)
-                                                        : ("#" + y.Id.ToString())),
-                            DocumentDate = y.RegistrationDate ?? y.CreateDate,
-                            Description = y.Description,
-                            Links = dbContext.DocumentLinksSet.Where(z => z.DocumentId == y.Id).
+                            Id = y.Doc.Id,
+                            DocumentDirectionName = y.DirName,
+                            DocumentTypeName = y.DocTypeName,
+                            RegistrationFullNumber =   (y.Doc.RegistrationNumber != null
+                                                           ? y.Doc.RegistrationNumberPrefix + y.Doc.RegistrationNumber +
+                                                             y.Doc.RegistrationNumberSuffix
+                                                           : "#" + y.Doc.Id),
+                            DocumentDate = y.Doc.RegistrationDate ?? y.Doc.CreateDate,
+                            IsRegistered = y.Doc.IsRegistered,
+                            Description = y.Doc.Description,
+                            ExecutorPositionExecutorAgentName = y.ExecutorPositionExecutorAgentName,
+                            ExecutorPositionName = y.ExecutorPosName,
+                            Links = dbContext.DocumentLinksSet.Where(z => z.DocumentId == y.Doc.Id).
                                 Select(z => new FrontDocumentLink
                                 {
                                     Id = z.Id,
-                                    GeneralInfo = z.LinkType.Name + " " +
-                                                (!z.ParentDocument.IsRegistered ? "#" : "") +
+                                    LinkTypeName = z.LinkType.Name,
+                                    RegistrationFullNumber = 
                                                 (z.ParentDocument.RegistrationNumber != null
                                                         ? (z.ParentDocument.RegistrationNumberPrefix + z.ParentDocument.RegistrationNumber.ToString() + z.ParentDocument.RegistrationNumberSuffix)
-                                                        : ("#" + z.ParentDocument.Id.ToString()))
-                                    + " " + (z.ParentDocument.RegistrationDate ?? z.ParentDocument.CreateDate).ToString()
+                                                        : ("#" + z.ParentDocument.Id.ToString())),
+                                    DocumentDate = (z.ParentDocument.RegistrationDate ?? z.ParentDocument.CreateDate),
                                 }).ToList()
                         }).ToList();
         }

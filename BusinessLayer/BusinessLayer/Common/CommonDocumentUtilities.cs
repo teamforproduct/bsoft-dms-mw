@@ -351,10 +351,10 @@ namespace BL.Logic.Common
                 throw new NeedInformationAboutCorrespondent();
             }
 
-            if (doc.IsHard)
+            if (doc.IsHard.Value)
             {
                 var _templateDb = DmsResolver.Current.Get<ITemplateDocumentsDbProcess>();
-                var docTemplate = _templateDb.GetTemplateDocument(ctx, doc.TemplateDocumentId);
+                var docTemplate = _templateDb.GetTemplateDocument(ctx, doc.TemplateDocumentId.Value);
 
                 if (docTemplate.DocumentSubjectId.HasValue)
                 {

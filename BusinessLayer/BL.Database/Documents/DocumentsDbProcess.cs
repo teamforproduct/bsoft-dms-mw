@@ -376,6 +376,7 @@ namespace BL.Database.Documents
                 var res = new FrontDocument
                 {
                     Id = doc.Doc.Id,
+                    DocumentDirection = (EnumDocumentDirections)doc.Templ.DocumentDirectionId,
                     DocumentDirectionName = doc.DirName,
                     DocumentTypeName = doc.DocTypeName,
                     RegistrationFullNumber =
@@ -402,7 +403,7 @@ namespace BL.Database.Documents
                     RegistrationDate = doc.Doc.RegistrationDate,
 
                     ExecutorPositionId = doc.Doc.ExecutorPositionId,
-                    ExecutorPositionAgentName = doc.ExecutorAgentName,
+                    ExecutorPositionExecutorNowAgentName = doc.ExecutorPositionExecutorNowAgentName,
                     ExecutorPositionAgentPhoneNumber = "ExecutorPositionAgentPhoneNumber", //TODO
 
                     SenderAgentId = doc.Doc.SenderAgentId,
@@ -438,12 +439,12 @@ namespace BL.Database.Documents
 
                 if (res.LinkId.HasValue)
                 {
-                    res.LinkedDocuments = CommonQueries.GetLinkedDocuments(dbContext, res.LinkId.Value);
+                    res.LinkedDocuments = CommonQueries.GetLinkedDocuments(ctx, dbContext, res.LinkId.Value);
                     res.LinkedDocumentsCount = res.LinkedDocuments.Count();
 
-                    if (filter?.DocumentsId.Any() ?? false)
+                    if ((filter?.DocumentsIdForAIP!=null ) && (filter.DocumentsIdForAIP.Any()))
                     {
-                        docIds = filter?.DocumentsId;
+                        docIds = filter?.DocumentsIdForAIP;
                     }
                 }
 

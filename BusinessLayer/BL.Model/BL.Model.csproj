@@ -113,8 +113,6 @@
     <Compile Include="DocumentCore\Filters\FilterDocumentById.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentAttachedFile.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentTag.cs" />
-    <Compile Include="DocumentCore\FrontModel\FrontDocumentEventDetail.cs" />
-    <Compile Include="DocumentCore\FrontModel\FrontDocumentEventList.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentTag.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentAttachedFile.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontTemplateAttachedFile.cs" />
@@ -208,11 +206,14 @@
     <Compile Include="SystemCore\FrontModel\FrontSystemObject.cs" />
     <Compile Include="SystemCore\FrontModel\FrontPropertyLink.cs" />
     <Compile Include="SystemCore\FrontModel\FrontProperty.cs" />
+    <Compile Include="SystemCore\FrontModel\FrontServer.cs" />
+    <Compile Include="SystemCore\IncomingModel\ModifyServer.cs" />
     <Compile Include="SystemCore\IncomingModel\ModifyPropertyValue.cs" />
     <Compile Include="SystemCore\IncomingModel\ModifyPropertyLink.cs" />
     <Compile Include="SystemCore\IncomingModel\ModifyProperty.cs" />
     <Compile Include="SystemCore\InternalModel\InternalDataForMail.cs" />
     <Compile Include="SystemCore\InternalModel\InternalMailProcessed.cs" />
+    <Compile Include="SystemCore\InternalModel\InternalServer.cs" />
     <Compile Include="SystemCore\InternalModel\InternalPropertyValues.cs" />
     <Compile Include="SystemCore\InternalModel\InternalPropertyValue.cs" />
     <Compile Include="SystemCore\InternalModel\InternalSendMailServerParameters.cs" />
