@@ -363,6 +363,7 @@ namespace BL.Database.Documents
                 var res = new FrontDocument
                 {
                     Id = doc.Doc.Id,
+                    DocumentDirection = (EnumDocumentDirections)doc.Templ.DocumentDirectionId,
                     DocumentDirectionName = doc.DirName,
                     DocumentTypeName = doc.DocTypeName,
                     RegistrationFullNumber =
@@ -391,7 +392,7 @@ namespace BL.Database.Documents
                     RegistrationDate = doc.Doc.RegistrationDate,
 
                     ExecutorPositionId = doc.Doc.ExecutorPositionId,
-                    ExecutorPositionAgentName = doc.ExecutorAgentName,
+                    ExecutorPositionExecutorNowAgentName = doc.ExecutorPositionExecutorNowAgentName,
                     ExecutorPositionAgentPhoneNumber = "ExecutorPositionAgentPhoneNumber", //TODO
 
                     SenderAgentId = doc.Doc.SenderAgentId,
@@ -417,8 +418,6 @@ namespace BL.Database.Documents
                     Accesses = qry.Select(x=> 
                         new FrontDocumentAccess
                         {
-                            LastChangeDate = x.Acc.LastChangeDate,
-                            LastChangeUserId = x.Acc.LastChangeUserId,
                             IsInWork = x.Acc.IsInWork,
                             IsFavourite = x.Acc.IsFavourite,
                             PositionId = x.Acc.PositionId,
@@ -437,7 +436,7 @@ namespace BL.Database.Documents
                     res.LinkedDocuments = CommonQueries.GetLinkedDocuments(ctx, dbContext, res.LinkId.Value);
                     res.LinkedDocumentsCount = res.LinkedDocuments.Count();
 
-                    if (filter?.DocumentsIdForAIP.Any()??false)
+                    if ((filter?.DocumentsIdForAIP!=null ) && (filter.DocumentsIdForAIP.Any()))
                     {
                         docIds = filter?.DocumentsIdForAIP;
                     }

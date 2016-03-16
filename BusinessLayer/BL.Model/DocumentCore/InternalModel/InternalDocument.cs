@@ -12,7 +12,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public InternalDocument()
         {
         }
-
+/*
         public InternalDocument(FrontDocument model)
         {
             if (model != null)
@@ -60,7 +60,7 @@ namespace BL.Model.DocumentCore.InternalModel
 
             }
         }
-
+*/
         /// <summary>
         /// ИД Документа
         /// </summary>

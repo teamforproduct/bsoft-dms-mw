@@ -110,8 +110,9 @@ namespace BL.Database.Common
                           RegistrationJournalPrefixFormula = regj.PrefixFormula,
                           RegistrationJournalSuffixFormula = regj.SuffixFormula,
                           ExecutorPosName = executor.Name,
-                          ExecutorPositionExecutorAgentName = executor.ExecutorAgent.Name,
-                          ExecutorAgentName = exAg.Name,
+                          ExecutorPositionExecutorAgentName = dc.ExecutorPositionExecutorAgent.Name,
+                          //ExecutorPositionExecutorNowAgentName = executor.ExecutorAgent.Name,
+                          ExecutorPositionExecutorNowAgentName = exAg.Name,
                           SenderAgentname = sendAg.Name,
                           SenderPersonName = sendAp.FullName
                       };
@@ -205,8 +206,6 @@ namespace BL.Database.Common
                 dbContext.DocumentAccessesSet.Where(x => ctx.CurrentPositionsIdList.Contains(x.PositionId))
                 .Select(acc => new FrontDocumentAccess
                 {
-                    LastChangeDate = acc.LastChangeDate,
-                    LastChangeUserId = acc.LastChangeUserId,
                     Id = acc.Id,
                     PositionId = acc.PositionId,
                     IsInWork = acc.IsInWork,
