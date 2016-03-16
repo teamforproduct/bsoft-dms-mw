@@ -1,7 +1,12 @@
-﻿using BL.Model.Exception;
+﻿using BL.Logic.AdminCore.Interfaces;
+using BL.Logic.DependencyInjection;
+using BL.Model.Exception;
+using DMS_WebAPI.Utilities;
+using Newtonsoft.Json;
 using System;
 using System.Net;
 using System.Web;
+using System.Web.Http;
 using System.Web.Http.Filters;
 
 namespace DMS_WebAPI.Infrastructure
@@ -30,8 +35,22 @@ namespace DMS_WebAPI.Infrastructure
             {
 
             }
-            HttpContext.Current.Response.Write(new System.Web.Script.Serialization.JavaScriptSerializer().Serialize(new { success = false, msg = context.Exception.Message }));
+
+            var json = JsonConvert.SerializeObject(new { success = false, msg = context.Exception.Message }, GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings);
+            try
+            {
+                if (HttpContext.Current.User.Identity.IsAuthenticated)
+                {
+                    var cxt = DmsResolver.Current.Get<UserContext>().Get();
+                    var service = DmsResolver.Current.Get<IAdminService>();
+                    json = service.ReplaceLanguageLabel(cxt, json);
+                }
+            }
+            catch { }
+
+            HttpContext.Current.Response.Write(json);
             HttpContext.Current.Response.End();
+            #region log to file
             try
             {
                 var ex = context.Exception;
@@ -98,6 +117,7 @@ namespace DMS_WebAPI.Infrastructure
                 }
             }
             catch { }
+            #endregion log to file
         }
     }
 }

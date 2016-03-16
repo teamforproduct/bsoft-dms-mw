@@ -42,6 +42,14 @@
   <ItemGroup>
     <Compile Include="AdminCore\AdminAccessInfo.cs" />
     <Compile Include="AdminCore\BaseAdminUserRole.cs" />
+    <Compile Include="AdminCore\FilterModel\FilterAdminLanguageValue.cs" />
+    <Compile Include="AdminCore\FilterModel\FilterAdminLanguage.cs" />
+    <Compile Include="AdminCore\FrontModel\FrontAdminLanguageValue.cs" />
+    <Compile Include="AdminCore\FrontModel\FrontAdminLanguage.cs" />
+    <Compile Include="AdminCore\IncomingModel\ModifyAdminLanguageValue.cs" />
+    <Compile Include="AdminCore\IncomingModel\ModifyAdminLanguage.cs" />
+    <Compile Include="AdminCore\InternalModel\InternalAdminLanguageValue.cs" />
+    <Compile Include="AdminCore\InternalModel\InternalAdminLanguage.cs" />
     <Compile Include="Constants\SettingConstants.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterCustomDictionary.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterCustomDictionaryType.cs" />
