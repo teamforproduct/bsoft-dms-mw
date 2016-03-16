@@ -38,6 +38,7 @@ namespace BL.Logic.DocumentCore
         {
             var doc = _documentDb.GetDocument(ctx, documentId, filter);
             doc.SendListStages = CommonDocumentUtilities.GetSendListStage(doc.SendLists);
+            doc.SendLists = null;
             return doc;
         }
 
@@ -59,17 +60,17 @@ namespace BL.Logic.DocumentCore
             return res;
         }
 
-        public FrontDocumentEventDetail GetDocumentEvent(IContext ctx, int eventId)
+        public FrontDocumentEvent GetDocumentEvent(IContext ctx, int eventId)
         {
             return _operationDb.GetDocumentEvent(ctx, eventId);
         }
 
-        public IEnumerable<FrontDocumentEventList> GetDocumentEvents(IContext ctx, FilterDocumentEvent filter, UIPaging paging)
+        public IEnumerable<FrontDocumentEvent> GetDocumentEvents(IContext ctx, FilterDocumentEvent filter, UIPaging paging)
         {
             return _operationDb.GetDocumentEvents(ctx, filter, paging);
         }
 
-        public IEnumerable<FrontDocumentEventList> GetEventsForDocument(IContext ctx, int documentId, UIPaging paging)
+        public IEnumerable<FrontDocumentEvent> GetEventsForDocument(IContext ctx, int documentId, UIPaging paging)
         {
             return _operationDb.GetDocumentEvents(ctx, new FilterDocumentEvent {DocumentId = documentId}, paging);
         }

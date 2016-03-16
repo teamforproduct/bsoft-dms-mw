@@ -5,7 +5,7 @@ namespace BL.Model.DocumentCore.FrontModel
     /// <summary>
     /// Модель для отображения деталей по ивенту документа
     /// </summary>
-    public class FrontDocumentEventDetail
+    public class FrontDocumentEventDetail1
     {
         public int Id { get; set; }
         public DateTime? ReadDate { get; set; }

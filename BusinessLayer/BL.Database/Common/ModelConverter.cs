@@ -96,6 +96,7 @@ namespace BL.Database.Common
                     SendEventId = subscription.SendEventId,
                     SendEvent = GetDbDocumentEvent(subscription.SendEvent),
                     Description = subscription.Description,
+                    SubscriptionStateId = (int)subscription.SubscriptionStates,
                     Hash = subscription.Hash,
                     ChangedHash = subscription.ChangedHash,
                 };

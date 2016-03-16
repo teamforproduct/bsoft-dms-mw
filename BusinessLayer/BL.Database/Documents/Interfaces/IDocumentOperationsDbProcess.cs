@@ -20,8 +20,8 @@ namespace BL.Database.Documents.Interfaces
         void AddDocumentWaits(IContext ctx, InternalDocument documentWaits);
 
         void AddDocumentEvents(IContext ctx, IEnumerable<InternalDocumentEvent> docEvents);
-        FrontDocumentEventDetail GetDocumentEvent(IContext ctx, int eventId);
-        IEnumerable<FrontDocumentEventList> GetDocumentEvents(IContext ctx, FilterDocumentEvent filter, UIPaging paging);
+        FrontDocumentEvent GetDocumentEvent(IContext ctx, int eventId);
+        IEnumerable<FrontDocumentEvent> GetDocumentEvents(IContext ctx, FilterDocumentEvent filter, UIPaging paging);
         InternalDocument MarkDocumentEventsAsReadPrepare(IContext ctx, int documentId);
         void MarkDocumentEventAsRead(IContext ctx, IEnumerable<InternalDocumentEvent> eventList);
 

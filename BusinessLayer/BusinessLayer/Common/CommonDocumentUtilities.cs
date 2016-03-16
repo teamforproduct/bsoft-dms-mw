@@ -264,6 +264,7 @@ namespace BL.Logic.Common
             return new InternalDocumentSubscription
             {
                 DocumentId = sendListModel.DocumentId,
+                SubscriptionStates = EnumSubscriptionStates.No,
                 LastChangeUserId = context.CurrentAgentId,
                 LastChangeDate = DateTime.Now,
                 SendEvent = eventType == null ? null :

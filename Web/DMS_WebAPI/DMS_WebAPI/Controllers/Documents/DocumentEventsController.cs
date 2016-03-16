@@ -19,7 +19,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <param name="filter">модель фильтра ивентов</param>
         /// <param name="paging">paging</param>
         /// <returns>список ивентов</returns>
-        [ResponseType(typeof(FrontDocumentEventList))]
+        [ResponseType(typeof(FrontDocumentEvent))]
         public IHttpActionResult Get([FromUri] FilterDocumentEvent filter, [FromUri]UIPaging paging)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();

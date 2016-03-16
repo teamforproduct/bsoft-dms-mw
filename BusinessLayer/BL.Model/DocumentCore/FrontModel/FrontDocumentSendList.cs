@@ -30,9 +30,16 @@ namespace BL.Model.DocumentCore.FrontModel
         public string TargetPositionExecutorAgentName { get; set; }
         public string TargetAgentName { get; set; }
 
+        public string SourcePositionExecutorNowAgentName { get; set; }
+        public string SourcePositionExecutorAgentPhoneNumber { get; set; }
+
+        public string TargetPositionExecutorNowAgentName { get; set; }
+        public string TargetPositionExecutorAgentPhoneNumber { get; set; }
+
         public string Task { get; set; }
         public string AccessLevelName { get; set; }
 
-        public string GeneralInfo { get; set; }
+        public FrontDocumentEvent StartEvent { get; set; }
+        public FrontDocumentEvent CloseEvent { get; set; }
     }
 }

@@ -9,8 +9,8 @@ namespace BL.Database.DBModel.Document
     {
         public DocumentEvents()
         {
-          //  this.OnWait = new HashSet<DocumentWaits>();
-          //  this.OffWait = new HashSet<DocumentWaits>();
+            this.OnWait = new HashSet<DocumentWaits>();
+            this.OffWait = new HashSet<DocumentWaits>();
             this.SendSubscription = new HashSet<DocumentSubscriptions>();
             this.DoneSubscription = new HashSet<DocumentSubscriptions>();
             this.StartSendList = new HashSet<DocumentSendLists>();
@@ -56,9 +56,9 @@ namespace BL.Database.DBModel.Document
         public virtual DictionaryAgents ReadAgent { get; set; }
 
         [ForeignKey("OnEventId")]
-        public virtual DocumentWaits OnWait { get; set; }
+        public virtual ICollection<DocumentWaits> OnWait { get; set; }
         [ForeignKey("OffEventId")]
-        public virtual DocumentWaits OffWait { get; set; }
+        public virtual ICollection<DocumentWaits> OffWait { get; set; }
 
         [ForeignKey("SendEventId")]
         public virtual ICollection<DocumentSubscriptions> SendSubscription { get; set; }

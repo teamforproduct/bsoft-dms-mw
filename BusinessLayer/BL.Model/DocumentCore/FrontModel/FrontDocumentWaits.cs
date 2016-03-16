@@ -18,7 +18,6 @@ namespace BL.Model.DocumentCore.FrontModel
         public DateTime? TargetAttentionDate { get; set; }
         public FrontDocumentEvent OnEvent { get; set; }
         public FrontDocumentEvent OffEvent { get; set; }
-        public int? OverdueTerm { get; set; }
         public bool IsClosed { get; set; }
         public DateTime DocumentDate { get; set; }
         public string RegistrationFullNumber { get; set; }

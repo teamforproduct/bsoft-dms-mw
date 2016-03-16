@@ -5,7 +5,7 @@ namespace BL.Model.DocumentCore.FrontModel
     /// <summary>
     /// Модель для отображения информации в списке ивентов документа
     /// </summary>
-    public class FrontDocumentEventList
+    public class FrontDocumentEventList1
     {
         public int Id { get; set; }
         public int DocumentId { get; set; }

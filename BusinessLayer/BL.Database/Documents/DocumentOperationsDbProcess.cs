@@ -624,12 +624,12 @@ namespace BL.Database.Documents
             }
         }
 
-        public FrontDocumentEventDetail GetDocumentEvent(IContext ctx, int eventId)
+        public FrontDocumentEvent GetDocumentEvent(IContext ctx, int eventId)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
                 return CommonQueries.GetDocumentEventsQuery(ctx, dbContext).Where(x => x.Id == eventId)
-                    .Select(x => new FrontDocumentEventDetail
+                    .Select(x => new FrontDocumentEvent
                     {
                         Id = x.Id,
                         DocumentDescription = x.Document.Description,
@@ -642,13 +642,13 @@ namespace BL.Database.Documents
                         TargetPositionName = x.TargetPosition.Name,
                         SourcePositionExecutorNowAgentName = x.SourcePosition.ExecutorAgent.Name,
                         TargetPositionExecutorNowAgentName = x.TargetPosition.ExecutorAgent.Name,
-                        SourcePositionPhone = "SourcePositionPhone", //TODO 
-                        TargetPositionPhone = "TargetPositionPhone", //TODO 
+                        SourcePositionExecutorAgentPhoneNumber = "SourcePositionAgentPhoneNumber", //TODO 
+                        TargetPositionExecutorAgentPhoneNumber = "TargetPositionAgentPhoneNumber", //TODO 
                     }).FirstOrDefault();
             }
         }
 
-        public IEnumerable<FrontDocumentEventList> GetDocumentEvents(IContext ctx, FilterDocumentEvent filter, UIPaging paging)
+        public IEnumerable<FrontDocumentEvent> GetDocumentEvents(IContext ctx, FilterDocumentEvent filter, UIPaging paging)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
@@ -677,14 +677,14 @@ namespace BL.Database.Documents
                         qry = qry.Where(x => x.Description.Contains(filter.Description));
                     }
 
-                    if (filter.EventType?.Count > 0)
+                    if (filter.EventType?.Count>0)
                     {
                         qry = qry.Where(x => filter.EventType.Cast<int>().Contains(x.EventTypeId));
                     }
 
                     if (filter.Importance?.Count > 0)
                     {
-                        qry = qry.Where(x => filter.Importance.Cast<int>().Contains(x.EventType.ImportanceEventTypeId));
+                        qry = qry.Where(x => filter.Importance.Cast<int>().Contains(x.EventType.ImportanceEventTypeId) );
                     }
 
                     if (filter.AgentId?.Count > 0)
@@ -694,11 +694,11 @@ namespace BL.Database.Documents
                                 x =>
                                     (x.TargetAgentId.HasValue && filter.AgentId.Contains(x.TargetAgentId.Value)) || filter.AgentId.Contains(x.SourceAgentId) ||
                                     (x.ReadAgentId.HasValue && filter.AgentId.Contains(x.ReadAgentId.Value))
-                                    || (x.SourcePositionExecutorAgentId.HasValue && filter.AgentId.Contains(x.SourcePositionExecutorAgentId.Value))
-                                    || (x.TargetPositionExecutorAgentId.HasValue && filter.AgentId.Contains(x.TargetPositionExecutorAgentId.Value)));
+                                    || (x.SourcePositionExecutorAgentId.HasValue && filter.AgentId.Contains(x.SourcePositionExecutorAgentId.Value ))
+                                    || (x.TargetPositionExecutorAgentId.HasValue && filter.AgentId.Contains(x.TargetPositionExecutorAgentId.Value )));
                     }
 
-                    if (filter.PositionId?.Count > 0)
+                    if (filter.PositionId?.Count>0)
                     {
                         qry =
                             qry.Where(
@@ -718,7 +718,7 @@ namespace BL.Database.Documents
                             .Take(paging.PageSize);
                 }
 
-                return qry.Select(x => new FrontDocumentEventList
+                return qry.Select(x => new FrontDocumentEvent
                 {
                     Id = x.Id,
                     DocumentId = x.DocumentId,
