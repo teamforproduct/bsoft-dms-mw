@@ -127,6 +127,8 @@ namespace BL.Database.Dictionaries.Interfaces
         #endregion DictionaryLinkTypes
 
         #region DictionaryPositions
+
+        int? GetExecutorAgentIdByPositionId(IContext context, int id);
         BaseDictionaryPosition GetDictionaryPosition(IContext context, int id);
 
         IEnumerable<BaseDictionaryPosition> GetDictionaryPositions(IContext context, FilterDictionaryPosition filter);
@@ -176,6 +178,7 @@ namespace BL.Database.Dictionaries.Interfaces
         IEnumerable<FrontDictionaryTag> GetDictionaryTags(IContext context, FilterDictionaryTag filter);
         int AddDictionaryTag(IContext context, InternalDictionaryTag model);
         void UpdateDictionaryTag(IContext context, InternalDictionaryTag model);
+        void DeleteDictionaryTag(IContext context, InternalDictionaryTag model);
         #endregion DictionaryTags
 
         #region Admins

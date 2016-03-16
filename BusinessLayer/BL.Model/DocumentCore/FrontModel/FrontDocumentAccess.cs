@@ -11,8 +11,6 @@ namespace BL.Model.DocumentCore.FrontModel
         public EnumDocumentAccesses AccessLevel { get; set; }
         public string AccessLevelName { get; set; }
         public bool IsInWork { get; set; }
-        public int LastChangeUserId { get; set; }
-        public DateTime LastChangeDate { get; set; }
         public bool IsFavourite { get; set; }
     }
 }

@@ -88,12 +88,14 @@
     <Compile Include="DictionaryCore\DocumentSubject\ModifyDictionaryDocumentSubjectCommand.cs" />
     <Compile Include="DictionaryCore\DocumentType\DeleteDictionaryDocumentTypeCommand.cs" />
     <Compile Include="DictionaryCore\Tag\AddDictionaryTagCommand.cs" />
+    <Compile Include="DictionaryCore\Tag\DeleteDictionaryTagCommand.cs" />
     <Compile Include="DictionaryCore\Tag\ModifyDictionaryTagCommand.cs" />
     <Compile Include="DictionaryCore\DocumentType\AddDictionaryDocumentTypeCommand.cs" />
     <Compile Include="DictionaryCore\DocumentType\ModifyDictionaryDocumentTypeCommand.cs" />
     <Compile Include="DictionaryCore\Interfaces\IDictionaryService.cs" />
     <Compile Include="DocumentCore\Commands\AffixSigningDocumentCommand.cs" />
     <Compile Include="DocumentCore\Commands\AcceptResultDocumentCommand.cs" />
+    <Compile Include="DocumentCore\Commands\MarkDocumentEventAsReadCommand.cs" />
     <Compile Include="DocumentCore\Commands\WithdrawSigningDocumentCommand.cs" />
     <Compile Include="DocumentCore\Commands\RejectSigningDocumentCommand.cs" />
     <Compile Include="DocumentCore\Commands\RejectResultDocumentCommand.cs" />

@@ -15,6 +15,7 @@ namespace BL.Logic.DocumentCore.Commands
 
         private readonly IDocumentsDbProcess _documentDb;
         private readonly IFileStore _fStore;
+        private int? _executorPositionExecutorAgentId;
 
         public CopyDocumentCommand(IDocumentsDbProcess documentDb, IFileStore fStore)
         {
@@ -48,21 +49,22 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
+            _executorPositionExecutorAgentId = CommonDocumentUtilities.GetExecutorAgentIdByPositionId(_context, _context.CurrentPositionId);
+            if (_executorPositionExecutorAgentId.HasValue)
+            {
+                _document.ExecutorPositionExecutorAgentId = _executorPositionExecutorAgentId.Value;
+            }
+            else
+            {
+                throw new ExecutorAgentForPositionIsNotDefined();
+            }
             return true;
         }
 
         public override object Execute()
         {
             CommonDocumentUtilities.SetAtrributesForNewDocument(_context, _document);
-
-            foreach (var sl in _document.SendLists)
-            {
-                sl.StartEventId = null;
-                sl.CloseEventId = null;
-                sl.SourceAgentId = _context.CurrentAgentId;
-                CommonDocumentUtilities.SetLastChange(_context, sl);
-            }
-
+            CommonDocumentUtilities.SetSendListAtrributesForNewDocument(_context, _document.SendLists, _executorPositionExecutorAgentId.Value, true);
             CommonDocumentUtilities.SetLastChange(_context, _document.RestrictedSendLists);
 
             _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context,null, EnumEventTypes.AddNewDocument, "Copy");
@@ -78,6 +80,7 @@ namespace BL.Logic.DocumentCore.Commands
 
             // assign new created list of files to document
             _document.DocumentFiles = toCopy.Keys;
+            CommonDocumentUtilities.SetLastChange(_context, _document.DocumentFiles);
 
             _documentDb.AddDocument(_context, _document);
 

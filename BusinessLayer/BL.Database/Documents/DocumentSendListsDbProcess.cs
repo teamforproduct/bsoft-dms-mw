@@ -35,9 +35,6 @@ namespace BL.Database.Documents
                         PositionExecutorAgentName = x.Position.ExecutorAgent.Name,
                         AccessLevel = (EnumDocumentAccesses)x.AccessLevelId,
                         AccessLevelName = x.AccessLevel.Name,
-                        LastChangeUserId = x.LastChangeUserId,
-                        LastChangeDate = x.LastChangeDate,
-                        GeneralInfo = string.Empty
                     }).FirstOrDefault();
 
                 return sendList;
@@ -91,7 +88,6 @@ namespace BL.Database.Documents
                         IsInitial = x.IsInitial,
                         StartEventId = x.StartEventId,
                         CloseEventId = x.CloseEventId,
-                        GeneralInfo = string.Empty
                     }).FirstOrDefault();
 
                 return sendLists;

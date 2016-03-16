@@ -9,6 +9,7 @@ using BL.Logic.DependencyInjection;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using BL.Model.Exception;
+using BL.Model.SystemCore.InternalModel;
 
 namespace DMS_WebAPI.Utilities
 {
@@ -47,7 +48,7 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        public IContext Set(string token, DatabaseModel db, string userId)
+        public IContext Set(string token, InternalServer db, string userId)
         {
             token = token.ToLower();
             if (!_casheContexts.ContainsKey(token))
@@ -62,7 +63,18 @@ namespace DMS_WebAPI.Utilities
                         Token = token,
                         AgentId = user.AgentId
                     },
-                    CurrentDB = db
+                    CurrentDB = new DatabaseModel
+                    {
+                        Id = db.Id,
+                        Address = db.Address,
+                        Name = db.Name,
+                        ServerType = db.ServerType,
+                        DefaultDatabase = db.DefaultDatabase,
+                        IntegrateSecurity = db.IntegrateSecurity,
+                        UserName = db.UserName,
+                        UserPassword = db.UserPassword,
+                        ConnectionString = db.ConnectionString
+                    }
                 };
 
                 if (user.AgentId.HasValue)

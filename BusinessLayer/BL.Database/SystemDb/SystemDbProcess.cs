@@ -11,7 +11,7 @@ using BL.Model.Enums;
 using BL.Model.SystemCore.InternalModel;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.FrontModel;
-
+using System.Data.Entity;
 
 namespace BL.Database.SystemDb
 {
@@ -115,7 +115,7 @@ namespace BL.Database.SystemDb
                     {
                         qry = qry.Where(x => x.IsVisible &&
                                               (!x.IsGrantable
-                                                || x.RoleActions.Any(y => y.Role.PositionRoles.Any(pr=>pr.PositionId == posId) 
+                                                || x.RoleActions.Any(y => y.Role.PositionRoles.Any(pr => pr.PositionId == posId)
                                                                             &&
                                                                             y.Role.UserRoles.Any(z => z.UserId == ctx.CurrentAgentId))));
                     }
@@ -218,7 +218,7 @@ namespace BL.Database.SystemDb
             {
                 var qry = dbContext.PropertyLinksSet.AsQueryable();
 
-                if (filter.PropertyLinkId?.Count > 0)
+                if (filter.PropertyLinkId != null)
                 {
                     qry = qry.Where(x => filter.PropertyLinkId.Contains(x.Id));
                 }
@@ -293,7 +293,7 @@ namespace BL.Database.SystemDb
             {
                 var qry = dbContext.PropertiesSet.AsQueryable();
 
-                if (filter.PropertyId?.Count > 0)
+                if (filter.PropertyId != null)
                 {
                     qry = qry.Where(x => filter.PropertyId.Contains(x.Id));
                 }
@@ -347,6 +347,7 @@ namespace BL.Database.SystemDb
                     LastChangeUserId = model.LastChangeUserId,
                 };
                 dbContext.PropertiesSet.Attach(item);
+                dbContext.Entry(item).State = EntityState.Added;
 
                 dbContext.SaveChanges();
                 model.Id = item.Id;
@@ -377,7 +378,7 @@ namespace BL.Database.SystemDb
                     LastChangeUserId = model.LastChangeUserId,
                 };
                 dbContext.PropertiesSet.Attach(item);
-                dbContext.Entry(item).State = System.Data.Entity.EntityState.Modified;
+                dbContext.Entry(item).State = EntityState.Modified;
 
                 dbContext.SaveChanges();
             }
@@ -440,7 +441,7 @@ namespace BL.Database.SystemDb
 
                     if (filter.Object?.Count > 0)
                     {
-                        qry = qry.Where(x => filter.Object.Select(y=>(int)y).Contains(x.ObjectId));
+                        qry = qry.Where(x => filter.Object.Select(y => (int)y).Contains(x.ObjectId));
                     }
                 }
 
@@ -470,6 +471,7 @@ namespace BL.Database.SystemDb
                     LastChangeUserId = model.LastChangeUserId,
                 };
                 dbContext.PropertyLinksSet.Attach(item);
+                dbContext.Entry(item).State = EntityState.Added;
 
                 dbContext.SaveChanges();
                 model.Id = item.Id;
@@ -484,15 +486,17 @@ namespace BL.Database.SystemDb
                 var item = new PropertyLinks
                 {
                     Id = model.Id,
-                    PropertyId = model.PropertyId,
-                    ObjectId = (int)model.Object,
                     Filers = model.Filers,
                     IsMandatory = model.IsMandatory,
                     LastChangeDate = model.LastChangeDate,
                     LastChangeUserId = model.LastChangeUserId,
                 };
                 dbContext.PropertyLinksSet.Attach(item);
-                dbContext.Entry(item).State = System.Data.Entity.EntityState.Modified;
+                var entry = dbContext.Entry(item);
+                entry.Property(p => p.Filers).IsModified = true;
+                entry.Property(p => p.IsMandatory).IsModified = true;
+                entry.Property(p => p.LastChangeDate).IsModified = true;
+                entry.Property(p => p.LastChangeUserId).IsModified = true;
 
                 dbContext.SaveChanges();
             }
@@ -557,7 +561,7 @@ namespace BL.Database.SystemDb
                     Id = x.Id,
                     PropertyLinkId = x.PropertyLinkId,
                     RecordId = x.RecordId,
-                    Value= x.ValueString
+                    Value = x.ValueString != null ? x.ValueString : (x.ValueNumeric.HasValue ? x.ValueNumeric.ToString() : (x.ValueDate.HasValue ? x.ValueDate.ToString() : null))
                 }).ToList();
             }
         }
@@ -582,13 +586,13 @@ namespace BL.Database.SystemDb
                         DocumentName = x.Document.Description,
                         EventType = (EnumEventTypes)x.EventTypeId,
                         DestinationAgentId = x.TargetAgentId ?? 0,
-                        DestinationAgentName = (x.TargetAgent == null)?"":x.TargetAgent.Name,
-                        DestinationPositionId = x.TargetPositionId??0,
-                        DestinationPositionName = (x.TargetPosition == null)?"": x.TargetPosition.Name,
+                        DestinationAgentName = (x.TargetAgent == null) ? "" : x.TargetAgent.Name,
+                        DestinationPositionId = x.TargetPositionId ?? 0,
+                        DestinationPositionName = (x.TargetPosition == null) ? "" : x.TargetPosition.Name,
                         SourceAgentId = x.SourceAgentId,
                         SourceAgentName = x.SourceAgent.Name,
-                        SourcePositiontId = x.SourcePositionId??0,
-                        SourcePositionName = x.SourcePosition == null?"":x.SourcePosition.Name,
+                        SourcePositiontId = x.SourcePositionId ?? 0,
+                        SourcePositionName = x.SourcePosition == null ? "" : x.SourcePosition.Name,
                         WasUpdated = !(x.SendDate == null),
                         DestinationAgentEmail = "sanyok.malinin@gmail.com"
                     }).ToList();
@@ -603,7 +607,7 @@ namespace BL.Database.SystemDb
                 var upd = new List<DbEntityEntry>();
                 mailProcessed.ProcessedEventIds.ForEach(x =>
                 {
-                    var evt = new DocumentEvents {Id = x, SendDate = mailProcessed.ProcessedDate};
+                    var evt = new DocumentEvents { Id = x, SendDate = mailProcessed.ProcessedDate };
                     dbContext.DocumentEventsSet.Attach(evt);
                     var entry = dbContext.Entry(evt);
                     entry.Property(p => p.SendDate).IsModified = true;
@@ -614,5 +618,36 @@ namespace BL.Database.SystemDb
         }
 
         #endregion
+
+        #region Filter Properties
+        public IEnumerable<BaseSystemUIElement> GetFilterProperties(IContext context, FilterProperties filter)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var qry = dbContext.PropertyLinksSet.AsQueryable();
+
+                qry = qry.Where(x => x.ObjectId == (int)filter.Object);
+
+                return qry.Select(x => new BaseSystemUIElement
+                {
+                    PropertyLinkId = x.Id,
+                    ObjectCode = filter.Object.ToString(),
+                    ActionCode = x.Property.Code,
+                    Code = x.Property.Code,
+                    TypeCode = x.Property.TypeCode,
+                    Label = x.Property.Label,
+                    Hint = x.Property.Hint,
+                    ValueTypeCode = x.Property.ValueType.Code,
+                    SelectAPI = x.Property.SelectAPI,
+                    SelectFilter = x.Property.SelectFilter,
+                    SelectFieldCode = x.Property.SelectFieldCode,
+                    SelectDescriptionFieldCode = x.Property.SelectDescriptionFieldCode,
+                    ValueFieldCode = x.Property.ValueType.Code,
+                    ValueDescriptionFieldCode = x.Property.ValueType.Description,
+                    Format = x.Property.OutFormat,
+                }).ToList();
+            }
+        }
+        #endregion Filter Properties
     }
 }

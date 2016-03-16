@@ -294,13 +294,27 @@
         /// </summary>
         DeleteDocumentLink = 105009,
 
-        AddSavedFilter = 191001, // Добавить сохраненный фильтр
-        ModifySavedFilter = 191005, // Изменить сохраненный фильтр
-        DeleteSavedFilter = 191009, // Удалить сохраненный фильтр
+        /// <summary>
+        /// Добавить сохраненный фильтр
+        /// </summary>
+        AddSavedFilter = 191001, 
+        /// <summary>
+        /// Изменить сохраненный фильтр
+        /// </summary>
+        ModifySavedFilter = 191005, 
+        /// <summary>
+        /// Удалить сохраненный фильтр
+        /// </summary>
+        DeleteSavedFilter = 191009, 
 
         /// <summary>
         /// Изменить тэги по документу
         /// </summary>
         ModifyDocumentTags = 192005,
+
+        /// <summary>
+        ///  Отметить прочтение событий
+        /// </summary>
+        MarkDocumentEventAsRead = 100010,
     }
 }

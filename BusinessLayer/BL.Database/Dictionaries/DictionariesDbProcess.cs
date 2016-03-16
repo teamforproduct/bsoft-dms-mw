@@ -1545,6 +1545,17 @@ namespace BL.Database.Dictionaries
         #endregion DictionaryLinkTypes
 
         #region DictionaryPositions
+
+        public int? GetExecutorAgentIdByPositionId(IContext context, int id)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                return dbContext.DictionaryPositionsSet.Where(x => x.Id == id)
+                    .Select(x => x.ExecutorAgentId).FirstOrDefault();
+            }
+        }
+
+
         public BaseDictionaryPosition GetDictionaryPosition(IContext context, int id)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
@@ -2076,6 +2087,20 @@ namespace BL.Database.Dictionaries
                 else
                 {
                     throw new DictionaryTagNotFoundOrUserHasNoAccess();
+                }
+            }
+        }
+
+        public void DeleteDictionaryTag(IContext context, InternalDictionaryTag model)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+
+                var item = dbContext.DictionaryTagsSet.FirstOrDefault(x => x.Id == model.Id);
+                if (item != null)
+                {
+                    dbContext.DictionaryTagsSet.Remove(item);
+                    dbContext.SaveChanges();
                 }
             }
         }

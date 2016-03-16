@@ -11,13 +11,14 @@ namespace BL.Model.DictionaryCore
         public string Name { get; set; }
         public int DepartmentId { get; set; }
         public int? ExecutorAgentId { get; set; }
-        public int LastChangeUserId { get; set; }
-        public DateTime LastChangeDate { get; set; }
+        public int? LastChangeUserId { get; set; }
+        public DateTime? LastChangeDate { get; set; }
 
         public string ParentPositionName { get; set; }
         public string DepartmentName { get; set; }
         public string ExecutorAgentName { get; set; }
         public int? MaxSubordinationTypeId { get; set; }
+        public string PositionPhone { get; set; }
 
         public virtual IEnumerable<BaseDictionaryPosition> ChildPositions { get; set; }
         public virtual IEnumerable<BaseDictionaryDepartment> ChiefDepartments { get; set; }

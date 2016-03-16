@@ -15,6 +15,13 @@ namespace BL.Database.SystemDb
         IEnumerable<InternalSystemAction> GetSystemActions(IContext ctx, FilterSystemAction filter);
         IEnumerable<BaseSystemUIElement> GetSystemUIElements(IContext ctx, FilterSystemUIElement filter);
 
+        #region SystemObjects
+
+        IEnumerable<FrontSystemObject> GetSystemObjects(IContext context, FilterSystemObject filter);
+
+
+        #endregion SystemObjects
+
         #region Properties
         IEnumerable<BaseSystemUIElement> GetPropertyUIElements(IContext context, FilterPropertyLink filter);
         InternalProperty GetProperty(IContext context, FilterProperty filter);
@@ -28,13 +35,6 @@ namespace BL.Database.SystemDb
         void DeleteProperty(IContext context, InternalProperty model);
 
         #endregion Properties
-
-        #region SystemObjects
-
-        IEnumerable<FrontSystemObject> GetSystemObjects(IContext context, FilterSystemObject filter);
-
-
-        #endregion SystemObjects
 
         #region PropertyLinks
 
@@ -55,5 +55,9 @@ namespace BL.Database.SystemDb
         IEnumerable<InternalDataForMail> GetNewActionsForMailing(IContext ctx);
         void MarkActionsLikeMailSended(IContext ctx, InternalMailProcessed mailProcessed);
         #endregion
+
+        #region Filter Properties
+        IEnumerable<BaseSystemUIElement> GetFilterProperties(IContext context, FilterProperties filter);
+        #endregion Filter Properties
     }
 }

@@ -59,7 +59,7 @@ namespace BL.Logic.Common
                         && (
                             !model.PropertyValues.Select(y => y.PropertyLinkId).Contains(x.Id)
                             || model.PropertyValues
-                                .Any(y => y.PropertyLinkId == x.Id && string.IsNullOrEmpty(y.ValueString)))))
+                                .Any(y => y.PropertyLinkId == x.Id && (string.IsNullOrEmpty(y.ValueString) && !y.ValueNumeric.HasValue && !y.ValueDate.HasValue)))))
             {
                 throw new NotFilledWithAdditionalRequiredAttributes();
             }

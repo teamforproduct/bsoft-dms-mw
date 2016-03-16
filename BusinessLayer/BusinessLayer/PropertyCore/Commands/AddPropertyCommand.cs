@@ -47,6 +47,7 @@ namespace BL.Logic.PropertyCore.Commands
                 var item = new InternalProperty
                 {
                     Code = Model.Code,
+                    TypeCode = Model.TypeCode,
                     Description = Model.Description,
                     Label = Model.Label,
                     Hint = Model.Hint,

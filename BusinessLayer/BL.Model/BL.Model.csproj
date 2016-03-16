@@ -186,6 +186,8 @@
     <Compile Include="Enums\EnumObjects.cs" />
     <Compile Include="Enums\EnumObserverType.cs" />
     <Compile Include="Enums\EnumEventCorrespondentType.cs" />
+    <Compile Include="Enums\EnumSubscriptionStates.cs" />
+    <Compile Include="Enums\EnumValueTypes.cs" />
     <Compile Include="Enums\EnumSubordinationTypes.cs" />
     <Compile Include="Enums\EnumDocumentDirections.cs" />
     <Compile Include="Enums\EnumDocumentAccesses.cs" />
@@ -217,6 +219,8 @@
     <Compile Include="FullTextSerach\FullTextUpdateCashInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Enums\EnumLogTypes.cs" />
+    <Compile Include="SystemCore\Filters\FilterProperties.cs" />
+    <Compile Include="SystemCore\Filters\FilterPropertyByRecord.cs" />
     <Compile Include="SystemCore\Filters\FilterPropertyValue.cs" />
     <Compile Include="SystemCore\Filters\FilterSystemObject.cs" />
     <Compile Include="SystemCore\Filters\FilterPropertyLink.cs" />
@@ -227,11 +231,14 @@
     <Compile Include="SystemCore\FrontModel\FrontSystemObject.cs" />
     <Compile Include="SystemCore\FrontModel\FrontPropertyLink.cs" />
     <Compile Include="SystemCore\FrontModel\FrontProperty.cs" />
+    <Compile Include="SystemCore\FrontModel\FrontServer.cs" />
+    <Compile Include="SystemCore\IncomingModel\ModifyServer.cs" />
     <Compile Include="SystemCore\IncomingModel\ModifyPropertyValue.cs" />
     <Compile Include="SystemCore\IncomingModel\ModifyPropertyLink.cs" />
     <Compile Include="SystemCore\IncomingModel\ModifyProperty.cs" />
     <Compile Include="SystemCore\InternalModel\InternalDataForMail.cs" />
     <Compile Include="SystemCore\InternalModel\InternalMailProcessed.cs" />
+    <Compile Include="SystemCore\InternalModel\InternalServer.cs" />
     <Compile Include="SystemCore\InternalModel\InternalPropertyValues.cs" />
     <Compile Include="SystemCore\InternalModel\InternalPropertyValue.cs" />
     <Compile Include="SystemCore\InternalModel\InternalSendMailServerParameters.cs" />

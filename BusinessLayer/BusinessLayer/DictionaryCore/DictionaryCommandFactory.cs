@@ -117,7 +117,7 @@ namespace BL.Logic.DictionaryCore
                     cmd = DmsResolver.Current.Get<DeleteCustomDictionaryCommand>();
                     break;
                 case EnumDictionaryActions.DeleteTag:
-                    return null;
+                    cmd = DmsResolver.Current.Get<DeleteDictionaryTagCommand>();
                     break;
 
                 // Тематики документов
