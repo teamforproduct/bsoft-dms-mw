@@ -734,7 +734,7 @@ namespace BL.Database.Documents
                                            ? x.Document.RegistrationNumberPrefix + x.Document.RegistrationNumber +
                                              x.Document.RegistrationNumberSuffix
                                            : "#" + x.Document.Id),
-                    DueDate = null, //TODO 
+                    DueDate = DateTime.Now, //TODO 
                 }).ToList();
             }
         }
