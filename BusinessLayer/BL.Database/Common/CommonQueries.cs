@@ -135,7 +135,7 @@ namespace BL.Database.Common
                 }
             }
 
-            return dbContext.DocumentFilesSet
+            return qry
                 .GroupBy(g => new { g.DocumentId, g.OrderNumber })
                 .Select(x => new FilterDocumentFileIdentity { DocumentId = x.Key.DocumentId, OrderInDocument = x.Key.OrderNumber, Version = x.Max(s => s.Version) });
         }
