@@ -437,9 +437,9 @@ namespace BL.Database.Documents
                     res.LinkedDocuments = CommonQueries.GetLinkedDocuments(dbContext, res.LinkId.Value);
                     res.LinkedDocumentsCount = res.LinkedDocuments.Count();
 
-                    if (filter?.DocumentsId.Any()??false)
+                    if (filter?.DocumentsIdForAIP.Any()??false)
                     {
-                        docIds = filter?.DocumentsId;
+                        docIds = filter?.DocumentsIdForAIP;
                     }
                 }
 

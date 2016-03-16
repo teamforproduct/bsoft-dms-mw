@@ -16,7 +16,7 @@ namespace BL.Model.DocumentCore.Filters
         /// <summary>
         /// Массив ИД документов для отображения ДИПов
         /// </summary>
-        public List<int> DocumentsId { get; set; }
+        public List<int> DocumentsIdForAIP { get; set; }
        
     }
 }
