@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using BL.CrossCutting.Interfaces;
 using BL.Database.DatabaseContext;
@@ -20,14 +19,12 @@ namespace BL.Database.Common
 {
     internal static class CommonQueries
     {
-        public static IQueryable<FrontDocumentQuery> GetFrontDocumentQuery(DmsContext dbContext, IQueryable<FrontDocumentAccess> userAccesses)
+        public static IQueryable<DocumentQuery> GetDocumentQuery(DmsContext dbContext, IContext ctx, IQueryable<FrontDocumentAccess> userAccesses = null)
         {
             var qry = from dc in dbContext.DocumentsSet
-                          //join acc in userAccesses on dc.Id equals acc.DocumentId
                       join tmpl in dbContext.TemplateDocumentsSet on dc.TemplateDocumentId equals tmpl.Id
                       join ddir in dbContext.DictionaryDocumentDirectionsSet on tmpl.DocumentDirectionId equals ddir.Id
                       join doctp in dbContext.DictionaryDocumentTypesSet on tmpl.DocumentTypeId equals doctp.Id
-                      //join acl in dbContext.AdminAccessLevelsSet on acc.AccessLevelId equals acl.Id
                       join executor in dbContext.DictionaryPositionsSet on dc.ExecutorPositionId equals executor.Id
 
                       join ea in dbContext.DictionaryAgentsSet on executor.ExecutorAgentId equals ea.Id into ea
@@ -46,63 +43,13 @@ namespace BL.Database.Common
                       join ap in dbContext.DictionaryAgentPersonsSet on dc.SenderAgentPersonId equals ap.Id into ap
                       from sendAp in ap.DefaultIfEmpty()
 
-                      where userAccesses.Select(x => x.DocumentId).Contains(dc.Id)
-
-                      select new FrontDocumentQuery
-                      {
-                          Doc = dc,
-                          //Acc = acc,
-                          Templ = tmpl,
-                          DirName = ddir.Name,
-                          //AccLevName = acl.Name,
-                          SubjName = docsubj.Name,
-                          DocTypeName = doctp.Name,
-                          RegistrationJournalName = regj.Name,
-                          RegistrationJournalNumerationPrefixFormula = regj.NumerationPrefixFormula,
-                          RegistrationJournalPrefixFormula = regj.PrefixFormula,
-                          RegistrationJournalSuffixFormula = regj.SuffixFormula,
-                          ExecutorPosName = executor.Name,
-                          ExecutorPositionExecutorAgentName = executor.ExecutorAgent.Name,
-                          ExecutorAgentName = exAg.Name,
-                          SenderAgentname = sendAg.Name,
-                          SenderPersonName = sendAp.FullName
-                      };
-            return qry;
-        }
-
-        public static IQueryable<DocumentQuery> GetDocumentQuery(DmsContext dbContext)
-        {
-            var qry = from dc in dbContext.DocumentsSet
-                      join acc in dbContext.DocumentAccessesSet on dc.Id equals acc.DocumentId
-                      join tmpl in dbContext.TemplateDocumentsSet on dc.TemplateDocumentId equals tmpl.Id
-                      join ddir in dbContext.DictionaryDocumentDirectionsSet on tmpl.DocumentDirectionId equals ddir.Id
-                      join doctp in dbContext.DictionaryDocumentTypesSet on tmpl.DocumentTypeId equals doctp.Id
-                      join acl in dbContext.AdminAccessLevelsSet on acc.AccessLevelId equals acl.Id
-                      join executor in dbContext.DictionaryPositionsSet on dc.ExecutorPositionId equals executor.Id
-
-                      join ea in dbContext.DictionaryAgentsSet on executor.ExecutorAgentId equals ea.Id into ea
-                      from exAg in ea.DefaultIfEmpty()
-
-                      join z in dbContext.DictionaryDocumentSubjectsSet on dc.DocumentSubjectId equals z.Id into eg
-                      from docsubj in eg.DefaultIfEmpty()
-
-                      join g in dbContext.DictionaryRegistrationJournalsSet on dc.RegistrationJournalId equals g.Id into
-                          egg
-                      from regj in egg.DefaultIfEmpty()
-
-                      join ag in dbContext.DictionaryAgentsSet on dc.SenderAgentId equals ag.Id into ag
-                      from sendAg in ag.DefaultIfEmpty()
-
-                      join ap in dbContext.DictionaryAgentPersonsSet on dc.SenderAgentPersonId equals ap.Id into ap
-                      from sendAp in ap.DefaultIfEmpty()
+                      where dbContext.DocumentAccessesSet.Where(x=>ctx.CurrentPositionsIdList.Contains(x.PositionId)).Select(x=>x.DocumentId).Contains(dc.Id)
 
                       select new DocumentQuery
                       {
                           Doc = dc,
-                          Acc = acc,
                           Templ = tmpl,
                           DirName = ddir.Name,
-                          AccLevName = acl.Name,
                           SubjName = docsubj.Name,
                           DocTypeName = doctp.Name,
                           RegistrationJournalName = regj.Name,
@@ -116,6 +63,10 @@ namespace BL.Database.Common
                           SenderAgentname = sendAg.Name,
                           SenderPersonName = sendAp.FullName
                       };
+            if (userAccesses != null)
+            {
+                qry = qry.Where(x => userAccesses.Select(a => a.DocumentId).Contains(x.Doc.Id));
+            }
             return qry;
         }
 
@@ -245,6 +196,16 @@ namespace BL.Database.Common
             }
 
             return null;
+        }
+
+        public static IQueryable<DocumentAccesses> GetDocumentAccessesesQry(DmsContext dbContext, int documentId, IContext ctx = null)
+        {
+            var qry = dbContext.DocumentAccessesSet.Where(x => x.DocumentId == documentId);
+            if (ctx != null)
+            {
+                qry = qry.Where(x => ctx.CurrentPositionsIdList.Contains(x.PositionId));
+            }
+            return qry;
         }
 
         public static IEnumerable<InternalDocumentAccess> GetInternalDocumentAccesses(DmsContext dbContext, int documentId)
@@ -529,7 +490,7 @@ namespace BL.Database.Common
 
             if (filter != null)
             {
-                if (filter?.DocumentId?.Count() > 0)
+                if (filter.DocumentId?.Count() > 0)
                 {
                     tagsDb = tagsDb.Where(x => filter.DocumentId.Contains(x.DocumentId));
                 }
