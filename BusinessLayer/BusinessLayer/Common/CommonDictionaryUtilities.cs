@@ -25,12 +25,30 @@ namespace BL.Logic.Common
             CommonDocumentUtilities.SetLastChange(context, internalModel);
         }
 
-        
+        public static void RegistrationJournalModifyToInternal(IContext context, ModifyDictionaryRegistrationJournal modifyModel, InternalDictionaryRegistrationJournal internalModel)
+        {
+            // pss Перегонка значений DictionaryRegistrationJournals
+            internalModel.Id = modifyModel.Id;
+            internalModel.IsActive = modifyModel.IsActive;
+            internalModel.Name = modifyModel.Name;
+            internalModel.DepartmentId = modifyModel.DepartmentId;
+            internalModel.Index = modifyModel.Index;
+            internalModel.IsIncoming = modifyModel.IsIncoming;
+            internalModel.IsOutcoming = modifyModel.IsOutcoming;
+            internalModel.IsInternal = modifyModel.IsInternal;
+            internalModel.PrefixFormula = modifyModel.PrefixFormula;
+            internalModel.NumerationPrefixFormula = modifyModel.NumerationPrefixFormula;
+            internalModel.SuffixFormula = modifyModel.SuffixFormula;
 
-        
-        
-        
+            CommonDocumentUtilities.SetLastChange(context, internalModel);
+        }
 
-       
+
+
+
+
+
+
+
     }
 }

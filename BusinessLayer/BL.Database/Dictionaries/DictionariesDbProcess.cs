@@ -25,6 +25,7 @@ namespace BL.Database.Dictionaries
             _helper = helper;
         }
 
+        // Агенты
         #region DictionaryAgents
 
         private bool IsAgentOneRole(IContext context,int id,EnumDictionaryAgentTypes source)
@@ -129,6 +130,7 @@ namespace BL.Database.Dictionaries
         }
         #endregion DictionaryAgents
 
+        // Физлица
         #region DictionaryAgentPerson
         public FrontDictionaryAgentPerson GetDictionaryAgentPerson(IContext context, int id)
         {
@@ -244,6 +246,7 @@ namespace BL.Database.Dictionaries
 
         #endregion DictionaryAgentPerson
 
+        // Адреса контрагентов
         #region DictionaryAgentAddress
         public FrontDictionaryAgentAddress GetDictionaryAgentAddress(IContext context, int id)
         {
@@ -370,8 +373,8 @@ namespace BL.Database.Dictionaries
         }
         #endregion
 
+        // Типы адресов 
         #region DictionaryAddressTypes
-
         public void UpdateDictionaryAddressType(IContext context, InternalDictionaryAddressType addrType)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
@@ -530,6 +533,7 @@ namespace BL.Database.Dictionaries
         }
         #endregion DictionaryCompanies
 
+        // Типы контактов
         #region DictionaryContactTypes
         public FrontDictionaryContactType GetInternalDictionaryContactType(IContext context, FilterDictionaryContactType filter)
         {
@@ -615,6 +619,7 @@ namespace BL.Database.Dictionaries
         }
         #endregion
 
+        // Контакты
         #region DictionaryContacts
 
         public FrontDictionaryContact GetDictionaryContact(IContext context,
@@ -732,6 +737,7 @@ namespace BL.Database.Dictionaries
         }
         #endregion
 
+        // Штатное расписание
         #region DictionaryDepartments
         public BaseDictionaryDepartment GetDictionaryDepartment(IContext context, int id)
         {
@@ -927,7 +933,6 @@ namespace BL.Database.Dictionaries
 
         public InternalDictionaryDocumentSubject GetInternalDictionaryDocumentSubject(IContext context, FilterDictionaryDocumentSubject filter)
         {
-
             // Устно договорились, что функция для возврата одного элемента возвращает параметры только конкретного элемена без учета родителя и потомков.
 
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
@@ -935,7 +940,7 @@ namespace BL.Database.Dictionaries
 
                 var qry = dbContext.DictionaryDocumentSubjectsSet.AsQueryable();
 
-                qry = DocumentSubjectsGetWhere(ref qry, filter);
+                qry = DocumentSubjectGetWhere(ref qry, filter);
 
                 return qry.Select(x => new InternalDictionaryDocumentSubject
                 {
@@ -963,7 +968,7 @@ namespace BL.Database.Dictionaries
 
                 var qry = dbContext.DictionaryDocumentSubjectsSet.AsQueryable();
 
-                qry = DocumentSubjectsGetWhere(ref qry, filter);
+                qry = DocumentSubjectGetWhere(ref qry, filter);
 
                 return qry.Select(x => new FrontDictionaryDocumentSubject
                 {
@@ -983,37 +988,36 @@ namespace BL.Database.Dictionaries
             {
                 var qry = dbContext.DictionaryDocumentSubjectsSet.AsQueryable();
                 
-                qry = DocumentSubjectsGetWhere(ref qry, filter);
+                qry = DocumentSubjectGetWhere(ref qry, filter);
 
                 var res = qry.Select(x => new FrontDictionaryDocumentSubject
                 {
                     Id = x.Id
                 }).FirstOrDefault();
-                //qry.Select(x => x.Id).FirstOrDefault();
 
-                return res != null;  //!(res == null)   !res.Equals(null) /*&& res?.Count() == 0*/;
+                return res != null;
             }
         }
 
         //TODO Эта  функция может находиться в FilterDictionaryDocumentSubject. Очень удобно: добавляешь параметр и сразу же добавляешь ифчик. У меня упихнуть НЕ получилось из-за пространства имен
-        private static IQueryable<DictionaryDocumentSubjects> DocumentSubjectsGetWhere(ref IQueryable<DictionaryDocumentSubjects> qry, FilterDictionaryDocumentSubject filter)
+        private static IQueryable<DictionaryDocumentSubjects> DocumentSubjectGetWhere(ref IQueryable<DictionaryDocumentSubjects> qry, FilterDictionaryDocumentSubject filter)
         {
             // Условие по ID
-            if (filter.DocumentSubjectId?.Count > 0)
+            if (filter.IDs?.Count > 0)
             {
-                qry = qry.Where(x => filter.DocumentSubjectId.Contains(x.Id));
+                qry = qry.Where(x => filter.IDs.Contains(x.Id));
             }
 
             // Условие по NotContainsId
-            if (filter.NotContainsId?.Count > 0)
+            if (filter.NotContainsIDs?.Count > 0)
             {
-                qry = qry.Where(x => !filter.NotContainsId.Contains(x.Id));
+                qry = qry.Where(x => !filter.NotContainsIDs.Contains(x.Id));
             }
 
             // Условие по Name
             if (!String.IsNullOrEmpty(filter.Name))
             {
-                qry = qry.Where(x => filter.Name == x.Name);
+                qry = qry.Where(x => x.Name.Contains(filter.Name));
             }
 
             // Условие по IsActive
@@ -1022,7 +1026,7 @@ namespace BL.Database.Dictionaries
                 qry = qry.Where(x => filter.IsActive == x.IsActive);
             }
 
-            // Условие по IsActive
+            // Условие по ParentId
             if (filter.ParentId != null)
             {
                 qry = qry.Where(x => filter.ParentId == x.ParentId);
@@ -1301,6 +1305,7 @@ namespace BL.Database.Dictionaries
         }
         #endregion DictionaryLinkTypes
 
+        // Должности
         #region DictionaryPositions
         public BaseDictionaryPosition GetDictionaryPosition(IContext context, int id)
         {
@@ -1453,53 +1458,241 @@ namespace BL.Database.Dictionaries
 
         #endregion DictionaryPositions
 
+        // Журналы регистрации
         #region DictionaryRegistrationJournals
-        public BaseDictionaryRegistrationJournal GetDictionaryRegistrationJournal(IContext context, int id)
+        public int AddDictionaryRegistrationJournal(IContext context, InternalDictionaryRegistrationJournal regJournal)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
-                return dbContext.DictionaryRegistrationJournalsSet.Where(x => x.Id == id)
-                    .Select(x => new BaseDictionaryRegistrationJournal
-                    {
-                        Id = x.Id,
-                        Name = x.Name,
-                        DepartmentId = x.DepartmentId,
-                        Index = x.Index,
-                        NumerationPrefixFormula = x.NumerationPrefixFormula,
-                        PrefixFormula = x.PrefixFormula,
-                        SuffixFormula = x.SuffixFormula,
-                        DirectionCodes = x.DirectionCodes,
-                        LastChangeUserId = x.LastChangeUserId,
-                        LastChangeDate = x.LastChangeDate,
-                        DepartmentName = x.Department.Name
-                    }).FirstOrDefault();
+                 
+                // Не нашел функцию IIf. Знаю, что можно компактнее
+                string s=null;
+
+                if (regJournal.IsIncoming)
+                {
+                    s = s + "1";
+                }
+
+                if (regJournal.IsOutcoming)
+                {
+                    s = s + "2";
+                }
+
+                if (regJournal.IsInternal)
+                {
+                    s = s + "3";
+                }
+                                    
+                var drj = new DictionaryRegistrationJournals
+                {
+                    // pss Перегонка значений DictionaryRegistrationJournals
+                    LastChangeDate = regJournal.LastChangeDate,
+                    LastChangeUserId = regJournal.LastChangeUserId,
+                    IsActive = regJournal.IsActive,
+                    Name = regJournal.Name,
+                    DepartmentId = regJournal.DepartmentId,
+                    Index = regJournal.Index,
+                    DirectionCodes = s,
+                    PrefixFormula = regJournal.PrefixFormula,
+                    NumerationPrefixFormula = regJournal.NumerationPrefixFormula,
+                    SuffixFormula = regJournal.SuffixFormula,
+                };
+                dbContext.DictionaryRegistrationJournalsSet.Add(drj);
+                dbContext.SaveChanges();
+                regJournal.Id = drj.Id;
+                return drj.Id;
             }
         }
 
-        public IEnumerable<BaseDictionaryRegistrationJournal> GetDictionaryRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter)
+        public void UpdateDictionaryRegistrationJournal(IContext context, InternalDictionaryRegistrationJournal regJournal)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                // Не нашел функцию IIf. Знаю, что можно компактнее
+                string s = null;
+
+                if (regJournal.IsIncoming)
+                {
+                    s = s + "1";
+                }
+
+                if (regJournal.IsOutcoming)
+                {
+                    s = s + "2";
+                }
+
+                if (regJournal.IsInternal)
+                {
+                    s = s + "3";
+                }
+
+                var drj = new DictionaryRegistrationJournals
+                {
+                    // pss Перегонка значений DictionaryRegistrationJournals
+                    Id = regJournal.Id,
+                    LastChangeDate = regJournal.LastChangeDate,
+                    LastChangeUserId = regJournal.LastChangeUserId,
+                    IsActive = regJournal.IsActive,
+                    Name = regJournal.Name,
+                    DepartmentId = regJournal.DepartmentId,
+                    Index = regJournal.Index,
+                    DirectionCodes = s,
+                    PrefixFormula = regJournal.PrefixFormula,
+                    NumerationPrefixFormula = regJournal.NumerationPrefixFormula,
+                    SuffixFormula = regJournal.SuffixFormula,
+                };
+
+                dbContext.DictionaryRegistrationJournalsSet.Attach(drj);
+                dbContext.Entry(drj).State = System.Data.Entity.EntityState.Modified;
+                dbContext.SaveChanges();
+            }
+        }
+
+        public void DeleteDictionaryRegistrationJournal(IContext context, InternalDictionaryRegistrationJournal docSubject)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var drj = dbContext.DictionaryRegistrationJournalsSet.FirstOrDefault(x => x.Id == docSubject.Id);
+                if (drj != null)
+                {
+                    dbContext.DictionaryRegistrationJournalsSet.Remove(drj);
+                    dbContext.SaveChanges();
+                }
+            }
+        }
+
+        public InternalDictionaryRegistrationJournal GetInternalDictionaryRegistrationJournal(IContext context, FilterDictionaryRegistrationJournal filter)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
                 var qry = dbContext.DictionaryRegistrationJournalsSet.AsQueryable();
 
-                if (filter.RegistrationJournalId?.Count > 0)
-                {
-                    qry = qry.Where(x => filter.RegistrationJournalId.Contains(x.Id));
-                }
+                qry = RegistrationJournalGetWhere(ref qry, filter);
 
-                return qry.Select(x => new BaseDictionaryRegistrationJournal
+                return qry.Select(x => new InternalDictionaryRegistrationJournal
                 {
+                    // pss Перегонка значений DictionaryRegistrationJournals
                     Id = x.Id,
+                    IsActive = x.IsActive,
+                    Name = x.Name,
+                    DepartmentId = x.DepartmentId,
+                    Index = x.Index,
+                    NumerationPrefixFormula = x.NumerationPrefixFormula,
+                    PrefixFormula = x.PrefixFormula,
+                    SuffixFormula = x.SuffixFormula,
+                    IsIncoming = x.DirectionCodes.Contains("1"),
+                    IsOutcoming = x.DirectionCodes.Contains("2"),
+                    IsInternal = x.DirectionCodes.Contains("3"),
+                    LastChangeUserId = x.LastChangeUserId,
+                    LastChangeDate = x.LastChangeDate
+                }).FirstOrDefault();
+            }
+        }
+
+        public IEnumerable<FrontDictionaryRegistrationJournal> GetDictionaryRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var qry = dbContext.DictionaryRegistrationJournalsSet.AsQueryable();
+
+                qry = RegistrationJournalGetWhere(ref qry, filter);
+                
+                return qry.Select(x => new FrontDictionaryRegistrationJournal
+                {
+                    // pss Перегонка значений DictionaryRegistrationJournals
+                    Id = x.Id,
+                    IsActive = x.IsActive,
                     Name = x.Name,
                     DepartmentId = x.DepartmentId,
                     Index = x.Index,
                     PrefixFormula = x.PrefixFormula,
                     SuffixFormula = x.SuffixFormula,
-                    DirectionCodes = x.DirectionCodes,
+                    IsIncoming = x.DirectionCodes.Contains("1"),
+                    IsOutcoming = x.DirectionCodes.Contains("2"),
+                    IsInternal = x.DirectionCodes.Contains("3"),
                     DepartmentName = x.Department.Name
                 }).ToList();
             }
         }
+
+        // Для использования в коммандах метод CanExecute
+        public bool ExistsDictionaryRegistrationJournal(IContext context, FilterDictionaryRegistrationJournal filter)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var qry = dbContext.DictionaryRegistrationJournalsSet.AsQueryable();
+
+                qry = RegistrationJournalGetWhere(ref qry, filter);
+
+                var res = qry.Select(x => new FrontDictionaryRegistrationJournal
+                {
+                    Id = x.Id
+                }).FirstOrDefault();
+
+                return res != null;
+            }
+        }
+
+        //TODO Эта  функция может находиться в FilterDictionaryRegistrationJournal. Очень удобно: добавляешь параметр и сразу же добавляешь ифчик. У меня упихнуть НЕ получилось из-за пространства имен
+        private static IQueryable<DictionaryRegistrationJournals> RegistrationJournalGetWhere(ref IQueryable<DictionaryRegistrationJournals> qry, FilterDictionaryRegistrationJournal filter)
+        {
+            // Условие по ID
+            if (filter.IDs?.Count > 0)
+            {
+                qry = qry.Where(x => filter.IDs.Contains(x.Id));
+            }
+
+            // Условие по NotContainsId
+            if (filter.NotContainsIDs?.Count > 0)
+            {
+                qry = qry.Where(x => !filter.NotContainsIDs.Contains(x.Id));
+            }
+
+            // Условие по IsActive
+            if (filter.IsActive != null)
+            {
+                qry = qry.Where(x => filter.IsActive == x.IsActive);
+            }
+
+            // Условие по Name
+            if (!String.IsNullOrEmpty(filter.Name))
+            {
+                qry = qry.Where(x => x.Name.Contains(filter.Name));
+            }
+
+            // Условие по Index
+            if (!String.IsNullOrEmpty(filter.Index))
+            {
+                qry = qry.Where(x => x.Index.Contains(filter.Index));
+            }
+
+            // Условие по DepartmentIDs
+            if (filter.DepartmentIDs?.Count > 0)
+            {
+                qry = qry.Where(x => filter.DepartmentIDs.Contains(x.DepartmentId));
+            }
+
+            // Условие по IsIncoming
+            if (filter.IsIncoming != null)
+            {
+                qry = qry.Where(x => x.DirectionCodes.Contains("1"));
+            }
+
+            // Условие по IsOutcoming
+            if (filter.IsOutcoming != null)
+            {
+                qry = qry.Where(x => x.DirectionCodes.Contains("2"));
+            }
+
+            // Условие по IsInternal
+            if (filter.IsInternal != null)
+            {
+                qry = qry.Where(x => x.DirectionCodes.Contains("3"));
+            }
+
+            return qry;
+        }
+
         #endregion DictionaryRegistrationJournals
 
         #region DictionaryResultTypes

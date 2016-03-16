@@ -103,9 +103,9 @@ namespace BL.Logic.DictionaryCore.Interfaces
         #endregion DictionaryPositions
 
         #region DictionaryRegistrationJournals
-        BaseDictionaryRegistrationJournal GetDictionaryRegistrationJournal(IContext context, int id);
+        FrontDictionaryRegistrationJournal GetDictionaryRegistrationJournal(IContext context, int id);
 
-        IEnumerable<BaseDictionaryRegistrationJournal> GetDictionaryRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter);
+        IEnumerable<FrontDictionaryRegistrationJournal> GetDictionaryRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter);
         #endregion DictionaryRegistrationJournals
 
         #region DictionaryResultTypes

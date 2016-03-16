@@ -69,9 +69,6 @@ namespace BL.Database.Dictionaries.Interfaces
         IEnumerable<FrontDictionaryContactType> GetDictionaryContactTypes(IContext context, FilterDictionaryContactType filter);
         #endregion
 
-
-
-
         #region DictionaryDepartments
         BaseDictionaryDepartment GetDictionaryDepartment(IContext context, int id);
 
@@ -96,15 +93,12 @@ namespace BL.Database.Dictionaries.Interfaces
 
         // Типы документов
         #region DictionaryDocumentTypes
-
-        
         void UpdateDictionaryDocumentType(IContext context, InternalDictionaryDocumentType docType);
         void DeleteDictionaryDocumentType(IContext context, InternalDictionaryDocumentType docType);
         int AddDictionaryDocumentType(IContext context, InternalDictionaryDocumentType docType);
         InternalDictionaryDocumentType GetInternalDictionaryDocumentType(IContext context, FilterDictionaryDocumentType filter);
         IEnumerable<FrontDictionaryDocumentType> GetDictionaryDocumentTypes(IContext context, FilterDictionaryDocumentType filter);
-        #endregion
-        
+        #endregion DictionaryDocumentTypes
 
         #region DictionaryEventTypes
         BaseDictionaryEventType GetDictionaryEventType(IContext context, int id);
@@ -131,10 +125,14 @@ namespace BL.Database.Dictionaries.Interfaces
         IEnumerable<InternalDictionaryPositionWithActions> GetDictionaryPositionsWithActions(IContext context, FilterDictionaryPosition filter);
         #endregion DictionaryPositions
 
+        // Журналы регистрации
         #region DictionaryRegistrationJournals
-        BaseDictionaryRegistrationJournal GetDictionaryRegistrationJournal(IContext context, int id);
-
-        IEnumerable<BaseDictionaryRegistrationJournal> GetDictionaryRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter);
+        int AddDictionaryRegistrationJournal(IContext context, InternalDictionaryRegistrationJournal docType);
+        void UpdateDictionaryRegistrationJournal(IContext context, InternalDictionaryRegistrationJournal docType);
+        void DeleteDictionaryRegistrationJournal(IContext context, InternalDictionaryRegistrationJournal docType);
+        bool ExistsDictionaryRegistrationJournal(IContext context, FilterDictionaryRegistrationJournal filter);
+        InternalDictionaryRegistrationJournal GetInternalDictionaryRegistrationJournal(IContext context, FilterDictionaryRegistrationJournal filter);
+        IEnumerable<FrontDictionaryRegistrationJournal> GetDictionaryRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter);
         #endregion DictionaryRegistrationJournals
 
         #region DictionaryResultTypes

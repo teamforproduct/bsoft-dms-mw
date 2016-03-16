@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace BL.Model.DictionaryCore.FrontModel
 {
     /// <summary>
-    /// ОСНОВНОЙ. Справочник тематик документов. 
+    /// Элемент справочника "Тематики документов". 
     /// </summary>
     // 
     public class FrontDictionaryDocumentSubject: ModifyDictionaryDocumentSubject

@@ -80,6 +80,9 @@
     <Compile Include="DictionaryCore\CustomDictionary\ModifyCustomDictionaryTypeCommand.cs" />
     <Compile Include="DictionaryCore\DictionaryCommandFactory.cs" />
     <Compile Include="DictionaryCore\DictionaryService.cs" />
+    <Compile Include="DictionaryCore\RegistrationJournal\AddDictionaryRegistrationJournalCommand.cs" />
+    <Compile Include="DictionaryCore\RegistrationJournal\DeleteDictionaryRegistrationJournalCommand.cs" />
+    <Compile Include="DictionaryCore\RegistrationJournal\ModifyDictionaryRegistrationJournalCommand.cs" />
     <Compile Include="DictionaryCore\DocumentSubject\AddDictionaryDocumentSubjectCommand.cs" />
     <Compile Include="DictionaryCore\DocumentSubject\DeleteDictionaryDocumentSubjectCommand.cs" />
     <Compile Include="DictionaryCore\DocumentSubject\ModifyDictionaryDocumentSubjectCommand.cs" />

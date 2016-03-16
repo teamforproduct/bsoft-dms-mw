@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BL.Database.DBModel.Dictionary
 {
-
     // Класс нативно отображает структуру таблицы DictionaryDocumentSubjects и ее связи (ParentDocumentSubject и ChildDocumentSubjects)
     // Этот класс сгененирован автоматически
     // Виртуальные свойства предписаны спецификацией Entity
