@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace BL.Model.DocumentCore.Filters
 {
@@ -13,9 +14,9 @@ namespace BL.Model.DocumentCore.Filters
         [IgnoreDataMember]
         public int DocumentId { get; set; }
         /// <summary>
-        /// Возвращать ли связанные документы
+        /// Массив ИД документов для отображения ДИПов
         /// </summary>
-        public bool IsShowInfoByLinkDocument { get; set; }
+        public List<int> DocumentsId { get; set; }
        
     }
 }

@@ -51,7 +51,6 @@ namespace BL.Model.DocumentCore.FrontModel
                 IsInWork = model.IsInWork;
 
                 DocumentDate = model.DocumentDate;
-                DateOfControl = model.DateOfControl;
                 //    RegistrationFullNumber = model.RegistrationFullNumber;
 
                 //    EventsCount = model.EventsCount;
@@ -158,10 +157,10 @@ namespace BL.Model.DocumentCore.FrontModel
         public bool IsInWork { get; set; }
 
         public DateTime DocumentDate { get; set; }
-        public DateTime DateOfControl { get; set; }
+       // public DateTime DateOfControl { get; set; }
         public string RegistrationFullNumber { get; set; }
 
-        public int EventsCount { get; set; }
+        public int? EventsCount { get; set; }
         public int WaitOpenCount { get; set; }
         public int WaitOverdueCount { get; set; }
 

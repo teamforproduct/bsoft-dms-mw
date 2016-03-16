@@ -13,9 +13,8 @@ namespace BL.Logic.DocumentCore.Interfaces
         FrontDocument GetDocument(IContext ctx, int documentId, FilterDocumentById filter);
         IEnumerable<BaseSystemUIElement> GetModifyMetaData(IContext cxt, FrontDocument doc);
         object ExecuteAction(EnumDocumentActions act, IContext context, object param);
-        FrontDocumentEventDeteil GetDocumentEvent(IContext ctx, int eventId);
-        IEnumerable<FrontDocumentEventList> GetDocumentEvents(IContext ctx, FilterDocumentEvent filter, UIPaging paging);
-        IEnumerable<FrontDocumentEventList> GetEventsForDocument(IContext ctx, int documentId, UIPaging paging);
-        void MarkDocumentEventsAsRead(IContext ctx, int documentId);
+        FrontDocumentEvent GetDocumentEvent(IContext ctx, int eventId);
+        IEnumerable<FrontDocumentEvent> GetDocumentEvents(IContext ctx, FilterDocumentEvent filter, UIPaging paging);
+        IEnumerable<FrontDocumentEvent> GetEventsForDocument(IContext ctx, int documentId, UIPaging paging);
     }
 }

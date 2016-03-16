@@ -624,30 +624,31 @@ namespace BL.Database.Documents
             }
         }
 
-        public FrontDocumentEventDeteil GetDocumentEvent(IContext ctx, int eventId)
+        public FrontDocumentEvent GetDocumentEvent(IContext ctx, int eventId)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
                 return CommonQueries.GetDocumentEventsQuery(ctx, dbContext).Where(x => x.Id == eventId)
-                    .Select(x => new FrontDocumentEventDeteil
+                    .Select(x => new FrontDocumentEvent
                     {
                         Id = x.Id,
                         DocumentDescription = x.Document.Description,
                         DocumentTypeName = x.Document.TemplateDocument.DocumentType.Name,
+                        DocumentDirectionName = x.Document.TemplateDocument.DocumentDirection.Name,
                         ReadAgentName = x.ReadAgent.Name,
                         ReadDate = x.ReadDate,
                         SourceAgentName = x.SourceAgent.Name,
                         SourcePositionName = x.SourcePosition.Name,
                         TargetPositionName = x.TargetPosition.Name,
-                        SourcePositionExecutorAgentName = x.SourcePosition.ExecutorAgent.Name,
-                        TargetPositionExecutorAgentName = x.TargetPosition.ExecutorAgent.Name,
-                        SourcePositionPhone = "",
-                        TargetPositionPhone = ""
+                        SourcePositionExecutorNowAgentName = x.SourcePosition.ExecutorAgent.Name,
+                        TargetPositionExecutorNowAgentName = x.TargetPosition.ExecutorAgent.Name,
+                        SourcePositionExecutorAgentPhoneNumber = "SourcePositionAgentPhoneNumber", //TODO 
+                        TargetPositionExecutorAgentPhoneNumber = "TargetPositionAgentPhoneNumber", //TODO 
                     }).FirstOrDefault();
             }
         }
 
-        public IEnumerable<FrontDocumentEventList> GetDocumentEvents(IContext ctx, FilterDocumentEvent filter, UIPaging paging)
+        public IEnumerable<FrontDocumentEvent> GetDocumentEvents(IContext ctx, FilterDocumentEvent filter, UIPaging paging)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
@@ -676,34 +677,34 @@ namespace BL.Database.Documents
                         qry = qry.Where(x => x.Description.Contains(filter.Description));
                     }
 
-                    if (filter.EventType.HasValue)
+                    if (filter.EventType?.Count>0)
                     {
-                        qry = qry.Where(x => x.EventTypeId == (int) filter.EventType.Value);
+                        qry = qry.Where(x => filter.EventType.Cast<int>().Contains(x.EventTypeId));
                     }
 
-                    if (filter.Importance.HasValue)
+                    if (filter.Importance?.Count > 0)
                     {
-                        qry = qry.Where(x => x.EventType.ImportanceEventTypeId == (int)filter.Importance.Value);
+                        qry = qry.Where(x => filter.Importance.Cast<int>().Contains(x.EventType.ImportanceEventTypeId) );
                     }
 
-                    if (filter.AgentId.HasValue)
+                    if (filter.AgentId?.Count > 0)
                     {
                         qry =
                             qry.Where(
                                 x =>
-                                    x.TargetAgentId == filter.AgentId.Value || x.SourceAgentId == filter.AgentId.Value ||
-                                    (x.ReadAgentId.HasValue && x.ReadAgentId.Value == filter.AgentId.Value)
-                                    || (x.SourcePositionExecutorAgentId.HasValue && x.SourcePositionExecutorAgentId.Value == filter.AgentId.Value)
-                                    || (x.TargetPositionExecutorAgentId.HasValue && x.TargetPositionExecutorAgentId.Value == filter.AgentId.Value));
+                                    (x.TargetAgentId.HasValue && filter.AgentId.Contains(x.TargetAgentId.Value)) || filter.AgentId.Contains(x.SourceAgentId) ||
+                                    (x.ReadAgentId.HasValue && filter.AgentId.Contains(x.ReadAgentId.Value))
+                                    || (x.SourcePositionExecutorAgentId.HasValue && filter.AgentId.Contains(x.SourcePositionExecutorAgentId.Value ))
+                                    || (x.TargetPositionExecutorAgentId.HasValue && filter.AgentId.Contains(x.TargetPositionExecutorAgentId.Value )));
                     }
 
-                    if (filter.PositionId.HasValue)
+                    if (filter.PositionId?.Count>0)
                     {
                         qry =
                             qry.Where(
                                 x =>
-                                    (x.SourcePositionId.HasValue && x.SourcePositionId.Value == filter.PositionId.Value) ||
-                                    (x.TargetPositionId.HasValue && x.TargetPositionId.Value == filter.PositionId.Value));
+                                    (x.SourcePositionId.HasValue && filter.PositionId.Contains(x.SourcePositionId.Value)) ||
+                                    (x.TargetPositionId.HasValue && filter.PositionId.Contains(x.TargetPositionId.Value)));
                     }
                 }
                 #endregion
@@ -717,40 +718,43 @@ namespace BL.Database.Documents
                             .Take(paging.PageSize);
                 }
 
-                return qry.Select(x => new FrontDocumentEventList
+                return qry.Select(x => new FrontDocumentEvent
                 {
                     Id = x.Id,
                     DocumentId = x.DocumentId,
-                    Task = x.Task,
-                    Description = x.Description,
                     EventTypeName = x.EventType.Name,
                     Date = x.Date,
-                    SourceAgentName = x.SourceAgent.Name,
-                    TargetAgentName = x.TargetAgent.Name,
-                    DocumentDate = x.Document.CreateDate,
-                    DocumentNumber = (!x.Document.IsRegistered ? "#" : "") +
-                                       (x.Document.RegistrationNumber != null
+                    Task = x.Task,
+                    Description = x.Description,
+
+                    SourcePositionExecutorAgentName = x.SourcePositionExecutorAgent.Name,
+                    TargetPositionExecutorAgentName = x.TargetPositionExecutorAgent.Name??x.TargetAgent.Name,
+                    DocumentDate = x.Document.RegistrationDate ?? x.Document.CreateDate,
+                    RegistrationFullNumber = (x.Document.RegistrationNumber != null
                                            ? x.Document.RegistrationNumberPrefix + x.Document.RegistrationNumber +
                                              x.Document.RegistrationNumberSuffix
                                            : "#" + x.Document.Id),
-                    DueDate = null,
+                    DueDate = null, //TODO 
                 }).ToList();
             }
         }
 
-        public IEnumerable<InternalDocumentEvent> MarkDocumentEventsAsReadPrepare(IContext ctx, int documentId)
+        public InternalDocument MarkDocumentEventsAsReadPrepare(IContext ctx, int documentId)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
+                var res = new InternalDocument {Id = documentId };
                 var qry = CommonQueries.GetDocumentEventsQuery(ctx, dbContext).Where(x=>x.DocumentId == documentId 
                 && !x.ReadDate.HasValue
-                && x.TargetPositionId.HasValue
+                && x.TargetPositionId.HasValue && x.TargetPositionId != x.SourcePositionId
                 && ctx.CurrentPositionsIdList.Contains(x.TargetPositionId.Value));
 
-                return qry.Select(x => new InternalDocumentEvent
+                res.Events = qry.Select(x => new InternalDocumentEvent
                 {
                     Id = x.Id
                 }).ToList();
+
+                return res;
             }
         }
 

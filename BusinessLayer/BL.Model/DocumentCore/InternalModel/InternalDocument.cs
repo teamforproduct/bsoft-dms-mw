@@ -49,7 +49,7 @@ namespace BL.Model.DocumentCore.InternalModel
                 IsInWork = model.IsInWork;
 
                 DocumentDate = model.DocumentDate;
-                DateOfControl = model.DateOfControl;
+
                 //RegistrationFullNumber = model.RegistrationFullNumber;
 
                // EventsCount = model.EventsCount;

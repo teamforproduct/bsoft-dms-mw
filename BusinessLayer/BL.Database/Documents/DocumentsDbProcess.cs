@@ -18,7 +18,6 @@ using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.InternalModel;
-using System.Data.Entity.SqlServer;
 
 namespace BL.Database.Documents
 {
@@ -276,8 +275,10 @@ namespace BL.Database.Documents
                 qry = qry.OrderByDescending(x => x.Doc.CreateDate)
                     .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
 
-                var evnt =
+                var newevnt =
                     dbContext.DocumentEventsSet.Join(qry, ev => ev.DocumentId, rs => rs.Doc.Id, (e, r) => new { ev = e })
+                    .Where(x=> !x.ev.ReadDate.HasValue && x.ev.TargetPositionId.HasValue && x.ev.TargetPositionId != x.ev.SourcePositionId
+                             && ctx.CurrentPositionsIdList.Contains(x.ev.TargetPositionId.Value))
                         .GroupBy(g => g.ev.DocumentId)
                         .Select(s => new { DocID = s.Key, EvnCnt = s.Count() }).ToList();
 
@@ -304,9 +305,6 @@ namespace BL.Database.Documents
                     Description = doc.Doc.Description,
                     ExecutorPositionExecutorAgentName = doc.ExecutorPositionExecutorAgentName,
                     ExecutorPositionName = doc.ExecutorPosName,
-                    NewEventCount = 0, //TODO
-                    AttachedFilesCount = 0, 
-                    LinkedDocumentsCount = 0, //TODO
                     WaitOpenCount = 0,//TODO
                     WaitOverdueCount = 0, //TODO
                 });
@@ -323,15 +321,17 @@ namespace BL.Database.Documents
                     //doc.AccessLevelName = doc.Accesses.FirstOrDefault(x => x.AccessLevel == doc.AccessLevel).AccessLevelName;
                 }
 
-                foreach (var x1 in docs.Join(evnt, d => d.Id, e => e.DocID, (d, e) => new { doc = d, ev = e }))
+
+                foreach (var x1 in docs.Join(newevnt, d => d.Id, e => e.DocID, (d, e) => new { doc = d, ev = e }))
                 {
-                    //x1.doc.EventsCount = x1.ev.EvnCnt;
-                    x1.doc.NewEventCount = 0;
+                    x1.doc.NewEventCount = x1.ev.EvnCnt;
                 }
+
                 foreach (var x1 in docs.Join(fls, d => d.Id, e => e.DocID, (d, e) => new { doc = d, ev = e }))
                 {
                     x1.doc.AttachedFilesCount = x1.ev.FileCnt;
                 }
+
                 foreach (var x1 in docs.Join(links, d => d.Id, e => e.DocID, (d, e) => new { doc = d, ev = e }))
                 {
                     x1.doc.LinkedDocumentsCount = x1.ev.LinkCnt;
@@ -350,7 +350,10 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext).FirstOrDefault(x => x.Doc.Id == documentId && ctx.CurrentPositionsIdList.Contains(x.Acc.PositionId));
+                var qry = CommonQueries.GetDocumentQuery(dbContext).Where(x => x.Doc.Id == documentId && ctx.CurrentPositionsIdList.Contains(x.Acc.PositionId)).ToList();
+
+                var doc = qry.FirstOrDefault();
+                var accs = qry.Select(x => x.Acc).ToList();
 
                 if (doc == null)
                 {
@@ -372,8 +375,6 @@ namespace BL.Database.Documents
                     Description = doc.Doc.Description,
                     ExecutorPositionExecutorAgentName = doc.ExecutorPositionExecutorAgentName,
                     ExecutorPositionName = doc.ExecutorPosName,
-                    NewEventCount = 0, //TODO
-                    AttachedFilesCount = 0,
                     LinkedDocumentsCount = 0, //TODO
                     WaitOpenCount = 0,//TODO
                     WaitOverdueCount = 0, //TODO
@@ -403,32 +404,30 @@ namespace BL.Database.Documents
 
                     IsLaunchPlan = doc.Doc.IsLaunchPlan,
 
-                    AccessLevel = (EnumDocumentAccesses)doc.Acc.AccessLevelId,  //TODO для ExecutorPosition
-                    AccessLevelName = doc.AccLevName,                           //TODO для ExecutorPosition
+                    AccessLevel = (EnumDocumentAccesses)accs.Where(x=>x.PositionId == doc.Doc.ExecutorPositionId).Select(x=>x.AccessLevelId).FirstOrDefault(),  
+                    AccessLevelName = qry.Where(x=>x.Acc.PositionId == doc.Doc.ExecutorPositionId).Select(x=>x.AccLevName).FirstOrDefault(),
 
                     TemplateDocumentName = doc.Templ.Name,
                     IsHard = doc.Templ.IsHard,
 
                     LinkId = doc.Doc.LinkId,
-                    IsFavourite = doc.Acc.IsFavourite,  //TODO как в ленте
-                    IsInWork = doc.Acc.IsInWork,        //TODO как в ленте
+                    IsFavourite = accs.Any(x=>x.IsFavourite),
+                    IsInWork = accs.Any(x=>x.IsInWork),
 
-
-                    Accesses = new List<FrontDocumentAccess> //TODO как в ленте
-                    {
+                    Accesses = qry.Select(x=> 
                         new FrontDocumentAccess
                         {
-                            LastChangeDate = doc.Acc.LastChangeDate,
-                            LastChangeUserId = doc.Acc.LastChangeUserId,
-                            IsInWork = doc.Acc.IsInWork,
-                            IsFavourite = doc.Acc.IsFavourite,
-                            PositionId = doc.Acc.PositionId,
-                            AccessLevel = (EnumDocumentAccesses) doc.Acc.AccessLevelId,
-                            AccessLevelName = doc.AccLevName,
-                            Id = doc.Acc.Id,
-                            DocumentId = doc.Acc.DocumentId
+                            LastChangeDate = x.Acc.LastChangeDate,
+                            LastChangeUserId = x.Acc.LastChangeUserId,
+                            IsInWork = x.Acc.IsInWork,
+                            IsFavourite = x.Acc.IsFavourite,
+                            PositionId = x.Acc.PositionId,
+                            AccessLevel = (EnumDocumentAccesses) x.Acc.AccessLevelId,
+                            AccessLevelName = x.AccLevName,
+                            Id = x.Acc.Id,
+                            DocumentId = x.Acc.DocumentId
                         }
-                    },
+                    ).ToList(),
                 };
 
                 var docIds = new List<int> { res.Id };
@@ -438,19 +437,18 @@ namespace BL.Database.Documents
                     res.LinkedDocuments = CommonQueries.GetLinkedDocuments(dbContext, res.LinkId.Value);
                     res.LinkedDocumentsCount = res.LinkedDocuments.Count();
 
-                    if (filter?.IsShowInfoByLinkDocument ?? false)
+                    if (filter?.DocumentsId.Any()??false)
                     {
-                        docIds = res.LinkedDocuments.Select(x => x.Id).ToList();
+                        docIds = filter?.DocumentsId;
                     }
                 }
 
-                //doc.Events = CommonQueries.GetDocumentEvents(dbContext, new FilterDocumentEvent { DocumentId = docIds });
                 res.EventsCount = dbContext.DocumentEventsSet.Count(x => x.DocumentId == res.Id);
-                res.NewEventCount = 0;
-
+                res.NewEventCount = dbContext.DocumentEventsSet.Count(x => x.DocumentId == res.Id && !x.ReadDate.HasValue 
+                && x.TargetPositionId.HasValue && x.TargetPositionId!=x.SourcePositionId
+                && ctx.CurrentPositionsIdList.Contains(x.TargetPositionId.Value));
 
                 res.SendLists = CommonQueries.GetDocumentSendList(dbContext, documentId);
-
 
                 res.SendListStageMax = (res.SendLists == null) || (!res.SendLists.Any()) ? 0 : res.SendLists.Max(x => x.Stage);
 

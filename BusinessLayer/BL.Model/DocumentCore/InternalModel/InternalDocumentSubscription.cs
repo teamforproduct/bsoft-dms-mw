@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BL.Model.Common;
+using BL.Model.Enums;
 
 namespace BL.Model.DocumentCore.InternalModel
 {
@@ -18,5 +19,6 @@ namespace BL.Model.DocumentCore.InternalModel
         public string ChangedHash { get; set; }
         public InternalDocumentEvent SendEvent { get; set; }
         public InternalDocumentEvent DoneEvent { get; set; }
+        public EnumSubscriptionStates SubscriptionStates { get; set; }
     }
 }

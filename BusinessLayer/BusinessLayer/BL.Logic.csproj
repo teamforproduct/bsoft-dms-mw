@@ -73,6 +73,7 @@
     <Compile Include="DictionaryCore\Interfaces\IDictionaryService.cs" />
     <Compile Include="DocumentCore\Commands\AffixSigningDocumentCommand.cs" />
     <Compile Include="DocumentCore\Commands\AcceptResultDocumentCommand.cs" />
+    <Compile Include="DocumentCore\Commands\MarkDocumentEventAsReadCommand.cs" />
     <Compile Include="DocumentCore\Commands\WithdrawSigningDocumentCommand.cs" />
     <Compile Include="DocumentCore\Commands\RejectSigningDocumentCommand.cs" />
     <Compile Include="DocumentCore\Commands\RejectResultDocumentCommand.cs" />
