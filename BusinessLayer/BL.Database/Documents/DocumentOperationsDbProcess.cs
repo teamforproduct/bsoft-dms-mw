@@ -39,8 +39,8 @@ namespace BL.Database.Documents
                 var res = new DocumentActionsModel();
                 res.ActionsList = new Dictionary<int, List<InternalSystemAction>>();
 
-                res.Document = CommonQueries.GetDocumentQuery(dbContext)
-                    .Where(x => x.Doc.Id == documentId && context.CurrentPositionsIdList.Contains(x.Acc.PositionId))
+                res.Document = CommonQueries.GetDocumentQuery(dbContext,context)
+                    .Where(x => x.Doc.Id == documentId)
                     .Select(x => new InternalDocument
                     {
                         Id = x.Doc.Id,
@@ -48,14 +48,12 @@ namespace BL.Database.Documents
                         IsLaunchPlan = x.Doc.IsLaunchPlan,
                         ExecutorPositionId = x.Doc.ExecutorPositionId,
                         LinkId = x.Doc.LinkId,
-                        IsInWork = x.Acc.IsInWork,
-                        IsFavourite = x.Acc.IsFavourite,
                     }).FirstOrDefault();
 
                 if (res.Document != null)
                 {
 
-                    res.Document.Accesses = dbContext.DocumentAccessesSet.Where(x => x.DocumentId == documentId)
+                    res.Document.Accesses = CommonQueries.GetDocumentAccessesesQry(dbContext, res.Document.Id)
                         .Select(x => new InternalDocumentAccess
                         {
                             Id = x.Id,
@@ -64,6 +62,9 @@ namespace BL.Database.Documents
                             IsFavourite = x.IsFavourite,
                         }
                         ).ToList();
+                    res.Document.IsInWork = res.Document.Accesses.Any(x => x.IsInWork);
+                    res.Document.IsFavourite = res.Document.Accesses.Any(x => x.IsFavourite);
+
 
                     res.Document.Events = dbContext.DocumentEventsSet.Where(x => x.DocumentId == documentId)
                         .Select(x => new InternalDocumentEvent
@@ -163,8 +164,8 @@ namespace BL.Database.Documents
                 var res = new DocumentActionsModel();
                 res.ActionsList = new Dictionary<int, List<InternalSystemAction>>();
 
-                res.Document = CommonQueries.GetDocumentQuery(dbContext)
-                    .Where(x => x.Doc.Id == documentId && context.CurrentPositionsIdList.Contains(x.Acc.PositionId))
+                res.Document = CommonQueries.GetDocumentQuery(dbContext, context)
+                    .Where(x => x.Doc.Id == documentId)
                     .Select(x => new InternalDocument
                     {
                         Id = x.Doc.Id,
@@ -246,8 +247,8 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext)
-                    .Where(x => x.Doc.Id == model.DocumentId && context.CurrentPositionsIdList.Contains(x.Acc.PositionId))
+                var doc = CommonQueries.GetDocumentQuery(dbContext, context)
+                    .Where(x => x.Doc.Id == model.DocumentId)
                     .Select(x => new InternalDocument
                     {
                         Id = x.Doc.Id,
@@ -258,7 +259,7 @@ namespace BL.Database.Documents
 
                 if (doc == null) return null;
 
-                var par = CommonQueries.GetDocumentQuery(dbContext)
+                var par = CommonQueries.GetDocumentQuery(dbContext, context)
                     .Where(x => x.Doc.Id == model.ParentDocumentId)
                     .Select(x => new { Id = x.Doc.Id, LinkId = x.Doc.LinkId }).FirstOrDefault();
 
@@ -1002,8 +1003,8 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext)
-                    .Where(x => x.Doc.Id == sendList.DocumentId && context.CurrentPositionsIdList.Contains(x.Acc.PositionId))
+                var doc = CommonQueries.GetDocumentQuery(dbContext, context)
+                    .Where(x => x.Doc.Id == sendList.DocumentId)
                     .Select(x => new InternalDocument
                     {
                         Id = x.Doc.Id
@@ -1033,8 +1034,8 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext)
-                    .Where(x => x.Doc.Id == sendList.DocumentId && context.CurrentPositionsIdList.Contains(x.Acc.PositionId))
+                var doc = CommonQueries.GetDocumentQuery(dbContext, context)
+                    .Where(x => x.Doc.Id == sendList.DocumentId)
                     .Select(x => new InternalDocument
                     {
                         Id = x.Doc.Id

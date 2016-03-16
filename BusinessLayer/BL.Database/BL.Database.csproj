@@ -99,7 +99,6 @@
     <Compile Include="DBModel\Document\DocumentTags.cs" />
     <Compile Include="DBModel\Document\DocumentWaits.cs" />
     <Compile Include="DBModel\InternalModel\DocumentQuery.cs" />
-    <Compile Include="DBModel\InternalModel\FrontDocumentQuery.cs" />
     <Compile Include="DBModel\System\Properties.cs" />
     <Compile Include="DBModel\System\PropertyLinks.cs" />
     <Compile Include="DBModel\System\PropertyValues.cs" />
