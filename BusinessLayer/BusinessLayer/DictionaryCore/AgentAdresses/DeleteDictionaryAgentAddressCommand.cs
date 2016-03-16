@@ -30,7 +30,7 @@ namespace BL.Logic.DictionaryCore.AgentAdresses
 
         public override bool CanExecute()
         {
-            _admin.VerifyAccess(_context, CommandType);
+            _admin.VerifyAccess(_context, CommandType,false,true);
             return true;
         }
 

@@ -32,28 +32,28 @@
         /// <summary>
         /// Добавить контакт
         /// </summary>
-        AddContact,
+        AddContact = 207001,
         /// <summary>
         /// Изменить контакт
         /// </summary>
-        ModifyContact,
+        ModifyContact = 207005,
         /// <summary>
         /// Удалить контакт
         /// </summary>
-        DeleteContact,
+        DeleteContact = 207009,
 
-        AddContactType,
-        ModifyContactType,
-        DeleteContactType,
-        AddAgentAddress,
-        ModifyAgentAddress,
-        DeleteAgentAddress,
+        AddContactType = 205001,
+        ModifyContactType = 205005,
+        DeleteContactType = 205009,
+        AddAgentAddress =208001,
+        ModifyAgentAddress=208005,
+        DeleteAgentAddress=208009,
         AddAgentPerson,
         ModifyAgentPerson,
         DeleteAgentPerson,
-        AddAgent,
-        ModifyAgent,
-        DeleteAgent,
+        AddAgent = 206001,
+        ModifyAgent = 206005,
+        DeleteAgent = 206009,
 
         /// <summary>
         /// Добавить тэг

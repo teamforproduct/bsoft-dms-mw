@@ -5,6 +5,7 @@ using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.DictionaryCore.FilterModel;
+using System.Linq;
 
 namespace BL.Logic.DictionaryCore.Contact
 {
@@ -30,18 +31,19 @@ namespace BL.Logic.DictionaryCore.Contact
         public override bool CanExecute()
         {
             _admin.VerifyAccess(_context, CommandType, false);
-            var spr = _dictDb.GetDictionaryContact(_context, 
+            var spr = _dictDb.GetDictionaryContacts(_context,Model.AgentId, 
                    new FilterDictionaryContact {
                        Value = Model.Value,
                        ContactTypeId = new List<int> { Model.ContactTypeId },
                        AgentId =new List<int> { Model.AgentId }
                    });
-            if (spr != null)
+
+            if (spr.Count() !=0)
             {
                 throw new DictionaryRecordNotUnique();
             }
 
-            _admin.VerifyAccess(_context, CommandType);
+            _admin.VerifyAccess(_context, CommandType,false,true);
             return true;
         }
 

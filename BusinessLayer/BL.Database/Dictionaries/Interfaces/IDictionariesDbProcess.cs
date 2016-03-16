@@ -33,7 +33,7 @@ namespace BL.Database.Dictionaries.Interfaces
         void UpdateDictionaryAgentAddress(IContext context, InternalDictionaryAgentAddress addr);
         void DeleteDictionaryAgentAddress(IContext context, InternalDictionaryAgentAddress addr);
         int AddDictionaryAgentAddress(IContext context, InternalDictionaryAgentAddress addr);
-        IEnumerable<FrontDictionaryAgentAddress> GetDictionaryAgentAddresses(IContext context, FilterDictionaryAgentAddress filter);
+        IEnumerable<FrontDictionaryAgentAddress> GetDictionaryAgentAddresses(IContext context,int agentId, FilterDictionaryAgentAddress filter);
         
         #endregion
 
@@ -60,7 +60,7 @@ namespace BL.Database.Dictionaries.Interfaces
         void UpdateDictionaryContact(IContext context, InternalDictionaryContact contact);
         void DeleteDictionaryContact(IContext context, InternalDictionaryContact contact);
         int AddDictionaryContact(IContext context, InternalDictionaryContact contact);
-        IEnumerable<FrontDictionaryContact> GetDictionaryContacts(IContext context, FilterDictionaryContact filter);
+        IEnumerable<FrontDictionaryContact> GetDictionaryContacts(IContext context, int agentId, FilterDictionaryContact filter);
         #endregion
 
         #region DictionaryContactTypes

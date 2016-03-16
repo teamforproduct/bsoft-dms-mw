@@ -28,13 +28,13 @@ namespace BL.Logic.DictionaryCore.ContactType
 
         public override bool CanExecute()
         {
-            var spr = _dictDb.GetInternalDictionaryContactType(_context, new FilterDictionaryContactType { Name = Model.Name });
+            var spr = _dictDb.GetInternalDictionaryContactType(_context, new FilterDictionaryContactType { Name = Model.Name, IsActive=Model.IsActive });
             if (spr != null)
             {
                 throw new DictionaryRecordNotUnique();
             }
 
-            _admin.VerifyAccess(_context, CommandType);
+            _admin.VerifyAccess(_context, CommandType,false,true);
 
             return true;
         }
@@ -47,7 +47,8 @@ namespace BL.Logic.DictionaryCore.ContactType
                 {
                     Id = Model.Id,
                     Name = Model.Name,
-                    InputMask = Model.InputMask
+                    InputMask = Model.InputMask,
+                    IsActive=Model.IsActive
                 };
                 CommonDocumentUtilities.SetLastChange(_context, newContactType);
                 _dictDb.UpdateDictionaryContactType(_context, newContactType);

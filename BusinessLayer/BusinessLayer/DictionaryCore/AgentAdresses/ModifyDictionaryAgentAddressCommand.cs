@@ -30,19 +30,9 @@ namespace BL.Logic.DictionaryCore.AgentAdresses
 
         public override bool CanExecute()
         {
-            var spr = _dictDb.GetDictionaryAgentAddresses(_context,
-                new FilterDictionaryAgentAddress {
-                    PostCode = Model.PostCode,
-                    Address = Model.Address,
-                    AddressTypeId = new List<int> { Model.AddressTypeId } ,
-                    AgentId = new List<int> { Model.AgentId }
-                    });
-            if (spr != null)
-            {
-                throw new DictionaryRecordNotUnique();
-            }
+           
 
-            _admin.VerifyAccess(_context, CommandType);
+            _admin.VerifyAccess(_context, CommandType,false,true);
 
             return true;
         }
@@ -58,7 +48,8 @@ namespace BL.Logic.DictionaryCore.AgentAdresses
                     AddressTypeID=Model.AddressTypeId,
                     PostCode=Model.PostCode,
                     Address = Model.Address,
-                    IsActive = Model.IsActive
+                    IsActive = Model.IsActive,
+                    Description=Model.Description
                 };
                 CommonDocumentUtilities.SetLastChange(_context, newAddr);
                 _dictDb.UpdateDictionaryAgentAddress(_context, newAddr);

@@ -41,7 +41,7 @@ namespace BL.Logic.DictionaryCore.DocumentType
             {
                 throw new DictionaryRecordNotUnique();
             }
-            _admin.VerifyAccess(_context, CommandType);
+            _admin.VerifyAccess(_context, CommandType,false,true);
             return true;
         }
 

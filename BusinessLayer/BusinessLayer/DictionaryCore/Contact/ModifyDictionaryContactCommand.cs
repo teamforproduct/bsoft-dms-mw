@@ -30,17 +30,8 @@ namespace BL.Logic.DictionaryCore.Contact
 
         public override bool CanExecute()
         {
-            var spr = _dictDb.GetDictionaryContact(_context,
-                new FilterDictionaryContact {
-                    Value = Model.Value,
-                    ContactTypeId = new List<int> { Model.ContactTypeId },
-                    AgentId = new List<int> { Model.AgentId } });
-            if (spr != null)
-            {
-                throw new DictionaryRecordNotUnique();
-            }
 
-            _admin.VerifyAccess(_context, CommandType);
+            _admin.VerifyAccess(_context, CommandType,false,true);
 
             return true;
         }
@@ -52,6 +43,7 @@ namespace BL.Logic.DictionaryCore.Contact
                  
                 var newContact = new InternalDictionaryContact
                 {
+                    Id =Model.Id,
                     AgentId=Model.AgentId,
                     ContactTypeId=Model.ContactTypeId,
                     Value = Model.Value,

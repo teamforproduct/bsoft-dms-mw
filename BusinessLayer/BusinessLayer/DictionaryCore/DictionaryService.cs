@@ -65,9 +65,9 @@ namespace BL.Logic.DictionaryCore
             return _dictDb.GetDictionaryAgentAddress(context, id);
         }
 
-        public IEnumerable<FrontDictionaryAgentAddress> GetDictionaryAgentAddresses(IContext context, FilterDictionaryAgentAddress filter)
+        public IEnumerable<FrontDictionaryAgentAddress> GetDictionaryAgentAddresses(IContext context,int agentId, FilterDictionaryAgentAddress filter)
         {
-            return _dictDb.GetDictionaryAgentAddresses(context, filter);
+            return _dictDb.GetDictionaryAgentAddresses(context, agentId,filter);
         }
         #endregion
 
@@ -104,12 +104,12 @@ namespace BL.Logic.DictionaryCore
         #region DictionaryContacts
         public FrontDictionaryContact GetDictionaryContact(IContext context, int id)
         {
-            return _dictDb.GetDictionaryContacts(context, new FilterDictionaryContact { Id = id }).FirstOrDefault();
+            return _dictDb.GetDictionaryContact(context, new FilterDictionaryContact { Id = id });
         }
 
-        public IEnumerable<FrontDictionaryContact> GetDictionaryContacts(IContext context, FilterDictionaryContact filter)
+        public IEnumerable<FrontDictionaryContact> GetDictionaryContacts(IContext context,int agentId, FilterDictionaryContact filter)
         {
-            return _dictDb.GetDictionaryContacts(context, filter);  
+            return _dictDb.GetDictionaryContacts(context,agentId, filter);  
         }
         #endregion
 

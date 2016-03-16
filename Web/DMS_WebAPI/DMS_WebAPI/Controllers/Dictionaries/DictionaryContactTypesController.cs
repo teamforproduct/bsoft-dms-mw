@@ -59,6 +59,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="id"></param>
         /// <param name="model"></param>
         /// <returns>Измененный запись словаря тип контакта</returns>
+        [HttpPut]
         public IHttpActionResult Put(int id, [FromBody]ModifyDictionaryContactType model)
         {
             model.Id = id;

@@ -30,7 +30,7 @@ namespace BL.Logic.DictionaryCore.ContactType
 
         public override bool CanExecute()
         {
-            _admin.VerifyAccess(_context, CommandType);
+            _admin.VerifyAccess(_context, CommandType,false,true);
             return true;
         }
 
@@ -38,12 +38,12 @@ namespace BL.Logic.DictionaryCore.ContactType
         {
             try
             {
-                var newContactType = new InternalDictionaryDocumentType
+                var newContactType = new InternalDictionaryContactType
                 {
                     Id = Model
 
                 };
-                _dictDb.DeleteDictionaryDocumentType(_context, newContactType);
+                _dictDb.DeleteDictionaryContactType(_context, newContactType);
                 return null;
             }
             catch (Exception ex)

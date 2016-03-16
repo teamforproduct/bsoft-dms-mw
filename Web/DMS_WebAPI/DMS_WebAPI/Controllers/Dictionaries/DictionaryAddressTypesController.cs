@@ -58,7 +58,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="id"></param>
         /// <param name="model"></param>
         /// <returns>Измененный запись словаря типа адреса</returns>
-        public IHttpActionResult Put(int id, [FromBody]ModifyDictionaryAddressType model)
+         public IHttpActionResult Put(int id, [FromBody]ModifyDictionaryAddressType model)
         {
             model.Id = id;
             var cxt = DmsResolver.Current.Get<UserContext>().Get();

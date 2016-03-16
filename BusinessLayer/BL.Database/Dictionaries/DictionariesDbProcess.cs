@@ -93,7 +93,10 @@ namespace BL.Database.Dictionaries
                             Name = y.ContactType.Name,
                             InputMask = y.ContactType.InputMask,
                             IsActive = y.ContactType.IsActive
-                        }
+                        },
+                        Value=y.Contact,
+                        IsActive=y.IsActive,
+                        Description=y.Description
                     }),
                     Addresses = x.AgentAddresses.Select(z => new FrontDictionaryAgentAddress
                     {
@@ -104,7 +107,11 @@ namespace BL.Database.Dictionaries
                             Id = z.AddressType.Id,
                             Name = z.AddressType.Name,
                             IsActive = z.AddressType.IsActive
-                        }
+                        },
+                        PostCode=z.PostCode,
+                        Address=z.Address,
+                        IsActive = z.IsActive,
+                        Description = z.Description
                     })
 
                 })            
@@ -202,6 +209,7 @@ namespace BL.Database.Dictionaries
                 dbContext.DictionaryAgentsSet.Attach(ddt);
                 var entity = dbContext.Entry(ddt);
                 entity.State = System.Data.Entity.EntityState.Modified;
+                dbContext.SaveChanges();
             }
         }
 
@@ -227,7 +235,6 @@ namespace BL.Database.Dictionaries
             {
                 var ddt = new DictionaryAgents
                 {
-                    Id = newAgent.Id,
                     Name = newAgent.Name,
                     ResidentTypeId = newAgent.ResidentTypeId,
                     IsBank = newAgent.IsBank,
@@ -483,13 +490,13 @@ namespace BL.Database.Dictionaries
                 {
                     Id = addr.Id,
                     AgentId=addr.AgentId,
-                    AddressType= new DictionaryAddressTypes { Id = addr.AddressTypeID },
+                    AdressTypeId = addr.AddressTypeID,
                     PostCode=addr.PostCode,
                     Address=addr.Address,
                     Description=addr.Description,
                     LastChangeDate = addr.LastChangeDate,
                     LastChangeUserId = addr.LastChangeUserId,
-                    IsActive = addr.IsActive
+                    IsActive = addr.IsActive,
                 };
   
                 dbContext.DictionaryAgentAddressesSet.Attach(ddt);
@@ -536,20 +543,17 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<FrontDictionaryAgentAddress> GetDictionaryAgentAddresses(IContext context, FilterDictionaryAgentAddress filter)
+        public IEnumerable<FrontDictionaryAgentAddress> GetDictionaryAgentAddresses(IContext context, int agentId,FilterDictionaryAgentAddress filter)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
                 var qry = dbContext.DictionaryAgentAddressesSet.AsQueryable();
 
+                qry = qry.Where(x => x.AgentId == filter.AgentId);
+
                 if (filter.AddressTypeId?.Count > 0)
                 {
                     qry = qry.Where(x => filter.AddressTypeId.Contains(x.AdressTypeId));
-                }
-
-                if (filter.AgentId?.Count > 0)
-                {
-                    qry = qry.Where(x => filter.AgentId.Contains(x.AgentId));
                 }
 
                 if (!String.IsNullOrEmpty(filter.PostCode))
@@ -684,7 +688,7 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(x => x.Name.Contains(filter.Name));
                 }
 
-                if (filter.IsActive != null)
+                if (filter.IsActive.HasValue )
                 {
                     qry = qry.Where(x => x.IsActive == filter.IsActive);
                 }
@@ -744,7 +748,32 @@ namespace BL.Database.Dictionaries
         #region DictionaryContactTypes
         public FrontDictionaryContactType GetInternalDictionaryContactType(IContext context, FilterDictionaryContactType filter)
         {
-            return new FrontDictionaryContactType();
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var qry = dbContext.DictionaryContactTypesSet.AsQueryable();
+
+                if (filter.ContactTypeId?.Count > 0)
+                {
+                    qry = qry.Where(x => filter.ContactTypeId.Contains(x.Id));
+                }
+
+                if (!String.IsNullOrEmpty(filter.Name))
+                {
+                    qry = qry.Where(x => filter.Name == x.Name);
+                }
+
+                if (filter.IsActive != null)
+                {
+                    qry = qry.Where(x => filter.IsActive == x.IsActive);
+                }
+
+                return qry.Select(x => new FrontDictionaryContactType
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    IsActive = x.IsActive
+                }).FirstOrDefault();
+            }
         }
         public void UpdateDictionaryContactType(IContext context, InternalDictionaryContactType contactType)
         {
@@ -811,7 +840,7 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(x => x.Name.Contains(filter.Name));
                 }
 
-                if (filter.IsActive != null)
+                if (filter.IsActive.HasValue)
                 {
                     qry = qry.Where(x => x.IsActive == filter.IsActive);
                 }
@@ -875,10 +904,11 @@ namespace BL.Database.Dictionaries
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
 
-                var ddt = dbContext.DictionaryAgentAddressesSet.FirstOrDefault(x => x.Id == contact.Id);
+                var ddt = dbContext.DictionaryAgentContactsSet.FirstOrDefault(x => x.Id == contact.Id);
                 if (ddt != null)
                 {
-                    dbContext.DictionaryAgentAddressesSet.Remove(ddt);
+                    dbContext.DictionaryAgentContactsSet.Remove(ddt);
+                  
                     dbContext.SaveChanges();
                 }
             }
@@ -903,11 +933,13 @@ namespace BL.Database.Dictionaries
                 return ddt.Id;
             }
         }
-        public IEnumerable<FrontDictionaryContact> GetDictionaryContacts(IContext context, FilterDictionaryContact filter)
+        public IEnumerable<FrontDictionaryContact> GetDictionaryContacts(IContext context, int agentId,FilterDictionaryContact filter)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
                 var qry = dbContext.DictionaryAgentContactsSet.AsQueryable();
+
+                qry = qry.Where(x => x.AgentId==agentId);
 
                 if (filter.ContactTypeId?.Count > 0)
                 {

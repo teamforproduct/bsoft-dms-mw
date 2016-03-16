@@ -27,7 +27,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
         #region DictionaryAgentAdress
         FrontDictionaryAgentAddress GetDictionaryAgentAddress(IContext context, int id);
 
-        IEnumerable<FrontDictionaryAgentAddress> GetDictionaryAgentAddresses(IContext context, FilterDictionaryAgentAddress filter);
+        IEnumerable<FrontDictionaryAgentAddress> GetDictionaryAgentAddresses(IContext context,int agentId, FilterDictionaryAgentAddress filter);
         #endregion
 
         #region DictionaryAddressTypes
@@ -39,7 +39,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
         #region DictionaryContacts
         FrontDictionaryContact GetDictionaryContact(IContext context, int id);
 
-        IEnumerable<FrontDictionaryContact> GetDictionaryContacts(IContext context, FilterDictionaryContact filter);
+        IEnumerable<FrontDictionaryContact> GetDictionaryContacts(IContext context, int agentId,FilterDictionaryContact filter);
         #endregion
 
         #region DictionaryContactTypes

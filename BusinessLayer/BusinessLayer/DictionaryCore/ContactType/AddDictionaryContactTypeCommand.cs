@@ -28,7 +28,7 @@ namespace BL.Logic.DictionaryCore.ContactType
 
         public override bool CanExecute()
         {
-            _admin.VerifyAccess(_context, CommandType, false);
+            _admin.VerifyAccess(_context, CommandType,false,true);
             var spr = _dictDb.GetInternalDictionaryContactType(_context, 
                    new FilterDictionaryContactType { Name = Model.Name });
             if (spr != null)
@@ -36,7 +36,6 @@ namespace BL.Logic.DictionaryCore.ContactType
                 throw new DictionaryRecordNotUnique();
             }
 
-            _admin.VerifyAccess(_context, CommandType);
             return true;
         }
 
@@ -48,7 +47,8 @@ namespace BL.Logic.DictionaryCore.ContactType
                 {
                     Id = Model.Id,
                     Name = Model.Name,
-                    InputMask=Model.InputMask
+                    InputMask=Model.InputMask,
+                    IsActive=Model.IsActive
                 };
                 CommonDocumentUtilities.SetLastChange(_context, newContactType);
                 return _dictDb.AddDictionaryContactType(_context, newContactType);

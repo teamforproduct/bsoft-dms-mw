@@ -31,12 +31,12 @@ namespace BL.Logic.DictionaryCore.DocumentType
 
         public override bool CanExecute()
         {
-            var spr = _dictDb.GetInternalDictionaryAddressType(_context, new FilterDictionaryAddressType { Name = Model.Name });
+            var spr = _dictDb.GetInternalDictionaryAddressType(_context, new FilterDictionaryAddressType { Name = Model.Name, IsActive=Model.IsActive });
             if (spr != null)
             {
                 throw new DictionaryRecordNotUnique();
             }
-            _admin.VerifyAccess(_context, CommandType);
+            _admin.VerifyAccess(_context, CommandType,false,true);
             return true;
         }
 
