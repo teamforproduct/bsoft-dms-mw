@@ -6,6 +6,8 @@ using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.SystemCore;
+using System.Collections.Generic;
+
 
 namespace BL.Logic.DictionaryCore.DocumentType
 {
@@ -31,8 +33,16 @@ namespace BL.Logic.DictionaryCore.DocumentType
 
         public override bool CanExecute()
         {
-            var spr = _dictDb.GetInternalDictionaryAddressType(_context, new FilterDictionaryAddressType { Name = Model.Name });
-            if (spr != null)
+            // Находим запись с таким-же именем в этой-же папке
+            // Устно договорились НЕ упроцедуривать new FilterDictionaryDocumentSubject { Name = Model.Name, ParentId = Model.ParentId, NotDocumentSubjectId = new List<int> { Model.Id }} в Modify и Add коммандах.
+            
+
+            //var spr = _dictDb.GetDictionaryDocumentSubjects(_context, new FilterDictionaryDocumentSubject { Name = Model.Name, ParentId = Model.ParentId, NotContainsId = new List<int> {Model.Id}}) ;
+            // если запрос пуст - то лист все равно будет создан, но пустой
+            // if (spr != null && spr?.Count() == 0)
+
+
+            if (_dictDb.ExistsDictionaryDocumentSubject(_context, new FilterDictionaryDocumentSubject { Name = Model.Name, ParentId = Model.ParentId, NotContainsId = new List<int> { Model.Id } }))
             {
                 throw new DictionaryRecordNotUnique();
             }
@@ -44,13 +54,10 @@ namespace BL.Logic.DictionaryCore.DocumentType
         {
             try
             {
-                var dds = new InternalDictionaryDocumentSubject
-                {
-                    Id = Model.Id,
-                    Name = Model.Name,
-                    IsActive=Model.IsActive
-                };
-                CommonDocumentUtilities.SetLastChange(_context, dds);
+                var dds = new InternalDictionaryDocumentSubject();
+
+                CommonDictionaryUtilities.DocumentSubjectModifyToInternal(_context, Model, dds);
+
                 _dictDb.UpdateDictionaryDocumentSubject(_context, dds);
             }
             catch (DictionaryRecordWasNotFound)

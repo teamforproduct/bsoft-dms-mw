@@ -32,8 +32,9 @@ namespace BL.Logic.DictionaryCore.DocumentType
 
         public override bool CanExecute()
         {
-            var spr = _dictDb.GetDictionaryDocumentSubjects(_context, new FilterDictionaryDocumentSubject { Name = Model.Name });
-            if (spr != null)
+            // Находим запись с таким-же именем в этой-же папке
+            //var spr = _dictDb.GetDictionaryDocumentSubjects(_context, new FilterDictionaryDocumentSubject { Name = Model.Name, ParentId = Model.ParentId });
+            if (_dictDb.ExistsDictionaryDocumentSubject(_context, new FilterDictionaryDocumentSubject { Name = Model.Name, ParentId = Model.ParentId }))
             {
                 throw new DictionaryRecordNotUnique();
             }
@@ -45,13 +46,10 @@ namespace BL.Logic.DictionaryCore.DocumentType
         {
             try
             {
-                var dds = new InternalDictionaryDocumentSubject
-                {
-                    Name = Model.Name,
-                    IsActive=Model.IsActive,
-                    ParentId = Model.ParentId
-                };
-                CommonDocumentUtilities.SetLastChange(_context, dds);
+                var dds = new InternalDictionaryDocumentSubject();
+
+                CommonDictionaryUtilities.DocumentSubjectModifyToInternal(_context, Model, dds);
+
                 return _dictDb.AddDictionaryDocumentSubject(_context, dds);
             }
             catch (Exception ex)

@@ -16,5 +16,11 @@ namespace BL.Model.DictionaryCore.FilterModel
         public bool? IsActive { get; set; }
 
         public int? ParentId { get; set; }
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        public List<int> NotContainsId { get; set; }
+
     }
 }

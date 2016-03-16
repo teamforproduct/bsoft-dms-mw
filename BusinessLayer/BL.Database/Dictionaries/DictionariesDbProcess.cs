@@ -1,18 +1,18 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using BL.Database.DatabaseContext;
-using BL.Model.DictionaryCore;
-using BL.Database.Dictionaries.Interfaces;
-using BL.Model.Enums;
-using System;
-using BL.CrossCutting.Helpers;
+﻿using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
+using BL.Database.DatabaseContext;
 using BL.Database.DBModel.Dictionary;
+using BL.Database.Dictionaries.Interfaces;
 using BL.Model.AdminCore;
+using BL.Model.DictionaryCore;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.InternalModel;
+using BL.Model.Enums;
 using BL.Model.Exception;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BL.Database.Dictionaries
 {
@@ -916,7 +916,6 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
-
                 var ddt = dbContext.DictionaryDocumentSubjectsSet.FirstOrDefault(x => x.Id == docSubject.Id);
                 if (ddt != null)
                 {
@@ -926,7 +925,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public FrontDictionaryDocumentSubject GetDictionaryDocumentSubject(IContext context, int id)
+        public InternalDictionaryDocumentSubject GetInternalDictionaryDocumentSubject(IContext context, FilterDictionaryDocumentSubject filter)
         {
 
             // Устно договорились, что функция для возврата одного элемента возвращает параметры только конкретного элемена без учета родителя и потомков.
@@ -934,25 +933,20 @@ namespace BL.Database.Dictionaries
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
 
-                  
-                return dbContext.DictionaryDocumentSubjectsSet.Where(x => x.Id == id)
-                        .Select(x => new FrontDictionaryDocumentSubject
-                        {
-                            Id = x.Id,
-                            ParentId = x.ParentId,
-                            Name = x.Name,
-                            ParentDocumentSubjectName = x.ParentDocumentSubject.Name
-                            //,
-                            //ChildDocumentSubjects =
-                            //    x.ChildDocumentSubjects.Select(y => new FrontDictionaryDocumentSubject
-                            //    {
-                            //        Id = y.Id,
-                            //        ParentId = y.ParentId,
-                            //        Name = y.Name,
-                            //        ParentDocumentSubjectName = y.ParentDocumentSubject.Name,
+                var qry = dbContext.DictionaryDocumentSubjectsSet.AsQueryable();
 
-                            //    })
-                        }).FirstOrDefault();
+                qry = DocumentSubjectsGetWhere(ref qry, filter);
+
+                return qry.Select(x => new InternalDictionaryDocumentSubject
+                {
+                    Id = x.Id,
+                    ParentId = x.ParentId,
+                    IsActive = x.IsActive,
+                    Name = x.Name,
+                    LastChangeDate = x.LastChangeDate,
+                    LastChangeUserId = x.LastChangeUserId
+                }).FirstOrDefault();
+
             }
         }
 
@@ -965,31 +959,11 @@ namespace BL.Database.Dictionaries
 
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
+                //IQueryable<DictionaryDocumentSubjects> qry=
+
                 var qry = dbContext.DictionaryDocumentSubjectsSet.AsQueryable();
 
-                // Условие по ID
-                if (filter.DocumentSubjectId?.Count > 0)
-                {
-                    qry = qry.Where(x => filter.DocumentSubjectId.Contains(x.Id));
-                }
-
-                // Условие по Name
-                if (!String.IsNullOrEmpty(filter.Name))
-                {
-                    qry = qry.Where(x => filter.Name == x.Name);
-                }
-
-                // Условие по IsActive
-                if (filter.IsActive != null)
-                {
-                    qry = qry.Where(x => filter.IsActive == x.IsActive);
-                }
-
-                // Условие по IsActive
-                if (filter.ParentId != null)
-                {
-                    qry = qry.Where(x => filter. ParentId == x.ParentId );
-                }
+                qry = DocumentSubjectsGetWhere(ref qry, filter);
 
                 return qry.Select(x => new FrontDictionaryDocumentSubject
                 {
@@ -1001,8 +975,65 @@ namespace BL.Database.Dictionaries
                 }).ToList();
             }
         }
+
+        // Для использования в коммандах метод CanExecute
+        public bool ExistsDictionaryDocumentSubject(IContext context, FilterDictionaryDocumentSubject filter)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var qry = dbContext.DictionaryDocumentSubjectsSet.AsQueryable();
+                
+                qry = DocumentSubjectsGetWhere(ref qry, filter);
+
+                var res = qry.Select(x => new FrontDictionaryDocumentSubject
+                {
+                    Id = x.Id
+                }).FirstOrDefault();
+                //qry.Select(x => x.Id).FirstOrDefault();
+
+                return res != null;  //!(res == null)   !res.Equals(null) /*&& res?.Count() == 0*/;
+            }
+        }
+
+        //TODO Эта  функция может находиться в FilterDictionaryDocumentSubject. Очень удобно: добавляешь параметр и сразу же добавляешь ифчик. У меня упихнуть НЕ получилось из-за пространства имен
+        private static IQueryable<DictionaryDocumentSubjects> DocumentSubjectsGetWhere(ref IQueryable<DictionaryDocumentSubjects> qry, FilterDictionaryDocumentSubject filter)
+        {
+            // Условие по ID
+            if (filter.DocumentSubjectId?.Count > 0)
+            {
+                qry = qry.Where(x => filter.DocumentSubjectId.Contains(x.Id));
+            }
+
+            // Условие по NotContainsId
+            if (filter.NotContainsId?.Count > 0)
+            {
+                qry = qry.Where(x => !filter.NotContainsId.Contains(x.Id));
+            }
+
+            // Условие по Name
+            if (!String.IsNullOrEmpty(filter.Name))
+            {
+                qry = qry.Where(x => filter.Name == x.Name);
+            }
+
+            // Условие по IsActive
+            if (filter.IsActive != null)
+            {
+                qry = qry.Where(x => filter.IsActive == x.IsActive);
+            }
+
+            // Условие по IsActive
+            if (filter.ParentId != null)
+            {
+                qry = qry.Where(x => filter.ParentId == x.ParentId);
+            }
+
+            return qry;
+        }
+
         #endregion DictionaryDocumentSubjects
 
+        // Типы документов
         #region DictionaryDocumentTypes
         public void UpdateDictionaryDocumentType(IContext context, InternalDictionaryDocumentType docType)
         {
@@ -2123,6 +2154,8 @@ namespace BL.Database.Dictionaries
                 return items;
             }
         }
+
+        
         #endregion CustomDictionaries
     }
 }

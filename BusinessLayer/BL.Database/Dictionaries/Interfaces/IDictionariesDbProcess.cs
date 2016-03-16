@@ -89,20 +89,19 @@ namespace BL.Database.Dictionaries.Interfaces
         int AddDictionaryDocumentSubject(IContext context, InternalDictionaryDocumentSubject docType);
         void UpdateDictionaryDocumentSubject(IContext context, InternalDictionaryDocumentSubject docType);
         void DeleteDictionaryDocumentSubject(IContext context, InternalDictionaryDocumentSubject docType);
-        
-        FrontDictionaryDocumentSubject GetDictionaryDocumentSubject(IContext context, int id);
-
+        bool ExistsDictionaryDocumentSubject(IContext context, FilterDictionaryDocumentSubject filter);
+        InternalDictionaryDocumentSubject GetInternalDictionaryDocumentSubject(IContext context, FilterDictionaryDocumentSubject filter);
         IEnumerable<FrontDictionaryDocumentSubject> GetDictionaryDocumentSubjects(IContext context, FilterDictionaryDocumentSubject filter);
         #endregion DictionaryDocumentSubjects
 
         // Типы документов
         #region DictionaryDocumentTypes
 
-        InternalDictionaryDocumentType GetInternalDictionaryDocumentType(IContext context,
-            FilterDictionaryDocumentType filter);
+        
         void UpdateDictionaryDocumentType(IContext context, InternalDictionaryDocumentType docType);
         void DeleteDictionaryDocumentType(IContext context, InternalDictionaryDocumentType docType);
         int AddDictionaryDocumentType(IContext context, InternalDictionaryDocumentType docType);
+        InternalDictionaryDocumentType GetInternalDictionaryDocumentType(IContext context, FilterDictionaryDocumentType filter);
         IEnumerable<FrontDictionaryDocumentType> GetDictionaryDocumentTypes(IContext context, FilterDictionaryDocumentType filter);
         #endregion
         

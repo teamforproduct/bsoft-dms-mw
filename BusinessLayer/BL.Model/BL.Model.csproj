@@ -52,7 +52,7 @@
     <Compile Include="DictionaryCore\FrontModel\FrontCustomDictionary.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontCustomDictionaryType.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAddressType.cs" />
-	<Compile Include="DictionaryCore\FrontModel\FrontDictionaryDocumentSubject.cs" />
+    <Compile Include="DictionaryCore\FrontModel\FrontDictionaryDocumentSubject.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgent.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentAddress.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentType.cs" />
@@ -62,7 +62,7 @@
     <Compile Include="DictionaryCore\IncomingModel\ModifyCustomDictionary.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyCustomDictionaryType.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAddressType.cs" />
-	<Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryDocumentSubject.cs" />
+    <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryDocumentSubject.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgent.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentAddress.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentPerson.cs" />
@@ -109,7 +109,6 @@
     <Compile Include="DictionaryCore\BaseDictionaryPosition.cs" />
     <Compile Include="DictionaryCore\BaseDictionaryImportanceEventType.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryDocumentType.cs" />
-    <Compile Include="DictionaryCore\BaseDictionaryDocumentSubject.cs" />
     <Compile Include="DictionaryCore\BaseDictionaryDocumentDirection.cs" />
     <Compile Include="DictionaryCore\BaseDictionaryDepartment.cs" />
     <Compile Include="DictionaryCore\BaseDictionaryCompany.cs" />

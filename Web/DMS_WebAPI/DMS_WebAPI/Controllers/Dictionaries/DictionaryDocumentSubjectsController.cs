@@ -45,7 +45,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// Добавление тематики документов
         /// </summary>
         /// <param name="model">ModifyDictionaryDocumentSubject</param>
-        /// <returns>Измененный запись словаря типа документа</returns>
+        /// <returns> Запись словаря тематики документов</returns>
         public IHttpActionResult Post([FromBody]ModifyDictionaryDocumentSubject model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
@@ -58,7 +58,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="id">int</param>
         /// <param name="model">ModifyDictionaryDocumentSubject</param>
-        /// <returns>Измененный запись словаря типа документа</returns>
+        /// <returns>Запись словаря тематики документов</returns>
         public IHttpActionResult Put(int id, [FromBody]ModifyDictionaryDocumentSubject model)
         {
 

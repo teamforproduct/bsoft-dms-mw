@@ -1,4 +1,5 @@
 ﻿using BL.Model.Common;
+using BL.Model.DictionaryCore.IncomingModel;
 
 namespace BL.Model.DictionaryCore.InternalModel
 {
@@ -7,6 +8,7 @@ namespace BL.Model.DictionaryCore.InternalModel
     /// </summary>
     public class InternalDictionaryDocumentSubject :  LastChangeInfo
     {
+        
         /// <summary>
         /// ID
         /// </summary>
@@ -26,5 +28,6 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// Ссылка на родителя.
         /// </summary>
         public int? ParentId { get; set; }
+
     }
 }
