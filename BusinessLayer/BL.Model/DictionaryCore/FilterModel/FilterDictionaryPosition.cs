@@ -19,5 +19,6 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// Массив ИД должностей для проверки субординации
         /// </summary>
         public List<int> SubordinatedPositions { get; set; }
+        public List<int> NotContainsId { get; set; }
     }
 }

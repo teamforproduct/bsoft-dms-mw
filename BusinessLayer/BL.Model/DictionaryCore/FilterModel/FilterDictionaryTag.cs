@@ -8,5 +8,6 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// Массив ИД тегов
         /// </summary>
         public List<int> TagId { get; set; }
+        public List<int> NotContainsId { get; set; }
     }
 }

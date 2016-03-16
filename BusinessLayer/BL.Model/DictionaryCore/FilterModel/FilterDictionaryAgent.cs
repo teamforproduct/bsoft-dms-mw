@@ -26,7 +26,7 @@ namespace BL.Model.DictionaryCore.FilterModel
         public bool? IsCompany { get; set; }
         public bool? IsEmployee { get; set; }
         public bool? IsBank { get; set; }
-        
-        
+        public List<int> NotContainsId { get; set; }
+
     }
 }
