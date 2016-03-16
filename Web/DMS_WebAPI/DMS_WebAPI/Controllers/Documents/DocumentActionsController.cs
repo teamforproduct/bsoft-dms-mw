@@ -442,7 +442,6 @@ namespace DMS_WebAPI.Controllers.Documents
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            //TODO change
             docProc.ExecuteAction(EnumDocumentActions.MarkDocumentEventAsRead, cxt, id);
             timeDB.Stop();
 

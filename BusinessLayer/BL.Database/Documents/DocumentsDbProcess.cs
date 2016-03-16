@@ -97,7 +97,6 @@ namespace BL.Database.Documents
 
         public IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging)
         {
-            //TODO OPTIMIZE
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
 
@@ -290,6 +289,17 @@ namespace BL.Database.Documents
                 var links = qry.GroupJoin(dbContext.DocumentsSet.Where(x => x.LinkId.HasValue), dl => dl.Doc.LinkId, d => d.LinkId,
                                             (dl, ds) => new { DocID = dl.Doc.Id, LinkCnt = ds.Count() }).ToList();
 
+                var cnt_weits =
+                    CommonQueries.GetDocumentWaitsQuery(dbContext, ctx).Where(x => !x.OffEventId.HasValue)
+                    .Join(qry, w=>w.DocumentId, rs => rs.Doc.Id, (w, r) => new { wt = w })
+                        .GroupBy(x => x.wt.DocumentId)
+                        .Select(x => new
+                        {
+                            DocId = x.Key,
+                            OpenWaits = x.Count(),
+                            Overdue = x.Count(s => s.wt.DueDate.HasValue && s.wt.DueDate.Value < DateTime.Now)
+                        }).ToList();
+
                 var res = qry.Select(doc => new FrontDocument
                 {
                     Id = doc.Doc.Id,
@@ -305,8 +315,6 @@ namespace BL.Database.Documents
                     Description = doc.Doc.Description,
                     ExecutorPositionExecutorAgentName = doc.ExecutorPositionExecutorAgentName,
                     ExecutorPositionName = doc.ExecutorPosName,
-                    WaitOpenCount = 0,//TODO
-                    WaitOverdueCount = 0, //TODO
                 });
 
                 var docs = res.ToList();
@@ -321,6 +329,11 @@ namespace BL.Database.Documents
                     //doc.AccessLevelName = doc.Accesses.FirstOrDefault(x => x.AccessLevel == doc.AccessLevel).AccessLevelName;
                 }
 
+                foreach (var x1 in docs.Join(cnt_weits, d => d.Id, e => e.DocId, (d, e) => new { doc = d, ev = e }))
+                {
+                    x1.doc.WaitOpenCount = x1.ev.OpenWaits;
+                    x1.doc.WaitOverdueCount = x1.ev.Overdue;
+                }
 
                 foreach (var x1 in docs.Join(newevnt, d => d.Id, e => e.DocID, (d, e) => new { doc = d, ev = e }))
                 {
@@ -357,7 +370,8 @@ namespace BL.Database.Documents
                 {
                     throw new DocumentNotFoundOrUserHasNoAccess();
                 }
-                var accs = CommonQueries.GetDocumentAccesses(ctx, dbContext).Where(x => x.DocumentId == doc.Doc.Id).ToList();
+                var accs =
+                    CommonQueries.GetDocumentAccesses(ctx, dbContext).Where(x => x.DocumentId == doc.Doc.Id).ToList();
 
                 var res = new FrontDocument
                 {
@@ -365,20 +379,16 @@ namespace BL.Database.Documents
                     DocumentDirectionName = doc.DirName,
                     DocumentTypeName = doc.DocTypeName,
                     RegistrationFullNumber =
-                   (doc.Doc.RegistrationNumber != null
-                       ? doc.Doc.RegistrationNumberPrefix + doc.Doc.RegistrationNumber +
-                         doc.Doc.RegistrationNumberSuffix
-                       : "#" + doc.Doc.Id),
+                        (doc.Doc.RegistrationNumber != null
+                            ? doc.Doc.RegistrationNumberPrefix + doc.Doc.RegistrationNumber +
+                              doc.Doc.RegistrationNumberSuffix
+                            : "#" + doc.Doc.Id),
                     DocumentDate = doc.Doc.RegistrationDate ?? doc.Doc.CreateDate,
                     IsRegistered = doc.Doc.IsRegistered,
                     Description = doc.Doc.Description,
                     ExecutorPositionExecutorAgentName = doc.ExecutorPositionExecutorAgentName,
                     ExecutorPositionName = doc.ExecutorPosName,
-                    EventsCount = 0,
-                    NewEventCount = 0,
                     LinkedDocumentsCount = 0, //TODO
-                    WaitOpenCount = 0,//TODO
-                    WaitOverdueCount = 0, //TODO
 
                     TemplateDocumentId = doc.Doc.TemplateDocumentId,
                     DocumentSubjectId = doc.Doc.DocumentSubjectId,
@@ -405,8 +415,14 @@ namespace BL.Database.Documents
 
                     IsLaunchPlan = doc.Doc.IsLaunchPlan,
 
-                    AccessLevel = accs.Where(x => x.PositionId == doc.Doc.ExecutorPositionId).Select(x => x.AccessLevel).FirstOrDefault(),
-                    AccessLevelName = accs.Where(x => x.PositionId == doc.Doc.ExecutorPositionId).Select(x => x.AccessLevelName).FirstOrDefault(),
+                    AccessLevel =
+                        accs.Where(x => x.PositionId == doc.Doc.ExecutorPositionId)
+                            .Select(x => x.AccessLevel)
+                            .FirstOrDefault(),
+                    AccessLevelName =
+                        accs.Where(x => x.PositionId == doc.Doc.ExecutorPositionId)
+                            .Select(x => x.AccessLevelName)
+                            .FirstOrDefault(),
 
                     TemplateDocumentName = doc.Templ.Name,
                     IsHard = doc.Templ.IsHard,
@@ -418,7 +434,7 @@ namespace BL.Database.Documents
                     Accesses = accs,
                 };
 
-                var docIds = new List<int> { res.Id };
+                var docIds = new List<int> {res.Id};
 
                 if (res.LinkId.HasValue)
                 {
@@ -429,6 +445,22 @@ namespace BL.Database.Documents
                     {
                         docIds = filter?.DocumentsId;
                     }
+                }
+
+                var cnt_weits =
+                    CommonQueries.GetDocumentWaitsQuery(dbContext, ctx, res.Id).Where(x => !x.OffEventId.HasValue)
+                        .GroupBy(x => x.DocumentId)
+                        .Select(x => new
+                        {
+                            DocId = x.Key,
+                            OpenWaits = x.Count(),
+                            Overdue = x.Count(s => s.DueDate.HasValue && s.DueDate.Value < DateTime.Now)
+                        }).FirstOrDefault();
+
+                if (cnt_weits != null)
+                {
+                    res.WaitOpenCount = cnt_weits.OpenWaits;
+                    res.WaitOverdueCount = cnt_weits.Overdue;
                 }
 
                 //select only events, where sourceposition or target position are in user's current positions luist
@@ -689,7 +721,7 @@ namespace BL.Database.Documents
                 if (doc == null) return null;
 
 
-                doc.DocumentFiles = CommonQueries.GetInternalDocumentFiles(dbContext, doc.Id); //TODO к Сергею OPTIMIZE!!!
+                doc.DocumentFiles = CommonQueries.GetInternalDocumentFiles(dbContext, doc.Id); 
 
                 return doc;
             }

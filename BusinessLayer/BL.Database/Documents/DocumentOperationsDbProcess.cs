@@ -719,7 +719,11 @@ namespace BL.Database.Documents
                             .Take(paging.PageSize);
                 }
 
-                return qry.Select(x => new FrontDocumentEvent
+                var ddate = dbContext.DocumentWaitsSet.Join(qry, w => w.OnEventId, e => e.Id, (w, e) => new {wt = w})
+                    .Where(x => !x.wt.OffEventId.HasValue)
+                    .Select(x => new {evtId = x.wt.OnEventId, x.wt.DueDate}).ToList();
+
+                var res =  qry.Select(x => new FrontDocumentEvent
                 {
                     Id = x.Id,
                     DocumentId = x.DocumentId,
@@ -735,8 +739,15 @@ namespace BL.Database.Documents
                                            ? x.Document.RegistrationNumberPrefix + x.Document.RegistrationNumber +
                                              x.Document.RegistrationNumberSuffix
                                            : "#" + x.Document.Id),
-                    DueDate = null, //TODO 
+                    DueDate = null,
                 }).ToList();
+
+                foreach (var el in res.Join(ddate, r=>r.Id, d=>d.evtId, (r,d)=>new {r,d}))
+                {
+                    el.r.DueDate = el.d.DueDate;
+                }
+
+                return res;
             }
         }
 
@@ -962,7 +973,6 @@ namespace BL.Database.Documents
 
         public void ModifyDocumentTags(IContext context, InternalDocumentTag model)
         {
-            // TODO к Сергею проверить нужно ли разнести этот метод
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
                 var dictionaryTags = dbContext.DictionaryTagsSet
