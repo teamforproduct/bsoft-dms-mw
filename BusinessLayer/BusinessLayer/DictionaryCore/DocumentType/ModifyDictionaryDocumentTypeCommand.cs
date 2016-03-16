@@ -28,13 +28,14 @@ namespace BL.Logic.DictionaryCore.DocumentType
 
         public override bool CanExecute()
         {
+
+            _admin.VerifyAccess(_context, CommandType, false);
+
             var spr = _dictDb.GetInternalDictionaryDocumentType(_context, new FilterDictionaryDocumentType { Name = Model.Name });
             if (spr != null)
             {
                 throw new DictionaryRecordNotUnique();
             }
-
-            _admin.VerifyAccess(_context, CommandType);
 
             return true;
         }

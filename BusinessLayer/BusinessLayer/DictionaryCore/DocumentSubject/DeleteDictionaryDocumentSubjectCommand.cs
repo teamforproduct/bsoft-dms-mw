@@ -2,15 +2,16 @@
 using BL.Database.Dictionaries.Interfaces;
 using BL.Logic.Common;
 using BL.Model.DictionaryCore.InternalModel;
+
 using BL.Model.Exception;
 using BL.Model.SystemCore;
 
 namespace BL.Logic.DictionaryCore.DocumentType
 {
-    public class DeleteDictionaryDocumentTypeCommand : BaseDictionaryCommand
-   
+    public class DeleteDictionaryDocumentSubjectCommand : BaseDictionaryCommand
+
     {
-       
+      
         private int Model
         {
             get
@@ -39,12 +40,12 @@ namespace BL.Logic.DictionaryCore.DocumentType
         {
             try
             {
-                var newDocType = new InternalDictionaryDocumentType
+                var dds = new InternalDictionaryDocumentSubject
                 {
                     Id = Model
-                  
+
                 };
-                _dictDb.DeleteDictionaryDocumentType(_context, newDocType);
+                _dictDb.DeleteDictionaryDocumentSubject(_context, dds);
                 return null;
             }
             catch (Exception ex)

@@ -119,6 +119,20 @@ namespace BL.Logic.DictionaryCore
                 case EnumDictionaryActions.DeleteTag:
                     return null;
                     break;
+
+                // Тематики документов
+                #region DictionaryDocumentSubjects
+                case EnumDictionaryActions.AddDocumentSubject:
+                    cmd = DmsResolver.Current.Get<AddDictionaryDocumentSubjectCommand>();
+                    break;
+                case EnumDictionaryActions.ModifyDocumentSubject:
+                    cmd = DmsResolver.Current.Get<ModifyDictionaryDocumentSubjectCommand>();
+                    break;
+                case EnumDictionaryActions.DeleteDocumentSubject:
+                    cmd = DmsResolver.Current.Get<DeleteDictionaryDocumentSubjectCommand>();
+                    break;
+                #endregion DictionaryDocumentSubjects
+
                 default:
                     throw new CommandNotDefinedError();
             }

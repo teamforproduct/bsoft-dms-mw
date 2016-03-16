@@ -155,13 +155,13 @@ namespace BL.Logic.DictionaryCore
         #endregion DictionaryDepartments
 
         #region DictionaryDocumentSubjects
-        public BaseDictionaryDocumentSubject GetDictionaryDocumentSubject(IContext context, int id)
+        public FrontDictionaryDocumentSubject GetDictionaryDocumentSubject(IContext context, int id)
         {
 
-            return _dictDb.GetDictionaryDocumentSubject(context, id);
+            return _dictDb.GetDictionaryDocumentSubjects(context, new FilterDictionaryDocumentSubject {DocumentSubjectId = new List<int> {id}}).FirstOrDefault();
         }
 
-        public IEnumerable<BaseDictionaryDocumentSubject> GetDictionaryDocumentSubjects(IContext context, FilterDictionaryDocumentSubject filter)
+        public IEnumerable<FrontDictionaryDocumentSubject> GetDictionaryDocumentSubjects(IContext context, FilterDictionaryDocumentSubject filter)
         {
 
             return _dictDb.GetDictionaryDocumentSubjects(context, filter);
@@ -180,7 +180,7 @@ namespace BL.Logic.DictionaryCore
             return _dictDb.GetDictionaryDocumentTypes(context, filter);
         }
 
-        #endregion DictionaryDocumentSubjects
+        #endregion DictionaryDocumentTypes
 
         #region DictionaryEventTypes
         public BaseDictionaryEventType GetDictionaryEventType(IContext context, int id)

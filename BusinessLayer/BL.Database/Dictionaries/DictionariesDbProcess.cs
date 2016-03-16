@@ -1,18 +1,18 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using BL.Database.DatabaseContext;
-using BL.Model.DictionaryCore;
-using BL.Database.Dictionaries.Interfaces;
-using BL.Model.Enums;
-using System;
-using BL.CrossCutting.Helpers;
+﻿using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
+using BL.Database.DatabaseContext;
 using BL.Database.DBModel.Dictionary;
+using BL.Database.Dictionaries.Interfaces;
 using BL.Model.AdminCore;
+using BL.Model.DictionaryCore;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.InternalModel;
+using BL.Model.Enums;
 using BL.Model.Exception;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BL.Database.Dictionaries
 {
@@ -1084,58 +1084,199 @@ namespace BL.Database.Dictionaries
         }
         #endregion DictionaryDepartments
 
+        // Тематики документов
         #region DictionaryDocumentSubjects
-        public BaseDictionaryDocumentSubject GetDictionaryDocumentSubject(IContext context, int id)
+
+        public int AddDictionaryDocumentSubject(IContext context, InternalDictionaryDocumentSubject docSubject)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
-                return dbContext.DictionaryDocumentSubjectsSet.Where(x => x.Id == id)
-                        .Select(x => new BaseDictionaryDocumentSubject
-                        {
-                            Id = x.Id,
-                            ParentId = x.ParentId,
-                            Name = x.Name,
-                            LastChangeUserId = x.LastChangeUserId,
-                            LastChangeDate = x.LastChangeDate,
-                            ParentDocumentSubjectName = x.ParentDocumentSubject.Name,
-                            ChildDocumentSubjects =
-                                x.ChildDocumentSubjects.Select(y => new BaseDictionaryDocumentSubject
-                                {
-                                    Id = y.Id,
-                                    ParentId = y.ParentId,
-                                    Name = y.Name,
-                                    LastChangeUserId = y.LastChangeUserId,
-                                    LastChangeDate = y.LastChangeDate,
-                                    ParentDocumentSubjectName = y.ParentDocumentSubject.Name,
-                                })
-                        }).FirstOrDefault();
+                var ddt = new DictionaryDocumentSubjects
+                {
+                    ParentId =  docSubject.ParentId,
+                    LastChangeDate = docSubject.LastChangeDate,
+                    LastChangeUserId = docSubject.LastChangeUserId,
+                    IsActive = docSubject.IsActive,
+                    Name = docSubject.Name
+                };
+                dbContext.DictionaryDocumentSubjectsSet.Add(ddt);
+                dbContext.SaveChanges();
+                docSubject.Id = ddt.Id;
+                return ddt.Id;
             }
         }
 
-        public IEnumerable<BaseDictionaryDocumentSubject> GetDictionaryDocumentSubjects(IContext context, FilterDictionaryDocumentSubject filter)
+        public void UpdateDictionaryDocumentSubject(IContext context, InternalDictionaryDocumentSubject docSubject)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+
+                // Альтернативный вариант обновления записи.
+                // В этом варианте на 1 обращение больше: сначала выполняется select и если вернулась строка обновляю значения, затем update
+                //var d = dbContext.DictionaryDocumentSubjectsSet.FirstOrDefault(x => x.Id == docSubject.Id);
+                //if (d != null)
+                //{
+                //    d.IsActive = docSubject.IsActive;
+                //}
+                //dbContext.SaveChanges();
+
+                // В этом варианте обновления с использованием Attach предварительная проверка на существование записи НЕ выполняется, сразу Update.
+                var dds = new DictionaryDocumentSubjects
+                {
+                    Id = docSubject.Id,
+                    ParentId = docSubject.ParentId,
+                    LastChangeDate = docSubject.LastChangeDate,
+                    LastChangeUserId = docSubject.LastChangeUserId,
+                    IsActive = docSubject.IsActive,
+                    Name = docSubject.Name
+                };
+
+                // если нужно обновить ВСЕ поля можно без перечисления сделать вот так
+                //dbContext.DictionaryDocumentSubjectsSet.Attach(dds);
+                //var entity = dbContext.Entry(dds);
+                //entity.State = System.Data.Entity.EntityState.Modified;
+
+                //или еще сократить
+                dbContext.DictionaryDocumentSubjectsSet.Attach(dds);
+                dbContext.Entry(dds).State = System.Data.Entity.EntityState.Modified;
+
+                // При частичном обновлении полей можно так:
+                //dbContext.DictionaryDocumentSubjectsSet.Attach(dds);
+
+                //var entity = dbContext.Entry(dds);
+
+                //entity.Property(x => x.ParentId).IsModified = true;
+                //entity.Property(x => x.LastChangeDate).IsModified = true;
+                //entity.Property(x => x.LastChangeUserId).IsModified = true;
+                //entity.Property(x => x.IsActive).IsModified = true;
+                //entity.Property(x => x.Name).IsModified = true;
+
+                dbContext.SaveChanges();
+            }
+        }
+
+        public void DeleteDictionaryDocumentSubject(IContext context, InternalDictionaryDocumentSubject docSubject)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var ddt = dbContext.DictionaryDocumentSubjectsSet.FirstOrDefault(x => x.Id == docSubject.Id);
+                if (ddt != null)
+                {
+                    dbContext.DictionaryDocumentSubjectsSet.Remove(ddt);
+                    dbContext.SaveChanges();
+                }
+            }
+        }
+
+        public InternalDictionaryDocumentSubject GetInternalDictionaryDocumentSubject(IContext context, FilterDictionaryDocumentSubject filter)
+        {
+
+            // Устно договорились, что функция для возврата одного элемента возвращает параметры только конкретного элемена без учета родителя и потомков.
+
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+
+                var qry = dbContext.DictionaryDocumentSubjectsSet.AsQueryable();
+
+                qry = DocumentSubjectsGetWhere(ref qry, filter);
+
+                return qry.Select(x => new InternalDictionaryDocumentSubject
+                {
+                    Id = x.Id,
+                    ParentId = x.ParentId,
+                    IsActive = x.IsActive,
+                    Name = x.Name,
+                    LastChangeDate = x.LastChangeDate,
+                    LastChangeUserId = x.LastChangeUserId
+                }).FirstOrDefault();
+
+            }
+        }
+
+        public IEnumerable<FrontDictionaryDocumentSubject> GetDictionaryDocumentSubjects(IContext context, FilterDictionaryDocumentSubject filter)
+        {
+
+            // Устно договорились, что функция для возврата коллекции элементов возвращает всю простыню элеменов без учета родителя и потомков.
+            // Если нужно каждому элементу добавить родителя и потомков это делается на уровень выше в Logic. Функция GetDictionaryDocumentSubects ВСЕГДА возвращает плоскую коллекцию
+            // более толго для построения иерархии на фронте плоской коллекции достаточно.
+
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                //IQueryable<DictionaryDocumentSubjects> qry=
+
+                var qry = dbContext.DictionaryDocumentSubjectsSet.AsQueryable();
+
+                qry = DocumentSubjectsGetWhere(ref qry, filter);
+
+                return qry.Select(x => new FrontDictionaryDocumentSubject
+                {
+                    Id = x.Id,
+                    ParentId = x.ParentId,
+                    IsActive = x.IsActive,
+                    Name = x.Name
+                    //ParentDocumentSubjectName = x.ParentDocumentSubject.Name,
+                }).ToList();
+            }
+        }
+
+        // Для использования в коммандах метод CanExecute
+        public bool ExistsDictionaryDocumentSubject(IContext context, FilterDictionaryDocumentSubject filter)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
                 var qry = dbContext.DictionaryDocumentSubjectsSet.AsQueryable();
+                
+                qry = DocumentSubjectsGetWhere(ref qry, filter);
 
-                if (filter.DocumentSubjectId?.Count > 0)
+                var res = qry.Select(x => new FrontDictionaryDocumentSubject
                 {
-                    qry = qry.Where(x => filter.DocumentSubjectId.Contains(x.Id));
-                }
+                    Id = x.Id
+                }).FirstOrDefault();
+                //qry.Select(x => x.Id).FirstOrDefault();
 
-                return qry.Select(x => new BaseDictionaryDocumentSubject
-                {
-                    Id = x.Id,
-                    ParentId = x.ParentId,
-                    Name = x.Name,
-                    LastChangeUserId = x.LastChangeUserId,
-                    LastChangeDate = x.LastChangeDate,
-                    ParentDocumentSubjectName = x.ParentDocumentSubject.Name,
-                }).ToList();
+                return res != null;  //!(res == null)   !res.Equals(null) /*&& res?.Count() == 0*/;
             }
         }
+
+        //TODO Эта  функция может находиться в FilterDictionaryDocumentSubject. Очень удобно: добавляешь параметр и сразу же добавляешь ифчик. У меня упихнуть НЕ получилось из-за пространства имен
+        private static IQueryable<DictionaryDocumentSubjects> DocumentSubjectsGetWhere(ref IQueryable<DictionaryDocumentSubjects> qry, FilterDictionaryDocumentSubject filter)
+        {
+            // Условие по ID
+            if (filter.DocumentSubjectId?.Count > 0)
+            {
+                qry = qry.Where(x => filter.DocumentSubjectId.Contains(x.Id));
+            }
+
+            // Условие по NotContainsId
+            if (filter.NotContainsId?.Count > 0)
+            {
+                qry = qry.Where(x => !filter.NotContainsId.Contains(x.Id));
+            }
+
+            // Условие по Name
+            if (!String.IsNullOrEmpty(filter.Name))
+            {
+                qry = qry.Where(x => filter.Name == x.Name);
+            }
+
+            // Условие по IsActive
+            if (filter.IsActive != null)
+            {
+                qry = qry.Where(x => filter.IsActive == x.IsActive);
+            }
+
+            // Условие по IsActive
+            if (filter.ParentId != null)
+            {
+                qry = qry.Where(x => filter.ParentId == x.ParentId);
+            }
+
+            return qry;
+        }
+
         #endregion DictionaryDocumentSubjects
 
+        // Типы документов
         #region DictionaryDocumentTypes
         public void UpdateDictionaryDocumentType(IContext context, InternalDictionaryDocumentType docType)
         {
@@ -2256,6 +2397,8 @@ namespace BL.Database.Dictionaries
                 return items;
             }
         }
+
+        
         #endregion CustomDictionaries
     }
 }
