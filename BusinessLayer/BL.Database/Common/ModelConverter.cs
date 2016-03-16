@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using BL.Database.DBModel.Document;
 using BL.Model.DocumentCore.InternalModel;

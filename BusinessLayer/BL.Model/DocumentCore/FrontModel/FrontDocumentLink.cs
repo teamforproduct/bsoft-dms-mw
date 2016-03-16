@@ -1,4 +1,6 @@
 ﻿
+using System;
+
 namespace BL.Model.DocumentCore.FrontModel
 {
     public class FrontDocumentLink
@@ -11,6 +13,9 @@ namespace BL.Model.DocumentCore.FrontModel
         /// <summary>
         /// общая информация о связи
         /// </summary>
-        public string GeneralInfo { get; set; }
+        public string LinkTypeName { get; set; }
+        public string RegistrationFullNumber { get; set; }
+        public DateTime? DocumentDate { get; set; }
+
     }
 }

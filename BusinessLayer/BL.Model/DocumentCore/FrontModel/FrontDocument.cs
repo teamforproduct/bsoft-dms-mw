@@ -114,7 +114,7 @@ namespace BL.Model.DocumentCore.FrontModel
         /// <summary>
         /// ИД уровня доступа
         /// </summary>
-        public EnumDocumentAccesses AccessLevel { get; set; }
+        public EnumDocumentAccesses? AccessLevel { get; set; }
 
         public string TemplateDocumentName { get; set; }
 
@@ -123,9 +123,10 @@ namespace BL.Model.DocumentCore.FrontModel
 
         public string DocumentSubjectName { get; set; }
         public string RegistrationJournalName { get; set; }
+
         public string ExecutorPositionName { get; set; }
         public string ExecutorPositionExecutorAgentName { get; set; }
-        public string ExecutorPositionAgentName { get; set; }
+        public string ExecutorPositionExecutorNowAgentName { get; set; }
         public string ExecutorPositionAgentPhoneNumber { get; set; }
 
         public string SenderAgentName { get; set; }
@@ -135,8 +136,8 @@ namespace BL.Model.DocumentCore.FrontModel
         public string GeneralInfo { get; set; }
 
 
-        public int TemplateDocumentId { get; set; }
-        public int ExecutorPositionId { get; set; }
+        public int? TemplateDocumentId { get; set; }
+        public int? ExecutorPositionId { get; set; }
         public DateTime? CreateDate { get; set; }
         public bool IsRegistered { get; set; }
         public int? RegistrationJournalId { get; set; }
@@ -148,31 +149,31 @@ namespace BL.Model.DocumentCore.FrontModel
         public int? LastChangeUserId { get; set; }
         public DateTime? LastChangeDate { get; set; }
         public int? LinkId { get; set; }
-        public bool IsLaunchPlan { get; set; }
-        public bool IsHard { get; set; }
-        public EnumDocumentDirections DocumentDirection { get; set; }
-        public int DocumentTypeId { get; set; }
+        public bool? IsLaunchPlan { get; set; }
+        public bool? IsHard { get; set; }
+        public EnumDocumentDirections? DocumentDirection { get; set; }
+        public int? DocumentTypeId { get; set; }
 
-        public bool IsFavourite { get; set; }
-        public bool IsInWork { get; set; }
+        public bool? IsFavourite { get; set; }
+        public bool? IsInWork { get; set; }
 
         public DateTime DocumentDate { get; set; }
        // public DateTime DateOfControl { get; set; }
         public string RegistrationFullNumber { get; set; }
 
         public int? EventsCount { get; set; }
-        public int WaitOpenCount { get; set; }
-        public int WaitOverdueCount { get; set; }
+        public int? WaitOpenCount { get; set; }
+        public int? WaitOverdueCount { get; set; }
 
 
-        public int NewEventCount { get; set; }
-        public int AttachedFilesCount { get; set; }
-        public int LinkedDocumentsCount { get; set; }
+        public int? NewEventCount { get; set; }
+        public int? AttachedFilesCount { get; set; }
+        public int? LinkedDocumentsCount { get; set; }
 
         public IEnumerable<FrontDocumentRestrictedSendList> RestrictedSendLists { get; set; }
         public IEnumerable<FrontDocumentSendList> SendLists { get; set; }
         public IEnumerable<FrontDocumentSendListStage> SendListStages { get; set; }
-        public int SendListStageMax { get; set; }
+        public int? SendListStageMax { get; set; }
         //public IEnumerable<FrontDocumentEvent> Events { get; set; }
         public IEnumerable<FrontDocumentAccess> Accesses { get; set; }
         public IEnumerable<FrontDocumentAttachedFile> DocumentFiles { get; set; }

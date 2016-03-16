@@ -133,7 +133,7 @@ namespace BL.Database.Documents
                         .Max(m => m.Version);
                 if (maxVer > 0)
                 {
-                    var doc = CommonQueries.GetDocumentQuery(dbContext)
+                    var doc = CommonQueries.GetDocumentQuery(dbContext, ctx)
                                         .Where(x => x.Doc.Id == documentId && ctx.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId))
                                         .Select(x => new InternalDocument
                                         {
@@ -204,7 +204,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext)
+                var doc = CommonQueries.GetDocumentQuery(dbContext, ctx)
                     .Where(x => x.Doc.Id == documentId && ctx.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId))
                     .Select(x => new InternalDocument
                     {
@@ -248,7 +248,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext)
+                var doc = CommonQueries.GetDocumentQuery(dbContext, ctx)
                     .Where(x => x.Doc.Id == flIdent.DocumentId && ctx.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId))
                     .Select(x => new InternalDocument
                     {

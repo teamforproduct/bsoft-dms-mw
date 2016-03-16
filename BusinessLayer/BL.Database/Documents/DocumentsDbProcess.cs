@@ -102,7 +102,7 @@ namespace BL.Database.Documents
             {
 
                 var acc = CommonQueries.GetDocumentAccesses(ctx, dbContext).Where(x => (!filters.IsInWork || filters.IsInWork && x.IsInWork == filters.IsInWork));
-                var qry = CommonQueries.GetFrontDocumentQuery(dbContext, acc);
+                var qry = CommonQueries.GetDocumentQuery(dbContext, ctx, acc);
 
                 #region DocumentsSetFilter
 
@@ -350,19 +350,19 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-                var qry = CommonQueries.GetDocumentQuery(dbContext).Where(x => x.Doc.Id == documentId && ctx.CurrentPositionsIdList.Contains(x.Acc.PositionId)).ToList();
+                var qry = CommonQueries.GetDocumentQuery(dbContext, ctx).Where(x => x.Doc.Id == documentId);
 
                 var doc = qry.FirstOrDefault();
-                var accs = qry.Select(x => x.Acc).ToList();
-
                 if (doc == null)
                 {
                     throw new DocumentNotFoundOrUserHasNoAccess();
                 }
+                var accs = CommonQueries.GetDocumentAccesses(ctx, dbContext).Where(x => x.DocumentId == doc.Doc.Id).ToList();
 
                 var res = new FrontDocument
                 {
                     Id = doc.Doc.Id,
+                    DocumentDirection = (EnumDocumentDirections)doc.Templ.DocumentDirectionId,
                     DocumentDirectionName = doc.DirName,
                     DocumentTypeName = doc.DocTypeName,
                     RegistrationFullNumber =
@@ -375,6 +375,8 @@ namespace BL.Database.Documents
                     Description = doc.Doc.Description,
                     ExecutorPositionExecutorAgentName = doc.ExecutorPositionExecutorAgentName,
                     ExecutorPositionName = doc.ExecutorPosName,
+                    EventsCount = 0,
+                    NewEventCount = 0,
                     LinkedDocumentsCount = 0, //TODO
                     WaitOpenCount = 0,//TODO
                     WaitOverdueCount = 0, //TODO
@@ -391,7 +393,7 @@ namespace BL.Database.Documents
                     RegistrationDate = doc.Doc.RegistrationDate,
 
                     ExecutorPositionId = doc.Doc.ExecutorPositionId,
-                    ExecutorPositionAgentName = doc.ExecutorAgentName,
+                    ExecutorPositionExecutorNowAgentName = doc.ExecutorPositionExecutorNowAgentName,
                     ExecutorPositionAgentPhoneNumber = "ExecutorPositionAgentPhoneNumber", //TODO
 
                     SenderAgentId = doc.Doc.SenderAgentId,
@@ -404,53 +406,57 @@ namespace BL.Database.Documents
 
                     IsLaunchPlan = doc.Doc.IsLaunchPlan,
 
-                    AccessLevel = (EnumDocumentAccesses)accs.Where(x=>x.PositionId == doc.Doc.ExecutorPositionId).Select(x=>x.AccessLevelId).FirstOrDefault(),  
-                    AccessLevelName = qry.Where(x=>x.Acc.PositionId == doc.Doc.ExecutorPositionId).Select(x=>x.AccLevName).FirstOrDefault(),
+                    AccessLevel = accs.Where(x => x.PositionId == doc.Doc.ExecutorPositionId).Select(x => x.AccessLevel).FirstOrDefault(),
+                    AccessLevelName = accs.Where(x => x.PositionId == doc.Doc.ExecutorPositionId).Select(x => x.AccessLevelName).FirstOrDefault(),
 
                     TemplateDocumentName = doc.Templ.Name,
                     IsHard = doc.Templ.IsHard,
 
                     LinkId = doc.Doc.LinkId,
-                    IsFavourite = accs.Any(x=>x.IsFavourite),
-                    IsInWork = accs.Any(x=>x.IsInWork),
+                    IsFavourite = accs.Any(x => x.IsFavourite),
+                    IsInWork = accs.Any(x => x.IsInWork),
 
-                    Accesses = qry.Select(x=> 
-                        new FrontDocumentAccess
-                        {
-                            LastChangeDate = x.Acc.LastChangeDate,
-                            LastChangeUserId = x.Acc.LastChangeUserId,
-                            IsInWork = x.Acc.IsInWork,
-                            IsFavourite = x.Acc.IsFavourite,
-                            PositionId = x.Acc.PositionId,
-                            AccessLevel = (EnumDocumentAccesses) x.Acc.AccessLevelId,
-                            AccessLevelName = x.AccLevName,
-                            Id = x.Acc.Id,
-                            DocumentId = x.Acc.DocumentId
-                        }
-                    ).ToList(),
+                    Accesses = accs,
                 };
 
                 var docIds = new List<int> { res.Id };
 
                 if (res.LinkId.HasValue)
                 {
-                    res.LinkedDocuments = CommonQueries.GetLinkedDocuments(dbContext, res.LinkId.Value);
+                    res.LinkedDocuments = CommonQueries.GetLinkedDocuments(ctx, dbContext, res.LinkId.Value);
                     res.LinkedDocumentsCount = res.LinkedDocuments.Count();
 
-                    if (filter?.DocumentsId.Any()??false)
+                    if ((filter?.DocumentsIdForAIP!=null ) && (filter.DocumentsIdForAIP.Any()))
                     {
-                        docIds = filter?.DocumentsId;
+                        docIds = filter?.DocumentsIdForAIP;
                     }
                 }
 
-                res.EventsCount = dbContext.DocumentEventsSet.Count(x => x.DocumentId == res.Id);
-                res.NewEventCount = dbContext.DocumentEventsSet.Count(x => x.DocumentId == res.Id && !x.ReadDate.HasValue 
-                && x.TargetPositionId.HasValue && x.TargetPositionId!=x.SourcePositionId
-                && ctx.CurrentPositionsIdList.Contains(x.TargetPositionId.Value));
+                //select only events, where sourceposition or target position are in user's current positions luist
+                var evtCount = dbContext.DocumentEventsSet.Where(x => x.DocumentId == res.Id && 
+                ((x.TargetPositionId.HasValue && ctx.CurrentPositionsIdList.Contains(x.TargetPositionId.Value)) 
+                || (x.SourcePositionId.HasValue && ctx.CurrentPositionsIdList.Contains(x.SourcePositionId.Value))))
+                .GroupBy(x => x.DocumentId)
+                    .Select(x => new
+                    {
+                        docId = x.Key,
+                        totalCnt = x.Count(),
+                        newCnt = x.Count(s => !s.ReadDate.HasValue
+                                              && s.TargetPositionId.HasValue && s.TargetPositionId != s.SourcePositionId
+                                              && ctx.CurrentPositionsIdList.Contains(s.TargetPositionId.Value))
+                    }).FirstOrDefault();
+
+                if (evtCount != null)
+                {
+                    res.EventsCount = evtCount.totalCnt;
+
+                    res.NewEventCount = evtCount.newCnt;
+                }
+                
 
                 res.SendLists = CommonQueries.GetDocumentSendList(dbContext, documentId);
 
-                res.SendListStageMax = (res.SendLists == null) || (!res.SendLists.Any()) ? 0 : res.SendLists.Max(x => x.Stage);
+                res.SendListStageMax = (res.SendLists == null) || !res.SendLists.Any() ? 0 : res.SendLists.Max(x => x.Stage);
 
                 res.RestrictedSendLists = CommonQueries.GetDocumentRestrictedSendList(dbContext, documentId);
 
@@ -535,8 +541,8 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext)
-                    .Where(x => x.Doc.Id == documentId && ctx.CurrentPositionsIdList.Contains(x.Acc.PositionId))
+                var doc = CommonQueries.GetDocumentQuery(dbContext, ctx)
+                    .Where(x => x.Doc.Id == documentId)
                     .Select(x => new InternalDocument
                     {
                         TemplateDocumentId = x.Doc.TemplateDocumentId,
@@ -545,7 +551,6 @@ namespace BL.Database.Documents
                         SenderAgentId = x.Doc.SenderAgentId,
                         SenderAgentPersonId = x.Doc.SenderAgentPersonId,
                         Addressee = x.Doc.Addressee,
-                        AccessLevel = (EnumDocumentAccesses)x.Acc.AccessLevelId,
 
                     }).FirstOrDefault();
 
@@ -553,6 +558,8 @@ namespace BL.Database.Documents
                 {
                     return null;
                 }
+
+                doc.AccessLevel = (EnumDocumentAccesses)CommonQueries.GetDocumentAccessesesQry(dbContext, doc.Id, ctx).Max(x => x.AccessLevelId);
 
                 doc.SendLists = dbContext.DocumentSendListsSet.Where(x => x.DocumentId == documentId && x.IsInitial)
                         .Select(y => new InternalDocumentSendList
@@ -585,28 +592,12 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext)
+                var doc = CommonQueries.GetDocumentQuery(dbContext, context)
                     .Where(x => x.Doc.Id == model.Id && context.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId))
                     .Select(x => new InternalDocument
                     {
                         Id = x.Doc.Id,
-                        //DocumentSubjectId = x.Doc.DocumentSubjectId,
-                        //Description = x.Doc.Description,
-                        //IsRegistered = x.Doc.IsRegistered,
-                        //RegistrationJournalId = x.Doc.RegistrationJournalId,
-                        //NumerationPrefixFormula = x.Doc.NumerationPrefixFormula,
-                        //RegistrationNumber = x.Doc.RegistrationNumber,
-                        //RegistrationNumberSuffix = x.Doc.RegistrationNumberSuffix,
-                        //RegistrationNumberPrefix = x.Doc.RegistrationNumberPrefix,
-                        //RegistrationDate = x.Doc.RegistrationDate,
                         ExecutorPositionId = x.Doc.ExecutorPositionId,
-                        //SenderAgentId = x.Doc.SenderAgentId,
-                        //SenderAgentPersonId = x.Doc.SenderAgentPersonId,
-                        //SenderNumber = x.Doc.SenderNumber,
-                        //SenderDate = x.Doc.SenderDate,
-                        //Addressee = x.Doc.Addressee,
-                        //LinkId = x.Doc.LinkId,
-
                         TemplateDocumentId = x.Doc.TemplateDocumentId,
                         IsHard = x.Templ.IsHard,
                         DocumentDirection = (EnumDocumentDirections)x.Templ.DocumentDirectionId,
@@ -685,7 +676,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext)
+                var doc = CommonQueries.GetDocumentQuery(dbContext, context)
                     .Where(x => x.Doc.Id == documentId && context.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId))
                     .Select(x => new InternalDocument
                     {
@@ -724,8 +715,8 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext)
-                    .Where(x => x.Doc.Id == model.DocumentId && context.CurrentPositionsIdList.Contains(x.Acc.PositionId))
+                var doc = CommonQueries.GetDocumentQuery(dbContext, context)
+                    .Where(x => x.Doc.Id == model.DocumentId)
                     .Select(x => new InternalDocument
                     {
                         Id = x.Doc.Id,
@@ -828,7 +819,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext)
+                var doc = CommonQueries.GetDocumentQuery(dbContext, context)
                     .Where(x => x.Doc.Id == model.DocumentId && context.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId))
                     .Select(x => new InternalDocument
                     {
@@ -882,7 +873,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext)
+                var doc = CommonQueries.GetDocumentQuery(dbContext, context)
                     .Where(x => x.Doc.Id == documentId && context.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId))
                     .Select(x => new InternalDocument
                     {
@@ -930,7 +921,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext)
+                var doc = CommonQueries.GetDocumentQuery(dbContext, context)
                     .Where(x => x.Doc.Id == documentId /*&& context.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId)*/)
                     .Select(x => new InternalDocument
                     {

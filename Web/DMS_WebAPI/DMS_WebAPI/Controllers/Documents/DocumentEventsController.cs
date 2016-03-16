@@ -44,13 +44,15 @@ namespace DMS_WebAPI.Controllers.Documents
             var res = new JsonResult(evt, this);
             return res;
         }
-
+/*
         /// <summary>
         /// получение всех ивентов по одному документу
         /// </summary>
         /// <param name="id">ИД документа</param>
         /// <param name="paging"> paging</param>
         /// <returns>соответствующая страница списка ивентов документа</returns>
+        [Route("GetEventsByDocument")]
+        [HttpGet]
         public IHttpActionResult GetEventsByDocument(int id,[FromUri]UIPaging paging)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
@@ -59,5 +61,6 @@ namespace DMS_WebAPI.Controllers.Documents
             var res = new JsonResult(events, this);
             return res;
         }
+        */
     }
 }
