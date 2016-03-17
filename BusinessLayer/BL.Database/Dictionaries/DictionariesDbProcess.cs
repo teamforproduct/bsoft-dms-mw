@@ -286,7 +286,10 @@ namespace BL.Database.Dictionaries
             {
 
                 var qry = dbContext.DictionaryAgentPersonsSet.AsQueryable();
-                
+
+                qry = qry.Where(x => x.Agent.IsIndividual);
+
+
                 if (filter.AgentId?.Count > 0)
                 {
                    qry = qry.Where(x => filter.AgentId.Contains(x.Id));

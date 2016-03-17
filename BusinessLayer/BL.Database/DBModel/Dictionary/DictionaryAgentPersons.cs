@@ -31,7 +31,7 @@ namespace BL.Database.DBModel.Dictionary
         {
             get
             {
-                return PassportSerial.Trim() + "-" + PassportNumber.ToString() + " выдан " + PassportText.Trim() + " " + PassportDate?.Date;
+                return PassportSerial?.Trim() + "-" + PassportNumber?.ToString() + " выдан " + PassportText?.Trim() + " " + PassportDate?.Date;
             }
 
         }

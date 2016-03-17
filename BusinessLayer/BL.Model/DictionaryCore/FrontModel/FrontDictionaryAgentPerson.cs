@@ -64,7 +64,7 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// </summary>
         public string FullName { get
                 {
-                return LastName.Trim() + " " + FirstName.Trim() + " " + MiddleName.Trim();
+                return LastName?.Trim() + " " + FirstName?.Trim() + " " + MiddleName?.Trim();
                 }
                                }
         /// <summary>
@@ -72,7 +72,7 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// </summary>
         public string ShortName { get
             {
-                return LastName.Trim() + " " +FirstName.Trim().Substring(1, 1) + "." + MiddleName.Trim().Substring(1, 1) + ".";
+                return LastName?.Trim() + " " +FirstName?.Trim().Substring(1, 1) + "." + MiddleName?.Trim().Substring(1, 1) + ".";
             }
                 }
         /// <summary>
@@ -80,7 +80,7 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// </summary>
         public string Passport  { get
             {
-                return PassportSerial.Trim() + "-" + PassportNumber.ToString() + " выдан " + PassportText.Trim() + " " + PassportDate?.Date;
+                return PassportSerial?.Trim() + "-" + PassportNumber?.ToString() + " выдан " + PassportText?.Trim() + " " + PassportDate?.Date;
             }
 
         }

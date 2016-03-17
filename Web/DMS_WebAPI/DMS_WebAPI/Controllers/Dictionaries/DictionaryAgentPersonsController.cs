@@ -11,7 +11,7 @@ using System.Web.Http;
 namespace DMS_WebAPI.Controllers.Dictionaries
 {
     /// <summary>
-    /// Котнрагент - физическое лицо
+    /// Контрагент - физическое лицо
     /// </summary>
     [Authorize]
     public class DictionaryAgentPersonsController : ApiController
