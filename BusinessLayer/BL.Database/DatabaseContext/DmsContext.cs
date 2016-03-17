@@ -77,6 +77,8 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<DictionaryImportanceEventTypes> DictionaryImportanceEventTypesSet { get; set; }
         public virtual DbSet<DictionaryLinkTypes> DictionaryLinkTypesSet { get; set; }
         public virtual DbSet<DictionaryPositions> DictionaryPositionsSet { get; set; }
+        public virtual DbSet<DictionaryPositionExecutors> DictionaryPositionExecutorsSet { get; set; }
+        public virtual DbSet<DictionaryPositionExecutorTypes> DictionaryPositionExecutorTypesSet { get; set; }
         public virtual DbSet<DictionaryRegistrationJournals> DictionaryRegistrationJournalsSet { get; set; }
         public virtual DbSet<DictionaryResultTypes> DictionaryResultTypesSet { get; set; }
         public virtual DbSet<DictionarySubscriptionStates> DictionarySubscriptionStatesSet { get; set; }
@@ -100,6 +102,8 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<DocumentSubscriptions> DocumentSubscriptionsSet { get; set; }
         public virtual DbSet<DocumentWaits> DocumentWaitsSet { get; set; }
         public virtual DbSet<DocumentTags> DocumentTagsSet { get; set; }
+        public virtual DbSet<DocumentEventReaders> DocumentEventReadersSet { get; set; }
+        public virtual DbSet<DocumentTasks> DocumentTasksSet { get; set; }
 
         public virtual DbSet<TemplateDocumentSendLists> TemplateDocumentSendLists { get; set; }
         public virtual DbSet<TemplateDocumentRestrictedSendLists> TemplateDocumentRestrictedSendLists { get; set; }

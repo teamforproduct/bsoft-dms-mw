@@ -2,7 +2,7 @@
 {
     public enum EnumDocumentDirections
     {
-        External = 1,
+        Incoming = 1,
         Outcoming = 2,
         Internal = 3
     }

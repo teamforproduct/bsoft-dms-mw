@@ -9,7 +9,7 @@ namespace DMS_WebAPI.Models
     public class AddExternalLoginBindingModel
     {
         [Required]
-        [Display(Name = "External access token")]
+        [Display(Name = "Incoming access token")]
         public string ExternalAccessToken { get; set; }
     }
 

@@ -48,7 +48,6 @@ namespace BL.Database.Admins
 
                 res.PositionRoles = dbContext.AdminPositionRolesSet.Select(x => new InternalDictionaryAdminPositionRoles
                 {
-                    AccessLevel = (EnumDocumentAccesses)x.AccessLevelId,
                     PositionId = x.PositionId,
                     Id = x.Id,
                     RoleId = x.RoleId
