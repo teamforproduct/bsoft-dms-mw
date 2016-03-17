@@ -126,6 +126,7 @@ namespace BL.Database.Dictionaries.Interfaces
         IEnumerable<FrontDictionaryTag> GetDictionaryTags(IContext context, FilterDictionaryTag filter);
         int AddDictionaryTag(IContext context, InternalDictionaryTag model);
         void UpdateDictionaryTag(IContext context, InternalDictionaryTag model);
+        void DeleteDictionaryTag(IContext context, InternalDictionaryTag model);
         #endregion DictionaryTags
 
         #region Admins

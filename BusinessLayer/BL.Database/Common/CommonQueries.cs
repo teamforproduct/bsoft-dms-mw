@@ -288,6 +288,32 @@ namespace BL.Database.Common
 
         //        }
 
+        public static IQueryable<DocumentWaits> GetDocumentWaitsQuery(DmsContext dbContext, IContext ctx = null, int? documentId = null)
+        {
+            var qry = dbContext.DocumentWaitsSet.AsQueryable();
+            if (documentId.HasValue)
+            {
+                qry = qry.Where(x => x.DocumentId == documentId.Value);
+            }
+            if (ctx != null)
+            {
+                qry = qry.Where( x =>
+                            (x.OnEvent.TargetPositionId.HasValue &&
+                             ctx.CurrentPositionsIdList.Contains(x.OnEvent.TargetPositionId.Value))
+                            ||
+                            (x.OnEvent.SourcePositionId.HasValue &&
+                             ctx.CurrentPositionsIdList.Contains(x.OnEvent.SourcePositionId.Value))
+                             ||
+                             (x.OffEventId.HasValue && (
+                             (x.OffEvent.TargetPositionId.HasValue &&
+                              ctx.CurrentPositionsIdList.Contains(x.OffEvent.TargetPositionId.Value))
+                             ||
+                             (x.OffEvent.SourcePositionId.HasValue &&
+                              ctx.CurrentPositionsIdList.Contains(x.OffEvent.SourcePositionId.Value)))));
+            }
+            return qry;
+        }
+
         public static IEnumerable<FrontDocumentWaits> GetDocumentWaits(DmsContext dbContext, FilterDocumentWait filter)
         {
             var waitsDb = dbContext.DocumentWaitsSet.AsQueryable();

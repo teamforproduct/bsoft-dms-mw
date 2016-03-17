@@ -61,8 +61,7 @@ namespace DMS_WebAPI.Controllers
         [AllowAnonymous]
         public IHttpActionResult GetServers()
         {
-            var readXml = new ReadXml("/servers.xml");
-            return new JsonResult(readXml.ReadDBsByUI(), this);
+            return new JsonResult(new Servers().GetServersByUser(), this);
         }
     }
 }

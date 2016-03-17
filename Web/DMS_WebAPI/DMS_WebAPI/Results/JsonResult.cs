@@ -1,4 +1,8 @@
-﻿using BL.Model.SystemCore;
+﻿using BL.Logic.AdminCore.Interfaces;
+using BL.Logic.DependencyInjection;
+using BL.Model.SystemCore;
+using DMS_WebAPI.Utilities;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +10,9 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
+using System.Web.Script.Serialization;
 
 namespace DMS_WebAPI.Results
 {
@@ -60,7 +66,18 @@ namespace DMS_WebAPI.Results
         }
         public Task<HttpResponseMessage> ExecuteAsync(CancellationToken cancellationToken)
         {
-            HttpResponseMessage response = _request.CreateResponse(HttpStatusCode.OK, new { success = _success, data = _data, msg = _msg, meta = _meta, paging= _paging });
+            object json = new { success = _success, data = _data, msg = _msg, meta = _meta, paging = _paging };
+            try
+            {
+                if (HttpContext.Current.User.Identity.IsAuthenticated)
+                {
+                    var cxt = DmsResolver.Current.Get<UserContext>().Get();
+                    var service = DmsResolver.Current.Get<IAdminService>();
+                    json = JsonConvert.DeserializeObject(service.ReplaceLanguageLabel(cxt, JsonConvert.SerializeObject(json, GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings)));
+                }
+            }
+            catch { }
+            HttpResponseMessage response = _request.CreateResponse(HttpStatusCode.OK, json);
             return Task.FromResult(response);
         }
     }

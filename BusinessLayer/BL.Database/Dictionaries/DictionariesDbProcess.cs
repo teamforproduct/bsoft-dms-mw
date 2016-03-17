@@ -466,7 +466,7 @@ namespace BL.Database.Dictionaries
                 }).ToList();
             }
         }
-        #endregion DictionaryDocumentSubjects
+        #endregion DictionaryDocumentTypes
 
         #region DictionaryEventTypes
         public BaseDictionaryEventType GetDictionaryEventType(IContext context, int id)
@@ -1158,6 +1158,20 @@ namespace BL.Database.Dictionaries
                 else
                 {
                     throw new DictionaryTagNotFoundOrUserHasNoAccess();
+                }
+            }
+        }
+
+        public void DeleteDictionaryTag(IContext context, InternalDictionaryTag model)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+
+                var item = dbContext.DictionaryTagsSet.FirstOrDefault(x => x.Id == model.Id);
+                if (item != null)
+                {
+                    dbContext.DictionaryTagsSet.Remove(item);
+                    dbContext.SaveChanges();
                 }
             }
         }

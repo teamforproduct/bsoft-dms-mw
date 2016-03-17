@@ -126,7 +126,7 @@ namespace BL.Logic.DictionaryCore
             return _dictDb.GetDictionaryDocumentTypes(context, filter);
         }
 
-        #endregion DictionaryDocumentSubjects
+        #endregion DictionaryDocumentTypes
 
         #region DictionaryEventTypes
         public BaseDictionaryEventType GetDictionaryEventType(IContext context, int id)
