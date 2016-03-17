@@ -59,6 +59,20 @@ namespace BL.Logic.DictionaryCore
         }
         #endregion DictionaryAgentPersons
 
+        #region DicionaryAgentEmployees
+
+        public FrontDictionaryAgentEmployee GetDictionaryAgentEmployee(IContext context, int id)
+        {
+            return _dictDb.GetDictionaryAgentEmployee(context, id);
+        }
+
+        public IEnumerable<FrontDictionaryAgentEmployee> GetDictionaryAgentEmployees(IContext context, FilterDictionaryAgentEmployee filter)
+        {
+            return _dictDb.GetDictionaryAgentEmployees(context, filter);
+        }
+       
+        #endregion DictionaryAgentEmployees
+       
         #region DictionaryAgentAdress
         public FrontDictionaryAgentAddress GetDictionaryAgentAddress(IContext context, int id)
         {

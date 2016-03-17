@@ -22,7 +22,15 @@ namespace BL.Logic.DictionaryCore.Interfaces
         FrontDictionaryAgentPerson GetDictionaryAgentPerson(IContext context, int id);
 
         IEnumerable<FrontDictionaryAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter);
+
         #endregion DictionaryAgentPersons
+
+        #region DictionaryAgentEmployees
+        FrontDictionaryAgentEmployee GetDictionaryAgentEmployee(IContext context, int id);
+
+        IEnumerable<FrontDictionaryAgentEmployee> GetDictionaryAgentEmployees(IContext context, FilterDictionaryAgentEmployee filter);
+
+        #endregion DictionaryAgentEmployees
 
         #region DictionaryAgentAdress
         FrontDictionaryAgentAddress GetDictionaryAgentAddress(IContext context, int id);

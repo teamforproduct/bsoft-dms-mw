@@ -18,5 +18,7 @@ namespace BL.Database.DBModel.Dictionary
         public DateTime LastChangeDate { get; set; }
         [ForeignKey("Id")]
         public virtual DictionaryAgents Agent { get; set; }
+        [ForeignKey("Id")]
+        public virtual DictionaryAgentPersons AgentPerson { get; set; }
     }
 }
