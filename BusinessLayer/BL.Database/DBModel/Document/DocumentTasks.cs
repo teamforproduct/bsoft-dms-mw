@@ -19,7 +19,9 @@ namespace BL.Database.DBModel.Document
 
         public int Id { get; set; }
         public int DocumentId { get; set; }
-        public Nullable<int> PositionId { get; set; }
+        public int PositionId { get; set; }
+        public int PositionExecutorAgentId { get; set; }
+        public int AgentId { get; set; }
         public string Task { get; set; }
         public string Description { get; set; }
         public int LastChangeUserId { get; set; }
@@ -28,6 +30,10 @@ namespace BL.Database.DBModel.Document
         public virtual Documents Document { get; set; }
         [ForeignKey("PositionId")]
         public virtual DictionaryPositions Position { get; set; }
+        [ForeignKey("AgentId")]
+        public virtual DictionaryAgents Agent { get; set; }
+        [ForeignKey("PositionExecutorAgentId")]
+        public virtual DictionaryAgents PositionExecutorAgent { get; set; }
 
         public virtual ICollection<DocumentEvents> Events { get; set; }
 
