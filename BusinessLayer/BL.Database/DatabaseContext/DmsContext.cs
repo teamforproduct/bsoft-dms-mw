@@ -50,6 +50,9 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<AdminUserRoles> AdminUserRolesSet { get; set; }
         public virtual DbSet<AdminSubordinations> AdminSubordinationsSet { get; set; }
 
+        public virtual DbSet<AdminLanguages> AdminLanguagesSet { get; set; }
+        public virtual DbSet<AdminLanguageValues> AdminLanguageValuesSet { get; set; }
+
         public virtual DbSet<DictionaryAgentPersons> DictionaryAgentPersonsSet { get; set; }
         public virtual DbSet<DictionaryAgentCompanies> DictionaryAgentCompaniesSet { get; set; }
         public virtual DbSet<DictionaryAgentBanks> DictionaryAgentBanksSet { get; set; }

@@ -81,6 +81,7 @@ namespace DMS_WebAPI.Utilities
                 {
                     var agent = DmsResolver.Current.Get<IAdminService>().GetEmployee(context, user.AgentId.Value);
                     context.CurrentEmployee.Name = agent.Name;
+                    context.CurrentEmployee.LanguageId = agent.LanguageId;
                 }
 
                 Save(token, context);

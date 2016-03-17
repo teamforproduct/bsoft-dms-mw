@@ -1398,7 +1398,7 @@ namespace BL.Database.Dictionaries
                 }).ToList();
             }
         }
-        #endregion DictionaryDocumentSubjects
+        #endregion DictionaryDocumentTypes
 
         #region DictionaryEventTypes
         public BaseDictionaryEventType GetDictionaryEventType(IContext context, int id)

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BL.Database.DBModel.Admin;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -25,6 +26,7 @@ namespace BL.Database.DBModel.Dictionary
         public bool IsUser { get; set; }
         public string Description { get; set; }
         public bool IsActive { get; set; }
+        public Nullable<int> LanguageId { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
 
@@ -38,6 +40,8 @@ namespace BL.Database.DBModel.Dictionary
         public virtual DictionaryAgentBanks AgentBank { get; set; }
         [ForeignKey("Id")]
         public virtual DictionaryAgentEmployees AgentEmployee { get; set; }
+        [ForeignKey("LanguageId")]
+        public virtual AdminLanguages Language { get; set; }
 
         public virtual DictionaryResidentTypes ResidentType { get; set; }
 
