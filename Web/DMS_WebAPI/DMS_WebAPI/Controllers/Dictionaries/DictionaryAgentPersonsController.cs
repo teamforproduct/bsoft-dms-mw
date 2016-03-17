@@ -40,7 +40,15 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
             return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.AddAgentPerson, cxt, model));
         }
-        
+
+        public IHttpActionResult PostToExistingAgent(int AgentId,[FromBody]ModifyDictionaryAgentPerson model)
+        {
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
+            model.Id = AgentId;
+            return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.AddAgentPerson, cxt, model));
+        }
+
         public IHttpActionResult Put(int id, [FromBody]ModifyDictionaryAgentPerson model)
         {
             model.Id = id;

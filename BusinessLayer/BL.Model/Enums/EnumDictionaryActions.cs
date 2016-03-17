@@ -65,9 +65,9 @@
         /// </summary>       
         DeleteDocumentSubject = 203009,
         #endregion DictionaryDocumentSubject
-        AddAgentPerson,
-        ModifyAgentPerson,
-        DeleteAgentPerson,
+        AddAgentPerson = 209001,
+        ModifyAgentPerson = 209005,
+        DeleteAgentPerson = 209009,
         AddAgentEmployee,
         ModifyAgentEmployee,
         DeleteAgentEmployee,

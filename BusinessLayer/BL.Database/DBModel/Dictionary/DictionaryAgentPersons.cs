@@ -32,6 +32,9 @@ namespace BL.Database.DBModel.Dictionary
         [ForeignKey("AgentCompanyId")]
         public virtual DictionaryAgentCompanies AgentCompany { get; set; }
 
+
+      
+
         //     [ForeignKey("AgentId")]
         //     public virtual DictionaryAgents Agent { get; set; }
         // [ForeignKey("PersonAgentId")]

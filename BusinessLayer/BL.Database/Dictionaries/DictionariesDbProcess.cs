@@ -335,7 +335,7 @@ namespace BL.Database.Dictionaries
                 }
                 if (!string.IsNullOrEmpty(filter.Passport))
                 {
-                    qry = qry.Where(x => x.PassportText.Contains(filter.Passport));
+                    qry = qry.Where(x => (x.PassportSerial + "-" + x.PassportNumber + " " + x.PassportDate.ToString() + " " + x.PassportText).Contains(filter.Passport));
                 }
                 if (!string.IsNullOrEmpty(filter.TaxCode))
                 {
@@ -467,8 +467,45 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
-                var ddt = new DictionaryAgentPersons
+
+                var agent = GetDictionaryAgent(context, person.Id);
+                if (agent == null)
                 {
+                    var newAgent = new InternalDictionaryAgent
+                    {
+                        Name = person.LastName.Trim() + " " + person.FirstName.Trim() + " " + person.MiddleName.Trim(),
+                        IsActive = person.IsActive,
+                        Description = person.Description,
+                        IsBank = false,
+                        IsCompany = false,
+                        IsEmployee = false,
+                        IsIndividual = true,
+                        LastChangeDate = person.LastChangeDate,
+                        LastChangeUserId = person.LastChangeUserId,
+                    };
+                    person.Id = AddDictionaryAgent(context, newAgent);
+                }
+                else {
+                    agent.IsIndividual = true;
+                    UpdateDictionaryAgent(context, new InternalDictionaryAgent
+                    {
+                        Id = agent.Id,
+                        Name = agent.Name,
+                        IsActive = agent.IsActive,
+                        Description = agent.Description,
+                        IsBank = agent.IsBank,
+                        IsCompany = agent.IsCompany,
+                        IsEmployee = agent.IsEmployee,
+                        IsIndividual = agent.IsIndividual,
+                        ResidentTypeId = agent.ResidentTypeId ?? 0,
+                        LastChangeDate = person.LastChangeDate,
+                        LastChangeUserId = person.LastChangeUserId
+                    });
+                  };
+
+                    var ddt = new DictionaryAgentPersons
+                {
+                    Id=person.Id,
                     FirstName = person.FirstName,
                     LastName = person.LastName,
                     MiddleName = person.MiddleName,
@@ -485,47 +522,10 @@ namespace BL.Database.Dictionaries
                     LastChangeUserId = person.LastChangeUserId,
                     IsActive = person.IsActive
                 };
-                dbContext.DictionaryAgentPersonsSet.Add(ddt);
-
-                var agent = GetDictionaryAgent(context, person.Id); 
-                if (agent==null)
-                {
-                    var newAgent = new InternalDictionaryAgent
-                    {
-                        Id = person.Id,
-                        Name = person.LastName.Trim() + " " + person.FirstName.Trim() + " " + person.MiddleName.Trim(),
-                        IsActive = person.IsActive,
-                        Description = person.Description,
-                        IsBank = false,
-                        IsCompany = false,
-                        IsEmployee = false,
-                        IsIndividual = true
-                    };
-                    AddDictionaryAgent(context, newAgent);
-                }
-                else {
-                    var curAgent = GetDictionaryAgent(context, person.Id);
-                    curAgent.IsIndividual = true;
-                    UpdateDictionaryAgent(context, new InternalDictionaryAgent
-                    {
-                        Id = curAgent.Id,
-                        Name = curAgent.Name,
-                        IsActive = curAgent.IsActive,
-                        Description = curAgent.Description,
-                        IsBank = curAgent.IsBank,
-                        IsCompany = curAgent.IsCompany,
-                        IsEmployee = curAgent.IsEmployee,
-                        IsIndividual = curAgent.IsIndividual,
-                        ResidentTypeId = curAgent.ResidentTypeId ?? 0,
-                        LastChangeDate = person.LastChangeDate,
-                        LastChangeUserId = person.LastChangeUserId
-                    });
-
-                }
-
+                dbContext.DictionaryAgentPersonsSet.Add(ddt);    
                 dbContext.SaveChanges();
-                person.Id = ddt.Id;
-                return ddt.Id;
+              
+                return person.Id;
             }
         }
 
@@ -612,7 +612,7 @@ namespace BL.Database.Dictionaries
                 }
                 if (!string.IsNullOrEmpty(filter.Passport))
                 {
-                    qry = qry.Where(x => x.Agent.AgentPerson.PassportText.Contains(filter.Passport));
+                    qry = qry.Where(x => x.Agent.AgentPerson.Passport.Contains(filter.Passport));
                 }
                 if (!string.IsNullOrEmpty(filter.TaxCode))
                 {
