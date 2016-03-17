@@ -333,7 +333,7 @@ namespace BL.Database.Dictionaries
                 }
                 if (!string.IsNullOrEmpty(filter.Passport))
                 {
-                    qry = qry.Where(x => x.Passport.Contains(filter.Passport));
+                    qry = qry.Where(x => x.PassportText.Contains(filter.Passport));
                 }
                 if (!string.IsNullOrEmpty(filter.TaxCode))
                 {
@@ -542,16 +542,16 @@ namespace BL.Database.Dictionaries
                     IsActive = x.IsActive,
                     IsEmployee = true,
                     Description = x.Description,
-                    FirstName = x.AgentPerson.FirstName,
-                    LastName = x.AgentPerson.LastName,
-                    MiddleName = x.AgentPerson.MiddleName,
-                    TaxCode = x.AgentPerson.TaxCode,
-                    IsMale = x.AgentPerson.IsMale,
-                    PassportSerial = x.AgentPerson.PassportSerial,
-                    PassportNumber = x.AgentPerson.PassportNumber,
-                    PassportText = x.AgentPerson.PassportText,
-                    PassportDate = x.AgentPerson.PassportDate,
-                    BirthDate = x.AgentPerson.BirthDate,
+                    FirstName = x.Agent.AgentPerson.FirstName,
+                    LastName = x.Agent.AgentPerson.LastName,
+                    MiddleName = x.Agent.AgentPerson.MiddleName,
+                    TaxCode = x.Agent.AgentPerson.TaxCode,
+                    IsMale = x.Agent.AgentPerson.IsMale,
+                    PassportSerial = x.Agent.AgentPerson.PassportSerial,
+                    PassportNumber = x.Agent.AgentPerson.PassportNumber,
+                    PassportText = x.Agent.AgentPerson.PassportText,
+                    PassportDate = x.Agent.AgentPerson.PassportDate,
+                    BirthDate = x.Agent.AgentPerson.BirthDate,
                     Contacts = x.Agent.AgentContacts.Select(y => new FrontDictionaryContact
                     {
                         Id = y.Id,
@@ -606,19 +606,19 @@ namespace BL.Database.Dictionaries
                 }
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
-                    qry = qry.Where(x => x.AgentPerson.FullName.Contains(filter.Name));
+                    qry = qry.Where(x => x.Agent.AgentPerson.FullName.Contains(filter.Name));
                 }
                 if (!string.IsNullOrEmpty(filter.Passport))
                 {
-                    qry = qry.Where(x => x.AgentPerson.Passport.Contains(filter.Passport));
+                    qry = qry.Where(x => x.Agent.AgentPerson.PassportText.Contains(filter.Passport));
                 }
                 if (!string.IsNullOrEmpty(filter.TaxCode))
                 {
-                    qry = qry.Where(x => x.AgentPerson.TaxCode.Contains(filter.TaxCode));
+                    qry = qry.Where(x => x.Agent.AgentPerson.TaxCode.Contains(filter.TaxCode));
                 }
                 if (filter.BirthDate != null)
                 {
-                    qry = qry.Where(x => x.AgentPerson.BirthDate == filter.BirthDate);
+                    qry = qry.Where(x => x.Agent.AgentPerson.BirthDate == filter.BirthDate);
                 }
 
                 return qry.Select(x => new FrontDictionaryAgentEmployee
@@ -628,16 +628,16 @@ namespace BL.Database.Dictionaries
                     IsActive = x.IsActive,
                     IsEmployee = true,
                     Description = x.Description,
-                    FirstName = x.AgentPerson.FirstName,
-                    LastName = x.AgentPerson.LastName,
-                    MiddleName = x.AgentPerson.MiddleName,
-                    TaxCode = x.AgentPerson.TaxCode,
-                    IsMale = x.AgentPerson.IsMale,
-                    PassportSerial = x.AgentPerson.PassportSerial,
-                    PassportNumber = x.AgentPerson.PassportNumber,
-                    PassportText = x.AgentPerson.PassportText,
-                    PassportDate = x.AgentPerson.PassportDate,
-                    BirthDate = x.AgentPerson.BirthDate,
+                    FirstName = x.Agent.AgentPerson.FirstName,
+                    LastName = x.Agent.AgentPerson.LastName,
+                    MiddleName = x.Agent.AgentPerson.MiddleName,
+                    TaxCode = x.Agent.AgentPerson.TaxCode,
+                    IsMale = x.Agent.AgentPerson.IsMale,
+                    PassportSerial = x.Agent.AgentPerson.PassportSerial,
+                    PassportNumber = x.Agent.AgentPerson.PassportNumber,
+                    PassportText = x.Agent.AgentPerson.PassportText,
+                    PassportDate = x.Agent.AgentPerson.PassportDate,
+                    BirthDate = x.Agent.AgentPerson.BirthDate,
                     Contacts = x.Agent.AgentContacts.Select(y => new FrontDictionaryContact
                     {
                         Id = y.Id,
