@@ -42,7 +42,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             }
             if (_document.LinkId.HasValue && _document.ParentDocumentLinkId.HasValue && (_document.LinkId == _document.ParentDocumentLinkId))
             {
-                throw new DocumentHasAlreadyHadLink();
+                throw new DocumentHasAlreadyHasLink();
             }
             _context.SetCurrentPosition(_document.ExecutorPositionId);
             _admin.VerifyAccess(_context, CommandType);
