@@ -47,7 +47,7 @@ namespace BL.Logic.DocumentCore.Commands
         }
         public override object Execute()
         {
-            var events = CommonDocumentUtilities.GetNewDocumentEvents(_context, Model.DocumentId, EnumEventTypes.AddNote, Model.Description);
+            var events = CommonDocumentUtilities.GetNewDocumentEvents(_context, Model.DocumentId, EnumEventTypes.AddNote, Model.EventDate, Model.Description);
             _operationDb.AddDocumentEvents(_context, events);
             return null;
         }

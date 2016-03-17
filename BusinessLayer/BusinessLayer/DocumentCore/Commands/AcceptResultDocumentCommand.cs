@@ -72,7 +72,7 @@ namespace BL.Logic.DocumentCore.Commands
         public override object Execute()
         {
             _docWait.ResultTypeId = Model.ResultTypeId;
-            _docWait.OffEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, _docWait.DocumentId, EnumEventTypes.AcceptResult, Model.Description, _docWait.OnEvent.Task, _docWait.OnEvent.TargetPositionId, null, _docWait.OnEvent.SourcePositionId);
+            _docWait.OffEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, _docWait.DocumentId, EnumEventTypes.AcceptResult, Model.EventDate, Model.Description, _docWait.OnEvent.Task, _docWait.OnEvent.TargetPositionId, null, _docWait.OnEvent.SourcePositionId);
             CommonDocumentUtilities.SetLastChange(_context, _document.Waits);
             CommonDocumentUtilities.SetLastChange(Context, _document.SendLists);
             _operationDb.CloseDocumentWait(_context, _document);

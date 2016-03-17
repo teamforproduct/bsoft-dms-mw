@@ -19,6 +19,16 @@ namespace BL.Logic.Common
     public static class CommonDocumentUtilities
     {
 
+        public static Dictionary<EnumDocumentActions, EnumSubscriptionStates> SubscriptionStatesForAction =
+    new Dictionary<EnumDocumentActions, EnumSubscriptionStates>
+        {
+                { EnumDocumentActions.AffixSigning, EnumSubscriptionStates.Sign },
+                { EnumDocumentActions.AffixАpproval, EnumSubscriptionStates.Аpproval },
+                { EnumDocumentActions.AffixVisaing, EnumSubscriptionStates.Visa },
+                { EnumDocumentActions.AffixАgreement, EnumSubscriptionStates.Аgreement },
+
+        };
+
         public static Dictionary<EnumDocumentActions, List<EnumEventTypes>> PermissibleEventTypesForAction =
     new Dictionary<EnumDocumentActions, List<EnumEventTypes>>
         {
@@ -169,7 +179,7 @@ namespace BL.Logic.Common
             };
         }
 
-        public static InternalDocumentEvent GetNewDocumentEvent(IContext context, int? documentId, EnumEventTypes eventType, string description = null, string task = null, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null)
+        public static InternalDocumentEvent GetNewDocumentEvent(IContext context, int? documentId, EnumEventTypes eventType, DateTime? eventDate = null, string description = null, string task = null, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null)
         {
             return new InternalDocumentEvent
             {
@@ -185,16 +195,16 @@ namespace BL.Logic.Common
                 TargetAgentId = targetAgentId,
                 LastChangeUserId = context.CurrentAgentId,
                 LastChangeDate = DateTime.Now,
-                Date = DateTime.Now,
+                Date = eventDate??DateTime.Now,
                 CreateDate = DateTime.Now,
             };
         }
 
-        public static IEnumerable<InternalDocumentEvent> GetNewDocumentEvents(IContext context, int? documentId, EnumEventTypes eventType, string description = null, string task = null, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null)
+        public static IEnumerable<InternalDocumentEvent> GetNewDocumentEvents(IContext context, int? documentId, EnumEventTypes eventType, DateTime? eventDate = null, string description = null, string task = null, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null)
         {
             return new List<InternalDocumentEvent>
             {
-                GetNewDocumentEvent(context,documentId,eventType,description,task,targetPositionId,targetAgentId,sourcePositionId,sourceAgentId),
+                GetNewDocumentEvent(context,documentId,eventType,eventDate,description,task,targetPositionId,targetAgentId,sourcePositionId,sourceAgentId),
             };
         }
 
@@ -218,7 +228,7 @@ namespace BL.Logic.Common
                 AttentionDate = controlOnModel.AttentionDate,
                 LastChangeUserId = context.CurrentAgentId,
                 LastChangeDate = DateTime.Now,
-                OnEvent = eventType == null ? null : GetNewDocumentEvent(context, controlOnModel.DocumentId, eventType.Value, controlOnModel.Description, controlOnModel.Task)
+                OnEvent = eventType == null ? null : GetNewDocumentEvent(context, controlOnModel.DocumentId, eventType.Value, controlOnModel.EventDate, controlOnModel.Description, controlOnModel.Task)
             };
         }
 
@@ -242,7 +252,7 @@ namespace BL.Logic.Common
                 OnEvent = eventType == null ? null :
                             GetNewDocumentEvent
                             (
-                                context, sendListModel.DocumentId, eventType.Value, sendListModel.Description, sendListModel.Task,
+                                context, sendListModel.DocumentId, eventType.Value, null, sendListModel.Description, sendListModel.Task,
                                 eventCorrespondentType == EnumEventCorrespondentType.FromSourceToSource ? sendListModel.SourcePositionId : sendListModel.TargetPositionId,
                                 null,
                                 eventCorrespondentType == EnumEventCorrespondentType.FromTargetToTarget ? sendListModel.TargetPositionId : sendListModel.SourcePositionId,
@@ -270,7 +280,7 @@ namespace BL.Logic.Common
                 SendEvent = eventType == null ? null :
                             GetNewDocumentEvent
                             (
-                                context, sendListModel.DocumentId, eventType.Value, sendListModel.Description, sendListModel.Task,
+                                context, sendListModel.DocumentId, eventType.Value, null, sendListModel.Description, sendListModel.Task,
                                 sendListModel.TargetPositionId,
                                 null,
                                 sendListModel.SourcePositionId,

@@ -51,7 +51,7 @@ namespace BL.Logic.DocumentCore.Commands
             if (Model?.Positions.Count == 0)
             {
                 var evt = CommonDocumentUtilities.GetNewDocumentEvent(_context, Model.DocumentId,
-                    EnumEventTypes.SendMessage, Model.Description, null);
+                    EnumEventTypes.SendMessage, Model.EventDate, Model.Description, null);
                 evt.TargetPositionId = null;
                 evtToAdd.Add(evt);
             }
@@ -69,7 +69,7 @@ namespace BL.Logic.DocumentCore.Commands
                         : "");
 
                 evtToAdd.AddRange(actuelPosList.Select(targetPositionId => 
-                            CommonDocumentUtilities.GetNewDocumentEvent(_context, Model.DocumentId, EnumEventTypes.SendMessage, description, null, targetPositionId)));
+                            CommonDocumentUtilities.GetNewDocumentEvent(_context, Model.DocumentId, EnumEventTypes.SendMessage, Model.EventDate, description, null, targetPositionId)));
             }
             _operationDb.AddDocumentEvents(_context, evtToAdd);
 

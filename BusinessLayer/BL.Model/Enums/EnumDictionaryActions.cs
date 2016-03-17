@@ -8,11 +8,11 @@
         /// <summary>
         /// Добавить тип документа
         /// </summary>
-        AddDocumentType = 201001, 
+        AddDocumentType = 201001,
         /// <summary>
         /// Изменить тип документа
         /// </summary>
-        ModifyDocumentType = 201005, 
+        ModifyDocumentType = 201005,
         /// <summary>
         /// Удалить тип документа
         /// </summary>
@@ -22,11 +22,11 @@
         /// <summary>
         /// Добавить тип адреса
         /// </summary>
-        AddAddressType = 202001,   
+        AddAddressType = 202001,
         /// <summary>
         /// Изменить тип адреса
         /// </summary>       
-        ModifyAddressType = 202005,   
+        ModifyAddressType = 202005,
         /// <summary>
         /// Удалить тип адреса
         /// </summary>       
@@ -48,9 +48,9 @@
         AddContactType = 205001,
         ModifyContactType = 205005,
         DeleteContactType = 205009,
-        AddAgentAddress =208001,
-        ModifyAgentAddress=208005,
-        DeleteAgentAddress=208009,
+        AddAgentAddress = 208001,
+        ModifyAgentAddress = 208005,
+        DeleteAgentAddress = 208009,
         #region DictionaryDocumentSubject
         /// <summary>
         /// Добавить тип адреса
@@ -78,15 +78,15 @@
         /// <summary>
         /// Добавить тэг
         /// </summary>
-        AddTag = 291001, 
+        AddTag = 291001,
         /// <summary>
         /// Изменить тэг
         /// </summary>
-        ModifyTag = 291005, 
+        ModifyTag = 291005,
         /// <summary>
         /// Удалить тэг
         /// </summary>
-        DeleteTag = 291009, 
+        DeleteTag = 291009,
 
         /// <summary>
         /// Добавить тип пользовательского словаря
