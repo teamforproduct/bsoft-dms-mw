@@ -30,7 +30,8 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// Название тематики документа.
         /// </summary>
         public string Name { get; set; }
-        
-       
+
+        // !!! После добавления полей внеси изменения в BL.Logic.Common.CommonDictionaryUtilities.DocumentSubjectModifyToInternal
+
     }
 }

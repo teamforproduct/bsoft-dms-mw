@@ -172,7 +172,7 @@ namespace BL.Logic.DictionaryCore
         public FrontDictionaryDocumentSubject GetDictionaryDocumentSubject(IContext context, int id)
         {
 
-            return _dictDb.GetDictionaryDocumentSubjects(context, new FilterDictionaryDocumentSubject {DocumentSubjectId = new List<int> {id}}).FirstOrDefault();
+            return _dictDb.GetDictionaryDocumentSubjects(context, new FilterDictionaryDocumentSubject {IDs = new List<int> {id}}).FirstOrDefault();
         }
 
         public IEnumerable<FrontDictionaryDocumentSubject> GetDictionaryDocumentSubjects(IContext context, FilterDictionaryDocumentSubject filter)
@@ -253,13 +253,13 @@ namespace BL.Logic.DictionaryCore
         #endregion DictionaryPositions
 
         #region DictionaryRegistrationJournals
-        public BaseDictionaryRegistrationJournal GetDictionaryRegistrationJournal(IContext context, int id)
+        public FrontDictionaryRegistrationJournal GetDictionaryRegistrationJournal(IContext context, int id)
         {
 
-            return _dictDb.GetDictionaryRegistrationJournal(context, id);
+            return _dictDb.GetDictionaryRegistrationJournals(context, new FilterDictionaryRegistrationJournal { IDs = new List<int> { id } }).FirstOrDefault();
         }
 
-        public IEnumerable<BaseDictionaryRegistrationJournal> GetDictionaryRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter)
+        public IEnumerable<FrontDictionaryRegistrationJournal> GetDictionaryRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter)
         {
 
             return _dictDb.GetDictionaryRegistrationJournals(context, filter);

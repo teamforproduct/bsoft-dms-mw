@@ -4,7 +4,7 @@ using BL.Model.DictionaryCore.IncomingModel;
 namespace BL.Model.DictionaryCore.InternalModel
 {
     /// <summary>
-    /// Модель внутренняя. Расширенная.
+    /// Internal элемент справочника "Тематики документов"
     /// </summary>
     public class InternalDictionaryDocumentSubject :  LastChangeInfo
     {
@@ -28,6 +28,8 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// Ссылка на родителя.
         /// </summary>
         public int? ParentId { get; set; }
+
+        // !!! После добавления полей внеси изменения в BL.Logic.Common.CommonDictionaryUtilities.RegistrationJournalModifyToInternal
 
     }
 }

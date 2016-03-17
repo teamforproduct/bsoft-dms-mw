@@ -61,6 +61,7 @@
     <Compile Include="DictionaryCore\FrontModel\FrontCustomDictionary.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontCustomDictionaryType.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAddressType.cs" />
+    <Compile Include="DictionaryCore\FrontModel\FrontDictionaryRegistrationJournal.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentEmployee.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryDocumentSubject.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgent.cs" />
@@ -73,6 +74,7 @@
     <Compile Include="DictionaryCore\IncomingModel\ModifyCustomDictionaryType.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAddressType.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentEmployee.cs" />
+    <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryRegistrationJournal.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryDocumentSubject.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgent.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentAddress.cs" />
@@ -88,6 +90,7 @@
     <Compile Include="DictionaryCore\InternalModel\InternalCustomDictionaryType.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAddressType.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAgentEmployee.cs" />
+    <Compile Include="DictionaryCore\InternalModel\InternalDictionaryRegistrationJournal.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryDocumentSubject.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAgent.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAgentAddress.cs" />

@@ -4,6 +4,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BL.Database.DBModel.Dictionary
 {
+    // Класс нативно отображает структуру таблицы DictionaryDocumentSubjects и ее связи (ParentDocumentSubject и ChildDocumentSubjects)
+    // Этот класс сгененирован автоматически
+    // Виртуальные свойства предписаны спецификацией Entity
+    // Рассположение аттрибута [ForeignKey("ParentId")] также важно. Аттрибут должен рассполагаться над виртуальным свойством
+    // Содержание класса должно строго соответствовать таблице. В противном случае из-за разности версий весь проект не стыкуется с базой. Все запросы перестают работать.
     public class DictionaryDocumentSubjects
     {
         public DictionaryDocumentSubjects()

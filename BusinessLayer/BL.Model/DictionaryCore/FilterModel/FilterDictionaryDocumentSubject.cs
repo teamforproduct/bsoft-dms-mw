@@ -8,19 +8,30 @@ namespace BL.Model.DictionaryCore.FilterModel
     // В этой модели целесообразно все поля, объявленные простыми типами, делать Nullable, чтобы при формировании Where можно было проверить на if != null
     public class FilterDictionaryDocumentSubject
     {
-        public List<int> DocumentSubjectId { get; set; }
-        public string Name { get; set; }
         /// <summary>
-        /// Сужение по активности элементов. Если IsActive == Null, то в запросе не учавствует
+        /// Список ID
+        /// </summary>
+        public List<int> IDs { get; set; }
+
+        /// <summary>
+        /// Исключение записей по ID
+        /// </summary>
+        public List<int> NotContainsIDs { get; set; }
+
+        /// <summary>
+        /// Сужение по активности элементов
         /// </summary>
         public bool? IsActive { get; set; }
-
-        public int? ParentId { get; set; }
         
         /// <summary>
-        /// 
+        /// Сужение по названию тематики
         /// </summary>
-        public List<int> NotContainsId { get; set; }
-
+        public string Name { get; set; }
+        
+        /// <summary>
+        /// Родительская тематика
+        /// </summary>
+        public int? ParentId { get; set; }
+        
     }
 }

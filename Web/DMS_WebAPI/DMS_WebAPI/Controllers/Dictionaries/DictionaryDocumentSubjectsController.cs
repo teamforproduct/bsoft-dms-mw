@@ -14,7 +14,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
     public class DictionaryDocumentSubjectsController : ApiController
     {
         /// <summary>
-        /// Возвращает список тематик документов
+        /// Возвращает записи из словаря "Тематики документов"
         /// </summary>
         /// <param name="filter">Параметры для фильтрации тематик документов</param>
         /// <returns>FrontDictionaryDocumentSubject</returns>
@@ -28,7 +28,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         }
 
         /// <summary>
-        /// Возвращает тематику документов по ID 
+        /// Возвращает записи из словаря "Тематики документов" по ID 
         /// </summary>
         /// <param name="id"></param>
         /// <returns>FrontDictionaryDocumentSubject</returns>
@@ -42,10 +42,10 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         }
 
         /// <summary>
-        /// Добавление тематики документов
+        /// Добавление записи в словаре "Тематики документов"
         /// </summary>
         /// <param name="model">ModifyDictionaryDocumentSubject</param>
-        /// <returns> Запись словаря тематики документов</returns>
+        /// <returns>Запись из словаря "Тематики документов"</returns>
         public IHttpActionResult Post([FromBody]ModifyDictionaryDocumentSubject model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
@@ -54,14 +54,13 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         }
 
         /// <summary>
-        /// Изменение словаря тип документа 
+        /// Изменение записи в словаре "Тематики документов"
         /// </summary>
         /// <param name="id">int</param>
         /// <param name="model">ModifyDictionaryDocumentSubject</param>
-        /// <returns>Запись словаря тематики документов</returns>
+        /// <returns>Запись из словаря "Тематики документов"</returns>
         public IHttpActionResult Put(int id, [FromBody]ModifyDictionaryDocumentSubject model)
         {
-
             // Спецификация REST требует отдельного указания ID, несмотря на то, что параметр ID есть в ModifyDictionaryDocumentSubject
             
             model.Id = id;
@@ -72,7 +71,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         }
 
         /// <summary>
-        /// Удаляет из справочника запись
+        /// Удаление записи в словаре "Тематики документов"
         /// </summary>
         /// <returns>FrontDictionaryDocumentSubject</returns> 
         public IHttpActionResult Delete([FromUri] int id)

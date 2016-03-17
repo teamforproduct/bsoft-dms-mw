@@ -43,7 +43,7 @@ namespace BL.Logic.DictionaryCore.DocumentType
 
             _admin.VerifyAccess(_context, CommandType, false);
 
-            if (_dictDb.ExistsDictionaryDocumentSubject(_context, new FilterDictionaryDocumentSubject { Name = Model.Name, ParentId = Model.ParentId, NotContainsId = new List<int> { Model.Id } }))
+            if (_dictDb.ExistsDictionaryDocumentSubject(_context, new FilterDictionaryDocumentSubject { Name = Model.Name, ParentId = Model.ParentId, NotContainsIDs = new List<int> { Model.Id } }))
             {
                 throw new DictionaryRecordNotUnique();
             }
