@@ -443,6 +443,7 @@ namespace BL.Database.Documents
                     {
                         Id = subscription.Id,
                         Description = subscription.Description,
+                        SubscriptionStateId = (int)subscription.SubscriptionStates,
                         Hash = subscription.Hash,
                         LastChangeDate = subscription.LastChangeDate,
                         LastChangeUserId = subscription.LastChangeUserId
@@ -455,6 +456,7 @@ namespace BL.Database.Documents
                     var entry = dbContext.Entry(subscriptionDb);
                     entry.Property(x => x.Id).IsModified = true;
                     entry.Property(x => x.Description).IsModified = true;
+                    entry.Property(x => x.SubscriptionStateId).IsModified = true;
                     entry.Property(x => x.Hash).IsModified = true;
                     entry.Property(x => x.LastChangeDate).IsModified = true;
                     entry.Property(x => x.LastChangeUserId).IsModified = true;

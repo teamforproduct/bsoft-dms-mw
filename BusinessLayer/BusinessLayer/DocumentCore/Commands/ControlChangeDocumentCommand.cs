@@ -71,7 +71,7 @@ namespace BL.Logic.DocumentCore.Commands
             var newWait = CommonDocumentUtilities.GetNewDocumentWait(_context, controlOn);
             newWait.Id = _docWait.Id;
 
-            var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, _docWait.DocumentId, _docWait.OnEvent.EventType, Model.Description, _docWait.OnEvent.Task, _docWait.OnEvent.TargetPositionId);
+            var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, _docWait.DocumentId, _docWait.OnEvent.EventType, Model.EventDate, Model.Description, _docWait.OnEvent.Task, _docWait.OnEvent.TargetPositionId);
             var oldEvent = _docWait.OnEvent;
 
             newEvent.Id = newWait.OnEventId = oldEvent.Id;

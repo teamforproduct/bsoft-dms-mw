@@ -71,12 +71,13 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override object Execute()
         {
-            _docWait.OffEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, _docWait.DocumentId, _eventType, Model.Description, _docWait.OnEvent.Task, _docWait.OnEvent.TargetPositionId, null, _docWait.OnEvent.SourcePositionId);
+            _docWait.OffEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, _docWait.DocumentId, _eventType, Model.EventDate, Model.Description, _docWait.OnEvent.Task, _docWait.OnEvent.TargetPositionId, null, _docWait.OnEvent.SourcePositionId);
             CommonDocumentUtilities.SetLastChange(_context, _document.Waits);
             CommonDocumentUtilities.SetLastChange(Context, _document.SendLists);
             var subscription = _document.Subscriptions.First();
             subscription.Description = Model.VisaText;
             subscription.DoneEvent = _docWait.OffEvent;
+            subscription.SubscriptionStates = CommonDocumentUtilities.SubscriptionStatesForAction[CommandType];
             //TODO HASH!!!!
             CommonDocumentUtilities.SetLastChange(Context, _document.Subscriptions);
             _operationDb.CloseDocumentWait(_context, _document);
