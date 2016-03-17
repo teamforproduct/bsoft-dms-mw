@@ -75,6 +75,9 @@
         ModifyAgent = 206005,
         DeleteAgent = 206009,
 
+        AddRegistrationJournal,
+        ModifyRegistrationJournal,
+        DeleteRegistrationJournal,
         /// <summary>
         /// Добавить тэг
         /// </summary>
