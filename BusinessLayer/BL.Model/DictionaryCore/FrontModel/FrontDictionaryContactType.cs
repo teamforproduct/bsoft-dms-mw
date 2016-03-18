@@ -8,6 +8,9 @@ using BL.Model.DictionaryCore.IncomingModel;
 
 namespace BL.Model.DictionaryCore.FrontModel
 {
+    /// <summary>
+    /// типы контактов
+    /// </summary>
     public class FrontDictionaryContactType : ModifyDictionaryContactType
     {
         /// <summary>

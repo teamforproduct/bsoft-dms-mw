@@ -612,7 +612,9 @@ namespace BL.Database.Dictionaries
                 }
                 if (!string.IsNullOrEmpty(filter.Passport))
                 {
-                    qry = qry.Where(x => x.Agent.AgentPerson.Passport.Contains(filter.Passport));
+                    qry = qry.Where(x => (x.Agent.AgentPerson.PassportSerial + "-" + x.Agent.AgentPerson.PassportNumber + " " + 
+                                          x.Agent.AgentPerson.PassportDate.ToString() + " " + 
+                                          x.Agent.AgentPerson.PassportText).Contains(filter.Passport));
                 }
                 if (!string.IsNullOrEmpty(filter.TaxCode))
                 {
@@ -933,7 +935,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<BaseDictionaryCompany> GetDictionaryCompanies(IContext context, FilterDictionaryCompany filter)
+        public IEnumerable<BaseDictionaryCompany> GetDictionaryCompanies(IContext context, FilterDictionaryAgentCompany filter)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {

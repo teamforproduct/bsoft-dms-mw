@@ -21,11 +21,25 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// Признак активности агента
         /// </summary>
         public bool? IsActive { get; set; }
-
+        /// <summary>
+        /// является физлицом
+        /// </summary>
         public bool? IsIndividual { get; set; }
+        /// <summary>
+        /// ъявляется юрлицом
+        /// </summary>
         public bool? IsCompany { get; set; }
+        /// <summary>
+        /// является сотрудником
+        /// </summary>
         public bool? IsEmployee { get; set; }
+        /// <summary>
+        /// является банком
+        /// </summary>
         public bool? IsBank { get; set; }
+        /// <summary>
+        /// игнорировать при поиске
+        /// </summary>
         public List<int> NotContainsId { get; set; }
 
     }

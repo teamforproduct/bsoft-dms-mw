@@ -108,7 +108,7 @@ namespace BL.Logic.DictionaryCore
             return _dictDb.GetDictionaryCompany(context, id);
         }
 
-        public IEnumerable<BaseDictionaryCompany> GetDictionaryCompanies(IContext context, FilterDictionaryCompany filter)
+        public IEnumerable<BaseDictionaryCompany> GetDictionaryCompanies(IContext context, FilterDictionaryAgentCompany filter)
         {
 
             return _dictDb.GetDictionaryCompanies(context, filter);

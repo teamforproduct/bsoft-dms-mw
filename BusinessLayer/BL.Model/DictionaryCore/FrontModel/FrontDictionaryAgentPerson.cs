@@ -84,19 +84,26 @@ namespace BL.Model.DictionaryCore.FrontModel
             }
 
         }
-
+        /// <summary>
+        /// является юрлицом
+        /// </summary>
         public override bool IsCompany {
             get  {
                 return false;
             }
         }
-
+        /// <summary>
+        /// является банком
+        /// </summary>
         public override bool IsBank
         {
             get  {
                 return false;
             }
         }
+        /// <summary>
+        /// является сотрудником
+        /// </summary>
         public override bool IsEmployee
         {
             get
@@ -104,6 +111,9 @@ namespace BL.Model.DictionaryCore.FrontModel
                 return false;
             }
         }
+        /// <summary>
+        /// является физлицом
+        /// </summary>
         public override bool IsIndividual
         {
             get

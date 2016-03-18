@@ -2,6 +2,9 @@
 
 namespace BL.Model.DictionaryCore.InternalModel
 {
+    /// <summary>
+    /// типы документов
+    /// </summary>
     public class InternalDictionaryDocumentType :  LastChangeInfo
     {
         /// <summary>

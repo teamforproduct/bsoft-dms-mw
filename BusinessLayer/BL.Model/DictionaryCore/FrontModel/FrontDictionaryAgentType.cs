@@ -7,6 +7,9 @@ using BL.Model.Enums;
 
 namespace BL.Model.DictionaryCore.FrontModel
 {
+    /// <summary>
+    /// Типы контрагентов. Модель пока не используется
+    /// </summary>
     public class FrontDictionaryAgentType
     {
         /// <summary>

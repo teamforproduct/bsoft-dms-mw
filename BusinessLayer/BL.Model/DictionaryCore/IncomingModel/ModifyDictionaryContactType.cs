@@ -7,6 +7,9 @@ using System.Runtime.Serialization;
 
 namespace BL.Model.DictionaryCore.IncomingModel
 {
+    /// <summary>
+    /// Типы контактов
+    /// </summary>
     public class ModifyDictionaryContactType
     {
         /// <summary>
@@ -22,7 +25,9 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// Признак активности
         /// </summary>
         public string InputMask { get; set; }
-
+        /// <summary>
+        /// признак активности
+        /// </summary>
         public bool IsActive { get; set; }
     }
 }

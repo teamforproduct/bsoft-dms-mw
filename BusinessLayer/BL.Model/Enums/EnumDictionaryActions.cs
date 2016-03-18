@@ -44,12 +44,29 @@
         /// Удалить контакт
         /// </summary>
         DeleteContact = 207009,
-
+        /// <summary>
+        /// добавить тип контакта
+        /// </summary>
         AddContactType = 205001,
+        /// <summary>
+        /// изменить тип контакта
+        /// </summary>
         ModifyContactType = 205005,
+        /// <summary>
+        /// удалить тип контакта
+        /// </summary>
         DeleteContactType = 205009,
+        /// <summary>
+        /// добавить адрес
+        /// </summary>
         AddAgentAddress = 208001,
+        /// <summary>
+        /// изменить адрес
+        /// </summary>
         ModifyAgentAddress = 208005,
+        /// <summary>
+        /// удалить адрес
+        /// </summary>
         DeleteAgentAddress = 208009,
         #region DictionaryDocumentSubject
         /// <summary>
@@ -65,14 +82,41 @@
         /// </summary>       
         DeleteDocumentSubject = 203009,
         #endregion DictionaryDocumentSubject
+        /// <summary>
+        /// добавить физлицо
+        /// </summary>
         AddAgentPerson = 209001,
+        /// <summary>
+        /// изменить физлицо
+        /// </summary>
         ModifyAgentPerson = 209005,
+        /// <summary>
+        /// удалить физлицо
+        /// </summary>
         DeleteAgentPerson = 209009,
+        /// <summary>
+        /// добавить сотрудника
+        /// </summary>
         AddAgentEmployee,
+        /// <summary>
+        /// изменить сотрудника
+        /// </summary>
         ModifyAgentEmployee,
+        /// <summary>
+        /// удалить сотрудника
+        /// </summary>
         DeleteAgentEmployee,
+        /// <summary>
+        /// добавить контраента
+        /// </summary>
         AddAgent = 206001,
+        /// <summary>
+        /// изменить контрагента
+        /// </summary>
         ModifyAgent = 206005,
+        /// <summary>
+        /// удалить контрагента
+        /// </summary>
         DeleteAgent = 206009,
 
         AddRegistrationJournal,

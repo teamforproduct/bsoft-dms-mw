@@ -6,14 +6,38 @@ using System.Threading.Tasks;
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
+    /// <summary>
+    /// фильтр для адресов агентов
+    /// </summary>
     public class FilterDictionaryAgentAddress
     {
+        /// <summary>
+        /// ИД
+        /// </summary>
         public int Id { get; set; }
+        /// <summary>
+        /// ИД агента
+        /// </summary>
         public int AgentId { get; set; }
+        /// <summary>
+        /// ссылка на тип адреса
+        /// </summary>
         public List<int> AddressTypeId { get; set; }
+        /// <summary>
+        /// индекс
+        /// </summary>
         public string PostCode { get; set; }
+        /// <summary>
+        /// адрес
+        /// </summary>
         public string Address { get; set; }
+        /// <summary>
+        /// признак активности
+        /// </summary>
         public bool? IsActive { get; set; }
+        /// <summary>
+        /// игнорировать при поиске
+        /// </summary>
         public List<int> NotContainsId { get; set; }
     }
 }

@@ -11,7 +11,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
     public class DictionaryCompaniesController : ApiController
     {
         // GET: api/DictionaryCompanies
-        public IHttpActionResult Get([FromUri] FilterDictionaryCompany filter)
+        public IHttpActionResult Get([FromUri] FilterDictionaryAgentCompany filter)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();

@@ -60,7 +60,7 @@ namespace BL.Database.Dictionaries.Interfaces
         #region DictionaryCompanies
         BaseDictionaryCompany GetDictionaryCompany(IContext context, int id);
 
-        IEnumerable<BaseDictionaryCompany> GetDictionaryCompanies(IContext context, FilterDictionaryCompany filter);
+        IEnumerable<BaseDictionaryCompany> GetDictionaryCompanies(IContext context, FilterDictionaryAgentCompany filter);
         #endregion DictionaryCompanies
 
         #region DictionaryContacts
