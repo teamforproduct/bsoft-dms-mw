@@ -219,9 +219,17 @@ namespace BL.Database.Dictionaries
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
 
+
                 var ddt = dbContext.DictionaryAgentsSet.FirstOrDefault(x => x.Id == agent.Id);
                 if (ddt != null)
                 {
+                    dbContext.DictionaryAgentAddressesSet.RemoveRange(
+                                   dbContext.DictionaryAgentAddressesSet.Where(x => x.AgentId == agent.Id)
+                                   );
+                    dbContext.DictionaryAgentContactsSet.RemoveRange(
+                                       dbContext.DictionaryAgentContactsSet.Where(x => x.AgentId == agent.Id)
+                                       );
+
                     dbContext.DictionaryAgentsSet.Remove(ddt);
 
                     dbContext.SaveChanges();
@@ -434,7 +442,10 @@ namespace BL.Database.Dictionaries
                         IsBank=false,
                         IsCompany=false,
                         IsEmployee=false,
-                        IsIndividual=true
+                        IsIndividual=true,
+                        LastChangeDate=person.LastChangeDate,
+                        LastChangeUserId=person.LastChangeUserId
+                        
                     };
                     UpdateDictionaryAgent(context, agent);
                 }
@@ -451,13 +462,14 @@ namespace BL.Database.Dictionaries
                 if (ddt != null)
                 {
                     dbContext.DictionaryAgentPersonsSet.Remove(ddt);
-                    
+                    dbContext.SaveChanges();
 
                     if (IsAgentOneRole(context,person.Id,EnumDictionaryAgentTypes.isIndividual)) {
                         DeleteDictionaryAgent(context, new InternalDictionaryAgent { Id = person.Id });
+                        dbContext.SaveChanges();
                     }
 
-                    dbContext.SaveChanges();
+                    
                 }
 
             }

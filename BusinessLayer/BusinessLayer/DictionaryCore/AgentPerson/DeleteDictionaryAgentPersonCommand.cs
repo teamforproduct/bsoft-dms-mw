@@ -28,7 +28,7 @@ namespace BL.Logic.DictionaryCore.AgentPerson
 
         public override bool CanExecute()
         {
-            _admin.VerifyAccess(_context, CommandType);
+            _admin.VerifyAccess(_context, CommandType,false,true);
             return true;
         }
 
