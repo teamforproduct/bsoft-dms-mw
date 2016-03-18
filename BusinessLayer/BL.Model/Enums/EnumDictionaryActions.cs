@@ -97,15 +97,15 @@
         /// <summary>
         /// добавить сотрудника
         /// </summary>
-        AddAgentEmployee,
+        AddAgentEmployee = 212001,
         /// <summary>
         /// изменить сотрудника
         /// </summary>
-        ModifyAgentEmployee,
+        ModifyAgentEmployee=212005,
         /// <summary>
         /// удалить сотрудника
         /// </summary>
-        DeleteAgentEmployee,
+        DeleteAgentEmployee=212009,
         /// <summary>
         /// добавить контраента
         /// </summary>

@@ -72,7 +72,7 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// </summary>
         public string ShortName { get
             {
-                return LastName?.Trim() + " " +FirstName?.Trim().Substring(1, 1) + "." + MiddleName?.Trim().Substring(1, 1) + ".";
+                return LastName?.Trim() + " " +FirstName?.Trim().Substring(0, 1) + "." + MiddleName?.Trim().Substring(0, 1) + ".";
             }
                 }
         /// <summary>
@@ -84,42 +84,6 @@ namespace BL.Model.DictionaryCore.FrontModel
             }
 
         }
-        /// <summary>
-        /// является юрлицом
-        /// </summary>
-        public override bool IsCompany {
-            get  {
-                return false;
-            }
-        }
-        /// <summary>
-        /// является банком
-        /// </summary>
-        public override bool IsBank
-        {
-            get  {
-                return false;
-            }
-        }
-        /// <summary>
-        /// является сотрудником
-        /// </summary>
-        public override bool IsEmployee
-        {
-            get
-            {
-                return false;
-            }
-        }
-        /// <summary>
-        /// является физлицом
-        /// </summary>
-        public override bool IsIndividual
-        {
-            get
-            {
-                return true;
-            }
-        }
+       
     }
 }
