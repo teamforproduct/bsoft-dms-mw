@@ -82,8 +82,17 @@
 
         // Агенты
         #region Agent
+        /// <summary>
+        /// добавить контраента
+        /// </summary>
         AddAgent = 206001,
+        /// <summary>
+        /// изменить контрагента
+        /// </summary>
         ModifyAgent = 206005,
+        /// <summary>
+        /// удалить контрагента
+        /// </summary>
         DeleteAgent = 206009,
         #endregion Agent
 
@@ -103,18 +112,8 @@
         DeleteContact = 207009,
         #endregion Contacts
 
-        /// <summary>
-        /// добавить тип контакта
-        /// </summary>
-        AddContactType = 205001,
-        /// <summary>
-        /// изменить тип контакта
-        /// </summary>
-        ModifyContactType = 205005,
-        /// <summary>
-        /// удалить тип контакта
-        /// </summary>
-        DeleteContactType = 205009,
+        // Адреса
+        #region AgentAddress
         /// <summary>
         /// добавить адрес
         /// </summary>
@@ -131,8 +130,17 @@
 
         // Persons
         #region AgentPersons
+        /// <summary>
+        /// добавить физлицо
+        /// </summary>
         AddAgentPerson = 209001,
+        /// <summary>
+        /// изменить физлицо
+        /// </summary>
         ModifyAgentPerson = 209005,
+        /// <summary>
+        /// удалить физлицо
+        /// </summary>
         DeleteAgentPerson = 209009,
         #endregion AgentPersons
 
@@ -148,28 +156,11 @@
         /// </summary>
         ModifyDepartment = 210005,
 
-        /// <summary>
-        /// Удалить тип адреса
-        /// </summary>       
-        DeleteDocumentSubject = 203009,
-        #endregion DictionaryDocumentSubject
-        /// <summary>
-        /// добавить физлицо
-        /// </summary>
-        AddAgentPerson = 209001,
-        /// <summary>
-        /// изменить физлицо
-        /// </summary>
-        ModifyAgentPerson = 209005,
-        /// <summary>
-        /// удалить физлицо
-        /// </summary>
-        DeleteAgentPerson = 209009,
         /// Удалить запись в справочнике "Структура предприятия"
         /// </summary>
         DeleteDepartment = 210009,
         #endregion DictionaryDepartment
-
+     
         // Штатное расписание
         #region DictionaryPositions
         /// <summary>
@@ -188,6 +179,8 @@
         DeletePosition = 211009,
         #endregion DictionaryDepartment
 
+        // Сотрудники
+        #region AgentEmployee
         /// <summary>
         /// добавить сотрудника
         /// </summary>
@@ -200,22 +193,7 @@
         /// удалить сотрудника
         /// </summary>
         DeleteAgentEmployee=212009,
-        /// <summary>
-        /// добавить контраента
-        /// </summary>
-        AddAgent = 206001,
-        /// <summary>
-        /// изменить контрагента
-        /// </summary>
-        ModifyAgent = 206005,
-        /// <summary>
-        /// удалить контрагента
-        /// </summary>
-        DeleteAgent = 206009,
-
-        AddRegistrationJournal,
-        ModifyRegistrationJournal,
-        DeleteRegistrationJournal,
+        #endregion AgentEmployee
         
         // Тэги
         #region Tags

@@ -37,13 +37,13 @@ namespace BL.Database.Dictionaries
                 switch (source)
                 {
                     case EnumDictionaryAgentTypes.isEmployee:
-                        if ( !agent.IsCompany && !agent.IsBank) { return true; }
+                        if (!agent.IsCompany && !agent.IsBank) { return true; }
                         break;
                     case EnumDictionaryAgentTypes.isCompany:
                         if (!agent.IsIndividual && !agent.IsEmployee && !agent.IsBank) { return true; }
                         break;
                     case EnumDictionaryAgentTypes.isIndividual:
-                        if ( !agent.IsCompany && !agent.IsBank) { return true; }
+                        if (!agent.IsCompany && !agent.IsBank) { return true; }
                         break;
                     case EnumDictionaryAgentTypes.isBank:
                         if (!agent.IsEmployee && !agent.IsCompany && !agent.IsIndividual) { return true; }
@@ -439,14 +439,14 @@ namespace BL.Database.Dictionaries
                     {
                         Id = person.Id,
                         Name = person.LastName.Trim() + " " + person.FirstName.Trim() + " " + person.MiddleName.Trim(),
-                        IsActive=person.IsActive,
-                        Description=person.Description,
-                        IsBank=false,
-                        IsCompany=false,
-                        IsEmployee=false,
-                        IsIndividual=true,
-                        LastChangeDate=person.LastChangeDate,
-                        LastChangeUserId=person.LastChangeUserId
+                        IsActive = person.IsActive,
+                        Description = person.Description,
+                        IsBank = false,
+                        IsCompany = false,
+                        IsEmployee = false,
+                        IsIndividual = true,
+                        LastChangeDate = person.LastChangeDate,
+                        LastChangeUserId = person.LastChangeUserId
                     };
                     UpdateDictionaryAgent(context, agent);
                 }
@@ -472,7 +472,7 @@ namespace BL.Database.Dictionaries
                         dbContext.SaveChanges();
                     }
 
-                    
+
                 }
 
             }
@@ -612,7 +612,7 @@ namespace BL.Database.Dictionaries
                 var ddt = new DictionaryAgentEmployees
                 {
                     Id = employee.Id,
-                    PersonnelNumber=employee.PersonnelNumber,
+                    PersonnelNumber = employee.PersonnelNumber,
                     Description = employee.Description,
                     LastChangeDate = employee.LastChangeDate,
                     LastChangeUserId = employee.LastChangeUserId,
@@ -642,7 +642,7 @@ namespace BL.Database.Dictionaries
                     LastChangeUserId = employee.LastChangeUserId,
                     IsActive = employee.IsActive
                 });
-               
+
             }
         }
         public void DeleteDictionaryAgentEmployee(IContext context, InternalDictionaryAgentEmployee employee)
@@ -670,24 +670,24 @@ namespace BL.Database.Dictionaries
                     var newAgent = new InternalDictionaryAgentPerson
                     {
                         LastName = employee.LastName,
-                        FirstName= employee.FirstName,
-                        MiddleName=employee.MiddleName,
+                        FirstName = employee.FirstName,
+                        MiddleName = employee.MiddleName,
                         IsActive = employee.IsActive,
                         Description = employee.Description,
-                        TaxCode=employee.TaxCode,
-                        BirthDate=employee.BirthDate,
-                        IsMale=employee.IsMale,
-                        PassportSerial=employee.PassportSerial,
-                        PassportNumber=employee.PassportNumber,
-                        PassportDate=employee.PassportDate,
-                        PassportText=employee.PassportText,
+                        TaxCode = employee.TaxCode,
+                        BirthDate = employee.BirthDate,
+                        IsMale = employee.IsMale,
+                        PassportSerial = employee.PassportSerial,
+                        PassportNumber = employee.PassportNumber,
+                        PassportDate = employee.PassportDate,
+                        PassportText = employee.PassportText,
                         LastChangeDate = employee.LastChangeDate,
                         LastChangeUserId = employee.LastChangeUserId,
                     };
                     employee.Id = AddDictionaryAgentPerson(context, newAgent);
                 }
                 else {
-                   
+
                     UpdateDictionaryAgent(context, new InternalDictionaryAgent
                     {
                         Id = agent.Id,
@@ -707,8 +707,8 @@ namespace BL.Database.Dictionaries
                 var ddt = new DictionaryAgentEmployees
                 {
                     Id = employee.Id,
-                    AgentPersonId=employee.Id,
-                    PersonnelNumber=employee.PersonnelNumber,
+                    AgentPersonId = employee.Id,
+                    PersonnelNumber = employee.PersonnelNumber,
                     Description = employee.Description,
                     LastChangeDate = employee.LastChangeDate,
                     LastChangeUserId = employee.LastChangeUserId,
@@ -743,8 +743,8 @@ namespace BL.Database.Dictionaries
                 }
                 if (!string.IsNullOrEmpty(filter.Passport))
                 {
-                    qry = qry.Where(x => (x.Agent.AgentPerson.PassportSerial + "-" + x.Agent.AgentPerson.PassportNumber + " " + 
-                                          x.Agent.AgentPerson.PassportDate.ToString() + " " + 
+                    qry = qry.Where(x => (x.Agent.AgentPerson.PassportSerial + "-" + x.Agent.AgentPerson.PassportNumber + " " +
+                                          x.Agent.AgentPerson.PassportDate.ToString() + " " +
                                           x.Agent.AgentPerson.PassportText).Contains(filter.Passport));
                 }
                 if (!string.IsNullOrEmpty(filter.TaxCode))
@@ -2035,7 +2035,7 @@ namespace BL.Database.Dictionaries
         // Должности
         #region DictionaryPositions
 
-     
+
 
         public int AddPosition(IContext context, InternalDictionaryPosition position)
         {
@@ -2256,50 +2256,72 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
-                var qry = dbContext.DictionaryPositionsSet.AsQueryable();
+                var qry = dbContext.DictionaryPositionsSet.Select(x => new { pos = x, subordMax = 0 }).AsQueryable();
 
-                qry = PositionGetWhere(ref qry, filter);
+                if (filter.IDs?.Count > 0)
+                {
+                    qry = qry.Where(x => filter.IDs.Contains(x.pos.Id));
+                }
+
+                if (filter.DocumentId?.Count > 0)
+                {
+                    qry = qry.Where(x =>
+                            dbContext.DocumentEventsSet
+                                .Where(y => filter.DocumentId.Contains(y.DocumentId)).Select(y => y.SourcePositionId).Contains(x.pos.Id)
+                                ||
+                                dbContext.DocumentEventsSet
+                                .Where(y => filter.DocumentId.Contains(y.DocumentId)).Select(y => y.TargetPositionId).Contains(x.pos.Id)
+                                );
+                }
+
+                if (filter.SubordinatedPositions?.Count > 0)
+                {
+                    qry = qry.GroupJoin(
+                                        dbContext.AdminSubordinationsSet.Where(y => filter.SubordinatedPositions.Contains(y.SourcePositionId)),
+                                        x => x.pos.Id,
+                                        y => y.TargetPositionId,
+                                        (x, y) => new { pos = x.pos, subordMax = y.Max(z => z.SubordinationTypeId) }
+                                        )
+                             .Where(x => x.subordMax > 0);
+                }
 
                 var res = qry.Select(x => new FrontDictionaryPosition
                 {
-                    Id = x.Id
+                    Id = x.pos.Id
                 }).FirstOrDefault();
 
                 return res != null;
             }
         }
 
-        private static IQueryable<DictionaryPositions> PositionGetWhere(ref IQueryable<DictionaryPositions> qry, FilterDictionaryPosition filter)
-        {
-            // Условие по ID
-            if (filter.IDs?.Count > 0)
-            {
-                qry = qry.Where(x => filter.IDs.Contains(x.Id));
-            }
+        //private static IQueryable<DictionaryPositions> PositionGetWhere(ref IQueryable<DictionaryPositions> qry, FilterDictionaryPosition filter)
+        //{
+        //    // Условие по ID
+        //    if (filter.IDs?.Count > 0)
+        //    {
+        //        qry = qry.Where(x => filter.IDs.Contains(x.Id));
+        //    }
 
-            // Условие по NotContainsId
-            if (filter.NotContainsIDs?.Count > 0)
-            {
-                qry = qry.Where(x => !filter.NotContainsIDs.Contains(x.Id));
-            }
+        //    // Условие по NotContainsId
+        //    if (filter.NotContainsIDs?.Count > 0)
+        //    {
+        //        qry = qry.Where(x => !filter.NotContainsIDs.Contains(x.Id));
+        //    }
 
-            // Условие по IsActive
-            if (filter.IsActive != null)
-            {
-                qry = qry.Where(x => filter.IsActive == x.IsActive);
-            }
+        //    // Условие по IsActive
+        //    if (filter.IsActive != null)
+        //    {
+        //        qry = qry.Where(x => filter.IsActive == x.IsActive);
+        //    }
 
-            // Условие по Name
-            if (!String.IsNullOrEmpty(filter.Name))
-            {
-                qry = qry.Where(x => x.Name.Contains(filter.Name));
-            }
+        //    // Условие по Name
+        //    if (!String.IsNullOrEmpty(filter.Name))
+        //    {
+        //        qry = qry.Where(x => x.Name.Contains(filter.Name));
+        //    }
 
-           
-            
-
-            return qry;
-        }
+        //    return qry;
+        //}
 
         #endregion DictionaryPositions
 
