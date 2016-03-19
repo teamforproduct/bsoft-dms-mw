@@ -16,7 +16,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <summary>
         /// Возвращает записи из словаря "Журналы регистрации"
         /// </summary>
-        /// <param name="filter">Параметры для фильтрации журналов регистрации</param>
+        /// <param name="filter">Параметры для фильтрации записей в словаре "Журналы регистрации"</param>
         /// <returns>FrontDictionaryRegistrationJournals</returns>
         // GET: api/DictionaryRegistrationJournals
         public IHttpActionResult Get([FromUri] FilterDictionaryRegistrationJournal filter)
@@ -28,7 +28,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         }
 
         /// <summary>
-        /// Возвращает записи из словаря "Журналы регистрации" по ID 
+        /// Возвращает запись из словаря "Журналы регистрации" по ID 
         /// </summary>
         /// <param name="id"></param>
         /// <returns>FrontDictionaryRegistrationJournals</returns>

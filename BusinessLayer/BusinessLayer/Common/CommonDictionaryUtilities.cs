@@ -43,7 +43,32 @@ namespace BL.Logic.Common
             CommonDocumentUtilities.SetLastChange(context, internalModel);
         }
 
+        public static void DepartmentModifyToInternal(IContext context, ModifyDictionaryDepartment modifyModel, InternalDictionaryDepartment internalModel)
+        {
+            internalModel.Id = modifyModel.Id;
+            internalModel.IsActive = modifyModel.IsActive;
+            internalModel.ParentId = modifyModel.ParentId;
+            internalModel.Name = modifyModel.Name;
+            internalModel.FullName = modifyModel.FullName;
+            internalModel.Code = modifyModel.Code;
+            internalModel.CompanyId = modifyModel.CompanyId;
+            internalModel.ChiefPositionId = modifyModel.ChiefPositionId;
 
+            CommonDocumentUtilities.SetLastChange(context, internalModel);
+        }
+
+        public static void PositionModifyToInternal(IContext context, ModifyDictionaryPosition modifyModel, InternalDictionaryPosition internalModel)
+        {
+            internalModel.Id = modifyModel.Id;
+            internalModel.IsActive = modifyModel.IsActive;
+            internalModel.ParentId = modifyModel.ParentId;
+            internalModel.Name = modifyModel.Name;
+            internalModel.FullName = modifyModel.FullName;
+            internalModel.DepartmentId = modifyModel.DepartmentId;
+            internalModel.ExecutorAgentId = modifyModel.ExecutorAgentId;
+
+            CommonDocumentUtilities.SetLastChange(context, internalModel);
+        }
 
 
 

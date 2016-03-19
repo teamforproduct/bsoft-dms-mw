@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BL.Model.DictionaryCore.FrontModel;
+using System;
 using System.Collections.Generic;
 
 namespace BL.Model.DictionaryCore
@@ -21,7 +22,7 @@ namespace BL.Model.DictionaryCore
         public string PositionPhone { get; set; }
 
         public virtual IEnumerable<BaseDictionaryPosition> ChildPositions { get; set; }
-        public virtual IEnumerable<BaseDictionaryDepartment> ChiefDepartments { get; set; }
+        public virtual IEnumerable<FrontDictionaryDepartment> ChiefDepartments { get; set; }
         public virtual IEnumerable<BaseDictionaryStandartSendList> StandartSendLists { get; set; }
     }
 }

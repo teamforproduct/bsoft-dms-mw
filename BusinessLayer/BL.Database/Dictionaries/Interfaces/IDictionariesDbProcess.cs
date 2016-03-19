@@ -42,8 +42,8 @@ namespace BL.Database.Dictionaries.Interfaces
         void UpdateDictionaryAgentAddress(IContext context, InternalDictionaryAgentAddress addr);
         void DeleteDictionaryAgentAddress(IContext context, InternalDictionaryAgentAddress addr);
         int AddDictionaryAgentAddress(IContext context, InternalDictionaryAgentAddress addr);
-        IEnumerable<FrontDictionaryAgentAddress> GetDictionaryAgentAddresses(IContext context,int agentId, FilterDictionaryAgentAddress filter);
-        
+        IEnumerable<FrontDictionaryAgentAddress> GetDictionaryAgentAddresses(IContext context, int agentId, FilterDictionaryAgentAddress filter);
+
         #endregion
 
         #region DicionaryAddressTypes
@@ -73,17 +73,22 @@ namespace BL.Database.Dictionaries.Interfaces
         #endregion
 
         #region DictionaryContactTypes
-        FrontDictionaryContactType GetInternalDictionaryContactType(IContext context,FilterDictionaryContactType filter);
+        FrontDictionaryContactType GetInternalDictionaryContactType(IContext context, FilterDictionaryContactType filter);
         void UpdateDictionaryContactType(IContext context, InternalDictionaryContactType contactType);
         void DeleteDictionaryContactType(IContext context, InternalDictionaryContactType contactType);
         int AddDictionaryContactType(IContext context, InternalDictionaryContactType contactType);
         IEnumerable<FrontDictionaryContactType> GetDictionaryContactTypes(IContext context, FilterDictionaryContactType filter);
         #endregion
 
+        // Структура предприятия
         #region DictionaryDepartments
-        BaseDictionaryDepartment GetDictionaryDepartment(IContext context, int id);
+        int AddDictionaryDepartment(IContext context, InternalDictionaryDepartment docType);
+        void UpdateDictionaryDepartment(IContext context, InternalDictionaryDepartment docType);
+        void DeleteDictionaryDepartment(IContext context, InternalDictionaryDepartment docType);
+        bool ExistsDictionaryDepartment(IContext context, FilterDictionaryDepartment filter);
+        InternalDictionaryDepartment GetDictionaryDepartment(IContext context, FilterDictionaryDepartment filter);
 
-        IEnumerable<BaseDictionaryDepartment> GetDictionaryDepartments(IContext context, FilterDictionaryDepartment filter);
+        IEnumerable<FrontDictionaryDepartment> GetDictionaryDepartments(IContext context, FilterDictionaryDepartment filter);
         #endregion DictionaryDepartments
 
         #region DictionaryDocumentDirections
@@ -129,12 +134,18 @@ namespace BL.Database.Dictionaries.Interfaces
         IEnumerable<BaseDictionaryLinkType> GetDictionaryLinkTypes(IContext context, FilterDictionaryLinkType filter);
         #endregion DictionaryLinkTypes
 
+        // Штатное расписание
         #region DictionaryPositions
 
-        int? GetExecutorAgentIdByPositionId(IContext context, int id);
-        BaseDictionaryPosition GetDictionaryPosition(IContext context, int id);
+        int AddPosition(IContext context, InternalDictionaryPosition position);
+        void UpdatePosition(IContext context, InternalDictionaryPosition position);
+        void DeletePosition(IContext context, InternalDictionaryPosition position);
+        bool ExistsPosition(IContext context, FilterDictionaryPosition filter);
 
-        IEnumerable<BaseDictionaryPosition> GetDictionaryPositions(IContext context, FilterDictionaryPosition filter);
+        int? GetExecutorAgentIdByPositionId(IContext context, int id);
+        FrontDictionaryPosition GetDictionaryPosition(IContext context, int id);
+
+        IEnumerable<FrontDictionaryPosition> GetDictionaryPositions(IContext context, FilterDictionaryPosition filter);
         IEnumerable<InternalDictionaryPositionWithActions> GetDictionaryPositionsWithActions(IContext context, FilterDictionaryPosition filter);
         #endregion DictionaryPositions
 

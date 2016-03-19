@@ -598,9 +598,9 @@ namespace BL.Database.Common
 
             if (filter != null)
             {
-                if (filter.PositionId?.Count > 0)
+                if (filter.IDs?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.PositionId.Contains(x.pos.Id));
+                    qry = qry.Where(x => filter.IDs.Contains(x.pos.Id));
                 }
 
                 if (filter.DocumentId?.Count > 0)

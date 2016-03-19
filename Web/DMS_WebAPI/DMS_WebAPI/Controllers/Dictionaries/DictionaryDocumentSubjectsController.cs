@@ -16,7 +16,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <summary>
         /// Возвращает записи из словаря "Тематики документов"
         /// </summary>
-        /// <param name="filter">Параметры для фильтрации тематик документов</param>
+        /// <param name="filter">Параметры для фильтрации записей в словаре "Тематики документов"</param>
         /// <returns>FrontDictionaryDocumentSubject</returns>
         // GET: api/DictionaryDocumentSubjects
         public IHttpActionResult Get([FromUri] FilterDictionaryDocumentSubject filter)
@@ -28,7 +28,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         }
 
         /// <summary>
-        /// Возвращает записи из словаря "Тематики документов" по ID 
+        /// Возвращает запись из словаря "Тематики документов" по ID 
         /// </summary>
         /// <param name="id"></param>
         /// <returns>FrontDictionaryDocumentSubject</returns>
@@ -45,7 +45,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// Добавление записи в словаре "Тематики документов"
         /// </summary>
         /// <param name="model">ModifyDictionaryDocumentSubject</param>
-        /// <returns>Запись из словаря "Тематики документов"</returns>
+        /// <returns>Возвращает добавленную запись</returns>
         public IHttpActionResult Post([FromBody]ModifyDictionaryDocumentSubject model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
@@ -53,12 +53,13 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.AddDocumentSubject, cxt, model));
         }
 
+
         /// <summary>
         /// Изменение записи в словаре "Тематики документов"
         /// </summary>
         /// <param name="id">int</param>
         /// <param name="model">ModifyDictionaryDocumentSubject</param>
-        /// <returns>Запись из словаря "Тематики документов"</returns>
+        /// <returns>Возвращает измененную запись</returns>
         public IHttpActionResult Put(int id, [FromBody]ModifyDictionaryDocumentSubject model)
         {
             // Спецификация REST требует отдельного указания ID, несмотря на то, что параметр ID есть в ModifyDictionaryDocumentSubject

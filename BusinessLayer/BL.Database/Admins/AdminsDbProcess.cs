@@ -115,7 +115,7 @@ namespace BL.Database.Admins
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
                 var dictDb = DmsResolver.Current.Get<IDictionariesDbProcess>();
-                var pos = dictDb.GetDictionaryPositions(context, new FilterDictionaryPosition() { PositionId = new List<int> { model.TargetPosition }, SubordinatedPositions = model.SourcePositions }).FirstOrDefault();
+                var pos = dictDb.GetDictionaryPositions(context, new FilterDictionaryPosition() { IDs = new List<int> { model.TargetPosition }, SubordinatedPositions = model.SourcePositions }).FirstOrDefault();
                 if (pos == null || pos.MaxSubordinationTypeId < (int)model.SubordinationType)
                 {
                     return false;

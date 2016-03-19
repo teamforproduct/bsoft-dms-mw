@@ -141,13 +141,13 @@ namespace BL.Logic.DictionaryCore
 
       
         #region DictionaryDepartments
-        public BaseDictionaryDepartment GetDictionaryDepartment(IContext context, int id)
+        public FrontDictionaryDepartment GetDictionaryDepartment(IContext context, int id)
         {
 
-            return _dictDb.GetDictionaryDepartment(context, id);
+            return _dictDb.GetDictionaryDepartments(context, new FilterDictionaryDepartment { IDs = new List<int> { id } }).FirstOrDefault();
         }
 
-        public IEnumerable<BaseDictionaryDepartment> GetDictionaryDepartments(IContext context, FilterDictionaryDepartment filter)
+        public IEnumerable<FrontDictionaryDepartment> GetDictionaryDepartments(IContext context, FilterDictionaryDepartment filter)
         {
 
             return _dictDb.GetDictionaryDepartments(context, filter);
@@ -168,6 +168,7 @@ namespace BL.Logic.DictionaryCore
         }
         #endregion DictionaryDepartments
 
+        // Тематики документов
         #region DictionaryDocumentSubjects
         public FrontDictionaryDocumentSubject GetDictionaryDocumentSubject(IContext context, int id)
         {
@@ -238,20 +239,22 @@ namespace BL.Logic.DictionaryCore
         }
         #endregion DictionaryLinkTypes
 
+        // Штатное расписание
         #region DictionaryPositions
-        public BaseDictionaryPosition GetDictionaryPosition(IContext context, int id)
+        public FrontDictionaryPosition GetDictionaryPosition(IContext context, int id)
         {
 
             return _dictDb.GetDictionaryPosition(context, id);
         }
 
-        public IEnumerable<BaseDictionaryPosition> GetDictionaryPositions(IContext context, FilterDictionaryPosition filter)
+        public IEnumerable<FrontDictionaryPosition> GetDictionaryPositions(IContext context, FilterDictionaryPosition filter)
         {
 
             return _dictDb.GetDictionaryPositions(context, filter);
         }
         #endregion DictionaryPositions
 
+        // Журналы регистрации
         #region DictionaryRegistrationJournals
         public FrontDictionaryRegistrationJournal GetDictionaryRegistrationJournal(IContext context, int id)
         {

@@ -11,18 +11,18 @@ using System.Collections.Generic;
 
 namespace BL.Logic.DictionaryCore.DocumentType
 {
-    public class ModifyDictionaryDocumentSubjectCommand : BaseDictionaryCommand
+    public class ModifyDictionaryDepartmentCommand : BaseDictionaryCommand
     {
-       
-        private ModifyDictionaryDocumentSubject Model
+
+        private ModifyDictionaryDepartment Model
         {
             get
             {
-                if (!(_param is ModifyDictionaryDocumentSubject))
+                if (!(_param is ModifyDictionaryDepartment))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ModifyDictionaryDocumentSubject)_param;
+                return (ModifyDictionaryDepartment)_param;
             }
         }
 
@@ -33,16 +33,22 @@ namespace BL.Logic.DictionaryCore.DocumentType
 
         public override bool CanExecute()
         {
-            
+
             _admin.VerifyAccess(_context, CommandType, false);
 
+            var fdd = new FilterDictionaryDepartment { Name = Model.Name, NotContainsIDs = new List<int> { Model.Id } };
+
+            if (Model.ParentId != null)
+            {
+                fdd.ParentIDs = new List<int> { Model.ParentId.Value };
+            }
+
             // Находим запись с таким-же именем в этой-же папке
-            // Устно договорились НЕ упроцедуривать new FilterDictionaryDocumentSubject { Name = Model.Name, ParentId = Model.ParentId, NotDocumentSubjectId = new List<int> { Model.Id }} в Modify и Add коммандах.
-            if (_dictDb.ExistsDictionaryDocumentSubject(_context, new FilterDictionaryDocumentSubject { Name = Model.Name, ParentId = Model.ParentId, NotContainsIDs = new List<int> { Model.Id } }))
+            if (_dictDb.ExistsDictionaryDepartment(_context, fdd))
             {
                 throw new DictionaryRecordNotUnique();
             }
-            
+
             return true;
         }
 
@@ -50,11 +56,11 @@ namespace BL.Logic.DictionaryCore.DocumentType
         {
             try
             {
-                var dds = new InternalDictionaryDocumentSubject();
+                var dds = new InternalDictionaryDepartment();
 
-                CommonDictionaryUtilities.DocumentSubjectModifyToInternal(_context, Model, dds);
+                CommonDictionaryUtilities.DepartmentModifyToInternal(_context, Model, dds);
 
-                _dictDb.UpdateDictionaryDocumentSubject(_context, dds);
+                _dictDb.UpdateDictionaryDepartment(_context, dds);
             }
             catch (DictionaryRecordWasNotFound)
             {

@@ -82,7 +82,13 @@
     <Compile Include="DictionaryCore\CustomDictionary\ModifyCustomDictionaryCommand.cs" />
     <Compile Include="DictionaryCore\CustomDictionary\ModifyCustomDictionaryTypeCommand.cs" />
     <Compile Include="DictionaryCore\DictionaryCommandFactory.cs" />
+    <Compile Include="DictionaryCore\DictionaryPositionss\AddDictionaryPositionsCommand.cs" />
+    <Compile Include="DictionaryCore\DictionaryPositionss\DeleteDictionaryPositionsCommand.cs" />
+    <Compile Include="DictionaryCore\DictionaryPositionss\ModifyDictionaryPositionsCommand.cs" />
     <Compile Include="DictionaryCore\DictionaryService.cs" />
+    <Compile Include="DictionaryCore\DictionaryDepartment\AddDictionaryDepartmentCommand.cs" />
+    <Compile Include="DictionaryCore\DictionaryDepartment\DeleteDictionaryDepartmentCommand.cs" />
+    <Compile Include="DictionaryCore\DictionaryDepartment\ModifyDictionaryDepartmentCommand.cs" />
     <Compile Include="DictionaryCore\RegistrationJournal\AddDictionaryRegistrationJournalCommand.cs" />
     <Compile Include="DictionaryCore\RegistrationJournal\DeleteDictionaryRegistrationJournalCommand.cs" />
     <Compile Include="DictionaryCore\RegistrationJournal\ModifyDictionaryRegistrationJournalCommand.cs" />
