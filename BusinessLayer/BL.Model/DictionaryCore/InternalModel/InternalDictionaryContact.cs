@@ -8,6 +8,9 @@ using BL.Model.Common;
 
 namespace BL.Model.DictionaryCore.InternalModel
 {
+    /// <summary>
+    /// контакт контрагента
+    /// </summary>
     public class InternalDictionaryContact : LastChangeInfo
     {
         /// <summary>

@@ -62,8 +62,10 @@ namespace BL.Logic.DictionaryCore.Contact
                 CommonDocumentUtilities.SetLastChange(_context, newContact);
                 return _dictDb.AddDictionaryContact(_context, newContact);
             }
+     
             catch (Exception ex)
             {
+                
                 throw new DictionaryRecordCouldNotBeAdded(ex);
             }
         }

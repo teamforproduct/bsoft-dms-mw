@@ -7,19 +7,19 @@ using BL.Model.DictionaryCore.FilterModel;
 using System.Collections.Generic;
 
 
-namespace BL.Logic.DictionaryCore.AgentPerson
+namespace BL.Logic.DictionaryCore.AgentEmployee
 {
-    public class ModifyDictionaryAgentPersonCommand : BaseDictionaryCommand
+    public class ModifyDictionaryAgentEmployeeCommand :BaseDictionaryCommand
     {
-        private ModifyDictionaryAgentPerson Model
+        private ModifyDictionaryAgentEmployee Model
         {
             get
             {
-                if (!(_param is ModifyDictionaryAgentPerson))
+                if (!(_param is ModifyDictionaryAgentEmployee))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ModifyDictionaryAgentPerson)_param;
+                return (ModifyDictionaryAgentEmployee)_param;
             }
         }
 
@@ -30,7 +30,7 @@ namespace BL.Logic.DictionaryCore.AgentPerson
 
         public override bool CanExecute()
         {
-             _admin.VerifyAccess(_context, CommandType,false,true);
+            _admin.VerifyAccess(_context, CommandType, false, true);
             return true;
         }
 
@@ -38,24 +38,25 @@ namespace BL.Logic.DictionaryCore.AgentPerson
         {
             try
             {
-                var newPerson = new InternalDictionaryAgentPerson
+                var newPerson = new InternalDictionaryAgentEmployee
                 {
                     Id = Model.Id,
+                    PersonnelNumber=Model.PersonnelNumber,
                     FirstName = Model.FirstName,
                     LastName = Model.LastName,
                     MiddleName = Model.MiddleName,
-                    TaxCode=Model.TaxCode,
+                    TaxCode = Model.TaxCode,
                     IsMale = Model.IsMale,
-                    PassportSerial=Model.PassportSerial,
-                    PassportNumber=Model.PassportNumber,
-                    PassportText=Model.PassportText,
-                    PassportDate=Model.PassportDate,
+                    PassportSerial = Model.PassportSerial,
+                    PassportNumber = Model.PassportNumber,
+                    PassportText = Model.PassportText,
+                    PassportDate = Model.PassportDate,
                     IsActive = Model.IsActive,
-                    BirthDate=Model.BirthDate,
-                    Description=Model.Description
+                    BirthDate = Model.BirthDate,
+                    Description = Model.Description
                 };
                 CommonDocumentUtilities.SetLastChange(_context, newPerson);
-                _dictDb.UpdateDictionaryAgentPerson(_context, newPerson);
+                _dictDb.UpdateDictionaryAgentEmployee(_context, newPerson);
             }
             catch (DictionaryRecordWasNotFound)
             {

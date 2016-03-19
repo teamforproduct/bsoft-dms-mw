@@ -15,6 +15,7 @@ namespace BL.Database.DBModel.Document
             this.DoneSubscription = new HashSet<DocumentSubscriptions>();
             this.StartSendList = new HashSet<DocumentSendLists>();
             this.CloseSendList = new HashSet<DocumentSendLists>();
+            this.EventReaders = new HashSet<DocumentEventReaders>();
         }
 
         public int Id { get; set; }
@@ -22,6 +23,7 @@ namespace BL.Database.DBModel.Document
         public int EventTypeId { get; set; }
         public DateTime CreateDate { get; set; }
         public DateTime Date { get; set; }
+        public Nullable<int> TaskId { get; set; }
         public string Task { get; set; }
         public string Description { get; set; }
         public int? SourcePositionId { get; set; }
@@ -30,6 +32,7 @@ namespace BL.Database.DBModel.Document
         public Nullable<int> TargetPositionId { get; set; }
         public Nullable<int> TargetPositionExecutorAgentId { get; set; }
         public Nullable<int> TargetAgentId { get; set; }
+        public bool IsAvailableWithinTask { get; set; }
         public Nullable<DateTime> SendDate { get; set; }
         public Nullable<DateTime> ReadDate { get; set; }
         public Nullable<int> ReadAgentId { get; set; }
@@ -40,6 +43,8 @@ namespace BL.Database.DBModel.Document
         public virtual Documents Document { get; set; }
         [ForeignKey("EventTypeId")]
         public virtual DictionaryEventTypes EventType { get; set; }
+        [ForeignKey("TaskId")]
+        public virtual DocumentTasks TaskD { get; set; }
         [ForeignKey("SourcePositionId")]
         public virtual DictionaryPositions SourcePosition { get; set; }
         [ForeignKey("SourcePositionExecutorAgentId")]
@@ -68,5 +73,8 @@ namespace BL.Database.DBModel.Document
         public virtual ICollection<DocumentSendLists> StartSendList { get; set; }
         [ForeignKey("CloseEventId")]
         public virtual ICollection<DocumentSendLists> CloseSendList { get; set; }
+        [ForeignKey("EventId")]
+        public virtual ICollection<DocumentEventReaders> EventReaders { get; set; }
+
     }
 }

@@ -19,6 +19,7 @@ namespace BL.Database.DBModel.Dictionary
             this.DocumentSavedFilters = new HashSet<DocumentSavedFilters>();
             this.Tags = new HashSet<DictionaryTags>();
             this.PositionRoles = new HashSet<AdminPositionRoles>();
+            this.PositionExecutors = new HashSet<DictionaryPositionExecutors>();
         }
         public int Id { get; set; }
         public Nullable<int> ParentId { get; set; }
@@ -49,6 +50,7 @@ namespace BL.Database.DBModel.Dictionary
         public virtual ICollection<DocumentSavedFilters> DocumentSavedFilters { get; set; }
         public virtual ICollection<DictionaryTags> Tags { get; set; }
         public virtual ICollection<AdminPositionRoles> PositionRoles { get; set; }
+        public virtual ICollection<DictionaryPositionExecutors> PositionExecutors { get; set; }
 
     }
 }

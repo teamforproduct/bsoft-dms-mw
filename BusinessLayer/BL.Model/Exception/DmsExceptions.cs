@@ -18,7 +18,7 @@
     /// </summary>
     public class DatabaseError : DmsExceptions
     {
-        private const string _MESSAGE = "Ошибка при обращении к базе данных!";
+        private const string _MESSAGE = "[lang]DmsExceptions@DatabaseError[lang]";
         public DatabaseError() : base(_MESSAGE)
         {
         }
@@ -33,7 +33,7 @@
     /// </summary>
     public class CommandNotDefinedError : DmsExceptions
     {
-        private const string _MESSAGE = "Искомой комманды не найдено";
+        private const string _MESSAGE = "[lang]DmsExceptions@CommandNotDefinedError[lang]";
         public CommandNotDefinedError() : base(_MESSAGE)
         {
         }
@@ -48,7 +48,7 @@
     /// </summary>
     public class WrongParameterValueError : DmsExceptions
     {
-        private const string _MESSAGE = "Параметры комманды неверные!";
+        private const string _MESSAGE = "[lang]DmsExceptions@WrongParameterValueError[lang]";
         public WrongParameterValueError() : base(_MESSAGE)
         {
         }
@@ -63,7 +63,7 @@
     /// </summary>
     public class WrongParameterTypeError : DmsExceptions
     {
-        private const string _MESSAGE = "Тип параметра комманды указан неверно!";
+        private const string _MESSAGE = "[lang]DmsExceptions@WrongParameterTypeError[lang]";
         public WrongParameterTypeError() : base(_MESSAGE)
         {
         }
@@ -75,7 +75,7 @@
 
     public class AccessIsDenied : DmsExceptions
     {
-        private const string _MESSAGE = "Access is Denied!";
+        private const string _MESSAGE = "[lang]DmsExceptions@AccessIsDenied[lang]";
         //TODO:передавать параметры
         public AccessIsDenied() : base(_MESSAGE)
         {
@@ -86,22 +86,22 @@
         }
     }
 
-    public class DocumentHasAlreadyHadLink : DmsExceptions
+    public class DocumentHasAlreadyHasLink : DmsExceptions
     {
-        private const string _MESSAGE = "Document Has Already Had Link!";
+        private const string _MESSAGE = "[lang]DmsExceptions@DocumentHasAlreadyHasLink[lang]";
         //TODO:передавать параметры
-        public DocumentHasAlreadyHadLink() : base(_MESSAGE)
+        public DocumentHasAlreadyHasLink() : base(_MESSAGE)
         {
         }
 
-        public DocumentHasAlreadyHadLink(System.Exception ex) : base(_MESSAGE, ex)
+        public DocumentHasAlreadyHasLink(System.Exception ex) : base(_MESSAGE, ex)
         {
         }
     }
 
     public class DocumentCannotBeModifiedOrDeleted : DmsExceptions
     {
-        private const string _MESSAGE = "Document Can't Be Modified Or Deleted!";
+        private const string _MESSAGE = "[lang]DmsExceptions@DocumentCannotBeModifiedOrDeleted[lang]";
         public DocumentCannotBeModifiedOrDeleted() : base(_MESSAGE)
         {
         }
@@ -113,7 +113,7 @@
 
     public class UserHasNoAccessToDocument : DmsExceptions
     {
-        private const string _MESSAGE = "User could not acceess this document!";
+        private const string _MESSAGE = "[lang]DmsExceptions@UserHasNoAccessToDocument[lang]";
         public UserHasNoAccessToDocument() : base(_MESSAGE)
         {
         }
@@ -125,7 +125,7 @@
 
     public class CannotSaveFile : DmsExceptions
     {
-        private const string _MESSAGE = "Error when save user file!";
+        private const string _MESSAGE = "[lang]DmsExceptions@CannotSaveFile[lang]";
         public CannotSaveFile() : base(_MESSAGE)
         {
         }
@@ -137,7 +137,7 @@
 
     public class UserFileNotExists : DmsExceptions
     {
-        private const string _MESSAGE = "User file does not exists on Filestore!";
+        private const string _MESSAGE = "[lang]DmsExceptions@UserFileNotExists[lang]";
         public UserFileNotExists() : base(_MESSAGE)
         {
         }
@@ -149,7 +149,7 @@
 
     public class UnknownDocumentFile : DmsExceptions
     {
-        private const string _MESSAGE = "Could not find appropriate document file!";
+        private const string _MESSAGE = "[lang]DmsExceptions@UnknownDocumentFile[lang]";
         public UnknownDocumentFile() : base(_MESSAGE)
         {
         }
@@ -161,7 +161,7 @@
 
     public class CannotAccessToFile : DmsExceptions
     {
-        private const string _MESSAGE = "Cannot accss to user file!";
+        private const string _MESSAGE = "[lang]DmsExceptions@CannotAccessToFile[lang]";
         public CannotAccessToFile() : base(_MESSAGE)
         {
         }
@@ -173,7 +173,7 @@
 
     public class DocumentNotFoundOrUserHasNoAccess : DmsExceptions
     {
-        private const string _MESSAGE = "User could not acceess this document!";
+        private const string _MESSAGE = "[lang]DmsExceptions@DocumentNotFoundOrUserHasNoAccess[lang]";
         public DocumentNotFoundOrUserHasNoAccess() : base(_MESSAGE)
         {
         }
@@ -185,7 +185,7 @@
 
     public class TemplateDocumentNotFoundOrUserHasNoAccess : DmsExceptions
     {
-        private const string _MESSAGE = "User could not acceess this template document!";
+        private const string _MESSAGE = "[lang]DmsExceptions@TemplateDocumentNotFoundOrUserHasNoAccess[lang]";
         public TemplateDocumentNotFoundOrUserHasNoAccess() : base(_MESSAGE)
         {
         }
@@ -197,7 +197,7 @@
 
     public class DocumentCouldNotBeRegistered : DmsExceptions
     {
-        private const string _MESSAGE = "Document registration has non been successfull! Try again!";
+        private const string _MESSAGE = "[lang]DmsExceptions@DocumentCouldNotBeRegistered[lang]";
         public DocumentCouldNotBeRegistered() : base(_MESSAGE)
         {
         }
@@ -209,7 +209,7 @@
 
     public class CouldNotChangeAttributeLaunchPlan : DmsExceptions
     {
-        private const string _MESSAGE = "Couldn't change attribute LaunchPlan";
+        private const string _MESSAGE = "[lang]DmsExceptions@CouldNotChangeAttributeLaunchPlan[lang]";
         public CouldNotChangeAttributeLaunchPlan() : base(_MESSAGE)
         {
         }
@@ -221,7 +221,7 @@
 
     public class CouldNotChangeFavourite : DmsExceptions
     {
-        private const string _MESSAGE = "Couldn't change attribute Favourite";
+        private const string _MESSAGE = "[lang]DmsExceptions@CouldNotChangeFavourite[lang]";
         public CouldNotChangeFavourite() : base(_MESSAGE)
         {
         }
@@ -233,7 +233,7 @@
 
     public class CouldNotChangeIsInWork : DmsExceptions
     {
-        private const string _MESSAGE = "Couldn't change attribute IsInWork";
+        private const string _MESSAGE = "[lang]DmsExceptions@CouldNotChangeIsInWork[lang]";
         public CouldNotChangeIsInWork() : base(_MESSAGE)
         {
         }
@@ -245,7 +245,7 @@
 
     public class DocumentHasAlredyBeenRegistered : DmsExceptions
     {
-        private const string _MESSAGE = "Document has already been registered!";
+        private const string _MESSAGE = "[lang]DmsExceptions@DocumentHasAlredyBeenRegistered[lang]";
         public DocumentHasAlredyBeenRegistered() : base(_MESSAGE)
         {
         }
@@ -257,7 +257,7 @@
 
     public class PlanPointHasAlredyBeenLaunched : DmsExceptions
     {
-        private const string _MESSAGE = "Plan Point has already been Launched!";
+        private const string _MESSAGE = "[lang]DmsExceptions@PlanPointHasAlredyBeenLaunched[lang]";
         public PlanPointHasAlredyBeenLaunched() : base(_MESSAGE)
         {
         }
@@ -269,7 +269,7 @@
 
     public class UserPositionIsNotDefined : DmsExceptions
     {
-        private const string _MESSAGE = "Position for the current user could not be defined!";
+        private const string _MESSAGE = "[lang]DmsExceptions@UserPositionIsNotDefined[lang]";
         public UserPositionIsNotDefined() : base(_MESSAGE)
         {
         }
@@ -281,7 +281,7 @@
 
     public class NeedInformationAboutCorrespondent : DmsExceptions
     {
-        private const string _MESSAGE = "Need information about correspondent!";
+        private const string _MESSAGE = "[lang]DmsExceptions@NeedInformationAboutCorrespondent[lang]";
         public NeedInformationAboutCorrespondent() : base(_MESSAGE)
         {
         }
@@ -293,7 +293,7 @@
 
     public class UserNameIsNotDefined : DmsExceptions
     {
-        private const string _MESSAGE = "Employee for the current user could not be defined!";
+        private const string _MESSAGE = "[lang]DmsExceptions@UserNameIsNotDefined[lang]";
         public UserNameIsNotDefined() : base(_MESSAGE)
         {
         }
@@ -305,7 +305,7 @@
 
     public class UserUnauthorized : DmsExceptions
     {
-        private const string _MESSAGE = "Authorization has been denied for this request.";
+        private const string _MESSAGE = "[lang]DmsExceptions@UserUnauthorized[lang]";
         public UserUnauthorized() : base(_MESSAGE)
         {
         }
@@ -317,7 +317,7 @@
 
     public class DocumentRestrictedSendListDuplication : DmsExceptions
     {
-        private const string _MESSAGE = "Duplicate Entry DocumentRestrictSendList";
+        private const string _MESSAGE = "[lang]DmsExceptions@DocumentRestrictedSendListDuplication[lang]";
         public DocumentRestrictedSendListDuplication() : base(_MESSAGE)
         {
         }
@@ -329,7 +329,7 @@
 
     public class WrongDocumentSendListEntry : DmsExceptions
     {
-        private const string _MESSAGE = "Duplicate Entry DocumentSendList";
+        private const string _MESSAGE = "[lang]DmsExceptions@WrongDocumentSendListEntry[lang]";
         public WrongDocumentSendListEntry() : base(_MESSAGE)
         {
         }
@@ -339,21 +339,9 @@
         }
     }
 
-    public class DocumentSendListDuplication : DmsExceptions
-    {
-        private const string _MESSAGE = "Duplicate Entry DocumentSendList";
-        public DocumentSendListDuplication() : base(_MESSAGE)
-        {
-        }
-
-        public DocumentSendListDuplication(System.Exception ex) : base(_MESSAGE, ex)
-        {
-        }
-    }
-
     public class DocumentSendListNotFoundInDocumentRestrictedSendList : DmsExceptions
     {
-        private const string _MESSAGE = "DocumentSendList not found in DocumentRestrictedSendList";
+        private const string _MESSAGE = "[lang]DmsExceptions@DocumentSendListNotFoundInDocumentRestrictedSendList[lang]";
         public DocumentSendListNotFoundInDocumentRestrictedSendList() : base(_MESSAGE)
         {
         }
@@ -365,7 +353,7 @@
 
     public class DocumentSendListDoesNotMatchTheTemplate : DmsExceptions
     {
-        private const string _MESSAGE = "Document SendList does not match the template";
+        private const string _MESSAGE = "[lang]DmsExceptions@DocumentSendListDoesNotMatchTheTemplate[lang]";
         public DocumentSendListDoesNotMatchTheTemplate() : base(_MESSAGE)
         {
         }
@@ -377,7 +365,7 @@
 
     public class DocumentRestrictedSendListDoesNotMatchTheTemplate : DmsExceptions
     {
-        private const string _MESSAGE = "Document Restricted SendList does not match the template";
+        private const string _MESSAGE = "[lang]DmsExceptions@DocumentRestrictedSendListDoesNotMatchTheTemplate[lang]";
         public DocumentRestrictedSendListDoesNotMatchTheTemplate() : base(_MESSAGE)
         {
         }
@@ -389,7 +377,7 @@
 
     public class EventNotFoundOrUserHasNoAccess : DmsExceptions
     {
-        private const string _MESSAGE = "User could not acceess this event!";
+        private const string _MESSAGE = "[lang]DmsExceptions@EventNotFoundOrUserHasNoAccess[lang]";
         public EventNotFoundOrUserHasNoAccess() : base(_MESSAGE)
         {
         }
@@ -401,7 +389,7 @@
 
     public class CouldNotPerformThisOperation : DmsExceptions
     {
-        private const string _MESSAGE = "Could Not Perform This Operation!";
+        private const string _MESSAGE = "[lang]DmsExceptions@CouldNotPerformThisOperation[lang]";
         public CouldNotPerformThisOperation() : base(_MESSAGE)
         {
         }
@@ -413,7 +401,7 @@
 
     public class WaitNotFoundOrUserHasNoAccess : DmsExceptions
     {
-        private const string _MESSAGE = "User could not acceess this wait!";
+        private const string _MESSAGE = "[lang]DmsExceptions@WaitNotFoundOrUserHasNoAccess[lang]";
         public WaitNotFoundOrUserHasNoAccess() : base(_MESSAGE)
         {
         }
@@ -425,7 +413,7 @@
 
     public class WaitHasAlreadyClosed : DmsExceptions
     {
-        private const string _MESSAGE = "Wait Has Already Closed!";
+        private const string _MESSAGE = "[lang]DmsExceptions@WaitHasAlreadyClosed[lang]";
         public WaitHasAlreadyClosed() : base(_MESSAGE)
         {
         }
@@ -437,7 +425,7 @@
 
     public class DictionaryTagNotFoundOrUserHasNoAccess : DmsExceptions
     {
-        private const string _MESSAGE = "User could not acceess this tag!";
+        private const string _MESSAGE = "[lang]DmsExceptions@DictionaryTagNotFoundOrUserHasNoAccess[lang]";
         public DictionaryTagNotFoundOrUserHasNoAccess() : base(_MESSAGE)
         {
         }
@@ -449,7 +437,7 @@
 
     public class ExecutorAgentForPositionIsNotDefined : DmsExceptions
     {
-        private const string _MESSAGE = "Executor Agent For Position Is Not Defined!";
+        private const string _MESSAGE = "[lang]DmsExceptions@ExecutorAgentForPositionIsNotDefined[lang]";
         public ExecutorAgentForPositionIsNotDefined() : base(_MESSAGE)
         {
         }
@@ -464,7 +452,7 @@
     /// </summary>
     public class DictionaryRecordCouldNotBeAdded : DmsExceptions
     {
-        private const string _MESSAGE = "You could not add this dictionary data!";
+        private const string _MESSAGE = "[lang]DmsExceptions@DictionaryRecordCouldNotBeAdded[lang]";
         public DictionaryRecordCouldNotBeAdded() : base(_MESSAGE)
         {
         }
@@ -479,7 +467,7 @@
     /// </summary>
     public class DictionaryRecordCouldNotBeDeleted : DmsExceptions
     {
-        private const string _MESSAGE = "You could not delete from this dictionary data!";
+        private const string _MESSAGE = "[lang]DmsExceptions@DictionaryRecordCouldNotBeDeleted[lang]";
         public DictionaryRecordCouldNotBeDeleted() : base(_MESSAGE)
         {
         }
@@ -495,7 +483,7 @@
     /// </summary>
     public class DictionaryRecordWasNotFound : DmsExceptions
     {
-        private const string _MESSAGE = "Dictionary record was not found!";
+        private const string _MESSAGE = "[lang]DmsExceptions@DictionaryRecordWasNotFound[lang]";
         public DictionaryRecordWasNotFound() : base(_MESSAGE)
         {
         }
@@ -510,7 +498,7 @@
     /// </summary>
     public class DictionaryRecordNotUnique : DmsExceptions
     {
-        private const string _MESSAGE = "Dictionary record should be unique!";
+        private const string _MESSAGE = "[lang]DmsExceptions@DictionaryRecordNotUnique[lang]";
         public DictionaryRecordNotUnique() : base(_MESSAGE)
         {
         }
@@ -522,7 +510,7 @@
 
     public class IncomingModelIsNotValid : DmsExceptions
     {
-        private const string _MESSAGE = "Incoming Model is not valid!";
+        private const string _MESSAGE = "[lang]DmsExceptions@IncomingModelIsNotValid[lang]";
         public IncomingModelIsNotValid() : base(_MESSAGE)
         {
         }
@@ -534,7 +522,7 @@
 
     public class NotFilledWithAdditionalRequiredAttributes : DmsExceptions
     {
-        private const string _MESSAGE = "Not filled with additional required attributes!";
+        private const string _MESSAGE = "[lang]DmsExceptions@NotFilledWithAdditionalRequiredAttributes[lang]";
         public NotFilledWithAdditionalRequiredAttributes() : base(_MESSAGE)
         {
         }

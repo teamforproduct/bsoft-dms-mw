@@ -147,7 +147,7 @@
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryDocumentSubject.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryDocumentDirection.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryDepartment.cs" />
-    <Compile Include="DictionaryCore\FilterModel\FilterDictionaryCompany.cs" />
+    <Compile Include="DictionaryCore\FilterModel\FilterDictionaryAgentCompany.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryAgentPerson.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryAgent.cs" />
     <Compile Include="DocumentCore\Actions\AffixSigning.cs" />

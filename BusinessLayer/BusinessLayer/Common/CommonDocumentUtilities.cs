@@ -333,7 +333,7 @@ namespace BL.Logic.Common
 
         public static IEnumerable<BaseSystemUIElement> VerifyDocument(IContext ctx, FrontDocument doc, IEnumerable<BaseSystemUIElement> uiElements)
         {
-            if (doc.DocumentDirection != EnumDocumentDirections.External)
+            if (doc.DocumentDirection != EnumDocumentDirections.Incoming)
             {
                 if (uiElements != null)
                 {
@@ -347,7 +347,7 @@ namespace BL.Logic.Common
                 doc.Addressee = null;
             }
 
-            if ((doc.DocumentDirection == EnumDocumentDirections.External) && (uiElements == null)
+            if ((doc.DocumentDirection == EnumDocumentDirections.Incoming) && (uiElements == null)
                     &&
                     (
                         doc.SenderAgentId == null ||
@@ -372,7 +372,7 @@ namespace BL.Logic.Common
                     doc.DocumentSubjectId = docTemplate.DocumentSubjectId;
                 }
 
-                if (doc.DocumentDirection == EnumDocumentDirections.External)
+                if (doc.DocumentDirection == EnumDocumentDirections.Incoming)
                 {
                     if (docTemplate.SenderAgentId.HasValue)
                     {

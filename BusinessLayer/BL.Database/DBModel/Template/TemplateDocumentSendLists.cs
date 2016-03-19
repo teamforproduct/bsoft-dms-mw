@@ -22,6 +22,8 @@ namespace BL.Database.DBModel.Template
         public int Stage { get; set; }
         public int? DueDay { get; set; }
         public int AccessLevelId { get; set; }
+        public bool IsAddControl { get; set; }
+        public bool IsAvailableWithinTask { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
         [ForeignKey("DocumentId")]

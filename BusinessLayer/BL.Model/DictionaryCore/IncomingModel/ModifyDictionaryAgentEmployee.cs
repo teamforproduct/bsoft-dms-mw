@@ -6,8 +6,14 @@ using System.Threading.Tasks;
 
 namespace BL.Model.DictionaryCore.IncomingModel
 {
+    /// <summary>
+    /// контрагент - сотрудник
+    /// </summary>
     public class ModifyDictionaryAgentEmployee : ModifyDictionaryAgentPerson
     {
+        /// <summary>
+        /// табельный номер
+        /// </summary>
         public string PersonnelNumber { get; set; }
     }
 }

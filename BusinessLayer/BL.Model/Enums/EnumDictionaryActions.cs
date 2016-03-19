@@ -103,10 +103,29 @@
         DeleteContact = 207009,
         #endregion Contacts
 
-        // Адреса
-        #region AgentAddress
+        /// <summary>
+        /// добавить тип контакта
+        /// </summary>
+        AddContactType = 205001,
+        /// <summary>
+        /// изменить тип контакта
+        /// </summary>
+        ModifyContactType = 205005,
+        /// <summary>
+        /// удалить тип контакта
+        /// </summary>
+        DeleteContactType = 205009,
+        /// <summary>
+        /// добавить адрес
+        /// </summary>
         AddAgentAddress = 208001,
+        /// <summary>
+        /// изменить адрес
+        /// </summary>
         ModifyAgentAddress = 208005,
+        /// <summary>
+        /// удалить адрес
+        /// </summary>
         DeleteAgentAddress = 208009,
         #endregion AgentAddress
 
@@ -130,6 +149,22 @@
         ModifyDepartment = 210005,
 
         /// <summary>
+        /// Удалить тип адреса
+        /// </summary>       
+        DeleteDocumentSubject = 203009,
+        #endregion DictionaryDocumentSubject
+        /// <summary>
+        /// добавить физлицо
+        /// </summary>
+        AddAgentPerson = 209001,
+        /// <summary>
+        /// изменить физлицо
+        /// </summary>
+        ModifyAgentPerson = 209005,
+        /// <summary>
+        /// удалить физлицо
+        /// </summary>
+        DeleteAgentPerson = 209009,
         /// Удалить запись в справочнике "Структура предприятия"
         /// </summary>
         DeleteDepartment = 210009,
@@ -153,9 +188,34 @@
         DeletePosition = 211009,
         #endregion DictionaryDepartment
 
-        AddAgentEmployee,
-        ModifyAgentEmployee,
-        DeleteAgentEmployee,
+        /// <summary>
+        /// добавить сотрудника
+        /// </summary>
+        AddAgentEmployee = 212001,
+        /// <summary>
+        /// изменить сотрудника
+        /// </summary>
+        ModifyAgentEmployee=212005,
+        /// <summary>
+        /// удалить сотрудника
+        /// </summary>
+        DeleteAgentEmployee=212009,
+        /// <summary>
+        /// добавить контраента
+        /// </summary>
+        AddAgent = 206001,
+        /// <summary>
+        /// изменить контрагента
+        /// </summary>
+        ModifyAgent = 206005,
+        /// <summary>
+        /// удалить контрагента
+        /// </summary>
+        DeleteAgent = 206009,
+
+        AddRegistrationJournal,
+        ModifyRegistrationJournal,
+        DeleteRegistrationJournal,
         
         // Тэги
         #region Tags

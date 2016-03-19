@@ -37,13 +37,13 @@ namespace BL.Database.Dictionaries
                 switch (source)
                 {
                     case EnumDictionaryAgentTypes.isEmployee:
-                        if (!agent.IsIndividual && !agent.IsCompany && !agent.IsBank) { return true; }
+                        if ( !agent.IsCompany && !agent.IsBank) { return true; }
                         break;
                     case EnumDictionaryAgentTypes.isCompany:
                         if (!agent.IsIndividual && !agent.IsEmployee && !agent.IsBank) { return true; }
                         break;
                     case EnumDictionaryAgentTypes.isIndividual:
-                        if (!agent.IsEmployee && !agent.IsCompany && !agent.IsBank) { return true; }
+                        if ( !agent.IsCompany && !agent.IsBank) { return true; }
                         break;
                     case EnumDictionaryAgentTypes.isBank:
                         if (!agent.IsEmployee && !agent.IsCompany && !agent.IsIndividual) { return true; }
@@ -220,9 +220,17 @@ namespace BL.Database.Dictionaries
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
 
+
                 var ddt = dbContext.DictionaryAgentsSet.FirstOrDefault(x => x.Id == agent.Id);
                 if (ddt != null)
                 {
+                    dbContext.DictionaryAgentAddressesSet.RemoveRange(
+                                   dbContext.DictionaryAgentAddressesSet.Where(x => x.AgentId == agent.Id)
+                                   );
+                    dbContext.DictionaryAgentContactsSet.RemoveRange(
+                                       dbContext.DictionaryAgentContactsSet.Where(x => x.AgentId == agent.Id)
+                                       );
+
                     dbContext.DictionaryAgentsSet.Remove(ddt);
 
                     dbContext.SaveChanges();
@@ -431,12 +439,14 @@ namespace BL.Database.Dictionaries
                     {
                         Id = person.Id,
                         Name = person.LastName.Trim() + " " + person.FirstName.Trim() + " " + person.MiddleName.Trim(),
-                        IsActive = person.IsActive,
-                        Description = person.Description,
-                        IsBank = false,
-                        IsCompany = false,
-                        IsEmployee = false,
-                        IsIndividual = true
+                        IsActive=person.IsActive,
+                        Description=person.Description,
+                        IsBank=false,
+                        IsCompany=false,
+                        IsEmployee=false,
+                        IsIndividual=true,
+                        LastChangeDate=person.LastChangeDate,
+                        LastChangeUserId=person.LastChangeUserId
                     };
                     UpdateDictionaryAgent(context, agent);
                 }
@@ -453,14 +463,16 @@ namespace BL.Database.Dictionaries
                 if (ddt != null)
                 {
                     dbContext.DictionaryAgentPersonsSet.Remove(ddt);
+                    dbContext.SaveChanges();
 
 
                     if (IsAgentOneRole(context, person.Id, EnumDictionaryAgentTypes.isIndividual))
                     {
                         DeleteDictionaryAgent(context, new InternalDictionaryAgent { Id = person.Id });
+                        dbContext.SaveChanges();
                     }
 
-                    dbContext.SaveChanges();
+                    
                 }
 
             }
@@ -481,7 +493,7 @@ namespace BL.Database.Dictionaries
                         Description = person.Description,
                         IsBank = false,
                         IsCompany = false,
-                        IsEmployee = false,
+                        IsEmployee = true,
                         IsIndividual = true,
                         LastChangeDate = person.LastChangeDate,
                         LastChangeUserId = person.LastChangeUserId,
@@ -593,9 +605,121 @@ namespace BL.Database.Dictionaries
         }
 
 
-        public void UpdateDictionaryAgentEmployee(IContext context, InternalDictionaryAgentEmployee employee) { }
-        public void DeleteDictionaryAgentEmployee(IContext context, InternalDictionaryAgentEmployee employee) { }
-        public int AddDictionaryAgentEmployee(IContext context, InternalDictionaryAgentEmployee employee) { return 0; }
+        public void UpdateDictionaryAgentEmployee(IContext context, InternalDictionaryAgentEmployee employee)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var ddt = new DictionaryAgentEmployees
+                {
+                    Id = employee.Id,
+                    PersonnelNumber=employee.PersonnelNumber,
+                    Description = employee.Description,
+                    LastChangeDate = employee.LastChangeDate,
+                    LastChangeUserId = employee.LastChangeUserId,
+                    IsActive = employee.IsActive
+                };
+
+                dbContext.DictionaryAgentEmployeesSet.Attach(ddt);
+                var entity = dbContext.Entry(ddt);
+                entity.State = System.Data.Entity.EntityState.Modified;
+                dbContext.SaveChanges();
+
+                UpdateDictionaryAgentPerson(context, new InternalDictionaryAgentPerson
+                {
+                    Id = employee.Id,
+                    FirstName = employee.FirstName,
+                    LastName = employee.LastName,
+                    MiddleName = employee.MiddleName,
+                    TaxCode = employee.TaxCode,
+                    IsMale = employee.IsMale,
+                    PassportSerial = employee.PassportSerial,
+                    PassportNumber = employee.PassportNumber,
+                    PassportText = employee.PassportText,
+                    PassportDate = employee.PassportDate,
+                    BirthDate = employee.BirthDate,
+                    Description = employee.Description,
+                    LastChangeDate = employee.LastChangeDate,
+                    LastChangeUserId = employee.LastChangeUserId,
+                    IsActive = employee.IsActive
+                });
+               
+            }
+        }
+        public void DeleteDictionaryAgentEmployee(IContext context, InternalDictionaryAgentEmployee employee)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+
+                var ddt = dbContext.DictionaryAgentEmployeesSet.FirstOrDefault(x => x.Id == employee.Id);
+                if (ddt != null)
+                {
+                    dbContext.DictionaryAgentEmployeesSet.Remove(ddt);
+                    dbContext.SaveChanges();
+                }
+            }
+        }
+
+        public int AddDictionaryAgentEmployee(IContext context, InternalDictionaryAgentEmployee employee)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+
+                var agent = GetDictionaryAgentPerson(context, employee.Id);
+                if (agent == null)
+                {
+                    var newAgent = new InternalDictionaryAgentPerson
+                    {
+                        LastName = employee.LastName,
+                        FirstName= employee.FirstName,
+                        MiddleName=employee.MiddleName,
+                        IsActive = employee.IsActive,
+                        Description = employee.Description,
+                        TaxCode=employee.TaxCode,
+                        BirthDate=employee.BirthDate,
+                        IsMale=employee.IsMale,
+                        PassportSerial=employee.PassportSerial,
+                        PassportNumber=employee.PassportNumber,
+                        PassportDate=employee.PassportDate,
+                        PassportText=employee.PassportText,
+                        LastChangeDate = employee.LastChangeDate,
+                        LastChangeUserId = employee.LastChangeUserId,
+                    };
+                    employee.Id = AddDictionaryAgentPerson(context, newAgent);
+                }
+                else {
+                   
+                    UpdateDictionaryAgent(context, new InternalDictionaryAgent
+                    {
+                        Id = agent.Id,
+                        Name = agent.Name,
+                        IsActive = agent.IsActive,
+                        Description = agent.Description,
+                        IsBank = agent.IsBank,
+                        IsCompany = agent.IsCompany,
+                        IsEmployee = true,
+                        IsIndividual = agent.IsIndividual,
+                        ResidentTypeId = agent.ResidentTypeId ?? 0,
+                        LastChangeDate = employee.LastChangeDate,
+                        LastChangeUserId = employee.LastChangeUserId
+                    });
+                };
+
+                var ddt = new DictionaryAgentEmployees
+                {
+                    Id = employee.Id,
+                    AgentPersonId=employee.Id,
+                    PersonnelNumber=employee.PersonnelNumber,
+                    Description = employee.Description,
+                    LastChangeDate = employee.LastChangeDate,
+                    LastChangeUserId = employee.LastChangeUserId,
+                    IsActive = employee.IsActive
+                };
+                dbContext.DictionaryAgentEmployeesSet.Add(ddt);
+                dbContext.SaveChanges();
+
+                return employee.Id;
+            }
+        }
 
         public IEnumerable<FrontDictionaryAgentEmployee> GetDictionaryAgentEmployees(IContext context, FilterDictionaryAgentEmployee filter)
         {
@@ -605,6 +729,10 @@ namespace BL.Database.Dictionaries
 
                 qry = qry.Where(x => x.Agent.IsEmployee);
 
+                if (!string.IsNullOrEmpty(filter.PersonnelNumber))
+                {
+                    qry = qry.Where(x => x.PersonnelNumber.Contains(filter.PersonnelNumber));
+                }
                 if (filter.AgentId?.Count > 0)
                 {
                     qry = qry.Where(x => filter.AgentId.Contains(x.Id));
@@ -615,7 +743,9 @@ namespace BL.Database.Dictionaries
                 }
                 if (!string.IsNullOrEmpty(filter.Passport))
                 {
-                    //qry = qry.Where(x => x.Agent.AgentPerson.Passport.Contains(filter.Passport));
+                    qry = qry.Where(x => (x.Agent.AgentPerson.PassportSerial + "-" + x.Agent.AgentPerson.PassportNumber + " " + 
+                                          x.Agent.AgentPerson.PassportDate.ToString() + " " + 
+                                          x.Agent.AgentPerson.PassportText).Contains(filter.Passport));
                 }
                 if (!string.IsNullOrEmpty(filter.TaxCode))
                 {
@@ -937,7 +1067,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<BaseDictionaryCompany> GetDictionaryCompanies(IContext context, FilterDictionaryCompany filter)
+        public IEnumerable<BaseDictionaryCompany> GetDictionaryCompanies(IContext context, FilterDictionaryAgentCompany filter)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {

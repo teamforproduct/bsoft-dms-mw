@@ -30,10 +30,21 @@ namespace BL.Model.DictionaryCore.FrontModel
          /// Список адресов контрагента
          /// </summary>
         public IEnumerable<FrontDictionaryAgentAddress> Addresses { get; set; }
-        
+        /// <summary>
+        /// является физлицом
+        /// </summary>
         public virtual bool IsIndividual { get; set; }
+        /// <summary>
+        /// является сотрудником
+        /// </summary>
         public virtual bool IsEmployee { get; set; }
+        /// <summary>
+        /// является банком
+        /// </summary>
         public virtual bool IsBank { get; set; }
+        /// <summary>
+        /// является юрлицом
+        /// </summary>
         public virtual bool IsCompany { get; set; }
 
         /// <summary>
