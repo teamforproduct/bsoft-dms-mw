@@ -256,7 +256,7 @@ namespace BL.Database.Documents
                                 }
                                 break;
                             case EnumValueTypes.Api:
-                                if (!(filterProperty.Ids?.Count()>0))
+                                if (!(filterProperty.Ids?.Count() > 0))
                                 {
                                     filterProperty.Ids = new List<int>();
                                 }
@@ -276,7 +276,7 @@ namespace BL.Database.Documents
 
                 var newevnt =
                     dbContext.DocumentEventsSet.Join(qry, ev => ev.DocumentId, rs => rs.Doc.Id, (e, r) => new { ev = e })
-                    .Where(x=> !x.ev.ReadDate.HasValue && x.ev.TargetPositionId.HasValue && x.ev.TargetPositionId != x.ev.SourcePositionId
+                    .Where(x => !x.ev.ReadDate.HasValue && x.ev.TargetPositionId.HasValue && x.ev.TargetPositionId != x.ev.SourcePositionId
                              && ctx.CurrentPositionsIdList.Contains(x.ev.TargetPositionId.Value))
                         .GroupBy(g => g.ev.DocumentId)
                         .Select(s => new { DocID = s.Key, EvnCnt = s.Count() }).ToList();
@@ -291,7 +291,7 @@ namespace BL.Database.Documents
 
                 var cnt_weits =
                     CommonQueries.GetDocumentWaitsQuery(dbContext, ctx).Where(x => !x.OffEventId.HasValue)
-                    .Join(qry, w=>w.DocumentId, rs => rs.Doc.Id, (w, r) => new { wt = w })
+                    .Join(qry, w => w.DocumentId, rs => rs.Doc.Id, (w, r) => new { wt = w })
                         .GroupBy(x => x.wt.DocumentId)
                         .Select(x => new
                         {
@@ -435,14 +435,14 @@ namespace BL.Database.Documents
                     Accesses = accs,
                 };
 
-                var docIds = new List<int> {res.Id};
+                var docIds = new List<int> { res.Id };
 
                 if (res.LinkId.HasValue)
                 {
                     res.LinkedDocuments = CommonQueries.GetLinkedDocuments(ctx, dbContext, res.LinkId.Value);
                     res.LinkedDocumentsCount = res.LinkedDocuments.Count();
 
-                    if ((filter?.DocumentsIdForAIP!=null ) && (filter.DocumentsIdForAIP.Any()))
+                    if ((filter?.DocumentsIdForAIP != null) && (filter.DocumentsIdForAIP.Any()))
                     {
                         docIds = filter?.DocumentsIdForAIP;
                     }
@@ -465,8 +465,8 @@ namespace BL.Database.Documents
                 }
 
                 //select only events, where sourceposition or target position are in user's current positions luist
-                var evtCount = dbContext.DocumentEventsSet.Where(x => x.DocumentId == res.Id && 
-                ((x.TargetPositionId.HasValue && ctx.CurrentPositionsIdList.Contains(x.TargetPositionId.Value)) 
+                var evtCount = dbContext.DocumentEventsSet.Where(x => x.DocumentId == res.Id &&
+                ((x.TargetPositionId.HasValue && ctx.CurrentPositionsIdList.Contains(x.TargetPositionId.Value))
                 || (x.SourcePositionId.HasValue && ctx.CurrentPositionsIdList.Contains(x.SourcePositionId.Value))))
                 .GroupBy(x => x.DocumentId)
                     .Select(x => new
@@ -484,7 +484,7 @@ namespace BL.Database.Documents
 
                     res.NewEventCount = evtCount.newCnt;
                 }
-                
+
 
                 res.SendLists = CommonQueries.GetDocumentSendList(dbContext, documentId);
 
@@ -592,7 +592,16 @@ namespace BL.Database.Documents
                 }
 
                 doc.AccessLevel = (EnumDocumentAccesses)CommonQueries.GetDocumentAccessesesQry(dbContext, doc.Id, ctx).Max(x => x.AccessLevelId);
-
+                doc.Tasks = dbContext.DocumentTasksSet
+                        .Where(x => x.DocumentId == documentId)
+                        .Select(x => new InternalDocumentTask
+                        {
+                            Id = x.Id,
+                            Task = x.Task,
+                            Description = x.Description,
+                            PositionId = x.PositionId,
+                        }
+                        ).ToList();
                 doc.SendLists = dbContext.DocumentSendListsSet.Where(x => x.DocumentId == documentId && x.IsInitial)
                         .Select(y => new InternalDocumentSendList
                         {
@@ -601,7 +610,8 @@ namespace BL.Database.Documents
                             SourcePositionId = y.SourcePositionId,
                             TargetPositionId = y.TargetPositionId,
                             TargetAgentId = y.TargetAgentId,
-                            Task = y.Task,
+                            TaskId = y.TaskId,
+                            IsAvailableWithinTask = y.IsAvailableWithinTask,
                             Description = y.Description,
                             DueDate = y.DueDate,
                             DueDay = y.DueDay,
@@ -694,7 +704,7 @@ namespace BL.Database.Documents
                     entryAcc.Property(x => x.AccessLevelId).IsModified = true;
                 }
 
-                if (document.Properties!=null)
+                if (document.Properties != null)
                 {
                     CommonQueries.ModifyPropertyValues(dbContext, new InternalPropertyValues { Object = EnumObjects.Documents, RecordId = document.Id, PropertyValues = document.Properties });
                 }
@@ -722,7 +732,7 @@ namespace BL.Database.Documents
                 if (doc == null) return null;
 
 
-                doc.DocumentFiles = CommonQueries.GetInternalDocumentFiles(dbContext, doc.Id); 
+                doc.DocumentFiles = CommonQueries.GetInternalDocumentFiles(dbContext, doc.Id);
 
                 return doc;
             }

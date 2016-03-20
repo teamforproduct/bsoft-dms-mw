@@ -371,7 +371,7 @@ namespace BL.Database.Common
                     {
                         Id = x.OnEvent.Id,
                         DocumentId = x.OnEvent.DocumentId,
-                        Task = x.OnEvent.Task,
+                        Task = x.OnEvent.Task.Task,
                         Description = x.OnEvent.Description,
                         EventType = x.OnEvent.EventTypeId,
                         EventTypeName = x.OnEvent.EventType.Name,
@@ -687,7 +687,7 @@ namespace BL.Database.Common
                             SourcePositionExecutorAgentName = y.SourcePosition.ExecutorAgent.Name,
                             TargetPositionExecutorAgentName = y.TargetPosition.ExecutorAgent.Name ?? y.TargetAgent.Name,
 
-                            Task = y.Task,
+                            Task = y.Task.Task,
                             Description = y.Description,
                             DueDate = y.DueDate,
                             DueDay = y.DueDay,

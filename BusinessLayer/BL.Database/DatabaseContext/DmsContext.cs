@@ -109,6 +109,7 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<TemplateDocumentRestrictedSendLists> TemplateDocumentRestrictedSendLists { get; set; }
         public virtual DbSet<TemplateDocuments> TemplateDocumentsSet { get; set; }
         public virtual DbSet<TemplateDocumentFiles> TemplateDocumentFilesSet { get; set; }
+        public virtual DbSet<TemplateDocumentTasks> TemplateDocumentTasksSet { get; set; }
 
         public virtual DbSet<SystemActions> SystemActionsSet { get; set; }
         public virtual DbSet<SystemFields> SystemFieldsSet { get; set; }

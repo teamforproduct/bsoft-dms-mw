@@ -51,7 +51,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
 
         public override bool CanExecute()
         {
-            _document = _operationDb.ChangeDocumentSendListPrepare(_context, Model.DocumentId);
+            _document = _operationDb.ChangeDocumentSendListPrepare(_context, Model.DocumentId,Model.Task);
 
             _sendList = _document?.SendLists.FirstOrDefault(x => x.Id == Model.Id);
             if (_sendList == null || !CanBeDisplayed(_sendList.SourcePositionId))
@@ -60,16 +60,18 @@ namespace BL.Logic.DocumentCore.SendListCommands
             }
             _context.SetCurrentPosition(_sendList.SourcePositionId);
             _admin.VerifyAccess(_context, CommandType);
-            
+            var taskId = CommonDocumentUtilities.GetDocumentTaskOrCreateNew(_context, _document, Model.Task); //TODO исправление от кого????
             _sendList.Stage = Model.Stage;
             _sendList.SendType = Model.SendType;
             _sendList.TargetPositionId = Model.TargetPositionId;
-            _sendList.Task = Model.Task;
+            //TODO ???? _sendList.Task = Model.Task;
             _sendList.Description = Model.Description;
             _sendList.DueDate = Model.DueDate;
             _sendList.DueDay = Model.DueDay;
             _sendList.AccessLevel = Model.AccessLevel;
             _sendList.IsInitial = Model.IsInitial;
+            _sendList.TaskId = taskId;
+            _sendList.IsAvailableWithinTask = Model.IsAvailableWithinTask;
 
             CommonDocumentUtilities.VerifySendLists(_document);
 

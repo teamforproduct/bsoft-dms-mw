@@ -15,6 +15,14 @@ namespace BL.Model.DocumentCore.Actions
         [Required]
         public int DocumentId { get; set; }
         /// <summary>
+        /// Задача
+        /// </summary>
+        public string Task { get; set; }
+        /// <summary>
+        /// Событие доступно в рамках задачи
+        /// </summary>
+        public bool IsAvailableWithinTask { get; set; }
+        /// <summary>
         /// Комментарий
         /// </summary>
         [Required]

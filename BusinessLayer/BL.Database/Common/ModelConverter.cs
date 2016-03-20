@@ -32,7 +32,8 @@ namespace BL.Database.Common
             return evt == null ? null :
                 new DocumentEvents
                 {
-                    Task = evt.Task,
+                    TaskId = evt.TaskId,
+                    IsAvailableWithinTask = evt.IsAvailableWithinTask,
                     Description = evt.Description,
                     Date = evt.Date,
                     CreateDate = evt.CreateDate,
@@ -54,6 +55,27 @@ namespace BL.Database.Common
         public static IEnumerable<DocumentEvents> GetDbDocumentEvents(IEnumerable<InternalDocumentEvent> events)
         {
             return events?.Any() ?? false ? events.Select(GetDbDocumentEvent) : null;
+        }
+
+        public static DocumentTasks GetDbDocumentTask(InternalDocumentTask task)
+        {
+            return task == null ? null :
+                new DocumentTasks
+                {
+                    Task = task.Task,
+                    Description = task.Description,
+                    DocumentId = task.DocumentId,
+                    LastChangeDate = task.LastChangeDate,
+                    LastChangeUserId = task.LastChangeUserId,
+                    AgentId = task.AgentId,
+                    PositionId = task.PositionId,
+                    PositionExecutorAgentId = task.PositionExecutorAgentId,
+                };
+        }
+
+        public static IEnumerable<DocumentTasks> GetDbDocumentTasks(IEnumerable<InternalDocumentTask> tasks)
+        {
+            return tasks?.Any() ?? false ? tasks.Select(GetDbDocumentTask) : null;
         }
 
         public static DocumentWaits GetDbDocumentWait(InternalDocumentWait wait)
@@ -126,7 +148,8 @@ namespace BL.Database.Common
                 Stage = sl.Stage,
                 SendTypeId = (int)sl.SendType,
 
-                Task = sl.Task,
+                TaskId = sl.TaskId,
+                IsAvailableWithinTask = sl.IsAvailableWithinTask,
                 Description = sl.Description,
                 DueDate = sl.DueDate,
                 DueDay = sl.DueDay,

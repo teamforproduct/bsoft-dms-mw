@@ -148,6 +148,7 @@
     <Compile Include="DocumentCore\InternalModel\InternalActionRecord.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentAttachedFile.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentSavedFilter.cs" />
+    <Compile Include="DocumentCore\InternalModel\InternalDocumentTask.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalTemplateAttachedFile.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalTemplateDocument.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalTemplateDocumentRestrictedSendList.cs" />

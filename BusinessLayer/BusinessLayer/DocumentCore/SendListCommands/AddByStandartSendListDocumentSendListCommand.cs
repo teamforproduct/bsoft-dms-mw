@@ -45,7 +45,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
             _document = _operationDb.ChangeDocumentSendListPrepare(_context, Model.DocumentId);            
             Model.IsInitial = _context.CurrentPositionsIdList.Contains(_document.ExecutorPositionId);
 
-            DocSendLists = _operationDb.AddByStandartSendListDocumentSendListPrepare(_context, Model);
+            DocSendLists = _operationDb.AddByStandartSendListDocumentSendListPrepare(_context, Model);  //TODO так нельзя!!!
 
             var sendLists = _document.SendLists.ToList();
             sendLists.AddRange(DocSendLists);

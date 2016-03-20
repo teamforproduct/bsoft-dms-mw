@@ -23,6 +23,10 @@ namespace BL.Model.DocumentCore.Actions
         /// Дата события
         /// </summary>
         public DateTime? EventDate { get; set; }
+        /// <summary>
+        /// Событие доступно в рамках задачи
+        /// </summary>
+        public bool IsAvailableWithinTask { get; set; }
 
     }
 }

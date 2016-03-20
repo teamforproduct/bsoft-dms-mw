@@ -49,6 +49,14 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// </summary>
         public string Task { get; set; }
         /// <summary>
+        /// Добавлять самоконтроль для отправителя
+        /// </summary>
+        public bool IsAddControl { get; set; }
+        /// <summary>
+        /// Событие доступно в рамках задачи
+        /// </summary>
+        public bool IsAvailableWithinTask { get; set; }
+        /// <summary>
         /// Комментарий
         /// </summary>
         [Required]

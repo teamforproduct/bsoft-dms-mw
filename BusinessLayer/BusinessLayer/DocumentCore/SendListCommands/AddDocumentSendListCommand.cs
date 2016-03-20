@@ -41,11 +41,11 @@ namespace BL.Logic.DocumentCore.SendListCommands
         {
 
             _admin.VerifyAccess(_context, CommandType);
-            _document = _operationDb.ChangeDocumentSendListPrepare(_context, Model.DocumentId);
+            _document = _operationDb.ChangeDocumentSendListPrepare(_context, Model.DocumentId, Model.Task);
 
             //Model.IsInitial = !_document.IsLaunchPlan;
-
-            DocSendList = CommonDocumentUtilities.GetNewDocumentSendList(_context, Model);
+            var taskId = CommonDocumentUtilities.GetDocumentTaskOrCreateNew(_context, _document, Model.Task); //TODO исправление от кого????
+            DocSendList = CommonDocumentUtilities.GetNewDocumentSendList(_context, Model, taskId);
             var sendLists = _document.SendLists.ToList();
             sendLists.Add(DocSendList);
             _document.SendLists = sendLists;

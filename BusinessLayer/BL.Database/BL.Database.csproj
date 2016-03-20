@@ -135,6 +135,7 @@
     <Compile Include="DBModel\Template\TemplateDocumentRestrictedSendLists.cs" />
     <Compile Include="DBModel\Template\TemplateDocuments.cs" />
     <Compile Include="DBModel\Template\TemplateDocumentSendLists.cs" />
+    <Compile Include="DBModel\Template\TemplateDocumentTasks.cs" />
     <Compile Include="DependencyInjection\DatabaseModule.cs" />
     <Compile Include="Admins\AdminsDbProcess.cs" />
     <Compile Include="Admins\Interfaces\IAdminsDbProcess.cs" />
@@ -395,6 +396,14 @@
     <Compile Include="Migrations\201603172236464_DocumentTasks.Designer.cs">
       <DependentUpon>201603172236464_DocumentTasks.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201603192148019_DeleteTask.cs" />
+    <Compile Include="Migrations\201603192148019_DeleteTask.Designer.cs">
+      <DependentUpon>201603192148019_DeleteTask.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201603201203465_TemplateDocumentTasks.cs" />
+    <Compile Include="Migrations\201603201203465_TemplateDocumentTasks.Designer.cs">
+      <DependentUpon>201603201203465_TemplateDocumentTasks.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SystemDb\ISystemDbProcess.cs" />
@@ -602,6 +611,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201603172236464_DocumentTasks.resx">
       <DependentUpon>201603172236464_DocumentTasks.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201603192148019_DeleteTask.resx">
+      <DependentUpon>201603192148019_DeleteTask.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201603201203465_TemplateDocumentTasks.resx">
+      <DependentUpon>201603201203465_TemplateDocumentTasks.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

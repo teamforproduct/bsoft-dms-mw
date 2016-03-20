@@ -13,6 +13,7 @@ namespace BL.Database.DBModel.Template
             this.SendLists = new HashSet<TemplateDocumentSendLists>();
             this.RestrictedSendLists = new HashSet<TemplateDocumentRestrictedSendLists>();
             this.DocumentFiles = new HashSet<TemplateDocumentFiles>();
+            this.Tasks = new HashSet<TemplateDocumentTasks>();
         }
 
         public int Id { get; set; }
@@ -35,6 +36,8 @@ namespace BL.Database.DBModel.Template
         public virtual ICollection<TemplateDocumentRestrictedSendLists> RestrictedSendLists { get; set; }
         [ForeignKey("DocumentId")]
         public virtual ICollection<TemplateDocumentFiles> DocumentFiles { get; set; }
+        [ForeignKey("DocumentId")]
+        public virtual ICollection<TemplateDocumentTasks> Tasks { get; set; }
         [ForeignKey("DocumentDirectionId")]
         public virtual DictionaryDocumentDirections DocumentDirection { get; set; }
         [ForeignKey("DocumentTypeId")]
@@ -47,5 +50,6 @@ namespace BL.Database.DBModel.Template
         public virtual DictionaryAgents SenderAgent { get; set; }
         [ForeignKey("SenderAgentPersonId")]
         public virtual DictionaryAgentPersons SenderAgentPerson { get; set; }
+
     }
 }

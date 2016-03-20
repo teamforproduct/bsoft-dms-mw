@@ -8,7 +8,7 @@ using BL.Model.Exception;
 
 namespace BL.Logic.DocumentCore.Commands
 {
-    public class ControlOffDocumentCommand: BaseDocumentCommand
+    public class ControlOffDocumentCommand : BaseDocumentCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
 
@@ -27,7 +27,7 @@ namespace BL.Logic.DocumentCore.Commands
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ControlOff) _param;
+                return (ControlOff)_param;
             }
         }
 
@@ -70,7 +70,7 @@ namespace BL.Logic.DocumentCore.Commands
             _docWait.ResultTypeId = Model.ResultTypeId;
 
             _docWait.OffEvent =
-                CommonDocumentUtilities.GetNewDocumentEvent(_context, _docWait.DocumentId, EnumEventTypes.ControlOff, Model.EventDate, Model.Description, _docWait.OnEvent.Task, _docWait.OnEvent.TargetPositionId);
+                CommonDocumentUtilities.GetNewDocumentEvent(_context, _docWait.DocumentId, EnumEventTypes.ControlOff, Model.EventDate, Model.Description, _docWait.OnEvent.TaskId, _docWait.OnEvent.IsAvailableWithinTask, _docWait.OnEvent.TargetPositionId);
             CommonDocumentUtilities.SetLastChange(_context, _docWait);
             _operationDb.CloseDocumentWait(_context, _document);
             return _docWait.DocumentId;

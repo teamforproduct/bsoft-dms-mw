@@ -8,13 +8,13 @@ namespace BL.Model.DocumentCore.Actions
     /// <summary>
     /// Модель для взятия документа на контроль
     /// </summary>
-    public class ControlOn : CurrentPosition
+    public class ControlOn : AddNote
     {
         public ControlOn()
         {
         }
 
-        public ControlOn(ControlChange controlChange, int documentId, string task)
+        public ControlOn(ControlChange controlChange, int documentId, string task = null)
         {
             DocumentId = documentId;
             Task = task;
@@ -22,7 +22,7 @@ namespace BL.Model.DocumentCore.Actions
             DueDate = controlChange.DueDate;
             AttentionDate = controlChange.AttentionDate;
         }
-
+        /*
         public ControlOn(InternalDocumentSendList sendList)
         {
             DocumentId = sendList.DocumentId;
@@ -30,19 +30,7 @@ namespace BL.Model.DocumentCore.Actions
             Description = sendList.Description;
             DueDate = new[] {sendList.DueDate ?? DateTime.Now, DateTime.Now.AddDays(sendList.DueDay ?? 0)}.Max();
         }
-
-        /// <summary>
-        /// ИД документа
-        /// </summary>
-        public int DocumentId { get; set; }
-        /// <summary>
-        /// Задача
-        /// </summary>
-        public string Task { get; set; }
-        /// <summary>
-        /// Комментарий
-        /// </summary>
-        public string Description { get; set; }
+        */
         /// <summary>
         /// Контрольный срок
         /// </summary>
@@ -51,9 +39,5 @@ namespace BL.Model.DocumentCore.Actions
         /// Срок включения режима постоянное внимание
         /// </summary>
         public DateTime? AttentionDate { get; set; }
-        /// <summary>
-        /// Дата события
-        /// </summary>
-        public DateTime? EventDate { get; set; }
     }
 }

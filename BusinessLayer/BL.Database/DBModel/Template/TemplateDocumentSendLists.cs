@@ -17,7 +17,7 @@ namespace BL.Database.DBModel.Template
         public int? SourcePositionId { get; set; }
         public Nullable<int> TargetPositionId { get; set; }
         public Nullable<int> TargetAgentId { get; set; }
-        public string Task { get; set; }
+        public Nullable<int> TaskId { get; set; }
         public string Description { get; set; }
         public int Stage { get; set; }
         public int? DueDay { get; set; }
@@ -38,6 +38,8 @@ namespace BL.Database.DBModel.Template
         public virtual DictionaryAgents TargetAgent { get; set; }
         [ForeignKey("AccessLevelId")]
         public virtual AdminAccessLevels AccessLevel { get; set; }
-        
+        [ForeignKey("TaskId")]
+        public virtual TemplateDocumentTasks Task { get; set; }
+
     }
 }
