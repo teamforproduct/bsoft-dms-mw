@@ -199,6 +199,7 @@
     <Compile Include="Exception\DmsExceptions.cs" />
     <Compile Include="FullTextSerach\EnumOperationType.cs" />
     <Compile Include="FullTextSerach\EnumSearchObjectType.cs" />
+    <Compile Include="FullTextSerach\FullTextIndexIem.cs" />
     <Compile Include="FullTextSerach\FullTextSearchResult.cs" />
     <Compile Include="FullTextSerach\FullTextSettings.cs" />
     <Compile Include="FullTextSerach\FullTextUpdateCashInfo.cs" />

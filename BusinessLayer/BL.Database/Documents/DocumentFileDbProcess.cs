@@ -221,6 +221,7 @@ namespace BL.Database.Documents
                 var fl = ModelConverter.GetDbDocumentFile(docFile);
                 dbContext.DocumentFilesSet.Add(fl);
                 dbContext.SaveChanges();
+                docFile.Id = fl.Id;
                 return fl.Id;
             }
         }
@@ -239,7 +240,8 @@ namespace BL.Database.Documents
                 entry.Property(x => x.IsAdditional).IsModified = true;
                 entry.Property(x => x.LastChangeDate).IsModified = true;
                 entry.Property(x => x.LastChangeUserId).IsModified = true;
-                entry.Property(x => x.Date).IsModified = true;
+                entry.Property(x => x.Hash).IsModified = true;
+                //entry.Property(x => x.Date).IsModified = true;//we do not update that
                 dbContext.SaveChanges();
             }
         }
