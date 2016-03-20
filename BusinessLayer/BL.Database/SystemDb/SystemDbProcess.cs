@@ -609,7 +609,18 @@ namespace BL.Database.SystemDb
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
             {
-                return new List<int>();
+                var qry = dbContext.DocumentsSet.Where(x => x.IsLaunchPlan)
+                    .Join(dbContext.DocumentSendListsSet, d => d.Id, s => s.DocumentId, (d, s) => new { doc = d, sl = s })
+                    .Where(x => x.sl.IsInitial && !x.sl.CloseEventId.HasValue)
+                    .GroupBy(x => x.sl.DocumentId)
+                    .Select(x => new
+                    {
+                        DocId = x.Key,
+                        MinStage = x.Min(s => s.sl.Stage)
+                    });
+
+                return dbContext.DocumentSendListsSet.Join(qry, s => s.DocumentId, q => q.DocId, (s, q) => new {sl = s, q})
+                    .Where(x => x.sl.Stage <= x.q.MinStage).Select(x => x.sl.Id).ToList();
             }
         }
 

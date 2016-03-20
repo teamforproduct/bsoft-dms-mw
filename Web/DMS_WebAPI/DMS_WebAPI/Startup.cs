@@ -1,4 +1,5 @@
 ﻿using BL.Logic.DependencyInjection;
+using BL.Logic.SystemServices.AutoPlan;
 using BL.Logic.SystemServices.FullTextSearch;
 using BL.Logic.SystemServices.MailWorker;
 using Microsoft.Owin;
@@ -14,7 +15,7 @@ namespace DMS_WebAPI
         {
             ConfigureAuth(app);
             //var readXml = new Utilities.ReadXml("/servers.xml");
-            //var dbs = readXml.ReadDBs();
+            //var dbs = readXml.Read();
 
             //foreach (var srv in DmsResolver.Current.GetAll<ISystemWorkerService>())
             //{
