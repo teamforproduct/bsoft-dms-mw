@@ -50,6 +50,7 @@
     <Compile Include="AdminCore\IncomingModel\ModifyAdminLanguage.cs" />
     <Compile Include="AdminCore\InternalModel\InternalAdminLanguageValue.cs" />
     <Compile Include="AdminCore\InternalModel\InternalAdminLanguage.cs" />
+    <Compile Include="AutoPlan\AutoPlanSettings.cs" />
     <Compile Include="Constants\SettingConstants.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterCustomDictionary.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterCustomDictionaryType.cs" />
@@ -199,6 +200,7 @@
     <Compile Include="Exception\DmsExceptions.cs" />
     <Compile Include="FullTextSerach\EnumOperationType.cs" />
     <Compile Include="FullTextSerach\EnumSearchObjectType.cs" />
+    <Compile Include="FullTextSerach\FullTextIndexIem.cs" />
     <Compile Include="FullTextSerach\FullTextSearchResult.cs" />
     <Compile Include="FullTextSerach\FullTextSettings.cs" />
     <Compile Include="FullTextSerach\FullTextUpdateCashInfo.cs" />

@@ -8,11 +8,15 @@ namespace BL.Logic.SystemServices.FullTextSearch
     {
         string ServerKey { get; }
 
-        void AddNewItem();
+        void StartUpdate();
         void CommitChanges();
-        void DeleteItem();
+
+        void AddNewItem(FullTextIndexIem item);
+        void DeleteItem(FullTextIndexIem item);
+        void UpdateItem(FullTextIndexIem item);
+
         IEnumerable<FullTextSearchResult> Search(string text);
         IEnumerable<FullTextSearchResult> Search(string text, EnumSearchObjectType objectType, int documentId);
-        void UpdateItem();
+
     }
 }
