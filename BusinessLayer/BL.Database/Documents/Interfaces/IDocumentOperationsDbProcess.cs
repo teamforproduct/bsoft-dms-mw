@@ -48,11 +48,11 @@ namespace BL.Database.Documents.Interfaces
 
         void DeleteDocumentRestrictedSendList(IContext context, int restSendListId);
 
-        void AddDocumentSendList(IContext context, IEnumerable<InternalDocumentSendList> model);
+        void AddDocumentSendList(IContext context, IEnumerable<InternalDocumentSendList> model, IEnumerable<InternalDocumentTask> task = null);
 
         IEnumerable<InternalDocumentSendList> AddByStandartSendListDocumentSendListPrepare(IContext context, ModifyDocumentSendListByStandartSendList model);
 
-        void ModifyDocumentSendList(IContext context, InternalDocumentSendList model);
+        void ModifyDocumentSendList(IContext context, InternalDocumentSendList model, IEnumerable<InternalDocumentTask> task = null);
 
         InternalDocument DeleteDocumentSendListPrepare(IContext context, int sendListId);
 

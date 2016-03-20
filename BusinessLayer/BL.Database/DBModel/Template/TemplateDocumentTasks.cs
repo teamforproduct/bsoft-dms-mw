@@ -8,7 +8,7 @@ using BL.Database.DBModel.Dictionary;
 
 namespace BL.Database.DBModel.Template
 {
-    public partial class TemplateDocumentTasks
+    public class TemplateDocumentTasks
     {
         public TemplateDocumentTasks()
         {

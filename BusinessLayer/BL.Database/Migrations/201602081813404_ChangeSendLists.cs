@@ -9,18 +9,18 @@ namespace BL.Database.Migrations
         {
             AddColumn("dbo.DictionaryStandartSendListContents", "Stage", c => c.Int(nullable: false));
             AddColumn("dbo.DocumentSendLists", "Stage", c => c.Int(nullable: false));
-            AddColumn("dbo.TemplateDocumentSendLists", "Stage", c => c.Int(nullable: false));
+            AddColumn("dbo.TemplateDocumentSendListsSet", "Stage", c => c.Int(nullable: false));
             DropColumn("dbo.DictionaryStandartSendListContents", "OrderNumber");
             DropColumn("dbo.DocumentSendLists", "OrderNumber");
-            DropColumn("dbo.TemplateDocumentSendLists", "OrderNumber");
+            DropColumn("dbo.TemplateDocumentSendListsSet", "OrderNumber");
         }
         
         public override void Down()
         {
-            AddColumn("dbo.TemplateDocumentSendLists", "OrderNumber", c => c.Int());
+            AddColumn("dbo.TemplateDocumentSendListsSet", "OrderNumber", c => c.Int());
             AddColumn("dbo.DocumentSendLists", "OrderNumber", c => c.Int());
             AddColumn("dbo.DictionaryStandartSendListContents", "OrderNumber", c => c.Int(nullable: false));
-            DropColumn("dbo.TemplateDocumentSendLists", "Stage");
+            DropColumn("dbo.TemplateDocumentSendListsSet", "Stage");
             DropColumn("dbo.DocumentSendLists", "Stage");
             DropColumn("dbo.DictionaryStandartSendListContents", "Stage");
         }

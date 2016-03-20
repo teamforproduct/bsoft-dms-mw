@@ -7,14 +7,13 @@ using BL.Model.Common;
 
 namespace BL.Model.DocumentCore.InternalModel
 {
-    public class InternalDocumentTask : LastChangeInfo
+    public class InternalTemplateDocumentTask : LastChangeInfo
     {
+
         public int Id { get; set; }
         public int DocumentId { get; set; }
-        public int PositionId { get; set; }
-        public int PositionExecutorAgentId { get; set; }
-        public int AgentId { get; set; }
-        public string Name { get; set; }
+        public Nullable<int> PositionId { get; set; }
+        public string Task { get; set; }
         public string Description { get; set; }
     }
 }

@@ -64,6 +64,7 @@ namespace BL.Logic.DocumentCore.Commands
         public override object Execute()
         {
             CommonDocumentUtilities.SetAtrributesForNewDocument(_context, _document);
+            CommonDocumentUtilities.SetTaskAtrributesForNewDocument(_context, _document.Tasks, _executorPositionExecutorAgentId.Value);
             CommonDocumentUtilities.SetSendListAtrributesForNewDocument(_context, _document.SendLists, _executorPositionExecutorAgentId.Value, true);
             CommonDocumentUtilities.SetLastChange(_context, _document.RestrictedSendLists);
 

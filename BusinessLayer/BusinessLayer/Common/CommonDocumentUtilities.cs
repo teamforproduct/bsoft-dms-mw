@@ -66,6 +66,32 @@ namespace BL.Logic.Common
             SetLastChange(context, document);
         }
 
+        public static void SetTaskAtrributesForNewDocument(IContext context, IEnumerable<InternalDocumentTask> tasks, int _executorPositionExecutorAgentId)
+        {
+            foreach (var t in tasks)
+            {
+                if (t.PositionId == 0)
+                {
+                    t.PositionId = context.CurrentPositionId;
+                    t.PositionExecutorAgentId = _executorPositionExecutorAgentId;
+                }
+                else
+                {
+                    var positionExecutorAgentId = GetExecutorAgentIdByPositionId(context, t.PositionId);
+                    if (positionExecutorAgentId.HasValue)
+                    {
+                        t.PositionExecutorAgentId = positionExecutorAgentId.Value;
+                    }
+                    else
+                    {
+                        throw new ExecutorAgentForPositionIsNotDefined();
+                    }
+                }
+                t.AgentId = context.CurrentAgentId;
+                SetLastChange(context, t);
+            }
+        }
+
         public static void SetSendListAtrributesForNewDocument(IContext context, IEnumerable<InternalDocumentSendList> sendLists, int _executorPositionExecutorAgentId, bool? isInitial)
         {
             foreach (var sl in sendLists)
@@ -324,7 +350,7 @@ namespace BL.Logic.Common
                         PositionId = context.CurrentPositionId,
                         PositionExecutorAgentId = positionExecutorAgentId.Value,
                         AgentId = context.CurrentAgentId,
-                        Task = task,
+                        Name = task,
                         Description = description,
                         LastChangeUserId = context.CurrentAgentId,
                         LastChangeDate = DateTime.Now,
@@ -359,6 +385,7 @@ namespace BL.Logic.Common
                 AccessLevel = model.AccessLevel,
                 IsInitial = model.IsInitial,
                 IsAvailableWithinTask = model.IsAvailableWithinTask,
+                IsAddControl = model.IsAddControl,
                 LastChangeUserId = context.CurrentAgentId,
                 LastChangeDate = DateTime.Now,
 

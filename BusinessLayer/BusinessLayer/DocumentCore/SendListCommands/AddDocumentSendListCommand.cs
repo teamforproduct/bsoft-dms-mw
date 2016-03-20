@@ -57,7 +57,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
 
         public override object Execute()
         {
-            _operationDb.AddDocumentSendList(_context, new List<InternalDocumentSendList> { DocSendList });
+            _operationDb.AddDocumentSendList(_context, new List<InternalDocumentSendList> { DocSendList }, _document.Tasks);
             return null;
         }
 

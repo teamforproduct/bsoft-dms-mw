@@ -19,5 +19,6 @@ namespace BL.Model.DocumentCore.InternalModel
         public string Addressee { get; set; }
         public virtual IEnumerable<InternalTemplateDocumentRestrictedSendList> RestrictedSendLists { get; set; }
         public virtual IEnumerable<InternalTemplateDocumentSendList> SendLists { get; set; }
+        public virtual IEnumerable<InternalTemplateDocumentTask> Tasks { get; set; }
     }
 }

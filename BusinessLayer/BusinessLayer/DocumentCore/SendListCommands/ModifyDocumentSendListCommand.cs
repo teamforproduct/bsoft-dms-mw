@@ -64,7 +64,8 @@ namespace BL.Logic.DocumentCore.SendListCommands
             _sendList.Stage = Model.Stage;
             _sendList.SendType = Model.SendType;
             _sendList.TargetPositionId = Model.TargetPositionId;
-            //TODO ???? _sendList.Task = Model.Task;
+            _sendList.TargetPositionExecutorAgentId = CommonDocumentUtilities.GetExecutorAgentIdByPositionId(_context, Model.TargetPositionId);
+            _sendList.TargetAgentId = Model.TargetAgentId;
             _sendList.Description = Model.Description;
             _sendList.DueDate = Model.DueDate;
             _sendList.DueDay = Model.DueDay;
@@ -72,6 +73,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
             _sendList.IsInitial = Model.IsInitial;
             _sendList.TaskId = taskId;
             _sendList.IsAvailableWithinTask = Model.IsAvailableWithinTask;
+            _sendList.IsAddControl = Model.IsAddControl;
 
             CommonDocumentUtilities.VerifySendLists(_document);
 
@@ -81,7 +83,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
         public override object Execute()
         {
             CommonDocumentUtilities.SetLastChange(_context, _sendList);
-            _operationDb.ModifyDocumentSendList(_context, _sendList);
+            _operationDb.ModifyDocumentSendList(_context, _sendList, _document.Tasks);
             return null;
         }
 

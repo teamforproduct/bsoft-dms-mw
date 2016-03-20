@@ -25,22 +25,22 @@ namespace BL.Database.Migrations
                 .Index(t => t.DocumentId)
                 .Index(t => t.PositionId);
             
-            AddColumn("dbo.TemplateDocumentSendLists", "TaskId", c => c.Int());
-            CreateIndex("dbo.TemplateDocumentSendLists", "TaskId");
-            AddForeignKey("dbo.TemplateDocumentSendLists", "TaskId", "dbo.TemplateDocumentTasks", "Id");
-            DropColumn("dbo.TemplateDocumentSendLists", "Task");
+            AddColumn("dbo.TemplateDocumentSendListsSet", "TaskId", c => c.Int());
+            CreateIndex("dbo.TemplateDocumentSendListsSet", "TaskId");
+            AddForeignKey("dbo.TemplateDocumentSendListsSet", "TaskId", "dbo.TemplateDocumentTasks", "Id");
+            DropColumn("dbo.TemplateDocumentSendListsSet", "TaskName");
         }
         
         public override void Down()
         {
-            AddColumn("dbo.TemplateDocumentSendLists", "Task", c => c.String());
-            DropForeignKey("dbo.TemplateDocumentSendLists", "TaskId", "dbo.TemplateDocumentTasks");
+            AddColumn("dbo.TemplateDocumentSendListsSet", "TaskName", c => c.String());
+            DropForeignKey("dbo.TemplateDocumentSendListsSet", "TaskId", "dbo.TemplateDocumentTasks");
             DropForeignKey("dbo.TemplateDocumentTasks", "PositionId", "dbo.DictionaryPositions");
             DropForeignKey("dbo.TemplateDocumentTasks", "DocumentId", "dbo.TemplateDocuments");
             DropIndex("dbo.TemplateDocumentTasks", new[] { "PositionId" });
             DropIndex("dbo.TemplateDocumentTasks", new[] { "DocumentId" });
-            DropIndex("dbo.TemplateDocumentSendLists", new[] { "TaskId" });
-            DropColumn("dbo.TemplateDocumentSendLists", "TaskId");
+            DropIndex("dbo.TemplateDocumentSendListsSet", new[] { "TaskId" });
+            DropColumn("dbo.TemplateDocumentSendListsSet", "TaskId");
             DropTable("dbo.TemplateDocumentTasks");
         }
     }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Transactions;
 using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Common;
@@ -34,64 +35,79 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-                var doc = new DBModel.Document.Documents
+                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
                 {
-                    TemplateDocumentId = document.TemplateDocumentId,
-                    CreateDate = document.CreateDate,
-                    DocumentSubjectId = document.DocumentSubjectId,
-                    Description = document.Description,
-                    IsRegistered = document.IsRegistered,
-                    RegistrationJournalId = document.RegistrationJournalId,
-                    RegistrationNumberSuffix = document.RegistrationNumberSuffix,
-                    RegistrationNumberPrefix = document.RegistrationNumberPrefix,
-                    RegistrationDate = document.RegistrationDate,
-                    ExecutorPositionId = document.ExecutorPositionId,
-                    ExecutorPositionExecutorAgentId = document.ExecutorPositionExecutorAgentId,
-                    LastChangeUserId = document.LastChangeUserId,
-                    LastChangeDate = document.LastChangeDate,
-                    SenderAgentId = document.SenderAgentId,
-                    SenderAgentPersonId = document.SenderAgentPersonId,
-                    SenderNumber = document.SenderNumber,
-                    SenderDate = document.SenderDate,
-                    Addressee = document.Addressee,
-                };
-
-
-                if (document.Accesses != null && document.Accesses.Any())
-                {
-                    doc.Accesses = ModelConverter.GetDbDocumentAccesses(document.Accesses).ToList();
-                }
-
-                if (document.Events != null && document.Events.Any())
-                {
-                    doc.Events = ModelConverter.GetDbDocumentEvents(document.Events).ToList();
-                }
-
-                if (document.RestrictedSendLists != null && document.RestrictedSendLists.Any())
-                {
-                    doc.RestrictedSendLists = ModelConverter.AddDocumentRestrictedSendList(document.RestrictedSendLists).ToList();
-                }
-
-                if (document.SendLists != null && document.SendLists.Any())
-                {
-                    doc.SendLists = ModelConverter.AddDocumentSendList(document.SendLists).ToList();
-                }
-
-                if (document.DocumentFiles != null && document.DocumentFiles.Any())
-                {
-                    doc.Files = ModelConverter.GetDbDocumentFiles(document.DocumentFiles).ToList();
-                }
-
-                dbContext.DocumentsSet.Add(doc);
-                dbContext.SaveChanges();
-                document.Id = doc.Id;
-
-                //TODO we schould check if it needed or not? 
-                if (document.DocumentFiles != null)
-                    foreach (var fl in document.DocumentFiles)
+                    var doc = new DBModel.Document.Documents
                     {
-                        fl.DocumentId = doc.Id;
+                        TemplateDocumentId = document.TemplateDocumentId,
+                        CreateDate = document.CreateDate,
+                        DocumentSubjectId = document.DocumentSubjectId,
+                        Description = document.Description,
+                        IsRegistered = document.IsRegistered,
+                        RegistrationJournalId = document.RegistrationJournalId,
+                        RegistrationNumberSuffix = document.RegistrationNumberSuffix,
+                        RegistrationNumberPrefix = document.RegistrationNumberPrefix,
+                        RegistrationDate = document.RegistrationDate,
+                        ExecutorPositionId = document.ExecutorPositionId,
+                        ExecutorPositionExecutorAgentId = document.ExecutorPositionExecutorAgentId,
+                        LastChangeUserId = document.LastChangeUserId,
+                        LastChangeDate = document.LastChangeDate,
+                        SenderAgentId = document.SenderAgentId,
+                        SenderAgentPersonId = document.SenderAgentPersonId,
+                        SenderNumber = document.SenderNumber,
+                        SenderDate = document.SenderDate,
+                        Addressee = document.Addressee,
+                    };
+
+
+                    if (document.Accesses != null && document.Accesses.Any())
+                    {
+                        doc.Accesses = ModelConverter.GetDbDocumentAccesses(document.Accesses).ToList();
                     }
+
+                    if (document.Events != null && document.Events.Any())
+                    {
+                        doc.Events = ModelConverter.GetDbDocumentEvents(document.Events).ToList();
+                    }
+
+                    if (document.RestrictedSendLists != null && document.RestrictedSendLists.Any())
+                    {
+                        doc.RestrictedSendLists = ModelConverter.GetDbDocumentRestrictedSendLists(document.RestrictedSendLists).ToList();
+                    }
+
+                    if (document.DocumentFiles != null && document.DocumentFiles.Any())
+                    {
+                        doc.Files = ModelConverter.GetDbDocumentFiles(document.DocumentFiles).ToList();
+                    }
+
+                    if (document.Tasks?.Any(x => x.Id == 0) ?? false)
+                    {
+                        doc.Tasks = ModelConverter.GetDbDocumentTasks(document.Tasks.Where(x => x.Id == 0)).ToList();
+                    }
+
+                    dbContext.DocumentsSet.Add(doc);
+                    dbContext.SaveChanges();
+
+                    if (document.SendLists != null && document.SendLists.Any())
+                    {
+                        var sendLists = document.SendLists.ToList();
+                        sendLists.ForEach(x => { x.DocumentId = doc.Id; x.TaskId = doc.Tasks.Where(y => y.Task == x.TaskName).Select(y=>y.Id).FirstOrDefault(); });
+                        var sendListsDb = ModelConverter.GetDbDocumentSendLists(sendLists).ToList();
+                        dbContext.DocumentSendListsSet.AddRange(sendListsDb);
+                        dbContext.SaveChanges();
+                    }
+
+
+                    document.Id = doc.Id;
+
+                    //TODO we schould check if it needed or not? 
+                    if (document.DocumentFiles != null)
+                        foreach (var fl in document.DocumentFiles)
+                        {
+                            fl.DocumentId = doc.Id;
+                        }
+                    transaction.Complete();
+                }
             }
         }
 
@@ -531,25 +547,35 @@ namespace BL.Database.Documents
                     return null;
                 }
 
-                doc.RestrictedSendLists = dbContext.TemplateDocumentRestrictedSendLists.Where(y => y.DocumentId == templateDocumentId)
+                doc.Tasks = dbContext.TemplateDocumentTasksSet.Where(y => y.DocumentId == templateDocumentId)
+                    .Select(y => new InternalDocumentTask()
+                    {
+                        Name = y.Task,
+                        Description = y.Description,
+                        PositionId = y.PositionId ?? 0,
+                    }).ToList();
+
+                doc.RestrictedSendLists = dbContext.TemplateDocumentRestrictedSendListsSet.Where(y => y.DocumentId == templateDocumentId)
                     .Select(y => new InternalDocumentRestrictedSendList()
                     {
                         PositionId = y.PositionId,
                         AccessLevel = (EnumDocumentAccesses)y.AccessLevelId
                     }).ToList();
 
-                doc.SendLists = dbContext.TemplateDocumentSendLists.Where(y => y.DocumentId == templateDocumentId)
+                doc.SendLists = dbContext.TemplateDocumentSendListsSet.Where(y => y.DocumentId == templateDocumentId)
                     .Select(y => new InternalDocumentSendList()
                     {
                         SendType = (EnumSendTypes)y.SendTypeId,
                         SourcePositionId = y.SourcePositionId ?? 0,
                         TargetPositionId = y.TargetPositionId,
                         TargetAgentId = y.TargetAgentId,
+                        TaskName = y.Task.Task,
+                        IsAvailableWithinTask = y.IsAvailableWithinTask,
+                        IsAddControl = y.IsAddControl,
                         Description = y.Description,
                         Stage = y.Stage,
                         DueDay = y.DueDay,
                         AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
-
                     }).ToList();
 
                 doc.DocumentFiles = dbContext.TemplateDocumentFilesSet.Where(x => x.DocumentId == templateDocumentId).Select(x => new InternalDocumentAttachedFile
@@ -596,8 +622,7 @@ namespace BL.Database.Documents
                         .Where(x => x.DocumentId == documentId)
                         .Select(x => new InternalDocumentTask
                         {
-                            Id = x.Id,
-                            Task = x.Task,
+                            Name = x.Task,
                             Description = x.Description,
                             PositionId = x.PositionId,
                         }
@@ -610,8 +635,9 @@ namespace BL.Database.Documents
                             SourcePositionId = y.SourcePositionId,
                             TargetPositionId = y.TargetPositionId,
                             TargetAgentId = y.TargetAgentId,
-                            TaskId = y.TaskId,
+                            TaskName = y.Task.Task,
                             IsAvailableWithinTask = y.IsAvailableWithinTask,
+                            IsAddControl = y.IsAddControl,
                             Description = y.Description,
                             DueDate = y.DueDate,
                             DueDay = y.DueDay,

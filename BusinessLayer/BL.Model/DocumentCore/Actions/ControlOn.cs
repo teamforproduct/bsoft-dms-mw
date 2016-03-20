@@ -26,7 +26,7 @@ namespace BL.Model.DocumentCore.Actions
         public ControlOn(InternalDocumentSendList sendList)
         {
             DocumentId = sendList.DocumentId;
-            Task = sendList.Task;
+            TaskName = sendList.TaskName;
             Description = sendList.Description;
             DueDate = new[] {sendList.DueDate ?? DateTime.Now, DateTime.Now.AddDays(sendList.DueDay ?? 0)}.Max();
         }

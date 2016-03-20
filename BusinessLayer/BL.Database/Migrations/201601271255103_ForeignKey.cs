@@ -114,7 +114,7 @@ namespace BL.Database.Migrations
                 .Index(t => t.EventId);
             
             CreateTable(
-                "dbo.TemplateDocumentSendLists",
+                "dbo.TemplateDocumentSendListsSet",
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
@@ -155,7 +155,7 @@ namespace BL.Database.Migrations
             AddColumn("dbo.Documents", "IncomingDetail_Id", c => c.Int());
             DropForeignKey("dbo.TemplateDocumentIncomingDetails", "SenderAgentId", "dbo.DictionaryAgents");
             DropForeignKey("dbo.DocumentIncomingDetails", "SenderAgentId", "dbo.DictionaryAgents");
-            DropForeignKey("dbo.TemplateDocumentSendLists", "DocumentId", "dbo.TemplateDocuments");
+            DropForeignKey("dbo.TemplateDocumentSendListsSet", "DocumentId", "dbo.TemplateDocuments");
             DropForeignKey("dbo.DocumentEvents", "TargetPositionId", "dbo.DictionaryPositions");
             DropForeignKey("dbo.DocumentEvents", "TargetAgentId", "dbo.DictionaryAgents");
             DropForeignKey("dbo.DocumentEvents", "SourcePositionId", "dbo.DictionaryPositions");
@@ -175,7 +175,7 @@ namespace BL.Database.Migrations
             DropForeignKey("dbo.DictionaryDepartments", "ChiefPositionId", "dbo.DictionaryPositions");
             DropIndex("dbo.TemplateDocumentIncomingDetails", new[] { "SenderAgentId" });
             DropIndex("dbo.DocumentIncomingDetails", new[] { "SenderAgentId" });
-            DropIndex("dbo.TemplateDocumentSendLists", new[] { "DocumentId" });
+            DropIndex("dbo.TemplateDocumentSendListsSet", new[] { "DocumentId" });
             DropIndex("dbo.DocumentSendLists", new[] { "EventId" });
             DropIndex("dbo.DocumentSendLists", new[] { "AccessLevelId" });
             DropIndex("dbo.DocumentSendLists", new[] { "TargetAgentId" });
@@ -196,7 +196,7 @@ namespace BL.Database.Migrations
             DropColumn("dbo.TemplateDocumentIncomingDetails", "DocumentId");
             DropColumn("dbo.DocumentIncomingDetails", "DocumentId");
             DropColumn("dbo.DictionaryDepartments", "DictionaryPositions_Id");
-            DropTable("dbo.TemplateDocumentSendLists");
+            DropTable("dbo.TemplateDocumentSendListsSet");
             DropTable("dbo.DocumentSendLists");
             DropTable("dbo.DocumentEvents");
             DropTable("dbo.DocumentAccesses");

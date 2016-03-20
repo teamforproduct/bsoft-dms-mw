@@ -266,7 +266,7 @@ namespace BL.Database.Common
         //            {
         //                Id = x.Id,
         //                DocumentId = x.DocumentId,
-        //                Task = x.Task,
+        //                TaskName = x.TaskName,
         //                Description = x.Description,
         //                EventType = (EnumEventTypes)x.EventTypeId,
         //                EventTypeName = x.EventType.Name,

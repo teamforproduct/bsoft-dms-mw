@@ -105,8 +105,8 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<DocumentEventReaders> DocumentEventReadersSet { get; set; }
         public virtual DbSet<DocumentTasks> DocumentTasksSet { get; set; }
 
-        public virtual DbSet<TemplateDocumentSendLists> TemplateDocumentSendLists { get; set; }
-        public virtual DbSet<TemplateDocumentRestrictedSendLists> TemplateDocumentRestrictedSendLists { get; set; }
+        public virtual DbSet<TemplateDocumentSendLists> TemplateDocumentSendListsSet { get; set; }
+        public virtual DbSet<TemplateDocumentRestrictedSendLists> TemplateDocumentRestrictedSendListsSet { get; set; }
         public virtual DbSet<TemplateDocuments> TemplateDocumentsSet { get; set; }
         public virtual DbSet<TemplateDocumentFiles> TemplateDocumentFilesSet { get; set; }
         public virtual DbSet<TemplateDocumentTasks> TemplateDocumentTasksSet { get; set; }
