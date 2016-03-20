@@ -9,17 +9,18 @@ namespace BL.Database.SystemDb
 {
     public interface ISystemDbProcess
     {
+        #region Logging
         int AddLog(IContext ctx, LogInfo log);
+        #endregion
+
+        #region Settings
         int AddSetting(IContext ctx, string name, string value, int? agentId = null);
         string GetSettingValue(IContext ctx, string name, int? agentId = null);
-        IEnumerable<InternalSystemAction> GetSystemActions(IContext ctx, FilterSystemAction filter);
-        IEnumerable<BaseSystemUIElement> GetSystemUIElements(IContext ctx, FilterSystemUIElement filter);
+        #endregion
 
         #region SystemObjects
-
         IEnumerable<FrontSystemObject> GetSystemObjects(IContext context, FilterSystemObject filter);
-
-
+        IEnumerable<BaseSystemUIElement> GetSystemUIElements(IContext ctx, FilterSystemUIElement filter);
         #endregion SystemObjects
 
         #region Properties
@@ -33,11 +34,9 @@ namespace BL.Database.SystemDb
         void UpdateProperty(IContext context, InternalProperty model);
 
         void DeleteProperty(IContext context, InternalProperty model);
-
         #endregion Properties
 
         #region PropertyLinks
-
         InternalPropertyLink GetPropertyLink(IContext context, FilterPropertyLink filter);
 
         IEnumerable<FrontPropertyLink> GetPropertyLinks(IContext context, FilterPropertyLink filter);
@@ -51,7 +50,6 @@ namespace BL.Database.SystemDb
         #endregion PropertyLinks
 
         #region Mailing
-
         IEnumerable<InternalDataForMail> GetNewActionsForMailing(IContext ctx);
         void MarkActionsLikeMailSended(IContext ctx, InternalMailProcessed mailProcessed);
         #endregion
@@ -59,5 +57,11 @@ namespace BL.Database.SystemDb
         #region Filter Properties
         IEnumerable<BaseSystemUIElement> GetFilterProperties(IContext context, FilterProperties filter);
         #endregion Filter Properties
+
+        #region AutoPlan
+
+        IEnumerable<int> GetSendListIdsForAutoPlan(IContext context);
+
+        #endregion
     }
 }

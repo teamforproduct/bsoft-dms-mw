@@ -26,6 +26,9 @@ namespace DMS_WebAPI
 
             //var indexService = DmsResolver.Current.Get<FullTextSearchService>();
             //indexService.Initialize(dbs);
+
+            //var autoPlanService = DmsResolver.Current.Get<AutoPlanService>();
+            //autoPlanService.Initialize(dbs);
         }
     }
 }

@@ -15,7 +15,9 @@
 
         public static string FILE_STORE_PATH = "IRF_DMS_FILESTORE_PATH";
         public static string FILE_STORE_DEFAULT_PATH = @"c:\IRF_DMS_FILESTORE";
-        public static string FILE_STORE_DOCUEMENT_FOLDER = @"DOCUMENT";
+        public static string FILE_STORE_DOCUMENT_FOLDER = @"DOCUMENT";
         public static string FILE_STORE_TEMPLATE_FOLDER = @"TEMPLATE";
+
+        public static string AUTOPLAN_TIOMEOUT_MIN = @"RUN_AUTOPLAN_TIMEOUT_MINUTE";
     }
 }

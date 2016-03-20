@@ -6,7 +6,7 @@ namespace BL.Logic.Observers
 {
     public class AfterDocumentAddObserver: ICommandObserver
     {
-        public EnumObserverType ObserverType { get { return EnumObserverType.After; } }
+        public EnumObserverType ObserverType => EnumObserverType.After;
 
         public void Inform(IContext context, InternalDocument document, EnumDocumentActions previousAction, object previousParameter)
         {
