@@ -118,9 +118,9 @@ namespace BL.Logic.AdminCore
             return VerifyAccess(context, new VerifyAccess { DocumentActionId = (int)action, IsPositionFromContext = isPositionFromContext }, isThrowExeception);
         }
 
-        public Employee GetEmployee(IContext context, int id)
+        public Employee GetEmployee(IContext context, string userId)
         {
-            return _adminDb.GetEmployee(context, id);
+            return _adminDb.GetEmployee(context, userId);
         }
 
         public IEnumerable<CurrentPosition> GetPositionsByUser(Employee employee)

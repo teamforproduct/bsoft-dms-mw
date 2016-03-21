@@ -4,22 +4,24 @@
     <Name>IRF_DMS</Name>
     <Address>109.197.217.79\SQLEXPRESS,1433</Address>
     <ServerType>SQLServer</ServerType>
-    <DefaultDatabase>IRF_DMS</DefaultDatabase>
-    <IntegrateSecurity>True</IntegrateSecurity>
+    <DefaultDatabase>IRF_DMS_DEV</DefaultDatabase>
+    <IntegrateSecurity>False</IntegrateSecurity>
     <UserName>sa</UserName>
     <UserPassword>Harm1969</UserPassword>
-    <ConnectionString>Data Source=109.197.217.79\SQLEXPRESS,1433;Initial Catalog=IRF_DMS;Persist Security Info=True;User ID=sa;Password=Harm1969</ConnectionString>
+    <ConnectionString>Data Source=109.197.217.79\SQLEXPRESS,1433;Initial Catalog=IRF_DMS_DEV;Persist Security Info=True;User ID=sa;Password=Harm1969</ConnectionString>
+    <DefaultSchema>BSOFT_DOB_REAL</DefaultSchema>
   </Server>
   <Server>
     <Id>2</Id>
-    <Name>IRF_DMS</Name>
-    <Address>109.197.217.79</Address>
-    <ServerType>SQLServer</ServerType>
-    <DefaultDatabase>IRF_DMS</DefaultDatabase>
-    <IntegrateSecurity>True</IntegrateSecurity>
-    <UserName>sa</UserName>
-    <UserPassword>Harm1969</UserPassword>
-    <ConnectionString>Data Source=109.197.217.79\SQLEXPRESS,1433;Initial Catalog=IRF_DMS;Persist Security Info=True;User ID=sa;Password=Harm1969</ConnectionString>
+    <Name>IRF_DMS_Oracle</Name>
+    <Address>88.198.16.119:21521/XE</Address>
+    <ServerType>Oracle</ServerType>
+    <DefaultDatabase>XE</DefaultDatabase>
+    <IntegrateSecurity>False</IntegrateSecurity>
+    <UserName>BSOFT_DOB_REAL</UserName>
+    <UserPassword>BSOFT_DOB_REAL</UserPassword>
+    <ConnectionString>User Id=BSOFT_DOB_REAL;Password=BSOFT_DOB_REAL;Data Source=88.198.16.119:21521/XE</ConnectionString>
+    <DefaultSchema>BSOFT_DOB_REAL</DefaultSchema>
   </Server>
 </Servers>
 <!--<Servers>

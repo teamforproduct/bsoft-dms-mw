@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace BL.Database.DBModel.Template
 {
+    [Table("TempDocRestrictedSendLists")]
     public class TemplateDocumentRestrictedSendLists
     {
         public int Id { get; set; }

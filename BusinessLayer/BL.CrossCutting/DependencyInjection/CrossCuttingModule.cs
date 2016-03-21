@@ -7,7 +7,7 @@ namespace BL.CrossCutting.DependencyInjection
     {
         public override void Load()
         {
-            Bind<IConnectionStringHelper>().To<ConnectionStringHelper>().InSingletonScope();
+            Bind<IConnectionHelper>().To<ConnectionHelper>().InSingletonScope();
         }
     }
 }

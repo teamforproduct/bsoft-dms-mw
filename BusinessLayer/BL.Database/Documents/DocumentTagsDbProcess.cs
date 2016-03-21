@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
 using BL.Database.DatabaseContext;
 using BL.Database.Documents.Interfaces;
@@ -10,17 +9,14 @@ namespace BL.Database.Documents
 {
     public class DocumentTagsDbProcess : IDocumentTagsDbProcess
     {
-        private readonly IConnectionStringHelper _helper;
-
-        public DocumentTagsDbProcess(IConnectionStringHelper helper)
+        public DocumentTagsDbProcess()
         {
-            _helper = helper;
         }
 
         #region DocumentTags
         public IEnumerable<FrontDocumentTag> GetTags(IContext ctx, int documentId)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            using (var dbContext = new DmsContext(ctx))
             {
 
                 var items = dbContext.DocumentTagsSet

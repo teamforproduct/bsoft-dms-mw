@@ -13,7 +13,7 @@ namespace BL.Database.Admins.Interfaces
         AdminAccessInfo GetAdminAccesses(IContext context);
         IEnumerable<BaseAdminUserRole> GetPositionsByUser(IContext ctx, FilterAdminUserRole filter);
 
-        Employee GetEmployee(IContext ctx, int id);
+        Employee GetEmployee(IContext ctx, string userId);
         IEnumerable<CurrentPosition> GetPositionsByUser(Employee employee);
 
         #region AdminLanguages

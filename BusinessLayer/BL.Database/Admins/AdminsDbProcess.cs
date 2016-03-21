@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Admins.Interfaces;
 using BL.Database.DatabaseContext;
@@ -20,16 +19,13 @@ namespace BL.Database.Admins
 {
     public class AdminsDbProcess : CoreDb.CoreDb, IAdminsDbProcess
     {
-        private readonly IConnectionStringHelper _helper;
-
-        public AdminsDbProcess(IConnectionStringHelper helper)
+        public AdminsDbProcess()
         {
-            _helper = helper;
         }
 
         public AdminAccessInfo GetAdminAccesses(IContext context)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var res = new AdminAccessInfo();
 
@@ -78,7 +74,7 @@ namespace BL.Database.Admins
 
         public IEnumerable<BaseAdminUserRole> GetPositionsByUser(IContext ctx, FilterAdminUserRole filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            using (var dbContext = new DmsContext(ctx))
             {
                 var qry = dbContext.AdminUserRolesSet.AsQueryable();
 
@@ -111,7 +107,7 @@ namespace BL.Database.Admins
         /// <returns></returns>
         public bool VerifySubordination(IContext context, VerifySubordination model)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var dictDb = DmsResolver.Current.Get<IDictionariesDbProcess>();
                 var pos = dictDb.GetDictionaryPositions(context, new FilterDictionaryPosition() { PositionId = new List<int> { model.TargetPosition }, SubordinatedPositions = model.SourcePositions }).FirstOrDefault();
@@ -123,16 +119,21 @@ namespace BL.Database.Admins
             }
         }
 
-        public Employee GetEmployee(IContext ctx, int id)
+        public Employee GetEmployee(IContext ctx, string userId)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            using (var dbContext = new DmsContext(ctx))
             {
-                return dbContext.DictionaryAgentsSet.Where(x => x.Id == id).Select(x => new Employee
+                var itemDB = dbContext.DictionaryAgentUsersSet.Where(x => x.UserId.Equals(userId));
+
+
+                    var item =itemDB.Select(x => new Employee
                 {
                     AgentId = x.Id,
-                    Name = x.Name,
-                    LanguageId = x.LanguageId ?? 0
-                }).FirstOrDefault();
+                    Name = x.Agent.Name,
+                    LanguageId = x.Agent.LanguageId ?? 0
+                });
+                var res = item.FirstOrDefault();
+                return res;
             }
         }
 
@@ -146,7 +147,7 @@ namespace BL.Database.Admins
 
         public IEnumerable<FrontAdminLanguage> GetAdminLanguages(IContext context, FilterAdminLanguage filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.AdminLanguagesSet.AsQueryable();
 
@@ -167,7 +168,7 @@ namespace BL.Database.Admins
 
         public InternalAdminLanguage GetInternalAdminLanguage(IContext context, FilterAdminLanguage filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.AdminLanguagesSet.AsQueryable();
 
@@ -193,7 +194,7 @@ namespace BL.Database.Admins
 
         public int AddAdminLanguage(IContext context, InternalAdminLanguage model)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var item = new AdminLanguages
                 {
@@ -210,7 +211,7 @@ namespace BL.Database.Admins
 
         public void UpdateAdminLanguage(IContext context, InternalAdminLanguage model)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var item = new AdminLanguages
                 {
@@ -232,7 +233,7 @@ namespace BL.Database.Admins
 
         public void DeleteAdminLanguage(IContext context, InternalAdminLanguage model)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
 
                 var item = dbContext.AdminLanguagesSet.FirstOrDefault(x => x.Id == model.Id);
@@ -249,7 +250,7 @@ namespace BL.Database.Admins
 
         public IEnumerable<FrontAdminLanguageValue> GetAdminLanguageValues(IContext context, FilterAdminLanguageValue filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.AdminLanguageValuesSet.AsQueryable();
 
@@ -287,7 +288,7 @@ namespace BL.Database.Admins
 
         public InternalAdminLanguageValue GetInternalAdminLanguageValue(IContext context, FilterAdminLanguageValue filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.AdminLanguageValuesSet.AsQueryable();
 
@@ -318,7 +319,7 @@ namespace BL.Database.Admins
 
         public int AddAdminLanguageValue(IContext context, InternalAdminLanguageValue model)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var item = new AdminLanguageValues
                 {
@@ -335,7 +336,7 @@ namespace BL.Database.Admins
 
         public void UpdateAdminLanguageValue(IContext context, InternalAdminLanguageValue model)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var item = new AdminLanguageValues
                 {
@@ -357,7 +358,7 @@ namespace BL.Database.Admins
 
         public void DeleteAdminLanguageValue(IContext context, InternalAdminLanguageValue model)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
 
                 var item = dbContext.AdminLanguageValuesSet.FirstOrDefault(x => x.Id == model.Id);

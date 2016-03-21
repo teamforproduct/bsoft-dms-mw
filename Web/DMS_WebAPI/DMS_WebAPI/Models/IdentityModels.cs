@@ -5,13 +5,16 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using System.Linq;
 using BL.Logic.DependencyInjection;
 using DMS_WebAPI.Utilities;
+using BL.CrossCutting.Helpers;
+using BL.CrossCutting.Interfaces;
+using System.Data.Entity;
+using BL.Model.Database;
 
 namespace DMS_WebAPI.Models
 {
     // You can add profile data for the user by adding more properties to your ApplicationUser class, please visit http://go.microsoft.com/fwlink/?LinkID=317594 to learn more.
     public class ApplicationUser : IdentityUser
     {
-        public int? AgentId { get; set; }
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager, string authenticationType)
         {
             // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
@@ -28,44 +31,8 @@ namespace DMS_WebAPI.Models
         {
         }
 
-        public ApplicationDbContext(string nameOrConnectionString)
-            : base(nameOrConnectionString, throwIfV1Schema: false)
-        {
-        }
-
         public static ApplicationDbContext Create()
         {
-            var path = System.Web.HttpContext.Current.Request.Path;
-            if (path.Equals("/token")|| path.Equals("/api/token") || path.Equals("/api/v2/token"))
-            {
-                int dbId = 0;
-
-                if (!int.TryParse(System.Web.HttpContext.Current.Request.Headers["DatabaseId"],out dbId))
-                {
-                    if (System.Web.HttpContext.Current.IsDebuggingEnabled)
-                    {
-                        System.Web.HttpContext.Current.Request.Headers["DatabaseId"] = "1";
-                        dbId = 1;
-                    }
-                    else
-                    {
-                        throw new System.Exception("Not set DatabaseId");
-                    }
-                }
-                var db = new Utilities.Servers().GetServers().FirstOrDefault(x => x.Id == dbId);
-                if (db==null)
-                {
-                    throw new System.Exception("Not found Database");
-                }
-                //var cxt = DmsResolver.Current.Get<UserContext>().Set(db);
-                return new ApplicationDbContext(db.ConnectionString);
-            }
-            else if ((System.Web.HttpContext.Current.User?.Identity?.IsAuthenticated ?? false) && !string.IsNullOrEmpty(System.Web.HttpContext.Current.Request.Headers["Authorization"]))
-            {
-                var cxt = DmsResolver.Current.Get<UserContext>().Get();
-                return new ApplicationDbContext(cxt.CurrentDB.ConnectionString);
-            }
-            
             return new ApplicationDbContext();
         }
     }

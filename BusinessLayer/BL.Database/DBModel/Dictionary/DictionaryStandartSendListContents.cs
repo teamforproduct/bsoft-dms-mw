@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BL.Database.DBModel.Dictionary
 {
+    [Table("DicStandartSendListContents")]
     public class DictionaryStandartSendListContents
     {
         public int Id { get; set; }

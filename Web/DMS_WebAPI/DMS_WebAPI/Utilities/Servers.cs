@@ -1,17 +1,14 @@
-﻿using BL.CrossCutting.Interfaces;
-using BL.Logic.Context;
-using BL.Model.Database;
+﻿using BL.Model.Database;
+using BL.Model.Database.FrontModel;
+using BL.Model.Database.IncomingModel;
+using BL.Model.Database.InternalModel;
 using BL.Model.Exception;
-using BL.Model.SystemCore.FrontModel;
-using BL.Model.SystemCore.IncomingModel;
-using BL.Model.SystemCore.InternalModel;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web;
 using System.Xml;
-using System.Xml.Linq;
 
 namespace DMS_WebAPI.Utilities
 {
@@ -57,7 +54,7 @@ namespace DMS_WebAPI.Utilities
             {
                 if (n.HasChildNodes)
                 {
-                    var isAdd = true;
+                    var isAdd = false;
                     var item = new InternalServer();
 
                     foreach (XmlNode child in n.ChildNodes)
@@ -91,6 +88,9 @@ namespace DMS_WebAPI.Utilities
                                 break;
                             case "connectionstring":
                                 item.ConnectionString = child.InnerText;
+                                break;
+                            case "defaultschema":
+                                item.DefaultSchema = child.InnerText;
                                 break;
                         }
                     }
@@ -148,6 +148,10 @@ namespace DMS_WebAPI.Utilities
                 tmpItem.InnerText = modal.ConnectionString.ToString();
                 item.AppendChild(tmpItem);
 
+                tmpItem = doc.CreateElement("DefaultSchema");
+                tmpItem.InnerText = modal.DefaultSchema.ToString();
+                item.AppendChild(tmpItem);
+
                 root.AppendChild(item);
 
                 doc.Save(_ServerFilePath);
@@ -180,6 +184,7 @@ namespace DMS_WebAPI.Utilities
                             n["UserName"].InnerText = modal.UserName.ToString();
                             n["UserPassword"].InnerText = modal.UserPassword.ToString();
                             n["ConnectionString"].InnerText = modal.ConnectionString.ToString();
+                            n["DefaultSchema"].InnerText = modal.DefaultSchema.ToString();
                             break;
                         }
                     }

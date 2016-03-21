@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
 using BL.Database.DatabaseContext;
 using BL.Database.Documents.Interfaces;
@@ -11,16 +10,13 @@ namespace BL.Database.Documents
 {
     public class TemplateDocumentsDbProcess : CoreDb.CoreDb, ITemplateDocumentsDbProcess
     {
-        private readonly IConnectionStringHelper _helper;
-
-        public TemplateDocumentsDbProcess(IConnectionStringHelper helper)
+        public TemplateDocumentsDbProcess()
         {
-            _helper = helper;
         }
 
         public IEnumerable<FrontTemplateDocument> GetTemplateDocument(IContext ctx)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            using (var dbContext = new DmsContext(ctx))
             {
                 return dbContext.TemplateDocumentsSet.Select(x => new FrontTemplateDocument
                 {
@@ -42,7 +38,7 @@ namespace BL.Database.Documents
         public FrontTemplateDocument GetTemplateDocumentByDocumentId(IContext ctx, int documentId)
         {
             int templateDocumentId = 0;
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            using (var dbContext = new DmsContext(ctx))
             {
                 templateDocumentId = dbContext.DocumentsSet.Where(x => x.Id == documentId).Select(x => x.TemplateDocumentId).FirstOrDefault();
             }
@@ -52,7 +48,7 @@ namespace BL.Database.Documents
 
         public FrontTemplateDocument GetTemplateDocument(IContext ctx, int templateDocumentId)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            using (var dbContext = new DmsContext(ctx))
             {
                 return
                     dbContext.TemplateDocumentsSet.Where(x => x.Id == templateDocumentId)

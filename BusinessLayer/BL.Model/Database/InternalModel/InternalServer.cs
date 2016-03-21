@@ -1,11 +1,9 @@
 ﻿using BL.Model.Database;
-using System.Runtime.Serialization;
 
-namespace BL.Model.SystemCore.IncomingModel
+namespace BL.Model.Database.InternalModel
 {
-    public class ModifyServer
+    public class InternalServer
     {
-        [IgnoreDataMember]
         public int Id { get; set; }
         public string Address { get; set; }
         public string Name { get; set; }
@@ -15,5 +13,6 @@ namespace BL.Model.SystemCore.IncomingModel
         public string UserName { get; set; }
         public string UserPassword { get; set; }
         public string ConnectionString { get; set; }
+        public string DefaultSchema { get; set; }
     }
 }

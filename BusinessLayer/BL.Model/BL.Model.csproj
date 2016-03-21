@@ -218,14 +218,14 @@
     <Compile Include="SystemCore\FrontModel\FrontSystemObject.cs" />
     <Compile Include="SystemCore\FrontModel\FrontPropertyLink.cs" />
     <Compile Include="SystemCore\FrontModel\FrontProperty.cs" />
-    <Compile Include="SystemCore\FrontModel\FrontServer.cs" />
-    <Compile Include="SystemCore\IncomingModel\ModifyServer.cs" />
+    <Compile Include="Database\FrontModel\FrontServer.cs" />
+    <Compile Include="Database\IncomingModel\ModifyServer.cs" />
     <Compile Include="SystemCore\IncomingModel\ModifyPropertyValue.cs" />
     <Compile Include="SystemCore\IncomingModel\ModifyPropertyLink.cs" />
     <Compile Include="SystemCore\IncomingModel\ModifyProperty.cs" />
     <Compile Include="SystemCore\InternalModel\InternalDataForMail.cs" />
     <Compile Include="SystemCore\InternalModel\InternalMailProcessed.cs" />
-    <Compile Include="SystemCore\InternalModel\InternalServer.cs" />
+    <Compile Include="Database\InternalModel\InternalServer.cs" />
     <Compile Include="SystemCore\InternalModel\InternalPropertyValues.cs" />
     <Compile Include="SystemCore\InternalModel\InternalPropertyValue.cs" />
     <Compile Include="SystemCore\InternalModel\InternalSendMailServerParameters.cs" />

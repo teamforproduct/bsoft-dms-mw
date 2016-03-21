@@ -9,7 +9,7 @@ using BL.Logic.DependencyInjection;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using BL.Model.Exception;
-using BL.Model.SystemCore.InternalModel;
+using BL.Model.Database.InternalModel;
 
 namespace DMS_WebAPI.Utilities
 {
@@ -53,36 +53,26 @@ namespace DMS_WebAPI.Utilities
             token = token.ToLower();
             if (!_casheContexts.ContainsKey(token))
             {
-                var userManager = HttpContext.Current.Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
-                var user = userManager.FindById(userId);
-                var context = 
+                var context =
                 new DefaultContext
                 {
                     CurrentEmployee = new BL.Model.Users.Employee
                     {
                         Token = token,
-                        AgentId = user.AgentId
+                        UserId = userId
                     },
-                    CurrentDB = new DatabaseModel
-                    {
-                        Id = db.Id,
-                        Address = db.Address,
-                        Name = db.Name,
-                        ServerType = db.ServerType,
-                        DefaultDatabase = db.DefaultDatabase,
-                        IntegrateSecurity = db.IntegrateSecurity,
-                        UserName = db.UserName,
-                        UserPassword = db.UserPassword,
-                        ConnectionString = db.ConnectionString
-                    }
+                    CurrentDB = new DatabaseModel(db)
                 };
 
-                if (user.AgentId.HasValue)
+                var agent = DmsResolver.Current.Get<IAdminService>().GetEmployee(context, userId);
+
+                if (agent == null)
                 {
-                    var agent = DmsResolver.Current.Get<IAdminService>().GetEmployee(context, user.AgentId.Value);
-                    context.CurrentEmployee.Name = agent.Name;
-                    context.CurrentEmployee.LanguageId = agent.LanguageId;
+                    throw new AccessIsDenied();
                 }
+                context.CurrentEmployee.AgentId = agent.AgentId;
+                context.CurrentEmployee.Name = agent.Name;
+                context.CurrentEmployee.LanguageId = agent.LanguageId;
 
                 Save(token, context);
                 return context;

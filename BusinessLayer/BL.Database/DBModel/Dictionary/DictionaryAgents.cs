@@ -42,6 +42,8 @@ namespace BL.Database.DBModel.Dictionary
         public virtual DictionaryAgentEmployees AgentEmployee { get; set; }
         [ForeignKey("LanguageId")]
         public virtual AdminLanguages Language { get; set; }
+        [ForeignKey("Id")]
+        public virtual DictionaryAgentUsers AgentUser { get; set; }
 
         public virtual DictionaryResidentTypes ResidentType { get; set; }
 
