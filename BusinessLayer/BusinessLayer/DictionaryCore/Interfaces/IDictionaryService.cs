@@ -25,6 +25,12 @@ namespace BL.Logic.DictionaryCore.Interfaces
 
         #endregion DictionaryAgentPersons
 
+        #region DictionaryAgentCompanies
+        FrontDictionaryAgentCompany GetDictionaryAgentCompany(IContext context, int id);
+
+        IEnumerable<FrontDictionaryAgentCompany> GetDictionaryAgentCompanies(IContext context, FilterDictionaryAgentCompany filter);
+        #endregion DictionaryAgentCompanies
+
         #region DictionaryAgentEmployees
         FrontDictionaryAgentEmployee GetDictionaryAgentEmployee(IContext context, int id);
 
@@ -56,11 +62,10 @@ namespace BL.Logic.DictionaryCore.Interfaces
         IEnumerable<FrontDictionaryContactType> GetDictionaryContactTypes(IContext context, FilterDictionaryContactType filter);
         #endregion
 
-        #region DictionaryCompanies
-        BaseDictionaryCompany GetDictionaryCompany(IContext context, int id);
-
-        IEnumerable<BaseDictionaryCompany> GetDictionaryCompanies(IContext context, FilterDictionaryAgentCompany filter);
-        #endregion DictionaryCompanies
+     //  #region DictionaryCompanies
+     //  BaseDictionaryCompany GetDictionaryCompany(IContext context, int id);
+     //  IEnumerable<BaseDictionaryCompany> GetDictionaryCompanies(IContext context, FilterDictionaryAgentCompany filter);
+     //  #endregion DictionaryCompanies
 
         // Структура предприятия
         #region DictionaryDepartments

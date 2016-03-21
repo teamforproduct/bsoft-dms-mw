@@ -242,7 +242,7 @@
     <Compile Include="Controllers\Dictionaries\DictionaryDocumentSubjectsController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryDocumentDirectionsController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryDepartmentsController.cs" />
-    <Compile Include="Controllers\Dictionaries\DictionaryCompaniesController.cs" />
+    <Compile Include="Controllers\Dictionaries\DictionaryAgentCompaniesController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryAgentPersonsController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryStandartSendListsController.cs" />
     <Compile Include="Controllers\Documents\DocumentActionsController.cs" />

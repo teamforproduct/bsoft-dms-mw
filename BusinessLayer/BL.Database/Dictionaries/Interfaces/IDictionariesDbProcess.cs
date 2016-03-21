@@ -57,11 +57,13 @@ namespace BL.Database.Dictionaries.Interfaces
 
         #endregion
 
-        #region DictionaryCompanies
-        BaseDictionaryCompany GetDictionaryCompany(IContext context, int id);
-
-        IEnumerable<BaseDictionaryCompany> GetDictionaryCompanies(IContext context, FilterDictionaryAgentCompany filter);
-        #endregion DictionaryCompanies
+        #region DictionaryAgentCompanies
+        FrontDictionaryAgentCompany GetDictionaryAgentCompany(IContext context, int id);
+        void UpdateDictionaryAgentCompany(IContext context, InternalDictionaryAgentCompany company);
+        void DeleteDictionaryAgentCompany(IContext context, InternalDictionaryAgentCompany company);
+        int AddDictionaryAgentCompany(IContext context, InternalDictionaryAgentCompany company);
+        IEnumerable<FrontDictionaryAgentCompany> GetDictionaryAgentCompanies(IContext context, FilterDictionaryAgentCompany filter);
+        #endregion DictionaryAgentCompanies
 
         #region DictionaryContacts
         FrontDictionaryContact GetDictionaryContact(IContext context,

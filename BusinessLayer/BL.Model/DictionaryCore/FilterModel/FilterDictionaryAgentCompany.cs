@@ -16,6 +16,22 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// </summary>
         public string Name { get; set; }
         /// <summary>
+        /// ИНН
+        /// </summary>
+        public string TaxCode { get; set; }
+        /// <summary>
+        /// ОКПО
+        /// </summary>
+        public string OKPOCode { get; set; }
+        /// <summary>
+        /// Номер свидетельства НДС
+        /// </summary>
+        public string VATCode { get; set; }
+        /// <summary>
+        /// Признак активности
+        /// </summary>
+        public bool? IsActive { get; set; }
+        /// <summary>
         ///  игнорировать при поиске
         /// </summary>
         public List<int> NotContainsId { get; set; }

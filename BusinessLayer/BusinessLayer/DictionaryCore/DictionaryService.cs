@@ -101,19 +101,19 @@ namespace BL.Logic.DictionaryCore
         #endregion
 
 
-        #region DictionaryCompanies
-        public BaseDictionaryCompany GetDictionaryCompany(IContext context, int id)
+        #region DictionaryAgentCompanies
+        public FrontDictionaryAgentCompany GetDictionaryAgentCompany(IContext context, int id)
         {
 
-            return _dictDb.GetDictionaryCompany(context, id);
+            return _dictDb.GetDictionaryAgentCompany(context, id);
         }
 
-        public IEnumerable<BaseDictionaryCompany> GetDictionaryCompanies(IContext context, FilterDictionaryAgentCompany filter)
+        public IEnumerable<FrontDictionaryAgentCompany> GetDictionaryAgentCompanies(IContext context, FilterDictionaryAgentCompany filter)
         {
 
-            return _dictDb.GetDictionaryCompanies(context, filter);
+            return _dictDb.GetDictionaryAgentCompanies(context, filter);
         }
-        #endregion DictionaryCompanies
+        #endregion DictionaryAgentCompanies
 
         #region DictionaryContacts
         public FrontDictionaryContact GetDictionaryContact(IContext context, int id)

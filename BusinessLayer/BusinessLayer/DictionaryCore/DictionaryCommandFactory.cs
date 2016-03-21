@@ -6,6 +6,7 @@ using BL.Logic.DictionaryCore.Contact;
 using BL.Logic.DictionaryCore.ContactType;
 using BL.Logic.DictionaryCore.AgentAdresses;
 using BL.Logic.DictionaryCore.AgentPerson;
+using BL.Logic.DictionaryCore.AgentCompany;
 using BL.Logic.DictionaryCore.AgentEmployee;
 using BL.Logic.DictionaryCore.Agent;
 using BL.Logic.DictionaryCore.Tag;
@@ -69,6 +70,17 @@ namespace BL.Logic.DictionaryCore
                 case EnumDictionaryActions.DeleteAgentEmployee:
                     cmd = DmsResolver.Current.Get<DeleteDictionaryAgentEmployeeCommand>();
                     break;
+
+                case EnumDictionaryActions.ModifyAgentCompany:
+                    cmd = DmsResolver.Current.Get<ModifyDictionaryAgentCompanyCommand>();
+                    break;
+                case EnumDictionaryActions.AddAgentCompany:
+                    cmd = DmsResolver.Current.Get<AddDictionaryAgentCompanyCommand>();
+                    break;
+                case EnumDictionaryActions.DeleteAgentCompany:
+                    cmd = DmsResolver.Current.Get<DeleteDictionaryAgentCompanyCommand>();
+                    break;
+
 
                 // Адреса
                 #region DictionaryAgentAddress

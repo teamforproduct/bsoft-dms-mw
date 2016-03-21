@@ -34,12 +34,14 @@ using BL.Model.SystemCore;
 
                 FrontDictionaryAgent tmp = _dictDb.GetDictionaryAgent(_context, Model);
 
-                // Удалить можно только контрагента без роли. 
+            // Удалить можно только контрагента без роли. 
+            if (tmp != null)
+            {
                 if (tmp.IsBank || tmp.IsCompany || tmp.IsEmployee || tmp.IsIndividual)
                 {
-                   throw new DictionaryRecordCouldNotBeDeleted();
+                    throw new DictionaryRecordCouldNotBeDeleted();
                 }
-               
+            }   
                 return true;
             }
 

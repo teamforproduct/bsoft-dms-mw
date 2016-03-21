@@ -211,6 +211,19 @@
         DeleteTag = 291009,
         #endregion Tags
 
+        /// <summary>
+        /// добавить юрлицо
+        /// </summary>
+        AddAgentCompany=213001,
+        /// <summary>
+        /// изменить юрлицо
+        /// </summary>
+        ModifyAgentCompany=213005,
+        /// <summary>
+        /// удалить юрлицо
+        /// </summary>
+        DeleteAgentCompany =213009,
+
         #region CustomDictionaryType
         /// <summary>
         /// Добавить тип пользовательского словаря
