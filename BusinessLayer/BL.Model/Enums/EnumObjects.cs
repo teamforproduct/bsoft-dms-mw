@@ -8,6 +8,7 @@
         DocumentSendLists = 103, // Документы - план работы
         DocumentFiles = 104, // Документы - файлы
         DocumentLinks = 105, // Документы - связи
+        DocumentSendListStages = 106, // Документы - этапы плана работ
         DocumentEvents = 111, // Документы - события
         DocumentWaits = 112, // Документы - ожидания
         DocumentSubscriptions = 113, // Документы - подписи

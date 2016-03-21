@@ -464,7 +464,7 @@ namespace BL.Database.Documents
                     }
                 }
 
-                var cnt_weits =
+                var cnt_waits =
                     CommonQueries.GetDocumentWaitsQuery(dbContext, ctx, res.Id).Where(x => !x.OffEventId.HasValue)
                         .GroupBy(x => x.DocumentId)
                         .Select(x => new
@@ -474,10 +474,10 @@ namespace BL.Database.Documents
                             Overdue = x.Count(s => s.DueDate.HasValue && s.DueDate.Value < DateTime.Now)
                         }).FirstOrDefault();
 
-                if (cnt_weits != null)
+                if (cnt_waits != null)
                 {
-                    res.WaitOpenCount = cnt_weits.OpenWaits;
-                    res.WaitOverdueCount = cnt_weits.Overdue;
+                    res.WaitOpenCount = cnt_waits.OpenWaits;
+                    res.WaitOverdueCount = cnt_waits.Overdue;
                 }
 
                 //select only events, where sourceposition or target position are in user's current positions luist
@@ -510,6 +510,8 @@ namespace BL.Database.Documents
 
                 res.DocumentFiles = CommonQueries.GetDocumentFiles(dbContext, new FilterDocumentAttachedFile { DocumentId = docIds });
                 res.AttachedFilesCount = res.DocumentFiles.Count();
+
+                res.DocumentTasks = CommonQueries.GetDocumentTasks(dbContext, new FilterDocumentTask { DocumentId = docIds });
 
                 res.DocumentWaits = CommonQueries.GetDocumentWaits(dbContext, new FilterDocumentWait { DocumentId = docIds });
 
