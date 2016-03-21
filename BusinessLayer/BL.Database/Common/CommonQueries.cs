@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using BL.CrossCutting.Context;
 using BL.CrossCutting.Interfaces;
 using BL.Database.DatabaseContext;
 using BL.Database.DBModel.Document;
@@ -43,7 +44,7 @@ namespace BL.Database.Common
                       join ap in dbContext.DictionaryAgentPersonsSet on dc.SenderAgentPersonId equals ap.Id into ap
                       from sendAp in ap.DefaultIfEmpty()
 
-                      where dbContext.DocumentAccessesSet.Where(x=>ctx.CurrentPositionsIdList.Contains(x.PositionId)).Select(x=>x.DocumentId).Contains(dc.Id)
+                      where dbContext.DocumentAccessesSet.Where(x=>ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.PositionId)).Select(x=>x.DocumentId).Contains(dc.Id)
 
                       select new DocumentQuery
                       {
@@ -154,7 +155,7 @@ namespace BL.Database.Common
         public static IQueryable<FrontDocumentAccess> GetDocumentAccesses(IContext ctx, DmsContext dbContext)
         {
             return
-                dbContext.DocumentAccessesSet.Where(x => ctx.CurrentPositionsIdList.Contains(x.PositionId))
+                dbContext.DocumentAccessesSet.Where(x => ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.PositionId))
                 .Select(acc => new FrontDocumentAccess
                 {
                     Id = acc.Id,
@@ -203,7 +204,7 @@ namespace BL.Database.Common
             var qry = dbContext.DocumentAccessesSet.Where(x => x.DocumentId == documentId);
             if (ctx != null)
             {
-                qry = qry.Where(x => ctx.CurrentPositionsIdList.Contains(x.PositionId));
+                qry = qry.Where(x => ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.PositionId));
             }
             return qry;
         }
@@ -238,7 +239,7 @@ namespace BL.Database.Common
         public static IQueryable<DocumentEvents> GetDocumentEventsQuery(IContext ctx, DmsContext dbContext)
         {
             return dbContext.DocumentEventsSet
-                    .Where(x => (x.TargetPositionId.HasValue && ctx.CurrentPositionsIdList.Contains(x.TargetPositionId.Value))
+                    .Where(x => ctx.IsAdmin || (x.TargetPositionId.HasValue && ctx.CurrentPositionsIdList.Contains(x.TargetPositionId.Value))
                     || (x.SourcePositionId.HasValue && ctx.CurrentPositionsIdList.Contains(x.SourcePositionId.Value))
                     //|| ctx.CurrentAgentId == x.SourceAgentId
                     //|| (x.TargetAgentId.HasValue && ctx.CurrentAgentId == x.TargetAgentId.Value)
@@ -297,7 +298,7 @@ namespace BL.Database.Common
             }
             if (ctx != null)
             {
-                qry = qry.Where( x =>
+                qry = qry.Where( x => ctx.IsAdmin ||
                             (x.OnEvent.TargetPositionId.HasValue &&
                              ctx.CurrentPositionsIdList.Contains(x.OnEvent.TargetPositionId.Value))
                             ||

@@ -158,14 +158,14 @@ namespace BL.Database.Documents
             }
         }
 
-        public DocumentActionsModel GetDocumentSendListActionsModelPrepare(IContext context, int documentId)
+        public DocumentActionsModel GetDocumentSendListActionsModelPrepare(IContext ctx, int documentId)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
                 var res = new DocumentActionsModel();
                 res.ActionsList = new Dictionary<int, List<InternalSystemAction>>();
 
-                res.Document = CommonQueries.GetDocumentQuery(dbContext, context)
+                res.Document = CommonQueries.GetDocumentQuery(dbContext, ctx)
                     .Where(x => x.Doc.Id == documentId)
                     .Select(x => new InternalDocument
                     {
@@ -203,8 +203,7 @@ namespace BL.Database.Documents
                     {
                         res.PositionWithActions = dbContext.DictionaryPositionsSet
                             .Where(
-                                x =>
-                                    context.CurrentPositionsIdList.Contains(x.Id) &&
+                                x => (ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.Id)) &&
                                     posAcc.Contains(x.Id))
                             .Select(x => new InternalDictionaryPositionWithActions
                             {
@@ -218,12 +217,12 @@ namespace BL.Database.Documents
                     }
                 }
 
-                foreach (int posId in context.CurrentPositionsIdList)
+                foreach (int posId in ctx.CurrentPositionsIdList)
                 {
                     var qry = dbContext.SystemActionsSet.Where(x => x.ObjectId == (int)EnumObjects.DocumentSendLists
                     && x.IsVisible &&
                     (!x.IsGrantable ||
-                        x.RoleActions.Any(y => y.Role.PositionRoles.Any(pr => pr.PositionId == posId) && y.Role.UserRoles.Any(z => z.UserId == context.CurrentAgentId)))
+                        x.RoleActions.Any(y => y.Role.PositionRoles.Any(pr => pr.PositionId == posId) && y.Role.UserRoles.Any(z => z.UserId == ctx.CurrentAgentId)))
                     );
 
                     var actLst = qry.Select(a => new InternalSystemAction
@@ -448,12 +447,12 @@ namespace BL.Database.Documents
             }
         }
 
-        public InternalDocument ControlChangeDocumentPrepare(IContext context, int eventId)
+        public InternalDocument ControlChangeDocumentPrepare(IContext ctx, int eventId)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
                 var doc = dbContext.DocumentWaitsSet
-                    .Where(x => x.OnEventId == eventId && context.CurrentPositionsIdList.Contains(x.OnEvent.SourcePositionId.Value))
+                    .Where(x => x.OnEventId == eventId && (ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.OnEvent.SourcePositionId.Value)))
                     .Select(x => new InternalDocument
                     {
                         Id = x.DocumentId,
@@ -499,12 +498,12 @@ namespace BL.Database.Documents
             }
         }
 
-        public InternalDocument ControlOffDocumentPrepare(IContext context, int eventId)
+        public InternalDocument ControlOffDocumentPrepare(IContext ctx, int eventId)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
                 var doc = dbContext.DocumentWaitsSet
-                    .Where(x => x.OnEventId == eventId && context.CurrentPositionsIdList.Contains(x.OnEvent.SourcePositionId.Value))
+                    .Where(x => x.OnEventId == eventId && (ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.OnEvent.SourcePositionId.Value)))
                     .Select(x => new InternalDocument
                     {
                         Id = x.DocumentId,
@@ -755,7 +754,7 @@ namespace BL.Database.Documents
                 var qry = CommonQueries.GetDocumentEventsQuery(ctx, dbContext).Where(x => x.DocumentId == documentId
                 && !x.ReadDate.HasValue
                 && x.TargetPositionId.HasValue && x.TargetPositionId != x.SourcePositionId
-                && ctx.CurrentPositionsIdList.Contains(x.TargetPositionId.Value));
+                && (ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.TargetPositionId.Value)));
 
                 res.Events = qry.Select(x => new InternalDocumentEvent
                 {
@@ -965,19 +964,19 @@ namespace BL.Database.Documents
             }
         }
 
-        public void ModifyDocumentTags(IContext context, InternalDocumentTag model)
+        public void ModifyDocumentTags(IContext ctx, InternalDocumentTag model)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
                 var dictionaryTags = dbContext.DictionaryTagsSet
-                    .Where(x => !x.PositionId.HasValue || context.CurrentPositionsIdList.Contains(x.PositionId ?? 0))
+                    .Where(x => ctx.IsAdmin || !x.PositionId.HasValue || ctx.CurrentPositionsIdList.Contains(x.PositionId ?? 0))
                     .Where(x => model.Tags.Contains(x.Id))
                     .Select(x => x.Id)
                     .ToList();
 
                 var documentTags = dbContext.DocumentTagsSet
                     .Where(x => x.DocumentId == model.DocumentId)
-                    .Where(x => !x.Tag.PositionId.HasValue || context.CurrentPositionsIdList.Contains(x.Tag.PositionId ?? 0))
+                    .Where(x => ctx.IsAdmin || !x.Tag.PositionId.HasValue || ctx.CurrentPositionsIdList.Contains(x.Tag.PositionId ?? 0))
                     .Select(x => x.TagId)
                     .ToList();
 
@@ -1003,12 +1002,12 @@ namespace BL.Database.Documents
             }
         }
 
-        public InternalDocument AddNoteDocumentPrepare(IContext context, AddNote model)
+        public InternalDocument AddNoteDocumentPrepare(IContext ctx, AddNote model)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext, context)
-                    .Where(x => x.Doc.Id == model.DocumentId /*&& context.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId)*/)
+                var doc = CommonQueries.GetDocumentQuery(dbContext, ctx)
+                    .Where(x => x.Doc.Id == model.DocumentId /*&& ctx.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId)*/)
                     .Select(x => new InternalDocument
                     {
                         Id = x.Doc.Id,

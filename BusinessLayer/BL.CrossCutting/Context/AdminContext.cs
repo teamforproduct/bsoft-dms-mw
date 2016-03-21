@@ -76,5 +76,7 @@ namespace BL.CrossCutting.Context
         {
             _currentPositionId = position;
         }
+
+        public bool IsAdmin => true;
     }
 }

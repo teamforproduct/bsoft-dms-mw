@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using BL.CrossCutting.Context;
 using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
 using BL.Database.DatabaseContext;
@@ -25,7 +26,7 @@ namespace BL.Database.Documents
 
                 var items = dbContext.DocumentTagsSet
                     .Where(x => x.DocumentId == documentId)
-                    .Where(x => !x.Tag.PositionId.HasValue || ctx.CurrentPositionsIdList.Contains(x.Tag.PositionId ?? 0))
+                    .Where(x => ctx.IsAdmin || !x.Tag.PositionId.HasValue || ctx.CurrentPositionsIdList.Contains(x.Tag.PositionId ?? 0))
                     .Select(x => new FrontDocumentTag
                     {
                         TagId = x.TagId,

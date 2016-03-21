@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using BL.CrossCutting.Context;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Database.Admins.Interfaces;
 using BL.Model.AdminCore;
@@ -67,6 +68,8 @@ namespace BL.Logic.AdminCore
         /// <param name="context"></param>
         public bool VerifyAccess(IContext context, VerifyAccess model, bool isThrowExeception = true)
         {
+            if (context is AdminContext) return true;//Full access to admin. ADMIN IS COOL!!! 
+
             var data = GetAccInfo(context);
             var res = false;
             if (model.UserId == 0)

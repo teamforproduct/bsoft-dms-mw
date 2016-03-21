@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Transactions;
+using BL.CrossCutting.Context;
 using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Common;
@@ -656,12 +657,12 @@ namespace BL.Database.Documents
             }
         }
 
-        public InternalDocument ModifyDocumentPrepare(IContext context, ModifyDocument model)
+        public InternalDocument ModifyDocumentPrepare(IContext ctx, ModifyDocument model)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext, context)
-                    .Where(x => x.Doc.Id == model.Id && context.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId))
+                var doc = CommonQueries.GetDocumentQuery(dbContext, ctx)
+                    .Where(x => x.Doc.Id == model.Id && (ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId)))
                     .Select(x => new InternalDocument
                     {
                         Id = x.Doc.Id,
@@ -740,12 +741,12 @@ namespace BL.Database.Documents
             }
         }
 
-        public InternalDocument DeleteDocumentPrepare(IContext context, int documentId)
+        public InternalDocument DeleteDocumentPrepare(IContext ctx, int documentId)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext, context)
-                    .Where(x => x.Doc.Id == documentId && context.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId))
+                var doc = CommonQueries.GetDocumentQuery(dbContext, ctx)
+                    .Where(x => x.Doc.Id == documentId && (ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId)))
                     .Select(x => new InternalDocument
                     {
                         Id = x.Doc.Id,
@@ -884,12 +885,12 @@ namespace BL.Database.Documents
             }
         }
 
-        public InternalDocument ChangeExecutorDocumentPrepare(IContext context, ChangeExecutor model)
+        public InternalDocument ChangeExecutorDocumentPrepare(IContext ctx, ChangeExecutor model)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext, context)
-                    .Where(x => x.Doc.Id == model.DocumentId && context.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId))
+                var doc = CommonQueries.GetDocumentQuery(dbContext, ctx)
+                    .Where(x => x.Doc.Id == model.DocumentId && ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId))
                     .Select(x => new InternalDocument
                     {
                         Id = x.Doc.Id,
@@ -938,12 +939,12 @@ namespace BL.Database.Documents
             }
         }
 
-        public InternalDocument ChangeIsLaunchPlanDocumentPrepare(IContext context, int documentId)
+        public InternalDocument ChangeIsLaunchPlanDocumentPrepare(IContext ctx, int documentId)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext, context)
-                    .Where(x => x.Doc.Id == documentId && context.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId))
+                var doc = CommonQueries.GetDocumentQuery(dbContext, ctx)
+                    .Where(x => x.Doc.Id == documentId && (ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId)))
                     .Select(x => new InternalDocument
                     {
                         Id = x.Doc.Id,
@@ -986,12 +987,12 @@ namespace BL.Database.Documents
             }
         }
 
-        public InternalDocument GetBlankInternalDocumentById(IContext context, int documentId)
+        public InternalDocument GetBlankInternalDocumentById(IContext ctx, int documentId)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext, context)
-                    .Where(x => x.Doc.Id == documentId /*&& context.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId)*/)
+                var doc = CommonQueries.GetDocumentQuery(dbContext, ctx)
+                    .Where(x => x.Doc.Id == documentId /*&& ctx.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId)*/)
                     .Select(x => new InternalDocument
                     {
                         Id = x.Doc.Id,

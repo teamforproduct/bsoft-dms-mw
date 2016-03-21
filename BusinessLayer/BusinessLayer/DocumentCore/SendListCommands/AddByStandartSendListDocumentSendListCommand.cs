@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using BL.CrossCutting.Context;
 using BL.Database.Documents.Interfaces;
 using BL.Logic.Common;
 using BL.Model.DocumentCore.IncomingModel;
@@ -43,7 +44,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
             _admin.VerifyAccess(_context, CommandType);
 
             _document = _operationDb.ChangeDocumentSendListPrepare(_context, Model.DocumentId);            
-            Model.IsInitial = _context.CurrentPositionsIdList.Contains(_document.ExecutorPositionId);
+            Model.IsInitial = (_context is AdminContext) || _context.CurrentPositionsIdList.Contains(_document.ExecutorPositionId);
 
             DocSendLists = _operationDb.AddByStandartSendListDocumentSendListPrepare(_context, Model);  //TODO так нельзя!!!
 
