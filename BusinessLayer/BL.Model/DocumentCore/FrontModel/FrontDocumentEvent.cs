@@ -16,6 +16,7 @@ namespace BL.Model.DocumentCore.FrontModel
         public string EventTypeName { get; set; }
         public DateTime? Date { get; set; }
         public string Task { get; set; }
+        public bool? IsAvailableWithinTask { get; set; }
         public string Description { get; set; }
         public DateTime? DueDate { get; set; }
         public string SourceAgentName { get; set; }

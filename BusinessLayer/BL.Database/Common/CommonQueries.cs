@@ -315,7 +315,52 @@ namespace BL.Database.Common
             return qry;
         }
 
-        public static IEnumerable<FrontDocumentWaits> GetDocumentWaits(DmsContext dbContext, FilterDocumentWait filter)
+        public static IEnumerable<FrontDocumentTask> GetDocumentTasks(DmsContext dbContext, FilterDocumentTask filter)
+        {
+            var tasksDb = dbContext.DocumentTasksSet.AsQueryable();
+
+            if (filter != null)
+            {
+                if (filter?.DocumentId?.Count() > 0)
+                {
+                    tasksDb = tasksDb.Where(x => filter.DocumentId.Contains(x.DocumentId));
+                }
+            }
+
+            var tasksRes = tasksDb.Select(x => new { Task = x });
+
+            var tasks = tasksRes.Select(x => new FrontDocumentTask
+            {
+                Id = x.Task.Id,
+                DocumentId = x.Task.DocumentId,
+                Name = x.Task.Task,
+                Description = x.Task.Description,
+                DocumentDate = x.Task.Document.RegistrationDate ?? x.Task.Document.CreateDate,
+                RegistrationFullNumber = (x.Task.Document.RegistrationNumber != null
+                                           ? x.Task.Document.RegistrationNumberPrefix + x.Task.Document.RegistrationNumber +
+                                             x.Task.Document.RegistrationNumberSuffix
+                                           : "#" + x.Task.Document.Id),
+                DocumentDescription = x.Task.Document.Description,
+                DocumentTypeName = x.Task.Document.TemplateDocument.DocumentType.Name,
+                DocumentDirectionName = x.Task.Document.TemplateDocument.DocumentDirection.Name,
+
+                PositionId = x.Task.PositionId,
+                PositionExecutorAgentId = x.Task.PositionExecutorAgentId,
+                AgentId = x.Task.AgentId,
+
+                PositionExecutorAgentName = x.Task.PositionExecutorAgent.Name,
+                AgentName = x.Task.Agent.Name,
+                PositionName = x.Task.Position.Name,
+                PositionExecutorNowAgentName = x.Task.Position.ExecutorAgent.Name,
+                PositionExecutorAgentPhoneNumber = "SourcePositionAgentPhoneNumber", //TODO 
+            }).ToList();
+
+            return tasks;
+
+        }
+
+
+        public static IEnumerable<FrontDocumentWait> GetDocumentWaits(DmsContext dbContext, FilterDocumentWait filter)
         {
             var waitsDb = dbContext.DocumentWaitsSet.AsQueryable();
 
@@ -344,7 +389,7 @@ namespace BL.Database.Common
 
             var waitsRes = waitsDb.Select(x => new { Wait = x, x.OnEvent, x.OffEvent });
 
-            var waits = waitsRes.Select(x => new FrontDocumentWaits
+            var waits = waitsRes.Select(x => new FrontDocumentWait
             {
                 Id = x.Wait.Id,
                 DocumentId = x.Wait.DocumentId,
@@ -689,6 +734,8 @@ namespace BL.Database.Common
                             TargetPositionExecutorAgentName = y.TargetPosition.ExecutorAgent.Name ?? y.TargetAgent.Name,
 
                             Task = y.Task.Task,
+                            IsAvailableWithinTask = y.IsAvailableWithinTask,
+                            IsAddControl = y.IsAddControl,
                             Description = y.Description,
                             DueDate = y.DueDate,
                             DueDay = y.DueDay,

@@ -219,7 +219,7 @@ namespace BL.Database.Documents
 
                 foreach (int posId in ctx.CurrentPositionsIdList)
                 {
-                    var qry = dbContext.SystemActionsSet.Where(x => x.ObjectId == (int)EnumObjects.DocumentSendLists
+                    var qry = dbContext.SystemActionsSet.Where(x => (x.ObjectId == (int)EnumObjects.DocumentSendLists|| x.ObjectId == (int)EnumObjects.DocumentSendListStages)
                     && x.IsVisible &&
                     (!x.IsGrantable ||
                         x.RoleActions.Any(y => y.Role.PositionRoles.Any(pr => pr.PositionId == posId) && y.Role.UserRoles.Any(z => z.UserId == ctx.CurrentAgentId)))
@@ -640,6 +640,7 @@ namespace BL.Database.Documents
                         TargetPositionExecutorNowAgentName = x.TargetPosition.ExecutorAgent.Name,
                         SourcePositionExecutorAgentPhoneNumber = "SourcePositionAgentPhoneNumber", //TODO 
                         TargetPositionExecutorAgentPhoneNumber = "TargetPositionAgentPhoneNumber", //TODO 
+                        IsAvailableWithinTask = x.IsAvailableWithinTask,
                     }).FirstOrDefault();
             }
         }
