@@ -21,6 +21,7 @@ namespace BL.Logic.SystemServices.AutoPlan
         {
             _sysDb = DmsResolver.Current.Get<ISystemDbProcess>();
             _cmdService = DmsResolver.Current.Get<ICommandService>();
+            _timers = new Dictionary<AutoPlanSettings, Timer>();
         }
 
         protected override void InitializeServers()

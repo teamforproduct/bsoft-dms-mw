@@ -32,7 +32,7 @@ namespace BL.Logic.SystemServices
         {
             _serverContext.Clear();
 
-            dbList.Select(x => new AdminContext(x)).ToList().ForEach(
+          dbList.Select(x => new AdminContext(x)).ToList().ForEach(
             x => _serverContext.Add(CommonSystemUtilities.GetServerKey(x), x));
 
             _initializeThread = Task.Factory.StartNew(InitializeServers);

@@ -225,7 +225,6 @@
     <Compile Include="SystemCore\IncomingModel\ModifyProperty.cs" />
     <Compile Include="SystemCore\InternalModel\InternalDataForMail.cs" />
     <Compile Include="SystemCore\InternalModel\InternalMailProcessed.cs" />
-    <Compile Include="SystemCore\InternalModel\InternalServer.cs" />
     <Compile Include="SystemCore\InternalModel\InternalPropertyValues.cs" />
     <Compile Include="SystemCore\InternalModel\InternalPropertyValue.cs" />
     <Compile Include="SystemCore\InternalModel\InternalSendMailServerParameters.cs" />
