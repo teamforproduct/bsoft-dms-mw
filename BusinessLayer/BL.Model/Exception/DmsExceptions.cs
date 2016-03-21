@@ -99,6 +99,21 @@
         }
     }
 
+    /// <summary>
+    /// Параметр комманды неверного типа
+    /// </summary>
+    public class NobodyIsChosen : DmsExceptions
+    {
+        private const string _MESSAGE = "[lang]DmsExceptions@NobodyIsChosen[lang]";
+        public NobodyIsChosen() : base(_MESSAGE)
+        {
+        }
+
+        public NobodyIsChosen(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
     public class DocumentCannotBeModifiedOrDeleted : DmsExceptions
     {
         private const string _MESSAGE = "[lang]DmsExceptions@DocumentCannotBeModifiedOrDeleted[lang]";

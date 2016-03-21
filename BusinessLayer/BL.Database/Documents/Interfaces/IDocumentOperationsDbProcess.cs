@@ -19,7 +19,7 @@ namespace BL.Database.Documents.Interfaces
 
         void AddDocumentWaits(IContext ctx, InternalDocument documentWaits);
 
-        void AddDocumentEvents(IContext ctx, IEnumerable<InternalDocumentEvent> docEvents);
+        void AddDocumentEvents(IContext ctx, InternalDocument document);
         FrontDocumentEvent GetDocumentEvent(IContext ctx, int eventId);
         IEnumerable<FrontDocumentEvent> GetDocumentEvents(IContext ctx, FilterDocumentEvent filter, UIPaging paging);
         InternalDocument MarkDocumentEventsAsReadPrepare(IContext ctx, int documentId);
@@ -35,24 +35,24 @@ namespace BL.Database.Documents.Interfaces
         InternalDocument AddDocumentLinkPrepare(IContext context, AddDocumentLink model);
         void ChangeIsFavouriteAccess(IContext context, InternalDocumentAccess docAccess);
 
-        InternalDocument ChangeDocumentSendListPrepare(IContext context, int documentId);
+        InternalDocument ChangeDocumentSendListPrepare(IContext context, int documentId, string task = null);
         void AddDocumentRestrictedSendList(IContext context, IEnumerable<InternalDocumentRestrictedSendList> model);
 
         IEnumerable<InternalDocumentRestrictedSendList> AddByStandartSendListDocumentRestrictedSendListPrepare(IContext context, ModifyDocumentRestrictedSendListByStandartSendList model);
 
         InternalDocumentRestrictedSendList DeleteDocumentRestrictedSendListPrepare(IContext context, int restSendListId);
-        InternalDocument SendForSigningDocumentPrepare(IContext _context, InternalDocumentSendList model);
+        InternalDocument SendForSigningDocumentPrepare(IContext context, InternalDocumentSendList model);
         void CloseDocumentWait(IContext context, InternalDocument document);
 
         InternalDocument SendForExecutionDocumentPrepare(IContext context, InternalDocumentSendList sendList);
 
         void DeleteDocumentRestrictedSendList(IContext context, int restSendListId);
 
-        void AddDocumentSendList(IContext context, IEnumerable<InternalDocumentSendList> model);
+        void AddDocumentSendList(IContext context, IEnumerable<InternalDocumentSendList> model, IEnumerable<InternalDocumentTask> task = null);
 
         IEnumerable<InternalDocumentSendList> AddByStandartSendListDocumentSendListPrepare(IContext context, ModifyDocumentSendListByStandartSendList model);
 
-        void ModifyDocumentSendList(IContext context, InternalDocumentSendList model);
+        void ModifyDocumentSendList(IContext context, InternalDocumentSendList model, IEnumerable<InternalDocumentTask> task = null);
 
         InternalDocument DeleteDocumentSendListPrepare(IContext context, int sendListId);
 
@@ -76,5 +76,7 @@ namespace BL.Database.Documents.Interfaces
         void ControlOffSendListPrepare(IContext context, InternalDocument document);
         void ControlOffSubscriptionPrepare(IContext context, InternalDocument document);
         void ControlOffMarkExecutionWaitPrepare(IContext context, InternalDocument document);
+
+        InternalDocument AddNoteDocumentPrepare(IContext context, AddNote model);
     }
 }

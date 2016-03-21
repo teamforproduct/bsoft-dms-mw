@@ -1,12 +1,16 @@
-﻿using BL.Logic.Common;
+﻿using System.Collections.Generic;
+using System.Linq;
+using BL.Database.DBModel.Document;
+using BL.Logic.Common;
 using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore.Actions;
+using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
 
 namespace BL.Logic.DocumentCore.Commands
 {
-    public class AddNoteDocumentCommand: BaseDocumentCommand
+    public class AddNoteDocumentCommand : BaseDocumentCommand
     {
         private readonly IDocumentsDbProcess _documentDb;
         private readonly IDocumentOperationsDbProcess _operationDb;
@@ -25,7 +29,7 @@ namespace BL.Logic.DocumentCore.Commands
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (AddNote) _param;
+                return (AddNote)_param;
             }
         }
 
@@ -37,7 +41,7 @@ namespace BL.Logic.DocumentCore.Commands
         public override bool CanExecute()
         {
             _admin.VerifyAccess(_context, CommandType);
-            _document = _documentDb.GetBlankInternalDocumentById(_context, Model.DocumentId);
+            _document = _operationDb.AddNoteDocumentPrepare(_context, Model);
 
             if (_document == null)
             {
@@ -47,8 +51,10 @@ namespace BL.Logic.DocumentCore.Commands
         }
         public override object Execute()
         {
-            var events = CommonDocumentUtilities.GetNewDocumentEvents(_context, Model.DocumentId, EnumEventTypes.AddNote, Model.EventDate, Model.Description);
-            _operationDb.AddDocumentEvents(_context, events);
+
+            var taskId = CommonDocumentUtilities.GetDocumentTaskOrCreateNew(_context, _document, Model.Task); 
+            _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, Model.DocumentId, EnumEventTypes.AddNote, Model.EventDate, Model.Description, taskId, Model.IsAvailableWithinTask);
+            _operationDb.AddDocumentEvents(_context, _document);
             return null;
         }
 

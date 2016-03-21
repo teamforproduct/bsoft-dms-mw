@@ -32,7 +32,8 @@ namespace BL.Database.Common
             return evt == null ? null :
                 new DocumentEvents
                 {
-                    Task = evt.Task,
+                    TaskId = evt.TaskId,
+                    IsAvailableWithinTask = evt.IsAvailableWithinTask,
                     Description = evt.Description,
                     Date = evt.Date,
                     CreateDate = evt.CreateDate,
@@ -54,6 +55,27 @@ namespace BL.Database.Common
         public static IEnumerable<DocumentEvents> GetDbDocumentEvents(IEnumerable<InternalDocumentEvent> events)
         {
             return events?.Any() ?? false ? events.Select(GetDbDocumentEvent) : null;
+        }
+
+        public static DocumentTasks GetDbDocumentTask(InternalDocumentTask task)
+        {
+            return task == null ? null :
+                new DocumentTasks
+                {
+                    Task = task.Name,
+                    Description = task.Description,
+                    DocumentId = task.DocumentId,
+                    LastChangeDate = task.LastChangeDate,
+                    LastChangeUserId = task.LastChangeUserId,
+                    AgentId = task.AgentId,
+                    PositionId = task.PositionId,
+                    PositionExecutorAgentId = task.PositionExecutorAgentId,
+                };
+        }
+
+        public static IEnumerable<DocumentTasks> GetDbDocumentTasks(IEnumerable<InternalDocumentTask> tasks)
+        {
+            return tasks?.Any() ?? false ? tasks.Select(GetDbDocumentTask) : null;
         }
 
         public static DocumentWaits GetDbDocumentWait(InternalDocumentWait wait)
@@ -106,56 +128,58 @@ namespace BL.Database.Common
             return subscriptions?.Any() ?? false ? subscriptions.Select(GetDbDocumentSubscription) : null;
         }
 
-        public static void UpdateDbDocumentWaitByEvents(DocumentWaits docWait, InternalDocumentWait documentWait)
+        public static DocumentSendLists GetDbDocumentSendList(InternalDocumentSendList sendList)
         {
-            if (documentWait.OnEvent != null)
-            {
-                docWait.OnEvent = GetDbDocumentEvent(documentWait.OnEvent);
-            }
-            if (documentWait.OffEvent != null)
-            {
-                docWait.OffEvent = GetDbDocumentEvent(documentWait.OffEvent);
-            }
+            return sendList == null ? null :
+                new DocumentSendLists
+                {
+                    DocumentId = sendList.DocumentId,
+                    Stage = sendList.Stage,
+                    SendTypeId = (int)sendList.SendType,
+
+                    TaskId = sendList.TaskId,
+                    IsAvailableWithinTask = sendList.IsAvailableWithinTask,
+                    IsAddControl = sendList.IsAddControl,
+                    Description = sendList.Description,
+                    DueDate = sendList.DueDate,
+                    DueDay = sendList.DueDay,
+                    AccessLevelId = (int)sendList.AccessLevel,
+                    IsInitial = sendList.IsInitial,
+                    StartEventId = sendList.StartEventId,
+                    CloseEventId = sendList.CloseEventId,
+
+                    SourceAgentId = sendList.SourceAgentId,
+                    SourcePositionId = sendList.SourcePositionId,
+                    SourcePositionExecutorAgentId = sendList.SourcePositionExecutorAgentId,
+                    TargetAgentId = sendList.TargetAgentId,
+                    TargetPositionId = sendList.TargetPositionId,
+                    TargetPositionExecutorAgentId = sendList.TargetPositionExecutorAgentId,
+                    LastChangeUserId = sendList.LastChangeUserId,
+                    LastChangeDate = sendList.LastChangeDate
+                };
         }
 
-        public static IEnumerable<DocumentSendLists> AddDocumentSendList(IEnumerable<InternalDocumentSendList> docSendList)
+        public static IEnumerable<DocumentSendLists> GetDbDocumentSendLists(IEnumerable<InternalDocumentSendList> sendLists)
         {
-            return docSendList.Select(sl => new DocumentSendLists()
-            {
-                DocumentId = sl.DocumentId,
-                Stage = sl.Stage,
-                SendTypeId = (int)sl.SendType,
-
-                Task = sl.Task,
-                Description = sl.Description,
-                DueDate = sl.DueDate,
-                DueDay = sl.DueDay,
-                AccessLevelId = (int)sl.AccessLevel,
-                IsInitial = sl.IsInitial,
-                StartEventId = sl.StartEventId,
-                CloseEventId = sl.CloseEventId,
-
-                SourceAgentId = sl.SourceAgentId,
-                SourcePositionId = sl.SourcePositionId,
-                SourcePositionExecutorAgentId = sl.SourcePositionExecutorAgentId,
-                TargetAgentId = sl.TargetAgentId,
-                TargetPositionId = sl.TargetPositionId,
-                TargetPositionExecutorAgentId = sl.TargetPositionExecutorAgentId,
-                LastChangeUserId = sl.LastChangeUserId,
-                LastChangeDate = sl.LastChangeDate
-            });
+            return sendLists?.Any() ?? false ? sendLists.Select(GetDbDocumentSendList) : null;
         }
 
-        public static IEnumerable<DocumentRestrictedSendLists> AddDocumentRestrictedSendList(IEnumerable<InternalDocumentRestrictedSendList> docRestrictedSendList)
+        public static DocumentRestrictedSendLists GetDbDocumentRestrictedSendList(InternalDocumentRestrictedSendList sendList)
         {
-            return docRestrictedSendList.Select(sl => new DocumentRestrictedSendLists
-            {
-                PositionId = sl.PositionId,
-                AccessLevelId = (int)sl.AccessLevel,
-                LastChangeUserId = sl.LastChangeUserId,
-                LastChangeDate = sl.LastChangeDate,
-                DocumentId = sl.DocumentId,
-            });
+            return sendList == null ? null :
+                new DocumentRestrictedSendLists
+                {
+                    PositionId = sendList.PositionId,
+                    AccessLevelId = (int)sendList.AccessLevel,
+                    LastChangeUserId = sendList.LastChangeUserId,
+                    LastChangeDate = sendList.LastChangeDate,
+                    DocumentId = sendList.DocumentId,
+                };
+        }
+
+        public static IEnumerable<DocumentRestrictedSendLists> GetDbDocumentRestrictedSendLists(IEnumerable<InternalDocumentRestrictedSendList> sendLists)
+        {
+            return sendLists?.Any() ?? false ? sendLists.Select(GetDbDocumentRestrictedSendList) : null;
         }
 
         public static DocumentFiles GetDbDocumentFile(InternalDocumentAttachedFile docFile)

@@ -37,14 +37,15 @@ namespace BL.Logic.DocumentCore.Commands
         public override bool CanExecute()
         {
             _admin.VerifyAccess(_context, CommandType);
-            _document = _documentDb.GetBlankInternalDocumentById(_context, Model.DocumentId);
+            _document = _operationDb.AddNoteDocumentPrepare(_context, Model);
             //TODO проверка на контроль с одинаковыми задачами
             return true;
         }
 
         public override object Execute()
         {
-            _document.Waits = CommonDocumentUtilities.GetNewDocumentWaits(_context, Model, EnumEventTypes.ControlOn);
+            var taskId = CommonDocumentUtilities.GetDocumentTaskOrCreateNew(_context, _document, Model.Task);
+            _document.Waits = CommonDocumentUtilities.GetNewDocumentWaits(_context, Model, EnumEventTypes.ControlOn, taskId, Model.IsAvailableWithinTask);
             _operationDb.AddDocumentWaits(_context, _document);
             return null;
         }

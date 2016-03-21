@@ -14,7 +14,7 @@ namespace BL.Logic.SystemServices
     {
         protected readonly ISettings _settings;
         protected readonly ILogger _logger;
-        protected object _lockObjectContext;
+        private object _lockObjectContext;
         protected object _lockObjectTimer;
         protected readonly Dictionary<string, AdminContext> _serverContext;
         private Task _initializeThread;

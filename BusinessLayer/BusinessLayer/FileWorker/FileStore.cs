@@ -28,7 +28,7 @@ namespace BL.Logic.FileWorker
         private string GetFullDocumentFilePath(IContext ctx, InternalDocumentAttachedFile attFile)
         {
             var path = GetStorePath(ctx);
-            path = Path.Combine(new string[] { path, SettingConstants.FILE_STORE_DOCUEMENT_FOLDER, ctx.CurrentAgentId.ToString(), attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString(), attFile.Version.ToString() });
+            path = Path.Combine(new string[] { path, SettingConstants.FILE_STORE_DOCUMENT_FOLDER, ctx.CurrentAgentId.ToString(), attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString(), attFile.Version.ToString() });
             return path;
         }
 
@@ -126,7 +126,7 @@ namespace BL.Logic.FileWorker
             try
             {
                 var path = GetStorePath(ctx);
-                path = Path.Combine(new string[] { path, SettingConstants.FILE_STORE_DOCUEMENT_FOLDER, ctx.CurrentAgentId.ToString(), documentId.ToString() });
+                path = Path.Combine(new string[] { path, SettingConstants.FILE_STORE_DOCUMENT_FOLDER, ctx.CurrentAgentId.ToString(), documentId.ToString() });
 
                 Directory.Delete(path, true);
             }
@@ -148,7 +148,7 @@ namespace BL.Logic.FileWorker
             try
             {
                 var path = GetStorePath(ctx);
-                path = Path.Combine(new string[] { path, ((attFile is InternalDocumentAttachedFile)? SettingConstants.FILE_STORE_DOCUEMENT_FOLDER : SettingConstants.FILE_STORE_TEMPLATE_FOLDER), ctx.CurrentAgentId.ToString(), attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString() });
+                path = Path.Combine(new string[] { path, ((attFile is InternalDocumentAttachedFile)? SettingConstants.FILE_STORE_DOCUMENT_FOLDER : SettingConstants.FILE_STORE_TEMPLATE_FOLDER), ctx.CurrentAgentId.ToString(), attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString() });
 
                 Directory.Delete(path, true);
             }

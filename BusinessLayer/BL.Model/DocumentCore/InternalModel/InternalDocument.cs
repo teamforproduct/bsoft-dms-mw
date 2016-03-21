@@ -149,7 +149,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public IEnumerable<FrontDocumentLink> Links { get; set; }
         public IEnumerable<InternalDocumentWait> Waits { get; set; }
         public IEnumerable<InternalDocumentSubscription> Subscriptions { get; set; }
-
+        public IEnumerable<InternalDocumentTask> Tasks { get; set; }
         public IEnumerable<InternalPropertyValue> Properties { get; set; }
 
     }

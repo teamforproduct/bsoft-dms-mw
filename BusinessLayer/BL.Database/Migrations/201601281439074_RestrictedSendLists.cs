@@ -34,7 +34,7 @@ namespace BL.Database.Migrations
                 .Index(t => t.AccessLevelId);
             
             CreateTable(
-                "dbo.TemplateDocumentRestrictedSendLists",
+                "dbo.TemplateDocumentRestrictedSendListsSet",
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
@@ -63,23 +63,23 @@ namespace BL.Database.Migrations
         {
             AddColumn("dbo.TemplateDocuments", "RestrictedSendListId", c => c.Int());
             AddColumn("dbo.Documents", "RestrictedSendListId", c => c.Int());
-            DropForeignKey("dbo.TemplateDocumentRestrictedSendLists", "PositionId", "dbo.DictionaryPositions");
-            DropForeignKey("dbo.TemplateDocumentRestrictedSendLists", "DocumentId", "dbo.TemplateDocuments");
-            DropForeignKey("dbo.TemplateDocumentRestrictedSendLists", "AgentId", "dbo.DictionaryAgents");
-            DropForeignKey("dbo.TemplateDocumentRestrictedSendLists", "AccessLevelId", "dbo.AdminAccessLevels");
+            DropForeignKey("dbo.TemplateDocumentRestrictedSendListsSet", "PositionId", "dbo.DictionaryPositions");
+            DropForeignKey("dbo.TemplateDocumentRestrictedSendListsSet", "DocumentId", "dbo.TemplateDocuments");
+            DropForeignKey("dbo.TemplateDocumentRestrictedSendListsSet", "AgentId", "dbo.DictionaryAgents");
+            DropForeignKey("dbo.TemplateDocumentRestrictedSendListsSet", "AccessLevelId", "dbo.AdminAccessLevels");
             DropForeignKey("dbo.DocumentRestrictedSendLists", "PositionId", "dbo.DictionaryPositions");
             DropForeignKey("dbo.DocumentRestrictedSendLists", "DocumentId", "dbo.Documents");
             DropForeignKey("dbo.DocumentRestrictedSendLists", "AgentId", "dbo.DictionaryAgents");
             DropForeignKey("dbo.DocumentRestrictedSendLists", "AccessLevelId", "dbo.AdminAccessLevels");
-            DropIndex("dbo.TemplateDocumentRestrictedSendLists", new[] { "AccessLevelId" });
-            DropIndex("dbo.TemplateDocumentRestrictedSendLists", new[] { "AgentId" });
-            DropIndex("dbo.TemplateDocumentRestrictedSendLists", new[] { "PositionId" });
-            DropIndex("dbo.TemplateDocumentRestrictedSendLists", new[] { "DocumentId" });
+            DropIndex("dbo.TemplateDocumentRestrictedSendListsSet", new[] { "AccessLevelId" });
+            DropIndex("dbo.TemplateDocumentRestrictedSendListsSet", new[] { "AgentId" });
+            DropIndex("dbo.TemplateDocumentRestrictedSendListsSet", new[] { "PositionId" });
+            DropIndex("dbo.TemplateDocumentRestrictedSendListsSet", new[] { "DocumentId" });
             DropIndex("dbo.DocumentRestrictedSendLists", new[] { "AccessLevelId" });
             DropIndex("dbo.DocumentRestrictedSendLists", new[] { "AgentId" });
             DropIndex("dbo.DocumentRestrictedSendLists", new[] { "PositionId" });
             DropIndex("dbo.DocumentRestrictedSendLists", new[] { "DocumentId" });
-            DropTable("dbo.TemplateDocumentRestrictedSendLists");
+            DropTable("dbo.TemplateDocumentRestrictedSendListsSet");
             DropTable("dbo.DocumentRestrictedSendLists");
             CreateIndex("dbo.TemplateDocuments", "RestrictedSendListId");
             CreateIndex("dbo.Documents", "RestrictedSendListId");

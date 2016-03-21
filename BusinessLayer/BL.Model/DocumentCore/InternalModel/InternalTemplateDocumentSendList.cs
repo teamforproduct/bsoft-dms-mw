@@ -13,9 +13,10 @@ namespace BL.Model.DocumentCore.InternalModel
         public int? TargetPositionId { get; set; }
         public int? TargetAgentId { get; set; }
 
-        public string Task { get; set; }
+        public int? TaskId { get; set; }
+        public bool IsAddControl { get; set; }
+        public bool IsAvailableWithinTask { get; set; }
         public string Description { get; set; }
-        public Nullable<DateTime> DueDate { get; set; }
         public int Stage { get; set; }
         public int? DueDay { get; set; }
         public EnumDocumentAccesses AccessLevel { get; set; }

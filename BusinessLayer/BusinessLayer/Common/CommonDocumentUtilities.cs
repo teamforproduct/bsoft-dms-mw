@@ -66,6 +66,32 @@ namespace BL.Logic.Common
             SetLastChange(context, document);
         }
 
+        public static void SetTaskAtrributesForNewDocument(IContext context, IEnumerable<InternalDocumentTask> tasks, int _executorPositionExecutorAgentId)
+        {
+            foreach (var t in tasks)
+            {
+                if (t.PositionId == 0)
+                {
+                    t.PositionId = context.CurrentPositionId;
+                    t.PositionExecutorAgentId = _executorPositionExecutorAgentId;
+                }
+                else
+                {
+                    var positionExecutorAgentId = GetExecutorAgentIdByPositionId(context, t.PositionId);
+                    if (positionExecutorAgentId.HasValue)
+                    {
+                        t.PositionExecutorAgentId = positionExecutorAgentId.Value;
+                    }
+                    else
+                    {
+                        throw new ExecutorAgentForPositionIsNotDefined();
+                    }
+                }
+                t.AgentId = context.CurrentAgentId;
+                SetLastChange(context, t);
+            }
+        }
+
         public static void SetSendListAtrributesForNewDocument(IContext context, IEnumerable<InternalDocumentSendList> sendLists, int _executorPositionExecutorAgentId, bool? isInitial)
         {
             foreach (var sl in sendLists)
@@ -156,7 +182,8 @@ namespace BL.Logic.Common
             {
                 DocumentId = model.DocumentId != 0 ? model.DocumentId : 0,
                 EventType = (EnumEventTypes)Enum.Parse(typeof(EnumEventTypes), model.SendType.ToString()),
-                Task = model.Task,
+                TaskId = model.TaskId,
+                IsAvailableWithinTask = model.IsAvailableWithinTask,
                 Description = model.Description,
                 SourceAgentId = model.SourceAgentId,
                 SourcePositionId = model.SourcePositionId,
@@ -179,14 +206,15 @@ namespace BL.Logic.Common
             };
         }
 
-        public static InternalDocumentEvent GetNewDocumentEvent(IContext context, int? documentId, EnumEventTypes eventType, DateTime? eventDate = null, string description = null, string task = null, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null)
+        public static InternalDocumentEvent GetNewDocumentEvent(IContext context, int? documentId, EnumEventTypes eventType, DateTime? eventDate = null, string description = null, int? taskId = null, bool isAvailableWithinTask = false, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null)
         {
             return new InternalDocumentEvent
             {
                 DocumentId = documentId ?? 0,
                 EventType = eventType,
+                TaskId = taskId,
+                IsAvailableWithinTask = isAvailableWithinTask,
                 Description = description,
-                Task = task,
                 SourceAgentId = sourceAgentId ?? context.CurrentAgentId,
                 SourcePositionId = sourcePositionId ?? context.CurrentPositionId,
                 SourcePositionExecutorAgentId = GetExecutorAgentIdByPositionId(context, sourcePositionId ?? context.CurrentPositionId),
@@ -195,16 +223,16 @@ namespace BL.Logic.Common
                 TargetAgentId = targetAgentId,
                 LastChangeUserId = context.CurrentAgentId,
                 LastChangeDate = DateTime.Now,
-                Date = eventDate??DateTime.Now,
+                Date = eventDate ?? DateTime.Now,
                 CreateDate = DateTime.Now,
             };
         }
 
-        public static IEnumerable<InternalDocumentEvent> GetNewDocumentEvents(IContext context, int? documentId, EnumEventTypes eventType, DateTime? eventDate = null, string description = null, string task = null, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null)
+        public static IEnumerable<InternalDocumentEvent> GetNewDocumentEvents(IContext context, int? documentId, EnumEventTypes eventType, DateTime? eventDate = null, string description = null, int? taskId = null, bool isAvailableWithinTask = false, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null)
         {
             return new List<InternalDocumentEvent>
             {
-                GetNewDocumentEvent(context,documentId,eventType,eventDate,description,task,targetPositionId,targetAgentId,sourcePositionId,sourceAgentId),
+                GetNewDocumentEvent(context,documentId,eventType,eventDate,description,taskId,isAvailableWithinTask,targetPositionId,targetAgentId,sourcePositionId,sourceAgentId),
             };
         }
 
@@ -219,7 +247,7 @@ namespace BL.Logic.Common
             };
         }
 
-        public static InternalDocumentWait GetNewDocumentWait(IContext context, ControlOn controlOnModel, EnumEventTypes? eventType = null)
+        public static InternalDocumentWait GetNewDocumentWait(IContext context, ControlOn controlOnModel, EnumEventTypes? eventType = null, int? taskId = null, bool isAvailableWithinTask = false)
         {
             return new InternalDocumentWait
             {
@@ -228,15 +256,15 @@ namespace BL.Logic.Common
                 AttentionDate = controlOnModel.AttentionDate,
                 LastChangeUserId = context.CurrentAgentId,
                 LastChangeDate = DateTime.Now,
-                OnEvent = eventType == null ? null : GetNewDocumentEvent(context, controlOnModel.DocumentId, eventType.Value, controlOnModel.EventDate, controlOnModel.Description, controlOnModel.Task)
+                OnEvent = eventType == null ? null : GetNewDocumentEvent(context, controlOnModel.DocumentId, eventType.Value, controlOnModel.EventDate, controlOnModel.Description, taskId, isAvailableWithinTask)
             };
         }
 
-        public static IEnumerable<InternalDocumentWait> GetNewDocumentWaits(IContext context, ControlOn controlOnModel, EnumEventTypes? eventType = null, EnumEventCorrespondentType? eventCorrespondentType = null)
+        public static IEnumerable<InternalDocumentWait> GetNewDocumentWaits(IContext context, ControlOn controlOnModel, EnumEventTypes? eventType = null, int? taskId = null, bool isAvailableWithinTask = false)
         {
             return new List<InternalDocumentWait>
             {
-                GetNewDocumentWait(context,controlOnModel,eventType),
+                GetNewDocumentWait(context,controlOnModel,eventType, taskId, isAvailableWithinTask),
             };
         }
 
@@ -252,7 +280,7 @@ namespace BL.Logic.Common
                 OnEvent = eventType == null ? null :
                             GetNewDocumentEvent
                             (
-                                context, sendListModel.DocumentId, eventType.Value, null, sendListModel.Description, sendListModel.Task,
+                                context, sendListModel.DocumentId, eventType.Value, null, sendListModel.Description, sendListModel.TaskId, sendListModel.IsAvailableWithinTask,
                                 eventCorrespondentType == EnumEventCorrespondentType.FromSourceToSource ? sendListModel.SourcePositionId : sendListModel.TargetPositionId,
                                 null,
                                 eventCorrespondentType == EnumEventCorrespondentType.FromTargetToTarget ? sendListModel.TargetPositionId : sendListModel.SourcePositionId,
@@ -280,7 +308,7 @@ namespace BL.Logic.Common
                 SendEvent = eventType == null ? null :
                             GetNewDocumentEvent
                             (
-                                context, sendListModel.DocumentId, eventType.Value, null, sendListModel.Description, sendListModel.Task,
+                                context, sendListModel.DocumentId, eventType.Value, null, sendListModel.Description, sendListModel.TaskId, sendListModel.IsAvailableWithinTask,
                                 sendListModel.TargetPositionId,
                                 null,
                                 sendListModel.SourcePositionId,
@@ -297,7 +325,42 @@ namespace BL.Logic.Common
             };
         }
 
-        public static InternalDocumentSendList GetNewDocumentSendList(IContext context, ModifyDocumentSendList model)
+        public static int? GetDocumentTaskOrCreateNew(IContext context, InternalDocument document, string task, int? positionId = null, string description = null)
+        {
+            int? taskId = null;
+            if (document.Tasks?.Any() ?? false)
+            {
+                taskId = document.Tasks.Select(x => x.Id).First();
+                //document.Tasks = null;
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(task)) return taskId;
+                var positionExecutorAgentId = CommonDocumentUtilities.GetExecutorAgentIdByPositionId(context,
+                    positionId ?? context.CurrentPositionId);
+                if (!positionExecutorAgentId.HasValue)
+                {
+                    throw new ExecutorAgentForPositionIsNotDefined();
+                }
+                document.Tasks = new List<InternalDocumentTask>
+                {
+                    new InternalDocumentTask
+                    {
+                        DocumentId = document.Id,
+                        PositionId = context.CurrentPositionId,
+                        PositionExecutorAgentId = positionExecutorAgentId.Value,
+                        AgentId = context.CurrentAgentId,
+                        Name = task,
+                        Description = description,
+                        LastChangeUserId = context.CurrentAgentId,
+                        LastChangeDate = DateTime.Now,
+                    }
+                };
+            }
+            return taskId;
+        }
+
+        public static InternalDocumentSendList GetNewDocumentSendList(IContext context, ModifyDocumentSendList model, int? taskId = null)
         {
             var executorPositionExecutorAgentId = CommonDocumentUtilities.GetExecutorAgentIdByPositionId(context, context.CurrentPositionId);
             if (!executorPositionExecutorAgentId.HasValue)
@@ -315,21 +378,19 @@ namespace BL.Logic.Common
                 TargetPositionId = model.TargetPositionId,
                 TargetPositionExecutorAgentId = GetExecutorAgentIdByPositionId(context, model.TargetPositionId),
                 TargetAgentId = model.TargetAgentId,
-                Task = model.Task,
+                TaskId = taskId,
                 Description = model.Description,
                 DueDate = model.DueDate,
                 DueDay = model.DueDay,
                 AccessLevel = model.AccessLevel,
                 IsInitial = model.IsInitial,
-
+                IsAvailableWithinTask = model.IsAvailableWithinTask,
+                IsAddControl = model.IsAddControl,
                 LastChangeUserId = context.CurrentAgentId,
                 LastChangeDate = DateTime.Now,
 
             };
         }
-
-
-
 
         public static IEnumerable<BaseSystemUIElement> VerifyDocument(IContext ctx, FrontDocument doc, IEnumerable<BaseSystemUIElement> uiElements)
         {

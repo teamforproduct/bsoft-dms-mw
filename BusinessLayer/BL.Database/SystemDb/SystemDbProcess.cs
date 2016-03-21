@@ -89,51 +89,7 @@ namespace BL.Database.SystemDb
             }
         }
         #endregion
-
-        public IEnumerable<InternalSystemAction> GetSystemActions(IContext ctx, FilterSystemAction filter)
-        {
-            var res = new List<InternalSystemAction>();
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
-            {
-                foreach (int posId in filter.PositionsIdList)
-                {
-                    var qry = dbContext.SystemActionsSet.AsQueryable();
-
-                    if (filter.ActionId?.Count > 0)
-                    {
-                        qry = qry.Where(x => filter.ActionId.Contains(x.Id));
-                    }
-                    if (filter.DocumentAction.HasValue)
-                    {
-                        qry = qry.Where(x => x.Id == (int)filter.DocumentAction);
-                    }
-                    if (filter.Object.HasValue)
-                    {
-                        qry = qry.Where(x => x.ObjectId == (int)filter.Object);
-                    }
-                    if (filter.IsAvailable ?? false)
-                    {
-                        qry = qry.Where(x => x.IsVisible &&
-                                              (!x.IsGrantable
-                                                || x.RoleActions.Any(y => y.Role.PositionRoles.Any(pr => pr.PositionId == posId)
-                                                                            &&
-                                                                            y.Role.UserRoles.Any(z => z.UserId == ctx.CurrentAgentId))));
-                    }
-                    res.AddRange(qry.Select(
-                              a => new InternalSystemAction
-                              {
-                                  DocumentAction = (EnumDocumentActions)a.Id,
-                                  Object = (EnumObjects)a.ObjectId,
-                                  ActionCode = a.Code,
-                                  ObjectCode = a.Object.Code,
-                                  API = a.API,
-                                  Description = a.Description,
-                              }).ToList());
-                }
-                return res;
-            }
-        }
-
+        
         public IEnumerable<BaseSystemUIElement> GetSystemUIElements(IContext ctx, FilterSystemUIElement filter)
         {
             {
@@ -648,6 +604,26 @@ namespace BL.Database.SystemDb
                 }).ToList();
             }
         }
+
+        public IEnumerable<int> GetSendListIdsForAutoPlan(IContext context)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var qry = dbContext.DocumentsSet.Where(x => x.IsLaunchPlan)
+                    .Join(dbContext.DocumentSendListsSet, d => d.Id, s => s.DocumentId, (d, s) => new { doc = d, sl = s })
+                    .Where(x => x.sl.IsInitial && !x.sl.CloseEventId.HasValue)
+                    .GroupBy(x => x.sl.DocumentId)
+                    .Select(x => new
+                    {
+                        DocId = x.Key,
+                        MinStage = x.Min(s => s.sl.Stage)
+                    });
+
+                return dbContext.DocumentSendListsSet.Join(qry, s => s.DocumentId, q => q.DocId, (s, q) => new {sl = s, q})
+                    .Where(x => x.sl.Stage <= x.q.MinStage).Select(x => x.sl.Id).ToList();
+            }
+        }
+
         #endregion Filter Properties
     }
 }

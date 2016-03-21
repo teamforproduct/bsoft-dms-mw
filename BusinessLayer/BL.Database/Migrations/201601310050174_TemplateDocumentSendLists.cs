@@ -7,24 +7,24 @@ namespace BL.Database.Migrations
     {
         public override void Up()
         {
-            DropForeignKey("dbo.TemplateDocumentRestrictedSendLists", "AgentId", "dbo.DictionaryAgents");
-            DropIndex("dbo.TemplateDocumentRestrictedSendLists", new[] { "AgentId" });
-            AddForeignKey("dbo.TemplateDocumentSendLists", "DocumentId", "dbo.AdminAccessLevels", "Id");
-            AddForeignKey("dbo.TemplateDocumentSendLists", "DocumentId", "dbo.DictionarySendTypes", "Id");
-            AddForeignKey("dbo.TemplateDocumentSendLists", "DocumentId", "dbo.DictionaryPositions", "Id");
-            DropColumn("dbo.TemplateDocumentRestrictedSendLists", "AgentId");
-            DropColumn("dbo.TemplateDocumentSendLists", "TargetAgentId");
+            DropForeignKey("dbo.TemplateDocumentRestrictedSendListsSet", "AgentId", "dbo.DictionaryAgents");
+            DropIndex("dbo.TemplateDocumentRestrictedSendListsSet", new[] { "AgentId" });
+            AddForeignKey("dbo.TemplateDocumentSendListsSet", "DocumentId", "dbo.AdminAccessLevels", "Id");
+            AddForeignKey("dbo.TemplateDocumentSendListsSet", "DocumentId", "dbo.DictionarySendTypes", "Id");
+            AddForeignKey("dbo.TemplateDocumentSendListsSet", "DocumentId", "dbo.DictionaryPositions", "Id");
+            DropColumn("dbo.TemplateDocumentRestrictedSendListsSet", "AgentId");
+            DropColumn("dbo.TemplateDocumentSendListsSet", "TargetAgentId");
         }
         
         public override void Down()
         {
-            AddColumn("dbo.TemplateDocumentSendLists", "TargetAgentId", c => c.Int());
-            AddColumn("dbo.TemplateDocumentRestrictedSendLists", "AgentId", c => c.Int());
-            DropForeignKey("dbo.TemplateDocumentSendLists", "DocumentId", "dbo.DictionaryPositions");
-            DropForeignKey("dbo.TemplateDocumentSendLists", "DocumentId", "dbo.DictionarySendTypes");
-            DropForeignKey("dbo.TemplateDocumentSendLists", "DocumentId", "dbo.AdminAccessLevels");
-            CreateIndex("dbo.TemplateDocumentRestrictedSendLists", "AgentId");
-            AddForeignKey("dbo.TemplateDocumentRestrictedSendLists", "AgentId", "dbo.DictionaryAgents", "Id");
+            AddColumn("dbo.TemplateDocumentSendListsSet", "TargetAgentId", c => c.Int());
+            AddColumn("dbo.TemplateDocumentRestrictedSendListsSet", "AgentId", c => c.Int());
+            DropForeignKey("dbo.TemplateDocumentSendListsSet", "DocumentId", "dbo.DictionaryPositions");
+            DropForeignKey("dbo.TemplateDocumentSendListsSet", "DocumentId", "dbo.DictionarySendTypes");
+            DropForeignKey("dbo.TemplateDocumentSendListsSet", "DocumentId", "dbo.AdminAccessLevels");
+            CreateIndex("dbo.TemplateDocumentRestrictedSendListsSet", "AgentId");
+            AddForeignKey("dbo.TemplateDocumentRestrictedSendListsSet", "AgentId", "dbo.DictionaryAgents", "Id");
         }
     }
 }

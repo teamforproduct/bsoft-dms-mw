@@ -95,8 +95,8 @@ namespace BL.Database.Migrations
             AddColumn("dbo.DocumentSendLists", "TaskId", c => c.Int());
             AddColumn("dbo.DocumentSendLists", "IsAddControl", c => c.Boolean(nullable: false));
             AddColumn("dbo.DocumentSendLists", "IsAvailableWithinTask", c => c.Boolean(nullable: false));
-            AddColumn("dbo.TemplateDocumentSendLists", "IsAddControl", c => c.Boolean(nullable: false));
-            AddColumn("dbo.TemplateDocumentSendLists", "IsAvailableWithinTask", c => c.Boolean(nullable: false));
+            AddColumn("dbo.TemplateDocumentSendListsSet", "IsAddControl", c => c.Boolean(nullable: false));
+            AddColumn("dbo.TemplateDocumentSendListsSet", "IsAvailableWithinTask", c => c.Boolean(nullable: false));
             CreateIndex("dbo.DocumentEvents", "TaskId");
             CreateIndex("dbo.DocumentSendLists", "TaskId");
             AddForeignKey("dbo.DocumentEvents", "TaskId", "dbo.DocumentTasks", "Id");
@@ -131,8 +131,8 @@ namespace BL.Database.Migrations
             DropIndex("dbo.DictionaryPositionExecutors", new[] { "PositionExecutorTypeId" });
             DropIndex("dbo.DictionaryPositionExecutors", new[] { "PositionId" });
             DropIndex("dbo.DictionaryPositionExecutors", new[] { "AgentId" });
-            DropColumn("dbo.TemplateDocumentSendLists", "IsAvailableWithinTask");
-            DropColumn("dbo.TemplateDocumentSendLists", "IsAddControl");
+            DropColumn("dbo.TemplateDocumentSendListsSet", "IsAvailableWithinTask");
+            DropColumn("dbo.TemplateDocumentSendListsSet", "IsAddControl");
             DropColumn("dbo.DocumentSendLists", "IsAvailableWithinTask");
             DropColumn("dbo.DocumentSendLists", "IsAddControl");
             DropColumn("dbo.DocumentSendLists", "TaskId");

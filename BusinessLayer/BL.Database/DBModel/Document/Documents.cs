@@ -75,6 +75,7 @@ namespace BL.Database.DBModel.Document
         public virtual ICollection<DocumentSubscriptions> Subscriptions { get; set; }
         public virtual ICollection<DocumentWaits> Waits { get; set; }
         public virtual ICollection<DocumentEvents> Events { get; set; }
+        public virtual ICollection<DocumentTasks> Tasks { get; set; }
 
         public virtual ICollection<DocumentRestrictedSendLists> RestrictedSendLists { get; set; }
         public virtual ICollection<DocumentTags> Tags { get; set; }

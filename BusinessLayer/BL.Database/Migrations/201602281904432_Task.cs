@@ -7,14 +7,14 @@ namespace BL.Database.Migrations
     {
         public override void Up()
         {
-            AddColumn("dbo.DocumentEvents", "Task", c => c.String());
-            DropColumn("dbo.DocumentWaits", "Task");
+            AddColumn("dbo.DocumentEvents", "TaskName", c => c.String());
+            DropColumn("dbo.DocumentWaits", "TaskName");
         }
         
         public override void Down()
         {
-            AddColumn("dbo.DocumentWaits", "Task", c => c.String());
-            DropColumn("dbo.DocumentEvents", "Task");
+            AddColumn("dbo.DocumentWaits", "TaskName", c => c.String());
+            DropColumn("dbo.DocumentEvents", "TaskName");
         }
     }
 }

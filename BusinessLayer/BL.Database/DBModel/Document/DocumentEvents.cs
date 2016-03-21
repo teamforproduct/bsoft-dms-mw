@@ -24,7 +24,7 @@ namespace BL.Database.DBModel.Document
         public DateTime CreateDate { get; set; }
         public DateTime Date { get; set; }
         public Nullable<int> TaskId { get; set; }
-        public string Task { get; set; }
+        //public string TaskName { get; set; }
         public string Description { get; set; }
         public int? SourcePositionId { get; set; }
         public Nullable<int> SourcePositionExecutorAgentId { get; set; }
@@ -44,7 +44,7 @@ namespace BL.Database.DBModel.Document
         [ForeignKey("EventTypeId")]
         public virtual DictionaryEventTypes EventType { get; set; }
         [ForeignKey("TaskId")]
-        public virtual DocumentTasks TaskD { get; set; }
+        public virtual DocumentTasks Task { get; set; }
         [ForeignKey("SourcePositionId")]
         public virtual DictionaryPositions SourcePosition { get; set; }
         [ForeignKey("SourcePositionExecutorAgentId")]
