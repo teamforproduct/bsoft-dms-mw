@@ -274,7 +274,6 @@
     <Compile Include="Results\JsonResult.cs" />
     <Compile Include="Results\ChallengeResult.cs" />
     <Compile Include="Startup.cs" />
-    <Compile Include="Utilities\ReadXml.cs" />
     <Compile Include="Utilities\UserContext.cs" />
     <Compile Include="Utilities\Servers.cs" />
     <Compile Include="Utilities\Utilities.cs" />
