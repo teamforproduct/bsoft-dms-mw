@@ -217,6 +217,7 @@
     <Compile Include="Controllers\Dictionaries\CustomDictionariesController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryAddressTypesController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryAgentAddressesController.cs" />
+    <Compile Include="Controllers\Dictionaries\DictionaryAgentBanksController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryAgentEmployeesController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryContactsController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryContactTypesController.cs" />

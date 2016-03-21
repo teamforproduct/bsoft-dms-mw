@@ -68,6 +68,32 @@ namespace BL.Database.Dictionaries
             }
         }
 
+        public void UpdateDictionaryAgentRole(IContext context, int id, EnumDictionaryAgentTypes role)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var agent = GetDictionaryAgent(context, id);
+                var ddt = new DictionaryAgents
+                {
+                    Name = agent.Name,
+                    ResidentTypeId = agent.ResidentTypeId,
+                    IsBank = (role==EnumDictionaryAgentTypes.isBank ? !agent.IsBank : agent.IsBank),
+                    IsCompany = (role == EnumDictionaryAgentTypes.isCompany ? !agent.IsCompany : agent.IsCompany),
+                    IsEmployee = (role == EnumDictionaryAgentTypes.isEmployee ? !agent.IsEmployee : agent.IsEmployee),
+                    IsIndividual = (role == EnumDictionaryAgentTypes.isIndividual ? !agent.IsIndividual : agent.IsIndividual),
+                    Description = agent.Description,
+                    LastChangeDate = DateTime.Now,
+                    LastChangeUserId = context.CurrentAgentId,
+                    IsActive = agent.IsActive
+                };
+                dbContext.DictionaryAgentsSet.Attach(ddt);
+                var entity = dbContext.Entry(ddt);
+                entity.State = System.Data.Entity.EntityState.Modified;
+                dbContext.SaveChanges();
+            }
+        }
+
+
         public FrontDictionaryAgent GetDictionaryAgent(IContext context, int id)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
@@ -262,9 +288,9 @@ namespace BL.Database.Dictionaries
 
                     dbContext.SaveChanges();
                 }
-
             }
         }
+
 
         public int AddDictionaryAgent(IContext context, InternalDictionaryAgent newAgent)
         {
@@ -498,6 +524,10 @@ namespace BL.Database.Dictionaries
                         DeleteDictionaryAgent(context, new InternalDictionaryAgent { Id = person.Id });
                         dbContext.SaveChanges();
                     }
+                    else
+                    {
+                        UpdateDictionaryAgentRole(context, person.Id, EnumDictionaryAgentTypes.isIndividual);
+                    }
 
 
                 }
@@ -682,6 +712,10 @@ namespace BL.Database.Dictionaries
                 {
                     dbContext.DictionaryAgentEmployeesSet.Remove(ddt);
                     dbContext.SaveChanges();
+                } 
+                else
+                {
+                    UpdateDictionaryAgentRole(context, employee.Id, EnumDictionaryAgentTypes.isEmployee);
                 }
             }
         }
@@ -1276,6 +1310,10 @@ namespace BL.Database.Dictionaries
                         DeleteDictionaryAgent(context, new InternalDictionaryAgent { Id = company.Id });
                         dbContext.SaveChanges();
                     }
+                    else
+                    {
+                        UpdateDictionaryAgentRole(context, company.Id, EnumDictionaryAgentTypes.isCompany);
+                    }
                 }
             }
         }
@@ -1340,8 +1378,235 @@ namespace BL.Database.Dictionaries
         }
         #endregion DictionaryAgentCompanies
 
-            // Типы контактов
-            #region DictionaryContactTypes
+        #region DictionaryAgentBanks
+        public FrontDictionaryAgentBank GetDictionaryAgentBank(IContext context, int id)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+
+                return
+                    dbContext.DictionaryAgentBanksSet.Where(x => x.Id == id).Select(x => new FrontDictionaryAgentBank
+                    {
+                        Id = x.Id,
+                        IsBank = true,
+                        MFOCode=x.MFOCode,
+                        Swift=x.Swift,
+                        IsCompany=x.Agent.IsCompany,
+                        IsEmployee=x.Agent.IsEmployee,
+                        IsIndividual=x.Agent.IsIndividual,
+                        Name=x.Agent.Name,
+                        ResidentTypeId=x.Agent.ResidentTypeId,
+                        Description = x.Description,
+                        IsActive = x.IsActive,
+                        Contacts = x.Agent.AgentContacts.Select(y => new FrontDictionaryContact
+                        {
+                            Id = y.Id,
+                            AgentId = y.AgentId,
+                            ContactType = new FrontDictionaryContactType
+                            {
+                                Id = y.ContactType.Id,
+                                Name = y.ContactType.Name,
+                                InputMask = y.ContactType.InputMask,
+                                IsActive = y.ContactType.IsActive
+                            },
+                            Value = y.Contact,
+                            IsActive = y.IsActive,
+                            Description = y.Description
+                        }),
+                        Addresses = x.Agent.AgentAddresses.Select(z => new FrontDictionaryAgentAddress
+                        {
+                            Id = z.Id,
+                            AgentId = z.AgentId,
+                            AddressType = new FrontDictionaryAddressType
+                            {
+                                Id = z.AddressType.Id,
+                                Name = z.AddressType.Name,
+                                IsActive = z.AddressType.IsActive
+                            },
+                            PostCode = z.PostCode,
+                            Address = z.Address,
+                            IsActive = z.IsActive,
+                            Description = z.Description
+                        })
+
+                    }).FirstOrDefault();
+            }
+        }
+
+        public void UpdateDictionaryAgentBank(IContext context, InternalDictionaryAgentBank bank)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var ddt = new DictionaryAgentBanks
+                {
+                    Id = bank.Id,
+                    MFOCode=bank.MFOCode,
+                    Swift=bank.Swift,
+                    Description = bank.Description,
+                    LastChangeDate = bank.LastChangeDate,
+                    LastChangeUserId = bank.LastChangeUserId,
+                    IsActive = bank.IsActive
+                };
+
+                dbContext.DictionaryAgentBanksSet.Attach(ddt);
+                var entity = dbContext.Entry(ddt);
+                entity.State = System.Data.Entity.EntityState.Modified;
+                dbContext.SaveChanges();
+
+                UpdateDictionaryAgentName(context, bank.Id, bank.Name);
+
+            }
+        }
+        public void DeleteDictionaryAgentBank(IContext context, InternalDictionaryAgentBank bank)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+
+                var ddt = dbContext.DictionaryAgentBanksSet.FirstOrDefault(x => x.Id == bank.Id);
+                if (ddt != null)
+                {
+                    dbContext.DictionaryAgentBanksSet.Remove(ddt);
+                    dbContext.SaveChanges();
+
+
+                    if (IsAgentOneRole(context, bank.Id, EnumDictionaryAgentTypes.isIndividual))
+                    {
+                        DeleteDictionaryAgent(context, new InternalDictionaryAgent { Id = bank.Id });
+                        dbContext.SaveChanges();
+                    }
+                    else
+                    {
+                        UpdateDictionaryAgentRole(context, bank.Id, EnumDictionaryAgentTypes.isBank);
+                    }
+
+                }
+            }
+        }
+
+        public int AddDictionaryAgentBank(IContext context, InternalDictionaryAgentBank bank)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+
+                var agent = GetDictionaryAgent(context, bank.Id);
+                if (agent == null)
+                {
+                    var newAgent = new InternalDictionaryAgent
+                    {
+                        Name = bank.Name,
+                        IsActive = bank.IsActive,
+                        Description = bank.Description,
+                        IsBank = true,
+                        IsCompany = false,
+                        IsEmployee = false,
+                        IsIndividual = false,
+                        LastChangeDate = bank.LastChangeDate,
+                        LastChangeUserId = bank.LastChangeUserId,
+                    };
+                    bank.Id = AddDictionaryAgent(context, newAgent);
+                }
+                else {
+                    UpdateDictionaryAgentRole(context, bank.Id, EnumDictionaryAgentTypes.isBank);
+                };
+
+                var ddt = new DictionaryAgentBanks
+                {
+                    Id = bank.Id,
+                    MFOCode=bank.MFOCode,
+                    Swift=bank.Swift,
+                    Description = bank.Description,
+                    LastChangeDate = bank.LastChangeDate,
+                    LastChangeUserId = bank.LastChangeUserId,
+                    IsActive = bank.IsActive
+                };
+                dbContext.DictionaryAgentBanksSet.Add(ddt);
+                dbContext.SaveChanges();
+
+                return bank.Id;
+            }
+        }
+
+
+        public IEnumerable<FrontDictionaryAgentBank> GetDictionaryAgentBanks(IContext context, FilterDictionaryAgentBank filter)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+
+                var qry = dbContext.DictionaryAgentBanksSet.AsQueryable();
+
+                qry = qry.Where(x => x.Agent.IsBank);
+
+
+                if (filter.AgentId?.Count > 0)
+                {
+                    qry = qry.Where(x => filter.AgentId.Contains(x.Id));
+                }
+                if (!string.IsNullOrEmpty(filter.Name))
+                {
+                    qry = qry.Where(x => x.Agent.Name.Contains(filter.Name));
+                }
+                if (!string.IsNullOrEmpty(filter.MFOCode))
+                {
+                    qry = qry.Where(x => x.MFOCode.Contains(filter.MFOCode));
+                }
+                if (filter.IsActive.HasValue)
+                {
+                    qry = qry.Where(x => x.IsActive == filter.IsActive);
+                }
+
+
+                return qry.Select(x => new FrontDictionaryAgentBank
+                {
+                    Id = x.Id,
+                    IsBank = true,
+                    MFOCode = x.MFOCode,
+                    Swift = x.Swift,
+                    IsCompany = x.Agent.IsCompany,
+                    IsEmployee = x.Agent.IsEmployee,
+                    IsIndividual = x.Agent.IsIndividual,
+                    Name = x.Agent.Name,
+                    ResidentTypeId = x.Agent.ResidentTypeId,
+                    Description = x.Description,
+                    IsActive = x.IsActive,
+                    Contacts = x.Agent.AgentContacts.Select(y => new FrontDictionaryContact
+                    {
+                        Id = y.Id,
+                        AgentId = y.AgentId,
+                        ContactType = new FrontDictionaryContactType
+                        {
+                            Id = y.ContactType.Id,
+                            Name = y.ContactType.Name,
+                            InputMask = y.ContactType.InputMask,
+                            IsActive = y.ContactType.IsActive
+                        },
+                        Value = y.Contact,
+                        IsActive = y.IsActive,
+                        Description = y.Description
+                    }),
+                    Addresses = x.Agent.AgentAddresses.Select(z => new FrontDictionaryAgentAddress
+                    {
+                        Id = z.Id,
+                        AgentId = z.AgentId,
+                        AddressType = new FrontDictionaryAddressType
+                        {
+                            Id = z.AddressType.Id,
+                            Name = z.AddressType.Name,
+                            IsActive = z.AddressType.IsActive
+                        },
+                        PostCode = z.PostCode,
+                        Address = z.Address,
+                        IsActive = z.IsActive,
+                        Description = z.Description
+                    })
+                }).ToList();
+            }
+        }
+        #endregion DictionaryAgentBanks
+
+
+
+        // Типы контактов
+        #region DictionaryContactTypes
         public FrontDictionaryContactType GetInternalDictionaryContactType(IContext context, FilterDictionaryContactType filter)
         {
             using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))

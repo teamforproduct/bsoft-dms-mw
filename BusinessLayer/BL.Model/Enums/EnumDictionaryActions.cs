@@ -223,6 +223,18 @@
         /// удалить юрлицо
         /// </summary>
         DeleteAgentCompany =213009,
+        /// <summary>
+        /// добавить банк
+        /// </summary>
+        AddAgentBank,
+        /// <summary>
+        /// изменить банк
+        /// </summary>
+        ModifyAgentBank,
+        /// <summary>
+        /// удалить банк
+        /// </summary>
+        DeleteAgentBank,
 
         #region CustomDictionaryType
         /// <summary>

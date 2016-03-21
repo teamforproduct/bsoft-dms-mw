@@ -67,6 +67,9 @@
     <Compile Include="DictionaryCore\AgentAdresses\AddDictionaryAgentAddressCommand.cs" />
     <Compile Include="DictionaryCore\AgentAdresses\DeleteDictionaryAgentAddressCommand.cs" />
     <Compile Include="DictionaryCore\AgentAdresses\ModifyDictionaryAgentAddressCommand.cs" />
+    <Compile Include="DictionaryCore\AgentBank\AddDictionaryAgentBankCommand.cs" />
+    <Compile Include="DictionaryCore\AgentBank\DeleteDictionaryAgentBankCommand.cs" />
+    <Compile Include="DictionaryCore\AgentBank\ModifyDictionaryAgentBankCommand.cs" />
     <Compile Include="DictionaryCore\AgentCompany\AddDictionaryAgentCompanyCommand.cs" />
     <Compile Include="DictionaryCore\AgentCompany\DeleteDictionaryAgentCompanyCommand.cs" />
     <Compile Include="DictionaryCore\AgentCompany\ModifyDictionaryAgentCompanyCommand.cs" />

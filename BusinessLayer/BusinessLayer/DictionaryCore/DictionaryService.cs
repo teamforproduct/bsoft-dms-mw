@@ -115,6 +115,20 @@ namespace BL.Logic.DictionaryCore
         }
         #endregion DictionaryAgentCompanies
 
+        #region DictionaryAgentBanks
+        public FrontDictionaryAgentBank GetDictionaryAgentBank(IContext context, int id)
+        {
+
+            return _dictDb.GetDictionaryAgentBank(context, id);
+        }
+
+        public IEnumerable<FrontDictionaryAgentBank> GetDictionaryAgentBanks(IContext context, FilterDictionaryAgentBank filter)
+        {
+
+            return _dictDb.GetDictionaryAgentBanks(context, filter);
+        }
+        #endregion DictionaryAgentCompanies
+
         #region DictionaryContacts
         public FrontDictionaryContact GetDictionaryContact(IContext context, int id)
         {
