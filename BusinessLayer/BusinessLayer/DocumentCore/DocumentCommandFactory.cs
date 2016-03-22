@@ -105,7 +105,9 @@ namespace BL.Logic.DocumentCore
                 case EnumDocumentActions.ModifyDocumentFile:
                     cmd = DmsResolver.Current.Get<ModifyDocumentFileCommand>();
                     break;
-
+                case EnumDocumentActions.SendForInformationExternal:
+                    cmd = DmsResolver.Current.Get<SendForInformationDocumentCommand>();
+                    break;
                 case EnumDocumentActions.SendForInformation:
                     cmd = DmsResolver.Current.Get<SendForInformationDocumentCommand>();
                     break;

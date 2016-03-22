@@ -920,10 +920,14 @@ namespace BL.Database.Documents
                     entry.Property(x => x.Id).IsModified = true;
                     entry.Property(x => x.LastChangeDate).IsModified = true;
                     entry.Property(x => x.LastChangeUserId).IsModified = true;
-
-                    dbContext.DocumentAccessesSet.AddRange(
-                        CommonQueries.GetDbDocumentAccesses(dbContext, document.Accesses, document.Id).ToList());
                     dbContext.SaveChanges();
+
+                    if (document.Accesses?.Any() ?? false)
+                    {
+                        dbContext.DocumentAccessesSet.AddRange(
+                            CommonQueries.GetDbDocumentAccesses(dbContext, document.Accesses, document.Id).ToList());
+                        dbContext.SaveChanges();
+                    }
 
                     if (document.Waits?.Any() ?? false)
                     {
@@ -935,8 +939,8 @@ namespace BL.Database.Documents
                             waitDb.OnEvent = null;
                         }
                         dbContext.DocumentWaitsSet.Add(waitDb);
+                        dbContext.SaveChanges();
                     }
-                    dbContext.SaveChanges();
 
                     if (document.Subscriptions?.Any() ?? false)
                     {
@@ -948,17 +952,20 @@ namespace BL.Database.Documents
                             subscriptionDb.SendEvent = null;
                         }
                         dbContext.DocumentSubscriptionsSet.Add(subscriptionDb);
+                        dbContext.SaveChanges();
                     }
-                    dbContext.SaveChanges();
 
-                    var eventsDb = ModelConverter.GetDbDocumentEvents(document.Events);
+
+
                     if (document.Events?.Any() ?? false)
                     {
+                        var eventsDb = ModelConverter.GetDbDocumentEvents(document.Events);
                         //dbContext.DocumentEventsSet.AddRange(eventsDb);
                         dbContext.DocumentEventsSet.Attach(eventsDb.First());
                         dbContext.Entry(eventsDb.First()).State = EntityState.Added;
+                        dbContext.SaveChanges();
                     }
-                    dbContext.SaveChanges();
+
 
                     transaction.Complete();
                 }

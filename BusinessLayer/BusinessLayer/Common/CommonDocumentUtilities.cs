@@ -470,7 +470,7 @@ namespace BL.Logic.Common
             //}
 
             if (doc.RestrictedSendLists?.Count() > 0
-                && doc.SendLists.GroupJoin(doc.RestrictedSendLists
+                && doc.SendLists.Where(sl => sl.TargetPositionId.HasValue).GroupJoin(doc.RestrictedSendLists
                     , sl => sl.TargetPositionId
                     , rsl => rsl.PositionId
                     , (sl, rsls) => new { sl, rsls }).Any(x => x.rsls.Count() == 0))
