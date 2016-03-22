@@ -1047,7 +1047,7 @@ namespace BL.Database.Documents
                 if (doc == null) return null;
 
                 doc.Waits = dbContext.DocumentWaitsSet
-                    .Where(x => x.DocumentId == sendList.DocumentId && x.OnEvent.Task.Id == sendList.TaskId && x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecution)
+                    .Where(x => x.DocumentId == sendList.DocumentId && x.OnEvent.Task.Id == sendList.TaskId && x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecution && !x.OffEventId.HasValue)
                     .Select(x => new List<InternalDocumentWait>
                                     {
                                         new InternalDocumentWait

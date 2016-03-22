@@ -67,6 +67,11 @@ namespace BL.Logic.DocumentCore.Commands
 
             _document.Waits = new List<InternalDocumentWait> { waitTarget };
 
+            if (Model.IsAddControl)
+            {
+                ((List<InternalDocumentWait>)_document.Waits).AddRange(CommonDocumentUtilities.GetNewDocumentWaits(_context, Model, EnumEventTypes.ControlOn, EnumEventCorrespondentType.FromSourceToSource));
+            }
+
             Model.StartEvent = waitTarget.OnEvent;
             CommonDocumentUtilities.SetLastChange(_context, Model);
             _document.SendLists = new List<InternalDocumentSendList> { Model };
