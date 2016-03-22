@@ -160,7 +160,7 @@ namespace BL.Logic.AdminCore
             //TODO оптимизировать
             for(int i=0,l=labels.Length;i< l;i++)
             {
-                text = text.Replace($"[lang]{labels[i].Label}[lang]", labels[i].Value);
+                text = text.Replace(labels[i].Label, labels[i].Value);
             }
             return text;
         }
