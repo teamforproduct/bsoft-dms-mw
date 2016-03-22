@@ -4,11 +4,24 @@
     <Name>IRF_DMS</Name>
     <Address>109.197.217.79\SQLEXPRESS,1433</Address>
     <ServerType>SQLServer</ServerType>
-    <DefaultDatabase>IRF_DMS</DefaultDatabase>
-    <IntegrateSecurity>True</IntegrateSecurity>
+    <DefaultDatabase>IRF_DMS_DEV</DefaultDatabase>
+    <IntegrateSecurity>False</IntegrateSecurity>
     <UserName>sa</UserName>
     <UserPassword>Harm1969</UserPassword>
-    <ConnectionString>Data Source=109.197.217.79\SQLEXPRESS,1433;Initial Catalog=IRF_DMS;Persist Security Info=True;User ID=sa;Password=Harm1969</ConnectionString>
+    <ConnectionString>Data Source=109.197.217.79\SQLEXPRESS,1433;Initial Catalog=IRF_DMS_DEV;Persist Security Info=True;User ID=sa;Password=Harm1969</ConnectionString>
+    <DefaultSchema>DMS</DefaultSchema>
+  </Server>
+  <Server>
+    <Id>2</Id>
+    <Name>IRF_DMS_Oracle</Name>
+    <Address>88.198.16.119:21521/XE</Address>
+    <ServerType>Oracle</ServerType>
+    <DefaultDatabase>XE</DefaultDatabase>
+    <IntegrateSecurity>False</IntegrateSecurity>
+    <UserName>DMS</UserName>
+    <UserPassword>DMS</UserPassword>
+    <ConnectionString>User Id=DMS;Password=DMS;Data Source=88.198.16.119:21521/XE</ConnectionString>
+    <DefaultSchema>DMS</DefaultSchema>
   </Server>
 </Servers>
 <!--<Servers>

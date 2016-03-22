@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using BL.CrossCutting.Context;
-using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Common;
 using BL.Database.DatabaseContext;
@@ -15,16 +13,13 @@ namespace BL.Database.Documents
 {
     public class DocumentFileDbProcess : CoreDb.CoreDb, IDocumentFileDbProcess
     {
-        private readonly IConnectionStringHelper _helper;
-
-        public DocumentFileDbProcess(IConnectionStringHelper helper)
+        public DocumentFileDbProcess()
         {
-            _helper = helper;
         }
 
         public IEnumerable<FrontDocumentAttachedFile> GetDocumentFiles(IContext ctx, int documentId)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            using (var dbContext = new DmsContext(ctx))
             {
                 return CommonQueries.GetDocumentFiles(dbContext, new FilterDocumentAttachedFile { DocumentId = new List<int> { documentId } });
             }
@@ -32,7 +27,7 @@ namespace BL.Database.Documents
 
         public IEnumerable<FrontDocumentAttachedFile> GetDocumentFileVersions(IContext ctx, int documentId, int orderNumber)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            using (var dbContext = new DmsContext(ctx))
             {
                 return
                     dbContext.DocumentFilesSet
@@ -63,7 +58,7 @@ namespace BL.Database.Documents
 
         public FrontDocumentAttachedFile GetDocumentFileVersion(IContext ctx, int documentId, int orderNumber, int versionNumber)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            using (var dbContext = new DmsContext(ctx))
             {
                 return
                     dbContext.DocumentFilesSet
@@ -96,7 +91,7 @@ namespace BL.Database.Documents
 
         public FrontDocumentAttachedFile GetDocumentFileVersion(IContext ctx, int id)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            using (var dbContext = new DmsContext(ctx))
             {
                 return
                     dbContext.DocumentFilesSet
@@ -127,7 +122,7 @@ namespace BL.Database.Documents
 
         public InternalDocument ModifyDocumentFilePrepare(IContext ctx, int documentId, int orderNumber)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            using (var dbContext = new DmsContext(ctx))
             {
                 var maxVer =
                     dbContext.DocumentFilesSet.Where(x => x.DocumentId == documentId && x.OrderNumber == orderNumber)
@@ -164,7 +159,7 @@ namespace BL.Database.Documents
 
         public FrontDocumentAttachedFile GetDocumentFileLatestVersion(IContext ctx, int documentId, int orderNumber)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            using (var dbContext = new DmsContext(ctx))
             {
                 var maxVer =
                     dbContext.DocumentFilesSet.Where(x => x.DocumentId == documentId && x.OrderNumber == orderNumber)
@@ -203,7 +198,7 @@ namespace BL.Database.Documents
 
         public InternalDocument AddDocumentFilePrepare(IContext ctx, int documentId)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            using (var dbContext = new DmsContext(ctx))
             {
                 var doc = CommonQueries.GetDocumentQuery(dbContext, ctx)
                     .Where(x => x.Doc.Id == documentId && (ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId)))
@@ -217,7 +212,7 @@ namespace BL.Database.Documents
 
         public int AddNewFileOrVersion(IContext ctx, InternalDocumentAttachedFile docFile)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            using (var dbContext = new DmsContext(ctx))
             {
                 var fl = ModelConverter.GetDbDocumentFile(docFile);
                 dbContext.DocumentFilesSet.Add(fl);
@@ -229,7 +224,7 @@ namespace BL.Database.Documents
 
         public void UpdateFileOrVersion(IContext ctx, InternalDocumentAttachedFile docFile)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            using (var dbContext = new DmsContext(ctx))
             {
                 var fl = ModelConverter.GetDbDocumentFile(docFile);
                 dbContext.DocumentFilesSet.Attach(fl);
@@ -249,7 +244,7 @@ namespace BL.Database.Documents
 
         public InternalDocument DeleteDocumentFilePrepare(IContext ctx, FilterDocumentFileIdentity flIdent)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            using (var dbContext = new DmsContext(ctx))
             {
                 var doc = CommonQueries.GetDocumentQuery(dbContext, ctx)
                     .Where(x => x.Doc.Id == flIdent.DocumentId && (ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId)))
@@ -274,7 +269,7 @@ namespace BL.Database.Documents
         /// <param name="docFile"> should be filled DocumentId and OrderInDocument fields</param>
         public void DeleteAttachedFile(IContext ctx, InternalDocumentAttachedFile docFile)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            using (var dbContext = new DmsContext(ctx))
             {
                 dbContext.DocumentFilesSet.RemoveRange(
                     dbContext.DocumentFilesSet.Where(
@@ -286,7 +281,7 @@ namespace BL.Database.Documents
 
         public int GetNextFileOrderNumber(IContext ctx, int documentId)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            using (var dbContext = new DmsContext(ctx))
             {
                 if (dbContext.DocumentFilesSet.Any(x => x.DocumentId == documentId))
                 {
@@ -298,7 +293,7 @@ namespace BL.Database.Documents
 
         public int GetFileNextVersion(IContext ctx, int documentId, int fileOrder)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            using (var dbContext = new DmsContext(ctx))
             {
                 if (dbContext.DocumentFilesSet.Any(x => x.DocumentId == documentId && x.OrderNumber == fileOrder))
                 {

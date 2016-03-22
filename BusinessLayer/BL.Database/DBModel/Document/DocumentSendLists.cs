@@ -1,6 +1,7 @@
 ﻿using BL.Database.DBModel.Admin;
 using BL.Database.DBModel.Dictionary;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BL.Database.DBModel.Document
@@ -19,6 +20,7 @@ namespace BL.Database.DBModel.Document
         public Nullable<int> TargetAgentId { get; set; }
         public Nullable<int> TaskId { get; set; }
         //public string TaskName { get; set; }
+        [MaxLength(2000)]
         public string Description { get; set; }
         public Nullable<DateTime> DueDate { get; set; }
         public int? DueDay { get; set; }

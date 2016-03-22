@@ -1,9 +1,12 @@
 ﻿using BL.Model.Database;
+using BL.Model.Database.FrontModel;
+using BL.Model.Database.IncomingModel;
 using BL.Model.Exception;
-using BL.Model.SystemCore.FrontModel;
-using BL.Model.SystemCore.IncomingModel;
+using DMS_WebAPI.DBModel;
+using DMS_WebAPI.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -16,29 +19,6 @@ namespace DMS_WebAPI.Utilities
     /// </summary>
     public class Servers
     {
-        private string _file = "/servers.xml";
-
-        private string _ServerFilePath
-        {
-            get { return HttpContext.Current.Server.MapPath(_file); }
-        }
-
-        private XmlDocument _File
-        {
-            get
-            {
-                var fileName = _ServerFilePath;
-                if (!File.Exists(fileName))
-                {
-                    throw new FileNotFoundException();
-                }
-
-                XmlDocument doc = new XmlDocument();
-                doc.Load(fileName);
-                return doc;
-            }
-        }
-
         /// <summary>
         /// Get list of the available servers to display for user.
         /// </summary>
@@ -64,54 +44,25 @@ namespace DMS_WebAPI.Utilities
         /// <returns></returns>
         public IEnumerable<DatabaseModel> GetServers()
         {
-            var root = _File.DocumentElement;
-            var res = new List<DatabaseModel>();
-
-            foreach (XmlNode n in root.ChildNodes)
+            using (var dbContext = new ApplicationDbContext())
             {
-                if (n.HasChildNodes)
+                //TODO (DatabaseType)Enum.Parse(typeof(DatabaseType), x.ServerType)
+                var items = dbContext.AdminServersSet.ToList().Select(x => new DatabaseModel
                 {
-                    var item = new DatabaseModel();
+                    Id = x.Id,
+                    Address = x.Address,
+                    Name = x.Name,
+                    ServerType = (DatabaseType)Enum.Parse(typeof(DatabaseType), x.ServerType),
+                    DefaultDatabase = x.DefaultSchema,
+                    IntegrateSecurity = x.IntegrateSecurity,
+                    UserName = x.UserName,
+                    UserPassword = x.UserPassword,
+                    ConnectionString = x.ConnectionString,
+                    DefaultSchema = x.DefaultSchema
+                }).ToList();
 
-                    foreach (XmlNode child in n.ChildNodes)
-                    {
-                        switch (child.Name.ToLower())
-                        {
-                            case "id":
-                                item.Id = int.Parse(child.InnerText);
-                                break;
-                            case "address":
-                                item.Address = child.InnerText;
-                                break;
-                            case "name":
-                                item.Name = child.InnerText;
-                                break;
-                            case "servertype":
-                                item.ServerType = (DatabaseType)Enum.Parse(typeof(DatabaseType), child.InnerText);
-                                break;
-                            case "defaultdatabase":
-                                item.DefaultDatabase = child.InnerText;
-                                break;
-                            case "integratesecurity":
-                                item.IntegrateSecurity = bool.Parse(child.InnerText);
-                                break;
-                            case "username":
-                                item.UserName = child.InnerText;
-                                break;
-                            case "userpassword":
-                                item.UserPassword = child.InnerText;
-                                break;
-                            case "connectionstring":
-                                item.ConnectionString = child.InnerText;
-                                break;
-                        }
-                    }
-                    res.Add(item);
-                }
-
+                return items;
             }
-
-            return res;
         }
 
         /// <summary>
@@ -124,53 +75,27 @@ namespace DMS_WebAPI.Utilities
         {
             try
             {
-                modal.Id = GetServers().Max(x => x.Id + 1);
+                using (var dbContext = new ApplicationDbContext())
+                {
+                    var item = new AdminServers
+                    {
+                        Address = modal.Address,
+                        Name = modal.Name,
+                        ServerType = modal.ServerType.ToString(),
+                        DefaultDatabase = modal.DefaultSchema,
+                        IntegrateSecurity = modal.IntegrateSecurity,
+                        UserName = modal.UserName,
+                        UserPassword = modal.UserPassword,
+                        ConnectionString = modal.ConnectionString,
+                        DefaultSchema = modal.DefaultSchema
+                    };
+                    dbContext.AdminServersSet.Add(item);
+                    dbContext.SaveChanges();
 
-                var doc = _File;
-                var root = doc.DocumentElement;
+                    modal.Id = item.Id;
 
-                XmlElement item = doc.CreateElement("Server");
-                var tmpItem = doc.CreateElement("Id");
-                tmpItem.InnerText = modal.Id.ToString();
-                item.AppendChild(tmpItem);
-
-                tmpItem = doc.CreateElement("Name");
-                tmpItem.InnerText = modal.Name;
-                item.AppendChild(tmpItem);
-
-                tmpItem = doc.CreateElement("Address");
-                tmpItem.InnerText = modal.Address;
-                item.AppendChild(tmpItem);
-
-                tmpItem = doc.CreateElement("ServerType");
-                tmpItem.InnerText = modal.ServerType.ToString();
-                item.AppendChild(tmpItem);
-
-                tmpItem = doc.CreateElement("DefaultDatabase");
-                tmpItem.InnerText = modal.DefaultDatabase;
-                item.AppendChild(tmpItem);
-
-                tmpItem = doc.CreateElement("IntegrateSecurity");
-                tmpItem.InnerText = modal.IntegrateSecurity.ToString();
-                item.AppendChild(tmpItem);
-
-                tmpItem = doc.CreateElement("UserName");
-                tmpItem.InnerText = modal.UserName;
-                item.AppendChild(tmpItem);
-
-                tmpItem = doc.CreateElement("UserPassword");
-                tmpItem.InnerText = modal.UserPassword;
-                item.AppendChild(tmpItem);
-
-                tmpItem = doc.CreateElement("ConnectionString");
-                tmpItem.InnerText = modal.ConnectionString;
-                item.AppendChild(tmpItem);
-
-                root.AppendChild(item);
-
-                doc.Save(_ServerFilePath);
-
-                return modal.Id;
+                    return modal.Id;
+                }
             }
             catch
             {
@@ -187,29 +112,27 @@ namespace DMS_WebAPI.Utilities
         {
             try
             {
-                var doc = _File;
-                var root = doc.DocumentElement;
-
-                foreach (XmlNode n in root.ChildNodes)
+                using (var dbContext = new ApplicationDbContext())
                 {
-                    if (n.HasChildNodes)
+                    var item = new AdminServers
                     {
-                        if (n["Id"].InnerText == modal.Id.ToString())
-                        {
-                            n["Name"].InnerText = modal.Name;
-                            n["Address"].InnerText = modal.Address;
-                            n["ServerType"].InnerText = modal.ServerType.ToString();
-                            n["DefaultDatabase"].InnerText = modal.DefaultDatabase;
-                            n["IntegrateSecurity"].InnerText = modal.IntegrateSecurity.ToString();
-                            n["UserName"].InnerText = modal.UserName;
-                            n["UserPassword"].InnerText = modal.UserPassword;
-                            n["ConnectionString"].InnerText = modal.ConnectionString;
-                            break;
-                        }
-                    }
+                        Id = modal.Id,
+                        Address = modal.Address,
+                        Name = modal.Name,
+                        ServerType = modal.ServerType.ToString(),
+                        DefaultDatabase = modal.DefaultSchema,
+                        IntegrateSecurity = modal.IntegrateSecurity,
+                        UserName = modal.UserName,
+                        UserPassword = modal.UserPassword,
+                        ConnectionString = modal.ConnectionString,
+                        DefaultSchema = modal.DefaultSchema
+                    };
+                    dbContext.AdminServersSet.Attach(item);
 
+                    dbContext.Entry(item).State = EntityState.Modified;
+
+                    dbContext.SaveChanges();
                 }
-                doc.Save(_ServerFilePath);
             }
             catch
             {
@@ -226,25 +149,22 @@ namespace DMS_WebAPI.Utilities
         {
             try
             {
-                var doc = _File;
-                var root = doc.DocumentElement;
-
-                foreach (XmlNode n in root.ChildNodes)
+                using (var dbContext = new ApplicationDbContext())
                 {
-                    if (n.HasChildNodes)
+                    var item = new AdminServers
                     {
-                        if (n["Id"].InnerText == id.ToString())
-                        {
-                            n.ParentNode.RemoveChild(n);
-                            break;
-                        }
-                    }
+                        Id = id
+                    };
+                    dbContext.AdminServersSet.Attach(item);
+
+                    dbContext.Entry(item).State = EntityState.Deleted;
+
+                    dbContext.SaveChanges();
                 }
-                doc.Save(_ServerFilePath);
             }
             catch
             {
-                throw new DictionaryRecordCouldNotBeDeleted();
+                throw new DictionaryRecordCouldNotBeAdded();
             }
         }
     }

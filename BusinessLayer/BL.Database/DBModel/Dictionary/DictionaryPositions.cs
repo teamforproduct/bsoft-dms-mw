@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using BL.Database.DBModel.Admin;
+using System.ComponentModel.DataAnnotations;
 
 namespace BL.Database.DBModel.Dictionary
 {
@@ -23,7 +24,9 @@ namespace BL.Database.DBModel.Dictionary
         }
         public int Id { get; set; }
         public Nullable<int> ParentId { get; set; }
+        [MaxLength(2000)]
         public string Name { get; set; }
+        [MaxLength(2000)]
         public string FullName { get; set; }
         public int DepartmentId { get; set; }
         public Nullable<int> ExecutorAgentId { get; set; }

@@ -29,6 +29,21 @@
     }
 
     /// <summary>
+    /// Сообщение при ошибке работы с базой данных
+    /// </summary>
+    public class DatabaseIsNotSet : DmsExceptions
+    {
+        private const string _MESSAGE = "The database is not set";
+        public DatabaseIsNotSet() : base(_MESSAGE)
+        {
+        }
+
+        public DatabaseIsNotSet(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+    /// <summary>
     /// Искомой комманды не существует или она не описана
     /// </summary>
     public class CommandNotDefinedError : DmsExceptions

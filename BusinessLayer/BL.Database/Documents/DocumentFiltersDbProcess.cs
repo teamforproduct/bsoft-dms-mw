@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
 using BL.Database.DatabaseContext;
 using BL.Database.Documents.Interfaces;
@@ -10,17 +9,14 @@ namespace BL.Database.Documents
 {
     public class DocumentFiltersDbProcess : IDocumentFiltersDbProcess
     {
-        private readonly IConnectionStringHelper _helper;
-
-        public DocumentFiltersDbProcess(IConnectionStringHelper helper)
+        public DocumentFiltersDbProcess()
         {
-            _helper = helper;
         }
         #region DocumentSavedFilters
 
         public IEnumerable<FrontDocumentSavedFilter> GetSavedFilters(IContext ctx)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            using (var dbContext = new DmsContext(ctx))
             {
                 var qry = dbContext.DocumentSavedFiltersSet.AsQueryable();
 
@@ -45,7 +41,7 @@ namespace BL.Database.Documents
 
         public FrontDocumentSavedFilter GetSavedFilter(IContext ctx, int savedFilterId)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            using (var dbContext = new DmsContext(ctx))
             {
 
                 var savFilter =

@@ -3,6 +3,7 @@ using BL.CrossCutting.Interfaces;
 using BL.Logic.Context;
 using BL.Model.Database;
 using BL.Model.Users;
+using BL.CrossCutting.Helpers;
 
 namespace BL.CrossCutting.Context
 {
@@ -23,7 +24,8 @@ namespace BL.CrossCutting.Context
                 Address = dbModel.Address,
                 DefaultDatabase = dbModel.DefaultDatabase,
                 UserName = _USER_NAME,
-                UserPassword = _USER_PASS
+                UserPassword = _USER_PASS,
+                DefaultSchema = dbModel.DefaultSchema
             };
             CurrentEmployee = new Employee
             {
@@ -46,7 +48,8 @@ namespace BL.CrossCutting.Context
                     Address = ctx.CurrentDB.Address,
                     DefaultDatabase = ctx.CurrentDB.DefaultDatabase,
                     UserName = _USER_NAME,
-                    UserPassword = _USER_PASS
+                    UserPassword = _USER_PASS,
+                    DefaultSchema = ctx.CurrentDB.DefaultSchema
                 };
                 CurrentEmployee = new Employee
                 {

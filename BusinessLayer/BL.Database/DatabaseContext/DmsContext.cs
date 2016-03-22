@@ -6,27 +6,40 @@ using BL.Database.DBModel.System;
 using BL.Database.DBModel.Template;
 using System.Data.Entity.ModelConfiguration.Conventions;
 using BL.CrossCutting.Helpers;
+using BL.CrossCutting.Interfaces;
+using BL.Logic.DependencyInjection;
+using System.Data.SqlClient;
 
 namespace BL.Database.DatabaseContext
 {
     public class DmsContext : DbContext
     {
 
-        public DmsContext() : base(ConnectionStringHelper.GetDefaultConnectionString())
+        private string _DefaultSchema { get; set; }
+        //TODO remove in release version
+        public DmsContext() : base(ConnectionHelper.GetDefaultConnection(), true)
         {
+            _DefaultSchema = ConnectionHelper.GetDefaultSchema();
         }
 
-        public DmsContext(string connString) : base(connString)
+        public DmsContext(IContext context) : base(DmsResolver.Current.Get<ConnectionHelper>().GetConnection(context), true)
         {
-
+            _DefaultSchema = context.CurrentDB.DefaultSchema;
         }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+            modelBuilder.HasDefaultSchema(_DefaultSchema);
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
 
             modelBuilder.Entity<DictionaryAgents>()
             .HasOptional(f => f.AgentPerson)
+            .WithRequired(s => s.Agent);
+
+            modelBuilder.Entity<DictionaryAgents>()
+            .HasOptional(f => f.AgentUser)
             .WithRequired(s => s.Agent);
 
             modelBuilder.Entity<DictionaryAgents>()
@@ -54,6 +67,7 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<AdminLanguageValues> AdminLanguageValuesSet { get; set; }
 
         public virtual DbSet<DictionaryAgentPersons> DictionaryAgentPersonsSet { get; set; }
+        public virtual DbSet<DictionaryAgentUsers> DictionaryAgentUsersSet { get; set; }
         public virtual DbSet<DictionaryAgentCompanies> DictionaryAgentCompaniesSet { get; set; }
         public virtual DbSet<DictionaryAgentBanks> DictionaryAgentBanksSet { get; set; }
         public virtual DbSet<DictionaryAgentEmployees> DictionaryAgentEmployeesSet { get; set; }

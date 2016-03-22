@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
@@ -13,7 +14,9 @@ namespace BL.Database.DBModel.System
     {
         public int Id { get; set; }
         public int ObjectId { get; set; }
+        [MaxLength(2000)]
         public string Code { get; set; }
+        [MaxLength(2000)]
         public string Description { get; set; }
         public int ValueTypeId { get; set; }
         [ForeignKey("ObjectId")]

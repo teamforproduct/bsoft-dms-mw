@@ -41,5 +41,6 @@
         /// Connection string (possible)
         /// </summary>
         public string ConnectionString { get; set; }
+        public string DefaultSchema { get; set; }
     }
 }
