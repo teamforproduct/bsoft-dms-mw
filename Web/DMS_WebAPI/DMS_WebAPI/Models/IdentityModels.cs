@@ -9,6 +9,7 @@ using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
 using System.Data.Entity;
 using BL.Model.Database;
+using DMS_WebAPI.DBModel;
 
 namespace DMS_WebAPI.Models
 {
@@ -35,5 +36,14 @@ namespace DMS_WebAPI.Models
         {
             return new ApplicationDbContext();
         }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+        }
+
+        public virtual DbSet<AdminLanguages> AdminLanguagesSet { get; set; }
+        public virtual DbSet<AdminLanguageValues> AdminLanguageValuesSet { get; set; }
+        public virtual DbSet<AdminServers> AdminServersSet { get; set; }
     }
 }

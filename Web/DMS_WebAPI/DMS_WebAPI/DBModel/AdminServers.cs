@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DMS_WebAPI.DBModel
 {
-    public class DictionaryServers
+    public class AdminServers
     {
         /// <summary>
         /// ID 

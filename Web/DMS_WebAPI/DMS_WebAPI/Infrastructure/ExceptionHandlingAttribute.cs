@@ -45,6 +45,13 @@ namespace DMS_WebAPI.Infrastructure
                     var service = DmsResolver.Current.Get<IAdminService>();
                     json = service.ReplaceLanguageLabel(cxt, json);
                 }
+                else
+                {
+                    //var userLanguages = Request.UserLanguages;
+                    //var ci = userLanguages.Count() > 0
+                    //    ? new CultureInfo(userLanguages[0])
+                    //    : CultureInfo.InvariantCulture;
+                }
             }
             catch { }
 

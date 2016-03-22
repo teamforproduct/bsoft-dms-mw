@@ -259,7 +259,9 @@
     <Compile Include="Controllers\Documents\TemplateDocumentsController.cs" />
     <Compile Include="Controllers\System\ServersController.cs" />
     <Compile Include="Controllers\System\UsersController.cs" />
-    <Compile Include="DBModel\DictionaryServers.cs" />
+    <Compile Include="DBModel\AdminLanguages.cs" />
+    <Compile Include="DBModel\AdminLanguageValues.cs" />
+    <Compile Include="DBModel\AdminServers.cs" />
     <Compile Include="DependencyInjection\ApiModel.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -269,6 +271,10 @@
     <Compile Include="Migrations\201603211144029_InitialMigration.cs" />
     <Compile Include="Migrations\201603211144029_InitialMigration.Designer.cs">
       <DependentUpon>201603211144029_InitialMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201603221119402_AddServersAndLanguages.cs" />
+    <Compile Include="Migrations\201603221119402_AddServersAndLanguages.Designer.cs">
+      <DependentUpon>201603221119402_AddServersAndLanguages.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
@@ -376,6 +382,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201603211144029_InitialMigration.resx">
       <DependentUpon>201603211144029_InitialMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201603221119402_AddServersAndLanguages.resx">
+      <DependentUpon>201603221119402_AddServersAndLanguages.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

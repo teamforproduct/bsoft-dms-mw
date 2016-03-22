@@ -15,10 +15,24 @@ using System.Xml;
 namespace DMS_WebAPI.Utilities
 {
     /// <summary>
-    /// Represend functionality to configure available servers
+    /// Represent functionality to configure languages
     /// </summary>
-    public class Servers
+    public class Languages
     {
+        public string ReplaceLanguageLabel(string text)
+        {
+            using (var dbContext = new ApplicationDbContext())
+            {
+                var labels = dbContext.AdminLanguageValuesSet.ToArray();
+                //TODO оптимизировать
+                for (int i = 0, l = labels.Length; i < l; i++)
+                {
+                    text = text.Replace($"[lang]{labels[i].Label}[lang]", labels[i].Value);
+                }
+                return text;
+            }
+        }
+
         /// <summary>
         /// Get list of the available servers to display for user.
         /// </summary>
@@ -46,8 +60,7 @@ namespace DMS_WebAPI.Utilities
         {
             using (var dbContext = new ApplicationDbContext())
             {
-                //TODO (DatabaseType)Enum.Parse(typeof(DatabaseType), x.ServerType)
-                var items = dbContext.AdminServersSet.ToList().Select(x => new DatabaseModel
+                var items = dbContext.AdminServersSet.Select(x => new DatabaseModel
                 {
                     Id = x.Id,
                     Address = x.Address,

@@ -55,7 +55,7 @@ namespace DMS_WebAPI.Utilities
         /// <param name="userId"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        public IContext Set(string token, DatabaseModel db, string userId)
+        public IContext Set(string token, DatabaseModel db, string userId, bool isSuperAdmin)
         {
             token = token.ToLower();
             if (!_casheContexts.ContainsKey(token))
@@ -71,15 +71,21 @@ namespace DMS_WebAPI.Utilities
                     CurrentDB = db
                 };
 
-                var agent = DmsResolver.Current.Get<IAdminService>().GetEmployee(context, userId);
-
-                if (agent == null)
+                if (!(db==null && isSuperAdmin))
                 {
-                    throw new AccessIsDenied();
+                    var agent = DmsResolver.Current.Get<IAdminService>().GetEmployee(context, userId);
+
+                    if (agent != null)
+                    {
+                        context.CurrentEmployee.AgentId = agent.AgentId;
+                        context.CurrentEmployee.Name = agent.Name;
+                        context.CurrentEmployee.LanguageId = agent.LanguageId;
+                    }
+                    else if (!isSuperAdmin)
+                    {
+                        throw new AccessIsDenied();
+                    }
                 }
-                context.CurrentEmployee.AgentId = agent.AgentId;
-                context.CurrentEmployee.Name = agent.Name;
-                context.CurrentEmployee.LanguageId = agent.LanguageId;
 
                 Save(token, context);
                 return context;
