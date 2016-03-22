@@ -18,7 +18,7 @@
     /// </summary>
     public class DatabaseError : DmsExceptions
     {
-        private const string _MESSAGE = "[lang]DmsExceptions@DatabaseError[lang]";
+        private const string _MESSAGE = "##l@DmsExceptions:DatabaseError@l##";
         public DatabaseError() : base(_MESSAGE)
         {
         }
@@ -33,7 +33,7 @@
     /// </summary>
     public class DatabaseIsNotSet : DmsExceptions
     {
-        private const string _MESSAGE = "The database is not set";
+        private const string _MESSAGE = "##l@DmsExceptions:DatabaseIsNotSet@l##The database is not set";
         public DatabaseIsNotSet() : base(_MESSAGE)
         {
         }
@@ -48,7 +48,7 @@
     /// </summary>
     public class CommandNotDefinedError : DmsExceptions
     {
-        private const string _MESSAGE = "[lang]DmsExceptions@CommandNotDefinedError[lang]";
+        private const string _MESSAGE = "##l@DmsExceptions:CommandNotDefinedError@l##";
         public CommandNotDefinedError() : base(_MESSAGE)
         {
         }
@@ -63,7 +63,7 @@
     /// </summary>
     public class WrongParameterValueError : DmsExceptions
     {
-        private const string _MESSAGE = "[lang]DmsExceptions@WrongParameterValueError[lang]";
+        private const string _MESSAGE = "##l@DmsExceptions:WrongParameterValueError@l##";
         public WrongParameterValueError() : base(_MESSAGE)
         {
         }
@@ -78,7 +78,7 @@
     /// </summary>
     public class WrongParameterTypeError : DmsExceptions
     {
-        private const string _MESSAGE = "[lang]DmsExceptions@WrongParameterTypeError[lang]";
+        private const string _MESSAGE = "##l@DmsExceptions:WrongParameterTypeError@l##";
         public WrongParameterTypeError() : base(_MESSAGE)
         {
         }
@@ -90,7 +90,7 @@
 
     public class AccessIsDenied : DmsExceptions
     {
-        private const string _MESSAGE = "[lang]DmsExceptions@AccessIsDenied[lang]";
+        private const string _MESSAGE = "##l@DmsExceptions:AccessIsDenied@l##";
         //TODO:передавать параметры
         public AccessIsDenied() : base(_MESSAGE)
         {
@@ -103,7 +103,7 @@
 
     public class DocumentHasAlreadyHasLink : DmsExceptions
     {
-        private const string _MESSAGE = "[lang]DmsExceptions@DocumentHasAlreadyHasLink[lang]";
+        private const string _MESSAGE = "##l@DmsExceptions:DocumentHasAlreadyHasLink@l##";
         //TODO:передавать параметры
         public DocumentHasAlreadyHasLink() : base(_MESSAGE)
         {
@@ -119,7 +119,7 @@
     /// </summary>
     public class NobodyIsChosen : DmsExceptions
     {
-        private const string _MESSAGE = "[lang]DmsExceptions@NobodyIsChosen[lang]";
+        private const string _MESSAGE = "##l@DmsExceptions:NobodyIsChosen@l##";
         public NobodyIsChosen() : base(_MESSAGE)
         {
         }
@@ -131,7 +131,7 @@
 
     public class DocumentCannotBeModifiedOrDeleted : DmsExceptions
     {
-        private const string _MESSAGE = "[lang]DmsExceptions@DocumentCannotBeModifiedOrDeleted[lang]";
+        private const string _MESSAGE = "##l@DmsExceptions:DocumentCannotBeModifiedOrDeleted@l##";
         public DocumentCannotBeModifiedOrDeleted() : base(_MESSAGE)
         {
         }
@@ -143,7 +143,7 @@
 
     public class UserHasNoAccessToDocument : DmsExceptions
     {
-        private const string _MESSAGE = "[lang]DmsExceptions@UserHasNoAccessToDocument[lang]";
+        private const string _MESSAGE = "##l@DmsExceptions:UserHasNoAccessToDocument@l##";
         public UserHasNoAccessToDocument() : base(_MESSAGE)
         {
         }
@@ -155,7 +155,7 @@
 
     public class CannotSaveFile : DmsExceptions
     {
-        private const string _MESSAGE = "[lang]DmsExceptions@CannotSaveFile[lang]";
+        private const string _MESSAGE = "##l@DmsExceptions:CannotSaveFile@l##";
         public CannotSaveFile() : base(_MESSAGE)
         {
         }
@@ -167,7 +167,7 @@
 
     public class UserFileNotExists : DmsExceptions
     {
-        private const string _MESSAGE = "[lang]DmsExceptions@UserFileNotExists[lang]";
+        private const string _MESSAGE = "##l@DmsExceptions:UserFileNotExists@l##";
         public UserFileNotExists() : base(_MESSAGE)
         {
         }
@@ -179,7 +179,7 @@
 
     public class UnknownDocumentFile : DmsExceptions
     {
-        private const string _MESSAGE = "[lang]DmsExceptions@UnknownDocumentFile[lang]";
+        private const string _MESSAGE = "##l@DmsExceptions:UnknownDocumentFile@l##";
         public UnknownDocumentFile() : base(_MESSAGE)
         {
         }
@@ -191,7 +191,7 @@
 
     public class CannotAccessToFile : DmsExceptions
     {
-        private const string _MESSAGE = "[lang]DmsExceptions@CannotAccessToFile[lang]";
+        private const string _MESSAGE = "##l@DmsExceptions:CannotAccessToFile@l##";
         public CannotAccessToFile() : base(_MESSAGE)
         {
         }
@@ -203,7 +203,7 @@
 
     public class DocumentNotFoundOrUserHasNoAccess : DmsExceptions
     {
-        private const string _MESSAGE = "[lang]DmsExceptions@DocumentNotFoundOrUserHasNoAccess[lang]";
+        private const string _MESSAGE = "##l@DmsExceptions:DocumentNotFoundOrUserHasNoAccess@l##";
         public DocumentNotFoundOrUserHasNoAccess() : base(_MESSAGE)
         {
         }
@@ -215,7 +215,7 @@
 
     public class TemplateDocumentNotFoundOrUserHasNoAccess : DmsExceptions
     {
-        private const string _MESSAGE = "[lang]DmsExceptions@TemplateDocumentNotFoundOrUserHasNoAccess[lang]";
+        private const string _MESSAGE = "##l@DmsExceptions:TemplateDocumentNotFoundOrUserHasNoAccess@l##";
         public TemplateDocumentNotFoundOrUserHasNoAccess() : base(_MESSAGE)
         {
         }
@@ -227,7 +227,7 @@
 
     public class DocumentCouldNotBeRegistered : DmsExceptions
     {
-        private const string _MESSAGE = "[lang]DmsExceptions@DocumentCouldNotBeRegistered[lang]";
+        private const string _MESSAGE = "##l@DmsExceptions:DocumentCouldNotBeRegistered@l##";
         public DocumentCouldNotBeRegistered() : base(_MESSAGE)
         {
         }
@@ -239,7 +239,7 @@
 
     public class CouldNotChangeAttributeLaunchPlan : DmsExceptions
     {
-        private const string _MESSAGE = "[lang]DmsExceptions@CouldNotChangeAttributeLaunchPlan[lang]";
+        private const string _MESSAGE = "##l@DmsExceptions:CouldNotChangeAttributeLaunchPlan@l##";
         public CouldNotChangeAttributeLaunchPlan() : base(_MESSAGE)
         {
         }
@@ -251,7 +251,7 @@
 
     public class CouldNotChangeFavourite : DmsExceptions
     {
-        private const string _MESSAGE = "[lang]DmsExceptions@CouldNotChangeFavourite[lang]";
+        private const string _MESSAGE = "##l@DmsExceptions:CouldNotChangeFavourite@l##";
         public CouldNotChangeFavourite() : base(_MESSAGE)
         {
         }
@@ -263,7 +263,7 @@
 
     public class CouldNotChangeIsInWork : DmsExceptions
     {
-        private const string _MESSAGE = "[lang]DmsExceptions@CouldNotChangeIsInWork[lang]";
+        private const string _MESSAGE = "##l@DmsExceptions:CouldNotChangeIsInWork@l##";
         public CouldNotChangeIsInWork() : base(_MESSAGE)
         {
         }
@@ -275,7 +275,7 @@
 
     public class DocumentHasAlredyBeenRegistered : DmsExceptions
     {
-        private const string _MESSAGE = "[lang]DmsExceptions@DocumentHasAlredyBeenRegistered[lang]";
+        private const string _MESSAGE = "##l@DmsExceptions:DocumentHasAlredyBeenRegistered@l##";
         public DocumentHasAlredyBeenRegistered() : base(_MESSAGE)
         {
         }
@@ -287,7 +287,7 @@
 
     public class PlanPointHasAlredyBeenLaunched : DmsExceptions
     {
-        private const string _MESSAGE = "[lang]DmsExceptions@PlanPointHasAlredyBeenLaunched[lang]";
+        private const string _MESSAGE = "##l@DmsExceptions:PlanPointHasAlredyBeenLaunched@l##";
         public PlanPointHasAlredyBeenLaunched() : base(_MESSAGE)
         {
         }
@@ -299,7 +299,7 @@
 
     public class UserPositionIsNotDefined : DmsExceptions
     {
-        private const string _MESSAGE = "[lang]DmsExceptions@UserPositionIsNotDefined[lang]";
+        private const string _MESSAGE = "##l@DmsExceptions:UserPositionIsNotDefined@l##";
         public UserPositionIsNotDefined() : base(_MESSAGE)
         {
         }
@@ -311,7 +311,7 @@
 
     public class NeedInformationAboutCorrespondent : DmsExceptions
     {
-        private const string _MESSAGE = "[lang]DmsExceptions@NeedInformationAboutCorrespondent[lang]";
+        private const string _MESSAGE = "##l@DmsExceptions:NeedInformationAboutCorrespondent@l##";
         public NeedInformationAboutCorrespondent() : base(_MESSAGE)
         {
         }
@@ -323,7 +323,7 @@
 
     public class UserNameIsNotDefined : DmsExceptions
     {
-        private const string _MESSAGE = "[lang]DmsExceptions@UserNameIsNotDefined[lang]";
+        private const string _MESSAGE = "##l@DmsExceptions:UserNameIsNotDefined@l##";
         public UserNameIsNotDefined() : base(_MESSAGE)
         {
         }
@@ -335,7 +335,7 @@
 
     public class UserUnauthorized : DmsExceptions
     {
-        private const string _MESSAGE = "[lang]DmsExceptions@UserUnauthorized[lang]";
+        private const string _MESSAGE = "##l@DmsExceptions:UserUnauthorized@l##";
         public UserUnauthorized() : base(_MESSAGE)
         {
         }
@@ -347,7 +347,7 @@
 
     public class DocumentRestrictedSendListDuplication : DmsExceptions
     {
-        private const string _MESSAGE = "[lang]DmsExceptions@DocumentRestrictedSendListDuplication[lang]";
+        private const string _MESSAGE = "##l@DmsExceptions:DocumentRestrictedSendListDuplication@l##";
         public DocumentRestrictedSendListDuplication() : base(_MESSAGE)
         {
         }
@@ -359,7 +359,7 @@
 
     public class WrongDocumentSendListEntry : DmsExceptions
     {
-        private const string _MESSAGE = "[lang]DmsExceptions@WrongDocumentSendListEntry[lang]";
+        private const string _MESSAGE = "##l@DmsExceptions:WrongDocumentSendListEntry@l##";
         public WrongDocumentSendListEntry() : base(_MESSAGE)
         {
         }
@@ -371,7 +371,7 @@
 
     public class DocumentSendListNotFoundInDocumentRestrictedSendList : DmsExceptions
     {
-        private const string _MESSAGE = "[lang]DmsExceptions@DocumentSendListNotFoundInDocumentRestrictedSendList[lang]";
+        private const string _MESSAGE = "##l@DmsExceptions:DocumentSendListNotFoundInDocumentRestrictedSendList@l##";
         public DocumentSendListNotFoundInDocumentRestrictedSendList() : base(_MESSAGE)
         {
         }
@@ -383,7 +383,7 @@
 
     public class DocumentSendListDoesNotMatchTheTemplate : DmsExceptions
     {
-        private const string _MESSAGE = "[lang]DmsExceptions@DocumentSendListDoesNotMatchTheTemplate[lang]";
+        private const string _MESSAGE = "##l@DmsExceptions:DocumentSendListDoesNotMatchTheTemplate@l##";
         public DocumentSendListDoesNotMatchTheTemplate() : base(_MESSAGE)
         {
         }
@@ -395,7 +395,7 @@
 
     public class DocumentRestrictedSendListDoesNotMatchTheTemplate : DmsExceptions
     {
-        private const string _MESSAGE = "[lang]DmsExceptions@DocumentRestrictedSendListDoesNotMatchTheTemplate[lang]";
+        private const string _MESSAGE = "##l@DmsExceptions:DocumentRestrictedSendListDoesNotMatchTheTemplate@l##";
         public DocumentRestrictedSendListDoesNotMatchTheTemplate() : base(_MESSAGE)
         {
         }
@@ -407,7 +407,7 @@
 
     public class EventNotFoundOrUserHasNoAccess : DmsExceptions
     {
-        private const string _MESSAGE = "[lang]DmsExceptions@EventNotFoundOrUserHasNoAccess[lang]";
+        private const string _MESSAGE = "##l@DmsExceptions:EventNotFoundOrUserHasNoAccess@l##";
         public EventNotFoundOrUserHasNoAccess() : base(_MESSAGE)
         {
         }
@@ -419,7 +419,7 @@
 
     public class CouldNotPerformThisOperation : DmsExceptions
     {
-        private const string _MESSAGE = "[lang]DmsExceptions@CouldNotPerformThisOperation[lang]";
+        private const string _MESSAGE = "##l@DmsExceptions:CouldNotPerformThisOperation@l##";
         public CouldNotPerformThisOperation() : base(_MESSAGE)
         {
         }
@@ -431,7 +431,7 @@
 
     public class WaitNotFoundOrUserHasNoAccess : DmsExceptions
     {
-        private const string _MESSAGE = "[lang]DmsExceptions@WaitNotFoundOrUserHasNoAccess[lang]";
+        private const string _MESSAGE = "##l@DmsExceptions:WaitNotFoundOrUserHasNoAccess@l##";
         public WaitNotFoundOrUserHasNoAccess() : base(_MESSAGE)
         {
         }
@@ -443,7 +443,7 @@
 
     public class WaitHasAlreadyClosed : DmsExceptions
     {
-        private const string _MESSAGE = "[lang]DmsExceptions@WaitHasAlreadyClosed[lang]";
+        private const string _MESSAGE = "##l@DmsExceptions:WaitHasAlreadyClosed@l##";
         public WaitHasAlreadyClosed() : base(_MESSAGE)
         {
         }
@@ -455,7 +455,7 @@
 
     public class DictionaryTagNotFoundOrUserHasNoAccess : DmsExceptions
     {
-        private const string _MESSAGE = "[lang]DmsExceptions@DictionaryTagNotFoundOrUserHasNoAccess[lang]";
+        private const string _MESSAGE = "##l@DmsExceptions:DictionaryTagNotFoundOrUserHasNoAccess@l##";
         public DictionaryTagNotFoundOrUserHasNoAccess() : base(_MESSAGE)
         {
         }
@@ -467,7 +467,7 @@
 
     public class ExecutorAgentForPositionIsNotDefined : DmsExceptions
     {
-        private const string _MESSAGE = "[lang]DmsExceptions@ExecutorAgentForPositionIsNotDefined[lang]";
+        private const string _MESSAGE = "##l@DmsExceptions:ExecutorAgentForPositionIsNotDefined@l##";
         public ExecutorAgentForPositionIsNotDefined() : base(_MESSAGE)
         {
         }
@@ -482,7 +482,7 @@
     /// </summary>
     public class DictionaryRecordCouldNotBeAdded : DmsExceptions
     {
-        private const string _MESSAGE = "[lang]DmsExceptions@DictionaryRecordCouldNotBeAdded[lang]";
+        private const string _MESSAGE = "##l@DmsExceptions:DictionaryRecordCouldNotBeAdded@l##";
         public DictionaryRecordCouldNotBeAdded() : base(_MESSAGE)
         {
         }
@@ -497,7 +497,7 @@
     /// </summary>
     public class DictionaryRecordCouldNotBeDeleted : DmsExceptions
     {
-        private const string _MESSAGE = "[lang]DmsExceptions@DictionaryRecordCouldNotBeDeleted[lang]";
+        private const string _MESSAGE = "##l@DmsExceptions:DictionaryRecordCouldNotBeDeleted@l##";
         public DictionaryRecordCouldNotBeDeleted() : base(_MESSAGE)
         {
         }
@@ -513,7 +513,7 @@
     /// </summary>
     public class DictionaryRecordWasNotFound : DmsExceptions
     {
-        private const string _MESSAGE = "[lang]DmsExceptions@DictionaryRecordWasNotFound[lang]";
+        private const string _MESSAGE = "##l@DmsExceptions:DictionaryRecordWasNotFound@l##";
         public DictionaryRecordWasNotFound() : base(_MESSAGE)
         {
         }
@@ -528,7 +528,7 @@
     /// </summary>
     public class DictionaryRecordNotUnique : DmsExceptions
     {
-        private const string _MESSAGE = "[lang]DmsExceptions@DictionaryRecordNotUnique[lang]";
+        private const string _MESSAGE = "##l@DmsExceptions:DictionaryRecordNotUnique@l##";
         public DictionaryRecordNotUnique() : base(_MESSAGE)
         {
         }
@@ -540,7 +540,7 @@
 
     public class IncomingModelIsNotValid : DmsExceptions
     {
-        private const string _MESSAGE = "[lang]DmsExceptions@IncomingModelIsNotValid[lang]";
+        private const string _MESSAGE = "##l@DmsExceptions:IncomingModelIsNotValid@l##";
         public IncomingModelIsNotValid() : base(_MESSAGE)
         {
         }
@@ -552,7 +552,7 @@
 
     public class NotFilledWithAdditionalRequiredAttributes : DmsExceptions
     {
-        private const string _MESSAGE = "[lang]DmsExceptions@NotFilledWithAdditionalRequiredAttributes[lang]";
+        private const string _MESSAGE = "##l@DmsExceptions:NotFilledWithAdditionalRequiredAttributes@l##";
         public NotFilledWithAdditionalRequiredAttributes() : base(_MESSAGE)
         {
         }

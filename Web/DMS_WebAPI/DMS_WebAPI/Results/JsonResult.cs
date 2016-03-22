@@ -1,4 +1,5 @@
-﻿using BL.Logic.AdminCore.Interfaces;
+﻿using BL.CrossCutting.Interfaces;
+using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.DependencyInjection;
 using BL.Model.SystemCore;
 using DMS_WebAPI.Utilities;
@@ -69,12 +70,22 @@ namespace DMS_WebAPI.Results
             object json = new { success = _success, data = _data, msg = _msg, meta = _meta, paging = _paging };
             try
             {
-                if (HttpContext.Current.User.Identity.IsAuthenticated)
+                IContext cxt = null;
+                try
                 {
-                    var cxt = DmsResolver.Current.Get<UserContext>().Get();
+                    cxt = DmsResolver.Current.Get<UserContext>().Get();
+                }
+                catch { }
+                if (HttpContext.Current.User.Identity.IsAuthenticated&& cxt!=null)
+                {
                     var service = DmsResolver.Current.Get<IAdminService>();
                     json = JsonConvert.DeserializeObject(service.ReplaceLanguageLabel(cxt, JsonConvert.SerializeObject(json, GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings)));
                 }
+                else
+                {
+                    json = JsonConvert.DeserializeObject(new Languages().ReplaceLanguageLabel(HttpContext.Current.Request.UserLanguages?[0], JsonConvert.SerializeObject(json, GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings)));
+                }
+
             }
             catch { }
             HttpResponseMessage response = _request.CreateResponse(HttpStatusCode.OK, json);
