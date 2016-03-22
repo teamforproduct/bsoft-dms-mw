@@ -1067,13 +1067,13 @@ namespace BL.Database.Dictionaries
 
         #region DictionaryTags
 
-        public InternalDictionaryTag GetInternalDictionaryTags(IContext context, FilterDictionaryTag filter)
+        public InternalDictionaryTag GetInternalDictionaryTags(IContext ctx, FilterDictionaryTag filter)
         {
-            using (var dbContext = new DmsContext(context))
+            using (var dbContext = new DmsContext(ctx))
             {
                 var qry = dbContext.DictionaryTagsSet.AsQueryable();
 
-                qry = qry.Where(x => !x.PositionId.HasValue || context.CurrentPositionsIdList.Contains(x.PositionId ?? 0));
+                qry = qry.Where(x => ctx.IsAdmin || !x.PositionId.HasValue || ctx.CurrentPositionsIdList.Contains(x.PositionId ?? 0));
 
                 if (filter.TagId?.Count > 0)
                 {
@@ -1090,13 +1090,13 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<FrontDictionaryTag> GetDictionaryTags(IContext context, FilterDictionaryTag filter)
+        public IEnumerable<FrontDictionaryTag> GetDictionaryTags(IContext ctx, FilterDictionaryTag filter)
         {
-            using (var dbContext = new DmsContext(context))
+            using (var dbContext = new DmsContext(ctx))
             {
                 var qry = dbContext.DictionaryTagsSet.AsQueryable();
 
-                qry = qry.Where(x => !x.PositionId.HasValue || context.CurrentPositionsIdList.Contains(x.PositionId ?? 0));
+                qry = qry.Where(x => ctx.IsAdmin || !x.PositionId.HasValue || ctx.CurrentPositionsIdList.Contains(x.PositionId ?? 0));
 
                 if (filter.TagId?.Count > 0)
                 {
@@ -1134,20 +1134,18 @@ namespace BL.Database.Dictionaries
                 return savTag.Id;
             }
         }
-        public void UpdateDictionaryTag(IContext context, InternalDictionaryTag model)
+        public void UpdateDictionaryTag(IContext ctx, InternalDictionaryTag model)
         {
-            using (var dbContext = new DmsContext(context))
+            using (var dbContext = new DmsContext(ctx))
             {
                 var savTag = dbContext.DictionaryTagsSet
-                    .Where(x => x.Id == model.Id)
-                    .Where(x => context.CurrentPositionsIdList.Contains(x.PositionId ?? 0))
-                    .FirstOrDefault();
+                    .FirstOrDefault(x => x.Id == model.Id && (ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.PositionId ?? 0)));
 
                 if (savTag?.Id > 0)
                 {
                     savTag.Name = model.Name;
                     savTag.Color = model.Color;
-                    savTag.LastChangeUserId = context.CurrentAgentId;
+                    savTag.LastChangeUserId = ctx.CurrentAgentId;
                     savTag.LastChangeDate = DateTime.Now;
                     dbContext.SaveChanges();
                 }

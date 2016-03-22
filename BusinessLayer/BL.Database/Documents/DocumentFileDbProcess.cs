@@ -130,7 +130,7 @@ namespace BL.Database.Documents
                 if (maxVer > 0)
                 {
                     var doc = CommonQueries.GetDocumentQuery(dbContext, ctx)
-                                        .Where(x => x.Doc.Id == documentId && ctx.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId))
+                                        .Where(x => x.Doc.Id == documentId && (ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId)))
                                         .Select(x => new InternalDocument
                                         {
                                             Id = x.Doc.Id,
@@ -201,7 +201,7 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(ctx))
             {
                 var doc = CommonQueries.GetDocumentQuery(dbContext, ctx)
-                    .Where(x => x.Doc.Id == documentId && ctx.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId))
+                    .Where(x => x.Doc.Id == documentId && (ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId)))
                     .Select(x => new InternalDocument
                     {
                         Id = x.Doc.Id
@@ -247,7 +247,7 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(ctx))
             {
                 var doc = CommonQueries.GetDocumentQuery(dbContext, ctx)
-                    .Where(x => x.Doc.Id == flIdent.DocumentId && ctx.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId))
+                    .Where(x => x.Doc.Id == flIdent.DocumentId && (ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId)))
                     .Select(x => new InternalDocument
                     {
                         Id = x.Doc.Id,

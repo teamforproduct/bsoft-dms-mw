@@ -2,6 +2,7 @@
 using BL.Logic.SystemServices.AutoPlan;
 using BL.Logic.SystemServices.FullTextSearch;
 using BL.Logic.SystemServices.MailWorker;
+using DMS_WebAPI.Utilities;
 using Microsoft.Owin;
 using Owin;
 
@@ -14,8 +15,8 @@ namespace DMS_WebAPI
         public void Configuration(IAppBuilder app)
         {
             ConfigureAuth(app);
-            //var readXml = new Utilities.ReadXml("/servers.xml");
-            //var dbs = readXml.Read();
+            var srv = new Servers();
+            var dbs = srv.GetServers();
 
             //foreach (var srv in DmsResolver.Current.GetAll<ISystemWorkerService>())
             //{
@@ -28,8 +29,8 @@ namespace DMS_WebAPI
             //var indexService = DmsResolver.Current.Get<FullTextSearchService>();
             //indexService.Initialize(dbs);
 
-            //var autoPlanService = DmsResolver.Current.Get<AutoPlanService>();
-            //autoPlanService.Initialize(dbs);
+            var autoPlanService = DmsResolver.Current.Get<AutoPlanService>();
+            autoPlanService.Initialize(dbs);
         }
     }
 }

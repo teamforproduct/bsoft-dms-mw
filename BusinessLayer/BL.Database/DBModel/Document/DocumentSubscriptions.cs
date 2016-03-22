@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using BL.Database.DBModel.Dictionary;
+using System.ComponentModel.DataAnnotations;
 
 namespace BL.Database.DBModel.Document
 {
@@ -14,9 +11,12 @@ namespace BL.Database.DBModel.Document
         public int DocumentId { get; set; }
         public int SendEventId { get; set; }
         public Nullable<int> DoneEventId { get; set; }
+        [MaxLength(2000)]
         public string Description { get; set; }
         public Nullable<int> SubscriptionStateId { get; set; }
+        [MaxLength(2000)]
         public string Hash { get; set; }
+        [MaxLength(2000)]
         public string ChangedHash { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }

@@ -1,6 +1,7 @@
 ﻿using BL.Database.DBModel.Dictionary;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BL.Database.DBModel.Template
@@ -17,15 +18,18 @@ namespace BL.Database.DBModel.Template
         }
 
         public int Id { get; set; }
+        [MaxLength(2000)]
         public string Name { get; set; }
         public bool IsHard { get; set; }
         public int DocumentDirectionId { get; set; }
         public int DocumentTypeId { get; set; }
         public Nullable<int> DocumentSubjectId { get; set; }
+        [MaxLength(2000)]
         public string Description { get; set; }
         public Nullable<int> RegistrationJournalId { get; set; }
         public Nullable<int> SenderAgentId { get; set; }
         public Nullable<int> SenderAgentPersonId { get; set; }
+        [MaxLength(2000)]
         public string Addressee { get; set; }
         public bool IsActive { get; set; }
         public int LastChangeUserId { get; set; }

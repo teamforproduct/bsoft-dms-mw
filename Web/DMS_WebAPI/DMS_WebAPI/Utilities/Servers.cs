@@ -1,7 +1,6 @@
 ﻿using BL.Model.Database;
 using BL.Model.Database.FrontModel;
 using BL.Model.Database.IncomingModel;
-using BL.Model.Database.InternalModel;
 using BL.Model.Exception;
 using System;
 using System.Collections.Generic;
@@ -12,6 +11,9 @@ using System.Xml;
 
 namespace DMS_WebAPI.Utilities
 {
+    /// <summary>
+    /// Represend functionality to configure available servers
+    /// </summary>
     public class Servers
     {
         private string _file = "/servers.xml";
@@ -37,32 +39,45 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
+        /// <summary>
+        /// Get list of the available servers to display for user.
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<FrontServer> GetServersByUser()
         {
             return GetServers().ToList().Select(x => new FrontServer { Id = x.Id, Name = x.Name });
         }
-        public InternalServer GetServer(int id)
+
+        /// <summary>
+        /// Get all server parameters by ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public DatabaseModel GetServer(int id)
         {
             return GetServers().FirstOrDefault(x => x.Id == id);
         }
-        public IEnumerable<InternalServer> GetServers()
+
+        /// <summary>
+        /// List of all aceptable servers
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<DatabaseModel> GetServers()
         {
             var root = _File.DocumentElement;
-            var res = new List<InternalServer>();
+            var res = new List<DatabaseModel>();
 
             foreach (XmlNode n in root.ChildNodes)
             {
                 if (n.HasChildNodes)
                 {
-                    var isAdd = false;
-                    var item = new InternalServer();
+                    var item = new DatabaseModel();
 
                     foreach (XmlNode child in n.ChildNodes)
                     {
                         switch (child.Name.ToLower())
                         {
                             case "id":
-                                isAdd = true;
                                 item.Id = int.Parse(child.InnerText);
                                 break;
                             case "address":
@@ -94,14 +109,20 @@ namespace DMS_WebAPI.Utilities
                                 break;
                         }
                     }
-                    if (isAdd)
-                        res.Add(item);
+                    res.Add(item);
                 }
 
             }
 
             return res;
         }
+
+        /// <summary>
+        /// Add new server to list of aceptable servers
+        /// </summary>
+        /// <param name="modal"></param>
+        /// <returns></returns>
+        /// <exception cref="DictionaryRecordCouldNotBeAdded"></exception>
         public int AddServer(ModifyServer modal)
         {
             try
@@ -117,11 +138,11 @@ namespace DMS_WebAPI.Utilities
                 item.AppendChild(tmpItem);
 
                 tmpItem = doc.CreateElement("Name");
-                tmpItem.InnerText = modal.Name.ToString();
+                tmpItem.InnerText = modal.Name;
                 item.AppendChild(tmpItem);
 
                 tmpItem = doc.CreateElement("Address");
-                tmpItem.InnerText = modal.Address.ToString();
+                tmpItem.InnerText = modal.Address;
                 item.AppendChild(tmpItem);
 
                 tmpItem = doc.CreateElement("ServerType");
@@ -129,7 +150,7 @@ namespace DMS_WebAPI.Utilities
                 item.AppendChild(tmpItem);
 
                 tmpItem = doc.CreateElement("DefaultDatabase");
-                tmpItem.InnerText = modal.DefaultDatabase.ToString();
+                tmpItem.InnerText = modal.DefaultDatabase;
                 item.AppendChild(tmpItem);
 
                 tmpItem = doc.CreateElement("IntegrateSecurity");
@@ -137,15 +158,15 @@ namespace DMS_WebAPI.Utilities
                 item.AppendChild(tmpItem);
 
                 tmpItem = doc.CreateElement("UserName");
-                tmpItem.InnerText = modal.UserName.ToString();
+                tmpItem.InnerText = modal.UserName;
                 item.AppendChild(tmpItem);
 
                 tmpItem = doc.CreateElement("UserPassword");
-                tmpItem.InnerText = modal.UserPassword.ToString();
+                tmpItem.InnerText = modal.UserPassword;
                 item.AppendChild(tmpItem);
 
                 tmpItem = doc.CreateElement("ConnectionString");
-                tmpItem.InnerText = modal.ConnectionString.ToString();
+                tmpItem.InnerText = modal.ConnectionString;
                 item.AppendChild(tmpItem);
 
                 tmpItem = doc.CreateElement("DefaultSchema");
@@ -163,6 +184,12 @@ namespace DMS_WebAPI.Utilities
                 throw new DictionaryRecordCouldNotBeAdded();
             }
         }
+
+        /// <summary>
+        /// Modify server parameters
+        /// </summary>
+        /// <param name="modal"></param>
+        /// <exception cref="DictionaryRecordCouldNotBeAdded"></exception>
         public void UpdateServer(ModifyServer modal)
         {
             try
@@ -176,14 +203,14 @@ namespace DMS_WebAPI.Utilities
                     {
                         if (n["Id"].InnerText == modal.Id.ToString())
                         {
-                            n["Name"].InnerText = modal.Name.ToString();
-                            n["Address"].InnerText = modal.Address.ToString();
+                            n["Name"].InnerText = modal.Name;
+                            n["Address"].InnerText = modal.Address;
                             n["ServerType"].InnerText = modal.ServerType.ToString();
-                            n["DefaultDatabase"].InnerText = modal.DefaultDatabase.ToString();
+                            n["DefaultDatabase"].InnerText = modal.DefaultDatabase;
                             n["IntegrateSecurity"].InnerText = modal.IntegrateSecurity.ToString();
-                            n["UserName"].InnerText = modal.UserName.ToString();
-                            n["UserPassword"].InnerText = modal.UserPassword.ToString();
-                            n["ConnectionString"].InnerText = modal.ConnectionString.ToString();
+                            n["UserName"].InnerText = modal.UserName;
+                            n["UserPassword"].InnerText = modal.UserPassword;
+                            n["ConnectionString"].InnerText = modal.ConnectionString;
                             n["DefaultSchema"].InnerText = modal.DefaultSchema.ToString();
                             break;
                         }
@@ -197,6 +224,12 @@ namespace DMS_WebAPI.Utilities
                 throw new DictionaryRecordCouldNotBeAdded();
             }
         }
+
+        /// <summary>
+        /// Delete server from the list
+        /// </summary>
+        /// <param name="id"></param>
+        /// <exception cref="DictionaryRecordCouldNotBeDeleted"></exception>
         public void DeleteServer(int id)
         {
             try

@@ -451,7 +451,7 @@ window.Modernizr = (function( window, document, undefined ) {
     // webk.it/70117 is tracking a legit WebGL feature detect proposal
 
     // We do a soft detect which may false positive in order to avoid
-    // an expensive context creation: bugzil.la/732441
+    // an expensive ctx creation: bugzil.la/732441
 
     tests['webgl'] = function() {
         return !!window.WebGLRenderingContext;
@@ -1126,7 +1126,7 @@ window.Modernizr = (function( window, document, undefined ) {
        * returns a shived element for the given nodeName and document
        * @memberOf html5
        * @param {String} nodeName name of the element
-       * @param {Document} ownerDocument The context document.
+       * @param {Document} ownerDocument The ctx document.
        * @returns {Object} The shived element.
        */
       function createElement(nodeName, ownerDocument, data){
@@ -1162,7 +1162,7 @@ window.Modernizr = (function( window, document, undefined ) {
       /**
        * returns a shived DocumentFragment for the given document
        * @memberOf html5
-       * @param {Document} ownerDocument The context document.
+       * @param {Document} ownerDocument The ctx document.
        * @returns {Object} The shived DocumentFragment.
        */
       function createDocumentFragment(ownerDocument, data){

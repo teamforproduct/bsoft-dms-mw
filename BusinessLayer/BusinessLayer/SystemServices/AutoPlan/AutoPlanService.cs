@@ -21,6 +21,7 @@ namespace BL.Logic.SystemServices.AutoPlan
         {
             _sysDb = DmsResolver.Current.Get<ISystemDbProcess>();
             _cmdService = DmsResolver.Current.Get<ICommandService>();
+            _timers = new Dictionary<AutoPlanSettings, Timer>();
         }
 
         protected override void InitializeServers()
@@ -76,7 +77,7 @@ namespace BL.Logic.SystemServices.AutoPlan
             }
             catch (Exception ex)
             {
-                _logger.Error(ctx, "Could not sinchronize fulltextsearch indexes", ex);
+                _logger.Error(ctx, "Could not process autoplan", ex);
             }
             tmr.Change(md.TimeToUpdate * 60000, Timeout.Infinite);//start new iteration of the timer
         }

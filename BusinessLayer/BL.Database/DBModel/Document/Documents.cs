@@ -2,6 +2,7 @@
 using BL.Database.DBModel.Template;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BL.Database.DBModel.Document
@@ -26,12 +27,16 @@ namespace BL.Database.DBModel.Document
         public int TemplateDocumentId { get; set; }
         public DateTime CreateDate { get; set; }
         public Nullable<int> DocumentSubjectId { get; set; }
+        [MaxLength(2000)]
         public string Description { get; set; }
         public bool IsRegistered { get; set; }
         public Nullable<int> RegistrationJournalId { get; set; }
+        [MaxLength(2000)]
         public string NumerationPrefixFormula { get; set; }
         public Nullable<int> RegistrationNumber { get; set; }
+        [MaxLength(2000)]
         public string RegistrationNumberSuffix { get; set; }
+        [MaxLength(2000)]
         public string RegistrationNumberPrefix { get; set; }
         public Nullable<DateTime> RegistrationDate { get; set; }
         public int ExecutorPositionId { get; set; }
@@ -40,8 +45,10 @@ namespace BL.Database.DBModel.Document
         //public int ExecutorAgentId { get; set; }
         public Nullable<int> SenderAgentId { get; set; }
         public Nullable<int> SenderAgentPersonId { get; set; }
+        [MaxLength(2000)]
         public string SenderNumber { get; set; }
         public Nullable<DateTime> SenderDate { get; set; }
+        [MaxLength(2000)]
         public string Addressee { get; set; }
         public int? LinkId { get; set; }
         public bool IsLaunchPlan { get; set; }

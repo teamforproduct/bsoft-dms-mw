@@ -44,16 +44,14 @@ namespace BL.CrossCutting.Helpers
         //TODO remove in release version
         public static DbConnection GetDefaultConnection()
         {
-            return new OracleConnection(@"User Id=BSOFT_DOB_REAL;Password=BSOFT_DOB_REAL;Data Source=88.198.16.119:21521/XE");
-            //return new SqlConnection(@"Data Source=109.197.217.79\SQLEXPRESS,1433;Initial Catalog=IRF_DMS_DEV;Persist Security Info=True;User ID=sa;Password=Harm1969");
+            //return new OracleConnection(@"User Id=DMS;Password=DMS;Data Source=88.198.16.119:21521/XE");
+            return new SqlConnection(@"Data Source=109.197.217.79\SQLEXPRESS,1433;Initial Catalog=IRF_DMS_DEV;Persist Security Info=True;User ID=sa;Password=Harm1969");
             //return @"Data Source=109.197.217.79\SQLEXPRESS,1433;Initial Catalog=IRF_DMS;Persist Security Info=True;User ID=sa;Password=Harm1969";
         }
         //TODO remove in release version
         public static string GetDefaultSchema()
         {
-            return "BSOFT_DOB_REAL";
-            //return "dbo";
-            //return @"Data Source=109.197.217.79\SQLEXPRESS,1433;Initial Catalog=IRF_DMS;Persist Security Info=True;User ID=sa;Password=Harm1969";
+            return "DMS";
         }
     }
 }

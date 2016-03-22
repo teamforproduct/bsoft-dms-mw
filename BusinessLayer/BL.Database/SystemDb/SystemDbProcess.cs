@@ -616,7 +616,7 @@ namespace BL.Database.SystemDb
                     });
 
                 return dbContext.DocumentSendListsSet.Join(qry, s => s.DocumentId, q => q.DocId, (s, q) => new {sl = s, q})
-                    .Where(x => x.sl.Stage <= x.q.MinStage).Select(x => x.sl.Id).ToList();
+                    .Where(x => x.sl.Stage <= x.q.MinStage && !x.sl.StartEventId.HasValue).Select(x => x.sl.Id).ToList();
             }
         }
 

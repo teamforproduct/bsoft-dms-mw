@@ -123,17 +123,12 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                var itemDB = dbContext.DictionaryAgentUsersSet.Where(x => x.UserId.Equals(userId));
-
-
-                    var item =itemDB.Select(x => new Employee
+                return dbContext.DictionaryAgentUsersSet.Where(x => x.UserId.Equals(userId)).Select(x => new Employee
                 {
                     AgentId = x.Id,
                     Name = x.Agent.Name,
                     LanguageId = x.Agent.LanguageId ?? 0
-                });
-                var res = item.FirstOrDefault();
-                return res;
+                }).FirstOrDefault();
             }
         }
 

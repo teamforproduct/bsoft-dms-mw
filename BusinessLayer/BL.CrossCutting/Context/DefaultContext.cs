@@ -60,6 +60,8 @@ namespace BL.Logic.Context
             _currentPositionId = position;
         }
 
+        public bool IsAdmin => false;
+
         public DatabaseModel CurrentDB { get; set; }
     }
 }

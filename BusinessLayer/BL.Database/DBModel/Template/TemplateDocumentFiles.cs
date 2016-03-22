@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BL.Database.DBModel.Template
 {
@@ -11,13 +8,17 @@ namespace BL.Database.DBModel.Template
     {
         public int Id { get; set; }
         public int DocumentId { get; set; }
+        [MaxLength(2000)]
         public string Name { get; set; }
         public int OrderNumber { get; set; }
+        [MaxLength(2000)]
         public string Extention { get; set; }
+        [MaxLength(2000)]
         public string FileType { get; set; }
         public int FileSize { get; set; }
         public byte[] Content { get; set; }
         public bool IsAdditional { get; set; }
+        [MaxLength(2000)]
         public string Hash { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }

@@ -1,6 +1,7 @@
 ﻿using BL.Database.DBModel.Dictionary;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BL.Database.DBModel.Document
@@ -19,6 +20,7 @@ namespace BL.Database.DBModel.Document
         public Nullable<int> ResultTypeId { get; set; }
         public Nullable<DateTime> DueDate { get; set; }
         public Nullable<DateTime> AttentionDate { get; set; }
+        [MaxLength(2000)]
         public string TargetDescription { get; set; }
         public Nullable<DateTime> TargetAttentionDate { get; set; }
         public int LastChangeUserId { get; set; }

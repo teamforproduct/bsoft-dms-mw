@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using BL.CrossCutting.Context;
 using BL.CrossCutting.Interfaces;
 using BL.Database.DatabaseContext;
 using BL.Database.DBModel.Document;
@@ -43,7 +44,7 @@ namespace BL.Database.Common
                       join ap in dbContext.DictionaryAgentPersonsSet on dc.SenderAgentPersonId equals ap.Id into ap
                       from sendAp in ap.DefaultIfEmpty()
 
-                      where dbContext.DocumentAccessesSet.Where(x=>ctx.CurrentPositionsIdList.Contains(x.PositionId)).Select(x=>x.DocumentId).Contains(dc.Id)
+                      where dbContext.DocumentAccessesSet.Where(x=>ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.PositionId)).Select(x=>x.DocumentId).Contains(dc.Id)
 
                       select new DocumentQuery
                       {
@@ -154,7 +155,7 @@ namespace BL.Database.Common
         public static IQueryable<FrontDocumentAccess> GetDocumentAccesses(IContext ctx, DmsContext dbContext)
         {
             return
-                dbContext.DocumentAccessesSet.Where(x => ctx.CurrentPositionsIdList.Contains(x.PositionId))
+                dbContext.DocumentAccessesSet.Where(x => ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.PositionId))
                 .Select(acc => new FrontDocumentAccess
                 {
                     Id = acc.Id,
@@ -203,7 +204,7 @@ namespace BL.Database.Common
             var qry = dbContext.DocumentAccessesSet.Where(x => x.DocumentId == documentId);
             if (ctx != null)
             {
-                qry = qry.Where(x => ctx.CurrentPositionsIdList.Contains(x.PositionId));
+                qry = qry.Where(x => ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.PositionId));
             }
             return qry;
         }
@@ -238,7 +239,7 @@ namespace BL.Database.Common
         public static IQueryable<DocumentEvents> GetDocumentEventsQuery(IContext ctx, DmsContext dbContext)
         {
             return dbContext.DocumentEventsSet
-                    .Where(x => (x.TargetPositionId.HasValue && ctx.CurrentPositionsIdList.Contains(x.TargetPositionId.Value))
+                    .Where(x => ctx.IsAdmin || (x.TargetPositionId.HasValue && ctx.CurrentPositionsIdList.Contains(x.TargetPositionId.Value))
                     || (x.SourcePositionId.HasValue && ctx.CurrentPositionsIdList.Contains(x.SourcePositionId.Value))
                     //|| ctx.CurrentAgentId == x.SourceAgentId
                     //|| (x.TargetAgentId.HasValue && ctx.CurrentAgentId == x.TargetAgentId.Value)
@@ -297,7 +298,7 @@ namespace BL.Database.Common
             }
             if (ctx != null)
             {
-                qry = qry.Where( x =>
+                qry = qry.Where( x => ctx.IsAdmin ||
                             (x.OnEvent.TargetPositionId.HasValue &&
                              ctx.CurrentPositionsIdList.Contains(x.OnEvent.TargetPositionId.Value))
                             ||
@@ -314,7 +315,52 @@ namespace BL.Database.Common
             return qry;
         }
 
-        public static IEnumerable<FrontDocumentWaits> GetDocumentWaits(DmsContext dbContext, FilterDocumentWait filter)
+        public static IEnumerable<FrontDocumentTask> GetDocumentTasks(DmsContext dbContext, FilterDocumentTask filter)
+        {
+            var tasksDb = dbContext.DocumentTasksSet.AsQueryable();
+
+            if (filter != null)
+            {
+                if (filter?.DocumentId?.Count() > 0)
+                {
+                    tasksDb = tasksDb.Where(x => filter.DocumentId.Contains(x.DocumentId));
+                }
+            }
+
+            var tasksRes = tasksDb.Select(x => new { Task = x });
+
+            var tasks = tasksRes.Select(x => new FrontDocumentTask
+            {
+                Id = x.Task.Id,
+                DocumentId = x.Task.DocumentId,
+                Name = x.Task.Task,
+                Description = x.Task.Description,
+                DocumentDate = x.Task.Document.RegistrationDate ?? x.Task.Document.CreateDate,
+                RegistrationFullNumber = (x.Task.Document.RegistrationNumber != null
+                                           ? x.Task.Document.RegistrationNumberPrefix + x.Task.Document.RegistrationNumber +
+                                             x.Task.Document.RegistrationNumberSuffix
+                                           : "#" + x.Task.Document.Id),
+                DocumentDescription = x.Task.Document.Description,
+                DocumentTypeName = x.Task.Document.TemplateDocument.DocumentType.Name,
+                DocumentDirectionName = x.Task.Document.TemplateDocument.DocumentDirection.Name,
+
+                PositionId = x.Task.PositionId,
+                PositionExecutorAgentId = x.Task.PositionExecutorAgentId,
+                AgentId = x.Task.AgentId,
+
+                PositionExecutorAgentName = x.Task.PositionExecutorAgent.Name,
+                AgentName = x.Task.Agent.Name,
+                PositionName = x.Task.Position.Name,
+                PositionExecutorNowAgentName = x.Task.Position.ExecutorAgent.Name,
+                PositionExecutorAgentPhoneNumber = "SourcePositionAgentPhoneNumber", //TODO 
+            }).ToList();
+
+            return tasks;
+
+        }
+
+
+        public static IEnumerable<FrontDocumentWait> GetDocumentWaits(DmsContext dbContext, FilterDocumentWait filter)
         {
             var waitsDb = dbContext.DocumentWaitsSet.AsQueryable();
 
@@ -343,7 +389,7 @@ namespace BL.Database.Common
 
             var waitsRes = waitsDb.Select(x => new { Wait = x, x.OnEvent, x.OffEvent });
 
-            var waits = waitsRes.Select(x => new FrontDocumentWaits
+            var waits = waitsRes.Select(x => new FrontDocumentWait
             {
                 Id = x.Wait.Id,
                 DocumentId = x.Wait.DocumentId,
@@ -688,6 +734,8 @@ namespace BL.Database.Common
                             TargetPositionExecutorAgentName = y.TargetPosition.ExecutorAgent.Name ?? y.TargetAgent.Name,
 
                             Task = y.Task.Task,
+                            IsAvailableWithinTask = y.IsAvailableWithinTask,
+                            IsAddControl = y.IsAddControl,
                             Description = y.Description,
                             DueDate = y.DueDate,
                             DueDay = y.DueDay,

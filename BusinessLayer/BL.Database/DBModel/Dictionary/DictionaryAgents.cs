@@ -1,6 +1,7 @@
 ﻿using BL.Database.DBModel.Admin;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BL.Database.DBModel.Dictionary
@@ -17,6 +18,7 @@ namespace BL.Database.DBModel.Dictionary
         }
 
         public int Id { get; set; }
+        [MaxLength(2000)]
         public string Name { get; set; }
         public Nullable<int> ResidentTypeId { get; set; }
         public bool IsCompany { get; set; }
@@ -24,6 +26,7 @@ namespace BL.Database.DBModel.Dictionary
         public bool IsEmployee { get; set; }
         public bool IsBank { get; set; }
         public bool IsUser { get; set; }
+        [MaxLength(2000)]
         public string Description { get; set; }
         public bool IsActive { get; set; }
         public Nullable<int> LanguageId { get; set; }

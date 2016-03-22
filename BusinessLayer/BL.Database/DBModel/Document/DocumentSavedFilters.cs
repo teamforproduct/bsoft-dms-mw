@@ -1,10 +1,7 @@
 ﻿using BL.Database.DBModel.Dictionary;
 using System;
-using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BL.Database.DBModel.Document
 {
@@ -12,7 +9,9 @@ namespace BL.Database.DBModel.Document
     {
         public int Id { get; set; }
         public Nullable<int> PositionId { get; set; }
+        [MaxLength(2000)]
         public string Icon { get; set; }
+        [MaxLength(2000)]
         public string Filter { get; set; }
         public bool IsCommon { get; set; }
         public int LastChangeUserId { get; set; }

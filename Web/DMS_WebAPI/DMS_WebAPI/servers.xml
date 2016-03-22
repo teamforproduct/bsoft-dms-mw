@@ -9,7 +9,7 @@
     <UserName>sa</UserName>
     <UserPassword>Harm1969</UserPassword>
     <ConnectionString>Data Source=109.197.217.79\SQLEXPRESS,1433;Initial Catalog=IRF_DMS_DEV;Persist Security Info=True;User ID=sa;Password=Harm1969</ConnectionString>
-    <DefaultSchema>BSOFT_DOB_REAL</DefaultSchema>
+    <DefaultSchema>DMS</DefaultSchema>
   </Server>
   <Server>
     <Id>2</Id>
@@ -18,10 +18,10 @@
     <ServerType>Oracle</ServerType>
     <DefaultDatabase>XE</DefaultDatabase>
     <IntegrateSecurity>False</IntegrateSecurity>
-    <UserName>BSOFT_DOB_REAL</UserName>
-    <UserPassword>BSOFT_DOB_REAL</UserPassword>
-    <ConnectionString>User Id=BSOFT_DOB_REAL;Password=BSOFT_DOB_REAL;Data Source=88.198.16.119:21521/XE</ConnectionString>
-    <DefaultSchema>BSOFT_DOB_REAL</DefaultSchema>
+    <UserName>DMS</UserName>
+    <UserPassword>DMS</UserPassword>
+    <ConnectionString>User Id=DMS;Password=DMS;Data Source=88.198.16.119:21521/XE</ConnectionString>
+    <DefaultSchema>DMS</DefaultSchema>
   </Server>
 </Servers>
 <!--<Servers>

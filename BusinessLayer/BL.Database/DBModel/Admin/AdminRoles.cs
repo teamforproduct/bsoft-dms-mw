@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace BL.Database.DBModel.Admin
 {
@@ -13,6 +14,7 @@ namespace BL.Database.DBModel.Admin
         }
 
         public int Id { get; set; }
+        [MaxLength(2000)]
         public string Name { get; set; }
         public int PositionId { get; set; }
         public int AccessLevelId { get; set; }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BL.Database.DBModel.Dictionary;
+using System.ComponentModel.DataAnnotations;
 
 namespace BL.Database.DBModel.Template
 {
@@ -18,7 +19,9 @@ namespace BL.Database.DBModel.Template
         public int Id { get; set; }
         public int DocumentId { get; set; }
         public Nullable<int> PositionId { get; set; }
+        [MaxLength(2000)]
         public string Task { get; set; }
+        [MaxLength(2000)]
         public string Description { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }

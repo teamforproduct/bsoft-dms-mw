@@ -1,9 +1,11 @@
-﻿namespace BL.Model.Database
+﻿using BL.Database.DBModel.Admin;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace DMS_WebAPI.DBModel
 {
-    /// <summary>
-    /// Model describe server parameters
-    /// </summary>
-    public class DatabaseModel
+    public class DictionaryServers
     {
         /// <summary>
         /// ID 
@@ -20,7 +22,7 @@
         /// <summary>
         /// Type of the server (SQL Server / Oracle / MySQL etc.)
         /// </summary>
-        public DatabaseType ServerType { get; set; }
+        public string ServerType { get; set; }
         /// <summary>
         /// Database name
         /// </summary>
