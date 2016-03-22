@@ -283,7 +283,9 @@ namespace BL.Database.Dictionaries
                     dbContext.DictionaryAgentContactsSet.RemoveRange(
                                        dbContext.DictionaryAgentContactsSet.Where(x => x.AgentId == agent.Id)
                                        );
-
+                    dbContext.DictionaryAgentAccountsSet.RemoveRange(
+                                                           dbContext.DictionaryAgentAccountsSet.Where(x => x.AgentId == agent.Id)
+                                                           );
                     dbContext.DictionaryAgentsSet.Remove(ddt);
 
                     dbContext.SaveChanges();
@@ -1603,7 +1605,188 @@ namespace BL.Database.Dictionaries
         }
         #endregion DictionaryAgentBanks
 
+        #region DictionaryAgentAccounts
+        public FrontDictionaryAgentAccount GetDictionaryAgentAccount(IContext context, int id)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
 
+                return
+                    dbContext.DictionaryAgentAccountsSet.Where(x => x.Id == id).Select(x => new FrontDictionaryAgentAccount
+                    {
+                        Id = x.Id,
+                        AccountNumber=x.AccountNumber,
+                        Name = x.Name,
+                        IsMain=x.IsMain,
+                        AgentBankId=x.AgentBankId,
+                        Description = x.Description,
+                        IsActive = x.IsActive,
+                        Bank=new FrontDictionaryAgentBank
+                        {
+                            Id=x.AgentBank.Id,
+                            MFOCode= x.AgentBank.MFOCode,
+                            Swift=x.AgentBank.Swift,
+                            Name=x.AgentBank.Agent.Name
+                        }
+
+                    }).FirstOrDefault();
+            }
+        }
+
+        public void SetMainAgentAccount(IContext context, int AgentId,int AccountId)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var accounts = GetDictionaryAgentAccounts(context, AgentId, new FilterDictionaryAgentAccount());
+                foreach (FrontDictionaryAgentAccount account in accounts)
+                {
+                    if (account.Id!=AccountId)
+                    {
+                        var newAcc = new InternalDictionaryAgentAccount
+                        {
+                            Id = account.Id,
+                            Name = account.Name,
+                            AgentId = account.AgentId,
+                            AgentBankId = account.AgentBankId,
+                            AccountNumber = account.AccountNumber,
+                            Description = account.Description,
+                            IsActive = account.IsActive,
+                            LastChangeDate = DateTime.Now,
+                            LastChangeUserId = context.CurrentAgentId,
+                            IsMain = false
+                        };
+                        UpdateDictionaryAgentAccount(context, newAcc);
+                    }
+                }
+            }
+        }
+
+        public void UpdateDictionaryAgentAccount(IContext context, InternalDictionaryAgentAccount account)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var ddt = new DictionaryAgentAccounts
+                {
+                    Id = account.Id,
+                    AccountNumber=account.AccountNumber,
+                    AgentId=account.AgentId,
+                    AgentBankId=account.AgentBankId,
+                    IsMain=account.IsMain,
+                    Name=account.Name,
+                    Description = account.Description,
+                    LastChangeDate = account.LastChangeDate,
+                    LastChangeUserId = account.LastChangeUserId,
+                    IsActive = account.IsActive
+                };
+
+                dbContext.DictionaryAgentAccountsSet.Attach(ddt);
+                var entity = dbContext.Entry(ddt);
+                entity.State = System.Data.Entity.EntityState.Modified;
+                dbContext.SaveChanges();
+
+                if (account.IsMain)
+                {
+                    SetMainAgentAccount(context, account.AgentId, account.Id);
+                }
+
+            }
+        }
+
+        public void DeleteDictionaryAgentAccount(IContext context, InternalDictionaryAgentAccount account)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+
+                var ddt = dbContext.DictionaryAgentAccountsSet.FirstOrDefault(x => x.Id == account.Id);
+                if (ddt != null)
+                {
+                    dbContext.DictionaryAgentAccountsSet.Remove(ddt);
+                    dbContext.SaveChanges();
+                }
+            }
+        }
+
+        public int AddDictionaryAgentAccount(IContext context, InternalDictionaryAgentAccount account)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+                var ddt = new DictionaryAgentAccounts
+                {
+                    Id = account.Id,
+                    AccountNumber = account.AccountNumber,
+                    AgentId = account.AgentId,
+                    AgentBankId = account.AgentBankId,
+                    IsMain = account.IsMain,
+                    Name = account.Name,
+                    Description = account.Description,
+                    LastChangeDate = account.LastChangeDate,
+                    LastChangeUserId = account.LastChangeUserId,
+                    IsActive = account.IsActive
+                };
+                dbContext.DictionaryAgentAccountsSet.Add(ddt);
+                dbContext.SaveChanges();
+
+                if (account.IsMain)
+                {
+                    SetMainAgentAccount(context, account.AgentId, account.Id);
+                }
+
+                return account.Id;
+            }
+        }
+
+        public IEnumerable<FrontDictionaryAgentAccount> GetDictionaryAgentAccounts(IContext context, int AgentId, FilterDictionaryAgentAccount filter)
+        {
+            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            {
+
+                var qry = dbContext.DictionaryAgentAccountsSet.AsQueryable();
+
+                qry = qry.Where(x => x.AgentId == AgentId);
+
+
+                if (!string.IsNullOrEmpty(filter.Name))
+                {
+                    qry = qry.Where(x => x.Name.Contains(filter.Name));
+                }
+
+                if (!string.IsNullOrEmpty(filter.AccountNumber))
+                {
+                    qry = qry.Where(x => x.AccountNumber.Contains(filter.AccountNumber));
+                }
+
+                if (filter.AgentBankId.HasValue)
+                {
+                    qry = qry.Where(x => x.AgentBankId == filter.AgentBankId);
+                }
+
+                if (filter.IsActive.HasValue)
+                {
+                    qry = qry.Where(x => x.IsActive == filter.IsActive);
+                }
+
+
+                return qry.Select(x => new FrontDictionaryAgentAccount
+                {
+                    Id = x.Id,
+                    AccountNumber = x.AccountNumber,
+                    Name = x.Name,
+                    IsMain = x.IsMain,
+                    AgentBankId = x.AgentBankId,
+                    Description = x.Description,
+                    IsActive = x.IsActive,
+                    Bank = new FrontDictionaryAgentBank
+                    {
+                        Id = x.AgentBank.Id,
+                        MFOCode = x.AgentBank.MFOCode,
+                        Swift = x.AgentBank.Swift,
+                        Name = x.AgentBank.Agent.Name
+                    }
+
+                }).ToList();
+            }
+        }
+        #endregion DictionaryAgentAccounts
 
         // Типы контактов
         #region DictionaryContactTypes

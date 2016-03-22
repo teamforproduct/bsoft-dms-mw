@@ -64,6 +64,9 @@
     <Compile Include="DictionaryCore\AddressType\AddDictionaryAddressTypeCommand.cs" />
     <Compile Include="DictionaryCore\AddressType\DeleteDictionaryAddressTypeCommand.cs" />
     <Compile Include="DictionaryCore\AddressType\ModifyDictionaryAddressTypeCommand.cs" />
+    <Compile Include="DictionaryCore\AgentAccount\AddDictionaryAgentAccountCommand.cs" />
+    <Compile Include="DictionaryCore\AgentAccount\DeleteDictionaryAgentAccountCommand.cs" />
+    <Compile Include="DictionaryCore\AgentAccount\ModifyDictionaryAgentAccountCommand.cs" />
     <Compile Include="DictionaryCore\AgentAdresses\AddDictionaryAgentAddressCommand.cs" />
     <Compile Include="DictionaryCore\AgentAdresses\DeleteDictionaryAgentAddressCommand.cs" />
     <Compile Include="DictionaryCore\AgentAdresses\ModifyDictionaryAgentAddressCommand.cs" />

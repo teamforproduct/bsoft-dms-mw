@@ -226,15 +226,27 @@
         /// <summary>
         /// добавить банк
         /// </summary>
-        AddAgentBank,
+        AddAgentBank=214001,
         /// <summary>
         /// изменить банк
         /// </summary>
-        ModifyAgentBank,
+        ModifyAgentBank=214005,
         /// <summary>
         /// удалить банк
         /// </summary>
-        DeleteAgentBank,
+        DeleteAgentBank=214009,
+        /// <summary>
+        /// добавить расчетный счет
+        /// </summary>
+        AddAgentAccount=215001,
+        /// <summary>
+        /// изменить расчетный счет
+        /// </summary>
+        ModifyAgentAccount=215005,
+        /// <summary>
+        /// удалить расчетный счет
+        /// </summary>
+        DeleteAgentAccount=215009,
 
         #region CustomDictionaryType
         /// <summary>

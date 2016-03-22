@@ -10,6 +10,7 @@ using BL.Logic.DictionaryCore.AgentBank;
 using BL.Logic.DictionaryCore.AgentCompany;
 using BL.Logic.DictionaryCore.AgentEmployee;
 using BL.Logic.DictionaryCore.Agent;
+using BL.Logic.DictionaryCore.AgentAccount;
 using BL.Logic.DictionaryCore.Tag;
 using BL.Model.Enums;
 using BL.Model.Exception;
@@ -90,6 +91,16 @@ namespace BL.Logic.DictionaryCore
                     break;
                 case EnumDictionaryActions.DeleteAgentBank:
                     cmd = DmsResolver.Current.Get<DeleteDictionaryAgentBankCommand>();
+                    break;
+
+                case EnumDictionaryActions.ModifyAgentAccount:
+                    cmd = DmsResolver.Current.Get<ModifyDictionaryAgentAccountCommand>();
+                    break;
+                case EnumDictionaryActions.AddAgentAccount:
+                    cmd = DmsResolver.Current.Get<AddDictionaryAgentAccountCommand>();
+                    break;
+                case EnumDictionaryActions.DeleteAgentAccount:
+                    cmd = DmsResolver.Current.Get<DeleteDictionaryAgentAccountCommand>();
                     break;
 
                 // Адреса

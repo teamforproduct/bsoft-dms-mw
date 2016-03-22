@@ -31,6 +31,12 @@ namespace BL.Logic.DictionaryCore.Interfaces
         IEnumerable<FrontDictionaryAgentCompany> GetDictionaryAgentCompanies(IContext context, FilterDictionaryAgentCompany filter);
         #endregion DictionaryAgentCompanies
 
+        #region DictionaryAgentAccounts
+        FrontDictionaryAgentAccount GetDictionaryAgentAccount(IContext context, int id);
+
+        IEnumerable<FrontDictionaryAgentAccount> GetDictionaryAgentAccounts(IContext context, int AgentId,FilterDictionaryAgentAccount filter);
+        #endregion DictionaryAgentAccounts
+
         #region DictionaryAgentBanks
         FrontDictionaryAgentBank GetDictionaryAgentBank(IContext context, int id);
 

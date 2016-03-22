@@ -55,6 +55,7 @@
     <Compile Include="DictionaryCore\FilterModel\FilterCustomDictionary.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterCustomDictionaryType.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryAddressType.cs" />
+    <Compile Include="DictionaryCore\FilterModel\FilterDictionaryAgentAccount.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryAgentAddress.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryAgentBank.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryAgentEmployee.cs" />
@@ -63,6 +64,7 @@
     <Compile Include="DictionaryCore\FrontModel\FrontCustomDictionary.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontCustomDictionaryType.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAddressType.cs" />
+    <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentAccount.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentBank.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentCompany.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryDepartment.cs" />
@@ -79,6 +81,7 @@
     <Compile Include="DictionaryCore\IncomingModel\ModifyCustomDictionary.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyCustomDictionaryType.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAddressType.cs" />
+    <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentAccount.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentBank.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentCompany.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentEmployee.cs" />
@@ -99,6 +102,7 @@
     <Compile Include="AdminCore\FilterAdminAccessLevel.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalCustomDictionaryType.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAddressType.cs" />
+    <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAgentAccount.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAgentBank.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAgentCompany.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAgentEmployee.cs" />
