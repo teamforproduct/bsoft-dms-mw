@@ -931,15 +931,17 @@ namespace BL.Database.Documents
 
                     if (document.Waits?.Any() ?? false)
                     {
-                        var wait = document.Waits.First();
-                        var waitDb = ModelConverter.GetDbDocumentWait(wait);
-                        if (wait.OnEvent == sendList.StartEvent)
+                        foreach(var wait in document.Waits)
                         {
-                            waitDb.OnEventId = sendListDb.StartEventId.Value;
-                            waitDb.OnEvent = null;
+                            var waitDb = ModelConverter.GetDbDocumentWait(wait);
+                            if (wait.OnEvent == sendList.StartEvent)
+                            {
+                                waitDb.OnEventId = sendListDb.StartEventId.Value;
+                                waitDb.OnEvent = null;
+                            }
+                            dbContext.DocumentWaitsSet.Add(waitDb);
+                            dbContext.SaveChanges();
                         }
-                        dbContext.DocumentWaitsSet.Add(waitDb);
-                        dbContext.SaveChanges();
                     }
 
                     if (document.Subscriptions?.Any() ?? false)
