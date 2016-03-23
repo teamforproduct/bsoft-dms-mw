@@ -15,6 +15,8 @@ using Microsoft.Owin.Security.OAuth;
 using DMS_WebAPI.Models;
 using DMS_WebAPI.Providers;
 using DMS_WebAPI.Results;
+using BL.Logic.DependencyInjection;
+using DMS_WebAPI.Utilities;
 
 namespace DMS_WebAPI.Controllers
 {
@@ -69,8 +71,11 @@ namespace DMS_WebAPI.Controllers
         [Route("Logout")]
         public IHttpActionResult Logout()
         {
+            DmsResolver.Current.Get<UserContext>().Remove();
+
             Authentication.SignOut(CookieAuthenticationDefaults.AuthenticationType);
-            return Ok();
+
+            return new JsonResult(null, this);
         }
 
         // GET api/Account/ManageInfo?returnUrl=%2F&generateState=true
