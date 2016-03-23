@@ -111,6 +111,7 @@ namespace BL.Logic.DependencyInjection
             Bind<IDocumentCommand>().To<CopyDocumentCommand>();
 
             Bind<IDocumentCommand>().To<ControlChangeDocumentCommand>();
+            Bind<IDocumentCommand>().To<ControlTargetChangeDocumentCommand>();
             Bind<IDocumentCommand>().To<ControlOnDocumentCommand>();
             Bind<IDocumentCommand>().To<ControlOffDocumentCommand>();
 

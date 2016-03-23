@@ -66,7 +66,7 @@
         /// <summary>
         /// Отметить прием
         /// </summary>
-        MarkReception = 100020, 
+        //MarkReception = 100020, 
 
         /// <summary>
         /// Взять на контроль
@@ -81,7 +81,12 @@
         /// <summary>
         /// Изменить параметры контроля
         /// </summary>
-        ControlChange = 100025, 
+        ControlChange = 100025,
+
+        /// <summary>
+        /// Изменить параметры контроля для исполнителя
+        /// </summary>
+        ControlTargetChange = 100026, 
 
         /// <summary>
         /// Снять с контроля

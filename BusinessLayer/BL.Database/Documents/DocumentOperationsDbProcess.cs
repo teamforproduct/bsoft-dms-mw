@@ -375,6 +375,37 @@ namespace BL.Database.Documents
             }
         }
 
+        public void ChangeTargetDocumentWait(IContext ctx, InternalDocumentWait wait, InternalDocumentEvent newEvent)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
+                {
+                    var eventDb = ModelConverter.GetDbDocumentEvent(newEvent);
+                    dbContext.DocumentEventsSet.Add(eventDb);
+                    dbContext.SaveChanges();
+
+                    var waitDb = new DocumentWaits
+                    {
+                        Id = wait.Id,
+                        TargetDescription = wait.TargetDescription,
+                        TargetAttentionDate = wait.TargetAttentionDate,
+                        LastChangeDate = wait.LastChangeDate,
+                        LastChangeUserId = wait.LastChangeUserId
+                    };
+                    dbContext.DocumentWaitsSet.Attach(waitDb);
+                    var entry = dbContext.Entry(waitDb);
+                    entry.Property(x => x.LastChangeDate).IsModified = true;
+                    entry.Property(x => x.LastChangeUserId).IsModified = true;
+                    entry.Property(x => x.TargetDescription).IsModified = true;
+                    entry.Property(x => x.TargetAttentionDate).IsModified = true;
+                    dbContext.SaveChanges();
+
+                    transaction.Complete();
+                }
+            }
+        }
+
         public void CloseDocumentWait(IContext ctx, InternalDocument document)
         {
             using (var dbContext = new DmsContext(ctx))
@@ -486,6 +517,52 @@ namespace BL.Database.Documents
                                                 ReadDate = x.OnEvent.ReadDate,
                                                 ReadAgentId = x.OnEvent.ReadAgentId,
 
+                                            }
+                                        }
+                                    }
+                    }).FirstOrDefault();
+                return doc;
+
+            }
+        }
+
+        public InternalDocument ControlTargetChangeDocumentPrepare(IContext ctx, int eventId)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                var doc = dbContext.DocumentWaitsSet
+                    .Where(x => x.OnEventId == eventId && (ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.OnEvent.SourcePositionId.Value)))
+                    .Select(x => new InternalDocument
+                    {
+                        Id = x.DocumentId,
+                        Waits = new List<InternalDocumentWait>
+                                    {
+                                        new InternalDocumentWait
+                                        {
+                                            Id = x.Id,
+                                            DocumentId = x.DocumentId,
+                                            OnEventId = x.OnEventId,
+                                            OffEventId = x.OffEventId,
+                                            TargetDescription = x.TargetDescription,
+                                            TargetAttentionDate = x.TargetAttentionDate,
+                                            OnEvent = new InternalDocumentEvent
+                                            {
+                                                Id = x.OnEvent.Id,
+                                                TargetPositionId = x.OnEvent.TargetPositionId,
+                                                TargetPositionExecutorAgentId = x.OnEvent.TargetPositionExecutorAgentId,
+                                                SourceAgentId = x.OnEvent.SourceAgentId,
+                                                TargetAgentId = x.OnEvent.TargetAgentId,
+                                                TaskId = x.OnEvent.TaskId,
+                                                IsAvailableWithinTask = x.OnEvent.IsAvailableWithinTask,
+                                                Description = x.OnEvent.Description,
+                                                EventType = (EnumEventTypes)x.OnEvent.EventTypeId,
+                                                CreateDate = x.OnEvent.CreateDate,
+                                                Date = x.OnEvent.Date,
+                                                LastChangeUserId = x.OnEvent.LastChangeUserId,
+                                                LastChangeDate = x.OnEvent.LastChangeDate,
+                                                SendDate = x.OnEvent.SendDate,
+                                                ReadDate = x.OnEvent.ReadDate,
+                                                ReadAgentId = x.OnEvent.ReadAgentId,
                                             }
                                         }
                                     }

@@ -33,6 +33,8 @@ namespace BL.Logic.Common
     new Dictionary<EnumDocumentActions, List<EnumEventTypes>>
         {
                 { EnumDocumentActions.ControlChange, new List<EnumEventTypes> { EnumEventTypes.ControlOn, EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution } },
+                { EnumDocumentActions.ControlTargetChange, new List<EnumEventTypes> { EnumEventTypes.ControlOn, EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution } },
+
                 { EnumDocumentActions.ControlOff, new List<EnumEventTypes> { EnumEventTypes.ControlOn } },
 
                 { EnumDocumentActions.MarkExecution, new List<EnumEventTypes> { EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution } },

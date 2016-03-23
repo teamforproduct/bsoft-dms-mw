@@ -65,6 +65,7 @@
     <Compile Include="AdminCore\FilterAdminUserRole.cs" />
     <Compile Include="AdminCore\FilterAdminAccessLevel.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalCustomDictionaryType.cs" />
+    <Compile Include="DocumentCore\Actions\ControlTargetChange.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentRestrictedSendList.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentSubscription.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentTask.cs" />

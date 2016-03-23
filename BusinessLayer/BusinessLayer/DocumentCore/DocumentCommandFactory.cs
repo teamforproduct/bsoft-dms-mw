@@ -41,6 +41,9 @@ namespace BL.Logic.DocumentCore
                 case EnumDocumentActions.ControlChange:
                     cmd = DmsResolver.Current.Get<ControlChangeDocumentCommand>();
                     break;
+                case EnumDocumentActions.ControlTargetChange:
+                    cmd = DmsResolver.Current.Get<ControlTargetChangeDocumentCommand>();
+                    break;
                 case EnumDocumentActions.ControlOff:
                     cmd = DmsResolver.Current.Get<ControlOffDocumentCommand>();
                     break;
@@ -212,7 +215,6 @@ namespace BL.Logic.DocumentCore
                     break;
 
                 case EnumDocumentActions.AddDocumentSendListItem:
-                case EnumDocumentActions.MarkReception:
                 case EnumDocumentActions.DeleteDocumentLink:
                     return null;
                     break;
