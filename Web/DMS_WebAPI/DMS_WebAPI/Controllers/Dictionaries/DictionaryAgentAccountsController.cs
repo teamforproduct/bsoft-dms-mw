@@ -21,17 +21,18 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <summary>
         /// Справочник расчетных счетов
         /// </summary>
-        /// <param name="AgentId">фильтр</param>
+        /// <param name="agentId">ID агента</param>
         /// <param name="filter">фильтр</param>
         /// <returns>Список расчетных счетов контрагента
         /// </returns>
-        public IHttpActionResult Get(int AgentId,[FromUri] FilterDictionaryAgentAccount filter)
+        // GET: api/DictionaryAgentAccounts
+        public IHttpActionResult Get(int agentId,[FromUri] FilterDictionaryAgentAccount filter)
         {
            
 
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionaryAgentAccounts(cxt, AgentId,filter);
+            var tmpDicts = tmpDictProc.GetDictionaryAgentAccounts(cxt, agentId,filter);
             return new JsonResult(tmpDicts, this);
         }
 

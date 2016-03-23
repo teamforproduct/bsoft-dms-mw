@@ -22,7 +22,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="agentId">ID контрагента</param>
         /// <param name="filter">Параметры для фильтрации контактов</param>
         /// <returns>Cписок контактов контрагента</returns>
-        // GET: api/DictionaryAddressTypes
+        // GET: api/DictionaryContacts
         public IHttpActionResult Get(int agentId,[FromUri] FilterDictionaryContact filter)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
