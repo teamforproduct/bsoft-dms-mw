@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,7 @@ namespace BL.Database.DBModel.System
         public int Id { get; set; }
         public int PropertyId { get; set; }
         public int ObjectId { get; set; }
+        [MaxLength(2000)]
         public string Filers { get; set; }
         public bool IsMandatory { get; set; }
         public int LastChangeUserId { get; set; }

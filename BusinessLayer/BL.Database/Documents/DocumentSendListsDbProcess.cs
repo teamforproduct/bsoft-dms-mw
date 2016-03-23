@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Common;
 using BL.Database.DatabaseContext;
@@ -12,16 +11,13 @@ namespace BL.Database.Documents
 {
     public class DocumentSendListsDbProcess : IDocumentSendListsDbProcess
     {
-        private readonly IConnectionStringHelper _helper;
-
-        public DocumentSendListsDbProcess(IConnectionStringHelper helper)
+        public DocumentSendListsDbProcess()
         {
-            _helper = helper;
         }
         #region DocumentRestrictedSendLists
         public FrontDocumentRestrictedSendList GetRestrictedSendListBaseById(IContext ctx, int id)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            using (var dbContext = new DmsContext(ctx))
             {
                 //TODO: Refactoring
                 var sendList = dbContext.DocumentRestrictedSendListsSet
@@ -43,7 +39,7 @@ namespace BL.Database.Documents
 
         public IEnumerable<FrontDocumentRestrictedSendList> GetRestrictedSendListBase(IContext ctx, int documentId)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            using (var dbContext = new DmsContext(ctx))
             {
                 return CommonQueries.GetDocumentRestrictedSendList(dbContext, documentId);
             }
@@ -54,7 +50,7 @@ namespace BL.Database.Documents
 
         public IEnumerable<FrontDocumentSendList> GetSendListBase(IContext ctx, int documentId)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            using (var dbContext = new DmsContext(ctx))
             {
                 return CommonQueries.GetDocumentSendList(dbContext, documentId);
             }
@@ -62,7 +58,7 @@ namespace BL.Database.Documents
 
         public FrontDocumentSendList GetSendListBaseById(IContext ctx, int id)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            using (var dbContext = new DmsContext(ctx))
             {
                 //TODO: Refactoring
                 var sendLists = dbContext.DocumentSendListsSet

@@ -1,9 +1,11 @@
-﻿using BL.Logic.AdminCore.Interfaces;
+﻿using BL.CrossCutting.Interfaces;
+using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.DependencyInjection;
 using BL.Model.Exception;
 using DMS_WebAPI.Utilities;
 using Newtonsoft.Json;
 using System;
+using System.Globalization;
 using System.Net;
 using System.Web;
 using System.Web.Http;
@@ -16,19 +18,20 @@ namespace DMS_WebAPI.Infrastructure
     {
         public override void OnException(HttpActionExecutedContext context)
         {
-            HttpContext.Current.Response.Clear();
-            HttpContext.Current.Response.StatusCode = (int)HttpStatusCode.OK;
+            var currentContext = HttpContext.Current;
+            currentContext.Response.Clear();
+            currentContext.Response.StatusCode = (int)HttpStatusCode.OK;
             //TODO Remove
-            if (System.Web.HttpContext.Current.IsDebuggingEnabled)
+            if (currentContext.IsDebuggingEnabled)
             {
-                HttpContext.Current.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-            }          
-            HttpContext.Current.Response.ContentType = "application/json";
+                currentContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            }
+            currentContext.Response.ContentType = "application/json";
             if (context.Exception is DmsExceptions)
             {
                 if (context.Exception is UserUnauthorized)
                 {
-                    HttpContext.Current.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                    currentContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
                 }
             }
             else
@@ -39,17 +42,26 @@ namespace DMS_WebAPI.Infrastructure
             var json = JsonConvert.SerializeObject(new { success = false, msg = context.Exception.Message }, GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings);
             try
             {
-                if (HttpContext.Current.User.Identity.IsAuthenticated)
+                IContext cxt = null;
+                try
                 {
-                    var cxt = DmsResolver.Current.Get<UserContext>().Get();
+                    cxt = DmsResolver.Current.Get<UserContext>().Get();
+                }
+                catch { }
+                if (currentContext.User.Identity.IsAuthenticated && cxt != null)
+                {
                     var service = DmsResolver.Current.Get<IAdminService>();
                     json = service.ReplaceLanguageLabel(cxt, json);
+                }
+                else
+                {
+                    json = new Languages().ReplaceLanguageLabel(currentContext.Request.UserLanguages?[0], json);
                 }
             }
             catch { }
 
-            HttpContext.Current.Response.Write(json);
-            HttpContext.Current.Response.End();
+            currentContext.Response.Write(json);
+            currentContext.Response.End();
             #region log to file
             try
             {
@@ -62,7 +74,7 @@ namespace DMS_WebAPI.Infrastructure
                 errorMessage += "ERROR!!!\r\n";
                 try
                 {
-                    HttpContext cnt = HttpContext.Current;
+                    HttpContext cnt = currentContext;
                     errorMessage += $"URL:{cnt.Request.Url.ToString()}\r\n";
                 }
                 catch
@@ -76,8 +88,8 @@ namespace DMS_WebAPI.Infrastructure
 
                 try
                 {
-                    HttpContext.Current.Request.InputStream.Position = 0;
-                    errorMessage += $"Request Body:{new System.IO.StreamReader(HttpContext.Current.Request.InputStream).ReadToEnd()}\r\n";
+                    currentContext.Request.InputStream.Position = 0;
+                    errorMessage += $"Request Body:{new System.IO.StreamReader(currentContext.Request.InputStream).ReadToEnd()}\r\n";
                 }
                 catch { }
 
@@ -85,7 +97,7 @@ namespace DMS_WebAPI.Infrastructure
                 try
                 {
                     System.IO.StreamWriter sw;
-                    string path = HttpContext.Current.Server.MapPath("~/SiteErrors.txt");
+                    string path = currentContext.Server.MapPath("~/SiteErrors.txt");
                     try
                     {
                         System.IO.FileInfo ff = new System.IO.FileInfo(path);

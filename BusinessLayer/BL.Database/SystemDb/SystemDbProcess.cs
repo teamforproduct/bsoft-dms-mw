@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
-using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
 using BL.Database.DatabaseContext;
 using BL.Database.DBModel.Document;
@@ -17,17 +16,14 @@ namespace BL.Database.SystemDb
 {
     public class SystemDbProcess : CoreDb.CoreDb, ISystemDbProcess
     {
-        private readonly IConnectionStringHelper _helper;
-
-        public SystemDbProcess(IConnectionStringHelper helper)
+        public SystemDbProcess()
         {
-            _helper = helper;
         }
 
         #region Log
         public int AddLog(IContext ctx, LogInfo log)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            using (var dbContext = new DmsContext(ctx))
             {
                 var nlog = new SystemLogs
                 {
@@ -48,7 +44,7 @@ namespace BL.Database.SystemDb
         #region Settings
         public int AddSetting(IContext ctx, string name, string value, int? agentId = null)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            using (var dbContext = new DmsContext(ctx))
             {
                 var cset = dbContext.SettingsSet.FirstOrDefault(x => x.Key == name);
                 if (cset == null)
@@ -73,7 +69,7 @@ namespace BL.Database.SystemDb
 
         public string GetSettingValue(IContext ctx, string name, int? agentId = null)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            using (var dbContext = new DmsContext(ctx))
             {
                 if (agentId.HasValue)
                 {
@@ -94,7 +90,7 @@ namespace BL.Database.SystemDb
         {
             {
 
-                using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+                using (var dbContext = new DmsContext(ctx))
                 {
                     var qry = dbContext.SystemUIElementsSet.AsQueryable();
 
@@ -145,7 +141,7 @@ namespace BL.Database.SystemDb
 
         public IEnumerable<FrontSystemObject> GetSystemObjects(IContext context, FilterSystemObject filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.PropertiesSet.AsQueryable();
 
@@ -170,7 +166,7 @@ namespace BL.Database.SystemDb
 
         public IEnumerable<BaseSystemUIElement> GetPropertyUIElements(IContext context, FilterPropertyLink filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.PropertyLinksSet.AsQueryable();
 
@@ -205,7 +201,7 @@ namespace BL.Database.SystemDb
 
         public InternalProperty GetProperty(IContext context, FilterProperty filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.PropertiesSet.AsQueryable();
 
@@ -245,7 +241,7 @@ namespace BL.Database.SystemDb
 
         public IEnumerable<FrontProperty> GetProperties(IContext context, FilterProperty filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.PropertiesSet.AsQueryable();
 
@@ -283,7 +279,7 @@ namespace BL.Database.SystemDb
 
         public int AddProperty(IContext context, InternalProperty model)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var item = new Properties
                 {
@@ -313,7 +309,7 @@ namespace BL.Database.SystemDb
 
         public void UpdateProperty(IContext context, InternalProperty model)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var item = new Properties
                 {
@@ -342,7 +338,7 @@ namespace BL.Database.SystemDb
 
         public void DeleteProperty(IContext context, InternalProperty model)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
 
                 var item = dbContext.PropertiesSet.FirstOrDefault(x => x.Id == model.Id);
@@ -360,7 +356,7 @@ namespace BL.Database.SystemDb
 
         public InternalPropertyLink GetPropertyLink(IContext context, FilterPropertyLink filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.PropertyLinksSet.AsQueryable();
 
@@ -384,7 +380,7 @@ namespace BL.Database.SystemDb
 
         public IEnumerable<FrontPropertyLink> GetPropertyLinks(IContext context, FilterPropertyLink filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.PropertyLinksSet.AsQueryable();
 
@@ -415,7 +411,7 @@ namespace BL.Database.SystemDb
 
         public int AddPropertyLink(IContext context, InternalPropertyLink model)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var item = new PropertyLinks
                 {
@@ -437,7 +433,7 @@ namespace BL.Database.SystemDb
 
         public void UpdatePropertyLink(IContext context, InternalPropertyLink model)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var item = new PropertyLinks
                 {
@@ -460,7 +456,7 @@ namespace BL.Database.SystemDb
 
         public void DeletePropertyLink(IContext context, InternalPropertyLink model)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
 
                 var item = dbContext.PropertyLinksSet.FirstOrDefault(x => x.Id == model.Id);
@@ -478,7 +474,7 @@ namespace BL.Database.SystemDb
 
         public InternalPropertyValue GetPropertyValue(IContext context, FilterPropertyValue filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.PropertyValuesSet.AsQueryable();
 
@@ -503,7 +499,7 @@ namespace BL.Database.SystemDb
 
         public IEnumerable<FrontPropertyValue> GetPropertyValues(IContext context, FilterPropertyValue filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.PropertyValuesSet.AsQueryable();
 
@@ -527,7 +523,7 @@ namespace BL.Database.SystemDb
 
         public IEnumerable<InternalDataForMail> GetNewActionsForMailing(IContext ctx)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            using (var dbContext = new DmsContext(ctx))
             {
                 return dbContext.DocumentEventsSet
                     .Where(x => (x.SendDate == null || x.SendDate < x.LastChangeDate)
@@ -557,7 +553,7 @@ namespace BL.Database.SystemDb
 
         public void MarkActionsLikeMailSended(IContext ctx, InternalMailProcessed mailProcessed)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            using (var dbContext = new DmsContext(ctx))
             {
                 //TODO будет ли это работать?? 
                 var upd = new List<DbEntityEntry>();
@@ -578,7 +574,7 @@ namespace BL.Database.SystemDb
         #region Filter Properties
         public IEnumerable<BaseSystemUIElement> GetFilterProperties(IContext context, FilterProperties filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.PropertyLinksSet.AsQueryable();
 
@@ -607,7 +603,7 @@ namespace BL.Database.SystemDb
 
         public IEnumerable<int> GetSendListIdsForAutoPlan(IContext context)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DocumentsSet.Where(x => x.IsLaunchPlan)
                     .Join(dbContext.DocumentSendListsSet, d => d.Id, s => s.DocumentId, (d, s) => new { doc = d, sl = s })
@@ -620,7 +616,7 @@ namespace BL.Database.SystemDb
                     });
 
                 return dbContext.DocumentSendListsSet.Join(qry, s => s.DocumentId, q => q.DocId, (s, q) => new {sl = s, q})
-                    .Where(x => x.sl.Stage <= x.q.MinStage).Select(x => x.sl.Id).ToList();
+                    .Where(x => x.sl.Stage <= x.q.MinStage && !x.sl.StartEventId.HasValue).Select(x => x.sl.Id).ToList();
             }
         }
 

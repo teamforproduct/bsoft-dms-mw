@@ -6,10 +6,8 @@ using System.Web;
 using BL.CrossCutting.Interfaces;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.DependencyInjection;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Owin;
 using BL.Model.Exception;
-using BL.Model.SystemCore.InternalModel;
+
 
 namespace DMS_WebAPI.Utilities
 {
@@ -25,6 +23,7 @@ namespace DMS_WebAPI.Utilities
         /// </summary>
         /// <typeparam name="T">Expected setting value type.</typeparam>
         /// <param key="settingName">Setting key.</param>
+        /// <param name="currentPositionId"></param>
         /// <returns>Typed setting value.</returns>
         public IContext Get(int? currentPositionId = null)
         {
@@ -48,40 +47,44 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        public IContext Set(string token, InternalServer db, string userId)
+        /// <summary>
+        /// Add new server to the list of available servers
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="db">new server parameters</param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
+        public IContext Set(string token, DatabaseModel db, string userId, bool isSuperAdmin)
         {
             token = token.ToLower();
             if (!_casheContexts.ContainsKey(token))
             {
-                var userManager = HttpContext.Current.Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
-                var user = userManager.FindById(userId);
-                var context = 
+                var context =
                 new DefaultContext
                 {
                     CurrentEmployee = new BL.Model.Users.Employee
                     {
                         Token = token,
-                        AgentId = user.AgentId
+                        UserId = userId
                     },
-                    CurrentDB = new DatabaseModel
-                    {
-                        Id = db.Id,
-                        Address = db.Address,
-                        Name = db.Name,
-                        ServerType = db.ServerType,
-                        DefaultDatabase = db.DefaultDatabase,
-                        IntegrateSecurity = db.IntegrateSecurity,
-                        UserName = db.UserName,
-                        UserPassword = db.UserPassword,
-                        ConnectionString = db.ConnectionString
-                    }
+                    CurrentDB = db
                 };
 
-                if (user.AgentId.HasValue)
+                if (!(db==null && isSuperAdmin))
                 {
-                    var agent = DmsResolver.Current.Get<IAdminService>().GetEmployee(context, user.AgentId.Value);
-                    context.CurrentEmployee.Name = agent.Name;
-                    context.CurrentEmployee.LanguageId = agent.LanguageId;
+                    var agent = DmsResolver.Current.Get<IAdminService>().GetEmployee(context, userId);
+
+                    if (agent != null)
+                    {
+                        context.CurrentEmployee.AgentId = agent.AgentId;
+                        context.CurrentEmployee.Name = agent.Name;
+                        context.CurrentEmployee.LanguageId = agent.LanguageId;
+                    }
+                    else if (!isSuperAdmin)
+                    {
+                        throw new AccessIsDenied();
+                    }
                 }
 
                 Save(token, context);

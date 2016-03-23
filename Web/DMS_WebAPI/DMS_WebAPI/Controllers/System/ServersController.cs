@@ -1,12 +1,8 @@
-﻿using BL.Logic.DependencyInjection;
-using BL.Logic.AdminCore.Interfaces;
-using BL.Model.AdminCore;
-using DMS_WebAPI.Results;
+﻿using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
-using System.Collections.Generic;
 using System.Web.Http;
-using BL.Model.SystemCore.IncomingModel;
-using BL.Model.SystemCore.FrontModel;
+using BL.Model.Database.IncomingModel;
+using BL.Model.Database.FrontModel;
 
 namespace DMS_WebAPI.Controllers
 {

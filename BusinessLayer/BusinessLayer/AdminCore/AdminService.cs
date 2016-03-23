@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using BL.CrossCutting.Context;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Database.Admins.Interfaces;
 using BL.Model.AdminCore;
@@ -67,6 +68,8 @@ namespace BL.Logic.AdminCore
         /// <param name="context"></param>
         public bool VerifyAccess(IContext context, VerifyAccess model, bool isThrowExeception = true)
         {
+            if (context is AdminContext) return true;//Full access to admin. ADMIN IS COOL!!! 
+
             var data = GetAccInfo(context);
             var res = false;
             if (model.UserId == 0)
@@ -118,9 +121,9 @@ namespace BL.Logic.AdminCore
             return VerifyAccess(context, new VerifyAccess { DocumentActionId = (int)action, IsPositionFromContext = isPositionFromContext }, isThrowExeception);
         }
 
-        public Employee GetEmployee(IContext context, int id)
+        public Employee GetEmployee(IContext context, string userId)
         {
-            return _adminDb.GetEmployee(context, id);
+            return _adminDb.GetEmployee(context, userId);
         }
 
         public IEnumerable<CurrentPosition> GetPositionsByUser(Employee employee)
@@ -157,7 +160,7 @@ namespace BL.Logic.AdminCore
             //TODO оптимизировать
             for(int i=0,l=labels.Length;i< l;i++)
             {
-                text = text.Replace($"[lang]{labels[i].Label}[lang]", labels[i].Value);
+                text = text.Replace(labels[i].Label, labels[i].Value);
             }
             return text;
         }

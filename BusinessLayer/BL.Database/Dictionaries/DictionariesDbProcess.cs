@@ -1,5 +1,4 @@
-﻿using BL.CrossCutting.Helpers;
-using BL.CrossCutting.Interfaces;
+﻿using BL.CrossCutting.Interfaces;
 using BL.Database.DatabaseContext;
 using BL.Database.DBModel.Dictionary;
 using BL.Database.Dictionaries.Interfaces;
@@ -18,11 +17,8 @@ namespace BL.Database.Dictionaries
 {
     public class DictionariesDbProcess : CoreDb.CoreDb, IDictionariesDbProcess
     {
-        private readonly IConnectionStringHelper _helper;
-
-        public DictionariesDbProcess(IConnectionStringHelper helper)
+        public DictionariesDbProcess()
         {
-            _helper = helper;
         }
 
         // Агенты
@@ -30,7 +26,7 @@ namespace BL.Database.Dictionaries
 
         public bool IsAgentOneRole(IContext context, int id, EnumDictionaryAgentTypes source)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var agent = GetDictionaryAgent(context, id);
 
@@ -55,7 +51,7 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<EnumDictionaryAgentTypes> GetAgentRoles(IContext context, int id)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 List<EnumDictionaryAgentTypes> list = new List<EnumDictionaryAgentTypes>();
                 var agent = GetDictionaryAgent(context, id);
@@ -70,7 +66,7 @@ namespace BL.Database.Dictionaries
 
         public void UpdateDictionaryAgentRole(IContext context, int id, EnumDictionaryAgentTypes role)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var agent = GetDictionaryAgent(context, id);
                 var ddt = new DictionaryAgents
@@ -96,7 +92,7 @@ namespace BL.Database.Dictionaries
 
         public FrontDictionaryAgent GetDictionaryAgent(IContext context, int id)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
 
                 return dbContext.DictionaryAgentsSet.Where(x => x.Id == id).Select(x => new FrontDictionaryAgent
@@ -148,7 +144,7 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<FrontDictionaryAgent> GetDictionaryAgents(IContext context, FilterDictionaryAgent filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionaryAgentsSet.AsQueryable();
 
@@ -217,7 +213,7 @@ namespace BL.Database.Dictionaries
 
         public void UpdateDictionaryAgent(IContext context, InternalDictionaryAgent agent)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var ddt = new DictionaryAgents
                 {
@@ -243,7 +239,7 @@ namespace BL.Database.Dictionaries
 
        public void UpdateDictionaryAgentName(IContext context,int Id,string newName)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var agent = GetDictionaryAgent(context, Id);
                 var ddt = new DictionaryAgents
@@ -270,7 +266,7 @@ namespace BL.Database.Dictionaries
 
         public void DeleteDictionaryAgent(IContext context, InternalDictionaryAgent agent)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
 
 
@@ -296,7 +292,7 @@ namespace BL.Database.Dictionaries
 
         public int AddDictionaryAgent(IContext context, InternalDictionaryAgent newAgent)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var ddt = new DictionaryAgents
                 {
@@ -324,7 +320,7 @@ namespace BL.Database.Dictionaries
         #region DictionaryAgentPerson
         public FrontDictionaryAgentPerson GetDictionaryAgentPerson(IContext context, int id)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
 
                 return
@@ -381,7 +377,7 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<FrontDictionaryAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
 
                 var qry = dbContext.DictionaryAgentPersonsSet.AsQueryable();
@@ -461,7 +457,7 @@ namespace BL.Database.Dictionaries
 
         public void UpdateDictionaryAgentPerson(IContext context, InternalDictionaryAgentPerson person)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var ddt = new DictionaryAgentPersons
                 {
@@ -511,7 +507,7 @@ namespace BL.Database.Dictionaries
 
         public void DeleteDictionaryAgentPerson(IContext context, InternalDictionaryAgentPerson person)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
 
                 var ddt = dbContext.DictionaryAgentPersonsSet.FirstOrDefault(x => x.Id == person.Id);
@@ -539,7 +535,7 @@ namespace BL.Database.Dictionaries
 
         public int AddDictionaryAgentPerson(IContext context, InternalDictionaryAgentPerson person)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
 
                 var agent = GetDictionaryAgent(context, person.Id);
@@ -609,7 +605,7 @@ namespace BL.Database.Dictionaries
 
         public FrontDictionaryAgentEmployee GetDictionaryAgentEmployee(IContext context, int id)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 return dbContext.DictionaryAgentEmployeesSet.Where(x => x.Id == id).Select(x => new FrontDictionaryAgentEmployee
                 {
@@ -666,7 +662,7 @@ namespace BL.Database.Dictionaries
 
         public void UpdateDictionaryAgentEmployee(IContext context, InternalDictionaryAgentEmployee employee)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var ddt = new DictionaryAgentEmployees
                 {
@@ -706,7 +702,7 @@ namespace BL.Database.Dictionaries
         }
         public void DeleteDictionaryAgentEmployee(IContext context, InternalDictionaryAgentEmployee employee)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
 
                 var ddt = dbContext.DictionaryAgentEmployeesSet.FirstOrDefault(x => x.Id == employee.Id);
@@ -724,7 +720,7 @@ namespace BL.Database.Dictionaries
 
         public int AddDictionaryAgentEmployee(IContext context, InternalDictionaryAgentEmployee employee)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
 
                 var agent = GetDictionaryAgentPerson(context, employee.Id);
@@ -786,7 +782,7 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<FrontDictionaryAgentEmployee> GetDictionaryAgentEmployees(IContext context, FilterDictionaryAgentEmployee filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionaryAgentEmployeesSet.AsQueryable();
 
@@ -875,7 +871,7 @@ namespace BL.Database.Dictionaries
         #region DictionaryAgentAddress
         public FrontDictionaryAgentAddress GetDictionaryAgentAddress(IContext context, int id)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionaryAgentAddressesSet.AsQueryable();
 
@@ -894,7 +890,7 @@ namespace BL.Database.Dictionaries
 
         public void UpdateDictionaryAgentAddress(IContext context, InternalDictionaryAgentAddress addr)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var ddt = new DictionaryAgentAddresses
                 {
@@ -919,7 +915,7 @@ namespace BL.Database.Dictionaries
 
         public void DeleteDictionaryAgentAddress(IContext context, InternalDictionaryAgentAddress addr)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
 
                 var ddt = dbContext.DictionaryAgentAddressesSet.FirstOrDefault(x => x.Id == addr.Id);
@@ -933,7 +929,7 @@ namespace BL.Database.Dictionaries
 
         public int AddDictionaryAgentAddress(IContext context, InternalDictionaryAgentAddress addr)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var ddt = new DictionaryAgentAddresses
                 {
@@ -955,7 +951,7 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<FrontDictionaryAgentAddress> GetDictionaryAgentAddresses(IContext context, int agentId, FilterDictionaryAgentAddress filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionaryAgentAddressesSet.AsQueryable();
 
@@ -999,7 +995,7 @@ namespace BL.Database.Dictionaries
         #region DictionaryAddressTypes
         public void UpdateDictionaryAddressType(IContext context, InternalDictionaryAddressType addrType)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var ddt = new DictionaryAddressTypes
                 {
@@ -1020,7 +1016,7 @@ namespace BL.Database.Dictionaries
 
         public void DeleteDictionaryAddressType(IContext context, InternalDictionaryAddressType addrType)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
 
                 var ddt = dbContext.DictionaryAddressTypesSet.FirstOrDefault(x => x.Id == addrType.Id);
@@ -1034,7 +1030,7 @@ namespace BL.Database.Dictionaries
 
         public int AddDictionaryAddressType(IContext context, InternalDictionaryAddressType addrType)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var ddt = new DictionaryAddressTypes
                 {
@@ -1052,7 +1048,7 @@ namespace BL.Database.Dictionaries
 
         public InternalDictionaryAddressType GetInternalDictionaryAddressType(IContext context, FilterDictionaryAddressType filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionaryDocumentTypesSet.AsQueryable();
 
@@ -1084,7 +1080,7 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<FrontDictionaryAddressType> GetDictionaryAddressTypes(IContext context, FilterDictionaryAddressType filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionaryAddressTypesSet.AsQueryable();
 
@@ -1117,7 +1113,7 @@ namespace BL.Database.Dictionaries
         #region DictionaryAgentCompanies
         public FrontDictionaryAgentCompany GetDictionaryAgentCompany(IContext context, int id)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
 
                 return
@@ -1180,7 +1176,7 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<FrontDictionaryAgentCompany> GetDictionaryAgentCompanies(IContext context, FilterDictionaryAgentCompany filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionaryAgentCompaniesSet.AsQueryable();
 
@@ -1268,7 +1264,7 @@ namespace BL.Database.Dictionaries
 
         public void UpdateDictionaryAgentCompany(IContext context, InternalDictionaryAgentCompany company)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var ddt = new DictionaryAgentCompanies
                 {
@@ -1297,7 +1293,7 @@ namespace BL.Database.Dictionaries
 
         public void DeleteDictionaryAgentCompany(IContext context, InternalDictionaryAgentCompany company)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
 
                 var ddt = dbContext.DictionaryAgentCompaniesSet.FirstOrDefault(x => x.Id == company.Id);
@@ -1322,7 +1318,7 @@ namespace BL.Database.Dictionaries
 
         public int AddDictionaryAgentCompany(IContext context, InternalDictionaryAgentCompany company)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
 
                 var agent = GetDictionaryAgent(context, company.Id);
@@ -1383,7 +1379,7 @@ namespace BL.Database.Dictionaries
         #region DictionaryAgentBanks
         public FrontDictionaryAgentBank GetDictionaryAgentBank(IContext context, int id)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
 
                 return
@@ -1437,7 +1433,7 @@ namespace BL.Database.Dictionaries
 
         public void UpdateDictionaryAgentBank(IContext context, InternalDictionaryAgentBank bank)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var ddt = new DictionaryAgentBanks
                 {
@@ -1461,7 +1457,7 @@ namespace BL.Database.Dictionaries
         }
         public void DeleteDictionaryAgentBank(IContext context, InternalDictionaryAgentBank bank)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
 
                 var ddt = dbContext.DictionaryAgentBanksSet.FirstOrDefault(x => x.Id == bank.Id);
@@ -1487,7 +1483,7 @@ namespace BL.Database.Dictionaries
 
         public int AddDictionaryAgentBank(IContext context, InternalDictionaryAgentBank bank)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
 
                 var agent = GetDictionaryAgent(context, bank.Id);
@@ -1531,7 +1527,7 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<FrontDictionaryAgentBank> GetDictionaryAgentBanks(IContext context, FilterDictionaryAgentBank filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
 
                 var qry = dbContext.DictionaryAgentBanksSet.AsQueryable();
@@ -1608,7 +1604,7 @@ namespace BL.Database.Dictionaries
         #region DictionaryAgentAccounts
         public FrontDictionaryAgentAccount GetDictionaryAgentAccount(IContext context, int id)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
 
                 return
@@ -1635,7 +1631,7 @@ namespace BL.Database.Dictionaries
 
         public void SetMainAgentAccount(IContext context, int AgentId,int AccountId)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var accounts = GetDictionaryAgentAccounts(context, AgentId, new FilterDictionaryAgentAccount());
                 foreach (FrontDictionaryAgentAccount account in accounts)
@@ -1663,7 +1659,7 @@ namespace BL.Database.Dictionaries
 
         public void UpdateDictionaryAgentAccount(IContext context, InternalDictionaryAgentAccount account)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var ddt = new DictionaryAgentAccounts
                 {
@@ -1694,7 +1690,7 @@ namespace BL.Database.Dictionaries
 
         public void DeleteDictionaryAgentAccount(IContext context, InternalDictionaryAgentAccount account)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
 
                 var ddt = dbContext.DictionaryAgentAccountsSet.FirstOrDefault(x => x.Id == account.Id);
@@ -1708,7 +1704,7 @@ namespace BL.Database.Dictionaries
 
         public int AddDictionaryAgentAccount(IContext context, InternalDictionaryAgentAccount account)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var ddt = new DictionaryAgentAccounts
                 {
@@ -1737,7 +1733,7 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<FrontDictionaryAgentAccount> GetDictionaryAgentAccounts(IContext context, int AgentId, FilterDictionaryAgentAccount filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
 
                 var qry = dbContext.DictionaryAgentAccountsSet.AsQueryable();
@@ -1792,7 +1788,7 @@ namespace BL.Database.Dictionaries
         #region DictionaryContactTypes
         public FrontDictionaryContactType GetInternalDictionaryContactType(IContext context, FilterDictionaryContactType filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionaryContactTypesSet.AsQueryable();
 
@@ -1821,7 +1817,7 @@ namespace BL.Database.Dictionaries
         }
         public void UpdateDictionaryContactType(IContext context, InternalDictionaryContactType contactType)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var ddt = new DictionaryContactTypes
                 {
@@ -1840,7 +1836,7 @@ namespace BL.Database.Dictionaries
         }
         public void DeleteDictionaryContactType(IContext context, InternalDictionaryContactType contactType)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
 
                 var ddt = dbContext.DictionaryContactTypesSet.FirstOrDefault(x => x.Id == contactType.Id);
@@ -1853,7 +1849,7 @@ namespace BL.Database.Dictionaries
         }
         public int AddDictionaryContactType(IContext context, InternalDictionaryContactType contactType)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var ddt = new DictionaryContactTypes
                 {
@@ -1870,7 +1866,7 @@ namespace BL.Database.Dictionaries
         }
         public IEnumerable<FrontDictionaryContactType> GetDictionaryContactTypes(IContext context, FilterDictionaryContactType filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionaryContactTypesSet.AsQueryable();
 
@@ -1905,7 +1901,7 @@ namespace BL.Database.Dictionaries
         public FrontDictionaryContact GetDictionaryContact(IContext context,
           FilterDictionaryContact filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionaryAgentContactsSet.AsQueryable();
 
@@ -1923,7 +1919,7 @@ namespace BL.Database.Dictionaries
 
         public void UpdateDictionaryContact(IContext context, InternalDictionaryContact contact)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var ddt = new DictionaryAgentContacts
                 {
@@ -1946,7 +1942,7 @@ namespace BL.Database.Dictionaries
         }
         public void DeleteDictionaryContact(IContext context, InternalDictionaryContact contact)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
 
                 var ddt = dbContext.DictionaryAgentContactsSet.FirstOrDefault(x => x.Id == contact.Id);
@@ -1960,7 +1956,7 @@ namespace BL.Database.Dictionaries
         }
         public int AddDictionaryContact(IContext context, InternalDictionaryContact contact)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var ddt = new DictionaryAgentContacts
                 {
@@ -1980,7 +1976,7 @@ namespace BL.Database.Dictionaries
         }
         public IEnumerable<FrontDictionaryContact> GetDictionaryContacts(IContext context, int agentId, FilterDictionaryContact filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionaryAgentContactsSet.AsQueryable();
 
@@ -2024,7 +2020,7 @@ namespace BL.Database.Dictionaries
         #region DictionaryDepartments
         public int AddDictionaryDepartment(IContext context, InternalDictionaryDepartment department)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var dd = new DictionaryDepartments
                 {
@@ -2047,7 +2043,7 @@ namespace BL.Database.Dictionaries
 
         public void UpdateDictionaryDepartment(IContext context, InternalDictionaryDepartment department)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var dd = new DictionaryDepartments
                 {
@@ -2072,7 +2068,7 @@ namespace BL.Database.Dictionaries
 
         public void DeleteDictionaryDepartment(IContext context, InternalDictionaryDepartment department)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var dd = dbContext.DictionaryDepartmentsSet.FirstOrDefault(x => x.Id == department.Id);
                 if (dd != null)
@@ -2085,7 +2081,7 @@ namespace BL.Database.Dictionaries
 
         public InternalDictionaryDepartment GetDictionaryDepartment(IContext context, FilterDictionaryDepartment filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionaryDepartmentsSet.AsQueryable();
 
@@ -2109,7 +2105,7 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<FrontDictionaryDepartment> GetDictionaryDepartments(IContext context, FilterDictionaryDepartment filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionaryDepartmentsSet.AsQueryable();
 
@@ -2152,7 +2148,7 @@ namespace BL.Database.Dictionaries
         // Для использования в коммандах метод CanExecute
         public bool ExistsDictionaryDepartment(IContext context, FilterDictionaryDepartment filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionaryDepartmentsSet.AsQueryable();
 
@@ -2231,7 +2227,7 @@ namespace BL.Database.Dictionaries
         #region DictionaryDocumentDirections
         public BaseDictionaryDocumentDirection GetDictionaryDocumentDirection(IContext context, int id)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 return
                     dbContext.DictionaryDocumentDirectionsSet.Where(x => x.Id == id)
@@ -2248,7 +2244,7 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<BaseDictionaryDocumentDirection> GetDictionaryDocumentDirections(IContext context, FilterDictionaryDocumentDirection filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionaryDocumentDirectionsSet.AsQueryable();
 
@@ -2274,7 +2270,7 @@ namespace BL.Database.Dictionaries
 
         public int AddDictionaryDocumentSubject(IContext context, InternalDictionaryDocumentSubject docSubject)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var ddt = new DictionaryDocumentSubjects
                 {
@@ -2293,7 +2289,7 @@ namespace BL.Database.Dictionaries
 
         public void UpdateDictionaryDocumentSubject(IContext context, InternalDictionaryDocumentSubject docSubject)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
 
                 // Альтернативный вариант обновления записи.
@@ -2342,7 +2338,7 @@ namespace BL.Database.Dictionaries
 
         public void DeleteDictionaryDocumentSubject(IContext context, InternalDictionaryDocumentSubject docSubject)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var ddt = dbContext.DictionaryDocumentSubjectsSet.FirstOrDefault(x => x.Id == docSubject.Id);
                 if (ddt != null)
@@ -2357,7 +2353,7 @@ namespace BL.Database.Dictionaries
         {
             // Устно договорились, что функция для возврата одного элемента возвращает параметры только конкретного элемена без учета родителя и потомков.
 
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
 
                 var qry = dbContext.DictionaryDocumentSubjectsSet.AsQueryable();
@@ -2384,7 +2380,7 @@ namespace BL.Database.Dictionaries
             // Если нужно каждому элементу добавить родителя и потомков это делается на уровень выше в Logic. Функция GetDictionaryDocumentSubects ВСЕГДА возвращает плоскую коллекцию
             // более толго для построения иерархии на фронте плоской коллекции достаточно.
 
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 //IQueryable<DictionaryDocumentSubjects> qry=
 
@@ -2406,7 +2402,7 @@ namespace BL.Database.Dictionaries
         // Для использования в коммандах метод CanExecute
         public bool ExistsDictionaryDocumentSubject(IContext context, FilterDictionaryDocumentSubject filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionaryDocumentSubjectsSet.AsQueryable();
 
@@ -2463,7 +2459,7 @@ namespace BL.Database.Dictionaries
         #region DictionaryDocumentTypes
         public void UpdateDictionaryDocumentType(IContext context, InternalDictionaryDocumentType docType)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var ddt = new DictionaryDocumentTypes
                 {
@@ -2487,7 +2483,7 @@ namespace BL.Database.Dictionaries
 
         public void DeleteDictionaryDocumentType(IContext context, InternalDictionaryDocumentType docType)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
 
                 var ddt = dbContext.DictionaryDocumentTypesSet.FirstOrDefault(x => x.Id == docType.Id);
@@ -2501,7 +2497,7 @@ namespace BL.Database.Dictionaries
 
         public int AddDictionaryDocumentType(IContext context, InternalDictionaryDocumentType docType)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var ddt = new DictionaryDocumentTypes
                 {
@@ -2519,7 +2515,7 @@ namespace BL.Database.Dictionaries
 
         public InternalDictionaryDocumentType GetInternalDictionaryDocumentType(IContext context, FilterDictionaryDocumentType filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionaryDocumentTypesSet.AsQueryable();
 
@@ -2551,7 +2547,7 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<FrontDictionaryDocumentType> GetDictionaryDocumentTypes(IContext context, FilterDictionaryDocumentType filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionaryDocumentTypesSet.AsQueryable();
 
@@ -2583,7 +2579,7 @@ namespace BL.Database.Dictionaries
         #region DictionaryEventTypes
         public BaseDictionaryEventType GetDictionaryEventType(IContext context, int id)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 return dbContext.DictionaryEventTypesSet.Where(x => x.Id == id).Select(x => new BaseDictionaryEventType
                 {
@@ -2601,7 +2597,7 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<BaseDictionaryEventType> GetDictionaryEventTypes(IContext context, FilterDictionaryEventType filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionaryEventTypesSet.AsQueryable();
 
@@ -2641,7 +2637,7 @@ namespace BL.Database.Dictionaries
         #region DictionaryImportanceEventTypes
         public BaseDictionaryImportanceEventType GetDictionaryImportanceEventType(IContext context, int id)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
 
                 return dbContext.DictionaryImportanceEventTypesSet.Where(x => x.Id == id)
@@ -2658,7 +2654,7 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<BaseDictionaryImportanceEventType> GetDictionaryImportanceEventTypes(IContext context, FilterDictionaryImportanceEventType filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionaryImportanceEventTypesSet.AsQueryable();
 
@@ -2690,7 +2686,7 @@ namespace BL.Database.Dictionaries
         #region DictionaryLinkTypes
         public BaseDictionaryLinkType GetDictionaryLinkType(IContext context, int id)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 return dbContext.DictionaryLinkTypesSet.Where(x => x.Id == id)
                     .Select(x => new BaseDictionaryLinkType
@@ -2706,7 +2702,7 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<BaseDictionaryLinkType> GetDictionaryLinkTypes(IContext context, FilterDictionaryLinkType filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionaryLinkTypesSet.AsQueryable();
 
@@ -2734,7 +2730,7 @@ namespace BL.Database.Dictionaries
 
         public int AddPosition(IContext context, InternalDictionaryPosition position)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var dd = new DictionaryPositions
                 {
@@ -2757,7 +2753,7 @@ namespace BL.Database.Dictionaries
 
         public void UpdatePosition(IContext context, InternalDictionaryPosition position)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var dd = new DictionaryPositions
                 {
@@ -2782,7 +2778,7 @@ namespace BL.Database.Dictionaries
 
         public void DeletePosition(IContext context, InternalDictionaryPosition position)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var dp = dbContext.DictionaryPositionsSet.FirstOrDefault(x => x.Id == position.Id);
                 if (dp != null)
@@ -2795,7 +2791,7 @@ namespace BL.Database.Dictionaries
 
         public int? GetExecutorAgentIdByPositionId(IContext context, int id)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 return dbContext.DictionaryPositionsSet.Where(x => x.Id == id)
                     .Select(x => x.ExecutorAgentId).FirstOrDefault();
@@ -2805,7 +2801,7 @@ namespace BL.Database.Dictionaries
 
         public FrontDictionaryPosition GetDictionaryPosition(IContext context, int id)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 return dbContext.DictionaryPositionsSet.Where(x => x.Id == id)
                     .Select(x => new FrontDictionaryPosition
@@ -2854,7 +2850,7 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<FrontDictionaryPosition> GetDictionaryPositions(IContext context, FilterDictionaryPosition filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionaryPositionsSet.Select(x => new { pos = x, subordMax = 0 }).AsQueryable();
 
@@ -2903,7 +2899,7 @@ namespace BL.Database.Dictionaries
         public IEnumerable<InternalDictionaryPositionWithActions> GetDictionaryPositionsWithActions(IContext context,
             FilterDictionaryPosition filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionaryPositionsSet.Select(x => new { pos = x, subordMax = 0 }).AsQueryable();
 
@@ -2949,7 +2945,7 @@ namespace BL.Database.Dictionaries
         // Для использования в коммандах метод CanExecute
         public bool ExistsPosition(IContext context, FilterDictionaryPosition filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionaryPositionsSet.Select(x => new { pos = x, subordMax = 0 }).AsQueryable();
 
@@ -3024,7 +3020,7 @@ namespace BL.Database.Dictionaries
         #region DictionaryRegistrationJournals
         public int AddDictionaryRegistrationJournal(IContext context, InternalDictionaryRegistrationJournal regJournal)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
 
                 string s = (regJournal.IsIncoming ? "1" : "") + (regJournal.IsOutcoming ? "2" : "") + (regJournal.IsInternal ? "3" : "");
@@ -3052,7 +3048,7 @@ namespace BL.Database.Dictionaries
 
         public void UpdateDictionaryRegistrationJournal(IContext context, InternalDictionaryRegistrationJournal regJournal)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 string s = (regJournal.IsIncoming ? "1" : "") + (regJournal.IsOutcoming ? "2" : "") + (regJournal.IsInternal ? "3" : "");
 
@@ -3080,7 +3076,7 @@ namespace BL.Database.Dictionaries
 
         public void DeleteDictionaryRegistrationJournal(IContext context, InternalDictionaryRegistrationJournal docSubject)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var drj = dbContext.DictionaryRegistrationJournalsSet.FirstOrDefault(x => x.Id == docSubject.Id);
                 if (drj != null)
@@ -3093,7 +3089,7 @@ namespace BL.Database.Dictionaries
 
         public InternalDictionaryRegistrationJournal GetInternalDictionaryRegistrationJournal(IContext context, FilterDictionaryRegistrationJournal filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionaryRegistrationJournalsSet.AsQueryable();
 
@@ -3121,7 +3117,7 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<FrontDictionaryRegistrationJournal> GetDictionaryRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionaryRegistrationJournalsSet.AsQueryable();
 
@@ -3148,7 +3144,7 @@ namespace BL.Database.Dictionaries
         // Для использования в коммандах метод CanExecute
         public bool ExistsDictionaryRegistrationJournal(IContext context, FilterDictionaryRegistrationJournal filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionaryRegistrationJournalsSet.AsQueryable();
 
@@ -3228,7 +3224,7 @@ namespace BL.Database.Dictionaries
         #region DictionaryResultTypes
         public BaseDictionaryResultType GetDictionaryResultType(IContext context, int id)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
 
                 return dbContext.DictionaryResultTypesSet.Where(x => x.Id == id)
@@ -3245,7 +3241,7 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<BaseDictionaryResultType> GetDictionaryResultTypes(IContext context, FilterDictionaryResultType filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionaryResultTypesSet.AsQueryable();
 
@@ -3267,7 +3263,7 @@ namespace BL.Database.Dictionaries
         #region DictionarySendTypes
         public BaseDictionarySendType GetDictionarySendType(IContext context, int id)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 return dbContext.DictionarySendTypesSet.Where(x => x.Id == id)
                     .Select(x => new BaseDictionarySendType
@@ -3286,7 +3282,7 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<BaseDictionarySendType> GetDictionarySendTypes(IContext context, FilterDictionarySendType filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionarySendTypesSet.AsQueryable();
 
@@ -3311,7 +3307,7 @@ namespace BL.Database.Dictionaries
         #region DictionaryStandartSendListContents
         public BaseDictionaryStandartSendListContent GetDictionaryStandartSendListContent(IContext context, int id)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 return dbContext.DictionaryStandartSendListContentsSet.Where(x => x.Id == id)
                     .Select(x => new BaseDictionaryStandartSendListContent
@@ -3338,7 +3334,7 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<BaseDictionaryStandartSendListContent> GetDictionaryStandartSendListContents(IContext context, FilterDictionaryStandartSendListContent filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionaryStandartSendListContentsSet.AsQueryable();
 
@@ -3371,7 +3367,7 @@ namespace BL.Database.Dictionaries
         #region DictionaryStandartSendLists
         public BaseDictionaryStandartSendList GetDictionaryStandartSendList(IContext context, int id)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 return dbContext.DictionaryStandartSendListsSet.Where(x => x.Id == id)
                         .Select(x => new BaseDictionaryStandartSendList
@@ -3406,7 +3402,7 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<BaseDictionaryStandartSendList> GetDictionaryStandartSendLists(IContext context, FilterDictionaryStandartSendList filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionaryStandartSendListsSet.AsQueryable();
                 if (filter.StandartSendListId != null && filter.StandartSendListId.Count > 0)
@@ -3431,7 +3427,7 @@ namespace BL.Database.Dictionaries
         #region DictionarySubordinationTypes
         public BaseDictionarySubordinationType GetDictionarySubordinationType(IContext context, int id)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 return dbContext.DictionarySubordinationTypesSet.Where(x => x.Id == id)
                     .Select(x => new BaseDictionarySubordinationType
@@ -3447,7 +3443,7 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<BaseDictionarySubordinationType> GetDictionarySubordinationTypes(IContext context, FilterDictionarySubordinationType filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionarySubordinationTypesSet.AsQueryable();
 
@@ -3469,13 +3465,13 @@ namespace BL.Database.Dictionaries
 
         #region DictionaryTags
 
-        public InternalDictionaryTag GetInternalDictionaryTags(IContext context, FilterDictionaryTag filter)
+        public InternalDictionaryTag GetInternalDictionaryTags(IContext ctx, FilterDictionaryTag filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(ctx))
             {
                 var qry = dbContext.DictionaryTagsSet.AsQueryable();
 
-                qry = qry.Where(x => !x.PositionId.HasValue || context.CurrentPositionsIdList.Contains(x.PositionId ?? 0));
+                qry = qry.Where(x => ctx.IsAdmin || !x.PositionId.HasValue || ctx.CurrentPositionsIdList.Contains(x.PositionId ?? 0));
 
                 if (filter.TagId?.Count > 0)
                 {
@@ -3492,13 +3488,13 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<FrontDictionaryTag> GetDictionaryTags(IContext context, FilterDictionaryTag filter)
+        public IEnumerable<FrontDictionaryTag> GetDictionaryTags(IContext ctx, FilterDictionaryTag filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(ctx))
             {
                 var qry = dbContext.DictionaryTagsSet.AsQueryable();
 
-                qry = qry.Where(x => !x.PositionId.HasValue || context.CurrentPositionsIdList.Contains(x.PositionId ?? 0));
+                qry = qry.Where(x => ctx.IsAdmin || !x.PositionId.HasValue || ctx.CurrentPositionsIdList.Contains(x.PositionId ?? 0));
 
                 if (filter.TagId?.Count > 0)
                 {
@@ -3519,7 +3515,7 @@ namespace BL.Database.Dictionaries
 
         public int AddDictionaryTag(IContext context, InternalDictionaryTag model)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var savTag = new DictionaryTags
                 {
@@ -3536,20 +3532,18 @@ namespace BL.Database.Dictionaries
                 return savTag.Id;
             }
         }
-        public void UpdateDictionaryTag(IContext context, InternalDictionaryTag model)
+        public void UpdateDictionaryTag(IContext ctx, InternalDictionaryTag model)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(ctx))
             {
                 var savTag = dbContext.DictionaryTagsSet
-                    .Where(x => x.Id == model.Id)
-                    .Where(x => context.CurrentPositionsIdList.Contains(x.PositionId ?? 0))
-                    .FirstOrDefault();
+                    .FirstOrDefault(x => x.Id == model.Id && (ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.PositionId ?? 0)));
 
                 if (savTag?.Id > 0)
                 {
                     savTag.Name = model.Name;
                     savTag.Color = model.Color;
-                    savTag.LastChangeUserId = context.CurrentAgentId;
+                    savTag.LastChangeUserId = ctx.CurrentAgentId;
                     savTag.LastChangeDate = DateTime.Now;
                     dbContext.SaveChanges();
                 }
@@ -3562,7 +3556,7 @@ namespace BL.Database.Dictionaries
 
         public void DeleteDictionaryTag(IContext context, InternalDictionaryTag model)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
 
                 var item = dbContext.DictionaryTagsSet.FirstOrDefault(x => x.Id == model.Id);
@@ -3580,7 +3574,7 @@ namespace BL.Database.Dictionaries
         #region AdminAccessLevels
         public FrontAdminAccessLevel GetAdminAccessLevel(IContext ctx, int id)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            using (var dbContext = new DmsContext(ctx))
             {
 
                 return dbContext.AdminAccessLevelsSet.Where(x => x.Id == id).Select(x => new FrontAdminAccessLevel
@@ -3596,7 +3590,7 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<FrontAdminAccessLevel> GetAdminAccessLevels(IContext ctx, FilterAdminAccessLevel filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            using (var dbContext = new DmsContext(ctx))
             {
                 var qry = dbContext.AdminAccessLevelsSet.AsQueryable();
 
@@ -3621,7 +3615,7 @@ namespace BL.Database.Dictionaries
         #region CustomDictionaryTypes
         public void UpdateCustomDictionaryType(IContext context, InternalCustomDictionaryType model)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var item = new CustomDictionaryTypes
                 {
@@ -3644,7 +3638,7 @@ namespace BL.Database.Dictionaries
 
         public int AddCustomDictionaryType(IContext context, InternalCustomDictionaryType model)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var item = new CustomDictionaryTypes
                 {
@@ -3662,7 +3656,7 @@ namespace BL.Database.Dictionaries
 
         public void DeleteCustomDictionaryType(IContext context, int id)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var item = dbContext.CustomDictionaryTypesSet.FirstOrDefault(x => x.Id == id);
                 if (item != null)
@@ -3676,7 +3670,7 @@ namespace BL.Database.Dictionaries
 
         public InternalCustomDictionaryType GetInternalCustomDictionaryType(IContext context, FilterCustomDictionaryType filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.CustomDictionaryTypesSet.AsQueryable();
 
@@ -3706,7 +3700,7 @@ namespace BL.Database.Dictionaries
 
         public FrontCustomDictionaryType GetCustomDictionaryType(IContext context, int id)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.CustomDictionaryTypesSet.AsQueryable();
 
@@ -3734,7 +3728,7 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<FrontCustomDictionaryType> GetCustomDictionaryTypes(IContext context, FilterCustomDictionaryType filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.CustomDictionaryTypesSet.AsQueryable();
 
@@ -3761,7 +3755,7 @@ namespace BL.Database.Dictionaries
         #region CustomDictionaries
         public void UpdateCustomDictionary(IContext context, InternalCustomDictionary model)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var item = new CustomDictionaries
                 {
@@ -3785,7 +3779,7 @@ namespace BL.Database.Dictionaries
 
         public int AddCustomDictionary(IContext context, InternalCustomDictionary model)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var item = new CustomDictionaries
                 {
@@ -3804,7 +3798,7 @@ namespace BL.Database.Dictionaries
 
         public void DeleteCustomDictionary(IContext context, int id)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var item = dbContext.CustomDictionariesSet.FirstOrDefault(x => x.Id == id);
                 if (item != null)
@@ -3817,7 +3811,7 @@ namespace BL.Database.Dictionaries
 
         public InternalCustomDictionary GetInternalCustomDictionary(IContext context, FilterCustomDictionary filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.CustomDictionariesSet.AsQueryable();
 
@@ -3848,7 +3842,7 @@ namespace BL.Database.Dictionaries
 
         public FrontCustomDictionary GetCustomDictionary(IContext context, int id)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.CustomDictionariesSet.AsQueryable();
 
@@ -3868,7 +3862,7 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<FrontCustomDictionary> GetCustomDictionaries(IContext context, FilterCustomDictionary filter)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.CustomDictionariesSet.AsQueryable();
 

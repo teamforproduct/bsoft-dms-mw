@@ -14,7 +14,6 @@ using BL.Model.Enums;
 using BL.Model.DocumentCore.IncomingModel;
 using System.Data.Entity;
 using System.Transactions;
-using BL.CrossCutting.Helpers;
 using BL.Model.AdminCore;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.SystemCore;
@@ -25,16 +24,13 @@ namespace BL.Database.Documents
 {
     public class DocumentOperationsDbProcess : IDocumentOperationsDbProcess
     {
-        private readonly IConnectionStringHelper _helper;
-
-        public DocumentOperationsDbProcess(IConnectionStringHelper helper)
+        public DocumentOperationsDbProcess()
         {
-            _helper = helper;
         }
 
         public DocumentActionsModel GetDocumentActionsModelPrepare(IContext context, int documentId)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var res = new DocumentActionsModel();
                 res.ActionsList = new Dictionary<int, List<InternalSystemAction>>();
@@ -158,14 +154,14 @@ namespace BL.Database.Documents
             }
         }
 
-        public DocumentActionsModel GetDocumentSendListActionsModelPrepare(IContext context, int documentId)
+        public DocumentActionsModel GetDocumentSendListActionsModelPrepare(IContext ctx, int documentId)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(ctx))
             {
                 var res = new DocumentActionsModel();
                 res.ActionsList = new Dictionary<int, List<InternalSystemAction>>();
 
-                res.Document = CommonQueries.GetDocumentQuery(dbContext, context)
+                res.Document = CommonQueries.GetDocumentQuery(dbContext, ctx)
                     .Where(x => x.Doc.Id == documentId)
                     .Select(x => new InternalDocument
                     {
@@ -203,8 +199,7 @@ namespace BL.Database.Documents
                     {
                         res.PositionWithActions = dbContext.DictionaryPositionsSet
                             .Where(
-                                x =>
-                                    context.CurrentPositionsIdList.Contains(x.Id) &&
+                                x => (ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.Id)) &&
                                     posAcc.Contains(x.Id))
                             .Select(x => new InternalDictionaryPositionWithActions
                             {
@@ -218,12 +213,12 @@ namespace BL.Database.Documents
                     }
                 }
 
-                foreach (int posId in context.CurrentPositionsIdList)
+                foreach (int posId in ctx.CurrentPositionsIdList)
                 {
-                    var qry = dbContext.SystemActionsSet.Where(x => x.ObjectId == (int)EnumObjects.DocumentSendLists
+                    var qry = dbContext.SystemActionsSet.Where(x => (x.ObjectId == (int)EnumObjects.DocumentSendLists|| x.ObjectId == (int)EnumObjects.DocumentSendListStages)
                     && x.IsVisible &&
                     (!x.IsGrantable ||
-                        x.RoleActions.Any(y => y.Role.PositionRoles.Any(pr => pr.PositionId == posId) && y.Role.UserRoles.Any(z => z.UserId == context.CurrentAgentId)))
+                        x.RoleActions.Any(y => y.Role.PositionRoles.Any(pr => pr.PositionId == posId) && y.Role.UserRoles.Any(z => z.UserId == ctx.CurrentAgentId)))
                     );
 
                     var actLst = qry.Select(a => new InternalSystemAction
@@ -246,7 +241,7 @@ namespace BL.Database.Documents
         #region DocumentLink    
         public InternalDocument AddDocumentLinkPrepare(IContext context, AddDocumentLink model)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var doc = CommonQueries.GetDocumentQuery(dbContext, context)
                     .Where(x => x.Doc.Id == model.DocumentId)
@@ -275,7 +270,7 @@ namespace BL.Database.Documents
 
         public void AddDocumentLink(IContext context, InternalDocument model)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var link = new DocumentLinks
                 {
@@ -324,7 +319,7 @@ namespace BL.Database.Documents
 
         public void AddDocumentWaits(IContext ctx, InternalDocument document)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            using (var dbContext = new DmsContext(ctx))
             {
                 using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
                 {
@@ -348,7 +343,7 @@ namespace BL.Database.Documents
 
         public void ChangeDocumentWait(IContext ctx, InternalDocumentWait wait)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            using (var dbContext = new DmsContext(ctx))
             {
                 using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
                 {
@@ -381,7 +376,7 @@ namespace BL.Database.Documents
 
         public void CloseDocumentWait(IContext ctx, InternalDocument document)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            using (var dbContext = new DmsContext(ctx))
             {
                 var offEvent = ModelConverter.GetDbDocumentEvent(document.Waits.First().OffEvent);
                 foreach (var docWait in document.Waits)
@@ -448,12 +443,12 @@ namespace BL.Database.Documents
             }
         }
 
-        public InternalDocument ControlChangeDocumentPrepare(IContext context, int eventId)
+        public InternalDocument ControlChangeDocumentPrepare(IContext ctx, int eventId)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(ctx))
             {
                 var doc = dbContext.DocumentWaitsSet
-                    .Where(x => x.OnEventId == eventId && context.CurrentPositionsIdList.Contains(x.OnEvent.SourcePositionId.Value))
+                    .Where(x => x.OnEventId == eventId && (ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.OnEvent.SourcePositionId.Value)))
                     .Select(x => new InternalDocument
                     {
                         Id = x.DocumentId,
@@ -499,12 +494,12 @@ namespace BL.Database.Documents
             }
         }
 
-        public InternalDocument ControlOffDocumentPrepare(IContext context, int eventId)
+        public InternalDocument ControlOffDocumentPrepare(IContext ctx, int eventId)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(ctx))
             {
                 var doc = dbContext.DocumentWaitsSet
-                    .Where(x => x.OnEventId == eventId && context.CurrentPositionsIdList.Contains(x.OnEvent.SourcePositionId.Value))
+                    .Where(x => x.OnEventId == eventId && (ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.OnEvent.SourcePositionId.Value)))
                     .Select(x => new InternalDocument
                     {
                         Id = x.DocumentId,
@@ -537,7 +532,7 @@ namespace BL.Database.Documents
 
         public void ControlOffSendListPrepare(IContext context, InternalDocument document)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var eventsId = document.Waits.Select(x => x.OnEventId).ToList();
 
@@ -553,7 +548,7 @@ namespace BL.Database.Documents
 
         public void ControlOffMarkExecutionWaitPrepare(IContext context, InternalDocument document)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var waitsId = document.Waits.Select(x => x.Id).ToList();
 
@@ -582,7 +577,7 @@ namespace BL.Database.Documents
 
         public void ControlOffSubscriptionPrepare(IContext context, InternalDocument document)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var eventsId = document.Waits.Select(x => x.OnEventId).ToList();
 
@@ -598,7 +593,7 @@ namespace BL.Database.Documents
 
         public void AddDocumentEvents(IContext ctx, InternalDocument document)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            using (var dbContext = new DmsContext(ctx))
             {
                 using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
                 {
@@ -623,7 +618,7 @@ namespace BL.Database.Documents
 
         public FrontDocumentEvent GetDocumentEvent(IContext ctx, int eventId)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            using (var dbContext = new DmsContext(ctx))
             {
                 return CommonQueries.GetDocumentEventsQuery(ctx, dbContext).Where(x => x.Id == eventId)
                     .Select(x => new FrontDocumentEvent
@@ -641,13 +636,14 @@ namespace BL.Database.Documents
                         TargetPositionExecutorNowAgentName = x.TargetPosition.ExecutorAgent.Name,
                         SourcePositionExecutorAgentPhoneNumber = "SourcePositionAgentPhoneNumber", //TODO 
                         TargetPositionExecutorAgentPhoneNumber = "TargetPositionAgentPhoneNumber", //TODO 
+                        IsAvailableWithinTask = x.IsAvailableWithinTask,
                     }).FirstOrDefault();
             }
         }
 
         public IEnumerable<FrontDocumentEvent> GetDocumentEvents(IContext ctx, FilterDocumentEvent filter, UIPaging paging)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            using (var dbContext = new DmsContext(ctx))
             {
                 var qry = CommonQueries.GetDocumentEventsQuery(ctx, dbContext);
 
@@ -749,13 +745,13 @@ namespace BL.Database.Documents
 
         public InternalDocument MarkDocumentEventsAsReadPrepare(IContext ctx, int documentId)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            using (var dbContext = new DmsContext(ctx))
             {
                 var res = new InternalDocument { Id = documentId };
                 var qry = CommonQueries.GetDocumentEventsQuery(ctx, dbContext).Where(x => x.DocumentId == documentId
                 && !x.ReadDate.HasValue
                 && x.TargetPositionId.HasValue && x.TargetPositionId != x.SourcePositionId
-                && ctx.CurrentPositionsIdList.Contains(x.TargetPositionId.Value));
+                && (ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.TargetPositionId.Value)));
 
                 res.Events = qry.Select(x => new InternalDocumentEvent
                 {
@@ -768,7 +764,7 @@ namespace BL.Database.Documents
 
         public void MarkDocumentEventAsRead(IContext ctx, IEnumerable<InternalDocumentEvent> eventList)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            using (var dbContext = new DmsContext(ctx))
             {
                 foreach (var bdev in eventList.Select(evt => new DocumentEvents
                 {
@@ -792,7 +788,7 @@ namespace BL.Database.Documents
 
         public IEnumerable<InternalDocumentAccess> GetDocumentAccesses(IContext ctx, int documentId)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            using (var dbContext = new DmsContext(ctx))
             {
                 return CommonQueries.GetInternalDocumentAccesses(dbContext, documentId);
             }
@@ -800,7 +796,7 @@ namespace BL.Database.Documents
 
         public IEnumerable<InternalPositionInfo> GetInternalPositionsInfo(IContext ctx, List<int> positionIds)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            using (var dbContext = new DmsContext(ctx))
             {
                 return CommonQueries.GetInternalPositionsInfo(dbContext, positionIds);
             }
@@ -808,7 +804,7 @@ namespace BL.Database.Documents
 
         public void ChangeIsFavouriteAccess(IContext context, InternalDocumentAccess docAccess)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var acc = new DocumentAccesses
                 {
@@ -828,7 +824,7 @@ namespace BL.Database.Documents
 
         public InternalDocument ChangeIsFavouriteAccessPrepare(IContext context, int documentId)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var doc = dbContext.DocumentAccessesSet
                     .Where(x => x.DocumentId == documentId && x.PositionId == context.CurrentPositionId)
@@ -853,7 +849,7 @@ namespace BL.Database.Documents
 
         public void ChangeIsInWorkAccess(IContext ctx, InternalDocument document)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            using (var dbContext = new DmsContext(ctx))
             {
                 var docAccess = document.Accesses.FirstOrDefault();
                 var acc = new DocumentAccesses
@@ -875,7 +871,7 @@ namespace BL.Database.Documents
 
         public InternalDocument ChangeIsInWorkAccessPrepare(IContext context, int documentId)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var acc = dbContext.DocumentAccessesSet
                     .Where(x => x.DocumentId == documentId && x.PositionId == context.CurrentPositionId)
@@ -899,7 +895,7 @@ namespace BL.Database.Documents
 
         public void SendBySendList(IContext ctx, InternalDocument document)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(ctx)))
+            using (var dbContext = new DmsContext(ctx))
             {
                 using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
                 {
@@ -920,23 +916,29 @@ namespace BL.Database.Documents
                     entry.Property(x => x.Id).IsModified = true;
                     entry.Property(x => x.LastChangeDate).IsModified = true;
                     entry.Property(x => x.LastChangeUserId).IsModified = true;
-
-                    dbContext.DocumentAccessesSet.AddRange(
-                        CommonQueries.GetDbDocumentAccesses(dbContext, document.Accesses, document.Id).ToList());
                     dbContext.SaveChanges();
+
+                    if (document.Accesses?.Any() ?? false)
+                    {
+                        dbContext.DocumentAccessesSet.AddRange(
+                            CommonQueries.GetDbDocumentAccesses(dbContext, document.Accesses, document.Id).ToList());
+                        dbContext.SaveChanges();
+                    }
 
                     if (document.Waits?.Any() ?? false)
                     {
-                        var wait = document.Waits.First();
-                        var waitDb = ModelConverter.GetDbDocumentWait(wait);
-                        if (wait.OnEvent == sendList.StartEvent)
+                        foreach(var wait in document.Waits)
                         {
-                            waitDb.OnEventId = sendListDb.StartEventId.Value;
-                            waitDb.OnEvent = null;
+                            var waitDb = ModelConverter.GetDbDocumentWait(wait);
+                            if (wait.OnEvent == sendList.StartEvent)
+                            {
+                                waitDb.OnEventId = sendListDb.StartEventId.Value;
+                                waitDb.OnEvent = null;
+                            }
+                            dbContext.DocumentWaitsSet.Add(waitDb);
+                            dbContext.SaveChanges();
                         }
-                        dbContext.DocumentWaitsSet.Add(waitDb);
                     }
-                    dbContext.SaveChanges();
 
                     if (document.Subscriptions?.Any() ?? false)
                     {
@@ -948,36 +950,39 @@ namespace BL.Database.Documents
                             subscriptionDb.SendEvent = null;
                         }
                         dbContext.DocumentSubscriptionsSet.Add(subscriptionDb);
+                        dbContext.SaveChanges();
                     }
-                    dbContext.SaveChanges();
 
-                    var eventsDb = ModelConverter.GetDbDocumentEvents(document.Events);
+
+
                     if (document.Events?.Any() ?? false)
                     {
+                        var eventsDb = ModelConverter.GetDbDocumentEvents(document.Events);
                         //dbContext.DocumentEventsSet.AddRange(eventsDb);
                         dbContext.DocumentEventsSet.Attach(eventsDb.First());
                         dbContext.Entry(eventsDb.First()).State = EntityState.Added;
+                        dbContext.SaveChanges();
                     }
-                    dbContext.SaveChanges();
+
 
                     transaction.Complete();
                 }
             }
         }
 
-        public void ModifyDocumentTags(IContext context, InternalDocumentTag model)
+        public void ModifyDocumentTags(IContext ctx, InternalDocumentTag model)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(ctx))
             {
                 var dictionaryTags = dbContext.DictionaryTagsSet
-                    .Where(x => !x.PositionId.HasValue || context.CurrentPositionsIdList.Contains(x.PositionId ?? 0))
+                    .Where(x => ctx.IsAdmin || !x.PositionId.HasValue || ctx.CurrentPositionsIdList.Contains(x.PositionId ?? 0))
                     .Where(x => model.Tags.Contains(x.Id))
                     .Select(x => x.Id)
                     .ToList();
 
                 var documentTags = dbContext.DocumentTagsSet
                     .Where(x => x.DocumentId == model.DocumentId)
-                    .Where(x => !x.Tag.PositionId.HasValue || context.CurrentPositionsIdList.Contains(x.Tag.PositionId ?? 0))
+                    .Where(x => ctx.IsAdmin || !x.Tag.PositionId.HasValue || ctx.CurrentPositionsIdList.Contains(x.Tag.PositionId ?? 0))
                     .Select(x => x.TagId)
                     .ToList();
 
@@ -1003,12 +1008,12 @@ namespace BL.Database.Documents
             }
         }
 
-        public InternalDocument AddNoteDocumentPrepare(IContext context, AddNote model)
+        public InternalDocument AddNoteDocumentPrepare(IContext ctx, AddNote model)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(ctx))
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext, context)
-                    .Where(x => x.Doc.Id == model.DocumentId /*&& context.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId)*/)
+                var doc = CommonQueries.GetDocumentQuery(dbContext, ctx)
+                    .Where(x => x.Doc.Id == model.DocumentId /*&& ctx.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId)*/)
                     .Select(x => new InternalDocument
                     {
                         Id = x.Doc.Id,
@@ -1031,7 +1036,7 @@ namespace BL.Database.Documents
 
         public InternalDocument SendForExecutionDocumentPrepare(IContext context, InternalDocumentSendList sendList)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var doc = CommonQueries.GetDocumentQuery(dbContext, context)
                     .Where(x => x.Doc.Id == sendList.DocumentId)
@@ -1042,7 +1047,7 @@ namespace BL.Database.Documents
                 if (doc == null) return null;
 
                 doc.Waits = dbContext.DocumentWaitsSet
-                    .Where(x => x.DocumentId == sendList.DocumentId && x.OnEvent.Task.Id == sendList.TaskId && x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecution)
+                    .Where(x => x.DocumentId == sendList.DocumentId && x.OnEvent.Task.Id == sendList.TaskId && x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecution && !x.OffEventId.HasValue)
                     .Select(x => new List<InternalDocumentWait>
                                     {
                                         new InternalDocumentWait
@@ -1062,7 +1067,7 @@ namespace BL.Database.Documents
 
         public InternalDocument SendForSigningDocumentPrepare(IContext context, InternalDocumentSendList sendList)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var doc = CommonQueries.GetDocumentQuery(dbContext, context)
                     .Where(x => x.Doc.Id == sendList.DocumentId)
@@ -1095,7 +1100,7 @@ namespace BL.Database.Documents
         #region DocumentSendList    
         public InternalDocument ChangeDocumentSendListPrepare(IContext context, int documentId, string task = null)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var docDb = from doc in dbContext.DocumentsSet.Where(x => x.Id == documentId)
                             join tmp in dbContext.TemplateDocumentsSet on doc.TemplateDocumentId equals tmp.Id
@@ -1169,7 +1174,7 @@ namespace BL.Database.Documents
 
         public void AddDocumentRestrictedSendList(IContext context, IEnumerable<InternalDocumentRestrictedSendList> model)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var items = model.Select(x => new DocumentRestrictedSendLists
                 {
@@ -1187,7 +1192,7 @@ namespace BL.Database.Documents
 
         public IEnumerable<InternalDocumentRestrictedSendList> AddByStandartSendListDocumentRestrictedSendListPrepare(IContext context, ModifyDocumentRestrictedSendListByStandartSendList model)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
 
                 var items = dbContext.DictionaryStandartSendListContentsSet.Where(x => x.StandartSendListId == model.StandartSendListId)
@@ -1204,7 +1209,7 @@ namespace BL.Database.Documents
 
         public InternalDocumentRestrictedSendList DeleteDocumentRestrictedSendListPrepare(IContext context, int restSendListId)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
 
                 var item = dbContext.DocumentRestrictedSendListsSet.Where(x => x.Id == restSendListId)
@@ -1220,7 +1225,7 @@ namespace BL.Database.Documents
 
         public void DeleteDocumentRestrictedSendList(IContext context, int restSendListId)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var item = dbContext.DocumentRestrictedSendListsSet.FirstOrDefault(x => x.Id == restSendListId);
                 if (item != null)
@@ -1233,7 +1238,7 @@ namespace BL.Database.Documents
 
         public void AddDocumentSendList(IContext context, IEnumerable<InternalDocumentSendList> sendList, IEnumerable<InternalDocumentTask> task = null)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
                 {
@@ -1260,7 +1265,7 @@ namespace BL.Database.Documents
         public IEnumerable<InternalDocumentSendList> AddByStandartSendListDocumentSendListPrepare(IContext context, ModifyDocumentSendListByStandartSendList model)
         {
             //TODO DELETE!!!!
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
 
                 var items = dbContext.DictionaryStandartSendListContentsSet.Where(x => x.StandartSendListId == model.StandartSendListId)
@@ -1287,7 +1292,7 @@ namespace BL.Database.Documents
 
         public void ModifyDocumentSendList(IContext context, InternalDocumentSendList sendList, IEnumerable<InternalDocumentTask> task = null)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
                 {
@@ -1344,7 +1349,7 @@ namespace BL.Database.Documents
 
         public InternalDocument DeleteDocumentSendListPrepare(IContext context, int sendListId)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var doc = dbContext.DocumentSendListsSet
                             .Where(x => x.Id == sendListId)
@@ -1369,7 +1374,7 @@ namespace BL.Database.Documents
 
         public void DeleteDocumentSendList(IContext context, int sendListId)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var item = dbContext.DocumentSendListsSet.FirstOrDefault(x => x.Id == sendListId);
                 if (item != null)
@@ -1382,7 +1387,7 @@ namespace BL.Database.Documents
 
         public InternalDocument AddDocumentSendListStagePrepare(IContext context, int documentId)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var docDb = (from doc in dbContext.DocumentsSet.Where(x => x.Id == documentId)
                              select new { doc })
@@ -1406,7 +1411,7 @@ namespace BL.Database.Documents
 
         public void ChangeDocumentSendListStage(IContext context, IEnumerable<InternalDocumentSendList> model)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 foreach (var sl in model)
                 {
@@ -1431,7 +1436,7 @@ namespace BL.Database.Documents
 
         public InternalDocument LaunchDocumentSendListItemPrepare(IContext context, int id)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var doc = dbContext.DocumentSendListsSet
                     .Where(x => x.Id == id)
@@ -1475,7 +1480,7 @@ namespace BL.Database.Documents
 
         public List<int> AddSavedFilter(IContext context, IEnumerable<InternalDocumentSavedFilter> model)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var items = model.Select(x => new DocumentSavedFilters
                 {
@@ -1496,7 +1501,7 @@ namespace BL.Database.Documents
 
         public void ModifySavedFilter(IContext context, InternalDocumentSavedFilter model)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var item = new DocumentSavedFilters
                 {
@@ -1524,7 +1529,7 @@ namespace BL.Database.Documents
 
         public void DeleteSavedFilter(IContext context, int id)
         {
-            using (var dbContext = new DmsContext(_helper.GetConnectionString(context)))
+            using (var dbContext = new DmsContext(context))
             {
                 var item = dbContext.DocumentSavedFiltersSet.FirstOrDefault(x => x.Id == id);
                 if (item != null)

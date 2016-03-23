@@ -2,7 +2,7 @@
 
 namespace BL.Model.DocumentCore.FrontModel
 {
-    public class FrontDocumentWaits
+    public class FrontDocumentWait
     {
         public int Id { get; set; }
         public int DocumentId { get; set; }

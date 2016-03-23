@@ -67,13 +67,17 @@ namespace BL.Logic.DocumentCore.Commands
 
             var waitParent = _document.Waits.First();
             var waitTarget = CommonDocumentUtilities.GetNewDocumentWait(_context, Model, _eventType, EnumEventCorrespondentType.FromSourceToTarget);
-            waitTarget.ParentWait = waitParent;
+            waitTarget.ParentId = waitParent.Id;
             waitTarget.OnEvent.SourcePositionId = waitParent.OnEvent.TargetPositionId;
             _document.Waits = new List<InternalDocumentWait> {  waitTarget };
 
             if (Model.SourcePositionId != waitParent.OnEvent.TargetPositionId)
             {
                 _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, Model);
+            }
+            if (Model.IsAddControl)
+            {
+                ((List<InternalDocumentWait>)_document.Waits).AddRange(CommonDocumentUtilities.GetNewDocumentWaits(_context, Model, EnumEventTypes.ControlOn, EnumEventCorrespondentType.FromSourceToSource));
             }
 
             Model.StartEvent = waitTarget.OnEvent;

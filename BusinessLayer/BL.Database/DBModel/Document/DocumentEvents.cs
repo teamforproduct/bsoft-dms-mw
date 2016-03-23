@@ -1,6 +1,7 @@
 ﻿using BL.Database.DBModel.Dictionary;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BL.Database.DBModel.Document
@@ -25,6 +26,7 @@ namespace BL.Database.DBModel.Document
         public DateTime Date { get; set; }
         public Nullable<int> TaskId { get; set; }
         //public string TaskName { get; set; }
+        [MaxLength(2000)]
         public string Description { get; set; }
         public int? SourcePositionId { get; set; }
         public Nullable<int> SourcePositionExecutorAgentId { get; set; }

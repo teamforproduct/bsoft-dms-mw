@@ -179,7 +179,8 @@ namespace BL.Model.DocumentCore.FrontModel
         public IEnumerable<FrontDocumentAttachedFile> DocumentFiles { get; set; }
         public IEnumerable<FrontDocument> LinkedDocuments { get; set; }
         public IEnumerable<FrontDocumentLink> Links { get; set; }
-        public IEnumerable<FrontDocumentWaits> DocumentWaits { get; set; }
+        public IEnumerable<FrontDocumentTask> DocumentTasks { get; set; }
+        public IEnumerable<FrontDocumentWait> DocumentWaits { get; set; }
         public IEnumerable<FrontDocumentTag> DocumentTags { get; set; }
 
         public IEnumerable<BaseDictionaryPosition> DocumentWorkGroup { get; set; }

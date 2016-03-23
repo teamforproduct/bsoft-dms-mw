@@ -4,6 +4,7 @@ using System.Collections.Generic;
 namespace BL.Database.DBModel.System
 {
     using Admin;
+    using global::System.ComponentModel.DataAnnotations;
     using global::System.ComponentModel.DataAnnotations.Schema;
 
 
@@ -17,8 +18,11 @@ namespace BL.Database.DBModel.System
 
         public int Id { get; set; }
         public int ObjectId { get; set; }
+        [MaxLength(2000)]
         public string Code { get; set; }
+        [MaxLength(2000)]
         public string API { get; set; }
+        [MaxLength(2000)]
         public string Description { get; set; }
         public bool IsGrantable { get; set; }
         public bool IsGrantableByRecordId { get; set; }

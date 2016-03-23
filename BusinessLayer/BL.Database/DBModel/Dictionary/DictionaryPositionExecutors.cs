@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BL.Database.DBModel.Admin;
+using System.ComponentModel.DataAnnotations;
 
 namespace BL.Database.DBModel.Dictionary
 {
@@ -15,6 +16,7 @@ namespace BL.Database.DBModel.Dictionary
         public int PositionId { get; set; }
         public int PositionExecutorTypeId { get; set; }
         public int AccessLevelId { get; set; }
+        [MaxLength(2000)]
         public string Description { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }

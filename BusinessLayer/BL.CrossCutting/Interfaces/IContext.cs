@@ -12,5 +12,6 @@ namespace BL.CrossCutting.Interfaces
         int CurrentPositionId { get; }
         int CurrentAgentId { get; }
         void SetCurrentPosition(int? position);
+        bool IsAdmin { get; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BL.Database.DBModel.Dictionary
@@ -18,6 +19,7 @@ namespace BL.Database.DBModel.Dictionary
 
         public int Id { get; set; }
         public Nullable<int> ParentId { get; set; }
+        [MaxLength(2000)]
         public string Name { get; set; }
         public bool IsActive { get; set; }
         public int LastChangeUserId { get; set; }

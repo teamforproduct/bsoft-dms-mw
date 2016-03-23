@@ -18,7 +18,9 @@
         ChangeExecutor = 205,// Изменение исполнителя по документу
 
         SendForInformation = 200,//	Направлен для сведения
+
         SendForConsideration = 220,//	Направлен для рассмотрения
+        SendForInformationExternal = 230, //Направлен для сведения внешнему агенту
 
         SendForVisaing = 250,// Направить для визирования 
         SendForАgreement = 260,// Направить для согласование 

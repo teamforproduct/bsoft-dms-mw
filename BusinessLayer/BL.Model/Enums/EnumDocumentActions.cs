@@ -59,7 +59,9 @@
         /// <summary>
         /// Направить для рассмотрения
         /// </summary>
-        SendForConsideration = 100012, 
+        SendForConsideration = 100012,
+
+        SendForInformationExternal = 100015, // Направить для сведения внешнему агенту
 
         /// <summary>
         /// Отметить прием

@@ -28,7 +28,7 @@ namespace BL.Logic.DocumentCore.Commands
                     throw new WrongParameterTypeError();
                 }
                 var model = (InternalDocumentSendList)_param;
-                if (model.SendType != EnumSendTypes.SendForInformation && model.SendType != EnumSendTypes.SendForConsideration)
+                if (model.SendType != EnumSendTypes.SendForInformationExternal && model.SendType != EnumSendTypes.SendForInformation && model.SendType != EnumSendTypes.SendForConsideration)
                 {
                     throw new WrongParameterTypeError();
                 }
@@ -63,6 +63,10 @@ namespace BL.Logic.DocumentCore.Commands
             if (Model.TargetPositionId.HasValue)
             {
                 _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, Model.DocumentId, Model.AccessLevel, Model.TargetPositionId.Value);
+            }
+            if (Model.IsAddControl)
+            {
+                _document.Waits=CommonDocumentUtilities.GetNewDocumentWaits(_context, Model, EnumEventTypes.ControlOn, EnumEventCorrespondentType.FromSourceToSource);
             }
 
             Model.CloseEvent = Model.StartEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, Model);

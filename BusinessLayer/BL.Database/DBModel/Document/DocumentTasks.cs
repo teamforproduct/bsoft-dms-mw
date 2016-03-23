@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BL.Database.DBModel.Dictionary;
+using System.ComponentModel.DataAnnotations;
 
 namespace BL.Database.DBModel.Document
 {
@@ -22,7 +23,9 @@ namespace BL.Database.DBModel.Document
         public int PositionId { get; set; }
         public int PositionExecutorAgentId { get; set; }
         public int AgentId { get; set; }
+        [MaxLength(2000)]
         public string Task { get; set; }
+        [MaxLength(2000)]
         public string Description { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }

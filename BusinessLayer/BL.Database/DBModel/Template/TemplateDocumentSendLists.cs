@@ -2,6 +2,7 @@
 using BL.Database.DBModel.Dictionary;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
@@ -18,6 +19,7 @@ namespace BL.Database.DBModel.Template
         public Nullable<int> TargetPositionId { get; set; }
         public Nullable<int> TargetAgentId { get; set; }
         public Nullable<int> TaskId { get; set; }
+        [MaxLength(2000)]
         public string Description { get; set; }
         public int Stage { get; set; }
         public int? DueDay { get; set; }

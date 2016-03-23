@@ -1,9 +1,11 @@
 ﻿using System;
 using BL.Database.DBModel.Admin;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace BL.Database.DBModel.Dictionary
 {
+    [Table("DicStandartSendListContents")]
     public class DictionaryStandartSendListContents
     {
         public int Id { get; set; }
@@ -12,7 +14,9 @@ namespace BL.Database.DBModel.Dictionary
         public int SendTypeId { get; set; }
         public Nullable<int> TargetPositionId { get; set; }
         public Nullable<int> TargetAgentId { get; set; }
+        [MaxLength(2000)]
         public string Task { get; set; }
+        [MaxLength(2000)]
         public string Description { get; set; }
         public Nullable<DateTime> DueDate { get; set; }
         public Nullable<int> DueDay { get; set; }

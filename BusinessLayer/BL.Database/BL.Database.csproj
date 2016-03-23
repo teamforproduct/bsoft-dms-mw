@@ -58,9 +58,18 @@
       <HintPath>..\..\Web\DMS_WebAPI\packages\Ninject.3.2.2.0\lib\net45-full\Ninject.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Oracle.ManagedDataAccess, Version=4.121.2.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=MSIL">
+      <HintPath>..\..\Web\DMS_WebAPI\packages\Oracle.ManagedDataAccess.12.1.2400\lib\net40\Oracle.ManagedDataAccess.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Oracle.ManagedDataAccess.EntityFramework, Version=6.121.2.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=MSIL">
+      <HintPath>..\..\Web\DMS_WebAPI\packages\Oracle.ManagedDataAccess.EntityFramework.12.1.2400\lib\net45\Oracle.ManagedDataAccess.EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Transactions" />
   </ItemGroup>
   <ItemGroup>
@@ -81,6 +90,7 @@
     <Compile Include="DBModel\Dictionary\DictionaryAgentBanks.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryAgentCompanies.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryAgentEmploeyes.cs" />
+    <Compile Include="DBModel\Dictionary\DictionaryAgentUsers.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryAgentPersons.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryAgentContacts.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryLinkTypes.cs" />
@@ -156,253 +166,9 @@
     <Compile Include="Documents\Interfaces\IDocumentsDbProcess.cs" />
     <Compile Include="Documents\Interfaces\ITemplateDocumentsDbProcess.cs" />
     <Compile Include="Documents\TemplateDocumentsDbProcess.cs" />
-    <Compile Include="Migrations\201601241114209_InitialMigration.cs" />
-    <Compile Include="Migrations\201601241114209_InitialMigration.Designer.cs">
-      <DependentUpon>201601241114209_InitialMigration.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201601251408559_AddDocumentsEnvironmentAndTemplate.cs" />
-    <Compile Include="Migrations\201601251408559_AddDocumentsEnvironmentAndTemplate.Designer.cs">
-      <DependentUpon>201601251408559_AddDocumentsEnvironmentAndTemplate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201601261654059_AddLogAndSetting.cs" />
-    <Compile Include="Migrations\201601261654059_AddLogAndSetting.Designer.cs">
-      <DependentUpon>201601261654059_AddLogAndSetting.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201601271146111_Corrections.cs" />
-    <Compile Include="Migrations\201601271146111_Corrections.Designer.cs">
-      <DependentUpon>201601271146111_Corrections.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201601271255103_ForeignKey.cs" />
-    <Compile Include="Migrations\201601271255103_ForeignKey.Designer.cs">
-      <DependentUpon>201601271255103_ForeignKey.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201601271302106_ForeignKeyIncomingDetails.cs" />
-    <Compile Include="Migrations\201601271302106_ForeignKeyIncomingDetails.Designer.cs">
-      <DependentUpon>201601271302106_ForeignKeyIncomingDetails.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201601272043368_DocumentsCorrection.cs" />
-    <Compile Include="Migrations\201601272043368_DocumentsCorrection.Designer.cs">
-      <DependentUpon>201601272043368_DocumentsCorrection.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201601281439074_RestrictedSendLists.cs" />
-    <Compile Include="Migrations\201601281439074_RestrictedSendLists.Designer.cs">
-      <DependentUpon>201601281439074_RestrictedSendLists.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201601291509057_DropForeignKeyForCreatingOneToOne.cs" />
-    <Compile Include="Migrations\201601291509057_DropForeignKeyForCreatingOneToOne.Designer.cs">
-      <DependentUpon>201601291509057_DropForeignKeyForCreatingOneToOne.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201601291515455_AddForeignKeyForCreatingOneToOne.cs" />
-    <Compile Include="Migrations\201601291515455_AddForeignKeyForCreatingOneToOne.Designer.cs">
-      <DependentUpon>201601291515455_AddForeignKeyForCreatingOneToOne.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201601302342240_Code.cs" />
-    <Compile Include="Migrations\201601302342240_Code.Designer.cs">
-      <DependentUpon>201601302342240_Code.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201601302346317_Code1.cs" />
-    <Compile Include="Migrations\201601302346317_Code1.Designer.cs">
-      <DependentUpon>201601302346317_Code1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201601310022316_Code2.cs" />
-    <Compile Include="Migrations\201601310022316_Code2.Designer.cs">
-      <DependentUpon>201601310022316_Code2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201601310028225_Code3.cs" />
-    <Compile Include="Migrations\201601310028225_Code3.Designer.cs">
-      <DependentUpon>201601310028225_Code3.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201601310050174_TemplateDocumentSendLists.cs" />
-    <Compile Include="Migrations\201601310050174_TemplateDocumentSendLists.Designer.cs">
-      <DependentUpon>201601310050174_TemplateDocumentSendLists.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201602011414067_delete_Incoming.cs" />
-    <Compile Include="Migrations\201602011414067_delete_Incoming.Designer.cs">
-      <DependentUpon>201602011414067_delete_Incoming.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201602012334302_del_exagent.cs" />
-    <Compile Include="Migrations\201602012334302_del_exagent.Designer.cs">
-      <DependentUpon>201602012334302_del_exagent.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201602021557362_add_tables.cs" />
-    <Compile Include="Migrations\201602021557362_add_tables.Designer.cs">
-      <DependentUpon>201602021557362_add_tables.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201602021700431_ChangeLoggingAndSetting.cs" />
-    <Compile Include="Migrations\201602021700431_ChangeLoggingAndSetting.Designer.cs">
-      <DependentUpon>201602021700431_ChangeLoggingAndSetting.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201602031007479_ChangeFieldsDocumentSavedFiltersAndDocumentWaits.cs" />
-    <Compile Include="Migrations\201602031007479_ChangeFieldsDocumentSavedFiltersAndDocumentWaits.Designer.cs">
-      <DependentUpon>201602031007479_ChangeFieldsDocumentSavedFiltersAndDocumentWaits.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201602031012091_AddDocumentSavedFilters.cs" />
-    <Compile Include="Migrations\201602031012091_AddDocumentSavedFilters.Designer.cs">
-      <DependentUpon>201602031012091_AddDocumentSavedFilters.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201602031631428_ChangeFKByIncorrectFields.cs" />
-    <Compile Include="Migrations\201602031631428_ChangeFKByIncorrectFields.Designer.cs">
-      <DependentUpon>201602031631428_ChangeFKByIncorrectFields.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201602031638082_Change2FKByIncorrectFields.cs" />
-    <Compile Include="Migrations\201602031638082_Change2FKByIncorrectFields.Designer.cs">
-      <DependentUpon>201602031638082_Change2FKByIncorrectFields.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201602041634097_sendList.cs" />
-    <Compile Include="Migrations\201602041634097_sendList.Designer.cs">
-      <DependentUpon>201602041634097_sendList.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201602041639450_sendList2.cs" />
-    <Compile Include="Migrations\201602041639450_sendList2.Designer.cs">
-      <DependentUpon>201602041639450_sendList2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201602041914159_DocumentAccesses.cs" />
-    <Compile Include="Migrations\201602041914159_DocumentAccesses.Designer.cs">
-      <DependentUpon>201602041914159_DocumentAccesses.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201602042159061_Files.cs" />
-    <Compile Include="Migrations\201602042159061_Files.Designer.cs">
-      <DependentUpon>201602042159061_Files.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201602051543256_tempreg.cs" />
-    <Compile Include="Migrations\201602051543256_tempreg.Designer.cs">
-      <DependentUpon>201602051543256_tempreg.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201602071517200_IsReg.cs" />
-    <Compile Include="Migrations\201602071517200_IsReg.Designer.cs">
-      <DependentUpon>201602071517200_IsReg.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201602081231540_file.cs" />
-    <Compile Include="Migrations\201602081231540_file.Designer.cs">
-      <DependentUpon>201602081231540_file.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201602081357065_system.cs" />
-    <Compile Include="Migrations\201602081357065_system.Designer.cs">
-      <DependentUpon>201602081357065_system.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201602081813404_ChangeSendLists.cs" />
-    <Compile Include="Migrations\201602081813404_ChangeSendLists.Designer.cs">
-      <DependentUpon>201602081813404_ChangeSendLists.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201602091111571_SystemUIElements.cs" />
-    <Compile Include="Migrations\201602091111571_SystemUIElements.Designer.cs">
-      <DependentUpon>201602091111571_SystemUIElements.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201602091929309_SystemUIElementsCorr.cs" />
-    <Compile Include="Migrations\201602091929309_SystemUIElementsCorr.Designer.cs">
-      <DependentUpon>201602091929309_SystemUIElementsCorr.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201602111527404_DocumMisc.cs" />
-    <Compile Include="Migrations\201602111527404_DocumMisc.Designer.cs">
-      <DependentUpon>201602111527404_DocumMisc.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201602111551448_DDictEvImp.cs" />
-    <Compile Include="Migrations\201602111551448_DDictEvImp.Designer.cs">
-      <DependentUpon>201602111551448_DDictEvImp.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201602111612452_DicImp.cs" />
-    <Compile Include="Migrations\201602111612452_DicImp.Designer.cs">
-      <DependentUpon>201602111612452_DicImp.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201602161611573_DBcorr.cs" />
-    <Compile Include="Migrations\201602161611573_DBcorr.Designer.cs">
-      <DependentUpon>201602161611573_DBcorr.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201602161704109_Subordination.cs" />
-    <Compile Include="Migrations\201602161704109_Subordination.Designer.cs">
-      <DependentUpon>201602161704109_Subordination.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201602171004544_Tags.cs" />
-    <Compile Include="Migrations\201602171004544_Tags.Designer.cs">
-      <DependentUpon>201602171004544_Tags.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201602221508072_corr.cs" />
-    <Compile Include="Migrations\201602221508072_corr.Designer.cs">
-      <DependentUpon>201602221508072_corr.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201602250916494_ForFileTemplates.cs" />
-    <Compile Include="Migrations\201602250916494_ForFileTemplates.Designer.cs">
-      <DependentUpon>201602250916494_ForFileTemplates.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201602261118268_AddFieldTask.cs" />
-    <Compile Include="Migrations\201602261118268_AddFieldTask.Designer.cs">
-      <DependentUpon>201602261118268_AddFieldTask.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201602261405334_AddFieldFileSize.cs" />
-    <Compile Include="Migrations\201602261405334_AddFieldFileSize.Designer.cs">
-      <DependentUpon>201602261405334_AddFieldFileSize.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201602271350593_CorrSendList.cs" />
-    <Compile Include="Migrations\201602271350593_CorrSendList.Designer.cs">
-      <DependentUpon>201602271350593_CorrSendList.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201602281904432_Task.cs" />
-    <Compile Include="Migrations\201602281904432_Task.Designer.cs">
-      <DependentUpon>201602281904432_Task.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201603020954490_CustomDictionary.cs" />
-    <Compile Include="Migrations\201603020954490_CustomDictionary.Designer.cs">
-      <DependentUpon>201603020954490_CustomDictionary.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201603041001270_Properties.cs" />
-    <Compile Include="Migrations\201603041001270_Properties.Designer.cs">
-      <DependentUpon>201603041001270_Properties.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201603072034551_agent1to2.cs" />
-    <Compile Include="Migrations\201603072034551_agent1to2.Designer.cs">
-      <DependentUpon>201603072034551_agent1to2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201603072037384_agent1to1.cs" />
-    <Compile Include="Migrations\201603072037384_agent1to1.Designer.cs">
-      <DependentUpon>201603072037384_agent1to1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201603072247181_agent.cs" />
-    <Compile Include="Migrations\201603072247181_agent.Designer.cs">
-      <DependentUpon>201603072247181_agent.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201603072305287_dictionaries.cs" />
-    <Compile Include="Migrations\201603072305287_dictionaries.Designer.cs">
-      <DependentUpon>201603072305287_dictionaries.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201603091445367_AddFieldTypeCodeInProperties.cs" />
-    <Compile Include="Migrations\201603091445367_AddFieldTypeCodeInProperties.Designer.cs">
-      <DependentUpon>201603091445367_AddFieldTypeCodeInProperties.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201603091552556_AdminPositionRoles.cs" />
-    <Compile Include="Migrations\201603091552556_AdminPositionRoles.Designer.cs">
-      <DependentUpon>201603091552556_AdminPositionRoles.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201603111855522_Contacts.cs" />
-    <Compile Include="Migrations\201603111855522_Contacts.Designer.cs">
-      <DependentUpon>201603111855522_Contacts.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201603141134381_PositionExecutorAgent.cs" />
-    <Compile Include="Migrations\201603141134381_PositionExecutorAgent.Designer.cs">
-      <DependentUpon>201603141134381_PositionExecutorAgent.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201603141158019_DictionarySubscriptionStates.cs" />
-    <Compile Include="Migrations\201603141158019_DictionarySubscriptionStates.Designer.cs">
-      <DependentUpon>201603141158019_DictionarySubscriptionStates.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201603161836443_Language.cs" />
-    <Compile Include="Migrations\201603161836443_Language.Designer.cs">
-      <DependentUpon>201603161836443_Language.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201603172141465_DictionaryPositionExecutors.cs" />
-    <Compile Include="Migrations\201603172141465_DictionaryPositionExecutors.Designer.cs">
-      <DependentUpon>201603172141465_DictionaryPositionExecutors.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201603172236464_DocumentTasks.cs" />
-    <Compile Include="Migrations\201603172236464_DocumentTasks.Designer.cs">
-      <DependentUpon>201603172236464_DocumentTasks.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201603192148019_DeleteTask.cs" />
-    <Compile Include="Migrations\201603192148019_DeleteTask.Designer.cs">
-      <DependentUpon>201603192148019_DeleteTask.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201603201203465_TemplateDocumentTasks.cs" />
-    <Compile Include="Migrations\201603201203465_TemplateDocumentTasks.Designer.cs">
-      <DependentUpon>201603201203465_TemplateDocumentTasks.cs</DependentUpon>
+    <Compile Include="Migrations\201603212007278_InitialMigration.cs" />
+    <Compile Include="Migrations\201603212007278_InitialMigration.Designer.cs">
+      <DependentUpon>201603212007278_InitialMigration.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -423,7 +189,6 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
       <Visible>False</Visible>
@@ -432,191 +197,8 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201601241114209_InitialMigration.resx">
-      <DependentUpon>201601241114209_InitialMigration.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201601251408559_AddDocumentsEnvironmentAndTemplate.resx">
-      <DependentUpon>201601251408559_AddDocumentsEnvironmentAndTemplate.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201601261654059_AddLogAndSetting.resx">
-      <DependentUpon>201601261654059_AddLogAndSetting.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201601271146111_Corrections.resx">
-      <DependentUpon>201601271146111_Corrections.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201601271255103_ForeignKey.resx">
-      <DependentUpon>201601271255103_ForeignKey.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201601271302106_ForeignKeyIncomingDetails.resx">
-      <DependentUpon>201601271302106_ForeignKeyIncomingDetails.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201601272043368_DocumentsCorrection.resx">
-      <DependentUpon>201601272043368_DocumentsCorrection.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201601281439074_RestrictedSendLists.resx">
-      <DependentUpon>201601281439074_RestrictedSendLists.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201601291509057_DropForeignKeyForCreatingOneToOne.resx">
-      <DependentUpon>201601291509057_DropForeignKeyForCreatingOneToOne.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201601291515455_AddForeignKeyForCreatingOneToOne.resx">
-      <DependentUpon>201601291515455_AddForeignKeyForCreatingOneToOne.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201601302342240_Code.resx">
-      <DependentUpon>201601302342240_Code.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201601302346317_Code1.resx">
-      <DependentUpon>201601302346317_Code1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201601310022316_Code2.resx">
-      <DependentUpon>201601310022316_Code2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201601310028225_Code3.resx">
-      <DependentUpon>201601310028225_Code3.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201601310050174_TemplateDocumentSendLists.resx">
-      <DependentUpon>201601310050174_TemplateDocumentSendLists.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201602011414067_delete_Incoming.resx">
-      <DependentUpon>201602011414067_delete_Incoming.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201602012334302_del_exagent.resx">
-      <DependentUpon>201602012334302_del_exagent.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201602021557362_add_tables.resx">
-      <DependentUpon>201602021557362_add_tables.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201602021700431_ChangeLoggingAndSetting.resx">
-      <DependentUpon>201602021700431_ChangeLoggingAndSetting.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201602031007479_ChangeFieldsDocumentSavedFiltersAndDocumentWaits.resx">
-      <DependentUpon>201602031007479_ChangeFieldsDocumentSavedFiltersAndDocumentWaits.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201602031012091_AddDocumentSavedFilters.resx">
-      <DependentUpon>201602031012091_AddDocumentSavedFilters.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201602031631428_ChangeFKByIncorrectFields.resx">
-      <DependentUpon>201602031631428_ChangeFKByIncorrectFields.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201602031638082_Change2FKByIncorrectFields.resx">
-      <DependentUpon>201602031638082_Change2FKByIncorrectFields.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201602041634097_sendList.resx">
-      <DependentUpon>201602041634097_sendList.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201602041639450_sendList2.resx">
-      <DependentUpon>201602041639450_sendList2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201602041914159_DocumentAccesses.resx">
-      <DependentUpon>201602041914159_DocumentAccesses.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201602042159061_Files.resx">
-      <DependentUpon>201602042159061_Files.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201602051543256_tempreg.resx">
-      <DependentUpon>201602051543256_tempreg.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201602071517200_IsReg.resx">
-      <DependentUpon>201602071517200_IsReg.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201602081231540_file.resx">
-      <DependentUpon>201602081231540_file.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201602081357065_system.resx">
-      <DependentUpon>201602081357065_system.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201602081813404_ChangeSendLists.resx">
-      <DependentUpon>201602081813404_ChangeSendLists.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201602091111571_SystemUIElements.resx">
-      <DependentUpon>201602091111571_SystemUIElements.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201602091929309_SystemUIElementsCorr.resx">
-      <DependentUpon>201602091929309_SystemUIElementsCorr.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201602111527404_DocumMisc.resx">
-      <DependentUpon>201602111527404_DocumMisc.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201602111551448_DDictEvImp.resx">
-      <DependentUpon>201602111551448_DDictEvImp.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201602111612452_DicImp.resx">
-      <DependentUpon>201602111612452_DicImp.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201602161611573_DBcorr.resx">
-      <DependentUpon>201602161611573_DBcorr.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201602161704109_Subordination.resx">
-      <DependentUpon>201602161704109_Subordination.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201602171004544_Tags.resx">
-      <DependentUpon>201602171004544_Tags.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201602221508072_corr.resx">
-      <DependentUpon>201602221508072_corr.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201602250916494_ForFileTemplates.resx">
-      <DependentUpon>201602250916494_ForFileTemplates.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201602261118268_AddFieldTask.resx">
-      <DependentUpon>201602261118268_AddFieldTask.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201602261405334_AddFieldFileSize.resx">
-      <DependentUpon>201602261405334_AddFieldFileSize.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201602271350593_CorrSendList.resx">
-      <DependentUpon>201602271350593_CorrSendList.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201602281904432_Task.resx">
-      <DependentUpon>201602281904432_Task.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201603020954490_CustomDictionary.resx">
-      <DependentUpon>201603020954490_CustomDictionary.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201603041001270_Properties.resx">
-      <DependentUpon>201603041001270_Properties.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201603072034551_agent1to2.resx">
-      <DependentUpon>201603072034551_agent1to2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201603072037384_agent1to1.resx">
-      <DependentUpon>201603072037384_agent1to1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201603072247181_agent.resx">
-      <DependentUpon>201603072247181_agent.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201603072305287_dictionaries.resx">
-      <DependentUpon>201603072305287_dictionaries.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201603091445367_AddFieldTypeCodeInProperties.resx">
-      <DependentUpon>201603091445367_AddFieldTypeCodeInProperties.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201603091552556_AdminPositionRoles.resx">
-      <DependentUpon>201603091552556_AdminPositionRoles.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201603111855522_Contacts.resx">
-      <DependentUpon>201603111855522_Contacts.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201603141134381_PositionExecutorAgent.resx">
-      <DependentUpon>201603141134381_PositionExecutorAgent.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201603141158019_DictionarySubscriptionStates.resx">
-      <DependentUpon>201603141158019_DictionarySubscriptionStates.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201603161836443_Language.resx">
-      <DependentUpon>201603161836443_Language.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201603172141465_DictionaryPositionExecutors.resx">
-      <DependentUpon>201603172141465_DictionaryPositionExecutors.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201603172236464_DocumentTasks.resx">
-      <DependentUpon>201603172236464_DocumentTasks.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201603192148019_DeleteTask.resx">
-      <DependentUpon>201603192148019_DeleteTask.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201603201203465_TemplateDocumentTasks.resx">
-      <DependentUpon>201603201203465_TemplateDocumentTasks.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201603212007278_InitialMigration.resx">
+      <DependentUpon>201603212007278_InitialMigration.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

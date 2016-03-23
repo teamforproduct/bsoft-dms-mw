@@ -116,6 +116,7 @@
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryContact.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryContactType.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentSubscription.cs" />
+    <Compile Include="DocumentCore\Filters\FilterDocumentTask.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentWait.cs" />
     <Compile Include="AdminCore\VerifyAccess.cs" />
     <Compile Include="AdminCore\VerifySubordination.cs" />
@@ -168,6 +169,7 @@
     <Compile Include="DocumentCore\Filters\FilterDocumentTag.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentTag.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentAttachedFile.cs" />
+    <Compile Include="DocumentCore\FrontModel\FrontDocumentTask.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontTemplateAttachedFile.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentSubscription.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentFiles.cs" />
@@ -184,7 +186,7 @@
     <Compile Include="DocumentCore\FrontModel\FrontDocumentSavedFilter.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentSendListStage.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentLink.cs" />
-    <Compile Include="DocumentCore\FrontModel\FrontDocumentWaits.cs" />
+    <Compile Include="DocumentCore\FrontModel\FrontDocumentWait.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentFileIdentity.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentFile.cs" />
     <Compile Include="DocumentCore\IncomingModel\AddDocumentByTemplateDocument.cs" />
@@ -264,14 +266,13 @@
     <Compile Include="SystemCore\FrontModel\FrontSystemObject.cs" />
     <Compile Include="SystemCore\FrontModel\FrontPropertyLink.cs" />
     <Compile Include="SystemCore\FrontModel\FrontProperty.cs" />
-    <Compile Include="SystemCore\FrontModel\FrontServer.cs" />
-    <Compile Include="SystemCore\IncomingModel\ModifyServer.cs" />
+    <Compile Include="Database\FrontModel\FrontServer.cs" />
+    <Compile Include="Database\IncomingModel\ModifyServer.cs" />
     <Compile Include="SystemCore\IncomingModel\ModifyPropertyValue.cs" />
     <Compile Include="SystemCore\IncomingModel\ModifyPropertyLink.cs" />
     <Compile Include="SystemCore\IncomingModel\ModifyProperty.cs" />
     <Compile Include="SystemCore\InternalModel\InternalDataForMail.cs" />
     <Compile Include="SystemCore\InternalModel\InternalMailProcessed.cs" />
-    <Compile Include="SystemCore\InternalModel\InternalServer.cs" />
     <Compile Include="SystemCore\InternalModel\InternalPropertyValues.cs" />
     <Compile Include="SystemCore\InternalModel\InternalPropertyValue.cs" />
     <Compile Include="SystemCore\InternalModel\InternalSendMailServerParameters.cs" />

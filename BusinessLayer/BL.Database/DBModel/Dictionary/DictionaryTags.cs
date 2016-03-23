@@ -1,6 +1,7 @@
 ﻿using BL.Database.DBModel.Document;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
@@ -16,8 +17,10 @@ namespace BL.Database.DBModel.Dictionary
         }
 
         public int Id { get; set; }
+        [MaxLength(2000)]
         public string Name { get; set; }
         public Nullable<int> PositionId { get; set; }
+        [MaxLength(2000)]
         public string Color { get; set; }
         public bool IsActive { get; set; }
         public int LastChangeUserId { get; set; }
