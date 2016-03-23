@@ -20,6 +20,7 @@ using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.SystemCore;
 using DocumentAccesses = BL.Database.DBModel.Document.DocumentAccesses;
 using BL.Model.SystemCore.InternalModel;
+using BL.Model.Exception;
 
 namespace BL.Database.Documents
 {
@@ -1548,5 +1549,75 @@ namespace BL.Database.Documents
         }
 
         #endregion DocumentSavedFilter
+
+        #region DocumentTasks
+        public void AddDocumentTasks(IContext context, IEnumerable<InternalDocumentTask> task)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var tasksDb = task.Select(ModelConverter.GetDbDocumentTask).ToList();
+                dbContext.DocumentTasksSet.AddRange(tasksDb);
+                dbContext.SaveChanges();
+            }
+        }
+        public InternalDocumentTask ChangeDocumentTaskPrepare(IContext context, int itemId)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var item = dbContext.DocumentTasksSet.Where(x => x.Id == itemId)
+                     .Select(x => new InternalDocumentTask
+                     {
+                         Id = x.Id,
+                         DocumentId = x.DocumentId,
+                         PositionId = x.PositionId,
+                         PositionExecutorAgentId = x.PositionExecutorAgentId,
+                         AgentId = x.AgentId,
+                         Name = x.Task,
+                         Description = x.Description
+                     }).FirstOrDefault();
+                
+                if (item == null)
+                {
+                    throw new TaskNotFoundOrUserHasNoAccess();
+                }
+
+                return item;
+            }
+        }
+        public void ModifyDocumentTask(IContext context, InternalDocumentTask task)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var taskDb = ModelConverter.GetDbDocumentTask(task);
+                taskDb.Id = task.Id;
+
+                dbContext.DocumentTasksSet.Attach(taskDb);
+                //TODO Проверить поля которые нужно обновлять
+                var entry = dbContext.Entry(taskDb);
+                entry.Property(e => e.DocumentId).IsModified = true;
+                entry.Property(e => e.PositionId).IsModified = true;
+                entry.Property(e => e.PositionExecutorAgentId).IsModified = true;
+                entry.Property(e => e.AgentId).IsModified = true;
+                entry.Property(e => e.Task).IsModified = true;
+                entry.Property(e => e.Description).IsModified = true;
+                entry.Property(e => e.LastChangeUserId).IsModified = true;
+                entry.Property(e => e.LastChangeDate).IsModified = true;
+
+                dbContext.SaveChanges();
+            }
+        }
+        public void DeleteDocumentTask(IContext context, int itemId)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var item = dbContext.DocumentTasksSet.FirstOrDefault(x => x.Id == itemId);
+                if (item != null)
+                {
+                    dbContext.DocumentTasksSet.Remove(item);
+                    dbContext.SaveChanges();
+                }
+            }
+        }
+        #endregion DocumentTasks
     }
 }
