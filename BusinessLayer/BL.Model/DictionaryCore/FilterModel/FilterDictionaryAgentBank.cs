@@ -29,5 +29,9 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// признак активности
         /// </summary>
         public bool? IsActive { get; set; }
+        /// <summary>
+        /// игнорировать при поиске
+        /// </summary>
+        public List<int> NotContainsId { get; set; }
     }
 }

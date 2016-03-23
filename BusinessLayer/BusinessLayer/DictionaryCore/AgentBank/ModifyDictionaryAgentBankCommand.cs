@@ -5,7 +5,7 @@ using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.DictionaryCore.FilterModel;
 using System.Collections.Generic;
-
+using System.Linq;
 
 namespace BL.Logic.DictionaryCore.AgentBank
 {
@@ -30,6 +30,17 @@ namespace BL.Logic.DictionaryCore.AgentBank
 
         public override bool CanExecute()
         {
+            var agents = _dictDb.GetDictionaryAgentBanks(_context, new FilterDictionaryAgentBank
+            {
+                MFOCode = Model.MFOCode,
+                IsActive=Model.IsActive,
+                NotContainsId=new List<int> { Model.Id }
+            });
+
+            if (agents.Count() > 0)
+            {
+                throw new DictionaryRecordNotUnique();
+            }
             _admin.VerifyAccess(_context, CommandType, false, true);
             return true;
         }

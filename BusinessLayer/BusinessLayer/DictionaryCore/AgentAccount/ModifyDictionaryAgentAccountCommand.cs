@@ -5,7 +5,7 @@ using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.DictionaryCore.FilterModel;
 using System.Collections.Generic;
-
+using System.Linq;
 
 namespace BL.Logic.DictionaryCore.AgentAccount
 {
@@ -31,8 +31,17 @@ namespace BL.Logic.DictionaryCore.AgentAccount
         public override bool CanExecute()
         {
 
-            _admin.VerifyAccess(_context, CommandType, false, true);
-
+       
+            _admin.VerifyAccess(_context, CommandType, false);
+            var spr = _dictDb.GetDictionaryAgentAccounts(_context, Model.AgentId, new FilterDictionaryAgentAccount
+            {
+                AgentBankId = Model.AgentBankId,
+                AccountNumber = Model.AccountNumber
+            });
+            if (spr.Count() != 0)
+            {
+                throw new DictionaryRecordNotUnique();
+            }
             return true;
         }
 

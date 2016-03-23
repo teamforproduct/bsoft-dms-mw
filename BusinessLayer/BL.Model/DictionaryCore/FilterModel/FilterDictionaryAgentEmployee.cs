@@ -15,6 +15,7 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// табельный номер
         /// </summary>
         public string PersonnelNumber { get; set; }
+       
 
     }
 }

@@ -237,7 +237,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-       public void UpdateDictionaryAgentName(IContext context,int Id,string newName)
+        public void UpdateDictionaryAgentName(IContext context,int Id,string newName)
         {
             using (var dbContext = new DmsContext(context))
             {
@@ -404,6 +404,14 @@ namespace BL.Database.Dictionaries
                 if (filter.BirthDate != null)
                 {
                     qry = qry.Where(x => x.BirthDate == filter.BirthDate);
+                }
+                if (filter.NotContainsId?.Count > 0)
+                {
+                    qry = qry.Where(x => !filter.NotContainsId.Contains(x.Id));
+                }
+                if (filter.IsActive.HasValue)
+                {
+                    qry = qry.Where(x => x.IsActive == filter.IsActive);
                 }
 
                 return qry.Select(x => new FrontDictionaryAgentPerson
@@ -814,6 +822,11 @@ namespace BL.Database.Dictionaries
                 {
                     qry = qry.Where(x => x.Agent.AgentPerson.BirthDate == filter.BirthDate);
                 }
+                if (filter.NotContainsId?.Count > 0)
+                {
+                    qry = qry.Where(x => !filter.NotContainsId.Contains(x.Id));
+                }
+
 
                 return qry.Select(x => new FrontDictionaryAgentEmployee
                 {
@@ -1067,6 +1080,11 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(x => filter.IsActive == x.IsActive);
                 }
 
+                if (filter.NotContainsId?.Count > 0)
+                {
+                    qry = qry.Where(x => !filter.NotContainsId.Contains(x.Id));
+                }
+
                 return qry.Select(x => new InternalDictionaryAddressType
                 {
                     Id = x.Id,
@@ -1098,7 +1116,10 @@ namespace BL.Database.Dictionaries
                 {
                     qry = qry.Where(x => x.IsActive == filter.IsActive);
                 }
-
+                if (filter.NotContainsId?.Count > 0)
+                {
+                    qry = qry.Where(x => !filter.NotContainsId.Contains(x.Id));
+                }
                 return qry.Select(x => new FrontDictionaryAddressType
                 {
                     Id = x.Id,
@@ -1203,6 +1224,10 @@ namespace BL.Database.Dictionaries
                 if (filter.IsActive.HasValue)
                 {
                     qry = qry.Where(x => x.IsActive==filter.IsActive);
+                }
+                if (filter.NotContainsId?.Count > 0)
+                {
+                    qry = qry.Where(x => !filter.NotContainsId.Contains(x.Id));
                 }
 
                 return qry.Select(x => new FrontDictionaryAgentCompany
@@ -1551,7 +1576,10 @@ namespace BL.Database.Dictionaries
                 {
                     qry = qry.Where(x => x.IsActive == filter.IsActive);
                 }
-
+                if (filter.NotContainsId?.Count > 0)
+                {
+                    qry = qry.Where(x => !filter.NotContainsId.Contains(x.Id));
+                }
 
                 return qry.Select(x => new FrontDictionaryAgentBank
                 {
@@ -1986,23 +2014,22 @@ namespace BL.Database.Dictionaries
                 {
                     qry = qry.Where(x => filter.ContactTypeId.Contains(x.ContactTypeId));
                 }
-
                 if (filter.AgentId?.Count > 0)
                 {
                     qry = qry.Where(x => filter.AgentId.Contains(x.AgentId));
                 }
-
-
                 if (!String.IsNullOrEmpty(filter.Value))
                 {
                     qry = qry.Where(x => x.Contact.Contains(filter.Value));
                 }
-
                 if (filter.IsActive != null)
                 {
                     qry = qry.Where(x => x.IsActive == filter.IsActive);
                 }
-
+                if (filter.NotContainsId?.Count > 0)
+                {
+                    qry = qry.Where(x => !filter.NotContainsId.Contains(x.Id));
+                }
                 return qry.Select(x => new FrontDictionaryContact
                 {
                     Id = x.Id,

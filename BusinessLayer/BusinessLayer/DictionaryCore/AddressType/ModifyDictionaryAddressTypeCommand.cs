@@ -6,6 +6,7 @@ using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.SystemCore;
+using System.Collections.Generic;
 
 namespace BL.Logic.DictionaryCore.DocumentType
 {
@@ -31,7 +32,12 @@ namespace BL.Logic.DictionaryCore.DocumentType
 
         public override bool CanExecute()
         {
-            var spr = _dictDb.GetInternalDictionaryAddressType(_context, new FilterDictionaryAddressType { Name = Model.Name, IsActive=Model.IsActive });
+            var spr = _dictDb.GetInternalDictionaryAddressType(_context, new FilterDictionaryAddressType
+            {
+                Name = Model.Name,
+                IsActive = Model.IsActive,
+                NotContainsId = new List<int> { Model.Id }
+            });
             if (spr != null)
             {
                 throw new DictionaryRecordNotUnique();

@@ -5,6 +5,8 @@ using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.DictionaryCore.FilterModel;
 using System.Collections.Generic;
+using System.Linq;
+
 namespace BL.Logic.DictionaryCore.AgentCompany
 {
     public class ModifyDictionaryAgentCompanyCommand : BaseDictionaryCommand
@@ -29,6 +31,19 @@ namespace BL.Logic.DictionaryCore.AgentCompany
         public override bool CanExecute()
         {
             _admin.VerifyAccess(_context, CommandType, false, true);
+            var agents = _dictDb.GetDictionaryAgentCompanies(_context, new FilterDictionaryAgentCompany
+            {
+                TaxCode = Model.TaxCode,
+                OKPOCode = Model.OKPOCode,
+                VATCode = Model.VATCode,
+                IsActive=Model.IsActive,
+                NotContainsId=new List<int> { Model.Id}
+            });
+
+            if (agents.Count() > 0)
+            {
+                throw new DictionaryRecordNotUnique();
+            }
             return true;
         }
 

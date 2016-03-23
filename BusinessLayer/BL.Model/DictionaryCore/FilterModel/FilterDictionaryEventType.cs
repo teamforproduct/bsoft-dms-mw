@@ -19,6 +19,9 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// Массив ИД документов
         /// </summary>
         public List<int> DocumentId { get; set; }
+        /// <summary>
+        /// игнорировать при поиске
+        /// </summary>
         public List<int> NotContainsId { get; set; }
     }
 }

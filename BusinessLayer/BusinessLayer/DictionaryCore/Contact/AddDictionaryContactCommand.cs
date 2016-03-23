@@ -43,7 +43,7 @@ namespace BL.Logic.DictionaryCore.Contact
                 throw new DictionaryRecordNotUnique();
             }
 
-            _admin.VerifyAccess(_context, CommandType,false,true);
+           
             return true;
         }
 

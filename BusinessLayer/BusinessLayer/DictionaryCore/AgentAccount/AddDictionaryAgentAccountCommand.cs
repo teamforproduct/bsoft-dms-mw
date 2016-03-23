@@ -42,7 +42,7 @@ namespace BL.Logic.DictionaryCore.AgentAccount
                 throw new DictionaryRecordNotUnique();
             }
 
-            _admin.VerifyAccess(_context, CommandType, false, true);
+         
             return true;
         }
 
