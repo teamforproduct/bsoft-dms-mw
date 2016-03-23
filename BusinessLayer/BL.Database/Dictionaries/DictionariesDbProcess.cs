@@ -24,45 +24,21 @@ namespace BL.Database.Dictionaries
         // Агенты
         #region DictionaryAgents
 
-        public bool IsAgentOneRole(IContext context, int id, EnumDictionaryAgentTypes source)
-        {
-            using (var dbContext = new DmsContext(context))
-            {
-                var agent = GetDictionaryAgent(context, id);
 
-                switch (source)
-                {
-                    case EnumDictionaryAgentTypes.isEmployee:
-                        if (!agent.IsCompany && !agent.IsBank) { return true; }
-                        break;
-                    case EnumDictionaryAgentTypes.isCompany:
-                        if (!agent.IsIndividual && !agent.IsEmployee && !agent.IsBank) { return true; }
-                        break;
-                    case EnumDictionaryAgentTypes.isIndividual:
-                        if (!agent.IsCompany && !agent.IsBank) { return true; }
-                        break;
-                    case EnumDictionaryAgentTypes.isBank:
-                        if (!agent.IsEmployee && !agent.IsCompany && !agent.IsIndividual) { return true; }
-                        break;
-                }
-                return false;
-            }
-        }
+        //public IEnumerable<EnumDictionaryAgentTypes> GetAgentRoles(IContext context, int id)
+        //{
+        //    using (var dbContext = new DmsContext(context))
+        //    {
+        //        List<EnumDictionaryAgentTypes> list = new List<EnumDictionaryAgentTypes>();
+        //        var agent = GetDictionaryAgent(context, id);
+        //        if (agent.IsBank) { list.Add(EnumDictionaryAgentTypes.isBank); }
+        //        if (agent.IsEmployee) { list.Add(EnumDictionaryAgentTypes.isEmployee); }
+        //        if (agent.IsIndividual) { list.Add(EnumDictionaryAgentTypes.isIndividual); }
+        //        if (agent.IsCompany) { list.Add(EnumDictionaryAgentTypes.isCompany); }
 
-        public IEnumerable<EnumDictionaryAgentTypes> GetAgentRoles(IContext context, int id)
-        {
-            using (var dbContext = new DmsContext(context))
-            {
-                List<EnumDictionaryAgentTypes> list = new List<EnumDictionaryAgentTypes>();
-                var agent = GetDictionaryAgent(context, id);
-                if (agent.IsBank) { list.Add(EnumDictionaryAgentTypes.isBank); }
-                if (agent.IsEmployee) { list.Add(EnumDictionaryAgentTypes.isEmployee); }
-                if (agent.IsIndividual) { list.Add(EnumDictionaryAgentTypes.isIndividual); }
-                if (agent.IsCompany) { list.Add(EnumDictionaryAgentTypes.isCompany); }
-
-                return list;
-            }
-        }
+        //        return list;
+        //    }
+        //}
 
         public void UpdateDictionaryAgentRole(IContext context, int id, EnumDictionaryAgentTypes role)
         {
@@ -492,23 +468,7 @@ namespace BL.Database.Dictionaries
                 entity.State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
 
-                if (IsAgentOneRole(context, person.Id, EnumDictionaryAgentTypes.isIndividual))
-                {
-                    var agent = new InternalDictionaryAgent
-                    {
-                        Id = person.Id,
-                        Name = person.LastName.Trim() + " " + person.FirstName.Trim() + " " + person.MiddleName.Trim(),
-                        IsActive = person.IsActive,
-                        Description = person.Description,
-                        IsBank = false,
-                        IsCompany = false,
-                        IsEmployee = false,
-                        IsIndividual = true,
-                        LastChangeDate = person.LastChangeDate,
-                        LastChangeUserId = person.LastChangeUserId
-                    };
-                    UpdateDictionaryAgent(context, agent);
-                }
+               
             }
         }
 
@@ -524,18 +484,15 @@ namespace BL.Database.Dictionaries
                     dbContext.DictionaryAgentPersonsSet.Remove(ddt);
                     dbContext.SaveChanges();
 
+                    var agent = GetDictionaryAgent(context, person.Id);
 
-                    if (IsAgentOneRole(context, person.Id, EnumDictionaryAgentTypes.isIndividual))
-                    {
+                    if ((!agent.IsCompany && !agent.IsEmployee && !agent.IsBank)) { 
                         DeleteDictionaryAgent(context, new InternalDictionaryAgent { Id = person.Id });
-                        dbContext.SaveChanges();
                     }
                     else
                     {
                         UpdateDictionaryAgentRole(context, person.Id, EnumDictionaryAgentTypes.isIndividual);
                     }
-
-
                 }
 
             }
@@ -1328,10 +1285,11 @@ namespace BL.Database.Dictionaries
                     dbContext.SaveChanges();
 
 
-                    if (IsAgentOneRole(context, company.Id, EnumDictionaryAgentTypes.isCompany))
+                    var agent = GetDictionaryAgent(context, company.Id);
+
+                    if (!agent.IsBank && !agent.IsEmployee && !agent.IsIndividual)
                     {
                         DeleteDictionaryAgent(context, new InternalDictionaryAgent { Id = company.Id });
-                        dbContext.SaveChanges();
                     }
                     else
                     {
@@ -1492,10 +1450,11 @@ namespace BL.Database.Dictionaries
                     dbContext.SaveChanges();
 
 
-                    if (IsAgentOneRole(context, bank.Id, EnumDictionaryAgentTypes.isIndividual))
+                    var agent = GetDictionaryAgent(context, bank.Id);
+
+                    if (!agent.IsCompany && !agent.IsEmployee && !agent.IsIndividual)
                     {
                         DeleteDictionaryAgent(context, new InternalDictionaryAgent { Id = bank.Id });
-                        dbContext.SaveChanges();
                     }
                     else
                     {

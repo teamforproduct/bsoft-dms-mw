@@ -43,6 +43,31 @@ namespace BL.Logic.DictionaryCore
 
             return _dictDb.GetDictionaryAgents(context, filter);
         }
+
+
+        //public bool IsAgentOneRole(IContext context, int id, EnumDictionaryAgentTypes source)
+        //{
+
+        //    var agent = GetDictionaryAgent(context, id);
+
+        //    switch (source)
+        //    {
+        //        case EnumDictionaryAgentTypes.isEmployee:
+        //            if (!agent.IsCompany && !agent.IsBank) { return true; }
+        //            break;
+        //        case EnumDictionaryAgentTypes.isCompany:
+        //            if (!agent.IsIndividual && !agent.IsEmployee && !agent.IsBank) { return true; }
+        //            break;
+        //        case EnumDictionaryAgentTypes.isIndividual:
+        //            if (!agent.IsCompany && !agent.IsBank) { return true; }
+        //            break;
+        //        case EnumDictionaryAgentTypes.isBank:
+        //            if (!agent.IsEmployee && !agent.IsCompany && !agent.IsIndividual) { return true; }
+        //            break;
+        //    }
+        //    return false;
+        //}
+
         #endregion DictionaryAgents
 
         #region DictionaryAgentPersons
