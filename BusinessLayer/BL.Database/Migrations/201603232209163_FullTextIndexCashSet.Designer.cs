@@ -7,13 +7,13 @@ namespace BL.Database.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class ChangeSendLists : IMigrationMetadata
+    public sealed partial class FullTextIndexCashSet : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(ChangeSendLists));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(FullTextIndexCashSet));
         
         string IMigrationMetadata.Id
         {
-            get { return "201602081813404_ChangeSendLists"; }
+            get { return "201603232209163_FullTextIndexCashSet"; }
         }
         
         string IMigrationMetadata.Source

@@ -629,21 +629,21 @@ namespace BL.Database.SystemDb
             var res = new List<FullTextIndexIem>();
             using (var dbContext = new DmsContext(ctx))
             {
-               res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int) EnumSearchObjectType.Document)
-                    .Join(dbContext.DocumentsSet, i => i.ObjectId, d => d.Id, (i, d) => new {ind = i, doc = d})
-                    .Select(x => new FullTextIndexIem
-                    {
-                        Id = x.ind.Id,
-                        DocumentId = x.doc.Id,
-                        ItemType = (EnumSearchObjectType)x.ind.ObjectType,
-                        OperationType = (EnumOperationType)x.ind.OperationType,
-                        ObjectId = 0,
-                        ObjectText = (x.doc.RegistrationNumber != null
-                            ? x.doc.RegistrationNumberPrefix + x.doc.RegistrationNumber +
-                              x.doc.RegistrationNumberSuffix
-                            : "#" + x.doc.Id)+x.doc.Description
-                    }).ToList()
-                );
+                res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumSearchObjectType.Document)
+                     .Join(dbContext.DocumentsSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, doc = d })
+                     .Select(x => new FullTextIndexIem
+                     {
+                         Id = x.ind.Id,
+                         DocumentId = x.doc.Id,
+                         ItemType = (EnumSearchObjectType)x.ind.ObjectType,
+                         OperationType = (EnumOperationType)x.ind.OperationType,
+                         ObjectId = 0,
+                         ObjectText = (x.doc.RegistrationNumber != null
+                             ? x.doc.RegistrationNumberPrefix + x.doc.RegistrationNumber +
+                               x.doc.RegistrationNumberSuffix
+                             : "#" + x.doc.Id) + x.doc.Description
+                     }).ToList()
+                 );
 
                 res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumSearchObjectType.Event)
                      .Join(dbContext.DocumentEventsSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, evt = d })
@@ -667,7 +667,7 @@ namespace BL.Database.SystemDb
                          ItemType = (EnumSearchObjectType)x.ind.ObjectType,
                          OperationType = (EnumOperationType)x.ind.OperationType,
                          ObjectId = x.fl.Id,
-                         ObjectText = x.fl.Name+"."+x.fl.Extension + " "
+                         ObjectText = x.fl.Name + "." + x.fl.Extension + " "
                      }).ToList()
                  );
 
