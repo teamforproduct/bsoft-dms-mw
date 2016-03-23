@@ -146,6 +146,7 @@
     <Compile Include="DocumentCore\Filters\FilterDocumentFileIdentity.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentFile.cs" />
     <Compile Include="DocumentCore\IncomingModel\AddDocumentByTemplateDocument.cs" />
+    <Compile Include="DocumentCore\IncomingModel\ModifyDocumentTasks.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentTags.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentTag.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalActionRecord.cs" />

@@ -200,7 +200,17 @@
         {
         }
     }
+    public class TaskNotFoundOrUserHasNoAccess : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:TaskNotFoundOrUserHasNoAccess@l##";
+        public TaskNotFoundOrUserHasNoAccess() : base(_MESSAGE)
+        {
+        }
 
+        public TaskNotFoundOrUserHasNoAccess(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
     public class DocumentNotFoundOrUserHasNoAccess : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:DocumentNotFoundOrUserHasNoAccess@l##";

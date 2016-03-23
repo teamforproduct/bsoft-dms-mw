@@ -156,10 +156,12 @@
     <Compile Include="Documents\DocumentFiltersDbProcess.cs" />
     <Compile Include="Documents\DocumentOperationsDbProcess.cs" />
     <Compile Include="Documents\DocumentsDbProcess.cs" />
+    <Compile Include="Documents\DocumentTasksDbProcess.cs" />
     <Compile Include="Documents\DocumentTagsDbProcess.cs" />
     <Compile Include="Documents\DocumentSendListsDbProcess.cs" />
     <Compile Include="Documents\Interfaces\IDocumentOperationsDbProcess.cs" />
     <Compile Include="Documents\Interfaces\IDocumentFiltersDbProcess.cs" />
+    <Compile Include="Documents\Interfaces\IDocumentTasksDbProcess.cs" />
     <Compile Include="Documents\Interfaces\IDocumentTagsDbProcess.cs" />
     <Compile Include="Documents\Interfaces\IDocumentSendListsDbProcess.cs" />
     <Compile Include="Documents\Interfaces\IDocumentFileDbProcess.cs" />
