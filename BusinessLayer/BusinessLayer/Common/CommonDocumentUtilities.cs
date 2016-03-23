@@ -392,6 +392,20 @@ namespace BL.Logic.Common
             };
         }
 
+        public static InternalDocumentRestrictedSendList GetNewDocumentRestrictedSendList(IContext context, ModifyDocumentRestrictedSendList model)
+        {
+            return new InternalDocumentRestrictedSendList
+            {
+                AccessLevel = model.AccessLevel,
+                DocumentId = model.DocumentId,
+                PositionId = model.PositionId,
+                LastChangeUserId = context.CurrentAgentId,
+                LastChangeDate = DateTime.Now,
+
+            };
+        }
+
+
         public static IEnumerable<BaseSystemUIElement> VerifyDocument(IContext ctx, FrontDocument doc, IEnumerable<BaseSystemUIElement> uiElements)
         {
             if (doc.DocumentDirection != EnumDocumentDirections.Incoming)

@@ -13,6 +13,7 @@ using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.DocumentCore.IncomingModel;
 using System.Data.Entity;
+using System.Net.Sockets;
 using System.Transactions;
 using BL.Model.AdminCore;
 using BL.Model.DictionaryCore.InternalModel;
@@ -1172,8 +1173,9 @@ namespace BL.Database.Documents
             }
         }
 
-        public void AddDocumentRestrictedSendList(IContext context, IEnumerable<InternalDocumentRestrictedSendList> model)
+        public IEnumerable<int> AddDocumentRestrictedSendList(IContext context, IEnumerable<InternalDocumentRestrictedSendList> model)
         {
+            List<int> res = null;
             using (var dbContext = new DmsContext(context))
             {
                 var items = model.Select(x => new DocumentRestrictedSendLists
@@ -1187,7 +1189,9 @@ namespace BL.Database.Documents
 
                 dbContext.DocumentRestrictedSendListsSet.AddRange(items);
                 dbContext.SaveChanges();
+                res = items.Select(x => x.Id).ToList();
             }
+                        return res;
         }
 
         public IEnumerable<InternalDocumentRestrictedSendList> AddByStandartSendListDocumentRestrictedSendListPrepare(IContext context, ModifyDocumentRestrictedSendListByStandartSendList model)
@@ -1236,8 +1240,9 @@ namespace BL.Database.Documents
             }
         }
 
-        public void AddDocumentSendList(IContext context, IEnumerable<InternalDocumentSendList> sendList, IEnumerable<InternalDocumentTask> task = null)
+        public IEnumerable<int> AddDocumentSendList(IContext context, IEnumerable<InternalDocumentSendList> sendList, IEnumerable<InternalDocumentTask> task = null)
         {
+            List<int> res = null;
             using (var dbContext = new DmsContext(context))
             {
                 using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
@@ -1252,14 +1257,16 @@ namespace BL.Database.Documents
 
                     if (sendList?.Any() ?? false)
                     {
-                        var sendListsDb = ModelConverter.GetDbDocumentSendLists(sendList);
+                        var sendListsDb = ModelConverter.GetDbDocumentSendLists(sendList).ToList();
                         dbContext.DocumentSendListsSet.AddRange(sendListsDb);
                         dbContext.SaveChanges();
+                        res = sendListsDb.Select(x => x.Id).ToList();
                     }
 
                     transaction.Complete();
                 }
             }
+            return res;
         }
 
         public IEnumerable<InternalDocumentSendList> AddByStandartSendListDocumentSendListPrepare(IContext context, ModifyDocumentSendListByStandartSendList model)

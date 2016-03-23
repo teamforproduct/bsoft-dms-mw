@@ -8,9 +8,9 @@ namespace BL.Database.Documents.Interfaces
 {
     public interface IDocumentSendListsDbProcess
     {
-        FrontDocumentRestrictedSendList GetRestrictedSendListBaseById(IContext ctx, int id);
-        IEnumerable<FrontDocumentRestrictedSendList> GetRestrictedSendListBase(IContext ctx, int documentId);
-        IEnumerable<FrontDocumentSendList> GetSendListBase(IContext ctx, int documentId);
-        FrontDocumentSendList GetSendListBaseById(IContext ctx, int id);
+        FrontDocumentRestrictedSendList GetRestrictedSendList(IContext ctx, int id);
+        IEnumerable<FrontDocumentRestrictedSendList> GetRestrictedSendLists(IContext ctx, int documentId);
+        IEnumerable<FrontDocumentSendList> GetSendLists(IContext ctx, int documentId);
+        FrontDocumentSendList GetSendList(IContext ctx, int id);
     }
 }
