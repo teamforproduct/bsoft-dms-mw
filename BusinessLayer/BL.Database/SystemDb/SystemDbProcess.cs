@@ -11,6 +11,7 @@ using BL.Model.SystemCore.InternalModel;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.FrontModel;
 using System.Data.Entity;
+using BL.Model.FullTextSerach;
 
 namespace BL.Database.SystemDb
 {
@@ -619,7 +620,97 @@ namespace BL.Database.SystemDb
                     .Where(x => x.sl.Stage <= x.q.MinStage && !x.sl.StartEventId.HasValue).Select(x => x.sl.Id).ToList();
             }
         }
-
         #endregion Filter Properties
+
+        #region Full text search
+
+        public IEnumerable<FullTextIndexIem> FullTextIndexPrepare(IContext ctx)
+        {
+            var res = new List<FullTextIndexIem>();
+            using (var dbContext = new DmsContext(ctx))
+            {
+               res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int) EnumSearchObjectType.Document)
+                    .Join(dbContext.DocumentsSet, i => i.ObjectId, d => d.Id, (i, d) => new {ind = i, doc = d})
+                    .Select(x => new FullTextIndexIem
+                    {
+                        Id = x.ind.Id,
+                        DocumentId = x.doc.Id,
+                        ItemType = (EnumSearchObjectType)x.ind.ObjectType,
+                        OperationType = (EnumOperationType)x.ind.OperationType,
+                        ObjectId = 0,
+                        ObjectText = (x.doc.RegistrationNumber != null
+                            ? x.doc.RegistrationNumberPrefix + x.doc.RegistrationNumber +
+                              x.doc.RegistrationNumberSuffix
+                            : "#" + x.doc.Id)+x.doc.Description
+                    }).ToList()
+                );
+
+                res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumSearchObjectType.Event)
+                     .Join(dbContext.DocumentEventsSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, evt = d })
+                     .Select(x => new FullTextIndexIem
+                     {
+                         Id = x.ind.Id,
+                         DocumentId = x.evt.DocumentId,
+                         ItemType = (EnumSearchObjectType)x.ind.ObjectType,
+                         OperationType = (EnumOperationType)x.ind.OperationType,
+                         ObjectId = x.evt.Id,
+                         ObjectText = x.evt.Description
+                     }).ToList()
+                 );
+
+                res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumSearchObjectType.Files)
+                     .Join(dbContext.DocumentFilesSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, fl = d })
+                     .Select(x => new FullTextIndexIem
+                     {
+                         Id = x.ind.Id,
+                         DocumentId = x.fl.DocumentId,
+                         ItemType = (EnumSearchObjectType)x.ind.ObjectType,
+                         OperationType = (EnumOperationType)x.ind.OperationType,
+                         ObjectId = x.fl.Id,
+                         ObjectText = x.fl.Name+"."+x.fl.Extension + " "
+                     }).ToList()
+                 );
+
+                res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumSearchObjectType.SendList)
+                     .Join(dbContext.DocumentSendListsSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, sl = d })
+                     .Select(x => new FullTextIndexIem
+                     {
+                         Id = x.ind.Id,
+                         DocumentId = x.sl.DocumentId,
+                         ItemType = (EnumSearchObjectType)x.ind.ObjectType,
+                         OperationType = (EnumOperationType)x.ind.OperationType,
+                         ObjectId = x.sl.Id,
+                         ObjectText = x.sl.Description
+                     }).ToList()
+                 );
+
+                res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumSearchObjectType.Subscription)
+                     .Join(dbContext.DocumentSubscriptionsSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, ss = d })
+                     .Select(x => new FullTextIndexIem
+                     {
+                         Id = x.ind.Id,
+                         DocumentId = x.ss.DocumentId,
+                         ItemType = (EnumSearchObjectType)x.ind.ObjectType,
+                         OperationType = (EnumOperationType)x.ind.OperationType,
+                         ObjectId = x.ss.Id,
+                         ObjectText = x.ss.Description
+                     }).ToList()
+                 );
+
+            }
+            return res;
+        }
+
+        public void FullTextIndexDeleteProcessed(IContext ctx, IEnumerable<int> processedIds)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                dbContext.FullTextIndexCashSet.RemoveRange(
+                    dbContext.FullTextIndexCashSet.Where(x => processedIds.Contains(x.Id)));
+            }
+        }
+
+        #endregion
+
     }
 }

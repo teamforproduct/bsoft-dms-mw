@@ -113,6 +113,7 @@
     <Compile Include="DBModel\Document\DocumentTasks.cs" />
     <Compile Include="DBModel\Document\DocumentWaits.cs" />
     <Compile Include="DBModel\InternalModel\DocumentQuery.cs" />
+    <Compile Include="DBModel\System\FullTextIndexCash.cs" />
     <Compile Include="DBModel\System\Properties.cs" />
     <Compile Include="DBModel\System\PropertyLinks.cs" />
     <Compile Include="DBModel\System\PropertyValues.cs" />

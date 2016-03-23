@@ -1,6 +1,7 @@
 using BL.Model.SystemCore;
 using System.Collections.Generic;
 using BL.CrossCutting.Interfaces;
+using BL.Model.FullTextSerach;
 using BL.Model.SystemCore.InternalModel;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.FrontModel;
@@ -61,6 +62,13 @@ namespace BL.Database.SystemDb
         #region AutoPlan
 
         IEnumerable<int> GetSendListIdsForAutoPlan(IContext context);
+
+        #endregion
+
+        #region Full text search
+
+        IEnumerable<FullTextIndexIem> FullTextIndexPrepare(IContext ctx);
+        void FullTextIndexDeleteProcessed(IContext ctx, IEnumerable<int> processedIds);
 
         #endregion
     }

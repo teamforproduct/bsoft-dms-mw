@@ -15,6 +15,7 @@ using BL.Model.SystemCore.InternalModel;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.FrontModel;
 using BL.Database.DBModel.System;
+using BL.Model.FullTextSerach;
 
 namespace BL.Database.Common
 {
@@ -891,6 +892,18 @@ namespace BL.Database.Common
                 dbContext.Entry(itemAtt).State = System.Data.Entity.EntityState.Deleted;
             }
             #endregion
+        }
+
+        public static void AddFullTextCashInfo(DmsContext dbContext, int objectId, EnumSearchObjectType objType, EnumOperationType operationType)
+        {
+            var cashInfo = new FullTextIndexCash
+            {
+                ObjectId = objectId,
+                ObjectType = (int)objType,
+                OperationType = (int)operationType
+            };
+
+            dbContext.FullTextIndexCashSet.Add(cashInfo);
         }
     }
 }
