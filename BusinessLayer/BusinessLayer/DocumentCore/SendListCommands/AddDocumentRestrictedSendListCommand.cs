@@ -44,12 +44,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
             _context.SetCurrentPosition(_document.ExecutorPositionId);
             _admin.VerifyAccess(_context, CommandType);
 
-            DocRestSendList = new InternalDocumentRestrictedSendList
-            {
-                AccessLevel = Model.AccessLevel,
-                DocumentId = Model.DocumentId,
-                PositionId = Model.PositionId
-            };
+            DocRestSendList = CommonDocumentUtilities.GetNewDocumentRestrictedSendList(_context, Model);
 
             var restrictedSendLists = _document.RestrictedSendLists.ToList();
             restrictedSendLists.Add(DocRestSendList);
@@ -62,11 +57,8 @@ namespace BL.Logic.DocumentCore.SendListCommands
 
         public override object Execute()
         {
-            CommonDocumentUtilities.SetLastChange(_context, DocRestSendList);
-            _operationDb.AddDocumentRestrictedSendList(_context, new List<InternalDocumentRestrictedSendList> { DocRestSendList });
-            return null;
+            return _operationDb.AddDocumentRestrictedSendList(_context, new List<InternalDocumentRestrictedSendList> { DocRestSendList }).FirstOrDefault();
         }
 
-        public override EnumDocumentActions CommandType => EnumDocumentActions.AddDocumentRestrictedSendList;
     }
 }

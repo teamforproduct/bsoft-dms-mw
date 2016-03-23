@@ -42,8 +42,8 @@ namespace DMS_WebAPI.Controllers.Documents
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            docProc.ExecuteAction(EnumDocumentActions.AddDocumentRestrictedSendList, cxt, model);
-            return GetByDocument(model.DocumentId);
+            var newId = (int)docProc.ExecuteAction(EnumDocumentActions.AddDocumentRestrictedSendList, cxt, model);
+            return Get(newId);
         }
 
         /// <summary>

@@ -475,7 +475,7 @@ namespace BL.Database.Common
 
             if (filter != null)
             {
-                if (filter?.DocumentId?.Count() > 0)
+                if (filter.DocumentId.Any())
                 {
                     subscriptionsDb = subscriptionsDb.Where(x => filter.DocumentId.Contains(x.DocumentId));
                 }
@@ -718,10 +718,24 @@ namespace BL.Database.Common
                         }).ToList();
         }
 
-        public static IEnumerable<FrontDocumentSendList> GetDocumentSendList(DmsContext dbContext, int documentId)
+        public static IEnumerable<FrontDocumentSendList> GetDocumentSendList(DmsContext dbContext, FilterDocumentSendList filter)
         {
-            return dbContext.DocumentSendListsSet.Where(x => x.DocumentId == documentId)
-                        .Select(y => new FrontDocumentSendList
+            var sendListDb = dbContext.DocumentSendListsSet.AsQueryable();
+
+            if (filter != null)
+            {
+                if (filter?.DocumentId?.Count() > 0)
+                {
+                    sendListDb = sendListDb.Where(x => filter.DocumentId.Contains(x.DocumentId));
+                }
+                if (filter?.Id?.Count() > 0)
+                {
+                    sendListDb = sendListDb.Where(x => filter.Id.Contains(x.Id));
+                }
+
+            }
+
+            return sendListDb.Select(y => new FrontDocumentSendList
                         {
                             Id = y.Id,
                             DocumentId = y.DocumentId,
@@ -784,10 +798,23 @@ namespace BL.Database.Common
                         }).ToList();
         }
 
-        public static IEnumerable<FrontDocumentRestrictedSendList> GetDocumentRestrictedSendList(DmsContext dbContext, int documentId)
+        public static IEnumerable<FrontDocumentRestrictedSendList> GetDocumentRestrictedSendList(DmsContext dbContext, FilterDocumentRestrictedSendList filter)
         {
-            return dbContext.DocumentRestrictedSendListsSet.Where(x => x.DocumentId == documentId)
-                        .Select(y => new FrontDocumentRestrictedSendList
+            var sendListDb = dbContext.DocumentRestrictedSendListsSet.AsQueryable();
+
+            if (filter != null)
+            {
+                if (filter?.DocumentId?.Count() > 0)
+                {
+                    sendListDb = sendListDb.Where(x => filter.DocumentId.Contains(x.DocumentId));
+                }
+                if (filter?.Id?.Count() > 0)
+                {
+                    sendListDb = sendListDb.Where(x => filter.Id.Contains(x.Id));
+                }
+
+            }
+            return sendListDb.Select(y => new FrontDocumentRestrictedSendList
                         {
                             Id = y.Id,
                             DocumentId = y.DocumentId,

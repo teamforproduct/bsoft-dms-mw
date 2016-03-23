@@ -498,11 +498,11 @@ namespace BL.Database.Documents
                 }
 
 
-                res.SendLists = CommonQueries.GetDocumentSendList(dbContext, documentId);
+                res.SendLists = CommonQueries.GetDocumentSendList(dbContext, new FilterDocumentSendList { DocumentId = new List<int> { documentId} });
 
                 res.SendListStageMax = (res.SendLists == null) || !res.SendLists.Any() ? 0 : res.SendLists.Max(x => x.Stage);
 
-                res.RestrictedSendLists = CommonQueries.GetDocumentRestrictedSendList(dbContext, documentId);
+                res.RestrictedSendLists = CommonQueries.GetDocumentRestrictedSendList(dbContext, new FilterDocumentRestrictedSendList { DocumentId = new List<int> { documentId } });
 
                 res.DocumentFiles = CommonQueries.GetDocumentFiles(dbContext, new FilterDocumentAttachedFile { DocumentId = docIds });
                 res.AttachedFilesCount = res.DocumentFiles.Count();
