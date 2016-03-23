@@ -8,7 +8,7 @@ using System.Data.Entity.ModelConfiguration.Conventions;
 using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
 using BL.Logic.DependencyInjection;
-using System.Data.SqlClient;
+
 
 namespace BL.Database.DatabaseContext
 {
@@ -135,7 +135,7 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<PropertyLinks> PropertyLinksSet { get; set; }
         public virtual DbSet<Properties> PropertiesSet { get; set; }
 
-
+        public virtual DbSet<FullTextIndexCash> FullTextIndexCashSet { get; set; }
         public virtual DbSet<SystemLogs> LogSet { get; set; }
         public virtual DbSet<SystemSettings> SettingsSet { get; set; }
 

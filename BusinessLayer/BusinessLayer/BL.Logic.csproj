@@ -75,6 +75,9 @@
     <Compile Include="DictionaryCore\DocumentType\AddDictionaryDocumentTypeCommand.cs" />
     <Compile Include="DictionaryCore\DocumentType\ModifyDictionaryDocumentTypeCommand.cs" />
     <Compile Include="DictionaryCore\Interfaces\IDictionaryService.cs" />
+    <Compile Include="DocumentCore\AdditionalCommands\AddDocumentTaskCommand.cs" />
+    <Compile Include="DocumentCore\AdditionalCommands\DeleteDocumentTaskCommand.cs" />
+    <Compile Include="DocumentCore\AdditionalCommands\ModifyDocumentTaskCommand.cs" />
     <Compile Include="DocumentCore\Commands\AffixSigningDocumentCommand.cs" />
     <Compile Include="DocumentCore\Commands\AcceptResultDocumentCommand.cs" />
     <Compile Include="DocumentCore\Commands\ControlTargetChangeDocumentCommand.cs" />
@@ -87,6 +90,8 @@
     <Compile Include="DocumentCore\Commands\SendForSigningDocumentCommand.cs" />
     <Compile Include="DocumentCore\Commands\SendForResponsibleExecutionDocumentCommand.cs" />
     <Compile Include="DocumentCore\Commands\SendForControlDocumentCommand.cs" />
+    <Compile Include="DocumentCore\DocumentTaskService.cs" />
+    <Compile Include="DocumentCore\Interfaces\IDocumentTaskService.cs" />
     <Compile Include="DocumentCore\SendListCommands\AddByStandartSendListDocumentSendListCommand.cs" />
     <Compile Include="DocumentCore\SendListCommands\AddByStandartSendListDocumentRestrictedSendListCommand.cs" />
     <Compile Include="DocumentCore\AdditionalCommands\AddDocumentFileCommand.cs" />

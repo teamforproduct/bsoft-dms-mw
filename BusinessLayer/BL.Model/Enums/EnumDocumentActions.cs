@@ -323,5 +323,10 @@
         ///  Отметить прочтение событий
         /// </summary>
         MarkDocumentEventAsRead = 100010,
+
+        //TODO Добавить в базу
+        AddDocumentTask = 1,
+        ModifyDocumentTask = 2,
+        DeleteDocumentTask = 3
     }
 }

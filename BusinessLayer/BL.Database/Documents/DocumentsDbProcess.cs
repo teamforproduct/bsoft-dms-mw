@@ -16,6 +16,7 @@ using BL.Model.Exception;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DictionaryCore.FilterModel;
+using BL.Model.FullTextSerach;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.InternalModel;
 
@@ -102,6 +103,9 @@ namespace BL.Database.Documents
                         {
                             fl.DocumentId = doc.Id;
                         }
+
+                    CommonQueries.AddFullTextCashInfo(dbContext,document.Id, EnumSearchObjectType.Document, EnumOperationType.AddNew);
+                    dbContext.SaveChanges();
                     transaction.Complete();
                 }
             }
@@ -733,6 +737,7 @@ namespace BL.Database.Documents
                     CommonQueries.ModifyPropertyValues(dbContext, new InternalPropertyValues { Object = EnumObjects.Documents, RecordId = document.Id, PropertyValues = document.Properties });
                 }
 
+                CommonQueries.AddFullTextCashInfo(dbContext, document.Id, EnumSearchObjectType.Document, EnumOperationType.Update);
                 dbContext.SaveChanges();
 
             }
@@ -774,6 +779,8 @@ namespace BL.Database.Documents
                 dbContext.DocumentRestrictedSendListsSet.RemoveRange(dbContext.DocumentRestrictedSendListsSet.Where(x => x.DocumentId == id));
                 dbContext.DocumentSendListsSet.RemoveRange(dbContext.DocumentSendListsSet.Where(x => x.DocumentId == id));
                 dbContext.DocumentsSet.RemoveRange(dbContext.DocumentsSet.Where(x => x.Id == id));
+
+                CommonQueries.AddFullTextCashInfo(dbContext, id, EnumSearchObjectType.Document, EnumOperationType.Delete);
                 dbContext.SaveChanges();
             }
         }
@@ -851,6 +858,7 @@ namespace BL.Database.Documents
                 entry.Property(x => x.RegistrationNumberPrefix).IsModified = true;
                 entry.Property(x => x.RegistrationDate).IsModified = true;
 
+                CommonQueries.AddFullTextCashInfo(dbContext, document.Id, EnumSearchObjectType.Document, EnumOperationType.Update);
                 dbContext.SaveChanges();
             }
         }

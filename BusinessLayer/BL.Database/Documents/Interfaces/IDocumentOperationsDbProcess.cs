@@ -80,5 +80,12 @@ namespace BL.Database.Documents.Interfaces
         void ControlOffMarkExecutionWaitPrepare(IContext context, InternalDocument document);
 
         InternalDocument AddNoteDocumentPrepare(IContext context, AddNote model);
+
+        #region DocumentTasks
+        void AddDocumentTasks(IContext context, IEnumerable<InternalDocumentTask> task);
+        InternalDocumentTask ChangeDocumentTaskPrepare(IContext context, int itemId);
+        void ModifyDocumentTask(IContext context, InternalDocumentTask task);
+        void DeleteDocumentTask(IContext context, int itemId);
+        #endregion DocumentTasks
     }
 }

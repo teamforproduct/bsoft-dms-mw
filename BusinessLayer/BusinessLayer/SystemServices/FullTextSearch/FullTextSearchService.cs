@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using BL.CrossCutting.Interfaces;
+using BL.Database.SystemDb;
 using BL.Logic.Common;
 using BL.Model.Constants;
-using BL.Model.DocumentCore.InternalModel;
 using BL.Model.FullTextSerach;
 
 namespace BL.Logic.SystemServices.FullTextSearch
@@ -13,17 +13,14 @@ namespace BL.Logic.SystemServices.FullTextSearch
     public class FullTextSearchService : BaseSystemWorkerService, IFullTextSearchService
     {
         private readonly Dictionary<FullTextSettings, Timer> _timers;
-        List<FullTextUpdateCashInfo> _updateQueue;
         List<IFullTextIndexWorker> _workers;
-        private object _lockQueue;
+        ISystemDbProcess _systemDb;
 
-
-        public FullTextSearchService(ISettings setting, ILogger logger):base(setting, logger)
+        public FullTextSearchService(ISettings setting, ILogger logger, ISystemDbProcess systemDb) :base(setting, logger)
         {
             _timers = new Dictionary<FullTextSettings, Timer>();
-            _updateQueue = new List<FullTextUpdateCashInfo>();
-            _lockQueue = new object();
             _workers = new List<IFullTextIndexWorker>();
+            _systemDb = systemDb;
         }
 
         public IEnumerable<FullTextSearchResult> Search(IContext ctx, string text)
@@ -36,18 +33,6 @@ namespace BL.Logic.SystemServices.FullTextSearch
         {
             var worker = _workers.FirstOrDefault(x => x.ServerKey == CommonSystemUtilities.GetServerKey(ctx));
             return worker?.Search(text, objectType, documentId);
-        }
-
-        public void UpdateIndex(IContext ctx, InternalDocument doc, EnumSearchObjectType objectType,EnumOperationType operType)
-        {
-            var si = new FullTextUpdateCashInfo
-            {
-                Document = doc,
-                OperationType = operType,
-                PartType = objectType,
-                ServerKey = CommonSystemUtilities.GetServerKey(ctx)
-            };
-            AddNewInfo(si);
         }
 
         protected override void InitializeServers()
@@ -84,25 +69,6 @@ namespace BL.Logic.SystemServices.FullTextSearch
             }
         }
 
-        private void AddNewInfo(FullTextUpdateCashInfo info)
-        {
-            lock (_lockQueue)
-            {
-                _updateQueue.Add(info);
-            }
-        }
-
-        private List<FullTextUpdateCashInfo> ExtractObjectsFromCash(string serverKey)
-        {
-            List<FullTextUpdateCashInfo> res;
-            lock (_lockQueue)
-            {
-                res = _updateQueue.Where(x => x.ServerKey == serverKey).ToList();
-                _updateQueue.RemoveAll(x => x.ServerKey == serverKey);
-            }
-            return res;
-        }
-
         private Timer GetTimer(FullTextSettings key)
         {
             Timer res = null;
@@ -114,80 +80,13 @@ namespace BL.Logic.SystemServices.FullTextSearch
             return res;
         }
 
-        private List<FullTextIndexIem> PrepareObjectToIndexing(List<FullTextUpdateCashInfo> objList)
+        private void SinchronizeServer(IContext ctx)
         {
-            var res = new List<FullTextIndexIem>();
-            //TODO check which data we store as description!
-            foreach (var info in objList)
-            {
-                switch (info.PartType)
-                {
-                    case EnumSearchObjectType.Document:
-                        res.Add(new FullTextIndexIem
-                        {
-                            DocumentId = info.Document.Id,
-                            ItemType = info.PartType,
-                            ObjectId = 0,
-                            ObjectText = info.Document.Description,
-                            OperationType = info.OperationType
-                        });
-                        break;
-                    case EnumSearchObjectType.Event:
-                        info.Document.Events.ToList().ForEach(x => res.Add(new FullTextIndexIem
-                        {
-                            DocumentId = x.DocumentId,
-                            ItemType = info.PartType,
-                            OperationType = info.OperationType,
-                            ObjectId = x.Id,
-                            ObjectText = x.Description
-                        }));
-                        break;
-                    case EnumSearchObjectType.Subscription:
-                        info.Document.Subscriptions.ToList().ForEach(x => res.Add(new FullTextIndexIem
-                        {
-                            DocumentId = x.DocumentId,
-                            ItemType = info.PartType,
-                            OperationType = info.OperationType,
-                            ObjectId = x.Id,
-                            ObjectText = x.Description
-                        }));
-                        break;
-                    case EnumSearchObjectType.SendList:
-                        info.Document.SendLists.ToList().ForEach(x => res.Add(new FullTextIndexIem
-                        {
-                            DocumentId = x.DocumentId,
-                            ItemType = info.PartType,
-                            OperationType = info.OperationType,
-                            ObjectId = x.Id,
-                            ObjectText = x.Description
-                        }));
-                        break;
-                    case EnumSearchObjectType.Files:
-                        info.Document.DocumentFiles.ToList().ForEach(x => res.Add(new FullTextIndexIem
-                        {
-                            DocumentId = x.DocumentId,
-                            ItemType = info.PartType,
-                            ObjectId = x.Id,
-                            ObjectText = x.Name+"."+x.Extension,
-                            OperationType = info.OperationType
-                        }));
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-            }
-            return res;
-        }
-
-        private void SinchronizeServer(FullTextSettings serverSetting, IContext ctx)
-        {
-            var objectToProcess = ExtractObjectsFromCash(serverSetting.DatabaseKey);
-            if (!objectToProcess.Any()) return;
-
             var worker = _workers.FirstOrDefault(x => x.ServerKey == CommonSystemUtilities.GetServerKey(ctx));
             if (worker == null) return;
 
-            var toUpdate = PrepareObjectToIndexing(objectToProcess);
+            var toUpdate = _systemDb.FullTextIndexPrepare(ctx) as List<FullTextIndexIem>;
+            if (toUpdate == null || !toUpdate.Any()) return;
 
             worker.StartUpdate();
 
@@ -216,9 +115,8 @@ namespace BL.Logic.SystemServices.FullTextSearch
             {
                 worker.UpdateItem(itm);
             }
-
-
             worker.CommitChanges();
+            _systemDb.FullTextIndexDeleteProcessed(ctx, toUpdate.Select(x=>x.Id));
         }
 
         private void OnSinchronize(object state)
@@ -233,7 +131,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
             if (ctx == null) return;
             try
             {
-                SinchronizeServer(md, ctx);
+                SinchronizeServer(ctx);
             }
             catch (Exception ex)
             {

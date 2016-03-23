@@ -214,6 +214,18 @@ namespace BL.Logic.DocumentCore
                     cmd = DmsResolver.Current.Get<MarkDocumentEventAsReadCommand>();
                     break;
 
+                case EnumDocumentActions.AddDocumentTask:
+                    cmd = DmsResolver.Current.Get<AddDocumentTaskCommand>();
+                    break;
+
+                case EnumDocumentActions.ModifyDocumentTask:
+                    cmd = DmsResolver.Current.Get<ModifyDocumentTaskCommand>();
+                    break;
+
+                case EnumDocumentActions.DeleteDocumentTask:
+                    cmd = DmsResolver.Current.Get<DeleteDocumentTaskCommand>();
+                    break;
+
                 case EnumDocumentActions.AddDocumentSendListItem:
                 case EnumDocumentActions.DeleteDocumentLink:
                     return null;

@@ -17,10 +17,10 @@ namespace BL.Logic.SystemServices.AutoPlan
         private ISystemDbProcess _sysDb;
         private ICommandService _cmdService;
 
-        public AutoPlanService(ISettings settings, ILogger logger) : base(settings, logger)
+        public AutoPlanService(ISettings settings, ILogger logger, ICommandService cmdService) : base(settings, logger)
         {
             _sysDb = DmsResolver.Current.Get<ISystemDbProcess>();
-            _cmdService = DmsResolver.Current.Get<ICommandService>();
+            _cmdService = cmdService;
             _timers = new Dictionary<AutoPlanSettings, Timer>();
         }
 
