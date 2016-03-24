@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using BL.CrossCutting.Interfaces;
 using BL.Model.AdminCore;
+using BL.Model.SystemCore;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.InternalModel;
@@ -15,21 +16,21 @@ namespace BL.Logic.DictionaryCore.Interfaces
 
         #region DictionaryAgents
         FrontDictionaryAgent GetDictionaryAgent(IContext context, int id);
-        IEnumerable<FrontDictionaryAgent> GetDictionaryAgents(IContext context, FilterDictionaryAgent filter);
+        IEnumerable<FrontDictionaryAgent> GetDictionaryAgents(IContext context, FilterDictionaryAgent filter,UIPaging paging);
        
         #endregion DictionaryAgents
 
         #region DictionaryAgentPersons
         FrontDictionaryAgentPerson GetDictionaryAgentPerson(IContext context, int id);
 
-        IEnumerable<FrontDictionaryAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter);
+        IEnumerable<FrontDictionaryAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging);
 
         #endregion DictionaryAgentPersons
 
         #region DictionaryAgentCompanies
         FrontDictionaryAgentCompany GetDictionaryAgentCompany(IContext context, int id);
 
-        IEnumerable<FrontDictionaryAgentCompany> GetDictionaryAgentCompanies(IContext context, FilterDictionaryAgentCompany filter);
+        IEnumerable<FrontDictionaryAgentCompany> GetDictionaryAgentCompanies(IContext context, FilterDictionaryAgentCompany filter, UIPaging paging);
         #endregion DictionaryAgentCompanies
 
         #region DictionaryAgentAccounts
@@ -41,13 +42,13 @@ namespace BL.Logic.DictionaryCore.Interfaces
         #region DictionaryAgentBanks
         FrontDictionaryAgentBank GetDictionaryAgentBank(IContext context, int id);
 
-        IEnumerable<FrontDictionaryAgentBank> GetDictionaryAgentBanks(IContext context, FilterDictionaryAgentBank filter);
+        IEnumerable<FrontDictionaryAgentBank> GetDictionaryAgentBanks(IContext context, FilterDictionaryAgentBank filter, UIPaging paging);
         #endregion DictionaryAgentBanks
 
         #region DictionaryAgentEmployees
         FrontDictionaryAgentEmployee GetDictionaryAgentEmployee(IContext context, int id);
 
-        IEnumerable<FrontDictionaryAgentEmployee> GetDictionaryAgentEmployees(IContext context, FilterDictionaryAgentEmployee filter);
+        IEnumerable<FrontDictionaryAgentEmployee> GetDictionaryAgentEmployees(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging);
 
         #endregion DictionaryAgentEmployees
 

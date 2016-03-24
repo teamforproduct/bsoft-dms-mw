@@ -7,7 +7,7 @@ using BL.CrossCutting.Interfaces;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.DependencyInjection;
 using BL.Model.Exception;
-
+using System.Linq;
 
 namespace DMS_WebAPI.Utilities
 {
@@ -21,8 +21,6 @@ namespace DMS_WebAPI.Utilities
         /// <summary>
         /// Gets setting value by its name.
         /// </summary>
-        /// <typeparam name="T">Expected setting value type.</typeparam>
-        /// <param key="settingName">Setting key.</param>
         /// <param name="currentPositionId"></param>
         /// <returns>Typed setting value.</returns>
         public IContext Get(int? currentPositionId = null)
@@ -39,6 +37,31 @@ namespace DMS_WebAPI.Utilities
                 contextValue.LastUsage = DateTime.Now;
                 var cxt = (IContext)contextValue.StoreObject;
                 cxt.SetCurrentPosition(currentPositionId);
+                return cxt;
+            }
+            catch (InvalidCastException invalidCastException)
+            {
+                throw new Exception();
+            }
+        }
+
+        /// <summary>
+        /// Remove setting value by its name.
+        /// </summary>
+        /// <returns>Typed setting value.</returns>
+        public IContext Remove(string token = null)
+        { 
+            if (string.IsNullOrEmpty(token)) token = Token.ToLower();
+            if (!_casheContexts.ContainsKey(token))
+            {
+                return null;
+            }
+
+            var contextValue = _casheContexts[token];
+            try
+            {
+                var cxt = (IContext)contextValue.StoreObject;
+                _casheContexts.Remove(token);
                 return cxt;
             }
             catch (InvalidCastException invalidCastException)
@@ -101,6 +124,16 @@ namespace DMS_WebAPI.Utilities
         private void Save(string token, IContext val)
         {
             _casheContexts.Add(token.ToLower(), new StoreInfo() { StoreObject = val, LastUsage = DateTime.Now });
+        }
+
+        public void RemoveByTimeout()
+        {
+            var now = DateTime.Now;
+            var keys = _casheContexts.Where(x => x.Value.LastUsage.AddDays(_TIME_OUT) <= now).Select(x => x.Key).ToArray();
+            foreach (var key in keys)
+            {
+                _casheContexts.Remove(key);
+            }
         }
 
         public void ClearCache()

@@ -84,7 +84,7 @@ namespace BL.Model.DocumentCore.FrontModel
         /// <summary>
         /// ИД Документа
         /// </summary>
-        public new int Id { get; set; }
+        public int Id { get; set; }
 
         public int? DocumentSubjectId { get; set; }
         /// <summary>

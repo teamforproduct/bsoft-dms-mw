@@ -1,6 +1,7 @@
 ﻿using BL.Logic.DictionaryCore.Interfaces;
 using System.Collections.Generic;
 using BL.Model.DictionaryCore;
+using BL.Model.SystemCore;
 using BL.Database.Dictionaries.Interfaces;
 using System.Linq;
 using BL.CrossCutting.Interfaces;
@@ -38,10 +39,10 @@ namespace BL.Logic.DictionaryCore
             return _dictDb.GetDictionaryAgent(context, id);
         }
 
-        public IEnumerable<FrontDictionaryAgent> GetDictionaryAgents(IContext context, FilterDictionaryAgent filter)
+        public IEnumerable<FrontDictionaryAgent> GetDictionaryAgents(IContext context, FilterDictionaryAgent filter,UIPaging paging)
         {
 
-            return _dictDb.GetDictionaryAgents(context, filter);
+            return _dictDb.GetDictionaryAgents(context, filter,paging);
         }
 
 
@@ -77,10 +78,10 @@ namespace BL.Logic.DictionaryCore
             return _dictDb.GetDictionaryAgentPerson(context, id);
         }
 
-        public IEnumerable<FrontDictionaryAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter)
+        public IEnumerable<FrontDictionaryAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging)
         {
 
-            return _dictDb.GetDictionaryAgentPersons(context, filter);
+            return _dictDb.GetDictionaryAgentPersons(context, filter,paging);
         }
         #endregion DictionaryAgentPersons
 
@@ -91,9 +92,9 @@ namespace BL.Logic.DictionaryCore
             return _dictDb.GetDictionaryAgentEmployee(context, id);
         }
 
-        public IEnumerable<FrontDictionaryAgentEmployee> GetDictionaryAgentEmployees(IContext context, FilterDictionaryAgentEmployee filter)
+        public IEnumerable<FrontDictionaryAgentEmployee> GetDictionaryAgentEmployees(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging)
         {
-            return _dictDb.GetDictionaryAgentEmployees(context, filter);
+            return _dictDb.GetDictionaryAgentEmployees(context, filter,paging);
         }
        
         #endregion DictionaryAgentEmployees
@@ -144,10 +145,10 @@ namespace BL.Logic.DictionaryCore
             return _dictDb.GetDictionaryAgentCompany(context, id);
         }
 
-        public IEnumerable<FrontDictionaryAgentCompany> GetDictionaryAgentCompanies(IContext context, FilterDictionaryAgentCompany filter)
+        public IEnumerable<FrontDictionaryAgentCompany> GetDictionaryAgentCompanies(IContext context, FilterDictionaryAgentCompany filter, UIPaging paging)
         {
 
-            return _dictDb.GetDictionaryAgentCompanies(context, filter);
+            return _dictDb.GetDictionaryAgentCompanies(context, filter,paging);
         }
         #endregion DictionaryAgentCompanies
 
@@ -158,10 +159,10 @@ namespace BL.Logic.DictionaryCore
             return _dictDb.GetDictionaryAgentBank(context, id);
         }
 
-        public IEnumerable<FrontDictionaryAgentBank> GetDictionaryAgentBanks(IContext context, FilterDictionaryAgentBank filter)
+        public IEnumerable<FrontDictionaryAgentBank> GetDictionaryAgentBanks(IContext context, FilterDictionaryAgentBank filter, UIPaging paging)
         {
 
-            return _dictDb.GetDictionaryAgentBanks(context, filter);
+            return _dictDb.GetDictionaryAgentBanks(context, filter,paging);
         }
         #endregion DictionaryAgentCompanies
 

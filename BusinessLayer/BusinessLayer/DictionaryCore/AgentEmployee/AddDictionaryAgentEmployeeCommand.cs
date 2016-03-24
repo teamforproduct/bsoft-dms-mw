@@ -37,7 +37,7 @@ namespace BL.Logic.DictionaryCore.AgentEmployee
             {
                 PersonnelNumber = Model.PersonnelNumber,
                 TaxCode=Model.TaxCode
-            });
+            },null);
 
             if (agents.Count() > 0)
             {

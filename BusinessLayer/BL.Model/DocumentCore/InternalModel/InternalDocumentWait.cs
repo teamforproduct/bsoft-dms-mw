@@ -13,9 +13,11 @@ namespace BL.Model.DocumentCore.InternalModel
         public int? ResultTypeId { get; set; }
         public DateTime? DueDate { get; set; }
         public DateTime? AttentionDate { get; set; }
+        public string TargetDescription { get; set; }
+        public DateTime? TargetAttentionDate { get; set; }
         public InternalDocumentEvent OnEvent { get; set; }
         public InternalDocumentEvent OffEvent { get; set; }
         public InternalDocumentWait ParentWait { get; set; }
-        public string GeneralInfo { get; set; }
+
     }
 }

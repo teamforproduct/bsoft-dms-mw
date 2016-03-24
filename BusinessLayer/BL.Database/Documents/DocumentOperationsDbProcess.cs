@@ -13,12 +13,14 @@ using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.DocumentCore.IncomingModel;
 using System.Data.Entity;
+using System.Net.Sockets;
 using System.Transactions;
 using BL.Model.AdminCore;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.SystemCore;
 using DocumentAccesses = BL.Database.DBModel.Document.DocumentAccesses;
 using BL.Model.SystemCore.InternalModel;
+using BL.Model.Exception;
 
 namespace BL.Database.Documents
 {
@@ -374,6 +376,37 @@ namespace BL.Database.Documents
             }
         }
 
+        public void ChangeTargetDocumentWait(IContext ctx, InternalDocumentWait wait, InternalDocumentEvent newEvent)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
+                {
+                    var eventDb = ModelConverter.GetDbDocumentEvent(newEvent);
+                    dbContext.DocumentEventsSet.Add(eventDb);
+                    dbContext.SaveChanges();
+
+                    var waitDb = new DocumentWaits
+                    {
+                        Id = wait.Id,
+                        TargetDescription = wait.TargetDescription,
+                        TargetAttentionDate = wait.TargetAttentionDate,
+                        LastChangeDate = wait.LastChangeDate,
+                        LastChangeUserId = wait.LastChangeUserId
+                    };
+                    dbContext.DocumentWaitsSet.Attach(waitDb);
+                    var entry = dbContext.Entry(waitDb);
+                    entry.Property(x => x.LastChangeDate).IsModified = true;
+                    entry.Property(x => x.LastChangeUserId).IsModified = true;
+                    entry.Property(x => x.TargetDescription).IsModified = true;
+                    entry.Property(x => x.TargetAttentionDate).IsModified = true;
+                    dbContext.SaveChanges();
+
+                    transaction.Complete();
+                }
+            }
+        }
+
         public void CloseDocumentWait(IContext ctx, InternalDocument document)
         {
             using (var dbContext = new DmsContext(ctx))
@@ -485,6 +518,52 @@ namespace BL.Database.Documents
                                                 ReadDate = x.OnEvent.ReadDate,
                                                 ReadAgentId = x.OnEvent.ReadAgentId,
 
+                                            }
+                                        }
+                                    }
+                    }).FirstOrDefault();
+                return doc;
+
+            }
+        }
+
+        public InternalDocument ControlTargetChangeDocumentPrepare(IContext ctx, int eventId)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                var doc = dbContext.DocumentWaitsSet
+                    .Where(x => x.OnEventId == eventId && (ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.OnEvent.SourcePositionId.Value)))
+                    .Select(x => new InternalDocument
+                    {
+                        Id = x.DocumentId,
+                        Waits = new List<InternalDocumentWait>
+                                    {
+                                        new InternalDocumentWait
+                                        {
+                                            Id = x.Id,
+                                            DocumentId = x.DocumentId,
+                                            OnEventId = x.OnEventId,
+                                            OffEventId = x.OffEventId,
+                                            TargetDescription = x.TargetDescription,
+                                            TargetAttentionDate = x.TargetAttentionDate,
+                                            OnEvent = new InternalDocumentEvent
+                                            {
+                                                Id = x.OnEvent.Id,
+                                                TargetPositionId = x.OnEvent.TargetPositionId,
+                                                TargetPositionExecutorAgentId = x.OnEvent.TargetPositionExecutorAgentId,
+                                                SourceAgentId = x.OnEvent.SourceAgentId,
+                                                TargetAgentId = x.OnEvent.TargetAgentId,
+                                                TaskId = x.OnEvent.TaskId,
+                                                IsAvailableWithinTask = x.OnEvent.IsAvailableWithinTask,
+                                                Description = x.OnEvent.Description,
+                                                EventType = (EnumEventTypes)x.OnEvent.EventTypeId,
+                                                CreateDate = x.OnEvent.CreateDate,
+                                                Date = x.OnEvent.Date,
+                                                LastChangeUserId = x.OnEvent.LastChangeUserId,
+                                                LastChangeDate = x.OnEvent.LastChangeDate,
+                                                SendDate = x.OnEvent.SendDate,
+                                                ReadDate = x.OnEvent.ReadDate,
+                                                ReadAgentId = x.OnEvent.ReadAgentId,
                                             }
                                         }
                                     }
@@ -1172,8 +1251,9 @@ namespace BL.Database.Documents
             }
         }
 
-        public void AddDocumentRestrictedSendList(IContext context, IEnumerable<InternalDocumentRestrictedSendList> model)
+        public IEnumerable<int> AddDocumentRestrictedSendList(IContext context, IEnumerable<InternalDocumentRestrictedSendList> model)
         {
+            List<int> res = null;
             using (var dbContext = new DmsContext(context))
             {
                 var items = model.Select(x => new DocumentRestrictedSendLists
@@ -1187,7 +1267,9 @@ namespace BL.Database.Documents
 
                 dbContext.DocumentRestrictedSendListsSet.AddRange(items);
                 dbContext.SaveChanges();
+                res = items.Select(x => x.Id).ToList();
             }
+                        return res;
         }
 
         public IEnumerable<InternalDocumentRestrictedSendList> AddByStandartSendListDocumentRestrictedSendListPrepare(IContext context, ModifyDocumentRestrictedSendListByStandartSendList model)
@@ -1236,8 +1318,9 @@ namespace BL.Database.Documents
             }
         }
 
-        public void AddDocumentSendList(IContext context, IEnumerable<InternalDocumentSendList> sendList, IEnumerable<InternalDocumentTask> task = null)
+        public IEnumerable<int> AddDocumentSendList(IContext context, IEnumerable<InternalDocumentSendList> sendList, IEnumerable<InternalDocumentTask> task = null)
         {
+            List<int> res = null;
             using (var dbContext = new DmsContext(context))
             {
                 using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
@@ -1252,14 +1335,16 @@ namespace BL.Database.Documents
 
                     if (sendList?.Any() ?? false)
                     {
-                        var sendListsDb = ModelConverter.GetDbDocumentSendLists(sendList);
+                        var sendListsDb = ModelConverter.GetDbDocumentSendLists(sendList).ToList();
                         dbContext.DocumentSendListsSet.AddRange(sendListsDb);
                         dbContext.SaveChanges();
+                        res = sendListsDb.Select(x => x.Id).ToList();
                     }
 
                     transaction.Complete();
                 }
             }
+            return res;
         }
 
         public IEnumerable<InternalDocumentSendList> AddByStandartSendListDocumentSendListPrepare(IContext context, ModifyDocumentSendListByStandartSendList model)
@@ -1541,5 +1626,75 @@ namespace BL.Database.Documents
         }
 
         #endregion DocumentSavedFilter
+
+        #region DocumentTasks
+        public void AddDocumentTasks(IContext context, IEnumerable<InternalDocumentTask> task)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var tasksDb = task.Select(ModelConverter.GetDbDocumentTask).ToList();
+                dbContext.DocumentTasksSet.AddRange(tasksDb);
+                dbContext.SaveChanges();
+            }
+        }
+        public InternalDocumentTask ChangeDocumentTaskPrepare(IContext context, int itemId)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var item = dbContext.DocumentTasksSet.Where(x => x.Id == itemId)
+                     .Select(x => new InternalDocumentTask
+                     {
+                         Id = x.Id,
+                         DocumentId = x.DocumentId,
+                         PositionId = x.PositionId,
+                         PositionExecutorAgentId = x.PositionExecutorAgentId,
+                         AgentId = x.AgentId,
+                         Name = x.Task,
+                         Description = x.Description
+                     }).FirstOrDefault();
+                
+                if (item == null)
+                {
+                    throw new TaskNotFoundOrUserHasNoAccess();
+                }
+
+                return item;
+            }
+        }
+        public void ModifyDocumentTask(IContext context, InternalDocumentTask task)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var taskDb = ModelConverter.GetDbDocumentTask(task);
+                taskDb.Id = task.Id;
+
+                dbContext.DocumentTasksSet.Attach(taskDb);
+                //TODO Проверить поля которые нужно обновлять
+                var entry = dbContext.Entry(taskDb);
+                entry.Property(e => e.DocumentId).IsModified = true;
+                entry.Property(e => e.PositionId).IsModified = true;
+                entry.Property(e => e.PositionExecutorAgentId).IsModified = true;
+                entry.Property(e => e.AgentId).IsModified = true;
+                entry.Property(e => e.Task).IsModified = true;
+                entry.Property(e => e.Description).IsModified = true;
+                entry.Property(e => e.LastChangeUserId).IsModified = true;
+                entry.Property(e => e.LastChangeDate).IsModified = true;
+
+                dbContext.SaveChanges();
+            }
+        }
+        public void DeleteDocumentTask(IContext context, int itemId)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var item = dbContext.DocumentTasksSet.FirstOrDefault(x => x.Id == itemId);
+                if (item != null)
+                {
+                    dbContext.DocumentTasksSet.Remove(item);
+                    dbContext.SaveChanges();
+                }
+            }
+        }
+        #endregion DocumentTasks
     }
 }

@@ -70,6 +70,8 @@ namespace BL.Logic.DocumentCore.Commands
             var controlOn = new ControlOn(Model, _docWait.DocumentId);
             var newWait = CommonDocumentUtilities.GetNewDocumentWait(_context, controlOn);
             newWait.Id = _docWait.Id;
+            newWait.TargetDescription = _docWait.TargetDescription;
+            newWait.TargetAttentionDate = _docWait.TargetAttentionDate;
 
             var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, _docWait.DocumentId, _docWait.OnEvent.EventType, Model.EventDate, Model.Description, _docWait.OnEvent.TaskId, _docWait.OnEvent.IsAvailableWithinTask, _docWait.OnEvent.TargetPositionId);
             var oldEvent = _docWait.OnEvent;
@@ -77,14 +79,12 @@ namespace BL.Logic.DocumentCore.Commands
             newEvent.Id = newWait.OnEventId = oldEvent.Id;
 
             newWait.OnEvent = newEvent;
-
-
             newWait.ParentWait = _docWait;
 
             _docWait.Id = 0;
             oldEvent.Id = _docWait.OnEventId = 0;
             _docWait.OffEventId = newEvent.Id;
-           // _docWait.OffEvent = newEvent;
+
             CommonDocumentUtilities.SetLastChange(_context, _docWait);
 
             //var waits = new List<InternalDocumentWait> { newWait };

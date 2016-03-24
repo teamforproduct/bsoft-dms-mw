@@ -37,7 +37,7 @@ namespace BL.Logic.DictionaryCore.AgentBank
             var agents = _dictDb.GetDictionaryAgentBanks(_context, new FilterDictionaryAgentBank
             {
                 MFOCode = Model.MFOCode
-            });
+            },null);
 
             if (agents.Count() > 0)
             {

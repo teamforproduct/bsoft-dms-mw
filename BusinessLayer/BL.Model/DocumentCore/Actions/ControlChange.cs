@@ -3,6 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BL.Model.DocumentCore.Actions
 {
+    /// <summary>
+    /// Модель изменения параметров контроля
+    /// </summary>
     public class ControlChange 
     {
         /// <summary>
@@ -20,7 +23,7 @@ namespace BL.Model.DocumentCore.Actions
         /// </summary>
         public DateTime? DueDate { get; set; }
         /// <summary>
-        /// Срок включения режима постоянное внимание
+        /// Дата включения режима постоянное внимание
         /// </summary>
         public DateTime? AttentionDate { get; set; }
         /// <summary>

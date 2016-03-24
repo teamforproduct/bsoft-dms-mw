@@ -7,6 +7,8 @@ using BL.Model.Enums;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Web.Http;
+using BL.Model.SystemCore;
+
 
 
 namespace DMS_WebAPI.Controllers.Dictionaries
@@ -22,11 +24,11 @@ namespace DMS_WebAPI.Controllers.Dictionaries
        /// <param name="filter"></param>
        /// <returns></returns>
         // GET: api/DictionaryCompanies
-        public IHttpActionResult Get([FromUri] FilterDictionaryAgentCompany filter)
+        public IHttpActionResult Get([FromUri] FilterDictionaryAgentCompany filter, [FromUri]UIPaging paging)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionaryAgentCompanies(cxt, filter);
+            var tmpDicts = tmpDictProc.GetDictionaryAgentCompanies(cxt, filter, paging);
             return new JsonResult(tmpDicts, this);
         }
         /// <summary>

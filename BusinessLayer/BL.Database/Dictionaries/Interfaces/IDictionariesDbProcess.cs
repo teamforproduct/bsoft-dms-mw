@@ -2,6 +2,7 @@
 using BL.CrossCutting.Interfaces;
 using BL.Model.AdminCore;
 using BL.Model.DictionaryCore;
+using BL.Model.SystemCore;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.InternalModel;
@@ -15,7 +16,7 @@ namespace BL.Database.Dictionaries.Interfaces
         void UpdateDictionaryAgent(IContext context, InternalDictionaryAgent addr);
         void DeleteDictionaryAgent(IContext context, InternalDictionaryAgent addr);
         int AddDictionaryAgent(IContext context, InternalDictionaryAgent addr);
-        IEnumerable<FrontDictionaryAgent> GetDictionaryAgents(IContext context, FilterDictionaryAgent filter);
+        IEnumerable<FrontDictionaryAgent> GetDictionaryAgents(IContext context, FilterDictionaryAgent filter,UIPaging paging);
         #endregion DictionaryAgents
 
         #region DictionaryAgentPerson
@@ -24,7 +25,7 @@ namespace BL.Database.Dictionaries.Interfaces
         void UpdateDictionaryAgentPerson(IContext context, InternalDictionaryAgentPerson addr);
         void DeleteDictionaryAgentPerson(IContext context, InternalDictionaryAgentPerson addr);
         int AddDictionaryAgentPerson(IContext context, InternalDictionaryAgentPerson addr);
-        IEnumerable<FrontDictionaryAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter);
+        IEnumerable<FrontDictionaryAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging);
         #endregion DictionaryAgentPerson
 
         #region DictionaryAgentEmployee
@@ -33,7 +34,7 @@ namespace BL.Database.Dictionaries.Interfaces
         void UpdateDictionaryAgentEmployee(IContext context, InternalDictionaryAgentEmployee employee);
         void DeleteDictionaryAgentEmployee(IContext context, InternalDictionaryAgentEmployee employee);
         int AddDictionaryAgentEmployee(IContext context, InternalDictionaryAgentEmployee employee);
-        IEnumerable<FrontDictionaryAgentEmployee> GetDictionaryAgentEmployees(IContext context, FilterDictionaryAgentEmployee filter);
+        IEnumerable<FrontDictionaryAgentEmployee> GetDictionaryAgentEmployees(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging);
         #endregion DictionaryAgentEmployee
 
         #region DictionaryAgentAddress
@@ -62,7 +63,7 @@ namespace BL.Database.Dictionaries.Interfaces
         void UpdateDictionaryAgentCompany(IContext context, InternalDictionaryAgentCompany company);
         void DeleteDictionaryAgentCompany(IContext context, InternalDictionaryAgentCompany company);
         int AddDictionaryAgentCompany(IContext context, InternalDictionaryAgentCompany company);
-        IEnumerable<FrontDictionaryAgentCompany> GetDictionaryAgentCompanies(IContext context, FilterDictionaryAgentCompany filter);
+        IEnumerable<FrontDictionaryAgentCompany> GetDictionaryAgentCompanies(IContext context, FilterDictionaryAgentCompany filter, UIPaging paging);
         #endregion DictionaryAgentCompanies
 
         #region DictionaryAgentBanks
@@ -70,7 +71,7 @@ namespace BL.Database.Dictionaries.Interfaces
         void UpdateDictionaryAgentBank(IContext context, InternalDictionaryAgentBank bank);
         void DeleteDictionaryAgentBank(IContext context, InternalDictionaryAgentBank bank);
         int AddDictionaryAgentBank(IContext context, InternalDictionaryAgentBank bank);
-        IEnumerable<FrontDictionaryAgentBank> GetDictionaryAgentBanks(IContext context, FilterDictionaryAgentBank filter);
+        IEnumerable<FrontDictionaryAgentBank> GetDictionaryAgentBanks(IContext context, FilterDictionaryAgentBank filter, UIPaging paging);
         #endregion DictionaryAgentBanks
 
         #region DictionaryAgentAccounts

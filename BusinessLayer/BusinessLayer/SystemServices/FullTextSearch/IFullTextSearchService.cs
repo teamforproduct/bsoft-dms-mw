@@ -11,6 +11,5 @@ namespace BL.Logic.SystemServices.FullTextSearch
         void Dispose();
         IEnumerable<FullTextSearchResult> Search(IContext ctx, string text);
         IEnumerable<FullTextSearchResult> Search(IContext ctx, string text, EnumSearchObjectType objectType, int documentId);
-        void UpdateIndex(IContext ctx, InternalDocument doc, EnumSearchObjectType objectType, EnumOperationType operType);
     }
 }
