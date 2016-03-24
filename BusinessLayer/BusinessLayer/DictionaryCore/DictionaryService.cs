@@ -206,13 +206,13 @@ namespace BL.Logic.DictionaryCore
         #endregion DictionaryDepartments
 
         #region DictionaryDocumentDirections
-        public BaseDictionaryDocumentDirection GetDictionaryDocumentDirection(IContext context, int id)
+        public FrontDictionaryDocumentDirection GetDictionaryDocumentDirection(IContext context, int id)
         {
 
             return _dictDb.GetDictionaryDocumentDirection(context, id);
         }
 
-        public IEnumerable<BaseDictionaryDocumentDirection> GetDictionaryDocumentDirections(IContext context, FilterDictionaryDocumentDirection filter)
+        public IEnumerable<FrontDictionaryDocumentDirection> GetDictionaryDocumentDirections(IContext context, FilterDictionaryDocumentDirection filter)
         {
 
             return _dictDb.GetDictionaryDocumentDirections(context, filter);
@@ -249,13 +249,13 @@ namespace BL.Logic.DictionaryCore
         #endregion DictionaryDocumentTypes
 
         #region DictionaryEventTypes
-        public BaseDictionaryEventType GetDictionaryEventType(IContext context, int id)
+        public FrontDictionaryEventType GetDictionaryEventType(IContext context, int id)
         {
 
             return _dictDb.GetDictionaryEventType(context, id);
         }
 
-        public IEnumerable<BaseDictionaryEventType> GetDictionaryEventTypes(IContext context, FilterDictionaryEventType filter)
+        public IEnumerable<FrontDictionaryEventType> GetDictionaryEventTypes(IContext context, FilterDictionaryEventType filter)
         {
 
             return _dictDb.GetDictionaryEventTypes(context, filter);
@@ -263,13 +263,13 @@ namespace BL.Logic.DictionaryCore
         #endregion DictionaryEventTypes
 
         #region DictionaryImportanceEventTypes
-        public BaseDictionaryImportanceEventType GetDictionaryImportanceEventType(IContext context, int id)
+        public FrontDictionaryImportanceEventType GetDictionaryImportanceEventType(IContext context, int id)
         {
 
             return _dictDb.GetDictionaryImportanceEventType(context, id);
         }
 
-        public IEnumerable<BaseDictionaryImportanceEventType> GetDictionaryImportanceEventTypes(IContext context, FilterDictionaryImportanceEventType filter)
+        public IEnumerable<FrontDictionaryImportanceEventType> GetDictionaryImportanceEventTypes(IContext context, FilterDictionaryImportanceEventType filter)
         {
 
             return _dictDb.GetDictionaryImportanceEventTypes(context, filter);
@@ -277,13 +277,13 @@ namespace BL.Logic.DictionaryCore
         #endregion DictionaryImportanceEventTypes
 
         #region DictionaryLinkTypes
-        public BaseDictionaryLinkType GetDictionaryLinkType(IContext context, int id)
+        public FrontDictionaryLinkType GetDictionaryLinkType(IContext context, int id)
         {
 
             return _dictDb.GetDictionaryLinkType(context, id);
         }
 
-        public IEnumerable<BaseDictionaryLinkType> GetDictionaryLinkTypes(IContext context, FilterDictionaryLinkType filter)
+        public IEnumerable<FrontDictionaryLinkType> GetDictionaryLinkTypes(IContext context, FilterDictionaryLinkType filter)
         {
 
             return _dictDb.GetDictionaryLinkTypes(context, filter);
@@ -321,13 +321,13 @@ namespace BL.Logic.DictionaryCore
         #endregion DictionaryRegistrationJournals
 
         #region DictionaryResultTypes
-        public BaseDictionaryResultType GetDictionaryResultType(IContext context, int id)
+        public FrontDictionaryResultType GetDictionaryResultType(IContext context, int id)
         {
 
             return _dictDb.GetDictionaryResultType(context, id);
         }
 
-        public IEnumerable<BaseDictionaryResultType> GetDictionaryResultTypes(IContext context, FilterDictionaryResultType filter)
+        public IEnumerable<FrontDictionaryResultType> GetDictionaryResultTypes(IContext context, FilterDictionaryResultType filter)
         {
 
             return _dictDb.GetDictionaryResultTypes(context, filter);
@@ -335,13 +335,13 @@ namespace BL.Logic.DictionaryCore
         #endregion DictionaryResultTypes
 
         #region DictionarySendTypes
-        public BaseDictionarySendType GetDictionarySendType(IContext context, int id)
+        public FrontDictionarySendType GetDictionarySendType(IContext context, int id)
         {
 
             return _dictDb.GetDictionarySendType(context, id);
         }
 
-        public IEnumerable<BaseDictionarySendType> GetDictionarySendTypes(IContext context, FilterDictionarySendType filter)
+        public IEnumerable<FrontDictionarySendType> GetDictionarySendTypes(IContext context, FilterDictionarySendType filter)
         {
 
             return _dictDb.GetDictionarySendTypes(context, filter);
@@ -377,13 +377,13 @@ namespace BL.Logic.DictionaryCore
         #endregion DictionaryStandartSendList
 
         #region DictionarySubordinationTypes
-        public BaseDictionarySubordinationType GetDictionarySubordinationType(IContext context, int id)
+        public FrontDictionarySubordinationType GetDictionarySubordinationType(IContext context, int id)
         {
 
             return _dictDb.GetDictionarySubordinationType(context, id);
         }
 
-        public IEnumerable<BaseDictionarySubordinationType> GetDictionarySubordinationTypes(IContext context, FilterDictionarySubordinationType filter)
+        public IEnumerable<FrontDictionarySubordinationType> GetDictionarySubordinationTypes(IContext context, FilterDictionarySubordinationType filter)
         {
 
             return _dictDb.GetDictionarySubordinationTypes(context, filter);

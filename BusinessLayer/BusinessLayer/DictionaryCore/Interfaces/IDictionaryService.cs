@@ -89,9 +89,9 @@ namespace BL.Logic.DictionaryCore.Interfaces
         #endregion DictionaryDepartments
 
         #region DictionaryDocumentDirections
-        BaseDictionaryDocumentDirection GetDictionaryDocumentDirection(IContext context, int id);
+        FrontDictionaryDocumentDirection GetDictionaryDocumentDirection(IContext context, int id);
 
-        IEnumerable<BaseDictionaryDocumentDirection> GetDictionaryDocumentDirections(IContext context, FilterDictionaryDocumentDirection filter);
+        IEnumerable<FrontDictionaryDocumentDirection> GetDictionaryDocumentDirections(IContext context, FilterDictionaryDocumentDirection filter);
         #endregion DictionaryDepartments
 
         // Тематики документов
@@ -108,21 +108,21 @@ namespace BL.Logic.DictionaryCore.Interfaces
         #endregion DictionaryDocumentSubjects
 
         #region DictionaryEventTypes
-        BaseDictionaryEventType GetDictionaryEventType(IContext context, int id);
+        FrontDictionaryEventType GetDictionaryEventType(IContext context, int id);
 
-        IEnumerable<BaseDictionaryEventType> GetDictionaryEventTypes(IContext context, FilterDictionaryEventType filter);
+        IEnumerable<FrontDictionaryEventType> GetDictionaryEventTypes(IContext context, FilterDictionaryEventType filter);
         #endregion DictionaryEventTypes
 
         #region DictionaryImportanceEventTypes
-        BaseDictionaryImportanceEventType GetDictionaryImportanceEventType(IContext context, int id);
+        FrontDictionaryImportanceEventType GetDictionaryImportanceEventType(IContext context, int id);
 
-        IEnumerable<BaseDictionaryImportanceEventType> GetDictionaryImportanceEventTypes(IContext context, FilterDictionaryImportanceEventType filter);
+        IEnumerable<FrontDictionaryImportanceEventType> GetDictionaryImportanceEventTypes(IContext context, FilterDictionaryImportanceEventType filter);
         #endregion DictionaryImportanceEventTypes
 
         #region DictionaryLinkTypes
-        BaseDictionaryLinkType GetDictionaryLinkType(IContext context, int id);
+        FrontDictionaryLinkType GetDictionaryLinkType(IContext context, int id);
 
-        IEnumerable<BaseDictionaryLinkType> GetDictionaryLinkTypes(IContext context, FilterDictionaryLinkType filter);
+        IEnumerable<FrontDictionaryLinkType> GetDictionaryLinkTypes(IContext context, FilterDictionaryLinkType filter);
         #endregion DictionaryLinkTypes
 
         // Штатное расписание
@@ -140,15 +140,15 @@ namespace BL.Logic.DictionaryCore.Interfaces
         #endregion DictionaryRegistrationJournals
 
         #region DictionaryResultTypes
-        BaseDictionaryResultType GetDictionaryResultType(IContext context, int id);
+        FrontDictionaryResultType GetDictionaryResultType(IContext context, int id);
 
-        IEnumerable<BaseDictionaryResultType> GetDictionaryResultTypes(IContext context, FilterDictionaryResultType filter);
+        IEnumerable<FrontDictionaryResultType> GetDictionaryResultTypes(IContext context, FilterDictionaryResultType filter);
         #endregion DictionaryResultTypes
 
         #region DictionarySendTypes
-        BaseDictionarySendType GetDictionarySendType(IContext context, int id);
+        FrontDictionarySendType GetDictionarySendType(IContext context, int id);
 
-        IEnumerable<BaseDictionarySendType> GetDictionarySendTypes(IContext context, FilterDictionarySendType filter);
+        IEnumerable<FrontDictionarySendType> GetDictionarySendTypes(IContext context, FilterDictionarySendType filter);
         #endregion DictionarySendTypes
 
         #region DictionaryStandartSendListContents
@@ -164,9 +164,9 @@ namespace BL.Logic.DictionaryCore.Interfaces
         #endregion DictionaryStandartSendList
 
         #region DictionarySubordinationTypes
-        BaseDictionarySubordinationType GetDictionarySubordinationType(IContext context, int id);
+        FrontDictionarySubordinationType GetDictionarySubordinationType(IContext context, int id);
 
-        IEnumerable<BaseDictionarySubordinationType> GetDictionarySubordinationTypes(IContext context, FilterDictionarySubordinationType filter);
+        IEnumerable<FrontDictionarySubordinationType> GetDictionarySubordinationTypes(IContext context, FilterDictionarySubordinationType filter);
         #endregion DictionarySubordinationTypes
 
         #region DictionaryTags

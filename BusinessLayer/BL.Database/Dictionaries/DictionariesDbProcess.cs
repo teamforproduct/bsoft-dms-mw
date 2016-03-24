@@ -2257,13 +2257,13 @@ namespace BL.Database.Dictionaries
         #endregion DictionaryDepartments
 
         #region DictionaryDocumentDirections
-        public BaseDictionaryDocumentDirection GetDictionaryDocumentDirection(IContext context, int id)
+        public FrontDictionaryDocumentDirection GetDictionaryDocumentDirection(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context))
             {
                 return
                     dbContext.DictionaryDocumentDirectionsSet.Where(x => x.Id == id)
-                        .Select(x => new BaseDictionaryDocumentDirection
+                        .Select(x => new FrontDictionaryDocumentDirection
                         {
                             Id = x.Id,
                             Code = x.Code,
@@ -2274,7 +2274,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<BaseDictionaryDocumentDirection> GetDictionaryDocumentDirections(IContext context, FilterDictionaryDocumentDirection filter)
+        public IEnumerable<FrontDictionaryDocumentDirection> GetDictionaryDocumentDirections(IContext context, FilterDictionaryDocumentDirection filter)
         {
             using (var dbContext = new DmsContext(context))
             {
@@ -2285,7 +2285,7 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(x => filter.DocumentDirectionId.Contains(x.Id));
                 }
 
-                return qry.Select(x => new BaseDictionaryDocumentDirection
+                return qry.Select(x => new FrontDictionaryDocumentDirection
                 {
                     Id = x.Id,
                     Code = x.Code,
@@ -2609,11 +2609,11 @@ namespace BL.Database.Dictionaries
         #endregion DictionaryDocumentTypes
 
         #region DictionaryEventTypes
-        public BaseDictionaryEventType GetDictionaryEventType(IContext context, int id)
+        public FrontDictionaryEventType GetDictionaryEventType(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context))
             {
-                return dbContext.DictionaryEventTypesSet.Where(x => x.Id == id).Select(x => new BaseDictionaryEventType
+                return dbContext.DictionaryEventTypesSet.Where(x => x.Id == id).Select(x => new FrontDictionaryEventType
                 {
                     EventType = (EnumEventTypes)x.Id,
                     Id = x.Id,
@@ -2627,7 +2627,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<BaseDictionaryEventType> GetDictionaryEventTypes(IContext context, FilterDictionaryEventType filter)
+        public IEnumerable<FrontDictionaryEventType> GetDictionaryEventTypes(IContext context, FilterDictionaryEventType filter)
         {
             using (var dbContext = new DmsContext(context))
             {
@@ -2651,7 +2651,7 @@ namespace BL.Database.Dictionaries
                                 );
                 }
 
-                return qry.Select(x => new BaseDictionaryEventType
+                return qry.Select(x => new FrontDictionaryEventType
                 {
                     EventType = (EnumEventTypes)x.Id,
                     Id = x.Id,
@@ -2667,13 +2667,13 @@ namespace BL.Database.Dictionaries
         #endregion DictionaryEventTypes
 
         #region DictionaryImportanceEventTypes
-        public BaseDictionaryImportanceEventType GetDictionaryImportanceEventType(IContext context, int id)
+        public FrontDictionaryImportanceEventType GetDictionaryImportanceEventType(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context))
             {
 
                 return dbContext.DictionaryImportanceEventTypesSet.Where(x => x.Id == id)
-                    .Select(x => new BaseDictionaryImportanceEventType
+                    .Select(x => new FrontDictionaryImportanceEventType
                     {
                         Id = x.Id,
                         Code = x.Code,
@@ -2684,7 +2684,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<BaseDictionaryImportanceEventType> GetDictionaryImportanceEventTypes(IContext context, FilterDictionaryImportanceEventType filter)
+        public IEnumerable<FrontDictionaryImportanceEventType> GetDictionaryImportanceEventTypes(IContext context, FilterDictionaryImportanceEventType filter)
         {
             using (var dbContext = new DmsContext(context))
             {
@@ -2703,7 +2703,7 @@ namespace BL.Database.Dictionaries
                                 );
                 }
 
-                return qry.Select(x => new BaseDictionaryImportanceEventType
+                return qry.Select(x => new FrontDictionaryImportanceEventType
                 {
                     Id = x.Id,
                     Code = x.Code,
@@ -2716,12 +2716,12 @@ namespace BL.Database.Dictionaries
         #endregion DictionaryImportanceEventTypes
 
         #region DictionaryLinkTypes
-        public BaseDictionaryLinkType GetDictionaryLinkType(IContext context, int id)
+        public FrontDictionaryLinkType GetDictionaryLinkType(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context))
             {
                 return dbContext.DictionaryLinkTypesSet.Where(x => x.Id == id)
-                    .Select(x => new BaseDictionaryLinkType
+                    .Select(x => new FrontDictionaryLinkType
                     {
                         Id = x.Id,
                         Name = x.Name,
@@ -2732,7 +2732,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<BaseDictionaryLinkType> GetDictionaryLinkTypes(IContext context, FilterDictionaryLinkType filter)
+        public IEnumerable<FrontDictionaryLinkType> GetDictionaryLinkTypes(IContext context, FilterDictionaryLinkType filter)
         {
             using (var dbContext = new DmsContext(context))
             {
@@ -2743,7 +2743,7 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(x => filter.LinkTypeId.Contains(x.Id));
                 }
 
-                return qry.Select(x => new BaseDictionaryLinkType
+                return qry.Select(x => new FrontDictionaryLinkType
                 {
                     Id = x.Id,
                     Name = x.Name,
@@ -3254,13 +3254,13 @@ namespace BL.Database.Dictionaries
         #endregion DictionaryRegistrationJournals
 
         #region DictionaryResultTypes
-        public BaseDictionaryResultType GetDictionaryResultType(IContext context, int id)
+        public FrontDictionaryResultType GetDictionaryResultType(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context))
             {
 
                 return dbContext.DictionaryResultTypesSet.Where(x => x.Id == id)
-                    .Select(x => new BaseDictionaryResultType
+                    .Select(x => new FrontDictionaryResultType
                     {
                         Id = x.Id,
                         Name = x.Name,
@@ -3271,7 +3271,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<BaseDictionaryResultType> GetDictionaryResultTypes(IContext context, FilterDictionaryResultType filter)
+        public IEnumerable<FrontDictionaryResultType> GetDictionaryResultTypes(IContext context, FilterDictionaryResultType filter)
         {
             using (var dbContext = new DmsContext(context))
             {
@@ -3282,7 +3282,7 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(x => filter.ResultTypeId.Contains(x.Id));
                 }
 
-                return qry.Select(x => new BaseDictionaryResultType
+                return qry.Select(x => new FrontDictionaryResultType
                 {
                     Id = x.Id,
                     Name = x.Name,
@@ -3293,12 +3293,12 @@ namespace BL.Database.Dictionaries
         #endregion DictionaryResultTypes
 
         #region DictionarySendTypes
-        public BaseDictionarySendType GetDictionarySendType(IContext context, int id)
+        public FrontDictionarySendType GetDictionarySendType(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context))
             {
                 return dbContext.DictionarySendTypesSet.Where(x => x.Id == id)
-                    .Select(x => new BaseDictionarySendType
+                    .Select(x => new FrontDictionarySendType
                     {
                         Id = x.Id,
                         Code = x.Code,
@@ -3312,7 +3312,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<BaseDictionarySendType> GetDictionarySendTypes(IContext context, FilterDictionarySendType filter)
+        public IEnumerable<FrontDictionarySendType> GetDictionarySendTypes(IContext context, FilterDictionarySendType filter)
         {
             using (var dbContext = new DmsContext(context))
             {
@@ -3323,7 +3323,7 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(x => filter.SendTypeId.Contains(x.Id));
                 }
 
-                return qry.Select(x => new BaseDictionarySendType
+                return qry.Select(x => new FrontDictionarySendType
                 {
                     Id = x.Id,
                     Code = x.Code,
@@ -3457,12 +3457,12 @@ namespace BL.Database.Dictionaries
         #endregion DictionaryStandartSendList
 
         #region DictionarySubordinationTypes
-        public BaseDictionarySubordinationType GetDictionarySubordinationType(IContext context, int id)
+        public FrontDictionarySubordinationType GetDictionarySubordinationType(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context))
             {
                 return dbContext.DictionarySubordinationTypesSet.Where(x => x.Id == id)
-                    .Select(x => new BaseDictionarySubordinationType
+                    .Select(x => new FrontDictionarySubordinationType
                     {
                         Id = x.Id,
                         Code = x.Code,
@@ -3473,7 +3473,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<BaseDictionarySubordinationType> GetDictionarySubordinationTypes(IContext context, FilterDictionarySubordinationType filter)
+        public IEnumerable<FrontDictionarySubordinationType> GetDictionarySubordinationTypes(IContext context, FilterDictionarySubordinationType filter)
         {
             using (var dbContext = new DmsContext(context))
             {
@@ -3484,7 +3484,7 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(x => filter.SubordinationTypeId.Contains(x.Id));
                 }
 
-                return qry.Select(x => new BaseDictionarySubordinationType
+                return qry.Select(x => new FrontDictionarySubordinationType
                 {
                     Id = x.Id,
                     Code = x.Code,
