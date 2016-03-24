@@ -271,6 +271,14 @@ namespace BL.Database.Admins
                     qry = qry.Where(x => filter.Label.Equals(x.Label));
                 }
 
+                if (filter.Labels!=null)
+                {
+                    if (filter.Labels.Count > 0)
+                        qry = qry.Where(x => filter.Labels.Contains(x.Label));
+                    else
+                        qry = qry.Where(x => x.Id == 0);
+                }
+
                 return qry.Select(x => new FrontAdminLanguageValue
                 {
                     Id = x.Id,
