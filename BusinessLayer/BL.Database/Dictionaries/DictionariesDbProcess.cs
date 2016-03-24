@@ -4,6 +4,7 @@ using BL.Database.DBModel.Dictionary;
 using BL.Database.Dictionaries.Interfaces;
 using BL.Model.AdminCore;
 using BL.Model.DictionaryCore;
+using BL.Model.SystemCore;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.InternalModel;
@@ -118,11 +119,19 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<FrontDictionaryAgent> GetDictionaryAgents(IContext context, FilterDictionaryAgent filter)
+        public IEnumerable<FrontDictionaryAgent> GetDictionaryAgents(IContext context, FilterDictionaryAgent filter,UIPaging paging)
         {
             using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionaryAgentsSet.AsQueryable();
+
+                if (paging != null)
+                {
+                    paging.TotalItemsCount = qry.Count();
+
+                    qry = qry.OrderBy(x => x.Name)
+                        .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
+                }
 
                 if (filter.AgentId?.Count > 0)
                 {
@@ -351,7 +360,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<FrontDictionaryAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter)
+        public IEnumerable<FrontDictionaryAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter,UIPaging paging)
         {
             using (var dbContext = new DmsContext(context))
             {
@@ -360,6 +369,13 @@ namespace BL.Database.Dictionaries
 
                 qry = qry.Where(x => x.Agent.IsIndividual);
 
+                if (paging != null)
+                {
+                    paging.TotalItemsCount = qry.Count();
+
+                    qry = qry.OrderBy(x => x.LastName)
+                        .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
+                }
 
                 if (filter.AgentId?.Count > 0)
                 {
@@ -745,13 +761,21 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<FrontDictionaryAgentEmployee> GetDictionaryAgentEmployees(IContext context, FilterDictionaryAgentEmployee filter)
+        public IEnumerable<FrontDictionaryAgentEmployee> GetDictionaryAgentEmployees(IContext context, FilterDictionaryAgentEmployee filter,UIPaging paging)
         {
             using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionaryAgentEmployeesSet.AsQueryable();
 
                 qry = qry.Where(x => x.Agent.IsEmployee);
+
+                if (paging != null)
+                {
+                    paging.TotalItemsCount = qry.Count();
+
+                    qry = qry.OrderBy(x => x.Agent.AgentPerson.LastName)
+                        .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
+                }
 
                 if (!string.IsNullOrEmpty(filter.PersonnelNumber))
                 {
@@ -925,7 +949,10 @@ namespace BL.Database.Dictionaries
             {
                 var qry = dbContext.DictionaryAgentAddressesSet.AsQueryable();
 
+                
                 qry = qry.Where(x => x.AgentId == filter.AgentId);
+
+                qry = qry.OrderBy(x => x.Address);
 
                 if (filter.AddressTypeId?.Count > 0)
                 {
@@ -1059,6 +1086,8 @@ namespace BL.Database.Dictionaries
             {
                 var qry = dbContext.DictionaryAddressTypesSet.AsQueryable();
 
+                qry = qry.OrderBy(x => x.Name);
+
                 if (filter.AddressTypeId?.Count > 0)
                 {
                     qry = qry.Where(x => filter.AddressTypeId.Contains(x.Id));
@@ -1152,11 +1181,19 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<FrontDictionaryAgentCompany> GetDictionaryAgentCompanies(IContext context, FilterDictionaryAgentCompany filter)
+        public IEnumerable<FrontDictionaryAgentCompany> GetDictionaryAgentCompanies(IContext context, FilterDictionaryAgentCompany filter,UIPaging paging)
         {
             using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionaryAgentCompaniesSet.AsQueryable();
+
+                if (paging != null)
+                {
+                    paging.TotalItemsCount = qry.Count();
+
+                    qry = qry.OrderBy(x => x.FullName)
+                        .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
+                }
 
                 if (filter.CompanyId?.Count > 0)
                 {
@@ -1509,7 +1546,7 @@ namespace BL.Database.Dictionaries
         }
 
 
-        public IEnumerable<FrontDictionaryAgentBank> GetDictionaryAgentBanks(IContext context, FilterDictionaryAgentBank filter)
+        public IEnumerable<FrontDictionaryAgentBank> GetDictionaryAgentBanks(IContext context, FilterDictionaryAgentBank filter,UIPaging paging)
         {
             using (var dbContext = new DmsContext(context))
             {
@@ -1518,6 +1555,13 @@ namespace BL.Database.Dictionaries
 
                 qry = qry.Where(x => x.Agent.IsBank);
 
+                if (paging != null)
+                {
+                    paging.TotalItemsCount = qry.Count();
+
+                    qry = qry.OrderBy(x => x.Agent.Name)
+                        .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
+                }
 
                 if (filter.AgentId?.Count > 0)
                 {
@@ -1968,6 +2012,8 @@ namespace BL.Database.Dictionaries
                 var qry = dbContext.DictionaryAgentContactsSet.AsQueryable();
 
                 qry = qry.Where(x => x.AgentId == agentId);
+
+                qry.OrderBy(x => x.ContactType);
 
                 if (filter.ContactTypeId?.Count > 0)
                 {

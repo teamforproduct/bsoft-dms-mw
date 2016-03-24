@@ -40,6 +40,9 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// игнорировать при поиске
         /// </summary>
         public List<int> NotContainsId { get; set; }
-
+        /// <summary>
+        /// Первая буква наименования
+        /// </summary>
+        public char FirstChar { get; set; }
     }
 }

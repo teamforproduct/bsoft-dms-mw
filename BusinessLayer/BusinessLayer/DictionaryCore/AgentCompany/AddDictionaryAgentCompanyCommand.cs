@@ -38,7 +38,7 @@ namespace BL.Logic.DictionaryCore.AgentCompany
                 TaxCode = Model.TaxCode,
                 OKPOCode=Model.OKPOCode,
                 VATCode=Model.VATCode
-            });
+            },null);
 
             if (agents.Count() > 0)
             {

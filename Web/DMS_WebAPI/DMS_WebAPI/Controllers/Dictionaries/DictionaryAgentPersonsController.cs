@@ -7,6 +7,7 @@ using BL.Model.Enums;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Web.Http;
+using BL.Model.SystemCore;
 
 namespace DMS_WebAPI.Controllers.Dictionaries
 {
@@ -22,11 +23,11 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="filter">фильтр</param>
         /// <returns>коллекцию контрагентов</returns>
-        public IHttpActionResult Get([FromUri] FilterDictionaryAgentPerson filter)
+        public IHttpActionResult Get([FromUri] FilterDictionaryAgentPerson filter, [FromUri]UIPaging paging)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionaryAgentPersons(cxt, filter);
+            var tmpDicts = tmpDictProc.GetDictionaryAgentPersons(cxt, filter,paging);
             return new JsonResult(tmpDicts, this);
         }
 

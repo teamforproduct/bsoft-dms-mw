@@ -35,7 +35,7 @@ namespace BL.Logic.DictionaryCore.AgentBank
                 MFOCode = Model.MFOCode,
                 IsActive=Model.IsActive,
                 NotContainsId=new List<int> { Model.Id }
-            });
+            },null);
 
             if (agents.Count() > 0)
             {

@@ -36,7 +36,7 @@ namespace BL.Logic.DictionaryCore.AgentPerson
             var agents = _dictDb.GetDictionaryAgentPersons(_context, new FilterDictionaryAgentPerson
             {
                 TaxCode = Model.TaxCode
-            });
+            },null);
             
             if (agents.Count() > 0)
             {

@@ -38,7 +38,7 @@ namespace BL.Logic.DictionaryCore.AgentEmployee
                 TaxCode = Model.TaxCode,
                 IsActive=Model.IsActive,
                 NotContainsId=new List<int> { Model.Id}
-            });
+            },null);
 
             if (agents.Count() > 0)
             {

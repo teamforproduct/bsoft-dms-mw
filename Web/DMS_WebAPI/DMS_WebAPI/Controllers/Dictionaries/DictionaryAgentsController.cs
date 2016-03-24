@@ -7,6 +7,7 @@ using DMS_WebAPI.Utilities;
 using System.Web.Http;
 using BL.Model.Enums;
 using BL.Model.DictionaryCore.FilterModel;
+using BL.Model.SystemCore;
 
 namespace DMS_WebAPI.Controllers.Dictionaries
 {
@@ -24,14 +25,14 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="filter">фильтр</param>
         /// <returns>Список контрагентов
         /// </returns>
-        public IHttpActionResult Get([FromUri] FilterDictionaryAgent filter)
+        public IHttpActionResult Get([FromUri] FilterDictionaryAgent filter, [FromUri]UIPaging paging)
         {
             //TODO Краткий формат если фильтр не указан или содержит несколько типов
             //     Формат конкретного типа, если тип явно указан в фильтре
 
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionaryAgents(cxt, filter);
+            var tmpDicts = tmpDictProc.GetDictionaryAgents(cxt, filter,paging);
             return new JsonResult(tmpDicts, this);
         }
 
