@@ -5,16 +5,13 @@ namespace BL.Model.DictionaryCore.FilterModel
     /// <summary>
     ///  Фильтр словаря типов важности событий
     /// </summary>
-    public class FilterDictionaryImportanceEventType
+    public class FilterDictionaryImportanceEventType : DictionaryBaseFilterParms
     {
-        /// <summary>
-        /// Массив ИД типов важности событий
-        /// </summary>
-        public List<int> ImportanceEventTypeId { get; set; }
+    
         /// <summary>
         /// Массив ИД документов
         /// </summary>
-        public List<int> DocumentId { get; set; }
-        public List<int> NotContainsId { get; set; }
+        public List<int> DocumentIDs { get; set; }
+        
     }
 }

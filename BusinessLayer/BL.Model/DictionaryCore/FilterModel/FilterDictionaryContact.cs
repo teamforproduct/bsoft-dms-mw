@@ -9,7 +9,7 @@ namespace BL.Model.DictionaryCore.FilterModel
     /// <summary>
     /// фильтр контактов
     /// </summary>
-    public class FilterDictionaryContact
+    public class FilterDictionaryContact : DictionaryBaseFilterParms
     {
         /// <summary>
         /// ИД
@@ -26,14 +26,7 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// <summary>
         /// значение
         /// </summary>
-        public string Value { get; set; }
-        /// <summary>
-        /// признак активности
-        /// </summary>
-        public bool? IsActive { get; set; }
-        /// <summary>
-        /// игнорировать при поиске
-        /// </summary>
-        public List<int> NotContainsId { get; set; }
+        public string Contact { get; set; }
+        
     }
 }

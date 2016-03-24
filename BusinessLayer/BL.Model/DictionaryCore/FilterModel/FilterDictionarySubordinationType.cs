@@ -2,9 +2,8 @@
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
-    public class FilterDictionarySubordinationType
+    public class FilterDictionarySubordinationType : DictionaryBaseFilterParms
     {
-        public List<int> SubordinationTypeId { get; set; }
-        public List<int> NotContainsId { get; set; }
+ 
     }
 }

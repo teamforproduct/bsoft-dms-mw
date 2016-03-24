@@ -10,29 +10,14 @@ namespace BL.Model.DictionaryCore.FilterModel
     /// <summary>
     /// Фильр для контрагентов - банков
     /// </summary>
-    public class FilterDictionaryAgentBank
+    public class FilterDictionaryAgentBank : DictionaryBaseFilterParms
     {
 
-        /// <summary>
-        /// Массив ИД 
-        /// </summary>
-        public List<int> AgentId { get; set; }
         /// <summary>
         /// МФО
         /// </summary>
         public string MFOCode { get; set; }
-        /// <summary>
-        /// Фрагмент наименования
-        /// </summary>
-        public string Name { get; set; }
-        /// <summary>
-        /// признак активности
-        /// </summary>
-        public bool? IsActive { get; set; }
-        /// <summary>
-        /// игнорировать при поиске
-        /// </summary>
-        public List<int> NotContainsId { get; set; }
+      
         /// <summary>
         /// Первая буква наименования
         /// </summary>

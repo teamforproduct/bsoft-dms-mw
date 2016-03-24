@@ -6,16 +6,9 @@ namespace BL.Model.DictionaryCore.FilterModel
     /// <summary>
     /// Фильтр словаря физических лиц
     /// </summary>
-    public class FilterDictionaryAgentPerson
+    public class FilterDictionaryAgentPerson : DictionaryBaseFilterParms
     {
-        /// <summary>
-        /// Массив ИД контрагентов
-        /// </summary>
-        public List<int> AgentId { get; set; }
-        /// <summary>
-        /// Отрывок из ФИО
-        /// </summary>
-        public string Name { get; set; }
+       
         /// <summary>
         /// Отрывок из паспортных данных
         /// </summary>
@@ -32,14 +25,7 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// Пол (true - мужской)
         /// </summary>
         public bool? IsMale { get; set; }
-        /// <summary>
-        /// Признак активности
-        /// </summary>
-        public bool? IsActive { get; set; }
-        /// <summary>
-        /// игнорировать при поиске
-        /// </summary>
-        public List<int> NotContainsId { get; set; }
+        
         /// <summary>
         /// Первая буква наименования
         /// </summary>

@@ -37,7 +37,7 @@ namespace BL.Logic.DictionaryCore.AgentCompany
                 OKPOCode = Model.OKPOCode,
                 VATCode = Model.VATCode,
                 IsActive=Model.IsActive,
-                NotContainsId=new List<int> { Model.Id}
+                NotContainsIDs=new List<int> { Model.Id}
             },null);
 
             if (agents.Count() > 0)

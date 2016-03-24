@@ -115,7 +115,7 @@ namespace BL.Logic.DictionaryCore
 
         public FrontDictionaryAddressType GetDictionaryAddressType(IContext context, int id)
         {
-            return _dictDb.GetDictionaryAddressTypes(context, new FilterDictionaryAddressType { AddressTypeId = new List<int> { id } }).FirstOrDefault();
+            return _dictDb.GetDictionaryAddressTypes(context, new FilterDictionaryAddressType { IDs = new List<int> { id } }).FirstOrDefault();
         }
 
         public IEnumerable<FrontDictionaryAddressType> GetDictionaryAddressTypes(IContext context, FilterDictionaryAddressType filter)
@@ -181,7 +181,7 @@ namespace BL.Logic.DictionaryCore
         #region DictionaryContactTypes
         public FrontDictionaryContactType GetDictionaryContactType(IContext context, int id)
         {
-            return _dictDb.GetDictionaryContactTypes(context, new FilterDictionaryContactType { ContactTypeId = new List<int> { id } }).FirstOrDefault();
+            return _dictDb.GetDictionaryContactTypes(context, new FilterDictionaryContactType { IDs = new List<int> { id } }).FirstOrDefault();
         }
 
         public IEnumerable<FrontDictionaryContactType> GetDictionaryContactTypes(IContext context, FilterDictionaryContactType filter)
@@ -189,8 +189,7 @@ namespace BL.Logic.DictionaryCore
             return _dictDb.GetDictionaryContactTypes(context, filter);
         }
         #endregion
-
-      
+              
         #region DictionaryDepartments
         public FrontDictionaryDepartment GetDictionaryDepartment(IContext context, int id)
         {
@@ -238,7 +237,7 @@ namespace BL.Logic.DictionaryCore
         // следить за списком полей необхдимых в каждом конкретном случае
         public FrontDictionaryDocumentType GetDictionaryDocumentType(IContext context, int id)
         {
-            return _dictDb.GetDictionaryDocumentTypes(context, new FilterDictionaryDocumentType { DocumentTypeId = new List<int> { id } }).FirstOrDefault();
+            return _dictDb.GetDictionaryDocumentTypes(context, new FilterDictionaryDocumentType { IDs = new List<int> { id } }).FirstOrDefault();
         }
 
         public IEnumerable<FrontDictionaryDocumentType> GetDictionaryDocumentTypes(IContext context, FilterDictionaryDocumentType filter)
@@ -398,7 +397,7 @@ namespace BL.Logic.DictionaryCore
 
         public FrontDictionaryTag GetDictionaryTag(IContext context, int id)
         {
-            return _dictDb.GetDictionaryTags(context, new FilterDictionaryTag { TagId = new List<int> { id } }).FirstOrDefault();
+            return _dictDb.GetDictionaryTags(context, new FilterDictionaryTag { IDs = new List<int> { id } }).FirstOrDefault();
         }
         #endregion DictionaryTags
 

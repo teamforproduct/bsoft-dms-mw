@@ -9,13 +9,9 @@ namespace BL.Model.DictionaryCore.FilterModel
     /// <summary>
     /// Фильтр для счетов контрагента
     /// </summary>
-    public class FilterDictionaryAgentAccount
+    public class FilterDictionaryAgentAccount : DictionaryBaseFilterParms
     {
        
-        /// <summary>
-        /// наименование
-        /// </summary>
-        public string Name { get; set; }
         /// <summary>
         /// номер счета
         /// </summary>
@@ -24,13 +20,6 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// банк
         /// </summary>
         public int? AgentBankId { get; set; }
-        /// <summary>
-        /// признак активности
-        /// </summary>
-        public bool? IsActive { get; set; }
-        /// <summary>
-        /// игнорировать при поиске
-        /// </summary>
-        public List<int> NotContainsId { get; set; }
+       
     }
 }

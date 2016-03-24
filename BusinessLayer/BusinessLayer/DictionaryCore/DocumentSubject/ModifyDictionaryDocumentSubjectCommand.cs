@@ -38,7 +38,7 @@ namespace BL.Logic.DictionaryCore.DocumentType
 
             // Находим запись с таким-же именем в этой-же папке
             // Устно договорились НЕ упроцедуривать new FilterDictionaryDocumentSubject { Name = Model.Name, ParentId = Model.ParentId, NotDocumentSubjectId = new List<int> { Model.Id }} в Modify и Add коммандах.
-            if (_dictDb.ExistsDictionaryDocumentSubject(_context, new FilterDictionaryDocumentSubject { Name = Model.Name, ParentId = Model.ParentId, NotContainsIDs = new List<int> { Model.Id } }))
+            if (_dictDb.ExistsDictionaryDocumentSubject(_context, new FilterDictionaryDocumentSubject { Name = Model.Name, ParentIDs = new List<int> { Model.ParentId ?? -1 }, NotContainsIDs = new List<int> { Model.Id } }))
             {
                 throw new DictionaryRecordNotUnique();
             }

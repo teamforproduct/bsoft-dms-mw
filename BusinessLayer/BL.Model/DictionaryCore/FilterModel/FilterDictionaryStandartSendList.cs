@@ -2,10 +2,10 @@
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
-    public class FilterDictionaryStandartSendList
+    public class FilterDictionaryStandartSendList : DictionaryBaseFilterParms
     {
-        public List<int> StandartSendListId { get; set; }
-        public List<int?> PositionId { get; set; }
-        public List<int> NotContainsId { get; set; }
+        
+        public List<int?> PositionIDs { get; set; }
+        
     }
 }

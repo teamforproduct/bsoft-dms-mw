@@ -52,6 +52,7 @@
     <Compile Include="AdminCore\InternalModel\InternalAdminLanguage.cs" />
     <Compile Include="AutoPlan\AutoPlanSettings.cs" />
     <Compile Include="Constants\SettingConstants.cs" />
+    <Compile Include="DictionaryCore\FilterModel\DictionaryBaseFilterParms.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterCustomDictionary.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterCustomDictionaryType.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryAddressType.cs" />

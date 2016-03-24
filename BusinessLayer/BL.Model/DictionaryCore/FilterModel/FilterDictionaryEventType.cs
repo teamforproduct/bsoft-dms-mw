@@ -5,12 +5,9 @@ namespace BL.Model.DictionaryCore.FilterModel
     /// <summary>
     /// Фильтр словаря типов событий
     /// </summary>
-    public class FilterDictionaryEventType
+    public class FilterDictionaryEventType : DictionaryBaseFilterParms
     {
-        /// <summary>
-        /// Массив ИД типов событий
-        /// </summary>
-        public List<int> EventTypeId { get; set; }
+   
         /// <summary>
         /// Массив ИД типов важности событий
         /// </summary>
@@ -19,9 +16,6 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// Массив ИД документов
         /// </summary>
         public List<int> DocumentId { get; set; }
-        /// <summary>
-        /// игнорировать при поиске
-        /// </summary>
-        public List<int> NotContainsId { get; set; }
+    
     }
 }

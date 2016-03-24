@@ -36,7 +36,7 @@ namespace BL.Logic.DictionaryCore.DocumentType
             {
                 Name = Model.Name,
                 IsActive = Model.IsActive,
-                NotContainsId = new List<int> { Model.Id }
+                NotContainsIDs = new List<int> { Model.Id }
             });
             if (spr != null)
             {

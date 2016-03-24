@@ -29,7 +29,7 @@ namespace BL.Logic.DictionaryCore.CustomDictionary
 
         public override bool CanExecute()
         {
-            var cd = _dictDb.GetInternalCustomDictionary(_context, new FilterCustomDictionary { CustomDictionaryTypeId = new List<int> { Model.DictionaryTypeId }, Code = Model.Code });
+            var cd = _dictDb.GetInternalCustomDictionary(_context, new FilterCustomDictionary { IDs = new List<int> { Model.DictionaryTypeId }, Code = Model.Code });
             if (cd != null && cd.Id != Model.Id)
             {
                 throw new DictionaryRecordNotUnique();

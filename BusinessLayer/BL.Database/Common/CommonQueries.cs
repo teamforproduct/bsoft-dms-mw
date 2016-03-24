@@ -650,14 +650,14 @@ namespace BL.Database.Common
                     qry = qry.Where(x => filter.IDs.Contains(x.pos.Id));
                 }
 
-                if (filter.DocumentId?.Count > 0)
+                if (filter.DocumentIDs?.Count > 0)
                 {
                     qry = qry.Where(x =>
                             dbContext.DocumentEventsSet
-                                .Where(y => filter.DocumentId.Contains(y.DocumentId)).Select(y => y.SourcePositionId).Contains(x.pos.Id)
+                                .Where(y => filter.DocumentIDs.Contains(y.DocumentId)).Select(y => y.SourcePositionId).Contains(x.pos.Id)
                                 ||
                                 dbContext.DocumentEventsSet
-                                .Where(y => filter.DocumentId.Contains(y.DocumentId)).Select(y => y.TargetPositionId).Contains(x.pos.Id)
+                                .Where(y => filter.DocumentIDs.Contains(y.DocumentId)).Select(y => y.TargetPositionId).Contains(x.pos.Id)
                                 );
                 }
 

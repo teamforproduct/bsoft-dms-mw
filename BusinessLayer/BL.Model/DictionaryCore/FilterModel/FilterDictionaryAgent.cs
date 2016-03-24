@@ -6,21 +6,9 @@ namespace BL.Model.DictionaryCore.FilterModel
     /// <summary>
     /// Фильтр словаря агентов
     /// </summary>
-    public class FilterDictionaryAgent
+    public class FilterDictionaryAgent : DictionaryBaseFilterParms
     {
-        /// <summary>
-        /// Массив ИД агентов
-        /// </summary>
-        public List<int> AgentId { get; set; }
-        /// <summary>
-        /// Отрывок наименования агента
-        /// </summary>
-        public string Name { get; set; }
-
-        /// <summary>
-        /// Признак активности агента
-        /// </summary>
-        public bool? IsActive { get; set; }
+    
         /// <summary>
         /// является физлицом
         /// </summary>
@@ -37,10 +25,7 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// является банком
         /// </summary>
         public bool? IsBank { get; set; }
-        /// <summary>
-        /// игнорировать при поиске
-        /// </summary>
-        public List<int> NotContainsId { get; set; }
+        
         /// <summary>
         /// Первая буква наименования
         /// </summary>
