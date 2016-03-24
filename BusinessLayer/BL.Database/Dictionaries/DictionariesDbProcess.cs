@@ -1,4 +1,5 @@
 ﻿using BL.CrossCutting.Interfaces;
+using BL.Database.Common;
 using BL.Database.DatabaseContext;
 using BL.Database.DBModel.Dictionary;
 using BL.Database.Dictionaries.Interfaces;
@@ -12,6 +13,7 @@ using BL.Model.Exception;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 
 namespace BL.Database.Dictionaries
 {
@@ -2149,7 +2151,6 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        //TODO Эта  функция может находиться в FilterDictionaryDepartment. Очень удобно: добавляешь параметр и сразу же добавляешь ифчик. У меня упихнуть НЕ получилось из-за пространства имен
         private static IQueryable<DictionaryDepartments> DepartmentGetWhere(ref IQueryable<DictionaryDepartments> qry, FilterDictionaryDepartment filter)
         {
             // Условие по ID
@@ -2179,7 +2180,11 @@ namespace BL.Database.Dictionaries
             // Условие по Name
             if (!String.IsNullOrEmpty(filter.Name))
             {
-                qry = qry.Where(x => x.Name.Contains(filter.Name));
+                foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.Name))
+                {
+                    qry = qry.Where(x => x.Name.Contains(temp));
+                }
+                
             }
 
             // Условие по FullName
@@ -2403,7 +2408,6 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        //TODO Эта  функция может находиться в FilterDictionaryDocumentSubject. Очень удобно: добавляешь параметр и сразу же добавляешь ифчик. У меня упихнуть НЕ получилось из-за пространства имен
         private static IQueryable<DictionaryDocumentSubjects> DocumentSubjectGetWhere(ref IQueryable<DictionaryDocumentSubjects> qry, FilterDictionaryDocumentSubject filter)
         {
             // Условие по ID
@@ -3145,7 +3149,6 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        //TODO Эта  функция может находиться в FilterDictionaryRegistrationJournal. Очень удобно: добавляешь параметр и сразу же добавляешь ифчик. У меня упихнуть НЕ получилось из-за пространства имен
         private static IQueryable<DictionaryRegistrationJournals> RegistrationJournalGetWhere(ref IQueryable<DictionaryRegistrationJournals> qry, FilterDictionaryRegistrationJournal filter)
         {
             // Условие по ID
