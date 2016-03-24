@@ -68,6 +68,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// Получение документа по ИД
         /// </summary>
         /// <param name="id">ИД Документа</param>
+        /// <param name="filter">Фильтр для получения документа по ИД</param>
         /// <returns>Документ</returns>
         public IHttpActionResult Get(int id, [FromUri]FilterDocumentById filter = null)
         {

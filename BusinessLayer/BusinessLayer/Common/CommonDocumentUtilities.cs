@@ -33,6 +33,8 @@ namespace BL.Logic.Common
     new Dictionary<EnumDocumentActions, List<EnumEventTypes>>
         {
                 { EnumDocumentActions.ControlChange, new List<EnumEventTypes> { EnumEventTypes.ControlOn, EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution } },
+                { EnumDocumentActions.ControlTargetChange, new List<EnumEventTypes> { EnumEventTypes.ControlOn, EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution } },
+
                 { EnumDocumentActions.ControlOff, new List<EnumEventTypes> { EnumEventTypes.ControlOn } },
 
                 { EnumDocumentActions.MarkExecution, new List<EnumEventTypes> { EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution } },
@@ -391,6 +393,20 @@ namespace BL.Logic.Common
 
             };
         }
+
+        public static InternalDocumentRestrictedSendList GetNewDocumentRestrictedSendList(IContext context, ModifyDocumentRestrictedSendList model)
+        {
+            return new InternalDocumentRestrictedSendList
+            {
+                AccessLevel = model.AccessLevel,
+                DocumentId = model.DocumentId,
+                PositionId = model.PositionId,
+                LastChangeUserId = context.CurrentAgentId,
+                LastChangeDate = DateTime.Now,
+
+            };
+        }
+
 
         public static IEnumerable<BaseSystemUIElement> VerifyDocument(IContext ctx, FrontDocument doc, IEnumerable<BaseSystemUIElement> uiElements)
         {

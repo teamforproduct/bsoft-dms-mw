@@ -5,6 +5,11 @@
     /// </summary>
     public class FullTextIndexIem
     {
+        
+        /// <summary>
+        /// ID record in DB table
+        /// </summary>
+        public int Id { get; set; }
         /// <summary>
         /// ID of document
         /// </summary>

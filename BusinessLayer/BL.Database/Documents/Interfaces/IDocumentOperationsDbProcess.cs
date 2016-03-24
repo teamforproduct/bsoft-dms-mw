@@ -31,12 +31,13 @@ namespace BL.Database.Documents.Interfaces
         IEnumerable<InternalDocumentAccess> GetDocumentAccesses(IContext ctx, int documentId);
         InternalDocument LaunchDocumentSendListItemPrepare(IContext context, int model);
         InternalDocument ControlChangeDocumentPrepare(IContext context, int eventId);
+        InternalDocument ControlTargetChangeDocumentPrepare(IContext context, int eventId);
         void ChangeIsInWorkAccess(IContext ctx, InternalDocument access);
         InternalDocument AddDocumentLinkPrepare(IContext context, AddDocumentLink model);
         void ChangeIsFavouriteAccess(IContext context, InternalDocumentAccess docAccess);
 
         InternalDocument ChangeDocumentSendListPrepare(IContext context, int documentId, string task = null);
-        void AddDocumentRestrictedSendList(IContext context, IEnumerable<InternalDocumentRestrictedSendList> model);
+        IEnumerable<int> AddDocumentRestrictedSendList(IContext context, IEnumerable<InternalDocumentRestrictedSendList> model);
 
         IEnumerable<InternalDocumentRestrictedSendList> AddByStandartSendListDocumentRestrictedSendListPrepare(IContext context, ModifyDocumentRestrictedSendListByStandartSendList model);
 
@@ -48,7 +49,7 @@ namespace BL.Database.Documents.Interfaces
 
         void DeleteDocumentRestrictedSendList(IContext context, int restSendListId);
 
-        void AddDocumentSendList(IContext context, IEnumerable<InternalDocumentSendList> model, IEnumerable<InternalDocumentTask> task = null);
+        IEnumerable<int> AddDocumentSendList(IContext context, IEnumerable<InternalDocumentSendList> model, IEnumerable<InternalDocumentTask> task = null);
 
         IEnumerable<InternalDocumentSendList> AddByStandartSendListDocumentSendListPrepare(IContext context, ModifyDocumentSendListByStandartSendList model);
 
@@ -64,6 +65,7 @@ namespace BL.Database.Documents.Interfaces
 
         void ModifyDocumentTags(IContext context, InternalDocumentTag model);
         void ChangeDocumentWait(IContext context, InternalDocumentWait wait);
+        void ChangeTargetDocumentWait(IContext ctx, InternalDocumentWait wait, InternalDocumentEvent newEvent);
         void SendBySendList(IContext context, InternalDocument document);
 
         List<int> AddSavedFilter(IContext context, IEnumerable<InternalDocumentSavedFilter> model);
@@ -78,5 +80,12 @@ namespace BL.Database.Documents.Interfaces
         void ControlOffMarkExecutionWaitPrepare(IContext context, InternalDocument document);
 
         InternalDocument AddNoteDocumentPrepare(IContext context, AddNote model);
+
+        #region DocumentTasks
+        void AddDocumentTasks(IContext context, IEnumerable<InternalDocumentTask> task);
+        InternalDocumentTask ChangeDocumentTaskPrepare(IContext context, int itemId);
+        void ModifyDocumentTask(IContext context, InternalDocumentTask task);
+        void DeleteDocumentTask(IContext context, int itemId);
+        #endregion DocumentTasks
     }
 }

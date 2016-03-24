@@ -3,30 +3,31 @@ using BL.Logic.Common;
 using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.InternalModel;
+using BL.Model.Enums;
 using BL.Model.Exception;
 
 namespace BL.Logic.DocumentCore.Commands
 {
-    public class ControlChangeDocumentCommand : BaseDocumentCommand
+    public class ControlTargetChangeDocumentCommand : BaseDocumentCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
 
         private InternalDocumentWait _docWait;
 
-        public ControlChangeDocumentCommand(IDocumentOperationsDbProcess operationDb)
+        public ControlTargetChangeDocumentCommand(IDocumentOperationsDbProcess operationDb)
         {
             _operationDb = operationDb;
         }
 
-        private ControlChange Model
+        private ControlTargetChange Model
         {
             get
             {
-                if (!(_param is ControlChange))
+                if (!(_param is ControlTargetChange))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ControlChange)_param;
+                return (ControlTargetChange)_param;
             }
         }
 
@@ -35,7 +36,7 @@ namespace BL.Logic.DocumentCore.Commands
             _actionRecords =
                 _document.Waits.Where(
                     x =>
-                        x.OnEvent.SourcePositionId == positionId &&
+                        x.OnEvent.TargetPositionId == positionId &&
                         x.OffEventId == null &&
                         CommonDocumentUtilities.PermissibleEventTypesForAction[CommandType].Contains(x.OnEvent.EventType))
                         .Select( x=>new InternalActionRecord
@@ -52,44 +53,28 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanExecute()
         {
-            _document = _operationDb.ControlChangeDocumentPrepare(_context, Model.EventId);
+            _document = _operationDb.ControlTargetChangeDocumentPrepare(_context, Model.EventId);
             _docWait = _document?.Waits?.FirstOrDefault();
-            if (_docWait?.OnEvent?.SourcePositionId == null 
-                || !CanBeDisplayed(_docWait.OnEvent.SourcePositionId.Value)
+            if (_docWait?.OnEvent?.TargetPositionId == null 
+                || !CanBeDisplayed(_docWait.OnEvent.TargetPositionId.Value)
                 )
             {
                 throw new CouldNotPerformThisOperation();
             }
-            _context.SetCurrentPosition(_docWait.OnEvent.SourcePositionId);
+            _context.SetCurrentPosition(_docWait.OnEvent.TargetPositionId);
             _admin.VerifyAccess(_context, CommandType);
             return true;
         }
 
         public override object Execute()
         {
-            var controlOn = new ControlOn(Model, _docWait.DocumentId);
-            var newWait = CommonDocumentUtilities.GetNewDocumentWait(_context, controlOn);
-            newWait.Id = _docWait.Id;
-            newWait.TargetDescription = _docWait.TargetDescription;
-            newWait.TargetAttentionDate = _docWait.TargetAttentionDate;
-
-            var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, _docWait.DocumentId, _docWait.OnEvent.EventType, Model.EventDate, Model.Description, _docWait.OnEvent.TaskId, _docWait.OnEvent.IsAvailableWithinTask, _docWait.OnEvent.TargetPositionId);
-            var oldEvent = _docWait.OnEvent;
-
-            newEvent.Id = newWait.OnEventId = oldEvent.Id;
-
-            newWait.OnEvent = newEvent;
-            newWait.ParentWait = _docWait;
-
-            _docWait.Id = 0;
-            oldEvent.Id = _docWait.OnEventId = 0;
-            _docWait.OffEventId = newEvent.Id;
-
+            var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, _docWait.DocumentId, EnumEventTypes.ControlTargetChange, Model.EventDate, Model.TargetDescription, _docWait.OnEvent.TaskId, _docWait.OnEvent.IsAvailableWithinTask);
+            _docWait.TargetDescription = Model.TargetDescription;
+            _docWait.TargetAttentionDate = Model.TargetAttentionDate;
             CommonDocumentUtilities.SetLastChange(_context, _docWait);
 
-            //var waits = new List<InternalDocumentWait> { newWait };
-
-            _operationDb.ChangeDocumentWait(_context, newWait);
+            _operationDb.ChangeTargetDocumentWait(_context, _docWait, newEvent);
+            
             return _docWait.DocumentId;
         }
 

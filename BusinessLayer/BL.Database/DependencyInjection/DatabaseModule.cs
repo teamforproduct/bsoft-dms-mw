@@ -30,6 +30,8 @@ namespace BL.Database.DependencyInjection
             Bind<IDocumentOperationsDbProcess>().To<DocumentOperationsDbProcess>().InSingletonScope();
 
             Bind<IDocumentTagsDbProcess>().To<DocumentTagsDbProcess>().InSingletonScope();
+
+            Bind<IDocumentTasksDbProcess>().To<DocumentTasksDbProcess>().InSingletonScope();
         }
 
         private void RegistrateSystemProcess()

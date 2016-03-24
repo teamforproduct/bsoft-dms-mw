@@ -1,4 +1,5 @@
-﻿using BL.Logic.DependencyInjection;
+﻿using System.Collections.Generic;
+using BL.Logic.DependencyInjection;
 using BL.Logic.DocumentCore.Interfaces;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
@@ -45,8 +46,8 @@ namespace DMS_WebAPI.Controllers.Documents
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            docProc.ExecuteAction(EnumDocumentActions.AddDocumentSendList, cxt, model);
-            return GetByDocument(model.DocumentId);
+            var newId = (int)docProc.ExecuteAction(EnumDocumentActions.AddDocumentSendList, cxt, model);
+            return Get(newId);
         }
 
         /// <summary>
@@ -74,7 +75,7 @@ namespace DMS_WebAPI.Controllers.Documents
             var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.ModifyDocumentSendList, cxt, model);
-            return GetByDocument(model.DocumentId);
+            return Get(id);
         }
 
         /// <summary>

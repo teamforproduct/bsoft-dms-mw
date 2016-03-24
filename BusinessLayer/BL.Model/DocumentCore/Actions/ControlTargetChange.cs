@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations;
 namespace BL.Model.DocumentCore.Actions
 {
     /// <summary>
-    /// Модель изменения параметров контроля
+    /// Модель изменения параметров контроля для исполнителя
     /// </summary>
-    public class ControlChange 
+    public class ControlTargetChange 
     {
         /// <summary>
         /// ИД события, породившего контроль
@@ -14,18 +14,14 @@ namespace BL.Model.DocumentCore.Actions
         [Required]
         public int EventId { get; set; }
         /// <summary>
-        /// Комментарий
+        /// Комментарий исполнителя
         /// </summary>
         [Required]
-        public string Description { get; set; }
+        public string TargetDescription { get; set; }
         /// <summary>
-        /// Контрольный срок
+        /// Дата включения режима постоянное внимание исполнителя
         /// </summary>
-        public DateTime? DueDate { get; set; }
-        /// <summary>
-        /// Дата включения режима постоянное внимание
-        /// </summary>
-        public DateTime? AttentionDate { get; set; }
+        public DateTime? TargetAttentionDate { get; set; }
         /// <summary>
         /// Дата события
         /// </summary>

@@ -58,6 +58,7 @@ namespace BL.Logic.DependencyInjection
             Bind<IDocumentFiltersService>().To<DocumentFiltersService>().InSingletonScope();
             Bind<IDocumentSendListService>().To<DocumentSendListService>().InSingletonScope();
             Bind<IDocumentTagService>().To<DocumentTagService>().InSingletonScope();
+            Bind<IDocumentTaskService>().To<DocumentTaskService>().InSingletonScope();
 
             //Bind<ICommandService>().To<CommandService>().InSingletonScope();
 
@@ -111,6 +112,7 @@ namespace BL.Logic.DependencyInjection
             Bind<IDocumentCommand>().To<CopyDocumentCommand>();
 
             Bind<IDocumentCommand>().To<ControlChangeDocumentCommand>();
+            Bind<IDocumentCommand>().To<ControlTargetChangeDocumentCommand>();
             Bind<IDocumentCommand>().To<ControlOnDocumentCommand>();
             Bind<IDocumentCommand>().To<ControlOffDocumentCommand>();
 
@@ -159,6 +161,10 @@ namespace BL.Logic.DependencyInjection
             Bind<IDocumentCommand>().To<DeleteDocumentSendListStageCommand>();
             Bind<IDocumentCommand>().To<ModifyDocumentSendListCommand>();
             Bind<IDocumentCommand>().To<LaunchDocumentSendListItemCommand>();
+
+            Bind<IDocumentCommand>().To<AddDocumentTaskCommand>();
+            Bind<IDocumentCommand>().To<ModifyDocumentTaskCommand>();
+            Bind<IDocumentCommand>().To<DeleteDocumentTaskCommand>();
 
         }
 

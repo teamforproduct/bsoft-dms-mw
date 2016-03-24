@@ -101,6 +101,8 @@
     <Compile Include="AdminCore\FilterAdminUserRole.cs" />
     <Compile Include="AdminCore\FilterAdminAccessLevel.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalCustomDictionaryType.cs" />
+    <Compile Include="DocumentCore\Actions\ControlTargetChange.cs" />
+    <Compile Include="DocumentCore\Filters\FilterDocumentRestrictedSendList.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAddressType.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAgentAccount.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAgentBank.cs" />
@@ -117,6 +119,7 @@
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryContactType.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentSubscription.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentTask.cs" />
+    <Compile Include="DocumentCore\Filters\FilterDocumentSendList.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentWait.cs" />
     <Compile Include="AdminCore\VerifyAccess.cs" />
     <Compile Include="AdminCore\VerifySubordination.cs" />
@@ -190,6 +193,7 @@
     <Compile Include="DocumentCore\Filters\FilterDocumentFileIdentity.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentFile.cs" />
     <Compile Include="DocumentCore\IncomingModel\AddDocumentByTemplateDocument.cs" />
+    <Compile Include="DocumentCore\IncomingModel\ModifyDocumentTasks.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentTags.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentTag.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalActionRecord.cs" />

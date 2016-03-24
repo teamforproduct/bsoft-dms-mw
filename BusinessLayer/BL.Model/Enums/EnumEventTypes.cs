@@ -5,6 +5,7 @@
         AddNewDocument = 110, //Создан проект
         ControlOn = 300,//Взят на контроль
         ControlChange = 310,//Изменить контроль
+        ControlTargetChange = 315,//Изменить параметры контроля для исполнителя
         ControlOff = 301,//Снят с контроля
 
         MarkExecution = 320,//Поручение выполнено

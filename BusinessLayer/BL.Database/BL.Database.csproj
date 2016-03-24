@@ -113,6 +113,7 @@
     <Compile Include="DBModel\Document\DocumentTasks.cs" />
     <Compile Include="DBModel\Document\DocumentWaits.cs" />
     <Compile Include="DBModel\InternalModel\DocumentQuery.cs" />
+    <Compile Include="DBModel\System\FullTextIndexCash.cs" />
     <Compile Include="DBModel\System\Properties.cs" />
     <Compile Include="DBModel\System\PropertyLinks.cs" />
     <Compile Include="DBModel\System\PropertyValues.cs" />
@@ -156,10 +157,12 @@
     <Compile Include="Documents\DocumentFiltersDbProcess.cs" />
     <Compile Include="Documents\DocumentOperationsDbProcess.cs" />
     <Compile Include="Documents\DocumentsDbProcess.cs" />
+    <Compile Include="Documents\DocumentTasksDbProcess.cs" />
     <Compile Include="Documents\DocumentTagsDbProcess.cs" />
     <Compile Include="Documents\DocumentSendListsDbProcess.cs" />
     <Compile Include="Documents\Interfaces\IDocumentOperationsDbProcess.cs" />
     <Compile Include="Documents\Interfaces\IDocumentFiltersDbProcess.cs" />
+    <Compile Include="Documents\Interfaces\IDocumentTasksDbProcess.cs" />
     <Compile Include="Documents\Interfaces\IDocumentTagsDbProcess.cs" />
     <Compile Include="Documents\Interfaces\IDocumentSendListsDbProcess.cs" />
     <Compile Include="Documents\Interfaces\IDocumentFileDbProcess.cs" />
@@ -169,6 +172,10 @@
     <Compile Include="Migrations\201603212007278_InitialMigration.cs" />
     <Compile Include="Migrations\201603212007278_InitialMigration.Designer.cs">
       <DependentUpon>201603212007278_InitialMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201603232209163_FullTextIndexCashSet.cs" />
+    <Compile Include="Migrations\201603232209163_FullTextIndexCashSet.Designer.cs">
+      <DependentUpon>201603232209163_FullTextIndexCashSet.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -199,6 +206,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201603212007278_InitialMigration.resx">
       <DependentUpon>201603212007278_InitialMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201603232209163_FullTextIndexCashSet.resx">
+      <DependentUpon>201603232209163_FullTextIndexCashSet.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

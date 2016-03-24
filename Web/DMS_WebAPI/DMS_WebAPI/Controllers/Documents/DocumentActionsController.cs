@@ -321,6 +321,32 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
+        /// Изменить контроль для исполнителя
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("ControlTargetChange")]
+        [HttpPost]
+        public IHttpActionResult ControlTargetChange(ControlTargetChange model)
+        {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            timeM.Start();
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            timeDB.Start();
+            var documentId = (int)docProc.ExecuteAction(EnumDocumentActions.ControlTargetChange, cxt, model);
+            timeDB.Stop();
+
+            timeM.Stop();
+            SaveToFile("M: DocumentActionsController ControlTargetChange", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentOperationsService ControlTargetChange", timeDB.Elapsed.ToString("G"));
+
+            var ctrl = new DocumentsController { ControllerContext = ControllerContext };
+            return ctrl.Get(documentId);
+        }
+
+        /// <summary>
         /// Снять с контроль
         /// </summary>
         /// <param name="model"></param>

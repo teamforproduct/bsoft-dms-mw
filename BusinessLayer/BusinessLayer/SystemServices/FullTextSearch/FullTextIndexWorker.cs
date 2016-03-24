@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using BL.Model.FullTextSerach;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Standard;
@@ -9,6 +10,7 @@ using Lucene.Net.QueryParsers;
 using Lucene.Net.Search;
 using Lucene.Net.Store;
 using System.Linq;
+using Directory = Lucene.Net.Store.Directory;
 using Version = Lucene.Net.Util.Version;
 
 namespace BL.Logic.SystemServices.FullTextSearch
@@ -32,7 +34,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
         {
             _serverKey = serverKey;
             _storePath = storePath;
-            _directory = FSDirectory.Open(_storePath);
+            _directory = FSDirectory.Open(Path.Combine(_storePath, _serverKey.Replace(".","").Replace("/","_")));
             _analyzer = new StandardAnalyzer(Version.LUCENE_30);
             _indexReader = IndexReader.Open(_directory, true); // only searching, so read-only=true
         }
