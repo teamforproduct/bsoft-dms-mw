@@ -550,20 +550,7 @@ namespace BL.Database.Documents
                                             {
                                                 Id = x.OnEvent.Id,
                                                 TargetPositionId = x.OnEvent.TargetPositionId,
-                                                TargetPositionExecutorAgentId = x.OnEvent.TargetPositionExecutorAgentId,
-                                                SourceAgentId = x.OnEvent.SourceAgentId,
-                                                TargetAgentId = x.OnEvent.TargetAgentId,
-                                                TaskId = x.OnEvent.TaskId,
-                                                IsAvailableWithinTask = x.OnEvent.IsAvailableWithinTask,
-                                                Description = x.OnEvent.Description,
                                                 EventType = (EnumEventTypes)x.OnEvent.EventTypeId,
-                                                CreateDate = x.OnEvent.CreateDate,
-                                                Date = x.OnEvent.Date,
-                                                LastChangeUserId = x.OnEvent.LastChangeUserId,
-                                                LastChangeDate = x.OnEvent.LastChangeDate,
-                                                SendDate = x.OnEvent.SendDate,
-                                                ReadDate = x.OnEvent.ReadDate,
-                                                ReadAgentId = x.OnEvent.ReadAgentId,
                                             }
                                         }
                                     }
