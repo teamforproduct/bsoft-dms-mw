@@ -22,15 +22,20 @@ namespace DMS_WebAPI.Utilities
             try {
                 using (var dbContext = new ApplicationDbContext())
                 {
+                    var labelsInText = new List<string>();
+                    foreach (Match label in Regex.Matches(text, "##l@(.*?)@l##"))
+                    {
+                        labelsInText.Add(label.Value);
+                    }
                     if (string.IsNullOrEmpty(userLanguage)) userLanguage = string.Empty;
                     var labels = dbContext.AdminLanguagesSet
                         .Where(x => userLanguage.Equals(x.Code, StringComparison.OrdinalIgnoreCase) || x.IsDefault)
                         .OrderBy(x => x.IsDefault)
                         .Take(1)
                         .SelectMany(x => x.LanguageValues)
+                        .Where(x=>labelsInText.Contains(x.Label))
                         .ToArray();
 
-                    //TODO оптимизировать
                     for (int i = 0, l = labels.Length; i < l; i++)
                     {
                         text = text.Replace(labels[i].Label, labels[i].Value);

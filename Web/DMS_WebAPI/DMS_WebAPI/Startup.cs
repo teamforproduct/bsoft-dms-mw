@@ -31,6 +31,9 @@ namespace DMS_WebAPI
 
             //var autoPlanService = DmsResolver.Current.Get<AutoPlanService>();
             //autoPlanService.Initialize(dbs);
+
+            var userContextService = DmsResolver.Current.Get<UserContextWorkerService>();
+            userContextService.Initialize();
         }
     }
 }
