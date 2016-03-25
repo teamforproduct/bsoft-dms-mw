@@ -13,6 +13,7 @@ using BL.Model.Exception;
 using BL.Model.Users;
 using BL.Model.AdminCore.FrontModel;
 using BL.Model.AdminCore.FilterModel;
+using System.Text.RegularExpressions;
 
 namespace BL.Logic.AdminCore
 {
@@ -156,8 +157,14 @@ namespace BL.Logic.AdminCore
 
         public string ReplaceLanguageLabel(IContext context, string text)
         {
-            var labels =  _adminDb.GetAdminLanguageValues(context, new FilterAdminLanguageValue { LanguageId = context.CurrentEmployee.LanguageId }).ToArray();
-            //TODO оптимизировать
+            var labelsInText = new List<string>();
+            foreach (Match label in Regex.Matches(text, "##l@(.*?)@l##"))
+            {
+                labelsInText.Add(label.Value);
+            }
+            
+            var labels =  _adminDb.GetAdminLanguageValues(context, new FilterAdminLanguageValue { LanguageId = context.CurrentEmployee.LanguageId, Labels = labelsInText }).ToArray();
+            
             for(int i=0,l=labels.Length;i< l;i++)
             {
                 text = text.Replace(labels[i].Label, labels[i].Value);
