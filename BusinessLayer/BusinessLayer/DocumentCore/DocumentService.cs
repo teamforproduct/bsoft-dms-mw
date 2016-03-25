@@ -76,5 +76,29 @@ namespace BL.Logic.DocumentCore
         }
         #endregion Documents
 
+        #region DocumentPapers
+        public FrontDocumentPaper GetDocumentPaper(IContext context, int itemId)
+        {
+            return _documentDb.GetDocumentPaperById(context, itemId);
+        }
+
+        public IEnumerable<FrontDocumentPaper> GetDocumentPapers(IContext context, FilterDocumentPaper filter)
+        {
+            return _documentDb.GetDocumentPapers(context, filter).ToList();
+        }
+
+        #endregion DocumentPapers    
+        #region DocumentPaperLists
+        public FrontDocumentPaperList GetDocumentPaperList(IContext context, int itemId)
+        {
+            return _documentDb.GetDocumentPaperListById(context, itemId);
+        }
+
+        public IEnumerable<FrontDocumentPaperList> GetDocumentPaperLists(IContext context, FilterDocumentPaperList filter)
+        {
+            return _documentDb.GetDocumentPaperLists(context, filter).ToList();
+        }
+
+        #endregion DocumentPaperLists        
     }
 }

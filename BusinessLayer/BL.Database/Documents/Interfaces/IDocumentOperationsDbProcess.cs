@@ -87,5 +87,19 @@ namespace BL.Database.Documents.Interfaces
         void ModifyDocumentTask(IContext context, InternalDocumentTask task);
         void DeleteDocumentTask(IContext context, int itemId);
         #endregion DocumentTasks
+
+        #region DocumentPapers
+        void AddDocumentPapers(IContext context, IEnumerable<InternalDocumentPaper> items);
+        InternalDocumentPaper ChangeDocumentPaperPrepare(IContext context, int itemId);
+        void ModifyDocumentPaper(IContext context, InternalDocumentPaper item);
+        void DeleteDocumentPaper(IContext context, int itemId);
+        #endregion DocumentPapers
+
+        #region DocumentPaperLists
+        void AddDocumentPaperLists(IContext context, IEnumerable<InternalDocumentPaperList> items);
+        InternalDocumentPaperList ChangeDocumentPaperListPrepare(IContext context, int itemId);
+        void ModifyDocumentPaperList(IContext context, InternalDocumentPaperList item);
+        void DeleteDocumentPaperList(IContext context, int itemId);
+        #endregion DocumentPaperLists
     }
 }

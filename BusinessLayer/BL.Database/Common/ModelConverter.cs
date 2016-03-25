@@ -206,5 +206,35 @@ namespace BL.Database.Common
         {
             return docFile.Select(GetDbDocumentFile);
         }
+
+        public static DocumentPapers GetDbDocumentPaper(InternalDocumentPaper item)
+        {
+            return item == null ? null :
+                new DocumentPapers
+                {
+                    DocumentId = item.DocumentId,
+                    Name = item.Name,
+                    Description = item.Description,
+                    IsMain = item.IsMain,
+                    IsOriginal=item.IsOriginal,
+                    IsCopy = item.IsCopy,
+                    PageQuantity = item.PageQuantity,
+                    OrderNumber = item.OrderNumber,
+                    LastPaperEventId = item.LastPaperEventId,
+                    LastChangeDate = item.LastChangeDate,
+                    LastChangeUserId = item.LastChangeUserId
+                };
+        }
+        public static DocumentPaperLists GetDbDocumentPaperList(InternalDocumentPaperList item)
+        {
+            return item == null ? null :
+                new DocumentPaperLists
+                {
+                    Date = item.Date,
+                    Description = item.Description,
+                    LastChangeDate = item.LastChangeDate,
+                    LastChangeUserId = item.LastChangeUserId
+                };
+        }
     }
 }

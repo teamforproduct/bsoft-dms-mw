@@ -10,6 +10,7 @@ using BL.Logic.DocumentCore;
 using BL.Logic.DocumentCore.AdditionalCommands;
 using BL.Logic.DocumentCore.Commands;
 using BL.Logic.DocumentCore.Interfaces;
+using BL.Logic.DocumentCore.PaperCommands;
 using BL.Logic.DocumentCore.SendListCommands;
 using BL.Logic.FileWorker;
 using BL.Logic.Logging;
@@ -165,6 +166,14 @@ namespace BL.Logic.DependencyInjection
             Bind<IDocumentCommand>().To<AddDocumentTaskCommand>();
             Bind<IDocumentCommand>().To<ModifyDocumentTaskCommand>();
             Bind<IDocumentCommand>().To<DeleteDocumentTaskCommand>();
+
+            Bind<IDocumentCommand>().To<AddDocumentPaperCommand>();
+            Bind<IDocumentCommand>().To<ModifyDocumentPaperCommand>();
+            Bind<IDocumentCommand>().To<DeleteDocumentPaperCommand>();
+
+            Bind<IDocumentCommand>().To<AddDocumentPaperListCommand>();
+            Bind<IDocumentCommand>().To<ModifyDocumentPaperListCommand>();
+            Bind<IDocumentCommand>().To<DeleteDocumentPaperListCommand>();
 
         }
 

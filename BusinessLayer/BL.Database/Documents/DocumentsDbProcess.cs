@@ -1008,5 +1008,70 @@ namespace BL.Database.Documents
             }
         }
 
+
+        #region DocumentPapers
+
+        public IEnumerable<FrontDocumentPaper> GetDocumentPapers(IContext ctx, FilterDocumentPaper filter)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                return CommonQueries.GetDocumentPapers(dbContext, filter);
+            }
+        }
+
+        public FrontDocumentPaper GetDocumentPaperById(IContext ctx, int id)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                //TODO: Refactoring
+                var item = dbContext.DocumentPapersSet
+                    .Where(x => x.Id == id)
+                    .Select(x => new FrontDocumentPaper
+                    {
+                        Id = x.Id,
+                        DocumentId = x.DocumentId,
+                        Name = x.Name,
+                        Description = x.Description,
+                        IsMain = x.IsMain,
+                        IsOriginal = x.IsOriginal,
+                        IsCopy = x.IsCopy,
+                        PageQuantity = x.PageQuantity,
+                        OrderNumber = x.OrderNumber,
+                        LastPaperEventId = x.LastPaperEventId
+                    }).FirstOrDefault();
+
+                return item;
+            }
+        }
+        #endregion DocumentPapers   
+
+        #region DocumentPaperLists
+
+        public IEnumerable<FrontDocumentPaperList> GetDocumentPaperLists(IContext ctx, FilterDocumentPaperList filter)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                return CommonQueries.GetDocumentPaperLists(dbContext, filter);
+            }
+        }
+
+        public FrontDocumentPaperList GetDocumentPaperListById(IContext ctx, int id)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                //TODO: Refactoring
+                var item = dbContext.DocumentPaperListsSet
+                    .Where(x => x.Id == id)
+                    .Select(x => new FrontDocumentPaperList
+                    {
+                        Id = x.Id,
+                        Date = x.Date,
+                        Description = x.Description
+                    }).FirstOrDefault();
+
+                return item;
+            }
+        }
+        #endregion DocumentPaperLists   
     }
 }
