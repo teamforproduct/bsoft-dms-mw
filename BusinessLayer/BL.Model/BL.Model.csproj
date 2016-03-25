@@ -78,6 +78,7 @@
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryContact.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentPerson.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryContactType.cs" />
+    <Compile Include="DictionaryCore\FrontModel\FrontDictionaryStandartSendListContent.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyCustomDictionary.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyCustomDictionaryType.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAddressType.cs" />
@@ -94,6 +95,7 @@
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentPerson.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryContact.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryContactType.cs" />
+    <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryStandartSendListContent.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalCustomDictionary.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAdminPositionRoles.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAdminRoleActions.cs" />

@@ -19,7 +19,7 @@
         /// Удалить тип документа
         /// </summary>
         DeleteDocumentType = 201009,
-        #endregion DictionaryAddressType
+        #endregion DictionaryDocumentType
 
         // Типы адресов
         #region DictionaryAddressType
@@ -247,6 +247,30 @@
         /// удалить расчетный счет
         /// </summary>
         DeleteAgentAccount=215009,
+        /// <summary>
+        /// добавить содержание типового списка рассылки
+        /// </summary>
+        AddStandartSendListContent=216001,
+        /// <summary>
+        /// изменить  содержание типового списка рассылки
+        /// </summary>
+        ModifyStandartSendListContent = 216005,
+        /// <summary>
+        ///  удалить содержание типового списка рассылки
+        /// </summary>
+        DeleteStandartSendListContent = 216009,
+        /// <summary>
+        /// добавить типовой список рассылки
+        /// </summary>
+        AddStandartSendList = 217001,
+        /// <summary>
+        /// изменить типовой список рассылки
+        /// </summary>
+        ModifyStandartSendList = 217005,
+        /// <summary>
+        /// удалить типовой список рассылки
+        /// </summary>
+        DeleteStandartSendList = 217009,
 
         #region CustomDictionaryType
         /// <summary>
