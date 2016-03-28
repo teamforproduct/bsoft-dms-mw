@@ -36,7 +36,7 @@ namespace BL.Database.Documents.Interfaces
         InternalDocument AddDocumentLinkPrepare(IContext context, AddDocumentLink model);
         void ChangeIsFavouriteAccess(IContext context, InternalDocumentAccess docAccess);
 
-        InternalDocument ChangeDocumentSendListPrepare(IContext context, int documentId, string task = null);
+        InternalDocument ChangeDocumentSendListPrepare(IContext context, int documentId, string task = null, List<int> papersId = null);
         IEnumerable<int> AddDocumentRestrictedSendList(IContext context, IEnumerable<InternalDocumentRestrictedSendList> model);
 
         IEnumerable<InternalDocumentRestrictedSendList> AddByStandartSendListDocumentRestrictedSendListPrepare(IContext context, ModifyDocumentRestrictedSendListByStandartSendList model);
@@ -87,5 +87,21 @@ namespace BL.Database.Documents.Interfaces
         void ModifyDocumentTask(IContext context, InternalDocumentTask task);
         void DeleteDocumentTask(IContext context, int itemId);
         #endregion DocumentTasks
+
+        #region DocumentPapers
+        InternalDocument AddDocumentPaperPrepare(IContext context, int documentId);
+        InternalDocument ChangeDocumentPaperPrepare(IContext context, int paperId);
+
+        void AddDocumentPapers(IContext context, IEnumerable<InternalDocumentPaper> items);
+        void ModifyDocumentPaper(IContext context, InternalDocumentPaper item);
+        void DeleteDocumentPaper(IContext context, int itemId);
+        #endregion DocumentPapers
+
+        #region DocumentPaperLists
+        void AddDocumentPaperLists(IContext context, IEnumerable<InternalDocumentPaperList> items);
+        InternalDocumentPaperList ChangeDocumentPaperListPrepare(IContext context, int paperId);
+        void ModifyDocumentPaperList(IContext context, InternalDocumentPaperList item);
+        void DeleteDocumentPaperList(IContext context, int itemId);
+        #endregion DocumentPaperLists
     }
 }

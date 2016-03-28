@@ -217,7 +217,7 @@ namespace BL.Database.Documents
 
                 foreach (int posId in ctx.CurrentPositionsIdList)
                 {
-                    var qry = dbContext.SystemActionsSet.Where(x => (x.ObjectId == (int)EnumObjects.DocumentSendLists|| x.ObjectId == (int)EnumObjects.DocumentSendListStages)
+                    var qry = dbContext.SystemActionsSet.Where(x => (x.ObjectId == (int)EnumObjects.DocumentSendLists || x.ObjectId == (int)EnumObjects.DocumentSendListStages)
                     && x.IsVisible &&
                     (!x.IsGrantable ||
                         x.RoleActions.Any(y => y.Role.PositionRoles.Any(pr => pr.PositionId == posId) && y.Role.UserRoles.Any(z => z.UserId == ctx.CurrentAgentId)))
@@ -993,7 +993,7 @@ namespace BL.Database.Documents
 
                     if (document.Waits?.Any() ?? false)
                     {
-                        foreach(var wait in document.Waits)
+                        foreach (var wait in document.Waits)
                         {
                             var waitDb = ModelConverter.GetDbDocumentWait(wait);
                             if (wait.OnEvent == sendList.StartEvent)
@@ -1164,7 +1164,7 @@ namespace BL.Database.Documents
         }
 
         #region DocumentSendList    
-        public InternalDocument ChangeDocumentSendListPrepare(IContext context, int documentId, string task = null)
+        public InternalDocument ChangeDocumentSendListPrepare(IContext context, int documentId, string task = null, List<int> papersId = null)
         {
             using (var dbContext = new DmsContext(context))
             {
@@ -1234,6 +1234,22 @@ namespace BL.Database.Documents
                         }).ToList();
                 }
 
+                if (papersId?.Any() ?? false)
+                {
+                    docRes.Papers = dbContext.DocumentPapersSet
+                        .Where(x => papersId.Contains(x.Id))
+                        .Select(x => new InternalDocumentPaper
+                        {
+                            Id = x.Id,
+                            LastPaperEvent = x.LastPaperEventId == null ? null : new InternalDocumentPaperEvent
+                            {
+                                Id = x.LastPaperEvent.Id,
+                                //TargetPositionId = x.LastPaperEvent.TargetPositionId,
+                                //RecieveDate = x.LastPaperEvent.RecieveDate
+                            }
+                        }).ToList();
+                }
+
                 return docRes;
             }
         }
@@ -1256,7 +1272,7 @@ namespace BL.Database.Documents
                 dbContext.SaveChanges();
                 res = items.Select(x => x.Id).ToList();
             }
-                        return res;
+            return res;
         }
 
         public IEnumerable<InternalDocumentRestrictedSendList> AddByStandartSendListDocumentRestrictedSendListPrepare(IContext context, ModifyDocumentRestrictedSendListByStandartSendList model)
@@ -1639,7 +1655,7 @@ namespace BL.Database.Documents
                          Name = x.Task,
                          Description = x.Description
                      }).FirstOrDefault();
-                
+
                 if (item == null)
                 {
                     throw new TaskNotFoundOrUserHasNoAccess();
@@ -1683,5 +1699,174 @@ namespace BL.Database.Documents
             }
         }
         #endregion DocumentTasks
+
+        #region DocumentPapers
+
+        public InternalDocument ChangeDocumentPaperPrepare(IContext context, int paperId)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                return dbContext.DocumentPapersSet.Where(x => x.Id == paperId)
+                        .Select(x => new InternalDocument
+                        {
+                            Id = x.Document.Id,
+                            ExecutorPositionId = x.Document.ExecutorPositionId,
+                            Papers = new List<InternalDocumentPaper>
+                                    {
+                                        new InternalDocumentPaper
+                                        {
+                                            Id = x.Id,
+
+                                        }
+                                    }
+                        }).FirstOrDefault();
+            }
+        }
+
+        public InternalDocument AddDocumentPaperPrepare(IContext context, int documentId)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var doc = CommonQueries.GetDocumentQuery(dbContext, context)
+                    .Where(x => x.Doc.Id == documentId && (context.IsAdmin || context.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId)))
+                    .Select(x => new InternalDocument
+                    {
+                        Id = x.Doc.Id,
+                        ExecutorPositionId = x.Doc.ExecutorPositionId
+                    }).FirstOrDefault();
+
+                return doc;
+            }
+        }
+
+        public void AddDocumentPapers(IContext context, IEnumerable<InternalDocumentPaper> papers)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                using (
+                    var transaction = new TransactionScope(TransactionScopeOption.Required,
+                        new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
+                {
+                    if (papers != null && papers.Any())
+                    {
+                        foreach (var paper in papers)
+                        {
+                            var paperDb = ModelConverter.GetDbDocumentPaper(paper);
+                            if (paper.Events != null && paper.Events.Any())
+                            {
+                                paperDb.PaperEvents = ModelConverter.GetDbDocumentPaperEvents(paper.Events).ToList();
+                            }
+                            dbContext.DocumentPapersSet.Add(paperDb);
+                            dbContext.SaveChanges();
+                            paperDb.LastPaperEventId = paperDb.PaperEvents.First().Id;
+                            dbContext.DocumentPapersSet.Attach(paperDb);
+                            var entry = dbContext.Entry(paperDb);
+                            entry.Property(x => x.LastPaperEventId).IsModified = true;
+                            dbContext.SaveChanges();
+                        }
+                    }
+                    transaction.Complete();
+                }
+            }
+        }
+
+
+        public void ModifyDocumentPaper(IContext context, InternalDocumentPaper item)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var itemDb = ModelConverter.GetDbDocumentPaper(item);
+                dbContext.DocumentPapersSet.Attach(itemDb);
+                var entry = dbContext.Entry(itemDb);
+                entry.Property(e => e.Name).IsModified = true;
+                entry.Property(e => e.Description).IsModified = true;
+                entry.Property(e => e.IsMain).IsModified = true;
+                entry.Property(e => e.IsOriginal).IsModified = true;
+                entry.Property(e => e.IsCopy).IsModified = true;
+                entry.Property(e => e.PageQuantity).IsModified = true;
+                entry.Property(e => e.OrderNumber).IsModified = true;
+                entry.Property(e => e.LastChangeUserId).IsModified = true;
+                entry.Property(e => e.LastChangeDate).IsModified = true;
+                dbContext.SaveChanges();
+            }
+        }
+
+        public void DeleteDocumentPaper(IContext context, int id)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                dbContext.DocumentPaperEventsSet.RemoveRange(dbContext.DocumentPaperEventsSet.Where(x => x.PaperId == id && x.EventTypeId == (int)EnumEventTypes.AddNewPaper));
+                dbContext.DocumentPapersSet.RemoveRange(dbContext.DocumentPapersSet.Where(x => x.Id == id));
+                dbContext.SaveChanges();
+
+            }
+        }
+
+        #endregion DocumentPapers
+
+        #region DocumentPaperLists
+        public void AddDocumentPaperLists(IContext context, IEnumerable<InternalDocumentPaperList> items)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var itemsDb = items.Select(ModelConverter.GetDbDocumentPaperList).ToList();
+                dbContext.DocumentPaperListsSet.AddRange(itemsDb);
+                dbContext.SaveChanges();
+            }
+        }
+
+        public InternalDocumentPaperList ChangeDocumentPaperListPrepare(IContext context, int itemId)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var item = dbContext.DocumentPaperListsSet.Where(x => x.Id == itemId)
+                     .Select(x => new InternalDocumentPaperList
+                     {
+                         Id = x.Id,
+                         Date = x.Date,
+                         Description = x.Description
+                     }).FirstOrDefault();
+
+                if (item == null)
+                {
+                    throw new PaperListNotFoundOrUserHasNoAccess();
+                }
+
+                return item;
+            }
+        }
+
+        public void ModifyDocumentPaperList(IContext context, InternalDocumentPaperList item)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var itemDb = ModelConverter.GetDbDocumentPaperList(item);
+                itemDb.Id = item.Id;
+
+                dbContext.DocumentPaperListsSet.Attach(itemDb);
+                //TODO Проверить поля которые нужно обновлять
+                var entry = dbContext.Entry(itemDb);
+                entry.Property(e => e.Date).IsModified = true;
+                entry.Property(e => e.Description).IsModified = true;
+                entry.Property(e => e.LastChangeUserId).IsModified = true;
+                entry.Property(e => e.LastChangeDate).IsModified = true;
+
+                dbContext.SaveChanges();
+            }
+        }
+
+        public void DeleteDocumentPaperList(IContext context, int itemId)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var item = dbContext.DocumentPaperListsSet.FirstOrDefault(x => x.Id == itemId);
+                if (item != null)
+                {
+                    dbContext.DocumentPaperListsSet.Remove(item);
+                    dbContext.SaveChanges();
+                }
+            }
+        }
+        #endregion DocumentPaperLists
     }
 }

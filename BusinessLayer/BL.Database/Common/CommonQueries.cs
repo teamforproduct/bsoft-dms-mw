@@ -45,7 +45,7 @@ namespace BL.Database.Common
                       join ap in dbContext.DictionaryAgentPersonsSet on dc.SenderAgentPersonId equals ap.Id into ap
                       from sendAp in ap.DefaultIfEmpty()
 
-                      where dbContext.DocumentAccessesSet.Where(x=>ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.PositionId)).Select(x=>x.DocumentId).Contains(dc.Id)
+                      where dbContext.DocumentAccessesSet.Where(x => ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.PositionId)).Select(x => x.DocumentId).Contains(dc.Id)
 
                       select new DocumentQuery
                       {
@@ -299,19 +299,19 @@ namespace BL.Database.Common
             }
             if (ctx != null)
             {
-                qry = qry.Where( x => ctx.IsAdmin ||
-                            (x.OnEvent.TargetPositionId.HasValue &&
-                             ctx.CurrentPositionsIdList.Contains(x.OnEvent.TargetPositionId.Value))
+                qry = qry.Where(x => ctx.IsAdmin ||
+                           (x.OnEvent.TargetPositionId.HasValue &&
+                            ctx.CurrentPositionsIdList.Contains(x.OnEvent.TargetPositionId.Value))
+                           ||
+                           (x.OnEvent.SourcePositionId.HasValue &&
+                            ctx.CurrentPositionsIdList.Contains(x.OnEvent.SourcePositionId.Value))
                             ||
-                            (x.OnEvent.SourcePositionId.HasValue &&
-                             ctx.CurrentPositionsIdList.Contains(x.OnEvent.SourcePositionId.Value))
-                             ||
-                             (x.OffEventId.HasValue && (
-                             (x.OffEvent.TargetPositionId.HasValue &&
-                              ctx.CurrentPositionsIdList.Contains(x.OffEvent.TargetPositionId.Value))
-                             ||
-                             (x.OffEvent.SourcePositionId.HasValue &&
-                              ctx.CurrentPositionsIdList.Contains(x.OffEvent.SourcePositionId.Value)))));
+                            (x.OffEventId.HasValue && (
+                            (x.OffEvent.TargetPositionId.HasValue &&
+                             ctx.CurrentPositionsIdList.Contains(x.OffEvent.TargetPositionId.Value))
+                            ||
+                            (x.OffEvent.SourcePositionId.HasValue &&
+                             ctx.CurrentPositionsIdList.Contains(x.OffEvent.SourcePositionId.Value)))));
             }
             return qry;
         }
@@ -696,7 +696,7 @@ namespace BL.Database.Common
                             Id = y.Doc.Id,
                             DocumentDirectionName = y.DirName,
                             DocumentTypeName = y.DocTypeName,
-                            RegistrationFullNumber =   (y.Doc.RegistrationNumber != null
+                            RegistrationFullNumber = (y.Doc.RegistrationNumber != null
                                                            ? y.Doc.RegistrationNumberPrefix + y.Doc.RegistrationNumber +
                                                              y.Doc.RegistrationNumberSuffix
                                                            : "#" + y.Doc.Id),
@@ -710,7 +710,7 @@ namespace BL.Database.Common
                                 {
                                     Id = z.Id,
                                     LinkTypeName = z.LinkType.Name,
-                                    RegistrationFullNumber = 
+                                    RegistrationFullNumber =
                                                 (z.ParentDocument.RegistrationNumber != null
                                                         ? (z.ParentDocument.RegistrationNumberPrefix + z.ParentDocument.RegistrationNumber.ToString() + z.ParentDocument.RegistrationNumberSuffix)
                                                         : ("#" + z.ParentDocument.Id.ToString())),
@@ -737,44 +737,44 @@ namespace BL.Database.Common
             }
 
             return sendListDb.Select(y => new FrontDocumentSendList
-                        {
-                            Id = y.Id,
-                            DocumentId = y.DocumentId,
-                            Stage = y.Stage,
-                            SendType = (EnumSendTypes)y.SendTypeId,
-                            SendTypeName = y.SendType.Name,
-                            SendTypeCode = y.SendType.Code,
-                            SendTypeIsImportant = y.SendType.IsImportant,
-                            SourcePositionExecutorAgentName = y.SourcePosition.ExecutorAgent.Name,
-                            TargetPositionExecutorAgentName = y.TargetPosition.ExecutorAgent.Name ?? y.TargetAgent.Name,
+            {
+                Id = y.Id,
+                DocumentId = y.DocumentId,
+                Stage = y.Stage,
+                SendType = (EnumSendTypes)y.SendTypeId,
+                SendTypeName = y.SendType.Name,
+                SendTypeCode = y.SendType.Code,
+                SendTypeIsImportant = y.SendType.IsImportant,
+                SourcePositionExecutorAgentName = y.SourcePosition.ExecutorAgent.Name,
+                TargetPositionExecutorAgentName = y.TargetPosition.ExecutorAgent.Name ?? y.TargetAgent.Name,
 
-                            Task = y.Task.Task,
-                            IsAvailableWithinTask = y.IsAvailableWithinTask,
-                            IsAddControl = y.IsAddControl,
-                            Description = y.Description,
-                            DueDate = y.DueDate,
-                            DueDay = y.DueDay,
-                            StartEventId = y.StartEventId,
-                            CloseEventId = y.CloseEventId,
-                            IsInitial = y.IsInitial,
+                Task = y.Task.Task,
+                IsAvailableWithinTask = y.IsAvailableWithinTask,
+                IsAddControl = y.IsAddControl,
+                Description = y.Description,
+                DueDate = y.DueDate,
+                DueDay = y.DueDay,
+                StartEventId = y.StartEventId,
+                CloseEventId = y.CloseEventId,
+                IsInitial = y.IsInitial,
 
-                            SourceAgentName = y.SourceAgent.Name,
+                SourceAgentName = y.SourceAgent.Name,
 
-                            SourceAgentId = y.SourceAgentId,
-                            SourcePositionId = y.SourcePositionId,
+                SourceAgentId = y.SourceAgentId,
+                SourcePositionId = y.SourcePositionId,
 
-                            TargetAgentId = y.TargetAgentId,
-                            TargetPositionId = y.TargetPositionId,
+                TargetAgentId = y.TargetAgentId,
+                TargetPositionId = y.TargetPositionId,
 
-                            SourcePositionName = y.SourcePosition.Name,
-                            TargetPositionName = y.TargetPosition.Name,
-                            SourcePositionExecutorNowAgentName = y.SourcePosition.ExecutorAgent.Name,
-                            TargetPositionExecutorNowAgentName = y.TargetPosition.ExecutorAgent.Name,
-                            SourcePositionExecutorAgentPhoneNumber = "SourcePositionAgentPhoneNumber", //TODO 
-                            TargetPositionExecutorAgentPhoneNumber = "TargetPositionAgentPhoneNumber", //TODO 
-                            AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
-                            AccessLevelName = y.AccessLevel.Name,
-                            StartEvent = y.StartEvent == null
+                SourcePositionName = y.SourcePosition.Name,
+                TargetPositionName = y.TargetPosition.Name,
+                SourcePositionExecutorNowAgentName = y.SourcePosition.ExecutorAgent.Name,
+                TargetPositionExecutorNowAgentName = y.TargetPosition.ExecutorAgent.Name,
+                SourcePositionExecutorAgentPhoneNumber = "SourcePositionAgentPhoneNumber", //TODO 
+                TargetPositionExecutorAgentPhoneNumber = "TargetPositionAgentPhoneNumber", //TODO 
+                AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
+                AccessLevelName = y.AccessLevel.Name,
+                StartEvent = y.StartEvent == null
                                         ? null
                                         : new FrontDocumentEvent
                                         {
@@ -785,7 +785,7 @@ namespace BL.Database.Common
                                             TargetPositionExecutorAgentName = y.StartEvent.TargetPositionExecutorAgent.Name ?? y.StartEvent.TargetAgent.Name,
                                             Description = y.StartEvent.Description,
                                         },
-                            CloseEvent = y.CloseEvent == null|| y.StartEventId == y.CloseEventId
+                CloseEvent = y.CloseEvent == null || y.StartEventId == y.CloseEventId
                                         ? null
                                         : new FrontDocumentEvent
                                         {
@@ -796,7 +796,7 @@ namespace BL.Database.Common
                                             TargetPositionExecutorAgentName = y.CloseEvent.TargetPositionExecutorAgent.Name ?? y.StartEvent.TargetAgent.Name,
                                             Description = y.CloseEvent.Description,
                                         },
-                        }).ToList();
+            }).ToList();
         }
 
         public static IEnumerable<FrontDocumentRestrictedSendList> GetDocumentRestrictedSendList(DmsContext dbContext, FilterDocumentRestrictedSendList filter)
@@ -816,17 +816,17 @@ namespace BL.Database.Common
 
             }
             return sendListDb.Select(y => new FrontDocumentRestrictedSendList
-                        {
-                            Id = y.Id,
-                            DocumentId = y.DocumentId,
-                            PositionId = y.PositionId,
-                            PositionName = y.Position.Name,
-                            PositionExecutorAgentName = y.Position.ExecutorAgent.Name,
-                            PositionExecutorAgentPhoneNumber = "PositionAgentPhone",
-                            AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
-                            AccessLevelName = y.AccessLevel.Name,
+            {
+                Id = y.Id,
+                DocumentId = y.DocumentId,
+                PositionId = y.PositionId,
+                PositionName = y.Position.Name,
+                PositionExecutorAgentName = y.Position.ExecutorAgent.Name,
+                PositionExecutorAgentPhoneNumber = "PositionAgentPhone",
+                AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
+                AccessLevelName = y.AccessLevel.Name,
 
-                        }).ToList();
+            }).ToList();
         }
 
         public static void ModifyPropertyValues(DmsContext dbContext, InternalPropertyValues model)
@@ -904,6 +904,58 @@ namespace BL.Database.Common
             };
 
             dbContext.FullTextIndexCashSet.Add(cashInfo);
+        }
+
+        public static IEnumerable<FrontDocumentPaper> GetDocumentPapers(DmsContext dbContext, FilterDocumentPaper filter)
+        {
+            var itemsDb = dbContext.DocumentPapersSet.AsQueryable();
+
+            if (filter != null)
+            {
+                if (filter?.DocumentId?.Count() > 0)
+                {
+                    itemsDb = itemsDb.Where(x => filter.DocumentId.Contains(x.DocumentId));
+                }
+            }
+
+            var itemsRes = itemsDb.Select(x => x);
+
+            var items = itemsRes.Select(x => new FrontDocumentPaper
+            {
+                Id = x.Id,
+                DocumentId = x.DocumentId,
+                Name = x.Name,
+                Description = x.Description,
+                IsMain = x.IsMain,
+                IsOriginal = x.IsOriginal,
+                IsCopy = x.IsCopy,
+                PageQuantity = x.PageQuantity,
+                OrderNumber = x.OrderNumber,
+                LastPaperEventId = x.LastPaperEventId
+            }).ToList();
+
+            return items;
+        }
+
+        public static IEnumerable<FrontDocumentPaperList> GetDocumentPaperLists(DmsContext dbContext, FilterDocumentPaperList filter)
+        {
+            var itemsDb = dbContext.DocumentPaperListsSet.AsQueryable();
+
+            if (filter != null)
+            {
+              
+            }
+
+            var itemsRes = itemsDb.Select(x => x);
+
+            var items = itemsRes.Select(x => new FrontDocumentPaperList
+            {
+                Id = x.Id,
+                Date = x.Date,
+                Description = x.Description
+            }).ToList();
+
+            return items;
         }
     }
 }

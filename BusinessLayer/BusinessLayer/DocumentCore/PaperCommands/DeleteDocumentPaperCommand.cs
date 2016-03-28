@@ -1,17 +1,19 @@
-﻿using BL.Logic.Common;
+﻿using System.Linq;
 using BL.Database.Documents.Interfaces;
+using BL.Logic.Common;
+using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
 
-namespace BL.Logic.DocumentCore.Commands
+namespace BL.Logic.DocumentCore.PaperCommands
 {
-    public class LaunchPlanDocumentCommand : BaseDocumentCommand
+    public class DeleteDocumentPaperCommand : BaseDocumentCommand
     {
-        private readonly IDocumentsDbProcess _documentDb;
+        private readonly IDocumentOperationsDbProcess _operationDb;        
 
-        public LaunchPlanDocumentCommand(IDocumentsDbProcess documentDb)
+        public DeleteDocumentPaperCommand(IDocumentOperationsDbProcess operationDb)
         {
-            _documentDb = documentDb;
+            _operationDb = operationDb;
         }
 
         private int Model
@@ -22,14 +24,13 @@ namespace BL.Logic.DocumentCore.Commands
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (int) _param;
+                return (int)_param;
             }
         }
 
         public override bool CanBeDisplayed(int positionId)
         {
             if (_document.ExecutorPositionId != positionId
-                || _document.IsLaunchPlan
                 )
             {
                 return false;
@@ -40,14 +41,14 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanExecute()
         {
-            //TODO ОСТАЛЬНЫЕ ПРОВЕРКИ!
-            _document = _documentDb.ChangeIsLaunchPlanDocumentPrepare(_context, Model);
+            _document = _operationDb.ChangeDocumentPaperPrepare(_context, Model);
             if (_document == null)
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
             _context.SetCurrentPosition(_document.ExecutorPositionId);
             _admin.VerifyAccess(_context, CommandType);
+            //TODO Добавить проверки на движение по БН
             if (!CanBeDisplayed(_context.CurrentPositionId))
             {
                 throw new CouldNotChangeAttributeLaunchPlan();
@@ -57,11 +58,8 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override object Execute()
         {
-            CommonDocumentUtilities.SetLastChange(_context, _document);
-            _document.IsLaunchPlan = true;
-            _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, _document.Id, EnumEventTypes.LaunchPlan);
-            _documentDb.ChangeIsLaunchPlanDocument(_context, _document);
-            return Model;
+            _operationDb.DeleteDocumentPaper(_context, Model);
+            return null;
         }
 
     }

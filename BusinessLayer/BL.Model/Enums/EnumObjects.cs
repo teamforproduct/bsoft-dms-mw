@@ -12,6 +12,9 @@
         DocumentEvents = 111, // Документы - события
         DocumentWaits = 112, // Документы - ожидания
         DocumentSubscriptions = 113, // Документы - подписи
+        DocumentPapers = 121, // Документы - бумажные носители
+        DocumentPaperEvents = 122, // Документы - события по бумажным носителям
+        DocumentPaperLists = 123, // Документы - реестры передачи бумажных носителей
         DocumentSavedFilters = 191, // Документы - сохраненные фильтры
         DocumentTags = 192, // Документы - тэги
         DictionaryDocumentType = 201, // Типы документов

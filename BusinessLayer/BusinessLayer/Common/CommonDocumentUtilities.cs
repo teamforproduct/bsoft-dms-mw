@@ -407,6 +407,62 @@ namespace BL.Logic.Common
             };
         }
 
+        public static InternalDocumentPaper GetNewDocumentPaper(IContext context, ModifyDocumentPapers model)
+        {
+            return new InternalDocumentPaper
+            {
+                DocumentId = model.DocumentId,
+                Name = model.Name,
+                Description = model.Description,
+                IsMain = model.IsMain,
+                IsOriginal = model.IsOriginal,
+                IsCopy = model.IsCopy,
+                PageQuantity = model.PageQuantity,
+                OrderNumber = model.OrderNumber,
+                Events = GetNewDocumentPaperEvents(context,null,EnumEventTypes.AddNewPaper),
+                LastChangeUserId = context.CurrentAgentId,
+                LastChangeDate = DateTime.Now,
+            };
+        }
+
+        public static IEnumerable<InternalDocumentPaper> GetNewDocumentPapers(IContext context, ModifyDocumentPapers model)
+        {
+            return new List<InternalDocumentPaper>
+            {
+                GetNewDocumentPaper(context,model)
+            };
+        }
+
+        public static InternalDocumentPaperEvent GetNewDocumentPaperEvent(IContext context, int? paperId, EnumEventTypes eventType, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null)
+        {
+            return new InternalDocumentPaperEvent
+            {
+                PaperId = paperId??0,
+                EventType = eventType,
+                SourceAgentId = sourceAgentId ?? context.CurrentAgentId,
+                SourcePositionId = sourcePositionId ?? context.CurrentPositionId,
+                SourcePositionExecutorAgentId = GetExecutorAgentIdByPositionId(context, sourcePositionId ?? context.CurrentPositionId),
+                TargetPositionId = targetPositionId ?? context.CurrentPositionId,
+                TargetPositionExecutorAgentId = GetExecutorAgentIdByPositionId(context, targetPositionId ?? context.CurrentPositionId),
+                TargetAgentId = targetAgentId,
+                PlanAgentId = context.CurrentPositionId,
+                PlanDate = DateTime.Now,
+                SendAgentId = context.CurrentPositionId,
+                SendDate = DateTime.Now,
+                RecieveAgentId = context.CurrentPositionId,
+                RecieveDate = DateTime.Now,
+                LastChangeUserId = context.CurrentAgentId,
+                LastChangeDate = DateTime.Now,
+            };
+        }
+
+        public static IEnumerable<InternalDocumentPaperEvent> GetNewDocumentPaperEvents(IContext context, int? paperId, EnumEventTypes eventType, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null)
+        {
+            return new List<InternalDocumentPaperEvent>
+            {
+                GetNewDocumentPaperEvent(context,  paperId, eventType, targetPositionId, targetAgentId, sourcePositionId, sourceAgentId )
+            };
+        }
 
         public static IEnumerable<BaseSystemUIElement> VerifyDocument(IContext ctx, FrontDocument doc, IEnumerable<BaseSystemUIElement> uiElements)
         {

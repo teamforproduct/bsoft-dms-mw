@@ -211,6 +211,28 @@
         {
         }
     }
+    public class PaperNotFoundOrUserHasNoAccess : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:PaperNotFoundOrUserHasNoAccess@l##";
+        public PaperNotFoundOrUserHasNoAccess() : base(_MESSAGE)
+        {
+        }
+
+        public PaperNotFoundOrUserHasNoAccess(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+    public class PaperListNotFoundOrUserHasNoAccess : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:PaperListNotFoundOrUserHasNoAccess@l##";
+        public PaperListNotFoundOrUserHasNoAccess() : base(_MESSAGE)
+        {
+        }
+
+        public PaperListNotFoundOrUserHasNoAccess(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
     public class DocumentNotFoundOrUserHasNoAccess : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:DocumentNotFoundOrUserHasNoAccess@l##";

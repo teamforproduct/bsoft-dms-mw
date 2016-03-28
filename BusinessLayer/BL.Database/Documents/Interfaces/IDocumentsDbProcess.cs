@@ -36,5 +36,19 @@ namespace BL.Database.Documents.Interfaces
         void ChangeIsLaunchPlanDocument(IContext ctx, InternalDocument document);
         InternalDocument GetBlankInternalDocumentById(IContext context, int documentId);
 
+        #region DocumentPapers
+
+        IEnumerable<FrontDocumentPaper> GetDocumentPapers(IContext ctx, FilterDocumentPaper filter);
+
+        FrontDocumentPaper GetDocumentPaperById(IContext ctx, int id);
+        #endregion DocumentPapers   
+
+        #region DocumentPaperLists
+
+        IEnumerable<FrontDocumentPaperList> GetDocumentPaperLists(IContext ctx, FilterDocumentPaperList filter);
+
+        FrontDocumentPaperList GetDocumentPaperListById(IContext ctx, int id);
+        #endregion DocumentPaperLists   
+
     }
 }

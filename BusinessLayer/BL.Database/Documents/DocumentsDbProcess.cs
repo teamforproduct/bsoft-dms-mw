@@ -34,28 +34,7 @@ namespace BL.Database.Documents
             {
                 using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
                 {
-                    var doc = new DBModel.Document.Documents
-                    {
-                        TemplateDocumentId = document.TemplateDocumentId,
-                        CreateDate = document.CreateDate,
-                        DocumentSubjectId = document.DocumentSubjectId,
-                        Description = document.Description,
-                        IsRegistered = document.IsRegistered,
-                        RegistrationJournalId = document.RegistrationJournalId,
-                        RegistrationNumberSuffix = document.RegistrationNumberSuffix,
-                        RegistrationNumberPrefix = document.RegistrationNumberPrefix,
-                        RegistrationDate = document.RegistrationDate,
-                        ExecutorPositionId = document.ExecutorPositionId,
-                        ExecutorPositionExecutorAgentId = document.ExecutorPositionExecutorAgentId,
-                        LastChangeUserId = document.LastChangeUserId,
-                        LastChangeDate = document.LastChangeDate,
-                        SenderAgentId = document.SenderAgentId,
-                        SenderAgentPersonId = document.SenderAgentPersonId,
-                        SenderNumber = document.SenderNumber,
-                        SenderDate = document.SenderDate,
-                        Addressee = document.Addressee,
-                    };
-
+                    var doc = ModelConverter.GetDbDocument(document);
 
                     if (document.Accesses != null && document.Accesses.Any())
                     {
@@ -1008,5 +987,70 @@ namespace BL.Database.Documents
             }
         }
 
+
+        #region DocumentPapers
+
+        public IEnumerable<FrontDocumentPaper> GetDocumentPapers(IContext ctx, FilterDocumentPaper filter)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                return CommonQueries.GetDocumentPapers(dbContext, filter);
+            }
+        }
+
+        public FrontDocumentPaper GetDocumentPaperById(IContext ctx, int id)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                //TODO: Refactoring
+                var item = dbContext.DocumentPapersSet
+                    .Where(x => x.Id == id)
+                    .Select(x => new FrontDocumentPaper
+                    {
+                        Id = x.Id,
+                        DocumentId = x.DocumentId,
+                        Name = x.Name,
+                        Description = x.Description,
+                        IsMain = x.IsMain,
+                        IsOriginal = x.IsOriginal,
+                        IsCopy = x.IsCopy,
+                        PageQuantity = x.PageQuantity,
+                        OrderNumber = x.OrderNumber,
+                        LastPaperEventId = x.LastPaperEventId
+                    }).FirstOrDefault();
+
+                return item;
+            }
+        }
+        #endregion DocumentPapers   
+
+        #region DocumentPaperLists
+
+        public IEnumerable<FrontDocumentPaperList> GetDocumentPaperLists(IContext ctx, FilterDocumentPaperList filter)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                return CommonQueries.GetDocumentPaperLists(dbContext, filter);
+            }
+        }
+
+        public FrontDocumentPaperList GetDocumentPaperListById(IContext ctx, int id)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                //TODO: Refactoring
+                var item = dbContext.DocumentPaperListsSet
+                    .Where(x => x.Id == id)
+                    .Select(x => new FrontDocumentPaperList
+                    {
+                        Id = x.Id,
+                        Date = x.Date,
+                        Description = x.Description
+                    }).FirstOrDefault();
+
+                return item;
+            }
+        }
+        #endregion DocumentPaperLists   
     }
 }

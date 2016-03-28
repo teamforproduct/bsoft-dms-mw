@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
@@ -13,7 +14,9 @@ namespace BL.Database.DBModel.Document
         public int Id { get; set; }
         public int PaperId { get; set; }
         public int EventTypeId { get; set; }
+        public Nullable<int> SendListId { get; set; }
         public Nullable<int> EventId { get; set; }
+        [MaxLength(2000)]
         public string Description { get; set; }
         public Nullable<int> SourcePositionId { get; set; }
         public Nullable<int> SourcePositionExecutorAgentId { get; set; }
@@ -22,8 +25,8 @@ namespace BL.Database.DBModel.Document
         public Nullable<int> TargetPositionExecutorAgentId { get; set; }
         public Nullable<int> TargetAgentId { get; set; }
         public Nullable<int> PaperListId { get; set; }
-        public int PlanAgentId { get; set; }
-        public DateTime PlanDate { get; set; }
+        public Nullable<int> PlanAgentId { get; set; }
+        public Nullable<DateTime> PlanDate { get; set; }
         public Nullable<int> SendAgentId { get; set; }
         public Nullable<DateTime> SendDate { get; set; }
         public Nullable<int> RecieveAgentId { get; set; }
@@ -36,6 +39,8 @@ namespace BL.Database.DBModel.Document
         public virtual DocumentPaperLists PaperList { get; set; }
         [ForeignKey("EventTypeId")]
         public virtual DictionaryEventTypes EventType { get; set; }
+        [ForeignKey("SendListId")]
+        public virtual DictionarySendTypes SendType { get; set; }
         [ForeignKey("EventId")]
         public virtual DocumentEvents Event { get; set; }
         [ForeignKey("SourcePositionId")]
@@ -56,5 +61,6 @@ namespace BL.Database.DBModel.Document
         public virtual DictionaryAgents SendAgent { get; set; }
         [ForeignKey("RecieveAgentId")]
         public virtual DictionaryAgents RecieveAgent { get; set; }
+
     }
 }

@@ -1,6 +1,7 @@
 ﻿using BL.Database.DBModel.Admin;
 using BL.Database.DBModel.Dictionary;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -8,6 +9,10 @@ namespace BL.Database.DBModel.Document
 {
     public class DocumentSendLists
     {
+        public DocumentSendLists()
+        {
+            this.PaperEvents = new HashSet<DocumentPaperEvents>();
+        }
         public int Id { get; set; }
         public int DocumentId { get; set; }
         public int Stage { get; set; }
@@ -57,5 +62,7 @@ namespace BL.Database.DBModel.Document
         public virtual DocumentEvents StartEvent { get; set; }
         [ForeignKey("CloseEventId")]
         public virtual DocumentEvents CloseEvent { get; set; }
+
+        public virtual ICollection<DocumentPaperEvents> PaperEvents { get; set; }
     }
 }

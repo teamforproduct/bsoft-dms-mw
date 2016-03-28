@@ -182,6 +182,8 @@ namespace BL.Model.DocumentCore.FrontModel
         public IEnumerable<FrontDocumentTask> DocumentTasks { get; set; }
         public IEnumerable<FrontDocumentWait> DocumentWaits { get; set; }
         public IEnumerable<FrontDocumentTag> DocumentTags { get; set; }
+        public IEnumerable<FrontDocumentPaper> DocumentPapers { get; set; }
+        public IEnumerable<FrontDocumentPaperEvent> DocumentPaperEvents { get; set; }
 
         public IEnumerable<BaseDictionaryPosition> DocumentWorkGroup { get; set; }
         public IEnumerable<FrontDocumentSubscription> DocumentSubscriptions { get; set; }
