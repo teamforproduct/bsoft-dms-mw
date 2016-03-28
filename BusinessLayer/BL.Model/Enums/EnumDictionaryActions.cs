@@ -75,8 +75,17 @@
 
         // Типы контактов
         #region DictionaryContactType
+        /// <summary>
+        /// Добавить тип контакта
+        /// </summary>
         AddContactType = 205001,
+        /// <summary>
+        /// Изменить тип контакта
+        /// </summary>
         ModifyContactType = 205005,
+        /// <summary>
+        /// Удалить тип контакта
+        /// </summary>
         DeleteContactType = 205009,
         #endregion ContactType
 
