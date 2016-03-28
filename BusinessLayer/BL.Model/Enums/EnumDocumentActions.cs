@@ -324,15 +324,17 @@
         /// </summary>
         MarkDocumentEventAsRead = 100010,
 
+        AddDocumentPaper = 121001, // Добавить бумажный носитель
+        ModifyDocumentPaper = 121005, // Изменить бумажный носитель
+        DeleteDocumentPaper = 121009, // Удалить бумажный носитель
+
         //TODO Добавить в базу
         AddDocumentTask = 1,
         ModifyDocumentTask = 2,
         DeleteDocumentTask = 3,
-        AddDocumentPaper = 4,
-        ModifyDocumentPaper = 5,
-        DeleteDocumentPaper = 6,
         AddDocumentPaperList = 7,
         ModifyDocumentPaperList = 8,
         DeleteDocumentPaperList = 9
+
     }
 }

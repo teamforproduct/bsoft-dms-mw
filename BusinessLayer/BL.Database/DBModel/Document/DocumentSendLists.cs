@@ -62,7 +62,7 @@ namespace BL.Database.DBModel.Document
         public virtual DocumentEvents StartEvent { get; set; }
         [ForeignKey("CloseEventId")]
         public virtual DocumentEvents CloseEvent { get; set; }
-
+        [ForeignKey("SendListId")]
         public virtual ICollection<DocumentPaperEvents> PaperEvents { get; set; }
     }
 }

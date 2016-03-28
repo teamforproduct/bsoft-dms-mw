@@ -40,7 +40,7 @@ namespace BL.Database.DBModel.Document
         [ForeignKey("EventTypeId")]
         public virtual DictionaryEventTypes EventType { get; set; }
         [ForeignKey("SendListId")]
-        public virtual DictionarySendTypes SendType { get; set; }
+        public virtual DocumentSendLists SendList { get; set; }
         [ForeignKey("EventId")]
         public virtual DocumentEvents Event { get; set; }
         [ForeignKey("SourcePositionId")]
