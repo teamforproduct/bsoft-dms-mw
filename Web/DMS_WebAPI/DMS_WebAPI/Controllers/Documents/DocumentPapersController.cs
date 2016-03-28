@@ -43,7 +43,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns>Измененная запись</returns>
         public IHttpActionResult Post([FromBody]ModifyDocumentPapers model)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.AddDocumentPaper, cxt, model);
             return Get(model.Id);
@@ -58,7 +58,7 @@ namespace DMS_WebAPI.Controllers.Documents
         public IHttpActionResult Put(int id, [FromBody]ModifyDocumentPapers model)
         {
             model.Id = id;
-            var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.ModifyDocumentPaper, cxt, model);
             return Get(model.Id);

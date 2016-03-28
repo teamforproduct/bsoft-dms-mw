@@ -24,6 +24,8 @@ namespace BL.Database.DBModel.System
         public string API { get; set; }
         [MaxLength(2000)]
         public string Description { get; set; }
+        [MaxLength(2000)]
+        public string Category { get; set; }
         public bool IsGrantable { get; set; }
         public bool IsGrantableByRecordId { get; set; }
         public bool IsVisible { get; set; }

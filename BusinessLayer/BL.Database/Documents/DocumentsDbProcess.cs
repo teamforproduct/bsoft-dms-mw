@@ -34,28 +34,7 @@ namespace BL.Database.Documents
             {
                 using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
                 {
-                    var doc = new DBModel.Document.Documents
-                    {
-                        TemplateDocumentId = document.TemplateDocumentId,
-                        CreateDate = document.CreateDate,
-                        DocumentSubjectId = document.DocumentSubjectId,
-                        Description = document.Description,
-                        IsRegistered = document.IsRegistered,
-                        RegistrationJournalId = document.RegistrationJournalId,
-                        RegistrationNumberSuffix = document.RegistrationNumberSuffix,
-                        RegistrationNumberPrefix = document.RegistrationNumberPrefix,
-                        RegistrationDate = document.RegistrationDate,
-                        ExecutorPositionId = document.ExecutorPositionId,
-                        ExecutorPositionExecutorAgentId = document.ExecutorPositionExecutorAgentId,
-                        LastChangeUserId = document.LastChangeUserId,
-                        LastChangeDate = document.LastChangeDate,
-                        SenderAgentId = document.SenderAgentId,
-                        SenderAgentPersonId = document.SenderAgentPersonId,
-                        SenderNumber = document.SenderNumber,
-                        SenderDate = document.SenderDate,
-                        Addressee = document.Addressee,
-                    };
-
+                    var doc = ModelConverter.GetDbDocument(document);
 
                     if (document.Accesses != null && document.Accesses.Any())
                     {

@@ -152,5 +152,9 @@ namespace BL.Model.DocumentCore.InternalModel
         public IEnumerable<InternalDocumentTask> Tasks { get; set; }
         public IEnumerable<InternalPropertyValue> Properties { get; set; }
 
+        public IEnumerable<InternalDocumentPaperEvent> PaperEvents { get; set; }
+        public IEnumerable<InternalDocumentPaper> Papers { get; set; }
+
+
     }
 }

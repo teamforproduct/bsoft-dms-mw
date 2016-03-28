@@ -40,7 +40,7 @@ namespace BL.Logic.DocumentCore.PaperCommands
         {
             _admin.VerifyAccess(_context, CommandType);
 
-            _item = _operationDb.ChangeDocumentPaperListPrepare(_context, Model.Id);
+            //_item = _operationDb.ChangeDocumentPaperListPrepare(_context, Model.Id);
 
             //TODO Проверить поля которые нужно обновлять
             _item.Date = Model.Date;

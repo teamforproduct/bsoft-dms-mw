@@ -17,6 +17,6 @@ namespace BL.Model.DocumentCore.FrontModel
         public bool IsCopy { get; set; }
         public int PageQuantity { get; set; }
         public int OrderNumber { get; set; }
-        public int LastPaperEventId { get; set; }
+        public int? LastPaperEventId { get; set; }
     }
 }

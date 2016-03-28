@@ -30,13 +30,29 @@ namespace BL.Logic.DocumentCore.PaperCommands
 
         public override bool CanBeDisplayed(int positionId)
         {
+            if (_document.ExecutorPositionId != positionId
+                )
+            {
+                return false;
+            }
+
             return true;
         }
 
         public override bool CanExecute()
         {
+            _document = _operationDb.ChangeDocumentPaperPrepare(_context, Model);
+            if (_document == null)
+            {
+                throw new DocumentNotFoundOrUserHasNoAccess();
+            }
+            _context.SetCurrentPosition(_document.ExecutorPositionId);
             _admin.VerifyAccess(_context, CommandType);
-
+            //TODO Добавить проверки на движение по БН
+            if (!CanBeDisplayed(_context.CurrentPositionId))
+            {
+                throw new CouldNotChangeAttributeLaunchPlan();
+            }
             return true;
         }
 
@@ -46,6 +62,5 @@ namespace BL.Logic.DocumentCore.PaperCommands
             return null;
         }
 
-        public override EnumDocumentActions CommandType => EnumDocumentActions.DeleteDocumentPaper;
     }
 }

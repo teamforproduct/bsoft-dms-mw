@@ -7,6 +7,33 @@ namespace BL.Database.Common
 {
     public static class ModelConverter
     {
+
+        public static DBModel.Document.Documents GetDbDocument(InternalDocument document)
+        {
+            return document == null ? null :
+                new DBModel.Document.Documents
+                {
+                    TemplateDocumentId = document.TemplateDocumentId,
+                    CreateDate = document.CreateDate,
+                    DocumentSubjectId = document.DocumentSubjectId,
+                    Description = document.Description,
+                    IsRegistered = document.IsRegistered,
+                    RegistrationJournalId = document.RegistrationJournalId,
+                    RegistrationNumberSuffix = document.RegistrationNumberSuffix,
+                    RegistrationNumberPrefix = document.RegistrationNumberPrefix,
+                    RegistrationDate = document.RegistrationDate,
+                    ExecutorPositionId = document.ExecutorPositionId,
+                    ExecutorPositionExecutorAgentId = document.ExecutorPositionExecutorAgentId,
+                    LastChangeUserId = document.LastChangeUserId,
+                    LastChangeDate = document.LastChangeDate,
+                    SenderAgentId = document.SenderAgentId,
+                    SenderAgentPersonId = document.SenderAgentPersonId,
+                    SenderNumber = document.SenderNumber,
+                    SenderDate = document.SenderDate,
+                    Addressee = document.Addressee,
+                };
+        }
+
         public static DocumentAccesses GetDbDocumentAccess(InternalDocumentAccess access)
         {
             return access == null ? null :
@@ -212,6 +239,7 @@ namespace BL.Database.Common
             return item == null ? null :
                 new DocumentPapers
                 {
+                    Id = item.Id,
                     DocumentId = item.DocumentId,
                     Name = item.Name,
                     Description = item.Description,
@@ -225,6 +253,42 @@ namespace BL.Database.Common
                     LastChangeUserId = item.LastChangeUserId
                 };
         }
+
+        public static IEnumerable<DocumentPapers> GetDbDocumentPapers(IEnumerable<InternalDocumentPaper> papers)
+        {
+            return papers?.Any() ?? false ? papers.Select(GetDbDocumentPaper) : null;
+        }
+
+        public static DocumentPaperEvents GetDbDocumentPaperEvent(InternalDocumentPaperEvent evt)
+        {
+            return evt == null ? null :
+                new DocumentPaperEvents
+                {
+                    Description = evt.Description,
+                    PaperId = evt.PaperId,
+                    EventTypeId = (int)evt.EventType,
+                    LastChangeDate = evt.LastChangeDate,
+                    LastChangeUserId = evt.LastChangeUserId,
+                    TargetAgentId = evt.TargetAgentId,
+                    TargetPositionId = evt.TargetPositionId,
+                    TargetPositionExecutorAgentId = evt.TargetPositionExecutorAgentId,
+                    SourceAgentId = evt.SourceAgentId,
+                    SourcePositionId = evt.SourcePositionId,
+                    SourcePositionExecutorAgentId = evt.SourcePositionExecutorAgentId,
+                    PlanAgentId = evt.PlanAgentId,
+                    PlanDate = evt.PlanDate,
+                    SendAgentId = evt.SendAgentId,
+                    SendDate = evt.SendDate,
+                    RecieveAgentId = evt.RecieveAgentId,
+                    RecieveDate = evt.RecieveDate,
+                };
+        }
+
+        public static IEnumerable<DocumentPaperEvents> GetDbDocumentPaperEvents(IEnumerable<InternalDocumentPaperEvent> evt)
+        {
+            return evt?.Any() ?? false ? evt.Select(GetDbDocumentPaperEvent) : null;
+        }
+
         public static DocumentPaperLists GetDbDocumentPaperList(InternalDocumentPaperList item)
         {
             return item == null ? null :

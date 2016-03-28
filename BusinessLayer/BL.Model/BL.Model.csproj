@@ -128,6 +128,7 @@
     <Compile Include="DocumentCore\Filters\FilterDocumentById.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentAttachedFile.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentTag.cs" />
+    <Compile Include="DocumentCore\FrontModel\FrontDocumentPaperEvent.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentPaperList.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentTag.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentAttachedFile.cs" />
@@ -157,6 +158,7 @@
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentPapers.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentTasks.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentTags.cs" />
+    <Compile Include="DocumentCore\InternalModel\InternalDocumentPaperEvent.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentPaperList.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentTag.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalActionRecord.cs" />

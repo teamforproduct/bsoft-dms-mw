@@ -12,8 +12,6 @@ namespace BL.Logic.DocumentCore.PaperCommands
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
 
-        private InternalDocumentPaper _item;
-
         public AddDocumentPaperCommand(IDocumentOperationsDbProcess operationDb)
         {
             _operationDb = operationDb;
@@ -33,38 +31,33 @@ namespace BL.Logic.DocumentCore.PaperCommands
 
         public override bool CanBeDisplayed(int positionId)
         {
+            if (_document.ExecutorPositionId != positionId
+                )
+            {
+                return false;
+            }
+
             return true;
         }
 
         public override bool CanExecute()
         {
-
-            _admin.VerifyAccess(_context, CommandType);
-
-            _item = new InternalDocumentPaper
+            _document = _operationDb.AddDocumentPaperPrepare(_context, Model.DocumentId);
+            if (_document == null)
             {
-                DocumentId = Model.DocumentId,
-                Name = Model.Name,
-                Description = Model.Description,
-                IsMain = Model.IsMain,
-                IsOriginal=Model.IsOriginal,
-                IsCopy = Model.IsCopy,
-                PageQuantity = Model.PageQuantity,
-                OrderNumber = Model.OrderNumber,
-                LastPaperEventId = Model.LastPaperEventId
-            };
-
+                throw new DocumentNotFoundOrUserHasNoAccess();
+            }
+            _context.SetCurrentPosition(_document.ExecutorPositionId);
+            _admin.VerifyAccess(_context, CommandType);
             return true;
         }
 
         public override object Execute()
         {
-
-            CommonDocumentUtilities.SetLastChange(_context, _item);
-            _operationDb.AddDocumentPapers(_context, new List<InternalDocumentPaper> { _item });
+            _document.Papers = CommonDocumentUtilities.GetNewDocumentPapers(_context, Model);
+            _operationDb.AddDocumentPapers(_context, _document.Papers);
             return null;
         }
 
-        public override EnumDocumentActions CommandType => EnumDocumentActions.AddDocumentPaper;
     }
 }

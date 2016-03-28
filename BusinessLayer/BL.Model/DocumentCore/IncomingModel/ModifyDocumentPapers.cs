@@ -6,7 +6,7 @@ namespace BL.Model.DocumentCore.IncomingModel
     /// <summary>
     /// Модель для перезаписи списка тегов документа
     /// </summary>
-    public class ModifyDocumentPapers : CurrentPosition
+    public class ModifyDocumentPapers
     {
         /// <summary>
         /// ИД Task
@@ -21,6 +21,5 @@ namespace BL.Model.DocumentCore.IncomingModel
         public bool IsCopy { get; set; }
         public int PageQuantity { get; set; }
         public int OrderNumber { get; set; }
-        public int LastPaperEventId { get; set; }
     }
 }

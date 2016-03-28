@@ -33,36 +33,47 @@ namespace BL.Logic.DocumentCore.PaperCommands
 
         public override bool CanBeDisplayed(int positionId)
         {
+            if (_document.ExecutorPositionId != positionId
+                )
+            {
+                return false;
+            }
+
             return true;
         }
 
         public override bool CanExecute()
         {
+            _document = _operationDb.ChangeDocumentPaperPrepare(_context, Model.Id);
+            if (_document == null)
+            {
+                throw new DocumentNotFoundOrUserHasNoAccess();
+            }
+            _context.SetCurrentPosition(_document.ExecutorPositionId);
             _admin.VerifyAccess(_context, CommandType);
-
-            _item = _operationDb.ChangeDocumentPaperPrepare(_context, Model.Id);
-
-            //TODO Проверить поля которые нужно обновлять
-            _item.DocumentId = Model.DocumentId;
-            _item.Name = Model.Name;
-            _item.Description = Model.Description;
-            _item.IsMain = Model.IsMain;
-            _item.IsOriginal = Model.IsOriginal;
-            _item.IsCopy = Model.IsCopy;
-            _item.PageQuantity = Model.PageQuantity;
-            _item.OrderNumber = Model.OrderNumber;
-            _item.LastPaperEventId = Model.LastPaperEventId;
-
+            if (!CanBeDisplayed(_context.CurrentPositionId))
+            {
+                throw new CouldNotChangeAttributeLaunchPlan();
+            }
             return true;
         }
 
         public override object Execute()
         {
-            CommonDocumentUtilities.SetLastChange(_context, _item);
+            var paper = _document.Papers.First();
+
+            paper.Name = Model.Name;
+            paper.Description = Model.Description;
+            paper.IsMain = Model.IsMain;
+            paper.IsOriginal = Model.IsOriginal;
+            paper.IsCopy = Model.IsCopy;
+            paper.PageQuantity = Model.PageQuantity;
+            paper.OrderNumber = Model.OrderNumber;
+            CommonDocumentUtilities.SetLastChange(_context, paper);
+
             _operationDb.ModifyDocumentPaper(_context, _item);
             return null;
         }
 
-        public override EnumDocumentActions CommandType => EnumDocumentActions.ModifyDocumentPaper;
     }
 }
