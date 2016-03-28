@@ -188,6 +188,14 @@
     <Compile Include="Migrations\201603281247006_papersCorr.Designer.cs">
       <DependentUpon>201603281247006_papersCorr.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201603281333276_papersCorr_dropInd.cs" />
+    <Compile Include="Migrations\201603281333276_papersCorr_dropInd.Designer.cs">
+      <DependentUpon>201603281333276_papersCorr_dropInd.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201603281335057_papersCorr_addInd.cs" />
+    <Compile Include="Migrations\201603281335057_papersCorr_addInd.Designer.cs">
+      <DependentUpon>201603281335057_papersCorr_addInd.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SystemDb\ISystemDbProcess.cs" />
@@ -226,6 +234,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201603281247006_papersCorr.resx">
       <DependentUpon>201603281247006_papersCorr.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201603281333276_papersCorr_dropInd.resx">
+      <DependentUpon>201603281333276_papersCorr_dropInd.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201603281335057_papersCorr_addInd.resx">
+      <DependentUpon>201603281335057_papersCorr_addInd.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
