@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace BL.Model.DocumentCore.FrontModel
 {
-    public class FrontDocumentTask
+    public class FrontDocumentTask : FrontRegistrationFullNumber
     {
         public int Id { get; set; }
         public int DocumentId { get; set; }
-        public string RegistrationFullNumber { get; set; }
         public DateTime? DocumentDate { get; set; }
         public int PositionId { get; set; }
         public int PositionExecutorAgentId { get; set; }

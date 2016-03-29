@@ -40,10 +40,12 @@ namespace BL.Database.Documents
                         Name = x.Task.Task,
                         Description = x.Task.Description,
                         DocumentDate = x.Task.Document.RegistrationDate ?? x.Task.Document.CreateDate,
-                        RegistrationFullNumber = (x.Task.Document.RegistrationNumber != null
-                                           ? x.Task.Document.RegistrationNumberPrefix + x.Task.Document.RegistrationNumber +
-                                             x.Task.Document.RegistrationNumberSuffix
-                                           : "#" + x.Task.Document.Id),
+
+                        RegistrationNumber = x.Task.Document.RegistrationNumber,
+                        RegistrationNumberPrefix = x.Task.Document.RegistrationNumberPrefix,
+                        RegistrationNumberSuffix = x.Task.Document.RegistrationNumberSuffix,
+                        RegistrationFullNumber = "#" + x.Task.Document.Id,
+
                         DocumentDescription = x.Task.Document.Description,
                         DocumentTypeName = x.Task.Document.TemplateDocument.DocumentType.Name,
                         DocumentDirectionName = x.Task.Document.TemplateDocument.DocumentDirection.Name,
@@ -58,6 +60,8 @@ namespace BL.Database.Documents
                         PositionExecutorNowAgentName = x.Task.Position.ExecutorAgent.Name,
                         PositionExecutorAgentPhoneNumber = "SourcePositionAgentPhoneNumber", //TODO 
                     }).FirstOrDefault();
+
+                CommonQueries.ChangeRegistrationFullNumber(item);
 
                 return item;
             }

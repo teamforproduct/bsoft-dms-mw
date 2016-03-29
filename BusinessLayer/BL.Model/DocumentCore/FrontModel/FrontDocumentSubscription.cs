@@ -2,7 +2,7 @@
 
 namespace BL.Model.DocumentCore.FrontModel
 {
-    public class FrontDocumentSubscription
+    public class FrontDocumentSubscription : FrontRegistrationFullNumber
     {
         public int Id { get; set; }
         public int? DocumentId { get; set; }
@@ -17,7 +17,6 @@ namespace BL.Model.DocumentCore.FrontModel
         public FrontDocumentEvent SendEvent { get; set; }
         public FrontDocumentEvent DoneEvent { get; set; }
 
-        public string RegistrationFullNumber { get; set; }
         public DateTime? DocumentDate { get; set; }
 
         public string DocumentDirectionName { get; set; }

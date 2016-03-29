@@ -790,12 +790,16 @@ namespace BL.Database.Documents
                     SourcePositionExecutorAgentName = x.SourcePositionExecutorAgent.Name,
                     TargetPositionExecutorAgentName = x.TargetPositionExecutorAgent.Name ?? x.TargetAgent.Name,
                     DocumentDate = x.Document.RegistrationDate ?? x.Document.CreateDate,
-                    RegistrationFullNumber = (x.Document.RegistrationNumber != null
-                                          ? x.Document.RegistrationNumberPrefix + x.Document.RegistrationNumber +
-                                            x.Document.RegistrationNumberSuffix
-                                          : "#" + x.Document.Id),
+
+                    RegistrationNumber = x.Document.RegistrationNumber,
+                    RegistrationNumberPrefix = x.Document.RegistrationNumberPrefix,
+                    RegistrationNumberSuffix = x.Document.RegistrationNumberSuffix,
+                    RegistrationFullNumber = "#" + x.Document.Id,
+
                     DueDate = null,
                 }).ToList();
+
+                res.ForEach(x => CommonQueries.ChangeRegistrationFullNumber(x));
 
                 foreach (var el in res.Join(ddate, r => r.Id, d => d.evtId, (r, d) => new { r, d }))
                 {
