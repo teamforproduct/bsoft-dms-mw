@@ -9,22 +9,22 @@
         /// <summary>
         /// Создать документ по шаблону
         /// </summary>
-        AddDocument = 100001, 
+        AddDocument = 100001,
 
         /// <summary>
         /// Создать документ копированием
         /// </summary>
-        CopyDocument = 100002, 
+        CopyDocument = 100002,
 
         /// <summary>
         /// Изменить документ
         /// </summary>
-        ModifyDocument = 100003, 
+        ModifyDocument = 100003,
 
         /// <summary>
         /// Удалить документ
         /// </summary>
-        DeleteDocument = 100004, 
+        DeleteDocument = 100004,
 
         /// <summary>
         /// Запустить выполнение плана
@@ -34,27 +34,27 @@
         /// <summary>
         /// Добавить пункт плана
         /// </summary>
-        AddDocumentSendListItem = 100006, 
+        AddDocumentSendListItem = 100006,
 
         /// <summary>
         /// Остановить выполнение плана
         /// </summary>
-        StopPlan = 100007, 
+        StopPlan = 100007,
 
         /// <summary>
         /// Передать управление
         /// </summary>
-        ChangeExecutor = 100008, 
+        ChangeExecutor = 100008,
 
         /// <summary>
         /// Зарегистрировать документ
         /// </summary>
-        RegisterDocument = 100009, 
+        RegisterDocument = 100009,
 
         /// <summary>
         /// Направить для сведения
         /// </summary>
-        SendForInformation = 100011, 
+        SendForInformation = 100011,
 
         /// <summary>
         /// Направить для рассмотрения
@@ -71,12 +71,12 @@
         /// <summary>
         /// Взять на контроль
         /// </summary>
-        ControlOn = 100021, 
+        ControlOn = 100021,
 
         /// <summary>
         /// Направить для контроля
         /// </summary>
-        SendForControl = 100022, 
+        SendForControl = 100022,
 
         /// <summary>
         /// Изменить параметры контроля
@@ -86,142 +86,142 @@
         /// <summary>
         /// Изменить параметры контроля для исполнителя
         /// </summary>
-        ControlTargetChange = 100026, 
+        ControlTargetChange = 100026,
 
         /// <summary>
         /// Снять с контроля
         /// </summary>
-        ControlOff = 100027, 
+        ControlOff = 100027,
 
         /// <summary>
         /// Направить для ответственного исполнения 
         /// </summary>
-        SendForResponsibleExecution = 100031, 
+        SendForResponsibleExecution = 100031,
 
         /// <summary>
         /// Направить для исполнения
         /// </summary>
-        SendForExecution = 100032, 
+        SendForExecution = 100032,
 
         /// <summary>
         /// Отметить исполнение
         /// </summary>
-        MarkExecution = 100035, 
+        MarkExecution = 100035,
 
         /// <summary>
         /// Принять результат
         /// </summary>
-        AcceptResult = 100037, 
+        AcceptResult = 100037,
 
         /// <summary>
         /// Отклонить результат
         /// </summary>
-        RejectResult = 100038, 
+        RejectResult = 100038,
 
         /// <summary>
         /// Направить для визирования 
         /// </summary>
-        SendForVisaing = 100041, 
+        SendForVisaing = 100041,
 
         /// <summary>
         /// Направить для согласование 
         /// </summary>
         SendForАgreement = 100042,
-         
+
         /// <summary>
         /// Направить для утверждения 
         /// </summary>
-        SendForАpproval = 100043, 
+        SendForАpproval = 100043,
 
         /// <summary>
         /// Направить для подписи 
         /// </summary>
-        SendForSigning = 100044, 
+        SendForSigning = 100044,
 
         /// <summary>
         /// Отозвать с визирования
         /// </summary>
-        WithdrawVisaing = 100046, 
+        WithdrawVisaing = 100046,
 
         /// <summary>
         /// Отозвать с согласования
         /// </summary>
-        WithdrawАgreement = 100047, 
+        WithdrawАgreement = 100047,
 
         /// <summary>
         /// Отозвать с утверждения
         /// </summary>
-        WithdrawАpproval = 100048, 
+        WithdrawАpproval = 100048,
 
         /// <summary>
         /// Отозвать с подписи
         /// </summary>
-        WithdrawSigning = 100049, 
+        WithdrawSigning = 100049,
 
         /// <summary>
         /// Завизировать
         /// </summary>
-        AffixVisaing = 100051, 
+        AffixVisaing = 100051,
 
         /// <summary>
         /// Согласовать
         /// </summary>
-        AffixАgreement = 100052, 
+        AffixАgreement = 100052,
 
         /// <summary>
         /// Утвердить
         /// </summary>
-        AffixАpproval = 100053, 
-         
+        AffixАpproval = 100053,
+
         /// <summary>
         /// Подписать
         /// </summary>
-        AffixSigning = 100054,  
+        AffixSigning = 100054,
 
         /// <summary>
         /// Отказать в визирования 
         /// </summary>
-        RejectVisaing = 100056, 
+        RejectVisaing = 100056,
 
         /// <summary>
         /// Отказать в согласование
         /// </summary>
-        RejectАgreement = 100057, 
-         
+        RejectАgreement = 100057,
+
         /// <summary>
         /// Отказать в утверждения 
         /// </summary>
-        RejectАpproval = 100058, 
+        RejectАpproval = 100058,
 
         /// <summary>
         /// Отказать в подписи 
         /// </summary>
-        RejectSigning = 100059, 
+        RejectSigning = 100059,
 
         /// <summary>
         /// Направить сообщение участникам рабочей группы
         /// </summary>
-        SendMessage = 100081, 
+        SendMessage = 100081,
 
         /// <summary>
         /// Добавить примечание
         /// </summary>
-        AddNote = 100083, 
+        AddNote = 100083,
 
         /// <summary>
         /// Добавить в избранное
         /// </summary>
-        AddFavourite = 100091, 
+        AddFavourite = 100091,
 
         /// <summary>
         /// Удалить из избранного
         /// </summary>
-        DeleteFavourite = 100093, 
+        DeleteFavourite = 100093,
 
         /// <summary>
         /// Закончить работу с документом
         /// </summary>
-        FinishWork = 100095, 
+        FinishWork = 100095,
 
         /// <summary>
         ///  Возобновить работу с документом
@@ -304,15 +304,15 @@
         /// <summary>
         /// Добавить сохраненный фильтр
         /// </summary>
-        AddSavedFilter = 191001, 
+        AddSavedFilter = 191001,
         /// <summary>
         /// Изменить сохраненный фильтр
         /// </summary>
-        ModifySavedFilter = 191005, 
+        ModifySavedFilter = 191005,
         /// <summary>
         /// Удалить сохраненный фильтр
         /// </summary>
-        DeleteSavedFilter = 191009, 
+        DeleteSavedFilter = 191009,
 
         /// <summary>
         /// Изменить тэги по документу
@@ -324,9 +324,17 @@
         /// </summary>
         MarkDocumentEventAsRead = 100010,
 
+        AddDocumentPaper = 121001, // Добавить бумажный носитель
+        ModifyDocumentPaper = 121005, // Изменить бумажный носитель
+        DeleteDocumentPaper = 121009, // Удалить бумажный носитель
+
         //TODO Добавить в базу
         AddDocumentTask = 1,
         ModifyDocumentTask = 2,
-        DeleteDocumentTask = 3
+        DeleteDocumentTask = 3,
+        AddDocumentPaperList = 7,
+        ModifyDocumentPaperList = 8,
+        DeleteDocumentPaperList = 9
+
     }
 }

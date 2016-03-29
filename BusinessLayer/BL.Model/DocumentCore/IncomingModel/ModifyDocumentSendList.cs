@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using System.Xml.Serialization;
@@ -78,5 +79,9 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// Признак первоначальный пункт
         /// </summary>
         public bool IsInitial { get; set; }
+        /// <summary>
+        /// Массив ИД бумажных насителей, подлежащих перемещению
+        /// </summary>
+        public List<int> PaperId { get; set; }
     }
 }

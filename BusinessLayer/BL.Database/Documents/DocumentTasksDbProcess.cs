@@ -30,7 +30,7 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(ctx))
             {
                 //TODO: Refactoring
-                var sendLists = dbContext.DocumentTasksSet
+                var item = dbContext.DocumentTasksSet
                     .Where(x => x.Id == id)
                     .Select(x => new { Task = x })
                     .Select(x => new FrontDocumentTask
@@ -59,7 +59,7 @@ namespace BL.Database.Documents
                         PositionExecutorAgentPhoneNumber = "SourcePositionAgentPhoneNumber", //TODO 
                     }).FirstOrDefault();
 
-                return sendLists;
+                return item;
             }
         }
         #endregion DocumentTasks         

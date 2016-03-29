@@ -133,6 +133,12 @@
     <Compile Include="DocumentCore\Commands\SendForSigningDocumentCommand.cs" />
     <Compile Include="DocumentCore\Commands\SendForResponsibleExecutionDocumentCommand.cs" />
     <Compile Include="DocumentCore\Commands\SendForControlDocumentCommand.cs" />
+    <Compile Include="DocumentCore\PaperCommands\AddDocumentPaperListCommand.cs" />
+    <Compile Include="DocumentCore\PaperCommands\AddDocumentPaperCommand.cs" />
+    <Compile Include="DocumentCore\PaperCommands\DeleteDocumentPaperListCommand.cs" />
+    <Compile Include="DocumentCore\PaperCommands\DeleteDocumentPaperCommand.cs" />
+    <Compile Include="DocumentCore\PaperCommands\ModifyDocumentPaperListCommand.cs" />
+    <Compile Include="DocumentCore\PaperCommands\ModifyDocumentPaperCommand.cs" />
     <Compile Include="DocumentCore\DocumentTaskService.cs" />
     <Compile Include="DocumentCore\Interfaces\IDocumentTaskService.cs" />
     <Compile Include="DocumentCore\SendListCommands\AddByStandartSendListDocumentSendListCommand.cs" />

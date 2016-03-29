@@ -80,6 +80,7 @@
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryContact.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentPerson.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryContactType.cs" />
+    <Compile Include="DictionaryCore\FrontModel\FrontDictionaryStandartSendListContent.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyCustomDictionary.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyCustomDictionaryType.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAddressType.cs" />
@@ -96,6 +97,7 @@
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentPerson.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryContact.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryContactType.cs" />
+    <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryStandartSendListContent.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalCustomDictionary.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAdminPositionRoles.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAdminRoleActions.cs" />
@@ -104,6 +106,7 @@
     <Compile Include="AdminCore\FilterAdminAccessLevel.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalCustomDictionaryType.cs" />
     <Compile Include="DocumentCore\Actions\ControlTargetChange.cs" />
+    <Compile Include="DocumentCore\Filters\FilterDocumentPaper.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentRestrictedSendList.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAddressType.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAgentAccount.cs" />
@@ -120,6 +123,7 @@
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryContact.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryContactType.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentSubscription.cs" />
+    <Compile Include="DocumentCore\Filters\FilterDocumentPaperList.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentTask.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentSendList.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentWait.cs" />
@@ -171,8 +175,11 @@
     <Compile Include="DocumentCore\Filters\FilterDocumentById.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentAttachedFile.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentTag.cs" />
+    <Compile Include="DocumentCore\FrontModel\FrontDocumentPaperEvent.cs" />
+    <Compile Include="DocumentCore\FrontModel\FrontDocumentPaperList.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentTag.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentAttachedFile.cs" />
+    <Compile Include="DocumentCore\FrontModel\FrontDocumentPaper.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentTask.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontTemplateAttachedFile.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentSubscription.cs" />
@@ -194,12 +201,17 @@
     <Compile Include="DocumentCore\Filters\FilterDocumentFileIdentity.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentFile.cs" />
     <Compile Include="DocumentCore\IncomingModel\AddDocumentByTemplateDocument.cs" />
+    <Compile Include="DocumentCore\IncomingModel\ModifyDocumentPaperLists.cs" />
+    <Compile Include="DocumentCore\IncomingModel\ModifyDocumentPapers.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentTasks.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentTags.cs" />
+    <Compile Include="DocumentCore\InternalModel\InternalDocumentPaperEvent.cs" />
+    <Compile Include="DocumentCore\InternalModel\InternalDocumentPaperList.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentTag.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalActionRecord.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentAttachedFile.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentSavedFilter.cs" />
+    <Compile Include="DocumentCore\InternalModel\InternalDocumentPaper.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentTask.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalTemplateAttachedFile.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalTemplateDocument.cs" />

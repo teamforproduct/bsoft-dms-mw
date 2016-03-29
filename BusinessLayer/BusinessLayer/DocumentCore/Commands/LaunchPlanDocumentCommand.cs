@@ -52,8 +52,6 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new CouldNotChangeAttributeLaunchPlan();
             }
-
-
             return true;
         }
 

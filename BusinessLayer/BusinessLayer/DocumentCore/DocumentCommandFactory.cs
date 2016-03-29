@@ -2,6 +2,7 @@
 using BL.Logic.DependencyInjection;
 using BL.Logic.DocumentCore.AdditionalCommands;
 using BL.Logic.DocumentCore.Commands;
+using BL.Logic.DocumentCore.PaperCommands;
 using BL.Logic.DocumentCore.SendListCommands;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
@@ -224,6 +225,30 @@ namespace BL.Logic.DocumentCore
 
                 case EnumDocumentActions.DeleteDocumentTask:
                     cmd = DmsResolver.Current.Get<DeleteDocumentTaskCommand>();
+                    break;
+
+                case EnumDocumentActions.AddDocumentPaper:
+                    cmd = DmsResolver.Current.Get<AddDocumentPaperCommand>();
+                    break;
+
+                case EnumDocumentActions.ModifyDocumentPaper:
+                    cmd = DmsResolver.Current.Get<ModifyDocumentPaperCommand>();
+                    break;
+
+                case EnumDocumentActions.DeleteDocumentPaper:
+                    cmd = DmsResolver.Current.Get<DeleteDocumentPaperCommand>();
+                    break;
+
+                case EnumDocumentActions.AddDocumentPaperList:
+                    cmd = DmsResolver.Current.Get<AddDocumentPaperListCommand>();
+                    break;
+
+                case EnumDocumentActions.ModifyDocumentPaperList:
+                    cmd = DmsResolver.Current.Get<ModifyDocumentPaperListCommand>();
+                    break;
+
+                case EnumDocumentActions.DeleteDocumentPaperList:
+                    cmd = DmsResolver.Current.Get<DeleteDocumentPaperListCommand>();
                     break;
 
                 case EnumDocumentActions.AddDocumentSendListItem:
