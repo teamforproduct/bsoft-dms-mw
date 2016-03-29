@@ -7,7 +7,7 @@ using BL.Model.SystemCore;
 
 namespace BL.Logic.DictionaryCore.StandartSendList
 {
-    public class DeleteDictionaryStandartSendListContentCommand : BaseDictionaryCommand
+    public class DeleteDictionaryStandartSendListCommand : BaseDictionaryCommand
     {
         private int model
         {
@@ -30,7 +30,7 @@ namespace BL.Logic.DictionaryCore.StandartSendList
         public override bool CanExecute()
         {
 
-          
+           
             _admin.VerifyAccess(_context, CommandType, false);
             return true;
         }
@@ -39,12 +39,12 @@ namespace BL.Logic.DictionaryCore.StandartSendList
         {
             try
             {
-                var newCont = new InternalDictionaryStandartSendListContent()
+                var newCont = new InternalDictionaryStandartSendList()
                 {
                     Id = model
 
                 };
-                _dictDb.DeleteDictionaryStandartSendListContent(_context, newCont);
+                _dictDb.DeleteDictionaryStandartSendList(_context, newCont);
                 return null;
             }
             catch (Exception ex)

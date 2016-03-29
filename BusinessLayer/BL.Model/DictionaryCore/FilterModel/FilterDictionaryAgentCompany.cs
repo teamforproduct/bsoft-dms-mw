@@ -5,7 +5,7 @@ namespace BL.Model.DictionaryCore.FilterModel
     /// <summary>
     /// фильтр юридических лиц
     /// </summary>
-    public class FilterDictionaryAgentCompany : DictionaryBaseFilterParms
+    public class FilterDictionaryAgentCompany : DictionaryBaseFilterParameters
     {
          
         /// <summary>

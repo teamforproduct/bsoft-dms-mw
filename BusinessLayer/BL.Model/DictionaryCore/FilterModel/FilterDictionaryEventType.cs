@@ -5,7 +5,7 @@ namespace BL.Model.DictionaryCore.FilterModel
     /// <summary>
     /// Фильтр словаря типов событий
     /// </summary>
-    public class FilterDictionaryEventType : DictionaryBaseFilterParms
+    public class FilterDictionaryEventType : DictionaryBaseFilterParameters
     {
    
         /// <summary>

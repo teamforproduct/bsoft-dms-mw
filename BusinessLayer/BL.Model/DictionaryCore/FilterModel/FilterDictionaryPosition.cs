@@ -5,7 +5,7 @@ namespace BL.Model.DictionaryCore.FilterModel
     /// <summary>
     /// Фильтры FilterDictionaryPosition
     /// </summary>
-    public class FilterDictionaryPosition : DictionaryBaseFilterParms
+    public class FilterDictionaryPosition : DictionaryBaseFilterParameters
     {
  
         /// <summary>

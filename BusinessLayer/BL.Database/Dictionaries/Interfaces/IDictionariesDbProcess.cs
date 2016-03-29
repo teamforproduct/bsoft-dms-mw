@@ -199,9 +199,11 @@ namespace BL.Database.Dictionaries.Interfaces
         #endregion DictionaryStandartSendListContents
 
         #region DictionaryStandartSendLists
-        BaseDictionaryStandartSendList GetDictionaryStandartSendList(IContext context, int id);
-
-        IEnumerable<BaseDictionaryStandartSendList> GetDictionaryStandartSendLists(IContext context, FilterDictionaryStandartSendList filter);
+        FrontDictionaryStandartSendList GetDictionaryStandartSendList(IContext context, int id);
+        void UpdateDictionaryStandartSendList(IContext context, InternalDictionaryStandartSendList list);
+        void DeleteDictionaryStandartSendList(IContext context, InternalDictionaryStandartSendList list);
+        int AddDictionaryStandartSendList(IContext context, InternalDictionaryStandartSendList list);
+        IEnumerable<FrontDictionaryStandartSendList> GetDictionaryStandartSendLists(IContext context, FilterDictionaryStandartSendList filter);
         #endregion DictionaryStandartSendList
 
         #region DictionarySubordinationTypes

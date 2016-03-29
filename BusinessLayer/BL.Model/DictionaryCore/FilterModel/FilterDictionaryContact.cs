@@ -9,7 +9,7 @@ namespace BL.Model.DictionaryCore.FilterModel
     /// <summary>
     /// фильтр контактов
     /// </summary>
-    public class FilterDictionaryContact : DictionaryBaseFilterParms
+    public class FilterDictionaryContact : DictionaryBaseFilterParameters
     {
         /// <summary>
         /// ИД

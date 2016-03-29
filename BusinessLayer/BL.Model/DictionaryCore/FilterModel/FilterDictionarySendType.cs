@@ -2,7 +2,7 @@
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
-    public class FilterDictionarySendType : DictionaryBaseFilterParms
+    public class FilterDictionarySendType : DictionaryBaseFilterParameters
     {
 
     }

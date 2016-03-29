@@ -3087,7 +3087,7 @@ namespace BL.Database.Dictionaries
                             CompanyName = y.Company.Name,
                             ChiefPositionName = y.ChiefPosition.Name
                         }),
-                        StandartSendLists = x.StandartSendLists.Select(y => new BaseDictionaryStandartSendList
+                        StandartSendLists = x.StandartSendLists.Select(y => new FrontDictionaryStandartSendList
                         {
                             Id = y.Id,
                             Name = y.Name,
@@ -3797,12 +3797,12 @@ namespace BL.Database.Dictionaries
         #endregion DictionaryStandartSendListContents
 
         #region DictionaryStandartSendLists
-        public BaseDictionaryStandartSendList GetDictionaryStandartSendList(IContext context, int id)
+        public FrontDictionaryStandartSendList GetDictionaryStandartSendList(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context))
             {
                 return dbContext.DictionaryStandartSendListsSet.Where(x => x.Id == id)
-                        .Select(x => new BaseDictionaryStandartSendList
+                        .Select(x => new FrontDictionaryStandartSendList
                         {
                             Id = x.Id,
                             Name = x.Name,
@@ -3811,7 +3811,7 @@ namespace BL.Database.Dictionaries
                             LastChangeDate = x.LastChangeDate,
                             PositionName = x.Position.Name,
                             StandartSendListContents =
-                                x.StandartSendListContents.Select(y => new BaseDictionaryStandartSendListContent
+                                x.StandartSendListContents.Select(y => new FrontDictionaryStandartSendListContent()
                                 {
                                     Id = y.Id,
                                     StandartSendListId = y.StandartSendListId,
@@ -3832,7 +3832,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<BaseDictionaryStandartSendList> GetDictionaryStandartSendLists(IContext context, FilterDictionaryStandartSendList filter)
+        public IEnumerable<FrontDictionaryStandartSendList> GetDictionaryStandartSendLists(IContext context, FilterDictionaryStandartSendList filter)
         {
             using (var dbContext = new DmsContext(context))
             {
@@ -3851,7 +3851,7 @@ namespace BL.Database.Dictionaries
                 }
                 
                 // Поиск по наименованию
-                if (!String.IsNullOrEmpty(filter.Name))
+                if (!string.IsNullOrEmpty(filter.Name))
                 {
                     foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
                     {
@@ -3859,19 +3859,73 @@ namespace BL.Database.Dictionaries
                     }
                 }
 
-                if (filter.PositionIDs != null && filter.PositionIDs.Count > 0)
+                if (filter.PositionID != null )
                 {
-                    qry = qry.Where(x => filter.PositionIDs.Contains(x.PositionId));
+                    qry = qry.Where(x => filter.PositionID==x.PositionId);
                 }
-                return qry.Select(x => new BaseDictionaryStandartSendList
+                return qry.Select(x => new FrontDictionaryStandartSendList
                 {
                     Id = x.Id,
                     Name = x.Name,
                     PositionId = x.PositionId,
-                    PositionName = x.Position.Name
+                    PositionName = x.Position.Name,
                 }).ToList();
             }
         }
+
+        public void UpdateDictionaryStandartSendList(IContext context, InternalDictionaryStandartSendList list)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var ddt = new DictionaryStandartSendLists()
+                {
+                    Id = list.Id,
+                    Name = list.Name,
+                    PositionId = list.PositionId,
+                    LastChangeDate = list.LastChangeDate,
+                    LastChangeUserId = list.LastChangeUserId
+                };
+
+                dbContext.DictionaryStandartSendListsSet.Attach(ddt);
+                var entity = dbContext.Entry(ddt);
+                entity.State = System.Data.Entity.EntityState.Modified;
+
+                dbContext.SaveChanges();
+            }
+        }
+
+        public void DeleteDictionaryStandartSendList(IContext context, InternalDictionaryStandartSendList list)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+
+                var ddt = dbContext.DictionaryStandartSendListsSet.FirstOrDefault(x => x.Id == list.Id);
+                if (ddt == null) return;
+                dbContext.DictionaryStandartSendListsSet.Remove(ddt);
+
+                dbContext.SaveChanges();
+            }
+        }
+
+        public int AddDictionaryStandartSendList(IContext context, InternalDictionaryStandartSendList list)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var ddt = new DictionaryStandartSendLists()
+                {
+                    Id = list.Id,
+                    Name = list.Name,
+                    PositionId = list.PositionId,
+                    LastChangeDate = list.LastChangeDate,
+                    LastChangeUserId = list.LastChangeUserId
+                };
+                dbContext.DictionaryStandartSendListsSet.Add(ddt);
+                dbContext.SaveChanges();
+                list.Id = ddt.Id;
+                return ddt.Id;
+            }
+        }
+
         #endregion DictionaryStandartSendList
 
         #region DictionarySubordinationTypes

@@ -2,7 +2,7 @@
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
-    public class FilterDictionaryTag : DictionaryBaseFilterParms
+    public class FilterDictionaryTag : DictionaryBaseFilterParameters
     {
 
     }

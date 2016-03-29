@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.Serialization;
 using BL.Model.Enums;
 
 namespace BL.Model.DictionaryCore.IncomingModel
@@ -15,6 +16,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// ИД
         /// </summary>
+        [IgnoreDataMember]
         public int Id { get; set; }
         /// <summary>
         /// Ссылка на типовую рассылку

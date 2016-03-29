@@ -10,7 +10,7 @@ namespace BL.Model.DictionaryCore.FilterModel
     /// <summary>
     /// Фильр для контрагентов - банков
     /// </summary>
-    public class FilterDictionaryAgentBank : DictionaryBaseFilterParms
+    public class FilterDictionaryAgentBank : DictionaryBaseFilterParameters
     {
 
         /// <summary>

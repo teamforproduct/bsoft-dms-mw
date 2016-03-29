@@ -112,8 +112,11 @@
     <Compile Include="DictionaryCore\DocumentSubject\DeleteDictionaryDocumentSubjectCommand.cs" />
     <Compile Include="DictionaryCore\DocumentSubject\ModifyDictionaryDocumentSubjectCommand.cs" />
     <Compile Include="DictionaryCore\DocumentType\DeleteDictionaryDocumentTypeCommand.cs" />
+    <Compile Include="DictionaryCore\StandartSendList\AddDictionaryStandartSendListtCommand.cs" />
     <Compile Include="DictionaryCore\StandartSendList\AddDictionaryStandartSendListContentCommand.cs" />
+    <Compile Include="DictionaryCore\StandartSendList\DeleteDictionaryStandartSendListCommand.cs" />
     <Compile Include="DictionaryCore\StandartSendList\DeleteDictionaryStandartSendListContentCommand.cs" />
+    <Compile Include="DictionaryCore\StandartSendList\ModifyDictionaryStandartSendListCommand.cs" />
     <Compile Include="DictionaryCore\StandartSendList\ModifyDictionaryStandartSendListContentCommand.cs" />
     <Compile Include="DictionaryCore\Tag\AddDictionaryTagCommand.cs" />
     <Compile Include="DictionaryCore\Tag\DeleteDictionaryTagCommand.cs" />

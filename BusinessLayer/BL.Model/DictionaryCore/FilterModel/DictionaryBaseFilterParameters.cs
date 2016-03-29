@@ -5,7 +5,7 @@ namespace BL.Model.DictionaryCore.FilterModel
     /// <summary>
     /// Базовые фильтры для справочников
     /// </summary>
-    public class DictionaryBaseFilterParms
+    public class DictionaryBaseFilterParameters
     {
         /// <summary>
         /// Список ID

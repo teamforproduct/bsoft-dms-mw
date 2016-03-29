@@ -7,7 +7,7 @@ namespace BL.Model.DictionaryCore.FilterModel
     /// <summary>
     /// фильтр содержания типовой рассылки
     /// </summary>
-    public class FilterDictionaryStandartSendListContent : DictionaryBaseFilterParms
+    public class FilterDictionaryStandartSendListContent : DictionaryBaseFilterParameters
    
     {
 

@@ -9,7 +9,7 @@ namespace BL.Model.DictionaryCore.FilterModel
     /// <summary>
     /// фильтр для адресов агентов
     /// </summary>
-    public class FilterDictionaryAgentAddress : DictionaryBaseFilterParms
+    public class FilterDictionaryAgentAddress : DictionaryBaseFilterParameters
     {
         /// <summary>
         /// ИД
