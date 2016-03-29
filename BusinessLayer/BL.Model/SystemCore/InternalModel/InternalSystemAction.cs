@@ -12,6 +12,7 @@ namespace BL.Model.SystemCore.InternalModel
         public string ObjectCode { get; set; }
         public string API { get; set; }
         public string Description { get; set; }
+        public string Category { get; set; }
         public IEnumerable<InternalActionRecord> ActionRecords { get; set; }
         
     }
