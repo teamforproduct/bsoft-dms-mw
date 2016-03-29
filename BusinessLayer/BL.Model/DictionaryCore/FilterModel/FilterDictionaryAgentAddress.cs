@@ -9,7 +9,7 @@ namespace BL.Model.DictionaryCore.FilterModel
     /// <summary>
     /// фильтр для адресов агентов
     /// </summary>
-    public class FilterDictionaryAgentAddress
+    public class FilterDictionaryAgentAddress : DictionaryBaseFilterParms
     {
         /// <summary>
         /// ИД
@@ -31,13 +31,6 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// адрес
         /// </summary>
         public string Address { get; set; }
-        /// <summary>
-        /// признак активности
-        /// </summary>
-        public bool? IsActive { get; set; }
-        /// <summary>
-        /// игнорировать при поиске
-        /// </summary>
-        public List<int> NotContainsId { get; set; }
+    
     }
 }

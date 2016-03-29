@@ -9,6 +9,20 @@ namespace BL.Model.DictionaryCore.InternalModel
     public class InternalDictionaryPosition : LastChangeInfo
     {
 
+        public InternalDictionaryPosition()
+        { }
+
+        public InternalDictionaryPosition(ModifyDictionaryPosition model)
+        {
+            Id = model.Id;
+            IsActive = model.IsActive;
+            ParentId = model.ParentId;
+            Name = model.Name;
+            FullName = model.FullName;
+            DepartmentId = model.DepartmentId;
+            ExecutorAgentId = model.ExecutorAgentId;
+        }
+
         /// <summary>
         /// ID
         /// </summary>

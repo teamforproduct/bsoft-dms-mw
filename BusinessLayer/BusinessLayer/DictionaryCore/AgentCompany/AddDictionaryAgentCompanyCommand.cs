@@ -52,18 +52,7 @@ namespace BL.Logic.DictionaryCore.AgentCompany
         {
             try
             {
-                var newCompany = new InternalDictionaryAgentCompany
-                {
-                    Id = Model.Id,
-                    FullName=Model.FullName,
-                    ShortName=Model.ShortName,
-                    TaxCode = Model.TaxCode,
-                    Description=Model.Description,
-                    OKPOCode=Model.OKPOCode,
-                    VATCode=Model.VATCode,
-                    ContactsPersonsId=Model.ContactsPersonsId,
-                    IsActive = Model.IsActive
-                };
+                var newCompany = new InternalDictionaryAgentCompany(Model);;
                 CommonDocumentUtilities.SetLastChange(_context, newCompany);
                 return _dictDb.AddDictionaryAgentCompany(_context, newCompany);
             }

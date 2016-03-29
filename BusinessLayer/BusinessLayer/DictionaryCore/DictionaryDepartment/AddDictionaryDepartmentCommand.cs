@@ -52,9 +52,7 @@ namespace BL.Logic.DictionaryCore.DocumentType
         {
             try
             {
-                var dds = new InternalDictionaryDepartment();
-
-                CommonDictionaryUtilities.DepartmentModifyToInternal(_context, Model, dds);
+                var dds = CommonDictionaryUtilities.DepartmentModifyToInternal(_context, Model);
 
                 return _dictDb.AddDictionaryDepartment(_context, dds);
             }

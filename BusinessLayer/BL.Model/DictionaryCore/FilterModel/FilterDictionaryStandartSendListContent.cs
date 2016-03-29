@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
+    public class FilterDictionaryStandartSendListContent : DictionaryBaseFilterParms
     /// <summary>
     /// фильтр содержания типовой рассылки
     /// </summary>

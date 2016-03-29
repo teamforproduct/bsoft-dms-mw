@@ -36,7 +36,7 @@ namespace BL.Logic.DictionaryCore.DocumentType
             {
                 Name = Model.Name,
                 IsActive = Model.IsActive,
-                NotContainsId = new List<int> { Model.Id }
+                NotContainsIDs = new List<int> { Model.Id }
             });
             if (spr != null)
             {
@@ -50,12 +50,13 @@ namespace BL.Logic.DictionaryCore.DocumentType
         {
             try
             {
-                var newAddrType = new InternalDictionaryAddressType
-                {
-                    Id = Model.Id,
-                    Name = Model.Name,
-                    IsActive=Model.IsActive
-                };
+                var newAddrType = new InternalDictionaryAddressType(Model);
+                // pss в команде Modify Id передается но в Add НЕТ???????
+                //{
+                //    Id = Model.Id,
+                //    Name = Model.Name,
+                //    IsActive=Model.IsActive
+                //};
                 CommonDocumentUtilities.SetLastChange(_context, newAddrType);
                 _dictDb.UpdateDictionaryAddressType(_context, newAddrType);
             }

@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BL.Model.Common;
+﻿using BL.Model.Common;
+using BL.Model.DictionaryCore.IncomingModel;
 
 namespace BL.Model.DictionaryCore.InternalModel
 {
@@ -12,7 +8,18 @@ namespace BL.Model.DictionaryCore.InternalModel
     /// </summary>
     public class InternalDictionaryContactType : LastChangeInfo
     {
-     
+
+        public InternalDictionaryContactType()
+        { }
+
+        public InternalDictionaryContactType(ModifyDictionaryContactType Model)
+        {
+            Id = Model.Id;
+            Name = Model.Name;
+            InputMask = Model.InputMask;
+            IsActive = Model.IsActive;
+        }
+
         /// <summary>
         /// ИД
         /// </summary>
@@ -21,7 +28,7 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// Наименование
         /// </summary>
         public string Name { get; set; }
-   
+
         /// <summary>
         /// Маска для ввода
         /// </summary>

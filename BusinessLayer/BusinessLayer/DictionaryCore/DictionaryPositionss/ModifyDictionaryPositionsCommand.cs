@@ -56,9 +56,7 @@ namespace BL.Logic.DictionaryCore.DocumentType
         {
             try
             {
-                var dp = new InternalDictionaryPosition();
-
-                CommonDictionaryUtilities.PositionModifyToInternal(_context, Model, dp);
+                var dp = CommonDictionaryUtilities.PositionModifyToInternal(_context, Model);
 
                 _dictDb.UpdatePosition(_context, dp);
             }

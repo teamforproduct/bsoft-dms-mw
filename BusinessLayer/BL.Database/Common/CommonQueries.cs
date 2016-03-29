@@ -1,21 +1,20 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using BL.CrossCutting.Context;
-using BL.CrossCutting.Interfaces;
+﻿using BL.CrossCutting.Interfaces;
 using BL.Database.DatabaseContext;
 using BL.Database.DBModel.Document;
 using BL.Database.DBModel.InternalModel;
+using BL.Database.DBModel.System;
+using BL.Model.DictionaryCore.FilterModel;
+using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
-using BL.Model.DictionaryCore.FilterModel;
-using BL.Model.DictionaryCore;
-using BL.Model.SystemCore.InternalModel;
+using BL.Model.FullTextSerach;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.FrontModel;
-using BL.Database.DBModel.System;
-using BL.Model.FullTextSerach;
+using BL.Model.SystemCore.InternalModel;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BL.Database.Common
 {
@@ -639,7 +638,7 @@ namespace BL.Database.Common
 
         }
 
-        public static IEnumerable<BaseDictionaryPosition> GetDocumentWorkGroup(DmsContext dbContext, FilterDictionaryPosition filter)
+        public static IEnumerable<FrontDictionaryPosition> GetDocumentWorkGroup(DmsContext dbContext, FilterDictionaryPosition filter)
         {
             var qry = dbContext.DictionaryPositionsSet.Select(x => new { pos = x, subordMax = 0 }).AsQueryable();
 
@@ -650,14 +649,14 @@ namespace BL.Database.Common
                     qry = qry.Where(x => filter.IDs.Contains(x.pos.Id));
                 }
 
-                if (filter.DocumentId?.Count > 0)
+                if (filter.DocumentIDs?.Count > 0)
                 {
                     qry = qry.Where(x =>
                             dbContext.DocumentEventsSet
-                                .Where(y => filter.DocumentId.Contains(y.DocumentId)).Select(y => y.SourcePositionId).Contains(x.pos.Id)
+                                .Where(y => filter.DocumentIDs.Contains(y.DocumentId)).Select(y => y.SourcePositionId).Contains(x.pos.Id)
                                 ||
                                 dbContext.DocumentEventsSet
-                                .Where(y => filter.DocumentId.Contains(y.DocumentId)).Select(y => y.TargetPositionId).Contains(x.pos.Id)
+                                .Where(y => filter.DocumentIDs.Contains(y.DocumentId)).Select(y => y.TargetPositionId).Contains(x.pos.Id)
                                 );
                 }
 
@@ -673,7 +672,7 @@ namespace BL.Database.Common
                 }
             }
 
-            return qry.Select(x => new BaseDictionaryPosition
+            return qry.Select(x => new FrontDictionaryPosition
             {
                 Id = x.pos.Id,
                 Name = x.pos.Name,

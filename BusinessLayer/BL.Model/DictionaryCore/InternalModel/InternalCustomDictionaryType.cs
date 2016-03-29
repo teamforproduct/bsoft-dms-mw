@@ -5,8 +5,18 @@ using BL.Model.Common;
 
 namespace BL.Model.DictionaryCore.InternalModel
 {
-    public class InternalCustomDictionaryType: LastChangeInfo
+    public class InternalCustomDictionaryType : LastChangeInfo
     {
+
+        public InternalCustomDictionaryType()
+        { }
+        public InternalCustomDictionaryType(ModifyCustomDictionaryType model)
+        {
+            Id = model.Id;
+            Code = model.Code;
+            Description = model.Description;
+        }
+
         /// <summary>
         /// ID
         /// </summary>

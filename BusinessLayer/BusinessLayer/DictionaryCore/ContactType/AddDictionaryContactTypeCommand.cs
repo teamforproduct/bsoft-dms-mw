@@ -43,13 +43,7 @@ namespace BL.Logic.DictionaryCore.ContactType
         {
             try
             {
-                var newContactType = new InternalDictionaryContactType
-                {
-                    Id = Model.Id,
-                    Name = Model.Name,
-                    InputMask=Model.InputMask,
-                    IsActive=Model.IsActive
-                };
+                var newContactType = new InternalDictionaryContactType(Model);
                 CommonDocumentUtilities.SetLastChange(_context, newContactType);
                 return _dictDb.AddDictionaryContactType(_context, newContactType);
             }

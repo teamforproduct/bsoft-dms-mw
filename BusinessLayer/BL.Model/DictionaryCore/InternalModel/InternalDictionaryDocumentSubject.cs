@@ -6,9 +6,22 @@ namespace BL.Model.DictionaryCore.InternalModel
     /// <summary>
     /// Internal элемент справочника "Тематики документов"
     /// </summary>
-    public class InternalDictionaryDocumentSubject :  LastChangeInfo
+    public class InternalDictionaryDocumentSubject : LastChangeInfo
     {
-        
+
+        public InternalDictionaryDocumentSubject()
+        {
+
+        }
+
+        public InternalDictionaryDocumentSubject(ModifyDictionaryDocumentSubject model)
+        {
+            Id = model.Id;
+            IsActive = model.IsActive;
+            Name = model.Name;
+            ParentId = model.ParentId;
+        }
+
         /// <summary>
         /// ID
         /// </summary>
@@ -28,8 +41,6 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// Ссылка на родителя.
         /// </summary>
         public int? ParentId { get; set; }
-
-        // !!! После добавления полей внеси изменения в BL.Logic.Common.CommonDictionaryUtilities.RegistrationJournalModifyToInternal
 
     }
 }

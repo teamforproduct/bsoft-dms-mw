@@ -37,7 +37,7 @@ namespace BL.Logic.DictionaryCore.AgentCompany
                 OKPOCode = Model.OKPOCode,
                 VATCode = Model.VATCode,
                 IsActive=Model.IsActive,
-                NotContainsId=new List<int> { Model.Id}
+                NotContainsIDs=new List<int> { Model.Id}
             },null);
 
             if (agents.Count() > 0)
@@ -51,18 +51,7 @@ namespace BL.Logic.DictionaryCore.AgentCompany
         {
             try
             {
-                var newCompany = new InternalDictionaryAgentCompany
-                {
-
-                    Id = Model.Id,
-                    FullName = Model.FullName,
-                    TaxCode = Model.TaxCode,
-                    Description = Model.Description,
-                    OKPOCode = Model.OKPOCode,
-                    VATCode = Model.VATCode,
-                    ContactsPersonsId = Model.ContactsPersonsId,
-                    IsActive = Model.IsActive
-                };
+                var newCompany = new InternalDictionaryAgentCompany(Model);;
                 CommonDocumentUtilities.SetLastChange(_context, newCompany);
                 _dictDb.UpdateDictionaryAgentCompany(_context, newCompany);
             }

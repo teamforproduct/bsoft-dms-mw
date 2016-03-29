@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using BL.Model.Common;
+using BL.Model.DictionaryCore.IncomingModel;
 
 namespace BL.Model.DictionaryCore.InternalModel
 {
@@ -12,6 +9,22 @@ namespace BL.Model.DictionaryCore.InternalModel
     /// </summary>
     public class InternalDictionaryAgentCompany : LastChangeInfo
     {
+
+        public InternalDictionaryAgentCompany()
+        { }
+
+        public InternalDictionaryAgentCompany(ModifyDictionaryAgentCompany model)
+        {
+            Id = model.Id;
+            FullName = model.FullName;
+            TaxCode = model.TaxCode;
+            Description = model.Description;
+            OKPOCode = model.OKPOCode;
+            VATCode = model.VATCode;
+            ContactsPersonsId = model.ContactsPersonsId;
+            IsActive = model.IsActive;
+        }
+        
         /// <summary>
         /// ИД
         /// </summary>

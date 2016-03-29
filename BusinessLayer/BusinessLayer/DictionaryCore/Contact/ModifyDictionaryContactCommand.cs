@@ -35,7 +35,7 @@ namespace BL.Logic.DictionaryCore.Contact
             var spr = _dictDb.GetDictionaryContacts(_context, Model.AgentId,
                    new FilterDictionaryContact
                    {
-                       Value = Model.Value,
+                       Contact = Model.Value,
                        ContactTypeId = new List<int> { Model.ContactTypeId },
                        AgentId = new List<int> { Model.AgentId },
                        IsActive=Model.IsActive
@@ -52,17 +52,8 @@ namespace BL.Logic.DictionaryCore.Contact
         {
             try
             {
-                 
-                var newContact = new InternalDictionaryContact
-                {
-                    Id =Model.Id,
-                    AgentId=Model.AgentId,
-                    ContactTypeId=Model.ContactTypeId,
-                    Value = Model.Value,
-                    IsActive = Model.IsActive,
-                    Description=Model.Description
-                };
-            
+
+                var newContact = new InternalDictionaryContact(Model);
                 CommonDocumentUtilities.SetLastChange(_context, newContact);
                 _dictDb.UpdateDictionaryContact(_context, newContact);
             }

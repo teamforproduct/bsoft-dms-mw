@@ -6,28 +6,9 @@ namespace BL.Model.DictionaryCore.FilterModel
     /// Фильтры FilterDictionaryRegistrationJournal
     /// </summary>
     // В этой модели целесообразно все поля, объявленные простыми типами, делать Nullable, чтобы при формировании Where можно было проверить на if != null
-    public class FilterDictionaryRegistrationJournal
+    public class FilterDictionaryRegistrationJournal : DictionaryBaseFilterParms
     {
-        /// <summary>
-        /// Список ID
-        /// </summary>
-        public List<int> IDs { get; set; }
-
-        /// <summary>
-        /// Исключение записей по ID
-        /// </summary>
-        public List<int> NotContainsIDs { get; set; }
-
-        /// <summary>
-        /// Сужение по активности элементов
-        /// </summary>
-        public bool? IsActive { get; set; }
-
-        /// <summary>
-        /// Сужение по названию журнала
-        /// </summary>
-        public string Name { get; set; }
-
+       
         /// <summary>
         /// Сужение по индексу журнала
         /// </summary>

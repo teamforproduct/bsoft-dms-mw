@@ -46,14 +46,8 @@ namespace BL.Logic.DictionaryCore.Tag
         {
             try
             {
-                var item = new InternalDictionaryTag
-                {
-                    Id = Model.Id,
-                    Name = Model.Name,
-                    Color = Model.Color,
-                    LastChangeDate = DateTime.Now,
-                    LastChangeUserId = _context.CurrentAgentId,
-                };
+                var item = new InternalDictionaryTag(Model);
+                CommonDocumentUtilities.SetLastChange(_context, item);
                 _dictDb.UpdateDictionaryTag(_context, item);
             }
             catch (DictionaryRecordWasNotFound)

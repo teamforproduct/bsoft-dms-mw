@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BL.Model.Enums;
-using BL.Model.Common;
+﻿using BL.Model.Common;
+using BL.Model.DictionaryCore.IncomingModel;
 
 namespace BL.Model.DictionaryCore.InternalModel
 {
@@ -13,6 +8,19 @@ namespace BL.Model.DictionaryCore.InternalModel
     /// </summary>
     public class InternalDictionaryAgentBank : LastChangeInfo
     {
+        public InternalDictionaryAgentBank()
+        { }
+
+        public InternalDictionaryAgentBank(ModifyDictionaryAgentBank model)
+        {
+            Id = model.Id;
+            MFOCode = model.MFOCode;
+            Swift = model.Swift;
+            Name = model.Name;
+            IsActive = model.IsActive;
+            Description = model.Description;
+        }
+
         /// <summary>
         /// Ид
         /// </summary>

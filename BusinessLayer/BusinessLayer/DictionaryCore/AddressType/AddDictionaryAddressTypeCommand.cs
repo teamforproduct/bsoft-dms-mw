@@ -13,10 +13,6 @@ namespace BL.Logic.DictionaryCore.DocumentType
     public class AddDictionaryAddressTypeCommand : BaseDictionaryCommand
     {
 
-       
-
-      
-
         private ModifyDictionaryAddressType Model
         {
             get
@@ -49,11 +45,7 @@ namespace BL.Logic.DictionaryCore.DocumentType
         {
             try
             {
-                var newAddrType = new InternalDictionaryAddressType
-                {
-                    Name = Model.Name,
-                    IsActive=Model.IsActive
-                };
+                var newAddrType = new InternalDictionaryAddressType(Model);
                 CommonDocumentUtilities.SetLastChange(_context, newAddrType);
                 return _dictDb.AddDictionaryAddressType(_context, newAddrType);
             }

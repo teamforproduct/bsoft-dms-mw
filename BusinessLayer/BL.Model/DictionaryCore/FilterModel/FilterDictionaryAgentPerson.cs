@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BL.Model.Common;
+using System;
 using System.Collections.Generic;
 
 namespace BL.Model.DictionaryCore.FilterModel
@@ -6,16 +7,9 @@ namespace BL.Model.DictionaryCore.FilterModel
     /// <summary>
     /// Фильтр словаря физических лиц
     /// </summary>
-    public class FilterDictionaryAgentPerson
+    public class FilterDictionaryAgentPerson : DictionaryBaseFilterParms
     {
-        /// <summary>
-        /// Массив ИД контрагентов
-        /// </summary>
-        public List<int> AgentId { get; set; }
-        /// <summary>
-        /// Отрывок из ФИО
-        /// </summary>
-        public string Name { get; set; }
+
         /// <summary>
         /// Отрывок из паспортных данных
         /// </summary>
@@ -27,19 +21,15 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// <summary>
         /// Дата рождения
         /// </summary>
-        public DateTime? BirthDate { get; set; }
+        //public DateTime? BirthDate { get; set; }
+        
+        public Period BirthPeriod { get; set; }
+
         /// <summary>
         /// Пол (true - мужской)
         /// </summary>
         public bool? IsMale { get; set; }
-        /// <summary>
-        /// Признак активности
-        /// </summary>
-        public bool? IsActive { get; set; }
-        /// <summary>
-        /// игнорировать при поиске
-        /// </summary>
-        public List<int> NotContainsId { get; set; }
+
         /// <summary>
         /// Первая буква наименования
         /// </summary>

@@ -33,7 +33,7 @@ namespace BL.Logic.DictionaryCore.DocumentType
 
             _admin.VerifyAccess(_context, CommandType, false);
             // Находим запись с таким-же именем в этой-же папке
-            if (_dictDb.ExistsDictionaryDocumentSubject(_context, new FilterDictionaryDocumentSubject { Name = Model.Name, ParentId = Model.ParentId, NotContainsIDs = new List<int> { Model.Id } }))
+            if (_dictDb.ExistsDictionaryDocumentSubject(_context, new FilterDictionaryDocumentSubject { Name = Model.Name, ParentIDs = new List<int> { Model.ParentId ?? -1 }, NotContainsIDs = new List<int> { Model.Id } }))
             {
                 throw new DictionaryRecordNotUnique();
             }
@@ -45,9 +45,7 @@ namespace BL.Logic.DictionaryCore.DocumentType
         {
             try
             {
-                var dds = new InternalDictionaryDocumentSubject();
-
-                CommonDictionaryUtilities.DocumentSubjectModifyToInternal(_context, Model, dds);
+                var dds = CommonDictionaryUtilities.DocumentSubjectModifyToInternal(_context, Model);
 
                 return _dictDb.AddDictionaryDocumentSubject(_context, dds);
             }

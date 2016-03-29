@@ -5,16 +5,9 @@ namespace BL.Model.DictionaryCore.FilterModel
     /// <summary>
     /// фильтр юридических лиц
     /// </summary>
-    public class FilterDictionaryAgentCompany
+    public class FilterDictionaryAgentCompany : DictionaryBaseFilterParms
     {
-        /// <summary>
-        /// Массив ИД компаний
-        /// </summary>
-        public List<int> CompanyId { get; set; }
-        /// <summary>
-        /// наименование
-        /// </summary>
-        public string Name { get; set; }
+         
         /// <summary>
         /// ИНН
         /// </summary>
@@ -27,14 +20,7 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// Номер свидетельства НДС
         /// </summary>
         public string VATCode { get; set; }
-        /// <summary>
-        /// Признак активности
-        /// </summary>
-        public bool? IsActive { get; set; }
-        /// <summary>
-        ///  игнорировать при поиске
-        /// </summary>
-        public List<int> NotContainsId { get; set; }
+        
         /// <summary>
         /// Первая буква наименования
         /// </summary>

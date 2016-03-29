@@ -51,15 +51,7 @@ namespace BL.Logic.DictionaryCore.AgentBank
         {
             try
             {
-                var newBank = new InternalDictionaryAgentBank
-                {
-                    Id = Model.Id,
-                    MFOCode=Model.MFOCode, 
-                    Name=Model.Name,
-                    Swift=Model.Swift,
-                    Description = Model.Description,
-                    IsActive = Model.IsActive
-                };
+                var newBank = new InternalDictionaryAgentBank(Model);
                 CommonDocumentUtilities.SetLastChange(_context, newBank);
                 return _dictDb.AddDictionaryAgentBank(_context, newBank);
             }

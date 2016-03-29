@@ -38,17 +38,7 @@ namespace BL.Logic.DictionaryCore.Agent
         {
             try
             {
-                var newAgent = new InternalDictionaryAgent
-                {
-                    Id = Model.Id,
-                    Name = Model.Name,
-                    IsBank=Model.IsBank,
-                    IsCompany=Model.IsCompany,
-                    IsEmployee=Model.IsEmployee,
-                    IsIndividual=Model.IsIndividual,
-                    IsActive = Model.IsActive,
-                    Description = Model.Description
-                };
+                var newAgent = new InternalDictionaryAgent(Model);
                 CommonDocumentUtilities.SetLastChange(_context, newAgent);
                 _dictDb.UpdateDictionaryAgent(_context, newAgent);
             }

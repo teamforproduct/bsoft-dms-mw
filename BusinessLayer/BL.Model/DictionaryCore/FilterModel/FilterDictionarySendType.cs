@@ -2,9 +2,8 @@
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
-    public class FilterDictionarySendType
+    public class FilterDictionarySendType : DictionaryBaseFilterParms
     {
-        public List<int> SendTypeId { get; set; }
-        public List<int> NotContainsId { get; set; }
+
     }
 }

@@ -1,10 +1,9 @@
-﻿using System;
-using BL.Database.Dictionaries.Interfaces;
+﻿using BL.Database.Dictionaries.Interfaces;
+using BL.Logic.Common;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.InternalModel;
-using BL.Model.Enums;
 using BL.Model.Exception;
-using BL.Model.SystemCore;
+using System;
 using BaseDictionaryCommand = BL.Logic.Common.BaseDictionaryCommand;
 
 namespace BL.Logic.DictionaryCore.Tag
@@ -45,14 +44,8 @@ namespace BL.Logic.DictionaryCore.Tag
         {
             try
             {
-                var item = new InternalDictionaryTag
-                {
-                    PositionId = _context.CurrentPositionId,
-                    Color = Model.Color,
-                    Name = Model.Name,
-                    LastChangeDate = DateTime.Now,
-                    LastChangeUserId = _context.CurrentAgentId,
-                };
+                var item = new InternalDictionaryTag(Model);
+                CommonDocumentUtilities.SetLastChange(_context, item);
                 return _dictDb.AddDictionaryTag(_context, item);
             }
             catch (Exception ex)

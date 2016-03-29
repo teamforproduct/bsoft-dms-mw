@@ -15,59 +15,42 @@ namespace BL.Logic.Common
     /// </summary>
     public static class CommonDictionaryUtilities
     {
-        public static void DocumentSubjectModifyToInternal(IContext context, ModifyDictionaryDocumentSubject modifyModel, InternalDictionaryDocumentSubject internalModel)
+        public static InternalDictionaryDocumentSubject DocumentSubjectModifyToInternal(IContext context, ModifyDictionaryDocumentSubject modifyModel)
         {
-            internalModel.Id = modifyModel.Id;
-            internalModel.IsActive = modifyModel.IsActive;
-            internalModel.Name = modifyModel.Name;
-            internalModel.ParentId = modifyModel.ParentId;
+            InternalDictionaryDocumentSubject internalModel = new InternalDictionaryDocumentSubject(modifyModel);
 
             CommonDocumentUtilities.SetLastChange(context, internalModel);
+
+            return internalModel;
         }
 
-        public static void RegistrationJournalModifyToInternal(IContext context, ModifyDictionaryRegistrationJournal modifyModel, InternalDictionaryRegistrationJournal internalModel)
+        public static InternalDictionaryRegistrationJournal RegistrationJournalModifyToInternal(IContext context, ModifyDictionaryRegistrationJournal modifyModel)
         {
-            // pss Перегонка значений DictionaryRegistrationJournals
-            internalModel.Id = modifyModel.Id;
-            internalModel.IsActive = modifyModel.IsActive;
-            internalModel.Name = modifyModel.Name;
-            internalModel.DepartmentId = modifyModel.DepartmentId;
-            internalModel.Index = modifyModel.Index;
-            internalModel.IsIncoming = modifyModel.IsIncoming;
-            internalModel.IsOutcoming = modifyModel.IsOutcoming;
-            internalModel.IsInternal = modifyModel.IsInternal;
-            internalModel.PrefixFormula = modifyModel.PrefixFormula;
-            internalModel.NumerationPrefixFormula = modifyModel.NumerationPrefixFormula;
-            internalModel.SuffixFormula = modifyModel.SuffixFormula;
+            InternalDictionaryRegistrationJournal internalModel = new InternalDictionaryRegistrationJournal(modifyModel);
 
             CommonDocumentUtilities.SetLastChange(context, internalModel);
+
+            return internalModel;
         }
 
-        public static void DepartmentModifyToInternal(IContext context, ModifyDictionaryDepartment modifyModel, InternalDictionaryDepartment internalModel)
+        public static InternalDictionaryDepartment DepartmentModifyToInternal(IContext context, ModifyDictionaryDepartment modifyModel)
         {
-            internalModel.Id = modifyModel.Id;
-            internalModel.IsActive = modifyModel.IsActive;
-            internalModel.ParentId = modifyModel.ParentId;
-            internalModel.Name = modifyModel.Name;
-            internalModel.FullName = modifyModel.FullName;
-            internalModel.Code = modifyModel.Code;
-            internalModel.CompanyId = modifyModel.CompanyId;
-            internalModel.ChiefPositionId = modifyModel.ChiefPositionId;
+            InternalDictionaryDepartment internalModel = new InternalDictionaryDepartment(modifyModel);
 
             CommonDocumentUtilities.SetLastChange(context, internalModel);
+
+            return internalModel;
         }
 
-        public static void PositionModifyToInternal(IContext context, ModifyDictionaryPosition modifyModel, InternalDictionaryPosition internalModel)
+        public static InternalDictionaryPosition PositionModifyToInternal(IContext context, ModifyDictionaryPosition modifyModel)
         {
-            internalModel.Id = modifyModel.Id;
-            internalModel.IsActive = modifyModel.IsActive;
-            internalModel.ParentId = modifyModel.ParentId;
-            internalModel.Name = modifyModel.Name;
-            internalModel.FullName = modifyModel.FullName;
-            internalModel.DepartmentId = modifyModel.DepartmentId;
-            internalModel.ExecutorAgentId = modifyModel.ExecutorAgentId;
+
+            InternalDictionaryPosition internalModel = new InternalDictionaryPosition(modifyModel);
 
             CommonDocumentUtilities.SetLastChange(context, internalModel);
+
+            return internalModel;
+
         }
 
 

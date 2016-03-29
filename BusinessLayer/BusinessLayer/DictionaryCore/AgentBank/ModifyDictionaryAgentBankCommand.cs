@@ -34,7 +34,7 @@ namespace BL.Logic.DictionaryCore.AgentBank
             {
                 MFOCode = Model.MFOCode,
                 IsActive=Model.IsActive,
-                NotContainsId=new List<int> { Model.Id }
+                NotContainsIDs=new List<int> { Model.Id }
             },null);
 
             if (agents.Count() > 0)
@@ -49,15 +49,7 @@ namespace BL.Logic.DictionaryCore.AgentBank
         {
             try
             {
-                var newBank = new InternalDictionaryAgentBank
-                {
-                    Id = Model.Id,
-                    MFOCode=Model.MFOCode,
-                    Swift=Model.Swift,
-                    Name=Model.Name,
-                    IsActive = Model.IsActive,
-                    Description = Model.Description
-                };
+                var newBank = new InternalDictionaryAgentBank(Model);
                 CommonDocumentUtilities.SetLastChange(_context, newBank);
                 _dictDb.UpdateDictionaryAgentBank(_context, newBank);
             }
