@@ -6,9 +6,24 @@ namespace BL.Model.DictionaryCore.InternalModel
     /// <summary>
     /// Internal элемент справочника "Структура предприятия"
     /// </summary>
-    public class InternalDictionaryDepartment :  LastChangeInfo
+    public class InternalDictionaryDepartment : LastChangeInfo
     {
-        
+
+        public InternalDictionaryDepartment()
+        { }
+
+        public InternalDictionaryDepartment(ModifyDictionaryDepartment model)
+        {
+            Id = model.Id;
+            IsActive = model.IsActive;
+            ParentId = model.ParentId;
+            Name = model.Name;
+            FullName = model.FullName;
+            Code = model.Code;
+            CompanyId = model.CompanyId;
+            ChiefPositionId = model.ChiefPositionId;
+        }
+
         /// <summary>
         /// ID
         /// </summary>

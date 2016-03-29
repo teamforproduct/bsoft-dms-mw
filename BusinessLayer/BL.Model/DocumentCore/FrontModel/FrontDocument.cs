@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using BL.Model.DictionaryCore.FrontModel;
+using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
-using BL.Model.DocumentCore.IncomingModel;
-using BL.Model.DictionaryCore;
 using BL.Model.SystemCore.FrontModel;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace BL.Model.DocumentCore.FrontModel
@@ -183,7 +183,7 @@ namespace BL.Model.DocumentCore.FrontModel
         public IEnumerable<FrontDocumentWait> DocumentWaits { get; set; }
         public IEnumerable<FrontDocumentTag> DocumentTags { get; set; }
 
-        public IEnumerable<BaseDictionaryPosition> DocumentWorkGroup { get; set; }
+        public IEnumerable<FrontDictionaryPosition> DocumentWorkGroup { get; set; }
         public IEnumerable<FrontDocumentSubscription> DocumentSubscriptions { get; set; }
 
         public IEnumerable<FrontPropertyValue> Properties { get; set; }

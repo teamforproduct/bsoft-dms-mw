@@ -51,23 +51,7 @@ namespace BL.Logic.DictionaryCore.AgentEmployee
         {
             try
             {
-                var newPerson = new InternalDictionaryAgentEmployee
-                {
-                    Id = Model.Id,
-                    PersonnelNumber=Model.PersonnelNumber,
-                    FirstName = Model.FirstName,
-                    LastName = Model.LastName,
-                    MiddleName = Model.MiddleName,
-                    TaxCode = Model.TaxCode,
-                    IsMale = Model.IsMale,
-                    PassportSerial = Model.PassportSerial,
-                    PassportNumber = Model.PassportNumber,
-                    PassportText = Model.PassportText,
-                    PassportDate = Model.PassportDate,
-                    IsActive = Model.IsActive,
-                    BirthDate = Model.BirthDate,
-                    Description = Model.Description
-                };
+                var newPerson = new InternalDictionaryAgentEmployee(Model);
                 CommonDocumentUtilities.SetLastChange(_context, newPerson);
                 _dictDb.UpdateDictionaryAgentEmployee(_context, newPerson);
             }

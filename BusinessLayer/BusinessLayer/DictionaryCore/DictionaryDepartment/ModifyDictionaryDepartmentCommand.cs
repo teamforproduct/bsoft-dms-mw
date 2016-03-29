@@ -52,13 +52,12 @@ namespace BL.Logic.DictionaryCore.DocumentType
             return true;
         }
 
+
         public override object Execute()
         {
             try
             {
-                var dds = new InternalDictionaryDepartment();
-
-                CommonDictionaryUtilities.DepartmentModifyToInternal(_context, Model, dds);
+                var dds = CommonDictionaryUtilities.DepartmentModifyToInternal(_context, Model);
 
                 _dictDb.UpdateDictionaryDepartment(_context, dds);
             }

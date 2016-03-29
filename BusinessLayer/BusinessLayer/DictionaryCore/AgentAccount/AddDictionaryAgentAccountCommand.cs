@@ -50,17 +50,7 @@ namespace BL.Logic.DictionaryCore.AgentAccount
         {
             try
             {
-                var newAccount = new InternalDictionaryAgentAccount
-                {
-                    Id = Model.Id,
-                    AgentId = Model.AgentId,
-                    AgentBankId=Model.AgentBankId,
-                    Name=Model.Name,
-                    AccountNumber=Model.AccountNumber,
-                    IsMain=Model.IsMain,
-                    Description=Model.Description,
-                    IsActive = Model.IsActive
-                };
+                var newAccount = new InternalDictionaryAgentAccount(Model);
                 CommonDocumentUtilities.SetLastChange(_context, newAccount);
                 return _dictDb.AddDictionaryAgentAccount(_context, newAccount);
             }

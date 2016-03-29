@@ -45,9 +45,7 @@ namespace BL.Logic.DictionaryCore.DocumentType
         {
             try
             {
-                var dds = new InternalDictionaryDocumentSubject();
-
-                CommonDictionaryUtilities.DocumentSubjectModifyToInternal(_context, Model, dds);
+                var dds = CommonDictionaryUtilities.DocumentSubjectModifyToInternal(_context, Model);
 
                 return _dictDb.AddDictionaryDocumentSubject(_context, dds);
             }

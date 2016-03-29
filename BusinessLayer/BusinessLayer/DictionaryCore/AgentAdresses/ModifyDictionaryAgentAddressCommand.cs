@@ -52,16 +52,7 @@ namespace BL.Logic.DictionaryCore.AgentAdresses
         {
             try
             {
-                var newAddr = new InternalDictionaryAgentAddress
-                {
-                    Id = Model.Id,
-                    AgentId=Model.AgentId,
-                    AddressTypeID=Model.AddressTypeId,
-                    PostCode=Model.PostCode,
-                    Address = Model.Address,
-                    IsActive = Model.IsActive,
-                    Description=Model.Description
-                };
+                var newAddr = new InternalDictionaryAgentAddress(Model);
                 CommonDocumentUtilities.SetLastChange(_context, newAddr);
                 _dictDb.UpdateDictionaryAgentAddress(_context, newAddr);
             }

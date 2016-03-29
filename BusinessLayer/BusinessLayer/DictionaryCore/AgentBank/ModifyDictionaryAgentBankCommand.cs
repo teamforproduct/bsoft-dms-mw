@@ -49,15 +49,7 @@ namespace BL.Logic.DictionaryCore.AgentBank
         {
             try
             {
-                var newBank = new InternalDictionaryAgentBank
-                {
-                    Id = Model.Id,
-                    MFOCode=Model.MFOCode,
-                    Swift=Model.Swift,
-                    Name=Model.Name,
-                    IsActive = Model.IsActive,
-                    Description = Model.Description
-                };
+                var newBank = new InternalDictionaryAgentBank(Model);
                 CommonDocumentUtilities.SetLastChange(_context, newBank);
                 _dictDb.UpdateDictionaryAgentBank(_context, newBank);
             }

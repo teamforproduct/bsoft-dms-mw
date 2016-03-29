@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using BL.Model.Common;
+using BL.Model.DictionaryCore.IncomingModel;
 
 namespace BL.Model.DictionaryCore.InternalModel
 {
@@ -12,6 +9,26 @@ namespace BL.Model.DictionaryCore.InternalModel
     /// </summary>
     public class InternalDictionaryAgentPerson : LastChangeInfo
     {
+
+        public InternalDictionaryAgentPerson()
+        { }
+
+        public InternalDictionaryAgentPerson(ModifyDictionaryAgentPerson model)
+        {
+            Id = model.Id;
+            FirstName = model.FirstName;
+            LastName = model.LastName;
+            MiddleName = model.MiddleName;
+            TaxCode = model.TaxCode;
+            IsMale = model.IsMale;
+            PassportSerial = model.PassportSerial;
+            PassportNumber = model.PassportNumber;
+            PassportText = model.PassportText;
+            PassportDate = model.PassportDate;
+            IsActive = model.IsActive;
+            BirthDate = model.BirthDate;
+            Description = model.Description;
+        }      
         /// <summary>
         /// ID
         /// </summary>

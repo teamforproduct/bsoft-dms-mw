@@ -6,9 +6,28 @@ namespace BL.Model.DictionaryCore.InternalModel
     /// <summary>
     /// Internal элемент справочника "Журналы регистрации"
     /// </summary>
-    public class InternalDictionaryRegistrationJournal :  LastChangeInfo
+    public class InternalDictionaryRegistrationJournal : LastChangeInfo
     {
-        
+
+        public InternalDictionaryRegistrationJournal()
+        {
+        }
+
+        public InternalDictionaryRegistrationJournal(ModifyDictionaryRegistrationJournal model)
+        {
+            Id = model.Id;
+            IsActive = model.IsActive;
+            Name = model.Name;
+            DepartmentId = model.DepartmentId;
+            Index = model.Index;
+            IsIncoming = model.IsIncoming;
+            IsOutcoming = model.IsOutcoming;
+            IsInternal = model.IsInternal;
+            PrefixFormula = model.PrefixFormula;
+            NumerationPrefixFormula = model.NumerationPrefixFormula;
+            SuffixFormula = model.SuffixFormula;
+        }
+
         /// <summary>
         /// ID
         /// </summary>

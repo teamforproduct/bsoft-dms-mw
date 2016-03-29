@@ -47,10 +47,7 @@ namespace BL.Logic.DictionaryCore.DocumentType
         {
             try
             {
-                var drj = new InternalDictionaryRegistrationJournal();
-
-                // pss Перегонка значений DictionaryRegistrationJournals
-                CommonDictionaryUtilities.RegistrationJournalModifyToInternal(_context, Model, drj);
+                var drj = CommonDictionaryUtilities.RegistrationJournalModifyToInternal(_context, Model);
 
                 return _dictDb.AddDictionaryRegistrationJournal(_context, drj);
             }

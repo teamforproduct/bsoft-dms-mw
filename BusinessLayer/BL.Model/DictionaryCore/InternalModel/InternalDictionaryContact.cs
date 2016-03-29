@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BL.Model.Enums;
-using BL.Model.Common;
+﻿using BL.Model.Common;
+using BL.Model.DictionaryCore.IncomingModel;
 
 namespace BL.Model.DictionaryCore.InternalModel
 {
@@ -13,6 +8,20 @@ namespace BL.Model.DictionaryCore.InternalModel
     /// </summary>
     public class InternalDictionaryContact : LastChangeInfo
     {
+
+        public InternalDictionaryContact()
+        { }
+
+        public InternalDictionaryContact(ModifyDictionaryContact model)
+        {
+            Id = model.Id;
+            AgentId = model.AgentId;
+            ContactTypeId = model.ContactTypeId;
+            Value = model.Value;
+            IsActive = model.IsActive;
+            Description = model.Description;
+        }
+
         /// <summary>
         /// ИД
         /// </summary>

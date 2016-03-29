@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BL.Model.Common;
+using System;
 using System.Collections.Generic;
 
 namespace BL.Model.DictionaryCore.FilterModel
@@ -8,7 +9,7 @@ namespace BL.Model.DictionaryCore.FilterModel
     /// </summary>
     public class FilterDictionaryAgentPerson : DictionaryBaseFilterParms
     {
-       
+
         /// <summary>
         /// Отрывок из паспортных данных
         /// </summary>
@@ -20,12 +21,15 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// <summary>
         /// Дата рождения
         /// </summary>
-        public DateTime? BirthDate { get; set; }
+        //public DateTime? BirthDate { get; set; }
+        
+        public Period BirthPeriod { get; set; }
+
         /// <summary>
         /// Пол (true - мужской)
         /// </summary>
         public bool? IsMale { get; set; }
-        
+
         /// <summary>
         /// Первая буква наименования
         /// </summary>

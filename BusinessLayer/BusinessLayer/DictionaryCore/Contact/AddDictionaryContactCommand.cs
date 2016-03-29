@@ -51,14 +51,7 @@ namespace BL.Logic.DictionaryCore.Contact
         {
             try
             {
-                var newContact = new InternalDictionaryContact
-                {
-                    AgentId=Model.AgentId,
-                    ContactTypeId=Model.ContactTypeId,
-                    Value = Model.Value,
-                    IsActive = Model.IsActive,
-                    Description=Model.Description
-                };
+                var newContact = new InternalDictionaryContact(Model);                
                 CommonDocumentUtilities.SetLastChange(_context, newContact);
                 return _dictDb.AddDictionaryContact(_context, newContact);
             }

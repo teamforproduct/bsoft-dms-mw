@@ -52,9 +52,7 @@ namespace BL.Logic.DictionaryCore.DocumentType
         {
             try
             {
-                var dp = new InternalDictionaryPosition();
-
-                CommonDictionaryUtilities.PositionModifyToInternal(_context, Model, dp);
+                var dp = CommonDictionaryUtilities.PositionModifyToInternal(_context, Model);
 
                 return _dictDb.AddPosition(_context, dp);
             }

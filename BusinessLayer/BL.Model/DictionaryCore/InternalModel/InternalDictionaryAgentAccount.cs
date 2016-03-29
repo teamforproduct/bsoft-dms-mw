@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BL.Model.Common;
+using BL.Model.DictionaryCore.IncomingModel;
 
 namespace BL.Model.DictionaryCore.InternalModel
 {
@@ -12,6 +13,22 @@ namespace BL.Model.DictionaryCore.InternalModel
     /// </summary>
     public class InternalDictionaryAgentAccount : LastChangeInfo
     {
+
+        public InternalDictionaryAgentAccount()
+        { }
+
+        public InternalDictionaryAgentAccount(ModifyDictionaryAgentAccount model)
+        {
+            Id = model.Id;
+            AgentId = model.AgentId;
+            AgentBankId = model.AgentBankId;
+            Name = model.Name;
+            AccountNumber = model.AccountNumber;
+            IsMain = model.IsMain;
+            Description = model.Description;
+            IsActive = model.IsActive;
+        }
+
         /// <summary>
         /// ИД
         /// </summary>
@@ -27,7 +44,7 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// <summary>
         /// ссылка на контрагента
         /// </summary>
-        public int AgentId { get;set;}
+        public int AgentId { get; set; }
         /// <summary>
         /// номер счета
         /// </summary>

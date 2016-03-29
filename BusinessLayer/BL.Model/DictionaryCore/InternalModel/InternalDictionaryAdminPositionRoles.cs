@@ -5,6 +5,7 @@ namespace BL.Model.DictionaryCore.InternalModel
 {
     public class InternalDictionaryAdminPositionRoles : LastChangeInfo
     {
+
         public int Id { get; set; }
         public int RoleId { get; set; }
         public int PositionId { get; set; }
