@@ -4,11 +4,11 @@
 
 namespace BL.Database.Common
 {
-    static public class CommonFilterUtilites
+    public static class CommonFilterUtilites
     {
-        static public String[] GetWhereExptessions(string SearchExpression)
+        public static string[] GetWhereExpressions(string SearchExpression)
         {
-            string res = SearchExpression.Trim();
+            var res = SearchExpression.Trim();
              
             while (res.Contains("  "))
             {

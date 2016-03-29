@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using BL.Model.Enums;
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
-    public class FilterDictionaryStandartSendListContent : DictionaryBaseFilterParms
     /// <summary>
     /// фильтр содержания типовой рассылки
     /// </summary>
-    public class FilterDictionaryStandartSendListContent
+    public class FilterDictionaryStandartSendListContent : DictionaryBaseFilterParms
+   
     {
 
         /// <summary>
@@ -21,7 +22,7 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// <summary>
         /// список типов рассылок
         /// </summary>
-        public List<int> SendTypeId { get; set; }
+        public List<EnumSendTypes> SendTypeId { get; set; }
         /// <summary>
         /// Должность получателя
         /// </summary>
