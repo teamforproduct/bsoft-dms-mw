@@ -66,7 +66,7 @@ namespace BL.Database.SystemDb
         #endregion
 
         #region Full text search
-
+        IEnumerable<FullTextIndexIem> FullTextIndexReindexDbPrepare(IContext ctx);
         IEnumerable<FullTextIndexIem> FullTextIndexPrepare(IContext ctx);
         void FullTextIndexDeleteProcessed(IContext ctx, IEnumerable<int> processedIds);
 

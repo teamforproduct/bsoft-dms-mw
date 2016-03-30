@@ -15,8 +15,6 @@ using BL.Model.FullTextSerach;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.FrontModel;
 using BL.Model.SystemCore.InternalModel;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System;
 
@@ -75,7 +73,7 @@ namespace BL.Database.Common
             return qry;
         }
 
-        public static IQueryable<FilterDocumentFileIdentity> GetDocumentFilesMaxVersion(DmsContext dbContext, FilterDocumentAttachedFile filter)
+        private static IQueryable<FilterDocumentFileIdentity> GetDocumentFilesMaxVersion(DmsContext dbContext, FilterDocumentAttachedFile filter)
         {
             var qry = dbContext.DocumentFilesSet.AsQueryable();
 
@@ -366,7 +364,6 @@ namespace BL.Database.Common
             return tasks;
 
         }
-
 
         public static IEnumerable<FrontDocumentWait> GetDocumentWaits(DmsContext dbContext, FilterDocumentWait filter)
         {
@@ -803,7 +800,6 @@ namespace BL.Database.Common
             return subscriptions;
         }
 
-
         public static IEnumerable<FrontDocumentSendList> GetDocumentSendList(DmsContext dbContext, FilterDocumentSendList filter)
         {
             var sendListDb = dbContext.DocumentSendListsSet.AsQueryable();
@@ -1061,6 +1057,7 @@ namespace BL.Database.Common
                 item.RegistrationNumberSuffix = null;
             }
         }
+
         public static void ChangeRegistrationFullNumber(FrontRegistrationFullNumber item, bool isClearFields = true)
         {
             if (item.RegistrationNumber != null)
@@ -1143,6 +1140,7 @@ namespace BL.Database.Common
 
             return document;
         }
+
         public static InternalDocument GetDocumentHashPrepare(DmsContext dbContext, IContext ctx, int documentId)
         {
             var doc = CommonQueries.GetDocumentQuery(dbContext, ctx).Where(x => x.Doc.Id == documentId)
@@ -1164,6 +1162,7 @@ namespace BL.Database.Common
 
             return doc;
         }
+
         public static string GetStringDocumentHash(InternalDocument doc, bool isFull = false)
         {
             var hashPrepare = new StringBuilder();
@@ -1210,5 +1209,6 @@ namespace BL.Database.Common
 
             return hash;
         }
+
     }
 }

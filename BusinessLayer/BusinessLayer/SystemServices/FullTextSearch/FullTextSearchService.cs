@@ -23,6 +23,13 @@ namespace BL.Logic.SystemServices.FullTextSearch
             _systemDb = systemDb;
         }
 
+        public void ReindexDatabase(IContext ctx)
+        {
+            var worker = _workers.FirstOrDefault(x => x.ServerKey == CommonSystemUtilities.GetServerKey(ctx));
+            var data = _systemDb.FullTextIndexReindexDbPrepare(ctx);
+            worker.ReindexDatabase(data);
+        }
+
         public IEnumerable<FullTextSearchResult> Search(IContext ctx, string text)
         {
             var worker = _workers.FirstOrDefault(x => x.ServerKey == CommonSystemUtilities.GetServerKey(ctx));

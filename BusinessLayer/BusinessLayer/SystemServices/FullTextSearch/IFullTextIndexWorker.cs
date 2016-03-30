@@ -18,5 +18,6 @@ namespace BL.Logic.SystemServices.FullTextSearch
         IEnumerable<FullTextSearchResult> Search(string text);
         IEnumerable<FullTextSearchResult> Search(string text, EnumSearchObjectType objectType, int documentId);
 
+        void ReindexDatabase(IEnumerable<FullTextIndexIem> items);
     }
 }
