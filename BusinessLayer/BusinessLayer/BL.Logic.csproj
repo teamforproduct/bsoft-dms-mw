@@ -94,6 +94,8 @@
     <Compile Include="DocumentCore\PaperCommands\AddDocumentPaperCommand.cs" />
     <Compile Include="DocumentCore\PaperCommands\DeleteDocumentPaperListCommand.cs" />
     <Compile Include="DocumentCore\PaperCommands\DeleteDocumentPaperCommand.cs" />
+    <Compile Include="DocumentCore\PaperCommands\MarkСorruptionDocumentPaperCommand.cs" />
+    <Compile Include="DocumentCore\PaperCommands\MarkOwnerDocumentPaperCommand.cs" />
     <Compile Include="DocumentCore\PaperCommands\ModifyDocumentPaperListCommand.cs" />
     <Compile Include="DocumentCore\PaperCommands\ModifyDocumentPaperCommand.cs" />
     <Compile Include="DocumentCore\DocumentTaskService.cs" />

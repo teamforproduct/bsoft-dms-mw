@@ -325,8 +325,16 @@
         MarkDocumentEventAsRead = 100010,
 
         AddDocumentPaper = 121001, // Добавить бумажный носитель
+        CopyDocumentPaper = 121003, // Отметить создание копий бумажных носителей
         ModifyDocumentPaper = 121005, // Изменить бумажный носитель
+        MarkOwnerDocumentPaper = 121007, // Отметить нахождение бумажного носителя у себя
+        MarkСorruptionDocumentPaper = 121008, // Отметить порчу бумажного носителя
         DeleteDocumentPaper = 121009, // Удалить бумажный носитель
+        PlanDocumentPaperEvent = 122001, // Планировать движение бумажного носителя
+        CancelPlanDocumentPaperEvent = 122009, // Отменить планирование движения бумажного носителя
+        SendDocumentPaperEvent = 122011, // Отметить передачу бумажного носителя
+        CancelSendDocumentPaperEvent = 122019, // Отменить передачу бумажного носителя
+        RecieveDocumentPaperEvent = 122021, // Отметить прием бумажного носителя
 
         //TODO Добавить в базу
         AddDocumentTask = 1,

@@ -175,6 +175,9 @@ namespace BL.Logic.DependencyInjection
             Bind<IDocumentCommand>().To<ModifyDocumentPaperListCommand>();
             Bind<IDocumentCommand>().To<DeleteDocumentPaperListCommand>();
 
+            Bind<IDocumentCommand>().To<MarkOwnerDocumentPaperCommand>();
+            Bind<IDocumentCommand>().To<MarkСorruptionDocumentPaperCommand>();
+
         }
 
     }

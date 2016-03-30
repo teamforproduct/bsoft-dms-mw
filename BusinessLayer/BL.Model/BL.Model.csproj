@@ -66,6 +66,9 @@
     <Compile Include="AdminCore\FilterAdminAccessLevel.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalCustomDictionaryType.cs" />
     <Compile Include="DocumentCore\Actions\ControlTargetChange.cs" />
+    <Compile Include="DocumentCore\Actions\MarkOwnerDocumentPaper.cs" />
+    <Compile Include="DocumentCore\Actions\PlanMovementPaper.cs" />
+    <Compile Include="DocumentCore\Actions\EventPaper.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentPaper.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentRestrictedSendList.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentSubscription.cs" />
@@ -156,6 +159,7 @@
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentFile.cs" />
     <Compile Include="DocumentCore\IncomingModel\AddDocumentByTemplateDocument.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentPaperLists.cs" />
+    <Compile Include="DocumentCore\Actions\CopyDocumentPaper.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentPapers.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentTasks.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentTags.cs" />

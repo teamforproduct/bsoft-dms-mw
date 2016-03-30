@@ -249,6 +249,7 @@ namespace BL.Database.Common
                     PageQuantity = item.PageQuantity,
                     OrderNumber = item.OrderNumber,
                     LastPaperEventId = item.LastPaperEventId,
+                    IsInWork = item.IsInWork,
                     LastChangeDate = item.LastChangeDate,
                     LastChangeUserId = item.LastChangeUserId
                 };
