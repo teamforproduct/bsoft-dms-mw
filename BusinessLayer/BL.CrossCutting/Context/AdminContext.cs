@@ -4,6 +4,7 @@ using BL.Logic.Context;
 using BL.Model.Database;
 using BL.Model.Users;
 using BL.CrossCutting.Helpers;
+using BL.Model.Enums;
 
 namespace BL.CrossCutting.Context
 {
@@ -30,7 +31,7 @@ namespace BL.CrossCutting.Context
             CurrentEmployee = new Employee
             {
                 Name = "System user",
-                AgentId = -1
+                AgentId = (int)EnumSystemUsers.AdminUser
             };
         }
 
@@ -54,7 +55,7 @@ namespace BL.CrossCutting.Context
                 CurrentEmployee = new Employee
                 {
                     Name = "System user",
-                    AgentId = -1
+                    AgentId = (int)EnumSystemUsers.AdminUser
                 };
             }
         }
@@ -73,7 +74,7 @@ namespace BL.CrossCutting.Context
             get { return _currentPositionId??0; }
         }
         public int CurrentAgentId {
-            get { return -1; }
+            get { return (int)EnumSystemUsers.AdminUser; }
         }
         public void SetCurrentPosition(int? position)
         {

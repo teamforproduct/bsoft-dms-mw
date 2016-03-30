@@ -16,18 +16,7 @@ using BL.Model.SystemCore.FrontModel;
 using BL.Database.DBModel.System;
 using BL.Model.FullTextSerach;
 using System.Text;
-
 using System;
-using BL.Database.Documents.Interfaces;
-using BL.Model.DocumentCore.Actions;
-using BL.Model.DocumentCore.IncomingModel;
-using System.Data.Entity;
-using System.Transactions;
-using BL.Model.AdminCore;
-using BL.Model.DictionaryCore.InternalModel;
-using BL.Model.SystemCore;
-using DocumentAccesses = BL.Database.DBModel.Document.DocumentAccesses;
-using BL.Model.Exception;
 
 namespace BL.Database.Common
 {
@@ -1110,6 +1099,12 @@ namespace BL.Database.Common
 
             if (isFull || isAddSubscription)
             {
+                //var _templateDb = DmsResolver.Current.Get<ITemplateDocumentsDbProcess>();
+                //foreach (var file in document.DocumentFiles)
+                //{
+                    
+                //}
+
                 //TODO проверка файлов
             }
 
@@ -1128,10 +1123,18 @@ namespace BL.Database.Common
                     if (comparer.Compare(subscription.Hash, document.Hash) != 0 ||
                         ((isFull || isAddSubscription) && comparer.Compare(subscription.FullHash, document.FullHash) != 0))
                     {
-                        var subscriptionDb = new DocumentSubscriptions { Id = subscription.Id, SubscriptionStateId = (int)EnumSubscriptionStates.Violated };
+                        var subscriptionDb = new DocumentSubscriptions
+                        {
+                            Id = subscription.Id,
+                            SubscriptionStateId = (int)EnumSubscriptionStates.Violated,
+                            LastChangeUserId = (int)EnumSystemUsers.AdminUser,
+                            LastChangeDate = DateTime.Now
+                        };
                         dbContext.DocumentSubscriptionsSet.Attach(subscriptionDb);
                         var entry = dbContext.Entry(subscriptionDb);
                         entry.Property(x => x.SubscriptionStateId).IsModified = true;
+                        entry.Property(x => x.LastChangeUserId).IsModified = true;
+                        entry.Property(x => x.LastChangeDate).IsModified = true;
                     }
                 }
             }
