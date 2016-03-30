@@ -172,6 +172,8 @@
     <Compile Include="Documents\Interfaces\IDocumentsDbProcess.cs" />
     <Compile Include="Documents\Interfaces\ITemplateDocumentsDbProcess.cs" />
     <Compile Include="Documents\TemplateDocumentsDbProcess.cs" />
+    <Compile Include="FileWorker\FileStore.cs" />
+    <Compile Include="FileWorker\IFileStore.cs" />
     <Compile Include="Migrations\201603212007278_InitialMigration.cs" />
     <Compile Include="Migrations\201603212007278_InitialMigration.Designer.cs">
       <DependentUpon>201603212007278_InitialMigration.cs</DependentUpon>

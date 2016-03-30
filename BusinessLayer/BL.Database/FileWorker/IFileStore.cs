@@ -12,6 +12,7 @@ namespace BL.Logic.FileWorker
         void DeleteFile(IContext ctx, InternalTemplateAttachedFile attFile);
         void DeleteFileVersion(IContext ctx, InternalDocumentAttachedFile attFile);
         void CopyFile(IContext ctx, InternalTemplateAttachedFile fromTempl, InternalTemplateAttachedFile toTempl);
+        bool IsFileCorrect(IContext ctx, InternalDocumentAttachedFile docFile);
         //IEnumerable<InternalTemplateAttachedFile> CopyFiles(IContext ctx, IEnumerable<InternalTemplateAttachedFile> fromTempl,int newDocNumber, bool newIsTemplate = false);
     }
 }
