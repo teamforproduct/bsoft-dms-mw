@@ -32,6 +32,19 @@ namespace BL.Logic.DocumentCore.PaperCommands
 
         public override bool CanBeDisplayed(int positionId)
         {
+            _actionRecords =
+                _document.Papers.Where(
+                    x => x.IsInWork &&
+                        x.LastPaperEvent.TargetPositionId == positionId &&
+                        x.LastPaperEvent.RecieveDate != null )
+                        .Select(x => new InternalActionRecord
+                        {
+                            PaperId = x.Id,
+                        });
+            if (!_actionRecords.Any())
+            {
+                return false;
+            }
             return true;
         }
 
@@ -55,7 +68,8 @@ namespace BL.Logic.DocumentCore.PaperCommands
             var paper = _document.Papers.First();
 
             paper.LastPaperEvent = CommonDocumentUtilities.GetNewDocumentPaperEvent(_context, paper.Id,
-                EnumEventTypes.MarkOwnerDocumentPaper, Model.Description);
+                EnumEventTypes.MarkСorruptionDocumentPaper, Model.Description);
+            paper.IsInWork = false;
             CommonDocumentUtilities.SetLastChange(_context, paper);
             _operationDb.MarkOwnerDocumentPaper(_context, paper);
             return null;

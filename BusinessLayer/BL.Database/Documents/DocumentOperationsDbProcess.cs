@@ -1745,6 +1745,7 @@ namespace BL.Database.Documents
                                         new InternalDocumentPaper
                                         {
                                             Id = x.Id,
+                                            IsInWork = x.IsInWork,
                                             LastPaperEvent = !x.LastPaperEventId.HasValue? null:
                                             new InternalDocumentPaperEvent
                                             {
@@ -1866,6 +1867,30 @@ namespace BL.Database.Documents
             }
         }
 
+        public void MarkСorruptionDocumentPaper(IContext context, InternalDocumentPaper paper)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                using (
+                    var transaction = new TransactionScope(TransactionScopeOption.Required,
+                        new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
+                {
+                    var paperEventDb = ModelConverter.GetDbDocumentPaperEvent(paper.LastPaperEvent);
+                    dbContext.DocumentPaperEventsSet.Add(paperEventDb);
+                    dbContext.SaveChanges();
+                    paper.LastPaperEventId = paperEventDb.Id;
+                    var paperDb = ModelConverter.GetDbDocumentPaper(paper);
+                    dbContext.DocumentPapersSet.Attach(paperDb);
+                    var entry = dbContext.Entry(paperDb);
+                    entry.Property(e => e.IsInWork).IsModified = true;
+                    entry.Property(e => e.LastPaperEventId).IsModified = true;
+                    entry.Property(e => e.LastChangeUserId).IsModified = true;
+                    entry.Property(e => e.LastChangeDate).IsModified = true;
+                    dbContext.SaveChanges();
+                    transaction.Complete();
+                }
+            }
+        }
 
         #endregion DocumentPapers
 

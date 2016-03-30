@@ -32,6 +32,18 @@ namespace BL.Logic.DocumentCore.PaperCommands
 
         public override bool CanBeDisplayed(int positionId)
         {
+            _actionRecords =
+                _document.Papers.Where(
+                    x => x.IsInWork &&
+                        x.LastPaperEvent.TargetPositionId != positionId)
+                        .Select(x => new InternalActionRecord
+                        {
+                            PaperId = x.Id,
+                        });
+            if (!_actionRecords.Any())
+            {
+                return false;
+            }
             return true;
         }
 

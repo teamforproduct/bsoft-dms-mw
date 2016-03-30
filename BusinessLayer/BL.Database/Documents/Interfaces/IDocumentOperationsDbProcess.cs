@@ -97,6 +97,7 @@ namespace BL.Database.Documents.Interfaces
         void ModifyDocumentPaper(IContext context, InternalDocumentPaper item);
         void DeleteDocumentPaper(IContext context, int itemId);
         void MarkOwnerDocumentPaper(IContext context, InternalDocumentPaper paper);
+        void MarkСorruptionDocumentPaper(IContext context, InternalDocumentPaper paper);
         #endregion DocumentPapers
 
         #region DocumentPaperLists
