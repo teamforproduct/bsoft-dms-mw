@@ -176,8 +176,6 @@
     <Compile Include="PropertyCore\Interfaces\IPropertyService.cs" />
     <Compile Include="PropertyCore\PropertyService.cs" />
     <Compile Include="Settings\Setting.cs" />
-    <Compile Include="FileWorker\FileStore.cs" />
-    <Compile Include="FileWorker\IFileStore.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BL.CrossCutting\BL.CrossCutting.csproj">
