@@ -26,6 +26,7 @@ namespace BL.Database.DBModel.Document
         public bool IsCopy { get; set; }
         public int PageQuantity { get; set; }
         public int OrderNumber { get; set; }
+        public bool IsInWork { get; set; }
         public int? LastPaperEventId { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }

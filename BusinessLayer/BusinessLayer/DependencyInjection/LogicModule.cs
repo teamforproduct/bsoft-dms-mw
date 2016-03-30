@@ -12,7 +12,6 @@ using BL.Logic.DocumentCore.Commands;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Logic.DocumentCore.PaperCommands;
 using BL.Logic.DocumentCore.SendListCommands;
-using BL.Logic.FileWorker;
 using BL.Logic.Logging;
 using BL.Logic.Observers;
 using BL.Logic.PropertyCore;
@@ -43,7 +42,6 @@ namespace BL.Logic.DependencyInjection
             Bind<ILogger>().To<Logger>().InSingletonScope();
             Bind<ISettings>().To<Setting>().InSingletonScope();
             Bind<ICommandService>().To<CommandService>().InSingletonScope();
-            Bind<IFileStore>().To<FileStore>().InSingletonScope();
             Bind<IAdminService>().To<AdminService>().InSingletonScope();
             Bind<ISystemWorkerService>().To<MailSenderWorkerService>().InSingletonScope();
             Bind<IFullTextSearchService>().To<FullTextSearchService>().InSingletonScope();
@@ -174,6 +172,9 @@ namespace BL.Logic.DependencyInjection
             Bind<IDocumentCommand>().To<AddDocumentPaperListCommand>();
             Bind<IDocumentCommand>().To<ModifyDocumentPaperListCommand>();
             Bind<IDocumentCommand>().To<DeleteDocumentPaperListCommand>();
+
+            Bind<IDocumentCommand>().To<MarkOwnerDocumentPaperCommand>();
+            Bind<IDocumentCommand>().To<MarkСorruptionDocumentPaperCommand>();
 
         }
 

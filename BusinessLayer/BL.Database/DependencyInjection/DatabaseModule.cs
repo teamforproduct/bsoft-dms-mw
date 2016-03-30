@@ -5,6 +5,7 @@ using BL.Database.Dictionaries.Interfaces;
 using BL.Database.Documents;
 using BL.Database.Documents.Interfaces;
 using BL.Database.SystemDb;
+using BL.Logic.FileWorker;
 using Ninject.Modules;
 
 namespace BL.Database.DependencyInjection
@@ -38,6 +39,7 @@ namespace BL.Database.DependencyInjection
         {
             Bind<IAdminsDbProcess>().To<AdminsDbProcess>().InSingletonScope();
             Bind<ISystemDbProcess>().To<SystemDbProcess>().InSingletonScope();
+            Bind<IFileStore>().To<FileStore>().InSingletonScope();
         }
 
     }

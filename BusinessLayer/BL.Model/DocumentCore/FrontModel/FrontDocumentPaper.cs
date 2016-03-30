@@ -18,5 +18,6 @@ namespace BL.Model.DocumentCore.FrontModel
         public int PageQuantity { get; set; }
         public int OrderNumber { get; set; }
         public int? LastPaperEventId { get; set; }
+        public bool IsInWork { get; set; }
     }
 }

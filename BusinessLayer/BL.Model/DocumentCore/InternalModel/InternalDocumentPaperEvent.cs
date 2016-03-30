@@ -24,7 +24,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public Nullable<int> TargetAgentId { get; set; }
         public Nullable<int> PaperListId { get; set; }
         public int PlanAgentId { get; set; }
-        public DateTime PlanDate { get; set; }
+        public DateTime? PlanDate { get; set; }
         public Nullable<int> SendAgentId { get; set; }
         public Nullable<DateTime> SendDate { get; set; }
         public Nullable<int> RecieveAgentId { get; set; }

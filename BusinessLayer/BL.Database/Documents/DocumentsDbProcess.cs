@@ -999,7 +999,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public FrontDocumentPaper GetDocumentPaperById(IContext ctx, int id)
+        public FrontDocumentPaper GetDocumentPaper(IContext ctx, int id)
         {
             using (var dbContext = new DmsContext(ctx))
             {
