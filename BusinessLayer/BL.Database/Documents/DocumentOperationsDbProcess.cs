@@ -693,6 +693,7 @@ namespace BL.Database.Documents
                         ReadAgentName = x.ReadAgent.Name,
                         ReadDate = x.ReadDate,
                         SourceAgentName = x.SourceAgent.Name,
+                        TargetAgentName = x.TargetAgent.Name,
                         SourcePositionName = x.SourcePosition.Name,
                         TargetPositionName = x.TargetPosition.Name,
                         SourcePositionExecutorNowAgentName = x.SourcePosition.ExecutorAgent.Name,
@@ -1748,7 +1749,12 @@ namespace BL.Database.Documents
                                             new InternalDocumentPaperEvent
                                             {
                                                 Id = x.LastPaperEvent.Id,
-                                                TargetPositionId = x.LastPaperEvent.TargetPositionId
+                                                SourcePositionId = x.LastPaperEvent.SourcePositionId,
+                                                TargetPositionId = x.LastPaperEvent.TargetPositionId,
+                                                PlanDate = x.LastPaperEvent.PlanDate,
+                                                SendDate = x.LastPaperEvent.SendDate,
+                                                RecieveDate = x.LastPaperEvent.RecieveDate,
+
                                             }
 
                                         }
