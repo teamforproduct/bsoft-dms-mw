@@ -185,6 +185,7 @@
     <Compile Include="DocumentCore\FrontModel\FrontDocumentTask.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontTemplateAttachedFile.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentSubscription.cs" />
+    <Compile Include="DocumentCore\FrontModel\FrontTemplateDocumentTasks.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentFiles.cs" />
     <Compile Include="DocumentCore\Actions\ChangeFavourites.cs" />
     <Compile Include="DocumentCore\Actions\ControlChange.cs" />
@@ -207,6 +208,11 @@
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentPapers.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentTasks.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentTags.cs" />
+    <Compile Include="DocumentCore\IncomingModel\ModifyTemplateAttachedFile.cs" />
+    <Compile Include="DocumentCore\IncomingModel\ModifyTemplateDocument.cs" />
+    <Compile Include="DocumentCore\IncomingModel\ModifyTemplateDocumentRestrictedSendLists.cs" />
+    <Compile Include="DocumentCore\IncomingModel\ModifyTemplateDocumentSendLists.cs" />
+    <Compile Include="DocumentCore\IncomingModel\ModifyTemplateDocumentTasks.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentPaperEvent.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentPaperList.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentTag.cs" />

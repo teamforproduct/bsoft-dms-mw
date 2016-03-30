@@ -4,6 +4,11 @@ using BL.Model.DocumentCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Web.Http;
+using BL.Model.DictionaryCore.FrontModel;
+using BL.Model.DictionaryCore.IncomingModel;
+using BL.Model.DocumentCore.FrontModel;
+using BL.Model.DocumentCore.IncomingModel;
+using BL.Model.Enums;
 
 namespace DMS_WebAPI.Controllers
 {
@@ -36,12 +41,36 @@ namespace DMS_WebAPI.Controllers
         }
 
 
-        //public IHttpActionResult Post(FrontTemplateDocument model)
-        //{
-        //    var cxt = DmsResolver.Current.Get<UserContext>().Get();
-        //    var docProc = DmsResolver.Current.Get<ITemplateDocumentService>();
-        //    docProc.AddOrUpdateTemplate(cxt, model);
-        //    return Ok();
-        //}
+        public IHttpActionResult Post([FromBody]ModifyTemplateDocument model)
+        {
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
+            var tmpTemplate = tmpDocProc.AddOrUpdateTemplate(cxt,model);
+            return Get(tmpTemplate);
+        }
+       
+        public IHttpActionResult Put(int id, [FromBody]ModifyTemplateDocument model)
+        {
+            model.Id = id;
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
+            var tmpTemplate = tmpDocProc.AddOrUpdateTemplate(cxt, model);
+            return Get(tmpTemplate);
+        }
+
+       
+        public IHttpActionResult Delete([FromUri] int id)
+        {
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
+
+            tmpDocProc.DeleteTemplate(cxt, id);
+
+            FrontTemplateDocument tmp = new FrontTemplateDocument();
+            tmp.Id = id;
+
+            return new JsonResult(tmp, this);
+
+        }
     }
 }
