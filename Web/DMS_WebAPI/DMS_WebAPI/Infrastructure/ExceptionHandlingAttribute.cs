@@ -10,6 +10,7 @@ using System.Net;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Filters;
+using BL.CrossCutting.DependencyInjection;
 
 namespace DMS_WebAPI.Infrastructure
 {

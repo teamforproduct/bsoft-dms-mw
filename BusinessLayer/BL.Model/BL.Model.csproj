@@ -241,9 +241,8 @@
     <Compile Include="DocumentCore\InternalModel\InternalDocumentSubscription.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentWait.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalTemplateDocumentTask.cs" />
-    <Compile Include="Enums\EnumContactTypes.cs" />
-    <Compile Include="Enums\EnumDictionaryAgentTypes.cs" />
-    <Compile Include="Enums\EnumPropertyAction.cs" />
+    <Compile Include="Enums\EnumSystemUsers.cs" />    <Compile Include="Enums\EnumContactTypes.cs" />
+    <Compile Include="Enums\EnumDictionaryAgentTypes.cs" />    <Compile Include="Enums\EnumPropertyAction.cs" />
     <Compile Include="Enums\EnumDictionaryActions.cs" />
     <Compile Include="Enums\EnumDocumentActions.cs" />
     <Compile Include="Enums\EnumObjects.cs" />

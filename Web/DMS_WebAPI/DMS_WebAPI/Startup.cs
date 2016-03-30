@@ -1,7 +1,10 @@
-﻿using BL.Logic.DependencyInjection;
+﻿using System.Linq;
+using BL.CrossCutting.DependencyInjection;
+using BL.Logic.DependencyInjection;
 using BL.Logic.SystemServices.AutoPlan;
 using BL.Logic.SystemServices.FullTextSearch;
 using BL.Logic.SystemServices.MailWorker;
+using BL.Model.Database;
 using DMS_WebAPI.Utilities;
 using Microsoft.Owin;
 using Owin;
@@ -16,7 +19,7 @@ namespace DMS_WebAPI
         {
             ConfigureAuth(app);
             var srv = new Servers();
-            var dbs = srv.GetServers();
+            var dbs = srv.GetServers().Where(x=>x.ServerType == DatabaseType.SQLServer);
 
             //foreach (var srv in DmsResolver.Current.GetAll<ISystemWorkerService>())
             //{

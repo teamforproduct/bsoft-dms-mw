@@ -4,12 +4,11 @@ using BL.Model.DocumentCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Web.Http;
-using BL.Model.DictionaryCore.FrontModel;
+using BL.CrossCutting.DependencyInjection;using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.Enums;
-
 namespace DMS_WebAPI.Controllers
 {
     [Authorize]

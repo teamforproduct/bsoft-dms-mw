@@ -8,6 +8,7 @@ using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.InternalModel;
 using System.Collections.Generic;
 using System.Linq;
+using BL.CrossCutting.DependencyInjection;
 
 namespace BL.Logic.Common
 {

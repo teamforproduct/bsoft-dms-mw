@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using BL.Model.Enums;
+using System.Collections.Generic;
 
 namespace BL.Model.DocumentCore.Filters
 {
@@ -11,5 +12,6 @@ namespace BL.Model.DocumentCore.Filters
         /// Массив ИД документов
         /// </summary>
         public List<int> DocumentId { get; set; }
+        public List<EnumSubscriptionStates> SubscriptionStates { get; set; }
     }
 }

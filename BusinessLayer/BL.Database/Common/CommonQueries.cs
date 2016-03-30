@@ -1,4 +1,6 @@
-﻿using BL.CrossCutting.Interfaces;
+﻿using System.Collections.Generic;
+using System.Linq;
+using BL.CrossCutting.Interfaces;
 using BL.Database.DatabaseContext;
 using BL.Database.DBModel.Document;
 using BL.Database.DBModel.InternalModel;
@@ -15,6 +17,8 @@ using BL.Model.SystemCore.FrontModel;
 using BL.Model.SystemCore.InternalModel;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System;
 
 namespace BL.Database.Common
 {
@@ -741,6 +745,65 @@ namespace BL.Database.Common
             return items;
         }
 
+        public static IEnumerable<InternalDocumentSendList> GetInternalDocumentSendList(DmsContext dbContext, FilterDocumentSendList filter)
+        {
+            var sendListDb = dbContext.DocumentSendListsSet.AsQueryable();
+
+            if (filter != null)
+            {
+                if (filter?.DocumentId?.Count() > 0)
+                {
+                    sendListDb = sendListDb.Where(x => filter.DocumentId.Contains(x.DocumentId));
+                }
+                if (filter?.Id?.Count() > 0)
+                {
+                    sendListDb = sendListDb.Where(x => filter.Id.Contains(x.Id));
+                }
+
+            }
+
+            return sendListDb.Select(y => new InternalDocumentSendList
+            {
+                Id = y.Id,
+                TargetAgentId = y.TargetAgentId,
+                TargetPositionId = y.TargetPositionId,
+                SendType = (EnumSendTypes)y.SendTypeId,
+                Description = y.Description,
+                DueDate = y.DueDate,
+                DueDay = y.DueDay,
+            }).ToList();
+        }
+
+        public static IEnumerable<InternalDocumentSubscription> GetInternalDocumentSubscriptions(DmsContext dbContext, FilterDocumentSubscription filter)
+        {
+            var subscriptionsDb = dbContext.DocumentSubscriptionsSet.AsQueryable();
+
+            if (filter != null)
+            {
+                if (filter.DocumentId.Any())
+                {
+                    subscriptionsDb = subscriptionsDb.Where(x => filter.DocumentId.Contains(x.DocumentId));
+                }
+                if (filter.SubscriptionStates?.Count > 0)
+                {
+                    subscriptionsDb = subscriptionsDb.Where(x => filter.SubscriptionStates.Cast<int>().Contains(x.SubscriptionStateId ?? 0));
+                }
+            }
+
+            var subscriptionsRes = subscriptionsDb.Select(x => new { Subscription = x });
+
+            var subscriptions = subscriptionsRes.Select(x => new InternalDocumentSubscription
+            {
+                Id = x.Subscription.Id,
+                SubscriptionStates = (EnumSubscriptionStates)x.Subscription.SubscriptionStateId,
+                Hash = x.Subscription.Hash,
+                FullHash = x.Subscription.FullHash
+            }).ToList();
+
+            return subscriptions;
+        }
+
+
         public static IEnumerable<FrontDocumentSendList> GetDocumentSendList(DmsContext dbContext, FilterDocumentSendList filter)
         {
             var sendListDb = dbContext.DocumentSendListsSet.AsQueryable();
@@ -1011,6 +1074,141 @@ namespace BL.Database.Common
                 item.RegistrationNumberPrefix = null;
                 item.RegistrationNumberSuffix = null;
             }
+        }
+
+        public static InternalDocument GetDocumentHash(DmsContext dbContext, IContext ctx, int documentId, bool isAddSubscription = false, bool isFull = false)
+        {
+            var subscriptions = CommonQueries.GetInternalDocumentSubscriptions(dbContext,
+                new FilterDocumentSubscription
+                {
+                    DocumentId = new List<int> { documentId },
+                    SubscriptionStates = new List<EnumSubscriptionStates> {
+                        EnumSubscriptionStates.Sign,
+                        EnumSubscriptionStates.Visa,
+                        EnumSubscriptionStates.Аgreement,
+                        EnumSubscriptionStates.Аpproval
+                        }
+                });
+
+            if (!isAddSubscription)
+            {
+                if (!subscriptions.Any())
+                    return null;
+            }
+
+            var document = CommonQueries.GetDocumentHashPrepare(dbContext, ctx, documentId);
+            document.Subscriptions = subscriptions;
+
+            if (isFull || isAddSubscription)
+            {
+                //var _templateDb = DmsResolver.Current.Get<ITemplateDocumentsDbProcess>();
+                //foreach (var file in document.DocumentFiles)
+                //{
+                    
+                //}
+
+                //TODO проверка файлов
+            }
+
+            document.Hash = CommonQueries.GetStringDocumentHash(document);
+
+            if (isFull || isAddSubscription)
+            {
+                document.FullHash = CommonQueries.GetStringDocumentHash(document, true);
+            }
+
+            if (subscriptions.Any())
+            {
+                StringComparer comparer = StringComparer.OrdinalIgnoreCase;
+                foreach (var subscription in subscriptions)
+                {
+                    if (comparer.Compare(subscription.Hash, document.Hash) != 0 ||
+                        ((isFull || isAddSubscription) && comparer.Compare(subscription.FullHash, document.FullHash) != 0))
+                    {
+                        var subscriptionDb = new DocumentSubscriptions
+                        {
+                            Id = subscription.Id,
+                            SubscriptionStateId = (int)EnumSubscriptionStates.Violated,
+                            LastChangeUserId = (int)EnumSystemUsers.AdminUser,
+                            LastChangeDate = DateTime.Now
+                        };
+                        dbContext.DocumentSubscriptionsSet.Attach(subscriptionDb);
+                        var entry = dbContext.Entry(subscriptionDb);
+                        entry.Property(x => x.SubscriptionStateId).IsModified = true;
+                        entry.Property(x => x.LastChangeUserId).IsModified = true;
+                        entry.Property(x => x.LastChangeDate).IsModified = true;
+                    }
+                }
+            }
+
+            return document;
+        }
+        public static InternalDocument GetDocumentHashPrepare(DmsContext dbContext, IContext ctx, int documentId)
+        {
+            var doc = CommonQueries.GetDocumentQuery(dbContext, ctx).Where(x => x.Doc.Id == documentId)
+                .Select(x => new InternalDocument
+                {
+                    Id = x.Doc.Id,
+                    DocumentTypeId = x.Templ.DocumentTypeId,
+                    Description = x.Doc.Description
+                }).FirstOrDefault();
+
+            if (doc == null)
+            {
+                throw new Model.Exception.DocumentNotFoundOrUserHasNoAccess();
+            }
+
+            doc.DocumentFiles = CommonQueries.GetInternalDocumentFiles(dbContext, documentId);
+
+            doc.SendLists = CommonQueries.GetInternalDocumentSendList(dbContext, new FilterDocumentSendList { DocumentId = new List<int> { documentId } });
+
+            return doc;
+        }
+        public static string GetStringDocumentHash(InternalDocument doc, bool isFull = false)
+        {
+            var hashPrepare = new StringBuilder();
+
+            hashPrepare.Append("Document");
+            hashPrepare.Append(doc.Id);
+            hashPrepare.Append(doc.DocumentTypeId);
+            hashPrepare.Append(doc.Description);
+            hashPrepare.Append("Document");
+
+            hashPrepare.Append("File");
+            if (doc.DocumentFiles?.Count() > 0)
+            {
+                foreach (var docFile in doc.DocumentFiles.OrderBy(x => x.Id))
+                {
+                    hashPrepare.Append(docFile.Id);
+                    hashPrepare.Append(docFile.FileSize);
+                    hashPrepare.Append(docFile.LastChangeDate);
+                    hashPrepare.Append(docFile.Extension);
+                    hashPrepare.Append(docFile.Name);
+                    if (isFull)
+                        hashPrepare.Append(docFile.Hash);
+                }
+            }
+            hashPrepare.Append("File");
+
+            hashPrepare.Append("SendList");
+            if (doc.SendLists?.Count() > 0)
+            {
+                foreach (var docSendList in doc.SendLists.OrderBy(x => x.Id))
+                {
+                    hashPrepare.Append(docSendList.Id);
+                    hashPrepare.Append(docSendList.TargetPositionId);
+                    hashPrepare.Append(docSendList.TargetAgentId);
+                    hashPrepare.Append(docSendList.SendType);
+                    hashPrepare.Append(docSendList.Description);
+                    hashPrepare.Append(docSendList.DueDate);
+                    hashPrepare.Append(docSendList.DueDay);
+                }
+            }
+            hashPrepare.Append("SendList");
+
+            var hash = CrossCutting.Helpers.DmsHash.GetSha1(hashPrepare.ToString());
+
+            return hash;
         }
     }
 }

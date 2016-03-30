@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using BL.CrossCutting.Interfaces;
 using BL.Model.AutoPlan;
 using System.Threading;
+using BL.CrossCutting.DependencyInjection;
 using BL.Database.SystemDb;
 using BL.Logic.DependencyInjection;
 using BL.Logic.DocumentCore;

@@ -1,4 +1,5 @@
-﻿using BL.CrossCutting.Interfaces;
+﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
 using BL.Database.Dictionaries.Interfaces;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.DependencyInjection;

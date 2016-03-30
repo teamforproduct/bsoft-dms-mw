@@ -2,6 +2,7 @@
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using System.Collections.Generic;
+using BL.CrossCutting.DependencyInjection;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.DependencyInjection;
 

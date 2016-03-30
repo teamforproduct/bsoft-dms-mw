@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using BL.CrossCutting.DependencyInjection;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.Enums;
 
