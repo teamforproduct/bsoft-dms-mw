@@ -2,9 +2,8 @@
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
-    public class FilterCustomDictionary
+    public class FilterCustomDictionary : DictionaryBaseFilterParameters
     {
-        public List<int> CustomDictionaryTypeId { get; set; }
         public string Code { get; set; }
     }
 }

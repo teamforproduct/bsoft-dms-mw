@@ -34,6 +34,7 @@ namespace BL.Logic.DictionaryCore.DocumentType
             {
                 throw new DictionaryRecordNotUnique();
             }
+
             return true;
         }
 
@@ -41,10 +42,7 @@ namespace BL.Logic.DictionaryCore.DocumentType
         {
             try
             {
-                var newDocType = new InternalDictionaryDocumentType
-                {
-                    Name = Model.Name
-                };
+                var newDocType = new InternalDictionaryDocumentType(Model);
                 CommonDocumentUtilities.SetLastChange(_context,newDocType);
                 return _dictDb.AddDictionaryDocumentType(_context, newDocType);
             }

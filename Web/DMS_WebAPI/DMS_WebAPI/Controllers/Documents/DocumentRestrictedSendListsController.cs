@@ -1,5 +1,4 @@
-﻿using BL.Logic.DependencyInjection;
-using BL.Logic.DocumentCore.Interfaces;
+﻿using BL.Logic.DocumentCore.Interfaces;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Web.Http;

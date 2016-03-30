@@ -7,6 +7,17 @@ namespace BL.Model.DictionaryCore.InternalModel
 {
     public class InternalCustomDictionary : LastChangeInfo
     {
+        public InternalCustomDictionary()
+        { }
+
+        public InternalCustomDictionary(ModifyCustomDictionary model)
+        {
+            Id = model.Id; 
+            Code = model.Code;
+            Description = model.Description;
+            DictionaryTypeId = model.DictionaryTypeId;
+        }
+
         /// <summary>
         /// ID
         /// </summary>

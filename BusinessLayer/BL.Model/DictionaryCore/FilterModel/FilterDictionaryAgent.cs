@@ -1,27 +1,35 @@
 ﻿using System.Collections.Generic;
+using BL.Model.Enums;
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
     /// <summary>
     /// Фильтр словаря агентов
     /// </summary>
-    public class FilterDictionaryAgent
+    public class FilterDictionaryAgent : DictionaryBaseFilterParameters
     {
+    
         /// <summary>
-        /// Массив ИД агентов
-        /// </summary>
-        public List<int> AgentId { get; set; }
-        /// <summary>
-        /// Отрывок наименования агента
-        /// </summary>
-        public string Name { get; set; }
-        /// <summary>
-        /// Признак является ли агент физическим лицом
+        /// является физлицом
         /// </summary>
         public bool? IsIndividual { get; set; }
         /// <summary>
-        /// Признак является ли агент сотрудником
+        /// ъявляется юрлицом
+        /// </summary>
+        public bool? IsCompany { get; set; }
+        /// <summary>
+        /// является сотрудником
         /// </summary>
         public bool? IsEmployee { get; set; }
+        /// <summary>
+        /// является банком
+        /// </summary>
+        public bool? IsBank { get; set; }
+        
+        /// <summary>
+        /// Первая буква наименования
+        /// </summary>
+        public char FirstChar { get; set; }
+
     }
 }

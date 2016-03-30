@@ -2,13 +2,32 @@
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
-    public class FilterDictionaryDepartment
+    /// <summary>
+    /// Фильтры FilterDictionaryDepartment
+    /// </summary>
+    // В этой модели целесообразно все поля, объявленные простыми типами, делать Nullable, чтобы при формировании Where можно было проверить на if != null
+    public class FilterDictionaryDepartment : DictionaryBaseFilterParameters
     {
-        public List<int> DepartmentId { get; set; }
-        public List<int> ParentId { get; set; }
-        public int? CompanyId { get; set; }
-        public string Name { get; set; }
-        public int? ChiefPositionId { get; set; }
 
+        /// <summary>
+        /// Сужение по полному наименованию подразделений
+        /// </summary>
+        public string FullName { get; set; }
+
+        /// <summary>
+        /// Индекс подразделения
+        /// </summary>
+        public string Code { get; set; }
+
+        /// <summary>
+        /// Сужение по компании, которая представляет этот отдел
+        /// </summary>
+        public int? CompanyId { get; set; }
+
+        /// <summary>
+        /// Руководитель подразделения
+        /// </summary>
+        public int? ChiefPositionId { get; set; }
+        
     }
 }

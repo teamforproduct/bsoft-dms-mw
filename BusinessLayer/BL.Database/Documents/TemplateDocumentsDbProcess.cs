@@ -4,6 +4,7 @@ using BL.CrossCutting.Interfaces;
 using BL.Database.DatabaseContext;
 using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore.FrontModel;
+using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.Enums;
 
 namespace BL.Database.Documents
@@ -87,12 +88,15 @@ namespace BL.Database.Documents
             }
         }
 
-        public int AddOrUpdateTemplate(IContext ctx, FrontTemplateDocument template)
+        public int AddOrUpdateTemplate(IContext ctx, ModifyTemplateDocument template)
         {
             // we should not implement it now
             //var dbContext = GetUserDmsContext(context);
-
-            return 0;
+            using (var dbContext = new DmsContext(ctx))
+            {
+                return 0;
+            }
+               
         }
     }
 }

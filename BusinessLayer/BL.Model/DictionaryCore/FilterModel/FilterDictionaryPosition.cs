@@ -3,21 +3,24 @@
 namespace BL.Model.DictionaryCore.FilterModel
 {
     /// <summary>
-    /// Фильтр словаря должностей
+    /// Фильтры FilterDictionaryPosition
     /// </summary>
-    public class FilterDictionaryPosition
+    public class FilterDictionaryPosition : DictionaryBaseFilterParameters
     {
+ 
         /// <summary>
-        /// Массив ИД должностей
+        /// Сужение по полному наименованию подразделений
         /// </summary>
-        public List<int> PositionId { get; set; }
+        public string FullName { get; set; }
+
         /// <summary>
         /// Массив ИД документов для поиска корреспондентов в событиях
         /// </summary>
-        public List<int> DocumentId { get; set; }
+        public List<int> DocumentIDs { get; set; }
         /// <summary>
         /// Массив ИД должностей для проверки субординации
         /// </summary>
         public List<int> SubordinatedPositions { get; set; }
+
     }
 }

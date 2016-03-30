@@ -1,17 +1,20 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using BL.CrossCutting.Interfaces;
+using BL.Database.Common;
 using BL.Database.DatabaseContext;
-using BL.Model.DictionaryCore;
-using BL.Database.Dictionaries.Interfaces;
-using BL.Model.Enums;
-using System;
-using BL.CrossCutting.Interfaces;
 using BL.Database.DBModel.Dictionary;
+using BL.Database.Dictionaries.Interfaces;
 using BL.Model.AdminCore;
+using BL.Model.DictionaryCore;
+using BL.Model.SystemCore;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.InternalModel;
+using BL.Model.Enums;
 using BL.Model.Exception;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 
 namespace BL.Database.Dictionaries
 {
@@ -21,264 +24,2401 @@ namespace BL.Database.Dictionaries
         {
         }
 
+        // Агенты
         #region DictionaryAgents
-        public BaseDictionaryAgent GetDictionaryAgent(IContext context, int id)
+
+
+        //public IEnumerable<EnumDictionaryAgentTypes> GetAgentRoles(IContext context, int id)
+        //{
+        //    using (var dbContext = new DmsContext(context))
+        //    {
+        //        List<EnumDictionaryAgentTypes> list = new List<EnumDictionaryAgentTypes>();
+        //        var agent = GetDictionaryAgent(context, id);
+        //        if (agent.IsBank) { list.Add(EnumDictionaryAgentTypes.isBank); }
+        //        if (agent.IsEmployee) { list.Add(EnumDictionaryAgentTypes.isEmployee); }
+        //        if (agent.IsIndividual) { list.Add(EnumDictionaryAgentTypes.isIndividual); }
+        //        if (agent.IsCompany) { list.Add(EnumDictionaryAgentTypes.isCompany); }
+
+        //        return list;
+        //    }
+        //}
+
+        public void UpdateDictionaryAgentRole(IContext context, int id, EnumDictionaryAgentTypes role)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var agent = GetDictionaryAgent(context, id);
+                var ddt = new DictionaryAgents
+                {
+                    Name = agent.Name,
+                    ResidentTypeId = agent.ResidentTypeId,
+                    IsBank = (role == EnumDictionaryAgentTypes.isBank ? !agent.IsBank : agent.IsBank),
+                    IsCompany = (role == EnumDictionaryAgentTypes.isCompany ? !agent.IsCompany : agent.IsCompany),
+                    IsEmployee = (role == EnumDictionaryAgentTypes.isEmployee ? !agent.IsEmployee : agent.IsEmployee),
+                    IsIndividual = (role == EnumDictionaryAgentTypes.isIndividual ? !agent.IsIndividual : agent.IsIndividual),
+                    Description = agent.Description,
+                    LastChangeDate = DateTime.Now,
+                    LastChangeUserId = context.CurrentAgentId,
+                    IsActive = agent.IsActive
+                };
+                dbContext.DictionaryAgentsSet.Attach(ddt);
+                var entity = dbContext.Entry(ddt);
+                entity.State = System.Data.Entity.EntityState.Modified;
+                dbContext.SaveChanges();
+            }
+        }
+
+
+        public FrontDictionaryAgent GetDictionaryAgent(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context))
             {
 
-                return dbContext.DictionaryAgentsSet.Where(x => x.Id == id).Select(x => new BaseDictionaryAgent
+                return dbContext.DictionaryAgentsSet.Where(x => x.Id == id).Select(x => new FrontDictionaryAgent
                 {
                     Id = x.Id,
                     Name = x.Name,
                     IsIndividual = x.IsIndividual,
                     IsEmployee = x.IsEmployee,
-                    LastChangeUserId = x.LastChangeUserId,
-                    LastChangeDate = x.LastChangeDate,
-                    /*AgentPersonsAgents = x.AgentPersonsAgents.Select(y => new BaseDictionaryAgentPerson
+                    IsCompany = x.IsCompany,
+                    IsBank = x.IsBank,
+                    IsActive = x.IsActive,
+                    ResidentTypeId = x.ResidentTypeId,
+                    Description = x.Description,
+                    Contacts = x.AgentContacts.Select(y => new FrontDictionaryContact
                     {
                         Id = y.Id,
                         AgentId = y.AgentId,
-                        Name = y.Name,
-                        PersonAgentId = y.PersonAgentId,
-                        LastChangeUserId = y.LastChangeUserId,
-                        LastChangeDate = y.LastChangeDate,
-                        AgentName = y.Agent.Name,
-                        PersonAgentName = y.PersonAgent.Name
+                        ContactType = new FrontDictionaryContactType
+                        {
+                            Id = y.ContactType.Id,
+                            Name = y.ContactType.Name,
+                            InputMask = y.ContactType.InputMask,
+                            IsActive = y.ContactType.IsActive
+                        },
+                        Value = y.Contact,
+                        IsActive = y.IsActive,
+                        Description = y.Description
                     }),
-                    AgentPersonsPersonAgents = x.AgentPersonsPersonAgents.Select(y => new BaseDictionaryAgentPerson
+                    Addresses = x.AgentAddresses.Select(z => new FrontDictionaryAgentAddress
                     {
-                        Id = y.Id,
-                        AgentId = y.AgentId,
-                        Name = y.Name,
-                        PersonAgentId = y.PersonAgentId,
-                        LastChangeUserId = y.LastChangeUserId,
-                        LastChangeDate = y.LastChangeDate,
-                        AgentName = y.Agent.Name,
-                        PersonAgentName = y.PersonAgent.Name
-                    })*/
-                }).FirstOrDefault();
+                        Id = z.Id,
+                        AgentId = z.AgentId,
+                        AddressType = new FrontDictionaryAddressType
+                        {
+                            Id = z.AddressType.Id,
+                            Name = z.AddressType.Name,
+                            IsActive = z.AddressType.IsActive
+                        },
+                        PostCode = z.PostCode,
+                        Address = z.Address,
+                        IsActive = z.IsActive,
+                        Description = z.Description
+                    })
+
+                })
+                .FirstOrDefault();
             }
         }
 
-        public IEnumerable<BaseDictionaryAgent> GetDictionaryAgents(IContext context, FilterDictionaryAgent filter)
+        public IEnumerable<FrontDictionaryAgent> GetDictionaryAgents(IContext context, FilterDictionaryAgent filter, UIPaging paging)
         {
             using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionaryAgentsSet.AsQueryable();
 
-                if (filter.AgentId?.Count > 0)
+                if (paging != null)
                 {
-                    qry = qry.Where(x => filter.AgentId.Contains(x.Id));
-                }
-                if (!string.IsNullOrEmpty(filter.Name))
-                {
-                    qry = qry.Where(x => x.Name.Contains(filter.Name));
-                }
-                if (filter.IsIndividual.HasValue)
-                {
-                    qry = qry.Where(x => x.IsIndividual == filter.IsIndividual);
-                }
-                if (filter.IsEmployee.HasValue)
-                {
-                    qry = qry.Where(x => x.IsEmployee == filter.IsEmployee);
+                    paging.TotalItemsCount = qry.Count();
+
+                    qry = qry.OrderBy(x => x.Name)
+                        .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
                 }
 
-                return qry.Select(x => new BaseDictionaryAgent
+                // Список первичных ключей
+                if (filter.IDs?.Count > 0)
+                {
+                    qry = qry.Where(x => filter.IDs.Contains(x.Id));
+                }
+
+                // Исключение списка первичных ключей
+                if (filter.NotContainsIDs?.Count > 0)
+                {
+                    qry = qry.Where(x => !filter.NotContainsIDs.Contains(x.Id));
+                }
+
+                // Тоько активные/неактивные
+                if (filter.IsActive != null)
+                {
+                    qry = qry.Where(x => filter.IsActive == x.IsActive);
+                }
+
+                // Поиск по наименованию
+                if (!string.IsNullOrEmpty(filter.Name))
+                {
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
+                    {
+                        qry = qry.Where(x => x.Name.Contains(temp));
+                    }
+                }
+
+                // Сравнение по ИЛИ или не задано ни одно условие
+                qry = qry.Where(x => (
+                  (
+                    (filter.IsBank.HasValue && x.IsBank == filter.IsBank) ||
+                    (filter.IsIndividual.HasValue && x.IsIndividual == filter.IsIndividual) ||
+                    (filter.IsCompany.HasValue && x.IsBank == filter.IsCompany) ||
+                    (filter.IsEmployee.HasValue && x.IsBank == filter.IsEmployee)
+                   ) || (!filter.IsBank.HasValue && !filter.IsIndividual.HasValue && !filter.IsCompany.HasValue && !filter.IsEmployee.HasValue)
+                 ));
+
+                return qry.Select(x => new FrontDictionaryAgent
                 {
                     Id = x.Id,
                     Name = x.Name,
                     IsIndividual = x.IsIndividual,
                     IsEmployee = x.IsEmployee,
-                    LastChangeUserId = x.LastChangeUserId,
-                    LastChangeDate = x.LastChangeDate
+                    IsCompany = x.IsCompany,
+                    IsBank = x.IsBank,
+                    IsActive = x.IsActive,
+                    ResidentTypeId = x.ResidentTypeId,
+                    Description = x.Description,
+                    Contacts = x.AgentContacts.Select(y => new FrontDictionaryContact
+                    {
+                        Id = y.Id,
+                        AgentId = y.AgentId,
+                        ContactType = new FrontDictionaryContactType
+                        {
+                            Id = y.ContactType.Id,
+                            Name = y.ContactType.Name,
+                            InputMask = y.ContactType.InputMask,
+                            IsActive = y.ContactType.IsActive
+                        }
+                    }),
+                    Addresses = x.AgentAddresses.Select(z => new FrontDictionaryAgentAddress
+                    {
+                        Id = z.Id,
+                        AgentId = z.AgentId,
+                        AddressType = new FrontDictionaryAddressType
+                        {
+                            Id = z.AddressType.Id,
+                            Name = z.AddressType.Name,
+                            IsActive = z.AddressType.IsActive
+                        }
+                    })
+
                 }).ToList();
             }
         }
+
+        public void UpdateDictionaryAgent(IContext context, InternalDictionaryAgent agent)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var ddt = new DictionaryAgents
+                {
+                    Id = agent.Id,
+                    Name = agent.Name,
+                    ResidentTypeId = agent.ResidentTypeId,
+                    IsBank = agent.IsBank,
+                    IsCompany = agent.IsCompany,
+                    IsEmployee = agent.IsEmployee,
+                    IsIndividual = agent.IsIndividual,
+                    Description = agent.Description,
+                    LastChangeDate = agent.LastChangeDate,
+                    LastChangeUserId = agent.LastChangeUserId,
+                    IsActive = agent.IsActive
+                };
+
+                dbContext.DictionaryAgentsSet.Attach(ddt);
+                var entity = dbContext.Entry(ddt);
+                entity.State = System.Data.Entity.EntityState.Modified;
+                dbContext.SaveChanges();
+            }
+        }
+
+        public void UpdateDictionaryAgentName(IContext context, int Id, string newName)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var agent = GetDictionaryAgent(context, Id);
+                var ddt = new DictionaryAgents
+                {
+                    Name = newName,
+                    ResidentTypeId = agent.ResidentTypeId,
+                    IsBank = agent.IsBank,
+                    IsCompany = agent.IsCompany,
+                    IsEmployee = agent.IsEmployee,
+                    IsIndividual = agent.IsIndividual,
+                    Description = agent.Description,
+                    LastChangeDate = DateTime.Now,
+                    LastChangeUserId = context.CurrentAgentId,
+                    IsActive = agent.IsActive
+                };
+                dbContext.DictionaryAgentsSet.Attach(ddt);
+                var entity = dbContext.Entry(ddt);
+                entity.State = System.Data.Entity.EntityState.Modified;
+                dbContext.SaveChanges();
+            }
+
+        }
+
+
+        public void DeleteDictionaryAgent(IContext context, InternalDictionaryAgent agent)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+
+
+                var ddt = dbContext.DictionaryAgentsSet.FirstOrDefault(x => x.Id == agent.Id);
+                if (ddt != null)
+                {
+                    dbContext.DictionaryAgentAddressesSet.RemoveRange(
+                                   dbContext.DictionaryAgentAddressesSet.Where(x => x.AgentId == agent.Id)
+                                   );
+                    dbContext.DictionaryAgentContactsSet.RemoveRange(
+                                       dbContext.DictionaryAgentContactsSet.Where(x => x.AgentId == agent.Id)
+                                       );
+                    dbContext.DictionaryAgentAccountsSet.RemoveRange(
+                                                           dbContext.DictionaryAgentAccountsSet.Where(x => x.AgentId == agent.Id)
+                                                           );
+                    dbContext.DictionaryAgentsSet.Remove(ddt);
+
+                    dbContext.SaveChanges();
+                }
+            }
+        }
+
+
+        public int AddDictionaryAgent(IContext context, InternalDictionaryAgent newAgent)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var ddt = new DictionaryAgents
+                {
+                    Name = newAgent.Name,
+                    ResidentTypeId = newAgent.ResidentTypeId,
+                    IsBank = newAgent.IsBank,
+                    IsCompany = newAgent.IsCompany,
+                    IsEmployee = newAgent.IsEmployee,
+                    IsIndividual = newAgent.IsIndividual,
+                    Description = newAgent.Description,
+                    LastChangeDate = newAgent.LastChangeDate,
+                    LastChangeUserId = newAgent.LastChangeUserId,
+                    IsActive = newAgent.IsActive
+                };
+                dbContext.DictionaryAgentsSet.Add(ddt);
+                dbContext.SaveChanges();
+                newAgent.Id = ddt.Id;
+                return ddt.Id;
+            }
+        }
+
         #endregion DictionaryAgents
 
-        #region DictionaryAgentPersons
-        public BaseDictionaryAgentPerson GetDictionaryAgentPerson(IContext context, int id)
+        // Физлица
+        #region DictionaryAgentPerson
+        public FrontDictionaryAgentPerson GetDictionaryAgentPerson(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context))
             {
 
                 return
-                    dbContext.DictionaryAgentPersonsSet.Where(x => x.Id == id).Select(x => new BaseDictionaryAgentPerson
+                    dbContext.DictionaryAgentPersonsSet.Where(x => x.Id == id).Select(x => new FrontDictionaryAgentPerson
                     {
                         Id = x.Id,
-                       // AgentId = x.AgentId,
-                        Name = x.FullName,
-                    //    PersonAgentId = x.PersonAgentId,
-                        LastChangeUserId = x.LastChangeUserId,
-                        LastChangeDate = x.LastChangeDate,
-                     //   AgentName = x.Agent.Name,
-                     //   PersonAgentName = x.PersonAgent.Name
+                        IsIndividual = true,
+                        FirstName = x.FirstName,
+                        LastName = x.LastName,
+                        MiddleName = x.MiddleName,
+                        TaxCode = x.TaxCode,
+                        IsMale = x.IsMale,
+                        PassportSerial = x.PassportSerial,
+                        PassportNumber = x.PassportNumber,
+                        PassportText = x.PassportText,
+                        PassportDate = x.PassportDate,
+                        BirthDate = x.BirthDate,
+                        Description = x.Description,
+                        IsActive = x.IsActive,
+                        Contacts = x.Agent.AgentContacts.Select(y => new FrontDictionaryContact
+                        {
+                            Id = y.Id,
+                            AgentId = y.AgentId,
+                            ContactType = new FrontDictionaryContactType
+                            {
+                                Id = y.ContactType.Id,
+                                Name = y.ContactType.Name,
+                                InputMask = y.ContactType.InputMask,
+                                IsActive = y.ContactType.IsActive
+                            },
+                            Value = y.Contact,
+                            IsActive = y.IsActive,
+                            Description = y.Description
+                        }),
+                        Addresses = x.Agent.AgentAddresses.Select(z => new FrontDictionaryAgentAddress
+                        {
+                            Id = z.Id,
+                            AgentId = z.AgentId,
+                            AddressType = new FrontDictionaryAddressType
+                            {
+                                Id = z.AddressType.Id,
+                                Name = z.AddressType.Name,
+                                IsActive = z.AddressType.IsActive
+                            },
+                            PostCode = z.PostCode,
+                            Address = z.Address,
+                            IsActive = z.IsActive,
+                            Description = z.Description
+                        })
+
                     }).FirstOrDefault();
             }
         }
 
-        public IEnumerable<BaseDictionaryAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter)
+        public IEnumerable<FrontDictionaryAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging)
         {
             using (var dbContext = new DmsContext(context))
             {
 
                 var qry = dbContext.DictionaryAgentPersonsSet.AsQueryable();
 
-                if (filter.AgentPersonId?.Count > 0)
+                qry = qry.Where(x => x.Agent.IsIndividual);
+
+                // Пагинация
+                if (paging != null)
                 {
-                    qry = qry.Where(x => filter.AgentPersonId.Contains(x.Id));
+                    paging.TotalItemsCount = qry.Count();
+
+                    qry = qry.OrderBy(x => x.LastName)
+                        .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
                 }
-               /* if (filter.AgentId?.Count > 0)
+
+                // Список первичных ключей
+                if (filter.IDs?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.AgentId.Contains(x.AgentId));
-                }*/
+                    qry = qry.Where(x => filter.IDs.Contains(x.Id));
+                }
+
+                // Исключение списка первичных ключей
+                if (filter.NotContainsIDs?.Count > 0)
+                {
+                    qry = qry.Where(x => !filter.NotContainsIDs.Contains(x.Id));
+                }
+
+                // Тоько активные/неактивные
+                if (filter.IsActive.HasValue)
+                {
+                    qry = qry.Where(x => x.IsActive == filter.IsActive);
+                }
+
+                // Поиск по наименованию
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
-                    qry = qry.Where(x => x.FullName.Contains(filter.Name));
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
+                    {
+                        qry = qry.Where(x => x.FullName.Contains(temp));
+                    }
                 }
-            /*    if (!string.IsNullOrEmpty(filter.AgentName))
-                {
-                    qry = qry.Where(x => x.Agent.Name.Contains(filter.AgentName));
-                }*/
-             /*   if (!string.IsNullOrEmpty(filter.PersonAgentName))
-                {
-                    qry = qry.Where(x => x.PersonAgent.Name.Contains(filter.PersonAgentName));
-                }*/
 
-                return qry.Select(x => new BaseDictionaryAgentPerson
+                // Поиск по паспортным данным
+                if (!string.IsNullOrEmpty(filter.Passport))
+                {
+                    qry = qry.Where(x => (x.PassportSerial + "-" + x.PassportNumber + " " + x.PassportDate.ToString() + " " + x.PassportText).Contains(filter.Passport));
+                }
+
+                // Поиск по ИНН
+                if (!string.IsNullOrEmpty(filter.TaxCode))
+                {
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.TaxCode))
+                    {
+                        qry = qry.Where(x => x.TaxCode.Contains(temp));
+                    }
+                }
+
+                // Поиск по дате рождения
+                if (filter.BirthPeriod.IsActive)
+                {
+                    qry = qry.Where(x => x.BirthDate >= filter.BirthPeriod.DateBeg);
+                    qry = qry.Where(x => x.BirthDate <= filter.BirthPeriod.DateEnd);
+                }
+
+                return qry.Select(x => new FrontDictionaryAgentPerson
                 {
                     Id = x.Id,
-                  //  AgentId = x.AgentId,
-                    Name = x.FullName,
-                  //  PersonAgentId = x.PersonAgentId,
-                    LastChangeUserId = x.LastChangeUserId,
-                    LastChangeDate = x.LastChangeDate,
-                 //   AgentName = x.Agent.Name,
-                 //   PersonAgentName = x.PersonAgent.Name
+                    IsIndividual = true,
+                    FirstName = x.FirstName,
+                    LastName = x.LastName,
+                    MiddleName = x.MiddleName,
+                    TaxCode = x.TaxCode,
+                    IsMale = x.IsMale,
+                    PassportSerial = x.PassportSerial,
+                    PassportNumber = x.PassportNumber,
+                    PassportText = x.PassportText,
+                    PassportDate = x.PassportDate,
+                    BirthDate = x.BirthDate,
+                    Description = x.Description,
+                    Contacts = x.Agent.AgentContacts.Select(y => new FrontDictionaryContact
+                    {
+                        Id = y.Id,
+                        AgentId = y.AgentId,
+                        ContactType = new FrontDictionaryContactType
+                        {
+                            Id = y.ContactType.Id,
+                            Name = y.ContactType.Name,
+                            InputMask = y.ContactType.InputMask,
+                            IsActive = y.ContactType.IsActive
+                        },
+                        Value = y.Contact,
+                        IsActive = y.IsActive,
+                        Description = y.Description
+                    }),
+                    Addresses = x.Agent.AgentAddresses.Select(z => new FrontDictionaryAgentAddress
+                    {
+                        Id = z.Id,
+                        AgentId = z.AgentId,
+                        AddressType = new FrontDictionaryAddressType
+                        {
+                            Id = z.AddressType.Id,
+                            Name = z.AddressType.Name,
+                            IsActive = z.AddressType.IsActive
+                        },
+                        PostCode = z.PostCode,
+                        Address = z.Address,
+                        IsActive = z.IsActive,
+                        Description = z.Description
+                    })
                 }).ToList();
             }
         }
-        #endregion DictionaryAgentPersons
 
-        #region DictionaryCompanies
-        public BaseDictionaryCompany GetDictionaryCompany(IContext context, int id)
+        public void UpdateDictionaryAgentPerson(IContext context, InternalDictionaryAgentPerson person)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var ddt = new DictionaryAgentPersons
+                {
+                    Id = person.Id,
+                    FirstName = person.FirstName,
+                    LastName = person.LastName,
+                    MiddleName = person.MiddleName,
+                    FullName = person.LastName + " " + person.FirstName + " " + person.MiddleName,
+                    TaxCode = person.TaxCode,
+                    IsMale = person.IsMale,
+                    PassportSerial = person.PassportSerial,
+                    PassportNumber = person.PassportNumber,
+                    PassportText = person.PassportText,
+                    PassportDate = person.PassportDate,
+                    BirthDate = person.BirthDate,
+                    Description = person.Description,
+                    LastChangeDate = person.LastChangeDate,
+                    LastChangeUserId = person.LastChangeUserId,
+                    IsActive = person.IsActive
+                };
+
+                dbContext.DictionaryAgentPersonsSet.Attach(ddt);
+                var entity = dbContext.Entry(ddt);
+                entity.State = System.Data.Entity.EntityState.Modified;
+                dbContext.SaveChanges();
+
+
+            }
+        }
+
+
+        public void DeleteDictionaryAgentPerson(IContext context, InternalDictionaryAgentPerson person)
         {
             using (var dbContext = new DmsContext(context))
             {
 
-                return dbContext.DictionaryCompaniesSet.Where(x => x.Id == id).Select(x => new BaseDictionaryCompany
+                var ddt = dbContext.DictionaryAgentPersonsSet.FirstOrDefault(x => x.Id == person.Id);
+                if (ddt != null)
+                {
+                    dbContext.DictionaryAgentPersonsSet.Remove(ddt);
+                    dbContext.SaveChanges();
+
+                    var agent = GetDictionaryAgent(context, person.Id);
+
+                    if ((!agent.IsCompany && !agent.IsEmployee && !agent.IsBank))
+                    {
+                        DeleteDictionaryAgent(context, new InternalDictionaryAgent { Id = person.Id });
+                    }
+                    else
+                    {
+                        UpdateDictionaryAgentRole(context, person.Id, EnumDictionaryAgentTypes.isIndividual);
+                    }
+                }
+
+            }
+        }
+
+        public int AddDictionaryAgentPerson(IContext context, InternalDictionaryAgentPerson person)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+
+                var agent = GetDictionaryAgent(context, person.Id);
+                if (agent == null)
+                {
+                    var newAgent = new InternalDictionaryAgent
+                    {
+                        Name = person.LastName.Trim() + " " + person.FirstName.Trim() + " " + person.MiddleName.Trim(),
+                        IsActive = person.IsActive,
+                        Description = person.Description,
+                        IsBank = false,
+                        IsCompany = false,
+                        IsEmployee = true,
+                        IsIndividual = true,
+                        LastChangeDate = person.LastChangeDate,
+                        LastChangeUserId = person.LastChangeUserId,
+                    };
+                    person.Id = AddDictionaryAgent(context, newAgent);
+                }
+                else {
+                    agent.IsIndividual = true;
+                    UpdateDictionaryAgent(context, new InternalDictionaryAgent
+                    {
+                        Id = agent.Id,
+                        Name = agent.Name,
+                        IsActive = agent.IsActive,
+                        Description = agent.Description,
+                        IsBank = agent.IsBank,
+                        IsCompany = agent.IsCompany,
+                        IsEmployee = agent.IsEmployee,
+                        IsIndividual = agent.IsIndividual,
+                        ResidentTypeId = agent.ResidentTypeId ?? 0,
+                        LastChangeDate = person.LastChangeDate,
+                        LastChangeUserId = person.LastChangeUserId
+                    });
+                };
+
+                var ddt = new DictionaryAgentPersons
+                {
+                    Id = person.Id,
+                    FirstName = person.FirstName,
+                    LastName = person.LastName,
+                    MiddleName = person.MiddleName,
+                    FullName = person.LastName + " " + person.FirstName + " " + person.MiddleName,
+                    TaxCode = person.TaxCode,
+                    IsMale = person.IsMale,
+                    PassportSerial = person.PassportSerial,
+                    PassportNumber = person.PassportNumber,
+                    PassportText = person.PassportText,
+                    PassportDate = person.PassportDate,
+                    BirthDate = person.BirthDate,
+                    Description = person.Description,
+                    LastChangeDate = person.LastChangeDate,
+                    LastChangeUserId = person.LastChangeUserId,
+                    IsActive = person.IsActive
+                };
+                dbContext.DictionaryAgentPersonsSet.Add(ddt);
+                dbContext.SaveChanges();
+
+                return person.Id;
+            }
+        }
+
+        #endregion DictionaryAgentPerson
+
+        #region DictionaryAgentEmployee
+
+        public FrontDictionaryAgentEmployee GetDictionaryAgentEmployee(IContext context, int id)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                return dbContext.DictionaryAgentEmployeesSet.Where(x => x.Id == id).Select(x => new FrontDictionaryAgentEmployee
                 {
                     Id = x.Id,
-                    Name = x.Name,
-                    LastChangeUserId = x.LastChangeUserId,
-                    LastChangeDate = x.LastChangeDate,
+                    PersonnelNumber = x.PersonnelNumber,
+                    IsActive = x.IsActive,
+                    IsEmployee = true,
+                    Description = x.Description,
+                    FirstName = x.Agent.AgentPerson.FirstName,
+                    LastName = x.Agent.AgentPerson.LastName,
+                    MiddleName = x.Agent.AgentPerson.MiddleName,
+                    TaxCode = x.Agent.AgentPerson.TaxCode,
+                    IsMale = x.Agent.AgentPerson.IsMale,
+                    PassportSerial = x.Agent.AgentPerson.PassportSerial,
+                    PassportNumber = x.Agent.AgentPerson.PassportNumber,
+                    PassportText = x.Agent.AgentPerson.PassportText,
+                    PassportDate = x.Agent.AgentPerson.PassportDate,
+                    BirthDate = x.Agent.AgentPerson.BirthDate,
+                    Contacts = x.Agent.AgentContacts.Select(y => new FrontDictionaryContact
+                    {
+                        Id = y.Id,
+                        AgentId = y.AgentId,
+                        ContactType = new FrontDictionaryContactType
+                        {
+                            Id = y.ContactType.Id,
+                            Name = y.ContactType.Name,
+                            InputMask = y.ContactType.InputMask,
+                            IsActive = y.ContactType.IsActive
+                        },
+                        Value = y.Contact,
+                        IsActive = y.IsActive,
+                        Description = y.Description
+                    }),
+                    Addresses = x.Agent.AgentAddresses.Select(z => new FrontDictionaryAgentAddress
+                    {
+                        Id = z.Id,
+                        AgentId = z.AgentId,
+                        AddressType = new FrontDictionaryAddressType
+                        {
+                            Id = z.AddressType.Id,
+                            Name = z.AddressType.Name,
+                            IsActive = z.AddressType.IsActive
+                        },
+                        PostCode = z.PostCode,
+                        Address = z.Address,
+                        IsActive = z.IsActive,
+                        Description = z.Description
+                    })
+                }).FirstOrDefault();
+
+            }
+        }
+
+
+        public void UpdateDictionaryAgentEmployee(IContext context, InternalDictionaryAgentEmployee employee)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var ddt = new DictionaryAgentEmployees
+                {
+                    Id = employee.Id,
+                    PersonnelNumber = employee.PersonnelNumber,
+                    Description = employee.Description,
+                    LastChangeDate = employee.LastChangeDate,
+                    LastChangeUserId = employee.LastChangeUserId,
+                    IsActive = employee.IsActive
+                };
+
+                dbContext.DictionaryAgentEmployeesSet.Attach(ddt);
+                var entity = dbContext.Entry(ddt);
+                entity.State = System.Data.Entity.EntityState.Modified;
+                dbContext.SaveChanges();
+
+                UpdateDictionaryAgentPerson(context, new InternalDictionaryAgentPerson
+                {
+                    Id = employee.Id,
+                    FirstName = employee.FirstName,
+                    LastName = employee.LastName,
+                    MiddleName = employee.MiddleName,
+                    TaxCode = employee.TaxCode,
+                    IsMale = employee.IsMale,
+                    PassportSerial = employee.PassportSerial,
+                    PassportNumber = employee.PassportNumber,
+                    PassportText = employee.PassportText,
+                    PassportDate = employee.PassportDate,
+                    BirthDate = employee.BirthDate,
+                    Description = employee.Description,
+                    LastChangeDate = employee.LastChangeDate,
+                    LastChangeUserId = employee.LastChangeUserId,
+                    IsActive = employee.IsActive
+                });
+
+            }
+        }
+        public void DeleteDictionaryAgentEmployee(IContext context, InternalDictionaryAgentEmployee employee)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+
+                var ddt = dbContext.DictionaryAgentEmployeesSet.FirstOrDefault(x => x.Id == employee.Id);
+                if (ddt != null)
+                {
+                    dbContext.DictionaryAgentEmployeesSet.Remove(ddt);
+                    dbContext.SaveChanges();
+                }
+                else
+                {
+                    UpdateDictionaryAgentRole(context, employee.Id, EnumDictionaryAgentTypes.isEmployee);
+                }
+            }
+        }
+
+        public int AddDictionaryAgentEmployee(IContext context, InternalDictionaryAgentEmployee employee)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+
+                var agent = GetDictionaryAgentPerson(context, employee.Id);
+                if (agent == null)
+                {
+                    var newAgent = new InternalDictionaryAgentPerson
+                    {
+                        LastName = employee.LastName,
+                        FirstName = employee.FirstName,
+                        MiddleName = employee.MiddleName,
+                        IsActive = employee.IsActive,
+                        Description = employee.Description,
+                        TaxCode = employee.TaxCode,
+                        BirthDate = employee.BirthDate,
+                        IsMale = employee.IsMale,
+                        PassportSerial = employee.PassportSerial,
+                        PassportNumber = employee.PassportNumber,
+                        PassportDate = employee.PassportDate,
+                        PassportText = employee.PassportText,
+                        LastChangeDate = employee.LastChangeDate,
+                        LastChangeUserId = employee.LastChangeUserId,
+                    };
+                    employee.Id = AddDictionaryAgentPerson(context, newAgent);
+                }
+                else {
+
+                    UpdateDictionaryAgent(context, new InternalDictionaryAgent
+                    {
+                        Id = agent.Id,
+                        Name = agent.Name,
+                        IsActive = agent.IsActive,
+                        Description = agent.Description,
+                        IsBank = agent.IsBank,
+                        IsCompany = agent.IsCompany,
+                        IsEmployee = true,
+                        IsIndividual = agent.IsIndividual,
+                        ResidentTypeId = agent.ResidentTypeId ?? 0,
+                        LastChangeDate = employee.LastChangeDate,
+                        LastChangeUserId = employee.LastChangeUserId
+                    });
+                };
+
+                var ddt = new DictionaryAgentEmployees
+                {
+                    Id = employee.Id,
+                    AgentPersonId = employee.Id,
+                    PersonnelNumber = employee.PersonnelNumber,
+                    Description = employee.Description,
+                    LastChangeDate = employee.LastChangeDate,
+                    LastChangeUserId = employee.LastChangeUserId,
+                    IsActive = employee.IsActive
+                };
+                dbContext.DictionaryAgentEmployeesSet.Add(ddt);
+                dbContext.SaveChanges();
+
+                return employee.Id;
+            }
+        }
+
+        public IEnumerable<FrontDictionaryAgentEmployee> GetDictionaryAgentEmployees(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.DictionaryAgentEmployeesSet.AsQueryable();
+
+                qry = qry.Where(x => x.Agent.IsEmployee);
+
+                // Пагинация
+                if (paging != null)
+                {
+                    paging.TotalItemsCount = qry.Count();
+
+                    qry = qry.OrderBy(x => x.Agent.AgentPerson.LastName)
+                        .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
+                }
+
+                // Список первичных ключей
+                if (filter.IDs?.Count > 0)
+                {
+                    qry = qry.Where(x => filter.IDs.Contains(x.Id));
+                }
+
+                // Исключение списка первичных ключей
+                if (filter.NotContainsIDs?.Count > 0)
+                {
+                    qry = qry.Where(x => !filter.NotContainsIDs.Contains(x.Id));
+                }
+
+                // Тоько активные/неактивные
+                if (filter.IsActive != null)
+                {
+                    qry = qry.Where(x => filter.IsActive == x.IsActive);
+                }
+
+                // Поиск по наименованию
+                if (!string.IsNullOrEmpty(filter.Name))
+                {
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
+                    {
+                        qry = qry.Where(x => x.Agent.AgentPerson.FullName.Contains(temp));
+                    }
+                }
+                
+                if (!string.IsNullOrEmpty(filter.PersonnelNumber))
+                {
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.PersonnelNumber))
+                    {
+                        qry = qry.Where(x => x.PersonnelNumber.Contains(temp));
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(filter.Passport))
+                {
+                    qry = qry.Where(x => (x.Agent.AgentPerson.PassportSerial + "-" + x.Agent.AgentPerson.PassportNumber + " " +
+                                          x.Agent.AgentPerson.PassportDate.ToString() + " " +
+                                          x.Agent.AgentPerson.PassportText).Contains(filter.Passport));
+                }
+
+                if (!string.IsNullOrEmpty(filter.TaxCode))
+                {
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.TaxCode))
+                    {
+                        qry = qry.Where(x => x.Agent.AgentPerson.TaxCode.Contains(temp));
+                    }
+                }
+                
+                // Поиск по дате рождения
+                if (filter.BirthPeriod.IsActive)
+                {
+                    qry = qry.Where(x => x.Agent.AgentPerson.BirthDate >= filter.BirthPeriod.DateBeg);
+                    qry = qry.Where(x => x.Agent.AgentPerson.BirthDate <= filter.BirthPeriod.DateEnd);
+                }
+
+                return qry.Select(x => new FrontDictionaryAgentEmployee
+                {
+                    Id = x.Id,
+                    PersonnelNumber = x.PersonnelNumber,
+                    IsActive = x.IsActive,
+                    IsEmployee = true,
+                    Description = x.Description,
+                    FirstName = x.Agent.AgentPerson.FirstName,
+                    LastName = x.Agent.AgentPerson.LastName,
+                    MiddleName = x.Agent.AgentPerson.MiddleName,
+                    TaxCode = x.Agent.AgentPerson.TaxCode,
+                    IsMale = x.Agent.AgentPerson.IsMale,
+                    PassportSerial = x.Agent.AgentPerson.PassportSerial,
+                    PassportNumber = x.Agent.AgentPerson.PassportNumber,
+                    PassportText = x.Agent.AgentPerson.PassportText,
+                    PassportDate = x.Agent.AgentPerson.PassportDate,
+                    BirthDate = x.Agent.AgentPerson.BirthDate,
+                    Contacts = x.Agent.AgentContacts.Select(y => new FrontDictionaryContact
+                    {
+                        Id = y.Id,
+                        AgentId = y.AgentId,
+                        ContactType = new FrontDictionaryContactType
+                        {
+                            Id = y.ContactType.Id,
+                            Name = y.ContactType.Name,
+                            InputMask = y.ContactType.InputMask,
+                            IsActive = y.ContactType.IsActive
+                        },
+                        Value = y.Contact,
+                        IsActive = y.IsActive,
+                        Description = y.Description
+                    }),
+                    Addresses = x.Agent.AgentAddresses.Select(z => new FrontDictionaryAgentAddress
+                    {
+                        Id = z.Id,
+                        AgentId = z.AgentId,
+                        AddressType = new FrontDictionaryAddressType
+                        {
+                            Id = z.AddressType.Id,
+                            Name = z.AddressType.Name,
+                            IsActive = z.AddressType.IsActive
+                        },
+                        PostCode = z.PostCode,
+                        Address = z.Address,
+                        IsActive = z.IsActive,
+                        Description = z.Description
+                    })
+                }).ToList();
+            }
+        }
+
+        #endregion DictionaryAgentEmployee
+
+        #region DictionaryAgentAddress
+        public FrontDictionaryAgentAddress GetDictionaryAgentAddress(IContext context, int id)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.DictionaryAgentAddressesSet.AsQueryable();
+
+                return qry.Select(x => new FrontDictionaryAgentAddress
+                {
+                    Id = x.Id,
+                    AgentId = x.AgentId,
+                    AddressType = new FrontDictionaryAddressType { Id = x.AdressTypeId, Name = x.AddressType.Name },
+                    PostCode = x.PostCode,
+                    Address = x.Address,
+                    Description = x.Description,
+                    IsActive = x.IsActive,
                 }).FirstOrDefault();
             }
         }
 
-        public IEnumerable<BaseDictionaryCompany> GetDictionaryCompanies(IContext context, FilterDictionaryCompany filter)
+        public void UpdateDictionaryAgentAddress(IContext context, InternalDictionaryAgentAddress addr)
         {
             using (var dbContext = new DmsContext(context))
             {
-                var qry = dbContext.DictionaryCompaniesSet.AsQueryable();
-
-                if (filter.CompanyId?.Count > 0)
+                var ddt = new DictionaryAgentAddresses
                 {
-                    qry = qry.Where(x => filter.CompanyId.Contains(x.Id));
-                }
-                if (!string.IsNullOrEmpty(filter.Name))
+                    Id = addr.Id,
+                    AgentId = addr.AgentId,
+                    AdressTypeId = addr.AddressTypeID,
+                    PostCode = addr.PostCode,
+                    Address = addr.Address,
+                    Description = addr.Description,
+                    LastChangeDate = addr.LastChangeDate,
+                    LastChangeUserId = addr.LastChangeUserId,
+                    IsActive = addr.IsActive,
+                };
+
+                dbContext.DictionaryAgentAddressesSet.Attach(ddt);
+                var entity = dbContext.Entry(ddt);
+                entity.State = System.Data.Entity.EntityState.Modified;
+
+                dbContext.SaveChanges();
+            }
+        }
+
+        public void DeleteDictionaryAgentAddress(IContext context, InternalDictionaryAgentAddress addr)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+
+                var ddt = dbContext.DictionaryAgentAddressesSet.FirstOrDefault(x => x.Id == addr.Id);
+                if (ddt != null)
                 {
-                    qry = qry.Where(x => x.Name.Contains(filter.Name));
+                    dbContext.DictionaryAgentAddressesSet.Remove(ddt);
+                    dbContext.SaveChanges();
+                }
+            }
+        }
+
+        public int AddDictionaryAgentAddress(IContext context, InternalDictionaryAgentAddress addr)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var ddt = new DictionaryAgentAddresses
+                {
+                    AgentId = addr.AgentId,
+                    AdressTypeId = addr.AddressTypeID,
+                    PostCode = addr.PostCode,
+                    Address = addr.Address,
+                    Description = addr.Description,
+                    LastChangeDate = addr.LastChangeDate,
+                    LastChangeUserId = addr.LastChangeUserId,
+                    IsActive = addr.IsActive
+                };
+                dbContext.DictionaryAgentAddressesSet.Add(ddt);
+                dbContext.SaveChanges();
+                addr.Id = ddt.Id;
+                return ddt.Id;
+            }
+        }
+
+        public IEnumerable<FrontDictionaryAgentAddress> GetDictionaryAgentAddresses(IContext context, int agentId, FilterDictionaryAgentAddress filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.DictionaryAgentAddressesSet.AsQueryable();
+
+
+                qry = qry.Where(x => x.AgentId == filter.AgentId);
+
+                qry = qry.OrderBy(x => x.Address);
+
+                if (filter.AddressTypeId?.Count > 0)
+                {
+                    qry = qry.Where(x => filter.AddressTypeId.Contains(x.AdressTypeId));
                 }
 
-                return qry.Select(x => new BaseDictionaryCompany
+                if (!String.IsNullOrEmpty(filter.PostCode))
+                {
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.PostCode))
+                    {
+                        qry = qry.Where(x => x.PostCode.Contains(temp));
+                    }
+                }
+
+                if (!String.IsNullOrEmpty(filter.Address))
+                {
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Address))
+                    {
+                        qry = qry.Where(x => x.Address.Contains(temp));
+                    }
+                }
+
+                if (filter.IsActive != null)
+                {
+                    qry = qry.Where(x => x.IsActive == filter.IsActive);
+                }
+
+                return qry.Select(x => new FrontDictionaryAgentAddress
                 {
                     Id = x.Id,
-                    Name = x.Name,
-                    LastChangeUserId = x.LastChangeUserId,
-                    LastChangeDate = x.LastChangeDate,
+                    AgentId = x.AgentId,
+                    AddressType = new FrontDictionaryAddressType { Id = x.AddressType.Id, Name = x.AddressType.Name },
+                    Address = x.Address,
+                    PostCode = x.PostCode,
+                    Description = x.Description,
+                    IsActive = x.IsActive
                 }).ToList();
             }
         }
-        #endregion DictionaryCompanies
+        #endregion
 
-        #region DictionaryDepartments
-        public BaseDictionaryDepartment GetDictionaryDepartment(IContext context, int id)
+        // Типы адресов 
+        #region DictionaryAddressTypes
+        public void UpdateDictionaryAddressType(IContext context, InternalDictionaryAddressType addrType)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var ddt = new DictionaryAddressTypes
+                {
+                    Id = addrType.Id,
+                    LastChangeDate = addrType.LastChangeDate,
+                    LastChangeUserId = addrType.LastChangeUserId,
+                    Name = addrType.Name,
+                    IsActive = addrType.IsActive
+                };
+                dbContext.DictionaryAddressTypesSet.Attach(ddt);
+                var entity = dbContext.Entry(ddt);
+
+                entity.State = System.Data.Entity.EntityState.Modified;
+                dbContext.SaveChanges();
+            }
+        }
+
+
+        public void DeleteDictionaryAddressType(IContext context, InternalDictionaryAddressType addrType)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+
+                var ddt = dbContext.DictionaryAddressTypesSet.FirstOrDefault(x => x.Id == addrType.Id);
+                if (ddt != null)
+                {
+                    dbContext.DictionaryAddressTypesSet.Remove(ddt);
+                    dbContext.SaveChanges();
+                }
+            }
+        }
+
+        public int AddDictionaryAddressType(IContext context, InternalDictionaryAddressType addrType)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var ddt = new DictionaryAddressTypes
+                {
+                    Name = addrType.Name,
+                    IsActive = addrType.IsActive,
+                    LastChangeDate = addrType.LastChangeDate,
+                    LastChangeUserId = addrType.LastChangeUserId
+                };
+                dbContext.DictionaryAddressTypesSet.Add(ddt);
+                dbContext.SaveChanges();
+                addrType.Id = ddt.Id;
+                return ddt.Id;
+            }
+        }
+
+        public InternalDictionaryAddressType GetInternalDictionaryAddressType(IContext context, FilterDictionaryAddressType filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.DictionaryDocumentTypesSet.AsQueryable();
+
+                if (filter.IDs?.Count > 0)
+                {
+                    qry = qry.Where(x => filter.IDs.Contains(x.Id));
+                }
+
+                if (!string.IsNullOrEmpty(filter.Name))
+                {
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
+                    {
+                        qry = qry.Where(x => x.Name.Contains(temp));
+                    }
+                   
+                }
+
+                if (filter.IsActive != null)
+                {
+                    qry = qry.Where(x => filter.IsActive == x.IsActive);
+                }
+
+                if (filter.NotContainsIDs?.Count > 0)
+                {
+                    qry = qry.Where(x => !filter.NotContainsIDs.Contains(x.Id));
+                }
+
+                return qry.Select(x => new InternalDictionaryAddressType
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    IsActive = x.IsActive,
+                    LastChangeDate = x.LastChangeDate,
+                    LastChangeUserId = x.LastChangeUserId
+                }).FirstOrDefault();
+            }
+        }
+
+        public IEnumerable<FrontDictionaryAddressType> GetDictionaryAddressTypes(IContext context, FilterDictionaryAddressType filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.DictionaryAddressTypesSet.AsQueryable();
+
+                qry = qry.OrderBy(x => x.Name);
+
+                // Список первичных ключей
+                if (filter.IDs?.Count > 0)
+                {
+                    qry = qry.Where(x => filter.IDs.Contains(x.Id));
+                }
+
+                // Исключение списка первичных ключей
+                if (filter.NotContainsIDs?.Count > 0)
+                {
+                    qry = qry.Where(x => !filter.NotContainsIDs.Contains(x.Id));
+                }
+
+                // Тоько активные/неактивные
+                if (filter.IsActive.HasValue)
+                {
+                    qry = qry.Where(x => x.IsActive == filter.IsActive);
+                }
+
+                // Поиск по наименованию
+                if (!String.IsNullOrEmpty(filter.Name))
+                {
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
+                    {
+                        qry = qry.Where(x => x.Name.Contains(temp));
+                    }
+                }
+
+                return qry.Select(x => new FrontDictionaryAddressType
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    IsActive = x.IsActive
+                }).ToList();
+            }
+        }
+        #endregion
+
+        // Компании
+        #region DictionaryAgentCompanies
+        public FrontDictionaryAgentCompany GetDictionaryAgentCompany(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context))
             {
 
                 return
-                    dbContext.DictionaryDepartmentsSet.Where(x => x.Id == id).Select(x => new BaseDictionaryDepartment
+                    dbContext.DictionaryAgentCompaniesSet.Where(x => x.Id == id).Select(x => new FrontDictionaryAgentCompany
                     {
                         Id = x.Id,
-                        ParentId = x.ParentId,
-                        CompanyId = x.CompanyId,
-                        Name = x.Name,
-                        ChiefPositionId = x.ChiefPositionId,
-                        LastChangeUserId = x.LastChangeUserId,
-                        LastChangeDate = x.LastChangeDate,
-                        ParentDepartmentName = x.ParentDepartment.Name,
-                        CompanyName = x.Company.Name,
-                        ChiefPositionName = x.ChiefPosition.Name,
-                        ChildDepartments = x.ChildDepartments.Select(y => new BaseDictionaryDepartment
+                        IsCompany = x.Agent.IsCompany,
+                        IsIndividual = x.Agent.IsIndividual,
+                        IsBank = x.Agent.IsBank,
+                        IsEmployee = x.Agent.IsEmployee,
+                        ResidentTypeId = x.Agent.ResidentTypeId,
+                        FullName = x.FullName,
+                        ShortName = x.Agent.Name,
+                        TaxCode = x.TaxCode,
+                        OKPOCode = x.OKPOCode,
+                        VATCode = x.VATCode,
+                        Description = x.Description,
+                        IsActive = x.IsActive,
+                        Contacts = x.Agent.AgentContacts.Select(y => new FrontDictionaryContact
                         {
                             Id = y.Id,
-                            ParentId = y.ParentId,
-                            CompanyId = y.CompanyId,
-                            Name = y.Name,
-                            ChiefPositionId = y.ChiefPositionId,
-                            LastChangeUserId = y.LastChangeUserId,
-                            LastChangeDate = y.LastChangeDate,
-                            ParentDepartmentName = y.ParentDepartment.Name,
-                            CompanyName = y.Company.Name,
-                            ChiefPositionName = y.ChiefPosition.Name,
+                            AgentId = y.AgentId,
+                            ContactType = new FrontDictionaryContactType
+                            {
+                                Id = y.ContactType.Id,
+                                Name = y.ContactType.Name,
+                                InputMask = y.ContactType.InputMask,
+                                IsActive = y.ContactType.IsActive
+                            },
+                            Value = y.Contact,
+                            IsActive = y.IsActive,
+                            Description = y.Description
+                        }),
+                        Addresses = x.Agent.AgentAddresses.Select(z => new FrontDictionaryAgentAddress
+                        {
+                            Id = z.Id,
+                            AgentId = z.AgentId,
+                            AddressType = new FrontDictionaryAddressType
+                            {
+                                Id = z.AddressType.Id,
+                                Name = z.AddressType.Name,
+                                IsActive = z.AddressType.IsActive
+                            },
+                            PostCode = z.PostCode,
+                            Address = z.Address,
+                            IsActive = z.IsActive,
+                            Description = z.Description
+                        }),
+                        ContactsPersons = x.AgentPersons.Select(t => new FrontDictionaryAgentPerson
+                        {
+                            Id = t.Id,
+                            FirstName = t.FirstName,
+                            LastName = t.LastName,
+                            MiddleName = t.MiddleName
                         })
+
                     }).FirstOrDefault();
             }
         }
 
-        public IEnumerable<BaseDictionaryDepartment> GetDictionaryDepartments(IContext context, FilterDictionaryDepartment filter)
+        public IEnumerable<FrontDictionaryAgentCompany> GetDictionaryAgentCompanies(IContext context, FilterDictionaryAgentCompany filter, UIPaging paging)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.DictionaryAgentCompaniesSet.AsQueryable();
+
+                // Пагинация
+                if (paging != null)
+                {
+                    paging.TotalItemsCount = qry.Count();
+
+                    qry = qry.OrderBy(x => x.FullName)
+                        .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
+                }
+
+                // Список первичных ключей
+                if (filter.IDs?.Count > 0)
+                {
+                    qry = qry.Where(x => filter.IDs.Contains(x.Id));
+                }
+
+                // Исключение списка первичных ключей
+                if (filter.NotContainsIDs?.Count > 0)
+                {
+                    qry = qry.Where(x => !filter.NotContainsIDs.Contains(x.Id));
+                }
+
+                // Тоько активные/неактивные
+                if (filter.IsActive.HasValue)
+                {
+                    qry = qry.Where(x => x.IsActive == filter.IsActive);
+                }
+
+                // Поиск по наименованию
+                if (!string.IsNullOrEmpty(filter.Name))
+                {
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
+                    {
+                        qry = qry.Where(x => x.FullName.Contains(temp));
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(filter.TaxCode))
+                {
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.TaxCode))
+                    {
+                        qry = qry.Where(x => x.TaxCode.Contains(temp));
+                    }
+                }
+                if (!string.IsNullOrEmpty(filter.OKPOCode))
+                {
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.OKPOCode))
+                    {
+                        qry = qry.Where(x => x.OKPOCode.Contains(temp));
+                    }
+                }
+                if (!string.IsNullOrEmpty(filter.VATCode))
+                {
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.VATCode))
+                    {
+                        qry = qry.Where(x => x.VATCode.Contains(temp));
+                    }
+                }
+
+                return qry.Select(x => new FrontDictionaryAgentCompany
+                {
+                    Id = x.Id,
+                    IsCompany = x.Agent.IsCompany,
+                    IsIndividual = x.Agent.IsIndividual,
+                    IsBank = x.Agent.IsBank,
+                    IsEmployee = x.Agent.IsEmployee,
+                    ResidentTypeId = x.Agent.ResidentTypeId,
+                    FullName = x.FullName,
+                    ShortName = x.Agent.Name,
+                    TaxCode = x.TaxCode,
+                    OKPOCode = x.OKPOCode,
+                    VATCode = x.VATCode,
+                    Description = x.Description,
+                    IsActive = x.IsActive,
+                    Contacts = x.Agent.AgentContacts.Select(y => new FrontDictionaryContact
+                    {
+                        Id = y.Id,
+                        AgentId = y.AgentId,
+                        ContactType = new FrontDictionaryContactType
+                        {
+                            Id = y.ContactType.Id,
+                            Name = y.ContactType.Name,
+                            InputMask = y.ContactType.InputMask,
+                            IsActive = y.ContactType.IsActive
+                        },
+                        Value = y.Contact,
+                        IsActive = y.IsActive,
+                        Description = y.Description
+                    }),
+                    Addresses = x.Agent.AgentAddresses.Select(z => new FrontDictionaryAgentAddress
+                    {
+                        Id = z.Id,
+                        AgentId = z.AgentId,
+                        AddressType = new FrontDictionaryAddressType
+                        {
+                            Id = z.AddressType.Id,
+                            Name = z.AddressType.Name,
+                            IsActive = z.AddressType.IsActive
+                        },
+                        PostCode = z.PostCode,
+                        Address = z.Address,
+                        IsActive = z.IsActive,
+                        Description = z.Description
+                    }),
+                    ContactsPersons = x.AgentPersons.Select(t => new FrontDictionaryAgentPerson
+                    {
+                        Id = t.Id,
+                        FirstName = t.FirstName,
+                        LastName = t.LastName,
+                        MiddleName = t.MiddleName
+                    })
+
+                }).ToList();
+            }
+        }
+
+        public void UpdateDictionaryAgentCompany(IContext context, InternalDictionaryAgentCompany company)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var ddt = new DictionaryAgentCompanies
+                {
+                    Id = company.Id,
+                    FullName = company.FullName,
+                    OKPOCode = company.OKPOCode,
+                    VATCode = company.VATCode,
+                    TaxCode = company.TaxCode,
+                    Description = company.Description,
+                    LastChangeDate = company.LastChangeDate,
+                    LastChangeUserId = company.LastChangeUserId,
+                    IsActive = company.IsActive
+                };
+
+                dbContext.DictionaryAgentCompaniesSet.Attach(ddt);
+                var entity = dbContext.Entry(ddt);
+                entity.State = System.Data.Entity.EntityState.Modified;
+                dbContext.SaveChanges();
+
+                UpdateDictionaryAgentName(context, company.Id, company.ShortName);
+
+            }
+
+        }
+
+
+        public void DeleteDictionaryAgentCompany(IContext context, InternalDictionaryAgentCompany company)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+
+                var ddt = dbContext.DictionaryAgentCompaniesSet.FirstOrDefault(x => x.Id == company.Id);
+                if (ddt != null)
+                {
+                    dbContext.DictionaryAgentCompaniesSet.Remove(ddt);
+                    dbContext.SaveChanges();
+
+
+                    var agent = GetDictionaryAgent(context, company.Id);
+
+                    if (!agent.IsBank && !agent.IsEmployee && !agent.IsIndividual)
+                    {
+                        DeleteDictionaryAgent(context, new InternalDictionaryAgent { Id = company.Id });
+                    }
+                    else
+                    {
+                        UpdateDictionaryAgentRole(context, company.Id, EnumDictionaryAgentTypes.isCompany);
+                    }
+                }
+            }
+        }
+
+        public int AddDictionaryAgentCompany(IContext context, InternalDictionaryAgentCompany company)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+
+                var agent = GetDictionaryAgent(context, company.Id);
+                if (agent == null)
+                {
+                    var newAgent = new InternalDictionaryAgent
+                    {
+                        Name = company.ShortName,
+                        IsActive = company.IsActive,
+                        Description = company.Description,
+                        IsBank = false,
+                        IsCompany = true,
+                        IsEmployee = false,
+                        IsIndividual = false,
+                        LastChangeDate = company.LastChangeDate,
+                        LastChangeUserId = company.LastChangeUserId,
+                    };
+                    company.Id = AddDictionaryAgent(context, newAgent);
+                }
+                else {
+                    agent.IsCompany = true;
+                    UpdateDictionaryAgent(context, new InternalDictionaryAgent
+                    {
+                        Id = agent.Id,
+                        Name = company.ShortName,
+                        IsActive = agent.IsActive,
+                        Description = agent.Description,
+                        IsBank = agent.IsBank,
+                        IsCompany = agent.IsCompany,
+                        IsEmployee = agent.IsEmployee,
+                        IsIndividual = agent.IsIndividual,
+                        ResidentTypeId = agent.ResidentTypeId ?? 0,
+                        LastChangeDate = company.LastChangeDate,
+                        LastChangeUserId = company.LastChangeUserId
+                    });
+                };
+
+                var ddt = new DictionaryAgentCompanies
+                {
+                    Id = company.Id,
+                    FullName = company.FullName,
+                    OKPOCode = company.OKPOCode,
+                    VATCode = company.VATCode,
+                    TaxCode = company.TaxCode,
+                    Description = company.Description,
+                    LastChangeDate = company.LastChangeDate,
+                    LastChangeUserId = company.LastChangeUserId,
+                    IsActive = company.IsActive
+                };
+                dbContext.DictionaryAgentCompaniesSet.Add(ddt);
+                dbContext.SaveChanges();
+
+                return company.Id;
+            }
+        }
+        #endregion DictionaryAgentCompanies
+
+        #region DictionaryAgentBanks
+        public FrontDictionaryAgentBank GetDictionaryAgentBank(IContext context, int id)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+
+                return
+                    dbContext.DictionaryAgentBanksSet.Where(x => x.Id == id).Select(x => new FrontDictionaryAgentBank
+                    {
+                        Id = x.Id,
+                        IsBank = true,
+                        MFOCode = x.MFOCode,
+                        Swift = x.Swift,
+                        IsCompany = x.Agent.IsCompany,
+                        IsEmployee = x.Agent.IsEmployee,
+                        IsIndividual = x.Agent.IsIndividual,
+                        Name = x.Agent.Name,
+                        ResidentTypeId = x.Agent.ResidentTypeId,
+                        Description = x.Description,
+                        IsActive = x.IsActive,
+                        Contacts = x.Agent.AgentContacts.Select(y => new FrontDictionaryContact
+                        {
+                            Id = y.Id,
+                            AgentId = y.AgentId,
+                            ContactType = new FrontDictionaryContactType
+                            {
+                                Id = y.ContactType.Id,
+                                Name = y.ContactType.Name,
+                                InputMask = y.ContactType.InputMask,
+                                IsActive = y.ContactType.IsActive
+                            },
+                            Value = y.Contact,
+                            IsActive = y.IsActive,
+                            Description = y.Description
+                        }),
+                        Addresses = x.Agent.AgentAddresses.Select(z => new FrontDictionaryAgentAddress
+                        {
+                            Id = z.Id,
+                            AgentId = z.AgentId,
+                            AddressType = new FrontDictionaryAddressType
+                            {
+                                Id = z.AddressType.Id,
+                                Name = z.AddressType.Name,
+                                IsActive = z.AddressType.IsActive
+                            },
+                            PostCode = z.PostCode,
+                            Address = z.Address,
+                            IsActive = z.IsActive,
+                            Description = z.Description
+                        })
+
+                    }).FirstOrDefault();
+            }
+        }
+
+        public void UpdateDictionaryAgentBank(IContext context, InternalDictionaryAgentBank bank)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var ddt = new DictionaryAgentBanks
+                {
+                    Id = bank.Id,
+                    MFOCode = bank.MFOCode,
+                    Swift = bank.Swift,
+                    Description = bank.Description,
+                    LastChangeDate = bank.LastChangeDate,
+                    LastChangeUserId = bank.LastChangeUserId,
+                    IsActive = bank.IsActive
+                };
+
+                dbContext.DictionaryAgentBanksSet.Attach(ddt);
+                var entity = dbContext.Entry(ddt);
+                entity.State = System.Data.Entity.EntityState.Modified;
+                dbContext.SaveChanges();
+
+                UpdateDictionaryAgentName(context, bank.Id, bank.Name);
+
+            }
+        }
+        public void DeleteDictionaryAgentBank(IContext context, InternalDictionaryAgentBank bank)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+
+                var ddt = dbContext.DictionaryAgentBanksSet.FirstOrDefault(x => x.Id == bank.Id);
+                if (ddt != null)
+                {
+                    dbContext.DictionaryAgentBanksSet.Remove(ddt);
+                    dbContext.SaveChanges();
+
+
+                    var agent = GetDictionaryAgent(context, bank.Id);
+
+                    if (!agent.IsCompany && !agent.IsEmployee && !agent.IsIndividual)
+                    {
+                        DeleteDictionaryAgent(context, new InternalDictionaryAgent { Id = bank.Id });
+                    }
+                    else
+                    {
+                        UpdateDictionaryAgentRole(context, bank.Id, EnumDictionaryAgentTypes.isBank);
+                    }
+
+                }
+            }
+        }
+
+        public int AddDictionaryAgentBank(IContext context, InternalDictionaryAgentBank bank)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+
+                var agent = GetDictionaryAgent(context, bank.Id);
+                if (agent == null)
+                {
+                    var newAgent = new InternalDictionaryAgent
+                    {
+                        Name = bank.Name,
+                        IsActive = bank.IsActive,
+                        Description = bank.Description,
+                        IsBank = true,
+                        IsCompany = false,
+                        IsEmployee = false,
+                        IsIndividual = false,
+                        LastChangeDate = bank.LastChangeDate,
+                        LastChangeUserId = bank.LastChangeUserId,
+                    };
+                    bank.Id = AddDictionaryAgent(context, newAgent);
+                }
+                else {
+                    UpdateDictionaryAgentRole(context, bank.Id, EnumDictionaryAgentTypes.isBank);
+                };
+
+                var ddt = new DictionaryAgentBanks
+                {
+                    Id = bank.Id,
+                    MFOCode = bank.MFOCode,
+                    Swift = bank.Swift,
+                    Description = bank.Description,
+                    LastChangeDate = bank.LastChangeDate,
+                    LastChangeUserId = bank.LastChangeUserId,
+                    IsActive = bank.IsActive
+                };
+                dbContext.DictionaryAgentBanksSet.Add(ddt);
+                dbContext.SaveChanges();
+
+                return bank.Id;
+            }
+        }
+
+
+        public IEnumerable<FrontDictionaryAgentBank> GetDictionaryAgentBanks(IContext context, FilterDictionaryAgentBank filter, UIPaging paging)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+
+                var qry = dbContext.DictionaryAgentBanksSet.AsQueryable();
+
+                qry = qry.Where(x => x.Agent.IsBank);
+
+                // Пагинация
+                if (paging != null)
+                {
+                    paging.TotalItemsCount = qry.Count();
+
+                    qry = qry.OrderBy(x => x.Agent.Name)
+                        .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
+                }
+                
+                // Список первичных ключей
+                if (filter.IDs?.Count > 0)
+                {
+                    qry = qry.Where(x => filter.IDs.Contains(x.Id));
+                }
+
+                // Исключение списка первичных ключей
+                if (filter.NotContainsIDs?.Count > 0)
+                {
+                    qry = qry.Where(x => !filter.NotContainsIDs.Contains(x.Id));
+                }
+
+                // Тоько активные/неактивные
+                if (filter.IsActive.HasValue)
+                {
+                    qry = qry.Where(x => x.IsActive == filter.IsActive);
+                }
+
+                // Поиск по наименованию
+                if (!string.IsNullOrEmpty(filter.Name))
+                {
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
+                    {
+                        qry = qry.Where(x => x.Agent.Name.Contains(temp));
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(filter.MFOCode))
+                {
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.MFOCode))
+                    {
+                        qry = qry.Where(x => x.MFOCode.Contains(temp));
+                    }
+                }
+
+                return qry.Select(x => new FrontDictionaryAgentBank
+                {
+                    Id = x.Id,
+                    IsBank = true,
+                    MFOCode = x.MFOCode,
+                    Swift = x.Swift,
+                    IsCompany = x.Agent.IsCompany,
+                    IsEmployee = x.Agent.IsEmployee,
+                    IsIndividual = x.Agent.IsIndividual,
+                    Name = x.Agent.Name,
+                    ResidentTypeId = x.Agent.ResidentTypeId,
+                    Description = x.Description,
+                    IsActive = x.IsActive,
+                    Contacts = x.Agent.AgentContacts.Select(y => new FrontDictionaryContact
+                    {
+                        Id = y.Id,
+                        AgentId = y.AgentId,
+                        ContactType = new FrontDictionaryContactType
+                        {
+                            Id = y.ContactType.Id,
+                            Name = y.ContactType.Name,
+                            InputMask = y.ContactType.InputMask,
+                            IsActive = y.ContactType.IsActive
+                        },
+                        Value = y.Contact,
+                        IsActive = y.IsActive,
+                        Description = y.Description
+                    }),
+                    Addresses = x.Agent.AgentAddresses.Select(z => new FrontDictionaryAgentAddress
+                    {
+                        Id = z.Id,
+                        AgentId = z.AgentId,
+                        AddressType = new FrontDictionaryAddressType
+                        {
+                            Id = z.AddressType.Id,
+                            Name = z.AddressType.Name,
+                            IsActive = z.AddressType.IsActive
+                        },
+                        PostCode = z.PostCode,
+                        Address = z.Address,
+                        IsActive = z.IsActive,
+                        Description = z.Description
+                    })
+                }).ToList();
+            }
+        }
+        #endregion DictionaryAgentBanks
+
+        #region DictionaryAgentAccounts
+        public FrontDictionaryAgentAccount GetDictionaryAgentAccount(IContext context, int id)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+
+                return
+                    dbContext.DictionaryAgentAccountsSet.Where(x => x.Id == id).Select(x => new FrontDictionaryAgentAccount
+                    {
+                        Id = x.Id,
+                        AccountNumber = x.AccountNumber,
+                        Name = x.Name,
+                        IsMain = x.IsMain,
+                        AgentBankId = x.AgentBankId,
+                        Description = x.Description,
+                        IsActive = x.IsActive,
+                        Bank = new FrontDictionaryAgentBank
+                        {
+                            Id = x.AgentBank.Id,
+                            MFOCode = x.AgentBank.MFOCode,
+                            Swift = x.AgentBank.Swift,
+                            Name = x.AgentBank.Agent.Name
+                        }
+
+                    }).FirstOrDefault();
+            }
+        }
+
+        public void SetMainAgentAccount(IContext context, int AgentId, int AccountId)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var accounts = GetDictionaryAgentAccounts(context, AgentId, new FilterDictionaryAgentAccount());
+                foreach (FrontDictionaryAgentAccount account in accounts)
+                {
+                    if (account.Id != AccountId)
+                    {
+                        var newAcc = new InternalDictionaryAgentAccount
+                        {
+                            Id = account.Id,
+                            Name = account.Name,
+                            AgentId = account.AgentId,
+                            AgentBankId = account.AgentBankId,
+                            AccountNumber = account.AccountNumber,
+                            Description = account.Description,
+                            IsActive = account.IsActive,
+                            LastChangeDate = DateTime.Now,
+                            LastChangeUserId = context.CurrentAgentId,
+                            IsMain = false
+                        };
+                        UpdateDictionaryAgentAccount(context, newAcc);
+                    }
+                }
+            }
+        }
+
+        public void UpdateDictionaryAgentAccount(IContext context, InternalDictionaryAgentAccount account)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var ddt = new DictionaryAgentAccounts
+                {
+                    Id = account.Id,
+                    AccountNumber = account.AccountNumber,
+                    AgentId = account.AgentId,
+                    AgentBankId = account.AgentBankId,
+                    IsMain = account.IsMain,
+                    Name = account.Name,
+                    Description = account.Description,
+                    LastChangeDate = account.LastChangeDate,
+                    LastChangeUserId = account.LastChangeUserId,
+                    IsActive = account.IsActive
+                };
+
+                dbContext.DictionaryAgentAccountsSet.Attach(ddt);
+                var entity = dbContext.Entry(ddt);
+                entity.State = System.Data.Entity.EntityState.Modified;
+                dbContext.SaveChanges();
+
+                if (account.IsMain)
+                {
+                    SetMainAgentAccount(context, account.AgentId, account.Id);
+                }
+
+            }
+        }
+
+        public void DeleteDictionaryAgentAccount(IContext context, InternalDictionaryAgentAccount account)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+
+                var ddt = dbContext.DictionaryAgentAccountsSet.FirstOrDefault(x => x.Id == account.Id);
+                if (ddt != null)
+                {
+                    dbContext.DictionaryAgentAccountsSet.Remove(ddt);
+                    dbContext.SaveChanges();
+                }
+            }
+        }
+
+        public int AddDictionaryAgentAccount(IContext context, InternalDictionaryAgentAccount account)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var ddt = new DictionaryAgentAccounts
+                {
+                    Id = account.Id,
+                    AccountNumber = account.AccountNumber,
+                    AgentId = account.AgentId,
+                    AgentBankId = account.AgentBankId,
+                    IsMain = account.IsMain,
+                    Name = account.Name,
+                    Description = account.Description,
+                    LastChangeDate = account.LastChangeDate,
+                    LastChangeUserId = account.LastChangeUserId,
+                    IsActive = account.IsActive
+                };
+                dbContext.DictionaryAgentAccountsSet.Add(ddt);
+                dbContext.SaveChanges();
+
+                if (account.IsMain)
+                {
+                    SetMainAgentAccount(context, account.AgentId, account.Id);
+                }
+
+                return account.Id;
+            }
+        }
+
+        public IEnumerable<FrontDictionaryAgentAccount> GetDictionaryAgentAccounts(IContext context, int AgentId, FilterDictionaryAgentAccount filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+
+                var qry = dbContext.DictionaryAgentAccountsSet.AsQueryable();
+
+                qry = qry.Where(x => x.AgentId == AgentId);
+
+
+                if (!string.IsNullOrEmpty(filter.Name))
+                {
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
+                    {
+                        qry = qry.Where(x => x.Name.Contains(temp));
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(filter.AccountNumber))
+                {
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.AccountNumber))
+                    {
+                        qry = qry.Where(x => x.AccountNumber.Contains(temp));
+                    }
+                }
+
+                if (filter.AgentBankId.HasValue)
+                {
+                    qry = qry.Where(x => x.AgentBankId == filter.AgentBankId);
+                }
+
+                if (filter.IsActive.HasValue)
+                {
+                    qry = qry.Where(x => x.IsActive == filter.IsActive);
+                }
+
+
+                return qry.Select(x => new FrontDictionaryAgentAccount
+                {
+                    Id = x.Id,
+                    AccountNumber = x.AccountNumber,
+                    Name = x.Name,
+                    IsMain = x.IsMain,
+                    AgentBankId = x.AgentBankId,
+                    Description = x.Description,
+                    IsActive = x.IsActive,
+                    Bank = new FrontDictionaryAgentBank
+                    {
+                        Id = x.AgentBank.Id,
+                        MFOCode = x.AgentBank.MFOCode,
+                        Swift = x.AgentBank.Swift,
+                        Name = x.AgentBank.Agent.Name
+                    }
+
+                }).ToList();
+            }
+        }
+        #endregion DictionaryAgentAccounts
+
+        // Типы контактов
+        #region DictionaryContactTypes
+        public FrontDictionaryContactType GetInternalDictionaryContactType(IContext context, FilterDictionaryContactType filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.DictionaryContactTypesSet.AsQueryable();
+
+                if (filter.IDs?.Count > 0)
+                {
+                    qry = qry.Where(x => filter.IDs.Contains(x.Id));
+                }
+
+                if (!String.IsNullOrEmpty(filter.Name))
+                {
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
+                    {
+                        qry = qry.Where(x => x.Name.Contains(temp));
+                    }
+                }
+
+                if (filter.IsActive != null)
+                {
+                    qry = qry.Where(x => filter.IsActive == x.IsActive);
+                }
+
+                return qry.Select(x => new FrontDictionaryContactType
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    IsActive = x.IsActive
+                }).FirstOrDefault();
+            }
+        }
+        public void UpdateDictionaryContactType(IContext context, InternalDictionaryContactType contactType)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var ddt = new DictionaryContactTypes
+                {
+                    Id = contactType.Id,
+                    LastChangeDate = contactType.LastChangeDate,
+                    LastChangeUserId = contactType.LastChangeUserId,
+                    Name = contactType.Name,
+                    IsActive = contactType.IsActive
+                };
+                dbContext.DictionaryContactTypesSet.Attach(ddt);
+                var entity = dbContext.Entry(ddt);
+
+                entity.State = System.Data.Entity.EntityState.Modified;
+                dbContext.SaveChanges();
+            }
+        }
+        public void DeleteDictionaryContactType(IContext context, InternalDictionaryContactType contactType)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+
+                var ddt = dbContext.DictionaryContactTypesSet.FirstOrDefault(x => x.Id == contactType.Id);
+                if (ddt != null)
+                {
+                    dbContext.DictionaryContactTypesSet.Remove(ddt);
+                    dbContext.SaveChanges();
+                }
+            }
+        }
+        public int AddDictionaryContactType(IContext context, InternalDictionaryContactType contactType)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var ddt = new DictionaryContactTypes
+                {
+                    Name = contactType.Name,
+                    IsActive = contactType.IsActive,
+                    LastChangeDate = contactType.LastChangeDate,
+                    LastChangeUserId = contactType.LastChangeUserId
+                };
+                dbContext.DictionaryContactTypesSet.Add(ddt);
+                dbContext.SaveChanges();
+                contactType.Id = ddt.Id;
+                return ddt.Id;
+            }
+        }
+        public IEnumerable<FrontDictionaryContactType> GetDictionaryContactTypes(IContext context, FilterDictionaryContactType filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.DictionaryContactTypesSet.AsQueryable();
+
+                // Список первичных ключей
+                if (filter.IDs?.Count > 0)
+                {
+                    qry = qry.Where(x => filter.IDs.Contains(x.Id));
+                }
+
+                // Исключение списка первичных ключей
+                if (filter.NotContainsIDs?.Count > 0)
+                {
+                    qry = qry.Where(x => !filter.NotContainsIDs.Contains(x.Id));
+                }
+
+                // Тоько активные/неактивные
+                if (filter.IsActive.HasValue)
+                {
+                    qry = qry.Where(x => x.IsActive == filter.IsActive);
+                }
+
+                // Поиск по наименованию
+                if (!String.IsNullOrEmpty(filter.Name))
+                {
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
+                    {
+                        qry = qry.Where(x => x.Name.Contains(temp));
+                    }
+                }
+
+                return qry.Select(x => new FrontDictionaryContactType
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    IsActive = x.IsActive
+                }).ToList();
+            }
+        }
+        #endregion
+
+        // Контакты
+        #region DictionaryContacts
+
+        public FrontDictionaryContact GetDictionaryContact(IContext context,
+          FilterDictionaryContact filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.DictionaryAgentContactsSet.AsQueryable();
+
+                return qry.Select(x => new FrontDictionaryContact
+                {
+                    Id = x.Id,
+                    AgentId = x.AgentId,
+                    ContactType = new FrontDictionaryContactType { Id = x.ContactTypeId, Name = x.ContactType.Name },
+                    Value = x.Contact,
+                    Description = x.Description,
+                    IsActive = x.IsActive,
+                }).FirstOrDefault();
+            }
+        }
+
+        public void UpdateDictionaryContact(IContext context, InternalDictionaryContact contact)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var ddt = new DictionaryAgentContacts
+                {
+                    Id = contact.Id,
+                    AgentId = contact.AgentId,
+                    ContactTypeId = contact.ContactTypeId,
+                    Contact = contact.Value,
+                    Description = contact.Description,
+                    LastChangeDate = contact.LastChangeDate,
+                    LastChangeUserId = contact.LastChangeUserId,
+                    IsActive = contact.IsActive
+                };
+
+                dbContext.DictionaryAgentContactsSet.Attach(ddt);
+                var entity = dbContext.Entry(ddt);
+                entity.State = System.Data.Entity.EntityState.Modified;
+
+                dbContext.SaveChanges();
+            }
+        }
+        public void DeleteDictionaryContact(IContext context, InternalDictionaryContact contact)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+
+                var ddt = dbContext.DictionaryAgentContactsSet.FirstOrDefault(x => x.Id == contact.Id);
+                if (ddt != null)
+                {
+                    dbContext.DictionaryAgentContactsSet.Remove(ddt);
+
+                    dbContext.SaveChanges();
+                }
+            }
+        }
+        public int AddDictionaryContact(IContext context, InternalDictionaryContact contact)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var ddt = new DictionaryAgentContacts
+                {
+                    AgentId = contact.AgentId,
+                    ContactTypeId = contact.ContactTypeId,
+                    Contact = contact.Value,
+                    Description = contact.Description,
+                    LastChangeDate = contact.LastChangeDate,
+                    LastChangeUserId = contact.LastChangeUserId,
+                    IsActive = contact.IsActive
+                };
+                dbContext.DictionaryAgentContactsSet.Add(ddt);
+                dbContext.SaveChanges();
+                contact.Id = ddt.Id;
+                return ddt.Id;
+            }
+        }
+        public IEnumerable<FrontDictionaryContact> GetDictionaryContacts(IContext context, int agentId, FilterDictionaryContact filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.DictionaryAgentContactsSet.AsQueryable();
+
+                qry = qry.Where(x => x.AgentId == agentId);
+
+                qry.OrderBy(x => x.ContactType);
+
+                if (filter.ContactTypeId?.Count > 0)
+                {
+                    qry = qry.Where(x => filter.ContactTypeId.Contains(x.ContactTypeId));
+                }
+                if (filter.AgentId?.Count > 0)
+                {
+                    qry = qry.Where(x => filter.AgentId.Contains(x.AgentId));
+                }
+                if (!String.IsNullOrEmpty(filter.Contact))
+                {
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Contact))
+                    {
+                        qry = qry.Where(x => x.Contact.Contains(temp));
+                    }
+                }
+                if (filter.IsActive != null)
+                {
+                    qry = qry.Where(x => x.IsActive == filter.IsActive);
+                }
+                if (filter.NotContainsIDs?.Count > 0)
+                {
+                    qry = qry.Where(x => !filter.NotContainsIDs.Contains(x.Id));
+                }
+                return qry.Select(x => new FrontDictionaryContact
+                {
+                    Id = x.Id,
+                    AgentId = x.AgentId,
+                    ContactType = new FrontDictionaryContactType { Id = x.ContactType.Id, Name = x.ContactType.Name },
+                    Value = x.Contact,
+                    Description = x.Description,
+                    IsActive = x.IsActive
+                }).ToList();
+            }
+        }
+        #endregion
+
+        // Структура предприятия
+        #region DictionaryDepartments
+        public int AddDictionaryDepartment(IContext context, InternalDictionaryDepartment department)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var dd = new DictionaryDepartments
+                {
+                    ParentId = department.ParentId,
+                    LastChangeDate = department.LastChangeDate,
+                    LastChangeUserId = department.LastChangeUserId,
+                    IsActive = department.IsActive,
+                    Name = department.Name,
+                    FullName = department.FullName,
+                    CompanyId = department.CompanyId,
+                    Code = department.Code,
+                    ChiefPositionId = department.ChiefPositionId
+                };
+                dbContext.DictionaryDepartmentsSet.Add(dd);
+                dbContext.SaveChanges();
+                department.Id = dd.Id;
+                return dd.Id;
+            }
+        }
+
+        public void UpdateDictionaryDepartment(IContext context, InternalDictionaryDepartment department)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var dd = new DictionaryDepartments
+                {
+                    Id = department.Id,
+                    ParentId = department.ParentId,
+                    LastChangeDate = department.LastChangeDate,
+                    LastChangeUserId = department.LastChangeUserId,
+                    IsActive = department.IsActive,
+                    Name = department.Name,
+                    FullName = department.FullName,
+                    CompanyId = department.CompanyId,
+                    Code = department.Code,
+                    ChiefPositionId = department.ChiefPositionId
+                };
+
+                dbContext.DictionaryDepartmentsSet.Attach(dd);
+                dbContext.Entry(dd).State = System.Data.Entity.EntityState.Modified;
+
+                dbContext.SaveChanges();
+            }
+        }
+
+        public void DeleteDictionaryDepartment(IContext context, InternalDictionaryDepartment department)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var dd = dbContext.DictionaryDepartmentsSet.FirstOrDefault(x => x.Id == department.Id);
+                if (dd != null)
+                {
+                    dbContext.DictionaryDepartmentsSet.Remove(dd);
+                    dbContext.SaveChanges();
+                }
+            }
+        }
+
+        public InternalDictionaryDepartment GetDictionaryDepartment(IContext context, FilterDictionaryDepartment filter)
         {
             using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionaryDepartmentsSet.AsQueryable();
 
-                if (filter.DepartmentId?.Count > 0)
-                {
-                    qry = qry.Where(x => filter.DepartmentId.Contains(x.Id));
-                }
-                if (!string.IsNullOrEmpty(filter.Name))
-                {
-                    qry = qry.Where(x => x.Name.Contains(filter.Name));
-                }
+                qry = DepartmentGetWhere(ref qry, filter);
 
-                return qry.Select(x => new BaseDictionaryDepartment
+                qry = qry.OrderBy(x => x.Name);
+
+                return qry.Select(x => new InternalDictionaryDepartment
                 {
                     Id = x.Id,
-                    ParentId = x.ParentId,
-                    CompanyId = x.CompanyId,
-                    Name = x.Name,
-                    ChiefPositionId = x.ChiefPositionId,
-                    LastChangeUserId = x.LastChangeUserId,
                     LastChangeDate = x.LastChangeDate,
-                    ParentDepartmentName = x.ParentDepartment.Name,
-                    CompanyName = x.Company.Name,
-                    ChiefPositionName = x.ChiefPosition.Name,
-                }).ToList();
+                    LastChangeUserId = x.LastChangeUserId,
+                    IsActive = x.IsActive,
+                    ParentId = x.ParentId,
+                    Code = x.Code,
+                    Name = x.Name,
+                    FullName = x.FullName,
+                    CompanyId = x.CompanyId,
+                    ChiefPositionId = x.ChiefPositionId
+                }).FirstOrDefault();
             }
+        }
+
+        public IEnumerable<FrontDictionaryDepartment> GetDictionaryDepartments(IContext context, FilterDictionaryDepartment filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.DictionaryDepartmentsSet.AsQueryable();
+
+                qry = DepartmentGetWhere(ref qry, filter);
+
+                qry = qry.OrderBy(x => x.ParentDepartment.Name).ThenBy(x => x.Name);
+
+                return qry.Select(x => new FrontDictionaryDepartment
+                {
+                    Id = x.Id,
+                    IsActive = x.IsActive,
+                    ParentId = x.ParentId,
+                    Code = x.Code,
+                    Name = x.Name,
+                    FullName = x.FullName,
+                    CompanyId = x.CompanyId,
+                    CompanyName = x.Company.Name,
+                    ChiefPositionId = x.ChiefPositionId,
+                    ChiefPositionName = x.ChiefPosition.Name,
+                    ParentDepartmentName = x.ParentDepartment.Name
+                }).ToList();
+
+                //ChildDepartments = x.ChildDepartments.Select(y => new InternalDictionaryDepartment
+                //{
+                //    Id = x.Id,
+                //    LastChangeDate = x.LastChangeDate,
+                //    LastChangeUserId = x.LastChangeUserId,
+                //    IsActive = x.IsActive,
+                //    ParentId = x.ParentId,
+                //    Code = x.Code,
+                //    Name = x.Name,
+                //    FullName = x.FullName,
+                //    CompanyId = x.CompanyId,
+                //    CompanyName = x.Company.Name,
+                //    ChiefPositionId = x.ChiefPositionId,
+                //    ChiefPositionName = x.ChiefPosition.Name,
+                //    ParentDepartmentName = x.ParentDepartment.Name
+                //})
+            }
+        }
+
+        // Для использования в коммандах метод CanExecute
+        public bool ExistsDictionaryDepartment(IContext context, FilterDictionaryDepartment filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.DictionaryDepartmentsSet.AsQueryable();
+
+                qry = DepartmentGetWhere(ref qry, filter);
+
+                var res = qry.Select(x => new FrontDictionaryDepartment
+                {
+                    Id = x.Id
+                }).FirstOrDefault();
+
+                return res != null;
+            }
+        }
+
+        private static IQueryable<DictionaryDepartments> DepartmentGetWhere(ref IQueryable<DictionaryDepartments> qry, FilterDictionaryDepartment filter)
+        {
+            // Список первичных ключей
+            if (filter.IDs?.Count > 0)
+            {
+                qry = qry.Where(x => filter.IDs.Contains(x.Id));
+            }
+
+            // Исключение списка первичных ключей
+            if (filter.NotContainsIDs?.Count > 0)
+            {
+                qry = qry.Where(x => !filter.NotContainsIDs.Contains(x.Id));
+            }
+
+            // Отбор по родительским элементам
+            if (filter.ParentIDs?.Count > 0)
+            {
+                qry = qry.Where(x => filter.ParentIDs.Contains(x.Id));
+            }
+
+            // Тоько активные/неактивные
+            if (filter.IsActive != null)
+            {
+                qry = qry.Where(x => filter.IsActive == x.IsActive);
+            }
+
+            // Условие по Name
+            if (!String.IsNullOrEmpty(filter.Name))
+            {
+                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
+                {
+                    qry = qry.Where(x => x.Name.Contains(temp));
+                }
+
+            }
+
+            // Условие по FullName
+            if (!String.IsNullOrEmpty(filter.FullName))
+            {
+                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.FullName))
+                {
+                    qry = qry.Where(x => x.FullName.Contains(temp));
+                }
+            }
+
+            // Условие по Code
+            if (!String.IsNullOrEmpty(filter.Code))
+            {
+                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Code))
+                {
+                    qry = qry.Where(x => x.Code.Contains(temp));
+                }
+            }
+
+            // Условие по CompanyId
+            if (filter.CompanyId != null)
+            {
+                qry = qry.Where(x => filter.CompanyId == x.CompanyId);
+            }
+
+            // Условие по ChiefPositionId
+            if (filter.ChiefPositionId != null)
+            {
+                qry = qry.Where(x => filter.ChiefPositionId == x.ChiefPositionId);
+            }
+
+            return qry;
         }
         #endregion DictionaryDepartments
 
         #region DictionaryDocumentDirections
-        public BaseDictionaryDocumentDirection GetDictionaryDocumentDirection(IContext context, int id)
+        public FrontDictionaryDocumentDirection GetDictionaryDocumentDirection(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context))
             {
                 return
                     dbContext.DictionaryDocumentDirectionsSet.Where(x => x.Id == id)
-                        .Select(x => new BaseDictionaryDocumentDirection
+                        .Select(x => new FrontDictionaryDocumentDirection
                         {
                             Id = x.Id,
                             Code = x.Code,
@@ -289,18 +2429,18 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<BaseDictionaryDocumentDirection> GetDictionaryDocumentDirections(IContext context, FilterDictionaryDocumentDirection filter)
+        public IEnumerable<FrontDictionaryDocumentDirection> GetDictionaryDocumentDirections(IContext context, FilterDictionaryDocumentDirection filter)
         {
             using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionaryDocumentDirectionsSet.AsQueryable();
 
-                if (filter.DocumentDirectionId?.Count > 0)
+                if (filter.IDs?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.DocumentDirectionId.Contains(x.Id));
+                    qry = qry.Where(x => filter.IDs.Contains(x.Id));
                 }
 
-                return qry.Select(x => new BaseDictionaryDocumentDirection
+                return qry.Select(x => new FrontDictionaryDocumentDirection
                 {
                     Id = x.Id,
                     Code = x.Code,
@@ -312,95 +2452,204 @@ namespace BL.Database.Dictionaries
         }
         #endregion DictionaryDepartments
 
+        // Тематики документов
         #region DictionaryDocumentSubjects
-        public BaseDictionaryDocumentSubject GetDictionaryDocumentSubject(IContext context, int id)
+
+        public int AddDictionaryDocumentSubject(IContext context, InternalDictionaryDocumentSubject docSubject)
         {
             using (var dbContext = new DmsContext(context))
             {
-                return dbContext.DictionaryDocumentSubjectsSet.Where(x => x.Id == id)
-                        .Select(x => new BaseDictionaryDocumentSubject
-                        {
-                            Id = x.Id,
-                            ParentId = x.ParentId,
-                            Name = x.Name,
-                            LastChangeUserId = x.LastChangeUserId,
-                            LastChangeDate = x.LastChangeDate,
-                            ParentDocumentSubjectName = x.ParentDocumentSubject.Name,
-                            ChildDocumentSubjects =
-                                x.ChildDocumentSubjects.Select(y => new BaseDictionaryDocumentSubject
-                                {
-                                    Id = y.Id,
-                                    ParentId = y.ParentId,
-                                    Name = y.Name,
-                                    LastChangeUserId = y.LastChangeUserId,
-                                    LastChangeDate = y.LastChangeDate,
-                                    ParentDocumentSubjectName = y.ParentDocumentSubject.Name,
-                                })
-                        }).FirstOrDefault();
-            }
-        }
-
-        public IEnumerable<BaseDictionaryDocumentSubject> GetDictionaryDocumentSubjects(IContext context, FilterDictionaryDocumentSubject filter)
-        {
-            using (var dbContext = new DmsContext(context))
-            {
-                var qry = dbContext.DictionaryDocumentSubjectsSet.AsQueryable();
-
-                if (filter.DocumentSubjectId?.Count > 0)
+                var ddt = new DictionaryDocumentSubjects
                 {
-                    qry = qry.Where(x => filter.DocumentSubjectId.Contains(x.Id));
-                }
-
-                return qry.Select(x => new BaseDictionaryDocumentSubject
-                {
-                    Id = x.Id,
-                    ParentId = x.ParentId,
-                    Name = x.Name,
-                    LastChangeUserId = x.LastChangeUserId,
-                    LastChangeDate = x.LastChangeDate,
-                    ParentDocumentSubjectName = x.ParentDocumentSubject.Name,
-                }).ToList();
-            }
-        }
-        #endregion DictionaryDocumentSubjects
-
-        #region DictionaryDocumentTypes
-        public void UpdateDictionaryDocumentType(IContext context, InternalDictionaryDocumentType docType)
-        {
-            using (var dbContext = new DmsContext(context))
-            {
-                var ddt = new DictionaryDocumentTypes
-                {
-                    Id = docType.Id,
-                    LastChangeDate = docType.LastChangeDate,
-                    LastChangeUserId = docType.LastChangeUserId,
-                    Name = docType.Name
+                    ParentId = docSubject.ParentId,
+                    LastChangeDate = docSubject.LastChangeDate,
+                    LastChangeUserId = docSubject.LastChangeUserId,
+                    IsActive = docSubject.IsActive,
+                    Name = docSubject.Name
                 };
-                dbContext.DictionaryDocumentTypesSet.Attach(ddt);
-                var entity = dbContext.Entry(ddt);
+                dbContext.DictionaryDocumentSubjectsSet.Add(ddt);
+                dbContext.SaveChanges();
+                docSubject.Id = ddt.Id;
+                return ddt.Id;
+            }
+        }
 
-                entity.Property(x => x.Name).IsModified = true;
-                entity.Property(x => x.LastChangeDate).IsModified = true;
-                entity.Property(x => x.LastChangeUserId).IsModified = true;
+        public void UpdateDictionaryDocumentSubject(IContext context, InternalDictionaryDocumentSubject docSubject)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+
+                // Альтернативный вариант обновления записи.
+                // В этом варианте на 1 обращение больше: сначала выполняется select и если вернулась строка обновляю значения, затем update
+                //var d = dbContext.DictionaryDocumentSubjectsSet.FirstOrDefault(x => x.Id == docSubject.Id);
+                //if (d != null)
+                //{
+                //    d.IsActive = docSubject.IsActive;
+                //}
+                //dbContext.SaveChanges();
+
+                // В этом варианте обновления с использованием Attach предварительная проверка на существование записи НЕ выполняется, сразу Update.
+                var dds = new DictionaryDocumentSubjects
+                {
+                    Id = docSubject.Id,
+                    ParentId = docSubject.ParentId,
+                    LastChangeDate = docSubject.LastChangeDate,
+                    LastChangeUserId = docSubject.LastChangeUserId,
+                    IsActive = docSubject.IsActive,
+                    Name = docSubject.Name
+                };
+
+                // если нужно обновить ВСЕ поля можно без перечисления сделать вот так
+                //dbContext.DictionaryDocumentSubjectsSet.Attach(dds);
+                //var entity = dbContext.Entry(dds);
+                //entity.State = System.Data.Entity.EntityState.Modified;
+
+                //или еще сократить
+                dbContext.DictionaryDocumentSubjectsSet.Attach(dds);
+                dbContext.Entry(dds).State = System.Data.Entity.EntityState.Modified;
+
+                // При частичном обновлении полей можно так:
+                //dbContext.DictionaryDocumentSubjectsSet.Attach(dds);
+
+                //var entity = dbContext.Entry(dds);
+
+                //entity.Property(x => x.ParentId).IsModified = true;
+                //entity.Property(x => x.LastChangeDate).IsModified = true;
+                //entity.Property(x => x.LastChangeUserId).IsModified = true;
+                //entity.Property(x => x.IsActive).IsModified = true;
+                //entity.Property(x => x.Name).IsModified = true;
+
                 dbContext.SaveChanges();
             }
         }
 
-
-        public void DeleteDictionaryDocumentType(IContext context, InternalDictionaryDocumentType docType)
+        public void DeleteDictionaryDocumentSubject(IContext context, InternalDictionaryDocumentSubject docSubject)
         {
             using (var dbContext = new DmsContext(context))
             {
-                
-                var ddt = dbContext.DictionaryDocumentTypesSet.FirstOrDefault(x => x.Id == docType.Id);
+                var ddt = dbContext.DictionaryDocumentSubjectsSet.FirstOrDefault(x => x.Id == docSubject.Id);
                 if (ddt != null)
                 {
-                    dbContext.DictionaryDocumentTypesSet.Remove(ddt);
+                    dbContext.DictionaryDocumentSubjectsSet.Remove(ddt);
                     dbContext.SaveChanges();
                 }
             }
         }
 
+        public InternalDictionaryDocumentSubject GetInternalDictionaryDocumentSubject(IContext context, FilterDictionaryDocumentSubject filter)
+        {
+            // Устно договорились, что функция для возврата одного элемента возвращает параметры только конкретного элемена без учета родителя и потомков.
+
+            using (var dbContext = new DmsContext(context))
+            {
+
+                var qry = dbContext.DictionaryDocumentSubjectsSet.AsQueryable();
+
+                qry = DocumentSubjectGetWhere(ref qry, filter);
+
+                qry = qry.OrderBy(x => x.Name);
+
+                return qry.Select(x => new InternalDictionaryDocumentSubject
+                {
+                    Id = x.Id,
+                    ParentId = x.ParentId,
+                    IsActive = x.IsActive,
+                    Name = x.Name,
+                    LastChangeDate = x.LastChangeDate,
+                    LastChangeUserId = x.LastChangeUserId
+                }).FirstOrDefault();
+
+            }
+        }
+
+        public IEnumerable<FrontDictionaryDocumentSubject> GetDictionaryDocumentSubjects(IContext context, FilterDictionaryDocumentSubject filter)
+        {
+
+            // Устно договорились, что функция для возврата коллекции элементов возвращает всю простыню элеменов без учета родителя и потомков.
+            // Если нужно каждому элементу добавить родителя и потомков это делается на уровень выше в Logic. Функция GetDictionaryDocumentSubects ВСЕГДА возвращает плоскую коллекцию
+            // более толго для построения иерархии на фронте плоской коллекции достаточно.
+
+            using (var dbContext = new DmsContext(context))
+            {
+                //IQueryable<DictionaryDocumentSubjects> qry=
+
+                var qry = dbContext.DictionaryDocumentSubjectsSet.AsQueryable();
+
+                qry = DocumentSubjectGetWhere(ref qry, filter);
+
+                qry = qry.OrderBy(x => x.Name);
+
+                return qry.Select(x => new FrontDictionaryDocumentSubject
+                {
+                    Id = x.Id,
+                    ParentId = x.ParentId,
+                    IsActive = x.IsActive,
+                    Name = x.Name
+                    //ParentDocumentSubjectName = x.ParentDocumentSubject.Name,
+                }).ToList();
+            }
+        }
+
+        // Для использования в коммандах метод CanExecute
+        public bool ExistsDictionaryDocumentSubject(IContext context, FilterDictionaryDocumentSubject filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.DictionaryDocumentSubjectsSet.AsQueryable();
+
+                qry = DocumentSubjectGetWhere(ref qry, filter);
+
+                var res = qry.Select(x => new FrontDictionaryDocumentSubject
+                {
+                    Id = x.Id
+                }).FirstOrDefault();
+
+                return res != null;
+            }
+        }
+
+        private static IQueryable<DictionaryDocumentSubjects> DocumentSubjectGetWhere(ref IQueryable<DictionaryDocumentSubjects> qry, FilterDictionaryDocumentSubject filter)
+        {
+            // Список первичных ключей
+            if (filter.IDs?.Count > 0)
+            {
+                qry = qry.Where(x => filter.IDs.Contains(x.Id));
+            }
+
+            // Исключение списка первичных ключей
+            if (filter.NotContainsIDs?.Count > 0)
+            {
+                qry = qry.Where(x => !filter.NotContainsIDs.Contains(x.Id));
+            }
+
+            // Тоько активные/неактивные
+            if (filter.IsActive != null)
+            {
+                qry = qry.Where(x => filter.IsActive == x.IsActive);
+            }
+
+            // Поиск по наименованию
+            if (!String.IsNullOrEmpty(filter.Name))
+            {
+                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
+                {
+                    qry = qry.Where(x => x.Name.Contains(temp));
+                }
+            }
+
+            // Условие по ParentId
+            if (filter.ParentIDs?.Count > 0)
+            {
+                qry = qry.Where(x => filter.ParentIDs.Contains(x.ParentId ?? -1));
+            }
+
+            return qry;
+        }
+
+        #endregion DictionaryDocumentSubjects
+
+        // Типы документов
+        #region DictionaryDocumentTypes
         public int AddDictionaryDocumentType(IContext context, InternalDictionaryDocumentType docType)
         {
             using (var dbContext = new DmsContext(context))
@@ -408,6 +2657,7 @@ namespace BL.Database.Dictionaries
                 var ddt = new DictionaryDocumentTypes
                 {
                     Name = docType.Name,
+                    IsActive = docType.IsActive,
                     LastChangeDate = docType.LastChangeDate,
                     LastChangeUserId = docType.LastChangeUserId
                 };
@@ -418,26 +2668,53 @@ namespace BL.Database.Dictionaries
             }
         }
 
+        public void UpdateDictionaryDocumentType(IContext context, InternalDictionaryDocumentType docType)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var ddt = new DictionaryDocumentTypes
+                {
+                    Id = docType.Id,
+                    LastChangeDate = docType.LastChangeDate,
+                    LastChangeUserId = docType.LastChangeUserId,
+                    Name = docType.Name,
+                    IsActive = docType.IsActive
+                };
+                dbContext.DictionaryDocumentTypesSet.Attach(ddt);
+
+                dbContext.Entry(ddt).State = System.Data.Entity.EntityState.Modified;
+
+                dbContext.SaveChanges();
+            }
+        }
+
+        public void DeleteDictionaryDocumentType(IContext context, InternalDictionaryDocumentType docType)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+
+                var ddt = dbContext.DictionaryDocumentTypesSet.FirstOrDefault(x => x.Id == docType.Id);
+                if (ddt != null)
+                {
+                    dbContext.DictionaryDocumentTypesSet.Remove(ddt);
+                    dbContext.SaveChanges();
+                }
+            }
+        }
+
         public InternalDictionaryDocumentType GetInternalDictionaryDocumentType(IContext context, FilterDictionaryDocumentType filter)
         {
             using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionaryDocumentTypesSet.AsQueryable();
 
-                if (filter.DocumentTypeId?.Count > 0)
-                {
-                    qry = qry.Where(x => filter.DocumentTypeId.Contains(x.Id));
-                }
-
-                if (!String.IsNullOrEmpty(filter.Name))
-                {
-                    qry = qry.Where(x => filter.Name == x.Name);
-                }
+                qry = DocumentTypeGetWhere(ref qry, filter);
 
                 return qry.Select(x => new InternalDictionaryDocumentType
                 {
                     Id = x.Id,
                     Name = x.Name,
+                    IsActive = x.IsActive,
                     LastChangeDate = x.LastChangeDate,
                     LastChangeUserId = x.LastChangeUserId
                 }).FirstOrDefault();
@@ -450,26 +2727,58 @@ namespace BL.Database.Dictionaries
             {
                 var qry = dbContext.DictionaryDocumentTypesSet.AsQueryable();
 
-                if (filter.DocumentTypeId?.Count > 0)
-                {
-                    qry = qry.Where(x => filter.DocumentTypeId.Contains(x.Id));
-                }
+                qry = DocumentTypeGetWhere(ref qry, filter);
+
+                qry = qry.OrderBy(x => x.Name);
 
                 return qry.Select(x => new FrontDictionaryDocumentType
                 {
                     Id = x.Id,
                     Name = x.Name,
+                    IsActive = x.IsActive
                 }).ToList();
             }
+        }
+
+        private static IQueryable<DictionaryDocumentTypes> DocumentTypeGetWhere(ref IQueryable<DictionaryDocumentTypes> qry, FilterDictionaryDocumentType filter)
+        {
+
+            // Список первичных ключей
+            if (filter.IDs?.Count > 0)
+            {
+                qry = qry.Where(x => filter.IDs.Contains(x.Id));
+            }
+
+            // Исключение списка первичных ключей
+            if (filter.NotContainsIDs?.Count > 0)
+            {
+                qry = qry.Where(x => !filter.NotContainsIDs.Contains(x.Id));
+            }
+
+            // Тоько активные/неактивные
+            if (filter.IsActive != null)
+            {
+                qry = qry.Where(x => filter.IsActive == x.IsActive);
+            }
+
+            // Поиск по наименованию
+            if (!String.IsNullOrEmpty(filter.Name))
+            {
+                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
+                {
+                    qry = qry.Where(x => x.Name.Contains(temp));
+                }
+            }
+            return qry;
         }
         #endregion DictionaryDocumentTypes
 
         #region DictionaryEventTypes
-        public BaseDictionaryEventType GetDictionaryEventType(IContext context, int id)
+        public FrontDictionaryEventType GetDictionaryEventType(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context))
             {
-                return dbContext.DictionaryEventTypesSet.Where(x => x.Id == id).Select(x => new BaseDictionaryEventType
+                return dbContext.DictionaryEventTypesSet.Where(x => x.Id == id).Select(x => new FrontDictionaryEventType
                 {
                     EventType = (EnumEventTypes)x.Id,
                     Id = x.Id,
@@ -483,31 +2792,47 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<BaseDictionaryEventType> GetDictionaryEventTypes(IContext context, FilterDictionaryEventType filter)
+        public IEnumerable<FrontDictionaryEventType> GetDictionaryEventTypes(IContext context, FilterDictionaryEventType filter)
         {
             using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionaryEventTypesSet.AsQueryable();
 
-                if (filter.EventTypeId?.Count > 0)
+                // Список первичных ключей
+                if (filter.IDs?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.EventTypeId.Contains(x.Id));
+                    qry = qry.Where(x => filter.IDs.Contains(x.Id));
                 }
 
-                if (filter.ImportanceEventTypeId?.Count > 0)
+                // Исключение списка первичных ключей
+                if (filter.NotContainsIDs?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.ImportanceEventTypeId.Contains(x.ImportanceEventTypeId));
+                    qry = qry.Where(x => !filter.NotContainsIDs.Contains(x.Id));
                 }
 
-                if (filter.DocumentId?.Count > 0)
+                // Поиск по наименованию
+                if (!String.IsNullOrEmpty(filter.Name))
+                {
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
+                    {
+                        qry = qry.Where(x => x.Name.Contains(temp));
+                    }
+                }
+
+                if (filter.ImportanceEventTypeIDs?.Count > 0)
+                {
+                    qry = qry.Where(x => filter.ImportanceEventTypeIDs.Contains(x.ImportanceEventTypeId));
+                }
+
+                if (filter.DocumentIDs?.Count > 0)
                 {
                     qry = qry.Where(x =>
                             dbContext.DocumentEventsSet
-                                .Where(y => filter.DocumentId.Contains(y.DocumentId)).Select(y => y.EventTypeId).Contains(x.Id)
+                                .Where(y => filter.DocumentIDs.Contains(y.DocumentId)).Select(y => y.EventTypeId).Contains(x.Id)
                                 );
                 }
 
-                return qry.Select(x => new BaseDictionaryEventType
+                return qry.Select(x => new FrontDictionaryEventType
                 {
                     EventType = (EnumEventTypes)x.Id,
                     Id = x.Id,
@@ -523,13 +2848,13 @@ namespace BL.Database.Dictionaries
         #endregion DictionaryEventTypes
 
         #region DictionaryImportanceEventTypes
-        public BaseDictionaryImportanceEventType GetDictionaryImportanceEventType(IContext context, int id)
+        public FrontDictionaryImportanceEventType GetDictionaryImportanceEventType(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context))
             {
 
                 return dbContext.DictionaryImportanceEventTypesSet.Where(x => x.Id == id)
-                    .Select(x => new BaseDictionaryImportanceEventType
+                    .Select(x => new FrontDictionaryImportanceEventType
                     {
                         Id = x.Id,
                         Code = x.Code,
@@ -540,26 +2865,42 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<BaseDictionaryImportanceEventType> GetDictionaryImportanceEventTypes(IContext context, FilterDictionaryImportanceEventType filter)
+        public IEnumerable<FrontDictionaryImportanceEventType> GetDictionaryImportanceEventTypes(IContext context, FilterDictionaryImportanceEventType filter)
         {
             using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionaryImportanceEventTypesSet.AsQueryable();
 
-                if (filter.ImportanceEventTypeId?.Count > 0)
+                // Список первичных ключей
+                if (filter.IDs?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.ImportanceEventTypeId.Contains(x.Id));
+                    qry = qry.Where(x => filter.IDs.Contains(x.Id));
                 }
 
-                if (filter.DocumentId?.Count > 0)
+                // Исключение списка первичных ключей
+                if (filter.NotContainsIDs?.Count > 0)
+                {
+                    qry = qry.Where(x => !filter.NotContainsIDs.Contains(x.Id));
+                }
+
+                // Поиск по наименованию
+                if (!String.IsNullOrEmpty(filter.Name))
+                {
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
+                    {
+                        qry = qry.Where(x => x.Name.Contains(temp));
+                    }
+                }
+
+                if (filter.DocumentIDs?.Count > 0)
                 {
                     qry = qry.Where(x =>
                             dbContext.DocumentEventsSet
-                                .Where(y => filter.DocumentId.Contains(y.DocumentId)).Select(y => y.EventType.ImportanceEventTypeId).Contains(x.Id)
+                                .Where(y => filter.DocumentIDs.Contains(y.DocumentId)).Select(y => y.EventType.ImportanceEventTypeId).Contains(x.Id)
                                 );
                 }
 
-                return qry.Select(x => new BaseDictionaryImportanceEventType
+                return qry.Select(x => new FrontDictionaryImportanceEventType
                 {
                     Id = x.Id,
                     Code = x.Code,
@@ -572,12 +2913,12 @@ namespace BL.Database.Dictionaries
         #endregion DictionaryImportanceEventTypes
 
         #region DictionaryLinkTypes
-        public BaseDictionaryLinkType GetDictionaryLinkType(IContext context, int id)
+        public FrontDictionaryLinkType GetDictionaryLinkType(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context))
             {
                 return dbContext.DictionaryLinkTypesSet.Where(x => x.Id == id)
-                    .Select(x => new BaseDictionaryLinkType
+                    .Select(x => new FrontDictionaryLinkType
                     {
                         Id = x.Id,
                         Name = x.Name,
@@ -588,18 +2929,40 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<BaseDictionaryLinkType> GetDictionaryLinkTypes(IContext context, FilterDictionaryLinkType filter)
+        public IEnumerable<FrontDictionaryLinkType> GetDictionaryLinkTypes(IContext context, FilterDictionaryLinkType filter)
         {
             using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionaryLinkTypesSet.AsQueryable();
 
-                if (filter.LinkTypeId?.Count > 0)
+                // Список первичных ключей
+                if (filter.IDs?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.LinkTypeId.Contains(x.Id));
+                    qry = qry.Where(x => filter.IDs.Contains(x.Id));
                 }
 
-                return qry.Select(x => new BaseDictionaryLinkType
+                // Исключение списка первичных ключей
+                if (filter.NotContainsIDs?.Count > 0)
+                {
+                    qry = qry.Where(x => !filter.NotContainsIDs.Contains(x.Id));
+                }
+
+                // Тоько активные/неактивные
+                if (filter.IsActive != null)
+                {
+                    qry = qry.Where(x => filter.IsActive == x.IsActive);
+                }
+
+                // Поиск по наименованию
+                if (!String.IsNullOrEmpty(filter.Name))
+                {
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
+                    {
+                        qry = qry.Where(x => x.Name.Contains(temp));
+                    }
+                }
+
+                return qry.Select(x => new FrontDictionaryLinkType
                 {
                     Id = x.Id,
                     Name = x.Name,
@@ -611,7 +2974,71 @@ namespace BL.Database.Dictionaries
         }
         #endregion DictionaryLinkTypes
 
+        // Должности
         #region DictionaryPositions
+
+
+
+        public int AddPosition(IContext context, InternalDictionaryPosition position)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var dd = new DictionaryPositions
+                {
+                    ParentId = position.ParentId,
+                    LastChangeDate = position.LastChangeDate,
+                    LastChangeUserId = position.LastChangeUserId,
+                    IsActive = position.IsActive,
+                    Name = position.Name,
+                    FullName = position.FullName,
+                    DepartmentId = position.DepartmentId,
+                    ExecutorAgentId = position.ExecutorAgentId,
+                    MainExecutorAgentId = position.MainExecutorAgentId
+                };
+                dbContext.DictionaryPositionsSet.Add(dd);
+                dbContext.SaveChanges();
+                position.Id = dd.Id;
+                return dd.Id;
+            }
+        }
+
+        public void UpdatePosition(IContext context, InternalDictionaryPosition position)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var dd = new DictionaryPositions
+                {
+                    Id = position.Id,
+                    ParentId = position.ParentId,
+                    LastChangeDate = position.LastChangeDate,
+                    LastChangeUserId = position.LastChangeUserId,
+                    IsActive = position.IsActive,
+                    Name = position.Name,
+                    FullName = position.FullName,
+                    DepartmentId = position.DepartmentId,
+                    ExecutorAgentId = position.ExecutorAgentId,
+                    MainExecutorAgentId = position.MainExecutorAgentId
+                };
+
+                dbContext.DictionaryPositionsSet.Attach(dd);
+                dbContext.Entry(dd).State = System.Data.Entity.EntityState.Modified;
+
+                dbContext.SaveChanges();
+            }
+        }
+
+        public void DeletePosition(IContext context, InternalDictionaryPosition position)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var dp = dbContext.DictionaryPositionsSet.FirstOrDefault(x => x.Id == position.Id);
+                if (dp != null)
+                {
+                    dbContext.DictionaryPositionsSet.Remove(dp);
+                    dbContext.SaveChanges();
+                }
+            }
+        }
 
         public int? GetExecutorAgentIdByPositionId(IContext context, int id)
         {
@@ -623,50 +3050,44 @@ namespace BL.Database.Dictionaries
         }
 
 
-        public BaseDictionaryPosition GetDictionaryPosition(IContext context, int id)
+        public FrontDictionaryPosition GetDictionaryPosition(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context))
             {
                 return dbContext.DictionaryPositionsSet.Where(x => x.Id == id)
-                    .Select(x => new BaseDictionaryPosition
+                    .Select(x => new FrontDictionaryPosition
                     {
                         Id = x.Id,
                         ParentId = x.ParentId,
                         Name = x.Name,
                         DepartmentId = x.DepartmentId,
                         ExecutorAgentId = x.ExecutorAgentId,
-                        LastChangeUserId = x.LastChangeUserId,
-                        LastChangeDate = x.LastChangeDate,
                         ParentPositionName = x.ParentPosition.Name,
                         DepartmentName = x.Department.Name,
                         ExecutorAgentName = x.ExecutorAgent.Name,
-                        ChildPositions = x.ChildPositions.Select(y => new BaseDictionaryPosition
+                        ChildPositions = x.ChildPositions.Select(y => new FrontDictionaryPosition
                         {
                             Id = y.Id,
                             ParentId = y.ParentId,
                             Name = y.Name,
                             DepartmentId = y.DepartmentId,
                             ExecutorAgentId = y.ExecutorAgentId,
-                            LastChangeUserId = y.LastChangeUserId,
-                            LastChangeDate = y.LastChangeDate,
                             ParentPositionName = y.ParentPosition.Name,
                             DepartmentName = y.Department.Name,
                             ExecutorAgentName = y.ExecutorAgent.Name
                         }),
-                        ChiefDepartments = x.ChiefDepartments.Select(y => new BaseDictionaryDepartment
+                        ChiefDepartments = x.ChiefDepartments.Select(y => new FrontDictionaryDepartment
                         {
                             Id = y.Id,
                             ParentId = y.ParentId,
                             CompanyId = y.CompanyId,
                             Name = y.Name,
                             ChiefPositionId = y.ChiefPositionId,
-                            LastChangeUserId = y.LastChangeUserId,
-                            LastChangeDate = y.LastChangeDate,
                             ParentDepartmentName = y.ParentDepartment.Name,
                             CompanyName = y.Company.Name,
                             ChiefPositionName = y.ChiefPosition.Name
                         }),
-                        StandartSendLists = x.StandartSendLists.Select(y => new BaseDictionaryStandartSendList
+                        StandartSendLists = x.StandartSendLists.Select(y => new FrontDictionaryStandartSendList
                         {
                             Id = y.Id,
                             Name = y.Name,
@@ -678,25 +3099,32 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<BaseDictionaryPosition> GetDictionaryPositions(IContext context, FilterDictionaryPosition filter)
+        public IEnumerable<FrontDictionaryPosition> GetDictionaryPositions(IContext context, FilterDictionaryPosition filter)
         {
             using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionaryPositionsSet.Select(x => new { pos = x, subordMax = 0 }).AsQueryable();
 
-                if (filter.PositionId?.Count > 0)
+                // Список первичных ключей
+                if (filter.IDs?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.PositionId.Contains(x.pos.Id));
+                    qry = qry.Where(x => filter.IDs.Contains(x.pos.Id));
                 }
 
-                if (filter.DocumentId?.Count > 0)
+                // Исключение списка первичных ключей
+                if (filter.NotContainsIDs?.Count > 0)
+                {
+                    qry = qry.Where(x => !filter.NotContainsIDs.Contains(x.pos.Id));
+                }
+
+                if (filter.DocumentIDs?.Count > 0)
                 {
                     qry = qry.Where(x =>
                             dbContext.DocumentEventsSet
-                                .Where(y => filter.DocumentId.Contains(y.DocumentId)).Select(y => y.SourcePositionId).Contains(x.pos.Id)
+                                .Where(y => filter.DocumentIDs.Contains(y.DocumentId)).Select(y => y.SourcePositionId).Contains(x.pos.Id)
                                 ||
                                 dbContext.DocumentEventsSet
-                                .Where(y => filter.DocumentId.Contains(y.DocumentId)).Select(y => y.TargetPositionId).Contains(x.pos.Id)
+                                .Where(y => filter.DocumentIDs.Contains(y.DocumentId)).Select(y => y.TargetPositionId).Contains(x.pos.Id)
                                 );
                 }
 
@@ -711,7 +3139,7 @@ namespace BL.Database.Dictionaries
                              .Where(x => x.subordMax > 0);
                 }
 
-                return qry.Select(x => new BaseDictionaryPosition
+                return qry.Select(x => new FrontDictionaryPosition
                 {
                     Id = x.pos.Id,
                     ParentId = x.pos.ParentId,
@@ -733,19 +3161,19 @@ namespace BL.Database.Dictionaries
             {
                 var qry = dbContext.DictionaryPositionsSet.Select(x => new { pos = x, subordMax = 0 }).AsQueryable();
 
-                if (filter.PositionId?.Count > 0)
+                if (filter.IDs?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.PositionId.Contains(x.pos.Id));
+                    qry = qry.Where(x => filter.IDs.Contains(x.pos.Id));
                 }
 
-                if (filter.DocumentId?.Count > 0)
+                if (filter.DocumentIDs?.Count > 0)
                 {
                     qry = qry.Where(x =>
                             dbContext.DocumentEventsSet
-                                .Where(y => filter.DocumentId.Contains(y.DocumentId)).Select(y => y.SourcePositionId).Contains(x.pos.Id)
+                                .Where(y => filter.DocumentIDs.Contains(y.DocumentId)).Select(y => y.SourcePositionId).Contains(x.pos.Id)
                                 ||
                                 dbContext.DocumentEventsSet
-                                .Where(y => filter.DocumentId.Contains(y.DocumentId)).Select(y => y.TargetPositionId).Contains(x.pos.Id)
+                                .Where(y => filter.DocumentIDs.Contains(y.DocumentId)).Select(y => y.TargetPositionId).Contains(x.pos.Id)
                                 );
                 }
 
@@ -772,65 +3200,304 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        #endregion DictionaryPositions
-
-        #region DictionaryRegistrationJournals
-        public BaseDictionaryRegistrationJournal GetDictionaryRegistrationJournal(IContext context, int id)
+        // Для использования в коммандах метод CanExecute
+        public bool ExistsPosition(IContext context, FilterDictionaryPosition filter)
         {
             using (var dbContext = new DmsContext(context))
             {
-                return dbContext.DictionaryRegistrationJournalsSet.Where(x => x.Id == id)
-                    .Select(x => new BaseDictionaryRegistrationJournal
-                    {
-                        Id = x.Id,
-                        Name = x.Name,
-                        DepartmentId = x.DepartmentId,
-                        Index = x.Index,
-                        NumerationPrefixFormula = x.NumerationPrefixFormula,
-                        PrefixFormula = x.PrefixFormula,
-                        SuffixFormula = x.SuffixFormula,
-                        DirectionCodes = x.DirectionCodes,
-                        LastChangeUserId = x.LastChangeUserId,
-                        LastChangeDate = x.LastChangeDate,
-                        DepartmentName = x.Department.Name
-                    }).FirstOrDefault();
+                var qry = dbContext.DictionaryPositionsSet.Select(x => new { pos = x, subordMax = 0 }).AsQueryable();
+
+                if (filter.IDs?.Count > 0)
+                {
+                    qry = qry.Where(x => filter.IDs.Contains(x.pos.Id));
+                }
+
+                if (filter.DocumentIDs?.Count > 0)
+                {
+                    qry = qry.Where(x =>
+                            dbContext.DocumentEventsSet
+                                .Where(y => filter.DocumentIDs.Contains(y.DocumentId)).Select(y => y.SourcePositionId).Contains(x.pos.Id)
+                                ||
+                                dbContext.DocumentEventsSet
+                                .Where(y => filter.DocumentIDs.Contains(y.DocumentId)).Select(y => y.TargetPositionId).Contains(x.pos.Id)
+                                );
+                }
+
+                if (filter.SubordinatedPositions?.Count > 0)
+                {
+                    qry = qry.GroupJoin(
+                                        dbContext.AdminSubordinationsSet.Where(y => filter.SubordinatedPositions.Contains(y.SourcePositionId)),
+                                        x => x.pos.Id,
+                                        y => y.TargetPositionId,
+                                        (x, y) => new { pos = x.pos, subordMax = y.Max(z => z.SubordinationTypeId) }
+                                        )
+                             .Where(x => x.subordMax > 0);
+                }
+
+                var res = qry.Select(x => new FrontDictionaryPosition
+                {
+                    Id = x.pos.Id
+                }).FirstOrDefault();
+
+                return res != null;
             }
         }
 
-        public IEnumerable<BaseDictionaryRegistrationJournal> GetDictionaryRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter)
+        //private static IQueryable<DictionaryPositions> PositionGetWhere(ref IQueryable<DictionaryPositions> qry, FilterDictionaryPosition filter)
+        //{
+        //    // Условие по ID
+        //    if (filter.IDs?.Count > 0)
+        //    {
+        //        qry = qry.Where(x => filter.IDs.Contains(x.Id));
+        //    }
+
+        //    // Условие по NotContainsId
+        //    if (filter.NotContainsIDs?.Count > 0)
+        //    {
+        //        qry = qry.Where(x => !filter.NotContainsIDs.Contains(x.Id));
+        //    }
+
+        //    // Условие по IsActive
+        //    if (filter.IsActive != null)
+        //    {
+        //        qry = qry.Where(x => filter.IsActive == x.IsActive);
+        //    }
+
+        //    // Условие по Name
+        //    if (!String.IsNullOrEmpty(filter.Name))
+        //    {
+        //        qry = qry.Where(x => x.Name.Contains(filter.Name));
+        //    }
+
+        //    return qry;
+        //}
+
+        #endregion DictionaryPositions
+
+        // Журналы регистрации
+        #region DictionaryRegistrationJournals
+        public int AddDictionaryRegistrationJournal(IContext context, InternalDictionaryRegistrationJournal regJournal)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+
+                string s = (regJournal.IsIncoming ? EnumDocumentDirections.Incoming.ToString() : "") +
+                    (regJournal.IsOutcoming ? EnumDocumentDirections.Outcoming.ToString() : "") +
+                    (regJournal.IsInternal ? EnumDocumentDirections.Internal.ToString() : "");
+
+                var drj = new DictionaryRegistrationJournals
+                {
+                    // pss Перегонка значений DictionaryRegistrationJournals
+                    LastChangeDate = regJournal.LastChangeDate,
+                    LastChangeUserId = regJournal.LastChangeUserId,
+                    IsActive = regJournal.IsActive,
+                    Name = regJournal.Name,
+                    DepartmentId = regJournal.DepartmentId,
+                    Index = regJournal.Index,
+                    DirectionCodes = s,
+                    PrefixFormula = regJournal.PrefixFormula,
+                    NumerationPrefixFormula = regJournal.NumerationPrefixFormula,
+                    SuffixFormula = regJournal.SuffixFormula,
+                };
+                dbContext.DictionaryRegistrationJournalsSet.Add(drj);
+                dbContext.SaveChanges();
+                regJournal.Id = drj.Id;
+                return drj.Id;
+            }
+        }
+
+        public void UpdateDictionaryRegistrationJournal(IContext context, InternalDictionaryRegistrationJournal regJournal)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                string s = (regJournal.IsIncoming ? EnumDocumentDirections.Incoming.ToString() : "") +
+                    (regJournal.IsOutcoming ? EnumDocumentDirections.Outcoming.ToString() : "") +
+                    (regJournal.IsInternal ? EnumDocumentDirections.Internal.ToString() : "");
+
+                var drj = new DictionaryRegistrationJournals
+                {
+                    // pss Перегонка значений DictionaryRegistrationJournals
+                    Id = regJournal.Id,
+                    LastChangeDate = regJournal.LastChangeDate,
+                    LastChangeUserId = regJournal.LastChangeUserId,
+                    IsActive = regJournal.IsActive,
+                    Name = regJournal.Name,
+                    DepartmentId = regJournal.DepartmentId,
+                    Index = regJournal.Index,
+                    DirectionCodes = s,
+                    PrefixFormula = regJournal.PrefixFormula,
+                    NumerationPrefixFormula = regJournal.NumerationPrefixFormula,
+                    SuffixFormula = regJournal.SuffixFormula,
+                };
+
+                dbContext.DictionaryRegistrationJournalsSet.Attach(drj);
+                dbContext.Entry(drj).State = System.Data.Entity.EntityState.Modified;
+                dbContext.SaveChanges();
+            }
+        }
+
+        public void DeleteDictionaryRegistrationJournal(IContext context, InternalDictionaryRegistrationJournal docSubject)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var drj = dbContext.DictionaryRegistrationJournalsSet.FirstOrDefault(x => x.Id == docSubject.Id);
+                if (drj != null)
+                {
+                    dbContext.DictionaryRegistrationJournalsSet.Remove(drj);
+                    dbContext.SaveChanges();
+                }
+            }
+        }
+
+        public InternalDictionaryRegistrationJournal GetInternalDictionaryRegistrationJournal(IContext context, FilterDictionaryRegistrationJournal filter)
         {
             using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionaryRegistrationJournalsSet.AsQueryable();
 
-                if (filter.RegistrationJournalId?.Count > 0)
-                {
-                    qry = qry.Where(x => filter.RegistrationJournalId.Contains(x.Id));
-                }
+                qry = RegistrationJournalGetWhere(ref qry, filter);
 
-                return qry.Select(x => new BaseDictionaryRegistrationJournal
+                return qry.Select(x => new InternalDictionaryRegistrationJournal
                 {
+                    // pss Перегонка значений DictionaryRegistrationJournals
                     Id = x.Id,
+                    IsActive = x.IsActive,
+                    Name = x.Name,
+                    DepartmentId = x.DepartmentId,
+                    Index = x.Index,
+                    NumerationPrefixFormula = x.NumerationPrefixFormula,
+                    PrefixFormula = x.PrefixFormula,
+                    SuffixFormula = x.SuffixFormula,
+                    IsIncoming = x.DirectionCodes.Contains(EnumDocumentDirections.Incoming.ToString()),
+                    IsOutcoming = x.DirectionCodes.Contains(EnumDocumentDirections.Outcoming.ToString()),
+                    IsInternal = x.DirectionCodes.Contains(EnumDocumentDirections.Internal.ToString()),
+                    LastChangeUserId = x.LastChangeUserId,
+                    LastChangeDate = x.LastChangeDate
+                }).FirstOrDefault();
+            }
+        }
+
+        public IEnumerable<FrontDictionaryRegistrationJournal> GetDictionaryRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.DictionaryRegistrationJournalsSet.AsQueryable();
+
+                qry = RegistrationJournalGetWhere(ref qry, filter);
+
+                qry = qry.OrderBy(x => x.Name);
+
+                return qry.Select(x => new FrontDictionaryRegistrationJournal
+                {
+                    // pss Перегонка значений DictionaryRegistrationJournals
+                    Id = x.Id,
+                    IsActive = x.IsActive,
                     Name = x.Name,
                     DepartmentId = x.DepartmentId,
                     Index = x.Index,
                     PrefixFormula = x.PrefixFormula,
                     SuffixFormula = x.SuffixFormula,
-                    DirectionCodes = x.DirectionCodes,
+                    IsIncoming = x.DirectionCodes.Contains(EnumDocumentDirections.Incoming.ToString()),
+                    IsOutcoming = x.DirectionCodes.Contains(EnumDocumentDirections.Outcoming.ToString()),
+                    IsInternal = x.DirectionCodes.Contains(EnumDocumentDirections.Internal.ToString()),
                     DepartmentName = x.Department.Name
                 }).ToList();
             }
         }
+
+        // Для использования в коммандах метод CanExecute
+        public bool ExistsDictionaryRegistrationJournal(IContext context, FilterDictionaryRegistrationJournal filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.DictionaryRegistrationJournalsSet.AsQueryable();
+
+                qry = RegistrationJournalGetWhere(ref qry, filter);
+
+                var res = qry.Select(x => new FrontDictionaryRegistrationJournal
+                {
+                    Id = x.Id
+                }).FirstOrDefault();
+
+                return res != null;
+            }
+        }
+
+        private static IQueryable<DictionaryRegistrationJournals> RegistrationJournalGetWhere(ref IQueryable<DictionaryRegistrationJournals> qry, FilterDictionaryRegistrationJournal filter)
+        {
+            // Список первичных ключей
+            if (filter.IDs?.Count > 0)
+            {
+                qry = qry.Where(x => filter.IDs.Contains(x.Id));
+            }
+
+            // Исключение списка первичных ключей
+            if (filter.NotContainsIDs?.Count > 0)
+            {
+                qry = qry.Where(x => !filter.NotContainsIDs.Contains(x.Id));
+            }
+
+            // Тоько активные/неактивные
+            if (filter.IsActive != null)
+            {
+                qry = qry.Where(x => filter.IsActive == x.IsActive);
+            }
+
+            // Поиск по наименованию
+            if (!String.IsNullOrEmpty(filter.Name))
+            {
+                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
+                {
+                    qry = qry.Where(x => x.Name.Contains(temp));
+                }
+            }
+
+            // Условие по Index
+            if (!String.IsNullOrEmpty(filter.Index))
+            {
+                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Index))
+                {
+                    qry = qry.Where(x => x.Index.Contains(temp));
+                }
+            }
+
+            // Условие по DepartmentIDs
+            if (filter.DepartmentIDs?.Count > 0)
+            {
+                qry = qry.Where(x => filter.DepartmentIDs.Contains(x.DepartmentId));
+            }
+
+            // Условие по IsIncoming
+            if (filter.IsIncoming != null)
+            {
+                qry = qry.Where(x => x.DirectionCodes.Contains(EnumDocumentDirections.Incoming.ToString()));
+            }
+
+            // Условие по IsOutcoming
+            if (filter.IsOutcoming != null)
+            {
+                qry = qry.Where(x => x.DirectionCodes.Contains(EnumDocumentDirections.Outcoming.ToString()));
+            }
+
+            // Условие по IsInternal
+            if (filter.IsInternal != null)
+            {
+                qry = qry.Where(x => x.DirectionCodes.Contains(EnumDocumentDirections.Internal.ToString()));
+            }
+            
+            return qry;
+        }
+
         #endregion DictionaryRegistrationJournals
 
         #region DictionaryResultTypes
-        public BaseDictionaryResultType GetDictionaryResultType(IContext context, int id)
+        public FrontDictionaryResultType GetDictionaryResultType(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context))
             {
 
                 return dbContext.DictionaryResultTypesSet.Where(x => x.Id == id)
-                    .Select(x => new BaseDictionaryResultType
+                    .Select(x => new FrontDictionaryResultType
                     {
                         Id = x.Id,
                         Name = x.Name,
@@ -841,18 +3508,40 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<BaseDictionaryResultType> GetDictionaryResultTypes(IContext context, FilterDictionaryResultType filter)
+        public IEnumerable<FrontDictionaryResultType> GetDictionaryResultTypes(IContext context, FilterDictionaryResultType filter)
         {
             using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionaryResultTypesSet.AsQueryable();
 
-                if (filter.ResultTypeId?.Count > 0)
+                // Список первичных ключей
+                if (filter.IDs?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.ResultTypeId.Contains(x.Id));
+                    qry = qry.Where(x => filter.IDs.Contains(x.Id));
                 }
 
-                return qry.Select(x => new BaseDictionaryResultType
+                // Исключение списка первичных ключей
+                if (filter.NotContainsIDs?.Count > 0)
+                {
+                    qry = qry.Where(x => !filter.NotContainsIDs.Contains(x.Id));
+                }
+
+                // Тоько активные/неактивные
+                if (filter.IsActive != null)
+                {
+                    qry = qry.Where(x => filter.IsActive == x.IsActive);
+                }
+
+                // Поиск по наименованию
+                if (!String.IsNullOrEmpty(filter.Name))
+                {
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
+                    {
+                        qry = qry.Where(x => x.Name.Contains(temp));
+                    }
+                }
+
+                return qry.Select(x => new FrontDictionaryResultType
                 {
                     Id = x.Id,
                     Name = x.Name,
@@ -863,12 +3552,12 @@ namespace BL.Database.Dictionaries
         #endregion DictionaryResultTypes
 
         #region DictionarySendTypes
-        public BaseDictionarySendType GetDictionarySendType(IContext context, int id)
+        public FrontDictionarySendType GetDictionarySendType(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context))
             {
                 return dbContext.DictionarySendTypesSet.Where(x => x.Id == id)
-                    .Select(x => new BaseDictionarySendType
+                    .Select(x => new FrontDictionarySendType
                     {
                         Id = x.Id,
                         Code = x.Code,
@@ -882,18 +3571,34 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<BaseDictionarySendType> GetDictionarySendTypes(IContext context, FilterDictionarySendType filter)
+        public IEnumerable<FrontDictionarySendType> GetDictionarySendTypes(IContext context, FilterDictionarySendType filter)
         {
             using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionarySendTypesSet.AsQueryable();
 
-                if (filter.SendTypeId?.Count > 0)
+                // Список первичных ключей
+                if (filter.IDs?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.SendTypeId.Contains(x.Id));
+                    qry = qry.Where(x => filter.IDs.Contains(x.Id));
                 }
 
-                return qry.Select(x => new BaseDictionarySendType
+                // Исключение списка первичных ключей
+                if (filter.NotContainsIDs?.Count > 0)
+                {
+                    qry = qry.Where(x => !filter.NotContainsIDs.Contains(x.Id));
+                }
+                
+                // Поиск по наименованию
+                if (!String.IsNullOrEmpty(filter.Name))
+                {
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
+                    {
+                        qry = qry.Where(x => x.Name.Contains(temp));
+                    }
+                }
+
+                return qry.Select(x => new FrontDictionarySendType
                 {
                     Id = x.Id,
                     Code = x.Code,
@@ -907,12 +3612,12 @@ namespace BL.Database.Dictionaries
         #endregion DictionarySendTypes
 
         #region DictionaryStandartSendListContents
-        public BaseDictionaryStandartSendListContent GetDictionaryStandartSendListContent(IContext context, int id)
+        public FrontDictionaryStandartSendListContent GetDictionaryStandartSendListContent(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context))
             {
                 return dbContext.DictionaryStandartSendListContentsSet.Where(x => x.Id == id)
-                    .Select(x => new BaseDictionaryStandartSendListContent
+                    .Select(x => new FrontDictionaryStandartSendListContent
                     {
                         Id = x.Id,
                         StandartSendListId = x.StandartSendListId,
@@ -924,8 +3629,6 @@ namespace BL.Database.Dictionaries
                         DueDate = x.DueDate,
                         DueDay = x.DueDay,
                         AccessLevelId = x.AccessLevelId,
-                        LastChangeUserId = x.LastChangeUserId,
-                        LastChangeDate = x.LastChangeDate,
                         SendTypeName = x.SendType.Name,
                         TargetPositionName = x.TargetPosition.Name,
                         TargetAgentName = x.TargetPosition.ExecutorAgent.Name ?? x.TargetAgent.Name,
@@ -934,18 +3637,72 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<BaseDictionaryStandartSendListContent> GetDictionaryStandartSendListContents(IContext context, FilterDictionaryStandartSendListContent filter)
+        public IEnumerable<FrontDictionaryStandartSendListContent> GetDictionaryStandartSendListContents(IContext context, FilterDictionaryStandartSendListContent filter)
         {
             using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionaryStandartSendListContentsSet.AsQueryable();
 
-                if (filter.StandartSendListContentId?.Count > 0)
+                // Список первичных ключей
+                if (filter.StandartSendListId.Count > 0)
                 {
-                    qry = qry.Where(x => filter.StandartSendListContentId.Contains(x.Id));
+                    qry = qry.Where(x => filter.StandartSendListId.Contains(x.StandartSendListId));
                 }
 
-                return qry.Select(x => new BaseDictionaryStandartSendListContent
+                if (filter.SendTypeId.Count > 0)
+                {
+                    qry = qry.Where(x => filter.SendTypeId.Contains((EnumSendTypes)x.SendTypeId));
+                }
+
+                if (filter.TargetPositionId.HasValue)
+                {
+                    qry = qry.Where(x => x.TargetPositionId == filter.TargetPositionId);
+                }
+
+                if (filter.TargetPositionId.HasValue)
+                {
+                    qry = qry.Where(x => x.TargetAgentId == filter.TargetAgentId);
+                }
+
+                if (!string.IsNullOrEmpty(filter.Task))
+                {
+                    qry = CommonFilterUtilites.GetWhereExpressions(filter.Task)
+                        .Aggregate(qry, (current, task) => current.Where(x => x.Task.Contains(task)));
+                }
+
+              
+                 if (!string.IsNullOrEmpty(filter.SendTypeName))
+                {
+
+                    foreach (string str in CommonFilterUtilites.GetWhereExpressions(filter.SendTypeName))
+                    {
+                        qry = qry.Where(x => x.SendType.Name.Contains(str));
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(filter.TargetPositionName))
+                {
+                    foreach (string str in CommonFilterUtilites.GetWhereExpressions(filter.TargetPositionName))
+                    {
+                        qry = qry.Where(x => x.TargetPosition.Name.Contains(str));
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(filter.TargetAgentName))
+                {
+                    foreach (string str in CommonFilterUtilites.GetWhereExpressions(filter.TargetAgentName))
+                    {
+                        qry = qry.Where(x => x.TargetAgent.Name.Contains(str));
+                    }
+                }
+
+                // Исключение списка первичных ключей
+                if (filter.NotContainsIDs?.Count > 0)
+                {
+                    qry = qry.Where(x => !filter.NotContainsIDs.Contains(x.Id));
+                }
+
+                return qry.Select(x => new FrontDictionaryStandartSendListContent
                 {
                     Id = x.Id,
                     StandartSendListId = x.StandartSendListId,
@@ -964,15 +3721,88 @@ namespace BL.Database.Dictionaries
                 }).ToList();
             }
         }
+
+
+        public void UpdateDictionaryStandartSendListContent(IContext context,
+            InternalDictionaryStandartSendListContent content)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var ddt = new DictionaryStandartSendListContents()
+                {
+                    Id = content.Id,
+                    AccessLevelId = (int)content.AccessLevel,
+                    TargetPositionId = content.TargetPositionId,
+                    TargetAgentId = content.TargetAgentId,
+                    DueDate = content.DueDate,
+                    DueDay = content.DueDay,
+                    SendTypeId = (int)content.SendType,
+                    Stage = content.Stage,
+                    StandartSendListId = content.StandartSendListId,
+                    Task = content.Task,
+                    Description = content.Description,
+                    LastChangeDate = content.LastChangeDate,
+                    LastChangeUserId = content.LastChangeUserId
+                };
+
+                dbContext.DictionaryStandartSendListContentsSet.Attach(ddt);
+                var entity = dbContext.Entry(ddt);
+                entity.State = System.Data.Entity.EntityState.Modified;
+
+                dbContext.SaveChanges();
+            }
+        }
+
+        public void DeleteDictionaryStandartSendListContent(IContext context,
+            InternalDictionaryStandartSendListContent content)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+
+                var ddt = dbContext.DictionaryStandartSendListContentsSet.FirstOrDefault(x => x.Id == content.Id);
+                if (ddt == null) return;
+                dbContext.DictionaryStandartSendListContentsSet.Remove(ddt);
+
+                dbContext.SaveChanges();
+            }
+        }
+
+        public int AddDictionaryStandartSendListContent(IContext context,
+            InternalDictionaryStandartSendListContent content)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var ddt = new DictionaryStandartSendListContents()
+                {
+                    Id = content.Id,
+                    AccessLevelId = (int)content.AccessLevel,
+                    TargetPositionId = content.TargetPositionId,
+                    TargetAgentId = content.TargetAgentId,
+                    DueDate = content.DueDate,
+                    DueDay = content.DueDay,
+                    SendTypeId = (int)content.SendType,
+                    Stage = content.Stage,
+                    StandartSendListId = content.StandartSendListId,
+                    Task = content.Task,
+                    Description = content.Description,
+                    LastChangeDate = content.LastChangeDate,
+                    LastChangeUserId = content.LastChangeUserId
+                };
+                dbContext.DictionaryStandartSendListContentsSet.Add(ddt);
+                dbContext.SaveChanges();
+                content.Id = ddt.Id;
+                return ddt.Id;
+            }
+        }
         #endregion DictionaryStandartSendListContents
 
         #region DictionaryStandartSendLists
-        public BaseDictionaryStandartSendList GetDictionaryStandartSendList(IContext context, int id)
+        public FrontDictionaryStandartSendList GetDictionaryStandartSendList(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context))
             {
                 return dbContext.DictionaryStandartSendListsSet.Where(x => x.Id == id)
-                        .Select(x => new BaseDictionaryStandartSendList
+                        .Select(x => new FrontDictionaryStandartSendList
                         {
                             Id = x.Id,
                             Name = x.Name,
@@ -981,7 +3811,7 @@ namespace BL.Database.Dictionaries
                             LastChangeDate = x.LastChangeDate,
                             PositionName = x.Position.Name,
                             StandartSendListContents =
-                                x.StandartSendListContents.Select(y => new BaseDictionaryStandartSendListContent
+                                x.StandartSendListContents.Select(y => new FrontDictionaryStandartSendListContent()
                                 {
                                     Id = y.Id,
                                     StandartSendListId = y.StandartSendListId,
@@ -1002,37 +3832,109 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<BaseDictionaryStandartSendList> GetDictionaryStandartSendLists(IContext context, FilterDictionaryStandartSendList filter)
+        public IEnumerable<FrontDictionaryStandartSendList> GetDictionaryStandartSendLists(IContext context, FilterDictionaryStandartSendList filter)
         {
             using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionaryStandartSendListsSet.AsQueryable();
-                if (filter.StandartSendListId != null && filter.StandartSendListId.Count > 0)
+
+                // Список первичных ключей
+                if (filter.IDs != null && filter.IDs.Count > 0)
                 {
-                    qry = qry.Where(x => filter.StandartSendListId.Contains(x.Id));
+                    qry = qry.Where(x => filter.IDs.Contains(x.Id));
                 }
-                if (filter.PositionId != null && filter.PositionId.Count > 0)
+
+                // Исключение списка первичных ключей
+                if (filter.NotContainsIDs?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.PositionId.Contains(x.PositionId));
+                    qry = qry.Where(x => !filter.NotContainsIDs.Contains(x.Id));
                 }
-                return qry.Select(x => new BaseDictionaryStandartSendList
+                
+                // Поиск по наименованию
+                if (!string.IsNullOrEmpty(filter.Name))
+                {
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
+                    {
+                        qry = qry.Where(x => x.Name.Contains(temp));
+                    }
+                }
+
+                if (filter.PositionID != null )
+                {
+                    qry = qry.Where(x => filter.PositionID==x.PositionId);
+                }
+                return qry.Select(x => new FrontDictionaryStandartSendList
                 {
                     Id = x.Id,
                     Name = x.Name,
                     PositionId = x.PositionId,
-                    PositionName = x.Position.Name
+                    PositionName = x.Position.Name,
                 }).ToList();
             }
         }
+
+        public void UpdateDictionaryStandartSendList(IContext context, InternalDictionaryStandartSendList list)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var ddt = new DictionaryStandartSendLists()
+                {
+                    Id = list.Id,
+                    Name = list.Name,
+                    PositionId = list.PositionId,
+                    LastChangeDate = list.LastChangeDate,
+                    LastChangeUserId = list.LastChangeUserId
+                };
+
+                dbContext.DictionaryStandartSendListsSet.Attach(ddt);
+                var entity = dbContext.Entry(ddt);
+                entity.State = System.Data.Entity.EntityState.Modified;
+
+                dbContext.SaveChanges();
+            }
+        }
+
+        public void DeleteDictionaryStandartSendList(IContext context, InternalDictionaryStandartSendList list)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+
+                var ddt = dbContext.DictionaryStandartSendListsSet.FirstOrDefault(x => x.Id == list.Id);
+                if (ddt == null) return;
+                dbContext.DictionaryStandartSendListsSet.Remove(ddt);
+
+                dbContext.SaveChanges();
+            }
+        }
+
+        public int AddDictionaryStandartSendList(IContext context, InternalDictionaryStandartSendList list)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var ddt = new DictionaryStandartSendLists()
+                {
+                    Id = list.Id,
+                    Name = list.Name,
+                    PositionId = list.PositionId,
+                    LastChangeDate = list.LastChangeDate,
+                    LastChangeUserId = list.LastChangeUserId
+                };
+                dbContext.DictionaryStandartSendListsSet.Add(ddt);
+                dbContext.SaveChanges();
+                list.Id = ddt.Id;
+                return ddt.Id;
+            }
+        }
+
         #endregion DictionaryStandartSendList
 
         #region DictionarySubordinationTypes
-        public BaseDictionarySubordinationType GetDictionarySubordinationType(IContext context, int id)
+        public FrontDictionarySubordinationType GetDictionarySubordinationType(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context))
             {
                 return dbContext.DictionarySubordinationTypesSet.Where(x => x.Id == id)
-                    .Select(x => new BaseDictionarySubordinationType
+                    .Select(x => new FrontDictionarySubordinationType
                     {
                         Id = x.Id,
                         Code = x.Code,
@@ -1043,18 +3945,34 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<BaseDictionarySubordinationType> GetDictionarySubordinationTypes(IContext context, FilterDictionarySubordinationType filter)
+        public IEnumerable<FrontDictionarySubordinationType> GetDictionarySubordinationTypes(IContext context, FilterDictionarySubordinationType filter)
         {
             using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionarySubordinationTypesSet.AsQueryable();
 
-                if (filter.SubordinationTypeId?.Count > 0)
+                // Список первичных ключей
+                if (filter.IDs?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.SubordinationTypeId.Contains(x.Id));
+                    qry = qry.Where(x => filter.IDs.Contains(x.Id));
                 }
 
-                return qry.Select(x => new BaseDictionarySubordinationType
+                // Исключение списка первичных ключей
+                if (filter.NotContainsIDs?.Count > 0)
+                {
+                    qry = qry.Where(x => !filter.NotContainsIDs.Contains(x.Id));
+                }
+                
+                // Поиск по наименованию
+                if (!String.IsNullOrEmpty(filter.Name))
+                {
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
+                    {
+                        qry = qry.Where(x => x.Name.Contains(temp));
+                    }
+                }
+
+                return qry.Select(x => new FrontDictionarySubordinationType
                 {
                     Id = x.Id,
                     Code = x.Code,
@@ -1075,9 +3993,9 @@ namespace BL.Database.Dictionaries
 
                 qry = qry.Where(x => ctx.IsAdmin || !x.PositionId.HasValue || ctx.CurrentPositionsIdList.Contains(x.PositionId ?? 0));
 
-                if (filter.TagId?.Count > 0)
+                if (filter.IDs?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.TagId.Contains(x.Id));
+                    qry = qry.Where(x => filter.IDs.Contains(x.Id));
                 }
 
                 return qry.Select(x => new InternalDictionaryTag
@@ -1098,9 +4016,9 @@ namespace BL.Database.Dictionaries
 
                 qry = qry.Where(x => ctx.IsAdmin || !x.PositionId.HasValue || ctx.CurrentPositionsIdList.Contains(x.PositionId ?? 0));
 
-                if (filter.TagId?.Count > 0)
+                if (filter.IDs?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.TagId.Contains(x.Id));
+                    qry = qry.Where(x => filter.IDs.Contains(x.Id));
                 }
 
                 return qry.Select(x => new FrontDictionaryTag
@@ -1278,9 +4196,9 @@ namespace BL.Database.Dictionaries
 
                 if (filter != null)
                 {
-                    if (filter.CustomDictionaryTypeId?.Count > 0)
+                    if (filter.IDs?.Count > 0)
                     {
-                        qry = qry.Where(x => filter.CustomDictionaryTypeId.Contains(x.Id));
+                        qry = qry.Where(x => filter.IDs.Contains(x.Id));
                     }
 
                     if (!string.IsNullOrEmpty(filter.Code))
@@ -1334,11 +4252,28 @@ namespace BL.Database.Dictionaries
             {
                 var qry = dbContext.CustomDictionaryTypesSet.AsQueryable();
 
+                // Список первичных ключей
                 if (filter != null)
                 {
-                    if (filter.CustomDictionaryTypeId?.Count > 0)
+                    if (filter.IDs?.Count > 0)
                     {
-                        qry = qry.Where(x => filter.CustomDictionaryTypeId.Contains(x.Id));
+                        qry = qry.Where(x => filter.IDs.Contains(x.Id));
+                    }
+                }
+
+                // Исключение списка первичных ключей
+                if (filter.NotContainsIDs?.Count > 0)
+                {
+                    qry = qry.Where(x => !filter.NotContainsIDs.Contains(x.Id));
+                }
+
+
+                // Поиск но Code
+                if (!String.IsNullOrEmpty(filter.Code))
+                {
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Code))
+                    {
+                        qry = qry.Where(x => x.Code.Contains(temp));
                     }
                 }
 
@@ -1361,6 +4296,7 @@ namespace BL.Database.Dictionaries
             {
                 var item = new CustomDictionaries
                 {
+                    // pss В Modify командах не передается ID!!!!
                     Id = model.Id,
                     Code = model.Code,
                     Description = model.Description,
@@ -1419,9 +4355,9 @@ namespace BL.Database.Dictionaries
 
                 if (filter != null)
                 {
-                    if (filter.CustomDictionaryTypeId?.Count > 0)
+                    if (filter.IDs?.Count > 0)
                     {
-                        qry = qry.Where(x => filter.CustomDictionaryTypeId.Contains(x.Id));
+                        qry = qry.Where(x => filter.IDs.Contains(x.Id));
                     }
 
                     if (!string.IsNullOrEmpty(filter.Code))
@@ -1468,11 +4404,33 @@ namespace BL.Database.Dictionaries
             {
                 var qry = dbContext.CustomDictionariesSet.AsQueryable();
 
+                // Список первичных ключей
                 if (filter != null)
                 {
-                    if (filter.CustomDictionaryTypeId?.Count > 0)
+                    if (filter.IDs?.Count > 0)
                     {
-                        qry = qry.Where(x => filter.CustomDictionaryTypeId.Contains(x.DictionaryTypeId));
+                        qry = qry.Where(x => filter.IDs.Contains(x.DictionaryTypeId));
+                    }
+                }
+
+                // Исключение списка первичных ключей
+                if (filter.NotContainsIDs?.Count > 0)
+                {
+                    qry = qry.Where(x => !filter.NotContainsIDs.Contains(x.Id));
+                }
+
+                // Тоько активные/неактивные
+                if (filter.IsActive != null)
+                {
+                    qry = qry.Where(x => filter.IsActive == x.IsActive);
+                }
+
+                // Поиск по Code
+                if (!String.IsNullOrEmpty(filter.Code))
+                {
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Code))
+                    {
+                        qry = qry.Where(x => x.Code.Contains(temp));
                     }
                 }
 
@@ -1487,6 +4445,7 @@ namespace BL.Database.Dictionaries
                 return items;
             }
         }
+
         #endregion CustomDictionaries
     }
 }

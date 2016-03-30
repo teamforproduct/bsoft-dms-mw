@@ -2,8 +2,8 @@
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
-    public class FilterDictionarySendType
+    public class FilterDictionarySendType : DictionaryBaseFilterParameters
     {
-        public List<int> SendTypeId { get; set; }
+
     }
 }

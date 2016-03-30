@@ -2,9 +2,11 @@
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
-    public class FilterDictionaryStandartSendList
+    public class FilterDictionaryStandartSendList : DictionaryBaseFilterParameters
     {
-        public List<int> StandartSendListId { get; set; }
-        public List<int?> PositionId { get; set; }
+        
+        public int? PositionID { get; set; }
+        public string Name { get; set; }
+        
     }
 }

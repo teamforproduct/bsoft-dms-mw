@@ -2,11 +2,8 @@
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
-    public class FilterDictionaryTag
+    public class FilterDictionaryTag : DictionaryBaseFilterParameters
     {
-        /// <summary>
-        /// Массив ИД тегов
-        /// </summary>
-        public List<int> TagId { get; set; }
+
     }
 }

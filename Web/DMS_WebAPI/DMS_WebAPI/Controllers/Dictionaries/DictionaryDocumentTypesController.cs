@@ -1,13 +1,12 @@
-﻿using BL.Logic.DependencyInjection;
-using BL.Logic.DictionaryCore.Interfaces;
-using BL.Model.DictionaryCore.IncomingModel;
+﻿using BL.Logic.DictionaryCore.Interfaces;
+using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;
+using BL.Model.DictionaryCore.IncomingModel;
+using BL.Model.Enums;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Web.Http;
 using BL.CrossCutting.DependencyInjection;
-using BL.Model.Enums;
-using BL.Model.DictionaryCore.FilterModel;
 
 namespace DMS_WebAPI.Controllers.Dictionaries
 {
@@ -15,10 +14,10 @@ namespace DMS_WebAPI.Controllers.Dictionaries
     public class DictionaryDocumentTypesController : ApiController
     {
         /// <summary>
-        /// Возвращает список типов документов
+        /// Возвращает записи из словаря "Типы документов"
         /// </summary>
-        /// <param name="filter">Параметры для фильтрации типов документа</param>
-        /// <returns>Cписок типов документов</returns>
+        /// <param name="filter">Параметры для фильтрации записей в словаре "Типы документов"</param>
+        /// <returns>FrontDictionaryDocumentType</returns>
         // GET: api/DictionaryDocumentTypes
         public IHttpActionResult Get([FromUri] FilterDictionaryDocumentType filter)
         {
@@ -28,6 +27,11 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             return new JsonResult(tmpDicts, this);
         }
 
+        /// <summary>
+        /// Возвращает запись из словаря "Типы документов" по ID 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>FrontDictionaryDocumentType</returns>
         // GET: api/DictionaryDocumentTypes/5
         public IHttpActionResult Get(int id)
         {
@@ -38,10 +42,10 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         }
 
         /// <summary>
-        /// Добавление словаря тип документа
+        /// Добавление записи в словаре "Типы документов"
         /// </summary>
-        /// <param name="model"></param>
-        /// <returns>Измененный запись словаря типа документа</returns>
+        /// <param name="model">ModifyDictionaryDocumentType</param>
+        /// <returns>Возвращает добавленную запись</returns>
         public IHttpActionResult Post([FromBody]ModifyDictionaryDocumentType model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
@@ -50,11 +54,11 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         }
 
         /// <summary>
-        /// Изменение словаря тип документа 
+        /// Изменение записи в словаре "Типы документов"
         /// </summary>
         /// <param name="id"></param>
-        /// <param name="model"></param>
-        /// <returns>Измененный запись словаря типа документа</returns>
+        /// <param name="model">ModifyDictionaryDocumentType</param>
+        /// <returns>Возвращает измененную запись</returns>
         public IHttpActionResult Put(int id, [FromBody]ModifyDictionaryDocumentType model)
         {
             model.Id = id;
@@ -65,9 +69,9 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         }
 
         /// <summary>
-        /// Удаляет из справочника запись
+        /// Удаление записи в словаре "Типы документов"
         /// </summary>
-        /// <returns>Возвращает id удаленного документа</returns> 
+        /// <returns>Возвращает ID удаленного документа</returns> 
         public IHttpActionResult Delete([FromUri] int id)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();

@@ -29,7 +29,7 @@ namespace BL.Logic.DictionaryCore.CustomDictionary
 
         public override bool CanExecute()
         {
-            var cd = _dictDb.GetInternalCustomDictionary(_context, new FilterCustomDictionary { CustomDictionaryTypeId = new List<int> { Model.DictionaryTypeId }, Code = Model.Code });
+            var cd = _dictDb.GetInternalCustomDictionary(_context, new FilterCustomDictionary { IDs = new List<int> { Model.DictionaryTypeId }, Code = Model.Code });
             if (cd != null)
             {
                 throw new DictionaryRecordNotUnique();
@@ -41,12 +41,7 @@ namespace BL.Logic.DictionaryCore.CustomDictionary
         {
             try
             {
-                var newItem = new InternalCustomDictionary
-                {
-                    Code = Model.Code,
-                    Description = Model.Description,
-                    DictionaryTypeId = Model.DictionaryTypeId
-                };
+                var newItem = new InternalCustomDictionary(Model);
                 CommonDocumentUtilities.SetLastChange(_context, newItem);
                 return _dictDb.AddCustomDictionary(_context, newItem);
             }
