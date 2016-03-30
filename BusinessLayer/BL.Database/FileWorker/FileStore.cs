@@ -7,7 +7,7 @@ using BL.Model.Constants;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Exception;
 
-namespace BL.Logic.FileWorker
+namespace BL.Database.FileWorker
 {
     public class FileStore : IFileStore
     {

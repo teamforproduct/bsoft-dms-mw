@@ -1,7 +1,7 @@
 using BL.CrossCutting.Interfaces;
 using BL.Model.DocumentCore.InternalModel;
 
-namespace BL.Logic.FileWorker
+namespace BL.Database.FileWorker
 {
     public interface IFileStore
     {

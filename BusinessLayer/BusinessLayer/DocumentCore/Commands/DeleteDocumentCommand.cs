@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using BL.Database.Documents.Interfaces;
+using BL.Database.FileWorker;
 using BL.Model.Exception;
 using BL.Logic.Common;
-using BL.Logic.FileWorker;
 
 namespace BL.Logic.DocumentCore.Commands
 {

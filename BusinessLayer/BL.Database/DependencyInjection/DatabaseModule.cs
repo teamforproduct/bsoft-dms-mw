@@ -4,8 +4,8 @@ using BL.Database.Dictionaries;
 using BL.Database.Dictionaries.Interfaces;
 using BL.Database.Documents;
 using BL.Database.Documents.Interfaces;
+using BL.Database.FileWorker;
 using BL.Database.SystemDb;
-using BL.Logic.FileWorker;
 using Ninject.Modules;
 
 namespace BL.Database.DependencyInjection

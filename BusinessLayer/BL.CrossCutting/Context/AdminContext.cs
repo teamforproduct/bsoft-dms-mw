@@ -3,7 +3,6 @@ using BL.CrossCutting.Interfaces;
 using BL.Logic.Context;
 using BL.Model.Database;
 using BL.Model.Users;
-using BL.CrossCutting.Helpers;
 
 namespace BL.CrossCutting.Context
 {

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Documents.Interfaces;
+using BL.Database.FileWorker;
 using BL.Logic.DocumentCore.Interfaces;
-using BL.Logic.FileWorker;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.Exception;

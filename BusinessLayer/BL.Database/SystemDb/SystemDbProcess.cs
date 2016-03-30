@@ -33,7 +33,7 @@ namespace BL.Database.SystemDb
                     LogLevel = (int)log.LogType,
                     LogException = log.LogException,
                     LogTrace = log.LogObjects,
-                    Message = log.Message
+                    Message = log.Message,
                 };
                 dbContext.LogSet.Add(nlog);
                 dbContext.SaveChanges();
@@ -547,7 +547,7 @@ namespace BL.Database.SystemDb
                         SourcePositiontId = x.SourcePositionId ?? 0,
                         SourcePositionName = x.SourcePosition == null ? "" : x.SourcePosition.Name,
                         WasUpdated = !(x.SendDate == null),
-                        DestinationAgentEmail = "sanyok.malinin@gmail.com"
+                        DestinationAgentEmail = "sergozubr@rambler.ru"
                     }).ToList();
             }
         }

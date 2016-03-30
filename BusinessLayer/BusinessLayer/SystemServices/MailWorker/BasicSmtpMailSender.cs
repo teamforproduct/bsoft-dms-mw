@@ -32,9 +32,12 @@ namespace BL.Logic.SystemServices.MailWorker
                 message.Subject = mailData.Subject;
                 message.SubjectEncoding = System.Text.Encoding.UTF8;
 
-                foreach (var filePath in mailData.AttachedFiles.Where(filePath => !string.IsNullOrEmpty(filePath.Trim())))
+                if (mailData.AttachedFiles != null)
                 {
-                    message.Attachments.Add(new Attachment(filePath.Trim()));
+                    foreach (var filePath in mailData.AttachedFiles.Where(filePath => !string.IsNullOrEmpty(filePath.Trim())))
+                    {
+                        message.Attachments.Add(new Attachment(filePath.Trim()));
+                    }
                 }
 
                 // Set the method that is called back when the send operation ends.
