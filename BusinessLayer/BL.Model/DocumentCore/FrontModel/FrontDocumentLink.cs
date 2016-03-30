@@ -3,7 +3,7 @@ using System;
 
 namespace BL.Model.DocumentCore.FrontModel
 {
-    public class FrontDocumentLink
+    public class FrontDocumentLink: FrontRegistrationFullNumber
     {
         /// <summary>
         /// ID 
@@ -14,7 +14,7 @@ namespace BL.Model.DocumentCore.FrontModel
         /// общая информация о связи
         /// </summary>
         public string LinkTypeName { get; set; }
-        public string RegistrationFullNumber { get; set; }
+
         public DateTime? DocumentDate { get; set; }
 
     }

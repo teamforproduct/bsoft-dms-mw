@@ -6,11 +6,10 @@ namespace BL.Model.DocumentCore.FrontModel
     /// <summary>
     /// Describe the display model for the Document events.
     /// </summary>
-    public class FrontDocumentEvent
+    public class FrontDocumentEvent : FrontRegistrationFullNumber
     {
         public int Id { get; set; }
         public int? DocumentId { get; set; }
-        public string RegistrationFullNumber { get; set; }
         public DateTime? DocumentDate { get; set; }
         public int? EventType { get; set; }
         public string EventTypeName { get; set; }
