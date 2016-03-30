@@ -7,7 +7,7 @@ namespace BL.Model.DictionaryCore.FilterModel
     /// <summary>
     /// Фильтр словаря физических лиц
     /// </summary>
-    public class FilterDictionaryAgentPerson : DictionaryBaseFilterParms
+    public class FilterDictionaryAgentPerson : DictionaryBaseFilterParameters
     {
 
         /// <summary>

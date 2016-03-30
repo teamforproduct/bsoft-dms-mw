@@ -6,7 +6,7 @@ namespace BL.Model.DictionaryCore.FilterModel
     /// <summary>
     /// Фильтр словаря агентов
     /// </summary>
-    public class FilterDictionaryAgent : DictionaryBaseFilterParms
+    public class FilterDictionaryAgent : DictionaryBaseFilterParameters
     {
     
         /// <summary>

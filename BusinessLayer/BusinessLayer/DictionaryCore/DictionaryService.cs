@@ -348,13 +348,13 @@ namespace BL.Logic.DictionaryCore
         #endregion DictionarySendTypes
 
         #region DictionaryStandartSendListContents
-        public BaseDictionaryStandartSendListContent GetDictionaryStandartSendListContent(IContext context, int id)
+        public FrontDictionaryStandartSendListContent GetDictionaryStandartSendListContent(IContext context, int id)
         {
 
             return _dictDb.GetDictionaryStandartSendListContent(context, id);
         }
 
-        public IEnumerable<BaseDictionaryStandartSendListContent> GetDictionaryStandartSendListContents(IContext context, FilterDictionaryStandartSendListContent filter)
+        public IEnumerable<FrontDictionaryStandartSendListContent> GetDictionaryStandartSendListContents(IContext context, FilterDictionaryStandartSendListContent filter)
         {
 
             return _dictDb.GetDictionaryStandartSendListContents(context, filter);
@@ -362,13 +362,13 @@ namespace BL.Logic.DictionaryCore
         #endregion DictionaryStandartSendListContents
 
         #region DictionaryStandartSendLists
-        public BaseDictionaryStandartSendList GetDictionaryStandartSendList(IContext context, int id)
+        public FrontDictionaryStandartSendList GetDictionaryStandartSendList(IContext context, int id)
         {
 
             return _dictDb.GetDictionaryStandartSendList(context, id);
         }
 
-        public IEnumerable<BaseDictionaryStandartSendList> GetDictionaryStandartSendLists(IContext context, FilterDictionaryStandartSendList filter)
+        public IEnumerable<FrontDictionaryStandartSendList> GetDictionaryStandartSendLists(IContext context, FilterDictionaryStandartSendList filter)
         {
 
             return _dictDb.GetDictionaryStandartSendLists(context, filter);

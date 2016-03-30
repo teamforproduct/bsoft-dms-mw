@@ -2,7 +2,7 @@
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
-    public class FilterCustomDictionary : DictionaryBaseFilterParms
+    public class FilterCustomDictionary : DictionaryBaseFilterParameters
     {
         public string Code { get; set; }
     }

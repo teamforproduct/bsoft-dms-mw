@@ -5,7 +5,7 @@ namespace BL.Model.DictionaryCore.FilterModel
     /// <summary>
     /// Фильтр типов адресов
     /// </summary>
-    public class FilterDictionaryAddressType : DictionaryBaseFilterParms
+    public class FilterDictionaryAddressType : DictionaryBaseFilterParameters
     {
         
     }

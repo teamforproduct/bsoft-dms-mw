@@ -11,6 +11,7 @@ using BL.Logic.DictionaryCore.AgentCompany;
 using BL.Logic.DictionaryCore.AgentEmployee;
 using BL.Logic.DictionaryCore.Agent;
 using BL.Logic.DictionaryCore.AgentAccount;
+using BL.Logic.DictionaryCore.StandartSendList;
 using BL.Logic.DictionaryCore.Tag;
 using BL.Model.Enums;
 using BL.Model.Exception;
@@ -246,7 +247,18 @@ namespace BL.Logic.DictionaryCore
                     cmd = DmsResolver.Current.Get<DeleteDictionaryPositionCommand>();
                     break;
                 #endregion DictionaryDictionaryPositionss
-                    
+
+                #region DictionaryStandartSendListContent
+                case EnumDictionaryActions.AddStandartSendListContent:
+                    cmd = DmsResolver.Current.Get<AddDictionaryStandartSendListContentCommand>();
+                    break;
+                case EnumDictionaryActions.ModifyStandartSendListContent:
+                    cmd = DmsResolver.Current.Get<ModifyDictionaryStandartSendListContentCommand>();
+                    break;
+                case EnumDictionaryActions.DeleteStandartSendListContent:
+                    cmd = DmsResolver.Current.Get<DeleteDictionaryStandartSendListContentCommand>();
+                    break;
+                #endregion DictionaryStandartSendListContent
 
 
                 default:

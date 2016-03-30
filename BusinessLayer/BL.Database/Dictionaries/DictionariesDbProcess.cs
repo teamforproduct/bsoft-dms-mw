@@ -156,7 +156,7 @@ namespace BL.Database.Dictionaries
                 // Поиск по наименованию
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
-                    foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.Name))
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
                     {
                         qry = qry.Where(x => x.Name.Contains(temp));
                     }
@@ -414,7 +414,7 @@ namespace BL.Database.Dictionaries
                 // Поиск по наименованию
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
-                    foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.Name))
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
                     {
                         qry = qry.Where(x => x.FullName.Contains(temp));
                     }
@@ -429,7 +429,7 @@ namespace BL.Database.Dictionaries
                 // Поиск по ИНН
                 if (!string.IsNullOrEmpty(filter.TaxCode))
                 {
-                    foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.TaxCode))
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.TaxCode))
                     {
                         qry = qry.Where(x => x.TaxCode.Contains(temp));
                     }
@@ -836,7 +836,7 @@ namespace BL.Database.Dictionaries
                 // Поиск по наименованию
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
-                    foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.Name))
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
                     {
                         qry = qry.Where(x => x.Agent.AgentPerson.FullName.Contains(temp));
                     }
@@ -844,7 +844,7 @@ namespace BL.Database.Dictionaries
                 
                 if (!string.IsNullOrEmpty(filter.PersonnelNumber))
                 {
-                    foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.PersonnelNumber))
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.PersonnelNumber))
                     {
                         qry = qry.Where(x => x.PersonnelNumber.Contains(temp));
                     }
@@ -859,7 +859,7 @@ namespace BL.Database.Dictionaries
 
                 if (!string.IsNullOrEmpty(filter.TaxCode))
                 {
-                    foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.TaxCode))
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.TaxCode))
                     {
                         qry = qry.Where(x => x.Agent.AgentPerson.TaxCode.Contains(temp));
                     }
@@ -1024,7 +1024,7 @@ namespace BL.Database.Dictionaries
 
                 if (!string.IsNullOrEmpty(filter.PostCode))
                 {
-                    foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.PostCode))
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.PostCode))
                     {
                         qry = qry.Where(x => x.PostCode.Contains(temp));
                     }
@@ -1032,7 +1032,7 @@ namespace BL.Database.Dictionaries
 
                 if (!string.IsNullOrEmpty(filter.Address))
                 {
-                    foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.Address))
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Address))
                     {
                         qry = qry.Where(x => x.Address.Contains(temp));
                     }
@@ -1125,10 +1125,11 @@ namespace BL.Database.Dictionaries
 
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
-                    foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.Name))
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
                     {
                         qry = qry.Where(x => x.Name.Contains(temp));
                     }
+                   
                 }
 
                 if (filter.IsActive != null)
@@ -1181,7 +1182,7 @@ namespace BL.Database.Dictionaries
                 // Поиск по наименованию
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
-                    foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.Name))
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
                     {
                         qry = qry.Where(x => x.Name.Contains(temp));
                     }
@@ -1298,7 +1299,7 @@ namespace BL.Database.Dictionaries
                 // Поиск по наименованию
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
-                    foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.Name))
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
                     {
                         qry = qry.Where(x => x.FullName.Contains(temp));
                     }
@@ -1306,21 +1307,21 @@ namespace BL.Database.Dictionaries
 
                 if (!string.IsNullOrEmpty(filter.TaxCode))
                 {
-                    foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.TaxCode))
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.TaxCode))
                     {
                         qry = qry.Where(x => x.TaxCode.Contains(temp));
                     }
                 }
                 if (!string.IsNullOrEmpty(filter.OKPOCode))
                 {
-                    foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.OKPOCode))
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.OKPOCode))
                     {
                         qry = qry.Where(x => x.OKPOCode.Contains(temp));
                     }
                 }
                 if (!string.IsNullOrEmpty(filter.VATCode))
                 {
-                    foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.VATCode))
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.VATCode))
                     {
                         qry = qry.Where(x => x.VATCode.Contains(temp));
                     }
@@ -1687,7 +1688,7 @@ namespace BL.Database.Dictionaries
                 // Поиск по наименованию
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
-                    foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.Name))
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
                     {
                         qry = qry.Where(x => x.Agent.Name.Contains(temp));
                     }
@@ -1695,7 +1696,7 @@ namespace BL.Database.Dictionaries
 
                 if (!string.IsNullOrEmpty(filter.MFOCode))
                 {
-                    foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.MFOCode))
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.MFOCode))
                     {
                         qry = qry.Where(x => x.MFOCode.Contains(temp));
                     }
@@ -1891,7 +1892,7 @@ namespace BL.Database.Dictionaries
 
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
-                    foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.Name))
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
                     {
                         qry = qry.Where(x => x.Name.Contains(temp));
                     }
@@ -1899,7 +1900,7 @@ namespace BL.Database.Dictionaries
 
                 if (!string.IsNullOrEmpty(filter.AccountNumber))
                 {
-                    foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.AccountNumber))
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.AccountNumber))
                     {
                         qry = qry.Where(x => x.AccountNumber.Contains(temp));
                     }
@@ -1953,7 +1954,7 @@ namespace BL.Database.Dictionaries
 
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
-                    foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.Name))
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
                     {
                         qry = qry.Where(x => x.Name.Contains(temp));
                     }
@@ -2048,7 +2049,7 @@ namespace BL.Database.Dictionaries
                 // Поиск по наименованию
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
-                    foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.Name))
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
                     {
                         qry = qry.Where(x => x.Name.Contains(temp));
                     }
@@ -2163,7 +2164,7 @@ namespace BL.Database.Dictionaries
                 }
                 if (!string.IsNullOrEmpty(filter.Contact))
                 {
-                    foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.Contact))
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Contact))
                     {
                         qry = qry.Where(x => x.Contact.Contains(temp));
                     }
@@ -2369,7 +2370,7 @@ namespace BL.Database.Dictionaries
             // Условие по Name
             if (!string.IsNullOrEmpty(filter.Name))
             {
-                foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.Name))
+                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
                 {
                     qry = qry.Where(x => x.Name.Contains(temp));
                 }
@@ -2379,7 +2380,7 @@ namespace BL.Database.Dictionaries
             // Условие по FullName
             if (!string.IsNullOrEmpty(filter.FullName))
             {
-                foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.FullName))
+                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.FullName))
                 {
                     qry = qry.Where(x => x.FullName.Contains(temp));
                 }
@@ -2388,7 +2389,7 @@ namespace BL.Database.Dictionaries
             // Условие по Code
             if (!string.IsNullOrEmpty(filter.Code))
             {
-                foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.Code))
+                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Code))
                 {
                     qry = qry.Where(x => x.Code.Contains(temp));
                 }
@@ -2630,7 +2631,7 @@ namespace BL.Database.Dictionaries
             // Поиск по наименованию
             if (!string.IsNullOrEmpty(filter.Name))
             {
-                foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.Name))
+                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
                 {
                     qry = qry.Where(x => x.Name.Contains(temp));
                 }
@@ -2763,7 +2764,7 @@ namespace BL.Database.Dictionaries
             // Поиск по наименованию
             if (!string.IsNullOrEmpty(filter.Name))
             {
-                foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.Name))
+                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
                 {
                     qry = qry.Where(x => x.Name.Contains(temp));
                 }
@@ -2812,7 +2813,7 @@ namespace BL.Database.Dictionaries
                 // Поиск по наименованию
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
-                    foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.Name))
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
                     {
                         qry = qry.Where(x => x.Name.Contains(temp));
                     }
@@ -2885,7 +2886,7 @@ namespace BL.Database.Dictionaries
                 // Поиск по наименованию
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
-                    foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.Name))
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
                     {
                         qry = qry.Where(x => x.Name.Contains(temp));
                     }
@@ -2955,7 +2956,7 @@ namespace BL.Database.Dictionaries
                 // Поиск по наименованию
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
-                    foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.Name))
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
                     {
                         qry = qry.Where(x => x.Name.Contains(temp));
                     }
@@ -3086,7 +3087,7 @@ namespace BL.Database.Dictionaries
                             CompanyName = y.Company.Name,
                             ChiefPositionName = y.ChiefPosition.Name
                         }),
-                        StandartSendLists = x.StandartSendLists.Select(y => new BaseDictionaryStandartSendList
+                        StandartSendLists = x.StandartSendLists.Select(y => new FrontDictionaryStandartSendList
                         {
                             Id = y.Id,
                             Name = y.Name,
@@ -3445,7 +3446,7 @@ namespace BL.Database.Dictionaries
             // Поиск по наименованию
             if (!string.IsNullOrEmpty(filter.Name))
             {
-                foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.Name))
+                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
                 {
                     qry = qry.Where(x => x.Name.Contains(temp));
                 }
@@ -3454,7 +3455,7 @@ namespace BL.Database.Dictionaries
             // Условие по Index
             if (!string.IsNullOrEmpty(filter.Index))
             {
-                foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.Index))
+                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Index))
                 {
                     qry = qry.Where(x => x.Index.Contains(temp));
                 }
@@ -3534,7 +3535,7 @@ namespace BL.Database.Dictionaries
                 // Поиск по наименованию
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
-                    foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.Name))
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
                     {
                         qry = qry.Where(x => x.Name.Contains(temp));
                     }
@@ -3591,7 +3592,7 @@ namespace BL.Database.Dictionaries
                 // Поиск по наименованию
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
-                    foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.Name))
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
                     {
                         qry = qry.Where(x => x.Name.Contains(temp));
                     }
@@ -3611,12 +3612,12 @@ namespace BL.Database.Dictionaries
         #endregion DictionarySendTypes
 
         #region DictionaryStandartSendListContents
-        public BaseDictionaryStandartSendListContent GetDictionaryStandartSendListContent(IContext context, int id)
+        public FrontDictionaryStandartSendListContent GetDictionaryStandartSendListContent(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context))
             {
                 return dbContext.DictionaryStandartSendListContentsSet.Where(x => x.Id == id)
-                    .Select(x => new BaseDictionaryStandartSendListContent
+                    .Select(x => new FrontDictionaryStandartSendListContent
                     {
                         Id = x.Id,
                         StandartSendListId = x.StandartSendListId,
@@ -3628,8 +3629,6 @@ namespace BL.Database.Dictionaries
                         DueDate = x.DueDate,
                         DueDay = x.DueDay,
                         AccessLevelId = x.AccessLevelId,
-                        LastChangeUserId = x.LastChangeUserId,
-                        LastChangeDate = x.LastChangeDate,
                         SendTypeName = x.SendType.Name,
                         TargetPositionName = x.TargetPosition.Name,
                         TargetAgentName = x.TargetPosition.ExecutorAgent.Name ?? x.TargetAgent.Name,
@@ -3638,16 +3637,63 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<BaseDictionaryStandartSendListContent> GetDictionaryStandartSendListContents(IContext context, FilterDictionaryStandartSendListContent filter)
+        public IEnumerable<FrontDictionaryStandartSendListContent> GetDictionaryStandartSendListContents(IContext context, FilterDictionaryStandartSendListContent filter)
         {
             using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionaryStandartSendListContentsSet.AsQueryable();
 
                 // Список первичных ключей
-                if (filter.IDs?.Count > 0)
+                if (filter.StandartSendListId.Count > 0)
                 {
-                    qry = qry.Where(x => filter.IDs.Contains(x.Id));
+                    qry = qry.Where(x => filter.StandartSendListId.Contains(x.StandartSendListId));
+                }
+
+                if (filter.SendTypeId.Count > 0)
+                {
+                    qry = qry.Where(x => filter.SendTypeId.Contains((EnumSendTypes)x.SendTypeId));
+                }
+
+                if (filter.TargetPositionId.HasValue)
+                {
+                    qry = qry.Where(x => x.TargetPositionId == filter.TargetPositionId);
+                }
+
+                if (filter.TargetPositionId.HasValue)
+                {
+                    qry = qry.Where(x => x.TargetAgentId == filter.TargetAgentId);
+                }
+
+                if (!string.IsNullOrEmpty(filter.Task))
+                {
+                    qry = CommonFilterUtilites.GetWhereExpressions(filter.Task)
+                        .Aggregate(qry, (current, task) => current.Where(x => x.Task.Contains(task)));
+                }
+
+              
+                 if (!string.IsNullOrEmpty(filter.SendTypeName))
+                {
+
+                    foreach (string str in CommonFilterUtilites.GetWhereExpressions(filter.SendTypeName))
+                    {
+                        qry = qry.Where(x => x.SendType.Name.Contains(str));
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(filter.TargetPositionName))
+                {
+                    foreach (string str in CommonFilterUtilites.GetWhereExpressions(filter.TargetPositionName))
+                    {
+                        qry = qry.Where(x => x.TargetPosition.Name.Contains(str));
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(filter.TargetAgentName))
+                {
+                    foreach (string str in CommonFilterUtilites.GetWhereExpressions(filter.TargetAgentName))
+                    {
+                        qry = qry.Where(x => x.TargetAgent.Name.Contains(str));
+                    }
                 }
 
                 // Исключение списка первичных ключей
@@ -3656,7 +3702,7 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(x => !filter.NotContainsIDs.Contains(x.Id));
                 }
 
-                return qry.Select(x => new BaseDictionaryStandartSendListContent
+                return qry.Select(x => new FrontDictionaryStandartSendListContent
                 {
                     Id = x.Id,
                     StandartSendListId = x.StandartSendListId,
@@ -3675,15 +3721,88 @@ namespace BL.Database.Dictionaries
                 }).ToList();
             }
         }
+
+
+        public void UpdateDictionaryStandartSendListContent(IContext context,
+            InternalDictionaryStandartSendListContent content)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var ddt = new DictionaryStandartSendListContents()
+                {
+                    Id = content.Id,
+                    AccessLevelId = (int)content.AccessLevel,
+                    TargetPositionId = content.TargetPositionId,
+                    TargetAgentId = content.TargetAgentId,
+                    DueDate = content.DueDate,
+                    DueDay = content.DueDay,
+                    SendTypeId = (int)content.SendType,
+                    Stage = content.Stage,
+                    StandartSendListId = content.StandartSendListId,
+                    Task = content.Task,
+                    Description = content.Description,
+                    LastChangeDate = content.LastChangeDate,
+                    LastChangeUserId = content.LastChangeUserId
+                };
+
+                dbContext.DictionaryStandartSendListContentsSet.Attach(ddt);
+                var entity = dbContext.Entry(ddt);
+                entity.State = System.Data.Entity.EntityState.Modified;
+
+                dbContext.SaveChanges();
+            }
+        }
+
+        public void DeleteDictionaryStandartSendListContent(IContext context,
+            InternalDictionaryStandartSendListContent content)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+
+                var ddt = dbContext.DictionaryStandartSendListContentsSet.FirstOrDefault(x => x.Id == content.Id);
+                if (ddt == null) return;
+                dbContext.DictionaryStandartSendListContentsSet.Remove(ddt);
+
+                dbContext.SaveChanges();
+            }
+        }
+
+        public int AddDictionaryStandartSendListContent(IContext context,
+            InternalDictionaryStandartSendListContent content)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var ddt = new DictionaryStandartSendListContents()
+                {
+                    Id = content.Id,
+                    AccessLevelId = (int)content.AccessLevel,
+                    TargetPositionId = content.TargetPositionId,
+                    TargetAgentId = content.TargetAgentId,
+                    DueDate = content.DueDate,
+                    DueDay = content.DueDay,
+                    SendTypeId = (int)content.SendType,
+                    Stage = content.Stage,
+                    StandartSendListId = content.StandartSendListId,
+                    Task = content.Task,
+                    Description = content.Description,
+                    LastChangeDate = content.LastChangeDate,
+                    LastChangeUserId = content.LastChangeUserId
+                };
+                dbContext.DictionaryStandartSendListContentsSet.Add(ddt);
+                dbContext.SaveChanges();
+                content.Id = ddt.Id;
+                return ddt.Id;
+            }
+        }
         #endregion DictionaryStandartSendListContents
 
         #region DictionaryStandartSendLists
-        public BaseDictionaryStandartSendList GetDictionaryStandartSendList(IContext context, int id)
+        public FrontDictionaryStandartSendList GetDictionaryStandartSendList(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context))
             {
                 return dbContext.DictionaryStandartSendListsSet.Where(x => x.Id == id)
-                        .Select(x => new BaseDictionaryStandartSendList
+                        .Select(x => new FrontDictionaryStandartSendList
                         {
                             Id = x.Id,
                             Name = x.Name,
@@ -3692,7 +3811,7 @@ namespace BL.Database.Dictionaries
                             LastChangeDate = x.LastChangeDate,
                             PositionName = x.Position.Name,
                             StandartSendListContents =
-                                x.StandartSendListContents.Select(y => new BaseDictionaryStandartSendListContent
+                                x.StandartSendListContents.Select(y => new FrontDictionaryStandartSendListContent()
                                 {
                                     Id = y.Id,
                                     StandartSendListId = y.StandartSendListId,
@@ -3713,7 +3832,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<BaseDictionaryStandartSendList> GetDictionaryStandartSendLists(IContext context, FilterDictionaryStandartSendList filter)
+        public IEnumerable<FrontDictionaryStandartSendList> GetDictionaryStandartSendLists(IContext context, FilterDictionaryStandartSendList filter)
         {
             using (var dbContext = new DmsContext(context))
             {
@@ -3734,25 +3853,79 @@ namespace BL.Database.Dictionaries
                 // Поиск по наименованию
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
-                    foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.Name))
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
                     {
                         qry = qry.Where(x => x.Name.Contains(temp));
                     }
                 }
 
-                if (filter.PositionIDs != null && filter.PositionIDs.Count > 0)
+                if (filter.PositionID != null )
                 {
-                    qry = qry.Where(x => filter.PositionIDs.Contains(x.PositionId));
+                    qry = qry.Where(x => filter.PositionID==x.PositionId);
                 }
-                return qry.Select(x => new BaseDictionaryStandartSendList
+                return qry.Select(x => new FrontDictionaryStandartSendList
                 {
                     Id = x.Id,
                     Name = x.Name,
                     PositionId = x.PositionId,
-                    PositionName = x.Position.Name
+                    PositionName = x.Position.Name,
                 }).ToList();
             }
         }
+
+        public void UpdateDictionaryStandartSendList(IContext context, InternalDictionaryStandartSendList list)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var ddt = new DictionaryStandartSendLists()
+                {
+                    Id = list.Id,
+                    Name = list.Name,
+                    PositionId = list.PositionId,
+                    LastChangeDate = list.LastChangeDate,
+                    LastChangeUserId = list.LastChangeUserId
+                };
+
+                dbContext.DictionaryStandartSendListsSet.Attach(ddt);
+                var entity = dbContext.Entry(ddt);
+                entity.State = System.Data.Entity.EntityState.Modified;
+
+                dbContext.SaveChanges();
+            }
+        }
+
+        public void DeleteDictionaryStandartSendList(IContext context, InternalDictionaryStandartSendList list)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+
+                var ddt = dbContext.DictionaryStandartSendListsSet.FirstOrDefault(x => x.Id == list.Id);
+                if (ddt == null) return;
+                dbContext.DictionaryStandartSendListsSet.Remove(ddt);
+
+                dbContext.SaveChanges();
+            }
+        }
+
+        public int AddDictionaryStandartSendList(IContext context, InternalDictionaryStandartSendList list)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var ddt = new DictionaryStandartSendLists()
+                {
+                    Id = list.Id,
+                    Name = list.Name,
+                    PositionId = list.PositionId,
+                    LastChangeDate = list.LastChangeDate,
+                    LastChangeUserId = list.LastChangeUserId
+                };
+                dbContext.DictionaryStandartSendListsSet.Add(ddt);
+                dbContext.SaveChanges();
+                list.Id = ddt.Id;
+                return ddt.Id;
+            }
+        }
+
         #endregion DictionaryStandartSendList
 
         #region DictionarySubordinationTypes
@@ -3793,7 +3966,7 @@ namespace BL.Database.Dictionaries
                 // Поиск по наименованию
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
-                    foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.Name))
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
                     {
                         qry = qry.Where(x => x.Name.Contains(temp));
                     }
@@ -4098,7 +4271,7 @@ namespace BL.Database.Dictionaries
                 // Поиск но Code
                 if (!string.IsNullOrEmpty(filter.Code))
                 {
-                    foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.Code))
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Code))
                     {
                         qry = qry.Where(x => x.Code.Contains(temp));
                     }
@@ -4255,7 +4428,7 @@ namespace BL.Database.Dictionaries
                 // Поиск по Code
                 if (!string.IsNullOrEmpty(filter.Code))
                 {
-                    foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.Code))
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Code))
                     {
                         qry = qry.Where(x => x.Code.Contains(temp));
                     }

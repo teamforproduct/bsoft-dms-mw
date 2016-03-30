@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.Serialization;
+using BL.Model.Enums;
 
 namespace BL.Model.DictionaryCore.IncomingModel
 {
@@ -14,6 +16,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// ИД
         /// </summary>
+        [IgnoreDataMember]
         public int Id { get; set; }
         /// <summary>
         /// Ссылка на типовую рассылку
@@ -26,7 +29,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// Ссылка на тип рассылки
         /// </summary>
-        public int SendTypeId { get; set; }
+        public EnumSendTypes SendTypeId { get; set; }
         /// <summary>
         /// Должность получателя
         /// </summary>
@@ -54,7 +57,10 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// Уровень доступа (ссылка)
         /// </summary>
-        public int? AccessLevelId { get; set; }
-       
+        public EnumDocumentAccesses AccessLevelId { get; set; }
+        /// <summary>
+        /// Признак активности
+        /// </summary>
+        public bool IsActive { get; set; }
     }
 }

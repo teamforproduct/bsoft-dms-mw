@@ -152,15 +152,15 @@ namespace BL.Logic.DictionaryCore.Interfaces
         #endregion DictionarySendTypes
 
         #region DictionaryStandartSendListContents
-        BaseDictionaryStandartSendListContent GetDictionaryStandartSendListContent(IContext context, int id);
+        FrontDictionaryStandartSendListContent GetDictionaryStandartSendListContent(IContext context, int id);
 
-        IEnumerable<BaseDictionaryStandartSendListContent> GetDictionaryStandartSendListContents(IContext context, FilterDictionaryStandartSendListContent filter);
+        IEnumerable<FrontDictionaryStandartSendListContent> GetDictionaryStandartSendListContents(IContext context, FilterDictionaryStandartSendListContent filter);
         #endregion DictionaryStandartSendListContents
 
         #region DictionaryStandartSendLists
-        BaseDictionaryStandartSendList GetDictionaryStandartSendList(IContext context, int id);
+        FrontDictionaryStandartSendList GetDictionaryStandartSendList(IContext context, int id);
 
-        IEnumerable<BaseDictionaryStandartSendList> GetDictionaryStandartSendLists(IContext context, FilterDictionaryStandartSendList filter);
+        IEnumerable<FrontDictionaryStandartSendList> GetDictionaryStandartSendLists(IContext context, FilterDictionaryStandartSendList filter);
         #endregion DictionaryStandartSendList
 
         #region DictionarySubordinationTypes

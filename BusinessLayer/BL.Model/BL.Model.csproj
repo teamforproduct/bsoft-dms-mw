@@ -53,7 +53,7 @@
     <Compile Include="AutoPlan\AutoPlanSettings.cs" />
     <Compile Include="Common\Period.cs" />
     <Compile Include="Constants\SettingConstants.cs" />
-    <Compile Include="DictionaryCore\FilterModel\DictionaryBaseFilterParms.cs" />
+    <Compile Include="DictionaryCore\FilterModel\DictionaryBaseFilterParameters.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterCustomDictionary.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterCustomDictionaryType.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryAddressType.cs" />
@@ -81,6 +81,7 @@
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentPerson.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryContactType.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryStandartSendListContent.cs" />
+    <Compile Include="DictionaryCore\FrontModel\FrontDictionaryStandartSendList.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyCustomDictionary.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyCustomDictionaryType.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAddressType.cs" />
@@ -97,6 +98,7 @@
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentPerson.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryContact.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryContactType.cs" />
+    <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryStandartSendList.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryStandartSendListContent.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalCustomDictionary.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAdminPositionRoles.cs" />
@@ -105,6 +107,7 @@
     <Compile Include="AdminCore\FilterAdminUserRole.cs" />
     <Compile Include="AdminCore\FilterAdminAccessLevel.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalCustomDictionaryType.cs" />
+    <Compile Include="DictionaryCore\InternalModel\InternalDictionaryStandartSendList.cs" />
     <Compile Include="DocumentCore\Actions\ControlTargetChange.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentPaper.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentRestrictedSendList.cs" />
@@ -151,8 +154,6 @@
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryImportanceEventType.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryDocumentType.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryDocumentDirection.cs" />
-    <Compile Include="DictionaryCore\BaseDictionaryStandartSendListContent.cs" />
-    <Compile Include="DictionaryCore\BaseDictionaryStandartSendList.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryEventType.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionarySubordinationType.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryStandartSendListContent.cs" />

@@ -40,7 +40,7 @@ namespace BL.Model.DictionaryCore.FrontModel
 
         public virtual IEnumerable<FrontDictionaryPosition> ChildPositions { get; set; }
         public virtual IEnumerable<FrontDictionaryDepartment> ChiefDepartments { get; set; }
-        public virtual IEnumerable<BaseDictionaryStandartSendList> StandartSendLists { get; set; }
+        public virtual IEnumerable<FrontDictionaryStandartSendList> StandartSendLists { get; set; }
 
     }
 }
