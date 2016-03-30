@@ -632,6 +632,5 @@ namespace BL.Logic.Common
             else
                 return null;
         }
-
     }
 }

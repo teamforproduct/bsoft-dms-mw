@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Context\AdminContext.cs" />
+    <Compile Include="Helpers\DmsHash.cs" />
     <Compile Include="Interfaces\ICommand.cs" />
     <Compile Include="Context\DefaultContext.cs" />
     <Compile Include="DependencyInjection\CrossCuttingModule.cs" />
