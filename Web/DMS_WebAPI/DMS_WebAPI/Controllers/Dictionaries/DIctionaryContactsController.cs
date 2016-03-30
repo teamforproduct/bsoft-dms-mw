@@ -7,7 +7,9 @@ using DMS_WebAPI.Utilities;
 using System.Web.Http;
 using BL.Model.Enums;
 using BL.Model.DictionaryCore.FilterModel;
+using BL.CrossCutting.DependencyInjection;
 namespace DMS_WebAPI.Controllers.Dictionaries
+
 {
     /// <summary>
     /// Список контактов контрагента

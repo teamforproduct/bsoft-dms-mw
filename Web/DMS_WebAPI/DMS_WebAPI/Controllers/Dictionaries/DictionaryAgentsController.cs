@@ -8,6 +8,8 @@ using System.Web.Http;
 using BL.CrossCutting.DependencyInjection;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.Enums;
+using BL.Model.SystemCore;
+
 namespace DMS_WebAPI.Controllers.Dictionaries
 {
     /// <summary>
