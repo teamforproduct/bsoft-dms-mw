@@ -1,5 +1,4 @@
-﻿using BL.Logic.Context;
-using BL.Model.Database;
+﻿using BL.Model.Database;
 using System;
 using System.Collections.Generic;
 using System.Web;
@@ -8,6 +7,8 @@ using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.DependencyInjection;
 using BL.Model.Exception;
 using System.Linq;
+using BL.CrossCutting.Context;
+using BL.CrossCutting.DependencyInjection;
 
 namespace DMS_WebAPI.Utilities
 {

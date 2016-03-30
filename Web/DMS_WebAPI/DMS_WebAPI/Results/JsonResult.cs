@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Web.Script.Serialization;
+using BL.CrossCutting.DependencyInjection;
 
 namespace DMS_WebAPI.Results
 {

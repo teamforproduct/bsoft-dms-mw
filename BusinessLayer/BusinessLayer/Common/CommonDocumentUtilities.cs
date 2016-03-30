@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Dictionaries.Interfaces;
 using BL.Logic.DependencyInjection;
@@ -633,6 +634,5 @@ namespace BL.Logic.Common
             else
                 return null;
         }
-
     }
 }

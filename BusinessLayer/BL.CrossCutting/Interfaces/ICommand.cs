@@ -1,5 +1,5 @@
 ﻿using BL.Model.DocumentCore.InternalModel;
-using BL.Model.SystemCore;
+
 
 namespace BL.CrossCutting.Interfaces
 {

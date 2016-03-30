@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using BL.Database.Documents.Interfaces;
+using BL.Database.FileWorker;
 using BL.Logic.Common;
-using BL.Logic.FileWorker;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DocumentCore.InternalModel;
