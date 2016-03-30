@@ -1022,7 +1022,7 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(x => filter.AddressTypeId.Contains(x.AdressTypeId));
                 }
 
-                if (!String.IsNullOrEmpty(filter.PostCode))
+                if (!string.IsNullOrEmpty(filter.PostCode))
                 {
                     foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.PostCode))
                     {
@@ -1030,7 +1030,7 @@ namespace BL.Database.Dictionaries
                     }
                 }
 
-                if (!String.IsNullOrEmpty(filter.Address))
+                if (!string.IsNullOrEmpty(filter.Address))
                 {
                     foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.Address))
                     {
@@ -1123,7 +1123,7 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(x => filter.IDs.Contains(x.Id));
                 }
 
-                if (!String.IsNullOrEmpty(filter.Name))
+                if (!string.IsNullOrEmpty(filter.Name))
                 {
                     foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.Name))
                     {
@@ -1179,7 +1179,7 @@ namespace BL.Database.Dictionaries
                 }
 
                 // Поиск по наименованию
-                if (!String.IsNullOrEmpty(filter.Name))
+                if (!string.IsNullOrEmpty(filter.Name))
                 {
                     foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.Name))
                     {
@@ -1951,7 +1951,7 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(x => filter.IDs.Contains(x.Id));
                 }
 
-                if (!String.IsNullOrEmpty(filter.Name))
+                if (!string.IsNullOrEmpty(filter.Name))
                 {
                     foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.Name))
                     {
@@ -2046,7 +2046,7 @@ namespace BL.Database.Dictionaries
                 }
 
                 // Поиск по наименованию
-                if (!String.IsNullOrEmpty(filter.Name))
+                if (!string.IsNullOrEmpty(filter.Name))
                 {
                     foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.Name))
                     {
@@ -2161,7 +2161,7 @@ namespace BL.Database.Dictionaries
                 {
                     qry = qry.Where(x => filter.AgentId.Contains(x.AgentId));
                 }
-                if (!String.IsNullOrEmpty(filter.Contact))
+                if (!string.IsNullOrEmpty(filter.Contact))
                 {
                     foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.Contact))
                     {
@@ -2367,7 +2367,7 @@ namespace BL.Database.Dictionaries
             }
 
             // Условие по Name
-            if (!String.IsNullOrEmpty(filter.Name))
+            if (!string.IsNullOrEmpty(filter.Name))
             {
                 foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.Name))
                 {
@@ -2377,7 +2377,7 @@ namespace BL.Database.Dictionaries
             }
 
             // Условие по FullName
-            if (!String.IsNullOrEmpty(filter.FullName))
+            if (!string.IsNullOrEmpty(filter.FullName))
             {
                 foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.FullName))
                 {
@@ -2386,7 +2386,7 @@ namespace BL.Database.Dictionaries
             }
 
             // Условие по Code
-            if (!String.IsNullOrEmpty(filter.Code))
+            if (!string.IsNullOrEmpty(filter.Code))
             {
                 foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.Code))
                 {
@@ -2628,7 +2628,7 @@ namespace BL.Database.Dictionaries
             }
 
             // Поиск по наименованию
-            if (!String.IsNullOrEmpty(filter.Name))
+            if (!string.IsNullOrEmpty(filter.Name))
             {
                 foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.Name))
                 {
@@ -2761,7 +2761,7 @@ namespace BL.Database.Dictionaries
             }
 
             // Поиск по наименованию
-            if (!String.IsNullOrEmpty(filter.Name))
+            if (!string.IsNullOrEmpty(filter.Name))
             {
                 foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.Name))
                 {
@@ -2810,7 +2810,7 @@ namespace BL.Database.Dictionaries
                 }
 
                 // Поиск по наименованию
-                if (!String.IsNullOrEmpty(filter.Name))
+                if (!string.IsNullOrEmpty(filter.Name))
                 {
                     foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.Name))
                     {
@@ -2883,7 +2883,7 @@ namespace BL.Database.Dictionaries
                 }
 
                 // Поиск по наименованию
-                if (!String.IsNullOrEmpty(filter.Name))
+                if (!string.IsNullOrEmpty(filter.Name))
                 {
                     foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.Name))
                     {
@@ -2953,7 +2953,7 @@ namespace BL.Database.Dictionaries
                 }
 
                 // Поиск по наименованию
-                if (!String.IsNullOrEmpty(filter.Name))
+                if (!string.IsNullOrEmpty(filter.Name))
                 {
                     foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.Name))
                     {
@@ -3263,7 +3263,7 @@ namespace BL.Database.Dictionaries
         //    }
 
         //    // Условие по Name
-        //    if (!String.IsNullOrEmpty(filter.Name))
+        //    if (!string.IsNullOrEmpty(filter.Name))
         //    {
         //        qry = qry.Where(x => x.Name.Contains(filter.Name));
         //    }
@@ -3443,7 +3443,7 @@ namespace BL.Database.Dictionaries
             }
 
             // Поиск по наименованию
-            if (!String.IsNullOrEmpty(filter.Name))
+            if (!string.IsNullOrEmpty(filter.Name))
             {
                 foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.Name))
                 {
@@ -3452,7 +3452,7 @@ namespace BL.Database.Dictionaries
             }
 
             // Условие по Index
-            if (!String.IsNullOrEmpty(filter.Index))
+            if (!string.IsNullOrEmpty(filter.Index))
             {
                 foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.Index))
                 {
@@ -3532,7 +3532,7 @@ namespace BL.Database.Dictionaries
                 }
 
                 // Поиск по наименованию
-                if (!String.IsNullOrEmpty(filter.Name))
+                if (!string.IsNullOrEmpty(filter.Name))
                 {
                     foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.Name))
                     {
@@ -3589,7 +3589,7 @@ namespace BL.Database.Dictionaries
                 }
                 
                 // Поиск по наименованию
-                if (!String.IsNullOrEmpty(filter.Name))
+                if (!string.IsNullOrEmpty(filter.Name))
                 {
                     foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.Name))
                     {
@@ -3732,7 +3732,7 @@ namespace BL.Database.Dictionaries
                 }
                 
                 // Поиск по наименованию
-                if (!String.IsNullOrEmpty(filter.Name))
+                if (!string.IsNullOrEmpty(filter.Name))
                 {
                     foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.Name))
                     {
@@ -3791,7 +3791,7 @@ namespace BL.Database.Dictionaries
                 }
                 
                 // Поиск по наименованию
-                if (!String.IsNullOrEmpty(filter.Name))
+                if (!string.IsNullOrEmpty(filter.Name))
                 {
                     foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.Name))
                     {
@@ -4096,7 +4096,7 @@ namespace BL.Database.Dictionaries
 
 
                 // Поиск но Code
-                if (!String.IsNullOrEmpty(filter.Code))
+                if (!string.IsNullOrEmpty(filter.Code))
                 {
                     foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.Code))
                     {
@@ -4253,7 +4253,7 @@ namespace BL.Database.Dictionaries
                 }
 
                 // Поиск по Code
-                if (!String.IsNullOrEmpty(filter.Code))
+                if (!string.IsNullOrEmpty(filter.Code))
                 {
                     foreach (string temp in CommonFilterUtilites.GetWhereExptessions(filter.Code))
                     {
