@@ -239,6 +239,14 @@ namespace BL.Logic.DocumentCore
                     cmd = DmsResolver.Current.Get<DeleteDocumentPaperCommand>();
                     break;
 
+                case EnumDocumentActions.MarkOwnerDocumentPaper:
+                    cmd = DmsResolver.Current.Get<MarkOwnerDocumentPaperCommand>();
+                    break;
+
+                case EnumDocumentActions.MarkСorruptionDocumentPaper:
+                    cmd = DmsResolver.Current.Get<MarkСorruptionDocumentPaperCommand>();
+                    break;
+
                 case EnumDocumentActions.AddDocumentPaperList:
                     cmd = DmsResolver.Current.Get<AddDocumentPaperListCommand>();
                     break;

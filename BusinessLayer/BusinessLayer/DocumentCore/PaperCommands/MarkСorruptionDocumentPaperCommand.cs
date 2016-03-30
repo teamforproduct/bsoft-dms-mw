@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using BL.Database.Documents.Interfaces;
 using BL.Logic.Common;
+using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
@@ -8,46 +9,39 @@ using BL.Model.Exception;
 
 namespace BL.Logic.DocumentCore.PaperCommands
 {
-    public class ModifyDocumentPaperCommand : BaseDocumentCommand
+    public class MarkСorruptionDocumentPaperCommand : BaseDocumentCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
 
-        public ModifyDocumentPaperCommand(IDocumentOperationsDbProcess operationDb)
+        public MarkСorruptionDocumentPaperCommand(IDocumentOperationsDbProcess operationDb)
         {
             _operationDb = operationDb;
         }
 
-        private ModifyDocumentPapers Model
+        private EventPaper Model
         {
             get
             {
-                if (!(_param is ModifyDocumentPapers))
+                if (!(_param is EventPaper))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ModifyDocumentPapers)_param;
+                return (EventPaper)_param;
             }
         }
 
         public override bool CanBeDisplayed(int positionId)
         {
-            if (_document.ExecutorPositionId != positionId
-                )
-            {
-                return false;
-            }
-
             return true;
         }
 
         public override bool CanExecute()
         {
-            _document = _operationDb.ChangeDocumentPaperPrepare(_context, Model.Id);
+            _document = _operationDb.EventDocumentPaperPrepare(_context, Model.Id);
             if (_document == null)
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
-            _context.SetCurrentPosition(_document.ExecutorPositionId);
             _admin.VerifyAccess(_context, CommandType);
             if (!CanBeDisplayed(_context.CurrentPositionId))
             {
@@ -60,16 +54,10 @@ namespace BL.Logic.DocumentCore.PaperCommands
         {
             var paper = _document.Papers.First();
 
-            paper.Name = Model.Name;
-            paper.Description = Model.Description;
-            paper.IsMain = Model.IsMain;
-            paper.IsOriginal = Model.IsOriginal;
-            paper.IsCopy = Model.IsCopy;
-            paper.PageQuantity = Model.PageQuantity;
-            paper.OrderNumber = Model.OrderNumber;
+            paper.LastPaperEvent = CommonDocumentUtilities.GetNewDocumentPaperEvent(_context, paper.Id,
+                EnumEventTypes.MarkOwnerDocumentPaper, Model.Description);
             CommonDocumentUtilities.SetLastChange(_context, paper);
-
-            _operationDb.ModifyDocumentPaper(_context, paper);
+            _operationDb.MarkOwnerDocumentPaper(_context, paper);
             return null;
         }
 

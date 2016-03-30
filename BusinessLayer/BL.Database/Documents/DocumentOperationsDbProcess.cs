@@ -1727,6 +1727,32 @@ namespace BL.Database.Documents
             }
         }
 
+        public InternalDocument EventDocumentPaperPrepare(IContext context, int paperId)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                return dbContext.DocumentPapersSet.Where(x => x.Id == paperId)
+                        .Select(x => new InternalDocument
+                        {
+                            Id = x.Document.Id,
+                            Papers = new List<InternalDocumentPaper>
+                                    {
+                                        new InternalDocumentPaper
+                                        {
+                                            Id = x.Id,
+                                            LastPaperEvent = !x.LastPaperEventId.HasValue? null:
+                                            new InternalDocumentPaperEvent
+                                            {
+                                                Id = x.LastPaperEvent.Id,
+                                                TargetPositionId = x.LastPaperEvent.TargetPositionId
+                                            }
+
+                                        }
+                                    }
+                        }).FirstOrDefault();
+            }
+        }
+
         public InternalDocument AddDocumentPaperPrepare(IContext context, int documentId)
         {
             using (var dbContext = new DmsContext(context))
@@ -1805,6 +1831,31 @@ namespace BL.Database.Documents
 
             }
         }
+
+        public void MarkOwnerDocumentPaper(IContext context, InternalDocumentPaper paper)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                using (
+                    var transaction = new TransactionScope(TransactionScopeOption.Required,
+                        new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
+                {
+                    var paperEventDb = ModelConverter.GetDbDocumentPaperEvent(paper.LastPaperEvent);
+                    dbContext.DocumentPaperEventsSet.Add(paperEventDb);
+                    dbContext.SaveChanges();
+                    paper.LastPaperEventId = paperEventDb.Id;
+                    var paperDb = ModelConverter.GetDbDocumentPaper(paper);
+                    dbContext.DocumentPapersSet.Attach(paperDb);
+                    var entry = dbContext.Entry(paperDb);
+                    entry.Property(e => e.LastPaperEventId).IsModified = true;
+                    entry.Property(e => e.LastChangeUserId).IsModified = true;
+                    entry.Property(e => e.LastChangeDate).IsModified = true;
+                    dbContext.SaveChanges();
+                    transaction.Complete();
+                }
+            }
+        }
+
 
         #endregion DocumentPapers
 
