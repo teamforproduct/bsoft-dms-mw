@@ -181,6 +181,7 @@
     <Compile Include="DocumentCore\FrontModel\FrontDocumentTag.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentAttachedFile.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentPaper.cs" />
+    <Compile Include="DocumentCore\FrontModel\FrontRegistrationFullNumber.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentTask.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontTemplateAttachedFile.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentSubscription.cs" />

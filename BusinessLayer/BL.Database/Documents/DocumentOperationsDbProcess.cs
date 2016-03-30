@@ -13,7 +13,6 @@ using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.DocumentCore.IncomingModel;
 using System.Data.Entity;
-using System.Net.Sockets;
 using System.Transactions;
 using BL.Model.AdminCore;
 using BL.Model.DictionaryCore.InternalModel;
@@ -26,9 +25,6 @@ namespace BL.Database.Documents
 {
     public class DocumentOperationsDbProcess : IDocumentOperationsDbProcess
     {
-        public DocumentOperationsDbProcess()
-        {
-        }
 
         public DocumentActionsModel GetDocumentActionsModelPrepare(IContext context, int documentId)
         {
@@ -148,6 +144,7 @@ namespace BL.Database.Documents
                         ObjectCode = a.Object.Code,
                         API = a.API,
                         Description = a.Description,
+                        Category = a.Category
                     }).ToList();
                     res.ActionsList.Add(posId, actLst);
 
@@ -793,12 +790,16 @@ namespace BL.Database.Documents
                     SourcePositionExecutorAgentName = x.SourcePositionExecutorAgent.Name,
                     TargetPositionExecutorAgentName = x.TargetPositionExecutorAgent.Name ?? x.TargetAgent.Name,
                     DocumentDate = x.Document.RegistrationDate ?? x.Document.CreateDate,
-                    RegistrationFullNumber = (x.Document.RegistrationNumber != null
-                                          ? x.Document.RegistrationNumberPrefix + x.Document.RegistrationNumber +
-                                            x.Document.RegistrationNumberSuffix
-                                          : "#" + x.Document.Id),
+
+                    RegistrationNumber = x.Document.RegistrationNumber,
+                    RegistrationNumberPrefix = x.Document.RegistrationNumberPrefix,
+                    RegistrationNumberSuffix = x.Document.RegistrationNumberSuffix,
+                    RegistrationFullNumber = "#" + x.Document.Id,
+
                     DueDate = null,
                 }).ToList();
+
+                res.ForEach(x => CommonQueries.ChangeRegistrationFullNumber(x));
 
                 foreach (var el in res.Join(ddate, r => r.Id, d => d.evtId, (r, d) => new { r, d }))
                 {
@@ -918,6 +919,10 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(ctx))
             {
                 var docAccess = document.Accesses.FirstOrDefault();
+                if (docAccess == null)
+                {
+                    throw new WrongParameterValueError();
+                }
                 var acc = new DocumentAccesses
                 {
                     Id = docAccess.Id,
@@ -1024,9 +1029,12 @@ namespace BL.Database.Documents
                     if (document.Events?.Any() ?? false)
                     {
                         var eventsDb = ModelConverter.GetDbDocumentEvents(document.Events);
-                        //dbContext.DocumentEventsSet.AddRange(eventsDb);
-                        dbContext.DocumentEventsSet.Attach(eventsDb.First());
-                        dbContext.Entry(eventsDb.First()).State = EntityState.Added;
+
+                        if (eventsDb != null && eventsDb.Any())
+                        {
+                            dbContext.DocumentEventsSet.Attach(eventsDb.First());
+                            dbContext.Entry(eventsDb.First()).State = EntityState.Added;
+                        }
                         dbContext.SaveChanges();
                     }
 
@@ -1181,7 +1189,7 @@ namespace BL.Database.Documents
                     IsLaunchPlan = x.doc.IsLaunchPlan
                 }).FirstOrDefault();
 
-                if (docRes == null) return docRes;
+                if (docRes == null) return null;
                 docRes.Tasks = dbContext.DocumentTasksSet
                         .Where(x => !string.IsNullOrEmpty(task) && x.DocumentId == documentId && x.Task == task)
                         .Select(x => new List<InternalDocumentTask>
@@ -1256,7 +1264,7 @@ namespace BL.Database.Documents
 
         public IEnumerable<int> AddDocumentRestrictedSendList(IContext context, IEnumerable<InternalDocumentRestrictedSendList> model)
         {
-            List<int> res = null;
+            List<int> res;
             using (var dbContext = new DmsContext(context))
             {
                 var items = model.Select(x => new DocumentRestrictedSendLists

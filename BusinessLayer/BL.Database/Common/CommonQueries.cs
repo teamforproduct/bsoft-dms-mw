@@ -336,10 +336,12 @@ namespace BL.Database.Common
                 Name = x.Task.Task,
                 Description = x.Task.Description,
                 DocumentDate = x.Task.Document.RegistrationDate ?? x.Task.Document.CreateDate,
-                RegistrationFullNumber = (x.Task.Document.RegistrationNumber != null
-                                           ? x.Task.Document.RegistrationNumberPrefix + x.Task.Document.RegistrationNumber +
-                                             x.Task.Document.RegistrationNumberSuffix
-                                           : "#" + x.Task.Document.Id),
+
+                RegistrationNumber = x.Task.Document.RegistrationNumber,
+                RegistrationNumberPrefix = x.Task.Document.RegistrationNumberPrefix,
+                RegistrationNumberSuffix = x.Task.Document.RegistrationNumberSuffix,
+                RegistrationFullNumber = "#" + x.Task.Document.Id,
+
                 DocumentDescription = x.Task.Document.Description,
                 DocumentTypeName = x.Task.Document.TemplateDocument.DocumentType.Name,
                 DocumentDirectionName = x.Task.Document.TemplateDocument.DocumentDirection.Name,
@@ -354,6 +356,8 @@ namespace BL.Database.Common
                 PositionExecutorNowAgentName = x.Task.Position.ExecutorAgent.Name,
                 PositionExecutorAgentPhoneNumber = "SourcePositionAgentPhoneNumber", //TODO 
             }).ToList();
+
+            tasks.ForEach(x => CommonQueries.ChangeRegistrationFullNumber(x));
 
             return tasks;
 
@@ -404,10 +408,12 @@ namespace BL.Database.Common
                 TargetAttentionDate = x.Wait.TargetAttentionDate,
                 IsClosed = x.OffEvent != null,
                 DocumentDate = x.Wait.Document.RegistrationDate ?? x.Wait.Document.CreateDate,
-                RegistrationFullNumber = (x.Wait.Document.RegistrationNumber != null
-                                           ? x.Wait.Document.RegistrationNumberPrefix + x.Wait.Document.RegistrationNumber +
-                                             x.Wait.Document.RegistrationNumberSuffix
-                                           : "#" + x.Wait.Document.Id),
+
+                RegistrationNumber = x.Wait.Document.RegistrationNumber,
+                RegistrationNumberPrefix = x.Wait.Document.RegistrationNumberPrefix,
+                RegistrationNumberSuffix = x.Wait.Document.RegistrationNumberSuffix,
+                RegistrationFullNumber = "#" + x.Wait.Document.Id,
+
                 DocumentDescription = x.Wait.Document.Description,
                 DocumentTypeName = x.Wait.Document.TemplateDocument.DocumentType.Name,
                 DocumentDirectionName = x.Wait.Document.TemplateDocument.DocumentDirection.Name,
@@ -465,6 +471,8 @@ namespace BL.Database.Common
                     }
             }).ToList();
 
+            waits.ForEach(x => CommonQueries.ChangeRegistrationFullNumber(x));
+
             return waits;
 
         }
@@ -493,10 +501,12 @@ namespace BL.Database.Common
                 SubscriptionStatesName = x.Subscription.SubscriptionState.Name,
                 Description = x.Subscription.Description,
                 DocumentDate = x.Subscription.Document.RegistrationDate ?? x.Subscription.Document.CreateDate,
-                RegistrationFullNumber = (x.Subscription.Document.RegistrationNumber != null
-                                           ? x.Subscription.Document.RegistrationNumberPrefix + x.Subscription.Document.RegistrationNumber +
-                                             x.Subscription.Document.RegistrationNumberSuffix
-                                           : "#" + x.Subscription.Document.Id),
+
+                RegistrationNumber = x.Subscription.Document.RegistrationNumber,
+                RegistrationNumberPrefix = x.Subscription.Document.RegistrationNumberPrefix,
+                RegistrationNumberSuffix = x.Subscription.Document.RegistrationNumberSuffix,
+                RegistrationFullNumber = "#" + x.Subscription.Document.Id,
+
                 DocumentDescription = x.Subscription.Document.Description,
                 DocumentTypeName = x.Subscription.Document.TemplateDocument.DocumentType.Name,
                 DocumentDirectionName = x.Subscription.Document.TemplateDocument.DocumentDirection.Name,
@@ -551,6 +561,8 @@ namespace BL.Database.Common
                         TargetPositionExecutorAgentPhoneNumber = null,
                     }
             }).ToList();
+
+            subscriptions.ForEach(x => CommonQueries.ChangeRegistrationFullNumber(x));
 
             return subscriptions;
 
@@ -688,17 +700,18 @@ namespace BL.Database.Common
 
         public static IEnumerable<FrontDocument> GetLinkedDocuments(IContext context, DmsContext dbContext, int linkId)
         {
-            return CommonQueries.GetDocumentQuery(dbContext, context)
+            var items = CommonQueries.GetDocumentQuery(dbContext, context)
                     .Where(x => x.Doc.LinkId == linkId /*&& context.CurrentPositionsIdList.Contains(x.Acc.PositionId)*/)
                         .Select(y => new FrontDocument
                         {
                             Id = y.Doc.Id,
                             DocumentDirectionName = y.DirName,
                             DocumentTypeName = y.DocTypeName,
-                            RegistrationFullNumber = (y.Doc.RegistrationNumber != null
-                                                           ? y.Doc.RegistrationNumberPrefix + y.Doc.RegistrationNumber +
-                                                             y.Doc.RegistrationNumberSuffix
-                                                           : "#" + y.Doc.Id),
+
+                            RegistrationNumber = y.Doc.RegistrationNumber,
+                            RegistrationNumberPrefix = y.Doc.RegistrationNumberPrefix,
+                            RegistrationNumberSuffix = y.Doc.RegistrationNumberSuffix,
+
                             DocumentDate = y.Doc.RegistrationDate ?? y.Doc.CreateDate,
                             IsRegistered = y.Doc.IsRegistered,
                             Description = y.Doc.Description,
@@ -709,13 +722,23 @@ namespace BL.Database.Common
                                 {
                                     Id = z.Id,
                                     LinkTypeName = z.LinkType.Name,
-                                    RegistrationFullNumber =
-                                                (z.ParentDocument.RegistrationNumber != null
-                                                        ? (z.ParentDocument.RegistrationNumberPrefix + z.ParentDocument.RegistrationNumber.ToString() + z.ParentDocument.RegistrationNumberSuffix)
-                                                        : ("#" + z.ParentDocument.Id.ToString())),
+                                    RegistrationNumber = z.ParentDocument.RegistrationNumber,
+                                    RegistrationNumberPrefix = z.ParentDocument.RegistrationNumberPrefix,
+                                    RegistrationNumberSuffix = z.ParentDocument.RegistrationNumberSuffix,
+                                    RegistrationFullNumber = "#" + z.ParentDocument.Id.ToString(),
                                     DocumentDate = (z.ParentDocument.RegistrationDate ?? z.ParentDocument.CreateDate),
                                 }).ToList()
                         }).ToList();
+
+            items.ForEach(x =>
+            {
+                CommonQueries.ChangeRegistrationFullNumber(x);
+                var links = x.Links.ToList();
+                links.ForEach(y => CommonQueries.ChangeRegistrationFullNumber(y));
+                x.Links = links;
+            });
+
+            return items;
         }
 
         public static IEnumerable<FrontDocumentSendList> GetDocumentSendList(DmsContext dbContext, FilterDocumentSendList filter)
@@ -942,7 +965,7 @@ namespace BL.Database.Common
 
             if (filter != null)
             {
-              
+
             }
 
             var itemsRes = itemsDb.Select(x => x);
@@ -955,6 +978,39 @@ namespace BL.Database.Common
             }).ToList();
 
             return items;
+        }
+
+        public static void ChangeRegistrationFullNumber(FrontDocument item, bool isClearFields = true)
+        {
+            if (item.RegistrationNumber != null)
+            {
+                item.RegistrationFullNumber = item.RegistrationNumberPrefix + item.RegistrationNumber + item.RegistrationNumberSuffix;
+            }
+            else
+            {
+                item.RegistrationFullNumber = "#" + item.Id;
+            }
+
+            if (isClearFields)
+            {
+                item.RegistrationNumber = null;
+                item.RegistrationNumberPrefix = null;
+                item.RegistrationNumberSuffix = null;
+            }
+        }
+        public static void ChangeRegistrationFullNumber(FrontRegistrationFullNumber item, bool isClearFields = true)
+        {
+            if (item.RegistrationNumber != null)
+            {
+                item.RegistrationFullNumber = item.RegistrationNumberPrefix + item.RegistrationNumber + item.RegistrationNumberSuffix;
+            }
+
+            if (isClearFields)
+            {
+                item.RegistrationNumber = null;
+                item.RegistrationNumberPrefix = null;
+                item.RegistrationNumberSuffix = null;
+            }
         }
     }
 }

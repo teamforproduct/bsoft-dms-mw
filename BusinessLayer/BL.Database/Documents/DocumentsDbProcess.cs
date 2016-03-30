@@ -67,7 +67,7 @@ namespace BL.Database.Documents
                     if (document.SendLists != null && document.SendLists.Any())
                     {
                         var sendLists = document.SendLists.ToList();
-                        sendLists.ForEach(x => { x.DocumentId = doc.Id; x.TaskId = doc.Tasks.Where(y => y.Task == x.TaskName).Select(y=>y.Id).FirstOrDefault(); });
+                        sendLists.ForEach(x => { x.DocumentId = doc.Id; x.TaskId = doc.Tasks.Where(y => y.Task == x.TaskName).Select(y => y.Id).FirstOrDefault(); });
                         var sendListsDb = ModelConverter.GetDbDocumentSendLists(sendLists).ToList();
                         dbContext.DocumentSendListsSet.AddRange(sendListsDb);
                         dbContext.SaveChanges();
@@ -83,7 +83,7 @@ namespace BL.Database.Documents
                             fl.DocumentId = doc.Id;
                         }
 
-                    CommonQueries.AddFullTextCashInfo(dbContext,document.Id, EnumSearchObjectType.Document, EnumOperationType.AddNew);
+                    CommonQueries.AddFullTextCashInfo(dbContext, document.Id, EnumSearchObjectType.Document, EnumOperationType.AddNew);
                     dbContext.SaveChanges();
                     transaction.Complete();
                 }
@@ -300,11 +300,11 @@ namespace BL.Database.Documents
                     Id = doc.Doc.Id,
                     DocumentDirectionName = doc.DirName,
                     DocumentTypeName = doc.DocTypeName,
-                    RegistrationFullNumber =
-                   (doc.Doc.RegistrationNumber != null
-                       ? doc.Doc.RegistrationNumberPrefix + doc.Doc.RegistrationNumber +
-                         doc.Doc.RegistrationNumberSuffix
-                       : "#" + doc.Doc.Id),
+
+                    RegistrationNumber = doc.Doc.RegistrationNumber,
+                    RegistrationNumberPrefix = doc.Doc.RegistrationNumberPrefix,
+                    RegistrationNumberSuffix = doc.Doc.RegistrationNumberSuffix,
+
                     DocumentDate = doc.Doc.RegistrationDate ?? doc.Doc.CreateDate,
                     IsRegistered = doc.Doc.IsRegistered,
                     Description = doc.Doc.Description,
@@ -313,6 +313,9 @@ namespace BL.Database.Documents
                 });
 
                 var docs = res.ToList();
+
+                docs.ForEach(x=>CommonQueries.ChangeRegistrationFullNumber(x));
+
                 var accs = acc.ToList();
 
                 foreach (var doc in docs)
@@ -374,11 +377,7 @@ namespace BL.Database.Documents
                     DocumentDirection = (EnumDocumentDirections)doc.Templ.DocumentDirectionId,
                     DocumentDirectionName = doc.DirName,
                     DocumentTypeName = doc.DocTypeName,
-                    RegistrationFullNumber =
-                        (doc.Doc.RegistrationNumber != null
-                            ? doc.Doc.RegistrationNumberPrefix + doc.Doc.RegistrationNumber +
-                              doc.Doc.RegistrationNumberSuffix
-                            : "#" + doc.Doc.Id),
+
                     DocumentDate = doc.Doc.RegistrationDate ?? doc.Doc.CreateDate,
                     IsRegistered = doc.Doc.IsRegistered,
                     Description = doc.Doc.Description,
@@ -429,6 +428,8 @@ namespace BL.Database.Documents
 
                     Accesses = accs,
                 };
+
+                CommonQueries.ChangeRegistrationFullNumber(res, false);
 
                 var docIds = new List<int> { res.Id };
 
@@ -481,7 +482,7 @@ namespace BL.Database.Documents
                 }
 
 
-                res.SendLists = CommonQueries.GetDocumentSendList(dbContext, new FilterDocumentSendList { DocumentId = new List<int> { documentId} });
+                res.SendLists = CommonQueries.GetDocumentSendList(dbContext, new FilterDocumentSendList { DocumentId = new List<int> { documentId } });
 
                 res.SendListStageMax = (res.SendLists == null) || !res.SendLists.Any() ? 0 : res.SendLists.Max(x => x.Stage);
 
