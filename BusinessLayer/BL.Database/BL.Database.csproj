@@ -74,6 +74,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\CommonFilterUtilites.cs" />
+    <Compile Include="Common\DictionaryModelConverter.cs" />
     <Compile Include="Common\ModelConverter.cs" />
     <Compile Include="CoreDb\CoreDb.cs" />
     <Compile Include="DatabaseContext\DmsContext.cs" />

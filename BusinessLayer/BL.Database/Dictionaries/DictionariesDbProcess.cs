@@ -4,13 +4,12 @@ using BL.Database.DatabaseContext;
 using BL.Database.DBModel.Dictionary;
 using BL.Database.Dictionaries.Interfaces;
 using BL.Model.AdminCore;
-using BL.Model.DictionaryCore;
-using BL.Model.SystemCore;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
+using BL.Model.SystemCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -2067,7 +2066,6 @@ namespace BL.Database.Dictionaries
 
         // Контакты
         #region DictionaryContacts
-
         public FrontDictionaryContact GetDictionaryContact(IContext context,
           FilterDictionaryContact filter)
         {
@@ -2196,18 +2194,7 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context))
             {
-                var dd = new DictionaryDepartments
-                {
-                    ParentId = department.ParentId,
-                    LastChangeDate = department.LastChangeDate,
-                    LastChangeUserId = department.LastChangeUserId,
-                    IsActive = department.IsActive,
-                    Name = department.Name,
-                    FullName = department.FullName,
-                    CompanyId = department.CompanyId,
-                    Code = department.Code,
-                    ChiefPositionId = department.ChiefPositionId
-                };
+                var dd = DictionaryModelConverter.GetDbDepartments(department);
                 dbContext.DictionaryDepartmentsSet.Add(dd);
                 dbContext.SaveChanges();
                 department.Id = dd.Id;
@@ -2219,20 +2206,7 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context))
             {
-                var dd = new DictionaryDepartments
-                {
-                    Id = department.Id,
-                    ParentId = department.ParentId,
-                    LastChangeDate = department.LastChangeDate,
-                    LastChangeUserId = department.LastChangeUserId,
-                    IsActive = department.IsActive,
-                    Name = department.Name,
-                    FullName = department.FullName,
-                    CompanyId = department.CompanyId,
-                    Code = department.Code,
-                    ChiefPositionId = department.ChiefPositionId
-                };
-
+                var dd = DictionaryModelConverter.GetDbDepartments(department);
                 dbContext.DictionaryDepartmentsSet.Attach(dd);
                 dbContext.Entry(dd).State = System.Data.Entity.EntityState.Modified;
 
@@ -2260,9 +2234,7 @@ namespace BL.Database.Dictionaries
                 var qry = dbContext.DictionaryDepartmentsSet.AsQueryable();
 
                 qry = DepartmentGetWhere(ref qry, filter);
-
-                qry = qry.OrderBy(x => x.Name);
-
+                
                 return qry.Select(x => new InternalDictionaryDepartment
                 {
                     Id = x.Id,
@@ -2459,18 +2431,11 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context))
             {
-                var ddt = new DictionaryDocumentSubjects
-                {
-                    ParentId = docSubject.ParentId,
-                    LastChangeDate = docSubject.LastChangeDate,
-                    LastChangeUserId = docSubject.LastChangeUserId,
-                    IsActive = docSubject.IsActive,
-                    Name = docSubject.Name
-                };
-                dbContext.DictionaryDocumentSubjectsSet.Add(ddt);
+                var dds = DictionaryModelConverter.GetDbDocumentSubject(docSubject);
+                dbContext.DictionaryDocumentSubjectsSet.Add(dds);
                 dbContext.SaveChanges();
-                docSubject.Id = ddt.Id;
-                return ddt.Id;
+                docSubject.Id = dds.Id;
+                return dds.Id;
             }
         }
 
@@ -2489,15 +2454,7 @@ namespace BL.Database.Dictionaries
                 //dbContext.SaveChanges();
 
                 // В этом варианте обновления с использованием Attach предварительная проверка на существование записи НЕ выполняется, сразу Update.
-                var dds = new DictionaryDocumentSubjects
-                {
-                    Id = docSubject.Id,
-                    ParentId = docSubject.ParentId,
-                    LastChangeDate = docSubject.LastChangeDate,
-                    LastChangeUserId = docSubject.LastChangeUserId,
-                    IsActive = docSubject.IsActive,
-                    Name = docSubject.Name
-                };
+                var dds = DictionaryModelConverter.GetDbDocumentSubject(docSubject);
 
                 // если нужно обновить ВСЕ поля можно без перечисления сделать вот так
                 //dbContext.DictionaryDocumentSubjectsSet.Attach(dds);
@@ -2654,13 +2611,7 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context))
             {
-                var ddt = new DictionaryDocumentTypes
-                {
-                    Name = docType.Name,
-                    IsActive = docType.IsActive,
-                    LastChangeDate = docType.LastChangeDate,
-                    LastChangeUserId = docType.LastChangeUserId
-                };
+                var ddt = DictionaryModelConverter.GetDbDocumentType(docType);
                 dbContext.DictionaryDocumentTypesSet.Add(ddt);
                 dbContext.SaveChanges();
                 docType.Id = ddt.Id;
@@ -2672,14 +2623,7 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context))
             {
-                var ddt = new DictionaryDocumentTypes
-                {
-                    Id = docType.Id,
-                    LastChangeDate = docType.LastChangeDate,
-                    LastChangeUserId = docType.LastChangeUserId,
-                    Name = docType.Name,
-                    IsActive = docType.IsActive
-                };
+                var ddt = DictionaryModelConverter.GetDbDocumentType(docType);
                 dbContext.DictionaryDocumentTypesSet.Attach(ddt);
 
                 dbContext.Entry(ddt).State = System.Data.Entity.EntityState.Modified;
@@ -2976,25 +2920,11 @@ namespace BL.Database.Dictionaries
 
         // Должности
         #region DictionaryPositions
-
-
-
         public int AddPosition(IContext context, InternalDictionaryPosition position)
         {
             using (var dbContext = new DmsContext(context))
             {
-                var dd = new DictionaryPositions
-                {
-                    ParentId = position.ParentId,
-                    LastChangeDate = position.LastChangeDate,
-                    LastChangeUserId = position.LastChangeUserId,
-                    IsActive = position.IsActive,
-                    Name = position.Name,
-                    FullName = position.FullName,
-                    DepartmentId = position.DepartmentId,
-                    ExecutorAgentId = position.ExecutorAgentId,
-                    MainExecutorAgentId = position.MainExecutorAgentId
-                };
+                var dd = DictionaryModelConverter.GetDbDictionaryPosition(position);
                 dbContext.DictionaryPositionsSet.Add(dd);
                 dbContext.SaveChanges();
                 position.Id = dd.Id;
@@ -3006,20 +2936,7 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context))
             {
-                var dd = new DictionaryPositions
-                {
-                    Id = position.Id,
-                    ParentId = position.ParentId,
-                    LastChangeDate = position.LastChangeDate,
-                    LastChangeUserId = position.LastChangeUserId,
-                    IsActive = position.IsActive,
-                    Name = position.Name,
-                    FullName = position.FullName,
-                    DepartmentId = position.DepartmentId,
-                    ExecutorAgentId = position.ExecutorAgentId,
-                    MainExecutorAgentId = position.MainExecutorAgentId
-                };
-
+                var dd = DictionaryModelConverter.GetDbDictionaryPosition(position);
                 dbContext.DictionaryPositionsSet.Attach(dd);
                 dbContext.Entry(dd).State = System.Data.Entity.EntityState.Modified;
 
@@ -3280,25 +3197,7 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context))
             {
-
-                string s = (regJournal.IsIncoming ? EnumDocumentDirections.Incoming.ToString() : "") +
-                    (regJournal.IsOutcoming ? EnumDocumentDirections.Outcoming.ToString() : "") +
-                    (regJournal.IsInternal ? EnumDocumentDirections.Internal.ToString() : "");
-
-                var drj = new DictionaryRegistrationJournals
-                {
-                    // pss Перегонка значений DictionaryRegistrationJournals
-                    LastChangeDate = regJournal.LastChangeDate,
-                    LastChangeUserId = regJournal.LastChangeUserId,
-                    IsActive = regJournal.IsActive,
-                    Name = regJournal.Name,
-                    DepartmentId = regJournal.DepartmentId,
-                    Index = regJournal.Index,
-                    DirectionCodes = s,
-                    PrefixFormula = regJournal.PrefixFormula,
-                    NumerationPrefixFormula = regJournal.NumerationPrefixFormula,
-                    SuffixFormula = regJournal.SuffixFormula,
-                };
+                DictionaryRegistrationJournals drj = DictionaryModelConverter.GetDbRegistrationJournal(regJournal);
                 dbContext.DictionaryRegistrationJournalsSet.Add(drj);
                 dbContext.SaveChanges();
                 regJournal.Id = drj.Id;
@@ -3310,26 +3209,7 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context))
             {
-                string s = (regJournal.IsIncoming ? EnumDocumentDirections.Incoming.ToString() : "") +
-                    (regJournal.IsOutcoming ? EnumDocumentDirections.Outcoming.ToString() : "") +
-                    (regJournal.IsInternal ? EnumDocumentDirections.Internal.ToString() : "");
-
-                var drj = new DictionaryRegistrationJournals
-                {
-                    // pss Перегонка значений DictionaryRegistrationJournals
-                    Id = regJournal.Id,
-                    LastChangeDate = regJournal.LastChangeDate,
-                    LastChangeUserId = regJournal.LastChangeUserId,
-                    IsActive = regJournal.IsActive,
-                    Name = regJournal.Name,
-                    DepartmentId = regJournal.DepartmentId,
-                    Index = regJournal.Index,
-                    DirectionCodes = s,
-                    PrefixFormula = regJournal.PrefixFormula,
-                    NumerationPrefixFormula = regJournal.NumerationPrefixFormula,
-                    SuffixFormula = regJournal.SuffixFormula,
-                };
-
+                DictionaryRegistrationJournals drj = DictionaryModelConverter.GetDbRegistrationJournal(regJournal);
                 dbContext.DictionaryRegistrationJournalsSet.Attach(drj);
                 dbContext.Entry(drj).State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
@@ -3649,6 +3529,12 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(x => filter.StandartSendListId.Contains(x.StandartSendListId));
                 }
 
+                // Исключение списка первичных ключей
+                if (filter.NotContainsIDs?.Count > 0)
+                {
+                    qry = qry.Where(x => !filter.NotContainsIDs.Contains(x.Id));
+                }
+
                 if (filter.SendTypeId.Count > 0)
                 {
                     qry = qry.Where(x => filter.SendTypeId.Contains((EnumSendTypes)x.SendTypeId));
@@ -3695,12 +3581,7 @@ namespace BL.Database.Dictionaries
                         qry = qry.Where(x => x.TargetAgent.Name.Contains(str));
                     }
                 }
-
-                // Исключение списка первичных ключей
-                if (filter.NotContainsIDs?.Count > 0)
-                {
-                    qry = qry.Where(x => !filter.NotContainsIDs.Contains(x.Id));
-                }
+                               
 
                 return qry.Select(x => new FrontDictionaryStandartSendListContent
                 {
@@ -3722,29 +3603,12 @@ namespace BL.Database.Dictionaries
             }
         }
 
-
         public void UpdateDictionaryStandartSendListContent(IContext context,
             InternalDictionaryStandartSendListContent content)
         {
             using (var dbContext = new DmsContext(context))
             {
-                var ddt = new DictionaryStandartSendListContents()
-                {
-                    Id = content.Id,
-                    AccessLevelId = (int)content.AccessLevel,
-                    TargetPositionId = content.TargetPositionId,
-                    TargetAgentId = content.TargetAgentId,
-                    DueDate = content.DueDate,
-                    DueDay = content.DueDay,
-                    SendTypeId = (int)content.SendType,
-                    Stage = content.Stage,
-                    StandartSendListId = content.StandartSendListId,
-                    Task = content.Task,
-                    Description = content.Description,
-                    LastChangeDate = content.LastChangeDate,
-                    LastChangeUserId = content.LastChangeUserId
-                };
-
+                var ddt = DictionaryModelConverter.GetDbStandartSendListContent(content);
                 dbContext.DictionaryStandartSendListContentsSet.Attach(ddt);
                 var entity = dbContext.Entry(ddt);
                 entity.State = System.Data.Entity.EntityState.Modified;
@@ -3772,22 +3636,7 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context))
             {
-                var ddt = new DictionaryStandartSendListContents()
-                {
-                    Id = content.Id,
-                    AccessLevelId = (int)content.AccessLevel,
-                    TargetPositionId = content.TargetPositionId,
-                    TargetAgentId = content.TargetAgentId,
-                    DueDate = content.DueDate,
-                    DueDay = content.DueDay,
-                    SendTypeId = (int)content.SendType,
-                    Stage = content.Stage,
-                    StandartSendListId = content.StandartSendListId,
-                    Task = content.Task,
-                    Description = content.Description,
-                    LastChangeDate = content.LastChangeDate,
-                    LastChangeUserId = content.LastChangeUserId
-                };
+                var ddt = DictionaryModelConverter.GetDbStandartSendListContent(content);
                 dbContext.DictionaryStandartSendListContentsSet.Add(ddt);
                 dbContext.SaveChanges();
                 content.Id = ddt.Id;
@@ -4090,7 +3939,6 @@ namespace BL.Database.Dictionaries
 
         #endregion DictionaryTags
 
-        #region Admins
         #region AdminAccessLevels
         public FrontAdminAccessLevel GetAdminAccessLevel(IContext ctx, int id)
         {
@@ -4130,21 +3978,13 @@ namespace BL.Database.Dictionaries
             }
         }
         #endregion AdminAccessLevels
-        #endregion
 
         #region CustomDictionaryTypes
         public void UpdateCustomDictionaryType(IContext context, InternalCustomDictionaryType model)
         {
             using (var dbContext = new DmsContext(context))
             {
-                var item = new CustomDictionaryTypes
-                {
-                    Id = model.Id,
-                    Code = model.Code,
-                    Description = model.Description,
-                    LastChangeDate = model.LastChangeDate,
-                    LastChangeUserId = model.LastChangeUserId,
-                };
+                var item = DictionaryModelConverter.GetDbCustomDictionaryType(model);
                 dbContext.CustomDictionaryTypesSet.Attach(item);
                 var entity = dbContext.Entry(item);
 
@@ -4160,13 +4000,7 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context))
             {
-                var item = new CustomDictionaryTypes
-                {
-                    Code = model.Code,
-                    Description = model.Description,
-                    LastChangeDate = model.LastChangeDate,
-                    LastChangeUserId = model.LastChangeUserId
-                };
+                var item = DictionaryModelConverter.GetDbCustomDictionaryType(model);
                 dbContext.CustomDictionaryTypesSet.Add(item);
                 dbContext.SaveChanges();
                 model.Id = item.Id;
@@ -4294,16 +4128,7 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context))
             {
-                var item = new CustomDictionaries
-                {
-                    // pss В Modify командах не передается ID!!!!
-                    Id = model.Id,
-                    Code = model.Code,
-                    Description = model.Description,
-                    DictionaryTypeId = model.DictionaryTypeId,
-                    LastChangeDate = model.LastChangeDate,
-                    LastChangeUserId = model.LastChangeUserId,
-                };
+                var item = DictionaryModelConverter.GetDbCustomDictionary(model);
                 dbContext.CustomDictionariesSet.Attach(item);
                 var entity = dbContext.Entry(item);
 
@@ -4319,14 +4144,7 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context))
             {
-                var item = new CustomDictionaries
-                {
-                    Code = model.Code,
-                    Description = model.Description,
-                    DictionaryTypeId = model.DictionaryTypeId,
-                    LastChangeDate = model.LastChangeDate,
-                    LastChangeUserId = model.LastChangeUserId
-                };
+                var item = DictionaryModelConverter.GetDbCustomDictionary(model);
                 dbContext.CustomDictionariesSet.Add(item);
                 dbContext.SaveChanges();
                 model.Id = item.Id;
