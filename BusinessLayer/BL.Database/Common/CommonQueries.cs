@@ -17,6 +17,9 @@ using BL.Database.DBModel.System;
 using BL.Model.FullTextSerach;
 using System.Text;
 using System;
+using BL.CrossCutting.DependencyInjection;
+using BL.Database.FileWorker;
+using BL.Model.Exception;
 
 namespace BL.Database.Common
 {
@@ -1099,13 +1102,15 @@ namespace BL.Database.Common
 
             if (isFull || isAddSubscription)
             {
-                //var _templateDb = DmsResolver.Current.Get<ITemplateDocumentsDbProcess>();
-                //foreach (var file in document.DocumentFiles)
-                //{
-                    
-                //}
-
-                //TODO проверка файлов
+                var fs = DmsResolver.Current.Get<IFileStore>();
+                foreach (var file in document.DocumentFiles)
+                {
+                    if(!fs.IsFileCorrect(ctx,file))
+                    {
+                        //TODO
+                        //throw new DocumentFileWasChangedExternally();
+                    }
+                }
             }
 
             document.Hash = CommonQueries.GetStringDocumentHash(document);
