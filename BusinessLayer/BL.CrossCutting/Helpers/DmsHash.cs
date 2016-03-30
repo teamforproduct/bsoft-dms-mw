@@ -9,7 +9,7 @@ namespace BL.CrossCutting.Helpers
         public static string GetSha1(string input)
         {
             byte[] buffer = Encoding.Default.GetBytes(input);
-            var sha = new SHA256Managed();
+            var sha = new SHA512Managed();
             byte[] hash = sha.ComputeHash(buffer);
             return BitConverter.ToString(hash).Replace("-", String.Empty);
         }

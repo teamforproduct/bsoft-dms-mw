@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using BL.CrossCutting.Context;
 using BL.CrossCutting.Interfaces;
 using BL.Database.DatabaseContext;
 using BL.Database.DBModel.Document;
@@ -17,6 +16,18 @@ using BL.Model.SystemCore.FrontModel;
 using BL.Database.DBModel.System;
 using BL.Model.FullTextSerach;
 using System.Text;
+
+using System;
+using BL.Database.Documents.Interfaces;
+using BL.Model.DocumentCore.Actions;
+using BL.Model.DocumentCore.IncomingModel;
+using System.Data.Entity;
+using System.Transactions;
+using BL.Model.AdminCore;
+using BL.Model.DictionaryCore.InternalModel;
+using BL.Model.SystemCore;
+using DocumentAccesses = BL.Database.DBModel.Document.DocumentAccesses;
+using BL.Model.Exception;
 
 namespace BL.Database.Common
 {
@@ -782,6 +793,10 @@ namespace BL.Database.Common
                 {
                     subscriptionsDb = subscriptionsDb.Where(x => filter.DocumentId.Contains(x.DocumentId));
                 }
+                if (filter.SubscriptionStates?.Count > 0)
+                {
+                    subscriptionsDb = subscriptionsDb.Where(x => filter.SubscriptionStates.Cast<int>().Contains(x.SubscriptionStateId ?? 0));
+                }
             }
 
             var subscriptionsRes = subscriptionsDb.Select(x => new { Subscription = x });
@@ -791,7 +806,7 @@ namespace BL.Database.Common
                 Id = x.Subscription.Id,
                 SubscriptionStates = (EnumSubscriptionStates)x.Subscription.SubscriptionStateId,
                 Hash = x.Subscription.Hash,
-                //FullHash = x.Subscription.FullHash
+                FullHash = x.Subscription.FullHash
             }).ToList();
 
             return subscriptions;
@@ -1070,6 +1085,59 @@ namespace BL.Database.Common
             }
         }
 
+        public static InternalDocument GetDocumentHash(DmsContext dbContext, IContext ctx, int documentId, bool isAddSubscription = false, bool isFull = false)
+        {
+            var subscriptions = CommonQueries.GetInternalDocumentSubscriptions(dbContext,
+                new FilterDocumentSubscription
+                {
+                    DocumentId = new List<int> { documentId },
+                    SubscriptionStates = new List<EnumSubscriptionStates> {
+                        EnumSubscriptionStates.Sign,
+                        EnumSubscriptionStates.Visa,
+                        EnumSubscriptionStates.Аgreement,
+                        EnumSubscriptionStates.Аpproval
+                        }
+                });
+
+            if (!isAddSubscription)
+            {
+                if (!subscriptions.Any())
+                    return null;
+            }
+
+            var document = CommonQueries.GetDocumentHashPrepare(dbContext, ctx, documentId);
+            document.Subscriptions = subscriptions;
+
+            if (isFull || isAddSubscription)
+            {
+                //TODO проверка файлов
+            }
+
+            document.Hash = CommonQueries.GetStringDocumentHash(document);
+
+            if (isFull || isAddSubscription)
+            {
+                document.FullHash = CommonQueries.GetStringDocumentHash(document, true);
+            }
+
+            if (subscriptions.Any())
+            {
+                StringComparer comparer = StringComparer.OrdinalIgnoreCase;
+                foreach (var subscription in subscriptions)
+                {
+                    if (comparer.Compare(subscription.Hash, document.Hash) != 0 ||
+                        ((isFull || isAddSubscription) && comparer.Compare(subscription.FullHash, document.FullHash) != 0))
+                    {
+                        var subscriptionDb = new DocumentSubscriptions { Id = subscription.Id, SubscriptionStateId = (int)EnumSubscriptionStates.Violated };
+                        dbContext.DocumentSubscriptionsSet.Attach(subscriptionDb);
+                        var entry = dbContext.Entry(subscriptionDb);
+                        entry.Property(x => x.SubscriptionStateId).IsModified = true;
+                    }
+                }
+            }
+
+            return document;
+        }
         public static InternalDocument GetDocumentHashPrepare(DmsContext dbContext, IContext ctx, int documentId)
         {
             var doc = CommonQueries.GetDocumentQuery(dbContext, ctx).Where(x => x.Doc.Id == documentId)
@@ -1089,38 +1157,9 @@ namespace BL.Database.Common
 
             doc.SendLists = CommonQueries.GetInternalDocumentSendList(dbContext, new FilterDocumentSendList { DocumentId = new List<int> { documentId } });
 
-            doc.Subscriptions = CommonQueries.GetInternalDocumentSubscriptions(dbContext, new FilterDocumentSubscription { DocumentId = new List<int> { documentId } });
-
             return doc;
         }
-
-        public static InternalDocument GetDocumentHash(DmsContext dbContext, IContext ctx, int documentId)
-        {
-            var doc = CommonQueries.GetDocumentHashPrepare(dbContext, ctx, documentId);
-
-            return doc;
-        }
-
-        public static InternalDocument VerifyDocumentHash(InternalDocument doc, bool isFullHash = false)
-        {
-            doc.Hash = CommonQueries.GetDocumentHash(doc);
-            if (isFullHash)
-            {
-                doc.FullHash = CommonQueries.GetDocumentHash(doc, true);
-                //TODO проверка реальных файлов
-            }
-            //TODO Уточнить статусы
-            if (doc.Subscriptions.Any(x => x.SubscriptionStates != EnumSubscriptionStates.Violated))
-            {
-                foreach(var subscription in doc.Subscriptions.Where(x => x.SubscriptionStates != EnumSubscriptionStates.Violated))
-                {
-
-                }
-            }
-            return doc;
-        }
-
-        public static string GetDocumentHash(InternalDocument doc, bool isFullHash = false)
+        public static string GetStringDocumentHash(InternalDocument doc, bool isFull = false)
         {
             var hashPrepare = new StringBuilder();
 
@@ -1140,7 +1179,7 @@ namespace BL.Database.Common
                     hashPrepare.Append(docFile.LastChangeDate);
                     hashPrepare.Append(docFile.Extension);
                     hashPrepare.Append(docFile.Name);
-                    if (isFullHash)
+                    if (isFull)
                         hashPrepare.Append(docFile.Hash);
                 }
             }
