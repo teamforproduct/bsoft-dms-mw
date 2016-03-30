@@ -1,14 +1,11 @@
-﻿using BL.Logic.DependencyInjection;
-using BL.Logic.DocumentCore;
-using BL.Model.DocumentCore;
+﻿using BL.Logic.DocumentCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Web.Http;
-using BL.CrossCutting.DependencyInjection;using BL.Model.DictionaryCore.FrontModel;
-using BL.Model.DictionaryCore.IncomingModel;
+using BL.CrossCutting.DependencyInjection;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
-using BL.Model.Enums;
+
 namespace DMS_WebAPI.Controllers
 {
     [Authorize]
