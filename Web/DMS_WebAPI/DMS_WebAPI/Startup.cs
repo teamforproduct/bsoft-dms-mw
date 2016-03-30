@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using BL.CrossCutting.DependencyInjection;
 using BL.Logic.DependencyInjection;
 using BL.Logic.SystemServices.AutoPlan;
 using BL.Logic.SystemServices.FullTextSearch;

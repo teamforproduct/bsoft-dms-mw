@@ -202,6 +202,10 @@
     <Compile Include="Migrations\201603291047586_hash.Designer.cs">
       <DependentUpon>201603291047586_hash.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201603301234374_FixSystemLogs.cs" />
+    <Compile Include="Migrations\201603301234374_FixSystemLogs.Designer.cs">
+      <DependentUpon>201603301234374_FixSystemLogs.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SystemDb\ISystemDbProcess.cs" />
@@ -249,6 +253,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201603291047586_hash.resx">
       <DependentUpon>201603291047586_hash.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201603301234374_FixSystemLogs.resx">
+      <DependentUpon>201603301234374_FixSystemLogs.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

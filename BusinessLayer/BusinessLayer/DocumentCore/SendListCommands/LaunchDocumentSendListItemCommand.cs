@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using BL.CrossCutting.DependencyInjection;
 using BL.Database.Documents.Interfaces;
 using BL.Logic.Common;
 using BL.Model.DocumentCore.InternalModel;

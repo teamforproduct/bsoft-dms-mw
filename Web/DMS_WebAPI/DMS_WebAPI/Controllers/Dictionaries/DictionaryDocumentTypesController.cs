@@ -5,6 +5,7 @@ using BL.Model.DictionaryCore.FrontModel;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Web.Http;
+using BL.CrossCutting.DependencyInjection;
 using BL.Model.Enums;
 using BL.Model.DictionaryCore.FilterModel;
 
