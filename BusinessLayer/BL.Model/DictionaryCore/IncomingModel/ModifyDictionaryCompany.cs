@@ -3,11 +3,11 @@
 namespace BL.Model.DictionaryCore.IncomingModel
 {
     /// <summary>
-    /// Модель для добавления/редактирования записи справочника "Штатное расписание"
+    /// Модель для добавления/редактирования записи справочника "Компании"
     /// </summary>
     // В модели перечислены поля, на значения которых можно повлиять из интерфейса. Например поля таблицы LastChangeUserId и LastChangeDate в этой модели отсутствуют
     // Если в таблице поля объявлены как Nullable то поля в этом классе нужно объявлять Nullable
-    public class ModifyDictionaryPosition
+    public class ModifyDictionaryCompany
     {
         /// <summary>
         /// ID
@@ -21,32 +21,9 @@ namespace BL.Model.DictionaryCore.IncomingModel
         public bool IsActive { get; set; }
         
         /// <summary>
-        /// Вышестоящая должность
-        /// </summary>
-        public int? ParentId { get; set; }
-
-        /// <summary>
-        /// Наименование должности
+        /// Наименование компании
         /// </summary>
         public string Name { get; set; }
-
-        /// <summary>
-        /// Полное наименование должности
-        /// </summary>
-        public string FullName { get; set; }
-
-        /// <summary>
-        /// Подразделение, в которое включена должность
-        /// </summary>
-        public int DepartmentId { get; set; }
-
-        /// <summary>
-        /// Исполнитель
-        /// </summary>
-        public int? ExecutorAgentId { get; set; }
-
-
-        public int? MainExecutorAgentId { get; set; }
 
     }
 }

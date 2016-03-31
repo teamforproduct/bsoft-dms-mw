@@ -11,43 +11,43 @@ using System.Web.Http;
 namespace DMS_WebAPI.Controllers.Dictionaries
 {
     [Authorize]
-    public class DictionaryPositionsController : ApiController
+    public class DictionaryPositionExecutorsController : ApiController
     {
         /// <summary>
-        /// Возвращает записи из словаря "Должности"
+        /// Возвращает записи из словаря "Исполнители Исполнители должности"
         /// </summary>
-        /// <param name="filter">Параметры для фильтрации записей в словаре "Должности"</param>
-        /// <returns>FrontDictionaryPositions</returns>
-        // GET: api/DictionaryPositions
-        public IHttpActionResult Get([FromUri] FilterDictionaryPosition filter)
+        /// <param name="filter">Параметры для фильтрации записей в словаре "Исполнители должности"</param>
+        /// <returns>FrontDictionaryPositionExecutors</returns>
+        // GET: api/DictionaryPositionExecutors
+        public IHttpActionResult Get([FromUri] FilterDictionaryPositionExecutor filter)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionaryPositions(cxt, filter);
+            var tmpDicts = tmpDictProc.GetDictionaryPositionExecutors(cxt, filter);
             return new JsonResult(tmpDicts, this);
         }
 
         /// <summary>
-        /// Возвращает запись из словаря "Должности" по ID 
+        /// Возвращает запись из словаря "Исполнители должности" по ID 
         /// </summary>
         /// <param name="id"></param>
-        /// <returns>FrontDictionaryPositions</returns>
-        // GET: api/DictionaryPositions/5
+        /// <returns>FrontDictionaryPositionExecutors</returns>
+        // GET: api/DictionaryPositionExecutors/5
         public IHttpActionResult Get(int id)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDict = tmpDictProc.GetDictionaryPosition(cxt, id);
+            var tmpDict = tmpDictProc.GetDictionaryPositionExecutor(cxt, id);
             return new JsonResult(tmpDict, this);
         }
 
 
         /// <summary>
-        /// Добавление записи в словаре "Должности"
+        /// Добавление записи в словаре "Исполнители должности"
         /// </summary>
-        /// <param name="model">ModifyDictionaryPosition</param>
-        /// <returns>DictionaryPositions</returns>
-        public IHttpActionResult Post([FromBody]ModifyDictionaryPosition model)
+        /// <param name="model">ModifyDictionaryPositionExecutor</param>
+        /// <returns>DictionaryPositionExecutors</returns>
+        public IHttpActionResult Post([FromBody]ModifyDictionaryPositionExecutor model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
@@ -55,14 +55,14 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         }
 
         /// <summary>
-        /// Изменение записи в словаре "Должности"
+        /// Изменение записи в словаре "Исполнители должности"
         /// </summary>
         /// <param name="id">int</param>
-        /// <param name="model">ModifyDictionaryPosition</param>
-        /// <returns>DictionaryPositions</returns>
-        public IHttpActionResult Put(int id, [FromBody]ModifyDictionaryPosition model)
+        /// <param name="model">ModifyDictionaryPositionExecutor</param>
+        /// <returns>DictionaryPositionExecutors</returns>
+        public IHttpActionResult Put(int id, [FromBody]ModifyDictionaryPositionExecutor model)
         {
-            // Спецификация REST требует отдельного указания ID, несмотря на то, что параметр ID есть в ModifyDictionaryPosition
+            // Спецификация REST требует отдельного указания ID, несмотря на то, что параметр ID есть в ModifyDictionaryPositionExecutor
 
             model.Id = id;
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
@@ -72,16 +72,16 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         }
 
         /// <summary>
-        /// Удаление записи в словаре "Должности"
+        /// Удаление записи в словаре "Исполнители должности"
         /// </summary>
-        /// <returns>DictionaryPositions</returns> 
+        /// <returns>DictionaryPositionExecutors</returns> 
         public IHttpActionResult Delete([FromUri] int id)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
 
             tmpDict.ExecuteAction(EnumDictionaryActions.DeletePosition, cxt, id);
-            FrontDictionaryPosition tmp = new FrontDictionaryPosition();
+            FrontDictionaryPositionExecutor tmp = new FrontDictionaryPositionExecutor();
             tmp.Id = id;
 
             return new JsonResult(tmp, this);

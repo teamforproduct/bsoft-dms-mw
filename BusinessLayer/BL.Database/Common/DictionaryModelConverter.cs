@@ -133,5 +133,37 @@ namespace BL.Database.Common
                 MainExecutorAgentId = item.MainExecutorAgentId
             };
         }
+
+
+        public static DictionaryCompanies GetDbCompany(InternalDictionaryCompany item)
+        {
+            return item == null ? null : new DictionaryCompanies
+            {
+                Id = item.Id,
+                Name = item.Name,
+                IsActive = item.IsActive,
+                LastChangeDate = item.LastChangeDate,
+                LastChangeUserId = item.LastChangeUserId
+            };
+        }
+
+        public static DictionaryPositionExecutors GetDbExecutor(InternalDictionaryPositionExecutor item)
+        {
+            return item == null ? null : new DictionaryPositionExecutors
+            {
+                Id = item.Id,
+                Description = item.Description,
+                IsActive = item.IsActive,
+                AgentId = item.AgentId,
+                PositionId = item.PositionId,
+                PositionExecutorTypeId = item.PositionExecutorTypeId,
+                AccessLevelId = item.AccessLevelId,
+                StartDate = item.StartDate,
+                EndDate = item.EndDate,
+                LastChangeDate = item.LastChangeDate,
+                LastChangeUserId = item.LastChangeUserId
+            };
+
+        }
     }
 }

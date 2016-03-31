@@ -11,7 +11,7 @@ using System.Web.Http;
 namespace DMS_WebAPI.Controllers.Dictionaries
 {
     [Authorize]
-    public class DictionaryPositionsController : ApiController
+    public class DictionaryPositionExecutorTypesController : ApiController
     {
         /// <summary>
         /// Возвращает записи из словаря "Должности"

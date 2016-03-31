@@ -230,6 +230,9 @@
     <Compile Include="Controllers\Dictionaries\DictionaryAgentEmployeesController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryContactsController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryContactTypesController.cs" />
+    <Compile Include="Controllers\Dictionaries\DictionaryPositionExecutorTypesController.cs" />
+    <Compile Include="Controllers\Dictionaries\DictionaryPositionExecutorsController.cs" />
+    <Compile Include="Controllers\Dictionaries\DictionaryCompaniesController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryTagsController.cs" />
     <Compile Include="Controllers\Documents\DocumentEventsController.cs" />
     <Compile Include="Controllers\Documents\DocumentPaperListsController.cs" />

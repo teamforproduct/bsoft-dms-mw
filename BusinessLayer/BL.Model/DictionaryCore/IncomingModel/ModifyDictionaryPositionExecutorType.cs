@@ -7,7 +7,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
     /// </summary>
     // В модели перечислены поля, на значения которых можно повлиять из интерфейса. Например поля таблицы LastChangeUserId и LastChangeDate в этой модели отсутствуют
     // Если в таблице поля объявлены как Nullable то поля в этом классе нужно объявлять Nullable
-    public class ModifyDictionaryPosition
+    public class ModifyDictionaryPositionExecutorType
     {
         /// <summary>
         /// ID
@@ -19,34 +19,18 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// Признак активности.
         /// </summary>
         public bool IsActive { get; set; }
-        
-        /// <summary>
-        /// Вышестоящая должность
-        /// </summary>
-        public int? ParentId { get; set; }
 
         /// <summary>
-        /// Наименование должности
+        /// Код
+        /// </summary>
+        public string Code { get; set; }
+
+        /// <summary>
+        /// Наименование типа исполнения
         /// </summary>
         public string Name { get; set; }
 
-        /// <summary>
-        /// Полное наименование должности
-        /// </summary>
-        public string FullName { get; set; }
 
-        /// <summary>
-        /// Подразделение, в которое включена должность
-        /// </summary>
-        public int DepartmentId { get; set; }
-
-        /// <summary>
-        /// Исполнитель
-        /// </summary>
-        public int? ExecutorAgentId { get; set; }
-
-
-        public int? MainExecutorAgentId { get; set; }
 
     }
 }

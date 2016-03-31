@@ -178,6 +178,30 @@ namespace BL.Database.Dictionaries.Interfaces
         IEnumerable<FrontDictionaryRegistrationJournal> GetDictionaryRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter);
         #endregion DictionaryRegistrationJournals
 
+
+        // Компании
+        #region DictionaryCompanies
+        int AddCompany(IContext context, InternalDictionaryCompany docType);
+        void UpdateCompany(IContext context, InternalDictionaryCompany docType);
+        void DeleteCompany(IContext context, InternalDictionaryCompany docType);
+        bool ExistsCompany(IContext context, FilterDictionaryCompany filter);
+        InternalDictionaryCompany GetInternalDictionaryCompany(IContext context, FilterDictionaryCompany filter);
+        IEnumerable<FrontDictionaryCompany> GetDictionaryCompanies(IContext context, FilterDictionaryCompany filter);
+        #endregion DictionaryCompanies
+
+
+        // Исполнители
+        #region DictionaryPositionExecutors
+        int AddExecutor(IContext context, InternalDictionaryPositionExecutor docType);
+        void UpdateExecutor(IContext context, InternalDictionaryPositionExecutor docType);
+        void DeleteExecutor(IContext context, InternalDictionaryPositionExecutor docType);
+        bool ExistsExecutor(IContext context, FilterDictionaryPositionExecutor filter);
+        InternalDictionaryPositionExecutor GetInternalDictionaryPositionExecutor(IContext context, FilterDictionaryPositionExecutor filter);
+        IEnumerable<FrontDictionaryPositionExecutor> GetDictionaryPositionExecutors(IContext context, FilterDictionaryPositionExecutor filter);
+        #endregion DictionaryPositionExecutors
+
+
+
         #region DictionaryResultTypes
         FrontDictionaryResultType GetDictionaryResultType(IContext context, int id);
 

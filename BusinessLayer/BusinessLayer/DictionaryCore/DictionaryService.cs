@@ -319,6 +319,39 @@ namespace BL.Logic.DictionaryCore
         }
         #endregion DictionaryRegistrationJournals
 
+        // Компании
+        #region DictionaryCompanies
+        public FrontDictionaryCompany GetDictionaryCompany(IContext context, int id)
+        {
+
+            return _dictDb.GetDictionaryCompanies(context, new FilterDictionaryCompany { IDs = new List<int> { id } }).FirstOrDefault();
+        }
+
+        public IEnumerable<FrontDictionaryCompany> GetDictionaryCompanies(IContext context, FilterDictionaryCompany filter)
+        {
+
+            return _dictDb.GetDictionaryCompanies(context, filter);
+        }
+        #endregion DictionaryCompanies
+
+
+
+        // Исполнители
+        #region DictionaryPositinExecutors
+        public FrontDictionaryPositionExecutor GetDictionaryPositionExecutor(IContext context, int id)
+        {
+
+            return _dictDb.GetDictionaryPositionExecutors(context, new FilterDictionaryPositionExecutor { IDs = new List<int> { id } }).FirstOrDefault();
+        }
+
+        public IEnumerable<FrontDictionaryPositionExecutor> GetDictionaryPositionExecutors(IContext context, FilterDictionaryPositionExecutor filter)
+        {
+
+            return _dictDb.GetDictionaryPositionExecutors(context, filter);
+        }
+        #endregion DictionaryPositinExecutors
+        
+        
         #region DictionaryResultTypes
         public FrontDictionaryResultType GetDictionaryResultType(IContext context, int id)
         {

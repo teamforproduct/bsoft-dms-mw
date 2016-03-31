@@ -840,7 +840,7 @@ namespace BL.Database.Dictionaries
                         qry = qry.Where(x => x.Agent.AgentPerson.FullName.Contains(temp));
                     }
                 }
-                
+
                 if (!string.IsNullOrEmpty(filter.PersonnelNumber))
                 {
                     foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.PersonnelNumber))
@@ -863,7 +863,7 @@ namespace BL.Database.Dictionaries
                         qry = qry.Where(x => x.Agent.AgentPerson.TaxCode.Contains(temp));
                     }
                 }
-                
+
                 // Поиск по дате рождения
                 if (filter.BirthPeriod.IsActive)
                 {
@@ -1128,7 +1128,7 @@ namespace BL.Database.Dictionaries
                     {
                         qry = qry.Where(x => x.Name.Contains(temp));
                     }
-                   
+
                 }
 
                 if (filter.IsActive != null)
@@ -1665,7 +1665,7 @@ namespace BL.Database.Dictionaries
                     qry = qry.OrderBy(x => x.Agent.Name)
                         .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
                 }
-                
+
                 // Список первичных ключей
                 if (filter.IDs?.Count > 0)
                 {
@@ -2234,7 +2234,7 @@ namespace BL.Database.Dictionaries
                 var qry = dbContext.DictionaryDepartmentsSet.AsQueryable();
 
                 qry = DepartmentGetWhere(ref qry, filter);
-                
+
                 return qry.Select(x => new InternalDictionaryDepartment
                 {
                     Id = x.Id,
@@ -3364,11 +3364,277 @@ namespace BL.Database.Dictionaries
             {
                 qry = qry.Where(x => x.DirectionCodes.Contains(EnumDocumentDirections.Internal.ToString()));
             }
-            
+
             return qry;
         }
 
         #endregion DictionaryRegistrationJournals
+
+        // Компании
+        #region DictionaryCompanies
+        public int AddCompany(IContext context, InternalDictionaryCompany company)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                DictionaryCompanies dc = DictionaryModelConverter.GetDbCompany(company);
+                dbContext.DictionaryCompaniesSet.Add(dc);
+                dbContext.SaveChanges();
+                company.Id = dc.Id;
+                return dc.Id;
+            }
+        }
+
+        public void UpdateCompany(IContext context, InternalDictionaryCompany company)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                DictionaryCompanies drj = DictionaryModelConverter.GetDbCompany(company);
+                dbContext.DictionaryCompaniesSet.Attach(drj);
+                dbContext.Entry(drj).State = System.Data.Entity.EntityState.Modified;
+                dbContext.SaveChanges();
+            }
+        }
+
+        public void DeleteCompany(IContext context, InternalDictionaryCompany docSubject)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var drj = dbContext.DictionaryCompaniesSet.FirstOrDefault(x => x.Id == docSubject.Id);
+                if (drj != null)
+                {
+                    dbContext.DictionaryCompaniesSet.Remove(drj);
+                    dbContext.SaveChanges();
+                }
+            }
+        }
+
+        public InternalDictionaryCompany GetInternalDictionaryCompany(IContext context, FilterDictionaryCompany filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.DictionaryCompaniesSet.AsQueryable();
+
+                qry = CompanyGetWhere(ref qry, filter);
+
+                return qry.Select(x => new InternalDictionaryCompany
+                {
+                    // pss Перегонка значений DictionaryCompany
+                    Id = x.Id,
+                    IsActive = x.IsActive,
+                    Name = x.Name,
+                    LastChangeUserId = x.LastChangeUserId,
+                    LastChangeDate = x.LastChangeDate
+                }).FirstOrDefault();
+            }
+        }
+
+        public IEnumerable<FrontDictionaryCompany> GetDictionaryCompanies(IContext context, FilterDictionaryCompany filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.DictionaryCompaniesSet.AsQueryable();
+
+                qry = CompanyGetWhere(ref qry, filter);
+
+                qry = qry.OrderBy(x => x.Name);
+
+                return qry.Select(x => new FrontDictionaryCompany
+                {
+                    // pss Перегонка значений DictionaryCompany
+                    Id = x.Id,
+                    IsActive = x.IsActive,
+                    Name = x.Name
+                }).ToList();
+            }
+        }
+
+        // Для использования в коммандах метод CanExecute
+        public bool ExistsCompany(IContext context, FilterDictionaryCompany filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.DictionaryCompaniesSet.AsQueryable();
+
+                qry = CompanyGetWhere(ref qry, filter);
+
+                var res = qry.Select(x => new FrontDictionaryCompany
+                {
+                    Id = x.Id
+                }).FirstOrDefault();
+
+                return res != null;
+            }
+        }
+
+        private static IQueryable<DictionaryCompanies> CompanyGetWhere(ref IQueryable<DictionaryCompanies> qry, FilterDictionaryCompany filter)
+        {
+            // Список первичных ключей
+            if (filter.IDs?.Count > 0)
+            {
+                qry = qry.Where(x => filter.IDs.Contains(x.Id));
+            }
+
+            // Исключение списка первичных ключей
+            if (filter.NotContainsIDs?.Count > 0)
+            {
+                qry = qry.Where(x => !filter.NotContainsIDs.Contains(x.Id));
+            }
+
+            // Тоько активные/неактивные
+            if (filter.IsActive != null)
+            {
+                qry = qry.Where(x => filter.IsActive == x.IsActive);
+            }
+
+            // Поиск по наименованию
+            if (!string.IsNullOrEmpty(filter.Name))
+            {
+                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
+                {
+                    qry = qry.Where(x => x.Name.Contains(temp));
+                }
+            }
+
+            return qry;
+        }
+
+        #endregion DictionaryCompanies
+
+        // Исполнители
+        #region DictionaryPositionExecutors
+        public int AddExecutor(IContext context, InternalDictionaryPositionExecutor executor)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                DictionaryPositionExecutors dc = DictionaryModelConverter.GetDbExecutor(executor);
+                dbContext.DictionaryPositionExecutorsSet.Add(dc);
+                dbContext.SaveChanges();
+                executor.Id = dc.Id;
+                return dc.Id;
+            }
+        }
+
+        public void UpdateExecutor(IContext context, InternalDictionaryPositionExecutor executor)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                DictionaryPositionExecutors drj = DictionaryModelConverter.GetDbExecutor(executor);
+                dbContext.DictionaryPositionExecutorsSet.Attach(drj);
+                dbContext.Entry(drj).State = System.Data.Entity.EntityState.Modified;
+                dbContext.SaveChanges();
+            }
+        }
+
+        public void DeleteExecutor(IContext context, InternalDictionaryPositionExecutor docSubject)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var drj = dbContext.DictionaryPositionExecutorsSet.FirstOrDefault(x => x.Id == docSubject.Id);
+                if (drj != null)
+                {
+                    dbContext.DictionaryPositionExecutorsSet.Remove(drj);
+                    dbContext.SaveChanges();
+                }
+            }
+        }
+
+        public InternalDictionaryPositionExecutor GetInternalDictionaryPositionExecutor(IContext context, FilterDictionaryPositionExecutor filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.DictionaryPositionExecutorsSet.AsQueryable();
+
+                qry = ExecutorGetWhere(ref qry, filter);
+
+                return qry.Select(x => new InternalDictionaryPositionExecutor
+                {
+                    // pss Перегонка значений DictionaryPositionExecutors
+                    Id = x.Id,
+                    IsActive = x.IsActive,
+                    AgentId = x.AgentId,
+                    PositionId = x.PositionId,
+                    PositionExecutorTypeId = x.PositionExecutorTypeId,
+                    AccessLevelId = x.AccessLevelId,
+                    Description = x.Description,
+                    StartDate = x.StartDate,
+                    EndDate = x.EndDate,
+                    LastChangeUserId = x.LastChangeUserId,
+                    LastChangeDate = x.LastChangeDate
+                }).FirstOrDefault();
+            }
+        }
+
+        public IEnumerable<FrontDictionaryPositionExecutor> GetDictionaryPositionExecutors(IContext context, FilterDictionaryPositionExecutor filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.DictionaryPositionExecutorsSet.AsQueryable();
+
+                qry = ExecutorGetWhere(ref qry, filter);
+
+                return qry.Select(x => new FrontDictionaryPositionExecutor
+                {
+                    // pss Перегонка значений DictionaryPositionExecutors
+                    Id = x.Id,
+                    IsActive = x.IsActive,
+                    AgentId = x.AgentId,
+                    PositionId = x.PositionId,
+                    PositionExecutorTypeId = x.PositionExecutorTypeId,
+                    AccessLevelId = x.AccessLevelId,
+                    Description = x.Description,
+                    StartDate = x.StartDate,
+                    EndDate = x.EndDate,
+                    AgentName = x.Agent.Name, 
+                    PositionName = x.Position.Name,
+                    PositionFullName = x.Position.FullName,
+                    AccessLevelName = x.AccessLevel.Name,   
+                    PositionExecutorTypeName = x.PositionExecutorType.Name  
+                }).ToList();
+            }
+        }
+
+        // Для использования в коммандах метод CanExecute
+        public bool ExistsExecutor(IContext context, FilterDictionaryPositionExecutor filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.DictionaryPositionExecutorsSet.AsQueryable();
+
+                qry = ExecutorGetWhere(ref qry, filter);
+
+                var res = qry.Select(x => new FrontDictionaryPositionExecutor
+                {
+                    Id = x.Id
+                }).FirstOrDefault();
+
+                return res != null;
+            }
+        }
+
+        private static IQueryable<DictionaryPositionExecutors> ExecutorGetWhere(ref IQueryable<DictionaryPositionExecutors> qry, FilterDictionaryPositionExecutor filter)
+        {
+            // Список первичных ключей
+            if (filter.IDs?.Count > 0)
+            {
+                qry = qry.Where(x => filter.IDs.Contains(x.Id));
+            }
+
+            // Исключение списка первичных ключей
+            if (filter.NotContainsIDs?.Count > 0)
+            {
+                qry = qry.Where(x => !filter.NotContainsIDs.Contains(x.Id));
+            }
+
+            // Тоько активные/неактивные
+            if (filter.IsActive != null)
+            {
+                qry = qry.Where(x => filter.IsActive == x.IsActive);
+            }
+
+            return qry;
+        }
+
+        #endregion DictionaryPositionExecutors
 
         #region DictionaryResultTypes
         public FrontDictionaryResultType GetDictionaryResultType(IContext context, int id)
@@ -3468,7 +3734,7 @@ namespace BL.Database.Dictionaries
                 {
                     qry = qry.Where(x => !filter.NotContainsIDs.Contains(x.Id));
                 }
-                
+
                 // Поиск по наименованию
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
@@ -3556,8 +3822,8 @@ namespace BL.Database.Dictionaries
                         .Aggregate(qry, (current, task) => current.Where(x => x.Task.Contains(task)));
                 }
 
-              
-                 if (!string.IsNullOrEmpty(filter.SendTypeName))
+
+                if (!string.IsNullOrEmpty(filter.SendTypeName))
                 {
 
                     foreach (string str in CommonFilterUtilites.GetWhereExpressions(filter.SendTypeName))
@@ -3581,7 +3847,7 @@ namespace BL.Database.Dictionaries
                         qry = qry.Where(x => x.TargetAgent.Name.Contains(str));
                     }
                 }
-                               
+
 
                 return qry.Select(x => new FrontDictionaryStandartSendListContent
                 {
@@ -3698,7 +3964,7 @@ namespace BL.Database.Dictionaries
                 {
                     qry = qry.Where(x => !filter.NotContainsIDs.Contains(x.Id));
                 }
-                
+
                 // Поиск по наименованию
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
@@ -3708,9 +3974,9 @@ namespace BL.Database.Dictionaries
                     }
                 }
 
-                if (filter.PositionID != null )
+                if (filter.PositionID != null)
                 {
-                    qry = qry.Where(x => filter.PositionID==x.PositionId);
+                    qry = qry.Where(x => filter.PositionID == x.PositionId);
                 }
                 return qry.Select(x => new FrontDictionaryStandartSendList
                 {
@@ -3811,7 +4077,7 @@ namespace BL.Database.Dictionaries
                 {
                     qry = qry.Where(x => !filter.NotContainsIDs.Contains(x.Id));
                 }
-                
+
                 // Поиск по наименованию
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
@@ -4263,6 +4529,8 @@ namespace BL.Database.Dictionaries
                 return items;
             }
         }
+
+
 
         #endregion CustomDictionaries
     }

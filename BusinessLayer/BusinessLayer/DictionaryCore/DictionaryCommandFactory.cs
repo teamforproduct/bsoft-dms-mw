@@ -223,7 +223,7 @@ namespace BL.Logic.DictionaryCore
                 #endregion DictionaryRegistrationJournals
                    
                 // Структура предприятия
-                #region DictionaryDictionaryDepartmentss
+                #region DictionaryDepartmentss
                 case EnumDictionaryActions.AddDepartment:
                     cmd = DmsResolver.Current.Get<AddDictionaryDepartmentCommand>();
                     break;
@@ -233,10 +233,10 @@ namespace BL.Logic.DictionaryCore
                 case EnumDictionaryActions.DeleteDepartment:
                     cmd = DmsResolver.Current.Get<DeleteDictionaryDepartmentCommand>();
                     break;
-                #endregion DictionaryDictionaryDepartmentss
+                #endregion DictionaryDepartmentss
 
                 // Штатное расписание
-                #region DictionaryDictionaryPositionss
+                #region DictionaryPositionss
                 case EnumDictionaryActions.AddPosition:
                     cmd = DmsResolver.Current.Get<AddDictionaryPositionCommand>();
                     break;
@@ -246,7 +246,34 @@ namespace BL.Logic.DictionaryCore
                 case EnumDictionaryActions.DeletePosition:
                     cmd = DmsResolver.Current.Get<DeleteDictionaryPositionCommand>();
                     break;
-                #endregion DictionaryDictionaryPositionss
+                #endregion DictionaryPositionss
+
+                // Компании
+                #region DictionaryCompanies
+                case EnumDictionaryActions.AddCompany:
+                    cmd = DmsResolver.Current.Get<AddDictionaryCompanyCommand>();
+                    break;
+                case EnumDictionaryActions.ModifyCompany:
+                    cmd = DmsResolver.Current.Get<ModifyDictionaryCompanyCommand>();
+                    break;
+                case EnumDictionaryActions.DeleteCompany:
+                    cmd = DmsResolver.Current.Get<DeleteDictionaryCompanyCommand>();
+                    break;
+                #endregion DictionaryCompanies
+
+                // Исполнители
+                #region DictionaryPositionExecutors
+                case EnumDictionaryActions.AddExecutor:
+                    cmd = DmsResolver.Current.Get<AddDictionaryPositionExecutorCommand>();
+                    break;
+                case EnumDictionaryActions.ModifyExecutor:
+                    cmd = DmsResolver.Current.Get<ModifyDictionaryPositionExecutorCommand>();
+                    break;
+                case EnumDictionaryActions.DeleteExecutor:
+                    cmd = DmsResolver.Current.Get<DeleteDictionaryPositionExecutorCommand>();
+                    break;
+                #endregion DictionaryPositionExecutors
+
 
                 #region DictionaryStandartSendListContent
                 case EnumDictionaryActions.AddStandartSendListContent:
