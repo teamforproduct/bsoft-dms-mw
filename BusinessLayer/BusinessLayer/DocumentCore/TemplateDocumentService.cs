@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Documents.Interfaces;
+using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.Common;
 using BL.Model.DocumentCore;
+using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
+using BL.Model.Enums;
 using BL.Model.Exception;
 
 namespace BL.Logic.DocumentCore
@@ -12,12 +15,16 @@ namespace BL.Logic.DocumentCore
     public class TemplateDocumentService : ITemplateDocumentService
     {
         private readonly ITemplateDocumentsDbProcess _templateDb;
+        private readonly IAdminService _admin;
 
-        public TemplateDocumentService(ITemplateDocumentsDbProcess templateDb)
+
+        public TemplateDocumentService(ITemplateDocumentsDbProcess templateDb,IAdminService admin)
         {
             _templateDb = templateDb;
+            _admin = admin;
         }
 
+        #region TemplateDocuments
         public IEnumerable<FrontTemplateDocument> GetTemplateDocuments(IContext context)
         {
             return _templateDb.GetTemplateDocument(context);
@@ -25,6 +32,8 @@ namespace BL.Logic.DocumentCore
 
         public int AddOrUpdateTemplate(IContext context, ModifyTemplateDocument template)
         {
+
+            _admin.VerifyAccess(context, EnumTemplateDocumentsActions.AddOrModifyTemplateDocument);
 
             if (!_templateDb.CanModifyTemplate(context, template))
             {
@@ -36,6 +45,7 @@ namespace BL.Logic.DocumentCore
 
         public void DeleteTemplate(IContext context, int id)
         {
+            _admin.VerifyAccess(context, EnumTemplateDocumentsActions.DeleteTemplateDocument);
             if (!_templateDb.CanModifyTemplate(context, id))
             {
                 throw new CouldNotModifyTemplateDocument();
@@ -49,6 +59,33 @@ namespace BL.Logic.DocumentCore
             return _templateDb.GetTemplateDocument(context, templateDocumentId);
         }
 
-        
+        #endregion TemplateDocuments
+        #region TemplateDocumentsSendList
+
+        public IEnumerable<FrontTemplateDocumentSendLists> GetTemplateDocumentSendLists(IContext context,int templateId,FilterTemplateDocumentSendList filter)
+        {
+            return _templateDb.GetTemplateDocumentSendLists(context,templateId,filter);
+        }
+
+        public int AddOrUpdateTemplateSendList(IContext context, ModifyTemplateDocumentSendLists template)
+        {
+            _admin.VerifyAccess(context, EnumTemplateDocumentsActions.AddOrModifyTemplateDocumentSendList);
+            CommonDocumentUtilities.SetLastChange(context, template);
+            return _templateDb.AddOrUpdateTemplateSendList(context, template);
+      
+
+        }
+
+        public void DeleteTemplateSendList(IContext context, int id)
+        {
+            _admin.VerifyAccess(context, EnumTemplateDocumentsActions.DeleteTemplateDocumentSendList);
+            _templateDb.DeleteTemplateSendList(context, id);
+        }
+
+        public FrontTemplateDocumentSendLists GetTemplateDocumentSendList(IContext context, int id)
+        {
+            return _templateDb.GetTemplateDocumentSendList(context, id);
+        }
+        #endregion TemplateDocumentsSendList
     }
 }

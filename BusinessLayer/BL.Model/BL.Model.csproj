@@ -128,6 +128,7 @@
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAgentPerson.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryContact.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryContactType.cs" />
+    <Compile Include="DocumentCore\Filters\FilterTemplateDocumentSendList.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentSubscription.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentPaperList.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentTask.cs" />
@@ -241,8 +242,11 @@
     <Compile Include="DocumentCore\InternalModel\InternalDocumentSubscription.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentWait.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalTemplateDocumentTask.cs" />
-    <Compile Include="Enums\EnumSystemUsers.cs" />    <Compile Include="Enums\EnumContactTypes.cs" />
-    <Compile Include="Enums\EnumDictionaryAgentTypes.cs" />    <Compile Include="Enums\EnumPropertyAction.cs" />
+    <Compile Include="Enums\EnumTemplateDocumentsActions.cs" />
+    <Compile Include="Enums\EnumSystemUsers.cs" />
+    <Compile Include="Enums\EnumContactTypes.cs" />
+    <Compile Include="Enums\EnumDictionaryAgentTypes.cs" />
+    <Compile Include="Enums\EnumPropertyAction.cs" />
     <Compile Include="Enums\EnumDictionaryActions.cs" />
     <Compile Include="Enums\EnumDocumentActions.cs" />
     <Compile Include="Enums\EnumObjects.cs" />

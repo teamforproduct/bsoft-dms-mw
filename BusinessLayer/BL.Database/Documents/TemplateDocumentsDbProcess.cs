@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using BL.CrossCutting.Interfaces;
 using BL.Database.DatabaseContext;
 using BL.Database.Documents.Interfaces;
 using BL.Database.DBModel.Template;
+using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.Enums;
@@ -12,8 +14,8 @@ namespace BL.Database.Documents
 {
     public class TemplateDocumentsDbProcess : CoreDb.CoreDb, ITemplateDocumentsDbProcess
     {
-       
 
+        #region TemplateDocuments
         public IEnumerable<FrontTemplateDocument> GetTemplateDocument(IContext ctx)
         {
             using (var dbContext = new DmsContext(ctx))
@@ -129,12 +131,9 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(context))
             {
                 var ddt = dbContext.TemplateDocumentsSet.FirstOrDefault(x => x.Id == id);
-                if (ddt != null)
-                {
-
-                    dbContext.TemplateDocumentsSet.Remove(ddt);
-                    dbContext.SaveChanges();
-                }
+                if (ddt == null) return;
+                dbContext.TemplateDocumentsSet.Remove(ddt);
+                dbContext.SaveChanges();
             }
         }
 
@@ -151,11 +150,131 @@ namespace BL.Database.Documents
 
         public bool CanModifyTemplate(IContext ctx, int templateId)
         {
+               return CanModifyTemplate(ctx, new ModifyTemplateDocument() {Id = templateId});           
+        }
+        #endregion TemplateDocuments
+
+        #region TemplateDocumentSendLists
+
+        public IEnumerable<FrontTemplateDocumentSendLists> GetTemplateDocumentSendLists(IContext ctx, int templateId,
+            FilterTemplateDocumentSendList filter)
+        {
             using (var dbContext = new DmsContext(ctx))
             {
-                return CanModifyTemplate(ctx, new ModifyTemplateDocument() {Id = templateId});
+                var qry = dbContext.TemplateDocumentSendListsSet.AsQueryable();
+                if (filter.Id.Count > 0)
+                {
+                    qry = qry.Where(x => filter.Id.Contains(x.Id));
+                }
+                if (filter.SendType.HasValue)
+                {
+                    qry = qry.Where(x => x.SendTypeId == (int) filter.SendType);
+                }
+                if (filter.TargetPositionId.HasValue)
+                {
+                    qry = qry.Where(x => x.TargetPositionId == filter.TargetPositionId);
+                }
+                if (filter.Stage.HasValue)
+                {
+                    qry = qry.Where(x => x.Stage == filter.Stage);
+                }
+                if (!string.IsNullOrEmpty(filter.Task))
+                {
+                    qry = qry.Where(x => x.Task.Task.Contains(filter.Task));
+                }
+
+                return qry.Select(x => new FrontTemplateDocumentSendLists()
+                {
+                    Id = x.Id,
+                    DocumentId = x.DocumentId,
+                    SendType = (EnumSendTypes)x.SendTypeId,
+                    TargetPositionId = x.TargetPositionId,
+                    Description = x.Description,
+                    Stage = x.Stage,
+                    Task = x.Task.Task,
+                    DueDay = x.DueDay,
+                    AccessLevel = (EnumDocumentAccesses)x.AccessLevelId,
+                    PositionName = x.TargetPosition.Name,
+                    SendTypeName = x.SendType.Name,
+                    AccessLevelName = x.AccessLevel.Name,
+                }).ToList();
+
             }
         }
 
+        public FrontTemplateDocumentSendLists GetTemplateDocumentSendList(IContext ctx, int id)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                return dbContext.TemplateDocumentSendListsSet.Where(x => x.Id == id).Select(x => new FrontTemplateDocumentSendLists()
+                {
+                    Id = x.Id,
+                    DocumentId = x.DocumentId,
+                    SendType = (EnumSendTypes) x.SendTypeId,
+                    TargetPositionId = x.TargetPositionId,
+                    Description = x.Description,
+                    Stage = x.Stage,
+                    Task = x.Task.Task,
+                    DueDay = x.DueDay,
+                    AccessLevel = (EnumDocumentAccesses) x.AccessLevelId,
+                    PositionName = x.TargetPosition.Name,
+                    SendTypeName = x.SendType.Name,
+                    AccessLevelName = x.AccessLevel.Name,
+                    IsAddControl = x.IsAddControl,
+                    IsAvailableWithinTask = x.IsAvailableWithinTask
+                }).FirstOrDefault();
+            }
+        }
+
+        public int AddOrUpdateTemplateSendList(IContext ctx, ModifyTemplateDocumentSendLists template)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                var newTemplate=new TemplateDocumentSendLists()
+                {
+                   DocumentId=template.DocumentId,
+                   Description = template.Description,
+                   IsAddControl = template.IsAddControl,
+                   IsAvailableWithinTask = template.IsAvailableWithinTask,
+                   TargetPositionId = template.TargetPositionId,
+                   AccessLevelId = (int)template.AccessLevel,
+                   DueDay = template.DueDay,
+                   SendTypeId = (int)template.SendType,
+                   SourcePositionId = template.SourcePositionId,
+                   Stage = template.Stage,
+                   TargetAgentId = template.TargetAgentId,
+                   TaskId = template.TaskId,
+                   LastChangeDate = template.LastChangeDate,
+                   LastChangeUserId = template.LastChangeUserId
+                };
+
+                if (template.Id.HasValue)
+                {
+                    newTemplate.Id = (int)template.Id;
+                }
+
+                dbContext.TemplateDocumentSendListsSet.Attach(newTemplate);
+
+                var entity = dbContext.Entry(newTemplate);
+                entity.State = System.Data.Entity.EntityState.Modified;
+
+                dbContext.SaveChanges();
+
+                return newTemplate.Id;
+            }
+        }
+
+        public void DeleteTemplateSendList(IContext ctx, int id)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                var ddt = dbContext.TemplateDocumentSendListsSet.FirstOrDefault(x => x.Id == id);
+                if (ddt == null) return;
+                dbContext.TemplateDocumentSendListsSet.Remove(ddt);
+                dbContext.SaveChanges();
+            }
+        }
+
+        #endregion TemplateDocumentSendLists
     }
 }
