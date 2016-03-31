@@ -11,5 +11,8 @@ namespace BL.Database.Documents.Interfaces
         FrontTemplateDocument GetTemplateDocument(IContext ctx, int templateDocumentId);
         FrontTemplateDocument GetTemplateDocumentByDocumentId(IContext ctx, int documentId);
         int AddOrUpdateTemplate(IContext ctx, ModifyTemplateDocument template);
+        void DeleteTemplate(IContext ctx, int id);
+        bool CanModifyTemplate(IContext ctx, ModifyTemplateDocument template);
+        bool CanModifyTemplate(IContext ctx, int templateId);
     }
 }

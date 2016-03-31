@@ -10,9 +10,10 @@ using BL.Model.Enums;
 
 namespace BL.Model.DocumentCore.IncomingModel
 {
-    public class ModifyTemplateDocument
+    public class ModifyTemplateDocument : LastChangeInfo
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
+        public string Name { get; set; }
         public bool IsHard { get; set; }
         public EnumDocumentDirections DocumentDirection { get; set; }
         public int DocumentTypeId { get; set; }
@@ -22,5 +23,6 @@ namespace BL.Model.DocumentCore.IncomingModel
         public int? SenderAgentId { get; set; }
         public int? SenderAgentPersonId { get; set; }
         public string Addressee { get; set; }
+        public bool IsActive { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using BL.Logic.DocumentCore;
+﻿using System.ComponentModel.DataAnnotations;
+using BL.Logic.DocumentCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Web.Http;
@@ -45,7 +46,7 @@ namespace DMS_WebAPI.Controllers
             return Get(tmpTemplate);
         }
        
-        public IHttpActionResult Put(int id, [FromBody]ModifyTemplateDocument model)
+        public IHttpActionResult Put([Required]int id, [FromBody]ModifyTemplateDocument model)
         {
             model.Id = id;
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
