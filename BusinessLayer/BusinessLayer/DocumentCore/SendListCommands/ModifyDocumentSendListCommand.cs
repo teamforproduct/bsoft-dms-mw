@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using BL.Database.Documents.Interfaces;
 using BL.Logic.Common;
 using BL.Model.DocumentCore.IncomingModel;
@@ -51,7 +52,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
 
         public override bool CanExecute()
         {
-            _document = _operationDb.ChangeDocumentSendListPrepare(_context, Model.DocumentId,Model.Task);
+            _document = _operationDb.ChangeDocumentSendListPrepare(_context, Model.DocumentId, Model.Task, Model.Id);
 
             _sendList = _document?.SendLists.FirstOrDefault(x => x.Id == Model.Id);
             if (_sendList == null || !CanBeDisplayed(_sendList.SourcePositionId))
@@ -83,7 +84,21 @@ namespace BL.Logic.DocumentCore.SendListCommands
         public override object Execute()
         {
             CommonDocumentUtilities.SetLastChange(_context, _sendList);
-            _operationDb.ModifyDocumentSendList(_context, _sendList, _document.Tasks);
+
+            var delPaperEvents = _document.PaperEvents.GroupJoin(Model.PaperEvents,
+                pe => pe.PaperId,
+                m => m.Id,
+                (pe, m) => new { pe, m = m.FirstOrDefault() })
+                .Where(x => x.m == null || x.pe.SourcePositionId != _sendList.SourcePositionId || x.pe.TargetPositionId != _sendList.TargetPositionId || x.pe.Description != x.m.Description)
+                .Select(x => x.pe.PaperId)
+                .ToList();
+
+            var addPaperEvents = new List<InternalDocumentPaperEvent>();
+            if (Model.PaperEvents?.Any(x => delPaperEvents.Contains(x.Id) || !_document.PaperEvents.Select(y => y.PaperId).ToList().Contains(x.Id)) ?? false)
+                addPaperEvents.AddRange(Model.PaperEvents.Where(x => delPaperEvents.Contains(x.Id) || !_document.PaperEvents.Select(y => y.PaperId).ToList().Contains(x.Id))
+                    .Select(model => CommonDocumentUtilities.GetNewDocumentPaperEvent(_context, model.Id, EnumEventTypes.MoveDocumentPaper, model.Description, _sendList.TargetPositionId, _sendList.TargetAgentId, _sendList.SourcePositionId, _sendList.SourceAgentId, false, false)));
+            addPaperEvents.ForEach(x => { x.SendListId = _sendList.Id; });
+            _operationDb.ModifyDocumentSendList(_context, _sendList, _document.Tasks, addPaperEvents, delPaperEvents);
             return null;
         }
 

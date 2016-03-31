@@ -13,7 +13,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
 
-        protected InternalDocumentSendList DocSendList;
+        private InternalDocumentSendList _sendList;
 
         public AddDocumentSendListCommand(IDocumentOperationsDbProcess operationDb)
         {
@@ -45,9 +45,9 @@ namespace BL.Logic.DocumentCore.SendListCommands
 
             //Model.IsInitial = !_document.IsLaunchPlan;
             var taskId = CommonDocumentUtilities.GetDocumentTaskOrCreateNew(_context, _document, Model.Task); //TODO исправление от кого????
-            DocSendList = CommonDocumentUtilities.GetNewDocumentSendList(_context, Model, taskId);
+            _sendList = CommonDocumentUtilities.GetNewDocumentSendList(_context, Model, taskId);
             var sendLists = _document.SendLists.ToList();
-            sendLists.Add(DocSendList);
+            sendLists.Add(_sendList);
             _document.SendLists = sendLists;
 
             CommonDocumentUtilities.VerifySendLists(_document);
@@ -57,7 +57,11 @@ namespace BL.Logic.DocumentCore.SendListCommands
 
         public override object Execute()
         {
-            return _operationDb.AddDocumentSendList(_context, new List<InternalDocumentSendList> { DocSendList }, _document.Tasks).FirstOrDefault();
+            var paperEvents = new List<InternalDocumentPaperEvent>();
+            if (Model.PaperEvents?.Any() ?? false)
+                paperEvents.AddRange(Model.PaperEvents.Select(model => CommonDocumentUtilities.GetNewDocumentPaperEvent(_context, model.Id, EnumEventTypes.MoveDocumentPaper, model.Description, _sendList.TargetPositionId, _sendList.TargetAgentId, _sendList.SourcePositionId, _sendList.SourceAgentId, false, false)));
+
+            return _operationDb.AddDocumentSendList(_context, new List<InternalDocumentSendList> { _sendList }, _document.Tasks, paperEvents).FirstOrDefault();
         }
 
     }

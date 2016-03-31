@@ -67,7 +67,10 @@ namespace BL.Database.Documents
                     if (document.SendLists != null && document.SendLists.Any())
                     {
                         var sendLists = document.SendLists.ToList();
-                        sendLists.ForEach(x => { x.DocumentId = doc.Id; x.TaskId = doc.Tasks.Where(y => y.Task == x.TaskName).Select(y => y.Id).FirstOrDefault(); });
+                        sendLists.ForEach(x => {    x.DocumentId = doc.Id;
+                                                    var taskId = doc.Tasks.Where(y => y.Task == x.TaskName).Select(y => y.Id).FirstOrDefault();
+                                                   x.TaskId = (taskId == 0 ? null : (int?)taskId);
+                        });
                         var sendListsDb = ModelConverter.GetDbDocumentSendLists(sendLists).ToList();
                         dbContext.DocumentSendListsSet.AddRange(sendListsDb);
                         dbContext.SaveChanges();
@@ -599,7 +602,7 @@ namespace BL.Database.Documents
                     return null;
                 }
 
-                doc.AccessLevel = (EnumDocumentAccesses)CommonQueries.GetDocumentAccessesesQry(dbContext, doc.Id, ctx).Max(x => x.AccessLevelId);
+                doc.AccessLevel = (EnumDocumentAccesses)CommonQueries.GetDocumentAccessesesQry(dbContext, documentId, ctx).Max(x => x.AccessLevelId);
                 doc.Tasks = dbContext.DocumentTasksSet
                         .Where(x => x.DocumentId == documentId)
                         .Select(x => new InternalDocumentTask
@@ -758,6 +761,7 @@ namespace BL.Database.Documents
                 dbContext.DocumentFilesSet.RemoveRange(dbContext.DocumentFilesSet.Where(x => x.DocumentId == id));
                 dbContext.DocumentRestrictedSendListsSet.RemoveRange(dbContext.DocumentRestrictedSendListsSet.Where(x => x.DocumentId == id));
                 dbContext.DocumentSendListsSet.RemoveRange(dbContext.DocumentSendListsSet.Where(x => x.DocumentId == id));
+                dbContext.DocumentTasksSet.RemoveRange(dbContext.DocumentTasksSet.Where(x => x.DocumentId == id));
                 dbContext.DocumentsSet.RemoveRange(dbContext.DocumentsSet.Where(x => x.Id == id));
 
                 CommonQueries.AddFullTextCashInfo(dbContext, id, EnumSearchObjectType.Document, EnumOperationType.Delete);

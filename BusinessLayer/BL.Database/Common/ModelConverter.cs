@@ -160,6 +160,7 @@ namespace BL.Database.Common
             return sendList == null ? null :
                 new DocumentSendLists
                 {
+                    Id = sendList.Id,
                     DocumentId = sendList.DocumentId,
                     Stage = sendList.Stage,
                     SendTypeId = (int)sendList.SendType,
@@ -265,6 +266,7 @@ namespace BL.Database.Common
             return evt == null ? null :
                 new DocumentPaperEvents
                 {
+                    Id = evt.Id,
                     Description = evt.Description,
                     PaperId = evt.PaperId,
                     EventTypeId = (int)evt.EventType,
@@ -282,6 +284,8 @@ namespace BL.Database.Common
                     SendDate = evt.SendDate,
                     RecieveAgentId = evt.RecieveAgentId,
                     RecieveDate = evt.RecieveDate,
+                    SendListId = evt.SendListId,
+                    EventId = evt.EventId,
                 };
         }
 

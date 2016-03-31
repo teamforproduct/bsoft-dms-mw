@@ -435,20 +435,21 @@ namespace BL.Logic.Common
             };
         }
 
-        public static InternalDocumentPaperEvent GetNewDocumentPaperEvent(IContext context, int? paperId, EnumEventTypes eventType, string description = null, bool IsMarkRecieve = true, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null)
+        public static InternalDocumentPaperEvent GetNewDocumentPaperEvent(IContext context, int? paperId, EnumEventTypes eventType, string description = null, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null, bool IsMarkPlan = true, bool IsMarkRecieve = true)
         {
             return new InternalDocumentPaperEvent
             {
                 PaperId = paperId ?? 0,
                 EventType = eventType,
+                Description = description,
                 SourceAgentId = sourceAgentId ?? context.CurrentAgentId,
                 SourcePositionId = sourcePositionId ?? context.CurrentPositionId,
-                SourcePositionExecutorAgentId = GetExecutorAgentIdByPositionId(context, sourcePositionId ?? context.CurrentPositionId),
+                SourcePositionExecutorAgentId = IsMarkPlan ? GetExecutorAgentIdByPositionId(context, sourcePositionId ?? context.CurrentPositionId) : null,
                 TargetPositionId = targetPositionId ?? context.CurrentPositionId,
-                TargetPositionExecutorAgentId = GetExecutorAgentIdByPositionId(context, targetPositionId ?? context.CurrentPositionId),
+                TargetPositionExecutorAgentId = IsMarkPlan ? GetExecutorAgentIdByPositionId(context, targetPositionId ?? context.CurrentPositionId) : null,
                 TargetAgentId = targetAgentId,
-                PlanAgentId = context.CurrentAgentId,
-                PlanDate = DateTime.Now,
+                PlanAgentId = IsMarkPlan? (int?)context.CurrentAgentId : null,
+                PlanDate = IsMarkPlan ? (DateTime?)DateTime.Now : null,
                 SendAgentId = IsMarkRecieve ? (int?)context.CurrentAgentId : null,
                 SendDate = IsMarkRecieve ? (DateTime?)DateTime.Now : null,
                 RecieveAgentId = IsMarkRecieve ? (int?)context.CurrentAgentId : null,
@@ -458,11 +459,11 @@ namespace BL.Logic.Common
             };
         }
 
-        public static IEnumerable<InternalDocumentPaperEvent> GetNewDocumentPaperEvents(IContext context, int? paperId, EnumEventTypes eventType, string description = null, bool IsMarkRecieve = true, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null)
+        public static IEnumerable<InternalDocumentPaperEvent> GetNewDocumentPaperEvents(IContext context, int? paperId, EnumEventTypes eventType, string description = null, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null, bool IsMarkPlan = true, bool IsMarkRecieve = true)
         {
             return new List<InternalDocumentPaperEvent>
             {
-                GetNewDocumentPaperEvent(context,  paperId, eventType, description, IsMarkRecieve, targetPositionId, targetAgentId, sourcePositionId, sourceAgentId )
+                GetNewDocumentPaperEvent(context,  paperId, eventType, description, targetPositionId, targetAgentId, sourcePositionId, sourceAgentId, IsMarkPlan, IsMarkRecieve)
             };
         }
 

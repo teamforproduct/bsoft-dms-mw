@@ -94,6 +94,11 @@
     <Compile Include="DocumentCore\PaperCommands\AddDocumentPaperCommand.cs" />
     <Compile Include="DocumentCore\PaperCommands\DeleteDocumentPaperListCommand.cs" />
     <Compile Include="DocumentCore\PaperCommands\DeleteDocumentPaperCommand.cs" />
+    <Compile Include="DocumentCore\PaperCommands\CancelSendDocumentPaperEventCommand.cs" />
+    <Compile Include="DocumentCore\PaperCommands\RecieveDocumentPaperEventCommand.cs" />
+    <Compile Include="DocumentCore\PaperCommands\PlanDocumentPaperEventCommand.cs" />
+    <Compile Include="DocumentCore\PaperCommands\CancelPlanDocumentPaperEventCommand.cs" />
+    <Compile Include="DocumentCore\PaperCommands\SendDocumentPaperEventCommand.cs" />
     <Compile Include="DocumentCore\PaperCommands\MarkСorruptionDocumentPaperCommand.cs" />
     <Compile Include="DocumentCore\PaperCommands\MarkOwnerDocumentPaperCommand.cs" />
     <Compile Include="DocumentCore\PaperCommands\ModifyDocumentPaperListCommand.cs" />

@@ -5,7 +5,7 @@ namespace BL.Model.DocumentCore.Actions
     /// <summary>
     /// Модель создания копий бумажных носителей
     /// </summary>
-    public class CopyDocumentPaper: EventPaper
+    public class CopyDocumentPaper: PaperEvent
     {
         /// <summary>
         /// Имя копии

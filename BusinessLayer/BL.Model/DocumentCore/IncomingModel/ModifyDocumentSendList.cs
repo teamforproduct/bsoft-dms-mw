@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using System.Xml.Serialization;
+using BL.Model.DocumentCore.Actions;
 using BL.Model.Enums;
 using BL.Model.Users;
 
@@ -80,8 +81,8 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// </summary>
         public bool IsInitial { get; set; }
         /// <summary>
-        /// Массив ИД бумажных насителей, подлежащих перемещению
+        /// Массив событий, по перемещению бумажных насителей
         /// </summary>
-        public List<int> PaperId { get; set; }
+        public List<PaperEvent> PaperEvents { get; set; }
     }
 }

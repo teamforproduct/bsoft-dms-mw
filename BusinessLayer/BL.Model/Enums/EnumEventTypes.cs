@@ -56,5 +56,7 @@
         AddNewPaper = 505, //Добавлен бумажный носитель
         MarkOwnerDocumentPaper = 507, //Отметка нахождения бумажного носителя у себя
         MarkСorruptionDocumentPaper = 509, //Отметка порчи бумажного носителя
+
+        MoveDocumentPaper = 510, //Переданы бумажные носители
     }
 }

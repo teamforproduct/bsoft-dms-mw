@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using BL.Model.Common;
 using BL.Model.Enums;
 
@@ -34,6 +35,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public InternalDocumentEvent StartEvent { get; set; }
         public InternalDocumentEvent CloseEvent { get; set; }
         public InternalDocumentTask Task { get; set; }
+        public List<InternalDocumentPaperEvent> PaperEvents { get; set; }
 
     }
 }
