@@ -10,6 +10,15 @@ namespace BL.Model.DocumentCore.Filters
     public class FilterDocument
     {
         /// <summary>
+        /// Default constructor
+        /// </summary>
+        public FilterDocument()
+        {
+            IsInWork = true;
+            DocumentId = new List<int>();
+        }
+
+        /// <summary>
         /// Массив ИД документов
         /// </summary>
         public List<int> DocumentId { get; set; }
@@ -93,6 +102,11 @@ namespace BL.Model.DocumentCore.Filters
         /// Признак в работе
         /// </summary>
         public bool IsInWork { get; set; } // should be true by default
+
+        /// <summary>
+        /// Содержит строку для поиска по полнотекстовому поиску. 
+        /// </summary>
+        public string FullTextSearch { get; set; }
 
         public List<FilterPropertyByRecord> FilterProperties { get; set; }
     }

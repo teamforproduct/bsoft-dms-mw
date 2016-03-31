@@ -16,7 +16,7 @@ using BL.Model.Exception;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DictionaryCore.FilterModel;
-using BL.Model.FullTextSerach;
+using BL.Model.FullTextSearch;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.InternalModel;
 
@@ -264,10 +264,13 @@ namespace BL.Database.Documents
                 }
                 #endregion DocumentsSetFilter
 
-                paging.TotalItemsCount = qry.Count();
+                if (paging != null)
+                {
+                    paging.TotalItemsCount = qry.Count();
 
-                qry = qry.OrderByDescending(x => x.Doc.CreateDate)
-                    .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
+                    qry = qry.OrderByDescending(x => x.Doc.CreateDate)
+                        .Skip(paging.PageSize*(paging.CurrentPage - 1)).Take(paging.PageSize);
+                }
 
                 var newevnt =
                     dbContext.DocumentEventsSet.Join(qry, ev => ev.DocumentId, rs => rs.Doc.Id, (e, r) => new { ev = e })

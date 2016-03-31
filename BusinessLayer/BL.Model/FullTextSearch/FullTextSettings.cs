@@ -1,4 +1,4 @@
-﻿namespace BL.Model.FullTextSerach
+﻿namespace BL.Model.FullTextSearch
 {
     /// <summary>
     /// Describe structure of parameters for the full text search

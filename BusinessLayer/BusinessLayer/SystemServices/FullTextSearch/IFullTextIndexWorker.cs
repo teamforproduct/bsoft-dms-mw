@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using BL.Model.FullTextSerach;
+using BL.Model.FullTextSearch;
 
 namespace BL.Logic.SystemServices.FullTextSearch
 {

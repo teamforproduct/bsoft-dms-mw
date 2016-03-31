@@ -1,4 +1,4 @@
-﻿namespace BL.Model.FullTextSerach
+﻿namespace BL.Model.FullTextSearch
 {
     /// <summary>
     /// Describe the result of Fulltext search
@@ -17,5 +17,10 @@
         /// ID of document part. 0 if it was Document itself. 
         /// </summary>
         public int ObjectId { get; set; }
+
+        /// <summary>
+        /// Score in FullText search result
+        /// </summary>
+        public float Score { get; set; }
     }
 }

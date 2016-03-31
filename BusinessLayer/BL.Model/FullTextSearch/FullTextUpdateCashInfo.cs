@@ -1,6 +1,6 @@
 ﻿using BL.Model.DocumentCore.InternalModel;
 
-namespace BL.Model.FullTextSerach
+namespace BL.Model.FullTextSearch
 {
     /// <summary>
     /// Information about the object which should be updated on FullText index

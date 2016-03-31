@@ -1,4 +1,4 @@
-﻿namespace BL.Model.FullTextSerach
+﻿namespace BL.Model.FullTextSearch
 {
     /// <summary>
     /// Model that describe one elements in FullText index and operation with it.
