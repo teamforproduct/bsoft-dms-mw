@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using BL.Model.FullTextSerach;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Documents;
@@ -10,6 +9,7 @@ using Lucene.Net.QueryParsers;
 using Lucene.Net.Search;
 using Lucene.Net.Store;
 using System.Linq;
+using BL.Model.FullTextSearch;
 using Directory = Lucene.Net.Store.Directory;
 using Version = Lucene.Net.Util.Version;
 
@@ -28,15 +28,17 @@ namespace BL.Logic.SystemServices.FullTextSearch
         private const string FIELD_OBJECT_ID = "ObjectId";
         private const string FIELD_BODY = "postBody";
         IndexWriter _writer;
-
+        object _lockObject;
 
         public FullTextIndexWorker(string serverKey, string storePath)
         {
             _serverKey = serverKey;
             _storePath = storePath;
+            _lockObject = new object();
             _directory = FSDirectory.Open(Path.Combine(_storePath, _serverKey.Replace(".","").Replace("/","_")));
             _analyzer = new StandardAnalyzer(Version.LUCENE_30);
             _indexReader = IndexReader.Open(_directory, true); // only searching, so read-only=true
+            _searcher = new IndexSearcher(_indexReader);
         }
 
         public string ServerKey => _serverKey;
@@ -96,8 +98,8 @@ namespace BL.Logic.SystemServices.FullTextSearch
             _writer.Commit();
             _writer.Dispose();
             _writer = null;
-            _searcher.Dispose();
-            _indexReader.Dispose();
+            //_searcher.Dispose();
+            //_indexReader.Dispose();
             _indexReader = IndexReader.Open(_directory, true);
             _searcher = new IndexSearcher(_indexReader);
         }
@@ -121,7 +123,8 @@ namespace BL.Logic.SystemServices.FullTextSearch
                     {
                         DocumentId = Convert.ToInt32(rdoc.Get(FIELD_DOC_ID)),
                         ObjectType = (EnumSearchObjectType) Convert.ToInt32(rdoc.Get(FIELD_OBJECT_TYPE)),
-                        ObjectId = Convert.ToInt32(rdoc.Get(FIELD_OBJECT_ID))
+                        ObjectId = Convert.ToInt32(rdoc.Get(FIELD_OBJECT_ID)),
+                        Score = doc.Score
                     };
                     searchResult.Add(sr);
                 }
@@ -136,6 +139,19 @@ namespace BL.Logic.SystemServices.FullTextSearch
         public IEnumerable<FullTextSearchResult> Search(string text, EnumSearchObjectType objectType, int documentId)
         {
             return null;
+        }
+
+        public void ReindexDatabase(IEnumerable<FullTextIndexIem> items)
+        {
+            StartUpdate();
+
+            _writer.DeleteAll();
+            foreach (var itm in items)
+            {
+                AddNewItem(itm);
+            }
+
+            CommitChanges();
         }
 
         public void Dispose()

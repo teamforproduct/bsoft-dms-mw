@@ -447,12 +447,14 @@ namespace BL.Database.Documents
                 var subscription = document.Subscriptions?.FirstOrDefault();
                 if (subscription != null)
                 {
+                    var docHash = CommonQueries.GetDocumentHash(dbContext, ctx, document.Id, true, true);
                     var subscriptionDb = new DocumentSubscriptions
                     {
                         Id = subscription.Id,
                         Description = subscription.Description,
                         SubscriptionStateId = (int)subscription.SubscriptionStates,
-                        Hash = subscription.Hash,
+                        Hash = docHash.Hash,
+                        FullHash = docHash.FullHash,
                         LastChangeDate = subscription.LastChangeDate,
                         LastChangeUserId = subscription.LastChangeUserId
                     };
@@ -466,6 +468,7 @@ namespace BL.Database.Documents
                     entry.Property(x => x.Description).IsModified = true;
                     entry.Property(x => x.SubscriptionStateId).IsModified = true;
                     entry.Property(x => x.Hash).IsModified = true;
+                    entry.Property(x => x.FullHash).IsModified = true;
                     entry.Property(x => x.LastChangeDate).IsModified = true;
                     entry.Property(x => x.LastChangeUserId).IsModified = true;
                 }

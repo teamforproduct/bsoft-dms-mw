@@ -1,14 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
-using BL.Logic.DependencyInjection;
 using BL.Database.Documents.Interfaces;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Model.SystemCore;
 using BL.Model.Enums;
 using BL.Database.SystemDb;
 using BL.Logic.Common;
+using BL.Logic.SystemServices.FullTextSearch;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.SystemCore.Filters;
@@ -32,6 +33,16 @@ namespace BL.Logic.DocumentCore
 
         public IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging)
         {
+            if (!String.IsNullOrEmpty(filters.FullTextSearch))
+            {
+                var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
+                var ftRes = ftService.Search(ctx, filters.FullTextSearch);
+                var resWithRanges =
+                    ftRes.GroupBy(x => x.DocumentId)
+                        .Select(x => new {DocId = x.Key, Rate = x.Count()})
+                        .OrderByDescending(x => x.Rate);
+                filters.DocumentId.AddRange(resWithRanges.Select(x=>x.DocId).Take(paging.PageSize * paging.CurrentPage));
+            }
             return _documentDb.GetDocuments(ctx, filters, paging);
         }
 
@@ -89,6 +100,7 @@ namespace BL.Logic.DocumentCore
         }
 
         #endregion DocumentPapers    
+
         #region DocumentPaperLists
         public FrontDocumentPaperList GetDocumentPaperList(IContext context, int itemId)
         {

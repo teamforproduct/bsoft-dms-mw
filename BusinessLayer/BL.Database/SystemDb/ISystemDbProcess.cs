@@ -1,7 +1,7 @@
 using BL.Model.SystemCore;
 using System.Collections.Generic;
 using BL.CrossCutting.Interfaces;
-using BL.Model.FullTextSerach;
+using BL.Model.FullTextSearch;
 using BL.Model.SystemCore.InternalModel;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.FrontModel;
@@ -66,7 +66,7 @@ namespace BL.Database.SystemDb
         #endregion
 
         #region Full text search
-
+        IEnumerable<FullTextIndexIem> FullTextIndexReindexDbPrepare(IContext ctx);
         IEnumerable<FullTextIndexIem> FullTextIndexPrepare(IContext ctx);
         void FullTextIndexDeleteProcessed(IContext ctx, IEnumerable<int> processedIds);
 

@@ -200,6 +200,19 @@
         {
         }
     }
+
+    public class DocumentFileWasChangedExternally : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:DocumentFileWasChangedExternally@l##";
+        public DocumentFileWasChangedExternally() : base(_MESSAGE)
+        {
+        }
+
+        public DocumentFileWasChangedExternally(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
     public class TaskNotFoundOrUserHasNoAccess : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:TaskNotFoundOrUserHasNoAccess@l##";

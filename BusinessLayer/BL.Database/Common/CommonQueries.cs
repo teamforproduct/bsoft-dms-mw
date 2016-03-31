@@ -4,19 +4,22 @@ using BL.CrossCutting.Interfaces;
 using BL.Database.DatabaseContext;
 using BL.Database.DBModel.Document;
 using BL.Database.DBModel.InternalModel;
+using BL.Database.DBModel.System;
+using BL.Model.DictionaryCore.FilterModel;
+using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
-using BL.Model.DictionaryCore.FilterModel;
-using BL.Model.DictionaryCore;
-using BL.Model.SystemCore.InternalModel;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.FrontModel;
-using BL.Database.DBModel.System;
-using BL.Model.FullTextSerach;
+using BL.Model.SystemCore.InternalModel;
 using System.Text;
 using System;
+using BL.CrossCutting.DependencyInjection;
+using BL.Database.FileWorker;
+using BL.Model.Exception;
+using BL.Model.FullTextSearch;
 
 namespace BL.Database.Common
 {
@@ -73,7 +76,7 @@ namespace BL.Database.Common
             return qry;
         }
 
-        public static IQueryable<FilterDocumentFileIdentity> GetDocumentFilesMaxVersion(DmsContext dbContext, FilterDocumentAttachedFile filter)
+        private static IQueryable<FilterDocumentFileIdentity> GetDocumentFilesMaxVersion(DmsContext dbContext, FilterDocumentAttachedFile filter)
         {
             var qry = dbContext.DocumentFilesSet.AsQueryable();
 
@@ -365,7 +368,6 @@ namespace BL.Database.Common
 
         }
 
-
         public static IEnumerable<FrontDocumentWait> GetDocumentWaits(DmsContext dbContext, FilterDocumentWait filter)
         {
             var waitsDb = dbContext.DocumentWaitsSet.AsQueryable();
@@ -652,25 +654,25 @@ namespace BL.Database.Common
 
         }
 
-        public static IEnumerable<BaseDictionaryPosition> GetDocumentWorkGroup(DmsContext dbContext, FilterDictionaryPosition filter)
+        public static IEnumerable<FrontDictionaryPosition> GetDocumentWorkGroup(DmsContext dbContext, FilterDictionaryPosition filter)
         {
             var qry = dbContext.DictionaryPositionsSet.Select(x => new { pos = x, subordMax = 0 }).AsQueryable();
 
             if (filter != null)
             {
-                if (filter.PositionId?.Count > 0)
+                if (filter.IDs?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.PositionId.Contains(x.pos.Id));
+                    qry = qry.Where(x => filter.IDs.Contains(x.pos.Id));
                 }
 
-                if (filter.DocumentId?.Count > 0)
+                if (filter.DocumentIDs?.Count > 0)
                 {
                     qry = qry.Where(x =>
                             dbContext.DocumentEventsSet
-                                .Where(y => filter.DocumentId.Contains(y.DocumentId)).Select(y => y.SourcePositionId).Contains(x.pos.Id)
+                                .Where(y => filter.DocumentIDs.Contains(y.DocumentId)).Select(y => y.SourcePositionId).Contains(x.pos.Id)
                                 ||
                                 dbContext.DocumentEventsSet
-                                .Where(y => filter.DocumentId.Contains(y.DocumentId)).Select(y => y.TargetPositionId).Contains(x.pos.Id)
+                                .Where(y => filter.DocumentIDs.Contains(y.DocumentId)).Select(y => y.TargetPositionId).Contains(x.pos.Id)
                                 );
                 }
 
@@ -686,7 +688,7 @@ namespace BL.Database.Common
                 }
             }
 
-            return qry.Select(x => new BaseDictionaryPosition
+            return qry.Select(x => new FrontDictionaryPosition
             {
                 Id = x.pos.Id,
                 Name = x.pos.Name,
@@ -800,7 +802,6 @@ namespace BL.Database.Common
 
             return subscriptions;
         }
-
 
         public static IEnumerable<FrontDocumentSendList> GetDocumentSendList(DmsContext dbContext, FilterDocumentSendList filter)
         {
@@ -1059,6 +1060,7 @@ namespace BL.Database.Common
                 item.RegistrationNumberSuffix = null;
             }
         }
+
         public static void ChangeRegistrationFullNumber(FrontRegistrationFullNumber item, bool isClearFields = true)
         {
             if (item.RegistrationNumber != null)
@@ -1099,13 +1101,15 @@ namespace BL.Database.Common
 
             if (isFull || isAddSubscription)
             {
-                //var _templateDb = DmsResolver.Current.Get<ITemplateDocumentsDbProcess>();
-                //foreach (var file in document.DocumentFiles)
-                //{
-                    
-                //}
-
-                //TODO проверка файлов
+                var fs = DmsResolver.Current.Get<IFileStore>();
+                foreach (var file in document.DocumentFiles)
+                {
+                    if(!fs.IsFileCorrect(ctx,file))
+                    {
+                        //TODO
+                        //throw new DocumentFileWasChangedExternally();
+                    }
+                }
             }
 
             document.Hash = CommonQueries.GetStringDocumentHash(document);
@@ -1141,6 +1145,7 @@ namespace BL.Database.Common
 
             return document;
         }
+
         public static InternalDocument GetDocumentHashPrepare(DmsContext dbContext, IContext ctx, int documentId)
         {
             var doc = CommonQueries.GetDocumentQuery(dbContext, ctx).Where(x => x.Doc.Id == documentId)
@@ -1162,6 +1167,7 @@ namespace BL.Database.Common
 
             return doc;
         }
+
         public static string GetStringDocumentHash(InternalDocument doc, bool isFull = false)
         {
             var hashPrepare = new StringBuilder();
@@ -1208,5 +1214,6 @@ namespace BL.Database.Common
 
             return hash;
         }
+
     }
 }

@@ -223,6 +223,13 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\Dictionaries\CustomDictionaryTypesController.cs" />
     <Compile Include="Controllers\Dictionaries\CustomDictionariesController.cs" />
+    <Compile Include="Controllers\Dictionaries\DictionaryAddressTypesController.cs" />
+    <Compile Include="Controllers\Dictionaries\DictionaryAgentAccountsController.cs" />
+    <Compile Include="Controllers\Dictionaries\DictionaryAgentAddressesController.cs" />
+    <Compile Include="Controllers\Dictionaries\DictionaryAgentBanksController.cs" />
+    <Compile Include="Controllers\Dictionaries\DictionaryAgentEmployeesController.cs" />
+    <Compile Include="Controllers\Dictionaries\DictionaryContactsController.cs" />
+    <Compile Include="Controllers\Dictionaries\DictionaryContactTypesController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryTagsController.cs" />
     <Compile Include="Controllers\Documents\DocumentEventsController.cs" />
     <Compile Include="Controllers\Documents\DocumentPaperListsController.cs" />
@@ -248,7 +255,7 @@
     <Compile Include="Controllers\Dictionaries\DictionaryDocumentSubjectsController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryDocumentDirectionsController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryDepartmentsController.cs" />
-    <Compile Include="Controllers\Dictionaries\DictionaryCompaniesController.cs" />
+    <Compile Include="Controllers\Dictionaries\DictionaryAgentCompaniesController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryAgentPersonsController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryStandartSendListsController.cs" />
     <Compile Include="Controllers\Documents\DocumentActionsController.cs" />

@@ -11,5 +11,6 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// ID
         /// </summary>
         public int Id { get; set; }
+
     }
 }

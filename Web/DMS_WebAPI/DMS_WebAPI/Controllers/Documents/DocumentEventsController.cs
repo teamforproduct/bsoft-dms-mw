@@ -1,7 +1,6 @@
 ﻿using System.Web.Http;
 using System.Web.Http.Description;
 using BL.CrossCutting.DependencyInjection;
-using BL.Logic.DependencyInjection;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;

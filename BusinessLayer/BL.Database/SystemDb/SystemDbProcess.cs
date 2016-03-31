@@ -11,7 +11,7 @@ using BL.Model.SystemCore.InternalModel;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.FrontModel;
 using System.Data.Entity;
-using BL.Model.FullTextSerach;
+using BL.Model.FullTextSearch;
 
 namespace BL.Database.SystemDb
 {
@@ -620,9 +620,86 @@ namespace BL.Database.SystemDb
                     .Where(x => x.sl.Stage <= x.q.MinStage && !x.sl.StartEventId.HasValue).Select(x => x.sl.Id).ToList();
             }
         }
+
         #endregion Filter Properties
 
         #region Full text search
+
+        public IEnumerable<FullTextIndexIem> FullTextIndexReindexDbPrepare(IContext ctx)
+        {
+            var res = new List<FullTextIndexIem>();
+            using (var dbContext = new DmsContext(ctx))
+            {
+                res.AddRange(dbContext.DocumentsSet
+                    .Select(x => new FullTextIndexIem
+                    {
+                        DocumentId = x.Id,
+                        ItemType = EnumSearchObjectType.Document,
+                        OperationType = EnumOperationType.AddNew,
+                        ObjectId = 0,
+                        ObjectText = (x.RegistrationNumber != null
+                            ? x.RegistrationNumberPrefix + x.RegistrationNumber +
+                              x.RegistrationNumberSuffix
+                            : "#" + x.Id) + " "
+                                     + x.RegistrationJournal.Name + " " + x.RegistrationJournal.Department.Name + " "
+                                     + x.Description + " "
+                                     + x.ExecutorPositionExecutorAgent.Name + " "
+                                     + x.TemplateDocument.DocumentType.Name + " " + x.TemplateDocument.DocumentDirection.Name + " "
+                                     + x.DocumentSubject.Name + " "
+                                     + x.SenderAgent.Name + " " + x.SenderAgentPerson.Agent.Name + " " + x.SenderNumber + " "
+                    }).ToList());
+
+                res.AddRange(dbContext.DocumentEventsSet
+                     .Select(x => new FullTextIndexIem
+                     {
+                         DocumentId = x.DocumentId,
+                         ItemType = EnumSearchObjectType.Event,
+                         OperationType = EnumOperationType.AddNew,
+                         ObjectId = x.Id,
+                         ObjectText = x.Description + " " + x.Task.Task + " "
+                                + x.SourcePositionExecutorAgent.Name + " " + x.TargetPositionExecutorAgent.Name + " "
+                                + x.SourceAgent.Name + " " + x.TargetAgent.Name + " "
+                     }).ToList()
+                 );
+
+                res.AddRange(dbContext.DocumentFilesSet
+                     .Select(x => new FullTextIndexIem
+                     {
+                         DocumentId = x.DocumentId,
+                         ItemType = EnumSearchObjectType.Files,
+                         OperationType = EnumOperationType.AddNew,
+                         ObjectId = x.Id,
+                         ObjectText = x.Name + "." + x.Extension + " "
+                     }).ToList()
+                 );
+
+                res.AddRange(dbContext.DocumentSendListsSet
+                     .Select(x => new FullTextIndexIem
+                     {
+                         DocumentId = x.DocumentId,
+                         ItemType = EnumSearchObjectType.SendList,
+                         OperationType = EnumOperationType.AddNew,
+                         ObjectId = x.Id,
+                         ObjectText = x.Description + " " + x.SendType.Name + " "
+                                + x.SourcePosition.Name + " " + x.TargetPosition.Name + " "
+                                + x.SourcePositionExecutorAgent.Name + " " + x.TargetPositionExecutorAgent.Name + " "
+                     }).ToList()
+                 );
+
+                res.AddRange(dbContext.DocumentSubscriptionsSet
+                     .Select(x => new FullTextIndexIem
+                     {
+                         DocumentId = x.DocumentId,
+                         ItemType = EnumSearchObjectType.Subscription,
+                         OperationType = EnumOperationType.AddNew,
+                         ObjectId = x.Id,
+                         ObjectText = x.Description + " " + x.SubscriptionState.Name + " " + x.DoneEvent.SourcePositionExecutorAgent.Name + " "
+                     }).ToList()
+                 );
+
+            }
+            return res;
+        }
 
         public IEnumerable<FullTextIndexIem> FullTextIndexPrepare(IContext ctx)
         {
@@ -641,13 +718,13 @@ namespace BL.Database.SystemDb
                          ObjectText = (x.doc.RegistrationNumber != null
                              ? x.doc.RegistrationNumberPrefix + x.doc.RegistrationNumber +
                                x.doc.RegistrationNumberSuffix
-                             : "#" + x.doc.Id) 
-                             + x.doc.RegistrationJournal.Name + x.doc.RegistrationJournal.Department.Name
-                             + x.doc.Description 
-                             + x.doc.ExecutorPositionExecutorAgent.Name 
-                             + x.doc.TemplateDocument.DocumentType.Name + x.doc.TemplateDocument.DocumentDirection.Name
-                             + x.doc.DocumentSubject.Name
-                             + x.doc.SenderAgent.Name + x.doc.SenderAgentPerson.Agent.Name + x.doc.SenderNumber
+                             : "#" + x.doc.Id) + " "
+                             + x.doc.RegistrationJournal.Name + " " + x.doc.RegistrationJournal.Department.Name + " "
+                             + x.doc.Description + " "
+                             + x.doc.ExecutorPositionExecutorAgent.Name + " "
+                             + x.doc.TemplateDocument.DocumentType.Name + " " + x.doc.TemplateDocument.DocumentDirection.Name + " "
+                             + x.doc.DocumentSubject.Name + " "
+                             + x.doc.SenderAgent.Name + " " + x.doc.SenderAgentPerson.Agent.Name + " " + x.doc.SenderNumber + " "
                      }).ToList()
                  );
 
@@ -660,9 +737,9 @@ namespace BL.Database.SystemDb
                          ItemType = (EnumSearchObjectType)x.ind.ObjectType,
                          OperationType = (EnumOperationType)x.ind.OperationType,
                          ObjectId = x.evt.Id,
-                         ObjectText = x.evt.Description + x.evt.Task.Task 
-                                + x.evt.SourcePositionExecutorAgent.Name + x.evt.TargetPositionExecutorAgent.Name
-                                + x.evt.SourceAgent.Name + x.evt.TargetAgent.Name
+                         ObjectText = x.evt.Description + " " + x.evt.Task.Task + " "
+                                + x.evt.SourcePositionExecutorAgent.Name + " " + x.evt.TargetPositionExecutorAgent.Name + " "
+                                + x.evt.SourceAgent.Name + " " + x.evt.TargetAgent.Name + " "
                      }).ToList()
                  );
 
@@ -688,9 +765,9 @@ namespace BL.Database.SystemDb
                          ItemType = (EnumSearchObjectType)x.ind.ObjectType,
                          OperationType = (EnumOperationType)x.ind.OperationType,
                          ObjectId = x.sl.Id,
-                         ObjectText = x.sl.Description + x.sl.SendType.Name 
-                                + x.sl.SourcePosition.Name + x.sl.TargetPosition.Name
-                                +x.sl.SourcePositionExecutorAgent.Name + x.sl.TargetPositionExecutorAgent.Name
+                         ObjectText = x.sl.Description + " " + x.sl.SendType.Name + " "
+                                + x.sl.SourcePosition.Name + " " + x.sl.TargetPosition.Name + " "
+                                + x.sl.SourcePositionExecutorAgent.Name + " " + x.sl.TargetPositionExecutorAgent.Name + " "
                      }).ToList()
                  );
 
@@ -703,7 +780,7 @@ namespace BL.Database.SystemDb
                          ItemType = (EnumSearchObjectType)x.ind.ObjectType,
                          OperationType = (EnumOperationType)x.ind.OperationType,
                          ObjectId = x.ss.Id,
-                         ObjectText = x.ss.Description + x.ss.SubscriptionState.Name + x.ss.DoneEvent.SourcePositionExecutorAgent.Name
+                         ObjectText = x.ss.Description + " " + x.ss.SubscriptionState.Name + " " + x.ss.DoneEvent.SourcePositionExecutorAgent.Name + " "
                      }).ToList()
                  );
 

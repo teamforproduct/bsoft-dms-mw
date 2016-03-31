@@ -2,9 +2,11 @@
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
-    public class FilterDictionaryDocumentType
+    /// <summary>
+    /// фильтр типов документов
+    /// </summary>
+    public class FilterDictionaryDocumentType : DictionaryBaseFilterParameters
     {
-        public List<int> DocumentTypeId { get; set; }
-        public string Name { get; set; }
+   
     }
 }

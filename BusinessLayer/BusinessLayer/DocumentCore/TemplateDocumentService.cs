@@ -3,6 +3,7 @@ using BL.CrossCutting.Interfaces;
 using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore;
 using BL.Model.DocumentCore.FrontModel;
+using BL.Model.DocumentCore.IncomingModel;
 
 namespace BL.Logic.DocumentCore
 {
@@ -20,7 +21,7 @@ namespace BL.Logic.DocumentCore
             return _templateDb.GetTemplateDocument(context);
         }
 
-        public int AddOrUpdateTemplate(IContext context, FrontTemplateDocument template)
+        public int AddOrUpdateTemplate(IContext context, ModifyTemplateDocument template)
         {
             return _templateDb.AddOrUpdateTemplate(context, template);
         }
@@ -29,5 +30,7 @@ namespace BL.Logic.DocumentCore
         {
             return _templateDb.GetTemplateDocument(context, templateDocumentId);
         }
+
+        public void DeleteTemplate(IContext context, int id) { }
     }
 }

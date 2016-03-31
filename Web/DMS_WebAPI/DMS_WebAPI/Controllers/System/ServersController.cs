@@ -1,6 +1,9 @@
 ﻿using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Web.Http;
+using BL.CrossCutting.Context;
+using BL.CrossCutting.DependencyInjection;
+using BL.Logic.SystemServices.FullTextSearch;
 using BL.Model.Database.IncomingModel;
 using BL.Model.Database.FrontModel;
 
@@ -52,6 +55,19 @@ namespace DMS_WebAPI.Controllers
             new Servers().DeleteServer(id);
             var item = new FrontServer { Id = id };
             return new JsonResult(item, this);
+        }
+
+        /// <summary>
+        /// Реиндексация полнотекстового поиска для сервера
+        /// </summary>
+        /// <returns>сервер</returns>
+        public IHttpActionResult FullTextReindex(int id)
+        {
+            var srv = new Servers().GetServer(id);
+            var ctx = new AdminContext(srv);
+            var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
+            ftService.ReindexDatabase(ctx);
+            return new JsonResult(new FrontServer { Id = id }, this);
         }
     }
 }

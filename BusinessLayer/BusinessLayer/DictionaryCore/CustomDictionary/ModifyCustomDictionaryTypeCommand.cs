@@ -40,12 +40,7 @@ namespace BL.Logic.DictionaryCore.CustomDictionary
         {
             try
             {
-                var newItem = new InternalCustomDictionaryType
-                {
-                    Id = Model.Id,
-                    Code = Model.Code,
-                    Description = Model.Description
-                };
+                var newItem = new InternalCustomDictionaryType(Model);
                 CommonDocumentUtilities.SetLastChange(_context, newItem);
                 _dictDb.UpdateCustomDictionaryType(_context, newItem);
             }

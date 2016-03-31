@@ -1,12 +1,16 @@
 ﻿using System;
+using BL.Database.Dictionaries.Interfaces;
 using BL.Logic.Common;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Exception;
+using BL.Model.SystemCore;
 
 namespace BL.Logic.DictionaryCore.DocumentType
 {
     public class DeleteDictionaryDocumentTypeCommand : BaseDictionaryCommand
+   
     {
+       
         private int Model
         {
             get
@@ -27,8 +31,7 @@ namespace BL.Logic.DictionaryCore.DocumentType
 
         public override bool CanExecute()
         {
-            //TODO: Проверка возможности удаления записи
-            //      Удаление возможно только если отсутствуют документы этого типа. + есть грант на удаление
+            _admin.VerifyAccess(_context, CommandType, false);
             return true;
         }
 

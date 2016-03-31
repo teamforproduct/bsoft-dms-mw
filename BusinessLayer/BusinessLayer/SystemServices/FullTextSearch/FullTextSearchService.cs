@@ -6,7 +6,7 @@ using BL.CrossCutting.Interfaces;
 using BL.Database.SystemDb;
 using BL.Logic.Common;
 using BL.Model.Constants;
-using BL.Model.FullTextSerach;
+using BL.Model.FullTextSearch;
 
 namespace BL.Logic.SystemServices.FullTextSearch
 {
@@ -21,6 +21,13 @@ namespace BL.Logic.SystemServices.FullTextSearch
             _timers = new Dictionary<FullTextSettings, Timer>();
             _workers = new List<IFullTextIndexWorker>();
             _systemDb = systemDb;
+        }
+
+        public void ReindexDatabase(IContext ctx)
+        {
+            var worker = _workers.FirstOrDefault(x => x.ServerKey == CommonSystemUtilities.GetServerKey(ctx));
+            var data = _systemDb.FullTextIndexReindexDbPrepare(ctx);
+            worker.ReindexDatabase(data);
         }
 
         public IEnumerable<FullTextSearchResult> Search(IContext ctx, string text)

@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using BL.CrossCutting.Interfaces;
 using BL.Model.AdminCore;
+using BL.Model.SystemCore;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;
+using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Enums;
 
 namespace BL.Logic.DictionaryCore.Interfaces
@@ -13,39 +15,90 @@ namespace BL.Logic.DictionaryCore.Interfaces
         object ExecuteAction(EnumDictionaryActions act, IContext context, object param);
 
         #region DictionaryAgents
-        BaseDictionaryAgent GetDictionaryAgent(IContext context, int id);
-
-        IEnumerable<BaseDictionaryAgent> GetDictionaryAgents(IContext context, FilterDictionaryAgent filter);
+        FrontDictionaryAgent GetDictionaryAgent(IContext context, int id);
+        IEnumerable<FrontDictionaryAgent> GetDictionaryAgents(IContext context, FilterDictionaryAgent filter,UIPaging paging);
+       
         #endregion DictionaryAgents
 
         #region DictionaryAgentPersons
-        BaseDictionaryAgentPerson GetDictionaryAgentPerson(IContext context, int id);
+        FrontDictionaryAgentPerson GetDictionaryAgentPerson(IContext context, int id);
 
-        IEnumerable<BaseDictionaryAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter);
+        IEnumerable<FrontDictionaryAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging);
+
         #endregion DictionaryAgentPersons
 
-        #region DictionaryCompanies
-        BaseDictionaryCompany GetDictionaryCompany(IContext context, int id);
+        #region DictionaryAgentCompanies
+        FrontDictionaryAgentCompany GetDictionaryAgentCompany(IContext context, int id);
 
-        IEnumerable<BaseDictionaryCompany> GetDictionaryCompanies(IContext context, FilterDictionaryCompany filter);
-        #endregion DictionaryCompanies
+        IEnumerable<FrontDictionaryAgentCompany> GetDictionaryAgentCompanies(IContext context, FilterDictionaryAgentCompany filter, UIPaging paging);
+        #endregion DictionaryAgentCompanies
 
+        #region DictionaryAgentAccounts
+        FrontDictionaryAgentAccount GetDictionaryAgentAccount(IContext context, int id);
+
+        IEnumerable<FrontDictionaryAgentAccount> GetDictionaryAgentAccounts(IContext context, int AgentId,FilterDictionaryAgentAccount filter);
+        #endregion DictionaryAgentAccounts
+
+        #region DictionaryAgentBanks
+        FrontDictionaryAgentBank GetDictionaryAgentBank(IContext context, int id);
+
+        IEnumerable<FrontDictionaryAgentBank> GetDictionaryAgentBanks(IContext context, FilterDictionaryAgentBank filter, UIPaging paging);
+        #endregion DictionaryAgentBanks
+
+        #region DictionaryAgentEmployees
+        FrontDictionaryAgentEmployee GetDictionaryAgentEmployee(IContext context, int id);
+
+        IEnumerable<FrontDictionaryAgentEmployee> GetDictionaryAgentEmployees(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging);
+
+        #endregion DictionaryAgentEmployees
+
+        #region DictionaryAgentAdress
+        FrontDictionaryAgentAddress GetDictionaryAgentAddress(IContext context, int id);
+
+        IEnumerable<FrontDictionaryAgentAddress> GetDictionaryAgentAddresses(IContext context,int agentId, FilterDictionaryAgentAddress filter);
+        #endregion
+
+        #region DictionaryAddressTypes
+        FrontDictionaryAddressType GetDictionaryAddressType(IContext context, int id);
+
+        IEnumerable<FrontDictionaryAddressType> GetDictionaryAddressTypes(IContext context, FilterDictionaryAddressType filter);
+        #endregion
+
+        #region DictionaryContacts
+        FrontDictionaryContact GetDictionaryContact(IContext context, int id);
+
+        IEnumerable<FrontDictionaryContact> GetDictionaryContacts(IContext context, int agentId,FilterDictionaryContact filter);
+        #endregion
+
+        #region DictionaryContactTypes
+        FrontDictionaryContactType GetDictionaryContactType(IContext context, int id);
+
+        IEnumerable<FrontDictionaryContactType> GetDictionaryContactTypes(IContext context, FilterDictionaryContactType filter);
+        #endregion
+
+     //  #region DictionaryCompanies
+     //  BaseDictionaryCompany GetDictionaryCompany(IContext context, int id);
+     //  IEnumerable<BaseDictionaryCompany> GetDictionaryCompanies(IContext context, FilterDictionaryAgentCompany filter);
+     //  #endregion DictionaryCompanies
+
+        // Структура предприятия
         #region DictionaryDepartments
-        BaseDictionaryDepartment GetDictionaryDepartment(IContext context, int id);
+        FrontDictionaryDepartment GetDictionaryDepartment(IContext context, int id);
 
-        IEnumerable<BaseDictionaryDepartment> GetDictionaryDepartments(IContext context, FilterDictionaryDepartment filter);
+        IEnumerable<FrontDictionaryDepartment> GetDictionaryDepartments(IContext context, FilterDictionaryDepartment filter);
         #endregion DictionaryDepartments
 
         #region DictionaryDocumentDirections
-        BaseDictionaryDocumentDirection GetDictionaryDocumentDirection(IContext context, int id);
+        FrontDictionaryDocumentDirection GetDictionaryDocumentDirection(IContext context, int id);
 
-        IEnumerable<BaseDictionaryDocumentDirection> GetDictionaryDocumentDirections(IContext context, FilterDictionaryDocumentDirection filter);
+        IEnumerable<FrontDictionaryDocumentDirection> GetDictionaryDocumentDirections(IContext context, FilterDictionaryDocumentDirection filter);
         #endregion DictionaryDepartments
 
+        // Тематики документов
         #region DictionaryDocumentSubjects
-        BaseDictionaryDocumentSubject GetDictionaryDocumentSubject(IContext context, int id);
+        FrontDictionaryDocumentSubject GetDictionaryDocumentSubject(IContext context, int id);
 
-        IEnumerable<BaseDictionaryDocumentSubject> GetDictionaryDocumentSubjects(IContext context, FilterDictionaryDocumentSubject filter);
+        IEnumerable<FrontDictionaryDocumentSubject> GetDictionaryDocumentSubjects(IContext context, FilterDictionaryDocumentSubject filter);
         #endregion DictionaryDocumentSubjects
 
         #region DictionaryDocumentTypes
@@ -55,63 +108,65 @@ namespace BL.Logic.DictionaryCore.Interfaces
         #endregion DictionaryDocumentSubjects
 
         #region DictionaryEventTypes
-        BaseDictionaryEventType GetDictionaryEventType(IContext context, int id);
+        FrontDictionaryEventType GetDictionaryEventType(IContext context, int id);
 
-        IEnumerable<BaseDictionaryEventType> GetDictionaryEventTypes(IContext context, FilterDictionaryEventType filter);
+        IEnumerable<FrontDictionaryEventType> GetDictionaryEventTypes(IContext context, FilterDictionaryEventType filter);
         #endregion DictionaryEventTypes
 
         #region DictionaryImportanceEventTypes
-        BaseDictionaryImportanceEventType GetDictionaryImportanceEventType(IContext context, int id);
+        FrontDictionaryImportanceEventType GetDictionaryImportanceEventType(IContext context, int id);
 
-        IEnumerable<BaseDictionaryImportanceEventType> GetDictionaryImportanceEventTypes(IContext context, FilterDictionaryImportanceEventType filter);
+        IEnumerable<FrontDictionaryImportanceEventType> GetDictionaryImportanceEventTypes(IContext context, FilterDictionaryImportanceEventType filter);
         #endregion DictionaryImportanceEventTypes
 
         #region DictionaryLinkTypes
-        BaseDictionaryLinkType GetDictionaryLinkType(IContext context, int id);
+        FrontDictionaryLinkType GetDictionaryLinkType(IContext context, int id);
 
-        IEnumerable<BaseDictionaryLinkType> GetDictionaryLinkTypes(IContext context, FilterDictionaryLinkType filter);
+        IEnumerable<FrontDictionaryLinkType> GetDictionaryLinkTypes(IContext context, FilterDictionaryLinkType filter);
         #endregion DictionaryLinkTypes
 
+        // Штатное расписание
         #region DictionaryPositions
-        BaseDictionaryPosition GetDictionaryPosition(IContext context, int id);
+        FrontDictionaryPosition GetDictionaryPosition(IContext context, int id);
 
-        IEnumerable<BaseDictionaryPosition> GetDictionaryPositions(IContext context, FilterDictionaryPosition filter);
+        IEnumerable<FrontDictionaryPosition> GetDictionaryPositions(IContext context, FilterDictionaryPosition filter);
         #endregion DictionaryPositions
 
+        // Журналы регистрации
         #region DictionaryRegistrationJournals
-        BaseDictionaryRegistrationJournal GetDictionaryRegistrationJournal(IContext context, int id);
+        FrontDictionaryRegistrationJournal GetDictionaryRegistrationJournal(IContext context, int id);
 
-        IEnumerable<BaseDictionaryRegistrationJournal> GetDictionaryRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter);
+        IEnumerable<FrontDictionaryRegistrationJournal> GetDictionaryRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter);
         #endregion DictionaryRegistrationJournals
 
         #region DictionaryResultTypes
-        BaseDictionaryResultType GetDictionaryResultType(IContext context, int id);
+        FrontDictionaryResultType GetDictionaryResultType(IContext context, int id);
 
-        IEnumerable<BaseDictionaryResultType> GetDictionaryResultTypes(IContext context, FilterDictionaryResultType filter);
+        IEnumerable<FrontDictionaryResultType> GetDictionaryResultTypes(IContext context, FilterDictionaryResultType filter);
         #endregion DictionaryResultTypes
 
         #region DictionarySendTypes
-        BaseDictionarySendType GetDictionarySendType(IContext context, int id);
+        FrontDictionarySendType GetDictionarySendType(IContext context, int id);
 
-        IEnumerable<BaseDictionarySendType> GetDictionarySendTypes(IContext context, FilterDictionarySendType filter);
+        IEnumerable<FrontDictionarySendType> GetDictionarySendTypes(IContext context, FilterDictionarySendType filter);
         #endregion DictionarySendTypes
 
         #region DictionaryStandartSendListContents
-        BaseDictionaryStandartSendListContent GetDictionaryStandartSendListContent(IContext context, int id);
+        FrontDictionaryStandartSendListContent GetDictionaryStandartSendListContent(IContext context, int id);
 
-        IEnumerable<BaseDictionaryStandartSendListContent> GetDictionaryStandartSendListContents(IContext context, FilterDictionaryStandartSendListContent filter);
+        IEnumerable<FrontDictionaryStandartSendListContent> GetDictionaryStandartSendListContents(IContext context, FilterDictionaryStandartSendListContent filter);
         #endregion DictionaryStandartSendListContents
 
         #region DictionaryStandartSendLists
-        BaseDictionaryStandartSendList GetDictionaryStandartSendList(IContext context, int id);
+        FrontDictionaryStandartSendList GetDictionaryStandartSendList(IContext context, int id);
 
-        IEnumerable<BaseDictionaryStandartSendList> GetDictionaryStandartSendLists(IContext context, FilterDictionaryStandartSendList filter);
+        IEnumerable<FrontDictionaryStandartSendList> GetDictionaryStandartSendLists(IContext context, FilterDictionaryStandartSendList filter);
         #endregion DictionaryStandartSendList
 
         #region DictionarySubordinationTypes
-        BaseDictionarySubordinationType GetDictionarySubordinationType(IContext context, int id);
+        FrontDictionarySubordinationType GetDictionarySubordinationType(IContext context, int id);
 
-        IEnumerable<BaseDictionarySubordinationType> GetDictionarySubordinationTypes(IContext context, FilterDictionarySubordinationType filter);
+        IEnumerable<FrontDictionarySubordinationType> GetDictionarySubordinationTypes(IContext context, FilterDictionarySubordinationType filter);
         #endregion DictionarySubordinationTypes
 
         #region DictionaryTags

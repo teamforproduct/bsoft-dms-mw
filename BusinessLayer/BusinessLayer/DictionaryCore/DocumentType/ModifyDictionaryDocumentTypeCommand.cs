@@ -28,11 +28,15 @@ namespace BL.Logic.DictionaryCore.DocumentType
 
         public override bool CanExecute()
         {
-            var spr = _dictDb.GetInternalDictionaryDocumentType(_context, new FilterDictionaryDocumentType { Name = Model.Name });
+
+            _admin.VerifyAccess(_context, CommandType, false);
+
+            var spr = _dictDb.GetInternalDictionaryDocumentType(_context, new FilterDictionaryDocumentType { Name = Model.Name,IsActive=Model.IsActive });
             if (spr != null)
             {
                 throw new DictionaryRecordNotUnique();
             }
+
             return true;
         }
 
@@ -40,11 +44,7 @@ namespace BL.Logic.DictionaryCore.DocumentType
         {
             try
             {
-                var newDocType = new InternalDictionaryDocumentType
-                {
-                    Id = Model.Id,
-                    Name = Model.Name
-                };
+                var newDocType = new InternalDictionaryDocumentType(Model);
                 CommonDocumentUtilities.SetLastChange(_context, newDocType);
                 _dictDb.UpdateDictionaryDocumentType(_context, newDocType);
             }

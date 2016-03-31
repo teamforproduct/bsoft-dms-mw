@@ -2,8 +2,8 @@
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
-    public class FilterDictionaryDocumentDirection
+    public class FilterDictionaryDocumentDirection : DictionaryBaseFilterParameters
     {
-        public List<int> DocumentDirectionId { get; set; }
+       
     }
 }

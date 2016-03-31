@@ -2,8 +2,8 @@
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
-    public class FilterDictionaryResultType
+    public class FilterDictionaryResultType : DictionaryBaseFilterParameters
     {
-        public List<int> ResultTypeId { get; set; }
+     
     }
 }

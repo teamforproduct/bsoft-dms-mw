@@ -2,8 +2,8 @@
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
-    public class FilterDictionaryLinkType
+    public class FilterDictionaryLinkType : DictionaryBaseFilterParameters
     {
-        public List<int> LinkTypeId { get; set; }
+  
     }
 }
