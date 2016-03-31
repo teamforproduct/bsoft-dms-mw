@@ -1,4 +1,5 @@
-﻿using BL.CrossCutting.Interfaces;
+﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
 using BL.Logic.DependencyInjection;
 using BL.Logic.DictionaryCore.CustomDictionary;
 using BL.Logic.DictionaryCore.DocumentType;

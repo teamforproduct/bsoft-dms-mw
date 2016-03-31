@@ -4,6 +4,7 @@ using BL.Model.DocumentCore.Actions;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Web.Http;
+using BL.CrossCutting.DependencyInjection;
 using BL.Model.Enums;
 
 namespace DMS_WebAPI.Controllers.Documents

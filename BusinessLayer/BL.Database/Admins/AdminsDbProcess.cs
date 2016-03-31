@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Admins.Interfaces;
 using BL.Database.DatabaseContext;
 using BL.Model.AdminCore;
-using BL.Logic.DependencyInjection;
 using BL.Database.Dictionaries.Interfaces;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.InternalModel;

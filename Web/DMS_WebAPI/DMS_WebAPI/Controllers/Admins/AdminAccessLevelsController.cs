@@ -3,6 +3,7 @@ using BL.Model.AdminCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Web.Http;
+using BL.CrossCutting.DependencyInjection;
 using BL.Logic.DictionaryCore.Interfaces;
 
 namespace DMS_WebAPI.Controllers.Admins

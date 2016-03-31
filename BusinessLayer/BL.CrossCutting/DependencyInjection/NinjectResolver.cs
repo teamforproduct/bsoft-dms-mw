@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using BL.Logic.Extensions;
+using BL.CrossCutting.Extensions;
 using Ninject;
 using Ninject.Parameters;
 
-namespace BL.Logic.DependencyInjection
+namespace BL.CrossCutting.DependencyInjection
 {
     public class NinjectResolver:IResolver
     {

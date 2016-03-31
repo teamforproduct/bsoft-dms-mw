@@ -1,4 +1,5 @@
-﻿using BL.Logic.DependencyInjection;
+﻿using BL.CrossCutting.DependencyInjection;
+using BL.Logic.DependencyInjection;
 using BL.Logic.DictionaryCore.Interfaces;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;

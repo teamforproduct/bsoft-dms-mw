@@ -304,6 +304,36 @@ namespace BL.Logic.DictionaryCore
         }
         #endregion DictionaryPositions
 
+        // Исполнители
+        #region DictionaryPositinExecutors
+        public FrontDictionaryPositionExecutor GetDictionaryPositionExecutor(IContext context, int id)
+        {
+
+            return _dictDb.GetDictionaryPositionExecutors(context, new FilterDictionaryPositionExecutor { IDs = new List<int> { id } }).FirstOrDefault();
+        }
+
+        public IEnumerable<FrontDictionaryPositionExecutor> GetDictionaryPositionExecutors(IContext context, FilterDictionaryPositionExecutor filter)
+        {
+
+            return _dictDb.GetDictionaryPositionExecutors(context, filter);
+        }
+        #endregion DictionaryPositinExecutors
+
+        // Типы исполнителей
+        #region DictionaryPositinExecutorTypes
+        public FrontDictionaryPositionExecutorType GetDictionaryPositionExecutorType(IContext context, int id)
+        {
+
+            return _dictDb.GetDictionaryPositionExecutorTypes(context, new FilterDictionaryPositionExecutorType { IDs = new List<int> { id } }).FirstOrDefault();
+        }
+
+        public IEnumerable<FrontDictionaryPositionExecutorType> GetDictionaryPositionExecutorTypes(IContext context, FilterDictionaryPositionExecutorType filter)
+        {
+
+            return _dictDb.GetDictionaryPositionExecutorTypes(context, filter);
+        }
+        #endregion DictionaryPositinExecutorTypes
+
         // Журналы регистрации
         #region DictionaryRegistrationJournals
         public FrontDictionaryRegistrationJournal GetDictionaryRegistrationJournal(IContext context, int id)
@@ -333,24 +363,6 @@ namespace BL.Logic.DictionaryCore
             return _dictDb.GetDictionaryCompanies(context, filter);
         }
         #endregion DictionaryCompanies
-
-
-
-        // Исполнители
-        #region DictionaryPositinExecutors
-        public FrontDictionaryPositionExecutor GetDictionaryPositionExecutor(IContext context, int id)
-        {
-
-            return _dictDb.GetDictionaryPositionExecutors(context, new FilterDictionaryPositionExecutor { IDs = new List<int> { id } }).FirstOrDefault();
-        }
-
-        public IEnumerable<FrontDictionaryPositionExecutor> GetDictionaryPositionExecutors(IContext context, FilterDictionaryPositionExecutor filter)
-        {
-
-            return _dictDb.GetDictionaryPositionExecutors(context, filter);
-        }
-        #endregion DictionaryPositinExecutors
-        
         
         #region DictionaryResultTypes
         public FrontDictionaryResultType GetDictionaryResultType(IContext context, int id)

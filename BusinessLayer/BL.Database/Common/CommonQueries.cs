@@ -1,4 +1,6 @@
-﻿using BL.CrossCutting.Interfaces;
+﻿using System.Collections.Generic;
+using System.Linq;
+using BL.CrossCutting.Interfaces;
 using BL.Database.DatabaseContext;
 using BL.Database.DBModel.Document;
 using BL.Database.DBModel.InternalModel;
@@ -15,6 +17,8 @@ using BL.Model.SystemCore.FrontModel;
 using BL.Model.SystemCore.InternalModel;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System;
 
 namespace BL.Database.Common
 {
@@ -336,10 +340,12 @@ namespace BL.Database.Common
                 Name = x.Task.Task,
                 Description = x.Task.Description,
                 DocumentDate = x.Task.Document.RegistrationDate ?? x.Task.Document.CreateDate,
-                RegistrationFullNumber = (x.Task.Document.RegistrationNumber != null
-                                           ? x.Task.Document.RegistrationNumberPrefix + x.Task.Document.RegistrationNumber +
-                                             x.Task.Document.RegistrationNumberSuffix
-                                           : "#" + x.Task.Document.Id),
+
+                RegistrationNumber = x.Task.Document.RegistrationNumber,
+                RegistrationNumberPrefix = x.Task.Document.RegistrationNumberPrefix,
+                RegistrationNumberSuffix = x.Task.Document.RegistrationNumberSuffix,
+                RegistrationFullNumber = "#" + x.Task.Document.Id,
+
                 DocumentDescription = x.Task.Document.Description,
                 DocumentTypeName = x.Task.Document.TemplateDocument.DocumentType.Name,
                 DocumentDirectionName = x.Task.Document.TemplateDocument.DocumentDirection.Name,
@@ -354,6 +360,8 @@ namespace BL.Database.Common
                 PositionExecutorNowAgentName = x.Task.Position.ExecutorAgent.Name,
                 PositionExecutorAgentPhoneNumber = "SourcePositionAgentPhoneNumber", //TODO 
             }).ToList();
+
+            tasks.ForEach(x => CommonQueries.ChangeRegistrationFullNumber(x));
 
             return tasks;
 
@@ -404,10 +412,12 @@ namespace BL.Database.Common
                 TargetAttentionDate = x.Wait.TargetAttentionDate,
                 IsClosed = x.OffEvent != null,
                 DocumentDate = x.Wait.Document.RegistrationDate ?? x.Wait.Document.CreateDate,
-                RegistrationFullNumber = (x.Wait.Document.RegistrationNumber != null
-                                           ? x.Wait.Document.RegistrationNumberPrefix + x.Wait.Document.RegistrationNumber +
-                                             x.Wait.Document.RegistrationNumberSuffix
-                                           : "#" + x.Wait.Document.Id),
+
+                RegistrationNumber = x.Wait.Document.RegistrationNumber,
+                RegistrationNumberPrefix = x.Wait.Document.RegistrationNumberPrefix,
+                RegistrationNumberSuffix = x.Wait.Document.RegistrationNumberSuffix,
+                RegistrationFullNumber = "#" + x.Wait.Document.Id,
+
                 DocumentDescription = x.Wait.Document.Description,
                 DocumentTypeName = x.Wait.Document.TemplateDocument.DocumentType.Name,
                 DocumentDirectionName = x.Wait.Document.TemplateDocument.DocumentDirection.Name,
@@ -465,6 +475,8 @@ namespace BL.Database.Common
                     }
             }).ToList();
 
+            waits.ForEach(x => CommonQueries.ChangeRegistrationFullNumber(x));
+
             return waits;
 
         }
@@ -493,10 +505,12 @@ namespace BL.Database.Common
                 SubscriptionStatesName = x.Subscription.SubscriptionState.Name,
                 Description = x.Subscription.Description,
                 DocumentDate = x.Subscription.Document.RegistrationDate ?? x.Subscription.Document.CreateDate,
-                RegistrationFullNumber = (x.Subscription.Document.RegistrationNumber != null
-                                           ? x.Subscription.Document.RegistrationNumberPrefix + x.Subscription.Document.RegistrationNumber +
-                                             x.Subscription.Document.RegistrationNumberSuffix
-                                           : "#" + x.Subscription.Document.Id),
+
+                RegistrationNumber = x.Subscription.Document.RegistrationNumber,
+                RegistrationNumberPrefix = x.Subscription.Document.RegistrationNumberPrefix,
+                RegistrationNumberSuffix = x.Subscription.Document.RegistrationNumberSuffix,
+                RegistrationFullNumber = "#" + x.Subscription.Document.Id,
+
                 DocumentDescription = x.Subscription.Document.Description,
                 DocumentTypeName = x.Subscription.Document.TemplateDocument.DocumentType.Name,
                 DocumentDirectionName = x.Subscription.Document.TemplateDocument.DocumentDirection.Name,
@@ -551,6 +565,8 @@ namespace BL.Database.Common
                         TargetPositionExecutorAgentPhoneNumber = null,
                     }
             }).ToList();
+
+            subscriptions.ForEach(x => CommonQueries.ChangeRegistrationFullNumber(x));
 
             return subscriptions;
 
@@ -688,17 +704,18 @@ namespace BL.Database.Common
 
         public static IEnumerable<FrontDocument> GetLinkedDocuments(IContext context, DmsContext dbContext, int linkId)
         {
-            return CommonQueries.GetDocumentQuery(dbContext, context)
+            var items = CommonQueries.GetDocumentQuery(dbContext, context)
                     .Where(x => x.Doc.LinkId == linkId /*&& context.CurrentPositionsIdList.Contains(x.Acc.PositionId)*/)
                         .Select(y => new FrontDocument
                         {
                             Id = y.Doc.Id,
                             DocumentDirectionName = y.DirName,
                             DocumentTypeName = y.DocTypeName,
-                            RegistrationFullNumber = (y.Doc.RegistrationNumber != null
-                                                           ? y.Doc.RegistrationNumberPrefix + y.Doc.RegistrationNumber +
-                                                             y.Doc.RegistrationNumberSuffix
-                                                           : "#" + y.Doc.Id),
+
+                            RegistrationNumber = y.Doc.RegistrationNumber,
+                            RegistrationNumberPrefix = y.Doc.RegistrationNumberPrefix,
+                            RegistrationNumberSuffix = y.Doc.RegistrationNumberSuffix,
+
                             DocumentDate = y.Doc.RegistrationDate ?? y.Doc.CreateDate,
                             IsRegistered = y.Doc.IsRegistered,
                             Description = y.Doc.Description,
@@ -709,14 +726,83 @@ namespace BL.Database.Common
                                 {
                                     Id = z.Id,
                                     LinkTypeName = z.LinkType.Name,
-                                    RegistrationFullNumber =
-                                                (z.ParentDocument.RegistrationNumber != null
-                                                        ? (z.ParentDocument.RegistrationNumberPrefix + z.ParentDocument.RegistrationNumber.ToString() + z.ParentDocument.RegistrationNumberSuffix)
-                                                        : ("#" + z.ParentDocument.Id.ToString())),
+                                    RegistrationNumber = z.ParentDocument.RegistrationNumber,
+                                    RegistrationNumberPrefix = z.ParentDocument.RegistrationNumberPrefix,
+                                    RegistrationNumberSuffix = z.ParentDocument.RegistrationNumberSuffix,
+                                    RegistrationFullNumber = "#" + z.ParentDocument.Id.ToString(),
                                     DocumentDate = (z.ParentDocument.RegistrationDate ?? z.ParentDocument.CreateDate),
                                 }).ToList()
                         }).ToList();
+
+            items.ForEach(x =>
+            {
+                CommonQueries.ChangeRegistrationFullNumber(x);
+                var links = x.Links.ToList();
+                links.ForEach(y => CommonQueries.ChangeRegistrationFullNumber(y));
+                x.Links = links;
+            });
+
+            return items;
         }
+
+        public static IEnumerable<InternalDocumentSendList> GetInternalDocumentSendList(DmsContext dbContext, FilterDocumentSendList filter)
+        {
+            var sendListDb = dbContext.DocumentSendListsSet.AsQueryable();
+
+            if (filter != null)
+            {
+                if (filter?.DocumentId?.Count() > 0)
+                {
+                    sendListDb = sendListDb.Where(x => filter.DocumentId.Contains(x.DocumentId));
+                }
+                if (filter?.Id?.Count() > 0)
+                {
+                    sendListDb = sendListDb.Where(x => filter.Id.Contains(x.Id));
+                }
+
+            }
+
+            return sendListDb.Select(y => new InternalDocumentSendList
+            {
+                Id = y.Id,
+                TargetAgentId = y.TargetAgentId,
+                TargetPositionId = y.TargetPositionId,
+                SendType = (EnumSendTypes)y.SendTypeId,
+                Description = y.Description,
+                DueDate = y.DueDate,
+                DueDay = y.DueDay,
+            }).ToList();
+        }
+
+        public static IEnumerable<InternalDocumentSubscription> GetInternalDocumentSubscriptions(DmsContext dbContext, FilterDocumentSubscription filter)
+        {
+            var subscriptionsDb = dbContext.DocumentSubscriptionsSet.AsQueryable();
+
+            if (filter != null)
+            {
+                if (filter.DocumentId.Any())
+                {
+                    subscriptionsDb = subscriptionsDb.Where(x => filter.DocumentId.Contains(x.DocumentId));
+                }
+                if (filter.SubscriptionStates?.Count > 0)
+                {
+                    subscriptionsDb = subscriptionsDb.Where(x => filter.SubscriptionStates.Cast<int>().Contains(x.SubscriptionStateId ?? 0));
+                }
+            }
+
+            var subscriptionsRes = subscriptionsDb.Select(x => new { Subscription = x });
+
+            var subscriptions = subscriptionsRes.Select(x => new InternalDocumentSubscription
+            {
+                Id = x.Subscription.Id,
+                SubscriptionStates = (EnumSubscriptionStates)x.Subscription.SubscriptionStateId,
+                Hash = x.Subscription.Hash,
+                FullHash = x.Subscription.FullHash
+            }).ToList();
+
+            return subscriptions;
+        }
+
 
         public static IEnumerable<FrontDocumentSendList> GetDocumentSendList(DmsContext dbContext, FilterDocumentSendList filter)
         {
@@ -942,7 +1028,7 @@ namespace BL.Database.Common
 
             if (filter != null)
             {
-              
+
             }
 
             var itemsRes = itemsDb.Select(x => x);
@@ -955,6 +1041,174 @@ namespace BL.Database.Common
             }).ToList();
 
             return items;
+        }
+
+        public static void ChangeRegistrationFullNumber(FrontDocument item, bool isClearFields = true)
+        {
+            if (item.RegistrationNumber != null)
+            {
+                item.RegistrationFullNumber = item.RegistrationNumberPrefix + item.RegistrationNumber + item.RegistrationNumberSuffix;
+            }
+            else
+            {
+                item.RegistrationFullNumber = "#" + item.Id;
+            }
+
+            if (isClearFields)
+            {
+                item.RegistrationNumber = null;
+                item.RegistrationNumberPrefix = null;
+                item.RegistrationNumberSuffix = null;
+            }
+        }
+        public static void ChangeRegistrationFullNumber(FrontRegistrationFullNumber item, bool isClearFields = true)
+        {
+            if (item.RegistrationNumber != null)
+            {
+                item.RegistrationFullNumber = item.RegistrationNumberPrefix + item.RegistrationNumber + item.RegistrationNumberSuffix;
+            }
+
+            if (isClearFields)
+            {
+                item.RegistrationNumber = null;
+                item.RegistrationNumberPrefix = null;
+                item.RegistrationNumberSuffix = null;
+            }
+        }
+
+        public static InternalDocument GetDocumentHash(DmsContext dbContext, IContext ctx, int documentId, bool isAddSubscription = false, bool isFull = false)
+        {
+            var subscriptions = CommonQueries.GetInternalDocumentSubscriptions(dbContext,
+                new FilterDocumentSubscription
+                {
+                    DocumentId = new List<int> { documentId },
+                    SubscriptionStates = new List<EnumSubscriptionStates> {
+                        EnumSubscriptionStates.Sign,
+                        EnumSubscriptionStates.Visa,
+                        EnumSubscriptionStates.Аgreement,
+                        EnumSubscriptionStates.Аpproval
+                        }
+                });
+
+            if (!isAddSubscription)
+            {
+                if (!subscriptions.Any())
+                    return null;
+            }
+
+            var document = CommonQueries.GetDocumentHashPrepare(dbContext, ctx, documentId);
+            document.Subscriptions = subscriptions;
+
+            if (isFull || isAddSubscription)
+            {
+                //var _templateDb = DmsResolver.Current.Get<ITemplateDocumentsDbProcess>();
+                //foreach (var file in document.DocumentFiles)
+                //{
+                    
+                //}
+
+                //TODO проверка файлов
+            }
+
+            document.Hash = CommonQueries.GetStringDocumentHash(document);
+
+            if (isFull || isAddSubscription)
+            {
+                document.FullHash = CommonQueries.GetStringDocumentHash(document, true);
+            }
+
+            if (subscriptions.Any())
+            {
+                StringComparer comparer = StringComparer.OrdinalIgnoreCase;
+                foreach (var subscription in subscriptions)
+                {
+                    if (comparer.Compare(subscription.Hash, document.Hash) != 0 ||
+                        ((isFull || isAddSubscription) && comparer.Compare(subscription.FullHash, document.FullHash) != 0))
+                    {
+                        var subscriptionDb = new DocumentSubscriptions
+                        {
+                            Id = subscription.Id,
+                            SubscriptionStateId = (int)EnumSubscriptionStates.Violated,
+                            LastChangeUserId = (int)EnumSystemUsers.AdminUser,
+                            LastChangeDate = DateTime.Now
+                        };
+                        dbContext.DocumentSubscriptionsSet.Attach(subscriptionDb);
+                        var entry = dbContext.Entry(subscriptionDb);
+                        entry.Property(x => x.SubscriptionStateId).IsModified = true;
+                        entry.Property(x => x.LastChangeUserId).IsModified = true;
+                        entry.Property(x => x.LastChangeDate).IsModified = true;
+                    }
+                }
+            }
+
+            return document;
+        }
+        public static InternalDocument GetDocumentHashPrepare(DmsContext dbContext, IContext ctx, int documentId)
+        {
+            var doc = CommonQueries.GetDocumentQuery(dbContext, ctx).Where(x => x.Doc.Id == documentId)
+                .Select(x => new InternalDocument
+                {
+                    Id = x.Doc.Id,
+                    DocumentTypeId = x.Templ.DocumentTypeId,
+                    Description = x.Doc.Description
+                }).FirstOrDefault();
+
+            if (doc == null)
+            {
+                throw new Model.Exception.DocumentNotFoundOrUserHasNoAccess();
+            }
+
+            doc.DocumentFiles = CommonQueries.GetInternalDocumentFiles(dbContext, documentId);
+
+            doc.SendLists = CommonQueries.GetInternalDocumentSendList(dbContext, new FilterDocumentSendList { DocumentId = new List<int> { documentId } });
+
+            return doc;
+        }
+        public static string GetStringDocumentHash(InternalDocument doc, bool isFull = false)
+        {
+            var hashPrepare = new StringBuilder();
+
+            hashPrepare.Append("Document");
+            hashPrepare.Append(doc.Id);
+            hashPrepare.Append(doc.DocumentTypeId);
+            hashPrepare.Append(doc.Description);
+            hashPrepare.Append("Document");
+
+            hashPrepare.Append("File");
+            if (doc.DocumentFiles?.Count() > 0)
+            {
+                foreach (var docFile in doc.DocumentFiles.OrderBy(x => x.Id))
+                {
+                    hashPrepare.Append(docFile.Id);
+                    hashPrepare.Append(docFile.FileSize);
+                    hashPrepare.Append(docFile.LastChangeDate);
+                    hashPrepare.Append(docFile.Extension);
+                    hashPrepare.Append(docFile.Name);
+                    if (isFull)
+                        hashPrepare.Append(docFile.Hash);
+                }
+            }
+            hashPrepare.Append("File");
+
+            hashPrepare.Append("SendList");
+            if (doc.SendLists?.Count() > 0)
+            {
+                foreach (var docSendList in doc.SendLists.OrderBy(x => x.Id))
+                {
+                    hashPrepare.Append(docSendList.Id);
+                    hashPrepare.Append(docSendList.TargetPositionId);
+                    hashPrepare.Append(docSendList.TargetAgentId);
+                    hashPrepare.Append(docSendList.SendType);
+                    hashPrepare.Append(docSendList.Description);
+                    hashPrepare.Append(docSendList.DueDate);
+                    hashPrepare.Append(docSendList.DueDay);
+                }
+            }
+            hashPrepare.Append("SendList");
+
+            var hash = CrossCutting.Helpers.DmsHash.GetSha1(hashPrepare.ToString());
+
+            return hash;
         }
     }
 }

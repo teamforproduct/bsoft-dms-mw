@@ -46,14 +46,13 @@ namespace DMS_WebAPI.Utilities
         {
             using (var dbContext = new ApplicationDbContext())
             {
-                //TODO (DatabaseType)Enum.Parse(typeof(DatabaseType), x.ServerType)
                 var items = dbContext.AdminServersSet.ToList().Select(x => new DatabaseModel
                 {
                     Id = x.Id,
                     Address = x.Address,
                     Name = x.Name,
                     ServerType = (DatabaseType)Enum.Parse(typeof(DatabaseType), x.ServerType),
-                    DefaultDatabase = x.DefaultSchema,
+                    DefaultDatabase = x.DefaultDatabase,
                     IntegrateSecurity = x.IntegrateSecurity,
                     UserName = x.UserName,
                     UserPassword = x.UserPassword,

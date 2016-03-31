@@ -35,5 +35,6 @@ namespace BL.Model.DocumentCore.FrontModel
 
         public virtual IEnumerable<FrontTemplateDocumentRestrictedSendLists> RestrictedSendLists { get; set; }
         public virtual IEnumerable<FrontTemplateDocumentSendLists> SendLists { get; set; }
+        
     }
 }

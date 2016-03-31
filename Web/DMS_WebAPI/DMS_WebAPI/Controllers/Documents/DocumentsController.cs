@@ -9,6 +9,7 @@ using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
 using System;
+using BL.CrossCutting.DependencyInjection;
 using BL.Model.Enums;
 
 namespace DMS_WebAPI.Controllers.Documents

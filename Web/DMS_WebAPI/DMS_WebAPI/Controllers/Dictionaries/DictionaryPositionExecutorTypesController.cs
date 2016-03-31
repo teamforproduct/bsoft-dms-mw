@@ -1,4 +1,5 @@
-﻿using BL.Logic.DependencyInjection;
+﻿using BL.CrossCutting.DependencyInjection;
+using BL.Logic.DependencyInjection;
 using BL.Logic.DictionaryCore.Interfaces;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;
@@ -14,78 +15,32 @@ namespace DMS_WebAPI.Controllers.Dictionaries
     public class DictionaryPositionExecutorTypesController : ApiController
     {
         /// <summary>
-        /// Возвращает записи из словаря "Должности"
+        /// Возвращает записи из словаря "Типы исполнителей"
         /// </summary>
-        /// <param name="filter">Параметры для фильтрации записей в словаре "Должности"</param>
-        /// <returns>FrontDictionaryPositions</returns>
-        // GET: api/DictionaryPositions
-        public IHttpActionResult Get([FromUri] FilterDictionaryPosition filter)
+        /// <param name="filter">Параметры для фильтрации записей в словаре "Типы исполнителей"</param>
+        /// <returns>FrontDictionaryPositionExecutorTypes</returns>
+        // GET: api/DictionaryPositionExecutorType
+        public IHttpActionResult Get([FromUri] FilterDictionaryPositionExecutorType filter)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionaryPositions(cxt, filter);
+            var tmpDicts = tmpDictProc.GetDictionaryPositionExecutorTypes(cxt, filter);
             return new JsonResult(tmpDicts, this);
         }
 
         /// <summary>
-        /// Возвращает запись из словаря "Должности" по ID 
+        /// Возвращает запись из словаря "Типы исполнителей" по ID 
         /// </summary>
         /// <param name="id"></param>
-        /// <returns>FrontDictionaryPositions</returns>
-        // GET: api/DictionaryPositions/5
+        /// <returns>FrontDictionaryPositionExecutorTypes</returns>
+        // GET: api/DictionaryPositionExecutorType/5
         public IHttpActionResult Get(int id)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDict = tmpDictProc.GetDictionaryPosition(cxt, id);
+            var tmpDict = tmpDictProc.GetDictionaryPositionExecutorType(cxt, id);
             return new JsonResult(tmpDict, this);
         }
 
-
-        /// <summary>
-        /// Добавление записи в словаре "Должности"
-        /// </summary>
-        /// <param name="model">ModifyDictionaryPosition</param>
-        /// <returns>DictionaryPositions</returns>
-        public IHttpActionResult Post([FromBody]ModifyDictionaryPosition model)
-        {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
-            return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.AddPosition, cxt, model));
-        }
-
-        /// <summary>
-        /// Изменение записи в словаре "Должности"
-        /// </summary>
-        /// <param name="id">int</param>
-        /// <param name="model">ModifyDictionaryPosition</param>
-        /// <returns>DictionaryPositions</returns>
-        public IHttpActionResult Put(int id, [FromBody]ModifyDictionaryPosition model)
-        {
-            // Спецификация REST требует отдельного указания ID, несмотря на то, что параметр ID есть в ModifyDictionaryPosition
-
-            model.Id = id;
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
-            tmpDict.ExecuteAction(EnumDictionaryActions.ModifyPosition, cxt, model);
-            return Get(model.Id);
-        }
-
-        /// <summary>
-        /// Удаление записи в словаре "Должности"
-        /// </summary>
-        /// <returns>DictionaryPositions</returns> 
-        public IHttpActionResult Delete([FromUri] int id)
-        {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
-
-            tmpDict.ExecuteAction(EnumDictionaryActions.DeletePosition, cxt, id);
-            FrontDictionaryPosition tmp = new FrontDictionaryPosition();
-            tmp.Id = id;
-
-            return new JsonResult(tmp, this);
-
-        }
     }
 }

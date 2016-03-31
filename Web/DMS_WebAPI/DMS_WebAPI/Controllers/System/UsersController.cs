@@ -5,6 +5,7 @@ using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
 using System.Web.Http;
+using BL.CrossCutting.DependencyInjection;
 
 namespace DMS_WebAPI.Controllers
 {

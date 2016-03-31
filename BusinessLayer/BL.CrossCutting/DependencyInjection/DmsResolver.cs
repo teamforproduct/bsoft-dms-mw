@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BL.Logic.DependencyInjection
+namespace BL.CrossCutting.DependencyInjection
 {
     public class DmsResolver
     {

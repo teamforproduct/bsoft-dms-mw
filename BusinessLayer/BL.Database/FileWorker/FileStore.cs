@@ -1,13 +1,13 @@
 ﻿using System;
 using System.IO;
 using System.Security.Cryptography;
+using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
-using BL.Logic.DependencyInjection;
 using BL.Model.Constants;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Exception;
 
-namespace BL.Logic.FileWorker
+namespace BL.Database.FileWorker
 {
     public class FileStore : IFileStore
     {
@@ -66,6 +66,26 @@ namespace BL.Logic.FileWorker
                 var log = DmsResolver.Current.Get<ILogger>();
                 log.Error(ctx, ex, "Cannot save user file", Environment.StackTrace);
                 throw new CannotSaveFile(ex);
+            }
+        }
+
+        public bool IsFileCorrect(IContext ctx, InternalDocumentAttachedFile docFile)
+        {
+            try
+            {
+                string path =  GetFullDocumentFilePath(ctx, docFile);
+
+                var localFilePath = path + "\\" + docFile.Name + "." + docFile.Extension;
+
+                return docFile.Hash == FileToSha1(localFilePath);
+
+            }
+            catch (Exception ex)
+            {
+                //TODO check if file exists
+                var log = DmsResolver.Current.Get<ILogger>();
+                log.Error(ctx, ex, "Cannot access to user file", Environment.StackTrace);
+                throw new CannotAccessToFile(ex);
             }
         }
 
@@ -285,7 +305,7 @@ namespace BL.Logic.FileWorker
         {
             using (var stream = File.OpenRead(sourceFileName))
             {
-                var sha = new SHA256Managed();
+                var sha = new SHA512Managed();
                 byte[] hash = sha.ComputeHash(stream);
                 return BitConverter.ToString(hash).Replace("-", String.Empty);
             }

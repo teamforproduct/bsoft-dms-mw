@@ -17,6 +17,8 @@ namespace BL.Database.DBModel.Document
         [MaxLength(2000)]
         public string Hash { get; set; }
         [MaxLength(2000)]
+        public string FullHash { get; set; }
+        [MaxLength(2000)]
         public string ChangedHash { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }

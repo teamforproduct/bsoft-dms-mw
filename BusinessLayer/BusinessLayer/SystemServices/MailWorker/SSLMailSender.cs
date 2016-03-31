@@ -36,10 +36,14 @@ namespace BL.Logic.SystemServices.MailWorker
             myMail.Body = mailData.Body;
             myMail.Priority = MailPriority.High;
 
-            foreach (var filePath in mailData.AttachedFiles.Where(filePath => !string.IsNullOrEmpty(filePath.Trim())))
+            if (mailData.AttachedFiles != null)
             {
-                MailAttachment MyAttachment = new MailAttachment(filePath.Trim());
-                myMail.Attachments.Add(MyAttachment);
+                foreach (
+                    var filePath in mailData.AttachedFiles.Where(filePath => !string.IsNullOrEmpty(filePath.Trim())))
+                {
+                    MailAttachment MyAttachment = new MailAttachment(filePath.Trim());
+                    myMail.Attachments.Add(MyAttachment);
+                }
             }
 
             SmtpMail.SmtpServer = $"{mailData.Server}:{mailData.Port}";

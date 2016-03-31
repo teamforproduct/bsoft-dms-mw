@@ -3191,6 +3191,225 @@ namespace BL.Database.Dictionaries
 
         #endregion DictionaryPositions
 
+        // Исполнители
+        #region DictionaryPositionExecutors
+        public int AddExecutor(IContext context, InternalDictionaryPositionExecutor executor)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                DictionaryPositionExecutors dc = DictionaryModelConverter.GetDbExecutor(executor);
+                dbContext.DictionaryPositionExecutorsSet.Add(dc);
+                dbContext.SaveChanges();
+                executor.Id = dc.Id;
+                return dc.Id;
+            }
+        }
+
+        public void UpdateExecutor(IContext context, InternalDictionaryPositionExecutor executor)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                DictionaryPositionExecutors drj = DictionaryModelConverter.GetDbExecutor(executor);
+                dbContext.DictionaryPositionExecutorsSet.Attach(drj);
+                dbContext.Entry(drj).State = System.Data.Entity.EntityState.Modified;
+                dbContext.SaveChanges();
+            }
+        }
+
+        public void DeleteExecutor(IContext context, InternalDictionaryPositionExecutor docSubject)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var drj = dbContext.DictionaryPositionExecutorsSet.FirstOrDefault(x => x.Id == docSubject.Id);
+                if (drj != null)
+                {
+                    dbContext.DictionaryPositionExecutorsSet.Remove(drj);
+                    dbContext.SaveChanges();
+                }
+            }
+        }
+
+        public InternalDictionaryPositionExecutor GetInternalDictionaryPositionExecutor(IContext context, FilterDictionaryPositionExecutor filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.DictionaryPositionExecutorsSet.AsQueryable();
+
+                qry = ExecutorGetWhere(ref qry, filter);
+
+                return qry.Select(x => new InternalDictionaryPositionExecutor
+                {
+                    // pss Перегонка значений DictionaryPositionExecutors
+                    Id = x.Id,
+                    IsActive = x.IsActive,
+                    AgentId = x.AgentId,
+                    PositionId = x.PositionId,
+                    PositionExecutorTypeId = x.PositionExecutorTypeId,
+                    AccessLevelId = x.AccessLevelId,
+                    Description = x.Description,
+                    StartDate = x.StartDate,
+                    EndDate = x.EndDate,
+                    LastChangeUserId = x.LastChangeUserId,
+                    LastChangeDate = x.LastChangeDate
+                }).FirstOrDefault();
+            }
+        }
+
+        public IEnumerable<FrontDictionaryPositionExecutor> GetDictionaryPositionExecutors(IContext context, FilterDictionaryPositionExecutor filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.DictionaryPositionExecutorsSet.AsQueryable();
+
+                qry = ExecutorGetWhere(ref qry, filter);
+
+                return qry.Select(x => new FrontDictionaryPositionExecutor
+                {
+                    // pss Перегонка значений DictionaryPositionExecutors
+                    Id = x.Id,
+                    IsActive = x.IsActive,
+                    AgentId = x.AgentId,
+                    PositionId = x.PositionId,
+                    PositionExecutorTypeId = x.PositionExecutorTypeId,
+                    AccessLevelId = x.AccessLevelId,
+                    Description = x.Description,
+                    StartDate = x.StartDate,
+                    EndDate = x.EndDate,
+                    AgentName = x.Agent.Name, 
+                    PositionName = x.Position.Name,
+                    PositionFullName = x.Position.FullName,
+                    AccessLevelName = x.AccessLevel.Name,   
+                    PositionExecutorTypeName = x.PositionExecutorType.Name  
+                }).ToList();
+            }
+        }
+
+        // Для использования в коммандах метод CanExecute
+        public bool ExistsExecutor(IContext context, FilterDictionaryPositionExecutor filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.DictionaryPositionExecutorsSet.AsQueryable();
+
+                qry = ExecutorGetWhere(ref qry, filter);
+
+                var res = qry.Select(x => new FrontDictionaryPositionExecutor
+                {
+                    Id = x.Id
+                }).FirstOrDefault();
+
+                return res != null;
+            }
+        }
+
+        private static IQueryable<DictionaryPositionExecutors> ExecutorGetWhere(ref IQueryable<DictionaryPositionExecutors> qry, FilterDictionaryPositionExecutor filter)
+        {
+            // Список первичных ключей
+            if (filter.IDs?.Count > 0)
+            {
+                qry = qry.Where(x => filter.IDs.Contains(x.Id));
+            }
+
+            // Исключение списка первичных ключей
+            if (filter.NotContainsIDs?.Count > 0)
+            {
+                qry = qry.Where(x => !filter.NotContainsIDs.Contains(x.Id));
+            }
+
+            // Тоько активные/неактивные
+            if (filter.IsActive != null)
+            {
+                qry = qry.Where(x => filter.IsActive == x.IsActive);
+            }
+
+            return qry;
+        }
+
+        #endregion DictionaryPositionExecutors
+
+        // Типы исполнителей
+        #region DictionaryPositionExecutorTypes
+        public InternalDictionaryPositionExecutorType GetInternalDictionaryPositionExecutorType(IContext context, FilterDictionaryPositionExecutorType filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.DictionaryPositionExecutorTypesSet.AsQueryable();
+
+                qry = ExecutorTypeGetWhere(ref qry, filter);
+
+                return qry.Select(x => new InternalDictionaryPositionExecutorType
+                {
+                    Id = x.Id,
+                    IsActive = x.IsActive,
+                    Code = x.Code,
+                    Name = x.Name,
+                    LastChangeUserId = x.LastChangeUserId,
+                    LastChangeDate = x.LastChangeDate
+                }).FirstOrDefault();
+            }
+        }
+
+        public IEnumerable<FrontDictionaryPositionExecutorType> GetDictionaryPositionExecutorTypes(IContext context, FilterDictionaryPositionExecutorType filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.DictionaryPositionExecutorTypesSet.AsQueryable();
+
+                qry = ExecutorTypeGetWhere(ref qry, filter);
+
+                return qry.Select(x => new FrontDictionaryPositionExecutorType
+                {
+                    Id = x.Id,
+                    IsActive = x.IsActive,
+                    Code = x.Code,
+                    Name = x.Name
+                }).ToList();
+            }
+        }
+
+        private static IQueryable<DictionaryPositionExecutorTypes> ExecutorTypeGetWhere(ref IQueryable<DictionaryPositionExecutorTypes> qry, FilterDictionaryPositionExecutorType filter)
+        {
+            // Список первичных ключей
+            if (filter.IDs?.Count > 0)
+            {
+                qry = qry.Where(x => filter.IDs.Contains(x.Id));
+            }
+
+            // Исключение списка первичных ключей
+            if (filter.NotContainsIDs?.Count > 0)
+            {
+                qry = qry.Where(x => !filter.NotContainsIDs.Contains(x.Id));
+            }
+
+            // Тоько активные/неактивные
+            if (filter.IsActive != null)
+            {
+                qry = qry.Where(x => filter.IsActive == x.IsActive);
+            }
+
+            // Поиск по наименованию
+            if (!string.IsNullOrEmpty(filter.Name))
+            {
+                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
+                {
+                    qry = qry.Where(x => x.Name.Contains(temp));
+                }
+            }
+
+            // Поиск по наименованию
+            if (!string.IsNullOrEmpty(filter.Code))
+            {
+                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Code))
+                {
+                    qry = qry.Where(x => x.Code.Contains(temp));
+                }
+            }
+
+            return qry;
+        }
+
+        #endregion DictionaryPositionExecutorTypes
+
         // Журналы регистрации
         #region DictionaryRegistrationJournals
         public int AddDictionaryRegistrationJournal(IContext context, InternalDictionaryRegistrationJournal regJournal)
@@ -3500,141 +3719,6 @@ namespace BL.Database.Dictionaries
 
         #endregion DictionaryCompanies
 
-        // Исполнители
-        #region DictionaryPositionExecutors
-        public int AddExecutor(IContext context, InternalDictionaryPositionExecutor executor)
-        {
-            using (var dbContext = new DmsContext(context))
-            {
-                DictionaryPositionExecutors dc = DictionaryModelConverter.GetDbExecutor(executor);
-                dbContext.DictionaryPositionExecutorsSet.Add(dc);
-                dbContext.SaveChanges();
-                executor.Id = dc.Id;
-                return dc.Id;
-            }
-        }
-
-        public void UpdateExecutor(IContext context, InternalDictionaryPositionExecutor executor)
-        {
-            using (var dbContext = new DmsContext(context))
-            {
-                DictionaryPositionExecutors drj = DictionaryModelConverter.GetDbExecutor(executor);
-                dbContext.DictionaryPositionExecutorsSet.Attach(drj);
-                dbContext.Entry(drj).State = System.Data.Entity.EntityState.Modified;
-                dbContext.SaveChanges();
-            }
-        }
-
-        public void DeleteExecutor(IContext context, InternalDictionaryPositionExecutor docSubject)
-        {
-            using (var dbContext = new DmsContext(context))
-            {
-                var drj = dbContext.DictionaryPositionExecutorsSet.FirstOrDefault(x => x.Id == docSubject.Id);
-                if (drj != null)
-                {
-                    dbContext.DictionaryPositionExecutorsSet.Remove(drj);
-                    dbContext.SaveChanges();
-                }
-            }
-        }
-
-        public InternalDictionaryPositionExecutor GetInternalDictionaryPositionExecutor(IContext context, FilterDictionaryPositionExecutor filter)
-        {
-            using (var dbContext = new DmsContext(context))
-            {
-                var qry = dbContext.DictionaryPositionExecutorsSet.AsQueryable();
-
-                qry = ExecutorGetWhere(ref qry, filter);
-
-                return qry.Select(x => new InternalDictionaryPositionExecutor
-                {
-                    // pss Перегонка значений DictionaryPositionExecutors
-                    Id = x.Id,
-                    IsActive = x.IsActive,
-                    AgentId = x.AgentId,
-                    PositionId = x.PositionId,
-                    PositionExecutorTypeId = x.PositionExecutorTypeId,
-                    AccessLevelId = x.AccessLevelId,
-                    Description = x.Description,
-                    StartDate = x.StartDate,
-                    EndDate = x.EndDate,
-                    LastChangeUserId = x.LastChangeUserId,
-                    LastChangeDate = x.LastChangeDate
-                }).FirstOrDefault();
-            }
-        }
-
-        public IEnumerable<FrontDictionaryPositionExecutor> GetDictionaryPositionExecutors(IContext context, FilterDictionaryPositionExecutor filter)
-        {
-            using (var dbContext = new DmsContext(context))
-            {
-                var qry = dbContext.DictionaryPositionExecutorsSet.AsQueryable();
-
-                qry = ExecutorGetWhere(ref qry, filter);
-
-                return qry.Select(x => new FrontDictionaryPositionExecutor
-                {
-                    // pss Перегонка значений DictionaryPositionExecutors
-                    Id = x.Id,
-                    IsActive = x.IsActive,
-                    AgentId = x.AgentId,
-                    PositionId = x.PositionId,
-                    PositionExecutorTypeId = x.PositionExecutorTypeId,
-                    AccessLevelId = x.AccessLevelId,
-                    Description = x.Description,
-                    StartDate = x.StartDate,
-                    EndDate = x.EndDate,
-                    AgentName = x.Agent.Name, 
-                    PositionName = x.Position.Name,
-                    PositionFullName = x.Position.FullName,
-                    AccessLevelName = x.AccessLevel.Name,   
-                    PositionExecutorTypeName = x.PositionExecutorType.Name  
-                }).ToList();
-            }
-        }
-
-        // Для использования в коммандах метод CanExecute
-        public bool ExistsExecutor(IContext context, FilterDictionaryPositionExecutor filter)
-        {
-            using (var dbContext = new DmsContext(context))
-            {
-                var qry = dbContext.DictionaryPositionExecutorsSet.AsQueryable();
-
-                qry = ExecutorGetWhere(ref qry, filter);
-
-                var res = qry.Select(x => new FrontDictionaryPositionExecutor
-                {
-                    Id = x.Id
-                }).FirstOrDefault();
-
-                return res != null;
-            }
-        }
-
-        private static IQueryable<DictionaryPositionExecutors> ExecutorGetWhere(ref IQueryable<DictionaryPositionExecutors> qry, FilterDictionaryPositionExecutor filter)
-        {
-            // Список первичных ключей
-            if (filter.IDs?.Count > 0)
-            {
-                qry = qry.Where(x => filter.IDs.Contains(x.Id));
-            }
-
-            // Исключение списка первичных ключей
-            if (filter.NotContainsIDs?.Count > 0)
-            {
-                qry = qry.Where(x => !filter.NotContainsIDs.Contains(x.Id));
-            }
-
-            // Тоько активные/неактивные
-            if (filter.IsActive != null)
-            {
-                qry = qry.Where(x => filter.IsActive == x.IsActive);
-            }
-
-            return qry;
-        }
-
-        #endregion DictionaryPositionExecutors
 
         #region DictionaryResultTypes
         public FrontDictionaryResultType GetDictionaryResultType(IContext context, int id)

@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using BL.Database.Dictionaries.Interfaces;
 using BL.Logic.Common;
 using BL.Database.Documents.Interfaces;
-using BL.Logic.FileWorker;
+using BL.Database.FileWorker;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;

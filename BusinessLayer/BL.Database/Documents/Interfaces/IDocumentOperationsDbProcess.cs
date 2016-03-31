@@ -91,10 +91,12 @@ namespace BL.Database.Documents.Interfaces
         #region DocumentPapers
         InternalDocument AddDocumentPaperPrepare(IContext context, int documentId);
         InternalDocument ChangeDocumentPaperPrepare(IContext context, int paperId);
+        InternalDocument EventDocumentPaperPrepare(IContext context, int paperId);
 
         void AddDocumentPapers(IContext context, IEnumerable<InternalDocumentPaper> items);
         void ModifyDocumentPaper(IContext context, InternalDocumentPaper item);
         void DeleteDocumentPaper(IContext context, int itemId);
+        void MarkOwnerDocumentPaper(IContext context, InternalDocumentPaper paper);
         #endregion DocumentPapers
 
         #region DocumentPaperLists

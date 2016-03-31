@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using BL.Database.Documents.Interfaces;
+using BL.Database.FileWorker;
 using BL.Logic.Common;
-using BL.Logic.FileWorker;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;

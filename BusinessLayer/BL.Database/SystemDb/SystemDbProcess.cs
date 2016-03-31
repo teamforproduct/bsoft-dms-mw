@@ -33,7 +33,7 @@ namespace BL.Database.SystemDb
                     LogLevel = (int)log.LogType,
                     LogException = log.LogException,
                     LogTrace = log.LogObjects,
-                    Message = log.Message
+                    Message = log.Message,
                 };
                 dbContext.LogSet.Add(nlog);
                 dbContext.SaveChanges();
@@ -547,7 +547,7 @@ namespace BL.Database.SystemDb
                         SourcePositiontId = x.SourcePositionId ?? 0,
                         SourcePositionName = x.SourcePosition == null ? "" : x.SourcePosition.Name,
                         WasUpdated = !(x.SendDate == null),
-                        DestinationAgentEmail = "sanyok.malinin@gmail.com"
+                        DestinationAgentEmail = "sergozubr@rambler.ru"
                     }).ToList();
             }
         }
@@ -641,7 +641,13 @@ namespace BL.Database.SystemDb
                          ObjectText = (x.doc.RegistrationNumber != null
                              ? x.doc.RegistrationNumberPrefix + x.doc.RegistrationNumber +
                                x.doc.RegistrationNumberSuffix
-                             : "#" + x.doc.Id) + x.doc.Description
+                             : "#" + x.doc.Id) 
+                             + x.doc.RegistrationJournal.Name + x.doc.RegistrationJournal.Department.Name
+                             + x.doc.Description 
+                             + x.doc.ExecutorPositionExecutorAgent.Name 
+                             + x.doc.TemplateDocument.DocumentType.Name + x.doc.TemplateDocument.DocumentDirection.Name
+                             + x.doc.DocumentSubject.Name
+                             + x.doc.SenderAgent.Name + x.doc.SenderAgentPerson.Agent.Name + x.doc.SenderNumber
                      }).ToList()
                  );
 
@@ -654,7 +660,9 @@ namespace BL.Database.SystemDb
                          ItemType = (EnumSearchObjectType)x.ind.ObjectType,
                          OperationType = (EnumOperationType)x.ind.OperationType,
                          ObjectId = x.evt.Id,
-                         ObjectText = x.evt.Description
+                         ObjectText = x.evt.Description + x.evt.Task.Task 
+                                + x.evt.SourcePositionExecutorAgent.Name + x.evt.TargetPositionExecutorAgent.Name
+                                + x.evt.SourceAgent.Name + x.evt.TargetAgent.Name
                      }).ToList()
                  );
 
@@ -680,7 +688,9 @@ namespace BL.Database.SystemDb
                          ItemType = (EnumSearchObjectType)x.ind.ObjectType,
                          OperationType = (EnumOperationType)x.ind.OperationType,
                          ObjectId = x.sl.Id,
-                         ObjectText = x.sl.Description
+                         ObjectText = x.sl.Description + x.sl.SendType.Name 
+                                + x.sl.SourcePosition.Name + x.sl.TargetPosition.Name
+                                +x.sl.SourcePositionExecutorAgent.Name + x.sl.TargetPositionExecutorAgent.Name
                      }).ToList()
                  );
 
@@ -693,7 +703,7 @@ namespace BL.Database.SystemDb
                          ItemType = (EnumSearchObjectType)x.ind.ObjectType,
                          OperationType = (EnumOperationType)x.ind.OperationType,
                          ObjectId = x.ss.Id,
-                         ObjectText = x.ss.Description
+                         ObjectText = x.ss.Description + x.ss.SubscriptionState.Name + x.ss.DoneEvent.SourcePositionExecutorAgent.Name
                      }).ToList()
                  );
 

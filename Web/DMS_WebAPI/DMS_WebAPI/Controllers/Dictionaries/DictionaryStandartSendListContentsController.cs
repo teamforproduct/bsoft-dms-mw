@@ -6,8 +6,7 @@ using DMS_WebAPI.Utilities;
 using System.Web.Http;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.IncomingModel;
-using BL.Model.Enums;
-
+using BL.Model.Enums;using BL.CrossCutting.DependencyInjection;
 namespace DMS_WebAPI.Controllers.Dictionaries
 {
     /// <summary>

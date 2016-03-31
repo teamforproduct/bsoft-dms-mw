@@ -1,4 +1,5 @@
-﻿using BL.CrossCutting.Interfaces;
+﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
 using BL.Logic.DependencyInjection;
 using BL.Logic.DocumentCore.AdditionalCommands;
 using BL.Logic.DocumentCore.Commands;
@@ -237,6 +238,14 @@ namespace BL.Logic.DocumentCore
 
                 case EnumDocumentActions.DeleteDocumentPaper:
                     cmd = DmsResolver.Current.Get<DeleteDocumentPaperCommand>();
+                    break;
+
+                case EnumDocumentActions.MarkOwnerDocumentPaper:
+                    cmd = DmsResolver.Current.Get<MarkOwnerDocumentPaperCommand>();
+                    break;
+
+                case EnumDocumentActions.MarkСorruptionDocumentPaper:
+                    cmd = DmsResolver.Current.Get<MarkСorruptionDocumentPaperCommand>();
                     break;
 
                 case EnumDocumentActions.AddDocumentPaperList:

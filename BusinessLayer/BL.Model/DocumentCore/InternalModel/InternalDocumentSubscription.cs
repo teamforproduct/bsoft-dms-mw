@@ -16,6 +16,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public int? DoneEventId { get; set; }
         public string Description { get; set; }
         public string Hash { get; set; }
+        public string FullHash { get; set; }
         public string ChangedHash { get; set; }
         public InternalDocumentEvent SendEvent { get; set; }
         public InternalDocumentEvent DoneEvent { get; set; }

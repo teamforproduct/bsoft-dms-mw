@@ -168,28 +168,6 @@ namespace BL.Database.Dictionaries.Interfaces
         IEnumerable<InternalDictionaryPositionWithActions> GetDictionaryPositionsWithActions(IContext context, FilterDictionaryPosition filter);
         #endregion DictionaryPositions
 
-        // Журналы регистрации
-        #region DictionaryRegistrationJournals
-        int AddDictionaryRegistrationJournal(IContext context, InternalDictionaryRegistrationJournal docType);
-        void UpdateDictionaryRegistrationJournal(IContext context, InternalDictionaryRegistrationJournal docType);
-        void DeleteDictionaryRegistrationJournal(IContext context, InternalDictionaryRegistrationJournal docType);
-        bool ExistsDictionaryRegistrationJournal(IContext context, FilterDictionaryRegistrationJournal filter);
-        InternalDictionaryRegistrationJournal GetInternalDictionaryRegistrationJournal(IContext context, FilterDictionaryRegistrationJournal filter);
-        IEnumerable<FrontDictionaryRegistrationJournal> GetDictionaryRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter);
-        #endregion DictionaryRegistrationJournals
-
-
-        // Компании
-        #region DictionaryCompanies
-        int AddCompany(IContext context, InternalDictionaryCompany docType);
-        void UpdateCompany(IContext context, InternalDictionaryCompany docType);
-        void DeleteCompany(IContext context, InternalDictionaryCompany docType);
-        bool ExistsCompany(IContext context, FilterDictionaryCompany filter);
-        InternalDictionaryCompany GetInternalDictionaryCompany(IContext context, FilterDictionaryCompany filter);
-        IEnumerable<FrontDictionaryCompany> GetDictionaryCompanies(IContext context, FilterDictionaryCompany filter);
-        #endregion DictionaryCompanies
-
-
         // Исполнители
         #region DictionaryPositionExecutors
         int AddExecutor(IContext context, InternalDictionaryPositionExecutor docType);
@@ -200,7 +178,31 @@ namespace BL.Database.Dictionaries.Interfaces
         IEnumerable<FrontDictionaryPositionExecutor> GetDictionaryPositionExecutors(IContext context, FilterDictionaryPositionExecutor filter);
         #endregion DictionaryPositionExecutors
 
+        // Типы исполнителей
+        #region DictionaryPositionExecutorTypes
+        InternalDictionaryPositionExecutorType GetInternalDictionaryPositionExecutorType(IContext context, FilterDictionaryPositionExecutorType filter);
+        IEnumerable<FrontDictionaryPositionExecutorType> GetDictionaryPositionExecutorTypes(IContext context, FilterDictionaryPositionExecutorType filter);
+        #endregion DictionaryPositionExecutorTypes
 
+        // Журналы регистрации
+        #region DictionaryRegistrationJournals
+        int AddDictionaryRegistrationJournal(IContext context, InternalDictionaryRegistrationJournal docType);
+        void UpdateDictionaryRegistrationJournal(IContext context, InternalDictionaryRegistrationJournal docType);
+        void DeleteDictionaryRegistrationJournal(IContext context, InternalDictionaryRegistrationJournal docType);
+        bool ExistsDictionaryRegistrationJournal(IContext context, FilterDictionaryRegistrationJournal filter);
+        InternalDictionaryRegistrationJournal GetInternalDictionaryRegistrationJournal(IContext context, FilterDictionaryRegistrationJournal filter);
+        IEnumerable<FrontDictionaryRegistrationJournal> GetDictionaryRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter);
+        #endregion DictionaryRegistrationJournals
+
+        // Компании
+        #region DictionaryCompanies
+        int AddCompany(IContext context, InternalDictionaryCompany docType);
+        void UpdateCompany(IContext context, InternalDictionaryCompany docType);
+        void DeleteCompany(IContext context, InternalDictionaryCompany docType);
+        bool ExistsCompany(IContext context, FilterDictionaryCompany filter);
+        InternalDictionaryCompany GetInternalDictionaryCompany(IContext context, FilterDictionaryCompany filter);
+        IEnumerable<FrontDictionaryCompany> GetDictionaryCompanies(IContext context, FilterDictionaryCompany filter);
+        #endregion DictionaryCompanies
 
         #region DictionaryResultTypes
         FrontDictionaryResultType GetDictionaryResultType(IContext context, int id);

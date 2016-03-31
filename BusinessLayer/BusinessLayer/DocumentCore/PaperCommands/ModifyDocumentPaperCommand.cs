@@ -12,8 +12,6 @@ namespace BL.Logic.DocumentCore.PaperCommands
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
 
-        private InternalDocumentPaper _item;
-
         public ModifyDocumentPaperCommand(IDocumentOperationsDbProcess operationDb)
         {
             _operationDb = operationDb;
@@ -53,7 +51,7 @@ namespace BL.Logic.DocumentCore.PaperCommands
             _admin.VerifyAccess(_context, CommandType);
             if (!CanBeDisplayed(_context.CurrentPositionId))
             {
-                throw new CouldNotChangeAttributeLaunchPlan();
+                throw new CouldNotPerformThisOperation();
             }
             return true;
         }
@@ -71,7 +69,7 @@ namespace BL.Logic.DocumentCore.PaperCommands
             paper.OrderNumber = Model.OrderNumber;
             CommonDocumentUtilities.SetLastChange(_context, paper);
 
-            _operationDb.ModifyDocumentPaper(_context, _item);
+            _operationDb.ModifyDocumentPaper(_context, paper);
             return null;
         }
 

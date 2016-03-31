@@ -1,4 +1,5 @@
-﻿using BL.Logic.DependencyInjection;
+﻿using BL.CrossCutting.DependencyInjection;
+using BL.Logic.DependencyInjection;
 using BL.Logic.DictionaryCore.Interfaces;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;
@@ -51,7 +52,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
-            return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.AddPosition, cxt, model));
+            return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.AddExecutor, cxt, model));
         }
 
         /// <summary>
@@ -67,7 +68,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             model.Id = id;
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
-            tmpDict.ExecuteAction(EnumDictionaryActions.ModifyPosition, cxt, model);
+            tmpDict.ExecuteAction(EnumDictionaryActions.ModifyExecutor, cxt, model);
             return Get(model.Id);
         }
 
@@ -80,7 +81,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
 
-            tmpDict.ExecuteAction(EnumDictionaryActions.DeletePosition, cxt, id);
+            tmpDict.ExecuteAction(EnumDictionaryActions.DeleteExecutor, cxt, id);
             FrontDictionaryPositionExecutor tmp = new FrontDictionaryPositionExecutor();
             tmp.Id = id;
 

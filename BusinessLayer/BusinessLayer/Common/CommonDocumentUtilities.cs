@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Dictionaries.Interfaces;
 using BL.Logic.DependencyInjection;
@@ -419,7 +420,8 @@ namespace BL.Logic.Common
                 IsCopy = model.IsCopy,
                 PageQuantity = model.PageQuantity,
                 OrderNumber = model.OrderNumber,
-                Events = GetNewDocumentPaperEvents(context,null,EnumEventTypes.AddNewPaper),
+                Events = GetNewDocumentPaperEvents(context, null, EnumEventTypes.AddNewPaper),
+                IsInWork = true,
                 LastChangeUserId = context.CurrentAgentId,
                 LastChangeDate = DateTime.Now,
             };
@@ -433,11 +435,11 @@ namespace BL.Logic.Common
             };
         }
 
-        public static InternalDocumentPaperEvent GetNewDocumentPaperEvent(IContext context, int? paperId, EnumEventTypes eventType, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null)
+        public static InternalDocumentPaperEvent GetNewDocumentPaperEvent(IContext context, int? paperId, EnumEventTypes eventType, string description = null, bool IsMarkRecieve = true, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null)
         {
             return new InternalDocumentPaperEvent
             {
-                PaperId = paperId??0,
+                PaperId = paperId ?? 0,
                 EventType = eventType,
                 SourceAgentId = sourceAgentId ?? context.CurrentAgentId,
                 SourcePositionId = sourcePositionId ?? context.CurrentPositionId,
@@ -447,20 +449,20 @@ namespace BL.Logic.Common
                 TargetAgentId = targetAgentId,
                 PlanAgentId = context.CurrentAgentId,
                 PlanDate = DateTime.Now,
-                SendAgentId = context.CurrentAgentId,
-                SendDate = DateTime.Now,
-                RecieveAgentId = context.CurrentAgentId,
-                RecieveDate = DateTime.Now,
+                SendAgentId = IsMarkRecieve ? (int?)context.CurrentAgentId : null,
+                SendDate = IsMarkRecieve ? (DateTime?)DateTime.Now : null,
+                RecieveAgentId = IsMarkRecieve ? (int?)context.CurrentAgentId : null,
+                RecieveDate = IsMarkRecieve ? (DateTime?)DateTime.Now : null,
                 LastChangeUserId = context.CurrentAgentId,
                 LastChangeDate = DateTime.Now,
             };
         }
 
-        public static IEnumerable<InternalDocumentPaperEvent> GetNewDocumentPaperEvents(IContext context, int? paperId, EnumEventTypes eventType, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null)
+        public static IEnumerable<InternalDocumentPaperEvent> GetNewDocumentPaperEvents(IContext context, int? paperId, EnumEventTypes eventType, string description = null, bool IsMarkRecieve = true, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null)
         {
             return new List<InternalDocumentPaperEvent>
             {
-                GetNewDocumentPaperEvent(context,  paperId, eventType, targetPositionId, targetAgentId, sourcePositionId, sourceAgentId )
+                GetNewDocumentPaperEvent(context,  paperId, eventType, description, IsMarkRecieve, targetPositionId, targetAgentId, sourcePositionId, sourceAgentId )
             };
         }
 
@@ -632,6 +634,5 @@ namespace BL.Logic.Common
             else
                 return null;
         }
-
     }
 }

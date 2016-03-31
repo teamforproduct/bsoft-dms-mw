@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
 using BL.Logic.DependencyInjection;
 using BL.Database.Documents.Interfaces;
@@ -79,7 +80,7 @@ namespace BL.Logic.DocumentCore
         #region DocumentPapers
         public FrontDocumentPaper GetDocumentPaper(IContext context, int itemId)
         {
-            return _documentDb.GetDocumentPaperById(context, itemId);
+            return _documentDb.GetDocumentPaper(context, itemId);
         }
 
         public IEnumerable<FrontDocumentPaper> GetDocumentPapers(IContext context, FilterDocumentPaper filter)

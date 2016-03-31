@@ -2,7 +2,7 @@
 
 namespace BL.Model.DocumentCore.FrontModel
 {
-    public class FrontDocumentWait
+    public class FrontDocumentWait : FrontRegistrationFullNumber
     {
         public int Id { get; set; }
         public int DocumentId { get; set; }
@@ -11,7 +11,7 @@ namespace BL.Model.DocumentCore.FrontModel
         public int? OffEventId { get; set; }
         public int? ResultTypeId { get; set; }
         public string ResultTypeName { get; set; }
-        
+
         public DateTime? DueDate { get; set; }
         public DateTime? AttentionDate { get; set; }
         public string TargetDescription { get; set; }
@@ -20,7 +20,6 @@ namespace BL.Model.DocumentCore.FrontModel
         public FrontDocumentEvent OffEvent { get; set; }
         public bool IsClosed { get; set; }
         public DateTime DocumentDate { get; set; }
-        public string RegistrationFullNumber { get; set; }
         public string DocumentDirectionName { get; set; }
         public string DocumentTypeName { get; set; }
         public string DocumentDescription { get; set; }
