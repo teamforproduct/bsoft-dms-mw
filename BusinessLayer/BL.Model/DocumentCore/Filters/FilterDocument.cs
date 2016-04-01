@@ -124,30 +124,21 @@ namespace BL.Model.DocumentCore.Filters
         public string EventDescription { get; set; }
 
         /// <summary>
-        /// Массив ИД отправителей событий по документу
+        /// Массив ИД отправителей или получателей событий по документу
         /// </summary>
-        public List<int> EventSourcePositionId { get; set; }
+        public List<int> EventPositionId { get; set; }
         /// <summary>
-        /// Массив ИД отправителей событий по документу
+        /// Массив ИД отправителей или получателей событий по документу
         /// </summary>
-        public List<int> EventSourcePositionExecutorAgentId { get; set; }
+        public List<int> EventPositionExecutorAgentId { get; set; }
         /// <summary>
-        /// Массив ИД отправителей событий по документу
+        /// Массив ИД отправителей или получателей событий по документу
         /// </summary>
-        public List<int> EventSourceAgentId { get; set; }
-
+        public List<int> EventDepartmentId { get; set; }
         /// <summary>
-        /// Массив ИД получателей событий по документу
+        /// Массив ИД отправителей или получателей событий по документу
         /// </summary>
-        public List<int> EventTargetPositionId { get; set; }
-        /// <summary>
-        /// Массив ИД получателей событий по документу
-        /// </summary>
-        public List<int> EventTargetPositionExecutorAgentId { get; set; }
-        /// <summary>
-        /// Массив ИД получателей событий по документу
-        /// </summary>
-        public List<int> EventTargetAgentId { get; set; }
+        public List<int> EventAgentId { get; set; }
         #endregion Event
         /// <summary>
         /// Массив ИД Task по документу
@@ -183,6 +174,53 @@ namespace BL.Model.DocumentCore.Filters
         /// Дата "по" для отбора по дате возникновения  контроля документа
         /// </summary>
         public DateTime? WaitCreateToDate { get; set; }
+        /// <summary>
+        /// Массив ИД отправителей контроля по документу
+        /// </summary>
+        public List<int> WaitControlToMePositionId { get; set; }
+        /// <summary>
+        /// Массив ИД отправителей контроля по документу
+        /// </summary>
+        public List<int> WaitControlToMePositionExecutorAgentId { get; set; }
+        /// <summary>
+        /// Массив ИД отправителей контроля по документу
+        /// </summary>
+        public List<int> WaitControlToMeDepartmentId { get; set; }
+        /// <summary>
+        /// Массив ИД получателей контроля по документу
+        /// </summary>
+        public List<int> WaitControlFromMePositionId { get; set; }
+        /// <summary>
+        /// Массив ИД получателей контроля по документу
+        /// </summary>
+        public List<int> WaitControlFromMePositionExecutorAgentId { get; set; }
+        /// <summary>
+        /// Массив ИД получателей контроля по документу
+        /// </summary>
+        public List<int> WaitControlFromMeDepartmentId { get; set; }
+        /// <summary>
+        /// Массив ИД получателей контроля по документу
+        /// </summary>
+        public List<int> WaitControlFromMeAgentId { get; set; }
+
+        /// <summary>
+        /// Самоконтроль. true - выполнять поиск иначе ничего не делаеться
+        /// </summary>
+        public bool? WaitIsSelfControl { get; set; }
+        /// <summary>
+        /// Поступившие на визирование. true - выполнять поиск иначе ничего не делаеться
+        /// </summary>
+        public bool? WaitIsVisaingToMe { get; set; }
+
+        /// <summary>
+        /// Отправленные на визирование. true - выполнять поиск иначе ничего не делаеться
+        /// </summary>
+        public bool? WaitIsVisaingFromMe { get; set; }
+        /// <summary>
+        /// Отчеты о выполнении. true - выполнять поиск иначе ничего не делаеться
+        /// </summary>
+        public bool? WaitIsMarkExecution { get; set; }
+
         #endregion Wait
 
         #region File
@@ -219,6 +257,11 @@ namespace BL.Model.DocumentCore.Filters
         /// Массив ИД уровней доступа по документу
         /// </summary>
         public List<int> AccessLevelId { get; set; }
+
+        /// <summary>
+        /// В Моем управлении. true - выполнять поиск иначе ничего не делаеться
+        /// </summary>
+        public bool? IsInMyControl { get; set; }
 
         /// <summary>
         /// Массив ИД организаций
