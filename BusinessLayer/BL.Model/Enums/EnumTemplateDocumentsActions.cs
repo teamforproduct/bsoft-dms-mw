@@ -10,7 +10,9 @@
         AddOrModifyTemplateDocumentSendList,
         DeleteTemplateDocumentSendList,
         AddOrModifyTemplateDocumentRestrictedSendList,
-        DeleteTemplateDocumentRestrictedSendList
+        DeleteTemplateDocumentRestrictedSendList,
+        AddOrModifyTemplateDocumentTask,
+        DeleteTemplateDocumentTask
 
     }
 }

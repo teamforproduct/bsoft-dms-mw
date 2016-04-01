@@ -80,7 +80,7 @@ namespace DMS_WebAPI.Controllers.Documents
 
             tmpDocProc.DeleteTemplateSendList(cxt, id);
 
-            var tmp = new FrontTemplateDocument {Id = id};
+            var tmp = new FrontTemplateDocumentSendLists {Id = id};
 
             return new JsonResult(tmp, this);
 

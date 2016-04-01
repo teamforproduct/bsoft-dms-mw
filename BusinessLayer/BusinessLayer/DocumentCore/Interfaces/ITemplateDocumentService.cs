@@ -24,5 +24,11 @@ namespace BL.Logic.DocumentCore
         int AddOrUpdateTemplateRestrictedSendList(IContext context, ModifyTemplateDocumentRestrictedSendLists template);
         void DeleteTemplateRestrictedSendList(IContext context, int id);
         FrontTemplateDocumentRestrictedSendLists GetTemplateDocumentRestrictedSendList(IContext context, int id);
+
+        IEnumerable<FrontTemplateDocumentTasks> GetTemplateDocumentTasks(IContext context,
+            int templateId, FilterTemplateDocumentTask filter);
+        int AddOrUpdateTemplateTask(IContext context, ModifyTemplateDocumentTasks template);
+        void DeleteTemplateTask(IContext context, int id);
+        FrontTemplateDocumentTasks GetTemplateDocumentTask(IContext context, int id);
     }
 }

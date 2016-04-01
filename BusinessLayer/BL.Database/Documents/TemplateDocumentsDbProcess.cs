@@ -8,6 +8,7 @@ using BL.Database.DBModel.Template;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
+using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 
 namespace BL.Database.Documents
@@ -374,6 +375,103 @@ namespace BL.Database.Documents
         }
 
         #endregion TemplateDocumentRestrictedSendList
+
+        #region TemplateDocumentTasks
+
+        public IEnumerable<FrontTemplateDocumentTasks> GetTemplateDocumentTasks(IContext ctx, int templateId,
+            FilterTemplateDocumentTask filter)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                var qry = dbContext.TemplateDocumentTasksSet.AsQueryable();
+                qry = qry.Where(x => x.DocumentId == templateId);
+
+                if (filter.Id.Any())
+                {
+                    qry = qry.Where(x => filter.Id.Contains(x.Id));
+                }
+                if (filter.PositionId.HasValue)
+                {
+                    qry = qry.Where(x => x.PositionId == filter.PositionId);
+                }
+                if (!string.IsNullOrEmpty(filter.Task))
+                {
+                    qry = qry.Where(x => x.Task.Contains(filter.Task));
+                }
+
+                return qry.Select(x => new FrontTemplateDocumentTasks
+                {
+                    Id=x.Id,
+                    DocumentId = x.DocumentId,
+                    PositionId = x.PositionId,
+                    PositionName = x.Position.Name,
+                    Task = x.Task,
+                    Description = x.Description
+                }).ToList();
+
+            }
+        }
+
+        public FrontTemplateDocumentTasks GetTemplateDocumentTask(IContext ctx, int id)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                return
+                    dbContext.TemplateDocumentTasksSet.Where(x => x.Id == id).Select(x => new FrontTemplateDocumentTasks
+                    {
+                        Id = x.Id,
+                        DocumentId = x.DocumentId,
+                        PositionId = x.PositionId,
+                        Task = x.Task,
+                        Description = x.Description,
+                        PositionName = x.Position.Name
+                        }).FirstOrDefault();
+            }
+        }
+
+        public int AddOrUpdateTemplateTask(IContext ctx, InternalTemplateDocumentTask template)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                var newTemplate = new TemplateDocumentTasks()
+                {
+
+                    DocumentId = template.DocumentId,
+                    PositionId = template.PositionId,
+                    Task = template.Task,
+                    Description = template.Description,
+                    LastChangeDate = template.LastChangeDate,
+                    LastChangeUserId = template.LastChangeUserId
+                };
+
+                if (template.Id.HasValue)
+                {
+                    newTemplate.Id = (int)template.Id;
+                }
+
+                dbContext.TemplateDocumentTasksSet.Attach(newTemplate);
+
+                var entity = dbContext.Entry(newTemplate);
+                entity.State = System.Data.Entity.EntityState.Modified;
+
+                dbContext.SaveChanges();
+
+                return newTemplate.Id;
+            }
+        }
+
+        public void DeleteTemplateTask(IContext ctx, int id)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                var ddt = dbContext.TemplateDocumentTasksSet.FirstOrDefault(x => x.Id == id);
+                if (ddt == null) return;
+                dbContext.TemplateDocumentTasksSet.Remove(ddt);
+                dbContext.SaveChanges();
+            }
+        }
+
+        #endregion TemplateDocumentTasks
 
     }
 }

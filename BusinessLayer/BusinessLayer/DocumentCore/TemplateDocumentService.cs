@@ -7,6 +7,7 @@ using BL.Model.DocumentCore;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
+using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
 
@@ -117,6 +118,35 @@ namespace BL.Logic.DocumentCore
         }
 
         #endregion TemplateDocumentsRestrictedSendList
+
+        #region TemplateDocumentTasks
+
+        public IEnumerable<FrontTemplateDocumentTasks> GetTemplateDocumentTasks(IContext context,
+            int templateId, FilterTemplateDocumentTask filter)
+        {
+            return _templateDb.GetTemplateDocumentTasks(context, templateId, filter);
+        }
+
+        public int AddOrUpdateTemplateTask(IContext context, ModifyTemplateDocumentTasks template)
+        {
+            _admin.VerifyAccess(context, EnumTemplateDocumentsActions.AddOrModifyTemplateDocumentTask);
+            var tmp=new InternalTemplateDocumentTask(template);
+            CommonDocumentUtilities.SetLastChange(context, tmp);
+            return _templateDb.AddOrUpdateTemplateTask(context, tmp);
+        }
+
+        public void DeleteTemplateTask(IContext context, int id)
+        {
+            _admin.VerifyAccess(context, EnumTemplateDocumentsActions.DeleteTemplateDocumentTask);
+            _templateDb.DeleteTemplateTask(context, id);
+        }
+
+        public FrontTemplateDocumentTasks GetTemplateDocumentTask(IContext context, int id)
+        {
+            return _templateDb.GetTemplateDocumentTask(context, id);
+        }
+
+        #endregion TemplateDocumentTasks
 
     }
 }

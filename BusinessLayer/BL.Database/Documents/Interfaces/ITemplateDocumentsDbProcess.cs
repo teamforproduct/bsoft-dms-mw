@@ -3,6 +3,7 @@ using BL.CrossCutting.Interfaces;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.IncomingModel;
+using BL.Model.DocumentCore.InternalModel;
 
 namespace BL.Database.Documents.Interfaces
 {
@@ -32,6 +33,13 @@ namespace BL.Database.Documents.Interfaces
         int AddOrUpdateTemplateRestrictedSendList(IContext ctx, ModifyTemplateDocumentRestrictedSendLists template);
         void DeleteTemplateRestrictedSendList(IContext ctx, int id);
         #endregion TemplateDocumentRestrictedSendList
+
+        #region TemplateDocumentTasks
+        IEnumerable<FrontTemplateDocumentTasks> GetTemplateDocumentTasks(IContext ctx, int templateId, FilterTemplateDocumentTask filter);
+        FrontTemplateDocumentTasks GetTemplateDocumentTask(IContext ctx, int id);
+        int AddOrUpdateTemplateTask(IContext ctx, InternalTemplateDocumentTask template);
+        void DeleteTemplateTask(IContext ctx, int id);
+        #endregion TemplateDocumentTasks
 
     }
 }
