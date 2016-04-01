@@ -237,6 +237,7 @@
     <Compile Include="Controllers\Documents\DocumentTasksController.cs" />
     <Compile Include="Controllers\Documents\DocumentTagsController.cs" />
     <Compile Include="Controllers\Documents\TemplateDocumentsRestrictedSendListsController.cs" />
+    <Compile Include="Controllers\Documents\TemplateDocumentsTasksController.cs" />
     <Compile Include="Controllers\Documents\TemplateDocumentsSendListsController.cs" />
     <Compile Include="Controllers\Properties\FilterPropertiesController.cs" />
     <Compile Include="Controllers\Properties\PropertyLinksController.cs" />

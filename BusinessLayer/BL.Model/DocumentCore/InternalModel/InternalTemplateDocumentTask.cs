@@ -24,7 +24,7 @@ namespace BL.Model.DocumentCore.InternalModel
             Description = model.Description;
         }
 
-        public int Id { get; set; }
+        public int? Id { get; set; }
         public int DocumentId { get; set; }
         public Nullable<int> PositionId { get; set; }
         public string Task { get; set; }
