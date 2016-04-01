@@ -25,5 +25,13 @@ namespace BL.Database.Documents.Interfaces
         int AddOrUpdateTemplateSendList(IContext ctx, ModifyTemplateDocumentSendLists template);
         void DeleteTemplateSendList(IContext ctx, int id);
         #endregion TemplateDocumentSendList
+
+        #region TemplateDocumentRestrictedSendList
+        IEnumerable<FrontTemplateDocumentRestrictedSendLists> GetTemplateDocumentRestrictedSendLists(IContext ctx, int templateId, FilterTemplateDocumentRestrictedSendList filter);
+        FrontTemplateDocumentRestrictedSendLists GetTemplateDocumentRestrictedSendList(IContext ctx, int id);
+        int AddOrUpdateTemplateRestrictedSendList(IContext ctx, ModifyTemplateDocumentRestrictedSendLists template);
+        void DeleteTemplateRestrictedSendList(IContext ctx, int id);
+        #endregion TemplateDocumentRestrictedSendList
+
     }
 }

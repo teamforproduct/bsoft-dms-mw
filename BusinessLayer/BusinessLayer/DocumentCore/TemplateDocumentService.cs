@@ -87,5 +87,36 @@ namespace BL.Logic.DocumentCore
             return _templateDb.GetTemplateDocumentSendList(context, id);
         }
         #endregion TemplateDocumentsSendList
+
+        #region TemplateDocumentsRestrictedSendList
+
+        public IEnumerable<FrontTemplateDocumentRestrictedSendLists> GetTemplateDocumentRestrictedSendLists(
+            IContext context,
+            int templateId, FilterTemplateDocumentRestrictedSendList filter)
+        {
+            return _templateDb.GetTemplateDocumentRestrictedSendLists(context, templateId, filter);
+        }
+
+        public int AddOrUpdateTemplateRestrictedSendList(IContext context,
+            ModifyTemplateDocumentRestrictedSendLists template)
+        {
+            _admin.VerifyAccess(context, EnumTemplateDocumentsActions.AddOrModifyTemplateDocumentRestrictedSendList);
+            CommonDocumentUtilities.SetLastChange(context, template);
+            return _templateDb.AddOrUpdateTemplateRestrictedSendList(context, template);
+        }
+
+        public void DeleteTemplateRestrictedSendList(IContext context, int id)
+        {
+            _admin.VerifyAccess(context, EnumTemplateDocumentsActions.DeleteTemplateDocumentRestrictedSendList);
+            _templateDb.DeleteTemplateRestrictedSendList(context, id);
+        }
+
+        public FrontTemplateDocumentRestrictedSendLists GetTemplateDocumentRestrictedSendList(IContext context, int id)
+        {
+            return _templateDb.GetTemplateDocumentRestrictedSendList(context, id);
+        }
+
+        #endregion TemplateDocumentsRestrictedSendList
+
     }
 }

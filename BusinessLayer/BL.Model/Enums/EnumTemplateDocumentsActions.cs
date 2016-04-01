@@ -8,7 +8,9 @@
         AddOrModifyTemplateDocument,
         DeleteTemplateDocument,
         AddOrModifyTemplateDocumentSendList,
-        DeleteTemplateDocumentSendList
+        DeleteTemplateDocumentSendList,
+        AddOrModifyTemplateDocumentRestrictedSendList,
+        DeleteTemplateDocumentRestrictedSendList
 
     }
 }

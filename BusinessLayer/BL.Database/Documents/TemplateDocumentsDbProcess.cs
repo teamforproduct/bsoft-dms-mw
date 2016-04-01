@@ -276,5 +276,104 @@ namespace BL.Database.Documents
         }
 
         #endregion TemplateDocumentSendLists
+
+        #region TemplateDocumentRestrictedSendList
+
+        public IEnumerable<FrontTemplateDocumentRestrictedSendLists> GetTemplateDocumentRestrictedSendLists(
+            IContext ctx,
+            int templateId, FilterTemplateDocumentRestrictedSendList filter)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                var qry = dbContext.TemplateDocumentRestrictedSendListsSet.AsQueryable();
+                qry = qry.Where(x => x.DocumentId == (int)filter.DocumentId);
+
+                if (filter.Id.Count > 0)
+                {
+                    qry = qry.Where(x => filter.Id.Contains(x.Id));
+                }
+                
+                if (filter.PositionId.HasValue)
+                {
+                    qry = qry.Where(x => x.PositionId == filter.PositionId);
+                }
+
+                if (filter.AccessLevel.HasValue)
+                {
+                    qry = qry.Where(x => x.AccessLevelId == (int)filter.AccessLevel);
+                }
+
+                return qry.Select(x => new FrontTemplateDocumentRestrictedSendLists()
+                {
+                    Id = x.Id,
+                    DocumentId = x.DocumentId,
+                    PositionId=x.Position.Id,
+                    AccessLevel = (EnumDocumentAccesses)x.AccessLevelId,
+                    PositionName = x.Position.Name,
+                    AccessLevelName = x.AccessLevel.Name,
+                }).ToList();
+            }
+        }
+
+        public FrontTemplateDocumentRestrictedSendLists GetTemplateDocumentRestrictedSendList(IContext ctx, int id)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                return dbContext.TemplateDocumentRestrictedSendListsSet.Where(x => x.Id == id).Select(x => new FrontTemplateDocumentRestrictedSendLists()
+                {
+                    Id = x.Id,
+                    DocumentId = x.DocumentId,
+                    PositionId = x.Position.Id,
+                    AccessLevel = (EnumDocumentAccesses)x.AccessLevelId,
+                    PositionName = x.Position.Name,
+                    AccessLevelName = x.AccessLevel.Name,
+                }).FirstOrDefault();
+            }
+        }
+
+        public int AddOrUpdateTemplateRestrictedSendList(IContext ctx,
+            ModifyTemplateDocumentRestrictedSendLists template)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                var newTemplate = new TemplateDocumentRestrictedSendLists()
+                {
+                    
+                    DocumentId = template.DocumentId,
+                    PositionId = template.PositionId,
+                    AccessLevelId = (int)template.AccessLevel,
+                    LastChangeDate = template.LastChangeDate,
+                    LastChangeUserId = template.LastChangeUserId
+                };
+
+                if (template.Id.HasValue)
+                {
+                    newTemplate.Id = (int)template.Id;
+                }
+
+                dbContext.TemplateDocumentRestrictedSendListsSet.Attach(newTemplate);
+
+                var entity = dbContext.Entry(newTemplate);
+                entity.State = System.Data.Entity.EntityState.Modified;
+
+                dbContext.SaveChanges();
+
+                return newTemplate.Id;
+            }
+        }
+
+        public void DeleteTemplateRestrictedSendList(IContext ctx, int id)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                var ddt = dbContext.TemplateDocumentRestrictedSendListsSet.FirstOrDefault(x => x.Id == id);
+                if (ddt == null) return;
+                dbContext.TemplateDocumentRestrictedSendListsSet.Remove(ddt);
+                dbContext.SaveChanges();
+            }
+        }
+
+        #endregion TemplateDocumentRestrictedSendList
+
     }
 }
