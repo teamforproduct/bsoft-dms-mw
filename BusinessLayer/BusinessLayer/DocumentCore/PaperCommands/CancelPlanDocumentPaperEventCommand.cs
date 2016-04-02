@@ -62,7 +62,7 @@ namespace BL.Logic.DocumentCore.PaperCommands
                 || !CanBeDisplayed(_paper.LastPaperEvent.SourcePositionId.Value)
                 )
             {
-                throw new CouldNotPerformThisOperation();
+                throw new CouldNotPerformOperationWithPaper();
             }
             _context.SetCurrentPosition(_paper.LastPaperEvent.SourcePositionId);
             _admin.VerifyAccess(_context, CommandType);
@@ -71,6 +71,8 @@ namespace BL.Logic.DocumentCore.PaperCommands
 
         public override object Execute()
         {
+            _paper.LastPaperEvent.EventId = null;
+            _paper.LastPaperEvent.SendListId = null;
             _paper.LastPaperEvent.PlanDate = null;
             _paper.LastPaperEvent.PlanAgentId = null;
             CommonDocumentUtilities.SetLastChange(_context, _paper.LastPaperEvent);

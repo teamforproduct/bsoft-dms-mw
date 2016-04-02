@@ -62,7 +62,7 @@ namespace BL.Logic.DocumentCore.PaperCommands
                 || !CanBeDisplayed(_paper.LastPaperEvent.TargetPositionId.Value)
                 )
             {
-                throw new CouldNotPerformThisOperation();
+                throw new CouldNotPerformOperationWithPaper();
             }
             _context.SetCurrentPosition(_paper.LastPaperEvent.TargetPositionId);
             _admin.VerifyAccess(_context, CommandType);

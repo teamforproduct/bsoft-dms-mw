@@ -103,6 +103,7 @@ namespace BL.Database.Documents.Interfaces
         void CancelPlanDocumentPaperEvent(IContext context, InternalDocumentPaper paper);
         void PlanDocumentPaperEvent(IContext context, IEnumerable<InternalDocumentPaper> items);
         InternalDocument PlanDocumentPaperEventPrepare(IContext context, List<int> paperIds);
+        IEnumerable<InternalDocumentPaper> PlanDocumentPaperFromSendListPrepare(IContext context, int idSendList);
         #endregion DocumentPapers
 
         #region DocumentPaperLists

@@ -19,9 +19,11 @@ namespace BL.Model.DocumentCore.InternalModel
         public int PageQuantity { get; set; }
         public int OrderNumber { get; set; }
         public int? LastPaperEventId { get; set; }
+        public int? NextPaperEventId { get; set; }
         public int? PreLastPaperEventId { get; set; }
         public bool IsInWork { get; set; }
         public InternalDocumentPaperEvent LastPaperEvent { get; set; }
+        //public InternalDocumentPaperEvent NextPaperEvent { get; set; }
         public IEnumerable<InternalDocumentPaperEvent> Events { get; set; }
     }
 }

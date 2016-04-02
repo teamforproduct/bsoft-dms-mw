@@ -51,7 +51,7 @@ namespace BL.Logic.DocumentCore.PaperCommands
             //TODO Добавить проверки на движение по БН
             if (!CanBeDisplayed(_context.CurrentPositionId))
             {
-                throw new CouldNotChangeAttributeLaunchPlan();
+                throw new CouldNotPerformOperationWithPaper();
             }
             return true;
         }

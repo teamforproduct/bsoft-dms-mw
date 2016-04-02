@@ -55,7 +55,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
             _sendList = _document?.SendLists.FirstOrDefault(x => x.Id == Model);
             if (_sendList == null || !CanBeDisplayed(_sendList.SourcePositionId))
             {
-                throw new CouldNotPerformThisOperation();
+                throw new CouldNotPerformOperationWithPaper();
             }
             _context.SetCurrentPosition(_sendList.SourcePositionId);
             _admin.VerifyAccess(_context, CommandType);

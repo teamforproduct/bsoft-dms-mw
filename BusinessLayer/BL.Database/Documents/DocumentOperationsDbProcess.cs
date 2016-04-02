@@ -988,7 +988,7 @@ namespace BL.Database.Documents
                         sendListDb.CloseEvent = sendListDb.StartEvent;
                     }
                     var entry = dbContext.Entry(sendListDb);
-                    entry.Property(x => x.Id).IsModified = true;
+                    //entry.Property(x => x.Id).IsModified = true;
                     entry.Property(x => x.LastChangeDate).IsModified = true;
                     entry.Property(x => x.LastChangeUserId).IsModified = true;
                     dbContext.SaveChanges();
@@ -1028,8 +1028,6 @@ namespace BL.Database.Documents
                         dbContext.SaveChanges();
                     }
 
-
-
                     if (document.Events?.Any() ?? false)
                     {
                         var eventsDb = ModelConverter.GetDbDocumentEvents(document.Events);
@@ -1042,6 +1040,36 @@ namespace BL.Database.Documents
                         dbContext.SaveChanges();
                     }
 
+                    if (document.Papers?.Any() ?? false)
+                    {
+                        foreach (var paper in document.Papers.ToList())
+                        {
+                            var paperEventDb = ModelConverter.GetDbDocumentPaperEvent(paper.LastPaperEvent);
+                            paperEventDb.EventId = sendListDb.StartEventId.Value;
+                            dbContext.DocumentPaperEventsSet.Attach(paperEventDb);
+                            var entryEventDb = dbContext.Entry(paperEventDb);
+                            entryEventDb.Property(e => e.SourcePositionExecutorAgentId).IsModified = true;
+                            entryEventDb.Property(e => e.TargetPositionExecutorAgentId).IsModified = true;
+                            entryEventDb.Property(e => e.SourceAgentId).IsModified = true;
+                            entryEventDb.Property(e => e.TargetAgentId).IsModified = true;
+                            entryEventDb.Property(e => e.EventId).IsModified = true;
+                            entryEventDb.Property(e => e.PlanDate).IsModified = true;
+                            entryEventDb.Property(e => e.PlanAgentId).IsModified = true;
+                            entryEventDb.Property(e => e.LastChangeUserId).IsModified = true;
+                            entryEventDb.Property(e => e.LastChangeDate).IsModified = true;
+                            dbContext.SaveChanges();
+                            paper.LastPaperEvent = null;
+                            var paperDb = ModelConverter.GetDbDocumentPaper(paper);
+                            paperDb.LastPaperEventId = paperEventDb.Id;
+                            dbContext.DocumentPapersSet.Attach(paperDb);
+                            var entryPaper = dbContext.Entry(paperDb);
+                            entryPaper.Property(e => e.LastPaperEventId).IsModified = true;
+                            entryPaper.Property(e => e.LastChangeUserId).IsModified = true;
+                            entryPaper.Property(e => e.LastChangeDate).IsModified = true;
+                            dbContext.SaveChanges();
+                        }
+
+                    }
 
                     transaction.Complete();
                 }
@@ -1484,6 +1512,7 @@ namespace BL.Database.Documents
                 var item = dbContext.DocumentSendListsSet.FirstOrDefault(x => x.Id == sendListId);
                 if (item != null)
                 {
+                    dbContext.DocumentPaperEventsSet.RemoveRange(dbContext.DocumentPaperEventsSet.Where(x => x.SendListId == sendListId && x.PlanDate == null));
                     dbContext.DocumentSendListsSet.Remove(item);
                     dbContext.SaveChanges();
                 }
@@ -1961,6 +1990,8 @@ namespace BL.Database.Documents
                     var paperEventDb = ModelConverter.GetDbDocumentPaperEvent(paper.LastPaperEvent);
                     dbContext.DocumentPaperEventsSet.Attach(paperEventDb);
                     var entry = dbContext.Entry(paperEventDb);
+                    entry.Property(e => e.EventId).IsModified = true;
+                    entry.Property(e => e.SendListId).IsModified = true;
                     entry.Property(e => e.PlanDate).IsModified = true;
                     entry.Property(e => e.PlanAgentId).IsModified = true;
                     entry.Property(e => e.LastChangeUserId).IsModified = true;
@@ -1978,6 +2009,35 @@ namespace BL.Database.Documents
                 }
             }
         }
+
+        public IEnumerable<InternalDocumentPaper> PlanDocumentPaperFromSendListPrepare(IContext context, int idSendList)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                return dbContext.DocumentPaperEventsSet.Where(x => x.SendListId == idSendList && x.PlanDate == null && x.SendDate == null && x.RecieveDate == null)
+                    .Select(x => new InternalDocumentPaper
+                    {
+                        Id = x.Paper.Id,
+                        DocumentId = x.Paper.DocumentId,
+                        IsInWork = x.Paper.IsInWork,
+                        LastPaperEventId = x.Paper.LastPaperEventId,
+                        LastPaperEvent = !x.Paper.LastPaperEventId.HasValue
+                            ? null
+                            : new InternalDocumentPaperEvent
+                            {
+                                Id = x.Paper.LastPaperEvent.Id,
+                                SourcePositionId = x.Paper.LastPaperEvent.SourcePositionId,
+                                //TargetPositionId = x.Paper.LastPaperEvent.TargetPositionId,
+                                PlanDate = x.Paper.LastPaperEvent.PlanDate,
+                                SendDate = x.Paper.LastPaperEvent.SendDate,
+                                RecieveDate = x.Paper.LastPaperEvent.RecieveDate,
+                            },
+                        NextPaperEventId = x.Id,
+                    }).ToList();
+
+            }
+        }
+
 
         public InternalDocument PlanDocumentPaperEventPrepare(IContext context, List<int> paperIds)
         {
