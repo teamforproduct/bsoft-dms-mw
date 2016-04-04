@@ -9,6 +9,9 @@ using BL.Model.DocumentCore.IncomingModel;
 
 namespace DMS_WebAPI.Controllers
 {
+    /// <summary>
+    /// Шаблоны документов
+    /// </summary>
     [Authorize]
     public class TemplateDocumentsController : ApiController
     {

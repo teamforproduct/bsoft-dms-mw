@@ -147,6 +147,34 @@ namespace BL.Logic.DocumentCore
         }
 
         #endregion TemplateDocumentTasks
+        
+        #region TemplateAttachedFiles
 
+        public IEnumerable<FrontTemplateAttachedFile> GetTemplateDocumentAttachedFiles(IContext context,
+            int templateId, FilterTemplateAttachedFile filter)
+        {
+            return _templateDb.GetTemplateAttachedFiles(context, templateId, filter);
+        }
+
+        public int AddOrUpdateTemplateAttachedFile(IContext context, ModifyTemplateAttachedFile template)
+        {
+            _admin.VerifyAccess(context, EnumTemplateDocumentsActions.AddOrModifyTemplateAttachedFile);
+            var tmp = new InternalTemplateAttachedFile(template);
+            CommonDocumentUtilities.SetLastChange(context, tmp);
+            return _templateDb.AddOrUpdateTemplateAttachedFile(context, tmp);
+        }
+
+        public void DeleteTemplateAttachedFile(IContext context, int id)
+        {
+            _admin.VerifyAccess(context, EnumTemplateDocumentsActions.DeleteTemplateAttachedFile);
+            _templateDb.DeleteTemplateAttachedFile(context, id);
+        }
+
+        public FrontTemplateAttachedFile GetTemplateDocumentAttachedFile(IContext context, int id)
+        {
+            return _templateDb.GetTemplateAttachedFile(context, id);
+        }
+
+        #endregion TemplateAttachedFiles
     }
 }

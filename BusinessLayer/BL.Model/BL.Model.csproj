@@ -129,6 +129,7 @@
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryContact.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryContactType.cs" />
     <Compile Include="DocumentCore\Filters\FilterTemplateDocumentRestrictedSendList.cs" />
+    <Compile Include="DocumentCore\Filters\FilterTemplateAttachedFile.cs" />
     <Compile Include="DocumentCore\Filters\FilterTemplateDocumentTask.cs" />
     <Compile Include="DocumentCore\Filters\FilterTemplateDocumentSendList.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentSubscription.cs" />

@@ -30,5 +30,13 @@ namespace BL.Logic.DocumentCore
         int AddOrUpdateTemplateTask(IContext context, ModifyTemplateDocumentTasks template);
         void DeleteTemplateTask(IContext context, int id);
         FrontTemplateDocumentTasks GetTemplateDocumentTask(IContext context, int id);
+
+        IEnumerable<FrontTemplateAttachedFile> GetTemplateDocumentAttachedFiles(IContext context,
+            int templateId, FilterTemplateAttachedFile filter);
+        int AddOrUpdateTemplateAttachedFile(IContext context, ModifyTemplateAttachedFile template);
+        void DeleteTemplateAttachedFile(IContext context, int id);
+        FrontTemplateAttachedFile GetTemplateDocumentAttachedFile(IContext context, int id);
+
+
     }
 }

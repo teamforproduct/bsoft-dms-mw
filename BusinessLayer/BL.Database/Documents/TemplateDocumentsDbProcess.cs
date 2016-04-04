@@ -133,6 +133,14 @@ namespace BL.Database.Documents
             {
                 var ddt = dbContext.TemplateDocumentsSet.FirstOrDefault(x => x.Id == id);
                 if (ddt == null) return;
+
+                dbContext.TemplateDocumentSendListsSet.RemoveRange(
+                    dbContext.TemplateDocumentSendListsSet.Where(x => x.DocumentId == id));
+                dbContext.TemplateDocumentRestrictedSendListsSet.RemoveRange(
+                    dbContext.TemplateDocumentRestrictedSendListsSet.Where(x => x.DocumentId == id));
+                dbContext.TemplateDocumentTasksSet.RemoveRange(
+                    dbContext.TemplateDocumentTasksSet.Where(x => x.DocumentId == id));
+
                 dbContext.TemplateDocumentsSet.Remove(ddt);
                 dbContext.SaveChanges();
             }
