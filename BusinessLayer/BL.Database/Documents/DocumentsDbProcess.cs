@@ -153,8 +153,11 @@ namespace BL.Database.Documents
                     qry =
                         qry.Where(
                             x =>
-                                (x.Doc.RegistrationNumberPrefix + x.Doc.RegistrationNumber.ToString() +
-                                 x.Doc.RegistrationNumberSuffix)
+                                (
+                                x.Doc.RegistrationNumber.HasValue
+                                ?x.Doc.RegistrationNumberPrefix + x.Doc.RegistrationNumber.ToString() + x.Doc.RegistrationNumberSuffix
+                                :"#"+ x.Doc.Id.ToString()
+                                )
                                     .Contains(filters.RegistrationNumber));
                 }
 
@@ -1156,7 +1159,7 @@ namespace BL.Database.Documents
                 if (doc == null) return null;
 
                 doc.Accesses = dbContext.DocumentAccessesSet
-                    .Where(x => x.DocumentId == model.Id && x.PositionId == doc.ExecutorPositionId && x.AccessLevelId != (int)model.AccessLevel)
+                    .Where(x => x.DocumentId == model.Id && x.PositionId == doc.ExecutorPositionId && x.AccessLevelId != model.AccessLevelId)
                     .Select(x => new InternalDocumentAccess
                     {
                         Id = x.Id,

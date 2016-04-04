@@ -531,7 +531,7 @@ jQuery.extend({
 	},
 
 	// data: string of html
-	// ctx (optional): If specified, the fragment will be created in this ctx, defaults to document
+	// ctx (optional): If specified, the fragment will be created in this context, defaults to document
 	// keepScripts (optional): If true, will include scripts passed in the html string
 	parseHTML: function( data, context, keepScripts ) {
 		if ( !data || typeof data !== "string" ) {
@@ -5744,7 +5744,7 @@ jQuery.fn.extend({
 			jQuery.find( selector, self[ i ], ret );
 		}
 
-		// Needed because $( selector, ctx ) becomes $( ctx ).find( selector )
+		// Needed because $( selector, ctx ) becomes $( context ).find( selector )
 		ret = this.pushStack( len > 1 ? jQuery.unique( ret ) : ret );
 		ret.selector = this.selector ? this.selector + " " + selector : selector;
 		return ret;

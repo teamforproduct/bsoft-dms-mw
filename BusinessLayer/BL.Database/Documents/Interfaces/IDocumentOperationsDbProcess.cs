@@ -74,6 +74,7 @@ namespace BL.Database.Documents.Interfaces
 
         DocumentActionsModel GetDocumentActionsModelPrepare(IContext context, int documentId);
         DocumentActionsModel GetDocumentSendListActionsModelPrepare(IContext context, int documentId);
+        DocumentActionsModel GetDocumentPaperActionsModelPrepare(IContext context, int documentId);
 
         void ControlOffSendListPrepare(IContext context, InternalDocument document);
         void ControlOffSubscriptionPrepare(IContext context, InternalDocument document);
@@ -89,7 +90,7 @@ namespace BL.Database.Documents.Interfaces
         #endregion DocumentTasks
 
         #region DocumentPapers
-        InternalDocument AddDocumentPaperPrepare(IContext context, int documentId);
+        InternalDocument AddDocumentPaperPrepare(IContext context, ModifyDocumentPapers model);
         InternalDocument ChangeDocumentPaperPrepare(IContext context, int paperId);
         InternalDocument EventDocumentPaperPrepare(IContext context, int paperId, bool isCalcPreLastPaperEvent = false);
 

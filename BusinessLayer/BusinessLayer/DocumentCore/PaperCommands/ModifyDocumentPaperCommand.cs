@@ -66,7 +66,6 @@ namespace BL.Logic.DocumentCore.PaperCommands
             paper.IsOriginal = Model.IsOriginal;
             paper.IsCopy = Model.IsCopy;
             paper.PageQuantity = Model.PageQuantity;
-            paper.OrderNumber = Model.OrderNumber;
             CommonDocumentUtilities.SetLastChange(_context, paper);
 
             _operationDb.ModifyDocumentPaper(_context, paper);

@@ -65,7 +65,7 @@ namespace BL.Model.DocumentCore.FrontModel
                 }
             }
         }
-
+        /*
         public FrontDocument(ModifyDocument model)
         {
             if (model != null)
@@ -81,6 +81,7 @@ namespace BL.Model.DocumentCore.FrontModel
                 AccessLevel = model.AccessLevel;
             }
         }
+        */
         /// <summary>
         /// ИД Документа
         /// </summary>

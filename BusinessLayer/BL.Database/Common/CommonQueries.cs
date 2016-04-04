@@ -18,6 +18,7 @@ using System.Text;
 using System;
 using BL.CrossCutting.DependencyInjection;
 using BL.Database.FileWorker;
+using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.FullTextSearch;
 
@@ -1214,6 +1215,54 @@ namespace BL.Database.Common
 
             return hash;
         }
+
+        public static List<InternalDictionaryPositionWithActions> GetPositionWithActions(IContext context, DmsContext dbContext, List<int> positionAccesses)
+        {
+            return dbContext.DictionaryPositionsSet
+                .Where(
+                    x =>
+                        context.CurrentPositionsIdList.Contains(x.Id) &&
+                        positionAccesses.Contains(x.Id))
+                .Select(x => new InternalDictionaryPositionWithActions
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    DepartmentId = x.DepartmentId,
+                    ExecutorAgentId = x.ExecutorAgentId,
+                    DepartmentName = x.Department.Name,
+                    ExecutorAgentName = x.ExecutorAgent.Name,
+                }).ToList();
+        }
+
+        public static Dictionary<int, List<InternalSystemAction>> GetActionsListForCurrentPositionsList(IContext context, DmsContext dbContext, IEnumerable<EnumObjects> objects, List<int> positionAccesses)
+        {
+            var res = new Dictionary<int, List<InternalSystemAction>>();
+            foreach (var posId in context.CurrentPositionsIdList)
+            {
+                var qry = dbContext.SystemActionsSet.Where(x => objects.Select(y => (int)y).Contains(x.ObjectId)
+                                                                && positionAccesses.Contains(posId)
+                                                                && x.IsVisible &&
+                                                                (!x.IsGrantable ||
+                                                                 x.RoleActions.Any(y => y.Role.PositionRoles.Any(pr => pr.PositionId == posId) &&
+                                                                                        y.Role.UserRoles.Any(z => z.UserId == context.CurrentAgentId)))
+                    );
+
+                var actLst = qry.Select(a => new InternalSystemAction
+                {
+                    DocumentAction = (EnumDocumentActions)a.Id,
+                    Object = (EnumObjects)a.ObjectId,
+                    ActionCode = a.Code,
+                    ObjectCode = a.Object.Code,
+                    API = a.API,
+                    Description = a.Description,
+                    Category = a.Category
+                }).ToList();
+                res.Add(posId, actLst);
+            }
+            return res;
+        }
+
+
 
     }
 }

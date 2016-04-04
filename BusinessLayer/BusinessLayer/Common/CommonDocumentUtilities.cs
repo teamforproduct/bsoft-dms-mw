@@ -408,7 +408,7 @@ namespace BL.Logic.Common
             };
         }
 
-        public static InternalDocumentPaper GetNewDocumentPaper(IContext context, ModifyDocumentPapers model)
+        public static InternalDocumentPaper GetNewDocumentPaper(IContext context, ModifyDocumentPapers model, int orderNumber)
         {
             return new InternalDocumentPaper
             {
@@ -419,7 +419,7 @@ namespace BL.Logic.Common
                 IsOriginal = model.IsOriginal,
                 IsCopy = model.IsCopy,
                 PageQuantity = model.PageQuantity,
-                OrderNumber = model.OrderNumber,
+                OrderNumber = orderNumber,
                 Events = GetNewDocumentPaperEvents(context, null, EnumEventTypes.AddNewPaper),
                 IsInWork = true,
                 LastChangeUserId = context.CurrentAgentId,
@@ -427,12 +427,14 @@ namespace BL.Logic.Common
             };
         }
 
-        public static IEnumerable<InternalDocumentPaper> GetNewDocumentPapers(IContext context, ModifyDocumentPapers model)
+        public static IEnumerable<InternalDocumentPaper> GetNewDocumentPapers(IContext context, ModifyDocumentPapers model, int maxOrderNumber)
         {
-            return new List<InternalDocumentPaper>
+            var res = new List<InternalDocumentPaper>();
+            for (int i = 1, l = model.PaperQuantity; i <= l; i++)
             {
-                GetNewDocumentPaper(context,model)
-            };
+                res.Add(GetNewDocumentPaper(context, model, maxOrderNumber + i));
+            }
+            return res;
         }
 
         public static InternalDocumentPaperEvent GetNewDocumentPaperEvent(IContext context, int? paperId, EnumEventTypes eventType, string description = null, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null, bool IsMarkPlan = true, bool IsMarkRecieve = true)
@@ -574,15 +576,15 @@ namespace BL.Logic.Common
             //{
             //    throw new DocumentSendListDuplication();
             //}
-
-            if (doc.RestrictedSendLists?.Count() > 0
-                && doc.SendLists.Where(sl => sl.TargetPositionId.HasValue).GroupJoin(doc.RestrictedSendLists
-                    , sl => sl.TargetPositionId
-                    , rsl => rsl.PositionId
-                    , (sl, rsls) => new { sl, rsls }).Any(x => x.rsls.Count() == 0))
-            {
-                throw new DocumentSendListNotFoundInDocumentRestrictedSendList();
-            }
+            //TODO Малинин. Надо вернуть, когда начнутся реальные тесты
+            //if (doc.RestrictedSendLists?.Count() > 0
+            //    && doc.SendLists.Where(sl => sl.TargetPositionId.HasValue).GroupJoin(doc.RestrictedSendLists
+            //        , sl => sl.TargetPositionId
+            //        , rsl => rsl.PositionId
+            //        , (sl, rsls) => new { sl, rsls }).Any(x => x.rsls.Count() == 0))
+            //{
+            //    throw new DocumentSendListNotFoundInDocumentRestrictedSendList();
+            //}
 
             if (doc.IsHard)
             {

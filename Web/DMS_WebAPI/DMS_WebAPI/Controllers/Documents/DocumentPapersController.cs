@@ -200,5 +200,21 @@ namespace DMS_WebAPI.Controllers.Documents
             return Get(id);
         }
 
+        /// <summary>
+        /// Получение списка доступных команд по документу
+        /// </summary>
+        /// <param name="id">ИД документа</param>
+        /// <returns>Массив команд</returns>
+        [Route("Actions/{id}")]
+        [HttpGet]
+        public IHttpActionResult Actions(int id)
+        {
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cmdService = DmsResolver.Current.Get<ICommandService>();
+            var actions = cmdService.GetDocumentPaperActions(cxt, id);
+
+            return new JsonResult(actions, this);
+        }
+
     }
 }
