@@ -16,5 +16,6 @@ namespace BL.Model.Database.IncomingModel
         public string UserPassword { get; set; }
         public string ConnectionString { get; set; }
         public string DefaultSchema { get; set; }
+        public int ClientId { get; set; }
     }
 }

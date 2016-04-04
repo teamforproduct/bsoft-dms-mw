@@ -13,5 +13,7 @@ namespace BL.Model.Database.FrontModel
         public string UserName { get; set; }
         public string UserPassword { get; set; }
         public string ConnectionString { get; set; }
+        public string DefaultSchema { get; set; }
+        public string ClientName { get; set; }
     }
 }
