@@ -102,7 +102,8 @@ namespace DMS_WebAPI.Utilities
                         UserName = modal.UserName,
                         UserPassword = modal.UserPassword,
                         ConnectionString = modal.ConnectionString,
-                        DefaultSchema = modal.DefaultSchema
+                        DefaultSchema = modal.DefaultSchema,
+                        ClientId = modal.ClientId
                     };
                     dbContext.AdminServersSet.Add(item);
                     dbContext.SaveChanges();
@@ -140,7 +141,8 @@ namespace DMS_WebAPI.Utilities
                         UserName = modal.UserName,
                         UserPassword = modal.UserPassword,
                         ConnectionString = modal.ConnectionString,
-                        DefaultSchema = modal.DefaultSchema
+                        DefaultSchema = modal.DefaultSchema,
+                        ClientId = modal.ClientId
                     };
                     dbContext.AdminServersSet.Attach(item);
 
