@@ -85,6 +85,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// </summary>
         /// <param name="model">модель</param>
         /// <returns></returns>
+        /*
         [Route("CopyDocumentPaper")]
         [HttpPost]
         public IHttpActionResult CopyDocumentPaper(CopyDocumentPaper model)
@@ -94,7 +95,7 @@ namespace DMS_WebAPI.Controllers.Documents
             int docId = (int)docProc.ExecuteAction(EnumDocumentActions.CopyDocumentPaper, cxt, model);
             return Get(docId);
         }
-
+        */
         /// <summary>
         /// Отметить нахождение бумажного носителя у себя
         /// </summary>

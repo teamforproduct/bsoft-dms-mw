@@ -1823,7 +1823,7 @@ namespace BL.Database.Documents
 
                 doc.MaxPaperOrderNumber = dbContext.DocumentPapersSet
                     .Where(x => x.DocumentId == model.DocumentId && x.Name == model.Name && x.IsMain == model.IsMain && x.IsCopy == model.IsCopy && x.IsOriginal == model.IsOriginal)
-                    .Max(x => x.OrderNumber);
+                    .OrderByDescending(x => x.OrderNumber).Select(x => x.OrderNumber).FirstOrDefault();
                 return doc;
             }
         }
