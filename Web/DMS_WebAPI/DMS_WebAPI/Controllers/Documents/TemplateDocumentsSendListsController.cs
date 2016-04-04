@@ -7,6 +7,8 @@ using BL.CrossCutting.DependencyInjection;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
+using BL.Model.Enums;
+
 namespace DMS_WebAPI.Controllers.Documents
 {
     /// <summary>
@@ -49,7 +51,7 @@ namespace DMS_WebAPI.Controllers.Documents
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpTemplate = tmpDocProc.AddOrUpdateTemplateSendList(cxt, model);
+            var tmpTemplate = tmpDocProc.AddOrUpdateTemplateSendList(cxt, model,EnumTemplateDocumentsActions.AddTemplateDocumentSendList);
             return Get(tmpTemplate);
         }
 
@@ -64,7 +66,7 @@ namespace DMS_WebAPI.Controllers.Documents
             model.Id = id;
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpTemplate = tmpDocProc.AddOrUpdateTemplateSendList(cxt, model);
+            var tmpTemplate = tmpDocProc.AddOrUpdateTemplateSendList(cxt, model,EnumTemplateDocumentsActions.ModifyTemplateDocumentSendList);
             return Get(tmpTemplate);
         }
 

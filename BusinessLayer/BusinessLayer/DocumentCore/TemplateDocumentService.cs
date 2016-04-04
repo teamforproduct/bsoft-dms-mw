@@ -31,10 +31,10 @@ namespace BL.Logic.DocumentCore
             return _templateDb.GetTemplateDocument(context);
         }
 
-        public int AddOrUpdateTemplate(IContext context, ModifyTemplateDocument template)
+        public int AddOrUpdateTemplate(IContext context, ModifyTemplateDocument template, EnumTemplateDocumentsActions action)
         {
 
-            _admin.VerifyAccess(context, EnumTemplateDocumentsActions.AddOrModifyTemplateDocument);
+            _admin.VerifyAccess(context, action);
 
             if (!_templateDb.CanModifyTemplate(context, template))
             {
@@ -68,9 +68,9 @@ namespace BL.Logic.DocumentCore
             return _templateDb.GetTemplateDocumentSendLists(context,templateId,filter);
         }
 
-        public int AddOrUpdateTemplateSendList(IContext context, ModifyTemplateDocumentSendLists template)
+        public int AddOrUpdateTemplateSendList(IContext context, ModifyTemplateDocumentSendLists template,EnumTemplateDocumentsActions action)
         {
-            _admin.VerifyAccess(context, EnumTemplateDocumentsActions.AddOrModifyTemplateDocumentSendList);
+            _admin.VerifyAccess(context, action);
             CommonDocumentUtilities.SetLastChange(context, template);
             return _templateDb.AddOrUpdateTemplateSendList(context, template);
       
@@ -99,9 +99,9 @@ namespace BL.Logic.DocumentCore
         }
 
         public int AddOrUpdateTemplateRestrictedSendList(IContext context,
-            ModifyTemplateDocumentRestrictedSendLists template)
+            ModifyTemplateDocumentRestrictedSendLists template, EnumTemplateDocumentsActions action)
         {
-            _admin.VerifyAccess(context, EnumTemplateDocumentsActions.AddOrModifyTemplateDocumentRestrictedSendList);
+            _admin.VerifyAccess(context, action);
             CommonDocumentUtilities.SetLastChange(context, template);
             return _templateDb.AddOrUpdateTemplateRestrictedSendList(context, template);
         }
@@ -127,9 +127,9 @@ namespace BL.Logic.DocumentCore
             return _templateDb.GetTemplateDocumentTasks(context, templateId, filter);
         }
 
-        public int AddOrUpdateTemplateTask(IContext context, ModifyTemplateDocumentTasks template)
+        public int AddOrUpdateTemplateTask(IContext context, ModifyTemplateDocumentTasks template, EnumTemplateDocumentsActions action)
         {
-            _admin.VerifyAccess(context, EnumTemplateDocumentsActions.AddOrModifyTemplateDocumentTask);
+            _admin.VerifyAccess(context, action);
             var tmp=new InternalTemplateDocumentTask(template);
             CommonDocumentUtilities.SetLastChange(context, tmp);
             return _templateDb.AddOrUpdateTemplateTask(context, tmp);
@@ -148,33 +148,6 @@ namespace BL.Logic.DocumentCore
 
         #endregion TemplateDocumentTasks
         
-        #region TemplateAttachedFiles
-
-        public IEnumerable<FrontTemplateAttachedFile> GetTemplateDocumentAttachedFiles(IContext context,
-            int templateId, FilterTemplateAttachedFile filter)
-        {
-            return _templateDb.GetTemplateAttachedFiles(context, templateId, filter);
-        }
-
-        public int AddOrUpdateTemplateAttachedFile(IContext context, ModifyTemplateAttachedFile template)
-        {
-            _admin.VerifyAccess(context, EnumTemplateDocumentsActions.AddOrModifyTemplateAttachedFile);
-            var tmp = new InternalTemplateAttachedFile(template);
-            CommonDocumentUtilities.SetLastChange(context, tmp);
-            return _templateDb.AddOrUpdateTemplateAttachedFile(context, tmp);
-        }
-
-        public void DeleteTemplateAttachedFile(IContext context, int id)
-        {
-            _admin.VerifyAccess(context, EnumTemplateDocumentsActions.DeleteTemplateAttachedFile);
-            _templateDb.DeleteTemplateAttachedFile(context, id);
-        }
-
-        public FrontTemplateAttachedFile GetTemplateDocumentAttachedFile(IContext context, int id)
-        {
-            return _templateDb.GetTemplateAttachedFile(context, id);
-        }
-
-        #endregion TemplateAttachedFiles
+       
     }
 }
