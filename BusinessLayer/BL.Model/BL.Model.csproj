@@ -111,7 +111,7 @@
     <Compile Include="DocumentCore\Actions\ControlTargetChange.cs" />
     <Compile Include="DocumentCore\Actions\MarkOwnerDocumentPaper.cs" />
     <Compile Include="DocumentCore\Actions\PlanMovementPaper.cs" />
-    <Compile Include="DocumentCore\Actions\EventPaper.cs" />
+    <Compile Include="DocumentCore\Actions\PaperEvent.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentPaper.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentRestrictedSendList.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAddressType.cs" />
@@ -281,12 +281,12 @@
     <Compile Include="Enums\EnumPeriod.cs" />
     <Compile Include="Enums\MailServerType.cs" />
     <Compile Include="Exception\DmsExceptions.cs" />
-    <Compile Include="FullTextSerach\EnumOperationType.cs" />
-    <Compile Include="FullTextSerach\EnumSearchObjectType.cs" />
-    <Compile Include="FullTextSerach\FullTextIndexIem.cs" />
-    <Compile Include="FullTextSerach\FullTextSearchResult.cs" />
-    <Compile Include="FullTextSerach\FullTextSettings.cs" />
-    <Compile Include="FullTextSerach\FullTextUpdateCashInfo.cs" />
+    <Compile Include="FullTextSearch\EnumOperationType.cs" />
+    <Compile Include="FullTextSearch\EnumSearchObjectType.cs" />
+    <Compile Include="FullTextSearch\FullTextIndexIem.cs" />
+    <Compile Include="FullTextSearch\FullTextSearchResult.cs" />
+    <Compile Include="FullTextSearch\FullTextSettings.cs" />
+    <Compile Include="FullTextSearch\FullTextUpdateCashInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Enums\EnumLogTypes.cs" />
     <Compile Include="SystemCore\Filters\FilterProperties.cs" />

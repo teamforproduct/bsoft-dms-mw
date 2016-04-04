@@ -176,6 +176,12 @@ namespace BL.Logic.DependencyInjection
             Bind<IDocumentCommand>().To<MarkOwnerDocumentPaperCommand>();
             Bind<IDocumentCommand>().To<MarkСorruptionDocumentPaperCommand>();
 
+            Bind<IDocumentCommand>().To<SendDocumentPaperEventCommand>();
+            Bind<IDocumentCommand>().To<CancelSendDocumentPaperEventCommand>();
+            Bind<IDocumentCommand>().To<RecieveDocumentPaperEventCommand>();
+            Bind<IDocumentCommand>().To<PlanDocumentPaperEventCommand>();
+            Bind<IDocumentCommand>().To<CancelPlanDocumentPaperEventCommand>();
+
         }
 
     }

@@ -1,4 +1,4 @@
-﻿namespace BL.Model.FullTextSerach
+﻿namespace BL.Model.FullTextSearch
 {
     /// <summary>
     /// type of indexing objects

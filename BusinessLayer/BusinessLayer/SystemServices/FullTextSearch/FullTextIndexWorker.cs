@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using BL.Model.FullTextSerach;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Documents;
@@ -10,6 +9,7 @@ using Lucene.Net.QueryParsers;
 using Lucene.Net.Search;
 using Lucene.Net.Store;
 using System.Linq;
+using BL.Model.FullTextSearch;
 using Directory = Lucene.Net.Store.Directory;
 using Version = Lucene.Net.Util.Version;
 
@@ -123,7 +123,8 @@ namespace BL.Logic.SystemServices.FullTextSearch
                     {
                         DocumentId = Convert.ToInt32(rdoc.Get(FIELD_DOC_ID)),
                         ObjectType = (EnumSearchObjectType) Convert.ToInt32(rdoc.Get(FIELD_OBJECT_TYPE)),
-                        ObjectId = Convert.ToInt32(rdoc.Get(FIELD_OBJECT_ID))
+                        ObjectId = Convert.ToInt32(rdoc.Get(FIELD_OBJECT_ID)),
+                        Score = doc.Score
                     };
                     searchResult.Add(sr);
                 }

@@ -16,7 +16,7 @@ using BL.Model.Exception;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DictionaryCore.FilterModel;
-using BL.Model.FullTextSerach;
+using BL.Model.FullTextSearch;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.InternalModel;
 
@@ -67,7 +67,12 @@ namespace BL.Database.Documents
                     if (document.SendLists != null && document.SendLists.Any())
                     {
                         var sendLists = document.SendLists.ToList();
-                        sendLists.ForEach(x => { x.DocumentId = doc.Id; x.TaskId = doc.Tasks.Where(y => y.Task == x.TaskName).Select(y => y.Id).FirstOrDefault(); });
+                        sendLists.ForEach(x =>
+                        {
+                            x.DocumentId = doc.Id;
+                            var taskId = doc.Tasks.Where(y => y.Task == x.TaskName).Select(y => y.Id).FirstOrDefault();
+                            x.TaskId = (taskId == 0 ? null : (int?)taskId);
+                        });
                         var sendListsDb = ModelConverter.GetDbDocumentSendLists(sendLists).ToList();
                         dbContext.DocumentSendListsSet.AddRange(sendListsDb);
                         dbContext.SaveChanges();
@@ -95,7 +100,15 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(ctx))
             {
 
-                var acc = CommonQueries.GetDocumentAccesses(ctx, dbContext).Where(x => (!filters.IsInWork || filters.IsInWork && x.IsInWork == filters.IsInWork));
+                var acc = CommonQueries.GetDocumentAccesses(ctx, dbContext);
+                if (filters.IsInWork.HasValue)
+                {
+                    acc = acc.Where(x => x.IsInWork == filters.IsInWork);
+                }
+                if (filters.AccessLevelId != null && filters.AccessLevelId.Count > 0)
+                {
+                    acc = acc.Where(x => filters.AccessLevelId.Contains((int)x.AccessLevel));
+                }
                 var qry = CommonQueries.GetDocumentQuery(dbContext, ctx, acc);
 
                 #region DocumentsSetFilter
@@ -203,6 +216,490 @@ namespace BL.Database.Documents
                     qry = qry.Where(x => filters.ExecutorPositionId.Contains(x.Doc.ExecutorPositionId));
                 }
 
+                //TODO Проверить фильтры
+                if (filters.ExecutorPositionExecutorAgentId != null && filters.ExecutorPositionExecutorAgentId.Count > 0)
+                {
+                    qry = qry.Where(x => filters.ExecutorPositionExecutorAgentId.Contains(x.Doc.ExecutorPositionExecutorAgentId));
+                }
+
+                if (filters.ExecutorDepartmentId != null && filters.ExecutorDepartmentId.Count > 0)
+                {
+                    qry = qry.Where(x => filters.ExecutorDepartmentId.Contains(x.Doc.ExecutorPosition.DepartmentId));
+                }
+
+                if (filters.IsInMyControl ?? false)
+                {
+                    qry = qry.Where(x => ctx.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId));
+                }
+
+                #region Subscription
+                if ((filters.SubscriptionPositionId != null && filters.SubscriptionPositionId.Count > 0) ||
+                    (filters.SubscriptionPositionExecutorAgentId != null && filters.SubscriptionPositionExecutorAgentId.Count > 0) ||
+                    (filters.SubscriptionrDepartmentId != null && filters.SubscriptionrDepartmentId.Count > 0))
+                {
+                    var qryTmp = from Doc in qry
+                                 join ds in dbContext.DocumentSubscriptionsSet on Doc.Doc.Id equals ds.DocumentId
+                                 join de in dbContext.DocumentEventsSet on ds.DoneEventId equals de.Id
+                                 join dpos in dbContext.DictionaryPositionsSet on de.SourcePositionId equals dpos.Id into dpos
+                                 from dp in dpos.DefaultIfEmpty()
+                                 where ds.DoneEventId.HasValue && ds.SubscriptionStateId == (int)EnumSubscriptionStates.Sign || ds.SubscriptionStateId == (int)EnumSubscriptionStates.Visa || ds.SubscriptionStateId == (int)EnumSubscriptionStates.Аgreement || ds.SubscriptionStateId == (int)EnumSubscriptionStates.Аpproval
+                                 select new { Doc, ds, de, dp };
+
+                    if (filters.SubscriptionPositionId != null && filters.SubscriptionPositionId.Count > 0)
+                    {
+                        qryTmp = qryTmp.Where(x => x.de.SourcePositionId.HasValue && filters.SubscriptionPositionId.Contains(x.de.SourcePositionId.Value));
+                    }
+
+                    if (filters.SubscriptionPositionExecutorAgentId != null && filters.SubscriptionPositionExecutorAgentId.Count > 0)
+                    {
+                        qryTmp = qryTmp.Where(x => x.de.SourcePositionExecutorAgentId.HasValue && filters.SubscriptionPositionExecutorAgentId.Contains(x.de.SourcePositionExecutorAgentId.Value));
+                    }
+
+                    if (filters.SubscriptionrDepartmentId != null && filters.SubscriptionrDepartmentId.Count > 0)
+                    {
+                        qryTmp = qryTmp.Where(x => x.de.SourcePositionId.HasValue && filters.SubscriptionrDepartmentId.Contains(x.dp.DepartmentId));
+                    }
+
+                    qry = qryTmp.GroupBy(x => x.Doc).Select(x => x.Key);
+                }
+                #endregion Subscription
+
+                #region Event
+                if (filters.EventIsNew.HasValue
+                    || filters.EventFromDate.HasValue
+                    || filters.EventToDate.HasValue
+                    || (filters.EventTypeId != null && filters.EventTypeId.Count > 0)
+                    || (filters.EventImportanceEventTypeId != null && filters.EventImportanceEventTypeId.Count > 0)
+                    || !string.IsNullOrEmpty(filters.EventDescription)
+                    || (filters.EventPositionId != null && filters.EventPositionId.Count > 0)
+                    || (filters.EventPositionExecutorAgentId != null && filters.EventPositionExecutorAgentId.Count > 0)
+                    || (filters.EventAgentId != null && filters.EventAgentId.Count > 0))
+                {
+                    var qryTmp = from Doc in qry
+                                 join de in dbContext.DocumentEventsSet on Doc.Doc.Id equals de.DocumentId
+                                 join det in dbContext.DictionaryEventTypesSet on de.EventTypeId equals det.Id
+                                 join SourcePos in dbContext.DictionaryPositionsSet on de.SourcePositionId equals SourcePos.Id into SourcePos
+                                 from DSourcePos in SourcePos.DefaultIfEmpty()
+                                 join TargetPos in dbContext.DictionaryPositionsSet on de.TargetPositionId equals TargetPos.Id into TargetPos
+                                 from DTargetPos in TargetPos.DefaultIfEmpty()
+                                 select new { Doc, de, det, DSourcePos, DTargetPos };
+                    if (filters.EventIsNew.HasValue)
+                    {
+                        if (filters.EventIsNew.Value)
+                        {
+                            qryTmp = qryTmp.Where(x => !x.de.ReadDate.HasValue);
+                        }
+                        else
+                        {
+                            qryTmp = qryTmp.Where(x => x.de.ReadDate.HasValue);
+                        }
+                    }
+
+                    if (filters.EventFromDate.HasValue)
+                    {
+                        qryTmp = qryTmp.Where(x => x.de.CreateDate >= filters.EventFromDate.Value);
+                    }
+
+                    if (filters.EventToDate.HasValue)
+                    {
+                        qryTmp = qryTmp.Where(x => x.de.CreateDate <= filters.EventToDate.Value);
+                    }
+
+                    if (filters.EventTypeId != null && filters.EventTypeId.Count > 0)
+                    {
+                        qryTmp = qryTmp.Where(x => filters.EventTypeId.Contains(x.de.EventTypeId));
+                    }
+
+                    if (filters.EventImportanceEventTypeId != null && filters.EventImportanceEventTypeId.Count > 0)
+                    {
+                        qryTmp = qryTmp.Where(x => filters.EventImportanceEventTypeId.Contains(x.det.ImportanceEventTypeId));
+                    }
+
+                    if (!string.IsNullOrEmpty(filters.EventDescription))
+                    {
+                        qryTmp = qryTmp.Where(x => x.de.Description.Contains(filters.EventDescription));
+                    }
+
+                    if (filters.EventPositionId != null && filters.EventPositionId.Count > 0)
+                    {
+                        qryTmp = qryTmp.Where(x =>
+                            (x.de.SourcePositionId.HasValue && filters.EventPositionId.Contains(x.de.SourcePositionId.Value))
+                            || (x.de.TargetPositionId.HasValue && filters.EventPositionId.Contains(x.de.TargetPositionId.Value)));
+                    }
+
+                    if (filters.EventPositionExecutorAgentId != null && filters.EventPositionExecutorAgentId.Count > 0)
+                    {
+                        qryTmp = qryTmp.Where(x =>
+                            (x.de.SourcePositionExecutorAgentId.HasValue && filters.EventPositionExecutorAgentId.Contains(x.de.SourcePositionExecutorAgentId.Value))
+                            || (x.de.TargetPositionExecutorAgentId.HasValue && filters.EventPositionExecutorAgentId.Contains(x.de.TargetPositionExecutorAgentId.Value)));
+                    }
+
+                    if (filters.EventDepartmentId != null && filters.EventDepartmentId.Count > 0)
+                    {
+                        qryTmp = qryTmp.Where(x =>
+                            (x.de.SourcePositionId.HasValue && filters.EventDepartmentId.Contains(x.DSourcePos.DepartmentId))
+                            || (x.de.TargetPositionId.HasValue && filters.EventDepartmentId.Contains(x.DTargetPos.DepartmentId)));
+                    }
+
+                    if (filters.EventAgentId != null && filters.EventAgentId.Count > 0)
+                    {
+                        qryTmp = qryTmp.Where(x =>
+                            (filters.EventAgentId.Contains(x.de.SourceAgentId))
+                            || (x.de.TargetAgentId.HasValue && filters.EventAgentId.Contains(x.de.TargetAgentId.Value)));
+                    }
+
+                    qry = qryTmp.GroupBy(x => x.Doc).Select(x => x.Key);
+                }
+                #endregion Event
+
+                #region Task
+                if ((filters.TaskId != null && filters.TaskId.Count > 0) ||
+                    !string.IsNullOrEmpty(filters.TaskDescription))
+                {
+                    var qryTmp = from Doc in qry
+                                 join dt in dbContext.DocumentTasksSet on Doc.Doc.Id equals dt.DocumentId
+                                 select new { Doc, dt };
+
+                    if (filters.TaskId != null && filters.TaskId.Count > 0)
+                    {
+                        qryTmp = qryTmp.Where(x => filters.TaskId.Contains(x.dt.Id));
+                    }
+
+                    if (!string.IsNullOrEmpty(filters.TaskDescription))
+                    {
+                        qryTmp = qryTmp.Where(x => x.dt.Task.Contains(filters.TaskDescription));
+                    }
+
+                    qry = qryTmp.GroupBy(x => x.Doc).Select(x => x.Key);
+                }
+                #endregion Task
+
+                #region Tag
+                if ((filters.TagId != null && filters.TagId.Count > 0) ||
+                    !string.IsNullOrEmpty(filters.TagDescription))
+                {
+                    var qryTmp = from Doc in qry
+                                 join DocTag in dbContext.DocumentTagsSet on Doc.Doc.Id equals DocTag.DocumentId
+                                 join DicTag in dbContext.DictionaryTagsSet on DocTag.TagId equals DicTag.Id
+                                 where !DicTag.PositionId.HasValue || ctx.CurrentPositionsIdList.Contains(DicTag.PositionId ?? 0)
+                                 select new { Doc, DocTag, DicTag };
+
+                    if (filters.TagId != null && filters.TagId.Count > 0)
+                    {
+                        qryTmp = qryTmp.Where(x => filters.TagId.Contains(x.DocTag.TagId));
+                    }
+
+                    if (!string.IsNullOrEmpty(filters.TagDescription))
+                    {
+                        qryTmp = qryTmp.Where(x => x.DicTag.Name.Contains(filters.TagDescription));
+                    }
+
+                    qry = qryTmp.GroupBy(x => x.Doc).Select(x => x.Key);
+                }
+                #endregion Tag
+
+                //TODO Перепроверить
+                #region Wait
+                if (filters.WaitDueDateFromDate.HasValue
+                    || filters.WaitDueDateToDate.HasValue
+                    || filters.WaitCreateFromDate.HasValue
+                    || filters.WaitCreateToDate.HasValue)
+                {
+                    var qryTmp = from Doc in qry
+                                 join Wait in dbContext.DocumentWaitsSet on Doc.Doc.Id equals Wait.DocumentId
+                                 join WaitOnEvent in dbContext.DocumentEventsSet on Wait.OnEventId equals WaitOnEvent.Id
+                                 join WaitOnEventSourcePos in dbContext.DictionaryPositionsSet on WaitOnEvent.SourcePositionId equals WaitOnEventSourcePos.Id into WaitOnEventSourcePos
+                                 from DWaitOnEventSourcePos in WaitOnEventSourcePos.DefaultIfEmpty()
+                                 join WaitOnEventTargetPos in dbContext.DictionaryPositionsSet on WaitOnEvent.TargetPositionId equals WaitOnEventTargetPos.Id into WaitOnEventTargetPos
+                                 from DWaitOnEventTargetPos in WaitOnEventTargetPos.DefaultIfEmpty()
+                                 select new { Doc, Wait, WaitOnEvent, DWaitOnEventSourcePos, DWaitOnEventTargetPos };
+
+                    if (filters.WaitDueDateFromDate.HasValue)
+                    {
+                        qryTmp = qryTmp.Where(x => x.Wait.DueDate >= filters.WaitDueDateFromDate.Value);
+                    }
+
+                    if (filters.WaitDueDateToDate.HasValue)
+                    {
+                        qryTmp = qryTmp.Where(x => x.Wait.DueDate <= filters.WaitDueDateToDate.Value);
+                    }
+
+                    if (filters.WaitCreateFromDate.HasValue)
+                    {
+                        qryTmp = qryTmp.Where(x => x.WaitOnEvent.Date >= filters.WaitCreateFromDate.Value);
+                    }
+
+                    if (filters.WaitCreateToDate.HasValue)
+                    {
+                        qryTmp = qryTmp.Where(x => x.WaitOnEvent.Date <= filters.WaitCreateToDate.Value);
+                    }
+
+                    #region Вид контроля
+
+                    if ((filters.WaitControlToMePositionId != null && filters.WaitControlToMePositionId.Count > 0)
+                        || (filters.WaitControlToMePositionExecutorAgentId != null && filters.WaitControlToMePositionExecutorAgentId.Count > 0)
+                        || (filters.WaitControlToMeDepartmentId != null && filters.WaitControlToMeDepartmentId.Count > 0)
+
+                        || (filters.WaitControlFromMePositionId != null && filters.WaitControlFromMePositionId.Count > 0)
+                        || (filters.WaitControlFromMePositionExecutorAgentId != null && filters.WaitControlFromMePositionExecutorAgentId.Count > 0)
+                        || (filters.WaitControlFromMeDepartmentId != null && filters.WaitControlFromMeDepartmentId.Count > 0)
+                        || (filters.WaitControlFromMeAgentId != null && filters.WaitControlFromMeAgentId.Count > 0)
+
+                        || (filters.WaitIsSelfControl ?? false)
+                        || (filters.WaitIsVisaingToMe ?? false)
+                        || (filters.WaitIsVisaingFromMe ?? false)
+                        || (filters.WaitIsMarkExecution ?? false)
+                        )
+                    {
+                        bool isFirstUnion = true;
+                        var qryTmpUnion = qryTmp;
+
+                        #region Чужой контроль исполнения  SendForExecution, SendForResponsibleExecution
+                        if ((filters.WaitControlToMePositionId != null && filters.WaitControlToMePositionId.Count > 0)
+                            || (filters.WaitControlToMePositionExecutorAgentId != null && filters.WaitControlToMePositionExecutorAgentId.Count > 0)
+                            || (filters.WaitControlToMeDepartmentId != null && filters.WaitControlToMeDepartmentId.Count > 0))
+                        {
+                            var qryTmpControl = qryTmp.Where(x =>
+                                (x.WaitOnEvent.EventTypeId == (int)EnumEventTypes.SendForExecution
+                                || x.WaitOnEvent.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecution)
+                                && !x.Wait.OffEventId.HasValue)
+                                 .Where(x =>
+                                     ctx.CurrentPositionsIdList.Contains(x.WaitOnEvent.TargetPositionId ?? 0)
+                                     && !ctx.CurrentPositionsIdList.Contains(x.WaitOnEvent.SourcePositionId ?? 0));
+
+                            if ((filters.WaitControlToMePositionId != null && filters.WaitControlToMePositionId.Count > 0))
+                            {
+                                qryTmpControl = qryTmpControl.Where(x => x.WaitOnEvent.SourcePositionId.HasValue && filters.WaitControlToMePositionId.Contains(x.WaitOnEvent.SourcePositionId.Value));
+                            }
+
+                            if ((filters.WaitControlToMePositionExecutorAgentId != null && filters.WaitControlToMePositionExecutorAgentId.Count > 0))
+                            {
+                                qryTmpControl = qryTmpControl.Where(x => x.WaitOnEvent.SourcePositionExecutorAgentId.HasValue && filters.WaitControlToMePositionExecutorAgentId.Contains(x.WaitOnEvent.SourcePositionExecutorAgentId.Value));
+                            }
+
+                            if ((filters.WaitControlToMeDepartmentId != null && filters.WaitControlToMeDepartmentId.Count > 0))
+                            {
+                                qryTmpControl = qryTmpControl.Where(x => x.WaitOnEvent.SourcePositionId.HasValue
+                                    && filters.WaitControlToMeDepartmentId.Contains(x.DWaitOnEventSourcePos.DepartmentId));
+                            }
+
+
+                            if (isFirstUnion)
+                            {
+                                isFirstUnion = false;
+                                qryTmpUnion = qryTmpControl;
+                            }
+                            else
+                            {
+                                qryTmpUnion = qryTmpUnion.Union(qryTmpControl);
+                            }
+                        }
+
+                        #endregion Чужой контроль исполнения  SendForExecution, SendForResponsibleExecution
+
+                        #region Собственный контроль исполнения SendForExecution, SendForResponsibleExecution
+
+                        if ((filters.WaitControlFromMePositionId != null && filters.WaitControlFromMePositionId.Count > 0)
+                            || (filters.WaitControlFromMePositionExecutorAgentId != null && filters.WaitControlFromMePositionExecutorAgentId.Count > 0)
+                            || (filters.WaitControlFromMeDepartmentId != null && filters.WaitControlFromMeDepartmentId.Count > 0)
+                            || (filters.WaitControlFromMeAgentId != null && filters.WaitControlFromMeAgentId.Count > 0))
+                        {
+                            var qryTmpControl = qryTmp.Where(x =>
+                                (x.WaitOnEvent.EventTypeId == (int)EnumEventTypes.SendForExecution
+                                || x.WaitOnEvent.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecution)
+                                && !x.Wait.OffEventId.HasValue)
+                                 .Where(x =>
+                                     !ctx.CurrentPositionsIdList.Contains(x.WaitOnEvent.TargetPositionId ?? 0)
+                                     && ctx.CurrentPositionsIdList.Contains(x.WaitOnEvent.SourcePositionId ?? 0));
+
+                            if ((filters.WaitControlFromMePositionId != null && filters.WaitControlFromMePositionId.Count > 0))
+                            {
+                                qryTmpControl = qryTmpControl.Where(x => x.WaitOnEvent.TargetPositionId.HasValue && filters.WaitControlFromMePositionId.Contains(x.WaitOnEvent.TargetPositionId.Value));
+                            }
+
+                            if ((filters.WaitControlFromMePositionExecutorAgentId != null && filters.WaitControlFromMePositionExecutorAgentId.Count > 0))
+                            {
+                                qryTmpControl = qryTmpControl.Where(x => x.WaitOnEvent.TargetPositionExecutorAgentId.HasValue
+                                && filters.WaitControlFromMePositionExecutorAgentId.Contains(x.WaitOnEvent.TargetPositionExecutorAgentId.Value));
+                            }
+
+                            if ((filters.WaitControlFromMeDepartmentId != null && filters.WaitControlFromMeDepartmentId.Count > 0))
+                            {
+                                qryTmpControl = qryTmpControl.Where(x => x.WaitOnEvent.TargetPositionId.HasValue
+                                    && filters.WaitControlFromMeDepartmentId.Contains(x.DWaitOnEventTargetPos.DepartmentId));
+                            }
+
+                            if ((filters.WaitControlFromMeAgentId != null && filters.WaitControlFromMeAgentId.Count > 0))
+                            {
+                                qryTmpControl = qryTmpControl.Where(x => x.WaitOnEvent.TargetAgentId.HasValue
+                                && filters.WaitControlFromMeAgentId.Contains(x.WaitOnEvent.TargetAgentId.Value));
+                            }
+
+
+                            if (isFirstUnion)
+                            {
+                                isFirstUnion = false;
+                                qryTmpUnion = qryTmpControl;
+                            }
+                            else
+                            {
+                                qryTmpUnion = qryTmpUnion.Union(qryTmpControl);
+                            }
+                        }
+                        #endregion Собственный контроль исполнения SendForExecution, SendForResponsibleExecution
+
+                        #region Самоконтроль ControlOn
+
+                        if (filters.WaitIsSelfControl ?? false)
+                        {
+                            var qryTmpControl = qryTmp.Where(x =>
+                                x.WaitOnEvent.EventTypeId == (int)EnumEventTypes.ControlOn
+                                && !x.Wait.OffEventId.HasValue)
+                                 .Where(x =>
+                                     ctx.CurrentPositionsIdList.Contains(x.WaitOnEvent.TargetPositionId ?? 0)
+                                     && ctx.CurrentPositionsIdList.Contains(x.WaitOnEvent.SourcePositionId ?? 0));
+
+                            if (isFirstUnion)
+                            {
+                                isFirstUnion = false;
+                                qryTmpUnion = qryTmpControl;
+                            }
+                            else
+                            {
+                                qryTmpUnion = qryTmpUnion.Union(qryTmpControl);
+                            }
+                        }
+                        #endregion Самоконтроль ControlOn
+
+                        #region Поступившие на визирование SendForVisaing, SendForАgreement, SendForАpproval, SendForSigning
+
+                        if (filters.WaitIsVisaingToMe ?? false)
+                        {
+                            var qryTmpControl = qryTmp.Where(x =>
+                                (x.WaitOnEvent.EventTypeId == (int)EnumEventTypes.SendForVisaing
+                                || x.WaitOnEvent.EventTypeId == (int)EnumEventTypes.SendForАgreement
+                                || x.WaitOnEvent.EventTypeId == (int)EnumEventTypes.SendForАpproval
+                                || x.WaitOnEvent.EventTypeId == (int)EnumEventTypes.SendForSigning)
+                                && !x.Wait.OffEventId.HasValue)
+                                 .Where(x =>
+                                     ctx.CurrentPositionsIdList.Contains(x.WaitOnEvent.TargetPositionId ?? 0)
+                                     && !ctx.CurrentPositionsIdList.Contains(x.WaitOnEvent.SourcePositionId ?? 0));
+
+                            if (isFirstUnion)
+                            {
+                                isFirstUnion = false;
+                                qryTmpUnion = qryTmpControl;
+                            }
+                            else
+                            {
+                                qryTmpUnion = qryTmpUnion.Union(qryTmpControl);
+                            }
+                        }
+                        #endregion Поступившие на визирование SendForVisaing, SendForАgreement, SendForАpproval, SendForSigning
+
+                        #region Отправленные на визирование SendForVisaing, SendForАgreement, SendForАpproval, SendForSigning
+
+                        if (filters.WaitIsVisaingFromMe ?? false)
+                        {
+                            var qryTmpControl = qryTmp.Where(x =>
+                                (x.WaitOnEvent.EventTypeId == (int)EnumEventTypes.SendForVisaing
+                                || x.WaitOnEvent.EventTypeId == (int)EnumEventTypes.SendForАgreement
+                                || x.WaitOnEvent.EventTypeId == (int)EnumEventTypes.SendForАpproval
+                                || x.WaitOnEvent.EventTypeId == (int)EnumEventTypes.SendForSigning)
+                                && !x.Wait.OffEventId.HasValue)
+                                 .Where(x =>
+                                     !ctx.CurrentPositionsIdList.Contains(x.WaitOnEvent.TargetPositionId ?? 0)
+                                     && ctx.CurrentPositionsIdList.Contains(x.WaitOnEvent.SourcePositionId ?? 0));
+
+                            if (isFirstUnion)
+                            {
+                                isFirstUnion = false;
+                                qryTmpUnion = qryTmpControl;
+                            }
+                            else
+                            {
+                                qryTmpUnion = qryTmpUnion.Union(qryTmpControl);
+                            }
+                        }
+                        #endregion Отправленные на визирование SendForVisaing, SendForАgreement, SendForАpproval, SendForSigning
+
+                        #region Отчеты о выполнении MarkExecution
+
+                        if (filters.WaitIsMarkExecution ?? false)
+                        {
+                            var qryTmpControl = qryTmp.Where(x =>
+                                x.WaitOnEvent.EventTypeId == (int)EnumEventTypes.MarkExecution
+                                && !x.Wait.OffEventId.HasValue);
+
+                            if (isFirstUnion)
+                            {
+                                isFirstUnion = false;
+                                qryTmpUnion = qryTmpControl;
+                            }
+                            else
+                            {
+                                qryTmpUnion = qryTmpUnion.Union(qryTmpControl);
+                            }
+                        }
+                        #endregion Отчеты о выполнении MarkExecution
+
+                        qryTmp = qryTmpUnion;
+                    }
+                    #endregion Вид контроля
+
+                    qry = qryTmp.GroupBy(x => x.Doc).Select(x => x.Key);
+                }
+                #endregion Wait
+
+                #region File
+                if (!string.IsNullOrEmpty(filters.FileName)
+                    || !string.IsNullOrEmpty(filters.FileExtension)
+                    || filters.FileSizeFrom.HasValue
+                    || filters.FileSizeTo.HasValue
+                    || filters.FileCreateFromDate.HasValue
+                    || filters.FileCreateToDate.HasValue
+                    || (filters.FileAgentId != null && filters.FileAgentId.Count > 0))
+                {
+                    var qryTmp = (from Doc in qry
+                                  join DocFile in dbContext.DocumentFilesSet on Doc.Doc.Id equals DocFile.DocumentId
+                                  select new { Doc, DocFile })
+                                 .GroupBy(g => new { g.Doc, g.DocFile.OrderNumber })
+                                 .Select(x => new { Doc = x.Key.Doc, DocFile = x.OrderByDescending(f => f.DocFile.Version).First().DocFile });
+
+                    if (!string.IsNullOrEmpty(filters.FileName))
+                    {
+                        qryTmp = qryTmp.Where(x => x.DocFile.Name.Contains(filters.FileName));
+                    }
+
+                    if (!string.IsNullOrEmpty(filters.FileExtension))
+                    {
+                        qryTmp = qryTmp.Where(x => x.DocFile.Extension.Contains(filters.FileExtension));
+                    }
+                    if (filters.FileSizeFrom.HasValue)
+                    {
+                        qryTmp = qryTmp.Where(x => x.DocFile.FileSize >= filters.FileSizeFrom);
+                    }
+                    if (filters.FileSizeTo.HasValue)
+                    {
+                        qryTmp = qryTmp.Where(x => x.DocFile.FileSize <= filters.FileSizeTo);
+                    }
+                    if (filters.FileCreateFromDate.HasValue)
+                    {
+                        qryTmp = qryTmp.Where(x => x.DocFile.Date >= filters.FileCreateFromDate.Value);
+                    }
+                    if (filters.FileCreateToDate.HasValue)
+                    {
+                        qryTmp = qryTmp.Where(x => x.DocFile.Date <= filters.FileCreateToDate);
+                    }
+                    if (filters.FileAgentId != null && filters.FileAgentId.Count > 0)
+                    {
+                        qryTmp = qryTmp.Where(x => filters.FileAgentId.Contains(x.DocFile.LastChangeUserId));
+                    }
+
+                    qry = qryTmp.GroupBy(x => x.Doc).Select(x => x.Key);
+                }
+                #endregion File
+
                 if (filters.SenderAgentId != null && filters.SenderAgentId.Count > 0)
                 {
                     qry =
@@ -259,15 +756,18 @@ namespace BL.Database.Documents
                                 qryTmp = qryTmp.Where(x => ids.Contains(x.pv.ValueNumeric));
                                 break;
                         }
-                        qry = qryTmp.Select(x => x.Doc);
+                        qry = qryTmp.GroupBy(x => x.Doc).Select(x => x.Key);
                     }
                 }
                 #endregion DocumentsSetFilter
 
-                paging.TotalItemsCount = qry.Count();
+                if (paging != null)
+                {
+                    paging.TotalItemsCount = qry.Count();
 
-                qry = qry.OrderByDescending(x => x.Doc.CreateDate)
-                    .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
+                    qry = qry.OrderByDescending(x => x.Doc.CreateDate)
+                        .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
+                }
 
                 var newevnt =
                     dbContext.DocumentEventsSet.Join(qry, ev => ev.DocumentId, rs => rs.Doc.Id, (e, r) => new { ev = e })
@@ -314,7 +814,7 @@ namespace BL.Database.Documents
 
                 var docs = res.ToList();
 
-                docs.ForEach(x=>CommonQueries.ChangeRegistrationFullNumber(x));
+                docs.ForEach(x => CommonQueries.ChangeRegistrationFullNumber(x));
 
                 var accs = acc.ToList();
 
@@ -348,7 +848,7 @@ namespace BL.Database.Documents
                     x1.doc.LinkedDocumentsCount = x1.ev.LinkCnt;
                 }
 
-                docs.GroupJoin(CommonQueries.GetDocumentTags(dbContext, new FilterDocumentTag { DocumentId = docs.Select(x => x.Id).ToList() }),
+                docs.GroupJoin(CommonQueries.GetDocumentTags(dbContext, new FilterDocumentTag { DocumentId = docs.Select(x => x.Id).ToList(), CurrentPositionsId = ctx.CurrentPositionsIdList }),
                     d => d.Id,
                     t => t.DocumentId,
                     (d, t) => d.DocumentTags = t);
@@ -599,7 +1099,7 @@ namespace BL.Database.Documents
                     return null;
                 }
 
-                doc.AccessLevel = (EnumDocumentAccesses)CommonQueries.GetDocumentAccessesesQry(dbContext, doc.Id, ctx).Max(x => x.AccessLevelId);
+                doc.AccessLevel = (EnumDocumentAccesses)CommonQueries.GetDocumentAccessesesQry(dbContext, documentId, ctx).Max(x => x.AccessLevelId);
                 doc.Tasks = dbContext.DocumentTasksSet
                         .Where(x => x.DocumentId == documentId)
                         .Select(x => new InternalDocumentTask
@@ -758,6 +1258,7 @@ namespace BL.Database.Documents
                 dbContext.DocumentFilesSet.RemoveRange(dbContext.DocumentFilesSet.Where(x => x.DocumentId == id));
                 dbContext.DocumentRestrictedSendListsSet.RemoveRange(dbContext.DocumentRestrictedSendListsSet.Where(x => x.DocumentId == id));
                 dbContext.DocumentSendListsSet.RemoveRange(dbContext.DocumentSendListsSet.Where(x => x.DocumentId == id));
+                dbContext.DocumentTasksSet.RemoveRange(dbContext.DocumentTasksSet.Where(x => x.DocumentId == id));
                 dbContext.DocumentsSet.RemoveRange(dbContext.DocumentsSet.Where(x => x.Id == id));
 
                 CommonQueries.AddFullTextCashInfo(dbContext, id, EnumSearchObjectType.Document, EnumOperationType.Delete);

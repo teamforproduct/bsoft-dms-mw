@@ -9,26 +9,26 @@ using BL.Model.Exception;
 
 namespace BL.Logic.DocumentCore.PaperCommands
 {
-    public class MarkOwnerDocumentPaperCommand : BaseDocumentCommand
+    public class RecieveDocumentPaperEventCommand : BaseDocumentCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
 
         private InternalDocumentPaper _paper;
 
-        public MarkOwnerDocumentPaperCommand(IDocumentOperationsDbProcess operationDb)
+        public RecieveDocumentPaperEventCommand(IDocumentOperationsDbProcess operationDb)
         {
             _operationDb = operationDb;
         }
 
-        private MarkOwnerDocumentPaper Model
+        private int Model
         {
             get
             {
-                if (!(_param is MarkOwnerDocumentPaper))
+                if (!(_param is int))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (MarkOwnerDocumentPaper)_param;
+                return (int)_param;
             }
         }
 
@@ -37,7 +37,8 @@ namespace BL.Logic.DocumentCore.PaperCommands
             _actionRecords =
                 _document.Papers.Where(
                     x => x.IsInWork &&
-                        x.LastPaperEvent.TargetPositionId != positionId)
+                        x.LastPaperEvent.TargetPositionId == positionId &&
+                        x.LastPaperEvent.RecieveDate == null && x.LastPaperEvent.PlanDate != null)
                         .Select(x => new InternalActionRecord
                         {
                             PaperId = x.Id,
@@ -51,26 +52,29 @@ namespace BL.Logic.DocumentCore.PaperCommands
 
         public override bool CanExecute()
         {
-            _document = _operationDb.EventDocumentPaperPrepare(_context, Model.Id);
+            _document = _operationDb.EventDocumentPaperPrepare(_context, Model);
             if (_document == null)
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
             _paper = _document.Papers.First();
-            _admin.VerifyAccess(_context, CommandType);
-            if (!CanBeDisplayed(_context.CurrentPositionId))
+            if (_paper?.LastPaperEvent?.TargetPositionId == null
+                || !CanBeDisplayed(_paper.LastPaperEvent.TargetPositionId.Value)
+                )
             {
                 throw new CouldNotPerformOperationWithPaper();
             }
+            _context.SetCurrentPosition(_paper.LastPaperEvent.TargetPositionId);
+            _admin.VerifyAccess(_context, CommandType);
             return true;
         }
 
         public override object Execute()
         {
-
-            _paper.LastPaperEvent = CommonDocumentUtilities.GetNewDocumentPaperEvent(_context, _paper.Id,EnumEventTypes.MarkOwnerDocumentPaper, Model.Description);
-            CommonDocumentUtilities.SetLastChange(_context, _paper);
-            _operationDb.MarkOwnerDocumentPaper(_context, _paper);
+            CommonDocumentUtilities.SetLastChange(_context, _paper.LastPaperEvent);
+            _paper.LastPaperEvent.RecieveDate = _paper.LastPaperEvent.LastChangeDate;
+            _paper.LastPaperEvent.RecieveAgentId = _context.CurrentAgentId;
+            _operationDb.RecieveDocumentPaperEvent(_context, _paper);
             return null;
         }
 

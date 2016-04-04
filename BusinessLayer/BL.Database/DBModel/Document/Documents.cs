@@ -35,9 +35,9 @@ namespace BL.Database.DBModel.Document
         [MaxLength(2000)]
         public string NumerationPrefixFormula { get; set; }
         public Nullable<int> RegistrationNumber { get; set; }
-        [MaxLength(2000)]
+        [MaxLength(100)]
         public string RegistrationNumberSuffix { get; set; }
-        [MaxLength(2000)]
+        [MaxLength(100)]
         public string RegistrationNumberPrefix { get; set; }
         public Nullable<DateTime> RegistrationDate { get; set; }
         public int ExecutorPositionId { get; set; }

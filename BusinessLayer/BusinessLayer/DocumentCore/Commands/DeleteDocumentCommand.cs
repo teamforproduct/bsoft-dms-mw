@@ -33,8 +33,8 @@ namespace BL.Logic.DocumentCore.Commands
         {
             if (_document.ExecutorPositionId != positionId
                 || _document.IsRegistered
-                || (_document.WaitsCount ?? 0) > 0 || _document.Waits.Any()
-                || (_document.SubscriptionsCount ?? 0) > 0 || _document.Subscriptions.Any()
+                || (_document.WaitsCount ?? 0) > 0 || (_document.Waits!=null &&_document.Waits.Any())
+                || (_document.SubscriptionsCount ?? 0) > 0 || (_document.Subscriptions!=null &&_document.Subscriptions.Any())
                 )
             {
                 return false;

@@ -435,20 +435,21 @@ namespace BL.Logic.Common
             };
         }
 
-        public static InternalDocumentPaperEvent GetNewDocumentPaperEvent(IContext context, int? paperId, EnumEventTypes eventType, string description = null, bool IsMarkRecieve = true, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null)
+        public static InternalDocumentPaperEvent GetNewDocumentPaperEvent(IContext context, int? paperId, EnumEventTypes eventType, string description = null, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null, bool IsMarkPlan = true, bool IsMarkRecieve = true)
         {
             return new InternalDocumentPaperEvent
             {
                 PaperId = paperId ?? 0,
                 EventType = eventType,
+                Description = description,
                 SourceAgentId = sourceAgentId ?? context.CurrentAgentId,
                 SourcePositionId = sourcePositionId ?? context.CurrentPositionId,
-                SourcePositionExecutorAgentId = GetExecutorAgentIdByPositionId(context, sourcePositionId ?? context.CurrentPositionId),
+                SourcePositionExecutorAgentId = IsMarkPlan ? GetExecutorAgentIdByPositionId(context, sourcePositionId ?? context.CurrentPositionId) : null,
                 TargetPositionId = targetPositionId ?? context.CurrentPositionId,
-                TargetPositionExecutorAgentId = GetExecutorAgentIdByPositionId(context, targetPositionId ?? context.CurrentPositionId),
+                TargetPositionExecutorAgentId = IsMarkPlan ? GetExecutorAgentIdByPositionId(context, targetPositionId ?? context.CurrentPositionId) : null,
                 TargetAgentId = targetAgentId,
-                PlanAgentId = context.CurrentAgentId,
-                PlanDate = DateTime.Now,
+                PlanAgentId = IsMarkPlan ? (int?)(sourceAgentId ?? context.CurrentAgentId) : null,
+                PlanDate = IsMarkPlan ? (DateTime?)DateTime.Now : null,
                 SendAgentId = IsMarkRecieve ? (int?)context.CurrentAgentId : null,
                 SendDate = IsMarkRecieve ? (DateTime?)DateTime.Now : null,
                 RecieveAgentId = IsMarkRecieve ? (int?)context.CurrentAgentId : null,
@@ -458,12 +459,43 @@ namespace BL.Logic.Common
             };
         }
 
-        public static IEnumerable<InternalDocumentPaperEvent> GetNewDocumentPaperEvents(IContext context, int? paperId, EnumEventTypes eventType, string description = null, bool IsMarkRecieve = true, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null)
+        public static IEnumerable<InternalDocumentPaperEvent> GetNewDocumentPaperEvents(IContext context, int? paperId, EnumEventTypes eventType, string description = null, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null, bool IsMarkPlan = true, bool IsMarkRecieve = true)
         {
             return new List<InternalDocumentPaperEvent>
             {
-                GetNewDocumentPaperEvent(context,  paperId, eventType, description, IsMarkRecieve, targetPositionId, targetAgentId, sourcePositionId, sourceAgentId )
+                GetNewDocumentPaperEvent(context,  paperId, eventType, description, targetPositionId, targetAgentId, sourcePositionId, sourceAgentId, IsMarkPlan, IsMarkRecieve)
             };
+        }
+
+        public static void PlanDocumentPaperFromSendList(IContext context, InternalDocument document, InternalDocumentSendList model)
+        {
+            var operationDb = DmsResolver.Current.Get<IDocumentOperationsDbProcess>();
+            document.Papers = operationDb.PlanDocumentPaperFromSendListPrepare(context, model.Id);
+            if (document.Papers?.Any() ?? false)
+            {
+                if (
+                    document.Papers.Any(
+                        x =>
+                            x.LastPaperEvent.SourcePositionId != model.SourcePositionId ||
+                            //x.LastPaperEvent.TargetPositionId != model.TargetPositionId ||
+                            //x.LastPaperEvent.SourceAgentId != model.SourceAgentId ||
+                            //x.LastPaperEvent.TargetAgentId != model.TargetAgentId ||
+                            x.LastPaperEvent.RecieveDate == null))
+
+                {
+                    throw new CouldNotPerformOperationWithPaper();
+                }
+                foreach (var paper in document.Papers.ToList())
+                {
+                    //paper.LastPaperEventId = null;
+                    paper.LastPaperEvent = CommonDocumentUtilities.GetNewDocumentPaperEvent(context, paper.Id,
+                        EnumEventTypes.MoveDocumentPaper, null, model.TargetPositionId, model.TargetAgentId, model.SourcePositionId, model.SourceAgentId, true, false);
+                    CommonDocumentUtilities.SetLastChange(context, paper);
+                    paper.LastPaperEventId = null;
+                    paper.LastPaperEvent.Id = paper.NextPaperEventId.Value;
+
+                }
+            }
         }
 
         public static IEnumerable<BaseSystemUIElement> VerifyDocument(IContext ctx, FrontDocument doc, IEnumerable<BaseSystemUIElement> uiElements)

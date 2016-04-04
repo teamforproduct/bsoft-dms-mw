@@ -5,7 +5,7 @@ namespace BL.Model.DocumentCore.Actions
     /// <summary>
     /// Модель события по бумажному носителю
     /// </summary>
-    public class EventPaper
+    public class PaperEvent
     {
         /// <summary>
         /// ИД БН

@@ -11,7 +11,7 @@ using BL.Model.SystemCore.InternalModel;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.FrontModel;
 using System.Data.Entity;
-using BL.Model.FullTextSerach;
+using BL.Model.FullTextSearch;
 
 namespace BL.Database.SystemDb
 {

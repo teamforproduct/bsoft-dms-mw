@@ -51,7 +51,7 @@ namespace BL.Logic.DocumentCore.PaperCommands
             _admin.VerifyAccess(_context, CommandType);
             if (!CanBeDisplayed(_context.CurrentPositionId))
             {
-                throw new CouldNotPerformThisOperation();
+                throw new CouldNotPerformOperationWithPaper();
             }
             return true;
         }

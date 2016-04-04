@@ -244,6 +244,22 @@ namespace BL.Logic.DocumentCore
                     cmd = DmsResolver.Current.Get<MarkOwnerDocumentPaperCommand>();
                     break;
 
+                case EnumDocumentActions.SendDocumentPaperEvent:
+                    cmd = DmsResolver.Current.Get<SendDocumentPaperEventCommand>();
+                    break;
+
+                case EnumDocumentActions.CancelSendDocumentPaperEvent:
+                    cmd = DmsResolver.Current.Get<CancelSendDocumentPaperEventCommand>();
+                    break;
+                case EnumDocumentActions.RecieveDocumentPaperEvent:
+                    cmd = DmsResolver.Current.Get<RecieveDocumentPaperEventCommand>();
+                    break;
+                case EnumDocumentActions.PlanDocumentPaperEvent:
+                    cmd = DmsResolver.Current.Get<PlanDocumentPaperEventCommand>();
+                    break;
+                case EnumDocumentActions.CancelPlanDocumentPaperEvent:
+                    cmd = DmsResolver.Current.Get<CancelPlanDocumentPaperEventCommand>();
+                    break;
                 case EnumDocumentActions.MarkСorruptionDocumentPaper:
                     cmd = DmsResolver.Current.Get<MarkСorruptionDocumentPaperCommand>();
                     break;

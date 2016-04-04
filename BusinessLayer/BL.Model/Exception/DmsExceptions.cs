@@ -486,6 +486,18 @@
         }
     }
 
+    public class CouldNotPerformOperationWithPaper : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:CouldNotPerformOperationWithPaper@l##";
+        public CouldNotPerformOperationWithPaper() : base(_MESSAGE)
+        {
+        }
+
+        public CouldNotPerformOperationWithPaper(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
     public class WaitNotFoundOrUserHasNoAccess : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:WaitNotFoundOrUserHasNoAccess@l##";

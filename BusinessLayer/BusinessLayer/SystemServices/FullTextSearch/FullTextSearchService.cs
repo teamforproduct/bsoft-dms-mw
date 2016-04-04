@@ -6,7 +6,7 @@ using BL.CrossCutting.Interfaces;
 using BL.Database.SystemDb;
 using BL.Logic.Common;
 using BL.Model.Constants;
-using BL.Model.FullTextSerach;
+using BL.Model.FullTextSearch;
 
 namespace BL.Logic.SystemServices.FullTextSearch
 {

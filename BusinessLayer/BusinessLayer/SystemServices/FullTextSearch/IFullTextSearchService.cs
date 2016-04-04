@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using BL.CrossCutting.Interfaces;
 using BL.Logic.SystemServices.MailWorker;
-using BL.Model.FullTextSerach;
+using BL.Model.FullTextSearch;
 
 namespace BL.Logic.SystemServices.FullTextSearch
 {

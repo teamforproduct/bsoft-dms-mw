@@ -57,7 +57,7 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new WrongDocumentSendListEntry();
             }
-
+            CommonDocumentUtilities.PlanDocumentPaperFromSendList(_context, _document, Model);
             return true;
         }
 

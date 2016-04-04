@@ -36,7 +36,7 @@ namespace BL.Database.Documents.Interfaces
         InternalDocument AddDocumentLinkPrepare(IContext context, AddDocumentLink model);
         void ChangeIsFavouriteAccess(IContext context, InternalDocumentAccess docAccess);
 
-        InternalDocument ChangeDocumentSendListPrepare(IContext context, int documentId, string task = null, List<int> papersId = null);
+        InternalDocument ChangeDocumentSendListPrepare(IContext context, int documentId, string task = null, int id = 0);
         IEnumerable<int> AddDocumentRestrictedSendList(IContext context, IEnumerable<InternalDocumentRestrictedSendList> model);
 
         IEnumerable<InternalDocumentRestrictedSendList> AddByStandartSendListDocumentRestrictedSendListPrepare(IContext context, ModifyDocumentRestrictedSendListByStandartSendList model);
@@ -49,11 +49,11 @@ namespace BL.Database.Documents.Interfaces
 
         void DeleteDocumentRestrictedSendList(IContext context, int restSendListId);
 
-        IEnumerable<int> AddDocumentSendList(IContext context, IEnumerable<InternalDocumentSendList> model, IEnumerable<InternalDocumentTask> task = null);
+        IEnumerable<int> AddDocumentSendList(IContext context, IEnumerable<InternalDocumentSendList> model, IEnumerable<InternalDocumentTask> task = null, IEnumerable<InternalDocumentPaperEvent> paperEvents = null);
 
         IEnumerable<InternalDocumentSendList> AddByStandartSendListDocumentSendListPrepare(IContext context, ModifyDocumentSendListByStandartSendList model);
 
-        void ModifyDocumentSendList(IContext context, InternalDocumentSendList model, IEnumerable<InternalDocumentTask> task = null);
+        void ModifyDocumentSendList(IContext context, InternalDocumentSendList model, IEnumerable<InternalDocumentTask> task = null, IEnumerable<InternalDocumentPaperEvent> addPaperEvents = null, IEnumerable<int> delPaperEvents = null);
 
         InternalDocument DeleteDocumentSendListPrepare(IContext context, int sendListId);
 
@@ -91,12 +91,19 @@ namespace BL.Database.Documents.Interfaces
         #region DocumentPapers
         InternalDocument AddDocumentPaperPrepare(IContext context, int documentId);
         InternalDocument ChangeDocumentPaperPrepare(IContext context, int paperId);
-        InternalDocument EventDocumentPaperPrepare(IContext context, int paperId);
+        InternalDocument EventDocumentPaperPrepare(IContext context, int paperId, bool isCalcPreLastPaperEvent = false);
 
         void AddDocumentPapers(IContext context, IEnumerable<InternalDocumentPaper> items);
         void ModifyDocumentPaper(IContext context, InternalDocumentPaper item);
         void DeleteDocumentPaper(IContext context, int itemId);
         void MarkOwnerDocumentPaper(IContext context, InternalDocumentPaper paper);
+        void MarkСorruptionDocumentPaper(IContext context, InternalDocumentPaper paper);
+        void SendDocumentPaperEvent(IContext context, InternalDocumentPaper paper);
+        void RecieveDocumentPaperEvent(IContext context, InternalDocumentPaper paper);
+        void CancelPlanDocumentPaperEvent(IContext context, InternalDocumentPaper paper);
+        void PlanDocumentPaperEvent(IContext context, IEnumerable<InternalDocumentPaper> items);
+        InternalDocument PlanDocumentPaperEventPrepare(IContext context, List<int> paperIds);
+        IEnumerable<InternalDocumentPaper> PlanDocumentPaperFromSendListPrepare(IContext context, int idSendList);
         #endregion DocumentPapers
 
         #region DocumentPaperLists

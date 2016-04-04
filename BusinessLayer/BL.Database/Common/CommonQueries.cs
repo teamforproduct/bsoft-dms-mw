@@ -11,7 +11,6 @@ using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
-using BL.Model.FullTextSerach;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.FrontModel;
 using BL.Model.SystemCore.InternalModel;
@@ -20,6 +19,7 @@ using System;
 using BL.CrossCutting.DependencyInjection;
 using BL.Database.FileWorker;
 using BL.Model.Exception;
+using BL.Model.FullTextSearch;
 
 namespace BL.Database.Common
 {
