@@ -103,47 +103,12 @@ namespace DMS_WebAPI.Providers
             if (context.Identity.IsAuthenticated)
             {
                 var userId = context.Identity.GetUserId();
-                var isSuperAdmin = false;
-                var superAdminRole = "SuperAdmin";
-
-                var userManager = context.OwinContext.GetUserManager<ApplicationUserManager>();
-
-                var userRoles = userManager.GetRoles(userId);
-                if (userRoles.Any(x => x.Equals(superAdminRole, StringComparison.OrdinalIgnoreCase)))
-                {
-                    isSuperAdmin = true;
-                }
 
                 var token = $"{context.Identity.AuthenticationType} {context.AccessToken}";
 
-                int dbId = 0;
-
-                if (!int.TryParse(System.Web.HttpContext.Current.Request.Headers["DatabaseId"], out dbId))
-                {
-                    //TODO Remove
-                    if (System.Web.HttpContext.Current.IsDebuggingEnabled)
-                    {
-                        System.Web.HttpContext.Current.Request.Headers["DatabaseId"] = "1";
-                        dbId = 1;
-                    }
-                    else if(!isSuperAdmin)
-                    {
-                        throw new DatabaseIsNotSet();
-                    }
-                }
-
-                var db = new Servers().GetServer(dbId);
-                if (db == null)
-                {
-                    if (!isSuperAdmin)
-                    {
-                        throw new System.Exception("Not found Database");
-                    }
-                }
-
                 var mngContext = DmsResolver.Current.Get<UserContext>();
 
-                var cxt = mngContext.Set(token, db, userId, isSuperAdmin);
+                var cxt = mngContext.Set(token, userId);
             }
 
             return Task.FromResult<object>(null);

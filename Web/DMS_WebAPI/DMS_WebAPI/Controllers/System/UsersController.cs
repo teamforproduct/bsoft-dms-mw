@@ -6,6 +6,7 @@ using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
 using System.Web.Http;
 using BL.CrossCutting.DependencyInjection;
+using BL.Model.Exception;
 
 namespace DMS_WebAPI.Controllers
 {
@@ -59,10 +60,34 @@ namespace DMS_WebAPI.Controllers
         /// </summary>
         /// <returns>список серверов</returns>
         [Route("Servers")]
-        [AllowAnonymous]
+        [HttpGet]
         public IHttpActionResult GetServers()
         {
-            return new JsonResult(new Servers().GetServersByUser(), this);
+            var context = DmsResolver.Current.Get<UserContext>().Get();
+            return new JsonResult(new Servers().GetServersByUser(context.CurrentEmployee.UserId), this);
+        }
+
+        /// <summary>
+        /// Установить сервер для использования
+        /// </summary>
+        /// <param name="serverId"></param>
+        /// <returns></returns>
+        [Route("Servers")]
+        [HttpPost]
+        public IHttpActionResult SetServers([FromBody]int serverId)
+        {
+            var mngContext = DmsResolver.Current.Get<UserContext>();
+
+            var db = new Servers().GetServer(serverId);
+            if (db == null)
+            {
+                throw new DatabaseIsNotFound();
+            }
+
+            mngContext.Set(db);
+
+
+            return new JsonResult(null, this);
         }
     }
 }

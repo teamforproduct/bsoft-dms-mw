@@ -221,6 +221,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
+    <Compile Include="Controllers\AspNet\UserServersController.cs" />
     <Compile Include="Controllers\Dictionaries\CustomDictionaryTypesController.cs" />
     <Compile Include="Controllers\Dictionaries\CustomDictionariesController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryAddressTypesController.cs" />
@@ -239,6 +240,7 @@
     <Compile Include="Controllers\Properties\FilterPropertiesController.cs" />
     <Compile Include="Controllers\Properties\PropertyLinksController.cs" />
     <Compile Include="Controllers\Properties\PropertiesController.cs" />
+    <Compile Include="Controllers\AspNet\ClientsController.cs" />
     <Compile Include="Controllers\System\AccountController.cs" />
     <Compile Include="Controllers\Admins\AdminAccessLevelsController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryAgentsController.cs" />
@@ -272,6 +274,8 @@
     <Compile Include="DBModel\AdminLanguages.cs" />
     <Compile Include="DBModel\AdminLanguageValues.cs" />
     <Compile Include="DBModel\AdminServers.cs" />
+    <Compile Include="DBModel\AspNetClients.cs" />
+    <Compile Include="DBModel\AspNetUserServers.cs" />
     <Compile Include="DependencyInjection\ApiModel.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -286,6 +290,10 @@
     <Compile Include="Migrations\201603221119402_AddServersAndLanguages.Designer.cs">
       <DependentUpon>201603221119402_AddServersAndLanguages.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201604041000553_Clients.cs" />
+    <Compile Include="Migrations\201604041000553_Clients.Designer.cs">
+      <DependentUpon>201604041000553_Clients.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -296,6 +304,7 @@
     <Compile Include="Results\ChallengeResult.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Utilities\Languages.cs" />
+    <Compile Include="Utilities\AspNetClients.cs" />
     <Compile Include="Utilities\UserContextWorkerService.cs" />
     <Compile Include="Utilities\UserContext.cs" />
     <Compile Include="Utilities\Servers.cs" />
@@ -397,6 +406,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201603221119402_AddServersAndLanguages.resx">
       <DependentUpon>201603221119402_AddServersAndLanguages.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604041000553_Clients.resx">
+      <DependentUpon>201604041000553_Clients.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

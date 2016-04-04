@@ -42,5 +42,6 @@
         /// </summary>
         public string ConnectionString { get; set; }
         public string DefaultSchema { get; set; }
+        public string ClientName { get; set; }
     }
 }
