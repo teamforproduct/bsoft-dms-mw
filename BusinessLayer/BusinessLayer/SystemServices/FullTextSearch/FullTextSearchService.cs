@@ -66,8 +66,8 @@ namespace BL.Logic.SystemServices.FullTextSearch
                     var worker = new FullTextIndexWorker(ftsSetting.DatabaseKey, ftsSetting.StorePath);
                     _workers.Add(worker);
                     // start timer only once. Do not do it regulary in case we don't know how much time sending of email take. So we can continue sending only when previous iteration was comlete
-                    var tmr = new Timer(OnSinchronize, ftsSetting, ftsSetting.TimeToUpdate * 60000, Timeout.Infinite);
-                    _timers.Add(ftsSetting, tmr);
+                    //var tmr = new Timer(OnSinchronize, ftsSetting, ftsSetting.TimeToUpdate * 60000, Timeout.Infinite);
+                    //_timers.Add(ftsSetting, tmr);
                 }
                 catch (Exception ex)
                 {
