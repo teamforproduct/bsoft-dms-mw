@@ -8,6 +8,7 @@ namespace BL.Logic.DocumentCore.Interfaces
     public interface IDocumentFileService
     {
         IEnumerable<FrontDocumentAttachedFile> GetDocumentFiles(IContext ctx, int documentId);
+        IEnumerable<FrontDocumentAttachedFile> GetDocumentFiles(IContext ctx, FilterDocumentAttachedFile filter);
         FrontDocumentAttachedFile GetUserFile(IContext ctx, FilterDocumentFileIdentity fileIdent);
 
         //IEnumerable<FrontDocumentAttachedFile> GetDocumentFileVersions(IContext ctx, FilterDocumentFileIdentity fileIdent);

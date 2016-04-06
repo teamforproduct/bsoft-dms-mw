@@ -107,7 +107,7 @@ namespace BL.Database.Documents
                 }
                 if (filters.AccessLevelId != null && filters.AccessLevelId.Count > 0)
                 {
-                    acc = acc.Where(x => filters.AccessLevelId.Contains((int)x.AccessLevel));
+                    acc = acc.Where(x => filters.AccessLevelId.Contains((int)x.AccessLevelId));
                 }
                 var qry = CommonQueries.GetDocumentQuery(dbContext, ctx, acc);
 
@@ -913,9 +913,9 @@ namespace BL.Database.Documents
 
                     IsLaunchPlan = doc.Doc.IsLaunchPlan,
 
-                    AccessLevel =
+                    AccessLevelId = 
                         accs.Where(x => x.PositionId == doc.Doc.ExecutorPositionId)
-                            .Select(x => x.AccessLevel)
+                            .Select(x => (int)x.AccessLevelId)
                             .FirstOrDefault(),
                     AccessLevelName =
                         accs.Where(x => x.PositionId == doc.Doc.ExecutorPositionId)
@@ -992,6 +992,7 @@ namespace BL.Database.Documents
                 res.RestrictedSendLists = CommonQueries.GetDocumentRestrictedSendList(dbContext, new FilterDocumentRestrictedSendList { DocumentId = new List<int> { documentId } });
 
                 res.DocumentFiles = CommonQueries.GetDocumentFiles(dbContext, new FilterDocumentAttachedFile { DocumentId = docIds });
+
                 res.AttachedFilesCount = res.DocumentFiles.Count();
 
                 res.DocumentTasks = CommonQueries.GetDocumentTasks(dbContext, new FilterDocumentTask { DocumentId = docIds });
@@ -1003,6 +1004,8 @@ namespace BL.Database.Documents
                 res.DocumentWorkGroup = CommonQueries.GetDocumentWorkGroup(dbContext, new FilterDictionaryPosition { DocumentIDs = docIds });
 
                 res.DocumentSubscriptions = CommonQueries.GetDocumentSubscriptions(dbContext, new FilterDocumentSubscription { DocumentId = docIds });
+
+                res.DocumentPapers = CommonQueries.GetDocumentPapers(dbContext, new FilterDocumentPaper { DocumentId = docIds });
 
                 res.Properties = CommonQueries.GetPropertyValues(dbContext, new FilterPropertyValue { RecordId = new List<int> { documentId }, Object = new List<EnumObjects> { EnumObjects.Documents } });
 
