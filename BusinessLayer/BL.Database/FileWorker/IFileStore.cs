@@ -1,4 +1,5 @@
 using BL.CrossCutting.Interfaces;
+using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.InternalModel;
 
 namespace BL.Database.FileWorker
@@ -7,6 +8,8 @@ namespace BL.Database.FileWorker
     {
         string SaveFile(IContext ctx, InternalTemplateAttachedFile attFile, bool isOverride = true);
         byte[] GetFile(IContext ctx, InternalTemplateAttachedFile attFile);
+        byte[] GetFile(IContext ctx, FrontTemplateAttachedFile attFile);
+        byte[] GetFile(IContext ctx, FrontDocumentAttachedFile attFile);
         void DeleteAllFileInDocument(IContext ctx, int documentId);
         void DeleteAllFileInTemplate(IContext ctx, int templateId);
         void DeleteFile(IContext ctx, InternalTemplateAttachedFile attFile);

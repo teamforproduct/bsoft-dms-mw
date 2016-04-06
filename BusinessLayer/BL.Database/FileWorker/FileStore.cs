@@ -4,6 +4,7 @@ using System.Security.Cryptography;
 using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
 using BL.Model.Constants;
+using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Exception;
 
@@ -24,6 +25,21 @@ namespace BL.Database.FileWorker
                 return sett.GetSetting<string>(ctx, SettingConstants.FILE_STORE_PATH);
             }
         }
+
+        private string GetFullDocumentFilePath(IContext ctx, FrontDocumentAttachedFile attFile)
+        {
+            var path = GetStorePath(ctx);
+            path = Path.Combine(new string[] { path, SettingConstants.FILE_STORE_DOCUMENT_FOLDER, ctx.CurrentAgentId.ToString(), attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString(), attFile.Version.ToString() });
+            return path;
+        }
+
+        private string GetFullDocumentFilePath(IContext ctx, FrontTemplateAttachedFile attFile)
+        {
+            var path = GetStorePath(ctx);
+            path = Path.Combine(new string[] { path, SettingConstants.FILE_STORE_TEMPLATE_FOLDER, ctx.CurrentAgentId.ToString(), attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString() });
+            return path;
+        }
+
 
         private string GetFullDocumentFilePath(IContext ctx, InternalDocumentAttachedFile attFile)
         {
@@ -79,6 +95,49 @@ namespace BL.Database.FileWorker
 
                 return docFile.Hash == FileToSha1(localFilePath);
 
+            }
+            catch (Exception ex)
+            {
+                //TODO check if file exists
+                var log = DmsResolver.Current.Get<ILogger>();
+                log.Error(ctx, ex, "Cannot access to user file", Environment.StackTrace);
+                throw new CannotAccessToFile(ex);
+            }
+        }
+
+        public byte[] GetFile(IContext ctx, FrontTemplateAttachedFile attFile)
+        {
+            try
+            {
+                string path = GetFullDocumentFilePath(ctx, attFile);
+
+                var localFilePath = path + "\\" + attFile.Name + "." + attFile.Extension;
+
+                attFile.FileContent = File.ReadAllBytes(localFilePath);
+
+                return attFile.FileContent;
+            }
+            catch (Exception ex)
+            {
+                //TODO check if file exists
+                var log = DmsResolver.Current.Get<ILogger>();
+                log.Error(ctx, ex, "Cannot access to user file", Environment.StackTrace);
+                throw new CannotAccessToFile(ex);
+            }
+        }
+
+        public byte[] GetFile(IContext ctx, FrontDocumentAttachedFile attFile)
+        {
+            try
+            {
+                string path =  GetFullDocumentFilePath(ctx, attFile);
+
+                var localFilePath = path + "\\" + attFile.Name + "." + attFile.Extension;
+
+                attFile.FileContent = File.ReadAllBytes(localFilePath);
+                attFile.WasChangedExternal = attFile.Hash != FileToSha1(localFilePath);
+
+                return attFile.FileContent;
             }
             catch (Exception ex)
             {
