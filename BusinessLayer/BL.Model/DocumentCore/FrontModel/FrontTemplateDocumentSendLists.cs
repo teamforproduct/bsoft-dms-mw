@@ -13,7 +13,7 @@ namespace BL.Model.DocumentCore.FrontModel
         public int Stage { get; set; }
         public string Task { get; set; }
         public int? DueDay { get; set; }
-        public EnumDocumentAccesses AccessLevel { get; set; }
+        public int AccessLevelId { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
 
