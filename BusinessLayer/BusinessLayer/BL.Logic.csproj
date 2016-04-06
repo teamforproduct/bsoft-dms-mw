@@ -206,6 +206,7 @@
     <Compile Include="DocumentCore\Interfaces\ITemplateDocumentService.cs" />
     <Compile Include="DocumentCore\TemplateDocumentService.cs" />
     <Compile Include="SystemServices\AutoPlan\AutoPlanService.cs" />
+    <Compile Include="SystemServices\AutoPlan\IAutoPlanService.cs" />
     <Compile Include="SystemServices\BaseSystemWorkerService.cs" />
     <Compile Include="SystemServices\FullTextSearch\FullTextIndexWorker.cs" />
     <Compile Include="SystemServices\FullTextSearch\FullTextSearchService.cs" />
@@ -215,6 +216,7 @@
     <Compile Include="SystemServices\MailWorker\BaseMailSender.cs" />
     <Compile Include="SystemServices\MailWorker\BasicSmtpMailSender.cs" />
     <Compile Include="SystemServices\MailWorker\IMailSender.cs" />
+    <Compile Include="SystemServices\MailWorker\IMailSenderWorkerService.cs" />
     <Compile Include="SystemServices\MailWorker\ISystemWorkerService.cs" />
     <Compile Include="SystemServices\MailWorker\MailSenderWorkerService.cs" />
     <Compile Include="SystemServices\MailWorker\SSLMailSender.cs" />

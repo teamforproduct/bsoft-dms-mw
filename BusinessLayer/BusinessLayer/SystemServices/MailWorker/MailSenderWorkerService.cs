@@ -4,7 +4,6 @@ using System.Threading;
 using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
 using BL.Database.SystemDb;
-using BL.Logic.DependencyInjection;
 using BL.Model.Constants;
 using BL.Model.Enums;
 using BL.Model.SystemCore.InternalModel;
@@ -12,7 +11,7 @@ using Ninject;
 
 namespace BL.Logic.SystemServices.MailWorker
 {
-    public class MailSenderWorkerService : BaseSystemWorkerService
+    public class MailSenderWorkerService : BaseSystemWorkerService, IMailSenderWorkerService
     {
         private readonly ISystemDbProcess _sysDb;
 
@@ -74,8 +73,8 @@ namespace BL.Logic.SystemServices.MailWorker
                 }
             }
         }
-        
-        private void CheckForNewMessages(object state)
+
+        public void CheckForNewMessages(object state)
         {
             
             var md = state as InternalSendMailServerParameters;
@@ -111,7 +110,7 @@ namespace BL.Logic.SystemServices.MailWorker
         }
 
 
-        private void SendMessage(IContext ctx, InternalSendMailParameters msSetting)
+        public void SendMessage(IContext ctx, InternalSendMailParameters msSetting)
         {
             var sender = DmsResolver.Current.Kernel.Get<IMailSender>(msSetting.ServerType.ToString());
 
