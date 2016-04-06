@@ -5,14 +5,13 @@ using BL.Model.AutoPlan;
 using System.Threading;
 using BL.CrossCutting.DependencyInjection;
 using BL.Database.SystemDb;
-using BL.Logic.DependencyInjection;
 using BL.Logic.DocumentCore;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Model.Constants;
 
 namespace BL.Logic.SystemServices.AutoPlan
 {
-    public class AutoPlanService: BaseSystemWorkerService
+    public class AutoPlanService: BaseSystemWorkerService, IAutoPlanService
     {
         private readonly Dictionary<AutoPlanSettings, Timer> _timers;
         private ISystemDbProcess _sysDb;

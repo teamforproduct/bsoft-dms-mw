@@ -35,7 +35,17 @@ namespace BL.Logic.SystemServices.FullTextSearch
             _serverKey = serverKey;
             _storePath = storePath;
             _lockObject = new object();
-            _directory = FSDirectory.Open(Path.Combine(_storePath, _serverKey.Replace(".","").Replace("/","_")));
+            var dir = Path.Combine(_storePath,_serverKey.Replace("\\", "").Replace(",", "").Replace(".", "").Replace("/", "_"));
+            if (!System.IO.Directory.Exists(dir))
+            {
+                System.IO.Directory.CreateDirectory(dir);
+                Directory directory = FSDirectory.Open(dir);
+                Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_30);
+                IndexWriter writer = new IndexWriter(directory, analyzer, IndexWriter.MaxFieldLength.UNLIMITED);
+                writer.Commit();
+                writer.Dispose();
+            }
+            _directory = FSDirectory.Open(dir);
             _analyzer = new StandardAnalyzer(Version.LUCENE_30);
             _indexReader = IndexReader.Open(_directory, true); // only searching, so read-only=true
             _searcher = new IndexSearcher(_indexReader);
