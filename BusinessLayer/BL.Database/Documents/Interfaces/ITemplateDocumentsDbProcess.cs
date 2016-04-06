@@ -40,6 +40,19 @@ namespace BL.Database.Documents.Interfaces
         int AddOrUpdateTemplateTask(IContext ctx, InternalTemplateDocumentTask template);
         void DeleteTemplateTask(IContext ctx, int id);
         #endregion TemplateDocumentTasks
+        #region TemplateAttachedFiles
+
+        IEnumerable<FrontTemplateAttachedFile> GetTemplateAttachedFiles(IContext ctx, FilterTemplateAttachedFile filter,
+            int templateId);
+
+        FrontTemplateAttachedFile GetTemplateAttachedFile(IContext ctx, int id);
+        int GetNextFileOrderNumber(IContext ctx, int templateId);
+        int AddNewFile(IContext ctx, InternalTemplateAttachedFile docFile);
+        void UpdateFile(IContext ctx, InternalTemplateAttachedFile docFile);
+        void DeleteTemplateAttachedFile(IContext ctx, InternalTemplateAttachedFile docFile);
+
+        #endregion TemplateAttachedFiles
+
 
     }
 }

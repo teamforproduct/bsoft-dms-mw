@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Documents.Interfaces;
+using BL.Database.FileWorker;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.Common;
+using BL.Logic.DocumentCore.Interfaces;
 using BL.Model.DocumentCore;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
@@ -17,12 +19,25 @@ namespace BL.Logic.DocumentCore
     {
         private readonly ITemplateDocumentsDbProcess _templateDb;
         private readonly IAdminService _admin;
+        private readonly ICommandService _commandService;
+        private readonly IFileStore _fStore;
+   
 
-
-        public TemplateDocumentService(ITemplateDocumentsDbProcess templateDb,IAdminService admin)
+        public TemplateDocumentService(ITemplateDocumentsDbProcess templateDb,IAdminService admin,
+            IFileStore fstore, ICommandService commandService)
         {
             _templateDb = templateDb;
             _admin = admin;
+            _fStore = fstore;
+            _commandService = commandService;
+
+        }
+
+        public object ExecuteAction(EnumDocumentActions act, IContext context, object param)
+        {
+            var cmd = TemplateCommandFactory.GetTemplateCommand(act, context, null, param);
+            var res = _commandService.ExecuteCommand(cmd);
+            return res;
         }
 
         #region TemplateDocuments
@@ -147,7 +162,23 @@ namespace BL.Logic.DocumentCore
         }
 
         #endregion TemplateDocumentTasks
-        
-       
+
+        #region TemplateAttachedFiles
+
+        public IEnumerable<FrontTemplateAttachedFile> GetTemplateAttachedFiles(IContext ctx,
+            FilterTemplateAttachedFile filter, int templateId)
+        {
+            return _templateDb.GetTemplateAttachedFiles(ctx, filter,templateId);
+        }
+
+        public FrontTemplateAttachedFile GetTemplateAttachedFile(IContext ctx, int id)
+        {
+            return _templateDb.GetTemplateAttachedFile(ctx, id);
+        }
+
+
+
+        #endregion TemplateAttachedFiles
+
     }
 }

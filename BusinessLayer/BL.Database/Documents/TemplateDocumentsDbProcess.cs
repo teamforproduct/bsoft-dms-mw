@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using BL.CrossCutting.Interfaces;
+using BL.Database.Common;
 using BL.Database.DatabaseContext;
 using BL.Database.Documents.Interfaces;
 using BL.Database.DBModel.Template;
@@ -17,6 +18,7 @@ namespace BL.Database.Documents
     {
 
         #region TemplateDocuments
+
         public IEnumerable<FrontTemplateDocument> GetTemplateDocument(IContext ctx)
         {
             using (var dbContext = new DmsContext(ctx))
@@ -43,7 +45,10 @@ namespace BL.Database.Documents
             int templateDocumentId = 0;
             using (var dbContext = new DmsContext(ctx))
             {
-                templateDocumentId = dbContext.DocumentsSet.Where(x => x.Id == documentId).Select(x => x.TemplateDocumentId).FirstOrDefault();
+                templateDocumentId =
+                    dbContext.DocumentsSet.Where(x => x.Id == documentId)
+                        .Select(x => x.TemplateDocumentId)
+                        .FirstOrDefault();
             }
 
             return GetTemplateDocument(ctx, templateDocumentId);
@@ -97,23 +102,23 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(ctx))
             {
                 var newTemplate = new TemplateDocuments()
-                    {
-                        Name = template.Name,
-                        IsHard = template.IsHard,
-                        DocumentDirectionId = (int) template.DocumentDirection,
-                        DocumentTypeId = template.DocumentTypeId,
-                        DocumentSubjectId = template.DocumentSubjectId,
-                        Description = template.Description,
-                        RegistrationJournalId = template.RegistrationJournalId,
-                        SenderAgentId = template.SenderAgentId,
-                        SenderAgentPersonId = template.SenderAgentPersonId,
-                        Addressee = template.Addressee,
-                        IsActive = template.IsActive
-                    };
+                {
+                    Name = template.Name,
+                    IsHard = template.IsHard,
+                    DocumentDirectionId = (int) template.DocumentDirection,
+                    DocumentTypeId = template.DocumentTypeId,
+                    DocumentSubjectId = template.DocumentSubjectId,
+                    Description = template.Description,
+                    RegistrationJournalId = template.RegistrationJournalId,
+                    SenderAgentId = template.SenderAgentId,
+                    SenderAgentPersonId = template.SenderAgentPersonId,
+                    Addressee = template.Addressee,
+                    IsActive = template.IsActive
+                };
 
                 if (template.Id.HasValue)
                 {
-                    newTemplate.Id = (int)template.Id;
+                    newTemplate.Id = (int) template.Id;
                 }
 
                 dbContext.TemplateDocumentsSet.Attach(newTemplate);
@@ -159,8 +164,9 @@ namespace BL.Database.Documents
 
         public bool CanModifyTemplate(IContext ctx, int templateId)
         {
-               return CanModifyTemplate(ctx, new ModifyTemplateDocument() {Id = templateId});           
+            return CanModifyTemplate(ctx, new ModifyTemplateDocument() {Id = templateId});
         }
+
         #endregion TemplateDocuments
 
         #region TemplateDocumentSendLists
@@ -196,13 +202,13 @@ namespace BL.Database.Documents
                 {
                     Id = x.Id,
                     DocumentId = x.DocumentId,
-                    SendType = (EnumSendTypes)x.SendTypeId,
+                    SendType = (EnumSendTypes) x.SendTypeId,
                     TargetPositionId = x.TargetPositionId,
                     Description = x.Description,
                     Stage = x.Stage,
                     Task = x.Task.Task,
                     DueDay = x.DueDay,
-                    AccessLevel = (EnumDocumentAccesses)x.AccessLevelId,
+                    AccessLevel = (EnumDocumentAccesses) x.AccessLevelId,
                     PositionName = x.TargetPosition.Name,
                     SendTypeName = x.SendType.Name,
                     AccessLevelName = x.AccessLevel.Name,
@@ -215,23 +221,25 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                return dbContext.TemplateDocumentSendListsSet.Where(x => x.Id == id).Select(x => new FrontTemplateDocumentSendLists()
-                {
-                    Id = x.Id,
-                    DocumentId = x.DocumentId,
-                    SendType = (EnumSendTypes) x.SendTypeId,
-                    TargetPositionId = x.TargetPositionId,
-                    Description = x.Description,
-                    Stage = x.Stage,
-                    Task = x.Task.Task,
-                    DueDay = x.DueDay,
-                    AccessLevel = (EnumDocumentAccesses) x.AccessLevelId,
-                    PositionName = x.TargetPosition.Name,
-                    SendTypeName = x.SendType.Name,
-                    AccessLevelName = x.AccessLevel.Name,
-                    IsAddControl = x.IsAddControl,
-                    IsAvailableWithinTask = x.IsAvailableWithinTask
-                }).FirstOrDefault();
+                return
+                    dbContext.TemplateDocumentSendListsSet.Where(x => x.Id == id)
+                        .Select(x => new FrontTemplateDocumentSendLists()
+                        {
+                            Id = x.Id,
+                            DocumentId = x.DocumentId,
+                            SendType = (EnumSendTypes) x.SendTypeId,
+                            TargetPositionId = x.TargetPositionId,
+                            Description = x.Description,
+                            Stage = x.Stage,
+                            Task = x.Task.Task,
+                            DueDay = x.DueDay,
+                            AccessLevel = (EnumDocumentAccesses) x.AccessLevelId,
+                            PositionName = x.TargetPosition.Name,
+                            SendTypeName = x.SendType.Name,
+                            AccessLevelName = x.AccessLevel.Name,
+                            IsAddControl = x.IsAddControl,
+                            IsAvailableWithinTask = x.IsAvailableWithinTask
+                        }).FirstOrDefault();
             }
         }
 
@@ -239,27 +247,27 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                var newTemplate=new TemplateDocumentSendLists()
+                var newTemplate = new TemplateDocumentSendLists()
                 {
-                   DocumentId=template.DocumentId,
-                   Description = template.Description,
-                   IsAddControl = template.IsAddControl,
-                   IsAvailableWithinTask = template.IsAvailableWithinTask,
-                   TargetPositionId = template.TargetPositionId,
-                   AccessLevelId = (int)template.AccessLevel,
-                   DueDay = template.DueDay,
-                   SendTypeId = (int)template.SendType,
-                   SourcePositionId = template.SourcePositionId,
-                   Stage = template.Stage,
-                   TargetAgentId = template.TargetAgentId,
-                   TaskId = template.TaskId,
-                   LastChangeDate = template.LastChangeDate,
-                   LastChangeUserId = template.LastChangeUserId
+                    DocumentId = template.DocumentId,
+                    Description = template.Description,
+                    IsAddControl = template.IsAddControl,
+                    IsAvailableWithinTask = template.IsAvailableWithinTask,
+                    TargetPositionId = template.TargetPositionId,
+                    AccessLevelId = (int) template.AccessLevel,
+                    DueDay = template.DueDay,
+                    SendTypeId = (int) template.SendType,
+                    SourcePositionId = template.SourcePositionId,
+                    Stage = template.Stage,
+                    TargetAgentId = template.TargetAgentId,
+                    TaskId = template.TaskId,
+                    LastChangeDate = template.LastChangeDate,
+                    LastChangeUserId = template.LastChangeUserId
                 };
 
                 if (template.Id.HasValue)
                 {
-                    newTemplate.Id = (int)template.Id;
+                    newTemplate.Id = (int) template.Id;
                 }
 
                 dbContext.TemplateDocumentSendListsSet.Attach(newTemplate);
@@ -295,13 +303,13 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(ctx))
             {
                 var qry = dbContext.TemplateDocumentRestrictedSendListsSet.AsQueryable();
-                qry = qry.Where(x => x.DocumentId == (int)filter.DocumentId);
+                qry = qry.Where(x => x.DocumentId == (int) filter.DocumentId);
 
                 if (filter.Id.Count > 0)
                 {
                     qry = qry.Where(x => filter.Id.Contains(x.Id));
                 }
-                
+
                 if (filter.PositionId.HasValue)
                 {
                     qry = qry.Where(x => x.PositionId == filter.PositionId);
@@ -309,15 +317,15 @@ namespace BL.Database.Documents
 
                 if (filter.AccessLevel.HasValue)
                 {
-                    qry = qry.Where(x => x.AccessLevelId == (int)filter.AccessLevel);
+                    qry = qry.Where(x => x.AccessLevelId == (int) filter.AccessLevel);
                 }
 
                 return qry.Select(x => new FrontTemplateDocumentRestrictedSendLists()
                 {
                     Id = x.Id,
                     DocumentId = x.DocumentId,
-                    PositionId=x.Position.Id,
-                    AccessLevel = (EnumDocumentAccesses)x.AccessLevelId,
+                    PositionId = x.Position.Id,
+                    AccessLevel = (EnumDocumentAccesses) x.AccessLevelId,
                     PositionName = x.Position.Name,
                     AccessLevelName = x.AccessLevel.Name,
                 }).ToList();
@@ -328,15 +336,17 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                return dbContext.TemplateDocumentRestrictedSendListsSet.Where(x => x.Id == id).Select(x => new FrontTemplateDocumentRestrictedSendLists()
-                {
-                    Id = x.Id,
-                    DocumentId = x.DocumentId,
-                    PositionId = x.Position.Id,
-                    AccessLevel = (EnumDocumentAccesses)x.AccessLevelId,
-                    PositionName = x.Position.Name,
-                    AccessLevelName = x.AccessLevel.Name,
-                }).FirstOrDefault();
+                return
+                    dbContext.TemplateDocumentRestrictedSendListsSet.Where(x => x.Id == id)
+                        .Select(x => new FrontTemplateDocumentRestrictedSendLists()
+                        {
+                            Id = x.Id,
+                            DocumentId = x.DocumentId,
+                            PositionId = x.Position.Id,
+                            AccessLevel = (EnumDocumentAccesses) x.AccessLevelId,
+                            PositionName = x.Position.Name,
+                            AccessLevelName = x.AccessLevel.Name,
+                        }).FirstOrDefault();
             }
         }
 
@@ -347,17 +357,17 @@ namespace BL.Database.Documents
             {
                 var newTemplate = new TemplateDocumentRestrictedSendLists()
                 {
-                    
+
                     DocumentId = template.DocumentId,
                     PositionId = template.PositionId,
-                    AccessLevelId = (int)template.AccessLevel,
+                    AccessLevelId = (int) template.AccessLevel,
                     LastChangeDate = template.LastChangeDate,
                     LastChangeUserId = template.LastChangeUserId
                 };
 
                 if (template.Id.HasValue)
                 {
-                    newTemplate.Id = (int)template.Id;
+                    newTemplate.Id = (int) template.Id;
                 }
 
                 dbContext.TemplateDocumentRestrictedSendListsSet.Attach(newTemplate);
@@ -409,7 +419,7 @@ namespace BL.Database.Documents
 
                 return qry.Select(x => new FrontTemplateDocumentTasks
                 {
-                    Id=x.Id,
+                    Id = x.Id,
                     DocumentId = x.DocumentId,
                     PositionId = x.PositionId,
                     PositionName = x.Position.Name,
@@ -433,7 +443,7 @@ namespace BL.Database.Documents
                         Task = x.Task,
                         Description = x.Description,
                         PositionName = x.Position.Name
-                        }).FirstOrDefault();
+                    }).FirstOrDefault();
             }
         }
 
@@ -454,7 +464,7 @@ namespace BL.Database.Documents
 
                 if (template.Id.HasValue)
                 {
-                    newTemplate.Id = (int)template.Id;
+                    newTemplate.Id = (int) template.Id;
                 }
 
                 dbContext.TemplateDocumentTasksSet.Attach(newTemplate);
@@ -481,5 +491,140 @@ namespace BL.Database.Documents
 
         #endregion TemplateDocumentTasks
 
+        #region TemplateDocumentAttachedFiles
+
+        public IEnumerable<FrontTemplateAttachedFile> GetTemplateAttachedFiles(IContext ctx,
+            FilterTemplateAttachedFile filter,
+            int templateId)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+
+                var qry = dbContext.TemplateDocumentFilesSet.AsQueryable();
+                qry = qry.Where(x => x.DocumentId == templateId);
+
+                if (filter.Id.HasValue)
+                {
+                    qry = qry.Where(x => x.Id == filter.Id);
+                }
+
+                if (!string.IsNullOrEmpty(filter.Name))
+                {
+                    qry = qry.Where(x => x.Name.Contains(filter.Name));
+                }
+
+                return
+                    qry.Join(dbContext.DictionaryAgentsSet, df => df.LastChangeUserId, da => da.Id,
+                        (d, a) => new {fl = d, agName = a.Name})
+                        .Select(x => new FrontTemplateAttachedFile
+                        {
+                            Id = x.fl.Id,
+                            DocumentId = x.fl.DocumentId,
+                            Extension = x.fl.Extention,
+                            FileContent = x.fl.Content,
+                            IsAdditional = x.fl.IsAdditional,
+                            Hash = x.fl.Hash,
+                            FileType = x.fl.FileType,
+                            FileSize = x.fl.FileSize,
+                            LastChangeDate = x.fl.LastChangeDate,
+                            LastChangeUserId = x.fl.LastChangeUserId,
+                            LastChangeUserName = x.agName,
+                            Name = x.fl.Name,
+                            OrderInDocument = x.fl.OrderNumber
+
+                        }).ToList();
+            }
+        }
+
+
+        public FrontTemplateAttachedFile GetTemplateAttachedFile(IContext ctx, int id)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                return
+                    dbContext.TemplateDocumentFilesSet.Where(
+                        x => x.Id == id)
+                        .Join(dbContext.DictionaryAgentsSet, df => df.LastChangeUserId, da => da.Id,
+                            (d, a) => new {fl = d, agName = a.Name})
+                        .Select(x => new FrontTemplateAttachedFile
+                        {
+                            Id = x.fl.Id,
+                            DocumentId = x.fl.DocumentId,
+                            Extension = x.fl.Extention,
+                            FileContent = x.fl.Content,
+                            IsAdditional = x.fl.IsAdditional,
+                            Hash = x.fl.Hash,
+                            FileType = x.fl.FileType,
+                            FileSize = x.fl.FileSize,
+                            LastChangeDate = x.fl.LastChangeDate,
+                            LastChangeUserId = x.fl.LastChangeUserId,
+                            LastChangeUserName = x.agName,
+                            Name = x.fl.Name,
+                            OrderInDocument = x.fl.OrderNumber
+
+                        }).FirstOrDefault();
+            }
+        }
+
+
+        public int GetNextFileOrderNumber(IContext ctx, int templateId)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                if (dbContext.TemplateDocumentFilesSet.Any(x => x.DocumentId == templateId))
+                {
+                    return
+                        dbContext.TemplateDocumentFilesSet.Where(x => x.DocumentId == templateId)
+                            .Max(x => x.OrderNumber) + 1;
+                }
+            }
+            return 1;
+        }
+
+        public int AddNewFile(IContext ctx, InternalTemplateAttachedFile docFile)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                var fl = ModelConverter.GetDbTemplateFile(docFile);
+                dbContext.TemplateDocumentFilesSet.Add(fl);
+                dbContext.SaveChanges();
+                docFile.Id = fl.Id;
+                return fl.Id;
+            }
+        }
+
+        public void UpdateFile(IContext ctx, InternalTemplateAttachedFile docFile)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                var fl = ModelConverter.GetDbTemplateFile(docFile);
+                dbContext.TemplateDocumentFilesSet.Attach(fl);
+                var entry = dbContext.Entry(fl);
+                entry.Property(x => x.Name).IsModified = true;
+                entry.Property(x => x.Extention).IsModified = true;
+                entry.Property(x => x.FileType).IsModified = true;
+                entry.Property(x => x.FileSize).IsModified = true;
+                entry.Property(x => x.IsAdditional).IsModified = true;
+                entry.Property(x => x.LastChangeDate).IsModified = true;
+                entry.Property(x => x.LastChangeUserId).IsModified = true;
+                entry.Property(x => x.Hash).IsModified = true;
+                dbContext.SaveChanges();
+            }
+        }
+
+        public void DeleteTemplateAttachedFile(IContext ctx, InternalTemplateAttachedFile docFile)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                dbContext.TemplateDocumentFilesSet.RemoveRange(
+                    dbContext.TemplateDocumentFilesSet.Where(
+                        x => x.DocumentId == docFile.DocumentId && x.OrderNumber == docFile.OrderInDocument));
+                dbContext.SaveChanges();
+
+            }
+        }
+
+        #endregion TemplateDocumentAttachedFiles
     }
+
 }

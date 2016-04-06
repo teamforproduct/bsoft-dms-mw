@@ -10,6 +10,9 @@ namespace BL.Logic.DocumentCore
 {
     public interface ITemplateDocumentService
     {
+
+        object ExecuteAction(EnumDocumentActions act, IContext context, object param);
+
         IEnumerable<FrontTemplateDocument> GetTemplateDocuments(IContext context);
         int AddOrUpdateTemplate(IContext context, ModifyTemplateDocument template,EnumTemplateDocumentsActions action);
         void DeleteTemplate(IContext context, int id);
@@ -32,11 +35,10 @@ namespace BL.Logic.DocumentCore
         void DeleteTemplateTask(IContext context, int id);
         FrontTemplateDocumentTasks GetTemplateDocumentTask(IContext context, int id);
 
- //       IEnumerable<FrontTemplateAttachedFile> GetTemplateDocumentAttachedFiles(IContext context,
- //           int templateId, FilterTemplateAttachedFile filter);
- //       int AddOrUpdateTemplateAttachedFile(IContext context, ModifyTemplateAttachedFile template, EnumTemplateDocumentsActions action);
- //       void DeleteTemplateAttachedFile(IContext context, int id);
- //       FrontTemplateAttachedFile GetTemplateDocumentAttachedFile(IContext context, int id);
+        IEnumerable<FrontTemplateAttachedFile> GetTemplateAttachedFiles(IContext ctx, FilterTemplateAttachedFile filter, int templateId);
+        FrontTemplateAttachedFile GetTemplateAttachedFile(IContext ctx, int id);
+
+
 
 
     }

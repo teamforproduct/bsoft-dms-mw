@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BL.Model.Users;
 
 namespace BL.Model.DocumentCore.IncomingModel
 {
     /// <summary>
     /// Изменение файла, прикрепленного к шаблону документа
     /// </summary>
-    public class ModifyTemplateAttachedFile
+    public class ModifyTemplateAttachedFile : CurrentPosition
     {
         /// <summary>
         /// ИД

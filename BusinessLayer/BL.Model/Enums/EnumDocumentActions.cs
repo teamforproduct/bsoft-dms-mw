@@ -342,7 +342,12 @@
         DeleteDocumentTask = 3,
         AddDocumentPaperList = 7,
         ModifyDocumentPaperList = 8,
-        DeleteDocumentPaperList = 9
+        DeleteDocumentPaperList = 9,
+
+
+        AddTemplateAttachedFile = 255001,
+        ModifyTemplateAttachedFile = 255005,
+        DeleteTemplateAttachedFile = 255009
 
     }
 }
