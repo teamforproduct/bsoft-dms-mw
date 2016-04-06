@@ -27,7 +27,7 @@ namespace BL.Model.DocumentCore.FrontModel
                 SenderNumber = model.SenderNumber;
                 SenderDate = model.SenderDate;
                 Addressee = model.Addressee;
-                if (model.AccessLevel != null) AccessLevel = (EnumDocumentAccesses)model.AccessLevel;
+                if (model.AccessLevel != null) AccessLevelId = (int)model.AccessLevel;
 
                 TemplateDocumentId = model.TemplateDocumentId;
                 ExecutorPositionId = model.ExecutorPositionId;
@@ -65,7 +65,7 @@ namespace BL.Model.DocumentCore.FrontModel
                 }
             }
         }
-
+        /*
         public FrontDocument(ModifyDocument model)
         {
             if (model != null)
@@ -81,6 +81,7 @@ namespace BL.Model.DocumentCore.FrontModel
                 AccessLevel = model.AccessLevel;
             }
         }
+        */
         /// <summary>
         /// ИД Документа
         /// </summary>
@@ -114,7 +115,7 @@ namespace BL.Model.DocumentCore.FrontModel
         /// <summary>
         /// ИД уровня доступа
         /// </summary>
-        public EnumDocumentAccesses? AccessLevel { get; set; }
+        public int? AccessLevelId { get; set; }
 
         public string TemplateDocumentName { get; set; }
 
@@ -182,6 +183,7 @@ namespace BL.Model.DocumentCore.FrontModel
         public IEnumerable<FrontDocumentTask> DocumentTasks { get; set; }
         public IEnumerable<FrontDocumentWait> DocumentWaits { get; set; }
         public IEnumerable<FrontDocumentTag> DocumentTags { get; set; }
+
         public IEnumerable<FrontDocumentPaper> DocumentPapers { get; set; }
         public IEnumerable<FrontDocumentPaperEvent> DocumentPaperEvents { get; set; }
 

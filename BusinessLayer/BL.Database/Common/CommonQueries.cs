@@ -18,6 +18,7 @@ using System.Text;
 using System;
 using BL.CrossCutting.DependencyInjection;
 using BL.Database.FileWorker;
+using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.FullTextSearch;
 
@@ -168,7 +169,7 @@ namespace BL.Database.Common
                     IsInWork = acc.IsInWork,
                     DocumentId = acc.DocumentId,
                     IsFavourite = acc.IsFavourite,
-                    AccessLevel = (EnumDocumentAccesses)acc.AccessLevelId,
+                    AccessLevelId = (int)acc.AccessLevelId,
                     AccessLevelName = acc.AccessLevel.Name
                 });
         }
@@ -251,48 +252,6 @@ namespace BL.Database.Common
                     )
                     .AsQueryable();
         }
-
-        //        public static IEnumerable<FrontDocumentEvent> GetDocumentEvents(DmsContext dbContext, FilterDocumentEvent filter)
-        //        {
-        //            var qry = dbContext.DocumentEventsSet.AsQueryable();
-
-        //            if (filter != null)
-        //            {
-        //                if (filter.EventId?.Count > 0)
-        //                {
-        //                    qry = qry.Where(x => filter.EventId.Contains(x.Id));
-        //                }
-
-        //                if (filter.DocumentId?.Count > 0)
-        //                {
-        //                    qry = qry.Where(x => filter.DocumentId.Contains(x.DocumentId));
-        //                }
-        //            }
-        //            return qry.Select(x => new FrontDocumentEvent
-        //            {
-        //                Id = x.Id,
-        //                DocumentId = x.DocumentId,
-        //                TaskName = x.TaskName,
-        //                Description = x.Description,
-        //                EventType = (EnumEventTypes)x.EventTypeId,
-        //                EventTypeName = x.EventType.Name,
-        //                ImportanceEventType = (EnumImportanceEventTypes)x.EventType.ImportanceEventTypeId,
-        ////                EventImportanceTypeName = x.EventType.ImportanceEventType.Name,
-        //                CreateDate = x.CreateDate,
-        //                Date = x.Date,
-        //                SourceAgentName = x.SourceAgent.Name,
-        //                SourceAgentId = x.SourceAgentId,
-        //                SourcePositionId = x.SourcePositionId,
-        //                SourcePositionName = x.SourcePosition.Name,
-        //                SourcePositionExecutorAgentName = x.SourcePosition.ExecutorAgent.Name,
-        //                TargetAgentName = x.TargetAgent.Name,
-        //                TargetAgentId = x.TargetAgentId,
-        //                TargetPositionId = x.TargetPositionId,
-        //                TargetPositionName = x.TargetPosition.Name,
-        //                TargetPositionExecutorAgentName = x.TargetPosition.ExecutorAgent.Name,
-        //            }).ToList();
-
-        //        }
 
         public static IQueryable<DocumentWaits> GetDocumentWaitsQuery(DmsContext dbContext, IContext ctx = null, int? documentId = null)
         {
@@ -745,64 +704,6 @@ namespace BL.Database.Common
             return items;
         }
 
-        public static IEnumerable<InternalDocumentSendList> GetInternalDocumentSendList(DmsContext dbContext, FilterDocumentSendList filter)
-        {
-            var sendListDb = dbContext.DocumentSendListsSet.AsQueryable();
-
-            if (filter != null)
-            {
-                if (filter?.DocumentId?.Count() > 0)
-                {
-                    sendListDb = sendListDb.Where(x => filter.DocumentId.Contains(x.DocumentId));
-                }
-                if (filter?.Id?.Count() > 0)
-                {
-                    sendListDb = sendListDb.Where(x => filter.Id.Contains(x.Id));
-                }
-
-            }
-
-            return sendListDb.Select(y => new InternalDocumentSendList
-            {
-                Id = y.Id,
-                TargetAgentId = y.TargetAgentId,
-                TargetPositionId = y.TargetPositionId,
-                SendType = (EnumSendTypes)y.SendTypeId,
-                Description = y.Description,
-                DueDate = y.DueDate,
-                DueDay = y.DueDay,
-            }).ToList();
-        }
-
-        public static IEnumerable<InternalDocumentSubscription> GetInternalDocumentSubscriptions(DmsContext dbContext, FilterDocumentSubscription filter)
-        {
-            var subscriptionsDb = dbContext.DocumentSubscriptionsSet.AsQueryable();
-
-            if (filter != null)
-            {
-                if (filter.DocumentId.Any())
-                {
-                    subscriptionsDb = subscriptionsDb.Where(x => filter.DocumentId.Contains(x.DocumentId));
-                }
-                if (filter.SubscriptionStates?.Count > 0)
-                {
-                    subscriptionsDb = subscriptionsDb.Where(x => filter.SubscriptionStates.Cast<int>().Contains(x.SubscriptionStateId ?? 0));
-                }
-            }
-
-            var subscriptionsRes = subscriptionsDb.Select(x => new { Subscription = x });
-
-            var subscriptions = subscriptionsRes.Select(x => new InternalDocumentSubscription
-            {
-                Id = x.Subscription.Id,
-                SubscriptionStates = (EnumSubscriptionStates)x.Subscription.SubscriptionStateId,
-                Hash = x.Subscription.Hash,
-                FullHash = x.Subscription.FullHash
-            }).ToList();
-
-            return subscriptions;
-        }
-
         public static IEnumerable<FrontDocumentSendList> GetDocumentSendList(DmsContext dbContext, FilterDocumentSendList filter)
         {
             var sendListDb = dbContext.DocumentSendListsSet.AsQueryable();
@@ -1015,8 +916,29 @@ namespace BL.Database.Common
                 IsCopy = x.IsCopy,
                 PageQuantity = x.PageQuantity,
                 OrderNumber = x.OrderNumber,
-                LastPaperEventId = x.LastPaperEventId
+                LastPaperEventId = x.LastPaperEventId,
+                IsInWork = x.IsInWork,
+                DocumentDate = x.Document.RegistrationDate ?? x.Document.CreateDate,
+                RegistrationNumber = x.Document.RegistrationNumber,
+                RegistrationNumberPrefix = x.Document.RegistrationNumberPrefix,
+                RegistrationNumberSuffix = x.Document.RegistrationNumberSuffix,
+                RegistrationFullNumber = "#" + x.Document.Id,
+                DocumentDescription = x.Document.Description,
+                DocumentTypeName = x.Document.TemplateDocument.DocumentType.Name,
+                DocumentDirectionName = x.Document.TemplateDocument.DocumentDirection.Name,
+                OwnerAgentName = x.LastPaperEvent.TargetAgent.Name,
+                OwnerPositionExecutorAgentName = x.LastPaperEvent.TargetPositionExecutorAgent.Name,
+                OwnerPositionName = x.LastPaperEvent.TargetPosition.Name,
+                OwnerPositionExecutorNowAgentName = x.LastPaperEvent.TargetPosition.ExecutorAgent.Name,
+                OwnerPositionExecutorAgentPhoneNumber = "OwnerPositionExecutorAgentPhoneNumber",
+                PlanDate = x.LastPaperEvent.PlanDate,
+                SendDate = x.LastPaperEvent.SendDate,
+                RecieveDate = x.LastPaperEvent.RecieveDate,
+
+
             }).ToList();
+
+            items.ForEach(x => CommonQueries.ChangeRegistrationFullNumber(x));
 
             return items;
         }
@@ -1214,6 +1136,112 @@ namespace BL.Database.Common
 
             return hash;
         }
+
+        public static List<InternalDictionaryPositionWithActions> GetPositionWithActions(IContext context, DmsContext dbContext, List<int> positionAccesses)
+        {
+            return dbContext.DictionaryPositionsSet
+                .Where(
+                    x =>
+                        context.CurrentPositionsIdList.Contains(x.Id) &&
+                        positionAccesses.Contains(x.Id))
+                .Select(x => new InternalDictionaryPositionWithActions
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    DepartmentId = x.DepartmentId,
+                    ExecutorAgentId = x.ExecutorAgentId,
+                    DepartmentName = x.Department.Name,
+                    ExecutorAgentName = x.ExecutorAgent.Name,
+                }).ToList();
+        }
+
+        public static Dictionary<int, List<InternalSystemAction>> GetActionsListForCurrentPositionsList(IContext context, DmsContext dbContext, IEnumerable<EnumObjects> objects, List<int> positionAccesses)
+        {
+            var res = new Dictionary<int, List<InternalSystemAction>>();
+            foreach (var posId in context.CurrentPositionsIdList)
+            {
+                var qry = dbContext.SystemActionsSet.Where(x => objects.Select(y => (int)y).Contains(x.ObjectId)
+                                                                && positionAccesses.Contains(posId)
+                                                                && x.IsVisible &&
+                                                                (!x.IsGrantable ||
+                                                                 x.RoleActions.Any(y => y.Role.PositionRoles.Any(pr => pr.PositionId == posId) &&
+                                                                                        y.Role.UserRoles.Any(z => z.UserId == context.CurrentAgentId)))
+                    );
+
+                var actLst = qry.Select(a => new InternalSystemAction
+                {
+                    DocumentAction = (EnumDocumentActions)a.Id,
+                    Object = (EnumObjects)a.ObjectId,
+                    ActionCode = a.Code,
+                    ObjectCode = a.Object.Code,
+                    API = a.API,
+                    Description = a.Description,
+                    Category = a.Category
+                }).ToList();
+                res.Add(posId, actLst);
+            }
+            return res;
+        }
+
+        public static IEnumerable<InternalDocumentSendList> GetInternalDocumentSendList(DmsContext dbContext, FilterDocumentSendList filter)
+        {
+            var sendListDb = dbContext.DocumentSendListsSet.AsQueryable();
+
+            if (filter != null)
+            {
+                if (filter?.DocumentId?.Count() > 0)
+                {
+                    sendListDb = sendListDb.Where(x => filter.DocumentId.Contains(x.DocumentId));
+                }
+                if (filter?.Id?.Count() > 0)
+                {
+                    sendListDb = sendListDb.Where(x => filter.Id.Contains(x.Id));
+                }
+
+            }
+
+            return sendListDb.Select(y => new InternalDocumentSendList
+            {
+                Id = y.Id,
+                TargetAgentId = y.TargetAgentId,
+                TargetPositionId = y.TargetPositionId,
+                SendType = (EnumSendTypes)y.SendTypeId,
+                Description = y.Description,
+                DueDate = y.DueDate,
+                DueDay = y.DueDay,
+            }).ToList();
+        }
+
+        public static IEnumerable<InternalDocumentSubscription> GetInternalDocumentSubscriptions(DmsContext dbContext, FilterDocumentSubscription filter)
+        {
+            var subscriptionsDb = dbContext.DocumentSubscriptionsSet.AsQueryable();
+
+            if (filter != null)
+            {
+                if (filter.DocumentId.Any())
+                {
+                    subscriptionsDb = subscriptionsDb.Where(x => filter.DocumentId.Contains(x.DocumentId));
+                }
+                if (filter.SubscriptionStates?.Count > 0)
+                {
+                    subscriptionsDb = subscriptionsDb.Where(x => filter.SubscriptionStates.Cast<int>().Contains(x.SubscriptionStateId ?? 0));
+                }
+            }
+
+            var subscriptionsRes = subscriptionsDb.Select(x => new { Subscription = x });
+
+            var subscriptions = subscriptionsRes.Select(x => new InternalDocumentSubscription
+            {
+                Id = x.Subscription.Id,
+                SubscriptionStates = (EnumSubscriptionStates)x.Subscription.SubscriptionStateId,
+                Hash = x.Subscription.Hash,
+                FullHash = x.Subscription.FullHash
+            }).ToList();
+
+            return subscriptions;
+        }
+
+
 
     }
 }

@@ -33,12 +33,27 @@
     /// </summary>
     public class DatabaseIsNotSet : DmsExceptions
     {
-        private const string _MESSAGE = "##l@DmsExceptions:DatabaseIsNotSet@l##The database is not set";
+        private const string _MESSAGE = "##l@DmsExceptions:DatabaseIsNotSet@l##";
         public DatabaseIsNotSet() : base(_MESSAGE)
         {
         }
 
         public DatabaseIsNotSet(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+    /// <summary>
+    /// Сообщение при ошибке работы с базой данных
+    /// </summary>
+    public class DatabaseIsNotFound : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:DatabaseIsNotFound@l##";
+        public DatabaseIsNotFound() : base(_MESSAGE)
+        {
+        }
+
+        public DatabaseIsNotFound(System.Exception ex) : base(_MESSAGE, ex)
         {
         }
     }

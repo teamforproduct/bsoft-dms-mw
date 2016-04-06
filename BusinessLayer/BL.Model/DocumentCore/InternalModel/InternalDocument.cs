@@ -157,6 +157,7 @@ namespace BL.Model.DocumentCore.InternalModel
 
         public IEnumerable<InternalDocumentPaperEvent> PaperEvents { get; set; }
         public IEnumerable<InternalDocumentPaper> Papers { get; set; }
+        public int? MaxPaperOrderNumber { get; set; }
 
 
     }

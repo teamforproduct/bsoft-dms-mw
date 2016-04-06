@@ -25,6 +25,7 @@ namespace BL.Database.Documents
 {
     public class DocumentOperationsDbProcess : IDocumentOperationsDbProcess
     {
+        #region DocumentAction
 
         public DocumentActionsModel GetDocumentActionsModelPrepare(IContext context, int documentId)
         {
@@ -32,7 +33,6 @@ namespace BL.Database.Documents
             {
                 var res = new DocumentActionsModel();
                 res.ActionsList = new Dictionary<int, List<InternalSystemAction>>();
-
                 res.Document = CommonQueries.GetDocumentQuery(dbContext, context)
                     .Where(x => x.Doc.Id == documentId)
                     .Select(x => new InternalDocument
@@ -105,62 +105,26 @@ namespace BL.Database.Documents
                         }
                         ).ToList();
 
+                    var positionAccesses = res.Document?.Accesses.Select(y => y.PositionId).ToList();
 
-
-                    var posAcc = res.Document?.Accesses.Select(y => y.PositionId).ToList();
-
-                    if (posAcc.Any())
+                    if (positionAccesses.Any())
                     {
-                        res.PositionWithActions = dbContext.DictionaryPositionsSet
-                            .Where(
-                                x =>
-                                    context.CurrentPositionsIdList.Contains(x.Id) &&
-                                    posAcc.Contains(x.Id))
-                            .Select(x => new InternalDictionaryPositionWithActions
-                            {
-                                Id = x.Id,
-                                Name = x.Name,
-                                DepartmentId = x.DepartmentId,
-                                ExecutorAgentId = x.ExecutorAgentId,
-                                DepartmentName = x.Department.Name,
-                                ExecutorAgentName = x.ExecutorAgent.Name,
-                            }).ToList();
+                        res.PositionWithActions = CommonQueries.GetPositionWithActions(context, dbContext, positionAccesses);
+                        res.ActionsList = CommonQueries.GetActionsListForCurrentPositionsList(context, dbContext, new List<EnumObjects> { EnumObjects.Documents }, positionAccesses);
                     }
-
-                }
-                foreach (int posId in context.CurrentPositionsIdList)
-                {
-                    var qry = dbContext.SystemActionsSet.Where(x => x.ObjectId == (int)EnumObjects.Documents
-                    && x.IsVisible &&
-                    (!x.IsGrantable ||
-                        x.RoleActions.Any(y => y.Role.PositionRoles.Any(pr => pr.PositionId == posId) && y.Role.UserRoles.Any(z => z.UserId == context.CurrentAgentId)))
-                    );
-
-                    var actLst = qry.Select(a => new InternalSystemAction
-                    {
-                        DocumentAction = (EnumDocumentActions)a.Id,
-                        Object = (EnumObjects)a.ObjectId,
-                        ActionCode = a.Code,
-                        ObjectCode = a.Object.Code,
-                        API = a.API,
-                        Description = a.Description,
-                        Category = a.Category
-                    }).ToList();
-                    res.ActionsList.Add(posId, actLst);
-
                 }
                 return res;
             }
         }
 
-        public DocumentActionsModel GetDocumentSendListActionsModelPrepare(IContext ctx, int documentId)
+        public DocumentActionsModel GetDocumentSendListActionsModelPrepare(IContext context, int documentId)
         {
-            using (var dbContext = new DmsContext(ctx))
+            using (var dbContext = new DmsContext(context))
             {
                 var res = new DocumentActionsModel();
                 res.ActionsList = new Dictionary<int, List<InternalSystemAction>>();
 
-                res.Document = CommonQueries.GetDocumentQuery(dbContext, ctx)
+                res.Document = CommonQueries.GetDocumentQuery(dbContext, context)
                     .Where(x => x.Doc.Id == documentId)
                     .Select(x => new InternalDocument
                     {
@@ -192,129 +156,79 @@ namespace BL.Database.Documents
                          ).ToList();
 
 
-                    var posAcc = res.Document?.Accesses.Select(y => y.PositionId).ToList();
+                    var positionAccesses = res.Document?.Accesses.Select(y => y.PositionId).ToList();
 
-                    if (posAcc.Any())
+                    if (positionAccesses.Any())
                     {
-                        res.PositionWithActions = dbContext.DictionaryPositionsSet
-                            .Where(
-                                x => (ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.Id)) &&
-                                    posAcc.Contains(x.Id))
-                            .Select(x => new InternalDictionaryPositionWithActions
-                            {
-                                Id = x.Id,
-                                Name = x.Name,
-                                DepartmentId = x.DepartmentId,
-                                ExecutorAgentId = x.ExecutorAgentId,
-                                DepartmentName = x.Department.Name,
-                                ExecutorAgentName = x.ExecutorAgent.Name,
-                            }).ToList();
+                        res.PositionWithActions = CommonQueries.GetPositionWithActions(context, dbContext, positionAccesses);
+                        res.ActionsList = CommonQueries.GetActionsListForCurrentPositionsList(context, dbContext, new List<EnumObjects> { EnumObjects.DocumentSendLists, EnumObjects.DocumentSendListStages }, positionAccesses);
                     }
-                }
-
-                foreach (int posId in ctx.CurrentPositionsIdList)
-                {
-                    var qry = dbContext.SystemActionsSet.Where(x => (x.ObjectId == (int)EnumObjects.DocumentSendLists || x.ObjectId == (int)EnumObjects.DocumentSendListStages)
-                    && x.IsVisible &&
-                    (!x.IsGrantable ||
-                        x.RoleActions.Any(y => y.Role.PositionRoles.Any(pr => pr.PositionId == posId) && y.Role.UserRoles.Any(z => z.UserId == ctx.CurrentAgentId)))
-                    );
-
-                    var actLst = qry.Select(a => new InternalSystemAction
-                    {
-                        DocumentAction = (EnumDocumentActions)a.Id,
-                        Object = (EnumObjects)a.ObjectId,
-                        ActionCode = a.Code,
-                        ObjectCode = a.Object.Code,
-                        API = a.API,
-                        Description = a.Description,
-                    }).ToList();
-                    res.ActionsList.Add(posId, actLst);
-
                 }
                 return res;
             }
         }
 
-
-        #region DocumentLink    
-        public InternalDocument AddDocumentLinkPrepare(IContext context, AddDocumentLink model)
+        public DocumentActionsModel GetDocumentPaperActionsModelPrepare(IContext context, int documentId)
         {
             using (var dbContext = new DmsContext(context))
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext, context)
-                    .Where(x => x.Doc.Id == model.DocumentId)
+                var res = new DocumentActionsModel();
+                res.ActionsList = new Dictionary<int, List<InternalSystemAction>>();
+
+                res.Document = CommonQueries.GetDocumentQuery(dbContext, context)
+                    .Where(x => x.Doc.Id == documentId)
                     .Select(x => new InternalDocument
                     {
                         Id = x.Doc.Id,
+                        //IsRegistered = x.Doc.IsRegistered,
                         ExecutorPositionId = x.Doc.ExecutorPositionId,
-                        LinkId = x.Doc.LinkId,
-                        LinkTypeId = model.LinkTypeId,
+                        //LinkId = x.Doc.LinkId,
                     }).FirstOrDefault();
 
-                if (doc == null) return null;
+                if (res.Document != null)
+                {
+                    res.Document.Accesses = dbContext.DocumentAccessesSet.Where(x => x.DocumentId == documentId)
+                        .Select(x => new InternalDocumentAccess
+                        {
+                            Id = x.Id,
+                            PositionId = x.PositionId,
+                        }
+                        ).ToList();
 
-                var par = CommonQueries.GetDocumentQuery(dbContext, context)
-                    .Where(x => x.Doc.Id == model.ParentDocumentId)
-                    .Select(x => new { Id = x.Doc.Id, LinkId = x.Doc.LinkId }).FirstOrDefault();
+                    res.Document.Papers = dbContext.DocumentPapersSet.Where(x => x.DocumentId == documentId)
+                         .Select(x => new InternalDocumentPaper
+                         {
+                             Id = x.Id,
+                             IsInWork = x.IsInWork,
+                             LastPaperEvent = !x.LastPaperEventId.HasValue ? null :
+                                            new InternalDocumentPaperEvent
+                                            {
+                                                Id = x.LastPaperEvent.Id,
+                                                SourcePositionId = x.LastPaperEvent.SourcePositionId,
+                                                TargetPositionId = x.LastPaperEvent.TargetPositionId,
+                                                PlanDate = x.LastPaperEvent.PlanDate,
+                                                SendDate = x.LastPaperEvent.SendDate,
+                                                RecieveDate = x.LastPaperEvent.RecieveDate,
 
-                if (par == null) return null;
+                                            }
+                         }
+                         ).ToList();
 
-                doc.ParentDocumentId = par.Id;
-                doc.ParentDocumentLinkId = par.LinkId;
+                    var positionAccesses = res.Document?.Accesses.Select(y => y.PositionId).ToList();
+                    if (positionAccesses.Any())
+                    {
+                        res.PositionWithActions = CommonQueries.GetPositionWithActions(context, dbContext, positionAccesses);
+                        res.ActionsList = CommonQueries.GetActionsListForCurrentPositionsList(context, dbContext, new List<EnumObjects> { EnumObjects.DocumentPapers, EnumObjects.DocumentPaperEvents }, positionAccesses);
+                    }
+                }
 
-                return doc;
+                return res;
             }
         }
 
-        public void AddDocumentLink(IContext context, InternalDocument model)
-        {
-            using (var dbContext = new DmsContext(context))
-            {
-                var link = new DocumentLinks
-                {
-                    DocumentId = model.Id,
-                    ParentDocumentId = model.ParentDocumentId,
-                    LinkTypeId = model.LinkTypeId,
-                    LastChangeUserId = model.LastChangeUserId,
-                    LastChangeDate = model.LastChangeDate,
-                };
-                dbContext.DocumentLinksSet.Add(link);
-                if (!model.ParentDocumentLinkId.HasValue)
-                {
-                    dbContext.DocumentsSet.Where(x => x.Id == model.ParentDocumentId).ToList()  //TODO OPTIMIZE
-                        .ForEach(x =>
-                        {
-                            x.LinkId = model.ParentDocumentId;
-                            x.LastChangeUserId = model.LastChangeUserId;
-                            x.LastChangeDate = model.LastChangeDate;
-                        });
-                }
-                if (!model.LinkId.HasValue)
-                {
-                    dbContext.DocumentsSet.Where(x => x.Id == model.Id).ToList()
-                        .ForEach(x =>
-                        {
-                            x.LinkId = model.ParentDocumentId;
-                            x.LastChangeUserId = model.LastChangeUserId;
-                            x.LastChangeDate = model.LastChangeDate;
-                        });
-                }
-                else
-                {
-                    dbContext.DocumentsSet.Where(x => x.LinkId == model.LinkId).ToList()
-                        .ForEach(x =>
-                        {
-                            x.LinkId = model.ParentDocumentId;
-                            x.LastChangeUserId = model.LastChangeUserId;
-                            x.LastChangeDate = model.LastChangeDate;
-                        });
-                }
-                dbContext.SaveChanges();
-            }
-        }
-
-        #endregion DocumentLink         
+        #endregion DocumentAction   
+            
+        #region DocumentMainLogic  
 
         public void AddDocumentWaits(IContext ctx, InternalDocument document)
         {
@@ -1203,6 +1117,88 @@ namespace BL.Database.Documents
             }
         }
 
+        #endregion DocumentMainLogic 
+
+        #region DocumentLink    
+
+        public InternalDocument AddDocumentLinkPrepare(IContext context, AddDocumentLink model)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var doc = CommonQueries.GetDocumentQuery(dbContext, context)
+                    .Where(x => x.Doc.Id == model.DocumentId)
+                    .Select(x => new InternalDocument
+                    {
+                        Id = x.Doc.Id,
+                        ExecutorPositionId = x.Doc.ExecutorPositionId,
+                        LinkId = x.Doc.LinkId,
+                        LinkTypeId = model.LinkTypeId,
+                    }).FirstOrDefault();
+
+                if (doc == null) return null;
+
+                var par = CommonQueries.GetDocumentQuery(dbContext, context)
+                    .Where(x => x.Doc.Id == model.ParentDocumentId)
+                    .Select(x => new { Id = x.Doc.Id, LinkId = x.Doc.LinkId }).FirstOrDefault();
+
+                if (par == null) return null;
+
+                doc.ParentDocumentId = par.Id;
+                doc.ParentDocumentLinkId = par.LinkId;
+
+                return doc;
+            }
+        }
+
+        public void AddDocumentLink(IContext context, InternalDocument model)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var link = new DocumentLinks
+                {
+                    DocumentId = model.Id,
+                    ParentDocumentId = model.ParentDocumentId,
+                    LinkTypeId = model.LinkTypeId,
+                    LastChangeUserId = model.LastChangeUserId,
+                    LastChangeDate = model.LastChangeDate,
+                };
+                dbContext.DocumentLinksSet.Add(link);
+                if (!model.ParentDocumentLinkId.HasValue)
+                {
+                    dbContext.DocumentsSet.Where(x => x.Id == model.ParentDocumentId).ToList()  //TODO OPTIMIZE
+                        .ForEach(x =>
+                        {
+                            x.LinkId = model.ParentDocumentId;
+                            x.LastChangeUserId = model.LastChangeUserId;
+                            x.LastChangeDate = model.LastChangeDate;
+                        });
+                }
+                if (!model.LinkId.HasValue)
+                {
+                    dbContext.DocumentsSet.Where(x => x.Id == model.Id).ToList()
+                        .ForEach(x =>
+                        {
+                            x.LinkId = model.ParentDocumentId;
+                            x.LastChangeUserId = model.LastChangeUserId;
+                            x.LastChangeDate = model.LastChangeDate;
+                        });
+                }
+                else
+                {
+                    dbContext.DocumentsSet.Where(x => x.LinkId == model.LinkId).ToList()
+                        .ForEach(x =>
+                        {
+                            x.LinkId = model.ParentDocumentId;
+                            x.LastChangeUserId = model.LastChangeUserId;
+                            x.LastChangeDate = model.LastChangeDate;
+                        });
+                }
+                dbContext.SaveChanges();
+            }
+        }
+
+        #endregion DocumentLink     
+
         #region DocumentSendList    
         public InternalDocument ChangeDocumentSendListPrepare(IContext context, int documentId, string task = null, int id = 0)
         {
@@ -1762,6 +1758,7 @@ namespace BL.Database.Documents
                                         new InternalDocumentPaper
                                         {
                                             Id = x.Id,
+                                            OrderNumber = x.OrderNumber,
 
                                         }
                                     }
@@ -1810,18 +1807,23 @@ namespace BL.Database.Documents
             }
         }
 
-        public InternalDocument AddDocumentPaperPrepare(IContext context, int documentId)
+        public InternalDocument AddDocumentPaperPrepare(IContext context, ModifyDocumentPapers model)
         {
             using (var dbContext = new DmsContext(context))
             {
                 var doc = CommonQueries.GetDocumentQuery(dbContext, context)
-                    .Where(x => x.Doc.Id == documentId && (context.IsAdmin || context.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId)))
+                    .Where(x => x.Doc.Id == model.DocumentId && (context.IsAdmin || context.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId)))
                     .Select(x => new InternalDocument
                     {
                         Id = x.Doc.Id,
                         ExecutorPositionId = x.Doc.ExecutorPositionId
                     }).FirstOrDefault();
 
+                if (doc == null) return null;
+
+                doc.MaxPaperOrderNumber = dbContext.DocumentPapersSet
+                    .Where(x => x.DocumentId == model.DocumentId && x.Name == model.Name && x.IsMain == model.IsMain && x.IsCopy == model.IsCopy && x.IsOriginal == model.IsOriginal)
+                    .OrderByDescending(x => x.OrderNumber).Select(x => x.OrderNumber).FirstOrDefault();
                 return doc;
             }
         }
@@ -2038,7 +2040,6 @@ namespace BL.Database.Documents
             }
         }
 
-
         public InternalDocument PlanDocumentPaperEventPrepare(IContext context, List<int> paperIds)
         {
             using (var dbContext = new DmsContext(context))
@@ -2099,9 +2100,6 @@ namespace BL.Database.Documents
             }
         }
 
-        #endregion DocumentPapers
-
-        #region DocumentPaperLists
         public void AddDocumentPaperLists(IContext context, IEnumerable<InternalDocumentPaperList> items)
         {
             using (var dbContext = new DmsContext(context))
@@ -2164,6 +2162,7 @@ namespace BL.Database.Documents
                 }
             }
         }
-        #endregion DocumentPaperLists
+
+        #endregion DocumentPapers
     }
 }

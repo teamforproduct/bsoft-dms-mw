@@ -85,6 +85,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// </summary>
         /// <param name="model">модель</param>
         /// <returns></returns>
+        /*
         [Route("CopyDocumentPaper")]
         [HttpPost]
         public IHttpActionResult CopyDocumentPaper(CopyDocumentPaper model)
@@ -94,7 +95,7 @@ namespace DMS_WebAPI.Controllers.Documents
             int docId = (int)docProc.ExecuteAction(EnumDocumentActions.CopyDocumentPaper, cxt, model);
             return Get(docId);
         }
-
+        */
         /// <summary>
         /// Отметить нахождение бумажного носителя у себя
         /// </summary>
@@ -198,6 +199,22 @@ namespace DMS_WebAPI.Controllers.Documents
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.RecieveDocumentPaperEvent, cxt, id);
             return Get(id);
+        }
+
+        /// <summary>
+        /// Получение списка доступных команд по документу
+        /// </summary>
+        /// <param name="id">ИД документа</param>
+        /// <returns>Массив команд</returns>
+        [Route("Actions/{id}")]
+        [HttpGet]
+        public IHttpActionResult Actions(int id)
+        {
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cmdService = DmsResolver.Current.Get<ICommandService>();
+            var actions = cmdService.GetDocumentPaperActions(cxt, id);
+
+            return new JsonResult(actions, this);
         }
 
     }

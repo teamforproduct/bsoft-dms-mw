@@ -31,18 +31,19 @@ namespace BL.Logic.DocumentCore.PaperCommands
 
         public override bool CanBeDisplayed(int positionId)
         {
+            /*
             if (_document.ExecutorPositionId != positionId
                 )
             {
                 return false;
             }
-
+            */
             return true;
         }
 
         public override bool CanExecute()
         {
-            _document = _operationDb.AddDocumentPaperPrepare(_context, Model.DocumentId);
+            _document = _operationDb.AddDocumentPaperPrepare(_context, Model);
             if (_document == null)
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
@@ -54,7 +55,7 @@ namespace BL.Logic.DocumentCore.PaperCommands
 
         public override object Execute()
         {
-            _document.Papers = CommonDocumentUtilities.GetNewDocumentPapers(_context, Model);
+            _document.Papers = CommonDocumentUtilities.GetNewDocumentPapers(_context, Model, _document.MaxPaperOrderNumber??0);
             _operationDb.AddDocumentPapers(_context, _document.Papers);
             return null;
         }

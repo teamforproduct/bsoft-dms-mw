@@ -51,7 +51,7 @@ namespace DMS_WebAPI.Utilities
         /// </summary>
         /// <returns>Typed setting value.</returns>
         public IContext Remove(string token = null)
-        { 
+        {
             if (string.IsNullOrEmpty(token)) token = Token.ToLower();
             if (!_casheContexts.ContainsKey(token))
             {
@@ -75,11 +75,10 @@ namespace DMS_WebAPI.Utilities
         /// Add new server to the list of available servers
         /// </summary>
         /// <param name="token"></param>
-        /// <param name="db">new server parameters</param>
         /// <param name="userId"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        public IContext Set(string token, DatabaseModel db, string userId, bool isSuperAdmin)
+        public IContext Set(string token, string userId)
         {
             token = token.ToLower();
             if (!_casheContexts.ContainsKey(token))
@@ -91,31 +90,40 @@ namespace DMS_WebAPI.Utilities
                     {
                         Token = token,
                         UserId = userId
-                    },
-                    CurrentDB = db
+                    }
                 };
-
-                if (!(db==null && isSuperAdmin))
-                {
-                    var agent = DmsResolver.Current.Get<IAdminService>().GetEmployee(context, userId);
-
-                    if (agent != null)
-                    {
-                        context.CurrentEmployee.AgentId = agent.AgentId;
-                        context.CurrentEmployee.Name = agent.Name;
-                        context.CurrentEmployee.LanguageId = agent.LanguageId;
-                    }
-                    else if (!isSuperAdmin)
-                    {
-                        throw new AccessIsDenied();
-                    }
-                }
 
                 Save(token, context);
                 return context;
             }
 
             throw new ArgumentException();
+        }
+
+        /// <summary>
+        /// Add new server to the list of available servers
+        /// </summary>
+        /// <param name="db">new server parameters</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
+        public void Set(DatabaseModel db)
+        {
+            var context = Get();
+            context.CurrentDB = db;
+
+            var agent = DmsResolver.Current.Get<IAdminService>().GetEmployee(context, context.CurrentEmployee.UserId);
+
+            if (agent != null)
+            {
+                context.CurrentEmployee.AgentId = agent.AgentId;
+                context.CurrentEmployee.Name = agent.Name;
+                context.CurrentEmployee.LanguageId = agent.LanguageId;
+            }
+            else
+            {
+                throw new AccessIsDenied();
+            }
+
         }
 
         private void Save(IContext val)

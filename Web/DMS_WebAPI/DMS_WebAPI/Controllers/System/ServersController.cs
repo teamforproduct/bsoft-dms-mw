@@ -10,6 +10,7 @@ using BL.Model.Database.FrontModel;
 namespace DMS_WebAPI.Controllers
 {
     [Authorize]
+    [RoutePrefix("api/v2/Servers")]
     public class ServersController : ApiController
     {
         /// <summary>
@@ -61,6 +62,8 @@ namespace DMS_WebAPI.Controllers
         /// Реиндексация полнотекстового поиска для сервера
         /// </summary>
         /// <returns>сервер</returns>
+        [Route("FullTextReindex")]
+        [HttpPost]
         public IHttpActionResult FullTextReindex(int id)
         {
             var srv = new Servers().GetServer(id);

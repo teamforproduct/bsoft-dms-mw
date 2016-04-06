@@ -25,6 +25,14 @@ namespace BL.Database.Documents
             }
         }
 
+        public IEnumerable<FrontDocumentAttachedFile> GetDocumentFiles(IContext ctx, FilterDocumentAttachedFile filter)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                return CommonQueries.GetDocumentFiles(dbContext, filter);
+            }
+        }
+
         public IEnumerable<FrontDocumentAttachedFile> GetDocumentFileVersions(IContext ctx, int documentId, int orderNumber)
         {
             using (var dbContext = new DmsContext(ctx))

@@ -79,7 +79,7 @@ namespace BL.Database.Documents
                                 x.RestrictedSendLists.Select(y => new FrontTemplateDocumentRestrictedSendLists()
                                 {
                                     PositionId = y.PositionId,
-                                    AccessLevel = (EnumDocumentAccesses) y.AccessLevelId
+                                    AccessLevelId = (int) y.AccessLevelId
                                 }).ToList(),
                             SendLists = x.SendLists.Select(y => new FrontTemplateDocumentSendLists()
                             {
@@ -89,7 +89,7 @@ namespace BL.Database.Documents
                                 Stage = y.Stage,
                                 Task = y.Task.Task,
                                 DueDay = y.DueDay,
-                                AccessLevel = (EnumDocumentAccesses) y.AccessLevelId
+                                AccessLevelId = (int) y.AccessLevelId
                             }).ToList()
                         }).FirstOrDefault();
             }
