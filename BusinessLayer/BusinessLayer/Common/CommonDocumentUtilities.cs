@@ -437,12 +437,14 @@ namespace BL.Logic.Common
             return res;
         }
 
-        public static InternalDocumentPaperEvent GetNewDocumentPaperEvent(IContext context, int? paperId, EnumEventTypes eventType, string description = null, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null, bool IsMarkPlan = true, bool IsMarkRecieve = true)
+        public static InternalDocumentEvent GetNewDocumentPaperEvent(IContext context, int? paperId, EnumEventTypes eventType, string description = null, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null, bool IsMarkPlan = true, bool IsMarkRecieve = true)
         {
-            return new InternalDocumentPaperEvent
+            return new InternalDocumentEvent
             {
                 PaperId = paperId ?? 0,
                 EventType = eventType,
+                Date = DateTime.Now,
+                CreateDate = DateTime.Now,
                 Description = description,
                 SourceAgentId = sourceAgentId ?? context.CurrentAgentId,
                 SourcePositionId = sourcePositionId ?? context.CurrentPositionId,
@@ -450,20 +452,20 @@ namespace BL.Logic.Common
                 TargetPositionId = targetPositionId ?? context.CurrentPositionId,
                 TargetPositionExecutorAgentId = IsMarkPlan ? GetExecutorAgentIdByPositionId(context, targetPositionId ?? context.CurrentPositionId) : null,
                 TargetAgentId = targetAgentId,
-                PlanAgentId = IsMarkPlan ? (int?)(sourceAgentId ?? context.CurrentAgentId) : null,
-                PlanDate = IsMarkPlan ? (DateTime?)DateTime.Now : null,
-                SendAgentId = IsMarkRecieve ? (int?)context.CurrentAgentId : null,
-                SendDate = IsMarkRecieve ? (DateTime?)DateTime.Now : null,
-                RecieveAgentId = IsMarkRecieve ? (int?)context.CurrentAgentId : null,
-                RecieveDate = IsMarkRecieve ? (DateTime?)DateTime.Now : null,
+                PaperPlanAgentId = IsMarkPlan ? (int?)(sourceAgentId ?? context.CurrentAgentId) : null,
+                PaperPlanDate = IsMarkPlan ? (DateTime?)DateTime.Now : null,
+                PaperSendAgentId = IsMarkRecieve ? (int?)context.CurrentAgentId : null,
+                PaperSendDate = IsMarkRecieve ? (DateTime?)DateTime.Now : null,
+                PaperRecieveAgentId = IsMarkRecieve ? (int?)context.CurrentAgentId : null,
+                PaperRecieveDate = IsMarkRecieve ? (DateTime?)DateTime.Now : null,
                 LastChangeUserId = context.CurrentAgentId,
                 LastChangeDate = DateTime.Now,
             };
         }
 
-        public static IEnumerable<InternalDocumentPaperEvent> GetNewDocumentPaperEvents(IContext context, int? paperId, EnumEventTypes eventType, string description = null, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null, bool IsMarkPlan = true, bool IsMarkRecieve = true)
+        public static IEnumerable<InternalDocumentEvent> GetNewDocumentPaperEvents(IContext context, int? paperId, EnumEventTypes eventType, string description = null, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null, bool IsMarkPlan = true, bool IsMarkRecieve = true)
         {
-            return new List<InternalDocumentPaperEvent>
+            return new List<InternalDocumentEvent>
             {
                 GetNewDocumentPaperEvent(context,  paperId, eventType, description, targetPositionId, targetAgentId, sourcePositionId, sourceAgentId, IsMarkPlan, IsMarkRecieve)
             };
@@ -479,10 +481,10 @@ namespace BL.Logic.Common
                     document.Papers.Any(
                         x =>
                             x.LastPaperEvent.SourcePositionId != model.SourcePositionId ||
-                            //x.LastPaperEvent.TargetPositionId != model.TargetPositionId ||
-                            //x.LastPaperEvent.SourceAgentId != model.SourceAgentId ||
-                            //x.LastPaperEvent.TargetAgentId != model.TargetAgentId ||
-                            x.LastPaperEvent.RecieveDate == null))
+                            //x.LastPaperEventTMP.TargetPositionId != model.TargetPositionId ||
+                            //x.LastPaperEventTMP.SourceAgentId != model.SourceAgentId ||
+                            //x.LastPaperEventTMP.TargetAgentId != model.TargetAgentId ||
+                            x.LastPaperEvent.PaperRecieveDate == null))
 
                 {
                     throw new CouldNotPerformOperationWithPaper();

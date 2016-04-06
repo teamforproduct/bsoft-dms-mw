@@ -57,7 +57,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
 
         public override object Execute()
         {
-            var paperEvents = new List<InternalDocumentPaperEvent>();
+            var paperEvents = new List<InternalDocumentEvent>();
             if (Model.PaperEvents?.Any() ?? false)
                 paperEvents.AddRange(Model.PaperEvents.Select(model => CommonDocumentUtilities.GetNewDocumentPaperEvent(_context, model.Id, EnumEventTypes.MoveDocumentPaper, model.Description, _sendList.TargetPositionId, _sendList.TargetAgentId, _sendList.SourcePositionId, _sendList.SourceAgentId, false, false)));
 

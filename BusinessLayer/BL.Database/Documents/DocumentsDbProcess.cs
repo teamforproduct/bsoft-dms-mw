@@ -347,7 +347,7 @@ namespace BL.Database.Documents
                     if (filters.EventAgentId != null && filters.EventAgentId.Count > 0)
                     {
                         qryTmp = qryTmp.Where(x =>
-                            (filters.EventAgentId.Contains(x.de.SourceAgentId))
+                            (x.de.TargetAgentId.HasValue && filters.EventAgentId.Contains(x.de.SourceAgentId.Value))
                             || (x.de.TargetAgentId.HasValue && filters.EventAgentId.Contains(x.de.TargetAgentId.Value)));
                     }
 

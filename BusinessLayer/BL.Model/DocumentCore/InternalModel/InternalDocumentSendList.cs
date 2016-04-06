@@ -35,7 +35,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public InternalDocumentEvent StartEvent { get; set; }
         public InternalDocumentEvent CloseEvent { get; set; }
         public InternalDocumentTask Task { get; set; }
-        public List<InternalDocumentPaperEvent> PaperEvents { get; set; }
+        public List<InternalDocumentEvent> PaperEvents { get; set; }
 
     }
 }

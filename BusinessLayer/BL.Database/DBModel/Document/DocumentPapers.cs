@@ -12,7 +12,7 @@ namespace BL.Database.DBModel.Document
     {
         public DocumentPapers()
         {
-            this.PaperEvents = new HashSet<DocumentPaperEvents>();
+            this.Events = new HashSet<DocumentEvents>();
         }
 
         public int Id { get; set; }
@@ -32,10 +32,11 @@ namespace BL.Database.DBModel.Document
         public DateTime LastChangeDate { get; set; }
 
         [ForeignKey("PaperId")]
-        public virtual ICollection<DocumentPaperEvents> PaperEvents { get; set; }
+        public virtual ICollection<DocumentEvents> Events { get; set; }
         [ForeignKey("DocumentId")]
         public virtual Documents Document { get; set; }
+        //[ForeignKey("LastPaperEventId")]
         [ForeignKey("LastPaperEventId")]
-        public virtual DocumentPaperEvents LastPaperEvent { get; set; }
+        public virtual DocumentEvents LastPaperEventTMP { get; set; }
     }
 }

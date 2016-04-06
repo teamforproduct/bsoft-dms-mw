@@ -11,7 +11,7 @@ namespace BL.Database.DBModel.Document
     {
         public DocumentPaperLists()
         {
-            this.PaperEvents = new HashSet<DocumentPaperEvents>();
+            this.Events = new HashSet<DocumentEvents>();
         }
 
         public int Id { get; set; }
@@ -21,6 +21,6 @@ namespace BL.Database.DBModel.Document
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
 
-        public virtual ICollection<DocumentPaperEvents> PaperEvents { get; set; }
+        public virtual ICollection<DocumentEvents> Events { get; set; }
     }
 }

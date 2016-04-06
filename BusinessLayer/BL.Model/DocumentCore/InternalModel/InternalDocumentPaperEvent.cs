@@ -8,11 +8,10 @@ using BL.Model.Enums;
 
 namespace BL.Model.DocumentCore.InternalModel
 {
-    public class InternalDocumentPaperEvent : LastChangeInfo
+    public class InternalDocumentPaperEvent1111 : LastChangeInfo
     {
         public int Id { get; set; }
-        public int PaperId { get; set; }
-        public int SendTypeId { get; set; }
+        public int? PaperId { get; set; }
         public EnumEventTypes EventType { get; set; }
         public Nullable<int> EventId { get; set; }
         public Nullable<int> SendListId { get; set; }

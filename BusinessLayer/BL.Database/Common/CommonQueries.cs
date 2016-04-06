@@ -926,14 +926,14 @@ namespace BL.Database.Common
                 DocumentDescription = x.Document.Description,
                 DocumentTypeName = x.Document.TemplateDocument.DocumentType.Name,
                 DocumentDirectionName = x.Document.TemplateDocument.DocumentDirection.Name,
-                OwnerAgentName = x.LastPaperEvent.TargetAgent.Name,
-                OwnerPositionExecutorAgentName = x.LastPaperEvent.TargetPositionExecutorAgent.Name,
-                OwnerPositionName = x.LastPaperEvent.TargetPosition.Name,
-                OwnerPositionExecutorNowAgentName = x.LastPaperEvent.TargetPosition.ExecutorAgent.Name,
+                OwnerAgentName = x.LastPaperEventTMP.TargetAgent.Name,
+                OwnerPositionExecutorAgentName = x.LastPaperEventTMP.TargetPositionExecutorAgent.Name,
+                OwnerPositionName = x.LastPaperEventTMP.TargetPosition.Name,
+                OwnerPositionExecutorNowAgentName = x.LastPaperEventTMP.TargetPosition.ExecutorAgent.Name,
                 OwnerPositionExecutorAgentPhoneNumber = "OwnerPositionExecutorAgentPhoneNumber",
-                PlanDate = x.LastPaperEvent.PlanDate,
-                SendDate = x.LastPaperEvent.SendDate,
-                RecieveDate = x.LastPaperEvent.RecieveDate,
+                PlanDate = x.LastPaperEventTMP.PaperPlanDate,
+                SendDate = x.LastPaperEventTMP.PaperSendDate,
+                RecieveDate = x.LastPaperEventTMP.PaperRecieveDate,
 
 
             }).ToList();

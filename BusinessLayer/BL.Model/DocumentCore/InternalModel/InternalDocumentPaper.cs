@@ -22,8 +22,8 @@ namespace BL.Model.DocumentCore.InternalModel
         public int? NextPaperEventId { get; set; }
         public int? PreLastPaperEventId { get; set; }
         public bool IsInWork { get; set; }
-        public InternalDocumentPaperEvent LastPaperEvent { get; set; }
+        public InternalDocumentEvent LastPaperEvent { get; set; }
         //public InternalDocumentPaperEvent NextPaperEvent { get; set; }
-        public IEnumerable<InternalDocumentPaperEvent> Events { get; set; }
+        public IEnumerable<InternalDocumentEvent> Events { get; set; }
     }
 }

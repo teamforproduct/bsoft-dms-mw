@@ -17,7 +17,7 @@ namespace BL.Database.DBModel.Document
             this.StartSendList = new HashSet<DocumentSendLists>();
             this.CloseSendList = new HashSet<DocumentSendLists>();
             this.EventReaders = new HashSet<DocumentEventReaders>();
-            this.PaperEvent = new HashSet<DocumentPaperEvents>();
+            this.ChildEvents = new HashSet<DocumentEvents>();
         }
 
         public int Id { get; set; }
@@ -31,7 +31,7 @@ namespace BL.Database.DBModel.Document
         public string Description { get; set; }
         public int? SourcePositionId { get; set; }
         public Nullable<int> SourcePositionExecutorAgentId { get; set; }
-        public int SourceAgentId { get; set; }
+        public int? SourceAgentId { get; set; }
         public Nullable<int> TargetPositionId { get; set; }
         public Nullable<int> TargetPositionExecutorAgentId { get; set; }
         public Nullable<int> TargetAgentId { get; set; }
@@ -39,6 +39,19 @@ namespace BL.Database.DBModel.Document
         public Nullable<DateTime> SendDate { get; set; }
         public Nullable<DateTime> ReadDate { get; set; }
         public Nullable<int> ReadAgentId { get; set; }
+
+        public Nullable<int> PaperId { get; set; }
+        public Nullable<int> SendListId { get; set; }
+        public Nullable<int> ParentEventId { get; set; }
+        public Nullable<int> PaperListId { get; set; }
+        public Nullable<int> PaperPlanAgentId { get; set; }
+        public Nullable<DateTime> PaperPlanDate { get; set; }
+        public Nullable<int> PaperSendAgentId { get; set; }
+        public Nullable<DateTime> PaperSendDate { get; set; }
+        public Nullable<int> PaperRecieveAgentId { get; set; }
+        public Nullable<DateTime> PaperRecieveDate { get; set; }
+
+
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
 
@@ -78,8 +91,24 @@ namespace BL.Database.DBModel.Document
         public virtual ICollection<DocumentSendLists> CloseSendList { get; set; }
         [ForeignKey("EventId")]
         public virtual ICollection<DocumentEventReaders> EventReaders { get; set; }
-        [ForeignKey("EventId")]
-        public virtual ICollection<DocumentPaperEvents> PaperEvent { get; set; }
+
+        [ForeignKey("PaperId")]
+        public virtual DocumentPapers Paper { get; set; }
+        [ForeignKey("SendListId")]
+        public virtual DocumentSendLists SendList { get; set; }
+        [ForeignKey("ParentEventId")]
+        public virtual DocumentEvents ParentEvent { get; set; }
+        [ForeignKey("ParentEventId")]
+        public virtual ICollection<DocumentEvents> ChildEvents { get; set; }
+        [ForeignKey("PaperListId")]
+        public virtual DocumentPaperLists PaperList { get; set; }
+        [ForeignKey("PaperPlanAgentId")]
+        public virtual DictionaryAgents PaperPlanAgent { get; set; }
+        [ForeignKey("PaperSendAgentId")]
+        public virtual DictionaryAgents PaperSendAgent { get; set; }
+        [ForeignKey("PaperRecieveAgentId")]
+        public virtual DictionaryAgents PaperRecieveAgent { get; set; }
+
 
     }
 }

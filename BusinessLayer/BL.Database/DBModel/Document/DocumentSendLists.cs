@@ -11,7 +11,7 @@ namespace BL.Database.DBModel.Document
     {
         public DocumentSendLists()
         {
-            this.PaperEvents = new HashSet<DocumentPaperEvents>();
+            this.PaperEvents = new HashSet<DocumentEvents>();
         }
         public int Id { get; set; }
         public int DocumentId { get; set; }
@@ -63,6 +63,6 @@ namespace BL.Database.DBModel.Document
         [ForeignKey("CloseEventId")]
         public virtual DocumentEvents CloseEvent { get; set; }
         [ForeignKey("SendListId")]
-        public virtual ICollection<DocumentPaperEvents> PaperEvents { get; set; }
+        public virtual ICollection<DocumentEvents> PaperEvents { get; set; }
     }
 }
