@@ -33,12 +33,21 @@ namespace BL.Logic.DocumentCore.PaperCommands
 
         public override bool CanBeDisplayed(int positionId)
         {
-            if (_document.ExecutorPositionId != positionId
-                )
+            _actionRecords =
+                _document.Papers.Where(
+                    x => x.IsInWork &&
+                        x.LastPaperEvent.TargetPositionId == positionId &&
+                        x.LastPaperEvent.PaperRecieveDate != null &&
+                        x.LastPaperEvent.EventType == EnumEventTypes.AddNewPaper
+                        )
+                        .Select(x => new InternalActionRecord
+                        {
+                            PaperId = x.Id,
+                        });
+            if (!_actionRecords.Any())
             {
                 return false;
             }
-
             return true;
         }
 
@@ -50,7 +59,14 @@ namespace BL.Logic.DocumentCore.PaperCommands
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
             _paper = _document.Papers.First();
-            _context.SetCurrentPosition(_document.ExecutorPositionId);
+            if (!Model.IsCopy || !_paper.IsCopy)
+            {
+                _context.SetCurrentPosition(_document.ExecutorPositionId);
+            }
+            else
+            {
+                _context.SetCurrentPosition(_paper.LastPaperEvent.TargetPositionId);
+            }
             _admin.VerifyAccess(_context, CommandType);
             if (!CanBeDisplayed(_context.CurrentPositionId))
             {

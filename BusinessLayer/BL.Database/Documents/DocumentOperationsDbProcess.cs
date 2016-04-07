@@ -204,6 +204,7 @@ namespace BL.Database.Documents
                                             new InternalDocumentEvent
                                             {
                                                 Id = x.LastPaperEvent.Id,
+                                                EventType = (EnumEventTypes)x.LastPaperEvent.EventTypeId,
                                                 SourcePositionId = x.LastPaperEvent.SourcePositionId,
                                                 TargetPositionId = x.LastPaperEvent.TargetPositionId,
                                                 PaperPlanDate = x.LastPaperEvent.PaperPlanDate,
@@ -1762,7 +1763,8 @@ namespace BL.Database.Documents
                                             OrderNumber = x.OrderNumber,
                                             LastPaperEvent = new InternalDocumentEvent
                                             {
-                                                EventType = (EnumEventTypes.AcceptResult)
+                                                EventType = (EnumEventTypes)x.LastPaperEvent.EventTypeId,
+                                                TargetPositionId = x.LastPaperEvent.TargetPositionId,
                                             }
                                         }
                                     }

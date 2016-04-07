@@ -49,11 +49,14 @@ namespace BL.Logic.DocumentCore.PaperCommands
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
-            if (Model.CurrentPositionId != _document.ExecutorPositionId && !Model.IsCopy)
+            if (Model.IsCopy)
             {
-                throw new CouldNotPerformOperationWithPaper();
+                _context.SetCurrentPosition(Model.CurrentPositionId);
             }
-            _context.SetCurrentPosition(Model.CurrentPositionId);
+            else
+            {
+                _context.SetCurrentPosition(_document.ExecutorPositionId);
+            }
             _admin.VerifyAccess(_context, CommandType);
             return true;
         }
