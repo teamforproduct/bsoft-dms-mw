@@ -37,6 +37,6 @@ namespace BL.Database.DBModel.Document
         public virtual Documents Document { get; set; }
         //[ForeignKey("LastPaperEventId")]
         [ForeignKey("LastPaperEventId")]
-        public virtual DocumentEvents LastPaperEventTMP { get; set; }
+        public virtual DocumentEvents LastPaperEvent { get; set; }
     }
 }

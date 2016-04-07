@@ -12,6 +12,8 @@ namespace BL.Logic.DocumentCore.PaperCommands
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
 
+        private InternalDocumentPaper _paper;
+
         public ModifyDocumentPaperCommand(IDocumentOperationsDbProcess operationDb)
         {
             _operationDb = operationDb;
@@ -47,6 +49,7 @@ namespace BL.Logic.DocumentCore.PaperCommands
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
+            _paper = _document.Papers.First();
             _context.SetCurrentPosition(_document.ExecutorPositionId);
             _admin.VerifyAccess(_context, CommandType);
             if (!CanBeDisplayed(_context.CurrentPositionId))
@@ -58,17 +61,17 @@ namespace BL.Logic.DocumentCore.PaperCommands
 
         public override object Execute()
         {
-            var paper = _document.Papers.First();
 
-            paper.Name = Model.Name;
-            paper.Description = Model.Description;
-            paper.IsMain = Model.IsMain;
-            paper.IsOriginal = Model.IsOriginal;
-            paper.IsCopy = Model.IsCopy;
-            paper.PageQuantity = Model.PageQuantity;
-            CommonDocumentUtilities.SetLastChange(_context, paper);
 
-            _operationDb.ModifyDocumentPaper(_context, paper);
+            _paper.Name = Model.Name;
+            _paper.Description = Model.Description;
+            _paper.IsMain = Model.IsMain;
+            _paper.IsOriginal = Model.IsOriginal;
+            _paper.IsCopy = Model.IsCopy;
+            _paper.PageQuantity = Model.PageQuantity;
+            CommonDocumentUtilities.SetLastChange(_context, _paper);
+
+            _operationDb.ModifyDocumentPaper(_context, _paper);
             return null;
         }
 

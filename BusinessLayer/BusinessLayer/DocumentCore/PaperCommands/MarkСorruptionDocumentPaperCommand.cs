@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using BL.Database.Documents.Interfaces;
 using BL.Logic.Common;
 using BL.Model.DocumentCore.Actions;
@@ -52,7 +53,7 @@ namespace BL.Logic.DocumentCore.PaperCommands
 
         public override bool CanExecute()
         {
-            _document = _operationDb.EventDocumentPaperPrepare(_context, Model.Id);
+            _document = _operationDb.EventDocumentPaperPrepare(_context, new List<int> { Model.Id});
             if (_document == null)
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
@@ -71,7 +72,7 @@ namespace BL.Logic.DocumentCore.PaperCommands
 
         public override object Execute()
         {
-            _paper.LastPaperEvent = CommonDocumentUtilities.GetNewDocumentPaperEvent(_context, _paper.Id, EnumEventTypes.MarkСorruptionDocumentPaper, Model.Description);
+            _paper.LastPaperEvent = CommonDocumentUtilities.GetNewDocumentPaperEvent(_context, _document.Id, _paper.Id, EnumEventTypes.MarkСorruptionDocumentPaper, Model.Description);
             _paper.IsInWork = false;
             CommonDocumentUtilities.SetLastChange(_context, _paper);
             _operationDb.MarkСorruptionDocumentPaper(_context, _paper);

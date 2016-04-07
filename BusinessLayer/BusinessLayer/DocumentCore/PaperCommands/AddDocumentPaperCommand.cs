@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Reflection;
 using BL.Database.Documents.Interfaces;
 using BL.Logic.Common;
 using BL.Model.DocumentCore.IncomingModel;
@@ -48,7 +49,11 @@ namespace BL.Logic.DocumentCore.PaperCommands
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
-            _context.SetCurrentPosition(_document.ExecutorPositionId);
+            if (Model.CurrentPositionId != _document.ExecutorPositionId && !Model.IsCopy)
+            {
+                throw new CouldNotPerformOperationWithPaper();
+            }
+            _context.SetCurrentPosition(Model.CurrentPositionId);
             _admin.VerifyAccess(_context, CommandType);
             return true;
         }

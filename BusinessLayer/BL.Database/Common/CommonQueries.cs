@@ -103,8 +103,8 @@ namespace BL.Database.Common
         {
             var sq = GetDocumentFilesMaxVersion(dbContext, filter);
 
-            return
-                sq.Join(dbContext.DocumentFilesSet, sub => new { sub.DocumentId, OrderNumber = sub.OrderInDocument, sub.Version },
+            var files =
+                 sq.Join(dbContext.DocumentFilesSet, sub => new { sub.DocumentId, OrderNumber = sub.OrderInDocument, sub.Version },
                     fl => new { fl.DocumentId, fl.OrderNumber, fl.Version },
                     (s, f) => new { fl = f })
                     .Join(dbContext.DictionaryAgentsSet, df => df.fl.LastChangeUserId, da => da.Id,
@@ -126,8 +126,15 @@ namespace BL.Database.Common
                         Name = x.fl.Name,
                         OrderInDocument = x.fl.OrderNumber,
                         Version = x.fl.Version,
-                        WasChangedExternal = false
+                        WasChangedExternal = false,
+                        DocumentDate = x.fl.Document.RegistrationDate ?? x.fl.Document.CreateDate,
+                        RegistrationNumber = x.fl.Document.RegistrationNumber,
+                        RegistrationNumberPrefix = x.fl.Document.RegistrationNumberPrefix,
+                        RegistrationNumberSuffix = x.fl.Document.RegistrationNumberSuffix,
+                        RegistrationFullNumber = "#" + x.fl.Document.Id,
                     }).ToList();
+            files.ForEach(x => CommonQueries.ChangeRegistrationFullNumber(x));
+            return files;
         }
 
         public static IEnumerable<InternalDocumentAttachedFile> GetInternalDocumentFiles(DmsContext dbContext, int documentId)
@@ -299,8 +306,8 @@ namespace BL.Database.Common
                 DocumentId = x.Task.DocumentId,
                 Name = x.Task.Task,
                 Description = x.Task.Description,
-                DocumentDate = x.Task.Document.RegistrationDate ?? x.Task.Document.CreateDate,
 
+                DocumentDate = x.Task.Document.RegistrationDate ?? x.Task.Document.CreateDate,
                 RegistrationNumber = x.Task.Document.RegistrationNumber,
                 RegistrationNumberPrefix = x.Task.Document.RegistrationNumberPrefix,
                 RegistrationNumberSuffix = x.Task.Document.RegistrationNumberSuffix,
@@ -926,14 +933,14 @@ namespace BL.Database.Common
                 DocumentDescription = x.Document.Description,
                 DocumentTypeName = x.Document.TemplateDocument.DocumentType.Name,
                 DocumentDirectionName = x.Document.TemplateDocument.DocumentDirection.Name,
-                OwnerAgentName = x.LastPaperEventTMP.TargetAgent.Name,
-                OwnerPositionExecutorAgentName = x.LastPaperEventTMP.TargetPositionExecutorAgent.Name,
-                OwnerPositionName = x.LastPaperEventTMP.TargetPosition.Name,
-                OwnerPositionExecutorNowAgentName = x.LastPaperEventTMP.TargetPosition.ExecutorAgent.Name,
+                OwnerAgentName = x.LastPaperEvent.TargetAgent.Name,
+                OwnerPositionExecutorAgentName = x.LastPaperEvent.TargetPositionExecutorAgent.Name,
+                OwnerPositionName = x.LastPaperEvent.TargetPosition.Name,
+                OwnerPositionExecutorNowAgentName = x.LastPaperEvent.TargetPosition.ExecutorAgent.Name,
                 OwnerPositionExecutorAgentPhoneNumber = "OwnerPositionExecutorAgentPhoneNumber",
-                PlanDate = x.LastPaperEventTMP.PaperPlanDate,
-                SendDate = x.LastPaperEventTMP.PaperSendDate,
-                RecieveDate = x.LastPaperEventTMP.PaperRecieveDate,
+                PlanDate = x.LastPaperEvent.PaperPlanDate,
+                SendDate = x.LastPaperEvent.PaperSendDate,
+                RecieveDate = x.LastPaperEvent.PaperRecieveDate,
 
 
             }).ToList();

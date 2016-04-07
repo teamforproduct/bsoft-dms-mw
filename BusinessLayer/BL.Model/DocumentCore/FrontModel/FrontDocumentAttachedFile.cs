@@ -6,7 +6,7 @@ namespace BL.Model.DocumentCore.FrontModel
     /// <summary>
     /// Модель файла документа для отображения пользователю
     /// </summary>
-    public class FrontDocumentAttachedFile
+    public class FrontDocumentAttachedFile : FrontRegistrationFullNumber
     {
         /// <summary>
         /// Default constructor
@@ -46,10 +46,7 @@ namespace BL.Model.DocumentCore.FrontModel
         /// </summary>
         public int Id { get; set; }
 
-        /// <summary>
-        /// ИД документа
-        /// </summary>
-        public int DocumentId { get; set; }
+
         /// <summary>
         /// Номер вложения в документе
         /// </summary>

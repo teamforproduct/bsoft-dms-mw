@@ -81,13 +81,13 @@ namespace BL.Logic.DocumentCore.PaperCommands
                 if (paper != null)
                 {
                     paper.LastPaperEventId = null;
-                    paper.LastPaperEvent = CommonDocumentUtilities.GetNewDocumentPaperEvent(_context, paper.Id,
+                    paper.LastPaperEvent = CommonDocumentUtilities.GetNewDocumentPaperEvent(_context, paper.DocumentId, paper.Id,
                         EnumEventTypes.MoveDocumentPaper, model.Description, model.TargetPositionId, null, paper.LastPaperEvent.SourcePositionId, null, true, false);
                     CommonDocumentUtilities.SetLastChange(_context, paper);
                 }
             }
             _operationDb.PlanDocumentPaperEvent(_context, _document.Papers);
-            return _document.Id;
+            return null;
         }
 
     }

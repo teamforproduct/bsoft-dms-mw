@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using BL.Database.Documents.Interfaces;
 using BL.Logic.Common;
 using BL.Model.DocumentCore.Actions;
@@ -13,22 +14,20 @@ namespace BL.Logic.DocumentCore.PaperCommands
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
 
-        private InternalDocumentPaper _paper;
-
         public RecieveDocumentPaperEventCommand(IDocumentOperationsDbProcess operationDb)
         {
             _operationDb = operationDb;
         }
 
-        private int Model
+        private List<int> Model
         {
             get
             {
-                if (!(_param is int))
+                if (!(_param is List<int>))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (int)_param;
+                return (List<int>)_param;
             }
         }
 
@@ -57,25 +56,30 @@ namespace BL.Logic.DocumentCore.PaperCommands
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
-            _paper = _document.Papers.First();
-            if (_paper?.LastPaperEvent?.TargetPositionId == null
-                || !CanBeDisplayed(_paper.LastPaperEvent.TargetPositionId.Value)
-                )
+            foreach (var paper in _document.Papers)
             {
-                throw new CouldNotPerformOperationWithPaper();
+                if (paper?.LastPaperEvent?.TargetPositionId == null
+                    || !CanBeDisplayed(paper.LastPaperEvent.TargetPositionId.Value)
+                    )
+                {
+                    throw new CouldNotPerformOperationWithPaper();
+                }
+                _context.SetCurrentPosition(paper.LastPaperEvent.TargetPositionId);
+                _admin.VerifyAccess(_context, CommandType);
             }
-            _context.SetCurrentPosition(_paper.LastPaperEvent.TargetPositionId);
-            _admin.VerifyAccess(_context, CommandType);
             return true;
         }
 
         public override object Execute()
         {
-            CommonDocumentUtilities.SetLastChange(_context, _paper.LastPaperEvent);
-            _paper.LastPaperEvent.Date = _paper.LastPaperEvent.LastChangeDate;
-            _paper.LastPaperEvent.PaperRecieveDate = _paper.LastPaperEvent.LastChangeDate;
-            _paper.LastPaperEvent.PaperRecieveAgentId = _context.CurrentAgentId;
-            _operationDb.RecieveDocumentPaperEvent(_context, _paper);
+            foreach (var paper in _document.Papers)
+            {
+                CommonDocumentUtilities.SetLastChange(_context, paper.LastPaperEvent);
+                paper.LastPaperEvent.Date = paper.LastPaperEvent.LastChangeDate;
+                paper.LastPaperEvent.PaperRecieveDate = paper.LastPaperEvent.LastChangeDate;
+                paper.LastPaperEvent.PaperRecieveAgentId = _context.CurrentAgentId;
+            }
+            _operationDb.RecieveDocumentPaperEvent(_context, _document.Papers);
             return null;
         }
 

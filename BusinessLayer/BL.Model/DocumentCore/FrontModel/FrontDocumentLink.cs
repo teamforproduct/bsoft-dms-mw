@@ -15,7 +15,7 @@ namespace BL.Model.DocumentCore.FrontModel
         /// </summary>
         public string LinkTypeName { get; set; }
 
-        public DateTime? DocumentDate { get; set; }
+
 
     }
 }

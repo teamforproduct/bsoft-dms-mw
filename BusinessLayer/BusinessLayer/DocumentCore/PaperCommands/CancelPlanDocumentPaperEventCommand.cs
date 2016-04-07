@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using BL.Database.Documents.Interfaces;
 using BL.Logic.Common;
 using BL.Model.DocumentCore.Actions;
@@ -13,22 +14,20 @@ namespace BL.Logic.DocumentCore.PaperCommands
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
 
-        private InternalDocumentPaper _paper;
-
         public CancelPlanDocumentPaperEventCommand(IDocumentOperationsDbProcess operationDb)
         {
             _operationDb = operationDb;
         }
 
-        private int Model
+        private List<int> Model
         {
             get
             {
-                if (!(_param is int))
+                if (!(_param is List<int>))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (int)_param;
+                return (List<int>)_param;
             }
         }
 
@@ -52,35 +51,40 @@ namespace BL.Logic.DocumentCore.PaperCommands
 
         public override bool CanExecute()
         {
-            _document = _operationDb.EventDocumentPaperPrepare(_context, Model,true);
+            _document = _operationDb.EventDocumentPaperPrepare(_context, Model, true);
             if (_document == null)
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
-            _paper = _document.Papers.First();
-            if (_paper?.LastPaperEvent?.SourcePositionId == null
-                || !CanBeDisplayed(_paper.LastPaperEvent.SourcePositionId.Value)
-                )
+            foreach (var paper in _document.Papers)
             {
-                throw new CouldNotPerformOperationWithPaper();
+                if (paper?.LastPaperEvent?.SourcePositionId == null
+                    || !CanBeDisplayed(paper.LastPaperEvent.SourcePositionId.Value)
+                    )
+                {
+                    throw new CouldNotPerformOperationWithPaper();
+                }
+                _context.SetCurrentPosition(paper.LastPaperEvent.SourcePositionId);
+                _admin.VerifyAccess(_context, CommandType);
             }
-            _context.SetCurrentPosition(_paper.LastPaperEvent.SourcePositionId);
-            _admin.VerifyAccess(_context, CommandType);
             return true;
         }
 
         public override object Execute()
         {
-            _paper.LastPaperEvent.ParentEventId = null;
-            _paper.LastPaperEvent.SendListId = null;
-            _paper.LastPaperEvent.PaperPlanDate = null;
-            _paper.LastPaperEvent.PaperPlanAgentId = null;
-            CommonDocumentUtilities.SetLastChange(_context, _paper.LastPaperEvent);
-            _paper.LastPaperEvent.Date = _paper.LastPaperEvent.LastChangeDate;
-
-            _paper.LastPaperEventId = _paper.PreLastPaperEventId;
-            CommonDocumentUtilities.SetLastChange(_context, _paper);
-            _operationDb.CancelPlanDocumentPaperEvent(_context, _paper);
+            foreach (var paper in _document.Papers)
+            {
+                paper.LastPaperEvent.ParentEventId = null;
+                paper.LastPaperEvent.SendListId = null;
+                paper.LastPaperEvent.PaperListId = null;
+                paper.LastPaperEvent.PaperPlanDate = null;
+                paper.LastPaperEvent.PaperPlanAgentId = null;
+                CommonDocumentUtilities.SetLastChange(_context, paper.LastPaperEvent);
+                paper.LastPaperEvent.Date = paper.LastPaperEvent.LastChangeDate;
+                paper.LastPaperEventId = paper.PreLastPaperEventId;
+                CommonDocumentUtilities.SetLastChange(_context, paper);
+            }
+            _operationDb.CancelPlanDocumentPaperEvent(_context, _document.Papers);
             return null;
         }
 

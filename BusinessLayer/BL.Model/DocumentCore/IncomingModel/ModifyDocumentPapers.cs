@@ -6,7 +6,7 @@ namespace BL.Model.DocumentCore.IncomingModel
     /// <summary>
     /// Модель для модификации бумажных носителей
     /// </summary>
-    public class ModifyDocumentPapers
+    public class ModifyDocumentPapers:CurrentPosition
     {
         /// <summary>
         /// ИД Бумажного носителя

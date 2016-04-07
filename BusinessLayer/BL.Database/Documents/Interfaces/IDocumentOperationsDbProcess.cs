@@ -92,16 +92,16 @@ namespace BL.Database.Documents.Interfaces
         #region DocumentPapers
         InternalDocument AddDocumentPaperPrepare(IContext context, ModifyDocumentPapers model);
         InternalDocument ChangeDocumentPaperPrepare(IContext context, int paperId);
-        InternalDocument EventDocumentPaperPrepare(IContext context, int paperId, bool isCalcPreLastPaperEvent = false);
+        InternalDocument EventDocumentPaperPrepare(IContext context, List<int> paperIds, bool isCalcPreLastPaperEvent = false);
 
         void AddDocumentPapers(IContext context, IEnumerable<InternalDocumentPaper> items);
         void ModifyDocumentPaper(IContext context, InternalDocumentPaper item);
         void DeleteDocumentPaper(IContext context, int itemId);
         void MarkOwnerDocumentPaper(IContext context, InternalDocumentPaper paper);
         void MarkСorruptionDocumentPaper(IContext context, InternalDocumentPaper paper);
-        void SendDocumentPaperEvent(IContext context, InternalDocumentPaper paper);
-        void RecieveDocumentPaperEvent(IContext context, InternalDocumentPaper paper);
-        void CancelPlanDocumentPaperEvent(IContext context, InternalDocumentPaper paper);
+        void SendDocumentPaperEvent(IContext context, IEnumerable<InternalDocumentPaper> paper);
+        void RecieveDocumentPaperEvent(IContext context, IEnumerable<InternalDocumentPaper> paper);
+        void CancelPlanDocumentPaperEvent(IContext context, IEnumerable<InternalDocumentPaper> paper);
         void PlanDocumentPaperEvent(IContext context, IEnumerable<InternalDocumentPaper> items);
         InternalDocument PlanDocumentPaperEventPrepare(IContext context, List<int> paperIds);
         IEnumerable<InternalDocumentPaper> PlanDocumentPaperFromSendListPrepare(IContext context, int idSendList);

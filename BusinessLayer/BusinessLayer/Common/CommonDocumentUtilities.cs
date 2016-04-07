@@ -420,7 +420,7 @@ namespace BL.Logic.Common
                 IsCopy = model.IsCopy,
                 PageQuantity = model.PageQuantity,
                 OrderNumber = orderNumber,
-                Events = GetNewDocumentPaperEvents(context, null, EnumEventTypes.AddNewPaper),
+                Events = GetNewDocumentPaperEvents(context, model.DocumentId, null, EnumEventTypes.AddNewPaper),
                 IsInWork = true,
                 LastChangeUserId = context.CurrentAgentId,
                 LastChangeDate = DateTime.Now,
@@ -437,10 +437,11 @@ namespace BL.Logic.Common
             return res;
         }
 
-        public static InternalDocumentEvent GetNewDocumentPaperEvent(IContext context, int? paperId, EnumEventTypes eventType, string description = null, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null, bool IsMarkPlan = true, bool IsMarkRecieve = true)
+        public static InternalDocumentEvent GetNewDocumentPaperEvent(IContext context, int documentId, int? paperId, EnumEventTypes eventType, string description = null, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null, bool IsMarkPlan = true, bool IsMarkRecieve = true)
         {
             return new InternalDocumentEvent
             {
+                DocumentId = documentId,
                 PaperId = paperId ?? 0,
                 EventType = eventType,
                 Date = DateTime.Now,
@@ -463,11 +464,11 @@ namespace BL.Logic.Common
             };
         }
 
-        public static IEnumerable<InternalDocumentEvent> GetNewDocumentPaperEvents(IContext context, int? paperId, EnumEventTypes eventType, string description = null, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null, bool IsMarkPlan = true, bool IsMarkRecieve = true)
+        public static IEnumerable<InternalDocumentEvent> GetNewDocumentPaperEvents(IContext context, int documentId, int? paperId, EnumEventTypes eventType, string description = null, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null, bool IsMarkPlan = true, bool IsMarkRecieve = true)
         {
             return new List<InternalDocumentEvent>
             {
-                GetNewDocumentPaperEvent(context,  paperId, eventType, description, targetPositionId, targetAgentId, sourcePositionId, sourceAgentId, IsMarkPlan, IsMarkRecieve)
+                GetNewDocumentPaperEvent(context,  documentId, paperId, eventType, description, targetPositionId, targetAgentId, sourcePositionId, sourceAgentId, IsMarkPlan, IsMarkRecieve)
             };
         }
 
@@ -481,9 +482,9 @@ namespace BL.Logic.Common
                     document.Papers.Any(
                         x =>
                             x.LastPaperEvent.SourcePositionId != model.SourcePositionId ||
-                            //x.LastPaperEventTMP.TargetPositionId != model.TargetPositionId ||
-                            //x.LastPaperEventTMP.SourceAgentId != model.SourceAgentId ||
-                            //x.LastPaperEventTMP.TargetAgentId != model.TargetAgentId ||
+                            //x.LastPaperEvent.TargetPositionId != model.TargetPositionId ||
+                            //x.LastPaperEvent.SourceAgentId != model.SourceAgentId ||
+                            //x.LastPaperEvent.TargetAgentId != model.TargetAgentId ||
                             x.LastPaperEvent.PaperRecieveDate == null))
 
                 {
@@ -492,7 +493,7 @@ namespace BL.Logic.Common
                 foreach (var paper in document.Papers.ToList())
                 {
                     //paper.LastPaperEventId = null;
-                    paper.LastPaperEvent = CommonDocumentUtilities.GetNewDocumentPaperEvent(context, paper.Id,
+                    paper.LastPaperEvent = CommonDocumentUtilities.GetNewDocumentPaperEvent(context, document.Id, paper.Id,
                         EnumEventTypes.MoveDocumentPaper, null, model.TargetPositionId, model.TargetAgentId, model.SourcePositionId, model.SourceAgentId, true, false);
                     CommonDocumentUtilities.SetLastChange(context, paper);
                     paper.LastPaperEventId = null;

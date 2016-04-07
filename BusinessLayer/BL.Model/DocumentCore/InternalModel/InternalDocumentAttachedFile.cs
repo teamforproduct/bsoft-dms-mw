@@ -23,7 +23,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public InternalDocumentAttachedFile(FrontDocumentAttachedFile doc)
         {
             Id = doc.Id;
-            DocumentId = doc.DocumentId;
+            DocumentId = doc.DocumentId??0;
             OrderInDocument = doc.OrderInDocument;
 
             Version = doc.Version;
