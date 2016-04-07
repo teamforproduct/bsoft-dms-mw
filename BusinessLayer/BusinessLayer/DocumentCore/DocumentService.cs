@@ -54,6 +54,11 @@ namespace BL.Logic.DocumentCore
             return doc;
         }
 
+        public Model.DocumentCore.ReportModel.ReportDocument GetDocumentByReport(IContext ctx, int documentId)
+        {
+            return _documentDb.GetDocumentByReport(ctx, documentId);
+        }
+
         public IEnumerable<BaseSystemUIElement> GetModifyMetaData(IContext ctx, FrontDocument doc)
         {
             var sysDb = DmsResolver.Current.Get<ISystemDbProcess>();

@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="DataSet1" targetNamespace="http://tempuri.org/DataSet1.xsd" xmlns:mstns="http://tempuri.org/DataSet1.xsd" xmlns="http://tempuri.org/DataSet1.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="DataSet1" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="DataSet1" msprop:Generator_UserDSName="DataSet1">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Documents" msprop:Generator_TableClassName="DocumentsDataTable" msprop:Generator_TableVarName="tableDocuments" msprop:Generator_RowChangedName="DocumentsRowChanged" msprop:Generator_TablePropName="Documents" msprop:Generator_RowDeletingName="DocumentsRowDeleting" msprop:Generator_RowChangingName="DocumentsRowChanging" msprop:Generator_RowEvHandlerName="DocumentsRowChangeEventHandler" msprop:Generator_RowDeletedName="DocumentsRowDeleted" msprop:Generator_RowClassName="DocumentsRow" msprop:Generator_UserTableName="Documents" msprop:Generator_RowEvArgName="DocumentsRowChangeEvent">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Id" msprop:Generator_ColumnVarNameInTable="columnId" msprop:Generator_ColumnPropNameInRow="Id" msprop:Generator_ColumnPropNameInTable="IdColumn" msprop:Generator_UserColumnName="Id" type="xs:int" />
+              <xs:element name="DocumentTypeName" msprop:Generator_ColumnVarNameInTable="columnDocumentTypeName" msprop:Generator_ColumnPropNameInRow="DocumentTypeName" msprop:Generator_ColumnPropNameInTable="DocumentTypeNameColumn" msprop:Generator_UserColumnName="DocumentTypeName" type="xs:string" minOccurs="0" />
+              <xs:element name="ExecutorPositionName" msprop:Generator_ColumnVarNameInTable="columnExecutorPositionName" msprop:Generator_ColumnPropNameInRow="ExecutorPositionName" msprop:Generator_ColumnPropNameInTable="ExecutorPositionNameColumn" msprop:Generator_UserColumnName="ExecutorPositionName" type="xs:string" minOccurs="0" />
+              <xs:element name="Description" msprop:Generator_ColumnVarNameInTable="columnDescription" msprop:Generator_ColumnPropNameInRow="Description" msprop:Generator_ColumnPropNameInTable="DescriptionColumn" msprop:Generator_UserColumnName="Description" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="DocumentWaits" msprop:Generator_TableClassName="DocumentWaitsDataTable" msprop:Generator_TableVarName="tableDocumentWaits" msprop:Generator_RowChangedName="DocumentWaitsRowChanged" msprop:Generator_TablePropName="DocumentWaits" msprop:Generator_RowDeletingName="DocumentWaitsRowDeleting" msprop:Generator_RowChangingName="DocumentWaitsRowChanging" msprop:Generator_RowEvHandlerName="DocumentWaitsRowChangeEventHandler" msprop:Generator_RowDeletedName="DocumentWaitsRowDeleted" msprop:Generator_RowClassName="DocumentWaitsRow" msprop:Generator_UserTableName="DocumentWaits" msprop:Generator_RowEvArgName="DocumentWaitsRowChangeEvent">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Id" msprop:Generator_ColumnVarNameInTable="columnId" msprop:Generator_ColumnPropNameInRow="Id" msprop:Generator_ColumnPropNameInTable="IdColumn" msprop:Generator_UserColumnName="Id" type="xs:int" />
+              <xs:element name="DocumentId" msprop:Generator_ColumnVarNameInTable="columnDocumentId" msprop:Generator_ColumnPropNameInRow="DocumentId" msprop:Generator_ColumnPropNameInTable="DocumentIdColumn" msprop:Generator_UserColumnName="DocumentId" type="xs:int" minOccurs="0" />
+              <xs:element name="ResultTypeName" msprop:Generator_ColumnVarNameInTable="columnResultTypeName" msprop:Generator_ColumnPropNameInRow="ResultTypeName" msprop:Generator_ColumnPropNameInTable="ResultTypeNameColumn" msprop:Generator_UserColumnName="ResultTypeName" type="xs:string" minOccurs="0" />
+              <xs:element name="DataCreated" msprop:Generator_ColumnVarNameInTable="columnDataCreated" msprop:Generator_ColumnPropNameInRow="DataCreated" msprop:Generator_ColumnPropNameInTable="DataCreatedColumn" msprop:Generator_UserColumnName="DataCreated" type="xs:dateTime" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+    <xs:unique name="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:Documents" />
+      <xs:field xpath="mstns:Id" />
+    </xs:unique>
+    <xs:unique name="DocumentWaits_Constraint1" msdata:ConstraintName="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:DocumentWaits" />
+      <xs:field xpath="mstns:Id" />
+    </xs:unique>
+  </xs:element>
+  <xs:annotation>
+    <xs:appinfo>
+      <msdata:Relationship name="Documents_DocumentWaits" msdata:parent="Documents" msdata:child="DocumentWaits" msdata:parentkey="Id" msdata:childkey="DocumentId" msprop:Generator_UserChildTable="DocumentWaits" msprop:Generator_ChildPropName="GetDocumentWaitsRows" msprop:Generator_UserRelationName="Documents_DocumentWaits" msprop:Generator_RelationVarName="relationDocuments_DocumentWaits" msprop:Generator_UserParentTable="Documents" msprop:Generator_ParentPropName="DocumentsRow" />
+    </xs:appinfo>
+  </xs:annotation>
+</xs:schema>

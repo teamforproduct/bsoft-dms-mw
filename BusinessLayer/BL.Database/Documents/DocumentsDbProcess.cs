@@ -155,8 +155,8 @@ namespace BL.Database.Documents
                             x =>
                                 (
                                 x.Doc.RegistrationNumber.HasValue
-                                ?x.Doc.RegistrationNumberPrefix + x.Doc.RegistrationNumber.ToString() + x.Doc.RegistrationNumberSuffix
-                                :"#"+ x.Doc.Id.ToString()
+                                ? x.Doc.RegistrationNumberPrefix + x.Doc.RegistrationNumber.ToString() + x.Doc.RegistrationNumberSuffix
+                                : "#" + x.Doc.Id.ToString()
                                 )
                                     .Contains(filters.RegistrationNumber));
                 }
@@ -1005,6 +1005,49 @@ namespace BL.Database.Documents
                 res.DocumentSubscriptions = CommonQueries.GetDocumentSubscriptions(dbContext, new FilterDocumentSubscription { DocumentId = docIds });
 
                 res.Properties = CommonQueries.GetPropertyValues(dbContext, new FilterPropertyValue { RecordId = new List<int> { documentId }, Object = new List<EnumObjects> { EnumObjects.Documents } });
+
+                return res;
+            }
+        }
+
+        public Model.DocumentCore.ReportModel.ReportDocument GetDocumentByReport(IContext ctx, int documentId)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                var qry = CommonQueries.GetDocumentQuery(dbContext, ctx).Where(x => x.Doc.Id == documentId);
+
+                var doc = qry.FirstOrDefault();
+                if (doc == null)
+                {
+                    throw new DocumentNotFoundOrUserHasNoAccess();
+                }
+                var accs =
+                    CommonQueries.GetDocumentAccesses(ctx, dbContext).Where(x => x.DocumentId == doc.Doc.Id).ToList();
+
+                var res = new Model.DocumentCore.ReportModel.ReportDocument
+                {
+                    Id = doc.Doc.Id,
+                    DocumentTypeName = doc.DocTypeName,
+                    ExecutorPositionName = doc.ExecutorPosName,
+                    Addressee = doc.Doc.Addressee,
+                    Description = doc.Doc.Description,
+                };
+
+                var docIds = new List<int> { res.Id };
+
+                res.DocumentWaits = CommonQueries.GetDocumentWaitsQuery(dbContext, ctx, res.Id)
+                    .Select(x => new Model.DocumentCore.ReportModel.ReportDocumentWait
+                    {
+                        Id = x.Id,
+                        DocumentId = x.DocumentId,
+                        CreateDate = x.OnEvent.Date,
+                        TargetPositionName = x.OnEvent.TargetPosition.Name,
+                        SourcePositionName = x.OnEvent.SourcePosition.Name,
+                        DueDate = x.DueDate,
+                        IsClosed = x.OffEventId != null,
+                        ResultTypeName = x.ResultType.Name
+                    }).ToList();
+
 
                 return res;
             }
