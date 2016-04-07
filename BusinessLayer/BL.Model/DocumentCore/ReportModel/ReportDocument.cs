@@ -15,6 +15,7 @@ namespace BL.Model.DocumentCore.ReportModel
         public string DocumentTypeName { get; set; }
 
         public string ExecutorPositionName { get; set; }
+        public string ExecutorPositionExecutorAgentName { get; set; }
         /// <summary>
         /// Кому адресован документ
         /// </summary>

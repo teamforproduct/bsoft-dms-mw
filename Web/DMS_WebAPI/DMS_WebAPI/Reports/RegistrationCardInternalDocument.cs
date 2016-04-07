@@ -16,14 +16,14 @@ namespace DMS_WebAPI.Reports {
     using CrystalDecisions.CrystalReports.Engine;
     
     
-    public class CrystalReport1 : ReportClass {
+    public class RegistrationCardInternalDocument : ReportClass {
         
-        public CrystalReport1() {
+        public RegistrationCardInternalDocument() {
         }
         
         public override string ResourceName {
             get {
-                return "CrystalReport1.rpt";
+                return "RegistrationCardInternalDocument.rpt";
             }
             set {
                 // Do nothing
@@ -41,7 +41,7 @@ namespace DMS_WebAPI.Reports {
         
         public override string FullResourceName {
             get {
-                return "DMS_WebAPI.Reports.CrystalReport1.rpt";
+                return "DMS_WebAPI.Reports.RegistrationCardInternalDocument.rpt";
             }
             set {
                 // Do nothing
@@ -90,9 +90,9 @@ namespace DMS_WebAPI.Reports {
     }
     
     [System.Drawing.ToolboxBitmapAttribute(typeof(CrystalDecisions.Shared.ExportOptions), "report.bmp")]
-    public class CachedCrystalReport1 : Component, ICachedReport {
+    public class CachedRegistrationCardInternalDocument : Component, ICachedReport {
         
-        public CachedCrystalReport1() {
+        public CachedRegistrationCardInternalDocument() {
         }
         
         [Browsable(false)]
@@ -129,7 +129,7 @@ namespace DMS_WebAPI.Reports {
         }
         
         public virtual CrystalDecisions.CrystalReports.Engine.ReportDocument CreateReport() {
-            CrystalReport1 rpt = new CrystalReport1();
+            RegistrationCardInternalDocument rpt = new RegistrationCardInternalDocument();
             rpt.Site = this.Site;
             return rpt;
         }
