@@ -542,7 +542,7 @@ namespace BL.Database.SystemDb
                         DestinationAgentName = (x.TargetAgent == null) ? "" : x.TargetAgent.Name,
                         DestinationPositionId = x.TargetPositionId ?? 0,
                         DestinationPositionName = (x.TargetPosition == null) ? "" : x.TargetPosition.Name,
-                        SourceAgentId = x.SourceAgentId,
+                        SourceAgentId = x.SourceAgentId ?? 0,
                         SourceAgentName = x.SourceAgent.Name,
                         SourcePositiontId = x.SourcePositionId ?? 0,
                         SourcePositionName = x.SourcePosition == null ? "" : x.SourcePosition.Name,

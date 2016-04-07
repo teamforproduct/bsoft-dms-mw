@@ -38,7 +38,7 @@ namespace BL.Logic.DocumentCore.PaperCommands
                 _document.Papers.Where(
                     x => x.IsInWork &&
                         x.LastPaperEvent.SourcePositionId == positionId &&
-                        x.LastPaperEvent.RecieveDate == null && x.LastPaperEvent.SendDate == null)
+                        x.LastPaperEvent.PaperRecieveDate == null && x.LastPaperEvent.SendDate == null)
                         .Select(x => new InternalActionRecord
                         {
                             PaperId = x.Id,
@@ -71,11 +71,13 @@ namespace BL.Logic.DocumentCore.PaperCommands
 
         public override object Execute()
         {
-            _paper.LastPaperEvent.EventId = null;
+            _paper.LastPaperEvent.ParentEventId = null;
             _paper.LastPaperEvent.SendListId = null;
-            _paper.LastPaperEvent.PlanDate = null;
-            _paper.LastPaperEvent.PlanAgentId = null;
+            _paper.LastPaperEvent.PaperPlanDate = null;
+            _paper.LastPaperEvent.PaperPlanAgentId = null;
             CommonDocumentUtilities.SetLastChange(_context, _paper.LastPaperEvent);
+            _paper.LastPaperEvent.Date = _paper.LastPaperEvent.LastChangeDate;
+
             _paper.LastPaperEventId = _paper.PreLastPaperEventId;
             CommonDocumentUtilities.SetLastChange(_context, _paper);
             _operationDb.CancelPlanDocumentPaperEvent(_context, _paper);

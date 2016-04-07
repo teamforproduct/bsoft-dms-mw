@@ -11,6 +11,7 @@ using BL.Model.Enums;
 namespace DMS_WebAPI.Controllers.Documents
 {
     [Authorize]
+    [RoutePrefix("api/v2/DocumentFiles")]
     public class DocumentFilesController : ApiController
     {
         //GET: api/Files
@@ -30,7 +31,21 @@ namespace DMS_WebAPI.Controllers.Documents
             var docFileProc = DmsResolver.Current.Get<IDocumentFileService>();
             return new JsonResult(docFileProc.GetDocumentFiles(cxt,id), this);
         }
-
+        
+        /// <summary>
+        /// Общий список файлов
+        /// </summary>
+        /// <param name="filter">фильтр</param>
+        /// <returns></returns>
+        [Route("GetFileList")]
+        [HttpGet]
+        public IHttpActionResult GetFileList(FilterDocumentAttachedFile filter)
+        {
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var docFileProc = DmsResolver.Current.Get<IDocumentFileService>();
+            return new JsonResult(docFileProc.GetDocumentFiles(cxt, filter), this);
+        }
+        
         // POST: api/Files
         public IHttpActionResult Post([FromBody]ModifyDocumentFiles model)
         {

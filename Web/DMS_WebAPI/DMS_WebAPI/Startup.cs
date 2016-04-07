@@ -26,13 +26,13 @@ namespace DMS_WebAPI
             //    srv.Initialize(dbs);
             //}
 
-            //var mailService = DmsResolver.Current.Get<MailSenderWorkerService>();
+            //var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
             //mailService.Initialize(dbs);
 
-            var indexService = DmsResolver.Current.Get<FullTextSearchService>();
-            indexService.Initialize(dbs);
+            //var indexService = DmsResolver.Current.Get<IFullTextSearchService>();
+            //indexService.Initialize(dbs);
 
-            //var autoPlanService = DmsResolver.Current.Get<AutoPlanService>();
+            //var autoPlanService = DmsResolver.Current.Get<IAutoPlanService>();
             //autoPlanService.Initialize(dbs);
 
             var userContextService = DmsResolver.Current.Get<UserContextWorkerService>();

@@ -201,14 +201,14 @@ namespace BL.Database.Documents
                              Id = x.Id,
                              IsInWork = x.IsInWork,
                              LastPaperEvent = !x.LastPaperEventId.HasValue ? null :
-                                            new InternalDocumentPaperEvent
+                                            new InternalDocumentEvent
                                             {
-                                                Id = x.LastPaperEvent.Id,
-                                                SourcePositionId = x.LastPaperEvent.SourcePositionId,
-                                                TargetPositionId = x.LastPaperEvent.TargetPositionId,
-                                                PlanDate = x.LastPaperEvent.PlanDate,
-                                                SendDate = x.LastPaperEvent.SendDate,
-                                                RecieveDate = x.LastPaperEvent.RecieveDate,
+                                                Id = x.LastPaperEventTMP.Id,
+                                                SourcePositionId = x.LastPaperEventTMP.SourcePositionId,
+                                                TargetPositionId = x.LastPaperEventTMP.TargetPositionId,
+                                                PaperPlanDate = x.LastPaperEventTMP.PaperPlanDate,
+                                                PaperSendDate = x.LastPaperEventTMP.PaperSendDate,
+                                                PaperRecieveDate = x.LastPaperEventTMP.PaperRecieveDate,
 
                                             }
                          }
@@ -666,7 +666,8 @@ namespace BL.Database.Documents
                         qry =
                             qry.Where(
                                 x =>
-                                    (x.TargetAgentId.HasValue && filter.AgentId.Contains(x.TargetAgentId.Value)) || filter.AgentId.Contains(x.SourceAgentId) ||
+                                    (x.TargetAgentId.HasValue && filter.AgentId.Contains(x.TargetAgentId.Value)) || 
+                                    (x.SourceAgentId.HasValue && filter.AgentId.Contains(x.SourceAgentId.Value)) ||
                                     (x.ReadAgentId.HasValue && filter.AgentId.Contains(x.ReadAgentId.Value))
                                     || (x.SourcePositionExecutorAgentId.HasValue && filter.AgentId.Contains(x.SourcePositionExecutorAgentId.Value))
                                     || (x.TargetPositionExecutorAgentId.HasValue && filter.AgentId.Contains(x.TargetPositionExecutorAgentId.Value)));
@@ -958,17 +959,17 @@ namespace BL.Database.Documents
                     {
                         foreach (var paper in document.Papers.ToList())
                         {
-                            var paperEventDb = ModelConverter.GetDbDocumentPaperEvent(paper.LastPaperEvent);
-                            paperEventDb.EventId = sendListDb.StartEventId.Value;
-                            dbContext.DocumentPaperEventsSet.Attach(paperEventDb);
+                            var paperEventDb = ModelConverter.GetDbDocumentEvent(paper.LastPaperEvent);
+                            paperEventDb.ParentEventId = sendListDb.StartEventId.Value;
+                            dbContext.DocumentEventsSet.Attach(paperEventDb);
                             var entryEventDb = dbContext.Entry(paperEventDb);
                             entryEventDb.Property(e => e.SourcePositionExecutorAgentId).IsModified = true;
                             entryEventDb.Property(e => e.TargetPositionExecutorAgentId).IsModified = true;
                             entryEventDb.Property(e => e.SourceAgentId).IsModified = true;
                             entryEventDb.Property(e => e.TargetAgentId).IsModified = true;
-                            entryEventDb.Property(e => e.EventId).IsModified = true;
-                            entryEventDb.Property(e => e.PlanDate).IsModified = true;
-                            entryEventDb.Property(e => e.PlanAgentId).IsModified = true;
+                            entryEventDb.Property(e => e.ParentEventId).IsModified = true;
+                            entryEventDb.Property(e => e.PaperPlanDate).IsModified = true;
+                            entryEventDb.Property(e => e.PaperPlanAgentId).IsModified = true;
                             entryEventDb.Property(e => e.LastChangeUserId).IsModified = true;
                             entryEventDb.Property(e => e.LastChangeDate).IsModified = true;
                             dbContext.SaveChanges();
@@ -1274,9 +1275,9 @@ namespace BL.Database.Documents
 
                 if (id != 0)
                 {
-                    docRes.PaperEvents = dbContext.DocumentPaperEventsSet
+                    docRes.PaperEvents = dbContext.DocumentEventsSet
                         .Where(x => x.SendListId == id)
-                        .Select(x => new InternalDocumentPaperEvent
+                        .Select(x => new InternalDocumentEvent
                         {
                             Id = x.Id,
                             PaperId = x.PaperId,
@@ -1357,7 +1358,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public IEnumerable<int> AddDocumentSendList(IContext context, IEnumerable<InternalDocumentSendList> sendList, IEnumerable<InternalDocumentTask> task = null, IEnumerable<InternalDocumentPaperEvent> paperEvents = null)
+        public IEnumerable<int> AddDocumentSendList(IContext context, IEnumerable<InternalDocumentSendList> sendList, IEnumerable<InternalDocumentTask> task = null, IEnumerable<InternalDocumentEvent> paperEvents = null)
         {
             List<int> res = null;
             using (var dbContext = new DmsContext(context))
@@ -1383,8 +1384,8 @@ namespace BL.Database.Documents
                     {
                         var listPaperEvent = paperEvents.ToList();
                         listPaperEvent.ForEach(x => { x.SendListId = res.FirstOrDefault(); });
-                        var paperEventsDb = ModelConverter.GetDbDocumentPaperEvents(listPaperEvent).ToList();
-                        dbContext.DocumentPaperEventsSet.AddRange(paperEventsDb);
+                        var paperEventsDb = ModelConverter.GetDbDocumentEvents(listPaperEvent).ToList();
+                        dbContext.DocumentEventsSet.AddRange(paperEventsDb);
                         dbContext.SaveChanges();
                     }
 
@@ -1422,7 +1423,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public void ModifyDocumentSendList(IContext context, InternalDocumentSendList sendList, IEnumerable<InternalDocumentTask> task = null, IEnumerable<InternalDocumentPaperEvent> addPaperEvents = null, IEnumerable<int> delPaperEvents = null)
+        public void ModifyDocumentSendList(IContext context, InternalDocumentSendList sendList, IEnumerable<InternalDocumentTask> task = null, IEnumerable<InternalDocumentEvent> addPaperEvents = null, IEnumerable<int?> delPaperEvents = null)
         {
             using (var dbContext = new DmsContext(context))
             {
@@ -1458,15 +1459,15 @@ namespace BL.Database.Documents
 
                     if (delPaperEvents?.Any() ?? false)
                     {
-                        dbContext.DocumentPaperEventsSet.RemoveRange(
-                            dbContext.DocumentPaperEventsSet.Where(
-                                x => delPaperEvents.Contains(x.PaperId) && x.SendListId == sendList.Id));
+                        dbContext.DocumentEventsSet.RemoveRange(
+                            dbContext.DocumentEventsSet.Where(
+                                x => ((List<int?>)delPaperEvents).Contains(x.PaperId) && x.SendListId == sendList.Id));
                         dbContext.SaveChanges();
                     }
                     if (addPaperEvents?.Any() ?? false)
                     {
-                        var paperEventsDb = ModelConverter.GetDbDocumentPaperEvents(addPaperEvents).ToList();
-                        dbContext.DocumentPaperEventsSet.AddRange(paperEventsDb);
+                        var paperEventsDb = ModelConverter.GetDbDocumentEvents(addPaperEvents).ToList();
+                        dbContext.DocumentEventsSet.AddRange(paperEventsDb);
                         dbContext.SaveChanges();
                     }
 
@@ -1508,7 +1509,7 @@ namespace BL.Database.Documents
                 var item = dbContext.DocumentSendListsSet.FirstOrDefault(x => x.Id == sendListId);
                 if (item != null)
                 {
-                    dbContext.DocumentPaperEventsSet.RemoveRange(dbContext.DocumentPaperEventsSet.Where(x => x.SendListId == sendListId && x.PlanDate == null));
+                    dbContext.DocumentEventsSet.RemoveRange(dbContext.DocumentEventsSet.Where(x => x.SendListId == sendListId && x.PaperPlanDate == null));
                     dbContext.DocumentSendListsSet.Remove(item);
                     dbContext.SaveChanges();
                 }
@@ -1781,14 +1782,14 @@ namespace BL.Database.Documents
                                             Id = x.Id,
                                             IsInWork = x.IsInWork,
                                             LastPaperEvent = !x.LastPaperEventId.HasValue? null:
-                                            new InternalDocumentPaperEvent
+                                            new InternalDocumentEvent
                                             {
-                                                Id = x.LastPaperEvent.Id,
-                                                SourcePositionId = x.LastPaperEvent.SourcePositionId,
-                                                TargetPositionId = x.LastPaperEvent.TargetPositionId,
-                                                PlanDate = x.LastPaperEvent.PlanDate,
-                                                SendDate = x.LastPaperEvent.SendDate,
-                                                RecieveDate = x.LastPaperEvent.RecieveDate,
+                                                Id = x.LastPaperEventTMP.Id,
+                                                SourcePositionId = x.LastPaperEventTMP.SourcePositionId,
+                                                TargetPositionId = x.LastPaperEventTMP.TargetPositionId,
+                                                PaperPlanDate = x.LastPaperEventTMP.PaperPlanDate,
+                                                PaperSendDate = x.LastPaperEventTMP.PaperSendDate,
+                                                PaperRecieveDate = x.LastPaperEventTMP.PaperRecieveDate,
 
                                             },                                        }
                                    }
@@ -1798,8 +1799,8 @@ namespace BL.Database.Documents
                 {
                     var paper = doc.Papers.First();
                     paper.PreLastPaperEventId =
-                        dbContext.DocumentPaperEventsSet.Where(y => y.PaperId == paperId && y.Id != paper.LastPaperEvent.Id && y.RecieveDate != null && y.TargetPositionId == paper.LastPaperEvent.SourcePositionId)
-                            .OrderByDescending(y => y.RecieveDate)
+                        dbContext.DocumentEventsSet.Where(y => y.PaperId == paperId && y.Id != paper.LastPaperEvent.Id && y.PaperRecieveDate != null && y.TargetPositionId == paper.LastPaperEvent.SourcePositionId)
+                            .OrderByDescending(y => y.PaperRecieveDate)
                             .Select(y => y.Id)
                             .FirstOrDefault();
                 }
@@ -1843,11 +1844,11 @@ namespace BL.Database.Documents
                             var paperDb = ModelConverter.GetDbDocumentPaper(paper);
                             if (paper.Events != null && paper.Events.Any())
                             {
-                                paperDb.PaperEvents = ModelConverter.GetDbDocumentPaperEvents(paper.Events).ToList();
+                                paperDb.Events = ModelConverter.GetDbDocumentEvents(paper.Events).ToList();
                             }
                             dbContext.DocumentPapersSet.Add(paperDb);
                             dbContext.SaveChanges();
-                            paperDb.LastPaperEventId = paperDb.PaperEvents.First().Id;
+                            paperDb.LastPaperEventId = paperDb.Events.First().Id;
                             dbContext.DocumentPapersSet.Attach(paperDb);
                             var entry = dbContext.Entry(paperDb);
                             entry.Property(x => x.LastPaperEventId).IsModified = true;
@@ -1883,7 +1884,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(context))
             {
-                dbContext.DocumentPaperEventsSet.RemoveRange(dbContext.DocumentPaperEventsSet.Where(x => x.PaperId == id && x.EventTypeId == (int)EnumEventTypes.AddNewPaper));
+                dbContext.DocumentEventsSet.RemoveRange(dbContext.DocumentEventsSet.Where(x => x.PaperId == id && x.EventTypeId == (int)EnumEventTypes.AddNewPaper));
                 dbContext.DocumentPapersSet.RemoveRange(dbContext.DocumentPapersSet.Where(x => x.Id == id));
                 dbContext.SaveChanges();
 
@@ -1898,8 +1899,8 @@ namespace BL.Database.Documents
                     var transaction = new TransactionScope(TransactionScopeOption.Required,
                         new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
                 {
-                    var paperEventDb = ModelConverter.GetDbDocumentPaperEvent(paper.LastPaperEvent);
-                    dbContext.DocumentPaperEventsSet.Add(paperEventDb);
+                    var paperEventDb = ModelConverter.GetDbDocumentEvent(paper.LastPaperEvent);
+                    dbContext.DocumentEventsSet.Add(paperEventDb);
                     dbContext.SaveChanges();
                     paper.LastPaperEventId = paperEventDb.Id;
                     var paperDb = ModelConverter.GetDbDocumentPaper(paper);
@@ -1922,8 +1923,8 @@ namespace BL.Database.Documents
                     var transaction = new TransactionScope(TransactionScopeOption.Required,
                         new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
                 {
-                    var paperEventDb = ModelConverter.GetDbDocumentPaperEvent(paper.LastPaperEvent);
-                    dbContext.DocumentPaperEventsSet.Add(paperEventDb);
+                    var paperEventDb = ModelConverter.GetDbDocumentEvent(paper.LastPaperEvent);
+                    dbContext.DocumentEventsSet.Add(paperEventDb);
                     dbContext.SaveChanges();
                     paper.LastPaperEventId = paperEventDb.Id;
                     var paperDb = ModelConverter.GetDbDocumentPaper(paper);
@@ -1947,11 +1948,12 @@ namespace BL.Database.Documents
                     var transaction = new TransactionScope(TransactionScopeOption.Required,
                         new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
                 {
-                    var paperEventDb = ModelConverter.GetDbDocumentPaperEvent(paper.LastPaperEvent);
-                    dbContext.DocumentPaperEventsSet.Attach(paperEventDb);
+                    var paperEventDb = ModelConverter.GetDbDocumentEvent(paper.LastPaperEvent);
+                    dbContext.DocumentEventsSet.Attach(paperEventDb);
                     var entry = dbContext.Entry(paperEventDb);
-                    entry.Property(e => e.SendDate).IsModified = true;
-                    entry.Property(e => e.SendAgentId).IsModified = true;
+                    entry.Property(e => e.Date).IsModified = true;
+                    entry.Property(e => e.PaperSendDate).IsModified = true;
+                    entry.Property(e => e.PaperSendAgentId).IsModified = true;
                     entry.Property(e => e.LastChangeUserId).IsModified = true;
                     entry.Property(e => e.LastChangeDate).IsModified = true;
                     dbContext.SaveChanges();
@@ -1968,11 +1970,12 @@ namespace BL.Database.Documents
                     var transaction = new TransactionScope(TransactionScopeOption.Required,
                         new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
                 {
-                    var paperEventDb = ModelConverter.GetDbDocumentPaperEvent(paper.LastPaperEvent);
-                    dbContext.DocumentPaperEventsSet.Attach(paperEventDb);
+                    var paperEventDb = ModelConverter.GetDbDocumentEvent(paper.LastPaperEvent);
+                    dbContext.DocumentEventsSet.Attach(paperEventDb);
                     var entry = dbContext.Entry(paperEventDb);
-                    entry.Property(e => e.RecieveDate).IsModified = true;
-                    entry.Property(e => e.RecieveAgentId).IsModified = true;
+                    entry.Property(e => e.Date).IsModified = true;
+                    entry.Property(e => e.PaperRecieveDate).IsModified = true;
+                    entry.Property(e => e.PaperRecieveAgentId).IsModified = true;
                     entry.Property(e => e.LastChangeUserId).IsModified = true;
                     entry.Property(e => e.LastChangeDate).IsModified = true;
                     dbContext.SaveChanges();
@@ -1989,13 +1992,14 @@ namespace BL.Database.Documents
                     var transaction = new TransactionScope(TransactionScopeOption.Required,
                         new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
                 {
-                    var paperEventDb = ModelConverter.GetDbDocumentPaperEvent(paper.LastPaperEvent);
-                    dbContext.DocumentPaperEventsSet.Attach(paperEventDb);
+                    var paperEventDb = ModelConverter.GetDbDocumentEvent(paper.LastPaperEvent);
+                    dbContext.DocumentEventsSet.Attach(paperEventDb);
                     var entry = dbContext.Entry(paperEventDb);
-                    entry.Property(e => e.EventId).IsModified = true;
+                    entry.Property(e => e.ParentEventId).IsModified = true;
                     entry.Property(e => e.SendListId).IsModified = true;
-                    entry.Property(e => e.PlanDate).IsModified = true;
-                    entry.Property(e => e.PlanAgentId).IsModified = true;
+                    entry.Property(e => e.Date).IsModified = true;
+                    entry.Property(e => e.PaperPlanDate).IsModified = true;
+                    entry.Property(e => e.PaperPlanAgentId).IsModified = true;
                     entry.Property(e => e.LastChangeUserId).IsModified = true;
                     entry.Property(e => e.LastChangeDate).IsModified = true;
                     dbContext.SaveChanges();
@@ -2016,7 +2020,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(context))
             {
-                return dbContext.DocumentPaperEventsSet.Where(x => x.SendListId == idSendList && x.PlanDate == null && x.SendDate == null && x.RecieveDate == null)
+                return dbContext.DocumentEventsSet.Where(x => x.SendListId == idSendList && x.PaperPlanDate == null && x.PaperSendDate == null && x.PaperRecieveDate == null)
                     .Select(x => new InternalDocumentPaper
                     {
                         Id = x.Paper.Id,
@@ -2025,14 +2029,14 @@ namespace BL.Database.Documents
                         LastPaperEventId = x.Paper.LastPaperEventId,
                         LastPaperEvent = !x.Paper.LastPaperEventId.HasValue
                             ? null
-                            : new InternalDocumentPaperEvent
+                            : new InternalDocumentEvent
                             {
-                                Id = x.Paper.LastPaperEvent.Id,
-                                SourcePositionId = x.Paper.LastPaperEvent.SourcePositionId,
-                                //TargetPositionId = x.Paper.LastPaperEvent.TargetPositionId,
-                                PlanDate = x.Paper.LastPaperEvent.PlanDate,
-                                SendDate = x.Paper.LastPaperEvent.SendDate,
-                                RecieveDate = x.Paper.LastPaperEvent.RecieveDate,
+                                Id = x.Paper.LastPaperEventTMP.Id,
+                                SourcePositionId = x.Paper.LastPaperEventTMP.SourcePositionId,
+                                //TargetPositionId = x.Paper.LastPaperEventTMP.TargetPositionId,
+                                PaperPlanDate = x.Paper.LastPaperEventTMP.PaperPlanDate,
+                                PaperSendDate = x.Paper.LastPaperEventTMP.PaperSendDate,
+                                PaperRecieveDate = x.Paper.LastPaperEventTMP.PaperRecieveDate,
                             },
                         NextPaperEventId = x.Id,
                     }).ToList();
@@ -2054,14 +2058,14 @@ namespace BL.Database.Documents
                         LastPaperEventId = x.LastPaperEventId,
                         LastPaperEvent = !x.LastPaperEventId.HasValue
                             ? null
-                            : new InternalDocumentPaperEvent
+                            : new InternalDocumentEvent
                             {
-                                Id = x.LastPaperEvent.Id,
-                                SourcePositionId = x.LastPaperEvent.SourcePositionId,
-                                TargetPositionId = x.LastPaperEvent.TargetPositionId,
-                                PlanDate = x.LastPaperEvent.PlanDate,
-                                SendDate = x.LastPaperEvent.SendDate,
-                                RecieveDate = x.LastPaperEvent.RecieveDate,
+                                Id = x.LastPaperEventTMP.Id,
+                                SourcePositionId = x.LastPaperEventTMP.SourcePositionId,
+                                TargetPositionId = x.LastPaperEventTMP.TargetPositionId,
+                                PaperPlanDate = x.LastPaperEventTMP.PaperPlanDate,
+                                PaperSendDate = x.LastPaperEventTMP.PaperSendDate,
+                                PaperRecieveDate = x.LastPaperEventTMP.PaperRecieveDate,
                             }
                     }).ToList();
                 if (!doc.Papers.Any()) return null;
@@ -2082,8 +2086,8 @@ namespace BL.Database.Documents
                     {
                         foreach (var paper in papers.Where(x => !x.LastPaperEventId.HasValue && x.LastPaperEvent != null).ToList())
                         {
-                            var paperEventDb = ModelConverter.GetDbDocumentPaperEvent(paper.LastPaperEvent);
-                            dbContext.DocumentPaperEventsSet.Add(paperEventDb);
+                            var paperEventDb = ModelConverter.GetDbDocumentEvent(paper.LastPaperEvent);
+                            dbContext.DocumentEventsSet.Add(paperEventDb);
                             dbContext.SaveChanges();
                             paper.LastPaperEventId = paperEventDb.Id;
                             var paperDb = ModelConverter.GetDbDocumentPaper(paper);

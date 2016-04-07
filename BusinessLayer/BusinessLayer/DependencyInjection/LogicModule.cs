@@ -18,6 +18,7 @@ using BL.Logic.PropertyCore;
 using BL.Logic.PropertyCore.Commands;
 using BL.Logic.PropertyCore.Interfaces;
 using BL.Logic.Settings;
+using BL.Logic.SystemServices.AutoPlan;
 using BL.Logic.SystemServices.FullTextSearch;
 using BL.Logic.SystemServices.MailWorker;
 using BL.Model.Enums;
@@ -43,8 +44,9 @@ namespace BL.Logic.DependencyInjection
             Bind<ISettings>().To<Setting>().InSingletonScope();
             Bind<ICommandService>().To<CommandService>().InSingletonScope();
             Bind<IAdminService>().To<AdminService>().InSingletonScope();
-            Bind<ISystemWorkerService>().To<MailSenderWorkerService>().InSingletonScope();
+            Bind<IMailSenderWorkerService>().To<MailSenderWorkerService>().InSingletonScope();
             Bind<IFullTextSearchService>().To<FullTextSearchService>().InSingletonScope();
+            Bind<IAutoPlanService>().To<AutoPlanService>().InSingletonScope();
         }
 
         private void LoadDocumentModule()

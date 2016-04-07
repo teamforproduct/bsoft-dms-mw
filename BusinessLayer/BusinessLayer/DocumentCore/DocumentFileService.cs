@@ -25,6 +25,11 @@ namespace BL.Logic.DocumentCore
             return _dbProcess.GetDocumentFiles(ctx, documentId);
         }
 
+        public IEnumerable<FrontDocumentAttachedFile> GetDocumentFiles(IContext ctx, FilterDocumentAttachedFile filter)
+        {
+            return _dbProcess.GetDocumentFiles(ctx, filter);
+        }
+
         public FrontDocumentAttachedFile GetUserFile(IContext ctx, FilterDocumentFileIdentity fileIdent)
         {
             var fl = _dbProcess.GetDocumentFileVersion(ctx, fileIdent.DocumentId, fileIdent.OrderInDocument, 1);

@@ -75,7 +75,18 @@ namespace BL.Database.Common
                     SourcePositionId = evt.SourcePositionId,
                     SourcePositionExecutorAgentId = evt.SourcePositionExecutorAgentId,
                     ReadAgentId = evt.ReadAgentId,
-                    ReadDate = evt.ReadDate
+                    ReadDate = evt.ReadDate,
+
+                    Id = evt.Id,
+                    PaperId = evt.PaperId,
+                    PaperPlanAgentId = evt.PaperPlanAgentId,
+                    PaperPlanDate = evt.PaperPlanDate,
+                    PaperSendAgentId = evt.PaperSendAgentId,
+                    PaperSendDate = evt.PaperSendDate,
+                    PaperRecieveAgentId = evt.PaperRecieveAgentId,
+                    PaperRecieveDate = evt.PaperRecieveDate,
+                    SendListId = evt.SendListId,
+                    ParentEventId = evt.ParentEventId,
                 };
         }
 
@@ -261,10 +272,10 @@ namespace BL.Database.Common
             return papers?.Any() ?? false ? papers.Select(GetDbDocumentPaper) : null;
         }
 
-        public static DocumentPaperEvents GetDbDocumentPaperEvent(InternalDocumentPaperEvent evt)
+        public static DocumentEvents GetDbDocumentPaperEvent111(InternalDocumentEvent evt)
         {
             return evt == null ? null :
-                new DocumentPaperEvents
+                new DocumentEvents
                 {
                     Id = evt.Id,
                     Description = evt.Description,
@@ -278,20 +289,20 @@ namespace BL.Database.Common
                     SourceAgentId = evt.SourceAgentId,
                     SourcePositionId = evt.SourcePositionId,
                     SourcePositionExecutorAgentId = evt.SourcePositionExecutorAgentId,
-                    PlanAgentId = evt.PlanAgentId,
-                    PlanDate = evt.PlanDate,
-                    SendAgentId = evt.SendAgentId,
-                    SendDate = evt.SendDate,
-                    RecieveAgentId = evt.RecieveAgentId,
-                    RecieveDate = evt.RecieveDate,
+                    PaperPlanAgentId = evt.PaperPlanAgentId,
+                    PaperPlanDate = evt.PaperPlanDate,
+                    PaperSendAgentId = evt.PaperSendAgentId,
+                    PaperSendDate = evt.PaperSendDate,
+                    PaperRecieveAgentId = evt.PaperRecieveAgentId,
+                    PaperRecieveDate = evt.PaperRecieveDate,
                     SendListId = evt.SendListId,
-                    EventId = evt.EventId,
+                    ParentEventId = evt.ParentEventId,
                 };
         }
 
-        public static IEnumerable<DocumentPaperEvents> GetDbDocumentPaperEvents(IEnumerable<InternalDocumentPaperEvent> evt)
+        public static IEnumerable<DocumentEvents> GetDbDocumentPaperEvents111(IEnumerable<InternalDocumentEvent> evt)
         {
-            return evt?.Any() ?? false ? evt.Select(GetDbDocumentPaperEvent) : null;
+            return evt?.Any() ?? false ? evt.Select(GetDbDocumentPaperEvent111) : null;
         }
 
         public static DocumentPaperLists GetDbDocumentPaperList(InternalDocumentPaperList item)
