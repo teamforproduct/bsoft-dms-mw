@@ -246,6 +246,9 @@
     <Compile Include="DocumentCore\InternalModel\InternalDocumentSubscription.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentWait.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalTemplateDocumentTask.cs" />
+    <Compile Include="DocumentCore\ReportModel\ReportDocumentWait.cs" />
+    <Compile Include="DocumentCore\ReportModel\ReportDocument.cs" />
+    <Compile Include="Enums\EnumReportTypes.cs" />
     <Compile Include="Enums\EnumSystemUsers.cs" />
     <Compile Include="Enums\EnumContactTypes.cs" />
     <Compile Include="Enums\EnumDictionaryAgentTypes.cs" />
