@@ -19,7 +19,8 @@ namespace DMS_WebAPI.Utilities
     {
         public string ReplaceLanguageLabel(string userLanguage, string text)
         {
-            try {
+            try
+            {
                 using (var dbContext = new ApplicationDbContext())
                 {
                     var labelsInText = new List<string>();
@@ -27,23 +28,29 @@ namespace DMS_WebAPI.Utilities
                     {
                         labelsInText.Add(label.Value);
                     }
-                    if (string.IsNullOrEmpty(userLanguage)) userLanguage = string.Empty;
-                    var labels = dbContext.AdminLanguagesSet
-                        .Where(x => userLanguage.Equals(x.Code, StringComparison.OrdinalIgnoreCase) || x.IsDefault)
-                        .OrderBy(x => x.IsDefault)
-                        .Take(1)
-                        .SelectMany(x => x.LanguageValues)
-                        .Where(x=>labelsInText.Contains(x.Label))
-                        .ToArray();
 
-                    for (int i = 0, l = labels.Length; i < l; i++)
+                    if (labelsInText.Count > 0)
                     {
-                        text = text.Replace(labels[i].Label, labels[i].Value);
+                        if (string.IsNullOrEmpty(userLanguage))
+                            userLanguage = string.Empty;
+
+                        var labels = dbContext.AdminLanguagesSet
+                            .Where(x => userLanguage.Equals(x.Code, StringComparison.OrdinalIgnoreCase) || x.IsDefault)
+                            .OrderBy(x => x.IsDefault)
+                            .Take(1)
+                            .SelectMany(x => x.LanguageValues)
+                            .Where(x => labelsInText.Contains(x.Label))
+                            .ToArray();
+
+                        for (int i = 0, l = labels.Length; i < l; i++)
+                        {
+                            text = text.Replace(labels[i].Label, labels[i].Value);
+                        }
                     }
                     return text;
                 }
             }
-            catch(Exception ex) { }
+            catch (Exception ex) { }
             return text;
         }
     }
