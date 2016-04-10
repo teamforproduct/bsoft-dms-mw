@@ -975,7 +975,7 @@ namespace BL.Database.Common
         {
             if (item.RegistrationNumber != null)
             {
-                item.RegistrationFullNumber = item.RegistrationNumberPrefix + item.RegistrationNumber + item.RegistrationNumberSuffix;
+                item.RegistrationFullNumber = (item.RegistrationNumberPrefix??"") + item.RegistrationNumber + (item.RegistrationNumberSuffix??"");
             }
             else
             {
@@ -994,7 +994,7 @@ namespace BL.Database.Common
         {
             if (item.RegistrationNumber != null)
             {
-                item.RegistrationFullNumber = item.RegistrationNumberPrefix + item.RegistrationNumber + item.RegistrationNumberSuffix;
+                item.RegistrationFullNumber = (item.RegistrationNumberPrefix??"") + item.RegistrationNumber + (item.RegistrationNumberSuffix??"");
             }
 
             if (isClearFields)
