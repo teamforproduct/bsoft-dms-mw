@@ -91,13 +91,20 @@ namespace BL.Logic.SystemServices.MailWorker
                 var newEvents = _sysDb.GetNewActionsForMailing(ctx);
                 foreach (var evt in newEvents)
                 {
-                    var mailParam = new InternalSendMailParameters(md);
-                    //TODO make correct subject and body!
-                    mailParam.ToAddress = evt.DestinationAgentEmail;
-                    mailParam.Subject = "Automatic notification";
-                    mailParam.Body = "You have new event: " + evt.Description;
-                    SendMessage(ctx, mailParam);
-                    processed.ProcessedEventIds.Add(evt.EventId);
+                    try
+                    {
+                        var mailParam = new InternalSendMailParameters(md);
+                        //TODO make correct subject and body!
+                        mailParam.ToAddress = evt.DestinationAgentEmail;
+                        mailParam.Subject = "Automatic notification";
+                        mailParam.Body = "You have new event: " + evt.Description;
+                        SendMessage(ctx, mailParam);
+                        processed.ProcessedEventIds.Add(evt.EventId);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.Error(ctx, $"MailWorkerService cannot process Event Id={evt.EventId} DocId ={evt.DocumentId} ", ex);
+                    }
                 }
                 //TODO possible error: when we sent all meils, but could not save an result to DB, then all messages could be sended again
                 _sysDb.MarkActionsLikeMailSended(ctx, processed);
