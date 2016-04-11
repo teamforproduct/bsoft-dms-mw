@@ -810,6 +810,7 @@ namespace BL.Database.Documents
 
                     DocumentDate = doc.Doc.RegistrationDate ?? doc.Doc.CreateDate,
                     IsRegistered = doc.Doc.IsRegistered,
+                    IsLaunchPlan = doc.Doc.IsLaunchPlan,
                     Description = doc.Doc.Description,
                     ExecutorPositionExecutorAgentName = doc.ExecutorPositionExecutorAgentName,
                     ExecutorPositionName = doc.ExecutorPosName,
