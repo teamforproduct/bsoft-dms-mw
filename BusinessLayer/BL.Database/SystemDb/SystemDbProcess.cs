@@ -631,23 +631,31 @@ namespace BL.Database.SystemDb
             using (var dbContext = new DmsContext(ctx))
             {
                 res.AddRange(dbContext.DocumentsSet
-                    .Select(x => new FullTextIndexIem
+                    .Select(x => new 
                     {
                         DocumentId = x.Id,
                         ItemType = EnumSearchObjectType.Document,
                         OperationType = EnumOperationType.AddNew,
                         ObjectId = 0,
-                        ObjectText = (x.RegistrationNumber != null
-                            ? x.RegistrationNumberPrefix + x.RegistrationNumber +
-                              x.RegistrationNumberSuffix
-                            : "#" + x.Id) + " "
-                                     + x.RegistrationJournal.Name + " " + x.RegistrationJournal.Department.Name + " "
-                                     + x.Description + " "
-                                     + x.ExecutorPositionExecutorAgent.Name + " "
-                                     + x.TemplateDocument.DocumentType.Name + " " + x.TemplateDocument.DocumentDirection.Name + " "
-                                     + x.DocumentSubject.Name + " "
-                                     + x.SenderAgent.Name + " " + x.SenderAgentPerson.Agent.Name + " " + x.SenderNumber + " "
-                    }).ToList());
+                        regNr = (x.RegistrationNumber != null
+                            ? (x.RegistrationNumberPrefix??"") + x.RegistrationNumber +
+                              (x.RegistrationNumberSuffix??"")
+                            : "#" + x.Id)+" " ,
+                                     v1 = x.RegistrationJournal.Name + " " + x.RegistrationJournal.Department.Name + " ",
+                                     v2 = x.Description + " ",
+                                     v3 = x.ExecutorPositionExecutorAgent.Name + " ",
+                                     v4 = x.TemplateDocument.DocumentType.Name + " " + x.TemplateDocument.DocumentDirection.Name + " ",
+                                     v5 = x.DocumentSubject.Name + " ",
+                                     v6 = x.SenderAgent.Name + " " + x.SenderAgentPerson.Agent.Name + " " + x.SenderNumber + " "
+                    }).ToList()
+                    .Select(x=>new FullTextIndexIem
+                    {
+                        DocumentId = x.DocumentId,
+                        ItemType = x.ItemType,
+                        OperationType = x.OperationType,
+                        ObjectId = x.ObjectId,
+                        ObjectText = x.regNr+x.v1+ x.v2 + x.v3 + x.v4 + x.v5 + x.v6
+                    }));
 
                 res.AddRange(dbContext.DocumentEventsSet
                      .Select(x => new FullTextIndexIem
@@ -706,26 +714,36 @@ namespace BL.Database.SystemDb
             var res = new List<FullTextIndexIem>();
             using (var dbContext = new DmsContext(ctx))
             {
+                //TODO process deleted document
                 res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumSearchObjectType.Document)
                      .Join(dbContext.DocumentsSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, doc = d })
-                     .Select(x => new FullTextIndexIem
+                     .Select(x => new 
                      {
                          Id = x.ind.Id,
                          DocumentId = x.doc.Id,
                          ItemType = (EnumSearchObjectType)x.ind.ObjectType,
                          OperationType = (EnumOperationType)x.ind.OperationType,
                          ObjectId = 0,
-                         ObjectText = (x.doc.RegistrationNumber != null
-                             ? x.doc.RegistrationNumberPrefix + x.doc.RegistrationNumber +
-                               x.doc.RegistrationNumberSuffix
-                             : "#" + x.doc.Id) + " "
-                             + x.doc.RegistrationJournal.Name + " " + x.doc.RegistrationJournal.Department.Name + " "
-                             + x.doc.Description + " "
-                             + x.doc.ExecutorPositionExecutorAgent.Name + " "
-                             + x.doc.TemplateDocument.DocumentType.Name + " " + x.doc.TemplateDocument.DocumentDirection.Name + " "
-                             + x.doc.DocumentSubject.Name + " "
-                             + x.doc.SenderAgent.Name + " " + x.doc.SenderAgentPerson.Agent.Name + " " + x.doc.SenderNumber + " "
+                         v1 = (x.doc.RegistrationNumber != null
+                             ? (x.doc.RegistrationNumberPrefix??"") + x.doc.RegistrationNumber +
+                               (x.doc.RegistrationNumberSuffix??"")
+                             : "#" + x.doc.Id) + " ",
+                             v2= x.doc.RegistrationJournal.Name + " " + x.doc.RegistrationJournal.Department.Name + " ",
+                             v3= x.doc.Description + " ",
+                             v4= x.doc.ExecutorPositionExecutorAgent.Name + " ",
+                             v5= x.doc.TemplateDocument.DocumentType.Name + " " + x.doc.TemplateDocument.DocumentDirection.Name + " ",
+                             v6= x.doc.DocumentSubject.Name + " ",
+                             v7= x.doc.SenderAgent.Name + " " + x.doc.SenderAgentPerson.Agent.Name + " " + x.doc.SenderNumber + " ",
                      }).ToList()
+                     .Select(x=>new FullTextIndexIem
+                     {
+                         Id = x.Id,
+                         DocumentId = x.DocumentId,
+                         ItemType = x.ItemType,
+                         OperationType = x.OperationType,
+                         ObjectId = x.ObjectId,
+                         ObjectText = x.v1+ x.v2+ x.v3+ x.v4+ x.v5+ x.v6+ x.v7
+                     })
                  );
 
                 res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumSearchObjectType.Event)
@@ -794,6 +812,7 @@ namespace BL.Database.SystemDb
             {
                 dbContext.FullTextIndexCashSet.RemoveRange(
                     dbContext.FullTextIndexCashSet.Where(x => processedIds.Contains(x.Id)));
+                dbContext.SaveChanges();
             }
         }
 

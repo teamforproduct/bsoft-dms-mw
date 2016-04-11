@@ -25,11 +25,7 @@ namespace DMS_WebAPI.Controllers.Reports
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var doc = docProc.GetDocumentByReport(cxt, id);
 
-            DataSet1 ds = new DataSet1();
-
-            report.ToDataSet(new List<BL.Model.DocumentCore.ReportModel.ReportDocument> { doc }, ds);
-            report.ToDataSet(doc.DocumentWaits.ToList(), ds);
-            report.SaveToFile(EnumReportTypes.RegistrationCardInternalDocument, ds, ExportFormatType.PortableDocFormat, "~/Reports/rep.pdf");
+            report.SaveToFile(EnumReportTypes.RegistrationCardInternalDocument, doc, ExportFormatType.PortableDocFormat, "~/Reports/rep.pdf");
             
             return new JsonResult(null, this);
         }

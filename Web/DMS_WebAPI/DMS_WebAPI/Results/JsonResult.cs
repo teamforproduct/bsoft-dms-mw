@@ -75,17 +75,14 @@ namespace DMS_WebAPI.Results
                 try
                 {
                     cxt = DmsResolver.Current.Get<UserContext>().Get();
+                    if (HttpContext.Current.User.Identity.IsAuthenticated && cxt != null)
+                    {
+                        var service = DmsResolver.Current.Get<IAdminService>();
+                        json = JsonConvert.DeserializeObject(service.ReplaceLanguageLabel(cxt, JsonConvert.SerializeObject(json, GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings)));
+                    }
                 }
                 catch { }
-                if (HttpContext.Current.User.Identity.IsAuthenticated&& cxt!=null)
-                {
-                    var service = DmsResolver.Current.Get<IAdminService>();
-                    json = JsonConvert.DeserializeObject(service.ReplaceLanguageLabel(cxt, JsonConvert.SerializeObject(json, GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings)));
-                }
-                else
-                {
-                    json = JsonConvert.DeserializeObject(new Languages().ReplaceLanguageLabel(HttpContext.Current.Request.UserLanguages?[0], JsonConvert.SerializeObject(json, GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings)));
-                }
+                json = JsonConvert.DeserializeObject(new Languages().ReplaceLanguageLabel(HttpContext.Current.Request.UserLanguages?[0], JsonConvert.SerializeObject(json, GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings)));
 
             }
             catch { }
