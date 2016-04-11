@@ -23,9 +23,9 @@ namespace BL.Model.DocumentCore.FrontModel
         public string OwnerPositionName { get; set; }
         public string OwnerPositionExecutorNowAgentName { get; set; }
         public string OwnerPositionExecutorAgentPhoneNumber { get; set; }
-        public DateTime? PlanDate { get; set; }
-        public DateTime? SendDate { get; set; }
-        public DateTime? RecieveDate { get; set; }
+        public DateTime? PaperPlanDate { get; set; }
+        public DateTime? PaperSendDate { get; set; }
+        public DateTime? PaperRecieveDate { get; set; }
 
     }
 }

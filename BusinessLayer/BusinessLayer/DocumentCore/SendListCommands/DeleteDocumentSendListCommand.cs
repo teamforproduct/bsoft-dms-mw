@@ -53,15 +53,18 @@ namespace BL.Logic.DocumentCore.SendListCommands
 
             _document = _operationDb.DeleteDocumentSendListPrepare(_context, Model);
             _sendList = _document?.SendLists.FirstOrDefault(x => x.Id == Model);
-            if (_sendList == null || !CanBeDisplayed(_sendList.SourcePositionId))
+            if (_sendList == null)
             {
-                throw new CouldNotPerformOperationWithPaper();
+                throw new DocumentNotFoundOrUserHasNoAccess();
             }
             _context.SetCurrentPosition(_sendList.SourcePositionId);
             _admin.VerifyAccess(_context, CommandType);
+            if (!CanBeDisplayed(_context.CurrentPositionId))
+            {
+                throw new CouldNotPerformOperationWithPaper();
+            }
 
             _document = _operationDb.ChangeDocumentSendListPrepare(_context, _sendList.DocumentId);
-
             var sendLists = _document.SendLists.ToList();
             sendLists.Remove(_document.SendLists.FirstOrDefault(x => x.Id == Model));
             _document.SendLists = sendLists;

@@ -469,6 +469,7 @@ namespace BL.Database.Common
                 DoneEventId = x.Subscription.DoneEventId,
                 SubscriptionStatesId = x.Subscription.SubscriptionStateId,
                 SubscriptionStatesName = x.Subscription.SubscriptionState.Name,
+                IsSuccess = x.Subscription.SubscriptionState.IsSuccess,
                 Description = x.Subscription.Description,
                 DocumentDate = x.Subscription.Document.RegistrationDate ?? x.Subscription.Document.CreateDate,
 
@@ -938,9 +939,9 @@ namespace BL.Database.Common
                 OwnerPositionName = x.LastPaperEvent.TargetPosition.Name,
                 OwnerPositionExecutorNowAgentName = x.LastPaperEvent.TargetPosition.ExecutorAgent.Name,
                 OwnerPositionExecutorAgentPhoneNumber = "OwnerPositionExecutorAgentPhoneNumber",
-                PlanDate = x.LastPaperEvent.PaperPlanDate,
-                SendDate = x.LastPaperEvent.PaperSendDate,
-                RecieveDate = x.LastPaperEvent.PaperRecieveDate,
+                PaperPlanDate = x.LastPaperEvent.PaperPlanDate,
+                PaperSendDate = x.LastPaperEvent.PaperSendDate,
+                PaperRecieveDate = x.LastPaperEvent.PaperRecieveDate,
 
 
             }).ToList();

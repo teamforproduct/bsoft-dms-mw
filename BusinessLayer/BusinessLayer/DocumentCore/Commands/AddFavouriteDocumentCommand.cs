@@ -50,7 +50,7 @@ namespace BL.Logic.DocumentCore.Commands
                 || !CanBeDisplayed(_docAccess.PositionId)
                 )
             {
-                throw new CouldNotPerformThisOperation();
+                throw new CouldNotPerformOperation();
             }
             return true;
         }

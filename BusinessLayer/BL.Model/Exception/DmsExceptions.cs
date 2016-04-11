@@ -477,14 +477,14 @@
         }
     }
 
-    public class CouldNotPerformThisOperation : DmsExceptions
+    public class CouldNotPerformOperation : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:CouldNotPerformThisOperation@l##";
-        public CouldNotPerformThisOperation() : base(_MESSAGE)
+        public CouldNotPerformOperation() : base(_MESSAGE)
         {
         }
 
-        public CouldNotPerformThisOperation(System.Exception ex) : base(_MESSAGE, ex)
+        public CouldNotPerformOperation(System.Exception ex) : base(_MESSAGE, ex)
         {
         }
     }

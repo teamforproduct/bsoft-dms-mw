@@ -481,8 +481,8 @@ namespace BL.Logic.Common
                 if (
                     document.Papers.Any(
                         x =>
-                            x.LastPaperEvent.SourcePositionId != model.SourcePositionId ||
-                            //x.LastPaperEvent.TargetPositionId != model.TargetPositionId ||
+                            //x.LastPaperEvent.SourcePositionId != model.SourcePositionId ||
+                            x.LastPaperEvent.TargetPositionId != model.SourcePositionId ||
                             //x.LastPaperEvent.SourceAgentId != model.SourceAgentId ||
                             //x.LastPaperEvent.TargetAgentId != model.TargetAgentId ||
                             x.LastPaperEvent.PaperRecieveDate == null))

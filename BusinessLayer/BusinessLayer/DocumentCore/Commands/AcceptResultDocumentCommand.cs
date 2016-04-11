@@ -60,7 +60,7 @@ namespace BL.Logic.DocumentCore.Commands
                 || !CanBeDisplayed(_docWait.OnEvent.SourcePositionId.Value)
                 )
             {
-                throw new CouldNotPerformThisOperation();
+                throw new CouldNotPerformOperation();
             }
             _operationDb.ControlOffSendListPrepare(_context, _document);
             _operationDb.ControlOffMarkExecutionWaitPrepare(_context, _document);

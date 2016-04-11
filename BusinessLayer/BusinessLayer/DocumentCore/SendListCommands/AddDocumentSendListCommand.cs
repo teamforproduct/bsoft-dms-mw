@@ -42,7 +42,14 @@ namespace BL.Logic.DocumentCore.SendListCommands
 
             _admin.VerifyAccess(_context, CommandType);
             _document = _operationDb.ChangeDocumentSendListPrepare(_context, Model.DocumentId, Model.Task);
-
+            if (_document == null)
+            {
+                throw new DocumentNotFoundOrUserHasNoAccess();
+            }
+            if (Model.IsInitial && _document.ExecutorPositionId != Model.CurrentPositionId)
+            {
+                throw new CouldNotPerformOperation();
+            }
             //Model.IsInitial = !_document.IsLaunchPlan;
             var taskId = CommonDocumentUtilities.GetDocumentTaskOrCreateNew(_context, _document, Model.Task); //TODO исправление от кого????
             _sendList = CommonDocumentUtilities.GetNewDocumentSendList(_context, Model, taskId);

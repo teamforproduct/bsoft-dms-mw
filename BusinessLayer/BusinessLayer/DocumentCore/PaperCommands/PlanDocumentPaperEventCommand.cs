@@ -38,7 +38,7 @@ namespace BL.Logic.DocumentCore.PaperCommands
             _actionRecords =
                 _document.Papers.Where(
                     x => x.IsInWork &&
-                        x.LastPaperEvent.SourcePositionId == positionId &&
+                        x.LastPaperEvent.TargetPositionId == positionId &&
                         x.LastPaperEvent.PaperRecieveDate != null )
                         .Select(x => new InternalActionRecord
                         {
@@ -60,13 +60,13 @@ namespace BL.Logic.DocumentCore.PaperCommands
             }
             foreach (var paper in _document.Papers)
             {
-                if (paper?.LastPaperEvent?.SourcePositionId == null
-                    || !CanBeDisplayed(paper.LastPaperEvent.SourcePositionId.Value)
+                if (paper?.LastPaperEvent?.TargetPositionId == null
+                    || !CanBeDisplayed(paper.LastPaperEvent.TargetPositionId.Value)
                     )
                 {
                     throw new CouldNotPerformOperationWithPaper();
                 }
-                _context.SetCurrentPosition(paper.LastPaperEvent.SourcePositionId);
+                _context.SetCurrentPosition(paper.LastPaperEvent.TargetPositionId);
                 _admin.VerifyAccess(_context, CommandType);
             }
             return true;

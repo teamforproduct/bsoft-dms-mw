@@ -54,11 +54,11 @@ namespace BL.Logic.DocumentCore.PaperCommands
         public override bool CanExecute()
         {
             _document = _operationDb.ChangeDocumentPaperPrepare(_context, Model.Id);
-            if (_document == null)
+            _paper = _document?.Papers.First();
+            if (_paper == null)
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
-            _paper = _document.Papers.First();
             if (!Model.IsCopy || !_paper.IsCopy)
             {
                 _context.SetCurrentPosition(_document.ExecutorPositionId);

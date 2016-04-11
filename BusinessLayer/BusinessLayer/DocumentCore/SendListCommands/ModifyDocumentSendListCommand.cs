@@ -55,12 +55,24 @@ namespace BL.Logic.DocumentCore.SendListCommands
             _document = _operationDb.ChangeDocumentSendListPrepare(_context, Model.DocumentId, Model.Task, Model.Id);
 
             _sendList = _document?.SendLists.FirstOrDefault(x => x.Id == Model.Id);
-            if (_sendList == null || !CanBeDisplayed(_sendList.SourcePositionId))
+            if (_sendList == null)
             {
-                throw new CouldNotPerformOperationWithPaper();
+                throw new DocumentNotFoundOrUserHasNoAccess();
             }
-            _context.SetCurrentPosition(_sendList.SourcePositionId);
+            if (Model.IsInitial || _sendList.IsInitial)
+            {
+                _context.SetCurrentPosition(_document.ExecutorPositionId);
+            }
+            else
+            {
+                _context.SetCurrentPosition(_sendList.SourcePositionId);
+            }
             _admin.VerifyAccess(_context, CommandType);
+            if (!CanBeDisplayed(_sendList.SourcePositionId))
+            {
+                throw new CouldNotPerformOperation();
+            }
+
             var taskId = CommonDocumentUtilities.GetDocumentTaskOrCreateNew(_context, _document, Model.Task); //TODO исправление от кого????
             _sendList.Stage = Model.Stage;
             _sendList.SendType = Model.SendType;
