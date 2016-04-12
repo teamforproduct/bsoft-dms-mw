@@ -1,8 +1,9 @@
-﻿using System;
+﻿using BL.Model.Reports.Interfaces;
+using System;
 
 namespace BL.Model.DocumentCore.ReportModel
 {
-    public class ReportDocumentWait
+    public class ReportDocumentWait: IReports
     {
         public int Id { get; set; }
         public int DocumentId { get; set; }
@@ -12,5 +13,6 @@ namespace BL.Model.DocumentCore.ReportModel
         public DateTime? DueDate { get; set; }
         public bool IsClosed { get; set; }
         public string ResultTypeName { get; set; }
+        public ReportDocument Document { get; set; }
     }
 }

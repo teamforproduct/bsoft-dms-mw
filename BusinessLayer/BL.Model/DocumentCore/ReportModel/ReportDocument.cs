@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using BL.Model.Reports.Interfaces;
+using System.Collections.Generic;
 
 namespace BL.Model.DocumentCore.ReportModel
 {
-    public class ReportDocument 
+    public class ReportDocument : IReports
     {
         public ReportDocument()
         {

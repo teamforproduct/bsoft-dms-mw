@@ -54,7 +54,6 @@
     <Compile Include="DependencyInjection\DmsResolver.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="Helpers\ConnectionHelper.cs" />
-    <Compile Include="Helpers\DmsUtilities.cs" />
     <Compile Include="Helpers\IConnectionHelper.cs" />
     <Compile Include="Interfaces\ICommandObserver.cs" />
     <Compile Include="Interfaces\IContext.cs" />

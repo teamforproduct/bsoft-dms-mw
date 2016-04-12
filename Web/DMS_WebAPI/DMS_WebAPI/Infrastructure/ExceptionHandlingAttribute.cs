@@ -47,17 +47,14 @@ namespace DMS_WebAPI.Infrastructure
                 try
                 {
                     cxt = DmsResolver.Current.Get<UserContext>().Get();
+                    if (currentContext.User.Identity.IsAuthenticated && cxt != null)
+                    {
+                        var service = DmsResolver.Current.Get<IAdminService>();
+                        json = service.ReplaceLanguageLabel(cxt, json);
+                    }
                 }
                 catch { }
-                if (currentContext.User.Identity.IsAuthenticated && cxt != null)
-                {
-                    var service = DmsResolver.Current.Get<IAdminService>();
-                    json = service.ReplaceLanguageLabel(cxt, json);
-                }
-                else
-                {
-                    json = new Languages().ReplaceLanguageLabel(currentContext.Request.UserLanguages?[0], json);
-                }
+                json = new Languages().ReplaceLanguageLabel(currentContext.Request.UserLanguages?[0], json);
             }
             catch { }
 

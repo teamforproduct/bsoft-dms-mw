@@ -60,7 +60,7 @@ namespace BL.Logic.DocumentCore.Commands
                 || !CanBeDisplayed(_docWait.OnEvent.TargetPositionId.Value)
                 )
             {
-                throw new CouldNotPerformThisOperation();
+                throw new CouldNotPerformOperation();
             }
             _operationDb.ControlOffSendListPrepare(_context, _document);
             _operationDb.ControlOffSubscriptionPrepare(_context, _document);

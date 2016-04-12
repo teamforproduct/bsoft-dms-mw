@@ -66,8 +66,8 @@ namespace BL.Logic.SystemServices.FullTextSearch
                     var worker = new FullTextIndexWorker(ftsSetting.DatabaseKey, ftsSetting.StorePath);
                     _workers.Add(worker);
                     // start timer only once. Do not do it regulary in case we don't know how much time sending of email take. So we can continue sending only when previous iteration was comlete
-                    //var tmr = new Timer(OnSinchronize, ftsSetting, ftsSetting.TimeToUpdate * 60000, Timeout.Infinite);
-                    //_timers.Add(ftsSetting, tmr);
+                    var tmr = new Timer(OnSinchronize, ftsSetting, ftsSetting.TimeToUpdate * 60000, Timeout.Infinite);
+                    _timers.Add(ftsSetting, tmr);
                 }
                 catch (Exception ex)
                 {
@@ -94,36 +94,66 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
             var toUpdate = _systemDb.FullTextIndexPrepare(ctx) as List<FullTextIndexIem>;
             if (toUpdate == null || !toUpdate.Any()) return;
-
+            var processedIds = new List<int>();
             worker.StartUpdate();
 
             var newItem = toUpdate.Where(x => x.OperationType == EnumOperationType.AddNew).ToList();
             foreach (var itm in newItem)
             {
-                var toDelete = toUpdate.FirstOrDefault(x => x.DocumentId == itm.DocumentId && x.ItemType == itm.ItemType && x.ObjectId == itm.ObjectId && x.OperationType == EnumOperationType.Delete);
-                if (toDelete != null)
+                try
                 {
-                    toUpdate.Remove(toDelete);
+                    var toDelete =
+                        toUpdate.FirstOrDefault(
+                            x =>
+                                x.DocumentId == itm.DocumentId && x.ItemType == itm.ItemType &&
+                                x.ObjectId == itm.ObjectId && x.OperationType == EnumOperationType.Delete);
+                    if (toDelete != null)
+                    {
+                        toUpdate.Remove(toDelete);
+                    }
+                    else
+                    {
+                        worker.AddNewItem(itm);
+                    }
+                    processedIds.Add(itm.Id);
                 }
-                else
+                catch (Exception ex)
                 {
-                    worker.AddNewItem(itm);
+                    _logger.Error(ctx, $"FullTextService cannot process docId={itm.DocumentId} ", ex);
                 }
             }
 
             var deletedItem = toUpdate.Where(x => x.OperationType == EnumOperationType.Delete).ToList();
             foreach (var itm in deletedItem)
             {
-                worker.DeleteItem(itm);
-                toUpdate.RemoveAll(x => x.DocumentId == itm.DocumentId && x.ItemType == itm.ItemType && x.ObjectId == itm.ObjectId && x.OperationType == EnumOperationType.Update);
+                try
+                {
+                    worker.DeleteItem(itm);
+                    toUpdate.RemoveAll(x =>
+                            x.DocumentId == itm.DocumentId && x.ItemType == itm.ItemType && x.ObjectId == itm.ObjectId &&
+                            x.OperationType == EnumOperationType.Update);
+                    processedIds.Add(itm.Id);
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(ctx, $"FullTextService cannot process docId={itm.DocumentId} ", ex);
+                }
             }
 
             foreach (var itm in toUpdate.Where(x => x.OperationType == EnumOperationType.Update))
             {
-                worker.UpdateItem(itm);
+                try
+                {
+                    worker.UpdateItem(itm);
+                    processedIds.Add(itm.Id);
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(ctx, $"FullTextService cannot process docId={itm.DocumentId} ", ex);
+                }
             }
             worker.CommitChanges();
-            _systemDb.FullTextIndexDeleteProcessed(ctx, toUpdate.Select(x=>x.Id));
+            _systemDb.FullTextIndexDeleteProcessed(ctx, processedIds);
         }
 
         private void OnSinchronize(object state)

@@ -57,7 +57,7 @@ namespace BL.Logic.DocumentCore.Commands
             _docWait = _document?.Waits?.FirstOrDefault();
             if (_docWait?.OnEvent?.SourcePositionId == null || !CanBeDisplayed(_docWait.OnEvent.SourcePositionId.Value))
             {
-                throw new CouldNotPerformThisOperation();
+                throw new CouldNotPerformOperation();
             }
             _context.SetCurrentPosition(_docWait.OnEvent.SourcePositionId);
             _admin.VerifyAccess(_context, CommandType);

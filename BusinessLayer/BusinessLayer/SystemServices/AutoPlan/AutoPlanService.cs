@@ -71,8 +71,17 @@ namespace BL.Logic.SystemServices.AutoPlan
                 var lst = _sysDb.GetSendListIdsForAutoPlan(ctx);
                 foreach (int id in lst)
                 {
-                    var cmd = DocumentCommandFactory.GetDocumentCommand(Model.Enums.EnumDocumentActions.LaunchDocumentSendListItem, ctx, null, id);
-                    _cmdService.ExecuteCommand(cmd);
+                    try
+                    {
+                        var cmd =
+                            DocumentCommandFactory.GetDocumentCommand(
+                                Model.Enums.EnumDocumentActions.LaunchDocumentSendListItem, ctx, null, id);
+                        _cmdService.ExecuteCommand(cmd);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.Error(ctx, $"AutoPlanService cannot process SendList Id={id} ", ex);
+                    }
                 }
             }
             catch (Exception ex)

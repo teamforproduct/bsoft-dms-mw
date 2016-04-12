@@ -50,7 +50,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
             _admin.VerifyAccess(_context, CommandType);
             if (!CanBeDisplayed(_context.CurrentPositionId))
             {
-                throw new CouldNotPerformThisOperation();
+                throw new CouldNotPerformOperation();
             }
             return true;
         }

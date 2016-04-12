@@ -49,13 +49,9 @@ namespace BL.Logic.DocumentCore.PaperCommands
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
-            if (Model.IsCopy)
+            if (!Model.IsCopy && _document.ExecutorPositionId != Model.CurrentPositionId)
             {
-                _context.SetCurrentPosition(Model.CurrentPositionId);
-            }
-            else
-            {
-                _context.SetCurrentPosition(_document.ExecutorPositionId);
+                throw new CouldNotPerformOperationWithPaper();
             }
             _admin.VerifyAccess(_context, CommandType);
             return true;
@@ -63,7 +59,7 @@ namespace BL.Logic.DocumentCore.PaperCommands
 
         public override object Execute()
         {
-            _document.Papers = CommonDocumentUtilities.GetNewDocumentPapers(_context, Model, _document.MaxPaperOrderNumber??0);
+            _document.Papers = CommonDocumentUtilities.GetNewDocumentPapers(_context, Model, _document.MaxPaperOrderNumber ?? 0);
             _operationDb.AddDocumentPapers(_context, _document.Papers);
             return null;
         }

@@ -59,7 +59,7 @@ namespace BL.Logic.DocumentCore.Commands
                 || !CanBeDisplayed(_docWait.OnEvent.TargetPositionId.Value)
                 )
             {
-                throw new CouldNotPerformThisOperation();
+                throw new CouldNotPerformOperation();
             }
             _context.SetCurrentPosition(_docWait.OnEvent.TargetPositionId);
             _admin.VerifyAccess(_context, CommandType);

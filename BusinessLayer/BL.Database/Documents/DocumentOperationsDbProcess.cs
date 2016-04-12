@@ -619,6 +619,9 @@ namespace BL.Database.Documents
                         SourcePositionExecutorAgentPhoneNumber = "SourcePositionAgentPhoneNumber", //TODO 
                         TargetPositionExecutorAgentPhoneNumber = "TargetPositionAgentPhoneNumber", //TODO 
                         IsAvailableWithinTask = x.IsAvailableWithinTask,
+                        PaperPlanAgentName = x.PaperPlanAgent.Name,
+                        PaperSendAgentName = x.PaperSendAgent.Name,
+                        PaperRecieveAgentName = x.PaperRecieveAgent.Name,
                     }).FirstOrDefault();
             }
         }
@@ -717,6 +720,18 @@ namespace BL.Database.Documents
                     RegistrationFullNumber = "#" + x.Document.Id,
 
                     DueDate = null,
+
+                    PaperName = x.Paper.Name,
+                    PaperIsMain = x.Paper.IsMain,
+                    PaperIsOriginal = x.Paper.IsOriginal,
+                    PaperIsCopy = x.Paper.IsCopy,
+                    PaperOrderNumber = x.Paper.OrderNumber,
+
+                    PaperPlanDate = x.PaperPlanDate,
+                    PaperSendDate = x.PaperSendDate,
+                    PaperRecieveDate = x.PaperRecieveDate,
+
+
                 }).ToList();
 
                 res.ForEach(x => CommonQueries.ChangeRegistrationFullNumber(x));
@@ -926,6 +941,13 @@ namespace BL.Database.Documents
                                 waitDb.OnEventId = sendListDb.StartEventId.Value;
                                 waitDb.OnEvent = null;
                             }
+                            else
+                            {
+                                if (waitDb.OnEvent != null)
+                                {
+                                    waitDb.OnEvent.ParentEventId = sendListDb.StartEventId.Value;
+                                }
+                            }
                             dbContext.DocumentWaitsSet.Add(waitDb);
                             dbContext.SaveChanges();
                         }
@@ -946,13 +968,14 @@ namespace BL.Database.Documents
 
                     if (document.Events?.Any() ?? false)
                     {
-                        var eventsDb = ModelConverter.GetDbDocumentEvents(document.Events);
-
-                        if (eventsDb != null && eventsDb.Any())
-                        {
-                            dbContext.DocumentEventsSet.Attach(eventsDb.First());
-                            dbContext.Entry(eventsDb.First()).State = EntityState.Added;
-                        }
+                        var eventDb = ModelConverter.GetDbDocumentEvent(document.Events.First());
+                        eventDb.ParentEventId = sendListDb.StartEventId.Value;
+                        //if (eventsDb != null && eventsDb.Any())
+                        //{
+                        //    dbContext.DocumentEventsSet.Attach(eventsDb.First());
+                        //    dbContext.Entry(eventsDb.First()).State = EntityState.Added;
+                        //}
+                        dbContext.DocumentEventsSet.Add(eventDb);
                         dbContext.SaveChanges();
                     }
 
@@ -1761,10 +1784,12 @@ namespace BL.Database.Documents
                                         {
                                             Id = x.Id,
                                             OrderNumber = x.OrderNumber,
+                                            IsInWork = x.IsInWork,
                                             LastPaperEvent = new InternalDocumentEvent
                                             {
                                                 EventType = (EnumEventTypes)x.LastPaperEvent.EventTypeId,
                                                 TargetPositionId = x.LastPaperEvent.TargetPositionId,
+                                                PaperRecieveDate = x.LastPaperEvent.PaperRecieveDate,
                                             }
                                         }
                                     }
@@ -1776,33 +1801,32 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(context))
             {
-                var doc = dbContext.DocumentPapersSet.Where(x => paperIds.Contains(x.Id))
-                       .Select(x => new InternalDocument
-                       {
-                           Id = x.Document.Id,
-                           Papers = new List<InternalDocumentPaper>
-                                   {
-                                        new InternalDocumentPaper
-                                        {
-                                            Id = x.Id,
-                                            IsInWork = x.IsInWork,
-                                            LastPaperEvent = !x.LastPaperEventId.HasValue? null:
-                                            new InternalDocumentEvent
-                                            {
-                                                Id = x.LastPaperEvent.Id,
-                                                SourcePositionId = x.LastPaperEvent.SourcePositionId,
-                                                TargetPositionId = x.LastPaperEvent.TargetPositionId,
-                                                PaperPlanDate = x.LastPaperEvent.PaperPlanDate,
-                                                PaperSendDate = x.LastPaperEvent.PaperSendDate,
-                                                PaperRecieveDate = x.LastPaperEvent.PaperRecieveDate,
-
-                                            },                                        }
-                                   }
-                       }).FirstOrDefault();
-                if (doc == null) return null;
+                var doc = new InternalDocument
+                {
+                    Papers = dbContext.DocumentPapersSet.Where(x => paperIds.Contains(x.Id))
+                        .Select(x => new InternalDocumentPaper
+                        {
+                            Id = x.Id,
+                            IsInWork = x.IsInWork,
+                            DocumentId = x.DocumentId,
+                            LastPaperEvent = !x.LastPaperEventId.HasValue
+                                ? null
+                                : new InternalDocumentEvent
+                                {
+                                    Id = x.LastPaperEvent.Id,
+                                    SourcePositionId = x.LastPaperEvent.SourcePositionId,
+                                    TargetPositionId = x.LastPaperEvent.TargetPositionId,
+                                    PaperPlanDate = x.LastPaperEvent.PaperPlanDate,
+                                    PaperSendDate = x.LastPaperEvent.PaperSendDate,
+                                    PaperRecieveDate = x.LastPaperEvent.PaperRecieveDate,
+                                },
+                        }
+                        ).ToList()
+                };
+                if (!doc.Papers.Any()) return null;
+                doc.Id = doc.Papers.First().DocumentId;
                 if (isCalcPreLastPaperEvent)
                 {
-
                     ((List<InternalDocumentPaper>)doc.Papers).ForEach(x =>
                     {
                         x.PreLastPaperEventId = dbContext.DocumentEventsSet
@@ -2059,7 +2083,7 @@ namespace BL.Database.Documents
                             {
                                 Id = x.Paper.LastPaperEvent.Id,
                                 SourcePositionId = x.Paper.LastPaperEvent.SourcePositionId,
-                                //TargetPositionId = x.Paper.LastPaperEvent.TargetPositionId,
+                                TargetPositionId = x.Paper.LastPaperEvent.TargetPositionId,
                                 PaperPlanDate = x.Paper.LastPaperEvent.PaperPlanDate,
                                 PaperSendDate = x.Paper.LastPaperEvent.PaperSendDate,
                                 PaperRecieveDate = x.Paper.LastPaperEvent.PaperRecieveDate,
