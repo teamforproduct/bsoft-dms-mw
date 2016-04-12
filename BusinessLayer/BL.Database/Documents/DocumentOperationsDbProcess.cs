@@ -104,13 +104,22 @@ namespace BL.Database.Documents
                             Id = x.Id,
                         }
                         ).ToList();
+                    res.Document.Tasks = dbContext.DocumentTasksSet.Where(x => x.DocumentId == documentId)
+                        .Select(x => new InternalDocumentTask
+                        {
+                            Id = x.Id,
+                            PositionId = x.PositionId,
+                        }
+                        ).ToList();
+
+
 
                     var positionAccesses = res.Document?.Accesses.Select(y => y.PositionId).ToList();
 
                     if (positionAccesses.Any())
                     {
                         res.PositionWithActions = CommonQueries.GetPositionWithActions(context, dbContext, positionAccesses);
-                        res.ActionsList = CommonQueries.GetActionsListForCurrentPositionsList(context, dbContext, new List<EnumObjects> { EnumObjects.Documents }, positionAccesses);
+                        res.ActionsList = CommonQueries.GetActionsListForCurrentPositionsList(context, dbContext, new List<EnumObjects> { EnumObjects.Documents, EnumObjects.DocumentEvents, EnumObjects.DocumentWaits, EnumObjects.DocumentSubscriptions }, positionAccesses);
                     }
                 }
                 return res;
@@ -237,7 +246,7 @@ namespace BL.Database.Documents
             {
                 using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
                 {
-                    if (document.Tasks?.Any() ?? false)
+                    if (document.Tasks?.Any(x => x.Id == 0) ?? false)
                     {
                         var taskDb = ModelConverter.GetDbDocumentTask(document.Tasks.First(x => x.Id == 0));
                         dbContext.DocumentTasksSet.Add(taskDb);
@@ -1698,37 +1707,37 @@ namespace BL.Database.Documents
         #endregion DocumentSavedFilter
 
         #region DocumentTasks
-        public void AddDocumentTasks(IContext context, IEnumerable<InternalDocumentTask> task)
+        public IEnumerable<int> AddDocumentTasks(IContext context, IEnumerable<InternalDocumentTask> task)
         {
+            List<int> res = null;
             using (var dbContext = new DmsContext(context))
             {
                 var tasksDb = task.Select(ModelConverter.GetDbDocumentTask).ToList();
                 dbContext.DocumentTasksSet.AddRange(tasksDb);
                 dbContext.SaveChanges();
+                res = tasksDb.Select(x => x.Id).ToList();
             }
+            return res;
         }
-        public InternalDocumentTask ChangeDocumentTaskPrepare(IContext context, int itemId)
+        public InternalDocument DeleteDocumentTaskPrepare(IContext context, int taskId)
         {
             using (var dbContext = new DmsContext(context))
             {
-                var item = dbContext.DocumentTasksSet.Where(x => x.Id == itemId)
-                     .Select(x => new InternalDocumentTask
-                     {
-                         Id = x.Id,
-                         DocumentId = x.DocumentId,
-                         PositionId = x.PositionId,
-                         PositionExecutorAgentId = x.PositionExecutorAgentId,
-                         AgentId = x.AgentId,
-                         Name = x.Task,
-                         Description = x.Description
-                     }).FirstOrDefault();
-
-                if (item == null)
-                {
-                    throw new TaskNotFoundOrUserHasNoAccess();
-                }
-
-                return item;
+                return dbContext.DocumentTasksSet.Where(x => x.Id == taskId)
+                        .Select(x => new InternalDocument
+                        {
+                            Id = x.Document.Id,
+                            Tasks = new List<InternalDocumentTask>
+                                    {
+                                                        new InternalDocumentTask
+                                                        {
+                                                            Id = x.Id,
+                                                            PositionId = x.PositionId,
+                                                            CountEvents = x.Events.Count,
+                                                            CountSendLists = x.SendLists.Count,
+                                                        }
+                                    }
+                        }).FirstOrDefault();
             }
         }
         public void ModifyDocumentTask(IContext context, InternalDocumentTask task)
@@ -1736,15 +1745,8 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(context))
             {
                 var taskDb = ModelConverter.GetDbDocumentTask(task);
-                taskDb.Id = task.Id;
-
                 dbContext.DocumentTasksSet.Attach(taskDb);
-                //TODO Проверить поля которые нужно обновлять
                 var entry = dbContext.Entry(taskDb);
-                entry.Property(e => e.DocumentId).IsModified = true;
-                entry.Property(e => e.PositionId).IsModified = true;
-                entry.Property(e => e.PositionExecutorAgentId).IsModified = true;
-                entry.Property(e => e.AgentId).IsModified = true;
                 entry.Property(e => e.Task).IsModified = true;
                 entry.Property(e => e.Description).IsModified = true;
                 entry.Property(e => e.LastChangeUserId).IsModified = true;
@@ -1753,6 +1755,7 @@ namespace BL.Database.Documents
                 dbContext.SaveChanges();
             }
         }
+
         public void DeleteDocumentTask(IContext context, int itemId)
         {
             using (var dbContext = new DmsContext(context))
@@ -1763,6 +1766,29 @@ namespace BL.Database.Documents
                     dbContext.DocumentTasksSet.Remove(item);
                     dbContext.SaveChanges();
                 }
+            }
+        }
+
+        public InternalDocument ModifyDocumentTaskPrepare(IContext context, ModifyDocumentTasks model)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var doc = CommonQueries.GetDocumentQuery(dbContext, context)
+                    .Where(x => x.Doc.Id == model.DocumentId && (context.IsAdmin || context.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId)))
+                    .Select(x => new InternalDocument
+                    {
+                        Id = x.Doc.Id,
+                        ExecutorPositionId = x.Doc.ExecutorPositionId
+                    }).FirstOrDefault();
+                if (doc == null) return null;
+                doc.Tasks = dbContext.DocumentTasksSet.Where(x => (x.Task == model.Name || x.Id == model.Id)&& x.DocumentId == model.DocumentId)
+                    .Select(x => new InternalDocumentTask
+                    {
+                        Id = x.Id,
+                        PositionId = x.PositionId,
+                    }).ToList();
+
+                return doc;
             }
         }
         #endregion DocumentTasks

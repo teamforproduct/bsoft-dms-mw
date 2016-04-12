@@ -33,28 +33,46 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override bool CanBeDisplayed(int positionId)
         {
+            _actionRecords =
+                _document.Tasks.Where(
+                    x => x.PositionId == positionId
+                        )
+                        .Select(x => new InternalActionRecord
+                        {
+                            TaskId = x.Id,
+                        });
+            if (!_actionRecords.Any())
+            {
+                return false;
+            }
             return true;
         }
 
         public override bool CanExecute()
         {
+            _document = _operationDb.ModifyDocumentTaskPrepare(_context, Model);
+            _task = _document?.Tasks.First();
+            if (_task == null)
+            {
+                throw new DocumentNotFoundOrUserHasNoAccess();
+            }
+            if (_document.Tasks.Count()>1)
+            {
+                throw new RecordNotUnique();
+            }
+            _context.SetCurrentPosition(_task.PositionId);
             _admin.VerifyAccess(_context, CommandType);
-
-            _task = _operationDb.ChangeDocumentTaskPrepare(_context, Model.Id);
-
-           //TODO Проверить поля которые нужно обновлять
-            _task.DocumentId = Model.DocumentId;
-            _task.PositionId = Model.PositionId;
-            _task.PositionExecutorAgentId = Model.PositionExecutorAgentId;
-            _task.AgentId = Model.AgentId;
-            _task.Name = Model.Name;
-            _task.Description = Model.Description;
-
+            if (!CanBeDisplayed(_context.CurrentPositionId))
+            {
+                throw new CouldNotPerformOperationWithPaper();
+            }
             return true;
         }
 
         public override object Execute()
         {
+            _task.Name = Model.Name;
+            _task.Description = Model.Description;
             CommonDocumentUtilities.SetLastChange(_context, _task);
             _operationDb.ModifyDocumentTask(_context, _task);
             return null;

@@ -296,6 +296,10 @@ namespace BL.Database.Common
                 {
                     tasksDb = tasksDb.Where(x => filter.DocumentId.Contains(x.DocumentId));
                 }
+                if (filter?.Id?.Count() > 0)
+                {
+                    tasksDb = tasksDb.Where(x => filter.Id.Contains(x.Id));
+                }
             }
 
             var tasksRes = tasksDb.Select(x => new { Task = x });
@@ -908,6 +912,10 @@ namespace BL.Database.Common
                 if (filter?.DocumentId?.Count() > 0)
                 {
                     itemsDb = itemsDb.Where(x => filter.DocumentId.Contains(x.DocumentId));
+                }
+                if (filter?.Id?.Count() > 0)
+                {
+                    itemsDb = itemsDb.Where(x => filter.Id.Contains(x.Id));
                 }
             }
 

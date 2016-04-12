@@ -100,6 +100,7 @@ namespace BL.Database.Common
             return task == null ? null :
                 new DocumentTasks
                 {
+                    Id = task.Id,
                     Task = task.Name,
                     Description = task.Description,
                     DocumentId = task.DocumentId,

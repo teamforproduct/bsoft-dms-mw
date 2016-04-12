@@ -9,6 +9,8 @@
         public int? SubscriptionId { get; set; }
         public int? SendListId { get; set; }
         public int? PaperId { get; set; }
+        public int? FileId { get; set; }
+        public int? TaskId { get; set; }
 
         public string Description { get; set; }
 

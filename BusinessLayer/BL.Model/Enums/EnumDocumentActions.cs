@@ -337,9 +337,9 @@
         RecieveDocumentPaperEvent = 122021, // Отметить прием бумажного носителя
 
         //TODO Добавить в базу
-        AddDocumentTask = 1,
-        ModifyDocumentTask = 2,
-        DeleteDocumentTask = 3,
+        AddDocumentTask = 115001, // Добавить задачу
+        ModifyDocumentTask = 115005, // Изменить задачу
+        DeleteDocumentTask = 115009, // Удалить задачу
         AddDocumentPaperList = 7,
         ModifyDocumentPaperList = 8,
         DeleteDocumentPaperList = 9

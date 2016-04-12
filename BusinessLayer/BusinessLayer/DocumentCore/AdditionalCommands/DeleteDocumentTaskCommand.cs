@@ -9,7 +9,9 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 {
     public class DeleteDocumentTaskCommand : BaseDocumentCommand
     {
-        private readonly IDocumentOperationsDbProcess _operationDb;        
+        private readonly IDocumentOperationsDbProcess _operationDb;
+
+        private InternalDocumentTask _task;
 
         public DeleteDocumentTaskCommand(IDocumentOperationsDbProcess operationDb)
         {
@@ -30,13 +32,35 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override bool CanBeDisplayed(int positionId)
         {
+            _actionRecords =
+                _document.Tasks.Where(
+                    x => x.PositionId == positionId && x.CountSendLists == 0 && x.CountEvents == 0
+                        )
+                        .Select(x => new InternalActionRecord
+                        {
+                            TaskId = x.Id,
+                        });
+            if (!_actionRecords.Any())
+            {
+                return false;
+            }
             return true;
         }
 
         public override bool CanExecute()
         {
+            _document = _operationDb.DeleteDocumentTaskPrepare(_context, Model);
+            _task = _document?.Tasks.First();
+            if (_task == null)
+            {
+                throw new DocumentNotFoundOrUserHasNoAccess();
+            }
+            _context.SetCurrentPosition(_task.PositionId);
             _admin.VerifyAccess(_context, CommandType);
-
+            if (!CanBeDisplayed(_context.CurrentPositionId))
+            {
+                throw new CouldNotPerformOperationWithPaper();
+            }
             return true;
         }
 

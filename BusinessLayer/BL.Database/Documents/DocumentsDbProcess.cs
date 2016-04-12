@@ -1554,24 +1554,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                //TODO: Refactoring
-                var item = dbContext.DocumentPapersSet
-                    .Where(x => x.Id == id)
-                    .Select(x => new FrontDocumentPaper
-                    {
-                        Id = x.Id,
-                        DocumentId = x.DocumentId,
-                        Name = x.Name,
-                        Description = x.Description,
-                        IsMain = x.IsMain,
-                        IsOriginal = x.IsOriginal,
-                        IsCopy = x.IsCopy,
-                        PageQuantity = x.PageQuantity,
-                        OrderNumber = x.OrderNumber,
-                        LastPaperEventId = x.LastPaperEventId
-                    }).FirstOrDefault();
-
-                return item;
+                return CommonQueries.GetDocumentPapers(dbContext, new FilterDocumentPaper { Id = new List<int> { id } }).FirstOrDefault();
             }
         }
         #endregion DocumentPapers   

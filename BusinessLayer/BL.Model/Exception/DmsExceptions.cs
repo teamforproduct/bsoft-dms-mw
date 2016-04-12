@@ -610,6 +610,21 @@
         }
     }
 
+    /// <summary>
+    /// Сообщение об ошибке, когда пытаются обновить несуществующую строку справочника в БД
+    /// </summary>
+    public class RecordNotUnique : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:RecordNotUnique@l##";
+        public RecordNotUnique() : base(_MESSAGE)
+        {
+        }
+
+        public RecordNotUnique(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
     public class IncomingModelIsNotValid : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:IncomingModelIsNotValid@l##";

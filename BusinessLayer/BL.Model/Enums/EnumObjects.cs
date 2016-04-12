@@ -12,6 +12,7 @@
         DocumentEvents = 111, // Документы - события
         DocumentWaits = 112, // Документы - ожидания
         DocumentSubscriptions = 113, // Документы - подписи
+        DocumentTasks = 115, // Документы - задачи
         DocumentPapers = 121, // Документы - бумажные носители
         DocumentPaperEvents = 122, // Документы - события по бумажным носителям
         DocumentPaperLists = 123, // Документы - реестры передачи бумажных носителей
