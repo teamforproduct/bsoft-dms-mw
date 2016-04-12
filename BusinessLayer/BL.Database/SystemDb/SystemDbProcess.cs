@@ -193,7 +193,7 @@ namespace BL.Database.SystemDb
                     SelectFilter = x.Property.SelectFilter,
                     SelectFieldCode = x.Property.SelectFieldCode,
                     SelectDescriptionFieldCode = x.Property.SelectDescriptionFieldCode,
-                    ValueFieldCode = x.Property.ValueType.Code,
+                    ValueFieldCode = x.Property.Code,
                     ValueDescriptionFieldCode = x.Property.ValueType.Description,
                     Format = x.Property.OutFormat,
                 }).ToList();
@@ -595,7 +595,7 @@ namespace BL.Database.SystemDb
                     SelectFilter = x.Property.SelectFilter,
                     SelectFieldCode = x.Property.SelectFieldCode,
                     SelectDescriptionFieldCode = x.Property.SelectDescriptionFieldCode,
-                    ValueFieldCode = x.Property.ValueType.Code,
+                    ValueFieldCode = x.Property.Code,
                     ValueDescriptionFieldCode = x.Property.ValueType.Description,
                     Format = x.Property.OutFormat,
                 }).ToList();
