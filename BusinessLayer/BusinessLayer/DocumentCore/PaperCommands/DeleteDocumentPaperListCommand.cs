@@ -9,7 +9,8 @@ namespace BL.Logic.DocumentCore.PaperCommands
 {
     public class DeleteDocumentPaperListCommand : BaseDocumentCommand
     {
-        private readonly IDocumentOperationsDbProcess _operationDb;        
+        private readonly IDocumentOperationsDbProcess _operationDb;
+        InternalDocumentPaperList _paperList;
 
         public DeleteDocumentPaperListCommand(IDocumentOperationsDbProcess operationDb)
         {
@@ -35,6 +36,16 @@ namespace BL.Logic.DocumentCore.PaperCommands
 
         public override bool CanExecute()
         {
+            _paperList = _operationDb.DeleteDocumentPaperListPrepare(_context, Model);
+            if (!_paperList.Events.Any(x=>x.PaperPlanDate.HasValue && !x.PaperSendDate.HasValue && !x.PaperRecieveDate.HasValue))
+            {
+                throw new DocumentNotFoundOrUserHasNoAccess();
+            }
+            if (_paperList.Events.Any(x => !x.PaperPlanDate.HasValue || x.PaperSendDate.HasValue || x.PaperRecieveDate.HasValue))
+            {
+                throw new CouldNotPerformOperationWithPaper();
+            }
+            _context.SetCurrentPosition(_paperList.Events.First().SourcePositionId.Value);
             _admin.VerifyAccess(_context, CommandType);
 
             return true;
@@ -42,10 +53,10 @@ namespace BL.Logic.DocumentCore.PaperCommands
 
         public override object Execute()
         {
-            _operationDb.DeleteDocumentPaperList(_context, Model);
+            CommonDocumentUtilities.SetLastChange(_context, _paperList);
+            _operationDb.DeleteDocumentPaperList(_context, _paperList);
             return null;
         }
 
-        public override EnumDocumentActions CommandType => EnumDocumentActions.DeleteDocumentPaperList;
     }
 }

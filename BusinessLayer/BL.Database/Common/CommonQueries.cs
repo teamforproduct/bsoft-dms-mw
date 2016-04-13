@@ -969,7 +969,10 @@ namespace BL.Database.Common
 
             if (filter != null)
             {
-
+                if (filter?.PaperListId?.Count() > 0)
+                {
+                    itemsDb = itemsDb.Where(x => filter.PaperListId.Contains(x.Id));
+                }
             }
 
             var itemsRes = itemsDb.Select(x => x);

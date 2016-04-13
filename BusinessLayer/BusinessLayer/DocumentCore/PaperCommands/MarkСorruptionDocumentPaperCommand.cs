@@ -53,7 +53,7 @@ namespace BL.Logic.DocumentCore.PaperCommands
 
         public override bool CanExecute()
         {
-            _document = _operationDb.EventDocumentPaperPrepare(_context, new List<int> { Model.Id});
+            _document = _operationDb.EventDocumentPaperPrepare(_context, new PaperList { PaperId = new List<int> { Model.Id } });
             if (_document == null)
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();

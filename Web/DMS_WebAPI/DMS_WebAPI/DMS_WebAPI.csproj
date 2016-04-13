@@ -333,7 +333,6 @@
     <Compile Include="Utilities\UserContextWorkerService.cs" />
     <Compile Include="Utilities\UserContext.cs" />
     <Compile Include="Utilities\Servers.cs" />
-    <Compile Include="Utilities\Utilities.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\IRF_DMS_WEBAPI.mdf" />

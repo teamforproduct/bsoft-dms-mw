@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using BL.CrossCutting.Interfaces;
 using BL.Model.Database;
@@ -11,8 +12,61 @@ namespace BL.CrossCutting.Context
     {
         private int? _currentPositionId;
         private List<int> _currentPositionsIdList;
-        public DatabaseModel _currentDB;
+        private DatabaseModel _currentDb;
         public Employee CurrentEmployee { get; set; }
+
+        public DefaultContext()
+        {
+        }
+
+        public DefaultContext(IContext ctx)
+        {
+            var def = ctx as DefaultContext;
+            if (def != null)
+            {
+                CurrentDB = new DatabaseModel
+                {
+                    Id = ctx.CurrentDB.Id,
+                    Name = ctx.CurrentDB.Name,
+                    ServerType = ctx.CurrentDB.ServerType,
+                    IntegrateSecurity = false,
+                    Address = ctx.CurrentDB.Address,
+                    DefaultDatabase = ctx.CurrentDB.DefaultDatabase,
+                    UserName = ctx.CurrentDB.UserName,
+                    UserPassword = ctx.CurrentDB.UserPassword,
+                    DefaultSchema = ctx.CurrentDB.DefaultSchema
+                };
+
+                CurrentEmployee = new Employee
+                {
+                    AgentId = ctx.CurrentEmployee.AgentId,
+                    LanguageId = ctx.CurrentEmployee.LanguageId,
+                    Name = ctx.CurrentEmployee.Name,
+                    Token = ctx.CurrentEmployee.Token,
+                    UserId = ctx.CurrentEmployee.UserId,
+                };
+
+                try
+                {
+                    _currentPositionId = ctx.CurrentPositionId;
+                }
+                catch (UserPositionIsNotDefined)
+                {
+                    _currentPositionId = null;
+                }
+
+                try
+                {
+                    CurrentPositionsIdList = ctx.CurrentPositionsIdList?.ToList();
+                }
+                catch (UserPositionIsNotDefined)
+                {
+                    CurrentPositionsIdList = null;
+                }
+            }
+        }
+
+
         public List<int> CurrentPositionsIdList
         {
             get
@@ -67,15 +121,15 @@ namespace BL.CrossCutting.Context
         {
             get
             {
-                if (_currentDB == null)
+                if (_currentDb == null)
                 {
                     throw new DatabaseIsNotSet();
                 }
-                return _currentDB;
+                return _currentDb;
             }
             set
             {
-                _currentDB = value;
+                _currentDb = value;
             }
         }
     }
