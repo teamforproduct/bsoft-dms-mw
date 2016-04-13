@@ -1569,21 +1569,11 @@ namespace BL.Database.Documents
             }
         }
 
-        public FrontDocumentPaperList GetDocumentPaperListById(IContext ctx, int id)
+        public FrontDocumentPaperList GetDocumentPaperList(IContext ctx, int id)
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                //TODO: Refactoring
-                var item = dbContext.DocumentPaperListsSet
-                    .Where(x => x.Id == id)
-                    .Select(x => new FrontDocumentPaperList
-                    {
-                        Id = x.Id,
-                        Date = x.Date,
-                        Description = x.Description
-                    }).FirstOrDefault();
-
-                return item;
+                return CommonQueries.GetDocumentPaperLists(dbContext, new FilterDocumentPaperList { PaperListId = new List<int> { id } }).FirstOrDefault();
             }
         }
         #endregion DocumentPaperLists   

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using BL.Database.Documents.Interfaces;
 using BL.Logic.Common;
 using BL.Model.DocumentCore.IncomingModel;
@@ -11,23 +13,22 @@ namespace BL.Logic.DocumentCore.PaperCommands
     public class AddDocumentPaperListCommand : BaseDocumentCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
-
-        private InternalDocumentPaperList _item;
+        InternalDocumentPaperList _paperList;
 
         public AddDocumentPaperListCommand(IDocumentOperationsDbProcess operationDb)
         {
             _operationDb = operationDb;
         }
 
-        private ModifyDocumentPaperLists Model
+        private AddDocumentPaperLists Model
         {
             get
             {
-                if (!(_param is ModifyDocumentPaperLists))
+                if (!(_param is AddDocumentPaperLists))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ModifyDocumentPaperLists)_param;
+                return (AddDocumentPaperLists)_param;
             }
         }
 
@@ -38,26 +39,36 @@ namespace BL.Logic.DocumentCore.PaperCommands
 
         public override bool CanExecute()
         {
-
-            _admin.VerifyAccess(_context, CommandType);
-
-            _item = new InternalDocumentPaperList
+            _paperList = _operationDb.AddDocumentPaperListsPrepare(_context, Model);
+            if (!_paperList.Events.Any())
             {
-                Date = Model.Date,
-                Description = Model.Description
-            };
+                throw new DocumentNotFoundOrUserHasNoAccess();
+            }
+
+            _admin.VerifyAccess(_context, CommandType,false);
 
             return true;
         }
 
         public override object Execute()
         {
+            var _paperLists = _paperList.Events
+                .GroupBy(x => new { x.SourcePositionId, x.TargetPositionId, x.TargetAgentId })
+                .Select(x => new InternalDocumentPaperList
+                {
+                    Date = DateTime.Now,
+                    Description = Model.Description,
+                    Events = x.Select(y => new InternalDocumentEvent
+                    {
+                        Id = y.Id,
+                        LastChangeDate = DateTime.Now,
+                        LastChangeUserId = _context.CurrentAgentId,
+                    }).ToList()
+                }).ToList();
+            CommonDocumentUtilities.SetLastChange(_context, _paperLists);
+            return _operationDb.AddDocumentPaperLists(_context, _paperLists).ToList();
 
-            CommonDocumentUtilities.SetLastChange(_context, _item);
-            _operationDb.AddDocumentPaperLists(_context, new List<InternalDocumentPaperList> { _item });
-            return null;
         }
 
-        public override EnumDocumentActions CommandType => EnumDocumentActions.AddDocumentPaperList;
     }
 }

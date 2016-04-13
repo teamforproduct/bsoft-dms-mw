@@ -12,7 +12,7 @@ namespace BL.Logic.DocumentCore.PaperCommands
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
 
-        private InternalDocumentPaperList _item;
+        InternalDocumentPaperList _paperList;
 
         public ModifyDocumentPaperListCommand(IDocumentOperationsDbProcess operationDb)
         {
@@ -38,24 +38,24 @@ namespace BL.Logic.DocumentCore.PaperCommands
 
         public override bool CanExecute()
         {
+            _paperList = _operationDb.ModifyDocumentPaperListPrepare(_context, Model.Id);
+            if (_paperList==null)
+            {
+                throw new DocumentNotFoundOrUserHasNoAccess();
+            }
+            _context.SetCurrentPosition(_paperList.SourcePositionId.Value);
             _admin.VerifyAccess(_context, CommandType);
-
-            //_item = _operationDb.ChangeDocumentPaperListPrepare(_context, Model.Id);
-
-            //TODO Проверить поля которые нужно обновлять
-            _item.Date = Model.Date;
-            _item.Description = Model.Description;
 
             return true;
         }
 
         public override object Execute()
         {
-            CommonDocumentUtilities.SetLastChange(_context, _item);
-            _operationDb.ModifyDocumentPaperList(_context, _item);
+            _paperList.Description = Model.Description;
+            CommonDocumentUtilities.SetLastChange(_context, _paperList);
+            _operationDb.ModifyDocumentPaperList(_context, _paperList);
             return null;
         }
 
-        public override EnumDocumentActions CommandType => EnumDocumentActions.ModifyDocumentPaperList;
     }
 }

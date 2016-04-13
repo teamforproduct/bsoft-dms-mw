@@ -35,6 +35,7 @@ namespace BL.Model.DocumentCore.FrontModel
         public string TargetPositionExecutorNowAgentName { get; set; }
         public string TargetPositionExecutorAgentPhoneNumber { get; set; }
 
+        public int? PaperId { get; set; }
         public string PaperName { get; set; }
         public bool? PaperIsMain { get; set; }
         public bool? PaperIsOriginal { get; set; }

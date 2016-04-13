@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 namespace BL.Model.DocumentCore.Filters
 {
     /// <summary>
-    /// Фильтр задач по документу
+    /// Фильтр реестров бумажных носителей
     /// </summary>
     public class FilterDocumentPaperList
     {
         /// <summary>
-        /// Массив ИД документов
+        /// Массив ИД реестров БН
         /// </summary>
-        public List<int> DocumentId { get; set; }
+        public List<int> PaperListId { get; set; }
     }
 }

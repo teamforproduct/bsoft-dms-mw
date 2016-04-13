@@ -109,7 +109,7 @@ namespace BL.Logic.DocumentCore
         #region DocumentPaperLists
         public FrontDocumentPaperList GetDocumentPaperList(IContext context, int itemId)
         {
-            return _documentDb.GetDocumentPaperListById(context, itemId);
+            return _documentDb.GetDocumentPaperList(context, itemId);
         }
 
         public IEnumerable<FrontDocumentPaperList> GetDocumentPaperLists(IContext context, FilterDocumentPaperList filter)
