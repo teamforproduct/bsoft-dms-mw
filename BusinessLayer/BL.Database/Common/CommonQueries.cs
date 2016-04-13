@@ -132,6 +132,8 @@ namespace BL.Database.Common
                         RegistrationNumberPrefix = x.fl.Document.RegistrationNumberPrefix,
                         RegistrationNumberSuffix = x.fl.Document.RegistrationNumberSuffix,
                         RegistrationFullNumber = "#" + x.fl.Document.Id,
+                        ExecutorPositionName = x.fl.ExecutorPosition.Name,
+                        ExecutorPositionExecutorAgentName = x.fl.ExecutorPositionExecutorAgent.Name
                     }).ToList();
             files.ForEach(x => CommonQueries.ChangeRegistrationFullNumber(x));
             return files;
@@ -161,7 +163,9 @@ namespace BL.Database.Common
                         Name = x.fl.Name,
                         OrderInDocument = x.fl.OrderNumber,
                         Version = x.fl.Version,
-                        WasChangedExternal = false
+                        WasChangedExternal = false,
+                        ExecutorPositionId = x.fl.ExecutorPositionId,
+                        ExecutorPositionExecutorAgentId = x.fl.ExecutorPositionExecutorAgentId
                     }).ToList();
         }
 

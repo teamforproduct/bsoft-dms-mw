@@ -76,6 +76,10 @@ namespace BL.Logic.DocumentCore.Commands
             var newOrdNum = 1;
             _document.DocumentFiles.ToList().ForEach(x =>
             {
+                x.ExecutorPositionId = _document.ExecutorPositionId;
+                x.ExecutorPositionExecutorAgentId = _document.ExecutorPositionExecutorAgentId;
+                CommonDocumentUtilities.SetLastChange(_context, x);
+
                 var fileToCopy = CommonDocumentUtilities.GetNewTemplateAttachedFile(x);
 
                 var newDoc = CommonDocumentUtilities.GetNewDocumentAttachedFile(x, newOrdNum, 1);

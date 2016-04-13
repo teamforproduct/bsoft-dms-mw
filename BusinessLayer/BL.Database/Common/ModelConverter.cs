@@ -238,7 +238,9 @@ namespace BL.Database.Common
                 LastChangeDate = docFile.LastChangeDate,
                 LastChangeUserId = docFile.LastChangeUserId,
                 Name = docFile.Name,
-                Date = docFile.Date
+                Date = docFile.Date,
+                ExecutorPositionId = docFile.ExecutorPositionId,
+                ExecutorPositionExecutorAgentId = docFile.ExecutorPositionExecutorAgentId
             };
         }
 

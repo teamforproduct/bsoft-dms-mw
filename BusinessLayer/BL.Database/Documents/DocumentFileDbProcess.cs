@@ -59,7 +59,9 @@ namespace BL.Database.Documents
                             FileSize = x.fl.FileSize,
                             OrderInDocument = x.fl.OrderNumber,
                             Version = x.fl.Version,
-                            WasChangedExternal = false
+                            WasChangedExternal = false,
+                            ExecutorPositionName = x.fl.ExecutorPosition.Name,
+                            ExecutorPositionExecutorAgentName = x.fl.ExecutorPositionExecutorAgent.Name
                         }).ToList();
             }
         }
@@ -92,7 +94,9 @@ namespace BL.Database.Documents
                             Name = x.fl.Name,
                             OrderInDocument = x.fl.OrderNumber,
                             Version = x.fl.Version,
-                            WasChangedExternal = false
+                            WasChangedExternal = false,
+                            ExecutorPositionName = x.fl.ExecutorPosition.Name,
+                            ExecutorPositionExecutorAgentName = x.fl.ExecutorPositionExecutorAgent.Name
                         }).FirstOrDefault();
             }
         }
@@ -123,7 +127,9 @@ namespace BL.Database.Documents
                             FileSize = x.fl.FileSize,
                             OrderInDocument = x.fl.OrderNumber,
                             Version = x.fl.Version,
-                            WasChangedExternal = false
+                            WasChangedExternal = false,
+                            ExecutorPositionName = x.fl.ExecutorPosition.Name,
+                            ExecutorPositionExecutorAgentName = x.fl.ExecutorPositionExecutorAgent.Name
                         }).FirstOrDefault();
             }
         }
@@ -142,6 +148,7 @@ namespace BL.Database.Documents
                                         .Select(x => new InternalDocument
                                         {
                                             Id = x.Doc.Id,
+                                            ExecutorPositionId = x.Doc.ExecutorPositionId
                                         }).FirstOrDefault();
 
                     if (doc == null) return null;
@@ -157,7 +164,8 @@ namespace BL.Database.Documents
                                 Date = x.fl.Date,
                                 DocumentId = x.fl.DocumentId,
                                 OrderInDocument = x.fl.OrderNumber,
-                                Version = x.fl.Version
+                                Version = x.fl.Version,
+                                ExecutorPositionId = x.fl.ExecutorPositionId
                             }).ToList();
                     return doc;
                 }
@@ -197,7 +205,9 @@ namespace BL.Database.Documents
                                 FileSize = x.fl.FileSize,
                                 OrderInDocument = x.fl.OrderNumber,
                                 Version = x.fl.Version,
-                                WasChangedExternal = false
+                                WasChangedExternal = false,
+                                ExecutorPositionName = x.fl.ExecutorPosition.Name,
+                                ExecutorPositionExecutorAgentName = x.fl.ExecutorPositionExecutorAgent.Name
                             }).FirstOrDefault();
                 }
             }
@@ -212,7 +222,8 @@ namespace BL.Database.Documents
                     .Where(x => x.Doc.Id == documentId && (ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId)))
                     .Select(x => new InternalDocument
                     {
-                        Id = x.Doc.Id
+                        Id = x.Doc.Id,
+                        ExecutorPositionId = x.Doc.ExecutorPositionId
                     }).FirstOrDefault();
                 return doc;
             }
@@ -265,7 +276,7 @@ namespace BL.Database.Documents
                 doc.DocumentFiles =
                     dbContext.DocumentFilesSet.Where(
                         x => x.DocumentId == flIdent.DocumentId && x.OrderNumber == flIdent.OrderInDocument)
-                        .Select(x => new InternalDocumentAttachedFile { Id = x.Id }).ToList();
+                        .Select(x => new InternalDocumentAttachedFile { Id = x.Id, ExecutorPositionId = x.ExecutorPositionId }).ToList();
                 return doc;
             }
         }

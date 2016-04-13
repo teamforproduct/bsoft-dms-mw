@@ -17,29 +17,6 @@ namespace BL.Model.DocumentCore.InternalModel
         }
 
         /// <summary>
-        /// create internal document attached file based on front model
-        /// </summary>
-        /// <param name="doc"></param>
-        public InternalDocumentAttachedFile(FrontDocumentAttachedFile doc)
-        {
-            Id = doc.Id;
-            DocumentId = doc.DocumentId??0;
-            OrderInDocument = doc.OrderInDocument;
-
-            Version = doc.Version;
-            FileContent = doc.FileContent;
-            Name = doc.Name;
-            Extension = doc.Extension;
-
-            FileType = doc.FileType;
-            FileSize = doc.FileSize;
-            IsAdditional = doc.IsAdditional;
-            Date = doc.Date;
-            Hash = doc.Hash;
-            WasChangedExternal = doc.WasChangedExternal;
-        }
-
-        /// <summary>
         /// Версия вложения
         /// </summary>
         public int Version { get; set; }
@@ -52,5 +29,8 @@ namespace BL.Model.DocumentCore.InternalModel
         /// Признак, изменялся ли файл в хранищие извне
         /// </summary>
         public bool WasChangedExternal { get; set; }
+
+        public int ExecutorPositionId { get; set; }
+        public int ExecutorPositionExecutorAgentId { get; set; }
     }
 }

@@ -7,6 +7,7 @@ using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.Enums;
+using System.Collections.Generic;
 
 namespace DMS_WebAPI.Controllers.Documents
 {
@@ -58,17 +59,17 @@ namespace DMS_WebAPI.Controllers.Documents
         // PUT: api/Files/5
         public IHttpActionResult Put([FromBody]ModifyDocumentFile model)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var fl = (FrontDocumentAttachedFile)docProc.ExecuteAction(EnumDocumentActions.ModifyDocumentFile, cxt, model);
-           
-            return new JsonResult(fl, this);
+            var fileId = (int)docProc.ExecuteAction(EnumDocumentActions.ModifyDocumentFile, cxt, model);
+
+            return GetFileList(new FilterDocumentAttachedFile { AttachedFileId = new List<int> { fileId } });
         }
 
         // DELETE: api/Files
         public IHttpActionResult Delete([FromBody]FilterDocumentFileIdentity model)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.DeleteDocumentFile, cxt, model);
             return new JsonResult(null, this);

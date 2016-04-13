@@ -657,7 +657,9 @@ namespace BL.Logic.Common
                 OrderInDocument = newOrderNumber ?? src.OrderInDocument,
                 Date = DateTime.Now,
                 Version = newVersion ?? 1,
-                WasChangedExternal = false
+                WasChangedExternal = false,
+                ExecutorPositionId = src.ExecutorPositionId,
+                ExecutorPositionExecutorAgentId = src.ExecutorPositionExecutorAgentId,
             };
         }
 
