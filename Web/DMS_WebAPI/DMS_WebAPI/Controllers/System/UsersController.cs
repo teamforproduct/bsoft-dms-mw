@@ -47,10 +47,12 @@ namespace DMS_WebAPI.Controllers
         [Route("ChoosenPositions")]
         public IHttpActionResult Post([FromBody]List<int> positionsIdList)
         {
-            var context = DmsResolver.Current.Get<UserContext>().Get();
+            var user_context = DmsResolver.Current.Get<UserContext>();
+            var context = user_context.Get();
             var admProc = DmsResolver.Current.Get<IAdminService>();
             admProc.VerifyAccess(context, new VerifyAccess() { PositionsIdList = positionsIdList });
-            context.CurrentPositionsIdList = positionsIdList;
+            user_context.SetUserPositions(context.CurrentEmployee.Token, positionsIdList);
+            //context.CurrentPositionsIdList = positionsIdList;
             //cxt.CurrentPositions = new List<CurrentPosition>() { new CurrentPosition { CurrentPositionId = positionId } };
             return new JsonResult(null, this);
         }

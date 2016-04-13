@@ -60,20 +60,21 @@ namespace BL.CrossCutting.Context
 
         public Employee CurrentEmployee { get; set; }
         public List<int> CurrentPositionsIdList {
-            get
-            {
-            return new List<int> {0};    
-            }
+            get { return new List<int> {0}; }
             set { }
         }
         public DatabaseModel CurrentDB { get; set; }
 
-        public int CurrentPositionId {
-            get { return _currentPositionId??0; }
+        public int CurrentPositionId
+        {
+            get { return _currentPositionId ?? 0; }
         }
-        public int CurrentAgentId {
-            get { return (int)EnumSystemUsers.AdminUser; }
+
+        public int CurrentAgentId
+        {
+            get { return (int) EnumSystemUsers.AdminUser; }
         }
+
         public void SetCurrentPosition(int? position)
         {
             _currentPositionId = position;
