@@ -77,7 +77,6 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 x.ExecutorPositionId = _document.ExecutorPositionId;
                 x.ExecutorPositionExecutorAgentId = _document.ExecutorPositionExecutorAgentId;
-                CommonDocumentUtilities.SetLastChange(_context, x);
 
                 var newDoc = CommonDocumentUtilities.GetNewDocumentAttachedFile(x);
                 toCopy.Add(newDoc, x);

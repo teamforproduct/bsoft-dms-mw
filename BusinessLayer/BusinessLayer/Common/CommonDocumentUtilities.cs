@@ -632,6 +632,7 @@ namespace BL.Logic.Common
         {
             return new InternalTemplateAttachedFile
             {
+                DocumentId = src.DocumentId,
                 Extension = src.Extension,
                 Name = src.Name,
                 FileType = src.FileType,

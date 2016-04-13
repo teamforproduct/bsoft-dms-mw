@@ -78,7 +78,6 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 x.ExecutorPositionId = _document.ExecutorPositionId;
                 x.ExecutorPositionExecutorAgentId = _document.ExecutorPositionExecutorAgentId;
-                CommonDocumentUtilities.SetLastChange(_context, x);
 
                 var fileToCopy = CommonDocumentUtilities.GetNewTemplateAttachedFile(x);
 
@@ -90,6 +89,7 @@ namespace BL.Logic.DocumentCore.Commands
 
             // assign new created list of files to document
             _document.DocumentFiles = toCopy.Keys;
+            CommonDocumentUtilities.SetLastChange(_context, _document.DocumentFiles);
 
             _documentDb.AddDocument(_context, Document);
 
