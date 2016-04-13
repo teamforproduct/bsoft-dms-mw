@@ -311,6 +311,7 @@ namespace BL.Database.Common
             return item == null ? null :
                 new DocumentPaperLists
                 {
+                    Id = item.Id,
                     Date = item.Date,
                     Description = item.Description,
                     LastChangeDate = item.LastChangeDate,

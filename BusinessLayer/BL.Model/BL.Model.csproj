@@ -114,6 +114,7 @@
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryStandartSendList.cs" />
     <Compile Include="DocumentCore\Actions\ControlTargetChange.cs" />
     <Compile Include="DocumentCore\Actions\MarkOwnerDocumentPaper.cs" />
+    <Compile Include="DocumentCore\Actions\PaperList.cs" />
     <Compile Include="DocumentCore\Actions\PlanMovementPaper.cs" />
     <Compile Include="DocumentCore\Actions\PaperEvent.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentPaper.cs" />
@@ -212,6 +213,7 @@
     <Compile Include="DocumentCore\Filters\FilterDocumentFileIdentity.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentFile.cs" />
     <Compile Include="DocumentCore\IncomingModel\AddDocumentByTemplateDocument.cs" />
+    <Compile Include="DocumentCore\IncomingModel\AddDocumentPaperLists.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentPaperLists.cs" />
     <Compile Include="DocumentCore\Actions\CopyDocumentPaper.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentPapers.cs" />

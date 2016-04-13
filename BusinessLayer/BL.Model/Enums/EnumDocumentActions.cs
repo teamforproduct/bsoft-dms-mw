@@ -340,9 +340,9 @@
         AddDocumentTask = 115001, // Добавить задачу
         ModifyDocumentTask = 115005, // Изменить задачу
         DeleteDocumentTask = 115009, // Удалить задачу
-        AddDocumentPaperList = 7,
-        ModifyDocumentPaperList = 8,
-        DeleteDocumentPaperList = 9
+        AddDocumentPaperList = 123001, // Добавить реестр
+        ModifyDocumentPaperList = 123005, // Изменить реестр
+        DeleteDocumentPaperList = 123009, // Удалить реестр
 
     }
 }

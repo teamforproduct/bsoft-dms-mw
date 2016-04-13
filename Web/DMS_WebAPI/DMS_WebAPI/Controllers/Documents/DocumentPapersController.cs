@@ -49,8 +49,8 @@ namespace DMS_WebAPI.Controllers.Documents
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            docProc.ExecuteAction(EnumDocumentActions.AddDocumentPaper, cxt, model);
-            return Get(model.Id);
+            var newIds = (List<int>)docProc.ExecuteAction(EnumDocumentActions.AddDocumentPaper, cxt, model);
+            return Get(new FilterDocumentPaper {Id = newIds });
         }
 
         /// <summary>
@@ -129,61 +129,61 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <summary>
         /// Отменить планирование движения бумажного носителя
         /// </summary>
-        /// <param name="id">ИД бумажного носителя</param>
+        /// <param name="model">перечень бумажных носителей</param>
         /// <returns></returns>
         [Route("CancelPlanDocumentPaperEvent")]
         [HttpPost]
-        public IHttpActionResult CancelPlanDocumentPaperEvent(List<int> id)
+        public IHttpActionResult CancelPlanDocumentPaperEvent(PaperList model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            docProc.ExecuteAction(EnumDocumentActions.CancelPlanDocumentPaperEvent, cxt, id);
-            return Get( new FilterDocumentPaper {Id = id});
+            docProc.ExecuteAction(EnumDocumentActions.CancelPlanDocumentPaperEvent, cxt, model);
+            return Get( new FilterDocumentPaper {Id = model.PaperId, PaperListId = model.PaperListId});
         }
 
         /// <summary>
         /// Отметить передачу бумажного носителя
         /// </summary>
-        /// <param name="id">ИД бумажного носителя</param>
+        /// <param name="model">перечень бумажных носителей</param>
         /// <returns></returns>
         [Route("SendDocumentPaperEvent")]
         [HttpPost]
-        public IHttpActionResult SendDocumentPaperEvent(List<int> id)
+        public IHttpActionResult SendDocumentPaperEvent(PaperList model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            docProc.ExecuteAction(EnumDocumentActions.SendDocumentPaperEvent, cxt, id);
-            return Get(new FilterDocumentPaper { Id = id });
+            docProc.ExecuteAction(EnumDocumentActions.SendDocumentPaperEvent, cxt, model);
+            return Get(new FilterDocumentPaper { Id = model.PaperId, PaperListId = model.PaperListId });
         }
 
         /// <summary>
         /// Отменить передачу бумажного носителя
         /// </summary>
-        /// <param name="id">ИД бумажного носителя</param>
+        /// <param name="model">перечень бумажных носителей</param>
         /// <returns></returns>
         [Route("CancelSendDocumentPaperEvent")]
         [HttpPost]
-        public IHttpActionResult CancelSendDocumentPaperEvent(List<int> id)
+        public IHttpActionResult CancelSendDocumentPaperEvent(PaperList model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            docProc.ExecuteAction(EnumDocumentActions.CancelSendDocumentPaperEvent, cxt, id);
-            return Get(new FilterDocumentPaper { Id = id });
+            docProc.ExecuteAction(EnumDocumentActions.CancelSendDocumentPaperEvent, cxt, model);
+            return Get(new FilterDocumentPaper { Id = model.PaperId, PaperListId = model.PaperListId });
         }
 
         /// <summary>
         /// Отметить прием бумажного носителя
         /// </summary>
-        /// <param name="id">ИД бумажного носителя</param>
+        /// <param name="model">перечень бумажных носителей</param>
         /// <returns></returns>
         [Route("RecieveDocumentPaperEvent")]
         [HttpPost]
-        public IHttpActionResult RecieveDocumentPaperEvent(List<int> id)
+        public IHttpActionResult RecieveDocumentPaperEvent(PaperList model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            docProc.ExecuteAction(EnumDocumentActions.RecieveDocumentPaperEvent, cxt, id);
-            return Get(new FilterDocumentPaper { Id = id });
+            docProc.ExecuteAction(EnumDocumentActions.RecieveDocumentPaperEvent, cxt, model);
+            return Get(new FilterDocumentPaper { Id = model.PaperId, PaperListId = model.PaperListId });
         }
 
         /// <summary>

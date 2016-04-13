@@ -49,7 +49,7 @@ namespace BL.Database.Documents.Interfaces
 
         IEnumerable<FrontDocumentPaperList> GetDocumentPaperLists(IContext ctx, FilterDocumentPaperList filter);
 
-        FrontDocumentPaperList GetDocumentPaperListById(IContext ctx, int id);
+        FrontDocumentPaperList GetDocumentPaperList(IContext ctx, int id);
         #endregion DocumentPaperLists   
 
     }

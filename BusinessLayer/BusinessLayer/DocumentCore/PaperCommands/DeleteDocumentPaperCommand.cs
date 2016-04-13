@@ -52,7 +52,7 @@ namespace BL.Logic.DocumentCore.PaperCommands
 
         public override bool CanExecute()
         {
-            _document = _operationDb.ChangeDocumentPaperPrepare(_context, Model);
+            _document = _operationDb.DeleteDocumentPaperPrepare(_context, Model);
             _paper = _document?.Papers.First();
             if (_paper == null)
             {
