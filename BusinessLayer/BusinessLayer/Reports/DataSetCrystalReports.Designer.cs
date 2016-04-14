@@ -10,7 +10,7 @@
 
 #pragma warning disable 1591
 
-namespace DMS_WebAPI.Reports {
+namespace BL.Logic.Reports {
     
     
     /// <summary>
@@ -20,21 +20,21 @@ namespace DMS_WebAPI.Reports {
     [global::System.ComponentModel.DesignerCategoryAttribute("code")]
     [global::System.ComponentModel.ToolboxItem(true)]
     [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedDataSetSchema")]
-    [global::System.Xml.Serialization.XmlRootAttribute("DataSet1")]
+    [global::System.Xml.Serialization.XmlRootAttribute("DataSetCrystalReports")]
     [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.DataSet")]
-    public partial class DataSet1 : global::System.Data.DataSet {
+    public partial class DataSetCrystalReports : global::System.Data.DataSet {
         
         private ReportDocumentDataTable tableReportDocument;
         
         private ReportDocumentWaitDataTable tableReportDocumentWait;
         
-        private global::System.Data.DataRelation relationDocuments_DocumentWaits;
+        private global::System.Data.DataRelation relationReportDocument_ReportDocumentWait;
         
         private global::System.Data.SchemaSerializationMode _schemaSerializationMode = global::System.Data.SchemaSerializationMode.IncludeSchema;
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-        public DataSet1() {
+        public DataSetCrystalReports() {
             this.BeginInit();
             this.InitClass();
             global::System.ComponentModel.CollectionChangeEventHandler schemaChangedHandler = new global::System.ComponentModel.CollectionChangeEventHandler(this.SchemaChanged);
@@ -45,7 +45,7 @@ namespace DMS_WebAPI.Reports {
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-        protected DataSet1(global::System.Runtime.Serialization.SerializationInfo info, global::System.Runtime.Serialization.StreamingContext context) : 
+        protected DataSetCrystalReports(global::System.Runtime.Serialization.SerializationInfo info, global::System.Runtime.Serialization.StreamingContext context) : 
                 base(info, context, false) {
             if ((this.IsBinarySerialized(info, context) == true)) {
                 this.InitVars(false);
@@ -144,7 +144,7 @@ namespace DMS_WebAPI.Reports {
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         public override global::System.Data.DataSet Clone() {
-            DataSet1 cln = ((DataSet1)(base.Clone()));
+            DataSetCrystalReports cln = ((DataSetCrystalReports)(base.Clone()));
             cln.InitVars();
             cln.SchemaSerializationMode = this.SchemaSerializationMode;
             return cln;
@@ -220,25 +220,25 @@ namespace DMS_WebAPI.Reports {
                     this.tableReportDocumentWait.InitVars();
                 }
             }
-            this.relationDocuments_DocumentWaits = this.Relations["Documents_DocumentWaits"];
+            this.relationReportDocument_ReportDocumentWait = this.Relations["ReportDocument_ReportDocumentWait"];
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         private void InitClass() {
-            this.DataSetName = "DataSet1";
+            this.DataSetName = "DataSetCrystalReports";
             this.Prefix = "";
-            this.Namespace = "http://tempuri.org/DataSet1.xsd";
+            this.Namespace = "http://tempuri.org/DataSetCrystalReports.xsd";
             this.EnforceConstraints = true;
             this.SchemaSerializationMode = global::System.Data.SchemaSerializationMode.IncludeSchema;
             this.tableReportDocument = new ReportDocumentDataTable();
             base.Tables.Add(this.tableReportDocument);
             this.tableReportDocumentWait = new ReportDocumentWaitDataTable();
             base.Tables.Add(this.tableReportDocumentWait);
-            this.relationDocuments_DocumentWaits = new global::System.Data.DataRelation("Documents_DocumentWaits", new global::System.Data.DataColumn[] {
+            this.relationReportDocument_ReportDocumentWait = new global::System.Data.DataRelation("ReportDocument_ReportDocumentWait", new global::System.Data.DataColumn[] {
                         this.tableReportDocument.IdColumn}, new global::System.Data.DataColumn[] {
                         this.tableReportDocumentWait.DocumentIdColumn}, false);
-            this.Relations.Add(this.relationDocuments_DocumentWaits);
+            this.Relations.Add(this.relationReportDocument_ReportDocumentWait);
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -264,7 +264,7 @@ namespace DMS_WebAPI.Reports {
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         public static global::System.Xml.Schema.XmlSchemaComplexType GetTypedDataSetSchema(global::System.Xml.Schema.XmlSchemaSet xs) {
-            DataSet1 ds = new DataSet1();
+            DataSetCrystalReports ds = new DataSetCrystalReports();
             global::System.Xml.Schema.XmlSchemaComplexType type = new global::System.Xml.Schema.XmlSchemaComplexType();
             global::System.Xml.Schema.XmlSchemaSequence sequence = new global::System.Xml.Schema.XmlSchemaSequence();
             global::System.Xml.Schema.XmlSchemaAny any = new global::System.Xml.Schema.XmlSchemaAny();
@@ -327,11 +327,15 @@ namespace DMS_WebAPI.Reports {
             
             private global::System.Data.DataColumn columnExecutorPositionName;
             
+            private global::System.Data.DataColumn columnExecutorPositionExecutorAgentName;
+            
             private global::System.Data.DataColumn columnAddressee;
             
             private global::System.Data.DataColumn columnDescription;
             
-            private global::System.Data.DataColumn columnExecutorPositionExecutorAgentName;
+            private global::System.Data.DataColumn columnSenderAgentName;
+            
+            private global::System.Data.DataColumn columnSenderAgentPersonName;
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
@@ -392,6 +396,14 @@ namespace DMS_WebAPI.Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn ExecutorPositionExecutorAgentNameColumn {
+                get {
+                    return this.columnExecutorPositionExecutorAgentName;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public global::System.Data.DataColumn AddresseeColumn {
                 get {
                     return this.columnAddressee;
@@ -408,9 +420,17 @@ namespace DMS_WebAPI.Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn ExecutorPositionExecutorAgentNameColumn {
+            public global::System.Data.DataColumn SenderAgentNameColumn {
                 get {
-                    return this.columnExecutorPositionExecutorAgentName;
+                    return this.columnSenderAgentName;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn SenderAgentPersonNameColumn {
+                get {
+                    return this.columnSenderAgentPersonName;
                 }
             }
             
@@ -451,15 +471,17 @@ namespace DMS_WebAPI.Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public ReportDocumentRow AddReportDocumentRow(int Id, string DocumentTypeName, string ExecutorPositionName, string Addressee, string Description, string ExecutorPositionExecutorAgentName) {
+            public ReportDocumentRow AddReportDocumentRow(int Id, string DocumentTypeName, string ExecutorPositionName, string ExecutorPositionExecutorAgentName, string Addressee, string Description, string SenderAgentName, string SenderAgentPersonName) {
                 ReportDocumentRow rowReportDocumentRow = ((ReportDocumentRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         Id,
                         DocumentTypeName,
                         ExecutorPositionName,
+                        ExecutorPositionExecutorAgentName,
                         Addressee,
                         Description,
-                        ExecutorPositionExecutorAgentName};
+                        SenderAgentName,
+                        SenderAgentPersonName};
                 rowReportDocumentRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowReportDocumentRow);
                 return rowReportDocumentRow;
@@ -492,9 +514,11 @@ namespace DMS_WebAPI.Reports {
                 this.columnId = base.Columns["Id"];
                 this.columnDocumentTypeName = base.Columns["DocumentTypeName"];
                 this.columnExecutorPositionName = base.Columns["ExecutorPositionName"];
+                this.columnExecutorPositionExecutorAgentName = base.Columns["ExecutorPositionExecutorAgentName"];
                 this.columnAddressee = base.Columns["Addressee"];
                 this.columnDescription = base.Columns["Description"];
-                this.columnExecutorPositionExecutorAgentName = base.Columns["ExecutorPositionExecutorAgentName"];
+                this.columnSenderAgentName = base.Columns["SenderAgentName"];
+                this.columnSenderAgentPersonName = base.Columns["SenderAgentPersonName"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -506,12 +530,16 @@ namespace DMS_WebAPI.Reports {
                 base.Columns.Add(this.columnDocumentTypeName);
                 this.columnExecutorPositionName = new global::System.Data.DataColumn("ExecutorPositionName", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnExecutorPositionName);
+                this.columnExecutorPositionExecutorAgentName = new global::System.Data.DataColumn("ExecutorPositionExecutorAgentName", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnExecutorPositionExecutorAgentName);
                 this.columnAddressee = new global::System.Data.DataColumn("Addressee", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnAddressee);
                 this.columnDescription = new global::System.Data.DataColumn("Description", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnDescription);
-                this.columnExecutorPositionExecutorAgentName = new global::System.Data.DataColumn("ExecutorPositionExecutorAgentName", typeof(string), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnExecutorPositionExecutorAgentName);
+                this.columnSenderAgentName = new global::System.Data.DataColumn("SenderAgentName", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnSenderAgentName);
+                this.columnSenderAgentPersonName = new global::System.Data.DataColumn("SenderAgentPersonName", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnSenderAgentPersonName);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
                                 this.columnId}, true));
                 this.columnId.AllowDBNull = false;
@@ -583,7 +611,7 @@ namespace DMS_WebAPI.Reports {
             public static global::System.Xml.Schema.XmlSchemaComplexType GetTypedTableSchema(global::System.Xml.Schema.XmlSchemaSet xs) {
                 global::System.Xml.Schema.XmlSchemaComplexType type = new global::System.Xml.Schema.XmlSchemaComplexType();
                 global::System.Xml.Schema.XmlSchemaSequence sequence = new global::System.Xml.Schema.XmlSchemaSequence();
-                DataSet1 ds = new DataSet1();
+                DataSetCrystalReports ds = new DataSetCrystalReports();
                 global::System.Xml.Schema.XmlSchemaAny any1 = new global::System.Xml.Schema.XmlSchemaAny();
                 any1.Namespace = "http://www.w3.org/2001/XMLSchema";
                 any1.MinOccurs = new decimal(0);
@@ -665,9 +693,11 @@ namespace DMS_WebAPI.Reports {
             
             private global::System.Data.DataColumn columnResultTypeName;
             
+            private global::System.Data.DataColumn columnTargetPositionExecutorAgentName;
+            
             private global::System.Data.DataColumn columnSourcePositionExecutorAgentName;
             
-            private global::System.Data.DataColumn columnTargetPositionExecutorAgentName;
+            private global::System.Data.DataColumn columnAttentionDate;
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
@@ -768,6 +798,14 @@ namespace DMS_WebAPI.Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn TargetPositionExecutorAgentNameColumn {
+                get {
+                    return this.columnTargetPositionExecutorAgentName;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public global::System.Data.DataColumn SourcePositionExecutorAgentNameColumn {
                 get {
                     return this.columnSourcePositionExecutorAgentName;
@@ -776,9 +814,9 @@ namespace DMS_WebAPI.Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn TargetPositionExecutorAgentNameColumn {
+            public global::System.Data.DataColumn AttentionDateColumn {
                 get {
-                    return this.columnTargetPositionExecutorAgentName;
+                    return this.columnAttentionDate;
                 }
             }
             
@@ -819,7 +857,7 @@ namespace DMS_WebAPI.Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public ReportDocumentWaitRow AddReportDocumentWaitRow(int Id, ReportDocumentRow parentReportDocumentRowByDocuments_DocumentWaits, System.DateTime CreateDate, string TargetPositionName, string SourcePositionName, System.DateTime DueDate, bool IsClosed, string ResultTypeName, string SourcePositionExecutorAgentName, string TargetPositionExecutorAgentName) {
+            public ReportDocumentWaitRow AddReportDocumentWaitRow(int Id, ReportDocumentRow parentReportDocumentRowByReportDocument_ReportDocumentWait, System.DateTime CreateDate, string TargetPositionName, string SourcePositionName, System.DateTime DueDate, bool IsClosed, string ResultTypeName, string TargetPositionExecutorAgentName, string SourcePositionExecutorAgentName, System.DateTime AttentionDate) {
                 ReportDocumentWaitRow rowReportDocumentWaitRow = ((ReportDocumentWaitRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         Id,
@@ -830,10 +868,11 @@ namespace DMS_WebAPI.Reports {
                         DueDate,
                         IsClosed,
                         ResultTypeName,
+                        TargetPositionExecutorAgentName,
                         SourcePositionExecutorAgentName,
-                        TargetPositionExecutorAgentName};
-                if ((parentReportDocumentRowByDocuments_DocumentWaits != null)) {
-                    columnValuesArray[1] = parentReportDocumentRowByDocuments_DocumentWaits[0];
+                        AttentionDate};
+                if ((parentReportDocumentRowByReportDocument_ReportDocumentWait != null)) {
+                    columnValuesArray[1] = parentReportDocumentRowByReportDocument_ReportDocumentWait[0];
                 }
                 rowReportDocumentWaitRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowReportDocumentWaitRow);
@@ -872,8 +911,9 @@ namespace DMS_WebAPI.Reports {
                 this.columnDueDate = base.Columns["DueDate"];
                 this.columnIsClosed = base.Columns["IsClosed"];
                 this.columnResultTypeName = base.Columns["ResultTypeName"];
-                this.columnSourcePositionExecutorAgentName = base.Columns["SourcePositionExecutorAgentName"];
                 this.columnTargetPositionExecutorAgentName = base.Columns["TargetPositionExecutorAgentName"];
+                this.columnSourcePositionExecutorAgentName = base.Columns["SourcePositionExecutorAgentName"];
+                this.columnAttentionDate = base.Columns["AttentionDate"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -895,10 +935,12 @@ namespace DMS_WebAPI.Reports {
                 base.Columns.Add(this.columnIsClosed);
                 this.columnResultTypeName = new global::System.Data.DataColumn("ResultTypeName", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnResultTypeName);
-                this.columnSourcePositionExecutorAgentName = new global::System.Data.DataColumn("SourcePositionExecutorAgentName", typeof(string), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnSourcePositionExecutorAgentName);
                 this.columnTargetPositionExecutorAgentName = new global::System.Data.DataColumn("TargetPositionExecutorAgentName", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnTargetPositionExecutorAgentName);
+                this.columnSourcePositionExecutorAgentName = new global::System.Data.DataColumn("SourcePositionExecutorAgentName", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnSourcePositionExecutorAgentName);
+                this.columnAttentionDate = new global::System.Data.DataColumn("AttentionDate", typeof(global::System.DateTime), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnAttentionDate);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
                                 this.columnId}, true));
                 this.columnId.AllowDBNull = false;
@@ -970,7 +1012,7 @@ namespace DMS_WebAPI.Reports {
             public static global::System.Xml.Schema.XmlSchemaComplexType GetTypedTableSchema(global::System.Xml.Schema.XmlSchemaSet xs) {
                 global::System.Xml.Schema.XmlSchemaComplexType type = new global::System.Xml.Schema.XmlSchemaComplexType();
                 global::System.Xml.Schema.XmlSchemaSequence sequence = new global::System.Xml.Schema.XmlSchemaSequence();
-                DataSet1 ds = new DataSet1();
+                DataSetCrystalReports ds = new DataSetCrystalReports();
                 global::System.Xml.Schema.XmlSchemaAny any1 = new global::System.Xml.Schema.XmlSchemaAny();
                 any1.Namespace = "http://www.w3.org/2001/XMLSchema";
                 any1.MinOccurs = new decimal(0);
@@ -1088,6 +1130,23 @@ namespace DMS_WebAPI.Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string ExecutorPositionExecutorAgentName {
+                get {
+                    try {
+                        return ((string)(this[this.tableReportDocument.ExecutorPositionExecutorAgentNameColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'ExecutorPositionExecutorAgentName\' in table \'ReportDocument" +
+                                "\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableReportDocument.ExecutorPositionExecutorAgentNameColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public string Addressee {
                 get {
                     try {
@@ -1120,18 +1179,34 @@ namespace DMS_WebAPI.Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public string ExecutorPositionExecutorAgentName {
+            public string SenderAgentName {
                 get {
                     try {
-                        return ((string)(this[this.tableReportDocument.ExecutorPositionExecutorAgentNameColumn]));
+                        return ((string)(this[this.tableReportDocument.SenderAgentNameColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("The value for column \'ExecutorPositionExecutorAgentName\' in table \'ReportDocument" +
-                                "\' is DBNull.", e);
+                        throw new global::System.Data.StrongTypingException("The value for column \'SenderAgentName\' in table \'ReportDocument\' is DBNull.", e);
                     }
                 }
                 set {
-                    this[this.tableReportDocument.ExecutorPositionExecutorAgentNameColumn] = value;
+                    this[this.tableReportDocument.SenderAgentNameColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string SenderAgentPersonName {
+                get {
+                    try {
+                        return ((string)(this[this.tableReportDocument.SenderAgentPersonNameColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'SenderAgentPersonName\' in table \'ReportDocument\' is DBNull." +
+                                "", e);
+                    }
+                }
+                set {
+                    this[this.tableReportDocument.SenderAgentPersonNameColumn] = value;
                 }
             }
             
@@ -1161,6 +1236,18 @@ namespace DMS_WebAPI.Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsExecutorPositionExecutorAgentNameNull() {
+                return this.IsNull(this.tableReportDocument.ExecutorPositionExecutorAgentNameColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetExecutorPositionExecutorAgentNameNull() {
+                this[this.tableReportDocument.ExecutorPositionExecutorAgentNameColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsAddresseeNull() {
                 return this.IsNull(this.tableReportDocument.AddresseeColumn);
             }
@@ -1185,24 +1272,36 @@ namespace DMS_WebAPI.Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool IsExecutorPositionExecutorAgentNameNull() {
-                return this.IsNull(this.tableReportDocument.ExecutorPositionExecutorAgentNameColumn);
+            public bool IsSenderAgentNameNull() {
+                return this.IsNull(this.tableReportDocument.SenderAgentNameColumn);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void SetExecutorPositionExecutorAgentNameNull() {
-                this[this.tableReportDocument.ExecutorPositionExecutorAgentNameColumn] = global::System.Convert.DBNull;
+            public void SetSenderAgentNameNull() {
+                this[this.tableReportDocument.SenderAgentNameColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsSenderAgentPersonNameNull() {
+                return this.IsNull(this.tableReportDocument.SenderAgentPersonNameColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetSenderAgentPersonNameNull() {
+                this[this.tableReportDocument.SenderAgentPersonNameColumn] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public ReportDocumentWaitRow[] GetReportDocumentWaitRows() {
-                if ((this.Table.ChildRelations["Documents_DocumentWaits"] == null)) {
+                if ((this.Table.ChildRelations["ReportDocument_ReportDocumentWait"] == null)) {
                     return new ReportDocumentWaitRow[0];
                 }
                 else {
-                    return ((ReportDocumentWaitRow[])(base.GetChildRows(this.Table.ChildRelations["Documents_DocumentWaits"])));
+                    return ((ReportDocumentWaitRow[])(base.GetChildRows(this.Table.ChildRelations["ReportDocument_ReportDocumentWait"])));
                 }
             }
         }
@@ -1348,23 +1447,6 @@ namespace DMS_WebAPI.Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public string SourcePositionExecutorAgentName {
-                get {
-                    try {
-                        return ((string)(this[this.tableReportDocumentWait.SourcePositionExecutorAgentNameColumn]));
-                    }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("The value for column \'SourcePositionExecutorAgentName\' in table \'ReportDocumentWa" +
-                                "it\' is DBNull.", e);
-                    }
-                }
-                set {
-                    this[this.tableReportDocumentWait.SourcePositionExecutorAgentNameColumn] = value;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public string TargetPositionExecutorAgentName {
                 get {
                     try {
@@ -1382,12 +1464,45 @@ namespace DMS_WebAPI.Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public ReportDocumentRow ReportDocumentRow {
+            public string SourcePositionExecutorAgentName {
                 get {
-                    return ((ReportDocumentRow)(this.GetParentRow(this.Table.ParentRelations["Documents_DocumentWaits"])));
+                    try {
+                        return ((string)(this[this.tableReportDocumentWait.SourcePositionExecutorAgentNameColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'SourcePositionExecutorAgentName\' in table \'ReportDocumentWa" +
+                                "it\' is DBNull.", e);
+                    }
                 }
                 set {
-                    this.SetParentRow(value, this.Table.ParentRelations["Documents_DocumentWaits"]);
+                    this[this.tableReportDocumentWait.SourcePositionExecutorAgentNameColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public System.DateTime AttentionDate {
+                get {
+                    try {
+                        return ((global::System.DateTime)(this[this.tableReportDocumentWait.AttentionDateColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'AttentionDate\' in table \'ReportDocumentWait\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableReportDocumentWait.AttentionDateColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public ReportDocumentRow ReportDocumentRow {
+                get {
+                    return ((ReportDocumentRow)(this.GetParentRow(this.Table.ParentRelations["ReportDocument_ReportDocumentWait"])));
+                }
+                set {
+                    this.SetParentRow(value, this.Table.ParentRelations["ReportDocument_ReportDocumentWait"]);
                 }
             }
             
@@ -1477,6 +1592,18 @@ namespace DMS_WebAPI.Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsTargetPositionExecutorAgentNameNull() {
+                return this.IsNull(this.tableReportDocumentWait.TargetPositionExecutorAgentNameColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetTargetPositionExecutorAgentNameNull() {
+                this[this.tableReportDocumentWait.TargetPositionExecutorAgentNameColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsSourcePositionExecutorAgentNameNull() {
                 return this.IsNull(this.tableReportDocumentWait.SourcePositionExecutorAgentNameColumn);
             }
@@ -1489,14 +1616,14 @@ namespace DMS_WebAPI.Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool IsTargetPositionExecutorAgentNameNull() {
-                return this.IsNull(this.tableReportDocumentWait.TargetPositionExecutorAgentNameColumn);
+            public bool IsAttentionDateNull() {
+                return this.IsNull(this.tableReportDocumentWait.AttentionDateColumn);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void SetTargetPositionExecutorAgentNameNull() {
-                this[this.tableReportDocumentWait.TargetPositionExecutorAgentNameColumn] = global::System.Convert.DBNull;
+            public void SetAttentionDateNull() {
+                this[this.tableReportDocumentWait.AttentionDateColumn] = global::System.Convert.DBNull;
             }
         }
         

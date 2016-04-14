@@ -18,6 +18,8 @@ namespace BL.Database.Documents.Interfaces
         IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging);
         FrontDocument GetDocument(IContext ctx, int documentId, FilterDocumentById filter);
 
+        InternalDocument ReportRegistrationCardDocumentPrepare(IContext ctx, int documentId);
+        Model.DocumentCore.ReportModel.ReportDocument ReportRegistrationCardDocument(IContext ctx, int documentId);
         Model.DocumentCore.ReportModel.ReportDocument GetDocumentByReport(IContext ctx, int documentId);
 
         InternalDocument RegisterDocumentPrepare(IContext ctx, RegisterDocument model);

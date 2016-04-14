@@ -9,7 +9,6 @@ namespace DMS_WebAPI.DependencyInjection
         {
             Bind<UserContext>().ToSelf().InSingletonScope();
             Bind<UserContextWorkerService>().ToSelf().InSingletonScope();
-            Bind<Report>().ToSelf().InSingletonScope();
         }
     }
 }

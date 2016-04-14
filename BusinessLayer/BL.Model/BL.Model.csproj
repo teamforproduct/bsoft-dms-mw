@@ -295,6 +295,7 @@
     <Compile Include="FullTextSearch\FullTextUpdateCashInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Enums\EnumLogTypes.cs" />
+    <Compile Include="Reports\FrontModel\FrontReport.cs" />
     <Compile Include="Reports\Interfaces\IReports.cs" />
     <Compile Include="SystemCore\Filters\FilterProperties.cs" />
     <Compile Include="SystemCore\Filters\FilterPropertyByRecord.cs" />

@@ -1014,6 +1014,75 @@ namespace BL.Database.Documents
             }
         }
 
+        public InternalDocument ReportRegistrationCardDocumentPrepare(IContext ctx, int documentId)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                var qry = CommonQueries.GetDocumentQuery(dbContext, ctx).Where(x => x.Doc.Id == documentId);
+
+                var doc = qry.Select(x => new InternalDocument
+                {
+                    Id = x.Doc.Id,
+                    DocumentDirection = (EnumDocumentDirections)x.Templ.DocumentDirectionId,
+                    IsRegistered = x.Doc.IsRegistered,
+                    ExecutorPositionId = x.Doc.ExecutorPositionId,
+                }).FirstOrDefault();
+
+                if (doc == null)
+                {
+                    throw new DocumentNotFoundOrUserHasNoAccess();
+                }
+
+                return doc;
+            }
+        }
+        public Model.DocumentCore.ReportModel.ReportDocument ReportRegistrationCardDocument(IContext ctx, int documentId)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                var qry = CommonQueries.GetDocumentQuery(dbContext, ctx).Where(x => x.Doc.Id == documentId);
+
+                var doc = qry.FirstOrDefault();
+                if (doc == null)
+                {
+                    throw new DocumentNotFoundOrUserHasNoAccess();
+                }
+                var accs =
+                    CommonQueries.GetDocumentAccesses(ctx, dbContext).Where(x => x.DocumentId == doc.Doc.Id).ToList();
+
+                var res = new Model.DocumentCore.ReportModel.ReportDocument
+                {
+                    Id = doc.Doc.Id,
+                    DocumentTypeName = doc.DocTypeName,
+                    ExecutorPositionName = doc.ExecutorPosName,
+                    Addressee = doc.Doc.Addressee,
+                    Description = doc.Doc.Description,
+                    SenderAgentName = doc.SenderAgentname,
+                    SenderAgentPersonName = doc.SenderPersonName,
+                };
+
+                var docIds = new List<int> { res.Id };
+
+                res.DocumentWaits = CommonQueries.GetDocumentWaitsQuery(dbContext, ctx, res.Id)
+                    .Select(x => new Model.DocumentCore.ReportModel.ReportDocumentWait
+                    {
+                        Id = x.Id,
+                        DocumentId = x.DocumentId,
+                        CreateDate = x.OnEvent.Date,
+                        TargetPositionName = x.OnEvent.TargetPosition.Name,
+                        TargetPositionExecutorAgentName =x.OnEvent.TargetPositionExecutorAgent.Name,
+                        SourcePositionName = x.OnEvent.SourcePosition.Name,
+                        SourcePositionExecutorAgentName = x.OnEvent.SourcePositionExecutorAgent.Name,
+                        DueDate = x.DueDate,
+                        IsClosed = x.OffEventId != null,
+                        ResultTypeName = x.ResultType.Name,
+                        AttentionDate = x.AttentionDate
+                    }).ToList();
+
+
+                return res;
+            }
+        }
         public Model.DocumentCore.ReportModel.ReportDocument GetDocumentByReport(IContext ctx, int documentId)
         {
             using (var dbContext = new DmsContext(ctx))

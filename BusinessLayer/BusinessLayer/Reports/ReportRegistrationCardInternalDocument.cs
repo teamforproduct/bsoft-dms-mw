@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace DMS_WebAPI.Reports {
+namespace BL.Logic.Reports {
     using System;
     using System.ComponentModel;
     using CrystalDecisions.Shared;
@@ -16,14 +16,14 @@ namespace DMS_WebAPI.Reports {
     using CrystalDecisions.CrystalReports.Engine;
     
     
-    public class RegistrationCardInternalDocument : ReportClass {
+    public class ReportRegistrationCardInternalDocument : ReportClass {
         
-        public RegistrationCardInternalDocument() {
+        public ReportRegistrationCardInternalDocument() {
         }
         
         public override string ResourceName {
             get {
-                return "RegistrationCardInternalDocument.rpt";
+                return "ReportRegistrationCardInternalDocument.rpt";
             }
             set {
                 // Do nothing
@@ -41,7 +41,7 @@ namespace DMS_WebAPI.Reports {
         
         public override string FullResourceName {
             get {
-                return "DMS_WebAPI.Reports.RegistrationCardInternalDocument.rpt";
+                return "BL.Logic.Reports.ReportRegistrationCardInternalDocument.rpt";
             }
             set {
                 // Do nothing
@@ -90,9 +90,9 @@ namespace DMS_WebAPI.Reports {
     }
     
     [System.Drawing.ToolboxBitmapAttribute(typeof(CrystalDecisions.Shared.ExportOptions), "report.bmp")]
-    public class CachedRegistrationCardInternalDocument : Component, ICachedReport {
+    public class CachedReportRegistrationCardInternalDocument : Component, ICachedReport {
         
-        public CachedRegistrationCardInternalDocument() {
+        public CachedReportRegistrationCardInternalDocument() {
         }
         
         [Browsable(false)]
@@ -129,7 +129,7 @@ namespace DMS_WebAPI.Reports {
         }
         
         public virtual CrystalDecisions.CrystalReports.Engine.ReportDocument CreateReport() {
-            RegistrationCardInternalDocument rpt = new RegistrationCardInternalDocument();
+            ReportRegistrationCardInternalDocument rpt = new ReportRegistrationCardInternalDocument();
             rpt.Site = this.Site;
             return rpt;
         }

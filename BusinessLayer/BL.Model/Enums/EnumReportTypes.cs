@@ -8,6 +8,8 @@ namespace BL.Model.Enums
 {
     public enum EnumReportTypes
     {
-        RegistrationCardInternalDocument = 1,
+        RegistrationCardIncomingDocument = 1,
+        RegistrationCardInternalDocument = 2,
+        RegistrationCardOutcomingDocument = 3
     }
 }
