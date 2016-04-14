@@ -132,8 +132,6 @@ namespace BL.Database.Common
                         RegistrationNumberPrefix = x.fl.Document.RegistrationNumberPrefix,
                         RegistrationNumberSuffix = x.fl.Document.RegistrationNumberSuffix,
                         RegistrationFullNumber = "#" + x.fl.Document.Id,
-                        ExecutorPositionName = x.fl.ExecutorPosition.Name,
-                        ExecutorPositionExecutorAgentName = x.fl.ExecutorPositionExecutorAgent.Name
                     }).ToList();
             files.ForEach(x => CommonQueries.ChangeRegistrationFullNumber(x));
             return files;
@@ -163,9 +161,7 @@ namespace BL.Database.Common
                         Name = x.fl.Name,
                         OrderInDocument = x.fl.OrderNumber,
                         Version = x.fl.Version,
-                        WasChangedExternal = false,
-                        ExecutorPositionId = x.fl.ExecutorPositionId,
-                        ExecutorPositionExecutorAgentId = x.fl.ExecutorPositionExecutorAgentId
+                        WasChangedExternal = false
                     }).ToList();
         }
 
@@ -369,7 +365,7 @@ namespace BL.Database.Common
                 }
             }
 
-            var waitsRes = waitsDb.Select(x => new { Wait = x, x.OnEvent, x.OffEvent });
+            var waitsRes = waitsDb.OrderByDescending(x => x.LastChangeDate).Select(x => new { Wait = x, x.OnEvent, x.OffEvent });
 
             var waits = waitsRes.Select(x => new FrontDocumentWait
             {
@@ -467,7 +463,7 @@ namespace BL.Database.Common
                 }
             }
 
-            var subscriptionsRes = subscriptionsDb.Select(x => new { Subscription = x, x.SendEvent, x.DoneEvent });
+            var subscriptionsRes = subscriptionsDb.OrderByDescending(x => x.LastChangeDate).Select(x => new { Subscription = x, x.SendEvent, x.DoneEvent });
 
             var subscriptions = subscriptionsRes.Select(x => new FrontDocumentSubscription
             {
@@ -991,7 +987,7 @@ namespace BL.Database.Common
         {
             if (item.RegistrationNumber != null)
             {
-                item.RegistrationFullNumber = (item.RegistrationNumberPrefix??"") + item.RegistrationNumber + (item.RegistrationNumberSuffix??"");
+                item.RegistrationFullNumber = (item.RegistrationNumberPrefix ?? "") + item.RegistrationNumber + (item.RegistrationNumberSuffix ?? "");
             }
             else
             {
@@ -1010,7 +1006,7 @@ namespace BL.Database.Common
         {
             if (item.RegistrationNumber != null)
             {
-                item.RegistrationFullNumber = (item.RegistrationNumberPrefix??"") + item.RegistrationNumber + (item.RegistrationNumberSuffix??"");
+                item.RegistrationFullNumber = (item.RegistrationNumberPrefix ?? "") + item.RegistrationNumber + (item.RegistrationNumberSuffix ?? "");
             }
 
             if (isClearFields)
@@ -1049,7 +1045,7 @@ namespace BL.Database.Common
                 var fs = DmsResolver.Current.Get<IFileStore>();
                 foreach (var file in document.DocumentFiles)
                 {
-                    if(!fs.IsFileCorrect(ctx,file))
+                    if (!fs.IsFileCorrect(ctx, file))
                     {
                         //TODO
                         //throw new DocumentFileWasChangedExternally();

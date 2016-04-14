@@ -701,7 +701,7 @@ namespace BL.Database.Documents
                 {
                     paging.TotalItemsCount = qry.Count();
 
-                    qry = qry.OrderByDescending(x => x.Id)
+                    qry = qry.OrderByDescending(x => x.LastChangeDate)
                             .Skip(paging.PageSize * (paging.CurrentPage - 1))
                             .Take(paging.PageSize);
                 }
