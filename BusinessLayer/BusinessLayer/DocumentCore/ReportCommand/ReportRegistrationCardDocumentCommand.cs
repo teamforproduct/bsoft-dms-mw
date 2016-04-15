@@ -51,7 +51,6 @@ namespace BL.Logic.DocumentCore.ReportsCommands
 
         public override bool CanExecute()
         {
-         //   _admin.VerifyAccess(_context, CommandType);
             _document = _documentDb.ReportRegistrationCardDocumentPrepare(_context, Model);
 
             if (_document == null)
@@ -59,6 +58,9 @@ namespace BL.Logic.DocumentCore.ReportsCommands
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
             _context.SetCurrentPosition(_document.ExecutorPositionId);
+
+            _admin.VerifyAccess(_context, CommandType);
+
             if (!CanBeDisplayed(_context.CurrentPositionId))
             {
                 throw new CouldNotPerformOperation();

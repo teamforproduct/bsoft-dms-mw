@@ -343,7 +343,7 @@
         AddDocumentPaperList = 123001, // Добавить реестр
         ModifyDocumentPaperList = 123005, // Изменить реестр
         DeleteDocumentPaperList = 123009, // Удалить реестр
-        ReportRegistrationCardDocument
+        ReportRegistrationCardDocument = 100085
 
     }
 }

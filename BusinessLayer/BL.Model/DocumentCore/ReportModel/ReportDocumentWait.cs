@@ -16,6 +16,8 @@ namespace BL.Model.DocumentCore.ReportModel
         public bool IsClosed { get; set; }
         public string ResultTypeName { get; set; }
         public DateTime? AttentionDate { get; set; }
+        public string OnEventTypeName { get; set; }
+        public DateTime? OffEventDate { get; set; }
         public ReportDocument Document { get; set; }
     }
 }

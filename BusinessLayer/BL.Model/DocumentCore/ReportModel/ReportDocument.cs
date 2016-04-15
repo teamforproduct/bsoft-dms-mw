@@ -29,6 +29,7 @@ namespace BL.Model.DocumentCore.ReportModel
         public string SenderAgentPersonName { get; set; }
 
         public IEnumerable<ReportDocumentWait> DocumentWaits { get; set; }
+        public IEnumerable<ReportDocumentSubscription> DocumentSubscriptions { get; set; }
 
     }
 }

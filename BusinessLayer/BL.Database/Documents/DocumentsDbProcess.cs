@@ -1070,15 +1070,27 @@ namespace BL.Database.Documents
                         DocumentId = x.DocumentId,
                         CreateDate = x.OnEvent.Date,
                         TargetPositionName = x.OnEvent.TargetPosition.Name,
-                        TargetPositionExecutorAgentName =x.OnEvent.TargetPositionExecutorAgent.Name,
+                        TargetPositionExecutorAgentName = x.OnEvent.TargetPositionExecutorAgent.Name,
                         SourcePositionName = x.OnEvent.SourcePosition.Name,
                         SourcePositionExecutorAgentName = x.OnEvent.SourcePositionExecutorAgent.Name,
                         DueDate = x.DueDate,
                         IsClosed = x.OffEventId != null,
                         ResultTypeName = x.ResultType.Name,
-                        AttentionDate = x.AttentionDate
+                        AttentionDate = x.AttentionDate,
+                        OnEventTypeName = x.OnEvent.EventType.Name,
+                        OffEventDate = x.OffEventId.HasValue ? x.OffEvent.CreateDate : (DateTime?)null
                     }).ToList();
 
+                res.DocumentSubscriptions = CommonQueries.GetDocumentSubscriptionsQuery(dbContext, new FilterDocumentSubscription { DocumentId = new List<int> { res.Id }, SubscriptionStates = new List<EnumSubscriptionStates> { EnumSubscriptionStates.Sign } })
+                    .Select(x=> new Model.DocumentCore.ReportModel.ReportDocumentSubscription
+                    {
+                        Id = x.Id,
+                        DocumentId = x.DocumentId,
+                        SubscriptionStatesId = x.SubscriptionStateId,
+                        SubscriptionStatesName = x.SubscriptionState.Name,
+                        DoneEventSourcePositionName = x.DoneEventId.HasValue ? x.DoneEvent.SourcePosition.Name : string.Empty,
+                        DoneEventSourcePositionExecutorAgentName = x.DoneEventId.HasValue ? x.DoneEvent.SourcePositionExecutorAgent.Name : string.Empty
+                    }).ToList();
 
                 return res;
             }
