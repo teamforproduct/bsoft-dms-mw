@@ -73,6 +73,8 @@
     <Reference Include="System.Transactions" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Admins\LanguagesDbProcess.cs" />
+    <Compile Include="Admins\Interfaces\ILanguagesDbProcess.cs" />
     <Compile Include="Common\CommonFilterUtilites.cs" />
     <Compile Include="Common\ModelConverter.cs" />
     <Compile Include="CoreDb\CoreDb.cs" />

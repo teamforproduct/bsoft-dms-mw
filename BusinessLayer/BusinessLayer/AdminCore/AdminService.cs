@@ -11,9 +11,6 @@ using BL.Model.Database;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Model.Users;
-using BL.Model.AdminCore.FrontModel;
-using BL.Model.AdminCore.FilterModel;
-using System.Text.RegularExpressions;
 
 namespace BL.Logic.AdminCore
 {
@@ -131,49 +128,5 @@ namespace BL.Logic.AdminCore
         {
             return _adminDb.GetPositionsByUser(employee);
         }
-
-        #region AdminLanguages
-        public FrontAdminLanguage GetAdminLanguage(IContext context, int id)
-        {
-            return _adminDb.GetAdminLanguages(context, new FilterAdminLanguage { LanguageId = new List<int> { id } }).FirstOrDefault();
-        }
-
-        public IEnumerable<FrontAdminLanguage> GetAdminLanguages(IContext context, FilterAdminLanguage filter)
-        {
-            return _adminDb.GetAdminLanguages(context, filter);
-        }
-        #endregion AdminLanguages
-
-        #region AdminLanguageValues
-        public FrontAdminLanguageValue GetAdminLanguageValue(IContext context, int id)
-        {
-            return _adminDb.GetAdminLanguageValues(context, new FilterAdminLanguageValue { LanguageValueId = new List<int> { id } }).FirstOrDefault();
-        }
-
-        public IEnumerable<FrontAdminLanguageValue> GetAdminLanguageValues(IContext context, FilterAdminLanguageValue filter)
-        {
-            return _adminDb.GetAdminLanguageValues(context, filter);
-        }
-
-        public string ReplaceLanguageLabel(IContext context, string text)
-        {
-            var labelsInText = new List<string>();
-            foreach (Match label in Regex.Matches(text, "##l@(.*?)@l##"))
-            {
-                labelsInText.Add(label.Value);
-            }
-
-            if (labelsInText.Count > 0)
-            {
-                var labels = _adminDb.GetAdminLanguageValues(context, new FilterAdminLanguageValue { LanguageId = context.CurrentEmployee.LanguageId, Labels = labelsInText }).ToArray();
-
-                for (int i = 0, l = labels.Length; i < l; i++)
-                {
-                    text = text.Replace(labels[i].Label, labels[i].Value);
-                }
-            }
-            return text;
-        }
-        #endregion AdminLanguageValues
     }
 }

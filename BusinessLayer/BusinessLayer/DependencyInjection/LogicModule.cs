@@ -46,6 +46,7 @@ namespace BL.Logic.DependencyInjection
             Bind<ISettings>().To<Setting>().InSingletonScope();
             Bind<ICommandService>().To<CommandService>().InSingletonScope();
             Bind<IAdminService>().To<AdminService>().InSingletonScope();
+            Bind<ILanguageService>().To<LanguageService>().InSingletonScope();
             Bind<IMailSenderWorkerService>().To<MailSenderWorkerService>().InSingletonScope();
             Bind<IFullTextSearchService>().To<FullTextSearchService>().InSingletonScope();
             Bind<IAutoPlanService>().To<AutoPlanService>().InSingletonScope();
