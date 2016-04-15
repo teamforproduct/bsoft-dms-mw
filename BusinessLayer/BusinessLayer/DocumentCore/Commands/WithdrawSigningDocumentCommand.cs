@@ -75,6 +75,7 @@ namespace BL.Logic.DocumentCore.Commands
             var subscription = _document.Subscriptions.First();
             subscription.Description = CommandType.ToString();
             subscription.DoneEvent = null;
+            subscription.SubscriptionStates = EnumSubscriptionStates.No;
             CommonDocumentUtilities.SetLastChange(Context, _document.Subscriptions);
             _operationDb.CloseDocumentWait(_context, _document);
             return _document.Id;

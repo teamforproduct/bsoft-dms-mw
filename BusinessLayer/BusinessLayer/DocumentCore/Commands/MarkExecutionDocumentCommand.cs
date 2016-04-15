@@ -35,7 +35,7 @@ namespace BL.Logic.DocumentCore.Commands
         public override bool CanBeDisplayed(int positionId)
         {
             var markExecWaitId =
-                _document.Waits.Where(x => x.OnEvent.EventType == EnumEventTypes.MarkExecution).Select(x => x.ParentId).ToList();
+                _document.Waits.Where(x => x.OnEvent.EventType == EnumEventTypes.MarkExecution && x.OffEventId == 0).Select(x => x.ParentId).ToList();
             _actionRecords =
                 _document.Waits.Where(
                     x =>

@@ -14,7 +14,7 @@ namespace BL.Model.DocumentCore.Filters
         /// </summary>
         public FilterDocument()
         {
-            IsInWork = true;
+            //IsInWork = true;
             DocumentId = new List<int>();
         }
 
