@@ -56,7 +56,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             if (Model.DocumentId <= 0 || Model.OrderInDocument <= 0)
             {
                 throw new WrongParameterValueError();
-            }            
+            }
 
             _document = _operationDb.DeleteDocumentFilePrepare(_context, Model);
             if (_document == null)
@@ -89,7 +89,14 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                 OrderInDocument = Model.OrderInDocument
             };
 
-            _fStore.DeleteFile(_context, docFile);
+            try
+            {
+                _fStore.DeleteFile(_context, docFile);
+            }
+            catch (CannotAccessToFile ex)
+            {
+
+            }
             _operationDb.DeleteAttachedFile(_context, docFile);
             return null;
         }

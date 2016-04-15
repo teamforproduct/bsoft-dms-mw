@@ -12,7 +12,7 @@
   <xs:element name="DataSetCrystalReports" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="DataSetCrystalReports" msprop:Generator_UserDSName="DataSetCrystalReports">
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:element name="ReportDocument" msprop:Generator_TableClassName="ReportDocumentDataTable" msprop:Generator_TableVarName="tableReportDocument" msprop:Generator_RowChangedName="ReportDocumentRowChanged" msprop:Generator_TablePropName="ReportDocument" msprop:Generator_RowDeletingName="ReportDocumentRowDeleting" msprop:Generator_RowChangingName="ReportDocumentRowChanging" msprop:Generator_RowEvHandlerName="ReportDocumentRowChangeEventHandler" msprop:Generator_RowDeletedName="ReportDocumentRowDeleted" msprop:Generator_RowClassName="ReportDocumentRow" msprop:Generator_UserTableName="ReportDocument" msprop:Generator_RowEvArgName="ReportDocumentRowChangeEvent">
+        <xs:element name="ReportDocument" msprop:Generator_TableClassName="ReportDocumentDataTable" msprop:Generator_TableVarName="tableReportDocument" msprop:Generator_TablePropName="ReportDocument" msprop:Generator_RowDeletingName="ReportDocumentRowDeleting" msprop:Generator_RowChangingName="ReportDocumentRowChanging" msprop:Generator_RowEvHandlerName="ReportDocumentRowChangeEventHandler" msprop:Generator_RowDeletedName="ReportDocumentRowDeleted" msprop:Generator_UserTableName="ReportDocument" msprop:Generator_RowChangedName="ReportDocumentRowChanged" msprop:Generator_RowEvArgName="ReportDocumentRowChangeEvent" msprop:Generator_RowClassName="ReportDocumentRow">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="Id" msprop:Generator_ColumnVarNameInTable="columnId" msprop:Generator_ColumnPropNameInRow="Id" msprop:Generator_ColumnPropNameInTable="IdColumn" msprop:Generator_UserColumnName="Id" type="xs:int" />
@@ -26,7 +26,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="ReportDocumentWait" msprop:Generator_TableClassName="ReportDocumentWaitDataTable" msprop:Generator_TableVarName="tableReportDocumentWait" msprop:Generator_RowChangedName="ReportDocumentWaitRowChanged" msprop:Generator_TablePropName="ReportDocumentWait" msprop:Generator_RowDeletingName="ReportDocumentWaitRowDeleting" msprop:Generator_RowChangingName="ReportDocumentWaitRowChanging" msprop:Generator_RowEvHandlerName="ReportDocumentWaitRowChangeEventHandler" msprop:Generator_RowDeletedName="ReportDocumentWaitRowDeleted" msprop:Generator_RowClassName="ReportDocumentWaitRow" msprop:Generator_UserTableName="ReportDocumentWait" msprop:Generator_RowEvArgName="ReportDocumentWaitRowChangeEvent">
+        <xs:element name="ReportDocumentWait" msprop:Generator_TableClassName="ReportDocumentWaitDataTable" msprop:Generator_TableVarName="tableReportDocumentWait" msprop:Generator_TablePropName="ReportDocumentWait" msprop:Generator_RowDeletingName="ReportDocumentWaitRowDeleting" msprop:Generator_RowChangingName="ReportDocumentWaitRowChanging" msprop:Generator_RowEvHandlerName="ReportDocumentWaitRowChangeEventHandler" msprop:Generator_RowDeletedName="ReportDocumentWaitRowDeleted" msprop:Generator_UserTableName="ReportDocumentWait" msprop:Generator_RowChangedName="ReportDocumentWaitRowChanged" msprop:Generator_RowEvArgName="ReportDocumentWaitRowChangeEvent" msprop:Generator_RowClassName="ReportDocumentWaitRow">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="Id" msprop:Generator_ColumnVarNameInTable="columnId" msprop:Generator_ColumnPropNameInRow="Id" msprop:Generator_ColumnPropNameInTable="IdColumn" msprop:Generator_UserColumnName="Id" type="xs:int" />
@@ -40,6 +40,20 @@
               <xs:element name="TargetPositionExecutorAgentName" msprop:Generator_ColumnVarNameInTable="columnTargetPositionExecutorAgentName" msprop:Generator_ColumnPropNameInRow="TargetPositionExecutorAgentName" msprop:Generator_ColumnPropNameInTable="TargetPositionExecutorAgentNameColumn" msprop:Generator_UserColumnName="TargetPositionExecutorAgentName" type="xs:string" minOccurs="0" />
               <xs:element name="SourcePositionExecutorAgentName" msprop:Generator_ColumnVarNameInTable="columnSourcePositionExecutorAgentName" msprop:Generator_ColumnPropNameInRow="SourcePositionExecutorAgentName" msprop:Generator_ColumnPropNameInTable="SourcePositionExecutorAgentNameColumn" msprop:Generator_UserColumnName="SourcePositionExecutorAgentName" type="xs:string" minOccurs="0" />
               <xs:element name="AttentionDate" msprop:Generator_ColumnVarNameInTable="columnAttentionDate" msprop:Generator_ColumnPropNameInRow="AttentionDate" msprop:Generator_ColumnPropNameInTable="AttentionDateColumn" msprop:Generator_UserColumnName="AttentionDate" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="OnEventTypeName" msprop:Generator_ColumnVarNameInTable="columnOnEventTypeName" msprop:Generator_ColumnPropNameInRow="OnEventTypeName" msprop:Generator_ColumnPropNameInTable="OnEventTypeNameColumn" msprop:Generator_UserColumnName="OnEventTypeName" type="xs:string" minOccurs="0" />
+              <xs:element name="OffEventDate" msprop:Generator_ColumnVarNameInTable="columnOffEventDate" msprop:Generator_ColumnPropNameInRow="OffEventDate" msprop:Generator_ColumnPropNameInTable="OffEventDateColumn" msprop:Generator_UserColumnName="OffEventDate" type="xs:dateTime" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="ReportDocumentSubscription" msprop:Generator_TableClassName="ReportDocumentSubscriptionDataTable" msprop:Generator_TableVarName="tableReportDocumentSubscription" msprop:Generator_RowChangedName="ReportDocumentSubscriptionRowChanged" msprop:Generator_TablePropName="ReportDocumentSubscription" msprop:Generator_RowDeletingName="ReportDocumentSubscriptionRowDeleting" msprop:Generator_RowChangingName="ReportDocumentSubscriptionRowChanging" msprop:Generator_RowEvHandlerName="ReportDocumentSubscriptionRowChangeEventHandler" msprop:Generator_RowDeletedName="ReportDocumentSubscriptionRowDeleted" msprop:Generator_RowClassName="ReportDocumentSubscriptionRow" msprop:Generator_UserTableName="ReportDocumentSubscription" msprop:Generator_RowEvArgName="ReportDocumentSubscriptionRowChangeEvent">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Id" msprop:Generator_ColumnVarNameInTable="columnId" msprop:Generator_ColumnPropNameInRow="Id" msprop:Generator_ColumnPropNameInTable="IdColumn" msprop:Generator_UserColumnName="Id" type="xs:int" />
+              <xs:element name="DocumentId" msprop:Generator_ColumnVarNameInTable="columnDocumentId" msprop:Generator_ColumnPropNameInRow="DocumentId" msprop:Generator_ColumnPropNameInTable="DocumentIdColumn" msprop:Generator_UserColumnName="DocumentId" type="xs:int" minOccurs="0" />
+              <xs:element name="SubscriptionStatesName" msprop:Generator_ColumnVarNameInTable="columnSubscriptionStatesName" msprop:Generator_ColumnPropNameInRow="SubscriptionStatesName" msprop:Generator_ColumnPropNameInTable="SubscriptionStatesNameColumn" msprop:Generator_UserColumnName="SubscriptionStatesName" type="xs:string" minOccurs="0" />
+              <xs:element name="SubscriptionStatesId" msprop:Generator_ColumnVarNameInTable="columnSubscriptionStatesId" msprop:Generator_ColumnPropNameInRow="SubscriptionStatesId" msprop:Generator_ColumnPropNameInTable="SubscriptionStatesIdColumn" msprop:Generator_UserColumnName="SubscriptionStatesId" type="xs:int" minOccurs="0" />
+              <xs:element name="DoneEventSourcePositionName" msprop:Generator_ColumnVarNameInTable="columnDoneEventSourcePositionName" msprop:Generator_ColumnPropNameInRow="DoneEventSourcePositionName" msprop:Generator_ColumnPropNameInTable="DoneEventSourcePositionNameColumn" msprop:Generator_UserColumnName="DoneEventSourcePositionName" type="xs:string" minOccurs="0" />
+              <xs:element name="DoneEventSourcePositionExecutorAgentName" msprop:Generator_ColumnVarNameInTable="columnDoneEventSourcePositionExecutorAgentName" msprop:Generator_ColumnPropNameInRow="DoneEventSourcePositionExecutorAgentName" msprop:Generator_ColumnPropNameInTable="DoneEventSourcePositionExecutorAgentNameColumn" msprop:Generator_UserColumnName="DoneEventSourcePositionExecutorAgentName" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
@@ -53,10 +67,15 @@
       <xs:selector xpath=".//mstns:ReportDocumentWait" />
       <xs:field xpath="mstns:Id" />
     </xs:unique>
+    <xs:unique name="ReportDocumentSubscription_Constraint1" msdata:ConstraintName="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:ReportDocumentSubscription" />
+      <xs:field xpath="mstns:Id" />
+    </xs:unique>
   </xs:element>
   <xs:annotation>
     <xs:appinfo>
-      <msdata:Relationship name="ReportDocument_ReportDocumentWait" msdata:parent="ReportDocument" msdata:child="ReportDocumentWait" msdata:parentkey="Id" msdata:childkey="DocumentId" msprop:Generator_UserChildTable="ReportDocumentWait" msprop:Generator_ChildPropName="GetReportDocumentWaitRows" msprop:Generator_UserRelationName="ReportDocument_ReportDocumentWait" msprop:Generator_RelationVarName="relationReportDocument_ReportDocumentWait" msprop:Generator_UserParentTable="ReportDocument" msprop:Generator_ParentPropName="ReportDocumentRow" />
+      <msdata:Relationship name="ReportDocument_ReportDocumentWait" msdata:parent="ReportDocument" msdata:child="ReportDocumentWait" msdata:parentkey="Id" msdata:childkey="DocumentId" msprop:Generator_UserChildTable="ReportDocumentWait" msprop:Generator_ChildPropName="GetReportDocumentWaitRows" msprop:Generator_UserRelationName="ReportDocument_ReportDocumentWait" msprop:Generator_ParentPropName="ReportDocumentRow" msprop:Generator_RelationVarName="relationReportDocument_ReportDocumentWait" msprop:Generator_UserParentTable="ReportDocument" />
+      <msdata:Relationship name="ReportDocument_ReportDocumentSubscription" msdata:parent="ReportDocument" msdata:child="ReportDocumentSubscription" msdata:parentkey="Id" msdata:childkey="DocumentId" msprop:Generator_UserChildTable="ReportDocumentSubscription" msprop:Generator_ChildPropName="GetReportDocumentSubscriptionRows" msprop:Generator_UserRelationName="ReportDocument_ReportDocumentSubscription" msprop:Generator_RelationVarName="relationReportDocument_ReportDocumentSubscription" msprop:Generator_UserParentTable="ReportDocument" msprop:Generator_ParentPropName="ReportDocumentRow" />
     </xs:appinfo>
   </xs:annotation>
 </xs:schema>

@@ -453,6 +453,25 @@ namespace BL.Database.Common
 
         }
 
+        public static IQueryable<DocumentSubscriptions> GetDocumentSubscriptionsQuery(DmsContext dbContext, FilterDocumentSubscription filter)
+        {
+            var subscriptionsDb = dbContext.DocumentSubscriptionsSet.AsQueryable();
+
+            if (filter != null)
+            {
+                if (filter.DocumentId.Any())
+                {
+                    subscriptionsDb = subscriptionsDb.Where(x => filter.DocumentId.Contains(x.DocumentId));
+                }
+                if (filter.SubscriptionStates?.Count > 0)
+                {
+                    subscriptionsDb = subscriptionsDb.Where(x => filter.SubscriptionStates.Cast<int>().Contains(x.SubscriptionStateId ?? 0));
+                }
+            }
+
+            return subscriptionsDb;
+
+        }
         public static IEnumerable<FrontDocumentSubscription> GetDocumentSubscriptions(DmsContext dbContext, FilterDocumentSubscription filter)
         {
             var subscriptionsDb = dbContext.DocumentSubscriptionsSet.AsQueryable();

@@ -225,10 +225,10 @@
       <DependentUpon>DataSetCrystalReports.xsd</DependentUpon>
     </Compile>
     <Compile Include="Reports\ReportRegistrationCardIncomingDocument.cs">
-      <DependentUpon>ReportRegistrationCardIncomingDocument.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
-      <SubType>Component</SubType>
       <DesignTime>True</DesignTime>
+      <DependentUpon>ReportRegistrationCardIncomingDocument.rpt</DependentUpon>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Reports\ReportRegistrationCardOutcomingDocument.cs">
       <DependentUpon>ReportRegistrationCardOutcomingDocument.rpt</DependentUpon>
@@ -237,9 +237,9 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Reports\ReportRegistrationCardInternalDocument.cs">
+      <DependentUpon>ReportRegistrationCardInternalDocument.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>ReportRegistrationCardInternalDocument.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="SystemServices\AutoPlan\AutoPlanService.cs" />
