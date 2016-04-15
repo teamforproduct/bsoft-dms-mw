@@ -621,7 +621,7 @@ namespace BL.Logic.Common
                     .Select(x => new FrontDocumentSendListStage
                     {
                         Stage = x.s,
-                        SendLists = x.sls.ToList()
+                        SendLists = x.sls.OrderBy(y=>y.Id).ToList()
                     }).ToList();
 
             }
