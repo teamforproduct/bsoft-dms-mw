@@ -11,6 +11,7 @@ using BL.Logic.DocumentCore.AdditionalCommands;
 using BL.Logic.DocumentCore.Commands;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Logic.DocumentCore.PaperCommands;
+using BL.Logic.DocumentCore.ReportsCommands;
 using BL.Logic.DocumentCore.SendListCommands;
 using BL.Logic.Logging;
 using BL.Logic.Observers;
@@ -36,6 +37,7 @@ namespace BL.Logic.DependencyInjection
             LoadDictionaryCommands();
             LoadObservers();
             LoadMailService();
+            LoadReportCommands();
         }
 
         private void LoadSystemModule()
@@ -183,6 +185,12 @@ namespace BL.Logic.DependencyInjection
             Bind<IDocumentCommand>().To<RecieveDocumentPaperEventCommand>();
             Bind<IDocumentCommand>().To<PlanDocumentPaperEventCommand>();
             Bind<IDocumentCommand>().To<CancelPlanDocumentPaperEventCommand>();
+
+        }
+
+        private void LoadReportCommands()
+        {
+            Bind<IDocumentCommand>().To<ReportRegistrationCardDocumentCommand>();
 
         }
 

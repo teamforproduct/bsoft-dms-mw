@@ -7,6 +7,7 @@ using BL.Model.Constants;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Exception;
+using BL.Model.Enums;
 
 namespace BL.Database.FileWorker
 {
@@ -368,6 +369,26 @@ namespace BL.Database.FileWorker
                 byte[] hash = sha.ComputeHash(stream);
                 return BitConverter.ToString(hash).Replace("-", String.Empty);
             }
+        }
+
+        public string GetFullTemplateReportFilePath(IContext ctx, EnumReportTypes reportType)
+        {
+            var path = GetStorePath(ctx);
+
+            var templateReportFile = string.Empty;
+            var sett = DmsResolver.Current.Get<ISettings>();
+            try
+            {
+                templateReportFile = sett.GetSetting<string>(ctx, SettingConstants.FILE_STORE_TEMPLATE_REPORT_FILE + reportType);
+            }
+            catch
+            {
+                sett.SaveSetting(ctx, SettingConstants.FILE_STORE_TEMPLATE_REPORT_FILE + reportType, SettingConstants.FILE_STORE_DEFAULT_TEMPLATE_REPORT_FILE);
+                templateReportFile = sett.GetSetting<string>(ctx, SettingConstants.FILE_STORE_TEMPLATE_REPORT_FILE + reportType);
+            }
+
+            path = Path.Combine(new string[] { path, SettingConstants.FILE_STORE_TEMPLATE_REPORTS_FOLDER, templateReportFile });
+            return path;
         }
 
     }

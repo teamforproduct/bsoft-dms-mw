@@ -887,5 +887,30 @@ namespace DMS_WebAPI.Controllers.Documents
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(docId);
         }
+
+        /// <summary>
+        /// Получить отчет
+        /// </summary>
+        /// <param name="id">ИД документа</param>>
+        /// <returns></returns>
+        [Route("ReportRegistrationCardDocument/{id}")]
+        [HttpPost]
+        public IHttpActionResult ReportRegistrationCardDocument(int id)
+        {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            timeM.Start();
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            timeDB.Start();
+            var res = docProc.ExecuteAction(EnumDocumentActions.ReportRegistrationCardDocument, cxt, id);
+            timeDB.Stop();
+
+            timeM.Stop();
+            SaveToFile("M: DocumentActionsController ReportRegistrationCardDocument", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentOperationsService ReportRegistrationCardDocument", timeDB.Elapsed.ToString("G"));
+
+            return new JsonResult(res, this);
+        }
     }
 }

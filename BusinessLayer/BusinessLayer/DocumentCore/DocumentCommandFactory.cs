@@ -4,6 +4,7 @@ using BL.Logic.DependencyInjection;
 using BL.Logic.DocumentCore.AdditionalCommands;
 using BL.Logic.DocumentCore.Commands;
 using BL.Logic.DocumentCore.PaperCommands;
+using BL.Logic.DocumentCore.ReportsCommands;
 using BL.Logic.DocumentCore.SendListCommands;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
@@ -274,6 +275,10 @@ namespace BL.Logic.DocumentCore
 
                 case EnumDocumentActions.DeleteDocumentPaperList:
                     cmd = DmsResolver.Current.Get<DeleteDocumentPaperListCommand>();
+                    break;
+
+                case EnumDocumentActions.ReportRegistrationCardDocument:
+                    cmd = DmsResolver.Current.Get<ReportRegistrationCardDocumentCommand>();
                     break;
 
                 case EnumDocumentActions.AddDocumentSendListItem:

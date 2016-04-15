@@ -31,6 +31,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CrystalDecisions.CrystalReports.Engine, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Thirdparty\Crystal Reports\CrystalDecisions.CrystalReports.Engine.dll</HintPath>
+    </Reference>
+    <Reference Include="CrystalDecisions.ReportSource, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Thirdparty\Crystal Reports\CrystalDecisions.ReportSource.dll</HintPath>
+    </Reference>
+    <Reference Include="CrystalDecisions.Shared, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Thirdparty\Crystal Reports\CrystalDecisions.Shared.dll</HintPath>
+    </Reference>
     <Reference Include="Lucene.Net">
       <HintPath>..\..\Thirdparty\Lucene\Lucene.Net.dll</HintPath>
       <EmbedInteropTypes>False</EmbedInteropTypes>
@@ -42,6 +54,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
@@ -154,6 +167,7 @@
     <Compile Include="DocumentCore\PaperCommands\ModifyDocumentPaperCommand.cs" />
     <Compile Include="DocumentCore\DocumentTaskService.cs" />
     <Compile Include="DocumentCore\Interfaces\IDocumentTaskService.cs" />
+    <Compile Include="DocumentCore\ReportCommand\ReportRegistrationCardDocumentCommand.cs" />
     <Compile Include="DocumentCore\SendListCommands\AddByStandartSendListDocumentSendListCommand.cs" />
     <Compile Include="DocumentCore\SendListCommands\AddByStandartSendListDocumentRestrictedSendListCommand.cs" />
     <Compile Include="DocumentCore\AdditionalCommands\AddDocumentFileCommand.cs" />
@@ -205,6 +219,29 @@
     <Compile Include="DocumentCore\Interfaces\IDocumentService.cs" />
     <Compile Include="DocumentCore\Interfaces\ITemplateDocumentService.cs" />
     <Compile Include="DocumentCore\TemplateDocumentService.cs" />
+    <Compile Include="Reports\DataSetCrystalReports.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DataSetCrystalReports.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Reports\ReportRegistrationCardIncomingDocument.cs">
+      <DependentUpon>ReportRegistrationCardIncomingDocument.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Reports\ReportRegistrationCardOutcomingDocument.cs">
+      <DependentUpon>ReportRegistrationCardOutcomingDocument.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Reports\ReportRegistrationCardInternalDocument.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ReportRegistrationCardInternalDocument.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="SystemServices\AutoPlan\AutoPlanService.cs" />
     <Compile Include="SystemServices\AutoPlan\IAutoPlanService.cs" />
     <Compile Include="SystemServices\BaseSystemWorkerService.cs" />
@@ -249,8 +286,35 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Reports\DataSetCrystalReports.xsc">
+      <DependentUpon>DataSetCrystalReports.xsd</DependentUpon>
+    </None>
+    <None Include="Reports\DataSetCrystalReports.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DataSetCrystalReports.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Reports\DataSetCrystalReports.xss">
+      <DependentUpon>DataSetCrystalReports.xsd</DependentUpon>
+    </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Reports\ReportRegistrationCardIncomingDocument.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>ReportRegistrationCardIncomingDocument.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\ReportRegistrationCardOutcomingDocument.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>ReportRegistrationCardOutcomingDocument.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\ReportRegistrationCardInternalDocument.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>ReportRegistrationCardInternalDocument.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

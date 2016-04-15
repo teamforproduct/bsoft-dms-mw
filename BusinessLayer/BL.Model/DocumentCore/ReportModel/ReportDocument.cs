@@ -25,7 +25,9 @@ namespace BL.Model.DocumentCore.ReportModel
         /// Краткое содержание
         /// </summary>
         public string Description { get; set; }
-       
+        public string SenderAgentName { get; set; }
+        public string SenderAgentPersonName { get; set; }
+
         public IEnumerable<ReportDocumentWait> DocumentWaits { get; set; }
 
     }
