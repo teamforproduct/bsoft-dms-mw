@@ -26,7 +26,7 @@ namespace BL.Model.DocumentCore.Actions
         /// <summary>
         /// Событие доступно в рамках задачи
         /// </summary>
-        public bool IsAvailableWithinTask { get; set; }
+        ///public bool IsAvailableWithinTask { get; set; }
 
     }
 }

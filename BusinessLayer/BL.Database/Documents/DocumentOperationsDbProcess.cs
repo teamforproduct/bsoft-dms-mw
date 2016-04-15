@@ -371,14 +371,19 @@ namespace BL.Database.Documents
                 var subscription = document.Subscriptions?.FirstOrDefault();
                 if (subscription != null)
                 {
-                    var docHash = CommonQueries.GetDocumentHash(dbContext, ctx, document.Id, true, true);
+                    var docHash = CommonQueries.GetDocumentHash(dbContext, ctx, document.Id,
+                                                                 subscription.SubscriptionStates == EnumSubscriptionStates.Sign ||
+                                                                 subscription.SubscriptionStates == EnumSubscriptionStates.Visa ||
+                                                                 subscription.SubscriptionStates == EnumSubscriptionStates.Аgreement ||
+                                                                 subscription.SubscriptionStates == EnumSubscriptionStates.Аpproval, 
+                                                                 true);
                     var subscriptionDb = new DocumentSubscriptions
                     {
                         Id = subscription.Id,
                         Description = subscription.Description,
                         SubscriptionStateId = (int)subscription.SubscriptionStates,
-                        Hash = docHash.Hash,
-                        FullHash = docHash.FullHash,
+                        Hash = docHash?.Hash,
+                        FullHash = docHash?.FullHash,
                         LastChangeDate = subscription.LastChangeDate,
                         LastChangeUserId = subscription.LastChangeUserId
                     };
