@@ -24,18 +24,25 @@ namespace BL.CrossCutting.Context
             var def = ctx as DefaultContext;
             if (def != null)
             {
-                CurrentDB = new DatabaseModel
+                try
                 {
-                    Id = ctx.CurrentDB.Id,
-                    Name = ctx.CurrentDB.Name,
-                    ServerType = ctx.CurrentDB.ServerType,
-                    IntegrateSecurity = false,
-                    Address = ctx.CurrentDB.Address,
-                    DefaultDatabase = ctx.CurrentDB.DefaultDatabase,
-                    UserName = ctx.CurrentDB.UserName,
-                    UserPassword = ctx.CurrentDB.UserPassword,
-                    DefaultSchema = ctx.CurrentDB.DefaultSchema
-                };
+                    CurrentDB = new DatabaseModel
+                    {
+                        Id = ctx.CurrentDB.Id,
+                        Name = ctx.CurrentDB.Name,
+                        ServerType = ctx.CurrentDB.ServerType,
+                        IntegrateSecurity = false,
+                        Address = ctx.CurrentDB.Address,
+                        DefaultDatabase = ctx.CurrentDB.DefaultDatabase,
+                        UserName = ctx.CurrentDB.UserName,
+                        UserPassword = ctx.CurrentDB.UserPassword,
+                        DefaultSchema = ctx.CurrentDB.DefaultSchema
+                    };
+                }
+                catch (DatabaseIsNotSet)
+                {
+                    CurrentDB = null;
+                }
 
                 CurrentEmployee = new Employee
                 {
