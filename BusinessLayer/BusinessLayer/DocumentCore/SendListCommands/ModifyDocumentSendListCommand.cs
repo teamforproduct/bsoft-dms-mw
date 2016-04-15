@@ -43,7 +43,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
                                                 {
                                                     SendListId = x.Id,
                                                 });
-            if (!_actionRecords.Any())
+            if (!_actionRecords.Any()||_document.IsLaunchPlan)
             {
                 return false;
             }
