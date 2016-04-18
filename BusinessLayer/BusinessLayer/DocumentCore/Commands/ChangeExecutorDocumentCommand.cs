@@ -1,4 +1,5 @@
-﻿using BL.Database.Dictionaries.Interfaces;
+﻿using System.Linq;
+using BL.Database.Dictionaries.Interfaces;
 using BL.Logic.Common;
 using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore.Actions;
@@ -10,10 +11,12 @@ namespace BL.Logic.DocumentCore.Commands
     public class ChangeExecutorDocumentCommand : BaseDocumentCommand
     {
         private readonly IDocumentsDbProcess _documentDb;
+        private readonly IDocumentOperationsDbProcess _operationDb;
 
-        public ChangeExecutorDocumentCommand(IDocumentsDbProcess documentDb)
+        public ChangeExecutorDocumentCommand(IDocumentsDbProcess documentDb, IDocumentOperationsDbProcess operationDb)
         {
             _documentDb = documentDb;
+            _operationDb = operationDb;
         }
 
         private ChangeExecutor Model
@@ -49,6 +52,20 @@ namespace BL.Logic.DocumentCore.Commands
             }
             _context.SetCurrentPosition(_document.ExecutorPositionId);
             _admin.VerifyAccess(_context, CommandType);
+            if (Model.PositionId == _context.CurrentPositionId)
+            {
+                throw new CouldNotChangeAttributeLaunchPlan();
+            }
+            if (Model.PaperEvents != null && Model.PaperEvents.Any())
+            {
+                _admin.VerifyAccess(_context, EnumDocumentActions.PlanDocumentPaperEvent);
+                _document.Papers = _operationDb.PlanDocumentPaperEventPrepare(_context, Model.PaperEvents.Select(x => x.Id).ToList()).Papers;
+                if (_document.Papers.Any(x => x.LastPaperEvent.TargetPositionId == null || x.LastPaperEvent.TargetPositionId.Value != _document.ExecutorPositionId
+                                            || !x.IsInWork || x.LastPaperEvent.PaperRecieveDate == null))
+                {
+                    throw new CouldNotPerformOperationWithPaper();
+                }
+            }
             var executorPositionExecutorAgentId = CommonDocumentUtilities.GetExecutorAgentIdByPositionId(_context, Model.PositionId);
             if (executorPositionExecutorAgentId.HasValue)
             {
@@ -72,6 +89,22 @@ namespace BL.Logic.DocumentCore.Commands
 
             _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, Model.DocumentId, Model.AccessLevel, Model.PositionId);
 
+            if (Model.PaperEvents != null && Model.PaperEvents.Any())
+            {
+                foreach (var model in Model.PaperEvents)
+                {
+                    var paper = _document.Papers.FirstOrDefault(x => x.Id == model.Id);
+                    if (paper != null)
+                    {
+                        paper.LastPaperEventId = null;
+                        paper.LastPaperEvent = CommonDocumentUtilities.GetNewDocumentPaperEvent(_context,
+                            paper.DocumentId, paper.Id,
+                            EnumEventTypes.MoveDocumentPaper, model.Description, Model.PositionId, null,
+                            paper.LastPaperEvent.SourcePositionId, null, true, false);
+                        CommonDocumentUtilities.SetLastChange(_context, paper);
+                    }
+                }
+            }
             _documentDb.ChangeExecutorDocument(_context, _document);
 
             return Model.DocumentId;
