@@ -114,6 +114,15 @@ namespace BL.Logic.DocumentCore
             return model.PositionWithActions;
         }
 
+        public IEnumerable<InternalDictionaryPositionWithActions> GetDocumentFileActions(IContext ctx, int documentId)
+        {
+            var model = _operationDb.GetDocumentFileActionsModelPrepare(ctx, documentId);
+
+            MenuFormation(ctx, model);
+
+            return model.PositionWithActions;
+        }
+
         public IEnumerable<InternalDictionaryPositionWithActions> GetDocumentPaperActions(IContext ctx, int documentId)
         {
             var model = _operationDb.GetDocumentPaperActionsModelPrepare(ctx, documentId);

@@ -38,6 +38,7 @@ namespace BL.Database.DependencyInjection
         private void RegistrateSystemProcess()
         {
             Bind<IAdminsDbProcess>().To<AdminsDbProcess>().InSingletonScope();
+            Bind<ILanguagesDbProcess>().To<LanguagesDbProcess>().InSingletonScope();
             Bind<ISystemDbProcess>().To<SystemDbProcess>().InSingletonScope();
             Bind<IFileStore>().To<FileStore>().InSingletonScope();
         }

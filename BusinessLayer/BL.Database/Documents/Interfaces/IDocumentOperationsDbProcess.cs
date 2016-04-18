@@ -74,6 +74,7 @@ namespace BL.Database.Documents.Interfaces
 
         DocumentActionsModel GetDocumentActionsModelPrepare(IContext context, int documentId);
         DocumentActionsModel GetDocumentSendListActionsModelPrepare(IContext context, int documentId);
+        DocumentActionsModel GetDocumentFileActionsModelPrepare(IContext context, int documentId);
         DocumentActionsModel GetDocumentPaperActionsModelPrepare(IContext context, int documentId);
 
         void ControlOffSendListPrepare(IContext context, InternalDocument document);

@@ -177,6 +177,54 @@ namespace BL.Database.Documents
             }
         }
 
+        public DocumentActionsModel GetDocumentFileActionsModelPrepare(IContext context, int documentId)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var res = new DocumentActionsModel();
+                res.ActionsList = new Dictionary<int, List<InternalSystemAction>>();
+
+                res.Document = CommonQueries.GetDocumentQuery(dbContext, context)
+                    .Where(x => x.Doc.Id == documentId)
+                    .Select(x => new InternalDocument
+                    {
+                        Id = x.Doc.Id,
+                        IsRegistered = x.Doc.IsRegistered,
+                        ExecutorPositionId = x.Doc.ExecutorPositionId,
+                        LinkId = x.Doc.LinkId,
+                    }).FirstOrDefault();
+
+                if (res.Document != null)
+                {
+
+                    res.Document.Accesses = dbContext.DocumentAccessesSet.Where(x => x.DocumentId == documentId)
+                        .Select(x => new InternalDocumentAccess
+                        {
+                            Id = x.Id,
+                            PositionId = x.PositionId,
+                        }
+                        ).ToList();
+
+                    res.Document.DocumentFiles = dbContext.DocumentFilesSet.Where(x => x.DocumentId == documentId)
+                        .Select(x => new InternalDocumentAttachedFile
+                        {
+                            Id = x.Id,
+                            ExecutorPositionId = x.ExecutorPositionId
+                        }).ToList();
+
+
+                    var positionAccesses = res.Document?.Accesses.Select(y => y.PositionId).ToList();
+
+                    if (positionAccesses.Any())
+                    {
+                        res.PositionWithActions = CommonQueries.GetPositionWithActions(context, dbContext, positionAccesses);
+                        res.ActionsList = CommonQueries.GetActionsListForCurrentPositionsList(context, dbContext, new List<EnumObjects> { EnumObjects.DocumentFiles }, positionAccesses);
+                    }
+                }
+                return res;
+            }
+        }
+
         public DocumentActionsModel GetDocumentPaperActionsModelPrepare(IContext context, int documentId)
         {
             using (var dbContext = new DmsContext(context))
