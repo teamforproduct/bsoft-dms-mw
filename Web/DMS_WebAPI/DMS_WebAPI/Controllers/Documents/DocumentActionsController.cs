@@ -425,6 +425,33 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
+        /// Замена должности по документу
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Обновленный документ</returns>
+        [Route("ChangePosition")]
+        [HttpPost]
+        public IHttpActionResult ChangePosition(ChangePosition model)
+        {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            timeM.Start();
+
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            timeDB.Start();
+            docProc.ExecuteAction(EnumDocumentActions.ChangePosition, cxt, model);
+            timeDB.Stop();
+
+            timeM.Stop();
+            SaveToFile("M: DocumentActionsController ChangePosition", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentOperationsService ChangePosition", timeDB.Elapsed.ToString("G"));
+
+            var ctrl = new DocumentsController { ControllerContext = ControllerContext };
+            return ctrl.Get(model.DocumentId);
+        }
+
+        /// <summary>
         /// Запустить план
         /// </summary>
         /// <param name="id">ИД документа</param>

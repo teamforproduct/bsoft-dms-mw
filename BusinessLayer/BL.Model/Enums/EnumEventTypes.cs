@@ -17,7 +17,7 @@
         SetOutWork = 999,//	Работа завершена
         SendMessage = 500,//	Направлено сообщение
         ChangeExecutor = 205,// Изменение исполнителя по документу
-
+        ChangePosition = 207,// Замена должности в документе
         SendForInformation = 200,//	Направлен для сведения
 
         SendForConsideration = 220,//	Направлен для рассмотрения

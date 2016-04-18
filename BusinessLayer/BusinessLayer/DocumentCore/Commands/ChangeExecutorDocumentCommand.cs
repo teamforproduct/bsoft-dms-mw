@@ -1,8 +1,10 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using BL.Database.Dictionaries.Interfaces;
 using BL.Logic.Common;
 using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore.Actions;
+using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
 
@@ -89,7 +91,7 @@ namespace BL.Logic.DocumentCore.Commands
 
             _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, Model.DocumentId, Model.AccessLevel, Model.PositionId);
 
-            if (Model.PaperEvents != null && Model.PaperEvents.Any())
+            if (Model.PaperEvents?.Any() ?? false)
             {
                 foreach (var model in Model.PaperEvents)
                 {
@@ -104,6 +106,24 @@ namespace BL.Logic.DocumentCore.Commands
                         CommonDocumentUtilities.SetLastChange(_context, paper);
                     }
                 }
+            }
+            if (_document.DocumentFiles?.Any() ?? false)
+            {
+                //CommonDocumentUtilities.SetLastChange(_context, _document.DocumentFiles);
+                ((List<InternalDocumentAttachedFile>)_document.DocumentFiles).ForEach(x=>
+                {
+                    x.ExecutorPositionId = _document.ExecutorPositionId;
+                    x.ExecutorPositionExecutorAgentId = _document.ExecutorPositionExecutorAgentId;
+                });
+            }
+            if (_document.Tasks?.Any() ?? false)
+            {
+                CommonDocumentUtilities.SetLastChange(_context, _document.Tasks);
+                ((List<InternalDocumentTask>)_document.Tasks).ForEach(x =>
+                {
+                    x.PositionId = _document.ExecutorPositionId;
+                    x.PositionExecutorAgentId = _document.ExecutorPositionExecutorAgentId;
+                });
             }
             _documentDb.ChangeExecutorDocument(_context, _document);
 

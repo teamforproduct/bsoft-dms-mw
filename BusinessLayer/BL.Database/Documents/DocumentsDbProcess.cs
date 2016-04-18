@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Transactions;
+using System.Data.Entity;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Common;
 using BL.Database.DatabaseContext;
@@ -1524,10 +1525,52 @@ namespace BL.Database.Documents
                         ExecutorPositionId = x.Doc.ExecutorPositionId,
                         IsRegistered = x.Doc.IsRegistered
                     }).FirstOrDefault();
-
+                if (doc == null) return null;
+                doc.DocumentFiles = dbContext.DocumentFilesSet
+                    .Where(x => x.DocumentId == model.DocumentId  && x.ExecutorPositionId == doc.ExecutorPositionId && !x.IsAdditional)
+                    .Select(x => new InternalDocumentAttachedFile
+                    {
+                        Id = x.Id,
+                    }).ToList();
+                doc.Tasks = dbContext.DocumentTasksSet
+                    .Where(x => x.DocumentId == model.DocumentId && x.PositionId == doc.ExecutorPositionId)
+                    .Select(x => new InternalDocumentTask
+                    {
+                        Id = x.Id,
+                    }).ToList();
                 return doc;
             }
         }
+
+        public InternalDocument ChangePositionDocumentPrepare(IContext ctx, ChangePosition model)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                var doc = CommonQueries.GetDocumentQuery(dbContext, ctx)
+                    .Where(x => x.Doc.Id == model.DocumentId && (ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId)))
+                    .Select(x => new InternalDocument
+                    {
+                        Id = x.Doc.Id,
+                        ExecutorPositionId = x.Doc.ExecutorPositionId,
+                        IsRegistered = x.Doc.IsRegistered
+                    }).FirstOrDefault();
+                if (doc == null) return null;
+                doc.DocumentFiles = dbContext.DocumentFilesSet
+                    .Where(x => x.DocumentId == model.DocumentId && x.ExecutorPositionId == doc.ExecutorPositionId && !x.IsAdditional)
+                    .Select(x => new InternalDocumentAttachedFile
+                    {
+                        Id = x.Id,
+                    }).ToList();
+                doc.Tasks = dbContext.DocumentTasksSet
+                    .Where(x => x.DocumentId == model.DocumentId && x.PositionId == doc.ExecutorPositionId)
+                    .Select(x => new InternalDocumentTask
+                    {
+                        Id = x.Id,
+                    }).ToList();
+                return doc;
+            }
+        }
+
 
         public void ChangeExecutorDocument(IContext ctx, InternalDocument document)
         {
@@ -1586,7 +1629,100 @@ namespace BL.Database.Documents
                             dbContext.SaveChanges();
                         }
                     }
+                    if (document.DocumentFiles?.Any() ?? false)
+                    {
+                        foreach (var fileDb in document.DocumentFiles.Select(ModelConverter.GetDbDocumentFile))
+                        {
+                            dbContext.DocumentFilesSet.Attach(fileDb);
+                            var entryFile = dbContext.Entry(fileDb);
+                            entryFile.Property(e => e.ExecutorPositionId).IsModified = true;
+                            entryFile.Property(e => e.ExecutorPositionExecutorAgentId).IsModified = true;
+                            dbContext.SaveChanges();
+                        }
+                    }
+                    if (document.Tasks?.Any() ?? false)
+                    {
+                        foreach (var taskDb in document.Tasks.Select(ModelConverter.GetDbDocumentTask))
+                        {
+                            dbContext.DocumentTasksSet.Attach(taskDb);
+                            var entryTask = dbContext.Entry(taskDb);
+                            entryTask.Property(e => e.PositionId).IsModified = true;
+                            entryTask.Property(e => e.PositionExecutorAgentId).IsModified = true;
+                            entryTask.Property(e => e.LastChangeUserId).IsModified = true;
+                            entryTask.Property(e => e.LastChangeDate).IsModified = true;
+                            dbContext.SaveChanges();
+                        }
+                    }
                     transaction.Complete();
+
+
+                }
+            }
+        }
+
+        public void ChangePositionDocument(IContext ctx, ChangePosition model, InternalDocument document)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                //using (
+                //    var transaction = new TransactionScope(TransactionScopeOption.Required,
+                //        new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
+                {
+                    dbContext.DocumentsSet.Where(x => x.Id == model.DocumentId && x.ExecutorPositionId == model.OldPositionId).ToList()
+                        .ForEach(x =>
+                        {
+                            x.ExecutorPositionId = model.NewPositionId;
+                        });
+                    dbContext.DocumentFilesSet.Where(x => x.DocumentId == model.DocumentId && x.ExecutorPositionId == model.OldPositionId).ToList()
+                        .ForEach(x =>
+                        {
+                            x.ExecutorPositionId = model.NewPositionId;
+                        });
+                    dbContext.DocumentTasksSet.Where(x => x.DocumentId == model.DocumentId && x.PositionId == model.OldPositionId).ToList()
+                        .ForEach(x =>
+                        {
+                            x.PositionId = model.NewPositionId;
+                        });
+                    dbContext.DocumentEventsSet.Where(x => x.DocumentId == model.DocumentId && x.SourcePositionId == model.OldPositionId).ToList()
+                        .ForEach(x =>
+                        {
+                            x.SourcePositionId = model.NewPositionId;
+                        });
+                    dbContext.DocumentEventsSet.Where(x => x.DocumentId == model.DocumentId && x.TargetPositionId == model.OldPositionId).ToList()
+                        .ForEach(x =>
+                        {
+                            x.TargetPositionId = model.NewPositionId;
+                        });
+                    dbContext.DocumentSendListsSet.Where(x => x.DocumentId == model.DocumentId && x.SourcePositionId == model.OldPositionId).ToList()
+                        .ForEach(x =>
+                        {
+                            x.SourcePositionId = model.NewPositionId;
+                        });
+                    dbContext.DocumentSendListsSet.Where(x => x.DocumentId == model.DocumentId && x.TargetPositionId == model.OldPositionId).ToList()
+                        .ForEach(x =>
+                        {
+                            x.TargetPositionId = model.NewPositionId;
+                        });
+                    dbContext.DocumentRestrictedSendListsSet.Where(x => x.DocumentId == model.DocumentId && x.PositionId == model.OldPositionId).ToList()
+                        .ForEach(x =>
+                        {
+                            x.PositionId = model.NewPositionId;
+                        });
+                    dbContext.DocumentAccessesSet.RemoveRange(dbContext.DocumentAccessesSet.Where(x => x.DocumentId == model.DocumentId && x.PositionId == model.NewPositionId));
+                    dbContext.DocumentAccessesSet.Where(x => x.DocumentId == model.DocumentId && x.PositionId == model.OldPositionId).ToList()
+                        .ForEach(x =>
+                        {
+                            x.PositionId = model.NewPositionId;
+                        });
+
+                    if (document.Events != null && document.Events.Any(x => x.Id == 0))
+                    {
+                        dbContext.DocumentEventsSet.AddRange(ModelConverter.GetDbDocumentEvents(document.Events.Where(x => x.Id == 0)).ToList());
+                    }
+
+                    dbContext.SaveChanges();
+
+                    //transaction.Complete();
 
 
                 }

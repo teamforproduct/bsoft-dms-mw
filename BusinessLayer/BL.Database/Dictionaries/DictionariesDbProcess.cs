@@ -436,7 +436,7 @@ namespace BL.Database.Dictionaries
                 }
 
                 // Поиск по дате рождения
-                if (filter.BirthPeriod.IsActive)
+                if (filter.BirthPeriod?.IsActive??false)
                 {
                     qry = qry.Where(x => x.BirthDate >= filter.BirthPeriod.DateBeg);
                     qry = qry.Where(x => x.BirthDate <= filter.BirthPeriod.DateEnd);
