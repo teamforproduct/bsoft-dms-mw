@@ -30,9 +30,19 @@ namespace BL.Logic.Reports {
         
         private ReportDocumentSubscriptionDataTable tableReportDocumentSubscription;
         
+        private ReportDocumentEventDataTable tableReportDocumentEvent;
+        
+        private ReportDocumentPaperDataTable tableReportDocumentPaper;
+        
         private global::System.Data.DataRelation relationReportDocument_ReportDocumentWait;
         
         private global::System.Data.DataRelation relationReportDocument_ReportDocumentSubscription;
+        
+        private global::System.Data.DataRelation relationReportDocument_ReportDocumentEvent;
+        
+        private global::System.Data.DataRelation relationReportDocument_ReportDocumentPaper;
+        
+        private global::System.Data.DataRelation relationReportDocumentPaper_ReportDocumentEvent;
         
         private global::System.Data.SchemaSerializationMode _schemaSerializationMode = global::System.Data.SchemaSerializationMode.IncludeSchema;
         
@@ -70,6 +80,12 @@ namespace BL.Logic.Reports {
                 }
                 if ((ds.Tables["ReportDocumentSubscription"] != null)) {
                     base.Tables.Add(new ReportDocumentSubscriptionDataTable(ds.Tables["ReportDocumentSubscription"]));
+                }
+                if ((ds.Tables["ReportDocumentEvent"] != null)) {
+                    base.Tables.Add(new ReportDocumentEventDataTable(ds.Tables["ReportDocumentEvent"]));
+                }
+                if ((ds.Tables["ReportDocumentPaper"] != null)) {
+                    base.Tables.Add(new ReportDocumentPaperDataTable(ds.Tables["ReportDocumentPaper"]));
                 }
                 this.DataSetName = ds.DataSetName;
                 this.Prefix = ds.Prefix;
@@ -116,6 +132,26 @@ namespace BL.Logic.Reports {
         public ReportDocumentSubscriptionDataTable ReportDocumentSubscription {
             get {
                 return this.tableReportDocumentSubscription;
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+        [global::System.ComponentModel.Browsable(false)]
+        [global::System.ComponentModel.DesignerSerializationVisibility(global::System.ComponentModel.DesignerSerializationVisibility.Content)]
+        public ReportDocumentEventDataTable ReportDocumentEvent {
+            get {
+                return this.tableReportDocumentEvent;
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+        [global::System.ComponentModel.Browsable(false)]
+        [global::System.ComponentModel.DesignerSerializationVisibility(global::System.ComponentModel.DesignerSerializationVisibility.Content)]
+        public ReportDocumentPaperDataTable ReportDocumentPaper {
+            get {
+                return this.tableReportDocumentPaper;
             }
         }
         
@@ -195,6 +231,12 @@ namespace BL.Logic.Reports {
                 if ((ds.Tables["ReportDocumentSubscription"] != null)) {
                     base.Tables.Add(new ReportDocumentSubscriptionDataTable(ds.Tables["ReportDocumentSubscription"]));
                 }
+                if ((ds.Tables["ReportDocumentEvent"] != null)) {
+                    base.Tables.Add(new ReportDocumentEventDataTable(ds.Tables["ReportDocumentEvent"]));
+                }
+                if ((ds.Tables["ReportDocumentPaper"] != null)) {
+                    base.Tables.Add(new ReportDocumentPaperDataTable(ds.Tables["ReportDocumentPaper"]));
+                }
                 this.DataSetName = ds.DataSetName;
                 this.Prefix = ds.Prefix;
                 this.Namespace = ds.Namespace;
@@ -246,8 +288,23 @@ namespace BL.Logic.Reports {
                     this.tableReportDocumentSubscription.InitVars();
                 }
             }
+            this.tableReportDocumentEvent = ((ReportDocumentEventDataTable)(base.Tables["ReportDocumentEvent"]));
+            if ((initTable == true)) {
+                if ((this.tableReportDocumentEvent != null)) {
+                    this.tableReportDocumentEvent.InitVars();
+                }
+            }
+            this.tableReportDocumentPaper = ((ReportDocumentPaperDataTable)(base.Tables["ReportDocumentPaper"]));
+            if ((initTable == true)) {
+                if ((this.tableReportDocumentPaper != null)) {
+                    this.tableReportDocumentPaper.InitVars();
+                }
+            }
             this.relationReportDocument_ReportDocumentWait = this.Relations["ReportDocument_ReportDocumentWait"];
             this.relationReportDocument_ReportDocumentSubscription = this.Relations["ReportDocument_ReportDocumentSubscription"];
+            this.relationReportDocument_ReportDocumentEvent = this.Relations["ReportDocument_ReportDocumentEvent"];
+            this.relationReportDocument_ReportDocumentPaper = this.Relations["ReportDocument_ReportDocumentPaper"];
+            this.relationReportDocumentPaper_ReportDocumentEvent = this.Relations["ReportDocumentPaper_ReportDocumentEvent"];
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -264,6 +321,10 @@ namespace BL.Logic.Reports {
             base.Tables.Add(this.tableReportDocumentWait);
             this.tableReportDocumentSubscription = new ReportDocumentSubscriptionDataTable();
             base.Tables.Add(this.tableReportDocumentSubscription);
+            this.tableReportDocumentEvent = new ReportDocumentEventDataTable();
+            base.Tables.Add(this.tableReportDocumentEvent);
+            this.tableReportDocumentPaper = new ReportDocumentPaperDataTable();
+            base.Tables.Add(this.tableReportDocumentPaper);
             this.relationReportDocument_ReportDocumentWait = new global::System.Data.DataRelation("ReportDocument_ReportDocumentWait", new global::System.Data.DataColumn[] {
                         this.tableReportDocument.IdColumn}, new global::System.Data.DataColumn[] {
                         this.tableReportDocumentWait.DocumentIdColumn}, false);
@@ -272,6 +333,18 @@ namespace BL.Logic.Reports {
                         this.tableReportDocument.IdColumn}, new global::System.Data.DataColumn[] {
                         this.tableReportDocumentSubscription.DocumentIdColumn}, false);
             this.Relations.Add(this.relationReportDocument_ReportDocumentSubscription);
+            this.relationReportDocument_ReportDocumentEvent = new global::System.Data.DataRelation("ReportDocument_ReportDocumentEvent", new global::System.Data.DataColumn[] {
+                        this.tableReportDocument.IdColumn}, new global::System.Data.DataColumn[] {
+                        this.tableReportDocumentEvent.DocumentIdColumn}, false);
+            this.Relations.Add(this.relationReportDocument_ReportDocumentEvent);
+            this.relationReportDocument_ReportDocumentPaper = new global::System.Data.DataRelation("ReportDocument_ReportDocumentPaper", new global::System.Data.DataColumn[] {
+                        this.tableReportDocument.IdColumn}, new global::System.Data.DataColumn[] {
+                        this.tableReportDocumentPaper.DocumentIdColumn}, false);
+            this.Relations.Add(this.relationReportDocument_ReportDocumentPaper);
+            this.relationReportDocumentPaper_ReportDocumentEvent = new global::System.Data.DataRelation("ReportDocumentPaper_ReportDocumentEvent", new global::System.Data.DataColumn[] {
+                        this.tableReportDocumentPaper.IdColumn}, new global::System.Data.DataColumn[] {
+                        this.tableReportDocumentEvent.PaperIdColumn}, false);
+            this.Relations.Add(this.relationReportDocumentPaper_ReportDocumentEvent);
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -289,6 +362,18 @@ namespace BL.Logic.Reports {
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         private bool ShouldSerializeReportDocumentSubscription() {
+            return false;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+        private bool ShouldSerializeReportDocumentEvent() {
+            return false;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+        private bool ShouldSerializeReportDocumentPaper() {
             return false;
         }
         
@@ -356,6 +441,12 @@ namespace BL.Logic.Reports {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         public delegate void ReportDocumentSubscriptionRowChangeEventHandler(object sender, ReportDocumentSubscriptionRowChangeEvent e);
         
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+        public delegate void ReportDocumentEventRowChangeEventHandler(object sender, ReportDocumentEventRowChangeEvent e);
+        
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+        public delegate void ReportDocumentPaperRowChangeEventHandler(object sender, ReportDocumentPaperRowChangeEvent e);
+        
         /// <summary>
         ///Represents the strongly named DataTable class.
         ///</summary>
@@ -378,6 +469,14 @@ namespace BL.Logic.Reports {
             private global::System.Data.DataColumn columnSenderAgentName;
             
             private global::System.Data.DataColumn columnSenderAgentPersonName;
+            
+            private global::System.Data.DataColumn columnRegistrationNumber;
+            
+            private global::System.Data.DataColumn columnRegistrationNumberSuffix;
+            
+            private global::System.Data.DataColumn columnRegistrationNumberPrefix;
+            
+            private global::System.Data.DataColumn columnRegistrationFullNumber;
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
@@ -478,6 +577,38 @@ namespace BL.Logic.Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn RegistrationNumberColumn {
+                get {
+                    return this.columnRegistrationNumber;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn RegistrationNumberSuffixColumn {
+                get {
+                    return this.columnRegistrationNumberSuffix;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn RegistrationNumberPrefixColumn {
+                get {
+                    return this.columnRegistrationNumberPrefix;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn RegistrationFullNumberColumn {
+                get {
+                    return this.columnRegistrationFullNumber;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -513,7 +644,7 @@ namespace BL.Logic.Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public ReportDocumentRow AddReportDocumentRow(int Id, string DocumentTypeName, string ExecutorPositionName, string ExecutorPositionExecutorAgentName, string Addressee, string Description, string SenderAgentName, string SenderAgentPersonName) {
+            public ReportDocumentRow AddReportDocumentRow(int Id, string DocumentTypeName, string ExecutorPositionName, string ExecutorPositionExecutorAgentName, string Addressee, string Description, string SenderAgentName, string SenderAgentPersonName, int RegistrationNumber, string RegistrationNumberSuffix, string RegistrationNumberPrefix, string RegistrationFullNumber) {
                 ReportDocumentRow rowReportDocumentRow = ((ReportDocumentRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         Id,
@@ -523,7 +654,11 @@ namespace BL.Logic.Reports {
                         Addressee,
                         Description,
                         SenderAgentName,
-                        SenderAgentPersonName};
+                        SenderAgentPersonName,
+                        RegistrationNumber,
+                        RegistrationNumberSuffix,
+                        RegistrationNumberPrefix,
+                        RegistrationFullNumber};
                 rowReportDocumentRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowReportDocumentRow);
                 return rowReportDocumentRow;
@@ -561,6 +696,10 @@ namespace BL.Logic.Reports {
                 this.columnDescription = base.Columns["Description"];
                 this.columnSenderAgentName = base.Columns["SenderAgentName"];
                 this.columnSenderAgentPersonName = base.Columns["SenderAgentPersonName"];
+                this.columnRegistrationNumber = base.Columns["RegistrationNumber"];
+                this.columnRegistrationNumberSuffix = base.Columns["RegistrationNumberSuffix"];
+                this.columnRegistrationNumberPrefix = base.Columns["RegistrationNumberPrefix"];
+                this.columnRegistrationFullNumber = base.Columns["RegistrationFullNumber"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -582,6 +721,14 @@ namespace BL.Logic.Reports {
                 base.Columns.Add(this.columnSenderAgentName);
                 this.columnSenderAgentPersonName = new global::System.Data.DataColumn("SenderAgentPersonName", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnSenderAgentPersonName);
+                this.columnRegistrationNumber = new global::System.Data.DataColumn("RegistrationNumber", typeof(int), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnRegistrationNumber);
+                this.columnRegistrationNumberSuffix = new global::System.Data.DataColumn("RegistrationNumberSuffix", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnRegistrationNumberSuffix);
+                this.columnRegistrationNumberPrefix = new global::System.Data.DataColumn("RegistrationNumberPrefix", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnRegistrationNumberPrefix);
+                this.columnRegistrationFullNumber = new global::System.Data.DataColumn("RegistrationFullNumber", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnRegistrationFullNumber);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
                                 this.columnId}, true));
                 this.columnId.AllowDBNull = false;
@@ -1473,6 +1620,657 @@ namespace BL.Logic.Reports {
         }
         
         /// <summary>
+        ///Represents the strongly named DataTable class.
+        ///</summary>
+        [global::System.Serializable()]
+        [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
+        public partial class ReportDocumentEventDataTable : global::System.Data.TypedTableBase<ReportDocumentEventRow> {
+            
+            private global::System.Data.DataColumn columnId;
+            
+            private global::System.Data.DataColumn columnDocumentId;
+            
+            private global::System.Data.DataColumn columnSourcePositionName;
+            
+            private global::System.Data.DataColumn columnSourcePositionExecutorAgentName;
+            
+            private global::System.Data.DataColumn columnTargetPositionName;
+            
+            private global::System.Data.DataColumn columnTargetPositionExecutorAgentName;
+            
+            private global::System.Data.DataColumn columnPaperId;
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public ReportDocumentEventDataTable() {
+                this.TableName = "ReportDocumentEvent";
+                this.BeginInit();
+                this.InitClass();
+                this.EndInit();
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            internal ReportDocumentEventDataTable(global::System.Data.DataTable table) {
+                this.TableName = table.TableName;
+                if ((table.CaseSensitive != table.DataSet.CaseSensitive)) {
+                    this.CaseSensitive = table.CaseSensitive;
+                }
+                if ((table.Locale.ToString() != table.DataSet.Locale.ToString())) {
+                    this.Locale = table.Locale;
+                }
+                if ((table.Namespace != table.DataSet.Namespace)) {
+                    this.Namespace = table.Namespace;
+                }
+                this.Prefix = table.Prefix;
+                this.MinimumCapacity = table.MinimumCapacity;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected ReportDocumentEventDataTable(global::System.Runtime.Serialization.SerializationInfo info, global::System.Runtime.Serialization.StreamingContext context) : 
+                    base(info, context) {
+                this.InitVars();
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn IdColumn {
+                get {
+                    return this.columnId;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn DocumentIdColumn {
+                get {
+                    return this.columnDocumentId;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn SourcePositionNameColumn {
+                get {
+                    return this.columnSourcePositionName;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn SourcePositionExecutorAgentNameColumn {
+                get {
+                    return this.columnSourcePositionExecutorAgentName;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn TargetPositionNameColumn {
+                get {
+                    return this.columnTargetPositionName;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn TargetPositionExecutorAgentNameColumn {
+                get {
+                    return this.columnTargetPositionExecutorAgentName;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn PaperIdColumn {
+                get {
+                    return this.columnPaperId;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            [global::System.ComponentModel.Browsable(false)]
+            public int Count {
+                get {
+                    return this.Rows.Count;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public ReportDocumentEventRow this[int index] {
+                get {
+                    return ((ReportDocumentEventRow)(this.Rows[index]));
+                }
+            }
+            
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public event ReportDocumentEventRowChangeEventHandler ReportDocumentEventRowChanging;
+            
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public event ReportDocumentEventRowChangeEventHandler ReportDocumentEventRowChanged;
+            
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public event ReportDocumentEventRowChangeEventHandler ReportDocumentEventRowDeleting;
+            
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public event ReportDocumentEventRowChangeEventHandler ReportDocumentEventRowDeleted;
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void AddReportDocumentEventRow(ReportDocumentEventRow row) {
+                this.Rows.Add(row);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public ReportDocumentEventRow AddReportDocumentEventRow(int Id, ReportDocumentRow parentReportDocumentRowByReportDocument_ReportDocumentEvent, string SourcePositionName, string SourcePositionExecutorAgentName, string TargetPositionName, string TargetPositionExecutorAgentName, ReportDocumentPaperRow parentReportDocumentPaperRowByReportDocumentPaper_ReportDocumentEvent) {
+                ReportDocumentEventRow rowReportDocumentEventRow = ((ReportDocumentEventRow)(this.NewRow()));
+                object[] columnValuesArray = new object[] {
+                        Id,
+                        null,
+                        SourcePositionName,
+                        SourcePositionExecutorAgentName,
+                        TargetPositionName,
+                        TargetPositionExecutorAgentName,
+                        null};
+                if ((parentReportDocumentRowByReportDocument_ReportDocumentEvent != null)) {
+                    columnValuesArray[1] = parentReportDocumentRowByReportDocument_ReportDocumentEvent[0];
+                }
+                if ((parentReportDocumentPaperRowByReportDocumentPaper_ReportDocumentEvent != null)) {
+                    columnValuesArray[6] = parentReportDocumentPaperRowByReportDocumentPaper_ReportDocumentEvent[0];
+                }
+                rowReportDocumentEventRow.ItemArray = columnValuesArray;
+                this.Rows.Add(rowReportDocumentEventRow);
+                return rowReportDocumentEventRow;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public ReportDocumentEventRow FindById(int Id) {
+                return ((ReportDocumentEventRow)(this.Rows.Find(new object[] {
+                            Id})));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public override global::System.Data.DataTable Clone() {
+                ReportDocumentEventDataTable cln = ((ReportDocumentEventDataTable)(base.Clone()));
+                cln.InitVars();
+                return cln;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected override global::System.Data.DataTable CreateInstance() {
+                return new ReportDocumentEventDataTable();
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            internal void InitVars() {
+                this.columnId = base.Columns["Id"];
+                this.columnDocumentId = base.Columns["DocumentId"];
+                this.columnSourcePositionName = base.Columns["SourcePositionName"];
+                this.columnSourcePositionExecutorAgentName = base.Columns["SourcePositionExecutorAgentName"];
+                this.columnTargetPositionName = base.Columns["TargetPositionName"];
+                this.columnTargetPositionExecutorAgentName = base.Columns["TargetPositionExecutorAgentName"];
+                this.columnPaperId = base.Columns["PaperId"];
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            private void InitClass() {
+                this.columnId = new global::System.Data.DataColumn("Id", typeof(int), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnId);
+                this.columnDocumentId = new global::System.Data.DataColumn("DocumentId", typeof(int), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnDocumentId);
+                this.columnSourcePositionName = new global::System.Data.DataColumn("SourcePositionName", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnSourcePositionName);
+                this.columnSourcePositionExecutorAgentName = new global::System.Data.DataColumn("SourcePositionExecutorAgentName", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnSourcePositionExecutorAgentName);
+                this.columnTargetPositionName = new global::System.Data.DataColumn("TargetPositionName", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnTargetPositionName);
+                this.columnTargetPositionExecutorAgentName = new global::System.Data.DataColumn("TargetPositionExecutorAgentName", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnTargetPositionExecutorAgentName);
+                this.columnPaperId = new global::System.Data.DataColumn("PaperId", typeof(int), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnPaperId);
+                this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
+                                this.columnId}, true));
+                this.columnId.AllowDBNull = false;
+                this.columnId.Unique = true;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public ReportDocumentEventRow NewReportDocumentEventRow() {
+                return ((ReportDocumentEventRow)(this.NewRow()));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected override global::System.Data.DataRow NewRowFromBuilder(global::System.Data.DataRowBuilder builder) {
+                return new ReportDocumentEventRow(builder);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected override global::System.Type GetRowType() {
+                return typeof(ReportDocumentEventRow);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected override void OnRowChanged(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowChanged(e);
+                if ((this.ReportDocumentEventRowChanged != null)) {
+                    this.ReportDocumentEventRowChanged(this, new ReportDocumentEventRowChangeEvent(((ReportDocumentEventRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected override void OnRowChanging(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowChanging(e);
+                if ((this.ReportDocumentEventRowChanging != null)) {
+                    this.ReportDocumentEventRowChanging(this, new ReportDocumentEventRowChangeEvent(((ReportDocumentEventRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected override void OnRowDeleted(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowDeleted(e);
+                if ((this.ReportDocumentEventRowDeleted != null)) {
+                    this.ReportDocumentEventRowDeleted(this, new ReportDocumentEventRowChangeEvent(((ReportDocumentEventRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected override void OnRowDeleting(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowDeleting(e);
+                if ((this.ReportDocumentEventRowDeleting != null)) {
+                    this.ReportDocumentEventRowDeleting(this, new ReportDocumentEventRowChangeEvent(((ReportDocumentEventRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void RemoveReportDocumentEventRow(ReportDocumentEventRow row) {
+                this.Rows.Remove(row);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public static global::System.Xml.Schema.XmlSchemaComplexType GetTypedTableSchema(global::System.Xml.Schema.XmlSchemaSet xs) {
+                global::System.Xml.Schema.XmlSchemaComplexType type = new global::System.Xml.Schema.XmlSchemaComplexType();
+                global::System.Xml.Schema.XmlSchemaSequence sequence = new global::System.Xml.Schema.XmlSchemaSequence();
+                DataSetCrystalReports ds = new DataSetCrystalReports();
+                global::System.Xml.Schema.XmlSchemaAny any1 = new global::System.Xml.Schema.XmlSchemaAny();
+                any1.Namespace = "http://www.w3.org/2001/XMLSchema";
+                any1.MinOccurs = new decimal(0);
+                any1.MaxOccurs = decimal.MaxValue;
+                any1.ProcessContents = global::System.Xml.Schema.XmlSchemaContentProcessing.Lax;
+                sequence.Items.Add(any1);
+                global::System.Xml.Schema.XmlSchemaAny any2 = new global::System.Xml.Schema.XmlSchemaAny();
+                any2.Namespace = "urn:schemas-microsoft-com:xml-diffgram-v1";
+                any2.MinOccurs = new decimal(1);
+                any2.ProcessContents = global::System.Xml.Schema.XmlSchemaContentProcessing.Lax;
+                sequence.Items.Add(any2);
+                global::System.Xml.Schema.XmlSchemaAttribute attribute1 = new global::System.Xml.Schema.XmlSchemaAttribute();
+                attribute1.Name = "namespace";
+                attribute1.FixedValue = ds.Namespace;
+                type.Attributes.Add(attribute1);
+                global::System.Xml.Schema.XmlSchemaAttribute attribute2 = new global::System.Xml.Schema.XmlSchemaAttribute();
+                attribute2.Name = "tableTypeName";
+                attribute2.FixedValue = "ReportDocumentEventDataTable";
+                type.Attributes.Add(attribute2);
+                type.Particle = sequence;
+                global::System.Xml.Schema.XmlSchema dsSchema = ds.GetSchemaSerializable();
+                if (xs.Contains(dsSchema.TargetNamespace)) {
+                    global::System.IO.MemoryStream s1 = new global::System.IO.MemoryStream();
+                    global::System.IO.MemoryStream s2 = new global::System.IO.MemoryStream();
+                    try {
+                        global::System.Xml.Schema.XmlSchema schema = null;
+                        dsSchema.Write(s1);
+                        for (global::System.Collections.IEnumerator schemas = xs.Schemas(dsSchema.TargetNamespace).GetEnumerator(); schemas.MoveNext(); ) {
+                            schema = ((global::System.Xml.Schema.XmlSchema)(schemas.Current));
+                            s2.SetLength(0);
+                            schema.Write(s2);
+                            if ((s1.Length == s2.Length)) {
+                                s1.Position = 0;
+                                s2.Position = 0;
+                                for (; ((s1.Position != s1.Length) 
+                                            && (s1.ReadByte() == s2.ReadByte())); ) {
+                                    ;
+                                }
+                                if ((s1.Position == s1.Length)) {
+                                    return type;
+                                }
+                            }
+                        }
+                    }
+                    finally {
+                        if ((s1 != null)) {
+                            s1.Close();
+                        }
+                        if ((s2 != null)) {
+                            s2.Close();
+                        }
+                    }
+                }
+                xs.Add(dsSchema);
+                return type;
+            }
+        }
+        
+        /// <summary>
+        ///Represents the strongly named DataTable class.
+        ///</summary>
+        [global::System.Serializable()]
+        [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
+        public partial class ReportDocumentPaperDataTable : global::System.Data.TypedTableBase<ReportDocumentPaperRow> {
+            
+            private global::System.Data.DataColumn columnId;
+            
+            private global::System.Data.DataColumn columnDocumentId;
+            
+            private global::System.Data.DataColumn columnName;
+            
+            private global::System.Data.DataColumn columnDescription;
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public ReportDocumentPaperDataTable() {
+                this.TableName = "ReportDocumentPaper";
+                this.BeginInit();
+                this.InitClass();
+                this.EndInit();
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            internal ReportDocumentPaperDataTable(global::System.Data.DataTable table) {
+                this.TableName = table.TableName;
+                if ((table.CaseSensitive != table.DataSet.CaseSensitive)) {
+                    this.CaseSensitive = table.CaseSensitive;
+                }
+                if ((table.Locale.ToString() != table.DataSet.Locale.ToString())) {
+                    this.Locale = table.Locale;
+                }
+                if ((table.Namespace != table.DataSet.Namespace)) {
+                    this.Namespace = table.Namespace;
+                }
+                this.Prefix = table.Prefix;
+                this.MinimumCapacity = table.MinimumCapacity;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected ReportDocumentPaperDataTable(global::System.Runtime.Serialization.SerializationInfo info, global::System.Runtime.Serialization.StreamingContext context) : 
+                    base(info, context) {
+                this.InitVars();
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn IdColumn {
+                get {
+                    return this.columnId;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn DocumentIdColumn {
+                get {
+                    return this.columnDocumentId;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn NameColumn {
+                get {
+                    return this.columnName;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn DescriptionColumn {
+                get {
+                    return this.columnDescription;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            [global::System.ComponentModel.Browsable(false)]
+            public int Count {
+                get {
+                    return this.Rows.Count;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public ReportDocumentPaperRow this[int index] {
+                get {
+                    return ((ReportDocumentPaperRow)(this.Rows[index]));
+                }
+            }
+            
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public event ReportDocumentPaperRowChangeEventHandler ReportDocumentPaperRowChanging;
+            
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public event ReportDocumentPaperRowChangeEventHandler ReportDocumentPaperRowChanged;
+            
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public event ReportDocumentPaperRowChangeEventHandler ReportDocumentPaperRowDeleting;
+            
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public event ReportDocumentPaperRowChangeEventHandler ReportDocumentPaperRowDeleted;
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void AddReportDocumentPaperRow(ReportDocumentPaperRow row) {
+                this.Rows.Add(row);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public ReportDocumentPaperRow AddReportDocumentPaperRow(int Id, ReportDocumentRow parentReportDocumentRowByReportDocument_ReportDocumentPaper, string Name, string Description) {
+                ReportDocumentPaperRow rowReportDocumentPaperRow = ((ReportDocumentPaperRow)(this.NewRow()));
+                object[] columnValuesArray = new object[] {
+                        Id,
+                        null,
+                        Name,
+                        Description};
+                if ((parentReportDocumentRowByReportDocument_ReportDocumentPaper != null)) {
+                    columnValuesArray[1] = parentReportDocumentRowByReportDocument_ReportDocumentPaper[0];
+                }
+                rowReportDocumentPaperRow.ItemArray = columnValuesArray;
+                this.Rows.Add(rowReportDocumentPaperRow);
+                return rowReportDocumentPaperRow;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public ReportDocumentPaperRow FindById(int Id) {
+                return ((ReportDocumentPaperRow)(this.Rows.Find(new object[] {
+                            Id})));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public override global::System.Data.DataTable Clone() {
+                ReportDocumentPaperDataTable cln = ((ReportDocumentPaperDataTable)(base.Clone()));
+                cln.InitVars();
+                return cln;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected override global::System.Data.DataTable CreateInstance() {
+                return new ReportDocumentPaperDataTable();
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            internal void InitVars() {
+                this.columnId = base.Columns["Id"];
+                this.columnDocumentId = base.Columns["DocumentId"];
+                this.columnName = base.Columns["Name"];
+                this.columnDescription = base.Columns["Description"];
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            private void InitClass() {
+                this.columnId = new global::System.Data.DataColumn("Id", typeof(int), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnId);
+                this.columnDocumentId = new global::System.Data.DataColumn("DocumentId", typeof(int), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnDocumentId);
+                this.columnName = new global::System.Data.DataColumn("Name", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnName);
+                this.columnDescription = new global::System.Data.DataColumn("Description", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnDescription);
+                this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
+                                this.columnId}, true));
+                this.columnId.AllowDBNull = false;
+                this.columnId.Unique = true;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public ReportDocumentPaperRow NewReportDocumentPaperRow() {
+                return ((ReportDocumentPaperRow)(this.NewRow()));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected override global::System.Data.DataRow NewRowFromBuilder(global::System.Data.DataRowBuilder builder) {
+                return new ReportDocumentPaperRow(builder);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected override global::System.Type GetRowType() {
+                return typeof(ReportDocumentPaperRow);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected override void OnRowChanged(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowChanged(e);
+                if ((this.ReportDocumentPaperRowChanged != null)) {
+                    this.ReportDocumentPaperRowChanged(this, new ReportDocumentPaperRowChangeEvent(((ReportDocumentPaperRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected override void OnRowChanging(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowChanging(e);
+                if ((this.ReportDocumentPaperRowChanging != null)) {
+                    this.ReportDocumentPaperRowChanging(this, new ReportDocumentPaperRowChangeEvent(((ReportDocumentPaperRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected override void OnRowDeleted(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowDeleted(e);
+                if ((this.ReportDocumentPaperRowDeleted != null)) {
+                    this.ReportDocumentPaperRowDeleted(this, new ReportDocumentPaperRowChangeEvent(((ReportDocumentPaperRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected override void OnRowDeleting(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowDeleting(e);
+                if ((this.ReportDocumentPaperRowDeleting != null)) {
+                    this.ReportDocumentPaperRowDeleting(this, new ReportDocumentPaperRowChangeEvent(((ReportDocumentPaperRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void RemoveReportDocumentPaperRow(ReportDocumentPaperRow row) {
+                this.Rows.Remove(row);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public static global::System.Xml.Schema.XmlSchemaComplexType GetTypedTableSchema(global::System.Xml.Schema.XmlSchemaSet xs) {
+                global::System.Xml.Schema.XmlSchemaComplexType type = new global::System.Xml.Schema.XmlSchemaComplexType();
+                global::System.Xml.Schema.XmlSchemaSequence sequence = new global::System.Xml.Schema.XmlSchemaSequence();
+                DataSetCrystalReports ds = new DataSetCrystalReports();
+                global::System.Xml.Schema.XmlSchemaAny any1 = new global::System.Xml.Schema.XmlSchemaAny();
+                any1.Namespace = "http://www.w3.org/2001/XMLSchema";
+                any1.MinOccurs = new decimal(0);
+                any1.MaxOccurs = decimal.MaxValue;
+                any1.ProcessContents = global::System.Xml.Schema.XmlSchemaContentProcessing.Lax;
+                sequence.Items.Add(any1);
+                global::System.Xml.Schema.XmlSchemaAny any2 = new global::System.Xml.Schema.XmlSchemaAny();
+                any2.Namespace = "urn:schemas-microsoft-com:xml-diffgram-v1";
+                any2.MinOccurs = new decimal(1);
+                any2.ProcessContents = global::System.Xml.Schema.XmlSchemaContentProcessing.Lax;
+                sequence.Items.Add(any2);
+                global::System.Xml.Schema.XmlSchemaAttribute attribute1 = new global::System.Xml.Schema.XmlSchemaAttribute();
+                attribute1.Name = "namespace";
+                attribute1.FixedValue = ds.Namespace;
+                type.Attributes.Add(attribute1);
+                global::System.Xml.Schema.XmlSchemaAttribute attribute2 = new global::System.Xml.Schema.XmlSchemaAttribute();
+                attribute2.Name = "tableTypeName";
+                attribute2.FixedValue = "ReportDocumentPaperDataTable";
+                type.Attributes.Add(attribute2);
+                type.Particle = sequence;
+                global::System.Xml.Schema.XmlSchema dsSchema = ds.GetSchemaSerializable();
+                if (xs.Contains(dsSchema.TargetNamespace)) {
+                    global::System.IO.MemoryStream s1 = new global::System.IO.MemoryStream();
+                    global::System.IO.MemoryStream s2 = new global::System.IO.MemoryStream();
+                    try {
+                        global::System.Xml.Schema.XmlSchema schema = null;
+                        dsSchema.Write(s1);
+                        for (global::System.Collections.IEnumerator schemas = xs.Schemas(dsSchema.TargetNamespace).GetEnumerator(); schemas.MoveNext(); ) {
+                            schema = ((global::System.Xml.Schema.XmlSchema)(schemas.Current));
+                            s2.SetLength(0);
+                            schema.Write(s2);
+                            if ((s1.Length == s2.Length)) {
+                                s1.Position = 0;
+                                s2.Position = 0;
+                                for (; ((s1.Position != s1.Length) 
+                                            && (s1.ReadByte() == s2.ReadByte())); ) {
+                                    ;
+                                }
+                                if ((s1.Position == s1.Length)) {
+                                    return type;
+                                }
+                            }
+                        }
+                    }
+                    finally {
+                        if ((s1 != null)) {
+                            s1.Close();
+                        }
+                        if ((s2 != null)) {
+                            s2.Close();
+                        }
+                    }
+                }
+                xs.Add(dsSchema);
+                return type;
+            }
+        }
+        
+        /// <summary>
         ///Represents strongly named DataRow class.
         ///</summary>
         public partial class ReportDocumentRow : global::System.Data.DataRow {
@@ -1613,6 +2411,73 @@ namespace BL.Logic.Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public int RegistrationNumber {
+                get {
+                    try {
+                        return ((int)(this[this.tableReportDocument.RegistrationNumberColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'RegistrationNumber\' in table \'ReportDocument\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableReportDocument.RegistrationNumberColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string RegistrationNumberSuffix {
+                get {
+                    try {
+                        return ((string)(this[this.tableReportDocument.RegistrationNumberSuffixColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'RegistrationNumberSuffix\' in table \'ReportDocument\' is DBNu" +
+                                "ll.", e);
+                    }
+                }
+                set {
+                    this[this.tableReportDocument.RegistrationNumberSuffixColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string RegistrationNumberPrefix {
+                get {
+                    try {
+                        return ((string)(this[this.tableReportDocument.RegistrationNumberPrefixColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'RegistrationNumberPrefix\' in table \'ReportDocument\' is DBNu" +
+                                "ll.", e);
+                    }
+                }
+                set {
+                    this[this.tableReportDocument.RegistrationNumberPrefixColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string RegistrationFullNumber {
+                get {
+                    try {
+                        return ((string)(this[this.tableReportDocument.RegistrationFullNumberColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'RegistrationFullNumber\' in table \'ReportDocument\' is DBNull" +
+                                ".", e);
+                    }
+                }
+                set {
+                    this[this.tableReportDocument.RegistrationFullNumberColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsDocumentTypeNameNull() {
                 return this.IsNull(this.tableReportDocument.DocumentTypeNameColumn);
             }
@@ -1697,6 +2562,54 @@ namespace BL.Logic.Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsRegistrationNumberNull() {
+                return this.IsNull(this.tableReportDocument.RegistrationNumberColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetRegistrationNumberNull() {
+                this[this.tableReportDocument.RegistrationNumberColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsRegistrationNumberSuffixNull() {
+                return this.IsNull(this.tableReportDocument.RegistrationNumberSuffixColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetRegistrationNumberSuffixNull() {
+                this[this.tableReportDocument.RegistrationNumberSuffixColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsRegistrationNumberPrefixNull() {
+                return this.IsNull(this.tableReportDocument.RegistrationNumberPrefixColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetRegistrationNumberPrefixNull() {
+                this[this.tableReportDocument.RegistrationNumberPrefixColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsRegistrationFullNumberNull() {
+                return this.IsNull(this.tableReportDocument.RegistrationFullNumberColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetRegistrationFullNumberNull() {
+                this[this.tableReportDocument.RegistrationFullNumberColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public ReportDocumentWaitRow[] GetReportDocumentWaitRows() {
                 if ((this.Table.ChildRelations["ReportDocument_ReportDocumentWait"] == null)) {
                     return new ReportDocumentWaitRow[0];
@@ -1714,6 +2627,28 @@ namespace BL.Logic.Reports {
                 }
                 else {
                     return ((ReportDocumentSubscriptionRow[])(base.GetChildRows(this.Table.ChildRelations["ReportDocument_ReportDocumentSubscription"])));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public ReportDocumentEventRow[] GetReportDocumentEventRows() {
+                if ((this.Table.ChildRelations["ReportDocument_ReportDocumentEvent"] == null)) {
+                    return new ReportDocumentEventRow[0];
+                }
+                else {
+                    return ((ReportDocumentEventRow[])(base.GetChildRows(this.Table.ChildRelations["ReportDocument_ReportDocumentEvent"])));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public ReportDocumentPaperRow[] GetReportDocumentPaperRows() {
+                if ((this.Table.ChildRelations["ReportDocument_ReportDocumentPaper"] == null)) {
+                    return new ReportDocumentPaperRow[0];
+                }
+                else {
+                    return ((ReportDocumentPaperRow[])(base.GetChildRows(this.Table.ChildRelations["ReportDocument_ReportDocumentPaper"])));
                 }
             }
         }
@@ -2278,6 +3213,358 @@ namespace BL.Logic.Reports {
         }
         
         /// <summary>
+        ///Represents strongly named DataRow class.
+        ///</summary>
+        public partial class ReportDocumentEventRow : global::System.Data.DataRow {
+            
+            private ReportDocumentEventDataTable tableReportDocumentEvent;
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            internal ReportDocumentEventRow(global::System.Data.DataRowBuilder rb) : 
+                    base(rb) {
+                this.tableReportDocumentEvent = ((ReportDocumentEventDataTable)(this.Table));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public int Id {
+                get {
+                    return ((int)(this[this.tableReportDocumentEvent.IdColumn]));
+                }
+                set {
+                    this[this.tableReportDocumentEvent.IdColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public int DocumentId {
+                get {
+                    try {
+                        return ((int)(this[this.tableReportDocumentEvent.DocumentIdColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'DocumentId\' in table \'ReportDocumentEvent\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableReportDocumentEvent.DocumentIdColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string SourcePositionName {
+                get {
+                    try {
+                        return ((string)(this[this.tableReportDocumentEvent.SourcePositionNameColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'SourcePositionName\' in table \'ReportDocumentEvent\' is DBNul" +
+                                "l.", e);
+                    }
+                }
+                set {
+                    this[this.tableReportDocumentEvent.SourcePositionNameColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string SourcePositionExecutorAgentName {
+                get {
+                    try {
+                        return ((string)(this[this.tableReportDocumentEvent.SourcePositionExecutorAgentNameColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'SourcePositionExecutorAgentName\' in table \'ReportDocumentEv" +
+                                "ent\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableReportDocumentEvent.SourcePositionExecutorAgentNameColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string TargetPositionName {
+                get {
+                    try {
+                        return ((string)(this[this.tableReportDocumentEvent.TargetPositionNameColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'TargetPositionName\' in table \'ReportDocumentEvent\' is DBNul" +
+                                "l.", e);
+                    }
+                }
+                set {
+                    this[this.tableReportDocumentEvent.TargetPositionNameColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string TargetPositionExecutorAgentName {
+                get {
+                    try {
+                        return ((string)(this[this.tableReportDocumentEvent.TargetPositionExecutorAgentNameColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'TargetPositionExecutorAgentName\' in table \'ReportDocumentEv" +
+                                "ent\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableReportDocumentEvent.TargetPositionExecutorAgentNameColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public int PaperId {
+                get {
+                    try {
+                        return ((int)(this[this.tableReportDocumentEvent.PaperIdColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'PaperId\' in table \'ReportDocumentEvent\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableReportDocumentEvent.PaperIdColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public ReportDocumentRow ReportDocumentRow {
+                get {
+                    return ((ReportDocumentRow)(this.GetParentRow(this.Table.ParentRelations["ReportDocument_ReportDocumentEvent"])));
+                }
+                set {
+                    this.SetParentRow(value, this.Table.ParentRelations["ReportDocument_ReportDocumentEvent"]);
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public ReportDocumentPaperRow ReportDocumentPaperRow {
+                get {
+                    return ((ReportDocumentPaperRow)(this.GetParentRow(this.Table.ParentRelations["ReportDocumentPaper_ReportDocumentEvent"])));
+                }
+                set {
+                    this.SetParentRow(value, this.Table.ParentRelations["ReportDocumentPaper_ReportDocumentEvent"]);
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsDocumentIdNull() {
+                return this.IsNull(this.tableReportDocumentEvent.DocumentIdColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetDocumentIdNull() {
+                this[this.tableReportDocumentEvent.DocumentIdColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsSourcePositionNameNull() {
+                return this.IsNull(this.tableReportDocumentEvent.SourcePositionNameColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetSourcePositionNameNull() {
+                this[this.tableReportDocumentEvent.SourcePositionNameColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsSourcePositionExecutorAgentNameNull() {
+                return this.IsNull(this.tableReportDocumentEvent.SourcePositionExecutorAgentNameColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetSourcePositionExecutorAgentNameNull() {
+                this[this.tableReportDocumentEvent.SourcePositionExecutorAgentNameColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsTargetPositionNameNull() {
+                return this.IsNull(this.tableReportDocumentEvent.TargetPositionNameColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetTargetPositionNameNull() {
+                this[this.tableReportDocumentEvent.TargetPositionNameColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsTargetPositionExecutorAgentNameNull() {
+                return this.IsNull(this.tableReportDocumentEvent.TargetPositionExecutorAgentNameColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetTargetPositionExecutorAgentNameNull() {
+                this[this.tableReportDocumentEvent.TargetPositionExecutorAgentNameColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsPaperIdNull() {
+                return this.IsNull(this.tableReportDocumentEvent.PaperIdColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetPaperIdNull() {
+                this[this.tableReportDocumentEvent.PaperIdColumn] = global::System.Convert.DBNull;
+            }
+        }
+        
+        /// <summary>
+        ///Represents strongly named DataRow class.
+        ///</summary>
+        public partial class ReportDocumentPaperRow : global::System.Data.DataRow {
+            
+            private ReportDocumentPaperDataTable tableReportDocumentPaper;
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            internal ReportDocumentPaperRow(global::System.Data.DataRowBuilder rb) : 
+                    base(rb) {
+                this.tableReportDocumentPaper = ((ReportDocumentPaperDataTable)(this.Table));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public int Id {
+                get {
+                    return ((int)(this[this.tableReportDocumentPaper.IdColumn]));
+                }
+                set {
+                    this[this.tableReportDocumentPaper.IdColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public int DocumentId {
+                get {
+                    try {
+                        return ((int)(this[this.tableReportDocumentPaper.DocumentIdColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'DocumentId\' in table \'ReportDocumentPaper\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableReportDocumentPaper.DocumentIdColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string Name {
+                get {
+                    try {
+                        return ((string)(this[this.tableReportDocumentPaper.NameColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Name\' in table \'ReportDocumentPaper\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableReportDocumentPaper.NameColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string Description {
+                get {
+                    try {
+                        return ((string)(this[this.tableReportDocumentPaper.DescriptionColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Description\' in table \'ReportDocumentPaper\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableReportDocumentPaper.DescriptionColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public ReportDocumentRow ReportDocumentRow {
+                get {
+                    return ((ReportDocumentRow)(this.GetParentRow(this.Table.ParentRelations["ReportDocument_ReportDocumentPaper"])));
+                }
+                set {
+                    this.SetParentRow(value, this.Table.ParentRelations["ReportDocument_ReportDocumentPaper"]);
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsDocumentIdNull() {
+                return this.IsNull(this.tableReportDocumentPaper.DocumentIdColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetDocumentIdNull() {
+                this[this.tableReportDocumentPaper.DocumentIdColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsNameNull() {
+                return this.IsNull(this.tableReportDocumentPaper.NameColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetNameNull() {
+                this[this.tableReportDocumentPaper.NameColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsDescriptionNull() {
+                return this.IsNull(this.tableReportDocumentPaper.DescriptionColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetDescriptionNull() {
+                this[this.tableReportDocumentPaper.DescriptionColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public ReportDocumentEventRow[] GetReportDocumentEventRows() {
+                if ((this.Table.ChildRelations["ReportDocumentPaper_ReportDocumentEvent"] == null)) {
+                    return new ReportDocumentEventRow[0];
+                }
+                else {
+                    return ((ReportDocumentEventRow[])(base.GetChildRows(this.Table.ChildRelations["ReportDocumentPaper_ReportDocumentEvent"])));
+                }
+            }
+        }
+        
+        /// <summary>
         ///Row event argument class
         ///</summary>
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
@@ -2365,6 +3652,74 @@ namespace BL.Logic.Reports {
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public ReportDocumentSubscriptionRow Row {
+                get {
+                    return this.eventRow;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataRowAction Action {
+                get {
+                    return this.eventAction;
+                }
+            }
+        }
+        
+        /// <summary>
+        ///Row event argument class
+        ///</summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+        public class ReportDocumentEventRowChangeEvent : global::System.EventArgs {
+            
+            private ReportDocumentEventRow eventRow;
+            
+            private global::System.Data.DataRowAction eventAction;
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public ReportDocumentEventRowChangeEvent(ReportDocumentEventRow row, global::System.Data.DataRowAction action) {
+                this.eventRow = row;
+                this.eventAction = action;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public ReportDocumentEventRow Row {
+                get {
+                    return this.eventRow;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataRowAction Action {
+                get {
+                    return this.eventAction;
+                }
+            }
+        }
+        
+        /// <summary>
+        ///Row event argument class
+        ///</summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+        public class ReportDocumentPaperRowChangeEvent : global::System.EventArgs {
+            
+            private ReportDocumentPaperRow eventRow;
+            
+            private global::System.Data.DataRowAction eventAction;
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public ReportDocumentPaperRowChangeEvent(ReportDocumentPaperRow row, global::System.Data.DataRowAction action) {
+                this.eventRow = row;
+                this.eventAction = action;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public ReportDocumentPaperRow Row {
                 get {
                     return this.eventRow;
                 }

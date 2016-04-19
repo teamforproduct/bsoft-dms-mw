@@ -280,6 +280,9 @@ namespace BL.Logic.DocumentCore
                 case EnumDocumentActions.ReportRegistrationCardDocument:
                     cmd = DmsResolver.Current.Get<ReportRegistrationCardDocumentCommand>();
                     break;
+                case EnumDocumentActions.ReportRegisterTransmissionDocuments:
+                    cmd = DmsResolver.Current.Get<ReportRegisterTransmissionDocumentsCommand>();
+                    break;
 
                 case EnumDocumentActions.AddDocumentSendListItem:
                 case EnumDocumentActions.DeleteDocumentLink:

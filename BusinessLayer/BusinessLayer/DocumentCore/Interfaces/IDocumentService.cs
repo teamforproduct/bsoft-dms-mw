@@ -11,7 +11,6 @@ namespace BL.Logic.DocumentCore.Interfaces
     {
         IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging);
         FrontDocument GetDocument(IContext ctx, int documentId, FilterDocumentById filter);
-        Model.DocumentCore.ReportModel.ReportDocument GetDocumentByReport(IContext ctx, int documentId);
         IEnumerable<BaseSystemUIElement> GetModifyMetaData(IContext cxt, FrontDocument doc);
         object ExecuteAction(EnumDocumentActions act, IContext context, object param);
         FrontDocumentEvent GetDocumentEvent(IContext ctx, int eventId);

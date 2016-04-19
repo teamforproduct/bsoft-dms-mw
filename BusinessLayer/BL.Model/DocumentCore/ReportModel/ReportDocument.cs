@@ -1,9 +1,10 @@
-﻿using BL.Model.Reports.Interfaces;
+﻿using BL.Model.DocumentCore.FrontModel;
+using BL.Model.Reports.Interfaces;
 using System.Collections.Generic;
 
 namespace BL.Model.DocumentCore.ReportModel
 {
-    public class ReportDocument : IReports
+    public class ReportDocument : FrontRegistrationFullNumber, IReports
     {
         public ReportDocument()
         {
@@ -28,8 +29,15 @@ namespace BL.Model.DocumentCore.ReportModel
         public string SenderAgentName { get; set; }
         public string SenderAgentPersonName { get; set; }
 
+        public int? RegistrationNumber { get; set; }
+        public string RegistrationNumberSuffix { get; set; }
+        public string RegistrationNumberPrefix { get; set; }
+        public string RegistrationFullNumber { get; set; }
+
         public IEnumerable<ReportDocumentWait> DocumentWaits { get; set; }
         public IEnumerable<ReportDocumentSubscription> DocumentSubscriptions { get; set; }
+
+        public IEnumerable<ReportDocumentEvent> DocumentEvents { get; set; }
 
     }
 }

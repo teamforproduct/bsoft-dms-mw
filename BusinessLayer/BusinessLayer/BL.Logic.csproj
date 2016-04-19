@@ -169,6 +169,7 @@
     <Compile Include="DocumentCore\PaperCommands\ModifyDocumentPaperCommand.cs" />
     <Compile Include="DocumentCore\DocumentTaskService.cs" />
     <Compile Include="DocumentCore\Interfaces\IDocumentTaskService.cs" />
+    <Compile Include="DocumentCore\ReportCommand\ReportRegisterTransmissionDocumentsCommand.cs" />
     <Compile Include="DocumentCore\ReportCommand\ReportRegistrationCardDocumentCommand.cs" />
     <Compile Include="DocumentCore\SendListCommands\AddByStandartSendListDocumentSendListCommand.cs" />
     <Compile Include="DocumentCore\SendListCommands\AddByStandartSendListDocumentRestrictedSendListCommand.cs" />
@@ -225,6 +226,13 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>DataSetCrystalReports.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Reports\DmsReport.cs" />
+    <Compile Include="Reports\ReportRegisterTransmissionDocuments.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ReportRegisterTransmissionDocuments.rpt</DependentUpon>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Reports\ReportRegistrationCardIncomingDocument.cs">
       <AutoGen>True</AutoGen>
@@ -292,15 +300,19 @@
       <DependentUpon>DataSetCrystalReports.xsd</DependentUpon>
     </None>
     <None Include="Reports\DataSetCrystalReports.xsd">
-      <SubType>Designer</SubType>
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>DataSetCrystalReports.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </None>
     <None Include="Reports\DataSetCrystalReports.xss">
       <DependentUpon>DataSetCrystalReports.xsd</DependentUpon>
     </None>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Reports\ReportRegisterTransmissionDocuments.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>ReportRegisterTransmissionDocuments.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Reports\ReportRegistrationCardIncomingDocument.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>ReportRegistrationCardIncomingDocument.cs</LastGenOutput>

@@ -53,11 +53,7 @@ namespace BL.Logic.DocumentCore
             doc.SendLists = null;
             return doc;
         }
-
-        public Model.DocumentCore.ReportModel.ReportDocument GetDocumentByReport(IContext ctx, int documentId)
-        {
-            return _documentDb.GetDocumentByReport(ctx, documentId);
-        }
+        
 
         public IEnumerable<BaseSystemUIElement> GetModifyMetaData(IContext ctx, FrontDocument doc)
         {

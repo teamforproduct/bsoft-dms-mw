@@ -192,6 +192,7 @@ namespace BL.Logic.DependencyInjection
         private void LoadReportCommands()
         {
             Bind<IDocumentCommand>().To<ReportRegistrationCardDocumentCommand>();
+            Bind<IDocumentCommand>().To<ReportRegisterTransmissionDocumentsCommand>();
 
         }
 
