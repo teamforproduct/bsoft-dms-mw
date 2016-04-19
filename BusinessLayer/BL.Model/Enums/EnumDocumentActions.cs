@@ -52,6 +52,11 @@
         RegisterDocument = 100009,
 
         /// <summary>
+        /// Поменять позицию в документе
+        /// </summary>
+        ChangePosition = 100099,
+
+        /// <summary>
         /// Направить для сведения
         /// </summary>
         SendForInformation = 100011,

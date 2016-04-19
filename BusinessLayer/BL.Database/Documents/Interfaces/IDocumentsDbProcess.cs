@@ -35,7 +35,9 @@ namespace BL.Database.Documents.Interfaces
         InternalDocument DeleteDocumentPrepare(IContext context, int documentId);
 
         InternalDocument ChangeExecutorDocumentPrepare(IContext ctx, ChangeExecutor model);
+        InternalDocument ChangePositionDocumentPrepare(IContext ctx, ChangePosition model);
         void ChangeExecutorDocument(IContext ctx, InternalDocument document);
+        void ChangePositionDocument(IContext ctx, ChangePosition model, InternalDocument document);
         void RegisterDocument(IContext context, InternalDocument document);
 
         InternalDocument ChangeIsLaunchPlanDocumentPrepare(IContext context, int documentId);

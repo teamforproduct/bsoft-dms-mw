@@ -423,7 +423,7 @@ namespace BL.Database.Documents
                                                                  subscription.SubscriptionStates == EnumSubscriptionStates.Sign ||
                                                                  subscription.SubscriptionStates == EnumSubscriptionStates.Visa ||
                                                                  subscription.SubscriptionStates == EnumSubscriptionStates.Аgreement ||
-                                                                 subscription.SubscriptionStates == EnumSubscriptionStates.Аpproval, 
+                                                                 subscription.SubscriptionStates == EnumSubscriptionStates.Аpproval,
                                                                  true);
                     var subscriptionDb = new DocumentSubscriptions
                     {

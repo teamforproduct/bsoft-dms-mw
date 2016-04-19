@@ -18,7 +18,9 @@ namespace BL.Database.DBModel.Dictionary
 
         public int Id { get; set; }
         [MaxLength(2000)]
+        [Index("IX_PositionName", 2, IsUnique = true)]
         public string Name { get; set; }
+        [Index("IX_PositionName", 1, IsUnique = true)]
         public Nullable<int> PositionId { get; set; }
         [MaxLength(2000)]
         public string Color { get; set; }

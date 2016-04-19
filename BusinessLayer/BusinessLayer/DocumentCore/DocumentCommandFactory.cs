@@ -59,6 +59,9 @@ namespace BL.Logic.DocumentCore
                 case EnumDocumentActions.ChangeExecutor:
                     cmd = DmsResolver.Current.Get<ChangeExecutorDocumentCommand>();
                     break;
+                case EnumDocumentActions.ChangePosition:
+                    cmd = DmsResolver.Current.Get<ChangePositionDocumentCommand>();
+                    break;
                 case EnumDocumentActions.CopyDocument:
                     cmd = DmsResolver.Current.Get<CopyDocumentCommand>();
                     break;

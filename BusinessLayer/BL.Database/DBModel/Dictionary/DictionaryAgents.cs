@@ -19,6 +19,7 @@ namespace BL.Database.DBModel.Dictionary
 
         public int Id { get; set; }
         [MaxLength(2000)]
+        [Index("IX_Name", 1, IsUnique = true)]
         public string Name { get; set; }
         public Nullable<int> ResidentTypeId { get; set; }
         public bool IsCompany { get; set; }

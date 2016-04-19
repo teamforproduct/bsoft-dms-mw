@@ -252,6 +252,30 @@
     <Compile Include="Migrations\201604111010582_ExecutorInFiles2.Designer.cs">
       <DependentUpon>201604111010582_ExecutorInFiles2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201604191555443_AdminIndex.cs" />
+    <Compile Include="Migrations\201604191555443_AdminIndex.Designer.cs">
+      <DependentUpon>201604191555443_AdminIndex.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201604191652384_TemplateIndex.cs" />
+    <Compile Include="Migrations\201604191652384_TemplateIndex.Designer.cs">
+      <DependentUpon>201604191652384_TemplateIndex.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201604191831015_SystemIndex.cs" />
+    <Compile Include="Migrations\201604191831015_SystemIndex.Designer.cs">
+      <DependentUpon>201604191831015_SystemIndex.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201604191832529_SystemIndex1.cs" />
+    <Compile Include="Migrations\201604191832529_SystemIndex1.Designer.cs">
+      <DependentUpon>201604191832529_SystemIndex1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201604191845418_SystemIndex2.cs" />
+    <Compile Include="Migrations\201604191845418_SystemIndex2.Designer.cs">
+      <DependentUpon>201604191845418_SystemIndex2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201604191942285_DictIndex.cs" />
+    <Compile Include="Migrations\201604191942285_DictIndex.Designer.cs">
+      <DependentUpon>201604191942285_DictIndex.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SystemDb\ISystemDbProcess.cs" />
@@ -335,6 +359,24 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201604111010582_ExecutorInFiles2.resx">
       <DependentUpon>201604111010582_ExecutorInFiles2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604191555443_AdminIndex.resx">
+      <DependentUpon>201604191555443_AdminIndex.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604191652384_TemplateIndex.resx">
+      <DependentUpon>201604191652384_TemplateIndex.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604191831015_SystemIndex.resx">
+      <DependentUpon>201604191831015_SystemIndex.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604191832529_SystemIndex1.resx">
+      <DependentUpon>201604191832529_SystemIndex1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604191845418_SystemIndex2.resx">
+      <DependentUpon>201604191845418_SystemIndex2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604191942285_DictIndex.resx">
+      <DependentUpon>201604191942285_DictIndex.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

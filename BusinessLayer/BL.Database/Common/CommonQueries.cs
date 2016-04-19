@@ -167,11 +167,15 @@ namespace BL.Database.Common
                     }).ToList();
         }
 
-        public static IQueryable<FrontDocumentAccess> GetDocumentAccesses(IContext ctx, DmsContext dbContext)
+        public static IQueryable<FrontDocumentAccess> GetDocumentAccesses(IContext ctx, DmsContext dbContext, bool isAll = false)
         {
+            var qry = dbContext.DocumentAccessesSet.AsQueryable();
+            if (!isAll && !ctx.IsAdmin)
+            {
+                qry = qry.Where(x => ctx.CurrentPositionsIdList.Contains(x.PositionId));
+            }
             return
-                dbContext.DocumentAccessesSet.Where(x => ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.PositionId))
-                .Select(acc => new FrontDocumentAccess
+                qry.Select(acc => new FrontDocumentAccess
                 {
                     Id = acc.Id,
                     PositionId = acc.PositionId,
@@ -696,7 +700,9 @@ namespace BL.Database.Common
 
         public static IEnumerable<FrontDocument> GetLinkedDocuments(IContext context, DmsContext dbContext, int linkId)
         {
-            var items = CommonQueries.GetDocumentQuery(dbContext, context)
+            var acc = CommonQueries.GetDocumentAccesses(context, dbContext,true);
+
+            var items = CommonQueries.GetDocumentQuery(dbContext, context, acc)
                     .Where(x => x.Doc.LinkId == linkId /*&& context.CurrentPositionsIdList.Contains(x.Acc.PositionId)*/)
                         .Select(y => new FrontDocument
                         {
@@ -732,6 +738,8 @@ namespace BL.Database.Common
                 var links = x.Links.ToList();
                 links.ForEach(y => CommonQueries.ChangeRegistrationFullNumber(y));
                 x.Links = links;
+
+                x.Accesses = acc.Where(y => y.DocumentId == x.Id).ToList();
             });
 
             return items;

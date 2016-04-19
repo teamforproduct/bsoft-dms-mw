@@ -17,8 +17,10 @@ namespace BL.Database.DBModel.Dictionary
 
         public int Id { get; set; }
         [MaxLength(2000)]
+        [Index("IX_FullName", 1, IsUnique = true)]
         public string FullName { get; set; }
         [MaxLength(2000)]
+        [Index("IX_TaxCode", 1, IsUnique = true)]
         public string TaxCode { get; set; }
         [MaxLength(2000)]
         public string OKPOCode { get; set; }

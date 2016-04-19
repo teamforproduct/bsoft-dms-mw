@@ -128,6 +128,7 @@ namespace BL.Logic.DependencyInjection
             Bind<IDocumentCommand>().To<AddNoteDocumentCommand>();
             Bind<IDocumentCommand>().To<SendMessageDocumentCommand>();
             Bind<IDocumentCommand>().To<ChangeExecutorDocumentCommand>();
+            Bind<IDocumentCommand>().To<ChangePositionDocumentCommand>();
             Bind<IDocumentCommand>().To<RegisterDocumentCommand>();
             Bind<IDocumentCommand>().To<LaunchPlanDocumentCommand>();
             Bind<IDocumentCommand>().To<StopPlanDocumentCommand>();

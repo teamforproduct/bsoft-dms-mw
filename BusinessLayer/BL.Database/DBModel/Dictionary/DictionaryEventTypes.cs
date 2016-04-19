@@ -10,6 +10,7 @@ namespace BL.Database.DBModel.Dictionary
         [MaxLength(2000)]
         public string Code { get; set; }
         [MaxLength(2000)]
+        [Index("IX_Name", 1, IsUnique = true)]
         public string Name { get; set; }
         [MaxLength(2000)]
         public string SourceDescription { get; set; }

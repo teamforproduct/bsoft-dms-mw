@@ -13,7 +13,10 @@ namespace BL.Database.DBModel.Template
     public class TemplateDocumentRestrictedSendLists
     {
         public int Id { get; set; }
+        [Index("IX_DocumentPosition", 1, IsUnique = true)]
         public int DocumentId { get; set; }
+        [Index("IX_DocumentPosition", 2, IsUnique = true)]
+        [Index("IX_PositionId", 1)]
         public Nullable<int> PositionId { get; set; }
         public int AccessLevelId { get; set; }
         public int LastChangeUserId { get; set; }
