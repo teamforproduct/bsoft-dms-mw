@@ -11,8 +11,13 @@ namespace BL.Database.DBModel.Admin
     public class AdminSubordinations
     {
         public int Id { get; set; }
+        [Index("IX_SourceTargetType", 1, IsUnique = true)]
         public int SourcePositionId { get; set; }
+        [Index("IX_SourceTargetType", 2, IsUnique = true)]
+        [Index("IX_TargetPositionId", 1)]
         public int TargetPositionId { get; set; }
+        [Index("IX_SourceTargetType", 3, IsUnique = true)]
+        [Index("IX_SubordinationTypeId", 1)]
         public int SubordinationTypeId { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }

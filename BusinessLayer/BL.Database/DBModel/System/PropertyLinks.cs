@@ -11,9 +11,13 @@ namespace BL.Database.DBModel.System
     public partial class PropertyLinks
     {
         public int Id { get; set; }
+        [Index("IX_ObjectPropertyFilers", 2, IsUnique = true)]
+        [Index("IX_PropertyId", 1)]
         public int PropertyId { get; set; }
+        [Index("IX_ObjectPropertyFilers", 1, IsUnique = true)]
         public int ObjectId { get; set; }
         [MaxLength(2000)]
+        [Index("IX_ObjectPropertyFilers", 3, IsUnique = true)]
         public string Filers { get; set; }
         public bool IsMandatory { get; set; }
         public int LastChangeUserId { get; set; }

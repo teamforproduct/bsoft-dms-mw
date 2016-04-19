@@ -11,8 +11,10 @@ namespace BL.Database.DBModel.Dictionary
     public class CustomDictionaries
     {
         public int Id { get; set; }
+        [Index("IX_DictionaryTypeCode", 1, IsUnique = true)]
         public int DictionaryTypeId { get; set; }
         [MaxLength(2000)]
+        [Index("IX_DictionaryTypeCode", 2, IsUnique = true)]
         public string Code { get; set; }
         [MaxLength(2000)]
         public string Description { get; set; }

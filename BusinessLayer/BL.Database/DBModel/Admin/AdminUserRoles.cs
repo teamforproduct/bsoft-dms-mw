@@ -8,8 +8,12 @@ namespace BL.Database.DBModel.Admin
     public class AdminUserRoles
     {
         public int Id { get; set; }
+        [Index("IX_UserRoleStartDate", 1, IsUnique = true)]
         public int UserId { get; set; }
+        [Index("IX_UserRoleStartDate", 2, IsUnique = true)]
+        [Index("IX_RoleId", 1)]
         public int RoleId { get; set; }
+        [Index("IX_UserRoleStartDate", 3, IsUnique = true)]
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public int LastChangeUserId { get; set; }

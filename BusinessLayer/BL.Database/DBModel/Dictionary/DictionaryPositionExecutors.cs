@@ -12,12 +12,16 @@ namespace BL.Database.DBModel.Dictionary
     public class DictionaryPositionExecutors
     {
         public int Id { get; set; }
+        [Index("IX_PositionAgentStartDate", 2, IsUnique = true)]
+        [Index("IX_AgentId", 1)]
         public int AgentId { get; set; }
+        [Index("IX_PositionAgentStartDate", 1, IsUnique = true)]
         public int PositionId { get; set; }
         public int PositionExecutorTypeId { get; set; }
         public int AccessLevelId { get; set; }
         [MaxLength(2000)]
         public string Description { get; set; }
+        [Index("IX_PositionAgentStartDate", 3, IsUnique = true)]
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public bool IsActive { get; set; }
