@@ -65,8 +65,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Common\AdminCore\LanguageService.cs" />
-    <Compile Include="Common\AdminCore\Interfaces\ILanguageService.cs" />
+    <Compile Include="AdminCore\AdminService.cs" />
+    <Compile Include="AdminCore\Interfaces\IAdminService.cs" />
+    <Compile Include="AdminCore\Interfaces\ILanguageService.cs" />
+    <Compile Include="AdminCore\LanguageService.cs" />
     <Compile Include="Common\BasePropertCommand.cs" />
     <Compile Include="Common\BaseDictionaryCommand.cs" />
     <Compile Include="Common\BaseDocumentCommand.cs" />
@@ -74,8 +76,6 @@
     <Compile Include="Common\CommonDocumentUtilities.cs" />
     <Compile Include="Common\CommonSystemUtilities.cs" />
     <Compile Include="DependencyInjection\LogicModule.cs" />
-    <Compile Include="Common\AdminCore\AdminService.cs" />
-    <Compile Include="Common\AdminCore\Interfaces\IAdminService.cs" />
     <Compile Include="DictionaryCore\AddressType\AddDictionaryAddressTypeCommand.cs" />
     <Compile Include="DictionaryCore\AddressType\DeleteDictionaryAddressTypeCommand.cs" />
     <Compile Include="DictionaryCore\AddressType\ModifyDictionaryAddressTypeCommand.cs" />
