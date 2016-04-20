@@ -7,24 +7,24 @@ using BL.Logic.Common;
 
 namespace BL.Logic.DocumentCore.AdditionalCommands
 {
-    public class AddDocumentLinkCommand: BaseDocumentCommand
+    public class DeleteDocumentLinkCommand: BaseDocumentCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
 
-        public AddDocumentLinkCommand(IDocumentOperationsDbProcess operationDb)
+        public DeleteDocumentLinkCommand(IDocumentOperationsDbProcess operationDb)
         {
             _operationDb = operationDb;
         }
 
-        private AddDocumentLink Model
+        private int Model
         {
             get
             {
-                if (!(_param is AddDocumentLink))
+                if (!(_param is int))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (AddDocumentLink) _param;
+                return (int) _param;
             }
         }
 
@@ -41,14 +41,10 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override bool CanExecute()
         {
-            _document = _operationDb.AddDocumentLinkPrepare(_context, Model);
-            if (_document?.Id == null || _document?.ParentDocumentId == null)
+            _document = _operationDb.DeleteDocumentLinkPrepare(_context, Model);
+            if (_document?.Id == null || _document?.LinkId == null)
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
-            }
-            if (_document.LinkId.HasValue && _document.ParentDocumentLinkId.HasValue && (_document.LinkId == _document.ParentDocumentLinkId))
-            {
-                throw new DocumentHasAlreadyHasLink();
             }
             _context.SetCurrentPosition(_document.ExecutorPositionId);
             _admin.VerifyAccess(_context, CommandType);
@@ -61,8 +57,9 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override object Execute()
         {
+            //if (_document.L)
             CommonDocumentUtilities.SetLastChange(_context, _document);
-            _operationDb.AddDocumentLink(_context, _document);
+            _operationDb.DeleteDocumentLink(_context, _document);
             return null;
         }
 

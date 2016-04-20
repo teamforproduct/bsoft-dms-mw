@@ -74,6 +74,9 @@ namespace BL.Logic.DocumentCore
                 case EnumDocumentActions.AddDocumentLink:
                     cmd = DmsResolver.Current.Get<AddDocumentLinkCommand>();
                     break;
+                case EnumDocumentActions.DeleteDocumentLink:
+                    cmd = DmsResolver.Current.Get<DeleteDocumentLinkCommand>();
+                    break;
                 case EnumDocumentActions.AddDocumentRestrictedSendList:
                     cmd = DmsResolver.Current.Get<AddDocumentRestrictedSendListCommand>();
                     break;
@@ -288,7 +291,6 @@ namespace BL.Logic.DocumentCore
                     break;
 
                 case EnumDocumentActions.AddDocumentSendListItem:
-                case EnumDocumentActions.DeleteDocumentLink:
                     return null;
                     break;
                 default:
