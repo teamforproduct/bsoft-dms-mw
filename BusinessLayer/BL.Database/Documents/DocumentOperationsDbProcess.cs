@@ -1238,7 +1238,81 @@ namespace BL.Database.Documents
             }
         }
 
+        public InternalDocument DeleteDocumentLinkPrepare(IContext context, int documentId)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var doc = CommonQueries.GetDocumentQuery(dbContext, context)
+                    .Where(x => x.Doc.Id == documentId)
+                    .Select(x => new InternalDocument
+                    {
+                        Id = x.Doc.Id,
+                        ExecutorPositionId = x.Doc.ExecutorPositionId,
+                        LinkId = x.Doc.LinkId,
+                        
+                    }).FirstOrDefault();
+
+                if (doc?.LinkId == null) return null;
+
+                var calc = dbContext.DocumentsSet.Where(x => x.LinkId == doc.LinkId && x.Id != doc.Id).GroupBy(x => true)
+                    .Select(x => new { Count = x.Count(), MinId = x.Min(y => y.Id) }).First();
+                doc.LinkedDocumentsCount = calc.Count;
+                doc.NewLinkId = calc.MinId;
+                
+                return doc;
+            }
+        }
+
+
+
         public void AddDocumentLink(IContext context, InternalDocument model)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var link = new DocumentLinks
+                {
+                    DocumentId = model.Id,
+                    ParentDocumentId = model.ParentDocumentId,
+                    LinkTypeId = model.LinkTypeId,
+                    LastChangeUserId = model.LastChangeUserId,
+                    LastChangeDate = model.LastChangeDate,
+                };
+                dbContext.DocumentLinksSet.Add(link);
+                if (!model.ParentDocumentLinkId.HasValue)
+                {
+                    dbContext.DocumentsSet.Where(x => x.Id == model.ParentDocumentId).ToList()  //TODO OPTIMIZE
+                        .ForEach(x =>
+                        {
+                            x.LinkId = model.ParentDocumentId;
+                            x.LastChangeUserId = model.LastChangeUserId;
+                            x.LastChangeDate = model.LastChangeDate;
+                        });
+                }
+                if (!model.LinkId.HasValue)
+                {
+                    dbContext.DocumentsSet.Where(x => x.Id == model.Id).ToList()
+                        .ForEach(x =>
+                        {
+                            x.LinkId = model.ParentDocumentId;
+                            x.LastChangeUserId = model.LastChangeUserId;
+                            x.LastChangeDate = model.LastChangeDate;
+                        });
+                }
+                else
+                {
+                    dbContext.DocumentsSet.Where(x => x.LinkId == model.LinkId).ToList()
+                        .ForEach(x =>
+                        {
+                            x.LinkId = model.ParentDocumentId;
+                            x.LastChangeUserId = model.LastChangeUserId;
+                            x.LastChangeDate = model.LastChangeDate;
+                        });
+                }
+                dbContext.SaveChanges();
+            }
+        }
+
+        public void DeleteDocumentLink(IContext context, InternalDocument model)
         {
             using (var dbContext = new DmsContext(context))
             {
