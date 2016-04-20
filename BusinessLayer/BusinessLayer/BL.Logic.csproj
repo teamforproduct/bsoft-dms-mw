@@ -76,8 +76,6 @@
     <Compile Include="Common\CommonDocumentUtilities.cs" />
     <Compile Include="Common\CommonSystemUtilities.cs" />
     <Compile Include="DependencyInjection\LogicModule.cs" />
-    <Compile Include="AdminCore\AdminService.cs" />
-    <Compile Include="AdminCore\Interfaces\IAdminService.cs" />
     <Compile Include="DictionaryCore\AddressType\AddDictionaryAddressTypeCommand.cs" />
     <Compile Include="DictionaryCore\AddressType\DeleteDictionaryAddressTypeCommand.cs" />
     <Compile Include="DictionaryCore\AddressType\ModifyDictionaryAddressTypeCommand.cs" />
