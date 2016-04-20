@@ -16,7 +16,7 @@ namespace BL.Database.DBModel.Document
             this.DoneSubscription = new HashSet<DocumentSubscriptions>();
             this.StartSendList = new HashSet<DocumentSendLists>();
             this.CloseSendList = new HashSet<DocumentSendLists>();
-            this.EventReaders = new HashSet<DocumentEventReaders>();
+            //this.EventReaders = new HashSet<DocumentEventReaders>();
             this.ChildEvents = new HashSet<DocumentEvents>();
         }
 
@@ -24,6 +24,7 @@ namespace BL.Database.DBModel.Document
         public int DocumentId { get; set; }
         public int EventTypeId { get; set; }
         public DateTime CreateDate { get; set; }
+        [Index("IX_Date", 1)]
         public DateTime Date { get; set; }
         public Nullable<int> TaskId { get; set; }
         //public string TaskName { get; set; }
@@ -89,8 +90,8 @@ namespace BL.Database.DBModel.Document
         public virtual ICollection<DocumentSendLists> StartSendList { get; set; }
         [ForeignKey("CloseEventId")]
         public virtual ICollection<DocumentSendLists> CloseSendList { get; set; }
-        [ForeignKey("EventId")]
-        public virtual ICollection<DocumentEventReaders> EventReaders { get; set; }
+//        [ForeignKey("EventId")]
+//        public virtual ICollection<DocumentEventReaders> EventReaders { get; set; }
 
         [ForeignKey("PaperId")]
         public virtual DocumentPapers Paper { get; set; }

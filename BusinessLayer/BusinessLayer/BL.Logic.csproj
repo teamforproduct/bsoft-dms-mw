@@ -65,8 +65,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AdminCore\LanguageService.cs" />
+    <Compile Include="AdminCore\AdminService.cs" />
+    <Compile Include="AdminCore\Interfaces\IAdminService.cs" />
     <Compile Include="AdminCore\Interfaces\ILanguageService.cs" />
+    <Compile Include="AdminCore\LanguageService.cs" />
     <Compile Include="Common\BasePropertCommand.cs" />
     <Compile Include="Common\BaseDictionaryCommand.cs" />
     <Compile Include="Common\BaseDocumentCommand.cs" />
