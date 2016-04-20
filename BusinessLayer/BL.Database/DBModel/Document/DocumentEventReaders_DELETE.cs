@@ -8,7 +8,7 @@ using BL.Database.DBModel.Dictionary;
 
 namespace BL.Database.DBModel.Document
 {
-    public class DocumentEventReaders
+    public class DocumentEventReaders_DELETE
     {
         public int Id { get; set; }
         public int EventId { get; set; }

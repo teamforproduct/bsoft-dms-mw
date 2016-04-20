@@ -8,8 +8,11 @@ namespace BL.Database.DBModel.Document
     public class DocumentSavedFilters
     {
         public int Id { get; set; }
+        [Index("IX_IconPosition", 2, IsUnique = true)]
+        [Index("IX_PositionId", 1)]
         public Nullable<int> PositionId { get; set; }
         [MaxLength(2000)]
+        [Index("IX_IconPosition", 1, IsUnique = true)]
         public string Icon { get; set; }
         [MaxLength(2000)]
         public string Filter { get; set; }
