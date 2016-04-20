@@ -687,8 +687,12 @@ namespace BL.Logic.Common
             if (string.IsNullOrEmpty(formula)) return formula;
             ///Example @/{f/DocumentDirection=Incoming/f}{v//v}/@
             string pattern = "@/(.*?)/@";
-            string patternFilter = "{f/(.*?)/f}";
-            string patternFormula = "{v/(.*?)/v}";
+            string patternFilterSymbol = "c";
+            string patternFilter = "{" + patternFilterSymbol + "/(.*?)/" + patternFilterSymbol + "}";
+            string patternFormulaSymbol = "v";
+            string patternFormula = "{" + patternFormulaSymbol + "/(.*?)/" + patternFormulaSymbol + "}";
+            string patternLengthSymbol = "l";
+            string patternLength = "{" + patternLengthSymbol + "/(.*?)/" + patternLengthSymbol + "}";
             string res = string.Copy(formula);
             foreach (Match mFormula in Regex.Matches(formula, pattern))
             {
@@ -700,18 +704,30 @@ namespace BL.Logic.Common
                 {
                     foreach (Match mFilter in mFilters)
                     {
-                        var filter = mFilter.Value.Replace("{f/", string.Empty).Replace("/f}", "");
-                        var template = CommonDocumentUtilities.GetFilterTemplateByDocument(doc).ToArray();
-                        if (CommonSystemUtilities.IsContainsInFilter(filter, template))
+                        if (!string.IsNullOrEmpty(mFilter.Value))
                         {
-                            isContainsInFilter = true;
-                            break;
+                            var filter = mFilter.Value.Replace("{f/", string.Empty).Replace("/f}", "");
+                            var template = CommonDocumentUtilities.GetFilterTemplateByDocument(doc).ToArray();
+                            if (CommonSystemUtilities.IsContainsInFilter(filter, template))
+                            {
+                                isContainsInFilter = true;
+                                break;
+                            }
                         }
                     }
                 }
 
                 if (isContainsInFilter)
                 {
+                    var mLengths = Regex.Matches(mFormula.Value, patternLength);
+                    int length = 0;
+                    foreach (Match mLength in mLengths)
+                    {
+                        if (!string.IsNullOrEmpty(mLength.Value))
+                        {
+                            int.TryParse(mLength.Value.Replace("{l/", string.Empty).Replace("/l}", ""), out length);
+                        }
+                    }
                     var mFormulaValues = Regex.Matches(mFormula.Value, patternFormula);
                     foreach (Match mFormulaValue in mFormulaValues)
                     {
@@ -720,7 +736,7 @@ namespace BL.Logic.Common
                         switch (formulaValue)
                         {
                             case EnumFormulas.RegistrationJournalId:
-                                newValue = doc.RegistrationJournalId.ToString();
+                                newValue = doc.RegistrationJournalId.GetValueOrDefault().ToString("D" + length);
                                 break;
                             case EnumFormulas.RegistrationJournalIndex:
                                 newValue = doc.RegistrationJournalIndex;
@@ -734,7 +750,16 @@ namespace BL.Logic.Common
             }
             return res;
         }
-
+        private static string ReplacePatternFilterSymbol(string input, string symbol)
+        {
+            if (string.IsNullOrEmpty(input)) input = string.Empty;
+            return input.Replace("{" + symbol + "/", string.Empty).Replace("/" + symbol + "}", "");
+        }
+        private static string GetPatternFilterSymbol(string input, string symbol)
+        {
+            if (string.IsNullOrEmpty(input)) input = string.Empty;
+            return input.Replace("{" + symbol + "/", string.Empty).Replace("/" + symbol + "}", "");
+        }
         /// <summary>
         /// Формирует список значений документа для фильтрации в динамических свойствах, формирование регистрационого номера по формуле
         /// </summary>
