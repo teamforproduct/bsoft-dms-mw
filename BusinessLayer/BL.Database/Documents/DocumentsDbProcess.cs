@@ -1471,6 +1471,53 @@ namespace BL.Database.Documents
                 }
                 var regJournal = dbContext.DictionaryRegistrationJournalsSet
                     .Where(x => x.Id == model.RegistrationJournalId)
+                    .Select(x => new { x.Id, x.NumerationPrefixFormula, x.PrefixFormula, x.SuffixFormula }).FirstOrDefault();
+
+                if (regJournal != null)
+                {
+                    doc.RegistrationJournalId = regJournal.Id;
+                    doc.NumerationPrefixFormula = regJournal.NumerationPrefixFormula;
+                    doc.RegistrationJournalPrefixFormula = regJournal.PrefixFormula;
+                    doc.RegistrationJournalSuffixFormula = regJournal.SuffixFormula;
+                }
+                else
+                {
+                    doc.RegistrationJournalId = null;
+                }
+                return doc;
+            }
+        }
+
+        public InternalDocumnRegistration RegisterModelDocumentPrepare(IContext context, RegisterDocument model)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var doc = CommonQueries.GetDocumentQuery(dbContext, context)
+                    .Where(x => x.Doc.Id == model.DocumentId)
+                    .Select(x => new InternalDocument
+                    {
+                        Id = x.Doc.Id,
+                        DocumentSubjectId = x.Doc.DocumentSubjectId,
+                        Description = x.Doc.Description,
+                        IsRegistered = x.Doc.IsRegistered,
+                        ExecutorPositionId = x.Doc.ExecutorPositionId,
+                        SenderAgentId = x.Doc.SenderAgentId,
+                        SenderAgentPersonId = x.Doc.SenderAgentPersonId,
+                        SenderNumber = x.Doc.SenderNumber,
+                        SenderDate = x.Doc.SenderDate,
+                        Addressee = x.Doc.Addressee,
+                        LinkId = x.Doc.LinkId,
+
+                        DocumentTypeId = x.Templ.DocumentTypeId,
+                        DocumentDirection = (EnumDocumentDirections)x.Templ.DocumentDirectionId,
+                    }).FirstOrDefault();
+
+                if (doc == null)
+                {
+                    return null;
+                }
+                var regJournal = dbContext.DictionaryRegistrationJournalsSet
+                    .Where(x => x.Id == model.RegistrationJournalId)
                     .Select(x => new { x.Id, x.NumerationPrefixFormula, x.PrefixFormula, x.SuffixFormula, x.Index }).FirstOrDefault();
 
                 if (regJournal != null)
@@ -1479,13 +1526,19 @@ namespace BL.Database.Documents
                     doc.NumerationPrefixFormula = regJournal.NumerationPrefixFormula;
                     doc.RegistrationJournalPrefixFormula = regJournal.PrefixFormula;
                     doc.RegistrationJournalSuffixFormula = regJournal.SuffixFormula;
-                    doc.RegistrationJournalIndex = regJournal.Index;
                 }
                 else
                 {
                     doc.RegistrationJournalId = null;
                 }
-                return doc;
+
+                var res = new InternalDocumnRegistration
+                {
+                    RegistrationJournalId = doc.RegistrationJournalId,
+                    RegistrationJournalIndex = regJournal == null ? null : regJournal.Index
+                };
+
+                return res;
             }
         }
 

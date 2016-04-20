@@ -226,6 +226,7 @@
     <Compile Include="DocumentCore\IncomingModel\ModifyTemplateDocumentRestrictedSendLists.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyTemplateDocumentSendLists.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyTemplateDocumentTasks.cs" />
+    <Compile Include="DocumentCore\InternalModel\InternalDocumnRegistration.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentPaperEvent.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentPaperList.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentTag.cs" />

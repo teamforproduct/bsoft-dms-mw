@@ -104,7 +104,6 @@ namespace BL.Model.DocumentCore.InternalModel
         public DateTime CreateDate { get; set; }
         public bool IsRegistered { get; set; }
         public int? RegistrationJournalId { get; set; }
-        public string RegistrationJournalIndex { get; set; }
         public string NumerationPrefixFormula { get; set; }
         public int? RegistrationNumber { get; set; }
         public string RegistrationNumberSuffix { get; set; }
