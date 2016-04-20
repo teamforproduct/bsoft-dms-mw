@@ -21,6 +21,7 @@ using BL.Database.FileWorker;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.FullTextSearch;
+using BL.Model.SystemCore;
 
 namespace BL.Database.Common
 {
@@ -77,7 +78,7 @@ namespace BL.Database.Common
             return qry;
         }
 
-        private static IQueryable<FilterDocumentFileIdentity> GetDocumentFilesMaxVersion(DmsContext dbContext, FilterDocumentAttachedFile filter)
+        private static IQueryable<FilterDocumentFileIdentity> GetDocumentFilesMaxVersion(IContext ctx, DmsContext dbContext, FilterDocumentAttachedFile filter)
         {
             var qry = dbContext.DocumentFilesSet.AsQueryable();
 
@@ -94,16 +95,20 @@ namespace BL.Database.Common
                 }
             }
 
+            qry = from fl in qry
+                  where dbContext.DocumentAccessesSet.Where(x => ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.PositionId)).Select(x => x.DocumentId).Contains(fl.DocumentId)
+                  select fl;
+
             return qry
                 .GroupBy(g => new { g.DocumentId, g.OrderNumber })
                 .Select(x => new FilterDocumentFileIdentity { DocumentId = x.Key.DocumentId, OrderInDocument = x.Key.OrderNumber, Version = x.Max(s => s.Version) });
         }
 
-        public static IEnumerable<FrontDocumentAttachedFile> GetDocumentFiles(DmsContext dbContext, FilterDocumentAttachedFile filter)
+        public static IEnumerable<FrontDocumentAttachedFile> GetDocumentFiles(IContext ctx, DmsContext dbContext, FilterDocumentAttachedFile filter, UIPaging paging = null)
         {
-            var sq = GetDocumentFilesMaxVersion(dbContext, filter);
+            var sq = GetDocumentFilesMaxVersion(ctx, dbContext, filter);
 
-            var files =
+            var qry =
                  sq.Join(dbContext.DocumentFilesSet, sub => new { sub.DocumentId, OrderNumber = sub.OrderInDocument, sub.Version },
                     fl => new { fl.DocumentId, fl.OrderNumber, fl.Version },
                     (s, f) => new { fl = f })
@@ -134,14 +139,24 @@ namespace BL.Database.Common
                         RegistrationFullNumber = "#" + x.fl.Document.Id,
                         ExecutorPositionName = x.fl.ExecutorPosition.Name,
                         ExecutorPositionExecutorAgentName = x.fl.ExecutorPositionExecutorAgent.Name,
-                    }).ToList();
+                    });
+
+            if (paging != null)
+            {
+                paging.TotalItemsCount = qry.Count();
+
+                qry = qry.OrderByDescending(x => x.LastChangeDate)
+                    .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
+            }
+
+            var files = qry.ToList();
             files.ForEach(x => CommonQueries.ChangeRegistrationFullNumber(x));
             return files;
         }
 
-        public static IEnumerable<InternalDocumentAttachedFile> GetInternalDocumentFiles(DmsContext dbContext, int documentId)
+        public static IEnumerable<InternalDocumentAttachedFile> GetInternalDocumentFiles(IContext ctx, DmsContext dbContext, int documentId)
         {
-            var sq = GetDocumentFilesMaxVersion(dbContext, new FilterDocumentAttachedFile { DocumentId = new List<int> { documentId } });
+            var sq = GetDocumentFilesMaxVersion(ctx, dbContext, new FilterDocumentAttachedFile { DocumentId = new List<int> { documentId } });
 
             return
                 sq.Join(dbContext.DocumentFilesSet, sub => new { sub.DocumentId, OrderNumber = sub.OrderInDocument, sub.Version },
@@ -700,7 +715,7 @@ namespace BL.Database.Common
 
         public static IEnumerable<FrontDocument> GetLinkedDocuments(IContext context, DmsContext dbContext, int linkId)
         {
-            var acc = CommonQueries.GetDocumentAccesses(context, dbContext,true);
+            var acc = CommonQueries.GetDocumentAccesses(context, dbContext, true);
 
             var items = CommonQueries.GetDocumentQuery(dbContext, context, acc)
                     .Where(x => x.Doc.LinkId == linkId /*&& context.CurrentPositionsIdList.Contains(x.Acc.PositionId)*/)
@@ -1131,7 +1146,7 @@ namespace BL.Database.Common
                 throw new Model.Exception.DocumentNotFoundOrUserHasNoAccess();
             }
 
-            doc.DocumentFiles = CommonQueries.GetInternalDocumentFiles(dbContext, documentId);
+            doc.DocumentFiles = CommonQueries.GetInternalDocumentFiles(ctx, dbContext, documentId);
 
             doc.SendLists = CommonQueries.GetInternalDocumentSendList(dbContext, new FilterDocumentSendList { DocumentId = new List<int> { documentId } });
 

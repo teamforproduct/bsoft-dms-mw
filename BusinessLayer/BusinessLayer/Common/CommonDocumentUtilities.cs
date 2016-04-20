@@ -684,6 +684,7 @@ namespace BL.Logic.Common
 
         private static string FormationRegistrationNumberByFormula(string formula, InternalDocument doc)
         {
+            if (string.IsNullOrEmpty(formula)) return formula;
             ///Example @/{f/DocumentDirection=Incoming/f}{v//v}/@
             string pattern = "@/(.*?)/@";
             string patternFilter = "{f/(.*?)/f}";
@@ -716,7 +717,7 @@ namespace BL.Logic.Common
                     {
                         var formulaValue = (EnumFormulas)Enum.Parse(typeof(EnumFormulas), mFormulaValue.Value.Replace("{v/", string.Empty).Replace("/v}", ""));
 
-                        switch(formulaValue)
+                        switch (formulaValue)
                         {
                             case EnumFormulas.RegistrationJournalId:
                                 newValue = doc.RegistrationJournalId.ToString();
@@ -740,17 +741,24 @@ namespace BL.Logic.Common
         /// <returns></returns>
         public static IEnumerable<string> GetFilterTemplateByDocument(InternalDocument doc)
         {
-            return new string[] { $"{nameof(doc.DocumentTypeId)}={doc.DocumentTypeId}", $"{nameof(doc.DocumentDirection)}={doc.DocumentDirection}", $"{nameof(doc.DocumentSubjectId)}={doc.DocumentSubjectId}" };
+            var res = new List<string>();
+            if (doc.DocumentTypeId > 0)
+                res.Add($"{nameof(doc.DocumentTypeId)}={doc.DocumentTypeId}");
+            if (doc.DocumentDirection > 0)
+                res.Add($"{nameof(doc.DocumentDirection)}={doc.DocumentDirection}");
+            if (doc.DocumentSubjectId.HasValue && doc.DocumentSubjectId > 0)
+                res.Add($"{nameof(doc.DocumentSubjectId)}={doc.DocumentSubjectId}");
+            return res;
         }
 
         public static IEnumerable<string> GetFilterTemplateByDocument(FrontDocument doc)
         {
             var res = new List<string>();
-            if (doc.DocumentTypeId.HasValue)
+            if (doc.DocumentTypeId.HasValue && doc.DocumentTypeId > 0)
                 res.Add($"{nameof(doc.DocumentTypeId)}={doc.DocumentTypeId}");
-            if (doc.DocumentDirection.HasValue)
+            if (doc.DocumentDirection.HasValue && doc.DocumentDirection > 0)
                 res.Add($"{nameof(doc.DocumentDirection)}={doc.DocumentDirection}");
-            if (doc.DocumentSubjectId.HasValue)
+            if (doc.DocumentSubjectId.HasValue && doc.DocumentSubjectId > 0)
                 res.Add($"{nameof(doc.DocumentSubjectId)}={doc.DocumentSubjectId}");
             return res;
         }

@@ -937,7 +937,7 @@ namespace BL.Database.Documents
 
                 res.RestrictedSendLists = CommonQueries.GetDocumentRestrictedSendList(dbContext, new FilterDocumentRestrictedSendList { DocumentId = new List<int> { documentId } });
 
-                res.DocumentFiles = CommonQueries.GetDocumentFiles(dbContext, new FilterDocumentAttachedFile { DocumentId = docIds });
+                res.DocumentFiles = CommonQueries.GetDocumentFiles(ctx, dbContext, new FilterDocumentAttachedFile { DocumentId = docIds });
 
                 res.AttachedFilesCount = res.DocumentFiles.Count();
 
@@ -1240,7 +1240,7 @@ namespace BL.Database.Documents
                             PositionId = y.PositionId,
                             AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
                         }).ToList();
-                doc.DocumentFiles = CommonQueries.GetInternalDocumentFiles(dbContext, documentId);
+                doc.DocumentFiles = CommonQueries.GetInternalDocumentFiles(ctx, dbContext, documentId);
 
                 return doc;
             }
@@ -1416,7 +1416,7 @@ namespace BL.Database.Documents
                 if (doc == null) return null;
 
 
-                doc.DocumentFiles = CommonQueries.GetInternalDocumentFiles(dbContext, doc.Id);
+                doc.DocumentFiles = CommonQueries.GetInternalDocumentFiles(ctx, dbContext, doc.Id);
 
                 return doc;
             }
@@ -1460,6 +1460,9 @@ namespace BL.Database.Documents
                         SenderDate = x.Doc.SenderDate,
                         Addressee = x.Doc.Addressee,
                         LinkId = x.Doc.LinkId,
+
+                        DocumentTypeId = x.Templ.DocumentTypeId,
+                        DocumentDirection = (EnumDocumentDirections)x.Templ.DocumentDirectionId,
                     }).FirstOrDefault();
 
                 if (doc == null)

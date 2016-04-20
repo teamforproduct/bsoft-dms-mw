@@ -3,13 +3,14 @@ using BL.CrossCutting.Interfaces;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.InternalModel;
+using BL.Model.SystemCore;
 
 namespace BL.Database.Documents.Interfaces
 {
     public interface IDocumentFileDbProcess
     {
         IEnumerable<FrontDocumentAttachedFile> GetDocumentFiles(IContext ctx, int documentId);
-        IEnumerable<FrontDocumentAttachedFile> GetDocumentFiles(IContext ctx, FilterDocumentAttachedFile filter);
+        IEnumerable<FrontDocumentAttachedFile> GetDocumentFiles(IContext ctx, FilterDocumentAttachedFile filter, UIPaging paging = null);
         IEnumerable<FrontDocumentAttachedFile> GetDocumentFileVersions(IContext ctx, int documentId, int orderNumber);
         FrontDocumentAttachedFile GetDocumentFileVersion(IContext ctx, int documentId, int orderNumber, int versionNumber);
         FrontDocumentAttachedFile GetDocumentFileVersion(IContext ctx, int id);
