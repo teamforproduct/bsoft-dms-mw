@@ -136,7 +136,7 @@ namespace BL.Model.DocumentCore.InternalModel
         // public int NewEventCount { get; set; }
         // public int AttachedFilesCount { get; set; }
         public int LinkedDocumentsCount { get; set; }
-        public int NewLinkId { get; set; }
+        public int? NewLinkId { get; set; }
 
         public string Hash { get; set; }
         public string FullHash { get; set; }

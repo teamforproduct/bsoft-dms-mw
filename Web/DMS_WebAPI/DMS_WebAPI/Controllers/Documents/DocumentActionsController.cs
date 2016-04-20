@@ -167,11 +167,11 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <summary>
         /// Удаление связи между документами
         /// </summary>
-        /// <param name="documentId">ИД документа</param>
+        /// <param name="id">ИД документа</param>
         /// <returns>Обновленный документ</returns>
-        [Route("DeleteDocumentLink")]
+        [Route("DeleteDocumentLink/{id}")]
         [HttpPost]
-        public IHttpActionResult DeleteDocumentLink(int documentId)
+        public IHttpActionResult DeleteDocumentLink(int id)
         {
             var timeM = new System.Diagnostics.Stopwatch();
             var timeDB = new System.Diagnostics.Stopwatch();
@@ -179,7 +179,7 @@ namespace DMS_WebAPI.Controllers.Documents
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            docProc.ExecuteAction(EnumDocumentActions.DeleteDocumentLink, cxt, documentId);
+            docProc.ExecuteAction(EnumDocumentActions.DeleteDocumentLink, cxt, id);
             timeDB.Stop();
 
             timeM.Stop();
@@ -187,7 +187,7 @@ namespace DMS_WebAPI.Controllers.Documents
             SaveToFile("DB: IDocumentOperationsService DeleteDocumentLink", timeDB.Elapsed.ToString("G"));
 
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
-            return ctrl.Get(documentId);
+            return ctrl.Get(id);
         }
 
         /// <summary>

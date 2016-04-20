@@ -57,7 +57,10 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override object Execute()
         {
-            //if (_document.L)
+            if (_document.LinkedDocumentsCount<2)
+            {
+                _document.NewLinkId = null;
+            }
             CommonDocumentUtilities.SetLastChange(_context, _document);
             _operationDb.DeleteDocumentLink(_context, _document);
             return null;
