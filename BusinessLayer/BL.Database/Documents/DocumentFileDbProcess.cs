@@ -7,7 +7,7 @@ using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.InternalModel;
-
+using BL.Model.SystemCore;
 
 namespace BL.Database.Documents
 {
@@ -21,15 +21,15 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                return CommonQueries.GetDocumentFiles(dbContext, new FilterDocumentAttachedFile { DocumentId = new List<int> { documentId } });
+                return CommonQueries.GetDocumentFiles(ctx, dbContext, new FilterDocumentAttachedFile { DocumentId = new List<int> { documentId } });
             }
         }
 
-        public IEnumerable<FrontDocumentAttachedFile> GetDocumentFiles(IContext ctx, FilterDocumentAttachedFile filter)
+        public IEnumerable<FrontDocumentAttachedFile> GetDocumentFiles(IContext ctx, FilterDocumentAttachedFile filter, UIPaging paging = null)
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                return CommonQueries.GetDocumentFiles(dbContext, filter);
+                return CommonQueries.GetDocumentFiles(ctx, dbContext, filter, paging);
             }
         }
 

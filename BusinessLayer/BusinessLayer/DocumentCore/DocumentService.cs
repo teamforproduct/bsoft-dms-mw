@@ -61,7 +61,7 @@ namespace BL.Logic.DocumentCore
             var uiElements = sysDb.GetSystemUIElements(ctx, new FilterSystemUIElement { ObjectCode = "Documents", ActionCode = "Modify" }).ToList();
             uiElements = CommonDocumentUtilities.VerifyDocument(ctx, doc, uiElements).ToList();
 
-            uiElements.AddRange(CommonSystemUtilities.GetPropertyUIElements(ctx,EnumObjects.Documents, new[] { $"{nameof(doc.DocumentTypeId)}={doc.DocumentTypeId}", $"{nameof(doc.DocumentDirection)}={doc.DocumentDirection}", $"{nameof(doc.DocumentSubjectId)}={doc.DocumentSubjectId}" }));
+            uiElements.AddRange(CommonSystemUtilities.GetPropertyUIElements(ctx,EnumObjects.Documents, CommonDocumentUtilities.GetFilterTemplateByDocument(doc).ToArray()));
 
             return uiElements;
         }

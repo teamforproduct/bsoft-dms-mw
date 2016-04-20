@@ -8,6 +8,7 @@ using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.Enums;
 using System.Collections.Generic;
+using BL.Model.SystemCore;
 
 namespace DMS_WebAPI.Controllers.Documents
 {
@@ -40,11 +41,13 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns></returns>
         [Route("GetFileList")]
         [HttpGet]
-        public IHttpActionResult GetFileList(FilterDocumentAttachedFile filter)
+        public IHttpActionResult GetFileList([FromUri]FilterDocumentAttachedFile filter, [FromUri]UIPaging paging)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docFileProc = DmsResolver.Current.Get<IDocumentFileService>();
-            return new JsonResult(docFileProc.GetDocumentFiles(cxt, filter), this);
+            var res = new JsonResult(docFileProc.GetDocumentFiles(cxt, filter, paging), this);
+            res.Paging = paging;
+            return res;
         }
         
         // POST: api/Files
@@ -63,7 +66,7 @@ namespace DMS_WebAPI.Controllers.Documents
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var fileId = (int)docProc.ExecuteAction(EnumDocumentActions.ModifyDocumentFile, cxt, model);
 
-            return GetFileList(new FilterDocumentAttachedFile { AttachedFileId = new List<int> { fileId } });
+            return GetFileList(new FilterDocumentAttachedFile { AttachedFileId = new List<int> { fileId } }, null);
         }
 
         // DELETE: api/Files

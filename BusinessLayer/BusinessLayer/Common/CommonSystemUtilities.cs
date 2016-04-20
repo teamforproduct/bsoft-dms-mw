@@ -19,7 +19,7 @@ namespace BL.Logic.Common
             return $"{ctx.CurrentDB.Address}/{ctx.CurrentDB.DefaultDatabase}";
         }
 
-        private static bool IsContainsInFilter(string propertyFilter, string[] template)
+        public static bool IsContainsInFilter(string propertyFilter, string[] template)
         {
             if (string.IsNullOrEmpty(propertyFilter)) return true;
 
