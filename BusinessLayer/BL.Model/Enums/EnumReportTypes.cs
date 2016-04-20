@@ -10,6 +10,7 @@ namespace BL.Model.Enums
     {
         RegistrationCardIncomingDocument = 1,
         RegistrationCardInternalDocument = 2,
-        RegistrationCardOutcomingDocument = 3
+        RegistrationCardOutcomingDocument = 3,
+        RegisterTransmissionDocuments = 4
     }
 }

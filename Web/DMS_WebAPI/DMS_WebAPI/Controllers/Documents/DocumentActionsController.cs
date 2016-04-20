@@ -939,5 +939,30 @@ namespace DMS_WebAPI.Controllers.Documents
 
             return new JsonResult(res, this);
         }
+
+        /// <summary>
+        /// Получить отчет Реестр передачи документов
+        /// </summary>
+        /// <param name="id">ИД PaperList</param>>
+        /// <returns></returns>
+        [Route("ReportRegisterTransmissionDocuments/{id}")]
+        [HttpPost]
+        public IHttpActionResult ReportRegisterTransmissionDocuments(int id)
+        {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            timeM.Start();
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            timeDB.Start();
+            var res = docProc.ExecuteAction(EnumDocumentActions.ReportRegisterTransmissionDocuments, cxt, id);
+            timeDB.Stop();
+
+            timeM.Stop();
+            SaveToFile("M: DocumentActionsController ReportRegisterTransmissionDocuments", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentOperationsService ReportRegisterTransmissionDocuments", timeDB.Elapsed.ToString("G"));
+
+            return new JsonResult(res, this);
+        }
     }
 }

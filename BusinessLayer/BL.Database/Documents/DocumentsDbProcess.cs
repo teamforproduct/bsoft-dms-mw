@@ -20,6 +20,7 @@ using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.FullTextSearch;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.InternalModel;
+using BL.Model.DocumentCore.ReportModel;
 
 namespace BL.Database.Documents
 {
@@ -980,7 +981,8 @@ namespace BL.Database.Documents
                 return doc;
             }
         }
-        public Model.DocumentCore.ReportModel.ReportDocument ReportRegistrationCardDocument(IContext ctx, int documentId)
+
+        public ReportDocument ReportRegistrationCardDocument(IContext ctx, int documentId)
         {
             using (var dbContext = new DmsContext(ctx))
             {
@@ -994,7 +996,7 @@ namespace BL.Database.Documents
                 var accs =
                     CommonQueries.GetDocumentAccesses(ctx, dbContext).Where(x => x.DocumentId == doc.Doc.Id).ToList();
 
-                var res = new Model.DocumentCore.ReportModel.ReportDocument
+                var res = new ReportDocument
                 {
                     Id = doc.Doc.Id,
                     DocumentTypeName = doc.DocTypeName,
@@ -1008,7 +1010,7 @@ namespace BL.Database.Documents
                 var docIds = new List<int> { res.Id };
 
                 res.DocumentWaits = CommonQueries.GetDocumentWaitsQuery(dbContext, ctx, res.Id)
-                    .Select(x => new Model.DocumentCore.ReportModel.ReportDocumentWait
+                    .Select(x => new ReportDocumentWait
                     {
                         Id = x.Id,
                         DocumentId = x.DocumentId,
@@ -1026,7 +1028,7 @@ namespace BL.Database.Documents
                     }).ToList();
 
                 res.DocumentSubscriptions = CommonQueries.GetDocumentSubscriptionsQuery(dbContext, new FilterDocumentSubscription { DocumentId = new List<int> { res.Id }, SubscriptionStates = new List<EnumSubscriptionStates> { EnumSubscriptionStates.Sign } })
-                    .Select(x => new Model.DocumentCore.ReportModel.ReportDocumentSubscription
+                    .Select(x => new ReportDocumentSubscription
                     {
                         Id = x.Id,
                         DocumentId = x.DocumentId,
@@ -1039,45 +1041,76 @@ namespace BL.Database.Documents
                 return res;
             }
         }
-        public Model.DocumentCore.ReportModel.ReportDocument GetDocumentByReport(IContext ctx, int documentId)
+
+        //public InternalDocument ReportTransmissionDocumentPaperEventPrepare(IContext ctx, int documentId)
+        //{
+        //    using (var dbContext = new DmsContext(ctx))
+        //    {
+        //        var qry = CommonQueries.GetDocumentQuery(dbContext, ctx).Where(x => x.Doc.Id == documentId);
+
+        //        var doc = qry.Select(x => new InternalDocument
+        //        {
+        //            Id = x.Doc.Id,
+        //            ExecutorPositionId = x.Doc.ExecutorPositionId,
+        //        }).FirstOrDefault();
+
+        //        if (doc == null)
+        //        {
+        //            throw new DocumentNotFoundOrUserHasNoAccess();
+        //        }
+
+        //        return doc;
+        //    }
+        //}
+
+        public List<ReportDocument> ReportRegisterTransmissionDocuments(IContext ctx, int paperListId)
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                var qry = CommonQueries.GetDocumentQuery(dbContext, ctx).Where(x => x.Doc.Id == documentId);
 
-                var doc = qry.FirstOrDefault();
-                if (doc == null)
-                {
-                    throw new DocumentNotFoundOrUserHasNoAccess();
-                }
-                var accs =
-                    CommonQueries.GetDocumentAccesses(ctx, dbContext).Where(x => x.DocumentId == doc.Doc.Id).ToList();
+                var qry = dbContext.DocumentEventsSet
+                    .Where(x => x.PaperListId == paperListId);
 
-                var res = new Model.DocumentCore.ReportModel.ReportDocument
-                {
-                    Id = doc.Doc.Id,
-                    DocumentTypeName = doc.DocTypeName,
-                    ExecutorPositionName = doc.ExecutorPosName,
-                    Addressee = doc.Doc.Addressee,
-                    Description = doc.Doc.Description,
-                };
-
-                var docIds = new List<int> { res.Id };
-
-                res.DocumentWaits = CommonQueries.GetDocumentWaitsQuery(dbContext, ctx, res.Id)
-                    .Select(x => new Model.DocumentCore.ReportModel.ReportDocumentWait
+                var res = qry.GroupBy(x => x.Document)
+                    .Select(x => x.Key)
+                    .Select(x => new ReportDocument
                     {
                         Id = x.Id,
-                        DocumentId = x.DocumentId,
-                        CreateDate = x.OnEvent.Date,
-                        TargetPositionName = x.OnEvent.TargetPosition.Name,
-                        SourcePositionName = x.OnEvent.SourcePosition.Name,
-                        DueDate = x.DueDate,
-                        IsClosed = x.OffEventId != null,
-                        ResultTypeName = x.ResultType.Name
+                        RegistrationNumber = x.RegistrationNumber,
+                        RegistrationNumberPrefix = x.RegistrationNumberPrefix,
+                        RegistrationNumberSuffix = x.RegistrationNumberSuffix,
+                        Description = x.Description
+                        //DocumentTypeName = x.DocTypeName,
+                        //ExecutorPositionName = x.ExecutorPosName,
+                        //Addressee = x.Doc.Addressee,
+                        //SenderAgentName = doc.SenderAgentname,
+                        //SenderAgentPersonName = doc.SenderPersonName,
                     }).ToList();
 
+                res.ForEach(x => CommonQueries.ChangeRegistrationFullNumber(x));
 
+                var events = qry.Select(x => new ReportDocumentEvent
+                {
+                    Id = x.Id,
+                    DocumentId = x.DocumentId,
+                    SourcePositionName = x.SourcePosition.Name,
+                    SourcePositionExecutorAgentName = x.SourcePositionExecutorAgent.Name,
+                    TargetPositionName = x.TargetPosition.Name,
+                    TargetPositionExecutorAgentName = x.TargetPositionExecutorAgent.Name,
+                    PaperId = x.PaperId,
+                    Paper = !x.PaperId.HasValue
+                        ? null
+                        : new ReportDocumentPaper
+                        {
+                            Id = x.Paper.Id,
+                            DocumentId = x.Paper.DocumentId,
+                            Name = x.Paper.Name,
+                            Description = x.Paper.Description
+                        }
+                }).ToList();
+
+                res = res.GroupJoin(events, o => o.Id, i => i.DocumentId, (o, i) => { o.DocumentEvents = i.ToList(); return o; }).ToList();
+                
                 return res;
             }
         }

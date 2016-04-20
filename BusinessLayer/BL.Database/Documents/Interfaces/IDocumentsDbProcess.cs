@@ -6,6 +6,7 @@ using BL.Model.DocumentCore.InternalModel;
 using BL.Model.SystemCore;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.IncomingModel;
+using BL.Model.DocumentCore.ReportModel;
 
 namespace BL.Database.Documents.Interfaces
 {
@@ -19,8 +20,10 @@ namespace BL.Database.Documents.Interfaces
         FrontDocument GetDocument(IContext ctx, int documentId, FilterDocumentById filter);
 
         InternalDocument ReportRegistrationCardDocumentPrepare(IContext ctx, int documentId);
-        Model.DocumentCore.ReportModel.ReportDocument ReportRegistrationCardDocument(IContext ctx, int documentId);
-        Model.DocumentCore.ReportModel.ReportDocument GetDocumentByReport(IContext ctx, int documentId);
+        ReportDocument ReportRegistrationCardDocument(IContext ctx, int documentId);
+
+        //InternalDocument ReportTransmissionDocumentPaperEventPrepare(IContext ctx, int documentId)
+        List<ReportDocument> ReportRegisterTransmissionDocuments(IContext ctx, int paperListId);
 
         InternalDocument RegisterDocumentPrepare(IContext ctx, RegisterDocument model);
         void GetNextDocumentRegistrationNumber(IContext ctx, InternalDocument document);

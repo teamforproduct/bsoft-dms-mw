@@ -3,13 +3,8 @@ using BL.Database.Documents.Interfaces;
 using BL.Model.Exception;
 using BL.Model.Enums;
 using BL.Logic.Reports;
-using BL.CrossCutting.Helpers;
 using BL.Database.FileWorker;
-using CrystalDecisions.CrystalReports.Engine;
-using CrystalDecisions.Shared;
-using System.IO;
-using BL.Model.Reports.FrontModel;
-using BL.Model.Constants;
+using BL.Model.DocumentCore.ReportModel;
 
 namespace BL.Logic.DocumentCore.ReportsCommands
 {
@@ -19,7 +14,7 @@ namespace BL.Logic.DocumentCore.ReportsCommands
         private readonly IDocumentsDbProcess _documentDb;
         private readonly IFileStore _fileStore;
 
-        protected Model.DocumentCore.ReportModel.ReportDocument _reportDocument;
+        protected ReportDocument _reportDocument;
 
         public ReportRegistrationCardDocumentCommand(IDocumentsDbProcess documentDb, IFileStore fileStore)
         {
@@ -92,36 +87,7 @@ namespace BL.Logic.DocumentCore.ReportsCommands
                     break;
             }
 
-            var filePathCrystalReport = _fileStore.GetFullTemplateReportFilePath(_context, reportType);
-
-            var ds = new DataSetCrystalReports();
-            ConvertToDataSet.ClassDataToDataTable(_reportDocument, ds, true);
-
-            ReportDocument crystalReport = new ReportDocument();
-            crystalReport.Load(filePathCrystalReport);
-            crystalReport.SetDataSource(ds);
-
-            //TODO Убрать в релизе
-            //Сохраняем файл для проверок
-            crystalReport.ExportToDisk(ExportFormatType.PortableDocFormat, Path.Combine(new string[] { SettingConstants.FILE_STORE_DEFAULT_PATH, "report.pdf" }));
-
-            var stream = crystalReport.ExportToStream(ExportFormatType.PortableDocFormat);
-
-            var res = new FrontReport();
-
-            byte[] buffer = new byte[16 * 1024];
-            using (MemoryStream ms = new MemoryStream())
-            {
-                int read;
-                while ((read = stream.Read(buffer, 0, buffer.Length)) > 0)
-                {
-                    ms.Write(buffer, 0, read);
-                }
-                res.FileContent = ms.ToArray();
-            }
-
-            return res;
+            return DmsReport.ReportExportToStream(_reportDocument, _fileStore.GetFullTemplateReportFilePath(_context, reportType));
         }
-
     }
 }

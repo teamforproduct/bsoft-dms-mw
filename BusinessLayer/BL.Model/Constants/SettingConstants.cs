@@ -20,7 +20,7 @@
 
         public static string FILE_STORE_TEMPLATE_REPORTS_FOLDER = @"TEMPLATE_REPORTS";
         public static string FILE_STORE_TEMPLATE_REPORT_FILE = "FILE_STORE_TEMPLATE_REPORT_FILE_";
-        public static string FILE_STORE_DEFAULT_TEMPLATE_REPORT_FILE = @"ReportRegistrationCardDocument.rpt";
+        public static string FILE_STORE_DEFAULT_TEMPLATE_REPORT_FILE = @"Report.rpt";
 
         public static string AUTOPLAN_TIOMEOUT_MIN = @"RUN_AUTOPLAN_TIMEOUT_MINUTE";
     }
