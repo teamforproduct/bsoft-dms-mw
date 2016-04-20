@@ -66,6 +66,7 @@ namespace BL.Logic.DocumentCore.Commands
             bool isNeedGenerateNumber;
             if (Model.RegistrationNumber == null || Model.IsOnlyGetNextNumber)
             {
+                CommonDocumentUtilities.FormationRegistrationNumberByFormula(_document);
                 _document.RegistrationNumberPrefix = _document.RegistrationJournalPrefixFormula;
                 _document.RegistrationNumberSuffix = _document.RegistrationJournalSuffixFormula;
                 _document.RegistrationNumber = null;

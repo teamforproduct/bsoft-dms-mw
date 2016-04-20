@@ -1468,7 +1468,7 @@ namespace BL.Database.Documents
                 }
                 var regJournal = dbContext.DictionaryRegistrationJournalsSet
                     .Where(x => x.Id == model.RegistrationJournalId)
-                    .Select(x => new { x.Id, x.NumerationPrefixFormula, x.PrefixFormula, x.SuffixFormula }).FirstOrDefault();
+                    .Select(x => new { x.Id, x.NumerationPrefixFormula, x.PrefixFormula, x.SuffixFormula, x.Index }).FirstOrDefault();
 
                 if (regJournal != null)
                 {
@@ -1476,6 +1476,7 @@ namespace BL.Database.Documents
                     doc.NumerationPrefixFormula = regJournal.NumerationPrefixFormula;
                     doc.RegistrationJournalPrefixFormula = regJournal.PrefixFormula;
                     doc.RegistrationJournalSuffixFormula = regJournal.SuffixFormula;
+                    doc.RegistrationJournalIndex = regJournal.Index;
                 }
                 else
                 {

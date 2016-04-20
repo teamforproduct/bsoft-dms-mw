@@ -14,6 +14,7 @@ using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
+using System.Text.RegularExpressions;
 
 namespace BL.Logic.Common
 {
@@ -621,7 +622,7 @@ namespace BL.Logic.Common
                     .Select(x => new FrontDocumentSendListStage
                     {
                         Stage = x.s,
-                        SendLists = x.sls.OrderBy(y=>y.Id).ToList()
+                        SendLists = x.sls.OrderBy(y => y.Id).ToList()
                     }).ToList();
 
             }
@@ -673,6 +674,85 @@ namespace BL.Logic.Common
             }
             else
                 return null;
+        }
+
+        public static void FormationRegistrationNumberByFormula(InternalDocument doc)
+        {
+            doc.RegistrationJournalPrefixFormula = FormationRegistrationNumberByFormula(doc.RegistrationJournalPrefixFormula, doc);
+            doc.RegistrationJournalSuffixFormula = FormationRegistrationNumberByFormula(doc.RegistrationJournalSuffixFormula, doc);
+        }
+
+        private static string FormationRegistrationNumberByFormula(string formula, InternalDocument doc)
+        {
+            ///Example @/{f/DocumentDirection=Incoming/f}{v//v}/@
+            string pattern = "@/(.*?)/@";
+            string patternFilter = "{f/(.*?)/f}";
+            string patternFormula = "{v/(.*?)/v}";
+            string res = string.Copy(formula);
+            foreach (Match mFormula in Regex.Matches(formula, pattern))
+            {
+                var oldValue = mFormula.Value;
+                var newValue = string.Empty;
+                var mFilters = Regex.Matches(oldValue, patternFilter);
+                var isContainsInFilter = mFilters.Count == 0;
+                if (!isContainsInFilter)
+                {
+                    foreach (Match mFilter in mFilters)
+                    {
+                        var filter = mFilter.Value.Replace("{f/", string.Empty).Replace("/f}", "");
+                        var template = CommonDocumentUtilities.GetFilterTemplateByDocument(doc).ToArray();
+                        if (CommonSystemUtilities.IsContainsInFilter(filter, template))
+                        {
+                            isContainsInFilter = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (isContainsInFilter)
+                {
+                    var mFormulaValues = Regex.Matches(mFormula.Value, patternFormula);
+                    foreach (Match mFormulaValue in mFormulaValues)
+                    {
+                        var formulaValue = (EnumFormulas)Enum.Parse(typeof(EnumFormulas), mFormulaValue.Value.Replace("{v/", string.Empty).Replace("/v}", ""));
+
+                        switch(formulaValue)
+                        {
+                            case EnumFormulas.RegistrationJournalId:
+                                newValue = doc.RegistrationJournalId.ToString();
+                                break;
+                            case EnumFormulas.RegistrationJournalIndex:
+                                newValue = doc.RegistrationJournalIndex;
+                                break;
+                        }
+                        break;
+                    }
+                }
+                if (string.IsNullOrEmpty(newValue)) newValue = string.Empty;
+                res = res.Replace(oldValue, newValue);
+            }
+            return res;
+        }
+
+        /// <summary>
+        /// Формирует список значений документа для фильтрации в динамических свойствах, формирование регистрационого номера по формуле
+        /// </summary>
+        /// <returns></returns>
+        public static IEnumerable<string> GetFilterTemplateByDocument(InternalDocument doc)
+        {
+            return new string[] { $"{nameof(doc.DocumentTypeId)}={doc.DocumentTypeId}", $"{nameof(doc.DocumentDirection)}={doc.DocumentDirection}", $"{nameof(doc.DocumentSubjectId)}={doc.DocumentSubjectId}" };
+        }
+
+        public static IEnumerable<string> GetFilterTemplateByDocument(FrontDocument doc)
+        {
+            var res = new List<string>();
+            if (doc.DocumentTypeId.HasValue)
+                res.Add($"{nameof(doc.DocumentTypeId)}={doc.DocumentTypeId}");
+            if (doc.DocumentDirection.HasValue)
+                res.Add($"{nameof(doc.DocumentDirection)}={doc.DocumentDirection}");
+            if (doc.DocumentSubjectId.HasValue)
+                res.Add($"{nameof(doc.DocumentSubjectId)}={doc.DocumentSubjectId}");
+            return res;
         }
     }
 }
