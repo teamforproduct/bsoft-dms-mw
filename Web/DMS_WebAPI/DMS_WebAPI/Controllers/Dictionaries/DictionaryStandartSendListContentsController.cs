@@ -14,6 +14,11 @@ namespace DMS_WebAPI.Controllers.Dictionaries
     [Authorize]
     public class DictionaryStandartSendListContentsController : ApiController
     {
+        /// <summary>
+        /// Список содержаний типовых списков рассылки
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
         // GET: api/DictionaryStandartSendListContents
         public IHttpActionResult Get([FromUri] FilterDictionaryStandartSendListContent filter)
         {
@@ -23,6 +28,11 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             return new JsonResult(tmpDicts, this);
         }
 
+        /// <summary>
+        /// Получение содержания типового списка рассылки по ИД
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         // GET: api/DictionaryStandartSendListContents/5
         public IHttpActionResult Get(int id)
         {
@@ -32,6 +42,11 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             return new JsonResult(tmpDict, this);
         }
 
+        /// <summary>
+        /// Добавление содержания типового списка рассылки
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public IHttpActionResult Post([FromBody]ModifyDictionaryStandartSendListContent model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
@@ -39,7 +54,12 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.AddStandartSendListContent, cxt, model));
         }
 
-       
+        /// <summary>
+        /// Изменение содержания типового списка рассылки
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public IHttpActionResult Put(int id, [FromBody]ModifyDictionaryStandartSendListContent model)
         {
             model.Id = id;
@@ -59,8 +79,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
 
             tmpDict.ExecuteAction(EnumDictionaryActions.DeleteStandartSendListContent, cxt, id);
-            FrontDictionaryStandartSendListContent tmp = new FrontDictionaryStandartSendListContent();
-            tmp.Id = id;
+            var tmp = new FrontDictionaryStandartSendListContent {Id = id};
 
             return new JsonResult(tmp, this);
 

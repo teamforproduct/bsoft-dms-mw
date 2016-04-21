@@ -351,5 +351,10 @@
         ReportRegistrationCardDocument = 100085,
         ReportRegisterTransmissionDocuments = 100086
 
+
+        AddTemplateAttachedFile = 255001,
+        ModifyTemplateAttachedFile = 255005,
+        DeleteTemplateAttachedFile = 255009
+
     }
 }

@@ -285,6 +285,18 @@
         }
     }
 
+    public class CouldNotModifyTemplateDocument : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:CouldNotModifyTemplateDocument@l##";
+        public CouldNotModifyTemplateDocument() : base(_MESSAGE)
+        {
+        }
+
+        public CouldNotModifyTemplateDocument(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
     public class DocumentCouldNotBeRegistered : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:DocumentCouldNotBeRegistered@l##";
