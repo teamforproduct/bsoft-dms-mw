@@ -686,8 +686,8 @@ namespace BL.Logic.Common
         {
             if (string.IsNullOrEmpty(formula)) return formula;
             string pattern = "@/(.*?)/@";
-            string patternFilterSymbol = "c", patternFormulaSymbol = "v", patternLengthSymbol = "l";
-            string patternFilter = GetPatternFilter(patternFilterSymbol), patternFormula = GetPatternFilter(patternFormulaSymbol), patternLength = GetPatternFilter(patternLengthSymbol);
+            string patternFilterSymbol = "c", patternFormulaSymbol = "v", patternLengthSymbol = "l", patternFormatSymbol = "f";
+            string patternFilter = GetPatternFilter(patternFilterSymbol), patternFormula = GetPatternFilter(patternFormulaSymbol), patternLength = GetPatternFilter(patternLengthSymbol), patternFormat = GetPatternFilter(patternFormatSymbol);
             string res = string.Copy(formula);
             foreach (Match mFormula in Regex.Matches(formula, pattern))
             {
@@ -699,13 +699,13 @@ namespace BL.Logic.Common
                 {
                     foreach (Match mFilter in mFilters)
                     {
-                            var filter = GetPatternFilterSymbolReplace(mFilter.Value,patternFilterSymbol);
-                            var template = CommonDocumentUtilities.GetFilterTemplateByDocument(doc).ToArray();
-                            if (CommonSystemUtilities.IsContainsInFilter(filter, template))
-                            {
-                                isContainsInFilter = true;
-                                break;
-                            }
+                        var filter = GetPatternFilterSymbolReplace(mFilter.Value, patternFilterSymbol);
+                        var template = CommonDocumentUtilities.GetFilterTemplateByDocument(doc).ToArray();
+                        if (CommonSystemUtilities.IsContainsInFilter(filter, template))
+                        {
+                            isContainsInFilter = true;
+                            break;
+                        }
                     }
                 }
 
@@ -719,10 +719,18 @@ namespace BL.Logic.Common
                             break;
                     }
 
+                    var mFormats = Regex.Matches(mFormula.Value, patternLength);
+                    string format = string.Empty;
+                    foreach (Match mFormat in mFormats)
+                    {
+                        format = GetPatternFilterSymbolReplace(mFormat.Value, patternFormatSymbol);
+                        break;
+                    }
+
                     var mFormulaValues = Regex.Matches(mFormula.Value, patternFormula);
                     foreach (Match mFormulaValue in mFormulaValues)
                     {
-                        var formulaValue = (EnumFormulas)Enum.Parse(typeof(EnumFormulas), GetPatternFilterSymbolReplace(mFormulaValue.Value,patternFormulaSymbol));
+                        var formulaValue = (EnumFormulas)Enum.Parse(typeof(EnumFormulas), GetPatternFilterSymbolReplace(mFormulaValue.Value, patternFormulaSymbol));
 
                         switch (formulaValue)
                         {
@@ -731,6 +739,33 @@ namespace BL.Logic.Common
                                 break;
                             case EnumFormulas.RegistrationJournalIndex:
                                 newValue = model.RegistrationJournalIndex;
+                                break;
+                            case EnumFormulas.InitiativeRegistrationFullNumber:
+                                newValue = model.InitiativeRegistrationFullNumber;
+                                break;
+                            case EnumFormulas.InitiativeRegistrationNumberPrefix:
+                                newValue = model.InitiativeRegistrationNumberPrefix;
+                                break;
+                            case EnumFormulas.InitiativeRegistrationNumberSuffix:
+                                newValue = model.InitiativeRegistrationNumberSuffix;
+                                break;
+                            case EnumFormulas.InitiativeRegistrationNumber:
+                                if (model.InitiativeRegistrationNumber.HasValue)
+                                    newValue = model.InitiativeRegistrationNumber.Value.ToString("D" + length);
+                                break;
+                            case EnumFormulas.Date:
+                                if (string.IsNullOrEmpty(format))
+                                    format = "YYYY";
+                                newValue = model.RegistrationDate.ToString(format);
+                                break;
+                            case EnumFormulas.ExecutorPositionDepartmentCode:
+                                newValue = model.ExecutorPositionDepartmentCode;
+                                break;
+                            case EnumFormulas.SubscriptionsPositionDepartmentCode:
+                                newValue = model.SubscriptionsPositionDepartmentCode;
+                                break;
+                            case EnumFormulas.RegistrationJournalDepartmentCode:
+                                newValue = model.RegistrationJournalDepartmentCode;
                                 break;
                         }
                         break;

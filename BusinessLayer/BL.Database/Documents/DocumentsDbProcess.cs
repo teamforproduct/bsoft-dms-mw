@@ -1110,7 +1110,7 @@ namespace BL.Database.Documents
                 }).ToList();
 
                 res = res.GroupJoin(events, o => o.Id, i => i.DocumentId, (o, i) => { o.DocumentEvents = i.ToList(); return o; }).ToList();
-                
+
                 return res;
             }
         }
@@ -1497,28 +1497,53 @@ namespace BL.Database.Documents
                     .Select(x => new InternalDocument
                     {
                         Id = x.Doc.Id,
-                        DocumentSubjectId = x.Doc.DocumentSubjectId,
-                        Description = x.Doc.Description,
-                        IsRegistered = x.Doc.IsRegistered,
-                        ExecutorPositionId = x.Doc.ExecutorPositionId,
-                        SenderAgentId = x.Doc.SenderAgentId,
-                        SenderAgentPersonId = x.Doc.SenderAgentPersonId,
-                        SenderNumber = x.Doc.SenderNumber,
-                        SenderDate = x.Doc.SenderDate,
-                        Addressee = x.Doc.Addressee,
-                        LinkId = x.Doc.LinkId,
+                        //DocumentSubjectId = x.Doc.DocumentSubjectId,
+                        //Description = x.Doc.Description,
+                        //IsRegistered = x.Doc.IsRegistered,
+                        //ExecutorPositionId = x.Doc.ExecutorPositionId,
+                        //SenderAgentId = x.Doc.SenderAgentId,
+                        //SenderAgentPersonId = x.Doc.SenderAgentPersonId,
+                        //SenderNumber = x.Doc.SenderNumber,
+                        //SenderDate = x.Doc.SenderDate,
+                        //Addressee = x.Doc.Addressee,
+                        //LinkId = x.Doc.LinkId,
 
-                        DocumentTypeId = x.Templ.DocumentTypeId,
-                        DocumentDirection = (EnumDocumentDirections)x.Templ.DocumentDirectionId,
+                        //DocumentTypeId = x.Templ.DocumentTypeId,
+                        //DocumentDirection = (EnumDocumentDirections)x.Templ.DocumentDirectionId,
+
+                        ExecutorPosition = new Model.DictionaryCore.InternalModel.InternalDictionaryPosition
+                        {
+                            Department = new Model.DictionaryCore.InternalModel.InternalDictionaryDepartment
+                            {
+                                Code = x.Doc.ExecutorPosition.Department.Code
+                            }
+                        },
+
+                        Subscriptions = x.Doc.Subscriptions
+                                        .Where(y => y.SubscriptionStateId == (int)EnumSubscriptionStates.Sign)
+                                        .OrderBy(y => y.LastChangeDate).Take(1)
+                                        .Select(y => new InternalDocumentSubscription
+                                        {
+                                            DoneEvent = new InternalDocumentEvent { SourcePosition = new Model.DictionaryCore.InternalModel.InternalDictionaryPosition { Department = new Model.DictionaryCore.InternalModel.InternalDictionaryDepartment { Code = y.DoneEvent.SourcePosition.Department.Code } } }
+                                        })
                     }).FirstOrDefault();
 
                 if (doc == null)
                 {
                     return null;
                 }
+
+                var res = new InternalDocumnRegistration
+                {
+                    RegistrationJournalId = doc.RegistrationJournalId,
+                    ExecutorPositionDepartmentCode = doc.ExecutorPosition.Department.Code,
+                    RegistrationDate = model.RegistrationDate,
+                    SubscriptionsPositionDepartmentCode = doc.Subscriptions.FirstOrDefault()?.DoneEvent?.SourcePosition?.Department?.Code
+                };
+
                 var regJournal = dbContext.DictionaryRegistrationJournalsSet
                     .Where(x => x.Id == model.RegistrationJournalId)
-                    .Select(x => new { x.Id, x.NumerationPrefixFormula, x.PrefixFormula, x.SuffixFormula, x.Index }).FirstOrDefault();
+                    .Select(x => new { x.Id, x.NumerationPrefixFormula, x.PrefixFormula, x.SuffixFormula, x.Index, RegistrationJournalDepartmentCode = x.Department.Code }).FirstOrDefault();
 
                 if (regJournal != null)
                 {
@@ -1526,17 +1551,46 @@ namespace BL.Database.Documents
                     doc.NumerationPrefixFormula = regJournal.NumerationPrefixFormula;
                     doc.RegistrationJournalPrefixFormula = regJournal.PrefixFormula;
                     doc.RegistrationJournalSuffixFormula = regJournal.SuffixFormula;
+
+                    res.RegistrationJournalIndex = regJournal.Index;
+                    res.RegistrationJournalDepartmentCode = regJournal.RegistrationJournalDepartmentCode;
                 }
                 else
                 {
                     doc.RegistrationJournalId = null;
                 }
 
-                var res = new InternalDocumnRegistration
+                var initiativeDoc = dbContext.DocumentLinksSet
+                    .Where(x => x.DocumentId == doc.Id)
+                    .OrderBy(x => x.LastChangeDate)
+                    .Select(x => x.ParentDocument)
+                    .Select(x => new InternalDocument
+                    {
+                        Id = x.Id,
+                        IsRegistered = x.IsRegistered,
+                        RegistrationNumber = x.RegistrationNumber,
+                        RegistrationNumberPrefix = x.RegistrationNumberPrefix,
+                        RegistrationNumberSuffix = x.RegistrationNumberSuffix,
+                        //ExecutorPositionId = x.ExecutorPositionId,
+                        //SenderAgentId = x.SenderAgentId,
+                        //SenderAgentPersonId = x.Doc.SenderAgentPersonId,
+                        //SenderNumber = x.Doc.SenderNumber,
+                        //SenderDate = x.Doc.SenderDate,
+                        //Addressee = x.Doc.Addressee,
+                        //LinkId = x.Doc.LinkId,
+
+                        //DocumentTypeId = x.Templ.DocumentTypeId,
+                        //DocumentDirection = (EnumDocumentDirections)x.Templ.DocumentDirectionId,
+                    })
+                    .FirstOrDefault();
+
+                if (initiativeDoc != null)
                 {
-                    RegistrationJournalId = doc.RegistrationJournalId,
-                    RegistrationJournalIndex = regJournal == null ? null : regJournal.Index
-                };
+                    res.InitiativeRegistrationFullNumber = CommonQueries.GetRegistrationFullNumber(initiativeDoc);
+                    res.InitiativeRegistrationNumberPrefix = initiativeDoc.RegistrationNumberPrefix;
+                    res.InitiativeRegistrationNumberSuffix = initiativeDoc.RegistrationNumberSuffix;
+                    res.InitiativeRegistrationNumber = initiativeDoc.RegistrationNumber;
+                }
 
                 return res;
             }
@@ -1617,7 +1671,7 @@ namespace BL.Database.Documents
                     }).FirstOrDefault();
                 if (doc == null) return null;
                 doc.DocumentFiles = dbContext.DocumentFilesSet
-                    .Where(x => x.DocumentId == model.DocumentId  && x.ExecutorPositionId == doc.ExecutorPositionId && !x.IsAdditional)
+                    .Where(x => x.DocumentId == model.DocumentId && x.ExecutorPositionId == doc.ExecutorPositionId && !x.IsAdditional)
                     .Select(x => new InternalDocumentAttachedFile
                     {
                         Id = x.Id,

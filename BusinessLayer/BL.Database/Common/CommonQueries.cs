@@ -1046,6 +1046,18 @@ namespace BL.Database.Common
             }
         }
 
+        public static string GetRegistrationFullNumber(InternalDocument item)
+        {
+            string res = null;
+            try
+            {
+                if (item.IsRegistered|| item.RegistrationNumber.HasValue)
+                    res = (item.RegistrationNumberPrefix ?? "") + item.RegistrationNumber + (item.RegistrationNumberSuffix ?? "");
+            }
+            catch { }
+            return res;
+        }
+
         public static void ChangeRegistrationFullNumber(FrontRegistrationFullNumber item, bool isClearFields = true)
         {
             if (item.RegistrationNumber != null)

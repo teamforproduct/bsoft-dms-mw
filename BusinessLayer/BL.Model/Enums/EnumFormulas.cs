@@ -10,5 +10,16 @@ namespace BL.Model.Enums
     {
         RegistrationJournalId = 1,
         RegistrationJournalIndex = 2,
+        RegistrationJournalDepartmentCode = 3,
+
+        InitiativeRegistrationFullNumber = 4,
+        InitiativeRegistrationNumberPrefix = 5,
+        InitiativeRegistrationNumberSuffix = 6,
+        InitiativeRegistrationNumber = 7,
+
+        ExecutorPositionDepartmentCode = 8,
+        SubscriptionsPositionDepartmentCode = 9,
+
+        Date = 10,
     }
 }
