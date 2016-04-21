@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Common;
@@ -521,7 +520,7 @@ namespace BL.Database.Documents
                             Id = x.fl.Id,
                             DocumentId = x.fl.DocumentId,
                             Extension = x.fl.Extention,
-                            FileContent = x.fl.Content,
+                            //FileContent = x.fl.Content,
                             IsAdditional = x.fl.IsAdditional,
                             Hash = x.fl.Hash,
                             FileType = x.fl.FileType,
@@ -551,7 +550,7 @@ namespace BL.Database.Documents
                             Id = x.fl.Id,
                             DocumentId = x.fl.DocumentId,
                             Extension = x.fl.Extention,
-                            FileContent = x.fl.Content,
+                            //FileContent = x.fl.Content,
                             IsAdditional = x.fl.IsAdditional,
                             Hash = x.fl.Hash,
                             FileType = x.fl.FileType,

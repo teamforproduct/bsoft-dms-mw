@@ -349,7 +349,7 @@
         ModifyDocumentPaperList = 123005, // Изменить реестр
         DeleteDocumentPaperList = 123009, // Удалить реестр
         ReportRegistrationCardDocument = 100085,
-        ReportRegisterTransmissionDocuments = 100086
+        ReportRegisterTransmissionDocuments = 100086,
 
 
         AddTemplateAttachedFile = 255001,
