@@ -654,6 +654,8 @@ namespace BL.Database.Documents
                         dbContext.DocumentEventsSet.AddRange(eventsDb);
                         dbContext.SaveChanges();
                     }
+                    CommonQueries.ModifyDocumentTaskAccesses(dbContext,document.Id);
+                    dbContext.SaveChanges();
                     transaction.Complete();
                 }
             }

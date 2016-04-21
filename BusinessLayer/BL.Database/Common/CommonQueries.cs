@@ -1304,7 +1304,36 @@ namespace BL.Database.Common
             return subscriptions;
         }
 
+        public static void ModifyDocumentTaskAccesses(DmsContext dbContext, int documentId)
+        {
+            var qry1 = dbContext.DocumentEventsSet.Where(x => x.DocumentId == documentId && x.IsAvailableWithinTask && x.TaskId.HasValue)
+                .GroupBy(x => new { x.TaskId, x.SourcePositionId, x.TargetPositionId })
+                .Select(x => new { x.Key.TaskId, x.Key.SourcePositionId, x.Key.TargetPositionId }).ToList();
+            var qry2 = qry1.GroupBy(x => new { x.TaskId, x.SourcePositionId }).Where(x => x.Key.SourcePositionId.HasValue)
+                .Select(x => new { x.Key.TaskId, PositionId = x.Key.SourcePositionId }).ToList();
+            var qry3 = qry1.GroupBy(x => new { x.TaskId, x.TargetPositionId }).Where(x => x.Key.TargetPositionId.HasValue)
+                .Select(x => new { x.Key.TaskId, PositionId = x.Key.TargetPositionId }).ToList();
+            var taNew = qry2.Union(qry3).GroupBy(x => new { x.TaskId, x.PositionId })
+                .Select(x => new InternalDocumentTaskAccesses { TaskId = x.Key.TaskId.Value, PositionId = x.Key.PositionId.Value }).ToList();
 
+            var taOld = dbContext.DocumentTaskAccessesSet.Where(x => x.Task.DocumentId == documentId)
+                .Select(x => new InternalDocumentTaskAccesses { Id = x.Id, TaskId = x.TaskId, PositionId = x.PositionId }).ToList();
+
+            var delId = taOld.GroupJoin(taNew
+                , ta1 => new { ta1.TaskId, ta1.PositionId }
+                , ta2 => new { ta2.TaskId, ta2.PositionId }
+                , (ta1, ta2) => new { ta1.Id, ta2 }).Where(x => x.ta2.Count() == 0).Select(x => x.Id).ToList();
+
+            var insTA = taNew.GroupJoin(taOld
+                , ta1 => new { ta1.TaskId, ta1.PositionId }
+                , ta2 => new { ta2.TaskId, ta2.PositionId }
+                , (ta1, ta2) => new { ta1, ta2 }).Where(x => x.ta2.Count() == 0).Select(x => x.ta1).ToList();
+
+            dbContext.DocumentTaskAccessesSet.RemoveRange(dbContext.DocumentTaskAccessesSet.Where(x => delId.Contains(x.Id)));
+
+            dbContext.DocumentTaskAccessesSet.AddRange(insTA.Select(x => new DocumentTaskAccesses { TaskId = x.TaskId, PositionId = x.PositionId }));
+            
+        }
 
     }
 }
