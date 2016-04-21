@@ -4,85 +4,85 @@ using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Web.Http;
 using BL.CrossCutting.DependencyInjection;
+using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.Enums;
 
-namespace DMS_WebAPI.Controllers
+namespace DMS_WebAPI.Controllers.Documents
 {
     /// <summary>
-    /// Шаблоны документов
+    /// Задачи шаблонов документов
     /// </summary>
     [Authorize]
-    public class TemplateDocumentsController : ApiController
+    public class TemplateDocumentsTasksController : ApiController
     {
         /// <summary>
-        /// Получение списка шаблонов документов
+        /// Получение всех задач шаблона документов
         /// </summary>
         /// <returns>Список шаблонов документов</returns>
-        public IHttpActionResult Get()
+        public IHttpActionResult Get([Required]int templateId,[FromUri]FilterTemplateDocumentTask filter)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpDocs = tmpDocProc.GetTemplateDocuments(cxt);
+            var tmpDocs = tmpDocProc.GetTemplateDocumentTasks(cxt,templateId,filter);
             return new JsonResult(tmpDocs, this);
         }
 
         /// <summary>
-        /// Получение шаблона документа по ИД
+        /// Получение задачи шаблона документа по ИД
         /// </summary>
-        /// <param name="id">ИД шаблона документа</param>
+        /// <param name="id">ИД списка рассылки</param>
         /// <returns>Шаблон документа</returns>
         public IHttpActionResult Get(int id)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpDoc = tmpDocProc.GetTemplateDocument(cxt, id);
+            var tmpDoc = tmpDocProc.GetTemplateDocumentTask(cxt, id);
             return new JsonResult(tmpDoc, this);
         }
 
         /// <summary>
-        /// Добавление шаблона документа
+        /// Добавление задачи к шаблону документа
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public IHttpActionResult Post([FromBody]ModifyTemplateDocument model)
+        public IHttpActionResult Post([FromBody]ModifyTemplateDocumentTasks model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpTemplate = tmpDocProc.AddOrUpdateTemplate(cxt,model,EnumTemplateDocumentsActions.AddTemplateDocument);
+            var tmpTemplate = tmpDocProc.AddOrUpdateTemplateTask(cxt, model,EnumTemplateDocumentsActions.AddTemplateDocumentTask);
             return Get(tmpTemplate);
         }
 
         /// <summary>
-        /// Изменение шаблона документа
+        /// Изменение задачи шаблона документа
         /// </summary>
         /// <param name="id"></param>
         /// <param name="model"></param>
         /// <returns></returns>
-        public IHttpActionResult Put([Required]int id, [FromBody]ModifyTemplateDocument model)
+        public IHttpActionResult Put([Required]int id, [FromBody]ModifyTemplateDocumentTasks model)
         {
             model.Id = id;
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpTemplate = tmpDocProc.AddOrUpdateTemplate(cxt, model,EnumTemplateDocumentsActions.ModifyTemplateDocument);
+            var tmpTemplate = tmpDocProc.AddOrUpdateTemplateTask(cxt, model,EnumTemplateDocumentsActions.ModifyTemplateDocumentTask);
             return Get(tmpTemplate);
         }
 
-       /// <summary>
-       /// Удаление шаблона документа
-       /// </summary>
-       /// <param name="id"></param>
-       /// <returns></returns>
+        /// <summary>
+        /// Удаление задачи из шаблона документа
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public IHttpActionResult Delete([FromUri] int id)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
 
-            tmpDocProc.DeleteTemplate(cxt, id);
+            tmpDocProc.DeleteTemplateTask(cxt, id);
 
-            FrontTemplateDocument tmp = new FrontTemplateDocument();
-            tmp.Id = id;
+            var tmp = new FrontTemplateDocumentTasks() {Id = id};
 
             return new JsonResult(tmp, this);
 

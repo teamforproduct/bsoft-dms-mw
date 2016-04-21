@@ -156,6 +156,7 @@
     <Compile Include="DocumentCore\Commands\SendForSigningDocumentCommand.cs" />
     <Compile Include="DocumentCore\Commands\SendForResponsibleExecutionDocumentCommand.cs" />
     <Compile Include="DocumentCore\Commands\SendForControlDocumentCommand.cs" />
+    <Compile Include="DocumentCore\TemplateCommandFactory.cs" />
     <Compile Include="DocumentCore\PaperCommands\AddDocumentPaperListCommand.cs" />
     <Compile Include="DocumentCore\PaperCommands\AddDocumentPaperCommand.cs" />
     <Compile Include="DocumentCore\PaperCommands\DeleteDocumentPaperListCommand.cs" />
@@ -223,6 +224,9 @@
     <Compile Include="DocumentCore\DocumentService.cs" />
     <Compile Include="DocumentCore\Interfaces\IDocumentService.cs" />
     <Compile Include="DocumentCore\Interfaces\ITemplateDocumentService.cs" />
+    <Compile Include="DocumentCore\TemplateCommands\AddTemplateFileCommand.cs" />
+    <Compile Include="DocumentCore\TemplateCommands\DeleteTemplateFileCommand.cs" />
+    <Compile Include="DocumentCore\TemplateCommands\ModifyTemplateFileCommand.cs" />
     <Compile Include="DocumentCore\TemplateDocumentService.cs" />
     <Compile Include="Reports\DataSetCrystalReports.Designer.cs">
       <AutoGen>True</AutoGen>

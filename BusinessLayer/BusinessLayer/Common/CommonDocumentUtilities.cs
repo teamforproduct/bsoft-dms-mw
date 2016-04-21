@@ -676,19 +676,18 @@ namespace BL.Logic.Common
                 return null;
         }
 
-        public static void FormationRegistrationNumberByFormula(InternalDocument doc)
+        public static void FormationRegistrationNumberByFormula(InternalDocument doc, InternalDocumnRegistration model)
         {
-            doc.RegistrationJournalPrefixFormula = FormationRegistrationNumberByFormula(doc.RegistrationJournalPrefixFormula, doc);
-            doc.RegistrationJournalSuffixFormula = FormationRegistrationNumberByFormula(doc.RegistrationJournalSuffixFormula, doc);
+            doc.RegistrationJournalPrefixFormula = FormationRegistrationNumberByFormula(doc.RegistrationJournalPrefixFormula, doc, model);
+            doc.RegistrationJournalSuffixFormula = FormationRegistrationNumberByFormula(doc.RegistrationJournalSuffixFormula, doc, model);
         }
 
-        private static string FormationRegistrationNumberByFormula(string formula, InternalDocument doc)
+        private static string FormationRegistrationNumberByFormula(string formula, InternalDocument doc, InternalDocumnRegistration model)
         {
             if (string.IsNullOrEmpty(formula)) return formula;
-            ///Example @/{f/DocumentDirection=Incoming/f}{v//v}/@
             string pattern = "@/(.*?)/@";
-            string patternFilter = "{f/(.*?)/f}";
-            string patternFormula = "{v/(.*?)/v}";
+            string patternFilterSymbol = "c", patternFormulaSymbol = "v", patternLengthSymbol = "l";
+            string patternFilter = GetPatternFilter(patternFilterSymbol), patternFormula = GetPatternFilter(patternFormulaSymbol), patternLength = GetPatternFilter(patternLengthSymbol);
             string res = string.Copy(formula);
             foreach (Match mFormula in Regex.Matches(formula, pattern))
             {
@@ -700,30 +699,38 @@ namespace BL.Logic.Common
                 {
                     foreach (Match mFilter in mFilters)
                     {
-                        var filter = mFilter.Value.Replace("{f/", string.Empty).Replace("/f}", "");
-                        var template = CommonDocumentUtilities.GetFilterTemplateByDocument(doc).ToArray();
-                        if (CommonSystemUtilities.IsContainsInFilter(filter, template))
-                        {
-                            isContainsInFilter = true;
-                            break;
-                        }
+                            var filter = GetPatternFilterSymbolReplace(mFilter.Value,patternFilterSymbol);
+                            var template = CommonDocumentUtilities.GetFilterTemplateByDocument(doc).ToArray();
+                            if (CommonSystemUtilities.IsContainsInFilter(filter, template))
+                            {
+                                isContainsInFilter = true;
+                                break;
+                            }
                     }
                 }
 
                 if (isContainsInFilter)
                 {
+                    var mLengths = Regex.Matches(mFormula.Value, patternLength);
+                    int length = 0;
+                    foreach (Match mLength in mLengths)
+                    {
+                        if (int.TryParse(GetPatternFilterSymbolReplace(mLength.Value, patternLengthSymbol), out length))
+                            break;
+                    }
+
                     var mFormulaValues = Regex.Matches(mFormula.Value, patternFormula);
                     foreach (Match mFormulaValue in mFormulaValues)
                     {
-                        var formulaValue = (EnumFormulas)Enum.Parse(typeof(EnumFormulas), mFormulaValue.Value.Replace("{v/", string.Empty).Replace("/v}", ""));
+                        var formulaValue = (EnumFormulas)Enum.Parse(typeof(EnumFormulas), GetPatternFilterSymbolReplace(mFormulaValue.Value,patternFormulaSymbol));
 
                         switch (formulaValue)
                         {
                             case EnumFormulas.RegistrationJournalId:
-                                newValue = doc.RegistrationJournalId.ToString();
+                                newValue = model.RegistrationJournalId.GetValueOrDefault().ToString("D" + length);
                                 break;
                             case EnumFormulas.RegistrationJournalIndex:
-                                newValue = doc.RegistrationJournalIndex;
+                                newValue = model.RegistrationJournalIndex;
                                 break;
                         }
                         break;
@@ -734,7 +741,15 @@ namespace BL.Logic.Common
             }
             return res;
         }
-
+        private static string GetPatternFilterSymbolReplace(string input, string symbol)
+        {
+            if (string.IsNullOrEmpty(input)) input = string.Empty;
+            return input.Replace("{" + symbol + "/", string.Empty).Replace("/" + symbol + "}", "");
+        }
+        private static string GetPatternFilter(string symbol)
+        {
+            return "{" + symbol + "/(.*?)/" + symbol + "}";
+        }
         /// <summary>
         /// Формирует список значений документа для фильтрации в динамических свойствах, формирование регистрационого номера по формуле
         /// </summary>

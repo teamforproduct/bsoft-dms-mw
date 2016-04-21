@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using BL.Database.DBModel.Document;
+using BL.Database.DBModel.Template;
 using BL.Model.DocumentCore.InternalModel;
 
 namespace BL.Database.Common
@@ -320,5 +321,25 @@ namespace BL.Database.Common
                     LastChangeUserId = item.LastChangeUserId
                 };
         }
+
+        public static TemplateDocumentFiles GetDbTemplateFile(InternalTemplateAttachedFile docFile)
+        {
+            return new TemplateDocumentFiles
+            {
+                Id = docFile.Id,
+                DocumentId = docFile.DocumentId,
+                OrderNumber = docFile.OrderInDocument,
+                Extention = docFile.Extension,
+                Hash = docFile.Hash,
+                FileType = docFile.FileType,
+                FileSize = docFile.FileSize,
+                IsAdditional = docFile.IsAdditional,
+                LastChangeDate = docFile.LastChangeDate,
+                LastChangeUserId = docFile.LastChangeUserId,
+                Name = docFile.Name
+                
+            };
+        }
+
     }
 }

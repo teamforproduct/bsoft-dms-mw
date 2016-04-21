@@ -18,11 +18,12 @@ namespace DMS_WebAPI.Controllers.Dictionaries
     [Authorize]
     public class DictionaryAgentCompaniesController : ApiController
     {
-       /// <summary>
-       /// Список контрагентов - юридических лиц
-       /// </summary>
-       /// <param name="filter"></param>
-       /// <returns></returns>
+        /// <summary>
+        /// Список контрагентов - юридических лиц
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <param name="paging"></param>
+        /// <returns></returns>
         // GET: api/DictionaryCompanies
         public IHttpActionResult Get([FromUri] FilterDictionaryAgentCompany filter, [FromUri]UIPaging paging)
         {

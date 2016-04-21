@@ -4,85 +4,85 @@ using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Web.Http;
 using BL.CrossCutting.DependencyInjection;
+using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.Enums;
 
-namespace DMS_WebAPI.Controllers
+namespace DMS_WebAPI.Controllers.Documents
 {
     /// <summary>
-    /// Шаблоны документов
+    /// Списки рассылок шаблонов документов
     /// </summary>
     [Authorize]
-    public class TemplateDocumentsController : ApiController
+    public class TemplateDocumentsRestrictedSendListsController : ApiController
     {
         /// <summary>
-        /// Получение списка шаблонов документов
+        /// Получение всех ограничительных списков рассылок шаблона документов
         /// </summary>
         /// <returns>Список шаблонов документов</returns>
-        public IHttpActionResult Get()
+        public IHttpActionResult Get([Required]int templateId,[FromUri]FilterTemplateDocumentRestrictedSendList filter)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpDocs = tmpDocProc.GetTemplateDocuments(cxt);
+            var tmpDocs = tmpDocProc.GetTemplateDocumentRestrictedSendLists(cxt,templateId,filter);
             return new JsonResult(tmpDocs, this);
         }
 
         /// <summary>
-        /// Получение шаблона документа по ИД
+        /// Получение ограничительного списка рассылок шаблона документа по ИД
         /// </summary>
-        /// <param name="id">ИД шаблона документа</param>
+        /// <param name="id">ИД списка рассылки</param>
         /// <returns>Шаблон документа</returns>
         public IHttpActionResult Get(int id)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpDoc = tmpDocProc.GetTemplateDocument(cxt, id);
+            var tmpDoc = tmpDocProc.GetTemplateDocumentRestrictedSendList(cxt, id);
             return new JsonResult(tmpDoc, this);
         }
 
         /// <summary>
-        /// Добавление шаблона документа
+        /// Добавление списка рассылки к шаблону документа
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public IHttpActionResult Post([FromBody]ModifyTemplateDocument model)
+        public IHttpActionResult Post([FromBody]ModifyTemplateDocumentRestrictedSendLists model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpTemplate = tmpDocProc.AddOrUpdateTemplate(cxt,model,EnumTemplateDocumentsActions.AddTemplateDocument);
+            var tmpTemplate = tmpDocProc.AddOrUpdateTemplateRestrictedSendList(cxt, model,EnumTemplateDocumentsActions.AddTemplateDocumentRestrictedSendList);
             return Get(tmpTemplate);
         }
 
         /// <summary>
-        /// Изменение шаблона документа
+        /// Изменение списка рассылки шаблона документа
         /// </summary>
         /// <param name="id"></param>
         /// <param name="model"></param>
         /// <returns></returns>
-        public IHttpActionResult Put([Required]int id, [FromBody]ModifyTemplateDocument model)
+        public IHttpActionResult Put([Required]int id, [FromBody]ModifyTemplateDocumentRestrictedSendLists model)
         {
             model.Id = id;
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpTemplate = tmpDocProc.AddOrUpdateTemplate(cxt, model,EnumTemplateDocumentsActions.ModifyTemplateDocument);
+            var tmpTemplate = tmpDocProc.AddOrUpdateTemplateRestrictedSendList(cxt, model,EnumTemplateDocumentsActions.ModifyTemplateDocumentRestrictedSendList);
             return Get(tmpTemplate);
         }
 
-       /// <summary>
-       /// Удаление шаблона документа
-       /// </summary>
-       /// <param name="id"></param>
-       /// <returns></returns>
+        /// <summary>
+        /// Удаление списка рассылки
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public IHttpActionResult Delete([FromUri] int id)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
 
-            tmpDocProc.DeleteTemplate(cxt, id);
+            tmpDocProc.DeleteTemplateRestrictedSendList(cxt, id);
 
-            FrontTemplateDocument tmp = new FrontTemplateDocument();
-            tmp.Id = id;
+            var tmp = new FrontTemplateDocumentRestrictedSendLists {Id = id};
 
             return new JsonResult(tmp, this);
 

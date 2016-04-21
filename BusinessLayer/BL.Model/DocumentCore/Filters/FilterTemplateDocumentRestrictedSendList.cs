@@ -3,20 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BL.Model.Common;
 using BL.Model.Enums;
 
-namespace BL.Model.DocumentCore.IncomingModel
+namespace BL.Model.DocumentCore.Filters
 {
     /// <summary>
-    /// Ограничительный список рассылки для шаблона документа
+    /// Фильтр ограничительных списков рассылки в шаблонах
     /// </summary>
-    public class ModifyTemplateDocumentRestrictedSendLists :LastChangeInfo
+    public class FilterTemplateDocumentRestrictedSendList
     {
         /// <summary>
         /// ИД
         /// </summary>
-        public int? Id { get; set; }
+        public List<int> Id { get; set; }
         /// <summary>
         /// Ссылка на шаблон
         /// </summary>
@@ -28,6 +27,6 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// <summary>
         /// Уровень доступа
         /// </summary>
-        public EnumDocumentAccesses AccessLevel { get; set; }
+        public EnumDocumentAccesses? AccessLevel { get; set; }
     }
 }
