@@ -20,5 +20,9 @@ namespace BL.Model.DocumentCore.InternalModel
 
         public string SubscriptionsPositionDepartmentCode { get; set; }
 
+        public string CurrentPositionDepartmentCode { get; set; }
+
+        public string InitiativeRegistrationSenderNumber { get; set; }
+
     }
 }

@@ -1571,16 +1571,7 @@ namespace BL.Database.Documents
                         RegistrationNumber = x.RegistrationNumber,
                         RegistrationNumberPrefix = x.RegistrationNumberPrefix,
                         RegistrationNumberSuffix = x.RegistrationNumberSuffix,
-                        //ExecutorPositionId = x.ExecutorPositionId,
-                        //SenderAgentId = x.SenderAgentId,
-                        //SenderAgentPersonId = x.Doc.SenderAgentPersonId,
-                        //SenderNumber = x.Doc.SenderNumber,
-                        //SenderDate = x.Doc.SenderDate,
-                        //Addressee = x.Doc.Addressee,
-                        //LinkId = x.Doc.LinkId,
-
-                        //DocumentTypeId = x.Templ.DocumentTypeId,
-                        //DocumentDirection = (EnumDocumentDirections)x.Templ.DocumentDirectionId,
+                        SenderNumber = x.SenderNumber
                     })
                     .FirstOrDefault();
 
@@ -1590,7 +1581,11 @@ namespace BL.Database.Documents
                     res.InitiativeRegistrationNumberPrefix = initiativeDoc.RegistrationNumberPrefix;
                     res.InitiativeRegistrationNumberSuffix = initiativeDoc.RegistrationNumberSuffix;
                     res.InitiativeRegistrationNumber = initiativeDoc.RegistrationNumber;
+                    res.InitiativeRegistrationSenderNumber = initiativeDoc.SenderNumber;
                 }
+
+                res.CurrentPositionDepartmentCode = dbContext.DictionaryPositionsSet.Where(x => x.Id == model.CurrentPositionId)
+                    .Select(x => x.Department.Code).FirstOrDefault();
 
                 return res;
             }

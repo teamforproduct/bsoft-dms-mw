@@ -16,10 +16,12 @@ namespace BL.Model.Enums
         InitiativeRegistrationNumberPrefix = 5,
         InitiativeRegistrationNumberSuffix = 6,
         InitiativeRegistrationNumber = 7,
+        InitiativeRegistrationSenderNumber = 8,
 
-        ExecutorPositionDepartmentCode = 8,
-        SubscriptionsPositionDepartmentCode = 9,
+        ExecutorPositionDepartmentCode = 9,
+        SubscriptionsPositionDepartmentCode = 10,
+        CurrentPositionDepartmentCode = 11,
 
-        Date = 10,
+        Date = 12,
     }
 }

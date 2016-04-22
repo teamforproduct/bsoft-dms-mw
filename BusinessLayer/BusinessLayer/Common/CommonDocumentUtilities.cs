@@ -767,6 +767,12 @@ namespace BL.Logic.Common
                             case EnumFormulas.RegistrationJournalDepartmentCode:
                                 newValue = model.RegistrationJournalDepartmentCode;
                                 break;
+                            case EnumFormulas.CurrentPositionDepartmentCode:
+                                newValue = model.CurrentPositionDepartmentCode;
+                                break;
+                            case EnumFormulas.InitiativeRegistrationSenderNumber:
+                                newValue = model.InitiativeRegistrationSenderNumber;
+                                break;
                         }
                         break;
                     }
