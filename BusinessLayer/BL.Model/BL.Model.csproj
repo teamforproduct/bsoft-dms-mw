@@ -135,6 +135,10 @@
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAgentPerson.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryContact.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryContactType.cs" />
+    <Compile Include="DocumentCore\Filters\FilterTemplateDocumentRestrictedSendList.cs" />
+    <Compile Include="DocumentCore\Filters\FilterTemplateAttachedFile.cs" />
+    <Compile Include="DocumentCore\Filters\FilterTemplateDocumentTask.cs" />
+    <Compile Include="DocumentCore\Filters\FilterTemplateDocumentSendList.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentSubscription.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentPaperList.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentTask.cs" />
@@ -235,6 +239,7 @@
     <Compile Include="DocumentCore\InternalModel\InternalDocumentSavedFilter.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentPaper.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentTask.cs" />
+    <Compile Include="DocumentCore\InternalModel\InternalDocumentTaskAccesses.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalTemplateAttachedFile.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalTemplateDocument.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalTemplateDocumentRestrictedSendList.cs" />
@@ -251,6 +256,7 @@
     <Compile Include="DocumentCore\InternalModel\InternalDocumentSubscription.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentWait.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalTemplateDocumentTask.cs" />
+    <Compile Include="Enums\EnumTemplateDocumentsActions.cs" />
     <Compile Include="DocumentCore\ReportModel\ReportDocumentEvent.cs" />
     <Compile Include="DocumentCore\ReportModel\ReportDocumentPaper.cs" />
     <Compile Include="DocumentCore\ReportModel\ReportDocumentSubscription.cs" />

@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BL.Model.Common;
 using BL.Model.Enums;
 
 namespace BL.Model.DocumentCore.IncomingModel
 {
-    public class ModifyTemplateDocumentSendLists
+    public class ModifyTemplateDocumentSendLists : LastChangeInfo
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
         public int DocumentId { get; set; }
         public EnumSendTypes SendType { get; set; }
         public int? SourcePositionId { get; set; }

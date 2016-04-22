@@ -115,6 +115,7 @@
     <Compile Include="DBModel\Document\DocumentSavedFilters.cs" />
     <Compile Include="DBModel\Document\DocumentSendLists.cs" />
     <Compile Include="DBModel\Document\DocumentTags.cs" />
+    <Compile Include="DBModel\Document\DocumentTaskAccesses.cs" />
     <Compile Include="DBModel\Document\DocumentTasks.cs" />
     <Compile Include="DBModel\Document\DocumentWaits.cs" />
     <Compile Include="DBModel\InternalModel\DocumentQuery.cs" />
@@ -280,6 +281,10 @@
     <Compile Include="Migrations\201604200938151_DocIndex.Designer.cs">
       <DependentUpon>201604200938151_DocIndex.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201604211349496_DocumentTaskAccesses.cs" />
+    <Compile Include="Migrations\201604211349496_DocumentTaskAccesses.Designer.cs">
+      <DependentUpon>201604211349496_DocumentTaskAccesses.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SystemDb\ISystemDbProcess.cs" />
@@ -384,6 +389,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201604200938151_DocIndex.resx">
       <DependentUpon>201604200938151_DocIndex.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604211349496_DocumentTaskAccesses.resx">
+      <DependentUpon>201604211349496_DocumentTaskAccesses.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
