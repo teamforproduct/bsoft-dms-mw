@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using BL.Model.Common;
-using BL.Model.DocumentCore.FrontModel;
 using BL.Model.Enums;
 using BL.Model.SystemCore.InternalModel;
-using BL.Model.DictionaryCore.InternalModel;
 
 namespace BL.Model.DocumentCore.InternalModel
 {
@@ -159,8 +157,6 @@ namespace BL.Model.DocumentCore.InternalModel
         public IEnumerable<InternalDocumentEvent> PaperEvents { get; set; }
         public IEnumerable<InternalDocumentPaper> Papers { get; set; }
         public int? MaxPaperOrderNumber { get; set; }
-
-        public InternalDictionaryPosition ExecutorPosition { get;set;}
 
     }
 }
