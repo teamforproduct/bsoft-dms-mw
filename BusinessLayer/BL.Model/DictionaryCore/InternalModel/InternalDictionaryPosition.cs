@@ -65,5 +65,7 @@ namespace BL.Model.DictionaryCore.InternalModel
 
         // !!! После добавления полей внеси изменения в BL.Logic.Common.CommonDictionaryUtilities.PositionModifyToInternal
 
+        public InternalDictionaryDepartment Department { get; set; }
+
     }
 }

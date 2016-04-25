@@ -42,7 +42,7 @@
   <ItemGroup>
     <Compile Include="AdminCore\AdminLanguageInfo.cs" />
     <Compile Include="AdminCore\AdminAccessInfo.cs" />
-    <Compile Include="AdminCore\BaseAdminUserRole.cs" />
+    <Compile Include="AdminCore\FrontAdminUserRole.cs" />
     <Compile Include="AdminCore\FilterModel\FilterAdminLanguageValue.cs" />
     <Compile Include="AdminCore\FilterModel\FilterAdminLanguage.cs" />
     <Compile Include="AdminCore\FrontModel\FrontAdminLanguageValue.cs" />

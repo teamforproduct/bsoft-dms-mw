@@ -275,10 +275,8 @@ namespace BL.Database.Common
             return dbContext.DocumentEventsSet
                     .Where(x => ctx.IsAdmin || (x.TargetPositionId.HasValue && ctx.CurrentPositionsIdList.Contains(x.TargetPositionId.Value))
                     || (x.SourcePositionId.HasValue && ctx.CurrentPositionsIdList.Contains(x.SourcePositionId.Value))
-                    //|| ctx.CurrentAgentId == x.SourceAgentId
-                    //|| (x.TargetAgentId.HasValue && ctx.CurrentAgentId == x.TargetAgentId.Value)
-                    )
-                    .AsQueryable();
+                    || (x.IsAvailableWithinTask && x.TaskId.HasValue && dbContext.DocumentTaskAccessesSet.Any(a=>a.TaskId == x.TaskId.Value && ctx.CurrentPositionsIdList.Contains(a.PositionId)))
+                    ).AsQueryable();
         }
 
         public static IQueryable<DocumentWaits> GetDocumentWaitsQuery(DmsContext dbContext, IContext ctx = null, int? documentId = null)
@@ -296,6 +294,11 @@ namespace BL.Database.Common
                            ||
                            (x.OnEvent.SourcePositionId.HasValue &&
                             ctx.CurrentPositionsIdList.Contains(x.OnEvent.SourcePositionId.Value))
+                            // make weit available if onevent can be accesed through the task
+                           ||
+                           (x.OnEvent.IsAvailableWithinTask && x.OnEvent.TaskId.HasValue &&
+                            dbContext.DocumentTaskAccessesSet.Any(a => a.TaskId == x.OnEvent.TaskId.Value && ctx.CurrentPositionsIdList.Contains(a.PositionId)))
+
                             ||
                             (x.OffEventId.HasValue && (
                             (x.OffEvent.TargetPositionId.HasValue &&
@@ -1044,6 +1047,18 @@ namespace BL.Database.Common
                 item.RegistrationNumberPrefix = null;
                 item.RegistrationNumberSuffix = null;
             }
+        }
+
+        public static string GetRegistrationFullNumber(InternalDocument item)
+        {
+            string res = null;
+            try
+            {
+                if (item.IsRegistered|| item.RegistrationNumber.HasValue)
+                    res = (item.RegistrationNumberPrefix ?? "") + item.RegistrationNumber + (item.RegistrationNumberSuffix ?? "");
+            }
+            catch { }
+            return res;
         }
 
         public static void ChangeRegistrationFullNumber(FrontRegistrationFullNumber item, bool isClearFields = true)

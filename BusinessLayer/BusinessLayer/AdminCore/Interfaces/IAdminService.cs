@@ -8,7 +8,7 @@ namespace BL.Logic.AdminCore.Interfaces
 {
     public interface IAdminService
     {
-        IEnumerable<BaseAdminUserRole> GetPositionsByCurrentUser(IContext context);
+        IEnumerable<FrontAdminUserRole> GetPositionsByCurrentUser(IContext context);
         bool VerifyAccess(IContext context, VerifyAccess verifyAccess, bool isThrowExeception = true);
         bool VerifyAccess(IContext context, EnumDocumentActions action, bool isPositionFromContext = true, bool isThrowExeception = true);
         bool VerifyAccess(IContext context, EnumDictionaryActions action, bool isPositionFromContext = true, bool isThrowExeception = true);
