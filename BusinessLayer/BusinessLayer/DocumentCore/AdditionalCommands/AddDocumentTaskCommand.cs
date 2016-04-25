@@ -55,9 +55,9 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         public override object Execute()
         {
             CommonDocumentUtilities.GetDocumentTaskOrCreateNew(_context, _document, Model.Name, _context.CurrentPositionId, Model.Description);
-            return _operationDb.AddDocumentTasks(_context, _document.Tasks).ToList(); 
+            Document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, null, EnumEventTypes.TaskFormulation, null, Model.Name+" / "+Model.Description);
+            return _operationDb.AddDocumentTasks(_context, _document).ToList(); 
         }
 
-        public override EnumDocumentActions CommandType => EnumDocumentActions.AddDocumentTask;
     }
 }
