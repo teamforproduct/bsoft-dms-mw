@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using BL.Model.Common;
 using BL.Model.Enums;
+using BL.Model.DictionaryCore.InternalModel;
 
 namespace BL.Model.DocumentCore.InternalModel
 {
@@ -36,6 +37,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public InternalDocumentEvent CloseEvent { get; set; }
         public InternalDocumentTask Task { get; set; }
         public List<InternalDocumentEvent> PaperEvents { get; set; }
+        public InternalDictionaryAgent TargetAgent { get; set; }
 
     }
 }

@@ -773,6 +773,12 @@ namespace BL.Logic.Common
                             case EnumFormulas.InitiativeRegistrationSenderNumber:
                                 newValue = model.InitiativeRegistrationSenderNumber;
                                 break;
+                            case EnumFormulas.DocumentSendListLastAgentExternalFirstSymbolName:
+                                newValue = model.DocumentSendListLastAgentExternalFirstSymbolName;
+                                break;
+                            case EnumFormulas.OrdinalNumberDocumentLinkForCorrespondent:
+                                newValue = model.OrdinalNumberDocumentLinkForCorrespondent.ToString("D" + length);
+                                break;
                         }
                         break;
                     }

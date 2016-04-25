@@ -1494,38 +1494,20 @@ namespace BL.Database.Documents
             {
                 var doc = CommonQueries.GetDocumentQuery(dbContext, context)
                     .Where(x => x.Doc.Id == model.DocumentId)
-                    .Select(x => new InternalDocument
+                    .Select(x => new
                     {
-                        Id = x.Doc.Id,
-                        //DocumentSubjectId = x.Doc.DocumentSubjectId,
-                        //Description = x.Doc.Description,
-                        //IsRegistered = x.Doc.IsRegistered,
-                        //ExecutorPositionId = x.Doc.ExecutorPositionId,
-                        //SenderAgentId = x.Doc.SenderAgentId,
-                        //SenderAgentPersonId = x.Doc.SenderAgentPersonId,
-                        //SenderNumber = x.Doc.SenderNumber,
-                        //SenderDate = x.Doc.SenderDate,
-                        //Addressee = x.Doc.Addressee,
-                        //LinkId = x.Doc.LinkId,
-
-                        //DocumentTypeId = x.Templ.DocumentTypeId,
-                        //DocumentDirection = (EnumDocumentDirections)x.Templ.DocumentDirectionId,
-
-                        ExecutorPosition = new Model.DictionaryCore.InternalModel.InternalDictionaryPosition
-                        {
-                            Department = new Model.DictionaryCore.InternalModel.InternalDictionaryDepartment
-                            {
-                                Code = x.Doc.ExecutorPosition.Department.Code
-                            }
-                        },
-
-                        Subscriptions = x.Doc.Subscriptions
+                        DocumentId = x.Doc.Id,
+                        LinkId = x.Doc.LinkId,
+                        SenderAgentId = x.Doc.SenderAgentId,
+                        ExecutorPositionDepartmentCode = x.Doc.ExecutorPosition.Department.Code,
+                        SubscriptionsPositionDepartmentCode = x.Doc.Subscriptions
                                         .Where(y => y.SubscriptionStateId == (int)EnumSubscriptionStates.Sign)
                                         .OrderBy(y => y.LastChangeDate).Take(1)
-                                        .Select(y => new InternalDocumentSubscription
-                                        {
-                                            DoneEvent = new InternalDocumentEvent { SourcePosition = new Model.DictionaryCore.InternalModel.InternalDictionaryPosition { Department = new Model.DictionaryCore.InternalModel.InternalDictionaryDepartment { Code = y.DoneEvent.SourcePosition.Department.Code } } }
-                                        })
+                                        .Select(y => y.DoneEvent.SourcePosition.Department.Code).FirstOrDefault(),
+                        DocumentSendListLastAgentExternalFirstSymbolName = x.Doc.SendLists
+                                        .Where(y => y.SendTypeId == (int)EnumSendTypes.SendForInformationExternal)
+                                        .OrderByDescending(y => y.LastChangeDate).Take(1)
+                                        .Select(y => y.TargetAgent.Name).FirstOrDefault()
                     }).FirstOrDefault();
 
                 if (doc == null)
@@ -1535,11 +1517,19 @@ namespace BL.Database.Documents
 
                 var res = new InternalDocumnRegistration
                 {
-                    RegistrationJournalId = doc.RegistrationJournalId,
-                    ExecutorPositionDepartmentCode = doc.ExecutorPosition.Department.Code,
+                    ExecutorPositionDepartmentCode = doc.ExecutorPositionDepartmentCode,
                     RegistrationDate = model.RegistrationDate,
-                    SubscriptionsPositionDepartmentCode = doc.Subscriptions.FirstOrDefault()?.DoneEvent?.SourcePosition?.Department?.Code
+                    SubscriptionsPositionDepartmentCode = doc.SubscriptionsPositionDepartmentCode,
+                    DocumentSendListLastAgentExternalFirstSymbolName = doc.DocumentSendListLastAgentExternalFirstSymbolName
                 };
+
+                if (!string.IsNullOrEmpty(res.DocumentSendListLastAgentExternalFirstSymbolName))
+                    res.DocumentSendListLastAgentExternalFirstSymbolName = res.DocumentSendListLastAgentExternalFirstSymbolName.Substring(0, 1);
+
+                //TODO ??? если doc.LinkId==null || doc.SenderAgentId ==null
+                res.OrdinalNumberDocumentLinkForCorrespondent = dbContext.DocumentsSet
+                        .Where(x => x.LinkId == doc.LinkId && x.SenderAgentId == doc.SenderAgentId && x.IsRegistered == true)
+                        .Count() + 1;
 
                 var regJournal = dbContext.DictionaryRegistrationJournalsSet
                     .Where(x => x.Id == model.RegistrationJournalId)
@@ -1547,21 +1537,17 @@ namespace BL.Database.Documents
 
                 if (regJournal != null)
                 {
-                    doc.RegistrationJournalId = regJournal.Id;
-                    doc.NumerationPrefixFormula = regJournal.NumerationPrefixFormula;
-                    doc.RegistrationJournalPrefixFormula = regJournal.PrefixFormula;
-                    doc.RegistrationJournalSuffixFormula = regJournal.SuffixFormula;
-
+                    res.RegistrationJournalId = regJournal.Id;
                     res.RegistrationJournalIndex = regJournal.Index;
                     res.RegistrationJournalDepartmentCode = regJournal.RegistrationJournalDepartmentCode;
                 }
                 else
                 {
-                    doc.RegistrationJournalId = null;
+                    res.RegistrationJournalId = null;
                 }
 
                 var initiativeDoc = dbContext.DocumentLinksSet
-                    .Where(x => x.DocumentId == doc.Id)
+                    .Where(x => x.DocumentId == doc.DocumentId)
                     .OrderBy(x => x.LastChangeDate)
                     .Select(x => x.ParentDocument)
                     .Select(x => new InternalDocument

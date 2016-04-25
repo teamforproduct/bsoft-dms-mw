@@ -74,16 +74,27 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                     Date = DateTime.Now,
                     FileContent = Convert.FromBase64String(file.FileData),
                     IsAdditional = file.IsAdditional,
-                    Version = 1,
                     FileType = file.FileType,
                     FileSize = file.FileSize,
-                    OrderInDocument = _operationDb.GetNextFileOrderNumber(_context, Model.DocumentId),
                     Name = Path.GetFileNameWithoutExtension(file.FileName),
                     Extension = Path.GetExtension(file.FileName).Replace(".", ""),
                     WasChangedExternal = false,
                     ExecutorPositionId = _context.CurrentPositionId,
                     ExecutorPositionExecutorAgentId = executorPositionExecutorAgentId.Value
                 };
+                var ordInDoc = _operationDb.CheckFileForDocument(_context, att.Name, att.Extension);
+                if (ordInDoc == -1)
+                {
+                    att.Version = 1;
+                    att.OrderInDocument = _operationDb.GetNextFileOrderNumber(_context, Model.DocumentId);
+                }
+                else
+                {
+                    att.Version = _operationDb.GetFileNextVersion(_context, att.DocumentId, ordInDoc);
+                    att.OrderInDocument = ordInDoc;
+                }
+
+
                 _fStore.SaveFile(_context, att);
                 CommonDocumentUtilities.SetLastChange(_context, att);
                 res.Add(_operationDb.AddNewFileOrVersion(_context, att));
