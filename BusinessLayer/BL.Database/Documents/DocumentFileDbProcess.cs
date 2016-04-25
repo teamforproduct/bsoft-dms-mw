@@ -298,6 +298,22 @@ namespace BL.Database.Documents
             }
         }
 
+        public int CheckFileForDocument(IContext ctx, string fileName, string fileExt)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                if (dbContext.DocumentFilesSet.Any(x => x.Name == fileName && x.Extension == fileExt))
+                {
+                    return
+                        dbContext.DocumentFilesSet.Where(x => x.Name == fileName && x.Extension == fileExt)
+                            .Select(x => x.OrderNumber)
+                            .First();
+                }
+
+                return -1;
+            }
+        }
+
         public int GetNextFileOrderNumber(IContext ctx, int documentId)
         {
             using (var dbContext = new DmsContext(ctx))
