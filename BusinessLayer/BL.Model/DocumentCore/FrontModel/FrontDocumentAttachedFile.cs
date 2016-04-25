@@ -16,32 +16,6 @@ namespace BL.Model.DocumentCore.FrontModel
         }
 
         /// <summary>
-        /// конструктор для превращения внутренней модели файла в модель отображения для пользователя
-        /// </summary>
-        /// <param name="doc"></param>
-        public FrontDocumentAttachedFile(InternalDocumentAttachedFile doc)
-        {
-            Id = doc.Id;
-            DocumentId = doc.DocumentId;
-            OrderInDocument = doc.OrderInDocument;
-
-            Version = doc.Version;
-            FileContent = doc.FileContent;
-            Name = doc.Name;
-            Extension = doc.Extension;
-
-            FileType = doc.FileType;
-            FileSize = doc.FileSize;
-            IsAdditional = doc.IsAdditional;
-            Date = doc.Date;
-            Hash = doc.Hash;
-            WasChangedExternal = doc.WasChangedExternal;
-            LastChangeUserId = doc.LastChangeUserId;
-            LastChangeDate = doc.LastChangeDate;
-        }
-
-
-        /// <summary>
         /// ИД.
         /// </summary>
         public int Id { get; set; }
@@ -109,5 +83,7 @@ namespace BL.Model.DocumentCore.FrontModel
         /// Дата последнего изменения записи
         /// </summary>
         public DateTime LastChangeDate { get; set; }
+        public string ExecutorPositionName { get; set; }
+        public string ExecutorPositionExecutorAgentName { get; set; }
     }
 }

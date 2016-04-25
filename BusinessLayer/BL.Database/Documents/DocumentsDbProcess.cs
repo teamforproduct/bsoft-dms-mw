@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Transactions;
+using System.Data.Entity;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Common;
 using BL.Database.DatabaseContext;
@@ -19,6 +20,7 @@ using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.FullTextSearch;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.InternalModel;
+using BL.Model.DocumentCore.ReportModel;
 
 namespace BL.Database.Documents
 {
@@ -26,73 +28,6 @@ namespace BL.Database.Documents
     {
         public DocumentsDbProcess()
         {
-        }
-
-        public void AddDocument(IContext ctx, InternalDocument document)
-        {
-            using (var dbContext = new DmsContext(ctx))
-            {
-                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
-                {
-                    var doc = ModelConverter.GetDbDocument(document);
-
-                    if (document.Accesses != null && document.Accesses.Any())
-                    {
-                        doc.Accesses = ModelConverter.GetDbDocumentAccesses(document.Accesses).ToList();
-                    }
-
-                    if (document.Events != null && document.Events.Any())
-                    {
-                        doc.Events = ModelConverter.GetDbDocumentEvents(document.Events).ToList();
-                    }
-
-                    if (document.RestrictedSendLists != null && document.RestrictedSendLists.Any())
-                    {
-                        doc.RestrictedSendLists = ModelConverter.GetDbDocumentRestrictedSendLists(document.RestrictedSendLists).ToList();
-                    }
-
-                    if (document.DocumentFiles != null && document.DocumentFiles.Any())
-                    {
-                        doc.Files = ModelConverter.GetDbDocumentFiles(document.DocumentFiles).ToList();
-                    }
-
-                    if (document.Tasks?.Any(x => x.Id == 0) ?? false)
-                    {
-                        doc.Tasks = ModelConverter.GetDbDocumentTasks(document.Tasks.Where(x => x.Id == 0)).ToList();
-                    }
-
-                    dbContext.DocumentsSet.Add(doc);
-                    dbContext.SaveChanges();
-
-                    if (document.SendLists != null && document.SendLists.Any())
-                    {
-                        var sendLists = document.SendLists.ToList();
-                        sendLists.ForEach(x =>
-                        {
-                            x.DocumentId = doc.Id;
-                            var taskId = doc.Tasks.Where(y => y.Task == x.TaskName).Select(y => y.Id).FirstOrDefault();
-                            x.TaskId = (taskId == 0 ? null : (int?)taskId);
-                        });
-                        var sendListsDb = ModelConverter.GetDbDocumentSendLists(sendLists).ToList();
-                        dbContext.DocumentSendListsSet.AddRange(sendListsDb);
-                        dbContext.SaveChanges();
-                    }
-
-
-                    document.Id = doc.Id;
-
-                    //TODO we schould check if it needed or not? 
-                    if (document.DocumentFiles != null)
-                        foreach (var fl in document.DocumentFiles)
-                        {
-                            fl.DocumentId = doc.Id;
-                        }
-
-                    CommonQueries.AddFullTextCashInfo(dbContext, document.Id, EnumSearchObjectType.Document, EnumOperationType.AddNew);
-                    dbContext.SaveChanges();
-                    transaction.Complete();
-                }
-            }
         }
 
         public IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging)
@@ -112,6 +47,8 @@ namespace BL.Database.Documents
                 var qry = CommonQueries.GetDocumentQuery(dbContext, ctx, acc);
 
                 #region DocumentsSetFilter
+
+                #region Base
 
                 if (filters.CreateFromDate.HasValue)
                 {
@@ -230,10 +167,26 @@ namespace BL.Database.Documents
                     qry = qry.Where(x => filters.ExecutorDepartmentId.Contains(x.Doc.ExecutorPosition.DepartmentId));
                 }
 
+
+                if (filters.SenderAgentId != null && filters.SenderAgentId.Count > 0)
+                {
+                    qry =
+                        qry.Where(
+                            x =>
+                                x.Doc.SenderAgentId.HasValue &&
+                                filters.SenderAgentId.Contains(x.Doc.SenderAgentId.Value));
+                }
+
+                if (filters.IsRegistered.HasValue)
+                {
+                    qry = qry.Where(x => x.Doc.IsRegistered == filters.IsRegistered.Value);
+                }
+
                 if (filters.IsInMyControl ?? false)
                 {
                     qry = qry.Where(x => ctx.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId));
                 }
+                #endregion Base
 
                 #region Subscription
                 if ((filters.SubscriptionPositionId != null && filters.SubscriptionPositionId.Count > 0) ||
@@ -703,20 +656,7 @@ namespace BL.Database.Documents
                 }
                 #endregion File
 
-                if (filters.SenderAgentId != null && filters.SenderAgentId.Count > 0)
-                {
-                    qry =
-                        qry.Where(
-                            x =>
-                                x.Doc.SenderAgentId.HasValue &&
-                                filters.SenderAgentId.Contains(x.Doc.SenderAgentId.Value));
-                }
-
-                if (filters.IsRegistered.HasValue)
-                {
-                    qry = qry.Where(x => x.Doc.IsRegistered == filters.IsRegistered.Value);
-                }
-
+                #region Property
                 if (filters.FilterProperties?.Count() > 0)
                 {
                     foreach (var filterProperty in filters.FilterProperties)
@@ -762,6 +702,9 @@ namespace BL.Database.Documents
                         qry = qryTmp.GroupBy(x => x.Doc).Select(x => x.Key);
                     }
                 }
+
+                #endregion Property
+
                 #endregion DocumentsSetFilter
 
                 if (paging != null)
@@ -772,6 +715,7 @@ namespace BL.Database.Documents
                         .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
                 }
 
+                #region Count
                 var newevnt =
                     dbContext.DocumentEventsSet.Join(qry, ev => ev.DocumentId, rs => rs.Doc.Id, (e, r) => new { ev = e })
                     .Where(x => !x.ev.ReadDate.HasValue && x.ev.TargetPositionId.HasValue && x.ev.TargetPositionId != x.ev.SourcePositionId
@@ -797,6 +741,7 @@ namespace BL.Database.Documents
                             OpenWaits = x.Count(),
                             Overdue = x.Count(s => s.wt.DueDate.HasValue && s.wt.DueDate.Value < DateTime.Now)
                         }).ToList();
+                #endregion Count
 
                 var res = qry.Select(doc => new FrontDocument
                 {
@@ -914,7 +859,7 @@ namespace BL.Database.Documents
 
                     IsLaunchPlan = doc.Doc.IsLaunchPlan,
 
-                    AccessLevelId = 
+                    AccessLevelId =
                         accs.Where(x => x.PositionId == doc.Doc.ExecutorPositionId)
                             .Select(x => (int)x.AccessLevelId)
                             .FirstOrDefault(),
@@ -992,7 +937,7 @@ namespace BL.Database.Documents
 
                 res.RestrictedSendLists = CommonQueries.GetDocumentRestrictedSendList(dbContext, new FilterDocumentRestrictedSendList { DocumentId = new List<int> { documentId } });
 
-                res.DocumentFiles = CommonQueries.GetDocumentFiles(dbContext, new FilterDocumentAttachedFile { DocumentId = docIds });
+                res.DocumentFiles = CommonQueries.GetDocumentFiles(ctx, dbContext, new FilterDocumentAttachedFile { DocumentId = docIds });
 
                 res.AttachedFilesCount = res.DocumentFiles.Count();
 
@@ -1014,7 +959,30 @@ namespace BL.Database.Documents
             }
         }
 
-        public Model.DocumentCore.ReportModel.ReportDocument GetDocumentByReport(IContext ctx, int documentId)
+        public InternalDocument ReportRegistrationCardDocumentPrepare(IContext ctx, int documentId)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                var qry = CommonQueries.GetDocumentQuery(dbContext, ctx).Where(x => x.Doc.Id == documentId);
+
+                var doc = qry.Select(x => new InternalDocument
+                {
+                    Id = x.Doc.Id,
+                    DocumentDirection = (EnumDocumentDirections)x.Templ.DocumentDirectionId,
+                    IsRegistered = x.Doc.IsRegistered,
+                    ExecutorPositionId = x.Doc.ExecutorPositionId,
+                }).FirstOrDefault();
+
+                if (doc == null)
+                {
+                    throw new DocumentNotFoundOrUserHasNoAccess();
+                }
+
+                return doc;
+            }
+        }
+
+        public ReportDocument ReportRegistrationCardDocument(IContext ctx, int documentId)
         {
             using (var dbContext = new DmsContext(ctx))
             {
@@ -1028,30 +996,120 @@ namespace BL.Database.Documents
                 var accs =
                     CommonQueries.GetDocumentAccesses(ctx, dbContext).Where(x => x.DocumentId == doc.Doc.Id).ToList();
 
-                var res = new Model.DocumentCore.ReportModel.ReportDocument
+                var res = new ReportDocument
                 {
                     Id = doc.Doc.Id,
                     DocumentTypeName = doc.DocTypeName,
                     ExecutorPositionName = doc.ExecutorPosName,
                     Addressee = doc.Doc.Addressee,
                     Description = doc.Doc.Description,
+                    SenderAgentName = doc.SenderAgentname,
+                    SenderAgentPersonName = doc.SenderPersonName,
                 };
 
                 var docIds = new List<int> { res.Id };
 
                 res.DocumentWaits = CommonQueries.GetDocumentWaitsQuery(dbContext, ctx, res.Id)
-                    .Select(x => new Model.DocumentCore.ReportModel.ReportDocumentWait
+                    .Select(x => new ReportDocumentWait
                     {
                         Id = x.Id,
                         DocumentId = x.DocumentId,
                         CreateDate = x.OnEvent.Date,
                         TargetPositionName = x.OnEvent.TargetPosition.Name,
+                        TargetPositionExecutorAgentName = x.OnEvent.TargetPositionExecutorAgent.Name,
                         SourcePositionName = x.OnEvent.SourcePosition.Name,
+                        SourcePositionExecutorAgentName = x.OnEvent.SourcePositionExecutorAgent.Name,
                         DueDate = x.DueDate,
                         IsClosed = x.OffEventId != null,
-                        ResultTypeName = x.ResultType.Name
+                        ResultTypeName = x.ResultType.Name,
+                        AttentionDate = x.AttentionDate,
+                        OnEventTypeName = x.OnEvent.EventType.Name,
+                        OffEventDate = x.OffEventId.HasValue ? x.OffEvent.CreateDate : (DateTime?)null
                     }).ToList();
 
+                res.DocumentSubscriptions = CommonQueries.GetDocumentSubscriptionsQuery(dbContext, new FilterDocumentSubscription { DocumentId = new List<int> { res.Id }, SubscriptionStates = new List<EnumSubscriptionStates> { EnumSubscriptionStates.Sign } })
+                    .Select(x => new ReportDocumentSubscription
+                    {
+                        Id = x.Id,
+                        DocumentId = x.DocumentId,
+                        SubscriptionStatesId = x.SubscriptionStateId,
+                        SubscriptionStatesName = x.SubscriptionState.Name,
+                        DoneEventSourcePositionName = x.DoneEventId.HasValue ? x.DoneEvent.SourcePosition.Name : string.Empty,
+                        DoneEventSourcePositionExecutorAgentName = x.DoneEventId.HasValue ? x.DoneEvent.SourcePositionExecutorAgent.Name : string.Empty
+                    }).ToList();
+
+                return res;
+            }
+        }
+
+        //public InternalDocument ReportTransmissionDocumentPaperEventPrepare(IContext ctx, int documentId)
+        //{
+        //    using (var dbContext = new DmsContext(ctx))
+        //    {
+        //        var qry = CommonQueries.GetDocumentQuery(dbContext, ctx).Where(x => x.Doc.Id == documentId);
+
+        //        var doc = qry.Select(x => new InternalDocument
+        //        {
+        //            Id = x.Doc.Id,
+        //            ExecutorPositionId = x.Doc.ExecutorPositionId,
+        //        }).FirstOrDefault();
+
+        //        if (doc == null)
+        //        {
+        //            throw new DocumentNotFoundOrUserHasNoAccess();
+        //        }
+
+        //        return doc;
+        //    }
+        //}
+
+        public List<ReportDocument> ReportRegisterTransmissionDocuments(IContext ctx, int paperListId)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+
+                var qry = dbContext.DocumentEventsSet
+                    .Where(x => x.PaperListId == paperListId);
+
+                var res = qry.GroupBy(x => x.Document)
+                    .Select(x => x.Key)
+                    .Select(x => new ReportDocument
+                    {
+                        Id = x.Id,
+                        RegistrationNumber = x.RegistrationNumber,
+                        RegistrationNumberPrefix = x.RegistrationNumberPrefix,
+                        RegistrationNumberSuffix = x.RegistrationNumberSuffix,
+                        Description = x.Description
+                        //DocumentTypeName = x.DocTypeName,
+                        //ExecutorPositionName = x.ExecutorPosName,
+                        //Addressee = x.Doc.Addressee,
+                        //SenderAgentName = doc.SenderAgentname,
+                        //SenderAgentPersonName = doc.SenderPersonName,
+                    }).ToList();
+
+                res.ForEach(x => CommonQueries.ChangeRegistrationFullNumber(x));
+
+                var events = qry.Select(x => new ReportDocumentEvent
+                {
+                    Id = x.Id,
+                    DocumentId = x.DocumentId,
+                    SourcePositionName = x.SourcePosition.Name,
+                    SourcePositionExecutorAgentName = x.SourcePositionExecutorAgent.Name,
+                    TargetPositionName = x.TargetPosition.Name,
+                    TargetPositionExecutorAgentName = x.TargetPositionExecutorAgent.Name,
+                    PaperId = x.PaperId,
+                    Paper = !x.PaperId.HasValue
+                        ? null
+                        : new ReportDocumentPaper
+                        {
+                            Id = x.Paper.Id,
+                            DocumentId = x.Paper.DocumentId,
+                            Name = x.Paper.Name,
+                            Description = x.Paper.Description
+                        }
+                }).ToList();
+
+                res = res.GroupJoin(events, o => o.Id, i => i.DocumentId, (o, i) => { o.DocumentEvents = i.ToList(); return o; }).ToList();
 
                 return res;
             }
@@ -1182,9 +1240,76 @@ namespace BL.Database.Documents
                             PositionId = y.PositionId,
                             AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
                         }).ToList();
-                doc.DocumentFiles = CommonQueries.GetInternalDocumentFiles(dbContext, documentId);
+                doc.DocumentFiles = CommonQueries.GetInternalDocumentFiles(ctx, dbContext, documentId);
 
                 return doc;
+            }
+        }
+
+        public void AddDocument(IContext ctx, InternalDocument document)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
+                {
+                    var doc = ModelConverter.GetDbDocument(document);
+
+                    if (document.Accesses != null && document.Accesses.Any())
+                    {
+                        doc.Accesses = ModelConverter.GetDbDocumentAccesses(document.Accesses).ToList();
+                    }
+
+                    if (document.Events != null && document.Events.Any())
+                    {
+                        doc.Events = ModelConverter.GetDbDocumentEvents(document.Events).ToList();
+                    }
+
+                    if (document.RestrictedSendLists != null && document.RestrictedSendLists.Any())
+                    {
+                        doc.RestrictedSendLists = ModelConverter.GetDbDocumentRestrictedSendLists(document.RestrictedSendLists).ToList();
+                    }
+
+                    if (document.DocumentFiles != null && document.DocumentFiles.Any())
+                    {
+                        doc.Files = ModelConverter.GetDbDocumentFiles(document.DocumentFiles).ToList();
+                    }
+
+                    if (document.Tasks?.Any(x => x.Id == 0) ?? false)
+                    {
+                        doc.Tasks = ModelConverter.GetDbDocumentTasks(document.Tasks.Where(x => x.Id == 0)).ToList();
+                    }
+
+                    dbContext.DocumentsSet.Add(doc);
+                    dbContext.SaveChanges();
+
+                    if (document.SendLists != null && document.SendLists.Any())
+                    {
+                        var sendLists = document.SendLists.ToList();
+                        sendLists.ForEach(x =>
+                        {
+                            x.DocumentId = doc.Id;
+                            var taskId = doc.Tasks.Where(y => y.Task == x.TaskName).Select(y => y.Id).FirstOrDefault();
+                            x.TaskId = (taskId == 0 ? null : (int?)taskId);
+                        });
+                        var sendListsDb = ModelConverter.GetDbDocumentSendLists(sendLists).ToList();
+                        dbContext.DocumentSendListsSet.AddRange(sendListsDb);
+                        dbContext.SaveChanges();
+                    }
+
+
+                    document.Id = doc.Id;
+
+                    //TODO we schould check if it needed or not? 
+                    if (document.DocumentFiles != null)
+                        foreach (var fl in document.DocumentFiles)
+                        {
+                            fl.DocumentId = doc.Id;
+                        }
+
+                    CommonQueries.AddFullTextCashInfo(dbContext, document.Id, EnumSearchObjectType.Document, EnumOperationType.AddNew);
+                    dbContext.SaveChanges();
+                    transaction.Complete();
+                }
             }
         }
 
@@ -1291,7 +1416,7 @@ namespace BL.Database.Documents
                 if (doc == null) return null;
 
 
-                doc.DocumentFiles = CommonQueries.GetInternalDocumentFiles(dbContext, doc.Id);
+                doc.DocumentFiles = CommonQueries.GetInternalDocumentFiles(ctx, dbContext, doc.Id);
 
                 return doc;
             }
@@ -1335,6 +1460,9 @@ namespace BL.Database.Documents
                         SenderDate = x.Doc.SenderDate,
                         Addressee = x.Doc.Addressee,
                         LinkId = x.Doc.LinkId,
+
+                        DocumentTypeId = x.Templ.DocumentTypeId,
+                        DocumentDirection = (EnumDocumentDirections)x.Templ.DocumentDirectionId,
                     }).FirstOrDefault();
 
                 if (doc == null)
@@ -1357,6 +1485,95 @@ namespace BL.Database.Documents
                     doc.RegistrationJournalId = null;
                 }
                 return doc;
+            }
+        }
+
+        public InternalDocumnRegistration RegisterModelDocumentPrepare(IContext context, RegisterDocument model)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var doc = CommonQueries.GetDocumentQuery(dbContext, context)
+                    .Where(x => x.Doc.Id == model.DocumentId)
+                    .Select(x => new
+                    {
+                        DocumentId = x.Doc.Id,
+                        LinkId = x.Doc.LinkId,
+                        SenderAgentId = x.Doc.SenderAgentId,
+                        ExecutorPositionDepartmentCode = x.Doc.ExecutorPosition.Department.Code,
+                        SubscriptionsPositionDepartmentCode = x.Doc.Subscriptions
+                                        .Where(y => y.SubscriptionStateId == (int)EnumSubscriptionStates.Sign)
+                                        .OrderBy(y => y.LastChangeDate).Take(1)
+                                        .Select(y => y.DoneEvent.SourcePosition.Department.Code).FirstOrDefault(),
+                        DocumentSendListLastAgentExternalFirstSymbolName = x.Doc.SendLists
+                                        .Where(y => y.SendTypeId == (int)EnumSendTypes.SendForInformationExternal)
+                                        .OrderByDescending(y => y.LastChangeDate).Take(1)
+                                        .Select(y => y.TargetAgent.Name).FirstOrDefault()
+                    }).FirstOrDefault();
+
+                if (doc == null)
+                {
+                    return null;
+                }
+
+                var res = new InternalDocumnRegistration
+                {
+                    ExecutorPositionDepartmentCode = doc.ExecutorPositionDepartmentCode,
+                    RegistrationDate = model.RegistrationDate,
+                    SubscriptionsPositionDepartmentCode = doc.SubscriptionsPositionDepartmentCode,
+                    DocumentSendListLastAgentExternalFirstSymbolName = doc.DocumentSendListLastAgentExternalFirstSymbolName
+                };
+
+                if (!string.IsNullOrEmpty(res.DocumentSendListLastAgentExternalFirstSymbolName))
+                    res.DocumentSendListLastAgentExternalFirstSymbolName = res.DocumentSendListLastAgentExternalFirstSymbolName.Substring(0, 1);
+
+                //TODO ??? если doc.LinkId==null || doc.SenderAgentId ==null
+                res.OrdinalNumberDocumentLinkForCorrespondent = dbContext.DocumentsSet
+                        .Where(x => x.LinkId == doc.LinkId && x.SenderAgentId == doc.SenderAgentId && x.IsRegistered == true)
+                        .Count() + 1;
+
+                var regJournal = dbContext.DictionaryRegistrationJournalsSet
+                    .Where(x => x.Id == model.RegistrationJournalId)
+                    .Select(x => new { x.Id, x.NumerationPrefixFormula, x.PrefixFormula, x.SuffixFormula, x.Index, RegistrationJournalDepartmentCode = x.Department.Code }).FirstOrDefault();
+
+                if (regJournal != null)
+                {
+                    res.RegistrationJournalId = regJournal.Id;
+                    res.RegistrationJournalIndex = regJournal.Index;
+                    res.RegistrationJournalDepartmentCode = regJournal.RegistrationJournalDepartmentCode;
+                }
+                else
+                {
+                    res.RegistrationJournalId = null;
+                }
+
+                var initiativeDoc = dbContext.DocumentLinksSet
+                    .Where(x => x.DocumentId == doc.DocumentId)
+                    .OrderBy(x => x.LastChangeDate)
+                    .Select(x => x.ParentDocument)
+                    .Select(x => new InternalDocument
+                    {
+                        Id = x.Id,
+                        IsRegistered = x.IsRegistered,
+                        RegistrationNumber = x.RegistrationNumber,
+                        RegistrationNumberPrefix = x.RegistrationNumberPrefix,
+                        RegistrationNumberSuffix = x.RegistrationNumberSuffix,
+                        SenderNumber = x.SenderNumber
+                    })
+                    .FirstOrDefault();
+
+                if (initiativeDoc != null)
+                {
+                    res.InitiativeRegistrationFullNumber = CommonQueries.GetRegistrationFullNumber(initiativeDoc);
+                    res.InitiativeRegistrationNumberPrefix = initiativeDoc.RegistrationNumberPrefix;
+                    res.InitiativeRegistrationNumberSuffix = initiativeDoc.RegistrationNumberSuffix;
+                    res.InitiativeRegistrationNumber = initiativeDoc.RegistrationNumber;
+                    res.InitiativeRegistrationSenderNumber = initiativeDoc.SenderNumber;
+                }
+
+                res.CurrentPositionDepartmentCode = dbContext.DictionaryPositionsSet.Where(x => x.Id == model.CurrentPositionId)
+                    .Select(x => x.Department.Code).FirstOrDefault();
+
+                return res;
             }
         }
 
@@ -1426,52 +1643,214 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(ctx))
             {
                 var doc = CommonQueries.GetDocumentQuery(dbContext, ctx)
-                    .Where(x => x.Doc.Id == model.DocumentId && ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId))
+                    .Where(x => x.Doc.Id == model.DocumentId && (ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId)))
                     .Select(x => new InternalDocument
                     {
                         Id = x.Doc.Id,
                         ExecutorPositionId = x.Doc.ExecutorPositionId,
                         IsRegistered = x.Doc.IsRegistered
                     }).FirstOrDefault();
-
+                if (doc == null) return null;
+                doc.DocumentFiles = dbContext.DocumentFilesSet
+                    .Where(x => x.DocumentId == model.DocumentId && x.ExecutorPositionId == doc.ExecutorPositionId && !x.IsAdditional)
+                    .Select(x => new InternalDocumentAttachedFile
+                    {
+                        Id = x.Id,
+                    }).ToList();
+                doc.Tasks = dbContext.DocumentTasksSet
+                    .Where(x => x.DocumentId == model.DocumentId && x.PositionId == doc.ExecutorPositionId)
+                    .Select(x => new InternalDocumentTask
+                    {
+                        Id = x.Id,
+                    }).ToList();
                 return doc;
             }
         }
+
+        public InternalDocument ChangePositionDocumentPrepare(IContext ctx, ChangePosition model)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                var doc = CommonQueries.GetDocumentQuery(dbContext, ctx)
+                    .Where(x => x.Doc.Id == model.DocumentId && (ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId)))
+                    .Select(x => new InternalDocument
+                    {
+                        Id = x.Doc.Id,
+                        ExecutorPositionId = x.Doc.ExecutorPositionId,
+                        IsRegistered = x.Doc.IsRegistered
+                    }).FirstOrDefault();
+                if (doc == null) return null;
+                doc.DocumentFiles = dbContext.DocumentFilesSet
+                    .Where(x => x.DocumentId == model.DocumentId && x.ExecutorPositionId == doc.ExecutorPositionId && !x.IsAdditional)
+                    .Select(x => new InternalDocumentAttachedFile
+                    {
+                        Id = x.Id,
+                    }).ToList();
+                doc.Tasks = dbContext.DocumentTasksSet
+                    .Where(x => x.DocumentId == model.DocumentId && x.PositionId == doc.ExecutorPositionId)
+                    .Select(x => new InternalDocumentTask
+                    {
+                        Id = x.Id,
+                    }).ToList();
+                return doc;
+            }
+        }
+
 
         public void ChangeExecutorDocument(IContext ctx, InternalDocument document)
         {
             using (var dbContext = new DmsContext(ctx))
             {
-
-                var doc = new DBModel.Document.Documents
+                using (
+                    var transaction = new TransactionScope(TransactionScopeOption.Required,
+                        new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
                 {
-                    Id = document.Id,
-                    ExecutorPositionId = document.ExecutorPositionId,
-                    ExecutorPositionExecutorAgentId = document.ExecutorPositionExecutorAgentId,
-                    LastChangeDate = document.LastChangeDate,
-                    LastChangeUserId = document.LastChangeUserId
-                };
-                dbContext.DocumentsSet.Attach(doc);
-                var entry = dbContext.Entry(doc);
-                entry.Property(x => x.LastChangeDate).IsModified = true;
-                entry.Property(x => x.LastChangeUserId).IsModified = true;
-                entry.Property(x => x.ExecutorPositionId).IsModified = true;
+                    var doc = new DBModel.Document.Documents
+                    {
+                        Id = document.Id,
+                        ExecutorPositionId = document.ExecutorPositionId,
+                        ExecutorPositionExecutorAgentId = document.ExecutorPositionExecutorAgentId,
+                        LastChangeDate = document.LastChangeDate,
+                        LastChangeUserId = document.LastChangeUserId
+                    };
+                    dbContext.DocumentsSet.Attach(doc);
+                    var entry = dbContext.Entry(doc);
+                    entry.Property(x => x.LastChangeDate).IsModified = true;
+                    entry.Property(x => x.LastChangeUserId).IsModified = true;
+                    entry.Property(x => x.ExecutorPositionId).IsModified = true;
+                    entry.Property(x => x.ExecutorPositionExecutorAgentId).IsModified = true;
 
-                if (document.Events != null && document.Events.Any(x => x.Id == 0))
-                {
-                    doc.Events = ModelConverter.GetDbDocumentEvents(document.Events.Where(x => x.Id == 0)).ToList();
+                    if (document.Events != null && document.Events.Any(x => x.Id == 0))
+                    {
+                        doc.Events = ModelConverter.GetDbDocumentEvents(document.Events.Where(x => x.Id == 0)).ToList();
+                    }
+
+                    //TODO При получении документа возвращаеться только один Accesses
+                    if (document.Accesses != null && document.Accesses.Any())
+                    {
+                        //TODO Не сохраняеться через свойства
+                        //doc.Accesses = CommonQueries.GetDbDocumentAccesses(dbContext, document.Accesses, doc.Id).ToList();
+                        dbContext.DocumentAccessesSet.AddRange(
+                            CommonQueries.GetDbDocumentAccesses(dbContext, document.Accesses, doc.Id).ToList());
+                    }
+                    dbContext.SaveChanges();
+
+                    if (document.Papers != null && document.Papers.Any(x => !x.LastPaperEventId.HasValue && x.LastPaperEvent != null))
+                    {
+                        foreach (
+                            var paper in
+                                document.Papers.Where(x => !x.LastPaperEventId.HasValue && x.LastPaperEvent != null).ToList())
+                        {
+                            var paperEventDb = ModelConverter.GetDbDocumentEvent(paper.LastPaperEvent);
+                            dbContext.DocumentEventsSet.Add(paperEventDb);
+                            dbContext.SaveChanges();
+                            paper.LastPaperEventId = paperEventDb.Id;
+                            var paperDb = ModelConverter.GetDbDocumentPaper(paper);
+                            dbContext.DocumentPapersSet.Attach(paperDb);
+                            var entryPaper = dbContext.Entry(paperDb);
+                            entryPaper.Property(e => e.LastPaperEventId).IsModified = true;
+                            entryPaper.Property(e => e.LastChangeUserId).IsModified = true;
+                            entryPaper.Property(e => e.LastChangeDate).IsModified = true;
+                            dbContext.SaveChanges();
+                        }
+                    }
+                    if (document.DocumentFiles?.Any() ?? false)
+                    {
+                        foreach (var fileDb in document.DocumentFiles.Select(ModelConverter.GetDbDocumentFile))
+                        {
+                            dbContext.DocumentFilesSet.Attach(fileDb);
+                            var entryFile = dbContext.Entry(fileDb);
+                            entryFile.Property(e => e.ExecutorPositionId).IsModified = true;
+                            entryFile.Property(e => e.ExecutorPositionExecutorAgentId).IsModified = true;
+                            dbContext.SaveChanges();
+                        }
+                    }
+                    if (document.Tasks?.Any() ?? false)
+                    {
+                        foreach (var taskDb in document.Tasks.Select(ModelConverter.GetDbDocumentTask))
+                        {
+                            dbContext.DocumentTasksSet.Attach(taskDb);
+                            var entryTask = dbContext.Entry(taskDb);
+                            entryTask.Property(e => e.PositionId).IsModified = true;
+                            entryTask.Property(e => e.PositionExecutorAgentId).IsModified = true;
+                            entryTask.Property(e => e.LastChangeUserId).IsModified = true;
+                            entryTask.Property(e => e.LastChangeDate).IsModified = true;
+                            dbContext.SaveChanges();
+                        }
+                    }
+                    transaction.Complete();
+
+
                 }
+            }
+        }
 
-                //TODO При получении документа возвращаеться только один Accesses
-                if (document.Accesses != null && document.Accesses.Any())
+        public void ChangePositionDocument(IContext ctx, ChangePosition model, InternalDocument document)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                //using (
+                //    var transaction = new TransactionScope(TransactionScopeOption.Required,
+                //        new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
                 {
-                    //TODO Не сохраняеться через свойства
-                    //doc.Accesses = CommonQueries.GetDbDocumentAccesses(dbContext, document.Accesses, doc.Id).ToList();
-                    dbContext.DocumentAccessesSet.AddRange(CommonQueries.GetDbDocumentAccesses(dbContext, document.Accesses, doc.Id).ToList());
+                    dbContext.DocumentsSet.Where(x => x.Id == model.DocumentId && x.ExecutorPositionId == model.OldPositionId).ToList()
+                        .ForEach(x =>
+                        {
+                            x.ExecutorPositionId = model.NewPositionId;
+                        });
+                    dbContext.DocumentFilesSet.Where(x => x.DocumentId == model.DocumentId && x.ExecutorPositionId == model.OldPositionId).ToList()
+                        .ForEach(x =>
+                        {
+                            x.ExecutorPositionId = model.NewPositionId;
+                        });
+                    dbContext.DocumentTasksSet.Where(x => x.DocumentId == model.DocumentId && x.PositionId == model.OldPositionId).ToList()
+                        .ForEach(x =>
+                        {
+                            x.PositionId = model.NewPositionId;
+                        });
+                    dbContext.DocumentEventsSet.Where(x => x.DocumentId == model.DocumentId && x.SourcePositionId == model.OldPositionId).ToList()
+                        .ForEach(x =>
+                        {
+                            x.SourcePositionId = model.NewPositionId;
+                        });
+                    dbContext.DocumentEventsSet.Where(x => x.DocumentId == model.DocumentId && x.TargetPositionId == model.OldPositionId).ToList()
+                        .ForEach(x =>
+                        {
+                            x.TargetPositionId = model.NewPositionId;
+                        });
+                    dbContext.DocumentSendListsSet.Where(x => x.DocumentId == model.DocumentId && x.SourcePositionId == model.OldPositionId).ToList()
+                        .ForEach(x =>
+                        {
+                            x.SourcePositionId = model.NewPositionId;
+                        });
+                    dbContext.DocumentSendListsSet.Where(x => x.DocumentId == model.DocumentId && x.TargetPositionId == model.OldPositionId).ToList()
+                        .ForEach(x =>
+                        {
+                            x.TargetPositionId = model.NewPositionId;
+                        });
+                    dbContext.DocumentRestrictedSendListsSet.Where(x => x.DocumentId == model.DocumentId && x.PositionId == model.OldPositionId).ToList()
+                        .ForEach(x =>
+                        {
+                            x.PositionId = model.NewPositionId;
+                        });
+                    dbContext.DocumentAccessesSet.RemoveRange(dbContext.DocumentAccessesSet.Where(x => x.DocumentId == model.DocumentId && x.PositionId == model.NewPositionId));
+                    dbContext.DocumentAccessesSet.Where(x => x.DocumentId == model.DocumentId && x.PositionId == model.OldPositionId).ToList()
+                        .ForEach(x =>
+                        {
+                            x.PositionId = model.NewPositionId;
+                        });
+
+                    if (document.Events != null && document.Events.Any(x => x.Id == 0))
+                    {
+                        dbContext.DocumentEventsSet.AddRange(ModelConverter.GetDbDocumentEvents(document.Events.Where(x => x.Id == 0)).ToList());
+                    }
+
+                    dbContext.SaveChanges();
+
+                    //transaction.Complete();
+
+
                 }
-
-                dbContext.SaveChanges();
-
             }
         }
 
@@ -1554,24 +1933,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                //TODO: Refactoring
-                var item = dbContext.DocumentPapersSet
-                    .Where(x => x.Id == id)
-                    .Select(x => new FrontDocumentPaper
-                    {
-                        Id = x.Id,
-                        DocumentId = x.DocumentId,
-                        Name = x.Name,
-                        Description = x.Description,
-                        IsMain = x.IsMain,
-                        IsOriginal = x.IsOriginal,
-                        IsCopy = x.IsCopy,
-                        PageQuantity = x.PageQuantity,
-                        OrderNumber = x.OrderNumber,
-                        LastPaperEventId = x.LastPaperEventId
-                    }).FirstOrDefault();
-
-                return item;
+                return CommonQueries.GetDocumentPapers(dbContext, new FilterDocumentPaper { Id = new List<int> { id } }).FirstOrDefault();
             }
         }
         #endregion DocumentPapers   
@@ -1586,21 +1948,11 @@ namespace BL.Database.Documents
             }
         }
 
-        public FrontDocumentPaperList GetDocumentPaperListById(IContext ctx, int id)
+        public FrontDocumentPaperList GetDocumentPaperList(IContext ctx, int id)
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                //TODO: Refactoring
-                var item = dbContext.DocumentPaperListsSet
-                    .Where(x => x.Id == id)
-                    .Select(x => new FrontDocumentPaperList
-                    {
-                        Id = x.Id,
-                        Date = x.Date,
-                        Description = x.Description
-                    }).FirstOrDefault();
-
-                return item;
+                return CommonQueries.GetDocumentPaperLists(dbContext, new FilterDocumentPaperList { PaperListId = new List<int> { id } }).FirstOrDefault();
             }
         }
         #endregion DocumentPaperLists   

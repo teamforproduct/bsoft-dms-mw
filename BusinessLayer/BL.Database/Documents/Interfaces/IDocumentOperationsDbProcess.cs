@@ -14,6 +14,7 @@ namespace BL.Database.Documents.Interfaces
     public interface IDocumentOperationsDbProcess
     {
         void AddDocumentLink(IContext context, InternalDocument model);
+        void DeleteDocumentLink(IContext context, InternalDocument model);
 
         IEnumerable<InternalPositionInfo> GetInternalPositionsInfo(IContext ctx, List<int> positionIds);
 
@@ -34,6 +35,7 @@ namespace BL.Database.Documents.Interfaces
         InternalDocument ControlTargetChangeDocumentPrepare(IContext context, int eventId);
         void ChangeIsInWorkAccess(IContext ctx, InternalDocument access);
         InternalDocument AddDocumentLinkPrepare(IContext context, AddDocumentLink model);
+        InternalDocument DeleteDocumentLinkPrepare(IContext context, int documentId);
         void ChangeIsFavouriteAccess(IContext context, InternalDocumentAccess docAccess);
 
         InternalDocument ChangeDocumentSendListPrepare(IContext context, int documentId, string task = null, int id = 0);
@@ -74,6 +76,7 @@ namespace BL.Database.Documents.Interfaces
 
         DocumentActionsModel GetDocumentActionsModelPrepare(IContext context, int documentId);
         DocumentActionsModel GetDocumentSendListActionsModelPrepare(IContext context, int documentId);
+        DocumentActionsModel GetDocumentFileActionsModelPrepare(IContext context, int documentId);
         DocumentActionsModel GetDocumentPaperActionsModelPrepare(IContext context, int documentId);
 
         void ControlOffSendListPrepare(IContext context, InternalDocument document);
@@ -83,18 +86,19 @@ namespace BL.Database.Documents.Interfaces
         InternalDocument AddNoteDocumentPrepare(IContext context, AddNote model);
 
         #region DocumentTasks
-        void AddDocumentTasks(IContext context, IEnumerable<InternalDocumentTask> task);
-        InternalDocumentTask ChangeDocumentTaskPrepare(IContext context, int itemId);
+        InternalDocument ModifyDocumentTaskPrepare(IContext context, ModifyDocumentTasks model);
+        IEnumerable<int> AddDocumentTasks(IContext context, IEnumerable<InternalDocumentTask> task);
+        InternalDocument DeleteDocumentTaskPrepare(IContext context, int itemId);
         void ModifyDocumentTask(IContext context, InternalDocumentTask task);
         void DeleteDocumentTask(IContext context, int itemId);
         #endregion DocumentTasks
 
         #region DocumentPapers
-        InternalDocument AddDocumentPaperPrepare(IContext context, ModifyDocumentPapers model);
-        InternalDocument ChangeDocumentPaperPrepare(IContext context, int paperId);
-        InternalDocument EventDocumentPaperPrepare(IContext context, List<int> paperIds, bool isCalcPreLastPaperEvent = false);
+        InternalDocument ModifyDocumentPaperPrepare(IContext context, ModifyDocumentPapers model);
+        InternalDocument DeleteDocumentPaperPrepare(IContext context, int paperId);
+        InternalDocument EventDocumentPaperPrepare(IContext context, PaperList paperIds, bool isCalcPreLastPaperEvent = false);
 
-        void AddDocumentPapers(IContext context, IEnumerable<InternalDocumentPaper> items);
+        IEnumerable<int> AddDocumentPapers(IContext context, IEnumerable<InternalDocumentPaper> items);
         void ModifyDocumentPaper(IContext context, InternalDocumentPaper item);
         void DeleteDocumentPaper(IContext context, int itemId);
         void MarkOwnerDocumentPaper(IContext context, InternalDocumentPaper paper);
@@ -108,10 +112,13 @@ namespace BL.Database.Documents.Interfaces
         #endregion DocumentPapers
 
         #region DocumentPaperLists
-        void AddDocumentPaperLists(IContext context, IEnumerable<InternalDocumentPaperList> items);
-        InternalDocumentPaperList ChangeDocumentPaperListPrepare(IContext context, int paperId);
+
+        InternalDocumentPaperList AddDocumentPaperListsPrepare(IContext context, AddDocumentPaperLists model);
+        List<int> AddDocumentPaperLists(IContext context, IEnumerable<InternalDocumentPaperList> items);
+        InternalDocumentPaperList DeleteDocumentPaperListPrepare(IContext context, int paperId);
+        InternalDocumentPaperList ModifyDocumentPaperListPrepare(IContext context, int paperId);
         void ModifyDocumentPaperList(IContext context, InternalDocumentPaperList item);
-        void DeleteDocumentPaperList(IContext context, int itemId);
+        void DeleteDocumentPaperList(IContext context, InternalDocumentPaperList item);
         #endregion DocumentPaperLists
     }
 }

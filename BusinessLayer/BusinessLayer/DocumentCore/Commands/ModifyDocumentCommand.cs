@@ -7,6 +7,7 @@ using BL.Model.Exception;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.SystemCore.InternalModel;
 using System;
+using System.Collections.Generic;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -104,9 +105,15 @@ namespace BL.Logic.DocumentCore.Commands
 
                 var model = new InternalPropertyValues { Object = EnumObjects.Documents, PropertyValues = _document.Properties };
 
-                CommonSystemUtilities.VerifyPropertyValues(_context, model, new string[] { $"{nameof(_document.DocumentTypeId)}={_document.DocumentTypeId}", $"{nameof(_document.DocumentDirection)}={_document.DocumentDirection}", $"{nameof(_document.DocumentSubjectId)}={_document.DocumentSubjectId}" });
+                CommonSystemUtilities.VerifyPropertyValues(_context, model, CommonDocumentUtilities.GetFilterTemplateByDocument(_document).ToArray());
 
                 _document.Properties = model.PropertyValues;
+            }
+            else
+            {
+                var model = new InternalPropertyValues { Object = EnumObjects.Documents, PropertyValues = new List<InternalPropertyValue>() };
+
+                CommonSystemUtilities.VerifyPropertyValues(_context, model, CommonDocumentUtilities.GetFilterTemplateByDocument(_document).ToArray());
             }
 
             CommonDocumentUtilities.VerifyDocument(_context, new FrontDocument(_document), null);    //TODO отвязаться от фронт-модели

@@ -16,5 +16,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public int AgentId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public int CountSendLists { get; set; }
+        public int CountEvents { get; set; }
     }
 }

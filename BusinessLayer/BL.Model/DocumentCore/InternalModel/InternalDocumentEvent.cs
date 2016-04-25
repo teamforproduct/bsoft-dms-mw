@@ -40,6 +40,5 @@ namespace BL.Model.DocumentCore.InternalModel
         public Nullable<DateTime> PaperSendDate { get; set; }
         public Nullable<int> PaperRecieveAgentId { get; set; }
         public Nullable<DateTime> PaperRecieveDate { get; set; }
-
     }
 }

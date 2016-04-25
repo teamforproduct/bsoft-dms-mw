@@ -43,7 +43,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
                                                 {
                                                     SendListId = x.Id,
                                                 });
-            if (!_actionRecords.Any())
+            if (!_actionRecords.Any() || _document.IsLaunchPlan)
             {
                 return false;
             }
@@ -68,7 +68,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
                 _context.SetCurrentPosition(_sendList.SourcePositionId);
             }
             _admin.VerifyAccess(_context, CommandType);
-            if (!CanBeDisplayed(_sendList.SourcePositionId))
+            if (!CanBeDisplayed(_context.CurrentPositionId))
             {
                 throw new CouldNotPerformOperation();
             }
@@ -96,15 +96,27 @@ namespace BL.Logic.DocumentCore.SendListCommands
         public override object Execute()
         {
             CommonDocumentUtilities.SetLastChange(_context, _sendList);
-
-            var delPaperEvents = _document.PaperEvents.GroupJoin(Model.PaperEvents,
-                pe => pe.PaperId,
-                m => m.Id,
-                (pe, m) => new { pe, m = m.FirstOrDefault() })
-                .Where(x => x.m == null || x.pe.SourcePositionId != _sendList.SourcePositionId || x.pe.TargetPositionId != _sendList.TargetPositionId || x.pe.Description != x.m.Description)
-                .Select(x => x.pe.PaperId)
-                .ToList();
-
+            var delPaperEvents = new List<int?>();
+            if (_document.PaperEvents?.Any() ?? false)
+            {
+                if (Model.PaperEvents?.Any() ?? false)
+                {
+                    delPaperEvents = _document.PaperEvents.GroupJoin(Model.PaperEvents,
+                       pe => pe.PaperId,
+                       m => m.Id,
+                       (pe, m) => new { pe, m = m.FirstOrDefault() })
+                       .Where(
+                           x =>
+                               x.m == null || x.pe.SourcePositionId != _sendList.SourcePositionId ||
+                               x.pe.TargetPositionId != _sendList.TargetPositionId || x.pe.Description != x.m.Description)
+                       .Select(x => x.pe.PaperId)
+                       .ToList();
+                }
+                else
+                {
+                    delPaperEvents = _document.PaperEvents.Select(x => x.PaperId).ToList();
+                }
+            }
             var addPaperEvents = new List<InternalDocumentEvent>();
             if (Model.PaperEvents?.Any(x => delPaperEvents.Contains(x.Id) || !_document.PaperEvents.Select(y => y.PaperId).ToList().Contains(x.Id)) ?? false)
                 addPaperEvents.AddRange(Model.PaperEvents.Where(x => delPaperEvents.Contains(x.Id) || !_document.PaperEvents.Select(y => y.PaperId).ToList().Contains(x.Id))
@@ -114,6 +126,5 @@ namespace BL.Logic.DocumentCore.SendListCommands
             return null;
         }
 
-        public override EnumDocumentActions CommandType => EnumDocumentActions.ModifyDocumentSendList;
     }
 }

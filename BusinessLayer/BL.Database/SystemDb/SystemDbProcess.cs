@@ -193,7 +193,7 @@ namespace BL.Database.SystemDb
                     SelectFilter = x.Property.SelectFilter,
                     SelectFieldCode = x.Property.SelectFieldCode,
                     SelectDescriptionFieldCode = x.Property.SelectDescriptionFieldCode,
-                    ValueFieldCode = x.Property.ValueType.Code,
+                    ValueFieldCode = x.Property.Code,
                     ValueDescriptionFieldCode = x.Property.ValueType.Description,
                     Format = x.Property.OutFormat,
                 }).ToList();
@@ -595,7 +595,7 @@ namespace BL.Database.SystemDb
                     SelectFilter = x.Property.SelectFilter,
                     SelectFieldCode = x.Property.SelectFieldCode,
                     SelectDescriptionFieldCode = x.Property.SelectDescriptionFieldCode,
-                    ValueFieldCode = x.Property.ValueType.Code,
+                    ValueFieldCode = x.Property.Code,
                     ValueDescriptionFieldCode = x.Property.ValueType.Description,
                     Format = x.Property.OutFormat,
                 }).ToList();
@@ -616,8 +616,13 @@ namespace BL.Database.SystemDb
                         MinStage = x.Min(s => s.sl.Stage)
                     });
 
-                return dbContext.DocumentSendListsSet.Join(qry, s => s.DocumentId, q => q.DocId, (s, q) => new {sl = s, q})
+                var res = dbContext.DocumentSendListsSet.Join(qry, s => s.DocumentId, q => q.DocId, (s, q) => new {sl = s, q})
                     .Where(x => x.sl.Stage <= x.q.MinStage && !x.sl.StartEventId.HasValue).Select(x => x.sl.Id).ToList();
+
+                res.AddRange(dbContext.DocumentSendListsSet.Where(x=>!x.IsInitial && !x.CloseEventId.HasValue
+                && !qry.Select(s=>s.DocId).Contains(x.DocumentId)).Select(x=>x.Id).ToList());
+
+                return res;
             }
         }
 

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using BL.Database.DBModel.Document;
+using BL.Database.DBModel.Template;
 using BL.Model.DocumentCore.InternalModel;
 
 namespace BL.Database.Common
@@ -100,6 +101,7 @@ namespace BL.Database.Common
             return task == null ? null :
                 new DocumentTasks
                 {
+                    Id = task.Id,
                     Task = task.Name,
                     Description = task.Description,
                     DocumentId = task.DocumentId,
@@ -237,7 +239,9 @@ namespace BL.Database.Common
                 LastChangeDate = docFile.LastChangeDate,
                 LastChangeUserId = docFile.LastChangeUserId,
                 Name = docFile.Name,
-                Date = docFile.Date
+                Date = docFile.Date,
+                ExecutorPositionId = docFile.ExecutorPositionId,
+                ExecutorPositionExecutorAgentId = docFile.ExecutorPositionExecutorAgentId
             };
         }
 
@@ -310,11 +314,32 @@ namespace BL.Database.Common
             return item == null ? null :
                 new DocumentPaperLists
                 {
+                    Id = item.Id,
                     Date = item.Date,
                     Description = item.Description,
                     LastChangeDate = item.LastChangeDate,
                     LastChangeUserId = item.LastChangeUserId
                 };
         }
+
+        public static TemplateDocumentFiles GetDbTemplateFile(InternalTemplateAttachedFile docFile)
+        {
+            return new TemplateDocumentFiles
+            {
+                Id = docFile.Id,
+                DocumentId = docFile.DocumentId,
+                OrderNumber = docFile.OrderInDocument,
+                Extention = docFile.Extension,
+                Hash = docFile.Hash,
+                FileType = docFile.FileType,
+                FileSize = docFile.FileSize,
+                IsAdditional = docFile.IsAdditional,
+                LastChangeDate = docFile.LastChangeDate,
+                LastChangeUserId = docFile.LastChangeUserId,
+                Name = docFile.Name
+                
+            };
+        }
+
     }
 }

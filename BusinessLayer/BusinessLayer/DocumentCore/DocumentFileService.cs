@@ -6,6 +6,7 @@ using BL.Logic.DocumentCore.Interfaces;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.Exception;
+using BL.Model.SystemCore;
 
 namespace BL.Logic.DocumentCore
 {
@@ -25,9 +26,9 @@ namespace BL.Logic.DocumentCore
             return _dbProcess.GetDocumentFiles(ctx, documentId);
         }
 
-        public IEnumerable<FrontDocumentAttachedFile> GetDocumentFiles(IContext ctx, FilterDocumentAttachedFile filter)
+        public IEnumerable<FrontDocumentAttachedFile> GetDocumentFiles(IContext ctx, FilterDocumentAttachedFile filter, UIPaging paging = null)
         {
-            return _dbProcess.GetDocumentFiles(ctx, filter);
+            return _dbProcess.GetDocumentFiles(ctx, filter, paging);
         }
 
         public FrontDocumentAttachedFile GetUserFile(IContext ctx, FilterDocumentFileIdentity fileIdent)

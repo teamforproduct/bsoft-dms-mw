@@ -285,6 +285,18 @@
         }
     }
 
+    public class CouldNotModifyTemplateDocument : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:CouldNotModifyTemplateDocument@l##";
+        public CouldNotModifyTemplateDocument() : base(_MESSAGE)
+        {
+        }
+
+        public CouldNotModifyTemplateDocument(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
     public class DocumentCouldNotBeRegistered : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:DocumentCouldNotBeRegistered@l##";
@@ -606,6 +618,21 @@
         }
 
         public DictionaryRecordNotUnique(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+    /// <summary>
+    /// Сообщение об ошибке, когда пытаются обновить несуществующую строку справочника в БД
+    /// </summary>
+    public class RecordNotUnique : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:RecordNotUnique@l##";
+        public RecordNotUnique() : base(_MESSAGE)
+        {
+        }
+
+        public RecordNotUnique(System.Exception ex) : base(_MESSAGE, ex)
         {
         }
     }

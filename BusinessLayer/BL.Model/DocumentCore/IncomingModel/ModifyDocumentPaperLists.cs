@@ -5,16 +5,19 @@ using System.Runtime.Serialization;
 namespace BL.Model.DocumentCore.IncomingModel
 {
     /// <summary>
-    /// Модель для перезаписи списка тегов документа
+    /// Модель модификации реестров БН
     /// </summary>
-    public class ModifyDocumentPaperLists : CurrentPosition
+    public class ModifyDocumentPaperLists
     {
         /// <summary>
-        /// ИД Task
+        /// ИД БН
         /// </summary>
         [IgnoreDataMember]
         public int Id { get; set; }
-        public DateTime Date { get; set; }
+        /// <summary>
+        /// Комментарий
+        /// </summary>
         public string Description { get; set; }
+
     }
 }

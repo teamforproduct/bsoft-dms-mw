@@ -1,6 +1,7 @@
 using BL.CrossCutting.Interfaces;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.InternalModel;
+using BL.Model.Enums;
 
 namespace BL.Database.FileWorker
 {
@@ -17,5 +18,7 @@ namespace BL.Database.FileWorker
         void CopyFile(IContext ctx, InternalTemplateAttachedFile fromTempl, InternalTemplateAttachedFile toTempl);
         bool IsFileCorrect(IContext ctx, InternalDocumentAttachedFile docFile);
         //IEnumerable<InternalTemplateAttachedFile> CopyFiles(IContext ctx, IEnumerable<InternalTemplateAttachedFile> fromTempl,int newDocNumber, bool newIsTemplate = false);
+
+        string GetFullTemplateReportFilePath(IContext ctx, EnumReportTypes reportType);
     }
 }

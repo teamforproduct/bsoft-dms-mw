@@ -19,5 +19,9 @@ namespace BL.Model.DocumentCore.Filters
         /// Массив ИД документов
         /// </summary>
         public List<int> DocumentId { get; set; }
+        /// <summary>
+        /// Реестр БН
+        /// </summary>
+        public int? PaperListId { get; set; }
     }
 }

@@ -2,34 +2,15 @@
 using BL.CrossCutting.Interfaces;
 using BL.Model.AdminCore;
 using BL.Model.Users;
-using BL.Model.AdminCore.FrontModel;
-using BL.Model.AdminCore.InternalModel;
-using BL.Model.AdminCore.FilterModel;
 
 namespace BL.Database.Admins.Interfaces
 {
     public interface IAdminsDbProcess
     {
         AdminAccessInfo GetAdminAccesses(IContext context);
-        IEnumerable<BaseAdminUserRole> GetPositionsByUser(IContext ctx, FilterAdminUserRole filter);
+        IEnumerable<FrontAdminUserRole> GetPositionsByUser(IContext ctx, FilterAdminUserRole filter);
 
         Employee GetEmployee(IContext ctx, string userId);
         IEnumerable<CurrentPosition> GetPositionsByUser(Employee employee);
-
-        #region AdminLanguages
-        IEnumerable<FrontAdminLanguage> GetAdminLanguages(IContext context, FilterAdminLanguage filter);
-        InternalAdminLanguage GetInternalAdminLanguage(IContext context, FilterAdminLanguage filter);
-        int AddAdminLanguage(IContext context, InternalAdminLanguage model);
-        void UpdateAdminLanguage(IContext context, InternalAdminLanguage model);
-        void DeleteAdminLanguage(IContext context, InternalAdminLanguage model);
-        #endregion AdminLanguages
-
-        #region AdminLanguageValues
-        IEnumerable<FrontAdminLanguageValue> GetAdminLanguageValues(IContext context, FilterAdminLanguageValue filter);
-        InternalAdminLanguageValue GetInternalAdminLanguageValue(IContext context, FilterAdminLanguageValue filter);
-        int AddAdminLanguageValue(IContext context, InternalAdminLanguageValue model);
-        void UpdateAdminLanguageValue(IContext context, InternalAdminLanguageValue model);
-        void DeleteAdminLanguageValue(IContext context, InternalAdminLanguageValue model);
-        #endregion AdminLanguageValues
     }
 }

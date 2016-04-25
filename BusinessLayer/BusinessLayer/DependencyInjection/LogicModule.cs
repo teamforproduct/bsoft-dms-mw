@@ -11,6 +11,7 @@ using BL.Logic.DocumentCore.AdditionalCommands;
 using BL.Logic.DocumentCore.Commands;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Logic.DocumentCore.PaperCommands;
+using BL.Logic.DocumentCore.ReportsCommands;
 using BL.Logic.DocumentCore.SendListCommands;
 using BL.Logic.Logging;
 using BL.Logic.Observers;
@@ -36,6 +37,7 @@ namespace BL.Logic.DependencyInjection
             LoadDictionaryCommands();
             LoadObservers();
             LoadMailService();
+            LoadReportCommands();
         }
 
         private void LoadSystemModule()
@@ -44,6 +46,7 @@ namespace BL.Logic.DependencyInjection
             Bind<ISettings>().To<Setting>().InSingletonScope();
             Bind<ICommandService>().To<CommandService>().InSingletonScope();
             Bind<IAdminService>().To<AdminService>().InSingletonScope();
+            Bind<ILanguageService>().To<LanguageService>().InSingletonScope();
             Bind<IMailSenderWorkerService>().To<MailSenderWorkerService>().InSingletonScope();
             Bind<IFullTextSearchService>().To<FullTextSearchService>().InSingletonScope();
             Bind<IAutoPlanService>().To<AutoPlanService>().InSingletonScope();
@@ -125,11 +128,13 @@ namespace BL.Logic.DependencyInjection
             Bind<IDocumentCommand>().To<AddNoteDocumentCommand>();
             Bind<IDocumentCommand>().To<SendMessageDocumentCommand>();
             Bind<IDocumentCommand>().To<ChangeExecutorDocumentCommand>();
+            Bind<IDocumentCommand>().To<ChangePositionDocumentCommand>();
             Bind<IDocumentCommand>().To<RegisterDocumentCommand>();
             Bind<IDocumentCommand>().To<LaunchPlanDocumentCommand>();
             Bind<IDocumentCommand>().To<StopPlanDocumentCommand>();
 
             Bind<IDocumentCommand>().To<AddDocumentLinkCommand>();
+            Bind<IDocumentCommand>().To<DeleteDocumentLinkCommand>();
 
             Bind<IDocumentCommand>().To<AddDocumentFileCommand>();
             Bind<IDocumentCommand>().To<DeleteDocumentFileCommand>();
@@ -183,6 +188,13 @@ namespace BL.Logic.DependencyInjection
             Bind<IDocumentCommand>().To<RecieveDocumentPaperEventCommand>();
             Bind<IDocumentCommand>().To<PlanDocumentPaperEventCommand>();
             Bind<IDocumentCommand>().To<CancelPlanDocumentPaperEventCommand>();
+
+        }
+
+        private void LoadReportCommands()
+        {
+            Bind<IDocumentCommand>().To<ReportRegistrationCardDocumentCommand>();
+            Bind<IDocumentCommand>().To<ReportRegisterTransmissionDocumentsCommand>();
 
         }
 

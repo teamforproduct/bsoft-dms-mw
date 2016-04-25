@@ -14,6 +14,7 @@ using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
+using System.Text.RegularExpressions;
 
 namespace BL.Logic.Common
 {
@@ -621,7 +622,7 @@ namespace BL.Logic.Common
                     .Select(x => new FrontDocumentSendListStage
                     {
                         Stage = x.s,
-                        SendLists = x.sls.ToList()
+                        SendLists = x.sls.OrderBy(y => y.Id).ToList()
                     }).ToList();
 
             }
@@ -632,6 +633,7 @@ namespace BL.Logic.Common
         {
             return new InternalTemplateAttachedFile
             {
+                DocumentId = src.DocumentId,
                 Extension = src.Extension,
                 Name = src.Name,
                 FileType = src.FileType,
@@ -657,7 +659,9 @@ namespace BL.Logic.Common
                 OrderInDocument = newOrderNumber ?? src.OrderInDocument,
                 Date = DateTime.Now,
                 Version = newVersion ?? 1,
-                WasChangedExternal = false
+                WasChangedExternal = false,
+                ExecutorPositionId = src.ExecutorPositionId,
+                ExecutorPositionExecutorAgentId = src.ExecutorPositionExecutorAgentId,
             };
         }
 
@@ -670,6 +674,155 @@ namespace BL.Logic.Common
             }
             else
                 return null;
+        }
+
+        public static void FormationRegistrationNumberByFormula(InternalDocument doc, InternalDocumnRegistration model)
+        {
+            doc.RegistrationJournalPrefixFormula = FormationRegistrationNumberByFormula(doc.RegistrationJournalPrefixFormula, doc, model);
+            doc.RegistrationJournalSuffixFormula = FormationRegistrationNumberByFormula(doc.RegistrationJournalSuffixFormula, doc, model);
+        }
+
+        private static string FormationRegistrationNumberByFormula(string formula, InternalDocument doc, InternalDocumnRegistration model)
+        {
+            if (string.IsNullOrEmpty(formula)) return formula;
+            string pattern = "@/(.*?)/@";
+            string patternFilterSymbol = "c", patternFormulaSymbol = "v", patternLengthSymbol = "l", patternFormatSymbol = "f";
+            string patternFilter = GetPatternFilter(patternFilterSymbol), patternFormula = GetPatternFilter(patternFormulaSymbol), patternLength = GetPatternFilter(patternLengthSymbol), patternFormat = GetPatternFilter(patternFormatSymbol);
+            string res = string.Copy(formula);
+            foreach (Match mFormula in Regex.Matches(formula, pattern))
+            {
+                var oldValue = mFormula.Value;
+                var newValue = string.Empty;
+                var mFilters = Regex.Matches(oldValue, patternFilter);
+                var isContainsInFilter = mFilters.Count == 0;
+                if (!isContainsInFilter)
+                {
+                    foreach (Match mFilter in mFilters)
+                    {
+                        var filter = GetPatternFilterSymbolReplace(mFilter.Value, patternFilterSymbol);
+                        var template = CommonDocumentUtilities.GetFilterTemplateByDocument(doc).ToArray();
+                        if (CommonSystemUtilities.IsContainsInFilter(filter, template))
+                        {
+                            isContainsInFilter = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (isContainsInFilter)
+                {
+                    var mLengths = Regex.Matches(mFormula.Value, patternLength);
+                    int length = 0;
+                    foreach (Match mLength in mLengths)
+                    {
+                        if (int.TryParse(GetPatternFilterSymbolReplace(mLength.Value, patternLengthSymbol), out length))
+                            break;
+                    }
+
+                    var mFormats = Regex.Matches(mFormula.Value, patternLength);
+                    string format = string.Empty;
+                    foreach (Match mFormat in mFormats)
+                    {
+                        format = GetPatternFilterSymbolReplace(mFormat.Value, patternFormatSymbol);
+                        break;
+                    }
+
+                    var mFormulaValues = Regex.Matches(mFormula.Value, patternFormula);
+                    foreach (Match mFormulaValue in mFormulaValues)
+                    {
+                        var formulaValue = (EnumFormulas)Enum.Parse(typeof(EnumFormulas), GetPatternFilterSymbolReplace(mFormulaValue.Value, patternFormulaSymbol));
+
+                        switch (formulaValue)
+                        {
+                            case EnumFormulas.RegistrationJournalId:
+                                newValue = model.RegistrationJournalId.GetValueOrDefault().ToString("D" + length);
+                                break;
+                            case EnumFormulas.RegistrationJournalIndex:
+                                newValue = model.RegistrationJournalIndex;
+                                break;
+                            case EnumFormulas.InitiativeRegistrationFullNumber:
+                                newValue = model.InitiativeRegistrationFullNumber;
+                                break;
+                            case EnumFormulas.InitiativeRegistrationNumberPrefix:
+                                newValue = model.InitiativeRegistrationNumberPrefix;
+                                break;
+                            case EnumFormulas.InitiativeRegistrationNumberSuffix:
+                                newValue = model.InitiativeRegistrationNumberSuffix;
+                                break;
+                            case EnumFormulas.InitiativeRegistrationNumber:
+                                if (model.InitiativeRegistrationNumber.HasValue)
+                                    newValue = model.InitiativeRegistrationNumber.Value.ToString("D" + length);
+                                break;
+                            case EnumFormulas.Date:
+                                if (string.IsNullOrEmpty(format))
+                                    format = "YYYY";
+                                newValue = model.RegistrationDate.ToString(format);
+                                break;
+                            case EnumFormulas.ExecutorPositionDepartmentCode:
+                                newValue = model.ExecutorPositionDepartmentCode;
+                                break;
+                            case EnumFormulas.SubscriptionsPositionDepartmentCode:
+                                newValue = model.SubscriptionsPositionDepartmentCode;
+                                break;
+                            case EnumFormulas.RegistrationJournalDepartmentCode:
+                                newValue = model.RegistrationJournalDepartmentCode;
+                                break;
+                            case EnumFormulas.CurrentPositionDepartmentCode:
+                                newValue = model.CurrentPositionDepartmentCode;
+                                break;
+                            case EnumFormulas.InitiativeRegistrationSenderNumber:
+                                newValue = model.InitiativeRegistrationSenderNumber;
+                                break;
+                            case EnumFormulas.DocumentSendListLastAgentExternalFirstSymbolName:
+                                newValue = model.DocumentSendListLastAgentExternalFirstSymbolName;
+                                break;
+                            case EnumFormulas.OrdinalNumberDocumentLinkForCorrespondent:
+                                newValue = model.OrdinalNumberDocumentLinkForCorrespondent.ToString("D" + length);
+                                break;
+                        }
+                        break;
+                    }
+                }
+                if (string.IsNullOrEmpty(newValue)) newValue = string.Empty;
+                res = res.Replace(oldValue, newValue);
+            }
+            return res;
+        }
+        private static string GetPatternFilterSymbolReplace(string input, string symbol)
+        {
+            if (string.IsNullOrEmpty(input)) input = string.Empty;
+            return input.Replace("{" + symbol + "/", string.Empty).Replace("/" + symbol + "}", "");
+        }
+        private static string GetPatternFilter(string symbol)
+        {
+            return "{" + symbol + "/(.*?)/" + symbol + "}";
+        }
+        /// <summary>
+        /// Формирует список значений документа для фильтрации в динамических свойствах, формирование регистрационого номера по формуле
+        /// </summary>
+        /// <returns></returns>
+        public static IEnumerable<string> GetFilterTemplateByDocument(InternalDocument doc)
+        {
+            var res = new List<string>();
+            if (doc.DocumentTypeId > 0)
+                res.Add($"{nameof(doc.DocumentTypeId)}={doc.DocumentTypeId}");
+            if (doc.DocumentDirection > 0)
+                res.Add($"{nameof(doc.DocumentDirection)}={doc.DocumentDirection}");
+            if (doc.DocumentSubjectId.HasValue && doc.DocumentSubjectId > 0)
+                res.Add($"{nameof(doc.DocumentSubjectId)}={doc.DocumentSubjectId}");
+            return res;
+        }
+
+        public static IEnumerable<string> GetFilterTemplateByDocument(FrontDocument doc)
+        {
+            var res = new List<string>();
+            if (doc.DocumentTypeId.HasValue && doc.DocumentTypeId > 0)
+                res.Add($"{nameof(doc.DocumentTypeId)}={doc.DocumentTypeId}");
+            if (doc.DocumentDirection.HasValue && doc.DocumentDirection > 0)
+                res.Add($"{nameof(doc.DocumentDirection)}={doc.DocumentDirection}");
+            if (doc.DocumentSubjectId.HasValue && doc.DocumentSubjectId > 0)
+                res.Add($"{nameof(doc.DocumentSubjectId)}={doc.DocumentSubjectId}");
+            return res;
         }
     }
 }

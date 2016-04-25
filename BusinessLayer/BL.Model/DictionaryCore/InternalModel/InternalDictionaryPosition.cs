@@ -64,6 +64,5 @@ namespace BL.Model.DictionaryCore.InternalModel
         public int? MainExecutorAgentId { get; set; }
 
         // !!! После добавления полей внеси изменения в BL.Logic.Common.CommonDictionaryUtilities.PositionModifyToInternal
-
     }
 }

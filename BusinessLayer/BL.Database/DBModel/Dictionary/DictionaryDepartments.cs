@@ -14,11 +14,15 @@ namespace BL.Database.DBModel.Dictionary
         }
 
         public int Id { get; set; }
+        [Index("IX_CompanyParentName", 2, IsUnique = false)]
+        [Index("IX_ParentId", 1)]
         public Nullable<int> ParentId { get; set; }
+        [Index("IX_CompanyParentName", 1, IsUnique = false)]
         public int CompanyId { get; set; }
         [MaxLength(2000)]
         public string Code { get; set; }
         [MaxLength(2000)]
+        [Index("IX_CompanyParentName", 3, IsUnique = false)]
         public string Name { get; set; }
         [MaxLength(2000)]
         public string FullName { get; set; }

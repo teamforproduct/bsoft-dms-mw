@@ -53,11 +53,7 @@ namespace BL.Logic.DocumentCore
             doc.SendLists = null;
             return doc;
         }
-
-        public Model.DocumentCore.ReportModel.ReportDocument GetDocumentByReport(IContext ctx, int documentId)
-        {
-            return _documentDb.GetDocumentByReport(ctx, documentId);
-        }
+        
 
         public IEnumerable<BaseSystemUIElement> GetModifyMetaData(IContext ctx, FrontDocument doc)
         {
@@ -65,7 +61,7 @@ namespace BL.Logic.DocumentCore
             var uiElements = sysDb.GetSystemUIElements(ctx, new FilterSystemUIElement { ObjectCode = "Documents", ActionCode = "Modify" }).ToList();
             uiElements = CommonDocumentUtilities.VerifyDocument(ctx, doc, uiElements).ToList();
 
-            uiElements.AddRange(CommonSystemUtilities.GetPropertyUIElements(ctx,EnumObjects.Documents, new[] { $"{nameof(doc.DocumentTypeId)}={doc.DocumentTypeId}", $"{nameof(doc.DocumentDirection)}={doc.DocumentDirection}", $"{nameof(doc.DocumentSubjectId)}={doc.DocumentSubjectId}" }));
+            uiElements.AddRange(CommonSystemUtilities.GetPropertyUIElements(ctx,EnumObjects.Documents, CommonDocumentUtilities.GetFilterTemplateByDocument(doc).ToArray()));
 
             return uiElements;
         }
@@ -109,7 +105,7 @@ namespace BL.Logic.DocumentCore
         #region DocumentPaperLists
         public FrontDocumentPaperList GetDocumentPaperList(IContext context, int itemId)
         {
-            return _documentDb.GetDocumentPaperListById(context, itemId);
+            return _documentDb.GetDocumentPaperList(context, itemId);
         }
 
         public IEnumerable<FrontDocumentPaperList> GetDocumentPaperLists(IContext context, FilterDocumentPaperList filter)

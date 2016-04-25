@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Web;
 using BL.CrossCutting.Interfaces;
 using BL.Logic.AdminCore.Interfaces;
-using BL.Logic.DependencyInjection;
 using BL.Model.Exception;
 using System.Linq;
 using BL.CrossCutting.Context;
@@ -37,8 +36,9 @@ namespace DMS_WebAPI.Utilities
             {
                 contextValue.LastUsage = DateTime.Now;
                 var cxt = (IContext)contextValue.StoreObject;
-                cxt.SetCurrentPosition(currentPositionId);
-                return cxt;
+                var request_ctx = new DefaultContext(cxt);
+                request_ctx.SetCurrentPosition(currentPositionId);
+                return request_ctx;
             }
             catch (InvalidCastException invalidCastException)
             {
@@ -70,6 +70,21 @@ namespace DMS_WebAPI.Utilities
                 throw new Exception();
             }
         }
+
+        public void SetUserPositions(string token, List<int> positionsIdList)
+        {
+            if (!_casheContexts.ContainsKey(token))
+            {
+                throw new UserUnauthorized();
+            }
+
+            var contextValue = _casheContexts[token];
+
+            contextValue.LastUsage = DateTime.Now;
+            var context = (IContext)contextValue.StoreObject;
+            context.CurrentPositionsIdList = positionsIdList;
+        }
+
 
         /// <summary>
         /// Add new server to the list of available servers
@@ -108,7 +123,17 @@ namespace DMS_WebAPI.Utilities
         /// <exception cref="ArgumentException"></exception>
         public void Set(DatabaseModel db)
         {
-            var context = Get();
+            string token = Token.ToLower();
+            if (!_casheContexts.ContainsKey(token))
+            {
+                throw new UserUnauthorized();
+            }
+
+            var contextValue = _casheContexts[token];
+
+            contextValue.LastUsage = DateTime.Now;
+            var context = (IContext)contextValue.StoreObject;
+
             context.CurrentDB = db;
 
             var agent = DmsResolver.Current.Get<IAdminService>().GetEmployee(context, context.CurrentEmployee.UserId);

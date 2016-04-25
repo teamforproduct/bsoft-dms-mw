@@ -9,10 +9,12 @@ using BL.Model.Exception;
 
 namespace BL.Logic.DocumentCore.AdditionalCommands
 {
-    public class DeleteDocumentFileCommand: BaseDocumentCommand
+    public class DeleteDocumentFileCommand : BaseDocumentCommand
     {
         private readonly IDocumentFileDbProcess _operationDb;
         private readonly IFileStore _fStore;
+
+        private InternalDocumentAttachedFile _file;
 
         public DeleteDocumentFileCommand(IDocumentFileDbProcess operationDb, IFileStore fStore)
         {
@@ -34,6 +36,18 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override bool CanBeDisplayed(int positionId)
         {
+            _actionRecords =
+                          _document.DocumentFiles.Where(
+                              x =>
+                                  x.ExecutorPositionId == positionId)
+                                                          .Select(x => new InternalActionRecord
+                                                          {
+                                                              FileId = x.Id,
+                                                          });
+            if (!_actionRecords.Any())
+            {
+                return false;
+            }
             return true;
         }
 
@@ -43,7 +57,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             {
                 throw new WrongParameterValueError();
             }
-            _admin.VerifyAccess(_context, CommandType);
+
             _document = _operationDb.DeleteDocumentFilePrepare(_context, Model);
             if (_document == null)
             {
@@ -52,6 +66,16 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             if (_document.DocumentFiles == null || !_document.DocumentFiles.Any())
             {
                 throw new UnknownDocumentFile();
+            }
+
+            _file = _document.DocumentFiles.First();
+
+            _context.SetCurrentPosition(_file.ExecutorPositionId);
+            _admin.VerifyAccess(_context, CommandType);
+
+            if (!CanBeDisplayed(_context.CurrentPositionId))
+            {
+                throw new CouldNotPerformOperationWithPaper();
             }
 
             return true;
@@ -65,7 +89,14 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                 OrderInDocument = Model.OrderInDocument
             };
 
-            _fStore.DeleteFile(_context, docFile);
+            try
+            {
+                _fStore.DeleteFile(_context, docFile);
+            }
+            catch (CannotAccessToFile ex)
+            {
+
+            }
             _operationDb.DeleteAttachedFile(_context, docFile);
             return null;
         }

@@ -25,45 +25,11 @@ namespace BL.Database.Documents
             }
         }
 
-        public FrontDocumentTask GetDocumentTaskById(IContext ctx, int id)
+        public FrontDocumentTask GetDocumentTask(IContext ctx, int id)
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                //TODO: Refactoring
-                var item = dbContext.DocumentTasksSet
-                    .Where(x => x.Id == id)
-                    .Select(x => new { Task = x })
-                    .Select(x => new FrontDocumentTask
-                    {
-                        Id = x.Task.Id,
-                        DocumentId = x.Task.DocumentId,
-                        Name = x.Task.Task,
-                        Description = x.Task.Description,
-                        DocumentDate = x.Task.Document.RegistrationDate ?? x.Task.Document.CreateDate,
-
-                        RegistrationNumber = x.Task.Document.RegistrationNumber,
-                        RegistrationNumberPrefix = x.Task.Document.RegistrationNumberPrefix,
-                        RegistrationNumberSuffix = x.Task.Document.RegistrationNumberSuffix,
-                        RegistrationFullNumber = "#" + x.Task.Document.Id,
-
-                        DocumentDescription = x.Task.Document.Description,
-                        DocumentTypeName = x.Task.Document.TemplateDocument.DocumentType.Name,
-                        DocumentDirectionName = x.Task.Document.TemplateDocument.DocumentDirection.Name,
-
-                        PositionId = x.Task.PositionId,
-                        PositionExecutorAgentId = x.Task.PositionExecutorAgentId,
-                        AgentId = x.Task.AgentId,
-
-                        PositionExecutorAgentName = x.Task.PositionExecutorAgent.Name,
-                        AgentName = x.Task.Agent.Name,
-                        PositionName = x.Task.Position.Name,
-                        PositionExecutorNowAgentName = x.Task.Position.ExecutorAgent.Name,
-                        PositionExecutorAgentPhoneNumber = "SourcePositionAgentPhoneNumber", //TODO 
-                    }).FirstOrDefault();
-
-                CommonQueries.ChangeRegistrationFullNumber(item);
-
-                return item;
+                return CommonQueries.GetDocumentTasks(dbContext, new FilterDocumentTask { Id = new List<int> { id } }).FirstOrDefault();
             }
         }
         #endregion DocumentTasks         

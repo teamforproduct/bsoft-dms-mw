@@ -17,7 +17,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         private readonly IDocumentFileDbProcess _operationDb;
         private readonly IFileStore _fStore;
 
-        private InternalDocumentAttachedFile fl;
+        private InternalDocumentAttachedFile _file;
 
         public ModifyDocumentFileCommand(IDocumentFileDbProcess operationDb, IFileStore fStore)
         {
@@ -39,13 +39,23 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override bool CanBeDisplayed(int positionId)
         {
+            _actionRecords =
+                   _document.DocumentFiles.Where(
+                       x =>
+                           x.ExecutorPositionId == positionId)
+                                                   .Select(x => new InternalActionRecord
+                                                   {
+                                                       FileId = x.Id,
+                                                   });
+            if (!_actionRecords.Any())
+            {
+                return false;
+            }
             return true;
         }
 
         public override bool CanExecute()
         {
-            _admin.VerifyAccess(_context, CommandType);
-
             //TODO potential two user could add same new version in same time. Probably need to implement CheckOut flag in future
             _document = _operationDb.ModifyDocumentFilePrepare(_context, Model.DocumentId, Model.OrderInDocument);
             if (_document == null)
@@ -56,25 +66,42 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             {
                 throw new UnknownDocumentFile();
             }
-            fl = _document.DocumentFiles.First();
+            _file = _document.DocumentFiles.First();
+
+            if (!Model.IsAdditional || !_file.IsAdditional)
+            {
+                _context.SetCurrentPosition(_document.ExecutorPositionId);
+            }
+            else
+            {
+                _context.SetCurrentPosition(_file.ExecutorPositionId);
+            }
+
+            _admin.VerifyAccess(_context, CommandType);
+
+            if (!CanBeDisplayed(_context.CurrentPositionId))
+            {
+                throw new CouldNotPerformOperation();
+            }
+
+            _file.FileContent = Convert.FromBase64String(Model.FileData);
+            _file.FileType = Model.FileType;
+            _file.FileSize = Model.FileSize;
+            _file.Extension = Path.GetExtension(Model.FileName).Replace(".", "");
+            _file.Name = Path.GetFileNameWithoutExtension(Model.FileName);
+            _file.IsAdditional = Model.IsAdditional;
+
             return true;
         }
 
         public override object Execute()
         {
-            fl.FileContent = Convert.FromBase64String(Model.FileData);
-            fl.FileType = Model.FileType;
-            fl.FileSize = Model.FileSize;
-            fl.Extension = Path.GetExtension(Model.FileName).Replace(".", "");
-            fl.Name = Path.GetFileNameWithoutExtension(Model.FileName);
-            fl.IsAdditional = fl.IsAdditional;
             //fl.Date = DateTime.Now;
-            _fStore.SaveFile(_context, fl);
-            CommonDocumentUtilities.SetLastChange(_context, fl);
+            _fStore.SaveFile(_context, _file);
+            CommonDocumentUtilities.SetLastChange(_context, _file);
 
-            _operationDb.UpdateFileOrVersion(_context, fl);
-            // имя модифировавшего пользователя в данном случае не заполнено!
-            return new FrontDocumentAttachedFile(fl);
+            _operationDb.UpdateFileOrVersion(_context, _file);
+            return _file.Id;
         }
 
         public override EnumDocumentActions CommandType => EnumDocumentActions.ModifyDocumentFile;

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using BL.Model.Common;
-using BL.Model.DocumentCore.FrontModel;
 using BL.Model.Enums;
 using BL.Model.SystemCore.InternalModel;
 
@@ -135,7 +134,8 @@ namespace BL.Model.DocumentCore.InternalModel
         // public int EventsCount { get; set; }
         // public int NewEventCount { get; set; }
         // public int AttachedFilesCount { get; set; }
-        // public int LinkedDocumentsCount { get; set; }
+        public int LinkedDocumentsCount { get; set; }
+        public int? NewLinkId { get; set; }
 
         public string Hash { get; set; }
         public string FullHash { get; set; }
@@ -149,7 +149,6 @@ namespace BL.Model.DocumentCore.InternalModel
         public IEnumerable<InternalDocumentAccess> Accesses { get; set; }
         public IEnumerable<InternalDocumentAttachedFile> DocumentFiles { get; set; }
         public IEnumerable<InternalDocument> LinkedDocuments { get; set; }
-        public IEnumerable<FrontDocumentLink> Links { get; set; }
         public IEnumerable<InternalDocumentWait> Waits { get; set; }
         public IEnumerable<InternalDocumentSubscription> Subscriptions { get; set; }
         public IEnumerable<InternalDocumentTask> Tasks { get; set; }
@@ -158,7 +157,6 @@ namespace BL.Model.DocumentCore.InternalModel
         public IEnumerable<InternalDocumentEvent> PaperEvents { get; set; }
         public IEnumerable<InternalDocumentPaper> Papers { get; set; }
         public int? MaxPaperOrderNumber { get; set; }
-
 
     }
 }

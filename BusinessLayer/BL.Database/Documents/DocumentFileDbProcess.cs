@@ -7,7 +7,7 @@ using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.InternalModel;
-
+using BL.Model.SystemCore;
 
 namespace BL.Database.Documents
 {
@@ -21,15 +21,15 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                return CommonQueries.GetDocumentFiles(dbContext, new FilterDocumentAttachedFile { DocumentId = new List<int> { documentId } });
+                return CommonQueries.GetDocumentFiles(ctx, dbContext, new FilterDocumentAttachedFile { DocumentId = new List<int> { documentId } });
             }
         }
 
-        public IEnumerable<FrontDocumentAttachedFile> GetDocumentFiles(IContext ctx, FilterDocumentAttachedFile filter)
+        public IEnumerable<FrontDocumentAttachedFile> GetDocumentFiles(IContext ctx, FilterDocumentAttachedFile filter, UIPaging paging = null)
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                return CommonQueries.GetDocumentFiles(dbContext, filter);
+                return CommonQueries.GetDocumentFiles(ctx, dbContext, filter, paging);
             }
         }
 
@@ -59,7 +59,9 @@ namespace BL.Database.Documents
                             FileSize = x.fl.FileSize,
                             OrderInDocument = x.fl.OrderNumber,
                             Version = x.fl.Version,
-                            WasChangedExternal = false
+                            WasChangedExternal = false,
+                            ExecutorPositionName = x.fl.ExecutorPosition.Name,
+                            ExecutorPositionExecutorAgentName = x.fl.ExecutorPositionExecutorAgent.Name
                         }).ToList();
             }
         }
@@ -92,7 +94,9 @@ namespace BL.Database.Documents
                             Name = x.fl.Name,
                             OrderInDocument = x.fl.OrderNumber,
                             Version = x.fl.Version,
-                            WasChangedExternal = false
+                            WasChangedExternal = false,
+                            ExecutorPositionName = x.fl.ExecutorPosition.Name,
+                            ExecutorPositionExecutorAgentName = x.fl.ExecutorPositionExecutorAgent.Name
                         }).FirstOrDefault();
             }
         }
@@ -123,7 +127,9 @@ namespace BL.Database.Documents
                             FileSize = x.fl.FileSize,
                             OrderInDocument = x.fl.OrderNumber,
                             Version = x.fl.Version,
-                            WasChangedExternal = false
+                            WasChangedExternal = false,
+                            ExecutorPositionName = x.fl.ExecutorPosition.Name,
+                            ExecutorPositionExecutorAgentName = x.fl.ExecutorPositionExecutorAgent.Name
                         }).FirstOrDefault();
             }
         }
@@ -142,6 +148,7 @@ namespace BL.Database.Documents
                                         .Select(x => new InternalDocument
                                         {
                                             Id = x.Doc.Id,
+                                            ExecutorPositionId = x.Doc.ExecutorPositionId
                                         }).FirstOrDefault();
 
                     if (doc == null) return null;
@@ -157,7 +164,8 @@ namespace BL.Database.Documents
                                 Date = x.fl.Date,
                                 DocumentId = x.fl.DocumentId,
                                 OrderInDocument = x.fl.OrderNumber,
-                                Version = x.fl.Version
+                                Version = x.fl.Version,
+                                ExecutorPositionId = x.fl.ExecutorPositionId
                             }).ToList();
                     return doc;
                 }
@@ -197,7 +205,9 @@ namespace BL.Database.Documents
                                 FileSize = x.fl.FileSize,
                                 OrderInDocument = x.fl.OrderNumber,
                                 Version = x.fl.Version,
-                                WasChangedExternal = false
+                                WasChangedExternal = false,
+                                ExecutorPositionName = x.fl.ExecutorPosition.Name,
+                                ExecutorPositionExecutorAgentName = x.fl.ExecutorPositionExecutorAgent.Name
                             }).FirstOrDefault();
                 }
             }
@@ -212,7 +222,8 @@ namespace BL.Database.Documents
                     .Where(x => x.Doc.Id == documentId && (ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId)))
                     .Select(x => new InternalDocument
                     {
-                        Id = x.Doc.Id
+                        Id = x.Doc.Id,
+                        ExecutorPositionId = x.Doc.ExecutorPositionId
                     }).FirstOrDefault();
                 return doc;
             }
@@ -265,7 +276,7 @@ namespace BL.Database.Documents
                 doc.DocumentFiles =
                     dbContext.DocumentFilesSet.Where(
                         x => x.DocumentId == flIdent.DocumentId && x.OrderNumber == flIdent.OrderInDocument)
-                        .Select(x => new InternalDocumentAttachedFile { Id = x.Id }).ToList();
+                        .Select(x => new InternalDocumentAttachedFile { Id = x.Id, ExecutorPositionId = x.ExecutorPositionId }).ToList();
                 return doc;
             }
         }
@@ -284,6 +295,22 @@ namespace BL.Database.Documents
                         x => x.DocumentId == docFile.DocumentId && x.OrderNumber == docFile.OrderInDocument));
                 dbContext.SaveChanges();
 
+            }
+        }
+
+        public int CheckFileForDocument(IContext ctx, string fileName, string fileExt)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                if (dbContext.DocumentFilesSet.Any(x => x.Name == fileName && x.Extension == fileExt))
+                {
+                    return
+                        dbContext.DocumentFilesSet.Where(x => x.Name == fileName && x.Extension == fileExt)
+                            .Select(x => x.OrderNumber)
+                            .First();
+                }
+
+                return -1;
             }
         }
 

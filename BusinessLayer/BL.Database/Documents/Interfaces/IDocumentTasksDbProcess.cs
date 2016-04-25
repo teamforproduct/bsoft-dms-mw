@@ -11,7 +11,7 @@ namespace BL.Database.Documents.Interfaces
     {
         #region DocumentTasks
         IEnumerable<FrontDocumentTask> GetDocumentTasks(IContext ctx, FilterDocumentTask filter);
-        FrontDocumentTask GetDocumentTaskById(IContext ctx, int id);
+        FrontDocumentTask GetDocumentTask(IContext ctx, int id);
         #endregion DocumentTasks  
     }
 }

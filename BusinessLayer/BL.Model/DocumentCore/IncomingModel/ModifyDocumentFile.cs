@@ -6,7 +6,7 @@ namespace BL.Model.DocumentCore.IncomingModel
     /// <summary>
     /// Добавляемый или редактируемый файл документа
     /// </summary>
-    public class ModifyDocumentFile : CurrentPosition
+    public class ModifyDocumentFile
     {
         [IgnoreDataMember]
         public int Id { get; set; }

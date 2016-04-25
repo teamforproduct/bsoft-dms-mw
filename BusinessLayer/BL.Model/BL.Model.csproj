@@ -40,8 +40,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdminCore\AdminLanguageInfo.cs" />
     <Compile Include="AdminCore\AdminAccessInfo.cs" />
-    <Compile Include="AdminCore\BaseAdminUserRole.cs" />
+    <Compile Include="AdminCore\FrontAdminUserRole.cs" />
     <Compile Include="AdminCore\FilterModel\FilterAdminLanguageValue.cs" />
     <Compile Include="AdminCore\FilterModel\FilterAdminLanguage.cs" />
     <Compile Include="AdminCore\FrontModel\FrontAdminLanguageValue.cs" />
@@ -112,8 +113,10 @@
     <Compile Include="AdminCore\FilterAdminAccessLevel.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalCustomDictionaryType.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryStandartSendList.cs" />
+    <Compile Include="DocumentCore\Actions\ChangePosition.cs" />
     <Compile Include="DocumentCore\Actions\ControlTargetChange.cs" />
     <Compile Include="DocumentCore\Actions\MarkOwnerDocumentPaper.cs" />
+    <Compile Include="DocumentCore\Actions\PaperList.cs" />
     <Compile Include="DocumentCore\Actions\PlanMovementPaper.cs" />
     <Compile Include="DocumentCore\Actions\PaperEvent.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentPaper.cs" />
@@ -132,6 +135,10 @@
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAgentPerson.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryContact.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryContactType.cs" />
+    <Compile Include="DocumentCore\Filters\FilterTemplateDocumentRestrictedSendList.cs" />
+    <Compile Include="DocumentCore\Filters\FilterTemplateAttachedFile.cs" />
+    <Compile Include="DocumentCore\Filters\FilterTemplateDocumentTask.cs" />
+    <Compile Include="DocumentCore\Filters\FilterTemplateDocumentSendList.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentSubscription.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentPaperList.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentTask.cs" />
@@ -212,6 +219,7 @@
     <Compile Include="DocumentCore\Filters\FilterDocumentFileIdentity.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentFile.cs" />
     <Compile Include="DocumentCore\IncomingModel\AddDocumentByTemplateDocument.cs" />
+    <Compile Include="DocumentCore\IncomingModel\AddDocumentPaperLists.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentPaperLists.cs" />
     <Compile Include="DocumentCore\Actions\CopyDocumentPaper.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentPapers.cs" />
@@ -222,6 +230,7 @@
     <Compile Include="DocumentCore\IncomingModel\ModifyTemplateDocumentRestrictedSendLists.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyTemplateDocumentSendLists.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyTemplateDocumentTasks.cs" />
+    <Compile Include="DocumentCore\InternalModel\InternalDocumnRegistration.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentPaperEvent.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentPaperList.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentTag.cs" />
@@ -230,6 +239,7 @@
     <Compile Include="DocumentCore\InternalModel\InternalDocumentSavedFilter.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentPaper.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentTask.cs" />
+    <Compile Include="DocumentCore\InternalModel\InternalDocumentTaskAccesses.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalTemplateAttachedFile.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalTemplateDocument.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalTemplateDocumentRestrictedSendList.cs" />
@@ -246,8 +256,13 @@
     <Compile Include="DocumentCore\InternalModel\InternalDocumentSubscription.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentWait.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalTemplateDocumentTask.cs" />
+    <Compile Include="Enums\EnumTemplateDocumentsActions.cs" />
+    <Compile Include="DocumentCore\ReportModel\ReportDocumentEvent.cs" />
+    <Compile Include="DocumentCore\ReportModel\ReportDocumentPaper.cs" />
+    <Compile Include="DocumentCore\ReportModel\ReportDocumentSubscription.cs" />
     <Compile Include="DocumentCore\ReportModel\ReportDocumentWait.cs" />
     <Compile Include="DocumentCore\ReportModel\ReportDocument.cs" />
+    <Compile Include="Enums\EnumFormulas.cs" />
     <Compile Include="Enums\EnumReportTypes.cs" />
     <Compile Include="Enums\EnumSystemUsers.cs" />
     <Compile Include="Enums\EnumContactTypes.cs" />
@@ -293,6 +308,7 @@
     <Compile Include="FullTextSearch\FullTextUpdateCashInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Enums\EnumLogTypes.cs" />
+    <Compile Include="Reports\FrontModel\FrontReport.cs" />
     <Compile Include="Reports\Interfaces\IReports.cs" />
     <Compile Include="SystemCore\Filters\FilterProperties.cs" />
     <Compile Include="SystemCore\Filters\FilterPropertyByRecord.cs" />

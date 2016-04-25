@@ -19,15 +19,15 @@ namespace BL.Logic.DocumentCore.PaperCommands
             _operationDb = operationDb;
         }
 
-        private List<int> Model
+        private PaperList Model
         {
             get
             {
-                if (!(_param is List<int>))
+                if (!(_param is PaperList))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (List<int>)_param ;
+                return (PaperList)_param ;
             }
         }
 

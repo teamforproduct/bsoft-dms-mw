@@ -27,7 +27,7 @@ namespace BL.Logic.DocumentCore
         #region DocumentTasks
         public FrontDocumentTask GetDocumentTask(IContext context, int taskId)
         {
-            return _documentDb.GetDocumentTaskById(context, taskId);
+            return _documentDb.GetDocumentTask(context, taskId);
         }
 
         public IEnumerable<FrontDocumentTask> GetTasks(IContext context, FilterDocumentTask filter)

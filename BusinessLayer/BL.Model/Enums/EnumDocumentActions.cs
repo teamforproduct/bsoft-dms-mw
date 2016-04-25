@@ -52,6 +52,11 @@
         RegisterDocument = 100009,
 
         /// <summary>
+        /// Поменять позицию в документе
+        /// </summary>
+        ChangePosition = 100099,
+
+        /// <summary>
         /// Направить для сведения
         /// </summary>
         SendForInformation = 100011,
@@ -337,12 +342,19 @@
         RecieveDocumentPaperEvent = 122021, // Отметить прием бумажного носителя
 
         //TODO Добавить в базу
-        AddDocumentTask = 1,
-        ModifyDocumentTask = 2,
-        DeleteDocumentTask = 3,
-        AddDocumentPaperList = 7,
-        ModifyDocumentPaperList = 8,
-        DeleteDocumentPaperList = 9
+        AddDocumentTask = 115001, // Добавить задачу
+        ModifyDocumentTask = 115005, // Изменить задачу
+        DeleteDocumentTask = 115009, // Удалить задачу
+        AddDocumentPaperList = 123001, // Добавить реестр
+        ModifyDocumentPaperList = 123005, // Изменить реестр
+        DeleteDocumentPaperList = 123009, // Удалить реестр
+        ReportRegistrationCardDocument = 100085,
+        ReportRegisterTransmissionDocuments = 100086,
+
+
+        AddTemplateAttachedFile = 255001,
+        ModifyTemplateAttachedFile = 255005,
+        DeleteTemplateAttachedFile = 255009
 
     }
 }

@@ -1,13 +1,18 @@
-﻿using BL.Logic.DocumentCore;
+﻿using System.ComponentModel.DataAnnotations;
+using BL.Logic.DocumentCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Web.Http;
 using BL.CrossCutting.DependencyInjection;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
+using BL.Model.Enums;
 
 namespace DMS_WebAPI.Controllers
 {
+    /// <summary>
+    /// Шаблоны документов
+    /// </summary>
     [Authorize]
     public class TemplateDocumentsController : ApiController
     {
@@ -36,25 +41,39 @@ namespace DMS_WebAPI.Controllers
             return new JsonResult(tmpDoc, this);
         }
 
-
+        /// <summary>
+        /// Добавление шаблона документа
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public IHttpActionResult Post([FromBody]ModifyTemplateDocument model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpTemplate = tmpDocProc.AddOrUpdateTemplate(cxt,model);
+            var tmpTemplate = tmpDocProc.AddOrUpdateTemplate(cxt,model,EnumTemplateDocumentsActions.AddTemplateDocument);
             return Get(tmpTemplate);
         }
-       
-        public IHttpActionResult Put(int id, [FromBody]ModifyTemplateDocument model)
+
+        /// <summary>
+        /// Изменение шаблона документа
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public IHttpActionResult Put([Required]int id, [FromBody]ModifyTemplateDocument model)
         {
             model.Id = id;
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpTemplate = tmpDocProc.AddOrUpdateTemplate(cxt, model);
+            var tmpTemplate = tmpDocProc.AddOrUpdateTemplate(cxt, model,EnumTemplateDocumentsActions.ModifyTemplateDocument);
             return Get(tmpTemplate);
         }
 
-       
+       /// <summary>
+       /// Удаление шаблона документа
+       /// </summary>
+       /// <param name="id"></param>
+       /// <returns></returns>
         public IHttpActionResult Delete([FromUri] int id)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
