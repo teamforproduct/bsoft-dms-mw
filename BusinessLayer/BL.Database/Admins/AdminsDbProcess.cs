@@ -68,7 +68,7 @@ namespace BL.Database.Admins
             }
         }
 
-        public IEnumerable<BaseAdminUserRole> GetPositionsByUser(IContext ctx, FilterAdminUserRole filter)
+        public IEnumerable<FrontAdminUserRole> GetPositionsByUser(IContext ctx, FilterAdminUserRole filter)
         {
             using (var dbContext = new DmsContext(ctx))
             {
@@ -86,12 +86,28 @@ namespace BL.Database.Admins
                 {
                     qry = qry.Where(x => filter.UserId.Contains(x.RoleId));
                 }
-                return qry.Distinct().SelectMany(x => x.Role.PositionRoles).Select(x => new BaseAdminUserRole
+
+                var res = qry.Distinct().SelectMany(x => x.Role.PositionRoles).Select(x => new FrontAdminUserRole
                 {
                     RolePositionId = x.PositionId,
                     RolePositionName = x.Position.Name,
                     RolePositionExecutorAgentName = x.Position.ExecutorAgent.Name
                 }).Distinct().ToList();
+
+                var roleList = res.Select(s => s.RolePositionId).ToList();
+
+                var newevnt = dbContext.DocumentEventsSet
+                                    .Where(x => !x.ReadDate.HasValue && x.TargetPositionId.HasValue && x.TargetPositionId != x.SourcePositionId
+                                             && roleList.Contains(x.TargetPositionId.Value))
+                                        .GroupBy(g => g.TargetPositionId)
+                                        .Select(s => new { PosID = s.Key, EvnCnt = s.Count() }).ToList();
+
+                foreach (var rn in res.Join(newevnt, r=>r.RolePositionId, e=>e.PosID, (r,e)=>new {rs= r, ne = e}))
+                {
+                    rn.rs.NewEventsCount = rn.ne.EvnCnt;
+                }
+
+                return res;
             }
         }
 
