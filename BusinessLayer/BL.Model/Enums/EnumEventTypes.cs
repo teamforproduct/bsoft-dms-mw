@@ -7,6 +7,7 @@
         //ControlChange = 310,//Изменить контроль
         ControlTargetChange = 315,//Изменить параметры контроля для исполнителя
         ControlOff = 301,//Снят с контроля
+        TaskFormulation = 601,//Формулировка задачи
 
         MarkExecution = 320,//Поручение выполнено
         AcceptResult = 321,//Результат принят

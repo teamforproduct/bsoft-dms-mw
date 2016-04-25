@@ -307,6 +307,9 @@ namespace BL.Database.Documents
                         dbContext.DocumentWaitsSet.AddRange(ModelConverter.GetDbDocumentWaits(document.Waits));
                         dbContext.SaveChanges();
                     }
+                    CommonQueries.ModifyDocumentTaskAccesses(dbContext, document.Id);
+                    dbContext.SaveChanges();
+
                     transaction.Complete();
                 }
             }
@@ -1074,6 +1077,9 @@ namespace BL.Database.Documents
                         }
 
                     }
+
+                    CommonQueries.ModifyDocumentTaskAccesses(dbContext, document.Id);
+                    dbContext.SaveChanges();
 
                     transaction.Complete();
                 }
@@ -1876,6 +1882,7 @@ namespace BL.Database.Documents
                 var item = dbContext.DocumentTasksSet.FirstOrDefault(x => x.Id == itemId);
                 if (item != null)
                 {
+                    //dbContext.DocumentTaskAccessesSet.RemoveRange(dbContext.DocumentTaskAccessesSet.Where(x => x.Id == itemId));
                     dbContext.DocumentTasksSet.Remove(item);
                     dbContext.SaveChanges();
                 }

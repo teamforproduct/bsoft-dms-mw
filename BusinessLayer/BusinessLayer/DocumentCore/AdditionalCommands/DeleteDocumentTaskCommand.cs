@@ -70,6 +70,5 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             return null;
         }
 
-        public override EnumDocumentActions CommandType => EnumDocumentActions.DeleteDocumentTask;
     }
 }
