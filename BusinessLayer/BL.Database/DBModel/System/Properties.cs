@@ -35,6 +35,8 @@ namespace BL.Database.DBModel.System
         public string SelectFieldCode { get; set; }
         [MaxLength(2000)]
         public string SelectDescriptionFieldCode { get; set; }
+        [MaxLength(2000)]
+        public string SelectTable { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
 
