@@ -1130,6 +1130,8 @@ namespace BL.Database.Documents
                         SenderAgentId = x.SenderAgentId,
                         SenderAgentPersonId = x.SenderAgentPersonId,
                         Addressee = x.Addressee,
+                        DocumentTypeId = x.DocumentTypeId,
+                        DocumentDirection = (EnumDocumentDirections)x.DocumentDirectionId
                     }).FirstOrDefault();
 
                 if (doc == null)
@@ -1180,6 +1182,8 @@ namespace BL.Database.Documents
                     IsAdditional = x.IsAdditional,
                     Hash = x.Hash
                 }).ToList();
+
+                doc.Properties = CommonQueries.GetInternalPropertyValues(dbContext, new FilterPropertyValue { Object = new List<EnumObjects> { EnumObjects.TemplateDocuments }, RecordId = new List<int> { templateDocumentId } }).ToList();
 
                 return doc;
             }
@@ -1242,6 +1246,8 @@ namespace BL.Database.Documents
                         }).ToList();
                 doc.DocumentFiles = CommonQueries.GetInternalDocumentFiles(ctx, dbContext, documentId);
 
+                doc.Properties = CommonQueries.GetInternalPropertyValues(dbContext, new FilterPropertyValue { Object = new List<EnumObjects> { EnumObjects.Documents }, RecordId = new List<int> { documentId } }).ToList();
+
                 return doc;
             }
         }
@@ -1296,6 +1302,13 @@ namespace BL.Database.Documents
                         dbContext.SaveChanges();
                     }
 
+                    if (document.Properties?.Any() ?? false)
+                    {
+                        document.Properties.ToList().ForEach(x => { x.RecordId = doc.Id; });
+                        var propertyValues = ModelConverter.GetDbPropertyValue(document.Properties).ToList();
+                        dbContext.PropertyValuesSet.AddRange(propertyValues);
+                        dbContext.SaveChanges();
+                    }
 
                     document.Id = doc.Id;
 

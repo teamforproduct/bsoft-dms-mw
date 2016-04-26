@@ -567,6 +567,34 @@ namespace BL.Logic.Common
             return uiElements;
         }
 
+        public static IEnumerable<BaseSystemUIElement> VerifyTemplateDocument(IContext ctx, FrontTemplateDocument templateDoc, IEnumerable<BaseSystemUIElement> uiElements)
+        {
+            if (templateDoc.DocumentDirection != EnumDocumentDirections.Incoming)
+            {
+                if (uiElements != null)
+                {
+                    var senderElements = new List<string> { "SenderAgent", "SenderAgentPerson", "Addressee" };
+                    uiElements = uiElements.Where(x => !senderElements.Contains(x.Code)).ToList();
+                }
+                templateDoc.SenderAgentId = null;
+                templateDoc.SenderAgentPersonId = null;
+                templateDoc.Addressee = null;
+            }
+
+            if ((templateDoc.DocumentDirection == EnumDocumentDirections.Incoming) && (uiElements == null)
+                    &&
+                    (
+                        templateDoc.SenderAgentId == null ||
+                        templateDoc.SenderAgentPersonId == null ||
+                        string.IsNullOrEmpty(templateDoc.Addressee)
+                    )
+                )
+            {
+                throw new NeedInformationAboutCorrespondent();
+            }
+            return uiElements;
+        }
+
         public static void VerifySendLists(InternalDocument doc)
         {
 
@@ -822,6 +850,18 @@ namespace BL.Logic.Common
                 res.Add($"{nameof(doc.DocumentDirection)}={doc.DocumentDirection}");
             if (doc.DocumentSubjectId.HasValue && doc.DocumentSubjectId > 0)
                 res.Add($"{nameof(doc.DocumentSubjectId)}={doc.DocumentSubjectId}");
+            return res;
+        }
+
+        public static IEnumerable<string> GetFilterTemplateByTemplateDocument(FrontTemplateDocument templateDoc)
+        {
+            var res = new List<string>();
+            if (templateDoc.DocumentTypeId > 0)
+                res.Add($"{nameof(templateDoc.DocumentTypeId)}={templateDoc.DocumentTypeId}");
+            if (templateDoc.DocumentDirection > 0)
+                res.Add($"{nameof(templateDoc.DocumentDirection)}={templateDoc.DocumentDirection}");
+            if (templateDoc.DocumentSubjectId.HasValue && templateDoc.DocumentSubjectId > 0)
+                res.Add($"{nameof(templateDoc.DocumentSubjectId)}={templateDoc.DocumentSubjectId}");
             return res;
         }
     }

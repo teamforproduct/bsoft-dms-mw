@@ -379,6 +379,36 @@ namespace BL.Database.SystemDb
             }
         }
 
+        public IEnumerable<InternalPropertyLink> GetInternalPropertyLinks(IContext context, FilterPropertyLink filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.PropertyLinksSet.AsQueryable();
+
+                if (filter != null)
+                {
+                    if (filter.PropertyLinkId?.Count > 0)
+                    {
+                        qry = qry.Where(x => filter.PropertyLinkId.Contains(x.Id));
+                    }
+
+                    if (filter.Object?.Count > 0)
+                    {
+                        qry = qry.Where(x => filter.Object.Select(y => (int)y).Contains(x.ObjectId));
+                    }
+                }
+
+                return qry.Select(x => new InternalPropertyLink
+                {
+                    Id = x.Id,
+                    PropertyId = x.PropertyId,
+                    Object = (EnumObjects)x.ObjectId,
+                    Filers = x.Filers,
+                    IsMandatory = x.IsMandatory,
+                }).ToList();
+            }
+        }
+
         public IEnumerable<FrontPropertyLink> GetPropertyLinks(IContext context, FilterPropertyLink filter)
         {
             using (var dbContext = new DmsContext(context))
@@ -471,54 +501,54 @@ namespace BL.Database.SystemDb
 
         #endregion PropertyLinks
 
-        #region PropertyValues
+        //#region PropertyValues
 
-        public InternalPropertyValue GetPropertyValue(IContext context, FilterPropertyValue filter)
-        {
-            using (var dbContext = new DmsContext(context))
-            {
-                var qry = dbContext.PropertyValuesSet.AsQueryable();
+        //public InternalPropertyValue GetPropertyValue(IContext context, FilterPropertyValue filter)
+        //{
+        //    using (var dbContext = new DmsContext(context))
+        //    {
+        //        var qry = dbContext.PropertyValuesSet.AsQueryable();
 
-                if (filter.PropertyValuesId?.Count > 0)
-                {
-                    qry = qry.Where(x => filter.PropertyValuesId.Contains(x.Id));
-                }
+        //        if (filter.PropertyValuesId?.Count > 0)
+        //        {
+        //            qry = qry.Where(x => filter.PropertyValuesId.Contains(x.Id));
+        //        }
 
-                return qry.Select(x => new InternalPropertyValue
-                {
-                    Id = x.Id,
-                    PropertyLinkId = x.PropertyLinkId,
-                    RecordId = x.RecordId,
-                    ValueString = x.ValueString,
-                    ValueDate = x.ValueDate,
-                    ValueNumeric = x.ValueNumeric,
-                    LastChangeDate = x.LastChangeDate,
-                    LastChangeUserId = x.LastChangeUserId,
-                }).FirstOrDefault();
-            }
-        }
+        //        return qry.Select(x => new InternalPropertyValue
+        //        {
+        //            Id = x.Id,
+        //            PropertyLinkId = x.PropertyLinkId,
+        //            RecordId = x.RecordId,
+        //            ValueString = x.ValueString,
+        //            ValueDate = x.ValueDate,
+        //            ValueNumeric = x.ValueNumeric,
+        //            LastChangeDate = x.LastChangeDate,
+        //            LastChangeUserId = x.LastChangeUserId,
+        //        }).FirstOrDefault();
+        //    }
+        //}
 
-        public IEnumerable<FrontPropertyValue> GetPropertyValues(IContext context, FilterPropertyValue filter)
-        {
-            using (var dbContext = new DmsContext(context))
-            {
-                var qry = dbContext.PropertyValuesSet.AsQueryable();
+        //public IEnumerable<FrontPropertyValue> GetPropertyValues(IContext context, FilterPropertyValue filter)
+        //{
+        //    using (var dbContext = new DmsContext(context))
+        //    {
+        //        var qry = dbContext.PropertyValuesSet.AsQueryable();
 
-                if (filter.PropertyValuesId?.Count > 0)
-                {
-                    qry = qry.Where(x => filter.PropertyValuesId.Contains(x.Id));
-                }
+        //        if (filter.PropertyValuesId?.Count > 0)
+        //        {
+        //            qry = qry.Where(x => filter.PropertyValuesId.Contains(x.Id));
+        //        }
 
-                return qry.Select(x => new FrontPropertyValue
-                {
-                    Id = x.Id,
-                    PropertyLinkId = x.PropertyLinkId,
-                    RecordId = x.RecordId,
-                    Value = x.ValueString != null ? x.ValueString : (x.ValueNumeric.HasValue ? x.ValueNumeric.ToString() : (x.ValueDate.HasValue ? x.ValueDate.ToString() : null))
-                }).ToList();
-            }
-        }
-        #endregion PropertyValues
+        //        return qry.Select(x => new FrontPropertyValue
+        //        {
+        //            Id = x.Id,
+        //            PropertyLinkId = x.PropertyLinkId,
+        //            RecordId = x.RecordId,
+        //            Value = x.ValueString != null ? x.ValueString : (x.ValueNumeric.HasValue ? x.ValueNumeric.ToString() : (x.ValueDate.HasValue ? x.ValueDate.ToString() : null))
+        //        }).ToList();
+        //    }
+        //}
+        //#endregion PropertyValues
 
         #region Mailing
 

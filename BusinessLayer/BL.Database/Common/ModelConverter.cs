@@ -3,6 +3,8 @@ using System.Linq;
 using BL.Database.DBModel.Document;
 using BL.Database.DBModel.Template;
 using BL.Model.DocumentCore.InternalModel;
+using BL.Database.DBModel.System;
+using BL.Model.SystemCore.InternalModel;
 
 namespace BL.Database.Common
 {
@@ -118,6 +120,26 @@ namespace BL.Database.Common
             return tasks?.Any() ?? false ? tasks.Select(GetDbDocumentTask) : null;
         }
 
+        public static PropertyValues GetDbPropertyValue(InternalPropertyValue propVal)
+        {
+            return propVal == null ? null :
+                new PropertyValues
+                {
+                    Id = propVal.Id,
+                    PropertyLinkId = propVal.PropertyLinkId,
+                    RecordId = propVal.RecordId,
+                    ValueString = propVal.ValueString,
+                    ValueDate = propVal.ValueDate,
+                    ValueNumeric = propVal.ValueNumeric,
+                    LastChangeDate = propVal.LastChangeDate,
+                    LastChangeUserId = propVal.LastChangeUserId,
+                };
+        }
+
+        public static IEnumerable<PropertyValues> GetDbPropertyValue(IEnumerable<InternalPropertyValue> propVals)
+        {
+            return propVals?.Any() ?? false ? propVals.Select(GetDbPropertyValue) : null;
+        }
         public static DocumentWaits GetDbDocumentWait(InternalDocumentWait wait)
         {
             var waitDb = wait == null ? null :
@@ -260,7 +282,7 @@ namespace BL.Database.Common
                     Name = item.Name,
                     Description = item.Description,
                     IsMain = item.IsMain,
-                    IsOriginal=item.IsOriginal,
+                    IsOriginal = item.IsOriginal,
                     IsCopy = item.IsCopy,
                     PageQuantity = item.PageQuantity,
                     OrderNumber = item.OrderNumber,
@@ -337,7 +359,7 @@ namespace BL.Database.Common
                 LastChangeDate = docFile.LastChangeDate,
                 LastChangeUserId = docFile.LastChangeUserId,
                 Name = docFile.Name
-                
+
             };
         }
 

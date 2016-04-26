@@ -285,6 +285,10 @@
     <Compile Include="Migrations\201604211349496_DocumentTaskAccesses.Designer.cs">
       <DependentUpon>201604211349496_DocumentTaskAccesses.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201604261427399_AddFieldSelectTableToProperties.cs" />
+    <Compile Include="Migrations\201604261427399_AddFieldSelectTableToProperties.Designer.cs">
+      <DependentUpon>201604261427399_AddFieldSelectTableToProperties.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SystemDb\ISystemDbProcess.cs" />
@@ -392,6 +396,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201604211349496_DocumentTaskAccesses.resx">
       <DependentUpon>201604211349496_DocumentTaskAccesses.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604261427399_AddFieldSelectTableToProperties.resx">
+      <DependentUpon>201604261427399_AddFieldSelectTableToProperties.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

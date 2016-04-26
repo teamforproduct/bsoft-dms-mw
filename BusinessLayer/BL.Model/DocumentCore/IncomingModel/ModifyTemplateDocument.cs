@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BL.Model.Common;
 using BL.Model.Enums;
-
+using BL.Model.SystemCore.IncomingModel;
 
 namespace BL.Model.DocumentCore.IncomingModel
 {
@@ -23,5 +23,7 @@ namespace BL.Model.DocumentCore.IncomingModel
         public int? SenderAgentPersonId { get; set; }
         public string Addressee { get; set; }
         public bool IsActive { get; set; }
+
+        public IEnumerable<ModifyPropertyValue> Properties { get; set; }
     }
 }

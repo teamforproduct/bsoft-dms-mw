@@ -7,6 +7,7 @@ using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
+using BL.Model.SystemCore.InternalModel;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -16,6 +17,8 @@ namespace BL.Logic.DocumentCore.Commands
         private readonly IFileStore _fStore;
 
         private int? _executorPositionExecutorAgentId;
+        private IEnumerable<InternalPropertyLink> _propertyLinksByTemplateDocument;
+        private IEnumerable<InternalPropertyLink> _propertyLinksByDocument;
 
         public AddDocumentCommand(IDocumentsDbProcess documentDb, IFileStore fStore)
         {
@@ -58,6 +61,14 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new ExecutorAgentForPositionIsNotDefined();
             }
+
+            var filterTemplateByDocument = CommonDocumentUtilities.GetFilterTemplateByDocument(_document).ToArray();
+
+            _propertyLinksByTemplateDocument = CommonSystemUtilities.GetPropertyLinks(_context, EnumObjects.TemplateDocuments, filterTemplateByDocument);
+            _propertyLinksByDocument = CommonSystemUtilities.GetPropertyLinks(_context, EnumObjects.Documents, filterTemplateByDocument);
+
+            CommonSystemUtilities.VerifyPropertyLinksCompare(_propertyLinksByTemplateDocument, _propertyLinksByDocument);
+
             return true;
         }
 
@@ -90,6 +101,15 @@ namespace BL.Logic.DocumentCore.Commands
             // assign new created list of files to document
             _document.DocumentFiles = toCopy.Keys;
             CommonDocumentUtilities.SetLastChange(_context, _document.DocumentFiles);
+
+            //Properties
+            _document.Properties = _document.Properties.ToList()
+                .Join(_propertyLinksByDocument,
+                        pv => new { PropertyId = pv.PropertyLink.PropertyId, pv.PropertyLink.Filers },
+                        pl => new { PropertyId = pl.PropertyId, pl.Filers },
+                        (pv, pl) => { pv.Id = 0; pv.RecordId = 0; pv.PropertyLinkId = pl.Id; pv.PropertyLink = null; return pv; }).ToList();
+
+            CommonDocumentUtilities.SetLastChange(_context, _document.Properties);
 
             _documentDb.AddDocument(_context, Document);
 

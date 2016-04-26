@@ -297,6 +297,18 @@
         }
     }
 
+    public class TemplateDocumentIsNotValid : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:TemplateDocumentIsNotValid@l##";
+        public TemplateDocumentIsNotValid() : base(_MESSAGE)
+        {
+        }
+
+        public TemplateDocumentIsNotValid(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
     public class DocumentCouldNotBeRegistered : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:DocumentCouldNotBeRegistered@l##";
