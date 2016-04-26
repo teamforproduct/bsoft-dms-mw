@@ -42,6 +42,8 @@ namespace BL.Database.SystemDb
 
         IEnumerable<FrontPropertyLink> GetPropertyLinks(IContext context, FilterPropertyLink filter);
 
+        IEnumerable<InternalPropertyLink> GetInternalPropertyLinks(IContext context, FilterPropertyLink filter);
+
         int AddPropertyLink(IContext context, InternalPropertyLink model);
 
         void UpdatePropertyLink(IContext context, InternalPropertyLink model);

@@ -37,8 +37,12 @@ namespace DMS_WebAPI.Controllers
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
+
             var tmpDoc = tmpDocProc.GetTemplateDocument(cxt, id);
-            return new JsonResult(tmpDoc, this);
+
+            var metaData = tmpDocProc.GetModifyMetaData(cxt, tmpDoc);
+
+            return new JsonResult(tmpDoc, metaData, this);
         }
 
         /// <summary>

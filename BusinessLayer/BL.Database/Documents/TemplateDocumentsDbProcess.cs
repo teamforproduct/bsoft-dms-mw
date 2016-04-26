@@ -10,6 +10,7 @@ using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
+using BL.Model.SystemCore.Filters;
 
 namespace BL.Database.Documents
 {
@@ -57,7 +58,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                return
+                var templateDocument =
                     dbContext.TemplateDocumentsSet.Where(x => x.Id == templateDocumentId)
                         .Select(x => new FrontTemplateDocument
                         {
@@ -91,6 +92,10 @@ namespace BL.Database.Documents
                                 AccessLevelId = (int) y.AccessLevelId
                             }).ToList()
                         }).FirstOrDefault();
+
+                templateDocument.Properties = CommonQueries.GetPropertyValues(dbContext, new FilterPropertyValue { RecordId = new List<int> { templateDocumentId }, Object = new List<EnumObjects> { EnumObjects.TemplateDocuments } });
+
+                return templateDocument;
             }
         }
 

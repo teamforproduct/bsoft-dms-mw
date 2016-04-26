@@ -12,6 +12,11 @@ using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
+using BL.Model.SystemCore;
+using BL.CrossCutting.DependencyInjection;
+using BL.Database.SystemDb;
+using BL.Model.SystemCore.Filters;
+using System.Linq;
 
 namespace BL.Logic.DocumentCore
 {
@@ -21,15 +26,17 @@ namespace BL.Logic.DocumentCore
         private readonly IAdminService _admin;
         private readonly ICommandService _commandService;
         private readonly IFileStore _fStore;
-   
+        private readonly ISystemDbProcess _systemDb;
+
 
         public TemplateDocumentService(ITemplateDocumentsDbProcess templateDb,IAdminService admin,
-            IFileStore fstore, ICommandService commandService)
+            IFileStore fstore, ICommandService commandService, ISystemDbProcess systemDb)
         {
             _templateDb = templateDb;
             _admin = admin;
             _fStore = fstore;
             _commandService = commandService;
+            _systemDb = systemDb;
 
         }
 
@@ -73,6 +80,16 @@ namespace BL.Logic.DocumentCore
         {
            
             return _templateDb.GetTemplateDocument(context, templateDocumentId);
+        }
+
+        public IEnumerable<BaseSystemUIElement> GetModifyMetaData(IContext ctx, FrontTemplateDocument templateDoc)
+        {
+            var uiElements = _systemDb.GetSystemUIElements(ctx, new FilterSystemUIElement { ObjectCode = "TemplateDocuments", ActionCode = "Modify" }).ToList();
+            uiElements = CommonDocumentUtilities.VerifyTemplateDocument(ctx, templateDoc, uiElements).ToList();
+
+            uiElements.AddRange(CommonSystemUtilities.GetPropertyUIElements(ctx, EnumObjects.TemplateDocuments, CommonDocumentUtilities.GetFilterTemplateByTemplateDocument(templateDoc).ToArray()));
+
+            return uiElements;
         }
 
         #endregion TemplateDocuments

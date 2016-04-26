@@ -275,7 +275,7 @@ namespace BL.Database.Common
             return dbContext.DocumentEventsSet
                     .Where(x => ctx.IsAdmin || (x.TargetPositionId.HasValue && ctx.CurrentPositionsIdList.Contains(x.TargetPositionId.Value))
                     || (x.SourcePositionId.HasValue && ctx.CurrentPositionsIdList.Contains(x.SourcePositionId.Value))
-                    || (x.IsAvailableWithinTask && x.TaskId.HasValue && dbContext.DocumentTaskAccessesSet.Any(a=>a.TaskId == x.TaskId.Value && ctx.CurrentPositionsIdList.Contains(a.PositionId)))
+                    || (x.IsAvailableWithinTask && x.TaskId.HasValue && dbContext.DocumentTaskAccessesSet.Any(a => a.TaskId == x.TaskId.Value && ctx.CurrentPositionsIdList.Contains(a.PositionId)))
                     ).AsQueryable();
         }
 
@@ -294,7 +294,7 @@ namespace BL.Database.Common
                            ||
                            (x.OnEvent.SourcePositionId.HasValue &&
                             ctx.CurrentPositionsIdList.Contains(x.OnEvent.SourcePositionId.Value))
-                            // make weit available if onevent can be accesed through the task
+                           // make weit available if onevent can be accesed through the task
                            ||
                            (x.OnEvent.IsAvailableWithinTask && x.OnEvent.TaskId.HasValue &&
                             dbContext.DocumentTaskAccessesSet.Any(a => a.TaskId == x.OnEvent.TaskId.Value && ctx.CurrentPositionsIdList.Contains(a.PositionId)))
@@ -637,31 +637,73 @@ namespace BL.Database.Common
                 }
             }
 
-            var itemsRes = itemsDb;
+            //var itemsRes = itemsDb;
 
+            var itemsRes = itemsDb.Where(x => !string.IsNullOrEmpty(x.PropertyLink.Property.SelectAPI))
+                .Select(x => new
+                {
+                    Id = x.Id,
+                    PropertyLinkId = x.PropertyLinkId,
+                    Value = x.ValueString != null ? x.ValueString : (x.ValueNumeric.HasValue ? x.ValueNumeric.ToString() : (x.ValueDate.HasValue ? x.ValueDate.ToString() : null)),
+                    PropertyCode = x.PropertyLink.Property.Code,
+                    DisplayValue = string.Empty,
+                    SelectAPI = x.PropertyLink.Property.SelectAPI,
+                    SelectFilter = x.PropertyLink.Property.SelectFilter,
+                    SelectFieldCode = x.PropertyLink.Property.SelectFieldCode,
+                });
+
+
+
+            //TODO Оптимизироват
             var items = itemsRes.Select(x => new FrontPropertyValue
             {
                 Id = x.Id,
-                RecordId = x.RecordId,
                 PropertyLinkId = x.PropertyLinkId,
-                Value = x.ValueString != null ? x.ValueString : (x.ValueNumeric.HasValue ? x.ValueNumeric.ToString() : (x.ValueDate.HasValue ? x.ValueDate.ToString() : null)),
-                PropertyId = x.PropertyLink.PropertyId,
-                ObjectId = x.PropertyLink.ObjectId,
-                Filers = x.PropertyLink.Filers,
-                IsMandatory = x.PropertyLink.IsMandatory,
-                PropertyCode = x.PropertyLink.Property.Code,
-                PropertyDescription = x.PropertyLink.Property.Description,
-                PropertyLabel = x.PropertyLink.Property.Label,
-                PropertyHint = x.PropertyLink.Property.Hint,
-                PropertyValueTypeId = x.PropertyLink.Property.ValueTypeId,
-                PropertyOutFormat = x.PropertyLink.Property.OutFormat,
-                PropertyInputFormat = x.PropertyLink.Property.InputFormat,
-                PropertySelectAPI = x.PropertyLink.Property.SelectAPI,
-                PropertySelectFilter = x.PropertyLink.Property.SelectFilter,
-                PropertySelectFieldCode = x.PropertyLink.Property.SelectFieldCode,
-                PropertySelectDescriptionFieldCode = x.PropertyLink.Property.SelectDescriptionFieldCode,
-                PropertyValueTypeCode = x.PropertyLink.Property.ValueType.Code,
-                PropertyValueTypeDescription = x.PropertyLink.Property.ValueType.Description,
+                Value = x.Value,
+                PropertyCode = x.PropertyCode,
+            }).ToList();
+
+            items.ForEach(x => { x.DisplayValue = x.Value; });
+
+            return items;
+
+        }
+
+        public static IEnumerable<InternalPropertyValue> GetInternalPropertyValues(DmsContext dbContext, FilterPropertyValue filter)
+        {
+            var itemsDb = dbContext.PropertyValuesSet.AsQueryable();
+
+            if (filter != null)
+            {
+                if (filter.Object?.Count() > 0)
+                {
+                    itemsDb = itemsDb.Where(x => filter.Object.Contains((EnumObjects)x.PropertyLink.ObjectId));
+                }
+
+                if (filter.RecordId?.Count > 0)
+                {
+                    itemsDb = itemsDb.Where(x => filter.RecordId.Contains(x.RecordId));
+                }
+            }
+
+            var itemsRes = itemsDb;
+
+            var items = itemsRes.Select(x => new InternalPropertyValue
+            {
+                Id = x.Id,
+                PropertyLinkId = x.PropertyLinkId,
+                RecordId = x.RecordId,
+                ValueString = x.ValueString,
+                ValueDate = x.ValueDate,
+                ValueNumeric = x.ValueNumeric,
+                PropertyLink = new InternalPropertyLink
+                {
+                    Id = x.PropertyLink.Id,
+                    PropertyId = x.PropertyLink.PropertyId,
+                    Object = (EnumObjects)x.PropertyLink.ObjectId,
+                    Filers = x.PropertyLink.Filers,
+                    IsMandatory = x.PropertyLink.IsMandatory
+                }
             }).ToList();
 
             return items;
@@ -1054,7 +1096,7 @@ namespace BL.Database.Common
             string res = null;
             try
             {
-                if (item.IsRegistered|| item.RegistrationNumber.HasValue)
+                if (item.IsRegistered || item.RegistrationNumber.HasValue)
                     res = (item.RegistrationNumberPrefix ?? "") + item.RegistrationNumber + (item.RegistrationNumberSuffix ?? "");
             }
             catch { }
@@ -1347,7 +1389,7 @@ namespace BL.Database.Common
             dbContext.DocumentTaskAccessesSet.RemoveRange(dbContext.DocumentTaskAccessesSet.Where(x => delId.Contains(x.Id)));
 
             dbContext.DocumentTaskAccessesSet.AddRange(insTA.Select(x => new DocumentTaskAccesses { TaskId = x.TaskId, PositionId = x.PositionId }));
-            
+
         }
 
     }

@@ -5,6 +5,7 @@ using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.Enums;
+using BL.Model.SystemCore;
 
 namespace BL.Logic.DocumentCore
 {
@@ -17,6 +18,7 @@ namespace BL.Logic.DocumentCore
         int AddOrUpdateTemplate(IContext context, ModifyTemplateDocument template,EnumTemplateDocumentsActions action);
         void DeleteTemplate(IContext context, int id);
         FrontTemplateDocument GetTemplateDocument(IContext context, int templateDocumentId);
+        IEnumerable<BaseSystemUIElement> GetModifyMetaData(IContext ctx, FrontTemplateDocument templateDoc);
 
         IEnumerable<FrontTemplateDocumentSendLists> GetTemplateDocumentSendLists(IContext context,int templateId,FilterTemplateDocumentSendList filter);
         int AddOrUpdateTemplateSendList(IContext context, ModifyTemplateDocumentSendLists template, EnumTemplateDocumentsActions action);

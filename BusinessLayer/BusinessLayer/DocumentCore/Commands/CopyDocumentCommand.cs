@@ -58,6 +58,7 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new ExecutorAgentForPositionIsNotDefined();
             }
+
             return true;
         }
 
@@ -85,6 +86,14 @@ namespace BL.Logic.DocumentCore.Commands
             // assign new created list of files to document
             _document.DocumentFiles = toCopy.Keys;
             CommonDocumentUtilities.SetLastChange(_context, _document.DocumentFiles);
+
+            //Properties
+            _document.Properties.ToList().ForEach(x => {
+                x.Id = 0;
+                x.RecordId = 0;
+            });
+
+            CommonDocumentUtilities.SetLastChange(_context, _document.Properties);
 
             _documentDb.AddDocument(_context, _document);
 
