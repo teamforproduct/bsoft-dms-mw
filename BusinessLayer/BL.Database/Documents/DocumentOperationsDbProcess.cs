@@ -789,6 +789,8 @@ namespace BL.Database.Documents
 
                     DueDate = null,
 
+                    IsRead = !x.TargetPositionId.HasValue || x.TargetPositionId == x.SourcePositionId || !ctx.CurrentPositionsIdList.Contains(x.TargetPositionId.Value)? null: (bool?)x.ReadDate.HasValue,
+
                     PaperId = x.Paper.Id,
                     PaperName = x.Paper.Name,
                     PaperIsMain = x.Paper.IsMain,
