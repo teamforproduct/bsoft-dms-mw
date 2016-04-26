@@ -16,6 +16,42 @@ namespace BL.Logic.DocumentCore
             IDocumentCommand cmd;
             switch (act)
             {
+                case EnumDocumentActions.AddTemplateDocument:
+                    cmd = DmsResolver.Current.Get<AddTemplateCommand>();
+                    break;
+                case EnumDocumentActions.DeleteTemplateDocument:
+                    cmd = DmsResolver.Current.Get<DeleteTemplateCommand>();
+                    break;
+                case EnumDocumentActions.ModifyTemplateDocument:
+                    cmd = DmsResolver.Current.Get<ModifyTemplateCommand>();
+                    break;
+                case EnumDocumentActions.AddTemplateDocumentSendList:
+                    cmd = DmsResolver.Current.Get<AddTemplateSendListCommand>();
+                    break;
+                case EnumDocumentActions.DeleteTemplateDocumentSendList:
+                    cmd = DmsResolver.Current.Get<DeleteTemplateSendListCommand>();
+                    break;
+                case EnumDocumentActions.ModifyTemplateDocumentSendList:
+                    cmd = DmsResolver.Current.Get<ModifyTemplateSendListCommand>();
+                    break;
+                case EnumDocumentActions.AddTemplateDocumentRestrictedSendList:
+                    cmd = DmsResolver.Current.Get<AddTemplateRestrictedSendListCommand>();
+                    break;
+                case EnumDocumentActions.DeleteTemplateDocumentRestrictedSendList:
+                    cmd = DmsResolver.Current.Get<DeleteTemplateRestrictedSendListCommand>();
+                    break;
+                case EnumDocumentActions.ModifyTemplateDocumentRestrictedSendList:
+                    cmd = DmsResolver.Current.Get<ModifyTemplateRestrictedSendListCommand>();
+                    break;
+                case EnumDocumentActions.AddTemplateDocumentTask:
+                    cmd = DmsResolver.Current.Get<AddTemplateTaskCommand>();
+                    break;
+                case EnumDocumentActions.DeleteTemplateDocumentTask:
+                    cmd = DmsResolver.Current.Get<DeleteTemplateTaskCommand>();
+                    break;
+                case EnumDocumentActions.ModifyTemplateDocumentTask:
+                    cmd = DmsResolver.Current.Get<ModifyTemplateTaskCommand>();
+                    break;
                 case EnumDocumentActions.AddTemplateAttachedFile:
                     cmd = DmsResolver.Current.Get<AddTemplateFileCommand>();
                     break;

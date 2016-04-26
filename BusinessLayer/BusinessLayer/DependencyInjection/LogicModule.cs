@@ -13,6 +13,7 @@ using BL.Logic.DocumentCore.Interfaces;
 using BL.Logic.DocumentCore.PaperCommands;
 using BL.Logic.DocumentCore.ReportsCommands;
 using BL.Logic.DocumentCore.SendListCommands;
+using BL.Logic.DocumentCore.TemplateCommands;
 using BL.Logic.Logging;
 using BL.Logic.Observers;
 using BL.Logic.PropertyCore;
@@ -188,6 +189,22 @@ namespace BL.Logic.DependencyInjection
             Bind<IDocumentCommand>().To<RecieveDocumentPaperEventCommand>();
             Bind<IDocumentCommand>().To<PlanDocumentPaperEventCommand>();
             Bind<IDocumentCommand>().To<CancelPlanDocumentPaperEventCommand>();
+
+            Bind<IDocumentCommand>().To<AddTemplateCommand>();
+            Bind<IDocumentCommand>().To<AddTemplateFileCommand>();
+            Bind<IDocumentCommand>().To<AddTemplateRestrictedSendListCommand>();
+            Bind<IDocumentCommand>().To<AddTemplateSendListCommand>();
+            Bind<IDocumentCommand>().To<AddTemplateTaskCommand>();
+            Bind<IDocumentCommand>().To<ModifyTemplateCommand>();
+            Bind<IDocumentCommand>().To<ModifyTemplateFileCommand>();
+            Bind<IDocumentCommand>().To<ModifyTemplateRestrictedSendListCommand>();
+            Bind<IDocumentCommand>().To<ModifyTemplateSendListCommand>();
+            Bind<IDocumentCommand>().To<ModifyTemplateTaskCommand>();
+            Bind<IDocumentCommand>().To<DeleteTemplateCommand>();
+            Bind<IDocumentCommand>().To<DeleteTemplateFileCommand>();
+            Bind<IDocumentCommand>().To<DeleteTemplateRestrictedSendListCommand>();
+            Bind<IDocumentCommand>().To<DeleteTemplateSendListCommand>();
+            Bind<IDocumentCommand>().To<DeleteTemplateTaskCommand>();
 
         }
 
