@@ -71,13 +71,16 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override object Execute()
         {
+            if (_task.Name != Model.Name || _task.Description != Model.Description)
+            {
+                Document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, null, EnumEventTypes.TaskFormulation, null, Model.Name + " / " + Model.Description);
+            }
             _task.Name = Model.Name;
             _task.Description = Model.Description;
             CommonDocumentUtilities.SetLastChange(_context, _task);
-            _operationDb.ModifyDocumentTask(_context, _task);
+            _operationDb.ModifyDocumentTask(_context, _document);
             return null;
         }
 
-        public override EnumDocumentActions CommandType => EnumDocumentActions.ModifyDocumentTask;
     }
 }

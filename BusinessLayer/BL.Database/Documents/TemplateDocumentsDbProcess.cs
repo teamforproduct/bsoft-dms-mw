@@ -181,27 +181,27 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(ctx))
             {
                 var qry = dbContext.TemplateDocumentSendListsSet.AsQueryable();
-                if (filter.Id.Count > 0)
-                {
+                    if (filter.Id?.Count > 0)
+                    {
                     qry = qry.Where(x => filter.Id.Contains(x.Id));
-                }
-                if (filter.SendType.HasValue)
-                {
-                    qry = qry.Where(x => x.SendTypeId == (int) filter.SendType);
-                }
-                if (filter.TargetPositionId.HasValue)
-                {
-                    qry = qry.Where(x => x.TargetPositionId == filter.TargetPositionId);
-                }
-                if (filter.Stage.HasValue)
-                {
-                    qry = qry.Where(x => x.Stage == filter.Stage);
-                }
-                if (!string.IsNullOrEmpty(filter.Task))
-                {
-                    qry = qry.Where(x => x.Task.Task.Contains(filter.Task));
-                }
-
+                    }
+                    if (filter.SendType.HasValue)
+                    {
+                        qry = qry.Where(x => x.SendTypeId == (int) filter.SendType);
+                    }
+                    if (filter.TargetPositionId.HasValue)
+                    {
+                        qry = qry.Where(x => x.TargetPositionId == filter.TargetPositionId);
+                    }
+                    if (filter.Stage.HasValue)
+                    {
+                        qry = qry.Where(x => x.Stage == filter.Stage);
+                    }
+                    if (!string.IsNullOrEmpty(filter.Task))
+                    {
+                        qry = qry.Where(x => x.Task.Task.Contains(filter.Task));
+                    }
+                
                 return qry.Select(x => new FrontTemplateDocumentSendLists()
                 {
                     Id = x.Id,
@@ -309,7 +309,7 @@ namespace BL.Database.Documents
                 var qry = dbContext.TemplateDocumentRestrictedSendListsSet.AsQueryable();
                 qry = qry.Where(x => x.DocumentId == (int) filter.DocumentId);
 
-                if (filter.Id.Count > 0)
+                if (filter.Id?.Count > 0)
                 {
                     qry = qry.Where(x => filter.Id.Contains(x.Id));
                 }
@@ -408,7 +408,7 @@ namespace BL.Database.Documents
                 var qry = dbContext.TemplateDocumentTasksSet.AsQueryable();
                 qry = qry.Where(x => x.DocumentId == templateId);
 
-                if (filter.Id.Any())
+                if (filter.Id?.Count>0)
                 {
                     qry = qry.Where(x => filter.Id.Contains(x.Id));
                 }

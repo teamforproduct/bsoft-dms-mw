@@ -307,6 +307,9 @@ namespace BL.Database.Documents
                         dbContext.DocumentWaitsSet.AddRange(ModelConverter.GetDbDocumentWaits(document.Waits));
                         dbContext.SaveChanges();
                     }
+                    CommonQueries.ModifyDocumentTaskAccesses(dbContext, document.Id);
+                    dbContext.SaveChanges();
+
                     transaction.Complete();
                 }
             }
@@ -527,6 +530,7 @@ namespace BL.Database.Documents
                                             {
                                                 Id = x.OnEvent.Id,
                                                 TargetPositionId = x.OnEvent.TargetPositionId,
+                                                TaskId = x.OnEvent.TaskId,
                                                 EventType = (EnumEventTypes)x.OnEvent.EventTypeId,
                                             }
                                         }
@@ -654,7 +658,7 @@ namespace BL.Database.Documents
                         dbContext.DocumentEventsSet.AddRange(eventsDb);
                         dbContext.SaveChanges();
                     }
-                    CommonQueries.ModifyDocumentTaskAccesses(dbContext,document.Id);
+                    CommonQueries.ModifyDocumentTaskAccesses(dbContext, document.Id);
                     dbContext.SaveChanges();
                     transaction.Complete();
                 }
@@ -1075,6 +1079,9 @@ namespace BL.Database.Documents
 
                     }
 
+                    CommonQueries.ModifyDocumentTaskAccesses(dbContext, document.Id);
+                    dbContext.SaveChanges();
+
                     transaction.Complete();
                 }
             }
@@ -1251,7 +1258,7 @@ namespace BL.Database.Documents
                         Id = x.Doc.Id,
                         ExecutorPositionId = x.Doc.ExecutorPositionId,
                         LinkId = x.Doc.LinkId,
-                        
+
                     }).FirstOrDefault();
 
                 if (doc?.LinkId == null) return null;
@@ -1260,7 +1267,7 @@ namespace BL.Database.Documents
                     .Select(x => new { Count = x.Count(), MinId = x.Min(y => y.Id) }).First();
                 doc.LinkedDocumentsCount = calc.Count;
                 doc.NewLinkId = calc.MinId;
-                
+
                 return doc;
             }
         }
@@ -1319,7 +1326,7 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(context))
             {
                 dbContext.DocumentLinksSet.RemoveRange(dbContext.DocumentLinksSet.Where(x => x.DocumentId == model.Id || x.ParentDocumentId == model.Id));
-                if (model.LinkId == model.Id || model.LinkedDocumentsCount<2)
+                if (model.LinkId == model.Id || model.LinkedDocumentsCount < 2)
                 {
                     dbContext.DocumentsSet.Where(x => x.LinkId == model.LinkId).ToList()
                         .ForEach(x =>
@@ -1338,7 +1345,7 @@ namespace BL.Database.Documents
                             x.LastChangeUserId = model.LastChangeUserId;
                             x.LastChangeDate = model.LastChangeDate;
                         });
-                }           
+                }
                 dbContext.SaveChanges();
             }
         }
@@ -1819,13 +1826,17 @@ namespace BL.Database.Documents
         #endregion DocumentSavedFilter
 
         #region DocumentTasks
-        public IEnumerable<int> AddDocumentTasks(IContext context, IEnumerable<InternalDocumentTask> task)
+        public IEnumerable<int> AddDocumentTasks(IContext context, InternalDocument document)
         {
             List<int> res = null;
             using (var dbContext = new DmsContext(context))
             {
-                var tasksDb = task.Select(ModelConverter.GetDbDocumentTask).ToList();
+                var tasksDb = document.Tasks.Select(ModelConverter.GetDbDocumentTask).ToList();
                 dbContext.DocumentTasksSet.AddRange(tasksDb);
+                if (document.Events != null && document.Events.Any(x => x.Id == 0))
+                {
+                    dbContext.DocumentEventsSet.AddRange(ModelConverter.GetDbDocumentEvents(document.Events.Where(x => x.Id == 0)).ToList());
+                }
                 dbContext.SaveChanges();
                 res = tasksDb.Select(x => x.Id).ToList();
             }
@@ -1845,7 +1856,7 @@ namespace BL.Database.Documents
                                                         {
                                                             Id = x.Id,
                                                             PositionId = x.PositionId,
-                                                            CountEvents = x.Events.Count,
+                                                            CountEvents = x.Events.Count(y=>y.EventTypeId!=(int)EnumEventTypes.TaskFormulation),
                                                             CountSendLists = x.SendLists.Count,
                                                         }
                                     }
@@ -1853,11 +1864,11 @@ namespace BL.Database.Documents
             }
         }
 
-        public void ModifyDocumentTask(IContext context, InternalDocumentTask task)
+        public void ModifyDocumentTask(IContext context, InternalDocument document)
         {
             using (var dbContext = new DmsContext(context))
             {
-                var taskDb = ModelConverter.GetDbDocumentTask(task);
+                var taskDb = ModelConverter.GetDbDocumentTask(document.Tasks.First());
                 dbContext.DocumentTasksSet.Attach(taskDb);
                 var entry = dbContext.Entry(taskDb);
                 entry.Property(e => e.Task).IsModified = true;
@@ -1876,6 +1887,8 @@ namespace BL.Database.Documents
                 var item = dbContext.DocumentTasksSet.FirstOrDefault(x => x.Id == itemId);
                 if (item != null)
                 {
+                    dbContext.DocumentTaskAccessesSet.RemoveRange(dbContext.DocumentTaskAccessesSet.Where(x => x.Id == itemId));
+                    dbContext.DocumentEventsSet.RemoveRange(dbContext.DocumentEventsSet.Where(x => x.Id == itemId && x.EventTypeId != (int)EnumEventTypes.TaskFormulation));
                     dbContext.DocumentTasksSet.Remove(item);
                     dbContext.SaveChanges();
                 }

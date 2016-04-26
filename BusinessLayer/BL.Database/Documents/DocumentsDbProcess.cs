@@ -1852,6 +1852,12 @@ namespace BL.Database.Documents
                         {
                             x.PositionId = model.NewPositionId;
                         });
+                    dbContext.DocumentTaskAccessesSet.RemoveRange(dbContext.DocumentTaskAccessesSet.Where(x => x.Task.DocumentId == model.DocumentId && x.PositionId == model.NewPositionId));
+                    dbContext.DocumentTaskAccessesSet.Where(x => x.Task.DocumentId == model.DocumentId && x.PositionId == model.OldPositionId).ToList()
+                        .ForEach(x =>
+                        {
+                            x.PositionId = model.NewPositionId;
+                        });
 
                     if (document.Events != null && document.Events.Any(x => x.Id == 0))
                     {

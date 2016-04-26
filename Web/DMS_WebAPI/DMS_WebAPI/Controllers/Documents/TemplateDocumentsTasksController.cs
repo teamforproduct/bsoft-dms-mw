@@ -51,8 +51,8 @@ namespace DMS_WebAPI.Controllers.Documents
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpTemplate = tmpDocProc.AddOrUpdateTemplateTask(cxt, model,EnumTemplateDocumentsActions.AddTemplateDocumentTask);
-            return Get(tmpTemplate);
+            var tmpTemplate = tmpDocProc.ExecuteAction(EnumDocumentActions.AddTemplateDocumentTask,cxt,model);
+            return Get((int)tmpTemplate);
         }
 
         /// <summary>
@@ -66,8 +66,8 @@ namespace DMS_WebAPI.Controllers.Documents
             model.Id = id;
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpTemplate = tmpDocProc.AddOrUpdateTemplateTask(cxt, model,EnumTemplateDocumentsActions.ModifyTemplateDocumentTask);
-            return Get(tmpTemplate);
+            var tmpTemplate = tmpDocProc.ExecuteAction(EnumDocumentActions.ModifyTemplateDocumentTask, cxt, model);
+            return Get((int)tmpTemplate);
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace DMS_WebAPI.Controllers.Documents
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
 
-            tmpDocProc.DeleteTemplateTask(cxt, id);
+            tmpDocProc.ExecuteAction(EnumDocumentActions.AddTemplateDocumentTask, cxt, id); 
 
             var tmp = new FrontTemplateDocumentTasks() {Id = id};
 

@@ -87,9 +87,9 @@ namespace BL.Database.Documents.Interfaces
 
         #region DocumentTasks
         InternalDocument ModifyDocumentTaskPrepare(IContext context, ModifyDocumentTasks model);
-        IEnumerable<int> AddDocumentTasks(IContext context, IEnumerable<InternalDocumentTask> task);
+        IEnumerable<int> AddDocumentTasks(IContext context, InternalDocument document);
         InternalDocument DeleteDocumentTaskPrepare(IContext context, int itemId);
-        void ModifyDocumentTask(IContext context, InternalDocumentTask task);
+        void ModifyDocumentTask(IContext context, InternalDocument document);
         void DeleteDocumentTask(IContext context, int itemId);
         #endregion DocumentTasks
 

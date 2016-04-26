@@ -51,8 +51,8 @@ namespace DMS_WebAPI.Controllers.Documents
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpTemplate = tmpDocProc.AddOrUpdateTemplateSendList(cxt, model,EnumTemplateDocumentsActions.AddTemplateDocumentSendList);
-            return Get(tmpTemplate);
+            var tmpTemplate = tmpDocProc.ExecuteAction(EnumDocumentActions.AddTemplateDocumentSendList,cxt,model);
+            return Get((int)tmpTemplate);
         }
 
         /// <summary>
@@ -66,8 +66,8 @@ namespace DMS_WebAPI.Controllers.Documents
             model.Id = id;
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpTemplate = tmpDocProc.AddOrUpdateTemplateSendList(cxt, model,EnumTemplateDocumentsActions.ModifyTemplateDocumentSendList);
-            return Get(tmpTemplate);
+            var tmpTemplate = tmpDocProc.ExecuteAction(EnumDocumentActions.ModifyTemplateDocumentSendList,cxt,model);
+            return Get((int)tmpTemplate);
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace DMS_WebAPI.Controllers.Documents
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
 
-            tmpDocProc.DeleteTemplateSendList(cxt, id);
+            tmpDocProc.ExecuteAction(EnumDocumentActions.DeleteTemplateDocumentSendList,cxt, id);
 
             var tmp = new FrontTemplateDocumentSendLists {Id = id};
 
