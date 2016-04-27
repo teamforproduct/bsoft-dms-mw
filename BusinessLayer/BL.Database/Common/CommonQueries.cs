@@ -639,7 +639,7 @@ namespace BL.Database.Common
 
             //var itemsRes = itemsDb;
 
-            var itemsRes = itemsDb.Where(x => !string.IsNullOrEmpty(x.PropertyLink.Property.SelectAPI))
+            var itemsRes = itemsDb
                 .Select(x => new
                 {
                     Id = x.Id,
@@ -649,21 +649,45 @@ namespace BL.Database.Common
                     DisplayValue = string.Empty,
                     SelectAPI = x.PropertyLink.Property.SelectAPI,
                     SelectFilter = x.PropertyLink.Property.SelectFilter,
-                    SelectFieldCode = x.PropertyLink.Property.SelectFieldCode,
-                });
+                    SelectDescriptionFieldCode = x.PropertyLink.Property.SelectDescriptionFieldCode,
+                    SelectTable = x.PropertyLink.Property.SelectTable,
+                }).ToList();
 
+            var items = new List<FrontPropertyValue>();
 
-
-            //TODO Оптимизироват
-            var items = itemsRes.Select(x => new FrontPropertyValue
+            foreach (var itemRes in itemsRes)
             {
-                Id = x.Id,
-                PropertyLinkId = x.PropertyLinkId,
-                Value = x.Value,
-                PropertyCode = x.PropertyCode,
-            }).ToList();
+                var item = new FrontPropertyValue
+                {
+                    Id = itemRes.Id,
+                    PropertyLinkId = itemRes.PropertyLinkId,
+                    Value = itemRes.Value,
+                    PropertyCode = itemRes.PropertyCode,
+                };
+                if (string.IsNullOrEmpty(itemRes.SelectAPI))
+                {
+                    item.DisplayValue = itemRes.Value;
+                }
+                else
+                {
+                    try
+                    {
+                        Type entityType = Type.GetType(itemRes.SelectTable);
 
-            items.ForEach(x => { x.DisplayValue = x.Value; });
+                        var values = dbContext.Set(entityType);
+                        int key = 0;
+                        int.TryParse(item.Value, out key);
+                        var value = key > 0 ? values.Find(key) : values.Find(item.Value);
+
+                        item.DisplayValue = (string)value.GetType().GetProperty(itemRes.SelectDescriptionFieldCode).GetValue(value, null);
+                    }
+                    catch
+                    {
+                        item.DisplayValue = itemRes.Value;
+                    }
+                }
+                items.Add(item);
+            }
 
             return items;
 
@@ -708,6 +732,28 @@ namespace BL.Database.Common
 
             return items;
 
+        }
+
+        public static void DeletePropertyValues(DmsContext dbContext, FilterPropertyValue filter)
+        {
+            var itemsDb = dbContext.PropertyValuesSet.AsQueryable();
+
+            if (filter != null)
+            {
+                if (filter.Object?.Count() > 0)
+                {
+                    itemsDb = itemsDb.Where(x => filter.Object.Contains((EnumObjects)x.PropertyLink.ObjectId));
+                }
+
+                if (filter.RecordId?.Count > 0)
+                {
+                    itemsDb = itemsDb.Where(x => filter.RecordId.Contains(x.RecordId));
+                }
+            }
+
+            var itemsRes = itemsDb;
+
+            dbContext.PropertyValuesSet.RemoveRange(itemsRes);
         }
 
         public static IEnumerable<FrontDictionaryPosition> GetDocumentWorkGroup(DmsContext dbContext, FilterDictionaryPosition filter)

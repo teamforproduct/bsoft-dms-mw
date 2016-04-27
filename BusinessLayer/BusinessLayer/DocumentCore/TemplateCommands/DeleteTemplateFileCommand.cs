@@ -10,7 +10,7 @@ using BL.Model.Exception;
 
 namespace BL.Logic.DocumentCore.TemplateCommands
 {
-    public class DeleteTemplateFileCommand: BaseDocumentCommand
+    public class DeleteTemplateFileCommand : BaseDocumentCommand
     {
         private readonly ITemplateDocumentsDbProcess _operationDb;
         private readonly IFileStore _fStore;
@@ -44,7 +44,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
             {
                 throw new WrongParameterValueError();
             }
-            _admin.VerifyAccess(_context, CommandType);
+            _admin.VerifyAccess(_context, CommandType, false);
             return true;
         }
 
@@ -60,6 +60,6 @@ namespace BL.Logic.DocumentCore.TemplateCommands
             _operationDb.DeleteTemplateAttachedFile(_context, docFile);
             return null;
         }
-       
+
     }
 }

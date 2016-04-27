@@ -15,6 +15,8 @@ using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
 using System.Text.RegularExpressions;
+using BL.Model.SystemCore.InternalModel;
+using BL.Model.SystemCore.IncomingModel;
 
 namespace BL.Logic.Common
 {
@@ -864,5 +866,46 @@ namespace BL.Logic.Common
                 res.Add($"{nameof(templateDoc.DocumentSubjectId)}={templateDoc.DocumentSubjectId}");
             return res;
         }
+
+        public static IEnumerable<string> GetFilterTemplateByTemplateDocument(InternalTemplateDocument templateDoc)
+        {
+            var res = new List<string>();
+            if (templateDoc.DocumentTypeId > 0)
+                res.Add($"{nameof(templateDoc.DocumentTypeId)}={templateDoc.DocumentTypeId}");
+            if (templateDoc.DocumentDirection > 0)
+                res.Add($"{nameof(templateDoc.DocumentDirection)}={templateDoc.DocumentDirection}");
+            if (templateDoc.DocumentSubjectId.HasValue && templateDoc.DocumentSubjectId > 0)
+                res.Add($"{nameof(templateDoc.DocumentSubjectId)}={templateDoc.DocumentSubjectId}");
+            return res;
+        }
+
+        public static InternalPropertyValue GetNewPropertyValue(ModifyPropertyValue model)
+        {
+            var item = new InternalPropertyValue
+            {
+                PropertyLinkId = model.PropertyLinkId,
+                ValueString = model.Value
+            };
+            double tmpNumeric;
+            if (double.TryParse(model.Value, out tmpNumeric))
+            {
+                item.ValueString = null;
+                item.ValueNumeric = tmpNumeric;
+            }
+            DateTime tmpDate;
+            if (DateTime.TryParse(model.Value, out tmpDate))
+            {
+                item.ValueString = null;
+                item.ValueDate = tmpDate;
+            }
+            return item;
+        }
+
+        public static IEnumerable<InternalPropertyValue> GetNewPropertyValues(IEnumerable<ModifyPropertyValue> model)
+        {
+            return model.Select(GetNewPropertyValue);
+        }
+
+
     }
 }

@@ -58,6 +58,7 @@ namespace BL.Logic.PropertyCore.Commands
                     SelectFilter = Model.SelectFilter,
                     SelectFieldCode = Model.SelectFieldCode,
                     SelectDescriptionFieldCode = Model.SelectDescriptionFieldCode,
+                    SelectTable = Model.SelectTable,
                 };
                 CommonDocumentUtilities.SetLastChange(_context, item);
                 return _systDb.AddProperty(_context, item);

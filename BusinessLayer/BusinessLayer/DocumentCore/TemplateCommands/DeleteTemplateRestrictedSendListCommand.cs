@@ -12,7 +12,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
         public DeleteTemplateRestrictedSendListCommand(ITemplateDocumentsDbProcess operationDb)
         {
             _operationDb = operationDb;
-           
+
         }
 
         private int Model
@@ -34,9 +34,9 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
         public override bool CanExecute()
         {
-            _admin.VerifyAccess(_context, CommandType);
+            _admin.VerifyAccess(_context, CommandType, false);
 
-           
+
             return true;
         }
 
@@ -45,6 +45,6 @@ namespace BL.Logic.DocumentCore.TemplateCommands
             _operationDb.DeleteTemplateRestrictedSendList(_context, Model);
             return null;
         }
-       
+
     }
 }

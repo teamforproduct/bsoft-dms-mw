@@ -4,6 +4,7 @@ using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DocumentCore.InternalModel;
+using BL.Model.SystemCore.InternalModel;
 
 namespace BL.Database.Documents.Interfaces
 {
@@ -14,7 +15,7 @@ namespace BL.Database.Documents.Interfaces
         IEnumerable<FrontTemplateDocument> GetTemplateDocument(IContext ctx);
         FrontTemplateDocument GetTemplateDocument(IContext ctx, int templateDocumentId);
         FrontTemplateDocument GetTemplateDocumentByDocumentId(IContext ctx, int documentId);
-        int AddOrUpdateTemplate(IContext ctx, ModifyTemplateDocument template);
+        int AddOrUpdateTemplate(IContext ctx, ModifyTemplateDocument template, IEnumerable<InternalPropertyValue> properties);
         void DeleteTemplate(IContext ctx, int id);
         bool CanModifyTemplate(IContext ctx, ModifyTemplateDocument template);
         bool CanModifyTemplate(IContext ctx, int templateId);

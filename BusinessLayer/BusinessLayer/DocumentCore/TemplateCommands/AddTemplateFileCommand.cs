@@ -12,7 +12,7 @@ using BL.Model.Exception;
 
 namespace BL.Logic.DocumentCore.TemplateCommands
 {
-    public class AddTemplateFileCommand: BaseDocumentCommand
+    public class AddTemplateFileCommand : BaseDocumentCommand
     {
         private readonly ITemplateDocumentsDbProcess _operationDb;
         private readonly IFileStore _fStore;
@@ -42,33 +42,33 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
         public override bool CanExecute()
         {
-            _admin.VerifyAccess(_context, CommandType);
-           
+            _admin.VerifyAccess(_context, CommandType, false);
+
             return true;
         }
 
         public override object Execute()
         {
-            
-                var att = new InternalTemplateAttachedFile
-                {
-                    DocumentId = Model.DocumentId,
-                    OrderInDocument = _operationDb.GetNextFileOrderNumber(_context, Model.DocumentId),
-                    FileContent = Convert.FromBase64String(Model.FileData),
-                    IsAdditional = Model.IsAdditional,
-                    FileType = Model.FileType,
-                    FileSize = Model.FileSize,
-                    Name = Path.GetFileNameWithoutExtension(Model.FileName),
-                    Extension = Path.GetExtension(Model.FileName ?? "").Replace(".", "") 
-                   
-                };
-                _fStore.SaveFile(_context, att);
-                CommonDocumentUtilities.SetLastChange(_context, att);
-                _operationDb.AddNewFile(_context, att);
+
+            var att = new InternalTemplateAttachedFile
+            {
+                DocumentId = Model.DocumentId,
+                OrderInDocument = _operationDb.GetNextFileOrderNumber(_context, Model.DocumentId),
+                FileContent = Convert.FromBase64String(Model.FileData),
+                IsAdditional = Model.IsAdditional,
+                FileType = Model.FileType,
+                FileSize = Model.FileSize,
+                Name = Path.GetFileNameWithoutExtension(Model.FileName),
+                Extension = Path.GetExtension(Model.FileName ?? "").Replace(".", "")
+
+            };
+            _fStore.SaveFile(_context, att);
+            CommonDocumentUtilities.SetLastChange(_context, att);
+            _operationDb.AddNewFile(_context, att);
 
             return att.Id;
         }
 
-       
+
     }
 }

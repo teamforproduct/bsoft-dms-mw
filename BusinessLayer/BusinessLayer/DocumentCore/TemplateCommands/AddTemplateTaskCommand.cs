@@ -8,15 +8,15 @@ using BL.Model.Exception;
 
 namespace BL.Logic.DocumentCore.TemplateCommands
 {
-    public class AddTemplateTaskCommand: BaseDocumentCommand
+    public class AddTemplateTaskCommand : BaseDocumentCommand
     {
         private readonly ITemplateDocumentsDbProcess _operationDb;
-   
+
 
         public AddTemplateTaskCommand(ITemplateDocumentsDbProcess operationDb)
         {
             _operationDb = operationDb;
-           
+
         }
 
         private ModifyTemplateDocumentTasks Model
@@ -38,9 +38,9 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
         public override bool CanExecute()
         {
-            _admin.VerifyAccess(_context, CommandType);
+            _admin.VerifyAccess(_context, CommandType, false);
 
- 
+
             return true;
         }
 
@@ -49,9 +49,9 @@ namespace BL.Logic.DocumentCore.TemplateCommands
             var tmp = new InternalTemplateDocumentTask(Model);
             CommonDocumentUtilities.SetLastChange(_context, tmp);
             return _operationDb.AddOrUpdateTemplateTask(_context, tmp);
-         
+
         }
 
-       
+
     }
 }

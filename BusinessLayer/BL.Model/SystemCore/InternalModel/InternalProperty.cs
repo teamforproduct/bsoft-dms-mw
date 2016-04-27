@@ -18,6 +18,8 @@ namespace BL.Model.SystemCore.InternalModel
         public string SelectFieldCode { get; set; }
         public string SelectDescriptionFieldCode { get; set; }
 
+        public string SelectTable { get; set; }
+
         public InternalSystemValueType ValueType { get; set; }
     }
 }
