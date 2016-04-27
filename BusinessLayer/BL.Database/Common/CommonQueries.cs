@@ -362,9 +362,9 @@ namespace BL.Database.Common
 
         }
 
-        public static IEnumerable<FrontDocumentWait> GetDocumentWaits(DmsContext dbContext, FilterDocumentWait filter)
+        public static IEnumerable<FrontDocumentWait> GetDocumentWaits(DmsContext dbContext, FilterDocumentWait filter, IContext ctx = null)
         {
-            var waitsDb = dbContext.DocumentWaitsSet.AsQueryable();
+            var waitsDb = GetDocumentWaitsQuery(dbContext, ctx);
 
             if (filter != null)
             {
