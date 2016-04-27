@@ -54,6 +54,10 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new PlanPointHasAlredyBeenLaunched();
             }
+            if (!Model.TargetPositionId.HasValue && !Model.TargetAgentId.HasValue)
+            {
+                throw new WrongDocumentSendListEntry();
+            }
             CommonDocumentUtilities.PlanDocumentPaperFromSendList(_context, _document, Model);
             return true;
         }

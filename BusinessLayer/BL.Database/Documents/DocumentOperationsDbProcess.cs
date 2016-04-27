@@ -1195,22 +1195,7 @@ namespace BL.Database.Documents
                         Id = x.Doc.Id
                     }).FirstOrDefault();
                 if (doc == null) return null;
-                /*
-                doc.Waits = dbContext.DocumentWaitsSet
-                    .Where(x => x.DocumentId == sendList.DocumentId && x.OnEvent.TaskName == sendList.TaskName && x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecution)
-                    .Select(x => new List<InternalDocumentWait>
-                                    {
-                                        new InternalDocumentWait
-                                        {
-                                                Id = x.Id,
-                                                OnEvent = new InternalDocumentEvent
-                                                {
-                                                    TargetPositionId = x.OnEvent.TargetPositionId
-                                                }
-                                        }
-                                    }
-                    ).FirstOrDefault();
-                    */
+
                 return doc;
 
             }
