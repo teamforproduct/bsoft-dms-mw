@@ -21,7 +21,7 @@ namespace BL.Model.DocumentCore.FrontModel
 
         public DateTime? ReadDate { get; set; }
         public string ReadAgentName { get; set; }
-
+        public bool? IsRead { get; set; }
 
         public string SourceAgentName { get; set; }
         public string SourcePositionExecutorAgentName { get; set; }
