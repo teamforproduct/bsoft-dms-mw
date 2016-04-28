@@ -32,7 +32,7 @@ namespace BL.Logic.DocumentCore.Commands
         public override bool CanBeDisplayed(int positionId)
         {
             if (_document.ExecutorPositionId != positionId
-                || _document.IsRegistered
+                || (_document.IsRegistered.HasValue && _document.IsRegistered.Value)
                 || (_document.WaitsCount ?? 0) > 0 || (_document.Waits!=null &&_document.Waits.Any())
                 || (_document.SubscriptionsCount ?? 0) > 0 || (_document.Subscriptions!=null &&_document.Subscriptions.Any())
                 )

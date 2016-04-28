@@ -101,7 +101,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public int ExecutorPositionId { get; set; }
         public int ExecutorPositionExecutorAgentId { get; set; }
         public DateTime CreateDate { get; set; }
-        public bool IsRegistered { get; set; }
+        public bool? IsRegistered { get; set; }
         public int? RegistrationJournalId { get; set; }
         public string NumerationPrefixFormula { get; set; }
         public int? RegistrationNumber { get; set; }

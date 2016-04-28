@@ -35,7 +35,7 @@ namespace BL.Logic.DocumentCore.Commands
         public override bool CanBeDisplayed(int positionId)
         {
             if (_document.ExecutorPositionId != positionId
-                || _document.IsRegistered
+                || (_document.IsRegistered.HasValue && _document.IsRegistered.Value)
                 )
             {
                 return false;
@@ -70,6 +70,7 @@ namespace BL.Logic.DocumentCore.Commands
             _document.SenderNumber = Model.SenderNumber;
             _document.SenderDate = Model.SenderDate;
             _document.Addressee = Model.Addressee;
+            _document.IsRegistered = _document.IsRegistered ?? false;
             _document.AccessLevel = (EnumDocumentAccesses)Model.AccessLevelId;
             if (_document.Accesses?.Count() > 0)
             {

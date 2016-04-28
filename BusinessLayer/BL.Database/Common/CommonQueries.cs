@@ -1142,7 +1142,7 @@ namespace BL.Database.Common
             string res = null;
             try
             {
-                if (item.IsRegistered || item.RegistrationNumber.HasValue)
+                if ((item.IsRegistered.HasValue && item.IsRegistered.Value) || item.RegistrationNumber.HasValue)
                     res = (item.RegistrationNumberPrefix ?? "") + item.RegistrationNumber + (item.RegistrationNumberSuffix ?? "");
             }
             catch { }

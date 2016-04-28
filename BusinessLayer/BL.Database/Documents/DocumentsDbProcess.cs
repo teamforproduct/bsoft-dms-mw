@@ -45,7 +45,7 @@ namespace BL.Database.Documents
                     acc = acc.Where(x => filters.AccessLevelId.Contains((int)x.AccessLevelId));
                 }
                 var qry = CommonQueries.GetDocumentQuery(dbContext, ctx, acc);
-
+                qry = qry.Where(x => x.Doc.IsRegistered.HasValue);
                 #region DocumentsSetFilter
 
                 #region Base
@@ -1339,7 +1339,7 @@ namespace BL.Database.Documents
                         TemplateDocumentId = x.Doc.TemplateDocumentId,
                         IsHard = x.Templ.IsHard,
                         DocumentDirection = (EnumDocumentDirections)x.Templ.DocumentDirectionId,
-
+                        IsRegistered = x.Doc.IsRegistered,
                     }).FirstOrDefault();
                 if (doc == null) return null;
 
@@ -1369,7 +1369,8 @@ namespace BL.Database.Documents
                     SenderDate = document.SenderDate,
                     Addressee = document.Addressee,
                     LastChangeDate = document.LastChangeDate,
-                    LastChangeUserId = document.LastChangeUserId
+                    LastChangeUserId = document.LastChangeUserId,
+                    IsRegistered = document.IsRegistered,
                 };
                 dbContext.DocumentsSet.Attach(doc);
                 var entry = dbContext.Entry(doc);
@@ -1382,6 +1383,7 @@ namespace BL.Database.Documents
                 entry.Property(x => x.SenderNumber).IsModified = true;
                 entry.Property(x => x.SenderDate).IsModified = true;
                 entry.Property(x => x.Addressee).IsModified = true;
+                entry.Property(x => x.IsRegistered).IsModified = true;
 
                 var docAccess = document.Accesses.FirstOrDefault();
                 if (docAccess != null)
@@ -1439,29 +1441,35 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                //ADD OTHER TABLES!!!!
-                dbContext.DocumentPapersSet.Where(x => x.DocumentId == id).ToList()  //TODO OPTIMIZE
-                .ForEach(x =>
+                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
                 {
-                    x.LastPaperEventId = null;
-                });
 
-                dbContext.DocumentWaitsSet.RemoveRange(dbContext.DocumentWaitsSet.Where(x => x.DocumentId == id));
-                dbContext.DocumentEventsSet.RemoveRange(dbContext.DocumentEventsSet.Where(x => x.DocumentId == id));
-                dbContext.DocumentAccessesSet.RemoveRange(dbContext.DocumentAccessesSet.Where(x => x.DocumentId == id));
-                dbContext.DocumentFilesSet.RemoveRange(dbContext.DocumentFilesSet.Where(x => x.DocumentId == id));
-                dbContext.DocumentRestrictedSendListsSet.RemoveRange(dbContext.DocumentRestrictedSendListsSet.Where(x => x.DocumentId == id));
-                dbContext.DocumentSendListsSet.RemoveRange(dbContext.DocumentSendListsSet.Where(x => x.DocumentId == id));
-                dbContext.DocumentTasksSet.RemoveRange(dbContext.DocumentTasksSet.Where(x => x.DocumentId == id));
-                dbContext.DocumentsSet.RemoveRange(dbContext.DocumentsSet.Where(x => x.Id == id));
+                    //ADD OTHER TABLES!!!!
+                    dbContext.DocumentPapersSet.Where(x => x.DocumentId == id).ToList()  //TODO OPTIMIZE
+                    .ForEach(x =>
+                    {
+                        x.LastPaperEventId = null;
+                    });
 
-                dbContext.DocumentPapersSet.RemoveRange(dbContext.DocumentPapersSet.Where(x => x.DocumentId == id));
+                    dbContext.DocumentWaitsSet.RemoveRange(dbContext.DocumentWaitsSet.Where(x => x.DocumentId == id));
+                    dbContext.DocumentEventsSet.RemoveRange(dbContext.DocumentEventsSet.Where(x => x.DocumentId == id));
+                    dbContext.SaveChanges();
+                    dbContext.DocumentAccessesSet.RemoveRange(dbContext.DocumentAccessesSet.Where(x => x.DocumentId == id));
+                    dbContext.DocumentFilesSet.RemoveRange(dbContext.DocumentFilesSet.Where(x => x.DocumentId == id));
+                    dbContext.DocumentRestrictedSendListsSet.RemoveRange(dbContext.DocumentRestrictedSendListsSet.Where(x => x.DocumentId == id));
+                    dbContext.DocumentSendListsSet.RemoveRange(dbContext.DocumentSendListsSet.Where(x => x.DocumentId == id));
+                    dbContext.DocumentTasksSet.RemoveRange(dbContext.DocumentTasksSet.Where(x => x.DocumentId == id));
 
-                CommonQueries.DeletePropertyValues(dbContext, new FilterPropertyValue { Object = new List<EnumObjects> { EnumObjects.Documents }, RecordId = new List<int> { id } });
+                    dbContext.DocumentPapersSet.RemoveRange(dbContext.DocumentPapersSet.Where(x => x.DocumentId == id));
 
+                    CommonQueries.DeletePropertyValues(dbContext, new FilterPropertyValue { Object = new List<EnumObjects> { EnumObjects.Documents }, RecordId = new List<int> { id } });
 
-                CommonQueries.AddFullTextCashInfo(dbContext, id, EnumSearchObjectType.Document, EnumOperationType.Delete);
-                dbContext.SaveChanges();
+                    dbContext.DocumentsSet.RemoveRange(dbContext.DocumentsSet.Where(x => x.Id == id));
+
+                    CommonQueries.AddFullTextCashInfo(dbContext, id, EnumSearchObjectType.Document, EnumOperationType.Delete);
+                    dbContext.SaveChanges();
+                    transaction.Complete();
+                }
             }
         }
 
