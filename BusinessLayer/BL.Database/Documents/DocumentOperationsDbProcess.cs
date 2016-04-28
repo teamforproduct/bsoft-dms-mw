@@ -773,6 +773,7 @@ namespace BL.Database.Documents
                 {
                     Id = x.Id,
                     DocumentId = x.DocumentId,
+                    EventType = x.EventTypeId,
                     EventTypeName = x.EventType.Name,
                     Date = x.Date,
                     Task = x.Task.Task,
