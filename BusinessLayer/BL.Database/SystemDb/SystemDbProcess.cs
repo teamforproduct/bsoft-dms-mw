@@ -608,7 +608,7 @@ namespace BL.Database.SystemDb
                 var res = dbContext.DocumentSendListsSet.Join(qry, s => s.DocumentId, q => q.DocId, (s, q) => new { sl = s, q })
                     .Where(x => x.sl.Stage <= x.q.MinStage && !x.sl.StartEventId.HasValue).Select(x => x.sl.Id).ToList();
 
-                res.AddRange(dbContext.DocumentSendListsSet.Where(x => !x.IsInitial && !x.CloseEventId.HasValue
+                res.AddRange(dbContext.DocumentSendListsSet.Where(x => !x.IsInitial && !x.CloseEventId.HasValue && x.Document.IsLaunchPlan
                 && !qry.Select(s => s.DocId).Contains(x.DocumentId)).Select(x => x.Id).ToList());
 
                 return res;

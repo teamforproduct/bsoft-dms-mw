@@ -33,8 +33,8 @@ namespace DMS_WebAPI
             //var indexService = DmsResolver.Current.Get<IFullTextSearchService>();
             //indexService.Initialize(dbs);
 
-            //var autoPlanService = DmsResolver.Current.Get<IAutoPlanService>();
-            //autoPlanService.Initialize(dbs);
+            var autoPlanService = DmsResolver.Current.Get<IAutoPlanService>();
+            autoPlanService.Initialize(dbs);
 
             var clearTrashDocumentsService = DmsResolver.Current.Get<IClearTrashDocumentsService>();
             clearTrashDocumentsService.Initialize(dbs);
