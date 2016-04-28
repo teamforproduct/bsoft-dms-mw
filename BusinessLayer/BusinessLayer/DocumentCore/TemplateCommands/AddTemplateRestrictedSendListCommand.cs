@@ -3,6 +3,7 @@ using BL.Database.Documents.Interfaces;
 using BL.Database.FileWorker;
 using BL.Logic.Common;
 using BL.Model.DocumentCore.IncomingModel;
+using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Exception;
 
 namespace BL.Logic.DocumentCore.TemplateCommands
@@ -46,7 +47,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
         public override object Execute()
         {
             CommonDocumentUtilities.SetLastChange(_context, Model);
-            return _operationDb.AddOrUpdateTemplateRestrictedSendList(_context, Model);
+            return _operationDb.AddOrUpdateTemplateRestrictedSendList(_context, new InternalTemplateDocumentRestrictedSendList(Model));
 
         }
 

@@ -84,7 +84,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
                 CommonSystemUtilities.VerifyPropertyValues(_context, model, filterTemplate);
             }
 
-            return _operationDb.AddOrUpdateTemplate(_context, Model, properties);
+            return _operationDb.AddOrUpdateTemplate(_context, new InternalTemplateDocument(Model), properties);
             
         }
 

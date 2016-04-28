@@ -44,7 +44,13 @@ namespace BL.Logic.DocumentCore.TemplateCommands
         {
             _admin.VerifyAccess(_context, CommandType, false);
 
+            if (!_operationDb.CanAddTemplateAttachedFile(_context, Model))
+            {
+                throw new CouldNotModifyTemplateDocument();
+            }
             return true;
+
+           
         }
 
         public override object Execute()
