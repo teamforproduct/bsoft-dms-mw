@@ -270,6 +270,8 @@
       <DesignTime>True</DesignTime>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="SystemServices\ClearTrashDocuments\ClearTrashDocumentsService.cs" />
+    <Compile Include="SystemServices\ClearTrashDocuments\IClearTrashDocumentsService.cs" />
     <Compile Include="SystemServices\AutoPlan\AutoPlanService.cs" />
     <Compile Include="SystemServices\AutoPlan\IAutoPlanService.cs" />
     <Compile Include="SystemServices\BaseSystemWorkerService.cs" />

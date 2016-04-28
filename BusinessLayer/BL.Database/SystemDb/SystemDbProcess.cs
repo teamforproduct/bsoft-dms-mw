@@ -12,6 +12,7 @@ using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.FrontModel;
 using System.Data.Entity;
 using BL.Model.FullTextSearch;
+using System;
 
 namespace BL.Database.SystemDb
 {
@@ -609,6 +610,21 @@ namespace BL.Database.SystemDb
 
                 res.AddRange(dbContext.DocumentSendListsSet.Where(x => !x.IsInitial && !x.CloseEventId.HasValue
                 && !qry.Select(s => s.DocId).Contains(x.DocumentId)).Select(x => x.Id).ToList());
+
+                return res;
+            }
+        }
+
+        public IEnumerable<int> GetDocumentIdsForClearTrashDocuments(IContext context, int timeMinForClearTrashDocuments)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var date = DateTime.Now.AddMinutes(-timeMinForClearTrashDocuments);
+                var qry = dbContext.DocumentsSet
+                    .Where(x => !x.IsRegistered.HasValue && !x.Waits.Any()&&!x.Subscriptions.Any()&& x.LastChangeDate < date)
+                    .Select(x => x.Id);
+
+                var res = qry.ToList();
 
                 return res;
             }

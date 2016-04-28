@@ -67,6 +67,8 @@ namespace BL.Database.SystemDb
 
         #endregion
 
+        IEnumerable<int> GetDocumentIdsForClearTrashDocuments(IContext context, int timeMinForClearTrashDocuments);
+
         #region Full text search
         IEnumerable<FullTextIndexIem> FullTextIndexReindexDbPrepare(IContext ctx);
         IEnumerable<FullTextIndexIem> FullTextIndexPrepare(IContext ctx);

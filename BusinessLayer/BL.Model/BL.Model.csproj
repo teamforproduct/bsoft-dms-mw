@@ -53,6 +53,7 @@
     <Compile Include="AdminCore\InternalModel\InternalAdminLanguage.cs" />
     <Compile Include="AspNet\FrontModel\FrontAspNetUserServers.cs" />
     <Compile Include="AspNet\IncomingModel\ModifyAspNetUserServers.cs" />
+    <Compile Include="ClearTrashDocuments\ClearTrashDocumentsSettings.cs" />
     <Compile Include="AutoPlan\AutoPlanSettings.cs" />
     <Compile Include="Common\Period.cs" />
     <Compile Include="Constants\SettingConstants.cs" />

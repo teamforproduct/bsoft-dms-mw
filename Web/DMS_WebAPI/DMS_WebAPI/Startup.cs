@@ -8,6 +8,7 @@ using BL.Model.Database;
 using DMS_WebAPI.Utilities;
 using Microsoft.Owin;
 using Owin;
+using BL.Logic.SystemServices.ClearTrashDocuments;
 
 [assembly: OwinStartup(typeof(DMS_WebAPI.Startup))]
 
@@ -32,11 +33,14 @@ namespace DMS_WebAPI
             //var indexService = DmsResolver.Current.Get<IFullTextSearchService>();
             //indexService.Initialize(dbs);
 
-            var autoPlanService = DmsResolver.Current.Get<IAutoPlanService>();
-            autoPlanService.Initialize(dbs);
+            //var autoPlanService = DmsResolver.Current.Get<IAutoPlanService>();
+            //autoPlanService.Initialize(dbs);
 
-            var userContextService = DmsResolver.Current.Get<UserContextWorkerService>();
-            userContextService.Initialize();
+            var clearTrashDocumentsService = DmsResolver.Current.Get<IClearTrashDocumentsService>();
+            clearTrashDocumentsService.Initialize(dbs);
+
+            //var userContextService = DmsResolver.Current.Get<UserContextWorkerService>();
+            //userContextService.Initialize();
         }
     }
 }
