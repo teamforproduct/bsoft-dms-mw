@@ -261,8 +261,8 @@
     <Compile Include="Reports\ReportRegistrationCardOutcomingDocument.cs">
       <DependentUpon>ReportRegistrationCardOutcomingDocument.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
-      <SubType>Component</SubType>
       <DesignTime>True</DesignTime>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Reports\ReportRegistrationCardInternalDocument.cs">
       <DependentUpon>ReportRegistrationCardInternalDocument.rpt</DependentUpon>
