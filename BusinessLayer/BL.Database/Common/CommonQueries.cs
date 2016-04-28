@@ -644,9 +644,12 @@ namespace BL.Database.Common
                 {
                     Id = x.Id,
                     PropertyLinkId = x.PropertyLinkId,
-                    Value = x.ValueString != null ? x.ValueString : (x.ValueNumeric.HasValue ? x.ValueNumeric.ToString() : (x.ValueDate.HasValue ? x.ValueDate.ToString() : null)),
+                    ValueString = x.ValueString,
+                    ValueNumeric = x.ValueNumeric,
+                    ValueDate = x.ValueDate,
                     PropertyCode = x.PropertyLink.Property.Code,
                     PropertyLabel = x.PropertyLink.Property.Label,
+                    PropertyValueTypeCode = x.PropertyLink.Property.ValueType.Code,
                     DisplayValue = string.Empty,
                     SelectAPI = x.PropertyLink.Property.SelectAPI,
                     SelectFilter = x.PropertyLink.Property.SelectFilter,
@@ -662,13 +665,32 @@ namespace BL.Database.Common
                 {
                     Id = itemRes.Id,
                     PropertyLinkId = itemRes.PropertyLinkId,
-                    Value = itemRes.Value,
+                    //Value = itemRes.Value,
                     PropertyCode = itemRes.PropertyCode,
                     PropertyLabel = itemRes.PropertyLabel,
+                    PropertyValueTypeCode = itemRes.PropertyValueTypeCode,
                 };
+
+                if (itemRes.ValueString != null)
+                {
+                    item.Value = itemRes.ValueString;
+                }
+                else if (itemRes.ValueNumeric.HasValue)
+                {
+                    item.Value = itemRes.ValueNumeric;
+                }
+                else if (itemRes.ValueDate.HasValue)
+                {
+                    item.Value = itemRes.ValueDate;
+                }
+                else
+                {
+                    item.Value = null;
+                }
+
                 if (string.IsNullOrEmpty(itemRes.SelectAPI))
                 {
-                    item.DisplayValue = itemRes.Value;
+                    item.DisplayValue = item.Value;
                 }
                 else
                 {
@@ -678,14 +700,14 @@ namespace BL.Database.Common
 
                         var values = dbContext.Set(entityType);
                         int key = 0;
-                        int.TryParse(item.Value, out key);
+                        int.TryParse(item.Value.ToString(), out key);
                         var value = key > 0 ? values.Find(key) : values.Find(item.Value);
 
                         item.DisplayValue = (string)value.GetType().GetProperty(itemRes.SelectDescriptionFieldCode).GetValue(value, null);
                     }
                     catch
                     {
-                        item.DisplayValue = itemRes.Value;
+                        item.DisplayValue = item.Value;
                     }
                 }
                 items.Add(item);
