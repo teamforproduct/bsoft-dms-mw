@@ -5,14 +5,14 @@ using BL.Model.Exception;
 
 namespace BL.Logic.DocumentCore.TemplateCommands
 {
-    public class DeleteTemplateTaskCommand: BaseDocumentCommand
+    public class DeleteTemplateTaskCommand : BaseDocumentCommand
     {
         private readonly ITemplateDocumentsDbProcess _operationDb;
 
         public DeleteTemplateTaskCommand(ITemplateDocumentsDbProcess operationDb)
         {
             _operationDb = operationDb;
-           
+
         }
 
         private int Model
@@ -34,7 +34,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
         public override bool CanExecute()
         {
-            _admin.VerifyAccess(_context, CommandType);
+            _admin.VerifyAccess(_context, CommandType, false);
 
             return true;
         }
@@ -44,6 +44,6 @@ namespace BL.Logic.DocumentCore.TemplateCommands
             _operationDb.DeleteTemplateTask(_context, Model);
             return null;
         }
-       
+
     }
 }

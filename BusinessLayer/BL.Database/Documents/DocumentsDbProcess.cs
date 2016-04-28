@@ -943,7 +943,7 @@ namespace BL.Database.Documents
 
                 res.DocumentTasks = CommonQueries.GetDocumentTasks(dbContext, new FilterDocumentTask { DocumentId = docIds });
 
-                res.DocumentWaits = CommonQueries.GetDocumentWaits(dbContext, new FilterDocumentWait { DocumentId = docIds });
+                res.DocumentWaits = CommonQueries.GetDocumentWaits(dbContext, new FilterDocumentWait { DocumentId = docIds }, ctx);
 
                 res.DocumentTags = CommonQueries.GetDocumentTags(dbContext, new FilterDocumentTag { DocumentId = docIds, CurrentPositionsId = ctx.CurrentPositionsIdList });
 
@@ -1457,7 +1457,8 @@ namespace BL.Database.Documents
 
                 dbContext.DocumentPapersSet.RemoveRange(dbContext.DocumentPapersSet.Where(x => x.DocumentId == id));
 
-                dbContext.PropertyValuesSet.RemoveRange(dbContext.PropertyValuesSet.Where(x => x.RecordId == id));
+                CommonQueries.DeletePropertyValues(dbContext, new FilterPropertyValue { Object = new List<EnumObjects> { EnumObjects.Documents }, RecordId = new List<int> { id } });
+
 
                 CommonQueries.AddFullTextCashInfo(dbContext, id, EnumSearchObjectType.Document, EnumOperationType.Delete);
                 dbContext.SaveChanges();

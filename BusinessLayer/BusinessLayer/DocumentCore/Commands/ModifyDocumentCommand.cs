@@ -78,30 +78,10 @@ namespace BL.Logic.DocumentCore.Commands
                 docAcc.AccessLevel = (EnumDocumentAccesses)Model.AccessLevelId;
             }
 
-            if (Model.Properties!=null)
+            if (Model.Properties != null)
             {
-                _document.Properties = Model.Properties.Select(x =>
-                {
-                    var item = new InternalPropertyValue
-                    {
-                        PropertyLinkId = x.PropertyLinkId,
-                        ValueString = x.Value
-                    };
-                    double tmpNumeric;
-                    if (double.TryParse(x.Value, out tmpNumeric))
-                    {
-                        item.ValueString = null;
-                        item.ValueNumeric = tmpNumeric;
-                    }
-                    DateTime tmpDate;
-                    if (DateTime.TryParse(x.Value, out tmpDate))
-                    {
-                        item.ValueString = null;
-                        item.ValueDate = tmpDate;
-                    }
-                    CommonDocumentUtilities.SetLastChange(_context, item);
-                    return item;
-                }).ToList();
+                _document.Properties = CommonDocumentUtilities.GetNewPropertyValues(Model.Properties).ToList();
+                CommonDocumentUtilities.SetLastChange(_context, _document.Properties);
 
                 var model = new InternalPropertyValues { Object = EnumObjects.Documents, PropertyValues = _document.Properties };
 

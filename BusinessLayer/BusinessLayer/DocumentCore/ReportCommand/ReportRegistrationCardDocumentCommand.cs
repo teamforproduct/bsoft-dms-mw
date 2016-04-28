@@ -36,11 +36,6 @@ namespace BL.Logic.DocumentCore.ReportsCommands
 
         public override bool CanBeDisplayed(int positionId)
         {
-            if (_document.IsRegistered)
-            {
-                return false;
-            }
-
             return true;
         }
 

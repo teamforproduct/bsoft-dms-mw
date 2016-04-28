@@ -5,14 +5,14 @@ using BL.Model.Exception;
 
 namespace BL.Logic.DocumentCore.TemplateCommands
 {
-    public class DeleteTemplateSendListCommand: BaseDocumentCommand
+    public class DeleteTemplateSendListCommand : BaseDocumentCommand
     {
         private readonly ITemplateDocumentsDbProcess _operationDb;
 
         public DeleteTemplateSendListCommand(ITemplateDocumentsDbProcess operationDb)
         {
             _operationDb = operationDb;
-           
+
         }
 
         private int Model
@@ -34,7 +34,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
         public override bool CanExecute()
         {
-            _admin.VerifyAccess(_context, CommandType);
+            _admin.VerifyAccess(_context, CommandType, false);
 
             if (!_operationDb.CanModifyTemplate(_context, Model))
             {
@@ -48,6 +48,6 @@ namespace BL.Logic.DocumentCore.TemplateCommands
             _operationDb.DeleteTemplateSendList(_context, Model);
             return null;
         }
-       
+
     }
 }

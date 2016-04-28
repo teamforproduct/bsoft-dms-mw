@@ -86,7 +86,7 @@ namespace BL.Database.SystemDb
             }
         }
         #endregion
-        
+
         public IEnumerable<BaseSystemUIElement> GetSystemUIElements(IContext ctx, FilterSystemUIElement filter)
         {
             {
@@ -226,6 +226,7 @@ namespace BL.Database.SystemDb
                     SelectFilter = x.SelectFilter,
                     SelectFieldCode = x.SelectFieldCode,
                     SelectDescriptionFieldCode = x.SelectDescriptionFieldCode,
+                    SelectTable = x.SelectTable,
                     LastChangeDate = x.LastChangeDate,
                     LastChangeUserId = x.LastChangeUserId,
 
@@ -266,7 +267,7 @@ namespace BL.Database.SystemDb
                     SelectFilter = x.SelectFilter,
                     SelectFieldCode = x.SelectFieldCode,
                     SelectDescriptionFieldCode = x.SelectDescriptionFieldCode,
-
+                    SelectTable = x.SelectTable,
                     ValueType = !x.ValueTypeId.HasValue ? null :
                         new InternalSystemValueType
                         {
@@ -296,6 +297,7 @@ namespace BL.Database.SystemDb
                     SelectFilter = model.SelectFilter,
                     SelectFieldCode = model.SelectFieldCode,
                     SelectDescriptionFieldCode = model.SelectDescriptionFieldCode,
+                    SelectTable = model.SelectTable,
                     LastChangeDate = model.LastChangeDate,
                     LastChangeUserId = model.LastChangeUserId,
                 };
@@ -327,6 +329,7 @@ namespace BL.Database.SystemDb
                     SelectFilter = model.SelectFilter,
                     SelectFieldCode = model.SelectFieldCode,
                     SelectDescriptionFieldCode = model.SelectDescriptionFieldCode,
+                    SelectTable = model.SelectTable,
                     LastChangeDate = model.LastChangeDate,
                     LastChangeUserId = model.LastChangeUserId,
                 };
@@ -501,54 +504,9 @@ namespace BL.Database.SystemDb
 
         #endregion PropertyLinks
 
-        //#region PropertyValues
+        #region PropertyValues
 
-        //public InternalPropertyValue GetPropertyValue(IContext context, FilterPropertyValue filter)
-        //{
-        //    using (var dbContext = new DmsContext(context))
-        //    {
-        //        var qry = dbContext.PropertyValuesSet.AsQueryable();
-
-        //        if (filter.PropertyValuesId?.Count > 0)
-        //        {
-        //            qry = qry.Where(x => filter.PropertyValuesId.Contains(x.Id));
-        //        }
-
-        //        return qry.Select(x => new InternalPropertyValue
-        //        {
-        //            Id = x.Id,
-        //            PropertyLinkId = x.PropertyLinkId,
-        //            RecordId = x.RecordId,
-        //            ValueString = x.ValueString,
-        //            ValueDate = x.ValueDate,
-        //            ValueNumeric = x.ValueNumeric,
-        //            LastChangeDate = x.LastChangeDate,
-        //            LastChangeUserId = x.LastChangeUserId,
-        //        }).FirstOrDefault();
-        //    }
-        //}
-
-        //public IEnumerable<FrontPropertyValue> GetPropertyValues(IContext context, FilterPropertyValue filter)
-        //{
-        //    using (var dbContext = new DmsContext(context))
-        //    {
-        //        var qry = dbContext.PropertyValuesSet.AsQueryable();
-
-        //        if (filter.PropertyValuesId?.Count > 0)
-        //        {
-        //            qry = qry.Where(x => filter.PropertyValuesId.Contains(x.Id));
-        //        }
-
-        //        return qry.Select(x => new FrontPropertyValue
-        //        {
-        //            Id = x.Id,
-        //            PropertyLinkId = x.PropertyLinkId,
-        //            RecordId = x.RecordId,
-        //            Value = x.ValueString != null ? x.ValueString : (x.ValueNumeric.HasValue ? x.ValueNumeric.ToString() : (x.ValueDate.HasValue ? x.ValueDate.ToString() : null))
-        //        }).ToList();
-        //    }
-        //}
-        //#endregion PropertyValues
+        #endregion PropertyValues
 
         #region Mailing
 
@@ -646,11 +604,11 @@ namespace BL.Database.SystemDb
                         MinStage = x.Min(s => s.sl.Stage)
                     });
 
-                var res = dbContext.DocumentSendListsSet.Join(qry, s => s.DocumentId, q => q.DocId, (s, q) => new {sl = s, q})
+                var res = dbContext.DocumentSendListsSet.Join(qry, s => s.DocumentId, q => q.DocId, (s, q) => new { sl = s, q })
                     .Where(x => x.sl.Stage <= x.q.MinStage && !x.sl.StartEventId.HasValue).Select(x => x.sl.Id).ToList();
 
-                res.AddRange(dbContext.DocumentSendListsSet.Where(x=>!x.IsInitial && !x.CloseEventId.HasValue
-                && !qry.Select(s=>s.DocId).Contains(x.DocumentId)).Select(x=>x.Id).ToList());
+                res.AddRange(dbContext.DocumentSendListsSet.Where(x => !x.IsInitial && !x.CloseEventId.HasValue
+                && !qry.Select(s => s.DocId).Contains(x.DocumentId)).Select(x => x.Id).ToList());
 
                 return res;
             }
@@ -666,30 +624,30 @@ namespace BL.Database.SystemDb
             using (var dbContext = new DmsContext(ctx))
             {
                 res.AddRange(dbContext.DocumentsSet
-                    .Select(x => new 
+                    .Select(x => new
                     {
                         DocumentId = x.Id,
                         ItemType = EnumSearchObjectType.Document,
                         OperationType = EnumOperationType.AddNew,
                         ObjectId = 0,
                         regNr = (x.RegistrationNumber != null
-                            ? (x.RegistrationNumberPrefix??"") + x.RegistrationNumber +
-                              (x.RegistrationNumberSuffix??"")
-                            : "#" + x.Id)+" " ,
-                                     v1 = x.RegistrationJournal.Name + " " + x.RegistrationJournal.Department.Name + " ",
-                                     v2 = x.Description + " ",
-                                     v3 = x.ExecutorPositionExecutorAgent.Name + " ",
-                                     v4 = x.TemplateDocument.DocumentType.Name + " " + x.TemplateDocument.DocumentDirection.Name + " ",
-                                     v5 = x.DocumentSubject.Name + " ",
-                                     v6 = x.SenderAgent.Name + " " + x.SenderAgentPerson.Agent.Name + " " + x.SenderNumber + " "
+                            ? (x.RegistrationNumberPrefix ?? "") + x.RegistrationNumber +
+                              (x.RegistrationNumberSuffix ?? "")
+                            : "#" + x.Id) + " ",
+                        v1 = x.RegistrationJournal.Name + " " + x.RegistrationJournal.Department.Name + " ",
+                        v2 = x.Description + " ",
+                        v3 = x.ExecutorPositionExecutorAgent.Name + " ",
+                        v4 = x.TemplateDocument.DocumentType.Name + " " + x.TemplateDocument.DocumentDirection.Name + " ",
+                        v5 = x.DocumentSubject.Name + " ",
+                        v6 = x.SenderAgent.Name + " " + x.SenderAgentPerson.Agent.Name + " " + x.SenderNumber + " "
                     }).ToList()
-                    .Select(x=>new FullTextIndexIem
+                    .Select(x => new FullTextIndexIem
                     {
                         DocumentId = x.DocumentId,
                         ItemType = x.ItemType,
                         OperationType = x.OperationType,
                         ObjectId = x.ObjectId,
-                        ObjectText = x.regNr+x.v1+ x.v2 + x.v3 + x.v4 + x.v5 + x.v6
+                        ObjectText = x.regNr + x.v1 + x.v2 + x.v3 + x.v4 + x.v5 + x.v6
                     }));
 
                 res.AddRange(dbContext.DocumentEventsSet
@@ -752,7 +710,7 @@ namespace BL.Database.SystemDb
                 //TODO process deleted document
                 res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumSearchObjectType.Document)
                      .Join(dbContext.DocumentsSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, doc = d })
-                     .Select(x => new 
+                     .Select(x => new
                      {
                          Id = x.ind.Id,
                          DocumentId = x.doc.Id,
@@ -760,24 +718,24 @@ namespace BL.Database.SystemDb
                          OperationType = (EnumOperationType)x.ind.OperationType,
                          ObjectId = 0,
                          v1 = (x.doc.RegistrationNumber != null
-                             ? (x.doc.RegistrationNumberPrefix??"") + x.doc.RegistrationNumber +
-                               (x.doc.RegistrationNumberSuffix??"")
+                             ? (x.doc.RegistrationNumberPrefix ?? "") + x.doc.RegistrationNumber +
+                               (x.doc.RegistrationNumberSuffix ?? "")
                              : "#" + x.doc.Id) + " ",
-                             v2= x.doc.RegistrationJournal.Name + " " + x.doc.RegistrationJournal.Department.Name + " ",
-                             v3= x.doc.Description + " ",
-                             v4= x.doc.ExecutorPositionExecutorAgent.Name + " ",
-                             v5= x.doc.TemplateDocument.DocumentType.Name + " " + x.doc.TemplateDocument.DocumentDirection.Name + " ",
-                             v6= x.doc.DocumentSubject.Name + " ",
-                             v7= x.doc.SenderAgent.Name + " " + x.doc.SenderAgentPerson.Agent.Name + " " + x.doc.SenderNumber + " ",
+                         v2 = x.doc.RegistrationJournal.Name + " " + x.doc.RegistrationJournal.Department.Name + " ",
+                         v3 = x.doc.Description + " ",
+                         v4 = x.doc.ExecutorPositionExecutorAgent.Name + " ",
+                         v5 = x.doc.TemplateDocument.DocumentType.Name + " " + x.doc.TemplateDocument.DocumentDirection.Name + " ",
+                         v6 = x.doc.DocumentSubject.Name + " ",
+                         v7 = x.doc.SenderAgent.Name + " " + x.doc.SenderAgentPerson.Agent.Name + " " + x.doc.SenderNumber + " ",
                      }).ToList()
-                     .Select(x=>new FullTextIndexIem
+                     .Select(x => new FullTextIndexIem
                      {
                          Id = x.Id,
                          DocumentId = x.DocumentId,
                          ItemType = x.ItemType,
                          OperationType = x.OperationType,
                          ObjectId = x.ObjectId,
-                         ObjectText = x.v1+ x.v2+ x.v3+ x.v4+ x.v5+ x.v6+ x.v7
+                         ObjectText = x.v1 + x.v2 + x.v3 + x.v4 + x.v5 + x.v6 + x.v7
                      })
                  );
 

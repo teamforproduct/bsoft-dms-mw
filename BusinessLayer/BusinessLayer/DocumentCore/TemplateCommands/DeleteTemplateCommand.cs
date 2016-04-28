@@ -10,14 +10,14 @@ using BL.Model.Exception;
 
 namespace BL.Logic.DocumentCore.TemplateCommands
 {
-    public class DeleteTemplateCommand: BaseDocumentCommand
+    public class DeleteTemplateCommand : BaseDocumentCommand
     {
         private readonly ITemplateDocumentsDbProcess _operationDb;
 
         public DeleteTemplateCommand(ITemplateDocumentsDbProcess operationDb)
         {
             _operationDb = operationDb;
-           
+
         }
 
         private int Model
@@ -39,7 +39,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
         public override bool CanExecute()
         {
-            _admin.VerifyAccess(_context, CommandType);
+            _admin.VerifyAccess(_context, CommandType, false);
 
             if (!_operationDb.CanModifyTemplate(_context, Model))
             {
@@ -53,6 +53,6 @@ namespace BL.Logic.DocumentCore.TemplateCommands
             _operationDb.DeleteTemplate(_context, Model);
             return null;
         }
-       
+
     }
 }

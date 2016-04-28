@@ -12,7 +12,7 @@ using BL.Model.Exception;
 
 namespace BL.Logic.DocumentCore.TemplateCommands
 {
-    public class ModifyTemplateFileCommand: BaseDocumentCommand
+    public class ModifyTemplateFileCommand : BaseDocumentCommand
     {
         private readonly ITemplateDocumentsDbProcess _operationDb;
         private readonly IFileStore _fStore;
@@ -44,8 +44,8 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
         public override bool CanExecute()
         {
-            _admin.VerifyAccess(_context, CommandType);
-          
+            _admin.VerifyAccess(_context, CommandType, false);
+
             return true;
         }
 
@@ -63,10 +63,10 @@ namespace BL.Logic.DocumentCore.TemplateCommands
             _fStore.SaveFile(_context, fl);
             CommonDocumentUtilities.SetLastChange(_context, fl);
             _operationDb.UpdateFile(_context, fl);
-          
+
             return new FrontTemplateAttachedFile(fl);
         }
 
-       
+
     }
 }

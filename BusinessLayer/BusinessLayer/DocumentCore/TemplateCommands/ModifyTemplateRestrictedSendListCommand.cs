@@ -8,14 +8,14 @@ using BL.Model.Exception;
 
 namespace BL.Logic.DocumentCore.TemplateCommands
 {
-    public class ModifyTemplateRestrictedSendListCommand: BaseDocumentCommand
+    public class ModifyTemplateRestrictedSendListCommand : BaseDocumentCommand
     {
         private readonly ITemplateDocumentsDbProcess _operationDb;
 
         public ModifyTemplateRestrictedSendListCommand(ITemplateDocumentsDbProcess operationDb)
         {
             _operationDb = operationDb;
-           
+
         }
 
         private ModifyTemplateDocumentRestrictedSendLists Model
@@ -37,9 +37,9 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
         public override bool CanExecute()
         {
-            _admin.VerifyAccess(_context, CommandType);
+            _admin.VerifyAccess(_context, CommandType, false);
 
-           
+
             return true;
         }
 
@@ -48,9 +48,9 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
             CommonDocumentUtilities.SetLastChange(_context, Model);
             return _operationDb.AddOrUpdateTemplateRestrictedSendList(_context, Model);
-            
+
         }
 
-       
+
     }
 }
