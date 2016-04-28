@@ -11,5 +11,6 @@ namespace BL.Model.SystemCore.FrontModel
         public string DisplayValue { get; set; }
 
         public string PropertyCode { get; set; }
+        public string PropertyLabel { get; set; }
     }
 }

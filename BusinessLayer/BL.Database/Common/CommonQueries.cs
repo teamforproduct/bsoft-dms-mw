@@ -646,6 +646,7 @@ namespace BL.Database.Common
                     PropertyLinkId = x.PropertyLinkId,
                     Value = x.ValueString != null ? x.ValueString : (x.ValueNumeric.HasValue ? x.ValueNumeric.ToString() : (x.ValueDate.HasValue ? x.ValueDate.ToString() : null)),
                     PropertyCode = x.PropertyLink.Property.Code,
+                    PropertyLabel = x.PropertyLink.Property.Label,
                     DisplayValue = string.Empty,
                     SelectAPI = x.PropertyLink.Property.SelectAPI,
                     SelectFilter = x.PropertyLink.Property.SelectFilter,
@@ -663,6 +664,7 @@ namespace BL.Database.Common
                     PropertyLinkId = itemRes.PropertyLinkId,
                     Value = itemRes.Value,
                     PropertyCode = itemRes.PropertyCode,
+                    PropertyLabel = itemRes.PropertyLabel,
                 };
                 if (string.IsNullOrEmpty(itemRes.SelectAPI))
                 {
