@@ -102,7 +102,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public int AddOrUpdateTemplate(IContext ctx, ModifyTemplateDocument template, IEnumerable<InternalPropertyValue> properties)
+        public int AddOrUpdateTemplate(IContext ctx, InternalTemplateDocument template, IEnumerable<InternalPropertyValue> properties)
         {
             // we should not implement it now
             //var dbContext = GetUserDmsContext(context);
@@ -129,12 +129,12 @@ namespace BL.Database.Documents
                         LastChangeDate = template.LastChangeDate
                     };
 
-                    if (template.Id.HasValue)
+                    if (template.Id>0)
                     {
-                        newTemplate.Id = (int)template.Id;
+                        newTemplate.Id = template.Id;
                     }
 
-                    if (template.Id.HasValue)
+                    if (template.Id>0)
                     {
                         dbContext.TemplateDocumentsSet.Attach(newTemplate);
 
@@ -192,6 +192,16 @@ namespace BL.Database.Documents
             }
         }
 
+        public bool CanAddTemplate(IContext ctx, ModifyTemplateDocument template)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                
+                var count = dbContext.TemplateDocumentsSet.Count(x => x.Name == template.Name);
+
+                return count == 0;
+            }
+        }
         public bool CanModifyTemplate(IContext ctx, int templateId)
         {
             return CanModifyTemplate(ctx, new ModifyTemplateDocument() { Id = templateId });
@@ -273,7 +283,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public int AddOrUpdateTemplateSendList(IContext ctx, ModifyTemplateDocumentSendLists template)
+        public int AddOrUpdateTemplateSendList(IContext ctx, InternalTemplateDocumentSendList template)
         {
             using (var dbContext = new DmsContext(ctx))
             {
@@ -295,7 +305,7 @@ namespace BL.Database.Documents
                     LastChangeUserId = template.LastChangeUserId
                 };
 
-                if (template.Id.HasValue)
+                if (template.Id>0)
                 {
                     newTemplate.Id = (int)template.Id;
                 }
@@ -381,7 +391,7 @@ namespace BL.Database.Documents
         }
 
         public int AddOrUpdateTemplateRestrictedSendList(IContext ctx,
-            ModifyTemplateDocumentRestrictedSendLists template)
+            InternalTemplateDocumentRestrictedSendList template)
         {
             using (var dbContext = new DmsContext(ctx))
             {
@@ -395,9 +405,9 @@ namespace BL.Database.Documents
                     LastChangeUserId = template.LastChangeUserId
                 };
 
-                if (template.Id.HasValue)
+                if (template.Id>0)
                 {
-                    newTemplate.Id = (int)template.Id;
+                    newTemplate.Id = template.Id;
                 }
 
                 dbContext.TemplateDocumentRestrictedSendListsSet.Attach(newTemplate);
@@ -421,6 +431,19 @@ namespace BL.Database.Documents
                 dbContext.SaveChanges();
             }
         }
+
+        public bool CanAddTemplateRestrictedSendList(IContext ctx, ModifyTemplateDocumentRestrictedSendLists list)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                var count =
+                    dbContext.TemplateDocumentRestrictedSendListsSet.Count(
+                        x => x.DocumentId == list.DocumentId && x.PositionId == list.PositionId);
+                return count == 0;
+            }
+        }
+
+
 
         #endregion TemplateDocumentRestrictedSendList
 
@@ -505,6 +528,18 @@ namespace BL.Database.Documents
                 dbContext.SaveChanges();
 
                 return newTemplate.Id;
+            }
+        }
+
+        public bool CanAddTemplateTask(IContext ctx, ModifyTemplateDocumentTasks task)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                var count = dbContext.TemplateDocumentTasksSet.Count(x =>
+                    (x.DocumentId == task.DocumentId && x.Task == task.Task) 
+                    );
+
+                return count == 0;
             }
         }
 
@@ -653,6 +688,22 @@ namespace BL.Database.Documents
 
             }
         }
+
+        public bool CanAddTemplateAttachedFile(IContext ctx, ModifyTemplateAttachedFile file)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                var count = dbContext.TemplateDocumentFilesSet.Count(x => 
+                    (x.DocumentId == file.DocumentId && x.OrderNumber==file.OrderInDocument) ||
+                    (x.DocumentId==file.DocumentId && x.Extention==file.FileType && x.Name==file.FileName)
+                    );
+
+                return count == 0;
+            }
+        }
+
+
+
 
         #endregion TemplateDocumentAttachedFiles
     }
