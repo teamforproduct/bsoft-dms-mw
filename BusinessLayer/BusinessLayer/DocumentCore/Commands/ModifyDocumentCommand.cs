@@ -97,7 +97,16 @@ namespace BL.Logic.DocumentCore.Commands
                 CommonSystemUtilities.VerifyPropertyValues(_context, model, CommonDocumentUtilities.GetFilterTemplateByDocument(_document).ToArray());
             }
 
-            CommonDocumentUtilities.VerifyDocument(_context, new FrontDocument(_document), null);    //TODO отвязаться от фронт-модели
+            var frontDoc = new FrontDocument(_document);
+
+            CommonDocumentUtilities.VerifyDocument(_context, frontDoc, null);    //TODO отвязаться от фронт-модели
+
+            //TODO отвязаться от фронт-модели
+            if (frontDoc.Properties?.Any()??false)
+            {
+                _document.Properties = CommonDocumentUtilities.GetNewPropertyValues(frontDoc.Properties).ToList();
+                CommonDocumentUtilities.SetLastChange(_context, _document.Properties);
+            }
 
             _documentDb.ModifyDocument(_context, _document);
 

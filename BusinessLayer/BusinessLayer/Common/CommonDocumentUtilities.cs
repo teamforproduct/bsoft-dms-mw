@@ -17,6 +17,9 @@ using BL.Model.SystemCore;
 using System.Text.RegularExpressions;
 using BL.Model.SystemCore.InternalModel;
 using BL.Model.SystemCore.IncomingModel;
+using BL.Database.SystemDb;
+using BL.Model.SystemCore.Filters;
+using BL.Model.SystemCore.FrontModel;
 
 namespace BL.Logic.Common
 {
@@ -565,6 +568,66 @@ namespace BL.Logic.Common
                         doc.Addressee = docTemplate.Addressee;
                     }
                 }
+
+                if (docTemplate.Properties?.Any() ?? false)
+                {
+                    var docTempProp = docTemplate.Properties.Where(x => x.Value != null).ToList();
+                    if (docTempProp.Any())
+                    {
+                        if (doc.Properties == null)
+                            doc.Properties = new List<FrontPropertyValue>();
+
+                        var propNotSet = docTempProp.GroupJoin(doc.Properties,
+                                            dp => new { PropertyCode = dp.PropertyCode },
+                                            dtp => new { PropertyCode = dtp.PropertyCode },
+                                            (dtp, dps) => new
+                                            {
+                                                dtp = dtp,
+                                                dp = dps.FirstOrDefault()
+                                            })
+                                        .Where(x => x.dp == null || x.dtp.Value != x.dp.Value)
+                                        .ToList();
+
+                        if (propNotSet.Where(x => x.dp != null).Any())
+                        {
+                            doc.Properties = doc.Properties.GroupJoin(
+                                propNotSet.Where(x => x.dp != null).ToList(),
+                                dp => new { PropertyCode = dp.PropertyCode },
+                                dtp => new { PropertyCode = dtp.dp.PropertyCode },
+                                (dp, dtps) =>
+                                {
+                                    if (dtps.Any())
+                                    {
+                                        var dtp = dtps.First();
+                                        dp.Value = dtp.dtp.Value;
+                                        dp.DisplayValue = dtp.dtp.DisplayValue;
+                                    }
+                                    return dp;
+                                }).ToList();
+                        }
+
+                        if (propNotSet.Where(x => x.dp == null).Any())
+                        {
+                            var _sysDb = DmsResolver.Current.Get<ISystemDbProcess>();
+                            var propLinks = _sysDb.GetPropertyValuesToDocumentFromTemplateDocument(ctx, new FilterPropertyLink { PropertyLinkId = propNotSet.Where(x => x.dp == null).Select(x => x.dtp.PropertyLinkId).ToList() });
+
+                            var props = doc.Properties.ToList();
+
+                            props.AddRange(
+                                propNotSet.Where(x => x.dp == null)
+                                            .Join(propLinks,
+                                                dtp => new { PropertyCode = dtp.dtp.PropertyCode },
+                                                pl => new { PropertyCode = pl.PropertyCode },
+                                                (dtp, pl) => { dtp.dtp.PropertyLinkId = pl.PropertyLinkId; return dtp.dtp; }).ToList()
+                                                );
+
+                            doc.Properties = props;
+                        }
+
+                        uiElements?.Where(x => docTempProp.Select(y => y.PropertyCode).Contains(x.Code)).ToList().ForEach(x => x.IsReadOnly = true);
+                    }
+                }
+
             }
             return uiElements;
         }
@@ -902,6 +965,34 @@ namespace BL.Logic.Common
         }
 
         public static IEnumerable<InternalPropertyValue> GetNewPropertyValues(IEnumerable<ModifyPropertyValue> model)
+        {
+            return model.Select(GetNewPropertyValue);
+        }
+
+        public static InternalPropertyValue GetNewPropertyValue(FrontPropertyValue model)
+        {
+            var value = model.Value != null ? model.Value.ToString() : null;
+            var item = new InternalPropertyValue
+            {
+                PropertyLinkId = model.PropertyLinkId,
+                ValueString = value
+            };
+            double tmpNumeric;
+            if (double.TryParse(value, out tmpNumeric))
+            {
+                item.ValueString = null;
+                item.ValueNumeric = tmpNumeric;
+            }
+            DateTime tmpDate;
+            if (DateTime.TryParse(value, out tmpDate))
+            {
+                item.ValueString = null;
+                item.ValueDate = tmpDate;
+            }
+            return item;
+        }
+
+        public static IEnumerable<InternalPropertyValue> GetNewPropertyValues(IEnumerable<FrontPropertyValue> model)
         {
             return model.Select(GetNewPropertyValue);
         }

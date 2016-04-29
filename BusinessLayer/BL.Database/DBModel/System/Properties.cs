@@ -10,6 +10,11 @@ namespace BL.Database.DBModel.System
 {
     public partial class Properties
     {
+        public Properties()
+        {
+            this.Links = new HashSet<PropertyLinks>();
+        }
+
         public int Id { get; set; }
         [MaxLength(2000)]
         [Index("IX_Code", 1, IsUnique = true)]
@@ -41,5 +46,8 @@ namespace BL.Database.DBModel.System
         public DateTime LastChangeDate { get; set; }
 
         public virtual SystemValueTypes ValueType { get; set; }
+
+        [ForeignKey("PropertyId")]
+        public virtual ICollection<PropertyLinks> Links { get; set; }
     }
 }
