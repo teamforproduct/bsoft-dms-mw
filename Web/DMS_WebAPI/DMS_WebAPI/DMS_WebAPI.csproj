@@ -68,6 +68,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -298,6 +299,10 @@
     <Compile Include="Migrations\201604041000553_Clients.Designer.cs">
       <DependentUpon>201604041000553_Clients.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201605031426007_AddLicenceinfo.cs" />
+    <Compile Include="Migrations\201605031426007_AddLicenceinfo.Designer.cs">
+      <DependentUpon>201605031426007_AddLicenceinfo.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -309,6 +314,8 @@
     <Compile Include="Startup.cs" />
     <Compile Include="Utilities\Languages.cs" />
     <Compile Include="Utilities\AspNetClients.cs" />
+    <Compile Include="Utilities\SystemDbWorker.cs" />
+    <Compile Include="Utilities\SystemInfo.cs" />
     <Compile Include="Utilities\UserContextWorkerService.cs" />
     <Compile Include="Utilities\UserContext.cs" />
     <Compile Include="Utilities\Servers.cs" />
@@ -411,6 +418,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201604041000553_Clients.resx">
       <DependentUpon>201604041000553_Clients.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605031426007_AddLicenceinfo.resx">
+      <DependentUpon>201605031426007_AddLicenceinfo.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

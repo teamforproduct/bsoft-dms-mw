@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using BL.CrossCutting.Interfaces;
 using BL.Model.Database;
 using BL.Model.Exception;
+using BL.Model.SystemCore;
 using BL.Model.Users;
 
 namespace BL.CrossCutting.Context
@@ -52,6 +52,8 @@ namespace BL.CrossCutting.Context
                     Token = ctx.CurrentEmployee.Token,
                     UserId = ctx.CurrentEmployee.UserId,
                 };
+
+                ClientLicence = ctx.ClientLicence;
 
                 try
                 {
@@ -123,6 +125,7 @@ namespace BL.CrossCutting.Context
         }
 
         public bool IsAdmin => false;
+        public LicenceInfo ClientLicence { get; set; }
 
         public DatabaseModel CurrentDB
         {

@@ -263,6 +263,7 @@
     <Compile Include="DocumentCore\ReportModel\ReportDocumentWait.cs" />
     <Compile Include="DocumentCore\ReportModel\ReportDocument.cs" />
     <Compile Include="Enums\EnumFormulas.cs" />
+    <Compile Include="Enums\EnumLicenceTypes.cs" />
     <Compile Include="Enums\EnumReportTypes.cs" />
     <Compile Include="Enums\EnumSystemUsers.cs" />
     <Compile Include="Enums\EnumContactTypes.cs" />
@@ -337,6 +338,7 @@
     <Compile Include="SystemCore\InternalModel\InternalProperty.cs" />
     <Compile Include="SystemCore\InternalModel\InternalSystemValueType.cs" />
     <Compile Include="SystemCore\InternalModel\InternalSystemAction.cs" />
+    <Compile Include="SystemCore\LicenceInfo.cs" />
     <Compile Include="SystemCore\LogInfo.cs" />
     <Compile Include="AdminCore\DocumentActionsModel.cs" />
     <Compile Include="SystemCore\BaseSystemUIElement.cs" />

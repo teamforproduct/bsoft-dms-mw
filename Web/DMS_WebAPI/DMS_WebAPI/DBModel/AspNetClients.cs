@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DMS_WebAPI.DBModel
 {
@@ -16,6 +13,15 @@ namespace DMS_WebAPI.DBModel
         public int Id { get; set; }
         [MaxLength(2000)]
         public string Name { get; set; }
+
+        public DateTime? FirstStart { get; set; }
+
+        public string LicenceType { get; set; }
+
+        public int NumberOfConnections { get; set; }
+
+        public int DurationDay { get; set; }
+
         public virtual ICollection<AdminServers> Servers { get; set; }
     }
 }

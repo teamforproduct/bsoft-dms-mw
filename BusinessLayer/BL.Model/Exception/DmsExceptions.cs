@@ -14,6 +14,21 @@
     }
 
     /// <summary>
+    /// Сообщение при ошибке проверки данных о лицензии
+    /// </summary>
+    public class LicenceError : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:LicenceInformationError@l##";
+        public LicenceError() : base(_MESSAGE)
+        {
+        }
+
+        public LicenceError(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+    /// <summary>
     /// Сообщение при ошибке работы с базой данных
     /// </summary>
     public class DatabaseError : DmsExceptions
