@@ -61,7 +61,6 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// <summary>
         /// Комментарий
         /// </summary>
-        [Required]
         public string Description { get; set; }
         /// <summary>
         /// Срок исполнения (дата)

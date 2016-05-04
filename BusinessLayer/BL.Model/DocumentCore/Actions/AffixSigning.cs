@@ -11,7 +11,6 @@ namespace BL.Model.DocumentCore.Actions
         /// <summary>
         /// Текст визы
         /// </summary>
-        [Required]
         public string VisaText { get; set; }
      
     }

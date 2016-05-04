@@ -16,7 +16,6 @@ namespace BL.Model.DocumentCore.Actions
         /// <summary>
         /// Комментарий исполнителя
         /// </summary>
-        [Required]
         public string TargetDescription { get; set; }
         /// <summary>
         /// Дата включения режима постоянное внимание исполнителя

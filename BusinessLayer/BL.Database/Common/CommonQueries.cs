@@ -353,7 +353,7 @@ namespace BL.Database.Common
                 AgentName = x.Task.Agent.Name,
                 PositionName = x.Task.Position.Name,
                 PositionExecutorNowAgentName = x.Task.Position.ExecutorAgent.Name,
-                PositionExecutorAgentPhoneNumber = "SourcePositionAgentPhoneNumber", //TODO 
+                PositionExecutorAgentPhoneNumber = "(888)888-88-88", //TODO 
             }).ToList();
 
             tasks.ForEach(x => CommonQueries.ChangeRegistrationFullNumber(x));
@@ -437,8 +437,8 @@ namespace BL.Database.Common
                         TargetPositionName = x.OnEvent.TargetPosition.Name,
                         SourcePositionExecutorNowAgentName = x.OnEvent.SourcePosition.ExecutorAgent.Name,
                         TargetPositionExecutorNowAgentName = x.OnEvent.TargetPosition.ExecutorAgent.Name,
-                        SourcePositionExecutorAgentPhoneNumber = "SourcePositionAgentPhoneNumber", //TODO 
-                        TargetPositionExecutorAgentPhoneNumber = "TargetPositionAgentPhoneNumber", //TODO 
+                        SourcePositionExecutorAgentPhoneNumber = "(888)888-88-88", //TODO 
+                        TargetPositionExecutorAgentPhoneNumber = "(888)888-88-88", //TODO 
 
                     },
                 OffEvent = x.OffEvent == null
@@ -548,8 +548,8 @@ namespace BL.Database.Common
                         TargetPositionName = x.SendEvent.TargetPosition.Name,
                         SourcePositionExecutorNowAgentName = x.SendEvent.SourcePosition.ExecutorAgent.Name,
                         TargetPositionExecutorNowAgentName = x.SendEvent.TargetPosition.ExecutorAgent.Name,
-                        SourcePositionExecutorAgentPhoneNumber = "SourcePositionAgentPhoneNumber", //TODO 
-                        TargetPositionExecutorAgentPhoneNumber = "TargetPositionAgentPhoneNumber", //TODO 
+                        SourcePositionExecutorAgentPhoneNumber = "(888)888-88-88", //TODO 
+                        TargetPositionExecutorAgentPhoneNumber = "(888)888-88-88", //TODO 
 
                     },
                 DoneEvent = x.DoneEvent == null
@@ -822,7 +822,7 @@ namespace BL.Database.Common
                 ExecutorAgentId = x.pos.ExecutorAgentId,
                 DepartmentName = x.pos.Department.Name,
                 ExecutorAgentName = x.pos.ExecutorAgent.Name,
-                PositionPhone = "PositionPhone",
+                PositionPhone = "(888)888-88-88",
                 MaxSubordinationTypeId = (x.subordMax > 0 ? (int?)x.subordMax : null)
             }).ToList();
 
@@ -926,8 +926,8 @@ namespace BL.Database.Common
                 TargetPositionName = y.TargetPosition.Name,
                 SourcePositionExecutorNowAgentName = y.SourcePosition.ExecutorAgent.Name,
                 TargetPositionExecutorNowAgentName = y.TargetPosition.ExecutorAgent.Name,
-                SourcePositionExecutorAgentPhoneNumber = "SourcePositionAgentPhoneNumber", //TODO 
-                TargetPositionExecutorAgentPhoneNumber = "TargetPositionAgentPhoneNumber", //TODO 
+                SourcePositionExecutorAgentPhoneNumber = "(888)888-88-88", //TODO 
+                TargetPositionExecutorAgentPhoneNumber = "(888)888-88-88", //TODO 
                 AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
                 AccessLevelName = y.AccessLevel.Name,
                 StartEvent = y.StartEvent == null
@@ -978,7 +978,7 @@ namespace BL.Database.Common
                 PositionId = y.PositionId,
                 PositionName = y.Position.Name,
                 PositionExecutorAgentName = y.Position.ExecutorAgent.Name,
-                PositionExecutorAgentPhoneNumber = "PositionAgentPhone",
+                PositionExecutorAgentPhoneNumber = "(888)888-88-88",
                 AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
                 AccessLevelName = y.AccessLevel.Name,
 
@@ -1105,7 +1105,7 @@ namespace BL.Database.Common
                 OwnerPositionExecutorAgentName = x.LastPaperEvent.TargetPositionExecutorAgent.Name,
                 OwnerPositionName = x.LastPaperEvent.TargetPosition.Name,
                 OwnerPositionExecutorNowAgentName = x.LastPaperEvent.TargetPosition.ExecutorAgent.Name,
-                OwnerPositionExecutorAgentPhoneNumber = "OwnerPositionExecutorAgentPhoneNumber",
+                OwnerPositionExecutorAgentPhoneNumber = "(888)888-88-88",
                 PaperPlanDate = x.LastPaperEvent.PaperPlanDate,
                 PaperSendDate = x.LastPaperEvent.PaperSendDate,
                 PaperRecieveDate = x.LastPaperEvent.PaperRecieveDate,

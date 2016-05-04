@@ -3519,6 +3519,10 @@ namespace BL.Database.Dictionaries
                 {
                     qry = qry.Where(x => filter.IDs.Contains(x.Id));
                 }
+                else
+                {
+                    qry = qry.Where(x => x.Id >= 0);
+                }
 
                 // Исключение списка первичных ключей
                 if (filter.NotContainsIDs?.Count > 0)
