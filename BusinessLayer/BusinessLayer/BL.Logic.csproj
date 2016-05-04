@@ -299,6 +299,9 @@
     <Compile Include="PropertyCore\Interfaces\IPropertyService.cs" />
     <Compile Include="PropertyCore\PropertyService.cs" />
     <Compile Include="Settings\Setting.cs" />
+    <Compile Include="SystemServices\QueueWorker\IQueueTask.cs" />
+    <Compile Include="SystemServices\QueueWorker\QueueTask.cs" />
+    <Compile Include="SystemServices\QueueWorker\QueueWorker.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BL.CrossCutting\BL.CrossCutting.csproj">

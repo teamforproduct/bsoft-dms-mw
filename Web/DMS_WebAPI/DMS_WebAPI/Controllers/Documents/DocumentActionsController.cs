@@ -4,6 +4,7 @@ using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Web.Http;
 using BL.CrossCutting.DependencyInjection;
+using BL.Logic.SystemServices.AutoPlan;
 using BL.Model.Enums;
 
 namespace DMS_WebAPI.Controllers.Documents
@@ -990,5 +991,26 @@ namespace DMS_WebAPI.Controllers.Documents
 
             return new JsonResult(res, this);
         }
+
+        /// <summary>
+        /// Запустить автоматические планы вручную
+        /// </summary>
+        /// <param name="id">ИД PaperList</param>>
+        /// <returns></returns>
+        [Route("ManualStartAutoPlan")]
+        [HttpPost]
+        public IHttpActionResult ManualStartAutoPlan()
+        {
+            var timeM = new System.Diagnostics.Stopwatch();
+            timeM.Start();
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ap = DmsResolver.Current.Get<IAutoPlanService>();
+            var res = ap.ManualRunAutoPlan(cxt);
+            timeM.Stop();
+            SaveToFile("M: DocumentActionsController ManualStartAutoPlan", timeM.Elapsed.ToString("G"));
+
+            return new JsonResult(res, this);
+        }
+
     }
 }
