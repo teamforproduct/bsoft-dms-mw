@@ -847,7 +847,7 @@ namespace BL.Database.Documents
 
                     ExecutorPositionId = doc.Doc.ExecutorPositionId,
                     ExecutorPositionExecutorNowAgentName = doc.ExecutorPositionExecutorNowAgentName,
-                    ExecutorPositionAgentPhoneNumber = "ExecutorPositionAgentPhoneNumber", //TODO
+                    ExecutorPositionAgentPhoneNumber = "(888)888-88-88", //TODO
 
                     SenderAgentId = doc.Doc.SenderAgentId,
                     SenderAgentName = doc.SenderAgentname,
@@ -1423,6 +1423,7 @@ namespace BL.Database.Documents
                     {
                         Id = x.Doc.Id,
                         IsRegistered = x.Doc.IsRegistered,
+                        LinkId = x.Doc.LinkId,
                         ExecutorPositionId = x.Doc.ExecutorPositionId,
                         WaitsCount = x.Doc.Waits.Count,
                         SubscriptionsCount = x.Doc.Subscriptions.Count,
@@ -1637,6 +1638,20 @@ namespace BL.Database.Documents
                 entry.Property(x => x.RegistrationNumberSuffix).IsModified = true;
                 entry.Property(x => x.RegistrationNumberPrefix).IsModified = true;
                 entry.Property(x => x.RegistrationDate).IsModified = true;
+
+                if (document.IsRegistered??false)
+                {
+                    if (document.Events != null && document.Events.Any(x => x.Id == 0))
+                    {
+                        doc.Events = ModelConverter.GetDbDocumentEvents(document.Events.Where(x => x.Id == 0)).ToList();
+                        document.Events = null; //евент добавляем один раз
+                    }
+
+                }
+                else
+                {
+                    dbContext.DocumentEventsSet.RemoveRange(dbContext.DocumentEventsSet.Where(x => x.DocumentId == document.Id && x.EventTypeId == (int)EnumEventTypes.Registered));
+                }
 
                 CommonQueries.AddFullTextCashInfo(dbContext, document.Id, EnumSearchObjectType.Document, EnumOperationType.Update);
                 dbContext.SaveChanges();

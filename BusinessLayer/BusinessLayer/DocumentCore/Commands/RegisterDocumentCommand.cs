@@ -2,6 +2,7 @@
 using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.Exception;
+using BL.Model.Enums;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -63,6 +64,10 @@ namespace BL.Logic.DocumentCore.Commands
             CommonDocumentUtilities.SetLastChange(_context, _document);
             _document.IsRegistered = !Model.IsOnlyGetNextNumber;
             _document.RegistrationDate = Model.RegistrationDate;
+
+            _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, Model.DocumentId, EnumEventTypes.Registered);
+
+
             bool isNeedGenerateNumber;
             if (Model.RegistrationNumber == null || Model.IsOnlyGetNextNumber)
             {

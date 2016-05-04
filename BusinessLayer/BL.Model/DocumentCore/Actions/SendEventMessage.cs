@@ -17,7 +17,6 @@ namespace BL.Model.DocumentCore.Actions
         /// <summary>
         /// Примечание
         /// </summary>
-        [Required]
         public string Description { get; set; }
         /// <summary>
         /// Дата события

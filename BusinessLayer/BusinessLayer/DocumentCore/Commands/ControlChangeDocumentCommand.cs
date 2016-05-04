@@ -4,6 +4,7 @@ using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Exception;
+using BL.Model.Enums;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -82,6 +83,7 @@ namespace BL.Logic.DocumentCore.Commands
             newWait.ParentWait = _docWait;
 
             _docWait.Id = 0;
+            _docWait.ResultTypeId = (int)EnumResultTypes.CloseByChanging;
             oldEvent.Id = _docWait.OnEventId = 0;
             _docWait.OffEventId = newEvent.Id;
 

@@ -264,6 +264,7 @@
     <Compile Include="DocumentCore\ReportModel\ReportDocument.cs" />
     <Compile Include="Enums\EnumFormulas.cs" />
     <Compile Include="Enums\EnumLicenceTypes.cs" />
+    <Compile Include="Enums\EnumResultTypes.cs" />
     <Compile Include="Enums\EnumReportTypes.cs" />
     <Compile Include="Enums\EnumSystemUsers.cs" />
     <Compile Include="Enums\EnumContactTypes.cs" />
@@ -299,6 +300,7 @@
     <Compile Include="DocumentCore\Actions\RegisterDocument.cs" />
     <Compile Include="Enums\EnumSendTypes.cs" />
     <Compile Include="Enums\EnumPeriod.cs" />
+    <Compile Include="Enums\EnumWorkStatus.cs" />
     <Compile Include="Enums\MailServerType.cs" />
     <Compile Include="Exception\DmsExceptions.cs" />
     <Compile Include="FullTextSearch\EnumOperationType.cs" />
