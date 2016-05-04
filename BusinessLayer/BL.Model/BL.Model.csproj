@@ -300,6 +300,7 @@
     <Compile Include="DocumentCore\Actions\RegisterDocument.cs" />
     <Compile Include="Enums\EnumSendTypes.cs" />
     <Compile Include="Enums\EnumPeriod.cs" />
+    <Compile Include="Enums\EnumWorkStatus.cs" />
     <Compile Include="Enums\MailServerType.cs" />
     <Compile Include="Exception\DmsExceptions.cs" />
     <Compile Include="FullTextSearch\EnumOperationType.cs" />
