@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using BL.CrossCutting.DependencyInjection;
 using BL.Database.Documents.Interfaces;
 using BL.Logic.Common;
+using BL.Logic.SystemServices.AutoPlan;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
@@ -123,6 +125,8 @@ namespace BL.Logic.DocumentCore.SendListCommands
                                                             .Select(model => CommonDocumentUtilities.GetNewDocumentPaperEvent(_context, Model.DocumentId, model.Id, EnumEventTypes.MoveDocumentPaper, model.Description, _sendList.TargetPositionId, _sendList.TargetAgentId, _sendList.SourcePositionId, _sendList.SourceAgentId, false, false)));
             addPaperEvents.ForEach(x => { x.SendListId = _sendList.Id; });
             _operationDb.ModifyDocumentSendList(_context, _sendList, _document.Tasks, addPaperEvents, delPaperEvents);
+            var aplan = DmsResolver.Current.Get<IAutoPlanService>();
+            aplan.ManualRunAutoPlan(_context);
             return null;
         }
 
