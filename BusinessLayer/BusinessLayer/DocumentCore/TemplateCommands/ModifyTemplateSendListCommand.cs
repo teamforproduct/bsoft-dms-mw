@@ -47,7 +47,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
         {
 
             CommonDocumentUtilities.SetLastChange(_context, Model);
-            return _operationDb.AddOrUpdateTemplateSendList(_context, Model);
+            return _operationDb.AddOrUpdateTemplateSendList(_context, new InternalTemplateDocumentSendList(Model));
 
         }
 

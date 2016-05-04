@@ -507,6 +507,28 @@ namespace BL.Database.SystemDb
 
         #region PropertyValues
 
+        public IEnumerable<FrontPropertyValue> GetPropertyValuesToDocumentFromTemplateDocument(IContext context, FilterPropertyLink filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.PropertyLinksSet.AsQueryable();
+
+                if (filter.PropertyLinkId?.Count > 0)
+                {
+                    qry = qry.Where(x => filter.PropertyLinkId.Contains(x.Id));
+                }
+
+                qry = qry.Select(x => x.Property.Links.FirstOrDefault(y => y.ObjectId == (int)EnumObjects.Documents && y.Filers == x.Filers))
+                    .Where(x=>x!=null);
+
+                return qry.Select(x => new FrontPropertyValue
+                {
+                    PropertyLinkId = x.Id,
+                    PropertyCode = x.Property.Code
+                }).ToList();
+            }
+        }
+
         #endregion PropertyValues
 
         #region Mailing
@@ -621,7 +643,7 @@ namespace BL.Database.SystemDb
             {
                 var date = DateTime.Now.AddMinutes(-timeMinForClearTrashDocuments);
                 var qry = dbContext.DocumentsSet
-                    .Where(x => !x.IsRegistered.HasValue && !x.Waits.Any()&&!x.Subscriptions.Any()&& x.LastChangeDate < date)
+                    .Where(x => !x.IsRegistered.HasValue && !x.Waits.Any() && !x.Subscriptions.Any() && x.LastChangeDate < date)
                     .Select(x => x.Id);
 
                 var res = qry.ToList();

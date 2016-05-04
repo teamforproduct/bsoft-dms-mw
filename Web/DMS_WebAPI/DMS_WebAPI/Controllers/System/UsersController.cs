@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Web.Http;
 using BL.CrossCutting.DependencyInjection;
 using BL.Model.Exception;
+using BL.Logic.DictionaryCore.Interfaces;
 
 namespace DMS_WebAPI.Controllers
 {
@@ -14,6 +15,22 @@ namespace DMS_WebAPI.Controllers
     [RoutePrefix("api/v2/Users")]
     public class UsersController : ApiController
     {
+        /// <summary>
+        /// Получение информации о пользователе
+        /// </summary>
+        /// <returns>список должностей</returns>
+        [Route("UserInfo")]
+        [HttpGet]
+        public IHttpActionResult GetUserInfo()
+        {
+            var context = DmsResolver.Current.Get<UserContext>().Get();
+            var dicProc = DmsResolver.Current.Get<IDictionaryService>();
+
+            var agent = dicProc.GetDictionaryAgent(context, context.CurrentAgentId);
+
+            return new JsonResult(agent, this);
+        }
+
         /// <summary>
         /// Получение списка должностей, доступных текущего для пользователя
         /// </summary>

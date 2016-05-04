@@ -3,6 +3,7 @@ using BL.CrossCutting.Interfaces;
 using BL.Model.Database;
 using BL.Model.Users;
 using BL.Model.Enums;
+using BL.Model.SystemCore;
 
 namespace BL.CrossCutting.Context
 {
@@ -81,5 +82,6 @@ namespace BL.CrossCutting.Context
         }
 
         public bool IsAdmin => true;
+        public LicenceInfo ClientLicence { get; set; }
     }
 }

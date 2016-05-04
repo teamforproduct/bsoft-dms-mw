@@ -52,6 +52,8 @@ namespace BL.Database.SystemDb
 
         #endregion PropertyLinks
 
+        IEnumerable<FrontPropertyValue> GetPropertyValuesToDocumentFromTemplateDocument(IContext context, FilterPropertyLink filter);
+
         #region Mailing
         IEnumerable<InternalDataForMail> GetNewActionsForMailing(IContext ctx);
         void MarkActionsLikeMailSended(IContext ctx, InternalMailProcessed mailProcessed);

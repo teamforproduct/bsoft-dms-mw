@@ -107,7 +107,7 @@ namespace DMS_WebAPI.Utilities
                         UserId = userId
                     }
                 };
-
+                //TODO insert here licence INFO 
                 Save(token, context);
                 return context;
             }

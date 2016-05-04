@@ -70,7 +70,7 @@ namespace BL.Logic.Common
         {
             var res = first.GroupJoin(second,
                 oKey => new { PropertyId = oKey.PropertyId, Filers = oKey.Filers },
-                iKey => new { PropertyId = iKey.PropertyId, iKey.Filers },
+                iKey => new { PropertyId = iKey.PropertyId, Filers = iKey.Filers },
                 (f, ss) => !ss.Any())
                 .Any(x => x);
 

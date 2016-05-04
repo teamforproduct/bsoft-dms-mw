@@ -663,7 +663,6 @@ namespace BL.Database.Common
             {
                 var item = new FrontPropertyValue
                 {
-                    Id = itemRes.Id,
                     PropertyLinkId = itemRes.PropertyLinkId,
                     //Value = itemRes.Value,
                     PropertyCode = itemRes.PropertyCode,

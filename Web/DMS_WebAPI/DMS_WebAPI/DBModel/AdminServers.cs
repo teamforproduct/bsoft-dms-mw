@@ -1,6 +1,4 @@
-﻿using BL.Database.DBModel.Admin;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DMS_WebAPI.DBModel

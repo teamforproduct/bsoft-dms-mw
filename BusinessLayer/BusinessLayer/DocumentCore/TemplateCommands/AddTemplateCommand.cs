@@ -44,7 +44,10 @@ namespace BL.Logic.DocumentCore.TemplateCommands
         {
             _admin.VerifyAccess(_context, CommandType, false);
 
-
+            if (!_operationDb.CanAddTemplate(_context, Model))
+            {
+                throw new CouldNotModifyTemplateDocument();
+            }
             return true;
         }
 
@@ -80,7 +83,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
                 CommonSystemUtilities.VerifyPropertyValues(_context, model, filterTemplate);
             }
 
-            return _operationDb.AddOrUpdateTemplate(_context, Model, properties);
+            return _operationDb.AddOrUpdateTemplate(_context, new InternalTemplateDocument(Model), properties);
 
         }
 

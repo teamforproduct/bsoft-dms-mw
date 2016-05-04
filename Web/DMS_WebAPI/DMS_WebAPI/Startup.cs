@@ -33,14 +33,18 @@ namespace DMS_WebAPI
             //var indexService = DmsResolver.Current.Get<IFullTextSearchService>();
             //indexService.Initialize(dbs);
 
+            //var si = new SystemInfo();
+            //var dbw = new SystemDbWorker();
+            //var cd = si.GetRegCode(dbw.GetLicenceInfo(1));
+
             var autoPlanService = DmsResolver.Current.Get<IAutoPlanService>();
             autoPlanService.Initialize(dbs);
 
             var clearTrashDocumentsService = DmsResolver.Current.Get<IClearTrashDocumentsService>();
             clearTrashDocumentsService.Initialize(dbs);
 
-            //var userContextService = DmsResolver.Current.Get<UserContextWorkerService>();
-            //userContextService.Initialize();
+            var userContextService = DmsResolver.Current.Get<UserContextWorkerService>();
+            userContextService.Initialize();
         }
     }
 }

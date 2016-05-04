@@ -59,9 +59,10 @@ namespace BL.Logic.DocumentCore
         {
             var sysDb = DmsResolver.Current.Get<ISystemDbProcess>();
             var uiElements = sysDb.GetSystemUIElements(ctx, new FilterSystemUIElement { ObjectCode = "Documents", ActionCode = "Modify" }).ToList();
-            uiElements = CommonDocumentUtilities.VerifyDocument(ctx, doc, uiElements).ToList();
 
-            uiElements.AddRange(CommonSystemUtilities.GetPropertyUIElements(ctx,EnumObjects.Documents, CommonDocumentUtilities.GetFilterTemplateByDocument(doc).ToArray()));
+            uiElements.AddRange(CommonSystemUtilities.GetPropertyUIElements(ctx, EnumObjects.Documents, CommonDocumentUtilities.GetFilterTemplateByDocument(doc).ToArray()));
+
+            uiElements = CommonDocumentUtilities.VerifyDocument(ctx, doc, uiElements).ToList();
 
             return uiElements;
         }
