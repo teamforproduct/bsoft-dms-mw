@@ -235,6 +235,10 @@ namespace BL.Database.Documents
             {
                 var fl = ModelConverter.GetDbDocumentFile(docFile);
                 dbContext.DocumentFilesSet.Add(fl);
+                if (docFile.Events != null && docFile.Events.Any(x => x.Id == 0))
+                {
+                    dbContext.DocumentEventsSet.AddRange(ModelConverter.GetDbDocumentEvents(docFile.Events.Where(x => x.Id == 0)).ToList());
+                }
                 dbContext.SaveChanges();
                 docFile.Id = fl.Id;
                 return fl.Id;
@@ -257,6 +261,10 @@ namespace BL.Database.Documents
                 entry.Property(x => x.LastChangeUserId).IsModified = true;
                 entry.Property(x => x.Hash).IsModified = true;
                 //entry.Property(x => x.Date).IsModified = true;//we do not update that
+                if (docFile.Events != null && docFile.Events.Any(x => x.Id == 0))
+                {
+                    dbContext.DocumentEventsSet.AddRange(ModelConverter.GetDbDocumentEvents(docFile.Events.Where(x => x.Id == 0)).ToList());
+                }
                 dbContext.SaveChanges();
             }
         }
@@ -276,7 +284,7 @@ namespace BL.Database.Documents
                 doc.DocumentFiles =
                     dbContext.DocumentFilesSet.Where(
                         x => x.DocumentId == flIdent.DocumentId && x.OrderNumber == flIdent.OrderInDocument)
-                        .Select(x => new InternalDocumentAttachedFile { Id = x.Id, ExecutorPositionId = x.ExecutorPositionId }).ToList();
+                        .Select(x => new InternalDocumentAttachedFile { Id = x.Id, ExecutorPositionId = x.ExecutorPositionId, Name = x.Name, Extension = x.Extension }).ToList();
                 return doc;
             }
         }
@@ -290,6 +298,10 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
+                if (docFile.Events != null && docFile.Events.Any(x => x.Id == 0))
+                {
+                    dbContext.DocumentEventsSet.AddRange(ModelConverter.GetDbDocumentEvents(docFile.Events.Where(x => x.Id == 0)).ToList());
+                }
                 dbContext.DocumentFilesSet.RemoveRange(
                     dbContext.DocumentFilesSet.Where(
                         x => x.DocumentId == docFile.DocumentId && x.OrderNumber == docFile.OrderInDocument));

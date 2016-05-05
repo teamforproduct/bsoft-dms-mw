@@ -1167,7 +1167,8 @@ namespace BL.Database.Documents
                 if (doc == null) return null;
 
                 doc.Waits = dbContext.DocumentWaitsSet
-                    .Where(x => x.DocumentId == sendList.DocumentId && x.OnEvent.Task.Id == sendList.TaskId && x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecution && !x.OffEventId.HasValue)
+                    .Where(x => x.DocumentId == sendList.DocumentId && x.OnEvent.Task.Id == sendList.TaskId && !x.OffEventId.HasValue
+                                && (x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecution|| x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForControl) )
                     .Select(x => new List<InternalDocumentWait>
                                     {
                                         new InternalDocumentWait
@@ -1290,7 +1291,7 @@ namespace BL.Database.Documents
                     dbContext.DocumentsSet.Where(x => x.Id == model.Id).ToList()
                         .ForEach(x =>
                         {
-                            x.LinkId = model.ParentDocumentId;
+                            x.LinkId = model.ParentDocumentLinkId??model.ParentDocumentId;
                             x.LastChangeUserId = model.LastChangeUserId;
                             x.LastChangeDate = model.LastChangeDate;
                         });
@@ -1300,7 +1301,7 @@ namespace BL.Database.Documents
                     dbContext.DocumentsSet.Where(x => x.LinkId == model.LinkId).ToList()
                         .ForEach(x =>
                         {
-                            x.LinkId = model.ParentDocumentId;
+                            x.LinkId = model.ParentDocumentLinkId ?? model.ParentDocumentId;
                             x.LastChangeUserId = model.LastChangeUserId;
                             x.LastChangeDate = model.LastChangeDate;
                         });

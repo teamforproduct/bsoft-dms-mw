@@ -4,9 +4,17 @@
     {
         AddNewDocument = 110, //Создан проект
         ControlOn = 300,//Взят на контроль
-        //ControlChange = 310,//Изменить контроль
+        ControlChange = 310,//Изменить контроль
         ControlTargetChange = 315,//Изменить параметры контроля для исполнителя
         ControlOff = 301,//Снят с контроля
+
+        SendForExecution = 210,//   Направлен для исполнения
+        SendForExecutionChange = 211,//   Изменить параметры направлен для исполнения
+        SendForControl = 212,//    Направлен для исполнения (на контроль)
+        SendForControlChange = 213,//    Изменить параметры направлен для исполнения (на контроль)
+        SendForResponsibleExecution = 214,//  Направлен для исполнения (отв. исполнитель)
+        SendForResponsibleExecutionChange = 215,//   Изменить параметры направлен для исполнения (отв. исполнитель)
+
         TaskFormulation = 601,//Формулировка задачи
 
         MarkExecution = 320,//Поручение выполнено
@@ -47,9 +55,7 @@
         RejectSigning = 282,//	Отказано в подписании
         WithdrawSigning = 283,//	Отозван с подписания
 
-        SendForExecution = 210,//   Направлен для исполнения
-        SendForControl = 212,//    Направлен для исполнения (на контроль)
-        SendForResponsibleExecution = 214,//  Направлен для исполнения (отв. исполнитель)
+
 
         Registered = 701,// Зарегистрирован
 
@@ -61,5 +67,10 @@
         MarkСorruptionDocumentPaper = 509, //Отметка порчи бумажного носителя
 
         MoveDocumentPaper = 510, //Переданы бумажные носители
+
+
+        AddDocumentFile = 115, //    Добавлен файл
+        ModifyDocumentFile = 117, //    Изменен файл
+        DeleteDocumentFile = 119, //    Удален файл
     }
 }

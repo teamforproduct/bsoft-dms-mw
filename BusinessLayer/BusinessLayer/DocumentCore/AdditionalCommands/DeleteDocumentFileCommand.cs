@@ -97,6 +97,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             {
 
             }
+            docFile.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, docFile.DocumentId, EnumEventTypes.DeleteDocumentFile, null, _file.Name + "." + _file.Extension);
             _operationDb.DeleteAttachedFile(_context, docFile);
             return null;
         }

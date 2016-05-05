@@ -891,7 +891,7 @@ namespace BL.Database.Common
 
             }
 
-            return sendListDb.Select(y => new FrontDocumentSendList
+            var res = sendListDb.Select(y => new FrontDocumentSendList
             {
                 Id = y.Id,
                 DocumentId = y.DocumentId,
@@ -952,6 +952,7 @@ namespace BL.Database.Common
                                             Description = y.CloseEvent.Description,
                                         },
             }).ToList();
+            return res;
         }
 
         public static IEnumerable<FrontDocumentRestrictedSendList> GetDocumentRestrictedSendList(DmsContext dbContext, FilterDocumentRestrictedSendList filter)

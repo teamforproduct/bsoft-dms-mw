@@ -97,6 +97,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
                 _fStore.SaveFile(_context, att);
                 CommonDocumentUtilities.SetLastChange(_context, att);
+                att.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, att.DocumentId, EnumEventTypes.AddDocumentFile,null, att.Name + "." + att.Extension);
                 res.Add(_operationDb.AddNewFileOrVersion(_context, att));
                 // Модель фронта содержит дополнительно только одно поле - пользователя, который последний модифицировал файл. 
                 // это поле не заполняется, иначе придется после каждого добавления файла делать запрос на выборку этого файла из таблицы

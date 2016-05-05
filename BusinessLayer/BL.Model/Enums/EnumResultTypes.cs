@@ -9,5 +9,8 @@ namespace BL.Model.Enums
     public enum EnumResultTypes
     {
         CloseByChanging = -1,
+        CloseByWithdrawing = -2,
+        CloseByRejecting = -3,
+        CloseByAffixing = -4,
     }
 }

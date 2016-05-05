@@ -66,7 +66,12 @@ namespace BL.Logic.DocumentCore.Commands
         {
             _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, Model.DocumentId, Model.AccessLevel, Model.TargetPositionId.Value);
 
-            _document.Waits = CommonDocumentUtilities.GetNewDocumentWaits(_context, Model, EnumEventTypes.ControlOn, EnumEventCorrespondentType.FromTargetToTarget);
+            _document.Waits = CommonDocumentUtilities.GetNewDocumentWaits(_context, Model, _eventType, EnumEventCorrespondentType.FromTargetToTarget);
+
+            if (Model.SourcePositionId != Model.TargetPositionId)
+            {
+                _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, Model);
+            }
 
             if (Model.IsAddControl)
             {
@@ -81,6 +86,8 @@ namespace BL.Logic.DocumentCore.Commands
 
             return null;
         }
+
+        private EnumEventTypes _eventType => (EnumEventTypes)Enum.Parse(typeof(EnumEventTypes), Model.SendType.ToString());
 
         public override EnumDocumentActions CommandType => (EnumDocumentActions)Enum.Parse(typeof(EnumDocumentActions), Model.SendType.ToString());
     }

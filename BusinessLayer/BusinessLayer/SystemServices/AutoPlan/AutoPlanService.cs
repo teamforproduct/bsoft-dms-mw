@@ -77,6 +77,7 @@ namespace BL.Logic.SystemServices.AutoPlan
 
         public bool ManualRunAutoPlan(IContext userContext)
         {
+            return true;
             var srvKey = CommonSystemUtilities.GetServerKey(userContext);
 
             var ctx = GetAdminContext(srvKey);

@@ -78,25 +78,31 @@
         /// </summary>
         ControlOn = 100021,
 
-        /// <summary>
-        /// Направить для контроля
-        /// </summary>
-        SendForControl = 100022,
+
 
         /// <summary>
         /// Изменить параметры контроля
         /// </summary>
-        ControlChange = 100025,
+        ControlChange = 100023,
+
+        SendForExecutionChange = 100024, // Изменить параметры направлен для исполнения
+        SendForControlChange = 100025, // Изменить параметры направлен для исполнения (на контроль)
+        SendForResponsibleExecutionChange = 100026, // Изменить параметры направлен для исполнения (отв. исполнитель)
 
         /// <summary>
         /// Изменить параметры контроля для исполнителя
         /// </summary>
-        ControlTargetChange = 100026,
+        ControlTargetChange = 100027,
 
         /// <summary>
         /// Снять с контроля
         /// </summary>
-        ControlOff = 100027,
+        ControlOff = 100029,
+
+        /// <summary>
+        /// Направить для контроля
+        /// </summary>
+        SendForControl = 100030,
 
         /// <summary>
         /// Направить для ответственного исполнения 

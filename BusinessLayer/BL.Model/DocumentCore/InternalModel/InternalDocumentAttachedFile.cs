@@ -1,6 +1,6 @@
 ﻿using System;
 using BL.Model.DocumentCore.FrontModel;
-
+using System.Collections.Generic;
 
 namespace BL.Model.DocumentCore.InternalModel
 {
@@ -32,5 +32,6 @@ namespace BL.Model.DocumentCore.InternalModel
 
         public int ExecutorPositionId { get; set; }
         public int ExecutorPositionExecutorAgentId { get; set; }
+        public IEnumerable<InternalDocumentEvent> Events { get; set; }
     }
 }

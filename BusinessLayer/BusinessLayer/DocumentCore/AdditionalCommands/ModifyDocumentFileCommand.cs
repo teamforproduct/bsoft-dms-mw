@@ -99,7 +99,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             //fl.Date = DateTime.Now;
             _fStore.SaveFile(_context, _file);
             CommonDocumentUtilities.SetLastChange(_context, _file);
-
+            _file.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, _file.DocumentId, EnumEventTypes.ModifyDocumentFile, null, _file.Name+"."+ _file.Extension);
             _operationDb.UpdateFileOrVersion(_context, _file);
             return _file.Id;
         }
