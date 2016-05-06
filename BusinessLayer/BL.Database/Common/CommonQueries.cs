@@ -22,6 +22,7 @@ using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.FullTextSearch;
 using BL.Model.SystemCore;
+using BL.CrossCutting.Helpers.Crypto;
 
 namespace BL.Database.Common
 {
@@ -1224,11 +1225,11 @@ namespace BL.Database.Common
                 }
             }
 
-            document.Hash = CommonQueries.GetStringDocumentHash(document);
+            document.Hash = CommonQueries.GetHashAndSignDocument(document);
 
             if (isFull || isAddSubscription)
             {
-                document.FullHash = CommonQueries.GetStringDocumentHash(document, true);
+                document.FullHash = CommonQueries.GetHashAndSignDocument(document, true);
             }
 
             if (subscriptions.Any())
@@ -1236,8 +1237,8 @@ namespace BL.Database.Common
                 StringComparer comparer = StringComparer.OrdinalIgnoreCase;
                 foreach (var subscription in subscriptions)
                 {
-                    if (comparer.Compare(subscription.Hash, document.Hash) != 0 ||
-                        ((isFull || isAddSubscription) && comparer.Compare(subscription.FullHash, document.FullHash) != 0))
+                    if (VerifyDocumentSignedHash(subscription.Hash, document) ||
+                        ((isFull || isAddSubscription) && VerifyDocumentSignedHash(subscription.FullHash, document, true)))
                     {
                         var subscriptionDb = new DocumentSubscriptions
                         {
@@ -1280,51 +1281,64 @@ namespace BL.Database.Common
             return doc;
         }
 
-        public static string GetStringDocumentHash(InternalDocument doc, bool isFull = false)
+        private static string GetStringDocumentForSignDocument(InternalDocument doc, bool isFull = false)
         {
-            var hashPrepare = new StringBuilder();
+            StringBuilder stringDocument = new StringBuilder();
 
-            hashPrepare.Append("Document");
-            hashPrepare.Append(doc.Id);
-            hashPrepare.Append(doc.DocumentTypeId);
-            hashPrepare.Append(doc.Description);
-            hashPrepare.Append("Document");
+            stringDocument.Append("Document");
+            stringDocument.Append(doc.Id);
+            stringDocument.Append(doc.DocumentTypeId);
+            stringDocument.Append(doc.Description);
+            stringDocument.Append("Document");
 
-            hashPrepare.Append("File");
+            stringDocument.Append("File");
             if (doc.DocumentFiles?.Count() > 0)
             {
                 foreach (var docFile in doc.DocumentFiles.OrderBy(x => x.Id))
                 {
-                    hashPrepare.Append(docFile.Id);
-                    hashPrepare.Append(docFile.FileSize);
-                    hashPrepare.Append(docFile.LastChangeDate);
-                    hashPrepare.Append(docFile.Extension);
-                    hashPrepare.Append(docFile.Name);
+                    stringDocument.Append(docFile.Id);
+                    stringDocument.Append(docFile.FileSize);
+                    stringDocument.Append(docFile.LastChangeDate);
+                    stringDocument.Append(docFile.Extension);
+                    stringDocument.Append(docFile.Name);
                     if (isFull)
-                        hashPrepare.Append(docFile.Hash);
+                        stringDocument.Append(docFile.Hash);
                 }
             }
-            hashPrepare.Append("File");
+            stringDocument.Append("File");
 
-            hashPrepare.Append("SendList");
+            stringDocument.Append("SendList");
             if (doc.SendLists?.Count() > 0)
             {
                 foreach (var docSendList in doc.SendLists.OrderBy(x => x.Id))
                 {
-                    hashPrepare.Append(docSendList.Id);
-                    hashPrepare.Append(docSendList.TargetPositionId);
-                    hashPrepare.Append(docSendList.TargetAgentId);
-                    hashPrepare.Append(docSendList.SendType);
-                    hashPrepare.Append(docSendList.Description);
-                    hashPrepare.Append(docSendList.DueDate);
-                    hashPrepare.Append(docSendList.DueDay);
+                    stringDocument.Append(docSendList.Id);
+                    stringDocument.Append(docSendList.TargetPositionId);
+                    stringDocument.Append(docSendList.TargetAgentId);
+                    stringDocument.Append(docSendList.SendType);
+                    stringDocument.Append(docSendList.Description);
+                    stringDocument.Append(docSendList.DueDate);
+                    stringDocument.Append(docSendList.DueDay);
                 }
             }
-            hashPrepare.Append("SendList");
+            stringDocument.Append("SendList");
 
-            var hash = CrossCutting.Helpers.DmsHash.GetSha1(hashPrepare.ToString());
+            return stringDocument.ToString();
+        }
+        public static string GetHashAndSignDocument(InternalDocument doc, bool isFull = false)
+        {
+            string stringDocument = GetStringDocumentForSignDocument(doc, isFull);
+
+            string hash = DmsResolver.Current.Get<ICryptoService>().HashAndSignString(stringDocument);
 
             return hash;
+        }
+
+        public static bool VerifyDocumentSignedHash(string hash, InternalDocument doc, bool isFull = false)
+        {
+            string stringDocument = GetStringDocumentForSignDocument(doc, isFull);
+
+            return DmsResolver.Current.Get<ICryptoService>().VerifySignedHash(stringDocument, hash);
         }
 
         public static List<InternalDictionaryPositionWithActions> GetPositionWithActions(IContext context, DmsContext dbContext, List<int> positionAccesses)

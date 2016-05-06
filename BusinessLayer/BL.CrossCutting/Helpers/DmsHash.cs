@@ -6,7 +6,7 @@ namespace BL.CrossCutting.Helpers
 {
     public static class DmsHash
     {
-        public static string GetSha1(string input)
+        public static string GetSha512(string input)
         {
             byte[] buffer = Encoding.Default.GetBytes(input);
             var sha = new SHA512Managed();
@@ -14,9 +14,9 @@ namespace BL.CrossCutting.Helpers
             return BitConverter.ToString(hash).Replace("-", String.Empty);
         }
 
-        public static bool VerifySha1(string input, string hash)
+        public static bool VerifySha512(string input, string hash)
         {
-            string hashOfInput = GetSha1(input);
+            string hashOfInput = GetSha512(input);
             StringComparer comparer = StringComparer.OrdinalIgnoreCase;
             if (0 == comparer.Compare(hashOfInput, hash))
             {

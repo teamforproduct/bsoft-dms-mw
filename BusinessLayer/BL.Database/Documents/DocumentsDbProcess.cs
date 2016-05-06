@@ -725,7 +725,8 @@ namespace BL.Database.Documents
 
                 var fls =
                     dbContext.DocumentFilesSet.Join(qry, fl => fl.DocumentId, rs => rs.Doc.Id, (f, r) => new { fil = f })
-                        .GroupBy(g => g.fil.DocumentId)
+                        .GroupBy(g => new { DocumentId = g.fil.DocumentId, g.fil.OrderNumber })
+                        .GroupBy(g => g.Key.DocumentId)
                         .Select(s => new { DocID = s.Key, FileCnt = s.Count() }).ToList();
 
                 var links = qry.GroupJoin(dbContext.DocumentsSet.Where(x => x.LinkId.HasValue), dl => dl.Doc.LinkId, d => d.LinkId,
