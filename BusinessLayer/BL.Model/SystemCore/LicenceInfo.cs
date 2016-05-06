@@ -11,5 +11,6 @@ namespace BL.Model.SystemCore
         public EnumLicenceTypes LicType { get; set; }
         public int NumberOfConnections { get; set; }
         public int DateLimit { get; set; }
+        public string LicenseKey { get; set; }
     }
 }

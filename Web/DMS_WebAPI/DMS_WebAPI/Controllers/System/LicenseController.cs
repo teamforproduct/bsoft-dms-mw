@@ -1,4 +1,5 @@
 ﻿using DMS_WebAPI.Models;
+using DMS_WebAPI.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +10,14 @@ namespace DMS_WebAPI.Controllers
 {
     public class LicenseController : Controller
     {
-        public ActionResult ActivationProgram()
+        public ActionResult ActivationProgram(int id)
         {
-            return View(new ActivationProgramViewModel { ProgramCode = "spfJA7G6UW/Y+53YjhUPEkGi4YA3GZX1Ci4aIkzh24lj4nJGW1GiuX4V1QGpxjZuMiy" });
+            var si = new SystemInfo();
+            var dbw = new SystemDbWorker();
+
+            var cd = si.GetRegCode(dbw.GetLicenceInfo(id));
+
+            return View(new ActivationProgramViewModel { ProgramCode = cd });
         }
 
         [HttpPost]

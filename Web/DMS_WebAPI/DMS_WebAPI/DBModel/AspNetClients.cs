@@ -22,6 +22,8 @@ namespace DMS_WebAPI.DBModel
 
         public int DurationDay { get; set; }
 
+        public string LicenceKey { get; set; }
+
         public virtual ICollection<AdminServers> Servers { get; set; }
     }
 }

@@ -36,7 +36,9 @@ namespace BL.CrossCutting.Context
                         DefaultDatabase = ctx.CurrentDB.DefaultDatabase,
                         UserName = ctx.CurrentDB.UserName,
                         UserPassword = ctx.CurrentDB.UserPassword,
-                        DefaultSchema = ctx.CurrentDB.DefaultSchema
+                        DefaultSchema = ctx.CurrentDB.DefaultSchema,
+                        ConnectionString = ctx.CurrentDB.ConnectionString,
+                        ClientId = ctx.CurrentDB.ClientId,
                     };
                 }
                 catch (DatabaseIsNotSet)

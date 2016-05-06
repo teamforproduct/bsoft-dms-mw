@@ -46,6 +46,8 @@
   <ItemGroup>
     <Compile Include="Context\AdminContext.cs" />
     <Compile Include="Helpers\ConvertToDataSet.cs" />
+    <Compile Include="Helpers\Crypto\CryptoService.cs" />
+    <Compile Include="Helpers\Crypto\ICryptoService.cs" />
     <Compile Include="Helpers\DmsHash.cs" />
     <Compile Include="Interfaces\ICommand.cs" />
     <Compile Include="Context\DefaultContext.cs" />

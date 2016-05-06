@@ -73,7 +73,8 @@ namespace DMS_WebAPI.Utilities
                     UserPassword = x.UserPassword,
                     ConnectionString = x.ConnectionString,
                     DefaultSchema = x.DefaultSchema,
-                    ClientName = x.ClientId.HasValue ? x.Client.Name : string.Empty
+                    ClientName = x.ClientId.HasValue ? x.Client.Name : string.Empty,
+                    ClientId = x.ClientId.HasValue ? x.ClientId.Value : 0
                 }).ToList();
 
                 return items;

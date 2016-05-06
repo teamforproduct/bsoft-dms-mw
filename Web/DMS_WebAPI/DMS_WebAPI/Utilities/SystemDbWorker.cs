@@ -28,9 +28,26 @@ namespace DMS_WebAPI.Utilities
                         NumberOfConnections = cl.NumberOfConnections,
                         ClientId = cl.Id,
                         DateLimit = cl.DurationDay,
-                        LicType = (EnumLicenceTypes)Enum.Parse(typeof(EnumLicenceTypes), cl.LicenceType, true)
+                        LicType = (EnumLicenceTypes)Enum.Parse(typeof(EnumLicenceTypes), cl.LicenceType, true),
+                        LicenseKey = cl.LicenceKey,
                     };
                     return li;
+                }
+                throw new LicenceError();
+            }
+        }
+
+        public void SaveLicenceKey(int clientId, string licenceKey)
+        {
+            using (var dbContext = new ApplicationDbContext())
+            {
+                var cl = dbContext.AspNetClientsSet.FirstOrDefault(x => x.Id == clientId);
+                if (cl != null)
+                {
+                    cl.LicenceKey = licenceKey;
+                    dbContext.SaveChanges();
+
+                    return;
                 }
                 throw new LicenceError();
             }

@@ -25,7 +25,9 @@ namespace BL.CrossCutting.Context
                 DefaultDatabase = dbModel.DefaultDatabase,
                 UserName = _USER_NAME,
                 UserPassword = _USER_PASS,
-                DefaultSchema = dbModel.DefaultSchema
+                DefaultSchema = dbModel.DefaultSchema,
+                ConnectionString = dbModel.ConnectionString,
+                ClientId = dbModel.ClientId,
             };
             CurrentEmployee = new Employee
             {
@@ -49,7 +51,9 @@ namespace BL.CrossCutting.Context
                     DefaultDatabase = ctx.CurrentDB.DefaultDatabase,
                     UserName = _USER_NAME,
                     UserPassword = _USER_PASS,
-                    DefaultSchema = ctx.CurrentDB.DefaultSchema
+                    DefaultSchema = ctx.CurrentDB.DefaultSchema,
+                    ConnectionString = ctx.CurrentDB.ConnectionString,
+                    ClientId = ctx.CurrentDB.ClientId,
                 };
                 CurrentEmployee = new Employee
                 {

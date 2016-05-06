@@ -29,6 +29,21 @@
     }
 
     /// <summary>
+    /// Сообщение при ошибке получения ключей
+    /// </summary>
+    public class CryptographicError : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:CryptographicError@l##";
+        public CryptographicError() : base(_MESSAGE)
+        {
+        }
+
+        public CryptographicError(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+    /// <summary>
     /// Сообщение при ошибке работы с базой данных
     /// </summary>
     public class DatabaseError : DmsExceptions
