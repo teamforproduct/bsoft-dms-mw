@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DMS_WebAPI.DBModel
 {
-    public class Licences
+    public class AspNetLicences
     {
         public int Id { get; set; }
         public bool IsTrial { get; set; }

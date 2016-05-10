@@ -15,5 +15,6 @@ namespace BL.CrossCutting.Interfaces
         void SetCurrentPosition(int? position);
         bool IsAdmin { get; }
         LicenceInfo ClientLicence { get; set; }
+        int? CurrentClientId{get;}
     }
 }

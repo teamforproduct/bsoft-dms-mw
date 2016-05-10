@@ -9,6 +9,24 @@ namespace DMS_WebAPI.Utilities
 {
     public class SystemDbWorker
     {
+        public LicenceInfo GetLicenceInfoByServerId(int serverId)
+        {
+            int? clientId = null;
+            using (var dbContext = new ApplicationDbContext())
+            {
+                clientId = dbContext.AdminServersSet
+                            .Where(x => x.Id == serverId)
+                            .Select(x => x.ClientId)
+                            .FirstOrDefault();
+            }
+            if (!clientId.HasValue)
+            {
+                throw new LicenceError();
+            }
+
+            return GetLicenceInfo(clientId.Value);
+        }
+
         public LicenceInfo GetLicenceInfo(int clientId)
         {
             using (var dbContext = new ApplicationDbContext())
@@ -78,6 +96,33 @@ namespace DMS_WebAPI.Utilities
                     return li;
                 }
                 throw new LicenceError();
+            }
+        }
+
+        public void SaveLicenceInfo(ModifyLicenceInfo lic)
+        {
+            using (var dbContext = new ApplicationDbContext())
+            {
+                var client = new DBModel.AspNetClients
+                {
+                    Id = lic.ClientId,
+                    FirstStart = lic.FirstStart,
+                    IsTrial = lic.IsTrial,
+                    NamedNumberOfConnections = lic.NamedNumberOfConnections,
+                    ConcurenteNumberOfConnections = lic.ConcurenteNumberOfConnections,
+                    DurationDay = lic.DurationDay,
+                    Functionals = lic.Functionals
+                };
+
+                dbContext.AspNetClientsSet.Attach(client);
+                var entry = dbContext.Entry(client);
+                entry.Property(x => x.FirstStart).IsModified = true;
+                entry.Property(x => x.IsTrial).IsModified = true;
+                entry.Property(x => x.NamedNumberOfConnections).IsModified = true;
+                entry.Property(x => x.ConcurenteNumberOfConnections).IsModified = true;
+                entry.Property(x => x.DurationDay).IsModified = true;
+                entry.Property(x => x.Functionals).IsModified = true;
+                dbContext.SaveChanges();
             }
         }
 

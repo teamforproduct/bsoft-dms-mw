@@ -8,7 +8,7 @@ namespace DMS_WebAPI.Migrations
         public override void Up()
         {
             CreateTable(
-                "dbo.Licences",
+                "dbo.AspNetLicences",
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
@@ -38,7 +38,7 @@ namespace DMS_WebAPI.Migrations
             DropColumn("dbo.AspNetClients", "ConcurenteNumberOfConnections");
             DropColumn("dbo.AspNetClients", "NamedNumberOfConnections");
             DropColumn("dbo.AspNetClients", "IsTrial");
-            DropTable("dbo.Licences");
+            DropTable("dbo.AspNetLicences");
         }
     }
 }

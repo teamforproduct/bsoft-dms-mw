@@ -1,4 +1,5 @@
 ﻿using BL.Model.Database;
+using BL.Model.SystemCore;
 
 namespace BL.Model.AspNet.FrontModel
 {

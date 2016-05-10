@@ -222,6 +222,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
+    <Compile Include="Controllers\AspNet\LicencesController.cs" />
     <Compile Include="Controllers\AspNet\UserServersController.cs" />
     <Compile Include="Controllers\Dictionaries\CustomDictionaryTypesController.cs" />
     <Compile Include="Controllers\Dictionaries\CustomDictionariesController.cs" />
@@ -275,13 +276,12 @@
     <Compile Include="Controllers\System\CryptoController.cs" />
     <Compile Include="Controllers\System\HomeController.cs" />
     <Compile Include="Controllers\Documents\TemplateDocumentsController.cs" />
-    <Compile Include="Controllers\System\LicenceController.cs" />
     <Compile Include="Controllers\System\ServersController.cs" />
     <Compile Include="Controllers\System\UsersController.cs" />
     <Compile Include="DBModel\AdminLanguages.cs" />
     <Compile Include="DBModel\AdminLanguageValues.cs" />
     <Compile Include="DBModel\AdminServers.cs" />
-    <Compile Include="DBModel\Licences.cs" />
+    <Compile Include="DBModel\AspNetLicences.cs" />
     <Compile Include="DBModel\AspNetClients.cs" />
     <Compile Include="DBModel\AspNetUserServers.cs" />
     <Compile Include="DependencyInjection\ApiModel.cs" />
@@ -320,8 +320,10 @@
     <Compile Include="Results\JsonResult.cs" />
     <Compile Include="Results\ChallengeResult.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="Utilities\AspNet\AspNetUserServers.cs" />
+    <Compile Include="Utilities\AspNet\AspNetLicences.cs" />
     <Compile Include="Utilities\Languages.cs" />
-    <Compile Include="Utilities\AspNetClients.cs" />
+    <Compile Include="Utilities\AspNet\AspNetClients.cs" />
     <Compile Include="Utilities\SystemDbWorker.cs" />
     <Compile Include="Utilities\SystemInfo.cs" />
     <Compile Include="Utilities\UserContextWorkerService.cs" />
@@ -391,7 +393,6 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\License\ActivationProgram.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

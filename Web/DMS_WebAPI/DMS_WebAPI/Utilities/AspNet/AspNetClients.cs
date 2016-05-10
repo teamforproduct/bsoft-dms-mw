@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 
-namespace DMS_WebAPI.Utilities
+namespace DMS_WebAPI.Utilities.AspNet
 {
     /// <summary>
     /// Represend functionality to configure clients
@@ -45,7 +45,7 @@ namespace DMS_WebAPI.Utilities
                 var items = dbContext.AspNetClientsSet.Select(x => new FrontAspNetClient
                 {
                     Id = x.Id,
-                    Name = x.Name,
+                    Name = x.Name
                 }).ToList();
 
                 return items;

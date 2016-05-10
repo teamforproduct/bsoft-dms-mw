@@ -27,6 +27,7 @@ namespace BL.CrossCutting.Helpers
         public static void Verify(LicenceInfo licence)
         {
             if (licence.IsDateLimit
+                && licence.FirstStart > DateTime.Now
                 && licence.FirstStart.AddDays(licence.DateLimit.GetValueOrDefault()) > DateTime.Now)
             {
                 throw new LicenceExpired();
@@ -47,7 +48,7 @@ namespace BL.CrossCutting.Helpers
             //TODO ограниченная по функционалу - вкл./выкл.
             if (licence.IsFunctionals)
             {
-                
+
             }
 
         }

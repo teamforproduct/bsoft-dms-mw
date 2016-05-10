@@ -144,5 +144,17 @@ namespace BL.CrossCutting.Context
                 _currentDb = value;
             }
         }
+
+        public int? CurrentClientId
+        {
+            get
+            {
+                if (_currentDb == null)
+                {
+                    return null;
+                }
+                return _currentDb.ClientId;
+            }
+        }
     }
 }

@@ -51,7 +51,10 @@
     <Compile Include="AdminCore\IncomingModel\ModifyAdminLanguage.cs" />
     <Compile Include="AdminCore\InternalModel\InternalAdminLanguageValue.cs" />
     <Compile Include="AdminCore\InternalModel\InternalAdminLanguage.cs" />
+    <Compile Include="AspNet\Filters\FilterAspNetUserServers.cs" />
+    <Compile Include="AspNet\FrontModel\FrontAspNetLicence.cs" />
     <Compile Include="AspNet\FrontModel\FrontAspNetUserServers.cs" />
+    <Compile Include="AspNet\IncomingModel\ModifyAspNetLicence.cs" />
     <Compile Include="AspNet\IncomingModel\ModifyAspNetUserServers.cs" />
     <Compile Include="ClearTrashDocuments\ClearTrashDocumentsSettings.cs" />
     <Compile Include="AutoPlan\AutoPlanSettings.cs" />
@@ -263,7 +266,6 @@
     <Compile Include="DocumentCore\ReportModel\ReportDocumentWait.cs" />
     <Compile Include="DocumentCore\ReportModel\ReportDocument.cs" />
     <Compile Include="Enums\EnumFormulas.cs" />
-    <Compile Include="Enums\EnumLicenceTypes.cs" />
     <Compile Include="Enums\EnumResultTypes.cs" />
     <Compile Include="Enums\EnumReportTypes.cs" />
     <Compile Include="Enums\EnumSystemUsers.cs" />
@@ -340,6 +342,7 @@
     <Compile Include="SystemCore\InternalModel\InternalProperty.cs" />
     <Compile Include="SystemCore\InternalModel\InternalSystemValueType.cs" />
     <Compile Include="SystemCore\InternalModel\InternalSystemAction.cs" />
+    <Compile Include="SystemCore\ModifyLicenceInfo.cs" />
     <Compile Include="SystemCore\LicenceInfo.cs" />
     <Compile Include="SystemCore\LogInfo.cs" />
     <Compile Include="AdminCore\DocumentActionsModel.cs" />

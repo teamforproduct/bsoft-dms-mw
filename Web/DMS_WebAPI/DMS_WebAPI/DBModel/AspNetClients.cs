@@ -15,6 +15,9 @@ namespace DMS_WebAPI.DBModel
         public string Name { get; set; }
 
         public DateTime? FirstStart { get; set; }
+        /// <summary>
+        /// Только для информации
+        /// </summary>
         public bool IsTrial { get; set; }
         public int? NamedNumberOfConnections { get; set; }
         public int? ConcurenteNumberOfConnections { get; set; }

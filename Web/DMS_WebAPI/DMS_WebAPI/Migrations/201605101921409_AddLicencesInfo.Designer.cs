@@ -13,7 +13,7 @@ namespace DMS_WebAPI.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201605101647457_AddLicencesInfo"; }
+            get { return "201605101921409_AddLicencesInfo"; }
         }
         
         string IMigrationMetadata.Source

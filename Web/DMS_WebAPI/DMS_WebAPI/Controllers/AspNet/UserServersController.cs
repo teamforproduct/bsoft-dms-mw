@@ -1,8 +1,9 @@
 ﻿using DMS_WebAPI.Results;
-using DMS_WebAPI.Utilities;
 using System.Web.Http;
 using BL.Model.AspNet.IncomingModel;
 using BL.Model.AspNet.FrontModel;
+using DMS_WebAPI.Utilities.AspNet;
+using BL.Model.AspNet.Filters;
 
 namespace DMS_WebAPI.Controllers.AspNet
 {
@@ -10,47 +11,40 @@ namespace DMS_WebAPI.Controllers.AspNet
     public class UserServersController : ApiController
     {
         /// <summary>
-        /// Получение списка клиентов
+        /// Получение списка пользователей на серверах
         /// </summary>
         /// <returns>список клиентов</returns>
-        public IHttpActionResult Get()
+        public IHttpActionResult Get([FromUri]FilterAspNetUserServers filter)
         {
-            return new JsonResult(new AspNetClients().GetClients(), this);
+            return new JsonResult(new AspNetUserServers().GetUserServers(filter), this);
+        }
+
+        /// <summary>
+        /// Получение пользователя на сервере
+        /// </summary>
+        /// <returns>список клиентов</returns>
+        private IHttpActionResult Get(int id)
+        {
+            return new JsonResult(new AspNetUserServers().GetUserServer(id), this);
         }
         /// <summary>
-        /// Получение клиента
+        /// Добавит пользователя на сервер
         /// </summary>
         /// <returns>клиент</returns>
-        public IHttpActionResult Get(int id)
+        public IHttpActionResult Post(ModifyAspNetUserServers model)
         {
-            return new JsonResult(new AspNetClients().GetClient(id), this);
+            return Get(new AspNetUserServers().AddUserServer(model));
         }
+
         /// <summary>
-        /// Добавит клиента
+        /// Удаление пользователя на сервере
         /// </summary>
-        /// <returns>клиент</returns>
-        public IHttpActionResult Post(ModifyAspNetClient model)
-        {
-            return Get(new AspNetClients().AddClient(model));
-        }
-        /// <summary>
-        /// Изменить клиента
-        /// </summary>
-        /// <returns>клиент</returns>
-        public IHttpActionResult Put(int id, ModifyAspNetClient model)
-        {
-            model.Id = id;
-            new AspNetClients().UpdateClient(model);
-            return Get(model.Id);
-        }
-        /// <summary>
-        /// Удаление клиента
-        /// </summary>
+        /// <param name="id">ID записи полученой из общего списка</param>
         /// <returns>клиент</returns>
         public IHttpActionResult Delete(int id)
         {
-            new AspNetClients().DeleteClient(id);
-            var item = new FrontAspNetClient { Id = id };
+            new AspNetUserServers().DeleteUserServer(id);
+            var item = new FrontAspNetUserServers { Id = id };
             return new JsonResult(item, this);
         }
     }

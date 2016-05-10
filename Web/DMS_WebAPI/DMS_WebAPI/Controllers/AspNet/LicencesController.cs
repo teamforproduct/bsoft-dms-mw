@@ -1,21 +1,20 @@
-﻿using DMS_WebAPI.Results;
-using System.Web.Http;
+﻿using BL.Model.AspNet.FrontModel;
 using BL.Model.AspNet.IncomingModel;
-using BL.Model.AspNet.FrontModel;
+using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities.AspNet;
+using System.Web.Http;
 
 namespace DMS_WebAPI.Controllers.AspNet
 {
-    [Authorize]
-    public class ClientsController : ApiController
+    public class LicencesController : ApiController
     {
         /// <summary>
-        /// Получение списка клиентов
+        /// Получение списка лицензий
         /// </summary>
         /// <returns>список клиентов</returns>
         public IHttpActionResult Get()
         {
-            return new JsonResult(new AspNetClients().GetClients(), this);
+            return new JsonResult(new AspNetLicences().GetLicences(), this);
         }
         /// <summary>
         /// Получение клиента
@@ -23,24 +22,24 @@ namespace DMS_WebAPI.Controllers.AspNet
         /// <returns>клиент</returns>
         public IHttpActionResult Get(int id)
         {
-            return new JsonResult(new AspNetClients().GetClient(id), this);
+            return new JsonResult(new AspNetLicences().GetLicence(id), this);
         }
         /// <summary>
         /// Добавит клиента
         /// </summary>
         /// <returns>клиент</returns>
-        public IHttpActionResult Post(ModifyAspNetClient model)
+        public IHttpActionResult Post(ModifyAspNetLicence model)
         {
-            return Get(new AspNetClients().AddClient(model));
+            return Get(new AspNetLicences().AddLicence(model));
         }
         /// <summary>
         /// Изменить клиента
         /// </summary>
         /// <returns>клиент</returns>
-        public IHttpActionResult Put(int id, ModifyAspNetClient model)
+        public IHttpActionResult Put(int id, ModifyAspNetLicence model)
         {
             model.Id = id;
-            new AspNetClients().UpdateClient(model);
+            new AspNetLicences().UpdateLicence(model);
             return Get(model.Id);
         }
         /// <summary>
@@ -49,8 +48,8 @@ namespace DMS_WebAPI.Controllers.AspNet
         /// <returns>клиент</returns>
         public IHttpActionResult Delete(int id)
         {
-            new AspNetClients().DeleteClient(id);
-            var item = new FrontAspNetClient { Id = id };
+            new AspNetLicences().DeleteLicence(id);
+            var item = new FrontAspNetLicence { Id = id };
             return new JsonResult(item, this);
         }
     }
