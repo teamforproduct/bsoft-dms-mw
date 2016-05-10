@@ -405,6 +405,7 @@ namespace BL.Database.Documents
                 var sendList = document.SendLists?.FirstOrDefault();
                 if (sendList != null)
                 {
+
                     var sendListDb = new DocumentSendLists
                     {
                         Id = sendList.Id,
@@ -412,13 +413,19 @@ namespace BL.Database.Documents
                         LastChangeUserId = sendList.LastChangeUserId
                     };
                     dbContext.DocumentSendListsSet.Attach(sendListDb);
-                    sendListDb.CloseEvent = offEvent;
                     var entry = dbContext.Entry(sendListDb);
-                    entry.Property(x => x.Id).IsModified = true;
                     entry.Property(x => x.LastChangeDate).IsModified = true;
                     entry.Property(x => x.LastChangeUserId).IsModified = true;
+                    if (sendList.StartEventId != null)
+                    {
+                        sendListDb.CloseEvent = offEvent;
+                    }
+                    else
+                    {
+                        sendListDb.StartEventId = null;
+                        entry.Property(x => x.StartEventId).IsModified = true;
+                    }
                 }
-
                 var subscription = document.Subscriptions?.FirstOrDefault();
                 if (subscription != null)
                 {
@@ -588,6 +595,8 @@ namespace BL.Database.Documents
                     .Select(x => new InternalDocumentSendList
                     {
                         Id = x.Id,
+                        IsInitial = x.IsInitial,
+                        StartEventId = x.StartEventId,
                     }
                     ).ToList();
             }
@@ -790,7 +799,7 @@ namespace BL.Database.Documents
 
                     DueDate = null,
 
-                    IsRead = !x.TargetPositionId.HasValue || x.TargetPositionId == x.SourcePositionId || !ctx.CurrentPositionsIdList.Contains(x.TargetPositionId.Value)? null: (bool?)x.ReadDate.HasValue,
+                    IsRead = !x.TargetPositionId.HasValue || x.TargetPositionId == x.SourcePositionId || !ctx.CurrentPositionsIdList.Contains(x.TargetPositionId.Value) ? null : (bool?)x.ReadDate.HasValue,
 
                     PaperId = x.Paper.Id,
                     PaperName = x.Paper.Name,
@@ -1168,7 +1177,7 @@ namespace BL.Database.Documents
 
                 doc.Waits = dbContext.DocumentWaitsSet
                     .Where(x => x.DocumentId == sendList.DocumentId && x.OnEvent.Task.Id == sendList.TaskId && !x.OffEventId.HasValue
-                                && (x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecution|| x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForControl) )
+                                && (x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecution || x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForControl))
                     .Select(x => new List<InternalDocumentWait>
                                     {
                                         new InternalDocumentWait
@@ -1176,7 +1185,8 @@ namespace BL.Database.Documents
                                                 Id = x.Id,
                                                 OnEvent = new InternalDocumentEvent
                                                 {
-                                                    TargetPositionId = x.OnEvent.TargetPositionId
+                                                    TargetPositionId = x.OnEvent.TargetPositionId,
+                                                    TargetPositionExecutorAgentId = x.OnEvent.TargetPositionExecutorAgentId,
                                                 }
                                         }
                                     }
@@ -1291,7 +1301,7 @@ namespace BL.Database.Documents
                     dbContext.DocumentsSet.Where(x => x.Id == model.Id).ToList()
                         .ForEach(x =>
                         {
-                            x.LinkId = model.ParentDocumentLinkId??model.ParentDocumentId;
+                            x.LinkId = model.ParentDocumentLinkId ?? model.ParentDocumentId;
                             x.LastChangeUserId = model.LastChangeUserId;
                             x.LastChangeDate = model.LastChangeDate;
                         });

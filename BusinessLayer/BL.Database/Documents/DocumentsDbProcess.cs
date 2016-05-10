@@ -795,7 +795,7 @@ namespace BL.Database.Documents
 
                 foreach (var x1 in docs.Join(links, d => d.Id, e => e.DocID, (d, e) => new { doc = d, ev = e }))
                 {
-                    x1.doc.LinkedDocumentsCount = x1.ev.LinkCnt;
+                    x1.doc.LinkedDocumentsCount = x1.ev.LinkCnt < 2 ? 0 : x1.ev.LinkCnt - 1;
                 }
 
                 docs.GroupJoin(CommonQueries.GetDocumentTags(dbContext, new FilterDocumentTag { DocumentId = docs.Select(x => x.Id).ToList(), CurrentPositionsId = ctx.CurrentPositionsIdList }),
@@ -886,7 +886,7 @@ namespace BL.Database.Documents
                 if (res.LinkId.HasValue)
                 {
                     res.LinkedDocuments = CommonQueries.GetLinkedDocuments(ctx, dbContext, res.LinkId.Value);
-                    res.LinkedDocumentsCount = res.LinkedDocuments.Count();
+                    res.LinkedDocumentsCount = res.LinkedDocuments.Count() < 2 ? 0 : res.LinkedDocuments.Count() - 1;
 
                     if ((filter?.DocumentsIdForAIP != null) && (filter.DocumentsIdForAIP.Any()))
                     {
@@ -1409,6 +1409,7 @@ namespace BL.Database.Documents
                 }
 
                 CommonQueries.AddFullTextCashInfo(dbContext, document.Id, EnumSearchObjectType.Document, EnumOperationType.Update);
+                CommonQueries.GetDocumentHash(dbContext, ctx, document.Id, false, false);
                 dbContext.SaveChanges();
 
             }
@@ -1640,7 +1641,7 @@ namespace BL.Database.Documents
                 entry.Property(x => x.RegistrationNumberPrefix).IsModified = true;
                 entry.Property(x => x.RegistrationDate).IsModified = true;
 
-                if (document.IsRegistered??false)
+                if (document.IsRegistered ?? false)
                 {
                     if (document.Events != null && document.Events.Any(x => x.Id == 0))
                     {
