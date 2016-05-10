@@ -7,13 +7,13 @@ namespace DMS_WebAPI.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class addfieldAgentIdAspNetUser : IMigrationMetadata
+    public sealed partial class AddLicencesInfo : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(addfieldAgentIdAspNetUser));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(AddLicencesInfo));
         
         string IMigrationMetadata.Id
         {
-            get { return "201601281134357_addfieldAgentIdAspNetUser"; }
+            get { return "201605101647457_AddLicencesInfo"; }
         }
         
         string IMigrationMetadata.Source

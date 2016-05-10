@@ -275,12 +275,13 @@
     <Compile Include="Controllers\System\CryptoController.cs" />
     <Compile Include="Controllers\System\HomeController.cs" />
     <Compile Include="Controllers\Documents\TemplateDocumentsController.cs" />
-    <Compile Include="Controllers\System\LicenseController.cs" />
+    <Compile Include="Controllers\System\LicenceController.cs" />
     <Compile Include="Controllers\System\ServersController.cs" />
     <Compile Include="Controllers\System\UsersController.cs" />
     <Compile Include="DBModel\AdminLanguages.cs" />
     <Compile Include="DBModel\AdminLanguageValues.cs" />
     <Compile Include="DBModel\AdminServers.cs" />
+    <Compile Include="DBModel\Licences.cs" />
     <Compile Include="DBModel\AspNetClients.cs" />
     <Compile Include="DBModel\AspNetUserServers.cs" />
     <Compile Include="DependencyInjection\ApiModel.cs" />

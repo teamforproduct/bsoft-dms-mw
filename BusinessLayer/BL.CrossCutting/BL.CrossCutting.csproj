@@ -48,6 +48,7 @@
     <Compile Include="CryptographicWorker\CryptoService.cs" />
     <Compile Include="CryptographicWorker\ICryptoService.cs" />
     <Compile Include="Helpers\ConvertToDataSet.cs" />
+    <Compile Include="Helpers\VerifyLicence.cs" />
     <Compile Include="Helpers\DmsHash.cs" />
     <Compile Include="Interfaces\ICommand.cs" />
     <Compile Include="Context\DefaultContext.cs" />

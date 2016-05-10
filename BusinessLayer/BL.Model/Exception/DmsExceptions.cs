@@ -29,6 +29,54 @@
     }
 
     /// <summary>
+    /// Сообщение при ошибке проверки данных о лицензии
+    /// Лицензия просрочена
+    /// </summary>
+    public class LicenceExpired : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:LicenceExpired@l##";
+        public LicenceExpired() : base(_MESSAGE)
+        {
+        }
+
+        public LicenceExpired(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+    /// <summary>
+    /// Сообщение при ошибке проверки данных о лицензии
+    /// Превышено количество зарегистрированных пользователей
+    /// </summary>
+    public class LicenceExceededNumberOfRegisteredUsers : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:LicenceExceededNumberOfRegisteredUsers@l##";
+        public LicenceExceededNumberOfRegisteredUsers() : base(_MESSAGE)
+        {
+        }
+
+        public LicenceExceededNumberOfRegisteredUsers(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+    /// <summary>
+    /// Сообщение при ошибке проверки данных о лицензии
+    /// Превышено количество подключенных пользователей
+    /// </summary>
+    public class LicenceExceededNumberOfConnectedUsers : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:LicenceExceededNumberOfConnectedUsers@l##";
+        public LicenceExceededNumberOfConnectedUsers() : base(_MESSAGE)
+        {
+        }
+
+        public LicenceExceededNumberOfConnectedUsers(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+    /// <summary>
     /// Сообщение при ошибке получения ключей
     /// </summary>
     public class CryptographicError : DmsExceptions

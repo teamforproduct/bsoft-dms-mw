@@ -8,7 +8,7 @@ using System.Web.Mvc;
 
 namespace DMS_WebAPI.Controllers
 {
-    public class LicenseController : Controller
+    public class LicenceController : Controller
     {
         public ActionResult ActivationProgram(int id)
         {

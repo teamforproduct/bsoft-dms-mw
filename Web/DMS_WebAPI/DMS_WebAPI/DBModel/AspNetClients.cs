@@ -15,12 +15,11 @@ namespace DMS_WebAPI.DBModel
         public string Name { get; set; }
 
         public DateTime? FirstStart { get; set; }
-
-        public string LicenceType { get; set; }
-
-        public int NumberOfConnections { get; set; }
-
-        public int DurationDay { get; set; }
+        public bool IsTrial { get; set; }
+        public int? NamedNumberOfConnections { get; set; }
+        public int? ConcurenteNumberOfConnections { get; set; }
+        public int? DurationDay { get; set; }
+        public string Functionals { get; set; }
 
         public string LicenceKey { get; set; }
 

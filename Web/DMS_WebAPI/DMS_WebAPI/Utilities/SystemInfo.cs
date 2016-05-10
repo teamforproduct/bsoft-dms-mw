@@ -57,15 +57,16 @@ namespace DMS_WebAPI.Utilities
         {
             var cpu = GetCPUKey();
             var disc = GetDiscKey("C:");
-            var clInfo = $"Id:{li.ClientId}/Name:{li.Name}/Lic:{li.LicType}/DT:{li.FirstStart}/NOC:{li.NumberOfConnections}/DD:{li.DateLimit}";
+            var clInfo = $"Id:{li.ClientId}/Name:{li.Name}/DT:{li.FirstStart}/DD:{li.DateLimit}/NNOC:{li.NamedNumberOfConnections}/CNOC:{li.ConcurenteNumberOfConnections}/Fun:{li.Functionals}";
 
-
-            if (string.IsNullOrEmpty(cpu) || string.IsNullOrEmpty(disc) || clInfo.Length <= 27)
+            //TODO
+            //if (string.IsNullOrEmpty(cpu) || string.IsNullOrEmpty(disc) || clInfo.Length <= 27)
+            if (string.IsNullOrEmpty(cpu) || string.IsNullOrEmpty(disc))
             {
                 throw new LicenceError();
             }
             var strinfo = $"{clInfo}+{cpu}+{disc}";
-            string res,hash;
+            string res, hash;
             using (var md5Hash = MD5.Create())
             {
                 byte[] data = md5Hash.ComputeHash(Encoding.UTF32.GetBytes(strinfo));
@@ -81,10 +82,10 @@ namespace DMS_WebAPI.Utilities
                     sBuilder.Append(data[i].ToString("x2"));
                 }
 
-                hash = sBuilder.ToString().ToUpper().Replace("0","").Replace("O", "").Replace("I", "").Replace("1", "");
+                hash = sBuilder.ToString().ToUpper().Replace("0", "").Replace("O", "").Replace("I", "").Replace("1", "");
             }
-            int part = hash.Length/8;
-            res = hash[0].ToString() + hash[hash.Length - 1] + hash[part] + hash[hash.Length - part] + hash[2*part] + hash[hash.Length - 2*part] + hash[3*part] + hash[hash.Length - 3*part];
+            int part = hash.Length / 8;
+            res = hash[0].ToString() + hash[hash.Length - 1] + hash[part] + hash[hash.Length - part] + hash[2 * part] + hash[hash.Length - 2 * part] + hash[3 * part] + hash[hash.Length - 3 * part];
             return res;
         }
     }
