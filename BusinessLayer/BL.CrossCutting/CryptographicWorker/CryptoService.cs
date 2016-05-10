@@ -4,7 +4,7 @@ using System;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace BL.CrossCutting.Helpers.Crypto
+namespace BL.CrossCutting.CryptographicWorker
 {
     internal class CryptoService : ICryptoService
     {
@@ -21,6 +21,8 @@ namespace BL.CrossCutting.Helpers.Crypto
                 // 13 to specify a DSA container or 1 to specify
                 // an RSA container.  The default is 1.
                 CspParameters cspParams = new CspParameters();
+
+                cspParams.Flags = CspProviderFlags.UseMachineKeyStore;
 
                 // Specify the container name using the passed variable.
                 cspParams.KeyContainerName = ContainerName;
@@ -40,32 +42,63 @@ namespace BL.CrossCutting.Helpers.Crypto
                 throw new CryptographicError();
             }
         }
-        
+
+        //TODO remove in release version
+        public string RSAPersistKeyInCSPExport(string ContainerName, bool IncludePrivateParameters)
+        {
+            //try
+            //{
+            // Create a new instance of CspParameters.  Pass
+            // 13 to specify a DSA container or 1 to specify
+            // an RSA container.  The default is 1.
+            CspParameters cspParams = new CspParameters();
+
+            cspParams.Flags = CspProviderFlags.UseMachineKeyStore;
+
+            // Specify the container name using the passed variable.
+            cspParams.KeyContainerName = ContainerName;
+
+            //Create a new instance of RSACryptoServiceProvider to generate
+            //a new key pair.  Pass the CspParameters class to persist the 
+            //key in the container.  The PersistKeyInCsp property is true by 
+            //default, allowing the key to be persisted. 
+            RSACryptoServiceProvider RSAalg = new RSACryptoServiceProvider(cspParams);
+
+            return RSAalg.ToXmlString(IncludePrivateParameters);
+            //}
+            //catch (CryptographicException ex)
+            //{
+            //    throw new CryptographicError();
+            //}
+        }
+
         //TODO remove in release version
         public void RSAPersistKeyInCSP(string ContainerName, string KeyXmlString)
         {
-            try
-            {
-                // Create a new instance of CspParameters.  Pass
-                // 13 to specify a DSA container or 1 to specify
-                // an RSA container.  The default is 1.
-                CspParameters cspParams = new CspParameters();
+            //try
+            //{
+            // Create a new instance of CspParameters.  Pass
+            // 13 to specify a DSA container or 1 to specify
+            // an RSA container.  The default is 1.
+            CspParameters cspParams = new CspParameters();
 
-                // Specify the container name using the passed variable.
-                cspParams.KeyContainerName = ContainerName;
+            cspParams.Flags = CspProviderFlags.UseMachineKeyStore;
 
-                //Create a new instance of RSACryptoServiceProvider to generate
-                //a new key pair.  Pass the CspParameters class to persist the 
-                //key in the container.  The PersistKeyInCsp property is true by 
-                //default, allowing the key to be persisted. 
-                RSACryptoServiceProvider RSAalg = new RSACryptoServiceProvider(cspParams);
+            // Specify the container name using the passed variable.
+            cspParams.KeyContainerName = ContainerName;
 
-                RSAalg.FromXmlString(KeyXmlString);
-            }
-            catch (CryptographicException ex)
-            {
-                throw new CryptographicError();
-            }
+            //Create a new instance of RSACryptoServiceProvider to generate
+            //a new key pair.  Pass the CspParameters class to persist the 
+            //key in the container.  The PersistKeyInCsp property is true by 
+            //default, allowing the key to be persisted. 
+            RSACryptoServiceProvider RSAalg = new RSACryptoServiceProvider(cspParams);
+
+            RSAalg.FromXmlString(KeyXmlString);
+            //}
+            //catch (CryptographicException ex)
+            //{
+            //    throw new CryptographicError();
+            //}
         }
 
         private RSAParameters RSAPersistKeyInCSP(string ContainerName, bool IncludePrivateParameters)
@@ -76,6 +109,8 @@ namespace BL.CrossCutting.Helpers.Crypto
                 // 13 to specify a DSA container or 1 to specify
                 // an RSA container.  The default is 1.
                 CspParameters cspParams = new CspParameters();
+
+                cspParams.Flags = CspProviderFlags.UseMachineKeyStore;
 
                 // Specify the container name using the passed variable.
                 cspParams.KeyContainerName = ContainerName;
@@ -102,6 +137,8 @@ namespace BL.CrossCutting.Helpers.Crypto
                 // 13 to specify a DSA container or 1 to specify
                 // an RSA container.  The default is 1.
                 CspParameters cspParams = new CspParameters();
+
+                cspParams.Flags = CspProviderFlags.UseMachineKeyStore;
 
                 // Specify the container name using the passed variable.
                 cspParams.KeyContainerName = ContainerName;

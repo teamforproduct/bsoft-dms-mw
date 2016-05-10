@@ -1,12 +1,13 @@
 ﻿using System.Security.Cryptography;
 
-namespace BL.CrossCutting.Helpers.Crypto
+namespace BL.CrossCutting.CryptographicWorker
 {
     public interface ICryptoService
     {
         #region RSAKey
         RSAParameters RSAPersistPublicKeyInCSP(string ContainerName, string PublicKeyXmlString);
-
+        //TODO remove in release version
+        string RSAPersistKeyInCSPExport(string ContainerName, bool IncludePrivateParameters);
         //TODO remove in release version
         void RSAPersistKeyInCSP(string ContainerName, string KeyXmlString);
         #endregion RSAKey

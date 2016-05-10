@@ -22,7 +22,7 @@ using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.FullTextSearch;
 using BL.Model.SystemCore;
-using BL.CrossCutting.Helpers.Crypto;
+using BL.CrossCutting.CryptographicWorker;
 
 namespace BL.Database.Common
 {

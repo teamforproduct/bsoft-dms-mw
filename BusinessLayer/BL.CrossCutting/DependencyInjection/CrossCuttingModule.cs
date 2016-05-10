@@ -1,5 +1,5 @@
-﻿using BL.CrossCutting.Helpers;
-using BL.CrossCutting.Helpers.Crypto;
+﻿using BL.CrossCutting.CryptographicWorker;
+using BL.CrossCutting.Helpers;
 using Ninject.Modules;
 
 namespace BL.CrossCutting.DependencyInjection
