@@ -310,6 +310,10 @@
     <Compile Include="Migrations\201605060918301_AddColumnLicenceKey.Designer.cs">
       <DependentUpon>201605060918301_AddColumnLicenceKey.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201605101921409_AddLicencesInfo.cs" />
+    <Compile Include="Migrations\201605101921409_AddLicencesInfo.Designer.cs">
+      <DependentUpon>201605101921409_AddLicencesInfo.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\LicenseViewModels.cs" />
@@ -435,6 +439,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201605060918301_AddColumnLicenceKey.resx">
       <DependentUpon>201605060918301_AddColumnLicenceKey.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605101921409_AddLicencesInfo.resx">
+      <DependentUpon>201605101921409_AddLicencesInfo.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
