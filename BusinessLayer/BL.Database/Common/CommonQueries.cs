@@ -1252,6 +1252,34 @@ namespace BL.Database.Common
                         entry.Property(x => x.SubscriptionStateId).IsModified = true;
                         entry.Property(x => x.LastChangeUserId).IsModified = true;
                         entry.Property(x => x.LastChangeDate).IsModified = true;
+
+                        var sendList = dbContext.DocumentSendListsSet
+                            .Where(x => x.StartEventId == subscription.SendEventId)
+                            .FirstOrDefault();
+
+                        sendList.StartEventId = null;
+                        sendList.CloseEventId = null;
+                        sendList.LastChangeUserId = ctx.CurrentAgentId;
+                        sendList.LastChangeDate = DateTime.Now;
+
+                        //TODO проверить поля
+                        //var eventDb = new DocumentEvents
+                        //{
+                        //    DocumentId = document.Id,
+                        //    EventTypeId = (int)EnumEventTypes.LaunchPlan,
+                        //    SourceAgentId = ctx.CurrentAgentId,
+                        //    SourcePositionId = ctx.CurrentPositionId,
+                        //    //SourcePositionExecutorAgentId = GetExecutorAgentIdByPositionId(context, sourcePositionId ?? context.CurrentPositionId),
+                        //    TargetPositionId = ctx.CurrentPositionId,
+                        //    //TargetPositionExecutorAgentId = GetExecutorAgentIdByPositionId(context, targetPositionId ?? context.CurrentPositionId),
+                        //    TargetAgentId = ctx.CurrentAgentId,
+                        //    LastChangeUserId = ctx.CurrentAgentId,
+                        //    LastChangeDate = DateTime.Now,
+                        //    Date = DateTime.Now,
+                        //    CreateDate = DateTime.Now,
+                        //};
+
+                        //dbContext.DocumentEventsSet.Add(eventDb);
                     }
                 }
             }
@@ -1437,6 +1465,7 @@ namespace BL.Database.Common
             var subscriptions = subscriptionsRes.Select(x => new InternalDocumentSubscription
             {
                 Id = x.Subscription.Id,
+                SendEventId = x.Subscription.SendEventId,
                 SubscriptionStates = (EnumSubscriptionStates)x.Subscription.SubscriptionStateId,
                 Hash = x.Subscription.Hash,
                 FullHash = x.Subscription.FullHash
