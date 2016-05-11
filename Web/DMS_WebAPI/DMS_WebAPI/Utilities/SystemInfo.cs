@@ -74,7 +74,7 @@ namespace DMS_WebAPI.Utilities
         }
         public string GetLicenceRegCode(LicenceInfo li)
         {
-            var clInfo = $"Id:{li.ClientId}/Name:{li.Name}/DT:{li.FirstStart.ToString("s")}/DD:{li.DateLimit}/NNOC:{li.NamedNumberOfConnections}/CNOC:{li.ConcurenteNumberOfConnections}/Fun:{li.Functionals}";
+            var clInfo = $"Id:{li.ClientId}/Name:{li.Name}/DT:{li.FirstStart.ToString("yyyy-MM-ddTHH:mm")}/DD:{li.DateLimit}/NNOC:{li.NamedNumberOfConnections}/CNOC:{li.ConcurenteNumberOfConnections}/Fun:{li.Functionals}";
 
             string res, hash;
 
