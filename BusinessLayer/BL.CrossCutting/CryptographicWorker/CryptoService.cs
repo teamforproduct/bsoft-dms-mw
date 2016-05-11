@@ -1,6 +1,7 @@
 ﻿using BL.Model.Constants;
 using BL.Model.Exception;
 using System;
+using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -8,9 +9,19 @@ namespace BL.CrossCutting.CryptographicWorker
 {
     internal class CryptoService : ICryptoService
     {
-        public CryptoService()
+
+        #region Convert
+        private byte[] GetBytes(string data)
         {
+            return Encoding.UTF8.GetBytes(data);
         }
+
+        private string GetString(byte[] data)
+        {
+            return BitConverter.ToString(data).Replace("-", String.Empty);
+        }
+
+        #endregion Convert
 
         #region RSAKey
         public RSAParameters RSAPersistPublicKeyInCSP(string ContainerName, string PublicKeyXmlString)
@@ -181,13 +192,13 @@ namespace BL.CrossCutting.CryptographicWorker
         /// <returns></returns>
         public string HashAndSignString(string DataToSign, string KeyName)
         {
-            byte[] dataToSign = Encoding.Default.GetBytes(DataToSign);
+            byte[] dataToSign = GetBytes(DataToSign);
 
             RSAParameters key = RSAPersistKeyInCSP(KeyName, true);
 
             byte[] hash = HashAndSignBytes(dataToSign, key);
 
-            return BitConverter.ToString(hash).Replace("-", String.Empty);
+            return GetString(hash);
         }
 
         /// <summary>
@@ -259,8 +270,8 @@ namespace BL.CrossCutting.CryptographicWorker
         /// <returns></returns>
         public bool VerifySignedHash(string DataToVerify, string SignedData, string KeyName)
         {
-            byte[] dataToVerify = Encoding.Default.GetBytes(DataToVerify);
-            byte[] signedData = Encoding.Default.GetBytes(SignedData);
+            byte[] dataToVerify = GetBytes(DataToVerify);
+            byte[] signedData = GetBytes(SignedData);
 
             RSAParameters key = RSAPersistKeyInCSP(KeyName, false);
 
@@ -320,5 +331,53 @@ namespace BL.CrossCutting.CryptographicWorker
             }
         }
         #endregion SignData
+
+        #region HashData
+
+        public byte[] GetHash(byte[] data)
+        {
+            return new SHA512Managed().ComputeHash(data);
+        }
+
+        public byte[] GetHash(Stream data)
+        {
+            return new SHA512Managed().ComputeHash(data);
+        }
+
+        public string GetHashString(Stream data)
+        {
+            return GetString(GetHash(data));
+        }
+
+        public string GetHashString(string data)
+        {
+            return GetString(GetHash(GetBytes(data)));
+        }
+
+        public bool VerifyHash(byte[] data, string hash)
+        {
+            if (string.IsNullOrEmpty(hash))
+                return false;
+
+            return hash.Equals(GetString(this.GetHash(data)));
+        }
+
+        public bool VerifyHash(Stream data, string hash)
+        {
+            if (string.IsNullOrEmpty(hash))
+                return false;
+
+            return hash.Equals(GetHashString(data));
+        }
+
+        public bool VerifyHash(string data, string hash)
+        {
+            if (string.IsNullOrEmpty(hash))
+                return false;
+
+            return hash.Equals(GetHashString(data));
+        }
+
+        #endregion HashData
     }
 }

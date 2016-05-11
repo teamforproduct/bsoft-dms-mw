@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using System.IO;
+using System.Security.Cryptography;
 
 namespace BL.CrossCutting.CryptographicWorker
 {
@@ -22,5 +23,15 @@ namespace BL.CrossCutting.CryptographicWorker
         bool VerifySignedHash(byte[] DataToVerify, byte[] SignedData);
         bool VerifySignedHash(byte[] DataToVerify, byte[] SignedData, string KeyName);
         #endregion SignData
+
+        #region HashData
+        byte[] GetHash(byte[] data);
+        byte[] GetHash(Stream data);
+        string GetHashString(Stream data);
+        string GetHashString(string data);
+        bool VerifyHash(byte[] data, string hash);
+        bool VerifyHash(Stream data, string hash);
+        bool VerifyHash(string data, string hash);
+        #endregion HashData
     }
 }
