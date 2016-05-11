@@ -1254,14 +1254,16 @@ namespace BL.Database.Common
                         entry.Property(x => x.LastChangeDate).IsModified = true;
 
                         var sendList = dbContext.DocumentSendListsSet
-                            .Where(x => x.StartEventId == subscription.SendEventId)
+                            .Where(x => x.StartEventId == subscription.SendEventId && x.IsInitial)
                             .FirstOrDefault();
 
-                        sendList.StartEventId = null;
-                        sendList.CloseEventId = null;
-                        sendList.LastChangeUserId = ctx.CurrentAgentId;
-                        sendList.LastChangeDate = DateTime.Now;
-
+                        if (sendList != null)
+                        {
+                            sendList.StartEventId = null;
+                            sendList.CloseEventId = null;
+                            sendList.LastChangeUserId = ctx.CurrentAgentId;
+                            sendList.LastChangeDate = DateTime.Now;
+                        }
                         //TODO проверить поля
                         //var eventDb = new DocumentEvents
                         //{
