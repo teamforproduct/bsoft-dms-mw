@@ -75,9 +75,8 @@ namespace BL.Logic.SystemServices.AutoPlan
             return res;
         }
 
-        public bool ManualRunAutoPlan(IContext userContext)
+        public bool ManualRunAutoPlan(IContext userContext, int? sendListId = null)
         {
-            return true;
             var srvKey = CommonSystemUtilities.GetServerKey(userContext);
 
             var ctx = GetAdminContext(srvKey);
@@ -90,7 +89,7 @@ namespace BL.Logic.SystemServices.AutoPlan
             {
                 try
                 {
-                    var lst = _sysDb.GetSendListIdsForAutoPlan(ctx);
+                    var lst = _sysDb.GetSendListIdsForAutoPlan(ctx, sendListId);
                     foreach (int id in lst)
                     {
                         try
@@ -112,7 +111,7 @@ namespace BL.Logic.SystemServices.AutoPlan
             wrkr.AddToQueue(wrkUnit);
 
             // here we can do it through manual or automate reset events or analize wrkr.WorkCompleted event, but do it just stupped and simple
-            while (wrkUnit.Status != EnumWorkStatus.Success || wrkUnit.Status != EnumWorkStatus.Error)
+            while (wrkUnit.Status != EnumWorkStatus.Success && wrkUnit.Status != EnumWorkStatus.Error)
             {
                 Thread.Sleep(50);
             }
