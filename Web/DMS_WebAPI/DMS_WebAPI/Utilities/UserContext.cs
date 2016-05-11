@@ -138,7 +138,7 @@ namespace DMS_WebAPI.Utilities
 
             var context = (IContext)contextValue.StoreObject;
 
-            VerifyNumberOfConnections(context, true);
+            VerifyNumberOfConnections(context, db.ClientId, true);
 
             contextValue.LastUsage = DateTime.Now;
 
@@ -178,19 +178,22 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        public void VerifyNumberOfConnections(IContext context, bool isAddNew = false)
+        public void VerifyNumberOfConnections(IContext context, int? clientId = null, bool isAddNew = false)
         {
             if (context == null) return;
-            var clientId = context.CurrentClientId;
+            if (!clientId.HasValue)
+                clientId = context.CurrentClientId;
             if (!clientId.HasValue) return;
 
             var si = new SystemInfo();
-            var dbw = new SystemDbWorker();
 
             var lic = context.ClientLicence;
 
             if (lic == null)
-                lic = dbw.GetLicenceInfo(clientId.GetValueOrDefault());
+            {
+                var sdbw = new SystemDbWorker();
+                lic = sdbw.GetLicenceInfo(clientId.GetValueOrDefault());
+            }
 
             var regCode = si.GetRegCode(lic);
 

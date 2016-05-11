@@ -11,6 +11,8 @@ namespace BL.CrossCutting.DependencyInjection
             Bind<IConnectionHelper>().To<ConnectionHelper>().InSingletonScope();
 
             Bind<ICryptoService>().To<CryptoService>().InSingletonScope();
+
+            Bind<IConvertToDataSet>().To<ConvertToDataSet>().InSingletonScope();
         }
     }
 }

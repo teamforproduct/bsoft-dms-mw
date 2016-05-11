@@ -1225,11 +1225,11 @@ namespace BL.Database.Common
                 }
             }
 
-            document.Hash = CommonQueries.GetHashAndSignDocument(document);
+            document.Hash = CommonQueries.GetDocumentHash(document);
 
             if (isFull || isAddSubscription)
             {
-                document.FullHash = CommonQueries.GetHashAndSignDocument(document, true);
+                document.FullHash = CommonQueries.GetDocumentHash(document, true);
             }
 
             if (subscriptions.Any())
@@ -1237,8 +1237,8 @@ namespace BL.Database.Common
                 StringComparer comparer = StringComparer.OrdinalIgnoreCase;
                 foreach (var subscription in subscriptions)
                 {
-                    if (VerifyDocumentSignedHash(subscription.Hash, document) ||
-                        ((isFull || isAddSubscription) && VerifyDocumentSignedHash(subscription.FullHash, document, true)))
+                    if (VerifyDocumentHash(subscription.Hash, document) ||
+                        ((isFull || isAddSubscription) && VerifyDocumentHash(subscription.FullHash, document, true)))
                     {
                         var subscriptionDb = new DocumentSubscriptions
                         {
@@ -1311,7 +1311,7 @@ namespace BL.Database.Common
             return doc;
         }
 
-        private static string GetStringDocumentForSignDocument(InternalDocument doc, bool isFull = false)
+        private static string GetStringDocumentForDocumentHash(InternalDocument doc, bool isFull = false)
         {
             StringBuilder stringDocument = new StringBuilder();
 
@@ -1355,20 +1355,20 @@ namespace BL.Database.Common
 
             return stringDocument.ToString();
         }
-        public static string GetHashAndSignDocument(InternalDocument doc, bool isFull = false)
+        public static string GetDocumentHash(InternalDocument doc, bool isFull = false)
         {
-            string stringDocument = GetStringDocumentForSignDocument(doc, isFull);
+            string stringDocument = GetStringDocumentForDocumentHash(doc, isFull);
 
-            string hash = DmsResolver.Current.Get<ICryptoService>().HashAndSignString(stringDocument);
+            string hash = DmsResolver.Current.Get<ICryptoService>().GetHash(stringDocument);
 
             return hash;
         }
 
-        public static bool VerifyDocumentSignedHash(string hash, InternalDocument doc, bool isFull = false)
+        public static bool VerifyDocumentHash(string hash, InternalDocument doc, bool isFull = false)
         {
-            string stringDocument = GetStringDocumentForSignDocument(doc, isFull);
+            string stringDocument = GetStringDocumentForDocumentHash(doc, isFull);
 
-            return DmsResolver.Current.Get<ICryptoService>().VerifySignedHash(stringDocument, hash);
+            return DmsResolver.Current.Get<ICryptoService>().VerifyHash(stringDocument, hash);
         }
 
         public static List<InternalDictionaryPositionWithActions> GetPositionWithActions(IContext context, DmsContext dbContext, List<int> positionAccesses)

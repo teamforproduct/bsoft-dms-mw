@@ -10,20 +10,34 @@ namespace BL.CrossCutting.CryptographicWorker
     internal class CryptoService : ICryptoService
     {
 
+        private const string _RSAPublicKeyXmlByLicence = "<RSAKeyValue><Modulus>sBRZy9xvw7FWdb5EHd79H8f2D4+JP3yokrbKpCgFbcwCEPPZpGUj07poBM9MvrIXEIHoahIYVw3UqWCLvFFL6Cb+u3zrOTaNmCNyXdZ4H/28sskfuBtVzXjllzwEkrcJg0NfSmCbjw/9YFUYEdl1ZTUL40pN8Kuk1Wr1f/wP+wk=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue>";
+
         #region Convert
-        private byte[] GetBytes(string data)
+        private byte[] GetBytesByData(string data)
         {
             return Encoding.UTF8.GetBytes(data);
         }
 
-        private string GetString(byte[] data)
+        private string GetStringByData(byte[] data)
         {
             return BitConverter.ToString(data).Replace("-", String.Empty);
+        }
+
+        private byte[] GetBytesByBase64(string data)
+        {
+            return Convert.FromBase64String(data);
+        }
+
+        private string GetStringByBase64(byte[] data)
+        {
+            return Convert.ToBase64String(data);
         }
 
         #endregion Convert
 
         #region RSAKey
+
+        //TODO
         public RSAParameters RSAPersistPublicKeyInCSP(string ContainerName, string PublicKeyXmlString)
         {
             try
@@ -140,36 +154,36 @@ namespace BL.CrossCutting.CryptographicWorker
             }
         }
 
-        private void RSADeleteKeyInCSP(string ContainerName)
-        {
-            try
-            {
-                // Create a new instance of CspParameters.  Pass
-                // 13 to specify a DSA container or 1 to specify
-                // an RSA container.  The default is 1.
-                CspParameters cspParams = new CspParameters();
+        //private void RSADeleteKeyInCSP(string ContainerName)
+        //{
+        //    try
+        //    {
+        //        // Create a new instance of CspParameters.  Pass
+        //        // 13 to specify a DSA container or 1 to specify
+        //        // an RSA container.  The default is 1.
+        //        CspParameters cspParams = new CspParameters();
 
-                cspParams.Flags = CspProviderFlags.UseMachineKeyStore;
+        //        cspParams.Flags = CspProviderFlags.UseMachineKeyStore;
 
-                // Specify the container name using the passed variable.
-                cspParams.KeyContainerName = ContainerName;
+        //        // Specify the container name using the passed variable.
+        //        cspParams.KeyContainerName = ContainerName;
 
-                //Create a new instance of RSACryptoServiceProvider. 
-                //Pass the CspParameters class to use the 
-                //key in the container.
-                RSACryptoServiceProvider RSAalg = new RSACryptoServiceProvider(cspParams);
+        //        //Create a new instance of RSACryptoServiceProvider. 
+        //        //Pass the CspParameters class to use the 
+        //        //key in the container.
+        //        RSACryptoServiceProvider RSAalg = new RSACryptoServiceProvider(cspParams);
 
-                //Explicitly set the PersistKeyInCsp property to false
-                //to delete the key entry in the container.
-                RSAalg.PersistKeyInCsp = false;
+        //        //Explicitly set the PersistKeyInCsp property to false
+        //        //to delete the key entry in the container.
+        //        RSAalg.PersistKeyInCsp = false;
 
-                //Call Clear to release resources and delete the key from the container.
-                RSAalg.Clear();
-            }
-            catch (CryptographicException ex)
-            {
-            }
-        }
+        //        //Call Clear to release resources and delete the key from the container.
+        //        RSAalg.Clear();
+        //    }
+        //    catch (CryptographicException ex)
+        //    {
+        //    }
+        //}
 
         #endregion RSAKey
 
@@ -192,13 +206,13 @@ namespace BL.CrossCutting.CryptographicWorker
         /// <returns></returns>
         public string HashAndSignString(string DataToSign, string KeyName)
         {
-            byte[] dataToSign = GetBytes(DataToSign);
+            byte[] dataToSign = GetBytesByData(DataToSign);
 
             RSAParameters key = RSAPersistKeyInCSP(KeyName, true);
 
             byte[] hash = HashAndSignBytes(dataToSign, key);
 
-            return GetString(hash);
+            return GetStringByBase64(hash);
         }
 
         /// <summary>
@@ -270,8 +284,8 @@ namespace BL.CrossCutting.CryptographicWorker
         /// <returns></returns>
         public bool VerifySignedHash(string DataToVerify, string SignedData, string KeyName)
         {
-            byte[] dataToVerify = GetBytes(DataToVerify);
-            byte[] signedData = GetBytes(SignedData);
+            byte[] dataToVerify = GetBytesByData(DataToVerify);
+            byte[] signedData = GetBytesByBase64(SignedData);
 
             RSAParameters key = RSAPersistKeyInCSP(KeyName, false);
 
@@ -334,24 +348,19 @@ namespace BL.CrossCutting.CryptographicWorker
 
         #region HashData
 
-        public byte[] GetHash(byte[] data)
+        public string GetHash(byte[] data)
         {
-            return new SHA512Managed().ComputeHash(data);
+            return GetStringByData(new SHA512Managed().ComputeHash(data));
         }
 
-        public byte[] GetHash(Stream data)
+        public string GetHash(Stream data)
         {
-            return new SHA512Managed().ComputeHash(data);
+            return GetStringByData(new SHA512Managed().ComputeHash(data));
         }
 
-        public string GetHashString(Stream data)
+        public string GetHash(string data)
         {
-            return GetString(GetHash(data));
-        }
-
-        public string GetHashString(string data)
-        {
-            return GetString(GetHash(GetBytes(data)));
+            return GetHash(GetBytesByData(data));
         }
 
         public bool VerifyHash(byte[] data, string hash)
@@ -359,7 +368,7 @@ namespace BL.CrossCutting.CryptographicWorker
             if (string.IsNullOrEmpty(hash))
                 return false;
 
-            return hash.Equals(GetString(this.GetHash(data)));
+            return hash.Equals(this.GetHash(data));
         }
 
         public bool VerifyHash(Stream data, string hash)
@@ -367,7 +376,7 @@ namespace BL.CrossCutting.CryptographicWorker
             if (string.IsNullOrEmpty(hash))
                 return false;
 
-            return hash.Equals(GetHashString(data));
+            return hash.Equals(GetHash(data));
         }
 
         public bool VerifyHash(string data, string hash)
@@ -375,9 +384,31 @@ namespace BL.CrossCutting.CryptographicWorker
             if (string.IsNullOrEmpty(hash))
                 return false;
 
-            return hash.Equals(GetHashString(data));
+            return hash.Equals(GetHash(data));
         }
 
         #endregion HashData
+
+        #region Licence
+        public bool VerifyLicenceKey(string regCode, string licKey)
+        {
+            try
+            {
+                RSACryptoServiceProvider RSAalg = new RSACryptoServiceProvider();
+
+                RSAalg.FromXmlString(_RSAPublicKeyXmlByLicence);
+
+                byte[] dataToVerify = GetBytesByData(regCode);
+                byte[] signedData = GetBytesByBase64(licKey);
+
+                return RSAalg.VerifyData(dataToVerify, new SHA512CryptoServiceProvider(), signedData);
+
+            }
+            catch (CryptographicException ex)
+            {
+                return false;
+            }
+        }
+        #endregion Licence
     }
 }

@@ -273,7 +273,6 @@
     <Compile Include="Controllers\Documents\DocumentsController.cs" />
     <Compile Include="Controllers\Documents\DocumentSendListStagesController.cs" />
     <Compile Include="Controllers\Documents\DocumentSendListsController.cs" />
-    <Compile Include="Controllers\System\CryptoController.cs" />
     <Compile Include="Controllers\System\HomeController.cs" />
     <Compile Include="Controllers\Documents\TemplateDocumentsController.cs" />
     <Compile Include="Controllers\System\ServersController.cs" />

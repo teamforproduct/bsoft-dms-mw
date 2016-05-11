@@ -3,6 +3,8 @@ using System.Security.Cryptography;
 using System.Text;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
+using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.CryptographicWorker;
 
 namespace DMS_WebAPI.Utilities
 {
@@ -53,40 +55,43 @@ namespace DMS_WebAPI.Utilities
             return "";
         }
 
-        public string GetRegCode(LicenceInfo li)
+        public string GetProgramRegCode()
         {
             var cpu = GetCPUKey();
             var disc = GetDiscKey("C:");
-            var clInfo = $"Id:{li.ClientId}/Name:{li.Name}/DT:{li.FirstStart}/DD:{li.DateLimit}/NNOC:{li.NamedNumberOfConnections}/CNOC:{li.ConcurenteNumberOfConnections}/Fun:{li.Functionals}";
 
-            //TODO
-            //if (string.IsNullOrEmpty(cpu) || string.IsNullOrEmpty(disc) || clInfo.Length <= 27)
             if (string.IsNullOrEmpty(cpu) || string.IsNullOrEmpty(disc))
             {
                 throw new LicenceError();
             }
-            var strinfo = $"{clInfo}+{cpu}+{disc}";
+            var strinfo = $"{cpu}+{disc}";
             string res, hash;
-            using (var md5Hash = MD5.Create())
-            {
-                byte[] data = md5Hash.ComputeHash(Encoding.UTF32.GetBytes(strinfo));
-
-                // Create a new Stringbuilder to collect the bytes
-                // and create a string.
-                StringBuilder sBuilder = new StringBuilder();
-
-                // Loop through each byte of the hashed data 
-                // and format each one as a hexadecimal string.
-                for (int i = 0; i < data.Length; i++)
-                {
-                    sBuilder.Append(data[i].ToString("x2"));
-                }
-
-                hash = sBuilder.ToString().ToUpper().Replace("0", "").Replace("O", "").Replace("I", "").Replace("1", "");
-            }
+            hash = DmsResolver.Current.Get<ICryptoService>().GetHash(strinfo);
+            hash = hash.ToUpper().Replace("0", "").Replace("O", "").Replace("I", "").Replace("1", "");
             int part = hash.Length / 8;
             res = hash[0].ToString() + hash[hash.Length - 1] + hash[part] + hash[hash.Length - part] + hash[2 * part] + hash[hash.Length - 2 * part] + hash[3 * part] + hash[hash.Length - 3 * part];
             return res;
+        }
+        public string GetLicenceRegCode(LicenceInfo li)
+        {
+            var clInfo = $"Id:{li.ClientId}/Name:{li.Name}/DT:{li.FirstStart.ToString("s")}/DD:{li.DateLimit}/NNOC:{li.NamedNumberOfConnections}/CNOC:{li.ConcurenteNumberOfConnections}/Fun:{li.Functionals}";
+
+            string res, hash;
+
+            hash = DmsResolver.Current.Get<ICryptoService>().GetHash(clInfo);
+
+            hash = hash.ToUpper().Replace("0", "").Replace("O", "").Replace("I", "").Replace("1", "");
+
+            int part = hash.Length / 8;
+
+            res = hash[0].ToString() + hash[hash.Length - 1] + hash[part] + hash[hash.Length - part] + hash[2 * part] + hash[hash.Length - 2 * part] + hash[3 * part] + hash[hash.Length - 3 * part];
+
+            return res;
+        }
+
+        public string GetRegCode(LicenceInfo li)
+        {
+            return GetProgramRegCode() + GetLicenceRegCode(li);
         }
     }
 }

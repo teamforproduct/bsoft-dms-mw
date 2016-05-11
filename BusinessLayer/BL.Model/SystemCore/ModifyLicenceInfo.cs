@@ -7,6 +7,7 @@ namespace BL.Model.SystemCore
     {
         [Required]
         public int ClientId { get; set; }
+        public string Name { get; set; }
         public DateTime FirstStart { get; set; }
         /// <summary>
         /// Только для информации

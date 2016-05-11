@@ -4,6 +4,9 @@ using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
 using DMS_WebAPI.Models;
+using System.IO;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace DMS_WebAPI.Utilities
 {
@@ -27,7 +30,7 @@ namespace DMS_WebAPI.Utilities
             return GetLicenceInfo(clientId.Value);
         }
 
-        public LicenceInfo GetLicenceInfo(int clientId)
+        public LicenceInfo GetLicenceInfo(int clientId, bool isRereadLicense = true)
         {
             using (var dbContext = new ApplicationDbContext())
             {
@@ -93,6 +96,13 @@ namespace DMS_WebAPI.Utilities
 
                         LicenceKey = cl.LicenceKey,
                     };
+
+                    if (isRereadLicense && string.IsNullOrEmpty(li.LicenceKey))
+                    {
+                        SetLicence(clientId);
+
+                        return GetLicenceInfo(clientId, false);
+                    }
                     return li;
                 }
                 throw new LicenceError();
@@ -106,6 +116,7 @@ namespace DMS_WebAPI.Utilities
                 var client = new DBModel.AspNetClients
                 {
                     Id = lic.ClientId,
+                    Name = lic.Name,
                     FirstStart = lic.FirstStart,
                     IsTrial = lic.IsTrial,
                     NamedNumberOfConnections = lic.NamedNumberOfConnections,
@@ -116,6 +127,7 @@ namespace DMS_WebAPI.Utilities
 
                 dbContext.AspNetClientsSet.Attach(client);
                 var entry = dbContext.Entry(client);
+                entry.Property(x => x.Name).IsModified = true;
                 entry.Property(x => x.FirstStart).IsModified = true;
                 entry.Property(x => x.IsTrial).IsModified = true;
                 entry.Property(x => x.NamedNumberOfConnections).IsModified = true;
@@ -139,6 +151,41 @@ namespace DMS_WebAPI.Utilities
                     return;
                 }
                 throw new LicenceError();
+            }
+        }
+
+        public void SetLicence(int clientId)
+        {
+            try
+            {
+                using (StreamReader sr = new StreamReader(System.Web.Hosting.HostingEnvironment.MapPath("~/lic.ini")))
+                {
+                    // Read the stream to a string, and write the string to the console.
+                    string lines = sr.ReadToEnd();
+                    var lics = JsonConvert.DeserializeObject<List<LicenceInfo>>(lines);
+
+                    var lic = lics.FirstOrDefault(x => x.ClientId == clientId);
+
+                    if (lic == null)
+                        throw new LicenceError();
+
+                    SaveLicenceInfo(new ModifyLicenceInfo
+                    {
+                        ClientId = lic.ClientId,
+                        Name = lic.Name,
+                        FirstStart = lic.FirstStart,
+                        DurationDay = lic.DateLimit,
+                        NamedNumberOfConnections = lic.NamedNumberOfConnections,
+                        ConcurenteNumberOfConnections = lic.ConcurenteNumberOfConnections,
+                        Functionals = lic.Functionals
+                    });
+
+                    SaveLicenceKey(lic.ClientId, lic.LicenceKey);
+                }
+            }
+            catch (Exception ex)
+            {
+
             }
         }
     }
