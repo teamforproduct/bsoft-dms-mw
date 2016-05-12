@@ -1,5 +1,5 @@
-﻿using BL.CrossCutting.Helpers;
-using BL.CrossCutting.Helpers.Crypto;
+﻿using BL.CrossCutting.CryptographicWorker;
+using BL.CrossCutting.Helpers;
 using Ninject.Modules;
 
 namespace BL.CrossCutting.DependencyInjection
@@ -11,6 +11,8 @@ namespace BL.CrossCutting.DependencyInjection
             Bind<IConnectionHelper>().To<ConnectionHelper>().InSingletonScope();
 
             Bind<ICryptoService>().To<CryptoService>().InSingletonScope();
+
+            Bind<IConvertToDataSet>().To<ConvertToDataSet>().InSingletonScope();
         }
     }
 }

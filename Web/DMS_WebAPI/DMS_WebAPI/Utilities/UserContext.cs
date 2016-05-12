@@ -8,6 +8,7 @@ using BL.Model.Exception;
 using System.Linq;
 using BL.CrossCutting.Context;
 using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Helpers;
 
 namespace DMS_WebAPI.Utilities
 {
@@ -34,8 +35,12 @@ namespace DMS_WebAPI.Utilities
             var contextValue = _casheContexts[token];
             try
             {
-                contextValue.LastUsage = DateTime.Now;
                 var cxt = (IContext)contextValue.StoreObject;
+
+                VerifyNumberOfConnections(cxt);
+
+                contextValue.LastUsage = DateTime.Now;
+
                 var request_ctx = new DefaultContext(cxt);
                 request_ctx.SetCurrentPosition(currentPositionId);
                 return request_ctx;
@@ -131,8 +136,11 @@ namespace DMS_WebAPI.Utilities
 
             var contextValue = _casheContexts[token];
 
-            contextValue.LastUsage = DateTime.Now;
             var context = (IContext)contextValue.StoreObject;
+
+            VerifyNumberOfConnections(context, db.ClientId, true);
+
+            contextValue.LastUsage = DateTime.Now;
 
             context.CurrentDB = db;
 
@@ -168,6 +176,42 @@ namespace DMS_WebAPI.Utilities
             {
                 _casheContexts.Remove(key);
             }
+        }
+
+        public void VerifyNumberOfConnections(IContext context, int? clientId = null, bool isAddNew = false)
+        {
+            if (context == null) return;
+            if (!clientId.HasValue)
+                clientId = context.CurrentClientId;
+            if (!clientId.HasValue) return;
+
+            var si = new SystemInfo();
+
+            var lic = context.ClientLicence;
+
+            if (lic == null)
+            {
+                var sdbw = new SystemDbWorker();
+                lic = sdbw.GetLicenceInfo(clientId.GetValueOrDefault());
+            }
+
+            var regCode = si.GetRegCode(lic);
+
+            if (lic.IsConcurenteLicence)
+            {
+                var now = DateTime.Now.AddMinutes(-5);
+                var count = _casheContexts
+                    .Where(x => x.Value.LastUsage > now)
+                    .Select(x => (IContext)x.Value.StoreObject)
+                    .Count(x => x.CurrentClientId == clientId);
+
+                if (isAddNew) count++;
+
+                lic.ConcurenteNumberOfConnectionsNow = count;
+            }
+
+            VerifyLicence.Verify(regCode, lic);
+
         }
 
         public void ClearCache()

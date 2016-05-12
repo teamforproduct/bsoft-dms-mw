@@ -108,5 +108,17 @@ namespace DMS_WebAPI.Controllers
 
             return new JsonResult(null, this);
         }
+
+        /// <summary>
+        /// Получить код програмы
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [Route("RegCode")]
+        [HttpGet]
+        public IHttpActionResult GetRegCode(int id)
+        {
+            return new JsonResult(new SystemInfo().GetProgramRegCode(), this);
+        }
     }
 }

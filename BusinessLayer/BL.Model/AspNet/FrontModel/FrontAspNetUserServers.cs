@@ -8,6 +8,6 @@ namespace BL.Model.AspNet.FrontModel
         public int ServerId { get; set; }
         public string UserId { get; set; }
         public string ServerName { get; set; }
-        public string ClientName { get; set; }
+        public string UserName { get; set; }
     }
 }

@@ -52,5 +52,6 @@ namespace DMS_WebAPI.Models
         public virtual DbSet<AdminServers> AdminServersSet { get; set; }
         public virtual DbSet<DBModel.AspNetClients> AspNetClientsSet { get; set; }
         public virtual DbSet<DBModel.AspNetUserServers> AspNetUserServersSet { get; set; }
+        public virtual DbSet<DBModel.AspNetLicences> AspNetLicencesSet { get; set; }
     }
 }

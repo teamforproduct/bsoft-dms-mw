@@ -19,8 +19,9 @@ namespace DMS_WebAPI
         public void Configuration(IAppBuilder app)
         {
             ConfigureAuth(app);
+
             var srv = new Servers();
-            var dbs = srv.GetServers().Where(x=>x.ServerType == DatabaseType.SQLServer);
+            var dbs = srv.GetServers().Where(x => x.ServerType == DatabaseType.SQLServer);
 
             //foreach (var srv in DmsResolver.Current.GetAll<ISystemWorkerService>())
             //{

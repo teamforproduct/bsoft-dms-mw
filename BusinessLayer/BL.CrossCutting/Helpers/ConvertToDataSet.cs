@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 
 namespace BL.CrossCutting.Helpers
 {
-    public static class ConvertToDataSet
+    public class ConvertToDataSet: IConvertToDataSet
     {
-        private static string _methodNameByClassListToDataTable => "ClassListToDataTable";
-        private static string _methodNameByClassDataToDataTable => "ClassDataToDataTable";
+        private const string _methodNameByClassListToDataTable = "ClassListToDataTable";
+        private const string _methodNameByClassDataToDataTable = "ClassDataToDataTable";
 
         /// <summary>
         /// Возвращает DataTable по названию класса, если в DataSet не найдено такой таблици, тогда возвращает new DataTable() 
@@ -20,7 +20,7 @@ namespace BL.CrossCutting.Helpers
         /// <typeparam name="T"></typeparam>
         /// <param name="dataSet"></param>
         /// <returns>DataTable</returns>
-        private static DataTable ClassToDataTable<T>(DataSet dataSet) where T : class
+        private DataTable ClassToDataTable<T>(DataSet dataSet) where T : class
         {
             if (dataSet == null)
                 return new DataTable();
@@ -33,45 +33,6 @@ namespace BL.CrossCutting.Helpers
             else
                 return new DataTable();
 
-            //List<PropertyInfo> propertyList = classType.GetProperties().ToList();
-            //if (propertyList.Count < 1)
-            //{
-            //    return new DataTable();
-            //}
-
-            //string className = classType.UnderlyingSystemType.Name;
-            //DataTable result = new DataTable(className);
-
-            //foreach (PropertyInfo property in propertyList)
-            //{
-            //    DataColumn col = new DataColumn();
-            //    col.ColumnName = property.Name;
-
-            //    Type dataType = property.PropertyType;
-
-            //    if (IsNullable(dataType))
-            //    {
-            //        if (dataType.IsGenericType)
-            //        {
-            //            dataType = dataType.GenericTypeArguments.FirstOrDefault();
-            //        }
-            //    }
-            //    else
-            //    {   // True by default
-            //        col.AllowDBNull = false;
-            //    }
-
-            //    col.DataType = dataType;
-
-            //    if (dataType.IsValueType)
-            //    {
-            //        result.Columns.Add(col);
-            //    }
-            //}
-
-            //dataSet.Tables.Add(result);
-
-            //return result;
         }
 
         /// <summary>
@@ -80,7 +41,7 @@ namespace BL.CrossCutting.Helpers
         /// <typeparam name="T"></typeparam>
         /// <param name="data"></param>
         /// <param name="dataSet"></param>
-        private static void ClassReferenceToDataTable<T>(T data, DataSet dataSet) where T : class
+        private void ClassReferenceToDataTable<T>(T data, DataSet dataSet) where T : class
         {
             if (data == null || dataSet == null)
                 return;
@@ -122,7 +83,7 @@ namespace BL.CrossCutting.Helpers
         /// <param name="data"></param>
         /// <param name="dataSet"></param>
         /// <param name="isAddReference"></param>
-        public static void ClassDataToDataTable<T>(T data, DataSet dataSet, bool isAddReference = true) where T : class
+        public void ClassDataToDataTable<T>(T data, DataSet dataSet, bool isAddReference = true) where T : class
         {
             if (data == null || dataSet == null)
                 return;
@@ -147,7 +108,7 @@ namespace BL.CrossCutting.Helpers
         /// <param name="classList"></param>
         /// <param name="dataSet"></param>
         /// <param name="isAddReference"></param>
-        public static void ClassListToDataTable<T>(List<T> classList, DataSet dataSet, bool isAddReference = true) where T : class
+        public void ClassListToDataTable<T>(List<T> classList, DataSet dataSet, bool isAddReference = true) where T : class
         {
             if (classList == null || dataSet == null)
                 return;
@@ -177,7 +138,7 @@ namespace BL.CrossCutting.Helpers
         /// <typeparam name="T"></typeparam>
         /// <param name="table"></param>
         /// <param name="data"></param>
-        private static bool ClassToDataRow<T>(ref DataTable table, T data) where T : class
+        private bool ClassToDataRow<T>(ref DataTable table, T data) where T : class
         {
             if (data == null)
                 return false;
@@ -237,12 +198,5 @@ namespace BL.CrossCutting.Helpers
             }
             return false;
         }
-
-        //private bool IsNullable(Type input)
-        //{
-        //    if (!input.IsValueType) return true; // Is a ref-type, such as a class
-        //    if (Nullable.GetUnderlyingType(input) != null) return true; // Nullable
-        //    return false; // Must be a value-type
-        //}
     }
 }

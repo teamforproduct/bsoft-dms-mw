@@ -1,8 +1,8 @@
 ﻿using DMS_WebAPI.Results;
-using DMS_WebAPI.Utilities;
 using System.Web.Http;
 using BL.Model.AspNet.IncomingModel;
 using BL.Model.AspNet.FrontModel;
+using DMS_WebAPI.Utilities.AspNet;
 
 namespace DMS_WebAPI.Controllers.AspNet
 {
