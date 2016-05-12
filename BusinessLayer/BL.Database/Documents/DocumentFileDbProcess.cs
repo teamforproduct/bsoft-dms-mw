@@ -310,14 +310,14 @@ namespace BL.Database.Documents
             }
         }
 
-        public int CheckFileForDocument(IContext ctx, string fileName, string fileExt)
+        public int CheckFileForDocument(IContext ctx, int documentId, string fileName, string fileExt)
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                if (dbContext.DocumentFilesSet.Any(x => x.Name == fileName && x.Extension == fileExt))
+                if (dbContext.DocumentFilesSet.Any(x => x.DocumentId == documentId && x.Name == fileName && x.Extension == fileExt))
                 {
                     return
-                        dbContext.DocumentFilesSet.Where(x => x.Name == fileName && x.Extension == fileExt)
+                        dbContext.DocumentFilesSet.Where(x => x.DocumentId == documentId && x.Name == fileName && x.Extension == fileExt)
                             .Select(x => x.OrderNumber)
                             .First();
                 }

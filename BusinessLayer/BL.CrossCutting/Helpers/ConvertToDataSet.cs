@@ -65,13 +65,13 @@ namespace BL.CrossCutting.Helpers
                         {
                             MethodInfo method = typeof(ConvertToDataSet).GetMethod(_methodNameByClassListToDataTable);
                             MethodInfo generic = method.MakeGenericMethod(dataType);
-                            generic.Invoke(null, new object[] { property.GetValue(data), dataSet, true });
+                            generic.Invoke(this, new object[] { property.GetValue(data), dataSet, true });
                         }
                     }else if (dataType.GetInterfaces().Any(x => x == typeof(IReports)))
                     {
                         MethodInfo method = typeof(ConvertToDataSet).GetMethod(_methodNameByClassDataToDataTable);
                         MethodInfo generic = method.MakeGenericMethod(dataType);
-                        generic.Invoke(null, new object[] { property.GetValue(data), dataSet, true });
+                        generic.Invoke(this, new object[] { property.GetValue(data), dataSet, true });
                     }
             }
         }

@@ -82,7 +82,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                     ExecutorPositionId = _context.CurrentPositionId,
                     ExecutorPositionExecutorAgentId = executorPositionExecutorAgentId.Value
                 };
-                var ordInDoc = _operationDb.CheckFileForDocument(_context, att.Name, att.Extension);
+                var ordInDoc = _operationDb.CheckFileForDocument(_context, Model.DocumentId, att.Name, att.Extension);
                 if (ordInDoc == -1)
                 {
                     att.Version = 1;

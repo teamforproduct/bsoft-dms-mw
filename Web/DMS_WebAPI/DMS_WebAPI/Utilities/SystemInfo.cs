@@ -91,7 +91,11 @@ namespace DMS_WebAPI.Utilities
 
         public string GetRegCode(LicenceInfo li)
         {
-            return GetProgramRegCode() + GetLicenceRegCode(li);
+            var progRegCode = GetProgramRegCode();
+            //TODO удалить когда будем использовать лицензи
+            progRegCode = "68692754";
+            var licRegCode = GetLicenceRegCode(li);
+            return progRegCode + licRegCode;
         }
     }
 }
