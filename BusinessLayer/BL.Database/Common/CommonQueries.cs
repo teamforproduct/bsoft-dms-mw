@@ -425,7 +425,7 @@ namespace BL.Database.Common
                         Task = x.OnEvent.Task.Task,
                         Description = x.OnEvent.Description,
                         EventType = x.OnEvent.EventTypeId,
-                        EventTypeName = x.OnEvent.EventType.Name,
+                        EventTypeName = x.OnEvent.EventType.WaitDescription/*?? x.OnEvent.EventType.Name*/,
                         Date = x.OnEvent.Date,
                         SourcePositionExecutorAgentName = x.OnEvent.SourcePositionExecutorAgent.Name,
                         TargetPositionExecutorAgentName = x.OnEvent.TargetPositionExecutorAgent.Name,

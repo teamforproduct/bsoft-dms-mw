@@ -35,7 +35,7 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanBeDisplayed(int positionId)
         {
-            if (_document.ExecutorPositionId != positionId
+            if (_document.ExecutorPositionId != positionId || (_document.IsRegistered.HasValue && _document.IsRegistered.Value)
                 )
             {
                 return false;
