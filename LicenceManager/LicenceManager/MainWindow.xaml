@@ -1,0 +1,32 @@
+﻿<Window x:Class="LicenceManager.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LicenceManager"
+        mc:Ignorable="d"
+        Title="Licence manager" Height="768" Width="1024">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" >
+            <Label HorizontalAlignment="Center" Margin="0,10,0,10" Content="Клиентский код" />
+            <TextBox Margin="0,10,0,10" MinWidth="200" MaxWidth="200" Name="txtClientCode"/>
+            <Label HorizontalAlignment="Center" Margin="0,10,0,10" Content="Код активации"/>
+            <TextBox MinWidth="600" MinLines="3" BorderThickness="3" Name="txtLicenceCode" />
+        </StackPanel>
+        <DataGrid Grid.Row="1" Name="clientsGrid">
+            <DataGrid.Columns>
+                <DataGridCheckBoxColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Client name"/>
+                <DataGridCheckBoxColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Date first start"/>
+                <DataGridCheckBoxColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Licence type"/>
+                <DataGridCheckBoxColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Named connections count"/>
+                <DataGridCheckBoxColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Concurent connections count"/>
+                <DataGridCheckBoxColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Functionality"/>
+                <DataGridCheckBoxColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Day limit"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Window>
