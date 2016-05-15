@@ -55,7 +55,7 @@ namespace DMS_WebAPI.Utilities
             return "";
         }
 
-        public string GetProgramRegCode()
+        public string GetProgramRegCode(LicenceInfo li)
         {
             var cpu = GetCPUKey();
             var disc = GetDiscKey("C:");
@@ -64,7 +64,7 @@ namespace DMS_WebAPI.Utilities
             {
                 throw new LicenceError();
             }
-            var strinfo = $"{cpu}+{disc}";
+            var strinfo = $"{li.FirstStart.ToString("yyyy-MM-ddTHH:mm")}+{cpu}+{disc}";
             string res, hash;
             hash = DmsResolver.Current.Get<ICryptoService>().GetHash(strinfo);
             hash = hash.ToUpper().Replace("0", "").Replace("O", "").Replace("I", "").Replace("1", "");
@@ -74,7 +74,7 @@ namespace DMS_WebAPI.Utilities
         }
         public string GetLicenceRegCode(LicenceInfo li)
         {
-            var clInfo = $"Id:{li.ClientId}/Name:{li.Name}/DT:{li.FirstStart.ToString("yyyy-MM-ddTHH:mm")}/DD:{li.DateLimit}/NNOC:{li.NamedNumberOfConnections}/CNOC:{li.ConcurenteNumberOfConnections}/Fun:{li.Functionals}";
+            var clInfo = $"Name:{li.Name}/DD:{li.DateLimit}/NNOC:{li.NamedNumberOfConnections}/CNOC:{li.ConcurenteNumberOfConnections}/Fun:{li.Functionals}";
 
             string res, hash;
 
@@ -91,9 +91,9 @@ namespace DMS_WebAPI.Utilities
 
         public string GetRegCode(LicenceInfo li)
         {
-            var progRegCode = GetProgramRegCode();
+            var progRegCode = GetProgramRegCode(li);
             //TODO удалить когда будем использовать лицензи
-            progRegCode = "68692754";
+            progRegCode = "D85BF3EE";
             var licRegCode = GetLicenceRegCode(li);
             return progRegCode + licRegCode;
         }
