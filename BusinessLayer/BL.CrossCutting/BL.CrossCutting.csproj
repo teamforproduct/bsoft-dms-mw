@@ -47,6 +47,7 @@
     <Compile Include="Context\AdminContext.cs" />
     <Compile Include="CryptographicWorker\CryptoService.cs" />
     <Compile Include="CryptographicWorker\ICryptoService.cs" />
+    <Compile Include="Helpers\IConvertToDataSet.cs" />
     <Compile Include="Helpers\ConvertToDataSet.cs" />
     <Compile Include="Helpers\VerifyLicence.cs" />
     <Compile Include="Interfaces\ICommand.cs" />

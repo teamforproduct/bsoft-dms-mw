@@ -1,4 +1,5 @@
-﻿using BL.CrossCutting.Helpers;
+﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Helpers;
 using BL.Model.Constants;
 using BL.Model.Reports.FrontModel;
 using CrystalDecisions.CrystalReports.Engine;
@@ -18,7 +19,10 @@ namespace BL.Logic.Reports
         public static FrontReport ReportExportToStream<T>(List<T> data, string filePathCrystalReport) where T : class
         {
             var ds = new DataSetCrystalReports();
-            ConvertToDataSet.ClassListToDataTable(data, ds, true);
+
+            var convertService = DmsResolver.Current.Get<IConvertToDataSet>();
+
+            convertService.ClassListToDataTable(data, ds, true);
 
             ReportDocument crystalReport = new ReportDocument();
             crystalReport.Load(filePathCrystalReport);

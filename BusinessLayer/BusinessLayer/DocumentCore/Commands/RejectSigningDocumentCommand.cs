@@ -6,6 +6,8 @@ using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using System;
+using BL.CrossCutting.DependencyInjection;
+using BL.Logic.SystemServices.AutoPlan;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -74,7 +76,7 @@ namespace BL.Logic.DocumentCore.Commands
             _docWait.ResultTypeId = (int)EnumResultTypes.CloseByRejecting;
             _docWait.OffEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, _docWait.DocumentId, _eventType, Model.EventDate, Model.Description, _docWait.OnEvent.TaskId, _docWait.OnEvent.IsAvailableWithinTask, _docWait.OnEvent.SourcePositionId, null, _docWait.OnEvent.TargetPositionId);
             CommonDocumentUtilities.SetLastChange(_context, _docWait);
-            var sendList = _document.SendLists.FirstOrDefault();
+            var sendList = _document.SendLists.FirstOrDefault(x => x.IsInitial);
             if (sendList != null)
             {
                 sendList.StartEventId = null;
@@ -86,6 +88,11 @@ namespace BL.Logic.DocumentCore.Commands
             subscription.SubscriptionStates = EnumSubscriptionStates.No;
             CommonDocumentUtilities.SetLastChange(Context, _document.Subscriptions);
             _operationDb.CloseDocumentWait(_context, _document);
+            if (sendList != null)
+            {
+                var aplan = DmsResolver.Current.Get<IAutoPlanService>();
+                aplan.ManualRunAutoPlan(_context);
+            }
             return _document.Id;
         }
 

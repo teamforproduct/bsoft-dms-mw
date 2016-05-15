@@ -18,7 +18,6 @@ namespace BL.Model.DocumentCore.Actions
         /// <summary>
         /// ИД типа результата
         /// </summary>
-        [Required]
         public int ResultTypeId { get; set; }
         /// <summary>
         /// Комментарий

@@ -4,6 +4,9 @@ using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
 using DMS_WebAPI.Models;
+using System.IO;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace DMS_WebAPI.Utilities
 {
@@ -27,7 +30,7 @@ namespace DMS_WebAPI.Utilities
             return GetLicenceInfo(clientId.Value);
         }
 
-        public LicenceInfo GetLicenceInfo(int clientId)
+        public LicenceInfo GetLicenceInfo(int clientId, bool isRereadLicense = true)
         {
             using (var dbContext = new ApplicationDbContext())
             {
@@ -93,52 +96,64 @@ namespace DMS_WebAPI.Utilities
 
                         LicenceKey = cl.LicenceKey,
                     };
+
+                    if (isRereadLicense && string.IsNullOrEmpty(li.LicenceKey))
+                    {
+                        SetLicence(li.Name);
+
+                        return GetLicenceInfo(clientId, false);
+                    }
                     return li;
                 }
                 throw new LicenceError();
             }
         }
 
-        public void SaveLicenceInfo(ModifyLicenceInfo lic)
+        public void SaveLicenceInfoByName(ModifyLicenceInfo lic)
         {
             using (var dbContext = new ApplicationDbContext())
             {
-                var client = new DBModel.AspNetClients
-                {
-                    Id = lic.ClientId,
-                    FirstStart = lic.FirstStart,
-                    IsTrial = lic.IsTrial,
-                    NamedNumberOfConnections = lic.NamedNumberOfConnections,
-                    ConcurenteNumberOfConnections = lic.ConcurenteNumberOfConnections,
-                    DurationDay = lic.DurationDay,
-                    Functionals = lic.Functionals
-                };
+                var client = dbContext.AspNetClientsSet.FirstOrDefault(x => x.Name.Equals(lic.Name));
 
-                dbContext.AspNetClientsSet.Attach(client);
-                var entry = dbContext.Entry(client);
-                entry.Property(x => x.FirstStart).IsModified = true;
-                entry.Property(x => x.IsTrial).IsModified = true;
-                entry.Property(x => x.NamedNumberOfConnections).IsModified = true;
-                entry.Property(x => x.ConcurenteNumberOfConnections).IsModified = true;
-                entry.Property(x => x.DurationDay).IsModified = true;
-                entry.Property(x => x.Functionals).IsModified = true;
+                client.IsTrial = lic.IsTrial;
+                client.NamedNumberOfConnections = lic.NamedNumberOfConnections;
+                client.ConcurenteNumberOfConnections = lic.ConcurenteNumberOfConnections;
+                client.DurationDay = lic.DurationDay;
+                client.Functionals = lic.Functionals;
+                client.LicenceKey = lic.LicenceKey;
                 dbContext.SaveChanges();
             }
         }
 
-        public void SaveLicenceKey(int clientId, string licenceKey)
+        public void SetLicence(string clientName)
         {
-            using (var dbContext = new ApplicationDbContext())
+            try
             {
-                var cl = dbContext.AspNetClientsSet.FirstOrDefault(x => x.Id == clientId);
-                if (cl != null)
+                using (StreamReader sr = new StreamReader(System.Web.Hosting.HostingEnvironment.MapPath("~/lic.ini")))
                 {
-                    cl.LicenceKey = licenceKey;
-                    dbContext.SaveChanges();
+                    // Read the stream to a string, and write the string to the console.
+                    string lines = sr.ReadToEnd();
+                    var lics = JsonConvert.DeserializeObject<List<LicenceInfo>>(lines);
 
-                    return;
+                    var lic = lics.FirstOrDefault(x => x.Name.Equals(clientName));
+
+                    if (lic == null)
+                        throw new LicenceError();
+
+                    SaveLicenceInfoByName(new ModifyLicenceInfo
+                    {
+                        Name = lic.Name,
+                        DurationDay = lic.DateLimit,
+                        NamedNumberOfConnections = lic.NamedNumberOfConnections,
+                        ConcurenteNumberOfConnections = lic.ConcurenteNumberOfConnections,
+                        Functionals = lic.Functionals,
+                        LicenceKey = lic.LicenceKey
+                    });
                 }
-                throw new LicenceError();
+            }
+            catch (Exception ex)
+            {
+
             }
         }
     }

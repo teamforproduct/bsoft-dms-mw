@@ -16,7 +16,7 @@ namespace BL.CrossCutting.Helpers
         {
             var cryptoService = DmsResolver.Current.Get<ICryptoService>();
 
-            if (!cryptoService.VerifySignedHash(regCode, licence.LicenceKey, SettingConstants.CRYPTO_OBTAINED_PUBLIC_KEY_NAME_FOR_VERIFY_SIGNED_HASH))
+            if (!cryptoService.VerifyLicenceKey(regCode, licence.LicenceKey))
             {
                 throw new LicenceError();
             }

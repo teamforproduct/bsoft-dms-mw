@@ -65,7 +65,7 @@ namespace BL.Database.SystemDb
 
         #region AutoPlan
 
-        IEnumerable<int> GetSendListIdsForAutoPlan(IContext context);
+        IEnumerable<int> GetSendListIdsForAutoPlan(IContext context, int? sendListId = null);
 
         #endregion
 

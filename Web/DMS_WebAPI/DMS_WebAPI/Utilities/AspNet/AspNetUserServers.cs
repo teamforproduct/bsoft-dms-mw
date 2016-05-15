@@ -82,9 +82,9 @@ namespace DMS_WebAPI.Utilities.AspNet
             try
             {
                 var si = new SystemInfo();
-                var dbw = new SystemDbWorker();
+                var sdbw = new SystemDbWorker();
 
-                var lic = dbw.GetLicenceInfoByServerId(modal.ServerId);
+                var lic = sdbw.GetLicenceInfoByServerId(modal.ServerId);
 
                 var regCode = si.GetRegCode(lic);
 

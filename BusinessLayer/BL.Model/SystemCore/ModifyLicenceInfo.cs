@@ -7,6 +7,7 @@ namespace BL.Model.SystemCore
     {
         [Required]
         public int ClientId { get; set; }
+        public string Name { get; set; }
         public DateTime FirstStart { get; set; }
         /// <summary>
         /// Только для информации
@@ -16,5 +17,6 @@ namespace BL.Model.SystemCore
         public int? ConcurenteNumberOfConnections { get; set; }
         public int? DurationDay { get; set; }
         public string Functionals { get; set; }
+        public string LicenceKey { get; set; }
     }
 }

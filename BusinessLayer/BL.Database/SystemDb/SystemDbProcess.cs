@@ -613,13 +613,13 @@ namespace BL.Database.SystemDb
             }
         }
 
-        public IEnumerable<int> GetSendListIdsForAutoPlan(IContext context)
+        public IEnumerable<int> GetSendListIdsForAutoPlan(IContext context, int? sendListId = null)
         {
             using (var dbContext = new DmsContext(context))
             {
-                var qry = dbContext.DocumentsSet.Where(x => x.IsLaunchPlan)
+                var qry = dbContext.DocumentsSet
                     .Join(dbContext.DocumentSendListsSet, d => d.Id, s => s.DocumentId, (d, s) => new { doc = d, sl = s })
-                    .Where(x => x.sl.IsInitial && !x.sl.CloseEventId.HasValue)
+                    .Where(x => ((sendListId == null && x.doc.IsLaunchPlan) || (sendListId.HasValue && sendListId.Value == x.sl.Id)) && x.sl.IsInitial && !x.sl.CloseEventId.HasValue)
                     .GroupBy(x => x.sl.DocumentId)
                     .Select(x => new
                     {
