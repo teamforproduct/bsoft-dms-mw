@@ -1,4 +1,6 @@
 ﻿using BL.Model.Common;
+using System.IO;
+using System.Web;
 
 namespace BL.Model.DocumentCore.InternalModel
 {
@@ -28,6 +30,10 @@ namespace BL.Model.DocumentCore.InternalModel
         /// содержимое файла
         /// </summary>
         public byte[] FileContent { get; set; }
+        /// <summary>
+        /// содержимое файла
+        /// </summary>
+        public HttpPostedFileBase PostedFileData { get; set; }
         /// <summary>
         /// Название файла без расширения
         /// </summary>

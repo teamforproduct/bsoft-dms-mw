@@ -74,7 +74,9 @@ namespace BL.Database.FileWorker
                     File.Delete(localFilePath);
                 }
 
-                File.WriteAllBytes(localFilePath, attFile.FileContent);
+                attFile.PostedFileData.SaveAs(localFilePath);
+
+                //File.WriteAllBytes(localFilePath, attFile.FileContent);
                 attFile.Hash = FileToSha1(localFilePath);
                 return attFile.Hash;
             }

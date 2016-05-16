@@ -72,7 +72,8 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                 {
                     DocumentId = Model.DocumentId,
                     Date = DateTime.Now,
-                    FileContent = Convert.FromBase64String(file.FileData),
+                    //FileContent = Convert.FromBase64String(file.FileData),
+                    PostedFileData = file.PostedFileData,
                     IsAdditional = file.IsAdditional,
                     FileType = file.FileType,
                     FileSize = file.FileSize,
