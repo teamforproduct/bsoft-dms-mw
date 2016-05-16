@@ -334,10 +334,6 @@
     <Compile Include="Utilities\Servers.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\IRF_DMS_WEBAPI.mdf" />
-    <Content Include="App_Data\IRF_DMS_WEBAPI_log.ldf">
-      <DependentUpon>IRF_DMS_WEBAPI.mdf</DependentUpon>
-    </Content>
     <Content Include="Areas\HelpPage\HelpPage.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
@@ -446,7 +442,9 @@
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
