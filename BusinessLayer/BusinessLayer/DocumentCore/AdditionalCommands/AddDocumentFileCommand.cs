@@ -13,7 +13,7 @@ using System.Linq;
 
 namespace BL.Logic.DocumentCore.AdditionalCommands
 {
-    public class AddDocumentFileCommand: BaseDocumentCommand
+    public class AddDocumentFileCommand : BaseDocumentCommand
     {
         private readonly IDocumentFileDbProcess _operationDb;
         private readonly IFileStore _fStore;
@@ -50,9 +50,14 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                 throw new UserHasNoAccessToDocument();
             }
 
-            if (Model.Files.Any(x=>!x.IsAdditional) && _document.ExecutorPositionId != _context.CurrentPositionId)
+            if (Model.Files.Any(x => !x.IsAdditional) && _document.ExecutorPositionId != _context.CurrentPositionId)
             {
                 throw new CouldNotPerformOperation();
+            }
+
+            if (Model.Files.Join(_document.DocumentFiles, o => o.FileName, i => i.Name + "." + i.Extension, (o, i) => true).Any())
+            {
+                throw new CannotAccessToFile();
             }
 
             return true;
@@ -98,7 +103,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
                 _fStore.SaveFile(_context, att);
                 CommonDocumentUtilities.SetLastChange(_context, att);
-                att.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, att.DocumentId, EnumEventTypes.AddDocumentFile,null, att.Name + "." + att.Extension);
+                att.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, att.DocumentId, EnumEventTypes.AddDocumentFile, null, att.Name + "." + att.Extension);
                 res.Add(_operationDb.AddNewFileOrVersion(_context, att));
                 // Модель фронта содержит дополнительно только одно поле - пользователя, который последний модифицировал файл. 
                 // это поле не заполняется, иначе придется после каждого добавления файла делать запрос на выборку этого файла из таблицы

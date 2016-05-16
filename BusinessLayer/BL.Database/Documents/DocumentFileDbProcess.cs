@@ -223,8 +223,20 @@ namespace BL.Database.Documents
                     .Select(x => new InternalDocument
                     {
                         Id = x.Doc.Id,
-                        ExecutorPositionId = x.Doc.ExecutorPositionId
+                        ExecutorPositionId = x.Doc.ExecutorPositionId,
+                        DocumentFiles = x.Doc.Files.GroupBy(y => new { y.DocumentId, y.OrderNumber })
+                        .Select(y => y.OrderByDescending(z => z.Version).FirstOrDefault())
+                        .Where(y => y != null)
+                        .Select(y =>
+                        new InternalDocumentAttachedFile
+                        {
+                            Id = y.Id,
+                            Name = y.Name,
+                            Extension = y.Extension,
+                            ExecutorPositionId = y.ExecutorPositionId                            
+                        })
                     }).FirstOrDefault();
+
                 return doc;
             }
         }
