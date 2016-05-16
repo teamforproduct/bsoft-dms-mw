@@ -34,13 +34,13 @@ namespace BL.CrossCutting.Helpers
             }
 
             if (licence.IsNamedLicence
-                && licence.NamedNumberOfConnectionsNow >= licence.NamedNumberOfConnections)
+                && licence.NamedNumberOfConnectionsNow > licence.NamedNumberOfConnections)
             {
                 throw new LicenceExceededNumberOfRegisteredUsers();
             }
 
             if (licence.IsConcurenteLicence
-                && licence.ConcurenteNumberOfConnectionsNow >= licence.ConcurenteNumberOfConnections)
+                && licence.ConcurenteNumberOfConnectionsNow > licence.ConcurenteNumberOfConnections)
             {
                 throw new LicenceExceededNumberOfConnectedUsers();
             }
