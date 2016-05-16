@@ -25,8 +25,8 @@ namespace BL.Database.Documents.Interfaces
         //InternalDocument ReportTransmissionDocumentPaperEventPrepare(IContext ctx, int documentId)
         List<ReportDocument> ReportRegisterTransmissionDocuments(IContext ctx, int paperListId);
 
-        InternalDocument RegisterDocumentPrepare(IContext ctx, RegisterDocument model);
-        InternalDocumnRegistration RegisterModelDocumentPrepare(IContext context, RegisterDocument model);
+        InternalDocument RegisterDocumentPrepare(IContext ctx, RegisterDocumentBase model);
+        InternalDocumnRegistration RegisterModelDocumentPrepare(IContext context, RegisterDocumentBase model);
         void GetNextDocumentRegistrationNumber(IContext ctx, InternalDocument document);
         bool VerifyDocumentRegistrationNumber(IContext ctx, InternalDocument document);
 

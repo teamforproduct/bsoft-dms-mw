@@ -123,6 +123,7 @@
     <Compile Include="DocumentCore\Actions\PaperList.cs" />
     <Compile Include="DocumentCore\Actions\PlanMovementPaper.cs" />
     <Compile Include="DocumentCore\Actions\PaperEvent.cs" />
+    <Compile Include="DocumentCore\Actions\RegisterDocumentBase.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentPaper.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentRestrictedSendList.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAddressType.cs" />
