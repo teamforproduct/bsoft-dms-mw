@@ -65,14 +65,14 @@ namespace BL.Logic.DocumentCore.Commands
             using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
             {
                 CommonDocumentUtilities.SetLastChange(_context, _document);
-                _document.IsRegistered = !Model.IsOnlyGetNextNumber;
+                _document.IsRegistered = Model.IsRegistered;
                 _document.RegistrationDate = Model.RegistrationDate;
 
                 _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, Model.DocumentId, EnumEventTypes.Registered);
 
 
                 bool isNeedGenerateNumber;
-                if (Model.RegistrationNumber == null || Model.IsOnlyGetNextNumber)
+                if (Model.RegistrationNumber == null)
                 {
                     var registerModel = _documentDb.RegisterModelDocumentPrepare(_context, Model);
                     CommonDocumentUtilities.FormationRegistrationNumberByFormula(_document, registerModel);

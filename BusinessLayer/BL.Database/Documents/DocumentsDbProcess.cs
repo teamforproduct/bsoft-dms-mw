@@ -1142,7 +1142,8 @@ namespace BL.Database.Documents
                         SenderAgentPersonId = x.SenderAgentPersonId,
                         Addressee = x.Addressee,
                         DocumentTypeId = x.DocumentTypeId,
-                        DocumentDirection = (EnumDocumentDirections)x.DocumentDirectionId
+                        DocumentDirection = (EnumDocumentDirections)x.DocumentDirectionId,
+                        RegistrationJournalId = x.RegistrationJournalId,
                     }).FirstOrDefault();
 
                 if (doc == null)
