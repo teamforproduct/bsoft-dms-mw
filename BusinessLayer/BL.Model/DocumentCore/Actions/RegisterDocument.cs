@@ -22,11 +22,10 @@ namespace BL.Model.DocumentCore.Actions
         [Required]
         public int RegistrationJournalId { get; set; }
         /// <summary>
-        /// Если 0 - регистрируется документ
-        /// Если 1 - автоматически получается и резервируется новый регистрационный номер
+        /// Признак регистрировать ли документ
         /// </summary>
         [Required]
-        public bool IsOnlyGetNextNumber { get; set; }
+        public bool IsRegistered { get; set; }
         /// <summary>
         /// Регистрационный номер.
         /// Если не передается, автоматически получается и резервируется новый регистрационный номер
