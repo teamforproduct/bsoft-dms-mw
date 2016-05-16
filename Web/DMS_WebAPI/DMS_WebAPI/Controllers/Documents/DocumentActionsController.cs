@@ -120,7 +120,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns>Обновленный документ</returns>
         [Route("GetNextRegisterDocumentNumber")]
         [HttpPost]
-        public IHttpActionResult GetNextRegisterDocumentNumber(RegisterDocument model)
+        public IHttpActionResult GetNextRegisterDocumentNumber(RegisterDocumentBase model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();

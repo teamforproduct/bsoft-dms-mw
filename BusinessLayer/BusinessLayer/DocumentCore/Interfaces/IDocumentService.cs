@@ -17,7 +17,7 @@ namespace BL.Logic.DocumentCore.Interfaces
         FrontDocumentEvent GetDocumentEvent(IContext ctx, int eventId);
         IEnumerable<FrontDocumentEvent> GetDocumentEvents(IContext ctx, FilterDocumentEvent filter, UIPaging paging);
         IEnumerable<FrontDocumentEvent> GetEventsForDocument(IContext ctx, int documentId, UIPaging paging);
-        IEnumerable<FrontRegistrationFullNumber> GetNextRegisterDocumentNumber(IContext ctx, RegisterDocument model);
+        FrontRegistrationFullNumber GetNextRegisterDocumentNumber(IContext ctx, RegisterDocumentBase model);
 
         #region DocumentPapers
         FrontDocumentPaper GetDocumentPaper(IContext context, int itemId);

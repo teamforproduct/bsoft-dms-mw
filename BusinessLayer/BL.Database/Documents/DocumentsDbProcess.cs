@@ -50,6 +50,16 @@ namespace BL.Database.Documents
 
                 #region Base
 
+                if (filters.DocumentFromDate.HasValue)
+                {
+                    qry = qry.Where(x => (x.Doc.RegistrationDate ?? x.Doc.CreateDate) >= filters.DocumentFromDate.Value);
+                }
+
+                if (filters.DocumentToDate.HasValue)
+                {
+                    qry = qry.Where(x => (x.Doc.RegistrationDate ?? x.Doc.CreateDate) <= filters.DocumentToDate.Value);
+                }
+
                 if (filters.CreateFromDate.HasValue)
                 {
                     qry = qry.Where(x => x.Doc.CreateDate >= filters.CreateFromDate.Value);
@@ -1476,7 +1486,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public InternalDocument RegisterDocumentPrepare(IContext context, RegisterDocument model)
+        public InternalDocument RegisterDocumentPrepare(IContext context, RegisterDocumentBase model)
         {
             using (var dbContext = new DmsContext(context))
             {
@@ -1523,7 +1533,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public InternalDocumnRegistration RegisterModelDocumentPrepare(IContext context, RegisterDocument model)
+        public InternalDocumnRegistration RegisterModelDocumentPrepare(IContext context, RegisterDocumentBase model)
         {
             using (var dbContext = new DmsContext(context))
             {

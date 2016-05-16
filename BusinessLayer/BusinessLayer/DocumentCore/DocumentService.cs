@@ -14,6 +14,7 @@ using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.SystemCore.Filters;
 using BL.Model.DocumentCore.Actions;
+using BL.Model.Exception;
 
 namespace BL.Logic.DocumentCore
 {
@@ -40,9 +41,9 @@ namespace BL.Logic.DocumentCore
                 var ftRes = ftService.Search(ctx, filters.FullTextSearch);
                 var resWithRanges =
                     ftRes.GroupBy(x => x.DocumentId)
-                        .Select(x => new {DocId = x.Key, Rate = x.Count()})
+                        .Select(x => new { DocId = x.Key, Rate = x.Count() })
                         .OrderByDescending(x => x.Rate);
-                filters.DocumentId.AddRange(resWithRanges.Select(x=>x.DocId).Take(paging.PageSize * paging.CurrentPage));
+                filters.DocumentId.AddRange(resWithRanges.Select(x => x.DocId).Take(paging.PageSize * paging.CurrentPage));
             }
             return _documentDb.GetDocuments(ctx, filters, paging);
         }
@@ -54,7 +55,7 @@ namespace BL.Logic.DocumentCore
             doc.SendLists = null;
             return doc;
         }
-        
+
 
         public IEnumerable<BaseSystemUIElement> GetModifyMetaData(IContext ctx, FrontDocument doc)
         {
@@ -87,12 +88,46 @@ namespace BL.Logic.DocumentCore
 
         public IEnumerable<FrontDocumentEvent> GetEventsForDocument(IContext ctx, int documentId, UIPaging paging)
         {
-            return _operationDb.GetDocumentEvents(ctx, new FilterDocumentEvent {DocumentId = documentId}, paging);
+            return _operationDb.GetDocumentEvents(ctx, new FilterDocumentEvent { DocumentId = documentId }, paging);
         }
 
-        public IEnumerable<FrontRegistrationFullNumber> GetNextRegisterDocumentNumber(IContext ctx, RegisterDocument model)
+        public FrontRegistrationFullNumber GetNextRegisterDocumentNumber(IContext ctx, RegisterDocumentBase model)
         {
-            return null;            
+            var document = _documentDb.RegisterDocumentPrepare(ctx, model);
+
+            if (document == null)
+            {
+                throw new DocumentNotFoundOrUserHasNoAccess();
+            }
+            if (!document.RegistrationJournalId.HasValue)
+            {
+                throw new DictionaryRecordWasNotFound();
+            }
+            if (document.IsRegistered.HasValue && document.IsRegistered.Value)
+            {
+                throw new DocumentHasAlredyBeenRegistered();
+            }
+
+            document.RegistrationDate = model.RegistrationDate;
+
+            var registerModel = _documentDb.RegisterModelDocumentPrepare(ctx, model);
+            CommonDocumentUtilities.FormationRegistrationNumberByFormula(document, registerModel);
+            document.RegistrationNumberPrefix = document.RegistrationJournalPrefixFormula;
+            document.RegistrationNumberSuffix = document.RegistrationJournalSuffixFormula;
+
+            _documentDb.GetNextDocumentRegistrationNumber(ctx, document);
+
+            var res = new FrontRegistrationFullNumber
+            {
+                DocumentId = document.Id,
+                RegistrationNumber = document.RegistrationNumber,
+                RegistrationNumberSuffix = document.RegistrationNumberSuffix,
+                RegistrationNumberPrefix = document.RegistrationNumberPrefix,
+                DocumentDate = document.RegistrationDate,
+                RegistrationFullNumber = (document.RegistrationNumberPrefix ?? "") + document.RegistrationNumber + (document.RegistrationNumberSuffix ?? "")
+            };
+
+            return res;
         }
         #endregion Documents
 

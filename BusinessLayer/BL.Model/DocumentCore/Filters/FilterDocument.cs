@@ -298,5 +298,14 @@ namespace BL.Model.DocumentCore.Filters
         public string FullTextSearch { get; set; }
 
         public List<FilterPropertyByRecord> FilterProperties { get; set; }
+
+        /// <summary>
+        /// Дата "с" для отбора по дате документа
+        /// </summary>
+        public DateTime? DocumentFromDate { get; set; }
+        /// <summary>
+        /// Дата "по" для отбора по дате документа
+        /// </summary>
+        public DateTime? DocumentToDate { get; set; }
     }
 }
