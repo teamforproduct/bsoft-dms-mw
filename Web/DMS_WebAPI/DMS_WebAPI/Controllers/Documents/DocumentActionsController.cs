@@ -118,7 +118,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// </summary>
         /// <param name="model"></param>
         /// <returns>Обновленный документ</returns>
-        [Route("RegisterDocument")]
+        [Route("GetNextRegisterDocumentNumber")]
         [HttpPost]
         public IHttpActionResult GetNextRegisterDocumentNumber(RegisterDocument model)
         {
