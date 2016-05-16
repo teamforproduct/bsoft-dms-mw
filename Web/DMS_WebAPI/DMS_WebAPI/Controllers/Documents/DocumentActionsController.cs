@@ -120,6 +120,23 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns>Обновленный документ</returns>
         [Route("RegisterDocument")]
         [HttpPost]
+        public IHttpActionResult GetNextRegisterDocumentNumber(RegisterDocument model)
+        {
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            var nextNumb = docProc.GetNextRegisterDocumentNumber(cxt, model);
+            return new JsonResult(nextNumb, this);
+        }
+        /// <summary>
+        /// Регистрация документа
+        /// Возможности:
+        /// 1. Получить регистрационный номер
+        /// 2. Зарегистрировать документ
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Обновленный документ</returns>
+        [Route("RegisterDocument")]
+        [HttpPost]
         public IHttpActionResult RegisterDocument(RegisterDocument model)
         {
             var timeM = new System.Diagnostics.Stopwatch();

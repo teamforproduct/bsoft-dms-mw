@@ -4,6 +4,7 @@ using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.Enums;
 using BL.Model.SystemCore;
+using BL.Model.DocumentCore.Actions;
 
 namespace BL.Logic.DocumentCore.Interfaces
 {
@@ -16,6 +17,7 @@ namespace BL.Logic.DocumentCore.Interfaces
         FrontDocumentEvent GetDocumentEvent(IContext ctx, int eventId);
         IEnumerable<FrontDocumentEvent> GetDocumentEvents(IContext ctx, FilterDocumentEvent filter, UIPaging paging);
         IEnumerable<FrontDocumentEvent> GetEventsForDocument(IContext ctx, int documentId, UIPaging paging);
+        IEnumerable<FrontRegistrationFullNumber> GetNextRegisterDocumentNumber(IContext ctx, RegisterDocument model);
 
         #region DocumentPapers
         FrontDocumentPaper GetDocumentPaper(IContext context, int itemId);

@@ -13,6 +13,7 @@ using BL.Logic.SystemServices.FullTextSearch;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.SystemCore.Filters;
+using BL.Model.DocumentCore.Actions;
 
 namespace BL.Logic.DocumentCore
 {
@@ -87,6 +88,11 @@ namespace BL.Logic.DocumentCore
         public IEnumerable<FrontDocumentEvent> GetEventsForDocument(IContext ctx, int documentId, UIPaging paging)
         {
             return _operationDb.GetDocumentEvents(ctx, new FilterDocumentEvent {DocumentId = documentId}, paging);
+        }
+
+        public IEnumerable<FrontRegistrationFullNumber> GetNextRegisterDocumentNumber(IContext ctx, RegisterDocument model)
+        {
+            return null;            
         }
         #endregion Documents
 
