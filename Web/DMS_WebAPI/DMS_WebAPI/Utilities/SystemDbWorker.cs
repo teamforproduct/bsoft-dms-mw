@@ -99,7 +99,7 @@ namespace DMS_WebAPI.Utilities
 
                     if (isRereadLicense && string.IsNullOrEmpty(li.LicenceKey))
                     {
-                        SetLicence(clientId);
+                        SetLicence(li.Name);
 
                         return GetLicenceInfo(clientId, false);
                     }
@@ -109,52 +109,23 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        public void SaveLicenceInfo(ModifyLicenceInfo lic)
+        public void SaveLicenceInfoByName(ModifyLicenceInfo lic)
         {
             using (var dbContext = new ApplicationDbContext())
             {
-                var client = new DBModel.AspNetClients
-                {
-                    Id = lic.ClientId,
-                    Name = lic.Name,
-                    FirstStart = lic.FirstStart,
-                    IsTrial = lic.IsTrial,
-                    NamedNumberOfConnections = lic.NamedNumberOfConnections,
-                    ConcurenteNumberOfConnections = lic.ConcurenteNumberOfConnections,
-                    DurationDay = lic.DurationDay,
-                    Functionals = lic.Functionals
-                };
+                var client = dbContext.AspNetClientsSet.FirstOrDefault(x => x.Name.Equals(lic.Name));
 
-                dbContext.AspNetClientsSet.Attach(client);
-                var entry = dbContext.Entry(client);
-                entry.Property(x => x.Name).IsModified = true;
-                entry.Property(x => x.FirstStart).IsModified = true;
-                entry.Property(x => x.IsTrial).IsModified = true;
-                entry.Property(x => x.NamedNumberOfConnections).IsModified = true;
-                entry.Property(x => x.ConcurenteNumberOfConnections).IsModified = true;
-                entry.Property(x => x.DurationDay).IsModified = true;
-                entry.Property(x => x.Functionals).IsModified = true;
+                client.IsTrial = lic.IsTrial;
+                client.NamedNumberOfConnections = lic.NamedNumberOfConnections;
+                client.ConcurenteNumberOfConnections = lic.ConcurenteNumberOfConnections;
+                client.DurationDay = lic.DurationDay;
+                client.Functionals = lic.Functionals;
+                client.LicenceKey = lic.LicenceKey;
                 dbContext.SaveChanges();
             }
         }
 
-        public void SaveLicenceKey(int clientId, string licenceKey)
-        {
-            using (var dbContext = new ApplicationDbContext())
-            {
-                var cl = dbContext.AspNetClientsSet.FirstOrDefault(x => x.Id == clientId);
-                if (cl != null)
-                {
-                    cl.LicenceKey = licenceKey;
-                    dbContext.SaveChanges();
-
-                    return;
-                }
-                throw new LicenceError();
-            }
-        }
-
-        public void SetLicence(int clientId)
+        public void SetLicence(string clientName)
         {
             try
             {
@@ -164,23 +135,20 @@ namespace DMS_WebAPI.Utilities
                     string lines = sr.ReadToEnd();
                     var lics = JsonConvert.DeserializeObject<List<LicenceInfo>>(lines);
 
-                    var lic = lics.FirstOrDefault(x => x.ClientId == clientId);
+                    var lic = lics.FirstOrDefault(x => x.Name.Equals(clientName));
 
                     if (lic == null)
                         throw new LicenceError();
 
-                    SaveLicenceInfo(new ModifyLicenceInfo
+                    SaveLicenceInfoByName(new ModifyLicenceInfo
                     {
-                        ClientId = lic.ClientId,
                         Name = lic.Name,
-                        FirstStart = lic.FirstStart,
                         DurationDay = lic.DateLimit,
                         NamedNumberOfConnections = lic.NamedNumberOfConnections,
                         ConcurenteNumberOfConnections = lic.ConcurenteNumberOfConnections,
-                        Functionals = lic.Functionals
+                        Functionals = lic.Functionals,
+                        LicenceKey = lic.LicenceKey
                     });
-
-                    SaveLicenceKey(lic.ClientId, lic.LicenceKey);
                 }
             }
             catch (Exception ex)

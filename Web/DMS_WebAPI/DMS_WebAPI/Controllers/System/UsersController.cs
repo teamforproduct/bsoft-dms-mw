@@ -118,7 +118,9 @@ namespace DMS_WebAPI.Controllers
         [HttpGet]
         public IHttpActionResult GetRegCode(int id)
         {
-            return new JsonResult(new SystemInfo().GetProgramRegCode(), this);
+            var sdbw = new SystemDbWorker();
+            var lic = sdbw.GetLicenceInfo(id);
+            return new JsonResult(new SystemInfo().GetProgramRegCode(lic), this);
         }
     }
 }

@@ -14,7 +14,11 @@ namespace DMS_WebAPI.Controllers
 
             //TODO удалить в релизе
             if (id.HasValue)
-                ViewBag.RegCode = new SystemInfo().GetProgramRegCode();
+            {
+                var sdbw = new SystemDbWorker();
+                var lic = sdbw.GetLicenceInfo(id.GetValueOrDefault());
+                ViewBag.RegCode = new SystemInfo().GetProgramRegCode(lic);
+            }
 
             return View();
         }

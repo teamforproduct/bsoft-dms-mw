@@ -17,5 +17,6 @@ namespace BL.Model.SystemCore
         public int? ConcurenteNumberOfConnections { get; set; }
         public int? DurationDay { get; set; }
         public string Functionals { get; set; }
+        public string LicenceKey { get; set; }
     }
 }
