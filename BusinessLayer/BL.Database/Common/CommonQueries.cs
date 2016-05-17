@@ -315,19 +315,54 @@ namespace BL.Database.Common
         {
             var tasksDb = dbContext.DocumentTasksSet.AsQueryable();
 
+            var sendTypeIds = new List<int> { (int)EnumSendTypes.SendForResponsibleExecution, (int)EnumSendTypes.SendForControl };
+            var sendListDb = dbContext.DocumentSendListsSet
+                            .Where(x => x.TaskId.HasValue)
+                            .Where(x => !x.CloseEventId.HasValue)
+                            .Where(x => sendTypeIds.Contains(x.SendTypeId))
+                            .GroupBy(x=>x.TaskId)
+                            .Select(x=>x.FirstOrDefault())
+                            .AsQueryable();
+
+            var eventTypeIds = new List<int> { (int)EnumEventTypes.SendForControl, (int)EnumEventTypes.SendForControlChange, (int)EnumEventTypes.SendForResponsibleExecution, (int)EnumEventTypes.SendForResponsibleExecutionChange };
+            var eventDb = dbContext.DocumentWaitsSet
+                            .Where(x => !x.OffEventId.HasValue)
+                            .Select(x => x.OnEvent)
+                            .Where(x => x.TaskId.HasValue)
+                            .Where(x => eventTypeIds.Contains(x.EventTypeId))
+                            .GroupBy(x => x.TaskId)
+                            .Select(x => x.FirstOrDefault())
+                            .AsQueryable();
+
             if (filter != null)
             {
                 if (filter?.DocumentId?.Count() > 0)
                 {
                     tasksDb = tasksDb.Where(x => filter.DocumentId.Contains(x.DocumentId));
+                    sendListDb = sendListDb.Where(x => filter.DocumentId.Contains(x.DocumentId));
+                    eventDb = eventDb.Where(x => filter.DocumentId.Contains(x.DocumentId));
                 }
                 if (filter?.Id?.Count() > 0)
                 {
                     tasksDb = tasksDb.Where(x => filter.Id.Contains(x.Id));
+                    sendListDb = sendListDb.Where(x => filter.Id.Contains(x.TaskId ?? 0));
+                    eventDb = eventDb.Where(x => filter.Id.Contains(x.TaskId ?? 0));
                 }
             }
 
-            var tasksRes = tasksDb.Select(x => new { Task = x });
+            var tasksRes = from task in tasksDb
+
+                           join sl in sendListDb on task.Id equals sl.TaskId into sl
+                           from slAg in sl.DefaultIfEmpty()
+
+                           join ev in eventDb on task.Id equals ev.TaskId into ev
+                           from evAg in ev.DefaultIfEmpty()
+                           select new
+                           {
+                               Task = task,
+                               SendListDb = slAg,
+                               Event = evAg
+                           };
 
             var tasks = tasksRes.Select(x => new FrontDocumentTask
             {
@@ -355,6 +390,12 @@ namespace BL.Database.Common
                 PositionName = x.Task.Position.Name,
                 PositionExecutorNowAgentName = x.Task.Position.ExecutorAgent.Name,
                 PositionExecutorAgentPhoneNumber = "(888)888-88-88", //TODO 
+
+                FactResponsibleExecutorPositionName = x.SendListDb.TargetPosition.Name,
+                FactResponsibleExecutorPositionExecutorAgentName = x.SendListDb.TargetPositionExecutorAgent.Name,
+
+                PlanResponsibleExecutorPositionName = x.Event.TargetPosition.Name,
+                PlanResponsibleExecutorPositionExecutorAgentName = x.Event.TargetPositionExecutorAgent.Name,
             }).ToList();
 
             tasks.ForEach(x => CommonQueries.ChangeRegistrationFullNumber(x));
