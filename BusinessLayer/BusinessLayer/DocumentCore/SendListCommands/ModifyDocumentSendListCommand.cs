@@ -45,7 +45,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
                                                 {
                                                     SendListId = x.Id,
                                                 });
-            if (!_actionRecords.Any() || _document.IsLaunchPlan)
+            if (!_actionRecords.Any() /*|| _document.IsLaunchPlan*/)
             {
                 return false;
             }
@@ -70,12 +70,15 @@ namespace BL.Logic.DocumentCore.SendListCommands
                 _context.SetCurrentPosition(_sendList.SourcePositionId);
             }
             _admin.VerifyAccess(_context, CommandType);
+            var tmpSendList = _document.SendLists;
+            _document.SendLists = _document?.SendLists.Where(x => x.Id == Model.Id).ToList();
             if (!CanBeDisplayed(_context.CurrentPositionId))
             {
                 throw new CouldNotPerformOperation();
             }
+            _document.SendLists = tmpSendList;
 
-            var taskId = CommonDocumentUtilities.GetDocumentTaskOrCreateNew(_context, _document, Model.Task); //TODO исправление от кого????
+           var taskId = CommonDocumentUtilities.GetDocumentTaskOrCreateNew(_context, _document, Model.Task); //TODO исправление от кого????
             _sendList.Stage = Model.Stage;
             _sendList.SendType = Model.SendType;
             _sendList.TargetPositionId = Model.TargetPositionId;
