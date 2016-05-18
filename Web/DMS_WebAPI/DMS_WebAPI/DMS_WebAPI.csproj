@@ -234,6 +234,8 @@
     <Compile Include="Controllers\Dictionaries\DictionaryContactsController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryContactTypesController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryTagsController.cs" />
+    <Compile Include="Controllers\Documents\DocumentSubscriptionsController.cs" />
+    <Compile Include="Controllers\Documents\DocumentWaitsController.cs" />
     <Compile Include="Controllers\Documents\DocumentEventsController.cs" />
     <Compile Include="Controllers\Documents\DocumentPaperListsController.cs" />
     <Compile Include="Controllers\Documents\DocumentPapersController.cs" />

@@ -960,7 +960,7 @@ namespace BL.Database.Documents
 
                 res.DocumentWorkGroup = CommonQueries.GetDocumentWorkGroup(dbContext, new FilterDictionaryPosition { DocumentIDs = docIds });
 
-                res.DocumentSubscriptions = CommonQueries.GetDocumentSubscriptions(dbContext, new FilterDocumentSubscription { DocumentId = docIds });
+                res.DocumentSubscriptions = CommonQueries.GetDocumentSubscriptions(dbContext, new FilterDocumentSubscription { DocumentId = docIds }, ctx);
 
                 res.DocumentPapers = CommonQueries.GetDocumentPapers(dbContext, new FilterDocumentPaper { DocumentId = docIds });
 
@@ -1038,7 +1038,7 @@ namespace BL.Database.Documents
                         OffEventDate = x.OffEventId.HasValue ? x.OffEvent.CreateDate : (DateTime?)null
                     }).ToList();
 
-                res.DocumentSubscriptions = CommonQueries.GetDocumentSubscriptionsQuery(dbContext, new FilterDocumentSubscription { DocumentId = new List<int> { res.Id }, SubscriptionStates = new List<EnumSubscriptionStates> { EnumSubscriptionStates.Sign } })
+                res.DocumentSubscriptions = CommonQueries.GetDocumentSubscriptionsQuery(dbContext, new FilterDocumentSubscription { DocumentId = new List<int> { res.Id }, SubscriptionStates = new List<EnumSubscriptionStates> { EnumSubscriptionStates.Sign } }, ctx)
                     .Select(x => new ReportDocumentSubscription
                     {
                         Id = x.Id,

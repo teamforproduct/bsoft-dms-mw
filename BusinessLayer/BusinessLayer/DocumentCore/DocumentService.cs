@@ -86,6 +86,16 @@ namespace BL.Logic.DocumentCore
             return _operationDb.GetDocumentEvents(ctx, filter, paging);
         }
 
+        public IEnumerable<FrontDocumentWait> GetDocumentWaits(IContext ctx, FilterDocumentWait filter, UIPaging paging)
+        {
+            return _operationDb.GetDocumentWaits(ctx, filter, paging);
+        }
+
+        public IEnumerable<FrontDocumentSubscription> GetDocumentSubscriptions(IContext ctx, FilterDocumentSubscription filter, UIPaging paging)
+        {
+            return _operationDb.GetDocumentSubscriptions(ctx, filter, paging);
+        }
+
         public IEnumerable<FrontDocumentEvent> GetEventsForDocument(IContext ctx, int documentId, UIPaging paging)
         {
             return _operationDb.GetDocumentEvents(ctx, new FilterDocumentEvent { DocumentId = documentId }, paging);

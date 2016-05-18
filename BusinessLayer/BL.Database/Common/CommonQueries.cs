@@ -273,16 +273,21 @@ namespace BL.Database.Common
 
         public static IQueryable<DocumentEvents> GetDocumentEventsQuery(IContext ctx, DmsContext dbContext)
         {
-            return dbContext.DocumentEventsSet
+            var qry = GetDocumentQuery(dbContext, ctx)
+                        .SelectMany(x => x.Doc.Events)
+                        .AsQueryable();
+            return qry
                     .Where(x => ctx.IsAdmin || (x.TargetPositionId.HasValue && ctx.CurrentPositionsIdList.Contains(x.TargetPositionId.Value))
                     || (x.SourcePositionId.HasValue && ctx.CurrentPositionsIdList.Contains(x.SourcePositionId.Value))
                     || (x.IsAvailableWithinTask && x.TaskId.HasValue && dbContext.DocumentTaskAccessesSet.Any(a => a.TaskId == x.TaskId.Value && ctx.CurrentPositionsIdList.Contains(a.PositionId)))
                     ).AsQueryable();
         }
 
-        public static IQueryable<DocumentWaits> GetDocumentWaitsQuery(DmsContext dbContext, IContext ctx = null, int? documentId = null)
+        public static IQueryable<DocumentWaits> GetDocumentWaitsQuery(DmsContext dbContext, IContext ctx, int? documentId = null)
         {
-            var qry = dbContext.DocumentWaitsSet.AsQueryable();
+            var qry = GetDocumentQuery(dbContext, ctx)
+                        .SelectMany(x => x.Doc.Waits)
+                        .AsQueryable();
             if (documentId.HasValue)
             {
                 qry = qry.Where(x => x.DocumentId == documentId.Value);
@@ -320,8 +325,8 @@ namespace BL.Database.Common
                             .Where(x => x.TaskId.HasValue)
                             .Where(x => !x.CloseEventId.HasValue)
                             .Where(x => sendTypeIds.Contains(x.SendTypeId))
-                            .GroupBy(x=>x.TaskId)
-                            .Select(x=>x.FirstOrDefault())
+                            .GroupBy(x => x.TaskId)
+                            .Select(x => x.FirstOrDefault())
                             .AsQueryable();
 
             var eventTypeIds = new List<int> { (int)EnumEventTypes.SendForControl, (int)EnumEventTypes.SendForControlChange, (int)EnumEventTypes.SendForResponsibleExecution, (int)EnumEventTypes.SendForResponsibleExecutionChange };
@@ -404,7 +409,7 @@ namespace BL.Database.Common
 
         }
 
-        public static IEnumerable<FrontDocumentWait> GetDocumentWaits(DmsContext dbContext, FilterDocumentWait filter, IContext ctx = null)
+        public static IEnumerable<FrontDocumentWait> GetDocumentWaits(DmsContext dbContext, FilterDocumentWait filter, IContext ctx, UIPaging paging = null)
         {
             var waitsDb = GetDocumentWaitsQuery(dbContext, ctx);
 
@@ -431,7 +436,19 @@ namespace BL.Database.Common
                 }
             }
 
-            var waitsRes = waitsDb.OrderByDescending(x => x.LastChangeDate).Select(x => new { Wait = x, x.OnEvent, x.OffEvent });
+            var waitsRes = waitsDb
+                .Select(x => new { Wait = x, x.OnEvent, x.OffEvent })
+                .OrderByDescending(x => x.OnEvent.Date)
+                .AsQueryable();
+
+            if (paging != null)
+            {
+                paging.TotalItemsCount = waitsRes.Count();
+
+                waitsRes = waitsRes
+                        .Skip(paging.PageSize * (paging.CurrentPage - 1))
+                        .Take(paging.PageSize);
+            }
 
             var waits = waitsRes.Select(x => new FrontDocumentWait
             {
@@ -517,9 +534,11 @@ namespace BL.Database.Common
 
         }
 
-        public static IQueryable<DocumentSubscriptions> GetDocumentSubscriptionsQuery(DmsContext dbContext, FilterDocumentSubscription filter)
+        public static IQueryable<DocumentSubscriptions> GetDocumentSubscriptionsQuery(DmsContext dbContext, FilterDocumentSubscription filter, IContext ctx)
         {
-            var subscriptionsDb = dbContext.DocumentSubscriptionsSet.AsQueryable();
+            var subscriptionsDb = GetDocumentQuery(dbContext, ctx)
+                                    .SelectMany(x => x.Doc.Subscriptions)
+                                    .AsQueryable();
 
             if (filter != null)
             {
@@ -536,19 +555,24 @@ namespace BL.Database.Common
             return subscriptionsDb;
 
         }
-        public static IEnumerable<FrontDocumentSubscription> GetDocumentSubscriptions(DmsContext dbContext, FilterDocumentSubscription filter)
+        public static IEnumerable<FrontDocumentSubscription> GetDocumentSubscriptions(DmsContext dbContext, FilterDocumentSubscription filter, IContext ctx, UIPaging paging = null)
         {
-            var subscriptionsDb = dbContext.DocumentSubscriptionsSet.AsQueryable();
 
-            if (filter != null)
+            var subscriptionsDb = GetDocumentSubscriptionsQuery(dbContext, filter, ctx);
+
+            var subscriptionsRes = subscriptionsDb
+                                    .Select(x => new { Subscription = x, x.SendEvent, x.DoneEvent })
+                                    .OrderByDescending(x => x.Subscription.LastChangeDate)
+                                    .AsQueryable();
+
+            if (paging != null)
             {
-                if (filter.DocumentId.Any())
-                {
-                    subscriptionsDb = subscriptionsDb.Where(x => filter.DocumentId.Contains(x.DocumentId));
-                }
-            }
+                paging.TotalItemsCount = subscriptionsRes.Count();
 
-            var subscriptionsRes = subscriptionsDb.OrderByDescending(x => x.LastChangeDate).Select(x => new { Subscription = x, x.SendEvent, x.DoneEvent });
+                subscriptionsRes = subscriptionsRes
+                        .Skip(paging.PageSize * (paging.CurrentPage - 1))
+                        .Take(paging.PageSize);
+            }
 
             var subscriptions = subscriptionsRes.Select(x => new FrontDocumentSubscription
             {
