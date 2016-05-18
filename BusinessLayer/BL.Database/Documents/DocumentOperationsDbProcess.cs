@@ -776,10 +776,6 @@ namespace BL.Database.Documents
 
                 var qryRes = qry.Select(x => new { Event = x, OnWait = x.OnWait.Where(y => !y.OffEventId.HasValue).FirstOrDefault() });
 
-                var ddate = dbContext.DocumentWaitsSet.Join(qry, w => w.OnEventId, e => e.Id, (w, e) => new { wt = w })
-                    .Where(x => !x.wt.OffEventId.HasValue)
-                    .Select(x => new { evtId = x.wt.OnEventId, x.wt.DueDate }).ToList();
-
                 var res = qryRes.Select(x => new FrontDocumentEvent
                 {
                     Id = x.Event.Id,
