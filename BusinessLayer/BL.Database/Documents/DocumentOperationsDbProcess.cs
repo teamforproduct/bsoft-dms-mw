@@ -774,55 +774,69 @@ namespace BL.Database.Documents
                             .Take(paging.PageSize);
                 }
 
+                var qryRes = qry.Select(x => new { Event = x, OnWait = x.OnWait.Where(y => !y.OffEventId.HasValue).FirstOrDefault() });
+
                 var ddate = dbContext.DocumentWaitsSet.Join(qry, w => w.OnEventId, e => e.Id, (w, e) => new { wt = w })
                     .Where(x => !x.wt.OffEventId.HasValue)
                     .Select(x => new { evtId = x.wt.OnEventId, x.wt.DueDate }).ToList();
 
-                var res = qry.Select(x => new FrontDocumentEvent
+                var res = qryRes.Select(x => new FrontDocumentEvent
                 {
-                    Id = x.Id,
-                    DocumentId = x.DocumentId,
-                    EventType = x.EventTypeId,
-                    EventTypeName = x.EventType.Name,
-                    Date = x.Date,
-                    Task = x.Task.Task,
-                    Description = x.Description,
+                    Id = x.Event.Id,
+                    DocumentId = x.Event.DocumentId,
+                    EventType = x.Event.EventTypeId,
+                    EventTypeName = x.Event.EventType.Name,
+                    Date = x.Event.Date,
+                    Task = x.Event.Task.Task,
+                    Description = x.Event.Description,
 
-                    SourcePositionExecutorAgentName = x.SourcePositionExecutorAgent.Name,
-                    TargetPositionExecutorAgentName = x.TargetPositionExecutorAgent.Name ?? x.TargetAgent.Name,
-                    DocumentDate = x.Document.RegistrationDate ?? x.Document.CreateDate,
+                    SourcePositionExecutorAgentName = x.Event.SourcePositionExecutorAgent.Name,
+                    TargetPositionExecutorAgentName = x.Event.TargetPositionExecutorAgent.Name ?? x.Event.TargetAgent.Name,
+                    DocumentDate = x.Event.Document.RegistrationDate ?? x.Event.Document.CreateDate,
 
-                    RegistrationNumber = x.Document.RegistrationNumber,
-                    RegistrationNumberPrefix = x.Document.RegistrationNumberPrefix,
-                    RegistrationNumberSuffix = x.Document.RegistrationNumberSuffix,
-                    RegistrationFullNumber = "#" + x.Document.Id,
+                    RegistrationNumber = x.Event.Document.RegistrationNumber,
+                    RegistrationNumberPrefix = x.Event.Document.RegistrationNumberPrefix,
+                    RegistrationNumberSuffix = x.Event.Document.RegistrationNumberSuffix,
+                    RegistrationFullNumber = "#" + x.Event.Document.Id,
 
-                    DueDate = null,
+                    DueDate = x.OnWait != null ? x.OnWait.DueDate : null,
+                    IsWaitOpened = x.OnWait != null,
 
-                    IsRead = !x.TargetPositionId.HasValue || x.TargetPositionId == x.SourcePositionId || !ctx.CurrentPositionsIdList.Contains(x.TargetPositionId.Value) ? null : (bool?)x.ReadDate.HasValue,
+                    IsRead = !x.Event.TargetPositionId.HasValue || x.Event.TargetPositionId == x.Event.SourcePositionId || !ctx.CurrentPositionsIdList.Contains(x.Event.TargetPositionId.Value) ? null : (bool?)x.Event.ReadDate.HasValue,
 
-                    PaperId = x.Paper.Id,
-                    PaperName = x.Paper.Name,
-                    PaperIsMain = x.Paper.IsMain,
-                    PaperIsOriginal = x.Paper.IsOriginal,
-                    PaperIsCopy = x.Paper.IsCopy,
-                    PaperOrderNumber = x.Paper.OrderNumber,
+                    PaperId = x.Event.Paper.Id,
+                    PaperName = x.Event.Paper.Name,
+                    PaperIsMain = x.Event.Paper.IsMain,
+                    PaperIsOriginal = x.Event.Paper.IsOriginal,
+                    PaperIsCopy = x.Event.Paper.IsCopy,
+                    PaperOrderNumber = x.Event.Paper.OrderNumber,
 
-                    PaperPlanDate = x.PaperPlanDate,
-                    PaperSendDate = x.PaperSendDate,
-                    PaperRecieveDate = x.PaperRecieveDate,
+                    PaperPlanDate = x.Event.PaperPlanDate,
+                    PaperSendDate = x.Event.PaperSendDate,
+                    PaperRecieveDate = x.Event.PaperRecieveDate,
 
 
                 }).ToList();
 
                 res.ForEach(x => CommonQueries.ChangeRegistrationFullNumber(x));
 
-                foreach (var el in res.Join(ddate, r => r.Id, d => d.evtId, (r, d) => new { r, d }))
-                {
-                    el.r.DueDate = el.d.DueDate;
-                }
-
                 return res;
+            }
+        }
+
+        public IEnumerable<FrontDocumentWait> GetDocumentWaits(IContext ctx, FilterDocumentWait filter, UIPaging paging)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                return CommonQueries.GetDocumentWaits(dbContext, filter, ctx, paging).ToList();
+            }
+        }
+
+        public IEnumerable<FrontDocumentSubscription> GetDocumentSubscriptions(IContext ctx, FilterDocumentSubscription filter, UIPaging paging)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                return CommonQueries.GetDocumentSubscriptions(dbContext, filter, ctx, paging).ToList();
             }
         }
 
