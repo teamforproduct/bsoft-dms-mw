@@ -9,6 +9,13 @@ using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.Enums;
 using System.Collections.Generic;
 using BL.Model.SystemCore;
+using System.Threading.Tasks;
+using System.Net;
+using System.Net.Http;
+using System.Web;
+using System.IO;
+using Newtonsoft.Json;
+using System.Linq;
 
 namespace DMS_WebAPI.Controllers.Documents
 {
@@ -31,9 +38,9 @@ namespace DMS_WebAPI.Controllers.Documents
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docFileProc = DmsResolver.Current.Get<IDocumentFileService>();
-            return new JsonResult(docFileProc.GetDocumentFiles(cxt,id), this);
+            return new JsonResult(docFileProc.GetDocumentFiles(cxt, id), this);
         }
-        
+
         /// <summary>
         /// Общий список файлов
         /// </summary>
@@ -49,12 +56,28 @@ namespace DMS_WebAPI.Controllers.Documents
             res.Paging = paging;
             return res;
         }
-        
+
         // POST: api/Files
-        public IHttpActionResult Post([FromBody]ModifyDocumentFiles model)
+        //public IHttpActionResult Post([FromBody]ModifyDocumentFiles model)
+        //{
+        //    var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+        //    var docProc = DmsResolver.Current.Get<IDocumentService>();
+        //    docProc.ExecuteAction(EnumDocumentActions.AddDocumentFile, cxt, model);
+        //    return Get(model.DocumentId);
+        //}
+
+        public IHttpActionResult Post(ModifyDocumentFiles model, IEnumerable<HttpPostedFileBase> files)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
+
+            foreach (var file in model.Files)
+            {
+                var fileData = files.FirstOrDefault(x => x.FileName.Equals(file.FileName));
+                if (fileData != null)
+                    file.PostedFileData = fileData;
+            }
+
             docProc.ExecuteAction(EnumDocumentActions.AddDocumentFile, cxt, model);
             return Get(model.DocumentId);
         }

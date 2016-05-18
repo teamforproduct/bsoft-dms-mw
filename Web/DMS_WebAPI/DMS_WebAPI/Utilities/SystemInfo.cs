@@ -24,7 +24,35 @@ namespace DMS_WebAPI.Utilities
             }
             return "";
         }
+        private string GetNetworkAdapterKey()
+        {
+            try
+            {
+                var macs = string.Empty;
 
+                using (var partitions = new ManagementObjectSearcher("Select MACAddress,PNPDeviceID FROM Win32_NetworkAdapter WHERE MACAddress IS NOT NULL AND PNPDeviceID IS NOT NULL"))
+                {
+                    foreach (var partition in partitions.Get())
+                    {
+                        string pnp = partition["PNPDeviceID"].ToString();
+                        if (pnp.Contains("PCI\\"))
+                        {
+                            string mac = partition["MACAddress"].ToString();
+                            mac = mac.Replace(":", string.Empty);
+                            macs += mac;
+                        }
+                    }
+                }
+                return macs;
+            }
+            catch
+            {
+                return "";
+            }
+
+            // Not Found
+            return "";
+        }
         private string GetDiscKey(string driveLetter)
         {
             try
@@ -59,12 +87,14 @@ namespace DMS_WebAPI.Utilities
         {
             var cpu = GetCPUKey();
             var disc = GetDiscKey("C:");
+            var netw = GetNetworkAdapterKey();
 
-            if (string.IsNullOrEmpty(cpu) || string.IsNullOrEmpty(disc))
+            var strinfo = $"{cpu}+{disc}+{netw}";
+            if (string.IsNullOrEmpty(strinfo) || string.IsNullOrEmpty(cpu) || string.IsNullOrEmpty(netw))
             {
                 throw new LicenceError();
             }
-            var strinfo = $"{li.FirstStart.ToString("yyyy-MM-ddTHH:mm")}+{cpu}+{disc}";
+            strinfo = $"{li.FirstStart.ToString("yyyy-MM-ddTHH:mm")}+{strinfo}";
             string res, hash;
             hash = DmsResolver.Current.Get<ICryptoService>().GetHash(strinfo);
             hash = hash.ToUpper().Replace("0", "").Replace("O", "").Replace("I", "").Replace("1", "");

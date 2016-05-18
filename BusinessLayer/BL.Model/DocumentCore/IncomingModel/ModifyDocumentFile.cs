@@ -1,5 +1,5 @@
-﻿using BL.Model.Users;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
+using System.Web;
 
 namespace BL.Model.DocumentCore.IncomingModel
 {
@@ -38,5 +38,11 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// Размер файла
         /// </summary>
         public int FileSize { get; set; }
+
+        /// <summary>
+        /// Данные файла
+        /// </summary>
+        [IgnoreDataMember]
+        public HttpPostedFileBase PostedFileData { get; set; }
     }
 }
