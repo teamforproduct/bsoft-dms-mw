@@ -5,13 +5,9 @@ namespace BL.Model.SystemCore
 {
     public class LicenceInfo
     {
+        public int LicenceId { get; set; }
         public int ClientId { get; set; }
-        public string Name { get; set; }
-
-        /// <summary>
-        /// Только для информации
-        /// </summary>
-        public bool IsTrial { get; set; }
+        public string ClientName { get; set; }
 
         public bool IsDateLimit { get; set; }
 

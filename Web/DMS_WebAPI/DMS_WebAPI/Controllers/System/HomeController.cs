@@ -12,14 +12,6 @@ namespace DMS_WebAPI.Controllers
         {
             ViewBag.Title = "Home Page";
 
-            //TODO удалить в релизе
-            if (id.HasValue)
-            {
-                var sdbw = new SystemDbWorker();
-                var lic = sdbw.GetLicenceInfo(id.GetValueOrDefault());
-                ViewBag.RegCode = new SystemInfo().GetProgramRegCode(lic);
-            }
-
             return View();
         }
     }

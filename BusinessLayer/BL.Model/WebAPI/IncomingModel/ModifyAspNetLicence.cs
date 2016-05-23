@@ -1,18 +1,17 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BL.Model.Database;
+using System.Runtime.Serialization;
 
-namespace DMS_WebAPI.DBModel
+namespace BL.Model.WebAPI.IncomingModel
 {
-    public class AspNetLicences
+    public class ModifyAspNetLicence
     {
+        [IgnoreDataMember]
         public int Id { get; set; }
-        [MaxLength(2000)]
         public string Name { get; set; }
-        [MaxLength(2000)]
         public string Description { get; set; }
         public int? NamedNumberOfConnections { get; set; }
         public int? ConcurenteNumberOfConnections { get; set; }
         public int? DurationDay { get; set; }
-        [MaxLength(2000)]
         public string Functionals { get; set; }
     }
 }

@@ -69,6 +69,7 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Management" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -77,6 +78,7 @@
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Abstractions" />
     <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Web.Services" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Runtime.Serialization" />
@@ -222,8 +224,6 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
-    <Compile Include="Controllers\AspNet\LicencesController.cs" />
-    <Compile Include="Controllers\AspNet\UserServersController.cs" />
     <Compile Include="Controllers\Dictionaries\CustomDictionaryTypesController.cs" />
     <Compile Include="Controllers\Dictionaries\CustomDictionariesController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryAddressTypesController.cs" />
@@ -248,7 +248,6 @@
     <Compile Include="Controllers\Properties\FilterPropertiesController.cs" />
     <Compile Include="Controllers\Properties\PropertyLinksController.cs" />
     <Compile Include="Controllers\Properties\PropertiesController.cs" />
-    <Compile Include="Controllers\AspNet\ClientsController.cs" />
     <Compile Include="Controllers\System\AccountController.cs" />
     <Compile Include="Controllers\Admins\AdminAccessLevelsController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryAgentsController.cs" />
@@ -277,13 +276,22 @@
     <Compile Include="Controllers\Documents\DocumentSendListsController.cs" />
     <Compile Include="Controllers\System\HomeController.cs" />
     <Compile Include="Controllers\Documents\TemplateDocumentsController.cs" />
-    <Compile Include="Controllers\System\ServersController.cs" />
     <Compile Include="Controllers\System\UsersController.cs" />
+    <Compile Include="Controllers\WebAPI\UserServersController.cs" />
+    <Compile Include="Controllers\WebAPI\UserClientsController.cs" />
+    <Compile Include="Controllers\WebAPI\LicencesController.cs" />
+    <Compile Include="Controllers\WebAPI\ClientServersController.cs" />
+    <Compile Include="Controllers\WebAPI\ClientsController.cs" />
+    <Compile Include="Controllers\WebAPI\ClientLicencesController.cs" />
+    <Compile Include="Controllers\WebAPI\ServersController.cs" />
     <Compile Include="DBModel\AdminLanguages.cs" />
     <Compile Include="DBModel\AdminLanguageValues.cs" />
     <Compile Include="DBModel\AdminServers.cs" />
+    <Compile Include="DBModel\AspNetClientServers.cs" />
+    <Compile Include="DBModel\AspNetClientLicences.cs" />
     <Compile Include="DBModel\AspNetLicences.cs" />
     <Compile Include="DBModel\AspNetClients.cs" />
+    <Compile Include="DBModel\AspNetUserClients.cs" />
     <Compile Include="DBModel\AspNetUserServers.cs" />
     <Compile Include="DependencyInjection\ApiModel.cs" />
     <Compile Include="Global.asax.cs">
@@ -325,15 +333,11 @@
     <Compile Include="Results\JsonResult.cs" />
     <Compile Include="Results\ChallengeResult.cs" />
     <Compile Include="Startup.cs" />
-    <Compile Include="Utilities\AspNet\AspNetUserServers.cs" />
-    <Compile Include="Utilities\AspNet\AspNetLicences.cs" />
+    <Compile Include="Utilities\WebAPIDbProcess.cs" />
     <Compile Include="Utilities\Languages.cs" />
-    <Compile Include="Utilities\AspNet\AspNetClients.cs" />
-    <Compile Include="Utilities\SystemDbWorker.cs" />
     <Compile Include="Utilities\SystemInfo.cs" />
     <Compile Include="Utilities\UserContextWorkerService.cs" />
     <Compile Include="Utilities\UserContext.cs" />
-    <Compile Include="Utilities\Servers.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\HelpPage\HelpPage.css" />

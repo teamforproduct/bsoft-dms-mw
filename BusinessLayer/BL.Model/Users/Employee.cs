@@ -25,6 +25,10 @@
         /// Код языка
         /// </summary>
         public int LanguageId { get; set; }
+
+        public int ClientId { get; set; }
+        public string ClientCode { get; set; }
+
         ///// <summary>
         ///// ЛОгин
         ///// </summary>

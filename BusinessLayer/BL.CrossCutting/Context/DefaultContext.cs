@@ -38,7 +38,6 @@ namespace BL.CrossCutting.Context
                         UserPassword = ctx.CurrentDB.UserPassword,
                         DefaultSchema = ctx.CurrentDB.DefaultSchema,
                         ConnectionString = ctx.CurrentDB.ConnectionString,
-                        ClientId = ctx.CurrentDB.ClientId,
                     };
                 }
                 catch (DatabaseIsNotSet)
@@ -53,6 +52,8 @@ namespace BL.CrossCutting.Context
                     Name = ctx.CurrentEmployee.Name,
                     Token = ctx.CurrentEmployee.Token,
                     UserId = ctx.CurrentEmployee.UserId,
+                    ClientId = ctx.CurrentEmployee.ClientId,
+                    ClientCode = ctx.CurrentEmployee.ClientCode,
                 };
 
                 ClientLicence = ctx.ClientLicence;
@@ -149,11 +150,11 @@ namespace BL.CrossCutting.Context
         {
             get
             {
-                if (_currentDb == null)
-                {
-                    return null;
-                }
-                return _currentDb.ClientId;
+                return CurrentEmployee.ClientId;
+            }
+            set
+            {
+                CurrentEmployee.ClientId = value.GetValueOrDefault();
             }
         }
     }

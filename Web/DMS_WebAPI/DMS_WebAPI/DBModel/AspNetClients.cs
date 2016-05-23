@@ -8,24 +8,19 @@ namespace DMS_WebAPI.DBModel
     {
         public AspNetClients()
         {
-            this.Servers = new HashSet<AdminServers>();
+            this.ClientServers = new HashSet<AspNetClientServers>();
+            this.Licences = new HashSet<AspNetClientLicences>();
+            this.UserServers = new HashSet<AspNetUserServers>();
         }
         public int Id { get; set; }
         [MaxLength(2000)]
         public string Name { get; set; }
 
-        public DateTime? FirstStart { get; set; }
-        /// <summary>
-        /// Только для информации
-        /// </summary>
-        public bool IsTrial { get; set; }
-        public int? NamedNumberOfConnections { get; set; }
-        public int? ConcurenteNumberOfConnections { get; set; }
-        public int? DurationDay { get; set; }
-        public string Functionals { get; set; }
+        [MaxLength(2000)]
+        public string Code { get; set; }
 
-        public string LicenceKey { get; set; }
-
-        public virtual ICollection<AdminServers> Servers { get; set; }
+        public virtual ICollection<AspNetClientServers> ClientServers { get; set; }
+        public virtual ICollection<AspNetClientLicences> Licences { get; set; }
+        public virtual ICollection<AspNetUserServers> UserServers { get; set; }
     }
 }

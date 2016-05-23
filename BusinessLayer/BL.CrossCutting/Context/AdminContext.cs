@@ -15,6 +15,7 @@ namespace BL.CrossCutting.Context
 
         public AdminContext(DatabaseModel dbModel)
         {
+            //TODO ClientId
             CurrentDB = new DatabaseModel
             {
                 Id = dbModel.Id,
@@ -27,7 +28,6 @@ namespace BL.CrossCutting.Context
                 UserPassword = _USER_PASS,
                 DefaultSchema = dbModel.DefaultSchema,
                 ConnectionString = dbModel.ConnectionString,
-                ClientId = dbModel.ClientId,
             };
             CurrentEmployee = new Employee
             {
@@ -53,7 +53,6 @@ namespace BL.CrossCutting.Context
                     UserPassword = _USER_PASS,
                     DefaultSchema = ctx.CurrentDB.DefaultSchema,
                     ConnectionString = ctx.CurrentDB.ConnectionString,
-                    ClientId = ctx.CurrentDB.ClientId,
                 };
                 CurrentEmployee = new Employee
                 {
@@ -64,8 +63,9 @@ namespace BL.CrossCutting.Context
         }
 
         public Employee CurrentEmployee { get; set; }
-        public List<int> CurrentPositionsIdList {
-            get { return new List<int> {0}; }
+        public List<int> CurrentPositionsIdList
+        {
+            get { return new List<int> { 0 }; }
             set { }
         }
         public DatabaseModel CurrentDB { get; set; }
@@ -77,7 +77,7 @@ namespace BL.CrossCutting.Context
 
         public int CurrentAgentId
         {
-            get { return (int) EnumSystemUsers.AdminUser; }
+            get { return (int)EnumSystemUsers.AdminUser; }
         }
 
         public void SetCurrentPosition(int? position)
@@ -88,16 +88,6 @@ namespace BL.CrossCutting.Context
         public bool IsAdmin => true;
         public LicenceInfo ClientLicence { get; set; }
 
-        public int? CurrentClientId
-        {
-            get
-            {
-                if (CurrentDB == null)
-                {
-                    return null;
-                }
-                return CurrentDB.ClientId;
-            }
-        }
+        public int? CurrentClientId { get { return null; } }
     }
 }

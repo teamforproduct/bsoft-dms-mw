@@ -8,6 +8,8 @@ using System.Web.Http;
 using BL.CrossCutting.DependencyInjection;
 using BL.Model.Exception;
 using BL.Logic.DictionaryCore.Interfaces;
+using System.Linq;
+using Microsoft.AspNet.Identity;
 
 namespace DMS_WebAPI.Controllers
 {
@@ -83,7 +85,12 @@ namespace DMS_WebAPI.Controllers
         public IHttpActionResult GetServers()
         {
             var context = DmsResolver.Current.Get<UserContext>().Get();
-            return new JsonResult(new Servers().GetServersByUser(context.CurrentEmployee.UserId), this);
+
+            var dbProc = new WebAPIDbProcess();
+
+            var servers = dbProc.GetServersByUser(context);
+
+            return new JsonResult(servers, this);
         }
 
         /// <summary>
@@ -93,34 +100,38 @@ namespace DMS_WebAPI.Controllers
         /// <returns></returns>
         [Route("Servers")]
         [HttpPost]
-        public IHttpActionResult SetServers([FromBody]int serverId)
+        public IHttpActionResult SetServers([FromBody]int serverId, [FromBody]int clientId)
         {
             var mngContext = DmsResolver.Current.Get<UserContext>();
 
-            var db = new Servers().GetServer(serverId);
+            var ctx = mngContext.Get();
+
+            var dbProc = new WebAPIDbProcess();
+
+            var db = dbProc.GetServerByUser(User.Identity.GetUserId(), serverId, clientId);
             if (db == null)
             {
                 throw new DatabaseIsNotFound();
             }
 
-            mngContext.Set(db);
+            mngContext.Set(db, clientId);
 
 
             return new JsonResult(null, this);
         }
 
-        /// <summary>
-        /// Получить код програмы
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [Route("RegCode")]
-        [HttpGet]
-        public IHttpActionResult GetRegCode(int id)
-        {
-            var sdbw = new SystemDbWorker();
-            var lic = sdbw.GetLicenceInfo(id);
-            return new JsonResult(new SystemInfo().GetProgramRegCode(lic), this);
-        }
+        ///// <summary>
+        ///// Получить код програмы
+        ///// </summary>
+        ///// <param name="id"></param>
+        ///// <returns></returns>
+        //[Route("RegCode")]
+        //[HttpGet]
+        //public IHttpActionResult GetRegCode(int id)
+        //{
+        //    var sdbw = new SystemDbWorker();
+        //    var lic = sdbw.GetLicenceInfo(id);
+        //    return new JsonResult(new SystemInfo().GetProgramRegCode(lic), this);
+        //}
     }
 }
