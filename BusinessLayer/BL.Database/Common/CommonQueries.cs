@@ -899,6 +899,7 @@ namespace BL.Database.Common
 
             var items = CommonQueries.GetDocumentQuery(dbContext, context, acc)
                     .Where(x => x.Doc.LinkId == linkId /*&& context.CurrentPositionsIdList.Contains(x.Acc.PositionId)*/)
+                        .OrderBy(x => x.Doc.RegistrationDate ?? x.Doc.CreateDate)
                         .Select(y => new FrontDocument
                         {
                             Id = y.Doc.Id,
@@ -914,7 +915,7 @@ namespace BL.Database.Common
                             Description = y.Doc.Description,
                             ExecutorPositionExecutorAgentName = y.ExecutorPositionExecutorAgentName,
                             ExecutorPositionName = y.ExecutorPosName,
-                            Links = dbContext.DocumentLinksSet.Where(z => z.DocumentId == y.Doc.Id).
+                            Links = dbContext.DocumentLinksSet.Where(z => z.DocumentId == y.Doc.Id).OrderBy(z => z.LastChangeDate).
                                 Select(z => new FrontDocumentLink
                                 {
                                     Id = z.Id,

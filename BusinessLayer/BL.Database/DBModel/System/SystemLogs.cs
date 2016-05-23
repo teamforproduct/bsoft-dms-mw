@@ -7,6 +7,8 @@ namespace BL.Database.DBModel.System
     public class SystemLogs
     {
         public int Id { get; set; }
+        [Index("IX_ClientId", 1)]
+        public int ClientId { get; set; }
         public int LogLevel { get; set; }
         [MaxLength(2000)]
         public string Message { get; set; }

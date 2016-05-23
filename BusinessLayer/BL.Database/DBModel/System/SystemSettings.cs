@@ -8,6 +8,9 @@ namespace BL.Database.DBModel.System
     public class SystemSettings
     {
         public int Id { get; set; }
+        [Index("IX_KeyExecutorAgent", 3, IsUnique = true)]
+        [Index("IX_ClientId", 1)]
+        public int ClientId { get; set; }
         [MaxLength(2000)]
         [Index("IX_KeyExecutorAgent", 1, IsUnique = true)]
         public string Key { get; set; }

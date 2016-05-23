@@ -104,15 +104,19 @@ namespace BL.Logic.DocumentCore.Commands
                 }
                 if (!isOk)
                 {
-                    _document.IsRegistered = false;
-                    _document.RegistrationJournalId = null;
-                    _document.NumerationPrefixFormula = null;
-                    _document.RegistrationNumber = null;
-                    _document.RegistrationNumberSuffix = null;
-                    _document.RegistrationNumberPrefix = null;
-                    _document.RegistrationDate = null;
-                    _documentDb.RegisterDocument(_context, _document);
+                    //_document.IsRegistered = false;
+                    //_document.RegistrationJournalId = null;
+                    //_document.NumerationPrefixFormula = null;
+                    //_document.RegistrationNumber = null;
+                    //_document.RegistrationNumberSuffix = null;
+                    //_document.RegistrationNumberPrefix = null;
+                    //_document.RegistrationDate = null;
+                    //_documentDb.RegisterDocument(_context, _document);
                     throw new DocumentCouldNotBeRegistered();
+                }
+                else
+                {
+                    transaction.Complete();
                 }
             }
             return Model.DocumentId;

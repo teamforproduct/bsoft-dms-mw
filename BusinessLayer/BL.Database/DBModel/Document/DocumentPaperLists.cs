@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,6 +16,8 @@ namespace BL.Database.DBModel.Document
         }
 
         public int Id { get; set; }
+        [Index("IX_ClientId", 1)]
+        public int ClientId { get; set; }
         public DateTime Date { get; set; }
         [MaxLength(2000)]
         public string Description { get; set; }
