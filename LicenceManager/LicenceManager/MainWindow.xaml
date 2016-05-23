@@ -5,17 +5,27 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LicenceManager"
         mc:Ignorable="d"
-        Title="Licence manager" Height="768" Width="1024">
+        Title="Licence manager" Height="768" Width="1024" WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <ResourceDictionary Source="CommonResource.xaml"/>
+    </Window.Resources>    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" >
-            <Label HorizontalAlignment="Center" Margin="0,10,0,10" Content="Клиентский код" />
-            <TextBox Margin="0,10,0,10" MinWidth="200" MaxWidth="200" Name="txtClientCode"/>
+            <WrapPanel>
+                <Label HorizontalAlignment="Center" Margin="10,10,10,10" Content="Название клиента" />
+                <TextBox Style="{StaticResource parametersEdit}" MinWidth="300" MaxWidth="200" Name="txtClientName"/>
+                <Label HorizontalAlignment="Center" Margin="10,10,10,10" Content="Клиентский код" />
+                <TextBox Style="{StaticResource parametersEdit}" MinWidth="200" MaxWidth="200" Name="txtClientCode"/>
+                <Button x:Name="btnGenerate" Content="Generate" Margin="20,10,10,10" Width="75"/>
+            </WrapPanel>
+            
             <Label HorizontalAlignment="Center" Margin="0,10,0,10" Content="Код активации"/>
             <TextBox MinWidth="600" MinLines="3" BorderThickness="3" Name="txtLicenceCode" />
+            <Button x:Name="btnAdd" Content="Add client to DB" Margin="10,10,10,30" Height="40"/>
         </StackPanel>
         <DataGrid Grid.Row="1" Name="clientsGrid">
             <DataGrid.Columns>
