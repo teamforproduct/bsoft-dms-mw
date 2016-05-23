@@ -298,6 +298,10 @@
     <Compile Include="Migrations\201605121642336_WaitDescription.Designer.cs">
       <DependentUpon>201605121642336_WaitDescription.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201605230929159_ClientId.cs" />
+    <Compile Include="Migrations\201605230929159_ClientId.Designer.cs">
+      <DependentUpon>201605230929159_ClientId.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SystemDb\ISystemDbProcess.cs" />
@@ -414,6 +418,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201605121642336_WaitDescription.resx">
       <DependentUpon>201605121642336_WaitDescription.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605230929159_ClientId.resx">
+      <DependentUpon>201605230929159_ClientId.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

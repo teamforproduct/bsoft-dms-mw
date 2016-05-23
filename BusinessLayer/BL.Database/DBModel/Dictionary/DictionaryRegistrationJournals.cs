@@ -12,9 +12,15 @@ namespace BL.Database.DBModel.Dictionary
     public class DictionaryRegistrationJournals
     {
         public int Id { get; set; }
+        [Index("IX_Name", 4, IsUnique = true)]
+        [Index("IX_ClientId", 1)]
+        public int ClientId { get; set; }
         [MaxLength(2000)]
+        [Index("IX_Name", 1, IsUnique = true)]
         public string Name { get; set; }
+        [Index("IX_Name", 2, IsUnique = true)]
         public int DepartmentId { get; set; }
+        [Index("IX_Name", 3, IsUnique = true)]
         [MaxLength(2000)]
         public string Index { get; set; }
         [MaxLength(2000)]

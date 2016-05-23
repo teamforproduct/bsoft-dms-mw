@@ -1,0 +1,152 @@
+namespace BL.Database.Migrations
+{
+    using System;
+    using System.Data.Entity.Migrations;
+    
+    public partial class ClientId : DbMigration
+    {
+        public override void Up()
+        {
+            DropIndex("DMS.DictionaryCompanies", new[] { "Name" });
+            DropIndex("DMS.DocumentSavedFilters", "IX_IconPosition");
+            DropIndex("DMS.DictionaryAgents", new[] { "Name" });
+            DropIndex("DMS.DictionaryAddressTypes", new[] { "Name" });
+            DropIndex("DMS.DictionaryContactTypes", new[] { "Code" });
+            DropIndex("DMS.DictionaryContactTypes", new[] { "Name" });
+            DropIndex("DMS.DictionaryResidentTypes", new[] { "Name" });
+            DropIndex("DMS.DictionaryDocumentSubjects", new[] { "Name" });
+            DropIndex("DMS.DictionaryRegistrationJournals", new[] { "DepartmentId" });
+            DropIndex("DMS.TemplateDocuments", new[] { "Name" });
+            DropIndex("DMS.DictionaryDocumentTypes", new[] { "Name" });
+            DropIndex("DMS.AdminRoles", new[] { "Name" });
+            DropIndex("DMS.CustomDictionaryTypes", new[] { "Code" });
+            DropIndex("DMS.Properties", new[] { "Code" });
+            DropIndex("DMS.SystemSettings", "IX_KeyExecutorAgent");
+            AddColumn("DMS.DictionaryCompanies", "ClientId", c => c.Int(nullable: false));
+            AddColumn("DMS.DocumentSavedFilters", "ClientId", c => c.Int(nullable: false));
+            AddColumn("DMS.DictionaryAgents", "ClientId", c => c.Int(nullable: false));
+            AddColumn("DMS.DictionaryAddressTypes", "ClientId", c => c.Int(nullable: false));
+            AddColumn("DMS.DictionaryContactTypes", "ClientId", c => c.Int(nullable: false));
+            AddColumn("DMS.DictionaryResidentTypes", "ClientId", c => c.Int(nullable: false));
+            AddColumn("DMS.DictionaryStandartSendLists", "ClientId", c => c.Int(nullable: false));
+            AddColumn("DMS.DictionaryTags", "ClientId", c => c.Int(nullable: false));
+            AddColumn("DMS.DictionaryDocumentSubjects", "ClientId", c => c.Int(nullable: false));
+            AddColumn("DMS.DocumentPaperLists", "ClientId", c => c.Int(nullable: false));
+            AddColumn("DMS.DictionaryRegistrationJournals", "ClientId", c => c.Int(nullable: false));
+            AddColumn("DMS.TemplateDocuments", "ClientId", c => c.Int(nullable: false));
+            AddColumn("DMS.DictionaryDocumentTypes", "ClientId", c => c.Int(nullable: false));
+            AddColumn("DMS.AdminRoles", "ClientId", c => c.Int(nullable: false));
+            AddColumn("DMS.CustomDictionaryTypes", "ClientId", c => c.Int(nullable: false));
+            AddColumn("DMS.SystemLogs", "ClientId", c => c.Int(nullable: false));
+            AddColumn("DMS.Properties", "ClientId", c => c.Int(nullable: false));
+            AddColumn("DMS.SystemSettings", "ClientId", c => c.Int(nullable: false));
+            CreateIndex("DMS.DictionaryCompanies", "ClientId");
+            CreateIndex("DMS.DictionaryCompanies", new[] { "Name", "ClientId" }, unique: true, name: "IX_Name");
+            CreateIndex("DMS.DocumentSavedFilters", "ClientId");
+            CreateIndex("DMS.DocumentSavedFilters", new[] { "Icon", "PositionId", "ClientId" }, unique: true, name: "IX_IconPosition");
+            CreateIndex("DMS.DictionaryAgents", "ClientId");
+            CreateIndex("DMS.DictionaryAgents", new[] { "Name", "ClientId" }, unique: true, name: "IX_Name");
+            CreateIndex("DMS.DictionaryAddressTypes", "ClientId");
+            CreateIndex("DMS.DictionaryAddressTypes", new[] { "Name", "ClientId" }, unique: true, name: "IX_Name");
+            CreateIndex("DMS.DictionaryContactTypes", "ClientId");
+            CreateIndex("DMS.DictionaryContactTypes", new[] { "Code", "ClientId" }, unique: true, name: "IX_Code");
+            CreateIndex("DMS.DictionaryContactTypes", new[] { "Name", "ClientId" }, unique: true, name: "IX_Name");
+            CreateIndex("DMS.DictionaryResidentTypes", "ClientId");
+            CreateIndex("DMS.DictionaryResidentTypes", new[] { "Name", "ClientId" }, unique: true, name: "IX_Name");
+            CreateIndex("DMS.DictionaryStandartSendLists", "ClientId");
+            CreateIndex("DMS.DictionaryStandartSendLists", "ClientId", unique: true, name: "IX_Name");
+            CreateIndex("DMS.DictionaryTags", "ClientId");
+            CreateIndex("DMS.DictionaryTags", "ClientId", unique: true, name: "IX_Name");
+            CreateIndex("DMS.DictionaryDocumentSubjects", "ClientId");
+            CreateIndex("DMS.DictionaryDocumentSubjects", new[] { "Name", "ClientId" }, unique: true, name: "IX_Name");
+            CreateIndex("DMS.DocumentPaperLists", "ClientId");
+            CreateIndex("DMS.DictionaryRegistrationJournals", "ClientId");
+            CreateIndex("DMS.DictionaryRegistrationJournals", new[] { "Name", "DepartmentId", "Index", "ClientId" }, unique: true, name: "IX_Name");
+            CreateIndex("DMS.TemplateDocuments", "ClientId");
+            CreateIndex("DMS.TemplateDocuments", new[] { "Name", "ClientId" }, unique: true, name: "IX_Name");
+            CreateIndex("DMS.DictionaryDocumentTypes", "ClientId");
+            CreateIndex("DMS.DictionaryDocumentTypes", new[] { "Name", "ClientId" }, unique: true, name: "IX_Name");
+            CreateIndex("DMS.AdminRoles", "ClientId");
+            CreateIndex("DMS.AdminRoles", new[] { "Name", "ClientId" }, unique: true, name: "IX_Name");
+            CreateIndex("DMS.CustomDictionaryTypes", "ClientId");
+            CreateIndex("DMS.CustomDictionaryTypes", new[] { "Code", "ClientId" }, unique: true, name: "IX_Code");
+            CreateIndex("DMS.SystemLogs", "ClientId");
+            CreateIndex("DMS.Properties", "ClientId");
+            CreateIndex("DMS.Properties", new[] { "Code", "ClientId" }, unique: true, name: "IX_Code");
+            CreateIndex("DMS.SystemSettings", "ClientId");
+            CreateIndex("DMS.SystemSettings", new[] { "Key", "ExecutorAgentId", "ClientId" }, unique: true, name: "IX_KeyExecutorAgent");
+        }
+        
+        public override void Down()
+        {
+            DropIndex("DMS.SystemSettings", "IX_KeyExecutorAgent");
+            DropIndex("DMS.SystemSettings", new[] { "ClientId" });
+            DropIndex("DMS.Properties", "IX_Code");
+            DropIndex("DMS.Properties", new[] { "ClientId" });
+            DropIndex("DMS.SystemLogs", new[] { "ClientId" });
+            DropIndex("DMS.CustomDictionaryTypes", "IX_Code");
+            DropIndex("DMS.CustomDictionaryTypes", new[] { "ClientId" });
+            DropIndex("DMS.AdminRoles", "IX_Name");
+            DropIndex("DMS.AdminRoles", new[] { "ClientId" });
+            DropIndex("DMS.DictionaryDocumentTypes", "IX_Name");
+            DropIndex("DMS.DictionaryDocumentTypes", new[] { "ClientId" });
+            DropIndex("DMS.TemplateDocuments", "IX_Name");
+            DropIndex("DMS.TemplateDocuments", new[] { "ClientId" });
+            DropIndex("DMS.DictionaryRegistrationJournals", "IX_Name");
+            DropIndex("DMS.DictionaryRegistrationJournals", new[] { "ClientId" });
+            DropIndex("DMS.DocumentPaperLists", new[] { "ClientId" });
+            DropIndex("DMS.DictionaryDocumentSubjects", "IX_Name");
+            DropIndex("DMS.DictionaryDocumentSubjects", new[] { "ClientId" });
+            DropIndex("DMS.DictionaryTags", "IX_Name");
+            DropIndex("DMS.DictionaryTags", new[] { "ClientId" });
+            DropIndex("DMS.DictionaryStandartSendLists", "IX_Name");
+            DropIndex("DMS.DictionaryStandartSendLists", new[] { "ClientId" });
+            DropIndex("DMS.DictionaryResidentTypes", "IX_Name");
+            DropIndex("DMS.DictionaryResidentTypes", new[] { "ClientId" });
+            DropIndex("DMS.DictionaryContactTypes", "IX_Name");
+            DropIndex("DMS.DictionaryContactTypes", "IX_Code");
+            DropIndex("DMS.DictionaryContactTypes", new[] { "ClientId" });
+            DropIndex("DMS.DictionaryAddressTypes", "IX_Name");
+            DropIndex("DMS.DictionaryAddressTypes", new[] { "ClientId" });
+            DropIndex("DMS.DictionaryAgents", "IX_Name");
+            DropIndex("DMS.DictionaryAgents", new[] { "ClientId" });
+            DropIndex("DMS.DocumentSavedFilters", "IX_IconPosition");
+            DropIndex("DMS.DocumentSavedFilters", new[] { "ClientId" });
+            DropIndex("DMS.DictionaryCompanies", "IX_Name");
+            DropIndex("DMS.DictionaryCompanies", new[] { "ClientId" });
+            DropColumn("DMS.SystemSettings", "ClientId");
+            DropColumn("DMS.Properties", "ClientId");
+            DropColumn("DMS.SystemLogs", "ClientId");
+            DropColumn("DMS.CustomDictionaryTypes", "ClientId");
+            DropColumn("DMS.AdminRoles", "ClientId");
+            DropColumn("DMS.DictionaryDocumentTypes", "ClientId");
+            DropColumn("DMS.TemplateDocuments", "ClientId");
+            DropColumn("DMS.DictionaryRegistrationJournals", "ClientId");
+            DropColumn("DMS.DocumentPaperLists", "ClientId");
+            DropColumn("DMS.DictionaryDocumentSubjects", "ClientId");
+            DropColumn("DMS.DictionaryTags", "ClientId");
+            DropColumn("DMS.DictionaryStandartSendLists", "ClientId");
+            DropColumn("DMS.DictionaryResidentTypes", "ClientId");
+            DropColumn("DMS.DictionaryContactTypes", "ClientId");
+            DropColumn("DMS.DictionaryAddressTypes", "ClientId");
+            DropColumn("DMS.DictionaryAgents", "ClientId");
+            DropColumn("DMS.DocumentSavedFilters", "ClientId");
+            DropColumn("DMS.DictionaryCompanies", "ClientId");
+            CreateIndex("DMS.SystemSettings", new[] { "Key", "ExecutorAgentId" }, unique: true, name: "IX_KeyExecutorAgent");
+            CreateIndex("DMS.Properties", "Code", unique: true);
+            CreateIndex("DMS.CustomDictionaryTypes", "Code", unique: true);
+            CreateIndex("DMS.AdminRoles", "Name", unique: true);
+            CreateIndex("DMS.DictionaryDocumentTypes", "Name", unique: true);
+            CreateIndex("DMS.TemplateDocuments", "Name", unique: true);
+            CreateIndex("DMS.DictionaryRegistrationJournals", "DepartmentId");
+            CreateIndex("DMS.DictionaryDocumentSubjects", "Name", unique: true);
+            CreateIndex("DMS.DictionaryResidentTypes", "Name", unique: true);
+            CreateIndex("DMS.DictionaryContactTypes", "Name", unique: true);
+            CreateIndex("DMS.DictionaryContactTypes", "Code", unique: true);
+            CreateIndex("DMS.DictionaryAddressTypes", "Name", unique: true);
+            CreateIndex("DMS.DictionaryAgents", "Name", unique: true);
+            CreateIndex("DMS.DocumentSavedFilters", new[] { "Icon", "PositionId" }, unique: true, name: "IX_IconPosition");
+            CreateIndex("DMS.DictionaryCompanies", "Name", unique: true);
+        }
+    }
+}
