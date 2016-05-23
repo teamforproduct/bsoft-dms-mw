@@ -774,7 +774,7 @@ namespace BL.Database.Documents
                             .Take(paging.PageSize);
                 }
 
-                var qryRes = qry.Select(x => new { Event = x, OnWait = x.OnWait.Where(y => !y.OffEventId.HasValue).FirstOrDefault() });
+                var qryRes = qry.Select(x => new { Event = x, OnWait = x.OnWait.FirstOrDefault() });
 
                 var res = qryRes.Select(x => new FrontDocumentEvent
                 {
@@ -796,7 +796,8 @@ namespace BL.Database.Documents
                     RegistrationFullNumber = "#" + x.Event.Document.Id,
 
                     DueDate = x.OnWait != null ? x.OnWait.DueDate : null,
-                    IsWaitOpened = x.OnWait != null,
+                    CloseDate = x.OnWait != null ? (DateTime?)x.OnWait.OffEvent.Date : null,
+                    IsOnEvent = x.OnWait != null,
 
                     IsRead = !x.Event.TargetPositionId.HasValue || x.Event.TargetPositionId == x.Event.SourcePositionId || !ctx.CurrentPositionsIdList.Contains(x.Event.TargetPositionId.Value) ? null : (bool?)x.Event.ReadDate.HasValue,
 

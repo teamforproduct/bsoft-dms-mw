@@ -17,7 +17,8 @@ namespace BL.Model.DocumentCore.FrontModel
         public bool? IsAvailableWithinTask { get; set; }
         public string Description { get; set; }
         public DateTime? DueDate { get; set; }
-        public bool IsWaitOpened { get; set; }
+        public DateTime? CloseDate { get; set; }
+        public bool? IsOnEvent { get; set; }
 
 
         public DateTime? ReadDate { get; set; }
