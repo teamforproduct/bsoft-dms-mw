@@ -18,7 +18,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                var qry = dbContext.DocumentSavedFiltersSet.AsQueryable();
+                var qry = dbContext.DocumentSavedFiltersSet.Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
 
                 //TODO: Uncomment to get the filters on the positions
                 //var positionId = dbContext.Context.CurrentPositionId;
@@ -45,7 +45,7 @@ namespace BL.Database.Documents
             {
 
                 var savFilter =
-                    dbContext.DocumentSavedFiltersSet.Where(x => x.Id == savedFilterId)
+                    dbContext.DocumentSavedFiltersSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(x => x.Id == savedFilterId)
                         .Select(x => new FrontDocumentSavedFilter
                         {
                             Id = x.Id,

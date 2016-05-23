@@ -145,13 +145,13 @@ namespace BL.CrossCutting.Context
             }
         }
 
-        public int? CurrentClientId
+        public int CurrentClientId
         {
             get
             {
                 if (_currentDb == null)
                 {
-                    return null;
+                    return 0;
                 }
                 return _currentDb.ClientId;
             }

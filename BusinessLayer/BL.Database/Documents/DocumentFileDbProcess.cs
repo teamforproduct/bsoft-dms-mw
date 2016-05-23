@@ -38,7 +38,7 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(ctx))
             {
                 return
-                    dbContext.DocumentFilesSet
+                    dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
                         .Where(x => x.DocumentId == documentId && x.OrderNumber == orderNumber)
                         .Join(dbContext.DictionaryAgentsSet, df => df.LastChangeUserId, da => da.Id,
                             (d, a) => new { fl = d, agName = a.Name })
@@ -71,7 +71,7 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(ctx))
             {
                 return
-                    dbContext.DocumentFilesSet
+                    dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
                         .Where(
                             x =>
                                 x.DocumentId == documentId && x.Version == versionNumber && x.OrderNumber == orderNumber)
@@ -106,7 +106,7 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(ctx))
             {
                 return
-                    dbContext.DocumentFilesSet
+                    dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
                         .Where(x => x.Id == id)
                         .Join(dbContext.DictionaryAgentsSet, df => df.LastChangeUserId, da => da.Id,
                             (d, a) => new { fl = d, agName = a.Name })
@@ -139,7 +139,8 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(ctx))
             {
                 var maxVer =
-                    dbContext.DocumentFilesSet.Where(x => x.DocumentId == documentId && x.OrderNumber == orderNumber)
+                    dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                        .Where(x => x.DocumentId == documentId && x.OrderNumber == orderNumber)
                         .Max(m => m.Version);
                 if (maxVer > 0)
                 {
@@ -153,7 +154,7 @@ namespace BL.Database.Documents
 
                     if (doc == null) return null;
 
-                    doc.DocumentFiles = dbContext.DocumentFilesSet
+                    doc.DocumentFiles = dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
                             .Where(
                                 x => x.DocumentId == documentId && x.Version == maxVer && x.OrderNumber == orderNumber)
                             .Join(dbContext.DictionaryAgentsSet, df => df.LastChangeUserId, da => da.Id,
@@ -178,14 +179,14 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(ctx))
             {
                 var maxVer =
-                    dbContext.DocumentFilesSet.Where(x => x.DocumentId == documentId && x.OrderNumber == orderNumber)
+                    dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                        .Where(x => x.DocumentId == documentId && x.OrderNumber == orderNumber)
                         .Max(m => m.Version);
                 if (maxVer > 0)
                 {
                     return
-                        dbContext.DocumentFilesSet
-                            .Where(
-                                x => x.DocumentId == documentId && x.Version == maxVer && x.OrderNumber == orderNumber)
+                        dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                            .Where(x => x.DocumentId == documentId && x.Version == maxVer && x.OrderNumber == orderNumber)
                             .Join(dbContext.DictionaryAgentsSet, df => df.LastChangeUserId, da => da.Id,
                                 (d, a) => new { fl = d, agName = a.Name })
                             .Select(x => new FrontDocumentAttachedFile
@@ -294,8 +295,8 @@ namespace BL.Database.Documents
                 if (doc == null) return null;
 
                 doc.DocumentFiles =
-                    dbContext.DocumentFilesSet.Where(
-                        x => x.DocumentId == flIdent.DocumentId && x.OrderNumber == flIdent.OrderInDocument)
+                    dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                        .Where(x => x.DocumentId == flIdent.DocumentId && x.OrderNumber == flIdent.OrderInDocument)
                         .Select(x => new InternalDocumentAttachedFile { Id = x.Id, ExecutorPositionId = x.ExecutorPositionId, Name = x.Name, Extension = x.Extension }).ToList();
                 return doc;
             }
@@ -315,8 +316,8 @@ namespace BL.Database.Documents
                     dbContext.DocumentEventsSet.AddRange(ModelConverter.GetDbDocumentEvents(docFile.Events.Where(x => x.Id == 0)).ToList());
                 }
                 dbContext.DocumentFilesSet.RemoveRange(
-                    dbContext.DocumentFilesSet.Where(
-                        x => x.DocumentId == docFile.DocumentId && x.OrderNumber == docFile.OrderInDocument));
+                    dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                        .Where(x => x.DocumentId == docFile.DocumentId && x.OrderNumber == docFile.OrderInDocument));
                 dbContext.SaveChanges();
 
             }
@@ -326,10 +327,10 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                if (dbContext.DocumentFilesSet.Any(x => x.DocumentId == documentId && x.Name == fileName && x.Extension == fileExt))
+                if (dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Any(x => x.DocumentId == documentId && x.Name == fileName && x.Extension == fileExt))
                 {
                     return
-                        dbContext.DocumentFilesSet.Where(x => x.DocumentId == documentId && x.Name == fileName && x.Extension == fileExt)
+                        dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == documentId && x.Name == fileName && x.Extension == fileExt)
                             .Select(x => x.OrderNumber)
                             .First();
                 }
@@ -342,9 +343,9 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                if (dbContext.DocumentFilesSet.Any(x => x.DocumentId == documentId))
+                if (dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Any(x => x.DocumentId == documentId))
                 {
-                    return dbContext.DocumentFilesSet.Where(x => x.DocumentId == documentId).Max(x => x.OrderNumber) + 1;
+                    return dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == documentId).Max(x => x.OrderNumber) + 1;
                 }
             }
             return 1;
@@ -354,10 +355,10 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                if (dbContext.DocumentFilesSet.Any(x => x.DocumentId == documentId && x.OrderNumber == fileOrder))
+                if (dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Any(x => x.DocumentId == documentId && x.OrderNumber == fileOrder))
                 {
                     return
-                        dbContext.DocumentFilesSet.Where(x => x.DocumentId == documentId && x.OrderNumber == fileOrder)
+                        dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == documentId && x.OrderNumber == fileOrder)
                             .Max(x => x.Version) + 1;
                 }
             }

@@ -66,6 +66,8 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<AdminLanguages> AdminLanguagesSet { get; set; }
         public virtual DbSet<AdminLanguageValues> AdminLanguageValuesSet { get; set; }
 
+        public virtual DbSet<DictionaryAgents> DictionaryAgentsSet { get; set; }
+
         public virtual DbSet<DictionaryAgentPersons> DictionaryAgentPersonsSet { get; set; }
         public virtual DbSet<DictionaryAgentUsers> DictionaryAgentUsersSet { get; set; }
         public virtual DbSet<DictionaryAgentCompanies> DictionaryAgentCompaniesSet { get; set; }
@@ -75,8 +77,6 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<DictionaryAgentAccounts> DictionaryAgentAccountsSet { get; set; }
         public virtual DbSet<DictionaryAgentAddresses> DictionaryAgentAddressesSet { get; set; }
         public virtual DbSet<DictionaryAgentContacts> DictionaryAgentContactsSet { get; set; }
-
-        public virtual DbSet<DictionaryAgents> DictionaryAgentsSet { get; set; }
 
         public virtual DbSet<DictionaryResidentTypes> DictionaryResidentTypesSet { get; set; }
         public virtual DbSet<DictionaryContactTypes> DictionaryContactTypesSet { get; set; }
@@ -120,9 +120,7 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<DocumentTasks> DocumentTasksSet { get; set; }
         public virtual DbSet<DocumentTaskAccesses> DocumentTaskAccessesSet { get; set; }
 
-        //public virtual DbSet<DocumentPapersTMP> DocumentPapersTMPSet { get; set; }
         public virtual DbSet<DocumentPapers> DocumentPapersSet { get; set; }
-        //public virtual DbSet<DocumentPaperEvents> DocumentPaperEventsSet { get; set; }
         public virtual DbSet<DocumentPaperLists> DocumentPaperListsSet { get; set; }
         
         public virtual DbSet<TemplateDocumentSendLists> TemplateDocumentSendListsSet { get; set; }

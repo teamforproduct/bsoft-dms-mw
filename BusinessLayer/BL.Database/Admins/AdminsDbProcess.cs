@@ -25,20 +25,20 @@ namespace BL.Database.Admins
             {
                 var res = new AdminAccessInfo();
 
-                res.UserRoles = dbContext.AdminUserRolesSet.Select(x => new InternalDictionaryAdminUserRoles
+                res.UserRoles = dbContext.AdminUserRolesSet.Where(x => x.Role.ClientId == context.CurrentClientId).Select(x => new InternalDictionaryAdminUserRoles
                 {
                     Id = x.Id,
                     RoleId = x.RoleId,
                     UserId = x.UserId
                 }).ToList();
 
-                res.Roles = dbContext.AdminRolesSet.Select(x => new InternalDictionaryAdminRoles
+                res.Roles = dbContext.AdminRolesSet.Where(x=>x.ClientId == context.CurrentClientId).Select(x => new InternalDictionaryAdminRoles
                 {
                     Id = x.Id
 
                 }).ToList();
 
-                res.PositionRoles = dbContext.AdminPositionRolesSet.Select(x => new InternalDictionaryAdminPositionRoles
+                res.PositionRoles = dbContext.AdminPositionRolesSet.Where(x => x.Role.ClientId == context.CurrentClientId).Select(x => new InternalDictionaryAdminPositionRoles
                 {
                     PositionId = x.PositionId,
                     Id = x.Id,
@@ -56,7 +56,7 @@ namespace BL.Database.Admins
                     Object = (EnumObjects)x.ObjectId
                 }).ToList();
 
-                res.ActionAccess = dbContext.AdminRoleActionsSet.Select(x => new InternalDictionaryAdminRoleActions
+                res.ActionAccess = dbContext.AdminRoleActionsSet.Where(x => x.Role.ClientId == context.CurrentClientId).Select(x => new InternalDictionaryAdminRoleActions
                 {
                     Id = x.Id,
                     RecordId = x.RecordId,
@@ -72,7 +72,7 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                var qry = dbContext.AdminUserRolesSet.AsQueryable();
+                var qry = dbContext.AdminUserRolesSet.Where(x => x.Role.ClientId == ctx.CurrentClientId).AsQueryable();
 
                 if (filter.UserRoleId?.Count > 0)
                 {
@@ -96,7 +96,7 @@ namespace BL.Database.Admins
 
                 var roleList = res.Select(s => s.RolePositionId).ToList();
 
-                var newevnt = dbContext.DocumentEventsSet
+                var newevnt = dbContext.DocumentEventsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
                                     .Where(x => !x.ReadDate.HasValue && x.TargetPositionId.HasValue && x.TargetPositionId != x.SourcePositionId
                                              && roleList.Contains(x.TargetPositionId.Value))
                                         .GroupBy(g => g.TargetPositionId)
@@ -135,7 +135,7 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                return dbContext.DictionaryAgentUsersSet.Where(x => x.UserId.Equals(userId)).Select(x => new Employee
+                return dbContext.DictionaryAgentUsersSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).Where(x => x.UserId.Equals(userId)).Select(x => new Employee
                 {
                     AgentId = x.Id,
                     Name = x.Agent.Name,
