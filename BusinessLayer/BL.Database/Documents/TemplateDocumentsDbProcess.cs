@@ -25,7 +25,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                return dbContext.TemplateDocumentsSet.Select(x => new FrontTemplateDocument
+                return dbContext.TemplateDocumentsSet.Where(x => x.ClientId == ctx.CurrentClientId).Select(x => new FrontTemplateDocument
                 {
                     Id = x.Id,
                     DocumentDirection = (EnumDocumentDirections)x.DocumentDirectionId,
@@ -48,7 +48,7 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(ctx))
             {
                 templateDocumentId =
-                    dbContext.DocumentsSet.Where(x => x.Id == documentId)
+                    dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.Id == documentId)
                         .Select(x => x.TemplateDocumentId)
                         .FirstOrDefault();
             }
@@ -61,7 +61,7 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(ctx))
             {
                 var templateDocument =
-                    dbContext.TemplateDocumentsSet.Where(x => x.Id == templateDocumentId)
+                    dbContext.TemplateDocumentsSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(x => x.Id == templateDocumentId)
                         .Select(x => new FrontTemplateDocument
                         {
                             Id = x.Id,
@@ -96,7 +96,7 @@ namespace BL.Database.Documents
                         }).FirstOrDefault();
 
                 if (templateDocument != null)
-                    templateDocument.Properties = CommonQueries.GetPropertyValues(dbContext, new FilterPropertyValue { RecordId = new List<int> { templateDocumentId }, Object = new List<EnumObjects> { EnumObjects.TemplateDocuments } });
+                    templateDocument.Properties = CommonQueries.GetPropertyValues(dbContext, ctx, new FilterPropertyValue { RecordId = new List<int> { templateDocumentId }, Object = new List<EnumObjects> { EnumObjects.TemplateDocuments } });
 
                 return templateDocument;
             }
@@ -114,6 +114,7 @@ namespace BL.Database.Documents
                 {
                     var newTemplate = new TemplateDocuments()
                     {
+                        ClientId = ctx.CurrentClientId,
                         Name = template.Name,
                         IsHard = template.IsHard,
                         DocumentDirectionId = (int)template.DocumentDirection,
@@ -129,12 +130,12 @@ namespace BL.Database.Documents
                         LastChangeDate = template.LastChangeDate
                     };
 
-                    if (template.Id>0)
+                    if (template.Id > 0)
                     {
                         newTemplate.Id = template.Id;
                     }
 
-                    if (template.Id>0)
+                    if (template.Id > 0)
                     {
                         dbContext.TemplateDocumentsSet.Attach(newTemplate);
 
@@ -150,7 +151,7 @@ namespace BL.Database.Documents
 
                     if (properties != null && properties.Any())
                     {
-                        CommonQueries.ModifyPropertyValues(dbContext, new InternalPropertyValues { Object = EnumObjects.TemplateDocuments, RecordId = newTemplate.Id, PropertyValues = properties });
+                        CommonQueries.ModifyPropertyValues(dbContext, ctx, new InternalPropertyValues { Object = EnumObjects.TemplateDocuments, RecordId = newTemplate.Id, PropertyValues = properties });
                     }
 
                     transaction.Complete();
@@ -164,17 +165,17 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(context))
             {
-                var ddt = dbContext.TemplateDocumentsSet.FirstOrDefault(x => x.Id == id);
+                var ddt = dbContext.TemplateDocumentsSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == id);
                 if (ddt == null) return;
 
                 dbContext.TemplateDocumentSendListsSet.RemoveRange(
-                    dbContext.TemplateDocumentSendListsSet.Where(x => x.DocumentId == id));
+                    dbContext.TemplateDocumentSendListsSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(x => x.DocumentId == id));
                 dbContext.TemplateDocumentRestrictedSendListsSet.RemoveRange(
-                    dbContext.TemplateDocumentRestrictedSendListsSet.Where(x => x.DocumentId == id));
+                    dbContext.TemplateDocumentRestrictedSendListsSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(x => x.DocumentId == id));
                 dbContext.TemplateDocumentTasksSet.RemoveRange(
-                    dbContext.TemplateDocumentTasksSet.Where(x => x.DocumentId == id));
+                    dbContext.TemplateDocumentTasksSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(x => x.DocumentId == id));
 
-                CommonQueries.DeletePropertyValues(dbContext, new FilterPropertyValue { Object = new List<EnumObjects> { EnumObjects.TemplateDocuments }, RecordId = new List<int> { id } });
+                CommonQueries.DeletePropertyValues(dbContext, context, new FilterPropertyValue { Object = new List<EnumObjects> { EnumObjects.TemplateDocuments }, RecordId = new List<int> { id } });
 
                 dbContext.TemplateDocumentsSet.Remove(ddt);
                 dbContext.SaveChanges();
@@ -186,7 +187,7 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(ctx))
             {
                 //TODO: Уточнить безнес-логику, в каких случаях можно менять/удалять шаблон документа
-                var count = dbContext.DocumentsSet.Count(x => x.TemplateDocumentId == template.Id);
+                var count = dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == ctx.CurrentClientId).Count(x => x.TemplateDocumentId == template.Id);
 
                 return count == 0;
             }
@@ -196,8 +197,8 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                
-                var count = dbContext.TemplateDocumentsSet.Count(x => x.Name == template.Name);
+
+                var count = dbContext.TemplateDocumentsSet.Count(x => x.ClientId == ctx.CurrentClientId && x.Name == template.Name);
 
                 return count == 0;
             }
@@ -216,7 +217,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                var qry = dbContext.TemplateDocumentSendListsSet.AsQueryable();
+                var qry = dbContext.TemplateDocumentSendListsSet.Where(x => x.Document.ClientId == ctx.CurrentClientId).AsQueryable();
                 if (filter.Id?.Count > 0)
                 {
                     qry = qry.Where(x => filter.Id.Contains(x.Id));
@@ -262,7 +263,7 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(ctx))
             {
                 return
-                    dbContext.TemplateDocumentSendListsSet.Where(x => x.Id == id)
+                    dbContext.TemplateDocumentSendListsSet.Where(x => x.Document.ClientId == ctx.CurrentClientId).Where(x => x.Id == id)
                         .Select(x => new FrontTemplateDocumentSendLists()
                         {
                             Id = x.Id,
@@ -305,7 +306,7 @@ namespace BL.Database.Documents
                     LastChangeUserId = template.LastChangeUserId
                 };
 
-                if (template.Id>0)
+                if (template.Id > 0)
                 {
                     newTemplate.Id = (int)template.Id;
                 }
@@ -325,7 +326,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                var ddt = dbContext.TemplateDocumentSendListsSet.FirstOrDefault(x => x.Id == id);
+                var ddt = dbContext.TemplateDocumentSendListsSet.Where(x => x.Document.ClientId == ctx.CurrentClientId).FirstOrDefault(x => x.Id == id);
                 if (ddt == null) return;
                 dbContext.TemplateDocumentSendListsSet.Remove(ddt);
                 dbContext.SaveChanges();
@@ -342,7 +343,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                var qry = dbContext.TemplateDocumentRestrictedSendListsSet.AsQueryable();
+                var qry = dbContext.TemplateDocumentRestrictedSendListsSet.Where(x => x.Document.ClientId == ctx.CurrentClientId).AsQueryable();
                 qry = qry.Where(x => x.DocumentId == (int)filter.DocumentId);
 
                 if (filter.Id?.Count > 0)
@@ -377,7 +378,7 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(ctx))
             {
                 return
-                    dbContext.TemplateDocumentRestrictedSendListsSet.Where(x => x.Id == id)
+                    dbContext.TemplateDocumentRestrictedSendListsSet.Where(x => x.Document.ClientId == ctx.CurrentClientId).Where(x => x.Id == id)
                         .Select(x => new FrontTemplateDocumentRestrictedSendLists()
                         {
                             Id = x.Id,
@@ -405,7 +406,7 @@ namespace BL.Database.Documents
                     LastChangeUserId = template.LastChangeUserId
                 };
 
-                if (template.Id>0)
+                if (template.Id > 0)
                 {
                     newTemplate.Id = template.Id;
                 }
@@ -425,7 +426,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                var ddt = dbContext.TemplateDocumentRestrictedSendListsSet.FirstOrDefault(x => x.Id == id);
+                var ddt = dbContext.TemplateDocumentRestrictedSendListsSet.Where(x => x.Document.ClientId == ctx.CurrentClientId).FirstOrDefault(x => x.Id == id);
                 if (ddt == null) return;
                 dbContext.TemplateDocumentRestrictedSendListsSet.Remove(ddt);
                 dbContext.SaveChanges();
@@ -438,7 +439,7 @@ namespace BL.Database.Documents
             {
                 var count =
                     dbContext.TemplateDocumentRestrictedSendListsSet.Count(
-                        x => x.DocumentId == list.DocumentId && x.PositionId == list.PositionId);
+                        x => x.Document.ClientId == ctx.CurrentClientId && x.DocumentId == list.DocumentId && x.PositionId == list.PositionId);
                 return count == 0;
             }
         }
@@ -454,7 +455,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                var qry = dbContext.TemplateDocumentTasksSet.AsQueryable();
+                var qry = dbContext.TemplateDocumentTasksSet.Where(x => x.Document.ClientId == ctx.CurrentClientId).AsQueryable();
                 qry = qry.Where(x => x.DocumentId == templateId);
 
                 if (filter.Id?.Count > 0)
@@ -488,7 +489,7 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(ctx))
             {
                 return
-                    dbContext.TemplateDocumentTasksSet.Where(x => x.Id == id).Select(x => new FrontTemplateDocumentTasks
+                    dbContext.TemplateDocumentTasksSet.Where(x => x.Document.ClientId == ctx.CurrentClientId).Where(x => x.Id == id).Select(x => new FrontTemplateDocumentTasks
                     {
                         Id = x.Id,
                         DocumentId = x.DocumentId,
@@ -536,7 +537,7 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(ctx))
             {
                 var count = dbContext.TemplateDocumentTasksSet.Count(x =>
-                    (x.DocumentId == task.DocumentId && x.Task == task.Task) 
+                    (x.Document.ClientId == ctx.CurrentClientId && x.DocumentId == task.DocumentId && x.Task == task.Task)
                     );
 
                 return count == 0;
@@ -547,7 +548,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                var ddt = dbContext.TemplateDocumentTasksSet.FirstOrDefault(x => x.Id == id);
+                var ddt = dbContext.TemplateDocumentTasksSet.Where(x => x.Document.ClientId == ctx.CurrentClientId).FirstOrDefault(x => x.Id == id);
                 if (ddt == null) return;
                 dbContext.TemplateDocumentTasksSet.Remove(ddt);
                 dbContext.SaveChanges();
@@ -565,7 +566,7 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(ctx))
             {
 
-                var qry = dbContext.TemplateDocumentFilesSet.AsQueryable();
+                var qry = dbContext.TemplateDocumentFilesSet.Where(x => x.Document.ClientId == ctx.CurrentClientId).AsQueryable();
                 qry = qry.Where(x => x.DocumentId == templateId);
 
                 if (filter.Id.HasValue)
@@ -607,10 +608,10 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(ctx))
             {
                 return
-                    dbContext.TemplateDocumentFilesSet.Where(
-                        x => x.Id == id)
-                        .Join(dbContext.DictionaryAgentsSet, df => df.LastChangeUserId, da => da.Id,
-                            (d, a) => new { fl = d, agName = a.Name })
+                    dbContext.TemplateDocumentFilesSet
+                        .Where(x => x.Document.ClientId == ctx.CurrentClientId)
+                        .Where(x => x.Id == id)
+                        .Join(dbContext.DictionaryAgentsSet, df => df.LastChangeUserId, da => da.Id, (d, a) => new { fl = d, agName = a.Name })
                         .Select(x => new FrontTemplateAttachedFile
                         {
                             Id = x.fl.Id,
@@ -682,7 +683,7 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(ctx))
             {
                 dbContext.TemplateDocumentFilesSet.RemoveRange(
-                    dbContext.TemplateDocumentFilesSet.Where(
+                    dbContext.TemplateDocumentFilesSet.Where(x=>x.Document.ClientId == ctx.CurrentClientId).Where(
                         x => x.DocumentId == docFile.DocumentId && x.OrderNumber == docFile.OrderInDocument));
                 dbContext.SaveChanges();
 
@@ -693,9 +694,10 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                var count = dbContext.TemplateDocumentFilesSet.Count(x => 
-                    (x.DocumentId == file.DocumentId && x.OrderNumber==file.OrderInDocument) ||
-                    (x.DocumentId==file.DocumentId && x.Extention==file.FileType && x.Name==file.FileName)
+                var count = dbContext.TemplateDocumentFilesSet.Count(x =>
+                    x.Document.ClientId == ctx.CurrentClientId &&
+                    ((x.DocumentId == file.DocumentId && x.OrderNumber == file.OrderInDocument) ||
+                    (x.DocumentId == file.DocumentId && x.Extention == file.FileType && x.Name == file.FileName))
                     );
 
                 return count == 0;

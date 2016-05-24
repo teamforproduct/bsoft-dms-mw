@@ -21,7 +21,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                return CommonQueries.GetDocumentTasks(dbContext, filter);
+                return CommonQueries.GetDocumentTasks(dbContext, ctx,  filter);
             }
         }
 
@@ -29,7 +29,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                return CommonQueries.GetDocumentTasks(dbContext, new FilterDocumentTask { Id = new List<int> { id } }).FirstOrDefault();
+                return CommonQueries.GetDocumentTasks(dbContext, ctx, new FilterDocumentTask { Id = new List<int> { id } }).FirstOrDefault();
             }
         }
         #endregion DocumentTasks         

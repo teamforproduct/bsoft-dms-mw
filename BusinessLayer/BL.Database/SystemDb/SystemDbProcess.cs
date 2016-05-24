@@ -29,6 +29,7 @@ namespace BL.Database.SystemDb
             {
                 var nlog = new SystemLogs
                 {
+                    ClientId = ctx.CurrentClientId,
                     ExecutorAgentId = log.AgentId,
                     LogDate = log.Date,
                     LogLevel = (int)log.LogType,
@@ -48,11 +49,12 @@ namespace BL.Database.SystemDb
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                var cset = dbContext.SettingsSet.FirstOrDefault(x => x.Key == name);
+                var cset = dbContext.SettingsSet.FirstOrDefault(x => ctx.CurrentClientId == x.ClientId && x.Key == name);
                 if (cset == null)
                 {
                     var nsett = new SystemSettings
                     {
+                        ClientId = ctx.CurrentClientId,
                         ExecutorAgentId = agentId,
                         Key = name,
                         Value = value
@@ -76,12 +78,12 @@ namespace BL.Database.SystemDb
                 if (agentId.HasValue)
                 {
                     return
-                        dbContext.SettingsSet.Where(x => x.Key == name && x.ExecutorAgentId == agentId.Value)
+                        dbContext.SettingsSet.Where(x => ctx.CurrentClientId == x.ClientId && x.Key == name && x.ExecutorAgentId == agentId.Value)
                             .Select(x => x.Value)
                             .FirstOrDefault();
                 }
                 return
-                    dbContext.SettingsSet.Where(x => x.Key == name).OrderBy(x => x.ExecutorAgentId)
+                    dbContext.SettingsSet.Where(x => ctx.CurrentClientId == x.ClientId && x.Key == name).OrderBy(x => x.ExecutorAgentId)
                         .Select(x => x.Value)
                         .FirstOrDefault();
             }
@@ -145,7 +147,7 @@ namespace BL.Database.SystemDb
         {
             using (var dbContext = new DmsContext(context))
             {
-                var qry = dbContext.PropertiesSet.AsQueryable();
+                var qry = dbContext.PropertiesSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
 
                 if (filter.SystemObjectId?.Count > 0)
                 {
@@ -170,7 +172,7 @@ namespace BL.Database.SystemDb
         {
             using (var dbContext = new DmsContext(context))
             {
-                var qry = dbContext.PropertyLinksSet.AsQueryable();
+                var qry = dbContext.PropertyLinksSet.Where(x => x.Property.ClientId == context.CurrentClientId).AsQueryable();
 
                 if (filter.PropertyLinkId != null)
                 {
@@ -205,7 +207,7 @@ namespace BL.Database.SystemDb
         {
             using (var dbContext = new DmsContext(context))
             {
-                var qry = dbContext.PropertiesSet.AsQueryable();
+                var qry = dbContext.PropertiesSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
 
                 if (filter.PropertyId?.Count > 0)
                 {
@@ -246,7 +248,7 @@ namespace BL.Database.SystemDb
         {
             using (var dbContext = new DmsContext(context))
             {
-                var qry = dbContext.PropertiesSet.AsQueryable();
+                var qry = dbContext.PropertiesSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
 
                 if (filter.PropertyId != null)
                 {
@@ -286,6 +288,7 @@ namespace BL.Database.SystemDb
             {
                 var item = new Properties
                 {
+                    ClientId = context.CurrentClientId,
                     Code = model.Code,
                     TypeCode = model.TypeCode,
                     Description = model.Description,
@@ -318,6 +321,7 @@ namespace BL.Database.SystemDb
                 var item = new Properties
                 {
                     Id = model.Id,
+                    ClientId = context.CurrentClientId,
                     Code = model.Code,
                     TypeCode = model.TypeCode,
                     Description = model.Description,
@@ -346,7 +350,7 @@ namespace BL.Database.SystemDb
             using (var dbContext = new DmsContext(context))
             {
 
-                var item = dbContext.PropertiesSet.FirstOrDefault(x => x.Id == model.Id);
+                var item = dbContext.PropertiesSet.FirstOrDefault(x => context.CurrentClientId == x.ClientId && x.Id == model.Id);
                 if (item != null)
                 {
                     dbContext.PropertiesSet.Remove(item);
@@ -363,7 +367,7 @@ namespace BL.Database.SystemDb
         {
             using (var dbContext = new DmsContext(context))
             {
-                var qry = dbContext.PropertyLinksSet.AsQueryable();
+                var qry = dbContext.PropertyLinksSet.Where(x => x.Property.ClientId == context.CurrentClientId).AsQueryable();
 
                 if (filter.PropertyLinkId?.Count > 0)
                 {
@@ -387,7 +391,7 @@ namespace BL.Database.SystemDb
         {
             using (var dbContext = new DmsContext(context))
             {
-                var qry = dbContext.PropertyLinksSet.AsQueryable();
+                var qry = dbContext.PropertyLinksSet.Where(x => x.Property.ClientId == context.CurrentClientId).AsQueryable();
 
                 if (filter != null)
                 {
@@ -417,7 +421,7 @@ namespace BL.Database.SystemDb
         {
             using (var dbContext = new DmsContext(context))
             {
-                var qry = dbContext.PropertyLinksSet.AsQueryable();
+                var qry = dbContext.PropertyLinksSet.Where(x => x.Property.ClientId == context.CurrentClientId).AsQueryable();
 
                 if (filter != null)
                 {
@@ -494,7 +498,7 @@ namespace BL.Database.SystemDb
             using (var dbContext = new DmsContext(context))
             {
 
-                var item = dbContext.PropertyLinksSet.FirstOrDefault(x => x.Id == model.Id);
+                var item = dbContext.PropertyLinksSet.Where(x => x.Property.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == model.Id);
                 if (item != null)
                 {
                     dbContext.PropertyLinksSet.Remove(item);
@@ -511,7 +515,7 @@ namespace BL.Database.SystemDb
         {
             using (var dbContext = new DmsContext(context))
             {
-                var qry = dbContext.PropertyLinksSet.AsQueryable();
+                var qry = dbContext.PropertyLinksSet.Where(x => x.Property.ClientId == context.CurrentClientId).AsQueryable();
 
                 if (filter.PropertyLinkId?.Count > 0)
                 {
@@ -537,7 +541,7 @@ namespace BL.Database.SystemDb
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                return dbContext.DocumentEventsSet
+                return dbContext.DocumentEventsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
                     .Where(x => (x.SendDate == null || x.SendDate < x.LastChangeDate)
                     && ((x.TargetAgentId != null && x.SourceAgentId != x.TargetAgentId)
                     || (x.TargetPositionId != null && x.SourcePositionId != x.TargetPositionId)))
@@ -588,7 +592,7 @@ namespace BL.Database.SystemDb
         {
             using (var dbContext = new DmsContext(context))
             {
-                var qry = dbContext.PropertyLinksSet.AsQueryable();
+                var qry = dbContext.PropertyLinksSet.Where(x => x.Property.ClientId == context.CurrentClientId).AsQueryable();
 
                 qry = qry.Where(x => x.ObjectId == (int)filter.Object);
 
@@ -617,7 +621,7 @@ namespace BL.Database.SystemDb
         {
             using (var dbContext = new DmsContext(context))
             {
-                var qry = dbContext.DocumentsSet
+                var qry = dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == context.CurrentClientId)
                     .Join(dbContext.DocumentSendListsSet, d => d.Id, s => s.DocumentId, (d, s) => new { doc = d, sl = s })
                     .Where(x => ((sendListId == null && x.doc.IsLaunchPlan) || (sendListId.HasValue && sendListId.Value == x.sl.Id)) && x.sl.IsInitial && !x.sl.CloseEventId.HasValue)
                     .GroupBy(x => x.sl.DocumentId)
@@ -627,10 +631,10 @@ namespace BL.Database.SystemDb
                         MinStage = x.Min(s => s.sl.Stage)
                     });
 
-                var res = dbContext.DocumentSendListsSet.Join(qry, s => s.DocumentId, q => q.DocId, (s, q) => new { sl = s, q })
+                var res = dbContext.DocumentSendListsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId).Join(qry, s => s.DocumentId, q => q.DocId, (s, q) => new { sl = s, q })
                     .Where(x => x.sl.Stage <= x.q.MinStage && !x.sl.StartEventId.HasValue).Select(x => x.sl.Id).ToList();
 
-                res.AddRange(dbContext.DocumentSendListsSet.Where(x => !x.IsInitial && !x.CloseEventId.HasValue && x.Document.IsLaunchPlan
+                res.AddRange(dbContext.DocumentSendListsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId).Where(x => !x.IsInitial && !x.CloseEventId.HasValue && x.Document.IsLaunchPlan
                 && !qry.Select(s => s.DocId).Contains(x.DocumentId)).Select(x => x.Id).ToList());
 
                 return res;
@@ -642,7 +646,7 @@ namespace BL.Database.SystemDb
             using (var dbContext = new DmsContext(context))
             {
                 var date = DateTime.Now.AddMinutes(-timeMinForClearTrashDocuments);
-                var qry = dbContext.DocumentsSet
+                var qry = dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == context.CurrentClientId)
                     .Where(x => !x.IsRegistered.HasValue && !x.Waits.Any() && !x.Subscriptions.Any() && x.LastChangeDate < date)
                     .Select(x => x.Id);
 
@@ -661,7 +665,7 @@ namespace BL.Database.SystemDb
             var res = new List<FullTextIndexIem>();
             using (var dbContext = new DmsContext(ctx))
             {
-                res.AddRange(dbContext.DocumentsSet
+                res.AddRange(dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.TemplateDocument.ClientId == ctx.CurrentClientId)
                     .Select(x => new
                     {
                         DocumentId = x.Id,
@@ -688,7 +692,7 @@ namespace BL.Database.SystemDb
                         ObjectText = x.regNr + x.v1 + x.v2 + x.v3 + x.v4 + x.v5 + x.v6
                     }));
 
-                res.AddRange(dbContext.DocumentEventsSet
+                res.AddRange(dbContext.DocumentEventsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
                      .Select(x => new FullTextIndexIem
                      {
                          DocumentId = x.DocumentId,
@@ -701,7 +705,7 @@ namespace BL.Database.SystemDb
                      }).ToList()
                  );
 
-                res.AddRange(dbContext.DocumentFilesSet
+                res.AddRange(dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
                      .Select(x => new FullTextIndexIem
                      {
                          DocumentId = x.DocumentId,
@@ -712,7 +716,7 @@ namespace BL.Database.SystemDb
                      }).ToList()
                  );
 
-                res.AddRange(dbContext.DocumentSendListsSet
+                res.AddRange(dbContext.DocumentSendListsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
                      .Select(x => new FullTextIndexIem
                      {
                          DocumentId = x.DocumentId,
@@ -725,7 +729,7 @@ namespace BL.Database.SystemDb
                      }).ToList()
                  );
 
-                res.AddRange(dbContext.DocumentSubscriptionsSet
+                res.AddRange(dbContext.DocumentSubscriptionsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
                      .Select(x => new FullTextIndexIem
                      {
                          DocumentId = x.DocumentId,
