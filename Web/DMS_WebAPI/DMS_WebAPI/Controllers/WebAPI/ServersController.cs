@@ -11,7 +11,6 @@ using System.Web.Http;
 namespace DMS_WebAPI.Controllers.WebAPI
 {
     [Authorize]
-    [RoutePrefix("api/v2/Servers")]
     public class ServersController : ApiController
     {
         /// <summary>
@@ -65,22 +64,6 @@ namespace DMS_WebAPI.Controllers.WebAPI
             dbProc.DeleteServer(id);
             var item = new FrontAdminServer { Id = id };
             return new JsonResult(item, this);
-        }
-
-        /// <summary>
-        /// Реиндексация полнотекстового поиска для сервера
-        /// </summary>
-        /// <returns>сервер</returns>
-        [Route("FullTextReindex")]
-        [HttpPost]
-        public IHttpActionResult FullTextReindex(int id)
-        {
-            var dbProc = new WebAPIDbProcess();
-            var srv = dbProc.GetServer(id);
-            var ctx = new AdminContext(srv);
-            var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
-            ftService.ReindexDatabase(ctx);
-            return new JsonResult(new FrontAdminServer { Id = id }, this);
         }
     }
 }

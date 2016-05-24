@@ -158,7 +158,7 @@ namespace BL.CrossCutting.Context
             }
             set
             {
-                CurrentEmployee.ClientId = value.GetValueOrDefault();
+                CurrentEmployee.ClientId = value;
             }
         }
     }

@@ -23,7 +23,7 @@ namespace DMS_WebAPI
             ConfigureAuth(app);
 
             var dbProc = new WebAPIDbProcess();
-            var dbs = dbProc.GetServers(new FilterAdminServers { ServerTypes = new List<DatabaseType> { DatabaseType.SQLServer } });
+            var dbs = dbProc.GetServersByAdmin(new FilterAdminServers { ServerTypes = new List<DatabaseType> { DatabaseType.SQLServer } });
 
             //foreach (var srv in DmsResolver.Current.GetAll<ISystemWorkerService>())
             //{

@@ -8,6 +8,5 @@ namespace BL.Model.WebAPI.FrontModel
     {
         public int Id { get; set; }
         public bool IsActive { get; set; }
-        public bool IsTrial { get; set; }
     }
 }

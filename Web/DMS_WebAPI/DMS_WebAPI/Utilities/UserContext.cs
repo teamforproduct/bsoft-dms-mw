@@ -123,6 +123,7 @@ namespace DMS_WebAPI.Utilities
         /// Add new server to the list of available servers
         /// </summary>
         /// <param name="db">new server parameters</param>
+        /// <param name="clientId">clientId</param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
         public void Set(DatabaseModel db, int clientId)
@@ -139,11 +140,8 @@ namespace DMS_WebAPI.Utilities
 
             context.CurrentClientId = clientId;
 
-            if (context.ClientLicence == null)
-            {
-                var dbProc = new WebAPIDbProcess();
-                context.ClientLicence = dbProc.GetClientLicenceActive(context.CurrentClientId.GetValueOrDefault());
-            }
+            var dbProc = new WebAPIDbProcess();
+            context.ClientLicence = dbProc.GetClientLicenceActive(context.CurrentClientId);
 
             VerifyNumberOfConnections(context, true);
 
@@ -187,8 +185,8 @@ namespace DMS_WebAPI.Utilities
 
         public void VerifyNumberOfConnections(IContext context, bool isAddNew = false)
         {
-            if (!context.CurrentClientId.HasValue) return;
-            var clientId = context.CurrentClientId.GetValueOrDefault();
+            if (context.CurrentClientId <= 0) return;
+            var clientId = context.CurrentClientId;
 
             var si = new SystemInfo();
 
@@ -215,7 +213,7 @@ namespace DMS_WebAPI.Utilities
                 lic.ConcurenteNumberOfConnectionsNow = count;
             }
 
-            new Licences().Verify(regCode, lic);
+            new Licences().Verify(regCode, lic, context);
 
         }
 

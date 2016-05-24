@@ -1,4 +1,5 @@
 ﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
@@ -36,13 +37,23 @@ namespace DMS_WebAPI.Utilities
 
 
 
-        public void Verify(string regCode, LicenceInfo licence)
+        public void Verify(string regCode, LicenceInfo licence, IContext cxt)
         {
             if (!VerifyLicenceKey(regCode, licence.LicenceKey))
             {
                 if (licence.IsTrial)
                 {
-                    VerifyTrialMaxDocumentCount(licence);
+                    if (cxt != null)
+                    {
+                        try
+                        {
+                            VerifyTrialMaxDocumentCount(licence, cxt);
+                        }
+                        catch(DatabaseIsNotSet)
+                        {
+
+                        }
+                    }
                 }
                 else
                 {
@@ -57,6 +68,9 @@ namespace DMS_WebAPI.Utilities
         {
             try
             {
+                if (string.IsNullOrEmpty(regCode) || string.IsNullOrEmpty(licKey))
+                    return false;
+
                 RSACryptoServiceProvider RSAalg = new RSACryptoServiceProvider();
 
                 RSAalg.FromXmlString(_RSAPublicKeyXmlByLicence);
@@ -72,11 +86,10 @@ namespace DMS_WebAPI.Utilities
                 return false;
             }
         }
-        private void VerifyTrialMaxDocumentCount(LicenceInfo licence)
+        private void VerifyTrialMaxDocumentCount(LicenceInfo licence, IContext cxt)
         {
             //TODO Проверить количество документов у клиента
             //TODO оптимизировать
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var count = docProc.GetCountDocuments(cxt);
 

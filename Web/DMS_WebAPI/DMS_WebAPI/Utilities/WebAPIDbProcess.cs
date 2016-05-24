@@ -82,6 +82,39 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
+        public IEnumerable<DatabaseModel> GetServersByAdmin(FilterAdminServers filter)
+        {
+            using (var dbContext = new ApplicationDbContext())
+            {
+                var itemsDb = GetServersQuery(dbContext, filter);
+
+                var itemsRes = (from server in itemsDb
+                                join client in dbContext.AspNetClientServersSet on server.Id equals client.ServerId
+                                select new
+                                {
+                                    Server = server,
+                                    ClientId = client.Id
+                                }).ToList();
+
+                var items = itemsRes.Select(x => new DatabaseModel
+                {
+                    Id = x.Server.Id,
+                    Address = x.Server.Address,
+                    Name = x.Server.Name,
+                    ServerType = (DatabaseType)Enum.Parse(typeof(DatabaseType), x.Server.ServerType),
+                    DefaultDatabase = x.Server.DefaultDatabase,
+                    IntegrateSecurity = x.Server.IntegrateSecurity,
+                    UserName = x.Server.UserName,
+                    UserPassword = x.Server.UserPassword,
+                    ConnectionString = x.Server.ConnectionString,
+                    DefaultSchema = x.Server.DefaultSchema,
+                    ClientId = x.ClientId
+                }).ToList();
+
+                return items;
+            }
+        }
+
         public IEnumerable<FrontAdminServerByUser> GetServersByUser(IContext ctx)
         {
             using (var dbContext = new ApplicationDbContext())
@@ -115,14 +148,14 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        public DatabaseModel GetServerByUser(string userId, SetUserServer userServer)
+        public DatabaseModel GetServerByUser(string userId, SetUserServer setUserServer)
         {
             using (var dbContext = new ApplicationDbContext())
             {
-                var userClients = GetUserClientsQuery(dbContext, new FilterAspNetUserClients { UserIds = new List<string> { userId }, ClientIds = new List<int> { clientId } })
+                var userClients = GetUserClientsQuery(dbContext, new FilterAspNetUserClients { UserIds = new List<string> { userId }, ClientIds = new List<int> { setUserServer.ClientId } })
                                     .Select(x => x.ClientId);
 
-                var userServers = GetUserServersQuery(dbContext, new FilterAspNetUserServers { UserIds = new List<string> { userId } });
+                var userServers = GetUserServersQuery(dbContext, new FilterAspNetUserServers { UserIds = new List<string> { userId }, ServerIds = new List<int> { setUserServer.ServerId } });
 
                 userServers = userServers.Where(x => userClients.Contains(x.ClientId));
 
@@ -786,44 +819,28 @@ namespace DMS_WebAPI.Utilities
             {
                 var db = new DatabaseModel();
 
-                Configuration webConf = WebConfigurationManager.OpenWebConfiguration(null);
-                if (webConf.AppSettings.Settings.Count > 0)
+                if (WebConfigurationManager.AppSettings.Count > 0)
                 {
-                    KeyValueConfigurationElement customSetting = webConf.AppSettings.Settings["DefaultClientServer_Address"];
-                    if (customSetting != null)
-                        db.Address = customSetting.Value;
+                    db.Address = WebConfigurationManager.AppSettings["DefaultClientServer_Address"];
 
-                    customSetting = webConf.AppSettings.Settings["DefaultClientServer_ServerType"];
-                    if (customSetting != null)
-                        db.ServerType = (DatabaseType)Enum.Parse(typeof(DatabaseType), customSetting.Value);
+                    DatabaseType serverType;
+                    if (Enum.TryParse<DatabaseType>(WebConfigurationManager.AppSettings["DefaultClientServer_ServerType"], out serverType))
+                        {
+                        db.ServerType = serverType;
+                    }
+                    db.DefaultDatabase = WebConfigurationManager.AppSettings["DefaultClientServer_DefaultDatabase"];
 
-                    customSetting = webConf.AppSettings.Settings["DefaultClientServer_DefaultDatabase"];
-                    if (customSetting != null)
-                        db.DefaultDatabase = customSetting.Value;
-
-                    customSetting = webConf.AppSettings.Settings["DefaultClientServer_IntegrateSecurity"];
-                    if (customSetting != null)
+                    bool integrateSecurity;
+                    if (bool.TryParse(WebConfigurationManager.AppSettings["DefaultClientServer_IntegrateSecurity"], out integrateSecurity))
                     {
-                        bool integrateSecurity;
-                        if (bool.TryParse(customSetting.Value, out integrateSecurity))
-                            db.IntegrateSecurity = integrateSecurity;
+                        db.IntegrateSecurity = integrateSecurity;
                     }
 
-                    customSetting = webConf.AppSettings.Settings["DefaultClientServer_UserName"];
-                    if (customSetting != null)
-                        db.UserName = customSetting.Value;
+                    db.UserName = WebConfigurationManager.AppSettings["DefaultClientServer_UserName"];
+                    db.UserPassword = WebConfigurationManager.AppSettings["DefaultClientServer_UserPassword"];
 
-                    customSetting = webConf.AppSettings.Settings["DefaultClientServer_UserPassword"];
-                    if (customSetting != null)
-                        db.UserPassword = customSetting.Value;
-
-                    customSetting = webConf.AppSettings.Settings["DefaultClientServer_DefaultSchema"];
-                    if (customSetting != null)
-                        db.DefaultSchema = customSetting.Value;
-
-                    customSetting = webConf.AppSettings.Settings["DefaultClientServer_ConnectionString"];
-                    if (customSetting != null)
-                        db.ConnectionString = customSetting.Value;
+                    db.DefaultSchema = WebConfigurationManager.AppSettings["DefaultClientServer_DefaultSchema"];
+                    db.ConnectionString = WebConfigurationManager.AppSettings["DefaultClientServer_ConnectionString"];
                 }
 
                 if (!isDefault)
@@ -1087,7 +1104,7 @@ namespace DMS_WebAPI.Utilities
                     lic.ConcurenteNumberOfConnectionsNow++;
                 }
 
-                new Licences().Verify(regCode, lic);
+                new Licences().Verify(regCode, lic, null);
 
                 using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
                 {

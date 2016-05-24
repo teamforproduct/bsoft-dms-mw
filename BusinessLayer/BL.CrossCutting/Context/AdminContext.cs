@@ -32,7 +32,8 @@ namespace BL.CrossCutting.Context
             CurrentEmployee = new Employee
             {
                 Name = "System user",
-                AgentId = (int)EnumSystemUsers.AdminUser
+                AgentId = (int)EnumSystemUsers.AdminUser,
+                ClientId = dbModel.ClientId,
             };
         }
 
@@ -100,7 +101,7 @@ namespace BL.CrossCutting.Context
             }
             set
             {
-                CurrentEmployee.ClientId = value.GetValueOrDefault();
+                CurrentEmployee.ClientId = value;
             }
         }
     }

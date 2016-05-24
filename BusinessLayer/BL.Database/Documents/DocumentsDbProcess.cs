@@ -34,8 +34,9 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                //TODO Проверка Клиент ID
-                return dbContext.DocumentsSet.Count();
+                return dbContext.DocumentsSet
+                    .Where(x=> x.TemplateDocument.ClientId == ctx.CurrentClientId)
+                    .Count();
             }
         }
         public IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging)
