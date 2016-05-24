@@ -88,6 +88,20 @@ namespace BL.CrossCutting.Context
         public bool IsAdmin => true;
         public LicenceInfo ClientLicence { get; set; }
 
-        public int? CurrentClientId { get { return null; } }
+        public int? CurrentClientId
+        {
+            get
+            {
+                if (CurrentEmployee.ClientId <= 0)
+                {
+                    return null;
+                }
+                return CurrentEmployee.ClientId;
+            }
+            set
+            {
+                CurrentEmployee.ClientId = value.GetValueOrDefault();
+            }
+        }
     }
 }

@@ -9,6 +9,8 @@ namespace BL.Model.SystemCore
         public int ClientId { get; set; }
         public string ClientName { get; set; }
 
+        public bool IsTrial { get; set; }
+
         public bool IsDateLimit { get; set; }
 
         public bool IsConcurenteLicence { get; set; }

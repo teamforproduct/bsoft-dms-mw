@@ -299,29 +299,9 @@
     </Compile>
     <Compile Include="Infrastructure\ExceptionHandlingAttribute.cs" />
     <Compile Include="Infrastructure\ModelValidationErrorHandlerFilterAttribute .cs" />
-    <Compile Include="Migrations\201603211144029_InitialMigration.cs" />
-    <Compile Include="Migrations\201603211144029_InitialMigration.Designer.cs">
-      <DependentUpon>201603211144029_InitialMigration.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201603221119402_AddServersAndLanguages.cs" />
-    <Compile Include="Migrations\201603221119402_AddServersAndLanguages.Designer.cs">
-      <DependentUpon>201603221119402_AddServersAndLanguages.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201604041000553_Clients.cs" />
-    <Compile Include="Migrations\201604041000553_Clients.Designer.cs">
-      <DependentUpon>201604041000553_Clients.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201605031426007_AddLicenceinfo.cs" />
-    <Compile Include="Migrations\201605031426007_AddLicenceinfo.Designer.cs">
-      <DependentUpon>201605031426007_AddLicenceinfo.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201605060918301_AddColumnLicenceKey.cs" />
-    <Compile Include="Migrations\201605060918301_AddColumnLicenceKey.Designer.cs">
-      <DependentUpon>201605060918301_AddColumnLicenceKey.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201605101921409_AddLicencesInfo.cs" />
-    <Compile Include="Migrations\201605101921409_AddLicencesInfo.Designer.cs">
-      <DependentUpon>201605101921409_AddLicencesInfo.cs</DependentUpon>
+    <Compile Include="Migrations\201605231056024_InitialMigration.cs" />
+    <Compile Include="Migrations\201605231056024_InitialMigration.Designer.cs">
+      <DependentUpon>201605231056024_InitialMigration.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
@@ -333,6 +313,7 @@
     <Compile Include="Results\JsonResult.cs" />
     <Compile Include="Results\ChallengeResult.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="Utilities\Licences.cs" />
     <Compile Include="Utilities\WebAPIDbProcess.cs" />
     <Compile Include="Utilities\Languages.cs" />
     <Compile Include="Utilities\SystemInfo.cs" />
@@ -426,30 +407,15 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201603211144029_InitialMigration.resx">
-      <DependentUpon>201603211144029_InitialMigration.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201603221119402_AddServersAndLanguages.resx">
-      <DependentUpon>201603221119402_AddServersAndLanguages.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201604041000553_Clients.resx">
-      <DependentUpon>201604041000553_Clients.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201605031426007_AddLicenceinfo.resx">
-      <DependentUpon>201605031426007_AddLicenceinfo.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201605060918301_AddColumnLicenceKey.resx">
-      <DependentUpon>201605060918301_AddColumnLicenceKey.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201605101921409_AddLicencesInfo.resx">
-      <DependentUpon>201605101921409_AddLicencesInfo.cs</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201605231056024_InitialMigration.resx">
+      <DependentUpon>201605231056024_InitialMigration.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

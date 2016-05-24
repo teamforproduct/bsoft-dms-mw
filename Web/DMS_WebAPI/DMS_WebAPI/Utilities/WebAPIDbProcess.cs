@@ -9,13 +9,16 @@ using BL.Model.WebAPI.IncomingModel;
 using DMS_WebAPI.DBModel;
 using DMS_WebAPI.Models;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.Entity;
 using System.Linq;
 using System.Transactions;
 using System.Web;
+using System.Web.Configuration;
 
 namespace DMS_WebAPI.Utilities
 {
@@ -112,7 +115,7 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        public DatabaseModel GetServerByUser(string userId, int serverId,int clientId )
+        public DatabaseModel GetServerByUser(string userId, SetUserServer userServer)
         {
             using (var dbContext = new ApplicationDbContext())
             {
@@ -124,11 +127,11 @@ namespace DMS_WebAPI.Utilities
                 userServers = userServers.Where(x => userClients.Contains(x.ClientId));
 
                 var itemsRes = (from userServer in userServers
-                               join server in dbContext.AdminServersSet on userServer.ServerId equals server.Id
-                               select new
-                               {
-                                   Server = server,
-                               }).ToList();
+                                join server in dbContext.AdminServersSet on userServer.ServerId equals server.Id
+                                select new
+                                {
+                                    Server = server,
+                                }).ToList();
 
 
                 var item = itemsRes.Select(x => new DatabaseModel
@@ -463,6 +466,10 @@ namespace DMS_WebAPI.Utilities
         {
             return GetClients(new FilterAspNetClients { ClientIds = new List<int> { id } }).FirstOrDefault();
         }
+        public FrontAspNetClient GetClient(string clientCode)
+        {
+            return GetClients(new FilterAspNetClients { Code = clientCode }).FirstOrDefault();
+        }
 
         public IEnumerable<FrontAspNetClient> GetClients(FilterAspNetClients filter)
         {
@@ -487,11 +494,16 @@ namespace DMS_WebAPI.Utilities
         {
             try
             {
-                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
-                {
-                    using (var dbContext = new ApplicationDbContext())
-                    {
+                var owinContext = HttpContext.Current.Request.GetOwinContext();
+                var userManager = owinContext.GetUserManager<ApplicationUserManager>();
 
+
+                using (var dbContext = new ApplicationDbContext())
+                {
+                    var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(dbContext));
+
+                    using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+                    {
                         #region Create client 1 
 
                         if (dbContext.AspNetClientsSet.Any(x => x.Name.Equals(model.ClientName)))
@@ -511,8 +523,6 @@ namespace DMS_WebAPI.Utilities
 
                         #region Create user                        
 
-                        var userManager = HttpContext.Current.Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
-
                         var email = model.Email;
 
                         if (!string.IsNullOrEmpty(model.ClientCode))
@@ -531,7 +541,8 @@ namespace DMS_WebAPI.Utilities
 
                         if (!result.Succeeded)
                         {
-                            throw new System.Exception();
+                            transaction.Dispose();
+                            throw new DictionaryRecordCouldNotBeAdded();
                         }
 
                         #endregion Create user
@@ -559,22 +570,79 @@ namespace DMS_WebAPI.Utilities
                         dbContext.AspNetClientLicencesSet.Add(clientLicence);
                         dbContext.SaveChanges();
 
-                        //TODO создать базу
-
                         #endregion Create client 2
 
                         #region add user to role admin
 
                         var role = $"Admin_Client_{client.Id}";
+
+                        var roleDb = roleManager.FindByName(role);
+
+                        if (roleDb == null || string.IsNullOrEmpty(roleDb.Id))
+                        {
+                            roleManager.Create(new IdentityRole { Name = role });
+                        }
+
                         userManager.AddToRole(user.Id, role);
 
                         #endregion add user to role admin
+
+                        #region add server
+
+                        //TODO создать базу
+
+                        var firstServer = AddClientServer(true);
+
+                        var server = new AdminServers
+                        {
+                            Name = client.Name,
+                            Address = firstServer.Address,
+                            ConnectionString = firstServer.ConnectionString,
+                            DefaultDatabase = firstServer.DefaultDatabase,
+                            DefaultSchema = firstServer.DefaultSchema,
+                            IntegrateSecurity = firstServer.IntegrateSecurity,
+                            ServerType = firstServer.ServerType.ToString(),
+                            UserName = firstServer.UserName,
+                            UserPassword = firstServer.UserPassword,
+                        };
+
+                        dbContext.AdminServersSet.Add(server);
+                        dbContext.SaveChanges();
+
+                        var clientServer = new AspNetClientServers
+                        {
+                            ClientId = client.Id,
+                            ServerId = server.Id,
+                        };
+
+                        dbContext.AspNetClientServersSet.Add(clientServer);
+
+                        var userServer = new AspNetUserServers
+                        {
+                            ClientId = client.Id,
+                            ServerId = server.Id,
+                            UserId = user.Id,
+                        };
+
+                        dbContext.AspNetUserServersSet.Add(userServer);
+
+                        dbContext.SaveChanges();
+
+                        #endregion add server
 
                         transaction.Complete();
 
                         return client.Id;
                     }
                 }
+            }
+            catch (UserNameAlreadyExists)
+            {
+                throw new UserNameAlreadyExists();
+            }
+            catch (ClientNameAlreadyExists)
+            {
+                throw new ClientNameAlreadyExists();
             }
             catch
             {
@@ -705,6 +773,65 @@ namespace DMS_WebAPI.Utilities
 
                     return model.Id;
                 }
+            }
+            catch
+            {
+                throw new DictionaryRecordCouldNotBeAdded();
+            }
+        }
+
+        public DatabaseModel AddClientServer(bool isDefault = true)
+        {
+            try
+            {
+                var db = new DatabaseModel();
+
+                Configuration webConf = WebConfigurationManager.OpenWebConfiguration(null);
+                if (webConf.AppSettings.Settings.Count > 0)
+                {
+                    KeyValueConfigurationElement customSetting = webConf.AppSettings.Settings["DefaultClientServer_Address"];
+                    if (customSetting != null)
+                        db.Address = customSetting.Value;
+
+                    customSetting = webConf.AppSettings.Settings["DefaultClientServer_ServerType"];
+                    if (customSetting != null)
+                        db.ServerType = (DatabaseType)Enum.Parse(typeof(DatabaseType), customSetting.Value);
+
+                    customSetting = webConf.AppSettings.Settings["DefaultClientServer_DefaultDatabase"];
+                    if (customSetting != null)
+                        db.DefaultDatabase = customSetting.Value;
+
+                    customSetting = webConf.AppSettings.Settings["DefaultClientServer_IntegrateSecurity"];
+                    if (customSetting != null)
+                    {
+                        bool integrateSecurity;
+                        if (bool.TryParse(customSetting.Value, out integrateSecurity))
+                            db.IntegrateSecurity = integrateSecurity;
+                    }
+
+                    customSetting = webConf.AppSettings.Settings["DefaultClientServer_UserName"];
+                    if (customSetting != null)
+                        db.UserName = customSetting.Value;
+
+                    customSetting = webConf.AppSettings.Settings["DefaultClientServer_UserPassword"];
+                    if (customSetting != null)
+                        db.UserPassword = customSetting.Value;
+
+                    customSetting = webConf.AppSettings.Settings["DefaultClientServer_DefaultSchema"];
+                    if (customSetting != null)
+                        db.DefaultSchema = customSetting.Value;
+
+                    customSetting = webConf.AppSettings.Settings["DefaultClientServer_ConnectionString"];
+                    if (customSetting != null)
+                        db.ConnectionString = customSetting.Value;
+                }
+
+                if (!isDefault)
+                {
+                    //TODO Создание новой базы если необходимо
+                }
+
+                return db;
             }
             catch
             {
@@ -960,7 +1087,7 @@ namespace DMS_WebAPI.Utilities
                     lic.ConcurenteNumberOfConnectionsNow++;
                 }
 
-                VerifyLicence.Verify(regCode, lic);
+                new Licences().Verify(regCode, lic);
 
                 using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
                 {

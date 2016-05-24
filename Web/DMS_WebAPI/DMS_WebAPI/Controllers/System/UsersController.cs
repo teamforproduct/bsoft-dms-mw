@@ -10,6 +10,7 @@ using BL.Model.Exception;
 using BL.Logic.DictionaryCore.Interfaces;
 using System.Linq;
 using Microsoft.AspNet.Identity;
+using BL.Model.WebAPI.IncomingModel;
 
 namespace DMS_WebAPI.Controllers
 {
@@ -100,7 +101,7 @@ namespace DMS_WebAPI.Controllers
         /// <returns></returns>
         [Route("Servers")]
         [HttpPost]
-        public IHttpActionResult SetServers([FromBody]int serverId, [FromBody]int clientId)
+        public IHttpActionResult SetServers([FromBody]SetUserServer model)
         {
             var mngContext = DmsResolver.Current.Get<UserContext>();
 
@@ -108,13 +109,13 @@ namespace DMS_WebAPI.Controllers
 
             var dbProc = new WebAPIDbProcess();
 
-            var db = dbProc.GetServerByUser(User.Identity.GetUserId(), serverId, clientId);
+            var db = dbProc.GetServerByUser(User.Identity.GetUserId(), model);
             if (db == null)
             {
                 throw new DatabaseIsNotFound();
             }
 
-            mngContext.Set(db, clientId);
+            mngContext.Set(db, model.ClientId);
 
 
             return new JsonResult(null, this);

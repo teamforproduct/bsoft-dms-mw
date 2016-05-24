@@ -367,6 +367,7 @@
     <Compile Include="WebAPI\IncomingModel\ModifyAdminServer.cs" />
     <Compile Include="WebAPI\IncomingModel\ModifyAspNetLicence.cs" />
     <Compile Include="WebAPI\IncomingModel\ModifyAspNetUserClient.cs" />
+    <Compile Include="WebAPI\IncomingModel\SetUserServer.cs" />
     <Compile Include="WebAPI\IncomingModel\ModifyAspNetUserServer.cs" />
   </ItemGroup>
   <ItemGroup />

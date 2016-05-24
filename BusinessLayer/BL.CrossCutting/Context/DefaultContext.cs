@@ -150,6 +150,10 @@ namespace BL.CrossCutting.Context
         {
             get
             {
+                if (CurrentEmployee.ClientId <= 0)
+                {
+                    return null;
+                }
                 return CurrentEmployee.ClientId;
             }
             set

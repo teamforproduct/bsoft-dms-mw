@@ -33,6 +33,11 @@ namespace BL.Logic.DocumentCore
 
         #region Documents
 
+        public int GetCountDocuments(IContext ctx)
+        {
+            return _documentDb.GetCountDocuments(ctx);
+        }
+
         public IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging)
         {
             if (!String.IsNullOrEmpty(filters.FullTextSearch))

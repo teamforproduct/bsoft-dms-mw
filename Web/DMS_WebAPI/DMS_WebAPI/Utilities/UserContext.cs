@@ -8,7 +8,6 @@ using BL.Model.Exception;
 using System.Linq;
 using BL.CrossCutting.Context;
 using BL.CrossCutting.DependencyInjection;
-using BL.CrossCutting.Helpers;
 
 namespace DMS_WebAPI.Utilities
 {
@@ -138,12 +137,12 @@ namespace DMS_WebAPI.Utilities
 
             var context = (IContext)contextValue.StoreObject;
 
-            context.CurrentEmployee.ClientId = clientId;
+            context.CurrentClientId = clientId;
 
             if (context.ClientLicence == null)
             {
                 var dbProc = new WebAPIDbProcess();
-                context.ClientLicence = dbProc.GetClientLicenceActive(context.CurrentEmployee.ClientId);
+                context.ClientLicence = dbProc.GetClientLicenceActive(context.CurrentClientId.GetValueOrDefault());
             }
 
             VerifyNumberOfConnections(context, true);
@@ -188,7 +187,8 @@ namespace DMS_WebAPI.Utilities
 
         public void VerifyNumberOfConnections(IContext context, bool isAddNew = false)
         {
-            var clientId = context.CurrentEmployee.ClientId;
+            if (!context.CurrentClientId.HasValue) return;
+            var clientId = context.CurrentClientId.GetValueOrDefault();
 
             var si = new SystemInfo();
 
@@ -197,7 +197,7 @@ namespace DMS_WebAPI.Utilities
             if (lic == null)
             {
                 var dbProc = new WebAPIDbProcess();
-                context.ClientLicence = lic = dbProc.GetClientLicenceActive(context.CurrentEmployee.ClientId);
+                context.ClientLicence = lic = dbProc.GetClientLicenceActive(clientId);
             }
 
             var regCode = si.GetRegCode(lic);
@@ -215,7 +215,7 @@ namespace DMS_WebAPI.Utilities
                 lic.ConcurenteNumberOfConnectionsNow = count;
             }
 
-            VerifyLicence.Verify(regCode, lic);
+            new Licences().Verify(regCode, lic);
 
         }
 
