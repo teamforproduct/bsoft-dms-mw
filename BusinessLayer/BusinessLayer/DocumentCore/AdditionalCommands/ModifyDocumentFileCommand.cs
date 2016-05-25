@@ -57,7 +57,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         public override bool CanExecute()
         {
             //TODO potential two user could add same new version in same time. Probably need to implement CheckOut flag in future
-            _document = _operationDb.ModifyDocumentFilePrepare(_context, Model.DocumentId, Model.OrderInDocument);
+            //_document = _operationDb.ModifyDocumentFilePrepare(_context, Model.DocumentId, Model.OrderInDocument);
             if (_document == null)
             {
                 throw new UserHasNoAccessToDocument();
@@ -84,7 +84,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                 throw new CouldNotPerformOperation();
             }
 
-            _file.FileContent = Convert.FromBase64String(Model.FileData);
+            //_file.FileContent = Convert.FromBase64String(Model.FileData);
             _file.FileType = Model.FileType;
             _file.FileSize = Model.FileSize;
             _file.Extension = Path.GetExtension(Model.FileName).Replace(".", "");

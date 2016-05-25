@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DMS_WebAPI.DBModel
@@ -7,6 +8,7 @@ namespace DMS_WebAPI.DBModel
     {
         public AdminServers()
         {
+            this.ClientServers = new HashSet<AspNetClientServers>();
             this.UserServers = new HashSet<AspNetUserServers>();
         }
         /// <summary>
@@ -16,18 +18,22 @@ namespace DMS_WebAPI.DBModel
         /// <summary>
         /// IP or host name 
         /// </summary>
+        [MaxLength(2000)]
         public string Address { get; set; }
         /// <summary>
         /// Display name
         /// </summary>
+        [MaxLength(2000)]
         public string Name { get; set; }
         /// <summary>
         /// Type of the server (SQL Server / Oracle / MySQL etc.)
         /// </summary>
+        [MaxLength(2000)]
         public string ServerType { get; set; }
         /// <summary>
         /// Database name
         /// </summary>
+        [MaxLength(2000)]
         public string DefaultDatabase { get; set; }
         /// <summary>
         /// use integrate security or Server security
@@ -36,19 +42,22 @@ namespace DMS_WebAPI.DBModel
         /// <summary>
         /// user name (if required)
         /// </summary>
+        [MaxLength(2000)]
         public string UserName { get; set; }
         /// <summary>
         /// user password (if required)
         /// </summary>
+        [MaxLength(2000)]
         public string UserPassword { get; set; }
         /// <summary>
         /// Connection string (possible)
         /// </summary>
+        [MaxLength(2000)]
         public string ConnectionString { get; set; }
+        [MaxLength(2000)]
         public string DefaultSchema { get; set; }
-        public int? ClientId { get; set; }
-        [ForeignKey("ClientId")]
-        public virtual AspNetClients Client { get; set; }
+
+        public virtual ICollection<AspNetClientServers> ClientServers { get; set; }
 
         public virtual ICollection<AspNetUserServers> UserServers { get; set; }
     }

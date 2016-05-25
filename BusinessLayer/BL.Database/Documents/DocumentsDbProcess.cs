@@ -30,6 +30,15 @@ namespace BL.Database.Documents
         {
         }
 
+        public int GetCountDocuments(IContext ctx)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                return dbContext.DocumentsSet
+                    .Where(x=> x.TemplateDocument.ClientId == ctx.CurrentClientId)
+                    .Count();
+            }
+        }
         public IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging)
         {
             using (var dbContext = new DmsContext(ctx))

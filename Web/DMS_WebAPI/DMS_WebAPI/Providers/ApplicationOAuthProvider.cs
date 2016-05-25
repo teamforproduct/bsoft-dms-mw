@@ -13,6 +13,9 @@ using DMS_WebAPI.Models;
 using DMS_WebAPI.Utilities;
 using BL.Logic.DependencyInjection;
 using BL.Model.Exception;
+using System.IO;
+using System.Web;
+using Newtonsoft.Json;
 
 namespace DMS_WebAPI.Providers
 {
@@ -32,9 +35,32 @@ namespace DMS_WebAPI.Providers
 
         public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
         {
+            var email = context.UserName;
+            try
+            {
+                context.Request.Body.Position = 0;
+                var body = new StreamReader(context.Request.Body);
+                //var bodyStr = HttpUtility.UrlDecode(body.ReadToEnd());
+                var bodyStr = body.ReadToEnd();
+
+                var dic = HttpUtility.ParseQueryString(bodyStr);
+                var clientCode = dic["ClientCode"] ?? string.Empty;
+
+                if (!string.IsNullOrEmpty(clientCode))
+                {
+                    var dbProc = new WebAPIDbProcess();
+                    var client = dbProc.GetClient(clientCode);
+                    if (client != null && client.Id > 0)
+                    {
+                        email = $"Client_{client.Id}_{email}";
+                    }
+                }
+            }
+            catch { }
+
             var userManager = context.OwinContext.GetUserManager<ApplicationUserManager>();
 
-            ApplicationUser user = await userManager.FindAsync(context.UserName, context.Password);
+            ApplicationUser user = await userManager.FindAsync(email, context.Password);
 
             if (user == null)
             {
@@ -102,13 +128,26 @@ namespace DMS_WebAPI.Providers
         {
             if (context.Identity.IsAuthenticated)
             {
+                var clientCode = string.Empty;
+                try
+                {
+                    context.Request.Body.Position = 0;
+                    var body = new StreamReader(context.Request.Body);
+                    //var bodyStr = HttpUtility.UrlDecode(body.ReadToEnd());
+                    var bodyStr = body.ReadToEnd();
+
+                    var dic = HttpUtility.ParseQueryString(bodyStr);
+                    clientCode = dic["ClientCode"] ?? string.Empty;
+                }
+                catch (Exception ex) { }
+
                 var userId = context.Identity.GetUserId();
 
                 var token = $"{context.Identity.AuthenticationType} {context.AccessToken}";
 
                 var mngContext = DmsResolver.Current.Get<UserContext>();
 
-                var cxt = mngContext.Set(token, userId);
+                var cxt = mngContext.Set(token, userId, clientCode);
             }
 
             return Task.FromResult<object>(null);

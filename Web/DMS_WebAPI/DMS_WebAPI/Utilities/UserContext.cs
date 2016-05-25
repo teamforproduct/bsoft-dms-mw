@@ -8,7 +8,6 @@ using BL.Model.Exception;
 using System.Linq;
 using BL.CrossCutting.Context;
 using BL.CrossCutting.DependencyInjection;
-using BL.CrossCutting.Helpers;
 
 namespace DMS_WebAPI.Utilities
 {
@@ -98,7 +97,7 @@ namespace DMS_WebAPI.Utilities
         /// <param name="userId"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        public IContext Set(string token, string userId)
+        public IContext Set(string token, string userId, string clientCode)
         {
             token = token.ToLower();
             if (!_casheContexts.ContainsKey(token))
@@ -109,10 +108,10 @@ namespace DMS_WebAPI.Utilities
                     CurrentEmployee = new BL.Model.Users.Employee
                     {
                         Token = token,
-                        UserId = userId
+                        UserId = userId,
+                        ClientCode = clientCode
                     }
                 };
-                //TODO insert here licence INFO 
                 Save(token, context);
                 return context;
             }
@@ -124,9 +123,10 @@ namespace DMS_WebAPI.Utilities
         /// Add new server to the list of available servers
         /// </summary>
         /// <param name="db">new server parameters</param>
+        /// <param name="clientId">clientId</param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        public void Set(DatabaseModel db)
+        public void Set(DatabaseModel db, int clientId)
         {
             string token = Token.ToLower();
             if (!_casheContexts.ContainsKey(token))
@@ -138,7 +138,12 @@ namespace DMS_WebAPI.Utilities
 
             var context = (IContext)contextValue.StoreObject;
 
-            VerifyNumberOfConnections(context, db.ClientId, true);
+            context.CurrentClientId = clientId;
+
+            var dbProc = new WebAPIDbProcess();
+            context.ClientLicence = dbProc.GetClientLicenceActive(context.CurrentClientId);
+
+            VerifyNumberOfConnections(context, true);
 
             contextValue.LastUsage = DateTime.Now;
 
@@ -178,12 +183,10 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        public void VerifyNumberOfConnections(IContext context, int? clientId = null, bool isAddNew = false)
+        public void VerifyNumberOfConnections(IContext context, bool isAddNew = false)
         {
-            if (context == null) return;
-            if (!clientId.HasValue)
-                clientId = context.CurrentClientId;
-            if (!clientId.HasValue) return;
+            if (context.CurrentClientId <= 0) return;
+            var clientId = context.CurrentClientId;
 
             var si = new SystemInfo();
 
@@ -191,8 +194,8 @@ namespace DMS_WebAPI.Utilities
 
             if (lic == null)
             {
-                var sdbw = new SystemDbWorker();
-                lic = sdbw.GetLicenceInfo(clientId.GetValueOrDefault());
+                var dbProc = new WebAPIDbProcess();
+                context.ClientLicence = lic = dbProc.GetClientLicenceActive(clientId);
             }
 
             var regCode = si.GetRegCode(lic);
@@ -210,7 +213,7 @@ namespace DMS_WebAPI.Utilities
                 lic.ConcurenteNumberOfConnectionsNow = count;
             }
 
-            VerifyLicence.Verify(regCode, lic);
+            new Licences().Verify(regCode, lic, context);
 
         }
 

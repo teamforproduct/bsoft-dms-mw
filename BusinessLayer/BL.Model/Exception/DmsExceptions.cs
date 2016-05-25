@@ -77,6 +77,40 @@
     }
 
     /// <summary>
+    /// Сообщение при ошибке регистрации нового клиента
+    /// Имя клиента уже существует
+    /// Client Name already exists
+    /// </summary>
+    public class ClientNameAlreadyExists : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:ClientNameAlreadyExists@l##";
+        public ClientNameAlreadyExists() : base(_MESSAGE)
+        {
+        }
+
+        public ClientNameAlreadyExists(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+    /// <summary>
+    /// Сообщение при ошибке регистрации нового клиента
+    /// Имя пользователя уже существует
+    /// User Name already exists
+    /// </summary>
+    public class UserNameAlreadyExists : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:UserNameAlreadyExists@l##";
+        public UserNameAlreadyExists() : base(_MESSAGE)
+        {
+        }
+
+        public UserNameAlreadyExists(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+    /// <summary>
     /// Сообщение при ошибке получения ключей
     /// </summary>
     public class CryptographicError : DmsExceptions

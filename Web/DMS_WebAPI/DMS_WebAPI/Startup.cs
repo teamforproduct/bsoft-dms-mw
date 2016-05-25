@@ -9,6 +9,8 @@ using DMS_WebAPI.Utilities;
 using Microsoft.Owin;
 using Owin;
 using BL.Logic.SystemServices.ClearTrashDocuments;
+using BL.Model.WebAPI.Filters;
+using System.Collections.Generic;
 
 [assembly: OwinStartup(typeof(DMS_WebAPI.Startup))]
 
@@ -20,8 +22,8 @@ namespace DMS_WebAPI
         {
             ConfigureAuth(app);
 
-            var srv = new Servers();
-            var dbs = srv.GetServers().Where(x => x.ServerType == DatabaseType.SQLServer);
+            var dbProc = new WebAPIDbProcess();
+            var dbs = dbProc.GetServersByAdmin(new FilterAdminServers { ServerTypes = new List<DatabaseType> { DatabaseType.SQLServer } });
 
             //foreach (var srv in DmsResolver.Current.GetAll<ISystemWorkerService>())
             //{

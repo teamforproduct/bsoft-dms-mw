@@ -66,17 +66,17 @@ namespace DMS_WebAPI.Controllers.Documents
         //    return Get(model.DocumentId);
         //}
 
-        public IHttpActionResult Post(ModifyDocumentFiles model, IEnumerable<HttpPostedFileBase> files)
+        public IHttpActionResult Post([FromUri]ModifyDocumentFile model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
 
-            foreach (var file in model.Files)
-            {
-                var fileData = files.FirstOrDefault(x => x.FileName.Equals(file.FileName));
-                if (fileData != null)
-                    file.PostedFileData = fileData;
-            }
+            HttpPostedFile file = HttpContext.Current.Request.Files[0];
+            model.PostedFileData = file;
+            model.FileName = file.FileName;
+            model.FileType = file.ContentType;
+            model.FileSize = file.ContentLength;
+
 
             docProc.ExecuteAction(EnumDocumentActions.AddDocumentFile, cxt, model);
             return Get(model.DocumentId);

@@ -33,7 +33,7 @@ namespace BL.Model.DocumentCore.InternalModel
         /// <summary>
         /// содержимое файла
         /// </summary>
-        public HttpPostedFileBase PostedFileData { get; set; }
+        public HttpPostedFile PostedFileData { get; set; }
         /// <summary>
         /// Название файла без расширения
         /// </summary>

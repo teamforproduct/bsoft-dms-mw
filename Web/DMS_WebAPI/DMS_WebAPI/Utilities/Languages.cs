@@ -1,16 +1,10 @@
-﻿using BL.Logic.Common;
-using BL.Model.AdminCore;
+﻿using BL.Model.AdminCore;
 using BL.Model.AdminCore.FilterModel;
 using BL.Model.AdminCore.InternalModel;
 using BL.Model.Database;
-using BL.Model.Database.FrontModel;
-using BL.Model.Database.IncomingModel;
-using BL.Model.Exception;
-using DMS_WebAPI.DBModel;
 using DMS_WebAPI.Models;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using System.Text.RegularExpressions;
 
