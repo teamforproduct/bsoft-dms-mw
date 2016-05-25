@@ -22,7 +22,7 @@ namespace BL.Model.DictionaryCore.InternalModel
             IsEmployee = model.IsEmployee;
             Description = model.Description;
             IsActive = model.IsActive;
-            ResidentTypeId = model.ResidentTypeId ?? 0;
+            ResidentTypeId = model.ResidentTypeId ?? null;
         }
 
 
@@ -57,7 +57,7 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// <summary>
         /// резидентность
         /// </summary>
-        public int ResidentTypeId { get; set; }
+        public int? ResidentTypeId { get; set; }
         /// <summary>
         /// комментарии
         /// </summary>
