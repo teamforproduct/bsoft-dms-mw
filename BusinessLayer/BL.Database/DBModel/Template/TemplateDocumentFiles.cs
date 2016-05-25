@@ -20,7 +20,7 @@ namespace BL.Database.DBModel.Template
         public string Extention { get; set; }
         [MaxLength(2000)]
         public string FileType { get; set; }
-        public int FileSize { get; set; }
+        public long FileSize { get; set; }
         //public byte[] Content { get; set; }
         public bool IsAdditional { get; set; }
         [MaxLength(2000)]

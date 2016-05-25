@@ -76,6 +76,10 @@ namespace BL.Database.FileWorker
 
                 attFile.PostedFileData.SaveAs(localFilePath);
 
+                FileInfo fileInfo = new FileInfo(localFilePath);
+
+                attFile.FileSize = fileInfo.Length;
+
                 //File.WriteAllBytes(localFilePath, attFile.FileContent);
                 attFile.Hash = FileToSha1(localFilePath);
                 return attFile.Hash;

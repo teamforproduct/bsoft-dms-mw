@@ -302,6 +302,10 @@
     <Compile Include="Migrations\201605230929159_ClientId.Designer.cs">
       <DependentUpon>201605230929159_ClientId.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201605251451464_FileSize.cs" />
+    <Compile Include="Migrations\201605251451464_FileSize.Designer.cs">
+      <DependentUpon>201605251451464_FileSize.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SystemDb\ISystemDbProcess.cs" />
@@ -421,6 +425,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201605230929159_ClientId.resx">
       <DependentUpon>201605230929159_ClientId.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605251451464_FileSize.resx">
+      <DependentUpon>201605251451464_FileSize.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

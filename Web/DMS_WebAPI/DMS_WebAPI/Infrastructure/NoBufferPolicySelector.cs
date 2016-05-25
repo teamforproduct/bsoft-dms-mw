@@ -1,9 +1,11 @@
-﻿using System;
+﻿using DMS_WebAPI.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Web;
 using System.Web.Http.WebHost;
+using System.Web.Routing;
 
 namespace DMS_WebAPI.Infrastructure
 {
@@ -17,13 +19,18 @@ namespace DMS_WebAPI.Infrastructure
             {
                 try
                 {
-                    var listControllerNameUploadings = new List<string> { "DocumentFilesController" };
-                    var controller = context.Request.RequestContext.RouteData.Values["controller"].ToString();
+                    var listControllerNameUploadings = new List<string> { "DocumentFiles" };
 
-                    if (listControllerNameUploadings.Any(x=>x.Equals(controller,StringComparison.InvariantCultureIgnoreCase)))
+                    var routeDefaultApi = RouteTable.Routes["DefaultApi"] as Route;
+
+                    var routeData = routeDefaultApi.GetRouteData(context);
+
+                    var controller = routeData.Values["controller"].ToString();
+
+                    if (listControllerNameUploadings.Any(x => x.Equals(controller, StringComparison.InvariantCultureIgnoreCase)))
                         return false;
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
 
                 }

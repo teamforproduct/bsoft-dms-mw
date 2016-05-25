@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using DMS_WebAPI.Areas.HelpPage;
 using System.Web;
 using DMS_WebAPI.Infrastructure;
+using System.Web.Http.Hosting;
 
 namespace DMS_WebAPI
 {
@@ -18,6 +19,8 @@ namespace DMS_WebAPI
 
             config.Filters.Add(new ExceptionHandlingAttribute());
             config.Filters.Add(new ModelValidationErrorHandlerFilterAttribute());
+
+            config.Services.Replace(typeof(IHostBufferPolicySelector), new NoBufferPolicySelector());
 
             // Web API routes
             config.MapHttpAttributeRoutes();

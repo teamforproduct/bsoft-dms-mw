@@ -24,7 +24,7 @@ namespace BL.Database.DBModel.Document
         public string Extension { get; set; }
         [MaxLength(2000)]
         public string FileType { get; set; }
-        public int FileSize { get; set; }
+        public long FileSize { get; set; }
         public DateTime Date { get; set; }
         public byte[] Content { get; set; }
         public bool IsAdditional { get; set; }

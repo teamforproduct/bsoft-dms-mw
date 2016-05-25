@@ -8,6 +8,7 @@ using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.Enums;
+using System.Web;
 
 namespace DMS_WebAPI.Controllers.Documents
 {
@@ -50,23 +51,35 @@ namespace DMS_WebAPI.Controllers.Documents
        /// </summary>
        /// <param name="model"></param>
        /// <returns></returns>
-        public IHttpActionResult Post([FromBody]ModifyTemplateAttachedFile model)
+        public IHttpActionResult Post([FromUri]ModifyTemplateAttachedFile model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<ITemplateDocumentService>();
+
+            HttpPostedFile file = HttpContext.Current.Request.Files[0];
+            model.PostedFileData = file;
+            model.FileName = file.FileName;
+            model.FileType = file.ContentType;
+
             return Get((int)docProc.ExecuteAction(EnumDocumentActions.AddTemplateAttachedFile, cxt, model));
             
         }
 
-       /// <summary>
-       /// Изменить вложенный в шаблон файл
-       /// </summary>
-       /// <param name="model"></param>
-       /// <returns></returns>
+        /// <summary>
+        /// Изменить вложенный в шаблон файл
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public IHttpActionResult Put([FromBody]ModifyTemplateAttachedFile model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<ITemplateDocumentService>();
+
+            HttpPostedFile file = HttpContext.Current.Request.Files[0];
+            model.PostedFileData = file;
+            model.FileName = file.FileName;
+            model.FileType = file.ContentType;
+
             var fl = (FrontTemplateAttachedFile)docProc.ExecuteAction(EnumDocumentActions.ModifyTemplateAttachedFile, cxt, model);
 
             return new JsonResult(fl, this);

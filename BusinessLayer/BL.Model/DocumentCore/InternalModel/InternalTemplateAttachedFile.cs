@@ -50,7 +50,7 @@ namespace BL.Model.DocumentCore.InternalModel
         /// <summary>
         /// Размер файла
         /// </summary>
-        public int FileSize { get; set; }
+        public long FileSize { get; set; }
 
         /// <summary>
         /// Хэш файла. для проверки целостности файла в хранилище

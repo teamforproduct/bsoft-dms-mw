@@ -55,7 +55,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                 throw new CouldNotPerformOperation();
             }
 
-            if (_document.DocumentFiles.Any(x => (x.Name + "." + x.Extension).Equals(Model.FileName)))
+            if (_document.DocumentFiles.Any(x => (x.Name + "." + x.Extension).Equals(Model.FileName) && x.ExecutorPositionId != _context.CurrentPositionId))
             {
                 throw new CannotAccessToFile();
             }
@@ -75,11 +75,9 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             {
                 DocumentId = Model.DocumentId,
                 Date = DateTime.Now,
-                //FileContent = Convert.FromBase64String(file.FileData),
                 PostedFileData = Model.PostedFileData,
                 IsAdditional = Model.IsAdditional,
                 FileType = Model.FileType,
-                FileSize = Model.FileSize,
                 Name = Path.GetFileNameWithoutExtension(Model.FileName),
                 Extension = Path.GetExtension(Model.FileName).Replace(".", ""),
                 WasChangedExternal = false,
