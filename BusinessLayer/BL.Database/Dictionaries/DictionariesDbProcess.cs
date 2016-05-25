@@ -2574,7 +2574,7 @@ namespace BL.Database.Dictionaries
                     Id = x.Id
                 }).FirstOrDefault();
 
-                return res != null;
+                return res?.Id > 0;
             }
         }
 
