@@ -15,9 +15,18 @@ namespace DMS_WebAPI.Infrastructure
 
             if (context != null)
             {
-                var ListControllerNameUploadings = new List<string> { "DocumentFilesController" };
-                if (string.Equals(context.Request.RequestContext.RouteData.Values["controller"].ToString(), "uploading", StringComparison.InvariantCultureIgnoreCase))
-                    return false;
+                try
+                {
+                    var listControllerNameUploadings = new List<string> { "DocumentFilesController" };
+                    var controller = context.Request.RequestContext.RouteData.Values["controller"].ToString();
+
+                    if (listControllerNameUploadings.Any(x=>x.Equals(controller,StringComparison.InvariantCultureIgnoreCase)))
+                        return false;
+                }
+                catch(Exception ex)
+                {
+
+                }
             }
 
             return true;
