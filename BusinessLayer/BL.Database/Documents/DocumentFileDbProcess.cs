@@ -7,7 +7,7 @@ using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.InternalModel;
-
+using BL.Model.SystemCore;
 
 namespace BL.Database.Documents
 {
@@ -21,7 +21,15 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                return CommonQueries.GetDocumentFiles(dbContext, new FilterDocumentAttachedFile { DocumentId = new List<int> { documentId } });
+                return CommonQueries.GetDocumentFiles(ctx, dbContext, new FilterDocumentAttachedFile { DocumentId = new List<int> { documentId } });
+            }
+        }
+
+        public IEnumerable<FrontDocumentAttachedFile> GetDocumentFiles(IContext ctx, FilterDocumentAttachedFile filter, UIPaging paging = null)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                return CommonQueries.GetDocumentFiles(ctx, dbContext, filter, paging);
             }
         }
 
@@ -30,7 +38,7 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(ctx))
             {
                 return
-                    dbContext.DocumentFilesSet
+                    dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
                         .Where(x => x.DocumentId == documentId && x.OrderNumber == orderNumber)
                         .Join(dbContext.DictionaryAgentsSet, df => df.LastChangeUserId, da => da.Id,
                             (d, a) => new { fl = d, agName = a.Name })
@@ -51,7 +59,9 @@ namespace BL.Database.Documents
                             FileSize = x.fl.FileSize,
                             OrderInDocument = x.fl.OrderNumber,
                             Version = x.fl.Version,
-                            WasChangedExternal = false
+                            WasChangedExternal = false,
+                            ExecutorPositionName = x.fl.ExecutorPosition.Name,
+                            ExecutorPositionExecutorAgentName = x.fl.ExecutorPositionExecutorAgent.Name
                         }).ToList();
             }
         }
@@ -61,7 +71,7 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(ctx))
             {
                 return
-                    dbContext.DocumentFilesSet
+                    dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
                         .Where(
                             x =>
                                 x.DocumentId == documentId && x.Version == versionNumber && x.OrderNumber == orderNumber)
@@ -84,7 +94,9 @@ namespace BL.Database.Documents
                             Name = x.fl.Name,
                             OrderInDocument = x.fl.OrderNumber,
                             Version = x.fl.Version,
-                            WasChangedExternal = false
+                            WasChangedExternal = false,
+                            ExecutorPositionName = x.fl.ExecutorPosition.Name,
+                            ExecutorPositionExecutorAgentName = x.fl.ExecutorPositionExecutorAgent.Name
                         }).FirstOrDefault();
             }
         }
@@ -94,7 +106,7 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(ctx))
             {
                 return
-                    dbContext.DocumentFilesSet
+                    dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
                         .Where(x => x.Id == id)
                         .Join(dbContext.DictionaryAgentsSet, df => df.LastChangeUserId, da => da.Id,
                             (d, a) => new { fl = d, agName = a.Name })
@@ -115,7 +127,9 @@ namespace BL.Database.Documents
                             FileSize = x.fl.FileSize,
                             OrderInDocument = x.fl.OrderNumber,
                             Version = x.fl.Version,
-                            WasChangedExternal = false
+                            WasChangedExternal = false,
+                            ExecutorPositionName = x.fl.ExecutorPosition.Name,
+                            ExecutorPositionExecutorAgentName = x.fl.ExecutorPositionExecutorAgent.Name
                         }).FirstOrDefault();
             }
         }
@@ -125,20 +139,22 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(ctx))
             {
                 var maxVer =
-                    dbContext.DocumentFilesSet.Where(x => x.DocumentId == documentId && x.OrderNumber == orderNumber)
+                    dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                        .Where(x => x.DocumentId == documentId && x.OrderNumber == orderNumber)
                         .Max(m => m.Version);
                 if (maxVer > 0)
                 {
                     var doc = CommonQueries.GetDocumentQuery(dbContext, ctx)
-                                        .Where(x => x.Doc.Id == documentId && (ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId)))
+                                        .Where(x => x.Doc.Id == documentId)
                                         .Select(x => new InternalDocument
                                         {
                                             Id = x.Doc.Id,
+                                            ExecutorPositionId = x.Doc.ExecutorPositionId
                                         }).FirstOrDefault();
 
                     if (doc == null) return null;
 
-                    doc.DocumentFiles = dbContext.DocumentFilesSet
+                    doc.DocumentFiles = dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
                             .Where(
                                 x => x.DocumentId == documentId && x.Version == maxVer && x.OrderNumber == orderNumber)
                             .Join(dbContext.DictionaryAgentsSet, df => df.LastChangeUserId, da => da.Id,
@@ -149,7 +165,8 @@ namespace BL.Database.Documents
                                 Date = x.fl.Date,
                                 DocumentId = x.fl.DocumentId,
                                 OrderInDocument = x.fl.OrderNumber,
-                                Version = x.fl.Version
+                                Version = x.fl.Version,
+                                ExecutorPositionId = x.fl.ExecutorPositionId
                             }).ToList();
                     return doc;
                 }
@@ -162,14 +179,14 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(ctx))
             {
                 var maxVer =
-                    dbContext.DocumentFilesSet.Where(x => x.DocumentId == documentId && x.OrderNumber == orderNumber)
+                    dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                        .Where(x => x.DocumentId == documentId && x.OrderNumber == orderNumber)
                         .Max(m => m.Version);
                 if (maxVer > 0)
                 {
                     return
-                        dbContext.DocumentFilesSet
-                            .Where(
-                                x => x.DocumentId == documentId && x.Version == maxVer && x.OrderNumber == orderNumber)
+                        dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                            .Where(x => x.DocumentId == documentId && x.Version == maxVer && x.OrderNumber == orderNumber)
                             .Join(dbContext.DictionaryAgentsSet, df => df.LastChangeUserId, da => da.Id,
                                 (d, a) => new { fl = d, agName = a.Name })
                             .Select(x => new FrontDocumentAttachedFile
@@ -189,7 +206,9 @@ namespace BL.Database.Documents
                                 FileSize = x.fl.FileSize,
                                 OrderInDocument = x.fl.OrderNumber,
                                 Version = x.fl.Version,
-                                WasChangedExternal = false
+                                WasChangedExternal = false,
+                                ExecutorPositionName = x.fl.ExecutorPosition.Name,
+                                ExecutorPositionExecutorAgentName = x.fl.ExecutorPositionExecutorAgent.Name
                             }).FirstOrDefault();
                 }
             }
@@ -201,11 +220,24 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(ctx))
             {
                 var doc = CommonQueries.GetDocumentQuery(dbContext, ctx)
-                    .Where(x => x.Doc.Id == documentId && (ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId)))
+                    .Where(x => x.Doc.Id == documentId)
                     .Select(x => new InternalDocument
                     {
-                        Id = x.Doc.Id
+                        Id = x.Doc.Id,
+                        ExecutorPositionId = x.Doc.ExecutorPositionId,
+                        DocumentFiles = x.Doc.Files.GroupBy(y => new { y.DocumentId, y.OrderNumber })
+                        .Select(y => y.OrderByDescending(z => z.Version).FirstOrDefault())
+                        .Where(y => y != null)
+                        .Select(y =>
+                        new InternalDocumentAttachedFile
+                        {
+                            Id = y.Id,
+                            Name = y.Name,
+                            Extension = y.Extension,
+                            ExecutorPositionId = y.ExecutorPositionId                            
+                        })
                     }).FirstOrDefault();
+
                 return doc;
             }
         }
@@ -216,6 +248,10 @@ namespace BL.Database.Documents
             {
                 var fl = ModelConverter.GetDbDocumentFile(docFile);
                 dbContext.DocumentFilesSet.Add(fl);
+                if (docFile.Events != null && docFile.Events.Any(x => x.Id == 0))
+                {
+                    dbContext.DocumentEventsSet.AddRange(ModelConverter.GetDbDocumentEvents(docFile.Events.Where(x => x.Id == 0)).ToList());
+                }
                 dbContext.SaveChanges();
                 docFile.Id = fl.Id;
                 return fl.Id;
@@ -238,6 +274,10 @@ namespace BL.Database.Documents
                 entry.Property(x => x.LastChangeUserId).IsModified = true;
                 entry.Property(x => x.Hash).IsModified = true;
                 //entry.Property(x => x.Date).IsModified = true;//we do not update that
+                if (docFile.Events != null && docFile.Events.Any(x => x.Id == 0))
+                {
+                    dbContext.DocumentEventsSet.AddRange(ModelConverter.GetDbDocumentEvents(docFile.Events.Where(x => x.Id == 0)).ToList());
+                }
                 dbContext.SaveChanges();
             }
         }
@@ -247,7 +287,7 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(ctx))
             {
                 var doc = CommonQueries.GetDocumentQuery(dbContext, ctx)
-                    .Where(x => x.Doc.Id == flIdent.DocumentId && (ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.Doc.ExecutorPositionId)))
+                    .Where(x => x.Doc.Id == flIdent.DocumentId)
                     .Select(x => new InternalDocument
                     {
                         Id = x.Doc.Id,
@@ -255,9 +295,9 @@ namespace BL.Database.Documents
                 if (doc == null) return null;
 
                 doc.DocumentFiles =
-                    dbContext.DocumentFilesSet.Where(
-                        x => x.DocumentId == flIdent.DocumentId && x.OrderNumber == flIdent.OrderInDocument)
-                        .Select(x => new InternalDocumentAttachedFile { Id = x.Id }).ToList();
+                    dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                        .Where(x => x.DocumentId == flIdent.DocumentId && x.OrderNumber == flIdent.OrderInDocument)
+                        .Select(x => new InternalDocumentAttachedFile { Id = x.Id, ExecutorPositionId = x.ExecutorPositionId, Name = x.Name, Extension = x.Extension }).ToList();
                 return doc;
             }
         }
@@ -271,11 +311,31 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
+                if (docFile.Events != null && docFile.Events.Any(x => x.Id == 0))
+                {
+                    dbContext.DocumentEventsSet.AddRange(ModelConverter.GetDbDocumentEvents(docFile.Events.Where(x => x.Id == 0)).ToList());
+                }
                 dbContext.DocumentFilesSet.RemoveRange(
-                    dbContext.DocumentFilesSet.Where(
-                        x => x.DocumentId == docFile.DocumentId && x.OrderNumber == docFile.OrderInDocument));
+                    dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                        .Where(x => x.DocumentId == docFile.DocumentId && x.OrderNumber == docFile.OrderInDocument));
                 dbContext.SaveChanges();
 
+            }
+        }
+
+        public int CheckFileForDocument(IContext ctx, int documentId, string fileName, string fileExt)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                if (dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Any(x => x.DocumentId == documentId && x.Name == fileName && x.Extension == fileExt))
+                {
+                    return
+                        dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == documentId && x.Name == fileName && x.Extension == fileExt)
+                            .Select(x => x.OrderNumber)
+                            .First();
+                }
+
+                return -1;
             }
         }
 
@@ -283,9 +343,9 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                if (dbContext.DocumentFilesSet.Any(x => x.DocumentId == documentId))
+                if (dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Any(x => x.DocumentId == documentId))
                 {
-                    return dbContext.DocumentFilesSet.Where(x => x.DocumentId == documentId).Max(x => x.OrderNumber) + 1;
+                    return dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == documentId).Max(x => x.OrderNumber) + 1;
                 }
             }
             return 1;
@@ -295,10 +355,10 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                if (dbContext.DocumentFilesSet.Any(x => x.DocumentId == documentId && x.OrderNumber == fileOrder))
+                if (dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Any(x => x.DocumentId == documentId && x.OrderNumber == fileOrder))
                 {
                     return
-                        dbContext.DocumentFilesSet.Where(x => x.DocumentId == documentId && x.OrderNumber == fileOrder)
+                        dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == documentId && x.OrderNumber == fileOrder)
                             .Max(x => x.Version) + 1;
                 }
             }

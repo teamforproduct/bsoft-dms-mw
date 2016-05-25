@@ -4,6 +4,7 @@ using BL.Logic.DependencyInjection;
 using BL.Logic.DocumentCore.AdditionalCommands;
 using BL.Logic.DocumentCore.Commands;
 using BL.Logic.DocumentCore.PaperCommands;
+using BL.Logic.DocumentCore.ReportsCommands;
 using BL.Logic.DocumentCore.SendListCommands;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
@@ -43,6 +44,15 @@ namespace BL.Logic.DocumentCore
                 case EnumDocumentActions.ControlChange:
                     cmd = DmsResolver.Current.Get<ControlChangeDocumentCommand>();
                     break;
+                case EnumDocumentActions.SendForExecutionChange:
+                    cmd = DmsResolver.Current.Get<ControlChangeDocumentCommand>();
+                    break;
+                case EnumDocumentActions.SendForControlChange:
+                    cmd = DmsResolver.Current.Get<ControlChangeDocumentCommand>();
+                    break;
+                case EnumDocumentActions.SendForResponsibleExecutionChange:
+                    cmd = DmsResolver.Current.Get<ControlChangeDocumentCommand>();
+                    break;
                 case EnumDocumentActions.ControlTargetChange:
                     cmd = DmsResolver.Current.Get<ControlTargetChangeDocumentCommand>();
                     break;
@@ -58,6 +68,9 @@ namespace BL.Logic.DocumentCore
                 case EnumDocumentActions.ChangeExecutor:
                     cmd = DmsResolver.Current.Get<ChangeExecutorDocumentCommand>();
                     break;
+                case EnumDocumentActions.ChangePosition:
+                    cmd = DmsResolver.Current.Get<ChangePositionDocumentCommand>();
+                    break;
                 case EnumDocumentActions.CopyDocument:
                     cmd = DmsResolver.Current.Get<CopyDocumentCommand>();
                     break;
@@ -69,6 +82,9 @@ namespace BL.Logic.DocumentCore
                     break;
                 case EnumDocumentActions.AddDocumentLink:
                     cmd = DmsResolver.Current.Get<AddDocumentLinkCommand>();
+                    break;
+                case EnumDocumentActions.DeleteDocumentLink:
+                    cmd = DmsResolver.Current.Get<DeleteDocumentLinkCommand>();
                     break;
                 case EnumDocumentActions.AddDocumentRestrictedSendList:
                     cmd = DmsResolver.Current.Get<AddDocumentRestrictedSendListCommand>();
@@ -244,6 +260,22 @@ namespace BL.Logic.DocumentCore
                     cmd = DmsResolver.Current.Get<MarkOwnerDocumentPaperCommand>();
                     break;
 
+                case EnumDocumentActions.SendDocumentPaperEvent:
+                    cmd = DmsResolver.Current.Get<SendDocumentPaperEventCommand>();
+                    break;
+
+                case EnumDocumentActions.CancelSendDocumentPaperEvent:
+                    cmd = DmsResolver.Current.Get<CancelSendDocumentPaperEventCommand>();
+                    break;
+                case EnumDocumentActions.RecieveDocumentPaperEvent:
+                    cmd = DmsResolver.Current.Get<RecieveDocumentPaperEventCommand>();
+                    break;
+                case EnumDocumentActions.PlanDocumentPaperEvent:
+                    cmd = DmsResolver.Current.Get<PlanDocumentPaperEventCommand>();
+                    break;
+                case EnumDocumentActions.CancelPlanDocumentPaperEvent:
+                    cmd = DmsResolver.Current.Get<CancelPlanDocumentPaperEventCommand>();
+                    break;
                 case EnumDocumentActions.MarkСorruptionDocumentPaper:
                     cmd = DmsResolver.Current.Get<MarkСorruptionDocumentPaperCommand>();
                     break;
@@ -260,8 +292,14 @@ namespace BL.Logic.DocumentCore
                     cmd = DmsResolver.Current.Get<DeleteDocumentPaperListCommand>();
                     break;
 
+                case EnumDocumentActions.ReportRegistrationCardDocument:
+                    cmd = DmsResolver.Current.Get<ReportRegistrationCardDocumentCommand>();
+                    break;
+                case EnumDocumentActions.ReportRegisterTransmissionDocuments:
+                    cmd = DmsResolver.Current.Get<ReportRegisterTransmissionDocumentsCommand>();
+                    break;
+
                 case EnumDocumentActions.AddDocumentSendListItem:
-                case EnumDocumentActions.DeleteDocumentLink:
                     return null;
                     break;
                 default:

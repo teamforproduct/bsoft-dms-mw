@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using BL.Database.Documents.Interfaces;
 using BL.Logic.Common;
 using BL.Model.DocumentCore.Actions;
@@ -13,51 +14,68 @@ namespace BL.Logic.DocumentCore.PaperCommands
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
 
+        private InternalDocumentPaper _paper;
+
         public MarkСorruptionDocumentPaperCommand(IDocumentOperationsDbProcess operationDb)
         {
             _operationDb = operationDb;
         }
 
-        private EventPaper Model
+        private PaperEvent Model
         {
             get
             {
-                if (!(_param is EventPaper))
+                if (!(_param is PaperEvent))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (EventPaper)_param;
+                return (PaperEvent)_param;
             }
         }
 
         public override bool CanBeDisplayed(int positionId)
         {
+            _actionRecords =
+                _document.Papers.Where(
+                    x => x.IsInWork &&
+                        x.LastPaperEvent.TargetPositionId == positionId &&
+                        x.LastPaperEvent.PaperRecieveDate != null )
+                        .Select(x => new InternalActionRecord
+                        {
+                            PaperId = x.Id,
+                        });
+            if (!_actionRecords.Any())
+            {
+                return false;
+            }
             return true;
         }
 
         public override bool CanExecute()
         {
-            _document = _operationDb.EventDocumentPaperPrepare(_context, Model.Id);
+            _document = _operationDb.EventDocumentPaperPrepare(_context, new PaperList { PaperId = new List<int> { Model.Id } });
             if (_document == null)
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
-            _admin.VerifyAccess(_context, CommandType);
-            if (!CanBeDisplayed(_context.CurrentPositionId))
+            _paper = _document.Papers.First();
+            if (_paper?.LastPaperEvent?.TargetPositionId == null
+                || !CanBeDisplayed(_paper.LastPaperEvent.TargetPositionId.Value)
+                )
             {
-                throw new CouldNotPerformThisOperation();
+                throw new CouldNotPerformOperationWithPaper();
             }
+            _context.SetCurrentPosition(_paper.LastPaperEvent.TargetPositionId);
+            _admin.VerifyAccess(_context, CommandType);
             return true;
         }
 
         public override object Execute()
         {
-            var paper = _document.Papers.First();
-
-            paper.LastPaperEvent = CommonDocumentUtilities.GetNewDocumentPaperEvent(_context, paper.Id,
-                EnumEventTypes.MarkOwnerDocumentPaper, Model.Description);
-            CommonDocumentUtilities.SetLastChange(_context, paper);
-            _operationDb.MarkOwnerDocumentPaper(_context, paper);
+            _paper.LastPaperEvent = CommonDocumentUtilities.GetNewDocumentPaperEvent(_context, _document.Id, _paper.Id, EnumEventTypes.MarkСorruptionDocumentPaper, Model.Description);
+            _paper.IsInWork = false;
+            CommonDocumentUtilities.SetLastChange(_context, _paper);
+            _operationDb.MarkСorruptionDocumentPaper(_context, _paper);
             return null;
         }
 

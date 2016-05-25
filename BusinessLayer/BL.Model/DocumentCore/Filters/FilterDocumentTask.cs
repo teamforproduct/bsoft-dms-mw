@@ -12,6 +12,10 @@ namespace BL.Model.DocumentCore.Filters
     public class FilterDocumentTask
     {
         /// <summary>
+        /// Массив ИД задач
+        /// </summary>
+        public List<int> Id { get; set; }
+        /// <summary>
         /// Массив ИД документов
         /// </summary>
         public List<int> DocumentId { get; set; }

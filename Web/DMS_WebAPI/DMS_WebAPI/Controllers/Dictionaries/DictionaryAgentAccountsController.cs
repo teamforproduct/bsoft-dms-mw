@@ -1,5 +1,4 @@
-﻿using BL.Logic.DependencyInjection;
-using BL.Logic.DictionaryCore.Interfaces;
+﻿using BL.Logic.DictionaryCore.Interfaces;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.FrontModel;
 using DMS_WebAPI.Results;

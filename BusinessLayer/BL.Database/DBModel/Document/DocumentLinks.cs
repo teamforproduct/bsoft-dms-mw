@@ -11,7 +11,10 @@ namespace BL.Database.DBModel.Document
     public class DocumentLinks
     {
         public int Id { get; set; }
+        [Index("IX_DocumentParentDocument", 1, IsUnique = true)]
         public int DocumentId { get; set; }
+        [Index("IX_DocumentParentDocument", 2, IsUnique = true)]
+        [Index("IX_ParentDocumentId", 1)]
         public int ParentDocumentId { get; set; }
         public int LinkTypeId { get; set; }
         public int LastChangeUserId { get; set; }

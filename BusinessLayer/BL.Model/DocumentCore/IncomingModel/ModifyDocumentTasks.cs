@@ -18,18 +18,6 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// </summary>
         public int DocumentId { get; set; }
         /// <summary>
-        /// ИД Позиции
-        /// </summary>
-        public int PositionId { get; set; }
-        /// <summary>
-        /// ИД исполняющего агента
-        /// </summary>
-        public int PositionExecutorAgentId { get; set; }
-        /// <summary>
-        /// ИД Агента
-        /// </summary>
-        public int AgentId { get; set; }
-        /// <summary>
         /// Название
         /// </summary>
         public string Name { get; set; }

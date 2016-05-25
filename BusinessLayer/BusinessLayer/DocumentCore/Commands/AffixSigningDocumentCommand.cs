@@ -60,7 +60,7 @@ namespace BL.Logic.DocumentCore.Commands
                 || !CanBeDisplayed(_docWait.OnEvent.TargetPositionId.Value)
                 )
             {
-                throw new CouldNotPerformThisOperation();
+                throw new CouldNotPerformOperation();
             }
             _operationDb.ControlOffSendListPrepare(_context, _document);
             _operationDb.ControlOffSubscriptionPrepare(_context, _document);
@@ -71,6 +71,7 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override object Execute()
         {
+            _docWait.ResultTypeId = (int)EnumResultTypes.CloseByAffixing;
             _docWait.OffEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, _docWait.DocumentId, _eventType, Model.EventDate, Model.Description, _docWait.OnEvent.TaskId, _docWait.OnEvent.IsAvailableWithinTask, _docWait.OnEvent.TargetPositionId, null, _docWait.OnEvent.SourcePositionId);
             CommonDocumentUtilities.SetLastChange(_context, _document.Waits);
             CommonDocumentUtilities.SetLastChange(Context, _document.SendLists);

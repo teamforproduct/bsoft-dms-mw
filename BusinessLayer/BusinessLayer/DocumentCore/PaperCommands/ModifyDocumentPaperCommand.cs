@@ -12,6 +12,8 @@ namespace BL.Logic.DocumentCore.PaperCommands
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
 
+        private InternalDocumentPaper _paper;
+
         public ModifyDocumentPaperCommand(IDocumentOperationsDbProcess operationDb)
         {
             _operationDb = operationDb;
@@ -31,45 +33,65 @@ namespace BL.Logic.DocumentCore.PaperCommands
 
         public override bool CanBeDisplayed(int positionId)
         {
-            if (_document.ExecutorPositionId != positionId
-                )
+            _actionRecords =
+                _document.Papers.Where(
+                    x => x.IsInWork &&
+                        x.LastPaperEvent.TargetPositionId == positionId &&
+                        x.LastPaperEvent.PaperRecieveDate != null &&
+                        x.LastPaperEvent.EventType == EnumEventTypes.AddNewPaper
+                        )
+                        .Select(x => new InternalActionRecord
+                        {
+                            PaperId = x.Id,
+                        });
+            if (!_actionRecords.Any())
             {
                 return false;
             }
-
             return true;
         }
 
         public override bool CanExecute()
         {
-            _document = _operationDb.ChangeDocumentPaperPrepare(_context, Model.Id);
-            if (_document == null)
+            _document = _operationDb.ModifyDocumentPaperPrepare(_context, Model);
+            _paper = _document?.Papers.First();
+            if (_paper == null)
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
-            _context.SetCurrentPosition(_document.ExecutorPositionId);
+            //if (_document.Papers.Count() > 1)
+            //{
+            //    throw new RecordNotUnique();
+            //}
+            if (!Model.IsCopy || !_paper.IsCopy)
+            {
+                _context.SetCurrentPosition(_document.ExecutorPositionId);
+            }
+            else
+            {
+                _context.SetCurrentPosition(_paper.LastPaperEvent.TargetPositionId);
+            }
             _admin.VerifyAccess(_context, CommandType);
             if (!CanBeDisplayed(_context.CurrentPositionId))
             {
-                throw new CouldNotPerformThisOperation();
+                throw new CouldNotPerformOperationWithPaper();
             }
             return true;
         }
 
         public override object Execute()
         {
-            var paper = _document.Papers.First();
 
-            paper.Name = Model.Name;
-            paper.Description = Model.Description;
-            paper.IsMain = Model.IsMain;
-            paper.IsOriginal = Model.IsOriginal;
-            paper.IsCopy = Model.IsCopy;
-            paper.PageQuantity = Model.PageQuantity;
-            paper.OrderNumber = Model.OrderNumber;
-            CommonDocumentUtilities.SetLastChange(_context, paper);
 
-            _operationDb.ModifyDocumentPaper(_context, paper);
+            _paper.Name = Model.Name;
+            _paper.Description = Model.Description;
+            _paper.IsMain = Model.IsMain;
+            _paper.IsOriginal = Model.IsOriginal;
+            _paper.IsCopy = Model.IsCopy;
+            _paper.PageQuantity = Model.PageQuantity;
+            CommonDocumentUtilities.SetLastChange(_context, _paper);
+
+            _operationDb.ModifyDocumentPaper(_context, _paper);
             return null;
         }
 

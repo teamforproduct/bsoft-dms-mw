@@ -1,17 +1,20 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
-using BL.Logic.DependencyInjection;
 using BL.Database.Documents.Interfaces;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Model.SystemCore;
 using BL.Model.Enums;
 using BL.Database.SystemDb;
 using BL.Logic.Common;
+using BL.Logic.SystemServices.FullTextSearch;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.SystemCore.Filters;
+using BL.Model.DocumentCore.Actions;
+using BL.Model.Exception;
 
 namespace BL.Logic.DocumentCore
 {
@@ -32,6 +35,16 @@ namespace BL.Logic.DocumentCore
 
         public IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging)
         {
+            if (!String.IsNullOrEmpty(filters.FullTextSearch))
+            {
+                var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
+                var ftRes = ftService.Search(ctx, filters.FullTextSearch);
+                var resWithRanges =
+                    ftRes.GroupBy(x => x.DocumentId)
+                        .Select(x => new { DocId = x.Key, Rate = x.Count() })
+                        .OrderByDescending(x => x.Rate);
+                filters.DocumentId.AddRange(resWithRanges.Select(x => x.DocId).Take(paging.PageSize * paging.CurrentPage));
+            }
             return _documentDb.GetDocuments(ctx, filters, paging);
         }
 
@@ -43,13 +56,15 @@ namespace BL.Logic.DocumentCore
             return doc;
         }
 
+
         public IEnumerable<BaseSystemUIElement> GetModifyMetaData(IContext ctx, FrontDocument doc)
         {
             var sysDb = DmsResolver.Current.Get<ISystemDbProcess>();
             var uiElements = sysDb.GetSystemUIElements(ctx, new FilterSystemUIElement { ObjectCode = "Documents", ActionCode = "Modify" }).ToList();
-            uiElements = CommonDocumentUtilities.VerifyDocument(ctx, doc, uiElements).ToList();
 
-            uiElements.AddRange(CommonSystemUtilities.GetPropertyUIElements(ctx,EnumObjects.Documents, new[] { $"{nameof(doc.DocumentTypeId)}={doc.DocumentTypeId}", $"{nameof(doc.DocumentDirection)}={doc.DocumentDirection}", $"{nameof(doc.DocumentSubjectId)}={doc.DocumentSubjectId}" }));
+            uiElements.AddRange(CommonSystemUtilities.GetPropertyUIElements(ctx, EnumObjects.Documents, CommonDocumentUtilities.GetFilterTemplateByDocument(doc).ToArray()));
+
+            uiElements = CommonDocumentUtilities.VerifyDocument(ctx, doc, uiElements).ToList();
 
             return uiElements;
         }
@@ -71,9 +86,58 @@ namespace BL.Logic.DocumentCore
             return _operationDb.GetDocumentEvents(ctx, filter, paging);
         }
 
+        public IEnumerable<FrontDocumentWait> GetDocumentWaits(IContext ctx, FilterDocumentWait filter, UIPaging paging)
+        {
+            return _operationDb.GetDocumentWaits(ctx, filter, paging);
+        }
+
+        public IEnumerable<FrontDocumentSubscription> GetDocumentSubscriptions(IContext ctx, FilterDocumentSubscription filter, UIPaging paging)
+        {
+            return _operationDb.GetDocumentSubscriptions(ctx, filter, paging);
+        }
+
         public IEnumerable<FrontDocumentEvent> GetEventsForDocument(IContext ctx, int documentId, UIPaging paging)
         {
-            return _operationDb.GetDocumentEvents(ctx, new FilterDocumentEvent {DocumentId = documentId}, paging);
+            return _operationDb.GetDocumentEvents(ctx, new FilterDocumentEvent { DocumentId = documentId }, paging);
+        }
+
+        public FrontRegistrationFullNumber GetNextRegisterDocumentNumber(IContext ctx, RegisterDocumentBase model)
+        {
+            var document = _documentDb.RegisterDocumentPrepare(ctx, model);
+
+            if (document == null)
+            {
+                throw new DocumentNotFoundOrUserHasNoAccess();
+            }
+            if (!document.RegistrationJournalId.HasValue)
+            {
+                throw new DictionaryRecordWasNotFound();
+            }
+            if (document.IsRegistered.HasValue && document.IsRegistered.Value)
+            {
+                throw new DocumentHasAlredyBeenRegistered();
+            }
+
+            document.RegistrationDate = model.RegistrationDate;
+
+            var registerModel = _documentDb.RegisterModelDocumentPrepare(ctx, model);
+            CommonDocumentUtilities.FormationRegistrationNumberByFormula(document, registerModel);
+            document.RegistrationNumberPrefix = document.RegistrationJournalPrefixFormula;
+            document.RegistrationNumberSuffix = document.RegistrationJournalSuffixFormula;
+
+            _documentDb.GetNextDocumentRegistrationNumber(ctx, document);
+
+            var res = new FrontRegistrationFullNumber
+            {
+                DocumentId = document.Id,
+                RegistrationNumber = document.RegistrationNumber,
+                RegistrationNumberSuffix = document.RegistrationNumberSuffix,
+                RegistrationNumberPrefix = document.RegistrationNumberPrefix,
+                DocumentDate = document.RegistrationDate,
+                RegistrationFullNumber = (document.RegistrationNumberPrefix ?? "") + document.RegistrationNumber + (document.RegistrationNumberSuffix ?? "")
+            };
+
+            return res;
         }
         #endregion Documents
 
@@ -89,10 +153,11 @@ namespace BL.Logic.DocumentCore
         }
 
         #endregion DocumentPapers    
+
         #region DocumentPaperLists
         public FrontDocumentPaperList GetDocumentPaperList(IContext context, int itemId)
         {
-            return _documentDb.GetDocumentPaperListById(context, itemId);
+            return _documentDb.GetDocumentPaperList(context, itemId);
         }
 
         public IEnumerable<FrontDocumentPaperList> GetDocumentPaperLists(IContext context, FilterDocumentPaperList filter)

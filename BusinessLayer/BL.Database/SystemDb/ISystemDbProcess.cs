@@ -1,7 +1,7 @@
 using BL.Model.SystemCore;
 using System.Collections.Generic;
 using BL.CrossCutting.Interfaces;
-using BL.Model.FullTextSerach;
+using BL.Model.FullTextSearch;
 using BL.Model.SystemCore.InternalModel;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.FrontModel;
@@ -42,6 +42,8 @@ namespace BL.Database.SystemDb
 
         IEnumerable<FrontPropertyLink> GetPropertyLinks(IContext context, FilterPropertyLink filter);
 
+        IEnumerable<InternalPropertyLink> GetInternalPropertyLinks(IContext context, FilterPropertyLink filter);
+
         int AddPropertyLink(IContext context, InternalPropertyLink model);
 
         void UpdatePropertyLink(IContext context, InternalPropertyLink model);
@@ -49,6 +51,8 @@ namespace BL.Database.SystemDb
         void DeletePropertyLink(IContext context, InternalPropertyLink model);
 
         #endregion PropertyLinks
+
+        IEnumerable<FrontPropertyValue> GetPropertyValuesToDocumentFromTemplateDocument(IContext context, FilterPropertyLink filter);
 
         #region Mailing
         IEnumerable<InternalDataForMail> GetNewActionsForMailing(IContext ctx);
@@ -61,12 +65,14 @@ namespace BL.Database.SystemDb
 
         #region AutoPlan
 
-        IEnumerable<int> GetSendListIdsForAutoPlan(IContext context);
+        IEnumerable<int> GetSendListIdsForAutoPlan(IContext context, int? sendListId = null);
 
         #endregion
 
-        #region Full text search
+        IEnumerable<int> GetDocumentIdsForClearTrashDocuments(IContext context, int timeMinForClearTrashDocuments);
 
+        #region Full text search
+        IEnumerable<FullTextIndexIem> FullTextIndexReindexDbPrepare(IContext ctx);
         IEnumerable<FullTextIndexIem> FullTextIndexPrepare(IContext ctx);
         void FullTextIndexDeleteProcessed(IContext ctx, IEnumerable<int> processedIds);
 

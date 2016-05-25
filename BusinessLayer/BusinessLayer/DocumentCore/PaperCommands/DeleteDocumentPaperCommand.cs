@@ -9,7 +9,9 @@ namespace BL.Logic.DocumentCore.PaperCommands
 {
     public class DeleteDocumentPaperCommand : BaseDocumentCommand
     {
-        private readonly IDocumentOperationsDbProcess _operationDb;        
+        private readonly IDocumentOperationsDbProcess _operationDb;
+
+        private InternalDocumentPaper _paper;
 
         public DeleteDocumentPaperCommand(IDocumentOperationsDbProcess operationDb)
         {
@@ -30,28 +32,37 @@ namespace BL.Logic.DocumentCore.PaperCommands
 
         public override bool CanBeDisplayed(int positionId)
         {
-            if (_document.ExecutorPositionId != positionId
-                )
+            _actionRecords =
+                _document.Papers.Where(
+                    x => x.IsInWork &&
+                        x.LastPaperEvent.TargetPositionId == positionId &&
+                        x.LastPaperEvent.PaperRecieveDate != null &&
+                        x.LastPaperEvent.EventType == EnumEventTypes.AddNewPaper
+                        )
+                        .Select(x => new InternalActionRecord
+                        {
+                            PaperId = x.Id,
+                        });
+            if (!_actionRecords.Any())
             {
                 return false;
             }
-
             return true;
         }
 
         public override bool CanExecute()
         {
-            _document = _operationDb.ChangeDocumentPaperPrepare(_context, Model);
-            if (_document == null)
+            _document = _operationDb.DeleteDocumentPaperPrepare(_context, Model);
+            _paper = _document?.Papers.First();
+            if (_paper == null)
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
-            _context.SetCurrentPosition(_document.ExecutorPositionId);
+            _context.SetCurrentPosition(_paper.LastPaperEvent.TargetPositionId);
             _admin.VerifyAccess(_context, CommandType);
-            //TODO Добавить проверки на движение по БН
             if (!CanBeDisplayed(_context.CurrentPositionId))
             {
-                throw new CouldNotChangeAttributeLaunchPlan();
+                throw new CouldNotPerformOperationWithPaper();
             }
             return true;
         }

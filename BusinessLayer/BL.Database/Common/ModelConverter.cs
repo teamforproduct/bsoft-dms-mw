@@ -1,7 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using BL.Database.DBModel.Document;
+using BL.Database.DBModel.Template;
 using BL.Model.DocumentCore.InternalModel;
+using BL.Database.DBModel.System;
+using BL.Model.SystemCore.InternalModel;
 
 namespace BL.Database.Common
 {
@@ -75,7 +78,18 @@ namespace BL.Database.Common
                     SourcePositionId = evt.SourcePositionId,
                     SourcePositionExecutorAgentId = evt.SourcePositionExecutorAgentId,
                     ReadAgentId = evt.ReadAgentId,
-                    ReadDate = evt.ReadDate
+                    ReadDate = evt.ReadDate,
+
+                    Id = evt.Id,
+                    PaperId = evt.PaperId,
+                    PaperPlanAgentId = evt.PaperPlanAgentId,
+                    PaperPlanDate = evt.PaperPlanDate,
+                    PaperSendAgentId = evt.PaperSendAgentId,
+                    PaperSendDate = evt.PaperSendDate,
+                    PaperRecieveAgentId = evt.PaperRecieveAgentId,
+                    PaperRecieveDate = evt.PaperRecieveDate,
+                    SendListId = evt.SendListId,
+                    ParentEventId = evt.ParentEventId,
                 };
         }
 
@@ -89,6 +103,7 @@ namespace BL.Database.Common
             return task == null ? null :
                 new DocumentTasks
                 {
+                    Id = task.Id,
                     Task = task.Name,
                     Description = task.Description,
                     DocumentId = task.DocumentId,
@@ -105,6 +120,26 @@ namespace BL.Database.Common
             return tasks?.Any() ?? false ? tasks.Select(GetDbDocumentTask) : null;
         }
 
+        public static PropertyValues GetDbPropertyValue(InternalPropertyValue propVal)
+        {
+            return propVal == null ? null :
+                new PropertyValues
+                {
+                    Id = propVal.Id,
+                    PropertyLinkId = propVal.PropertyLinkId,
+                    RecordId = propVal.RecordId,
+                    ValueString = propVal.ValueString,
+                    ValueDate = propVal.ValueDate,
+                    ValueNumeric = propVal.ValueNumeric,
+                    LastChangeDate = propVal.LastChangeDate,
+                    LastChangeUserId = propVal.LastChangeUserId,
+                };
+        }
+
+        public static IEnumerable<PropertyValues> GetDbPropertyValue(IEnumerable<InternalPropertyValue> propVals)
+        {
+            return propVals?.Any() ?? false ? propVals.Select(GetDbPropertyValue) : null;
+        }
         public static DocumentWaits GetDbDocumentWait(InternalDocumentWait wait)
         {
             var waitDb = wait == null ? null :
@@ -160,6 +195,7 @@ namespace BL.Database.Common
             return sendList == null ? null :
                 new DocumentSendLists
                 {
+                    Id = sendList.Id,
                     DocumentId = sendList.DocumentId,
                     Stage = sendList.Stage,
                     SendTypeId = (int)sendList.SendType,
@@ -225,7 +261,9 @@ namespace BL.Database.Common
                 LastChangeDate = docFile.LastChangeDate,
                 LastChangeUserId = docFile.LastChangeUserId,
                 Name = docFile.Name,
-                Date = docFile.Date
+                Date = docFile.Date,
+                ExecutorPositionId = docFile.ExecutorPositionId,
+                ExecutorPositionExecutorAgentId = docFile.ExecutorPositionExecutorAgentId
             };
         }
 
@@ -244,7 +282,7 @@ namespace BL.Database.Common
                     Name = item.Name,
                     Description = item.Description,
                     IsMain = item.IsMain,
-                    IsOriginal=item.IsOriginal,
+                    IsOriginal = item.IsOriginal,
                     IsCopy = item.IsCopy,
                     PageQuantity = item.PageQuantity,
                     OrderNumber = item.OrderNumber,
@@ -260,11 +298,12 @@ namespace BL.Database.Common
             return papers?.Any() ?? false ? papers.Select(GetDbDocumentPaper) : null;
         }
 
-        public static DocumentPaperEvents GetDbDocumentPaperEvent(InternalDocumentPaperEvent evt)
+        public static DocumentEvents GetDbDocumentPaperEvent111(InternalDocumentEvent evt)
         {
             return evt == null ? null :
-                new DocumentPaperEvents
+                new DocumentEvents
                 {
+                    Id = evt.Id,
                     Description = evt.Description,
                     PaperId = evt.PaperId,
                     EventTypeId = (int)evt.EventType,
@@ -276,18 +315,20 @@ namespace BL.Database.Common
                     SourceAgentId = evt.SourceAgentId,
                     SourcePositionId = evt.SourcePositionId,
                     SourcePositionExecutorAgentId = evt.SourcePositionExecutorAgentId,
-                    PlanAgentId = evt.PlanAgentId,
-                    PlanDate = evt.PlanDate,
-                    SendAgentId = evt.SendAgentId,
-                    SendDate = evt.SendDate,
-                    RecieveAgentId = evt.RecieveAgentId,
-                    RecieveDate = evt.RecieveDate,
+                    PaperPlanAgentId = evt.PaperPlanAgentId,
+                    PaperPlanDate = evt.PaperPlanDate,
+                    PaperSendAgentId = evt.PaperSendAgentId,
+                    PaperSendDate = evt.PaperSendDate,
+                    PaperRecieveAgentId = evt.PaperRecieveAgentId,
+                    PaperRecieveDate = evt.PaperRecieveDate,
+                    SendListId = evt.SendListId,
+                    ParentEventId = evt.ParentEventId,
                 };
         }
 
-        public static IEnumerable<DocumentPaperEvents> GetDbDocumentPaperEvents(IEnumerable<InternalDocumentPaperEvent> evt)
+        public static IEnumerable<DocumentEvents> GetDbDocumentPaperEvents111(IEnumerable<InternalDocumentEvent> evt)
         {
-            return evt?.Any() ?? false ? evt.Select(GetDbDocumentPaperEvent) : null;
+            return evt?.Any() ?? false ? evt.Select(GetDbDocumentPaperEvent111) : null;
         }
 
         public static DocumentPaperLists GetDbDocumentPaperList(InternalDocumentPaperList item)
@@ -295,11 +336,32 @@ namespace BL.Database.Common
             return item == null ? null :
                 new DocumentPaperLists
                 {
+                    Id = item.Id,
                     Date = item.Date,
                     Description = item.Description,
                     LastChangeDate = item.LastChangeDate,
                     LastChangeUserId = item.LastChangeUserId
                 };
         }
+
+        public static TemplateDocumentFiles GetDbTemplateFile(InternalTemplateAttachedFile docFile)
+        {
+            return new TemplateDocumentFiles
+            {
+                Id = docFile.Id,
+                DocumentId = docFile.DocumentId,
+                OrderNumber = docFile.OrderInDocument,
+                Extention = docFile.Extension,
+                Hash = docFile.Hash,
+                FileType = docFile.FileType,
+                FileSize = docFile.FileSize,
+                IsAdditional = docFile.IsAdditional,
+                LastChangeDate = docFile.LastChangeDate,
+                LastChangeUserId = docFile.LastChangeUserId,
+                Name = docFile.Name
+
+            };
+        }
+
     }
 }

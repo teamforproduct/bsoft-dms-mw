@@ -11,9 +11,6 @@ using BL.Model.Database;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Model.Users;
-using BL.Model.AdminCore.FrontModel;
-using BL.Model.AdminCore.FilterModel;
-using System.Text.RegularExpressions;
 
 namespace BL.Logic.AdminCore
 {
@@ -56,9 +53,9 @@ namespace BL.Logic.AdminCore
             return nlst;
         }
 
-        public IEnumerable<BaseAdminUserRole> GetPositionsByCurrentUser(IContext context)
+        public IEnumerable<FrontAdminUserRole> GetPositionsByCurrentUser(IContext context)
         {
-            return _adminDb.GetPositionsByUser(context, new FilterAdminUserRole() { UserId  = new List<int>() { context.CurrentAgentId } });
+            return _adminDb.GetPositionsByUser(context, new FilterAdminUserRole() { UserId = new List<int>() { context.CurrentAgentId } });
         }
 
         /// <summary>
@@ -90,8 +87,8 @@ namespace BL.Logic.AdminCore
                 }
 
                 var qry = data.ActionAccess
-                    .Join(data.Actions, aa => aa.ActionId, ac => ac.Id,(aa, ac) => new {ActAccess = aa, Act = ac})
-                    .Join(data.PositionRoles, aa => aa.ActAccess.RoleId, r => r.Id,(aa, r) => new {aa.ActAccess, aa.Act, Role = r});
+                    .Join(data.Actions, aa => aa.ActionId, ac => ac.Id, (aa, ac) => new { ActAccess = aa, Act = ac })
+                    .Join(data.PositionRoles, aa => aa.ActAccess.RoleId, r => r.Id, (aa, r) => new { aa.ActAccess, aa.Act, Role = r });
                 // test it really good!
                 res = qry.Any(x => x.Act.Id == model.DocumentActionId
                 && data.UserRoles.Where(s => s.RoleId == x.Role.Id).Any(y => y.UserId == model.UserId)
@@ -100,7 +97,7 @@ namespace BL.Logic.AdminCore
             }
             else
             {
-                var qry = data.UserRoles.Join(data.PositionRoles, ur => ur.RoleId, r => r.RoleId, (u, r) => new {URole = u, PR = r});
+                var qry = data.UserRoles.Join(data.PositionRoles, ur => ur.RoleId, r => r.RoleId, (u, r) => new { URole = u, PR = r });
 
                 res = !model.PositionsIdList.Except(qry.Where(x => x.URole.UserId == model.UserId).Select(x => x.PR.PositionId)).Any();
             }
@@ -122,6 +119,8 @@ namespace BL.Logic.AdminCore
             return VerifyAccess(context, new VerifyAccess { DocumentActionId = (int)action, IsPositionFromContext = isPositionFromContext }, isThrowExeception);
         }
 
+      
+
         public Employee GetEmployee(IContext context, string userId)
         {
             return _adminDb.GetEmployee(context, userId);
@@ -131,46 +130,5 @@ namespace BL.Logic.AdminCore
         {
             return _adminDb.GetPositionsByUser(employee);
         }
-
-        #region AdminLanguages
-        public FrontAdminLanguage GetAdminLanguage(IContext context, int id)
-        {
-            return _adminDb.GetAdminLanguages(context, new FilterAdminLanguage { LanguageId = new List<int> { id } }).FirstOrDefault();
-        }
-
-        public IEnumerable<FrontAdminLanguage> GetAdminLanguages(IContext context, FilterAdminLanguage filter)
-        {
-            return _adminDb.GetAdminLanguages(context, filter);
-        }
-        #endregion AdminLanguages
-
-        #region AdminLanguageValues
-        public FrontAdminLanguageValue GetAdminLanguageValue(IContext context, int id)
-        {
-            return _adminDb.GetAdminLanguageValues(context, new FilterAdminLanguageValue { LanguageValueId = new List<int> { id } }).FirstOrDefault();
-        }
-
-        public IEnumerable<FrontAdminLanguageValue> GetAdminLanguageValues(IContext context, FilterAdminLanguageValue filter)
-        {
-            return _adminDb.GetAdminLanguageValues(context, filter);
-        }
-
-        public string ReplaceLanguageLabel(IContext context, string text)
-        {
-            var labelsInText = new List<string>();
-            foreach (Match label in Regex.Matches(text, "##l@(.*?)@l##"))
-            {
-                labelsInText.Add(label.Value);
-            }
-            
-            var labels =  _adminDb.GetAdminLanguageValues(context, new FilterAdminLanguageValue { LanguageId = context.CurrentEmployee.LanguageId, Labels = labelsInText }).ToArray();
-            
-            for(int i=0,l=labels.Length;i< l;i++)
-            {
-                text = text.Replace(labels[i].Label, labels[i].Value);
-            }
-            return text;
-        }
-        #endregion AdminLanguageValues
     }
 }

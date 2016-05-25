@@ -68,6 +68,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -221,6 +222,8 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
+    <Compile Include="Controllers\AspNet\LicencesController.cs" />
+    <Compile Include="Controllers\AspNet\UserServersController.cs" />
     <Compile Include="Controllers\Dictionaries\CustomDictionaryTypesController.cs" />
     <Compile Include="Controllers\Dictionaries\CustomDictionariesController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryAddressTypesController.cs" />
@@ -234,14 +237,21 @@
     <Compile Include="Controllers\Dictionaries\DictionaryPositionExecutorsController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryCompaniesController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryTagsController.cs" />
+    <Compile Include="Controllers\Documents\DocumentSubscriptionsController.cs" />
+    <Compile Include="Controllers\Documents\DocumentWaitsController.cs" />
     <Compile Include="Controllers\Documents\DocumentEventsController.cs" />
     <Compile Include="Controllers\Documents\DocumentPaperListsController.cs" />
     <Compile Include="Controllers\Documents\DocumentPapersController.cs" />
     <Compile Include="Controllers\Documents\DocumentTasksController.cs" />
     <Compile Include="Controllers\Documents\DocumentTagsController.cs" />
+    <Compile Include="Controllers\Documents\TemplateDocumentAttachedFileController.cs" />
+    <Compile Include="Controllers\Documents\TemplateDocumentsRestrictedSendListsController.cs" />
+    <Compile Include="Controllers\Documents\TemplateDocumentsTasksController.cs" />
+    <Compile Include="Controllers\Documents\TemplateDocumentsSendListsController.cs" />
     <Compile Include="Controllers\Properties\FilterPropertiesController.cs" />
     <Compile Include="Controllers\Properties\PropertyLinksController.cs" />
     <Compile Include="Controllers\Properties\PropertiesController.cs" />
+    <Compile Include="Controllers\AspNet\ClientsController.cs" />
     <Compile Include="Controllers\System\AccountController.cs" />
     <Compile Include="Controllers\Admins\AdminAccessLevelsController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryAgentsController.cs" />
@@ -275,6 +285,9 @@
     <Compile Include="DBModel\AdminLanguages.cs" />
     <Compile Include="DBModel\AdminLanguageValues.cs" />
     <Compile Include="DBModel\AdminServers.cs" />
+    <Compile Include="DBModel\AspNetLicences.cs" />
+    <Compile Include="DBModel\AspNetClients.cs" />
+    <Compile Include="DBModel\AspNetUserServers.cs" />
     <Compile Include="DependencyInjection\ApiModel.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -289,8 +302,25 @@
     <Compile Include="Migrations\201603221119402_AddServersAndLanguages.Designer.cs">
       <DependentUpon>201603221119402_AddServersAndLanguages.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201604041000553_Clients.cs" />
+    <Compile Include="Migrations\201604041000553_Clients.Designer.cs">
+      <DependentUpon>201604041000553_Clients.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201605031426007_AddLicenceinfo.cs" />
+    <Compile Include="Migrations\201605031426007_AddLicenceinfo.Designer.cs">
+      <DependentUpon>201605031426007_AddLicenceinfo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201605060918301_AddColumnLicenceKey.cs" />
+    <Compile Include="Migrations\201605060918301_AddColumnLicenceKey.Designer.cs">
+      <DependentUpon>201605060918301_AddColumnLicenceKey.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201605101921409_AddLicencesInfo.cs" />
+    <Compile Include="Migrations\201605101921409_AddLicencesInfo.Designer.cs">
+      <DependentUpon>201605101921409_AddLicencesInfo.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
+    <Compile Include="Models\LicenseViewModels.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -298,20 +328,21 @@
     <Compile Include="Results\JsonResult.cs" />
     <Compile Include="Results\ChallengeResult.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="Utilities\AspNet\AspNetUserServers.cs" />
+    <Compile Include="Utilities\AspNet\AspNetLicences.cs" />
     <Compile Include="Utilities\Languages.cs" />
+    <Compile Include="Utilities\AspNet\AspNetClients.cs" />
+    <Compile Include="Utilities\SystemDbWorker.cs" />
+    <Compile Include="Utilities\SystemInfo.cs" />
     <Compile Include="Utilities\UserContextWorkerService.cs" />
     <Compile Include="Utilities\UserContext.cs" />
     <Compile Include="Utilities\Servers.cs" />
-    <Compile Include="Utilities\Utilities.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\IRF_DMS_WEBAPI.mdf" />
-    <Content Include="App_Data\IRF_DMS_WEBAPI_log.ldf">
-      <DependentUpon>IRF_DMS_WEBAPI.mdf</DependentUpon>
-    </Content>
     <Content Include="Areas\HelpPage\HelpPage.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\default-logo.png" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -336,8 +367,8 @@
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\CollectionModelDescription.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\ApiGroup.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\Api.cshtml" />
-    <None Include="Properties\PublishProfiles\dms-base-my-server.pubxml" />
-    <None Include="Properties\PublishProfiles\dms-base-vpn.pubxml" />
+    <None Include="Properties\PublishProfiles\DEV_IRF_DMS.pubxml" />
+    <None Include="Properties\PublishProfiles\PROD_IRF_DMS.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -349,7 +380,6 @@
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
-    <Content Include="servers.xml" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -401,8 +431,25 @@
     <EmbeddedResource Include="Migrations\201603221119402_AddServersAndLanguages.resx">
       <DependentUpon>201603221119402_AddServersAndLanguages.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604041000553_Clients.resx">
+      <DependentUpon>201604041000553_Clients.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605031426007_AddLicenceinfo.resx">
+      <DependentUpon>201605031426007_AddLicenceinfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605060918301_AddColumnLicenceKey.resx">
+      <DependentUpon>201605060918301_AddColumnLicenceKey.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605101921409_AddLicencesInfo.resx">
+      <DependentUpon>201605101921409_AddLicencesInfo.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

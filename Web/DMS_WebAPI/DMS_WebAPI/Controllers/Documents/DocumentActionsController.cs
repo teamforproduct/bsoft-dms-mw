@@ -1,10 +1,10 @@
-﻿using BL.Logic.DependencyInjection;
-using BL.Logic.DocumentCore.Interfaces;
+﻿using BL.Logic.DocumentCore.Interfaces;
 using BL.Model.DocumentCore.Actions;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Web.Http;
 using BL.CrossCutting.DependencyInjection;
+using BL.Logic.SystemServices.AutoPlan;
 using BL.Model.Enums;
 
 namespace DMS_WebAPI.Controllers.Documents
@@ -118,6 +118,23 @@ namespace DMS_WebAPI.Controllers.Documents
         /// </summary>
         /// <param name="model"></param>
         /// <returns>Обновленный документ</returns>
+        [Route("GetNextRegisterDocumentNumber")]
+        [HttpPost]
+        public IHttpActionResult GetNextRegisterDocumentNumber(RegisterDocumentBase model)
+        {
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            var nextNumb = docProc.GetNextRegisterDocumentNumber(cxt, model);
+            return new JsonResult(nextNumb, this);
+        }
+        /// <summary>
+        /// Регистрация документа
+        /// Возможности:
+        /// 1. Получить регистрационный номер
+        /// 2. Зарегистрировать документ
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Обновленный документ</returns>
         [Route("RegisterDocument")]
         [HttpPost]
         public IHttpActionResult RegisterDocument(RegisterDocument model)
@@ -163,6 +180,32 @@ namespace DMS_WebAPI.Controllers.Documents
 
             var ctrl = new DocumentsController {ControllerContext = ControllerContext};
             return ctrl.Get(model.DocumentId);
+        }
+
+        /// <summary>
+        /// Удаление связи между документами
+        /// </summary>
+        /// <param name="id">ИД документа</param>
+        /// <returns>Обновленный документ</returns>
+        [Route("DeleteDocumentLink/{id}")]
+        [HttpPost]
+        public IHttpActionResult DeleteDocumentLink(int id)
+        {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            timeM.Start();
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            timeDB.Start();
+            docProc.ExecuteAction(EnumDocumentActions.DeleteDocumentLink, cxt, id);
+            timeDB.Stop();
+
+            timeM.Stop();
+            SaveToFile("M: DocumentActionsController DeleteDocumentLink", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentOperationsService DeleteDocumentLink", timeDB.Elapsed.ToString("G"));
+
+            var ctrl = new DocumentsController { ControllerContext = ControllerContext };
+            return ctrl.Get(id);
         }
 
         /// <summary>
@@ -321,6 +364,85 @@ namespace DMS_WebAPI.Controllers.Documents
             return ctrl.Get(documentId);
         }
 
+
+        /// <summary>
+        /// Изменить параметры направлен для исполнения
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("SendForExecutionChange")]
+        [HttpPost]
+        public IHttpActionResult SendForExecutionChange(ControlChange model)
+        {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            timeM.Start();
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            timeDB.Start();
+            var documentId = (int)docProc.ExecuteAction(EnumDocumentActions.SendForExecutionChange, cxt, model);
+            timeDB.Stop();
+
+            timeM.Stop();
+            SaveToFile("M: DocumentActionsController SendForExecutionChange", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentOperationsService SendForExecutionChange", timeDB.Elapsed.ToString("G"));
+
+            var ctrl = new DocumentsController { ControllerContext = ControllerContext };
+            return ctrl.Get(documentId);
+        }
+
+        /// <summary>
+        /// Изменить параметры направлен для исполнения (на контроль)
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("SendForControlChange")]
+        [HttpPost]
+        public IHttpActionResult SendForControlChange(ControlChange model)
+        {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            timeM.Start();
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            timeDB.Start();
+            var documentId = (int)docProc.ExecuteAction(EnumDocumentActions.SendForControlChange, cxt, model);
+            timeDB.Stop();
+
+            timeM.Stop();
+            SaveToFile("M: DocumentActionsController SendForControlChange", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentOperationsService SendForControlChange", timeDB.Elapsed.ToString("G"));
+
+            var ctrl = new DocumentsController { ControllerContext = ControllerContext };
+            return ctrl.Get(documentId);
+        }
+
+        /// <summary>
+        /// Изменить параметры направлен для исполнения (отв. исполнитель)
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("SendForResponsibleExecutionChange")]
+        [HttpPost]
+        public IHttpActionResult SendForResponsibleExecutionChange(ControlChange model)
+        {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            timeM.Start();
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            timeDB.Start();
+            var documentId = (int)docProc.ExecuteAction(EnumDocumentActions.SendForResponsibleExecutionChange, cxt, model);
+            timeDB.Stop();
+
+            timeM.Stop();
+            SaveToFile("M: DocumentActionsController SendForResponsibleExecutionChange", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentOperationsService SendForResponsibleExecutionChange", timeDB.Elapsed.ToString("G"));
+
+            var ctrl = new DocumentsController { ControllerContext = ControllerContext };
+            return ctrl.Get(documentId);
+        }
+
         /// <summary>
         /// Изменить контроль для исполнителя
         /// </summary>
@@ -422,6 +544,33 @@ namespace DMS_WebAPI.Controllers.Documents
             SaveToFile("DB: IDocumentOperationsService ChangeExecutor", timeDB.Elapsed.ToString("G"));
 
             var ctrl = new DocumentsController {ControllerContext = ControllerContext};
+            return ctrl.Get(model.DocumentId);
+        }
+
+        /// <summary>
+        /// Замена должности по документу
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Обновленный документ</returns>
+        [Route("ChangePosition")]
+        [HttpPost]
+        public IHttpActionResult ChangePosition(ChangePosition model)
+        {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            timeM.Start();
+
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            timeDB.Start();
+            docProc.ExecuteAction(EnumDocumentActions.ChangePosition, cxt, model);
+            timeDB.Stop();
+
+            timeM.Stop();
+            SaveToFile("M: DocumentActionsController ChangePosition", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentOperationsService ChangePosition", timeDB.Elapsed.ToString("G"));
+
+            var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(model.DocumentId);
         }
 
@@ -888,5 +1037,76 @@ namespace DMS_WebAPI.Controllers.Documents
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(docId);
         }
+
+        /// <summary>
+        /// Получить отчет
+        /// </summary>
+        /// <param name="id">ИД документа</param>>
+        /// <returns></returns>
+        [Route("ReportRegistrationCardDocument/{id}")]
+        [HttpPost]
+        public IHttpActionResult ReportRegistrationCardDocument(int id)
+        {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            timeM.Start();
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            timeDB.Start();
+            var res = docProc.ExecuteAction(EnumDocumentActions.ReportRegistrationCardDocument, cxt, id);
+            timeDB.Stop();
+
+            timeM.Stop();
+            SaveToFile("M: DocumentActionsController ReportRegistrationCardDocument", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentOperationsService ReportRegistrationCardDocument", timeDB.Elapsed.ToString("G"));
+
+            return new JsonResult(res, this);
+        }
+
+        /// <summary>
+        /// Получить отчет Реестр передачи документов
+        /// </summary>
+        /// <param name="id">ИД PaperList</param>>
+        /// <returns></returns>
+        [Route("ReportRegisterTransmissionDocuments/{id}")]
+        [HttpPost]
+        public IHttpActionResult ReportRegisterTransmissionDocuments(int id)
+        {
+            var timeM = new System.Diagnostics.Stopwatch();
+            var timeDB = new System.Diagnostics.Stopwatch();
+            timeM.Start();
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            timeDB.Start();
+            var res = docProc.ExecuteAction(EnumDocumentActions.ReportRegisterTransmissionDocuments, cxt, id);
+            timeDB.Stop();
+
+            timeM.Stop();
+            SaveToFile("M: DocumentActionsController ReportRegisterTransmissionDocuments", timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentOperationsService ReportRegisterTransmissionDocuments", timeDB.Elapsed.ToString("G"));
+
+            return new JsonResult(res, this);
+        }
+
+        /// <summary>
+        /// Запустить автоматические планы вручную
+        /// </summary>
+        /// <param name="id">ИД PaperList</param>>
+        /// <returns></returns>
+        [Route("ManualStartAutoPlan")]
+        [HttpPost]
+        public IHttpActionResult ManualStartAutoPlan()
+        {
+            var timeM = new System.Diagnostics.Stopwatch();
+            timeM.Start();
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ap = DmsResolver.Current.Get<IAutoPlanService>();
+            var res = ap.ManualRunAutoPlan(cxt);
+            timeM.Stop();
+            SaveToFile("M: DocumentActionsController ManualStartAutoPlan", timeM.Elapsed.ToString("G"));
+
+            return new JsonResult(res, this);
+        }
+
     }
 }

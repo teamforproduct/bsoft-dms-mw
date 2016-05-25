@@ -12,6 +12,7 @@ namespace BL.Database.DBModel.Dictionary
     {
         public int Id { get; set; }
         [MaxLength(128)]
+        [Index("IX_UserId", 1, IsUnique = true)]
         public string UserId { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }

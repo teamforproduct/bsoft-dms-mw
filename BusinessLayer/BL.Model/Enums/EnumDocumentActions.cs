@@ -52,6 +52,11 @@
         RegisterDocument = 100009,
 
         /// <summary>
+        /// Поменять позицию в документе
+        /// </summary>
+        ChangePosition = 100099,
+
+        /// <summary>
         /// Направить для сведения
         /// </summary>
         SendForInformation = 100011,
@@ -73,25 +78,31 @@
         /// </summary>
         ControlOn = 100021,
 
-        /// <summary>
-        /// Направить для контроля
-        /// </summary>
-        SendForControl = 100022,
+
 
         /// <summary>
         /// Изменить параметры контроля
         /// </summary>
-        ControlChange = 100025,
+        ControlChange = 100023,
+
+        SendForExecutionChange = 100024, // Изменить параметры направлен для исполнения
+        SendForControlChange = 100025, // Изменить параметры направлен для исполнения (на контроль)
+        SendForResponsibleExecutionChange = 100026, // Изменить параметры направлен для исполнения (отв. исполнитель)
 
         /// <summary>
         /// Изменить параметры контроля для исполнителя
         /// </summary>
-        ControlTargetChange = 100026,
+        ControlTargetChange = 100027,
 
         /// <summary>
         /// Снять с контроля
         /// </summary>
-        ControlOff = 100027,
+        ControlOff = 100029,
+
+        /// <summary>
+        /// Направить для контроля
+        /// </summary>
+        SendForControl = 100030,
 
         /// <summary>
         /// Направить для ответственного исполнения 
@@ -325,7 +336,7 @@
         MarkDocumentEventAsRead = 100010,
 
         AddDocumentPaper = 121001, // Добавить бумажный носитель
-        CopyDocumentPaper = 121003, // Отметить создание копий бумажных носителей
+//        CopyDocumentPaper = 121003, // Отметить создание копий бумажных носителей
         ModifyDocumentPaper = 121005, // Изменить бумажный носитель
         MarkOwnerDocumentPaper = 121007, // Отметить нахождение бумажного носителя у себя
         MarkСorruptionDocumentPaper = 121008, // Отметить порчу бумажного носителя
@@ -337,12 +348,30 @@
         RecieveDocumentPaperEvent = 122021, // Отметить прием бумажного носителя
 
         //TODO Добавить в базу
-        AddDocumentTask = 1,
-        ModifyDocumentTask = 2,
-        DeleteDocumentTask = 3,
-        AddDocumentPaperList = 7,
-        ModifyDocumentPaperList = 8,
-        DeleteDocumentPaperList = 9
+        AddDocumentTask = 115001, // Добавить задачу
+        ModifyDocumentTask = 115005, // Изменить задачу
+        DeleteDocumentTask = 115009, // Удалить задачу
+        AddDocumentPaperList = 123001, // Добавить реестр
+        ModifyDocumentPaperList = 123005, // Изменить реестр
+        DeleteDocumentPaperList = 123009, // Удалить реестр
+        ReportRegistrationCardDocument = 100085,
+        ReportRegisterTransmissionDocuments = 100086,
+
+        AddTemplateDocument = 251001,
+        ModifyTemplateDocument = 251005,
+        DeleteTemplateDocument = 251009,
+        AddTemplateDocumentSendList = 252001,
+        ModifyTemplateDocumentSendList = 252005,
+        DeleteTemplateDocumentSendList = 252009,
+        AddTemplateDocumentRestrictedSendList = 253001,
+        ModifyTemplateDocumentRestrictedSendList = 253005,
+        DeleteTemplateDocumentRestrictedSendList = 253009,
+        AddTemplateDocumentTask = 254001,
+        ModifyTemplateDocumentTask = 254005,
+        DeleteTemplateDocumentTask = 254009,
+        AddTemplateAttachedFile = 255001,
+        ModifyTemplateAttachedFile = 255005,
+        DeleteTemplateAttachedFile = 255009
 
     }
 }

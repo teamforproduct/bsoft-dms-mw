@@ -7,16 +7,21 @@ namespace BL.Database.DBModel.Template
     public class TemplateDocumentFiles
     {
         public int Id { get; set; }
+        [Index("IX_DocumentNameExtention", 1, IsUnique = true)]
+        [Index("IX_DocumentOrderNumber", 1, IsUnique = true)]
         public int DocumentId { get; set; }
         [MaxLength(2000)]
+        [Index("IX_DocumentNameExtention", 2, IsUnique = true)]
         public string Name { get; set; }
+        [Index("IX_DocumentOrderNumber", 2, IsUnique = true)]
         public int OrderNumber { get; set; }
         [MaxLength(2000)]
+        [Index("IX_DocumentNameExtention", 3, IsUnique = true)]
         public string Extention { get; set; }
         [MaxLength(2000)]
         public string FileType { get; set; }
         public int FileSize { get; set; }
-        public byte[] Content { get; set; }
+        //public byte[] Content { get; set; }
         public bool IsAdditional { get; set; }
         [MaxLength(2000)]
         public string Hash { get; set; }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using BL.Logic.Common;
 using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore.InternalModel;
@@ -58,21 +59,26 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new WrongDocumentSendListEntry();
             }
-
+            CommonDocumentUtilities.PlanDocumentPaperFromSendList(_context, _document, Model);
             return true;
         }
         public override object Execute()
         {
             _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, Model.DocumentId, Model.AccessLevel, Model.TargetPositionId.Value);
+            var waitTarget = CommonDocumentUtilities.GetNewDocumentWait(_context, Model, _eventType, EnumEventCorrespondentType.FromTargetToTarget);
+            _document.Waits = new List<InternalDocumentWait> { waitTarget };
 
-            _document.Waits = CommonDocumentUtilities.GetNewDocumentWaits(_context, Model, EnumEventTypes.ControlOn, EnumEventCorrespondentType.FromTargetToTarget);
+            if (Model.SourcePositionId != Model.TargetPositionId)
+            {
+                _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, Model);
+            }
 
             if (Model.IsAddControl)
             {
-                ((List<InternalDocumentWait>) _document.Waits).AddRange(CommonDocumentUtilities.GetNewDocumentWaits(_context, Model, EnumEventTypes.ControlOn, EnumEventCorrespondentType.FromSourceToSource));
+                ((List<InternalDocumentWait>)_document.Waits).AddRange(CommonDocumentUtilities.GetNewDocumentWaits(_context, Model, EnumEventTypes.ControlOn, EnumEventCorrespondentType.FromSourceToSource));
             }
-
-            Model.CloseEvent = Model.StartEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, Model);
+            Model.CloseEvent = Model.StartEvent = waitTarget.OnEvent;
+            //Model.CloseEvent = Model.StartEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, Model);
             CommonDocumentUtilities.SetLastChange(_context, Model);
             _document.SendLists = new List<InternalDocumentSendList> { Model };
 
@@ -80,6 +86,8 @@ namespace BL.Logic.DocumentCore.Commands
 
             return null;
         }
+
+        private EnumEventTypes _eventType => (EnumEventTypes)Enum.Parse(typeof(EnumEventTypes), Model.SendType.ToString());
 
         public override EnumDocumentActions CommandType => (EnumDocumentActions)Enum.Parse(typeof(EnumDocumentActions), Model.SendType.ToString());
     }

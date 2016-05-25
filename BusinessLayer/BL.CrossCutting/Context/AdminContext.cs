@@ -3,6 +3,7 @@ using BL.CrossCutting.Interfaces;
 using BL.Model.Database;
 using BL.Model.Users;
 using BL.Model.Enums;
+using BL.Model.SystemCore;
 
 namespace BL.CrossCutting.Context
 {
@@ -24,7 +25,9 @@ namespace BL.CrossCutting.Context
                 DefaultDatabase = dbModel.DefaultDatabase,
                 UserName = _USER_NAME,
                 UserPassword = _USER_PASS,
-                DefaultSchema = dbModel.DefaultSchema
+                DefaultSchema = dbModel.DefaultSchema,
+                ConnectionString = dbModel.ConnectionString,
+                ClientId = dbModel.ClientId,
             };
             CurrentEmployee = new Employee
             {
@@ -48,7 +51,9 @@ namespace BL.CrossCutting.Context
                     DefaultDatabase = ctx.CurrentDB.DefaultDatabase,
                     UserName = _USER_NAME,
                     UserPassword = _USER_PASS,
-                    DefaultSchema = ctx.CurrentDB.DefaultSchema
+                    DefaultSchema = ctx.CurrentDB.DefaultSchema,
+                    ConnectionString = ctx.CurrentDB.ConnectionString,
+                    ClientId = ctx.CurrentDB.ClientId,
                 };
                 CurrentEmployee = new Employee
                 {
@@ -60,25 +65,39 @@ namespace BL.CrossCutting.Context
 
         public Employee CurrentEmployee { get; set; }
         public List<int> CurrentPositionsIdList {
-            get
-            {
-            return new List<int> {0};    
-            }
+            get { return new List<int> {0}; }
             set { }
         }
         public DatabaseModel CurrentDB { get; set; }
 
-        public int CurrentPositionId {
-            get { return _currentPositionId??0; }
+        public int CurrentPositionId
+        {
+            get { return _currentPositionId ?? 0; }
         }
-        public int CurrentAgentId {
-            get { return (int)EnumSystemUsers.AdminUser; }
+
+        public int CurrentAgentId
+        {
+            get { return (int) EnumSystemUsers.AdminUser; }
         }
+
         public void SetCurrentPosition(int? position)
         {
             _currentPositionId = position;
         }
 
         public bool IsAdmin => true;
+        public LicenceInfo ClientLicence { get; set; }
+
+        public int CurrentClientId
+        {
+            get
+            {
+                if (CurrentDB == null)
+                {
+                    return 0;
+                }
+                return CurrentDB.ClientId;
+            }
+        }
     }
 }

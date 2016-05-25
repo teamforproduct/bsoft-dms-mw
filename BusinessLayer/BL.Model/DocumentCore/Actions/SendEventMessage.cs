@@ -17,7 +17,6 @@ namespace BL.Model.DocumentCore.Actions
         /// <summary>
         /// Примечание
         /// </summary>
-        [Required]
         public string Description { get; set; }
         /// <summary>
         /// Дата события
@@ -26,7 +25,7 @@ namespace BL.Model.DocumentCore.Actions
         /// <summary>
         /// Событие доступно в рамках задачи
         /// </summary>
-        public bool IsAvailableWithinTask { get; set; }
+        ///public bool IsAvailableWithinTask { get; set; }
 
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using BL.Model.Enums;
 using BL.Model.Users;
 using System.ComponentModel.DataAnnotations;
@@ -23,7 +24,6 @@ namespace BL.Model.DocumentCore.Actions
         /// <summary>
         /// Комментарий
         /// </summary>
-        [Required]
         public string Description { get; set; }
         /// <summary>
         /// ИД уровня доступа
@@ -34,5 +34,9 @@ namespace BL.Model.DocumentCore.Actions
         /// Дата события
         /// </summary>
         public DateTime? EventDate { get; set; }
+        /// <summary>
+        /// Массив событий по перемещению бумажных носителей
+        /// </summary>
+        public List<PaperEvent> PaperEvents { get; set; }
     }
 }

@@ -14,6 +14,84 @@
     }
 
     /// <summary>
+    /// Сообщение при ошибке проверки данных о лицензии
+    /// </summary>
+    public class LicenceError : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:LicenceInformationError@l##";
+        public LicenceError() : base(_MESSAGE)
+        {
+        }
+
+        public LicenceError(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+    /// <summary>
+    /// Сообщение при ошибке проверки данных о лицензии
+    /// Лицензия просрочена
+    /// </summary>
+    public class LicenceExpired : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:LicenceExpired@l##";
+        public LicenceExpired() : base(_MESSAGE)
+        {
+        }
+
+        public LicenceExpired(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+    /// <summary>
+    /// Сообщение при ошибке проверки данных о лицензии
+    /// Превышено количество зарегистрированных пользователей
+    /// </summary>
+    public class LicenceExceededNumberOfRegisteredUsers : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:LicenceExceededNumberOfRegisteredUsers@l##";
+        public LicenceExceededNumberOfRegisteredUsers() : base(_MESSAGE)
+        {
+        }
+
+        public LicenceExceededNumberOfRegisteredUsers(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+    /// <summary>
+    /// Сообщение при ошибке проверки данных о лицензии
+    /// Превышено количество подключенных пользователей
+    /// </summary>
+    public class LicenceExceededNumberOfConnectedUsers : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:LicenceExceededNumberOfConnectedUsers@l##";
+        public LicenceExceededNumberOfConnectedUsers() : base(_MESSAGE)
+        {
+        }
+
+        public LicenceExceededNumberOfConnectedUsers(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+    /// <summary>
+    /// Сообщение при ошибке получения ключей
+    /// </summary>
+    public class CryptographicError : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:CryptographicError@l##";
+        public CryptographicError() : base(_MESSAGE)
+        {
+        }
+
+        public CryptographicError(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+    /// <summary>
     /// Сообщение при ошибке работы с базой данных
     /// </summary>
     public class DatabaseError : DmsExceptions
@@ -33,12 +111,27 @@
     /// </summary>
     public class DatabaseIsNotSet : DmsExceptions
     {
-        private const string _MESSAGE = "##l@DmsExceptions:DatabaseIsNotSet@l##The database is not set";
+        private const string _MESSAGE = "##l@DmsExceptions:DatabaseIsNotSet@l##";
         public DatabaseIsNotSet() : base(_MESSAGE)
         {
         }
 
         public DatabaseIsNotSet(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+    /// <summary>
+    /// Сообщение при ошибке работы с базой данных
+    /// </summary>
+    public class DatabaseIsNotFound : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:DatabaseIsNotFound@l##";
+        public DatabaseIsNotFound() : base(_MESSAGE)
+        {
+        }
+
+        public DatabaseIsNotFound(System.Exception ex) : base(_MESSAGE, ex)
         {
         }
     }
@@ -200,6 +293,19 @@
         {
         }
     }
+
+    public class DocumentFileWasChangedExternally : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:DocumentFileWasChangedExternally@l##";
+        public DocumentFileWasChangedExternally() : base(_MESSAGE)
+        {
+        }
+
+        public DocumentFileWasChangedExternally(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
     public class TaskNotFoundOrUserHasNoAccess : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:TaskNotFoundOrUserHasNoAccess@l##";
@@ -253,6 +359,30 @@
         }
 
         public TemplateDocumentNotFoundOrUserHasNoAccess(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+    public class CouldNotModifyTemplateDocument : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:CouldNotModifyTemplateDocument@l##";
+        public CouldNotModifyTemplateDocument() : base(_MESSAGE)
+        {
+        }
+
+        public CouldNotModifyTemplateDocument(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+    public class TemplateDocumentIsNotValid : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:TemplateDocumentIsNotValid@l##";
+        public TemplateDocumentIsNotValid() : base(_MESSAGE)
+        {
+        }
+
+        public TemplateDocumentIsNotValid(System.Exception ex) : base(_MESSAGE, ex)
         {
         }
     }
@@ -449,14 +579,26 @@
         }
     }
 
-    public class CouldNotPerformThisOperation : DmsExceptions
+    public class CouldNotPerformOperation : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:CouldNotPerformThisOperation@l##";
-        public CouldNotPerformThisOperation() : base(_MESSAGE)
+        public CouldNotPerformOperation() : base(_MESSAGE)
         {
         }
 
-        public CouldNotPerformThisOperation(System.Exception ex) : base(_MESSAGE, ex)
+        public CouldNotPerformOperation(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+    public class CouldNotPerformOperationWithPaper : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:CouldNotPerformOperationWithPaper@l##";
+        public CouldNotPerformOperationWithPaper() : base(_MESSAGE)
+        {
+        }
+
+        public CouldNotPerformOperationWithPaper(System.Exception ex) : base(_MESSAGE, ex)
         {
         }
     }
@@ -566,6 +708,21 @@
         }
 
         public DictionaryRecordNotUnique(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+    /// <summary>
+    /// Сообщение об ошибке, когда пытаются обновить несуществующую строку справочника в БД
+    /// </summary>
+    public class RecordNotUnique : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:RecordNotUnique@l##";
+        public RecordNotUnique() : base(_MESSAGE)
+        {
+        }
+
+        public RecordNotUnique(System.Exception ex) : base(_MESSAGE, ex)
         {
         }
     }

@@ -16,14 +16,17 @@ namespace BL.Database.DBModel.Document
         {
             this.Events = new HashSet<DocumentEvents>();
             this.SendLists = new HashSet<DocumentSendLists>();
+            this.TaskAccesses = new HashSet<DocumentTaskAccesses>();
         }
 
         public int Id { get; set; }
+        [Index("IX_DocumentTask", 1, IsUnique = true)]
         public int DocumentId { get; set; }
         public int PositionId { get; set; }
         public int PositionExecutorAgentId { get; set; }
         public int AgentId { get; set; }
         [MaxLength(2000)]
+        [Index("IX_DocumentTask", 2, IsUnique = true)]
         public string Task { get; set; }
         [MaxLength(2000)]
         public string Description { get; set; }
@@ -41,5 +44,7 @@ namespace BL.Database.DBModel.Document
         public virtual ICollection<DocumentEvents> Events { get; set; }
 
         public virtual ICollection<DocumentSendLists> SendLists { get; set; }
+
+        public virtual ICollection<DocumentTaskAccesses> TaskAccesses { get; set; }
     }
 }

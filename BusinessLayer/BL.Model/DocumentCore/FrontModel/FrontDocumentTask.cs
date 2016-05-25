@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace BL.Model.DocumentCore.FrontModel
 {
-    public class FrontDocumentTask : FrontRegistrationFullNumber
+    public class FrontDocumentTask : FrontDocumentInfo
     {
         public int Id { get; set; }
-        public int DocumentId { get; set; }
-        public DateTime? DocumentDate { get; set; }
+
         public int PositionId { get; set; }
         public int PositionExecutorAgentId { get; set; }
         public int AgentId { get; set; }
@@ -23,8 +22,12 @@ namespace BL.Model.DocumentCore.FrontModel
         public string PositionName { get; set; }
         public string PositionExecutorAgentPhoneNumber { get; set; }
 
-        public string DocumentDirectionName { get; set; }
-        public string DocumentTypeName { get; set; }
-        public string DocumentDescription { get; set; }
+        public string PlanResponsibleExecutorPositionName { get; set; }
+        public string PlanResponsibleExecutorPositionExecutorAgentName { get; set; }
+
+        public string FactResponsibleExecutorPositionName { get; set; }
+        public string FactResponsibleExecutorPositionExecutorAgentName { get; set; }
+
+
     }
 }

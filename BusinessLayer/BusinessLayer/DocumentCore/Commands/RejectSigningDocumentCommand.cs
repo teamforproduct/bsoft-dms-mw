@@ -6,6 +6,8 @@ using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using System;
+using BL.CrossCutting.DependencyInjection;
+using BL.Logic.SystemServices.AutoPlan;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -60,8 +62,9 @@ namespace BL.Logic.DocumentCore.Commands
                 || !CanBeDisplayed(_docWait.OnEvent.TargetPositionId.Value)
                 )
             {
-                throw new CouldNotPerformThisOperation();
+                throw new CouldNotPerformOperation();
             }
+            _operationDb.ControlOffSendListPrepare(_context, _document);
             _operationDb.ControlOffSubscriptionPrepare(_context, _document);
             _context.SetCurrentPosition(_docWait.OnEvent.TargetPositionId);
             _admin.VerifyAccess(_context, CommandType);
@@ -70,13 +73,26 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override object Execute()
         {
+            _docWait.ResultTypeId = (int)EnumResultTypes.CloseByRejecting;
             _docWait.OffEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, _docWait.DocumentId, _eventType, Model.EventDate, Model.Description, _docWait.OnEvent.TaskId, _docWait.OnEvent.IsAvailableWithinTask, _docWait.OnEvent.SourcePositionId, null, _docWait.OnEvent.TargetPositionId);
             CommonDocumentUtilities.SetLastChange(_context, _docWait);
+            var sendList = _document.SendLists.FirstOrDefault(x => x.IsInitial);
+            if (sendList != null)
+            {
+                sendList.StartEventId = null;
+            }
+            CommonDocumentUtilities.SetLastChange(Context, _document.SendLists);
             var subscription = _document.Subscriptions.First();
             subscription.Description = CommandType.ToString();
             subscription.DoneEvent = null;
+            subscription.SubscriptionStates = EnumSubscriptionStates.No;
             CommonDocumentUtilities.SetLastChange(Context, _document.Subscriptions);
             _operationDb.CloseDocumentWait(_context, _document);
+            if (sendList != null)
+            {
+                var aplan = DmsResolver.Current.Get<IAutoPlanService>();
+                aplan.ManualRunAutoPlan(_context);
+            }
             return _document.Id;
         }
 

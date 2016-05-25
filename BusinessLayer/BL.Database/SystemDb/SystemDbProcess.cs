@@ -11,7 +11,8 @@ using BL.Model.SystemCore.InternalModel;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.FrontModel;
 using System.Data.Entity;
-using BL.Model.FullTextSerach;
+using BL.Model.FullTextSearch;
+using System;
 
 namespace BL.Database.SystemDb
 {
@@ -28,6 +29,7 @@ namespace BL.Database.SystemDb
             {
                 var nlog = new SystemLogs
                 {
+                    ClientId = ctx.CurrentClientId,
                     ExecutorAgentId = log.AgentId,
                     LogDate = log.Date,
                     LogLevel = (int)log.LogType,
@@ -47,11 +49,12 @@ namespace BL.Database.SystemDb
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                var cset = dbContext.SettingsSet.FirstOrDefault(x => x.Key == name);
+                var cset = dbContext.SettingsSet.FirstOrDefault(x => ctx.CurrentClientId == x.ClientId && x.Key == name);
                 if (cset == null)
                 {
                     var nsett = new SystemSettings
                     {
+                        ClientId = ctx.CurrentClientId,
                         ExecutorAgentId = agentId,
                         Key = name,
                         Value = value
@@ -75,18 +78,18 @@ namespace BL.Database.SystemDb
                 if (agentId.HasValue)
                 {
                     return
-                        dbContext.SettingsSet.Where(x => x.Key == name && x.ExecutorAgentId == agentId.Value)
+                        dbContext.SettingsSet.Where(x => ctx.CurrentClientId == x.ClientId && x.Key == name && x.ExecutorAgentId == agentId.Value)
                             .Select(x => x.Value)
                             .FirstOrDefault();
                 }
                 return
-                    dbContext.SettingsSet.Where(x => x.Key == name).OrderBy(x => x.ExecutorAgentId)
+                    dbContext.SettingsSet.Where(x => ctx.CurrentClientId == x.ClientId && x.Key == name).OrderBy(x => x.ExecutorAgentId)
                         .Select(x => x.Value)
                         .FirstOrDefault();
             }
         }
         #endregion
-        
+
         public IEnumerable<BaseSystemUIElement> GetSystemUIElements(IContext ctx, FilterSystemUIElement filter)
         {
             {
@@ -144,7 +147,7 @@ namespace BL.Database.SystemDb
         {
             using (var dbContext = new DmsContext(context))
             {
-                var qry = dbContext.PropertiesSet.AsQueryable();
+                var qry = dbContext.PropertiesSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
 
                 if (filter.SystemObjectId?.Count > 0)
                 {
@@ -169,7 +172,7 @@ namespace BL.Database.SystemDb
         {
             using (var dbContext = new DmsContext(context))
             {
-                var qry = dbContext.PropertyLinksSet.AsQueryable();
+                var qry = dbContext.PropertyLinksSet.Where(x => x.Property.ClientId == context.CurrentClientId).AsQueryable();
 
                 if (filter.PropertyLinkId != null)
                 {
@@ -193,7 +196,7 @@ namespace BL.Database.SystemDb
                     SelectFilter = x.Property.SelectFilter,
                     SelectFieldCode = x.Property.SelectFieldCode,
                     SelectDescriptionFieldCode = x.Property.SelectDescriptionFieldCode,
-                    ValueFieldCode = x.Property.ValueType.Code,
+                    ValueFieldCode = x.Property.Code,
                     ValueDescriptionFieldCode = x.Property.ValueType.Description,
                     Format = x.Property.OutFormat,
                 }).ToList();
@@ -204,7 +207,7 @@ namespace BL.Database.SystemDb
         {
             using (var dbContext = new DmsContext(context))
             {
-                var qry = dbContext.PropertiesSet.AsQueryable();
+                var qry = dbContext.PropertiesSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
 
                 if (filter.PropertyId?.Count > 0)
                 {
@@ -226,6 +229,7 @@ namespace BL.Database.SystemDb
                     SelectFilter = x.SelectFilter,
                     SelectFieldCode = x.SelectFieldCode,
                     SelectDescriptionFieldCode = x.SelectDescriptionFieldCode,
+                    SelectTable = x.SelectTable,
                     LastChangeDate = x.LastChangeDate,
                     LastChangeUserId = x.LastChangeUserId,
 
@@ -244,7 +248,7 @@ namespace BL.Database.SystemDb
         {
             using (var dbContext = new DmsContext(context))
             {
-                var qry = dbContext.PropertiesSet.AsQueryable();
+                var qry = dbContext.PropertiesSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
 
                 if (filter.PropertyId != null)
                 {
@@ -266,7 +270,7 @@ namespace BL.Database.SystemDb
                     SelectFilter = x.SelectFilter,
                     SelectFieldCode = x.SelectFieldCode,
                     SelectDescriptionFieldCode = x.SelectDescriptionFieldCode,
-
+                    SelectTable = x.SelectTable,
                     ValueType = !x.ValueTypeId.HasValue ? null :
                         new InternalSystemValueType
                         {
@@ -284,6 +288,7 @@ namespace BL.Database.SystemDb
             {
                 var item = new Properties
                 {
+                    ClientId = context.CurrentClientId,
                     Code = model.Code,
                     TypeCode = model.TypeCode,
                     Description = model.Description,
@@ -296,6 +301,7 @@ namespace BL.Database.SystemDb
                     SelectFilter = model.SelectFilter,
                     SelectFieldCode = model.SelectFieldCode,
                     SelectDescriptionFieldCode = model.SelectDescriptionFieldCode,
+                    SelectTable = model.SelectTable,
                     LastChangeDate = model.LastChangeDate,
                     LastChangeUserId = model.LastChangeUserId,
                 };
@@ -315,6 +321,7 @@ namespace BL.Database.SystemDb
                 var item = new Properties
                 {
                     Id = model.Id,
+                    ClientId = context.CurrentClientId,
                     Code = model.Code,
                     TypeCode = model.TypeCode,
                     Description = model.Description,
@@ -327,6 +334,7 @@ namespace BL.Database.SystemDb
                     SelectFilter = model.SelectFilter,
                     SelectFieldCode = model.SelectFieldCode,
                     SelectDescriptionFieldCode = model.SelectDescriptionFieldCode,
+                    SelectTable = model.SelectTable,
                     LastChangeDate = model.LastChangeDate,
                     LastChangeUserId = model.LastChangeUserId,
                 };
@@ -342,7 +350,7 @@ namespace BL.Database.SystemDb
             using (var dbContext = new DmsContext(context))
             {
 
-                var item = dbContext.PropertiesSet.FirstOrDefault(x => x.Id == model.Id);
+                var item = dbContext.PropertiesSet.FirstOrDefault(x => context.CurrentClientId == x.ClientId && x.Id == model.Id);
                 if (item != null)
                 {
                     dbContext.PropertiesSet.Remove(item);
@@ -359,7 +367,7 @@ namespace BL.Database.SystemDb
         {
             using (var dbContext = new DmsContext(context))
             {
-                var qry = dbContext.PropertyLinksSet.AsQueryable();
+                var qry = dbContext.PropertyLinksSet.Where(x => x.Property.ClientId == context.CurrentClientId).AsQueryable();
 
                 if (filter.PropertyLinkId?.Count > 0)
                 {
@@ -379,11 +387,41 @@ namespace BL.Database.SystemDb
             }
         }
 
+        public IEnumerable<InternalPropertyLink> GetInternalPropertyLinks(IContext context, FilterPropertyLink filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.PropertyLinksSet.Where(x => x.Property.ClientId == context.CurrentClientId).AsQueryable();
+
+                if (filter != null)
+                {
+                    if (filter.PropertyLinkId?.Count > 0)
+                    {
+                        qry = qry.Where(x => filter.PropertyLinkId.Contains(x.Id));
+                    }
+
+                    if (filter.Object?.Count > 0)
+                    {
+                        qry = qry.Where(x => filter.Object.Select(y => (int)y).Contains(x.ObjectId));
+                    }
+                }
+
+                return qry.Select(x => new InternalPropertyLink
+                {
+                    Id = x.Id,
+                    PropertyId = x.PropertyId,
+                    Object = (EnumObjects)x.ObjectId,
+                    Filers = x.Filers,
+                    IsMandatory = x.IsMandatory,
+                }).ToList();
+            }
+        }
+
         public IEnumerable<FrontPropertyLink> GetPropertyLinks(IContext context, FilterPropertyLink filter)
         {
             using (var dbContext = new DmsContext(context))
             {
-                var qry = dbContext.PropertyLinksSet.AsQueryable();
+                var qry = dbContext.PropertyLinksSet.Where(x => x.Property.ClientId == context.CurrentClientId).AsQueryable();
 
                 if (filter != null)
                 {
@@ -460,7 +498,7 @@ namespace BL.Database.SystemDb
             using (var dbContext = new DmsContext(context))
             {
 
-                var item = dbContext.PropertyLinksSet.FirstOrDefault(x => x.Id == model.Id);
+                var item = dbContext.PropertyLinksSet.Where(x => x.Property.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == model.Id);
                 if (item != null)
                 {
                     dbContext.PropertyLinksSet.Remove(item);
@@ -473,51 +511,28 @@ namespace BL.Database.SystemDb
 
         #region PropertyValues
 
-        public InternalPropertyValue GetPropertyValue(IContext context, FilterPropertyValue filter)
+        public IEnumerable<FrontPropertyValue> GetPropertyValuesToDocumentFromTemplateDocument(IContext context, FilterPropertyLink filter)
         {
             using (var dbContext = new DmsContext(context))
             {
-                var qry = dbContext.PropertyValuesSet.AsQueryable();
+                var qry = dbContext.PropertyLinksSet.Where(x => x.Property.ClientId == context.CurrentClientId).AsQueryable();
 
-                if (filter.PropertyValuesId?.Count > 0)
+                if (filter.PropertyLinkId?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.PropertyValuesId.Contains(x.Id));
+                    qry = qry.Where(x => filter.PropertyLinkId.Contains(x.Id));
                 }
 
-                return qry.Select(x => new InternalPropertyValue
-                {
-                    Id = x.Id,
-                    PropertyLinkId = x.PropertyLinkId,
-                    RecordId = x.RecordId,
-                    ValueString = x.ValueString,
-                    ValueDate = x.ValueDate,
-                    ValueNumeric = x.ValueNumeric,
-                    LastChangeDate = x.LastChangeDate,
-                    LastChangeUserId = x.LastChangeUserId,
-                }).FirstOrDefault();
-            }
-        }
-
-        public IEnumerable<FrontPropertyValue> GetPropertyValues(IContext context, FilterPropertyValue filter)
-        {
-            using (var dbContext = new DmsContext(context))
-            {
-                var qry = dbContext.PropertyValuesSet.AsQueryable();
-
-                if (filter.PropertyValuesId?.Count > 0)
-                {
-                    qry = qry.Where(x => filter.PropertyValuesId.Contains(x.Id));
-                }
+                qry = qry.Select(x => x.Property.Links.FirstOrDefault(y => y.ObjectId == (int)EnumObjects.Documents && y.Filers == x.Filers))
+                    .Where(x=>x!=null);
 
                 return qry.Select(x => new FrontPropertyValue
                 {
-                    Id = x.Id,
-                    PropertyLinkId = x.PropertyLinkId,
-                    RecordId = x.RecordId,
-                    Value = x.ValueString != null ? x.ValueString : (x.ValueNumeric.HasValue ? x.ValueNumeric.ToString() : (x.ValueDate.HasValue ? x.ValueDate.ToString() : null))
+                    PropertyLinkId = x.Id,
+                    PropertyCode = x.Property.Code
                 }).ToList();
             }
         }
+
         #endregion PropertyValues
 
         #region Mailing
@@ -526,7 +541,7 @@ namespace BL.Database.SystemDb
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                return dbContext.DocumentEventsSet
+                return dbContext.DocumentEventsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
                     .Where(x => (x.SendDate == null || x.SendDate < x.LastChangeDate)
                     && ((x.TargetAgentId != null && x.SourceAgentId != x.TargetAgentId)
                     || (x.TargetPositionId != null && x.SourcePositionId != x.TargetPositionId)))
@@ -542,7 +557,7 @@ namespace BL.Database.SystemDb
                         DestinationAgentName = (x.TargetAgent == null) ? "" : x.TargetAgent.Name,
                         DestinationPositionId = x.TargetPositionId ?? 0,
                         DestinationPositionName = (x.TargetPosition == null) ? "" : x.TargetPosition.Name,
-                        SourceAgentId = x.SourceAgentId,
+                        SourceAgentId = x.SourceAgentId ?? 0,
                         SourceAgentName = x.SourceAgent.Name,
                         SourcePositiontId = x.SourcePositionId ?? 0,
                         SourcePositionName = x.SourcePosition == null ? "" : x.SourcePosition.Name,
@@ -577,7 +592,7 @@ namespace BL.Database.SystemDb
         {
             using (var dbContext = new DmsContext(context))
             {
-                var qry = dbContext.PropertyLinksSet.AsQueryable();
+                var qry = dbContext.PropertyLinksSet.Where(x => x.Property.ClientId == context.CurrentClientId).AsQueryable();
 
                 qry = qry.Where(x => x.ObjectId == (int)filter.Object);
 
@@ -595,20 +610,20 @@ namespace BL.Database.SystemDb
                     SelectFilter = x.Property.SelectFilter,
                     SelectFieldCode = x.Property.SelectFieldCode,
                     SelectDescriptionFieldCode = x.Property.SelectDescriptionFieldCode,
-                    ValueFieldCode = x.Property.ValueType.Code,
+                    ValueFieldCode = x.Property.Code,
                     ValueDescriptionFieldCode = x.Property.ValueType.Description,
                     Format = x.Property.OutFormat,
                 }).ToList();
             }
         }
 
-        public IEnumerable<int> GetSendListIdsForAutoPlan(IContext context)
+        public IEnumerable<int> GetSendListIdsForAutoPlan(IContext context, int? sendListId = null)
         {
             using (var dbContext = new DmsContext(context))
             {
-                var qry = dbContext.DocumentsSet.Where(x => x.IsLaunchPlan)
+                var qry = dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == context.CurrentClientId)
                     .Join(dbContext.DocumentSendListsSet, d => d.Id, s => s.DocumentId, (d, s) => new { doc = d, sl = s })
-                    .Where(x => x.sl.IsInitial && !x.sl.CloseEventId.HasValue)
+                    .Where(x => ((sendListId == null && x.doc.IsLaunchPlan) || (sendListId.HasValue && sendListId.Value == x.sl.Id)) && x.sl.IsInitial && !x.sl.CloseEventId.HasValue)
                     .GroupBy(x => x.sl.DocumentId)
                     .Select(x => new
                     {
@@ -616,39 +631,154 @@ namespace BL.Database.SystemDb
                         MinStage = x.Min(s => s.sl.Stage)
                     });
 
-                return dbContext.DocumentSendListsSet.Join(qry, s => s.DocumentId, q => q.DocId, (s, q) => new {sl = s, q})
+                var res = dbContext.DocumentSendListsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId).Join(qry, s => s.DocumentId, q => q.DocId, (s, q) => new { sl = s, q })
                     .Where(x => x.sl.Stage <= x.q.MinStage && !x.sl.StartEventId.HasValue).Select(x => x.sl.Id).ToList();
+
+                res.AddRange(dbContext.DocumentSendListsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId).Where(x => !x.IsInitial && !x.CloseEventId.HasValue && x.Document.IsLaunchPlan
+                && !qry.Select(s => s.DocId).Contains(x.DocumentId)).Select(x => x.Id).ToList());
+
+                return res;
             }
         }
+
+        public IEnumerable<int> GetDocumentIdsForClearTrashDocuments(IContext context, int timeMinForClearTrashDocuments)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var date = DateTime.Now.AddMinutes(-timeMinForClearTrashDocuments);
+                var qry = dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == context.CurrentClientId)
+                    .Where(x => !x.IsRegistered.HasValue && !x.Waits.Any() && !x.Subscriptions.Any() && x.LastChangeDate < date)
+                    .Select(x => x.Id);
+
+                var res = qry.ToList();
+
+                return res;
+            }
+        }
+
         #endregion Filter Properties
 
         #region Full text search
+
+        public IEnumerable<FullTextIndexIem> FullTextIndexReindexDbPrepare(IContext ctx)
+        {
+            var res = new List<FullTextIndexIem>();
+            using (var dbContext = new DmsContext(ctx))
+            {
+                res.AddRange(dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.TemplateDocument.ClientId == ctx.CurrentClientId)
+                    .Select(x => new
+                    {
+                        DocumentId = x.Id,
+                        ItemType = EnumSearchObjectType.Document,
+                        OperationType = EnumOperationType.AddNew,
+                        ObjectId = 0,
+                        regNr = (x.RegistrationNumber != null
+                            ? (x.RegistrationNumberPrefix ?? "") + x.RegistrationNumber +
+                              (x.RegistrationNumberSuffix ?? "")
+                            : "#" + x.Id) + " ",
+                        v1 = x.RegistrationJournal.Name + " " + x.RegistrationJournal.Department.Name + " ",
+                        v2 = x.Description + " ",
+                        v3 = x.ExecutorPositionExecutorAgent.Name + " ",
+                        v4 = x.TemplateDocument.DocumentType.Name + " " + x.TemplateDocument.DocumentDirection.Name + " ",
+                        v5 = x.DocumentSubject.Name + " ",
+                        v6 = x.SenderAgent.Name + " " + x.SenderAgentPerson.Agent.Name + " " + x.SenderNumber + " "
+                    }).ToList()
+                    .Select(x => new FullTextIndexIem
+                    {
+                        DocumentId = x.DocumentId,
+                        ItemType = x.ItemType,
+                        OperationType = x.OperationType,
+                        ObjectId = x.ObjectId,
+                        ObjectText = x.regNr + x.v1 + x.v2 + x.v3 + x.v4 + x.v5 + x.v6
+                    }));
+
+                res.AddRange(dbContext.DocumentEventsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                     .Select(x => new FullTextIndexIem
+                     {
+                         DocumentId = x.DocumentId,
+                         ItemType = EnumSearchObjectType.Event,
+                         OperationType = EnumOperationType.AddNew,
+                         ObjectId = x.Id,
+                         ObjectText = x.Description + " " + x.Task.Task + " "
+                                + x.SourcePositionExecutorAgent.Name + " " + x.TargetPositionExecutorAgent.Name + " "
+                                + x.SourceAgent.Name + " " + x.TargetAgent.Name + " "
+                     }).ToList()
+                 );
+
+                res.AddRange(dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                     .Select(x => new FullTextIndexIem
+                     {
+                         DocumentId = x.DocumentId,
+                         ItemType = EnumSearchObjectType.Files,
+                         OperationType = EnumOperationType.AddNew,
+                         ObjectId = x.Id,
+                         ObjectText = x.Name + "." + x.Extension + " "
+                     }).ToList()
+                 );
+
+                res.AddRange(dbContext.DocumentSendListsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                     .Select(x => new FullTextIndexIem
+                     {
+                         DocumentId = x.DocumentId,
+                         ItemType = EnumSearchObjectType.SendList,
+                         OperationType = EnumOperationType.AddNew,
+                         ObjectId = x.Id,
+                         ObjectText = x.Description + " " + x.SendType.Name + " "
+                                + x.SourcePosition.Name + " " + x.TargetPosition.Name + " "
+                                + x.SourcePositionExecutorAgent.Name + " " + x.TargetPositionExecutorAgent.Name + " "
+                     }).ToList()
+                 );
+
+                res.AddRange(dbContext.DocumentSubscriptionsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                     .Select(x => new FullTextIndexIem
+                     {
+                         DocumentId = x.DocumentId,
+                         ItemType = EnumSearchObjectType.Subscription,
+                         OperationType = EnumOperationType.AddNew,
+                         ObjectId = x.Id,
+                         ObjectText = x.Description + " " + x.SubscriptionState.Name + " " + x.DoneEvent.SourcePositionExecutorAgent.Name + " "
+                     }).ToList()
+                 );
+
+            }
+            return res;
+        }
 
         public IEnumerable<FullTextIndexIem> FullTextIndexPrepare(IContext ctx)
         {
             var res = new List<FullTextIndexIem>();
             using (var dbContext = new DmsContext(ctx))
             {
+                //TODO process deleted document
                 res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumSearchObjectType.Document)
                      .Join(dbContext.DocumentsSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, doc = d })
-                     .Select(x => new FullTextIndexIem
+                     .Select(x => new
                      {
                          Id = x.ind.Id,
                          DocumentId = x.doc.Id,
                          ItemType = (EnumSearchObjectType)x.ind.ObjectType,
                          OperationType = (EnumOperationType)x.ind.OperationType,
                          ObjectId = 0,
-                         ObjectText = (x.doc.RegistrationNumber != null
-                             ? x.doc.RegistrationNumberPrefix + x.doc.RegistrationNumber +
-                               x.doc.RegistrationNumberSuffix
-                             : "#" + x.doc.Id) 
-                             + x.doc.RegistrationJournal.Name + x.doc.RegistrationJournal.Department.Name
-                             + x.doc.Description 
-                             + x.doc.ExecutorPositionExecutorAgent.Name 
-                             + x.doc.TemplateDocument.DocumentType.Name + x.doc.TemplateDocument.DocumentDirection.Name
-                             + x.doc.DocumentSubject.Name
-                             + x.doc.SenderAgent.Name + x.doc.SenderAgentPerson.Agent.Name + x.doc.SenderNumber
+                         v1 = (x.doc.RegistrationNumber != null
+                             ? (x.doc.RegistrationNumberPrefix ?? "") + x.doc.RegistrationNumber +
+                               (x.doc.RegistrationNumberSuffix ?? "")
+                             : "#" + x.doc.Id) + " ",
+                         v2 = x.doc.RegistrationJournal.Name + " " + x.doc.RegistrationJournal.Department.Name + " ",
+                         v3 = x.doc.Description + " ",
+                         v4 = x.doc.ExecutorPositionExecutorAgent.Name + " ",
+                         v5 = x.doc.TemplateDocument.DocumentType.Name + " " + x.doc.TemplateDocument.DocumentDirection.Name + " ",
+                         v6 = x.doc.DocumentSubject.Name + " ",
+                         v7 = x.doc.SenderAgent.Name + " " + x.doc.SenderAgentPerson.Agent.Name + " " + x.doc.SenderNumber + " ",
                      }).ToList()
+                     .Select(x => new FullTextIndexIem
+                     {
+                         Id = x.Id,
+                         DocumentId = x.DocumentId,
+                         ItemType = x.ItemType,
+                         OperationType = x.OperationType,
+                         ObjectId = x.ObjectId,
+                         ObjectText = x.v1 + x.v2 + x.v3 + x.v4 + x.v5 + x.v6 + x.v7
+                     })
                  );
 
                 res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumSearchObjectType.Event)
@@ -660,9 +790,9 @@ namespace BL.Database.SystemDb
                          ItemType = (EnumSearchObjectType)x.ind.ObjectType,
                          OperationType = (EnumOperationType)x.ind.OperationType,
                          ObjectId = x.evt.Id,
-                         ObjectText = x.evt.Description + x.evt.Task.Task 
-                                + x.evt.SourcePositionExecutorAgent.Name + x.evt.TargetPositionExecutorAgent.Name
-                                + x.evt.SourceAgent.Name + x.evt.TargetAgent.Name
+                         ObjectText = x.evt.Description + " " + x.evt.Task.Task + " "
+                                + x.evt.SourcePositionExecutorAgent.Name + " " + x.evt.TargetPositionExecutorAgent.Name + " "
+                                + x.evt.SourceAgent.Name + " " + x.evt.TargetAgent.Name + " "
                      }).ToList()
                  );
 
@@ -688,9 +818,9 @@ namespace BL.Database.SystemDb
                          ItemType = (EnumSearchObjectType)x.ind.ObjectType,
                          OperationType = (EnumOperationType)x.ind.OperationType,
                          ObjectId = x.sl.Id,
-                         ObjectText = x.sl.Description + x.sl.SendType.Name 
-                                + x.sl.SourcePosition.Name + x.sl.TargetPosition.Name
-                                +x.sl.SourcePositionExecutorAgent.Name + x.sl.TargetPositionExecutorAgent.Name
+                         ObjectText = x.sl.Description + " " + x.sl.SendType.Name + " "
+                                + x.sl.SourcePosition.Name + " " + x.sl.TargetPosition.Name + " "
+                                + x.sl.SourcePositionExecutorAgent.Name + " " + x.sl.TargetPositionExecutorAgent.Name + " "
                      }).ToList()
                  );
 
@@ -703,7 +833,7 @@ namespace BL.Database.SystemDb
                          ItemType = (EnumSearchObjectType)x.ind.ObjectType,
                          OperationType = (EnumOperationType)x.ind.OperationType,
                          ObjectId = x.ss.Id,
-                         ObjectText = x.ss.Description + x.ss.SubscriptionState.Name + x.ss.DoneEvent.SourcePositionExecutorAgent.Name
+                         ObjectText = x.ss.Description + " " + x.ss.SubscriptionState.Name + " " + x.ss.DoneEvent.SourcePositionExecutorAgent.Name + " "
                      }).ToList()
                  );
 
@@ -717,6 +847,7 @@ namespace BL.Database.SystemDb
             {
                 dbContext.FullTextIndexCashSet.RemoveRange(
                     dbContext.FullTextIndexCashSet.Where(x => processedIds.Contains(x.Id)));
+                dbContext.SaveChanges();
             }
         }
 

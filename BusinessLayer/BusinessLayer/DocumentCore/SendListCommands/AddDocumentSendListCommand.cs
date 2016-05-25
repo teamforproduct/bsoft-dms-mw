@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using BL.CrossCutting.DependencyInjection;
 using BL.Database.Documents.Interfaces;
 using BL.Logic.Common;
+using BL.Logic.SystemServices.AutoPlan;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
@@ -13,7 +15,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
 
-        protected InternalDocumentSendList DocSendList;
+        private InternalDocumentSendList _sendList;
 
         public AddDocumentSendListCommand(IDocumentOperationsDbProcess operationDb)
         {
@@ -42,12 +44,19 @@ namespace BL.Logic.DocumentCore.SendListCommands
 
             _admin.VerifyAccess(_context, CommandType);
             _document = _operationDb.ChangeDocumentSendListPrepare(_context, Model.DocumentId, Model.Task);
-
+            if (_document == null)
+            {
+                throw new DocumentNotFoundOrUserHasNoAccess();
+            }
+            if (Model.IsInitial && _document.ExecutorPositionId != Model.CurrentPositionId)
+            {
+                throw new CouldNotPerformOperation();
+            }
             //Model.IsInitial = !_document.IsLaunchPlan;
             var taskId = CommonDocumentUtilities.GetDocumentTaskOrCreateNew(_context, _document, Model.Task); //TODO исправление от кого????
-            DocSendList = CommonDocumentUtilities.GetNewDocumentSendList(_context, Model, taskId);
+            _sendList = CommonDocumentUtilities.GetNewDocumentSendList(_context, Model, taskId);
             var sendLists = _document.SendLists.ToList();
-            sendLists.Add(DocSendList);
+            sendLists.Add(_sendList);
             _document.SendLists = sendLists;
 
             CommonDocumentUtilities.VerifySendLists(_document);
@@ -57,7 +66,14 @@ namespace BL.Logic.DocumentCore.SendListCommands
 
         public override object Execute()
         {
-            return _operationDb.AddDocumentSendList(_context, new List<InternalDocumentSendList> { DocSendList }, _document.Tasks).FirstOrDefault();
+            var paperEvents = new List<InternalDocumentEvent>();
+            if (Model.PaperEvents?.Any() ?? false)
+                paperEvents.AddRange(Model.PaperEvents.Select(model => CommonDocumentUtilities.GetNewDocumentPaperEvent(_context, Model.DocumentId, model.Id, EnumEventTypes.MoveDocumentPaper, model.Description, _sendList.TargetPositionId, _sendList.TargetAgentId, _sendList.SourcePositionId, _sendList.SourceAgentId, false, false)));
+
+            var res =  _operationDb.AddDocumentSendList(_context, new List<InternalDocumentSendList> { _sendList }, _document.Tasks, paperEvents).FirstOrDefault();
+            var aplan = DmsResolver.Current.Get<IAutoPlanService>();
+            aplan.ManualRunAutoPlan(_context);
+            return res;
         }
 
     }

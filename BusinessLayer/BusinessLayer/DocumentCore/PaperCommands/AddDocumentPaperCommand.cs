@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using BL.Database.Documents.Interfaces;
 using BL.Logic.Common;
 using BL.Model.DocumentCore.IncomingModel;
@@ -31,32 +33,35 @@ namespace BL.Logic.DocumentCore.PaperCommands
 
         public override bool CanBeDisplayed(int positionId)
         {
+            /*
             if (_document.ExecutorPositionId != positionId
                 )
             {
                 return false;
             }
-
+            */
             return true;
         }
 
         public override bool CanExecute()
         {
-            _document = _operationDb.AddDocumentPaperPrepare(_context, Model.DocumentId);
+            _document = _operationDb.ModifyDocumentPaperPrepare(_context, Model);
             if (_document == null)
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
-            _context.SetCurrentPosition(_document.ExecutorPositionId);
+            if (!Model.IsCopy && _document.ExecutorPositionId != Model.CurrentPositionId)
+            {
+                throw new CouldNotPerformOperationWithPaper();
+            }
             _admin.VerifyAccess(_context, CommandType);
             return true;
         }
 
         public override object Execute()
         {
-            _document.Papers = CommonDocumentUtilities.GetNewDocumentPapers(_context, Model);
-            _operationDb.AddDocumentPapers(_context, _document.Papers);
-            return null;
+            _document.Papers = CommonDocumentUtilities.GetNewDocumentPapers(_context, Model, _document.MaxPaperOrderNumber ?? 0);
+            return _operationDb.AddDocumentPapers(_context, _document.Papers).ToList();
         }
 
     }

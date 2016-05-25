@@ -23,9 +23,24 @@ namespace DMS_WebAPI.Utilities
         /// Get list of the available servers to display for user.
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<FrontServer> GetServersByUser()
+        public IEnumerable<FrontServer> GetServersByUser(string userId)
         {
-            return GetServers().ToList().Select(x => new FrontServer { Id = x.Id, Name = x.Name });
+            using (var dbContext = new ApplicationDbContext())
+            {
+                var items = dbContext.AspNetUserServersSet
+                    .Where(x => userId.Equals(x.UserId, StringComparison.OrdinalIgnoreCase))
+                    .GroupBy(x => x.Server)
+                    .Select(x => x.Key)
+                    .Select(x => new FrontServer
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        ClientName = x.ClientId.HasValue ? x.Client.Name : string.Empty
+                    }).ToList();
+
+                return items;
+            }
+            return GetServers().ToList().Select(x => new FrontServer { Id = x.Id, Name = x.Name, ClientName = x.ClientName });
         }
 
         /// <summary>
@@ -57,7 +72,9 @@ namespace DMS_WebAPI.Utilities
                     UserName = x.UserName,
                     UserPassword = x.UserPassword,
                     ConnectionString = x.ConnectionString,
-                    DefaultSchema = x.DefaultSchema
+                    DefaultSchema = x.DefaultSchema,
+                    ClientName = x.ClientId.HasValue ? x.Client.Name : string.Empty,
+                    ClientId = x.ClientId.HasValue ? x.ClientId.Value : 0
                 }).ToList();
 
                 return items;
@@ -86,7 +103,8 @@ namespace DMS_WebAPI.Utilities
                         UserName = modal.UserName,
                         UserPassword = modal.UserPassword,
                         ConnectionString = modal.ConnectionString,
-                        DefaultSchema = modal.DefaultSchema
+                        DefaultSchema = modal.DefaultSchema,
+                        ClientId = modal.ClientId
                     };
                     dbContext.AdminServersSet.Add(item);
                     dbContext.SaveChanges();
@@ -124,7 +142,8 @@ namespace DMS_WebAPI.Utilities
                         UserName = modal.UserName,
                         UserPassword = modal.UserPassword,
                         ConnectionString = modal.ConnectionString,
-                        DefaultSchema = modal.DefaultSchema
+                        DefaultSchema = modal.DefaultSchema,
+                        ClientId = modal.ClientId
                     };
                     dbContext.AdminServersSet.Attach(item);
 

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using BL.Database.Documents.Interfaces;
 using BL.Logic.Common;
 using BL.Model.DocumentCore.IncomingModel;
@@ -38,30 +39,25 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override bool CanExecute()
         {
-
-            _admin.VerifyAccess(_context, CommandType);
-
-            _task = new InternalDocumentTask
+            _document = _operationDb.ModifyDocumentTaskPrepare(_context, Model);
+            if (_document == null)
             {
-                Name = Model.Name,
-                Description = Model.Description,
-                DocumentId = Model.DocumentId,
-                AgentId = Model.AgentId,
-                PositionId = Model.PositionId,
-                PositionExecutorAgentId = Model.PositionExecutorAgentId
-            };
-
+                throw new DocumentNotFoundOrUserHasNoAccess();
+            }
+            if (_document.Tasks.Any())
+            {
+                throw new RecordNotUnique();
+            }
+            _admin.VerifyAccess(_context, CommandType);
             return true;
         }
 
         public override object Execute()
         {
-
-            CommonDocumentUtilities.SetLastChange(_context, _task);
-            _operationDb.AddDocumentTasks(_context, new List<InternalDocumentTask> { _task });
-            return null;
+            CommonDocumentUtilities.GetDocumentTaskOrCreateNew(_context, _document, Model.Name, _context.CurrentPositionId, Model.Description);
+            Document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, null, EnumEventTypes.TaskFormulation, null, Model.Name+" / "+Model.Description);
+            return _operationDb.AddDocumentTasks(_context, _document).ToList(); 
         }
 
-        public override EnumDocumentActions CommandType => EnumDocumentActions.AddDocumentTask;
     }
 }

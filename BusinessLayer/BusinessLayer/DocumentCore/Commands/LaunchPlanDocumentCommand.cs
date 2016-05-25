@@ -2,6 +2,8 @@
 using BL.Database.Documents.Interfaces;
 using BL.Model.Enums;
 using BL.Model.Exception;
+using BL.CrossCutting.DependencyInjection;
+using BL.Logic.SystemServices.AutoPlan;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -61,6 +63,10 @@ namespace BL.Logic.DocumentCore.Commands
             _document.IsLaunchPlan = true;
             _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, _document.Id, EnumEventTypes.LaunchPlan);
             _documentDb.ChangeIsLaunchPlanDocument(_context, _document);
+
+            var aplan = DmsResolver.Current.Get<IAutoPlanService>();
+            aplan.ManualRunAutoPlan(_context);
+
             return Model;
         }
 

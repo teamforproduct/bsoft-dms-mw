@@ -1,5 +1,4 @@
-﻿using BL.Logic.DependencyInjection;
-using BL.Logic.DocumentCore.Interfaces;
+﻿using BL.Logic.DocumentCore.Interfaces;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Web.Http;
@@ -46,8 +45,8 @@ namespace DMS_WebAPI.Controllers.Documents
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            docProc.ExecuteAction(EnumDocumentActions.AddDocumentTask, cxt, model);
-            return Get(model.Id);
+            var newId = (int)docProc.ExecuteAction(EnumDocumentActions.AddDocumentTask, cxt, model);
+            return Get(newId);
         }
 
         /// <summary>
@@ -74,8 +73,8 @@ namespace DMS_WebAPI.Controllers.Documents
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            int docId = (int)docProc.ExecuteAction(EnumDocumentActions.DeleteDocumentTask, cxt, id);
-            return Get(docId);
+            docProc.ExecuteAction(EnumDocumentActions.DeleteDocumentTask, cxt, id);
+            return new JsonResult(null, this);
         }
     }
 }

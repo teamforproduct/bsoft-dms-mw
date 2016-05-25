@@ -1,5 +1,4 @@
-﻿using BL.Logic.DependencyInjection;
-using BL.Logic.DictionaryCore.Interfaces;
+﻿using BL.Logic.DictionaryCore.Interfaces;
 using BL.Model.DictionaryCore.FilterModel;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
@@ -11,9 +10,17 @@ using BL.Model.Enums;
 
 namespace DMS_WebAPI.Controllers.Dictionaries
 {
+    /// <summary>
+    /// Типовой список рассылки
+    /// </summary>
     [Authorize]
     public class DictionaryStandartSendListsController : ApiController
     {
+        /// <summary>
+        /// Получение всех типовых списков рассылки
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
         // GET: api/DictionaryStandartSendLists
         public IHttpActionResult Get([FromUri] FilterDictionaryStandartSendList filter)
         {
@@ -23,6 +30,11 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             return new JsonResult(tmpDicts, this);
         }
 
+        /// <summary>
+        /// Получение списка рассылки по ИД
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         // GET: api/DictionaryStandartSendLists/5
         public IHttpActionResult Get(int id)
         {
@@ -32,6 +44,11 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             return new JsonResult(tmpDict, this);
         }
 
+        /// <summary>
+        /// Добавление типового списка рассылки
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public IHttpActionResult Post([FromBody]ModifyDictionaryStandartSendList model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
@@ -39,7 +56,12 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.AddStandartSendList, cxt, model));
         }
 
-
+        /// <summary>
+        /// Изменение типового списка рассылки
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public IHttpActionResult Put(int id, [FromBody]ModifyDictionaryStandartSendList model)
         {
             model.Id = id;
@@ -59,8 +81,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
 
             tmpDict.ExecuteAction(EnumDictionaryActions.DeleteStandartSendListContent, cxt, id);
-            FrontDictionaryStandartSendList tmp = new FrontDictionaryStandartSendList();
-            tmp.Id = id;
+            var tmp = new FrontDictionaryStandartSendList {Id = id};
 
             return new JsonResult(tmp, this);
 

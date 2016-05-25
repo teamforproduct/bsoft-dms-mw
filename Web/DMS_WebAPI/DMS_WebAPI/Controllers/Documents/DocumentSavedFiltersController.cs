@@ -1,13 +1,6 @@
-﻿using BL.Logic.DependencyInjection;
-using BL.Logic.DocumentCore.Interfaces;
-using BL.Model.DocumentCore;
+﻿using BL.Logic.DocumentCore.Interfaces;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using BL.CrossCutting.DependencyInjection;
 using BL.Model.DocumentCore.IncomingModel;

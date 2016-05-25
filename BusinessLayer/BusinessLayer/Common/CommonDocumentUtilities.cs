@@ -14,6 +14,12 @@ using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
+using System.Text.RegularExpressions;
+using BL.Model.SystemCore.InternalModel;
+using BL.Model.SystemCore.IncomingModel;
+using BL.Database.SystemDb;
+using BL.Model.SystemCore.Filters;
+using BL.Model.SystemCore.FrontModel;
 
 namespace BL.Logic.Common
 {
@@ -33,13 +39,23 @@ namespace BL.Logic.Common
         public static Dictionary<EnumDocumentActions, List<EnumEventTypes>> PermissibleEventTypesForAction =
     new Dictionary<EnumDocumentActions, List<EnumEventTypes>>
         {
-                { EnumDocumentActions.ControlChange, new List<EnumEventTypes> { EnumEventTypes.ControlOn, EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution } },
-                { EnumDocumentActions.ControlTargetChange, new List<EnumEventTypes> { EnumEventTypes.ControlOn, EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution } },
 
-                { EnumDocumentActions.ControlOff, new List<EnumEventTypes> { EnumEventTypes.ControlOn } },
+                { EnumDocumentActions.ControlChange, new List<EnumEventTypes> { EnumEventTypes.ControlOn, EnumEventTypes.ControlChange } },
 
-                { EnumDocumentActions.MarkExecution, new List<EnumEventTypes> { EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution } },
-                { EnumDocumentActions.AcceptResult, new List<EnumEventTypes> { EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution } },
+                { EnumDocumentActions.SendForResponsibleExecutionChange, new List<EnumEventTypes> { EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForResponsibleExecutionChange } },
+
+                { EnumDocumentActions.SendForExecutionChange, new List<EnumEventTypes> { EnumEventTypes.SendForExecution, EnumEventTypes.SendForExecutionChange} },
+
+                { EnumDocumentActions.SendForControlChange, new List<EnumEventTypes> { EnumEventTypes.SendForControl, EnumEventTypes.SendForControlChange} },
+
+                { EnumDocumentActions.ControlTargetChange, new List<EnumEventTypes> { EnumEventTypes.ControlOn, EnumEventTypes.SendForControl, EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution,
+                                                                                      EnumEventTypes.ControlChange, EnumEventTypes.SendForControlChange, EnumEventTypes.SendForResponsibleExecutionChange, EnumEventTypes.SendForExecutionChange,
+                                                                                     } },
+
+                { EnumDocumentActions.ControlOff, new List<EnumEventTypes> { EnumEventTypes.ControlOn, EnumEventTypes.SendForControl, EnumEventTypes.ControlChange, EnumEventTypes.SendForControlChange } },
+
+                { EnumDocumentActions.MarkExecution, new List<EnumEventTypes> { EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution, EnumEventTypes.SendForResponsibleExecutionChange, EnumEventTypes.SendForExecutionChange } },
+                { EnumDocumentActions.AcceptResult, new List<EnumEventTypes> { EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution, EnumEventTypes.SendForResponsibleExecutionChange, EnumEventTypes.SendForExecutionChange } },
                 { EnumDocumentActions.RejectResult, new List<EnumEventTypes> { EnumEventTypes.MarkExecution} },
 
                 { EnumDocumentActions.RejectSigning, new List<EnumEventTypes> { EnumEventTypes.SendForSigning} },
@@ -63,7 +79,7 @@ namespace BL.Logic.Common
         {
             document.CreateDate = DateTime.Now;
             document.ExecutorPositionId = context.CurrentPositionId;
-            document.IsRegistered = false;
+            document.IsRegistered = null;
             document.IsLaunchPlan = false;
             document.LinkId = null;
             SetLastChange(context, document);
@@ -408,7 +424,7 @@ namespace BL.Logic.Common
             };
         }
 
-        public static InternalDocumentPaper GetNewDocumentPaper(IContext context, ModifyDocumentPapers model)
+        public static InternalDocumentPaper GetNewDocumentPaper(IContext context, ModifyDocumentPapers model, int orderNumber)
         {
             return new InternalDocumentPaper
             {
@@ -419,51 +435,88 @@ namespace BL.Logic.Common
                 IsOriginal = model.IsOriginal,
                 IsCopy = model.IsCopy,
                 PageQuantity = model.PageQuantity,
-                OrderNumber = model.OrderNumber,
-                Events = GetNewDocumentPaperEvents(context, null, EnumEventTypes.AddNewPaper),
+                OrderNumber = orderNumber,
+                Events = GetNewDocumentPaperEvents(context, model.DocumentId, null, EnumEventTypes.AddNewPaper),
                 IsInWork = true,
                 LastChangeUserId = context.CurrentAgentId,
                 LastChangeDate = DateTime.Now,
             };
         }
 
-        public static IEnumerable<InternalDocumentPaper> GetNewDocumentPapers(IContext context, ModifyDocumentPapers model)
+        public static IEnumerable<InternalDocumentPaper> GetNewDocumentPapers(IContext context, ModifyDocumentPapers model, int maxOrderNumber)
         {
-            return new List<InternalDocumentPaper>
+            var res = new List<InternalDocumentPaper>();
+            for (int i = 1, l = model.PaperQuantity; i <= l; i++)
             {
-                GetNewDocumentPaper(context,model)
-            };
+                res.Add(GetNewDocumentPaper(context, model, maxOrderNumber + i));
+            }
+            return res;
         }
 
-        public static InternalDocumentPaperEvent GetNewDocumentPaperEvent(IContext context, int? paperId, EnumEventTypes eventType, string description = null, bool IsMarkRecieve = true, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null)
+        public static InternalDocumentEvent GetNewDocumentPaperEvent(IContext context, int documentId, int? paperId, EnumEventTypes eventType, string description = null, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null, bool IsMarkPlan = true, bool IsMarkRecieve = true)
         {
-            return new InternalDocumentPaperEvent
+            return new InternalDocumentEvent
             {
+                DocumentId = documentId,
                 PaperId = paperId ?? 0,
                 EventType = eventType,
+                Date = DateTime.Now,
+                CreateDate = DateTime.Now,
+                Description = description,
                 SourceAgentId = sourceAgentId ?? context.CurrentAgentId,
                 SourcePositionId = sourcePositionId ?? context.CurrentPositionId,
-                SourcePositionExecutorAgentId = GetExecutorAgentIdByPositionId(context, sourcePositionId ?? context.CurrentPositionId),
+                SourcePositionExecutorAgentId = IsMarkPlan ? GetExecutorAgentIdByPositionId(context, sourcePositionId ?? context.CurrentPositionId) : null,
                 TargetPositionId = targetPositionId ?? context.CurrentPositionId,
-                TargetPositionExecutorAgentId = GetExecutorAgentIdByPositionId(context, targetPositionId ?? context.CurrentPositionId),
+                TargetPositionExecutorAgentId = IsMarkPlan ? GetExecutorAgentIdByPositionId(context, targetPositionId ?? context.CurrentPositionId) : null,
                 TargetAgentId = targetAgentId,
-                PlanAgentId = context.CurrentAgentId,
-                PlanDate = DateTime.Now,
-                SendAgentId = IsMarkRecieve ? (int?)context.CurrentAgentId : null,
-                SendDate = IsMarkRecieve ? (DateTime?)DateTime.Now : null,
-                RecieveAgentId = IsMarkRecieve ? (int?)context.CurrentAgentId : null,
-                RecieveDate = IsMarkRecieve ? (DateTime?)DateTime.Now : null,
+                PaperPlanAgentId = IsMarkPlan ? (int?)(sourceAgentId ?? context.CurrentAgentId) : null,
+                PaperPlanDate = IsMarkPlan ? (DateTime?)DateTime.Now : null,
+                PaperSendAgentId = IsMarkRecieve ? (int?)context.CurrentAgentId : null,
+                PaperSendDate = IsMarkRecieve ? (DateTime?)DateTime.Now : null,
+                PaperRecieveAgentId = IsMarkRecieve ? (int?)context.CurrentAgentId : null,
+                PaperRecieveDate = IsMarkRecieve ? (DateTime?)DateTime.Now : null,
                 LastChangeUserId = context.CurrentAgentId,
                 LastChangeDate = DateTime.Now,
             };
         }
 
-        public static IEnumerable<InternalDocumentPaperEvent> GetNewDocumentPaperEvents(IContext context, int? paperId, EnumEventTypes eventType, string description = null, bool IsMarkRecieve = true, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null)
+        public static IEnumerable<InternalDocumentEvent> GetNewDocumentPaperEvents(IContext context, int documentId, int? paperId, EnumEventTypes eventType, string description = null, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null, bool IsMarkPlan = true, bool IsMarkRecieve = true)
         {
-            return new List<InternalDocumentPaperEvent>
+            return new List<InternalDocumentEvent>
             {
-                GetNewDocumentPaperEvent(context,  paperId, eventType, description, IsMarkRecieve, targetPositionId, targetAgentId, sourcePositionId, sourceAgentId )
+                GetNewDocumentPaperEvent(context,  documentId, paperId, eventType, description, targetPositionId, targetAgentId, sourcePositionId, sourceAgentId, IsMarkPlan, IsMarkRecieve)
             };
+        }
+
+        public static void PlanDocumentPaperFromSendList(IContext context, InternalDocument document, InternalDocumentSendList model)
+        {
+            var operationDb = DmsResolver.Current.Get<IDocumentOperationsDbProcess>();
+            document.Papers = operationDb.PlanDocumentPaperFromSendListPrepare(context, model.Id);
+            if (document.Papers?.Any() ?? false)
+            {
+                if (
+                    document.Papers.Any(
+                        x =>
+                            //x.LastPaperEvent.SourcePositionId != model.SourcePositionId ||
+                            x.LastPaperEvent.TargetPositionId != model.SourcePositionId ||
+                            //x.LastPaperEvent.SourceAgentId != model.SourceAgentId ||
+                            //x.LastPaperEvent.TargetAgentId != model.TargetAgentId ||
+                            x.LastPaperEvent.PaperRecieveDate == null))
+
+                {
+                    throw new CouldNotPerformOperationWithPaper();
+                }
+                foreach (var paper in document.Papers.ToList())
+                {
+                    //paper.LastPaperEventId = null;
+                    paper.LastPaperEvent = CommonDocumentUtilities.GetNewDocumentPaperEvent(context, document.Id, paper.Id,
+                        EnumEventTypes.MoveDocumentPaper, null, model.TargetPositionId, model.TargetAgentId, model.SourcePositionId, model.SourceAgentId, true, false);
+                    CommonDocumentUtilities.SetLastChange(context, paper);
+                    paper.LastPaperEventId = null;
+                    paper.LastPaperEvent.Id = paper.NextPaperEventId.Value;
+
+                }
+            }
         }
 
         public static IEnumerable<BaseSystemUIElement> VerifyDocument(IContext ctx, FrontDocument doc, IEnumerable<BaseSystemUIElement> uiElements)
@@ -525,6 +578,94 @@ namespace BL.Logic.Common
                         doc.Addressee = docTemplate.Addressee;
                     }
                 }
+
+                if (docTemplate.Properties?.Any() ?? false)
+                {
+                    var docTempProp = docTemplate.Properties.Where(x => x.Value != null).ToList();
+                    if (docTempProp.Any())
+                    {
+                        if (doc.Properties == null)
+                            doc.Properties = new List<FrontPropertyValue>();
+
+                        var propNotSet = docTempProp.GroupJoin(doc.Properties,
+                                            dp => new { PropertyCode = dp.PropertyCode },
+                                            dtp => new { PropertyCode = dtp.PropertyCode },
+                                            (dtp, dps) => new
+                                            {
+                                                dtp = dtp,
+                                                dp = dps.FirstOrDefault()
+                                            })
+                                        .Where(x => x.dp == null || x.dtp.Value != x.dp.Value)
+                                        .ToList();
+
+                        if (propNotSet.Where(x => x.dp != null).Any())
+                        {
+                            doc.Properties = doc.Properties.GroupJoin(
+                                propNotSet.Where(x => x.dp != null).ToList(),
+                                dp => new { PropertyCode = dp.PropertyCode },
+                                dtp => new { PropertyCode = dtp.dp.PropertyCode },
+                                (dp, dtps) =>
+                                {
+                                    if (dtps.Any())
+                                    {
+                                        var dtp = dtps.First();
+                                        dp.Value = dtp.dtp.Value;
+                                        dp.DisplayValue = dtp.dtp.DisplayValue;
+                                    }
+                                    return dp;
+                                }).ToList();
+                        }
+
+                        if (propNotSet.Where(x => x.dp == null).Any())
+                        {
+                            var _sysDb = DmsResolver.Current.Get<ISystemDbProcess>();
+                            var propLinks = _sysDb.GetPropertyValuesToDocumentFromTemplateDocument(ctx, new FilterPropertyLink { PropertyLinkId = propNotSet.Where(x => x.dp == null).Select(x => x.dtp.PropertyLinkId).ToList() });
+
+                            var props = doc.Properties.ToList();
+
+                            props.AddRange(
+                                propNotSet.Where(x => x.dp == null)
+                                            .Join(propLinks,
+                                                dtp => new { PropertyCode = dtp.dtp.PropertyCode },
+                                                pl => new { PropertyCode = pl.PropertyCode },
+                                                (dtp, pl) => { dtp.dtp.PropertyLinkId = pl.PropertyLinkId; return dtp.dtp; }).ToList()
+                                                );
+
+                            doc.Properties = props;
+                        }
+
+                        uiElements?.Where(x => docTempProp.Select(y => y.PropertyCode).Contains(x.Code)).ToList().ForEach(x => x.IsReadOnly = true);
+                    }
+                }
+
+            }
+            return uiElements;
+        }
+
+        public static IEnumerable<BaseSystemUIElement> VerifyTemplateDocument(IContext ctx, FrontTemplateDocument templateDoc, IEnumerable<BaseSystemUIElement> uiElements)
+        {
+            if (templateDoc.DocumentDirection != EnumDocumentDirections.Incoming)
+            {
+                if (uiElements != null)
+                {
+                    var senderElements = new List<string> { "SenderAgent", "SenderAgentPerson", "Addressee" };
+                    uiElements = uiElements.Where(x => !senderElements.Contains(x.Code)).ToList();
+                }
+                templateDoc.SenderAgentId = null;
+                templateDoc.SenderAgentPersonId = null;
+                templateDoc.Addressee = null;
+            }
+
+            if ((templateDoc.DocumentDirection == EnumDocumentDirections.Incoming) && (uiElements == null)
+                    &&
+                    (
+                        templateDoc.SenderAgentId == null ||
+                        templateDoc.SenderAgentPersonId == null ||
+                        string.IsNullOrEmpty(templateDoc.Addressee)
+                    )
+                )
+            {
+                throw new NeedInformationAboutCorrespondent();
             }
             return uiElements;
         }
@@ -542,15 +683,15 @@ namespace BL.Logic.Common
             //{
             //    throw new DocumentSendListDuplication();
             //}
-
-            if (doc.RestrictedSendLists?.Count() > 0
-                && doc.SendLists.Where(sl => sl.TargetPositionId.HasValue).GroupJoin(doc.RestrictedSendLists
-                    , sl => sl.TargetPositionId
-                    , rsl => rsl.PositionId
-                    , (sl, rsls) => new { sl, rsls }).Any(x => x.rsls.Count() == 0))
-            {
-                throw new DocumentSendListNotFoundInDocumentRestrictedSendList();
-            }
+            //TODO Малинин. Надо вернуть, когда начнутся реальные тесты
+            //if (doc.RestrictedSendLists?.Count() > 0
+            //    && doc.SendLists.Where(sl => sl.TargetPositionId.HasValue).GroupJoin(doc.RestrictedSendLists
+            //        , sl => sl.TargetPositionId
+            //        , rsl => rsl.PositionId
+            //        , (sl, rsls) => new { sl, rsls }).Any(x => x.rsls.Count() == 0))
+            //{
+            //    throw new DocumentSendListNotFoundInDocumentRestrictedSendList();
+            //}
 
             if (doc.IsHard)
             {
@@ -584,7 +725,7 @@ namespace BL.Logic.Common
                     .Select(x => new FrontDocumentSendListStage
                     {
                         Stage = x.s,
-                        SendLists = x.sls.ToList()
+                        SendLists = x.sls.OrderBy(y => y.Id).ToList()
                     }).ToList();
 
             }
@@ -595,6 +736,7 @@ namespace BL.Logic.Common
         {
             return new InternalTemplateAttachedFile
             {
+                DocumentId = src.DocumentId,
                 Extension = src.Extension,
                 Name = src.Name,
                 FileType = src.FileType,
@@ -620,7 +762,9 @@ namespace BL.Logic.Common
                 OrderInDocument = newOrderNumber ?? src.OrderInDocument,
                 Date = DateTime.Now,
                 Version = newVersion ?? 1,
-                WasChangedExternal = false
+                WasChangedExternal = false,
+                ExecutorPositionId = src.ExecutorPositionId,
+                ExecutorPositionExecutorAgentId = src.ExecutorPositionExecutorAgentId,
             };
         }
 
@@ -634,5 +778,235 @@ namespace BL.Logic.Common
             else
                 return null;
         }
+
+        public static void FormationRegistrationNumberByFormula(InternalDocument doc, InternalDocumnRegistration model)
+        {
+            doc.RegistrationJournalPrefixFormula = FormationRegistrationNumberByFormula(doc.RegistrationJournalPrefixFormula, doc, model);
+            doc.RegistrationJournalSuffixFormula = FormationRegistrationNumberByFormula(doc.RegistrationJournalSuffixFormula, doc, model);
+        }
+
+        private static string FormationRegistrationNumberByFormula(string formula, InternalDocument doc, InternalDocumnRegistration model)
+        {
+            if (string.IsNullOrEmpty(formula)) return formula;
+            string pattern = "@/(.*?)/@";
+            string patternFilterSymbol = "c", patternFormulaSymbol = "v", patternLengthSymbol = "l", patternFormatSymbol = "f";
+            string patternFilter = GetPatternFilter(patternFilterSymbol), patternFormula = GetPatternFilter(patternFormulaSymbol), patternLength = GetPatternFilter(patternLengthSymbol), patternFormat = GetPatternFilter(patternFormatSymbol);
+            string res = string.Copy(formula);
+            foreach (Match mFormula in Regex.Matches(formula, pattern))
+            {
+                var oldValue = mFormula.Value;
+                var newValue = string.Empty;
+                var mFilters = Regex.Matches(oldValue, patternFilter);
+                var isContainsInFilter = mFilters.Count == 0;
+                if (!isContainsInFilter)
+                {
+                    foreach (Match mFilter in mFilters)
+                    {
+                        var filter = GetPatternFilterSymbolReplace(mFilter.Value, patternFilterSymbol);
+                        var template = CommonDocumentUtilities.GetFilterTemplateByDocument(doc).ToArray();
+                        if (CommonSystemUtilities.IsContainsInFilter(filter, template))
+                        {
+                            isContainsInFilter = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (isContainsInFilter)
+                {
+                    var mLengths = Regex.Matches(mFormula.Value, patternLength);
+                    int length = 0;
+                    foreach (Match mLength in mLengths)
+                    {
+                        if (int.TryParse(GetPatternFilterSymbolReplace(mLength.Value, patternLengthSymbol), out length))
+                            break;
+                    }
+
+                    var mFormats = Regex.Matches(mFormula.Value, patternLength);
+                    string format = string.Empty;
+                    foreach (Match mFormat in mFormats)
+                    {
+                        format = GetPatternFilterSymbolReplace(mFormat.Value, patternFormatSymbol);
+                        break;
+                    }
+
+                    var mFormulaValues = Regex.Matches(mFormula.Value, patternFormula);
+                    foreach (Match mFormulaValue in mFormulaValues)
+                    {
+                        var formulaValue = (EnumFormulas)Enum.Parse(typeof(EnumFormulas), GetPatternFilterSymbolReplace(mFormulaValue.Value, patternFormulaSymbol));
+
+                        switch (formulaValue)
+                        {
+                            case EnumFormulas.RegistrationJournalId:
+                                newValue = model.RegistrationJournalId.GetValueOrDefault().ToString("D" + length);
+                                break;
+                            case EnumFormulas.RegistrationJournalIndex:
+                                newValue = model.RegistrationJournalIndex;
+                                break;
+                            case EnumFormulas.InitiativeRegistrationFullNumber:
+                                newValue = model.InitiativeRegistrationFullNumber;
+                                break;
+                            case EnumFormulas.InitiativeRegistrationNumberPrefix:
+                                newValue = model.InitiativeRegistrationNumberPrefix;
+                                break;
+                            case EnumFormulas.InitiativeRegistrationNumberSuffix:
+                                newValue = model.InitiativeRegistrationNumberSuffix;
+                                break;
+                            case EnumFormulas.InitiativeRegistrationNumber:
+                                if (model.InitiativeRegistrationNumber.HasValue)
+                                    newValue = model.InitiativeRegistrationNumber.Value.ToString("D" + length);
+                                break;
+                            case EnumFormulas.Date:
+                                if (string.IsNullOrEmpty(format))
+                                    format = "YYYY";
+                                newValue = model.RegistrationDate.ToString(format);
+                                break;
+                            case EnumFormulas.ExecutorPositionDepartmentCode:
+                                newValue = model.ExecutorPositionDepartmentCode;
+                                break;
+                            case EnumFormulas.SubscriptionsPositionDepartmentCode:
+                                newValue = model.SubscriptionsPositionDepartmentCode;
+                                break;
+                            case EnumFormulas.RegistrationJournalDepartmentCode:
+                                newValue = model.RegistrationJournalDepartmentCode;
+                                break;
+                            case EnumFormulas.CurrentPositionDepartmentCode:
+                                newValue = model.CurrentPositionDepartmentCode;
+                                break;
+                            case EnumFormulas.InitiativeRegistrationSenderNumber:
+                                newValue = model.InitiativeRegistrationSenderNumber;
+                                break;
+                            case EnumFormulas.DocumentSendListLastAgentExternalFirstSymbolName:
+                                newValue = model.DocumentSendListLastAgentExternalFirstSymbolName;
+                                break;
+                            case EnumFormulas.OrdinalNumberDocumentLinkForCorrespondent:
+                                newValue = model.OrdinalNumberDocumentLinkForCorrespondent.ToString("D" + length);
+                                break;
+                        }
+                        break;
+                    }
+                }
+                if (string.IsNullOrEmpty(newValue)) newValue = string.Empty;
+                res = res.Replace(oldValue, newValue);
+            }
+            return res;
+        }
+        private static string GetPatternFilterSymbolReplace(string input, string symbol)
+        {
+            if (string.IsNullOrEmpty(input)) input = string.Empty;
+            return input.Replace("{" + symbol + "/", string.Empty).Replace("/" + symbol + "}", "");
+        }
+        private static string GetPatternFilter(string symbol)
+        {
+            return "{" + symbol + "/(.*?)/" + symbol + "}";
+        }
+        /// <summary>
+        /// Формирует список значений документа для фильтрации в динамических свойствах, формирование регистрационого номера по формуле
+        /// </summary>
+        /// <returns></returns>
+        public static IEnumerable<string> GetFilterTemplateByDocument(InternalDocument doc)
+        {
+            var res = new List<string>();
+            if (doc.DocumentTypeId > 0)
+                res.Add($"{nameof(doc.DocumentTypeId)}={doc.DocumentTypeId}");
+            if (doc.DocumentDirection > 0)
+                res.Add($"{nameof(doc.DocumentDirection)}={doc.DocumentDirection}");
+            if (doc.DocumentSubjectId.HasValue && doc.DocumentSubjectId > 0)
+                res.Add($"{nameof(doc.DocumentSubjectId)}={doc.DocumentSubjectId}");
+            return res;
+        }
+
+        public static IEnumerable<string> GetFilterTemplateByDocument(FrontDocument doc)
+        {
+            var res = new List<string>();
+            if (doc.DocumentTypeId.HasValue && doc.DocumentTypeId > 0)
+                res.Add($"{nameof(doc.DocumentTypeId)}={doc.DocumentTypeId}");
+            if (doc.DocumentDirection.HasValue && doc.DocumentDirection > 0)
+                res.Add($"{nameof(doc.DocumentDirection)}={doc.DocumentDirection}");
+            if (doc.DocumentSubjectId.HasValue && doc.DocumentSubjectId > 0)
+                res.Add($"{nameof(doc.DocumentSubjectId)}={doc.DocumentSubjectId}");
+            return res;
+        }
+
+        public static IEnumerable<string> GetFilterTemplateByTemplateDocument(FrontTemplateDocument templateDoc)
+        {
+            var res = new List<string>();
+            if (templateDoc.DocumentTypeId > 0)
+                res.Add($"{nameof(templateDoc.DocumentTypeId)}={templateDoc.DocumentTypeId}");
+            if (templateDoc.DocumentDirection > 0)
+                res.Add($"{nameof(templateDoc.DocumentDirection)}={templateDoc.DocumentDirection}");
+            if (templateDoc.DocumentSubjectId.HasValue && templateDoc.DocumentSubjectId > 0)
+                res.Add($"{nameof(templateDoc.DocumentSubjectId)}={templateDoc.DocumentSubjectId}");
+            return res;
+        }
+
+        public static IEnumerable<string> GetFilterTemplateByTemplateDocument(InternalTemplateDocument templateDoc)
+        {
+            var res = new List<string>();
+            if (templateDoc.DocumentTypeId > 0)
+                res.Add($"{nameof(templateDoc.DocumentTypeId)}={templateDoc.DocumentTypeId}");
+            if (templateDoc.DocumentDirection > 0)
+                res.Add($"{nameof(templateDoc.DocumentDirection)}={templateDoc.DocumentDirection}");
+            if (templateDoc.DocumentSubjectId.HasValue && templateDoc.DocumentSubjectId > 0)
+                res.Add($"{nameof(templateDoc.DocumentSubjectId)}={templateDoc.DocumentSubjectId}");
+            return res;
+        }
+
+        public static InternalPropertyValue GetNewPropertyValue(ModifyPropertyValue model)
+        {
+            var item = new InternalPropertyValue
+            {
+                PropertyLinkId = model.PropertyLinkId,
+                ValueString = model.Value
+            };
+            double tmpNumeric;
+            if (double.TryParse(model.Value, out tmpNumeric))
+            {
+                item.ValueString = null;
+                item.ValueNumeric = tmpNumeric;
+            }
+            DateTime tmpDate;
+            if (DateTime.TryParse(model.Value, out tmpDate))
+            {
+                item.ValueString = null;
+                item.ValueDate = tmpDate;
+            }
+            return item;
+        }
+
+        public static IEnumerable<InternalPropertyValue> GetNewPropertyValues(IEnumerable<ModifyPropertyValue> model)
+        {
+            return model.Select(GetNewPropertyValue);
+        }
+
+        public static InternalPropertyValue GetNewPropertyValue(FrontPropertyValue model)
+        {
+            var value = model.Value != null ? model.Value.ToString() : null;
+            var item = new InternalPropertyValue
+            {
+                PropertyLinkId = model.PropertyLinkId,
+                ValueString = value
+            };
+            double tmpNumeric;
+            if (double.TryParse(value, out tmpNumeric))
+            {
+                item.ValueString = null;
+                item.ValueNumeric = tmpNumeric;
+            }
+            DateTime tmpDate;
+            if (DateTime.TryParse(value, out tmpDate))
+            {
+                item.ValueString = null;
+                item.ValueDate = tmpDate;
+            }
+            return item;
+        }
+
+        public static IEnumerable<InternalPropertyValue> GetNewPropertyValues(IEnumerable<FrontPropertyValue> model)
+        {
+            return model.Select(GetNewPropertyValue);
+        }
+
+
     }
 }

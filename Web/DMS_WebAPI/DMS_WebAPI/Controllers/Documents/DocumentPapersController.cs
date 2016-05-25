@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using BL.Logic.DependencyInjection;
+using System.Linq;
 using BL.Logic.DocumentCore.Interfaces;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
@@ -47,10 +47,10 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns>Измененная запись</returns>
         public IHttpActionResult Post([FromBody]ModifyDocumentPapers model)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            docProc.ExecuteAction(EnumDocumentActions.AddDocumentPaper, cxt, model);
-            return Get(model.Id);
+            var newIds = (List<int>)docProc.ExecuteAction(EnumDocumentActions.AddDocumentPaper, cxt, model);
+            return Get(new FilterDocumentPaper {Id = newIds });
         }
 
         /// <summary>
@@ -77,23 +77,8 @@ namespace DMS_WebAPI.Controllers.Documents
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            int docId = (int)docProc.ExecuteAction(EnumDocumentActions.DeleteDocumentPaper, cxt, id);
-            return Get(docId);
-        }
-
-        /// <summary>
-        /// Отметить создание копий бумажных носителей
-        /// </summary>
-        /// <param name="model">модель</param>
-        /// <returns></returns>
-        [Route("CopyDocumentPaper")]
-        [HttpPost]
-        public IHttpActionResult CopyDocumentPaper(CopyDocumentPaper model)
-        {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentService>();
-            int docId = (int)docProc.ExecuteAction(EnumDocumentActions.CopyDocumentPaper, cxt, model);
-            return Get(docId);
+            docProc.ExecuteAction(EnumDocumentActions.DeleteDocumentPaper, cxt, id);
+            return new JsonResult(null, this);
         }
 
         /// <summary>
@@ -118,7 +103,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns></returns>
         [Route("MarkСorruptionDocumentPaper")]
         [HttpPost]
-        public IHttpActionResult MarkСorruptionDocumentPaper(EventPaper model)
+        public IHttpActionResult MarkСorruptionDocumentPaper(PaperEvent model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
@@ -137,68 +122,84 @@ namespace DMS_WebAPI.Controllers.Documents
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            int docId = (int)docProc.ExecuteAction(EnumDocumentActions.PlanDocumentPaperEvent, cxt, model);
-            return Get(docId);
+            docProc.ExecuteAction(EnumDocumentActions.PlanDocumentPaperEvent, cxt, model);
+            return Get(new FilterDocumentPaper { Id = model.Select(x => x.Id).ToList() });
         }
 
         /// <summary>
         /// Отменить планирование движения бумажного носителя
         /// </summary>
-        /// <param name="id">ИД записи</param>
+        /// <param name="model">перечень бумажных носителей</param>
         /// <returns></returns>
         [Route("CancelPlanDocumentPaperEvent")]
         [HttpPost]
-        public IHttpActionResult CancelPlanDocumentPaperEvent(EventPaper model)
+        public IHttpActionResult CancelPlanDocumentPaperEvent(PaperList model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.CancelPlanDocumentPaperEvent, cxt, model);
-            return Get(model.Id);
+            return Get( new FilterDocumentPaper {Id = model.PaperId, PaperListId = model.PaperListId});
         }
 
         /// <summary>
         /// Отметить передачу бумажного носителя
         /// </summary>
-        /// <param name="id">ИД записи</param>
+        /// <param name="model">перечень бумажных носителей</param>
         /// <returns></returns>
         [Route("SendDocumentPaperEvent")]
         [HttpPost]
-        public IHttpActionResult SendDocumentPaperEvent(EventPaper model)
+        public IHttpActionResult SendDocumentPaperEvent(PaperList model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.SendDocumentPaperEvent, cxt, model);
-            return Get(model.Id);
+            return Get(new FilterDocumentPaper { Id = model.PaperId, PaperListId = model.PaperListId });
         }
 
         /// <summary>
         /// Отменить передачу бумажного носителя
         /// </summary>
-        /// <param name="id">ИД записи</param>
+        /// <param name="model">перечень бумажных носителей</param>
         /// <returns></returns>
         [Route("CancelSendDocumentPaperEvent")]
         [HttpPost]
-        public IHttpActionResult CancelSendDocumentPaperEvent(EventPaper model)
+        public IHttpActionResult CancelSendDocumentPaperEvent(PaperList model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.CancelSendDocumentPaperEvent, cxt, model);
-            return Get(model.Id);
+            return Get(new FilterDocumentPaper { Id = model.PaperId, PaperListId = model.PaperListId });
         }
 
         /// <summary>
         /// Отметить прием бумажного носителя
         /// </summary>
-        /// <param name="id">ИД записи</param>
+        /// <param name="model">перечень бумажных носителей</param>
         /// <returns></returns>
         [Route("RecieveDocumentPaperEvent")]
         [HttpPost]
-        public IHttpActionResult RecieveDocumentPaperEvent(EventPaper model)
+        public IHttpActionResult RecieveDocumentPaperEvent(PaperList model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.RecieveDocumentPaperEvent, cxt, model);
-            return Get(model.Id);
+            return Get(new FilterDocumentPaper { Id = model.PaperId, PaperListId = model.PaperListId });
+        }
+
+        /// <summary>
+        /// Получение списка доступных команд по документу
+        /// </summary>
+        /// <param name="id">ИД документа</param>
+        /// <returns>Массив команд</returns>
+        [Route("Actions/{id}")]
+        [HttpGet]
+        public IHttpActionResult Actions(int id)
+        {
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cmdService = DmsResolver.Current.Get<ICommandService>();
+            var actions = cmdService.GetDocumentPaperActions(cxt, id);
+
+            return new JsonResult(actions, this);
         }
 
     }

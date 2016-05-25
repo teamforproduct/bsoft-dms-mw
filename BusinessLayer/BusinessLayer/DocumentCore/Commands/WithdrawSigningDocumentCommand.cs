@@ -60,8 +60,9 @@ namespace BL.Logic.DocumentCore.Commands
                 || !CanBeDisplayed(_docWait.OnEvent.SourcePositionId.Value)
                 )
             {
-                throw new CouldNotPerformThisOperation();
+                throw new CouldNotPerformOperation();
             }
+            _operationDb.ControlOffSendListPrepare(_context, _document);
             _operationDb.ControlOffSubscriptionPrepare(_context, _document);
             _context.SetCurrentPosition(_docWait.OnEvent.SourcePositionId);
             _admin.VerifyAccess(_context, CommandType);
@@ -70,11 +71,19 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override object Execute()
         {
+            _docWait.ResultTypeId = (int)EnumResultTypes.CloseByWithdrawing;
             _docWait.OffEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, _docWait.DocumentId, _eventType, Model.EventDate, Model.Description, _docWait.OnEvent.TaskId, _docWait.OnEvent.IsAvailableWithinTask, _docWait.OnEvent.TargetPositionId, null, _docWait.OnEvent.SourcePositionId);
             CommonDocumentUtilities.SetLastChange(_context, _docWait);
+            var sendList = _document.SendLists.FirstOrDefault(x => x.IsInitial);
+            if (sendList != null)
+            {
+                sendList.StartEventId = null;
+            }
+            CommonDocumentUtilities.SetLastChange(Context, _document.SendLists);
             var subscription = _document.Subscriptions.First();
             subscription.Description = CommandType.ToString();
             subscription.DoneEvent = null;
+            subscription.SubscriptionStates = EnumSubscriptionStates.No;
             CommonDocumentUtilities.SetLastChange(Context, _document.Subscriptions);
             _operationDb.CloseDocumentWait(_context, _document);
             return _document.Id;

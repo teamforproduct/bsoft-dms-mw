@@ -4,6 +4,8 @@ using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Exception;
+using BL.Model.Enums;
+using System;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -58,7 +60,7 @@ namespace BL.Logic.DocumentCore.Commands
                 || !CanBeDisplayed(_docWait.OnEvent.SourcePositionId.Value)
                 )
             {
-                throw new CouldNotPerformThisOperation();
+                throw new CouldNotPerformOperation();
             }
             _context.SetCurrentPosition(_docWait.OnEvent.SourcePositionId);
             _admin.VerifyAccess(_context, CommandType);
@@ -73,7 +75,7 @@ namespace BL.Logic.DocumentCore.Commands
             newWait.TargetDescription = _docWait.TargetDescription;
             newWait.TargetAttentionDate = _docWait.TargetAttentionDate;
 
-            var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, _docWait.DocumentId, _docWait.OnEvent.EventType, Model.EventDate, Model.Description, _docWait.OnEvent.TaskId, _docWait.OnEvent.IsAvailableWithinTask, _docWait.OnEvent.TargetPositionId);
+            var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, _docWait.DocumentId, _eventType, Model.EventDate, Model.Description, _docWait.OnEvent.TaskId, _docWait.OnEvent.IsAvailableWithinTask, _docWait.OnEvent.TargetPositionId);
             var oldEvent = _docWait.OnEvent;
 
             newEvent.Id = newWait.OnEventId = oldEvent.Id;
@@ -82,6 +84,7 @@ namespace BL.Logic.DocumentCore.Commands
             newWait.ParentWait = _docWait;
 
             _docWait.Id = 0;
+            _docWait.ResultTypeId = (int)EnumResultTypes.CloseByChanging;
             oldEvent.Id = _docWait.OnEventId = 0;
             _docWait.OffEventId = newEvent.Id;
 
@@ -92,6 +95,8 @@ namespace BL.Logic.DocumentCore.Commands
             _operationDb.ChangeDocumentWait(_context, newWait);
             return _docWait.DocumentId;
         }
+
+        private EnumEventTypes _eventType => (EnumEventTypes)Enum.Parse(typeof(EnumEventTypes), CommandType.ToString());
 
     }
 }

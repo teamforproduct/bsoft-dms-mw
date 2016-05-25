@@ -7,6 +7,7 @@ using BL.Model.Exception;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.SystemCore.InternalModel;
 using System;
+using System.Collections.Generic;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -34,7 +35,7 @@ namespace BL.Logic.DocumentCore.Commands
         public override bool CanBeDisplayed(int positionId)
         {
             if (_document.ExecutorPositionId != positionId
-                || _document.IsRegistered
+                || (_document.IsRegistered.HasValue && _document.IsRegistered.Value)
                 )
             {
                 return false;
@@ -54,7 +55,7 @@ namespace BL.Logic.DocumentCore.Commands
             _admin.VerifyAccess(_context, CommandType);
             if (!CanBeDisplayed(_context.CurrentPositionId))
             {
-                throw new CouldNotPerformThisOperation();
+                throw new CouldNotPerformOperation();
             }
             return true;
         }
@@ -69,47 +70,43 @@ namespace BL.Logic.DocumentCore.Commands
             _document.SenderNumber = Model.SenderNumber;
             _document.SenderDate = Model.SenderDate;
             _document.Addressee = Model.Addressee;
-            _document.AccessLevel = Model.AccessLevel;
+            _document.IsRegistered = _document.IsRegistered ?? false;
+            _document.AccessLevel = (EnumDocumentAccesses)Model.AccessLevelId;
             if (_document.Accesses?.Count() > 0)
             {
                 var docAcc = _document.Accesses.First();
                 CommonDocumentUtilities.SetLastChange(_context, docAcc);
-                docAcc.AccessLevel = Model.AccessLevel;
+                docAcc.AccessLevel = (EnumDocumentAccesses)Model.AccessLevelId;
             }
 
-            if (Model.Properties!=null)
+            if (Model.Properties != null)
             {
-                _document.Properties = Model.Properties.Select(x =>
-                {
-                    var item = new InternalPropertyValue
-                    {
-                        PropertyLinkId = x.PropertyLinkId,
-                        ValueString = x.Value
-                    };
-                    double tmpNumeric;
-                    if (double.TryParse(x.Value, out tmpNumeric))
-                    {
-                        item.ValueString = null;
-                        item.ValueNumeric = tmpNumeric;
-                    }
-                    DateTime tmpDate;
-                    if (DateTime.TryParse(x.Value, out tmpDate))
-                    {
-                        item.ValueString = null;
-                        item.ValueDate = tmpDate;
-                    }
-                    CommonDocumentUtilities.SetLastChange(_context, item);
-                    return item;
-                }).ToList();
+                _document.Properties = CommonDocumentUtilities.GetNewPropertyValues(Model.Properties).ToList();
+                CommonDocumentUtilities.SetLastChange(_context, _document.Properties);
 
                 var model = new InternalPropertyValues { Object = EnumObjects.Documents, PropertyValues = _document.Properties };
 
-                CommonSystemUtilities.VerifyPropertyValues(_context, model, new string[] { $"{nameof(_document.DocumentTypeId)}={_document.DocumentTypeId}", $"{nameof(_document.DocumentDirection)}={_document.DocumentDirection}", $"{nameof(_document.DocumentSubjectId)}={_document.DocumentSubjectId}" });
+                CommonSystemUtilities.VerifyPropertyValues(_context, model, CommonDocumentUtilities.GetFilterTemplateByDocument(_document).ToArray());
 
                 _document.Properties = model.PropertyValues;
             }
+            else
+            {
+                var model = new InternalPropertyValues { Object = EnumObjects.Documents, PropertyValues = new List<InternalPropertyValue>() };
 
-            CommonDocumentUtilities.VerifyDocument(_context, new FrontDocument(_document), null);    //TODO отвязаться от фронт-модели
+                CommonSystemUtilities.VerifyPropertyValues(_context, model, CommonDocumentUtilities.GetFilterTemplateByDocument(_document).ToArray());
+            }
+
+            var frontDoc = new FrontDocument(_document);
+
+            CommonDocumentUtilities.VerifyDocument(_context, frontDoc, null);    //TODO отвязаться от фронт-модели
+
+            //TODO отвязаться от фронт-модели
+            if (frontDoc.Properties?.Any()??false)
+            {
+                _document.Properties = CommonDocumentUtilities.GetNewPropertyValues(frontDoc.Properties).ToList();
+                CommonDocumentUtilities.SetLastChange(_context, _document.Properties);
+            }
 
             _documentDb.ModifyDocument(_context, _document);
 

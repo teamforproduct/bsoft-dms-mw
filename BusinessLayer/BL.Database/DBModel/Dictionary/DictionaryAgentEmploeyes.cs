@@ -12,7 +12,9 @@ namespace BL.Database.DBModel.Dictionary
     {
         public int Id { get; set; }
         [MaxLength(2000)]
+        [Index("IX_PersonnelNumber", 1, IsUnique = true)]
         public string PersonnelNumber { get; set; }
+        [Index("IX_AgentPersonId", 1, IsUnique = true)]
         public int AgentPersonId { get; set; }
         [MaxLength(2000)]
         public string Description { get; set; }

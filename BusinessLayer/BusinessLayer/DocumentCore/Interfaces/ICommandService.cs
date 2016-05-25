@@ -9,5 +9,7 @@ namespace BL.Logic.DocumentCore.Interfaces
         object ExecuteCommand(ICommand cmd);
         IEnumerable<InternalDictionaryPositionWithActions> GetDocumentActions(IContext ctx, int documentId);
         IEnumerable<InternalDictionaryPositionWithActions> GetDocumentSendListActions(IContext cxt, int id);
+        IEnumerable<InternalDictionaryPositionWithActions> GetDocumentFileActions(IContext ctx, int documentId);
+        IEnumerable<InternalDictionaryPositionWithActions> GetDocumentPaperActions(IContext cxt, int id);
     }
 }

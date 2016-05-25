@@ -30,14 +30,14 @@ namespace BL.Database.DBModel.Document
         public Nullable<int> DocumentSubjectId { get; set; }
         [MaxLength(2000)]
         public string Description { get; set; }
-        public bool IsRegistered { get; set; }
+        public bool? IsRegistered { get; set; }
         public Nullable<int> RegistrationJournalId { get; set; }
         [MaxLength(2000)]
         public string NumerationPrefixFormula { get; set; }
         public Nullable<int> RegistrationNumber { get; set; }
-        [MaxLength(2000)]
+        [MaxLength(100)]
         public string RegistrationNumberSuffix { get; set; }
-        [MaxLength(2000)]
+        [MaxLength(100)]
         public string RegistrationNumberPrefix { get; set; }
         public Nullable<DateTime> RegistrationDate { get; set; }
         public int ExecutorPositionId { get; set; }

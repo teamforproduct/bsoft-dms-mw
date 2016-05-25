@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using BL.Model.Enums;
+using BL.Model.SystemCore.FrontModel;
 
 namespace BL.Model.DocumentCore.FrontModel
 {
@@ -35,6 +36,8 @@ namespace BL.Model.DocumentCore.FrontModel
 
         public virtual IEnumerable<FrontTemplateDocumentRestrictedSendLists> RestrictedSendLists { get; set; }
         public virtual IEnumerable<FrontTemplateDocumentSendLists> SendLists { get; set; }
-        
+
+        public IEnumerable<FrontPropertyValue> Properties { get; set; }
+
     }
 }

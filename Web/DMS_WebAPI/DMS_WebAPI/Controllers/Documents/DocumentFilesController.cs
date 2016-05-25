@@ -1,5 +1,4 @@
-﻿using BL.Logic.DependencyInjection;
-using DMS_WebAPI.Results;
+﻿using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Web.Http;
 using BL.CrossCutting.DependencyInjection;
@@ -8,10 +7,20 @@ using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.Enums;
+using System.Collections.Generic;
+using BL.Model.SystemCore;
+using System.Threading.Tasks;
+using System.Net;
+using System.Net.Http;
+using System.Web;
+using System.IO;
+using Newtonsoft.Json;
+using System.Linq;
 
 namespace DMS_WebAPI.Controllers.Documents
 {
     [Authorize]
+    [RoutePrefix("api/v2/DocumentFiles")]
     public class DocumentFilesController : ApiController
     {
         //GET: api/Files
@@ -29,14 +38,46 @@ namespace DMS_WebAPI.Controllers.Documents
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docFileProc = DmsResolver.Current.Get<IDocumentFileService>();
-            return new JsonResult(docFileProc.GetDocumentFiles(cxt,id), this);
+            return new JsonResult(docFileProc.GetDocumentFiles(cxt, id), this);
+        }
+
+        /// <summary>
+        /// Общий список файлов
+        /// </summary>
+        /// <param name="filter">фильтр</param>
+        /// <returns></returns>
+        [Route("GetFileList")]
+        [HttpGet]
+        public IHttpActionResult GetFileList([FromUri]FilterDocumentAttachedFile filter, [FromUri]UIPaging paging)
+        {
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var docFileProc = DmsResolver.Current.Get<IDocumentFileService>();
+            var res = new JsonResult(docFileProc.GetDocumentFiles(cxt, filter, paging), this);
+            res.Paging = paging;
+            return res;
         }
 
         // POST: api/Files
-        public IHttpActionResult Post([FromBody]ModifyDocumentFiles model)
+        //public IHttpActionResult Post([FromBody]ModifyDocumentFiles model)
+        //{
+        //    var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+        //    var docProc = DmsResolver.Current.Get<IDocumentService>();
+        //    docProc.ExecuteAction(EnumDocumentActions.AddDocumentFile, cxt, model);
+        //    return Get(model.DocumentId);
+        //}
+
+        public IHttpActionResult Post(ModifyDocumentFiles model, IEnumerable<HttpPostedFileBase> files)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
+
+            foreach (var file in model.Files)
+            {
+                var fileData = files.FirstOrDefault(x => x.FileName.Equals(file.FileName));
+                if (fileData != null)
+                    file.PostedFileData = fileData;
+            }
+
             docProc.ExecuteAction(EnumDocumentActions.AddDocumentFile, cxt, model);
             return Get(model.DocumentId);
         }
@@ -44,20 +85,36 @@ namespace DMS_WebAPI.Controllers.Documents
         // PUT: api/Files/5
         public IHttpActionResult Put([FromBody]ModifyDocumentFile model)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var fl = (FrontDocumentAttachedFile)docProc.ExecuteAction(EnumDocumentActions.ModifyDocumentFile, cxt, model);
-           
-            return new JsonResult(fl, this);
+            var fileId = (int)docProc.ExecuteAction(EnumDocumentActions.ModifyDocumentFile, cxt, model);
+
+            return GetFileList(new FilterDocumentAttachedFile { AttachedFileId = new List<int> { fileId } }, null);
         }
 
         // DELETE: api/Files
-        public IHttpActionResult Delete([FromBody]FilterDocumentFileIdentity model)
+        public IHttpActionResult Delete([FromUri]FilterDocumentFileIdentity model)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.DeleteDocumentFile, cxt, model);
             return new JsonResult(null, this);
+        }
+
+        /// <summary>
+        /// Получение списка доступных команд по документу
+        /// </summary>
+        /// <param name="id">ИД документа</param>
+        /// <returns>Массив команд</returns>
+        [Route("Actions/{id}")]
+        [HttpGet]
+        public IHttpActionResult Actions(int id)
+        {
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cmdService = DmsResolver.Current.Get<ICommandService>();
+            var actions = cmdService.GetDocumentFileActions(cxt, id);
+
+            return new JsonResult(actions, this);
         }
     }
 }

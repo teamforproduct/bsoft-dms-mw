@@ -18,12 +18,10 @@ namespace BL.Model.DocumentCore.Actions
         /// <summary>
         /// ИД типа результата
         /// </summary>
-        [Required]
         public int ResultTypeId { get; set; }
         /// <summary>
         /// Комментарий
         /// </summary>
-        [Required]
         public string Description { get; set; }
         /// <summary>
         /// Каскадное закрытие контроля

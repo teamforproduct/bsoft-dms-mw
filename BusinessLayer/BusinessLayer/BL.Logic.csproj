@@ -31,6 +31,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CrystalDecisions.CrystalReports.Engine, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Thirdparty\Crystal Reports\CrystalDecisions.CrystalReports.Engine.dll</HintPath>
+    </Reference>
+    <Reference Include="CrystalDecisions.ReportSource, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Thirdparty\Crystal Reports\CrystalDecisions.ReportSource.dll</HintPath>
+    </Reference>
+    <Reference Include="CrystalDecisions.Shared, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Thirdparty\Crystal Reports\CrystalDecisions.Shared.dll</HintPath>
+    </Reference>
     <Reference Include="Lucene.Net">
       <HintPath>..\..\Thirdparty\Lucene\Lucene.Net.dll</HintPath>
       <EmbedInteropTypes>False</EmbedInteropTypes>
@@ -42,6 +54,8 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
@@ -52,6 +66,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdminCore\AdminService.cs" />
+    <Compile Include="AdminCore\Interfaces\IAdminService.cs" />
+    <Compile Include="AdminCore\Interfaces\ILanguageService.cs" />
+    <Compile Include="AdminCore\LanguageService.cs" />
     <Compile Include="Common\BasePropertCommand.cs" />
     <Compile Include="Common\BaseDictionaryCommand.cs" />
     <Compile Include="Common\BaseDocumentCommand.cs" />
@@ -59,8 +77,6 @@
     <Compile Include="Common\CommonDocumentUtilities.cs" />
     <Compile Include="Common\CommonSystemUtilities.cs" />
     <Compile Include="DependencyInjection\LogicModule.cs" />
-    <Compile Include="AdminCore\AdminService.cs" />
-    <Compile Include="AdminCore\Interfaces\IAdminService.cs" />
     <Compile Include="DictionaryCore\AddressType\AddDictionaryAddressTypeCommand.cs" />
     <Compile Include="DictionaryCore\AddressType\DeleteDictionaryAddressTypeCommand.cs" />
     <Compile Include="DictionaryCore\AddressType\ModifyDictionaryAddressTypeCommand.cs" />
@@ -130,11 +146,13 @@
     <Compile Include="DictionaryCore\DocumentType\AddDictionaryDocumentTypeCommand.cs" />
     <Compile Include="DictionaryCore\DocumentType\ModifyDictionaryDocumentTypeCommand.cs" />
     <Compile Include="DictionaryCore\Interfaces\IDictionaryService.cs" />
+    <Compile Include="DocumentCore\AdditionalCommands\DeleteDocumentLinkCommand.cs" />
     <Compile Include="DocumentCore\AdditionalCommands\AddDocumentTaskCommand.cs" />
     <Compile Include="DocumentCore\AdditionalCommands\DeleteDocumentTaskCommand.cs" />
     <Compile Include="DocumentCore\AdditionalCommands\ModifyDocumentTaskCommand.cs" />
     <Compile Include="DocumentCore\Commands\AffixSigningDocumentCommand.cs" />
     <Compile Include="DocumentCore\Commands\AcceptResultDocumentCommand.cs" />
+    <Compile Include="DocumentCore\Commands\ChangePositionDocumentCommand.cs" />
     <Compile Include="DocumentCore\Commands\ControlTargetChangeDocumentCommand.cs" />
     <Compile Include="DocumentCore\Commands\MarkDocumentEventAsReadCommand.cs" />
     <Compile Include="DocumentCore\Commands\WithdrawSigningDocumentCommand.cs" />
@@ -145,16 +163,24 @@
     <Compile Include="DocumentCore\Commands\SendForSigningDocumentCommand.cs" />
     <Compile Include="DocumentCore\Commands\SendForResponsibleExecutionDocumentCommand.cs" />
     <Compile Include="DocumentCore\Commands\SendForControlDocumentCommand.cs" />
+    <Compile Include="DocumentCore\TemplateCommandFactory.cs" />
     <Compile Include="DocumentCore\PaperCommands\AddDocumentPaperListCommand.cs" />
     <Compile Include="DocumentCore\PaperCommands\AddDocumentPaperCommand.cs" />
     <Compile Include="DocumentCore\PaperCommands\DeleteDocumentPaperListCommand.cs" />
     <Compile Include="DocumentCore\PaperCommands\DeleteDocumentPaperCommand.cs" />
+    <Compile Include="DocumentCore\PaperCommands\CancelSendDocumentPaperEventCommand.cs" />
+    <Compile Include="DocumentCore\PaperCommands\RecieveDocumentPaperEventCommand.cs" />
+    <Compile Include="DocumentCore\PaperCommands\PlanDocumentPaperEventCommand.cs" />
+    <Compile Include="DocumentCore\PaperCommands\CancelPlanDocumentPaperEventCommand.cs" />
+    <Compile Include="DocumentCore\PaperCommands\SendDocumentPaperEventCommand.cs" />
     <Compile Include="DocumentCore\PaperCommands\MarkСorruptionDocumentPaperCommand.cs" />
     <Compile Include="DocumentCore\PaperCommands\MarkOwnerDocumentPaperCommand.cs" />
     <Compile Include="DocumentCore\PaperCommands\ModifyDocumentPaperListCommand.cs" />
     <Compile Include="DocumentCore\PaperCommands\ModifyDocumentPaperCommand.cs" />
     <Compile Include="DocumentCore\DocumentTaskService.cs" />
     <Compile Include="DocumentCore\Interfaces\IDocumentTaskService.cs" />
+    <Compile Include="DocumentCore\ReportCommand\ReportRegisterTransmissionDocumentsCommand.cs" />
+    <Compile Include="DocumentCore\ReportCommand\ReportRegistrationCardDocumentCommand.cs" />
     <Compile Include="DocumentCore\SendListCommands\AddByStandartSendListDocumentSendListCommand.cs" />
     <Compile Include="DocumentCore\SendListCommands\AddByStandartSendListDocumentRestrictedSendListCommand.cs" />
     <Compile Include="DocumentCore\AdditionalCommands\AddDocumentFileCommand.cs" />
@@ -205,8 +231,56 @@
     <Compile Include="DocumentCore\DocumentService.cs" />
     <Compile Include="DocumentCore\Interfaces\IDocumentService.cs" />
     <Compile Include="DocumentCore\Interfaces\ITemplateDocumentService.cs" />
+    <Compile Include="DocumentCore\TemplateCommands\AddTemplateRestrictedSendListCommand.cs" />
+    <Compile Include="DocumentCore\TemplateCommands\AddTemplateTaskCommand.cs" />
+    <Compile Include="DocumentCore\TemplateCommands\AddTemplateSendListCommand.cs" />
+    <Compile Include="DocumentCore\TemplateCommands\AddTemplateCommand.cs" />
+    <Compile Include="DocumentCore\TemplateCommands\AddTemplateFileCommand.cs" />
+    <Compile Include="DocumentCore\TemplateCommands\DeleteTemplateRestrictedSendListCommand.cs" />
+    <Compile Include="DocumentCore\TemplateCommands\DeleteTemplateTaskCommand.cs" />
+    <Compile Include="DocumentCore\TemplateCommands\DeleteTemplateSendListCommand.cs" />
+    <Compile Include="DocumentCore\TemplateCommands\DeleteTemplateCommand.cs" />
+    <Compile Include="DocumentCore\TemplateCommands\DeleteTemplateFileCommand.cs" />
+    <Compile Include="DocumentCore\TemplateCommands\ModifyTemplateRestrictedSendListCommand.cs" />
+    <Compile Include="DocumentCore\TemplateCommands\ModifyTemplateTaskCommand.cs" />
+    <Compile Include="DocumentCore\TemplateCommands\ModifyTemplateSendListCommand.cs" />
+    <Compile Include="DocumentCore\TemplateCommands\ModifyTemplateCommand.cs" />
+    <Compile Include="DocumentCore\TemplateCommands\ModifyTemplateFileCommand.cs" />
     <Compile Include="DocumentCore\TemplateDocumentService.cs" />
+    <Compile Include="Reports\DataSetCrystalReports.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DataSetCrystalReports.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Reports\DmsReport.cs" />
+    <Compile Include="Reports\ReportRegisterTransmissionDocuments.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ReportRegisterTransmissionDocuments.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\ReportRegistrationCardIncomingDocument.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ReportRegistrationCardIncomingDocument.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\ReportRegistrationCardOutcomingDocument.cs">
+      <DependentUpon>ReportRegistrationCardOutcomingDocument.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\ReportRegistrationCardInternalDocument.cs">
+      <DependentUpon>ReportRegistrationCardInternalDocument.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="SystemServices\ClearTrashDocuments\ClearTrashDocumentsService.cs" />
+    <Compile Include="SystemServices\ClearTrashDocuments\IClearTrashDocumentsService.cs" />
     <Compile Include="SystemServices\AutoPlan\AutoPlanService.cs" />
+    <Compile Include="SystemServices\AutoPlan\IAutoPlanService.cs" />
     <Compile Include="SystemServices\BaseSystemWorkerService.cs" />
     <Compile Include="SystemServices\FullTextSearch\FullTextIndexWorker.cs" />
     <Compile Include="SystemServices\FullTextSearch\FullTextSearchService.cs" />
@@ -216,6 +290,7 @@
     <Compile Include="SystemServices\MailWorker\BaseMailSender.cs" />
     <Compile Include="SystemServices\MailWorker\BasicSmtpMailSender.cs" />
     <Compile Include="SystemServices\MailWorker\IMailSender.cs" />
+    <Compile Include="SystemServices\MailWorker\IMailSenderWorkerService.cs" />
     <Compile Include="SystemServices\MailWorker\ISystemWorkerService.cs" />
     <Compile Include="SystemServices\MailWorker\MailSenderWorkerService.cs" />
     <Compile Include="SystemServices\MailWorker\SSLMailSender.cs" />
@@ -231,6 +306,9 @@
     <Compile Include="PropertyCore\Interfaces\IPropertyService.cs" />
     <Compile Include="PropertyCore\PropertyService.cs" />
     <Compile Include="Settings\Setting.cs" />
+    <Compile Include="SystemServices\QueueWorker\IQueueTask.cs" />
+    <Compile Include="SystemServices\QueueWorker\QueueTask.cs" />
+    <Compile Include="SystemServices\QueueWorker\QueueWorker.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BL.CrossCutting\BL.CrossCutting.csproj">
@@ -248,8 +326,39 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Reports\DataSetCrystalReports.xsc">
+      <DependentUpon>DataSetCrystalReports.xsd</DependentUpon>
+    </None>
+    <None Include="Reports\DataSetCrystalReports.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DataSetCrystalReports.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Reports\DataSetCrystalReports.xss">
+      <DependentUpon>DataSetCrystalReports.xsd</DependentUpon>
+    </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Reports\ReportRegisterTransmissionDocuments.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>ReportRegisterTransmissionDocuments.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\ReportRegistrationCardIncomingDocument.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>ReportRegistrationCardIncomingDocument.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\ReportRegistrationCardOutcomingDocument.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>ReportRegistrationCardOutcomingDocument.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\ReportRegistrationCardInternalDocument.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>ReportRegistrationCardInternalDocument.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

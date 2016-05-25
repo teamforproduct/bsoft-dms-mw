@@ -8,13 +8,13 @@ using BL.Model.Enums;
 
 namespace BL.Model.DocumentCore.InternalModel
 {
-    public class InternalDocumentPaperEvent : LastChangeInfo
+    public class InternalDocumentPaperEvent1111 : LastChangeInfo
     {
         public int Id { get; set; }
-        public int PaperId { get; set; }
-        public int SendTypeId { get; set; }
+        public int? PaperId { get; set; }
         public EnumEventTypes EventType { get; set; }
         public Nullable<int> EventId { get; set; }
+        public Nullable<int> SendListId { get; set; }
         public string Description { get; set; }
         public Nullable<int> SourcePositionId { get; set; }
         public Nullable<int> SourcePositionExecutorAgentId { get; set; }
@@ -23,7 +23,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public Nullable<int> TargetPositionExecutorAgentId { get; set; }
         public Nullable<int> TargetAgentId { get; set; }
         public Nullable<int> PaperListId { get; set; }
-        public int PlanAgentId { get; set; }
+        public int? PlanAgentId { get; set; }
         public DateTime? PlanDate { get; set; }
         public Nullable<int> SendAgentId { get; set; }
         public Nullable<DateTime> SendDate { get; set; }

@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Web;
 using BL.CrossCutting.Interfaces;
 using BL.Logic.AdminCore.Interfaces;
-using BL.Logic.DependencyInjection;
 using BL.Model.Exception;
 using System.Linq;
 using BL.CrossCutting.Context;
 using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Helpers;
 
 namespace DMS_WebAPI.Utilities
 {
@@ -35,10 +35,15 @@ namespace DMS_WebAPI.Utilities
             var contextValue = _casheContexts[token];
             try
             {
-                contextValue.LastUsage = DateTime.Now;
                 var cxt = (IContext)contextValue.StoreObject;
-                cxt.SetCurrentPosition(currentPositionId);
-                return cxt;
+
+                VerifyNumberOfConnections(cxt);
+
+                contextValue.LastUsage = DateTime.Now;
+
+                var request_ctx = new DefaultContext(cxt);
+                request_ctx.SetCurrentPosition(currentPositionId);
+                return request_ctx;
             }
             catch (InvalidCastException invalidCastException)
             {
@@ -51,7 +56,7 @@ namespace DMS_WebAPI.Utilities
         /// </summary>
         /// <returns>Typed setting value.</returns>
         public IContext Remove(string token = null)
-        { 
+        {
             if (string.IsNullOrEmpty(token)) token = Token.ToLower();
             if (!_casheContexts.ContainsKey(token))
             {
@@ -71,15 +76,29 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
+        public void SetUserPositions(string token, List<int> positionsIdList)
+        {
+            if (!_casheContexts.ContainsKey(token))
+            {
+                throw new UserUnauthorized();
+            }
+
+            var contextValue = _casheContexts[token];
+
+            contextValue.LastUsage = DateTime.Now;
+            var context = (IContext)contextValue.StoreObject;
+            context.CurrentPositionsIdList = positionsIdList;
+        }
+
+
         /// <summary>
         /// Add new server to the list of available servers
         /// </summary>
         /// <param name="token"></param>
-        /// <param name="db">new server parameters</param>
         /// <param name="userId"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        public IContext Set(string token, DatabaseModel db, string userId, bool isSuperAdmin)
+        public IContext Set(string token, string userId)
         {
             token = token.ToLower();
             if (!_casheContexts.ContainsKey(token))
@@ -91,31 +110,53 @@ namespace DMS_WebAPI.Utilities
                     {
                         Token = token,
                         UserId = userId
-                    },
-                    CurrentDB = db
+                    }
                 };
-
-                if (!(db==null && isSuperAdmin))
-                {
-                    var agent = DmsResolver.Current.Get<IAdminService>().GetEmployee(context, userId);
-
-                    if (agent != null)
-                    {
-                        context.CurrentEmployee.AgentId = agent.AgentId;
-                        context.CurrentEmployee.Name = agent.Name;
-                        context.CurrentEmployee.LanguageId = agent.LanguageId;
-                    }
-                    else if (!isSuperAdmin)
-                    {
-                        throw new AccessIsDenied();
-                    }
-                }
-
+                //TODO insert here licence INFO 
                 Save(token, context);
                 return context;
             }
 
             throw new ArgumentException();
+        }
+
+        /// <summary>
+        /// Add new server to the list of available servers
+        /// </summary>
+        /// <param name="db">new server parameters</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
+        public void Set(DatabaseModel db)
+        {
+            string token = Token.ToLower();
+            if (!_casheContexts.ContainsKey(token))
+            {
+                throw new UserUnauthorized();
+            }
+
+            var contextValue = _casheContexts[token];
+
+            var context = (IContext)contextValue.StoreObject;
+
+            VerifyNumberOfConnections(context, db.ClientId, true);
+
+            contextValue.LastUsage = DateTime.Now;
+
+            context.CurrentDB = db;
+
+            var agent = DmsResolver.Current.Get<IAdminService>().GetEmployee(context, context.CurrentEmployee.UserId);
+
+            if (agent != null)
+            {
+                context.CurrentEmployee.AgentId = agent.AgentId;
+                context.CurrentEmployee.Name = agent.Name;
+                context.CurrentEmployee.LanguageId = agent.LanguageId;
+            }
+            else
+            {
+                throw new AccessIsDenied();
+            }
+
         }
 
         private void Save(IContext val)
@@ -135,6 +176,42 @@ namespace DMS_WebAPI.Utilities
             {
                 _casheContexts.Remove(key);
             }
+        }
+
+        public void VerifyNumberOfConnections(IContext context, int? clientId = null, bool isAddNew = false)
+        {
+            if (context == null) return;
+            if (!clientId.HasValue)
+                clientId = context.CurrentClientId;
+            if (!clientId.HasValue) return;
+
+            var si = new SystemInfo();
+
+            var lic = context.ClientLicence;
+
+            if (lic == null)
+            {
+                var sdbw = new SystemDbWorker();
+                lic = sdbw.GetLicenceInfo(clientId.GetValueOrDefault());
+            }
+
+            var regCode = si.GetRegCode(lic);
+
+            if (lic.IsConcurenteLicence)
+            {
+                var now = DateTime.Now.AddMinutes(-5);
+                var count = _casheContexts
+                    .Where(x => x.Value.LastUsage > now)
+                    .Select(x => (IContext)x.Value.StoreObject)
+                    .Count(x => x.CurrentClientId == clientId);
+
+                if (isAddNew) count++;
+
+                lic.ConcurenteNumberOfConnectionsNow = count;
+            }
+
+            VerifyLicence.Verify(regCode, lic);
+
         }
 
         public void ClearCache()

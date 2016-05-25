@@ -10,6 +10,8 @@ using BL.CrossCutting.Interfaces;
 using System.Data.Entity;
 using BL.Model.Database;
 using DMS_WebAPI.DBModel;
+using System.Collections.Generic;
+using System.Data.Entity.ModelConfiguration.Conventions;
 
 namespace DMS_WebAPI.Models
 {
@@ -23,6 +25,8 @@ namespace DMS_WebAPI.Models
             // Add custom user claims here
             return userIdentity;
         }
+
+        public virtual ICollection<AspNetUserServers> UserServers { get; set; }
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
@@ -40,10 +44,14 @@ namespace DMS_WebAPI.Models
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            //modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
         }
 
         public virtual DbSet<AdminLanguages> AdminLanguagesSet { get; set; }
         public virtual DbSet<AdminLanguageValues> AdminLanguageValuesSet { get; set; }
         public virtual DbSet<AdminServers> AdminServersSet { get; set; }
+        public virtual DbSet<DBModel.AspNetClients> AspNetClientsSet { get; set; }
+        public virtual DbSet<DBModel.AspNetUserServers> AspNetUserServersSet { get; set; }
+        public virtual DbSet<DBModel.AspNetLicences> AspNetLicencesSet { get; set; }
     }
 }

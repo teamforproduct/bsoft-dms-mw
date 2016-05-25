@@ -1,4 +1,4 @@
-﻿using BL.Logic.DependencyInjection;
+﻿using System.Collections.Generic;
 using BL.Logic.DocumentCore.Interfaces;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
@@ -42,12 +42,12 @@ namespace DMS_WebAPI.Controllers.Documents
         /// </summary>
         /// <param name="model"></param>
         /// <returns>Измененная запись</returns>
-        public IHttpActionResult Post([FromBody]ModifyDocumentPaperLists model)
+        public IHttpActionResult Post([FromBody]AddDocumentPaperLists model)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            docProc.ExecuteAction(EnumDocumentActions.AddDocumentPaperList, cxt, model);
-            return Get(model.Id);
+            var newIds = (List<int>)docProc.ExecuteAction(EnumDocumentActions.AddDocumentPaperList, cxt, model);
+            return Get(new FilterDocumentPaperList { PaperListId = newIds });
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace DMS_WebAPI.Controllers.Documents
         public IHttpActionResult Put(int id, [FromBody]ModifyDocumentPaperLists model)
         {
             model.Id = id;
-            var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.ModifyDocumentPaperList, cxt, model);
             return Get(model.Id);
@@ -74,8 +74,8 @@ namespace DMS_WebAPI.Controllers.Documents
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            int docId = (int)docProc.ExecuteAction(EnumDocumentActions.DeleteDocumentPaperList, cxt, id);
-            return Get(docId);
+            docProc.ExecuteAction(EnumDocumentActions.DeleteDocumentPaperList, cxt, id);
+            return new JsonResult(null, this);
         }
     }
 }

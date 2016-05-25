@@ -19,7 +19,7 @@ namespace BL.Logic.Common
             return $"{ctx.CurrentDB.Address}/{ctx.CurrentDB.DefaultDatabase}";
         }
 
-        private static bool IsContainsInFilter(string propertyFilter, string[] template)
+        public static bool IsContainsInFilter(string propertyFilter, string[] template)
         {
             if (string.IsNullOrEmpty(propertyFilter)) return true;
 
@@ -64,6 +64,31 @@ namespace BL.Logic.Common
             {
                 throw new NotFilledWithAdditionalRequiredAttributes();
             }
+        }
+
+        public static void VerifyPropertyLinksCompare(IEnumerable<InternalPropertyLink> first, IEnumerable<InternalPropertyLink> second)
+        {
+            var res = first.GroupJoin(second,
+                oKey => new { PropertyId = oKey.PropertyId, Filers = oKey.Filers },
+                iKey => new { PropertyId = iKey.PropertyId, Filers = iKey.Filers },
+                (f, ss) => !ss.Any())
+                .Any(x => x);
+
+            if (res)
+            {
+                throw new TemplateDocumentIsNotValid();
+            }
+        }
+
+        public static IEnumerable<InternalPropertyLink> GetPropertyLinks(IContext ctx, EnumObjects systemObject, string[] template)
+        {
+            var _systemDb = DmsResolver.Current.Get<ISystemDbProcess>();
+
+            var propertyLinks = _systemDb.GetInternalPropertyLinks(ctx, new FilterPropertyLink { Object = new List<EnumObjects> { systemObject } });
+
+            propertyLinks = propertyLinks.Where(x => IsContainsInFilter(x.Filers, template)).ToList();
+
+            return propertyLinks;
         }
 
         public static IEnumerable<BaseSystemUIElement> GetPropertyUIElements(IContext ctx, EnumObjects systemObject, string[] template)

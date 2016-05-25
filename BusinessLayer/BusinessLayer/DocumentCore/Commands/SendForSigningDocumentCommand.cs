@@ -56,10 +56,11 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new PlanPointHasAlredyBeenLaunched();
             }
-            if (!Model.TargetPositionId.HasValue || _document.Waits != null)
+            if (!Model.TargetPositionId.HasValue)
             {
                 throw new WrongDocumentSendListEntry();
             }
+            CommonDocumentUtilities.PlanDocumentPaperFromSendList(_context, _document, Model);
             return true;
         }
         public override object Execute()

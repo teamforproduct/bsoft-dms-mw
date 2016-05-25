@@ -11,9 +11,13 @@ namespace BL.Database.DBModel.Dictionary
     public class DictionaryAgentContacts
     {
         public int Id { get; set; }
+        [Index("IX_AgentContactTypeContact", 1, IsUnique = true)]
         public int AgentId { get; set; }
+        [Index("IX_AgentContactTypeContact", 2, IsUnique = true)]
+        [Index("IX_ContactTypeId", 1)]
         public int ContactTypeId { get; set; }
         [MaxLength(2000)]
+        [Index("IX_AgentContactTypeContact", 3, IsUnique = true)]
         public string Contact { get; set; }
         [MaxLength(2000)]
         public string Description { get; set; }

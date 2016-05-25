@@ -3,6 +3,7 @@ using System.Linq;
 using BL.CrossCutting.Interfaces;
 using BL.Model.Database;
 using BL.Model.Exception;
+using BL.Model.SystemCore;
 using BL.Model.Users;
 
 namespace BL.CrossCutting.Context
@@ -11,8 +12,72 @@ namespace BL.CrossCutting.Context
     {
         private int? _currentPositionId;
         private List<int> _currentPositionsIdList;
-        public DatabaseModel _currentDB;
+        private DatabaseModel _currentDb;
         public Employee CurrentEmployee { get; set; }
+
+        public DefaultContext()
+        {
+        }
+
+        public DefaultContext(IContext ctx)
+        {
+            var def = ctx as DefaultContext;
+            if (def != null)
+            {
+                try
+                {
+                    CurrentDB = new DatabaseModel
+                    {
+                        Id = ctx.CurrentDB.Id,
+                        Name = ctx.CurrentDB.Name,
+                        ServerType = ctx.CurrentDB.ServerType,
+                        IntegrateSecurity = false,
+                        Address = ctx.CurrentDB.Address,
+                        DefaultDatabase = ctx.CurrentDB.DefaultDatabase,
+                        UserName = ctx.CurrentDB.UserName,
+                        UserPassword = ctx.CurrentDB.UserPassword,
+                        DefaultSchema = ctx.CurrentDB.DefaultSchema,
+                        ConnectionString = ctx.CurrentDB.ConnectionString,
+                        ClientId = ctx.CurrentDB.ClientId,
+                    };
+                }
+                catch (DatabaseIsNotSet)
+                {
+                    CurrentDB = null;
+                }
+
+                CurrentEmployee = new Employee
+                {
+                    AgentId = ctx.CurrentEmployee.AgentId,
+                    LanguageId = ctx.CurrentEmployee.LanguageId,
+                    Name = ctx.CurrentEmployee.Name,
+                    Token = ctx.CurrentEmployee.Token,
+                    UserId = ctx.CurrentEmployee.UserId,
+                };
+
+                ClientLicence = ctx.ClientLicence;
+
+                try
+                {
+                    _currentPositionId = ctx.CurrentPositionId;
+                }
+                catch (UserPositionIsNotDefined)
+                {
+                    _currentPositionId = null;
+                }
+
+                try
+                {
+                    CurrentPositionsIdList = ctx.CurrentPositionsIdList?.ToList();
+                }
+                catch (UserPositionIsNotDefined)
+                {
+                    CurrentPositionsIdList = null;
+                }
+            }
+        }
+
+
         public List<int> CurrentPositionsIdList
         {
             get
@@ -62,20 +127,33 @@ namespace BL.CrossCutting.Context
         }
 
         public bool IsAdmin => false;
+        public LicenceInfo ClientLicence { get; set; }
 
         public DatabaseModel CurrentDB
         {
             get
             {
-                if (_currentDB == null)
+                if (_currentDb == null)
                 {
                     throw new DatabaseIsNotSet();
                 }
-                return _currentDB;
+                return _currentDb;
             }
             set
             {
-                _currentDB = value;
+                _currentDb = value;
+            }
+        }
+
+        public int CurrentClientId
+        {
+            get
+            {
+                if (_currentDb == null)
+                {
+                    return 0;
+                }
+                return _currentDb.ClientId;
             }
         }
     }

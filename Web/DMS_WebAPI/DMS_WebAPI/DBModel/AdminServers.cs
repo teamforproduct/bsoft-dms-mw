@@ -1,12 +1,14 @@
-﻿using BL.Database.DBModel.Admin;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DMS_WebAPI.DBModel
 {
     public class AdminServers
     {
+        public AdminServers()
+        {
+            this.UserServers = new HashSet<AspNetUserServers>();
+        }
         /// <summary>
         /// ID 
         /// </summary>
@@ -44,5 +46,10 @@ namespace DMS_WebAPI.DBModel
         /// </summary>
         public string ConnectionString { get; set; }
         public string DefaultSchema { get; set; }
+        public int? ClientId { get; set; }
+        [ForeignKey("ClientId")]
+        public virtual AspNetClients Client { get; set; }
+
+        public virtual ICollection<AspNetUserServers> UserServers { get; set; }
     }
 }

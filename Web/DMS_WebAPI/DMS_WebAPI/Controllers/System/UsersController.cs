@@ -6,6 +6,8 @@ using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
 using System.Web.Http;
 using BL.CrossCutting.DependencyInjection;
+using BL.Model.Exception;
+using BL.Logic.DictionaryCore.Interfaces;
 
 namespace DMS_WebAPI.Controllers
 {
@@ -13,6 +15,22 @@ namespace DMS_WebAPI.Controllers
     [RoutePrefix("api/v2/Users")]
     public class UsersController : ApiController
     {
+        /// <summary>
+        /// Получение информации о пользователе
+        /// </summary>
+        /// <returns>список должностей</returns>
+        [Route("UserInfo")]
+        [HttpGet]
+        public IHttpActionResult GetUserInfo()
+        {
+            var context = DmsResolver.Current.Get<UserContext>().Get();
+            var dicProc = DmsResolver.Current.Get<IDictionaryService>();
+
+            var agent = dicProc.GetDictionaryAgent(context, context.CurrentAgentId);
+
+            return new JsonResult(agent, this);
+        }
+
         /// <summary>
         /// Получение списка должностей, доступных текущего для пользователя
         /// </summary>
@@ -46,10 +64,12 @@ namespace DMS_WebAPI.Controllers
         [Route("ChoosenPositions")]
         public IHttpActionResult Post([FromBody]List<int> positionsIdList)
         {
-            var context = DmsResolver.Current.Get<UserContext>().Get();
+            var user_context = DmsResolver.Current.Get<UserContext>();
+            var context = user_context.Get();
             var admProc = DmsResolver.Current.Get<IAdminService>();
             admProc.VerifyAccess(context, new VerifyAccess() { PositionsIdList = positionsIdList });
-            context.CurrentPositionsIdList = positionsIdList;
+            user_context.SetUserPositions(context.CurrentEmployee.Token, positionsIdList);
+            //context.CurrentPositionsIdList = positionsIdList;
             //cxt.CurrentPositions = new List<CurrentPosition>() { new CurrentPosition { CurrentPositionId = positionId } };
             return new JsonResult(null, this);
         }
@@ -59,10 +79,48 @@ namespace DMS_WebAPI.Controllers
         /// </summary>
         /// <returns>список серверов</returns>
         [Route("Servers")]
-        [AllowAnonymous]
+        [HttpGet]
         public IHttpActionResult GetServers()
         {
-            return new JsonResult(new Servers().GetServersByUser(), this);
+            var context = DmsResolver.Current.Get<UserContext>().Get();
+            return new JsonResult(new Servers().GetServersByUser(context.CurrentEmployee.UserId), this);
+        }
+
+        /// <summary>
+        /// Установить сервер для использования
+        /// </summary>
+        /// <param name="serverId"></param>
+        /// <returns></returns>
+        [Route("Servers")]
+        [HttpPost]
+        public IHttpActionResult SetServers([FromBody]int serverId)
+        {
+            var mngContext = DmsResolver.Current.Get<UserContext>();
+
+            var db = new Servers().GetServer(serverId);
+            if (db == null)
+            {
+                throw new DatabaseIsNotFound();
+            }
+
+            mngContext.Set(db);
+
+
+            return new JsonResult(null, this);
+        }
+
+        /// <summary>
+        /// Получить код програмы
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [Route("RegCode")]
+        [HttpGet]
+        public IHttpActionResult GetRegCode(int id)
+        {
+            var sdbw = new SystemDbWorker();
+            var lic = sdbw.GetLicenceInfo(id);
+            return new JsonResult(new SystemInfo().GetProgramRegCode(lic), this);
         }
     }
 }

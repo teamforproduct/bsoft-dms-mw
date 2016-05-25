@@ -18,5 +18,6 @@ namespace BL.Model.SystemCore.IncomingModel
         public string SelectFilter { get; set; }
         public string SelectFieldCode { get; set; }
         public string SelectDescriptionFieldCode { get; set; }
+        public string SelectTable { get; set; }
     }
 }

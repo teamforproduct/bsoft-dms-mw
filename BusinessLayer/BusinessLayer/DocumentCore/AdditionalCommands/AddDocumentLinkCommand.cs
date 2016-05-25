@@ -30,6 +30,12 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override bool CanBeDisplayed(int positionId)
         {
+            if (_document.ExecutorPositionId != positionId
+                )
+            {
+                return false;
+            }
+
             return true;
         }
 
@@ -46,6 +52,10 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             }
             _context.SetCurrentPosition(_document.ExecutorPositionId);
             _admin.VerifyAccess(_context, CommandType);
+            if (!CanBeDisplayed(_context.CurrentPositionId))
+            {
+                throw new CouldNotPerformOperation();
+            }
             return true;
         }
 
@@ -56,6 +66,5 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             return null;
         }
 
-        public override EnumDocumentActions CommandType => EnumDocumentActions.AddDocumentLink;
     }
 }

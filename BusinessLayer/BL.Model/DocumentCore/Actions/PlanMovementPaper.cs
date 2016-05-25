@@ -5,11 +5,11 @@ namespace BL.Model.DocumentCore.Actions
     /// <summary>
     /// Модель создания копий бумажных носителей
     /// </summary>
-    public class PlanMovementPaper: EventPaper
+    public class PlanMovementPaper: PaperEvent
     {
         /// <summary>
         /// ИД должности, кому направляется БН
         /// </summary>
-        public int TargetPosition { get; set; }
+        public int TargetPositionId { get; set; }
     }
 }

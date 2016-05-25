@@ -17,7 +17,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                return CommonQueries.GetDocumentRestrictedSendList(dbContext, new FilterDocumentRestrictedSendList { Id = new List<int> { id } }).FirstOrDefault();
+                return CommonQueries.GetDocumentRestrictedSendList(dbContext, ctx, new FilterDocumentRestrictedSendList { Id = new List<int> { id } }).FirstOrDefault();
             }
         }
 
@@ -25,7 +25,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                return CommonQueries.GetDocumentRestrictedSendList(dbContext, new FilterDocumentRestrictedSendList { DocumentId = new List<int> { documentId } });
+                return CommonQueries.GetDocumentRestrictedSendList(dbContext, ctx, new FilterDocumentRestrictedSendList { DocumentId = new List<int> { documentId } });
             }
         }
 
@@ -33,7 +33,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                return CommonQueries.GetDocumentSendList(dbContext, new FilterDocumentSendList { DocumentId = new List<int> { documentId } });
+                return CommonQueries.GetDocumentSendList(dbContext, ctx, new FilterDocumentSendList { DocumentId = new List<int> { documentId } });
             }
         }
 
@@ -41,7 +41,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                return CommonQueries.GetDocumentSendList(dbContext, new FilterDocumentSendList { Id = new List<int> { id } }).FirstOrDefault();
+                return CommonQueries.GetDocumentSendList(dbContext, ctx, new FilterDocumentSendList { Id = new List<int> { id } }).FirstOrDefault();
             }
         }
   

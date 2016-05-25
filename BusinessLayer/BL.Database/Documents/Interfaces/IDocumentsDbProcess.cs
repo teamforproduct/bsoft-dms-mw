@@ -6,6 +6,7 @@ using BL.Model.DocumentCore.InternalModel;
 using BL.Model.SystemCore;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.IncomingModel;
+using BL.Model.DocumentCore.ReportModel;
 
 namespace BL.Database.Documents.Interfaces
 {
@@ -18,7 +19,14 @@ namespace BL.Database.Documents.Interfaces
         IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging);
         FrontDocument GetDocument(IContext ctx, int documentId, FilterDocumentById filter);
 
-        InternalDocument RegisterDocumentPrepare(IContext ctx, RegisterDocument model);
+        InternalDocument ReportRegistrationCardDocumentPrepare(IContext ctx, int documentId);
+        ReportDocument ReportRegistrationCardDocument(IContext ctx, int documentId);
+
+        //InternalDocument ReportTransmissionDocumentPaperEventPrepare(IContext ctx, int documentId)
+        List<ReportDocument> ReportRegisterTransmissionDocuments(IContext ctx, int paperListId);
+
+        InternalDocument RegisterDocumentPrepare(IContext ctx, RegisterDocumentBase model);
+        InternalDocumnRegistration RegisterModelDocumentPrepare(IContext context, RegisterDocumentBase model);
         void GetNextDocumentRegistrationNumber(IContext ctx, InternalDocument document);
         bool VerifyDocumentRegistrationNumber(IContext ctx, InternalDocument document);
 
@@ -28,7 +36,9 @@ namespace BL.Database.Documents.Interfaces
         InternalDocument DeleteDocumentPrepare(IContext context, int documentId);
 
         InternalDocument ChangeExecutorDocumentPrepare(IContext ctx, ChangeExecutor model);
+        InternalDocument ChangePositionDocumentPrepare(IContext ctx, ChangePosition model);
         void ChangeExecutorDocument(IContext ctx, InternalDocument document);
+        void ChangePositionDocument(IContext ctx, ChangePosition model, InternalDocument document);
         void RegisterDocument(IContext context, InternalDocument document);
 
         InternalDocument ChangeIsLaunchPlanDocumentPrepare(IContext context, int documentId);
@@ -47,7 +57,7 @@ namespace BL.Database.Documents.Interfaces
 
         IEnumerable<FrontDocumentPaperList> GetDocumentPaperLists(IContext ctx, FilterDocumentPaperList filter);
 
-        FrontDocumentPaperList GetDocumentPaperListById(IContext ctx, int id);
+        FrontDocumentPaperList GetDocumentPaperList(IContext ctx, int id);
         #endregion DocumentPaperLists   
 
     }
