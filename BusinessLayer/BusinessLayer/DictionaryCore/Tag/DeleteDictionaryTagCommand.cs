@@ -40,7 +40,7 @@ namespace BL.Logic.DictionaryCore.Tag
                     Id = Model
                   
                 };
-                _dictDb.DeleteDictionaryTag(_context, item);
+                _dictDb.DeleteTag(_context, item);
                 return null;
             }
             catch (Exception ex)

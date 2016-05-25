@@ -45,7 +45,7 @@ namespace BL.Logic.DictionaryCore.DocumentType
                     Id = Model
 
                 };
-                _dictDb.DeleteDictionaryAddressType(_context, newAddrType);
+                _dictDb.DeleteAddressType(_context, newAddrType);
                 return null;
             }
             catch (Exception ex)

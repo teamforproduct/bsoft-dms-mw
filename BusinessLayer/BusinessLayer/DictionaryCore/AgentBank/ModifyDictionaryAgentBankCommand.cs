@@ -30,7 +30,7 @@ namespace BL.Logic.DictionaryCore.AgentBank
 
         public override bool CanExecute()
         {
-            var agents = _dictDb.GetDictionaryAgentBanks(_context, new FilterDictionaryAgentBank
+            var agents = _dictDb.GetAgentBanks(_context, new FilterDictionaryAgentBank
             {
                 MFOCode = Model.MFOCode,
                 IsActive=Model.IsActive,
@@ -51,7 +51,7 @@ namespace BL.Logic.DictionaryCore.AgentBank
             {
                 var newBank = new InternalDictionaryAgentBank(Model);
                 CommonDocumentUtilities.SetLastChange(_context, newBank);
-                _dictDb.UpdateDictionaryAgentBank(_context, newBank);
+                _dictDb.UpdateAgentBank(_context, newBank);
             }
             catch (DictionaryRecordWasNotFound)
             {

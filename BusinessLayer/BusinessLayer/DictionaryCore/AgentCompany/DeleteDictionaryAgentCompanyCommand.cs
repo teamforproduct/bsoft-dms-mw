@@ -43,7 +43,7 @@ namespace BL.Logic.DictionaryCore.AgentCompany
                     Id = Model
 
                 };
-                _dictDb.DeleteDictionaryAgentCompany(_context, newCompany);
+                _dictDb.DeleteAgentCompany(_context, newCompany);
                 return null;
             }
             catch (Exception ex)

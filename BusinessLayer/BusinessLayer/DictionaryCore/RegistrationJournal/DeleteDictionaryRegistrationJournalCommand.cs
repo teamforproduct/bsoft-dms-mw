@@ -45,7 +45,7 @@ namespace BL.Logic.DictionaryCore.DocumentType
                     Id = Model
 
                 };
-                _dictDb.DeleteDictionaryRegistrationJournal(_context, drj);
+                _dictDb.DeleteRegistrationJournal(_context, drj);
                 return null;
             }
             catch (Exception ex)

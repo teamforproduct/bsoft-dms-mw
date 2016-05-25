@@ -31,7 +31,7 @@ namespace BL.Logic.DictionaryCore.Contact
         public override bool CanExecute()
         {
             _admin.VerifyAccess(_context, CommandType, false);
-            var spr = _dictDb.GetDictionaryContacts(_context,Model.AgentId, 
+            var spr = _dictDb.GetContacts(_context,Model.AgentId, 
                    new FilterDictionaryContact {
                        Contact = Model.Value,
                        ContactTypeId = new List<int> { Model.ContactTypeId },
@@ -53,7 +53,7 @@ namespace BL.Logic.DictionaryCore.Contact
             {
                 var newContact = new InternalDictionaryContact(Model);                
                 CommonDocumentUtilities.SetLastChange(_context, newContact);
-                return _dictDb.AddDictionaryContact(_context, newContact);
+                return _dictDb.AddContact(_context, newContact);
             }
      
             catch (Exception ex)

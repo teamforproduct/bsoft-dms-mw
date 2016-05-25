@@ -52,7 +52,7 @@ namespace BL.Logic.DictionaryCore.DocumentType
             {
                 var dds = CommonDictionaryUtilities.DocumentSubjectModifyToInternal(_context, Model);
 
-                _dictDb.UpdateDictionaryDocumentSubject(_context, dds);
+                _dictDb.UpdateDocumentSubject(_context, dds);
             }
             catch (DictionaryRecordWasNotFound)
             {

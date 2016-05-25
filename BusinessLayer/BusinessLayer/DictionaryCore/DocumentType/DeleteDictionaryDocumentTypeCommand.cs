@@ -44,7 +44,7 @@ namespace BL.Logic.DictionaryCore.DocumentType
                     Id = Model
                   
                 };
-                _dictDb.DeleteDictionaryDocumentType(_context, newDocType);
+                _dictDb.DeleteDocumentType(_context, newDocType);
                 return null;
             }
             catch (Exception ex)

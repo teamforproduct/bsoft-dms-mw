@@ -54,7 +54,7 @@ namespace BL.Logic.DictionaryCore.DocumentType
             {
                 var dds = CommonDictionaryUtilities.DepartmentModifyToInternal(_context, Model);
 
-                return _dictDb.AddDictionaryDepartment(_context, dds);
+                return _dictDb.AddDepartment(_context, dds);
             }
             catch (Exception ex)
             {

@@ -45,7 +45,7 @@ namespace BL.Logic.DictionaryCore.ContactType
             {
                 var newContactType = new InternalDictionaryContactType(Model);
                 CommonDocumentUtilities.SetLastChange(_context, newContactType);
-                _dictDb.UpdateDictionaryContactType(_context, newContactType);
+                _dictDb.UpdateContactType(_context, newContactType);
             }
             catch (DictionaryRecordWasNotFound)
             {

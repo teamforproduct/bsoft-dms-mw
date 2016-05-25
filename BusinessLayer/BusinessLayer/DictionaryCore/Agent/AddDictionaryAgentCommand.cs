@@ -43,7 +43,7 @@ namespace BL.Logic.DictionaryCore.Agent
             {
                 var newAgent = new InternalDictionaryAgent(Model);
                 CommonDocumentUtilities.SetLastChange(_context, newAgent);
-                return _dictDb.AddDictionaryAgent(_context, newAgent);
+                return _dictDb.AddAgent(_context, newAgent);
             }
             catch (Exception ex)
             {

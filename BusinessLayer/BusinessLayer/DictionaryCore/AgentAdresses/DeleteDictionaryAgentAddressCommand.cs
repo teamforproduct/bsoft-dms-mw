@@ -43,7 +43,7 @@ namespace BL.Logic.DictionaryCore.AgentAdresses
                     Id = Model
 
                 };
-                _dictDb.DeleteDictionaryAgentAddress(_context, newAddr);
+                _dictDb.DeleteAgentAddress(_context, newAddr);
                 return null;
             }
             catch (Exception ex)

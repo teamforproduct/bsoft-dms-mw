@@ -32,7 +32,7 @@ namespace BL.Logic.DictionaryCore.StandartSendList
         public override bool CanExecute()
         {
             _admin.VerifyAccess(_context, CommandType, false);
-            var spr = _dictDb.GetDictionaryStandartSendLists(_context, new FilterDictionaryStandartSendList
+            var spr = _dictDb.GetStandartSendLists(_context, new FilterDictionaryStandartSendList
             {
                Name = Model.Name,
                PositionID = Model.PositionId,
@@ -57,7 +57,7 @@ namespace BL.Logic.DictionaryCore.StandartSendList
                     
                 };
                 CommonDocumentUtilities.SetLastChange(_context, newList);
-                return _dictDb.AddDictionaryStandartSendList(_context, newList);
+                return _dictDb.AddStandartSendList(_context, newList);
             }
             catch (Exception ex)
             {

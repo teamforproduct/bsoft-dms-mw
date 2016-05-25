@@ -49,7 +49,7 @@ namespace BL.Logic.DictionaryCore.DocumentType
             {
                 var drj = CommonDictionaryUtilities.RegistrationJournalModifyToInternal(_context, Model);
 
-                _dictDb.UpdateDictionaryRegistrationJournal(_context, drj);
+                _dictDb.UpdateRegistrationJournal(_context, drj);
             }
             catch (DictionaryRecordWasNotFound)
             {

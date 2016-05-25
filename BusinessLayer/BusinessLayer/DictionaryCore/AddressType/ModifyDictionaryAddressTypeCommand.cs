@@ -58,7 +58,7 @@ namespace BL.Logic.DictionaryCore.DocumentType
                 //    IsActive=Model.IsActive
                 //};
                 CommonDocumentUtilities.SetLastChange(_context, newAddrType);
-                _dictDb.UpdateDictionaryAddressType(_context, newAddrType);
+                _dictDb.UpdateAddressType(_context, newAddrType);
             }
             catch (DictionaryRecordWasNotFound)
             {

@@ -43,7 +43,7 @@ namespace BL.Logic.DictionaryCore.ContactType
                     Id = Model
 
                 };
-                _dictDb.DeleteDictionaryContactType(_context, newContactType);
+                _dictDb.DeleteContactType(_context, newContactType);
                 return null;
             }
             catch (Exception ex)

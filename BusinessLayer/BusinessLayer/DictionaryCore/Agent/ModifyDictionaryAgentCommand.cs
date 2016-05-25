@@ -40,7 +40,7 @@ namespace BL.Logic.DictionaryCore.Agent
             {
                 var newAgent = new InternalDictionaryAgent(Model);
                 CommonDocumentUtilities.SetLastChange(_context, newAgent);
-                _dictDb.UpdateDictionaryAgent(_context, newAgent);
+                _dictDb.UpdateAgent(_context, newAgent);
             }
             catch (DictionaryRecordWasNotFound)
             {

@@ -33,7 +33,7 @@ namespace BL.Logic.DictionaryCore.AgentAdresses
            
 
             _admin.VerifyAccess(_context, CommandType,false,true);
-            var spr = _dictDb.GetDictionaryAgentAddresses(_context, Model.AgentId, new FilterDictionaryAgentAddress
+            var spr = _dictDb.GetAgentAddresses(_context, Model.AgentId, new FilterDictionaryAgentAddress
             {
                 PostCode = Model.PostCode,
                 Address = Model.Address,
@@ -54,7 +54,7 @@ namespace BL.Logic.DictionaryCore.AgentAdresses
             {
                 var newAddr = new InternalDictionaryAgentAddress(Model);
                 CommonDocumentUtilities.SetLastChange(_context, newAddr);
-                _dictDb.UpdateDictionaryAgentAddress(_context, newAddr);
+                _dictDb.UpdateAgentAddress(_context, newAddr);
             }
             catch (DictionaryRecordWasNotFound)
             {

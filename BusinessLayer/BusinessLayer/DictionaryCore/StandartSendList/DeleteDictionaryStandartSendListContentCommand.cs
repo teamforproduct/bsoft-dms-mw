@@ -44,7 +44,7 @@ namespace BL.Logic.DictionaryCore.StandartSendList
                     Id = model
 
                 };
-                _dictDb.DeleteDictionaryStandartSendListContent(_context, newCont);
+                _dictDb.DeleteStandartSendListContent(_context, newCont);
                 return null;
             }
             catch (Exception ex)

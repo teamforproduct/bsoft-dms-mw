@@ -48,7 +48,7 @@ namespace BL.Logic.DictionaryCore.Tag
             {
                 var item = new InternalDictionaryTag(Model);
                 CommonDocumentUtilities.SetLastChange(_context, item);
-                _dictDb.UpdateDictionaryTag(_context, item);
+                _dictDb.UpdateTag(_context, item);
             }
             catch (DictionaryRecordWasNotFound)
             {

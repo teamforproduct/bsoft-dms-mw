@@ -29,7 +29,7 @@ namespace BL.Logic.DictionaryCore.AgentPerson
         public override bool CanExecute()
         {
 
-            var agent = _dictDb.GetDictionaryAgent(_context, Model);
+            var agent = _dictDb.GetAgent(_context, Model);
             if (agent.IsEmployee )
             {
                 throw new DictionaryRecordCouldNotBeDeleted();
@@ -48,7 +48,7 @@ namespace BL.Logic.DictionaryCore.AgentPerson
                     Id = Model
 
                 };
-                _dictDb.DeleteDictionaryAgentPerson(_context, newPers);
+                _dictDb.DeleteAgentPerson(_context, newPers);
                 return null;
             }
             catch (Exception ex)

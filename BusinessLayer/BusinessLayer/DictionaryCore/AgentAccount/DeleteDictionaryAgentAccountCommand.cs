@@ -42,7 +42,7 @@ namespace BL.Logic.DictionaryCore.AgentAccount
                     Id = Model
 
                 };
-                _dictDb.DeleteDictionaryAgentAccount(_context, newAccount);
+                _dictDb.DeleteAgentAccount(_context, newAccount);
                 return null;
             }
             catch (Exception ex)

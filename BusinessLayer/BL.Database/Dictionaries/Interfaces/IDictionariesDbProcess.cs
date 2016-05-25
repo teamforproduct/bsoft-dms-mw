@@ -12,38 +12,38 @@ namespace BL.Database.Dictionaries.Interfaces
     public interface IDictionariesDbProcess
     {
         #region DictionaryAgents
-        FrontDictionaryAgent GetDictionaryAgent(IContext context, int id);
-        void UpdateDictionaryAgent(IContext context, InternalDictionaryAgent addr);
-        void DeleteDictionaryAgent(IContext context, InternalDictionaryAgent addr);
-        int AddDictionaryAgent(IContext context, InternalDictionaryAgent addr);
-        IEnumerable<FrontDictionaryAgent> GetDictionaryAgents(IContext context, FilterDictionaryAgent filter,UIPaging paging);
+        FrontDictionaryAgent GetAgent(IContext context, int id);
+        void UpdateAgent(IContext context, InternalDictionaryAgent addr);
+        void DeleteAgent(IContext context, InternalDictionaryAgent addr);
+        int AddAgent(IContext context, InternalDictionaryAgent addr);
+        IEnumerable<FrontDictionaryAgent> GetAgents(IContext context, FilterDictionaryAgent filter,UIPaging paging);
         #endregion DictionaryAgents
 
         #region DictionaryAgentPerson
 
-        FrontDictionaryAgentPerson GetDictionaryAgentPerson(IContext context, int id);
-        void UpdateDictionaryAgentPerson(IContext context, InternalDictionaryAgentPerson addr);
-        void DeleteDictionaryAgentPerson(IContext context, InternalDictionaryAgentPerson addr);
-        int AddDictionaryAgentPerson(IContext context, InternalDictionaryAgentPerson addr);
-        IEnumerable<FrontDictionaryAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging);
+        FrontDictionaryAgentPerson GetAgentPerson(IContext context, int id);
+        void UpdateAgentPerson(IContext context, InternalDictionaryAgentPerson addr);
+        void DeleteAgentPerson(IContext context, InternalDictionaryAgentPerson addr);
+        int AddAgentPerson(IContext context, InternalDictionaryAgentPerson addr);
+        IEnumerable<FrontDictionaryAgentPerson> GetAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging);
         #endregion DictionaryAgentPerson
 
         #region DictionaryAgentEmployee
 
-        FrontDictionaryAgentEmployee GetDictionaryAgentEmployee(IContext context, int id);
-        void UpdateDictionaryAgentEmployee(IContext context, InternalDictionaryAgentEmployee employee);
-        void DeleteDictionaryAgentEmployee(IContext context, InternalDictionaryAgentEmployee employee);
-        int AddDictionaryAgentEmployee(IContext context, InternalDictionaryAgentEmployee employee);
-        IEnumerable<FrontDictionaryAgentEmployee> GetDictionaryAgentEmployees(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging);
+        FrontDictionaryAgentEmployee GetAgentEmployee(IContext context, int id);
+        void UpdateAgentEmployee(IContext context, InternalDictionaryAgentEmployee employee);
+        void DeleteAgentEmployee(IContext context, InternalDictionaryAgentEmployee employee);
+        int AddAgentEmployee(IContext context, InternalDictionaryAgentEmployee employee);
+        IEnumerable<FrontDictionaryAgentEmployee> GetAgentEmployees(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging);
         #endregion DictionaryAgentEmployee
 
         #region DictionaryAgentAddress
 
-        FrontDictionaryAgentAddress GetDictionaryAgentAddress(IContext context, int id);
-        void UpdateDictionaryAgentAddress(IContext context, InternalDictionaryAgentAddress addr);
-        void DeleteDictionaryAgentAddress(IContext context, InternalDictionaryAgentAddress addr);
-        int AddDictionaryAgentAddress(IContext context, InternalDictionaryAgentAddress addr);
-        IEnumerable<FrontDictionaryAgentAddress> GetDictionaryAgentAddresses(IContext context, int agentId, FilterDictionaryAgentAddress filter);
+        FrontDictionaryAgentAddress GetAgentAddress(IContext context, int id);
+        void UpdateAgentAddress(IContext context, InternalDictionaryAgentAddress addr);
+        void DeleteAgentAddress(IContext context, InternalDictionaryAgentAddress addr);
+        int AddAgentAddress(IContext context, InternalDictionaryAgentAddress addr);
+        IEnumerable<FrontDictionaryAgentAddress> GetAgentAddresses(IContext context, int agentId, FilterDictionaryAgentAddress filter);
 
         #endregion
 
@@ -51,106 +51,106 @@ namespace BL.Database.Dictionaries.Interfaces
 
         InternalDictionaryAddressType GetInternalDictionaryAddressType(IContext context,
             FilterDictionaryAddressType filter);
-        void UpdateDictionaryAddressType(IContext context, InternalDictionaryAddressType addrType);
-        void DeleteDictionaryAddressType(IContext context, InternalDictionaryAddressType addrType);
-        int AddDictionaryAddressType(IContext context, InternalDictionaryAddressType addrType);
-        IEnumerable<FrontDictionaryAddressType> GetDictionaryAddressTypes(IContext context, FilterDictionaryAddressType filter);
+        void UpdateAddressType(IContext context, InternalDictionaryAddressType addrType);
+        void DeleteAddressType(IContext context, InternalDictionaryAddressType addrType);
+        int AddAddressType(IContext context, InternalDictionaryAddressType addrType);
+        IEnumerable<FrontDictionaryAddressType> GetAddressTypes(IContext context, FilterDictionaryAddressType filter);
 
         #endregion
 
         #region DictionaryAgentCompanies
-        FrontDictionaryAgentCompany GetDictionaryAgentCompany(IContext context, int id);
-        void UpdateDictionaryAgentCompany(IContext context, InternalDictionaryAgentCompany company);
-        void DeleteDictionaryAgentCompany(IContext context, InternalDictionaryAgentCompany company);
-        int AddDictionaryAgentCompany(IContext context, InternalDictionaryAgentCompany company);
-        IEnumerable<FrontDictionaryAgentCompany> GetDictionaryAgentCompanies(IContext context, FilterDictionaryAgentCompany filter, UIPaging paging);
+        FrontDictionaryAgentCompany GetAgentCompany(IContext context, int id);
+        void UpdateAgentCompany(IContext context, InternalDictionaryAgentCompany company);
+        void DeleteAgentCompany(IContext context, InternalDictionaryAgentCompany company);
+        int AddAgentCompany(IContext context, InternalDictionaryAgentCompany company);
+        IEnumerable<FrontDictionaryAgentCompany> GetAgentCompanies(IContext context, FilterDictionaryAgentCompany filter, UIPaging paging);
         #endregion DictionaryAgentCompanies
 
         #region DictionaryAgentBanks
-        FrontDictionaryAgentBank GetDictionaryAgentBank(IContext context, int id);
-        void UpdateDictionaryAgentBank(IContext context, InternalDictionaryAgentBank bank);
-        void DeleteDictionaryAgentBank(IContext context, InternalDictionaryAgentBank bank);
-        int AddDictionaryAgentBank(IContext context, InternalDictionaryAgentBank bank);
-        IEnumerable<FrontDictionaryAgentBank> GetDictionaryAgentBanks(IContext context, FilterDictionaryAgentBank filter, UIPaging paging);
+        FrontDictionaryAgentBank GetAgentBank(IContext context, int id);
+        void UpdateAgentBank(IContext context, InternalDictionaryAgentBank bank);
+        void DeleteAgentBank(IContext context, InternalDictionaryAgentBank bank);
+        int AddAgentBank(IContext context, InternalDictionaryAgentBank bank);
+        IEnumerable<FrontDictionaryAgentBank> GetAgentBanks(IContext context, FilterDictionaryAgentBank filter, UIPaging paging);
         #endregion DictionaryAgentBanks
 
         #region DictionaryAgentAccounts
-        FrontDictionaryAgentAccount GetDictionaryAgentAccount(IContext context, int id);
-        void UpdateDictionaryAgentAccount(IContext context, InternalDictionaryAgentAccount account);
-        void DeleteDictionaryAgentAccount(IContext context, InternalDictionaryAgentAccount account);
-        int AddDictionaryAgentAccount(IContext context, InternalDictionaryAgentAccount account);
-        IEnumerable<FrontDictionaryAgentAccount> GetDictionaryAgentAccounts(IContext context, int AgentId, FilterDictionaryAgentAccount filter);
+        FrontDictionaryAgentAccount GetAgentAccount(IContext context, int id);
+        void UpdateAgentAccount(IContext context, InternalDictionaryAgentAccount account);
+        void DeleteAgentAccount(IContext context, InternalDictionaryAgentAccount account);
+        int AddAgentAccount(IContext context, InternalDictionaryAgentAccount account);
+        IEnumerable<FrontDictionaryAgentAccount> GetAgentAccounts(IContext context, int AgentId, FilterDictionaryAgentAccount filter);
         #endregion DictionaryAgentAccounts
 
         #region DictionaryContacts
-        FrontDictionaryContact GetDictionaryContact(IContext context,
+        FrontDictionaryContact GetContact(IContext context,
            FilterDictionaryContact filter);
-        void UpdateDictionaryContact(IContext context, InternalDictionaryContact contact);
-        void DeleteDictionaryContact(IContext context, InternalDictionaryContact contact);
-        int AddDictionaryContact(IContext context, InternalDictionaryContact contact);
-        IEnumerable<FrontDictionaryContact> GetDictionaryContacts(IContext context, int agentId, FilterDictionaryContact filter);
+        void UpdateContact(IContext context, InternalDictionaryContact contact);
+        void DeleteContact(IContext context, InternalDictionaryContact contact);
+        int AddContact(IContext context, InternalDictionaryContact contact);
+        IEnumerable<FrontDictionaryContact> GetContacts(IContext context, int agentId, FilterDictionaryContact filter);
         #endregion
 
         #region DictionaryContactTypes
         FrontDictionaryContactType GetInternalDictionaryContactType(IContext context, FilterDictionaryContactType filter);
-        void UpdateDictionaryContactType(IContext context, InternalDictionaryContactType contactType);
-        void DeleteDictionaryContactType(IContext context, InternalDictionaryContactType contactType);
-        int AddDictionaryContactType(IContext context, InternalDictionaryContactType contactType);
-        IEnumerable<FrontDictionaryContactType> GetDictionaryContactTypes(IContext context, FilterDictionaryContactType filter);
+        void UpdateContactType(IContext context, InternalDictionaryContactType contactType);
+        void DeleteContactType(IContext context, InternalDictionaryContactType contactType);
+        int AddContactType(IContext context, InternalDictionaryContactType contactType);
+        IEnumerable<FrontDictionaryContactType> GetContactTypes(IContext context, FilterDictionaryContactType filter);
         #endregion
 
         // Структура предприятия
         #region DictionaryDepartments
-        int AddDictionaryDepartment(IContext context, InternalDictionaryDepartment docType);
-        void UpdateDictionaryDepartment(IContext context, InternalDictionaryDepartment docType);
-        void DeleteDictionaryDepartment(IContext context, InternalDictionaryDepartment docType);
+        int AddDepartment(IContext context, InternalDictionaryDepartment docType);
+        void UpdateDepartment(IContext context, InternalDictionaryDepartment docType);
+        void DeleteDepartment(IContext context, InternalDictionaryDepartment docType);
         bool ExistsDictionaryDepartment(IContext context, FilterDictionaryDepartment filter);
-        InternalDictionaryDepartment GetDictionaryDepartment(IContext context, FilterDictionaryDepartment filter);
+        InternalDictionaryDepartment GetDepartment(IContext context, FilterDictionaryDepartment filter);
 
-        IEnumerable<FrontDictionaryDepartment> GetDictionaryDepartments(IContext context, FilterDictionaryDepartment filter);
+        IEnumerable<FrontDictionaryDepartment> GetDepartments(IContext context, FilterDictionaryDepartment filter);
         #endregion DictionaryDepartments
 
         #region DictionaryDocumentDirections
-        FrontDictionaryDocumentDirection GetDictionaryDocumentDirection(IContext context, int id);
+        FrontDictionaryDocumentDirection GetDocumentDirection(IContext context, int id);
 
-        IEnumerable<FrontDictionaryDocumentDirection> GetDictionaryDocumentDirections(IContext context, FilterDictionaryDocumentDirection filter);
+        IEnumerable<FrontDictionaryDocumentDirection> GetDocumentDirections(IContext context, FilterDictionaryDocumentDirection filter);
         #endregion DictionaryDepartments
 
         // Тематики документов
         #region DictionaryDocumentSubjects
-        int AddDictionaryDocumentSubject(IContext context, InternalDictionaryDocumentSubject docType);
-        void UpdateDictionaryDocumentSubject(IContext context, InternalDictionaryDocumentSubject docType);
-        void DeleteDictionaryDocumentSubject(IContext context, InternalDictionaryDocumentSubject docType);
+        int AddDocumentSubject(IContext context, InternalDictionaryDocumentSubject docType);
+        void UpdateDocumentSubject(IContext context, InternalDictionaryDocumentSubject docType);
+        void DeleteDocumentSubject(IContext context, InternalDictionaryDocumentSubject docType);
         bool ExistsDictionaryDocumentSubject(IContext context, FilterDictionaryDocumentSubject filter);
         InternalDictionaryDocumentSubject GetInternalDictionaryDocumentSubject(IContext context, FilterDictionaryDocumentSubject filter);
-        IEnumerable<FrontDictionaryDocumentSubject> GetDictionaryDocumentSubjects(IContext context, FilterDictionaryDocumentSubject filter);
+        IEnumerable<FrontDictionaryDocumentSubject> GetDocumentSubjects(IContext context, FilterDictionaryDocumentSubject filter);
         #endregion DictionaryDocumentSubjects
 
         // Типы документов
         #region DictionaryDocumentTypes
-        void UpdateDictionaryDocumentType(IContext context, InternalDictionaryDocumentType docType);
-        void DeleteDictionaryDocumentType(IContext context, InternalDictionaryDocumentType docType);
-        int AddDictionaryDocumentType(IContext context, InternalDictionaryDocumentType docType);
+        void UpdateDocumentType(IContext context, InternalDictionaryDocumentType docType);
+        void DeleteDocumentType(IContext context, InternalDictionaryDocumentType docType);
+        int AddDocumentType(IContext context, InternalDictionaryDocumentType docType);
         InternalDictionaryDocumentType GetInternalDictionaryDocumentType(IContext context, FilterDictionaryDocumentType filter);
-        IEnumerable<FrontDictionaryDocumentType> GetDictionaryDocumentTypes(IContext context, FilterDictionaryDocumentType filter);
+        IEnumerable<FrontDictionaryDocumentType> GetDocumentTypes(IContext context, FilterDictionaryDocumentType filter);
         #endregion DictionaryDocumentTypes
 
         #region DictionaryEventTypes
-        FrontDictionaryEventType GetDictionaryEventType(IContext context, int id);
+        FrontDictionaryEventType GetEventType(IContext context, int id);
 
-        IEnumerable<FrontDictionaryEventType> GetDictionaryEventTypes(IContext context, FilterDictionaryEventType filter);
+        IEnumerable<FrontDictionaryEventType> GetEventTypes(IContext context, FilterDictionaryEventType filter);
         #endregion DictionaryEventTypes
 
         #region DictionaryImportanceEventTypes
-        FrontDictionaryImportanceEventType GetDictionaryImportanceEventType(IContext context, int id);
+        FrontDictionaryImportanceEventType GetImportanceEventType(IContext context, int id);
 
-        IEnumerable<FrontDictionaryImportanceEventType> GetDictionaryImportanceEventTypes(IContext context, FilterDictionaryImportanceEventType filter);
+        IEnumerable<FrontDictionaryImportanceEventType> GetImportanceEventTypes(IContext context, FilterDictionaryImportanceEventType filter);
         #endregion DictionaryImportanceEventTypes
 
         #region DictionaryLinkTypes
-        FrontDictionaryLinkType GetDictionaryLinkType(IContext context, int id);
+        FrontDictionaryLinkType GetLinkType(IContext context, int id);
 
-        IEnumerable<FrontDictionaryLinkType> GetDictionaryLinkTypes(IContext context, FilterDictionaryLinkType filter);
+        IEnumerable<FrontDictionaryLinkType> GetLinkTypes(IContext context, FilterDictionaryLinkType filter);
         #endregion DictionaryLinkTypes
 
         // Штатное расписание
@@ -162,10 +162,10 @@ namespace BL.Database.Dictionaries.Interfaces
         bool ExistsPosition(IContext context, FilterDictionaryPosition filter);
 
         int? GetExecutorAgentIdByPositionId(IContext context, int id);
-        FrontDictionaryPosition GetDictionaryPosition(IContext context, int id);
+        FrontDictionaryPosition GetPosition(IContext context, int id);
 
-        IEnumerable<FrontDictionaryPosition> GetDictionaryPositions(IContext context, FilterDictionaryPosition filter);
-        IEnumerable<InternalDictionaryPositionWithActions> GetDictionaryPositionsWithActions(IContext context, FilterDictionaryPosition filter);
+        IEnumerable<FrontDictionaryPosition> GetPositions(IContext context, FilterDictionaryPosition filter);
+        IEnumerable<InternalDictionaryPositionWithActions> GetPositionsWithActions(IContext context, FilterDictionaryPosition filter);
         #endregion DictionaryPositions
 
         // Исполнители
@@ -175,23 +175,23 @@ namespace BL.Database.Dictionaries.Interfaces
         void DeleteExecutor(IContext context, InternalDictionaryPositionExecutor docType);
         bool ExistsExecutor(IContext context, FilterDictionaryPositionExecutor filter);
         InternalDictionaryPositionExecutor GetInternalDictionaryPositionExecutor(IContext context, FilterDictionaryPositionExecutor filter);
-        IEnumerable<FrontDictionaryPositionExecutor> GetDictionaryPositionExecutors(IContext context, FilterDictionaryPositionExecutor filter);
+        IEnumerable<FrontDictionaryPositionExecutor> GetPositionExecutors(IContext context, FilterDictionaryPositionExecutor filter);
         #endregion DictionaryPositionExecutors
 
         // Типы исполнителей
         #region DictionaryPositionExecutorTypes
         InternalDictionaryPositionExecutorType GetInternalDictionaryPositionExecutorType(IContext context, FilterDictionaryPositionExecutorType filter);
-        IEnumerable<FrontDictionaryPositionExecutorType> GetDictionaryPositionExecutorTypes(IContext context, FilterDictionaryPositionExecutorType filter);
+        IEnumerable<FrontDictionaryPositionExecutorType> GetPositionExecutorTypes(IContext context, FilterDictionaryPositionExecutorType filter);
         #endregion DictionaryPositionExecutorTypes
 
         // Журналы регистрации
         #region DictionaryRegistrationJournals
-        int AddDictionaryRegistrationJournal(IContext context, InternalDictionaryRegistrationJournal docType);
-        void UpdateDictionaryRegistrationJournal(IContext context, InternalDictionaryRegistrationJournal docType);
-        void DeleteDictionaryRegistrationJournal(IContext context, InternalDictionaryRegistrationJournal docType);
+        int AddRegistrationJournal(IContext context, InternalDictionaryRegistrationJournal docType);
+        void UpdateRegistrationJournal(IContext context, InternalDictionaryRegistrationJournal docType);
+        void DeleteRegistrationJournal(IContext context, InternalDictionaryRegistrationJournal docType);
         bool ExistsDictionaryRegistrationJournal(IContext context, FilterDictionaryRegistrationJournal filter);
         InternalDictionaryRegistrationJournal GetInternalDictionaryRegistrationJournal(IContext context, FilterDictionaryRegistrationJournal filter);
-        IEnumerable<FrontDictionaryRegistrationJournal> GetDictionaryRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter);
+        IEnumerable<FrontDictionaryRegistrationJournal> GetRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter);
         #endregion DictionaryRegistrationJournals
 
         // Компании
@@ -201,51 +201,51 @@ namespace BL.Database.Dictionaries.Interfaces
         void DeleteCompany(IContext context, InternalDictionaryCompany docType);
         bool ExistsCompany(IContext context, FilterDictionaryCompany filter);
         InternalDictionaryCompany GetInternalDictionaryCompany(IContext context, FilterDictionaryCompany filter);
-        IEnumerable<FrontDictionaryCompany> GetDictionaryCompanies(IContext context, FilterDictionaryCompany filter);
+        IEnumerable<FrontDictionaryCompany> GetCompanies(IContext context, FilterDictionaryCompany filter);
         #endregion DictionaryCompanies
 
         #region DictionaryResultTypes
-        FrontDictionaryResultType GetDictionaryResultType(IContext context, int id);
+        FrontDictionaryResultType GetResultType(IContext context, int id);
 
-        IEnumerable<FrontDictionaryResultType> GetDictionaryResultTypes(IContext context, FilterDictionaryResultType filter);
+        IEnumerable<FrontDictionaryResultType> GetResultTypes(IContext context, FilterDictionaryResultType filter);
         #endregion DictionaryResultTypes
 
         #region DictionarySendTypes
-        FrontDictionarySendType GetDictionarySendType(IContext context, int id);
+        FrontDictionarySendType GetSendType(IContext context, int id);
 
-        IEnumerable<FrontDictionarySendType> GetDictionarySendTypes(IContext context, FilterDictionarySendType filter);
+        IEnumerable<FrontDictionarySendType> GetSendTypes(IContext context, FilterDictionarySendType filter);
         #endregion DictionarySendTypes
 
         #region DictionaryStandartSendListContents
-        FrontDictionaryStandartSendListContent GetDictionaryStandartSendListContent(IContext context, int id);
-        void UpdateDictionaryStandartSendListContent(IContext context, InternalDictionaryStandartSendListContent content);
-        void DeleteDictionaryStandartSendListContent(IContext context, InternalDictionaryStandartSendListContent content);
-        int AddDictionaryStandartSendListContent(IContext context, InternalDictionaryStandartSendListContent content);
-        IEnumerable<FrontDictionaryStandartSendListContent> GetDictionaryStandartSendListContents(IContext context, FilterDictionaryStandartSendListContent filter);
+        FrontDictionaryStandartSendListContent GetStandartSendListContent(IContext context, int id);
+        void UpdateStandartSendListContent(IContext context, InternalDictionaryStandartSendListContent content);
+        void DeleteStandartSendListContent(IContext context, InternalDictionaryStandartSendListContent content);
+        int AddStandartSendListContent(IContext context, InternalDictionaryStandartSendListContent content);
+        IEnumerable<FrontDictionaryStandartSendListContent> GetStandartSendListContents(IContext context, FilterDictionaryStandartSendListContent filter);
         #endregion DictionaryStandartSendListContents
 
         #region DictionaryStandartSendLists
-        FrontDictionaryStandartSendList GetDictionaryStandartSendList(IContext context, int id);
-        void UpdateDictionaryStandartSendList(IContext context, InternalDictionaryStandartSendList list);
-        void DeleteDictionaryStandartSendList(IContext context, InternalDictionaryStandartSendList list);
-        int AddDictionaryStandartSendList(IContext context, InternalDictionaryStandartSendList list);
-        IEnumerable<FrontDictionaryStandartSendList> GetDictionaryStandartSendLists(IContext context, FilterDictionaryStandartSendList filter);
+        FrontDictionaryStandartSendList GetStandartSendList(IContext context, int id);
+        void UpdateStandartSendList(IContext context, InternalDictionaryStandartSendList list);
+        void DeleteStandartSendList(IContext context, InternalDictionaryStandartSendList list);
+        int AddStandartSendList(IContext context, InternalDictionaryStandartSendList list);
+        IEnumerable<FrontDictionaryStandartSendList> GetStandartSendLists(IContext context, FilterDictionaryStandartSendList filter);
         #endregion DictionaryStandartSendList
 
         #region DictionarySubordinationTypes
-        FrontDictionarySubordinationType GetDictionarySubordinationType(IContext context, int id);
+        FrontDictionarySubordinationType GetSubordinationType(IContext context, int id);
 
-        IEnumerable<FrontDictionarySubordinationType> GetDictionarySubordinationTypes(IContext context, FilterDictionarySubordinationType filter);
+        IEnumerable<FrontDictionarySubordinationType> GetSubordinationTypes(IContext context, FilterDictionarySubordinationType filter);
 
         #endregion DictionarySubordinationTypes
 
         #region DictionaryTags
 
         InternalDictionaryTag GetInternalDictionaryTags(IContext context, FilterDictionaryTag filter);
-        IEnumerable<FrontDictionaryTag> GetDictionaryTags(IContext context, FilterDictionaryTag filter);
-        int AddDictionaryTag(IContext context, InternalDictionaryTag model);
-        void UpdateDictionaryTag(IContext context, InternalDictionaryTag model);
-        void DeleteDictionaryTag(IContext context, InternalDictionaryTag model);
+        IEnumerable<FrontDictionaryTag> GetTags(IContext context, FilterDictionaryTag filter);
+        int AddTag(IContext context, InternalDictionaryTag model);
+        void UpdateTag(IContext context, InternalDictionaryTag model);
+        void DeleteTag(IContext context, InternalDictionaryTag model);
         #endregion DictionaryTags
 
         #region Admins

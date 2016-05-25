@@ -32,7 +32,7 @@ namespace BL.Logic.DictionaryCore.Contact
         {
 
             _admin.VerifyAccess(_context, CommandType,false,true);
-            var spr = _dictDb.GetDictionaryContacts(_context, Model.AgentId,
+            var spr = _dictDb.GetContacts(_context, Model.AgentId,
                    new FilterDictionaryContact
                    {
                        Contact = Model.Value,
@@ -55,7 +55,7 @@ namespace BL.Logic.DictionaryCore.Contact
 
                 var newContact = new InternalDictionaryContact(Model);
                 CommonDocumentUtilities.SetLastChange(_context, newContact);
-                _dictDb.UpdateDictionaryContact(_context, newContact);
+                _dictDb.UpdateContact(_context, newContact);
             }
             catch (DictionaryRecordWasNotFound)
             {

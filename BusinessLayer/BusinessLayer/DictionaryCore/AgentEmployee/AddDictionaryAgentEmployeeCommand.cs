@@ -33,7 +33,7 @@ namespace BL.Logic.DictionaryCore.AgentEmployee
         public override bool CanExecute()
         {
             _admin.VerifyAccess(_context, CommandType, false, true);
-            var agents = _dictDb.GetDictionaryAgentEmployees(_context, new FilterDictionaryAgentEmployee
+            var agents = _dictDb.GetAgentEmployees(_context, new FilterDictionaryAgentEmployee
             {
                 PersonnelNumber = Model.PersonnelNumber,
                 TaxCode=Model.TaxCode
@@ -53,7 +53,7 @@ namespace BL.Logic.DictionaryCore.AgentEmployee
             {
                 var newEmployee = new InternalDictionaryAgentEmployee(Model);
                 CommonDocumentUtilities.SetLastChange(_context, newEmployee);
-                return _dictDb.AddDictionaryAgentEmployee(_context, newEmployee);
+                return _dictDb.AddAgentEmployee(_context, newEmployee);
             }
             catch (Exception ex)
             {

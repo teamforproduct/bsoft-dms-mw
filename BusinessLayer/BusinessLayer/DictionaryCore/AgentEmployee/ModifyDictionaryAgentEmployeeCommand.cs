@@ -32,7 +32,7 @@ namespace BL.Logic.DictionaryCore.AgentEmployee
         {
             _admin.VerifyAccess(_context, CommandType, false);
 
-            var agents = _dictDb.GetDictionaryAgentEmployees(_context, new FilterDictionaryAgentEmployee
+            var agents = _dictDb.GetAgentEmployees(_context, new FilterDictionaryAgentEmployee
             {
                 PersonnelNumber = Model.PersonnelNumber,
                 TaxCode = Model.TaxCode,
@@ -53,7 +53,7 @@ namespace BL.Logic.DictionaryCore.AgentEmployee
             {
                 var newPerson = new InternalDictionaryAgentEmployee(Model);
                 CommonDocumentUtilities.SetLastChange(_context, newPerson);
-                _dictDb.UpdateDictionaryAgentEmployee(_context, newPerson);
+                _dictDb.UpdateAgentEmployee(_context, newPerson);
             }
             catch (DictionaryRecordWasNotFound)
             {
