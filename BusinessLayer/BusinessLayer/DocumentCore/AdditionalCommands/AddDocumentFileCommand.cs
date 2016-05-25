@@ -24,15 +24,15 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             _fStore = fStore;
         }
 
-        private ModifyDocumentFiles Model
+        private ModifyDocumentFile Model
         {
             get
             {
-                if (!(_param is ModifyDocumentFiles))
+                if (!(_param is ModifyDocumentFile))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ModifyDocumentFiles)_param;
+                return (ModifyDocumentFile)_param;
             }
         }
 
@@ -50,12 +50,12 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                 throw new UserHasNoAccessToDocument();
             }
 
-            if (Model.Files.Any(x => !x.IsAdditional) && _document.ExecutorPositionId != _context.CurrentPositionId)
+            if (!Model.IsAdditional && _document.ExecutorPositionId != _context.CurrentPositionId)
             {
                 throw new CouldNotPerformOperation();
             }
 
-            if (Model.Files.Join(_document.DocumentFiles, o => o.FileName, i => i.Name + "." + i.Extension, (o, i) => true).Any())
+            if (_document.DocumentFiles.Any(x => (x.Name + "." + x.Extension).Equals(Model.FileName)))
             {
                 throw new CannotAccessToFile();
             }
@@ -71,45 +71,42 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                 throw new ExecutorAgentForPositionIsNotDefined();
             }
             var res = new List<int>();
-            foreach (var file in Model.Files)
+            var att = new InternalDocumentAttachedFile
             {
-                var att = new InternalDocumentAttachedFile
-                {
-                    DocumentId = Model.DocumentId,
-                    Date = DateTime.Now,
-                    //FileContent = Convert.FromBase64String(file.FileData),
-                    PostedFileData = file.PostedFileData,
-                    IsAdditional = file.IsAdditional,
-                    FileType = file.FileType,
-                    FileSize = file.FileSize,
-                    Name = Path.GetFileNameWithoutExtension(file.FileName),
-                    Extension = Path.GetExtension(file.FileName).Replace(".", ""),
-                    WasChangedExternal = false,
-                    ExecutorPositionId = _context.CurrentPositionId,
-                    ExecutorPositionExecutorAgentId = executorPositionExecutorAgentId.Value
-                };
-                var ordInDoc = _operationDb.CheckFileForDocument(_context, Model.DocumentId, att.Name, att.Extension);
-                if (ordInDoc == -1)
-                {
-                    att.Version = 1;
-                    att.OrderInDocument = _operationDb.GetNextFileOrderNumber(_context, Model.DocumentId);
-                }
-                else
-                {
-                    att.Version = _operationDb.GetFileNextVersion(_context, att.DocumentId, ordInDoc);
-                    att.OrderInDocument = ordInDoc;
-                }
-
-
-                _fStore.SaveFile(_context, att);
-                CommonDocumentUtilities.SetLastChange(_context, att);
-                att.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, att.DocumentId, EnumEventTypes.AddDocumentFile, null, att.Name + "." + att.Extension);
-                res.Add(_operationDb.AddNewFileOrVersion(_context, att));
-                // Модель фронта содержит дополнительно только одно поле - пользователя, который последний модифицировал файл. 
-                // это поле не заполняется, иначе придется после каждого добавления файла делать запрос на выборку этого файла из таблицы
-                // как вариант можно потому будет добавить получение имени текущего пользователя вначале и дописывать его к модели
-                //res.Add(new FrontDocumentAttachedFile(att));
+                DocumentId = Model.DocumentId,
+                Date = DateTime.Now,
+                //FileContent = Convert.FromBase64String(file.FileData),
+                PostedFileData = Model.PostedFileData,
+                IsAdditional = Model.IsAdditional,
+                FileType = Model.FileType,
+                FileSize = Model.FileSize,
+                Name = Path.GetFileNameWithoutExtension(Model.FileName),
+                Extension = Path.GetExtension(Model.FileName).Replace(".", ""),
+                WasChangedExternal = false,
+                ExecutorPositionId = _context.CurrentPositionId,
+                ExecutorPositionExecutorAgentId = executorPositionExecutorAgentId.Value
+            };
+            var ordInDoc = _operationDb.CheckFileForDocument(_context, Model.DocumentId, att.Name, att.Extension);
+            if (ordInDoc == -1)
+            {
+                att.Version = 1;
+                att.OrderInDocument = _operationDb.GetNextFileOrderNumber(_context, Model.DocumentId);
             }
+            else
+            {
+                att.Version = _operationDb.GetFileNextVersion(_context, att.DocumentId, ordInDoc);
+                att.OrderInDocument = ordInDoc;
+            }
+
+
+            _fStore.SaveFile(_context, att);
+            CommonDocumentUtilities.SetLastChange(_context, att);
+            att.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, att.DocumentId, EnumEventTypes.AddDocumentFile, null, att.Name + "." + att.Extension);
+            res.Add(_operationDb.AddNewFileOrVersion(_context, att));
+            // Модель фронта содержит дополнительно только одно поле - пользователя, который последний модифицировал файл. 
+            // это поле не заполняется, иначе придется после каждого добавления файла делать запрос на выборку этого файла из таблицы
+            // как вариант можно потому будет добавить получение имени текущего пользователя вначале и дописывать его к модели
+            //res.Add(new FrontDocumentAttachedFile(att));
 
 
             return res;
