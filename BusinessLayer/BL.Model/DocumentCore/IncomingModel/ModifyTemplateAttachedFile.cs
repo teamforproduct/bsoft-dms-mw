@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BL.Model.Users;
+using System.Runtime.Serialization;
+using System.Web;
 
 namespace BL.Model.DocumentCore.IncomingModel
 {
@@ -15,6 +17,7 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// <summary>
         /// ИД
         /// </summary>
+        [IgnoreDataMember]
         public int? Id { get; set; }
         /// <summary>
         /// Ид. шаблона документа, которому принадлежит файл
@@ -22,27 +25,34 @@ namespace BL.Model.DocumentCore.IncomingModel
         public int DocumentId { get; set; }
         /// <summary>
         /// Порядковый номер файла в списке файлов документа
+        /// Только для изменения файла
         /// </summary>
         public int OrderInDocument { get; set; }
         /// <summary>
         /// Является ли файл дополнительным или основным. 
         /// </summary>
         public bool IsAdditional { get; set; }
-        /// <summary>
-        /// Данные файла в виде строки
-        /// </summary>
-        public string FileData { get; set; }
+
         /// <summary>
         /// Имя файла. Включая расширение
         /// </summary>
+        [IgnoreDataMember]
         public string FileName { get; set; }
         /// <summary>
         /// Тип файла.
         /// </summary>
+        [IgnoreDataMember]
         public string FileType { get; set; }
         /// <summary>
         /// Размер файла
         /// </summary>
+        [IgnoreDataMember]
         public int FileSize { get; set; }
+
+        /// <summary>
+        /// Данные файла
+        /// </summary>
+        [IgnoreDataMember]
+        public HttpPostedFile PostedFileData { get; set; }
     }
 }

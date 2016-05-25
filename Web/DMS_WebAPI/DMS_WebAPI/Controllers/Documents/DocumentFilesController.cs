@@ -75,7 +75,6 @@ namespace DMS_WebAPI.Controllers.Documents
             model.PostedFileData = file;
             model.FileName = file.FileName;
             model.FileType = file.ContentType;
-            model.FileSize = file.ContentLength;
 
 
             docProc.ExecuteAction(EnumDocumentActions.AddDocumentFile, cxt, model);
@@ -83,10 +82,16 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         // PUT: api/Files/5
-        public IHttpActionResult Put([FromBody]ModifyDocumentFile model)
+        public IHttpActionResult Put([FromUri]ModifyDocumentFile model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
+
+            HttpPostedFile file = HttpContext.Current.Request.Files[0];
+            model.PostedFileData = file;
+            model.FileName = file.FileName;
+            model.FileType = file.ContentType;
+
             var fileId = (int)docProc.ExecuteAction(EnumDocumentActions.ModifyDocumentFile, cxt, model);
 
             return GetFileList(new FilterDocumentAttachedFile { AttachedFileId = new List<int> { fileId } }, null);

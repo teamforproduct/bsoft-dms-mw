@@ -12,7 +12,7 @@ using BL.Model.Exception;
 
 namespace BL.Logic.DocumentCore.AdditionalCommands
 {
-    public class ModifyDocumentFileCommand: BaseDocumentCommand
+    public class ModifyDocumentFileCommand : BaseDocumentCommand
     {
         private readonly IDocumentFileDbProcess _operationDb;
         private readonly IFileStore _fStore;
@@ -85,8 +85,8 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             }
 
             //_file.FileContent = Convert.FromBase64String(Model.FileData);
+            _file.PostedFileData = Model.PostedFileData;
             _file.FileType = Model.FileType;
-            _file.FileSize = Model.FileSize;
             _file.Extension = Path.GetExtension(Model.FileName).Replace(".", "");
             _file.Name = Path.GetFileNameWithoutExtension(Model.FileName);
             _file.IsAdditional = Model.IsAdditional;
@@ -99,7 +99,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             //fl.Date = DateTime.Now;
             _fStore.SaveFile(_context, _file);
             CommonDocumentUtilities.SetLastChange(_context, _file);
-            _file.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, _file.DocumentId, EnumEventTypes.ModifyDocumentFile, null, _file.Name+"."+ _file.Extension);
+            _file.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, _file.DocumentId, EnumEventTypes.ModifyDocumentFile, null, _file.Name + "." + _file.Extension);
             _operationDb.UpdateFileOrVersion(_context, _file);
             return _file.Id;
         }

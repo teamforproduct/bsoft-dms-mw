@@ -212,7 +212,6 @@
     <Compile Include="DocumentCore\FrontModel\FrontTemplateAttachedFile.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentSubscription.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontTemplateDocumentTasks.cs" />
-    <Compile Include="DocumentCore\IncomingModel\ModifyDocumentFiles.cs" />
     <Compile Include="DocumentCore\Actions\ChangeFavourites.cs" />
     <Compile Include="DocumentCore\Actions\ControlChange.cs" />
     <Compile Include="DocumentCore\Actions\CopyDocument.cs" />
