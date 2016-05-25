@@ -22,9 +22,9 @@ namespace DMS_WebAPI.Controllers.Documents
         [ResponseType(typeof(FrontDocumentSubscription))]
         public IHttpActionResult Get([FromUri] FilterDocumentSubscription filter, [FromUri]UIPaging paging)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var subscriptions = docProc.GetDocumentSubscriptions(cxt, filter, paging);
+            var subscriptions = docProc.GetDocumentSubscriptions(ctx, filter, paging);
             var res = new JsonResult(subscriptions, this);
             res.Paging = paging;
             return res;

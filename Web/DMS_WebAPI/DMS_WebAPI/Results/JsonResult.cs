@@ -71,14 +71,14 @@ namespace DMS_WebAPI.Results
             object json = new { success = _success, data = _data, msg = _msg, meta = _meta, paging = _paging };
             try
             {
-                IContext cxt = null;
+                IContext ctx = null;
                 try
                 {
-                    cxt = DmsResolver.Current.Get<UserContext>().Get();
-                    if (HttpContext.Current.User.Identity.IsAuthenticated && cxt != null)
+                    ctx = DmsResolver.Current.Get<UserContext>().Get();
+                    if (HttpContext.Current.User.Identity.IsAuthenticated && ctx != null)
                     {
                         var service = DmsResolver.Current.Get<ILanguageService>();
-                        json = JsonConvert.DeserializeObject(service.ReplaceLanguageLabel(cxt, JsonConvert.SerializeObject(json, GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings)));
+                        json = JsonConvert.DeserializeObject(service.ReplaceLanguageLabel(ctx, JsonConvert.SerializeObject(json, GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings)));
                     }
                 }
                 catch { }

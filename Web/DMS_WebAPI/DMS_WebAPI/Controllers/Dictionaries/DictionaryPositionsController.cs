@@ -13,18 +13,18 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         // GET: api/DictionaryPositions
         public IHttpActionResult Get([FromUri] FilterDictionaryPosition filter)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionaryPositions(cxt, filter);
+            var tmpDicts = tmpDictProc.GetDictionaryPositions(ctx, filter);
             return new JsonResult(tmpDicts, this);
         }
 
         // GET: api/DictionaryPositions/5
         public IHttpActionResult Get(int id)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDict = tmpDictProc.GetDictionaryPosition(cxt, id);
+            var tmpDict = tmpDictProc.GetDictionaryPosition(ctx, id);
             return new JsonResult(tmpDict, this);
         }
     }

@@ -21,9 +21,9 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         // GET: api/DictionaryDocumentSubjects
         public IHttpActionResult Get([FromUri] FilterDictionaryDocumentSubject filter)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionaryDocumentSubjects(cxt, filter);
+            var tmpDicts = tmpDictProc.GetDictionaryDocumentSubjects(ctx, filter);
             return new JsonResult(tmpDicts, this);
         }
 
@@ -35,9 +35,9 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         // GET: api/DictionaryDocumentSubjects/5
         public IHttpActionResult Get(int id)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDict = tmpDictProc.GetDictionaryDocumentSubject(cxt, id);
+            var tmpDict = tmpDictProc.GetDictionaryDocumentSubject(ctx, id);
             return new JsonResult(tmpDict, this);
         }
 
@@ -48,9 +48,9 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns>Возвращает добавленную запись</returns>
         public IHttpActionResult Post([FromBody]ModifyDictionaryDocumentSubject model)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
-            return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.AddDocumentSubject, cxt, model));
+            return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.AddDocumentSubject, ctx, model));
         }
 
 
@@ -65,9 +65,9 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             // Спецификация REST требует отдельного указания ID, несмотря на то, что параметр ID есть в ModifyDictionaryDocumentSubject
             
             model.Id = id;
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
-            tmpDict.ExecuteAction(EnumDictionaryActions.ModifyDocumentSubject, cxt, model);
+            tmpDict.ExecuteAction(EnumDictionaryActions.ModifyDocumentSubject, ctx, model);
             return Get(model.Id);
         }
 
@@ -77,10 +77,10 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns>FrontDictionaryDocumentSubject</returns> 
         public IHttpActionResult Delete([FromUri] int id)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
 
-            tmpDict.ExecuteAction(EnumDictionaryActions.DeleteDocumentSubject, cxt, id);
+            tmpDict.ExecuteAction(EnumDictionaryActions.DeleteDocumentSubject, ctx, id);
             FrontDictionaryDocumentSubject tmp = new FrontDictionaryDocumentSubject();
             tmp.Id = id;
 

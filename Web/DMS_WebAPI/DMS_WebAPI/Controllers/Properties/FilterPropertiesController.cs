@@ -17,9 +17,9 @@ namespace DMS_WebAPI.Controllers.Properties
         /// <returns>Список фильтров</returns>
         public IHttpActionResult Get([FromUri] FilterProperties filter)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpServ = DmsResolver.Current.Get<IPropertyService>();
-            var tmpItems = tmpServ.GetFilterProperties(cxt, filter);
+            var tmpItems = tmpServ.GetFilterProperties(ctx, filter);
             return new JsonResult(tmpItems, this);
         }
     }

@@ -34,13 +34,13 @@ namespace DMS_WebAPI.Utilities
             var contextValue = _casheContexts[token];
             try
             {
-                var cxt = (IContext)contextValue.StoreObject;
+                var ctx = (IContext)contextValue.StoreObject;
 
-                VerifyNumberOfConnections(cxt);
+                VerifyNumberOfConnections(ctx);
 
                 contextValue.LastUsage = DateTime.Now;
 
-                var request_ctx = new DefaultContext(cxt);
+                var request_ctx = new DefaultContext(ctx);
                 request_ctx.SetCurrentPosition(currentPositionId);
                 return request_ctx;
             }
@@ -65,9 +65,9 @@ namespace DMS_WebAPI.Utilities
             var contextValue = _casheContexts[token];
             try
             {
-                var cxt = (IContext)contextValue.StoreObject;
+                var ctx = (IContext)contextValue.StoreObject;
                 _casheContexts.Remove(token);
-                return cxt;
+                return ctx;
             }
             catch (InvalidCastException invalidCastException)
             {

@@ -23,9 +23,9 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns>Список шаблонов документов</returns>
         public IHttpActionResult Get([Required]int templateId,[FromUri]FilterTemplateDocumentSendList filter)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpDocs = tmpDocProc.GetTemplateDocumentSendLists(cxt,templateId,filter);
+            var tmpDocs = tmpDocProc.GetTemplateDocumentSendLists(ctx,templateId,filter);
             return new JsonResult(tmpDocs, this);
         }
 
@@ -36,9 +36,9 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns>Шаблон документа</returns>
         public IHttpActionResult Get(int id)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpDoc = tmpDocProc.GetTemplateDocumentSendList(cxt, id);
+            var tmpDoc = tmpDocProc.GetTemplateDocumentSendList(ctx, id);
             return new JsonResult(tmpDoc, this);
         }
 
@@ -49,9 +49,9 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns></returns>
         public IHttpActionResult Post([FromBody]ModifyTemplateDocumentSendLists model)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpTemplate = tmpDocProc.ExecuteAction(EnumDocumentActions.AddTemplateDocumentSendList,cxt,model);
+            var tmpTemplate = tmpDocProc.ExecuteAction(EnumDocumentActions.AddTemplateDocumentSendList,ctx,model);
             return Get((int)tmpTemplate);
         }
 
@@ -64,9 +64,9 @@ namespace DMS_WebAPI.Controllers.Documents
         public IHttpActionResult Put([Required]int id, [FromBody]ModifyTemplateDocumentSendLists model)
         {
             model.Id = id;
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpTemplate = tmpDocProc.ExecuteAction(EnumDocumentActions.ModifyTemplateDocumentSendList,cxt,model);
+            var tmpTemplate = tmpDocProc.ExecuteAction(EnumDocumentActions.ModifyTemplateDocumentSendList,ctx,model);
             return Get((int)tmpTemplate);
         }
 
@@ -77,10 +77,10 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns></returns>
         public IHttpActionResult Delete([FromUri] int id)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
 
-            tmpDocProc.ExecuteAction(EnumDocumentActions.DeleteTemplateDocumentSendList,cxt, id);
+            tmpDocProc.ExecuteAction(EnumDocumentActions.DeleteTemplateDocumentSendList,ctx, id);
 
             var tmp = new FrontTemplateDocumentSendLists {Id = id};
 

@@ -17,9 +17,9 @@ namespace DMS_WebAPI.Controllers.Admins
         /// <returns>Список уровней доступа</returns>
         public IHttpActionResult Get([FromUri] FilterAdminAccessLevel filter)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var dictSrv = DmsResolver.Current.Get<IDictionaryService>();
-            var accLevels = dictSrv.GetAdminAccessLevels(cxt, filter);
+            var accLevels = dictSrv.GetAdminAccessLevels(ctx, filter);
             return new JsonResult(accLevels, this);
         }
 
@@ -30,9 +30,9 @@ namespace DMS_WebAPI.Controllers.Admins
         /// <returns>Уровень доуступа</returns>
         public IHttpActionResult Get(int id)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var dictSrv = DmsResolver.Current.Get<IDictionaryService>();
-            var accLevel = dictSrv.GetAdminAccessLevel(cxt, id);
+            var accLevel = dictSrv.GetAdminAccessLevel(ctx, id);
             return new JsonResult(accLevel, this);
         }
     }

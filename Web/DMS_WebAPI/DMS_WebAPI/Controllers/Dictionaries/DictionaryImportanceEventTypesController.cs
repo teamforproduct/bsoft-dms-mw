@@ -13,18 +13,18 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         // GET: api/DictionaryImportanceEventTypes
         public IHttpActionResult Get([FromUri] FilterDictionaryImportanceEventType filter)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionaryImportanceEventTypes(cxt, filter);
+            var tmpDicts = tmpDictProc.GetDictionaryImportanceEventTypes(ctx, filter);
             return new JsonResult(tmpDicts, this);
         }
 
         // GET: api/DictionaryImportanceEventTypes/5
         public IHttpActionResult Get(int id)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDict = tmpDictProc.GetDictionaryImportanceEventType(cxt, id);
+            var tmpDict = tmpDictProc.GetDictionaryImportanceEventType(ctx, id);
             return new JsonResult(tmpDict, this);
         }
     }

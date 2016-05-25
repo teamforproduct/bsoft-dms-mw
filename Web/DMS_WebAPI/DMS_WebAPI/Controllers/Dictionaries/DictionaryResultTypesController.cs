@@ -21,9 +21,9 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         // GET: api/DictionaryResultTypes
         public IHttpActionResult Get([FromUri] FilterDictionaryResultType filter)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionaryResultTypes(cxt, filter);
+            var tmpDicts = tmpDictProc.GetDictionaryResultTypes(ctx, filter);
             return new JsonResult(tmpDicts, this);
         }
         /// <summary>
@@ -34,9 +34,9 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         // GET: api/DictionaryResultTypes/5
         public IHttpActionResult Get(int id)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDict = tmpDictProc.GetDictionaryResultType(cxt, id);
+            var tmpDict = tmpDictProc.GetDictionaryResultType(ctx, id);
             return new JsonResult(tmpDict, this);
         }
     }

@@ -19,9 +19,9 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns>Запись плана работы над документом</returns>
         private IHttpActionResult Get(int id)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
-            return new JsonResult(docProc.GetSendList(cxt, id),this);
+            return new JsonResult(docProc.GetSendList(ctx, id),this);
         }
 
         /// <summary>
@@ -31,9 +31,9 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns>Записи плана работы над документом</returns>
         private IHttpActionResult GetByDocument(int documentId)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
-            return new JsonResult(docProc.GetSendLists(cxt, documentId), this);
+            return new JsonResult(docProc.GetSendLists(ctx, documentId), this);
         }
 
         /// <summary>
@@ -43,9 +43,9 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns>Измененная запись плана работы над документом</returns>
         public IHttpActionResult Post([FromBody]ModifyDocumentSendList model)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var newId = (int)docProc.ExecuteAction(EnumDocumentActions.AddDocumentSendList, cxt, model);
+            var newId = (int)docProc.ExecuteAction(EnumDocumentActions.AddDocumentSendList, ctx, model);
             return Get(newId);
         }
 
@@ -56,9 +56,9 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns>Измененные записи плана работы над документом</returns>
         public IHttpActionResult Put([FromBody]ModifyDocumentSendListByStandartSendList model)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            docProc.ExecuteAction(EnumDocumentActions.AddByStandartSendListDocumentSendList, cxt, model);
+            docProc.ExecuteAction(EnumDocumentActions.AddByStandartSendListDocumentSendList, ctx, model);
             return GetByDocument(model.DocumentId);
         }
 
@@ -71,9 +71,9 @@ namespace DMS_WebAPI.Controllers.Documents
         public IHttpActionResult Put(int id, [FromBody]ModifyDocumentSendList model)
         {
             model.Id = id;
-            var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            docProc.ExecuteAction(EnumDocumentActions.ModifyDocumentSendList, cxt, model);
+            docProc.ExecuteAction(EnumDocumentActions.ModifyDocumentSendList, ctx, model);
             return Get(id);
         }
 
@@ -84,9 +84,9 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns></returns>
         public IHttpActionResult Delete(int id)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            int docId = (int)docProc.ExecuteAction(EnumDocumentActions.DeleteDocumentSendList, cxt, id);
+            int docId = (int)docProc.ExecuteAction(EnumDocumentActions.DeleteDocumentSendList, ctx, id);
             return GetByDocument(docId);
         }
 
@@ -99,9 +99,9 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult LaunchItem(int id)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            int docId = (int)docProc.ExecuteAction(EnumDocumentActions.LaunchDocumentSendListItem, cxt, id);
+            int docId = (int)docProc.ExecuteAction(EnumDocumentActions.LaunchDocumentSendListItem, ctx, id);
             return GetByDocument(docId);
         }
 
@@ -114,9 +114,9 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpGet]
         public IHttpActionResult Actions(int id)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var cmdService = DmsResolver.Current.Get<ICommandService>();
-            var actions = cmdService.GetDocumentSendListActions(cxt, id);
+            var actions = cmdService.GetDocumentSendListActions(ctx, id);
 
             return new JsonResult(actions, this);
         }

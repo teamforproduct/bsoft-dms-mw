@@ -73,7 +73,7 @@ namespace DMS_WebAPI.Controllers
             admProc.VerifyAccess(context, new VerifyAccess() { PositionsIdList = positionsIdList });
             user_context.SetUserPositions(context.CurrentEmployee.Token, positionsIdList);
             //context.CurrentPositionsIdList = positionsIdList;
-            //cxt.CurrentPositions = new List<CurrentPosition>() { new CurrentPosition { CurrentPositionId = positionId } };
+            //ctx.CurrentPositions = new List<CurrentPosition>() { new CurrentPosition { CurrentPositionId = positionId } };
             return new JsonResult(null, this);
         }
 
