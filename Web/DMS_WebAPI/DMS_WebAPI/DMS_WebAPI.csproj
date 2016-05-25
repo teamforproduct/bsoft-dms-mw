@@ -299,6 +299,7 @@
     </Compile>
     <Compile Include="Infrastructure\ExceptionHandlingAttribute.cs" />
     <Compile Include="Infrastructure\ModelValidationErrorHandlerFilterAttribute .cs" />
+    <Compile Include="Infrastructure\NoBufferPolicySelector.cs" />
     <Compile Include="Migrations\201605231056024_InitialMigration.cs" />
     <Compile Include="Migrations\201605231056024_InitialMigration.Designer.cs">
       <DependentUpon>201605231056024_InitialMigration.cs</DependentUpon>

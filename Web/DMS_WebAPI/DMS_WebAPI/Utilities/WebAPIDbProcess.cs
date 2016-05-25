@@ -94,7 +94,7 @@ namespace DMS_WebAPI.Utilities
                                 select new
                                 {
                                     Server = server,
-                                    ClientId = client.Id
+                                    ClientId = client.ClientId
                                 }).ToList();
 
                 var items = itemsRes.Select(x => new DatabaseModel
