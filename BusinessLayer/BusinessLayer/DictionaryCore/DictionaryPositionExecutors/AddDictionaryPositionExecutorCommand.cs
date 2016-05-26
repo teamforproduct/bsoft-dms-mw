@@ -1,7 +1,9 @@
 ﻿using BL.Logic.Common;
+using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.Exception;
 using System;
+using System.Collections.Generic;
 
 namespace BL.Logic.DictionaryCore.DocumentType
 {
@@ -30,8 +32,9 @@ namespace BL.Logic.DictionaryCore.DocumentType
 
             _admin.VerifyAccess(_context, CommandType, false);
 
-            //var fd = new FilterDictionaryPositionExecutor {NotContainsIDs = new List<int> { Model.Id } };
-            
+            // pss узнать какие поля не должны повторяться
+            //var fd = new FilterDictionaryPositionExecutor { NotContainsIDs = new List<int> { Model.Id } };
+
             //if (_dictDb.ExistsExecutor(_context, fd))
             //{
             //    throw new DictionaryRecordNotUnique();

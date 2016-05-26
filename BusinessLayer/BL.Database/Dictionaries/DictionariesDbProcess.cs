@@ -2815,23 +2815,28 @@ namespace BL.Database.Dictionaries
                         ParentPositionName = x.ParentPosition.Name,
                         DepartmentName = x.Department.Name,
                         ExecutorAgentName = x.ExecutorAgent.Name,
-                        ChildPositions = x.ChildPositions.Select(y => new FrontDictionaryPosition
-                        {
-                            Id = y.Id,
-                            ParentId = y.ParentId,
-                            Name = y.Name,
-                            DepartmentId = y.DepartmentId,
-                            ExecutorAgentId = y.ExecutorAgentId,
-                            ParentPositionName = y.ParentPosition.Name,
-                            DepartmentName = y.Department.Name,
-                            ExecutorAgentName = y.ExecutorAgent.Name
-                        }),
+                        //pss !!!!!!! GetPosition - ChildPositions
+                        //ChildPositions = x.ChildPositions.Select(y => new FrontDictionaryPosition
+                        //{
+                        //    Id = y.Id,
+                        //    IsActive = y.IsActive,
+                        //    ParentId = y.ParentId,
+                        //    Name = y.Name,
+                        //    FullName = x.pos.FullName,
+                        //    DepartmentId = y.DepartmentId,
+                        //    ExecutorAgentId = y.ExecutorAgentId,
+                        //    ParentPositionName = y.ParentPosition.Name,
+                        //    DepartmentName = y.Department.Name,
+                        //    ExecutorAgentName = y.ExecutorAgent.Name
+                        //}),
                         ChiefDepartments = x.ChiefDepartments.Select(y => new FrontDictionaryDepartment
                         {
                             Id = y.Id,
+                            IsActive = y.IsActive,
                             ParentId = y.ParentId,
                             CompanyId = y.CompanyId,
                             Name = y.Name,
+                            FullName = y.FullName,
                             ChiefPositionId = y.ChiefPositionId,
                             ParentDepartmentName = y.ParentDepartment.Name,
                             CompanyName = y.Company.Name,
@@ -2853,8 +2858,9 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context))
             {
+                // pss эта сборка Where-условий повторяется 3 раза (GetPositionsWithActions, ExistsPosition, GetPosition). У меня НЕ получается вынести Where в отдельную функцию.
                 var qry = dbContext.DictionaryPositionsSet.Where(x => x.Department.Company.ClientId == context.CurrentClientId).Select(x => new { pos = x, subordMax = 0 }).AsQueryable();
-
+   
                 // Список первичных ключей
                 if (filter.IDs?.Count > 0)
                 {
@@ -2865,6 +2871,30 @@ namespace BL.Database.Dictionaries
                 if (filter.NotContainsIDs?.Count > 0)
                 {
                     qry = qry.Where(x => !filter.NotContainsIDs.Contains(x.pos.Id));
+                }
+
+                // Условие по IsActive
+                if (filter.IsActive != null)
+                {
+                    qry = qry.Where(x => filter.IsActive == x.pos.IsActive);
+                }
+
+                // Поиск по наименованию
+                if (!string.IsNullOrEmpty(filter.Name))
+                {
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
+                    {
+                        qry = qry.Where(x => x.pos.Name.Contains(temp));
+                    }
+                }
+
+                // Условие по полному имени
+                if (!string.IsNullOrEmpty(filter.FullName))
+                {
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.FullName))
+                    {
+                        qry = qry.Where(x => x.pos.FullName.Contains(temp));
+                    }
                 }
 
                 if (filter.DocumentIDs?.Count > 0)
@@ -2894,8 +2924,10 @@ namespace BL.Database.Dictionaries
                 return qry.Select(x => new FrontDictionaryPosition
                 {
                     Id = x.pos.Id,
+                    IsActive = x.pos.IsActive,
                     ParentId = x.pos.ParentId,
                     Name = x.pos.Name,
+                    FullName = x.pos.FullName,
                     DepartmentId = x.pos.DepartmentId,
                     ExecutorAgentId = x.pos.ExecutorAgentId,
                     ParentPositionName = x.pos.ParentPosition.Name,
@@ -2906,16 +2938,48 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<InternalDictionaryPositionWithActions> GetPositionsWithActions(IContext context,
-            FilterDictionaryPosition filter)
+        // Для использования в коммандах метод CanExecute
+        public bool ExistsPosition(IContext context, FilterDictionaryPosition filter)
         {
             using (var dbContext = new DmsContext(context))
             {
+                // pss эта сборка Where-условий повторяется 3 раза (GetPositionsWithActions, ExistsPosition, GetPosition). У меня НЕ получается вынести Where в отдельную функцию.
                 var qry = dbContext.DictionaryPositionsSet.Where(x => x.Department.Company.ClientId == context.CurrentClientId).Select(x => new { pos = x, subordMax = 0 }).AsQueryable();
 
+                // Список первичных ключей
                 if (filter.IDs?.Count > 0)
                 {
                     qry = qry.Where(x => filter.IDs.Contains(x.pos.Id));
+                }
+
+                // Исключение списка первичных ключей
+                if (filter.NotContainsIDs?.Count > 0)
+                {
+                    qry = qry.Where(x => !filter.NotContainsIDs.Contains(x.pos.Id));
+                }
+
+                // Условие по IsActive
+                if (filter.IsActive != null)
+                {
+                    qry = qry.Where(x => filter.IsActive == x.pos.IsActive);
+                }
+
+                // Поиск по наименованию
+                if (!string.IsNullOrEmpty(filter.Name))
+                {
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
+                    {
+                        qry = qry.Where(x => x.pos.Name.Contains(temp));
+                    }
+                }
+
+                // Условие по полному имени
+                if (!string.IsNullOrEmpty(filter.FullName))
+                {
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.FullName))
+                    {
+                        qry = qry.Where(x => x.pos.FullName.Contains(temp));
+                    }
                 }
 
                 if (filter.DocumentIDs?.Count > 0)
@@ -2929,6 +2993,83 @@ namespace BL.Database.Dictionaries
                                 );
                 }
 
+
+
+                if (filter.SubordinatedPositions?.Count > 0)
+                {
+                    qry = qry.GroupJoin(
+                                        dbContext.AdminSubordinationsSet.Where(y => filter.SubordinatedPositions.Contains(y.SourcePositionId)),
+                                        x => x.pos.Id,
+                                        y => y.TargetPositionId,
+                                        (x, y) => new { pos = x.pos, subordMax = y.Max(z => z.SubordinationTypeId) }
+                                        )
+                             .Where(x => x.subordMax > 0);
+                }
+
+                var res = qry.Select(x => new FrontDictionaryPosition
+                {
+                    Id = x.pos.Id
+                }).FirstOrDefault();
+
+                return res != null;
+            }
+        }
+        
+        public IEnumerable<InternalDictionaryPositionWithActions> GetPositionsWithActions(IContext context,
+            FilterDictionaryPosition filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                // pss эта сборка Where-условий повторяется 3 раза (GetPositionsWithActions, ExistsPosition, GetPosition). У меня НЕ получается вынести Where в отдельную функцию.
+                var qry = dbContext.DictionaryPositionsSet.Where(x => x.Department.Company.ClientId == context.CurrentClientId).Select(x => new { pos = x, subordMax = 0 }).AsQueryable();
+
+                // Список первичных ключей
+                if (filter.IDs?.Count > 0)
+                {
+                    qry = qry.Where(x => filter.IDs.Contains(x.pos.Id));
+                }
+
+                // Исключение списка первичных ключей
+                if (filter.NotContainsIDs?.Count > 0)
+                {
+                    qry = qry.Where(x => !filter.NotContainsIDs.Contains(x.pos.Id));
+                }
+
+                // Условие по IsActive
+                if (filter.IsActive != null)
+                {
+                    qry = qry.Where(x => filter.IsActive == x.pos.IsActive);
+                }
+
+                // Поиск по наименованию
+                if (!string.IsNullOrEmpty(filter.Name))
+                {
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
+                    {
+                        qry = qry.Where(x => x.pos.Name.Contains(temp));
+                    }
+                }
+
+                // Условие по полному имени
+                if (!string.IsNullOrEmpty(filter.FullName))
+                {
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.FullName))
+                    {
+                        qry = qry.Where(x => x.pos.FullName.Contains(temp));
+                    }
+                }
+
+                if (filter.DocumentIDs?.Count > 0)
+                {
+                    qry = qry.Where(x =>
+                            dbContext.DocumentEventsSet.Where(y => y.Document.TemplateDocument.ClientId == context.CurrentClientId)
+                                .Where(y => filter.DocumentIDs.Contains(y.DocumentId)).Select(y => y.SourcePositionId).Contains(x.pos.Id)
+                                ||
+                                dbContext.DocumentEventsSet.Where(y => y.Document.TemplateDocument.ClientId == context.CurrentClientId)
+                                .Where(y => filter.DocumentIDs.Contains(y.DocumentId)).Select(y => y.TargetPositionId).Contains(x.pos.Id)
+                                );
+                }
+                
                 if (filter.SubordinatedPositions?.Count > 0)
                 {
                     qry = qry.GroupJoin(
@@ -2951,78 +3092,6 @@ namespace BL.Database.Dictionaries
                 }).ToList();
             }
         }
-
-        // Для использования в коммандах метод CanExecute
-        public bool ExistsPosition(IContext context, FilterDictionaryPosition filter)
-        {
-            using (var dbContext = new DmsContext(context))
-            {
-                var qry = dbContext.DictionaryPositionsSet.Where(x => x.Department.Company.ClientId == context.CurrentClientId).Select(x => new { pos = x, subordMax = 0 }).AsQueryable();
-
-                if (filter.IDs?.Count > 0)
-                {
-                    qry = qry.Where(x => filter.IDs.Contains(x.pos.Id));
-                }
-
-                if (filter.DocumentIDs?.Count > 0)
-                {
-                    qry = qry.Where(x =>
-                            dbContext.DocumentEventsSet.Where(y => y.Document.TemplateDocument.ClientId == context.CurrentClientId)
-                                .Where(y => filter.DocumentIDs.Contains(y.DocumentId)).Select(y => y.SourcePositionId).Contains(x.pos.Id)
-                                ||
-                                dbContext.DocumentEventsSet.Where(y => y.Document.TemplateDocument.ClientId == context.CurrentClientId)
-                                .Where(y => filter.DocumentIDs.Contains(y.DocumentId)).Select(y => y.TargetPositionId).Contains(x.pos.Id)
-                                );
-                }
-
-                if (filter.SubordinatedPositions?.Count > 0)
-                {
-                    qry = qry.GroupJoin(
-                                        dbContext.AdminSubordinationsSet.Where(y => filter.SubordinatedPositions.Contains(y.SourcePositionId)),
-                                        x => x.pos.Id,
-                                        y => y.TargetPositionId,
-                                        (x, y) => new { pos = x.pos, subordMax = y.Max(z => z.SubordinationTypeId) }
-                                        )
-                             .Where(x => x.subordMax > 0);
-                }
-
-                var res = qry.Select(x => new FrontDictionaryPosition
-                {
-                    Id = x.pos.Id
-                }).FirstOrDefault();
-
-                return res != null;
-            }
-        }
-
-        //private static IQueryable<DictionaryPositions> PositionGetWhere(ref IQueryable<DictionaryPositions> qry, FilterDictionaryPosition filter)
-        //{
-        //    // Условие по ID
-        //    if (filter.IDs?.Count > 0)
-        //    {
-        //        qry = qry.Where(x => filter.IDs.Contains(x.Id));
-        //    }
-
-        //    // Условие по NotContainsId
-        //    if (filter.NotContainsIDs?.Count > 0)
-        //    {
-        //        qry = qry.Where(x => !filter.NotContainsIDs.Contains(x.Id));
-        //    }
-
-        //    // Условие по IsActive
-        //    if (filter.IsActive != null)
-        //    {
-        //        qry = qry.Where(x => filter.IsActive == x.IsActive);
-        //    }
-
-        //    // Условие по Name
-        //    if (!string.IsNullOrEmpty(filter.Name))
-        //    {
-        //        qry = qry.Where(x => x.Name.Contains(filter.Name));
-        //    }
-
-        //    return qry;
-        //}
 
         #endregion DictionaryPositions
 
