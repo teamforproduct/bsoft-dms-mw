@@ -1992,6 +1992,7 @@ namespace BL.Database.Dictionaries
                 {
                     ClientId = context.CurrentClientId,
                     Id = contactType.Id,
+                    InputMask = contactType.InputMask,
                     LastChangeDate = contactType.LastChangeDate,
                     LastChangeUserId = contactType.LastChangeUserId,
                     Name = contactType.Name,
@@ -2026,6 +2027,7 @@ namespace BL.Database.Dictionaries
                     ClientId = context.CurrentClientId,
                     Name = contactType.Name,
                     IsActive = contactType.IsActive,
+                    InputMask=contactType.InputMask,
                     LastChangeDate = contactType.LastChangeDate,
                     LastChangeUserId = contactType.LastChangeUserId
                 };

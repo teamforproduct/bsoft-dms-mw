@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using BL.Logic.Common;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.InternalModel;
@@ -28,7 +29,7 @@ namespace BL.Logic.DictionaryCore.ContactType
 
         public override bool CanExecute()
         {
-            var spr = _dictDb.GetInternalDictionaryContactType(_context, new FilterDictionaryContactType { Name = Model.Name, IsActive=Model.IsActive });
+            var spr = _dictDb.GetInternalDictionaryContactType(_context, new FilterDictionaryContactType { Name = Model.Name, IsActive=Model.IsActive, NotContainsIDs=new List<int> {Model.Id} });
             if (spr != null)
             {
                 throw new DictionaryRecordNotUnique();
