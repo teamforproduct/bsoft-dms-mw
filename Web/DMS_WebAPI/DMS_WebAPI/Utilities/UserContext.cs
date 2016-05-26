@@ -21,6 +21,33 @@ namespace DMS_WebAPI.Utilities
         /// <summary>
         /// Gets setting value by its name.
         /// </summary>
+        /// <returns>Typed setting value.</returns>
+        public IContext GetByLanguage()
+        {
+            string token = Token.ToLower();
+            if (!_casheContexts.ContainsKey(token))
+            {
+                throw new UserUnauthorized();
+            }
+
+            var contextValue = _casheContexts[token];
+            try
+            {
+                var ctx = (IContext)contextValue.StoreObject;
+
+                var request_ctx = new DefaultContext(ctx);
+                request_ctx.SetCurrentPosition(null);
+                return request_ctx;
+            }
+            catch (InvalidCastException invalidCastException)
+            {
+                throw new Exception();
+            }
+        }
+
+        /// <summary>
+        /// Gets setting value by its name.
+        /// </summary>
         /// <param name="currentPositionId"></param>
         /// <returns>Typed setting value.</returns>
         public IContext Get(int? currentPositionId = null)

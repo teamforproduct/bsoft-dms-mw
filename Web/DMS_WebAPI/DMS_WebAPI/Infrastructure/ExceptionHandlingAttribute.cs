@@ -46,7 +46,7 @@ namespace DMS_WebAPI.Infrastructure
                 IContext ctx = null;
                 try
                 {
-                    ctx = DmsResolver.Current.Get<UserContext>().Get();
+                    ctx = DmsResolver.Current.Get<UserContext>().GetByLanguage();
                     if (currentContext.User.Identity.IsAuthenticated && ctx != null)
                     {
                         var service = DmsResolver.Current.Get<ILanguageService>();
