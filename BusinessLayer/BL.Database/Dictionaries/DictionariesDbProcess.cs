@@ -2878,6 +2878,8 @@ namespace BL.Database.Dictionaries
                                 );
                 }
 
+                
+
                 if (filter.SubordinatedPositions?.Count > 0)
                 {
                     qry = qry.GroupJoin(
