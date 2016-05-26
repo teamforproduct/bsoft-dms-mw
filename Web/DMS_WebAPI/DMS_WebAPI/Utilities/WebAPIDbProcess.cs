@@ -44,7 +44,8 @@ namespace DMS_WebAPI.Utilities
 
                 if (filter.ServerTypes?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.ServerTypes.Cast<string>().Contains(x.ServerType));
+                    var serverTypes = filter.ServerTypes.Select(x => x.ToString()).ToList();
+                    qry = qry.Where(x => serverTypes.Contains(x.ServerType));
                 }
             }
 
@@ -93,7 +94,7 @@ namespace DMS_WebAPI.Utilities
                                 select new
                                 {
                                     Server = server,
-                                    ClientId = client.Id
+                                    ClientId = client.ClientId
                                 }).ToList();
 
                 var items = itemsRes.Select(x => new DatabaseModel

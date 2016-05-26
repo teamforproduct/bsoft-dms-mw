@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using BL.Model.Users;
+using System.Runtime.Serialization;
 using System.Web;
 
 namespace BL.Model.DocumentCore.IncomingModel
@@ -6,7 +7,7 @@ namespace BL.Model.DocumentCore.IncomingModel
     /// <summary>
     /// Добавляемый или редактируемый файл документа
     /// </summary>
-    public class ModifyDocumentFile
+    public class ModifyDocumentFile : CurrentPosition
     {
         [IgnoreDataMember]
         public int Id { get; set; }
@@ -16,6 +17,7 @@ namespace BL.Model.DocumentCore.IncomingModel
         public int DocumentId { get; set; }
         /// <summary>
         /// Порядковый номер файла в списке файлов документа
+        /// Только для изменения файла
         /// </summary>
         public int OrderInDocument { get; set; }
         /// <summary>
@@ -23,26 +25,25 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// </summary>
         public bool IsAdditional { get; set; }
         /// <summary>
-        /// Данные файла в виде строки
-        /// </summary>
-        public string FileData { get; set; }
-        /// <summary>
         /// Имя файла. Включая расширение
         /// </summary>
+        [IgnoreDataMember]
         public string FileName { get; set; }
         /// <summary>
         /// Тип файла.
         /// </summary>
+        [IgnoreDataMember]
         public string FileType { get; set; }
         /// <summary>
         /// Размер файла
         /// </summary>
-        public int FileSize { get; set; }
+        [IgnoreDataMember]
+        public long FileSize { get; set; }
 
         /// <summary>
         /// Данные файла
         /// </summary>
         [IgnoreDataMember]
-        public HttpPostedFileBase PostedFileData { get; set; }
+        public HttpPostedFile PostedFileData { get; set; }
     }
 }

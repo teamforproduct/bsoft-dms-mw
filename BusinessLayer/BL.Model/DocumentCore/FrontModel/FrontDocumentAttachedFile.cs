@@ -49,7 +49,7 @@ namespace BL.Model.DocumentCore.FrontModel
         /// <summary>
         /// Размер файла
         /// </summary>
-        public int FileSize { get; set; }
+        public long FileSize { get; set; }
 
         /// <summary>
         /// Хэш файла. для проверки целостности файла в хранилище

@@ -54,12 +54,13 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
             fl.DocumentId = Model.DocumentId;
             fl.OrderInDocument = _operationDb.GetNextFileOrderNumber(_context, Model.DocumentId);
-            fl.FileContent = Convert.FromBase64String(Model.FileData);
+            //fl.FileContent = Convert.FromBase64String(Model.FileData);
             fl.FileType = Model.FileType;
             fl.FileSize = Model.FileSize;
             fl.Extension = Path.GetExtension(Model.FileName ?? "").Replace(".", "");
             fl.Name = Path.GetFileNameWithoutExtension(Model.FileName);
             fl.IsAdditional = fl.IsAdditional;
+            fl.PostedFileData = Model.PostedFileData;
             _fStore.SaveFile(_context, fl);
             CommonDocumentUtilities.SetLastChange(_context, fl);
             _operationDb.UpdateFile(_context, fl);

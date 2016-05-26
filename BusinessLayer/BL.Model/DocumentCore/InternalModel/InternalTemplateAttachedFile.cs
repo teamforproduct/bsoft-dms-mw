@@ -33,7 +33,7 @@ namespace BL.Model.DocumentCore.InternalModel
         /// <summary>
         /// содержимое файла
         /// </summary>
-        public HttpPostedFileBase PostedFileData { get; set; }
+        public HttpPostedFile PostedFileData { get; set; }
         /// <summary>
         /// Название файла без расширения
         /// </summary>
@@ -50,7 +50,7 @@ namespace BL.Model.DocumentCore.InternalModel
         /// <summary>
         /// Размер файла
         /// </summary>
-        public int FileSize { get; set; }
+        public long FileSize { get; set; }
 
         /// <summary>
         /// Хэш файла. для проверки целостности файла в хранилище
