@@ -373,6 +373,7 @@
     <Compile Include="WebAPI\FrontModel\FrontAspNetUserServer.cs" />
     <Compile Include="WebAPI\IncomingModel\AddAspNetClient.cs" />
     <Compile Include="WebAPI\IncomingModel\ModifyAspNetClient.cs" />
+    <Compile Include="WebAPI\IncomingModel\SetClientLicenceKey.cs" />
     <Compile Include="WebAPI\IncomingModel\ModifyAspNetClientServer.cs" />
     <Compile Include="WebAPI\IncomingModel\ModifyAspNetClientLicence.cs" />
     <Compile Include="WebAPI\IncomingModel\ModifyAdminServer.cs" />

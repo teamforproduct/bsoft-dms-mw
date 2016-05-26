@@ -29,16 +29,16 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeM = new System.Diagnostics.Stopwatch();
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            var docs = docProc.GetDocuments(cxt, filter, paging);
+            var docs = docProc.GetDocuments(ctx, filter, paging);
             timeDB.Stop();
             var res = new JsonResult(docs, this);
             res.Paging = paging;
             timeM.Stop();
-            SaveToFile("DB: IDocumentService GetDocuments User: " + cxt.CurrentAgentId, timeDB.Elapsed.ToString("G"));
-            SaveToFile("M: DocumentsController Get List User: " + cxt.CurrentAgentId, timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentService GetDocuments User: " + ctx.CurrentAgentId, timeDB.Elapsed.ToString("G"));
+            SaveToFile("M: DocumentsController Get List User: " + ctx.CurrentAgentId, timeM.Elapsed.ToString("G"));
             return res;
         }
 
@@ -78,24 +78,24 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeDB1 = new System.Diagnostics.Stopwatch();
             var timeDB2 = new System.Diagnostics.Stopwatch();
             timeM.Start();
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
 
             timeDB.Start();
             timeDB1.Start();
-            var doc = docProc.GetDocument(cxt, id, filter);
+            var doc = docProc.GetDocument(ctx, id, filter);
             timeDB1.Stop();
 
             timeDB2.Start();
-            var metaData = docProc.GetModifyMetaData(cxt, doc);
+            var metaData = docProc.GetModifyMetaData(ctx, doc);
             timeDB2.Stop();
             timeDB.Stop();
 
             timeM.Stop();
-            SaveToFile("DB: IDocumentService GetDocument and GetModifyMetaData User: " + cxt.CurrentAgentId, timeDB.Elapsed.ToString("G"));
-            SaveToFile("DB1: IDocumentService GetDocument User: " + cxt.CurrentAgentId, timeDB1.Elapsed.ToString("G"));
-            SaveToFile("DB2: IDocumentService GetModifyMetaData User: " + cxt.CurrentAgentId, timeDB2.Elapsed.ToString("G"));
-            SaveToFile("M: DocumentsController Get By Id User: " + cxt.CurrentAgentId, timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentService GetDocument and GetModifyMetaData User: " + ctx.CurrentAgentId, timeDB.Elapsed.ToString("G"));
+            SaveToFile("DB1: IDocumentService GetDocument User: " + ctx.CurrentAgentId, timeDB1.Elapsed.ToString("G"));
+            SaveToFile("DB2: IDocumentService GetModifyMetaData User: " + ctx.CurrentAgentId, timeDB2.Elapsed.ToString("G"));
+            SaveToFile("M: DocumentsController Get By Id User: " + ctx.CurrentAgentId, timeM.Elapsed.ToString("G"));
 
             return new JsonResult(doc, metaData, this);
         }
@@ -111,16 +111,16 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
 
-            var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
 
             timeDB.Start();
-            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.AddDocument, cxt, model);
+            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.AddDocument, ctx, model);
             timeDB.Stop();
 
             timeM.Stop();
-            SaveToFile("DB: IDocumentService AddDocumentByTemplateDocument User: " + cxt.CurrentAgentId, timeDB.Elapsed.ToString("G"));
-            SaveToFile("M: DocumentsController Post User: " + cxt.CurrentAgentId, timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentService AddDocumentByTemplateDocument User: " + ctx.CurrentAgentId, timeDB.Elapsed.ToString("G"));
+            SaveToFile("M: DocumentsController Post User: " + ctx.CurrentAgentId, timeM.Elapsed.ToString("G"));
             return Get(docId);
             //return new JsonResult(null,this);
         }
@@ -137,15 +137,15 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
 
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
 
             timeDB.Start();
-            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.ModifyDocument, cxt, model);
+            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.ModifyDocument, ctx, model);
             timeDB.Stop();
             timeM.Stop();
-            SaveToFile("DB: IDocumentService ModifyDocument User: " + cxt.CurrentAgentId, timeDB.Elapsed.ToString("G"));
-            SaveToFile("M: DocumentsController Put User: " + cxt.CurrentAgentId, timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentService ModifyDocument User: " + ctx.CurrentAgentId, timeDB.Elapsed.ToString("G"));
+            SaveToFile("M: DocumentsController Put User: " + ctx.CurrentAgentId, timeM.Elapsed.ToString("G"));
 
 
             return Get(docId);
@@ -163,14 +163,14 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
 
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            docProc.ExecuteAction(EnumDocumentActions.DeleteDocument, cxt, id);
+            docProc.ExecuteAction(EnumDocumentActions.DeleteDocument, ctx, id);
             timeDB.Stop();
             timeM.Stop();
-            SaveToFile("DB: IDocumentService DeleteDocument User: " + cxt.CurrentAgentId, timeDB.Elapsed.ToString("G"));
-            SaveToFile("M: DocumentsController Delete  User: " + cxt.CurrentAgentId, timeM.Elapsed.ToString("G"));
+            SaveToFile("DB: IDocumentService DeleteDocument User: " + ctx.CurrentAgentId, timeDB.Elapsed.ToString("G"));
+            SaveToFile("M: DocumentsController Delete  User: " + ctx.CurrentAgentId, timeM.Elapsed.ToString("G"));
             return new JsonResult(null, this);
         }
 

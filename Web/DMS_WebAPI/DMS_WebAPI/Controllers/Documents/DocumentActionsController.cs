@@ -46,10 +46,10 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeM = new System.Diagnostics.Stopwatch();
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var cmdService = DmsResolver.Current.Get<ICommandService>();
             timeDB.Start();
-            var actions = cmdService.GetDocumentActions(cxt, id);
+            var actions = cmdService.GetDocumentActions(ctx, id);
             timeDB.Stop();
             timeM.Stop();
             SaveToFile("M: DocumentActionsController Get List", timeM.Elapsed.ToString("G"));
@@ -71,10 +71,10 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
 
-            var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            docProc.ExecuteAction(EnumDocumentActions.DeleteFavourite, cxt, model);
+            docProc.ExecuteAction(EnumDocumentActions.DeleteFavourite, ctx, model);
             timeDB.Stop();
 
             timeM.Stop();
@@ -97,10 +97,10 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
 
-            var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            docProc.ExecuteAction(EnumDocumentActions.AddFavourite, cxt, model);
+            docProc.ExecuteAction(EnumDocumentActions.AddFavourite, ctx, model);
             timeDB.Stop();
 
             timeM.Stop();
@@ -122,9 +122,9 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult GetNextRegisterDocumentNumber(RegisterDocumentBase model)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var nextNumb = docProc.GetNextRegisterDocumentNumber(cxt, model);
+            var nextNumb = docProc.GetNextRegisterDocumentNumber(ctx, model);
             return new JsonResult(nextNumb, this);
         }
         /// <summary>
@@ -143,10 +143,10 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
 
-            var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            docProc.ExecuteAction(EnumDocumentActions.RegisterDocument, cxt, model);
+            docProc.ExecuteAction(EnumDocumentActions.RegisterDocument, ctx, model);
             timeDB.Stop();
 
             timeM.Stop();
@@ -168,10 +168,10 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeM = new System.Diagnostics.Stopwatch();
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            docProc.ExecuteAction(EnumDocumentActions.AddDocumentLink, cxt, model);
+            docProc.ExecuteAction(EnumDocumentActions.AddDocumentLink, ctx, model);
             timeDB.Stop();
 
             timeM.Stop();
@@ -194,10 +194,10 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeM = new System.Diagnostics.Stopwatch();
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            docProc.ExecuteAction(EnumDocumentActions.DeleteDocumentLink, cxt, id);
+            docProc.ExecuteAction(EnumDocumentActions.DeleteDocumentLink, ctx, id);
             timeDB.Stop();
 
             timeM.Stop();
@@ -220,10 +220,10 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeM = new System.Diagnostics.Stopwatch();
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
-            var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            docProc.ExecuteAction(EnumDocumentActions.StartWork, cxt, model);
+            docProc.ExecuteAction(EnumDocumentActions.StartWork, ctx, model);
             timeDB.Stop();
 
             timeM.Stop();
@@ -246,10 +246,10 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeM = new System.Diagnostics.Stopwatch();
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
-            var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            docProc.ExecuteAction(EnumDocumentActions.FinishWork, cxt, model);
+            docProc.ExecuteAction(EnumDocumentActions.FinishWork, ctx, model);
             timeDB.Stop();
 
             timeM.Stop();
@@ -272,10 +272,10 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeM = new System.Diagnostics.Stopwatch();
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
-            var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            docProc.ExecuteAction(EnumDocumentActions.SendMessage, cxt, model);
+            docProc.ExecuteAction(EnumDocumentActions.SendMessage, ctx, model);
             timeDB.Stop();
 
             timeM.Stop();
@@ -298,10 +298,10 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeM = new System.Diagnostics.Stopwatch();
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
-            var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            docProc.ExecuteAction(EnumDocumentActions.AddNote, cxt, model);
+            docProc.ExecuteAction(EnumDocumentActions.AddNote, ctx, model);
             timeDB.Stop();
 
             timeM.Stop();
@@ -324,10 +324,10 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeM = new System.Diagnostics.Stopwatch();
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
-            var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            docProc.ExecuteAction(EnumDocumentActions.ControlOn, cxt, model);
+            docProc.ExecuteAction(EnumDocumentActions.ControlOn, ctx, model);
             timeDB.Stop();
 
             timeM.Stop();
@@ -350,10 +350,10 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeM = new System.Diagnostics.Stopwatch();
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            var documentId = (int)docProc.ExecuteAction(EnumDocumentActions.ControlChange,cxt, model);
+            var documentId = (int)docProc.ExecuteAction(EnumDocumentActions.ControlChange,ctx, model);
             timeDB.Stop();
 
             timeM.Stop();
@@ -377,10 +377,10 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeM = new System.Diagnostics.Stopwatch();
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            var documentId = (int)docProc.ExecuteAction(EnumDocumentActions.SendForExecutionChange, cxt, model);
+            var documentId = (int)docProc.ExecuteAction(EnumDocumentActions.SendForExecutionChange, ctx, model);
             timeDB.Stop();
 
             timeM.Stop();
@@ -403,10 +403,10 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeM = new System.Diagnostics.Stopwatch();
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            var documentId = (int)docProc.ExecuteAction(EnumDocumentActions.SendForControlChange, cxt, model);
+            var documentId = (int)docProc.ExecuteAction(EnumDocumentActions.SendForControlChange, ctx, model);
             timeDB.Stop();
 
             timeM.Stop();
@@ -429,10 +429,10 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeM = new System.Diagnostics.Stopwatch();
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            var documentId = (int)docProc.ExecuteAction(EnumDocumentActions.SendForResponsibleExecutionChange, cxt, model);
+            var documentId = (int)docProc.ExecuteAction(EnumDocumentActions.SendForResponsibleExecutionChange, ctx, model);
             timeDB.Stop();
 
             timeM.Stop();
@@ -455,10 +455,10 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeM = new System.Diagnostics.Stopwatch();
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            var documentId = (int)docProc.ExecuteAction(EnumDocumentActions.ControlTargetChange, cxt, model);
+            var documentId = (int)docProc.ExecuteAction(EnumDocumentActions.ControlTargetChange, ctx, model);
             timeDB.Stop();
 
             timeM.Stop();
@@ -481,10 +481,10 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeM = new System.Diagnostics.Stopwatch();
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            var documentId = (int)docProc.ExecuteAction(EnumDocumentActions.ControlOff, cxt, model);
+            var documentId = (int)docProc.ExecuteAction(EnumDocumentActions.ControlOff, ctx, model);
             timeDB.Stop();
 
             timeM.Stop();
@@ -507,10 +507,10 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeM = new System.Diagnostics.Stopwatch();
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
-            var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.CopyDocument, cxt, model);
+            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.CopyDocument, ctx, model);
             timeDB.Stop();
 
             timeM.Stop();
@@ -533,10 +533,10 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
 
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            docProc.ExecuteAction(EnumDocumentActions.ChangeExecutor, cxt, model);
+            docProc.ExecuteAction(EnumDocumentActions.ChangeExecutor, ctx, model);
             timeDB.Stop();
 
             timeM.Stop();
@@ -560,10 +560,10 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
 
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            docProc.ExecuteAction(EnumDocumentActions.ChangePosition, cxt, model);
+            docProc.ExecuteAction(EnumDocumentActions.ChangePosition, ctx, model);
             timeDB.Stop();
 
             timeM.Stop();
@@ -587,11 +587,11 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
 
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
             //TODO change
-            docProc.ExecuteAction(EnumDocumentActions.LaunchPlan, cxt, id);
+            docProc.ExecuteAction(EnumDocumentActions.LaunchPlan, ctx, id);
             timeDB.Stop();
 
             timeM.Stop();
@@ -615,10 +615,10 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
 
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            docProc.ExecuteAction(EnumDocumentActions.MarkDocumentEventAsRead, cxt, id);
+            docProc.ExecuteAction(EnumDocumentActions.MarkDocumentEventAsRead, ctx, id);
             timeDB.Stop();
 
             timeM.Stop();
@@ -642,11 +642,11 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
 
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
             //TODO change
-            docProc.ExecuteAction(EnumDocumentActions.StopPlan, cxt, id);
+            docProc.ExecuteAction(EnumDocumentActions.StopPlan, ctx, id);
             timeDB.Stop();
 
             timeM.Stop();
@@ -669,10 +669,10 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeM = new System.Diagnostics.Stopwatch();
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.MarkExecution, cxt, model);
+            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.MarkExecution, ctx, model);
             timeDB.Stop();
 
             timeM.Stop();
@@ -695,10 +695,10 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeM = new System.Diagnostics.Stopwatch();
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.RejectResult, cxt, model);
+            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.RejectResult, ctx, model);
             timeDB.Stop();
 
             timeM.Stop();
@@ -721,10 +721,10 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeM = new System.Diagnostics.Stopwatch();
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.AcceptResult, cxt, model);
+            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.AcceptResult, ctx, model);
             timeDB.Stop();
 
             timeM.Stop();
@@ -747,10 +747,10 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeM = new System.Diagnostics.Stopwatch();
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.RejectSigning, cxt, model);
+            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.RejectSigning, ctx, model);
             timeDB.Stop();
 
             timeM.Stop();
@@ -772,10 +772,10 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeM = new System.Diagnostics.Stopwatch();
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.RejectVisaing, cxt, model);
+            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.RejectVisaing, ctx, model);
             timeDB.Stop();
 
             timeM.Stop();
@@ -797,10 +797,10 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeM = new System.Diagnostics.Stopwatch();
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.RejectАgreement, cxt, model);
+            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.RejectАgreement, ctx, model);
             timeDB.Stop();
 
             timeM.Stop();
@@ -822,10 +822,10 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeM = new System.Diagnostics.Stopwatch();
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.RejectАpproval, cxt, model);
+            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.RejectАpproval, ctx, model);
             timeDB.Stop();
 
             timeM.Stop();
@@ -848,10 +848,10 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeM = new System.Diagnostics.Stopwatch();
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.WithdrawSigning, cxt, model);
+            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.WithdrawSigning, ctx, model);
             timeDB.Stop();
 
             timeM.Stop();
@@ -873,10 +873,10 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeM = new System.Diagnostics.Stopwatch();
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.WithdrawVisaing, cxt, model);
+            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.WithdrawVisaing, ctx, model);
             timeDB.Stop();
 
             timeM.Stop();
@@ -898,10 +898,10 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeM = new System.Diagnostics.Stopwatch();
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.WithdrawАgreement, cxt, model);
+            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.WithdrawАgreement, ctx, model);
             timeDB.Stop();
 
             timeM.Stop();
@@ -923,10 +923,10 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeM = new System.Diagnostics.Stopwatch();
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.WithdrawАpproval, cxt, model);
+            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.WithdrawАpproval, ctx, model);
             timeDB.Stop();
 
             timeM.Stop();
@@ -949,10 +949,10 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeM = new System.Diagnostics.Stopwatch();
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.AffixSigning, cxt, model);
+            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.AffixSigning, ctx, model);
             timeDB.Stop();
 
             timeM.Stop();
@@ -974,10 +974,10 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeM = new System.Diagnostics.Stopwatch();
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.AffixVisaing, cxt, model);
+            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.AffixVisaing, ctx, model);
             timeDB.Stop();
 
             timeM.Stop();
@@ -999,10 +999,10 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeM = new System.Diagnostics.Stopwatch();
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.AffixАgreement, cxt, model);
+            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.AffixАgreement, ctx, model);
             timeDB.Stop();
 
             timeM.Stop();
@@ -1024,10 +1024,10 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeM = new System.Diagnostics.Stopwatch();
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.AffixАpproval, cxt, model);
+            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.AffixАpproval, ctx, model);
             timeDB.Stop();
 
             timeM.Stop();
@@ -1050,10 +1050,10 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeM = new System.Diagnostics.Stopwatch();
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            var res = docProc.ExecuteAction(EnumDocumentActions.ReportRegistrationCardDocument, cxt, id);
+            var res = docProc.ExecuteAction(EnumDocumentActions.ReportRegistrationCardDocument, ctx, id);
             timeDB.Stop();
 
             timeM.Stop();
@@ -1075,10 +1075,10 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeM = new System.Diagnostics.Stopwatch();
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            var res = docProc.ExecuteAction(EnumDocumentActions.ReportRegisterTransmissionDocuments, cxt, id);
+            var res = docProc.ExecuteAction(EnumDocumentActions.ReportRegisterTransmissionDocuments, ctx, id);
             timeDB.Stop();
 
             timeM.Stop();
@@ -1099,9 +1099,9 @@ namespace DMS_WebAPI.Controllers.Documents
         {
             var timeM = new System.Diagnostics.Stopwatch();
             timeM.Start();
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var ap = DmsResolver.Current.Get<IAutoPlanService>();
-            var res = ap.ManualRunAutoPlan(cxt);
+            var res = ap.ManualRunAutoPlan(ctx);
             timeM.Stop();
             SaveToFile("M: DocumentActionsController ManualStartAutoPlan", timeM.Elapsed.ToString("G"));
 

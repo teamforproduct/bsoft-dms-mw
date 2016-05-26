@@ -23,9 +23,9 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns>Список шаблонов документов</returns>
         public IHttpActionResult Get([Required]int templateId,[FromUri]FilterTemplateDocumentRestrictedSendList filter)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpDocs = tmpDocProc.GetTemplateDocumentRestrictedSendLists(cxt,templateId,filter);
+            var tmpDocs = tmpDocProc.GetTemplateDocumentRestrictedSendLists(ctx,templateId,filter);
             return new JsonResult(tmpDocs, this);
         }
 
@@ -36,9 +36,9 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns>Шаблон документа</returns>
         public IHttpActionResult Get(int id)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpDoc = tmpDocProc.GetTemplateDocumentRestrictedSendList(cxt, id);
+            var tmpDoc = tmpDocProc.GetTemplateDocumentRestrictedSendList(ctx, id);
             return new JsonResult(tmpDoc, this);
         }
 
@@ -49,9 +49,9 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns></returns>
         public IHttpActionResult Post([FromBody]ModifyTemplateDocumentRestrictedSendLists model)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpTemplate = tmpDocProc.ExecuteAction(EnumDocumentActions.AddTemplateDocumentRestrictedSendList,cxt,model);
+            var tmpTemplate = tmpDocProc.ExecuteAction(EnumDocumentActions.AddTemplateDocumentRestrictedSendList,ctx,model);
             return Get((int)tmpTemplate);
         }
 
@@ -64,9 +64,9 @@ namespace DMS_WebAPI.Controllers.Documents
         public IHttpActionResult Put([Required]int id, [FromBody]ModifyTemplateDocumentRestrictedSendLists model)
         {
             model.Id = id;
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpTemplate = tmpDocProc.ExecuteAction(EnumDocumentActions.ModifyTemplateDocumentRestrictedSendList,cxt,model);
+            var tmpTemplate = tmpDocProc.ExecuteAction(EnumDocumentActions.ModifyTemplateDocumentRestrictedSendList,ctx,model);
             return Get((int)tmpTemplate);
         }
 
@@ -77,10 +77,10 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns></returns>
         public IHttpActionResult Delete([FromUri] int id)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
 
-            tmpDocProc.ExecuteAction(EnumDocumentActions.DeleteTemplateDocumentRestrictedSendList,cxt, id);
+            tmpDocProc.ExecuteAction(EnumDocumentActions.DeleteTemplateDocumentRestrictedSendList,ctx, id);
 
             var tmp = new FrontTemplateDocumentRestrictedSendLists {Id = id};
 

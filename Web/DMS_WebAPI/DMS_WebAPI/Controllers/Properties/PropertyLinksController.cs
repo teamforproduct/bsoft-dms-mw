@@ -16,42 +16,42 @@ namespace DMS_WebAPI.Controllers.Properties
     {
         public IHttpActionResult Get([FromUri] FilterPropertyLink filter)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpServ = DmsResolver.Current.Get<IPropertyService>();
-            var tmpItems = tmpServ.GetPropertyLinks(cxt, filter);
+            var tmpItems = tmpServ.GetPropertyLinks(ctx, filter);
             return new JsonResult(tmpItems, this);
         }
 
         public IHttpActionResult Get(int id)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpServ = DmsResolver.Current.Get<IPropertyService>();
-            var tmpItems = tmpServ.GetPropertyLink(cxt, id);
+            var tmpItems = tmpServ.GetPropertyLink(ctx, id);
             return new JsonResult(tmpItems, this);
         }
 
         public IHttpActionResult Post([FromBody]ModifyPropertyLink model)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpServ = DmsResolver.Current.Get<IPropertyService>();
-            return Get((int)tmpServ.ExecuteAction(EnumPropertyAction.AddPropertyLink,  cxt, model));
+            return Get((int)tmpServ.ExecuteAction(EnumPropertyAction.AddPropertyLink,  ctx, model));
         }
 
         public IHttpActionResult Put(int id, [FromBody]ModifyPropertyLink model)
         {
             model.Id = id;
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpServ = DmsResolver.Current.Get<IPropertyService>();
-            tmpServ.ExecuteAction(EnumPropertyAction.ModifyPropertyLink, cxt, model);
+            tmpServ.ExecuteAction(EnumPropertyAction.ModifyPropertyLink, ctx, model);
             return Get(model.Id);
         }
 
         public IHttpActionResult Delete([FromUri] int id)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpServ = DmsResolver.Current.Get<IPropertyService>();
 
-            tmpServ.ExecuteAction(EnumPropertyAction.DeletePropertyLink, cxt, id);
+            tmpServ.ExecuteAction(EnumPropertyAction.DeletePropertyLink, ctx, id);
             FrontPropertyLink tmp = new FrontPropertyLink();
             tmp.Id = id;
 

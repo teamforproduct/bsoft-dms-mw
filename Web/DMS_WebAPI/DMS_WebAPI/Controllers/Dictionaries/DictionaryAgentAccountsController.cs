@@ -30,9 +30,9 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         {
            
 
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionaryAgentAccounts(cxt, agentId,filter);
+            var tmpDicts = tmpDictProc.GetDictionaryAgentAccounts(ctx, agentId,filter);
             return new JsonResult(tmpDicts, this);
         }
 
@@ -43,9 +43,9 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns>Расчетный счет</returns>
         public IHttpActionResult Get(int id)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDict = tmpDictProc.GetDictionaryAgentAccount(cxt, id);
+            var tmpDict = tmpDictProc.GetDictionaryAgentAccount(ctx, id);
             return new JsonResult(tmpDict, this);
         }
 
@@ -56,9 +56,9 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns></returns>
         public IHttpActionResult Post([FromBody]ModifyDictionaryAgentAccount model)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
-            return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.AddAgentAccount, cxt, model));
+            return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.AddAgentAccount, ctx, model));
         }
 
         /// <summary>
@@ -70,9 +70,9 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         public IHttpActionResult Put(int id, [FromBody]ModifyDictionaryAgent model)
         {
             model.Id = id;
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
-            tmpDict.ExecuteAction(EnumDictionaryActions.ModifyAgentAccount, cxt, model);
+            tmpDict.ExecuteAction(EnumDictionaryActions.ModifyAgentAccount, ctx, model);
             return Get(model.Id);
         }
 
@@ -83,10 +83,10 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns></returns>
         public IHttpActionResult Delete([FromUri] int id)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
 
-            tmpDict.ExecuteAction(EnumDictionaryActions.DeleteAgentAccount, cxt, id);
+            tmpDict.ExecuteAction(EnumDictionaryActions.DeleteAgentAccount, ctx, id);
             FrontDictionaryAgentAccount tmp = new FrontDictionaryAgentAccount();
             tmp.Id = id;
 

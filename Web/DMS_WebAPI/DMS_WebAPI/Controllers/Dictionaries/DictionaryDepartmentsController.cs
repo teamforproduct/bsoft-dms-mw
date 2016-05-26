@@ -21,9 +21,9 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         // GET: api/DictionaryDepartments
         public IHttpActionResult Get([FromUri] FilterDictionaryDepartment filter)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionaryDepartments(cxt, filter);
+            var tmpDicts = tmpDictProc.GetDictionaryDepartments(ctx, filter);
             return new JsonResult(tmpDicts, this);
         }
 
@@ -35,9 +35,9 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         // GET: api/DictionaryDepartments/5
         public IHttpActionResult Get(int id)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDict = tmpDictProc.GetDictionaryDepartment(cxt, id);
+            var tmpDict = tmpDictProc.GetDictionaryDepartment(ctx, id);
             return new JsonResult(tmpDict, this);
         }
 
@@ -48,9 +48,9 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns>Возвращает добавленную запись</returns>
         public IHttpActionResult Post([FromBody]ModifyDictionaryDepartment model)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
-            return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.AddDepartment, cxt, model));
+            return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.AddDepartment, ctx, model));
         }
 
 
@@ -65,9 +65,9 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             // Спецификация REST требует отдельного указания ID, несмотря на то, что параметр ID есть в ModifyDictionaryDictionaryDepartment
 
             model.Id = id;
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
-            tmpDict.ExecuteAction(EnumDictionaryActions.ModifyDepartment, cxt, model);
+            tmpDict.ExecuteAction(EnumDictionaryActions.ModifyDepartment, ctx, model);
             return Get(model.Id);
         }
 
@@ -77,10 +77,10 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns>FrontDictionaryDictionaryDepartment</returns> 
         public IHttpActionResult Delete([FromUri] int id)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
 
-            tmpDict.ExecuteAction(EnumDictionaryActions.DeleteDepartment, cxt, id);
+            tmpDict.ExecuteAction(EnumDictionaryActions.DeleteDepartment, ctx, id);
             FrontDictionaryDepartment tmp = new FrontDictionaryDepartment();
             tmp.Id = id;
 

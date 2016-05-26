@@ -22,9 +22,9 @@ namespace DMS_WebAPI.Controllers.Documents
         [ResponseType(typeof(FrontDocumentWait))]
         public IHttpActionResult Get([FromUri] FilterDocumentWait filter, [FromUri]UIPaging paging)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var waits = docProc.GetDocumentWaits(cxt, filter, paging);
+            var waits = docProc.GetDocumentWaits(ctx, filter, paging);
             var res = new JsonResult(waits, this);
             res.Paging = paging;
             return res;
