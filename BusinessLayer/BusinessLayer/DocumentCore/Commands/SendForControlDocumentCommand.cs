@@ -55,7 +55,7 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new PlanPointHasAlredyBeenLaunched();
             }
-            if (!Model.TargetPositionId.HasValue || _document.Waits != null)
+            if (!Model.TargetPositionId.HasValue || _document.Waits != null || _document.Events != null)
             {
                 throw new WrongDocumentSendListEntry();
             }
@@ -65,20 +65,21 @@ namespace BL.Logic.DocumentCore.Commands
         public override object Execute()
         {
             _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, Model.DocumentId, Model.AccessLevel, Model.TargetPositionId.Value);
-            var waitTarget = CommonDocumentUtilities.GetNewDocumentWait(_context, Model, _eventType, EnumEventCorrespondentType.FromTargetToTarget);
-            _document.Waits = new List<InternalDocumentWait> { waitTarget };
+            //var waitTarget = CommonDocumentUtilities.GetNewDocumentWait(_context, Model, _eventType, EnumEventCorrespondentType.FromTargetToTarget);
+            //_document.Waits = new List<InternalDocumentWait> { waitTarget };
 
-            if (Model.SourcePositionId != Model.TargetPositionId)
-            {
-                _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, Model);
-            }
+            //if (Model.SourcePositionId != Model.TargetPositionId)
+            //{
+            //    _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, Model);
+            //}
+            //Model.CloseEvent = Model.StartEvent = waitTarget.OnEvent;
 
             if (Model.IsAddControl)
             {
                 ((List<InternalDocumentWait>)_document.Waits).AddRange(CommonDocumentUtilities.GetNewDocumentWaits(_context, Model, EnumEventTypes.ControlOn, EnumEventCorrespondentType.FromSourceToSource));
             }
-            Model.CloseEvent = Model.StartEvent = waitTarget.OnEvent;
-            //Model.CloseEvent = Model.StartEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, Model);
+
+            Model.CloseEvent = Model.StartEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, Model);
             CommonDocumentUtilities.SetLastChange(_context, Model);
             _document.SendLists = new List<InternalDocumentSendList> { Model };
 

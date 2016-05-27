@@ -5,6 +5,7 @@ using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
+using System.Linq;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -64,6 +65,17 @@ namespace BL.Logic.DocumentCore.Commands
             _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, Model.DocumentId, Model.AccessLevel, Model.TargetPositionId.Value);
 
             var waitTarget = CommonDocumentUtilities.GetNewDocumentWait(_context, Model, _eventType, EnumEventCorrespondentType.FromSourceToTarget);
+
+            if (_document.Events?.Any() ?? false)
+            {
+                var eventControlor = _document.Events.First();
+                waitTarget.OnEvent.SourcePositionId = eventControlor.TargetPositionId;
+                waitTarget.OnEvent.SourcePositionExecutorAgentId = eventControlor.TargetPositionExecutorAgentId;
+                if (Model.SourcePositionId != waitTarget.OnEvent.SourcePositionId)
+                {
+                    _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, Model);
+                }
+            }
 
             _document.Waits = new List<InternalDocumentWait> { waitTarget };
 
