@@ -1188,7 +1188,7 @@ namespace BL.Database.Documents
 
                 doc.Waits = dbContext.DocumentWaitsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId)
                     .Where(x => x.DocumentId == sendList.DocumentId && x.OnEvent.Task.Id == sendList.TaskId && !x.OffEventId.HasValue
-                                && (x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecution || x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForControl))
+                                && (x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecution /*|| x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForControl*/))
                     .Select(x => new List<InternalDocumentWait>
                                     {
                                         new InternalDocumentWait
@@ -1199,6 +1199,19 @@ namespace BL.Database.Documents
                                                     TargetPositionId = x.OnEvent.TargetPositionId,
                                                     TargetPositionExecutorAgentId = x.OnEvent.TargetPositionExecutorAgentId,
                                                 }
+                                        }
+                                    }
+                    ).FirstOrDefault();
+                doc.Events = dbContext.DocumentEventsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId)
+                    .Where(x => x.DocumentId == sendList.DocumentId && x.Task.Id == sendList.TaskId 
+                                && (x.EventTypeId == (int)EnumEventTypes.SendForControl))
+                    .Select(x => new List<InternalDocumentEvent>
+                                    {
+                                        new InternalDocumentEvent
+                                        {
+                                                Id = x.Id,
+                                                TargetPositionId = x.TargetPositionId,
+                                                TargetPositionExecutorAgentId = x.TargetPositionExecutorAgentId,
                                         }
                                     }
                     ).FirstOrDefault();

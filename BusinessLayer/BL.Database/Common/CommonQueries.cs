@@ -439,7 +439,7 @@ namespace BL.Database.Common
 
             var waitsRes = waitsDb
                 .Select(x => new { Wait = x, x.OnEvent, x.OffEvent })
-                .OrderByDescending(x => x.OnEvent.Date)
+                .OrderBy(x => new { x.Wait.DueDate,x.OnEvent.Date} )
                 .AsQueryable();
 
             if (paging != null)

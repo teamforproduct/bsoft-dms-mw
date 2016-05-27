@@ -8,6 +8,8 @@ using BL.Model.Exception;
 using System;
 using BL.CrossCutting.DependencyInjection;
 using BL.Logic.SystemServices.AutoPlan;
+using BL.Logic.DocumentCore.Interfaces;
+using System.Transactions;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -87,12 +89,21 @@ namespace BL.Logic.DocumentCore.Commands
             subscription.DoneEvent = null;
             subscription.SubscriptionStates = EnumSubscriptionStates.No;
             CommonDocumentUtilities.SetLastChange(Context, _document.Subscriptions);
-            _operationDb.CloseDocumentWait(_context, _document);
-            if (sendList != null)
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
             {
-                var aplan = DmsResolver.Current.Get<IAutoPlanService>();
-                aplan.ManualRunAutoPlan(_context);
+                _operationDb.CloseDocumentWait(_context, _document);
+                if (sendList != null)
+                {
+                    var docProc = DmsResolver.Current.Get<IDocumentService>();
+                    docProc.ExecuteAction(EnumDocumentActions.StopPlan, _context, _document.Id);
+                }
+                transaction.Complete();
             }
+            //if (sendList != null)
+            //{
+            //    var aplan = DmsResolver.Current.Get<IAutoPlanService>();
+            //    aplan.ManualRunAutoPlan(_context);
+            //}
             return _document.Id;
         }
 

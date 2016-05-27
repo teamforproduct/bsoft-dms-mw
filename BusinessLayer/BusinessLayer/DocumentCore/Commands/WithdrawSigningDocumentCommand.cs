@@ -6,6 +6,9 @@ using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using System;
+using BL.Logic.DocumentCore.Interfaces;
+using BL.CrossCutting.DependencyInjection;
+using System.Transactions;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -85,7 +88,16 @@ namespace BL.Logic.DocumentCore.Commands
             subscription.DoneEvent = null;
             subscription.SubscriptionStates = EnumSubscriptionStates.No;
             CommonDocumentUtilities.SetLastChange(Context, _document.Subscriptions);
-            _operationDb.CloseDocumentWait(_context, _document);
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
+            {
+                _operationDb.CloseDocumentWait(_context, _document);
+                if (sendList != null)
+                {
+                    var docProc = DmsResolver.Current.Get<IDocumentService>();
+                    docProc.ExecuteAction(EnumDocumentActions.StopPlan, _context, _document.Id);
+                }
+                transaction.Complete();
+            }
             return _document.Id;
         }
 
