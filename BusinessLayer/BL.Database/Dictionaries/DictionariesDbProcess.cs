@@ -87,36 +87,36 @@ namespace BL.Database.Dictionaries
                         IsActive = x.IsActive,
                         ResidentTypeId = x.ResidentTypeId,
                         Description = x.Description,
-                        Contacts = x.AgentContacts.Select(y => new FrontDictionaryContact
+                        Contacts=x.AgentContacts.Select(y=> new FrontDictionaryContact
                         {
-                            Id = y.ContactType.Id,
-                            Name = y.ContactType.Name,
-                            Code=y.ContactType.Code,
-                            InputMask = y.ContactType.InputMask,
-                            IsActive = y.ContactType.IsActive
-                        },
-                        Value = y.Contact,
-                        IsActive = y.IsActive,
-                        Description = y.Description
-                    }),
-                    Addresses = x.AgentAddresses.Select(z => new FrontDictionaryAgentAddress
-                    {
+                          Id=y.Id,
+                          AgentId=y.AgentId,
+                          ContactType  = new FrontDictionaryContactType
+                          {
+                              Id=y.ContactType.Id,
+                              Code=y.ContactType.Code,
+                              Name = y.ContactType.Name,
+                              IsActive=y.ContactType.IsActive
+                           },
+                          Value = y.Contact,
+                          IsActive = y.IsActive,
+                          Description = y.Description
+                          }),
+
+                        Addresses = x.AgentAddresses.Select(z => new FrontDictionaryAgentAddress
+                        {
                         Id = z.Id,
                         AgentId = z.AgentId,
                         AddressType = new FrontDictionaryAddressType
                         {
-                            Id = z.Id,
-                            AgentId = z.AgentId,
-                            AddressType = new FrontDictionaryAddressType
-                            {
                                 Id = z.AddressType.Id,
                                 Name = z.AddressType.Name,
                                 IsActive = z.AddressType.IsActive
-                            },
-                            PostCode = z.PostCode,
-                            Address = z.Address,
-                            IsActive = z.IsActive,
-                            Description = z.Description
+                         },
+                         PostCode = z.PostCode,
+                         Address = z.Address,
+                         IsActive = z.IsActive,
+                         Description = z.Description
                         })
 
                     })
