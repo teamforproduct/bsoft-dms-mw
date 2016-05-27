@@ -9,7 +9,7 @@ using BL.Model.DictionaryCore.FilterModel;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace BL.Logic.DictionaryCore.AgentPerson
+namespace BL.Logic.DictionaryCore
 {
     public class ModifyDictionaryAgentPersonCommand : BaseDictionaryCommand
     {
@@ -33,7 +33,7 @@ namespace BL.Logic.DictionaryCore.AgentPerson
         public override bool CanExecute()
         {
              _admin.VerifyAccess(_context, CommandType,false,true);
-            var agents = _dictDb.GetDictionaryAgentPersons(_context, new FilterDictionaryAgentPerson
+            var agents = _dictDb.GetAgentPersons(_context, new FilterDictionaryAgentPerson
             {
                 TaxCode = Model.TaxCode,
                 IsActive=Model.IsActive,
@@ -53,7 +53,7 @@ namespace BL.Logic.DictionaryCore.AgentPerson
             {
                 var newPerson = new InternalDictionaryAgentPerson(Model);
                 CommonDocumentUtilities.SetLastChange(_context, newPerson);
-                _dictDb.UpdateDictionaryAgentPerson(_context, newPerson);
+                _dictDb.UpdateAgentPerson(_context, newPerson);
                 
 
             }

@@ -6,7 +6,7 @@ using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.DictionaryCore.FilterModel;
 
-namespace BL.Logic.DictionaryCore.ContactType
+namespace BL.Logic.DictionaryCore
 {
     public class ModifyDictionaryContactTypeCommand : BaseDictionaryCommand
     {
@@ -47,7 +47,7 @@ namespace BL.Logic.DictionaryCore.ContactType
             {
                 var newContactType = new InternalDictionaryContactType(Model);
                 CommonDocumentUtilities.SetLastChange(_context, newContactType);
-                _dictDb.UpdateDictionaryContactType(_context, newContactType);
+                _dictDb.UpdateContactType(_context, newContactType);
             }
             catch (DictionaryRecordWasNotFound)
             {

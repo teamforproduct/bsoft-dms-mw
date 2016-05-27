@@ -6,7 +6,7 @@ using BL.Model.Exception;
 using BL.Model.SystemCore;
 
 
-namespace BL.Logic.DictionaryCore.ContactType
+namespace BL.Logic.DictionaryCore
 {
     public class DeleteDictionaryContactTypeCommand : BaseDictionaryCommand
     {
@@ -43,7 +43,7 @@ namespace BL.Logic.DictionaryCore.ContactType
                     Id = Model
 
                 };
-                _dictDb.DeleteDictionaryContactType(_context, newContactType);
+                _dictDb.DeleteContactType(_context, newContactType);
                 return null;
             }
             catch (Exception ex)

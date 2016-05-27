@@ -5,7 +5,7 @@ using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.DictionaryCore.FilterModel;
 
-namespace BL.Logic.DictionaryCore.CustomDictionary
+namespace BL.Logic.DictionaryCore
 {
     public class AddCustomDictionaryTypeCommand : BaseDictionaryCommand
     {

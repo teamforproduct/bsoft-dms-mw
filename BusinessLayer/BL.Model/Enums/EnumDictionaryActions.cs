@@ -220,6 +220,9 @@
         DeleteTag = 291009,
         #endregion Tags
 
+
+
+
         /// <summary>
         /// добавить юрлицо
         /// </summary>
@@ -280,6 +283,46 @@
         /// удалить типовой список рассылки
         /// </summary>
         DeleteStandartSendList = 217009,
+
+        // Компании
+        #region DictionaryCompanies
+        /// <summary>
+        /// Добавить запись в справочнике "Компании"
+        /// </summary>
+        AddCompany = 218001,
+
+        /// <summary>
+        /// Изменить запись в справочнике "Компании"
+        /// </summary>
+        ModifyCompany = 218005,
+
+        /// <summary>
+        /// Удалить запись в справочнике "Компании"
+        /// </summary>
+        DeleteCompany = 218009,
+        #endregion DictionaryCompanies
+
+
+
+
+        // Компании
+        #region DictionaryPositionExecutors
+        /// <summary>
+        /// Добавить запись в справочнике "Компании"
+        /// </summary>
+        AddExecutor = 220001,
+
+        /// <summary>
+        /// Изменить запись в справочнике "Компании"
+        /// </summary>
+        ModifyExecutor = 220005,
+
+        /// <summary>
+        /// Удалить запись в справочнике "Компании"
+        /// </summary>
+        DeleteExecutor = 220009,
+        #endregion DictionaryPositionExecutors
+
 
         #region CustomDictionaryType
         /// <summary>

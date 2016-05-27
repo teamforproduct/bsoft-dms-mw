@@ -36,13 +36,13 @@ namespace BL.Logic.DictionaryCore
         public FrontDictionaryAgent GetDictionaryAgent(IContext context, int id)
         {
 
-            return _dictDb.GetDictionaryAgent(context, id);
+            return _dictDb.GetAgent(context, id);
         }
 
         public IEnumerable<FrontDictionaryAgent> GetDictionaryAgents(IContext context, FilterDictionaryAgent filter,UIPaging paging)
         {
 
-            return _dictDb.GetDictionaryAgents(context, filter,paging);
+            return _dictDb.GetAgents(context, filter,paging);
         }
 
 
@@ -75,13 +75,13 @@ namespace BL.Logic.DictionaryCore
         public FrontDictionaryAgentPerson GetDictionaryAgentPerson(IContext context, int id)
         {
 
-            return _dictDb.GetDictionaryAgentPerson(context, id);
+            return _dictDb.GetAgentPerson(context, id);
         }
 
         public IEnumerable<FrontDictionaryAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging)
         {
 
-            return _dictDb.GetDictionaryAgentPersons(context, filter,paging);
+            return _dictDb.GetAgentPersons(context, filter,paging);
         }
         #endregion DictionaryAgentPersons
 
@@ -89,12 +89,12 @@ namespace BL.Logic.DictionaryCore
 
         public FrontDictionaryAgentEmployee GetDictionaryAgentEmployee(IContext context, int id)
         {
-            return _dictDb.GetDictionaryAgentEmployee(context, id);
+            return _dictDb.GetAgentEmployee(context, id);
         }
 
         public IEnumerable<FrontDictionaryAgentEmployee> GetDictionaryAgentEmployees(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging)
         {
-            return _dictDb.GetDictionaryAgentEmployees(context, filter,paging);
+            return _dictDb.GetAgentEmployees(context, filter,paging);
         }
        
         #endregion DictionaryAgentEmployees
@@ -102,12 +102,12 @@ namespace BL.Logic.DictionaryCore
         #region DictionaryAgentAdress
         public FrontDictionaryAgentAddress GetDictionaryAgentAddress(IContext context, int id)
         {
-            return _dictDb.GetDictionaryAgentAddress(context, id);
+            return _dictDb.GetAgentAddress(context, id);
         }
 
         public IEnumerable<FrontDictionaryAgentAddress> GetDictionaryAgentAddresses(IContext context,int agentId, FilterDictionaryAgentAddress filter)
         {
-            return _dictDb.GetDictionaryAgentAddresses(context, agentId,filter);
+            return _dictDb.GetAgentAddresses(context, agentId,filter);
         }
         #endregion
 
@@ -115,12 +115,12 @@ namespace BL.Logic.DictionaryCore
 
         public FrontDictionaryAddressType GetDictionaryAddressType(IContext context, int id)
         {
-            return _dictDb.GetDictionaryAddressTypes(context, new FilterDictionaryAddressType { IDs = new List<int> { id } }).FirstOrDefault();
+            return _dictDb.GetAddressTypes(context, new FilterDictionaryAddressType { IDs = new List<int> { id } }).FirstOrDefault();
         }
 
         public IEnumerable<FrontDictionaryAddressType> GetDictionaryAddressTypes(IContext context, FilterDictionaryAddressType filter)
         {
-            return _dictDb.GetDictionaryAddressTypes(context, filter);
+            return _dictDb.GetAddressTypes(context, filter);
         }
 
 
@@ -129,12 +129,12 @@ namespace BL.Logic.DictionaryCore
         #region DictionaryAgentAccounts
         public FrontDictionaryAgentAccount GetDictionaryAgentAccount(IContext context, int id)
         {
-            return _dictDb.GetDictionaryAgentAccount(context, id);
+            return _dictDb.GetAgentAccount(context, id);
         }
 
         public IEnumerable<FrontDictionaryAgentAccount> GetDictionaryAgentAccounts(IContext context, int AgentId,FilterDictionaryAgentAccount filter)
         {
-            return _dictDb.GetDictionaryAgentAccounts(context, AgentId,filter);
+            return _dictDb.GetAgentAccounts(context, AgentId,filter);
         }
         #endregion DictionaryAgentAccounts
 
@@ -142,13 +142,13 @@ namespace BL.Logic.DictionaryCore
         public FrontDictionaryAgentCompany GetDictionaryAgentCompany(IContext context, int id)
         {
 
-            return _dictDb.GetDictionaryAgentCompany(context, id);
+            return _dictDb.GetAgentCompany(context, id);
         }
 
         public IEnumerable<FrontDictionaryAgentCompany> GetDictionaryAgentCompanies(IContext context, FilterDictionaryAgentCompany filter, UIPaging paging)
         {
 
-            return _dictDb.GetDictionaryAgentCompanies(context, filter,paging);
+            return _dictDb.GetAgentCompanies(context, filter,paging);
         }
         #endregion DictionaryAgentCompanies
 
@@ -156,37 +156,37 @@ namespace BL.Logic.DictionaryCore
         public FrontDictionaryAgentBank GetDictionaryAgentBank(IContext context, int id)
         {
 
-            return _dictDb.GetDictionaryAgentBank(context, id);
+            return _dictDb.GetAgentBank(context, id);
         }
 
         public IEnumerable<FrontDictionaryAgentBank> GetDictionaryAgentBanks(IContext context, FilterDictionaryAgentBank filter, UIPaging paging)
         {
 
-            return _dictDb.GetDictionaryAgentBanks(context, filter,paging);
+            return _dictDb.GetAgentBanks(context, filter,paging);
         }
         #endregion DictionaryAgentCompanies
 
         #region DictionaryContacts
         public FrontDictionaryContact GetDictionaryContact(IContext context, int id)
         {
-            return _dictDb.GetDictionaryContact(context,id);
+            return _dictDb.GetContact(context,id);
         }
 
         public IEnumerable<FrontDictionaryContact> GetDictionaryContacts(IContext context,int agentId, FilterDictionaryContact filter)
         {
-            return _dictDb.GetDictionaryContacts(context,agentId, filter);  
+            return _dictDb.GetContacts(context,agentId, filter);  
         }
         #endregion
 
         #region DictionaryContactTypes
         public FrontDictionaryContactType GetDictionaryContactType(IContext context, int id)
         {
-            return _dictDb.GetDictionaryContactTypes(context, new FilterDictionaryContactType { IDs = new List<int> { id } }).FirstOrDefault();
+            return _dictDb.GetContactTypes(context, new FilterDictionaryContactType { IDs = new List<int> { id } }).FirstOrDefault();
         }
 
         public IEnumerable<FrontDictionaryContactType> GetDictionaryContactTypes(IContext context, FilterDictionaryContactType filter)
         {
-            return _dictDb.GetDictionaryContactTypes(context, filter);
+            return _dictDb.GetContactTypes(context, filter);
         }
         #endregion
               
@@ -194,13 +194,13 @@ namespace BL.Logic.DictionaryCore
         public FrontDictionaryDepartment GetDictionaryDepartment(IContext context, int id)
         {
 
-            return _dictDb.GetDictionaryDepartments(context, new FilterDictionaryDepartment { IDs = new List<int> { id } }).FirstOrDefault();
+            return _dictDb.GetDepartments(context, new FilterDictionaryDepartment { IDs = new List<int> { id } }).FirstOrDefault();
         }
 
         public IEnumerable<FrontDictionaryDepartment> GetDictionaryDepartments(IContext context, FilterDictionaryDepartment filter)
         {
 
-            return _dictDb.GetDictionaryDepartments(context, filter);
+            return _dictDb.GetDepartments(context, filter);
         }
         #endregion DictionaryDepartments
 
@@ -208,13 +208,13 @@ namespace BL.Logic.DictionaryCore
         public FrontDictionaryDocumentDirection GetDictionaryDocumentDirection(IContext context, int id)
         {
 
-            return _dictDb.GetDictionaryDocumentDirection(context, id);
+            return _dictDb.GetDocumentDirection(context, id);
         }
 
         public IEnumerable<FrontDictionaryDocumentDirection> GetDictionaryDocumentDirections(IContext context, FilterDictionaryDocumentDirection filter)
         {
 
-            return _dictDb.GetDictionaryDocumentDirections(context, filter);
+            return _dictDb.GetDocumentDirections(context, filter);
         }
         #endregion DictionaryDepartments
 
@@ -223,13 +223,13 @@ namespace BL.Logic.DictionaryCore
         public FrontDictionaryDocumentSubject GetDictionaryDocumentSubject(IContext context, int id)
         {
 
-            return _dictDb.GetDictionaryDocumentSubjects(context, new FilterDictionaryDocumentSubject {IDs = new List<int> {id}}).FirstOrDefault();
+            return _dictDb.GetDocumentSubjects(context, new FilterDictionaryDocumentSubject {IDs = new List<int> {id}}).FirstOrDefault();
         }
 
         public IEnumerable<FrontDictionaryDocumentSubject> GetDictionaryDocumentSubjects(IContext context, FilterDictionaryDocumentSubject filter)
         {
 
-            return _dictDb.GetDictionaryDocumentSubjects(context, filter);
+            return _dictDb.GetDocumentSubjects(context, filter);
         }
         #endregion DictionaryDocumentSubjects
 
@@ -237,12 +237,12 @@ namespace BL.Logic.DictionaryCore
         // следить за списком полей необхдимых в каждом конкретном случае
         public FrontDictionaryDocumentType GetDictionaryDocumentType(IContext context, int id)
         {
-            return _dictDb.GetDictionaryDocumentTypes(context, new FilterDictionaryDocumentType { IDs = new List<int> { id } }).FirstOrDefault();
+            return _dictDb.GetDocumentTypes(context, new FilterDictionaryDocumentType { IDs = new List<int> { id } }).FirstOrDefault();
         }
 
         public IEnumerable<FrontDictionaryDocumentType> GetDictionaryDocumentTypes(IContext context, FilterDictionaryDocumentType filter)
         {
-            return _dictDb.GetDictionaryDocumentTypes(context, filter);
+            return _dictDb.GetDocumentTypes(context, filter);
         }
 
         #endregion DictionaryDocumentTypes
@@ -251,13 +251,13 @@ namespace BL.Logic.DictionaryCore
         public FrontDictionaryEventType GetDictionaryEventType(IContext context, int id)
         {
 
-            return _dictDb.GetDictionaryEventType(context, id);
+            return _dictDb.GetEventType(context, id);
         }
 
         public IEnumerable<FrontDictionaryEventType> GetDictionaryEventTypes(IContext context, FilterDictionaryEventType filter)
         {
 
-            return _dictDb.GetDictionaryEventTypes(context, filter);
+            return _dictDb.GetEventTypes(context, filter);
         }
         #endregion DictionaryEventTypes
 
@@ -265,13 +265,13 @@ namespace BL.Logic.DictionaryCore
         public FrontDictionaryImportanceEventType GetDictionaryImportanceEventType(IContext context, int id)
         {
 
-            return _dictDb.GetDictionaryImportanceEventType(context, id);
+            return _dictDb.GetImportanceEventType(context, id);
         }
 
         public IEnumerable<FrontDictionaryImportanceEventType> GetDictionaryImportanceEventTypes(IContext context, FilterDictionaryImportanceEventType filter)
         {
 
-            return _dictDb.GetDictionaryImportanceEventTypes(context, filter);
+            return _dictDb.GetImportanceEventTypes(context, filter);
         }
         #endregion DictionaryImportanceEventTypes
 
@@ -279,13 +279,13 @@ namespace BL.Logic.DictionaryCore
         public FrontDictionaryLinkType GetDictionaryLinkType(IContext context, int id)
         {
 
-            return _dictDb.GetDictionaryLinkType(context, id);
+            return _dictDb.GetLinkType(context, id);
         }
 
         public IEnumerable<FrontDictionaryLinkType> GetDictionaryLinkTypes(IContext context, FilterDictionaryLinkType filter)
         {
 
-            return _dictDb.GetDictionaryLinkTypes(context, filter);
+            return _dictDb.GetLinkTypes(context, filter);
         }
         #endregion DictionaryLinkTypes
 
@@ -294,42 +294,87 @@ namespace BL.Logic.DictionaryCore
         public FrontDictionaryPosition GetDictionaryPosition(IContext context, int id)
         {
 
-            return _dictDb.GetDictionaryPosition(context, id);
+            return _dictDb.GetPosition(context, id);
         }
 
         public IEnumerable<FrontDictionaryPosition> GetDictionaryPositions(IContext context, FilterDictionaryPosition filter)
         {
 
-            return _dictDb.GetDictionaryPositions(context, filter);
+            return _dictDb.GetPositions(context, filter);
         }
         #endregion DictionaryPositions
+
+        // Исполнители
+        #region DictionaryPositinExecutors
+        public FrontDictionaryPositionExecutor GetDictionaryPositionExecutor(IContext context, int id)
+        {
+
+            return _dictDb.GetPositionExecutors(context, new FilterDictionaryPositionExecutor { IDs = new List<int> { id } }).FirstOrDefault();
+        }
+
+        public IEnumerable<FrontDictionaryPositionExecutor> GetDictionaryPositionExecutors(IContext context, FilterDictionaryPositionExecutor filter)
+        {
+
+            return _dictDb.GetPositionExecutors(context, filter);
+        }
+        #endregion DictionaryPositinExecutors
+
+        // Типы исполнителей
+        #region DictionaryPositinExecutorTypes
+        public FrontDictionaryPositionExecutorType GetDictionaryPositionExecutorType(IContext context, int id)
+        {
+
+            return _dictDb.GetPositionExecutorTypes(context, new FilterDictionaryPositionExecutorType { IDs = new List<int> { id } }).FirstOrDefault();
+        }
+
+        public IEnumerable<FrontDictionaryPositionExecutorType> GetDictionaryPositionExecutorTypes(IContext context, FilterDictionaryPositionExecutorType filter)
+        {
+
+            return _dictDb.GetPositionExecutorTypes(context, filter);
+        }
+        #endregion DictionaryPositinExecutorTypes
 
         // Журналы регистрации
         #region DictionaryRegistrationJournals
         public FrontDictionaryRegistrationJournal GetDictionaryRegistrationJournal(IContext context, int id)
         {
 
-            return _dictDb.GetDictionaryRegistrationJournals(context, new FilterDictionaryRegistrationJournal { IDs = new List<int> { id } }).FirstOrDefault();
+            return _dictDb.GetRegistrationJournals(context, new FilterDictionaryRegistrationJournal { IDs = new List<int> { id } }).FirstOrDefault();
         }
 
         public IEnumerable<FrontDictionaryRegistrationJournal> GetDictionaryRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter)
         {
 
-            return _dictDb.GetDictionaryRegistrationJournals(context, filter);
+            return _dictDb.GetRegistrationJournals(context, filter);
         }
         #endregion DictionaryRegistrationJournals
 
+        // Компании
+        #region DictionaryCompanies
+        public FrontDictionaryCompany GetDictionaryCompany(IContext context, int id)
+        {
+
+            return _dictDb.GetCompanies(context, new FilterDictionaryCompany { IDs = new List<int> { id } }).FirstOrDefault();
+        }
+
+        public IEnumerable<FrontDictionaryCompany> GetDictionaryCompanies(IContext context, FilterDictionaryCompany filter)
+        {
+
+            return _dictDb.GetCompanies(context, filter);
+        }
+        #endregion DictionaryCompanies
+        
         #region DictionaryResultTypes
         public FrontDictionaryResultType GetDictionaryResultType(IContext context, int id)
         {
 
-            return _dictDb.GetDictionaryResultType(context, id);
+            return _dictDb.GetResultType(context, id);
         }
 
         public IEnumerable<FrontDictionaryResultType> GetDictionaryResultTypes(IContext context, FilterDictionaryResultType filter)
         {
 
-            return _dictDb.GetDictionaryResultTypes(context, filter);
+            return _dictDb.GetResultTypes(context, filter);
         }
         #endregion DictionaryResultTypes
 
@@ -337,13 +382,13 @@ namespace BL.Logic.DictionaryCore
         public FrontDictionarySendType GetDictionarySendType(IContext context, int id)
         {
 
-            return _dictDb.GetDictionarySendType(context, id);
+            return _dictDb.GetSendType(context, id);
         }
 
         public IEnumerable<FrontDictionarySendType> GetDictionarySendTypes(IContext context, FilterDictionarySendType filter)
         {
 
-            return _dictDb.GetDictionarySendTypes(context, filter);
+            return _dictDb.GetSendTypes(context, filter);
         }
         #endregion DictionarySendTypes
 
@@ -351,13 +396,13 @@ namespace BL.Logic.DictionaryCore
         public FrontDictionaryStandartSendListContent GetDictionaryStandartSendListContent(IContext context, int id)
         {
 
-            return _dictDb.GetDictionaryStandartSendListContent(context, id);
+            return _dictDb.GetStandartSendListContent(context, id);
         }
 
         public IEnumerable<FrontDictionaryStandartSendListContent> GetDictionaryStandartSendListContents(IContext context, FilterDictionaryStandartSendListContent filter)
         {
 
-            return _dictDb.GetDictionaryStandartSendListContents(context, filter);
+            return _dictDb.GetStandartSendListContents(context, filter);
         }
         #endregion DictionaryStandartSendListContents
 
@@ -365,13 +410,13 @@ namespace BL.Logic.DictionaryCore
         public FrontDictionaryStandartSendList GetDictionaryStandartSendList(IContext context, int id)
         {
 
-            return _dictDb.GetDictionaryStandartSendList(context, id);
+            return _dictDb.GetStandartSendList(context, id);
         }
 
         public IEnumerable<FrontDictionaryStandartSendList> GetDictionaryStandartSendLists(IContext context, FilterDictionaryStandartSendList filter)
         {
 
-            return _dictDb.GetDictionaryStandartSendLists(context, filter);
+            return _dictDb.GetStandartSendLists(context, filter);
         }
         #endregion DictionaryStandartSendList
 
@@ -379,25 +424,25 @@ namespace BL.Logic.DictionaryCore
         public FrontDictionarySubordinationType GetDictionarySubordinationType(IContext context, int id)
         {
 
-            return _dictDb.GetDictionarySubordinationType(context, id);
+            return _dictDb.GetSubordinationType(context, id);
         }
 
         public IEnumerable<FrontDictionarySubordinationType> GetDictionarySubordinationTypes(IContext context, FilterDictionarySubordinationType filter)
         {
 
-            return _dictDb.GetDictionarySubordinationTypes(context, filter);
+            return _dictDb.GetSubordinationTypes(context, filter);
         }
         #endregion DictionarySubordinationTypes
 
         #region DictionaryTags
         public IEnumerable<FrontDictionaryTag> GetDictionaryTags(IContext context, FilterDictionaryTag filter)
         {
-            return _dictDb.GetDictionaryTags(context, filter);
+            return _dictDb.GetTags(context, filter);
         }
 
         public FrontDictionaryTag GetDictionaryTag(IContext context, int id)
         {
-            return _dictDb.GetDictionaryTags(context, new FilterDictionaryTag { IDs = new List<int> { id } }).FirstOrDefault();
+            return _dictDb.GetTags(context, new FilterDictionaryTag { IDs = new List<int> { id } }).FirstOrDefault();
         }
         #endregion DictionaryTags
 

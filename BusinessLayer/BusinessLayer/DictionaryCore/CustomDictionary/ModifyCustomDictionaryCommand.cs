@@ -6,7 +6,7 @@ using BL.Model.Exception;
 using BL.Model.DictionaryCore.FilterModel;
 using System.Collections.Generic;
 
-namespace BL.Logic.DictionaryCore.CustomDictionary
+namespace BL.Logic.DictionaryCore
 {
     public class ModifyCustomDictionaryCommand : BaseDictionaryCommand
     {

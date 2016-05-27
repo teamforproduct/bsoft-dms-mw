@@ -7,7 +7,7 @@ using BL.Model.DictionaryCore.FilterModel;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace BL.Logic.DictionaryCore.AgentAdresses 
+namespace BL.Logic.DictionaryCore
 {
     public class ModifyDictionaryAgentAddressCommand : BaseDictionaryCommand
     {
@@ -33,7 +33,7 @@ namespace BL.Logic.DictionaryCore.AgentAdresses
            
 
             _admin.VerifyAccess(_context, CommandType,false,true);
-            var spr = _dictDb.GetDictionaryAgentAddresses(_context, Model.AgentId, new FilterDictionaryAgentAddress
+            var spr = _dictDb.GetAgentAddresses(_context, Model.AgentId, new FilterDictionaryAgentAddress
             {
                 PostCodeExact = Model.PostCode,
                 AddressExact = Model.Address,
@@ -55,7 +55,7 @@ namespace BL.Logic.DictionaryCore.AgentAdresses
             {
                 var newAddr = new InternalDictionaryAgentAddress(Model);
                 CommonDocumentUtilities.SetLastChange(_context, newAddr);
-                _dictDb.UpdateDictionaryAgentAddress(_context, newAddr);
+                _dictDb.UpdateAgentAddress(_context, newAddr);
             }
             catch (DictionaryRecordWasNotFound)
             {

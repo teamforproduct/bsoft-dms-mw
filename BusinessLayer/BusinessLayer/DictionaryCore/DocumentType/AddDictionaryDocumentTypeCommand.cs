@@ -5,7 +5,7 @@ using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.DictionaryCore.FilterModel;
 
-namespace BL.Logic.DictionaryCore.DocumentType
+namespace BL.Logic.DictionaryCore
 {
     public class AddDictionaryDocumentTypeCommand : BaseDictionaryCommand
     {
@@ -44,7 +44,7 @@ namespace BL.Logic.DictionaryCore.DocumentType
             {
                 var newDocType = new InternalDictionaryDocumentType(Model);
                 CommonDocumentUtilities.SetLastChange(_context,newDocType);
-                return _dictDb.AddDictionaryDocumentType(_context, newDocType);
+                return _dictDb.AddDocumentType(_context, newDocType);
             }
             catch (Exception ex)
             {

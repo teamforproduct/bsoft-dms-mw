@@ -6,7 +6,7 @@ using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
 
-namespace BL.Logic.DictionaryCore.DocumentType
+namespace BL.Logic.DictionaryCore
 {
     public class DeleteDictionaryDocumentSubjectCommand : BaseDictionaryCommand
 
@@ -45,7 +45,7 @@ namespace BL.Logic.DictionaryCore.DocumentType
                     Id = Model
 
                 };
-                _dictDb.DeleteDictionaryDocumentSubject(_context, dds);
+                _dictDb.DeleteDocumentSubject(_context, dds);
                 return null;
             }
             catch (Exception ex)

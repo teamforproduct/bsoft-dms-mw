@@ -6,7 +6,7 @@ using BL.Model.Exception;
 using System;
 using BaseDictionaryCommand = BL.Logic.Common.BaseDictionaryCommand;
 
-namespace BL.Logic.DictionaryCore.Tag
+namespace BL.Logic.DictionaryCore
 {
     public class AddDictionaryTagCommand : BaseDictionaryCommand
     {
@@ -46,7 +46,7 @@ namespace BL.Logic.DictionaryCore.Tag
             {
                 var item = new InternalDictionaryTag(Model);
                 CommonDocumentUtilities.SetLastChange(_context, item);
-                return _dictDb.AddDictionaryTag(_context, item);
+                return _dictDb.AddTag(_context, item);
             }
             catch (Exception ex)
             {

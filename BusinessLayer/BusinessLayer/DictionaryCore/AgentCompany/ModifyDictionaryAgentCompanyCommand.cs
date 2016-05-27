@@ -7,7 +7,7 @@ using BL.Model.DictionaryCore.FilterModel;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace BL.Logic.DictionaryCore.AgentCompany
+namespace BL.Logic.DictionaryCore
 {
     public class ModifyDictionaryAgentCompanyCommand : BaseDictionaryCommand
     {
@@ -31,7 +31,7 @@ namespace BL.Logic.DictionaryCore.AgentCompany
         public override bool CanExecute()
         {
             _admin.VerifyAccess(_context, CommandType, false, true);
-            var agents = _dictDb.GetDictionaryAgentCompanies(_context, new FilterDictionaryAgentCompany
+            var agents = _dictDb.GetAgentCompanies(_context, new FilterDictionaryAgentCompany
             {
                 TaxCode = Model.TaxCode,
                 OKPOCode = Model.OKPOCode,
@@ -53,7 +53,7 @@ namespace BL.Logic.DictionaryCore.AgentCompany
             {
                 var newCompany = new InternalDictionaryAgentCompany(Model);;
                 CommonDocumentUtilities.SetLastChange(_context, newCompany);
-                _dictDb.UpdateDictionaryAgentCompany(_context, newCompany);
+                _dictDb.UpdateAgentCompany(_context, newCompany);
             }
             catch (DictionaryRecordWasNotFound)
             {
