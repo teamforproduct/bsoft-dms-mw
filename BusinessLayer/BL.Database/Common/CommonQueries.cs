@@ -1288,7 +1288,7 @@ namespace BL.Database.Common
                     if (!fs.IsFileCorrect(ctx, file))
                     {
                         //TODO
-                        //throw new DocumentFileWasChangedExternally();
+                        throw new DocumentFileWasChangedExternally();
                     }
                 }
             }

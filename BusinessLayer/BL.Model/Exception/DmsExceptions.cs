@@ -111,6 +111,23 @@
     }
 
     /// <summary>
+    /// Сообщение при ошибке работы с клиентом
+    /// Клиент не найден
+    /// Client not found
+    /// </summary>
+    public class ClientIsNotFound : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:ClientIsNotFound@l##";
+        public ClientIsNotFound() : base(_MESSAGE)
+        {
+        }
+
+        public ClientIsNotFound(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+    /// <summary>
     /// Сообщение при ошибке регистрации нового клиента
     /// Имя пользователя уже существует
     /// User Name already exists

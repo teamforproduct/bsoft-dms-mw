@@ -1,6 +1,5 @@
 ﻿using BL.CrossCutting.Context;
 using BL.CrossCutting.DependencyInjection;
-using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Model.Database;
@@ -16,12 +15,10 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data.Entity;
 using System.Linq;
 using System.Transactions;
 using System.Web;
-using System.Web.Configuration;
 
 namespace DMS_WebAPI.Utilities
 {
@@ -31,18 +28,6 @@ namespace DMS_WebAPI.Utilities
         {
 
         }
-
-        #region Create Local Server
-
-        public bool CreateIfNotExistsLocalServer()
-        {
-            using (var dbContext = new ApplicationDbContext())
-            {
-                return dbContext.Database.CreateIfNotExists();
-            }
-        }
-
-        #endregion Create Local Server
 
         #region Servers
 
@@ -587,6 +572,58 @@ namespace DMS_WebAPI.Utilities
                 }).ToList();
 
                 return items;
+            }
+        }
+
+        public IEnumerable<FrontAspNetClient> GetClientsByUser(IContext ctx)
+        {
+            using (var dbContext = new ApplicationDbContext())
+            {
+                var userClients = GetUserClientsQuery(dbContext, new FilterAspNetUserClients { UserIds = new List<string> { ctx.CurrentEmployee.UserId }, ClientCode = ctx.CurrentEmployee.ClientCode })
+                                    .AsQueryable();
+
+                var itemsRes = from userClient in userClients
+                               join client in dbContext.AspNetClientsSet on userClient.ClientId equals client.Id
+                               select new
+                               {
+                                   Client = client
+                               };
+
+
+                var items = itemsRes.Select(x => new FrontAspNetClient
+                {
+                    Id = x.Client.Id,
+                    Name = x.Client.Name,
+                    Code = x.Client.Code,
+                }).ToList();
+
+                return items;
+            }
+        }
+
+        public FrontAspNetClient GetClientByUser(string userId, int clientId)
+        {
+            using (var dbContext = new ApplicationDbContext())
+            {
+                var userClients = GetUserClientsQuery(dbContext, new FilterAspNetUserClients { UserIds = new List<string> { userId }, ClientIds = new List<int> { clientId } })
+                                    .AsQueryable();
+
+                var itemsRes = from userClient in userClients
+                                join client in dbContext.AspNetClientsSet on userClient.ClientId equals client.Id
+                                select new
+                                {
+                                    Client = client,
+                                };
+
+
+                var item = itemsRes.Select(x => new FrontAspNetClient
+                {
+                    Id = x.Client.Id,
+                    Name = x.Client.Name,
+                    Code = x.Client.Code,
+                }).FirstOrDefault();
+
+                return item;
             }
         }
 

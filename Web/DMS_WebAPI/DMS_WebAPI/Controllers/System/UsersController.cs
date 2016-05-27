@@ -97,7 +97,7 @@ namespace DMS_WebAPI.Controllers
         /// <summary>
         /// Установить сервер для использования
         /// </summary>
-        /// <param name="serverId"></param>
+        /// <param name="model"></param>
         /// <returns></returns>
         [Route("Servers")]
         [HttpPost]
@@ -121,18 +121,48 @@ namespace DMS_WebAPI.Controllers
             return new JsonResult(null, this);
         }
 
-        ///// <summary>
-        ///// Получить код програмы
-        ///// </summary>
-        ///// <param name="id"></param>
-        ///// <returns></returns>
-        //[Route("RegCode")]
-        //[HttpGet]
-        //public IHttpActionResult GetRegCode(int id)
-        //{
-        //    var sdbw = new SystemDbWorker();
-        //    var lic = sdbw.GetLicenceInfo(id);
-        //    return new JsonResult(new SystemInfo().GetProgramRegCode(lic), this);
-        //}
+        /// <summary>
+        /// Получение списка доступных клиентов для пользователя
+        /// </summary>
+        /// <returns>список серверов</returns>
+        [Route("Clients")]
+        [HttpGet]
+        public IHttpActionResult GetClients()
+        {
+            var context = DmsResolver.Current.Get<UserContext>().Get();
+
+            var dbProc = new WebAPIDbProcess();
+
+            var clients = dbProc.GetClientsByUser(context);
+
+            return new JsonResult(clients, this);
+        }
+
+        /// <summary>
+        /// Установить клиента для пользователя
+        /// </summary>
+        /// <param name="clientId"></param>
+        /// <returns></returns>
+        [Route("Clients")]
+        [HttpPost]
+        public IHttpActionResult SetClients([FromBody]int clientId)
+        {
+            var mngContext = DmsResolver.Current.Get<UserContext>();
+
+            var ctx = mngContext.Get();
+
+            var dbProc = new WebAPIDbProcess();
+
+            var client = dbProc.GetClientByUser(User.Identity.GetUserId(), clientId);
+            if (client == null)
+            {
+                throw new ClientIsNotFound();
+            }
+
+            mngContext.Set(client);
+
+
+            return new JsonResult(null, this);
+        }
     }
 }

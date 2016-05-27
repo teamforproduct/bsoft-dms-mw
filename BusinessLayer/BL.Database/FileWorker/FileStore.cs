@@ -108,7 +108,7 @@ namespace BL.Database.FileWorker
                 //TODO check if file exists
                 var log = DmsResolver.Current.Get<ILogger>();
                 log.Error(ctx, ex, "Cannot access to user file", Environment.StackTrace);
-                throw new CannotAccessToFile(ex);
+                throw new DocumentFileWasChangedExternally(ex);
             }
         }
 

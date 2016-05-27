@@ -8,6 +8,7 @@ using BL.Model.Exception;
 using System.Linq;
 using BL.CrossCutting.Context;
 using BL.CrossCutting.DependencyInjection;
+using BL.Model.WebAPI.FrontModel;
 
 namespace DMS_WebAPI.Utilities
 {
@@ -189,6 +190,34 @@ namespace DMS_WebAPI.Utilities
                 throw new AccessIsDenied();
             }
 
+        }
+
+        /// <summary>
+        /// Set client
+        /// </summary>
+        /// <param name="client">new client parameters</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
+        public void Set(FrontAspNetClient client)
+        {
+            string token = Token.ToLower();
+            if (!_casheContexts.ContainsKey(token))
+            {
+                throw new UserUnauthorized();
+            }
+
+            var contextValue = _casheContexts[token];
+
+            var context = (IContext)contextValue.StoreObject;
+
+            context.CurrentClientId = client.Id;
+
+            var dbProc = new WebAPIDbProcess();
+            context.ClientLicence = dbProc.GetClientLicenceActive(context.CurrentClientId);
+
+            VerifyNumberOfConnections(context, true);
+
+            contextValue.LastUsage = DateTime.Now;
         }
 
         private void Save(IContext val)
