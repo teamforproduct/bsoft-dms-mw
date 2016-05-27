@@ -94,6 +94,23 @@
     }
 
     /// <summary>
+    /// Сообщение при проверке проверочного кода клиента
+    /// Проверочный код неверен
+    /// Verification code is invalid
+    /// </summary>
+    public class ClientVerificationCodeIncorrect : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:ClientVerificationCodeIncorrect@l##";
+        public ClientVerificationCodeIncorrect() : base(_MESSAGE)
+        {
+        }
+
+        public ClientVerificationCodeIncorrect(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+    /// <summary>
     /// Сообщение при ошибке регистрации нового клиента
     /// Имя пользователя уже существует
     /// User Name already exists

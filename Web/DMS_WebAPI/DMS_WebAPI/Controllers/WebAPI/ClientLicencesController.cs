@@ -55,7 +55,7 @@ namespace DMS_WebAPI.Controllers.WebAPI
         }
 
         [Route("SetLicenceKey")]
-        [HttpGet]
+        [HttpPost]
         public IHttpActionResult PostSetLicenceKey(SetClientLicenceKey model)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();

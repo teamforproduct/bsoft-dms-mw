@@ -69,6 +69,7 @@ namespace DMS_WebAPI.Migrations
                         Id = c.Int(nullable: false, identity: true),
                         Name = c.String(maxLength: 2000),
                         Code = c.String(maxLength: 2000),
+                        VerificationCode = c.String(maxLength: 2000),
                     })
                 .PrimaryKey(t => t.Id);
             
