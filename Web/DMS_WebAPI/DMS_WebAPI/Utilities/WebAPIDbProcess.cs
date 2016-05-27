@@ -330,8 +330,8 @@ namespace DMS_WebAPI.Utilities
                     {
                         qry = qry.GroupBy(x => x.ClientId)
                                 .Select(x => x
-                                    .OrderBy(y => y.IsActive)
-                                    .ThenBy(y => y.LicenceKey != null)
+                                    .OrderByDescending(y => y.IsActive)
+                                    .ThenByDescending(y => y.LicenceKey != null)
                                     .ThenByDescending(y => y.FirstStart)
                                     .FirstOrDefault())
                                 .Where(x => x != null);
@@ -441,14 +441,15 @@ namespace DMS_WebAPI.Utilities
                     var item = new AspNetClientLicences
                     {
                         Id = model.ClientLicenceId,
-                        ClientId = ctx.CurrentClientId,
                         LicenceKey = model.LicenceKey,
+                        IsActive = true,
                     };
 
                     dbContext.AspNetClientLicencesSet.Attach(item);
 
                     var entry = dbContext.Entry(item);
                     entry.Property(p => p.LicenceKey).IsModified = true;
+                    entry.Property(p => p.IsActive).IsModified = true;
 
                     dbContext.SaveChanges();
 

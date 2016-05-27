@@ -126,7 +126,7 @@ namespace DMS_WebAPI.Utilities
             //progRegCode = "D85BF3EE";       //TEST
             //progRegCode = "E99DC7C3";       //PROD       
             var licRegCode = GetLicenceRegCode(li);
-            return progRegCode + licRegCode;
+            return $"{progRegCode}-{licRegCode}";
         }
     }
 }
