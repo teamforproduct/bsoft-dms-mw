@@ -19,9 +19,9 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns>Теги документа</returns>
         public IHttpActionResult Get(int id)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tagProc = DmsResolver.Current.Get<IDocumentTagService>();
-            return new JsonResult(tagProc.GetTags(cxt, id), this);
+            return new JsonResult(tagProc.GetTags(ctx, id), this);
         }
 
         /// <summary>
@@ -32,9 +32,9 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns>Измененная запись плана работы над документом</returns>
         public IHttpActionResult Post([FromBody]ModifyDocumentTags model)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            docProc.ExecuteAction(EnumDocumentActions.ModifyDocumentTags, cxt, model);
+            docProc.ExecuteAction(EnumDocumentActions.ModifyDocumentTags, ctx, model);
             return Get(model.DocumentId);
         }
     }

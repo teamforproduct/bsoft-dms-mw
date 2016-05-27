@@ -18,9 +18,9 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns></returns>
         public IHttpActionResult Post([FromBody]ModifyDocumentSendListStage model)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var isLastStage = (bool)docProc.ExecuteAction(EnumDocumentActions.AddDocumentSendListStage, cxt, model);
+            var isLastStage = (bool)docProc.ExecuteAction(EnumDocumentActions.AddDocumentSendListStage, ctx, model);
             return Get(model.DocumentId, isLastStage);
         }
 
@@ -31,9 +31,9 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns></returns>
         public IHttpActionResult Delete([FromBody]ModifyDocumentSendListStage model)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            docProc.ExecuteAction(EnumDocumentActions.DeleteDocumentSendListStage, cxt, model);
+            docProc.ExecuteAction(EnumDocumentActions.DeleteDocumentSendListStage, ctx, model);
             return Get(model.DocumentId);
         }
 
@@ -45,9 +45,9 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns>План работы над документом</returns>
         private IHttpActionResult Get(int DocumentId, bool isLastStage = false)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
-            return new JsonResult(docProc.GetSendListStage(cxt, DocumentId, isLastStage), this);
+            return new JsonResult(docProc.GetSendListStage(ctx, DocumentId, isLastStage), this);
         }
     }
 }

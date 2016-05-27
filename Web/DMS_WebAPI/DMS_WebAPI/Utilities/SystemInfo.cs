@@ -124,7 +124,7 @@ namespace DMS_WebAPI.Utilities
             var progRegCode = GetProgramRegCode(li);
             //TODO удалить когда будем использовать лицензи
             //progRegCode = "D85BF3EE";       //TEST
-            progRegCode = "E99DC7C3";       //PROD       
+            //progRegCode = "E99DC7C3";       //PROD       
             var licRegCode = GetLicenceRegCode(li);
             return progRegCode + licRegCode;
         }

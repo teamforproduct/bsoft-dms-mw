@@ -21,9 +21,9 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         // GET: api/DictionaryAddressTypes
         public IHttpActionResult Get([FromUri] FilterDictionaryAddressType filter)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionaryAddressTypes(cxt, filter);
+            var tmpDicts = tmpDictProc.GetDictionaryAddressTypes(ctx, filter);
             return new JsonResult(tmpDicts, this);
         }
 
@@ -34,9 +34,9 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         // GET: api/DictionaryAddressTypes/5
         public IHttpActionResult Get(int id)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDict = tmpDictProc.GetDictionaryAddressType(cxt, id);
+            var tmpDict = tmpDictProc.GetDictionaryAddressType(ctx, id);
             return new JsonResult(tmpDict, this);
         }
 
@@ -47,9 +47,9 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns>Измененный запись словаря типа документа</returns>
         public IHttpActionResult Post([FromBody]ModifyDictionaryAddressType model)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
-            return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.AddAddressType, cxt, model));
+            return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.AddAddressType, ctx, model));
         }
 
         /// <summary>
@@ -61,9 +61,9 @@ namespace DMS_WebAPI.Controllers.Dictionaries
          public IHttpActionResult Put(int id, [FromBody]ModifyDictionaryAddressType model)
         {
             model.Id = id;
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
-            tmpDict.ExecuteAction(EnumDictionaryActions.ModifyAddressType, cxt, model);
+            tmpDict.ExecuteAction(EnumDictionaryActions.ModifyAddressType, ctx, model);
             return Get(model.Id);
         }
 
@@ -73,10 +73,10 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns>Возвращает id удаленной записи</returns> 
         public IHttpActionResult Delete([FromUri] int id)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
 
-            tmpDict.ExecuteAction(EnumDictionaryActions.DeleteAddressType, cxt, id);
+            tmpDict.ExecuteAction(EnumDictionaryActions.DeleteAddressType, ctx, id);
             FrontDictionaryAddressType tmp = new FrontDictionaryAddressType();
             tmp.Id = id;
 

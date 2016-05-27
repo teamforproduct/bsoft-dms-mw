@@ -15,6 +15,7 @@ using System.Web;
 using System.Web.Http;
 using System.Web.Script.Serialization;
 using BL.CrossCutting.DependencyInjection;
+using System.Text;
 
 namespace DMS_WebAPI.Results
 {
@@ -68,26 +69,29 @@ namespace DMS_WebAPI.Results
         }
         public Task<HttpResponseMessage> ExecuteAsync(CancellationToken cancellationToken)
         {
-            object json = new { success = _success, data = _data, msg = _msg, meta = _meta, paging = _paging };
+            var json = JsonConvert.SerializeObject(new { success = _success, data = _data, msg = _msg, meta = _meta, paging = _paging }, GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings);
+
             try
             {
-                IContext cxt = null;
+                IContext ctx = null;
                 try
                 {
-                    cxt = DmsResolver.Current.Get<UserContext>().Get();
-                    if (HttpContext.Current.User.Identity.IsAuthenticated && cxt != null)
+                    ctx = DmsResolver.Current.Get<UserContext>().GetByLanguage();
+                    if (HttpContext.Current.User.Identity.IsAuthenticated && ctx != null)
                     {
                         var service = DmsResolver.Current.Get<ILanguageService>();
-                        json = JsonConvert.DeserializeObject(service.ReplaceLanguageLabel(cxt, JsonConvert.SerializeObject(json, GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings)));
+                        json = service.ReplaceLanguageLabel(ctx, json);
                     }
                 }
                 catch { }
                 var languageService = DmsResolver.Current.Get<Languages>();
-                json = JsonConvert.DeserializeObject(languageService.ReplaceLanguageLabel(HttpContext.Current.Request.UserLanguages?[0], JsonConvert.SerializeObject(json, GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings)));
-
+                json = languageService.ReplaceLanguageLabel(HttpContext.Current.Request.UserLanguages?[0], json);
             }
             catch { }
-            HttpResponseMessage response = _request.CreateResponse(HttpStatusCode.OK, json);
+
+            HttpResponseMessage response = _request.CreateResponse(HttpStatusCode.OK);
+            response.Content = new StringContent(json, Encoding.UTF8, "application/json");
+
             return Task.FromResult(response);
         }
     }

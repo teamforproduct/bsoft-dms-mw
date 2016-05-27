@@ -26,9 +26,9 @@ namespace DMS_WebAPI.Controllers.Documents
         //GET: api/Files
         public IHttpActionResult Get([FromUri]FilterDocumentFileIdentity model)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docFileProc = DmsResolver.Current.Get<IDocumentFileService>();
-            var res = docFileProc.GetUserFile(cxt, model);
+            var res = docFileProc.GetUserFile(ctx, model);
 
             return new JsonResult(res, this);
         }
@@ -36,9 +36,9 @@ namespace DMS_WebAPI.Controllers.Documents
         // GET: api/Files/5
         public IHttpActionResult Get(int id)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docFileProc = DmsResolver.Current.Get<IDocumentFileService>();
-            return new JsonResult(docFileProc.GetDocumentFiles(cxt, id), this);
+            return new JsonResult(docFileProc.GetDocumentFiles(ctx, id), this);
         }
 
         /// <summary>
@@ -50,9 +50,9 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpGet]
         public IHttpActionResult GetFileList([FromUri]FilterDocumentAttachedFile filter, [FromUri]UIPaging paging)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docFileProc = DmsResolver.Current.Get<IDocumentFileService>();
-            var res = new JsonResult(docFileProc.GetDocumentFiles(cxt, filter, paging), this);
+            var res = new JsonResult(docFileProc.GetDocumentFiles(ctx, filter, paging), this);
             res.Paging = paging;
             return res;
         }
@@ -60,15 +60,15 @@ namespace DMS_WebAPI.Controllers.Documents
         // POST: api/Files
         //public IHttpActionResult Post([FromBody]ModifyDocumentFiles model)
         //{
-        //    var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+        //    var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
         //    var docProc = DmsResolver.Current.Get<IDocumentService>();
-        //    docProc.ExecuteAction(EnumDocumentActions.AddDocumentFile, cxt, model);
+        //    docProc.ExecuteAction(EnumDocumentActions.AddDocumentFile, ctx, model);
         //    return Get(model.DocumentId);
         //}
 
         public IHttpActionResult Post([FromUri]ModifyDocumentFile model)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
 
             HttpPostedFile file = HttpContext.Current.Request.Files[0];
@@ -77,14 +77,14 @@ namespace DMS_WebAPI.Controllers.Documents
             model.FileType = file.ContentType;
 
 
-            docProc.ExecuteAction(EnumDocumentActions.AddDocumentFile, cxt, model);
+            docProc.ExecuteAction(EnumDocumentActions.AddDocumentFile, ctx, model);
             return Get(model.DocumentId);
         }
 
         // PUT: api/Files/5
         public IHttpActionResult Put([FromUri]ModifyDocumentFile model)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
 
             HttpPostedFile file = HttpContext.Current.Request.Files[0];
@@ -92,7 +92,7 @@ namespace DMS_WebAPI.Controllers.Documents
             model.FileName = file.FileName;
             model.FileType = file.ContentType;
 
-            var fileId = (int)docProc.ExecuteAction(EnumDocumentActions.ModifyDocumentFile, cxt, model);
+            var fileId = (int)docProc.ExecuteAction(EnumDocumentActions.ModifyDocumentFile, ctx, model);
 
             return GetFileList(new FilterDocumentAttachedFile { AttachedFileId = new List<int> { fileId } }, null);
         }
@@ -100,9 +100,9 @@ namespace DMS_WebAPI.Controllers.Documents
         // DELETE: api/Files
         public IHttpActionResult Delete([FromUri]FilterDocumentFileIdentity model)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            docProc.ExecuteAction(EnumDocumentActions.DeleteDocumentFile, cxt, model);
+            docProc.ExecuteAction(EnumDocumentActions.DeleteDocumentFile, ctx, model);
             return new JsonResult(null, this);
         }
 
@@ -115,9 +115,9 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpGet]
         public IHttpActionResult Actions(int id)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var cmdService = DmsResolver.Current.Get<ICommandService>();
-            var actions = cmdService.GetDocumentFileActions(cxt, id);
+            var actions = cmdService.GetDocumentFileActions(ctx, id);
 
             return new JsonResult(actions, this);
         }

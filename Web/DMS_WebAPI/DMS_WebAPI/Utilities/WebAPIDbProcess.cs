@@ -379,7 +379,38 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        public int AddClientLicence(ModifyAspNetClientLicence model)
+        public int AddClientLicence(IContext ctx, int licenceId)
+        {
+            try
+            {
+                using (var dbContext = new ApplicationDbContext())
+                {
+                    var licence = GetLicence(licenceId);
+
+                    var item = new AspNetClientLicences
+                    {
+                        ClientId = ctx.CurrentClientId,
+                        FirstStart = DateTime.Now,
+                        IsActive = false,
+                        IsTrial = false,
+                        NamedNumberOfConnections = licence.NamedNumberOfConnections,
+                        ConcurenteNumberOfConnections = licence.ConcurenteNumberOfConnections,
+                        DurationDay = licence.DateLimit,
+                        Functionals = licence.Functionals,
+                    };
+                    dbContext.AspNetClientLicencesSet.Add(item);
+                    dbContext.SaveChanges();
+
+                    return item.Id;
+                }
+            }
+            catch
+            {
+                throw new DictionaryRecordCouldNotBeAdded();
+            }
+        }
+
+        public int SetClientLicenceKey(IContext ctx, SetClientLicenceKey model)
         {
             try
             {
@@ -387,21 +418,19 @@ namespace DMS_WebAPI.Utilities
                 {
                     var item = new AspNetClientLicences
                     {
-                        ClientId = model.ClientId,
-                        FirstStart = model.FirstStart,
-                        IsActive = model.IsActive,
-                        IsTrial = model.IsTrial,
-                        NamedNumberOfConnections = model.NamedNumberOfConnections,
-                        ConcurenteNumberOfConnections = model.ConcurenteNumberOfConnections,
-                        DurationDay = model.DurationDay,
-                        Functionals = model.Functionals,
+                        Id = model.ClientLicenceId,
+                        ClientId = ctx.CurrentClientId,
+                        LicenceKey = model.LicenceKey,
                     };
-                    dbContext.AspNetClientLicencesSet.Add(item);
+
+                    dbContext.AspNetClientLicencesSet.Attach(item);
+
+                    var entry = dbContext.Entry(item);
+                    entry.Property(p => p.LicenceKey).IsModified = true;
+
                     dbContext.SaveChanges();
 
-                    model.Id = item.Id;
-
-                    return model.Id;
+                    return item.Id;
                 }
             }
             catch
@@ -1091,7 +1120,7 @@ namespace DMS_WebAPI.Utilities
             {
                 var si = new SystemInfo();
 
-                LicenceInfo lic = GetClientLicences(new FilterAspNetClientLicences { ClientIds = new List<int> { model.ClientId }, IsNowUsed = true }).FirstOrDefault();
+                LicenceInfo lic = GetClientLicenceActive(model.ClientId);
 
                 if (lic == null)
                 {

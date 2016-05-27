@@ -22,9 +22,9 @@ namespace DMS_WebAPI.Controllers.Documents
         [ResponseType(typeof(FrontDocumentEvent))]
         public IHttpActionResult Get([FromUri] FilterDocumentEvent filter, [FromUri]UIPaging paging)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var events = docProc.GetDocumentEvents(cxt, filter, paging);
+            var events = docProc.GetDocumentEvents(ctx, filter, paging);
             var res = new JsonResult(events, this);
             res.Paging = paging;
             return res;
@@ -38,9 +38,9 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns>Ивент</returns>
         public IHttpActionResult Get(int id)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var evt = docProc.GetDocumentEvent(cxt, id);
+            var evt = docProc.GetDocumentEvent(ctx, id);
             var res = new JsonResult(evt, this);
             return res;
         }
@@ -55,9 +55,9 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpGet]
         public IHttpActionResult GetEventsByDocument(int id,[FromUri]UIPaging paging)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var events = docProc.GetEventsForDocument(cxt, id, paging);
+            var events = docProc.GetEventsForDocument(ctx, id, paging);
             var res = new JsonResult(events, this);
             return res;
         }

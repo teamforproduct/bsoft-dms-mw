@@ -24,9 +24,9 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         // GET: api/DictionaryStandartSendLists
         public IHttpActionResult Get([FromUri] FilterDictionaryStandartSendList filter)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionaryStandartSendLists(cxt, filter);
+            var tmpDicts = tmpDictProc.GetDictionaryStandartSendLists(ctx, filter);
             return new JsonResult(tmpDicts, this);
         }
 
@@ -38,9 +38,9 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         // GET: api/DictionaryStandartSendLists/5
         public IHttpActionResult Get(int id)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDict = tmpDictProc.GetDictionaryStandartSendList(cxt, id);
+            var tmpDict = tmpDictProc.GetDictionaryStandartSendList(ctx, id);
             return new JsonResult(tmpDict, this);
         }
 
@@ -51,9 +51,9 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns></returns>
         public IHttpActionResult Post([FromBody]ModifyDictionaryStandartSendList model)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
-            return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.AddStandartSendList, cxt, model));
+            return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.AddStandartSendList, ctx, model));
         }
 
         /// <summary>
@@ -65,9 +65,9 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         public IHttpActionResult Put(int id, [FromBody]ModifyDictionaryStandartSendList model)
         {
             model.Id = id;
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
-            tmpDict.ExecuteAction(EnumDictionaryActions.ModifyStandartSendList, cxt, model);
+            tmpDict.ExecuteAction(EnumDictionaryActions.ModifyStandartSendList, ctx, model);
             return Get(model.Id);
         }
 
@@ -77,10 +77,10 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns>Возвращает id удаленной записи</returns> 
         public IHttpActionResult Delete([FromUri] int id)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
 
-            tmpDict.ExecuteAction(EnumDictionaryActions.DeleteStandartSendListContent, cxt, id);
+            tmpDict.ExecuteAction(EnumDictionaryActions.DeleteStandartSendListContent, ctx, id);
             var tmp = new FrontDictionaryStandartSendList {Id = id};
 
             return new JsonResult(tmp, this);

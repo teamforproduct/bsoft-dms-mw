@@ -52,7 +52,9 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
             if (!Model.IsAdditional && _document.ExecutorPositionId != _context.CurrentPositionId)
             {
-                throw new CouldNotPerformOperation();
+                //TODO Саше проверить.
+                Model.IsAdditional = true;
+                //throw new CouldNotPerformOperation();
             }
 
             if (_document.DocumentFiles.Any(x => (x.Name + "." + x.Extension).Equals(Model.FileName) && x.ExecutorPositionId != _context.CurrentPositionId))

@@ -13,18 +13,18 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         // GET: api/DictionarySubordinationTypes
         public IHttpActionResult Get([FromUri] FilterDictionarySubordinationType filter)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionarySubordinationTypes(cxt, filter);
+            var tmpDicts = tmpDictProc.GetDictionarySubordinationTypes(ctx, filter);
             return new JsonResult(tmpDicts, this);
         }
 
         // GET: api/DictionarySubordinationTypes/5
         public IHttpActionResult Get(int id)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDict = tmpDictProc.GetDictionarySubordinationType(cxt, id);
+            var tmpDict = tmpDictProc.GetDictionarySubordinationType(ctx, id);
             return new JsonResult(tmpDict, this);
         }
     }

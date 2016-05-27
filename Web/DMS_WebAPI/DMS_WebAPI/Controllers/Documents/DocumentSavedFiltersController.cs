@@ -14,27 +14,27 @@ namespace DMS_WebAPI.Controllers.Documents
         // GET: api/DocumentSavedFilters
         public IHttpActionResult Get()
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentFiltersService>();
-            var savFilters = docProc.GetSavedFilters(cxt);
+            var savFilters = docProc.GetSavedFilters(ctx);
             return new JsonResult(savFilters, this);
         }
 
         // GET: api/DocumentSavedFilters/5
         public IHttpActionResult Get(int id)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentFiltersService>();
-            var savFilter = docProc.GetSavedFilter(cxt, id);
+            var savFilter = docProc.GetSavedFilter(ctx, id);
             return new JsonResult(savFilter, this);
         }
 
         // POST: api/DocumentSavedFilters
         public IHttpActionResult Post([FromBody]ModifyDocumentSavedFilter model)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var id = (int)docProc.ExecuteAction(EnumDocumentActions.AddSavedFilter, cxt, model);
+            var id = (int)docProc.ExecuteAction(EnumDocumentActions.AddSavedFilter, ctx, model);
             return Get(id);
         }
 
@@ -42,18 +42,18 @@ namespace DMS_WebAPI.Controllers.Documents
         public IHttpActionResult Put(int id, [FromBody]ModifyDocumentSavedFilter model)
         {
             model.Id = id;
-            var cxt = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            docProc.ExecuteAction(EnumDocumentActions.ModifySavedFilter, cxt, model);
+            docProc.ExecuteAction(EnumDocumentActions.ModifySavedFilter, ctx, model);
             return Get(model.Id);
         }
 
         // DELETE: api/DocumentSavedFilters/5
         public IHttpActionResult Delete(int id)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            docProc.ExecuteAction(EnumDocumentActions.DeleteSavedFilter, cxt, id);
+            docProc.ExecuteAction(EnumDocumentActions.DeleteSavedFilter, ctx, id);
             return new JsonResult(null, this);
         }
     }

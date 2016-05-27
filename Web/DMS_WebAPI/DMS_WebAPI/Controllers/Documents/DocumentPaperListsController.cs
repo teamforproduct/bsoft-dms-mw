@@ -20,9 +20,9 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns>PaperList</returns>
         public IHttpActionResult Get(int id)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            return new JsonResult(docProc.GetDocumentPaperList(cxt, id),this);
+            return new JsonResult(docProc.GetDocumentPaperList(ctx, id),this);
         }
 
         /// <summary>
@@ -32,9 +32,9 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns>Список PaperLists</returns>
         public IHttpActionResult Get([FromUri]FilterDocumentPaperList filter)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            return new JsonResult(docProc.GetDocumentPaperLists(cxt, filter), this);
+            return new JsonResult(docProc.GetDocumentPaperLists(ctx, filter), this);
         }
 
         /// <summary>
@@ -44,9 +44,9 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns>Измененная запись</returns>
         public IHttpActionResult Post([FromBody]AddDocumentPaperLists model)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var newIds = (List<int>)docProc.ExecuteAction(EnumDocumentActions.AddDocumentPaperList, cxt, model);
+            var newIds = (List<int>)docProc.ExecuteAction(EnumDocumentActions.AddDocumentPaperList, ctx, model);
             return Get(new FilterDocumentPaperList { PaperListId = newIds });
         }
 
@@ -59,9 +59,9 @@ namespace DMS_WebAPI.Controllers.Documents
         public IHttpActionResult Put(int id, [FromBody]ModifyDocumentPaperLists model)
         {
             model.Id = id;
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            docProc.ExecuteAction(EnumDocumentActions.ModifyDocumentPaperList, cxt, model);
+            docProc.ExecuteAction(EnumDocumentActions.ModifyDocumentPaperList, ctx, model);
             return Get(model.Id);
         }
 
@@ -72,9 +72,9 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns></returns>
         public IHttpActionResult Delete(int id)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            docProc.ExecuteAction(EnumDocumentActions.DeleteDocumentPaperList, cxt, id);
+            docProc.ExecuteAction(EnumDocumentActions.DeleteDocumentPaperList, ctx, id);
             return new JsonResult(null, this);
         }
     }

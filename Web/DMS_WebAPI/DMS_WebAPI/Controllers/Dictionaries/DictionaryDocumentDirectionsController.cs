@@ -22,9 +22,9 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         // GET: api/DictionaryDocumentDirections
         public IHttpActionResult Get([FromUri] FilterDictionaryDocumentDirection filter)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionaryDocumentDirections(cxt, filter);
+            var tmpDicts = tmpDictProc.GetDictionaryDocumentDirections(ctx, filter);
             return new JsonResult(tmpDicts, this);
         }
 
@@ -36,9 +36,9 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         // GET: api/DictionaryDocumentDirections/5
         public IHttpActionResult Get(int id)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDict = tmpDictProc.GetDictionaryDocumentDirection(cxt, id);
+            var tmpDict = tmpDictProc.GetDictionaryDocumentDirection(ctx, id);
             return new JsonResult(tmpDict, this);
         }
     }

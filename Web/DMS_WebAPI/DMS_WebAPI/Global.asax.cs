@@ -9,6 +9,9 @@ namespace DMS_WebAPI
     {
         protected void Application_Start()
         {
+            // maximum number of concurrent connections allowed by a ServicePoint object
+            System.Net.ServicePointManager.DefaultConnectionLimit = System.Int16.MaxValue;
+
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);

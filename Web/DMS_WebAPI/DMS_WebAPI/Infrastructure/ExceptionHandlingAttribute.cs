@@ -43,14 +43,14 @@ namespace DMS_WebAPI.Infrastructure
             var json = JsonConvert.SerializeObject(new { success = false, msg = context.Exception.Message }, GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings);
             try
             {
-                IContext cxt = null;
+                IContext ctx = null;
                 try
                 {
-                    cxt = DmsResolver.Current.Get<UserContext>().Get();
-                    if (currentContext.User.Identity.IsAuthenticated && cxt != null)
+                    ctx = DmsResolver.Current.Get<UserContext>().GetByLanguage();
+                    if (currentContext.User.Identity.IsAuthenticated && ctx != null)
                     {
                         var service = DmsResolver.Current.Get<ILanguageService>();
-                        json = service.ReplaceLanguageLabel(cxt, json);
+                        json = service.ReplaceLanguageLabel(ctx, json);
                     }
                 }
                 catch { }

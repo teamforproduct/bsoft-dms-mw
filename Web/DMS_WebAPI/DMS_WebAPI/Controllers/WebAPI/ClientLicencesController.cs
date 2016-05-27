@@ -11,6 +11,7 @@ using System.Web.Http;
 namespace DMS_WebAPI.Controllers.WebAPI
 {
     [Authorize]
+    [RoutePrefix("api/v2/ClientLicences")]
     public class ClientLicencesController : ApiController
     {
         public IHttpActionResult Get(FilterAspNetClientLicences filter)
@@ -25,12 +26,44 @@ namespace DMS_WebAPI.Controllers.WebAPI
             var item = dbProc.GetClientLicence(id);
             return new JsonResult(item, this);
         }
-        public IHttpActionResult Post(ModifyAspNetClientLicence model)
+
+        [Route("GetRegCode")]
+        [HttpGet]
+        public IHttpActionResult GetRegCode(int clientLicenceId)
         {
             var dbProc = new WebAPIDbProcess();
-            var itemId = dbProc.AddClientLicence(model);
+            var si = new SystemInfo();
+
+            var lic = dbProc.GetClientLicence(clientLicenceId);
+
+            var regCode = si.GetRegCode(lic);
+
+            return new JsonResult(regCode, this);
+        }
+
+        /// <summary>
+        /// Добавить лицензию клиенту чтобы получить регистрационный код
+        /// </summary>
+        /// <param name="id">ИД лицензии</param>
+        /// <returns></returns>
+        public IHttpActionResult Post(int id)
+        {
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var dbProc = new WebAPIDbProcess();
+            var itemId = dbProc.AddClientLicence(ctx, id);
             return Get(itemId);
         }
+
+        [Route("SetLicenceKey")]
+        [HttpGet]
+        public IHttpActionResult PostSetLicenceKey(SetClientLicenceKey model)
+        {
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var dbProc = new WebAPIDbProcess();
+            var itemId = dbProc.SetClientLicenceKey(ctx, model);
+            return Get(itemId);
+        }
+
         public IHttpActionResult Put(int id, ModifyAspNetClientLicence model)
         {
             model.Id = id;

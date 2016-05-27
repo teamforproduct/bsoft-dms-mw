@@ -37,17 +37,17 @@ namespace DMS_WebAPI.Utilities
 
 
 
-        public void Verify(string regCode, LicenceInfo licence, IContext cxt)
+        public void Verify(string regCode, LicenceInfo licence, IContext ctx)
         {
             if (!VerifyLicenceKey(regCode, licence.LicenceKey))
             {
                 if (licence.IsTrial)
                 {
-                    if (cxt != null)
+                    if (ctx != null)
                     {
                         try
                         {
-                            VerifyTrialMaxDocumentCount(licence, cxt);
+                            VerifyTrialMaxDocumentCount(licence, ctx);
                         }
                         catch(DatabaseIsNotSet)
                         {
@@ -86,12 +86,12 @@ namespace DMS_WebAPI.Utilities
                 return false;
             }
         }
-        private void VerifyTrialMaxDocumentCount(LicenceInfo licence, IContext cxt)
+        private void VerifyTrialMaxDocumentCount(LicenceInfo licence, IContext ctx)
         {
             //TODO Проверить количество документов у клиента
             //TODO оптимизировать
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var count = docProc.GetCountDocuments(cxt);
+            var count = docProc.GetCountDocuments(ctx);
 
             if (count > _TrialMaxCountDocuments)
             {
