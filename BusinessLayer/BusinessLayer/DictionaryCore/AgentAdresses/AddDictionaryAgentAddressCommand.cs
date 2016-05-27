@@ -33,8 +33,8 @@ namespace BL.Logic.DictionaryCore.AgentAdresses
             _admin.VerifyAccess(_context, CommandType, false);
             var spr = _dictDb.GetDictionaryAgentAddresses(_context, Model.AgentId,new FilterDictionaryAgentAddress
             {
-                PostCode = Model.PostCode,
-                Address = Model.Address,
+                PostCodeExact = Model.PostCode,
+                AddressExact = Model.Address,
                 AddressTypeId = new List<int> { Model.AddressTypeId },
                 AgentId = Model.AgentId
             });

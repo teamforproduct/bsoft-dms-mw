@@ -29,7 +29,8 @@ namespace BL.Logic.DictionaryCore.ContactType
 
         public override bool CanExecute()
         {
-            var spr = _dictDb.GetInternalDictionaryContactType(_context, new FilterDictionaryContactType { Name = Model.Name, IsActive=Model.IsActive, NotContainsIDs=new List<int> {Model.Id} });
+            var spr = _dictDb.GetInternalDictionaryContactType(_context, new FilterDictionaryContactType
+                { NameExact = Model.Name, Code=Model.Code,IsActive=Model.IsActive});
             if (spr != null)
             {
                 throw new DictionaryRecordNotUnique();

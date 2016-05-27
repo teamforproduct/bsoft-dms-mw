@@ -95,6 +95,7 @@ namespace BL.Database.Dictionaries
                         {
                             Id = y.ContactType.Id,
                             Name = y.ContactType.Name,
+                            Code=y.ContactType.Code,
                             InputMask = y.ContactType.InputMask,
                             IsActive = y.ContactType.IsActive
                         },
@@ -189,10 +190,14 @@ namespace BL.Database.Dictionaries
                     {
                         Id = y.Id,
                         AgentId = y.AgentId,
+                        Value = y.Contact,
+                        IsActive=y.IsActive,
+                        Description = y.Description,
                         ContactType = new FrontDictionaryContactType
                         {
                             Id = y.ContactType.Id,
                             Name = y.ContactType.Name,
+                            Code=y.ContactType.Code,
                             InputMask = y.ContactType.InputMask,
                             IsActive = y.ContactType.IsActive
                         }
@@ -206,7 +211,11 @@ namespace BL.Database.Dictionaries
                             Id = z.AddressType.Id,
                             Name = z.AddressType.Name,
                             IsActive = z.AddressType.IsActive
-                        }
+                        },
+                        PostCode = z.PostCode,
+                        Address = z.Address,
+                        IsActive = z.IsActive,
+                        Description = z.Description
                     })
 
                 }).ToList();
@@ -939,11 +948,13 @@ namespace BL.Database.Dictionaries
             {
                 var qry = dbContext.DictionaryAgentAddressesSet.Where(x => x.Agent.ClientId == context.CurrentClientId).AsQueryable();
 
+                qry = qry.Where(x => x.Id == id);
+
                 return qry.Select(x => new FrontDictionaryAgentAddress
                 {
                     Id = x.Id,
                     AgentId = x.AgentId,
-                    AddressType = new FrontDictionaryAddressType { Id = x.AdressTypeId, Name = x.AddressType.Name },
+                    AddressType = new FrontDictionaryAddressType { Id = x.AdressTypeId, Name = x.AddressType.Name,IsActive = x.AddressType.IsActive},
                     PostCode = x.PostCode,
                     Address = x.Address,
                     Description = x.Description,
@@ -1035,6 +1046,20 @@ namespace BL.Database.Dictionaries
                     {
                         qry = qry.Where(x => x.PostCode.Contains(temp));
                     }
+                }
+
+                if (!String.IsNullOrEmpty(filter.PostCodeExact))
+                {
+                    
+                        qry = qry.Where(x => x.PostCode==filter.PostCodeExact);
+                    
+                }
+
+                if (!String.IsNullOrEmpty(filter.AddressExact))
+                {
+
+                    qry = qry.Where(x => x.Address == filter.AddressExact);
+
                 }
 
                 if (!String.IsNullOrEmpty(filter.Address))
@@ -1971,6 +1996,20 @@ namespace BL.Database.Dictionaries
                     }
                 }
 
+                if (!String.IsNullOrEmpty(filter.Code))
+                {
+                    
+                    qry = qry.Where(x => x.Code==filter.Code);
+                    
+                }
+
+                if (!String.IsNullOrEmpty(filter.NameExact))
+                {
+
+                    qry = qry.Where(x => x.Name == filter.NameExact);
+
+                }
+
                 if (filter.IsActive != null)
                 {
                     qry = qry.Where(x => filter.IsActive == x.IsActive);
@@ -1980,10 +2019,14 @@ namespace BL.Database.Dictionaries
                 {
                     Id = x.Id,
                     Name = x.Name,
+                    InputMask=x.InputMask,
+                    Code=x.Code,
                     IsActive = x.IsActive
                 }).FirstOrDefault();
             }
         }
+
+       
         public void UpdateDictionaryContactType(IContext context, InternalDictionaryContactType contactType)
         {
             using (var dbContext = new DmsContext(context))
@@ -1993,6 +2036,7 @@ namespace BL.Database.Dictionaries
                     ClientId = context.CurrentClientId,
                     Id = contactType.Id,
                     InputMask = contactType.InputMask,
+                    Code=contactType.Code,
                     LastChangeDate = contactType.LastChangeDate,
                     LastChangeUserId = contactType.LastChangeUserId,
                     Name = contactType.Name,
@@ -2028,6 +2072,7 @@ namespace BL.Database.Dictionaries
                     Name = contactType.Name,
                     IsActive = contactType.IsActive,
                     InputMask=contactType.InputMask,
+                    Code=contactType.Code,
                     LastChangeDate = contactType.LastChangeDate,
                     LastChangeUserId = contactType.LastChangeUserId
                 };
@@ -2069,11 +2114,18 @@ namespace BL.Database.Dictionaries
                         qry = qry.Where(x => x.Name.Contains(temp));
                     }
                 }
+                if (!String.IsNullOrEmpty(filter.Code))
+                {
 
+                    qry = qry.Where(x => x.Code == filter.Code);
+
+                }
                 return qry.Select(x => new FrontDictionaryContactType
                 {
                     Id = x.Id,
                     Name = x.Name,
+                    InputMask=x.InputMask,
+                    Code=x.Code,
                     IsActive = x.IsActive
                 }).ToList();
             }
@@ -2083,18 +2135,20 @@ namespace BL.Database.Dictionaries
         // Контакты
         #region DictionaryContacts
 
-        public FrontDictionaryContact GetDictionaryContact(IContext context,
-          FilterDictionaryContact filter)
+        public FrontDictionaryContact GetDictionaryContact(IContext context, int id)
+          
         {
             using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.DictionaryAgentContactsSet.Where(x => x.Agent.ClientId == context.CurrentClientId).AsQueryable();
 
+                qry = qry.Where(x => x.Id == id);
+
                 return qry.Select(x => new FrontDictionaryContact
                 {
                     Id = x.Id,
                     AgentId = x.AgentId,
-                    ContactType = new FrontDictionaryContactType { Id = x.ContactTypeId, Name = x.ContactType.Name },
+                    ContactType = new FrontDictionaryContactType { Id = x.ContactTypeId, Name = x.ContactType.Name,Code=x.ContactType.Code,IsActive=x.ContactType.IsActive },
                     Value = x.Contact,
                     Description = x.Description,
                     IsActive = x.IsActive,
@@ -2184,6 +2238,10 @@ namespace BL.Database.Dictionaries
                         qry = qry.Where(x => x.Contact.Contains(temp));
                     }
                 }
+                if (!String.IsNullOrEmpty(filter.ContactExact))
+                {
+                    qry = qry.Where(x => x.Contact==filter.ContactExact);
+                }
                 if (filter.IsActive != null)
                 {
                     qry = qry.Where(x => x.IsActive == filter.IsActive);
@@ -2196,7 +2254,7 @@ namespace BL.Database.Dictionaries
                 {
                     Id = x.Id,
                     AgentId = x.AgentId,
-                    ContactType = new FrontDictionaryContactType { Id = x.ContactType.Id, Name = x.ContactType.Name },
+                    ContactType = new FrontDictionaryContactType { Id = x.ContactTypeId, Name = x.ContactType.Name, Code = x.ContactType.Code, IsActive = x.ContactType.IsActive },
                     Value = x.Contact,
                     Description = x.Description,
                     IsActive = x.IsActive

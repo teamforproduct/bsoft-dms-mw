@@ -33,7 +33,7 @@ namespace BL.Logic.DictionaryCore.Contact
             _admin.VerifyAccess(_context, CommandType, false);
             var spr = _dictDb.GetDictionaryContacts(_context,Model.AgentId, 
                    new FilterDictionaryContact {
-                       Contact = Model.Value,
+                       ContactExact = Model.Value,
                        ContactTypeId = new List<int> { Model.ContactTypeId },
                        AgentId =new List<int> { Model.AgentId }
                    });

@@ -169,7 +169,7 @@ namespace BL.Logic.DictionaryCore
         #region DictionaryContacts
         public FrontDictionaryContact GetDictionaryContact(IContext context, int id)
         {
-            return _dictDb.GetDictionaryContact(context, new FilterDictionaryContact { Id = id });
+            return _dictDb.GetDictionaryContact(context,id);
         }
 
         public IEnumerable<FrontDictionaryContact> GetDictionaryContacts(IContext context,int agentId, FilterDictionaryContact filter)

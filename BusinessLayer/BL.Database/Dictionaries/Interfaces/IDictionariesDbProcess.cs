@@ -83,8 +83,9 @@ namespace BL.Database.Dictionaries.Interfaces
         #endregion DictionaryAgentAccounts
 
         #region DictionaryContacts
-        FrontDictionaryContact GetDictionaryContact(IContext context,
-           FilterDictionaryContact filter);
+
+        FrontDictionaryContact GetDictionaryContact(IContext context, int id);
+           
         void UpdateDictionaryContact(IContext context, InternalDictionaryContact contact);
         void DeleteDictionaryContact(IContext context, InternalDictionaryContact contact);
         int AddDictionaryContact(IContext context, InternalDictionaryContact contact);
@@ -93,6 +94,7 @@ namespace BL.Database.Dictionaries.Interfaces
 
         #region DictionaryContactTypes
         FrontDictionaryContactType GetInternalDictionaryContactType(IContext context, FilterDictionaryContactType filter);
+      
         void UpdateDictionaryContactType(IContext context, InternalDictionaryContactType contactType);
         void DeleteDictionaryContactType(IContext context, InternalDictionaryContactType contactType);
         int AddDictionaryContactType(IContext context, InternalDictionaryContactType contactType);

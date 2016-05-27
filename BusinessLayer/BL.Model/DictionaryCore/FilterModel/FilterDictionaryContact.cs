@@ -27,6 +27,6 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// значение
         /// </summary>
         public string Contact { get; set; }
-        
+        public string ContactExact { get; set; }
     }
 }
