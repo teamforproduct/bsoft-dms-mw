@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using BL.Logic.Common;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.DictionaryCore.FilterModel;
 
-namespace BL.Logic.DictionaryCore.ContactType
+namespace BL.Logic.DictionaryCore
 {
     public class ModifyDictionaryContactTypeCommand : BaseDictionaryCommand
     {
@@ -28,7 +29,8 @@ namespace BL.Logic.DictionaryCore.ContactType
 
         public override bool CanExecute()
         {
-            var spr = _dictDb.GetInternalDictionaryContactType(_context, new FilterDictionaryContactType { Name = Model.Name, IsActive=Model.IsActive });
+            var spr = _dictDb.GetInternalDictionaryContactType(_context, new FilterDictionaryContactType
+                { NameExact = Model.Name, Code=Model.Code,IsActive=Model.IsActive});
             if (spr != null)
             {
                 throw new DictionaryRecordNotUnique();
@@ -45,7 +47,7 @@ namespace BL.Logic.DictionaryCore.ContactType
             {
                 var newContactType = new InternalDictionaryContactType(Model);
                 CommonDocumentUtilities.SetLastChange(_context, newContactType);
-                _dictDb.UpdateDictionaryContactType(_context, newContactType);
+                _dictDb.UpdateContactType(_context, newContactType);
             }
             catch (DictionaryRecordWasNotFound)
             {

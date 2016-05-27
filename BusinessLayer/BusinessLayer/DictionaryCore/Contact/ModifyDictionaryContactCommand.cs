@@ -7,7 +7,7 @@ using BL.Model.Exception;
 using BL.Model.DictionaryCore.FilterModel;
 using System.Linq;
 
-namespace BL.Logic.DictionaryCore.Contact
+namespace BL.Logic.DictionaryCore
 {
     public class ModifyDictionaryContactCommand : BaseDictionaryCommand
     {
@@ -32,10 +32,10 @@ namespace BL.Logic.DictionaryCore.Contact
         {
 
             _admin.VerifyAccess(_context, CommandType,false,true);
-            var spr = _dictDb.GetDictionaryContacts(_context, Model.AgentId,
+            var spr = _dictDb.GetContacts(_context, Model.AgentId,
                    new FilterDictionaryContact
                    {
-                       Contact = Model.Value,
+                       ContactExact = Model.Value,
                        ContactTypeId = new List<int> { Model.ContactTypeId },
                        AgentId = new List<int> { Model.AgentId },
                        IsActive=Model.IsActive
@@ -55,7 +55,7 @@ namespace BL.Logic.DictionaryCore.Contact
 
                 var newContact = new InternalDictionaryContact(Model);
                 CommonDocumentUtilities.SetLastChange(_context, newContact);
-                _dictDb.UpdateDictionaryContact(_context, newContact);
+                _dictDb.UpdateContact(_context, newContact);
             }
             catch (DictionaryRecordWasNotFound)
             {

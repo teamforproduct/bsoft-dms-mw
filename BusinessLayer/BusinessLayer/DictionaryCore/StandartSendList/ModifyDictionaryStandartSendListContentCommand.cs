@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 
-namespace BL.Logic.DictionaryCore.StandartSendList
+namespace BL.Logic.DictionaryCore
 {
     public class ModifyDictionaryStandartSendListContentCommand :BaseDictionaryCommand
     {
@@ -34,7 +34,7 @@ namespace BL.Logic.DictionaryCore.StandartSendList
         public override bool CanExecute()
         {
             _admin.VerifyAccess(_context, CommandType, false, true);
-            var contents = _dictDb.GetDictionaryStandartSendListContents(_context, new FilterDictionaryStandartSendListContent() 
+            var contents = _dictDb.GetStandartSendListContents(_context, new FilterDictionaryStandartSendListContent() 
             {
                 TargetAgentId = Model.TargetAgentId,
                 TargetPositionId = Model.TargetPositionId,
@@ -56,7 +56,7 @@ namespace BL.Logic.DictionaryCore.StandartSendList
             {
                 var newCont = new InternalDictionaryStandartSendListContent(Model);
                 CommonDocumentUtilities.SetLastChange(_context, newCont);
-                _dictDb.UpdateDictionaryStandartSendListContent(_context, newCont);
+                _dictDb.UpdateStandartSendListContent(_context, newCont);
 
 
             }

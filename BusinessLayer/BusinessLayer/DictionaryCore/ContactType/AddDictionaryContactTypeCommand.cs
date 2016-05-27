@@ -5,7 +5,7 @@ using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.DictionaryCore.FilterModel;
 
-namespace BL.Logic.DictionaryCore.ContactType
+namespace BL.Logic.DictionaryCore
 {
     public class AddDictionaryContactTypeCommand : BaseDictionaryCommand
     {
@@ -30,7 +30,7 @@ namespace BL.Logic.DictionaryCore.ContactType
         {
             _admin.VerifyAccess(_context, CommandType,false,true);
             var spr = _dictDb.GetInternalDictionaryContactType(_context, 
-                   new FilterDictionaryContactType { Name = Model.Name });
+                   new FilterDictionaryContactType { NameExact = Model.Name, Code=Model.Code });
             if (spr != null)
             {
                 throw new DictionaryRecordNotUnique();
@@ -45,7 +45,7 @@ namespace BL.Logic.DictionaryCore.ContactType
             {
                 var newContactType = new InternalDictionaryContactType(Model);
                 CommonDocumentUtilities.SetLastChange(_context, newContactType);
-                return _dictDb.AddDictionaryContactType(_context, newContactType);
+                return _dictDb.AddContactType(_context, newContactType);
             }
             catch (Exception ex)
             {

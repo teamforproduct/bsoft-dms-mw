@@ -5,7 +5,7 @@ using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
 
-namespace BL.Logic.DictionaryCore.StandartSendList
+namespace BL.Logic.DictionaryCore
 {
     public class DeleteDictionaryStandartSendListContentCommand : BaseDictionaryCommand
     {
@@ -44,7 +44,7 @@ namespace BL.Logic.DictionaryCore.StandartSendList
                     Id = model
 
                 };
-                _dictDb.DeleteDictionaryStandartSendListContent(_context, newCont);
+                _dictDb.DeleteStandartSendListContent(_context, newCont);
                 return null;
             }
             catch (Exception ex)

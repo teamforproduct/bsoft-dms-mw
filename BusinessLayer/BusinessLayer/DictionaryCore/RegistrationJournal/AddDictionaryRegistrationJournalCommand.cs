@@ -9,7 +9,7 @@ using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.SystemCore;
 using System.Collections.Generic;
 
-namespace BL.Logic.DictionaryCore.DocumentType
+namespace BL.Logic.DictionaryCore
 {
     public class AddDictionaryRegistrationJournalCommand : BaseDictionaryCommand
     {
@@ -49,7 +49,7 @@ namespace BL.Logic.DictionaryCore.DocumentType
             {
                 var drj = CommonDictionaryUtilities.RegistrationJournalModifyToInternal(_context, Model);
 
-                return _dictDb.AddDictionaryRegistrationJournal(_context, drj);
+                return _dictDb.AddRegistrationJournal(_context, drj);
             }
             catch (Exception ex)
             {

@@ -6,20 +6,20 @@ using BL.Model.Exception;
 using System;
 using System.Collections.Generic;
 
-namespace BL.Logic.DictionaryCore.DocumentType
+namespace BL.Logic.DictionaryCore
 {
-    public class AddDictionaryDepartmentCommand : BaseDictionaryCommand
+    public class AddDictionaryPositionCommand : BaseDictionaryCommand
     {
 
-        private ModifyDictionaryDepartment Model
+        private ModifyDictionaryPosition Model
         {
             get
             {
-                if (!(_param is ModifyDictionaryDepartment))
+                if (!(_param is ModifyDictionaryPosition))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ModifyDictionaryDepartment)_param;
+                return (ModifyDictionaryPosition)_param;
             }
         }
 
@@ -33,14 +33,14 @@ namespace BL.Logic.DictionaryCore.DocumentType
 
             _admin.VerifyAccess(_context, CommandType, false);
 
-            var fdd = new FilterDictionaryDepartment { Name = Model.Name, NotContainsIDs = new List<int> { Model.Id } };
+            var fdd = new FilterDictionaryPosition { Name = Model.Name, NotContainsIDs = new List<int> { Model.Id } };
 
             if (Model.ParentId != null)
             {
                 fdd.ParentIDs = new List<int> { Model.ParentId.Value };
             }
             // Находим запись с таким-же именем в этой-же папке
-            if (_dictDb.ExistsDictionaryDepartment(_context, fdd))
+            if (_dictDb.ExistsPosition(_context, fdd))
             {
                 throw new DictionaryRecordNotUnique();
             }
@@ -52,9 +52,9 @@ namespace BL.Logic.DictionaryCore.DocumentType
         {
             try
             {
-                var dds = CommonDictionaryUtilities.DepartmentModifyToInternal(_context, Model);
+                var dp = CommonDictionaryUtilities.PositionModifyToInternal(_context, Model);
 
-                return _dictDb.AddDictionaryDepartment(_context, dds);
+                return _dictDb.AddPosition(_context, dp);
             }
             catch (Exception ex)
             {

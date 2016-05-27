@@ -5,7 +5,7 @@ using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.DictionaryCore.FilterModel;
 
-namespace BL.Logic.DictionaryCore.DocumentType
+namespace BL.Logic.DictionaryCore
 {
     public class ModifyDictionaryDocumentTypeCommand : BaseDictionaryCommand
     {
@@ -46,7 +46,7 @@ namespace BL.Logic.DictionaryCore.DocumentType
             {
                 var newDocType = new InternalDictionaryDocumentType(Model);
                 CommonDocumentUtilities.SetLastChange(_context, newDocType);
-                _dictDb.UpdateDictionaryDocumentType(_context, newDocType);
+                _dictDb.UpdateDocumentType(_context, newDocType);
             }
             catch (DictionaryRecordWasNotFound)
             {

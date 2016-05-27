@@ -1,10 +1,9 @@
-﻿using System;
-using BL.Database.Dictionaries.Interfaces;
-using BL.Logic.Common;
+﻿using BL.Logic.Common;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Exception;
-using BL.Model.SystemCore;
-namespace BL.Logic.DictionaryCore.AgentPerson
+using System;
+
+namespace BL.Logic.DictionaryCore
 {
     public class DeleteDictionaryAgentPersonCommand : BaseDictionaryCommand
     {
@@ -29,7 +28,7 @@ namespace BL.Logic.DictionaryCore.AgentPerson
         public override bool CanExecute()
         {
 
-            var agent = _dictDb.GetDictionaryAgent(_context, Model);
+            var agent = _dictDb.GetAgent(_context, Model);
             if (agent.IsEmployee )
             {
                 throw new DictionaryRecordCouldNotBeDeleted();
@@ -48,7 +47,7 @@ namespace BL.Logic.DictionaryCore.AgentPerson
                     Id = Model
 
                 };
-                _dictDb.DeleteDictionaryAgentPerson(_context, newPers);
+                _dictDb.DeleteAgentPerson(_context, newPers);
                 return null;
             }
             catch (Exception ex)

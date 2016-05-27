@@ -8,7 +8,7 @@ using BL.Model.Exception;
 using BL.Model.SystemCore;
 
 
-namespace BL.Logic.DictionaryCore.Tag
+namespace BL.Logic.DictionaryCore
 {
     public class ModifyDictionaryTagCommand : BaseDictionaryCommand
     {
@@ -48,7 +48,7 @@ namespace BL.Logic.DictionaryCore.Tag
             {
                 var item = new InternalDictionaryTag(Model);
                 CommonDocumentUtilities.SetLastChange(_context, item);
-                _dictDb.UpdateDictionaryTag(_context, item);
+                _dictDb.UpdateTag(_context, item);
             }
             catch (DictionaryRecordWasNotFound)
             {
