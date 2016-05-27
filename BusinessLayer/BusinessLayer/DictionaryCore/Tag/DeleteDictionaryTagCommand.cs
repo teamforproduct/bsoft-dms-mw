@@ -3,7 +3,7 @@ using BL.Logic.Common;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Exception;
 
-namespace BL.Logic.DictionaryCore.Tag
+namespace BL.Logic.DictionaryCore
 {
     public class DeleteDictionaryTagCommand : BaseDictionaryCommand
     {

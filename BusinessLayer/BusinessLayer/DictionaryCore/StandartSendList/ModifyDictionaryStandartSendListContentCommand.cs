@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 
-namespace BL.Logic.DictionaryCore.StandartSendList
+namespace BL.Logic.DictionaryCore
 {
     public class ModifyDictionaryStandartSendListContentCommand :BaseDictionaryCommand
     {

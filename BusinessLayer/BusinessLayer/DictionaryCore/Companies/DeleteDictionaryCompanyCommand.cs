@@ -1,14 +1,11 @@
-﻿using System;
-using BL.Database.Dictionaries.Interfaces;
-using BL.Logic.Common;
+﻿using BL.Logic.Common;
 using BL.Model.DictionaryCore.InternalModel;
-
 using BL.Model.Exception;
-using BL.Model.SystemCore;
+using System;
 
-namespace BL.Logic.DictionaryCore.DocumentType
+namespace BL.Logic.DictionaryCore
 {
-    public class DeleteDictionaryPositionCommand : BaseDictionaryCommand
+    public class DeleteDictionaryCompanyCommand : BaseDictionaryCommand
 
     {
       
@@ -24,7 +21,7 @@ namespace BL.Logic.DictionaryCore.DocumentType
             }
         }
 
-        public override bool CanBeDisplayed(int positionId)
+        public override bool CanBeDisplayed(int CompanyId)
         {
             return true;
         }
@@ -40,12 +37,12 @@ namespace BL.Logic.DictionaryCore.DocumentType
         {
             try
             {
-                var dd = new InternalDictionaryPosition
+                var dd = new InternalDictionaryCompany
                 {
                     Id = Model
 
                 };
-                _dictDb.DeletePosition(_context, dd);
+                _dictDb.DeleteCompany(_context, dd);
                 return null;
             }
             catch (Exception ex)

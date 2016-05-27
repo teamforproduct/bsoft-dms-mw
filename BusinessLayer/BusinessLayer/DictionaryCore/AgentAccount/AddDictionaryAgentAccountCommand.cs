@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 
-namespace BL.Logic.DictionaryCore.AgentAccount
+namespace BL.Logic.DictionaryCore
 {
     public class AddDictionaryAgentAccountCommand : BaseDictionaryCommand
     {

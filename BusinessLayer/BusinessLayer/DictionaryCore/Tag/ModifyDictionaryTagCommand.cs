@@ -8,7 +8,7 @@ using BL.Model.Exception;
 using BL.Model.SystemCore;
 
 
-namespace BL.Logic.DictionaryCore.Tag
+namespace BL.Logic.DictionaryCore
 {
     public class ModifyDictionaryTagCommand : BaseDictionaryCommand
     {

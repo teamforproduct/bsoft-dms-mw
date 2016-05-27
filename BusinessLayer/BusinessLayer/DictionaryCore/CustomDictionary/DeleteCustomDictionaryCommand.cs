@@ -2,7 +2,7 @@
 using BL.Logic.Common;
 using BL.Model.Exception;
 
-namespace BL.Logic.DictionaryCore.CustomDictionary
+namespace BL.Logic.DictionaryCore
 {
     public class DeleteCustomDictionaryCommand : BaseDictionaryCommand
     {

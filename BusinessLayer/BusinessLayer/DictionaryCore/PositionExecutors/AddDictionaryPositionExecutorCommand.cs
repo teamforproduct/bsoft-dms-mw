@@ -5,7 +5,7 @@ using BL.Model.Exception;
 using System;
 using System.Collections.Generic;
 
-namespace BL.Logic.DictionaryCore.DocumentType
+namespace BL.Logic.DictionaryCore
 {
     public class AddDictionaryPositionExecutorCommand : BaseDictionaryCommand
     {
@@ -32,13 +32,12 @@ namespace BL.Logic.DictionaryCore.DocumentType
 
             _admin.VerifyAccess(_context, CommandType, false);
 
-            // pss узнать какие поля не должны повторяться
-            //var fd = new FilterDictionaryPositionExecutor { NotContainsIDs = new List<int> { Model.Id } };
+            var fd = new FilterDictionaryPositionExecutor { PositionIDs = new List<int> { Model.PositionId }, AgentIDs = new List<int> { Model.AgentId }, StartDate = Model.StartDate };
 
-            //if (_dictDb.ExistsExecutor(_context, fd))
-            //{
-            //    throw new DictionaryRecordNotUnique();
-            //}
+            if (_dictDb.ExistsExecutor(_context, fd))
+            {
+                throw new DictionaryRecordNotUnique();
+            }
 
             return true;
         }

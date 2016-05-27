@@ -6,7 +6,7 @@ using BL.Model.Exception;
 using BL.Model.SystemCore;
 
 
-namespace BL.Logic.DictionaryCore.AgentEmployee
+namespace BL.Logic.DictionaryCore
 {
     class DeleteDictionaryAgentEmployeeCommand :BaseDictionaryCommand
     {

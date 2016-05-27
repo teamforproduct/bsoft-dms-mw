@@ -6,7 +6,7 @@ using BL.Model.Exception;
 using BL.Model.SystemCore;
 
 
-namespace BL.Logic.DictionaryCore.Contact
+namespace BL.Logic.DictionaryCore
 {
     public class DeleteDictionaryContactCommand : BaseDictionaryCommand
     {

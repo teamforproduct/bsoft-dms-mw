@@ -7,7 +7,7 @@ using BL.Model.Exception;
 using BL.Model.DictionaryCore.FilterModel;
 using System.Linq;
 
-namespace BL.Logic.DictionaryCore.Contact
+namespace BL.Logic.DictionaryCore
 {
     public class ModifyDictionaryContactCommand : BaseDictionaryCommand
     {

@@ -6,7 +6,7 @@ using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
 
-    namespace BL.Logic.DictionaryCore.Agent
+    namespace BL.Logic.DictionaryCore
 {
     public class DeleteDictionaryAgentCommand : BaseDictionaryCommand
     {

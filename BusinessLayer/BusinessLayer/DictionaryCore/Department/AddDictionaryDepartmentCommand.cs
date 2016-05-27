@@ -1,28 +1,25 @@
-﻿using System;
-using BL.Database.Dictionaries.Interfaces;
-using BL.Logic.Common;
+﻿using BL.Logic.Common;
+using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Exception;
-using BL.Model.DictionaryCore.FilterModel;
-using BL.Model.SystemCore;
+using System;
 using System.Collections.Generic;
 
-
-namespace BL.Logic.DictionaryCore.DocumentType
+namespace BL.Logic.DictionaryCore
 {
-    public class ModifyDictionaryPositionCommand : BaseDictionaryCommand
+    public class AddDictionaryDepartmentCommand : BaseDictionaryCommand
     {
 
-        private ModifyDictionaryPosition Model
+        private ModifyDictionaryDepartment Model
         {
             get
             {
-                if (!(_param is ModifyDictionaryPosition))
+                if (!(_param is ModifyDictionaryDepartment))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ModifyDictionaryPosition)_param;
+                return (ModifyDictionaryDepartment)_param;
             }
         }
 
@@ -36,15 +33,14 @@ namespace BL.Logic.DictionaryCore.DocumentType
 
             _admin.VerifyAccess(_context, CommandType, false);
 
-            var fdd = new FilterDictionaryPosition { Name = Model.Name, NotContainsIDs = new List<int> { Model.Id } };
+            var fdd = new FilterDictionaryDepartment { Name = Model.Name, NotContainsIDs = new List<int> { Model.Id } };
 
             if (Model.ParentId != null)
             {
                 fdd.ParentIDs = new List<int> { Model.ParentId.Value };
             }
-
             // Находим запись с таким-же именем в этой-же папке
-            if (_dictDb.ExistsPosition(_context, fdd))
+            if (_dictDb.ExistsDictionaryDepartment(_context, fdd))
             {
                 throw new DictionaryRecordNotUnique();
             }
@@ -56,19 +52,14 @@ namespace BL.Logic.DictionaryCore.DocumentType
         {
             try
             {
-                var dp = CommonDictionaryUtilities.PositionModifyToInternal(_context, Model);
+                var dds = CommonDictionaryUtilities.DepartmentModifyToInternal(_context, Model);
 
-                _dictDb.UpdatePosition(_context, dp);
-            }
-            catch (DictionaryRecordWasNotFound)
-            {
-                throw;
+                return _dictDb.AddDepartment(_context, dds);
             }
             catch (Exception ex)
             {
-                throw new DatabaseError(ex);
+                throw new DictionaryRecordCouldNotBeAdded(ex);
             }
-            return null;
         }
     }
 }

@@ -2,10 +2,7 @@
 using BL.Logic.AdminCore;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.DictionaryCore;
-using BL.Logic.DictionaryCore.CustomDictionary;
-using BL.Logic.DictionaryCore.DocumentType;
 using BL.Logic.DictionaryCore.Interfaces;
-using BL.Logic.DictionaryCore.Tag;
 using BL.Logic.DocumentCore;
 using BL.Logic.DocumentCore.AdditionalCommands;
 using BL.Logic.DocumentCore.Commands;

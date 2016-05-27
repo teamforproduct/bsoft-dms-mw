@@ -10,7 +10,7 @@ using BL.Model.SystemCore;
 using System.Linq;
 
 
-namespace BL.Logic.DictionaryCore.AgentBank
+namespace BL.Logic.DictionaryCore
 {
     public class AddDictionaryAgentBankCommand : BaseDictionaryCommand
     {

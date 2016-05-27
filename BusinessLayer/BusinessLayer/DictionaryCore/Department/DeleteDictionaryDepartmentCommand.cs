@@ -1,11 +1,14 @@
-﻿using BL.Logic.Common;
+﻿using System;
+using BL.Database.Dictionaries.Interfaces;
+using BL.Logic.Common;
 using BL.Model.DictionaryCore.InternalModel;
-using BL.Model.Exception;
-using System;
 
-namespace BL.Logic.DictionaryCore.DocumentType
+using BL.Model.Exception;
+using BL.Model.SystemCore;
+
+namespace BL.Logic.DictionaryCore
 {
-    public class DeleteDictionaryPositionExecutorCommand : BaseDictionaryCommand
+    public class DeleteDictionaryDepartmentCommand : BaseDictionaryCommand
 
     {
       
@@ -37,12 +40,12 @@ namespace BL.Logic.DictionaryCore.DocumentType
         {
             try
             {
-                var dd = new InternalDictionaryPositionExecutor
+                var dd = new InternalDictionaryDepartment
                 {
                     Id = Model
 
                 };
-                _dictDb.DeleteExecutor(_context, dd);
+                _dictDb.DeleteDepartment(_context, dd);
                 return null;
             }
             catch (Exception ex)

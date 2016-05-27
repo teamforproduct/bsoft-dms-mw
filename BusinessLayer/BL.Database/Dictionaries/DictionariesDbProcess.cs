@@ -3555,7 +3555,8 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context))
             {
-                var qry = dbContext.DictionaryCompaniesSet.AsQueryable();
+                
+                var qry = dbContext.DictionaryCompaniesSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
 
                 qry = CompanyGetWhere(ref qry, filter);
 

@@ -8,7 +8,7 @@ using BL.Model.Exception;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.SystemCore;
 
-namespace BL.Logic.DictionaryCore.DocumentType
+namespace BL.Logic.DictionaryCore
 {
     public class AddDictionaryAddressTypeCommand : BaseDictionaryCommand
     {

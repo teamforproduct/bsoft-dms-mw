@@ -1,14 +1,17 @@
-﻿using BL.Logic.Common;
-using BL.Model.DictionaryCore.FilterModel;
+﻿using System;
+using BL.Database.Dictionaries.Interfaces;
+using BL.Logic.Common;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Exception;
-using System;
+using BL.Model.DictionaryCore.FilterModel;
+using BL.Model.SystemCore;
 using System.Collections.Generic;
 
-namespace BL.Logic.DictionaryCore.DocumentType
+
+namespace BL.Logic.DictionaryCore
 {
-    public class AddDictionaryPositionCommand : BaseDictionaryCommand
+    public class ModifyDictionaryPositionCommand : BaseDictionaryCommand
     {
 
         private ModifyDictionaryPosition Model
@@ -39,6 +42,7 @@ namespace BL.Logic.DictionaryCore.DocumentType
             {
                 fdd.ParentIDs = new List<int> { Model.ParentId.Value };
             }
+
             // Находим запись с таким-же именем в этой-же папке
             if (_dictDb.ExistsPosition(_context, fdd))
             {
@@ -54,12 +58,17 @@ namespace BL.Logic.DictionaryCore.DocumentType
             {
                 var dp = CommonDictionaryUtilities.PositionModifyToInternal(_context, Model);
 
-                return _dictDb.AddPosition(_context, dp);
+                _dictDb.UpdatePosition(_context, dp);
+            }
+            catch (DictionaryRecordWasNotFound)
+            {
+                throw;
             }
             catch (Exception ex)
             {
-                throw new DictionaryRecordCouldNotBeAdded(ex);
+                throw new DatabaseError(ex);
             }
+            return null;
         }
     }
 }

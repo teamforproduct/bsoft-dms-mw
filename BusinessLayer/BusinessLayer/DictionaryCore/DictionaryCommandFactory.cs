@@ -1,19 +1,5 @@
 ﻿using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
-using BL.Logic.DependencyInjection;
-using BL.Logic.DictionaryCore.CustomDictionary;
-using BL.Logic.DictionaryCore.DocumentType;
-using BL.Logic.DictionaryCore.Contact;
-using BL.Logic.DictionaryCore.ContactType;
-using BL.Logic.DictionaryCore.AgentAdresses;
-using BL.Logic.DictionaryCore.AgentPerson;
-using BL.Logic.DictionaryCore.AgentBank;
-using BL.Logic.DictionaryCore.AgentCompany;
-using BL.Logic.DictionaryCore.AgentEmployee;
-using BL.Logic.DictionaryCore.Agent;
-using BL.Logic.DictionaryCore.AgentAccount;
-using BL.Logic.DictionaryCore.StandartSendList;
-using BL.Logic.DictionaryCore.Tag;
 using BL.Model.Enums;
 using BL.Model.Exception;
 

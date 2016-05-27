@@ -5,7 +5,7 @@ using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
 
-namespace BL.Logic.DictionaryCore.AgentAdresses
+namespace BL.Logic.DictionaryCore
 {
     public class DeleteDictionaryAgentAddressCommand : BaseDictionaryCommand
     {

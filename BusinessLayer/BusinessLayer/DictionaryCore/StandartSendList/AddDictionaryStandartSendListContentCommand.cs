@@ -8,7 +8,7 @@ using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.Enums;
 
 
-namespace BL.Logic.DictionaryCore.StandartSendList
+namespace BL.Logic.DictionaryCore
 {
     public class AddDictionaryStandartSendListContentCommand : BaseDictionaryCommand
     {

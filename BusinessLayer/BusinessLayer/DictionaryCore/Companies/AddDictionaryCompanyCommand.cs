@@ -1,17 +1,14 @@
-﻿using System;
-using BL.Database.Dictionaries.Interfaces;
-using BL.Logic.Common;
+﻿using BL.Logic.Common;
+using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Exception;
-using BL.Model.DictionaryCore.FilterModel;
-using BL.Model.SystemCore;
+using System;
 using System.Collections.Generic;
 
-
-namespace BL.Logic.DictionaryCore.DocumentType
+namespace BL.Logic.DictionaryCore
 {
-    public class ModifyDictionaryCompanyCommand : BaseDictionaryCommand
+    public class AddDictionaryCompanyCommand : BaseDictionaryCommand
     {
 
         private ModifyDictionaryCompany Model
@@ -52,17 +49,12 @@ namespace BL.Logic.DictionaryCore.DocumentType
             {
                 var dp = CommonDictionaryUtilities.CompanyModifyToInternal(_context, Model);
 
-                _dictDb.UpdateCompany(_context, dp);
-            }
-            catch (DictionaryRecordWasNotFound)
-            {
-                throw;
+                return _dictDb.AddCompany(_context, dp);
             }
             catch (Exception ex)
             {
-                throw new DatabaseError(ex);
+                throw new DictionaryRecordCouldNotBeAdded(ex);
             }
-            return null;
         }
     }
 }

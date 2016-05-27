@@ -1,10 +1,11 @@
 ﻿using BL.Logic.Common;
+using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.Exception;
 using System;
+using System.Collections.Generic;
 
-
-namespace BL.Logic.DictionaryCore.DocumentType
+namespace BL.Logic.DictionaryCore
 {
     public class ModifyDictionaryPositionExecutorCommand : BaseDictionaryCommand
     {
@@ -31,12 +32,12 @@ namespace BL.Logic.DictionaryCore.DocumentType
 
             _admin.VerifyAccess(_context, CommandType, false);
 
-            //var fd = new FilterDictionaryPositionExecutor {NotContainsIDs = new List<int> { Model.Id } };         
-            
-            //if (_dictDb.ExistsExecutor(_context, fd))
-            //{
-            //    throw new DictionaryRecordNotUnique();
-            //}
+            var fd = new FilterDictionaryPositionExecutor { NotContainsIDs = new List<int> { Model.Id }, PositionIDs = new List<int> { Model.PositionId }, AgentIDs = new List<int> { Model.AgentId }, StartDate = Model.StartDate };
+
+            if (_dictDb.ExistsExecutor(_context, fd))
+            {
+                throw new DictionaryRecordNotUnique();
+            }
 
             return true;
         }

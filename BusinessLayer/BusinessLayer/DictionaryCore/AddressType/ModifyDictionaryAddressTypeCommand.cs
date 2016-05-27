@@ -8,7 +8,7 @@ using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.SystemCore;
 using System.Collections.Generic;
 
-namespace BL.Logic.DictionaryCore.DocumentType
+namespace BL.Logic.DictionaryCore
 {
     public class ModifyDictionaryAddressTypeCommand : BaseDictionaryCommand
     {

@@ -6,7 +6,7 @@ using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
 
-namespace BL.Logic.DictionaryCore.DocumentType
+namespace BL.Logic.DictionaryCore
 {
     public class DeleteDictionaryDocumentSubjectCommand : BaseDictionaryCommand
 

@@ -7,7 +7,7 @@ using BL.Model.DictionaryCore.FilterModel;
 using System.Collections.Generic;
 
 
-namespace BL.Logic.DictionaryCore.Agent
+namespace BL.Logic.DictionaryCore
 {
     public class ModifyDictionaryAgentCommand : BaseDictionaryCommand
     {

@@ -6,7 +6,7 @@ using BL.Model.Exception;
 using System;
 using BaseDictionaryCommand = BL.Logic.Common.BaseDictionaryCommand;
 
-namespace BL.Logic.DictionaryCore.Tag
+namespace BL.Logic.DictionaryCore
 {
     public class AddDictionaryTagCommand : BaseDictionaryCommand
     {

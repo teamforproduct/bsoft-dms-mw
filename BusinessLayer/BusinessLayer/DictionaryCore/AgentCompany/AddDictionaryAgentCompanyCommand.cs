@@ -9,7 +9,7 @@ using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.SystemCore;
 using System.Linq;
 
-namespace BL.Logic.DictionaryCore.AgentCompany
+namespace BL.Logic.DictionaryCore
 {
     public class AddDictionaryAgentCompanyCommand : BaseDictionaryCommand
     {
