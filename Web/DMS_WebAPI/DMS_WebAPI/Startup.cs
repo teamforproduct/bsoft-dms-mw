@@ -22,13 +22,14 @@ namespace DMS_WebAPI
     {
         public void Configuration(IAppBuilder app)
         {
+            ApplicationDbContext.CreateDatabaseIfNotExists();
+
             ConfigureAuth(app);
 
+            //Database.SetInitializer(new CreateDatabaseIfNotExists<ApplicationDbContext>());
+            //var tt = Database.Exists("DefaultConnection");
+
             var dbProc = new WebAPIDbProcess();
-
-            Database.SetInitializer(new CreateDatabaseIfNotExists<ApplicationDbContext>());
-
-            //var tt = dbProc.CreateIfNotExistsLocalServer();
 
             var dbs = dbProc.GetServersByAdmin(new FilterAdminServers { ServerTypes = new List<DatabaseType> { DatabaseType.SQLServer } });
 

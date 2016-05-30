@@ -12,6 +12,9 @@ using BL.Model.Database;
 using DMS_WebAPI.DBModel;
 using System.Collections.Generic;
 using System.Data.Entity.ModelConfiguration.Conventions;
+using System.Configuration;
+using System.Data.SqlClient;
+using System;
 
 namespace DMS_WebAPI.Models
 {
@@ -34,11 +37,36 @@ namespace DMS_WebAPI.Models
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {
+            Database.SetInitializer<ApplicationDbContext>(new ApplicationDbInitializer());
         }
 
         public static ApplicationDbContext Create()
         {
             return new ApplicationDbContext();
+        }
+
+        public static void CreateDatabaseIfNotExists()
+        {
+            var isIncorrect = false;
+            using (var dbContext = new ApplicationDbContext())
+            {
+                try
+                {
+                    dbContext.Database.Connection.Open();   // check the database connection
+                }
+                catch
+                {
+                    isIncorrect = true;
+                }
+            }
+
+            if(isIncorrect)
+            {
+                using (var dbContext = new ApplicationDbContext())
+                {
+                    dbContext.Database.Delete();
+                }
+            }
         }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
