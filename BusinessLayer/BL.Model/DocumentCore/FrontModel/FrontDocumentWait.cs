@@ -15,7 +15,7 @@ namespace BL.Model.DocumentCore.FrontModel
         public DateTime? DueDate { get; set; }
         public DateTime? AttentionDate { get; set; }
         public string TargetDescription { get; set; }
-        public DateTime? TargetAttentionDate { get; set; }
+        //public DateTime? TargetAttentionDate { get; set; }
         public FrontDocumentEvent OnEvent { get; set; }
         public FrontDocumentEvent OffEvent { get; set; }
         public bool IsClosed { get; set; }

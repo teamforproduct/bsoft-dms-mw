@@ -32,6 +32,9 @@ namespace BL.Database.DBModel.Document
         public int AccessLevelId { get; set; }
         public bool IsInitial { get; set; }
         public bool IsAddControl { get; set; }
+        public Nullable<DateTime> SelfDueDate { get; set; }
+        public int? SelfDueDay { get; set; }
+        public Nullable<DateTime> SelfAttentionDate { get; set; }
         public bool IsAvailableWithinTask { get; set; }
         public Nullable<int> StartEventId { get; set; }
         public Nullable<int> CloseEventId { get; set; }

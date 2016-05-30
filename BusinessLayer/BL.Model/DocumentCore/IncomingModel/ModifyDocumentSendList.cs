@@ -55,6 +55,18 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// </summary>
         public bool IsAddControl { get; set; }
         /// <summary>
+        /// Срок для самоконтроля (дата)
+        /// </summary>
+        public Nullable<DateTime> SelfDueDate { get; set; }
+        /// <summary>
+        /// Срок для самоконтроля (дни)
+        /// </summary>
+        public int? SelfDueDay { get; set; }
+        /// <summary>
+        /// Дата постоянное внимание для самоконтроля
+        /// </sumпmary>
+        public Nullable<DateTime> SelfAttentionDate { get; set; }
+        /// <summary>
         /// Событие доступно в рамках задачи
         /// </summary>
         public bool IsAvailableWithinTask { get; set; }

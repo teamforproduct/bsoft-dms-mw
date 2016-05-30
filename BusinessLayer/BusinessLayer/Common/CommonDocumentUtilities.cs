@@ -46,13 +46,13 @@ namespace BL.Logic.Common
 
                 { EnumDocumentActions.SendForExecutionChange, new List<EnumEventTypes> { EnumEventTypes.SendForExecution, EnumEventTypes.SendForExecutionChange} },
 
-                { EnumDocumentActions.SendForControlChange, new List<EnumEventTypes> { EnumEventTypes.SendForControl, EnumEventTypes.SendForControlChange} },
+                //{ EnumDocumentActions.SendForControlChange, new List<EnumEventTypes> { EnumEventTypes.SendForControl, EnumEventTypes.SendForControlChange} },
 
-                { EnumDocumentActions.ControlTargetChange, new List<EnumEventTypes> { EnumEventTypes.ControlOn, EnumEventTypes.SendForControl, EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution,
-                                                                                      EnumEventTypes.ControlChange, EnumEventTypes.SendForControlChange, EnumEventTypes.SendForResponsibleExecutionChange, EnumEventTypes.SendForExecutionChange,
+                { EnumDocumentActions.ControlTargetChange, new List<EnumEventTypes> { EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution,
+                                                                                      EnumEventTypes.SendForResponsibleExecutionChange, EnumEventTypes.SendForExecutionChange,
                                                                                      } },
 
-                { EnumDocumentActions.ControlOff, new List<EnumEventTypes> { EnumEventTypes.ControlOn, EnumEventTypes.SendForControl, EnumEventTypes.ControlChange, EnumEventTypes.SendForControlChange } },
+                { EnumDocumentActions.ControlOff, new List<EnumEventTypes> { EnumEventTypes.ControlOn, EnumEventTypes.SendForControl, EnumEventTypes.ControlChange/*, EnumEventTypes.SendForControlChange*/ } },
 
                 { EnumDocumentActions.MarkExecution, new List<EnumEventTypes> { EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution, EnumEventTypes.SendForResponsibleExecutionChange, EnumEventTypes.SendForExecutionChange } },
                 { EnumDocumentActions.AcceptResult, new List<EnumEventTypes> { EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution, EnumEventTypes.SendForResponsibleExecutionChange, EnumEventTypes.SendForExecutionChange } },
@@ -287,19 +287,21 @@ namespace BL.Logic.Common
             };
         }
 
-        public static InternalDocumentWait GetNewDocumentWait(IContext context, InternalDocumentSendList sendListModel, EnumEventTypes? eventType = null, EnumEventCorrespondentType? eventCorrespondentType = null)
+        public static InternalDocumentWait GetNewDocumentWait(IContext context, InternalDocumentSendList sendListModel, EnumEventTypes eventType, EnumEventCorrespondentType? eventCorrespondentType = null)
         {
             return new InternalDocumentWait
             {
                 DocumentId = sendListModel.DocumentId,
-                DueDate = new[] { sendListModel.DueDate, (!sendListModel.DueDay.HasValue || sendListModel.DueDay.Value < 0) ? null : (DateTime?)DateTime.Now.AddDays(sendListModel.DueDay.Value) }.Max(),
-                //AttentionDate = sendListModel.AttentionDate,
+                DueDate = eventType == EnumEventTypes.ControlOn
+                            ? new[] { sendListModel.SelfDueDate, (!sendListModel.SelfDueDay.HasValue || sendListModel.SelfDueDay.Value < 0) ? null : (DateTime?)DateTime.Now.AddDays(sendListModel.SelfDueDay.Value) }.Max()
+                            : new[] { sendListModel.DueDate, (!sendListModel.DueDay.HasValue || sendListModel.DueDay.Value < 0) ? null : (DateTime?)DateTime.Now.AddDays(sendListModel.DueDay.Value) }.Max(),
+                AttentionDate = eventType == EnumEventTypes.ControlOn ? sendListModel.SelfAttentionDate : null,
                 LastChangeUserId = context.CurrentAgentId,
                 LastChangeDate = DateTime.Now,
-                OnEvent = eventType == null ? null :
+                OnEvent = //eventType == null ? null :
                             GetNewDocumentEvent
                             (
-                                context, sendListModel.DocumentId, eventType.Value, null, sendListModel.Description, sendListModel.TaskId, sendListModel.IsAvailableWithinTask,
+                                context, sendListModel.DocumentId, eventType, null, sendListModel.Description, sendListModel.TaskId, sendListModel.IsAvailableWithinTask,
                                 eventCorrespondentType == EnumEventCorrespondentType.FromSourceToSource ? sendListModel.SourcePositionId : sendListModel.TargetPositionId,
                                 null,
                                 eventCorrespondentType == EnumEventCorrespondentType.FromTargetToTarget ? sendListModel.TargetPositionId : sendListModel.SourcePositionId,
@@ -308,7 +310,7 @@ namespace BL.Logic.Common
             };
         }
 
-        public static IEnumerable<InternalDocumentWait> GetNewDocumentWaits(IContext context, InternalDocumentSendList sendListModel, EnumEventTypes? eventType = null, EnumEventCorrespondentType? eventCorrespondentType = null)
+        public static IEnumerable<InternalDocumentWait> GetNewDocumentWaits(IContext context, InternalDocumentSendList sendListModel, EnumEventTypes eventType, EnumEventCorrespondentType? eventCorrespondentType = null)
         {
             return new List<InternalDocumentWait>
             {
@@ -405,6 +407,9 @@ namespace BL.Logic.Common
                 IsInitial = model.IsInitial,
                 IsAvailableWithinTask = model.IsAvailableWithinTask,
                 IsAddControl = model.IsAddControl,
+                SelfDueDate = model.SelfDueDate,
+                SelfDueDay = model.SelfDueDay,
+                SelfAttentionDate = model.SelfAttentionDate,
                 LastChangeUserId = context.CurrentAgentId,
                 LastChangeDate = DateTime.Now,
 

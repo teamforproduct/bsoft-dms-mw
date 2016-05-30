@@ -30,6 +30,7 @@ namespace BL.Database.DBModel.Document
         //public string TaskName { get; set; }
         [MaxLength(2000)]
         public string Description { get; set; }
+        public string AddDescription { get; set; }
         public int? SourcePositionId { get; set; }
         public Nullable<int> SourcePositionExecutorAgentId { get; set; }
         public int? SourceAgentId { get; set; }

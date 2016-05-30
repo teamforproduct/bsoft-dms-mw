@@ -92,6 +92,9 @@ namespace BL.Logic.DocumentCore.SendListCommands
             _sendList.TaskId = taskId;
             _sendList.IsAvailableWithinTask = Model.IsAvailableWithinTask;
             _sendList.IsAddControl = Model.IsAddControl;
+            _sendList.SelfDueDate = Model.SelfDueDate;
+            _sendList.SelfDueDay = Model.SelfDueDay;
+            _sendList.SelfAttentionDate = Model.SelfAttentionDate;
 
             CommonDocumentUtilities.VerifySendLists(_document);
 

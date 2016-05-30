@@ -19,6 +19,9 @@ namespace BL.Model.DocumentCore.IncomingModel
 
         public int? TaskId { get; set; }
         public bool IsAddControl { get; set; }
+        public Nullable<DateTime> SelfDueDate { get; set; }
+        public int? SelfDueDay { get; set; }
+        public Nullable<DateTime> SelfAttentionDate { get; set; }
         public bool IsAvailableWithinTask { get; set; }
         public string Description { get; set; }
         public int Stage { get; set; }

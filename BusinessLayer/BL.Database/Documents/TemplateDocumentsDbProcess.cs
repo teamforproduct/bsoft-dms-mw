@@ -279,6 +279,9 @@ namespace BL.Database.Documents
                             SendTypeName = x.SendType.Name,
                             AccessLevelName = x.AccessLevel.Name,
                             IsAddControl = x.IsAddControl,
+                            SelfDueDate = x.SelfDueDate,
+                            SelfDueDay = x.SelfDueDay,
+                            SelfAttentionDate = x.SelfAttentionDate,
                             IsAvailableWithinTask = x.IsAvailableWithinTask
                         }).FirstOrDefault();
             }
@@ -293,6 +296,9 @@ namespace BL.Database.Documents
                     DocumentId = template.DocumentId,
                     Description = template.Description,
                     IsAddControl = template.IsAddControl,
+                    SelfDueDate = template.SelfDueDate,
+                    SelfDueDay = template.SelfDueDay,
+                    SelfAttentionDate = template.SelfAttentionDate,
                     IsAvailableWithinTask = template.IsAvailableWithinTask,
                     TargetPositionId = template.TargetPositionId,
                     AccessLevelId = (int)template.AccessLevel,

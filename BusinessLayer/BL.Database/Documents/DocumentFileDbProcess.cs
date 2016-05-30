@@ -225,6 +225,7 @@ namespace BL.Database.Documents
                     {
                         Id = x.Doc.Id,
                         ExecutorPositionId = x.Doc.ExecutorPositionId,
+                        IsRegistered = x.Doc.IsRegistered,
                         DocumentFiles = x.Doc.Files.GroupBy(y => new { y.DocumentId, y.OrderNumber })
                         .Select(y => y.OrderByDescending(z => z.Version).FirstOrDefault())
                         .Where(y => y != null)
@@ -291,6 +292,7 @@ namespace BL.Database.Documents
                     .Select(x => new InternalDocument
                     {
                         Id = x.Doc.Id,
+                        IsRegistered = x.Doc.IsRegistered,
                     }).FirstOrDefault();
                 if (doc == null) return null;
 

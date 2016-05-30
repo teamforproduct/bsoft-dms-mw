@@ -550,6 +550,7 @@ namespace BL.Database.SystemDb
                         EventId = x.Id,
                         Date = x.Date,
                         Description = x.Description,
+                        AddDescription = x.AddDescription,
                         DocumentId = x.DocumentId,
                         DocumentName = x.Document.Description,
                         EventType = (EnumEventTypes)x.EventTypeId,
@@ -632,10 +633,15 @@ namespace BL.Database.SystemDb
                     });
 
                 var res = dbContext.DocumentSendListsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId).Join(qry, s => s.DocumentId, q => q.DocId, (s, q) => new { sl = s, q })
-                    .Where(x => x.sl.Stage <= x.q.MinStage && !x.sl.StartEventId.HasValue).Select(x => x.sl.Id).ToList();
+                    .Where(x => x.sl.Stage <= x.q.MinStage && !x.sl.StartEventId.HasValue)
+                    .OrderBy(x=> new { x.sl.Stage, SendTypeId = x.sl.SendTypeId == (int)EnumSendTypes.SendForControl ? 0 : x.sl.SendTypeId })
+                    .Select(x => x.sl.Id).ToList();
 
-                res.AddRange(dbContext.DocumentSendListsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId).Where(x => !x.IsInitial && !x.CloseEventId.HasValue && x.Document.IsLaunchPlan
-                && !qry.Select(s => s.DocId).Contains(x.DocumentId)).Select(x => x.Id).ToList());
+                res.AddRange(dbContext.DocumentSendListsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId)
+                    .Where(x => !x.IsInitial && !x.CloseEventId.HasValue && x.Document.IsLaunchPlan
+                                && !qry.Select(s => s.DocId).Contains(x.DocumentId))
+                    .OrderBy(x => new { x.Stage, SendTypeId = x.SendTypeId == (int)EnumSendTypes.SendForControl ? 0 : x.SendTypeId })
+                    .Select(x => x.Id).ToList());
 
                 return res;
             }
@@ -699,7 +705,7 @@ namespace BL.Database.SystemDb
                          ItemType = EnumSearchObjectType.Event,
                          OperationType = EnumOperationType.AddNew,
                          ObjectId = x.Id,
-                         ObjectText = x.Description + " " + x.Task.Task + " "
+                         ObjectText = x.Description + " " + x.AddDescription + " " + x.Task.Task + " "
                                 + x.SourcePositionExecutorAgent.Name + " " + x.TargetPositionExecutorAgent.Name + " "
                                 + x.SourceAgent.Name + " " + x.TargetAgent.Name + " "
                      }).ToList()
@@ -790,7 +796,7 @@ namespace BL.Database.SystemDb
                          ItemType = (EnumSearchObjectType)x.ind.ObjectType,
                          OperationType = (EnumOperationType)x.ind.OperationType,
                          ObjectId = x.evt.Id,
-                         ObjectText = x.evt.Description + " " + x.evt.Task.Task + " "
+                         ObjectText = x.evt.Description + " " + x.evt.AddDescription + " " + x.evt.Task.Task + " "
                                 + x.evt.SourcePositionExecutorAgent.Name + " " + x.evt.TargetPositionExecutorAgent.Name + " "
                                 + x.evt.SourceAgent.Name + " " + x.evt.TargetAgent.Name + " "
                      }).ToList()

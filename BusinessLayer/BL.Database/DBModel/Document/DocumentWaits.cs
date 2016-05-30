@@ -22,7 +22,7 @@ namespace BL.Database.DBModel.Document
         public Nullable<DateTime> AttentionDate { get; set; }
         [MaxLength(2000)]
         public string TargetDescription { get; set; }
-        public Nullable<DateTime> TargetAttentionDate { get; set; }
+//        public Nullable<DateTime> TargetAttentionDate { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
         [ForeignKey("DocumentId")]

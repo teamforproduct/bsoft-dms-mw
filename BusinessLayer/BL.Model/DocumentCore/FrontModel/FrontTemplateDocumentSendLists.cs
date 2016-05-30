@@ -18,6 +18,10 @@ namespace BL.Model.DocumentCore.FrontModel
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
         public bool IsAddControl { get; set; }
+        public Nullable<DateTime> SelfDueDate { get; set; }
+        public int? SelfDueDay { get; set; }
+        public Nullable<DateTime> SelfAttentionDate { get; set; }
+
         public bool IsAvailableWithinTask { get; set; }
 
 
