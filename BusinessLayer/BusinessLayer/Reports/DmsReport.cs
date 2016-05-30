@@ -4,6 +4,7 @@ using BL.Model.Constants;
 using BL.Model.Reports.FrontModel;
 using CrystalDecisions.CrystalReports.Engine;
 using CrystalDecisions.Shared;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -44,7 +45,7 @@ namespace BL.Logic.Reports
                 {
                     ms.Write(buffer, 0, read);
                 }
-                res.FileContent = ms.ToArray();
+                res.FileContent = Convert.ToBase64String(ms.ToArray());
             }
 
             return res;
