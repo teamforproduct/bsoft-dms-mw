@@ -358,20 +358,13 @@ namespace BL.Database.Documents
                     dbContext.DocumentEventsSet.Add(eventDb);
                     dbContext.SaveChanges();
 
-                    var waitDb = new DocumentWaits
-                    {
-                        Id = wait.Id,
-                        TargetDescription = wait.TargetDescription,
-                        TargetAttentionDate = wait.TargetAttentionDate,
-                        LastChangeDate = wait.LastChangeDate,
-                        LastChangeUserId = wait.LastChangeUserId
-                    };
+                    var waitDb = ModelConverter.GetDbDocumentWait(wait);
                     dbContext.DocumentWaitsSet.Attach(waitDb);
                     var entry = dbContext.Entry(waitDb);
                     entry.Property(x => x.LastChangeDate).IsModified = true;
                     entry.Property(x => x.LastChangeUserId).IsModified = true;
                     entry.Property(x => x.TargetDescription).IsModified = true;
-                    entry.Property(x => x.TargetAttentionDate).IsModified = true;
+                    entry.Property(x => x.AttentionDate).IsModified = true;
                     dbContext.SaveChanges();
 
                     transaction.Complete();
@@ -496,6 +489,7 @@ namespace BL.Database.Documents
                                                 TaskId = x.OnEvent.TaskId,
                                                 IsAvailableWithinTask = x.OnEvent.IsAvailableWithinTask,
                                                 Description = x.OnEvent.Description,
+                                                //AddDescription = x.OnEvent.AddDescription,
                                                 EventType = (EnumEventTypes)x.OnEvent.EventTypeId,
                                                 CreateDate = x.OnEvent.CreateDate,
                                                 Date = x.OnEvent.Date,
@@ -532,7 +526,7 @@ namespace BL.Database.Documents
                                             OnEventId = x.OnEventId,
                                             OffEventId = x.OffEventId,
                                             TargetDescription = x.TargetDescription,
-                                            TargetAttentionDate = x.TargetAttentionDate,
+                                            AttentionDate = x.AttentionDate,
                                             OnEvent = new InternalDocumentEvent
                                             {
                                                 Id = x.OnEvent.Id,
@@ -785,6 +779,7 @@ namespace BL.Database.Documents
                     Date = x.Event.Date,
                     Task = x.Event.Task.Task,
                     Description = x.Event.Description,
+                    AddDescription = x.Event.AddDescription,
 
                     SourcePositionExecutorAgentName = x.Event.SourcePositionExecutorAgent.Name,
                     TargetPositionExecutorAgentName = x.Event.TargetPositionExecutorAgent.Name ?? x.Event.TargetAgent.Name,
@@ -1630,6 +1625,9 @@ namespace BL.Database.Documents
                     entry.Property(e => e.TaskId).IsModified = true;
                     entry.Property(e => e.IsAvailableWithinTask).IsModified = true;
                     entry.Property(e => e.IsAddControl).IsModified = true;
+                    entry.Property(e => e.SelfDueDate).IsModified = true;
+                    entry.Property(e => e.SelfDueDay).IsModified = true;
+                    entry.Property(e => e.SelfAttentionDate).IsModified = true;
                     entry.Property(e => e.IsInitial).IsModified = true;
                     entry.Property(e => e.Description).IsModified = true;
                     entry.Property(e => e.DueDate).IsModified = true;
@@ -1771,6 +1769,9 @@ namespace BL.Database.Documents
                                             TaskId = x.TaskId,
                                             IsAvailableWithinTask = x.IsAvailableWithinTask,
                                             IsAddControl = x.IsAddControl,
+                                            SelfDueDate = x.SelfDueDate,
+                                            SelfDueDay = x.SelfDueDay,
+                                            SelfAttentionDate = x.SelfAttentionDate,
                                             IsInitial = x.IsInitial,
                                             Description = x.Description,
                                             DueDay = x.DueDay,

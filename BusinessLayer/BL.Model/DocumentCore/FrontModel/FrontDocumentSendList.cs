@@ -39,6 +39,9 @@ namespace BL.Model.DocumentCore.FrontModel
         public string Task { get; set; }
         public bool? IsAvailableWithinTask { get; set; }
         public bool? IsAddControl { get; set; }
+
+
+
         public string AccessLevelName { get; set; }
 
         public FrontDocumentEvent StartEvent { get; set; }

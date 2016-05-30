@@ -32,7 +32,7 @@ namespace BL.Model.DocumentCore.FrontModel
         /// <summary>
         /// содержимое файла
         /// </summary>
-        public byte[] FileContent { get; set; }
+        public string FileContent { get; set; }
         /// <summary>
         /// Название файла без расширения
         /// </summary>

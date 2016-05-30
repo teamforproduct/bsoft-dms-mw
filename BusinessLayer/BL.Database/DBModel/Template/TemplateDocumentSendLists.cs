@@ -25,6 +25,9 @@ namespace BL.Database.DBModel.Template
         public int? DueDay { get; set; }
         public int AccessLevelId { get; set; }
         public bool IsAddControl { get; set; }
+        public Nullable<DateTime> SelfDueDate { get; set; }
+        public int? SelfDueDay { get; set; }
+        public Nullable<DateTime> SelfAttentionDate { get; set; }
         public bool IsAvailableWithinTask { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }

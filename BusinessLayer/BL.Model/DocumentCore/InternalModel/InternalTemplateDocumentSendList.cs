@@ -16,6 +16,11 @@ namespace BL.Model.DocumentCore.InternalModel
 
         public int? TaskId { get; set; }
         public bool IsAddControl { get; set; }
+
+        public Nullable<DateTime> SelfDueDate { get; set; }
+        public int? SelfDueDay { get; set; }
+        public Nullable<DateTime> SelfAttentionDate { get; set; }
+
         public bool IsAvailableWithinTask { get; set; }
         public string Description { get; set; }
         public int Stage { get; set; }
@@ -36,6 +41,11 @@ namespace BL.Model.DocumentCore.InternalModel
             this.TargetAgentId = list.TargetAgentId;
             this.TaskId = list.TaskId;
             this.IsAddControl = list.IsAddControl;
+
+            this.SelfDueDate = list.SelfDueDate;
+            this.SelfDueDay = list.SelfDueDay;
+            this.SelfAttentionDate = list.SelfAttentionDate;
+
             this.IsAvailableWithinTask = list.IsAvailableWithinTask;
             this.Description= list.Description;
             this.Stage = list.Stage;

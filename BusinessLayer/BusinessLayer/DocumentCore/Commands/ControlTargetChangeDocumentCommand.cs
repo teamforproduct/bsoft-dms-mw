@@ -70,7 +70,7 @@ namespace BL.Logic.DocumentCore.Commands
         {
             var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, _docWait.DocumentId, EnumEventTypes.ControlTargetChange, Model.EventDate, Model.TargetDescription, _docWait.OnEvent.TaskId, _docWait.OnEvent.IsAvailableWithinTask);
             _docWait.TargetDescription = Model.TargetDescription;
-            _docWait.TargetAttentionDate = Model.TargetAttentionDate;
+            _docWait.AttentionDate = Model.TargetAttentionDate;
             CommonDocumentUtilities.SetLastChange(_context, _docWait);
 
             _operationDb.ChangeTargetDocumentWait(_context, _docWait, newEvent);

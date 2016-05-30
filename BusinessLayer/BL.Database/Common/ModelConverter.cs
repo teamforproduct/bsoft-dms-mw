@@ -65,6 +65,7 @@ namespace BL.Database.Common
                     TaskId = evt.TaskId,
                     IsAvailableWithinTask = evt.IsAvailableWithinTask,
                     Description = evt.Description,
+                    AddDescription = evt.AddDescription,
                     Date = evt.Date,
                     CreateDate = evt.CreateDate,
                     DocumentId = evt.DocumentId,
@@ -145,6 +146,7 @@ namespace BL.Database.Common
             var waitDb = wait == null ? null :
                 new DocumentWaits
                 {
+                    Id = wait.Id,
                     AttentionDate = wait.AttentionDate,
                     DocumentId = wait.DocumentId,
                     DueDate = wait.DueDate,
@@ -157,6 +159,8 @@ namespace BL.Database.Common
                     ParentWait = GetDbDocumentWait(wait.ParentWait),
                     OnEvent = GetDbDocumentEvent(wait.OnEvent),
                     OffEvent = GetDbDocumentEvent(wait.OffEvent),
+                    TargetDescription = wait.TargetDescription,
+                    //TargetAttentionDate = wait.TargetAttentionDate,
                 };
             return waitDb;
         }
@@ -203,6 +207,10 @@ namespace BL.Database.Common
                     TaskId = sendList.TaskId,
                     IsAvailableWithinTask = sendList.IsAvailableWithinTask,
                     IsAddControl = sendList.IsAddControl,
+                    SelfDueDate = sendList.SelfDueDate,
+                    SelfDueDay = sendList.SelfDueDay,
+                    SelfAttentionDate = sendList.SelfAttentionDate,
+
                     Description = sendList.Description,
                     DueDate = sendList.DueDate,
                     DueDay = sendList.DueDay,
@@ -296,39 +304,6 @@ namespace BL.Database.Common
         public static IEnumerable<DocumentPapers> GetDbDocumentPapers(IEnumerable<InternalDocumentPaper> papers)
         {
             return papers?.Any() ?? false ? papers.Select(GetDbDocumentPaper) : null;
-        }
-
-        public static DocumentEvents GetDbDocumentPaperEvent111(InternalDocumentEvent evt)
-        {
-            return evt == null ? null :
-                new DocumentEvents
-                {
-                    Id = evt.Id,
-                    Description = evt.Description,
-                    PaperId = evt.PaperId,
-                    EventTypeId = (int)evt.EventType,
-                    LastChangeDate = evt.LastChangeDate,
-                    LastChangeUserId = evt.LastChangeUserId,
-                    TargetAgentId = evt.TargetAgentId,
-                    TargetPositionId = evt.TargetPositionId,
-                    TargetPositionExecutorAgentId = evt.TargetPositionExecutorAgentId,
-                    SourceAgentId = evt.SourceAgentId,
-                    SourcePositionId = evt.SourcePositionId,
-                    SourcePositionExecutorAgentId = evt.SourcePositionExecutorAgentId,
-                    PaperPlanAgentId = evt.PaperPlanAgentId,
-                    PaperPlanDate = evt.PaperPlanDate,
-                    PaperSendAgentId = evt.PaperSendAgentId,
-                    PaperSendDate = evt.PaperSendDate,
-                    PaperRecieveAgentId = evt.PaperRecieveAgentId,
-                    PaperRecieveDate = evt.PaperRecieveDate,
-                    SendListId = evt.SendListId,
-                    ParentEventId = evt.ParentEventId,
-                };
-        }
-
-        public static IEnumerable<DocumentEvents> GetDbDocumentPaperEvents111(IEnumerable<InternalDocumentEvent> evt)
-        {
-            return evt?.Any() ?? false ? evt.Select(GetDbDocumentPaperEvent111) : null;
         }
 
         public static DocumentPaperLists GetDbDocumentPaperList(InternalDocumentPaperList item)

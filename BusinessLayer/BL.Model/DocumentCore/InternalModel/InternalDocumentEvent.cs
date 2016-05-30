@@ -15,6 +15,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public int? TaskId { get; set; }
         public bool IsAvailableWithinTask { get; set; }
         public string Description { get; set; }
+        public string AddDescription { get; set; }
         public int? SourcePositionId { get; set; }
         public int? SourcePositionExecutorAgentId { get; set; }
         public int? SourceAgentId { get; set; }

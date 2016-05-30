@@ -26,6 +26,10 @@ namespace BL.Model.DocumentCore.InternalModel
         public bool IsAvailableWithinTask { get; set; }
         public bool IsAddControl { get; set; }
 
+        public Nullable<DateTime> SelfDueDate { get; set; }
+        public int? SelfDueDay { get; set; }
+        public Nullable<DateTime> SelfAttentionDate { get; set; }
+
         public string Description { get; set; }
         public DateTime? DueDate { get; set; }
         public int? DueDay { get; set; }

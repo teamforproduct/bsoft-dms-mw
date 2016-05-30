@@ -40,7 +40,7 @@ namespace BL.Logic.DocumentCore.Commands
                         x.OnEvent.SourcePositionId == positionId &&
                         x.OffEventId == null &&
                         CommonDocumentUtilities.PermissibleEventTypesForAction[CommandType].Contains(x.OnEvent.EventType))
-                        .Select( x=>new InternalActionRecord
+                        .Select(x => new InternalActionRecord
                         {
                             EventId = x.OnEvent.Id,
                             WaitId = x.Id
@@ -56,7 +56,7 @@ namespace BL.Logic.DocumentCore.Commands
         {
             _document = _operationDb.ControlChangeDocumentPrepare(_context, Model.EventId);
             _docWait = _document?.Waits?.FirstOrDefault();
-            if (_docWait?.OnEvent?.SourcePositionId == null 
+            if (_docWait?.OnEvent?.SourcePositionId == null
                 || !CanBeDisplayed(_docWait.OnEvent.SourcePositionId.Value)
                 )
             {
@@ -69,30 +69,37 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override object Execute()
         {
-            var controlOn = new ControlOn(Model, _docWait.DocumentId);
-            var newWait = CommonDocumentUtilities.GetNewDocumentWait(_context, controlOn);
-            newWait.Id = _docWait.Id;
-            newWait.TargetDescription = _docWait.TargetDescription;
-            newWait.TargetAttentionDate = _docWait.TargetAttentionDate;
+            var addDescripton = Model.DueDate != _docWait.DueDate ? "контрольный срок"+"," : ""
+                                + Model.Description != _docWait.OnEvent.Description ? "формулировка задачи"+"," : ""
+                                + (_eventType == EnumEventTypes.ControlChange && Model.AttentionDate != _docWait.AttentionDate ? "дата постоянного внимания"+"," : "");
+            if (!string.IsNullOrEmpty(addDescripton))
+            {
+                var controlOn = new ControlOn(Model, _docWait.DocumentId);
+                var newWait = CommonDocumentUtilities.GetNewDocumentWait(_context, controlOn);
+                newWait.Id = _docWait.Id;
+                newWait.TargetDescription = _docWait.TargetDescription;
+                newWait.AttentionDate = _eventType == EnumEventTypes.ControlChange ? Model.AttentionDate : _docWait.AttentionDate;
 
-            var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, _docWait.DocumentId, _eventType, Model.EventDate, Model.Description, _docWait.OnEvent.TaskId, _docWait.OnEvent.IsAvailableWithinTask, _docWait.OnEvent.TargetPositionId);
-            var oldEvent = _docWait.OnEvent;
+                var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, _docWait.DocumentId, _eventType, Model.EventDate, Model.Description, _docWait.OnEvent.TaskId, _docWait.OnEvent.IsAvailableWithinTask, _docWait.OnEvent.TargetPositionId);
+                newEvent.AddDescription = addDescripton.Remove(addDescripton.Length-1);
+                var oldEvent = _docWait.OnEvent;
 
-            newEvent.Id = newWait.OnEventId = oldEvent.Id;
+                newEvent.Id = newWait.OnEventId = oldEvent.Id;
 
-            newWait.OnEvent = newEvent;
-            newWait.ParentWait = _docWait;
+                newWait.OnEvent = newEvent;
+                newWait.ParentWait = _docWait;
 
-            _docWait.Id = 0;
-            _docWait.ResultTypeId = (int)EnumResultTypes.CloseByChanging;
-            oldEvent.Id = _docWait.OnEventId = 0;
-            _docWait.OffEventId = newEvent.Id;
+                _docWait.Id = 0;
+                _docWait.ResultTypeId = (int)EnumResultTypes.CloseByChanging;
+                oldEvent.Id = _docWait.OnEventId = 0;
+                _docWait.OffEventId = newEvent.Id;
 
-            CommonDocumentUtilities.SetLastChange(_context, _docWait);
+                CommonDocumentUtilities.SetLastChange(_context, _docWait);
 
-            //var waits = new List<InternalDocumentWait> { newWait };
+                //var waits = new List<InternalDocumentWait> { newWait };
 
-            _operationDb.ChangeDocumentWait(_context, newWait);
+                _operationDb.ChangeDocumentWait(_context, newWait);
+            }
             return _docWait.DocumentId;
         }
 

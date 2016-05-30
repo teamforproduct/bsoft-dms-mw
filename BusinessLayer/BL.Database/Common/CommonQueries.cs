@@ -330,7 +330,7 @@ namespace BL.Database.Common
                             .Select(x => x.FirstOrDefault())
                             .AsQueryable();
 
-            var eventTypeIds = new List<int> { (int)EnumEventTypes.SendForControl, (int)EnumEventTypes.SendForControlChange, (int)EnumEventTypes.SendForResponsibleExecution, (int)EnumEventTypes.SendForResponsibleExecutionChange };
+            var eventTypeIds = new List<int> { /*(int)EnumEventTypes.SendForControl, (int)EnumEventTypes.SendForControlChange,*/ (int)EnumEventTypes.SendForResponsibleExecution, (int)EnumEventTypes.SendForResponsibleExecutionChange };
             var eventDb = dbContext.DocumentWaitsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId)
                             .Where(x => !x.OffEventId.HasValue)
                             .Select(x => x.OnEvent)
@@ -439,7 +439,7 @@ namespace BL.Database.Common
 
             var waitsRes = waitsDb
                 .Select(x => new { Wait = x, x.OnEvent, x.OffEvent })
-                .OrderBy(x => new { x.Wait.DueDate,x.OnEvent.Date} )
+                .OrderBy(x => new { DueDate = x.Wait.DueDate??DateTime.MaxValue,x.OnEvent.Date} )
                 .AsQueryable();
 
             if (paging != null)
@@ -463,7 +463,7 @@ namespace BL.Database.Common
                 DueDate = x.Wait.DueDate,
                 AttentionDate = x.Wait.AttentionDate,
                 TargetDescription = x.Wait.TargetDescription,
-                TargetAttentionDate = x.Wait.TargetAttentionDate,
+                //TargetAttentionDate = x.Wait.TargetAttentionDate,
                 IsClosed = x.OffEvent != null,
                 DocumentDate = x.Wait.Document.RegistrationDate ?? x.Wait.Document.CreateDate,
 
@@ -483,6 +483,7 @@ namespace BL.Database.Common
                         DocumentId = x.OnEvent.DocumentId,
                         Task = x.OnEvent.Task.Task,
                         Description = x.OnEvent.Description,
+                        AddDescription = x.OnEvent.AddDescription,
                         EventType = x.OnEvent.EventTypeId,
                         EventTypeName = x.OnEvent.EventType.WaitDescription/*?? x.OnEvent.EventType.Name*/,
                         Date = x.OnEvent.Date,
@@ -509,6 +510,7 @@ namespace BL.Database.Common
                         DocumentId = x.OffEvent.DocumentId,
                         Task = null,
                         Description = x.OffEvent.Description,
+                        AddDescription = x.OffEvent.AddDescription,
                         EventType = x.OffEvent.EventTypeId,
                         EventTypeName = x.OffEvent.EventType.Name,
                         Date = x.OffEvent.Date,
@@ -608,6 +610,7 @@ namespace BL.Database.Common
                         Date = x.SendEvent.Date,
                         SourcePositionExecutorAgentName = x.SendEvent.SourcePositionExecutorAgent.Name,
                         Description = x.SendEvent.Description,
+                        AddDescription = x.SendEvent.AddDescription,
                         ReadAgentName = x.SendEvent.ReadAgent.Name,
                         ReadDate = x.SendEvent.ReadDate,
                         SourceAgentName = x.SendEvent.SourceAgent.Name,
@@ -631,6 +634,7 @@ namespace BL.Database.Common
                         Date = x.DoneEvent.Date,
                         SourcePositionExecutorAgentName = null,
                         Description = x.DoneEvent.Description,
+                        AddDescription = x.DoneEvent.AddDescription,
 
 
                         ReadAgentName = x.SendEvent.ReadAgent.Name,
@@ -974,6 +978,9 @@ namespace BL.Database.Common
                 Task = y.Task.Task,
                 IsAvailableWithinTask = y.IsAvailableWithinTask,
                 IsAddControl = y.IsAddControl,
+                SelfDueDate = y.SelfDueDate,
+                SelfDueDay = y.SelfDueDay,
+                SelfAttentionDate = y.SelfAttentionDate,
                 Description = y.Description,
                 DueDate = y.DueDate,
                 DueDay = y.DueDay,
@@ -1007,6 +1014,7 @@ namespace BL.Database.Common
                                             SourcePositionExecutorAgentName = y.StartEvent.SourcePositionExecutorAgent.Name,
                                             TargetPositionExecutorAgentName = y.StartEvent.TargetPositionExecutorAgent.Name ?? y.StartEvent.TargetAgent.Name,
                                             Description = y.StartEvent.Description,
+                                            AddDescription = y.StartEvent.AddDescription,
                                         },
                 CloseEvent = y.CloseEvent == null || y.StartEventId == y.CloseEventId
                                         ? null
@@ -1018,6 +1026,7 @@ namespace BL.Database.Common
                                             SourcePositionExecutorAgentName = y.CloseEvent.SourcePositionExecutorAgent.Name,
                                             TargetPositionExecutorAgentName = y.CloseEvent.TargetPositionExecutorAgent.Name ?? y.StartEvent.TargetAgent.Name,
                                             Description = y.CloseEvent.Description,
+                                            AddDescription = y.CloseEvent.AddDescription,
                                         },
             }).ToList();
             return res;
@@ -1280,6 +1289,8 @@ namespace BL.Database.Common
             var document = CommonQueries.GetDocumentHashPrepare(dbContext, ctx, documentId);
             document.Subscriptions = subscriptions;
 
+            var IsFilesIncorrect = false;
+
             if (isFull || isAddSubscription)
             {
                 var fs = DmsResolver.Current.Get<IFileStore>();
@@ -1288,7 +1299,8 @@ namespace BL.Database.Common
                     if (!fs.IsFileCorrect(ctx, file))
                     {
                         //TODO
-                        throw new DocumentFileWasChangedExternally();
+                        IsFilesIncorrect = true;
+                        //throw new DocumentFileWasChangedExternally();
                     }
                 }
             }
@@ -1305,8 +1317,8 @@ namespace BL.Database.Common
                 StringComparer comparer = StringComparer.OrdinalIgnoreCase;
                 foreach (var subscription in subscriptions)
                 {
-                    if (VerifyDocumentHash(subscription.Hash, document) ||
-                        ((isFull || isAddSubscription) && VerifyDocumentHash(subscription.FullHash, document, true)))
+                    if (IsFilesIncorrect || !VerifyDocumentHash(subscription.Hash, document) ||
+                        ((isFull || isAddSubscription) && !VerifyDocumentHash(subscription.FullHash, document, true)))
                     {
                         var subscriptionDb = new DocumentSubscriptions
                         {
@@ -1352,6 +1364,11 @@ namespace BL.Database.Common
                         //dbContext.DocumentEventsSet.Add(eventDb);
                     }
                 }
+            }
+
+            if (IsFilesIncorrect)
+            {
+                throw new DocumentFileWasChangedExternally();
             }
 
             return document;

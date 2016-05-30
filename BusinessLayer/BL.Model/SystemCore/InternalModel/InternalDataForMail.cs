@@ -22,6 +22,7 @@ namespace BL.Model.SystemCore
         public string DestinationAgentEmail { get; set; }
         public DateTime Date { get; set; }
         public string Description { get; set; }
+        public string AddDescription { get; set; }
         public EnumEventTypes EventType { get; set; }
         public bool WasUpdated { get; set; }
     }
