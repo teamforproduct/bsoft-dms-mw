@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 
-namespace BL.Logic.DictionaryCore.AgentAccount
+namespace BL.Logic.DictionaryCore
 {
     public class AddDictionaryAgentAccountCommand : BaseDictionaryCommand
     {
@@ -32,7 +32,7 @@ namespace BL.Logic.DictionaryCore.AgentAccount
         public override bool CanExecute()
         {
             _admin.VerifyAccess(_context, CommandType, false);
-            var spr = _dictDb.GetDictionaryAgentAccounts(_context, Model.AgentId, new FilterDictionaryAgentAccount
+            var spr = _dictDb.GetAgentAccounts(_context, Model.AgentId, new FilterDictionaryAgentAccount
             {
                 AgentBankId=Model.AgentBankId,
                 AccountNumber=Model.AccountNumber
@@ -52,7 +52,7 @@ namespace BL.Logic.DictionaryCore.AgentAccount
             {
                 var newAccount = new InternalDictionaryAgentAccount(Model);
                 CommonDocumentUtilities.SetLastChange(_context, newAccount);
-                return _dictDb.AddDictionaryAgentAccount(_context, newAccount);
+                return _dictDb.AddAgentAccount(_context, newAccount);
             }
             catch (Exception ex)
             {

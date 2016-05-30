@@ -11,6 +11,6 @@ namespace BL.Model.Reports.FrontModel
         /// <summary>
         /// содержимое файла
         /// </summary>
-        public byte[] FileContent { get; set; }
+        public string FileContent { get; set; }
     }
 }

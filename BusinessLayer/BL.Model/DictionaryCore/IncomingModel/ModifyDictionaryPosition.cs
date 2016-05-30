@@ -48,7 +48,5 @@ namespace BL.Model.DictionaryCore.IncomingModel
 
         public int? MainExecutorAgentId { get; set; }
 
-        // !!! После добавления полей внеси изменения в BL.Logic.Common.CommonDictionaryUtilities.PositionModifyToInternal
-
     }
 }

@@ -27,10 +27,12 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// индекс
         /// </summary>
         public string PostCode { get; set; }
+        public string PostCodeExact { get; set; }
         /// <summary>
         /// адрес
         /// </summary>
         public string Address { get; set; }
-    
+        public string AddressExact { get; set; }
+
     }
 }

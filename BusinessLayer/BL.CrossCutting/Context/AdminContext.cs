@@ -58,7 +58,8 @@ namespace BL.CrossCutting.Context
                 CurrentEmployee = new Employee
                 {
                     Name = "System user",
-                    AgentId = (int)EnumSystemUsers.AdminUser
+                    AgentId = (int)EnumSystemUsers.AdminUser,
+                    ClientId = ctx.CurrentClientId
                 };
             }
         }
@@ -71,15 +72,9 @@ namespace BL.CrossCutting.Context
         }
         public DatabaseModel CurrentDB { get; set; }
 
-        public int CurrentPositionId
-        {
-            get { return _currentPositionId ?? 0; }
-        }
+        public int CurrentPositionId => _currentPositionId ?? 0;
 
-        public int CurrentAgentId
-        {
-            get { return (int)EnumSystemUsers.AdminUser; }
-        }
+        public int CurrentAgentId => (int)EnumSystemUsers.AdminUser;
 
         public void SetCurrentPosition(int? position)
         {

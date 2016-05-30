@@ -5,7 +5,7 @@ using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
 
-namespace BL.Logic.DictionaryCore.AgentBank
+namespace BL.Logic.DictionaryCore
 {
     public class DeleteDictionaryAgentBankCommand : BaseDictionaryCommand
     {
@@ -43,7 +43,7 @@ namespace BL.Logic.DictionaryCore.AgentBank
                     Id = Model
 
                 };
-                _dictDb.DeleteDictionaryAgentBank(_context, newBank);
+                _dictDb.DeleteAgentBank(_context, newBank);
                 return null;
             }
             catch (Exception ex)

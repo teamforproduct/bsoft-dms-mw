@@ -11,6 +11,8 @@ using Owin;
 using BL.Logic.SystemServices.ClearTrashDocuments;
 using BL.Model.WebAPI.Filters;
 using System.Collections.Generic;
+using System.Data.Entity;
+using DMS_WebAPI.Models;
 
 [assembly: OwinStartup(typeof(DMS_WebAPI.Startup))]
 
@@ -23,6 +25,11 @@ namespace DMS_WebAPI
             ConfigureAuth(app);
 
             var dbProc = new WebAPIDbProcess();
+
+            Database.SetInitializer(new CreateDatabaseIfNotExists<ApplicationDbContext>());
+
+            //var tt = dbProc.CreateIfNotExistsLocalServer();
+
             var dbs = dbProc.GetServersByAdmin(new FilterAdminServers { ServerTypes = new List<DatabaseType> { DatabaseType.SQLServer } });
 
             //foreach (var srv in DmsResolver.Current.GetAll<ISystemWorkerService>())

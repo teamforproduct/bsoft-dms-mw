@@ -31,6 +31,15 @@ namespace DMS_WebAPI.Controllers.WebAPI
             var itemId = dbProc.AddUserClient(model);
             return Get(itemId);
         }
+        [Route("AddFirstAdmin")]
+        [HttpPost]
+        [AllowAnonymous]
+        public IHttpActionResult PostAddFirstAdmin(AddFirstAdminClient model)
+        {
+            var dbProc = new WebAPIDbProcess();
+            var itemId = dbProc.AddFirstAdminClient(model);
+            return Get(itemId);
+        }
         public IHttpActionResult Delete(int id)
         {
             var dbProc = new WebAPIDbProcess();

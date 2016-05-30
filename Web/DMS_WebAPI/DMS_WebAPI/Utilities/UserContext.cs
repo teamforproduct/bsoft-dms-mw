@@ -8,6 +8,7 @@ using BL.Model.Exception;
 using System.Linq;
 using BL.CrossCutting.Context;
 using BL.CrossCutting.DependencyInjection;
+using BL.Model.WebAPI.FrontModel;
 
 namespace DMS_WebAPI.Utilities
 {
@@ -63,7 +64,7 @@ namespace DMS_WebAPI.Utilities
             {
                 var ctx = (IContext)contextValue.StoreObject;
 
-                VerifyNumberOfConnections(ctx);
+                VerifyNumberOfConnections(ctx, ctx.CurrentClientId);
 
                 contextValue.LastUsage = DateTime.Now;
 
@@ -165,14 +166,14 @@ namespace DMS_WebAPI.Utilities
 
             var context = (IContext)contextValue.StoreObject;
 
-            context.CurrentClientId = clientId;
-
             var dbProc = new WebAPIDbProcess();
-            context.ClientLicence = dbProc.GetClientLicenceActive(context.CurrentClientId);
+            context.ClientLicence = dbProc.GetClientLicenceActive(clientId);
 
-            VerifyNumberOfConnections(context, true);
+            VerifyNumberOfConnections(context, clientId, true);
 
             contextValue.LastUsage = DateTime.Now;
+
+            context.CurrentClientId = clientId;
 
             context.CurrentDB = db;
 
@@ -189,6 +190,34 @@ namespace DMS_WebAPI.Utilities
                 throw new AccessIsDenied();
             }
 
+        }
+
+        /// <summary>
+        /// Set client
+        /// </summary>
+        /// <param name="client">new client parameters</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
+        public void Set(FrontAspNetClient client)
+        {
+            string token = Token.ToLower();
+            if (!_casheContexts.ContainsKey(token))
+            {
+                throw new UserUnauthorized();
+            }
+
+            var contextValue = _casheContexts[token];
+
+            var context = (IContext)contextValue.StoreObject;
+
+            var dbProc = new WebAPIDbProcess();
+            context.ClientLicence = dbProc.GetClientLicenceActive(client.Id);
+
+            VerifyNumberOfConnections(context, client.Id, true);
+
+            contextValue.LastUsage = DateTime.Now;
+
+            context.CurrentClientId = client.Id;
         }
 
         private void Save(IContext val)
@@ -210,10 +239,9 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        public void VerifyNumberOfConnections(IContext context, bool isAddNew = false)
+        public void VerifyNumberOfConnections(IContext context,int clientId, bool isAddNew = false)
         {
-            if (context.CurrentClientId <= 0) return;
-            var clientId = context.CurrentClientId;
+            if (clientId <= 0) return;
 
             var si = new SystemInfo();
 
@@ -230,10 +258,17 @@ namespace DMS_WebAPI.Utilities
             if (lic.IsConcurenteLicence)
             {
                 var now = DateTime.Now.AddMinutes(-5);
-                var count = _casheContexts
+                var qry = _casheContexts
                     .Where(x => x.Value.LastUsage > now)
                     .Select(x => (IContext)x.Value.StoreObject)
-                    .Count(x => x.CurrentClientId == clientId);
+                    .Where(x => x.CurrentClientId == clientId);
+
+                if (isAddNew)
+                {
+                    qry = qry.Where(x => x.CurrentEmployee.Token != context.CurrentEmployee.Token);
+                }
+
+                var count = qry.Count();
 
                 if (isAddNew) count++;
 

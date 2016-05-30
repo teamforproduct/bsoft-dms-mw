@@ -9,20 +9,20 @@ using BL.Model.SystemCore;
 using System.Collections.Generic;
 
 
-namespace BL.Logic.DictionaryCore.DocumentType
+namespace BL.Logic.DictionaryCore
 {
-    public class ModifyDictionaryPositionCommand : BaseDictionaryCommand
+    public class ModifyDictionaryDepartmentCommand : BaseDictionaryCommand
     {
 
-        private ModifyDictionaryPosition Model
+        private ModifyDictionaryDepartment Model
         {
             get
             {
-                if (!(_param is ModifyDictionaryPosition))
+                if (!(_param is ModifyDictionaryDepartment))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ModifyDictionaryPosition)_param;
+                return (ModifyDictionaryDepartment)_param;
             }
         }
 
@@ -36,7 +36,7 @@ namespace BL.Logic.DictionaryCore.DocumentType
 
             _admin.VerifyAccess(_context, CommandType, false);
 
-            var fdd = new FilterDictionaryPosition { Name = Model.Name, NotContainsIDs = new List<int> { Model.Id } };
+            var fdd = new FilterDictionaryDepartment { Name = Model.Name, NotContainsIDs = new List<int> { Model.Id } };
 
             if (Model.ParentId != null)
             {
@@ -44,7 +44,7 @@ namespace BL.Logic.DictionaryCore.DocumentType
             }
 
             // Находим запись с таким-же именем в этой-же папке
-            if (_dictDb.ExistsPosition(_context, fdd))
+            if (_dictDb.ExistsDictionaryDepartment(_context, fdd))
             {
                 throw new DictionaryRecordNotUnique();
             }
@@ -52,13 +52,14 @@ namespace BL.Logic.DictionaryCore.DocumentType
             return true;
         }
 
+
         public override object Execute()
         {
             try
             {
-                var dp = CommonDictionaryUtilities.PositionModifyToInternal(_context, Model);
+                var dds = CommonDictionaryUtilities.DepartmentModifyToInternal(_context, Model);
 
-                _dictDb.UpdatePosition(_context, dp);
+                _dictDb.UpdateDepartment(_context, dds);
             }
             catch (DictionaryRecordWasNotFound)
             {

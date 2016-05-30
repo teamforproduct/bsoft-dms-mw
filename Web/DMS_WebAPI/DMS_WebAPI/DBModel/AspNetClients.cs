@@ -19,6 +19,9 @@ namespace DMS_WebAPI.DBModel
         [MaxLength(2000)]
         public string Code { get; set; }
 
+        [MaxLength(2000)]
+        public string VerificationCode { get; set; }
+
         public virtual ICollection<AspNetClientServers> ClientServers { get; set; }
         public virtual ICollection<AspNetClientLicences> Licences { get; set; }
         public virtual ICollection<AspNetUserServers> UserServers { get; set; }

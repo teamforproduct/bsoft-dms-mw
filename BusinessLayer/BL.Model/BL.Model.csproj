@@ -66,6 +66,9 @@
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryAgentEmployee.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryContact.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryContactType.cs" />
+    <Compile Include="DictionaryCore\FilterModel\FilterDictionaryCompany.cs" />
+    <Compile Include="DictionaryCore\FilterModel\FilterDictionaryPositionExecutorType.cs" />
+    <Compile Include="DictionaryCore\FilterModel\FilterDictionaryPositionExecutor.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontCustomDictionary.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontCustomDictionaryType.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAddressType.cs" />
@@ -73,6 +76,9 @@
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentBank.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentCompany.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryDepartment.cs" />
+    <Compile Include="DictionaryCore\FrontModel\FrontDictionaryCompany.cs" />
+    <Compile Include="DictionaryCore\FrontModel\FrontDictionaryPositionExecutorType.cs" />
+    <Compile Include="DictionaryCore\FrontModel\FrontDictionaryPositionExecutor.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryPosition.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryRegistrationJournal.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentEmployee.cs" />
@@ -92,6 +98,9 @@
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentBank.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentCompany.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentEmployee.cs" />
+    <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryCompany.cs" />
+    <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryPositionExecutorType.cs" />
+    <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryPositionExecutor.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryPosition.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryDepartment.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryRegistrationJournal.cs" />
@@ -110,6 +119,9 @@
     <Compile Include="AdminCore\FilterAdminUserRole.cs" />
     <Compile Include="AdminCore\FilterAdminAccessLevel.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalCustomDictionaryType.cs" />
+    <Compile Include="DictionaryCore\InternalModel\InternalDictionaryCompany.cs" />
+    <Compile Include="DictionaryCore\InternalModel\InternalDictionaryPositionExecutorType.cs" />
+    <Compile Include="DictionaryCore\InternalModel\InternalDictionaryPositionExecutor.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryStandartSendList.cs" />
     <Compile Include="DocumentCore\Actions\ChangePosition.cs" />
     <Compile Include="DocumentCore\Actions\ControlTargetChange.cs" />
@@ -361,6 +373,8 @@
     <Compile Include="WebAPI\FrontModel\FrontAspNetUserServer.cs" />
     <Compile Include="WebAPI\IncomingModel\AddAspNetClient.cs" />
     <Compile Include="WebAPI\IncomingModel\ModifyAspNetClient.cs" />
+    <Compile Include="WebAPI\IncomingModel\ModifyAspNetUser.cs" />
+    <Compile Include="WebAPI\IncomingModel\AddFirstAdminClient.cs" />
     <Compile Include="WebAPI\IncomingModel\SetClientLicenceKey.cs" />
     <Compile Include="WebAPI\IncomingModel\ModifyAspNetClientServer.cs" />
     <Compile Include="WebAPI\IncomingModel\ModifyAspNetClientLicence.cs" />

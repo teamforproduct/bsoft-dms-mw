@@ -17,6 +17,7 @@ namespace BL.Model.DictionaryCore.InternalModel
             Id = Model.Id;
             Name = Model.Name;
             InputMask = Model.InputMask;
+            Code = Model.Code;
             IsActive = Model.IsActive;
         }
 
@@ -33,6 +34,7 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// Маска для ввода
         /// </summary>
         public string InputMask { get; set; }
+        public string Code { get; set; }
         /// <summary>
         /// признак активности
         /// </summary>

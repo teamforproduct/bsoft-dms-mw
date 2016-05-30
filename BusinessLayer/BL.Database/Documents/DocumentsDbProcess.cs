@@ -34,9 +34,13 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                return dbContext.DocumentsSet
-                    .Where(x=> x.TemplateDocument.ClientId == ctx.CurrentClientId)
-                    .Count();
+                var qry = from doc in dbContext.DocumentsSet
+                          join tmpl in dbContext.TemplateDocumentsSet on doc.TemplateDocumentId equals tmpl.Id
+                          where tmpl.ClientId == ctx.CurrentClientId
+                          select doc.Id;
+                var count = qry.Count();
+
+                return count;
             }
         }
         public IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging)
@@ -973,7 +977,7 @@ namespace BL.Database.Documents
 
                 res.DocumentSubscriptions = CommonQueries.GetDocumentSubscriptions(dbContext, new FilterDocumentSubscription { DocumentId = docIds }, ctx);
 
-                res.DocumentPapers = CommonQueries.GetDocumentPapers(dbContext, ctx,  new FilterDocumentPaper { DocumentId = docIds });
+                res.DocumentPapers = CommonQueries.GetDocumentPapers(dbContext, ctx, new FilterDocumentPaper { DocumentId = docIds });
 
                 res.Properties = CommonQueries.GetPropertyValues(dbContext, ctx, new FilterPropertyValue { RecordId = new List<int> { documentId }, Object = new List<EnumObjects> { EnumObjects.Documents } });
 

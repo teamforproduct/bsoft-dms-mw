@@ -29,7 +29,7 @@ namespace BL.Model.DocumentCore.InternalModel
         /// <summary>
         /// содержимое файла
         /// </summary>
-        public byte[] FileContent { get; set; }
+        public string FileContent { get; set; }
         /// <summary>
         /// содержимое файла
         /// </summary>

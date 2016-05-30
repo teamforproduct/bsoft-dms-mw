@@ -6,24 +6,24 @@ using BL.Model.Exception;
 using System;
 using System.Collections.Generic;
 
-namespace BL.Logic.DictionaryCore.DocumentType
+namespace BL.Logic.DictionaryCore
 {
-    public class AddDictionaryPositionCommand : BaseDictionaryCommand
+    public class AddDictionaryCompanyCommand : BaseDictionaryCommand
     {
 
-        private ModifyDictionaryPosition Model
+        private ModifyDictionaryCompany Model
         {
             get
             {
-                if (!(_param is ModifyDictionaryPosition))
+                if (!(_param is ModifyDictionaryCompany))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ModifyDictionaryPosition)_param;
+                return (ModifyDictionaryCompany)_param;
             }
         }
 
-        public override bool CanBeDisplayed(int positionId)
+        public override bool CanBeDisplayed(int CompanyId)
         {
             return true;
         }
@@ -33,14 +33,9 @@ namespace BL.Logic.DictionaryCore.DocumentType
 
             _admin.VerifyAccess(_context, CommandType, false);
 
-            var fdd = new FilterDictionaryPosition { Name = Model.Name, NotContainsIDs = new List<int> { Model.Id } };
+            var fdd = new FilterDictionaryCompany { Name = Model.Name, NotContainsIDs = new List<int> { Model.Id } };
 
-            if (Model.ParentId != null)
-            {
-                fdd.ParentIDs = new List<int> { Model.ParentId.Value };
-            }
-            // Находим запись с таким-же именем в этой-же папке
-            if (_dictDb.ExistsPosition(_context, fdd))
+            if (_dictDb.ExistsCompany(_context, fdd))
             {
                 throw new DictionaryRecordNotUnique();
             }
@@ -52,9 +47,9 @@ namespace BL.Logic.DictionaryCore.DocumentType
         {
             try
             {
-                var dp = CommonDictionaryUtilities.PositionModifyToInternal(_context, Model);
+                var dp = CommonDictionaryUtilities.CompanyModifyToInternal(_context, Model);
 
-                return _dictDb.AddPosition(_context, dp);
+                return _dictDb.AddCompany(_context, dp);
             }
             catch (Exception ex)
             {

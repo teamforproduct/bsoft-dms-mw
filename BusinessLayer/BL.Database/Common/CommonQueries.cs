@@ -1289,6 +1289,8 @@ namespace BL.Database.Common
             var document = CommonQueries.GetDocumentHashPrepare(dbContext, ctx, documentId);
             document.Subscriptions = subscriptions;
 
+            var IsFilesIncorrect = false;
+
             if (isFull || isAddSubscription)
             {
                 var fs = DmsResolver.Current.Get<IFileStore>();
@@ -1297,6 +1299,7 @@ namespace BL.Database.Common
                     if (!fs.IsFileCorrect(ctx, file))
                     {
                         //TODO
+                        IsFilesIncorrect = true;
                         //throw new DocumentFileWasChangedExternally();
                     }
                 }
@@ -1314,8 +1317,8 @@ namespace BL.Database.Common
                 StringComparer comparer = StringComparer.OrdinalIgnoreCase;
                 foreach (var subscription in subscriptions)
                 {
-                    if (VerifyDocumentHash(subscription.Hash, document) ||
-                        ((isFull || isAddSubscription) && VerifyDocumentHash(subscription.FullHash, document, true)))
+                    if (IsFilesIncorrect || !VerifyDocumentHash(subscription.Hash, document) ||
+                        ((isFull || isAddSubscription) && !VerifyDocumentHash(subscription.FullHash, document, true)))
                     {
                         var subscriptionDb = new DocumentSubscriptions
                         {
@@ -1361,6 +1364,11 @@ namespace BL.Database.Common
                         //dbContext.DocumentEventsSet.Add(eventDb);
                     }
                 }
+            }
+
+            if (IsFilesIncorrect)
+            {
+                throw new DocumentFileWasChangedExternally();
             }
 
             return document;

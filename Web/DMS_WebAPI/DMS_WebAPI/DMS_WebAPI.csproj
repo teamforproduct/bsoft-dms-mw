@@ -233,6 +233,9 @@
     <Compile Include="Controllers\Dictionaries\DictionaryAgentEmployeesController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryContactsController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryContactTypesController.cs" />
+    <Compile Include="Controllers\Dictionaries\DictionaryPositionExecutorTypesController.cs" />
+    <Compile Include="Controllers\Dictionaries\DictionaryPositionExecutorsController.cs" />
+    <Compile Include="Controllers\Dictionaries\DictionaryCompaniesController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryTagsController.cs" />
     <Compile Include="Controllers\Documents\DocumentSubscriptionsController.cs" />
     <Compile Include="Controllers\Documents\DocumentWaitsController.cs" />
@@ -300,9 +303,9 @@
     <Compile Include="Infrastructure\ExceptionHandlingAttribute.cs" />
     <Compile Include="Infrastructure\ModelValidationErrorHandlerFilterAttribute .cs" />
     <Compile Include="Infrastructure\NoBufferPolicySelector.cs" />
-    <Compile Include="Migrations\201605231056024_InitialMigration.cs" />
-    <Compile Include="Migrations\201605231056024_InitialMigration.Designer.cs">
-      <DependentUpon>201605231056024_InitialMigration.cs</DependentUpon>
+    <Compile Include="Migrations\201605271021582_InitialMigration.cs" />
+    <Compile Include="Migrations\201605271021582_InitialMigration.Designer.cs">
+      <DependentUpon>201605271021582_InitialMigration.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
@@ -410,12 +413,10 @@
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="App_Data\" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\201605231056024_InitialMigration.resx">
-      <DependentUpon>201605231056024_InitialMigration.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201605271021582_InitialMigration.resx">
+      <DependentUpon>201605271021582_InitialMigration.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

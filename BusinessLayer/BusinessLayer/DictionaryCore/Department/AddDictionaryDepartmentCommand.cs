@@ -1,17 +1,14 @@
-﻿using System;
-using BL.Database.Dictionaries.Interfaces;
-using BL.Logic.Common;
+﻿using BL.Logic.Common;
+using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Exception;
-using BL.Model.DictionaryCore.FilterModel;
-using BL.Model.SystemCore;
+using System;
 using System.Collections.Generic;
 
-
-namespace BL.Logic.DictionaryCore.DocumentType
+namespace BL.Logic.DictionaryCore
 {
-    public class ModifyDictionaryDepartmentCommand : BaseDictionaryCommand
+    public class AddDictionaryDepartmentCommand : BaseDictionaryCommand
     {
 
         private ModifyDictionaryDepartment Model
@@ -42,7 +39,6 @@ namespace BL.Logic.DictionaryCore.DocumentType
             {
                 fdd.ParentIDs = new List<int> { Model.ParentId.Value };
             }
-
             // Находим запись с таким-же именем в этой-же папке
             if (_dictDb.ExistsDictionaryDepartment(_context, fdd))
             {
@@ -52,24 +48,18 @@ namespace BL.Logic.DictionaryCore.DocumentType
             return true;
         }
 
-
         public override object Execute()
         {
             try
             {
                 var dds = CommonDictionaryUtilities.DepartmentModifyToInternal(_context, Model);
 
-                _dictDb.UpdateDictionaryDepartment(_context, dds);
-            }
-            catch (DictionaryRecordWasNotFound)
-            {
-                throw;
+                return _dictDb.AddDepartment(_context, dds);
             }
             catch (Exception ex)
             {
-                throw new DatabaseError(ex);
+                throw new DictionaryRecordCouldNotBeAdded(ex);
             }
-            return null;
         }
     }
 }

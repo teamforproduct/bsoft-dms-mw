@@ -11,6 +11,9 @@ namespace BL.Model.DictionaryCore.FilterModel
     /// </summary>
     public class FilterDictionaryContactType : DictionaryBaseFilterParameters
     {
-   
+         public string Code {get; set;}
+
+         public string NameExact { get; set; }
+         
     }
 }

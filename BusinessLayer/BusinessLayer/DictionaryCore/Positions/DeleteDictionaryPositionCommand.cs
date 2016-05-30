@@ -6,9 +6,9 @@ using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
 
-namespace BL.Logic.DictionaryCore.DocumentType
+namespace BL.Logic.DictionaryCore
 {
-    public class DeleteDictionaryDepartmentCommand : BaseDictionaryCommand
+    public class DeleteDictionaryPositionCommand : BaseDictionaryCommand
 
     {
       
@@ -40,12 +40,12 @@ namespace BL.Logic.DictionaryCore.DocumentType
         {
             try
             {
-                var dd = new InternalDictionaryDepartment
+                var dd = new InternalDictionaryPosition
                 {
                     Id = Model
 
                 };
-                _dictDb.DeleteDictionaryDepartment(_context, dd);
+                _dictDb.DeletePosition(_context, dd);
                 return null;
             }
             catch (Exception ex)
