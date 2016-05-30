@@ -97,7 +97,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             {
 
             }
-            if (!_document.IsRegistered.HasValue)
+            if (_document.IsRegistered.HasValue)
             {
                 docFile.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, docFile.DocumentId, EnumEventTypes.DeleteDocumentFile, null, _file.Name + "." + _file.Extension);
             }

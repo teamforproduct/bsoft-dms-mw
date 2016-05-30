@@ -101,7 +101,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
             _fStore.SaveFile(_context, att);
             CommonDocumentUtilities.SetLastChange(_context, att);
-            if (!_document.IsRegistered.HasValue)
+            if (_document.IsRegistered.HasValue)
             {
                 att.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, att.DocumentId, EnumEventTypes.AddDocumentFile, null, att.Name + "." + att.Extension);
             }
