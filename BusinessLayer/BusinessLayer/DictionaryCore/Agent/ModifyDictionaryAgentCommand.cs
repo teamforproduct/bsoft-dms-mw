@@ -7,7 +7,7 @@ using BL.Model.DictionaryCore.FilterModel;
 using System.Collections.Generic;
 
 
-namespace BL.Logic.DictionaryCore.Agent
+namespace BL.Logic.DictionaryCore
 {
     public class ModifyDictionaryAgentCommand : BaseDictionaryCommand
     {
@@ -40,7 +40,7 @@ namespace BL.Logic.DictionaryCore.Agent
             {
                 var newAgent = new InternalDictionaryAgent(Model);
                 CommonDocumentUtilities.SetLastChange(_context, newAgent);
-                _dictDb.UpdateDictionaryAgent(_context, newAgent);
+                _dictDb.UpdateAgent(_context, newAgent);
             }
             catch (DictionaryRecordWasNotFound)
             {

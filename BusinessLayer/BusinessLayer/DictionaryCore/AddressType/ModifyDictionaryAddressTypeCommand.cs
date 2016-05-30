@@ -8,7 +8,7 @@ using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.SystemCore;
 using System.Collections.Generic;
 
-namespace BL.Logic.DictionaryCore.DocumentType
+namespace BL.Logic.DictionaryCore
 {
     public class ModifyDictionaryAddressTypeCommand : BaseDictionaryCommand
     {
@@ -58,7 +58,7 @@ namespace BL.Logic.DictionaryCore.DocumentType
                 //    IsActive=Model.IsActive
                 //};
                 CommonDocumentUtilities.SetLastChange(_context, newAddrType);
-                _dictDb.UpdateDictionaryAddressType(_context, newAddrType);
+                _dictDb.UpdateAddressType(_context, newAddrType);
             }
             catch (DictionaryRecordWasNotFound)
             {

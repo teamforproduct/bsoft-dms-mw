@@ -5,7 +5,7 @@ using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
 
-namespace BL.Logic.DictionaryCore.AgentAccount
+namespace BL.Logic.DictionaryCore
 {
     public class DeleteDictionaryAgentAccountCommand : BaseDictionaryCommand
     {
@@ -42,7 +42,7 @@ namespace BL.Logic.DictionaryCore.AgentAccount
                     Id = Model
 
                 };
-                _dictDb.DeleteDictionaryAgentAccount(_context, newAccount);
+                _dictDb.DeleteAgentAccount(_context, newAccount);
                 return null;
             }
             catch (Exception ex)

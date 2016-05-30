@@ -6,7 +6,7 @@ using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
 
-    namespace BL.Logic.DictionaryCore.Agent
+    namespace BL.Logic.DictionaryCore
 {
     public class DeleteDictionaryAgentCommand : BaseDictionaryCommand
     {
@@ -32,7 +32,7 @@ using BL.Model.SystemCore;
             {
                 _admin.VerifyAccess(_context, CommandType,false,true);
 
-                FrontDictionaryAgent tmp = _dictDb.GetDictionaryAgent(_context, Model);
+                FrontDictionaryAgent tmp = _dictDb.GetAgent(_context, Model);
 
             // Удалить можно только контрагента без роли. 
             if (tmp != null)
@@ -54,7 +54,7 @@ using BL.Model.SystemCore;
                         Id = Model
 
                     };
-                    _dictDb.DeleteDictionaryAgent(_context, newPers);
+                    _dictDb.DeleteAgent(_context, newPers);
                     return null;
                 }
                 catch (Exception ex)

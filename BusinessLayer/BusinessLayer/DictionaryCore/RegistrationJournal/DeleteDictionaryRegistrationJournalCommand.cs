@@ -6,7 +6,7 @@ using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
 
-namespace BL.Logic.DictionaryCore.DocumentType
+namespace BL.Logic.DictionaryCore
 {
     public class DeleteDictionaryRegistrationJournalCommand : BaseDictionaryCommand
 
@@ -45,7 +45,7 @@ namespace BL.Logic.DictionaryCore.DocumentType
                     Id = Model
 
                 };
-                _dictDb.DeleteDictionaryRegistrationJournal(_context, drj);
+                _dictDb.DeleteRegistrationJournal(_context, drj);
                 return null;
             }
             catch (Exception ex)

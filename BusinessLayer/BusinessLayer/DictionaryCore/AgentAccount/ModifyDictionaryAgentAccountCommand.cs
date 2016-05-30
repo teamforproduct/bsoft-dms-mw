@@ -7,7 +7,7 @@ using BL.Model.DictionaryCore.FilterModel;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace BL.Logic.DictionaryCore.AgentAccount
+namespace BL.Logic.DictionaryCore
 {
     public class ModifyDictionaryAgentAccountCommand : BaseDictionaryCommand
     {
@@ -33,7 +33,7 @@ namespace BL.Logic.DictionaryCore.AgentAccount
 
        
             _admin.VerifyAccess(_context, CommandType, false);
-            var spr = _dictDb.GetDictionaryAgentAccounts(_context, Model.AgentId, new FilterDictionaryAgentAccount
+            var spr = _dictDb.GetAgentAccounts(_context, Model.AgentId, new FilterDictionaryAgentAccount
             {
                 AgentBankId = Model.AgentBankId,
                 AccountNumber = Model.AccountNumber
@@ -51,7 +51,7 @@ namespace BL.Logic.DictionaryCore.AgentAccount
             {
                 var newAccount = new InternalDictionaryAgentAccount(Model);
                 CommonDocumentUtilities.SetLastChange(_context, newAccount);
-                _dictDb.UpdateDictionaryAgentAccount(_context, newAccount);
+                _dictDb.UpdateAgentAccount(_context, newAccount);
             }
             catch (DictionaryRecordWasNotFound)
             {

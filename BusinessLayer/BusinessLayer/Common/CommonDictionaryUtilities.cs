@@ -53,7 +53,27 @@ namespace BL.Logic.Common
 
         }
 
+        public static InternalDictionaryPositionExecutor PositionExecutorModifyToInternal(IContext context, ModifyDictionaryPositionExecutor modifyModel)
+        {
 
+            InternalDictionaryPositionExecutor internalModel = new InternalDictionaryPositionExecutor(modifyModel);
+
+            CommonDocumentUtilities.SetLastChange(context, internalModel);
+
+            return internalModel;
+
+        }
+
+        public static InternalDictionaryCompany  CompanyModifyToInternal(IContext context, ModifyDictionaryCompany modifyModel)
+        {
+
+            InternalDictionaryCompany internalModel = new InternalDictionaryCompany(modifyModel);
+
+            CommonDocumentUtilities.SetLastChange(context, internalModel);
+
+            return internalModel;
+
+        }
 
 
 

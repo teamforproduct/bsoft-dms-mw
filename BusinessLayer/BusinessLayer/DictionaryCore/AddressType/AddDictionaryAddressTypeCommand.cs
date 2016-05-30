@@ -8,7 +8,7 @@ using BL.Model.Exception;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.SystemCore;
 
-namespace BL.Logic.DictionaryCore.DocumentType
+namespace BL.Logic.DictionaryCore
 {
     public class AddDictionaryAddressTypeCommand : BaseDictionaryCommand
     {
@@ -47,7 +47,7 @@ namespace BL.Logic.DictionaryCore.DocumentType
             {
                 var newAddrType = new InternalDictionaryAddressType(Model);
                 CommonDocumentUtilities.SetLastChange(_context, newAddrType);
-                return _dictDb.AddDictionaryAddressType(_context, newAddrType);
+                return _dictDb.AddAddressType(_context, newAddrType);
             }
             catch (Exception ex)
             {

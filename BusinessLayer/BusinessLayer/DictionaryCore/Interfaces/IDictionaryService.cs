@@ -132,12 +132,34 @@ namespace BL.Logic.DictionaryCore.Interfaces
         IEnumerable<FrontDictionaryPosition> GetDictionaryPositions(IContext context, FilterDictionaryPosition filter);
         #endregion DictionaryPositions
 
+        // Исполнители
+        #region DictionaryPositionExecutors
+        FrontDictionaryPositionExecutor GetDictionaryPositionExecutor(IContext context, int id);
+
+        IEnumerable<FrontDictionaryPositionExecutor> GetDictionaryPositionExecutors(IContext context, FilterDictionaryPositionExecutor filter);
+        #endregion DictionaryPositionExecutors
+
+        // Типы исполнителей
+        #region DictionaryPositionExecutorTypes
+        FrontDictionaryPositionExecutorType GetDictionaryPositionExecutorType(IContext context, int id);
+        IEnumerable<FrontDictionaryPositionExecutorType> GetDictionaryPositionExecutorTypes(IContext context, FilterDictionaryPositionExecutorType filter);
+        #endregion DictionaryPositionExecutorTypes
+
+
         // Журналы регистрации
         #region DictionaryRegistrationJournals
         FrontDictionaryRegistrationJournal GetDictionaryRegistrationJournal(IContext context, int id);
 
         IEnumerable<FrontDictionaryRegistrationJournal> GetDictionaryRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter);
         #endregion DictionaryRegistrationJournals
+
+        // Компании
+        #region DictionaryCompanies
+        FrontDictionaryCompany GetDictionaryCompany(IContext context, int id);
+
+        IEnumerable<FrontDictionaryCompany> GetDictionaryCompanies(IContext context, FilterDictionaryCompany filter);
+        #endregion DictionaryCompanies
+
 
         #region DictionaryResultTypes
         FrontDictionaryResultType GetDictionaryResultType(IContext context, int id);
