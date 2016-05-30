@@ -17,6 +17,8 @@ using BL.Logic.PropertyCore;
 using BL.Logic.PropertyCore.Commands;
 using BL.Logic.PropertyCore.Interfaces;
 using BL.Logic.Settings;
+using BL.Logic.SystemCore;
+using BL.Logic.SystemCore.Interfaces;
 using BL.Logic.SystemServices.AutoPlan;
 using BL.Logic.SystemServices.ClearTrashDocuments;
 using BL.Logic.SystemServices.FullTextSearch;
@@ -50,6 +52,8 @@ namespace BL.Logic.DependencyInjection
             Bind<IFullTextSearchService>().To<FullTextSearchService>().InSingletonScope();
             Bind<IAutoPlanService>().To<AutoPlanService>().InSingletonScope();
             Bind<IClearTrashDocumentsService>().To<ClearTrashDocumentsService>().InSingletonScope();
+
+            Bind<ISystemService>().To<SystemService>().InSingletonScope();
         }
 
         private void LoadDocumentModule()

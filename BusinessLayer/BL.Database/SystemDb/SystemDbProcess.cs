@@ -22,6 +22,14 @@ namespace BL.Database.SystemDb
         {
         }
 
+        public void InitializerDatabase(IContext context)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                dbContext.SystemObjectsSet.Take(0).ToList();
+            }
+        }
+
         #region Log
         public int AddLog(IContext ctx, LogInfo log)
         {

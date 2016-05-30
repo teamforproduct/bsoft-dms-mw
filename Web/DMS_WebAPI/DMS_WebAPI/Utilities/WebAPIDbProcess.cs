@@ -1,7 +1,7 @@
 ﻿using BL.CrossCutting.Context;
 using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
-using BL.Logic.DocumentCore.Interfaces;
+using BL.Logic.SystemCore.Interfaces;
 using BL.Model.Database;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
@@ -218,7 +218,7 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        public void CreateServer(ModifyAdminServer model)
+        public void InitializerDatabase(ModifyAdminServer model)
         {
             var db = new DatabaseModel
             {
@@ -234,8 +234,8 @@ namespace DMS_WebAPI.Utilities
                 ClientId = model.ClientId
             };
             var ctx = new AdminContext(db);
-            var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var count = docProc.GetCountDocuments(ctx);
+            var sysProc = DmsResolver.Current.Get<ISystemService>();
+            sysProc.InitializerDatabase(ctx);
 
             //TODO Добавить в базу дефолтные даные
         }
@@ -638,7 +638,7 @@ namespace DMS_WebAPI.Utilities
                 //TODO в transaction не может подлючиться к базе
                 if (model.Server.Id <= 0)
                 {
-                    CreateServer(model.Server);
+                    InitializerDatabase(model.Server);
                 }
 
 

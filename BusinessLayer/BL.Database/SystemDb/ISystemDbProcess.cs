@@ -10,6 +10,8 @@ namespace BL.Database.SystemDb
 {
     public interface ISystemDbProcess
     {
+        void InitializerDatabase(IContext context);
+
         #region Logging
         int AddLog(IContext ctx, LogInfo log);
         #endregion
