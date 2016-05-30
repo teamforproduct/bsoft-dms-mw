@@ -166,7 +166,7 @@ namespace BL.Database.FileWorker
 
                 attFile.WasChangedExternal = attFile.Hash != FileToSha512(localFilePath);
 
-                if (!attFile.WasChangedExternal)
+                if (attFile.WasChangedExternal)
                 {
                     throw new DocumentFileWasChangedExternally();
                 }
@@ -211,7 +211,7 @@ namespace BL.Database.FileWorker
                 if (docFile != null)
                 {
                     docFile.WasChangedExternal = docFile.Hash != FileToSha512(localFilePath);
-                    if (!docFile.WasChangedExternal)
+                    if (docFile.WasChangedExternal)
                     {
                         throw new DocumentFileWasChangedExternally();
                     }
