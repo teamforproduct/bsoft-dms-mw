@@ -42,9 +42,14 @@ namespace BL.Database.Common
             return qry;
         }
 
-        private static IQueryable<FilterDocumentFileIdentity> GetDocumentFilesMaxVersion(IContext ctx, DmsContext dbContext, FilterDocumentAttachedFile filter)
+        private static IQueryable<DocumentFiles> GetDocumentFilesMaxVersion(IContext ctx, DmsContext dbContext, FilterDocumentAttachedFile filter)
         {
             var qry = dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).AsQueryable();
+
+            if (!ctx.IsAdmin)
+            {
+                qry = qry.Where(x => x.Document.Accesses.Any(y => ctx.CurrentPositionsIdList.Contains(y.PositionId)));
+            }
 
             if (filter != null)
             {
@@ -59,51 +64,45 @@ namespace BL.Database.Common
                 }
             }
 
-            qry = from fl in qry
-                  where dbContext.DocumentAccessesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.PositionId)).Select(x => x.DocumentId).Contains(fl.DocumentId)
-                  select fl;
-
             return qry
                 .GroupBy(g => new { g.DocumentId, g.OrderNumber })
-                .Select(x => new FilterDocumentFileIdentity { DocumentId = x.Key.DocumentId, OrderInDocument = x.Key.OrderNumber, Version = x.Max(s => s.Version) });
+                .Select(x => x.OrderByDescending(y => y.Version).FirstOrDefault());
         }
 
         public static IEnumerable<FrontDocumentAttachedFile> GetDocumentFiles(IContext ctx, DmsContext dbContext, FilterDocumentAttachedFile filter, UIPaging paging = null)
         {
             var sq = GetDocumentFilesMaxVersion(ctx, dbContext, filter);
 
-            var qry =
-                 sq.Join(dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId), sub => new { sub.DocumentId, OrderNumber = sub.OrderInDocument, sub.Version },
-                    fl => new { fl.DocumentId, fl.OrderNumber, fl.Version },
-                    (s, f) => new { fl = f })
-                    .Join(dbContext.DictionaryAgentsSet, df => df.fl.LastChangeUserId, da => da.Id,
-                        (d, a) => new { d.fl, agName = a.Name })
-                    .Select(x => new FrontDocumentAttachedFile
-                    {
-                        Id = x.fl.Id,
-                        Date = x.fl.Date,
-                        DocumentId = x.fl.DocumentId,
-                        Extension = x.fl.Extension,
-                        FileContent = x.fl.Content,
-                        FileType = x.fl.FileType,
-                        FileSize = x.fl.FileSize,
-                        IsAdditional = x.fl.IsAdditional,
-                        Hash = x.fl.Hash,
-                        LastChangeDate = x.fl.LastChangeDate,
-                        LastChangeUserId = x.fl.LastChangeUserId,
-                        LastChangeUserName = x.agName,
-                        Name = x.fl.Name,
-                        OrderInDocument = x.fl.OrderNumber,
-                        Version = x.fl.Version,
-                        WasChangedExternal = false,
-                        DocumentDate = x.fl.Document.RegistrationDate ?? x.fl.Document.CreateDate,
-                        RegistrationNumber = x.fl.Document.RegistrationNumber,
-                        RegistrationNumberPrefix = x.fl.Document.RegistrationNumberPrefix,
-                        RegistrationNumberSuffix = x.fl.Document.RegistrationNumberSuffix,
-                        RegistrationFullNumber = "#" + x.fl.Document.Id,
-                        ExecutorPositionName = x.fl.ExecutorPosition.Name,
-                        ExecutorPositionExecutorAgentName = x.fl.ExecutorPositionExecutorAgent.Name,
-                    });
+            var qry = from file in sq
+                      join agent in dbContext.DictionaryAgentsSet on file.LastChangeUserId equals agent.Id into agent
+                      from agentAg in agent.DefaultIfEmpty()
+                      select new FrontDocumentAttachedFile
+                      {
+                          Id = file.Id,
+                          Date = file.Date,
+                          DocumentId = file.DocumentId,
+                          Extension = file.Extension,
+                          FileContent = file.Content,
+                          FileType = file.FileType,
+                          FileSize = file.FileSize,
+                          IsAdditional = file.IsAdditional,
+                          Hash = file.Hash,
+                          LastChangeDate = file.LastChangeDate,
+                          LastChangeUserId = file.LastChangeUserId,
+                          LastChangeUserName = agentAg.Name,
+                          Name = file.Name,
+                          OrderInDocument = file.OrderNumber,
+                          Version = file.Version,
+                          WasChangedExternal = false,
+                          ExecutorPositionName = file.ExecutorPosition.Name,
+                          ExecutorPositionExecutorAgentName = file.ExecutorPositionExecutorAgent.Name,
+
+                          DocumentDate = file.Document.LinkId.HasValue ? file.Document.RegistrationDate ?? file.Document.CreateDate : (DateTime?)null,
+                          RegistrationNumber = file.Document.LinkId.HasValue ? file.Document.RegistrationNumber : null,
+                          RegistrationNumberPrefix = file.Document.LinkId.HasValue ? file.Document.RegistrationNumberPrefix : null,
+                          RegistrationNumberSuffix = file.Document.LinkId.HasValue ? file.Document.RegistrationNumberSuffix : null,
+                          RegistrationFullNumber = file.Document.LinkId.HasValue ? "#" + file.Document.Id : null,
+                      };
 
             if (paging != null)
             {
@@ -123,25 +122,22 @@ namespace BL.Database.Common
             var sq = GetDocumentFilesMaxVersion(ctx, dbContext, new FilterDocumentAttachedFile { DocumentId = new List<int> { documentId } });
 
             return
-                sq.Join(dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId), sub => new { sub.DocumentId, OrderNumber = sub.OrderInDocument, sub.Version },
-                    fl => new { fl.DocumentId, fl.OrderNumber, fl.Version },
-                    (s, f) => new { fl = f })
-                    .Select(x => new InternalDocumentAttachedFile
+                sq.Select(x => new InternalDocumentAttachedFile
                     {
-                        Id = x.fl.Id,
-                        Date = x.fl.Date,
-                        DocumentId = x.fl.DocumentId,
-                        Extension = x.fl.Extension,
-                        FileContent = x.fl.Content,
-                        FileType = x.fl.FileType,
-                        FileSize = x.fl.FileSize,
-                        IsAdditional = x.fl.IsAdditional,
-                        Hash = x.fl.Hash,
-                        LastChangeDate = x.fl.LastChangeDate,
-                        LastChangeUserId = x.fl.LastChangeUserId,
-                        Name = x.fl.Name,
-                        OrderInDocument = x.fl.OrderNumber,
-                        Version = x.fl.Version,
+                        Id = x.Id,
+                        Date = x.Date,
+                        DocumentId = x.DocumentId,
+                        Extension = x.Extension,
+                        FileContent = x.Content,
+                        FileType = x.FileType,
+                        FileSize = x.FileSize,
+                        IsAdditional = x.IsAdditional,
+                        Hash = x.Hash,
+                        LastChangeDate = x.LastChangeDate,
+                        LastChangeUserId = x.LastChangeUserId,
+                        Name = x.Name,
+                        OrderInDocument = x.OrderNumber,
+                        Version = x.Version,
                         WasChangedExternal = false
                     }).ToList();
         }
@@ -260,85 +256,87 @@ namespace BL.Database.Common
         {
             var tasksDb = dbContext.DocumentTasksSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId).AsQueryable();
 
-            var sendListDb = dbContext.DocumentSendListsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId)
-                            .Where(x => x.TaskId.HasValue)
-                            .Where(x => !x.CloseEventId.HasValue)
-                            .Where(x => x.SendTypeId == (int)EnumSendTypes.SendForResponsibleExecution)
-                            .GroupBy(x => x.TaskId)
-                            .Select(x => x.FirstOrDefault())
-                            .AsQueryable();
+            //var sendListDb = dbContext.DocumentSendListsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId)
+            //                .Where(x => x.TaskId.HasValue)
+            //                .Where(x => !x.CloseEventId.HasValue)
+            //                .Where(x => x.SendTypeId == (int)EnumSendTypes.SendForResponsibleExecution)
+            //                .GroupBy(x => x.TaskId)
+            //                .Select(x => x.FirstOrDefault())
+            //                .AsQueryable();
 
-            var eventDb = dbContext.DocumentWaitsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId)
-                            .Where(x => !x.OffEventId.HasValue)
-                            .Select(x => x.OnEvent)
-                            .Where(x => x.TaskId.HasValue)
-                            .Where(x => x.EventTypeId ==(int)EnumEventTypes.SendForResponsibleExecution || x.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecutionChange )
-                            .GroupBy(x => x.TaskId)
-                            .Select(x => x.FirstOrDefault())
-                            .AsQueryable();
+            //var eventDb = dbContext.DocumentWaitsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId)
+            //                .Where(x => !x.OffEventId.HasValue)
+            //                .Select(x => x.OnEvent)
+            //                .Where(x => x.TaskId.HasValue)
+            //                .Where(x => x.EventTypeId ==(int)EnumEventTypes.SendForResponsibleExecution || x.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecutionChange )
+            //                .GroupBy(x => x.TaskId)
+            //                .Select(x => x.FirstOrDefault())
+            //                .AsQueryable();
 
             if (filter != null)
             {
                 if (filter?.DocumentId?.Count() > 0)
                 {
                     tasksDb = tasksDb.Where(x => filter.DocumentId.Contains(x.DocumentId));
-                    sendListDb = sendListDb.Where(x => filter.DocumentId.Contains(x.DocumentId));
-                    eventDb = eventDb.Where(x => filter.DocumentId.Contains(x.DocumentId));
+                    //sendListDb = sendListDb.Where(x => filter.DocumentId.Contains(x.DocumentId));
+                    //eventDb = eventDb.Where(x => filter.DocumentId.Contains(x.DocumentId));
                 }
                 if (filter?.Id?.Count() > 0)
                 {
                     tasksDb = tasksDb.Where(x => filter.Id.Contains(x.Id));
-                    sendListDb = sendListDb.Where(x => filter.Id.Contains(x.TaskId ?? 0));
-                    eventDb = eventDb.Where(x => filter.Id.Contains(x.TaskId ?? 0));
+                    //sendListDb = sendListDb.Where(x => filter.Id.Contains(x.TaskId ?? 0));
+                    //eventDb = eventDb.Where(x => filter.Id.Contains(x.TaskId ?? 0));
                 }
             }
 
-            var tasksRes = from task in tasksDb
+            var tasksRes = tasksDb;
 
-                           join sl in sendListDb on task.Id equals sl.TaskId into sl
-                           from slAg in sl.DefaultIfEmpty()
+            //var tasksRes = from task in tasksDb
 
-                           join ev in eventDb on task.Id equals ev.TaskId into ev
-                           from evAg in ev.DefaultIfEmpty()
-                           select new
-                           {
-                               Task = task,
-                               SendListDb = slAg,
-                               Event = evAg
-                           };
+            //               join sl in sendListDb on task.Id equals sl.TaskId into sl
+            //               from slAg in sl.DefaultIfEmpty()
+
+            //               join ev in eventDb on task.Id equals ev.TaskId into ev
+            //               from evAg in ev.DefaultIfEmpty()
+            //               select new
+            //               {
+            //                   Task = task,
+            //                   SendListDb = slAg,
+            //                   Event = evAg
+            //               };
 
             var tasks = tasksRes.Select(x => new FrontDocumentTask
             {
-                Id = x.Task.Id,
-                DocumentId = x.Task.DocumentId,
-                Name = x.Task.Task,
-                Description = x.Task.Description,
+                Id = x.Id,
+                DocumentId = x.DocumentId,
+                Name = x.Task,
+                Description = x.Description,
 
-                DocumentDate = x.Task.Document.RegistrationDate ?? x.Task.Document.CreateDate,
-                RegistrationNumber = x.Task.Document.RegistrationNumber,
-                RegistrationNumberPrefix = x.Task.Document.RegistrationNumberPrefix,
-                RegistrationNumberSuffix = x.Task.Document.RegistrationNumberSuffix,
-                RegistrationFullNumber = "#" + x.Task.Document.Id,
+                DocumentDate = x.Document.RegistrationDate ?? x.Document.CreateDate,
+                RegistrationNumber = x.Document.RegistrationNumber,
+                RegistrationNumberPrefix = x.Document.RegistrationNumberPrefix,
+                RegistrationNumberSuffix = x.Document.RegistrationNumberSuffix,
+                RegistrationFullNumber = "#" + x.Document.Id,
 
-                DocumentDescription = x.Task.Document.Description,
-                DocumentTypeName = x.Task.Document.TemplateDocument.DocumentType.Name,
-                DocumentDirectionName = x.Task.Document.TemplateDocument.DocumentDirection.Name,
+                DocumentDescription = x.Document.Description,
+                DocumentTypeName = x.Document.TemplateDocument.DocumentType.Name,
+                DocumentDirectionName = x.Document.TemplateDocument.DocumentDirection.Name,
 
-                PositionId = x.Task.PositionId,
-                PositionExecutorAgentId = x.Task.PositionExecutorAgentId,
-                AgentId = x.Task.AgentId,
+                PositionId = x.PositionId,
+                PositionExecutorAgentId = x.PositionExecutorAgentId,
+                AgentId = x.AgentId,
 
-                PositionExecutorAgentName = x.Task.PositionExecutorAgent.Name,
-                AgentName = x.Task.Agent.Name,
-                PositionName = x.Task.Position.Name,
-                PositionExecutorNowAgentName = x.Task.Position.ExecutorAgent.Name,
+                PositionExecutorAgentName = x.PositionExecutorAgent.Name,
+                AgentName = x.Agent.Name,
+                PositionName = x.Position.Name,
+                PositionExecutorNowAgentName = x.Position.ExecutorAgent.Name,
                 PositionExecutorAgentPhoneNumber = "(888)888-88-88", //TODO 
 
-                FactResponsibleExecutorPositionName = x.SendListDb.TargetPosition.Name,
-                FactResponsibleExecutorPositionExecutorAgentName = x.SendListDb.TargetPositionExecutorAgent.Name,
+                //FactResponsibleExecutorPositionName = x.SendListDb.TargetPosition.Name,
+                //FactResponsibleExecutorPositionExecutorAgentName = x.SendListDb.TargetPositionExecutorAgent.Name,
 
-                PlanResponsibleExecutorPositionName = x.Event.TargetPosition.Name,
-                PlanResponsibleExecutorPositionExecutorAgentName = x.Event.TargetPositionExecutorAgent.Name,
+                //PlanResponsibleExecutorPositionName = x.Event.TargetPosition.Name,
+                //PlanResponsibleExecutorPositionExecutorAgentName = x.Event.TargetPositionExecutorAgent.Name,
             }).ToList();
 
             tasks.ForEach(x => CommonQueries.ChangeRegistrationFullNumber(x));
