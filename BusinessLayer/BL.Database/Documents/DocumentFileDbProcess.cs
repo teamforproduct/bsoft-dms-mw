@@ -145,11 +145,11 @@ namespace BL.Database.Documents
                 if (maxVer > 0)
                 {
                     var doc = CommonQueries.GetDocumentQuery(dbContext, ctx)
-                                        .Where(x => x.Doc.Id == documentId)
+                                        .Where(x => x.Id == documentId)
                                         .Select(x => new InternalDocument
                                         {
-                                            Id = x.Doc.Id,
-                                            ExecutorPositionId = x.Doc.ExecutorPositionId
+                                            Id = x.Id,
+                                            ExecutorPositionId = x.ExecutorPositionId
                                         }).FirstOrDefault();
 
                     if (doc == null) return null;
@@ -220,13 +220,13 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(ctx))
             {
                 var doc = CommonQueries.GetDocumentQuery(dbContext, ctx)
-                    .Where(x => x.Doc.Id == documentId)
+                    .Where(x => x.Id == documentId)
                     .Select(x => new InternalDocument
                     {
-                        Id = x.Doc.Id,
-                        ExecutorPositionId = x.Doc.ExecutorPositionId,
-                        IsRegistered = x.Doc.IsRegistered,
-                        DocumentFiles = x.Doc.Files.GroupBy(y => new { y.DocumentId, y.OrderNumber })
+                        Id = x.Id,
+                        ExecutorPositionId = x.ExecutorPositionId,
+                        IsRegistered = x.IsRegistered,
+                        DocumentFiles = x.Files.GroupBy(y => new { y.DocumentId, y.OrderNumber })
                         .Select(y => y.OrderByDescending(z => z.Version).FirstOrDefault())
                         .Where(y => y != null)
                         .Select(y =>
@@ -288,11 +288,11 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(ctx))
             {
                 var doc = CommonQueries.GetDocumentQuery(dbContext, ctx)
-                    .Where(x => x.Doc.Id == flIdent.DocumentId)
+                    .Where(x => x.Id == flIdent.DocumentId)
                     .Select(x => new InternalDocument
                     {
-                        Id = x.Doc.Id,
-                        IsRegistered = x.Doc.IsRegistered,
+                        Id = x.Id,
+                        IsRegistered = x.IsRegistered,
                     }).FirstOrDefault();
                 if (doc == null) return null;
 
