@@ -676,9 +676,9 @@ namespace BL.Database.Documents
                     .Select(x => new FrontDocumentEvent
                     {
                         Id = x.Id,
-                        DocumentDescription = x.Document.Description,
-                        DocumentTypeName = x.Document.TemplateDocument.DocumentType.Name,
-                        DocumentDirectionName = x.Document.TemplateDocument.DocumentDirection.Name,
+                        DocumentDescription = x.Document.LinkId.HasValue ? x.Document.Description:null,
+                        DocumentTypeName = x.Document.LinkId.HasValue ? x.Document.TemplateDocument.DocumentType.Name : null,
+                        DocumentDirectionName = x.Document.LinkId.HasValue ? x.Document.TemplateDocument.DocumentDirection.Name : null,
                         ReadAgentName = x.ReadAgent.Name,
                         ReadDate = x.ReadDate,
                         SourceAgentName = x.SourceAgent.Name,
@@ -784,12 +784,12 @@ namespace BL.Database.Documents
 
                     SourcePositionExecutorAgentName = x.Event.SourcePositionExecutorAgent.Name,
                     TargetPositionExecutorAgentName = x.Event.TargetPositionExecutorAgent.Name ?? x.Event.TargetAgent.Name,
-                    DocumentDate = x.Event.Document.RegistrationDate ?? x.Event.Document.CreateDate,
 
-                    RegistrationNumber = x.Event.Document.RegistrationNumber,
-                    RegistrationNumberPrefix = x.Event.Document.RegistrationNumberPrefix,
-                    RegistrationNumberSuffix = x.Event.Document.RegistrationNumberSuffix,
-                    RegistrationFullNumber = "#" + x.Event.Document.Id,
+                    DocumentDate = x.Event.Document.LinkId.HasValue ? x.Event.Document.RegistrationDate ?? x.Event.Document.CreateDate : (DateTime?)null,
+                    RegistrationNumber = x.Event.Document.LinkId.HasValue ? x.Event.Document.RegistrationNumber : null,
+                    RegistrationNumberPrefix = x.Event.Document.LinkId.HasValue ? x.Event.Document.RegistrationNumberPrefix : null,
+                    RegistrationNumberSuffix = x.Event.Document.LinkId.HasValue ? x.Event.Document.RegistrationNumberSuffix : null,
+                    RegistrationFullNumber = x.Event.Document.LinkId.HasValue ? "#" + x.Event.Document.Id : null,
 
                     DueDate = x.OnWait != null ? x.OnWait.DueDate : null,
                     CloseDate = x.OnWait != null ? (DateTime?)x.OnWait.OffEvent.Date : null,

@@ -221,9 +221,12 @@ namespace BL.Database.Common
 
         public static IQueryable<DocumentWaits> GetDocumentWaitsQuery(DmsContext dbContext, IContext ctx, int? documentId = null)
         {
-            var qry = GetDocumentQuery(dbContext, ctx)
-                        .SelectMany(x => x.Waits)
-                        .AsQueryable();
+            var qry = dbContext.DocumentWaitsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).AsQueryable();
+            if (!ctx.IsAdmin)
+            {
+                qry = qry.Where(x => x.Document.Accesses.Any(y => ctx.CurrentPositionsIdList.Contains(y.PositionId)));
+            }
+
             if (documentId.HasValue)
             {
                 qry = qry.Where(x => x.DocumentId == documentId.Value);
@@ -264,14 +267,14 @@ namespace BL.Database.Common
             //                .Select(x => x.FirstOrDefault())
             //                .AsQueryable();
 
-            //var eventDb = dbContext.DocumentWaitsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId)
-            //                .Where(x => !x.OffEventId.HasValue)
-            //                .Select(x => x.OnEvent)
-            //                .Where(x => x.TaskId.HasValue)
-            //                .Where(x => x.EventTypeId ==(int)EnumEventTypes.SendForResponsibleExecution || x.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecutionChange )
-            //                .GroupBy(x => x.TaskId)
-            //                .Select(x => x.FirstOrDefault())
-            //                .AsQueryable();
+            var eventDb = dbContext.DocumentWaitsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId)
+                            .Where(x => !x.OffEventId.HasValue)
+                            .Select(x => x.OnEvent)
+                            .Where(x => x.TaskId.HasValue)
+                            .Where(x => x.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecution || x.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecutionChange)
+                            .GroupBy(x => x.TaskId)
+                            .Select(x => x.FirstOrDefault())
+                            .AsQueryable();
 
             if (filter != null)
             {
@@ -400,16 +403,16 @@ namespace BL.Database.Common
                 TargetDescription = x.Wait.TargetDescription,
                 //TargetAttentionDate = x.Wait.TargetAttentionDate,
                 IsClosed = x.OffEvent != null,
-                DocumentDate = x.Wait.Document.RegistrationDate ?? x.Wait.Document.CreateDate,
 
-                RegistrationNumber = x.Wait.Document.RegistrationNumber,
-                RegistrationNumberPrefix = x.Wait.Document.RegistrationNumberPrefix,
-                RegistrationNumberSuffix = x.Wait.Document.RegistrationNumberSuffix,
-                RegistrationFullNumber = "#" + x.Wait.Document.Id,
+                DocumentDate = x.Wait.Document.LinkId.HasValue ? x.Wait.Document.RegistrationDate ?? x.Wait.Document.CreateDate : (DateTime?)null,
+                RegistrationNumber = x.Wait.Document.LinkId.HasValue ? x.Wait.Document.RegistrationNumber : null,
+                RegistrationNumberPrefix = x.Wait.Document.LinkId.HasValue ? x.Wait.Document.RegistrationNumberPrefix : null,
+                RegistrationNumberSuffix = x.Wait.Document.LinkId.HasValue ? x.Wait.Document.RegistrationNumberSuffix : null,
+                RegistrationFullNumber = x.Wait.Document.LinkId.HasValue ? "#" + x.Wait.Document.Id : null,
+                DocumentDescription = x.Wait.Document.LinkId.HasValue ? x.Wait.Document.Description : null,
+                DocumentTypeName = x.Wait.Document.LinkId.HasValue ? x.Wait.Document.TemplateDocument.DocumentType.Name : null,
+                DocumentDirectionName = x.Wait.Document.LinkId.HasValue ? x.Wait.Document.TemplateDocument.DocumentDirection.Name : null,
 
-                DocumentDescription = x.Wait.Document.Description,
-                DocumentTypeName = x.Wait.Document.TemplateDocument.DocumentType.Name,
-                DocumentDirectionName = x.Wait.Document.TemplateDocument.DocumentDirection.Name,
                 OnEvent = x.OnEvent == null
                     ? null
                     : new FrontDocumentEvent
@@ -474,10 +477,12 @@ namespace BL.Database.Common
 
         public static IQueryable<DocumentSubscriptions> GetDocumentSubscriptionsQuery(DmsContext dbContext, FilterDocumentSubscription filter, IContext ctx)
         {
-            var subscriptionsDb = GetDocumentQuery(dbContext, ctx)
-                                    .SelectMany(x => x.Subscriptions)
-                                    .AsQueryable();
-
+            var subscriptionsDb = dbContext.DocumentSubscriptionsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).AsQueryable();
+            if (!ctx.IsAdmin)
+            {
+                subscriptionsDb = subscriptionsDb.Where(x => x.Document.Accesses.Any(y => ctx.CurrentPositionsIdList.Contains(y.PositionId)));
+            }
+            
             if (filter != null)
             {
                 if (filter.DocumentId.Any())
@@ -522,16 +527,16 @@ namespace BL.Database.Common
                 SubscriptionStatesName = x.Subscription.SubscriptionState.Name,
                 IsSuccess = x.Subscription.SubscriptionState.IsSuccess,
                 Description = x.Subscription.Description,
-                DocumentDate = x.Subscription.Document.RegistrationDate ?? x.Subscription.Document.CreateDate,
 
-                RegistrationNumber = x.Subscription.Document.RegistrationNumber,
-                RegistrationNumberPrefix = x.Subscription.Document.RegistrationNumberPrefix,
-                RegistrationNumberSuffix = x.Subscription.Document.RegistrationNumberSuffix,
-                RegistrationFullNumber = "#" + x.Subscription.Document.Id,
+                DocumentDate = x.Subscription.Document.LinkId.HasValue ? x.Subscription.Document.RegistrationDate ?? x.Subscription.Document.CreateDate : (DateTime?)null,
+                RegistrationNumber = x.Subscription.Document.LinkId.HasValue ? x.Subscription.Document.RegistrationNumber : null,
+                RegistrationNumberPrefix = x.Subscription.Document.LinkId.HasValue ? x.Subscription.Document.RegistrationNumberPrefix : null,
+                RegistrationNumberSuffix = x.Subscription.Document.LinkId.HasValue ? x.Subscription.Document.RegistrationNumberSuffix : null,
+                RegistrationFullNumber = x.Subscription.Document.LinkId.HasValue ? "#" + x.Subscription.Document.Id : null,
+                DocumentDescription = x.Subscription.Document.LinkId.HasValue ? x.Subscription.Document.Description : null,
+                DocumentTypeName = x.Subscription.Document.LinkId.HasValue ? x.Subscription.Document.TemplateDocument.DocumentType.Name : null,
+                DocumentDirectionName = x.Subscription.Document.LinkId.HasValue ? x.Subscription.Document.TemplateDocument.DocumentDirection.Name : null,
 
-                DocumentDescription = x.Subscription.Document.Description,
-                DocumentTypeName = x.Subscription.Document.TemplateDocument.DocumentType.Name,
-                DocumentDirectionName = x.Subscription.Document.TemplateDocument.DocumentDirection.Name,
                 SendEvent = x.SendEvent == null
                     ? null
                     : new FrontDocumentEvent
@@ -835,9 +840,9 @@ namespace BL.Database.Common
 
         public static IEnumerable<FrontDocument> GetLinkedDocuments(IContext context, DmsContext dbContext, int linkId)
         {
-            var acc = CommonQueries.GetDocumentAccesses(context, dbContext, true);
+            //var acc = CommonQueries.GetDocumentAccesses(context, dbContext, true);
 
-            var items = CommonQueries.GetDocumentQuery(dbContext, context, acc)
+            var items = CommonQueries.GetDocumentQuery(dbContext, context/*, acc*/)
                     .Where(x => x.LinkId == linkId /*&& context.CurrentPositionsIdList.Contains(x.Acc.PositionId)*/)
                         .OrderBy(x => x.RegistrationDate ?? x.CreateDate)
                         .Select(y => new FrontDocument
@@ -875,7 +880,7 @@ namespace BL.Database.Common
                 links.ForEach(y => CommonQueries.ChangeRegistrationFullNumber(y));
                 x.Links = links;
 
-                x.Accesses = acc.Where(y => y.DocumentId == x.Id).ToList();
+                //TODO x.Accesses = acc.Where(y => y.DocumentId == x.Id).ToList();
             });
 
             return items;
@@ -1107,14 +1112,16 @@ namespace BL.Database.Common
                 OrderNumber = x.OrderNumber,
                 LastPaperEventId = x.LastPaperEventId,
                 IsInWork = x.IsInWork,
-                DocumentDate = x.Document.RegistrationDate ?? x.Document.CreateDate,
-                RegistrationNumber = x.Document.RegistrationNumber,
-                RegistrationNumberPrefix = x.Document.RegistrationNumberPrefix,
-                RegistrationNumberSuffix = x.Document.RegistrationNumberSuffix,
-                RegistrationFullNumber = "#" + x.Document.Id,
-                DocumentDescription = x.Document.Description,
-                DocumentTypeName = x.Document.TemplateDocument.DocumentType.Name,
-                DocumentDirectionName = x.Document.TemplateDocument.DocumentDirection.Name,
+
+                DocumentDate = x.Document.LinkId.HasValue ? x.Document.RegistrationDate ?? x.Document.CreateDate : (DateTime?)null,
+                RegistrationNumber = x.Document.LinkId.HasValue ? x.Document.RegistrationNumber : null,
+                RegistrationNumberPrefix = x.Document.LinkId.HasValue ? x.Document.RegistrationNumberPrefix : null,
+                RegistrationNumberSuffix = x.Document.LinkId.HasValue ? x.Document.RegistrationNumberSuffix : null,
+                RegistrationFullNumber = x.Document.LinkId.HasValue ? "#" + x.Document.Id : null,
+                DocumentDescription = x.Document.LinkId.HasValue ? x.Document.Description : null,
+                DocumentTypeName = x.Document.LinkId.HasValue ? x.Document.TemplateDocument.DocumentType.Name : null,
+                DocumentDirectionName = x.Document.LinkId.HasValue ? x.Document.TemplateDocument.DocumentDirection.Name : null,
+
                 OwnerAgentName = x.LastPaperEvent.TargetAgent.Name,
                 OwnerPositionExecutorAgentName = x.LastPaperEvent.TargetPositionExecutorAgent.Name,
                 OwnerPositionName = x.LastPaperEvent.TargetPosition.Name,
