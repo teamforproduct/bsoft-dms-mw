@@ -28,53 +28,16 @@ namespace BL.Database.Common
 {
     internal static class CommonQueries
     {
-        public static IQueryable<DocumentQuery> GetDocumentQuery(DmsContext dbContext, IContext ctx, IQueryable<FrontDocumentAccess> userAccesses = null)
+        public static IQueryable<DBModel.Document.Documents> GetDocumentQuery(DmsContext dbContext, IContext ctx, IQueryable<FrontDocumentAccess> userAccesses = null)
         {
-            var qry = from dc in dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == ctx.CurrentClientId)
-                      join tmpl in dbContext.TemplateDocumentsSet on dc.TemplateDocumentId equals tmpl.Id
-                      join ddir in dbContext.DictionaryDocumentDirectionsSet on tmpl.DocumentDirectionId equals ddir.Id
-                      join doctp in dbContext.DictionaryDocumentTypesSet on tmpl.DocumentTypeId equals doctp.Id
-                      join executor in dbContext.DictionaryPositionsSet on dc.ExecutorPositionId equals executor.Id
-
-                      join ea in dbContext.DictionaryAgentsSet on executor.ExecutorAgentId equals ea.Id into ea
-                      from exAg in ea.DefaultIfEmpty()
-
-                      join z in dbContext.DictionaryDocumentSubjectsSet on dc.DocumentSubjectId equals z.Id into eg
-                      from docsubj in eg.DefaultIfEmpty()
-
-                      join g in dbContext.DictionaryRegistrationJournalsSet on dc.RegistrationJournalId equals g.Id into
-                          egg
-                      from regj in egg.DefaultIfEmpty()
-
-                      join ag in dbContext.DictionaryAgentsSet on dc.SenderAgentId equals ag.Id into ag
-                      from sendAg in ag.DefaultIfEmpty()
-
-                      join ap in dbContext.DictionaryAgentPersonsSet on dc.SenderAgentPersonId equals ap.Id into ap
-                      from sendAp in ap.DefaultIfEmpty()
-
-                      where dbContext.DocumentAccessesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.PositionId)).Select(x => x.DocumentId).Contains(dc.Id)
-                      && tmpl.ClientId == ctx.CurrentClientId
-                      select new DocumentQuery
-                      {
-                          Doc = dc,
-                          Templ = tmpl,
-                          DirName = ddir.Name,
-                          SubjName = docsubj.Name,
-                          DocTypeName = doctp.Name,
-                          RegistrationJournalName = regj.Name,
-                          RegistrationJournalNumerationPrefixFormula = regj.NumerationPrefixFormula,
-                          RegistrationJournalPrefixFormula = regj.PrefixFormula,
-                          RegistrationJournalSuffixFormula = regj.SuffixFormula,
-                          ExecutorPosName = executor.Name,
-                          ExecutorPositionExecutorAgentName = dc.ExecutorPositionExecutorAgent.Name,
-                          //ExecutorPositionExecutorNowAgentName = executor.ExecutorAgent.Name,
-                          ExecutorPositionExecutorNowAgentName = exAg.Name,
-                          SenderAgentname = sendAg.Name,
-                          SenderPersonName = sendAp.FullName
-                      };
+            var qry = dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == ctx.CurrentClientId).AsQueryable();
+            if(!ctx.IsAdmin)
+            {
+                qry = qry.Where(x => x.Accesses.Any(y => ctx.CurrentPositionsIdList.Contains(y.PositionId)));
+            }
             if (userAccesses != null)
             {
-                qry = qry.Where(x => userAccesses.Select(a => a.DocumentId).Contains(x.Doc.Id));
+                qry = qry.Where(x => userAccesses.Select(a => a.DocumentId).Contains(x.Id));
             }
             return qry;
         }
@@ -275,7 +238,7 @@ namespace BL.Database.Common
         public static IQueryable<DocumentEvents> GetDocumentEventsQuery(IContext ctx, DmsContext dbContext)
         {
             var qry = GetDocumentQuery(dbContext, ctx)
-                        .SelectMany(x => x.Doc.Events)
+                        .SelectMany(x => x.Events)
                         .AsQueryable();
             return qry
                     .Where(x => ctx.IsAdmin || (x.TargetPositionId.HasValue && ctx.CurrentPositionsIdList.Contains(x.TargetPositionId.Value))
@@ -287,7 +250,7 @@ namespace BL.Database.Common
         public static IQueryable<DocumentWaits> GetDocumentWaitsQuery(DmsContext dbContext, IContext ctx, int? documentId = null)
         {
             var qry = GetDocumentQuery(dbContext, ctx)
-                        .SelectMany(x => x.Doc.Waits)
+                        .SelectMany(x => x.Waits)
                         .AsQueryable();
             if (documentId.HasValue)
             {
@@ -540,7 +503,7 @@ namespace BL.Database.Common
         public static IQueryable<DocumentSubscriptions> GetDocumentSubscriptionsQuery(DmsContext dbContext, FilterDocumentSubscription filter, IContext ctx)
         {
             var subscriptionsDb = GetDocumentQuery(dbContext, ctx)
-                                    .SelectMany(x => x.Doc.Subscriptions)
+                                    .SelectMany(x => x.Subscriptions)
                                     .AsQueryable();
 
             if (filter != null)
@@ -903,24 +866,24 @@ namespace BL.Database.Common
             var acc = CommonQueries.GetDocumentAccesses(context, dbContext, true);
 
             var items = CommonQueries.GetDocumentQuery(dbContext, context, acc)
-                    .Where(x => x.Doc.LinkId == linkId /*&& context.CurrentPositionsIdList.Contains(x.Acc.PositionId)*/)
-                        .OrderBy(x => x.Doc.RegistrationDate ?? x.Doc.CreateDate)
+                    .Where(x => x.LinkId == linkId /*&& context.CurrentPositionsIdList.Contains(x.Acc.PositionId)*/)
+                        .OrderBy(x => x.RegistrationDate ?? x.CreateDate)
                         .Select(y => new FrontDocument
                         {
-                            Id = y.Doc.Id,
-                            DocumentDirectionName = y.DirName,
-                            DocumentTypeName = y.DocTypeName,
+                            Id = y.Id,
+                            DocumentDirectionName = y.TemplateDocument.DocumentDirection.Name,
+                            DocumentTypeName = y.TemplateDocument.DocumentType.Name,
 
-                            RegistrationNumber = y.Doc.RegistrationNumber,
-                            RegistrationNumberPrefix = y.Doc.RegistrationNumberPrefix,
-                            RegistrationNumberSuffix = y.Doc.RegistrationNumberSuffix,
+                            RegistrationNumber = y.RegistrationNumber,
+                            RegistrationNumberPrefix = y.RegistrationNumberPrefix,
+                            RegistrationNumberSuffix = y.RegistrationNumberSuffix,
 
-                            DocumentDate = y.Doc.RegistrationDate ?? y.Doc.CreateDate,
-                            IsRegistered = y.Doc.IsRegistered,
-                            Description = y.Doc.Description,
-                            ExecutorPositionExecutorAgentName = y.ExecutorPositionExecutorAgentName,
-                            ExecutorPositionName = y.ExecutorPosName,
-                            Links = dbContext.DocumentLinksSet.Where(z => z.Document.TemplateDocument.ClientId == context.CurrentClientId).Where(z => z.DocumentId == y.Doc.Id).OrderBy(z => z.LastChangeDate).
+                            DocumentDate = y.RegistrationDate ?? y.CreateDate,
+                            IsRegistered = y.IsRegistered,
+                            Description = y.Description,
+                            ExecutorPositionExecutorAgentName = y.ExecutorPositionExecutorAgent.Name,
+                            ExecutorPositionName = y.ExecutorPosition.Name,
+                            Links = dbContext.DocumentLinksSet.Where(z => z.Document.TemplateDocument.ClientId == context.CurrentClientId).Where(z => z.DocumentId == y.Id).OrderBy(z => z.LastChangeDate).
                                 Select(z => new FrontDocumentLink
                                 {
                                     Id = z.Id,
@@ -1376,12 +1339,12 @@ namespace BL.Database.Common
 
         public static InternalDocument GetDocumentHashPrepare(DmsContext dbContext, IContext ctx, int documentId)
         {
-            var doc = CommonQueries.GetDocumentQuery(dbContext, ctx).Where(x => x.Doc.Id == documentId)
+            var doc = CommonQueries.GetDocumentQuery(dbContext, ctx).Where(x => x.Id == documentId)
                 .Select(x => new InternalDocument
                 {
-                    Id = x.Doc.Id,
-                    DocumentTypeId = x.Templ.DocumentTypeId,
-                    Description = x.Doc.Description
+                    Id = x.Id,
+                    DocumentTypeId = x.TemplateDocument.DocumentTypeId,
+                    Description = x.Description
                 }).FirstOrDefault();
 
             if (doc == null)
