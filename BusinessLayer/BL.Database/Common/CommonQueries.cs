@@ -31,7 +31,7 @@ namespace BL.Database.Common
         public static IQueryable<DBModel.Document.Documents> GetDocumentQuery(DmsContext dbContext, IContext ctx, IQueryable<FrontDocumentAccess> userAccesses = null)
         {
             var qry = dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == ctx.CurrentClientId).AsQueryable();
-            if(!ctx.IsAdmin)
+            if (!ctx.IsAdmin)
             {
                 qry = qry.Where(x => x.Accesses.Any(y => ctx.CurrentPositionsIdList.Contains(y.PositionId)));
             }
@@ -166,35 +166,11 @@ namespace BL.Database.Common
                 });
         }
 
-        public static IEnumerable<DocumentAccesses> GetDbDocumentAccesses(DmsContext dbContext, IContext ctx,IEnumerable<InternalDocumentAccess> docAccesses, int documentId)
+        public static IEnumerable<DocumentAccesses> GetDbDocumentAccesses(DmsContext dbContext, IContext ctx, IEnumerable<InternalDocumentAccess> docAccesses, int documentId)
         {
             if (docAccesses == null || !docAccesses.Any()) return null;
             var accPositions = dbContext.DocumentAccessesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == documentId).Select(x => x.PositionId);
             return docAccesses.Where(x => !accPositions.Contains(x.PositionId)).Select(ModelConverter.GetDbDocumentAccess);
-        }
-
-        public static InternalDocumentAccess GetInternalDocumentAccess(IContext ctx, DmsContext dbContext, int documentId)
-        {
-
-            var acc =
-                dbContext.DocumentAccessesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).FirstOrDefault(
-                    x => x.DocumentId == documentId && x.PositionId == ctx.CurrentPositionId);
-            if (acc != null)
-            {
-                return new InternalDocumentAccess
-                {
-                    LastChangeDate = acc.LastChangeDate,
-                    LastChangeUserId = acc.LastChangeUserId,
-                    Id = acc.Id,
-                    PositionId = acc.PositionId,
-                    IsInWork = acc.IsInWork,
-                    DocumentId = acc.DocumentId,
-                    IsFavourite = acc.IsFavourite,
-                    AccessLevel = (EnumDocumentAccesses)acc.AccessLevelId,
-                };
-            }
-
-            return null;
         }
 
         public static IQueryable<DocumentAccesses> GetDocumentAccessesesQry(DmsContext dbContext, int documentId, IContext ctx)
@@ -211,28 +187,28 @@ namespace BL.Database.Common
         {
             return dbContext.DocumentAccessesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
                     .Where(x => x.DocumentId == documentId).Select(acc => new InternalDocumentAccess
-                {
-                    LastChangeDate = acc.LastChangeDate,
-                    LastChangeUserId = acc.LastChangeUserId,
-                    Id = acc.Id,
-                    PositionId = acc.PositionId,
-                    IsInWork = acc.IsInWork,
-                    DocumentId = acc.DocumentId,
-                    IsFavourite = acc.IsFavourite,
-                    AccessLevel = (EnumDocumentAccesses)acc.AccessLevelId
-                }).ToList();
+                    {
+                        LastChangeDate = acc.LastChangeDate,
+                        LastChangeUserId = acc.LastChangeUserId,
+                        Id = acc.Id,
+                        PositionId = acc.PositionId,
+                        IsInWork = acc.IsInWork,
+                        DocumentId = acc.DocumentId,
+                        IsFavourite = acc.IsFavourite,
+                        AccessLevel = (EnumDocumentAccesses)acc.AccessLevelId
+                    }).ToList();
         }
 
         public static IEnumerable<InternalPositionInfo> GetInternalPositionsInfo(DmsContext dbContext, IContext context, List<int> positionIds)
         {
             return dbContext.DictionaryPositionsSet.Where(x => x.Department.Company.ClientId == context.CurrentClientId)
                 .Where(x => positionIds.Contains(x.Id)).Select(x => new InternalPositionInfo
-            {
-                PositionId = x.Id,
-                PositionName = x.Name,
-                AgentId = x.ExecutorAgentId ?? 0,
-                AgentName = x.ExecutorAgentId.HasValue ? x.ExecutorAgent.Name : ""
-            }).ToList();
+                {
+                    PositionId = x.Id,
+                    PositionName = x.Name,
+                    AgentId = x.ExecutorAgentId ?? 0,
+                    AgentName = x.ExecutorAgentId.HasValue ? x.ExecutorAgent.Name : ""
+                }).ToList();
         }
 
         public static IQueryable<DocumentEvents> GetDocumentEventsQuery(IContext ctx, DmsContext dbContext)
@@ -284,21 +260,19 @@ namespace BL.Database.Common
         {
             var tasksDb = dbContext.DocumentTasksSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId).AsQueryable();
 
-            var sendTypeIds = new List<int> { (int)EnumSendTypes.SendForResponsibleExecution, (int)EnumSendTypes.SendForControl };
             var sendListDb = dbContext.DocumentSendListsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId)
                             .Where(x => x.TaskId.HasValue)
                             .Where(x => !x.CloseEventId.HasValue)
-                            .Where(x => sendTypeIds.Contains(x.SendTypeId))
+                            .Where(x => x.SendTypeId == (int)EnumSendTypes.SendForResponsibleExecution)
                             .GroupBy(x => x.TaskId)
                             .Select(x => x.FirstOrDefault())
                             .AsQueryable();
 
-            var eventTypeIds = new List<int> { /*(int)EnumEventTypes.SendForControl, (int)EnumEventTypes.SendForControlChange,*/ (int)EnumEventTypes.SendForResponsibleExecution, (int)EnumEventTypes.SendForResponsibleExecutionChange };
             var eventDb = dbContext.DocumentWaitsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId)
                             .Where(x => !x.OffEventId.HasValue)
                             .Select(x => x.OnEvent)
                             .Where(x => x.TaskId.HasValue)
-                            .Where(x => eventTypeIds.Contains(x.EventTypeId))
+                            .Where(x => x.EventTypeId ==(int)EnumEventTypes.SendForResponsibleExecution || x.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecutionChange )
                             .GroupBy(x => x.TaskId)
                             .Select(x => x.FirstOrDefault())
                             .AsQueryable();
@@ -402,7 +376,7 @@ namespace BL.Database.Common
 
             var waitsRes = waitsDb
                 .Select(x => new { Wait = x, x.OnEvent, x.OffEvent })
-                .OrderBy(x => new { DueDate = x.Wait.DueDate??DateTime.MaxValue,x.OnEvent.Date} )
+                .OrderBy(x => new { DueDate = x.Wait.DueDate ?? DateTime.MaxValue, x.OnEvent.Date })
                 .AsQueryable();
 
             if (paging != null)
@@ -1028,7 +1002,7 @@ namespace BL.Database.Common
         public static void ModifyPropertyValues(DmsContext dbContext, IContext ctx, InternalPropertyValues model)
         {
             var propertyValues = dbContext.PropertyValuesSet
-                .Where(x=>x.PropertyLink.Property.ClientId == ctx.CurrentClientId)
+                .Where(x => x.PropertyLink.Property.ClientId == ctx.CurrentClientId)
                 .Where(x => x.PropertyLink.ObjectId == (int)model.Object && x.RecordId == model.RecordId)
                 .Select(x => new { x.Id, x.PropertyLinkId }).ToList();
 

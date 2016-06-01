@@ -34,10 +34,8 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                var qry = from doc in dbContext.DocumentsSet
-                          join tmpl in dbContext.TemplateDocumentsSet on doc.TemplateDocumentId equals tmpl.Id
-                          where tmpl.ClientId == ctx.CurrentClientId
-                          select doc.Id;
+                var qry = dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == ctx.CurrentClientId).AsQueryable();
+
                 var count = qry.Count();
 
                 return count;
