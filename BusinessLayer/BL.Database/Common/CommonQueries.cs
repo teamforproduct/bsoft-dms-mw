@@ -3,7 +3,6 @@ using System.Linq;
 using BL.CrossCutting.Interfaces;
 using BL.Database.DatabaseContext;
 using BL.Database.DBModel.Document;
-using BL.Database.DBModel.InternalModel;
 using BL.Database.DBModel.System;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;
@@ -267,14 +266,14 @@ namespace BL.Database.Common
             //                .Select(x => x.FirstOrDefault())
             //                .AsQueryable();
 
-            var eventDb = dbContext.DocumentWaitsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId)
-                            .Where(x => !x.OffEventId.HasValue)
-                            .Select(x => x.OnEvent)
-                            .Where(x => x.TaskId.HasValue)
-                            .Where(x => x.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecution || x.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecutionChange)
-                            .GroupBy(x => x.TaskId)
-                            .Select(x => x.FirstOrDefault())
-                            .AsQueryable();
+            //var eventDb = dbContext.DocumentWaitsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId)
+            //                .Where(x => !x.OffEventId.HasValue)
+            //                .Select(x => x.OnEvent)
+            //                .Where(x => x.TaskId.HasValue)
+            //                .Where(x => x.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecution || x.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecutionChange)
+            //                .GroupBy(x => x.TaskId)
+            //                .Select(x => x.FirstOrDefault())
+            //                .AsQueryable();
 
             if (filter != null)
             {

@@ -936,8 +936,7 @@ namespace BL.Database.Documents
                 //time.Reset();
 
                 //time.Start();
-                var cnt_waits =
-                    CommonQueries.GetDocumentWaitsQuery(dbContext, ctx, res.Id).Where(x => !x.OffEventId.HasValue)
+                var cnt_waits = CommonQueries.GetDocumentWaitsQuery(dbContext, ctx, res.Id).Where(x => !x.OffEventId.HasValue)
                         .GroupBy(x => x.DocumentId)
                         .Select(x => new
                         {
