@@ -42,6 +42,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Context\AdminContext.cs" />
@@ -49,6 +50,7 @@
     <Compile Include="CryptographicWorker\ICryptoService.cs" />
     <Compile Include="Helpers\IConvertToDataSet.cs" />
     <Compile Include="Helpers\ConvertToDataSet.cs" />
+    <Compile Include="Helpers\Logger.cs" />
     <Compile Include="Helpers\VerifyLicence.cs" />
     <Compile Include="Interfaces\ICommand.cs" />
     <Compile Include="Context\DefaultContext.cs" />

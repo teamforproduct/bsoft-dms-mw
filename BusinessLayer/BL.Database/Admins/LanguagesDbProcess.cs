@@ -135,13 +135,8 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(context))
             {
-
-                var item = dbContext.AdminLanguagesSet.FirstOrDefault(x => x.Id == model.Id);
-                if (item != null)
-                {
-                    dbContext.AdminLanguagesSet.Remove(item);
-                    dbContext.SaveChanges();
-                }
+                dbContext.AdminLanguagesSet.RemoveRange(dbContext.AdminLanguagesSet.Where(x => x.Id == model.Id));
+                dbContext.SaveChanges();
             }
         }
         #endregion AdminLanguages
@@ -268,13 +263,8 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(context))
             {
-
-                var item = dbContext.AdminLanguageValuesSet.FirstOrDefault(x => x.Id == model.Id);
-                if (item != null)
-                {
-                    dbContext.AdminLanguageValuesSet.Remove(item);
-                    dbContext.SaveChanges();
-                }
+                dbContext.AdminLanguageValuesSet.RemoveRange(dbContext.AdminLanguageValuesSet.Where(x => x.Id == model.Id));
+                dbContext.SaveChanges();
             }
         }
         #endregion AdminLanguageValues
