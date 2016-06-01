@@ -24,6 +24,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public int? TaskId { get; set; }
         public string TaskName { get; set; }
         public bool IsAvailableWithinTask { get; set; }
+        public bool IsWorkGroup { get; set; }
         public bool IsAddControl { get; set; }
 
         public Nullable<DateTime> SelfDueDate { get; set; }

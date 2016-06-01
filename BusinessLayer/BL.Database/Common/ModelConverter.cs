@@ -206,6 +206,7 @@ namespace BL.Database.Common
 
                     TaskId = sendList.TaskId,
                     IsAvailableWithinTask = sendList.IsAvailableWithinTask,
+                    IsWorkGroup = sendList.IsWorkGroup,
                     IsAddControl = sendList.IsAddControl,
                     SelfDueDate = sendList.SelfDueDate,
                     SelfDueDay = sendList.SelfDueDay,

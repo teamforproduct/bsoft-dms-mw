@@ -53,7 +53,7 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new PlanPointHasAlredyBeenLaunched();
             }
-            if (!Model.TargetPositionId.HasValue || _document.Waits == null|| _document.Waits.Count()>1)
+            if (!Model.TargetPositionId.HasValue || (Model.IsWorkGroup && (_document.Waits == null || _document.Waits.Count() > 1 || !Model.TaskId.HasValue)))
             {
                 throw new WrongDocumentSendListEntry();
             }
@@ -65,14 +65,16 @@ namespace BL.Logic.DocumentCore.Commands
         {
             _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, Model.DocumentId, Model.AccessLevel, Model.TargetPositionId.Value);
 
-            var waitParent = _document.Waits.First();
+            var waitParent = _document.Waits.FirstOrDefault();
             var waitTarget = CommonDocumentUtilities.GetNewDocumentWait(_context, Model, _eventType, EnumEventCorrespondentType.FromSourceToTarget);
-            waitTarget.ParentId = waitParent.Id;
-            waitTarget.OnEvent.SourcePositionId = waitParent.OnEvent.TargetPositionId;
-            waitTarget.OnEvent.SourcePositionExecutorAgentId = waitParent.OnEvent.TargetPositionExecutorAgentId;
-            _document.Waits = new List<InternalDocumentWait> {  waitTarget };
-
-            if (Model.SourcePositionId != waitParent.OnEvent.TargetPositionId)
+            if (Model.IsWorkGroup)
+            {
+                waitTarget.ParentId = waitParent.Id;
+                waitTarget.OnEvent.SourcePositionId = waitParent.OnEvent.TargetPositionId;
+                waitTarget.OnEvent.SourcePositionExecutorAgentId = waitParent.OnEvent.TargetPositionExecutorAgentId;
+            }
+            _document.Waits = new List<InternalDocumentWait> { waitTarget };
+            if (Model.SourcePositionId != waitTarget.OnEvent.SourcePositionId)
             {
                 _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, Model);
             }

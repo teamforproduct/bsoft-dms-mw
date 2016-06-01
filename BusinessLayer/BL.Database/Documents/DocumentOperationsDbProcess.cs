@@ -47,7 +47,7 @@ namespace BL.Database.Documents
                 if (res.Document != null)
                 {
 
-                    res.Document.Accesses = CommonQueries.GetDocumentAccessesesQry(dbContext, res.Document.Id,context)
+                    res.Document.Accesses = CommonQueries.GetDocumentAccessesesQry(dbContext, res.Document.Id, context)
                         .Select(x => new InternalDocumentAccess
                         {
                             Id = x.Id,
@@ -1015,7 +1015,7 @@ namespace BL.Database.Documents
                     if (document.Accesses?.Any() ?? false)
                     {
                         dbContext.DocumentAccessesSet.AddRange(
-                            CommonQueries.GetDbDocumentAccesses(dbContext, ctx,document.Accesses, document.Id).ToList());
+                            CommonQueries.GetDbDocumentAccesses(dbContext, ctx, document.Accesses, document.Id).ToList());
                         dbContext.SaveChanges();
                     }
 
@@ -1181,38 +1181,38 @@ namespace BL.Database.Documents
                         Id = x.Id
                     }).FirstOrDefault();
                 if (doc == null) return null;
-
-                doc.Waits = dbContext.DocumentWaitsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId)
-                    .Where(x => x.DocumentId == sendList.DocumentId && x.OnEvent.Task.Id == sendList.TaskId && !x.OffEventId.HasValue
-                                && (x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecution /*|| x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForControl*/))
-                    .Select(x => new List<InternalDocumentWait>
-                                    {
-                                        new InternalDocumentWait
-                                        {
-                                                Id = x.Id,
-                                                OnEvent = new InternalDocumentEvent
-                                                {
-                                                    TargetPositionId = x.OnEvent.TargetPositionId,
-                                                    TargetPositionExecutorAgentId = x.OnEvent.TargetPositionExecutorAgentId,
-                                                }
-                                        }
-                                    }
-                    ).FirstOrDefault();
-                doc.Events = dbContext.DocumentEventsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId)
-                    .Where(x => x.DocumentId == sendList.DocumentId && x.Task.Id == sendList.TaskId 
-                                && (x.EventTypeId == (int)EnumEventTypes.SendForControl))
-                    .Select(x => new List<InternalDocumentEvent>
-                                    {
-                                        new InternalDocumentEvent
-                                        {
-                                                Id = x.Id,
-                                                TargetPositionId = x.TargetPositionId,
-                                                TargetPositionExecutorAgentId = x.TargetPositionExecutorAgentId,
-                                        }
-                                    }
-                    ).FirstOrDefault();
+                if (sendList.SendType == EnumSendTypes.SendForResponsibleExecution || sendList.SendType == EnumSendTypes.SendForControl || sendList.IsWorkGroup)
+                {
+                    doc.Waits = dbContext.DocumentWaitsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId)
+                        .Where(x => x.DocumentId == sendList.DocumentId && x.OnEvent.Task.Id == sendList.TaskId && !x.OffEventId.HasValue
+                                    && x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecution
+                                    && x.OnEvent.SourcePositionId == sendList.SourcePositionId)
+                        .Select(x => new InternalDocumentWait
+                        {
+                            Id = x.Id,
+                            OnEvent = new InternalDocumentEvent
+                            {
+                                TargetPositionId = x.OnEvent.TargetPositionId,
+                                TargetPositionExecutorAgentId = x.OnEvent.TargetPositionExecutorAgentId,
+                            }
+                        }
+                        ).ToList();
+                }
+                if (sendList.SendType == EnumSendTypes.SendForResponsibleExecution || sendList.SendType == EnumSendTypes.SendForControl)
+                {
+                    doc.Events = dbContext.DocumentEventsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId)
+                        .Where(x => x.DocumentId == sendList.DocumentId && x.Task.Id == sendList.TaskId
+                                    && x.EventTypeId == (int)EnumEventTypes.SendForControl
+                                    && x.SourcePositionId == sendList.SourcePositionId)
+                        .Select(x => new InternalDocumentEvent
+                        {
+                            Id = x.Id,
+                            TargetPositionId = x.TargetPositionId,
+                            TargetPositionExecutorAgentId = x.TargetPositionExecutorAgentId,
+                        }
+                        ).ToList();
+                }
                 return doc;
-
             }
         }
 
@@ -1625,6 +1625,7 @@ namespace BL.Database.Documents
                     entry.Property(e => e.TargetAgentId).IsModified = true;
                     entry.Property(e => e.TaskId).IsModified = true;
                     entry.Property(e => e.IsAvailableWithinTask).IsModified = true;
+                    entry.Property(e => e.IsWorkGroup).IsModified = true;
                     entry.Property(e => e.IsAddControl).IsModified = true;
                     entry.Property(e => e.SelfDueDate).IsModified = true;
                     entry.Property(e => e.SelfDueDay).IsModified = true;
@@ -1769,6 +1770,7 @@ namespace BL.Database.Documents
                                             TargetAgentId = x.TargetAgentId,
                                             TaskId = x.TaskId,
                                             IsAvailableWithinTask = x.IsAvailableWithinTask,
+                                            IsWorkGroup = x.IsWorkGroup,
                                             IsAddControl = x.IsAddControl,
                                             SelfDueDate = x.SelfDueDate,
                                             SelfDueDay = x.SelfDueDay,

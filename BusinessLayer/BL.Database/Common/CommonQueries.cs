@@ -940,6 +940,7 @@ namespace BL.Database.Common
 
                 Task = y.Task.Task,
                 IsAvailableWithinTask = y.IsAvailableWithinTask,
+                IsWorkGroup = y.IsWorkGroup,
                 IsAddControl = y.IsAddControl,
                 SelfDueDate = y.SelfDueDate,
                 SelfDueDay = y.SelfDueDay,
