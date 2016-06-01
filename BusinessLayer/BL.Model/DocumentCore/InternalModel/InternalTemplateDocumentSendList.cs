@@ -15,6 +15,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public int? TargetAgentId { get; set; }
 
         public int? TaskId { get; set; }
+        public bool IsWorkGroup { get; set; }
         public bool IsAddControl { get; set; }
 
         public Nullable<DateTime> SelfDueDate { get; set; }
@@ -40,6 +41,7 @@ namespace BL.Model.DocumentCore.InternalModel
             this.TargetPositionId = list.TargetPositionId;
             this.TargetAgentId = list.TargetAgentId;
             this.TaskId = list.TaskId;
+            this.IsWorkGroup = list.IsWorkGroup;
             this.IsAddControl = list.IsAddControl;
 
             this.SelfDueDate = list.SelfDueDate;

@@ -278,6 +278,7 @@ namespace BL.Database.Documents
                             PositionName = x.TargetPosition.Name,
                             SendTypeName = x.SendType.Name,
                             AccessLevelName = x.AccessLevel.Name,
+                            IsWorkGroup = x.IsWorkGroup,
                             IsAddControl = x.IsAddControl,
                             SelfDueDate = x.SelfDueDate,
                             SelfDueDay = x.SelfDueDay,
@@ -295,6 +296,7 @@ namespace BL.Database.Documents
                 {
                     DocumentId = template.DocumentId,
                     Description = template.Description,
+                    IsWorkGroup = template.IsWorkGroup,
                     IsAddControl = template.IsAddControl,
                     SelfDueDate = template.SelfDueDate,
                     SelfDueDay = template.SelfDueDay,

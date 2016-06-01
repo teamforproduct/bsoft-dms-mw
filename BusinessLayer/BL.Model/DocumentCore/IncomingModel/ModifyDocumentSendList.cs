@@ -51,6 +51,10 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// </summary>
         public string Task { get; set; }
         /// <summary>
+        /// Поручение в рамках рабочей группы
+        /// </summary>
+        public bool IsWorkGroup { get; set; }
+        /// <summary>
         /// Добавлять самоконтроль для отправителя
         /// </summary>
         public bool IsAddControl { get; set; }

@@ -24,6 +24,7 @@ namespace BL.Database.DBModel.Template
         public int Stage { get; set; }
         public int? DueDay { get; set; }
         public int AccessLevelId { get; set; }
+        public bool IsWorkGroup { get; set; }
         public bool IsAddControl { get; set; }
         public Nullable<DateTime> SelfDueDate { get; set; }
         public int? SelfDueDay { get; set; }
