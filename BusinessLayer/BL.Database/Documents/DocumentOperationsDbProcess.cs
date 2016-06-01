@@ -777,6 +777,7 @@ namespace BL.Database.Documents
                     EventType = x.Event.EventTypeId,
                     EventTypeName = x.Event.EventType.Name,
                     Date = x.Event.Date,
+                    CreateDate = x.Event.Date != x.Event.CreateDate ? (DateTime?)x.Event.CreateDate : null,
                     Task = x.Event.Task.Task,
                     Description = x.Event.Description,
                     AddDescription = x.Event.AddDescription,

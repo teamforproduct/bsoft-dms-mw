@@ -30,6 +30,7 @@ namespace BL.Database.DBModel.Document
         public Nullable<int> DocumentSubjectId { get; set; }
         [MaxLength(2000)]
         public string Description { get; set; }
+        public string AddDescription { get; set; }
         public bool? IsRegistered { get; set; }
         public Nullable<int> RegistrationJournalId { get; set; }
         [MaxLength(2000)]

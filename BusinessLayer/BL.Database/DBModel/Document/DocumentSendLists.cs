@@ -27,10 +27,12 @@ namespace BL.Database.DBModel.Document
         //public string TaskName { get; set; }
         [MaxLength(2000)]
         public string Description { get; set; }
+        public string AddDescription { get; set; }
         public Nullable<DateTime> DueDate { get; set; }
         public int? DueDay { get; set; }
         public int AccessLevelId { get; set; }
         public bool IsInitial { get; set; }
+        public bool IsWorkGroup { get; set; }
         public bool IsAddControl { get; set; }
         public Nullable<DateTime> SelfDueDate { get; set; }
         public int? SelfDueDay { get; set; }

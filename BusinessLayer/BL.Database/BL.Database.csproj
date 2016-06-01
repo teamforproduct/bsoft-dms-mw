@@ -316,6 +316,10 @@
     <Compile Include="Migrations\201605301135029_BLCorrections.Designer.cs">
       <DependentUpon>201605301135029_BLCorrections.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201606010951185_IsWorkGroup.cs" />
+    <Compile Include="Migrations\201606010951185_IsWorkGroup.Designer.cs">
+      <DependentUpon>201606010951185_IsWorkGroup.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SystemDb\ISystemDbProcess.cs" />
@@ -444,6 +448,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201605301135029_BLCorrections.resx">
       <DependentUpon>201605301135029_BLCorrections.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201606010951185_IsWorkGroup.resx">
+      <DependentUpon>201606010951185_IsWorkGroup.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
