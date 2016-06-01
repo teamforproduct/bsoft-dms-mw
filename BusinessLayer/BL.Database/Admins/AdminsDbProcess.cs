@@ -102,7 +102,7 @@ namespace BL.Database.Admins
                                         .GroupBy(g => g.TargetPositionId)
                                         .Select(s => new { PosID = s.Key, EvnCnt = s.Count() }).ToList();
 
-                res.Join(newevnt, r => r.RolePositionId, e => e.PosID, (r, e) => { r.NewEventsCount = e.EvnCnt; return r; });
+                res.Join(newevnt, r => r.RolePositionId, e => e.PosID, (r, e) => { r.NewEventsCount = e.EvnCnt; return r; }).ToList();
 
                 //TODO
                 //foreach (var rn in res.Join(newevnt, r => r.RolePositionId, e => e.PosID, (r, e) => new { rs = r, ne = e }))

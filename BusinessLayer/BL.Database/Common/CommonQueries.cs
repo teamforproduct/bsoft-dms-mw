@@ -123,23 +123,23 @@ namespace BL.Database.Common
 
             return
                 sq.Select(x => new InternalDocumentAttachedFile
-                    {
-                        Id = x.Id,
-                        Date = x.Date,
-                        DocumentId = x.DocumentId,
-                        Extension = x.Extension,
-                        FileContent = x.Content,
-                        FileType = x.FileType,
-                        FileSize = x.FileSize,
-                        IsAdditional = x.IsAdditional,
-                        Hash = x.Hash,
-                        LastChangeDate = x.LastChangeDate,
-                        LastChangeUserId = x.LastChangeUserId,
-                        Name = x.Name,
-                        OrderInDocument = x.OrderNumber,
-                        Version = x.Version,
-                        WasChangedExternal = false
-                    }).ToList();
+                {
+                    Id = x.Id,
+                    Date = x.Date,
+                    DocumentId = x.DocumentId,
+                    Extension = x.Extension,
+                    FileContent = x.Content,
+                    FileType = x.FileType,
+                    FileSize = x.FileSize,
+                    IsAdditional = x.IsAdditional,
+                    Hash = x.Hash,
+                    LastChangeDate = x.LastChangeDate,
+                    LastChangeUserId = x.LastChangeUserId,
+                    Name = x.Name,
+                    OrderInDocument = x.OrderNumber,
+                    Version = x.Version,
+                    WasChangedExternal = false
+                }).ToList();
         }
 
         public static IQueryable<FrontDocumentAccess> GetDocumentAccesses(IContext ctx, DmsContext dbContext, bool isAll = false)
@@ -218,7 +218,7 @@ namespace BL.Database.Common
             return qry
                     .Where(x => ctx.IsAdmin || (x.TargetPositionId.HasValue && ctx.CurrentPositionsIdList.Contains(x.TargetPositionId.Value))
                     || (x.SourcePositionId.HasValue && ctx.CurrentPositionsIdList.Contains(x.SourcePositionId.Value))
-                    || (x.IsAvailableWithinTask && x.TaskId.HasValue && dbContext.DocumentTaskAccessesSet.Where(a => a.Task.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Any(a => a.TaskId == x.TaskId.Value && ctx.CurrentPositionsIdList.Contains(a.PositionId)))
+                    || (x.IsAvailableWithinTask && x.TaskId.HasValue && x.Task.TaskAccesses.Any(a => ctx.CurrentPositionsIdList.Contains(a.PositionId)))
                     ).AsQueryable();
         }
 
@@ -236,24 +236,21 @@ namespace BL.Database.Common
             }
             if (ctx != null)
             {
-                qry = qry.Where(x => ctx.IsAdmin ||
+                //TODO
+                var isAdmin = ctx.IsAdmin;
+                var currentPositionsIdList = ctx.CurrentPositionsIdList;
+
+                qry = qry.Where(x => isAdmin ||
                            (x.OnEvent.TargetPositionId.HasValue &&
-                            ctx.CurrentPositionsIdList.Contains(x.OnEvent.TargetPositionId.Value))
+                            currentPositionsIdList.Contains(x.OnEvent.TargetPositionId.Value))
                            ||
                            (x.OnEvent.SourcePositionId.HasValue &&
-                            ctx.CurrentPositionsIdList.Contains(x.OnEvent.SourcePositionId.Value))
+                            currentPositionsIdList.Contains(x.OnEvent.SourcePositionId.Value))
                            // make weit available if onevent can be accesed through the task
                            ||
                            (x.OnEvent.IsAvailableWithinTask && x.OnEvent.TaskId.HasValue &&
-                            dbContext.DocumentTaskAccessesSet.Where(a => a.Task.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Any(a => a.TaskId == x.OnEvent.TaskId.Value && ctx.CurrentPositionsIdList.Contains(a.PositionId)))
-
-                            ||
-                            (x.OffEventId.HasValue && (
-                            (x.OffEvent.TargetPositionId.HasValue &&
-                             ctx.CurrentPositionsIdList.Contains(x.OffEvent.TargetPositionId.Value))
-                            ||
-                            (x.OffEvent.SourcePositionId.HasValue &&
-                             ctx.CurrentPositionsIdList.Contains(x.OffEvent.SourcePositionId.Value)))));
+                           x.OnEvent.Task.TaskAccesses.Any(a => currentPositionsIdList.Contains(a.PositionId)))
+                             );
             }
             return qry;
         }
@@ -379,8 +376,8 @@ namespace BL.Database.Common
             }
 
             var waitsRes = waitsDb
-                .Select(x => new { Wait = x, x.OnEvent, x.OffEvent })
-                .OrderBy(x => new { DueDate = x.Wait.DueDate ?? DateTime.MaxValue, x.OnEvent.Date })
+                .OrderBy(x => x.DueDate ?? DateTime.MaxValue)
+                .ThenBy(x=> x.OnEvent.Date)
                 .AsQueryable();
 
             if (paging != null)
@@ -394,31 +391,29 @@ namespace BL.Database.Common
 
             var waits = waitsRes.Select(x => new FrontDocumentWait
             {
-                Id = x.Wait.Id,
-                DocumentId = x.Wait.DocumentId,
-                ParentId = x.Wait.ParentId,
-                OnEventId = x.Wait.OnEventId,
-                OffEventId = x.Wait.OffEventId,
-                ResultTypeId = x.Wait.ResultTypeId,
-                ResultTypeName = x.Wait.ResultType.Name,
-                DueDate = x.Wait.DueDate,
-                AttentionDate = x.Wait.AttentionDate,
-                TargetDescription = x.Wait.TargetDescription,
-                //TargetAttentionDate = x.Wait.TargetAttentionDate,
+                Id = x.Id,
+                DocumentId = x.DocumentId,
+                ParentId = x.ParentId,
+                OnEventId = x.OnEventId,
+                OffEventId = x.OffEventId,
+                ResultTypeId = x.ResultTypeId,
+                ResultTypeName = x.ResultType.Name,
+                DueDate = x.DueDate,
+                AttentionDate = x.AttentionDate,
+                TargetDescription = x.TargetDescription,
+                //TargetAttentionDate = x.TargetAttentionDate,
                 IsClosed = x.OffEvent != null,
 
-                DocumentDate = x.Wait.Document.LinkId.HasValue ? x.Wait.Document.RegistrationDate ?? x.Wait.Document.CreateDate : (DateTime?)null,
-                RegistrationNumber = x.Wait.Document.LinkId.HasValue ? x.Wait.Document.RegistrationNumber : null,
-                RegistrationNumberPrefix = x.Wait.Document.LinkId.HasValue ? x.Wait.Document.RegistrationNumberPrefix : null,
-                RegistrationNumberSuffix = x.Wait.Document.LinkId.HasValue ? x.Wait.Document.RegistrationNumberSuffix : null,
-                RegistrationFullNumber = x.Wait.Document.LinkId.HasValue ? "#" + x.Wait.Document.Id : null,
-                DocumentDescription = x.Wait.Document.LinkId.HasValue ? x.Wait.Document.Description : null,
-                DocumentTypeName = x.Wait.Document.LinkId.HasValue ? x.Wait.Document.TemplateDocument.DocumentType.Name : null,
-                DocumentDirectionName = x.Wait.Document.LinkId.HasValue ? x.Wait.Document.TemplateDocument.DocumentDirection.Name : null,
+                DocumentDate = x.Document.LinkId.HasValue ? x.Document.RegistrationDate ?? x.Document.CreateDate : (DateTime?)null,
+                RegistrationNumber = x.Document.LinkId.HasValue ? x.Document.RegistrationNumber : null,
+                RegistrationNumberPrefix = x.Document.LinkId.HasValue ? x.Document.RegistrationNumberPrefix : null,
+                RegistrationNumberSuffix = x.Document.LinkId.HasValue ? x.Document.RegistrationNumberSuffix : null,
+                RegistrationFullNumber = x.Document.LinkId.HasValue ? "#" + x.Document.Id : null,
+                DocumentDescription = x.Document.LinkId.HasValue ? x.Document.Description : null,
+                DocumentTypeName = x.Document.LinkId.HasValue ? x.Document.TemplateDocument.DocumentType.Name : null,
+                DocumentDirectionName = x.Document.LinkId.HasValue ? x.Document.TemplateDocument.DocumentDirection.Name : null,
 
-                OnEvent = x.OnEvent == null
-                    ? null
-                    : new FrontDocumentEvent
+                OnEvent = new FrontDocumentEvent
                     {
                         Id = x.OnEvent.Id,
                         DocumentId = x.OnEvent.DocumentId,
@@ -443,7 +438,7 @@ namespace BL.Database.Common
                         TargetPositionExecutorAgentPhoneNumber = "(888)888-88-88", //TODO 
 
                     },
-                OffEvent = x.OffEvent == null
+                OffEvent = !x.OffEventId.HasValue
                     ? null
                     : new FrontDocumentEvent
                     {
@@ -485,7 +480,7 @@ namespace BL.Database.Common
             {
                 subscriptionsDb = subscriptionsDb.Where(x => x.Document.Accesses.Any(y => ctx.CurrentPositionsIdList.Contains(y.PositionId)));
             }
-            
+
             if (filter != null)
             {
                 if (filter.DocumentId.Any())
@@ -507,8 +502,7 @@ namespace BL.Database.Common
             var subscriptionsDb = GetDocumentSubscriptionsQuery(dbContext, filter, ctx);
 
             var subscriptionsRes = subscriptionsDb
-                                    .Select(x => new { Subscription = x, x.SendEvent, x.DoneEvent })
-                                    .OrderByDescending(x => x.Subscription.LastChangeDate)
+                                    .OrderByDescending(x => x.LastChangeDate)
                                     .AsQueryable();
 
             if (paging != null)
@@ -522,23 +516,23 @@ namespace BL.Database.Common
 
             var subscriptions = subscriptionsRes.Select(x => new FrontDocumentSubscription
             {
-                Id = x.Subscription.Id,
-                DocumentId = x.Subscription.DocumentId,
-                SendEventId = x.Subscription.SendEventId,
-                DoneEventId = x.Subscription.DoneEventId,
-                SubscriptionStatesId = x.Subscription.SubscriptionStateId,
-                SubscriptionStatesName = x.Subscription.SubscriptionState.Name,
-                IsSuccess = x.Subscription.SubscriptionState.IsSuccess,
-                Description = x.Subscription.Description,
+                Id = x.Id,
+                DocumentId = x.DocumentId,
+                SendEventId = x.SendEventId,
+                DoneEventId = x.DoneEventId,
+                SubscriptionStatesId = x.SubscriptionStateId,
+                SubscriptionStatesName = x.SubscriptionState.Name,
+                IsSuccess = x.SubscriptionState.IsSuccess,
+                Description = x.Description,
 
-                DocumentDate = x.Subscription.Document.LinkId.HasValue ? x.Subscription.Document.RegistrationDate ?? x.Subscription.Document.CreateDate : (DateTime?)null,
-                RegistrationNumber = x.Subscription.Document.LinkId.HasValue ? x.Subscription.Document.RegistrationNumber : null,
-                RegistrationNumberPrefix = x.Subscription.Document.LinkId.HasValue ? x.Subscription.Document.RegistrationNumberPrefix : null,
-                RegistrationNumberSuffix = x.Subscription.Document.LinkId.HasValue ? x.Subscription.Document.RegistrationNumberSuffix : null,
-                RegistrationFullNumber = x.Subscription.Document.LinkId.HasValue ? "#" + x.Subscription.Document.Id : null,
-                DocumentDescription = x.Subscription.Document.LinkId.HasValue ? x.Subscription.Document.Description : null,
-                DocumentTypeName = x.Subscription.Document.LinkId.HasValue ? x.Subscription.Document.TemplateDocument.DocumentType.Name : null,
-                DocumentDirectionName = x.Subscription.Document.LinkId.HasValue ? x.Subscription.Document.TemplateDocument.DocumentDirection.Name : null,
+                DocumentDate = x.Document.LinkId.HasValue ? x.Document.RegistrationDate ?? x.Document.CreateDate : (DateTime?)null,
+                RegistrationNumber = x.Document.LinkId.HasValue ? x.Document.RegistrationNumber : null,
+                RegistrationNumberPrefix = x.Document.LinkId.HasValue ? x.Document.RegistrationNumberPrefix : null,
+                RegistrationNumberSuffix = x.Document.LinkId.HasValue ? x.Document.RegistrationNumberSuffix : null,
+                RegistrationFullNumber = x.Document.LinkId.HasValue ? "#" + x.Document.Id : null,
+                DocumentDescription = x.Document.LinkId.HasValue ? x.Document.Description : null,
+                DocumentTypeName = x.Document.LinkId.HasValue ? x.Document.TemplateDocument.DocumentType.Name : null,
+                DocumentDirectionName = x.Document.LinkId.HasValue ? x.Document.TemplateDocument.DocumentDirection.Name : null,
 
                 SendEvent = x.SendEvent == null
                     ? null
@@ -548,7 +542,7 @@ namespace BL.Database.Common
                         DocumentId = x.SendEvent.DocumentId,
                         EventTypeName = x.SendEvent.EventType.Name,
                         TargetPositionExecutorAgentName = x.SendEvent.TargetPositionExecutorAgent.Name,
-                        DueDate = x.Subscription.SendEvent.OnWait.FirstOrDefault().DueDate,
+                        DueDate = x.SendEvent.OnWait.FirstOrDefault().DueDate,
 
                         Date = x.SendEvent.Date,
                         SourcePositionExecutorAgentName = x.SendEvent.SourcePositionExecutorAgent.Name,
@@ -1493,15 +1487,13 @@ namespace BL.Database.Common
                 }
             }
 
-            var subscriptionsRes = subscriptionsDb.Select(x => new { Subscription = x });
-
-            var subscriptions = subscriptionsRes.Select(x => new InternalDocumentSubscription
+            var subscriptions = subscriptionsDb.Select(x => new InternalDocumentSubscription
             {
-                Id = x.Subscription.Id,
-                SendEventId = x.Subscription.SendEventId,
-                SubscriptionStates = (EnumSubscriptionStates)x.Subscription.SubscriptionStateId,
-                Hash = x.Subscription.Hash,
-                FullHash = x.Subscription.FullHash
+                Id = x.Id,
+                SendEventId = x.SendEventId,
+                SubscriptionStates = (EnumSubscriptionStates)x.SubscriptionStateId,
+                Hash = x.Hash,
+                FullHash = x.FullHash
             }).ToList();
 
             return subscriptions;
