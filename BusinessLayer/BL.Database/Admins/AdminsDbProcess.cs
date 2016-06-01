@@ -72,22 +72,22 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                var qry = dbContext.AdminUserRolesSet.Where(x => x.Role.ClientId == ctx.CurrentClientId).AsQueryable();
+                var qry = dbContext.AdminPositionRolesSet.Where(x => x.Role.ClientId == ctx.CurrentClientId).AsQueryable();
 
                 if (filter.UserRoleId?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.UserRoleId.Contains(x.Id));
+                    qry = qry.Where(x => x.Role.UserRoles.Any(y=> filter.UserRoleId.Contains(y.Id)));
                 }
                 if (filter.UserId?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.UserId.Contains(x.UserId));
+                    qry = qry.Where(x => x.Role.UserRoles.Any(y => filter.UserId.Contains(y.UserId)));
                 }
                 if (filter.RoleId?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.UserId.Contains(x.RoleId));
+                    qry = qry.Where(x => filter.RoleId.Contains(x.RoleId));
                 }
 
-                var res = qry.Distinct().SelectMany(x => x.Role.PositionRoles).Select(x => new FrontAdminUserRole
+                var res = qry.Select(x => new FrontAdminUserRole
                 {
                     RolePositionId = x.PositionId,
                     RolePositionName = x.Position.Name,
@@ -102,10 +102,13 @@ namespace BL.Database.Admins
                                         .GroupBy(g => g.TargetPositionId)
                                         .Select(s => new { PosID = s.Key, EvnCnt = s.Count() }).ToList();
 
-                foreach (var rn in res.Join(newevnt, r => r.RolePositionId, e => e.PosID, (r, e) => new { rs = r, ne = e }))
-                {
-                    rn.rs.NewEventsCount = rn.ne.EvnCnt;
-                }
+                res.Join(newevnt, r => r.RolePositionId, e => e.PosID, (r, e) => { r.NewEventsCount = e.EvnCnt; return r; });
+
+                //TODO
+                //foreach (var rn in res.Join(newevnt, r => r.RolePositionId, e => e.PosID, (r, e) => new { rs = r, ne = e }))
+                //{
+                //    rn.rs.NewEventsCount = rn.ne.EvnCnt;
+                //}
 
                 return res;
             }
