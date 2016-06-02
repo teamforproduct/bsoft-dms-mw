@@ -17,6 +17,7 @@ namespace BL.Model.DocumentCore.FrontModel
         public int AccessLevelId { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
+        public bool IsWorkGroup { get; set; }
         public bool IsAddControl { get; set; }
         public Nullable<DateTime> SelfDueDate { get; set; }
         public int? SelfDueDay { get; set; }

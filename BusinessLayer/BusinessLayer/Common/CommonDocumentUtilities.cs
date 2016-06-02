@@ -406,6 +406,7 @@ namespace BL.Logic.Common
                 AccessLevel = model.AccessLevel,
                 IsInitial = model.IsInitial,
                 IsAvailableWithinTask = model.IsAvailableWithinTask,
+                IsWorkGroup = model.IsWorkGroup,
                 IsAddControl = model.IsAddControl,
                 SelfDueDate = model.SelfDueDate,
                 SelfDueDay = model.SelfDueDay,

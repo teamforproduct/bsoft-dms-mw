@@ -336,17 +336,6 @@ namespace DMS_WebAPI.Utilities
                                     .FirstOrDefault())
                                 .Where(x => x != null);
                     }
-                    else
-                    {
-                        qry = qry.GroupBy(x => x.ClientId)
-                                .SelectMany(x => x
-                                    .OrderBy(y => y.IsActive)
-                                    .ThenBy(y => y.LicenceKey != null)
-                                    .ThenByDescending(y => y.FirstStart)
-                                    .Skip(1))
-                                .Where(x => x != null);
-                    }
-
                 }
             }
 
@@ -1241,9 +1230,7 @@ namespace DMS_WebAPI.Utilities
 
                 if (!string.IsNullOrEmpty(filter.ClientCode))
                 {
-                    qry = qry.GroupBy(x => x.Client)
-                            .Where(x => filter.ClientCode.Equals(x.Key.Code))
-                            .SelectMany(x => x);
+                    qry = qry.Where(x => filter.ClientCode.Equals(x.Client.Code));
                 }
             }
 

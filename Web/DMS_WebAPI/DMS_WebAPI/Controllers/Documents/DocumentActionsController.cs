@@ -13,29 +13,6 @@ namespace DMS_WebAPI.Controllers.Documents
     [RoutePrefix("api/v2/DocumentActions")]
     public class DocumentActionsController : ApiController
     {
-        private void SaveToFile(string method, string time)
-        {
-            try
-            {
-                System.IO.StreamWriter sw = System.IO.File.AppendText(System.Web.HttpContext.Current.Server.MapPath("~/SiteLog.txt"));
-                try
-                {
-                    string line = $"{System.DateTime.Now.ToString("o")}\r\n method: {method}\r\n time:{time}";
-                    sw.WriteLine(line);
-                }
-                catch
-                {
-                }
-                finally
-                {
-                    sw.Close();
-                }
-            }
-            catch
-            {
-            }
-        }
-
         /// <summary>
         /// Получение списка доступных команд по документу
         /// </summary>
@@ -52,8 +29,8 @@ namespace DMS_WebAPI.Controllers.Documents
             var actions = cmdService.GetDocumentActions(ctx, id);
             timeDB.Stop();
             timeM.Stop();
-            SaveToFile("M: DocumentActionsController Get List", timeM.Elapsed.ToString("G"));
-            SaveToFile("DB: IDocumentOperationsService GetDocumentActionsPrepare", timeDB.Elapsed.ToString("G"));
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController Get List", timeM.Elapsed);
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService GetDocumentActionsPrepare", timeDB.Elapsed);
 
             return new JsonResult(actions, this);
         }
@@ -78,8 +55,8 @@ namespace DMS_WebAPI.Controllers.Documents
             timeDB.Stop();
 
             timeM.Stop();
-            SaveToFile("M: DocumentActionsController DeleteFavourite", timeM.Elapsed.ToString("G"));
-            SaveToFile("DB: IDocumentOperationsService DeleteFavourite", timeDB.Elapsed.ToString("G"));
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController DeleteFavourite", timeM.Elapsed);
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService DeleteFavourite", timeDB.Elapsed);
 
             var ctrl = new DocumentsController {ControllerContext = ControllerContext};
             return ctrl.Get(model.DocumentId);
@@ -104,8 +81,8 @@ namespace DMS_WebAPI.Controllers.Documents
             timeDB.Stop();
 
             timeM.Stop();
-            SaveToFile("M: DocumentActionsController AddFavourite", timeM.Elapsed.ToString("G"));
-            SaveToFile("DB: IDocumentOperationsService AddFavourite", timeDB.Elapsed.ToString("G"));
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController AddFavourite", timeM.Elapsed);
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService AddFavourite", timeDB.Elapsed);
 
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(model.DocumentId);
@@ -150,8 +127,8 @@ namespace DMS_WebAPI.Controllers.Documents
             timeDB.Stop();
 
             timeM.Stop();
-            SaveToFile("M: DocumentActionsController RegisterDocument", timeM.Elapsed.ToString("G"));
-            SaveToFile("DB: IDocumentOperationsService RegisterDocument", timeDB.Elapsed.ToString("G"));
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController RegisterDocument", timeM.Elapsed);
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService RegisterDocument", timeDB.Elapsed);
 
             var ctrl = new DocumentsController {ControllerContext = ControllerContext};
             return ctrl.Get(model.DocumentId);
@@ -175,8 +152,8 @@ namespace DMS_WebAPI.Controllers.Documents
             timeDB.Stop();
 
             timeM.Stop();
-            SaveToFile("M: DocumentActionsController AddDocumentLink", timeM.Elapsed.ToString("G"));
-            SaveToFile("DB: IDocumentOperationsService AddDocumentLink", timeDB.Elapsed.ToString("G"));
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController AddDocumentLink", timeM.Elapsed);
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService AddDocumentLink", timeDB.Elapsed);
 
             var ctrl = new DocumentsController {ControllerContext = ControllerContext};
             return ctrl.Get(model.DocumentId);
@@ -201,8 +178,8 @@ namespace DMS_WebAPI.Controllers.Documents
             timeDB.Stop();
 
             timeM.Stop();
-            SaveToFile("M: DocumentActionsController DeleteDocumentLink", timeM.Elapsed.ToString("G"));
-            SaveToFile("DB: IDocumentOperationsService DeleteDocumentLink", timeDB.Elapsed.ToString("G"));
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController DeleteDocumentLink", timeM.Elapsed);
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService DeleteDocumentLink", timeDB.Elapsed);
 
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(id);
@@ -227,8 +204,8 @@ namespace DMS_WebAPI.Controllers.Documents
             timeDB.Stop();
 
             timeM.Stop();
-            SaveToFile("M: DocumentActionsController StartWork", timeM.Elapsed.ToString("G"));
-            SaveToFile("DB: IDocumentOperationsService StartWork", timeDB.Elapsed.ToString("G"));
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController StartWork", timeM.Elapsed);
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService StartWork", timeDB.Elapsed);
 
             var ctrl = new DocumentsController {ControllerContext = ControllerContext};
             return ctrl.Get(model.DocumentId);
@@ -253,8 +230,8 @@ namespace DMS_WebAPI.Controllers.Documents
             timeDB.Stop();
 
             timeM.Stop();
-            SaveToFile("M: DocumentActionsController FinishWork", timeM.Elapsed.ToString("G"));
-            SaveToFile("DB: IDocumentOperationsService FinishWork", timeDB.Elapsed.ToString("G"));
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController FinishWork", timeM.Elapsed);
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService FinishWork", timeDB.Elapsed);
 
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(model.DocumentId);
@@ -279,8 +256,8 @@ namespace DMS_WebAPI.Controllers.Documents
             timeDB.Stop();
 
             timeM.Stop();
-            SaveToFile("M: DocumentActionsController SendMessage", timeM.Elapsed.ToString("G"));
-            SaveToFile("DB: IDocumentOperationsService SendMessage", timeDB.Elapsed.ToString("G"));
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController SendMessage", timeM.Elapsed);
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService SendMessage", timeDB.Elapsed);
 
             var ctrl = new DocumentsController {ControllerContext = ControllerContext};
             return ctrl.Get(model.DocumentId);
@@ -305,8 +282,8 @@ namespace DMS_WebAPI.Controllers.Documents
             timeDB.Stop();
 
             timeM.Stop();
-            SaveToFile("M: DocumentActionsController AddNote", timeM.Elapsed.ToString("G"));
-            SaveToFile("DB: IDocumentOperationsService AddDocumentComment", timeDB.Elapsed.ToString("G"));
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController AddNote", timeM.Elapsed);
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService AddDocumentComment", timeDB.Elapsed);
 
             var ctrl = new DocumentsController {ControllerContext = ControllerContext};
             return ctrl.Get(model.DocumentId);
@@ -331,8 +308,8 @@ namespace DMS_WebAPI.Controllers.Documents
             timeDB.Stop();
 
             timeM.Stop();
-            SaveToFile("M: DocumentActionsController ControlOn", timeM.Elapsed.ToString("G"));
-            SaveToFile("DB: IDocumentOperationsService ControlOn", timeDB.Elapsed.ToString("G"));
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController ControlOn", timeM.Elapsed);
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService ControlOn", timeDB.Elapsed);
 
             var ctrl = new DocumentsController {ControllerContext = ControllerContext};
             return ctrl.Get(model.DocumentId);
@@ -357,8 +334,8 @@ namespace DMS_WebAPI.Controllers.Documents
             timeDB.Stop();
 
             timeM.Stop();
-            SaveToFile("M: DocumentActionsController ControlChange", timeM.Elapsed.ToString("G"));
-            SaveToFile("DB: IDocumentOperationsService ControlChange", timeDB.Elapsed.ToString("G"));
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController ControlChange", timeM.Elapsed);
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService ControlChange", timeDB.Elapsed);
 
             var ctrl = new DocumentsController {ControllerContext = ControllerContext};
             return ctrl.Get(documentId);
@@ -384,8 +361,8 @@ namespace DMS_WebAPI.Controllers.Documents
             timeDB.Stop();
 
             timeM.Stop();
-            SaveToFile("M: DocumentActionsController SendForExecutionChange", timeM.Elapsed.ToString("G"));
-            SaveToFile("DB: IDocumentOperationsService SendForExecutionChange", timeDB.Elapsed.ToString("G"));
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController SendForExecutionChange", timeM.Elapsed);
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService SendForExecutionChange", timeDB.Elapsed);
 
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(documentId);
@@ -410,8 +387,8 @@ namespace DMS_WebAPI.Controllers.Documents
             timeDB.Stop();
 
             timeM.Stop();
-            SaveToFile("M: DocumentActionsController SendForControlChange", timeM.Elapsed.ToString("G"));
-            SaveToFile("DB: IDocumentOperationsService SendForControlChange", timeDB.Elapsed.ToString("G"));
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController SendForControlChange", timeM.Elapsed);
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService SendForControlChange", timeDB.Elapsed);
 
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(documentId);
@@ -436,8 +413,8 @@ namespace DMS_WebAPI.Controllers.Documents
             timeDB.Stop();
 
             timeM.Stop();
-            SaveToFile("M: DocumentActionsController SendForResponsibleExecutionChange", timeM.Elapsed.ToString("G"));
-            SaveToFile("DB: IDocumentOperationsService SendForResponsibleExecutionChange", timeDB.Elapsed.ToString("G"));
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController SendForResponsibleExecutionChange", timeM.Elapsed);
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService SendForResponsibleExecutionChange", timeDB.Elapsed);
 
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(documentId);
@@ -462,8 +439,8 @@ namespace DMS_WebAPI.Controllers.Documents
             timeDB.Stop();
 
             timeM.Stop();
-            SaveToFile("M: DocumentActionsController ControlTargetChange", timeM.Elapsed.ToString("G"));
-            SaveToFile("DB: IDocumentOperationsService ControlTargetChange", timeDB.Elapsed.ToString("G"));
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController ControlTargetChange", timeM.Elapsed);
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService ControlTargetChange", timeDB.Elapsed);
 
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(documentId);
@@ -488,8 +465,8 @@ namespace DMS_WebAPI.Controllers.Documents
             timeDB.Stop();
 
             timeM.Stop();
-            SaveToFile("M: DocumentActionsController ControlOff", timeM.Elapsed.ToString("G"));
-            SaveToFile("DB: IDocumentOperationsService ControlOff", timeDB.Elapsed.ToString("G"));
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController ControlOff", timeM.Elapsed);
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService ControlOff", timeDB.Elapsed);
 
             var ctrl = new DocumentsController {ControllerContext = ControllerContext};
             return ctrl.Get(documentId);
@@ -514,8 +491,8 @@ namespace DMS_WebAPI.Controllers.Documents
             timeDB.Stop();
 
             timeM.Stop();
-            SaveToFile("M: DocumentActionsController CopyDocument", timeM.Elapsed.ToString("G"));
-            SaveToFile("DB: IDocumentOperationsService CopyDocument", timeDB.Elapsed.ToString("G"));
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController CopyDocument", timeM.Elapsed);
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService CopyDocument", timeDB.Elapsed);
 
             var ctrl = new DocumentsController {ControllerContext = ControllerContext};
             return ctrl.Get(docId);
@@ -540,8 +517,8 @@ namespace DMS_WebAPI.Controllers.Documents
             timeDB.Stop();
 
             timeM.Stop();
-            SaveToFile("M: DocumentActionsController ChangeExecutor", timeM.Elapsed.ToString("G"));
-            SaveToFile("DB: IDocumentOperationsService ChangeExecutor", timeDB.Elapsed.ToString("G"));
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController ChangeExecutor", timeM.Elapsed);
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService ChangeExecutor", timeDB.Elapsed);
 
             var ctrl = new DocumentsController {ControllerContext = ControllerContext};
             return ctrl.Get(model.DocumentId);
@@ -567,8 +544,8 @@ namespace DMS_WebAPI.Controllers.Documents
             timeDB.Stop();
 
             timeM.Stop();
-            SaveToFile("M: DocumentActionsController ChangePosition", timeM.Elapsed.ToString("G"));
-            SaveToFile("DB: IDocumentOperationsService ChangePosition", timeDB.Elapsed.ToString("G"));
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController ChangePosition", timeM.Elapsed);
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService ChangePosition", timeDB.Elapsed);
 
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(model.DocumentId);
@@ -595,8 +572,8 @@ namespace DMS_WebAPI.Controllers.Documents
             timeDB.Stop();
 
             timeM.Stop();
-            SaveToFile("M: DocumentActionsController LaunchPlan", timeM.Elapsed.ToString("G"));
-            SaveToFile("DB: IDocumentOperationsService LaunchPlan", timeDB.Elapsed.ToString("G"));
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController LaunchPlan", timeM.Elapsed);
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService LaunchPlan", timeDB.Elapsed);
 
             var ctrl = new DocumentsController {ControllerContext = ControllerContext};
             return ctrl.Get(id);
@@ -622,8 +599,8 @@ namespace DMS_WebAPI.Controllers.Documents
             timeDB.Stop();
 
             timeM.Stop();
-            SaveToFile("M: DocumentActionsController MarkDocumentEventAsRead", timeM.Elapsed.ToString("G"));
-            SaveToFile("DB: IDocumentOperationsService MarkDocumentEventAsRead", timeDB.Elapsed.ToString("G"));
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController MarkDocumentEventAsRead", timeM.Elapsed);
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService MarkDocumentEventAsRead", timeDB.Elapsed);
 
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(id);
@@ -650,8 +627,8 @@ namespace DMS_WebAPI.Controllers.Documents
             timeDB.Stop();
 
             timeM.Stop();
-            SaveToFile("M: DocumentActionsController StopPlan", timeM.Elapsed.ToString("G"));
-            SaveToFile("DB: IDocumentOperationsService StopPlan", timeDB.Elapsed.ToString("G"));
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController StopPlan", timeM.Elapsed);
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService StopPlan", timeDB.Elapsed);
 
             var ctrl = new DocumentsController {ControllerContext = ControllerContext};
             return ctrl.Get(id);
@@ -676,8 +653,8 @@ namespace DMS_WebAPI.Controllers.Documents
             timeDB.Stop();
 
             timeM.Stop();
-            SaveToFile("M: DocumentActionsController MarkExecution", timeM.Elapsed.ToString("G"));
-            SaveToFile("DB: IDocumentOperationsService MarkExecution", timeDB.Elapsed.ToString("G"));
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController MarkExecution", timeM.Elapsed);
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService MarkExecution", timeDB.Elapsed);
 
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(docId);
@@ -702,8 +679,8 @@ namespace DMS_WebAPI.Controllers.Documents
             timeDB.Stop();
 
             timeM.Stop();
-            SaveToFile("M: DocumentActionsController RejectResult", timeM.Elapsed.ToString("G"));
-            SaveToFile("DB: IDocumentOperationsService RejectResult", timeDB.Elapsed.ToString("G"));
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController RejectResult", timeM.Elapsed);
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService RejectResult", timeDB.Elapsed);
 
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(docId);
@@ -728,8 +705,8 @@ namespace DMS_WebAPI.Controllers.Documents
             timeDB.Stop();
 
             timeM.Stop();
-            SaveToFile("M: DocumentActionsController AcceptResult", timeM.Elapsed.ToString("G"));
-            SaveToFile("DB: IDocumentOperationsService AcceptResult", timeDB.Elapsed.ToString("G"));
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController AcceptResult", timeM.Elapsed);
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService AcceptResult", timeDB.Elapsed);
 
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(docId);
@@ -754,8 +731,8 @@ namespace DMS_WebAPI.Controllers.Documents
             timeDB.Stop();
 
             timeM.Stop();
-            SaveToFile("M: DocumentActionsController RejectSigning", timeM.Elapsed.ToString("G"));
-            SaveToFile("DB: IDocumentOperationsService RejectSigning", timeDB.Elapsed.ToString("G"));
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController RejectSigning", timeM.Elapsed);
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService RejectSigning", timeDB.Elapsed);
 
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(docId);
@@ -779,8 +756,8 @@ namespace DMS_WebAPI.Controllers.Documents
             timeDB.Stop();
 
             timeM.Stop();
-            SaveToFile("M: DocumentActionsController RejectVisaing", timeM.Elapsed.ToString("G"));
-            SaveToFile("DB: IDocumentOperationsService RejectVisaing", timeDB.Elapsed.ToString("G"));
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController RejectVisaing", timeM.Elapsed);
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService RejectVisaing", timeDB.Elapsed);
 
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(docId);
@@ -804,8 +781,8 @@ namespace DMS_WebAPI.Controllers.Documents
             timeDB.Stop();
 
             timeM.Stop();
-            SaveToFile("M: DocumentActionsController RejectАgreement", timeM.Elapsed.ToString("G"));
-            SaveToFile("DB: IDocumentOperationsService RejectАgreement", timeDB.Elapsed.ToString("G"));
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController RejectАgreement", timeM.Elapsed);
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService RejectАgreement", timeDB.Elapsed);
 
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(docId);
@@ -829,8 +806,8 @@ namespace DMS_WebAPI.Controllers.Documents
             timeDB.Stop();
 
             timeM.Stop();
-            SaveToFile("M: DocumentActionsController RejectАpproval", timeM.Elapsed.ToString("G"));
-            SaveToFile("DB: IDocumentOperationsService RejectАpproval", timeDB.Elapsed.ToString("G"));
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController RejectАpproval", timeM.Elapsed);
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService RejectАpproval", timeDB.Elapsed);
 
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(docId);
@@ -855,8 +832,8 @@ namespace DMS_WebAPI.Controllers.Documents
             timeDB.Stop();
 
             timeM.Stop();
-            SaveToFile("M: DocumentActionsController WithdrawSigning", timeM.Elapsed.ToString("G"));
-            SaveToFile("DB: IDocumentOperationsService WithdrawSigning", timeDB.Elapsed.ToString("G"));
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController WithdrawSigning", timeM.Elapsed);
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService WithdrawSigning", timeDB.Elapsed);
 
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(docId);
@@ -880,8 +857,8 @@ namespace DMS_WebAPI.Controllers.Documents
             timeDB.Stop();
 
             timeM.Stop();
-            SaveToFile("M: DocumentActionsController WithdrawVisaing", timeM.Elapsed.ToString("G"));
-            SaveToFile("DB: IDocumentOperationsService WithdrawVisaing", timeDB.Elapsed.ToString("G"));
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController WithdrawVisaing", timeM.Elapsed);
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService WithdrawVisaing", timeDB.Elapsed);
 
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(docId);
@@ -905,8 +882,8 @@ namespace DMS_WebAPI.Controllers.Documents
             timeDB.Stop();
 
             timeM.Stop();
-            SaveToFile("M: DocumentActionsController WithdrawАgreement", timeM.Elapsed.ToString("G"));
-            SaveToFile("DB: IDocumentOperationsService WithdrawАgreement", timeDB.Elapsed.ToString("G"));
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController WithdrawАgreement", timeM.Elapsed);
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService WithdrawАgreement", timeDB.Elapsed);
 
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(docId);
@@ -930,8 +907,8 @@ namespace DMS_WebAPI.Controllers.Documents
             timeDB.Stop();
 
             timeM.Stop();
-            SaveToFile("M: DocumentActionsController WithdrawАpproval", timeM.Elapsed.ToString("G"));
-            SaveToFile("DB: IDocumentOperationsService WithdrawАpproval", timeDB.Elapsed.ToString("G"));
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController WithdrawАpproval", timeM.Elapsed);
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService WithdrawАpproval", timeDB.Elapsed);
 
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(docId);
@@ -956,8 +933,8 @@ namespace DMS_WebAPI.Controllers.Documents
             timeDB.Stop();
 
             timeM.Stop();
-            SaveToFile("M: DocumentActionsController AffixSigning", timeM.Elapsed.ToString("G"));
-            SaveToFile("DB: IDocumentOperationsService AffixSigning", timeDB.Elapsed.ToString("G"));
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController AffixSigning", timeM.Elapsed);
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService AffixSigning", timeDB.Elapsed);
 
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(docId);
@@ -981,8 +958,8 @@ namespace DMS_WebAPI.Controllers.Documents
             timeDB.Stop();
 
             timeM.Stop();
-            SaveToFile("M: DocumentActionsController AffixVisaing", timeM.Elapsed.ToString("G"));
-            SaveToFile("DB: IDocumentOperationsService AffixVisaing", timeDB.Elapsed.ToString("G"));
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController AffixVisaing", timeM.Elapsed);
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService AffixVisaing", timeDB.Elapsed);
 
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(docId);
@@ -1006,8 +983,8 @@ namespace DMS_WebAPI.Controllers.Documents
             timeDB.Stop();
 
             timeM.Stop();
-            SaveToFile("M: DocumentActionsController AffixАgreement", timeM.Elapsed.ToString("G"));
-            SaveToFile("DB: IDocumentOperationsService AffixАgreement", timeDB.Elapsed.ToString("G"));
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController AffixАgreement", timeM.Elapsed);
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService AffixАgreement", timeDB.Elapsed);
 
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(docId);
@@ -1031,8 +1008,8 @@ namespace DMS_WebAPI.Controllers.Documents
             timeDB.Stop();
 
             timeM.Stop();
-            SaveToFile("M: DocumentActionsController AffixАpproval", timeM.Elapsed.ToString("G"));
-            SaveToFile("DB: IDocumentOperationsService AffixАpproval", timeDB.Elapsed.ToString("G"));
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController AffixАpproval", timeM.Elapsed);
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService AffixАpproval", timeDB.Elapsed);
 
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(docId);
@@ -1057,8 +1034,8 @@ namespace DMS_WebAPI.Controllers.Documents
             timeDB.Stop();
 
             timeM.Stop();
-            SaveToFile("M: DocumentActionsController ReportRegistrationCardDocument", timeM.Elapsed.ToString("G"));
-            SaveToFile("DB: IDocumentOperationsService ReportRegistrationCardDocument", timeDB.Elapsed.ToString("G"));
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController ReportRegistrationCardDocument", timeM.Elapsed);
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService ReportRegistrationCardDocument", timeDB.Elapsed);
 
             return new JsonResult(res, this);
         }
@@ -1082,8 +1059,8 @@ namespace DMS_WebAPI.Controllers.Documents
             timeDB.Stop();
 
             timeM.Stop();
-            SaveToFile("M: DocumentActionsController ReportRegisterTransmissionDocuments", timeM.Elapsed.ToString("G"));
-            SaveToFile("DB: IDocumentOperationsService ReportRegisterTransmissionDocuments", timeDB.Elapsed.ToString("G"));
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController ReportRegisterTransmissionDocuments", timeM.Elapsed);
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService ReportRegisterTransmissionDocuments", timeDB.Elapsed);
 
             return new JsonResult(res, this);
         }
@@ -1103,7 +1080,7 @@ namespace DMS_WebAPI.Controllers.Documents
             var ap = DmsResolver.Current.Get<IAutoPlanService>();
             var res = ap.ManualRunAutoPlan(ctx);
             timeM.Stop();
-            SaveToFile("M: DocumentActionsController ManualStartAutoPlan", timeM.Elapsed.ToString("G"));
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController ManualStartAutoPlan", timeM.Elapsed);
 
             return new JsonResult(res, this);
         }

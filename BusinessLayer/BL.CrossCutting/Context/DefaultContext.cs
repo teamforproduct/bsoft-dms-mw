@@ -83,7 +83,6 @@ namespace BL.CrossCutting.Context
         {
             get
             {
-                //var position = CurrentPositions?.FirstOrDefault();
                 if ((_currentPositionsIdList == null) || !_currentPositionsIdList.Any())
                 {
                     throw new UserPositionIsNotDefined();

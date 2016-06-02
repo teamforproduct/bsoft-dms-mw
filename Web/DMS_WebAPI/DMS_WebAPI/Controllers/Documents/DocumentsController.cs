@@ -37,32 +37,9 @@ namespace DMS_WebAPI.Controllers.Documents
             var res = new JsonResult(docs, this);
             res.Paging = paging;
             timeM.Stop();
-            SaveToFile("DB: IDocumentService GetDocuments User: " + ctx.CurrentAgentId, timeDB.Elapsed.ToString("G"));
-            SaveToFile("M: DocumentsController Get List User: " + ctx.CurrentAgentId, timeM.Elapsed.ToString("G"));
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentService GetDocuments User: " + ctx.CurrentAgentId, timeDB.Elapsed);
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentsController Get List User: " + ctx.CurrentAgentId, timeM.Elapsed);
             return res;
-        }
-
-        private void SaveToFile(string method, string time)
-        {
-            try
-            {
-                System.IO.StreamWriter sw = System.IO.File.AppendText(System.Web.HttpContext.Current.Server.MapPath("~/SiteLog.txt"));
-                try
-                {
-                    string line = $"{DateTime.Now.ToString("o")}\r\n method: {method}\r\n time:{time}";
-                    sw.WriteLine(line);
-                }
-                catch
-                {
-                }
-                finally
-                {
-                    sw.Close();
-                }
-            }
-            catch
-            {
-            }
         }
 
         /// <summary>
@@ -92,10 +69,10 @@ namespace DMS_WebAPI.Controllers.Documents
             timeDB.Stop();
 
             timeM.Stop();
-            SaveToFile("DB: IDocumentService GetDocument and GetModifyMetaData User: " + ctx.CurrentAgentId, timeDB.Elapsed.ToString("G"));
-            SaveToFile("DB1: IDocumentService GetDocument User: " + ctx.CurrentAgentId, timeDB1.Elapsed.ToString("G"));
-            SaveToFile("DB2: IDocumentService GetModifyMetaData User: " + ctx.CurrentAgentId, timeDB2.Elapsed.ToString("G"));
-            SaveToFile("M: DocumentsController Get By Id User: " + ctx.CurrentAgentId, timeM.Elapsed.ToString("G"));
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentService GetDocument and GetModifyMetaData User: " + ctx.CurrentAgentId, timeDB.Elapsed);
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB1: IDocumentService GetDocument User: " + ctx.CurrentAgentId, timeDB1.Elapsed);
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB2: IDocumentService GetModifyMetaData User: " + ctx.CurrentAgentId, timeDB2.Elapsed);
+            BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentsController Get By Id User: " + ctx.CurrentAgentId, timeM.Elapsed);
 
             return new JsonResult(doc, metaData, this);
         }
@@ -119,8 +96,8 @@ namespace DMS_WebAPI.Controllers.Documents
             timeDB.Stop();
 
             timeM.Stop();
-            SaveToFile("DB: IDocumentService AddDocumentByTemplateDocument User: " + ctx.CurrentAgentId, timeDB.Elapsed.ToString("G"));
-            SaveToFile("M: DocumentsController Post User: " + ctx.CurrentAgentId, timeM.Elapsed.ToString("G"));
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentService AddDocumentByTemplateDocument User: " + ctx.CurrentAgentId, timeDB.Elapsed);
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentsController Post User: " + ctx.CurrentAgentId, timeM.Elapsed);
             return Get(docId);
             //return new JsonResult(null,this);
         }
@@ -144,8 +121,8 @@ namespace DMS_WebAPI.Controllers.Documents
             var docId = (int)docProc.ExecuteAction(EnumDocumentActions.ModifyDocument, ctx, model);
             timeDB.Stop();
             timeM.Stop();
-            SaveToFile("DB: IDocumentService ModifyDocument User: " + ctx.CurrentAgentId, timeDB.Elapsed.ToString("G"));
-            SaveToFile("M: DocumentsController Put User: " + ctx.CurrentAgentId, timeM.Elapsed.ToString("G"));
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentService ModifyDocument User: " + ctx.CurrentAgentId, timeDB.Elapsed);
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentsController Put User: " + ctx.CurrentAgentId, timeM.Elapsed);
 
 
             return Get(docId);
@@ -169,8 +146,8 @@ namespace DMS_WebAPI.Controllers.Documents
             docProc.ExecuteAction(EnumDocumentActions.DeleteDocument, ctx, id);
             timeDB.Stop();
             timeM.Stop();
-            SaveToFile("DB: IDocumentService DeleteDocument User: " + ctx.CurrentAgentId, timeDB.Elapsed.ToString("G"));
-            SaveToFile("M: DocumentsController Delete  User: " + ctx.CurrentAgentId, timeM.Elapsed.ToString("G"));
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentService DeleteDocument User: " + ctx.CurrentAgentId, timeDB.Elapsed);
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentsController Delete  User: " + ctx.CurrentAgentId, timeM.Elapsed);
             return new JsonResult(null, this);
         }
 

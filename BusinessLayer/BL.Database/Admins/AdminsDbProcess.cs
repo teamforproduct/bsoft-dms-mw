@@ -32,7 +32,7 @@ namespace BL.Database.Admins
                     UserId = x.UserId
                 }).ToList();
 
-                res.Roles = dbContext.AdminRolesSet.Where(x=>x.ClientId == context.CurrentClientId).Select(x => new InternalDictionaryAdminRoles
+                res.Roles = dbContext.AdminRolesSet.Where(x => x.ClientId == context.CurrentClientId).Select(x => new InternalDictionaryAdminRoles
                 {
                     Id = x.Id
 
@@ -72,22 +72,22 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                var qry = dbContext.AdminUserRolesSet.Where(x => x.Role.ClientId == ctx.CurrentClientId).AsQueryable();
+                var qry = dbContext.AdminPositionRolesSet.Where(x => x.Role.ClientId == ctx.CurrentClientId).AsQueryable();
 
                 if (filter.UserRoleId?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.UserRoleId.Contains(x.Id));
+                    qry = qry.Where(x => x.Role.UserRoles.Any(y=> filter.UserRoleId.Contains(y.Id)));
                 }
                 if (filter.UserId?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.UserId.Contains(x.UserId));
+                    qry = qry.Where(x => x.Role.UserRoles.Any(y => filter.UserId.Contains(y.UserId)));
                 }
                 if (filter.RoleId?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.UserId.Contains(x.RoleId));
+                    qry = qry.Where(x => filter.RoleId.Contains(x.RoleId));
                 }
 
-                var res = qry.Distinct().SelectMany(x => x.Role.PositionRoles).Select(x => new FrontAdminUserRole
+                var res = qry.Select(x => new FrontAdminUserRole
                 {
                     RolePositionId = x.PositionId,
                     RolePositionName = x.Position.Name,
@@ -102,10 +102,13 @@ namespace BL.Database.Admins
                                         .GroupBy(g => g.TargetPositionId)
                                         .Select(s => new { PosID = s.Key, EvnCnt = s.Count() }).ToList();
 
-                foreach (var rn in res.Join(newevnt, r=>r.RolePositionId, e=>e.PosID, (r,e)=>new {rs= r, ne = e}))
-                {
-                    rn.rs.NewEventsCount = rn.ne.EvnCnt;
-                }
+                res.Join(newevnt, r => r.RolePositionId, e => e.PosID, (r, e) => { r.NewEventsCount = e.EvnCnt; return r; }).ToList();
+
+                //TODO
+                //foreach (var rn in res.Join(newevnt, r => r.RolePositionId, e => e.PosID, (r, e) => new { rs = r, ne = e }))
+                //{
+                //    rn.rs.NewEventsCount = rn.ne.EvnCnt;
+                //}
 
                 return res;
             }
@@ -122,7 +125,9 @@ namespace BL.Database.Admins
             using (var dbContext = new DmsContext(context))
             {
                 var dictDb = DmsResolver.Current.Get<IDictionariesDbProcess>();
-                var pos = dictDb.GetPositions(context, new FilterDictionaryPosition() { IDs = new List<int> { model.TargetPosition }, SubordinatedPositions = model.SourcePositions }).FirstOrDefault();
+                var pos = dictDb.GetPositions(context, new FilterDictionaryPosition() { IDs = new List<int> { model.TargetPosition }, SubordinatedPositions = model.SourcePositions })
+                    .Select(x => new { MaxSubordinationTypeId = x.MaxSubordinationTypeId })
+                    .FirstOrDefault();
                 if (pos == null || pos.MaxSubordinationTypeId < (int)model.SubordinationType)
                 {
                     return false;
@@ -135,12 +140,13 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                return dbContext.DictionaryAgentUsersSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).Where(x => x.UserId.Equals(userId)).Select(x => new Employee
-                {
-                    AgentId = x.Id,
-                    Name = x.Agent.Name,
-                    LanguageId = x.Agent.LanguageId ?? 0
-                }).FirstOrDefault();
+                return dbContext.DictionaryAgentUsersSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).Where(x => x.UserId.Equals(userId))
+                    .Select(x => new Employee
+                    {
+                        AgentId = x.Id,
+                        Name = x.Agent.Name,
+                        LanguageId = x.Agent.LanguageId ?? 0
+                    }).FirstOrDefault();
             }
         }
 
