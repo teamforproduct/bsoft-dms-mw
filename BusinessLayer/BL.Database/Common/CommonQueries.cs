@@ -238,13 +238,13 @@ namespace BL.Database.Common
             {
                 qry = qry.Where(x => x.DocumentId == documentId.Value);
             }
-            if (ctx != null)
+            if (ctx != null && !ctx.IsAdmin)
             {
                 //TODO
-                var isAdmin = ctx.IsAdmin;
                 var currentPositionsIdList = ctx.CurrentPositionsIdList;
 
-                qry = qry.Where(x => isAdmin ||
+                
+                qry = qry.Where(x => 
                            (x.OnEvent.TargetPositionId.HasValue &&
                             currentPositionsIdList.Contains(x.OnEvent.TargetPositionId.Value))
                            ||

@@ -737,35 +737,72 @@ namespace BL.Database.Documents
                         .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
                 }
 
+                //TODO
+                //var time = new System.Diagnostics.Stopwatch();
+
                 #region Count
-                var newevnt =
-                    dbContext.DocumentEventsSet.Join(qry, ev => ev.DocumentId, rs => rs.Id, (e, r) => new { ev = e })
-                    .Where(x => !x.ev.ReadDate.HasValue && x.ev.TargetPositionId.HasValue && x.ev.TargetPositionId != x.ev.SourcePositionId
-                             && ctx.CurrentPositionsIdList.Contains(x.ev.TargetPositionId.Value))
-                        .GroupBy(g => g.ev.DocumentId)
-                        .Select(s => new { DocID = s.Key, EvnCnt = s.Count() }).ToList();
+                //time.Start();
+                //var newevnt =
+                //    dbContext.DocumentEventsSet.Join(qry, ev => ev.DocumentId, rs => rs.Id, (e, r) => new { ev = e })
+                //    .Where(x => !x.ev.ReadDate.HasValue && x.ev.TargetPositionId.HasValue && x.ev.TargetPositionId != x.ev.SourcePositionId
+                //             && ctx.CurrentPositionsIdList.Contains(x.ev.TargetPositionId.Value))
+                //        .GroupBy(g => g.ev.DocumentId)
+                //        .Select(s => new { DocID = s.Key, EvnCnt = s.Count() }).ToList();
 
-                var fls =
-                    dbContext.DocumentFilesSet.Join(qry, fl => fl.DocumentId, rs => rs.Id, (f, r) => new { fil = f })
-                        .GroupBy(g => new { DocumentId = g.fil.DocumentId, g.fil.OrderNumber })
-                        .GroupBy(g => g.Key.DocumentId)
-                        .Select(s => new { DocID = s.Key, FileCnt = s.Count() }).ToList();
+                //time.Stop();
+                //BL.CrossCutting.Helpers.Logger.SaveToFile("DDP:GetDocuments-newevnt", time.Elapsed);
+                //time.Reset();
 
-                var links = qry.GroupJoin(dbContext.DocumentsSet.Where(x => x.LinkId.HasValue), dl => dl.LinkId, d => d.LinkId,
-                                            (dl, ds) => new { DocID = dl.Id, LinkCnt = ds.Count() }).ToList();
+                //time.Start();
+                //var fls =
+                //    dbContext.DocumentFilesSet.Join(qry, fl => fl.DocumentId, rs => rs.Id, (f, r) => new { fil = f })
+                //        .GroupBy(g => new { DocumentId = g.fil.DocumentId, g.fil.OrderNumber })
+                //        .GroupBy(g => g.Key.DocumentId)
+                //        .Select(s => new { DocID = s.Key, FileCnt = s.Count() }).ToList();
+                //time.Stop();
+                //BL.CrossCutting.Helpers.Logger.SaveToFile("DDP:GetDocuments-fls", time.Elapsed);
+                //time.Reset();
 
-                var cnt_weits =
-                    CommonQueries.GetDocumentWaitsQuery(dbContext, ctx).Where(x => !x.OffEventId.HasValue)
-                    .Join(qry, w => w.DocumentId, rs => rs.Id, (w, r) => new { wt = w })
-                        .GroupBy(x => x.wt.DocumentId)
-                        .Select(x => new
-                        {
-                            DocId = x.Key,
-                            OpenWaits = x.Count(),
-                            Overdue = x.Count(s => s.wt.DueDate.HasValue && s.wt.DueDate.Value < DateTime.Now)
-                        }).ToList();
+                //time.Start();
+                //var links = qry.GroupJoin(dbContext.DocumentsSet.Where(x => x.LinkId.HasValue), dl => dl.LinkId, d => d.LinkId,
+                //                            (dl, ds) => new { DocID = dl.Id, LinkCnt = ds.Count() }).ToList();
+                //time.Stop();
+                //BL.CrossCutting.Helpers.Logger.SaveToFile("DDP:GetDocuments-links", time.Elapsed);
+                //time.Reset();
+
+                //time.Start();
+                //var cnt_waitsQry =
+                //    CommonQueries.GetDocumentWaitsQuery(dbContext, ctx).Where(x => !x.OffEventId.HasValue);
+
+                //time.Stop();
+                //BL.CrossCutting.Helpers.Logger.SaveToFile("DDP:GetDocuments-cnt_waitsQry", time.Elapsed);
+                //time.Reset();
+
+                //time.Start();
+
+                //var cnt_waitsQry2 =
+                //    cnt_waitsQry.Join(qry, w => w.DocumentId, rs => rs.Id, (w, r) => new { wt = w })
+                //        .GroupBy(x => x.wt.DocumentId)
+                //        .Select(x => new
+                //        {
+                //            DocId = x.Key,
+                //            OpenWaits = x.Count(),
+                //            Overdue = x.Count(s => s.wt.DueDate.HasValue && s.wt.DueDate.Value < DateTime.Now)
+                //        });
+                //time.Stop();
+                //BL.CrossCutting.Helpers.Logger.SaveToFile("DDP:GetDocuments-cnt_waitsQry2", time.Elapsed);
+                //time.Reset();
+
+                //time.Start();
+                //var cnt_waits = cnt_waitsQry2.ToList();
+                //time.Stop();
+                //BL.CrossCutting.Helpers.Logger.SaveToFile("DDP:GetDocuments-cnt_waits", time.Elapsed);
+                //time.Reset();
                 #endregion Count
 
+                var currentPositionsIdList = ctx.CurrentPositionsIdList;
+
+                //time.Start();
                 var res = qry.Select(doc => new FrontDocument
                 {
                     Id = doc.Id,
@@ -782,9 +819,37 @@ namespace BL.Database.Documents
                     Description = doc.Description,
                     ExecutorPositionExecutorAgentName = doc.ExecutorPositionExecutorAgent.Name,
                     ExecutorPositionName = doc.ExecutorPosition.Name,
+
+                    WaitCount = doc.Waits.Where(x =>
+                            !x.OffEventId.HasValue && (
+                            (x.OnEvent.TargetPositionId.HasValue &&
+                             currentPositionsIdList.Contains(x.OnEvent.TargetPositionId.Value))
+                            ||
+                            (x.OnEvent.SourcePositionId.HasValue &&
+                             currentPositionsIdList.Contains(x.OnEvent.SourcePositionId.Value))
+                            // make weit available if onevent can be accesed through the task
+                            ||
+                            (x.OnEvent.IsAvailableWithinTask && x.OnEvent.TaskId.HasValue &&
+                            x.OnEvent.Task.TaskAccesses.Any(a => currentPositionsIdList.Contains(a.PositionId)))
+                             )).GroupBy(x => x.DocumentId).Select(x => new UICounters { Counter1 = x.Count(), Counter2 = x.Count(s => s.DueDate.HasValue && s.DueDate.Value < DateTime.Now) }).FirstOrDefault(),
+
+                    NewEventCount = doc.Events.Count(x => !x.ReadDate.HasValue && x.TargetPositionId.HasValue && x.TargetPositionId != x.SourcePositionId
+                             && ctx.CurrentPositionsIdList.Contains(x.TargetPositionId.Value)),
+
+                    AttachedFilesCount = doc.Files.GroupBy(g => g.OrderNumber).Count(),
+
+                    LinkedDocumentsCount = doc.Links
+                        .GroupBy(x => x.LinkId)
+                        .Select(x=>x.Count())
+                        .Select(x=> x < 2 ? 0 : x - 1).FirstOrDefault()
+
+
                 });
 
                 var docs = res.ToList();
+                //time.Stop();
+                //BL.CrossCutting.Helpers.Logger.SaveToFile("DDP:GetDocuments-ToList", time.Elapsed);
+                //time.Reset();
 
                 docs.ForEach(x => CommonQueries.ChangeRegistrationFullNumber(x));
 
@@ -799,31 +864,51 @@ namespace BL.Database.Documents
                     //doc.AccessLevelName = doc.Accesses.FirstOrDefault(x => x.AccessLevel == doc.AccessLevel).AccessLevelName;
                 }
 
-                foreach (var x1 in docs.Join(cnt_weits, d => d.Id, e => e.DocId, (d, e) => new { doc = d, ev = e }))
-                {
-                    x1.doc.WaitOpenCount = x1.ev.OpenWaits;
-                    x1.doc.WaitOverdueCount = x1.ev.Overdue;
-                }
+                //time.Start();
+                //foreach (var x1 in docs.Join(cnt_waits, d => d.Id, e => e.DocId, (d, e) => new { doc = d, ev = e }))
+                //{
+                //    x1.doc.WaitOpenCount = x1.ev.OpenWaits;
+                //    x1.doc.WaitOverdueCount = x1.ev.Overdue;
+                //}
+                //time.Stop();
+                //BL.CrossCutting.Helpers.Logger.SaveToFile("DDP:GetDocuments-docs-cnt_waits", time.Elapsed);
+                //time.Reset();
 
-                foreach (var x1 in docs.Join(newevnt, d => d.Id, e => e.DocID, (d, e) => new { doc = d, ev = e }))
-                {
-                    x1.doc.NewEventCount = x1.ev.EvnCnt;
-                }
+                //time.Start();
+                //foreach (var x1 in docs.Join(newevnt, d => d.Id, e => e.DocID, (d, e) => new { doc = d, ev = e }))
+                //{
+                //    x1.doc.NewEventCount = x1.ev.EvnCnt;
+                //}
+                //time.Stop();
+                //BL.CrossCutting.Helpers.Logger.SaveToFile("DDP:GetDocuments-docs-newevnt", time.Elapsed);
+                //time.Reset();
 
-                foreach (var x1 in docs.Join(fls, d => d.Id, e => e.DocID, (d, e) => new { doc = d, ev = e }))
-                {
-                    x1.doc.AttachedFilesCount = x1.ev.FileCnt;
-                }
+                //time.Start();
+                //foreach (var x1 in docs.Join(fls, d => d.Id, e => e.DocID, (d, e) => new { doc = d, ev = e }))
+                //{
+                //    x1.doc.AttachedFilesCount = x1.ev.FileCnt;
+                //}
+                //time.Stop();
+                //BL.CrossCutting.Helpers.Logger.SaveToFile("DDP:GetDocuments-docs-fls", time.Elapsed);
+                //time.Reset();
 
-                foreach (var x1 in docs.Join(links, d => d.Id, e => e.DocID, (d, e) => new { doc = d, ev = e }))
-                {
-                    x1.doc.LinkedDocumentsCount = x1.ev.LinkCnt < 2 ? 0 : x1.ev.LinkCnt - 1;
-                }
+                //time.Start();
+                //foreach (var x1 in docs.Join(links, d => d.Id, e => e.DocID, (d, e) => new { doc = d, ev = e }))
+                //{
+                //    x1.doc.LinkedDocumentsCount = x1.ev.LinkCnt < 2 ? 0 : x1.ev.LinkCnt - 1;
+                //}
+                //time.Stop();
+                //BL.CrossCutting.Helpers.Logger.SaveToFile("DDP:GetDocuments-docs-links", time.Elapsed);
+                //time.Reset();
 
+                //time.Start();
                 docs.GroupJoin(CommonQueries.GetDocumentTags(dbContext, ctx, new FilterDocumentTag { DocumentId = docs.Select(x => x.Id).ToList(), CurrentPositionsId = ctx.CurrentPositionsIdList }),
                     d => d.Id,
                     t => t.DocumentId,
                     (d, t) => d.DocumentTags = t);
+                //time.Stop();
+                //BL.CrossCutting.Helpers.Logger.SaveToFile("DDP:GetDocuments-docs-tags", time.Elapsed);
+                //time.Reset();
 
                 return docs;
             }
@@ -888,7 +973,6 @@ namespace BL.Database.Documents
                     TemplateDocumentName = doc.TemplateDocument.Name,
                     IsHard = doc.TemplateDocument.IsHard,
                     LinkId = doc.LinkId,
-
 
                 }).FirstOrDefault();
                 //time.Stop();

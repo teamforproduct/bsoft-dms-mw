@@ -22,6 +22,7 @@ namespace BL.Database.DBModel.Document
             this.RestrictedSendLists = new HashSet<DocumentRestrictedSendLists>();
             this.Tags = new HashSet<DocumentTags>();
             this.Papers = new HashSet<DocumentPapers>();
+            this.Links = new HashSet<Documents>();
         }
 
         public int Id { get; set; }
@@ -91,6 +92,11 @@ namespace BL.Database.DBModel.Document
         public virtual ICollection<DocumentTags> Tags { get; set; }
         [ForeignKey("DocumentId")]
         public virtual ICollection<DocumentPapers> Papers { get; set; }
+
+        [ForeignKey("LinkId")]
+        public virtual ICollection<Documents> Links { get; set; }
+        [ForeignKey("LinkId")]
+        public virtual Documents Link { get; set; }
 
     }
 

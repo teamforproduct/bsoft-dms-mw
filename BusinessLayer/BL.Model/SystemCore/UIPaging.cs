@@ -8,6 +8,9 @@ namespace BL.Model.SystemCore
         public int PageSize { get; set; } = 50;
         [XmlIgnore]
         public int TotalItemsCount { get; set; }
+        /// <summary>
+        /// Вернет только количество записей если = true
+        /// </summary>
         public bool IsOnlyCounter { get; set; }
     }
 }
