@@ -821,6 +821,7 @@ namespace BL.Database.Common
 
         public static IEnumerable<FrontDictionaryPosition> GetDocumentWorkGroup(DmsContext dbContext, IContext ctx, FilterDictionaryPosition filter)
         {
+            //TODO пределать на аксессы
             var qry = dbContext.DictionaryPositionsSet.Where(x => x.Department.Company.ClientId == ctx.CurrentClientId).Select(x => new { pos = x, subordMax = 0 }).AsQueryable();
 
             if (filter != null)
