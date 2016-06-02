@@ -489,7 +489,7 @@ namespace BL.Database.Documents
                                                 TaskId = x.OnEvent.TaskId,
                                                 IsAvailableWithinTask = x.OnEvent.IsAvailableWithinTask,
                                                 Description = x.OnEvent.Description,
-                                                //AddDescription = x.OnEvent.AddDescription,
+                                                AddDescription = x.OnEvent.AddDescription,
                                                 EventType = (EnumEventTypes)x.OnEvent.EventTypeId,
                                                 CreateDate = x.OnEvent.CreateDate,
                                                 Date = x.OnEvent.Date,

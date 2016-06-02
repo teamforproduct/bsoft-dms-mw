@@ -51,7 +51,7 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// </summary>
         public string Task { get; set; }
         /// <summary>
-        /// Поручение в рамках рабочей группы
+        /// В рамках рабочей группы
         /// </summary>
         public bool IsWorkGroup { get; set; }
         /// <summary>
