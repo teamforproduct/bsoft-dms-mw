@@ -72,6 +72,19 @@ namespace BL.Database.Common
         {
             var sq = GetDocumentFilesMaxVersion(ctx, dbContext, filter);
 
+            if (paging != null)
+            {
+                paging.TotalItemsCount = sq.Count();
+
+                if (paging.IsOnlyCounter)
+                {
+                    return new List<FrontDocumentAttachedFile>();
+                }
+
+                sq = sq.OrderByDescending(x => x.LastChangeDate)
+                    .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
+            }
+
             var qry = from file in sq
                       join agent in dbContext.DictionaryAgentsSet on file.LastChangeUserId equals agent.Id into agent
                       from agentAg in agent.DefaultIfEmpty()
@@ -102,14 +115,6 @@ namespace BL.Database.Common
                           RegistrationNumberSuffix = file.Document.LinkId.HasValue ? file.Document.RegistrationNumberSuffix : null,
                           RegistrationFullNumber = file.Document.LinkId.HasValue ? "#" + file.Document.Id : null,
                       };
-
-            if (paging != null)
-            {
-                paging.TotalItemsCount = qry.Count();
-
-                qry = qry.OrderByDescending(x => x.LastChangeDate)
-                    .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
-            }
 
             var files = qry.ToList();
             files.ForEach(x => CommonQueries.ChangeRegistrationFullNumber(x));
@@ -316,6 +321,11 @@ namespace BL.Database.Common
             {
                 paging.TotalItemsCount = tasksDb.Count();
 
+                if (paging.IsOnlyCounter)
+                {
+                    return new List<FrontDocumentTask>();
+                }
+
                 tasksDb = tasksDb.OrderByDescending(x => x.LastChangeDate)
                     .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
             }
@@ -395,6 +405,11 @@ namespace BL.Database.Common
             if (paging != null)
             {
                 paging.TotalItemsCount = waitsRes.Count();
+
+                if (paging.IsOnlyCounter)
+                {
+                    return new List<FrontDocumentWait>();
+                }
 
                 waitsRes = waitsRes
                         .Skip(paging.PageSize * (paging.CurrentPage - 1))
@@ -520,6 +535,11 @@ namespace BL.Database.Common
             if (paging != null)
             {
                 paging.TotalItemsCount = subscriptionsRes.Count();
+
+                if (paging.IsOnlyCounter)
+                {
+                    return new List<FrontDocumentSubscription>();
+                }
 
                 subscriptionsRes = subscriptionsRes
                         .Skip(paging.PageSize * (paging.CurrentPage - 1))
@@ -1114,6 +1134,11 @@ namespace BL.Database.Common
             if (paging != null)
             {
                 paging.TotalItemsCount = itemsDb.Count();
+
+                if (paging.IsOnlyCounter)
+                {
+                    return new List<FrontDocumentPaper>();
+                }
 
                 itemsDb = itemsDb
                         .Skip(paging.PageSize * (paging.CurrentPage - 1))

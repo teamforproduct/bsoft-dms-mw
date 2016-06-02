@@ -8,5 +8,6 @@ namespace BL.Model.SystemCore
         public int PageSize { get; set; } = 50;
         [XmlIgnore]
         public int TotalItemsCount { get; set; }
+        public bool IsOnlyCounter { get; set; }
     }
 }
