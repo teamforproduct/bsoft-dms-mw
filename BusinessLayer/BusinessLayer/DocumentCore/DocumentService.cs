@@ -152,9 +152,9 @@ namespace BL.Logic.DocumentCore
             return _documentDb.GetDocumentPaper(context, itemId);
         }
 
-        public IEnumerable<FrontDocumentPaper> GetDocumentPapers(IContext context, FilterDocumentPaper filter)
+        public IEnumerable<FrontDocumentPaper> GetDocumentPapers(IContext context, FilterDocumentPaper filter, UIPaging paging)
         {
-            return _documentDb.GetDocumentPapers(context, filter).ToList();
+            return _documentDb.GetDocumentPapers(context, filter, paging);
         }
 
         #endregion DocumentPapers    

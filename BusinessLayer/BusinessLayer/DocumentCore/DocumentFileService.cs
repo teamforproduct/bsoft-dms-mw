@@ -21,11 +21,6 @@ namespace BL.Logic.DocumentCore
             _dbProcess = dbProcess;
         }
 
-        public IEnumerable<FrontDocumentAttachedFile> GetDocumentFiles(IContext ctx, int documentId)
-        {
-            return _dbProcess.GetDocumentFiles(ctx, documentId);
-        }
-
         public IEnumerable<FrontDocumentAttachedFile> GetDocumentFiles(IContext ctx, FilterDocumentAttachedFile filter, UIPaging paging = null)
         {
             return _dbProcess.GetDocumentFiles(ctx, filter, paging);

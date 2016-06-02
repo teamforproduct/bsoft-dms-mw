@@ -25,7 +25,7 @@ namespace BL.Logic.DocumentCore.Interfaces
         #region DocumentPapers
         FrontDocumentPaper GetDocumentPaper(IContext context, int itemId);
 
-        IEnumerable<FrontDocumentPaper> GetDocumentPapers(IContext context, FilterDocumentPaper filter);
+        IEnumerable<FrontDocumentPaper> GetDocumentPapers(IContext context, FilterDocumentPaper filter, UIPaging paging);
 
         #endregion DocumentPapers    
         #region DocumentPaperLists

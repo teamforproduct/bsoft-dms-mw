@@ -49,7 +49,7 @@ namespace BL.Database.Documents.Interfaces
 
         #region DocumentPapers
 
-        IEnumerable<FrontDocumentPaper> GetDocumentPapers(IContext ctx, FilterDocumentPaper filter);
+        IEnumerable<FrontDocumentPaper> GetDocumentPapers(IContext ctx, FilterDocumentPaper filter, UIPaging paging);
 
         FrontDocumentPaper GetDocumentPaper(IContext ctx, int id);
         #endregion DocumentPapers   
