@@ -7,6 +7,7 @@ using BL.Model.DocumentCore.FrontModel;
 using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
+using System.Collections.Generic;
 
 namespace DMS_WebAPI.Controllers.Documents
 {
@@ -19,7 +20,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <param name="filter">модель фильтра ожиданий</param>
         /// <param name="paging">paging</param>
         /// <returns>список ожиданий</returns>
-        [ResponseType(typeof(FrontDocumentWait))]
+        [ResponseType(typeof(List<FrontDocumentWait>))]
         public IHttpActionResult Get([FromUri] FilterDocumentWait filter, [FromUri]UIPaging paging)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();

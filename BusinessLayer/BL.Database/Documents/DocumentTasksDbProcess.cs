@@ -7,6 +7,7 @@ using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.Enums;
 using BL.Model.DocumentCore.Filters;
+using BL.Model.SystemCore;
 
 namespace BL.Database.Documents
 {
@@ -17,11 +18,11 @@ namespace BL.Database.Documents
         }
         #region DocumentTasks
 
-        public IEnumerable<FrontDocumentTask> GetDocumentTasks(IContext ctx, FilterDocumentTask filter)
+        public IEnumerable<FrontDocumentTask> GetDocumentTasks(IContext ctx, FilterDocumentTask filter, UIPaging paging)
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                return CommonQueries.GetDocumentTasks(dbContext, ctx,  filter);
+                return CommonQueries.GetDocumentTasks(dbContext, ctx, filter, paging);
             }
         }
 
@@ -29,7 +30,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                return CommonQueries.GetDocumentTasks(dbContext, ctx, new FilterDocumentTask { Id = new List<int> { id } }).FirstOrDefault();
+                return CommonQueries.GetDocumentTasks(dbContext, ctx, new FilterDocumentTask { Id = new List<int> { id } }, null).FirstOrDefault();
             }
         }
         #endregion DocumentTasks         

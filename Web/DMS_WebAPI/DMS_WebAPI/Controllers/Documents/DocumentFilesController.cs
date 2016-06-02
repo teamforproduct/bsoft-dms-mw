@@ -33,14 +33,6 @@ namespace DMS_WebAPI.Controllers.Documents
             return new JsonResult(res, this);
         }
 
-        // GET: api/Files/5
-        public IHttpActionResult Get(int id)
-        {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
-            var docFileProc = DmsResolver.Current.Get<IDocumentFileService>();
-            return new JsonResult(docFileProc.GetDocumentFiles(ctx, id), this);
-        }
-
         /// <summary>
         /// Общий список файлов
         /// </summary>
@@ -57,15 +49,6 @@ namespace DMS_WebAPI.Controllers.Documents
             return res;
         }
 
-        // POST: api/Files
-        //public IHttpActionResult Post([FromBody]ModifyDocumentFiles model)
-        //{
-        //    var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
-        //    var docProc = DmsResolver.Current.Get<IDocumentService>();
-        //    docProc.ExecuteAction(EnumDocumentActions.AddDocumentFile, ctx, model);
-        //    return Get(model.DocumentId);
-        //}
-
         public IHttpActionResult Post([FromUri]ModifyDocumentFile model)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
@@ -78,7 +61,7 @@ namespace DMS_WebAPI.Controllers.Documents
 
 
             docProc.ExecuteAction(EnumDocumentActions.AddDocumentFile, ctx, model);
-            return Get(model.DocumentId);
+            return GetFileList(new FilterDocumentAttachedFile { DocumentId = new List<int> { model.DocumentId } }, null);
         }
 
         // PUT: api/Files/5

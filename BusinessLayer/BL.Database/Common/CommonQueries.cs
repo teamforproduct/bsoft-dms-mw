@@ -254,9 +254,14 @@ namespace BL.Database.Common
             return qry;
         }
 
-        public static IEnumerable<FrontDocumentTask> GetDocumentTasks(DmsContext dbContext, IContext context, FilterDocumentTask filter)
+        public static IEnumerable<FrontDocumentTask> GetDocumentTasks(DmsContext dbContext, IContext ctx, FilterDocumentTask filter,UIPaging paging)
         {
-            var tasksDb = dbContext.DocumentTasksSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId).AsQueryable();
+            var tasksDb = dbContext.DocumentTasksSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).AsQueryable();
+
+            if (!ctx.IsAdmin)
+            {
+                tasksDb = tasksDb.Where(x => x.Document.Accesses.Any(y => ctx.CurrentPositionsIdList.Contains(y.PositionId)));
+            }
 
             //var sendListDb = dbContext.DocumentSendListsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId)
             //                .Where(x => x.TaskId.HasValue)
@@ -291,7 +296,7 @@ namespace BL.Database.Common
                 }
             }
 
-            var tasksRes = tasksDb;
+            //var tasksRes = tasksDb;
 
             //var tasksRes = from task in tasksDb
 
@@ -307,7 +312,15 @@ namespace BL.Database.Common
             //                   Event = evAg
             //               };
 
-            var tasks = tasksRes.Select(x => new FrontDocumentTask
+            if (paging != null)
+            {
+                paging.TotalItemsCount = tasksDb.Count();
+
+                tasksDb = tasksDb.OrderByDescending(x => x.LastChangeDate)
+                    .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
+            }
+
+            var tasks = tasksDb.Select(x => new FrontDocumentTask
             {
                 Id = x.Id,
                 DocumentId = x.DocumentId,
@@ -1077,9 +1090,14 @@ namespace BL.Database.Common
             dbContext.FullTextIndexCashSet.Add(cashInfo);
         }
 
-        public static IEnumerable<FrontDocumentPaper> GetDocumentPapers(DmsContext dbContext, IContext context, FilterDocumentPaper filter)
+        public static IEnumerable<FrontDocumentPaper> GetDocumentPapers(DmsContext dbContext, IContext ctx, FilterDocumentPaper filter, UIPaging paging)
         {
-            var itemsDb = dbContext.DocumentPapersSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId).AsQueryable();
+            var itemsDb = dbContext.DocumentPapersSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).AsQueryable();
+
+            if (!ctx.IsAdmin)
+            {
+                itemsDb = itemsDb.Where(x => x.Document.Accesses.Any(y => ctx.CurrentPositionsIdList.Contains(y.PositionId)));
+            }
 
             if (filter != null)
             {
@@ -1093,9 +1111,18 @@ namespace BL.Database.Common
                 }
             }
 
-            var itemsRes = itemsDb.Select(x => x);
+            if (paging != null)
+            {
+                paging.TotalItemsCount = itemsDb.Count();
 
-            var items = itemsRes.Select(x => new FrontDocumentPaper
+                itemsDb = itemsDb
+                        .Skip(paging.PageSize * (paging.CurrentPage - 1))
+                        .Take(paging.PageSize);
+            }
+
+            //var itemsRes = itemsDb.Select(x => x);
+
+            var items = itemsDb.Select(x => new FrontDocumentPaper
             {
                 Id = x.Id,
                 DocumentId = x.DocumentId,

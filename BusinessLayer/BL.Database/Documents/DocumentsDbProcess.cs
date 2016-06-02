@@ -936,49 +936,53 @@ namespace BL.Database.Documents
                 //time.Reset();
 
                 //time.Start();
-                var cnt_waits = CommonQueries.GetDocumentWaitsQuery(dbContext, ctx, res.Id).Where(x => !x.OffEventId.HasValue)
-                        .GroupBy(x => x.DocumentId)
-                        .Select(x => new
-                        {
-                            DocId = x.Key,
-                            OpenWaits = x.Count(),
-                            Overdue = x.Count(s => s.DueDate.HasValue && s.DueDate.Value < DateTime.Now)
-                        }).FirstOrDefault();
+                //TODO
+                //var cnt_waits = CommonQueries.GetDocumentWaitsQuery(dbContext, ctx, res.Id).Where(x => !x.OffEventId.HasValue)
+                //        .GroupBy(x => x.DocumentId)
+                //        .Select(x => new
+                //        {
+                //            DocId = x.Key,
+                //            OpenWaits = x.Count(),
+                //            Overdue = x.Count(s => s.DueDate.HasValue && s.DueDate.Value < DateTime.Now)
+                //        }).FirstOrDefault();
                 //time.Stop();
                 //BL.CrossCutting.Helpers.Logger.SaveToFile("DDP:GetDocument-GetDocumentWaitsQuery", time.Elapsed);
                 //time.Reset();
 
-                if (cnt_waits != null)
-                {
-                    res.WaitOpenCount = cnt_waits.OpenWaits;
-                    res.WaitOverdueCount = cnt_waits.Overdue;
-                }
+                //TODO
+                //if (cnt_waits != null)
+                //{
+                //    res.WaitOpenCount = cnt_waits.OpenWaits;
+                //    res.WaitOverdueCount = cnt_waits.Overdue;
+                //}
 
                 //time.Start();
                 //select only events, where sourceposition or target position are in user's current positions luist
-                var evtCount = dbContext.DocumentEventsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
-                    .Where(x => x.DocumentId == res.Id &&
-                ((x.TargetPositionId.HasValue && ctx.CurrentPositionsIdList.Contains(x.TargetPositionId.Value))
-                || (x.SourcePositionId.HasValue && ctx.CurrentPositionsIdList.Contains(x.SourcePositionId.Value))))
-                .GroupBy(x => x.DocumentId)
-                    .Select(x => new
-                    {
-                        docId = x.Key,
-                        totalCnt = x.Count(),
-                        newCnt = x.Count(s => !s.ReadDate.HasValue
-                                              && s.TargetPositionId.HasValue && s.TargetPositionId != s.SourcePositionId
-                                              && ctx.CurrentPositionsIdList.Contains(s.TargetPositionId.Value))
-                    }).FirstOrDefault();
+                //TODO
+                //var evtCount = dbContext.DocumentEventsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                //    .Where(x => x.DocumentId == res.Id &&
+                //((x.TargetPositionId.HasValue && ctx.CurrentPositionsIdList.Contains(x.TargetPositionId.Value))
+                //|| (x.SourcePositionId.HasValue && ctx.CurrentPositionsIdList.Contains(x.SourcePositionId.Value))))
+                //.GroupBy(x => x.DocumentId)
+                //    .Select(x => new
+                //    {
+                //        docId = x.Key,
+                //        totalCnt = x.Count(),
+                //        newCnt = x.Count(s => !s.ReadDate.HasValue
+                //                              && s.TargetPositionId.HasValue && s.TargetPositionId != s.SourcePositionId
+                //                              && ctx.CurrentPositionsIdList.Contains(s.TargetPositionId.Value))
+                //    }).FirstOrDefault();
                 //time.Stop();
                 //BL.CrossCutting.Helpers.Logger.SaveToFile("DDP:GetDocument-DocumentEventsSet", time.Elapsed);
                 //time.Reset();
 
-                if (evtCount != null)
-                {
-                    res.EventsCount = evtCount.totalCnt;
+                //TODO
+                //if (evtCount != null)
+                //{
+                //    res.EventsCount = evtCount.totalCnt;
 
-                    res.NewEventCount = evtCount.newCnt;
-                }
+                //    res.NewEventCount = evtCount.newCnt;
+                //}
 
 
                 //time.Start();
@@ -1000,25 +1004,29 @@ namespace BL.Database.Documents
                 //time.Reset();
 
                 //time.Start();
-                res.DocumentFiles = CommonQueries.GetDocumentFiles(ctx, dbContext, new FilterDocumentAttachedFile { DocumentId = docIds });
+                //TODO
+                //res.DocumentFiles = CommonQueries.GetDocumentFiles(ctx, dbContext, new FilterDocumentAttachedFile { DocumentId = docIds });
                 //time.Stop();
                 //BL.CrossCutting.Helpers.Logger.SaveToFile("DDP:GetDocument-GetDocumentFiles", time.Elapsed);
                 //time.Reset();
 
                 //time.Start();
-                res.AttachedFilesCount = res.DocumentFiles.Count();
+                //TODO
+                //res.AttachedFilesCount = res.DocumentFiles.Count();
                 //time.Stop();
                 //BL.CrossCutting.Helpers.Logger.SaveToFile("DDP:GetDocument-AttachedFilesCount", time.Elapsed);
                 //time.Reset();
 
                 //time.Start();
-                res.DocumentTasks = CommonQueries.GetDocumentTasks(dbContext, ctx, new FilterDocumentTask { DocumentId = docIds });
+                //TODO
+                //res.DocumentTasks = CommonQueries.GetDocumentTasks(dbContext, ctx, new FilterDocumentTask { DocumentId = docIds }, null);
                 //time.Stop();
                 //BL.CrossCutting.Helpers.Logger.SaveToFile("DDP:GetDocument-GetDocumentTasks", time.Elapsed);
                 //time.Reset();
 
                 //time.Start();
-                res.DocumentWaits = CommonQueries.GetDocumentWaits(dbContext, new FilterDocumentWait { DocumentId = docIds }, ctx);
+                //TODO
+                //res.DocumentWaits = CommonQueries.GetDocumentWaits(dbContext, new FilterDocumentWait { DocumentId = docIds }, ctx);
                 //time.Stop();
                 //BL.CrossCutting.Helpers.Logger.SaveToFile("DDP:GetDocument-GetDocumentWaits", time.Elapsed);
                 //time.Reset();
@@ -1036,13 +1044,15 @@ namespace BL.Database.Documents
                 //time.Reset();
 
                 //time.Start();
-                res.DocumentSubscriptions = CommonQueries.GetDocumentSubscriptions(dbContext, new FilterDocumentSubscription { DocumentId = docIds }, ctx);
+                //TODO
+                //res.DocumentSubscriptions = CommonQueries.GetDocumentSubscriptions(dbContext, new FilterDocumentSubscription { DocumentId = docIds }, ctx);
                 //time.Stop();
                 //BL.CrossCutting.Helpers.Logger.SaveToFile("DDP:GetDocument-GetDocumentSubscriptions", time.Elapsed);
                 //time.Reset();
 
                 //time.Start();
-                res.DocumentPapers = CommonQueries.GetDocumentPapers(dbContext, ctx, new FilterDocumentPaper { DocumentId = docIds });
+                //TODO
+                //res.DocumentPapers = CommonQueries.GetDocumentPapers(dbContext, ctx, new FilterDocumentPaper { DocumentId = docIds }, null);
                 //time.Stop();
                 //BL.CrossCutting.Helpers.Logger.SaveToFile("DDP:GetDocument-GetDocumentPapers", time.Elapsed);
                 //time.Reset();
@@ -2084,11 +2094,11 @@ namespace BL.Database.Documents
 
         #region DocumentPapers
 
-        public IEnumerable<FrontDocumentPaper> GetDocumentPapers(IContext ctx, FilterDocumentPaper filter)
+        public IEnumerable<FrontDocumentPaper> GetDocumentPapers(IContext ctx, FilterDocumentPaper filter, UIPaging paging)
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                return CommonQueries.GetDocumentPapers(dbContext, ctx, filter);
+                return CommonQueries.GetDocumentPapers(dbContext, ctx, filter, paging);
             }
         }
 
@@ -2096,7 +2106,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                return CommonQueries.GetDocumentPapers(dbContext, ctx, new FilterDocumentPaper { Id = new List<int> { id } }).FirstOrDefault();
+                return CommonQueries.GetDocumentPapers(dbContext, ctx, new FilterDocumentPaper { Id = new List<int> { id } }, null).FirstOrDefault();
             }
         }
         #endregion DocumentPapers   

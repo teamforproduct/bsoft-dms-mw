@@ -9,6 +9,7 @@ using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.Enums;
 using BL.Model.DocumentCore.Filters;
+using BL.Model.SystemCore;
 
 namespace DMS_WebAPI.Controllers.Documents
 {
@@ -33,11 +34,11 @@ namespace DMS_WebAPI.Controllers.Documents
         /// </summary>
         /// <param name="filter"></param>
         /// <returns>Список Papers</returns>
-        public IHttpActionResult Get([FromUri]FilterDocumentPaper filter)
+        public IHttpActionResult Get([FromUri]FilterDocumentPaper filter, [FromUri]UIPaging paging)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            return new JsonResult(docProc.GetDocumentPapers(ctx, filter), this);
+            return new JsonResult(docProc.GetDocumentPapers(ctx, filter, paging), this);
         }
 
         /// <summary>
@@ -50,7 +51,7 @@ namespace DMS_WebAPI.Controllers.Documents
             var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var newIds = (List<int>)docProc.ExecuteAction(EnumDocumentActions.AddDocumentPaper, ctx, model);
-            return Get(new FilterDocumentPaper {Id = newIds });
+            return Get(new FilterDocumentPaper {Id = newIds }, null);
         }
 
         /// <summary>
@@ -123,7 +124,7 @@ namespace DMS_WebAPI.Controllers.Documents
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.PlanDocumentPaperEvent, ctx, model);
-            return Get(new FilterDocumentPaper { Id = model.Select(x => x.Id).ToList() });
+            return Get(new FilterDocumentPaper { Id = model.Select(x => x.Id).ToList() }, null);
         }
 
         /// <summary>
@@ -138,7 +139,7 @@ namespace DMS_WebAPI.Controllers.Documents
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.CancelPlanDocumentPaperEvent, ctx, model);
-            return Get( new FilterDocumentPaper {Id = model.PaperId, PaperListId = model.PaperListId});
+            return Get( new FilterDocumentPaper {Id = model.PaperId, PaperListId = model.PaperListId}, null);
         }
 
         /// <summary>
@@ -153,7 +154,7 @@ namespace DMS_WebAPI.Controllers.Documents
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.SendDocumentPaperEvent, ctx, model);
-            return Get(new FilterDocumentPaper { Id = model.PaperId, PaperListId = model.PaperListId });
+            return Get(new FilterDocumentPaper { Id = model.PaperId, PaperListId = model.PaperListId }, null);
         }
 
         /// <summary>
@@ -168,7 +169,7 @@ namespace DMS_WebAPI.Controllers.Documents
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.CancelSendDocumentPaperEvent, ctx, model);
-            return Get(new FilterDocumentPaper { Id = model.PaperId, PaperListId = model.PaperListId });
+            return Get(new FilterDocumentPaper { Id = model.PaperId, PaperListId = model.PaperListId }, null);
         }
 
         /// <summary>
@@ -183,7 +184,7 @@ namespace DMS_WebAPI.Controllers.Documents
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.RecieveDocumentPaperEvent, ctx, model);
-            return Get(new FilterDocumentPaper { Id = model.PaperId, PaperListId = model.PaperListId });
+            return Get(new FilterDocumentPaper { Id = model.PaperId, PaperListId = model.PaperListId }, null);
         }
 
         /// <summary>

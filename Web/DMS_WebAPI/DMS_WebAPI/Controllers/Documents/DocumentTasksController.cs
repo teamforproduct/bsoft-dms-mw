@@ -6,6 +6,7 @@ using BL.CrossCutting.DependencyInjection;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.Enums;
 using BL.Model.DocumentCore.Filters;
+using BL.Model.SystemCore;
 
 namespace DMS_WebAPI.Controllers.Documents
 {
@@ -29,11 +30,11 @@ namespace DMS_WebAPI.Controllers.Documents
         /// </summary>
         /// <param name="filter"></param>
         /// <returns>Список Tasks</returns>
-        public IHttpActionResult Get([FromUri]FilterDocumentTask filter)
+        public IHttpActionResult Get([FromUri]FilterDocumentTask filter, [FromUri]UIPaging paging)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentTaskService>();
-            return new JsonResult(docProc.GetTasks(ctx, filter), this);
+            return new JsonResult(docProc.GetTasks(ctx, filter, paging), this);
         }
 
         /// <summary>
