@@ -6,6 +6,7 @@ using BL.CrossCutting.Interfaces;
 using BL.Database.SystemDb;
 using BL.Logic.Common;
 using BL.Model.Constants;
+using BL.Model.Enums;
 using BL.Model.FullTextSearch;
 
 namespace BL.Logic.SystemServices.FullTextSearch
@@ -30,16 +31,21 @@ namespace BL.Logic.SystemServices.FullTextSearch
             worker.ReindexDatabase(data);
         }
 
-        public IEnumerable<FullTextSearchResult> Search(IContext ctx, string text)
+        public IEnumerable<FullTextSearchResult> SearchDocument(IContext ctx, string text)
         {
             var worker = _workers.FirstOrDefault(x => x.ServerKey == CommonSystemUtilities.GetServerKey(ctx));
-            return worker?.Search(text);
+            return worker?.SearchDocument(text);
         }
 
-        public IEnumerable<FullTextSearchResult> Search(IContext ctx, string text, EnumSearchObjectType objectType, int documentId)
+        public IEnumerable<FullTextSearchResult> SearchDictionary(IContext ctx, string text)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<FullTextSearchResult> SearchInDocument(IContext ctx, string text, EnumObjects objectType, int documentId)
         {
             var worker = _workers.FirstOrDefault(x => x.ServerKey == CommonSystemUtilities.GetServerKey(ctx));
-            return worker?.Search(text, objectType, documentId);
+            return worker?.SearchInDocument(text, objectType, documentId);
         }
 
         protected override void InitializeServers()
@@ -92,7 +98,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
             var worker = _workers.FirstOrDefault(x => x.ServerKey == CommonSystemUtilities.GetServerKey(ctx));
             if (worker == null) return;
 
-            var toUpdate = _systemDb.FullTextIndexPrepare(ctx) as List<FullTextIndexIem>;
+            var toUpdate = _systemDb.FullTextIndexPrepare(ctx) as List<FullTextIndexItem>;
             if (toUpdate == null || !toUpdate.Any()) return;
             var processedIds = new List<int>();
             worker.StartUpdate();

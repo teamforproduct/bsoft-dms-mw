@@ -1115,7 +1115,7 @@ namespace BL.Database.Common
             #endregion
         }
 
-        public static void AddFullTextCashInfo(DmsContext dbContext, int objectId, EnumSearchObjectType objType, EnumOperationType operationType)
+        public static void AddFullTextCashInfo(DmsContext dbContext, int objectId, EnumObjects objType, EnumOperationType operationType)
         {
             var cashInfo = new FullTextIndexCash
             {

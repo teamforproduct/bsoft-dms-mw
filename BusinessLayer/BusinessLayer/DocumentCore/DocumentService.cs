@@ -43,7 +43,7 @@ namespace BL.Logic.DocumentCore
             if (!String.IsNullOrEmpty(filters.FullTextSearch))
             {
                 var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
-                var ftRes = ftService.Search(ctx, filters.FullTextSearch);
+                var ftRes = ftService.SearchDocument(ctx, filters.FullTextSearch);
                 var resWithRanges =
                     ftRes.GroupBy(x => x.DocumentId)
                         .Select(x => new { DocId = x.Key, Rate = x.Count() })

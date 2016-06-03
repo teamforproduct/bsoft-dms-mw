@@ -57,7 +57,7 @@ namespace BL.Logic.DocumentCore
             var uiElements = _systemDb.GetSystemUIElements(ctx, new FilterSystemUIElement { ObjectCode = "TemplateDocuments", ActionCode = "Modify" }).ToList();
             uiElements = CommonDocumentUtilities.VerifyTemplateDocument(ctx, templateDoc, uiElements).ToList();
 
-            uiElements.AddRange(CommonSystemUtilities.GetPropertyUIElements(ctx, EnumObjects.TemplateDocuments, CommonDocumentUtilities.GetFilterTemplateByTemplateDocument(templateDoc).ToArray()));
+            uiElements.AddRange(CommonSystemUtilities.GetPropertyUIElements(ctx, EnumObjects.TemplateDocument, CommonDocumentUtilities.GetFilterTemplateByTemplateDocument(templateDoc).ToArray()));
 
             return uiElements;
         }

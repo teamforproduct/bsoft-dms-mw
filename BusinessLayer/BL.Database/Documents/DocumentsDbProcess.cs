@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Transactions;
-using System.Data.Entity;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Common;
 using BL.Database.DatabaseContext;
@@ -1380,7 +1379,7 @@ namespace BL.Database.Documents
                     Hash = x.Hash
                 }).ToList();
 
-                doc.Properties = CommonQueries.GetInternalPropertyValues(dbContext, context, new FilterPropertyValue { Object = new List<EnumObjects> { EnumObjects.TemplateDocuments }, RecordId = new List<int> { templateDocumentId } }).ToList();
+                doc.Properties = CommonQueries.GetInternalPropertyValues(dbContext, context, new FilterPropertyValue { Object = new List<EnumObjects> { EnumObjects.TemplateDocument }, RecordId = new List<int> { templateDocumentId } }).ToList();
 
                 return doc;
             }
@@ -1522,7 +1521,7 @@ namespace BL.Database.Documents
                             fl.DocumentId = doc.Id;
                         }
 
-                    CommonQueries.AddFullTextCashInfo(dbContext, document.Id, EnumSearchObjectType.Document, EnumOperationType.AddNew);
+                    CommonQueries.AddFullTextCashInfo(dbContext, document.Id, EnumObjects.Documents, EnumOperationType.AddNew);
                     dbContext.SaveChanges();
                     transaction.Complete();
                 }
@@ -1610,7 +1609,7 @@ namespace BL.Database.Documents
                     CommonQueries.ModifyPropertyValues(dbContext, ctx, new InternalPropertyValues { Object = EnumObjects.Documents, RecordId = document.Id, PropertyValues = document.Properties });
                 }
 
-                CommonQueries.AddFullTextCashInfo(dbContext, document.Id, EnumSearchObjectType.Document, EnumOperationType.Update);
+                CommonQueries.AddFullTextCashInfo(dbContext, document.Id, EnumObjects.Documents, EnumOperationType.Update);
                 CommonQueries.GetDocumentHash(dbContext, ctx, document.Id, false, false);
                 dbContext.SaveChanges();
 
@@ -1671,7 +1670,7 @@ namespace BL.Database.Documents
 
                     dbContext.DocumentsSet.RemoveRange(dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.Id == id));
 
-                    CommonQueries.AddFullTextCashInfo(dbContext, id, EnumSearchObjectType.Document, EnumOperationType.Delete);
+                    CommonQueries.AddFullTextCashInfo(dbContext, id, EnumObjects.Documents, EnumOperationType.Delete);
                     dbContext.SaveChanges();
                     transaction.Complete();
                 }
@@ -1857,7 +1856,7 @@ namespace BL.Database.Documents
                     dbContext.DocumentEventsSet.RemoveRange(dbContext.DocumentEventsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == document.Id && x.EventTypeId == (int)EnumEventTypes.Registered));
                 }
 
-                CommonQueries.AddFullTextCashInfo(dbContext, document.Id, EnumSearchObjectType.Document, EnumOperationType.Update);
+                CommonQueries.AddFullTextCashInfo(dbContext, document.Id, EnumObjects.Documents, EnumOperationType.Update);
                 dbContext.SaveChanges();
             }
         }

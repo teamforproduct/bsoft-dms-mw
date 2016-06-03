@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using BL.Model.Enums;
 using BL.Model.FullTextSearch;
 
 namespace BL.Logic.SystemServices.FullTextSearch
@@ -11,13 +12,14 @@ namespace BL.Logic.SystemServices.FullTextSearch
         void StartUpdate();
         void CommitChanges();
 
-        void AddNewItem(FullTextIndexIem item);
-        void DeleteItem(FullTextIndexIem item);
-        void UpdateItem(FullTextIndexIem item);
+        void AddNewItem(FullTextIndexItem item);
+        void DeleteItem(FullTextIndexItem item);
+        void UpdateItem(FullTextIndexItem item);
 
-        IEnumerable<FullTextSearchResult> Search(string text);
-        IEnumerable<FullTextSearchResult> Search(string text, EnumSearchObjectType objectType, int documentId);
+        IEnumerable<FullTextSearchResult> SearchDocument(string text);
+        IEnumerable<FullTextSearchResult> SearchDictionary(string text);
+        IEnumerable<FullTextSearchResult> SearchInDocument(string text, EnumObjects objectType, int documentId);
 
-        void ReindexDatabase(IEnumerable<FullTextIndexIem> items);
+        void ReindexDatabase(IEnumerable<FullTextIndexItem> items);
     }
 }

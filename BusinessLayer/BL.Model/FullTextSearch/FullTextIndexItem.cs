@@ -1,9 +1,11 @@
-﻿namespace BL.Model.FullTextSearch
+﻿using BL.Model.Enums;
+
+namespace BL.Model.FullTextSearch
 {
     /// <summary>
     /// Model that describe one elements in FullText index and operation with it.
     /// </summary>
-    public class FullTextIndexIem
+    public class FullTextIndexItem
     {
         
         /// <summary>
@@ -17,7 +19,7 @@
         /// <summary>
         /// Which part of document should be updated
         /// </summary>
-        public EnumSearchObjectType ItemType { get; set; }
+        public EnumObjects ItemType { get; set; }
         /// <summary>
         /// type of operation add/delete/update
         /// </summary>

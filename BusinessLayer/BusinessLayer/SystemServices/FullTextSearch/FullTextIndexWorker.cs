@@ -9,6 +9,7 @@ using Lucene.Net.QueryParsers;
 using Lucene.Net.Search;
 using Lucene.Net.Store;
 using System.Linq;
+using BL.Model.Enums;
 using BL.Model.FullTextSearch;
 using Directory = Lucene.Net.Store.Directory;
 using Version = Lucene.Net.Util.Version;
@@ -53,17 +54,17 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
         public string ServerKey => _serverKey;
 
-        public void DeleteItem(FullTextIndexIem item)
+        public void DeleteItem(FullTextIndexItem item)
         {
             if (_writer == null) return;
-            var qryVal = new[] { item.DocumentId.ToString(), ((int)item.ItemType).ToString(), item.ObjectId.ToString() };
-            var fld = new[] { FIELD_DOC_ID, FIELD_OBJECT_TYPE, FIELD_OBJECT_ID };
+            var qryVal = new[] { ((int)item.ItemType).ToString(), item.ObjectId.ToString() };
+            var fld = new[] { FIELD_OBJECT_TYPE, FIELD_OBJECT_ID };
             var flags = new[] { Occur.MUST, Occur.MUST, Occur.MUST };
             var query = MultiFieldQueryParser.Parse(Version.LUCENE_30, qryVal, fld, flags, _analyzer);
             _writer.DeleteDocuments(query);
         }
 
-        public void AddNewItem(FullTextIndexIem item)
+        public void AddNewItem(FullTextIndexItem item)
         {
             if (_writer == null) return;
             var doc = new Document();
@@ -74,7 +75,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
             _writer.AddDocument(doc);
         }
 
-        public void UpdateItem(FullTextIndexIem item)
+        public void UpdateItem(FullTextIndexItem item)
         {
             if (_writer == null) return;
             DeleteItem(item);
@@ -114,7 +115,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
             _searcher = new IndexSearcher(_indexReader);
         }
 
-        public IEnumerable<FullTextSearchResult> Search(string text)
+        public IEnumerable<FullTextSearchResult> SearchDocument(string text)
         {
             //QueryParser parser = new QueryParser(Version.LUCENE_30, "postBody", analyzer);
             var parser = new QueryParser(Version.LUCENE_30, FIELD_BODY, _analyzer);
@@ -132,7 +133,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                     var sr = new FullTextSearchResult
                     {
                         DocumentId = Convert.ToInt32(rdoc.Get(FIELD_DOC_ID)),
-                        ObjectType = (EnumSearchObjectType) Convert.ToInt32(rdoc.Get(FIELD_OBJECT_TYPE)),
+                        ObjectType = (EnumObjects) Convert.ToInt32(rdoc.Get(FIELD_OBJECT_TYPE)),
                         ObjectId = Convert.ToInt32(rdoc.Get(FIELD_OBJECT_ID)),
                         Score = doc.Score
                     };
@@ -146,12 +147,17 @@ namespace BL.Logic.SystemServices.FullTextSearch
             return searchResult;
         }
 
-        public IEnumerable<FullTextSearchResult> Search(string text, EnumSearchObjectType objectType, int documentId)
+        public IEnumerable<FullTextSearchResult> SearchDictionary(string text)
         {
             return null;
         }
 
-        public void ReindexDatabase(IEnumerable<FullTextIndexIem> items)
+        public IEnumerable<FullTextSearchResult> SearchInDocument(string text, EnumObjects objectType, int documentId)
+        {
+            return null;
+        }
+
+        public void ReindexDatabase(IEnumerable<FullTextIndexItem> items)
         {
             StartUpdate();
 

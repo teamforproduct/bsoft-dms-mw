@@ -312,8 +312,7 @@
     <Compile Include="Enums\MailServerType.cs" />
     <Compile Include="Exception\DmsExceptions.cs" />
     <Compile Include="FullTextSearch\EnumOperationType.cs" />
-    <Compile Include="FullTextSearch\EnumSearchObjectType.cs" />
-    <Compile Include="FullTextSearch\FullTextIndexIem.cs" />
+    <Compile Include="FullTextSearch\FullTextIndexItem.cs" />
     <Compile Include="FullTextSearch\FullTextSearchResult.cs" />
     <Compile Include="FullTextSearch\FullTextSettings.cs" />
     <Compile Include="FullTextSearch\FullTextUpdateCashInfo.cs" />

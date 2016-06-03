@@ -96,7 +96,7 @@ namespace BL.Database.Documents
                         }).FirstOrDefault();
 
                 if (templateDocument != null)
-                    templateDocument.Properties = CommonQueries.GetPropertyValues(dbContext, ctx, new FilterPropertyValue { RecordId = new List<int> { templateDocumentId }, Object = new List<EnumObjects> { EnumObjects.TemplateDocuments } });
+                    templateDocument.Properties = CommonQueries.GetPropertyValues(dbContext, ctx, new FilterPropertyValue { RecordId = new List<int> { templateDocumentId }, Object = new List<EnumObjects> { EnumObjects.TemplateDocument } });
 
                 return templateDocument;
             }
@@ -151,7 +151,7 @@ namespace BL.Database.Documents
 
                     if (properties != null && properties.Any())
                     {
-                        CommonQueries.ModifyPropertyValues(dbContext, ctx, new InternalPropertyValues { Object = EnumObjects.TemplateDocuments, RecordId = newTemplate.Id, PropertyValues = properties });
+                        CommonQueries.ModifyPropertyValues(dbContext, ctx, new InternalPropertyValues { Object = EnumObjects.TemplateDocument, RecordId = newTemplate.Id, PropertyValues = properties });
                     }
 
                     transaction.Complete();
@@ -175,7 +175,7 @@ namespace BL.Database.Documents
                 dbContext.TemplateDocumentTasksSet.RemoveRange(
                     dbContext.TemplateDocumentTasksSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(x => x.DocumentId == id));
 
-                CommonQueries.DeletePropertyValues(dbContext, context, new FilterPropertyValue { Object = new List<EnumObjects> { EnumObjects.TemplateDocuments }, RecordId = new List<int> { id } });
+                CommonQueries.DeletePropertyValues(dbContext, context, new FilterPropertyValue { Object = new List<EnumObjects> { EnumObjects.TemplateDocument }, RecordId = new List<int> { id } });
 
                 dbContext.TemplateDocumentsSet.Remove(ddt);
                 dbContext.SaveChanges();

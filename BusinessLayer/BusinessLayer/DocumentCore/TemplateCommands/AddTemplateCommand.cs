@@ -70,7 +70,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
                 CommonDocumentUtilities.SetLastChange(_context, properties);
 
-                var model = new InternalPropertyValues { Object = EnumObjects.TemplateDocuments, PropertyValues = properties };
+                var model = new InternalPropertyValues { Object = EnumObjects.TemplateDocument, PropertyValues = properties };
 
                 CommonSystemUtilities.VerifyPropertyValues(_context, model, filterTemplate);
 
@@ -78,7 +78,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
             }
             else
             {
-                var model = new InternalPropertyValues { Object = EnumObjects.TemplateDocuments, PropertyValues = new List<InternalPropertyValue>() };
+                var model = new InternalPropertyValues { Object = EnumObjects.TemplateDocument, PropertyValues = new List<InternalPropertyValue>() };
 
                 CommonSystemUtilities.VerifyPropertyValues(_context, model, filterTemplate);
             }

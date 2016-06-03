@@ -1,4 +1,5 @@
 ﻿using BL.Model.DocumentCore.InternalModel;
+using BL.Model.Enums;
 
 namespace BL.Model.FullTextSearch
 {
@@ -18,7 +19,7 @@ namespace BL.Model.FullTextSearch
         /// <summary>
         /// Which part of document should be updated
         /// </summary>
-        public EnumSearchObjectType PartType { get; set; }
+        public EnumObjects PartType { get; set; }
         /// <summary>
         /// type of operation add/delete/update
         /// </summary>

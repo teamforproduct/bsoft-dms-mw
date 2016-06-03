@@ -64,7 +64,7 @@ namespace BL.Logic.DocumentCore.Commands
 
             var filterTemplateByDocument = CommonDocumentUtilities.GetFilterTemplateByDocument(_document).ToArray();
 
-            _propertyLinksByTemplateDocument = CommonSystemUtilities.GetPropertyLinks(_context, EnumObjects.TemplateDocuments, filterTemplateByDocument);
+            _propertyLinksByTemplateDocument = CommonSystemUtilities.GetPropertyLinks(_context, EnumObjects.TemplateDocument, filterTemplateByDocument);
             _propertyLinksByDocument = CommonSystemUtilities.GetPropertyLinks(_context, EnumObjects.Documents, filterTemplateByDocument);
 
             CommonSystemUtilities.VerifyPropertyLinksCompare(_propertyLinksByTemplateDocument, _propertyLinksByDocument);

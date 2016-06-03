@@ -1,4 +1,6 @@
-﻿namespace BL.Model.FullTextSearch
+﻿using BL.Model.Enums;
+
+namespace BL.Model.FullTextSearch
 {
     /// <summary>
     /// Describe the result of Fulltext search
@@ -12,7 +14,7 @@
         /// <summary>
         /// Type if document part, where text was found (i.e. Document, event etc.)
         /// </summary>
-        public EnumSearchObjectType ObjectType { get; set; }
+        public EnumObjects ObjectType { get; set; }
         /// <summary>
         /// ID of document part. 0 if it was Document itself. 
         /// </summary>
