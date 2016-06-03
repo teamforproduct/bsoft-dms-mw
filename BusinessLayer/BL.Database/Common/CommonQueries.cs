@@ -406,19 +406,20 @@ namespace BL.Database.Common
             {
                 //paging.TotalItemsCount = waitsRes.Count();
 
-                var qry2 = waitsRes.GroupBy(x => x.DocumentId).Select(x => new UICounters
+                paging.Counters = new UICounters
                 {
-                    Counter1 = x.Count(y => !y.OffEventId.HasValue),
-                    Counter2 = x.Count(s => !s.OffEventId.HasValue && s.DueDate.HasValue && s.DueDate.Value < DateTime.Now),
-                    Counter3 = x.Count()
-                });
+                    Counter1 = waitsRes.Count(y => !y.OffEventId.HasValue),
+                    Counter2 = waitsRes.Count(s => !s.OffEventId.HasValue && s.DueDate.HasValue && s.DueDate.Value < DateTime.Now),
+                    Counter3 = waitsRes.Count(),
+                };
 
-                paging.Counters = waitsRes.GroupBy(x => x.DocumentId).Select(x => new UICounters
-                {
-                    Counter1 = x.Count(y => !y.OffEventId.HasValue),
-                    Counter2 = x.Count(s => !s.OffEventId.HasValue && s.DueDate.HasValue && s.DueDate.Value < DateTime.Now),
-                    Counter3 = x.Count()
-                }).FirstOrDefault();
+                //TODO Подумать что лучше
+                //paging.Counters = waitsRes.GroupBy(x => 1).Select(x => new UICounters
+                //{
+                //    Counter1 = x.Count(y => !y.OffEventId.HasValue),
+                //    Counter2 = x.Count(s => !s.OffEventId.HasValue && s.DueDate.HasValue && s.DueDate.Value < DateTime.Now),
+                //    Counter3 = x.Count()
+                //}).FirstOrDefault();
 
                 paging.TotalItemsCount = paging.Counters.Counter3.GetValueOrDefault();
 
