@@ -236,8 +236,6 @@ namespace DMS_WebAPI.Utilities
             var ctx = new AdminContext(db);
             var sysProc = DmsResolver.Current.Get<ISystemService>();
             sysProc.InitializerDatabase(ctx);
-
-            //TODO Добавить в базу дефолтные даные
         }
 
         public void UpdateServer(ModifyAdminServer model)

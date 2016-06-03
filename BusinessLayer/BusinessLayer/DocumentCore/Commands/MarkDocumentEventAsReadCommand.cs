@@ -3,6 +3,9 @@ using System.Linq;
 using BL.Database.Documents.Interfaces;
 using BL.Logic.Common;
 using BL.Model.Exception;
+using BL.Model.DocumentCore.Actions;
+using BL.Model.DocumentCore.InternalModel;
+using System.Collections.Generic;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -15,15 +18,17 @@ namespace BL.Logic.DocumentCore.Commands
             _documentDb = documentDb;
         }
 
-        private int Model
+        private IEnumerable<InternalDocumentEvent> _events { get; set; }
+
+        private MarkDocumentEventAsRead Model
         {
             get
             {
-                if (!(_param is int))
+                if (!(_param is MarkDocumentEventAsRead))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (int)_param;
+                return (MarkDocumentEventAsRead)_param;
             }
         }
 
@@ -34,8 +39,8 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanExecute()
         {
-            _document = _documentDb.MarkDocumentEventsAsReadPrepare(_context, Model);
-            if (!_document.Events.Any())
+            _events = _documentDb.MarkDocumentEventsAsReadPrepare(_context, Model);
+            if (!_events.Any())
             {
                 return false;
             }
@@ -44,14 +49,14 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override object Execute()
         {
-            foreach (var x in _document.Events)
+            foreach (var x in _events)
                 {
                     x.LastChangeUserId = _context.CurrentAgentId;
                     x.LastChangeDate = DateTime.Now;
                     x.ReadDate = DateTime.Now;
                     x.ReadAgentId = _context.CurrentAgentId;
                 }
-            _documentDb.MarkDocumentEventAsRead(_context, _document.Events);
+            _documentDb.MarkDocumentEventAsRead(_context, _events);
             return null;
         }
     }

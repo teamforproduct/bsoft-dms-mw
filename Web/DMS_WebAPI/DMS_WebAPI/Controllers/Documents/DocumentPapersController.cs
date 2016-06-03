@@ -33,6 +33,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// Получение списка Papers для документов
         /// </summary>
         /// <param name="filter"></param>
+        /// <param name="paging"></param>
         /// <returns>Список Papers</returns>
         public IHttpActionResult Get([FromUri]FilterDocumentPaper filter, [FromUri]UIPaging paging)
         {

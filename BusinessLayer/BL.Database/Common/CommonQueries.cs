@@ -161,7 +161,7 @@ namespace BL.Database.Common
                     IsInWork = acc.IsInWork,
                     DocumentId = acc.DocumentId,
                     IsFavourite = acc.IsFavourite,
-                    AccessLevelId = (int)acc.AccessLevelId,
+                    AccessLevelId = acc.AccessLevelId,
                     AccessLevelName = acc.AccessLevel.Name
                 });
         }
@@ -406,19 +406,20 @@ namespace BL.Database.Common
             {
                 //paging.TotalItemsCount = waitsRes.Count();
 
-                var qry2 = waitsRes.GroupBy(x => x.DocumentId).Select(x => new UICounters
+                paging.Counters = new UICounters
                 {
-                    Counter1 = x.Count(y => !y.OffEventId.HasValue),
-                    Counter2 = x.Count(s => !s.OffEventId.HasValue && s.DueDate.HasValue && s.DueDate.Value < DateTime.Now),
-                    Counter3 = x.Count()
-                });
+                    Counter1 = waitsRes.Count(y => !y.OffEventId.HasValue),
+                    Counter2 = waitsRes.Count(s => !s.OffEventId.HasValue && s.DueDate.HasValue && s.DueDate.Value < DateTime.Now),
+                    Counter3 = waitsRes.Count(),
+                };
 
-                paging.Counters = waitsRes.GroupBy(x => x.DocumentId).Select(x => new UICounters
-                {
-                    Counter1 = x.Count(y => !y.OffEventId.HasValue),
-                    Counter2 = x.Count(s => !s.OffEventId.HasValue && s.DueDate.HasValue && s.DueDate.Value < DateTime.Now),
-                    Counter3 = x.Count()
-                }).FirstOrDefault();
+                //TODO Подумать что лучше
+                //paging.Counters = waitsRes.GroupBy(x => 1).Select(x => new UICounters
+                //{
+                //    Counter1 = x.Count(y => !y.OffEventId.HasValue),
+                //    Counter2 = x.Count(s => !s.OffEventId.HasValue && s.DueDate.HasValue && s.DueDate.Value < DateTime.Now),
+                //    Counter3 = x.Count()
+                //}).FirstOrDefault();
 
                 paging.TotalItemsCount = paging.Counters.Counter3.GetValueOrDefault();
 
@@ -906,7 +907,7 @@ namespace BL.Database.Common
                             Description = y.Description,
                             ExecutorPositionExecutorAgentName = y.ExecutorPositionExecutorAgent.Name,
                             ExecutorPositionName = y.ExecutorPosition.Name,
-                            Links = dbContext.DocumentLinksSet.Where(z => z.Document.TemplateDocument.ClientId == context.CurrentClientId).Where(z => z.DocumentId == y.Id).OrderBy(z => z.LastChangeDate).
+                            Links = y.LinksDocuments.OrderBy(z => z.LastChangeDate).
                                 Select(z => new FrontDocumentLink
                                 {
                                     Id = z.Id,
@@ -916,7 +917,7 @@ namespace BL.Database.Common
                                     RegistrationNumberSuffix = z.ParentDocument.RegistrationNumberSuffix,
                                     RegistrationFullNumber = "#" + z.ParentDocument.Id.ToString(),
                                     DocumentDate = (z.ParentDocument.RegistrationDate ?? z.ParentDocument.CreateDate),
-                                }).ToList()
+                                })
                         }).ToList();
 
             items.ForEach(x =>
@@ -1148,6 +1149,8 @@ namespace BL.Database.Common
                 }
             }
 
+            itemsDb = itemsDb.OrderByDescending(x => x.LastChangeDate);
+
             if (paging != null)
             {
                 paging.TotalItemsCount = itemsDb.Count();
@@ -1156,6 +1159,8 @@ namespace BL.Database.Common
                 {
                     return new List<FrontDocumentPaper>();
                 }
+
+
 
                 itemsDb = itemsDb
                         .Skip(paging.PageSize * (paging.CurrentPage - 1))

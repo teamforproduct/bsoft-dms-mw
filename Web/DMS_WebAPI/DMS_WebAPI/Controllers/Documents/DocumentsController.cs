@@ -27,19 +27,19 @@ namespace DMS_WebAPI.Controllers.Documents
         [ResponseType(typeof(List<FrontDocument>))]
         public IHttpActionResult Get([FromUri] FilterDocument filter, [FromUri]UIPaging paging)
         {
-            var timeM = new System.Diagnostics.Stopwatch();
-            var timeDB = new System.Diagnostics.Stopwatch();
-            timeM.Start();
+            //var timeM = new System.Diagnostics.Stopwatch();
+            //var timeDB = new System.Diagnostics.Stopwatch();
+            //timeM.Start();
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            timeDB.Start();
+            //timeDB.Start();
             var docs = docProc.GetDocuments(ctx, filter, paging);
-            timeDB.Stop();
+            //timeDB.Stop();
             var res = new JsonResult(docs, this);
             res.Paging = paging;
-            timeM.Stop();
+            //timeM.Stop();
             //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentService GetDocuments User: " + ctx.CurrentAgentId, timeDB.Elapsed);
-            BL.CrossCutting.Helpers.Logger.SaveToFile("M:DocumentsController-GetList", timeM.Elapsed);
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("M:DocumentsController-GetList", timeM.Elapsed);
             return res;
         }
 
@@ -51,29 +51,29 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns>Документ</returns>
         public IHttpActionResult Get(int id, [FromUri]FilterDocumentById filter = null)
         {
-            var timeM = new System.Diagnostics.Stopwatch();
-            var timeDB = new System.Diagnostics.Stopwatch();
-            var timeDB1 = new System.Diagnostics.Stopwatch();
-            var timeDB2 = new System.Diagnostics.Stopwatch();
-            timeM.Start();
+            //var timeM = new System.Diagnostics.Stopwatch();
+            //var timeDB = new System.Diagnostics.Stopwatch();
+            //var timeDB1 = new System.Diagnostics.Stopwatch();
+            //var timeDB2 = new System.Diagnostics.Stopwatch();
+            //timeM.Start();
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
 
-            timeDB.Start();
-            timeDB1.Start();
+            //timeDB.Start();
+            //timeDB1.Start();
             var doc = docProc.GetDocument(ctx, id, filter);
-            timeDB1.Stop();
+            //timeDB1.Stop();
 
-            timeDB2.Start();
+            //timeDB2.Start();
             var metaData = docProc.GetModifyMetaData(ctx, doc);
-            timeDB2.Stop();
-            timeDB.Stop();
+            //timeDB2.Stop();
+            //timeDB.Stop();
 
-            timeM.Stop();
+            //timeM.Stop();
             //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentService GetDocument and GetModifyMetaData User: " + ctx.CurrentAgentId, timeDB.Elapsed);
             //BL.CrossCutting.Helpers.Logger.SaveToFile("DB1: IDocumentService GetDocument User: " + ctx.CurrentAgentId, timeDB1.Elapsed);
             //BL.CrossCutting.Helpers.Logger.SaveToFile("DB2: IDocumentService GetModifyMetaData User: " + ctx.CurrentAgentId, timeDB2.Elapsed);
-            BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentsController Get By Id User: " + ctx.CurrentAgentId, timeM.Elapsed);
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentsController Get By Id User: " + ctx.CurrentAgentId, timeM.Elapsed);
 
             return new JsonResult(doc, metaData, this);
         }

@@ -58,7 +58,7 @@ namespace DMS_WebAPI.Controllers.Documents
             //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController DeleteFavourite", timeM.Elapsed);
             //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService DeleteFavourite", timeDB.Elapsed);
 
-            var ctrl = new DocumentsController {ControllerContext = ControllerContext};
+            var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(model.DocumentId);
         }
         /// <summary>
@@ -130,7 +130,7 @@ namespace DMS_WebAPI.Controllers.Documents
             //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController RegisterDocument", timeM.Elapsed);
             //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService RegisterDocument", timeDB.Elapsed);
 
-            var ctrl = new DocumentsController {ControllerContext = ControllerContext};
+            var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(model.DocumentId);
         }
         /// <summary>
@@ -155,7 +155,7 @@ namespace DMS_WebAPI.Controllers.Documents
             //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController AddDocumentLink", timeM.Elapsed);
             //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService AddDocumentLink", timeDB.Elapsed);
 
-            var ctrl = new DocumentsController {ControllerContext = ControllerContext};
+            var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(model.DocumentId);
         }
 
@@ -207,7 +207,7 @@ namespace DMS_WebAPI.Controllers.Documents
             //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController StartWork", timeM.Elapsed);
             //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService StartWork", timeDB.Elapsed);
 
-            var ctrl = new DocumentsController {ControllerContext = ControllerContext};
+            var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(model.DocumentId);
         }
 
@@ -259,7 +259,7 @@ namespace DMS_WebAPI.Controllers.Documents
             //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController SendMessage", timeM.Elapsed);
             //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService SendMessage", timeDB.Elapsed);
 
-            var ctrl = new DocumentsController {ControllerContext = ControllerContext};
+            var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(model.DocumentId);
         }
 
@@ -285,7 +285,7 @@ namespace DMS_WebAPI.Controllers.Documents
             //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController AddNote", timeM.Elapsed);
             //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService AddDocumentComment", timeDB.Elapsed);
 
-            var ctrl = new DocumentsController {ControllerContext = ControllerContext};
+            var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(model.DocumentId);
         }
 
@@ -311,7 +311,7 @@ namespace DMS_WebAPI.Controllers.Documents
             //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController ControlOn", timeM.Elapsed);
             //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService ControlOn", timeDB.Elapsed);
 
-            var ctrl = new DocumentsController {ControllerContext = ControllerContext};
+            var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(model.DocumentId);
         }
 
@@ -330,14 +330,14 @@ namespace DMS_WebAPI.Controllers.Documents
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            var documentId = (int)docProc.ExecuteAction(EnumDocumentActions.ControlChange,ctx, model);
+            var documentId = (int)docProc.ExecuteAction(EnumDocumentActions.ControlChange, ctx, model);
             timeDB.Stop();
 
             timeM.Stop();
             //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController ControlChange", timeM.Elapsed);
             //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService ControlChange", timeDB.Elapsed);
 
-            var ctrl = new DocumentsController {ControllerContext = ControllerContext};
+            var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(documentId);
         }
 
@@ -468,7 +468,7 @@ namespace DMS_WebAPI.Controllers.Documents
             //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController ControlOff", timeM.Elapsed);
             //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService ControlOff", timeDB.Elapsed);
 
-            var ctrl = new DocumentsController {ControllerContext = ControllerContext};
+            var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(documentId);
         }
 
@@ -494,7 +494,7 @@ namespace DMS_WebAPI.Controllers.Documents
             //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController CopyDocument", timeM.Elapsed);
             //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService CopyDocument", timeDB.Elapsed);
 
-            var ctrl = new DocumentsController {ControllerContext = ControllerContext};
+            var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(docId);
         }
         /// <summary>
@@ -520,7 +520,7 @@ namespace DMS_WebAPI.Controllers.Documents
             //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController ChangeExecutor", timeM.Elapsed);
             //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService ChangeExecutor", timeDB.Elapsed);
 
-            var ctrl = new DocumentsController {ControllerContext = ControllerContext};
+            var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(model.DocumentId);
         }
 
@@ -575,18 +575,18 @@ namespace DMS_WebAPI.Controllers.Documents
             //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController LaunchPlan", timeM.Elapsed);
             //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService LaunchPlan", timeDB.Elapsed);
 
-            var ctrl = new DocumentsController {ControllerContext = ControllerContext};
+            var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(id);
         }
 
         /// <summary>
         /// отметить для пользователя ивенты документа как прочтенные 
         /// </summary>
-        /// <param name="id">ИД документа</param>
+        /// <param name="model"></param>
         /// <returns></returns>
-        [Route("MarkDocumentEventAsRead/{id}")]
+        [Route("MarkDocumentEventAsRead")]
         [HttpPost]
-        public IHttpActionResult MarkDocumentEventAsRead(int id)
+        public IHttpActionResult MarkDocumentEventAsRead(MarkDocumentEventAsRead model)
         {
             var timeM = new System.Diagnostics.Stopwatch();
             var timeDB = new System.Diagnostics.Stopwatch();
@@ -595,15 +595,14 @@ namespace DMS_WebAPI.Controllers.Documents
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
-            docProc.ExecuteAction(EnumDocumentActions.MarkDocumentEventAsRead, ctx, id);
+            docProc.ExecuteAction(EnumDocumentActions.MarkDocumentEventAsRead, ctx, model);
             timeDB.Stop();
 
             timeM.Stop();
             //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController MarkDocumentEventAsRead", timeM.Elapsed);
             //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService MarkDocumentEventAsRead", timeDB.Elapsed);
 
-            var ctrl = new DocumentsController { ControllerContext = ControllerContext };
-            return ctrl.Get(id);
+            return new JsonResult(null, this);
         }
 
         /// <summary>
@@ -630,7 +629,7 @@ namespace DMS_WebAPI.Controllers.Documents
             //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController StopPlan", timeM.Elapsed);
             //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService StopPlan", timeDB.Elapsed);
 
-            var ctrl = new DocumentsController {ControllerContext = ControllerContext};
+            var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(id);
         }
 

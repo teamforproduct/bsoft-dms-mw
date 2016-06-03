@@ -461,7 +461,7 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(ctx))
             {
                 var doc = dbContext.DocumentWaitsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
-                    .Where(x => x.OnEventId == eventId && (ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.OnEvent.SourcePositionId.Value)))
+                    .Where(x => x.OnEventId == eventId)
                     .Select(x => new InternalDocument
                     {
                         Id = x.DocumentId,
@@ -513,7 +513,7 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(ctx))
             {
                 var doc = dbContext.DocumentWaitsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
-                    .Where(x => x.OnEventId == eventId && (ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.OnEvent.SourcePositionId.Value)))
+                    .Where(x => x.OnEventId == eventId)
                     .Select(x => new InternalDocument
                     {
                         Id = x.DocumentId,
@@ -547,7 +547,7 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(ctx))
             {
                 var doc = dbContext.DocumentWaitsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
-                    .Where(x => x.OnEventId == eventId && (ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.OnEvent.SourcePositionId.Value)))
+                    .Where(x => x.OnEventId == eventId )
                     .Select(x => new InternalDocument
                     {
                         Id = x.DocumentId,
@@ -761,7 +761,23 @@ namespace BL.Database.Documents
 
                 if (paging != null)
                 {
-                    paging.TotalItemsCount = qry.Count();
+                    //paging.TotalItemsCount = qry.Count();
+
+                    //TODO
+                    paging.Counters = new UICounters
+                    {
+                        Counter1 = qry.Count(x=>!x.ReadDate.HasValue
+                                              && x.TargetPositionId.HasValue && x.TargetPositionId != x.SourcePositionId
+                                              && ctx.CurrentPositionsIdList.Contains(x.TargetPositionId.Value)),
+                        Counter3 = qry.Count(),
+                    };
+
+                    paging.TotalItemsCount = paging.Counters.Counter3.GetValueOrDefault();
+
+                    if (paging.IsOnlyCounter)
+                    {
+                        return new List<FrontDocumentEvent>();
+                    }
 
                     qry = qry.OrderByDescending(x => x.LastChangeDate)
                             .Skip(paging.PageSize * (paging.CurrentPage - 1))
@@ -833,17 +849,19 @@ namespace BL.Database.Documents
             }
         }
 
-        public InternalDocument MarkDocumentEventsAsReadPrepare(IContext ctx, int documentId)
+        public IEnumerable<InternalDocumentEvent> MarkDocumentEventsAsReadPrepare(IContext ctx, MarkDocumentEventAsRead model)
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                var res = new InternalDocument { Id = documentId };
-                var qry = CommonQueries.GetDocumentEventsQuery(ctx, dbContext).Where(x => x.DocumentId == documentId
+                if (model.EventIds == null)
+                    return new List<InternalDocumentEvent>();
+
+                var qry = CommonQueries.GetDocumentEventsQuery(ctx, dbContext).Where(x => model.EventIds.Contains(x.Id)
                 && !x.ReadDate.HasValue
                 && x.TargetPositionId.HasValue && x.TargetPositionId != x.SourcePositionId
                 && (ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.TargetPositionId.Value)));
 
-                res.Events = qry.Select(x => new InternalDocumentEvent
+                var res = qry.Select(x => new InternalDocumentEvent
                 {
                     Id = x.Id
                 }).ToList();
