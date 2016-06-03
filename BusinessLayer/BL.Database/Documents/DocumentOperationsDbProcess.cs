@@ -461,7 +461,7 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(ctx))
             {
                 var doc = dbContext.DocumentWaitsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
-                    .Where(x => x.OnEventId == eventId && (ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.OnEvent.SourcePositionId.Value)))
+                    .Where(x => x.OnEventId == eventId)
                     .Select(x => new InternalDocument
                     {
                         Id = x.DocumentId,
@@ -513,7 +513,7 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(ctx))
             {
                 var doc = dbContext.DocumentWaitsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
-                    .Where(x => x.OnEventId == eventId && (ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.OnEvent.SourcePositionId.Value)))
+                    .Where(x => x.OnEventId == eventId)
                     .Select(x => new InternalDocument
                     {
                         Id = x.DocumentId,
@@ -547,7 +547,7 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(ctx))
             {
                 var doc = dbContext.DocumentWaitsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
-                    .Where(x => x.OnEventId == eventId && (ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.OnEvent.SourcePositionId.Value)))
+                    .Where(x => x.OnEventId == eventId )
                     .Select(x => new InternalDocument
                     {
                         Id = x.DocumentId,
