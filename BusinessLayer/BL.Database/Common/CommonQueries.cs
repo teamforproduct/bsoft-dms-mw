@@ -243,8 +243,8 @@ namespace BL.Database.Common
                 //TODO
                 var currentPositionsIdList = ctx.CurrentPositionsIdList;
 
-                
-                qry = qry.Where(x => 
+
+                qry = qry.Where(x =>
                            (x.OnEvent.TargetPositionId.HasValue &&
                             currentPositionsIdList.Contains(x.OnEvent.TargetPositionId.Value))
                            ||
@@ -259,7 +259,7 @@ namespace BL.Database.Common
             return qry;
         }
 
-        public static IEnumerable<FrontDocumentTask> GetDocumentTasks(DmsContext dbContext, IContext ctx, FilterDocumentTask filter,UIPaging paging)
+        public static IEnumerable<FrontDocumentTask> GetDocumentTasks(DmsContext dbContext, IContext ctx, FilterDocumentTask filter, UIPaging paging)
         {
             var tasksDb = dbContext.DocumentTasksSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).AsQueryable();
 
@@ -399,12 +399,28 @@ namespace BL.Database.Common
 
             var waitsRes = waitsDb
                 .OrderBy(x => x.DueDate ?? DateTime.MaxValue)
-                .ThenBy(x=> x.OnEvent.Date)
+                .ThenBy(x => x.OnEvent.Date)
                 .AsQueryable();
 
             if (paging != null)
             {
-                paging.TotalItemsCount = waitsRes.Count();
+                //paging.TotalItemsCount = waitsRes.Count();
+
+                var qry2 = waitsRes.GroupBy(x => x.DocumentId).Select(x => new UICounters
+                {
+                    Counter1 = x.Count(y => !y.OffEventId.HasValue),
+                    Counter2 = x.Count(s => !s.OffEventId.HasValue && s.DueDate.HasValue && s.DueDate.Value < DateTime.Now),
+                    Counter3 = x.Count()
+                });
+
+                paging.Counters = waitsRes.GroupBy(x => x.DocumentId).Select(x => new UICounters
+                {
+                    Counter1 = x.Count(y => !y.OffEventId.HasValue),
+                    Counter2 = x.Count(s => !s.OffEventId.HasValue && s.DueDate.HasValue && s.DueDate.Value < DateTime.Now),
+                    Counter3 = x.Count()
+                }).FirstOrDefault();
+
+                paging.TotalItemsCount = paging.Counters.Counter3.GetValueOrDefault();
 
                 if (paging.IsOnlyCounter)
                 {
@@ -441,30 +457,30 @@ namespace BL.Database.Common
                 DocumentDirectionName = x.Document.LinkId.HasValue ? x.Document.TemplateDocument.DocumentDirection.Name : null,
 
                 OnEvent = new FrontDocumentEvent
-                    {
-                        Id = x.OnEvent.Id,
-                        DocumentId = x.OnEvent.DocumentId,
-                        Task = x.OnEvent.Task.Task,
-                        Description = x.OnEvent.Description,
-                        AddDescription = x.OnEvent.AddDescription,
-                        EventType = x.OnEvent.EventTypeId,
-                        EventTypeName = x.OnEvent.EventType.WaitDescription/*?? x.OnEvent.EventType.Name*/,
-                        Date = x.OnEvent.Date,
-                        SourcePositionExecutorAgentName = x.OnEvent.SourcePositionExecutorAgent.Name,
-                        TargetPositionExecutorAgentName = x.OnEvent.TargetPositionExecutorAgent.Name,
+                {
+                    Id = x.OnEvent.Id,
+                    DocumentId = x.OnEvent.DocumentId,
+                    Task = x.OnEvent.Task.Task,
+                    Description = x.OnEvent.Description,
+                    AddDescription = x.OnEvent.AddDescription,
+                    EventType = x.OnEvent.EventTypeId,
+                    EventTypeName = x.OnEvent.EventType.WaitDescription/*?? x.OnEvent.EventType.Name*/,
+                    Date = x.OnEvent.Date,
+                    SourcePositionExecutorAgentName = x.OnEvent.SourcePositionExecutorAgent.Name,
+                    TargetPositionExecutorAgentName = x.OnEvent.TargetPositionExecutorAgent.Name,
 
-                        ReadAgentName = x.OnEvent.ReadAgent.Name,
-                        ReadDate = x.OnEvent.ReadDate,
-                        SourceAgentName = x.OnEvent.SourceAgent.Name,
+                    ReadAgentName = x.OnEvent.ReadAgent.Name,
+                    ReadDate = x.OnEvent.ReadDate,
+                    SourceAgentName = x.OnEvent.SourceAgent.Name,
 
-                        SourcePositionName = x.OnEvent.SourcePosition.Name,
-                        TargetPositionName = x.OnEvent.TargetPosition.Name,
-                        SourcePositionExecutorNowAgentName = x.OnEvent.SourcePosition.ExecutorAgent.Name,
-                        TargetPositionExecutorNowAgentName = x.OnEvent.TargetPosition.ExecutorAgent.Name,
-                        SourcePositionExecutorAgentPhoneNumber = "(888)888-88-88", //TODO 
-                        TargetPositionExecutorAgentPhoneNumber = "(888)888-88-88", //TODO 
+                    SourcePositionName = x.OnEvent.SourcePosition.Name,
+                    TargetPositionName = x.OnEvent.TargetPosition.Name,
+                    SourcePositionExecutorNowAgentName = x.OnEvent.SourcePosition.ExecutorAgent.Name,
+                    TargetPositionExecutorNowAgentName = x.OnEvent.TargetPosition.ExecutorAgent.Name,
+                    SourcePositionExecutorAgentPhoneNumber = "(888)888-88-88", //TODO 
+                    TargetPositionExecutorAgentPhoneNumber = "(888)888-88-88", //TODO 
 
-                    },
+                },
                 OffEvent = !x.OffEventId.HasValue
                     ? null
                     : new FrontDocumentEvent
