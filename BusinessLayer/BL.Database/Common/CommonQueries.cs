@@ -1149,6 +1149,8 @@ namespace BL.Database.Common
                 }
             }
 
+            itemsDb = itemsDb.OrderByDescending(x => x.LastChangeDate);
+
             if (paging != null)
             {
                 paging.TotalItemsCount = itemsDb.Count();
@@ -1157,6 +1159,8 @@ namespace BL.Database.Common
                 {
                     return new List<FrontDocumentPaper>();
                 }
+
+
 
                 itemsDb = itemsDb
                         .Skip(paging.PageSize * (paging.CurrentPage - 1))

@@ -761,7 +761,23 @@ namespace BL.Database.Documents
 
                 if (paging != null)
                 {
-                    paging.TotalItemsCount = qry.Count();
+                    //paging.TotalItemsCount = qry.Count();
+
+                    //TODO
+                    paging.Counters = new UICounters
+                    {
+                        Counter1 = qry.Count(x=>!x.ReadDate.HasValue
+                                              && x.TargetPositionId.HasValue && x.TargetPositionId != x.SourcePositionId
+                                              && ctx.CurrentPositionsIdList.Contains(x.TargetPositionId.Value)),
+                        Counter3 = qry.Count(),
+                    };
+
+                    paging.TotalItemsCount = paging.Counters.Counter3.GetValueOrDefault();
+
+                    if (paging.IsOnlyCounter)
+                    {
+                        return new List<FrontDocumentEvent>();
+                    }
 
                     qry = qry.OrderByDescending(x => x.LastChangeDate)
                             .Skip(paging.PageSize * (paging.CurrentPage - 1))
