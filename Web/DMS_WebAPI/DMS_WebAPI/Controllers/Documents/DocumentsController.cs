@@ -11,6 +11,7 @@ using BL.Model.DocumentCore.IncomingModel;
 using System;
 using BL.CrossCutting.DependencyInjection;
 using BL.Model.Enums;
+using System.Collections.Generic;
 
 namespace DMS_WebAPI.Controllers.Documents
 {
@@ -23,7 +24,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <param name="filter">модель фильтра документов</param>
         /// <param name="paging">paging</param>
         /// <returns></returns>
-        [ResponseType(typeof(FrontDocument))]
+        [ResponseType(typeof(List<FrontDocument>))]
         public IHttpActionResult Get([FromUri] FilterDocument filter, [FromUri]UIPaging paging)
         {
             var timeM = new System.Diagnostics.Stopwatch();
@@ -38,7 +39,7 @@ namespace DMS_WebAPI.Controllers.Documents
             res.Paging = paging;
             timeM.Stop();
             //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentService GetDocuments User: " + ctx.CurrentAgentId, timeDB.Elapsed);
-            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentsController Get List User: " + ctx.CurrentAgentId, timeM.Elapsed);
+            BL.CrossCutting.Helpers.Logger.SaveToFile("M:DocumentsController-GetList", timeM.Elapsed);
             return res;
         }
 

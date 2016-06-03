@@ -12,6 +12,7 @@ using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Logic.Common;
 using BL.Model.DocumentCore.Filters;
+using BL.Model.SystemCore;
 
 namespace BL.Logic.DocumentCore
 {
@@ -30,9 +31,9 @@ namespace BL.Logic.DocumentCore
             return _documentDb.GetDocumentTask(context, taskId);
         }
 
-        public IEnumerable<FrontDocumentTask> GetTasks(IContext context, FilterDocumentTask filter)
+        public IEnumerable<FrontDocumentTask> GetTasks(IContext context, FilterDocumentTask filter, UIPaging paging)
         {
-            return _documentDb.GetDocumentTasks(context, filter).ToList();
+            return _documentDb.GetDocumentTasks(context, filter, paging).ToList();
         }
 
         #endregion DocumentTasks         

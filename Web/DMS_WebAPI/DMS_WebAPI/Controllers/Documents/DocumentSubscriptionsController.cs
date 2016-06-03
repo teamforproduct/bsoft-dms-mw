@@ -7,6 +7,7 @@ using BL.Model.DocumentCore.FrontModel;
 using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
+using System.Collections.Generic;
 
 namespace DMS_WebAPI.Controllers.Documents
 {
@@ -19,7 +20,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <param name="filter">модель фильтра подписей</param>
         /// <param name="paging">paging</param>
         /// <returns>список подписей</returns>
-        [ResponseType(typeof(FrontDocumentSubscription))]
+        [ResponseType(typeof(List<FrontDocumentSubscription>))]
         public IHttpActionResult Get([FromUri] FilterDocumentSubscription filter, [FromUri]UIPaging paging)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();

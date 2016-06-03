@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using BL.CrossCutting.Interfaces;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.Filters;
+using BL.Model.SystemCore;
 
 namespace BL.Logic.DocumentCore.Interfaces
 {
@@ -9,7 +10,7 @@ namespace BL.Logic.DocumentCore.Interfaces
     {
         #region DocumentTasks
         FrontDocumentTask GetDocumentTask(IContext context, int taskId);
-        IEnumerable<FrontDocumentTask> GetTasks(IContext context, FilterDocumentTask filter);
+        IEnumerable<FrontDocumentTask> GetTasks(IContext context, FilterDocumentTask filter, UIPaging paging);
         #endregion DocumentTasks         
     }
 }

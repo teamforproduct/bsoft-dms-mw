@@ -2,6 +2,7 @@
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
+using BL.Model.SystemCore;
 using BL.Model.SystemCore.FrontModel;
 using System;
 using System.Collections.Generic;
@@ -163,6 +164,9 @@ namespace BL.Model.DocumentCore.FrontModel
         public string RegistrationFullNumber { get; set; }
 
         public int? EventsCount { get; set; }
+
+        public UICounters WaitCount { get; set; }
+
         public int? WaitOpenCount { get; set; }
         public int? WaitOverdueCount { get; set; }
 

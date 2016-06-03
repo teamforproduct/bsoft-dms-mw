@@ -17,14 +17,6 @@ namespace BL.Database.Documents
         {
         }
 
-        public IEnumerable<FrontDocumentAttachedFile> GetDocumentFiles(IContext ctx, int documentId)
-        {
-            using (var dbContext = new DmsContext(ctx))
-            {
-                return CommonQueries.GetDocumentFiles(ctx, dbContext, new FilterDocumentAttachedFile { DocumentId = new List<int> { documentId } });
-            }
-        }
-
         public IEnumerable<FrontDocumentAttachedFile> GetDocumentFiles(IContext ctx, FilterDocumentAttachedFile filter, UIPaging paging = null)
         {
             using (var dbContext = new DmsContext(ctx))
