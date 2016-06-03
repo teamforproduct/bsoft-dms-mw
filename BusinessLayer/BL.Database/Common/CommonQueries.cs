@@ -161,7 +161,7 @@ namespace BL.Database.Common
                     IsInWork = acc.IsInWork,
                     DocumentId = acc.DocumentId,
                     IsFavourite = acc.IsFavourite,
-                    AccessLevelId = (int)acc.AccessLevelId,
+                    AccessLevelId = acc.AccessLevelId,
                     AccessLevelName = acc.AccessLevel.Name
                 });
         }

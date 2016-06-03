@@ -986,8 +986,12 @@ namespace BL.Database.Documents
                 }
 
                 //time.Start();
-                res.AccessLevelId = accs.Where(x => x.PositionId == res.ExecutorPositionId).Select(x => (int)x.AccessLevelId).FirstOrDefault();
-                res.AccessLevelName = accs.Where(x => x.PositionId == res.ExecutorPositionId).Select(x => x.AccessLevelName).FirstOrDefault();
+                var accByExecutorPosition = accs.Where(x => x.PositionId == res.ExecutorPositionId).FirstOrDefault();
+                if (accByExecutorPosition != null)
+                {
+                    res.AccessLevelId = accByExecutorPosition.AccessLevelId;
+                    res.AccessLevelName = accByExecutorPosition.AccessLevelName;
+                }
                 res.IsFavourite = accs.Any(x => x.IsFavourite);
                 res.IsInWork = accs.Any(x => x.IsInWork);
                 res.Accesses = accs;
