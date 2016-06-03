@@ -907,7 +907,7 @@ namespace BL.Database.Common
                             Description = y.Description,
                             ExecutorPositionExecutorAgentName = y.ExecutorPositionExecutorAgent.Name,
                             ExecutorPositionName = y.ExecutorPosition.Name,
-                            Links = dbContext.DocumentLinksSet.Where(z => z.Document.TemplateDocument.ClientId == context.CurrentClientId).Where(z => z.DocumentId == y.Id).OrderBy(z => z.LastChangeDate).
+                            Links = y.LinksDocuments.OrderBy(z => z.LastChangeDate).
                                 Select(z => new FrontDocumentLink
                                 {
                                     Id = z.Id,
@@ -917,7 +917,7 @@ namespace BL.Database.Common
                                     RegistrationNumberSuffix = z.ParentDocument.RegistrationNumberSuffix,
                                     RegistrationFullNumber = "#" + z.ParentDocument.Id.ToString(),
                                     DocumentDate = (z.ParentDocument.RegistrationDate ?? z.ParentDocument.CreateDate),
-                                }).ToList()
+                                })
                         }).ToList();
 
             items.ForEach(x =>
