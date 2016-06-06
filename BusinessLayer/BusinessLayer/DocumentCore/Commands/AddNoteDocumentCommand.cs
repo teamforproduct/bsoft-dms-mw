@@ -53,7 +53,7 @@ namespace BL.Logic.DocumentCore.Commands
         {
 
             var taskId = CommonDocumentUtilities.GetDocumentTaskOrCreateNew(_context, _document, Model.Task); 
-            _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, Model.DocumentId, EnumEventTypes.AddNote, Model.EventDate, Model.Description, taskId, Model.IsAvailableWithinTask);
+            _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, Model.DocumentId, EnumEventTypes.AddNote, Model.EventDate, Model.Description, null, taskId, Model.IsAvailableWithinTask);
             _operationDb.AddDocumentEvents(_context, _document);
             return null;
         }

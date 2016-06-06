@@ -29,6 +29,7 @@ namespace BL.Database.Documents
                 {
                     Id = x.Id,
                     DocumentDirection = (EnumDocumentDirections)x.DocumentDirectionId,
+                    IsHard = x.IsHard,
                     DocumentTypeId = x.DocumentTypeId,
                     Name = x.Name,
                     Description = x.Description,

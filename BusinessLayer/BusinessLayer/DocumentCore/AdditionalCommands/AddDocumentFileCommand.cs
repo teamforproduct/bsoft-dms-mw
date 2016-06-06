@@ -103,7 +103,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             CommonDocumentUtilities.SetLastChange(_context, att);
             if (_document.IsRegistered.HasValue)
             {
-                att.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, att.DocumentId, EnumEventTypes.AddDocumentFile, null, att.Name + "." + att.Extension);
+                att.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, att.DocumentId, EnumEventTypes.AddDocumentFile, null, null, att.Name + "." + att.Extension);
             }
             res.Add(_operationDb.AddNewFileOrVersion(_context, att));
             // Модель фронта содержит дополнительно только одно поле - пользователя, который последний модифицировал файл. 
