@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Dynamic;
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
@@ -32,5 +33,10 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// </summary>
         public string Name { get; set; }
 
+        /// <summary>
+        /// Строка, для полнотекстового поиска
+        /// </summary>
+        public string FullTextSearchString { get; set; }
+    
     }
 }
