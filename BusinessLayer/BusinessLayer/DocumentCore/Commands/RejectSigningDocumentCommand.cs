@@ -95,7 +95,11 @@ namespace BL.Logic.DocumentCore.Commands
                 if (sendList != null)
                 {
                     var docProc = DmsResolver.Current.Get<IDocumentService>();
-                    docProc.ExecuteAction(EnumDocumentActions.StopPlan, _context, _document.Id);
+                    if (_document.IsLaunchPlan)
+                    {
+                        var adminCtx = new CrossCutting.Context.AdminContext(_context);
+                        docProc.ExecuteAction(EnumDocumentActions.StopPlan, adminCtx, _document.Id);
+                    }
                 }
                 transaction.Complete();
             }
