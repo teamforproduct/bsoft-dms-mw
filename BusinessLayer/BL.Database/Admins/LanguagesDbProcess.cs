@@ -8,6 +8,7 @@ using BL.Model.AdminCore.FrontModel;
 using BL.Model.AdminCore.FilterModel;
 using BL.Model.AdminCore.InternalModel;
 using BL.Database.DBModel.Admin;
+using LinqKit;
 
 namespace BL.Database.Admins
 {
@@ -44,17 +45,32 @@ namespace BL.Database.Admins
         }
 
         #region AdminLanguages
+        private IQueryable<AdminLanguages> GetAdminLanguagesQuery(DmsContext dbContext, FilterAdminLanguage filter)
+        {
+            var qry = dbContext.AdminLanguagesSet.AsQueryable();
+
+            if (filter.LanguageId?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.False<AdminLanguages>();
+                filterContains = filter.LanguageId.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Id == value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            if (!string.IsNullOrEmpty(filter.Code))
+            {
+                qry = qry.Where(x => filter.Code.Equals(x.Code));
+            }
+
+            return qry;
+        }
 
         public IEnumerable<FrontAdminLanguage> GetAdminLanguages(IContext context, FilterAdminLanguage filter)
         {
             using (var dbContext = new DmsContext(context))
             {
-                var qry = dbContext.AdminLanguagesSet.AsQueryable();
-
-                if (filter.LanguageId?.Count > 0)
-                {
-                    qry = qry.Where(x => filter.LanguageId.Contains(x.Id));
-                }
+                var qry = GetAdminLanguagesQuery(dbContext, filter);
 
                 return qry.Select(x => new FrontAdminLanguage
                 {
@@ -70,17 +86,7 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(context))
             {
-                var qry = dbContext.AdminLanguagesSet.AsQueryable();
-
-                if (filter.LanguageId?.Count > 0)
-                {
-                    qry = qry.Where(x => filter.LanguageId.Contains(x.Id));
-                }
-
-                if (!string.IsNullOrEmpty(filter.Code))
-                {
-                    qry = qry.Where(x => filter.Code.Equals(x.Code));
-                }
+                var qry = GetAdminLanguagesQuery(dbContext, filter);
 
                 return qry.Select(x => new InternalAdminLanguage
                 {
@@ -143,41 +149,53 @@ namespace BL.Database.Admins
 
         #region AdminLanguageValues
 
+        private IQueryable<AdminLanguageValues> GetAdminLanguageValuesQuery(DmsContext dbContext, FilterAdminLanguageValue filter)
+        {
+            var qry = dbContext.AdminLanguageValuesSet.AsQueryable();
+
+            if (filter.LanguageValueId?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.False<AdminLanguageValues>();
+                filterContains = filter.LanguageValueId.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Id == value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            if (filter.LanguageId.HasValue)
+            {
+                if (filter.LanguageId > 0)
+                {
+                    qry = qry.Where(x => x.Id == filter.LanguageId);
+                }
+                else
+                {
+                    qry = qry.Where(x => x.Language.IsDefault);
+                }
+            }
+
+            if (!string.IsNullOrEmpty(filter.Label))
+            {
+                qry = qry.Where(x => filter.Label.Equals(x.Label));
+            }
+
+            if (filter.Labels?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.False<AdminLanguageValues>();
+                filterContains = filter.Labels.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Label == value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            return qry;
+        }
+
         public IEnumerable<FrontAdminLanguageValue> GetAdminLanguageValues(IContext context, FilterAdminLanguageValue filter)
         {
             using (var dbContext = new DmsContext(context))
             {
-                var qry = dbContext.AdminLanguageValuesSet.AsQueryable();
-
-                if (filter.LanguageValueId?.Count > 0)
-                {
-                    qry = qry.Where(x => filter.LanguageValueId.Contains(x.Id));
-                }
-
-                if (filter.LanguageId.HasValue)
-                {
-                    if (filter.LanguageId > 0)
-                    {
-                        qry = qry.Where(x => x.Id == filter.LanguageId);
-                    }
-                    else
-                    {
-                        qry = qry.Where(x => x.Language.IsDefault);
-                    }
-                }
-
-                if (!string.IsNullOrEmpty(filter.Label))
-                {
-                    qry = qry.Where(x => filter.Label.Equals(x.Label));
-                }
-
-                if (filter.Labels != null)
-                {
-                    if (filter.Labels.Count > 0)
-                        qry = qry.Where(x => filter.Labels.Contains(x.Label));
-                    else
-                        qry = qry.Where(x => x.Id == 0);
-                }
+                var qry = GetAdminLanguageValuesQuery(dbContext, filter);
 
                 return qry.Select(x => new FrontAdminLanguageValue
                 {
@@ -193,22 +211,7 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(context))
             {
-                var qry = dbContext.AdminLanguageValuesSet.AsQueryable();
-
-                if (filter.LanguageValueId?.Count > 0)
-                {
-                    qry = qry.Where(x => filter.LanguageValueId.Contains(x.Id));
-                }
-
-                if (filter.LanguageId.HasValue)
-                {
-                    qry = qry.Where(x => x.Id == filter.LanguageId);
-                }
-
-                if (!string.IsNullOrEmpty(filter.Label))
-                {
-                    qry = qry.Where(x => filter.Label.Equals(x.Label));
-                }
+                var qry = GetAdminLanguageValuesQuery(dbContext, filter);
 
                 return qry.Select(x => new InternalAdminLanguageValue
                 {

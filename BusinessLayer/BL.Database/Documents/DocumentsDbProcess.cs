@@ -839,8 +839,8 @@ namespace BL.Database.Documents
 
                     LinkedDocumentsCount = doc.Links
                         .GroupBy(x => x.LinkId)
-                        .Select(x=>x.Count())
-                        .Select(x=> x < 2 ? 0 : x - 1).FirstOrDefault()
+                        .Select(x => x.Count())
+                        .Select(x => x < 2 ? 0 : x - 1).FirstOrDefault()
 
 
                 });
@@ -1536,8 +1536,8 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext, ctx)
-                    .Where(x => x.Id == model.Id && (ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.ExecutorPositionId)))
+                var doc = CommonQueries.GetDocumentQuery(dbContext, ctx, null, true)
+                    .Where(x => x.Id == model.Id)
                     .Select(x => new InternalDocument
                     {
                         Id = x.Id,
@@ -1624,8 +1624,8 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext, ctx)
-                    .Where(x => x.Id == documentId && (ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.ExecutorPositionId)))
+                var doc = CommonQueries.GetDocumentQuery(dbContext, ctx, null, true)
+                    .Where(x => x.Id == documentId)
                     .Select(x => new InternalDocument
                     {
                         Id = x.Id,
@@ -1896,8 +1896,8 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext, ctx)
-                    .Where(x => x.Id == model.DocumentId && (ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.ExecutorPositionId)))
+                var doc = CommonQueries.GetDocumentQuery(dbContext, ctx, null, true)
+                    .Where(x => x.Id == model.DocumentId)
                     .Select(x => new InternalDocument
                     {
                         Id = x.Id,
@@ -1925,8 +1925,8 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext, ctx)
-                    .Where(x => x.Id == model.DocumentId && (ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.ExecutorPositionId)))
+                var doc = CommonQueries.GetDocumentQuery(dbContext, ctx, null, true)
+                    .Where(x => x.Id == model.DocumentId)
                     .Select(x => new InternalDocument
                     {
                         Id = x.Id,
@@ -2118,8 +2118,8 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext, ctx)
-                    .Where(x => x.Id == documentId && (ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.ExecutorPositionId)))
+                var doc = CommonQueries.GetDocumentQuery(dbContext, ctx, null, true)
+                    .Where(x => x.Id == documentId)
                     .Select(x => new InternalDocument
                     {
                         Id = x.Id,

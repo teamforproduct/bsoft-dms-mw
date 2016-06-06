@@ -23,12 +23,13 @@ using BL.Model.FullTextSearch;
 using BL.Model.SystemCore;
 using BL.CrossCutting.CryptographicWorker;
 using LinqKit;
+using BL.Database.DBModel.Dictionary;
 
 namespace BL.Database.Common
 {
     internal static class CommonQueries
     {
-        public static IQueryable<DBModel.Document.Documents> GetDocumentQuery(DmsContext dbContext, IContext ctx, IQueryable<FrontDocumentAccess> userAccesses = null)
+        public static IQueryable<DBModel.Document.Documents> GetDocumentQuery(DmsContext dbContext, IContext ctx, IQueryable<FrontDocumentAccess> userAccesses = null, bool isVerifyExecutorPosition = false)
         {
             var qry = dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == ctx.CurrentClientId).AsQueryable();
             if (!ctx.IsAdmin)
@@ -38,7 +39,15 @@ namespace BL.Database.Common
                     (current, value) => current.Or(e => e.PositionId == value).Expand());
 
                 qry = qry.Where(x => x.Accesses.AsQueryable().Any(filterContains));
-                //qry = qry.Where(x => x.Accesses.Any(y => ctx.CurrentPositionsIdList.Contains(y.PositionId)));
+
+                if (isVerifyExecutorPosition)
+                {
+                    var filterExecutorPositionContains = PredicateBuilder.False<DBModel.Document.Documents>();
+                    filterExecutorPositionContains = ctx.CurrentPositionsIdList.Aggregate(filterExecutorPositionContains,
+                        (current, value) => current.Or(e => e.ExecutorPositionId == value).Expand());
+
+                    qry = qry.Where(filterExecutorPositionContains);
+                }
             }
             if (userAccesses != null)
             {
@@ -53,19 +62,31 @@ namespace BL.Database.Common
 
             if (!ctx.IsAdmin)
             {
-                qry = qry.Where(x => x.Document.Accesses.Any(y => ctx.CurrentPositionsIdList.Contains(y.PositionId)));
+                var filterContains = PredicateBuilder.False<DocumentAccesses>();
+                filterContains = ctx.CurrentPositionsIdList.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.PositionId == value).Expand());
+
+                qry = qry.Where(x => x.Document.Accesses.AsQueryable().Any(filterContains));
             }
 
             if (filter != null)
             {
                 if (filter.AttachedFileId?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.AttachedFileId.Contains(x.Id));
+                    var filterContains = PredicateBuilder.False<DocumentFiles>();
+                    filterContains = filter.AttachedFileId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    qry = qry.Where(filterContains);
                 }
 
                 if (filter.DocumentId?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.DocumentId.Contains(x.DocumentId));
+                    var filterContains = PredicateBuilder.False<DocumentFiles>();
+                    filterContains = filter.DocumentId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.DocumentId == value).Expand());
+
+                    qry = qry.Where(filterContains);
                 }
             }
 
@@ -186,9 +207,13 @@ namespace BL.Database.Common
         public static IQueryable<DocumentAccesses> GetDocumentAccessesesQry(DmsContext dbContext, int documentId, IContext ctx)
         {
             var qry = dbContext.DocumentAccessesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == documentId);
-            if (ctx != null)
+            if (ctx != null && !ctx.IsAdmin)
             {
-                qry = qry.Where(x => ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.PositionId));
+                var filterContains = PredicateBuilder.False<DocumentAccesses>();
+                filterContains = ctx.CurrentPositionsIdList.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.PositionId == value).Expand());
+
+                qry = qry.Where(filterContains);
             }
             return qry;
         }
@@ -211,8 +236,12 @@ namespace BL.Database.Common
 
         public static IEnumerable<InternalPositionInfo> GetInternalPositionsInfo(DmsContext dbContext, IContext context, List<int> positionIds)
         {
+            var filterContains = PredicateBuilder.False<DictionaryPositions>();
+            filterContains = positionIds.Aggregate(filterContains,
+                (current, value) => current.Or(e => e.Id == value).Expand());
+
             return dbContext.DictionaryPositionsSet.Where(x => x.Department.Company.ClientId == context.CurrentClientId)
-                .Where(x => positionIds.Contains(x.Id)).Select(x => new InternalPositionInfo
+                .Where(filterContains).Select(x => new InternalPositionInfo
                 {
                     PositionId = x.Id,
                     PositionName = x.Name,
@@ -223,48 +252,69 @@ namespace BL.Database.Common
 
         public static IQueryable<DocumentEvents> GetDocumentEventsQuery(IContext ctx, DmsContext dbContext)
         {
-            var qry = dbContext.DocumentEventsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).AsQueryable();
+            var qry = dbContext.DocumentEventsSet.AsQueryable();
+
+            //TODO Что то придумать с union
+
             if (!ctx.IsAdmin)
             {
-                qry = qry.Where(x => x.Document.Accesses.Any(y => ctx.CurrentPositionsIdList.Contains(y.PositionId)));
+                var filterPositionContains = PredicateBuilder.False<DocumentEvents>();
+                filterPositionContains = ctx.CurrentPositionsIdList.Aggregate(filterPositionContains,
+                    (current, value) => current.Or(e =>
+                        e.TargetPositionId == value
+                        || e.SourcePositionId == value).Expand());
+
+                var filterTaskAccessesContains = PredicateBuilder.False<DocumentTaskAccesses>();
+                filterTaskAccessesContains = ctx.CurrentPositionsIdList.Aggregate(filterTaskAccessesContains,
+                    (current, value) => current.Or(e => e.PositionId == value).Expand());
+
+                qry = qry.Where(filterPositionContains)
+                         .Union(qry.Where(x => x.IsAvailableWithinTask && x.TaskId.HasValue && x.Task.TaskAccesses.AsQueryable().Any(filterTaskAccessesContains)));
+
+                var filterContains = PredicateBuilder.False<DocumentAccesses>();
+                filterContains = ctx.CurrentPositionsIdList.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.PositionId == value).Expand());
+
+                qry = qry.Where(x => x.Document.Accesses.AsQueryable().Any(filterContains));
             }
 
-            return qry
-                    .Where(x => ctx.IsAdmin || (x.TargetPositionId.HasValue && ctx.CurrentPositionsIdList.Contains(x.TargetPositionId.Value))
-                    || (x.SourcePositionId.HasValue && ctx.CurrentPositionsIdList.Contains(x.SourcePositionId.Value))
-                    || (x.IsAvailableWithinTask && x.TaskId.HasValue && x.Task.TaskAccesses.Any(a => ctx.CurrentPositionsIdList.Contains(a.PositionId)))
-                    ).AsQueryable();
+            qry = qry.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId);
+
+            return qry;
         }
 
         public static IQueryable<DocumentWaits> GetDocumentWaitsQuery(DmsContext dbContext, IContext ctx, int? documentId = null)
         {
-            var qry = dbContext.DocumentWaitsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).AsQueryable();
-            if (!ctx.IsAdmin)
+            var qry = dbContext.DocumentWaitsSet.AsQueryable();
+
+            //TODO Что то придумать с union
+
+            if (ctx != null && !ctx.IsAdmin)
             {
-                qry = qry.Where(x => x.Document.Accesses.Any(y => ctx.CurrentPositionsIdList.Contains(y.PositionId)));
+                var filterOnEventPositionsContains = PredicateBuilder.False<DocumentWaits>();
+                filterOnEventPositionsContains = ctx.CurrentPositionsIdList.Aggregate(filterOnEventPositionsContains,
+                    (current, value) => current.Or(e => e.OnEvent.TargetPositionId == value || e.OnEvent.SourcePositionId == value).Expand());
+
+                var filterOnEventTaskAccessesContains = PredicateBuilder.False<DocumentTaskAccesses>();
+                filterOnEventTaskAccessesContains = ctx.CurrentPositionsIdList.Aggregate(filterOnEventTaskAccessesContains,
+                    (current, value) => current.Or(e => e.PositionId == value).Expand());
+
+                qry = qry.Where(filterOnEventPositionsContains)
+                        .Union(qry.Where(x => x.OnEvent.IsAvailableWithinTask && x.OnEvent.TaskId.HasValue &&
+                        x.OnEvent.Task.TaskAccesses.AsQueryable().Any(filterOnEventTaskAccessesContains)));
+
+                var filterContains = PredicateBuilder.False<DocumentAccesses>();
+                filterContains = ctx.CurrentPositionsIdList.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.PositionId == value).Expand());
+
+                qry = qry.Where(x => x.Document.Accesses.AsQueryable().Any(filterContains));
             }
+
+            qry = qry.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId);
 
             if (documentId.HasValue)
             {
                 qry = qry.Where(x => x.DocumentId == documentId.Value);
-            }
-            if (ctx != null && !ctx.IsAdmin)
-            {
-                //TODO
-                var currentPositionsIdList = ctx.CurrentPositionsIdList;
-
-
-                qry = qry.Where(x =>
-                           (x.OnEvent.TargetPositionId.HasValue &&
-                            currentPositionsIdList.Contains(x.OnEvent.TargetPositionId.Value))
-                           ||
-                           (x.OnEvent.SourcePositionId.HasValue &&
-                            currentPositionsIdList.Contains(x.OnEvent.SourcePositionId.Value))
-                           // make weit available if onevent can be accesed through the task
-                           ||
-                           (x.OnEvent.IsAvailableWithinTask && x.OnEvent.TaskId.HasValue &&
-                           x.OnEvent.Task.TaskAccesses.Any(a => currentPositionsIdList.Contains(a.PositionId)))
-                             );
             }
             return qry;
         }
@@ -275,39 +325,30 @@ namespace BL.Database.Common
 
             if (!ctx.IsAdmin)
             {
-                tasksDb = tasksDb.Where(x => x.Document.Accesses.Any(y => ctx.CurrentPositionsIdList.Contains(y.PositionId)));
+                var filterContains = PredicateBuilder.False<DocumentAccesses>();
+                filterContains = ctx.CurrentPositionsIdList.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.PositionId == value).Expand());
+
+                tasksDb = tasksDb.Where(x => x.Document.Accesses.AsQueryable().Any(filterContains));
             }
-
-            //var sendListDb = dbContext.DocumentSendListsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId)
-            //                .Where(x => x.TaskId.HasValue)
-            //                .Where(x => !x.CloseEventId.HasValue)
-            //                .Where(x => x.SendTypeId == (int)EnumSendTypes.SendForResponsibleExecution)
-            //                .GroupBy(x => x.TaskId)
-            //                .Select(x => x.FirstOrDefault())
-            //                .AsQueryable();
-
-            //var eventDb = dbContext.DocumentWaitsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId)
-            //                .Where(x => !x.OffEventId.HasValue)
-            //                .Select(x => x.OnEvent)
-            //                .Where(x => x.TaskId.HasValue)
-            //                .Where(x => x.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecution || x.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecutionChange)
-            //                .GroupBy(x => x.TaskId)
-            //                .Select(x => x.FirstOrDefault())
-            //                .AsQueryable();
 
             if (filter != null)
             {
                 if (filter?.DocumentId?.Count() > 0)
                 {
-                    tasksDb = tasksDb.Where(x => filter.DocumentId.Contains(x.DocumentId));
-                    //sendListDb = sendListDb.Where(x => filter.DocumentId.Contains(x.DocumentId));
-                    //eventDb = eventDb.Where(x => filter.DocumentId.Contains(x.DocumentId));
+                    var filterContains = PredicateBuilder.False<DocumentTasks>();
+                    filterContains = filter.DocumentId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.DocumentId == value).Expand());
+
+                    tasksDb = tasksDb.Where(filterContains);
                 }
                 if (filter?.Id?.Count() > 0)
                 {
-                    tasksDb = tasksDb.Where(x => filter.Id.Contains(x.Id));
-                    //sendListDb = sendListDb.Where(x => filter.Id.Contains(x.TaskId ?? 0));
-                    //eventDb = eventDb.Where(x => filter.Id.Contains(x.TaskId ?? 0));
+                    var filterContains = PredicateBuilder.False<DocumentTasks>();
+                    filterContains = filter.Id.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    tasksDb = tasksDb.Where(filterContains);
                 }
             }
 
@@ -388,7 +429,11 @@ namespace BL.Database.Common
             {
                 if (filter?.DocumentId?.Count() > 0)
                 {
-                    waitsDb = waitsDb.Where(x => filter.DocumentId.Contains(x.DocumentId));
+                    var filterContains = PredicateBuilder.False<DocumentWaits>();
+                    filterContains = filter.DocumentId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.DocumentId == value).Expand());
+
+                    waitsDb = waitsDb.Where(filterContains);
                 }
 
                 if (filter.OnEventId.HasValue)
@@ -532,18 +577,30 @@ namespace BL.Database.Common
             var subscriptionsDb = dbContext.DocumentSubscriptionsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).AsQueryable();
             if (!ctx.IsAdmin)
             {
-                subscriptionsDb = subscriptionsDb.Where(x => x.Document.Accesses.Any(y => ctx.CurrentPositionsIdList.Contains(y.PositionId)));
+                var filterContains = PredicateBuilder.False<DocumentAccesses>();
+                filterContains = ctx.CurrentPositionsIdList.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.PositionId == value).Expand());
+
+                subscriptionsDb = subscriptionsDb.Where(x => x.Document.Accesses.AsQueryable().Any(filterContains));
             }
 
             if (filter != null)
             {
-                if (filter.DocumentId.Any())
+                if (filter.DocumentId?.Count > 0)
                 {
-                    subscriptionsDb = subscriptionsDb.Where(x => filter.DocumentId.Contains(x.DocumentId));
+                    var filterContains = PredicateBuilder.False<DocumentSubscriptions>();
+                    filterContains = filter.DocumentId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.DocumentId == value).Expand());
+
+                    subscriptionsDb = subscriptionsDb.Where(filterContains);
                 }
                 if (filter.SubscriptionStates?.Count > 0)
                 {
-                    subscriptionsDb = subscriptionsDb.Where(x => filter.SubscriptionStates.Cast<int>().Contains(x.SubscriptionStateId ?? 0));
+                    var filterContains = PredicateBuilder.False<DocumentSubscriptions>();
+                    filterContains = filter.SubscriptionStates.Aggregate(filterContains,
+                        (current, value) => current.Or(e => (EnumSubscriptionStates)e.SubscriptionStateId == value).Expand());
+
+                    subscriptionsDb = subscriptionsDb.Where(filterContains);
                 }
             }
 
@@ -666,8 +723,6 @@ namespace BL.Database.Common
                         (current, value) => current.Or(e => e.DocumentId == value).Expand());
 
                     tagsDb = tagsDb.Where(filterContains);
-
-                    //tagsDb = tagsDb.Where(x => filter.DocumentId.Contains(x.DocumentId));
                 }
 
                 if (filter.CurrentPositionsId?.Count > 0)
@@ -677,8 +732,6 @@ namespace BL.Database.Common
                         (current, value) => current.Or(e => !e.Tag.PositionId.HasValue || e.Tag.PositionId == value).Expand());
 
                     tagsDb = tagsDb.Where(filterContains);
-
-                    //tagsDb = tagsDb.Where(x => !x.Tag.PositionId.HasValue || filter.CurrentPositionsId.Contains(x.Tag.PositionId ?? 0));
                 }
             }
 
@@ -699,7 +752,7 @@ namespace BL.Database.Common
 
         }
 
-        public static IEnumerable<FrontPropertyValue> GetPropertyValues(DmsContext dbContext, IContext ctx, FilterPropertyValue filter)
+        public static IQueryable<PropertyValues> GetPropertyValuesQuery(DmsContext dbContext, IContext ctx, FilterPropertyValue filter)
         {
             var itemsDb = dbContext.PropertyValuesSet.Where(x => x.PropertyLink.Property.ClientId == ctx.CurrentClientId).AsQueryable();
 
@@ -708,12 +761,10 @@ namespace BL.Database.Common
                 if (filter.Object?.Count() > 0)
                 {
                     var filterContains = PredicateBuilder.False<PropertyValues>();
-                    filterContains = filter.Object.Select(x=>(int)x).Aggregate(filterContains,
+                    filterContains = filter.Object.Select(x => (int)x).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.PropertyLink.ObjectId == value).Expand());
 
                     itemsDb = itemsDb.Where(filterContains);
-
-                    //itemsDb = itemsDb.Where(x => filter.Object.Contains((EnumObjects)x.PropertyLink.ObjectId));
                 }
 
                 if (filter.RecordId?.Count > 0)
@@ -723,12 +774,16 @@ namespace BL.Database.Common
                         (current, value) => current.Or(e => e.RecordId == value).Expand());
 
                     itemsDb = itemsDb.Where(filterContains);
-
-                    //itemsDb = itemsDb.Where(x => filter.RecordId.Contains(x.RecordId));
                 }
             }
 
-            //var itemsRes = itemsDb;
+            return itemsDb;
+
+        }
+
+        public static IEnumerable<FrontPropertyValue> GetPropertyValues(DmsContext dbContext, IContext ctx, FilterPropertyValue filter)
+        {
+            var itemsDb = GetPropertyValuesQuery(dbContext, ctx, filter);
 
             var itemsRes = itemsDb
                 .Select(x => new
@@ -809,24 +864,9 @@ namespace BL.Database.Common
 
         public static IEnumerable<InternalPropertyValue> GetInternalPropertyValues(DmsContext dbContext, IContext ctx, FilterPropertyValue filter)
         {
-            var itemsDb = dbContext.PropertyValuesSet.Where(x => x.PropertyLink.Property.ClientId == ctx.CurrentClientId).AsQueryable();
+            var itemsDb = GetPropertyValuesQuery(dbContext, ctx, filter);
 
-            if (filter != null)
-            {
-                if (filter.Object?.Count() > 0)
-                {
-                    itemsDb = itemsDb.Where(x => filter.Object.Contains((EnumObjects)x.PropertyLink.ObjectId));
-                }
-
-                if (filter.RecordId?.Count > 0)
-                {
-                    itemsDb = itemsDb.Where(x => filter.RecordId.Contains(x.RecordId));
-                }
-            }
-
-            var itemsRes = itemsDb;
-
-            var items = itemsRes.Select(x => new InternalPropertyValue
+            var items = itemsDb.Select(x => new InternalPropertyValue
             {
                 Id = x.Id,
                 PropertyLinkId = x.PropertyLinkId,
@@ -850,24 +890,9 @@ namespace BL.Database.Common
 
         public static void DeletePropertyValues(DmsContext dbContext, IContext ctx, FilterPropertyValue filter)
         {
-            var itemsDb = dbContext.PropertyValuesSet.Where(x => x.PropertyLink.Property.ClientId == ctx.CurrentClientId).AsQueryable();
+            var itemsDb = GetPropertyValuesQuery(dbContext, ctx, filter);
 
-            if (filter != null)
-            {
-                if (filter.Object?.Count() > 0)
-                {
-                    itemsDb = itemsDb.Where(x => filter.Object.Contains((EnumObjects)x.PropertyLink.ObjectId));
-                }
-
-                if (filter.RecordId?.Count > 0)
-                {
-                    itemsDb = itemsDb.Where(x => filter.RecordId.Contains(x.RecordId));
-                }
-            }
-
-            var itemsRes = itemsDb;
-
-            dbContext.PropertyValuesSet.RemoveRange(itemsRes);
+            dbContext.PropertyValuesSet.RemoveRange(itemsDb);
         }
 
         public static IEnumerable<FrontDictionaryPosition> GetDocumentWorkGroup(DmsContext dbContext, IContext ctx, FilterDictionaryPosition filter)
@@ -967,7 +992,7 @@ namespace BL.Database.Common
             return items;
         }
 
-        public static IEnumerable<FrontDocumentSendList> GetDocumentSendList(DmsContext dbContext, IContext context, FilterDocumentSendList filter)
+        private static IQueryable<DocumentSendLists> GetDocumentSendListQuery(DmsContext dbContext, IContext context, FilterDocumentSendList filter)
         {
             var sendListDb = dbContext.DocumentSendListsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId).AsQueryable();
 
@@ -980,7 +1005,6 @@ namespace BL.Database.Common
                         (current, value) => current.Or(e => e.DocumentId == value).Expand());
 
                     sendListDb = sendListDb.Where(filterContains);
-                    //sendListDb = sendListDb.Where(x => filter.DocumentId.Contains(x.DocumentId));
                 }
                 if (filter?.Id?.Count() > 0)
                 {
@@ -989,11 +1013,16 @@ namespace BL.Database.Common
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
                     sendListDb = sendListDb.Where(filterContains);
-
-                    //sendListDb = sendListDb.Where(x => filter.Id.Contains(x.Id));
                 }
 
             }
+
+            return sendListDb;
+        }
+
+        public static IEnumerable<FrontDocumentSendList> GetDocumentSendList(DmsContext dbContext, IContext context, FilterDocumentSendList filter)
+        {
+            var sendListDb = GetDocumentSendListQuery(dbContext, context, filter);
 
             var res = sendListDb.Select(y => new FrontDocumentSendList
             {
@@ -1078,7 +1107,6 @@ namespace BL.Database.Common
                         (current, value) => current.Or(e => e.DocumentId == value).Expand());
 
                     sendListDb = sendListDb.Where(filterContains);
-                    //sendListDb = sendListDb.Where(x => filter.DocumentId.Contains(x.DocumentId));
                 }
                 if (filter?.Id?.Count() > 0)
                 {
@@ -1087,8 +1115,6 @@ namespace BL.Database.Common
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
                     sendListDb = sendListDb.Where(filterContains);
-
-                    //sendListDb = sendListDb.Where(x => filter.Id.Contains(x.Id));
                 }
 
             }
@@ -1190,18 +1216,30 @@ namespace BL.Database.Common
 
             if (!ctx.IsAdmin)
             {
-                itemsDb = itemsDb.Where(x => x.Document.Accesses.Any(y => ctx.CurrentPositionsIdList.Contains(y.PositionId)));
+                var filterContains = PredicateBuilder.False<DocumentAccesses>();
+                filterContains = ctx.CurrentPositionsIdList.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.PositionId == value).Expand());
+
+                itemsDb = itemsDb.Where(x => x.Document.Accesses.AsQueryable().Any(filterContains));
             }
 
             if (filter != null)
             {
                 if (filter?.DocumentId?.Count() > 0)
                 {
-                    itemsDb = itemsDb.Where(x => filter.DocumentId.Contains(x.DocumentId));
+                    var filterContains = PredicateBuilder.False<DocumentPapers>();
+                    filterContains = filter.DocumentId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.DocumentId == value).Expand());
+
+                    itemsDb = itemsDb.Where(filterContains);
                 }
                 if (filter?.Id?.Count() > 0)
                 {
-                    itemsDb = itemsDb.Where(x => filter.Id.Contains(x.Id));
+                    var filterContains = PredicateBuilder.False<DocumentPapers>();
+                    filterContains = filter.Id.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    itemsDb = itemsDb.Where(filterContains);
                 }
             }
 

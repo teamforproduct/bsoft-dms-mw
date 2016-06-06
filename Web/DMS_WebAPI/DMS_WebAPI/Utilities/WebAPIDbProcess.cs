@@ -10,6 +10,7 @@ using BL.Model.WebAPI.FrontModel;
 using BL.Model.WebAPI.IncomingModel;
 using DMS_WebAPI.DBModel;
 using DMS_WebAPI.Models;
+using LinqKit;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
@@ -39,13 +40,20 @@ namespace DMS_WebAPI.Utilities
             {
                 if (filter.ServerIds?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.ServerIds.Contains(x.Id));
+                    var filterContains = PredicateBuilder.False<AdminServers>();
+                    filterContains = filter.ServerIds.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    qry = qry.Where(filterContains);
                 }
 
                 if (filter.ServerTypes?.Count > 0)
                 {
-                    var serverTypes = filter.ServerTypes.Select(x => x.ToString()).ToList();
-                    qry = qry.Where(x => serverTypes.Contains(x.ServerType));
+                    var filterContains = PredicateBuilder.False<AdminServers>();
+                    filterContains = filter.ServerTypes.Select(x => x.ToString()).ToList().Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.ServerType == value).Expand());
+
+                    qry = qry.Where(filterContains);
                 }
             }
 
@@ -63,14 +71,13 @@ namespace DMS_WebAPI.Utilities
             {
                 var itemsDb = GetServersQuery(dbContext, filter);
 
-                var itemsRes = itemsDb.ToList();
-
-                var items = itemsRes.Select(x => new FrontAdminServer
+                var items = itemsDb.Select(x => new FrontAdminServer
                 {
                     Id = x.Id,
                     Address = x.Address,
                     Name = x.Name,
-                    ServerType = (DatabaseType)Enum.Parse(typeof(DatabaseType), x.ServerType),
+                    ServerTypeName = x.ServerType,
+                    //ServerType = (DatabaseType)Enum.Parse(typeof(DatabaseType), x.ServerType),
                     DefaultDatabase = x.DefaultDatabase,
                     IntegrateSecurity = x.IntegrateSecurity,
                     UserName = x.UserName,
@@ -78,6 +85,8 @@ namespace DMS_WebAPI.Utilities
                     ConnectionString = x.ConnectionString,
                     DefaultSchema = x.DefaultSchema,
                 }).ToList();
+
+                items.ForEach(x => { x.ServerType = (DatabaseType)Enum.Parse(typeof(DatabaseType), x.ServerTypeName); });
 
                 return items;
             }
@@ -127,17 +136,7 @@ namespace DMS_WebAPI.Utilities
 
                 userServers = userServers.Where(x => userClients.Contains(x.ClientId));
 
-                var itemsRes = from userServer in userServers
-                               join server in dbContext.AdminServersSet on userServer.ServerId equals server.Id
-                               join client in dbContext.AspNetClientsSet on userServer.ClientId equals client.Id
-                               select new
-                               {
-                                   Server = server,
-                                   Client = client
-                               };
-
-
-                var items = itemsRes.Select(x => new FrontAdminServerByUser
+                var items = userServers.Select(x => new FrontAdminServerByUser
                 {
                     Id = x.Server.Id,
                     Name = x.Server.Name,
@@ -160,20 +159,13 @@ namespace DMS_WebAPI.Utilities
 
                 userServers = userServers.Where(x => userClients.Contains(x.ClientId));
 
-                var itemsRes = (from userServer in userServers
-                                join server in dbContext.AdminServersSet on userServer.ServerId equals server.Id
-                                select new
-                                {
-                                    Server = server,
-                                }).ToList();
-
-
-                var item = itemsRes.Select(x => new DatabaseModel
+                var item = userServers.Select(x => new DatabaseModel
                 {
                     Id = x.Server.Id,
                     Address = x.Server.Address,
                     Name = x.Server.Name,
-                    ServerType = (DatabaseType)Enum.Parse(typeof(DatabaseType), x.Server.ServerType),
+                    ServerTypeName = x.Server.ServerType,
+                    //ServerType = (DatabaseType)Enum.Parse(typeof(DatabaseType), x.Server.ServerType),
                     DefaultDatabase = x.Server.DefaultDatabase,
                     IntegrateSecurity = x.Server.IntegrateSecurity,
                     UserName = x.Server.UserName,
@@ -181,6 +173,8 @@ namespace DMS_WebAPI.Utilities
                     ConnectionString = x.Server.ConnectionString,
                     DefaultSchema = x.Server.DefaultSchema,
                 }).FirstOrDefault();
+
+                item.ServerType = (DatabaseType)Enum.Parse(typeof(DatabaseType), item.ServerTypeName);
 
                 return item;
             }
@@ -314,12 +308,20 @@ namespace DMS_WebAPI.Utilities
             {
                 if (filter.ClientLicenceIds?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.ClientLicenceIds.Contains(x.Id));
+                    var filterContains = PredicateBuilder.False<AspNetClientLicences>();
+                    filterContains = filter.ClientLicenceIds.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    qry = qry.Where(filterContains);
                 }
 
                 if (filter.ClientIds?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.ClientIds.Contains(x.ClientId));
+                    var filterContains = PredicateBuilder.False<AspNetClientLicences>();
+                    filterContains = filter.ClientIds.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.ClientId == value).Expand());
+
+                    qry = qry.Where(filterContains);
                 }
 
                 if (filter.IsNowUsed.HasValue)
@@ -523,7 +525,11 @@ namespace DMS_WebAPI.Utilities
             {
                 if (filter.ClientIds?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.ClientIds.Contains(x.Id));
+                    var filterContains = PredicateBuilder.False<AspNetClients>();
+                    filterContains = filter.ClientIds.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    qry = qry.Where(filterContains);
                 }
 
                 if (!string.IsNullOrEmpty(filter.Code))
@@ -968,16 +974,28 @@ namespace DMS_WebAPI.Utilities
             {
                 if (filter.ClientServerIds?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.ClientServerIds.Contains(x.Id));
+                    var filterContains = PredicateBuilder.False<AspNetClientServers>();
+                    filterContains = filter.ClientServerIds.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    qry = qry.Where(filterContains);
                 }
 
                 if (filter.ClientIds?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.ClientIds.Contains(x.ClientId));
+                    var filterContains = PredicateBuilder.False<AspNetClientServers>();
+                    filterContains = filter.ClientIds.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.ClientId == value).Expand());
+
+                    qry = qry.Where(filterContains);
                 }
                 if (filter.ServerIds?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.ServerIds.Contains(x.ServerId));
+                    var filterContains = PredicateBuilder.False<AspNetClientServers>();
+                    filterContains = filter.ServerIds.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.ServerId == value).Expand());
+
+                    qry = qry.Where(filterContains);
                 }
             }
 
@@ -1070,7 +1088,11 @@ namespace DMS_WebAPI.Utilities
             {
                 if (filter.LicenceIds?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.LicenceIds.Contains(x.Id));
+                    var filterContains = PredicateBuilder.False<AspNetLicences>();
+                    filterContains = filter.LicenceIds.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    qry = qry.Where(filterContains);
                 }
             }
 
@@ -1213,17 +1235,29 @@ namespace DMS_WebAPI.Utilities
             {
                 if (filter.UserClientIds?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.UserClientIds.Contains(x.Id));
+                    var filterContains = PredicateBuilder.False<AspNetUserClients>();
+                    filterContains = filter.UserClientIds.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    qry = qry.Where(filterContains);
                 }
 
                 if (filter.ClientIds?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.ClientIds.Contains(x.ClientId));
+                    var filterContains = PredicateBuilder.False<AspNetUserClients>();
+                    filterContains = filter.ClientIds.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.ClientId == value).Expand());
+
+                    qry = qry.Where(filterContains);
                 }
 
                 if (filter.UserIds?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.UserIds.Contains(x.UserId));
+                    var filterContains = PredicateBuilder.False<AspNetUserClients>();
+                    filterContains = filter.UserIds.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.UserId == value).Expand());
+
+                    qry = qry.Where(filterContains);
                 }
 
                 if (!string.IsNullOrEmpty(filter.ClientCode))
@@ -1344,19 +1378,35 @@ namespace DMS_WebAPI.Utilities
             {
                 if (filter.UserServerIds?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.UserServerIds.Contains(x.Id));
+                    var filterContains = PredicateBuilder.False<AspNetUserServers>();
+                    filterContains = filter.UserServerIds.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    qry = qry.Where(filterContains);
                 }
                 if (filter.ClientIds?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.ClientIds.Contains(x.ClientId));
+                    var filterContains = PredicateBuilder.False<AspNetUserServers>();
+                    filterContains = filter.ClientIds.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.ClientId == value).Expand());
+
+                    qry = qry.Where(filterContains);
                 }
                 if (filter.UserIds?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.UserIds.Contains(x.UserId));
+                    var filterContains = PredicateBuilder.False<AspNetUserServers>();
+                    filterContains = filter.UserIds.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.UserId == value).Expand());
+
+                    qry = qry.Where(filterContains);
                 }
                 if (filter.ServerIds?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.ServerIds.Contains(x.ServerId));
+                    var filterContains = PredicateBuilder.False<AspNetUserServers>();
+                    filterContains = filter.ServerIds.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.ServerId == value).Expand());
+
+                    qry = qry.Where(filterContains);
                 }
             }
 

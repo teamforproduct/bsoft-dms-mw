@@ -18,10 +18,15 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
+                var qry = dbContext.DocumentTagsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                    .Where(x => x.DocumentId == documentId).AsQueryable();
+                if (!ctx.IsAdmin)
+                {
+                    qry = qry.Where(x => !x.Tag.PositionId.HasValue || ctx.CurrentPositionsIdList.Contains(x.Tag.PositionId ?? 0));
+                }
 
-                var items = dbContext.DocumentTagsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
-                    .Where(x => x.DocumentId == documentId)
-                    .Where(x => ctx.IsAdmin || !x.Tag.PositionId.HasValue || ctx.CurrentPositionsIdList.Contains(x.Tag.PositionId ?? 0))
+
+                var items = qry
                     .Select(x => new FrontDocumentTag
                     {
                         TagId = x.TagId,

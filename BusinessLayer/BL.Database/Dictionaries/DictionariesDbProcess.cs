@@ -4173,7 +4173,10 @@ namespace BL.Database.Dictionaries
             {
                 var qry = dbContext.DictionaryTagsSet.Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
 
-                qry = qry.Where(x => ctx.IsAdmin || !x.PositionId.HasValue || ctx.CurrentPositionsIdList.Contains(x.PositionId ?? 0));
+                if (!ctx.IsAdmin)
+                {
+                    qry = qry.Where(x => !x.PositionId.HasValue || ctx.CurrentPositionsIdList.Contains(x.PositionId ?? 0));
+                }
 
                 if (filter.IDs?.Count > 0)
                 {
@@ -4196,7 +4199,10 @@ namespace BL.Database.Dictionaries
             {
                 var qry = dbContext.DictionaryTagsSet.Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
 
-                qry = qry.Where(x => ctx.IsAdmin || !x.PositionId.HasValue || ctx.CurrentPositionsIdList.Contains(x.PositionId ?? 0));
+                if (!ctx.IsAdmin)
+                {
+                    qry = qry.Where(x => !x.PositionId.HasValue || ctx.CurrentPositionsIdList.Contains(x.PositionId ?? 0));
+                }
 
                 if (filter.IDs?.Count > 0)
                 {
@@ -4239,8 +4245,15 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                var savTag = dbContext.DictionaryTagsSet.Where(x => x.ClientId == ctx.CurrentClientId)
-                    .FirstOrDefault(x => x.Id == model.Id && (ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.PositionId ?? 0)));
+                var qry = dbContext.DictionaryTagsSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                            .Where(x => x.Id == model.Id).AsQueryable();
+
+                if(!ctx.IsAdmin)
+                {
+                    qry = qry.Where(x => ctx.CurrentPositionsIdList.Contains(x.PositionId ?? 0));
+                }
+
+                var savTag = qry.FirstOrDefault();
 
                 if (savTag?.Id > 0)
                 {

@@ -547,11 +547,10 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(ctx))
             {
                 var doc = dbContext.DocumentWaitsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
-                    .Where(x => x.OnEventId == eventId )
+                    .Where(x => x.OnEventId == eventId)
                     .Select(x => new InternalDocument
                     {
                         Id = x.DocumentId,
-                        IsLaunchPlan = x.Document.IsLaunchPlan,
                         Waits = new List<InternalDocumentWait>
                                     {
                                         new InternalDocumentWait
@@ -677,7 +676,7 @@ namespace BL.Database.Documents
                     .Select(x => new FrontDocumentEvent
                     {
                         Id = x.Id,
-                        DocumentDescription = x.Document.LinkId.HasValue ? x.Document.Description:null,
+                        DocumentDescription = x.Document.LinkId.HasValue ? x.Document.Description : null,
                         DocumentTypeName = x.Document.LinkId.HasValue ? x.Document.TemplateDocument.DocumentType.Name : null,
                         DocumentDirectionName = x.Document.LinkId.HasValue ? x.Document.TemplateDocument.DocumentDirection.Name : null,
                         ReadAgentName = x.ReadAgent.Name,
@@ -767,7 +766,7 @@ namespace BL.Database.Documents
                     //TODO
                     paging.Counters = new UICounters
                     {
-                        Counter1 = qry.Count(x=>!x.ReadDate.HasValue
+                        Counter1 = qry.Count(x => !x.ReadDate.HasValue
                                               && x.TargetPositionId.HasValue && x.TargetPositionId != x.SourcePositionId
                                               && ctx.CurrentPositionsIdList.Contains(x.TargetPositionId.Value)),
                         Counter3 = qry.Count(),
@@ -859,8 +858,12 @@ namespace BL.Database.Documents
 
                 var qry = CommonQueries.GetDocumentEventsQuery(ctx, dbContext).Where(x => model.EventIds.Contains(x.Id)
                 && !x.ReadDate.HasValue
-                && x.TargetPositionId.HasValue && x.TargetPositionId != x.SourcePositionId
-                && (ctx.IsAdmin || ctx.CurrentPositionsIdList.Contains(x.TargetPositionId.Value)));
+                && x.TargetPositionId.HasValue && x.TargetPositionId != x.SourcePositionId);
+
+                if (!ctx.IsAdmin)
+                {
+                    qry = qry.Where(x => ctx.CurrentPositionsIdList.Contains(x.TargetPositionId.Value));
+                }
 
                 var res = qry.Select(x => new InternalDocumentEvent
                 {
@@ -1129,15 +1132,27 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                var dictionaryTags = dbContext.DictionaryTagsSet.Where(x => x.ClientId == ctx.CurrentClientId)
-                    .Where(x => ctx.IsAdmin || !x.PositionId.HasValue || ctx.CurrentPositionsIdList.Contains(x.PositionId ?? 0))
-                    .Where(x => model.Tags.Contains(x.Id))
+                var qryDictionaryTags = dbContext.DictionaryTagsSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                                            .Where(x => model.Tags.Contains(x.Id)).AsQueryable();
+
+                if (!ctx.IsAdmin)
+                {
+                    qryDictionaryTags = qryDictionaryTags.Where(x => !x.PositionId.HasValue || ctx.CurrentPositionsIdList.Contains(x.PositionId ?? 0));
+                }
+
+                var dictionaryTags = qryDictionaryTags
                     .Select(x => x.Id)
                     .ToList();
 
-                var documentTags = dbContext.DocumentTagsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
-                    .Where(x => x.DocumentId == model.DocumentId)
-                    .Where(x => ctx.IsAdmin || !x.Tag.PositionId.HasValue || ctx.CurrentPositionsIdList.Contains(x.Tag.PositionId ?? 0))
+                var qryDocumentTags = dbContext.DocumentTagsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                                        .Where(x => x.DocumentId == model.DocumentId).AsQueryable();
+
+                if (!ctx.IsAdmin)
+                {
+                    qryDocumentTags = qryDocumentTags.Where(x => !x.Tag.PositionId.HasValue || ctx.CurrentPositionsIdList.Contains(x.Tag.PositionId ?? 0));
+                }
+
+                var documentTags = qryDocumentTags
                     .Select(x => x.TagId)
                     .ToList();
 
@@ -1953,8 +1968,8 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(context))
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext, context)
-                    .Where(x => x.Id == model.DocumentId && (context.IsAdmin || context.CurrentPositionsIdList.Contains(x.ExecutorPositionId)))
+                var doc = CommonQueries.GetDocumentQuery(dbContext, context, null, true)
+                    .Where(x => x.Id == model.DocumentId)
                     .Select(x => new InternalDocument
                     {
                         Id = x.Id,
@@ -2062,8 +2077,8 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(context))
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext, context)
-                    .Where(x => x.Id == model.DocumentId && (context.IsAdmin || context.CurrentPositionsIdList.Contains(x.ExecutorPositionId)))
+                var doc = CommonQueries.GetDocumentQuery(dbContext, context, null, true)
+                    .Where(x => x.Id == model.DocumentId)
                     .Select(x => new InternalDocument
                     {
                         Id = x.Id,
