@@ -2,19 +2,9 @@
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
-using System.Linq;
-using BL.Logic.DependencyInjection;
-using DMS_WebAPI.Utilities;
-using BL.CrossCutting.Helpers;
-using BL.CrossCutting.Interfaces;
 using System.Data.Entity;
-using BL.Model.Database;
 using DMS_WebAPI.DBModel;
 using System.Collections.Generic;
-using System.Data.Entity.ModelConfiguration.Conventions;
-using System.Configuration;
-using System.Data.SqlClient;
-using System;
 
 namespace DMS_WebAPI.Models
 {
