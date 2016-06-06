@@ -75,7 +75,7 @@ namespace BL.Logic.DocumentCore.Commands
         public override object Execute()
         {
             _docWait.ResultTypeId = (int)EnumResultTypes.CloseByWithdrawing;
-            _docWait.OffEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, _docWait.DocumentId, _eventType, Model.EventDate, Model.Description, _docWait.OnEvent.TaskId, _docWait.OnEvent.IsAvailableWithinTask, _docWait.OnEvent.TargetPositionId, null, _docWait.OnEvent.SourcePositionId);
+            _docWait.OffEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, _docWait.DocumentId, _eventType, Model.EventDate, Model.Description, null, _docWait.OnEvent.TaskId, _docWait.OnEvent.IsAvailableWithinTask, _docWait.OnEvent.TargetPositionId, null, _docWait.OnEvent.SourcePositionId);
             CommonDocumentUtilities.SetLastChange(_context, _docWait);
             var sendList = _document.SendLists.FirstOrDefault(x => x.IsInitial);
             if (sendList != null)
@@ -94,7 +94,11 @@ namespace BL.Logic.DocumentCore.Commands
                 if (sendList != null)
                 {
                     var docProc = DmsResolver.Current.Get<IDocumentService>();
-                    docProc.ExecuteAction(EnumDocumentActions.StopPlan, _context, _document.Id);
+                    if (_document.IsLaunchPlan)
+                    {
+                        var adminCtx = new CrossCutting.Context.AdminContext(_context);
+                        docProc.ExecuteAction(EnumDocumentActions.StopPlan, adminCtx, _document.Id);
+                    }
                 }
                 transaction.Complete();
             }

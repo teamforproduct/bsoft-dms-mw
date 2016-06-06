@@ -67,7 +67,7 @@ namespace BL.Logic.DocumentCore.Commands
                     ? "[" + string.Join(", ", posInfos.Select(x => x.PositionName)) + "]"
                     : "");
             evtToAdd.AddRange(actuelPosList.Select(targetPositionId => 
-                CommonDocumentUtilities.GetNewDocumentEvent(_context, Model.DocumentId, EnumEventTypes.SendMessage, Model.EventDate, description, taskId, Model.IsAvailableWithinTask,targetPositionId)));
+                CommonDocumentUtilities.GetNewDocumentEvent(_context, Model.DocumentId, EnumEventTypes.SendMessage, Model.EventDate, description, null, taskId, Model.IsAvailableWithinTask,targetPositionId)));
             _document.Events = evtToAdd;
             _operationDb.AddDocumentEvents(_context, _document);
             return null;

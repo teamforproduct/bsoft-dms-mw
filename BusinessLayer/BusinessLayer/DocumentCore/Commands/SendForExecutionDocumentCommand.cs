@@ -53,7 +53,7 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new PlanPointHasAlredyBeenLaunched();
             }
-            if (!Model.TargetPositionId.HasValue || (Model.IsWorkGroup && (_document.Waits == null || _document.Waits.Count() > 1 || !Model.TaskId.HasValue)))
+            if (!Model.TargetPositionId.HasValue || (Model.IsWorkGroup && (_document.Waits == null || !_document.Waits.Any() ||_document.Waits.Count() > 1 || !Model.TaskId.HasValue)))
             {
                 throw new WrongDocumentSendListEntry();
             }
@@ -64,11 +64,10 @@ namespace BL.Logic.DocumentCore.Commands
         public override object Execute()
         {
             _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, Model.DocumentId, Model.AccessLevel, Model.TargetPositionId.Value);
-
-            var waitParent = _document.Waits.FirstOrDefault();
             var waitTarget = CommonDocumentUtilities.GetNewDocumentWait(_context, Model, _eventType, EnumEventCorrespondentType.FromSourceToTarget);
             if (Model.IsWorkGroup)
             {
+                var waitParent = _document.Waits.FirstOrDefault();
                 waitTarget.ParentId = waitParent.Id;
                 waitTarget.OnEvent.SourcePositionId = waitParent.OnEvent.TargetPositionId;
                 waitTarget.OnEvent.SourcePositionExecutorAgentId = waitParent.OnEvent.TargetPositionExecutorAgentId;
