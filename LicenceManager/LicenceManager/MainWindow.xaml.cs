@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows;
 using LicenceManager.DB;
+using LicenceManager.Licence;
 using LicenceManager.Models;
 
 namespace LicenceManager
@@ -69,6 +70,28 @@ namespace LicenceManager
                 ctx.SaveChanges();
             }
             RefreshClientsInfo();
+        }
+
+        private LicenceInfo GetLicenceInfo()
+        {
+            using (var ctx = new LicenceManagerDb(GetConnectionString()))
+            {
+                return ctx.LicenceTypes.Where(x => x.Name == cbLicenceType.Text).Select(x => new LicenceInfo
+                {
+                    ClientName = txtClientName.Text,
+                    LicenceId = x.Id,
+                    DateLimit = x.DurationDay,
+                    ConcurenteNumberOfConnections = x.ConcurenteNumberOfConnections,
+                    Functionals = x.Functionals,
+                    NamedNumberOfConnections = x.NamedNumberOfConnections
+                }).First();
+            }
+        }
+
+        private void btnGenerate_Click(object sender, RoutedEventArgs e)
+        {
+            var li = GetLicenceInfo();
+            txtLicenceCode.Text = LicenceGenerator.CreateLicenceKey(txtClientCode.Text, li);
         }
     }
 }

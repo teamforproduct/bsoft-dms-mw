@@ -96,6 +96,8 @@
     <Compile Include="DB\DbInitialize.cs" />
     <Compile Include="DB\LicenceManagerDb.cs" />
     <Compile Include="DB\LicenceType.cs" />
+    <Compile Include="Licence\LicenceGenerator.cs" />
+    <Compile Include="Licence\LicenceInfo.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -144,11 +146,8 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="DB\LicenceDatabase.mdf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Content Include="DB\LicenceDatabase.mdf" />
     <Content Include="DB\LicenceDatabase_log.ldf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <DependentUpon>LicenceDatabase.mdf</DependentUpon>
     </Content>
   </ItemGroup>
