@@ -2864,6 +2864,7 @@ namespace BL.Database.Dictionaries
                     filterContains = filter.DocumentIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.DocumentId == value).Expand());
 
+                    //TODO Contains
                     qry = qry.Where(x =>
                             dbContext.DocumentEventsSet.Where(y => y.Document.TemplateDocument.ClientId == context.CurrentClientId)
                                 .Where(filterContains).Select(y => y.EventTypeId).Contains(x.Id)
@@ -2944,6 +2945,7 @@ namespace BL.Database.Dictionaries
                     filterContains = filter.DocumentIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.DocumentId == value).Expand());
 
+                    //TODO Contains
                     qry = qry.Where(x =>
                             dbContext.DocumentEventsSet.Where(y => y.Document.TemplateDocument.ClientId == context.CurrentClientId)
                                 .Where(filterContains).Select(y => y.EventType.ImportanceEventTypeId).Contains(x.Id)
@@ -3147,12 +3149,14 @@ namespace BL.Database.Dictionaries
                 // Список первичных ключей
                 if (filter.IDs?.Count > 0)
                 {
+                    //TODO Contains
                     qry = qry.Where(x => filter.IDs.Contains(x.pos.Id));
                 }
 
                 // Исключение списка первичных ключей
                 if (filter.NotContainsIDs?.Count > 0)
                 {
+                    //TODO Contains
                     qry = qry.Where(x => !filter.NotContainsIDs.Contains(x.pos.Id));
                 }
 
@@ -3186,6 +3190,7 @@ namespace BL.Database.Dictionaries
                     filterContains = filter.DocumentIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.DocumentId == value).Expand());
 
+                    //TODO Contains
                     qry = qry.Where(x =>
                             dbContext.DocumentEventsSet.Where(y => y.Document.TemplateDocument.ClientId == context.CurrentClientId)
                                 .Where(filterContains).Select(y => y.SourcePositionId).Contains(x.pos.Id)
@@ -3240,12 +3245,14 @@ namespace BL.Database.Dictionaries
                 // Список первичных ключей
                 if (filter.IDs?.Count > 0)
                 {
+                    //TODO Contains
                     qry = qry.Where(x => filter.IDs.Contains(x.pos.Id));
                 }
 
                 // Исключение списка первичных ключей
                 if (filter.NotContainsIDs?.Count > 0)
                 {
+                    //TODO Contains
                     qry = qry.Where(x => !filter.NotContainsIDs.Contains(x.pos.Id));
                 }
 
@@ -3279,6 +3286,7 @@ namespace BL.Database.Dictionaries
                     filterContains = filter.DocumentIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.DocumentId == value).Expand());
 
+                    //TODO Contains
                     qry = qry.Where(x =>
                             dbContext.DocumentEventsSet.Where(y => y.Document.TemplateDocument.ClientId == context.CurrentClientId)
                                 .Where(filterContains).Select(y => y.SourcePositionId).Contains(x.pos.Id)
@@ -3325,12 +3333,14 @@ namespace BL.Database.Dictionaries
                 // Список первичных ключей
                 if (filter.IDs?.Count > 0)
                 {
+                    //TODO Contains
                     qry = qry.Where(x => filter.IDs.Contains(x.pos.Id));
                 }
 
                 // Исключение списка первичных ключей
                 if (filter.NotContainsIDs?.Count > 0)
                 {
+                    //TODO Contains
                     qry = qry.Where(x => !filter.NotContainsIDs.Contains(x.pos.Id));
                 }
 
@@ -3364,6 +3374,7 @@ namespace BL.Database.Dictionaries
                     filterContains = filter.DocumentIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.DocumentId == value).Expand());
 
+                    //TODO Contains
                     qry = qry.Where(x =>
                             dbContext.DocumentEventsSet.Where(y => y.Document.TemplateDocument.ClientId == context.CurrentClientId)
                                 .Where(filterContains).Select(y => y.SourcePositionId).Contains(x.pos.Id)

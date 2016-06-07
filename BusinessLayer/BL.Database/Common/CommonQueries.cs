@@ -904,11 +904,13 @@ namespace BL.Database.Common
             {
                 if (filter.IDs?.Count > 0)
                 {
+                    //TODO Contains
                     qry = qry.Where(x => filter.IDs.Contains(x.pos.Id));
                 }
 
                 if (filter.DocumentIDs?.Count > 0)
                 {
+                    //TODO Contains
                     qry = qry.Where(x =>
                             dbContext.DocumentEventsSet.Where(y => y.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
                                 .Where(y => filter.DocumentIDs.Contains(y.DocumentId)).Select(y => y.SourcePositionId).Contains(x.pos.Id)
@@ -920,6 +922,7 @@ namespace BL.Database.Common
 
                 if (filter.SubordinatedPositions?.Count > 0)
                 {
+                    //TODO Contains
                     qry = qry.GroupJoin(
                                         dbContext.AdminSubordinationsSet.Where(y => filter.SubordinatedPositions.Contains(y.SourcePositionId)),
                                         x => x.pos.Id,
@@ -949,7 +952,7 @@ namespace BL.Database.Common
             //var acc = CommonQueries.GetDocumentAccesses(context, dbContext, true);
 
             var items = CommonQueries.GetDocumentQuery(dbContext, context/*, acc*/)
-                    .Where(x => x.LinkId == linkId /*&& context.CurrentPositionsIdList.Contains(x.Acc.PositionId)*/)
+                    .Where(x => x.LinkId == linkId)
                         .OrderBy(x => x.RegistrationDate ?? x.CreateDate)
                         .Select(y => new FrontDocument
                         {
