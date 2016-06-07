@@ -755,6 +755,240 @@ namespace BL.Database.SystemDb
                      }).ToList()
                  );
 
+                #region Dictionaries
+                res.AddRange(dbContext.DictionaryAgentsSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                     .Select(x => new FullTextIndexItem
+                     {
+                        
+                         DocumentId = 0,
+                         ItemType = EnumObjects.DictionaryAgents,
+                         OperationType = EnumOperationType.AddNew,
+                         ObjectId = x.Id,
+                         ObjectText = x.Name + " " + x.Description
+                     }).ToList()
+                 );
+
+                res.AddRange(dbContext.DictionaryAgentEmployeesSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId)
+                    .Select(x => new FullTextIndexItem
+                    {
+                        DocumentId = 0,
+                        ItemType = EnumObjects.DictionaryAgentEmployees,
+                        OperationType = EnumOperationType.AddNew,
+                        ObjectId = x.Id,
+                        ObjectText =x.PersonnelNumber + " " + x.Description + " " +x.Agent.Name + " "
+                    }).ToList()
+                );
+
+                res.AddRange(dbContext.DictionaryAgentCompaniesSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId)
+                    .Select(x => new FullTextIndexItem
+                    {
+                        DocumentId = 0,
+                        ItemType = EnumObjects.DictionaryAgentCompanies,
+                        OperationType = EnumOperationType.AddNew,
+                        ObjectId = x.Id,
+                        ObjectText = x.FullName + " " + x.OKPOCode + " " + x.Description + " " +
+                                    x.TaxCode + " " + x.VATCode 
+                    }).ToList()
+                );
+
+                res.AddRange(dbContext.DictionaryAgentPersonsSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId)
+                    .Select(x => new FullTextIndexItem
+                    {
+                        DocumentId = 0,
+                        ItemType = EnumObjects.DictionaryAgentPersons,
+                        OperationType = EnumOperationType.AddNew,
+                        ObjectId = x.Id,
+                        ObjectText = x.FullName + " " + x.Description + " " + x.TaxCode + " " +
+                                    x.BirthDate + " " + x.PassportNumber + " " + x.PassportSerial + " " +
+                                    x.PassportText
+                    }).ToList()
+                );
+
+                res.AddRange(dbContext.DictionaryAgentBanksSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId)
+                    .Select(x => new FullTextIndexItem
+                    {
+                        DocumentId = 0,
+                        ItemType = EnumObjects.DictionaryAgentBanks,
+                        OperationType = EnumOperationType.AddNew,
+                        ObjectId = x.Id,
+                        ObjectText = x.Agent.Name + " " + x.Description + " " + x.MFOCode + " " + x.Swift
+                    }).ToList()
+                );
+
+                res.AddRange(dbContext.DictionaryAgentContactsSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId)
+                    .Select(x => new FullTextIndexItem
+                    {
+                        DocumentId = 0,
+                        ItemType = EnumObjects.DictionaryContacts,
+                        OperationType = EnumOperationType.AddNew,
+                        ObjectId = x.Id,
+                        ObjectText = x.Agent.Name + " " + x.Description + " " + x.Contact +
+                                    " " + x.ContactType.Code + " " + x.ContactType.Name 
+                    }).ToList()
+                );
+
+                res.AddRange(dbContext.DictionaryContactTypesSet
+                    .Select(x => new FullTextIndexItem
+                    {
+                        DocumentId = 0,
+                        ItemType = EnumObjects.DictionaryContactType,
+                        OperationType = EnumOperationType.AddNew,
+                        ObjectId = x.Id,
+                        ObjectText = x.Code + " " + x.Name
+                    }).ToList()
+                );
+
+                res.AddRange(dbContext.DictionaryAgentAddressesSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId)
+                    .Select(x => new FullTextIndexItem
+                    {
+                        DocumentId = 0,
+                        ItemType = EnumObjects.DictionaryAgentAddresses,
+                        OperationType = EnumOperationType.AddNew,
+                        ObjectId = x.Id,
+                        ObjectText = x.Agent.Name + " " + x.Description + " " + x.Address +
+                                    " " + x.PostCode + " " + x.AddressType.Name
+                    }).ToList()
+                );
+
+                res.AddRange(dbContext.DictionaryAddressTypesSet
+                    .Select(x => new FullTextIndexItem
+                    {
+                        DocumentId = 0,
+                        ItemType = EnumObjects.DictionaryAddressType,
+                        OperationType = EnumOperationType.AddNew,
+                        ObjectId = x.Id,
+                        ObjectText = x.Name 
+                    }).ToList()
+                );
+
+                res.AddRange(dbContext.DictionaryAgentAccountsSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId)
+                    .Select(x => new FullTextIndexItem
+                    {
+                        DocumentId = 0,
+                        ItemType = EnumObjects.DictionaryAgentAccounts,
+                        OperationType = EnumOperationType.AddNew,
+                        ObjectId = x.Id,
+                        ObjectText = x.AccountNumber + " " + x.Name + " " +
+                                x.Agent.Name + " " + x.AgentBank.MFOCode + " " + x.AgentBank.Agent.Name
+                    }).ToList()
+                );
+
+                res.AddRange(dbContext.DictionaryDocumentTypesSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                    .Select(x => new FullTextIndexItem
+                    {
+                        DocumentId = 0,
+                        ItemType = EnumObjects.DictionaryDocumentType,
+                        OperationType = EnumOperationType.AddNew,
+                        ObjectId = x.Id,
+                        ObjectText = x.Name 
+                    }).ToList()
+                );
+
+                res.AddRange(dbContext.DictionaryDocumentSubjectsSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                    .Select(x => new FullTextIndexItem
+                    {
+                        DocumentId = 0,
+                        ItemType = EnumObjects.DictionaryDocumentSubjects,
+                        OperationType = EnumOperationType.AddNew,
+                        ObjectId = x.Id,
+                        ObjectText = x.Name
+                    }).ToList()
+                );
+
+                res.AddRange(dbContext.DictionaryRegistrationJournalsSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                    .Select(x => new FullTextIndexItem
+                    {
+                        DocumentId = 0,
+                        ItemType = EnumObjects.DictionaryRegistrationJournals,
+                        OperationType = EnumOperationType.AddNew,
+                        ObjectId = x.Id,
+                        ObjectText = x.Index + " " + x.Name + " " + x.Department.FullName
+                    }).ToList()
+                );
+
+                res.AddRange(dbContext.DictionaryDepartmentsSet.Where(x => x.Company.ClientId == ctx.CurrentClientId)
+                   .Select(x => new FullTextIndexItem
+                   {
+                       DocumentId = 0,
+                       ItemType = EnumObjects.DictionaryDepartments,
+                       OperationType = EnumOperationType.AddNew,
+                       ObjectId = x.Id,
+                       ObjectText = x.FullName + " " + x.Code + " " + x.Name + " " + x.Company.Name + " " + x.ChiefPosition.FullName
+                   }).ToList()
+               );
+
+                res.AddRange(dbContext.DictionaryPositionsSet.Where(x => x.Department.Company.ClientId == ctx.CurrentClientId)
+                  .Select(x => new FullTextIndexItem
+                  {
+                      DocumentId = 0,
+                      ItemType = EnumObjects.DictionaryPositions,
+                      OperationType = EnumOperationType.AddNew,
+                      ObjectId = x.Id,
+                      ObjectText = x.FullName + " " + x.Name + " " + x.Department.Name + " " +
+                                x.ExecutorAgent.Name + " " + x.MainExecutorAgent.Name
+                  }).ToList()
+              );
+
+                res.AddRange(dbContext.DictionaryStandartSendListsSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                 .Select(x => new FullTextIndexItem
+                 {
+                     DocumentId = 0,
+                     ItemType = EnumObjects.DictionaryStandartSendLists,
+                     OperationType = EnumOperationType.AddNew,
+                     ObjectId = x.Id,
+                     ObjectText = x.Name + " " + x.Position.Department.Name + " " + x.Position.Name
+                 }).ToList()
+             );
+
+                res.AddRange(dbContext.DictionaryStandartSendListContentsSet.Where(x => x.StandartSendList.ClientId == ctx.CurrentClientId)
+                 .Select(x => new FullTextIndexItem
+                 {
+                     DocumentId = 0,
+                     ItemType = EnumObjects.DictionaryStandartSendListContent,
+                     OperationType = EnumOperationType.AddNew,
+                     ObjectId = x.Id,
+                     ObjectText = x.Task + " " + x.Description + " " + x.SendType.Name + x.StandartSendList.Name +
+                                " " + x.TargetAgent.Name + " " + x.TargetPosition.Name
+                 }).ToList()
+             );
+
+                res.AddRange(dbContext.DictionaryCompaniesSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                .Select(x => new FullTextIndexItem
+                {
+                    DocumentId = 0,
+                    ItemType = EnumObjects.DictionaryCompanies,
+                    OperationType = EnumOperationType.AddNew,
+                    ObjectId = x.Id,
+                    ObjectText = x.Name 
+                }).ToList()
+            );
+
+                res.AddRange(dbContext.DictionaryPositionExecutorsSet.Where(x => x.Position.Department.Company.ClientId == ctx.CurrentClientId)
+               .Select(x => new FullTextIndexItem
+               {
+                   DocumentId = 0,
+                   ItemType = EnumObjects.DictionaryPositionExecutors,
+                   OperationType = EnumOperationType.AddNew,
+                   ObjectId = x.Id,
+                   ObjectText = x.Description + " " + x.Agent.Name + " " + x.EndDate + " "
+                                + x.Position.Name + " " + x.PositionExecutorType.Name
+               }).ToList()
+           );
+
+                res.AddRange(dbContext.DictionaryPositionExecutorTypesSet
+             .Select(x => new FullTextIndexItem
+             {
+                 DocumentId = 0,
+                 ItemType = EnumObjects.DictionaryPositionExecutorTypes,
+                 OperationType = EnumOperationType.AddNew,
+                 ObjectId = x.Id,
+                 ObjectText = x.Name + " " + x.Code
+             }).ToList()
+         );
+
+                #endregion Dictionaries
+
+
             }
             return res;
         }
@@ -943,7 +1177,7 @@ namespace BL.Database.SystemDb
                                 ObjectId = x.id,
                                 ObjectText =
                                     x.agent.PersonnelNumber + " " + x.agent.Description + " " +
-                                    x.agent.Agent.Name + " " 
+                                    x.agent.Agent.Name  
                             })
                             .ToList()
                         );

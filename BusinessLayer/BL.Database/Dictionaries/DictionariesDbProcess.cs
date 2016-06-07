@@ -2235,7 +2235,7 @@ namespace BL.Database.Dictionaries
             // Отбор по родительским элементам
             if (filter.ParentIDs?.Count > 0)
             {
-                qry = qry.Where(x => filter.ParentIDs.Contains(x.Id));
+                qry = qry.Where(x => filter.ParentIDs.Contains(x.ParentId ?? 0));
             }
 
             // Тоько активные/неактивные
@@ -4561,7 +4561,7 @@ namespace BL.Database.Dictionaries
                 {
                     if (filter.IDs?.Count > 0)
                     {
-                        qry = qry.Where(x => filter.IDs.Contains(x.DictionaryTypeId));
+                        qry = qry.Where(x => filter.IDs.Contains(x.Id));
                     }
                 }
 
