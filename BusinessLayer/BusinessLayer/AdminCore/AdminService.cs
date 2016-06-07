@@ -90,7 +90,6 @@ namespace BL.Logic.AdminCore
                     .Join(data.Actions, aa => aa.ActionId, ac => ac.Id, (aa, ac) => new { ActAccess = aa, Act = ac })
                     .Join(data.PositionRoles, aa => aa.ActAccess.RoleId, r => r.Id, (aa, r) => new { aa.ActAccess, aa.Act, Role = r });
                 // test it really good!
-                //TODO Contains
                 res = qry.Any(x => x.Act.Id == model.DocumentActionId
                 && data.UserRoles.Where(s => s.RoleId == x.Role.Id).Any(y => y.UserId == model.UserId)
                 && (((model.PositionId == null) && (model.PositionsIdList.Contains(x.Role.PositionId))) || (x.Role.PositionId == model.PositionId))
