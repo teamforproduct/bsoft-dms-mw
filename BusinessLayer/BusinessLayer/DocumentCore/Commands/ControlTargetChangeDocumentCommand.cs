@@ -68,13 +68,18 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override object Execute()
         {
-            var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, _docWait.DocumentId, EnumEventTypes.ControlTargetChange, Model.EventDate, Model.TargetDescription, _docWait.OnEvent.TaskId, _docWait.OnEvent.IsAvailableWithinTask);
-            _docWait.TargetDescription = Model.TargetDescription;
-            _docWait.AttentionDate = Model.TargetAttentionDate;
-            CommonDocumentUtilities.SetLastChange(_context, _docWait);
+            var addDescripton = (Model.TargetDescription != _docWait.TargetDescription ? "формулировка задачи" + "," : "")
+                    + ((Model.TargetAttentionDate != _docWait.AttentionDate ? "дата постоянного внимания" + "," : ""));
+            addDescripton = addDescripton.Remove(addDescripton.Length - 1);
+            if (!string.IsNullOrEmpty(addDescripton))
+            {
+                var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, _docWait.DocumentId, EnumEventTypes.ControlTargetChange, Model.EventDate, Model.TargetDescription, addDescripton, _docWait.OnEvent.TaskId, _docWait.OnEvent.IsAvailableWithinTask);
+                _docWait.TargetDescription = Model.TargetDescription;
+                _docWait.AttentionDate = Model.TargetAttentionDate;
+                CommonDocumentUtilities.SetLastChange(_context, _docWait);
 
-            _operationDb.ChangeTargetDocumentWait(_context, _docWait, newEvent);
-            
+                _operationDb.ChangeTargetDocumentWait(_context, _docWait, newEvent);
+            }
             return _docWait.DocumentId;
         }
 

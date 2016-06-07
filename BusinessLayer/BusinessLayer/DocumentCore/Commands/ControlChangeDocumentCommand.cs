@@ -72,6 +72,7 @@ namespace BL.Logic.DocumentCore.Commands
             var addDescripton = (Model.DueDate != _docWait.DueDate ? "контрольный срок"+"," : "")
                                 + (Model.Description != _docWait.OnEvent.Description ? "формулировка задачи"+"," : "")
                                 + ((_eventType == EnumEventTypes.ControlChange && Model.AttentionDate != _docWait.AttentionDate ? "дата постоянного внимания"+"," : ""));
+            addDescripton = addDescripton.Remove(addDescripton.Length - 1);
             if (!string.IsNullOrEmpty(addDescripton))
             {
                 var controlOn = new ControlOn(Model, _docWait.DocumentId);
@@ -80,8 +81,7 @@ namespace BL.Logic.DocumentCore.Commands
                 newWait.TargetDescription = _docWait.TargetDescription;
                 newWait.AttentionDate = _eventType == EnumEventTypes.ControlChange ? Model.AttentionDate : _docWait.AttentionDate;
 
-                var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, _docWait.DocumentId, _eventType, Model.EventDate, Model.Description, _docWait.OnEvent.TaskId, _docWait.OnEvent.IsAvailableWithinTask, _docWait.OnEvent.TargetPositionId);
-                newEvent.AddDescription = addDescripton.Remove(addDescripton.Length-1);
+                var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, _docWait.DocumentId, _eventType, Model.EventDate, Model.Description, addDescripton, _docWait.OnEvent.TaskId, _docWait.OnEvent.IsAvailableWithinTask, _docWait.OnEvent.TargetPositionId);
                 var oldEvent = _docWait.OnEvent;
 
                 newEvent.Id = newWait.OnEventId = oldEvent.Id;

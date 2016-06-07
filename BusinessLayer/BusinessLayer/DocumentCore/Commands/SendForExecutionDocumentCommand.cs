@@ -53,7 +53,7 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new PlanPointHasAlredyBeenLaunched();
             }
-            if (!Model.TargetPositionId.HasValue || (Model.IsWorkGroup && (_document.Waits == null || _document.Waits.Count() > 1 || !Model.TaskId.HasValue)))
+            if (!Model.TargetPositionId.HasValue || (Model.IsWorkGroup && (_document.Waits == null || !_document.Waits.Any() ||_document.Waits.Count() > 1 || !Model.TaskId.HasValue)))
             {
                 throw new WrongDocumentSendListEntry();
             }

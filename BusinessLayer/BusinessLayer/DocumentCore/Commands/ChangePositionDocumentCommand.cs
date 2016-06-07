@@ -52,7 +52,7 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override object Execute()
         {
-            _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, Model.DocumentId, EnumEventTypes.ChangePosition, Model.EventDate, Model.Description, null, false, Model.NewPositionId, null, Model.NewPositionId);
+            _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, Model.DocumentId, EnumEventTypes.ChangePosition, Model.EventDate, Model.Description, null, null, false, Model.NewPositionId, null, Model.NewPositionId);
 
             _documentDb.ChangePositionDocument(_context, Model, _document);
 
