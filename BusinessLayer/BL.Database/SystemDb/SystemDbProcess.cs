@@ -13,6 +13,7 @@ using BL.Model.SystemCore.FrontModel;
 using System.Data.Entity;
 using BL.Model.FullTextSearch;
 using System;
+using BL.Database.DBModel.Dictionary;
 using LinqKit;
 
 namespace BL.Database.SystemDb
@@ -714,6 +715,300 @@ namespace BL.Database.SystemDb
                      }).ToList()
                  );
 
+                #region Dictionaries
+                res.AddRange(dbContext.DictionaryAgentsSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                     .Select(x => new FullTextIndexItem
+                     {
+                        
+                         DocumentId = 0,
+                         ItemType = EnumObjects.DictionaryAgents,
+                         OperationType = EnumOperationType.AddNew,
+                         ObjectId = x.Id,
+                         ObjectText = x.Name + " " + x.Description
+                     }).ToList()
+                 );
+
+                res.AddRange(dbContext.DictionaryAgentEmployeesSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId)
+                    .Select(x => new FullTextIndexItem
+                    {
+                        DocumentId = 0,
+                        ItemType = EnumObjects.DictionaryAgentEmployees,
+                        OperationType = EnumOperationType.AddNew,
+                        ObjectId = x.Id,
+                        ObjectText =x.PersonnelNumber + " " + x.Description + " " +x.Agent.Name + " "
+                    }).ToList()
+                );
+
+                res.AddRange(dbContext.DictionaryAgentCompaniesSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId)
+                    .Select(x => new FullTextIndexItem
+                    {
+                        DocumentId = 0,
+                        ItemType = EnumObjects.DictionaryAgentCompanies,
+                        OperationType = EnumOperationType.AddNew,
+                        ObjectId = x.Id,
+                        ObjectText = x.FullName + " " + x.OKPOCode + " " + x.Description + " " +
+                                    x.TaxCode + " " + x.VATCode 
+                    }).ToList()
+                );
+
+                res.AddRange(dbContext.DictionaryAgentPersonsSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId)
+                    .Select(x => new FullTextIndexItem
+                    {
+                        DocumentId = 0,
+                        ItemType = EnumObjects.DictionaryAgentPersons,
+                        OperationType = EnumOperationType.AddNew,
+                        ObjectId = x.Id,
+                        ObjectText = x.FullName + " " + x.Description + " " + x.TaxCode + " " +
+                                    x.BirthDate + " " + x.PassportNumber + " " + x.PassportSerial + " " +
+                                    x.PassportText
+                    }).ToList()
+                );
+
+                res.AddRange(dbContext.DictionaryAgentBanksSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId)
+                    .Select(x => new FullTextIndexItem
+                    {
+                        DocumentId = 0,
+                        ItemType = EnumObjects.DictionaryAgentBanks,
+                        OperationType = EnumOperationType.AddNew,
+                        ObjectId = x.Id,
+                        ObjectText = x.Agent.Name + " " + x.Description + " " + x.MFOCode + " " + x.Swift
+                    }).ToList()
+                );
+
+                res.AddRange(dbContext.DictionaryAgentContactsSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId)
+                    .Select(x => new FullTextIndexItem
+                    {
+                        DocumentId = 0,
+                        ItemType = EnumObjects.DictionaryContacts,
+                        OperationType = EnumOperationType.AddNew,
+                        ObjectId = x.Id,
+                        ObjectText = x.Agent.Name + " " + x.Description + " " + x.Contact +
+                                    " " + x.ContactType.Code + " " + x.ContactType.Name 
+                    }).ToList()
+                );
+
+                res.AddRange(dbContext.DictionaryContactTypesSet
+                    .Select(x => new FullTextIndexItem
+                    {
+                        DocumentId = 0,
+                        ItemType = EnumObjects.DictionaryContactType,
+                        OperationType = EnumOperationType.AddNew,
+                        ObjectId = x.Id,
+                        ObjectText = x.Code + " " + x.Name
+                    }).ToList()
+                );
+
+                res.AddRange(dbContext.DictionaryAgentAddressesSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId)
+                    .Select(x => new FullTextIndexItem
+                    {
+                        DocumentId = 0,
+                        ItemType = EnumObjects.DictionaryAgentAddresses,
+                        OperationType = EnumOperationType.AddNew,
+                        ObjectId = x.Id,
+                        ObjectText = x.Agent.Name + " " + x.Description + " " + x.Address +
+                                    " " + x.PostCode + " " + x.AddressType.Name
+                    }).ToList()
+                );
+
+                res.AddRange(dbContext.DictionaryAddressTypesSet
+                    .Select(x => new FullTextIndexItem
+                    {
+                        DocumentId = 0,
+                        ItemType = EnumObjects.DictionaryAddressType,
+                        OperationType = EnumOperationType.AddNew,
+                        ObjectId = x.Id,
+                        ObjectText = x.Name 
+                    }).ToList()
+                );
+
+                res.AddRange(dbContext.DictionaryAgentAccountsSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId)
+                    .Select(x => new FullTextIndexItem
+                    {
+                        DocumentId = 0,
+                        ItemType = EnumObjects.DictionaryAgentAccounts,
+                        OperationType = EnumOperationType.AddNew,
+                        ObjectId = x.Id,
+                        ObjectText = x.AccountNumber + " " + x.Name + " " +
+                                x.Agent.Name + " " + x.AgentBank.MFOCode + " " + x.AgentBank.Agent.Name
+                    }).ToList()
+                );
+
+                res.AddRange(dbContext.DictionaryDocumentTypesSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                    .Select(x => new FullTextIndexItem
+                    {
+                        DocumentId = 0,
+                        ItemType = EnumObjects.DictionaryDocumentType,
+                        OperationType = EnumOperationType.AddNew,
+                        ObjectId = x.Id,
+                        ObjectText = x.Name 
+                    }).ToList()
+                );
+
+                res.AddRange(dbContext.DictionaryDocumentSubjectsSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                    .Select(x => new FullTextIndexItem
+                    {
+                        DocumentId = 0,
+                        ItemType = EnumObjects.DictionaryDocumentSubjects,
+                        OperationType = EnumOperationType.AddNew,
+                        ObjectId = x.Id,
+                        ObjectText = x.Name
+                    }).ToList()
+                );
+
+                res.AddRange(dbContext.DictionaryRegistrationJournalsSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                    .Select(x => new FullTextIndexItem
+                    {
+                        DocumentId = 0,
+                        ItemType = EnumObjects.DictionaryRegistrationJournals,
+                        OperationType = EnumOperationType.AddNew,
+                        ObjectId = x.Id,
+                        ObjectText = x.Index + " " + x.Name + " " + x.Department.FullName
+                    }).ToList()
+                );
+
+                res.AddRange(dbContext.DictionaryDepartmentsSet.Where(x => x.Company.ClientId == ctx.CurrentClientId)
+                   .Select(x => new FullTextIndexItem
+                   {
+                       DocumentId = 0,
+                       ItemType = EnumObjects.DictionaryDepartments,
+                       OperationType = EnumOperationType.AddNew,
+                       ObjectId = x.Id,
+                       ObjectText = x.FullName + " " + x.Code + " " + x.Name + " " + x.Company.Name + " " + x.ChiefPosition.FullName
+                   }).ToList()
+               );
+
+                res.AddRange(dbContext.DictionaryPositionsSet.Where(x => x.Department.Company.ClientId == ctx.CurrentClientId)
+                  .Select(x => new FullTextIndexItem
+                  {
+                      DocumentId = 0,
+                      ItemType = EnumObjects.DictionaryPositions,
+                      OperationType = EnumOperationType.AddNew,
+                      ObjectId = x.Id,
+                      ObjectText = x.FullName + " " + x.Name + " " + x.Department.Name + " " +
+                                x.ExecutorAgent.Name + " " + x.MainExecutorAgent.Name
+                  }).ToList()
+              );
+
+                res.AddRange(dbContext.DictionaryStandartSendListsSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                 .Select(x => new FullTextIndexItem
+                 {
+                     DocumentId = 0,
+                     ItemType = EnumObjects.DictionaryStandartSendLists,
+                     OperationType = EnumOperationType.AddNew,
+                     ObjectId = x.Id,
+                     ObjectText = x.Name + " " + x.Position.Department.Name + " " + x.Position.Name
+                 }).ToList()
+                 );
+
+                res.AddRange(dbContext.DictionaryStandartSendListContentsSet.Where(x => x.StandartSendList.ClientId == ctx.CurrentClientId)
+                 .Select(x => new FullTextIndexItem
+                 {
+                     DocumentId = 0,
+                     ItemType = EnumObjects.DictionaryStandartSendListContent,
+                     OperationType = EnumOperationType.AddNew,
+                     ObjectId = x.Id,
+                     ObjectText = x.Task + " " + x.Description + " " + x.SendType.Name + x.StandartSendList.Name +
+                                " " + x.TargetAgent.Name + " " + x.TargetPosition.Name
+                 }).ToList()
+                 );
+
+                res.AddRange(dbContext.DictionaryCompaniesSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                .Select(x => new FullTextIndexItem
+                {
+                    DocumentId = 0,
+                    ItemType = EnumObjects.DictionaryCompanies,
+                    OperationType = EnumOperationType.AddNew,
+                    ObjectId = x.Id,
+                    ObjectText = x.Name 
+                }).ToList()
+              );
+
+                res.AddRange(dbContext.DictionaryPositionExecutorsSet.Where(x => x.Position.Department.Company.ClientId == ctx.CurrentClientId)
+               .Select(x => new FullTextIndexItem
+               {
+                   DocumentId = 0,
+                   ItemType = EnumObjects.DictionaryPositionExecutors,
+                   OperationType = EnumOperationType.AddNew,
+                   ObjectId = x.Id,
+                   ObjectText = x.Description + " " + x.Agent.Name + " " + x.EndDate + " "
+                                + x.Position.Name + " " + x.PositionExecutorType.Name
+               }).ToList()
+            );
+
+             res.AddRange(dbContext.DictionaryPositionExecutorTypesSet
+                .Select(x => new FullTextIndexItem
+             {
+                 DocumentId = 0,
+                 ItemType = EnumObjects.DictionaryPositionExecutorTypes,
+                 OperationType = EnumOperationType.AddNew,
+                 ObjectId = x.Id,
+                 ObjectText = x.Name + " " + x.Code
+             }).ToList()
+            );
+
+                #endregion Dictionaries
+
+                #region DocumentTemplates
+
+                res.AddRange(dbContext.TemplateDocumentsSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                              .Select(x => new FullTextIndexItem
+                              {
+                                  DocumentId = 0,
+                                  ItemType = EnumObjects.TemplateDocument,
+                                  OperationType = EnumOperationType.AddNew,
+                                  ObjectId = x.Id,
+                                  ObjectText = x.Description + " " + x.Addressee + " " + x.DocumentDirection.Name + " " +
+                                    x.DocumentSubject.Name + " " + x.DocumentType.Name + " " + x.Name + " " +
+                                    x.RegistrationJournal.Name + " " + x.SenderAgent.Name + " " + x.SenderAgentPerson.FullName
+                              }).ToList()
+                       );
+
+                res.AddRange(dbContext.TemplateDocumentSendListsSet.Where(x => x.Document.ClientId == ctx.CurrentClientId)
+                              .Select(x => new FullTextIndexItem
+                              {
+                                  DocumentId = 0,
+                                  ItemType = EnumObjects.TemplateDocumentSendList,
+                                  OperationType = EnumOperationType.AddNew,
+                                  ObjectId = x.Id,
+                                  ObjectText = x.Description + " " + x.Document.Name + " " + x.SendType.Name + " " +
+                                    x.SourceAgent.Name + " " + x.TargetAgent.Name + " " + x.TargetPosition.Name
+                              }).ToList()
+                       );
+
+                res.AddRange(dbContext.TemplateDocumentRestrictedSendListsSet.Where(x => x.Document.ClientId == ctx.CurrentClientId)
+                              .Select(x => new FullTextIndexItem
+                              {
+                                  DocumentId = 0,
+                                  ItemType = EnumObjects.TemplateDocumentRestrictedSendList,
+                                  OperationType = EnumOperationType.AddNew,
+                                  ObjectId = x.Id,
+                                  ObjectText = x.Document.Name + " " + x.Position.FullName + " " + x.Position.Name
+                              }).ToList()
+                       );
+
+                res.AddRange(dbContext.TemplateDocumentTasksSet.Where(x => x.Document.ClientId == ctx.CurrentClientId)
+                              .Select(x => new FullTextIndexItem
+                              {
+                                  DocumentId = 0,
+                                  ItemType = EnumObjects.TemplateDocumentTask,
+                                  OperationType = EnumOperationType.AddNew,
+                                  ObjectId = x.Id,
+                                  ObjectText = x.Document.Name + " " + x.Position.FullName + " " + x.Position.Name + " " + x.Task
+                              }).ToList()
+                       );
+
+                res.AddRange(dbContext.TemplateDocumentFilesSet.Where(x => x.Document.ClientId == ctx.CurrentClientId)
+                              .Select(x => new FullTextIndexItem
+                              {
+                                  DocumentId = 0,
+                                  ItemType = EnumObjects.TemplateDocumentAttachedFiles,
+                                  OperationType = EnumOperationType.AddNew,
+                                  ObjectId = x.Id,
+                                  ObjectText = x.Document.Name + " " + x.Extention + " " + x.Name
+                              }).ToList()
+                       );
+
+                #endregion DocumentTemplates
             }
             return res;
         }
@@ -861,12 +1156,541 @@ namespace BL.Database.SystemDb
                         );
                 }
 
-                //TODo add dictionaries here
-                //if (objectTypesToProcess.Contains(EnumObjects.DictionaryAgents))
-                //{
-                //    res.AddRange();
+                #region Dictionaries
+                if (objectTypesToProcess.Contains(EnumObjects.DictionaryAgents))
+                {
+                    res.AddRange(
+                        dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryAgents)
+                            .Join(dbContext.DictionaryAgentsSet, i => i.ObjectId, d => d.Id,
+                                (i, d) => new { ind = i, agent = d,id=d.Id })
+                            .Select(x => new FullTextIndexItem
+                            {
+                                Id = x.ind.Id,
+                                DocumentId = 0,
+                                ItemType = (EnumObjects)x.ind.ObjectType,
+                                OperationType = (EnumOperationType)x.ind.OperationType,
+                                ObjectId = x.id,
+                                ObjectText =
+                                    x.agent.Name + " " + x.agent.Description 
+                            })
+                            .ToList()
+                        );
+                }
 
-                //}
+                if (objectTypesToProcess.Contains(EnumObjects.DictionaryAgentEmployees))
+                {
+                    res.AddRange(
+                        dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryAgentEmployees)
+                            .Join(dbContext.DictionaryAgentEmployeesSet, i => i.ObjectId, d => d.Id,
+                                (i, d) => new { ind = i, agent = d, id = d.Id })
+                            .Select(x => new FullTextIndexItem
+                            {
+                                Id = x.ind.Id,
+                                DocumentId = 0,
+                                ItemType = (EnumObjects)x.ind.ObjectType,
+                                OperationType = (EnumOperationType)x.ind.OperationType,
+                                ObjectId = x.id,
+                                ObjectText =
+                                    x.agent.PersonnelNumber + " " + x.agent.Description + " " +
+                                    x.agent.Agent.Name  
+                            })
+                            .ToList()
+                        );
+                }
+
+                if (objectTypesToProcess.Contains(EnumObjects.DictionaryAgentCompanies))
+                {
+                    res.AddRange(
+                        dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryAgentCompanies)
+                            .Join(dbContext.DictionaryAgentCompaniesSet, i => i.ObjectId, d => d.Id,
+                                (i, d) => new { ind = i, agent = d, id = d.Id })
+                            .Select(x => new FullTextIndexItem
+                            {
+                                Id = x.ind.Id,
+                                DocumentId = 0,
+                                ItemType = (EnumObjects)x.ind.ObjectType,
+                                OperationType = (EnumOperationType)x.ind.OperationType,
+                                ObjectId = x.id,
+                                ObjectText =
+                                    x.agent.FullName + " " +x.agent.OKPOCode + " " + x.agent.Description + " " +
+                                    x.agent.TaxCode + " " + x.agent.VATCode 
+                                    
+                            })
+                            .ToList()
+                        );
+                }
+
+                if (objectTypesToProcess.Contains(EnumObjects.DictionaryAgentPersons))
+                {
+                    res.AddRange(
+                        dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryAgentPersons)
+                            .Join(dbContext.DictionaryAgentPersonsSet, i => i.ObjectId, d => d.Id,
+                                (i, d) => new { ind = i, agent = d, id = d.Id })
+                            .Select(x => new FullTextIndexItem
+                            {
+                                Id = x.ind.Id,
+                                DocumentId = 0,
+                                ItemType = (EnumObjects)x.ind.ObjectType,
+                                OperationType = (EnumOperationType)x.ind.OperationType,
+                                ObjectId = x.id,
+                                ObjectText =
+                                    x.agent.FullName + " " +  x.agent.Description + " " + x.agent.TaxCode + " " +
+                                    x.agent.BirthDate + " " + x.agent.PassportNumber + " " + x.agent.PassportSerial + " " +
+                                    x.agent.PassportText
+
+                            })
+                            .ToList()
+                        );
+                }
+
+                if (objectTypesToProcess.Contains(EnumObjects.DictionaryAgentBanks))
+                {
+                    res.AddRange(
+                        dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryAgentBanks)
+                            .Join(dbContext.DictionaryAgentBanksSet, i => i.ObjectId, d => d.Id,
+                                (i, d) => new { ind = i, agent = d, id = d.Id })
+                            .Select(x => new FullTextIndexItem
+                            {
+                                Id = x.ind.Id,
+                                DocumentId = 0,
+                                ItemType = (EnumObjects)x.ind.ObjectType,
+                                OperationType = (EnumOperationType)x.ind.OperationType,
+                                ObjectId = x.id,
+                                ObjectText =
+                                    x.agent.Agent.Name + " " + x.agent.Description + " " + x.agent.MFOCode + " " +
+                                    x.agent.Swift 
+
+                            })
+                            .ToList()
+                        );
+                }
+
+                if (objectTypesToProcess.Contains(EnumObjects.DictionaryContacts))
+                {
+                    res.AddRange(
+                        dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryContacts)
+                            .Join(dbContext.DictionaryAgentContactsSet, i => i.ObjectId, d => d.Id,
+                                (i, d) => new { ind = i, contact = d, id = d.Id })
+                            .Select(x => new FullTextIndexItem
+                            {
+                                Id = x.ind.Id,
+                                DocumentId = 0,
+                                ItemType = (EnumObjects)x.ind.ObjectType,
+                                OperationType = (EnumOperationType)x.ind.OperationType,
+                                ObjectId = x.id,
+                                ObjectText =
+                                    x.contact.Agent.Name + " " + x.contact.Description + " " + x.contact.Contact + 
+                                    " " + x.contact.ContactType.Code + " " + x.contact.ContactType.Name
+
+                            })
+                            .ToList()
+                        );
+                }
+
+                if (objectTypesToProcess.Contains(EnumObjects.DictionaryContactType))
+                {
+                    res.AddRange(
+                        dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryContactType)
+                            .Join(dbContext.DictionaryContactTypesSet, i => i.ObjectId, d => d.Id,
+                                (i, d) => new { ind = i, contact = d, id = d.Id })
+                            .Select(x => new FullTextIndexItem
+                            {
+                                Id = x.ind.Id,
+                                DocumentId = 0,
+                                ItemType = (EnumObjects)x.ind.ObjectType,
+                                OperationType = (EnumOperationType)x.ind.OperationType,
+                                ObjectId = x.id,
+                                ObjectText =
+                                    x.contact.Code + " " + x.contact.Name 
+                             })
+                            .ToList()
+                        );
+                }
+
+                if (objectTypesToProcess.Contains(EnumObjects.DictionaryAgentAddresses))
+                {
+                    res.AddRange(
+                        dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryAgentAddresses)
+                            .Join(dbContext.DictionaryAgentAddressesSet, i => i.ObjectId, d => d.Id,
+                                (i, d) => new { ind = i, address = d, id = d.Id })
+                            .Select(x => new FullTextIndexItem
+                            {
+                                Id = x.ind.Id,
+                                DocumentId = 0,
+                                ItemType = (EnumObjects)x.ind.ObjectType,
+                                OperationType = (EnumOperationType)x.ind.OperationType,
+                                ObjectId = x.id,
+                                ObjectText =
+                                    x.address.Agent.Name + " " + x.address.Description + " " + x.address.Address +
+                                    " " + x.address.PostCode + " " + x.address.AddressType.Name
+
+                            })
+                            .ToList()
+                        );
+                }
+
+                if (objectTypesToProcess.Contains(EnumObjects.DictionaryAddressType))
+                {
+                    res.AddRange(
+                        dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryAddressType)
+                            .Join(dbContext.DictionaryAddressTypesSet, i => i.ObjectId, d => d.Id,
+                                (i, d) => new { ind = i, address = d, id = d.Id })
+                            .Select(x => new FullTextIndexItem
+                            {
+                                Id = x.ind.Id,
+                                DocumentId = 0,
+                                ItemType = (EnumObjects)x.ind.ObjectType,
+                                OperationType = (EnumOperationType)x.ind.OperationType,
+                                ObjectId = x.id,
+                                ObjectText = x.address.Name 
+                             })
+                            .ToList()
+                        );
+                }
+
+                if (objectTypesToProcess.Contains(EnumObjects.DictionaryAgentAccounts))
+                {
+                    res.AddRange(
+                        dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryAgentAccounts)
+                            .Join(dbContext.DictionaryAgentAccountsSet, i => i.ObjectId, d => d.Id,
+                                (i, d) => new { ind = i, account = d, id = d.Id })
+                            .Select(x => new FullTextIndexItem
+                            {
+                                Id = x.ind.Id,
+                                DocumentId = 0,
+                                ItemType = (EnumObjects)x.ind.ObjectType,
+                                OperationType = (EnumOperationType)x.ind.OperationType,
+                                ObjectId = x.id,
+                                ObjectText = 
+                                x.account.AccountNumber + " " + x.account.Name + " " +
+                                x.account.Agent.Name + " " + x.account.AgentBank.MFOCode + " " + 
+                                x.account.AgentBank.Agent.Name
+                            })
+                            .ToList()
+                        );
+                }
+
+                if (objectTypesToProcess.Contains(EnumObjects.DictionaryDocumentType))
+                {
+                    res.AddRange(
+                        dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryDocumentType)
+                            .Join(dbContext.DictionaryDocumentTypesSet, i => i.ObjectId, d => d.Id,
+                                (i, d) => new { ind = i, doc = d, id = d.Id })
+                            .Select(x => new FullTextIndexItem
+                            {
+                                Id = x.ind.Id,
+                                DocumentId = 0,
+                                ItemType = (EnumObjects)x.ind.ObjectType,
+                                OperationType = (EnumOperationType)x.ind.OperationType,
+                                ObjectId = x.id,
+                                ObjectText = x.doc.Name 
+                            })
+                            .ToList()
+                        );
+                }
+
+                if (objectTypesToProcess.Contains(EnumObjects.DictionaryDocumentSubjects))
+                {
+                    res.AddRange(
+                        dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryDocumentSubjects)
+                            .Join(dbContext.DictionaryDocumentSubjectsSet, i => i.ObjectId, d => d.Id,
+                                (i, d) => new { ind = i, doc = d, id = d.Id })
+                            .Select(x => new FullTextIndexItem
+                            {
+                                Id = x.ind.Id,
+                                DocumentId = 0,
+                                ItemType = (EnumObjects)x.ind.ObjectType,
+                                OperationType = (EnumOperationType)x.ind.OperationType,
+                                ObjectId = x.id,
+                                ObjectText = x.doc.Name 
+                            })
+                            .ToList()
+                        );
+                }
+
+                if (objectTypesToProcess.Contains(EnumObjects.DictionaryRegistrationJournals))
+                {
+                    res.AddRange(
+                        dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryRegistrationJournals)
+                            .Join(dbContext.DictionaryRegistrationJournalsSet, i => i.ObjectId, d => d.Id,
+                                (i, d) => new { ind = i, doc = d, id = d.Id })
+                     
+                            .Select(x => new FullTextIndexItem
+                            {
+                                Id = x.ind.Id,
+                                DocumentId = 0,
+                                ItemType = (EnumObjects)x.ind.ObjectType,
+                                OperationType = (EnumOperationType)x.ind.OperationType,
+                                ObjectId = x.id,
+                                ObjectText = x.doc.Index + " " + x.doc.Name + " " + x.doc.Department.FullName 
+                            })
+                            .ToList()
+                        );
+                }
+
+
+                if (objectTypesToProcess.Contains(EnumObjects.DictionaryDepartments))
+                {
+                    res.AddRange(
+                        dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryDepartments)
+                            .Join(dbContext.DictionaryDepartmentsSet, i => i.ObjectId, d => d.Id,
+                                (i, d) => new { ind = i, doc = d, id = d.Id })
+
+                            .Select(x => new FullTextIndexItem
+                            {
+                                Id = x.ind.Id,
+                                DocumentId = 0,
+                                ItemType = (EnumObjects)x.ind.ObjectType,
+                                OperationType = (EnumOperationType)x.ind.OperationType,
+                                ObjectId = x.id,
+                                ObjectText =x.doc.FullName + " " + x.doc.Code + " " + x.doc.Name + " " +
+                                x.doc.Company.Name + " " + x.doc.ChiefPosition.FullName
+                            })
+                            .ToList()
+                        );
+                }
+
+                if (objectTypesToProcess.Contains(EnumObjects.DictionaryPositions))
+                {
+                    res.AddRange(
+                        dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryPositions)
+                            .Join(dbContext.DictionaryPositionsSet, i => i.ObjectId, d => d.Id,
+                                (i, d) => new { ind = i, doc = d, id = d.Id })
+
+                            .Select(x => new FullTextIndexItem
+                            {
+                                Id = x.ind.Id,
+                                DocumentId = 0,
+                                ItemType = (EnumObjects)x.ind.ObjectType,
+                                OperationType = (EnumOperationType)x.ind.OperationType,
+                                ObjectId = x.id,
+                                ObjectText = x.doc.FullName + " " + x.doc.Name + " " + x.doc.Department.Name + " " +
+                                x.doc.ExecutorAgent.Name + " " + x.doc.MainExecutorAgent.Name
+                            })
+                            .ToList()
+                        );
+                }
+
+                if (objectTypesToProcess.Contains(EnumObjects.DictionaryStandartSendLists))
+                {
+                    res.AddRange(
+                        dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryStandartSendLists)
+                            .Join(dbContext.DictionaryStandartSendListsSet, i => i.ObjectId, d => d.Id,
+                                (i, d) => new { ind = i, doc = d, id = d.Id })
+
+                            .Select(x => new FullTextIndexItem
+                            {
+                                Id = x.ind.Id,
+                                DocumentId = 0,
+                                ItemType = (EnumObjects)x.ind.ObjectType,
+                                OperationType = (EnumOperationType)x.ind.OperationType,
+                                ObjectId = x.id,
+                                ObjectText = x.doc.Name + " " + x.doc.Position.Department.Name + " " + x.doc.Position.Name
+                            })
+                            .ToList()
+                        );
+                }
+
+                if (objectTypesToProcess.Contains(EnumObjects.DictionaryStandartSendListContent))
+                {
+                    res.AddRange(
+                        dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryStandartSendListContent)
+                            .Join(dbContext.DictionaryStandartSendListContentsSet, i => i.ObjectId, d => d.Id,
+                                (i, d) => new { ind = i, doc = d, id = d.Id })
+
+                            .Select(x => new FullTextIndexItem
+                            {
+                                Id = x.ind.Id,
+                                DocumentId = 0,
+                                ItemType = (EnumObjects)x.ind.ObjectType,
+                                OperationType = (EnumOperationType)x.ind.OperationType,
+                                ObjectId = x.id,
+                                ObjectText =x.doc.Task + " " + x.doc.Description + " " + x.doc.SendType.Name + x.doc.StandartSendList.Name +
+                                " " + x.doc.TargetAgent.Name + " " + x.doc.TargetPosition.Name
+
+                            })
+                            .ToList()
+                        );
+                }
+
+                if (objectTypesToProcess.Contains(EnumObjects.DictionaryCompanies))
+                {
+                    res.AddRange(
+                        dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryCompanies)
+                            .Join(dbContext.DictionaryCompaniesSet, i => i.ObjectId, d => d.Id,
+                                (i, d) => new { ind = i, doc = d, id = d.Id })
+
+                            .Select(x => new FullTextIndexItem
+                            {
+                                Id = x.ind.Id,
+                                DocumentId = 0,
+                                ItemType = (EnumObjects)x.ind.ObjectType,
+                                OperationType = (EnumOperationType)x.ind.OperationType,
+                                ObjectId = x.id,
+                                ObjectText = x.doc.Name
+
+                            })
+                            .ToList()
+                        );
+                }
+
+                if (objectTypesToProcess.Contains(EnumObjects.DictionaryPositionExecutorTypes))
+                {
+                    res.AddRange(
+                        dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryPositionExecutorTypes)
+                            .Join(dbContext.DictionaryPositionExecutorTypesSet, i => i.ObjectId, d => d.Id,
+                                (i, d) => new { ind = i, doc = d, id = d.Id })
+
+                            .Select(x => new FullTextIndexItem
+                            {
+                                Id = x.ind.Id,
+                                DocumentId = 0,
+                                ItemType = (EnumObjects)x.ind.ObjectType,
+                                OperationType = (EnumOperationType)x.ind.OperationType,
+                                ObjectId = x.id,
+                                ObjectText = x.doc.Name + " " + x.doc.Code
+
+                            })
+                            .ToList()
+                        );
+                }
+
+                if (objectTypesToProcess.Contains(EnumObjects.DictionaryPositionExecutors))
+                {
+                    res.AddRange(
+                        dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryPositionExecutors)
+                            .Join(dbContext.DictionaryPositionExecutorsSet, i => i.ObjectId, d => d.Id,
+                                (i, d) => new { ind = i, doc = d, id = d.Id })
+
+                            .Select(x => new FullTextIndexItem
+                            {
+                                Id = x.ind.Id,
+                                DocumentId = 0,
+                                ItemType = (EnumObjects)x.ind.ObjectType,
+                                OperationType = (EnumOperationType)x.ind.OperationType,
+                                ObjectId = x.id,
+                                ObjectText = x.doc.Description + " " + x.doc.Agent.Name + " " + x.doc.EndDate + " "
+                                + x.doc.Position.Name + " " + x.doc.PositionExecutorType.Name
+
+                            })
+                            .ToList()
+                        );
+                }
+
+                #endregion Dictionaries
+
+                #region TemplateDocuments
+
+                if (objectTypesToProcess.Contains(EnumObjects.TemplateDocument))
+                {
+                    res.AddRange(
+                        dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.TemplateDocument)
+                            .Join(dbContext.TemplateDocumentsSet, i => i.ObjectId, d => d.Id,
+                                (i, d) => new { ind = i, doc = d, id = d.Id })
+
+                            .Select(x => new FullTextIndexItem
+                            {
+                                Id = x.ind.Id,
+                                DocumentId = 0,
+                                ItemType = (EnumObjects)x.ind.ObjectType,
+                                OperationType = (EnumOperationType)x.ind.OperationType,
+                                ObjectId = x.id,
+                                ObjectText = x.doc.Description + " " + x.doc.Addressee + " " + x.doc.DocumentDirection.Name + " " +
+                                x.doc.DocumentSubject.Name + " " + x.doc.DocumentType.Name + " " + x.doc.Name + " " +
+                                x.doc.RegistrationJournal.Name + " " + x.doc.SenderAgent.Name + " " + x.doc.SenderAgentPerson.FullName
+
+                            })
+                            .ToList()
+                        );
+                }
+
+                if (objectTypesToProcess.Contains(EnumObjects.TemplateDocumentSendList))
+                {
+                    res.AddRange(
+                        dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.TemplateDocumentSendList)
+                            .Join(dbContext.TemplateDocumentSendListsSet, i => i.ObjectId, d => d.Id,
+                                (i, d) => new { ind = i, doc = d, id = d.Id })
+
+                            .Select(x => new FullTextIndexItem
+                            {
+                                Id = x.ind.Id,
+                                DocumentId = 0,
+                                ItemType = (EnumObjects)x.ind.ObjectType,
+                                OperationType = (EnumOperationType)x.ind.OperationType,
+                                ObjectId = x.id,
+                                ObjectText = x.doc.Description + " " + x.doc.Document.Name + " " + x.doc.SendType.Name + " " +
+                                x.doc.SourceAgent.Name + " " + x.doc.TargetAgent.Name + " " + x.doc.TargetPosition.Name
+
+                            })
+                            .ToList()
+                        );
+                }
+
+                if (objectTypesToProcess.Contains(EnumObjects.TemplateDocumentRestrictedSendList))
+                {
+                    res.AddRange(
+                        dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.TemplateDocumentRestrictedSendList)
+                            .Join(dbContext.TemplateDocumentRestrictedSendListsSet, i => i.ObjectId, d => d.Id,
+                                (i, d) => new { ind = i, doc = d, id = d.Id })
+
+                            .Select(x => new FullTextIndexItem
+                            {
+                                Id = x.ind.Id,
+                                DocumentId = 0,
+                                ItemType = (EnumObjects)x.ind.ObjectType,
+                                OperationType = (EnumOperationType)x.ind.OperationType,
+                                ObjectId = x.id,
+                                ObjectText = x.doc.Document.Name + " " + x.doc.Position.FullName + " " + x.doc.Position.Name
+
+                            })
+                            .ToList()
+                        );
+                }
+
+                if (objectTypesToProcess.Contains(EnumObjects.TemplateDocumentTask))
+                {
+                    res.AddRange(
+                        dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.TemplateDocumentTask)
+                            .Join(dbContext.TemplateDocumentTasksSet, i => i.ObjectId, d => d.Id,
+                                (i, d) => new { ind = i, doc = d, id = d.Id })
+
+                            .Select(x => new FullTextIndexItem
+                            {
+                                Id = x.ind.Id,
+                                DocumentId = 0,
+                                ItemType = (EnumObjects)x.ind.ObjectType,
+                                OperationType = (EnumOperationType)x.ind.OperationType,
+                                ObjectId = x.id,
+                                ObjectText = x.doc.Document.Name + " " + x.doc.Position.FullName + " " + x.doc.Position.Name + " " +
+                                x.doc.Task
+
+                            })
+                            .ToList()
+                        );
+                }
+
+                if (objectTypesToProcess.Contains(EnumObjects.TemplateDocumentAttachedFiles))
+                {
+                    res.AddRange(
+                        dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.TemplateDocumentAttachedFiles)
+                            .Join(dbContext.TemplateDocumentFilesSet, i => i.ObjectId, d => d.Id,
+                                (i, d) => new { ind = i, doc = d, id = d.Id })
+
+                            .Select(x => new FullTextIndexItem
+                            {
+                                Id = x.ind.Id,
+                                DocumentId = 0,
+                                ItemType = (EnumObjects)x.ind.ObjectType,
+                                OperationType = (EnumOperationType)x.ind.OperationType,
+                                ObjectId = x.id,
+                                ObjectText = x.doc.Document.Name + " " + x.doc.Extention + " " + x.doc.Name
+
+                            })
+                            .ToList()
+                        );
+                }
+
+                #endregion TemplateDocuments
 
             }
             return res;
@@ -885,4 +1709,4 @@ namespace BL.Database.SystemDb
         #endregion
 
     }
-}
+} 
