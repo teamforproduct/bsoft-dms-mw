@@ -938,7 +938,7 @@ namespace BL.Database.SystemDb
                      ObjectId = x.Id,
                      ObjectText = x.Name + " " + x.Position.Department.Name + " " + x.Position.Name
                  }).ToList()
-             );
+                 );
 
                 res.AddRange(dbContext.DictionaryStandartSendListContentsSet.Where(x => x.StandartSendList.ClientId == ctx.CurrentClientId)
                  .Select(x => new FullTextIndexItem
@@ -950,7 +950,7 @@ namespace BL.Database.SystemDb
                      ObjectText = x.Task + " " + x.Description + " " + x.SendType.Name + x.StandartSendList.Name +
                                 " " + x.TargetAgent.Name + " " + x.TargetPosition.Name
                  }).ToList()
-             );
+                 );
 
                 res.AddRange(dbContext.DictionaryCompaniesSet.Where(x => x.ClientId == ctx.CurrentClientId)
                 .Select(x => new FullTextIndexItem
@@ -961,7 +961,7 @@ namespace BL.Database.SystemDb
                     ObjectId = x.Id,
                     ObjectText = x.Name 
                 }).ToList()
-            );
+              );
 
                 res.AddRange(dbContext.DictionaryPositionExecutorsSet.Where(x => x.Position.Department.Company.ClientId == ctx.CurrentClientId)
                .Select(x => new FullTextIndexItem
@@ -973,10 +973,10 @@ namespace BL.Database.SystemDb
                    ObjectText = x.Description + " " + x.Agent.Name + " " + x.EndDate + " "
                                 + x.Position.Name + " " + x.PositionExecutorType.Name
                }).ToList()
-           );
+            );
 
-                res.AddRange(dbContext.DictionaryPositionExecutorTypesSet
-             .Select(x => new FullTextIndexItem
+             res.AddRange(dbContext.DictionaryPositionExecutorTypesSet
+                .Select(x => new FullTextIndexItem
              {
                  DocumentId = 0,
                  ItemType = EnumObjects.DictionaryPositionExecutorTypes,
@@ -984,11 +984,71 @@ namespace BL.Database.SystemDb
                  ObjectId = x.Id,
                  ObjectText = x.Name + " " + x.Code
              }).ToList()
-         );
+            );
 
                 #endregion Dictionaries
 
+                #region DocumentTemplates
 
+                res.AddRange(dbContext.TemplateDocumentsSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                              .Select(x => new FullTextIndexItem
+                              {
+                                  DocumentId = 0,
+                                  ItemType = EnumObjects.TemplateDocument,
+                                  OperationType = EnumOperationType.AddNew,
+                                  ObjectId = x.Id,
+                                  ObjectText = x.Description + " " + x.Addressee + " " + x.DocumentDirection.Name + " " +
+                                    x.DocumentSubject.Name + " " + x.DocumentType.Name + " " + x.Name + " " +
+                                    x.RegistrationJournal.Name + " " + x.SenderAgent.Name + " " + x.SenderAgentPerson.FullName
+                              }).ToList()
+                       );
+
+                res.AddRange(dbContext.TemplateDocumentSendListsSet.Where(x => x.Document.ClientId == ctx.CurrentClientId)
+                              .Select(x => new FullTextIndexItem
+                              {
+                                  DocumentId = 0,
+                                  ItemType = EnumObjects.TemplateDocumentSendList,
+                                  OperationType = EnumOperationType.AddNew,
+                                  ObjectId = x.Id,
+                                  ObjectText = x.Description + " " + x.Document.Name + " " + x.SendType.Name + " " +
+                                    x.SourceAgent.Name + " " + x.TargetAgent.Name + " " + x.TargetPosition.Name
+                              }).ToList()
+                       );
+
+                res.AddRange(dbContext.TemplateDocumentRestrictedSendListsSet.Where(x => x.Document.ClientId == ctx.CurrentClientId)
+                              .Select(x => new FullTextIndexItem
+                              {
+                                  DocumentId = 0,
+                                  ItemType = EnumObjects.TemplateDocumentRestrictedSendList,
+                                  OperationType = EnumOperationType.AddNew,
+                                  ObjectId = x.Id,
+                                  ObjectText = x.Document.Name + " " + x.Position.FullName + " " + x.Position.Name
+                              }).ToList()
+                       );
+
+                res.AddRange(dbContext.TemplateDocumentTasksSet.Where(x => x.Document.ClientId == ctx.CurrentClientId)
+                              .Select(x => new FullTextIndexItem
+                              {
+                                  DocumentId = 0,
+                                  ItemType = EnumObjects.TemplateDocumentTask,
+                                  OperationType = EnumOperationType.AddNew,
+                                  ObjectId = x.Id,
+                                  ObjectText = x.Document.Name + " " + x.Position.FullName + " " + x.Position.Name + " " + x.Task
+                              }).ToList()
+                       );
+
+                res.AddRange(dbContext.TemplateDocumentFilesSet.Where(x => x.Document.ClientId == ctx.CurrentClientId)
+                              .Select(x => new FullTextIndexItem
+                              {
+                                  DocumentId = 0,
+                                  ItemType = EnumObjects.TemplateDocumentAttachedFiles,
+                                  OperationType = EnumOperationType.AddNew,
+                                  ObjectId = x.Id,
+                                  ObjectText = x.Document.Name + " " + x.Extention + " " + x.Name
+                              }).ToList()
+                       );
+
+                #endregion DocumentTemplates
             }
             return res;
         }
@@ -1136,12 +1196,7 @@ namespace BL.Database.SystemDb
                         );
                 }
 
-                //TODo add dictionaries here
-                //if (objectTypesToProcess.Contains(EnumObjects.DictionaryAgents))
-                //{
-                //    res.AddRange();
-
-                //}
+                #region Dictionaries
                 if (objectTypesToProcess.Contains(EnumObjects.DictionaryAgents))
                 {
                     res.AddRange(
@@ -1562,6 +1617,10 @@ namespace BL.Database.SystemDb
                         );
                 }
 
+                #endregion Dictionaries
+
+                #region TemplateDocuments
+
                 if (objectTypesToProcess.Contains(EnumObjects.TemplateDocument))
                 {
                     res.AddRange(
@@ -1670,6 +1729,8 @@ namespace BL.Database.SystemDb
                             .ToList()
                         );
                 }
+
+                #endregion TemplateDocuments
 
             }
             return res;
