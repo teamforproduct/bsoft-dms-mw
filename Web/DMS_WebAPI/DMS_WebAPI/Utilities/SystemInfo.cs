@@ -102,6 +102,7 @@ namespace DMS_WebAPI.Utilities
             res = hash[0].ToString() + hash[hash.Length - 1] + hash[part] + hash[hash.Length - part] + hash[2 * part] + hash[hash.Length - 2 * part] + hash[3 * part] + hash[hash.Length - 3 * part];
             return res;
         }
+
         public string GetLicenceRegCode(LicenceInfo li)
         {
             var clInfo = $"Name:{li.ClientName}/DD:{li.DateLimit}/NNOC:{li.NamedNumberOfConnections}/CNOC:{li.ConcurenteNumberOfConnections}/Fun:{li.Functionals}";
