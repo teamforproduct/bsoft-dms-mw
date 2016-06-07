@@ -1328,6 +1328,114 @@ namespace BL.Database.SystemDb
                         );
                 }
 
+                if (objectTypesToProcess.Contains(EnumObjects.TemplateDocument))
+                {
+                    res.AddRange(
+                        dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.TemplateDocument)
+                            .Join(dbContext.TemplateDocumentsSet, i => i.ObjectId, d => d.Id,
+                                (i, d) => new { ind = i, doc = d, id = d.Id })
+
+                            .Select(x => new FullTextIndexItem
+                            {
+                                Id = x.ind.Id,
+                                DocumentId = 0,
+                                ItemType = (EnumObjects)x.ind.ObjectType,
+                                OperationType = (EnumOperationType)x.ind.OperationType,
+                                ObjectId = x.id,
+                                ObjectText = x.doc.Description + " " + x.doc.Addressee + " " + x.doc.DocumentDirection.Name + " " +
+                                x.doc.DocumentSubject.Name + " " + x.doc.DocumentType.Name + " " + x.doc.Name + " " +
+                                x.doc.RegistrationJournal.Name + " " + x.doc.SenderAgent.Name + " " + x.doc.SenderAgentPerson.FullName
+
+                            })
+                            .ToList()
+                        );
+                }
+
+                if (objectTypesToProcess.Contains(EnumObjects.TemplateDocumentSendList))
+                {
+                    res.AddRange(
+                        dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.TemplateDocumentSendList)
+                            .Join(dbContext.TemplateDocumentSendListsSet, i => i.ObjectId, d => d.Id,
+                                (i, d) => new { ind = i, doc = d, id = d.Id })
+
+                            .Select(x => new FullTextIndexItem
+                            {
+                                Id = x.ind.Id,
+                                DocumentId = 0,
+                                ItemType = (EnumObjects)x.ind.ObjectType,
+                                OperationType = (EnumOperationType)x.ind.OperationType,
+                                ObjectId = x.id,
+                                ObjectText = x.doc.Description + " " + x.doc.Document.Name + " " + x.doc.SendType.Name + " " +
+                                x.doc.SourceAgent.Name + " " + x.doc.TargetAgent.Name + " " + x.doc.TargetPosition.Name
+
+                            })
+                            .ToList()
+                        );
+                }
+
+                if (objectTypesToProcess.Contains(EnumObjects.TemplateDocumentRestrictedSendList))
+                {
+                    res.AddRange(
+                        dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.TemplateDocumentRestrictedSendList)
+                            .Join(dbContext.TemplateDocumentRestrictedSendListsSet, i => i.ObjectId, d => d.Id,
+                                (i, d) => new { ind = i, doc = d, id = d.Id })
+
+                            .Select(x => new FullTextIndexItem
+                            {
+                                Id = x.ind.Id,
+                                DocumentId = 0,
+                                ItemType = (EnumObjects)x.ind.ObjectType,
+                                OperationType = (EnumOperationType)x.ind.OperationType,
+                                ObjectId = x.id,
+                                ObjectText = x.doc.Document.Name + " " + x.doc.Position.FullName + " " + x.doc.Position.Name
+
+                            })
+                            .ToList()
+                        );
+                }
+
+                if (objectTypesToProcess.Contains(EnumObjects.TemplateDocumentTask))
+                {
+                    res.AddRange(
+                        dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.TemplateDocumentTask)
+                            .Join(dbContext.TemplateDocumentTasksSet, i => i.ObjectId, d => d.Id,
+                                (i, d) => new { ind = i, doc = d, id = d.Id })
+
+                            .Select(x => new FullTextIndexItem
+                            {
+                                Id = x.ind.Id,
+                                DocumentId = 0,
+                                ItemType = (EnumObjects)x.ind.ObjectType,
+                                OperationType = (EnumOperationType)x.ind.OperationType,
+                                ObjectId = x.id,
+                                ObjectText = x.doc.Document.Name + " " + x.doc.Position.FullName + " " + x.doc.Position.Name + " " +
+                                x.doc.Task
+
+                            })
+                            .ToList()
+                        );
+                }
+
+                if (objectTypesToProcess.Contains(EnumObjects.TemplateDocumentAttachedFiles))
+                {
+                    res.AddRange(
+                        dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.TemplateDocumentAttachedFiles)
+                            .Join(dbContext.TemplateDocumentFilesSet, i => i.ObjectId, d => d.Id,
+                                (i, d) => new { ind = i, doc = d, id = d.Id })
+
+                            .Select(x => new FullTextIndexItem
+                            {
+                                Id = x.ind.Id,
+                                DocumentId = 0,
+                                ItemType = (EnumObjects)x.ind.ObjectType,
+                                OperationType = (EnumOperationType)x.ind.OperationType,
+                                ObjectId = x.id,
+                                ObjectText = x.doc.Document.Name + " " + x.doc.Extention + " " + x.doc.Name
+
+                            })
+                            .ToList()
+                        );
+                }
 
             }
             return res;
@@ -1346,4 +1454,4 @@ namespace BL.Database.SystemDb
         #endregion
 
     }
-}
+} 
