@@ -13,6 +13,7 @@ using BL.Model.Enums;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.InternalModel;
 using System.Transactions;
+using BL.Model.FullTextSearch;
 
 namespace BL.Database.Documents
 {
@@ -147,6 +148,9 @@ namespace BL.Database.Documents
                         dbContext.TemplateDocumentsSet.Add(newTemplate);
                     }
 
+                    CommonQueries.AddFullTextCashInfo(dbContext, newTemplate.Id, EnumObjects.DictionaryDocumentType, 
+                        template.Id > 0 ? EnumOperationType.Update : EnumOperationType.AddNew);
+
                     dbContext.SaveChanges();
 
                     if (properties != null && properties.Any())
@@ -178,6 +182,7 @@ namespace BL.Database.Documents
                 CommonQueries.DeletePropertyValues(dbContext, context, new FilterPropertyValue { Object = new List<EnumObjects> { EnumObjects.TemplateDocument }, RecordId = new List<int> { id } });
 
                 dbContext.TemplateDocumentsSet.Remove(ddt);
+                CommonQueries.AddFullTextCashInfo(dbContext, ddt.Id, EnumObjects.TemplateDocument, EnumOperationType.Delete);
                 dbContext.SaveChanges();
             }
         }
@@ -321,6 +326,9 @@ namespace BL.Database.Documents
 
                 dbContext.TemplateDocumentSendListsSet.Attach(newTemplate);
 
+                CommonQueries.AddFullTextCashInfo(dbContext, newTemplate.Id, EnumObjects.TemplateDocumentSendList, 
+                    template.Id>0 ? EnumOperationType.Update : EnumOperationType.AddNew);
+
                 var entity = dbContext.Entry(newTemplate);
                 entity.State = System.Data.Entity.EntityState.Modified;
 
@@ -337,6 +345,7 @@ namespace BL.Database.Documents
                 var ddt = dbContext.TemplateDocumentSendListsSet.Where(x => x.Document.ClientId == ctx.CurrentClientId).FirstOrDefault(x => x.Id == id);
                 if (ddt == null) return;
                 dbContext.TemplateDocumentSendListsSet.Remove(ddt);
+                CommonQueries.AddFullTextCashInfo(dbContext, ddt.Id, EnumObjects.TemplateDocumentSendList, EnumOperationType.Delete);
                 dbContext.SaveChanges();
             }
         }
@@ -420,7 +429,8 @@ namespace BL.Database.Documents
                 }
 
                 dbContext.TemplateDocumentRestrictedSendListsSet.Attach(newTemplate);
-
+                CommonQueries.AddFullTextCashInfo(dbContext, newTemplate.Id, EnumObjects.TemplateDocumentRestrictedSendList,
+                    template.Id>0 ? EnumOperationType.Update : EnumOperationType.AddNew);
                 var entity = dbContext.Entry(newTemplate);
                 entity.State = System.Data.Entity.EntityState.Modified;
 
@@ -437,6 +447,7 @@ namespace BL.Database.Documents
                 var ddt = dbContext.TemplateDocumentRestrictedSendListsSet.Where(x => x.Document.ClientId == ctx.CurrentClientId).FirstOrDefault(x => x.Id == id);
                 if (ddt == null) return;
                 dbContext.TemplateDocumentRestrictedSendListsSet.Remove(ddt);
+                CommonQueries.AddFullTextCashInfo(dbContext, ddt.Id, EnumObjects.TemplateDocumentRestrictedSendList, EnumOperationType.Delete);
                 dbContext.SaveChanges();
             }
         }
@@ -530,7 +541,8 @@ namespace BL.Database.Documents
                 }
 
                 dbContext.TemplateDocumentTasksSet.Attach(newTemplate);
-
+                CommonQueries.AddFullTextCashInfo(dbContext, newTemplate.Id, EnumObjects.TemplateDocumentTask,
+                    template.Id>0 ? EnumOperationType.Update : EnumOperationType.AddNew);
                 var entity = dbContext.Entry(newTemplate);
                 entity.State = System.Data.Entity.EntityState.Modified;
 
@@ -559,6 +571,7 @@ namespace BL.Database.Documents
                 var ddt = dbContext.TemplateDocumentTasksSet.Where(x => x.Document.ClientId == ctx.CurrentClientId).FirstOrDefault(x => x.Id == id);
                 if (ddt == null) return;
                 dbContext.TemplateDocumentTasksSet.Remove(ddt);
+                CommonQueries.AddFullTextCashInfo(dbContext, ddt.Id, EnumObjects.TemplateDocumentTask, EnumOperationType.Delete);
                 dbContext.SaveChanges();
             }
         }
@@ -661,6 +674,7 @@ namespace BL.Database.Documents
             {
                 var fl = ModelConverter.GetDbTemplateFile(docFile);
                 dbContext.TemplateDocumentFilesSet.Add(fl);
+                CommonQueries.AddFullTextCashInfo(dbContext, fl.Id, EnumObjects.TemplateDocumentAttachedFiles, EnumOperationType.AddNew);
                 dbContext.SaveChanges();
                 docFile.Id = fl.Id;
                 return fl.Id;
@@ -673,6 +687,8 @@ namespace BL.Database.Documents
             {
                 var fl = ModelConverter.GetDbTemplateFile(docFile);
                 dbContext.TemplateDocumentFilesSet.Attach(fl);
+
+                CommonQueries.AddFullTextCashInfo(dbContext, docFile.Id, EnumObjects.TemplateDocumentAttachedFiles, EnumOperationType.Update);
                 var entry = dbContext.Entry(fl);
                 entry.Property(x => x.Name).IsModified = true;
                 entry.Property(x => x.Extention).IsModified = true;
@@ -693,6 +709,7 @@ namespace BL.Database.Documents
                 dbContext.TemplateDocumentFilesSet.RemoveRange(
                     dbContext.TemplateDocumentFilesSet.Where(x=>x.Document.ClientId == ctx.CurrentClientId).Where(
                         x => x.DocumentId == docFile.DocumentId && x.OrderNumber == docFile.OrderInDocument));
+                CommonQueries.AddFullTextCashInfo(dbContext, docFile.Id, EnumObjects.TemplateDocumentAttachedFiles, EnumOperationType.Delete);
                 dbContext.SaveChanges();
 
             }
