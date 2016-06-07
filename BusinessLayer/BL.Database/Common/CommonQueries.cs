@@ -1311,7 +1311,11 @@ namespace BL.Database.Common
             {
                 if (filter?.PaperListId?.Count() > 0)
                 {
-                    itemsDb = itemsDb.Where(x => filter.PaperListId.Contains(x.Id));
+                    var filterContains = PredicateBuilder.False<DocumentPaperLists>();
+                    filterContains = filter.PaperListId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    itemsDb = itemsDb.Where(filterContains);
                 }
             }
 
@@ -1563,13 +1567,19 @@ namespace BL.Database.Common
             return DmsResolver.Current.Get<ICryptoService>().VerifyHash(stringDocument, hash);
         }
 
-        public static List<InternalDictionaryPositionWithActions> GetPositionWithActions(IContext context, DmsContext dbContext, List<int> positionAccesses)
+        public static List<InternalDictionaryPositionWithActions> GetPositionWithActions(IContext ctx, DmsContext dbContext, List<int> positionAccesses)
         {
-            return dbContext.DictionaryPositionsSet.Where(x => x.Department.Company.ClientId == context.CurrentClientId)
-                .Where(
-                    x =>
-                        context.CurrentPositionsIdList.Contains(x.Id) &&
-                        positionAccesses.Contains(x.Id))
+            var filterCurrentPositionsContains = PredicateBuilder.False<DictionaryPositions>();
+            filterCurrentPositionsContains = ctx.CurrentPositionsIdList.Aggregate(filterCurrentPositionsContains,
+                (current, value) => current.Or(e => e.Id == value).Expand());
+
+            var filterPositionAccessesContains = PredicateBuilder.False<DictionaryPositions>();
+            filterPositionAccessesContains = positionAccesses.Aggregate(filterPositionAccessesContains,
+                (current, value) => current.Or(e => e.Id == value).Expand());
+
+            return dbContext.DictionaryPositionsSet.Where(x => x.Department.Company.ClientId == ctx.CurrentClientId)
+                .Where(filterCurrentPositionsContains)
+                .Where(filterPositionAccessesContains)
                 .Select(x => new InternalDictionaryPositionWithActions
                 {
                     Id = x.Id,
@@ -1583,28 +1593,35 @@ namespace BL.Database.Common
 
         public static Dictionary<int, List<InternalSystemAction>> GetActionsListForCurrentPositionsList(IContext context, DmsContext dbContext, IEnumerable<EnumObjects> objects, List<int> positionAccesses)
         {
+            var filterObjectsContains = PredicateBuilder.False<SystemActions>();
+            filterObjectsContains = objects.Aggregate(filterObjectsContains,
+                (current, value) => current.Or(e => (EnumObjects)e.ObjectId == value).Expand());
+
             var res = new Dictionary<int, List<InternalSystemAction>>();
             foreach (var posId in context.CurrentPositionsIdList)
             {
-                var qry = dbContext.SystemActionsSet.Where(x => objects.Select(y => (int)y).Contains(x.ObjectId)
-                                                                && positionAccesses.Contains(posId)
-                                                                && x.IsVisible &&
-                                                                (!x.IsGrantable ||
-                                                                 x.RoleActions.Any(y => y.Role.PositionRoles.Any(pr => pr.PositionId == posId) &&
-                                                                                        y.Role.UserRoles.Any(z => z.UserId == context.CurrentAgentId)))
-                    );
-
-                var actLst = qry.Select(a => new InternalSystemAction
+                if (positionAccesses.Contains(posId))
                 {
-                    DocumentAction = (EnumDocumentActions)a.Id,
-                    Object = (EnumObjects)a.ObjectId,
-                    ActionCode = a.Code,
-                    ObjectCode = a.Object.Code,
-                    API = a.API,
-                    Description = a.Description,
-                    Category = a.Category
-                }).ToList();
-                res.Add(posId, actLst);
+                    var qry = dbContext.SystemActionsSet
+                        .Where(filterObjectsContains)
+                        .Where(x => x.IsVisible &&
+                                    (!x.IsGrantable ||
+                                        x.RoleActions.Any(y => y.Role.PositionRoles.Any(pr => pr.PositionId == posId) &&
+                                        y.Role.UserRoles.Any(z => z.UserId == context.CurrentAgentId)))
+                        );
+
+                    var actLst = qry.Select(a => new InternalSystemAction
+                    {
+                        DocumentAction = (EnumDocumentActions)a.Id,
+                        Object = (EnumObjects)a.ObjectId,
+                        ActionCode = a.Code,
+                        ObjectCode = a.Object.Code,
+                        API = a.API,
+                        Description = a.Description,
+                        Category = a.Category
+                    }).ToList();
+                    res.Add(posId, actLst);
+                }
             }
             return res;
         }
@@ -1617,11 +1634,19 @@ namespace BL.Database.Common
             {
                 if (filter?.DocumentId?.Count() > 0)
                 {
-                    sendListDb = sendListDb.Where(x => filter.DocumentId.Contains(x.DocumentId));
+                    var filterContains = PredicateBuilder.False<DocumentSendLists>();
+                    filterContains = filter.DocumentId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.DocumentId == value).Expand());
+
+                    sendListDb = sendListDb.Where(filterContains);
                 }
                 if (filter?.Id?.Count() > 0)
                 {
-                    sendListDb = sendListDb.Where(x => filter.Id.Contains(x.Id));
+                    var filterContains = PredicateBuilder.False<DocumentSendLists>();
+                    filterContains = filter.Id.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    sendListDb = sendListDb.Where(filterContains);
                 }
 
             }
@@ -1646,11 +1671,19 @@ namespace BL.Database.Common
             {
                 if (filter.DocumentId.Any())
                 {
-                    subscriptionsDb = subscriptionsDb.Where(x => filter.DocumentId.Contains(x.DocumentId));
+                    var filterContains = PredicateBuilder.False<DocumentSubscriptions>();
+                    filterContains = filter.DocumentId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.DocumentId == value).Expand());
+
+                    subscriptionsDb = subscriptionsDb.Where(filterContains);
                 }
                 if (filter.SubscriptionStates?.Count > 0)
                 {
-                    subscriptionsDb = subscriptionsDb.Where(x => filter.SubscriptionStates.Cast<int>().Contains(x.SubscriptionStateId ?? 0));
+                    var filterContains = PredicateBuilder.False<DocumentSubscriptions>();
+                    filterContains = filter.SubscriptionStates.Aggregate(filterContains,
+                        (current, value) => current.Or(e => (EnumSubscriptionStates)e.SubscriptionStateId == value).Expand());
+
+                    subscriptionsDb = subscriptionsDb.Where(filterContains);
                 }
             }
 
@@ -1692,7 +1725,13 @@ namespace BL.Database.Common
                 , ta2 => new { ta2.TaskId, ta2.PositionId }
                 , (ta1, ta2) => new { ta1, ta2 }).Where(x => x.ta2.Count() == 0).Select(x => x.ta1).ToList();
 
-            dbContext.DocumentTaskAccessesSet.RemoveRange(dbContext.DocumentTaskAccessesSet.Where(x => x.Task.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => delId.Contains(x.Id)));
+            {
+                var filterContains = PredicateBuilder.False<DocumentTaskAccesses>();
+                filterContains = delId.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Id == value).Expand());
+
+                dbContext.DocumentTaskAccessesSet.RemoveRange(dbContext.DocumentTaskAccessesSet.Where(x => x.Task.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(filterContains));
+            }
 
             dbContext.DocumentTaskAccessesSet.AddRange(insTA.Select(x => new DocumentTaskAccesses { TaskId = x.TaskId, PositionId = x.PositionId }));
 

@@ -4,6 +4,8 @@ using BL.CrossCutting.Interfaces;
 using BL.Database.DatabaseContext;
 using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore.FrontModel;
+using LinqKit;
+using BL.Database.DBModel.Document;
 
 namespace BL.Database.Documents
 {
@@ -22,7 +24,11 @@ namespace BL.Database.Documents
                     .Where(x => x.DocumentId == documentId).AsQueryable();
                 if (!ctx.IsAdmin)
                 {
-                    qry = qry.Where(x => !x.Tag.PositionId.HasValue || ctx.CurrentPositionsIdList.Contains(x.Tag.PositionId ?? 0));
+                    var filterContains = PredicateBuilder.False<DocumentTags>();
+                    filterContains = ctx.CurrentPositionsIdList.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Tag.PositionId == value || !e.Tag.PositionId.HasValue).Expand());
+
+                    qry = qry.Where(filterContains);
                 }
 
 

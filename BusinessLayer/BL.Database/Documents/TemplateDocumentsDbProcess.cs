@@ -13,6 +13,7 @@ using BL.Model.Enums;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.InternalModel;
 using System.Transactions;
+using LinqKit;
 
 namespace BL.Database.Documents
 {
@@ -221,7 +222,11 @@ namespace BL.Database.Documents
                 var qry = dbContext.TemplateDocumentSendListsSet.Where(x => x.Document.ClientId == ctx.CurrentClientId).AsQueryable();
                 if (filter.Id?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.Id.Contains(x.Id));
+                    var filterContains = PredicateBuilder.False<TemplateDocumentSendLists>();
+                    filterContains = filter.Id.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    qry = qry.Where(filterContains);
                 }
                 if (filter.SendType.HasValue)
                 {
@@ -357,7 +362,11 @@ namespace BL.Database.Documents
 
                 if (filter.Id?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.Id.Contains(x.Id));
+                    var filterContains = PredicateBuilder.False<TemplateDocumentRestrictedSendLists>();
+                    filterContains = filter.Id.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    qry = qry.Where(filterContains);
                 }
 
                 if (filter.PositionId.HasValue)
@@ -469,7 +478,11 @@ namespace BL.Database.Documents
 
                 if (filter.Id?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.Id.Contains(x.Id));
+                    var filterContains = PredicateBuilder.False<TemplateDocumentTasks>();
+                    filterContains = filter.Id.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    qry = qry.Where(filterContains);
                 }
                 if (filter.PositionId.HasValue)
                 {
