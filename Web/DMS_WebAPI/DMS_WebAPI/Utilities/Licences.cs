@@ -44,17 +44,21 @@ namespace DMS_WebAPI.Utilities
                 //TODO
                 //if (licence.IsTrial)
                 //{
-                    if (ctx != null)
+                if (ctx != null)
+                {
+                    try
                     {
-                        try
-                        {
-                            VerifyTrialMaxDocumentCount(licence, ctx);
-                        }
-                        catch(DatabaseIsNotSet)
-                        {
-
-                        }
+                        VerifyTrialMaxDocumentCount(licence, ctx);
                     }
+                    catch (DatabaseIsNotSet)
+                    {
+
+                    }
+                    catch (LicenceError)
+                    {
+                        throw new LicenceError();
+                    }
+                }
                 //}
                 //else
                 //{

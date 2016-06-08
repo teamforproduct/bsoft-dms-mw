@@ -139,7 +139,7 @@ namespace BL.Database.Dictionaries
                     if (!paging.IsAll)
                     {
                         qry = qry.OrderBy(x => x.Name)
-                        .Skip(() => paging.PageSize * (paging.CurrentPage - 1)).Take(() => paging.PageSize);
+                        .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
                     }
                 }
 
@@ -399,7 +399,7 @@ namespace BL.Database.Dictionaries
                     if (!paging.IsAll)
                     {
                         qry = qry.OrderBy(x => x.LastName)
-                        .Skip(() => paging.PageSize * (paging.CurrentPage - 1)).Take(() => paging.PageSize);
+                        .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
                     }
                 }
 
@@ -815,7 +815,7 @@ namespace BL.Database.Dictionaries
                     if (!paging.IsAll)
                     {
                         qry = qry.OrderBy(x => x.Agent.AgentPerson.LastName)
-                        .Skip(() => paging.PageSize * (paging.CurrentPage - 1)).Take(() => paging.PageSize);
+                        .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
                     }
                 }
 
@@ -1302,7 +1302,7 @@ namespace BL.Database.Dictionaries
                     if (!paging.IsAll)
                     {
                         qry = qry.OrderBy(x => x.FullName)
-                        .Skip(() => paging.PageSize * (paging.CurrentPage - 1)).Take(() => paging.PageSize);
+                        .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
                     }
                 }
 
@@ -1674,7 +1674,7 @@ namespace BL.Database.Dictionaries
                     if (!paging.IsAll)
                     {
                         qry = qry.OrderBy(x => x.Agent.Name)
-                        .Skip(() => paging.PageSize * (paging.CurrentPage - 1)).Take(() => paging.PageSize);
+                        .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
                     }
                 }
 
