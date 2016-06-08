@@ -28,7 +28,6 @@ namespace BL.Database.SystemDb
 
         #region Properties
         IEnumerable<BaseSystemUIElement> GetPropertyUIElements(IContext context, FilterPropertyLink filter);
-        InternalProperty GetProperty(IContext context, FilterProperty filter);
 
         IEnumerable<FrontProperty> GetProperties(IContext context, FilterProperty filter);
 
@@ -40,7 +39,6 @@ namespace BL.Database.SystemDb
         #endregion Properties
 
         #region PropertyLinks
-        InternalPropertyLink GetPropertyLink(IContext context, FilterPropertyLink filter);
 
         IEnumerable<FrontPropertyLink> GetPropertyLinks(IContext context, FilterPropertyLink filter);
 

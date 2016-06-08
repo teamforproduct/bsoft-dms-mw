@@ -43,7 +43,10 @@ namespace BL.Database.DBModel.Dictionary
         public virtual DictionaryAgents ExecutorAgent { get; set; }
         [ForeignKey("MainExecutorAgentId")]
         public virtual DictionaryAgents MainExecutorAgent { get; set; }
-        //public virtual ICollection<AdminSubordination> Subordinations { get; set; }
+        [ForeignKey("SourcePositionId")]
+        public virtual ICollection<AdminSubordinations> SourcePositionSubordinations { get; set; }
+        [ForeignKey("TargetPositionId")]
+        public virtual ICollection<AdminSubordinations> TargetPositionSubordinations { get; set; }
         //public virtual ICollection<AdminSubordination> AddresseeSubordinations { get; set; }
         //public virtual ICollection<AdminSettings> Settings { get; set; }
         public virtual ICollection<DictionaryPositions> ChildPositions { get; set; }

@@ -28,8 +28,12 @@ namespace BL.Database.DBModel.Document
         public DateTime Date { get; set; }
         public string Content { get; set; }
         public bool IsAdditional { get; set; }
+        public bool IsDeleted { get; set; }
+        public bool IsWorkedOut { get; set; }
         [MaxLength(2000)]
         public string Hash { get; set; }
+        [MaxLength(2000)]
+        public string Description { get; set; }
         public int ExecutorPositionId { get; set; }
         [Column("ExecutorPositionExeAgentId")]
         public int ExecutorPositionExecutorAgentId { get; set; }

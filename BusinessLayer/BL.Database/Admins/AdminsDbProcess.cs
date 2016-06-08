@@ -10,6 +10,8 @@ using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Users;
+using LinqKit;
+using BL.Database.DBModel.Admin;
 
 namespace BL.Database.Admins
 {
@@ -76,15 +78,27 @@ namespace BL.Database.Admins
 
                 if (filter.UserRoleId?.Count > 0)
                 {
-                    qry = qry.Where(x => x.Role.UserRoles.Any(y=> filter.UserRoleId.Contains(y.Id)));
+                    var filterContains = PredicateBuilder.False<AdminUserRoles>();
+                    filterContains = filter.UserRoleId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    qry = qry.Where(x => x.Role.UserRoles.AsQueryable().Any(filterContains));
                 }
                 if (filter.UserId?.Count > 0)
                 {
-                    qry = qry.Where(x => x.Role.UserRoles.Any(y => filter.UserId.Contains(y.UserId)));
+                    var filterContains = PredicateBuilder.False<AdminUserRoles>();
+                    filterContains = filter.UserId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.UserId == value).Expand());
+
+                    qry = qry.Where(x => x.Role.UserRoles.AsQueryable().Any(filterContains));
                 }
                 if (filter.RoleId?.Count > 0)
                 {
-                    qry = qry.Where(x => filter.RoleId.Contains(x.RoleId));
+                    var filterContains = PredicateBuilder.False<AdminPositionRoles>();
+                    filterContains = filter.RoleId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.RoleId == value).Expand());
+
+                    qry = qry.Where(filterContains);
                 }
 
                 var res = qry.Select(x => new FrontAdminUserRole
@@ -96,11 +110,15 @@ namespace BL.Database.Admins
 
                 var roleList = res.Select(s => s.RolePositionId).ToList();
 
+                var filterNewEventTargetPositionContains = PredicateBuilder.False<DBModel.Document.DocumentEvents>();
+                filterNewEventTargetPositionContains = roleList.Aggregate(filterNewEventTargetPositionContains,
+                    (current, value) => current.Or(e => e.TargetPositionId == value).Expand());
+
                 var newevnt = dbContext.DocumentEventsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
-                                    .Where(x => !x.ReadDate.HasValue && x.TargetPositionId.HasValue && x.TargetPositionId != x.SourcePositionId
-                                             && roleList.Contains(x.TargetPositionId.Value))
-                                        .GroupBy(g => g.TargetPositionId)
-                                        .Select(s => new { PosID = s.Key, EvnCnt = s.Count() }).ToList();
+                                .Where(x => !x.ReadDate.HasValue && x.TargetPositionId.HasValue && x.TargetPositionId != x.SourcePositionId)
+                                .Where(filterNewEventTargetPositionContains)
+                                .GroupBy(g => g.TargetPositionId)
+                                .Select(s => new { PosID = s.Key, EvnCnt = s.Count() }).ToList();
 
                 res.Join(newevnt, r => r.RolePositionId, e => e.PosID, (r, e) => { r.NewEventsCount = e.EvnCnt; return r; }).ToList();
 

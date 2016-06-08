@@ -25,8 +25,10 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         public IHttpActionResult Get([FromUri] FilterDictionaryStandartSendList filter)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
+
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
             var tmpDicts = tmpDictProc.GetDictionaryStandartSendLists(ctx, filter);
+
             return new JsonResult(tmpDicts, this);
         }
 
