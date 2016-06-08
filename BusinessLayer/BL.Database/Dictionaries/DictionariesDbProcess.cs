@@ -1035,6 +1035,21 @@ namespace BL.Database.Dictionaries
                 }).ToList();
             }
         }
+
+        public IEnumerable<int> GetAgentsIDByAddress(IContext context, IEnumerable<int> addresses)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.DictionaryAgentAddressesSet.Where(x => x.Agent.ClientId == context.CurrentClientId).AsQueryable();
+
+                if (addresses.Any())
+                {
+                    qry = qry.Where(x => addresses.Contains(x.Id));
+                }
+
+                return qry.Select(x => x.AgentId).ToList();
+            }
+        }
         #endregion
 
         // Типы адресов 
@@ -2133,7 +2148,20 @@ namespace BL.Database.Dictionaries
             }
         }
         #endregion
+        public IEnumerable<int> GetAgentsIDByContacts(IContext context, IEnumerable<int> contacts)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.DictionaryAgentAddressesSet.Where(x => x.Agent.ClientId == context.CurrentClientId).AsQueryable();
 
+                if (contacts.Any())
+                {
+                    qry = qry.Where(x => contacts.Contains(x.Id));
+                }
+
+                return qry.Select(x => x.AgentId).ToList();
+            }
+        }
         // Структура предприятия
         #region DictionaryDepartments
         public int AddDepartment(IContext context, InternalDictionaryDepartment department)

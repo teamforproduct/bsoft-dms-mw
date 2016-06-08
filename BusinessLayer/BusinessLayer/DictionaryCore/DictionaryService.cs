@@ -1,16 +1,20 @@
-﻿using BL.Logic.DictionaryCore.Interfaces;
+﻿using System;
+using BL.Logic.DictionaryCore.Interfaces;
 using System.Collections.Generic;
 using BL.Model.DictionaryCore;
 using BL.Model.SystemCore;
 using BL.Database.Dictionaries.Interfaces;
 using System.Linq;
+using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
 using BL.Logic.DocumentCore.Interfaces;
+using BL.Logic.SystemServices.FullTextSearch;
 using BL.Model.AdminCore;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.Enums;
+using BL.Model.FullTextSearch;
 
 namespace BL.Logic.DictionaryCore
 {
@@ -42,7 +46,55 @@ namespace BL.Logic.DictionaryCore
         public IEnumerable<FrontDictionaryAgent> GetDictionaryAgents(IContext context, FilterDictionaryAgent filter,UIPaging paging)
         {
 
+            if (!String.IsNullOrEmpty(filter.FullTextSearchString))
+            {
+                
+                var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
+                var ftRes = ftService.SearchDictionary(context, filter.FullTextSearchString);
+                var ftClear=ResolveSearchResultAgents(context,ftRes);
+                var resWithRanges =
+                    ftClear.GroupBy(x => x.DocumentId)
+                        .Select(x => new { DocId = x.Key, Rate = x.Count()})
+                        .OrderByDescending(x => x.Rate);
+                filter.IDs.AddRange(resWithRanges.Select(x => x.DocId).Take(paging.PageSize * paging.CurrentPage));
+            }
+
             return _dictDb.GetAgents(context, filter,paging);
+        }
+
+        private IEnumerable<FullTextSearchResult> ResolveSearchResultAgents(IContext ctx,IEnumerable<FullTextSearchResult> ftRes)
+        {
+
+            var agentTypes = new List<EnumObjects>
+            {
+                EnumObjects.DictionaryAgents,
+                EnumObjects.DictionaryAgentBanks,
+                EnumObjects.DictionaryAgentCompanies,
+                EnumObjects.DictionaryAgentEmployees,
+                EnumObjects.DictionaryAgentPersons
+            };
+
+            var res = new List<FullTextSearchResult>();
+            res.AddRange(ftRes
+                .Where(x => agentTypes.Contains(x.ObjectType)));
+                
+            var tmp = _dictDb.GetAgentsIDByAddress(ctx,
+                ftRes.Where(x => x.ObjectType == EnumObjects.DictionaryAgentAddresses).Select(y => y.ObjectId).ToList());
+
+            res.AddRange(tmp.Select(x => new FullTextSearchResult
+            {
+                DocumentId = 0, ObjectId = x, ObjectType = EnumObjects.DictionaryAgents, Score = 0
+            }));
+
+            tmp = _dictDb.GetAgentsIDByContacts(ctx,
+                ftRes.Where(x => x.ObjectType == EnumObjects.DictionaryContacts).Select(y => y.ObjectId).ToList());
+
+            res.AddRange(tmp.Select(x => new FullTextSearchResult
+            {
+                DocumentId = 0,ObjectId = x,ObjectType = EnumObjects.DictionaryAgents,Score = 0
+            }));
+
+            return res;
         }
 
 
