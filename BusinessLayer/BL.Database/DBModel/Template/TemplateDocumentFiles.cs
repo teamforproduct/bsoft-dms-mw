@@ -25,6 +25,8 @@ namespace BL.Database.DBModel.Template
         public bool IsAdditional { get; set; }
         [MaxLength(2000)]
         public string Hash { get; set; }
+        [MaxLength(2000)]
+        public string Description { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
         [ForeignKey("DocumentId")]

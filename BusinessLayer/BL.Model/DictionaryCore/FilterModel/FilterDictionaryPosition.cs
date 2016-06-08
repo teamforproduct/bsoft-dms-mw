@@ -22,5 +22,10 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// </summary>
         public List<int> SubordinatedPositions { get; set; }
 
+        /// <summary>
+        /// Тип субординации
+        /// </summary>
+        public int? SubordinatedTypeId { get; set; }
+
     }
 }

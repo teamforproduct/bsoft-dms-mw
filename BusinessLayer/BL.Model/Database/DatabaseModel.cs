@@ -22,6 +22,10 @@
         /// </summary>
         public DatabaseType ServerType { get; set; }
         /// <summary>
+        /// Type of the server (SQL Server / Oracle / MySQL etc.)
+        /// </summary>
+        public string ServerTypeName { get; set; }
+        /// <summary>
         /// Database name
         /// </summary>
         public string DefaultDatabase { get; set; }

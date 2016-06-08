@@ -4,7 +4,6 @@ using System.Linq;
 using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Dictionaries.Interfaces;
-using BL.Logic.DependencyInjection;
 using BL.Database.Documents.Interfaces;
 using BL.Model.Common;
 using BL.Model.DocumentCore.Actions;
