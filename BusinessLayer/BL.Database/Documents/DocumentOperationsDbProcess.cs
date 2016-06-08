@@ -808,9 +808,12 @@ namespace BL.Database.Documents
                         return new List<FrontDocumentEvent>();
                     }
 
-                    qry = qry.OrderByDescending(x => x.LastChangeDate)
-                            .Skip(paging.PageSize * (paging.CurrentPage - 1))
-                            .Take(paging.PageSize);
+                    if (!paging.IsAll)
+                    {
+                        qry = qry.OrderByDescending(x => x.LastChangeDate)
+                            .Skip(() => paging.PageSize * (paging.CurrentPage - 1))
+                            .Take(() => paging.PageSize);
+                    }
                 }
 
                 var res = qry.Select(x => new FrontDocumentEvent

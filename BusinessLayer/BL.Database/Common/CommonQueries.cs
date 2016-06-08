@@ -24,6 +24,7 @@ using BL.Model.SystemCore;
 using BL.CrossCutting.CryptographicWorker;
 using LinqKit;
 using BL.Database.DBModel.Dictionary;
+using System.Data.Entity;
 
 namespace BL.Database.Common
 {
@@ -108,8 +109,11 @@ namespace BL.Database.Common
                     return new List<FrontDocumentAttachedFile>();
                 }
 
-                sq = sq.OrderByDescending(x => x.LastChangeDate)
-                    .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
+                if (!paging.IsAll)
+                {
+                    sq = sq.OrderByDescending(x => x.LastChangeDate)
+                        .Skip(() => paging.PageSize * (paging.CurrentPage - 1)).Take(() => paging.PageSize);
+                }
             }
 
             var qry = from file in sq
@@ -377,8 +381,11 @@ namespace BL.Database.Common
                     return new List<FrontDocumentTask>();
                 }
 
-                tasksDb = tasksDb.OrderByDescending(x => x.LastChangeDate)
-                    .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
+                if (!paging.IsAll)
+                {
+                    tasksDb = tasksDb.OrderByDescending(x => x.LastChangeDate)
+                    .Skip(() => paging.PageSize * (paging.CurrentPage - 1)).Take(() => paging.PageSize);
+                }
             }
 
             var tasks = tasksDb.Select(x => new FrontDocumentTask
@@ -483,9 +490,12 @@ namespace BL.Database.Common
                     return new List<FrontDocumentWait>();
                 }
 
-                waitsRes = waitsRes
-                        .Skip(paging.PageSize * (paging.CurrentPage - 1))
-                        .Take(paging.PageSize);
+                if (!paging.IsAll)
+                {
+                    waitsRes = waitsRes
+                        .Skip(() => paging.PageSize * (paging.CurrentPage - 1))
+                        .Take(() => paging.PageSize);
+                }
             }
 
             var waits = waitsRes.Select(x => new FrontDocumentWait
@@ -625,9 +635,12 @@ namespace BL.Database.Common
                     return new List<FrontDocumentSubscription>();
                 }
 
-                subscriptionsRes = subscriptionsRes
-                        .Skip(paging.PageSize * (paging.CurrentPage - 1))
-                        .Take(paging.PageSize);
+                if (!paging.IsAll)
+                {
+                    subscriptionsRes = subscriptionsRes
+                        .Skip(() => paging.PageSize * (paging.CurrentPage - 1))
+                        .Take(() => paging.PageSize);
+                }
             }
 
             var subscriptions = subscriptionsRes.Select(x => new FrontDocumentSubscription
@@ -897,52 +910,38 @@ namespace BL.Database.Common
 
         public static IEnumerable<FrontDictionaryPosition> GetDocumentWorkGroup(DmsContext dbContext, IContext ctx, FilterDictionaryPosition filter)
         {
-            //TODO пределать на аксессы
-            var qry = dbContext.DictionaryPositionsSet.Where(x => x.Department.Company.ClientId == ctx.CurrentClientId).Select(x => new { pos = x, subordMax = 0 }).AsQueryable();
+            var qry = dbContext.DocumentAccessesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).AsQueryable();
 
             if (filter != null)
             {
                 if (filter.IDs?.Count > 0)
                 {
-                    //TODO Contains
-                    qry = qry.Where(x => filter.IDs.Contains(x.pos.Id));
+                    var filterContains = PredicateBuilder.False<DocumentAccesses>();
+                    filterContains = filter.IDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.PositionId == value).Expand());
+
+                    qry = qry.Where(filterContains);
                 }
 
                 if (filter.DocumentIDs?.Count > 0)
                 {
-                    //TODO Contains
-                    qry = qry.Where(x =>
-                            dbContext.DocumentEventsSet.Where(y => y.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
-                                .Where(y => filter.DocumentIDs.Contains(y.DocumentId)).Select(y => y.SourcePositionId).Contains(x.pos.Id)
-                                ||
-                                dbContext.DocumentEventsSet.Where(y => y.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
-                                .Where(y => filter.DocumentIDs.Contains(y.DocumentId)).Select(y => y.TargetPositionId).Contains(x.pos.Id)
-                                );
-                }
+                    var filterContains = PredicateBuilder.False<DocumentAccesses>();
+                    filterContains = filter.DocumentIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.DocumentId == value).Expand());
 
-                if (filter.SubordinatedPositions?.Count > 0)
-                {
-                    //TODO Contains
-                    qry = qry.GroupJoin(
-                                        dbContext.AdminSubordinationsSet.Where(y => filter.SubordinatedPositions.Contains(y.SourcePositionId)),
-                                        x => x.pos.Id,
-                                        y => y.TargetPositionId,
-                                        (x, y) => new { pos = x.pos, subordMax = y.Max(z => z.SubordinationTypeId) }
-                                        )
-                             .Where(x => x.subordMax > 0);
+                    qry = qry.Where(filterContains);
                 }
             }
 
             return qry.Select(x => new FrontDictionaryPosition
             {
-                Id = x.pos.Id,
-                Name = x.pos.Name,
-                DepartmentId = x.pos.DepartmentId,
-                ExecutorAgentId = x.pos.ExecutorAgentId,
-                DepartmentName = x.pos.Department.Name,
-                ExecutorAgentName = x.pos.ExecutorAgent.Name,
-                PositionPhone = "(888)888-88-88",
-                MaxSubordinationTypeId = (x.subordMax > 0 ? (int?)x.subordMax : null)
+                Id = x.PositionId,
+                Name = x.Position.Name,
+                DepartmentId = x.Position.DepartmentId,
+                ExecutorAgentId = x.Position.ExecutorAgentId,
+                DepartmentName = x.Position.Department.Name,
+                ExecutorAgentName = x.Position.ExecutorAgent.Name,
+                PositionPhone = "(888)888-88-88"
             }).ToList();
 
         }
@@ -1258,10 +1257,12 @@ namespace BL.Database.Common
                 }
 
 
-
-                itemsDb = itemsDb
-                        .Skip(paging.PageSize * (paging.CurrentPage - 1))
-                        .Take(paging.PageSize);
+                if (!paging.IsAll)
+                {
+                    itemsDb = itemsDb
+                        .Skip(() => paging.PageSize * (paging.CurrentPage - 1))
+                        .Take(() => paging.PageSize);
+                }
             }
 
             //var itemsRes = itemsDb.Select(x => x);

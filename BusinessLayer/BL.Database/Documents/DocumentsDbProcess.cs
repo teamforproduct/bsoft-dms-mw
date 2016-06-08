@@ -21,6 +21,7 @@ using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.InternalModel;
 using BL.Model.DocumentCore.ReportModel;
 using LinqKit;
+using System.Data.Entity;
 
 namespace BL.Database.Documents
 {
@@ -800,11 +801,26 @@ namespace BL.Database.Documents
                 {
                     paging.TotalItemsCount = qry.Count();
 
-                    qry = qry.OrderByDescending(x => x.CreateDate)
-                        .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
+                    if (!paging.IsAll)
+                    {
+                        qry = qry.OrderByDescending(x => x.CreateDate)
+                        .Skip(() => paging.PageSize * (paging.CurrentPage - 1)).Take(() => paging.PageSize);
+                    }
                 }
 
-                var currentPositionsIdList = ctx.CurrentPositionsIdList;
+                #region Counter
+                var filterOnEventPositionsContains = PredicateBuilder.False<DocumentWaits>();
+                filterOnEventPositionsContains = ctx.CurrentPositionsIdList.Aggregate(filterOnEventPositionsContains,
+                    (current, value) => current.Or(e => e.OnEvent.TargetPositionId == value || e.OnEvent.SourcePositionId == value).Expand());
+
+                var filterOnEventTaskAccessesContains = PredicateBuilder.False<DocumentTaskAccesses>();
+                filterOnEventTaskAccessesContains = ctx.CurrentPositionsIdList.Aggregate(filterOnEventTaskAccessesContains,
+                    (current, value) => current.Or(e => e.PositionId == value).Expand());
+
+                var filterNewEventContains = PredicateBuilder.False<DocumentEvents>();
+                filterNewEventContains = ctx.CurrentPositionsIdList.Aggregate(filterNewEventContains,
+                    (current, value) => current.Or(e => e.TargetPositionId == value).Expand());
+                #endregion Counter
 
                 var res = qry.Select(doc => new FrontDocument
                 {
@@ -823,23 +839,15 @@ namespace BL.Database.Documents
                     ExecutorPositionExecutorAgentName = doc.ExecutorPositionExecutorAgent.Name,
                     ExecutorPositionName = doc.ExecutorPosition.Name,
 
-                    //TODO Contains
-                    WaitCount = doc.Waits.Where(x =>
-                            !x.OffEventId.HasValue && (
-                            (x.OnEvent.TargetPositionId.HasValue &&
-                             currentPositionsIdList.Contains(x.OnEvent.TargetPositionId.Value))
-                            ||
-                            (x.OnEvent.SourcePositionId.HasValue &&
-                             currentPositionsIdList.Contains(x.OnEvent.SourcePositionId.Value))
-                            // make weit available if onevent can be accesed through the task
-                            ||
-                            (x.OnEvent.IsAvailableWithinTask && x.OnEvent.TaskId.HasValue &&
-                            x.OnEvent.Task.TaskAccesses.Any(a => currentPositionsIdList.Contains(a.PositionId)))
-                             )).GroupBy(x => x.DocumentId).Select(x => new UICounters { Counter1 = x.Count(), Counter2 = x.Count(s => s.DueDate.HasValue && s.DueDate.Value < DateTime.Now) }).FirstOrDefault(),
+                    WaitCount = doc.Waits.AsQueryable().Where(filterOnEventPositionsContains)
+                        .Union(doc.Waits.AsQueryable().Where(x => x.OnEvent.IsAvailableWithinTask && x.OnEvent.TaskId.HasValue &&
+                            x.OnEvent.Task.TaskAccesses.AsQueryable().Any(filterOnEventTaskAccessesContains)))
+                            .GroupBy(x => x.DocumentId)
+                            .Select(x => new UICounters { Counter1 = x.Count(), Counter2 = x.Count(s => s.DueDate.HasValue && s.DueDate.Value < DateTime.Now) })
+                            .FirstOrDefault(),
 
                     //TODO Contains
-                    NewEventCount = doc.Events.Count(x => !x.ReadDate.HasValue && x.TargetPositionId.HasValue && x.TargetPositionId != x.SourcePositionId
-                             && ctx.CurrentPositionsIdList.Contains(x.TargetPositionId.Value)),
+                    NewEventCount = doc.Events.AsQueryable().Where(filterNewEventContains).Count(x => !x.ReadDate.HasValue && x.TargetPositionId != x.SourcePositionId),
 
                     AttachedFilesCount = doc.Files.GroupBy(g => g.OrderNumber).Count(),
 
@@ -847,7 +855,6 @@ namespace BL.Database.Documents
                         .GroupBy(x => x.LinkId)
                         .Select(x => x.Count())
                         .Select(x => x < 2 ? 0 : x - 1).FirstOrDefault()
-
 
                 });
 
