@@ -29,7 +29,7 @@
             
             <Label HorizontalAlignment="Center" Margin="0,10,0,10" Content="Код активации"/>
             <TextBox MinWidth="600" MinLines="3" BorderThickness="3" Name="txtLicenceCode" TextWrapping="Wrap" />
-            <Button x:Name="btnAdd" Content="Add client to DB" Margin="10,10,10,30" Height="40" Click="btnAdd_Click"/>
+            <Button x:Name="btnAdd" Content="Add client to DB" Margin="10,10,10,30" Height="40" Click="btnAdd_Click" IsEnabled="False"/>
         </StackPanel>
         <DataGrid Grid.Row="1" Name="clientsGrid" IsReadOnly="True" AutoGenerateColumns="False">
             <DataGrid.Columns>
