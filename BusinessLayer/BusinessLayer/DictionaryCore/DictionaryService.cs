@@ -45,21 +45,26 @@ namespace BL.Logic.DictionaryCore
 
         public IEnumerable<FrontDictionaryAgent> GetDictionaryAgents(IContext context, FilterDictionaryAgent filter,UIPaging paging)
         {
-
+            var newFilter = new FilterDictionaryAgent();
             if (!String.IsNullOrEmpty(filter.FullTextSearchString))
             {
-                
+
                 var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
                 var ftRes = ftService.SearchDictionary(context, filter.FullTextSearchString);
-                var ftClear=ResolveSearchResultAgents(context,ftRes);
+                var ftClear = ResolveSearchResultAgents(context, ftRes);
                 var resWithRanges =
-                    ftClear.GroupBy(x => x.DocumentId)
-                        .Select(x => new { DocId = x.Key, Rate = x.Count()})
+                    ftClear.GroupBy(x => x.ObjectId)
+                        .Select(x => new {DocId = x.Key, Rate = x.Count()})
                         .OrderByDescending(x => x.Rate);
-                filter.IDs.AddRange(resWithRanges.Select(x => x.DocId).Take(paging.PageSize * paging.CurrentPage));
+
+                newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId).Take(paging.PageSize*paging.CurrentPage));
+            }
+            else
+            {
+                newFilter = filter;
             }
 
-            return _dictDb.GetAgents(context, filter,paging);
+            return _dictDb.GetAgents(context, newFilter,paging);
         }
 
         private IEnumerable<FullTextSearchResult> ResolveSearchResultAgents(IContext ctx,IEnumerable<FullTextSearchResult> ftRes)
@@ -172,7 +177,29 @@ namespace BL.Logic.DictionaryCore
 
         public IEnumerable<FrontDictionaryAddressType> GetDictionaryAddressTypes(IContext context, FilterDictionaryAddressType filter)
         {
-            return _dictDb.GetAddressTypes(context, filter);
+            var newFilter = new FilterDictionaryAddressType();
+
+            if (!String.IsNullOrEmpty(filter.FullTextSearchString))
+            {
+
+                var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
+                var ftRes = ftService.SearchDictionary(context, filter.FullTextSearchString)
+                    .Where(x=>x.ObjectType==EnumObjects.DictionaryAddressType);
+                
+                var resWithRanges =
+                    ftRes.GroupBy(x => x.ObjectId)
+                        .Select(x => new { DocId = x.Key, Rate = x.Count() })
+                        .OrderByDescending(x => x.Rate);
+
+                newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId));
+            }
+            else
+            {
+                newFilter = filter;
+            }
+
+
+            return _dictDb.GetAddressTypes(context, newFilter);
         }
 
 
@@ -238,7 +265,28 @@ namespace BL.Logic.DictionaryCore
 
         public IEnumerable<FrontDictionaryContactType> GetDictionaryContactTypes(IContext context, FilterDictionaryContactType filter)
         {
-            return _dictDb.GetContactTypes(context, filter);
+            var newFilter = new FilterDictionaryContactType();
+
+            if (!String.IsNullOrEmpty(filter.FullTextSearchString))
+            {
+
+                var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
+                var ftRes = ftService.SearchDictionary(context, filter.FullTextSearchString)
+                    .Where(x => x.ObjectType == EnumObjects.DictionaryContactType);
+
+                var resWithRanges =
+                    ftRes.GroupBy(x => x.ObjectId)
+                        .Select(x => new { DocId = x.Key, Rate = x.Count() })
+                        .OrderByDescending(x => x.Rate);
+
+                newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId));
+            }
+            else
+            {
+                newFilter = filter;
+            }
+
+            return _dictDb.GetContactTypes(context, newFilter);
         }
         #endregion
               
@@ -396,6 +444,27 @@ namespace BL.Logic.DictionaryCore
 
         public IEnumerable<FrontDictionaryRegistrationJournal> GetDictionaryRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter)
         {
+
+            var newFilter = new FilterDictionaryRegistrationJournal();
+
+            if (!String.IsNullOrEmpty(filter.FullTextSearchString))
+            {
+
+                var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
+                var ftRes = ftService.SearchDictionary(context, filter.FullTextSearchString)
+                    .Where(x => x.ObjectType == EnumObjects.DictionaryRegistrationJournals);
+
+                var resWithRanges =
+                    ftRes.GroupBy(x => x.ObjectId)
+                        .Select(x => new { DocId = x.Key, Rate = x.Count() })
+                        .OrderByDescending(x => x.Rate);
+
+                newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId));
+            }
+            else
+            {
+                newFilter = filter;
+            }
 
             return _dictDb.GetRegistrationJournals(context, filter);
         }

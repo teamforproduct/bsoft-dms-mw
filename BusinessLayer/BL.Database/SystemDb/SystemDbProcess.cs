@@ -756,6 +756,7 @@ namespace BL.Database.SystemDb
                  );
 
                 #region Dictionaries
+
                 res.AddRange(dbContext.DictionaryAgentsSet.Where(x => x.ClientId == ctx.CurrentClientId)
                      .Select(x => new FullTextIndexItem
                      {
