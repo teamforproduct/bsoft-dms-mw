@@ -134,7 +134,7 @@ namespace BL.Database.Dictionaries
 
                 if (paging != null)
                 {
-                    paging.TotalItemsCount = qry.Count();
+                    //paging.TotalItemsCount = qry.Count();
 
                     if (!paging.IsAll)
                     {
@@ -807,15 +807,13 @@ namespace BL.Database.Dictionaries
 
                 qry = qry.Where(x => x.Agent.IsEmployee);
 
-                // Пагинация
                 if (paging != null)
                 {
-                    paging.TotalItemsCount = qry.Count();
 
                     if (!paging.IsAll)
                     {
-                        qry = qry.OrderBy(x => x.Agent.AgentPerson.LastName)
-                        .Skip(() => paging.PageSize * (paging.CurrentPage - 1)).Take(() => paging.PageSize);
+                       qry = qry.OrderBy(x => x.Agent.AgentPerson.LastName)
+                      .Skip(() => paging.PageSize * (paging.CurrentPage - 1)).Take(() => paging.PageSize);
                     }
                 }
 
@@ -878,10 +876,13 @@ namespace BL.Database.Dictionaries
                 }
 
                 // Поиск по дате рождения
-                if (filter.BirthPeriod.IsActive)
+                if (filter.BirthPeriod != null)
                 {
-                    qry = qry.Where(x => x.Agent.AgentPerson.BirthDate >= filter.BirthPeriod.DateBeg);
-                    qry = qry.Where(x => x.Agent.AgentPerson.BirthDate <= filter.BirthPeriod.DateEnd);
+                    if (filter.BirthPeriod.IsActive)
+                    {
+                        qry = qry.Where(x => x.Agent.AgentPerson.BirthDate >= filter.BirthPeriod.DateBeg);
+                        qry = qry.Where(x => x.Agent.AgentPerson.BirthDate <= filter.BirthPeriod.DateEnd);
+                    }
                 }
 
                 return qry.Select(x => new FrontDictionaryAgentEmployee
