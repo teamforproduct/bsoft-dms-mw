@@ -810,9 +810,11 @@ namespace BL.Database.Documents
 
                     if (!paging.IsAll)
                     {
+                        var skip = paging.PageSize * (paging.CurrentPage - 1);
+                        var take = paging.PageSize;
+
                         qry = qry.OrderByDescending(x => x.LastChangeDate)
-                            .Skip(paging.PageSize * (paging.CurrentPage - 1))
-                            .Take(paging.PageSize);
+                            .Skip(() => skip).Take(() => take);
                     }
                 }
 
