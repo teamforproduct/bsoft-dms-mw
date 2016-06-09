@@ -804,7 +804,7 @@ namespace BL.Database.Documents
                     if (!paging.IsAll)
                     {
                         qry = qry.OrderByDescending(x => x.CreateDate)
-                        .Skip(() => paging.PageSize * (paging.CurrentPage - 1)).Take(() => paging.PageSize);
+                        .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
                     }
                 }
 
@@ -846,15 +846,14 @@ namespace BL.Database.Documents
                             .Select(x => new UICounters { Counter1 = x.Count(), Counter2 = x.Count(s => s.DueDate.HasValue && s.DueDate.Value < DateTime.Now) })
                             .FirstOrDefault(),
 
-                    //TODO Contains
                     NewEventCount = doc.Events.AsQueryable().Where(filterNewEventContains).Count(x => !x.ReadDate.HasValue && x.TargetPositionId != x.SourcePositionId),
 
                     AttachedFilesCount = doc.Files.GroupBy(g => g.OrderNumber).Count(),
 
                     LinkedDocumentsCount = doc.Links
-                        .GroupBy(x => x.LinkId)
-                        .Select(x => x.Count())
-                        .Select(x => x < 2 ? 0 : x - 1).FirstOrDefault()
+                    .GroupBy(x => x.LinkId)
+                    .Select(x => x.Count())
+                    .Select(x => x < 2 ? 0 : x - 1).FirstOrDefault()
 
                 });
 

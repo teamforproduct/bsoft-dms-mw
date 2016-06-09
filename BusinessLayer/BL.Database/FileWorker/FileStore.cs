@@ -337,7 +337,10 @@ namespace BL.Database.FileWorker
                     ? GetFullDocumentFilePath(ctx, toTempl)
                     : GetFullDocumentFilePath(ctx, toDoc);
 
-                if (!File.Exists(fromPath))
+                var localFromPath = fromPath + "\\" + fromTempl.Name + "." + fromTempl.Extension;
+                var localToPath = toPath + "\\" + toTempl.Name + "." + toTempl.Extension;
+
+                if (!File.Exists(localFromPath))
                 {
                     throw new UserFileNotExists();
                 }
@@ -346,8 +349,6 @@ namespace BL.Database.FileWorker
                 {
                     var dir = Directory.CreateDirectory(toPath);
                 }
-                var localFromPath = fromPath + "\\" + fromTempl.Name + "." + fromTempl.Extension;
-                var localToPath = toPath + "\\" + toTempl.Name + "." + toTempl.Extension;
 
                 File.Copy(localFromPath, localToPath, true);
                 toTempl.Hash = FileToSha512(localToPath);

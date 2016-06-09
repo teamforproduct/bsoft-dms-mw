@@ -112,7 +112,7 @@ namespace BL.Database.Common
                 if (!paging.IsAll)
                 {
                     sq = sq.OrderByDescending(x => x.LastChangeDate)
-                        .Skip(() => paging.PageSize * (paging.CurrentPage - 1)).Take(() => paging.PageSize);
+                        .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
                 }
             }
 
@@ -384,7 +384,7 @@ namespace BL.Database.Common
                 if (!paging.IsAll)
                 {
                     tasksDb = tasksDb.OrderByDescending(x => x.LastChangeDate)
-                    .Skip(() => paging.PageSize * (paging.CurrentPage - 1)).Take(() => paging.PageSize);
+                    .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
                 }
             }
 
@@ -493,8 +493,8 @@ namespace BL.Database.Common
                 if (!paging.IsAll)
                 {
                     waitsRes = waitsRes
-                        .Skip(() => paging.PageSize * (paging.CurrentPage - 1))
-                        .Take(() => paging.PageSize);
+                        .Skip(paging.PageSize * (paging.CurrentPage - 1))
+                        .Take(paging.PageSize);
                 }
             }
 
@@ -638,8 +638,8 @@ namespace BL.Database.Common
                 if (!paging.IsAll)
                 {
                     subscriptionsRes = subscriptionsRes
-                        .Skip(() => paging.PageSize * (paging.CurrentPage - 1))
-                        .Take(() => paging.PageSize);
+                        .Skip(paging.PageSize * (paging.CurrentPage - 1))
+                        .Take(paging.PageSize);
                 }
             }
 
@@ -1260,8 +1260,8 @@ namespace BL.Database.Common
                 if (!paging.IsAll)
                 {
                     itemsDb = itemsDb
-                        .Skip(() => paging.PageSize * (paging.CurrentPage - 1))
-                        .Take(() => paging.PageSize);
+                        .Skip(paging.PageSize * (paging.CurrentPage - 1))
+                        .Take(paging.PageSize);
                 }
             }
 

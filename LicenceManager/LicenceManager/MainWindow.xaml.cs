@@ -92,6 +92,7 @@ namespace LicenceManager
         {
             var li = GetLicenceInfo();
             txtLicenceCode.Text = LicenceGenerator.CreateLicenceKey(txtClientCode.Text, li);
+            btnAdd.IsEnabled = true;
         }
     }
 }
