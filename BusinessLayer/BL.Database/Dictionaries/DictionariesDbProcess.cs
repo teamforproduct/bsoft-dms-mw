@@ -132,16 +132,7 @@ namespace BL.Database.Dictionaries
             {
                 var qry = dbContext.DictionaryAgentsSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
 
-                if (paging != null)
-                {
-                    //paging.TotalItemsCount = qry.Count();
-
-                    if (!paging.IsAll)
-                    {
-                        qry = qry.OrderBy(x => x.Name)
-                        .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
-                    }
-                }
+               
 
                 // Список первичных ключей
                 if (filter.IDs?.Count > 0)
@@ -187,6 +178,18 @@ namespace BL.Database.Dictionaries
                     (filter.IsEmployee.HasValue && x.IsBank == filter.IsEmployee)
                    ) || (!filter.IsBank.HasValue && !filter.IsIndividual.HasValue && !filter.IsCompany.HasValue && !filter.IsEmployee.HasValue)
                  ));
+
+
+                if (paging != null)
+                {
+                    paging.TotalItemsCount = qry.Count();
+
+                    if (!paging.IsAll)
+                    {
+                        qry = qry.OrderBy(x => x.Name)
+                        .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
+                    }
+                }
 
                 return qry.Select(x => new FrontDictionaryAgent
                 {
@@ -807,16 +810,7 @@ namespace BL.Database.Dictionaries
 
                 qry = qry.Where(x => x.Agent.IsEmployee);
 
-                if (paging != null)
-                {
-
-                    if (!paging.IsAll)
-                    {
-                        qry = qry.OrderBy(x => x.Agent.AgentPerson.LastName)
-                        .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
-                    }
-                }
-
+               
                 // Список первичных ключей
                 if (filter.IDs?.Count > 0)
                 {
@@ -884,6 +878,17 @@ namespace BL.Database.Dictionaries
                         qry = qry.Where(x => x.Agent.AgentPerson.BirthDate <= filter.BirthPeriod.DateEnd);
                     }
                 }
+
+                if (paging != null)
+                {
+                    paging.TotalItemsCount = qry.Count();
+                    if (!paging.IsAll)
+                    {
+                        qry = qry.OrderBy(x => x.Agent.AgentPerson.LastName)
+                        .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
+                    }
+                }
+
 
                 return qry.Select(x => new FrontDictionaryAgentEmployee
                 {
