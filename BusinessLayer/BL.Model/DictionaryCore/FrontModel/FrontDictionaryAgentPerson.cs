@@ -82,7 +82,7 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// </summary>
         public string Passport  { get
             {
-                return PassportSerial?.Trim() + "-" + PassportNumber?.ToString() + " " + PassportText?.Trim() + " " + PassportDate?.ToString("dd-MM-yyyy");
+                return PassportSerial?.Trim() + " " + PassportNumber?.ToString() + " " + PassportText?.Trim() + " " + PassportDate?.ToString("dd.MM.yyyy");
             }
 
         }

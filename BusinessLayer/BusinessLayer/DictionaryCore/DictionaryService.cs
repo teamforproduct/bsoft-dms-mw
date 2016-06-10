@@ -138,7 +138,28 @@ namespace BL.Logic.DictionaryCore
         public IEnumerable<FrontDictionaryAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging)
         {
 
-            return _dictDb.GetAgentPersons(context, filter,paging);
+            var newFilter = new FilterDictionaryAgentPerson();
+
+            if (!String.IsNullOrEmpty(filter.FullTextSearchString))
+            {
+
+                var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
+                var ftRes = ftService.SearchDictionary(context, filter.FullTextSearchString)
+                    .Where(x => x.ObjectType == EnumObjects.DictionaryAgentPersons);
+
+                var resWithRanges =
+                    ftRes.GroupBy(x => x.ObjectId)
+                        .Select(x => new { DocId = x.Key, Rate = x.Count() })
+                        .OrderByDescending(x => x.Rate);
+
+                newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId));
+            }
+            else
+            {
+                newFilter = filter;
+            }
+
+            return _dictDb.GetAgentPersons(context, newFilter,paging);
         }
         #endregion DictionaryAgentPersons
 
@@ -151,7 +172,30 @@ namespace BL.Logic.DictionaryCore
 
         public IEnumerable<FrontDictionaryAgentEmployee> GetDictionaryAgentEmployees(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging)
         {
-            return _dictDb.GetAgentEmployees(context, filter,paging);
+
+            var newFilter = new FilterDictionaryAgentEmployee();
+
+            if (!String.IsNullOrEmpty(filter.FullTextSearchString))
+            {
+
+                var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
+                var ftRes = ftService.SearchDictionary(context, filter.FullTextSearchString)
+                    .Where(x => x.ObjectType == EnumObjects.DictionaryAgentEmployees);
+
+                var resWithRanges =
+                    ftRes.GroupBy(x => x.ObjectId)
+                        .Select(x => new { DocId = x.Key, Rate = x.Count() })
+                        .OrderByDescending(x => x.Rate);
+
+                newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId));
+            }
+            else
+            {
+                newFilter = filter;
+            }
+
+            return _dictDb.GetAgentEmployees(context, newFilter,paging);
+            
         }
        
         #endregion DictionaryAgentEmployees
@@ -466,7 +510,7 @@ namespace BL.Logic.DictionaryCore
                 newFilter = filter;
             }
 
-            return _dictDb.GetRegistrationJournals(context, filter);
+            return _dictDb.GetRegistrationJournals(context, newFilter);
         }
         #endregion DictionaryRegistrationJournals
 

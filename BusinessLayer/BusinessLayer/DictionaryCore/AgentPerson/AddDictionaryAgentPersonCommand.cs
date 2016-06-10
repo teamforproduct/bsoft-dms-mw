@@ -35,10 +35,10 @@ namespace BL.Logic.DictionaryCore
             _admin.VerifyAccess(_context, CommandType, false, true);
             var agents = _dictDb.GetAgentPersons(_context, new FilterDictionaryAgentPerson
             {
-                TaxCode = Model.TaxCode
+                TaxCode = Model.TaxCode, FirstNameExact = Model.FirstName, LastNameExact = Model.LastName,PassportSerial = Model.PassportSerial, PassportNumber = Model.PassportNumber
             },null);
             
-            if (agents.Count() > 0)
+            if (agents.Any())
             {
                 throw new DictionaryRecordNotUnique();
             }
