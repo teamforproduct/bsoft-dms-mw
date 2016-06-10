@@ -111,8 +111,11 @@ namespace BL.Database.Common
 
                 if (!paging.IsAll)
                 {
+                    var skip = paging.PageSize * (paging.CurrentPage - 1);
+                    var take = paging.PageSize;
+
                     sq = sq.OrderByDescending(x => x.LastChangeDate)
-                        .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
+                        .Skip(() => skip).Take(() => take);
                 }
             }
 
@@ -383,8 +386,11 @@ namespace BL.Database.Common
 
                 if (!paging.IsAll)
                 {
+                    var skip = paging.PageSize * (paging.CurrentPage - 1);
+                    var take = paging.PageSize;
+
                     tasksDb = tasksDb.OrderByDescending(x => x.LastChangeDate)
-                    .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
+                        .Skip(() => skip).Take(() => take);
                 }
             }
 
@@ -492,9 +498,11 @@ namespace BL.Database.Common
 
                 if (!paging.IsAll)
                 {
+                    var skip = paging.PageSize * (paging.CurrentPage - 1);
+                    var take = paging.PageSize;
+
                     waitsRes = waitsRes
-                        .Skip(paging.PageSize * (paging.CurrentPage - 1))
-                        .Take(paging.PageSize);
+                        .Skip(() => skip).Take(() => take);
                 }
             }
 
@@ -637,9 +645,11 @@ namespace BL.Database.Common
 
                 if (!paging.IsAll)
                 {
+                    var skip = paging.PageSize * (paging.CurrentPage - 1);
+                    var take = paging.PageSize;
+
                     subscriptionsRes = subscriptionsRes
-                        .Skip(paging.PageSize * (paging.CurrentPage - 1))
-                        .Take(paging.PageSize);
+                        .Skip(() => skip).Take(() => take);
                 }
             }
 
@@ -1259,9 +1269,11 @@ namespace BL.Database.Common
 
                 if (!paging.IsAll)
                 {
+                    var skip = paging.PageSize * (paging.CurrentPage - 1);
+                    var take = paging.PageSize;
+
                     itemsDb = itemsDb
-                        .Skip(paging.PageSize * (paging.CurrentPage - 1))
-                        .Take(paging.PageSize);
+                        .Skip(() => skip).Take(() => take);
                 }
             }
 
