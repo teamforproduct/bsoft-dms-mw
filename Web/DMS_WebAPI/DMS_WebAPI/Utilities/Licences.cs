@@ -16,6 +16,7 @@ namespace DMS_WebAPI.Utilities
     {
         private const string _RSAPublicKeyXmlByLicence = "<RSAKeyValue><Modulus>sBRZy9xvw7FWdb5EHd79H8f2D4+JP3yokrbKpCgFbcwCEPPZpGUj07poBM9MvrIXEIHoahIYVw3UqWCLvFFL6Cb+u3zrOTaNmCNyXdZ4H/28sskfuBtVzXjllzwEkrcJg0NfSmCbjw/9YFUYEdl1ZTUL40pN8Kuk1Wr1f/wP+wk=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue>";
         private const int _TrialMaxCountDocuments = 1000;
+        private const int _TrialDurationInDays = 30;
 
         #region Convert
         private byte[] GetBytesByData(string data)
@@ -96,9 +97,9 @@ namespace DMS_WebAPI.Utilities
             //TODO Проверить количество документов у клиента
             //TODO оптимизировать
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var count = docProc.GetCountDocuments(ctx);
+            docProc.GetCountDocuments(ctx, licence);
 
-            if (count > _TrialMaxCountDocuments)
+            if (licence.CountDocument > _TrialMaxCountDocuments && licence.DateFirstDocument.AddDays(_TrialDurationInDays) >=DateTime.Now)
             {
                 throw new LicenceError();
             }
