@@ -54,7 +54,7 @@ namespace DMS_WebAPI.Utilities
         public IContext Get(int? currentPositionId = null)
         {
             var time = new System.Diagnostics.Stopwatch();
-            
+
             string token = Token.ToLower();
             if (!_casheContexts.ContainsKey(token))
             {
@@ -66,6 +66,11 @@ namespace DMS_WebAPI.Utilities
             try
             {
                 var ctx = (IContext)contextValue.StoreObject;
+
+                if (!(ctx.ClientLicence?.IsActive??true))
+                {
+                    throw new LicenceError();
+                }
 
                 //time.Start();
                 //VerifyNumberOfConnections(ctx, ctx.CurrentClientId);
@@ -237,6 +242,71 @@ namespace DMS_WebAPI.Utilities
             _casheContexts.Add(token.ToLower(), new StoreInfo() { StoreObject = val, LastUsage = DateTime.Now });
         }
 
+        public void VerifyLicence(int clientId)
+        {
+            var clientUsers = _casheContexts
+                    .Select(x => (IContext)x.Value.StoreObject)
+                    .Where(x => x.CurrentClientId == clientId);
+
+            if (clientUsers.Count() <= 0)
+                return;
+
+            var context = clientUsers.FirstOrDefault();
+
+            var dbProc = new WebAPIDbProcess();
+
+            var lic = dbProc.GetClientLicenceActive(clientId);
+
+            var si = new SystemInfo();
+            var regCode = si.GetRegCode(lic);
+
+            if (lic.IsConcurenteLicence)
+            {
+                var now = DateTime.Now.AddMinutes(-5);
+                var qry = _casheContexts
+                    .Where(x => x.Value.LastUsage > now)
+                    .Select(x => (IContext)x.Value.StoreObject)
+                    .Where(x => x.CurrentClientId == clientId);
+
+                lic.ConcurenteNumberOfConnectionsNow = qry.Count();
+            }
+
+            var isVerifyLicence = true;
+
+            try
+            {
+                new Licences().Verify(regCode, lic, context);
+            }
+            catch (LicenceError)
+            {
+                isVerifyLicence = false;
+            }
+            catch (LicenceExpired)
+            {
+                isVerifyLicence = false;
+            }
+            catch (LicenceExceededNumberOfRegisteredUsers)
+            {
+                isVerifyLicence = false;
+            }
+            catch (LicenceExceededNumberOfConnectedUsers)
+            {
+                isVerifyLicence = false;
+            }
+            catch (Exception ex)
+            {
+                isVerifyLicence = false;
+            }
+
+            if (!isVerifyLicence)
+            {
+                foreach (var user in clientUsers)
+                {
+                    user.ClientLicence.IsActive = false;
+                }
+            }
+        }
+
         public void RemoveByTimeout()
         {
             var now = DateTime.Now;
@@ -247,7 +317,7 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        public void VerifyNumberOfConnections(IContext context,int clientId, bool isAddNew = false)
+        public void VerifyNumberOfConnections(IContext context, int clientId, bool isAddNew = false)
         {
             if (clientId <= 0) return;
 

@@ -31,15 +31,22 @@ namespace BL.Database.Documents
         {
         }
 
-        public int GetCountDocuments(IContext ctx)
+        public void GetCountDocuments(IContext ctx, LicenceInfo licence)
         {
+            if (licence==null)
+            {
+                throw new LicenceError();
+            }
+
             using (var dbContext = new DmsContext(ctx))
             {
                 var qry = dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == ctx.CurrentClientId).AsQueryable();
 
-                var count = qry.Count();
-
-                return count;
+                licence.CountDocument = qry.Count();
+                if (licence.CountDocument > 0)
+                    licence.DateFirstDocument = qry.OrderBy(x => x.CreateDate).Select(x => x.CreateDate).FirstOrDefault();
+                else
+                    licence.DateFirstDocument = DateTime.MinValue;
             }
         }
         public IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging)
