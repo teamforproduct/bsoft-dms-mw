@@ -114,11 +114,12 @@ namespace BL.Database.Admins
                 filterNewEventTargetPositionContains = roleList.Aggregate(filterNewEventTargetPositionContains,
                     (current, value) => current.Or(e => e.TargetPositionId == value).Expand());
 
-                var newevnt = dbContext.DocumentEventsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                var neweventQry = dbContext.DocumentEventsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
                                 .Where(x => !x.ReadDate.HasValue && x.TargetPositionId.HasValue && x.TargetPositionId != x.SourcePositionId)
                                 .Where(filterNewEventTargetPositionContains)
                                 .GroupBy(g => g.TargetPositionId)
-                                .Select(s => new { PosID = s.Key, EvnCnt = s.Count() }).ToList();
+                                .Select(s => new { PosID = s.Key, EvnCnt = s.Count() });
+                var newevnt = neweventQry.ToList();
 
                 res.Join(newevnt, r => r.RolePositionId, e => e.PosID, (r, e) => { r.NewEventsCount = e.EvnCnt; return r; }).ToList();
 

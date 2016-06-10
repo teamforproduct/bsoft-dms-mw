@@ -33,9 +33,9 @@ namespace BL.Logic.DocumentCore
 
         #region Documents
 
-        public int GetCountDocuments(IContext ctx)
+        public void GetCountDocuments(IContext ctx, LicenceInfo licence)
         {
-            return _documentDb.GetCountDocuments(ctx);
+            _documentDb.GetCountDocuments(ctx, licence);
         }
 
         public IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging)

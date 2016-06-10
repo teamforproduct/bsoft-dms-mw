@@ -320,6 +320,7 @@
     <Compile Include="Results\ChallengeResult.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Utilities\Licences.cs" />
+    <Compile Include="Utilities\LicencesWorkerService.cs" />
     <Compile Include="Utilities\WebAPIDbProcess.cs" />
     <Compile Include="Utilities\Languages.cs" />
     <Compile Include="Utilities\SystemInfo.cs" />
