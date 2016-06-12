@@ -34,5 +34,11 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// Первая буква наименования
         /// </summary>
         public char FirstChar { get; set; }
+
+        public string FirstNameExact { get; set; }
+        public string LastNameExact { get; set; }
+        public string PassportSerial { get; set; }
+        public int? PassportNumber { get; set; }
+        public DateTime? BirthDate { get; set; }
     }
 }

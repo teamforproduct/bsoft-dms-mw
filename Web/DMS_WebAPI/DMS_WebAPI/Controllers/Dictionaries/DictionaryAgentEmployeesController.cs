@@ -26,8 +26,10 @@ namespace DMS_WebAPI.Controllers.Dictionaries
                 var ctx = DmsResolver.Current.Get<UserContext>().Get();
                 var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpDicts = tmpDictProc.GetDictionaryAgentEmployees(ctx, filter,paging);
-                return new JsonResult(tmpDicts, this);
-            }
+                var res=new JsonResult(tmpDicts, this);
+                res.Paging = paging;
+                return res;
+        }
 
             /// <summary>
             /// Запись справочника сотрудников

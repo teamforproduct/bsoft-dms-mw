@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -55,6 +56,7 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// Дата рождения
         /// </summary>
         public DateTime? BirthDate { get; set; }
+        
         /// <summary>
         /// Дополнительная информация
         /// </summary>
@@ -80,7 +82,7 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// </summary>
         public string Passport  { get
             {
-                return PassportSerial?.Trim() + "-" + PassportNumber?.ToString() + " выдан " + PassportText?.Trim() + " " + PassportDate?.Date;
+                return PassportSerial?.Trim() + " " + PassportNumber?.ToString() + " " + PassportText?.Trim() + " " + PassportDate?.ToString("dd.MM.yyyy");
             }
 
         }
