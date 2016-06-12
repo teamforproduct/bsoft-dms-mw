@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Documents.Interfaces;
@@ -55,6 +56,11 @@ namespace BL.Logic.DocumentCore
                 }
             }
             return _documentDb.GetDocuments(ctx, filters, paging);
+        }
+
+        public Task<IEnumerable<FrontDocument>> GetDocumentsAsync(IContext ctx, FilterDocument filters, UIPaging paging)
+        {
+            return Task.Factory.StartNew(() => GetDocuments(ctx, filters, paging));
         }
 
         public FrontDocument GetDocument(IContext ctx, int documentId, FilterDocumentById filter)

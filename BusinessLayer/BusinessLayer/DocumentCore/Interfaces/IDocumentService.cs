@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using BL.CrossCutting.Interfaces;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
@@ -12,6 +13,7 @@ namespace BL.Logic.DocumentCore.Interfaces
     {
         void GetCountDocuments(IContext ctx, LicenceInfo licence);
         IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging);
+        Task<IEnumerable<FrontDocument>> GetDocumentsAsync(IContext ctx, FilterDocument filters, UIPaging paging);
         FrontDocument GetDocument(IContext ctx, int documentId, FilterDocumentById filter);
         IEnumerable<BaseSystemUIElement> GetModifyMetaData(IContext ctx, FrontDocument doc);
         object ExecuteAction(EnumDocumentActions act, IContext context, object param);
