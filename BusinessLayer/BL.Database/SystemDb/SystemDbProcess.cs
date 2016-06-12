@@ -640,6 +640,7 @@ namespace BL.Database.SystemDb
             var res = new List<FullTextIndexItem>();
             using (var dbContext = new DmsContext(ctx))
             {
+                dbContext.Database.CommandTimeout = 0;
                 res.AddRange(dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == ctx.CurrentClientId)
                     .Select(x => new
                     {
@@ -667,18 +668,27 @@ namespace BL.Database.SystemDb
                         ObjectText = x.regNr + x.v1 + x.v2 + x.v3 + x.v4 + x.v5 + x.v6
                     }));
 
-                res.AddRange(dbContext.DocumentEventsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
-                     .Select(x => new FullTextIndexItem
-                     {
-                         DocumentId = x.DocumentId,
-                         ItemType = EnumObjects.DocumentEvents,
-                         OperationType = EnumOperationType.AddNew,
-                         ObjectId = x.Id,
-                         ObjectText = x.Description + " " + x.AddDescription + " " + x.Task.Task + " "
-                                + x.SourcePositionExecutorAgent.Name + " " + x.TargetPositionExecutorAgent.Name + " "
-                                + x.SourceAgent.Name + " " + x.TargetAgent.Name + " "
-                     }).ToList()
-                 );
+                res.AddRange(
+                    dbContext.DocumentEventsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                        .Select(x => new
+                        {
+                            x.DocumentId,
+                            x.Id,
+                            v1 = x.Description,
+                            v2 = x.AddDescription,
+                            v3 = x.Task.Task + " "
+                                 + x.SourcePositionExecutorAgent.Name + " " + x.TargetPositionExecutorAgent.Name + " "
+                                 + x.SourceAgent.Name + " " + x.TargetAgent.Name + " "
+                        }).ToList()
+                        .Select(x => new FullTextIndexItem
+                        {
+                            DocumentId = x.DocumentId,
+                            ItemType = EnumObjects.DocumentEvents,
+                            OperationType = EnumOperationType.AddNew,
+                            ObjectId = x.Id,
+                            ObjectText = x.v1 + " " + x.v2 + " " + x.v3
+                        }).ToList()
+                    );
 
                 res.AddRange(dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
                      .Select(x => new FullTextIndexItem
@@ -1009,6 +1019,11 @@ namespace BL.Database.SystemDb
                        );
 
                 #endregion DocumentTemplates
+
+                //when we reindex database, then we should delete all values from cash table
+                //this is fucking workaround for entity framework, but i don't want delete 1000 rows one by one 
+                //and i have no another way to delete it in batch from EF. So do that. 
+                dbContext.Database.ExecuteSqlCommand("TRUNCATE TABLE [DMS].[FullTextIndexCashes]");
             }
             return res;
         }
@@ -1077,21 +1092,30 @@ namespace BL.Database.SystemDb
                 if (objectTypesToProcess.Contains(EnumObjects.DocumentEvents))
                 {
                     res.AddRange(
-                        dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DocumentEvents)
+                        dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int) EnumObjects.DocumentEvents)
                             .Join(dbContext.DocumentEventsSet, i => i.ObjectId, d => d.Id,
-                                (i, d) => new { ind = i, evt = d })
+                                (i, d) => new {ind = i, evt = d})
+                            .Select(x => new
+                            {
+                                x.evt.DocumentId,
+                                x.ind.Id,
+                                ObjId = x.evt.Id,
+                                x.ind.OperationType,
+                                v1 = x.evt.Description,
+                                v2 = x.evt.AddDescription,
+                                v3 = x.evt.Task.Task + " "
+                                     + x.evt.SourcePositionExecutorAgent.Name + " " +
+                                     x.evt.TargetPositionExecutorAgent.Name + " "
+                                     + x.evt.SourceAgent.Name + " " + x.evt.TargetAgent.Name + " "
+                            }).ToList()
                             .Select(x => new FullTextIndexItem
                             {
-                                Id = x.ind.Id,
-                                DocumentId = x.evt.DocumentId,
-                                ItemType = (EnumObjects)x.ind.ObjectType,
-                                OperationType = (EnumOperationType)x.ind.OperationType,
-                                ObjectId = x.evt.Id,
-                                ObjectText =
-                                    x.evt.Description + " " + x.evt.AddDescription + " " + x.evt.Task.Task + " "
-                                    + x.evt.SourcePositionExecutorAgent.Name + " " +
-                                    x.evt.TargetPositionExecutorAgent.Name + " "
-                                    + x.evt.SourceAgent.Name + " " + x.evt.TargetAgent.Name + " "
+                                Id = x.Id,
+                                DocumentId = x.DocumentId,
+                                ItemType = EnumObjects.DocumentEvents,
+                                OperationType = (EnumOperationType) x.OperationType,
+                                ObjectId = x.ObjId,
+                                ObjectText = x.v1 + " " + x.v2 + " " + x.v3
                             }).ToList()
                         );
                 }

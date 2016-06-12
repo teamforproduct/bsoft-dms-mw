@@ -5,6 +5,7 @@ using BL.Database.Dictionaries.Interfaces;
 using BL.Database.Documents;
 using BL.Database.Documents.Interfaces;
 using BL.Database.FileWorker;
+using BL.Database.Helper;
 using BL.Database.SystemDb;
 using Ninject.Modules;
 
@@ -14,6 +15,7 @@ namespace BL.Database.DependencyInjection
     {
         public override void Load()
         {
+            Bind<IConnectionHelper>().To<ConnectionHelper>().InSingletonScope();
             RegistrateSystemProcess();
             RegistrateDocumentProcess();
         }

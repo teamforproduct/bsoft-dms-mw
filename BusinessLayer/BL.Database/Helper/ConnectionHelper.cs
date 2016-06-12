@@ -1,10 +1,11 @@
-﻿using BL.CrossCutting.Interfaces;
+﻿using System.Data.Common;
+using System.Data.SqlClient;
+using BL.CrossCutting.Helpers;
+using BL.CrossCutting.Interfaces;
 using BL.Model.Database;
 using Oracle.ManagedDataAccess.Client;
-using System.Data.Common;
-using System.Data.SqlClient;
 
-namespace BL.CrossCutting.Helpers
+namespace BL.Database.Helper
 {
     public class ConnectionHelper : IConnectionHelper
     {
@@ -19,9 +20,9 @@ namespace BL.CrossCutting.Helpers
             {
                 switch (currentDB.ServerType)
                 {
-                    case Model.Database.DatabaseType.SQLServer:
+                    case DatabaseType.SQLServer:
                         return new SqlConnection(currentDB.ConnectionString);
-                    case Model.Database.DatabaseType.Oracle:
+                    case DatabaseType.Oracle:
                         return new OracleConnection(currentDB.ConnectionString);
                     default:
                         return null;
@@ -32,9 +33,9 @@ namespace BL.CrossCutting.Helpers
             var secur = currentDB.IntegrateSecurity ? "Persist Security Info=false" : $"Persist Security Info=True;User ID={currentDB.UserName};Password={currentDB.UserPassword}";
             switch (currentDB.ServerType)
             {
-                case Model.Database.DatabaseType.SQLServer:
+                case DatabaseType.SQLServer:
                     return new SqlConnection(string.Format(@"Data Source={0};Initial Catalog={1};{2}", currentDB.Address, currentDB.DefaultDatabase, secur));
-                case Model.Database.DatabaseType.Oracle:
+                case DatabaseType.Oracle:
                     return new OracleConnection($"Data Source={currentDB.Address};{secur}");
                 default:
                     return null;
