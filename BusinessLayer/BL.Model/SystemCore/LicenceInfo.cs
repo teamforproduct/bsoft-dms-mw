@@ -34,7 +34,7 @@ namespace BL.Model.SystemCore
 
         public string LicenceKey { get; set; }
 
-        public DateTime DateFirstDocument { get; set; }
+        public DateTime? DateFirstDocument { get; set; }
         public int CountDocument { get; set; }
     }
 }

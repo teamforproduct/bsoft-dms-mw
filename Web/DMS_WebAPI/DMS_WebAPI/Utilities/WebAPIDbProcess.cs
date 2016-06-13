@@ -38,6 +38,15 @@ namespace DMS_WebAPI.Utilities
 
             if (filter != null)
             {
+                if (filter.ClientIds?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<AspNetClientServers>();
+                    filterContains = filter.ClientIds.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.ClientId == value).Expand());
+
+                    qry = qry.Where(x=>x.ClientServers.AsQueryable().Any(filterContains));
+                }
+
                 if (filter.ServerIds?.Count > 0)
                 {
                     var filterContains = PredicateBuilder.False<AdminServers>();

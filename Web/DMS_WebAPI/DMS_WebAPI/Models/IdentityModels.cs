@@ -54,7 +54,7 @@ namespace DMS_WebAPI.Models
             {
                 using (var dbContext = new ApplicationDbContext())
                 {
-                    dbContext.Database.Delete();
+                    //dbContext.Database.Delete();
                 }
             }
         }
