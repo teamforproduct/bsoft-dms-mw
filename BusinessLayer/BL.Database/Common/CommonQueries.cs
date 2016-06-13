@@ -111,8 +111,11 @@ namespace BL.Database.Common
 
                 if (!paging.IsAll)
                 {
+                    var skip = paging.PageSize * (paging.CurrentPage - 1);
+                    var take = paging.PageSize;
+
                     sq = sq.OrderByDescending(x => x.LastChangeDate)
-                        .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
+                        .Skip(() => skip).Take(() => take);
                 }
             }
 
@@ -272,8 +275,8 @@ namespace BL.Database.Common
                 filterTaskAccessesContains = ctx.CurrentPositionsIdList.Aggregate(filterTaskAccessesContains,
                     (current, value) => current.Or(e => e.PositionId == value).Expand());
 
-                qry = qry.Where(filterPositionContains)
-                         .Union(qry.Where(x => x.IsAvailableWithinTask && x.TaskId.HasValue && x.Task.TaskAccesses.AsQueryable().Any(filterTaskAccessesContains)));
+                qry = qry.Where(x => !x.IsAvailableWithinTask).Where(filterPositionContains)
+                         .Concat(qry.Where(x => x.IsAvailableWithinTask && x.TaskId.HasValue && x.Task.TaskAccesses.AsQueryable().Any(filterTaskAccessesContains)));
 
                 var filterContains = PredicateBuilder.False<DocumentAccesses>();
                 filterContains = ctx.CurrentPositionsIdList.Aggregate(filterContains,
@@ -303,8 +306,8 @@ namespace BL.Database.Common
                 filterOnEventTaskAccessesContains = ctx.CurrentPositionsIdList.Aggregate(filterOnEventTaskAccessesContains,
                     (current, value) => current.Or(e => e.PositionId == value).Expand());
 
-                qry = qry.Where(filterOnEventPositionsContains)
-                        .Union(qry.Where(x => x.OnEvent.IsAvailableWithinTask && x.OnEvent.TaskId.HasValue &&
+                qry = qry.Where(x => !x.OnEvent.IsAvailableWithinTask).Where(filterOnEventPositionsContains)
+                        .Concat(qry.Where(x => x.OnEvent.IsAvailableWithinTask && x.OnEvent.TaskId.HasValue &&
                         x.OnEvent.Task.TaskAccesses.AsQueryable().Any(filterOnEventTaskAccessesContains)));
 
                 var filterContains = PredicateBuilder.False<DocumentAccesses>();
@@ -383,8 +386,11 @@ namespace BL.Database.Common
 
                 if (!paging.IsAll)
                 {
+                    var skip = paging.PageSize * (paging.CurrentPage - 1);
+                    var take = paging.PageSize;
+
                     tasksDb = tasksDb.OrderByDescending(x => x.LastChangeDate)
-                    .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
+                        .Skip(() => skip).Take(() => take);
                 }
             }
 
@@ -492,9 +498,11 @@ namespace BL.Database.Common
 
                 if (!paging.IsAll)
                 {
+                    var skip = paging.PageSize * (paging.CurrentPage - 1);
+                    var take = paging.PageSize;
+
                     waitsRes = waitsRes
-                        .Skip(paging.PageSize * (paging.CurrentPage - 1))
-                        .Take(paging.PageSize);
+                        .Skip(() => skip).Take(() => take);
                 }
             }
 
@@ -637,9 +645,11 @@ namespace BL.Database.Common
 
                 if (!paging.IsAll)
                 {
+                    var skip = paging.PageSize * (paging.CurrentPage - 1);
+                    var take = paging.PageSize;
+
                     subscriptionsRes = subscriptionsRes
-                        .Skip(paging.PageSize * (paging.CurrentPage - 1))
-                        .Take(paging.PageSize);
+                        .Skip(() => skip).Take(() => take);
                 }
             }
 
@@ -1259,9 +1269,11 @@ namespace BL.Database.Common
 
                 if (!paging.IsAll)
                 {
+                    var skip = paging.PageSize * (paging.CurrentPage - 1);
+                    var take = paging.PageSize;
+
                     itemsDb = itemsDb
-                        .Skip(paging.PageSize * (paging.CurrentPage - 1))
-                        .Take(paging.PageSize);
+                        .Skip(() => skip).Take(() => take);
                 }
             }
 

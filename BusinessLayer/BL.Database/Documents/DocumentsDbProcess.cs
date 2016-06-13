@@ -31,15 +31,22 @@ namespace BL.Database.Documents
         {
         }
 
-        public int GetCountDocuments(IContext ctx)
+        public void GetCountDocuments(IContext ctx, LicenceInfo licence)
         {
+            if (licence==null)
+            {
+                throw new LicenceError();
+            }
+
             using (var dbContext = new DmsContext(ctx))
             {
                 var qry = dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == ctx.CurrentClientId).AsQueryable();
 
-                var count = qry.Count();
-
-                return count;
+                licence.CountDocument = qry.Count();
+                if (licence.CountDocument > 0)
+                    licence.DateFirstDocument = qry.OrderBy(x => x.CreateDate).Select(x => x.CreateDate).FirstOrDefault();
+                else
+                    licence.DateFirstDocument = DateTime.MinValue;
             }
         }
         public IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging)
@@ -803,8 +810,11 @@ namespace BL.Database.Documents
 
                     if (!paging.IsAll)
                     {
+                        var skip = paging.PageSize * (paging.CurrentPage - 1);
+                        var take = paging.PageSize;
+
                         qry = qry.OrderByDescending(x => x.CreateDate)
-                        .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
+                            .Skip(() => skip).Take(() => take);
                     }
                 }
 
@@ -839,8 +849,8 @@ namespace BL.Database.Documents
                     ExecutorPositionExecutorAgentName = doc.ExecutorPositionExecutorAgent.Name,
                     ExecutorPositionName = doc.ExecutorPosition.Name,
 
-                    WaitCount = doc.Waits.AsQueryable().Where(filterOnEventPositionsContains)
-                        .Union(doc.Waits.AsQueryable().Where(x => x.OnEvent.IsAvailableWithinTask && x.OnEvent.TaskId.HasValue &&
+                    WaitCount = doc.Waits.AsQueryable().Where(x => !x.OnEvent.IsAvailableWithinTask).Where(filterOnEventPositionsContains)
+                        .Concat(doc.Waits.AsQueryable().Where(x => x.OnEvent.IsAvailableWithinTask && x.OnEvent.TaskId.HasValue &&
                             x.OnEvent.Task.TaskAccesses.AsQueryable().Any(filterOnEventTaskAccessesContains)))
                             .GroupBy(x => x.DocumentId)
                             .Select(x => new UICounters { Counter1 = x.Count(), Counter2 = x.Count(s => s.DueDate.HasValue && s.DueDate.Value < DateTime.Now) })

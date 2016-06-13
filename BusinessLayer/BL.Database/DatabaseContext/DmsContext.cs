@@ -25,7 +25,7 @@ namespace BL.Database.DatabaseContext
         public DmsContext(IContext context) : base(DmsResolver.Current.Get<ConnectionHelper>().GetConnection(context), true)
         {
             _DefaultSchema = context.CurrentDB.DefaultSchema;
-
+            this.Database.CommandTimeout = int.MaxValue;
             System.Data.Entity.Database.SetInitializer<DmsContext>(new DmsDbInitializer());
         }
 

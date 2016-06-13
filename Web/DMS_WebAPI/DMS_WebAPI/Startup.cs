@@ -56,6 +56,9 @@ namespace DMS_WebAPI
 
             var userContextService = DmsResolver.Current.Get<UserContextWorkerService>();
             userContextService.Initialize();
+
+            var licencesService = DmsResolver.Current.Get<LicencesWorkerService>();
+            licencesService.Initialize();
         }
     }
 }

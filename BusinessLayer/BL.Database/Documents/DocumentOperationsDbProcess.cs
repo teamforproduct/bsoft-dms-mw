@@ -795,11 +795,22 @@ namespace BL.Database.Documents
                     filterContains = ctx.CurrentPositionsIdList.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.TargetPositionId == value).Expand());
 
-                    paging.Counters = new UICounters
+                    if ((filter.EventId?.Count > 0) ||
+                            (filter.DocumentId.HasValue) ||
+                            (filter.ListDocumentId?.Count > 0)
+                        )
                     {
-                        Counter1 = qry.Where(filterContains).Count(x => !x.ReadDate.HasValue && x.TargetPositionId != x.SourcePositionId),
-                        Counter3 = qry.Count(),
-                    };
+
+                        paging.Counters = new UICounters
+                        {
+                            Counter1 = qry.Where(filterContains).Count(x => !x.ReadDate.HasValue && x.TargetPositionId != x.SourcePositionId),
+                            Counter3 = qry.Count(),
+                        };
+                    }
+                    else
+                    {
+                        paging.Counters = new UICounters();
+                    }
 
                     paging.TotalItemsCount = paging.Counters.Counter3.GetValueOrDefault();
 
@@ -810,13 +821,15 @@ namespace BL.Database.Documents
 
                     if (!paging.IsAll)
                     {
+                        var skip = paging.PageSize * (paging.CurrentPage - 1);
+                        var take = paging.PageSize;
+
                         qry = qry.OrderByDescending(x => x.LastChangeDate)
-                            .Skip(paging.PageSize * (paging.CurrentPage - 1))
-                            .Take(paging.PageSize);
+                            .Skip(() => skip).Take(() => take);
                     }
                 }
 
-                var res = qry.Select(x => new FrontDocumentEvent
+                var qryFE = qry.Select(x => new FrontDocumentEvent
                 {
                     Id = x.Id,
                     DocumentId = x.DocumentId,
@@ -856,11 +869,13 @@ namespace BL.Database.Documents
                     PaperPlanDate = x.PaperPlanDate,
                     PaperSendDate = x.PaperSendDate,
                     PaperRecieveDate = x.PaperRecieveDate,
-                }).ToList();
+                });
+
+                var res = qryFE.ToList();
 
                 res.ForEach(x =>
                 {
-                    x.IsRead = !x.TargetPositionId.HasValue || x.TargetPositionId == x.SourcePositionId || ctx.CurrentPositionsIdList.Contains(x.TargetPositionId ?? 0) ? null : (bool?)x.ReadDate.HasValue;
+                    x.IsRead = !x.TargetPositionId.HasValue || x.TargetPositionId == x.SourcePositionId || !ctx.CurrentPositionsIdList.Contains(x.TargetPositionId ?? 0) ? null : (bool?)x.ReadDate.HasValue;
                     x.TargetPositionId = null;
                     x.SourcePositionId = null;
                     x.ReadDate = null;

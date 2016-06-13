@@ -138,8 +138,11 @@ namespace BL.Database.Dictionaries
 
                     if (!paging.IsAll)
                     {
+                        var skip = paging.PageSize * (paging.CurrentPage - 1);
+                        var take = paging.PageSize;
+
                         qry = qry.OrderBy(x => x.Name)
-                        .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
+                            .Skip(() => skip).Take(() => take);
                     }
                 }
 
@@ -398,8 +401,11 @@ namespace BL.Database.Dictionaries
 
                     if (!paging.IsAll)
                     {
+                        var skip = paging.PageSize * (paging.CurrentPage - 1);
+                        var take = paging.PageSize;
+
                         qry = qry.OrderBy(x => x.LastName)
-                        .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
+                            .Skip(() => skip).Take(() => take);
                     }
                 }
 
@@ -814,8 +820,11 @@ namespace BL.Database.Dictionaries
 
                     if (!paging.IsAll)
                     {
+                        var skip = paging.PageSize * (paging.CurrentPage - 1);
+                        var take = paging.PageSize;
+
                         qry = qry.OrderBy(x => x.Agent.AgentPerson.LastName)
-                        .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
+                            .Skip(() => skip).Take(() => take);
                     }
                 }
 
@@ -1301,8 +1310,11 @@ namespace BL.Database.Dictionaries
 
                     if (!paging.IsAll)
                     {
+                        var skip = paging.PageSize * (paging.CurrentPage - 1);
+                        var take = paging.PageSize;
+
                         qry = qry.OrderBy(x => x.FullName)
-                        .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
+                            .Skip(() => skip).Take(() => take);
                     }
                 }
 
@@ -1673,8 +1685,11 @@ namespace BL.Database.Dictionaries
 
                     if (!paging.IsAll)
                     {
+                        var skip = paging.PageSize * (paging.CurrentPage - 1);
+                        var take = paging.PageSize;
+
                         qry = qry.OrderBy(x => x.Agent.Name)
-                        .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
+                            .Skip(() => skip).Take(() => take);
                     }
                 }
 
