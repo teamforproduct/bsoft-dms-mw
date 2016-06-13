@@ -45,7 +45,9 @@ namespace BL.Database.Dictionaries.Interfaces
         int AddAgentAddress(IContext context, InternalDictionaryAgentAddress addr);
         IEnumerable<FrontDictionaryAgentAddress> GetAgentAddresses(IContext context, int agentId, FilterDictionaryAgentAddress filter);
 
-        #endregion
+        IEnumerable<int> GetAgentsIDByAddress(IContext context, IEnumerable<int> addresses);
+
+            #endregion
 
         #region DicionaryAddressTypes
 
@@ -91,7 +93,7 @@ namespace BL.Database.Dictionaries.Interfaces
         int AddContact(IContext context, InternalDictionaryContact contact);
         IEnumerable<FrontDictionaryContact> GetContacts(IContext context, int agentId, FilterDictionaryContact filter);
         #endregion
-
+        IEnumerable<int> GetAgentsIDByContacts(IContext context, IEnumerable<int> contacts);
         #region DictionaryContactTypes
         FrontDictionaryContactType GetInternalDictionaryContactType(IContext context, FilterDictionaryContactType filter);
         void UpdateContactType(IContext context, InternalDictionaryContactType contactType);

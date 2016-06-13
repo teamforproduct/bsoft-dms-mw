@@ -44,11 +44,15 @@ namespace BL.Logic.DocumentCore
             {
                 var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
                 var ftRes = ftService.SearchDocument(ctx, filters.FullTextSearch);
-                var resWithRanges =
-                    ftRes.GroupBy(x => x.DocumentId)
-                        .Select(x => new { DocId = x.Key, Rate = x.Count() })
-                        .OrderByDescending(x => x.Rate);
-                filters.DocumentId.AddRange(resWithRanges.Select(x => x.DocId).Take(paging.PageSize * paging.CurrentPage));
+                if (ftRes != null)
+                {
+                    var resWithRanges =
+                        ftRes.GroupBy(x => x.DocumentId)
+                            .Select(x => new {DocId = x.Key, Rate = x.Count()})
+                            .OrderByDescending(x => x.Rate);
+                    filters.DocumentId.AddRange(
+                        resWithRanges.Select(x => x.DocId).Take(paging.PageSize*paging.CurrentPage));
+                }
             }
             return _documentDb.GetDocuments(ctx, filters, paging);
         }

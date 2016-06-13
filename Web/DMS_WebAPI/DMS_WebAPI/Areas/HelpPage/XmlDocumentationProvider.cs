@@ -6,8 +6,6 @@ using System.Web.Http.Controllers;
 using System.Web.Http.Description;
 using System.Xml.XPath;
 using DMS_WebAPI.Areas.HelpPage.ModelDescriptions;
-using System.Collections.Generic;
-using System.IO;
 
 namespace DMS_WebAPI.Areas.HelpPage
 {
@@ -16,7 +14,7 @@ namespace DMS_WebAPI.Areas.HelpPage
     /// </summary>
     public class XmlDocumentationProvider : IDocumentationProvider, IModelDocumentationProvider
     {
-        private List<XPathNavigator> _documentNavigators = new List<XPathNavigator>();
+        private XPathNavigator _documentNavigator;
         private const string TypeExpression = "/doc/members/member[@name='T:{0}']";
         private const string MethodExpression = "/doc/members/member[@name='M:{0}']";
         private const string PropertyExpression = "/doc/members/member[@name='P:{0}']";
@@ -26,31 +24,15 @@ namespace DMS_WebAPI.Areas.HelpPage
         /// <summary>
         /// Initializes a new instance of the <see cref="XmlDocumentationProvider"/> class.
         /// </summary>
-        /// <param name="appDataPath">The physical path to XML document.</param>
-        public XmlDocumentationProvider(string appDataPath, string[] files)
+        /// <param name="documentPath">The physical path to XML document.</param>
+        public XmlDocumentationProvider(string documentPath)
         {
-            if (appDataPath == null)
+            if (documentPath == null)
             {
-                throw new ArgumentNullException("appDataPath");
+                throw new ArgumentNullException("documentPath");
             }
-
-            //var files = new[] { "XmlDocument.xml", "Subproject.xml" };
-            foreach (var file in files)
-            {
-                XPathDocument xpath = new XPathDocument(Path.Combine(appDataPath, file));
-                _documentNavigators.Add(xpath.CreateNavigator());
-            }
-        }
-
-        private XPathNavigator SelectSingleNode(string selectExpression)
-        {
-            foreach (var navigator in _documentNavigators)
-            {
-                var propertyNode = navigator.SelectSingleNode(selectExpression);
-                if (propertyNode != null)
-                    return propertyNode;
-            }
-            return null;
+            XPathDocument xpath = new XPathDocument(documentPath);
+            _documentNavigator = xpath.CreateNavigator();
         }
 
         public string GetDocumentation(HttpControllerDescriptor controllerDescriptor)
@@ -96,7 +78,7 @@ namespace DMS_WebAPI.Areas.HelpPage
             string memberName = String.Format(CultureInfo.InvariantCulture, "{0}.{1}", GetTypeName(member.DeclaringType), member.Name);
             string expression = member.MemberType == MemberTypes.Field ? FieldExpression : PropertyExpression;
             string selectExpression = String.Format(CultureInfo.InvariantCulture, expression, memberName);
-            XPathNavigator propertyNode = SelectSingleNode(selectExpression);
+            XPathNavigator propertyNode = _documentNavigator.SelectSingleNode(selectExpression);
             return GetTagValue(propertyNode, "summary");
         }
 
@@ -112,7 +94,7 @@ namespace DMS_WebAPI.Areas.HelpPage
             if (reflectedActionDescriptor != null)
             {
                 string selectExpression = String.Format(CultureInfo.InvariantCulture, MethodExpression, GetMemberName(reflectedActionDescriptor.MethodInfo));
-                return SelectSingleNode(selectExpression);
+                return _documentNavigator.SelectSingleNode(selectExpression);
             }
 
             return null;
@@ -149,7 +131,7 @@ namespace DMS_WebAPI.Areas.HelpPage
         {
             string controllerTypeName = GetTypeName(type);
             string selectExpression = String.Format(CultureInfo.InvariantCulture, TypeExpression, controllerTypeName);
-            return SelectSingleNode(selectExpression);
+            return _documentNavigator.SelectSingleNode(selectExpression);
         }
 
         private static string GetTypeName(Type type)

@@ -42,10 +42,10 @@ namespace BL.Logic.SystemServices.FullTextSearch
             throw new NotImplementedException();
         }
 
-        public IEnumerable<FullTextSearchResult> SearchInDocument(IContext ctx, string text, EnumObjects objectType, int documentId)
+        public IEnumerable<FullTextSearchResult> SearchInDocument(IContext ctx, string text, int documentId)
         {
             var worker = _workers.FirstOrDefault(x => x.ServerKey == CommonSystemUtilities.GetServerKey(ctx));
-            return worker?.SearchInDocument(text, objectType, documentId);
+            return worker?.SearchInDocument(text,  documentId);
         }
 
         protected override void InitializeServers()

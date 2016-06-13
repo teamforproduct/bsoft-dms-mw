@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using BL.Model.Enums;
 using BL.Model.FullTextSearch;
 
 namespace BL.Logic.SystemServices.FullTextSearch
@@ -18,7 +17,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
         IEnumerable<FullTextSearchResult> SearchDocument(string text);
         IEnumerable<FullTextSearchResult> SearchDictionary(string text);
-        IEnumerable<FullTextSearchResult> SearchInDocument(string text, EnumObjects objectType, int documentId);
+        IEnumerable<FullTextSearchResult> SearchInDocument(string text, int documentId);
 
         void ReindexDatabase(IEnumerable<FullTextIndexItem> items);
     }

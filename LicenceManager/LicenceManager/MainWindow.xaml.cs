@@ -33,7 +33,6 @@ namespace LicenceManager
 
             cbLicenceType.SelectedIndex = 0;
             RefreshClientsInfo();
-
         }
 
         private void RefreshClientsInfo()

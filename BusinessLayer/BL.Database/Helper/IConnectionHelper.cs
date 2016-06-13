@@ -1,8 +1,8 @@
-﻿using BL.CrossCutting.Interfaces;
+﻿using System.Data.Common;
+using BL.CrossCutting.Interfaces;
 using BL.Model.Database;
-using System.Data.Common;
 
-namespace BL.CrossCutting.Helpers
+namespace BL.Database.Helper
 {
     public interface IConnectionHelper
     {

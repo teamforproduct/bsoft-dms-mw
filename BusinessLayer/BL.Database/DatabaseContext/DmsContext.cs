@@ -6,8 +6,8 @@ using BL.Database.DBModel.System;
 using BL.Database.DBModel.Template;
 using System.Data.Entity.ModelConfiguration.Conventions;
 using BL.CrossCutting.DependencyInjection;
-using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
+using BL.Database.Helper;
 
 
 namespace BL.Database.DatabaseContext

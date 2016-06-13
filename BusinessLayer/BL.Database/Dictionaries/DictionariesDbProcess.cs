@@ -132,7 +132,7 @@ namespace BL.Database.Dictionaries
             {
                 var qry = dbContext.DictionaryAgentsSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
 
-                if (paging != null)
+               if (paging != null)
                 {
                     paging.TotalItemsCount = qry.Count();
 
@@ -190,6 +190,18 @@ namespace BL.Database.Dictionaries
                     (filter.IsEmployee.HasValue && x.IsBank == filter.IsEmployee)
                    ) || (!filter.IsBank.HasValue && !filter.IsIndividual.HasValue && !filter.IsCompany.HasValue && !filter.IsEmployee.HasValue)
                  ));
+
+
+                if (paging != null)
+                {
+                    paging.TotalItemsCount = qry.Count();
+
+                    if (!paging.IsAll)
+                    {
+                        qry = qry.OrderBy(x => x.Name)
+                        .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
+                    }
+                }
 
                 return qry.Select(x => new FrontDictionaryAgent
                 {
@@ -394,20 +406,8 @@ namespace BL.Database.Dictionaries
 
                 qry = qry.Where(x => x.Agent.IsIndividual);
 
-                // Пагинация
-                if (paging != null)
-                {
-                    paging.TotalItemsCount = qry.Count();
-
-                    if (!paging.IsAll)
-                    {
-                        var skip = paging.PageSize * (paging.CurrentPage - 1);
-                        var take = paging.PageSize;
-
-                        qry = qry.OrderBy(x => x.LastName)
-                            .Skip(() => skip).Take(() => take);
-                    }
-                }
+               
+                
 
                 // Список первичных ключей
                 if (filter.IDs?.Count > 0)
@@ -466,6 +466,40 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(x => x.BirthDate <= filter.BirthPeriod.DateEnd);
                 }
 
+                if (!string.IsNullOrEmpty(filter.FirstNameExact))
+                {
+                    qry = qry.Where(x => x.FirstName == filter.FirstNameExact);
+                }
+
+                if (!string.IsNullOrEmpty(filter.LastNameExact))
+                {
+                    qry = qry.Where(x => x.LastName == filter.LastNameExact);
+                }
+
+                if (!string.IsNullOrEmpty(filter.PassportSerial))
+                {
+                    qry = qry.Where(x => x.PassportSerial == filter.PassportSerial);
+                }
+
+                if (filter.PassportNumber != null)
+                {
+                    qry = qry.Where(x => x.PassportNumber == filter.PassportNumber);
+                }
+
+                if (paging != null)
+                {
+                    paging.TotalItemsCount = qry.Count();
+
+                    if (!paging.IsAll)
+                    {
+                        var skip = paging.PageSize * (paging.CurrentPage - 1);
+                        var take = paging.PageSize;
+
+                        qry = qry.OrderBy(x => x.LastName)
+                            .Skip(() => skip).Take(() => take);
+                    }
+                }
+
                 return qry.Select(x => new FrontDictionaryAgentPerson
                 {
                     Id = x.Id,
@@ -481,6 +515,10 @@ namespace BL.Database.Dictionaries
                     PassportDate = x.PassportDate,
                     BirthDate = x.BirthDate,
                     Description = x.Description,
+                    IsActive = x.IsActive,
+                    IsBank = x.Agent.IsBank,
+                    IsCompany = x.Agent.IsCompany,
+                    IsEmployee = x.Agent.IsEmployee,
                     Contacts = x.Agent.AgentContacts.Select(y => new FrontDictionaryContact
                     {
                         Id = y.Id,
@@ -571,12 +609,12 @@ namespace BL.Database.Dictionaries
                 {
                     var newAgent = new InternalDictionaryAgent
                     {
-                        Name = person.LastName.Trim() + " " + person.FirstName.Trim() + " " + person.MiddleName.Trim(),
+                        Name = person.LastName + " " + person.FirstName + " " + person.MiddleName,
                         IsActive = person.IsActive,
                         Description = person.Description,
                         IsBank = false,
                         IsCompany = false,
-                        IsEmployee = true,
+                        IsEmployee = false,
                         IsIndividual = true,
                         LastChangeDate = person.LastChangeDate,
                         LastChangeUserId = person.LastChangeUserId,
@@ -813,20 +851,7 @@ namespace BL.Database.Dictionaries
 
                 qry = qry.Where(x => x.Agent.IsEmployee);
 
-                // Пагинация
-                if (paging != null)
-                {
-                    paging.TotalItemsCount = qry.Count();
 
-                    if (!paging.IsAll)
-                    {
-                        var skip = paging.PageSize * (paging.CurrentPage - 1);
-                        var take = paging.PageSize;
-
-                        qry = qry.OrderBy(x => x.Agent.AgentPerson.LastName)
-                            .Skip(() => skip).Take(() => take);
-                    }
-                }
 
                 // Список первичных ключей
                 if (filter.IDs?.Count > 0)
@@ -887,11 +912,47 @@ namespace BL.Database.Dictionaries
                 }
 
                 // Поиск по дате рождения
-                if (filter.BirthPeriod.IsActive)
+                if (filter.BirthPeriod != null)
                 {
-                    qry = qry.Where(x => x.Agent.AgentPerson.BirthDate >= filter.BirthPeriod.DateBeg);
-                    qry = qry.Where(x => x.Agent.AgentPerson.BirthDate <= filter.BirthPeriod.DateEnd);
+                    if (filter.BirthPeriod.IsActive)
+                    {
+                        qry = qry.Where(x => x.Agent.AgentPerson.BirthDate >= filter.BirthPeriod.DateBeg);
+                        qry = qry.Where(x => x.Agent.AgentPerson.BirthDate <= filter.BirthPeriod.DateEnd);
+                    }
                 }
+
+                if (!string.IsNullOrEmpty(filter.FirstNameExact))
+                {
+                    qry = qry.Where(x => x.Agent.AgentPerson.FirstName == filter.FirstNameExact);
+                }
+
+                if (!string.IsNullOrEmpty(filter.LastNameExact))
+                {
+                    qry = qry.Where(x => x.Agent.AgentPerson.LastName == filter.LastNameExact);
+                }
+
+                if (!string.IsNullOrEmpty(filter.PassportSerial))
+                {
+                    qry = qry.Where(x => x.Agent.AgentPerson.PassportSerial == filter.PassportSerial);
+                }
+
+                if (filter.PassportNumber != null)
+                {
+                    qry = qry.Where(x => x.Agent.AgentPerson.PassportNumber == filter.PassportNumber);
+                }
+
+
+
+                if (paging != null)
+                {
+                    paging.TotalItemsCount = qry.Count();
+                    if (!paging.IsAll)
+                    {
+                        qry = qry.OrderBy(x => x.Agent.AgentPerson.LastName)
+                        .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
+                    }
+                }
+
 
                 return qry.Select(x => new FrontDictionaryAgentEmployee
                 {
@@ -910,6 +971,9 @@ namespace BL.Database.Dictionaries
                     PassportText = x.Agent.AgentPerson.PassportText,
                     PassportDate = x.Agent.AgentPerson.PassportDate,
                     BirthDate = x.Agent.AgentPerson.BirthDate,
+                    IsBank = x.Agent.IsBank,
+                    IsCompany = x.Agent.IsCompany,
+                    IsIndividual = x.Agent.IsIndividual,
                     Contacts = x.Agent.AgentContacts.Select(y => new FrontDictionaryContact
                     {
                         Id = y.Id,
@@ -1080,6 +1144,21 @@ namespace BL.Database.Dictionaries
                     Description = x.Description,
                     IsActive = x.IsActive
                 }).ToList();
+            }
+        }
+
+        public IEnumerable<int> GetAgentsIDByAddress(IContext context, IEnumerable<int> addresses)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.DictionaryAgentAddressesSet.Where(x => x.Agent.ClientId == context.CurrentClientId).AsQueryable();
+
+                if (addresses.Any())
+                {
+                    qry = qry.Where(x => addresses.Contains(x.Id));
+                }
+
+                return qry.Select(x => x.AgentId).ToList();
             }
         }
         #endregion
@@ -2247,8 +2326,22 @@ namespace BL.Database.Dictionaries
                 }).ToList();
             }
         }
-        #endregion
+       
+        public IEnumerable<int> GetAgentsIDByContacts(IContext context, IEnumerable<int> contacts)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.DictionaryAgentAddressesSet.Where(x => x.Agent.ClientId == context.CurrentClientId).AsQueryable();
 
+                if (contacts.Any())
+                {
+                    qry = qry.Where(x => contacts.Contains(x.Id));
+                }
+
+                return qry.Select(x => x.AgentId).ToList();
+            }
+        }
+        #endregion
         // Структура предприятия
         #region DictionaryDepartments
         public int AddDepartment(IContext context, InternalDictionaryDepartment department)

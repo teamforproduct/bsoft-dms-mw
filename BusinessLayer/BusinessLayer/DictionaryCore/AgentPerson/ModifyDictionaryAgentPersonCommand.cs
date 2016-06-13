@@ -37,10 +37,14 @@ namespace BL.Logic.DictionaryCore
             {
                 TaxCode = Model.TaxCode,
                 IsActive=Model.IsActive,
+                FirstNameExact = Model.FirstName,
+                LastNameExact = Model.LastName,
+                PassportSerial = Model.PassportSerial,
+                PassportNumber = Model.PassportNumber,
                 NotContainsIDs = new List<int> { Model.Id}
             },null);
 
-            if (agents.Count() > 0)
+            if (agents.Any())
             {
                 throw new DictionaryRecordNotUnique();
             }
