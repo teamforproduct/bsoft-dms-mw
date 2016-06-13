@@ -1,6 +1,7 @@
 using BL.Model.SystemCore;
 using System.Collections.Generic;
 using BL.CrossCutting.Interfaces;
+using BL.Model.Enums;
 using BL.Model.FullTextSearch;
 using BL.Model.SystemCore.InternalModel;
 using BL.Model.SystemCore.Filters;
@@ -72,9 +73,14 @@ namespace BL.Database.SystemDb
         IEnumerable<int> GetDocumentIdsForClearTrashDocuments(IContext context, int timeMinForClearTrashDocuments);
 
         #region Full text search
-        IEnumerable<FullTextIndexItem> FullTextIndexReindexDbPrepare(IContext ctx);
-        IEnumerable<FullTextIndexItem> FullTextIndexPrepare(IContext ctx);
-        void FullTextIndexDeleteProcessed(IContext ctx, IEnumerable<int> processedIds);
+
+        int GetCurrentMaxCasheId(IContext ctx);
+        IEnumerable<FullTextIndexItem> FullTextIndexDocumentsReindexDbPrepare(IContext ctx, EnumObjects objType, int rowToSelect, int rowOffset);
+        IEnumerable<FullTextIndexItem> FullTextIndexNonDocumentsReindexDbPrepare(IContext ctx);
+        IEnumerable<FullTextIndexItem> FullTextIndexDocumentsPrepare(IContext ctx, EnumObjects objType, int rowToSelect, int selectBis);
+        IEnumerable<FullTextIndexItem> FullTextIndexToDeletePrepare(IContext ctx);
+        void FullTextIndexDeleteProcessed(IContext ctx, IEnumerable<int> processedIds, bool deleteSimilarObject = false);
+        void DeleteRelatedToDocumentRecords(IContext ctx, IEnumerable<int> docIds, int? deleteBis = null);
 
         #endregion
     }

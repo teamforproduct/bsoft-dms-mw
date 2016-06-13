@@ -218,17 +218,9 @@ namespace BL.Logic.SystemServices.FullTextSearch
             return searchResult;
         }
 
-        public void ReindexDatabase(IEnumerable<FullTextIndexItem> items)
+        public void DeleteAllDocuments()
         {
-            StartUpdate();
-
             _writer.DeleteAll();
-            foreach (var itm in items)
-            {
-                AddNewItem(itm);
-            }
-
-            CommitChanges();
         }
 
         public void Dispose()

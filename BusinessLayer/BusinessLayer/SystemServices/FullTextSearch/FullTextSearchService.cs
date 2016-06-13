@@ -13,6 +13,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
 {
     public class FullTextSearchService : BaseSystemWorkerService, IFullTextSearchService
     {
+        private const int MAX_ROW_PROCESS = 1000;
         private readonly Dictionary<FullTextSettings, Timer> _timers;
         List<IFullTextIndexWorker> _workers;
         ISystemDbProcess _systemDb;
@@ -27,25 +28,80 @@ namespace BL.Logic.SystemServices.FullTextSearch
         public void ReindexDatabase(IContext ctx)
         {
             var worker = _workers.FirstOrDefault(x => x.ServerKey == CommonSystemUtilities.GetServerKey(ctx));
-            var data = _systemDb.FullTextIndexReindexDbPrepare(ctx);
-            worker.ReindexDatabase(data);
+            if (worker == null) return;
+            
+            worker.StartUpdate();
+            try
+            {
+                int offset =0;
+                var objToProcess = new EnumObjects[]
+                {
+                    EnumObjects.Documents, EnumObjects.DocumentEvents, EnumObjects.DocumentSendLists,
+                    EnumObjects.DocumentSubscriptions, EnumObjects.DocumentFiles
+                };
+                //delete all current document before reindexing
+                worker.DeleteAllDocuments();
+
+                //going through the documents objects and add it. Select max 1000 row for one processing
+                foreach (var dataType in objToProcess)
+                {
+                    do
+                    {
+                        var data = _systemDb.FullTextIndexDocumentsReindexDbPrepare(ctx, dataType, MAX_ROW_PROCESS,offset);
+                        foreach (var itm in data)
+                        {
+                            worker.AddNewItem(itm);
+                        }
+
+                        if (data.Count() == MAX_ROW_PROCESS)
+                        {
+                            offset += MAX_ROW_PROCESS;
+                        }
+                        else
+                        {
+                            offset = 0;
+                        }
+
+                    } while (offset != 0);
+
+                }
+
+                // add to index dictionaries and templates 
+                var additionaData = _systemDb.FullTextIndexNonDocumentsReindexDbPrepare(ctx);
+                foreach (var itm in additionaData)
+                {
+                    worker.AddNewItem(itm);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ctx, "Error duing the reindexing database for client.", ex);
+            }
+            finally
+            {
+                worker.CommitChanges();
+            }
+            
+        }
+
+        private IFullTextIndexWorker GetWorker(IContext ctx)
+        {
+            return _workers.FirstOrDefault(x => x.ServerKey == CommonSystemUtilities.GetServerKey(ctx));
         }
 
         public IEnumerable<FullTextSearchResult> SearchDocument(IContext ctx, string text)
         {
-            var worker = _workers.FirstOrDefault(x => x.ServerKey == CommonSystemUtilities.GetServerKey(ctx));
-            return worker?.SearchDocument(text);
+            return GetWorker(ctx)?.SearchDocument(text);
         }
 
         public IEnumerable<FullTextSearchResult> SearchDictionary(IContext ctx, string text)
         {
-            throw new NotImplementedException();
+            return GetWorker(ctx)?.SearchDictionary(text);
         }
 
         public IEnumerable<FullTextSearchResult> SearchInDocument(IContext ctx, string text, int documentId)
         {
-            var worker = _workers.FirstOrDefault(x => x.ServerKey == CommonSystemUtilities.GetServerKey(ctx));
-            return worker?.SearchInDocument(text,  documentId);
+            return GetWorker(ctx)?.SearchInDocument(text,  documentId);
         }
 
         protected override void InitializeServers()
@@ -98,68 +154,106 @@ namespace BL.Logic.SystemServices.FullTextSearch
             var worker = _workers.FirstOrDefault(x => x.ServerKey == CommonSystemUtilities.GetServerKey(ctx));
             if (worker == null) return;
 
-            var toUpdate = _systemDb.FullTextIndexPrepare(ctx) as List<FullTextIndexItem>;
-            if (toUpdate == null || !toUpdate.Any()) return;
             var processedIds = new List<int>();
+
             worker.StartUpdate();
-
-            var newItem = toUpdate.Where(x => x.OperationType == EnumOperationType.AddNew).ToList();
-            foreach (var itm in newItem)
+            try
             {
-                try
+                var toDelete = _systemDb.FullTextIndexToDeletePrepare(ctx);
+                if (toDelete.Any())
                 {
-                    var toDelete =
-                        toUpdate.FirstOrDefault(
-                            x =>
-                                x.DocumentId == itm.DocumentId && x.ItemType == itm.ItemType &&
-                                x.ObjectId == itm.ObjectId && x.OperationType == EnumOperationType.Delete);
-                    if (toDelete != null)
+                    foreach (var itm in toDelete)
                     {
-                        toUpdate.Remove(toDelete);
+                        try
+                        {
+                            worker.DeleteItem(itm);
+                            processedIds.Add(itm.Id);
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.Error(ctx, $"FullTextService cannot process docId={itm.DocumentId} ", ex);
+                        }
                     }
-                    else
+                    _systemDb.FullTextIndexDeleteProcessed(ctx, processedIds, true);
+                    processedIds.Clear();
+                }
+
+                var toUpdateNonDocuments =
+                    _systemDb.FullTextIndexNonDocumentsReindexDbPrepare(ctx) as List<FullTextIndexItem>;
+                if (toUpdateNonDocuments.Any())
+                {
+                    foreach (var itm in toDelete)
                     {
-                        worker.AddNewItem(itm);
+                        try
+                        {
+                            switch (itm.OperationType)
+                            {
+                                case EnumOperationType.AddNew:
+                                    worker.AddNewItem(itm);
+                                    break;
+                                case EnumOperationType.Update:
+                                    worker.UpdateItem(itm);
+                                    break;
+                            }
+                            processedIds.Add(itm.Id);
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.Error(ctx, $"FullTextService cannot process docId={itm.DocumentId} ", ex);
+                        }
                     }
-                    processedIds.Add(itm.Id);
+                    _systemDb.FullTextIndexDeleteProcessed(ctx, processedIds);
+                    processedIds.Clear();
                 }
-                catch (Exception ex)
-                {
-                    _logger.Error(ctx, $"FullTextService cannot process docId={itm.DocumentId} ", ex);
-                }
-            }
 
-            var deletedItem = toUpdate.Where(x => x.OperationType == EnumOperationType.Delete).ToList();
-            foreach (var itm in deletedItem)
-            {
-                try
+                var objToProcess = new EnumObjects[]
                 {
-                    worker.DeleteItem(itm);
-                    toUpdate.RemoveAll(x =>
-                            x.DocumentId == itm.DocumentId && x.ItemType == itm.ItemType && x.ObjectId == itm.ObjectId &&
-                            x.OperationType == EnumOperationType.Update);
-                    processedIds.Add(itm.Id);
-                }
-                catch (Exception ex)
-                {
-                    _logger.Error(ctx, $"FullTextService cannot process docId={itm.DocumentId} ", ex);
-                }
-            }
+                    EnumObjects.Documents, EnumObjects.DocumentEvents, EnumObjects.DocumentSendLists,
+                    EnumObjects.DocumentSubscriptions, EnumObjects.DocumentFiles
+                };
 
-            foreach (var itm in toUpdate.Where(x => x.OperationType == EnumOperationType.Update))
-            {
-                try
+                var maxId = _systemDb.GetCurrentMaxCasheId(ctx);
+
+                foreach (var objType in objToProcess)
                 {
-                    worker.UpdateItem(itm);
-                    processedIds.Add(itm.Id);
+                    var toUpdate = _systemDb.FullTextIndexDocumentsPrepare(ctx, objType, MAX_ROW_PROCESS, maxId);
+                    while (toUpdate.Any())
+                    {
+                        foreach (var itm in toUpdate)
+                        {
+                            try
+                            {
+                                switch (itm.OperationType)
+                                {
+                                    case EnumOperationType.AddNew:
+                                        worker.AddNewItem(itm);
+                                        break;
+                                    case EnumOperationType.Update:
+                                        worker.UpdateItem(itm);
+                                        break;
+                                }
+                                processedIds.Add(itm.Id);
+                            }
+                            catch (Exception ex)
+                            {
+                                _logger.Error(ctx, $"FullTextService cannot process docId={itm.DocumentId} ", ex);
+                            }
+                        }
+                        _systemDb.FullTextIndexDeleteProcessed(ctx, processedIds);
+                        processedIds.Clear();
+                        toUpdate = _systemDb.FullTextIndexDocumentsPrepare(ctx, objType, MAX_ROW_PROCESS, maxId);
+                    }
                 }
-                catch (Exception ex)
-                {
-                    _logger.Error(ctx, $"FullTextService cannot process docId={itm.DocumentId} ", ex);
-                }
+
             }
-            worker.CommitChanges();
-            _systemDb.FullTextIndexDeleteProcessed(ctx, processedIds);
+            catch (Exception ex)
+            {
+                _logger.Error(ctx, "FullTextService raise an exception when process cash. ", ex);
+            }
+            finally
+            {
+                worker.CommitChanges();
+            }
         }
 
         private void OnSinchronize(object state)
