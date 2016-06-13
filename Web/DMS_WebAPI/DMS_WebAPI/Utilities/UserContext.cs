@@ -53,8 +53,6 @@ namespace DMS_WebAPI.Utilities
         /// <returns>Typed setting value.</returns>
         public IContext Get(int? currentPositionId = null)
         {
-            var time = new System.Diagnostics.Stopwatch();
-
             string token = Token.ToLower();
             if (!_casheContexts.ContainsKey(token))
             {
@@ -72,11 +70,7 @@ namespace DMS_WebAPI.Utilities
                     throw new LicenceError();
                 }
 
-                //time.Start();
                 //VerifyNumberOfConnections(ctx, ctx.CurrentClientId);
-                //time.Stop();
-                //BL.CrossCutting.Helpers.Logger.SaveToFile("UC:UserContext", time.Elapsed);
-                //time.Reset();
 
                 contextValue.LastUsage = DateTime.Now;
 

@@ -20,17 +20,9 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns>Массив команд</returns>
         public IHttpActionResult Get(int id)
         {
-            var timeM = new System.Diagnostics.Stopwatch();
-            var timeDB = new System.Diagnostics.Stopwatch();
-            timeM.Start();
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var cmdService = DmsResolver.Current.Get<ICommandService>();
-            timeDB.Start();
             var actions = cmdService.GetDocumentActions(ctx, id);
-            timeDB.Stop();
-            timeM.Stop();
-            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController Get List", timeM.Elapsed);
-            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService GetDocumentActionsPrepare", timeDB.Elapsed);
 
             return new JsonResult(actions, this);
         }
@@ -44,19 +36,9 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult DeleteFavourite(ChangeFavourites model)
         {
-            var timeM = new System.Diagnostics.Stopwatch();
-            var timeDB = new System.Diagnostics.Stopwatch();
-            timeM.Start();
-
             var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            timeDB.Start();
             docProc.ExecuteAction(EnumDocumentActions.DeleteFavourite, ctx, model);
-            timeDB.Stop();
-
-            timeM.Stop();
-            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController DeleteFavourite", timeM.Elapsed);
-            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService DeleteFavourite", timeDB.Elapsed);
 
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(model.DocumentId);
@@ -70,19 +52,9 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult AddFavourite(ChangeFavourites model)
         {
-            var timeM = new System.Diagnostics.Stopwatch();
-            var timeDB = new System.Diagnostics.Stopwatch();
-            timeM.Start();
-
             var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            timeDB.Start();
             docProc.ExecuteAction(EnumDocumentActions.AddFavourite, ctx, model);
-            timeDB.Stop();
-
-            timeM.Stop();
-            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController AddFavourite", timeM.Elapsed);
-            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService AddFavourite", timeDB.Elapsed);
 
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(model.DocumentId);
@@ -116,19 +88,9 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult RegisterDocument(RegisterDocument model)
         {
-            var timeM = new System.Diagnostics.Stopwatch();
-            var timeDB = new System.Diagnostics.Stopwatch();
-            timeM.Start();
-
             var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            timeDB.Start();
             docProc.ExecuteAction(EnumDocumentActions.RegisterDocument, ctx, model);
-            timeDB.Stop();
-
-            timeM.Stop();
-            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController RegisterDocument", timeM.Elapsed);
-            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService RegisterDocument", timeDB.Elapsed);
 
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(model.DocumentId);
@@ -142,18 +104,9 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult AddDocumentLink(AddDocumentLink model)
         {
-            var timeM = new System.Diagnostics.Stopwatch();
-            var timeDB = new System.Diagnostics.Stopwatch();
-            timeM.Start();
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            timeDB.Start();
             docProc.ExecuteAction(EnumDocumentActions.AddDocumentLink, ctx, model);
-            timeDB.Stop();
-
-            timeM.Stop();
-            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController AddDocumentLink", timeM.Elapsed);
-            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService AddDocumentLink", timeDB.Elapsed);
 
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(model.DocumentId);
@@ -168,18 +121,9 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult DeleteDocumentLink(int id)
         {
-            var timeM = new System.Diagnostics.Stopwatch();
-            var timeDB = new System.Diagnostics.Stopwatch();
-            timeM.Start();
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            timeDB.Start();
             docProc.ExecuteAction(EnumDocumentActions.DeleteDocumentLink, ctx, id);
-            timeDB.Stop();
-
-            timeM.Stop();
-            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController DeleteDocumentLink", timeM.Elapsed);
-            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService DeleteDocumentLink", timeDB.Elapsed);
 
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(id);
@@ -194,18 +138,9 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult StartWork(ChangeWorkStatus model)
         {
-            var timeM = new System.Diagnostics.Stopwatch();
-            var timeDB = new System.Diagnostics.Stopwatch();
-            timeM.Start();
             var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            timeDB.Start();
             docProc.ExecuteAction(EnumDocumentActions.StartWork, ctx, model);
-            timeDB.Stop();
-
-            timeM.Stop();
-            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController StartWork", timeM.Elapsed);
-            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService StartWork", timeDB.Elapsed);
 
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(model.DocumentId);
@@ -220,18 +155,9 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult FinishWork(ChangeWorkStatus model)
         {
-            var timeM = new System.Diagnostics.Stopwatch();
-            var timeDB = new System.Diagnostics.Stopwatch();
-            timeM.Start();
             var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            timeDB.Start();
             docProc.ExecuteAction(EnumDocumentActions.FinishWork, ctx, model);
-            timeDB.Stop();
-
-            timeM.Stop();
-            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController FinishWork", timeM.Elapsed);
-            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService FinishWork", timeDB.Elapsed);
 
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(model.DocumentId);
@@ -246,18 +172,9 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult SendMessage(SendMessage model)
         {
-            var timeM = new System.Diagnostics.Stopwatch();
-            var timeDB = new System.Diagnostics.Stopwatch();
-            timeM.Start();
             var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            timeDB.Start();
             docProc.ExecuteAction(EnumDocumentActions.SendMessage, ctx, model);
-            timeDB.Stop();
-
-            timeM.Stop();
-            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController SendMessage", timeM.Elapsed);
-            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService SendMessage", timeDB.Elapsed);
 
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(model.DocumentId);
@@ -272,18 +189,9 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult AddNote(AddNote model)
         {
-            var timeM = new System.Diagnostics.Stopwatch();
-            var timeDB = new System.Diagnostics.Stopwatch();
-            timeM.Start();
             var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            timeDB.Start();
             docProc.ExecuteAction(EnumDocumentActions.AddNote, ctx, model);
-            timeDB.Stop();
-
-            timeM.Stop();
-            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController AddNote", timeM.Elapsed);
-            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService AddDocumentComment", timeDB.Elapsed);
 
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(model.DocumentId);
@@ -298,18 +206,9 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult ControlOn(ControlOn model)
         {
-            var timeM = new System.Diagnostics.Stopwatch();
-            var timeDB = new System.Diagnostics.Stopwatch();
-            timeM.Start();
             var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            timeDB.Start();
             docProc.ExecuteAction(EnumDocumentActions.ControlOn, ctx, model);
-            timeDB.Stop();
-
-            timeM.Stop();
-            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController ControlOn", timeM.Elapsed);
-            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService ControlOn", timeDB.Elapsed);
 
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(model.DocumentId);
@@ -324,18 +223,9 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult ControlChange(ControlChange model)
         {
-            var timeM = new System.Diagnostics.Stopwatch();
-            var timeDB = new System.Diagnostics.Stopwatch();
-            timeM.Start();
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            timeDB.Start();
             var documentId = (int)docProc.ExecuteAction(EnumDocumentActions.ControlChange, ctx, model);
-            timeDB.Stop();
-
-            timeM.Stop();
-            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController ControlChange", timeM.Elapsed);
-            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService ControlChange", timeDB.Elapsed);
 
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(documentId);
@@ -351,18 +241,9 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult SendForExecutionChange(ControlChange model)
         {
-            var timeM = new System.Diagnostics.Stopwatch();
-            var timeDB = new System.Diagnostics.Stopwatch();
-            timeM.Start();
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            timeDB.Start();
             var documentId = (int)docProc.ExecuteAction(EnumDocumentActions.SendForExecutionChange, ctx, model);
-            timeDB.Stop();
-
-            timeM.Stop();
-            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController SendForExecutionChange", timeM.Elapsed);
-            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService SendForExecutionChange", timeDB.Elapsed);
 
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(documentId);
@@ -377,18 +258,9 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult SendForControlChange(ControlChange model)
         {
-            var timeM = new System.Diagnostics.Stopwatch();
-            var timeDB = new System.Diagnostics.Stopwatch();
-            timeM.Start();
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            timeDB.Start();
             var documentId = (int)docProc.ExecuteAction(EnumDocumentActions.SendForControlChange, ctx, model);
-            timeDB.Stop();
-
-            timeM.Stop();
-            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController SendForControlChange", timeM.Elapsed);
-            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService SendForControlChange", timeDB.Elapsed);
 
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(documentId);
@@ -403,18 +275,9 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult SendForResponsibleExecutionChange(ControlChange model)
         {
-            var timeM = new System.Diagnostics.Stopwatch();
-            var timeDB = new System.Diagnostics.Stopwatch();
-            timeM.Start();
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            timeDB.Start();
             var documentId = (int)docProc.ExecuteAction(EnumDocumentActions.SendForResponsibleExecutionChange, ctx, model);
-            timeDB.Stop();
-
-            timeM.Stop();
-            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController SendForResponsibleExecutionChange", timeM.Elapsed);
-            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService SendForResponsibleExecutionChange", timeDB.Elapsed);
 
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(documentId);
@@ -429,18 +292,9 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult ControlTargetChange(ControlTargetChange model)
         {
-            var timeM = new System.Diagnostics.Stopwatch();
-            var timeDB = new System.Diagnostics.Stopwatch();
-            timeM.Start();
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            timeDB.Start();
             var documentId = (int)docProc.ExecuteAction(EnumDocumentActions.ControlTargetChange, ctx, model);
-            timeDB.Stop();
-
-            timeM.Stop();
-            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController ControlTargetChange", timeM.Elapsed);
-            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService ControlTargetChange", timeDB.Elapsed);
 
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(documentId);
@@ -455,18 +309,9 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult ControlOff(ControlOff model)
         {
-            var timeM = new System.Diagnostics.Stopwatch();
-            var timeDB = new System.Diagnostics.Stopwatch();
-            timeM.Start();
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            timeDB.Start();
             var documentId = (int)docProc.ExecuteAction(EnumDocumentActions.ControlOff, ctx, model);
-            timeDB.Stop();
-
-            timeM.Stop();
-            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController ControlOff", timeM.Elapsed);
-            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService ControlOff", timeDB.Elapsed);
 
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(documentId);
@@ -481,19 +326,10 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult CopyDocument(CopyDocument model)
         {
-            var timeM = new System.Diagnostics.Stopwatch();
-            var timeDB = new System.Diagnostics.Stopwatch();
-            timeM.Start();
             var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            timeDB.Start();
             var docId = (int)docProc.ExecuteAction(EnumDocumentActions.CopyDocument, ctx, model);
-            timeDB.Stop();
-
-            timeM.Stop();
-            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController CopyDocument", timeM.Elapsed);
-            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService CopyDocument", timeDB.Elapsed);
-
+            
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(docId);
         }
@@ -506,19 +342,9 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult ChangeExecutor(ChangeExecutor model)
         {
-            var timeM = new System.Diagnostics.Stopwatch();
-            var timeDB = new System.Diagnostics.Stopwatch();
-            timeM.Start();
-
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            timeDB.Start();
             docProc.ExecuteAction(EnumDocumentActions.ChangeExecutor, ctx, model);
-            timeDB.Stop();
-
-            timeM.Stop();
-            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController ChangeExecutor", timeM.Elapsed);
-            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService ChangeExecutor", timeDB.Elapsed);
 
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(model.DocumentId);
@@ -533,19 +359,9 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult ChangePosition(ChangePosition model)
         {
-            var timeM = new System.Diagnostics.Stopwatch();
-            var timeDB = new System.Diagnostics.Stopwatch();
-            timeM.Start();
-
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            timeDB.Start();
             docProc.ExecuteAction(EnumDocumentActions.ChangePosition, ctx, model);
-            timeDB.Stop();
-
-            timeM.Stop();
-            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController ChangePosition", timeM.Elapsed);
-            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService ChangePosition", timeDB.Elapsed);
 
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(model.DocumentId);
@@ -560,21 +376,11 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult LaunchPlan(int id)
         {
-            var timeM = new System.Diagnostics.Stopwatch();
-            var timeDB = new System.Diagnostics.Stopwatch();
-            timeM.Start();
-
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            timeDB.Start();
             //TODO change
             docProc.ExecuteAction(EnumDocumentActions.LaunchPlan, ctx, id);
-            timeDB.Stop();
-
-            timeM.Stop();
-            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController LaunchPlan", timeM.Elapsed);
-            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService LaunchPlan", timeDB.Elapsed);
-
+            
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(id);
         }
@@ -588,20 +394,10 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult MarkDocumentEventAsRead(MarkDocumentEventAsRead model)
         {
-            var timeM = new System.Diagnostics.Stopwatch();
-            var timeDB = new System.Diagnostics.Stopwatch();
-            timeM.Start();
-
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            timeDB.Start();
             docProc.ExecuteAction(EnumDocumentActions.MarkDocumentEventAsRead, ctx, model);
-            timeDB.Stop();
-
-            timeM.Stop();
-            //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentActionsController MarkDocumentEventAsRead", timeM.Elapsed);
-            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentOperationsService MarkDocumentEventAsRead", timeDB.Elapsed);
-
+            
             return new JsonResult(null, this);
         }
 
