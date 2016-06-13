@@ -42,9 +42,6 @@ namespace DMS_WebAPI.Utilities
         {
             if (!VerifyLicenceKey(regCode, licence.LicenceKey))
             {
-                //TODO
-                //if (licence.IsTrial)
-                //{
                 if (ctx != null)
                 {
                     try
@@ -60,11 +57,6 @@ namespace DMS_WebAPI.Utilities
                         throw new LicenceError();
                     }
                 }
-                //}
-                //else
-                //{
-                //    throw new LicenceError();
-                //}
             }
 
             VerifyLicenceInfo(licence);

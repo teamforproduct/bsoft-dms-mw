@@ -67,7 +67,7 @@ namespace DMS_WebAPI.Utilities
             {
                 var ctx = (IContext)contextValue.StoreObject;
 
-                if (!(ctx.ClientLicence?.IsActive??true))
+                if (!(ctx.ClientLicence?.IsActive ?? true))
                 {
                     throw new LicenceError();
                 }
@@ -271,38 +271,39 @@ namespace DMS_WebAPI.Utilities
                 lic.ConcurenteNumberOfConnectionsNow = qry.Count();
             }
 
-            var isVerifyLicence = true;
+            object licenceError = null;
 
             try
             {
                 new Licences().Verify(regCode, lic, context);
             }
-            catch (LicenceError)
+            catch (LicenceError ex)
             {
-                isVerifyLicence = false;
+                licenceError = ex;
             }
-            catch (LicenceExpired)
+            catch (LicenceExpired ex)
             {
-                isVerifyLicence = false;
+                licenceError = ex;
             }
-            catch (LicenceExceededNumberOfRegisteredUsers)
+            catch (LicenceExceededNumberOfRegisteredUsers ex)
             {
-                isVerifyLicence = false;
+                licenceError = ex;
             }
-            catch (LicenceExceededNumberOfConnectedUsers)
+            catch (LicenceExceededNumberOfConnectedUsers ex)
             {
-                isVerifyLicence = false;
+                //TODO
+                licenceError = ex;
             }
             catch (Exception ex)
             {
-                isVerifyLicence = false;
+                licenceError = ex;
             }
 
-            if (!isVerifyLicence)
+            if (licenceError != null)
             {
                 foreach (var user in clientUsers)
                 {
-                    user.ClientLicence.IsActive = false;
+                    user.ClientLicence.LicenceError = licenceError;
                 }
             }
         }

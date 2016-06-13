@@ -871,15 +871,21 @@ namespace BL.Database.Documents
 
                 docs.ForEach(x => CommonQueries.ChangeRegistrationFullNumber(x));
 
-                var accs = acc.ToList();
-
-                foreach (var doc in docs)
                 {
-                    doc.Accesses = accs.Where(x => x.DocumentId == doc.Id).ToList();
-                    doc.IsFavourite = doc.Accesses.Any(x => x.IsFavourite);
-                    doc.IsInWork = doc.Accesses.Any(x => x.IsInWork);
-                    //doc.AccessLevel = doc.Accesses.Max(x => x.AccessLevel);
-                    //doc.AccessLevelName = doc.Accesses.FirstOrDefault(x => x.AccessLevel == doc.AccessLevel).AccessLevelName;
+                    var filterContains = PredicateBuilder.False<FrontDocumentAccess>();
+                    filterContains = docs.Select(x=>x.Id).Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.DocumentId == value).Expand());
+
+                    var accs = acc.Where(filterContains).ToList();
+
+                    foreach (var doc in docs)
+                    {
+                        doc.Accesses = accs.Where(x => x.DocumentId == doc.Id).ToList();
+                        doc.IsFavourite = doc.Accesses.Any(x => x.IsFavourite);
+                        doc.IsInWork = doc.Accesses.Any(x => x.IsInWork);
+                        //doc.AccessLevel = doc.Accesses.Max(x => x.AccessLevel);
+                        //doc.AccessLevelName = doc.Accesses.FirstOrDefault(x => x.AccessLevel == doc.AccessLevel).AccessLevelName;
+                    }
                 }
 
                 docs.GroupJoin(CommonQueries.GetDocumentTags(dbContext, ctx, new FilterDocumentTag { DocumentId = docs.Select(x => x.Id).ToList(), CurrentPositionsId = ctx.CurrentPositionsIdList }),

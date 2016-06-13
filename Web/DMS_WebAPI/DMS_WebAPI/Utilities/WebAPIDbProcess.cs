@@ -383,7 +383,6 @@ namespace DMS_WebAPI.Utilities
                     LicenceKey = x.LicenceKey,
 
                     IsActive = x.IsActive,
-                    IsTrial = x.IsTrial
                 }).ToList();
 
                 return items;
