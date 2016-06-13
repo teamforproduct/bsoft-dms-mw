@@ -44,6 +44,10 @@ namespace DMS_WebAPI.Controllers.Documents
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docFileProc = DmsResolver.Current.Get<IDocumentFileService>();
+            if (paging == null)
+            {
+                paging = new UIPaging();
+            }
             var res = new JsonResult(docFileProc.GetDocumentFiles(ctx, filter, paging), this);
             res.Paging = paging;
             return res;

@@ -275,8 +275,8 @@ namespace BL.Database.Common
                 filterTaskAccessesContains = ctx.CurrentPositionsIdList.Aggregate(filterTaskAccessesContains,
                     (current, value) => current.Or(e => e.PositionId == value).Expand());
 
-                qry = qry.Where(filterPositionContains)
-                         .Union(qry.Where(x => x.IsAvailableWithinTask && x.TaskId.HasValue && x.Task.TaskAccesses.AsQueryable().Any(filterTaskAccessesContains)));
+                qry = qry.Where(x => !x.IsAvailableWithinTask).Where(filterPositionContains)
+                         .Concat(qry.Where(x => x.IsAvailableWithinTask && x.TaskId.HasValue && x.Task.TaskAccesses.AsQueryable().Any(filterTaskAccessesContains)));
 
                 var filterContains = PredicateBuilder.False<DocumentAccesses>();
                 filterContains = ctx.CurrentPositionsIdList.Aggregate(filterContains,
@@ -306,8 +306,8 @@ namespace BL.Database.Common
                 filterOnEventTaskAccessesContains = ctx.CurrentPositionsIdList.Aggregate(filterOnEventTaskAccessesContains,
                     (current, value) => current.Or(e => e.PositionId == value).Expand());
 
-                qry = qry.Where(filterOnEventPositionsContains)
-                        .Union(qry.Where(x => x.OnEvent.IsAvailableWithinTask && x.OnEvent.TaskId.HasValue &&
+                qry = qry.Where(x => !x.OnEvent.IsAvailableWithinTask).Where(filterOnEventPositionsContains)
+                        .Concat(qry.Where(x => x.OnEvent.IsAvailableWithinTask && x.OnEvent.TaskId.HasValue &&
                         x.OnEvent.Task.TaskAccesses.AsQueryable().Any(filterOnEventTaskAccessesContains)));
 
                 var filterContains = PredicateBuilder.False<DocumentAccesses>();
