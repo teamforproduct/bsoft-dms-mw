@@ -17,6 +17,7 @@ namespace BL.Model.DictionaryCore.InternalModel
         {
             Id = model.Id;
             FullName = model.FullName;
+            ShortName = model.ShortName;
             TaxCode = model.TaxCode;
             Description = model.Description;
             OKPOCode = model.OKPOCode;

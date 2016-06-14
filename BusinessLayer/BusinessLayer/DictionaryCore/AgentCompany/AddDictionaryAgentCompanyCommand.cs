@@ -35,12 +35,12 @@ namespace BL.Logic.DictionaryCore
             _admin.VerifyAccess(_context, CommandType, false, true);
             var agents = _dictDb.GetAgentCompanies(_context, new FilterDictionaryAgentCompany
             {
-                TaxCode = Model.TaxCode,
-                OKPOCode=Model.OKPOCode,
-                VATCode=Model.VATCode
+                TaxCodeExact = Model.TaxCode,
+                OKPOCodeExact=Model.OKPOCode,
+                VATCodeExact= Model.VATCode
             },null);
 
-            if (agents.Count() > 0)
+            if (agents.Any())
             {
                 throw new DictionaryRecordNotUnique();
             }

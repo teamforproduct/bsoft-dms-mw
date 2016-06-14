@@ -265,14 +265,15 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public void UpdateAgentName(IContext context, int Id, string newName)
+        public void UpdateAgentName(IContext context, int id, string newName)
         {
             using (var dbContext = new DmsContext(context))
             {
-                var agent = GetAgent(context, Id);
+                var agent = GetAgent(context, id);
                 var ddt = new DictionaryAgents
                 {
                     ClientId = context.CurrentClientId,
+                    Id=id,
                     Name = newName,
                     ResidentTypeId = agent.ResidentTypeId,
                     IsBank = agent.IsBank,
@@ -287,7 +288,7 @@ namespace BL.Database.Dictionaries
                 dbContext.DictionaryAgentsSet.Attach(ddt);
                 var entity = dbContext.Entry(ddt);
 
-                CommonQueries.AddFullTextCashInfo(dbContext, Id, EnumObjects.DictionaryAgents, EnumOperationType.Update);
+                CommonQueries.AddFullTextCashInfo(dbContext, id, EnumObjects.DictionaryAgents, EnumOperationType.Update);
                 entity.State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
             }
@@ -1454,6 +1455,21 @@ namespace BL.Database.Dictionaries
                     }
                 }
 
+                if (!string.IsNullOrEmpty(filter.TaxCodeExact))
+                {
+                    qry = qry.Where(x => x.TaxCode == filter.TaxCodeExact);
+                }
+
+                if (!string.IsNullOrEmpty(filter.OKPOCodeExact))
+                {
+                    qry = qry.Where(x => x.OKPOCode == filter.OKPOCodeExact);
+                }
+
+                if (!string.IsNullOrEmpty(filter.VATCodeExact))
+                {
+                    qry = qry.Where(x => x.VATCode == filter.VATCodeExact);
+                }
+
                 return qry.Select(x => new FrontDictionaryAgentCompany
                 {
                     Id = x.Id,
@@ -1504,7 +1520,9 @@ namespace BL.Database.Dictionaries
                         Id = t.Id,
                         FirstName = t.FirstName,
                         LastName = t.LastName,
-                        MiddleName = t.MiddleName
+                        MiddleName = t.MiddleName,
+                        IsActive=t.IsActive,
+                        IsMale=t.IsMale
                     })
 
                 }).ToList();
