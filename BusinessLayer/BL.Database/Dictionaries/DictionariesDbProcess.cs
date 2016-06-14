@@ -1775,20 +1775,8 @@ namespace BL.Database.Dictionaries
 
                 qry = qry.Where(x => x.Agent.IsBank);
 
-                // Пагинация
-                if (paging != null)
-                {
-                    paging.TotalItemsCount = qry.Count();
-
-                    if (!paging.IsAll)
-                    {
-                        var skip = paging.PageSize * (paging.CurrentPage - 1);
-                        var take = paging.PageSize;
-
-                        qry = qry.OrderBy(x => x.Agent.Name)
-                            .Skip(() => skip).Take(() => take);
-                    }
-                }
+               
+                
 
                 // Список первичных ключей
                 if (filter.IDs?.Count > 0)
@@ -1830,6 +1818,27 @@ namespace BL.Database.Dictionaries
                     foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.MFOCode))
                     {
                         qry = qry.Where(x => x.MFOCode.Contains(temp));
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(filter.MFOCodeExact))
+                {
+                    
+                    qry = qry.Where(x => x.MFOCode==filter.MFOCodeExact);
+                    
+                }
+
+                if (paging != null)
+                {
+                    paging.TotalItemsCount = qry.Count();
+
+                    if (!paging.IsAll)
+                    {
+                        var skip = paging.PageSize * (paging.CurrentPage - 1);
+                        var take = paging.PageSize;
+
+                        qry = qry.OrderBy(x => x.Agent.Name)
+                            .Skip(() => skip).Take(() => take);
                     }
                 }
 
