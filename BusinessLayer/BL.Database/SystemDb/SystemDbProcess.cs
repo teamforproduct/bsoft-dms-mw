@@ -638,7 +638,7 @@ namespace BL.Database.SystemDb
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                return dbContext.FullTextIndexCashSet.Max(x => x.Id);
+                return dbContext.FullTextIndexCashSet.Any()?dbContext.FullTextIndexCashSet.Max(x => x.Id):0;
             }
         }
 
@@ -1885,6 +1885,15 @@ namespace BL.Database.SystemDb
                 dbContext.FullTextIndexCashSet.RemoveRange(
                     dbContext.FullTextIndexCashSet.Where(x => processedIds.Contains(x.Id)));
                 dbContext.SaveChanges();
+            }
+        }
+
+        public void FullTextIndexDeleteCash(IContext ctx, int deleteBis)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                //that is totaly wrong but delete 10000 elements with normal EF method is madness
+                dbContext.Database.ExecuteSqlCommand("DELETE FROM [DMS].[FullTextIndexCashes] WHERE [Id] <="+deleteBis);
             }
         }
 

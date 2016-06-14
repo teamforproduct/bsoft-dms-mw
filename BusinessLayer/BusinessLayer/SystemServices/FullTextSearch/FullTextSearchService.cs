@@ -13,8 +13,9 @@ namespace BL.Logic.SystemServices.FullTextSearch
 {
     public class FullTextSearchService : BaseSystemWorkerService, IFullTextSearchService
     {
-        private const int MAX_ROW_PROCESS = 1000;
+        private const int MAX_ROW_PROCESS = 5000;
         private readonly Dictionary<FullTextSettings, Timer> _timers;
+        private List<Timer> _stopTimersList = new List<Timer>();
         List<IFullTextIndexWorker> _workers;
         ISystemDbProcess _systemDb;
 
@@ -27,13 +28,23 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
         public void ReindexDatabase(IContext ctx)
         {
-            var worker = _workers.FirstOrDefault(x => x.ServerKey == CommonSystemUtilities.GetServerKey(ctx));
+            var dbKey = CommonSystemUtilities.GetServerKey(ctx);
+            var worker = _workers.FirstOrDefault(x => x.ServerKey == dbKey);
             if (worker == null) return;
-            
+
+            var md = _timers.Keys.First(x => x.DatabaseKey == dbKey);
+
+            if (md == null) return;
+
+            var tmr = GetTimer(md);
+            tmr.Change(Timeout.Infinite, Timeout.Infinite); // stop the timer. But that should be checked. Probably timer event can be rased ones more
+            _stopTimersList.Add(tmr); // to avoid additional raise of timer event
+            //initiate the update of FT
             worker.StartUpdate();
             try
             {
                 int offset =0;
+                var currCashId = _systemDb.GetCurrentMaxCasheId(ctx);
                 var objToProcess = new EnumObjects[]
                 {
                     EnumObjects.Documents, EnumObjects.DocumentEvents, EnumObjects.DocumentSendLists,
@@ -72,6 +83,9 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 {
                     worker.AddNewItem(itm);
                 }
+
+                //delete cash in case we just processed all that documents
+                _systemDb.FullTextIndexDeleteCash(ctx, currCashId);
             }
             catch (Exception ex)
             {
@@ -81,7 +95,8 @@ namespace BL.Logic.SystemServices.FullTextSearch
             {
                 worker.CommitChanges();
             }
-            
+
+            tmr.Change(md.TimeToUpdate * 60000, Timeout.Infinite); //start new iteration of the timer
         }
 
         private IFullTextIndexWorker GetWorker(IContext ctx)
@@ -178,11 +193,10 @@ namespace BL.Logic.SystemServices.FullTextSearch
                     processedIds.Clear();
                 }
 
-                var toUpdateNonDocuments =
-                    _systemDb.FullTextIndexNonDocumentsReindexDbPrepare(ctx) as List<FullTextIndexItem>;
+                var toUpdateNonDocuments =_systemDb.FullTextIndexNonDocumentsPrepare(ctx) as List<FullTextIndexItem>;
                 if (toUpdateNonDocuments.Any())
                 {
-                    foreach (var itm in toDelete)
+                    foreach (var itm in toUpdateNonDocuments)
                     {
                         try
                         {
@@ -263,6 +277,9 @@ namespace BL.Logic.SystemServices.FullTextSearch
             if (md == null) return;
 
             var tmr = GetTimer(md);
+
+            if (_stopTimersList.Contains(tmr)) return;
+
             var ctx = GetAdminContext(md.DatabaseKey);
 
             if (ctx == null) return;

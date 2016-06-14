@@ -128,7 +128,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
             var conditionQry = parser.Parse(text);
             var idQry = NumericRangeQuery.NewIntRange(FIELD_DOC_ID, 1, null, true, true);
-            var query = conditionQry.Combine(new Query[] {conditionQry, idQry});
+            var query = conditionQry.Combine(new [] {conditionQry, idQry});
             var qryRes = _searcher.Search(query, 100);
             var searchResult = new List<FullTextSearchResult>();
 

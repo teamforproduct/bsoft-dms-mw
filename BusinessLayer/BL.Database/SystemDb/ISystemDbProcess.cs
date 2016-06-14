@@ -78,9 +78,11 @@ namespace BL.Database.SystemDb
         IEnumerable<FullTextIndexItem> FullTextIndexDocumentsReindexDbPrepare(IContext ctx, EnumObjects objType, int rowToSelect, int rowOffset);
         IEnumerable<FullTextIndexItem> FullTextIndexNonDocumentsReindexDbPrepare(IContext ctx);
         IEnumerable<FullTextIndexItem> FullTextIndexDocumentsPrepare(IContext ctx, EnumObjects objType, int rowToSelect, int selectBis);
+        IEnumerable<FullTextIndexItem> FullTextIndexNonDocumentsPrepare(IContext ctx);
         IEnumerable<FullTextIndexItem> FullTextIndexToDeletePrepare(IContext ctx);
         void FullTextIndexDeleteProcessed(IContext ctx, IEnumerable<int> processedIds, bool deleteSimilarObject = false);
         void DeleteRelatedToDocumentRecords(IContext ctx, IEnumerable<int> docIds, int? deleteBis = null);
+        void FullTextIndexDeleteCash(IContext ctx, int deleteBis);
 
         #endregion
     }
