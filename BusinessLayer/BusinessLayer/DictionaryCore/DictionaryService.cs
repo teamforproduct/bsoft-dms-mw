@@ -510,7 +510,31 @@ namespace BL.Logic.DictionaryCore
 
         public IEnumerable<FrontDictionaryDocumentType> GetDictionaryDocumentTypes(IContext context, FilterDictionaryDocumentType filter)
         {
-            return _dictDb.GetDocumentTypes(context, filter);
+
+            var newFilter = new FilterDictionaryDocumentType();
+
+            if (!String.IsNullOrEmpty(filter.FullTextSearchString))
+            {
+
+                var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
+                var ftRes = ftService.SearchDictionary(context, filter.FullTextSearchString)
+                    .Where(x => x.ObjectType == EnumObjects.DictionaryAddressType);
+
+                var resWithRanges =
+                    ftRes.GroupBy(x => x.ObjectId)
+                        .Select(x => new { DocId = x.Key, Rate = x.Count() })
+                        .OrderByDescending(x => x.Rate);
+
+                newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId));
+            }
+            else
+            {
+                newFilter = filter;
+            }
+
+
+            return _dictDb.GetDocumentTypes(context, newFilter);
+            
         }
 
         #endregion DictionaryDocumentTypes

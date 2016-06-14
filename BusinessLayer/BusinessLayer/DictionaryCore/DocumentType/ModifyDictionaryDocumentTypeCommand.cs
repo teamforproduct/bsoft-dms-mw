@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using BL.Logic.Common;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.InternalModel;
@@ -31,7 +32,12 @@ namespace BL.Logic.DictionaryCore
 
             _admin.VerifyAccess(_context, CommandType, false);
 
-            var spr = _dictDb.GetInternalDictionaryDocumentType(_context, new FilterDictionaryDocumentType { Name = Model.Name,IsActive=Model.IsActive });
+            var spr = _dictDb.GetInternalDictionaryDocumentType(_context, new FilterDictionaryDocumentType
+            {
+                NameExact = Model.Name,
+                IsActive =Model.IsActive,
+                NotContainsIDs = new List<int>(Model.Id)
+            });
             if (spr != null)
             {
                 throw new DictionaryRecordNotUnique();

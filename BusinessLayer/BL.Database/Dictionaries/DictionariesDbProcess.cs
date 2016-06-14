@@ -2941,6 +2941,12 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(x => x.Name.Contains(temp));
                 }
             }
+
+            if (!string.IsNullOrEmpty(filter.NameExact))
+            {
+                qry = qry.Where(x => x.Name == filter.NameExact);
+            }
+
             return qry;
         }
         #endregion DictionaryDocumentTypes
