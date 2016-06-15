@@ -35,11 +35,13 @@ namespace BL.Database.Common
             var qry = dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == ctx.CurrentClientId).AsQueryable();
             if (!ctx.IsAdmin)
             {
-                var filterContains = PredicateBuilder.False<DocumentAccesses>();
-                filterContains = ctx.CurrentPositionsIdList.Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.PositionId == value).Expand());
-
-                qry = qry.Where(x => x.Accesses.AsQueryable().Any(filterContains));
+                if (userAccesses == null)
+                {
+                    var filterContains = PredicateBuilder.False<DocumentAccesses>();
+                    filterContains = ctx.CurrentPositionsIdList.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.PositionId == value).Expand());
+                    qry = qry.Where(x => x.Accesses.AsQueryable().Any(filterContains));
+                }
 
                 if (isVerifyExecutorPosition)
                 {
@@ -183,9 +185,13 @@ namespace BL.Database.Common
                 }).ToList();
         }
 
-        public static IQueryable<FrontDocumentAccess> GetDocumentAccesses(IContext ctx, DmsContext dbContext, bool isAll = false)
+        public static IQueryable<FrontDocumentAccess> GetDocumentAccesses(IContext ctx, DmsContext dbContext, bool isAll = false, bool isAddClientFilter = true)
         {
-            var qry = dbContext.DocumentAccessesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).AsQueryable();
+            var qry = dbContext.DocumentAccessesSet.AsQueryable();
+            if (isAddClientFilter)
+            {
+                qry = qry.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId);
+            }
             if (!isAll && !ctx.IsAdmin)
             {
                 var filterContains = PredicateBuilder.False<DocumentAccesses>();
