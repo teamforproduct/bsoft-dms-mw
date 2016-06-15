@@ -891,7 +891,7 @@ namespace BL.Database.Documents
                     filterContains = docs.Select(x => x.Id).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.DocumentId == value).Expand());
 
-                    var accs = acc.Where(filterContains).Select(x => new FrontDocumentAccess
+                    var accs = acc.Where(filterContains).Select(x => new
                     {
                         DocumentId = x.DocumentId,
                         IsFavourite = x.IsFavourite,
