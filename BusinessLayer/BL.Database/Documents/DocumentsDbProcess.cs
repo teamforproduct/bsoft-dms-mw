@@ -42,11 +42,19 @@ namespace BL.Database.Documents
             {
                 var qry = dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == ctx.CurrentClientId).AsQueryable();
 
-                licence.CountDocument = qry.Count();
-                if (licence.CountDocument > 0)
-                    licence.DateFirstDocument = qry.OrderBy(x => x.CreateDate).Select(x => x.CreateDate).FirstOrDefault();
-                else
-                    licence.DateFirstDocument = DateTime.MinValue;
+                var count = qry.Count();
+
+                licence.CountDocument += count;
+
+                if (count>0)
+                {
+                    var dateFirstDocument = qry.OrderBy(x => x.CreateDate).Select(x => x.CreateDate).FirstOrDefault();
+                    if (licence.DateFirstDocument==null|| dateFirstDocument < licence.DateFirstDocument)
+                    {
+                        licence.DateFirstDocument = dateFirstDocument;
+                    }
+
+                }
             }
         }
         public IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging)

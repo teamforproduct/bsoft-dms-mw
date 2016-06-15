@@ -7,10 +7,10 @@ using System.Web.Http.Description;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
-using System;
 using BL.CrossCutting.DependencyInjection;
 using BL.Model.Enums;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace DMS_WebAPI.Controllers.Documents
 {
@@ -33,6 +33,33 @@ namespace DMS_WebAPI.Controllers.Documents
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             //timeDB.Start();
             var docs = docProc.GetDocuments(ctx, filter, paging);
+            //timeDB.Stop();
+            var res = new JsonResult(docs, this);
+            res.Paging = paging;
+            //timeM.Stop();
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentService GetDocuments User: " + ctx.CurrentAgentId, timeDB.Elapsed);
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("M:DocumentsController-GetList", timeM.Elapsed);
+            return res;
+        }
+
+        /// <summary>
+        /// Получение списка документов асинхронно
+        /// </summary>
+        /// <param name="filter">модель фильтра документов</param>
+        /// <param name="paging">paging</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("DocumentsAsync")]
+        [ResponseType(typeof(List<FrontDocument>))] // будет ли это работать при асинхронном вызове? 
+        public async Task<IHttpActionResult> GetAsync([FromUri] FilterDocument filter, [FromUri]UIPaging paging)
+        {
+            //var timeM = new System.Diagnostics.Stopwatch();
+            //var timeDB = new System.Diagnostics.Stopwatch();
+            //timeM.Start();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            //timeDB.Start();
+            var docs = await docProc.GetDocumentsAsync(ctx, filter, paging);
             //timeDB.Stop();
             var res = new JsonResult(docs, this);
             res.Paging = paging;
