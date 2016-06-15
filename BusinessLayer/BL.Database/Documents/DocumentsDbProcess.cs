@@ -62,7 +62,7 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(ctx))
             {
 
-                var acc = CommonQueries.GetDocumentAccesses(ctx, dbContext);
+                var acc = CommonQueries.GetDocumentAccesses(ctx, dbContext,false,false);
                 if (filters.IsInWork.HasValue)
                 {
                     acc = acc.Where(x => x.IsInWork == filters.IsInWork);
@@ -868,10 +868,7 @@ namespace BL.Database.Documents
 
                     AttachedFilesCount = doc.Files.GroupBy(g => g.OrderNumber).Count(),
 
-                    LinkedDocumentsCount = doc.Links
-                    .GroupBy(x => x.LinkId)
-                    .Select(x => x.Count())
-                    .Select(x => x < 2 ? 0 : x - 1).FirstOrDefault()
+                    LinkedDocumentsCount = doc.Links.GroupBy(x => x.LinkId).Select(x => x.Count()).Select(x => x < 2 ? 0 : x - 1).FirstOrDefault()
 
                 });
 
@@ -911,7 +908,7 @@ namespace BL.Database.Documents
             {
                 var qry = CommonQueries.GetDocumentQuery(dbContext, ctx).Where(x => x.Id == documentId);
 
-                var accs = CommonQueries.GetDocumentAccesses(ctx, dbContext).Where(x => x.DocumentId == documentId).ToList();
+                var accs = CommonQueries.GetDocumentAccesses(ctx, dbContext, false, false).Where(x => x.DocumentId == documentId).ToList();
 
                 var res = qry.Select(doc => new FrontDocument
                 {
@@ -1039,7 +1036,7 @@ namespace BL.Database.Documents
                     throw new DocumentNotFoundOrUserHasNoAccess();
                 }
                 var accs =
-                    CommonQueries.GetDocumentAccesses(ctx, dbContext).Where(x => x.DocumentId == doc.Id).ToList();
+                    CommonQueries.GetDocumentAccesses(ctx, dbContext,false,false).Where(x => x.DocumentId == doc.Id).ToList();
 
                 var res = new ReportDocument
                 {
