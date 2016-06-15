@@ -45,10 +45,6 @@ namespace DMS_WebAPI
             //var indexService = DmsResolver.Current.Get<IFullTextSearchService>();
             //indexService.Initialize(dbs);
 
-            //var si = new SystemInfo();
-            //var dbw = new SystemDbWorker();
-            //var cd = si.GetRegCode(dbw.GetLicenceInfo(1));
-
             //TODO
             //var autoPlanService = DmsResolver.Current.Get<IAutoPlanService>();
             //autoPlanService.Initialize(dbs);
