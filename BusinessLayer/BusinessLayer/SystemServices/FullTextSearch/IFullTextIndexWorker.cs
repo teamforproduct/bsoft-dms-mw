@@ -19,6 +19,6 @@ namespace BL.Logic.SystemServices.FullTextSearch
         IEnumerable<FullTextSearchResult> SearchDictionary(string text);
         IEnumerable<FullTextSearchResult> SearchInDocument(string text, int documentId);
 
-        void ReindexDatabase(IEnumerable<FullTextIndexItem> items);
+        void DeleteAllDocuments();
     }
 }

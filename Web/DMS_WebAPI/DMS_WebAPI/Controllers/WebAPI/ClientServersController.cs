@@ -21,12 +21,14 @@ namespace DMS_WebAPI.Controllers.WebAPI
             var items = dbProc.GetClientServers(filter);
             return new JsonResult(items, this);
         }
+
         public IHttpActionResult Get(int id)
         {
             var dbProc = new WebAPIDbProcess();
             var item = dbProc.GetClientServer(id);
             return new JsonResult(item, this);
         }
+
         public IHttpActionResult Post(ModifyAspNetClientServer model)
         {
             var dbProc = new WebAPIDbProcess();
