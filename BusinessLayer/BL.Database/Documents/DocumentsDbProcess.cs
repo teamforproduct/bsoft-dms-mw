@@ -814,7 +814,15 @@ namespace BL.Database.Documents
 
                 if (paging != null)
                 {
-                    paging.TotalItemsCount = qry.Count();
+                    if (paging.IsOnlyCounter ?? true)
+                    {
+                        paging.TotalItemsCount = qry.Count();
+                    }
+
+                    if (paging.IsOnlyCounter??false)
+                    {
+                        return new List<FrontDocument>();
+                    }
 
                     if (!paging.IsAll)
                     {
