@@ -42,8 +42,8 @@ namespace DMS_WebAPI
             //mailService.Initialize(dbs);
 
             //TODO
-            //var indexService = DmsResolver.Current.Get<IFullTextSearchService>();
-            //indexService.Initialize(dbs);
+            var indexService = DmsResolver.Current.Get<IFullTextSearchService>();
+            indexService.Initialize(dbs);
 
             //TODO
             var autoPlanService = DmsResolver.Current.Get<IAutoPlanService>();
