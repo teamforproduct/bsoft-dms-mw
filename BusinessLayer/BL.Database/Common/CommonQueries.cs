@@ -104,9 +104,12 @@ namespace BL.Database.Common
 
             if (paging != null)
             {
-                paging.TotalItemsCount = sq.Count();
+                if (paging.IsOnlyCounter ?? true)
+                {
+                    paging.TotalItemsCount = sq.Count();
+                }
 
-                if (paging.IsOnlyCounter)
+                if (paging.IsOnlyCounter ?? false)
                 {
                     return new List<FrontDocumentAttachedFile>();
                 }
@@ -383,9 +386,12 @@ namespace BL.Database.Common
 
             if (paging != null)
             {
-                paging.TotalItemsCount = tasksDb.Count();
+                if (paging.IsOnlyCounter ?? true)
+                {
+                    paging.TotalItemsCount = tasksDb.Count();
+                }
 
-                if (paging.IsOnlyCounter)
+                if (paging.IsOnlyCounter ?? false)
                 {
                     return new List<FrontDocumentTask>();
                 }
@@ -478,26 +484,28 @@ namespace BL.Database.Common
 
             if (paging != null)
             {
-                //paging.TotalItemsCount = waitsRes.Count();
-
-                paging.Counters = new UICounters
+                if (paging.IsOnlyCounter ?? true)
                 {
-                    Counter1 = waitsRes.Count(y => !y.OffEventId.HasValue),
-                    Counter2 = waitsRes.Count(s => !s.OffEventId.HasValue && s.DueDate.HasValue && s.DueDate.Value < DateTime.Now),
-                    Counter3 = waitsRes.Count(),
-                };
+                    paging.Counters = new UICounters
+                    {
+                        Counter1 = waitsRes.Count(y => !y.OffEventId.HasValue),
+                        Counter2 = waitsRes.Count(s => !s.OffEventId.HasValue && s.DueDate.HasValue && s.DueDate.Value < DateTime.Now),
+                        Counter3 = waitsRes.Count(),
+                    };
 
-                //TODO Подумать что лучше
-                //paging.Counters = waitsRes.GroupBy(x => 1).Select(x => new UICounters
-                //{
-                //    Counter1 = x.Count(y => !y.OffEventId.HasValue),
-                //    Counter2 = x.Count(s => !s.OffEventId.HasValue && s.DueDate.HasValue && s.DueDate.Value < DateTime.Now),
-                //    Counter3 = x.Count()
-                //}).FirstOrDefault();
+                    //TODO Подумать что лучше
+                    //Нужно в одном запросе посчитать несколько каунтов
+                    //paging.Counters = waitsRes.GroupBy(x => 1).Select(x => new UICounters
+                    //{
+                    //    Counter1 = x.Count(y => !y.OffEventId.HasValue),
+                    //    Counter2 = x.Count(s => !s.OffEventId.HasValue && s.DueDate.HasValue && s.DueDate.Value < DateTime.Now),
+                    //    Counter3 = x.Count()
+                    //}).FirstOrDefault();
 
-                paging.TotalItemsCount = paging.Counters.Counter3.GetValueOrDefault();
+                    paging.TotalItemsCount = paging.Counters.Counter3.GetValueOrDefault();
+                }
 
-                if (paging.IsOnlyCounter)
+                if (paging.IsOnlyCounter ?? false)
                 {
                     return new List<FrontDocumentWait>();
                 }
@@ -642,9 +650,12 @@ namespace BL.Database.Common
 
             if (paging != null)
             {
-                paging.TotalItemsCount = subscriptionsRes.Count();
+                if (paging.IsOnlyCounter ?? true)
+                {
+                    paging.TotalItemsCount = subscriptionsRes.Count();
+                }
 
-                if (paging.IsOnlyCounter)
+                if (paging.IsOnlyCounter??false)
                 {
                     return new List<FrontDocumentSubscription>();
                 }
@@ -1265,9 +1276,12 @@ namespace BL.Database.Common
 
             if (paging != null)
             {
-                paging.TotalItemsCount = itemsDb.Count();
+                if (paging.IsOnlyCounter ?? true)
+                {
+                    paging.TotalItemsCount = itemsDb.Count();
+                }
 
-                if (paging.IsOnlyCounter)
+                if (paging.IsOnlyCounter??false)
                 {
                     return new List<FrontDocumentPaper>();
                 }

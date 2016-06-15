@@ -272,6 +272,7 @@
     <Compile Include="Controllers\Dictionaries\DictionaryPositionExecutorsController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryCompaniesController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryTagsController.cs" />
+    <Compile Include="Controllers\Documents\DocumentAccessesController.cs" />
     <Compile Include="Controllers\Documents\DocumentSubscriptionsController.cs" />
     <Compile Include="Controllers\Documents\DocumentWaitsController.cs" />
     <Compile Include="Controllers\Documents\DocumentEventsController.cs" />

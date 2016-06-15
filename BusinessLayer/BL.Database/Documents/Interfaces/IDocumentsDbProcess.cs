@@ -61,5 +61,10 @@ namespace BL.Database.Documents.Interfaces
         FrontDocumentPaperList GetDocumentPaperList(IContext ctx, int id);
         #endregion DocumentPaperLists   
 
+        #region DocumentAccesses
+
+        IEnumerable<FrontDocumentAccess> GetDocumentAccesses(IContext ctx, FilterDocumentAccess filters, UIPaging paging);
+
+        #endregion DocumentAccesses
     }
 }

@@ -12,7 +12,8 @@ namespace BL.Model.SystemCore
         /// <summary>
         /// Вернет только количество записей если = true
         /// </summary>
-        public bool IsOnlyCounter { get; set; }
+        public bool? IsOnlyCounter { get; set; }
+        [XmlIgnore]
         public UICounters Counters { get; set; }
     }
 }

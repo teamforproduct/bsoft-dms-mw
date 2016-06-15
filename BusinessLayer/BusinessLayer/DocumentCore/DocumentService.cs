@@ -176,5 +176,14 @@ namespace BL.Logic.DocumentCore
         }
 
         #endregion DocumentPaperLists        
+
+        #region DocumentAccesses
+
+        public IEnumerable<FrontDocumentAccess> GetDocumentAccesses(IContext ctx, FilterDocumentAccess filters, UIPaging paging)
+        {
+            return _documentDb.GetDocumentAccesses(ctx, filters, paging);
+        }
+
+        #endregion DocumentAccesses 
     }
 }
