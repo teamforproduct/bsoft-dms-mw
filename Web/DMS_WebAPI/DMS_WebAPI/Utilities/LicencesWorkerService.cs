@@ -50,7 +50,8 @@ namespace DMS_WebAPI.Utilities
 
                 foreach(var client in clients)
                 {
-                    userContext.VerifyLicence(client.Id);
+                    var dbs = webProc.GetServersByAdmin(new BL.Model.WebAPI.Filters.FilterAdminServers { ClientIds = new System.Collections.Generic.List<int> { client.Id } });
+                    userContext.VerifyLicence(client.Id, dbs);
                 }
 
                 DmsResolver.Current.Get<UserContext>().RemoveByTimeout();

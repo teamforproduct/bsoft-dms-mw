@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using BL.CrossCutting.Interfaces;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;

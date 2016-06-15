@@ -1,5 +1,4 @@
-﻿
-using BL.Model.SystemCore;
+﻿using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Web.Http;
@@ -8,10 +7,10 @@ using System.Web.Http.Description;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
-using System;
 using BL.CrossCutting.DependencyInjection;
 using BL.Model.Enums;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace DMS_WebAPI.Controllers.Documents
 {
@@ -41,7 +40,7 @@ namespace DMS_WebAPI.Controllers.Documents
             //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentService GetDocuments User: " + ctx.CurrentAgentId, timeDB.Elapsed);
             //BL.CrossCutting.Helpers.Logger.SaveToFile("M:DocumentsController-GetList", timeM.Elapsed);
             return res;
-        }
+        }        
 
         /// <summary>
         /// Получение документа по ИД
@@ -53,16 +52,16 @@ namespace DMS_WebAPI.Controllers.Documents
         {
             //var timeM = new System.Diagnostics.Stopwatch();
             //var timeDB = new System.Diagnostics.Stopwatch();
-            var timeDB1 = new System.Diagnostics.Stopwatch();
+            //var timeDB1 = new System.Diagnostics.Stopwatch();
             //var timeDB2 = new System.Diagnostics.Stopwatch();
             //timeM.Start();
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
 
             //timeDB.Start();
-            timeDB1.Start();
+            //timeDB1.Start();
             var doc = docProc.GetDocument(ctx, id, filter);
-            timeDB1.Stop();
+            //timeDB1.Stop();
 
             //timeDB2.Start();
             var metaData = docProc.GetModifyMetaData(ctx, doc);
@@ -71,7 +70,7 @@ namespace DMS_WebAPI.Controllers.Documents
 
             //timeM.Stop();
             //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentService GetDocument and GetModifyMetaData User: " + ctx.CurrentAgentId, timeDB.Elapsed);
-            BL.CrossCutting.Helpers.Logger.SaveToFile("DB1: IDocumentService GetDocument User: " + ctx.CurrentAgentId, timeDB1.Elapsed);
+            //BL.CrossCutting.Helpers.Logger.SaveToFile("DB1: IDocumentService GetDocument User: " + ctx.CurrentAgentId, timeDB1.Elapsed);
             //BL.CrossCutting.Helpers.Logger.SaveToFile("DB2: IDocumentService GetModifyMetaData User: " + ctx.CurrentAgentId, timeDB2.Elapsed);
             //BL.CrossCutting.Helpers.Logger.SaveToFile("M: DocumentsController Get By Id User: " + ctx.CurrentAgentId, timeM.Elapsed);
 

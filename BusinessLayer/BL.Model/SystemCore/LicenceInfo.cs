@@ -9,10 +9,6 @@ namespace BL.Model.SystemCore
         public int ClientId { get; set; }
         public string ClientName { get; set; }
 
-        public bool IsActive { get; set; } = true;
-
-        public bool IsTrial { get; set; }
-
         public bool IsDateLimit { get; set; }
 
         public bool IsConcurenteLicence { get; set; }
@@ -32,9 +28,11 @@ namespace BL.Model.SystemCore
 
         public string Functionals { get; set; }
 
+        public bool IsActive { get; set; } = true;
+        public object LicenceError { get; set; }
         public string LicenceKey { get; set; }
 
-        public DateTime DateFirstDocument { get; set; }
+        public DateTime? DateFirstDocument { get; set; }
         public int CountDocument { get; set; }
     }
 }

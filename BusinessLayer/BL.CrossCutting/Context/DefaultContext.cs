@@ -5,6 +5,7 @@ using BL.Model.Database;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
 using BL.Model.Users;
+using System;
 
 namespace BL.CrossCutting.Context
 {
@@ -160,5 +161,7 @@ namespace BL.CrossCutting.Context
                 CurrentEmployee.ClientId = value;
             }
         }
+
+        public DateTime CreateDate { get; } = DateTime.Now;
     }
 }

@@ -1,6 +1,8 @@
-﻿using BL.CrossCutting.DependencyInjection;
+﻿using BL.CrossCutting.Context;
+using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
 using BL.Logic.DocumentCore.Interfaces;
+using BL.Model.Database;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
 using System;
@@ -15,8 +17,13 @@ namespace DMS_WebAPI.Utilities
     internal class Licences
     {
         private const string _RSAPublicKeyXmlByLicence = "<RSAKeyValue><Modulus>sBRZy9xvw7FWdb5EHd79H8f2D4+JP3yokrbKpCgFbcwCEPPZpGUj07poBM9MvrIXEIHoahIYVw3UqWCLvFFL6Cb+u3zrOTaNmCNyXdZ4H/28sskfuBtVzXjllzwEkrcJg0NfSmCbjw/9YFUYEdl1ZTUL40pN8Kuk1Wr1f/wP+wk=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue>";
-        private const int _TrialMaxCountDocuments = 1000;
-        private const int _TrialDurationInDays = 30;
+
+        //TODO For release
+        //private const int _TrialMaxCountDocuments = 1000;
+        //private const int _TrialDurationInDays = 30;
+
+        private const int _TrialMaxCountDocuments = int.MaxValue;
+        private const int _TrialDurationInDays = Int16.MaxValue;
 
         #region Convert
         private byte[] GetBytesByData(string data)
@@ -38,18 +45,15 @@ namespace DMS_WebAPI.Utilities
 
 
 
-        public void Verify(string regCode, LicenceInfo licence, IContext ctx)
+        public void Verify(string regCode, LicenceInfo licence, IEnumerable<DatabaseModel> dbs)
         {
             if (!VerifyLicenceKey(regCode, licence.LicenceKey))
             {
-                //TODO
-                //if (licence.IsTrial)
-                //{
-                if (ctx != null)
+                if (dbs?.Count() > 0)
                 {
                     try
                     {
-                        VerifyTrialMaxDocumentCount(licence, ctx);
+                        VerifyTrialMaxDocumentCount(licence, dbs);
                     }
                     catch (DatabaseIsNotSet)
                     {
@@ -60,11 +64,6 @@ namespace DMS_WebAPI.Utilities
                         throw new LicenceError();
                     }
                 }
-                //}
-                //else
-                //{
-                //    throw new LicenceError();
-                //}
             }
 
             VerifyLicenceInfo(licence);
@@ -92,14 +91,18 @@ namespace DMS_WebAPI.Utilities
                 return false;
             }
         }
-        private void VerifyTrialMaxDocumentCount(LicenceInfo licence, IContext ctx)
+        private void VerifyTrialMaxDocumentCount(LicenceInfo licence, IEnumerable<DatabaseModel> dbs)
         {
             //TODO Проверить количество документов у клиента
             //TODO оптимизировать
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            docProc.GetCountDocuments(ctx, licence);
+            foreach (var db in dbs)
+            {
+                var ctx = new AdminContext(db);
+                docProc.GetCountDocuments(ctx, licence);
+            }
 
-            if (licence.CountDocument > _TrialMaxCountDocuments && licence.DateFirstDocument.AddDays(_TrialDurationInDays) >=DateTime.Now)
+            if (licence.CountDocument > _TrialMaxCountDocuments || (licence.DateFirstDocument ?? DateTime.Now).AddDays(_TrialDurationInDays) < DateTime.Now)
             {
                 throw new LicenceError();
             }

@@ -2,6 +2,7 @@
 using BL.Model.Database;
 using BL.Model.SystemCore;
 using BL.Model.Users;
+using System;
 
 namespace BL.CrossCutting.Interfaces
 {
@@ -16,5 +17,6 @@ namespace BL.CrossCutting.Interfaces
         bool IsAdmin { get; }
         LicenceInfo ClientLicence { get; set; }
         int CurrentClientId{ get; set; }
+        DateTime CreateDate { get; }
     }
 }
