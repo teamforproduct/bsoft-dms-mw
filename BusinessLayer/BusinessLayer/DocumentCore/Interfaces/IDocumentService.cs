@@ -13,7 +13,6 @@ namespace BL.Logic.DocumentCore.Interfaces
     {
         void GetCountDocuments(IContext ctx, LicenceInfo licence);
         IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging);
-        Task<IEnumerable<FrontDocument>> GetDocumentsAsync(IContext ctx, FilterDocument filters, UIPaging paging);
         FrontDocument GetDocument(IContext ctx, int documentId, FilterDocumentById filter);
         IEnumerable<BaseSystemUIElement> GetModifyMetaData(IContext ctx, FrontDocument doc);
         object ExecuteAction(EnumDocumentActions act, IContext context, object param);
