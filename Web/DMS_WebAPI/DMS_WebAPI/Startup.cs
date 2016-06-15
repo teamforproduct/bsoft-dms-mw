@@ -46,12 +46,12 @@ namespace DMS_WebAPI
             //indexService.Initialize(dbs);
 
             //TODO
-            //var autoPlanService = DmsResolver.Current.Get<IAutoPlanService>();
-            //autoPlanService.Initialize(dbs);
+            var autoPlanService = DmsResolver.Current.Get<IAutoPlanService>();
+            autoPlanService.Initialize(dbs);
 
             //TODO
-            //var clearTrashDocumentsService = DmsResolver.Current.Get<IClearTrashDocumentsService>();
-            //clearTrashDocumentsService.Initialize(dbs);
+            var clearTrashDocumentsService = DmsResolver.Current.Get<IClearTrashDocumentsService>();
+            clearTrashDocumentsService.Initialize(dbs);
 
             var userContextService = DmsResolver.Current.Get<UserContextWorkerService>();
             userContextService.Initialize();
