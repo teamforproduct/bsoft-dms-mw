@@ -8,6 +8,8 @@ using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
+using BL.Logic.DocumentCore.Interfaces;
+using System.Transactions;
 
 namespace BL.Logic.DocumentCore.SendListCommands
 {
@@ -78,7 +80,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
             }
             _document.SendLists = tmpSendList;
 
-           var taskId = CommonDocumentUtilities.GetDocumentTaskOrCreateNew(_context, _document, Model.Task); //TODO исправление от кого????
+            var taskId = CommonDocumentUtilities.GetDocumentTaskOrCreateNew(_context, _document, Model.Task); //TODO исправление от кого????
             _sendList.Stage = Model.Stage;
             _sendList.SendType = Model.SendType;
             _sendList.TargetPositionId = Model.TargetPositionId;
@@ -131,9 +133,21 @@ namespace BL.Logic.DocumentCore.SendListCommands
                 addPaperEvents.AddRange(Model.PaperEvents.Where(x => delPaperEvents.Contains(x.Id) || !_document.PaperEvents.Select(y => y.PaperId).ToList().Contains(x.Id))
                                                             .Select(model => CommonDocumentUtilities.GetNewDocumentPaperEvent(_context, Model.DocumentId, model.Id, EnumEventTypes.MoveDocumentPaper, model.Description, _sendList.TargetPositionId, _sendList.TargetAgentId, _sendList.SourcePositionId, _sendList.SourceAgentId, false, false)));
             addPaperEvents.ForEach(x => { x.SendListId = _sendList.Id; });
-            _operationDb.ModifyDocumentSendList(_context, _sendList, _document.Tasks, addPaperEvents, delPaperEvents);
-            var aplan = DmsResolver.Current.Get<IAutoPlanService>();
-            aplan.ManualRunAutoPlan(_context);
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
+            {
+                _operationDb.ModifyDocumentSendList(_context, _sendList, _document.Tasks, addPaperEvents, delPaperEvents);
+                if (Model.IsLaunchItem ?? false)
+                {
+                    var docProc = DmsResolver.Current.Get<IDocumentService>();
+                    int docId = (int)docProc.ExecuteAction(EnumDocumentActions.LaunchDocumentSendListItem, _context, _sendList.Id);
+                }
+                else
+                {
+                    var aplan = DmsResolver.Current.Get<IAutoPlanService>();
+                    aplan.ManualRunAutoPlan(_context);
+                }
+                transaction.Complete();
+            }
             return null;
         }
 

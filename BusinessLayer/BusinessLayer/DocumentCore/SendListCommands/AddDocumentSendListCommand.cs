@@ -8,6 +8,8 @@ using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
+using BL.Logic.DocumentCore.Interfaces;
+using System.Transactions;
 
 namespace BL.Logic.DocumentCore.SendListCommands
 {
@@ -66,13 +68,25 @@ namespace BL.Logic.DocumentCore.SendListCommands
 
         public override object Execute()
         {
+            int res;
             var paperEvents = new List<InternalDocumentEvent>();
             if (Model.PaperEvents?.Any() ?? false)
                 paperEvents.AddRange(Model.PaperEvents.Select(model => CommonDocumentUtilities.GetNewDocumentPaperEvent(_context, Model.DocumentId, model.Id, EnumEventTypes.MoveDocumentPaper, model.Description, _sendList.TargetPositionId, _sendList.TargetAgentId, _sendList.SourcePositionId, _sendList.SourceAgentId, false, false)));
-
-            var res =  _operationDb.AddDocumentSendList(_context, new List<InternalDocumentSendList> { _sendList }, _document.Tasks, paperEvents).FirstOrDefault();
-            var aplan = DmsResolver.Current.Get<IAutoPlanService>();
-            aplan.ManualRunAutoPlan(_context);
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
+            {
+                res = _operationDb.AddDocumentSendList(_context, new List<InternalDocumentSendList> { _sendList }, _document.Tasks, paperEvents).FirstOrDefault();
+                if (Model.IsLaunchItem ?? false)
+                {
+                    var docProc = DmsResolver.Current.Get<IDocumentService>();
+                    int docId = (int)docProc.ExecuteAction(EnumDocumentActions.LaunchDocumentSendListItem, _context, res);
+                }
+                else
+                {
+                    var aplan = DmsResolver.Current.Get<IAutoPlanService>();
+                    aplan.ManualRunAutoPlan(_context);
+                }
+                transaction.Complete();
+            }
             return res;
         }
 

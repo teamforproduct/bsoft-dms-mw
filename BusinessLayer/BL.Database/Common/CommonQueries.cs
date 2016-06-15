@@ -474,13 +474,19 @@ namespace BL.Database.Common
             {
                 //paging.TotalItemsCount = waitsRes.Count();
 
-                paging.Counters = new UICounters
+                if (filter?.DocumentId?.Count() > 0)
                 {
-                    Counter1 = waitsRes.Count(y => !y.OffEventId.HasValue),
-                    Counter2 = waitsRes.Count(s => !s.OffEventId.HasValue && s.DueDate.HasValue && s.DueDate.Value < DateTime.Now),
-                    Counter3 = waitsRes.Count(),
-                };
-
+                    paging.Counters = new UICounters
+                    {
+                        Counter1 = waitsRes.Count(y => !y.OffEventId.HasValue),
+                        Counter2 = waitsRes.Count(s => !s.OffEventId.HasValue && s.DueDate.HasValue && s.DueDate.Value < DateTime.Now),
+                        Counter3 = waitsRes.Count(),
+                    };
+                }
+                else
+                {
+                    paging.Counters = new UICounters();
+                }
                 //TODO Подумать что лучше
                 //paging.Counters = waitsRes.GroupBy(x => 1).Select(x => new UICounters
                 //{

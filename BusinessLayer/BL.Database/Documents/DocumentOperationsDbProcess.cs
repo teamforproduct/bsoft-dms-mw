@@ -1016,6 +1016,7 @@ namespace BL.Database.Documents
                                         {
                                             Id = x.Id,
                                             IsFavourite = x.IsFavourite,
+                                            PositionId = x.PositionId,
                                         }
                                     }
 
