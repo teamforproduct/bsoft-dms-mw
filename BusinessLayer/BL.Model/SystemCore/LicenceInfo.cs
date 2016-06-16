@@ -27,8 +27,6 @@ namespace BL.Model.SystemCore
         public int? DateLimit { get; set; }
 
         public string Functionals { get; set; }
-
-        public bool IsActive { get; set; } = true;
         public object LicenceError { get; set; }
         public string LicenceKey { get; set; }
 

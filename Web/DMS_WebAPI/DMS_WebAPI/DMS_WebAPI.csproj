@@ -340,9 +340,9 @@
     <Compile Include="Infrastructure\ExceptionHandlingAttribute.cs" />
     <Compile Include="Infrastructure\ModelValidationErrorHandlerFilterAttribute .cs" />
     <Compile Include="Infrastructure\NoBufferPolicySelector.cs" />
-    <Compile Include="Migrations\201605271021582_InitialMigration.cs" />
-    <Compile Include="Migrations\201605271021582_InitialMigration.Designer.cs">
-      <DependentUpon>201605271021582_InitialMigration.cs</DependentUpon>
+    <Compile Include="Migrations\201606162106554_InitialMigration.cs" />
+    <Compile Include="Migrations\201606162106554_InitialMigration.Designer.cs">
+      <DependentUpon>201606162106554_InitialMigration.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ClientViewModels.cs" />
@@ -460,8 +460,8 @@
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201605271021582_InitialMigration.resx">
-      <DependentUpon>201605271021582_InitialMigration.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201606162106554_InitialMigration.resx">
+      <DependentUpon>201606162106554_InitialMigration.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

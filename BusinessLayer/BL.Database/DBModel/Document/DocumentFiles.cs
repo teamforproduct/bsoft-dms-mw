@@ -34,6 +34,8 @@ namespace BL.Database.DBModel.Document
         public string Hash { get; set; }
         [MaxLength(2000)]
         public string Description { get; set; }
+        //public bool IsMainVersion { get; set; }
+        //public bool IsLastVersion { get; set; }
         public int ExecutorPositionId { get; set; }
         [Column("ExecutorPositionExeAgentId")]
         public int ExecutorPositionExecutorAgentId { get; set; }

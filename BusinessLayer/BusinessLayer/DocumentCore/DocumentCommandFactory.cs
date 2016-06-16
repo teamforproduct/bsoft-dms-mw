@@ -16,6 +16,11 @@ namespace BL.Logic.DocumentCore
     {
         public static IDocumentCommand GetDocumentCommand(EnumDocumentActions act, IContext ctx, InternalDocument doc, object param)
         {
+            if (ctx.ClientLicence?.LicenceError != null)
+            {
+                throw ctx.ClientLicence.LicenceError as DmsExceptions;
+            }
+
             IDocumentCommand cmd;
             switch (act)
             {
