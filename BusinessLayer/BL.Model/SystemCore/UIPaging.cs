@@ -5,7 +5,7 @@ namespace BL.Model.SystemCore
     public class UIPaging
     {
         public int CurrentPage { get; set; } = 1;
-        public int PageSize { get; set; } = 50;
+        public int PageSize { get; set; } = 25;
         [XmlIgnore]
         public int TotalItemsCount { get; set; }
         public bool IsAll { get; set; } = false;

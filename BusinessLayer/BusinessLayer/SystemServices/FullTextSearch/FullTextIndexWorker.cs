@@ -28,6 +28,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
         private const string FIELD_OBJECT_TYPE = "ObjectType";
         private const string FIELD_OBJECT_ID = "ObjectId";
         private const string FIELD_BODY = "postBody";
+        private const string FIELD_CLIENT_ID = "ClientId";
         IndexWriter _writer;
         object _lockObject;
 
@@ -79,6 +80,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
             doc.Add(new Field(FIELD_OBJECT_TYPE, ((int)item.ItemType).ToString(), Field.Store.YES, Field.Index.ANALYZED));
             doc.Add(new Field(FIELD_OBJECT_ID, item.ObjectId.ToString(), Field.Store.YES, Field.Index.ANALYZED));
             doc.Add(new Field(FIELD_BODY, item.ObjectText, Field.Store.NO, Field.Index.ANALYZED));
+            doc.Add(new Field(FIELD_CLIENT_ID, item.ClientId.ToString(), Field.Store.YES, Field.Index.ANALYZED));
             _writer.AddDocument(doc);
         }
 
@@ -122,13 +124,14 @@ namespace BL.Logic.SystemServices.FullTextSearch
             _searcher = new IndexSearcher(_indexReader);
         }
 
-        public IEnumerable<FullTextSearchResult> SearchDocument(string text)
+        public IEnumerable<FullTextSearchResult> SearchDocument(string text, int clientId)
         {
             var parser = new QueryParser(Version.LUCENE_30, FIELD_BODY, _analyzer);
 
             var conditionQry = parser.Parse(text);
             var idQry = NumericRangeQuery.NewIntRange(FIELD_DOC_ID, 1, null, true, true);
-            var query = conditionQry.Combine(new [] {conditionQry, idQry});
+            var clientQry = new TermQuery(new Term(FIELD_CLIENT_ID, clientId.ToString()));
+            var query = conditionQry.Combine(new [] {conditionQry, idQry, clientQry });
             var qryRes = _searcher.Search(query, 100);
             var searchResult = new List<FullTextSearchResult>();
 
@@ -154,13 +157,14 @@ namespace BL.Logic.SystemServices.FullTextSearch
             return searchResult;
         }
 
-        public IEnumerable<FullTextSearchResult> SearchDictionary(string text)
+        public IEnumerable<FullTextSearchResult> SearchDictionary(string text, int clientId)
         {
             var parser = new QueryParser(Version.LUCENE_30, FIELD_BODY, _analyzer);
 
             var conditionQry = parser.Parse(text);
             var idQry = new TermQuery(new Term(FIELD_DOC_ID, "0"));
-            var query = conditionQry.Combine(new Query[] { conditionQry, idQry });
+            var clientQry = new TermQuery(new Term(FIELD_CLIENT_ID, clientId.ToString()));
+            var query = conditionQry.Combine(new Query[] { conditionQry, idQry, clientQry });
             var qryRes = _searcher.Search(query, 100);
             var searchResult = new List<FullTextSearchResult>();
 
