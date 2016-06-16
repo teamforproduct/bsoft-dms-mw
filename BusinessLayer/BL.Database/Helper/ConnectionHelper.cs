@@ -1,6 +1,5 @@
 ﻿using System.Data.Common;
 using System.Data.SqlClient;
-using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
 using BL.Model.Database;
 using Oracle.ManagedDataAccess.Client;
