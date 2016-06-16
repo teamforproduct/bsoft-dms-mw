@@ -132,19 +132,7 @@ namespace BL.Database.Dictionaries
             {
                 var qry = dbContext.DictionaryAgentsSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
 
-               if (paging != null)
-                {
-                    paging.TotalItemsCount = qry.Count();
-
-                    if (!paging.IsAll)
-                    {
-                        var skip = paging.PageSize * (paging.CurrentPage - 1);
-                        var take = paging.PageSize;
-
-                        qry = qry.OrderBy(x => x.Name)
-                            .Skip(() => skip).Take(() => take);
-                    }
-                }
+               
 
                 // Список первичных ключей
                 if (filter.IDs?.Count > 0)
