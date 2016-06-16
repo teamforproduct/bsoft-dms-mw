@@ -316,8 +316,9 @@ namespace BL.Database.Common
                     (current, value) => current.Or(e => e.PositionId == value).Expand());
 
                 qry = qry.Where(x => !x.OnEvent.IsAvailableWithinTask).Where(filterOnEventPositionsContains)
-                        .Concat(qry.Where(x => x.OnEvent.IsAvailableWithinTask && x.OnEvent.TaskId.HasValue &&
-                        x.OnEvent.Task.TaskAccesses.AsQueryable().Any(filterOnEventTaskAccessesContains)));
+                        .Concat(
+                                    qry.Where(x => x.OnEvent.IsAvailableWithinTask && x.OnEvent.TaskId.HasValue && x.OnEvent.Task.TaskAccesses.AsQueryable().Any(filterOnEventTaskAccessesContains))
+                                );
 
                 var filterContains = PredicateBuilder.False<DocumentAccesses>();
                 filterContains = ctx.CurrentPositionsIdList.Aggregate(filterContains,
@@ -520,56 +521,59 @@ namespace BL.Database.Common
                 }
             }
 
-            var waits = waitsRes.Select(x => new FrontDocumentWait
-            {
-                Id = x.Id,
-                DocumentId = x.DocumentId,
-                ParentId = x.ParentId,
-                OnEventId = x.OnEventId,
-                OffEventId = x.OffEventId,
-                ResultTypeId = x.ResultTypeId,
-                ResultTypeName = x.ResultType.Name,
-                DueDate = x.DueDate,
-                AttentionDate = x.AttentionDate,
-                TargetDescription = x.TargetDescription,
-                //TargetAttentionDate = x.TargetAttentionDate,
-                IsClosed = x.OffEvent != null,
-
-                DocumentDate = x.Document.LinkId.HasValue ? x.Document.RegistrationDate ?? x.Document.CreateDate : (DateTime?)null,
-                RegistrationNumber = x.Document.LinkId.HasValue ? x.Document.RegistrationNumber : null,
-                RegistrationNumberPrefix = x.Document.LinkId.HasValue ? x.Document.RegistrationNumberPrefix : null,
-                RegistrationNumberSuffix = x.Document.LinkId.HasValue ? x.Document.RegistrationNumberSuffix : null,
-                RegistrationFullNumber = x.Document.LinkId.HasValue ? "#" + x.Document.Id : null,
-                DocumentDescription = x.Document.LinkId.HasValue ? x.Document.Description : null,
-                DocumentTypeName = x.Document.LinkId.HasValue ? x.Document.TemplateDocument.DocumentType.Name : null,
-                DocumentDirectionName = x.Document.LinkId.HasValue ? x.Document.TemplateDocument.DocumentDirection.Name : null,
-
-                OnEvent = new FrontDocumentEvent
+            var waitsRes1 =
+                //waitsRes
+                dbContext.DocumentWaitsSet.Where(x => waitsRes.Select(y => y.Id).Contains(x.Id))
+                .Select(x => new FrontDocumentWait
                 {
-                    Id = x.OnEvent.Id,
-                    DocumentId = x.OnEvent.DocumentId,
-                    Task = x.OnEvent.Task.Task,
-                    Description = x.OnEvent.Description,
-                    AddDescription = x.OnEvent.AddDescription,
-                    EventType = x.OnEvent.EventTypeId,
-                    EventTypeName = x.OnEvent.EventType.WaitDescription/*?? x.OnEvent.EventType.Name*/,
-                    Date = x.OnEvent.Date,
-                    SourcePositionExecutorAgentName = x.OnEvent.SourcePositionExecutorAgent.Name,
-                    TargetPositionExecutorAgentName = x.OnEvent.TargetPositionExecutorAgent.Name,
+                    Id = x.Id,
+                    DocumentId = x.DocumentId,
+                    ParentId = x.ParentId,
+                    OnEventId = x.OnEventId,
+                    OffEventId = x.OffEventId,
+                    ResultTypeId = x.ResultTypeId,
+                    ResultTypeName = x.ResultType.Name,
+                    DueDate = x.DueDate,
+                    AttentionDate = x.AttentionDate,
+                    TargetDescription = x.TargetDescription,
+                    //TargetAttentionDate = x.TargetAttentionDate,
+                    IsClosed = x.OffEvent != null,
 
-                    ReadAgentName = x.OnEvent.ReadAgent.Name,
-                    ReadDate = x.OnEvent.ReadDate,
-                    SourceAgentName = x.OnEvent.SourceAgent.Name,
+                    DocumentDate = x.Document.LinkId.HasValue ? x.Document.RegistrationDate ?? x.Document.CreateDate : (DateTime?)null,
+                    RegistrationNumber = x.Document.LinkId.HasValue ? x.Document.RegistrationNumber : null,
+                    RegistrationNumberPrefix = x.Document.LinkId.HasValue ? x.Document.RegistrationNumberPrefix : null,
+                    RegistrationNumberSuffix = x.Document.LinkId.HasValue ? x.Document.RegistrationNumberSuffix : null,
+                    RegistrationFullNumber = x.Document.LinkId.HasValue ? "#" + x.Document.Id : null,
+                    DocumentDescription = x.Document.LinkId.HasValue ? x.Document.Description : null,
+                    DocumentTypeName = x.Document.LinkId.HasValue ? x.Document.TemplateDocument.DocumentType.Name : null,
+                    DocumentDirectionName = x.Document.LinkId.HasValue ? x.Document.TemplateDocument.DocumentDirection.Name : null,
 
-                    SourcePositionName = x.OnEvent.SourcePosition.Name,
-                    TargetPositionName = x.OnEvent.TargetPosition.Name,
-                    SourcePositionExecutorNowAgentName = x.OnEvent.SourcePosition.ExecutorAgent.Name,
-                    TargetPositionExecutorNowAgentName = x.OnEvent.TargetPosition.ExecutorAgent.Name,
-                    SourcePositionExecutorAgentPhoneNumber = "(888)888-88-88", //TODO 
-                    TargetPositionExecutorAgentPhoneNumber = "(888)888-88-88", //TODO 
+                    OnEvent = new FrontDocumentEvent
+                    {
+                        Id = x.OnEvent.Id,
+                        DocumentId = x.OnEvent.DocumentId,
+                        Task = x.OnEvent.Task.Task,
+                        Description = x.OnEvent.Description,
+                        AddDescription = x.OnEvent.AddDescription,
+                        EventType = x.OnEvent.EventTypeId,
+                        EventTypeName = x.OnEvent.EventType.WaitDescription/*?? x.OnEvent.EventType.Name*/,
+                        Date = x.OnEvent.Date,
+                        SourcePositionExecutorAgentName = x.OnEvent.SourcePositionExecutorAgent.Name,
+                        TargetPositionExecutorAgentName = x.OnEvent.TargetPositionExecutorAgent.Name,
 
-                },
-                OffEvent = !x.OffEventId.HasValue
+                        ReadAgentName = x.OnEvent.ReadAgent.Name,
+                        ReadDate = x.OnEvent.ReadDate,
+                        SourceAgentName = x.OnEvent.SourceAgent.Name,
+
+                        SourcePositionName = x.OnEvent.SourcePosition.Name,
+                        TargetPositionName = x.OnEvent.TargetPosition.Name,
+                        SourcePositionExecutorNowAgentName = x.OnEvent.SourcePosition.ExecutorAgent.Name,
+                        TargetPositionExecutorNowAgentName = x.OnEvent.TargetPosition.ExecutorAgent.Name,
+                        SourcePositionExecutorAgentPhoneNumber = "(888)888-88-88", //TODO 
+                        TargetPositionExecutorAgentPhoneNumber = "(888)888-88-88", //TODO 
+
+                    },
+                    OffEvent = !x.OffEventId.HasValue
                     ? null
                     : new FrontDocumentEvent
                     {
@@ -596,7 +600,8 @@ namespace BL.Database.Common
                         TargetPositionExecutorAgentPhoneNumber = null,
 
                     }
-            }).ToList();
+                });
+            var waits = waitsRes1.ToList();
 
             waits.ForEach(x => CommonQueries.ChangeRegistrationFullNumber(x));
 
@@ -655,7 +660,7 @@ namespace BL.Database.Common
                     paging.TotalItemsCount = subscriptionsRes.Count();
                 }
 
-                if (paging.IsOnlyCounter??false)
+                if (paging.IsOnlyCounter ?? false)
                 {
                     return new List<FrontDocumentSubscription>();
                 }
@@ -1281,7 +1286,7 @@ namespace BL.Database.Common
                     paging.TotalItemsCount = itemsDb.Count();
                 }
 
-                if (paging.IsOnlyCounter??false)
+                if (paging.IsOnlyCounter ?? false)
                 {
                     return new List<FrontDocumentPaper>();
                 }
