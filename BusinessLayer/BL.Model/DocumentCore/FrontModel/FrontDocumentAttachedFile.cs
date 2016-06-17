@@ -30,6 +30,14 @@ namespace BL.Model.DocumentCore.FrontModel
         /// </summary>
         public bool IsAdditional { get; set; }
         /// <summary>
+        /// Признак основная версия файла
+        /// </summary>
+        public bool IsMainVersion { get; set; }
+        /// <summary>
+        /// Признак последняя версия файла
+        /// </summary>
+        public bool IsLastVersion { get; set; }
+        /// <summary>
         /// содержимое файла
         /// </summary>
         public string FileContent { get; set; }

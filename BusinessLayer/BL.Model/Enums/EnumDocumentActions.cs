@@ -301,6 +301,10 @@
         /// Удалить файл
         /// </summary>
         DeleteDocumentFile = 104009,
+        /// <summary>
+        /// Добавить версию файла к файлу
+        /// </summary>
+        AddDocumentFileUseMainNameFile = 104010,
 
         /// <summary>
         /// Добавить связь между документами

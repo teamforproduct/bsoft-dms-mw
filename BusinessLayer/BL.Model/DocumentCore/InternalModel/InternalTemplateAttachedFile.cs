@@ -27,6 +27,10 @@ namespace BL.Model.DocumentCore.InternalModel
         /// </summary>
         public bool IsAdditional { get; set; }
         /// <summary>
+        /// Описание файла
+        /// </summary>
+        public string Description { get; set; }
+        /// <summary>
         /// содержимое файла
         /// </summary>
         public string FileContent { get; set; }

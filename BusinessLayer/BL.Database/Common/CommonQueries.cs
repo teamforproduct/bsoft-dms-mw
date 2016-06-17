@@ -59,7 +59,7 @@ namespace BL.Database.Common
             return qry;
         }
 
-        private static IQueryable<DocumentFiles> GetDocumentFilesMaxVersion(IContext ctx, DmsContext dbContext, FilterDocumentAttachedFile filter)
+        private static IQueryable<DocumentFiles> GetDocumentFilesQuery(IContext ctx, DmsContext dbContext, FilterDocumentAttachedFile filter)
         {
             var qry = dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).AsQueryable();
 
@@ -91,16 +91,34 @@ namespace BL.Database.Common
 
                     qry = qry.Where(filterContains);
                 }
+
+                if (filter.IsAdditional.HasValue)
+                {
+                    qry = qry.Where(x => x.IsAdditional == filter.IsAdditional);
+                }
+
+                if (filter.IsDeleted.HasValue)
+                {
+                    qry = qry.Where(x => x.IsDeleted == filter.IsDeleted);
+                }
+
+                if (filter.IsMainVersion.HasValue)
+                {
+                    qry = qry.Where(x => x.IsMainVersion == filter.IsMainVersion);
+                }
+
+                if (filter.IsLastVersion.HasValue)
+                {
+                    qry = qry.Where(x => x.IsLastVersion == filter.IsLastVersion);
+                }
             }
 
-            return qry
-                .GroupBy(g => new { g.DocumentId, g.OrderNumber })
-                .Select(x => x.OrderByDescending(y => y.Version).FirstOrDefault());
+            return qry;
         }
 
         public static IEnumerable<FrontDocumentAttachedFile> GetDocumentFiles(IContext ctx, DmsContext dbContext, FilterDocumentAttachedFile filter, UIPaging paging = null)
         {
-            var sq = GetDocumentFilesMaxVersion(ctx, dbContext, filter);
+            var sq = GetDocumentFilesQuery(ctx, dbContext, filter);
 
             if (paging != null)
             {
@@ -137,6 +155,8 @@ namespace BL.Database.Common
                           FileType = file.FileType,
                           FileSize = file.FileSize,
                           IsAdditional = file.IsAdditional,
+                          IsMainVersion = file.IsMainVersion,
+                          IsLastVersion = file.IsLastVersion,
                           Hash = file.Hash,
                           LastChangeDate = file.LastChangeDate,
                           LastChangeUserId = file.LastChangeUserId,
@@ -162,7 +182,7 @@ namespace BL.Database.Common
 
         public static IEnumerable<InternalDocumentAttachedFile> GetInternalDocumentFiles(IContext ctx, DmsContext dbContext, int documentId)
         {
-            var sq = GetDocumentFilesMaxVersion(ctx, dbContext, new FilterDocumentAttachedFile { DocumentId = new List<int> { documentId } });
+            var sq = GetDocumentFilesQuery(ctx, dbContext, new FilterDocumentAttachedFile { DocumentId = new List<int> { documentId } });
 
             return
                 sq.Select(x => new InternalDocumentAttachedFile
@@ -175,6 +195,10 @@ namespace BL.Database.Common
                     FileType = x.FileType,
                     FileSize = x.FileSize,
                     IsAdditional = x.IsAdditional,
+                    
+                    IsMainVersion = x.IsMainVersion,
+                    IsLastVersion = x.IsLastVersion,
+
                     Hash = x.Hash,
                     LastChangeDate = x.LastChangeDate,
                     LastChangeUserId = x.LastChangeUserId,

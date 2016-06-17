@@ -23,7 +23,11 @@ namespace DMS_WebAPI.Controllers.Documents
     [RoutePrefix("api/v2/DocumentFiles")]
     public class DocumentFilesController : ApiController
     {
-        //GET: api/Files
+        /// <summary>
+        /// Получить файл документа определенной версии
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public IHttpActionResult Get([FromUri]FilterDocumentFileIdentity model)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
@@ -74,14 +78,9 @@ namespace DMS_WebAPI.Controllers.Documents
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
 
-            HttpPostedFile file = HttpContext.Current.Request.Files[0];
-            model.PostedFileData = file;
-            model.FileName = file.FileName;
-            model.FileType = file.ContentType;
-
             var fileId = (int)docProc.ExecuteAction(EnumDocumentActions.ModifyDocumentFile, ctx, model);
 
-            return GetFileList(new FilterDocumentAttachedFile { AttachedFileId = new List<int> { fileId } }, null);
+            return GetFileList(new FilterDocumentAttachedFile { AttachedFileId = new List<int> { fileId }, IsDeleted = null, IsMainVersion = null }, null);
         }
 
         // DELETE: api/Files
@@ -107,6 +106,22 @@ namespace DMS_WebAPI.Controllers.Documents
             var actions = cmdService.GetDocumentFileActions(ctx, id);
 
             return new JsonResult(actions, this);
+        }
+
+        [Route("AddUseMainNameFile/{id}")]
+        [HttpPost]
+        public IHttpActionResult PostAddUseMainNameFile([FromUri]ModifyDocumentFile model)
+        {
+            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+
+            HttpPostedFile file = HttpContext.Current.Request.Files[0];
+            model.PostedFileData = file;
+
+            model.IsUseMainNameFile = true;
+
+            docProc.ExecuteAction(EnumDocumentActions.AddDocumentFileUseMainNameFile, ctx, model);
+            return GetFileList(new FilterDocumentAttachedFile { DocumentId = new List<int> { model.DocumentId } }, null);
         }
     }
 }

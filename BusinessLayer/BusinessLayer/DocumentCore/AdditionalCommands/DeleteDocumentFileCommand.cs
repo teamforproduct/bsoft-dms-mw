@@ -91,7 +91,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
             try
             {
-                _fStore.DeleteFile(_context, docFile);
+                //_fStore.DeleteFile(_context, docFile);
             }
             catch (CannotAccessToFile ex)
             {

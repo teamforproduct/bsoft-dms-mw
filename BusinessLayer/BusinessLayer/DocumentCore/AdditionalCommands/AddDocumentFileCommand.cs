@@ -57,7 +57,19 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                 //throw new CouldNotPerformOperation();
             }
 
-            if (_document.DocumentFiles.Any(x => (x.Name + "." + x.Extension).Equals(Model.FileName) && x.ExecutorPositionId != _context.CurrentPositionId))
+            if (Model.IsUseMainNameFile)
+            {
+                var mainFile = _document.DocumentFiles.FirstOrDefault(x => x.OrderInDocument == Model.OrderInDocument);
+                if (mainFile == null)
+                {
+                    throw new CannotAccessToFile();
+                }
+
+                Model.FileName = mainFile.Name + "." + mainFile.Extension;
+                Model.FileType = mainFile.FileType;
+            }
+
+            if (_document.DocumentFiles.Any(x => (x.Name + "." + x.Extension).Equals(Model.FileName) && x.ExecutorPositionId != _context.CurrentPositionId && x.IsAdditional))
             {
                 throw new CannotAccessToFile();
             }
@@ -79,9 +91,13 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                 Date = DateTime.Now,
                 PostedFileData = Model.PostedFileData,
                 IsAdditional = Model.IsAdditional,
+                IsLastVersion = true,
+                IsMainVersion  = Model.IsAdditional || (!Model.IsAdditional && _document.DocumentFiles.Any(x => (x.Name + "." + x.Extension).Equals(Model.FileName) && x.ExecutorPositionId == _context.CurrentPositionId)),
                 FileType = Model.FileType,
                 Name = Path.GetFileNameWithoutExtension(Model.FileName),
                 Extension = Path.GetExtension(Model.FileName).Replace(".", ""),
+                Description = Model.Description,
+                
                 WasChangedExternal = false,
                 ExecutorPositionId = _context.CurrentPositionId,
                 ExecutorPositionExecutorAgentId = executorPositionExecutorAgentId.Value
