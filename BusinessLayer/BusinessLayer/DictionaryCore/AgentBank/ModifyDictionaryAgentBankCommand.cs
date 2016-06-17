@@ -33,6 +33,7 @@ namespace BL.Logic.DictionaryCore
             var agents = _dictDb.GetAgentBanks(_context, new FilterDictionaryAgentBank
             {
                 MFOCodeExact = Model.MFOCode,
+                NameExact=Model.Name,
                 IsActive=Model.IsActive,
                 NotContainsIDs=new List<int> { Model.Id }
             },null);

@@ -35,6 +35,7 @@ namespace BL.Logic.DictionaryCore
             _admin.VerifyAccess(_context, CommandType, false, true);
             var agents = _dictDb.GetAgentCompanies(_context, new FilterDictionaryAgentCompany
             {
+                NameExact = Model.FullName,
                 TaxCodeExact = Model.TaxCode,
                 OKPOCodeExact=Model.OKPOCode,
                 VATCodeExact= Model.VATCode

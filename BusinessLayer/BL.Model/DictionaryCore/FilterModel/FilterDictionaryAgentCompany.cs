@@ -7,7 +7,7 @@ namespace BL.Model.DictionaryCore.FilterModel
     /// </summary>
     public class FilterDictionaryAgentCompany : DictionaryBaseFilterParameters
     {
-         
+        public string NameExact{get;set;} 
         /// <summary>
         /// ИНН
         /// </summary>

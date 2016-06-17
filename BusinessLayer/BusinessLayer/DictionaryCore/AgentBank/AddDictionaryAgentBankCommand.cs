@@ -36,7 +36,8 @@ namespace BL.Logic.DictionaryCore
             _admin.VerifyAccess(_context, CommandType, false, true);
             var agents = _dictDb.GetAgentBanks(_context, new FilterDictionaryAgentBank
             {
-                MFOCodeExact = Model.MFOCode
+                MFOCodeExact = Model.MFOCode,
+                NameExact =  Model.Name
             },null);
 
             if (agents.Any())

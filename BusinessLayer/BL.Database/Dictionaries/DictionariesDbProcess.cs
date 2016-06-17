@@ -1467,6 +1467,12 @@ namespace BL.Database.Dictionaries
                 {
                     qry = qry.Where(x => x.VATCode == filter.VATCodeExact);
                 }
+
+                if (!string.IsNullOrEmpty(filter.NameExact))
+                {
+                    qry = qry.Where(x => x.FullName == filter.NameExact);
+                }
+
                 // Пагинация
                 if (paging != null)
                 {
@@ -1866,6 +1872,13 @@ namespace BL.Database.Dictionaries
                     
                     qry = qry.Where(x => x.MFOCode==filter.MFOCodeExact);
                     
+                }
+
+                if (!string.IsNullOrEmpty(filter.NameExact))
+                {
+
+                    qry = qry.Where(x => x.Agent.Name == filter.NameExact);
+
                 }
 
                 if (paging != null)
