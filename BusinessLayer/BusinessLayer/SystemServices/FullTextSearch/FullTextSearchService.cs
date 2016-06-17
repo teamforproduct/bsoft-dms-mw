@@ -13,7 +13,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
 {
     public class FullTextSearchService : BaseSystemWorkerService, IFullTextSearchService
     {
-        private const int MAX_ROW_PROCESS = 5000;
+        private const int MAX_ROW_PROCESS = 10000;
         private readonly Dictionary<FullTextSettings, Timer> _timers;
         private List<Timer> _stopTimersList = new List<Timer>();
         List<IFullTextIndexWorker> _workers;
@@ -106,12 +106,12 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
         public IEnumerable<FullTextSearchResult> SearchDocument(IContext ctx, string text)
         {
-            return GetWorker(ctx)?.SearchDocument(text);
+            return GetWorker(ctx)?.SearchDocument(text, ctx.CurrentClientId);
         }
 
         public IEnumerable<FullTextSearchResult> SearchDictionary(IContext ctx, string text)
         {
-            return GetWorker(ctx)?.SearchDictionary(text);
+            return GetWorker(ctx)?.SearchDictionary(text, ctx.CurrentClientId);
         }
 
         public IEnumerable<FullTextSearchResult> SearchInDocument(IContext ctx, string text, int documentId)

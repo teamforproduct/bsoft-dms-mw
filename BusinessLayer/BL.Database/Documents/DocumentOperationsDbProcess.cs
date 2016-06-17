@@ -791,30 +791,22 @@ namespace BL.Database.Documents
 
                 if (paging != null)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentEvents>();
-                    filterContains = ctx.CurrentPositionsIdList.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.TargetPositionId == value).Expand());
-
-                    if ((filter.EventId?.Count > 0) ||
-                            (filter.DocumentId.HasValue) ||
-                            (filter.ListDocumentId?.Count > 0)
-                        )
+                    if (paging.IsOnlyCounter ?? true)
                     {
+                        var filterContains = PredicateBuilder.False<DocumentEvents>();
+                        filterContains = ctx.CurrentPositionsIdList.Aggregate(filterContains,
+                            (current, value) => current.Or(e => e.TargetPositionId == value).Expand());
 
                         paging.Counters = new UICounters
                         {
                             Counter1 = qry.Where(filterContains).Count(x => !x.ReadDate.HasValue && x.TargetPositionId != x.SourcePositionId),
                             Counter3 = qry.Count(),
                         };
-                    }
-                    else
-                    {
-                        paging.Counters = new UICounters();
+
+                        paging.TotalItemsCount = paging.Counters.Counter3.GetValueOrDefault();
                     }
 
-                    paging.TotalItemsCount = paging.Counters.Counter3.GetValueOrDefault();
-
-                    if (paging.IsOnlyCounter)
+                    if (paging.IsOnlyCounter ?? false)
                     {
                         return new List<FrontDocumentEvent>();
                     }
@@ -1016,6 +1008,7 @@ namespace BL.Database.Documents
                                         {
                                             Id = x.Id,
                                             IsFavourite = x.IsFavourite,
+                                            PositionId = x.PositionId,
                                         }
                                     }
 

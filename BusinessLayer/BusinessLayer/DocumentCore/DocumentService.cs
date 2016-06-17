@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Documents.Interfaces;
@@ -175,5 +176,14 @@ namespace BL.Logic.DocumentCore
         }
 
         #endregion DocumentPaperLists        
+
+        #region DocumentAccesses
+
+        public IEnumerable<FrontDocumentAccess> GetDocumentAccesses(IContext ctx, FilterDocumentAccess filters, UIPaging paging)
+        {
+            return _documentDb.GetDocumentAccesses(ctx, filters, paging);
+        }
+
+        #endregion DocumentAccesses 
     }
 }

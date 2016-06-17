@@ -674,6 +674,7 @@ namespace BL.Database.SystemDb
                         .Select(x => new FullTextIndexItem
                         {
                             DocumentId = x.DocumentId,
+                            ClientId = ctx.CurrentClientId,
                             ItemType = x.ItemType,
                             OperationType = x.OperationType,
                             ObjectId = x.ObjectId,
@@ -704,6 +705,7 @@ namespace BL.Database.SystemDb
                                 DocumentId = x.DocumentId,
                                 ItemType = EnumObjects.DocumentEvents,
                                 OperationType = EnumOperationType.AddNew,
+                                ClientId = ctx.CurrentClientId,
                                 ObjectId = x.Id,
                                 ObjectText = x.v1 + " " + x.v2 + " " + x.v3
                             }).ToList()
@@ -722,6 +724,7 @@ namespace BL.Database.SystemDb
                                 DocumentId = x.DocumentId,
                                 ItemType = EnumObjects.DocumentFiles,
                                 OperationType = EnumOperationType.AddNew,
+                                ClientId = ctx.CurrentClientId,
                                 ObjectId = x.Id,
                                 ObjectText = x.Name + "." + x.Extension + " "
                             }).Skip(() => rowOffset).Take(() => rowToSelect).ToList()
@@ -740,6 +743,7 @@ namespace BL.Database.SystemDb
                                 DocumentId = x.DocumentId,
                                 ItemType = EnumObjects.DocumentSendLists,
                                 OperationType = EnumOperationType.AddNew,
+                                ClientId = ctx.CurrentClientId,
                                 ObjectId = x.Id,
                                 ObjectText = x.Description + " " + x.SendType.Name + " "
                                              + x.SourcePosition.Name + " " + x.TargetPosition.Name + " "
@@ -761,6 +765,7 @@ namespace BL.Database.SystemDb
                                 DocumentId = x.DocumentId,
                                 ItemType = EnumObjects.DocumentSubscriptions,
                                 OperationType = EnumOperationType.AddNew,
+                                ClientId = ctx.CurrentClientId,
                                 ObjectId = x.Id,
                                 ObjectText =
                                     x.Description + " " + x.SubscriptionState.Name + " " +
@@ -789,6 +794,7 @@ namespace BL.Database.SystemDb
                          DocumentId = 0,
                          ItemType = EnumObjects.DictionaryAgents,
                          OperationType = EnumOperationType.AddNew,
+                         ClientId = ctx.CurrentClientId,
                          ObjectId = x.Id,
                          ObjectText = x.Name + " " + x.Description
                      }).ToList()
@@ -800,6 +806,7 @@ namespace BL.Database.SystemDb
                         DocumentId = 0,
                         ItemType = EnumObjects.DictionaryAgentEmployees,
                         OperationType = EnumOperationType.AddNew,
+                        ClientId = ctx.CurrentClientId,
                         ObjectId = x.Id,
                         ObjectText = x.PersonnelNumber + " " + x.Description + " " + x.Agent.Name + " "
                     }).ToList()
@@ -811,6 +818,7 @@ namespace BL.Database.SystemDb
                         DocumentId = 0,
                         ItemType = EnumObjects.DictionaryAgentCompanies,
                         OperationType = EnumOperationType.AddNew,
+                        ClientId = ctx.CurrentClientId,
                         ObjectId = x.Id,
                         ObjectText = x.FullName + " " + x.OKPOCode + " " + x.Description + " " +
                                     x.TaxCode + " " + x.VATCode
@@ -823,6 +831,7 @@ namespace BL.Database.SystemDb
                         DocumentId = 0,
                         ItemType = EnumObjects.DictionaryAgentPersons,
                         OperationType = EnumOperationType.AddNew,
+                        ClientId = ctx.CurrentClientId,
                         ObjectId = x.Id,
                         ObjectText = x.FullName + " " + x.Description + " " + x.TaxCode + " " +
                                     x.BirthDate + " " + x.PassportNumber + " " + x.PassportSerial + " " +
@@ -836,6 +845,7 @@ namespace BL.Database.SystemDb
                         DocumentId = 0,
                         ItemType = EnumObjects.DictionaryAgentBanks,
                         OperationType = EnumOperationType.AddNew,
+                        ClientId = ctx.CurrentClientId,
                         ObjectId = x.Id,
                         ObjectText = x.Agent.Name + " " + x.Description + " " + x.MFOCode + " " + x.Swift
                     }).ToList()
@@ -847,6 +857,7 @@ namespace BL.Database.SystemDb
                         DocumentId = 0,
                         ItemType = EnumObjects.DictionaryContacts,
                         OperationType = EnumOperationType.AddNew,
+                        ClientId = ctx.CurrentClientId,
                         ObjectId = x.Id,
                         ObjectText = x.Agent.Name + " " + x.Description + " " + x.Contact +
                                     " " + x.ContactType.Code + " " + x.ContactType.Name
@@ -859,6 +870,7 @@ namespace BL.Database.SystemDb
                         DocumentId = 0,
                         ItemType = EnumObjects.DictionaryContactType,
                         OperationType = EnumOperationType.AddNew,
+                        ClientId = ctx.CurrentClientId,
                         ObjectId = x.Id,
                         ObjectText = x.Code + " " + x.Name
                     }).ToList()
@@ -870,6 +882,7 @@ namespace BL.Database.SystemDb
                         DocumentId = 0,
                         ItemType = EnumObjects.DictionaryAgentAddresses,
                         OperationType = EnumOperationType.AddNew,
+                        ClientId = ctx.CurrentClientId,
                         ObjectId = x.Id,
                         ObjectText = x.Agent.Name + " " + x.Description + " " + x.Address +
                                     " " + x.PostCode + " " + x.AddressType.Name
@@ -882,6 +895,7 @@ namespace BL.Database.SystemDb
                         DocumentId = 0,
                         ItemType = EnumObjects.DictionaryAddressType,
                         OperationType = EnumOperationType.AddNew,
+                        ClientId = ctx.CurrentClientId,
                         ObjectId = x.Id,
                         ObjectText = x.Name
                     }).ToList()
@@ -893,6 +907,7 @@ namespace BL.Database.SystemDb
                         DocumentId = 0,
                         ItemType = EnumObjects.DictionaryAgentAccounts,
                         OperationType = EnumOperationType.AddNew,
+                        ClientId = ctx.CurrentClientId,
                         ObjectId = x.Id,
                         ObjectText = x.AccountNumber + " " + x.Name + " " +
                                 x.Agent.Name + " " + x.AgentBank.MFOCode + " " + x.AgentBank.Agent.Name
@@ -905,6 +920,7 @@ namespace BL.Database.SystemDb
                         DocumentId = 0,
                         ItemType = EnumObjects.DictionaryDocumentType,
                         OperationType = EnumOperationType.AddNew,
+                        ClientId = ctx.CurrentClientId,
                         ObjectId = x.Id,
                         ObjectText = x.Name
                     }).ToList()
@@ -916,6 +932,7 @@ namespace BL.Database.SystemDb
                         DocumentId = 0,
                         ItemType = EnumObjects.DictionaryDocumentSubjects,
                         OperationType = EnumOperationType.AddNew,
+                        ClientId = ctx.CurrentClientId,
                         ObjectId = x.Id,
                         ObjectText = x.Name
                     }).ToList()
@@ -927,6 +944,7 @@ namespace BL.Database.SystemDb
                         DocumentId = 0,
                         ItemType = EnumObjects.DictionaryRegistrationJournals,
                         OperationType = EnumOperationType.AddNew,
+                        ClientId = ctx.CurrentClientId,
                         ObjectId = x.Id,
                         ObjectText = x.Index + " " + x.Name + " " + x.Department.FullName
                     }).ToList()
@@ -938,6 +956,7 @@ namespace BL.Database.SystemDb
                        DocumentId = 0,
                        ItemType = EnumObjects.DictionaryDepartments,
                        OperationType = EnumOperationType.AddNew,
+                       ClientId = ctx.CurrentClientId,
                        ObjectId = x.Id,
                        ObjectText = x.FullName + " " + x.Code + " " + x.Name + " " + x.Company.Name + " " + x.ChiefPosition.FullName
                    }).ToList()
@@ -949,6 +968,7 @@ namespace BL.Database.SystemDb
                       DocumentId = 0,
                       ItemType = EnumObjects.DictionaryPositions,
                       OperationType = EnumOperationType.AddNew,
+                      ClientId = ctx.CurrentClientId,
                       ObjectId = x.Id,
                       ObjectText = x.FullName + " " + x.Name + " " + x.Department.Name + " " +
                                 x.ExecutorAgent.Name + " " + x.MainExecutorAgent.Name
@@ -961,6 +981,7 @@ namespace BL.Database.SystemDb
                      DocumentId = 0,
                      ItemType = EnumObjects.DictionaryStandartSendLists,
                      OperationType = EnumOperationType.AddNew,
+                     ClientId = ctx.CurrentClientId,
                      ObjectId = x.Id,
                      ObjectText = x.Name + " " + x.Position.Department.Name + " " + x.Position.Name
                  }).ToList()
@@ -972,6 +993,7 @@ namespace BL.Database.SystemDb
                      DocumentId = 0,
                      ItemType = EnumObjects.DictionaryStandartSendListContent,
                      OperationType = EnumOperationType.AddNew,
+                     ClientId = ctx.CurrentClientId,
                      ObjectId = x.Id,
                      ObjectText = x.Task + " " + x.Description + " " + x.SendType.Name + x.StandartSendList.Name +
                                 " " + x.TargetAgent.Name + " " + x.TargetPosition.Name
@@ -984,6 +1006,7 @@ namespace BL.Database.SystemDb
                     DocumentId = 0,
                     ItemType = EnumObjects.DictionaryCompanies,
                     OperationType = EnumOperationType.AddNew,
+                    ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
                     ObjectText = x.Name
                 }).ToList()
@@ -995,6 +1018,7 @@ namespace BL.Database.SystemDb
                    DocumentId = 0,
                    ItemType = EnumObjects.DictionaryPositionExecutors,
                    OperationType = EnumOperationType.AddNew,
+                   ClientId = ctx.CurrentClientId,
                    ObjectId = x.Id,
                    ObjectText = x.Description + " " + x.Agent.Name + " " + x.EndDate + " "
                                 + x.Position.Name + " " + x.PositionExecutorType.Name
@@ -1007,6 +1031,7 @@ namespace BL.Database.SystemDb
                        DocumentId = 0,
                        ItemType = EnumObjects.DictionaryPositionExecutorTypes,
                        OperationType = EnumOperationType.AddNew,
+                       ClientId = ctx.CurrentClientId,
                        ObjectId = x.Id,
                        ObjectText = x.Name + " " + x.Code
                    }).ToList()
@@ -1022,6 +1047,7 @@ namespace BL.Database.SystemDb
                                   DocumentId = 0,
                                   ItemType = EnumObjects.TemplateDocument,
                                   OperationType = EnumOperationType.AddNew,
+                                  ClientId = ctx.CurrentClientId,
                                   ObjectId = x.Id,
                                   ObjectText = x.Description + " " + x.Addressee + " " + x.DocumentDirection.Name + " " +
                                     x.DocumentSubject.Name + " " + x.DocumentType.Name + " " + x.Name + " " +
@@ -1035,6 +1061,7 @@ namespace BL.Database.SystemDb
                                   DocumentId = 0,
                                   ItemType = EnumObjects.TemplateDocumentSendList,
                                   OperationType = EnumOperationType.AddNew,
+                                  ClientId = ctx.CurrentClientId,
                                   ObjectId = x.Id,
                                   ObjectText = x.Description + " " + x.Document.Name + " " + x.SendType.Name + " " +
                                     x.SourceAgent.Name + " " + x.TargetAgent.Name + " " + x.TargetPosition.Name
@@ -1047,6 +1074,7 @@ namespace BL.Database.SystemDb
                                   DocumentId = 0,
                                   ItemType = EnumObjects.TemplateDocumentRestrictedSendList,
                                   OperationType = EnumOperationType.AddNew,
+                                  ClientId = ctx.CurrentClientId,
                                   ObjectId = x.Id,
                                   ObjectText = x.Document.Name + " " + x.Position.FullName + " " + x.Position.Name
                               }).ToList()
@@ -1058,6 +1086,7 @@ namespace BL.Database.SystemDb
                                   DocumentId = 0,
                                   ItemType = EnumObjects.TemplateDocumentTask,
                                   OperationType = EnumOperationType.AddNew,
+                                  ClientId = ctx.CurrentClientId,
                                   ObjectId = x.Id,
                                   ObjectText = x.Document.Name + " " + x.Position.FullName + " " + x.Position.Name + " " + x.Task
                               }).ToList()
@@ -1069,6 +1098,7 @@ namespace BL.Database.SystemDb
                                   DocumentId = 0,
                                   ItemType = EnumObjects.TemplateDocumentAttachedFiles,
                                   OperationType = EnumOperationType.AddNew,
+                                  ClientId = ctx.CurrentClientId,
                                   ObjectId = x.Id,
                                   ObjectText = x.Document.Name + " " + x.Extention + " " + x.Name
                               }).ToList()
@@ -1093,6 +1123,7 @@ namespace BL.Database.SystemDb
                         DocumentId = (x.ObjectType == (int)EnumObjects.Documents) ? x.ObjectId : 0,
                         ItemType = (EnumObjects)x.ObjectType,
                         OperationType = (EnumOperationType)x.OperationType,
+                        ClientId = ctx.CurrentClientId,
                         ObjectId = x.ObjectId,
                         ObjectText = ""
                     }).ToList());
@@ -1139,6 +1170,7 @@ namespace BL.Database.SystemDb
                             DocumentId = x.DocumentId,
                             ItemType = x.ItemType,
                             OperationType = x.OperationType,
+                            ClientId = ctx.CurrentClientId,
                             ObjectId = x.ObjectId,
                             ObjectText = x.v1 + x.v2 + x.v3 + x.v4 + x.v5 + x.v6 + x.v7
                         }));
@@ -1169,6 +1201,7 @@ namespace BL.Database.SystemDb
                                 DocumentId = x.DocumentId,
                                 ItemType = EnumObjects.DocumentEvents,
                                 OperationType = (EnumOperationType) x.OperationType,
+                                ClientId = ctx.CurrentClientId,
                                 ObjectId = x.ObjId,
                                 ObjectText = x.v1 + " " + x.v2 + " " + x.v3
                             }).ToList()
@@ -1187,6 +1220,7 @@ namespace BL.Database.SystemDb
                                 DocumentId = x.fl.DocumentId,
                                 ItemType = (EnumObjects)x.ind.ObjectType,
                                 OperationType = (EnumOperationType)x.ind.OperationType,
+                                ClientId = ctx.CurrentClientId,
                                 ObjectId = x.fl.Id,
                                 ObjectText = x.fl.Name + "." + x.fl.Extension + " "
                             }).Take(() => rowToSelect).ToList()
@@ -1205,6 +1239,7 @@ namespace BL.Database.SystemDb
                                 DocumentId = x.sl.DocumentId,
                                 ItemType = (EnumObjects)x.ind.ObjectType,
                                 OperationType = (EnumOperationType)x.ind.OperationType,
+                                ClientId = ctx.CurrentClientId,
                                 ObjectId = x.sl.Id,
                                 ObjectText = x.sl.Description + " " + x.sl.SendType.Name + " "
                                              + x.sl.SourcePosition.Name + " " + x.sl.TargetPosition.Name + " "
@@ -1225,6 +1260,7 @@ namespace BL.Database.SystemDb
                                 DocumentId = x.ss.DocumentId,
                                 ItemType = (EnumObjects)x.ind.ObjectType,
                                 OperationType = (EnumOperationType)x.ind.OperationType,
+                                ClientId = ctx.CurrentClientId,
                                 ObjectId = x.ss.Id,
                                 ObjectText =
                                     x.ss.Description + " " + x.ss.SubscriptionState.Name + " " +
@@ -1273,6 +1309,7 @@ namespace BL.Database.SystemDb
                                 DocumentId = 0,
                                 ItemType = (EnumObjects) x.ind.ObjectType,
                                 OperationType = (EnumOperationType) x.ind.OperationType,
+                                ClientId = ctx.CurrentClientId,
                                 ObjectId = x.id,
                                 ObjectText =
                                     x.agent.Name + " " + x.agent.Description
@@ -1296,6 +1333,7 @@ namespace BL.Database.SystemDb
                                 DocumentId = 0,
                                 ItemType = (EnumObjects) x.ind.ObjectType,
                                 OperationType = (EnumOperationType) x.ind.OperationType,
+                                ClientId = ctx.CurrentClientId,
                                 ObjectId = x.id,
                                 ObjectText =
                                     x.agent.PersonnelNumber + " " + x.agent.Description + " " +
@@ -1320,6 +1358,7 @@ namespace BL.Database.SystemDb
                                 DocumentId = 0,
                                 ItemType = (EnumObjects) x.ind.ObjectType,
                                 OperationType = (EnumOperationType) x.ind.OperationType,
+                                ClientId = ctx.CurrentClientId,
                                 ObjectId = x.id,
                                 ObjectText =
                                     x.agent.FullName + " " + x.agent.OKPOCode + " " + x.agent.Description + " " +
@@ -1345,6 +1384,7 @@ namespace BL.Database.SystemDb
                                 DocumentId = 0,
                                 ItemType = (EnumObjects) x.ind.ObjectType,
                                 OperationType = (EnumOperationType) x.ind.OperationType,
+                                ClientId = ctx.CurrentClientId,
                                 ObjectId = x.id,
                                 ObjectText =
                                     x.agent.FullName + " " + x.agent.Description + " " + x.agent.TaxCode + " " +
@@ -1372,6 +1412,7 @@ namespace BL.Database.SystemDb
                                 DocumentId = 0,
                                 ItemType = (EnumObjects) x.ind.ObjectType,
                                 OperationType = (EnumOperationType) x.ind.OperationType,
+                                ClientId = ctx.CurrentClientId,
                                 ObjectId = x.id,
                                 ObjectText =
                                     x.agent.Agent.Name + " " + x.agent.Description + " " + x.agent.MFOCode + " " +
@@ -1397,6 +1438,7 @@ namespace BL.Database.SystemDb
                                 DocumentId = 0,
                                 ItemType = (EnumObjects) x.ind.ObjectType,
                                 OperationType = (EnumOperationType) x.ind.OperationType,
+                                ClientId = ctx.CurrentClientId,
                                 ObjectId = x.id,
                                 ObjectText =
                                     x.contact.Agent.Name + " " + x.contact.Description + " " + x.contact.Contact +
@@ -1422,6 +1464,7 @@ namespace BL.Database.SystemDb
                                 DocumentId = 0,
                                 ItemType = (EnumObjects) x.ind.ObjectType,
                                 OperationType = (EnumOperationType) x.ind.OperationType,
+                                ClientId = ctx.CurrentClientId,
                                 ObjectId = x.id,
                                 ObjectText =
                                     x.contact.Code + " " + x.contact.Name
@@ -1445,6 +1488,7 @@ namespace BL.Database.SystemDb
                                 DocumentId = 0,
                                 ItemType = (EnumObjects) x.ind.ObjectType,
                                 OperationType = (EnumOperationType) x.ind.OperationType,
+                                ClientId = ctx.CurrentClientId,
                                 ObjectId = x.id,
                                 ObjectText =
                                     x.address.Agent.Name + " " + x.address.Description + " " + x.address.Address +
@@ -1470,6 +1514,7 @@ namespace BL.Database.SystemDb
                                 DocumentId = 0,
                                 ItemType = (EnumObjects) x.ind.ObjectType,
                                 OperationType = (EnumOperationType) x.ind.OperationType,
+                                ClientId = ctx.CurrentClientId,
                                 ObjectId = x.id,
                                 ObjectText = x.address.Name
                             })
@@ -1492,6 +1537,7 @@ namespace BL.Database.SystemDb
                                 DocumentId = 0,
                                 ItemType = (EnumObjects) x.ind.ObjectType,
                                 OperationType = (EnumOperationType) x.ind.OperationType,
+                                ClientId = ctx.CurrentClientId,
                                 ObjectId = x.id,
                                 ObjectText =
                                     x.account.AccountNumber + " " + x.account.Name + " " +
@@ -1517,6 +1563,7 @@ namespace BL.Database.SystemDb
                                 DocumentId = 0,
                                 ItemType = (EnumObjects) x.ind.ObjectType,
                                 OperationType = (EnumOperationType) x.ind.OperationType,
+                                ClientId = ctx.CurrentClientId,
                                 ObjectId = x.id,
                                 ObjectText = x.doc.Name
                             })
@@ -1539,6 +1586,7 @@ namespace BL.Database.SystemDb
                                 DocumentId = 0,
                                 ItemType = (EnumObjects) x.ind.ObjectType,
                                 OperationType = (EnumOperationType) x.ind.OperationType,
+                                ClientId = ctx.CurrentClientId,
                                 ObjectId = x.id,
                                 ObjectText = x.doc.Name
                             })
@@ -1562,6 +1610,7 @@ namespace BL.Database.SystemDb
                                 DocumentId = 0,
                                 ItemType = (EnumObjects) x.ind.ObjectType,
                                 OperationType = (EnumOperationType) x.ind.OperationType,
+                                ClientId = ctx.CurrentClientId,
                                 ObjectId = x.id,
                                 ObjectText = x.doc.Index + " " + x.doc.Name + " " + x.doc.Department.FullName
                             })
@@ -1586,6 +1635,7 @@ namespace BL.Database.SystemDb
                                 DocumentId = 0,
                                 ItemType = (EnumObjects) x.ind.ObjectType,
                                 OperationType = (EnumOperationType) x.ind.OperationType,
+                                ClientId = ctx.CurrentClientId,
                                 ObjectId = x.id,
                                 ObjectText = x.doc.FullName + " " + x.doc.Code + " " + x.doc.Name + " " +
                                              x.doc.Company.Name + " " + x.doc.ChiefPosition.FullName
@@ -1610,6 +1660,7 @@ namespace BL.Database.SystemDb
                                 DocumentId = 0,
                                 ItemType = (EnumObjects) x.ind.ObjectType,
                                 OperationType = (EnumOperationType) x.ind.OperationType,
+                                ClientId = ctx.CurrentClientId,
                                 ObjectId = x.id,
                                 ObjectText = x.doc.FullName + " " + x.doc.Name + " " + x.doc.Department.Name + " " +
                                              x.doc.ExecutorAgent.Name + " " + x.doc.MainExecutorAgent.Name
@@ -1634,6 +1685,7 @@ namespace BL.Database.SystemDb
                                 DocumentId = 0,
                                 ItemType = (EnumObjects) x.ind.ObjectType,
                                 OperationType = (EnumOperationType) x.ind.OperationType,
+                                ClientId = ctx.CurrentClientId,
                                 ObjectId = x.id,
                                 ObjectText =
                                     x.doc.Name + " " + x.doc.Position.Department.Name + " " + x.doc.Position.Name
@@ -1658,6 +1710,7 @@ namespace BL.Database.SystemDb
                                 DocumentId = 0,
                                 ItemType = (EnumObjects) x.ind.ObjectType,
                                 OperationType = (EnumOperationType) x.ind.OperationType,
+                                ClientId = ctx.CurrentClientId,
                                 ObjectId = x.id,
                                 ObjectText =
                                     x.doc.Task + " " + x.doc.Description + " " + x.doc.SendType.Name +
@@ -1685,6 +1738,7 @@ namespace BL.Database.SystemDb
                                 DocumentId = 0,
                                 ItemType = (EnumObjects) x.ind.ObjectType,
                                 OperationType = (EnumOperationType) x.ind.OperationType,
+                                ClientId = ctx.CurrentClientId,
                                 ObjectId = x.id,
                                 ObjectText = x.doc.Name
 
@@ -1709,6 +1763,7 @@ namespace BL.Database.SystemDb
                                 DocumentId = 0,
                                 ItemType = (EnumObjects) x.ind.ObjectType,
                                 OperationType = (EnumOperationType) x.ind.OperationType,
+                                ClientId = ctx.CurrentClientId,
                                 ObjectId = x.id,
                                 ObjectText = x.doc.Name + " " + x.doc.Code
 
@@ -1733,6 +1788,7 @@ namespace BL.Database.SystemDb
                                 DocumentId = 0,
                                 ItemType = (EnumObjects) x.ind.ObjectType,
                                 OperationType = (EnumOperationType) x.ind.OperationType,
+                                ClientId = ctx.CurrentClientId,
                                 ObjectId = x.id,
                                 ObjectText = x.doc.Description + " " + x.doc.Agent.Name + " " + x.doc.EndDate + " "
                                              + x.doc.Position.Name + " " + x.doc.PositionExecutorType.Name
@@ -1762,6 +1818,7 @@ namespace BL.Database.SystemDb
                                 DocumentId = 0,
                                 ItemType = (EnumObjects) x.ind.ObjectType,
                                 OperationType = (EnumOperationType) x.ind.OperationType,
+                                ClientId = ctx.CurrentClientId,
                                 ObjectId = x.id,
                                 ObjectText =
                                     x.doc.Description + " " + x.doc.Addressee + " " + x.doc.DocumentDirection.Name + " " +
@@ -1790,6 +1847,7 @@ namespace BL.Database.SystemDb
                                 DocumentId = 0,
                                 ItemType = (EnumObjects) x.ind.ObjectType,
                                 OperationType = (EnumOperationType) x.ind.OperationType,
+                                ClientId = ctx.CurrentClientId,
                                 ObjectId = x.id,
                                 ObjectText =
                                     x.doc.Description + " " + x.doc.Document.Name + " " + x.doc.SendType.Name + " " +
@@ -1815,6 +1873,7 @@ namespace BL.Database.SystemDb
                                 DocumentId = 0,
                                 ItemType = (EnumObjects) x.ind.ObjectType,
                                 OperationType = (EnumOperationType) x.ind.OperationType,
+                                ClientId = ctx.CurrentClientId,
                                 ObjectId = x.id,
                                 ObjectText =
                                     x.doc.Document.Name + " " + x.doc.Position.FullName + " " + x.doc.Position.Name
@@ -1838,6 +1897,7 @@ namespace BL.Database.SystemDb
                                 DocumentId = 0,
                                 ItemType = (EnumObjects) x.ind.ObjectType,
                                 OperationType = (EnumOperationType) x.ind.OperationType,
+                                ClientId = ctx.CurrentClientId,
                                 ObjectId = x.id,
                                 ObjectText =
                                     x.doc.Document.Name + " " + x.doc.Position.FullName + " " + x.doc.Position.Name +
@@ -1863,6 +1923,7 @@ namespace BL.Database.SystemDb
                                 DocumentId = 0,
                                 ItemType = (EnumObjects) x.ind.ObjectType,
                                 OperationType = (EnumOperationType) x.ind.OperationType,
+                                ClientId = ctx.CurrentClientId,
                                 ObjectId = x.id,
                                 ObjectText = x.doc.Document.Name + " " + x.doc.Extention + " " + x.doc.Name
 

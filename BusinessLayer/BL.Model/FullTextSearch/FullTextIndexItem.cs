@@ -34,5 +34,10 @@ namespace BL.Model.FullTextSearch
         /// Text which should be added to full text search
         /// </summary>
         public string ObjectText { get; set; }
+
+        /// <summary>
+        /// ID of the client
+        /// </summary>
+        public int ClientId { get; set; }
     }
 }

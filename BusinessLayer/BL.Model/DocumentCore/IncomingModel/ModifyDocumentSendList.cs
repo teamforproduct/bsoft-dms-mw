@@ -99,5 +99,9 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// Массив событий, по перемещению бумажных насителей
         /// </summary>
         public List<PaperEvent> PaperEvents { get; set; }
+        /// <summary>
+        /// Признак, запуска пункта плана сразу после сохранения
+        /// </summary>
+        public bool? IsLaunchItem { get; set; }
     }
 }

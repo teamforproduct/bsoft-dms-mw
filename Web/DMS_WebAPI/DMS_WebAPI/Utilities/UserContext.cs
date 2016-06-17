@@ -176,7 +176,9 @@ namespace DMS_WebAPI.Utilities
             var dbProc = new WebAPIDbProcess();
             context.ClientLicence = dbProc.GetClientLicenceActive(clientId);
 
-            VerifyNumberOfConnections(context, clientId, true);
+            db.ClientId = clientId;
+
+            VerifyNumberOfConnectionsByNew(context, clientId,new List<DatabaseModel> { db });
 
             contextValue.LastUsage = DateTime.Now;
 
@@ -220,7 +222,9 @@ namespace DMS_WebAPI.Utilities
             var dbProc = new WebAPIDbProcess();
             context.ClientLicence = dbProc.GetClientLicenceActive(client.Id);
 
-            VerifyNumberOfConnections(context, client.Id, true);
+            var dbs = dbProc.GetServersByAdmin(new BL.Model.WebAPI.Filters.FilterAdminServers { ClientIds = new List<int> { client.Id } });
+
+            VerifyNumberOfConnectionsByNew(context, client.Id, dbs);
 
             contextValue.LastUsage = DateTime.Now;
 
@@ -236,7 +240,7 @@ namespace DMS_WebAPI.Utilities
             _casheContexts.Add(token.ToLower(), new StoreInfo() { StoreObject = val, LastUsage = DateTime.Now });
         }
 
-        public void VerifyLicence(int clientId)
+        public void VerifyLicence(int clientId, IEnumerable<DatabaseModel> dbs)
         {
             var clientUsers = _casheContexts
                     .Select(x => (IContext)x.Value.StoreObject)
@@ -244,8 +248,6 @@ namespace DMS_WebAPI.Utilities
 
             if (clientUsers.Count() <= 0)
                 return;
-
-            var context = clientUsers.FirstOrDefault();
 
             var dbProc = new WebAPIDbProcess();
 
@@ -269,7 +271,7 @@ namespace DMS_WebAPI.Utilities
 
             try
             {
-                new Licences().Verify(regCode, lic, context);
+                new Licences().Verify(regCode, lic, dbs);
             }
             catch (LicenceError ex)
             {
@@ -312,7 +314,7 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        public void VerifyNumberOfConnections(IContext context, int clientId, bool isAddNew = false)
+        public void VerifyNumberOfConnectionsByNew(IContext context, int clientId, IEnumerable<DatabaseModel> dbs)
         {
             if (clientId <= 0) return;
 
@@ -336,19 +338,16 @@ namespace DMS_WebAPI.Utilities
                     .Select(x => (IContext)x.Value.StoreObject)
                     .Where(x => x.CurrentClientId == clientId);
 
-                if (isAddNew)
-                {
-                    qry = qry.Where(x => x.CurrentEmployee.Token != context.CurrentEmployee.Token);
-                }
+                qry = qry.Where(x => x.CurrentEmployee.Token != context.CurrentEmployee.Token);
 
                 var count = qry.Count();
 
-                if (isAddNew) count++;
+                count++;
 
                 lic.ConcurenteNumberOfConnectionsNow = count;
             }
 
-            new Licences().Verify(regCode, lic, context);
+            new Licences().Verify(regCode, lic, dbs);
 
         }
 

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using BL.CrossCutting.Interfaces;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
@@ -34,5 +35,9 @@ namespace BL.Logic.DocumentCore.Interfaces
         IEnumerable<FrontDocumentPaperList> GetDocumentPaperLists(IContext context, FilterDocumentPaperList filter);
 
         #endregion DocumentPaperLists        
+
+        #region DocumentAccesses
+        IEnumerable<FrontDocumentAccess> GetDocumentAccesses(IContext ctx, FilterDocumentAccess filters, UIPaging paging);
+        #endregion DocumentAccess
     }
 }

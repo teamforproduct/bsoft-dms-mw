@@ -182,7 +182,15 @@ namespace BL.Database.Dictionaries
 
                 if (paging != null)
                 {
-                    paging.TotalItemsCount = qry.Count();
+                    if (paging.IsOnlyCounter ?? true)
+                    {
+                        paging.TotalItemsCount = qry.Count();
+                    }
+
+                    if (paging.IsOnlyCounter ?? false)
+                    {
+                        return new List<FrontDictionaryAgent>();
+                    }
 
                     if (!paging.IsAll)
                     {
@@ -395,8 +403,8 @@ namespace BL.Database.Dictionaries
 
                 qry = qry.Where(x => x.Agent.IsIndividual);
 
-               
-                
+
+
 
                 // Список первичных ключей
                 if (filter.IDs?.Count > 0)
@@ -477,7 +485,15 @@ namespace BL.Database.Dictionaries
 
                 if (paging != null)
                 {
-                    paging.TotalItemsCount = qry.Count();
+                    if (paging.IsOnlyCounter ?? true)
+                    {
+                        paging.TotalItemsCount = qry.Count();
+                    }
+
+                    if (paging.IsOnlyCounter ?? false)
+                    {
+                        return new List<FrontDictionaryAgentPerson>();
+                    }
 
                     if (!paging.IsAll)
                     {
@@ -934,7 +950,16 @@ namespace BL.Database.Dictionaries
 
                 if (paging != null)
                 {
-                    paging.TotalItemsCount = qry.Count();
+                    if (paging.IsOnlyCounter ?? true)
+                    {
+                        paging.TotalItemsCount = qry.Count();
+                    }
+
+                    if (paging.IsOnlyCounter ?? false)
+                    {
+                        return new List<FrontDictionaryAgentEmployee>();
+                    }
+
                     if (!paging.IsAll)
                     {
                         qry = qry.OrderBy(x => x.Agent.AgentPerson.LastName)
@@ -1371,21 +1396,6 @@ namespace BL.Database.Dictionaries
             {
                 var qry = dbContext.DictionaryAgentCompaniesSet.Where(x => x.Agent.ClientId == context.CurrentClientId).AsQueryable();
 
-                // Пагинация
-                if (paging != null)
-                {
-                    paging.TotalItemsCount = qry.Count();
-
-                    if (!paging.IsAll)
-                    {
-                        var skip = paging.PageSize * (paging.CurrentPage - 1);
-                        var take = paging.PageSize;
-
-                        qry = qry.OrderBy(x => x.FullName)
-                            .Skip(() => skip).Take(() => take);
-                    }
-                }
-
                 // Список первичных ключей
                 if (filter.IDs?.Count > 0)
                 {
@@ -1456,6 +1466,28 @@ namespace BL.Database.Dictionaries
                 if (!string.IsNullOrEmpty(filter.VATCodeExact))
                 {
                     qry = qry.Where(x => x.VATCode == filter.VATCodeExact);
+                }
+                // Пагинация
+                if (paging != null)
+                {
+                    if (paging.IsOnlyCounter ?? true)
+                    {
+                        paging.TotalItemsCount = qry.Count();
+                    }
+
+                    if (paging.IsOnlyCounter ?? false)
+                    {
+                        return new List<FrontDictionaryAgentCompany>();
+                    }
+
+                    if (!paging.IsAll)
+                    {
+                        var skip = paging.PageSize * (paging.CurrentPage - 1);
+                        var take = paging.PageSize;
+
+                        qry = qry.OrderBy(x => x.FullName)
+                            .Skip(() => skip).Take(() => take);
+                    }
                 }
 
                 return qry.Select(x => new FrontDictionaryAgentCompany
@@ -1763,8 +1795,28 @@ namespace BL.Database.Dictionaries
 
                 qry = qry.Where(x => x.Agent.IsBank);
 
-               
-                
+                // Пагинация
+                if (paging != null)
+                {
+                    if (paging.IsOnlyCounter ?? true)
+                    {
+                        paging.TotalItemsCount = qry.Count();
+                    }
+
+                    if (paging.IsOnlyCounter ?? false)
+                    {
+                        return new List<FrontDictionaryAgentBank>();
+                    }
+
+                    if (!paging.IsAll)
+                    {
+                        var skip = paging.PageSize * (paging.CurrentPage - 1);
+                        var take = paging.PageSize;
+
+                        qry = qry.OrderBy(x => x.Agent.Name)
+                            .Skip(() => skip).Take(() => take);
+                    }
+                }
 
                 // Список первичных ключей
                 if (filter.IDs?.Count > 0)
@@ -2341,7 +2393,7 @@ namespace BL.Database.Dictionaries
                 }).ToList();
             }
         }
-       
+
         public IEnumerable<int> GetAgentsIDByContacts(IContext context, IEnumerable<int> contacts)
         {
             using (var dbContext = new DmsContext(context))
