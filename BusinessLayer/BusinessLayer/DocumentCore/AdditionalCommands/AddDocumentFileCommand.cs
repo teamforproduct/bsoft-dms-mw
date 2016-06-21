@@ -97,7 +97,8 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                 Name = Path.GetFileNameWithoutExtension(Model.FileName),
                 Extension = Path.GetExtension(Model.FileName).Replace(".", ""),
                 Description = Model.Description,
-                
+                IsWorkedOut = (!Model.IsAdditional && _document.DocumentFiles.Any(x => (x.Name + "." + x.Extension).Equals(Model.FileName) && x.ExecutorPositionId != _context.CurrentPositionId))? false: (bool?)null,
+
                 WasChangedExternal = false,
                 ExecutorPositionId = _context.CurrentPositionId,
                 ExecutorPositionExecutorAgentId = executorPositionExecutorAgentId.Value

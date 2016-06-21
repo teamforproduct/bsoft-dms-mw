@@ -29,7 +29,7 @@ namespace BL.Database.DBModel.Document
         public string Content { get; set; }
         public bool IsAdditional { get; set; }
         public bool IsDeleted { get; set; }
-        public bool IsWorkedOut { get; set; }
+        public bool? IsWorkedOut { get; set; }
         [MaxLength(2000)]
         public string Hash { get; set; }
         [MaxLength(2000)]
@@ -41,6 +41,8 @@ namespace BL.Database.DBModel.Document
         public int ExecutorPositionExecutorAgentId { get; set; }
 
         public int LastChangeUserId { get; set; }
+
+        [Index("IX_LastChangeDate")]
         public DateTime LastChangeDate { get; set; }
         [ForeignKey("DocumentId")]
         public virtual Documents Document { get; set; }

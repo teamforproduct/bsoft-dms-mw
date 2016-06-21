@@ -305,6 +305,14 @@
         /// Добавить версию файла к файлу
         /// </summary>
         AddDocumentFileUseMainNameFile = 104010,
+        /// <summary>
+        /// Файл принят
+        /// </summary>
+        AcceptDocumentFile = 104011,
+        /// <summary>
+        /// Файл не принят
+        /// </summary>
+        RejectDocumentFile = 104012,
 
         /// <summary>
         /// Добавить связь между документами

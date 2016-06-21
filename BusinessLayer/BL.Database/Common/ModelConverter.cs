@@ -270,6 +270,7 @@ namespace BL.Database.Common
                 IsDeleted = docFile.IsDeleted,
                 IsLastVersion = docFile.IsLastVersion,
                 IsMainVersion = docFile.IsMainVersion,
+                IsWorkedOut = docFile.IsWorkedOut,
                 Description = docFile.Description,
                 LastChangeDate = docFile.LastChangeDate,
                 LastChangeUserId = docFile.LastChangeUserId,

@@ -21,6 +21,10 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// </summary>
         public int OrderInDocument { get; set; }
         /// <summary>
+        /// Версия файла
+        /// </summary>
+        public int Version { get; set; }
+        /// <summary>
         /// Является ли файл дополнительным или основным.
         /// Только для добавления файла
         /// </summary>

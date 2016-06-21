@@ -66,6 +66,7 @@ namespace DMS_WebAPI.Controllers.Documents
             model.PostedFileData = file;
             model.FileName = file.FileName;
             model.FileType = file.ContentType;
+            model.IsUseMainNameFile = false;
 
 
             docProc.ExecuteAction(EnumDocumentActions.AddDocumentFile, ctx, model);
@@ -117,10 +118,32 @@ namespace DMS_WebAPI.Controllers.Documents
 
             HttpPostedFile file = HttpContext.Current.Request.Files[0];
             model.PostedFileData = file;
-
+            model.FileName = file.FileName;
+            model.FileType = file.ContentType;
             model.IsUseMainNameFile = true;
 
             docProc.ExecuteAction(EnumDocumentActions.AddDocumentFileUseMainNameFile, ctx, model);
+            return GetFileList(new FilterDocumentAttachedFile { DocumentId = new List<int> { model.DocumentId } }, null);
+        }
+
+        [Route("Accept")]
+        [HttpPost]
+        public IHttpActionResult PostAccept([FromUri]ChangeWorkOutDocumentFile model)
+        {
+            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+
+            docProc.ExecuteAction(EnumDocumentActions.AcceptDocumentFile, ctx, model);
+            return GetFileList(new FilterDocumentAttachedFile { DocumentId = new List<int> { model.DocumentId } }, null);
+        }
+        [Route("Reject")]
+        [HttpPost]
+        public IHttpActionResult PostNotWorkOut([FromUri]ChangeWorkOutDocumentFile model)
+        {
+            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+
+            docProc.ExecuteAction(EnumDocumentActions.RejectDocumentFile, ctx, model);
             return GetFileList(new FilterDocumentAttachedFile { DocumentId = new List<int> { model.DocumentId } }, null);
         }
     }

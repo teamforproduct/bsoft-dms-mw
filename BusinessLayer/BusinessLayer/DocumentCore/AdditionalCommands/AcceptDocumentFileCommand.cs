@@ -1,10 +1,7 @@
-﻿using System;
-using System.IO;
-using System.Linq;
+﻿using System.Linq;
 using BL.Database.Documents.Interfaces;
 using BL.Database.FileWorker;
 using BL.Logic.Common;
-using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
@@ -12,41 +9,43 @@ using BL.Model.Exception;
 
 namespace BL.Logic.DocumentCore.AdditionalCommands
 {
-    public class ModifyDocumentFileCommand : BaseDocumentCommand
+    public class AcceptDocumentFileCommand : BaseDocumentCommand
     {
         private readonly IDocumentFileDbProcess _operationDb;
         private readonly IFileStore _fStore;
 
         private InternalDocumentAttachedFile _file;
 
-        public ModifyDocumentFileCommand(IDocumentFileDbProcess operationDb, IFileStore fStore)
+        public AcceptDocumentFileCommand(IDocumentFileDbProcess operationDb, IFileStore fStore)
         {
             _operationDb = operationDb;
             _fStore = fStore;
         }
 
-        private ModifyDocumentFile Model
+        private ChangeWorkOutDocumentFile Model
         {
             get
             {
-                if (!(_param is ModifyDocumentFile))
+                if (!(_param is ChangeWorkOutDocumentFile))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ModifyDocumentFile)_param;
+                return (ChangeWorkOutDocumentFile)_param;
             }
         }
 
         public override bool CanBeDisplayed(int positionId)
         {
-            _actionRecords =
-                   _document.DocumentFiles.Where(
-                       x =>
-                           x.ExecutorPositionId == positionId)
-                                                   .Select(x => new InternalActionRecord
-                                                   {
-                                                       FileId = x.Id,
-                                                   });
+            if (_document.ExecutorPositionId == positionId)
+            {
+                _actionRecords =
+                       _document.DocumentFiles.Where(
+                           x => !(x.IsWorkedOut ?? false))
+                                                       .Select(x => new InternalActionRecord
+                                                       {
+                                                           FileId = x.Id,
+                                                       });
+            }
             if (!_actionRecords.Any())
             {
                 return false;
@@ -66,16 +65,8 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             {
                 throw new UnknownDocumentFile();
             }
-            _file = _document.DocumentFiles.First();
 
-            if (!Model.IsAdditional || !_file.IsAdditional)
-            {
-                _context.SetCurrentPosition(_document.ExecutorPositionId);
-            }
-            else
-            {
-                _context.SetCurrentPosition(_file.ExecutorPositionId);
-            }
+            _context.SetCurrentPosition(Document.ExecutorPositionId);
 
             _admin.VerifyAccess(_context, CommandType);
 
@@ -84,25 +75,18 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                 throw new CouldNotPerformOperation();
             }
 
-            
-            _file.FileType = Model.FileType;
-            _file.Extension = Path.GetExtension(Model.FileName).Replace(".", "");
-            _file.Name = Path.GetFileNameWithoutExtension(Model.FileName);
-            _file.IsAdditional = Model.IsAdditional;
-
             return true;
         }
 
         public override object Execute()
         {
-            //fl.Date = DateTime.Now;
-            _fStore.SaveFile(_context, _file);
+            _file.IsWorkedOut = true;
             CommonDocumentUtilities.SetLastChange(_context, _file);
             _file.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, _file.DocumentId, EnumEventTypes.ModifyDocumentFile, null, _file.Name + "." + _file.Extension);
             _operationDb.UpdateFileOrVersion(_context, _file);
             return _file.Id;
         }
 
-        public override EnumDocumentActions CommandType => EnumDocumentActions.ModifyDocumentFile;
+        public override EnumDocumentActions CommandType => EnumDocumentActions.AcceptDocumentFile;
     }
 }

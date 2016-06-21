@@ -21,24 +21,32 @@ namespace BL.Database.DBModel.Document
         }
 
         public int Id { get; set; }
+        [Index("IX_DocumentEvents_ReadDate", 3)]
         public int DocumentId { get; set; }
         public int EventTypeId { get; set; }
         public DateTime CreateDate { get; set; }
         [Index("IX_Date", 1)]
         public DateTime Date { get; set; }
+        [Index("IX_DocumentEvents_IsAvailableWithinTask", 2)]
         public Nullable<int> TaskId { get; set; }
         //public string TaskName { get; set; }
         [MaxLength(2000)]
         public string Description { get; set; }
         public string AddDescription { get; set; }
+        [Index("IX_DocumentEvents_ReadDate", 4)]
         public int? SourcePositionId { get; set; }
         public Nullable<int> SourcePositionExecutorAgentId { get; set; }
         public int? SourceAgentId { get; set; }
+        [Index("IX_DocumentEvents_ReadDate", 2)]
         public Nullable<int> TargetPositionId { get; set; }
         public Nullable<int> TargetPositionExecutorAgentId { get; set; }
         public Nullable<int> TargetAgentId { get; set; }
+
+        [Index("IX_DocumentEvents_IsAvailableWithinTask", 1)]
         public bool IsAvailableWithinTask { get; set; }
         public Nullable<DateTime> SendDate { get; set; }
+
+        [Index("IX_DocumentEvents_ReadDate", 1)]
         public Nullable<DateTime> ReadDate { get; set; }
         public Nullable<int> ReadAgentId { get; set; }
 
@@ -55,6 +63,7 @@ namespace BL.Database.DBModel.Document
 
 
         public int LastChangeUserId { get; set; }
+        [Index("IX_LastChangeDate")]
         public DateTime LastChangeDate { get; set; }
 
         [ForeignKey("DocumentId")]
@@ -91,8 +100,8 @@ namespace BL.Database.DBModel.Document
         public virtual ICollection<DocumentSendLists> StartSendList { get; set; }
         [ForeignKey("CloseEventId")]
         public virtual ICollection<DocumentSendLists> CloseSendList { get; set; }
-//        [ForeignKey("EventId")]
-//        public virtual ICollection<DocumentEventReaders> EventReaders { get; set; }
+        //        [ForeignKey("EventId")]
+        //        public virtual ICollection<DocumentEventReaders> EventReaders { get; set; }
 
         [ForeignKey("PaperId")]
         public virtual DocumentPapers Paper { get; set; }
