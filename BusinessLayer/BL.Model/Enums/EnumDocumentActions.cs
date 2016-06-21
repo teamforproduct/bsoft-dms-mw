@@ -301,6 +301,28 @@
         /// Удалить файл
         /// </summary>
         DeleteDocumentFile = 104009,
+        /// <summary>
+        /// Добавить версию файла к файлу
+        /// </summary>
+        AddDocumentFileUseMainNameFile = 104010,
+        /// <summary>
+        /// Файл принят
+        /// </summary>
+        AcceptDocumentFile = 104011,
+        /// <summary>
+        /// Файл не принят
+        /// </summary>
+        RejectDocumentFile = 104012,
+
+        /// <summary>
+        /// Переименовать файл
+        /// </summary>
+        RenameDocumentFile = 104013,
+
+        /// <summary>
+        /// Удалить версию файл
+        /// </summary>
+        DeleteDocumentFileVersion = 104014,
 
         /// <summary>
         /// Добавить связь между документами

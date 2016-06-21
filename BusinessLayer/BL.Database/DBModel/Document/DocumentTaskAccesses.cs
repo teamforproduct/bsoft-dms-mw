@@ -12,9 +12,10 @@ namespace BL.Database.DBModel.Document
     {
         public int Id { get; set; }
         [Index("IX_TaskPosition", 1, IsUnique = true)]
+        [Index("IX_PositionTask", 2, IsUnique = true)]
         public int TaskId { get; set; }
         [Index("IX_TaskPosition", 2, IsUnique = true)]
-        [Index("IX_PositionId", 1)]
+        [Index("IX_PositionTask", 1, IsUnique = true)]
         public int PositionId { get; set; }
         [ForeignKey("TaskId")]
         public virtual DocumentTasks Task { get; set; }

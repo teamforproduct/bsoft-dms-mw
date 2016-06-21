@@ -5,6 +5,7 @@ using BL.Database.DBModel.Template;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Database.DBModel.System;
 using BL.Model.SystemCore.InternalModel;
+using System;
 
 namespace BL.Database.Common
 {
@@ -149,7 +150,7 @@ namespace BL.Database.Common
                     Id = wait.Id,
                     AttentionDate = wait.AttentionDate,
                     DocumentId = wait.DocumentId,
-                    DueDate = wait.DueDate,
+                    DueDate = wait.DueDate ?? DateTime.MaxValue,
                     LastChangeDate = wait.LastChangeDate,
                     LastChangeUserId = wait.LastChangeUserId,
                     OffEventId = wait.OffEventId,
@@ -267,6 +268,11 @@ namespace BL.Database.Common
                 FileType = docFile.FileType,
                 FileSize = docFile.FileSize,
                 IsAdditional = docFile.IsAdditional,
+                IsDeleted = docFile.IsDeleted,
+                IsLastVersion = docFile.IsLastVersion,
+                IsMainVersion = docFile.IsMainVersion,
+                IsWorkedOut = docFile.IsWorkedOut,
+                Description = docFile.Description,
                 LastChangeDate = docFile.LastChangeDate,
                 LastChangeUserId = docFile.LastChangeUserId,
                 Name = docFile.Name,

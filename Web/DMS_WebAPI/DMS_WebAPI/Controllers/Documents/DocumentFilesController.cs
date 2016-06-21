@@ -23,7 +23,11 @@ namespace DMS_WebAPI.Controllers.Documents
     [RoutePrefix("api/v2/DocumentFiles")]
     public class DocumentFilesController : ApiController
     {
-        //GET: api/Files
+        /// <summary>
+        /// Получить файл документа определенной версии
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public IHttpActionResult Get([FromUri]FilterDocumentFileIdentity model)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
@@ -53,7 +57,7 @@ namespace DMS_WebAPI.Controllers.Documents
             return res;
         }
 
-        public IHttpActionResult Post([FromUri]ModifyDocumentFile model)
+        public IHttpActionResult Post([FromUri]AddDocumentFile model)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
@@ -62,6 +66,7 @@ namespace DMS_WebAPI.Controllers.Documents
             model.PostedFileData = file;
             model.FileName = file.FileName;
             model.FileType = file.ContentType;
+            model.IsUseMainNameFile = false;
 
 
             docProc.ExecuteAction(EnumDocumentActions.AddDocumentFile, ctx, model);
@@ -71,17 +76,12 @@ namespace DMS_WebAPI.Controllers.Documents
         // PUT: api/Files/5
         public IHttpActionResult Put([FromUri]ModifyDocumentFile model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-
-            HttpPostedFile file = HttpContext.Current.Request.Files[0];
-            model.PostedFileData = file;
-            model.FileName = file.FileName;
-            model.FileType = file.ContentType;
 
             var fileId = (int)docProc.ExecuteAction(EnumDocumentActions.ModifyDocumentFile, ctx, model);
 
-            return GetFileList(new FilterDocumentAttachedFile { AttachedFileId = new List<int> { fileId } }, null);
+            return GetFileList(new FilterDocumentAttachedFile { AttachedFileId = new List<int> { fileId }, IsDeleted = null, IsMainVersion = null }, null);
         }
 
         // DELETE: api/Files
@@ -107,6 +107,54 @@ namespace DMS_WebAPI.Controllers.Documents
             var actions = cmdService.GetDocumentFileActions(ctx, id);
 
             return new JsonResult(actions, this);
+        }
+
+        [Route("AddUseMainNameFile/{id}")]
+        [HttpPost]
+        public IHttpActionResult PostAddUseMainNameFile([FromUri]AddDocumentFile model)
+        {
+            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+
+            HttpPostedFile file = HttpContext.Current.Request.Files[0];
+            model.PostedFileData = file;
+            model.FileName = file.FileName;
+            model.FileType = file.ContentType;
+            model.IsUseMainNameFile = true;
+
+            docProc.ExecuteAction(EnumDocumentActions.AddDocumentFileUseMainNameFile, ctx, model);
+            return GetFileList(new FilterDocumentAttachedFile { DocumentId = new List<int> { model.DocumentId } }, null);
+        }
+
+        [Route("Accept")]
+        [HttpPost]
+        public IHttpActionResult PostAccept([FromUri]ChangeWorkOutDocumentFile model)
+        {
+            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+
+            docProc.ExecuteAction(EnumDocumentActions.AcceptDocumentFile, ctx, model);
+            return GetFileList(new FilterDocumentAttachedFile { DocumentId = new List<int> { model.DocumentId } }, null);
+        }
+        [Route("Reject")]
+        [HttpPost]
+        public IHttpActionResult PostNotWorkOut([FromUri]ChangeWorkOutDocumentFile model)
+        {
+            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+
+            docProc.ExecuteAction(EnumDocumentActions.RejectDocumentFile, ctx, model);
+            return GetFileList(new FilterDocumentAttachedFile { DocumentId = new List<int> { model.DocumentId } }, null);
+        }
+
+        [Route("DeleteFileVersion")]
+        [HttpDelete]
+        public IHttpActionResult DeleteFileVersion([FromUri]FilterDocumentFileIdentity model)
+        {
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            docProc.ExecuteAction(EnumDocumentActions.DeleteDocumentFileVersion, ctx, model);
+            return new JsonResult(null, this);
         }
     }
 }

@@ -59,7 +59,7 @@ namespace BL.Database.Common
             return qry;
         }
 
-        private static IQueryable<DocumentFiles> GetDocumentFilesMaxVersion(IContext ctx, DmsContext dbContext, FilterDocumentAttachedFile filter)
+        private static IQueryable<DocumentFiles> GetDocumentFilesQuery(IContext ctx, DmsContext dbContext, FilterDocumentAttachedFile filter)
         {
             var qry = dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).AsQueryable();
 
@@ -91,16 +91,34 @@ namespace BL.Database.Common
 
                     qry = qry.Where(filterContains);
                 }
+
+                if (filter.IsAdditional.HasValue)
+                {
+                    qry = qry.Where(x => x.IsAdditional == filter.IsAdditional);
+                }
+
+                if (filter.IsDeleted.HasValue)
+                {
+                    qry = qry.Where(x => x.IsDeleted == filter.IsDeleted);
+                }
+
+                if (filter.IsMainVersion.HasValue)
+                {
+                    qry = qry.Where(x => x.IsMainVersion == filter.IsMainVersion);
+                }
+
+                if (filter.IsLastVersion.HasValue)
+                {
+                    qry = qry.Where(x => x.IsLastVersion == filter.IsLastVersion);
+                }
             }
 
-            return qry
-                .GroupBy(g => new { g.DocumentId, g.OrderNumber })
-                .Select(x => x.OrderByDescending(y => y.Version).FirstOrDefault());
+            return qry;
         }
 
         public static IEnumerable<FrontDocumentAttachedFile> GetDocumentFiles(IContext ctx, DmsContext dbContext, FilterDocumentAttachedFile filter, UIPaging paging = null)
         {
-            var sq = GetDocumentFilesMaxVersion(ctx, dbContext, filter);
+            var sq = GetDocumentFilesQuery(ctx, dbContext, filter);
 
             if (paging != null)
             {
@@ -137,6 +155,8 @@ namespace BL.Database.Common
                           FileType = file.FileType,
                           FileSize = file.FileSize,
                           IsAdditional = file.IsAdditional,
+                          IsMainVersion = file.IsMainVersion,
+                          IsLastVersion = file.IsLastVersion,
                           Hash = file.Hash,
                           LastChangeDate = file.LastChangeDate,
                           LastChangeUserId = file.LastChangeUserId,
@@ -162,7 +182,7 @@ namespace BL.Database.Common
 
         public static IEnumerable<InternalDocumentAttachedFile> GetInternalDocumentFiles(IContext ctx, DmsContext dbContext, int documentId)
         {
-            var sq = GetDocumentFilesMaxVersion(ctx, dbContext, new FilterDocumentAttachedFile { DocumentId = new List<int> { documentId } });
+            var sq = GetDocumentFilesQuery(ctx, dbContext, new FilterDocumentAttachedFile { DocumentId = new List<int> { documentId } });
 
             return
                 sq.Select(x => new InternalDocumentAttachedFile
@@ -175,6 +195,10 @@ namespace BL.Database.Common
                     FileType = x.FileType,
                     FileSize = x.FileSize,
                     IsAdditional = x.IsAdditional,
+                    
+                    IsMainVersion = x.IsMainVersion,
+                    IsLastVersion = x.IsLastVersion,
+
                     Hash = x.Hash,
                     LastChangeDate = x.LastChangeDate,
                     LastChangeUserId = x.LastChangeUserId,
@@ -316,8 +340,71 @@ namespace BL.Database.Common
                     (current, value) => current.Or(e => e.PositionId == value).Expand());
 
                 qry = qry.Where(x => !x.OnEvent.IsAvailableWithinTask).Where(filterOnEventPositionsContains)
-                        .Concat(qry.Where(x => x.OnEvent.IsAvailableWithinTask && x.OnEvent.TaskId.HasValue &&
-                        x.OnEvent.Task.TaskAccesses.AsQueryable().Any(filterOnEventTaskAccessesContains)));
+                        .Concat(
+                                    qry.Where(x => x.OnEvent.IsAvailableWithinTask && x.OnEvent.TaskId.HasValue && x.OnEvent.Task.TaskAccesses.AsQueryable().Any(filterOnEventTaskAccessesContains))
+                                );
+
+                var filterContains = PredicateBuilder.False<DocumentAccesses>();
+                filterContains = ctx.CurrentPositionsIdList.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.PositionId == value).Expand());
+
+                qry = qry.Where(x => x.Document.Accesses.AsQueryable().Any(filterContains));
+            }
+
+            qry = qry.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId);
+
+            if (documentId.HasValue)
+            {
+                qry = qry.Where(x => x.DocumentId == documentId.Value);
+            }
+            return qry;
+        }
+
+
+        public static IQueryable<DocumentWaits> GetDocumentWaitsQuery1(DmsContext dbContext, IContext ctx, int? documentId = null)
+        {
+            var qry = dbContext.DocumentWaitsSet.AsQueryable();
+
+            //TODO Что то придумать с union
+
+            if (ctx != null && !ctx.IsAdmin)
+            {
+                var filterOnEventPositionsContains = PredicateBuilder.False<DocumentWaits>();
+                filterOnEventPositionsContains = ctx.CurrentPositionsIdList.Aggregate(filterOnEventPositionsContains,
+                    (current, value) => current.Or(e => e.OnEvent.TargetPositionId == value || e.OnEvent.SourcePositionId == value).Expand());
+
+                qry = qry.Where(x => !x.OnEvent.IsAvailableWithinTask).Where(filterOnEventPositionsContains);
+
+                var filterContains = PredicateBuilder.False<DocumentAccesses>();
+                filterContains = ctx.CurrentPositionsIdList.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.PositionId == value).Expand());
+
+                qry = qry.Where(x => x.Document.Accesses.AsQueryable().Any(filterContains));
+            }
+
+            qry = qry.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId);
+
+            if (documentId.HasValue)
+            {
+                qry = qry.Where(x => x.DocumentId == documentId.Value);
+            }
+            return qry;
+        }
+
+
+        public static IQueryable<DocumentWaits> GetDocumentWaitsQuery2(DmsContext dbContext, IContext ctx, int? documentId = null)
+        {
+            var qry = dbContext.DocumentWaitsSet.AsQueryable();
+
+            //TODO Что то придумать с union
+
+            if (ctx != null && !ctx.IsAdmin)
+            {
+                var filterOnEventTaskAccessesContains = PredicateBuilder.False<DocumentTaskAccesses>();
+                filterOnEventTaskAccessesContains = ctx.CurrentPositionsIdList.Aggregate(filterOnEventTaskAccessesContains,
+                    (current, value) => current.Or(e => e.PositionId == value).Expand());
+
+                qry = qry.Where(x => x.OnEvent.IsAvailableWithinTask && x.OnEvent.TaskId.HasValue && x.OnEvent.Task.TaskAccesses.AsQueryable().Any(filterOnEventTaskAccessesContains));
 
                 var filterContains = PredicateBuilder.False<DocumentAccesses>();
                 filterContains = ctx.CurrentPositionsIdList.Aggregate(filterContains,
@@ -449,6 +536,8 @@ namespace BL.Database.Common
         public static IEnumerable<FrontDocumentWait> GetDocumentWaits(DmsContext dbContext, FilterDocumentWait filter, IContext ctx, UIPaging paging = null)
         {
             var waitsDb = GetDocumentWaitsQuery(dbContext, ctx);
+            var waitsDb1 = GetDocumentWaitsQuery1(dbContext, ctx);
+            var waitsDb2 = GetDocumentWaitsQuery2(dbContext, ctx);
 
             if (filter != null)
             {
@@ -459,28 +548,36 @@ namespace BL.Database.Common
                         (current, value) => current.Or(e => e.DocumentId == value).Expand());
 
                     waitsDb = waitsDb.Where(filterContains);
+                    waitsDb1 = waitsDb1.Where(filterContains);
+                    waitsDb2 = waitsDb2.Where(filterContains);
                 }
 
                 if (filter.OnEventId.HasValue)
                 {
                     waitsDb = waitsDb.Where(x => x.OnEventId == filter.OnEventId.Value);
+                    waitsDb1 = waitsDb1.Where(x => x.OnEventId == filter.OnEventId.Value);
+                    waitsDb2 = waitsDb2.Where(x => x.OnEventId == filter.OnEventId.Value);
                 }
 
                 if (filter.OffEventId.HasValue)
                 {
                     waitsDb = waitsDb.Where(x => x.OffEventId.HasValue && x.OffEventId.Value == filter.OffEventId.Value);
+                    waitsDb1 = waitsDb1.Where(x => x.OffEventId.HasValue && x.OffEventId.Value == filter.OffEventId.Value);
+                    waitsDb2 = waitsDb2.Where(x => x.OffEventId.HasValue && x.OffEventId.Value == filter.OffEventId.Value);
                 }
 
                 if (filter.Opened)
                 {
                     waitsDb = waitsDb.Where(x => !x.OffEventId.HasValue);
+                    waitsDb1 = waitsDb1.Where(x => !x.OffEventId.HasValue);
+                    waitsDb2 = waitsDb2.Where(x => !x.OffEventId.HasValue);
                 }
             }
 
-            var waitsRes = waitsDb
-                .OrderBy(x => x.DueDate ?? DateTime.MaxValue)
-                .ThenBy(x => x.OnEvent.Date)
-                .AsQueryable();
+            var waitsRes = waitsDb.OrderBy(x => x.DueDate).AsQueryable();
+            var waitsRes1 = waitsDb1.OrderBy(x => x.DueDate).AsQueryable();
+            var waitsRes2 = waitsDb2.OrderBy(x => x.DueDate).AsQueryable();
+
 
             if (paging != null)
             {
@@ -514,62 +611,74 @@ namespace BL.Database.Common
                 {
                     var skip = paging.PageSize * (paging.CurrentPage - 1);
                     var take = paging.PageSize;
+                    var skip1 = 0;
+                    var take1 = paging.PageSize * (paging.CurrentPage - 1) + paging.PageSize;
 
                     waitsRes = waitsRes
                         .Skip(() => skip).Take(() => take);
+
+                    waitsRes = waitsRes1.Skip(() => skip1).Take(() => take1)
+                        .Concat(waitsRes2.Skip(() => skip1).Take(() => take1))
+                        .OrderBy(x => x.DueDate).Skip(() => skip).Take(() => take);
+
                 }
             }
 
-            var waits = waitsRes.Select(x => new FrontDocumentWait
-            {
-                Id = x.Id,
-                DocumentId = x.DocumentId,
-                ParentId = x.ParentId,
-                OnEventId = x.OnEventId,
-                OffEventId = x.OffEventId,
-                ResultTypeId = x.ResultTypeId,
-                ResultTypeName = x.ResultType.Name,
-                DueDate = x.DueDate,
-                AttentionDate = x.AttentionDate,
-                TargetDescription = x.TargetDescription,
-                //TargetAttentionDate = x.TargetAttentionDate,
-                IsClosed = x.OffEvent != null,
+            var maxDateTime = DateTime.Now.AddYears(50);
 
-                DocumentDate = x.Document.LinkId.HasValue ? x.Document.RegistrationDate ?? x.Document.CreateDate : (DateTime?)null,
-                RegistrationNumber = x.Document.LinkId.HasValue ? x.Document.RegistrationNumber : null,
-                RegistrationNumberPrefix = x.Document.LinkId.HasValue ? x.Document.RegistrationNumberPrefix : null,
-                RegistrationNumberSuffix = x.Document.LinkId.HasValue ? x.Document.RegistrationNumberSuffix : null,
-                RegistrationFullNumber = x.Document.LinkId.HasValue ? "#" + x.Document.Id : null,
-                DocumentDescription = x.Document.LinkId.HasValue ? x.Document.Description : null,
-                DocumentTypeName = x.Document.LinkId.HasValue ? x.Document.TemplateDocument.DocumentType.Name : null,
-                DocumentDirectionName = x.Document.LinkId.HasValue ? x.Document.TemplateDocument.DocumentDirection.Name : null,
-
-                OnEvent = new FrontDocumentEvent
+            var waitsResF =
+                //waitsRes
+                dbContext.DocumentWaitsSet.Where(x => waitsRes.Select(y => y.Id).Contains(x.Id))
+                .Select(x => new FrontDocumentWait
                 {
-                    Id = x.OnEvent.Id,
-                    DocumentId = x.OnEvent.DocumentId,
-                    Task = x.OnEvent.Task.Task,
-                    Description = x.OnEvent.Description,
-                    AddDescription = x.OnEvent.AddDescription,
-                    EventType = x.OnEvent.EventTypeId,
-                    EventTypeName = x.OnEvent.EventType.WaitDescription/*?? x.OnEvent.EventType.Name*/,
-                    Date = x.OnEvent.Date,
-                    SourcePositionExecutorAgentName = x.OnEvent.SourcePositionExecutorAgent.Name,
-                    TargetPositionExecutorAgentName = x.OnEvent.TargetPositionExecutorAgent.Name,
+                    Id = x.Id,
+                    DocumentId = x.DocumentId,
+                    ParentId = x.ParentId,
+                    OnEventId = x.OnEventId,
+                    OffEventId = x.OffEventId,
+                    ResultTypeId = x.ResultTypeId,
+                    ResultTypeName = x.ResultType.Name,
+                    DueDate = x.DueDate > maxDateTime ? null : x.DueDate,
+                    AttentionDate = x.AttentionDate,
+                    TargetDescription = x.TargetDescription,
+                    //TargetAttentionDate = x.TargetAttentionDate,
+                    IsClosed = x.OffEvent != null,
 
-                    ReadAgentName = x.OnEvent.ReadAgent.Name,
-                    ReadDate = x.OnEvent.ReadDate,
-                    SourceAgentName = x.OnEvent.SourceAgent.Name,
+                    DocumentDate = x.Document.LinkId.HasValue ? x.Document.RegistrationDate ?? x.Document.CreateDate : (DateTime?)null,
+                    RegistrationNumber = x.Document.LinkId.HasValue ? x.Document.RegistrationNumber : null,
+                    RegistrationNumberPrefix = x.Document.LinkId.HasValue ? x.Document.RegistrationNumberPrefix : null,
+                    RegistrationNumberSuffix = x.Document.LinkId.HasValue ? x.Document.RegistrationNumberSuffix : null,
+                    RegistrationFullNumber = x.Document.LinkId.HasValue ? "#" + x.Document.Id : null,
+                    DocumentDescription = x.Document.LinkId.HasValue ? x.Document.Description : null,
+                    DocumentTypeName = x.Document.LinkId.HasValue ? x.Document.TemplateDocument.DocumentType.Name : null,
+                    DocumentDirectionName = x.Document.LinkId.HasValue ? x.Document.TemplateDocument.DocumentDirection.Name : null,
 
-                    SourcePositionName = x.OnEvent.SourcePosition.Name,
-                    TargetPositionName = x.OnEvent.TargetPosition.Name,
-                    SourcePositionExecutorNowAgentName = x.OnEvent.SourcePosition.ExecutorAgent.Name,
-                    TargetPositionExecutorNowAgentName = x.OnEvent.TargetPosition.ExecutorAgent.Name,
-                    SourcePositionExecutorAgentPhoneNumber = "(888)888-88-88", //TODO 
-                    TargetPositionExecutorAgentPhoneNumber = "(888)888-88-88", //TODO 
+                    OnEvent = new FrontDocumentEvent
+                    {
+                        Id = x.OnEvent.Id,
+                        DocumentId = x.OnEvent.DocumentId,
+                        Task = x.OnEvent.Task.Task,
+                        Description = x.OnEvent.Description,
+                        AddDescription = x.OnEvent.AddDescription,
+                        EventType = x.OnEvent.EventTypeId,
+                        EventTypeName = x.OnEvent.EventType.WaitDescription/*?? x.OnEvent.EventType.Name*/,
+                        Date = x.OnEvent.Date,
+                        SourcePositionExecutorAgentName = x.OnEvent.SourcePositionExecutorAgent.Name,
+                        TargetPositionExecutorAgentName = x.OnEvent.TargetPositionExecutorAgent.Name,
 
-                },
-                OffEvent = !x.OffEventId.HasValue
+                        ReadAgentName = x.OnEvent.ReadAgent.Name,
+                        ReadDate = x.OnEvent.ReadDate,
+                        SourceAgentName = x.OnEvent.SourceAgent.Name,
+
+                        SourcePositionName = x.OnEvent.SourcePosition.Name,
+                        TargetPositionName = x.OnEvent.TargetPosition.Name,
+                        SourcePositionExecutorNowAgentName = x.OnEvent.SourcePosition.ExecutorAgent.Name,
+                        TargetPositionExecutorNowAgentName = x.OnEvent.TargetPosition.ExecutorAgent.Name,
+                        SourcePositionExecutorAgentPhoneNumber = "(888)888-88-88", //TODO 
+                        TargetPositionExecutorAgentPhoneNumber = "(888)888-88-88", //TODO 
+
+                    },
+                    OffEvent = !x.OffEventId.HasValue
                     ? null
                     : new FrontDocumentEvent
                     {
@@ -596,7 +705,8 @@ namespace BL.Database.Common
                         TargetPositionExecutorAgentPhoneNumber = null,
 
                     }
-            }).ToList();
+                });
+            var waits = waitsResF.ToList();
 
             waits.ForEach(x => CommonQueries.ChangeRegistrationFullNumber(x));
 
@@ -655,7 +765,7 @@ namespace BL.Database.Common
                     paging.TotalItemsCount = subscriptionsRes.Count();
                 }
 
-                if (paging.IsOnlyCounter??false)
+                if (paging.IsOnlyCounter ?? false)
                 {
                     return new List<FrontDocumentSubscription>();
                 }
@@ -669,6 +779,8 @@ namespace BL.Database.Common
                         .Skip(() => skip).Take(() => take);
                 }
             }
+
+            var maxDateTime = DateTime.Now.AddYears(50);
 
             var subscriptions = subscriptionsRes.Select(x => new FrontDocumentSubscription
             {
@@ -698,7 +810,7 @@ namespace BL.Database.Common
                         DocumentId = x.SendEvent.DocumentId,
                         EventTypeName = x.SendEvent.EventType.Name,
                         TargetPositionExecutorAgentName = x.SendEvent.TargetPositionExecutorAgent.Name,
-                        DueDate = x.SendEvent.OnWait.FirstOrDefault().DueDate,
+                        DueDate = x.SendEvent.OnWait.FirstOrDefault().DueDate > maxDateTime ? null : x.SendEvent.OnWait.FirstOrDefault().DueDate,
 
                         Date = x.SendEvent.Date,
                         SourcePositionExecutorAgentName = x.SendEvent.SourcePositionExecutorAgent.Name,
@@ -1281,7 +1393,7 @@ namespace BL.Database.Common
                     paging.TotalItemsCount = itemsDb.Count();
                 }
 
-                if (paging.IsOnlyCounter??false)
+                if (paging.IsOnlyCounter ?? false)
                 {
                     return new List<FrontDocumentPaper>();
                 }

@@ -1,6 +1,5 @@
 ﻿using System.Data.Common;
 using System.Data.SqlClient;
-using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
 using BL.Model.Database;
 using Oracle.ManagedDataAccess.Client;
@@ -47,6 +46,7 @@ namespace BL.Database.Helper
         {
             //return new OracleConnection(@"User Id=DMS;Password=DMS;Data Source=88.198.16.119:21521/XE");
             return new SqlConnection(@"Data Source=109.197.217.79\SQLEXPRESS,1433;Initial Catalog=IRF_DMS_DEV;Persist Security Info=True;User ID=sa;Password=Harm1969");
+            //return new SqlConnection(@"Data Source=DESKTOP-5ETVK83\SQLEXPRESS;Initial Catalog=IRF_DMS_DEV;Persist Security Info=True;User ID=sa;Password=Harm1969");
             //return @"Data Source=109.197.217.79\SQLEXPRESS,1433;Initial Catalog=IRF_DMS;Persist Security Info=True;User ID=sa;Password=Harm1969";
         }
         //TODO remove in release version

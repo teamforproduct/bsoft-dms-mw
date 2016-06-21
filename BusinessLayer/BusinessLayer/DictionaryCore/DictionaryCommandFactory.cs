@@ -9,6 +9,11 @@ namespace BL.Logic.DictionaryCore
     {
         public static IDictionaryCommand GetDictionaryCommand(EnumDictionaryActions act, IContext ctx, object param)
         {
+            if (ctx.ClientLicence?.LicenceError != null)
+            {
+                throw ctx.ClientLicence.LicenceError as DmsExceptions;
+            }
+
             IDictionaryCommand cmd;
             switch (act)
             {

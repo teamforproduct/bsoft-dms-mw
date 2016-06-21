@@ -172,6 +172,8 @@
     <Compile Include="DocumentCore\Actions\PaperEvent.cs" />
     <Compile Include="DocumentCore\Actions\RegisterDocumentBase.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentAccess.cs" />
+    <Compile Include="DocumentCore\Filters\FilterDocumentAttachedFile.cs" />
+    <Compile Include="DocumentCore\Filters\FilterDocumentFileIdentity.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentPaper.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentRestrictedSendList.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAddressType.cs" />
@@ -241,7 +243,6 @@
     <Compile Include="DocumentCore\Actions\AffixSigning.cs" />
     <Compile Include="DocumentCore\Actions\SendEventMessage.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentById.cs" />
-    <Compile Include="DocumentCore\Filters\FilterDocumentAttachedFile.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentTag.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentPaperEvent.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentPaperList.cs" />
@@ -268,7 +269,8 @@
     <Compile Include="DocumentCore\FrontModel\FrontDocumentSendListStage.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentLink.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentWait.cs" />
-    <Compile Include="DocumentCore\Filters\FilterDocumentFileIdentity.cs" />
+    <Compile Include="DocumentCore\IncomingModel\ChangeWorkOutDocumentFile.cs" />
+    <Compile Include="DocumentCore\IncomingModel\AddDocumentFile.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentFile.cs" />
     <Compile Include="DocumentCore\IncomingModel\AddDocumentByTemplateDocument.cs" />
     <Compile Include="DocumentCore\IncomingModel\AddDocumentPaperLists.cs" />

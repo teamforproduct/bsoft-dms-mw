@@ -86,6 +86,10 @@
       <HintPath>..\..\Web\DMS_WebAPI\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\..\Web\DMS_WebAPI\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="LinqKit, Version=1.1.3.1, Culture=neutral, PublicKeyToken=bc217f8844052a91, processorArchitecture=MSIL">
       <HintPath>..\..\Web\DMS_WebAPI\packages\LinqKit.1.1.3.1\lib\net45\LinqKit.dll</HintPath>
       <Private>True</Private>
@@ -95,7 +99,11 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Oracle.ManagedDataAccess, Version=4.121.2.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=MSIL">
-      <HintPath>..\..\Web\DMS_WebAPI\packages\Oracle.ManagedDataAccess.12.1.2400\lib\net40\Oracle.ManagedDataAccess.dll</HintPath>
+      <HintPath>..\..\Web\DMS_WebAPI\packages\Oracle.ManagedDataAccess.12.1.24160419\lib\net40\Oracle.ManagedDataAccess.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Oracle.ManagedDataAccess.EntityFramework, Version=6.121.2.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=MSIL">
+      <HintPath>..\..\Web\DMS_WebAPI\packages\Oracle.ManagedDataAccess.EntityFramework.12.1.2400\lib\net45\Oracle.ManagedDataAccess.EntityFramework.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -374,6 +382,26 @@
     <Compile Include="Migrations\201606081146224_File.Designer.cs">
       <DependentUpon>201606081146224_File.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201606162136249_Files.cs" />
+    <Compile Include="Migrations\201606162136249_Files.Designer.cs">
+      <DependentUpon>201606162136249_Files.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201606210939436_Index.cs" />
+    <Compile Include="Migrations\201606210939436_Index.Designer.cs">
+      <DependentUpon>201606210939436_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201606210945382_DropIndex.cs" />
+    <Compile Include="Migrations\201606210945382_DropIndex.Designer.cs">
+      <DependentUpon>201606210945382_DropIndex.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201606210947435_TagNameMaxLength.cs" />
+    <Compile Include="Migrations\201606210947435_TagNameMaxLength.Designer.cs">
+      <DependentUpon>201606210947435_TagNameMaxLength.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201606210948462_TagIndex.cs" />
+    <Compile Include="Migrations\201606210948462_TagIndex.Designer.cs">
+      <DependentUpon>201606210948462_TagIndex.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SystemDb\ISystemDbProcess.cs" />
@@ -520,6 +548,21 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201606081146224_File.resx">
       <DependentUpon>201606081146224_File.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201606162136249_Files.resx">
+      <DependentUpon>201606162136249_Files.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201606210939436_Index.resx">
+      <DependentUpon>201606210939436_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201606210945382_DropIndex.resx">
+      <DependentUpon>201606210945382_DropIndex.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201606210947435_TagNameMaxLength.resx">
+      <DependentUpon>201606210947435_TagNameMaxLength.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201606210948462_TagIndex.resx">
+      <DependentUpon>201606210948462_TagIndex.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

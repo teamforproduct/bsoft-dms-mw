@@ -8,6 +8,7 @@ using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.Enums;
+using System.Collections.Generic;
 
 namespace BL.Database.FileWorker
 {
@@ -83,6 +84,45 @@ namespace BL.Database.FileWorker
                 //File.WriteAllBytes(localFilePath, attFile.FileContent);
                 attFile.Hash = FileToSha512(localFilePath);
                 return attFile.Hash;
+            }
+            catch (Exception ex)
+            {
+                var log = DmsResolver.Current.Get<ILogger>();
+                log.Error(ctx, ex, "Cannot save user file", Environment.StackTrace);
+                throw new CannotSaveFile(ex);
+            }
+        }
+
+        public bool RenameFile(IContext ctx, InternalTemplateAttachedFile attFile, string newName)
+        {
+            try
+            {
+                var docFile = attFile as InternalDocumentAttachedFile;
+                var path = (docFile == null) ? GetFullDocumentFilePath(ctx, attFile) : GetFullDocumentFilePath(ctx, docFile);
+
+                if (!Directory.Exists(path))
+                {
+                    var dir = Directory.CreateDirectory(path);
+                }
+                var localFilePath = path + "\\" + attFile.Name + "." + attFile.Extension;
+                var localFilePathNew = path + "\\" + newName + "." + attFile.Extension;
+
+                if (File.Exists(localFilePath))
+                {
+                    try
+                    {
+
+                        File.Move(localFilePath, localFilePathNew);
+                    }
+                    catch
+                    {
+                        return false;
+                    }
+                    return true;
+
+                }
+
+                return false;
             }
             catch (Exception ex)
             {

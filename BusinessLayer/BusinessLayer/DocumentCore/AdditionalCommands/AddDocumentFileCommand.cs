@@ -24,15 +24,15 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             _fStore = fStore;
         }
 
-        private ModifyDocumentFile Model
+        private AddDocumentFile Model
         {
             get
             {
-                if (!(_param is ModifyDocumentFile))
+                if (!(_param is AddDocumentFile))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ModifyDocumentFile)_param;
+                return (AddDocumentFile)_param;
             }
         }
 
@@ -50,16 +50,36 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                 throw new UserHasNoAccessToDocument();
             }
 
-            if (!Model.IsAdditional && _document.ExecutorPositionId != _context.CurrentPositionId)
+            if (Model.IsUseMainNameFile)
             {
-                //TODO Саше проверить.
-                Model.IsAdditional = true;
-                //throw new CouldNotPerformOperation();
+                var mainFile = _document.DocumentFiles.FirstOrDefault(x => x.OrderInDocument == Model.OrderInDocument);
+                if (mainFile == null)
+                {
+                    throw new CannotAccessToFile();
+                }
+
+                Model.FileName = mainFile.Name + "." + mainFile.Extension;
+                Model.FileType = mainFile.FileType;
             }
 
-            if (_document.DocumentFiles.Any(x => (x.Name + "." + x.Extension).Equals(Model.FileName) && x.ExecutorPositionId != _context.CurrentPositionId))
+            var file = _document.DocumentFiles.FirstOrDefault(x => (x.Name + "." + x.Extension).Equals(Model.FileName));
+
+            if (file != null)
             {
-                throw new CannotAccessToFile();
+                Model.IsAdditional = file.IsAdditional;
+                if (file.IsAdditional && file.ExecutorPositionId != _context.CurrentPositionId)
+                {
+                    throw new CannotAccessToFile();
+                }
+            }
+            else
+            {
+                if (!Model.IsAdditional && _document.ExecutorPositionId != _context.CurrentPositionId)
+                {
+                    //TODO Саше проверить.
+                    Model.IsAdditional = true;
+                    //throw new CouldNotPerformOperation();
+                }
             }
 
             return true;
@@ -79,9 +99,14 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                 Date = DateTime.Now,
                 PostedFileData = Model.PostedFileData,
                 IsAdditional = Model.IsAdditional,
+                IsLastVersion = true,
+                IsMainVersion = Model.IsAdditional || (!Model.IsAdditional && _document.ExecutorPositionId == _context.CurrentPositionId),
                 FileType = Model.FileType,
                 Name = Path.GetFileNameWithoutExtension(Model.FileName),
                 Extension = Path.GetExtension(Model.FileName).Replace(".", ""),
+                Description = Model.Description,
+                IsWorkedOut = (!Model.IsAdditional && _document.ExecutorPositionId != _context.CurrentPositionId) ? false : (bool?)null,
+
                 WasChangedExternal = false,
                 ExecutorPositionId = _context.CurrentPositionId,
                 ExecutorPositionExecutorAgentId = executorPositionExecutorAgentId.Value
@@ -103,7 +128,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             CommonDocumentUtilities.SetLastChange(_context, att);
             if (_document.IsRegistered.HasValue)
             {
-                att.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, att.DocumentId, EnumEventTypes.AddDocumentFile, null, null, att.Name + "." + att.Extension);
+                att.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, att.DocumentId, EnumEventTypes.AddDocumentFile, null, null, att.Name + "." + att.Extension, null, false, _document.ExecutorPositionId);
             }
             res.Add(_operationDb.AddNewFileOrVersion(_context, att));
             // Модель фронта содержит дополнительно только одно поле - пользователя, который последний модифицировал файл. 
