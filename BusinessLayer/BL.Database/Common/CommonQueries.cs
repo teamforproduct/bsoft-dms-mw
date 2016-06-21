@@ -624,6 +624,8 @@ namespace BL.Database.Common
                 }
             }
 
+            var maxDateTime = DateTime.Now.AddYears(50);
+
             var waitsResF =
                 //waitsRes
                 dbContext.DocumentWaitsSet.Where(x => waitsRes.Select(y => y.Id).Contains(x.Id))
@@ -636,7 +638,7 @@ namespace BL.Database.Common
                     OffEventId = x.OffEventId,
                     ResultTypeId = x.ResultTypeId,
                     ResultTypeName = x.ResultType.Name,
-                    DueDate = x.DueDate > DateTime.Now.AddYears(50) ? null : x.DueDate,
+                    DueDate = x.DueDate > maxDateTime ? null : x.DueDate,
                     AttentionDate = x.AttentionDate,
                     TargetDescription = x.TargetDescription,
                     //TargetAttentionDate = x.TargetAttentionDate,
@@ -778,6 +780,8 @@ namespace BL.Database.Common
                 }
             }
 
+            var maxDateTime = DateTime.Now.AddYears(50);
+
             var subscriptions = subscriptionsRes.Select(x => new FrontDocumentSubscription
             {
                 Id = x.Id,
@@ -806,7 +810,7 @@ namespace BL.Database.Common
                         DocumentId = x.SendEvent.DocumentId,
                         EventTypeName = x.SendEvent.EventType.Name,
                         TargetPositionExecutorAgentName = x.SendEvent.TargetPositionExecutorAgent.Name,
-                        DueDate = x.SendEvent.OnWait.FirstOrDefault().DueDate > DateTime.Now.AddYears(50) ? null : x.SendEvent.OnWait.FirstOrDefault().DueDate,
+                        DueDate = x.SendEvent.OnWait.FirstOrDefault().DueDate > maxDateTime ? null : x.SendEvent.OnWait.FirstOrDefault().DueDate,
 
                         Date = x.SendEvent.Date,
                         SourcePositionExecutorAgentName = x.SendEvent.SourcePositionExecutorAgent.Name,
