@@ -1077,7 +1077,7 @@ namespace BL.Database.Documents
                         TargetPositionExecutorAgentName = x.OnEvent.TargetPositionExecutorAgent.Name,
                         SourcePositionName = x.OnEvent.SourcePosition.Name,
                         SourcePositionExecutorAgentName = x.OnEvent.SourcePositionExecutorAgent.Name,
-                        DueDate = x.DueDate,
+                        DueDate = x.DueDate > DateTime.Now.AddYears(50) ? null : x.DueDate,
                         IsClosed = x.OffEventId != null,
                         ResultTypeName = x.ResultType.Name,
                         AttentionDate = x.AttentionDate,
