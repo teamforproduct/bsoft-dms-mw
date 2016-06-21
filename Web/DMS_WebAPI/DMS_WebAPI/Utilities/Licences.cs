@@ -17,11 +17,11 @@ namespace DMS_WebAPI.Utilities
         private const string _RSAPublicKeyXmlByLicence = "<RSAKeyValue><Modulus>sBRZy9xvw7FWdb5EHd79H8f2D4+JP3yokrbKpCgFbcwCEPPZpGUj07poBM9MvrIXEIHoahIYVw3UqWCLvFFL6Cb+u3zrOTaNmCNyXdZ4H/28sskfuBtVzXjllzwEkrcJg0NfSmCbjw/9YFUYEdl1ZTUL40pN8Kuk1Wr1f/wP+wk=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue>";
 
         //TODO For release
-        private const int _TrialMaxCountDocuments = 1000;
-        private const int _TrialDurationInDays = 30;
+        //private const int _TrialMaxCountDocuments = 1000;
+        //private const int _TrialDurationInDays = 30;
 
-        //private const int _TrialMaxCountDocuments = int.MaxValue;
-        //private const int _TrialDurationInDays = Int16.MaxValue;
+        private const int _TrialMaxCountDocuments = int.MaxValue;
+        private const int _TrialDurationInDays = Int16.MaxValue;
 
         #region Convert
         private byte[] GetBytesByData(string data)

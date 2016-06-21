@@ -45,8 +45,8 @@ namespace BL.Database.Helper
         public static DbConnection GetDefaultConnection()
         {
             //return new OracleConnection(@"User Id=DMS;Password=DMS;Data Source=88.198.16.119:21521/XE");
-            //return new SqlConnection(@"Data Source=109.197.217.79\SQLEXPRESS,1433;Initial Catalog=IRF_DMS_DEV;Persist Security Info=True;User ID=sa;Password=Harm1969");
-            return new SqlConnection(@"Data Source=DESKTOP-5ETVK83\SQLEXPRESS;Initial Catalog=IRF_DMS_DEV;Persist Security Info=True;User ID=sa;Password=Harm1969");
+            return new SqlConnection(@"Data Source=109.197.217.79\SQLEXPRESS,1433;Initial Catalog=IRF_DMS_DEV;Persist Security Info=True;User ID=sa;Password=Harm1969");
+            //return new SqlConnection(@"Data Source=DESKTOP-5ETVK83\SQLEXPRESS;Initial Catalog=IRF_DMS_DEV;Persist Security Info=True;User ID=sa;Password=Harm1969");
             //return @"Data Source=109.197.217.79\SQLEXPRESS,1433;Initial Catalog=IRF_DMS;Persist Security Info=True;User ID=sa;Password=Harm1969";
         }
         //TODO remove in release version
