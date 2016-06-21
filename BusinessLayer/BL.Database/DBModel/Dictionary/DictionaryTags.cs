@@ -20,7 +20,7 @@ namespace BL.Database.DBModel.Dictionary
         [Index("IX_PositionName", 3, IsUnique = true)]
         [Index("IX_ClientId", 1)]
         public int ClientId { get; set; }
-        [MaxLength(2000)]
+        [MaxLength(900)]
         [Index("IX_PositionName", 2, IsUnique = true)]
         public string Name { get; set; }
         [Index("IX_PositionName", 1, IsUnique = true)]

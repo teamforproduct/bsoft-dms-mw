@@ -390,6 +390,18 @@
     <Compile Include="Migrations\201606210939436_Index.Designer.cs">
       <DependentUpon>201606210939436_Index.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201606210945382_DropIndex.cs" />
+    <Compile Include="Migrations\201606210945382_DropIndex.Designer.cs">
+      <DependentUpon>201606210945382_DropIndex.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201606210947435_TagNameMaxLength.cs" />
+    <Compile Include="Migrations\201606210947435_TagNameMaxLength.Designer.cs">
+      <DependentUpon>201606210947435_TagNameMaxLength.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201606210948462_TagIndex.cs" />
+    <Compile Include="Migrations\201606210948462_TagIndex.Designer.cs">
+      <DependentUpon>201606210948462_TagIndex.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SystemDb\ISystemDbProcess.cs" />
@@ -542,6 +554,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201606210939436_Index.resx">
       <DependentUpon>201606210939436_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201606210945382_DropIndex.resx">
+      <DependentUpon>201606210945382_DropIndex.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201606210947435_TagNameMaxLength.resx">
+      <DependentUpon>201606210947435_TagNameMaxLength.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201606210948462_TagIndex.resx">
+      <DependentUpon>201606210948462_TagIndex.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
