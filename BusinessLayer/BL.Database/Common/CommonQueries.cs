@@ -336,6 +336,68 @@ namespace BL.Database.Common
             return qry;
         }
 
+
+        public static IQueryable<DocumentWaits> GetDocumentWaitsQuery1(DmsContext dbContext, IContext ctx, int? documentId = null)
+        {
+            var qry = dbContext.DocumentWaitsSet.AsQueryable();
+
+            //TODO Что то придумать с union
+
+            if (ctx != null && !ctx.IsAdmin)
+            {
+                var filterOnEventPositionsContains = PredicateBuilder.False<DocumentWaits>();
+                filterOnEventPositionsContains = ctx.CurrentPositionsIdList.Aggregate(filterOnEventPositionsContains,
+                    (current, value) => current.Or(e => e.OnEvent.TargetPositionId == value || e.OnEvent.SourcePositionId == value).Expand());
+
+                qry = qry.Where(x => !x.OnEvent.IsAvailableWithinTask).Where(filterOnEventPositionsContains);
+
+                var filterContains = PredicateBuilder.False<DocumentAccesses>();
+                filterContains = ctx.CurrentPositionsIdList.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.PositionId == value).Expand());
+
+                qry = qry.Where(x => x.Document.Accesses.AsQueryable().Any(filterContains));
+            }
+
+            qry = qry.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId);
+
+            if (documentId.HasValue)
+            {
+                qry = qry.Where(x => x.DocumentId == documentId.Value);
+            }
+            return qry;
+        }
+
+
+        public static IQueryable<DocumentWaits> GetDocumentWaitsQuery2(DmsContext dbContext, IContext ctx, int? documentId = null)
+        {
+            var qry = dbContext.DocumentWaitsSet.AsQueryable();
+
+            //TODO Что то придумать с union
+
+            if (ctx != null && !ctx.IsAdmin)
+            {
+                var filterOnEventTaskAccessesContains = PredicateBuilder.False<DocumentTaskAccesses>();
+                filterOnEventTaskAccessesContains = ctx.CurrentPositionsIdList.Aggregate(filterOnEventTaskAccessesContains,
+                    (current, value) => current.Or(e => e.PositionId == value).Expand());
+
+                qry = qry.Where(x => x.OnEvent.IsAvailableWithinTask && x.OnEvent.TaskId.HasValue && x.OnEvent.Task.TaskAccesses.AsQueryable().Any(filterOnEventTaskAccessesContains));
+
+                var filterContains = PredicateBuilder.False<DocumentAccesses>();
+                filterContains = ctx.CurrentPositionsIdList.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.PositionId == value).Expand());
+
+                qry = qry.Where(x => x.Document.Accesses.AsQueryable().Any(filterContains));
+            }
+
+            qry = qry.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId);
+
+            if (documentId.HasValue)
+            {
+                qry = qry.Where(x => x.DocumentId == documentId.Value);
+            }
+            return qry;
+        }
+
         public static IEnumerable<FrontDocumentTask> GetDocumentTasks(DmsContext dbContext, IContext ctx, FilterDocumentTask filter, UIPaging paging)
         {
             var tasksDb = dbContext.DocumentTasksSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).AsQueryable();
@@ -450,6 +512,8 @@ namespace BL.Database.Common
         public static IEnumerable<FrontDocumentWait> GetDocumentWaits(DmsContext dbContext, FilterDocumentWait filter, IContext ctx, UIPaging paging = null)
         {
             var waitsDb = GetDocumentWaitsQuery(dbContext, ctx);
+            var waitsDb1 = GetDocumentWaitsQuery1(dbContext, ctx);
+            var waitsDb2 = GetDocumentWaitsQuery2(dbContext, ctx);
 
             if (filter != null)
             {
@@ -460,28 +524,36 @@ namespace BL.Database.Common
                         (current, value) => current.Or(e => e.DocumentId == value).Expand());
 
                     waitsDb = waitsDb.Where(filterContains);
+                    waitsDb1 = waitsDb1.Where(filterContains);
+                    waitsDb2 = waitsDb2.Where(filterContains);
                 }
 
                 if (filter.OnEventId.HasValue)
                 {
                     waitsDb = waitsDb.Where(x => x.OnEventId == filter.OnEventId.Value);
+                    waitsDb1 = waitsDb1.Where(x => x.OnEventId == filter.OnEventId.Value);
+                    waitsDb2 = waitsDb2.Where(x => x.OnEventId == filter.OnEventId.Value);
                 }
 
                 if (filter.OffEventId.HasValue)
                 {
                     waitsDb = waitsDb.Where(x => x.OffEventId.HasValue && x.OffEventId.Value == filter.OffEventId.Value);
+                    waitsDb1 = waitsDb1.Where(x => x.OffEventId.HasValue && x.OffEventId.Value == filter.OffEventId.Value);
+                    waitsDb2 = waitsDb2.Where(x => x.OffEventId.HasValue && x.OffEventId.Value == filter.OffEventId.Value);
                 }
 
                 if (filter.Opened)
                 {
                     waitsDb = waitsDb.Where(x => !x.OffEventId.HasValue);
+                    waitsDb1 = waitsDb1.Where(x => !x.OffEventId.HasValue);
+                    waitsDb2 = waitsDb2.Where(x => !x.OffEventId.HasValue);
                 }
             }
 
-            var waitsRes = waitsDb
-                .OrderBy(x => x.DueDate ?? DateTime.MaxValue)
-                .ThenBy(x => x.OnEvent.Date)
-                .AsQueryable();
+            var waitsRes = waitsDb.OrderBy(x => x.DueDate).AsQueryable();
+            var waitsRes1 = waitsDb1.OrderBy(x => x.DueDate).AsQueryable();
+            var waitsRes2 = waitsDb2.OrderBy(x => x.DueDate).AsQueryable();
+
 
             if (paging != null)
             {
@@ -515,13 +587,20 @@ namespace BL.Database.Common
                 {
                     var skip = paging.PageSize * (paging.CurrentPage - 1);
                     var take = paging.PageSize;
+                    var skip1 = 0;
+                    var take1 = paging.PageSize * (paging.CurrentPage - 1) + paging.PageSize;
 
                     waitsRes = waitsRes
                         .Skip(() => skip).Take(() => take);
+
+                    waitsRes = waitsRes1.Skip(() => skip1).Take(() => take1)
+                        .Concat(waitsRes2.Skip(() => skip1).Take(() => take1))
+                        .OrderBy(x => x.DueDate).Skip(() => skip).Take(() => take);
+
                 }
             }
 
-            var waitsRes1 =
+            var waitsResF =
                 //waitsRes
                 dbContext.DocumentWaitsSet.Where(x => waitsRes.Select(y => y.Id).Contains(x.Id))
                 .Select(x => new FrontDocumentWait
@@ -533,7 +612,7 @@ namespace BL.Database.Common
                     OffEventId = x.OffEventId,
                     ResultTypeId = x.ResultTypeId,
                     ResultTypeName = x.ResultType.Name,
-                    DueDate = x.DueDate,
+                    DueDate = x.DueDate > DateTime.Now.AddYears(50) ? null : x.DueDate,
                     AttentionDate = x.AttentionDate,
                     TargetDescription = x.TargetDescription,
                     //TargetAttentionDate = x.TargetAttentionDate,
@@ -601,7 +680,7 @@ namespace BL.Database.Common
 
                     }
                 });
-            var waits = waitsRes1.ToList();
+            var waits = waitsResF.ToList();
 
             waits.ForEach(x => CommonQueries.ChangeRegistrationFullNumber(x));
 
@@ -703,7 +782,7 @@ namespace BL.Database.Common
                         DocumentId = x.SendEvent.DocumentId,
                         EventTypeName = x.SendEvent.EventType.Name,
                         TargetPositionExecutorAgentName = x.SendEvent.TargetPositionExecutorAgent.Name,
-                        DueDate = x.SendEvent.OnWait.FirstOrDefault().DueDate,
+                        DueDate = x.SendEvent.OnWait.FirstOrDefault().DueDate > DateTime.Now.AddYears(50) ? null : x.SendEvent.OnWait.FirstOrDefault().DueDate,
 
                         Date = x.SendEvent.Date,
                         SourcePositionExecutorAgentName = x.SendEvent.SourcePositionExecutorAgent.Name,

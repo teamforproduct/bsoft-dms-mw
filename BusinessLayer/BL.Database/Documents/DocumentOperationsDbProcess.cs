@@ -474,7 +474,7 @@ namespace BL.Database.Documents
                                             ParentId = x.ParentId,
                                             OnEventId = x.OnEventId,
                                             OffEventId = x.OffEventId,
-                                            DueDate = x.DueDate,
+                                            DueDate = x.DueDate > DateTime.Now.AddYears(50) ? null : x.DueDate,
                                             AttentionDate = x.AttentionDate,
                                             OnEvent = new InternalDocumentEvent
                                             {
@@ -842,7 +842,7 @@ namespace BL.Database.Documents
                     RegistrationNumberSuffix = x.Document.LinkId.HasValue ? x.Document.RegistrationNumberSuffix : null,
                     RegistrationFullNumber = x.Document.LinkId.HasValue ? "#" + x.Document.Id : null,
 
-                    DueDate = x.OnWait.FirstOrDefault() != null ? x.OnWait.FirstOrDefault().DueDate : null,
+                    DueDate = x.OnWait.FirstOrDefault() != null ? x.OnWait.FirstOrDefault().DueDate > DateTime.Now.AddYears(50) ? null : x.OnWait.FirstOrDefault().DueDate: null,
                     CloseDate = x.OnWait.FirstOrDefault() != null ? (DateTime?)x.OnWait.FirstOrDefault().OffEvent.Date : null,
                     IsOnEvent = x.OnWait.FirstOrDefault() != null,
 
