@@ -25,36 +25,12 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// </summary>
         public int Version { get; set; }
         /// <summary>
-        /// Является ли файл дополнительным или основным.
-        /// Только для добавления файла
-        /// </summary>
-        public bool IsAdditional { get; set; }
-        [IgnoreDataMember]
-        public bool IsUseMainNameFile { get; set; }
-        /// <summary>
-        /// Имя файла. Включая расширение
-        /// Только для изменения файла
-        /// </summary>
-        public string FileName { get; set; }
-        /// <summary>
-        /// Тип файла.
-        /// Только для изменения файла
-        /// </summary>
-        public string FileType { get; set; }
-        /// <summary>
         /// Описание файла
         /// </summary>
         public string Description { get; set; }
         /// <summary>
-        /// Размер файла
+        /// Название файла
         /// </summary>
-        [IgnoreDataMember]
-        public long FileSize { get; set; }
-
-        /// <summary>
-        /// Данные файла
-        /// </summary>
-        [IgnoreDataMember]
-        public HttpPostedFile PostedFileData { get; set; }
+        public string FileName { get; set; }
     }
 }

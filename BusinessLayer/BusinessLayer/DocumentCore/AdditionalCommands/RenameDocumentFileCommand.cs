@@ -4,22 +4,22 @@ using System.Linq;
 using BL.Database.Documents.Interfaces;
 using BL.Database.FileWorker;
 using BL.Logic.Common;
-using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
+using System.Collections.Generic;
 
 namespace BL.Logic.DocumentCore.AdditionalCommands
 {
-    public class ModifyDocumentFileCommand : BaseDocumentCommand
+    public class RenameDocumentFileCommand : BaseDocumentCommand
     {
         private readonly IDocumentFileDbProcess _operationDb;
         private readonly IFileStore _fStore;
 
-        private InternalDocumentAttachedFile _file;
+        private IEnumerable<InternalDocumentAttachedFile> _files;
 
-        public ModifyDocumentFileCommand(IDocumentFileDbProcess operationDb, IFileStore fStore)
+        public RenameDocumentFileCommand(IDocumentFileDbProcess operationDb, IFileStore fStore)
         {
             _operationDb = operationDb;
             _fStore = fStore;
@@ -42,7 +42,8 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             _actionRecords =
                    _document.DocumentFiles.Where(
                        x =>
-                           x.ExecutorPositionId == positionId)
+                           (x.ExecutorPositionId == positionId && x.IsAdditional)
+                           || (_document.ExecutorPositionId == positionId && !x.IsAdditional))
                                                    .Select(x => new InternalActionRecord
                                                    {
                                                        FileId = x.Id,
@@ -66,7 +67,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             {
                 throw new UnknownDocumentFile();
             }
-            _file = _document.DocumentFiles.First();
+            _files = _document.DocumentFiles;
 
             _admin.VerifyAccess(_context, CommandType);
 
@@ -80,14 +81,23 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override object Execute()
         {
-            _file.Description = Model.Description;
+            var oldName = _files.First().Name;
+            var extension = _files.First().Extension;
+            foreach (var file in _files)
+            {
+                _fStore.RenameFile(_context, file, Model.FileName);
 
-            CommonDocumentUtilities.SetLastChange(_context, _file);
-            _file.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, _file.DocumentId, EnumEventTypes.ModifyDocumentFile, null, _file.Name + "." + _file.Extension);
-            _operationDb.UpdateFileOrVersion(_context, _file);
-            return _file.Id;
+                file.Name = Model.FileName;
+                CommonDocumentUtilities.SetLastChange(_context, file);
+            }
+
+            var events = CommonDocumentUtilities.GetNewDocumentEvents(_context, Model.DocumentId, EnumEventTypes.RanameDocumentFile, null, oldName + "." + extension, Model.FileName + "." + extension);
+
+            _operationDb.RenameFile(_context, _files, events);
+
+            return null;
         }
 
-        public override EnumDocumentActions CommandType => EnumDocumentActions.ModifyDocumentFile;
+        public override EnumDocumentActions CommandType => EnumDocumentActions.RenameDocumentFile;
     }
 }

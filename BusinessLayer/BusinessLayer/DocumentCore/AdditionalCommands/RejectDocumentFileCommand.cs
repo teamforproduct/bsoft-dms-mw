@@ -9,14 +9,14 @@ using BL.Model.Exception;
 
 namespace BL.Logic.DocumentCore.AdditionalCommands
 {
-    public class AcceptDocumentFileCommand : BaseDocumentCommand
+    public class RejectDocumentFileCommand : BaseDocumentCommand
     {
         private readonly IDocumentFileDbProcess _operationDb;
         private readonly IFileStore _fStore;
 
         private InternalDocumentAttachedFile _file;
 
-        public AcceptDocumentFileCommand(IDocumentFileDbProcess operationDb, IFileStore fStore)
+        public RejectDocumentFileCommand(IDocumentFileDbProcess operationDb, IFileStore fStore)
         {
             _operationDb = operationDb;
             _fStore = fStore;
@@ -40,7 +40,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             {
                 _actionRecords =
                        _document.DocumentFiles.Where(
-                           x => !(x.IsWorkedOut ?? false))
+                           x => (x.IsWorkedOut ?? true))
                                                        .Select(x => new InternalActionRecord
                                                        {
                                                            FileId = x.Id,
@@ -80,14 +80,13 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override object Execute()
         {
-            _file.IsWorkedOut = true;
-            _file.IsMainVersion = true;
+            _file.IsWorkedOut = false;
             CommonDocumentUtilities.SetLastChange(_context, _file);
-            _file.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, _file.DocumentId, EnumEventTypes.AcceptDocumentFile, null, _file.Name + "." + _file.Extension);
+            _file.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, _file.DocumentId, EnumEventTypes.RejectDocumentFile, null, _file.Name + "." + _file.Extension);
             _operationDb.UpdateFileOrVersion(_context, _file);
             return _file.Id;
         }
 
-        public override EnumDocumentActions CommandType => EnumDocumentActions.AcceptDocumentFile;
+        public override EnumDocumentActions CommandType => EnumDocumentActions.RejectDocumentFile;
     }
 }

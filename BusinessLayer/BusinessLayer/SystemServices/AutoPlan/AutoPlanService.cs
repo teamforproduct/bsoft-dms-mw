@@ -75,7 +75,7 @@ namespace BL.Logic.SystemServices.AutoPlan
             return res;
         }
 
-        public bool ManualRunAutoPlan(IContext userContext, int? sendListId = null)
+        public bool ManualRunAutoPlan(IContext userContext, int? sendListId = null, int? documentId = null)
         {
             var srvKey = CommonSystemUtilities.GetServerKey(userContext);
 
@@ -89,7 +89,7 @@ namespace BL.Logic.SystemServices.AutoPlan
             {
                 try
                 {
-                    var lst = _sysDb.GetSendListIdsForAutoPlan(ctx, sendListId);
+                    var lst = _sysDb.GetSendListIdsForAutoPlan(ctx, sendListId, documentId);
                     foreach (int id in lst)
                     {
                         try

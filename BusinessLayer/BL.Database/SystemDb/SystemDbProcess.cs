@@ -586,30 +586,69 @@ namespace BL.Database.SystemDb
             }
         }
 
-        public IEnumerable<int> GetSendListIdsForAutoPlan(IContext ctx, int? sendListId = null)
+        public IEnumerable<int> GetSendListIdsForAutoPlan(IContext ctx, int? sendListId = null, int? documentId = null)
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                var qry = dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == ctx.CurrentClientId)
-                    .Join(dbContext.DocumentSendListsSet, d => d.Id, s => s.DocumentId, (d, s) => new { doc = d, sl = s })
-                    .Where(x => ((sendListId == null && x.doc.IsLaunchPlan) || (sendListId.HasValue && sendListId.Value == x.sl.Id)) && x.sl.IsInitial && !x.sl.CloseEventId.HasValue)
-                    .GroupBy(x => x.sl.DocumentId)
+                var qryPrepare = dbContext.DocumentSendListsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                                .Where(x => x.IsInitial && !x.CloseEventId.HasValue).AsQueryable();
+
+                if (sendListId==null)
+                {
+                    qryPrepare = qryPrepare.Where(x => x.Document.IsLaunchPlan);
+                }
+                else
+                {
+                    qryPrepare = qryPrepare.Where(x => x.Id == sendListId);
+                }
+
+                if (documentId.HasValue)
+                {
+                    qryPrepare = qryPrepare.Where(x => x.DocumentId == documentId);
+                }
+
+                var qry = qryPrepare.GroupBy(x => x.DocumentId)
                     .Select(x => new
                     {
                         DocId = x.Key,
-                        MinStage = x.Min(s => s.sl.Stage)
+                        MinStage = x.Min(s => s.Stage)
                     });
 
-                var res = dbContext.DocumentSendListsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Join(qry, s => s.DocumentId, q => q.DocId, (s, q) => new { sl = s, q })
-                    .Where(x => x.sl.Stage <= x.q.MinStage && !x.sl.StartEventId.HasValue)
-                    .OrderBy(x=>x.sl.DocumentId).ThenBy(x => new { x.sl.Stage, SendTypeId = x.sl.SendTypeId == (int)EnumSendTypes.SendForControl ? 0 : x.sl.SendTypeId })
-                    .Select(x => x.sl.Id).ToList();
+                var sendListsSet = dbContext.DocumentSendListsSet
+                                    .Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                                    .AsQueryable();
 
-                res.AddRange(dbContext.DocumentSendListsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                if (documentId.HasValue)
+                {
+                    sendListsSet = sendListsSet.Where(x => x.DocumentId == documentId);
+                }
+
+                var qry2 = sendListsSet
+                    .Join(qry, s => s.DocumentId, q => q.DocId, (s, q) => new { sl = s, q })
+                    .Where(x => x.sl.Stage <= x.q.MinStage && !x.sl.StartEventId.HasValue)
+                    .OrderBy(x => x.sl.DocumentId)
+                    .ThenBy(x => new { x.sl.Stage, SendTypeId = x.sl.SendTypeId == (int)EnumSendTypes.SendForControl ? 0 : x.sl.SendTypeId })
+                    .Select(x => x.sl.Id);
+
+                if (!documentId.HasValue)
+                {
+                    qry2 = qry2.Take(50);
+                }
+
+                var res = qry2.ToList();
+
+                var qry3 = sendListsSet
                     .Where(x => !x.IsInitial && !x.CloseEventId.HasValue && x.Document.IsLaunchPlan
                                 && !qry.Select(s => s.DocId).Contains(x.DocumentId))
-                    .OrderBy(x=>x.DocumentId).ThenBy(x => new { x.Stage, SendTypeId = x.SendTypeId == (int)EnumSendTypes.SendForControl ? 0 : x.SendTypeId })
-                    .Select(x => x.Id).ToList());
+                    .OrderBy(x => x.DocumentId).ThenBy(x => new { x.Stage, SendTypeId = x.SendTypeId == (int)EnumSendTypes.SendForControl ? 0 : x.SendTypeId })
+                    .Select(x => x.Id);
+
+                if (!documentId.HasValue)
+                {
+                    qry3 = qry3.Take(50);
+                }
+
+                res.AddRange(qry3.ToList());
 
                 return res;
             }

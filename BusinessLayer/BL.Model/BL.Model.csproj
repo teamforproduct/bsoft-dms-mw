@@ -270,6 +270,7 @@
     <Compile Include="DocumentCore\FrontModel\FrontDocumentLink.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentWait.cs" />
     <Compile Include="DocumentCore\IncomingModel\ChangeWorkOutDocumentFile.cs" />
+    <Compile Include="DocumentCore\IncomingModel\AddDocumentFile.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentFile.cs" />
     <Compile Include="DocumentCore\IncomingModel\AddDocumentByTemplateDocument.cs" />
     <Compile Include="DocumentCore\IncomingModel\AddDocumentPaperLists.cs" />

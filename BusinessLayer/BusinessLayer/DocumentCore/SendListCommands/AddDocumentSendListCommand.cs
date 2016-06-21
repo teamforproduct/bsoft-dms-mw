@@ -77,13 +77,13 @@ namespace BL.Logic.DocumentCore.SendListCommands
                 res = _operationDb.AddDocumentSendList(_context, new List<InternalDocumentSendList> { _sendList }, _document.Tasks, paperEvents).FirstOrDefault();
                 if (Model.IsLaunchItem ?? false)
                 {
-                    var docProc = DmsResolver.Current.Get<IDocumentService>();
-                    int docId = (int)docProc.ExecuteAction(EnumDocumentActions.LaunchDocumentSendListItem, _context, res);
+                    var aplan = DmsResolver.Current.Get<IAutoPlanService>();
+                    aplan.ManualRunAutoPlan(_context, res, _document.Id);
                 }
                 else
                 {
                     var aplan = DmsResolver.Current.Get<IAutoPlanService>();
-                    aplan.ManualRunAutoPlan(_context);
+                    aplan.ManualRunAutoPlan(_context, null, _document.Id);
                 }
                 transaction.Complete();
             }

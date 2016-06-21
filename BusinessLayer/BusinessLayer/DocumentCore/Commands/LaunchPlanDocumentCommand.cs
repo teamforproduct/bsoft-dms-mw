@@ -65,7 +65,7 @@ namespace BL.Logic.DocumentCore.Commands
             _documentDb.ChangeIsLaunchPlanDocument(_context, _document);
 
             var aplan = DmsResolver.Current.Get<IAutoPlanService>();
-            aplan.ManualRunAutoPlan(_context);
+            aplan.ManualRunAutoPlan(_context, null, _document.Id);
 
             return Model;
         }

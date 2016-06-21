@@ -9,14 +9,14 @@ using BL.Model.Exception;
 
 namespace BL.Logic.DocumentCore.AdditionalCommands
 {
-    public class DeleteDocumentFileCommand : BaseDocumentCommand
+    public class DeleteDocumentFileVersionCommand : BaseDocumentCommand
     {
         private readonly IDocumentFileDbProcess _operationDb;
         private readonly IFileStore _fStore;
 
         private InternalDocumentAttachedFile _file;
 
-        public DeleteDocumentFileCommand(IDocumentFileDbProcess operationDb, IFileStore fStore)
+        public DeleteDocumentFileVersionCommand(IDocumentFileDbProcess operationDb, IFileStore fStore)
         {
             _operationDb = operationDb;
             _fStore = fStore;
@@ -53,7 +53,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override bool CanExecute()
         {
-            if (Model.DocumentId <= 0 || Model.OrderInDocument <= 0 || Model.Version.HasValue )
+            if (Model.DocumentId <= 0 || Model.OrderInDocument <= 0 || !Model.Version.HasValue)
             {
                 throw new WrongParameterValueError();
             }
@@ -70,14 +70,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
             _file = _document.DocumentFiles.First();
 
-            if (!_file.IsAdditional)
-            {
-                _context.SetCurrentPosition(_document.ExecutorPositionId);
-            }
-            else
-            {
-                _context.SetCurrentPosition(_file.ExecutorPositionId);
-            }
+            _context.SetCurrentPosition(_file.ExecutorPositionId);
             _admin.VerifyAccess(_context, CommandType);
 
             if (!CanBeDisplayed(_context.CurrentPositionId))
@@ -93,7 +86,8 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             var docFile = new InternalDocumentAttachedFile
             {
                 DocumentId = Model.DocumentId,
-                OrderInDocument = Model.OrderInDocument
+                OrderInDocument = Model.OrderInDocument,
+                Version = Model.Version ?? 0
             };
 
             try
@@ -106,12 +100,12 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             }
             if (_document.IsRegistered.HasValue)
             {
-                docFile.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, docFile.DocumentId, EnumEventTypes.DeleteDocumentFile, null, null, _file.Name + "." + _file.Extension);
+                docFile.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, docFile.DocumentId, EnumEventTypes.DeleteDocumentFileVersion, null, null, _file.Name + "." + _file.Extension);
             }
             _operationDb.DeleteAttachedFile(_context, docFile);
             return null;
         }
 
-        public override EnumDocumentActions CommandType => EnumDocumentActions.DeleteDocumentFile;
+        public override EnumDocumentActions CommandType => EnumDocumentActions.DeleteDocumentFileVersion;
     }
 }

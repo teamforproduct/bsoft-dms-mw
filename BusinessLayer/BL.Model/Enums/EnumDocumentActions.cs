@@ -315,6 +315,16 @@
         RejectDocumentFile = 104012,
 
         /// <summary>
+        /// Переименовать файл
+        /// </summary>
+        RenameDocumentFile = 104013,
+
+        /// <summary>
+        /// Удалить версию файл
+        /// </summary>
+        DeleteDocumentFileVersion = 104014,
+
+        /// <summary>
         /// Добавить связь между документами
         /// </summary>
         AddDocumentLink = 105001,

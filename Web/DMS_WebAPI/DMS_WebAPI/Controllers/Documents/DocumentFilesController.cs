@@ -57,7 +57,7 @@ namespace DMS_WebAPI.Controllers.Documents
             return res;
         }
 
-        public IHttpActionResult Post([FromUri]ModifyDocumentFile model)
+        public IHttpActionResult Post([FromUri]AddDocumentFile model)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
@@ -76,7 +76,7 @@ namespace DMS_WebAPI.Controllers.Documents
         // PUT: api/Files/5
         public IHttpActionResult Put([FromUri]ModifyDocumentFile model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
 
             var fileId = (int)docProc.ExecuteAction(EnumDocumentActions.ModifyDocumentFile, ctx, model);
@@ -111,7 +111,7 @@ namespace DMS_WebAPI.Controllers.Documents
 
         [Route("AddUseMainNameFile/{id}")]
         [HttpPost]
-        public IHttpActionResult PostAddUseMainNameFile([FromUri]ModifyDocumentFile model)
+        public IHttpActionResult PostAddUseMainNameFile([FromUri]AddDocumentFile model)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
@@ -145,6 +145,16 @@ namespace DMS_WebAPI.Controllers.Documents
 
             docProc.ExecuteAction(EnumDocumentActions.RejectDocumentFile, ctx, model);
             return GetFileList(new FilterDocumentAttachedFile { DocumentId = new List<int> { model.DocumentId } }, null);
+        }
+
+        [Route("DeleteFileVersion")]
+        [HttpDelete]
+        public IHttpActionResult DeleteFileVersion([FromUri]FilterDocumentFileIdentity model)
+        {
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            docProc.ExecuteAction(EnumDocumentActions.DeleteDocumentFileVersion, ctx, model);
+            return new JsonResult(null, this);
         }
     }
 }

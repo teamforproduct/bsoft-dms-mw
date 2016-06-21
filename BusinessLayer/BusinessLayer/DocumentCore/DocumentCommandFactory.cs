@@ -132,6 +132,20 @@ namespace BL.Logic.DocumentCore
                 case EnumDocumentActions.ModifyDocumentFile:
                     cmd = DmsResolver.Current.Get<ModifyDocumentFileCommand>();
                     break;
+
+                case EnumDocumentActions.AcceptDocumentFile:
+                    cmd = DmsResolver.Current.Get<AcceptDocumentFileCommand>();
+                    break;
+                case EnumDocumentActions.RejectDocumentFile:
+                    cmd = DmsResolver.Current.Get<RejectDocumentFileCommand>();
+                    break;
+                case EnumDocumentActions.RenameDocumentFile:
+                    cmd = DmsResolver.Current.Get<RenameDocumentFileCommand>();
+                    break;
+                case EnumDocumentActions.DeleteDocumentFileVersion:
+                    cmd = DmsResolver.Current.Get<DeleteDocumentFileVersionCommand>();
+                    break;
+
                 case EnumDocumentActions.SendForInformationExternal:
                     cmd = DmsResolver.Current.Get<SendForInformationDocumentCommand>();
                     break;
