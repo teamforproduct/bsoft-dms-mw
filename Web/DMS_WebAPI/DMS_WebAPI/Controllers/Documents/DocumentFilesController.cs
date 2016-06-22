@@ -74,7 +74,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         // PUT: api/Files/5
-        public IHttpActionResult Put([FromUri]ModifyDocumentFile model)
+        public IHttpActionResult Put(ModifyDocumentFile model)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
@@ -128,7 +128,7 @@ namespace DMS_WebAPI.Controllers.Documents
 
         [Route("Accept")]
         [HttpPost]
-        public IHttpActionResult PostAccept([FromUri]ChangeWorkOutDocumentFile model)
+        public IHttpActionResult PostAccept(ChangeWorkOutDocumentFile model)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
@@ -138,7 +138,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
         [Route("Reject")]
         [HttpPost]
-        public IHttpActionResult PostNotWorkOut([FromUri]ChangeWorkOutDocumentFile model)
+        public IHttpActionResult PostReject(ChangeWorkOutDocumentFile model)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
