@@ -3911,6 +3911,18 @@ namespace BL.Database.Dictionaries
 
                 qry = RegistrationJournalGetWhere(ref qry, filter);
 
+                if (!string.IsNullOrEmpty(filter.NameExact))
+                {
+                    qry = qry.Where(x => x.Name == filter.NameExact);
+                }
+
+                if (!string.IsNullOrEmpty(filter.IndexExact))
+                {
+                    qry = qry.Where(x => x.Index == filter.IndexExact);
+                }
+
+
+
                 return qry.Select(x => new InternalDictionaryRegistrationJournal
                 {
                     // pss Перегонка значений DictionaryRegistrationJournals
@@ -3967,6 +3979,16 @@ namespace BL.Database.Dictionaries
                 var qry = dbContext.DictionaryRegistrationJournalsSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
 
                 qry = RegistrationJournalGetWhere(ref qry, filter);
+
+                if (!string.IsNullOrEmpty(filter.NameExact))
+                {
+                    qry = qry.Where(x => x.Name == filter.NameExact);
+                }
+
+                if (!string.IsNullOrEmpty(filter.IndexExact))
+                {
+                    qry = qry.Where(x => x.Index == filter.IndexExact);
+                }
 
                 var res = qry.Select(x => new FrontDictionaryRegistrationJournal
                 {
