@@ -5,6 +5,7 @@ using System.Web.Http;
 using BL.CrossCutting.DependencyInjection;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.Enums;
+using BL.Logic.SystemServices.AutoPlan;
 
 namespace DMS_WebAPI.Controllers.Documents
 {
@@ -21,7 +22,7 @@ namespace DMS_WebAPI.Controllers.Documents
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
-            return new JsonResult(docProc.GetSendList(ctx, id),this);
+            return new JsonResult(docProc.GetSendList(ctx, id), this);
         }
 
         /// <summary>
@@ -100,9 +101,9 @@ namespace DMS_WebAPI.Controllers.Documents
         public IHttpActionResult LaunchItem(int id)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentService>();
-            int docId = (int)docProc.ExecuteAction(EnumDocumentActions.LaunchDocumentSendListItem, ctx, id);
-            return GetByDocument(docId);
+            var aplan = DmsResolver.Current.Get<IAutoPlanService>();
+            aplan.ManualRunAutoPlan(ctx, id, null);
+            return new JsonResult(null, this);
         }
 
         /// <summary>

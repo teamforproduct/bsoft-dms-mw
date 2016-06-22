@@ -1067,6 +1067,8 @@ namespace BL.Database.Documents
 
                 var docIds = new List<int> { res.Id };
 
+                var maxDateTime = DateTime.Now.AddYears(50);
+
                 res.DocumentWaits = CommonQueries.GetDocumentWaitsQuery(dbContext, ctx, res.Id)
                     .Select(x => new ReportDocumentWait
                     {
@@ -1077,7 +1079,7 @@ namespace BL.Database.Documents
                         TargetPositionExecutorAgentName = x.OnEvent.TargetPositionExecutorAgent.Name,
                         SourcePositionName = x.OnEvent.SourcePosition.Name,
                         SourcePositionExecutorAgentName = x.OnEvent.SourcePositionExecutorAgent.Name,
-                        DueDate = x.DueDate,
+                        DueDate = x.DueDate > maxDateTime ? null : x.DueDate,
                         IsClosed = x.OffEventId != null,
                         ResultTypeName = x.ResultType.Name,
                         AttentionDate = x.AttentionDate,

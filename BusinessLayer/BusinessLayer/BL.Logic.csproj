@@ -179,6 +179,10 @@
     <Compile Include="DictionaryCore\DocumentType\AddDictionaryDocumentTypeCommand.cs" />
     <Compile Include="DictionaryCore\DocumentType\ModifyDictionaryDocumentTypeCommand.cs" />
     <Compile Include="DictionaryCore\Interfaces\IDictionaryService.cs" />
+    <Compile Include="DocumentCore\AdditionalCommands\DeleteDocumentFileVersionCommand.cs" />
+    <Compile Include="DocumentCore\AdditionalCommands\RejectDocumentFileCommand.cs" />
+    <Compile Include="DocumentCore\AdditionalCommands\AcceptDocumentFileCommand.cs" />
+    <Compile Include="DocumentCore\AdditionalCommands\RenameDocumentFileCommand.cs" />
     <Compile Include="SystemCore\Interfaces\ISystemService.cs" />
     <Compile Include="SystemCore\SystemService.cs" />
     <Compile Include="DocumentCore\AdditionalCommands\DeleteDocumentLinkCommand.cs" />

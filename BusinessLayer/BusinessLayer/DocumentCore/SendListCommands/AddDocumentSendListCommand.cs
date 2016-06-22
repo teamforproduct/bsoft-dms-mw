@@ -72,20 +72,20 @@ namespace BL.Logic.DocumentCore.SendListCommands
             var paperEvents = new List<InternalDocumentEvent>();
             if (Model.PaperEvents?.Any() ?? false)
                 paperEvents.AddRange(Model.PaperEvents.Select(model => CommonDocumentUtilities.GetNewDocumentPaperEvent(_context, Model.DocumentId, model.Id, EnumEventTypes.MoveDocumentPaper, model.Description, _sendList.TargetPositionId, _sendList.TargetAgentId, _sendList.SourcePositionId, _sendList.SourceAgentId, false, false)));
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
+//            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
             {
                 res = _operationDb.AddDocumentSendList(_context, new List<InternalDocumentSendList> { _sendList }, _document.Tasks, paperEvents).FirstOrDefault();
                 if (Model.IsLaunchItem ?? false)
                 {
-                    var docProc = DmsResolver.Current.Get<IDocumentService>();
-                    int docId = (int)docProc.ExecuteAction(EnumDocumentActions.LaunchDocumentSendListItem, _context, res);
+                    var aplan = DmsResolver.Current.Get<IAutoPlanService>();
+                    aplan.ManualRunAutoPlan(_context, res, _document.Id);
                 }
                 else
                 {
                     var aplan = DmsResolver.Current.Get<IAutoPlanService>();
-                    aplan.ManualRunAutoPlan(_context);
+                    aplan.ManualRunAutoPlan(_context, null, _document.Id);
                 }
-                transaction.Complete();
+//                transaction.Complete();
             }
             return res;
         }

@@ -6,6 +6,6 @@ namespace BL.Logic.SystemServices.AutoPlan
 {
     public interface IAutoPlanService : ISystemWorkerService, IDisposable
     {
-        bool ManualRunAutoPlan(IContext userContext, int? sendListId = null);
+        bool ManualRunAutoPlan(IContext userContext, int? sendListId = null, int? documentId = null);
     }
 }

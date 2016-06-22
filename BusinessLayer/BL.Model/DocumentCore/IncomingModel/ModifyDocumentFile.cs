@@ -17,33 +17,20 @@ namespace BL.Model.DocumentCore.IncomingModel
         public int DocumentId { get; set; }
         /// <summary>
         /// Порядковый номер файла в списке файлов документа
-        /// Только для изменения файла
+        /// Только для изменения файла и для добавления версию файла к файлу
         /// </summary>
         public int OrderInDocument { get; set; }
         /// <summary>
-        /// Является ли файл дополнительным или основным. 
+        /// Версия файла
         /// </summary>
-        public bool IsAdditional { get; set; }
+        public int Version { get; set; }
         /// <summary>
-        /// Имя файла. Включая расширение
+        /// Описание файла
         /// </summary>
-        [IgnoreDataMember]
+        public string Description { get; set; }
+        /// <summary>
+        /// Название файла
+        /// </summary>
         public string FileName { get; set; }
-        /// <summary>
-        /// Тип файла.
-        /// </summary>
-        [IgnoreDataMember]
-        public string FileType { get; set; }
-        /// <summary>
-        /// Размер файла
-        /// </summary>
-        [IgnoreDataMember]
-        public long FileSize { get; set; }
-
-        /// <summary>
-        /// Данные файла
-        /// </summary>
-        [IgnoreDataMember]
-        public HttpPostedFile PostedFileData { get; set; }
     }
 }
