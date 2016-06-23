@@ -1303,7 +1303,7 @@ namespace DMS_WebAPI.Utilities
 
                 if (lic.IsNamedLicence)
                 {
-                    lic.ConcurenteNumberOfConnectionsNow++;
+                    lic.NamedNumberOfConnectionsNow++;
                 }
 
                 new Licences().Verify(regCode, lic, null, true);

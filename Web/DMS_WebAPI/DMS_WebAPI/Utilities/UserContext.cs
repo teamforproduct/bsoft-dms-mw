@@ -259,11 +259,11 @@ namespace DMS_WebAPI.Utilities
 
             if (lic.IsConcurenteLicence)
             {
-                var now = DateTime.Now.AddMinutes(-5);
                 var qry = _casheContexts
-                    .Where(x => x.Value.LastUsage > now)
-                    .Select(x => (IContext)x.Value.StoreObject)
-                    .Where(x => x.CurrentClientId == clientId);
+                   .Select(x => (IContext)x.Value.StoreObject)
+                   .Where(x => x.CurrentClientId == clientId)
+                   .Select(x => x.CurrentEmployee.UserId)
+                   .Distinct();
 
                 lic.ConcurenteNumberOfConnectionsNow = qry.Count();
             }
@@ -313,17 +313,18 @@ namespace DMS_WebAPI.Utilities
 
             if (lic.IsConcurenteLicence)
             {
-                var now = DateTime.Now.AddMinutes(-5);
                 var qry = _casheContexts
-                    .Where(x => x.Value.LastUsage > now)
                     .Select(x => (IContext)x.Value.StoreObject)
-                    .Where(x => x.CurrentClientId == clientId);
-
-                qry = qry.Where(x => x.CurrentEmployee.Token != context.CurrentEmployee.Token);
+                    .Where(x => x.CurrentClientId == clientId)
+                    .Select(x => x.CurrentEmployee.UserId)
+                    .Distinct();
 
                 var count = qry.Count();
 
-                count++;
+                if (!qry.Any(x => x == context.CurrentEmployee.UserId))
+                {
+                    count++;
+                }
 
                 lic.ConcurenteNumberOfConnectionsNow = count;
             }
