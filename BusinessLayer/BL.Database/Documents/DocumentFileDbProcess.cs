@@ -381,6 +381,7 @@ namespace BL.Database.Documents
                     {
                         Id = x.Id,
                         IsRegistered = x.IsRegistered,
+                        ExecutorPositionId = x.ExecutorPositionId,
                     }).FirstOrDefault();
                 if (doc == null) return null;
 
@@ -427,7 +428,7 @@ namespace BL.Database.Documents
 
                 if (docFile.Version>0)
                 {
-                    docFileQry.Where(x => x.Version == docFile.Version);
+                    docFileQry = docFileQry.Where(x => x.Version == docFile.Version);
                 }
 
                 foreach (var fileId in docFileQry.Select(x => x.Id).ToList())
