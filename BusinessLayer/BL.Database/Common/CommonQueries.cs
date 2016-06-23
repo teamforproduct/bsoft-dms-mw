@@ -119,7 +119,7 @@ namespace BL.Database.Common
         public static IEnumerable<FrontDocumentAttachedFile> GetDocumentFiles(IContext ctx, DmsContext dbContext, FilterDocumentAttachedFile filter, UIPaging paging = null)
         {
             var sq = GetDocumentFilesQuery(ctx, dbContext, filter);
-
+            sq = sq.OrderByDescending(x => x.LastChangeDate);
             if (paging != null)
             {
                 if (paging.IsOnlyCounter ?? true)
@@ -137,8 +137,7 @@ namespace BL.Database.Common
                     var skip = paging.PageSize * (paging.CurrentPage - 1);
                     var take = paging.PageSize;
 
-                    sq = sq.OrderByDescending(x => x.LastChangeDate)
-                        .Skip(() => skip).Take(() => take);
+                    sq = sq.Skip(() => skip).Take(() => take);
                 }
             }
 
@@ -470,6 +469,7 @@ namespace BL.Database.Common
             //                   SendListDb = slAg,
             //                   Event = evAg
             //               };
+            tasksDb = tasksDb.OrderByDescending(x => x.LastChangeDate);
 
             if (paging != null)
             {
@@ -488,8 +488,7 @@ namespace BL.Database.Common
                     var skip = paging.PageSize * (paging.CurrentPage - 1);
                     var take = paging.PageSize;
 
-                    tasksDb = tasksDb.OrderByDescending(x => x.LastChangeDate)
-                        .Skip(() => skip).Take(() => take);
+                    tasksDb = tasksDb.Skip(() => skip).Take(() => take);
                 }
             }
 
@@ -535,7 +534,7 @@ namespace BL.Database.Common
 
         public static IEnumerable<FrontDocumentWait> GetDocumentWaits(DmsContext dbContext, FilterDocumentWait filter, IContext ctx, UIPaging paging = null)
         {
-            var waitsDb = GetDocumentWaitsQuery(dbContext, ctx);
+            var waitsDb = GetDocumentWaitsQuery(dbContext, ctx);    //TODO CLEAN!!!
             var waitsDb1 = GetDocumentWaitsQuery1(dbContext, ctx);
             var waitsDb2 = GetDocumentWaitsQuery2(dbContext, ctx);
 
@@ -622,13 +621,17 @@ namespace BL.Database.Common
                         .OrderBy(x => x.DueDate).Skip(() => skip).Take(() => take);
 
                 }
+                else
+                {
+                    waitsRes = waitsRes1.Concat(waitsRes2).OrderBy(x => x.DueDate);
+                }
             }
 
             var maxDateTime = DateTime.Now.AddYears(50);
 
             var waitsResF =
                 //waitsRes
-                dbContext.DocumentWaitsSet.Where(x => waitsRes.Select(y => y.Id).Contains(x.Id))
+                dbContext.DocumentWaitsSet.Where(x => waitsRes.Select(y => y.Id).Contains(x.Id)).OrderBy(x => x.DueDate)
                 .Select(x => new FrontDocumentWait
                 {
                     Id = x.Id,
