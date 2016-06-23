@@ -53,6 +53,7 @@ namespace BL.Database.Dictionaries
                 var ddt = new DictionaryAgents
                 {
                     ClientId = context.CurrentClientId,
+                    Id=id,
                     Name = agent.Name,
                     ResidentTypeId = agent.ResidentTypeId,
                     IsBank = (role == EnumDictionaryAgentTypes.isBank ? !agent.IsBank : agent.IsBank),
@@ -532,6 +533,7 @@ namespace BL.Database.Dictionaries
                         {
                             Id = y.ContactType.Id,
                             Name = y.ContactType.Name,
+                            Code = y.ContactType.Code,
                             InputMask = y.ContactType.InputMask,
                             IsActive = y.ContactType.IsActive
                         },
@@ -565,6 +567,7 @@ namespace BL.Database.Dictionaries
                 var ddt = DictionaryModelConverter.GetDbAgentPerson(person);
 
                 dbContext.DictionaryAgentPersonsSet.Attach(ddt);
+                dbContext.SaveChanges();
                 var entity = dbContext.Entry(ddt);
                 CommonQueries.AddFullTextCashInfo(dbContext, ddt.Id, EnumObjects.DictionaryAgentPersons, EnumOperationType.Update);
 
@@ -691,6 +694,7 @@ namespace BL.Database.Dictionaries
                         {
                             Id = y.ContactType.Id,
                             Name = y.ContactType.Name,
+                            Code = y.ContactType.Code,
                             InputMask = y.ContactType.InputMask,
                             IsActive = y.ContactType.IsActive
                         },
@@ -840,6 +844,7 @@ namespace BL.Database.Dictionaries
                     IsActive = employee.IsActive
                 };
                 dbContext.DictionaryAgentEmployeesSet.Add(ddt);
+                UpdateAgentRole(context,ddt.Id,EnumDictionaryAgentTypes.isEmployee);
 
                 CommonQueries.AddFullTextCashInfo(dbContext, ddt.Id, EnumObjects.DictionaryAgentEmployees, EnumOperationType.AddNew);
                 dbContext.SaveChanges();
@@ -996,6 +1001,7 @@ namespace BL.Database.Dictionaries
                         {
                             Id = y.ContactType.Id,
                             Name = y.ContactType.Name,
+                            Code = y.ContactType.Code,
                             InputMask = y.ContactType.InputMask,
                             IsActive = y.ContactType.IsActive
                         },
@@ -1356,6 +1362,7 @@ namespace BL.Database.Dictionaries
                             {
                                 Id = y.ContactType.Id,
                                 Name = y.ContactType.Name,
+                                Code = y.ContactType.Code,
                                 InputMask = y.ContactType.InputMask,
                                 IsActive = y.ContactType.IsActive
                             },
@@ -1519,6 +1526,7 @@ namespace BL.Database.Dictionaries
                         {
                             Id = y.ContactType.Id,
                             Name = y.ContactType.Name,
+                            Code = y.ContactType.Code,
                             InputMask = y.ContactType.InputMask,
                             IsActive = y.ContactType.IsActive
                         },
@@ -1682,6 +1690,7 @@ namespace BL.Database.Dictionaries
                             {
                                 Id = y.ContactType.Id,
                                 Name = y.ContactType.Name,
+                                Code = y.ContactType.Code,
                                 InputMask = y.ContactType.InputMask,
                                 IsActive = y.ContactType.IsActive
                             },
@@ -1916,6 +1925,7 @@ namespace BL.Database.Dictionaries
                         {
                             Id = y.ContactType.Id,
                             Name = y.ContactType.Name,
+                            Code = y.ContactType.Code,
                             InputMask = y.ContactType.InputMask,
                             IsActive = y.ContactType.IsActive
                         },

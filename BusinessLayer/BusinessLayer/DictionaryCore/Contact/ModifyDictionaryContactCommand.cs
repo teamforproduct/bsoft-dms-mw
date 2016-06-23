@@ -38,7 +38,8 @@ namespace BL.Logic.DictionaryCore
                        ContactExact = Model.Value,
                        ContactTypeId = new List<int> { Model.ContactTypeId },
                        AgentId = new List<int> { Model.AgentId },
-                       IsActive=Model.IsActive
+                       IsActive=Model.IsActive,
+                       NotContainsIDs = new List<int> {Model.Id}
                    });
 
             if (spr.Count() != 0)
