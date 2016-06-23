@@ -60,7 +60,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
             if (_writer == null) return;
             var qryVal = new[] { ((int)item.ItemType).ToString(), item.ObjectId.ToString() };
             var fld = new[] { FIELD_OBJECT_TYPE, FIELD_OBJECT_ID };
-            var flags = new[] { Occur.MUST, Occur.MUST, Occur.MUST };
+            var flags = new[] { Occur.MUST, Occur.MUST };
             var query = MultiFieldQueryParser.Parse(Version.LUCENE_30, qryVal, fld, flags, _analyzer);
 
             //var qry1 = new TermQuery(new Term(FIELD_OBJECT_TYPE, ((int)item.ItemType).ToString()));

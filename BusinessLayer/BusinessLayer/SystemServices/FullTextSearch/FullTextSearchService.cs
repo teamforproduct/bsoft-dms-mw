@@ -27,6 +27,30 @@ namespace BL.Logic.SystemServices.FullTextSearch
             _systemDb = systemDb;
         }
 
+        private void ReindexPart(IContext ctx, IFullTextIndexWorker worker, EnumObjects dataType, int fromNumber,int toNumber)
+        {
+            var offset = fromNumber;
+            do
+            {
+
+                var data = _systemDb.FullTextIndexDocumentsReindexDbPrepare(ctx, dataType, MAX_ROW_PROCESS, offset);
+                foreach (var itm in data)
+                {
+                    worker.AddNewItem(itm);
+                }
+
+                if (data.Count() == MAX_ROW_PROCESS)
+                {
+                    offset += MAX_ROW_PROCESS;
+                }
+                else
+                {
+                    offset = 0;
+                }
+
+            } while (offset != 0 && offset< toNumber);
+        }
+
         public void ReindexDatabase(IContext ctx)
         {
             var dbKey = CommonSystemUtilities.GetServerKey(ctx);
@@ -48,7 +72,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 var currCashId = _systemDb.GetCurrentMaxCasheId(ctx);
                 var objToProcess = new EnumObjects[]
                 {
-                    EnumObjects.Documents, EnumObjects.DocumentEvents, EnumObjects.DocumentSendLists,
+                    /*EnumObjects.Documents, EnumObjects.DocumentEvents,*/ EnumObjects.DocumentSendLists,
                     EnumObjects.DocumentSubscriptions, EnumObjects.DocumentFiles
                 };
                 //delete all current document before reindexing
@@ -91,6 +115,29 @@ namespace BL.Logic.SystemServices.FullTextSearch
                         worker.AddNewItem(itm);
                     }
                 }));
+
+                int MAX_ENTITY_FOR_THREAD = 1000000;
+                var docCount = _systemDb.GetEntityNumbers(ctx, EnumObjects.Documents);
+                int startFrom = 0;
+                while (startFrom< docCount)
+                {
+                    tskList.Add(Task.Factory.StartNew(() =>
+                    {
+                        ReindexPart(ctx, worker, EnumObjects.Documents, startFrom, startFrom + MAX_ENTITY_FOR_THREAD - 1);
+                    }));
+                    startFrom += MAX_ENTITY_FOR_THREAD;
+                }
+
+                var eventCount = _systemDb.GetEntityNumbers(ctx, EnumObjects.DocumentEvents);
+                startFrom = 0;
+                while (startFrom < eventCount)
+                {
+                    tskList.Add(Task.Factory.StartNew(() =>
+                    {
+                        ReindexPart(ctx, worker, EnumObjects.DocumentEvents, startFrom, startFrom + MAX_ENTITY_FOR_THREAD - 1);
+                    }));
+                    startFrom += MAX_ENTITY_FOR_THREAD;
+                }
 
                 Task.WaitAll(tskList.ToArray());
 

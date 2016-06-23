@@ -51,8 +51,7 @@ namespace BL.Logic.DocumentCore
                         ftRes.GroupBy(x => x.DocumentId)
                             .Select(x => new {DocId = x.Key, Rate = x.Count()})
                             .OrderByDescending(x => x.Rate);
-                    filters.DocumentId.AddRange(
-                        resWithRanges.Select(x => x.DocId).Take(paging.PageSize*paging.CurrentPage));
+                    filters.DocumentId.AddRange(resWithRanges.Select(x => x.DocId));
                 }
             }
             return _documentDb.GetDocuments(ctx, filters, paging);
