@@ -810,7 +810,7 @@ namespace BL.Database.Documents
                 #endregion Property
 
                 #endregion DocumentsSetFilter
-
+                qry = qry.OrderByDescending(x => x.CreateDate);
                 if (paging != null)
                 {
                     if (paging.IsOnlyCounter ?? true)
@@ -828,8 +828,7 @@ namespace BL.Database.Documents
                         var skip = paging.PageSize * (paging.CurrentPage - 1);
                         var take = paging.PageSize;
 
-                        qry = qry.OrderByDescending(x => x.CreateDate)
-                            .Skip(() => skip).Take(() => take);
+                        qry = qry.Skip(() => skip).Take(() => take);
                     }
                 }
 
@@ -2115,7 +2114,7 @@ namespace BL.Database.Documents
                         qry = qry.Where(x => x.IsInWork == filters.IsInWork);
                     }
                 }
-
+                qry = qry.OrderByDescending(x => x.DocumentId);
                 if (paging != null)
                 {
                     if (paging.IsOnlyCounter ?? true)
@@ -2133,8 +2132,7 @@ namespace BL.Database.Documents
                         var skip = paging.PageSize * (paging.CurrentPage - 1);
                         var take = paging.PageSize;
 
-                        qry = qry.OrderByDescending(x => x.DocumentId)
-                            .Skip(() => skip).Take(() => take);
+                        qry = qry.Skip(() => skip).Take(() => take);
                     }
                 }
 

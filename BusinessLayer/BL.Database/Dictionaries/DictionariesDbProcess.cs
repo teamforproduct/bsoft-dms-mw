@@ -179,7 +179,7 @@ namespace BL.Database.Dictionaries
                    ) || (!filter.IsBank.HasValue && !filter.IsIndividual.HasValue && !filter.IsCompany.HasValue && !filter.IsEmployee.HasValue)
                  ));
 
-
+                qry = qry.OrderBy(x => x.Name);
                 if (paging != null)
                 {
                     if (paging.IsOnlyCounter ?? true)
@@ -194,8 +194,7 @@ namespace BL.Database.Dictionaries
 
                     if (!paging.IsAll)
                     {
-                        qry = qry.OrderBy(x => x.Name)
-                        .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
+                        qry = qry.Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
                     }
                 }
 
@@ -482,7 +481,7 @@ namespace BL.Database.Dictionaries
                 {
                     qry = qry.Where(x => x.PassportNumber == filter.PassportNumber);
                 }
-
+                qry = qry.OrderBy(x => x.LastName);
                 if (paging != null)
                 {
                     if (paging.IsOnlyCounter ?? true)
@@ -500,8 +499,7 @@ namespace BL.Database.Dictionaries
                         var skip = paging.PageSize * (paging.CurrentPage - 1);
                         var take = paging.PageSize;
 
-                        qry = qry.OrderBy(x => x.LastName)
-                            .Skip(() => skip).Take(() => take);
+                        qry = qry.Skip(() => skip).Take(() => take);
                     }
                 }
 
@@ -947,7 +945,7 @@ namespace BL.Database.Dictionaries
                 }
 
 
-
+                qry = qry.OrderBy(x => x.Agent.AgentPerson.LastName);
                 if (paging != null)
                 {
                     if (paging.IsOnlyCounter ?? true)
@@ -962,8 +960,7 @@ namespace BL.Database.Dictionaries
 
                     if (!paging.IsAll)
                     {
-                        qry = qry.OrderBy(x => x.Agent.AgentPerson.LastName)
-                        .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
+                        qry = qry.Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
                     }
                 }
 
@@ -1474,6 +1471,7 @@ namespace BL.Database.Dictionaries
                 }
 
                 // Пагинация
+                qry = qry.OrderBy(x => x.FullName);
                 if (paging != null)
                 {
                     if (paging.IsOnlyCounter ?? true)
@@ -1491,8 +1489,7 @@ namespace BL.Database.Dictionaries
                         var skip = paging.PageSize * (paging.CurrentPage - 1);
                         var take = paging.PageSize;
 
-                        qry = qry.OrderBy(x => x.FullName)
-                            .Skip(() => skip).Take(() => take);
+                        qry = qry.Skip(() => skip).Take(() => take);
                     }
                 }
 
@@ -1800,7 +1797,7 @@ namespace BL.Database.Dictionaries
                 var qry = dbContext.DictionaryAgentBanksSet.Where(x => x.Agent.ClientId == context.CurrentClientId).AsQueryable();
 
                 qry = qry.Where(x => x.Agent.IsBank);
-
+                qry = qry.OrderBy(x => x.Agent.Name);
                 // Пагинация
                 if (paging != null)
                 {
@@ -1819,8 +1816,7 @@ namespace BL.Database.Dictionaries
                         var skip = paging.PageSize * (paging.CurrentPage - 1);
                         var take = paging.PageSize;
 
-                        qry = qry.OrderBy(x => x.Agent.Name)
-                            .Skip(() => skip).Take(() => take);
+                        qry = qry.Skip(() => skip).Take(() => take);
                     }
                 }
 
@@ -1880,7 +1876,7 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(x => x.Agent.Name == filter.NameExact);
 
                 }
-
+                qry = qry.OrderBy(x => x.Agent.Name);
                 if (paging != null)
                 {
                     paging.TotalItemsCount = qry.Count();
@@ -1890,8 +1886,7 @@ namespace BL.Database.Dictionaries
                         var skip = paging.PageSize * (paging.CurrentPage - 1);
                         var take = paging.PageSize;
 
-                        qry = qry.OrderBy(x => x.Agent.Name)
-                            .Skip(() => skip).Take(() => take);
+                        qry = qry.Skip(() => skip).Take(() => take);
                     }
                 }
 
