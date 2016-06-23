@@ -8,11 +8,26 @@ namespace DMS_WebAPI.Models
     {
         protected override void Seed(ApplicationDbContext context)
         {
+            context.AspNetLicencesSet.AddRange(GetAspNetLicences());
+
             context.AdminLanguagesSet.AddRange(GetAdminLanguages());
 
             context.AdminLanguageValuesSet.AddRange(GetAdminLanguageValues());
 
             base.Seed(context);
+        }
+
+        private List<AspNetLicences> GetAspNetLicences()
+        {
+            var items = new List<AspNetLicences>();
+
+            //items.Add(new AspNetLicences { Id = 0, Name = "", Description = "", NamedNumberOfConnections = null, ConcurenteNumberOfConnections = null, DurationDay = null, Functionals = null, IsActive = true });
+            items.Add(new AspNetLicences { Id = 1, Name = "Base licence", Description = "", NamedNumberOfConnections = null, ConcurenteNumberOfConnections = 10, DurationDay = 365, Functionals = null, IsActive = true });
+            items.Add(new AspNetLicences { Id = 2, Name = "Small business licence", Description = "", NamedNumberOfConnections = null, ConcurenteNumberOfConnections = 50, DurationDay = 365, Functionals = null, IsActive = true });
+            items.Add(new AspNetLicences { Id = 3, Name = "Fixed Name business", Description = "", NamedNumberOfConnections = null, ConcurenteNumberOfConnections = null, DurationDay = 365, Functionals = null, IsActive = true });
+            items.Add(new AspNetLicences { Id = 4, Name = "Unlimited", Description = "", NamedNumberOfConnections = 50, ConcurenteNumberOfConnections = null, DurationDay = null, Functionals = null, IsActive = true });
+
+            return items;
         }
 
         private List<AdminLanguages> GetAdminLanguages()
