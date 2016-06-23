@@ -823,7 +823,7 @@ namespace BL.Database.Dictionaries
                         IsCompany = agent.IsCompany,
                         IsEmployee = true,
                         IsIndividual = agent.IsIndividual,
-                        ResidentTypeId = agent.ResidentTypeId ?? 0,
+                        ResidentTypeId = agent.ResidentTypeId,
                         LastChangeDate = employee.LastChangeDate,
                         LastChangeUserId = employee.LastChangeUserId
                     });
