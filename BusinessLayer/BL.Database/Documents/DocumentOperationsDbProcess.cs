@@ -790,7 +790,7 @@ namespace BL.Database.Documents
                     }
                 }
                 #endregion
-
+                qry = qry.OrderByDescending(x => x.LastChangeDate);
                 if (paging != null)
                 {
                     if (paging.IsOnlyCounter ?? true)
@@ -818,8 +818,7 @@ namespace BL.Database.Documents
                         var skip = paging.PageSize * (paging.CurrentPage - 1);
                         var take = paging.PageSize;
 
-                        qry = qry.OrderByDescending(x => x.LastChangeDate)
-                            .Skip(() => skip).Take(() => take);
+                        qry = qry.Skip(() => skip).Take(() => take);
                     }
                 }
 

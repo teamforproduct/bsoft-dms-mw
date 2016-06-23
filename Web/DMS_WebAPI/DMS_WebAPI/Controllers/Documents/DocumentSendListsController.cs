@@ -18,7 +18,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// </summary>
         /// <param name="id"></param>
         /// <returns>Запись плана работы над документом</returns>
-        private IHttpActionResult Get(int id)
+        public IHttpActionResult Get(int id)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
@@ -30,7 +30,9 @@ namespace DMS_WebAPI.Controllers.Documents
         /// </summary>
         /// <param name="documentId"></param>
         /// <returns>Записи плана работы над документом</returns>
-        private IHttpActionResult GetByDocument(int documentId)
+        [Route("GetByDocument")]
+        [HttpGet]
+        public IHttpActionResult GetByDocument(int documentId)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
@@ -103,7 +105,7 @@ namespace DMS_WebAPI.Controllers.Documents
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var aplan = DmsResolver.Current.Get<IAutoPlanService>();
             aplan.ManualRunAutoPlan(ctx, id, null);
-            return new JsonResult(null, this);
+            return Get(id);
         }
 
         /// <summary>

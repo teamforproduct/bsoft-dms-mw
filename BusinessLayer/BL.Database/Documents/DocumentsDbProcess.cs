@@ -422,25 +422,24 @@ namespace BL.Database.Documents
                 if ((filters.TagId?.Count() > 0) ||
                     !string.IsNullOrEmpty(filters.TagDescription))
                 {
-                    //TODO Contains
-                    var qryTmp = from Doc in qry
-                                 join DocTag in dbContext.DocumentTagsSet on Doc.Id equals DocTag.DocumentId
-                                 join DicTag in dbContext.DictionaryTagsSet on DocTag.TagId equals DicTag.Id
-                                 where !DicTag.PositionId.HasValue || ctx.CurrentPositionsIdList.Contains(DicTag.PositionId ?? 0)
-                                 select new { Doc, DocTag, DicTag };
+                    var filterContainsPosition = PredicateBuilder.False<DocumentTags>();
+
+                    filterContainsPosition = ctx.CurrentPositionsIdList.Aggregate(filterContainsPosition,
+                        (current, value) => current.Or(e => !e.Tag.PositionId.HasValue || e.Tag.PositionId == value).Expand());
 
                     if (filters.TagId?.Count() > 0)
                     {
-                        //TODO Contains
-                        qryTmp = qryTmp.Where(x => filters.TagId.Contains(x.DocTag.TagId));
+                        var filterContains = PredicateBuilder.False<DocumentTags>();
+                        filterContains = filters.TagId.Aggregate(filterContains,
+                            (current, value) => current.Or(e => e.Tag.Id == value).Expand());
+
+                        qry = qry.Where(x => x.Tags.AsQueryable().Where(filterContainsPosition).Any(filterContains));
                     }
 
                     if (!string.IsNullOrEmpty(filters.TagDescription))
                     {
-                        qryTmp = qryTmp.Where(x => x.DicTag.Name.Contains(filters.TagDescription));
+                        qry = qry.Where(x => x.Tags.AsQueryable().Where(filterContainsPosition).Any(y=>y.Tag.Name.Contains(filters.TagDescription)));
                     }
-
-                    qry = qryTmp.GroupBy(x => x.Doc).Select(x => x.Key);
                 }
                 #endregion Tag
 
@@ -811,7 +810,7 @@ namespace BL.Database.Documents
                 #endregion Property
 
                 #endregion DocumentsSetFilter
-
+                qry = qry.OrderByDescending(x => x.CreateDate);
                 if (paging != null)
                 {
                     if (paging.IsOnlyCounter ?? true)
@@ -829,8 +828,7 @@ namespace BL.Database.Documents
                         var skip = paging.PageSize * (paging.CurrentPage - 1);
                         var take = paging.PageSize;
 
-                        qry = qry.OrderByDescending(x => x.CreateDate)
-                            .Skip(() => skip).Take(() => take);
+                        qry = qry.Skip(() => skip).Take(() => take);
                     }
                 }
 
@@ -2116,7 +2114,7 @@ namespace BL.Database.Documents
                         qry = qry.Where(x => x.IsInWork == filters.IsInWork);
                     }
                 }
-
+                qry = qry.OrderByDescending(x => x.DocumentId);
                 if (paging != null)
                 {
                     if (paging.IsOnlyCounter ?? true)
@@ -2134,8 +2132,7 @@ namespace BL.Database.Documents
                         var skip = paging.PageSize * (paging.CurrentPage - 1);
                         var take = paging.PageSize;
 
-                        qry = qry.OrderByDescending(x => x.DocumentId)
-                            .Skip(() => skip).Take(() => take);
+                        qry = qry.Skip(() => skip).Take(() => take);
                     }
                 }
 
