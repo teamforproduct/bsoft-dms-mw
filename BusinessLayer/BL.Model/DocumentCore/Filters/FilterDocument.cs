@@ -1,6 +1,8 @@
 ﻿using BL.Model.SystemCore.Filters;
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
+using System.Xml.Serialization;
 
 namespace BL.Model.DocumentCore.Filters
 {
@@ -22,6 +24,12 @@ namespace BL.Model.DocumentCore.Filters
         /// Массив ИД документов
         /// </summary>
         public List<int> DocumentId { get; set; }
+        /// <summary>
+        /// Массив ИД документов полученного из полнотекстового поиска
+        /// </summary>
+        [XmlIgnore]
+        [IgnoreDataMember]
+        public List<int> FullTextSearchDocumentId { get; set; }
         /// <summary>
         /// Массив ИД шаблонов документов
         /// </summary>

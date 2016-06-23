@@ -610,19 +610,35 @@ namespace BL.Database.SystemDb
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                var qryPrepare =
-                    dbContext.DocumentSendListsSet.Where(
-                        x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
-                        .Where(x => x.IsInitial && !x.CloseEventId.HasValue).AsQueryable();
 
-                if (sendListId == null)
-                {
-                    qryPrepare = qryPrepare.Where(x => x.Document.IsLaunchPlan);
-                }
-                else
-                {
-                    qryPrepare = qryPrepare.Where(x => x.Id == sendListId);
-                }
+                /*
+                 var qry = dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == ctx.CurrentClientId)
+                    .Join(dbContext.DocumentSendListsSet, d => d.Id, s => s.DocumentId, (d, s) => new { doc = d, sl = s })
+                    .Where(x => ((sendListId == null && x.doc.IsLaunchPlan) || (sendListId.HasValue && sendListId.Value == x.sl.Id)) && x.sl.IsInitial && !x.sl.CloseEventId.HasValue)
+                    .GroupBy(x => x.sl.DocumentId)
+                    .Select(x => new
+                    {
+                        DocId = x.Key,
+                        MinStage = x.Min(s => s.sl.Stage)
+                    });
+
+                var res = dbContext.DocumentSendListsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Join(qry, s => s.DocumentId, q => q.DocId, (s, q) => new { sl = s, q })
+                    .Where(x => x.sl.Stage <= x.q.MinStage && !x.sl.StartEventId.HasValue)
+                    .OrderBy(x=>x.sl.DocumentId).ThenBy(x => new { x.sl.Stage, SendTypeId = x.sl.SendTypeId == (int)EnumSendTypes.SendForControl ? 0 : x.sl.SendTypeId })
+                    .Select(x => x.sl.Id).ToList();
+
+                res.AddRange(dbContext.DocumentSendListsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                    .Where(x => !x.IsInitial && !x.CloseEventId.HasValue && x.Document.IsLaunchPlan
+                                && !qry.Select(s => s.DocId).Contains(x.DocumentId))
+                    .OrderBy(x=>x.DocumentId).ThenBy(x => new { x.Stage, SendTypeId = x.SendTypeId == (int)EnumSendTypes.SendForControl ? 0 : x.SendTypeId })
+                    .Select(x => x.Id).ToList());
+                 */
+
+                if (sendListId.HasValue)
+                    return new List<int> { sendListId.GetValueOrDefault() };
+
+                var qryPrepare = dbContext.DocumentSendListsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                                .Where(x => x.IsInitial && !x.CloseEventId.HasValue).AsQueryable();
 
                 if (documentId.HasValue)
                 {
@@ -637,21 +653,13 @@ namespace BL.Database.SystemDb
                     });
 
                 var sendListsSet = dbContext.DocumentSendListsSet
-                    .Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
-                    .AsQueryable();
+                                    .Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                                    .Where(x => x.Document.IsLaunchPlan)
+                                    .AsQueryable();
 
                 if (documentId.HasValue)
                 {
                     sendListsSet = sendListsSet.Where(x => x.DocumentId == documentId);
-                }
-
-                if (sendListId == null)
-                {
-                    sendListsSet = sendListsSet.Where(x => x.Document.IsLaunchPlan);
-                }
-                else
-                {
-                    sendListsSet = sendListsSet.Where(x => x.Id == sendListId);
                 }
 
                 var qry2 = sendListsSet

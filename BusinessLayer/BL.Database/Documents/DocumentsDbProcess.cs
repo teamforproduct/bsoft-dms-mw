@@ -438,7 +438,7 @@ namespace BL.Database.Documents
 
                     if (!string.IsNullOrEmpty(filters.TagDescription))
                     {
-                        qry = qry.Where(x => x.Tags.AsQueryable().Where(filterContainsPosition).Any(y=>y.Tag.Name.Contains(filters.TagDescription)));
+                        qry = qry.Where(x => x.Tags.AsQueryable().Where(filterContainsPosition).Any(y => y.Tag.Name.Contains(filters.TagDescription)));
                     }
                 }
                 #endregion Tag
@@ -811,7 +811,44 @@ namespace BL.Database.Documents
 
                 #endregion DocumentsSetFilter
                 qry = qry.OrderByDescending(x => x.CreateDate);
-                if (paging != null)
+
+                if (filters.FullTextSearchDocumentId?.Count() > 0)
+                {
+                    var docIds = qry.Select(x => x.Id).ToList();
+
+                    docIds = docIds.Join(filters.FullTextSearchDocumentId, o => o, i => i, (o, i) => o).ToList();
+
+                    if (paging != null)
+                    {
+                        if (paging.IsOnlyCounter ?? true)
+                        {
+                            paging.TotalItemsCount = docIds.Count();
+                        }
+
+                        if (paging.IsOnlyCounter ?? false)
+                        {
+                            return new List<FrontDocument>();
+                        }
+
+                        if (!paging.IsAll)
+                        {
+                            var skip = paging.PageSize * (paging.CurrentPage - 1);
+                            var take = paging.PageSize;
+
+                            docIds = docIds.Skip(skip).Take(take).ToList();
+                        }
+                    }
+
+                    var filterContains = PredicateBuilder.False<DBModel.Document.Documents>();
+                    filterContains = docIds.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    qry = dbContext.DocumentsSet.Where(filterContains);
+
+                    qry = qry.OrderByDescending(x => x.CreateDate);
+
+                }
+                else if (paging != null)
                 {
                     if (paging.IsOnlyCounter ?? true)
                     {
