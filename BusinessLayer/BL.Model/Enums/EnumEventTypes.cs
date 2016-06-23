@@ -70,7 +70,11 @@
 
 
         AddDocumentFile = 115, //    Добавлен файл
+        RanameDocumentFile = 116, //    Переименован файл
         ModifyDocumentFile = 117, //    Изменен файл
+        DeleteDocumentFileVersion = 118,
         DeleteDocumentFile = 119, //    Удален файл
+        RejectDocumentFile = 121, //
+        AcceptDocumentFile = 122, //
     }
 }

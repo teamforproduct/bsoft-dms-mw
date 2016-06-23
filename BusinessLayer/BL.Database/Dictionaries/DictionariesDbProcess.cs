@@ -132,6 +132,8 @@ namespace BL.Database.Dictionaries
             {
                 var qry = dbContext.DictionaryAgentsSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
 
+               
+
                 // Список первичных ключей
                 if (filter.IDs?.Count > 0)
                 {
@@ -177,7 +179,7 @@ namespace BL.Database.Dictionaries
                    ) || (!filter.IsBank.HasValue && !filter.IsIndividual.HasValue && !filter.IsCompany.HasValue && !filter.IsEmployee.HasValue)
                  ));
 
-
+                qry = qry.OrderBy(x => x.Name);
                 if (paging != null)
                 {
                     if (paging.IsOnlyCounter ?? true)
@@ -192,8 +194,7 @@ namespace BL.Database.Dictionaries
 
                     if (!paging.IsAll)
                     {
-                        qry = qry.OrderBy(x => x.Name)
-                        .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
+                        qry = qry.Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
                     }
                 }
 
@@ -259,14 +260,15 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public void UpdateAgentName(IContext context, int Id, string newName)
+        public void UpdateAgentName(IContext context, int id, string newName)
         {
             using (var dbContext = new DmsContext(context))
             {
-                var agent = GetAgent(context, Id);
+                var agent = GetAgent(context, id);
                 var ddt = new DictionaryAgents
                 {
                     ClientId = context.CurrentClientId,
+                    Id=id,
                     Name = newName,
                     ResidentTypeId = agent.ResidentTypeId,
                     IsBank = agent.IsBank,
@@ -281,7 +283,7 @@ namespace BL.Database.Dictionaries
                 dbContext.DictionaryAgentsSet.Attach(ddt);
                 var entity = dbContext.Entry(ddt);
 
-                CommonQueries.AddFullTextCashInfo(dbContext, Id, EnumObjects.DictionaryAgents, EnumOperationType.Update);
+                CommonQueries.AddFullTextCashInfo(dbContext, id, EnumObjects.DictionaryAgents, EnumOperationType.Update);
                 entity.State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
             }
@@ -479,7 +481,7 @@ namespace BL.Database.Dictionaries
                 {
                     qry = qry.Where(x => x.PassportNumber == filter.PassportNumber);
                 }
-
+                qry = qry.OrderBy(x => x.LastName);
                 if (paging != null)
                 {
                     if (paging.IsOnlyCounter ?? true)
@@ -497,8 +499,7 @@ namespace BL.Database.Dictionaries
                         var skip = paging.PageSize * (paging.CurrentPage - 1);
                         var take = paging.PageSize;
 
-                        qry = qry.OrderBy(x => x.LastName)
-                            .Skip(() => skip).Take(() => take);
+                        qry = qry.Skip(() => skip).Take(() => take);
                     }
                 }
 
@@ -944,7 +945,7 @@ namespace BL.Database.Dictionaries
                 }
 
 
-
+                qry = qry.OrderBy(x => x.Agent.AgentPerson.LastName);
                 if (paging != null)
                 {
                     if (paging.IsOnlyCounter ?? true)
@@ -959,8 +960,7 @@ namespace BL.Database.Dictionaries
 
                     if (!paging.IsAll)
                     {
-                        qry = qry.OrderBy(x => x.Agent.AgentPerson.LastName)
-                        .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
+                        qry = qry.Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
                     }
                 }
 
@@ -1450,7 +1450,28 @@ namespace BL.Database.Dictionaries
                     }
                 }
 
+                if (!string.IsNullOrEmpty(filter.TaxCodeExact))
+                {
+                    qry = qry.Where(x => x.TaxCode == filter.TaxCodeExact);
+                }
+
+                if (!string.IsNullOrEmpty(filter.OKPOCodeExact))
+                {
+                    qry = qry.Where(x => x.OKPOCode == filter.OKPOCodeExact);
+                }
+
+                if (!string.IsNullOrEmpty(filter.VATCodeExact))
+                {
+                    qry = qry.Where(x => x.VATCode == filter.VATCodeExact);
+                }
+
+                if (!string.IsNullOrEmpty(filter.NameExact))
+                {
+                    qry = qry.Where(x => x.FullName == filter.NameExact);
+                }
+
                 // Пагинация
+                qry = qry.OrderBy(x => x.FullName);
                 if (paging != null)
                 {
                     if (paging.IsOnlyCounter ?? true)
@@ -1468,8 +1489,7 @@ namespace BL.Database.Dictionaries
                         var skip = paging.PageSize * (paging.CurrentPage - 1);
                         var take = paging.PageSize;
 
-                        qry = qry.OrderBy(x => x.FullName)
-                            .Skip(() => skip).Take(() => take);
+                        qry = qry.Skip(() => skip).Take(() => take);
                     }
                 }
 
@@ -1523,7 +1543,9 @@ namespace BL.Database.Dictionaries
                         Id = t.Id,
                         FirstName = t.FirstName,
                         LastName = t.LastName,
-                        MiddleName = t.MiddleName
+                        MiddleName = t.MiddleName,
+                        IsActive=t.IsActive,
+                        IsMale=t.IsMale
                     })
 
                 }).ToList();
@@ -1775,7 +1797,7 @@ namespace BL.Database.Dictionaries
                 var qry = dbContext.DictionaryAgentBanksSet.Where(x => x.Agent.ClientId == context.CurrentClientId).AsQueryable();
 
                 qry = qry.Where(x => x.Agent.IsBank);
-
+                qry = qry.OrderBy(x => x.Agent.Name);
                 // Пагинация
                 if (paging != null)
                 {
@@ -1794,8 +1816,7 @@ namespace BL.Database.Dictionaries
                         var skip = paging.PageSize * (paging.CurrentPage - 1);
                         var take = paging.PageSize;
 
-                        qry = qry.OrderBy(x => x.Agent.Name)
-                            .Skip(() => skip).Take(() => take);
+                        qry = qry.Skip(() => skip).Take(() => take);
                     }
                 }
 
@@ -1839,6 +1860,33 @@ namespace BL.Database.Dictionaries
                     foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.MFOCode))
                     {
                         qry = qry.Where(x => x.MFOCode.Contains(temp));
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(filter.MFOCodeExact))
+                {
+                    
+                    qry = qry.Where(x => x.MFOCode==filter.MFOCodeExact);
+                    
+                }
+
+                if (!string.IsNullOrEmpty(filter.NameExact))
+                {
+
+                    qry = qry.Where(x => x.Agent.Name == filter.NameExact);
+
+                }
+                qry = qry.OrderBy(x => x.Agent.Name);
+                if (paging != null)
+                {
+                    paging.TotalItemsCount = qry.Count();
+
+                    if (!paging.IsAll)
+                    {
+                        var skip = paging.PageSize * (paging.CurrentPage - 1);
+                        var take = paging.PageSize;
+
+                        qry = qry.Skip(() => skip).Take(() => take);
                     }
                 }
 
@@ -2941,6 +2989,12 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(x => x.Name.Contains(temp));
                 }
             }
+
+            if (!string.IsNullOrEmpty(filter.NameExact))
+            {
+                qry = qry.Where(x => x.Name == filter.NameExact);
+            }
+
             return qry;
         }
         #endregion DictionaryDocumentTypes

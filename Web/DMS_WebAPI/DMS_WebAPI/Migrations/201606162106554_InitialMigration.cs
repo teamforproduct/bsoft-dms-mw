@@ -79,18 +79,31 @@ namespace DMS_WebAPI.Migrations
                     {
                         Id = c.Int(nullable: false, identity: true),
                         ClientId = c.Int(nullable: false),
+                        LicenceId = c.Int(nullable: false),
                         FirstStart = c.DateTime(nullable: false),
                         IsActive = c.Boolean(nullable: false),
-                        IsTrial = c.Boolean(nullable: false),
+                        LicenceKey = c.String(),
+                    })
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.AspNetClients", t => t.ClientId, cascadeDelete: true)
+                .ForeignKey("dbo.AspNetLicences", t => t.LicenceId, cascadeDelete: true)
+                .Index(t => t.ClientId)
+                .Index(t => t.LicenceId);
+            
+            CreateTable(
+                "dbo.AspNetLicences",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        Name = c.String(maxLength: 2000),
+                        Description = c.String(maxLength: 2000),
                         NamedNumberOfConnections = c.Int(),
                         ConcurenteNumberOfConnections = c.Int(),
                         DurationDay = c.Int(),
                         Functionals = c.String(maxLength: 2000),
-                        LicenceKey = c.String(maxLength: 2000),
+                        IsActive = c.Boolean(nullable: false),
                     })
-                .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.AspNetClients", t => t.ClientId, cascadeDelete: true)
-                .Index(t => t.ClientId);
+                .PrimaryKey(t => t.Id);
             
             CreateTable(
                 "dbo.AspNetUserServers",
@@ -168,20 +181,6 @@ namespace DMS_WebAPI.Migrations
                 .Index(t => t.RoleId);
             
             CreateTable(
-                "dbo.AspNetLicences",
-                c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        Name = c.String(maxLength: 2000),
-                        Description = c.String(maxLength: 2000),
-                        NamedNumberOfConnections = c.Int(),
-                        ConcurenteNumberOfConnections = c.Int(),
-                        DurationDay = c.Int(),
-                        Functionals = c.String(maxLength: 2000),
-                    })
-                .PrimaryKey(t => t.Id);
-            
-            CreateTable(
                 "dbo.AspNetUserClients",
                 c => new
                     {
@@ -219,6 +218,7 @@ namespace DMS_WebAPI.Migrations
             DropForeignKey("dbo.AspNetUserClaims", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserServers", "ServerId", "dbo.AdminServers");
             DropForeignKey("dbo.AspNetUserServers", "ClientId", "dbo.AspNetClients");
+            DropForeignKey("dbo.AspNetClientLicences", "LicenceId", "dbo.AspNetLicences");
             DropForeignKey("dbo.AspNetClientLicences", "ClientId", "dbo.AspNetClients");
             DropForeignKey("dbo.AspNetClientServers", "ClientId", "dbo.AspNetClients");
             DropForeignKey("dbo.AdminLanguageValues", "LanguageId", "dbo.AdminLanguages");
@@ -233,18 +233,19 @@ namespace DMS_WebAPI.Migrations
             DropIndex("dbo.AspNetUserServers", new[] { "ClientId" });
             DropIndex("dbo.AspNetUserServers", new[] { "ServerId" });
             DropIndex("dbo.AspNetUserServers", new[] { "UserId" });
+            DropIndex("dbo.AspNetClientLicences", new[] { "LicenceId" });
             DropIndex("dbo.AspNetClientLicences", new[] { "ClientId" });
             DropIndex("dbo.AspNetClientServers", new[] { "ServerId" });
             DropIndex("dbo.AspNetClientServers", new[] { "ClientId" });
             DropIndex("dbo.AdminLanguageValues", new[] { "LanguageId" });
             DropTable("dbo.AspNetRoles");
             DropTable("dbo.AspNetUserClients");
-            DropTable("dbo.AspNetLicences");
             DropTable("dbo.AspNetUserRoles");
             DropTable("dbo.AspNetUserLogins");
             DropTable("dbo.AspNetUserClaims");
             DropTable("dbo.AspNetUsers");
             DropTable("dbo.AspNetUserServers");
+            DropTable("dbo.AspNetLicences");
             DropTable("dbo.AspNetClientLicences");
             DropTable("dbo.AspNetClients");
             DropTable("dbo.AspNetClientServers");

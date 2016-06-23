@@ -53,7 +53,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override bool CanExecute()
         {
-            if (Model.DocumentId <= 0 || Model.OrderInDocument <= 0)
+            if (Model.DocumentId <= 0 || Model.OrderInDocument <= 0 || Model.Version.HasValue )
             {
                 throw new WrongParameterValueError();
             }
@@ -70,7 +70,14 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
             _file = _document.DocumentFiles.First();
 
-            _context.SetCurrentPosition(_file.ExecutorPositionId);
+            if (!_file.IsAdditional)
+            {
+                _context.SetCurrentPosition(_document.ExecutorPositionId);
+            }
+            else
+            {
+                _context.SetCurrentPosition(_file.ExecutorPositionId);
+            }
             _admin.VerifyAccess(_context, CommandType);
 
             if (!CanBeDisplayed(_context.CurrentPositionId))
@@ -91,7 +98,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
             try
             {
-                _fStore.DeleteFile(_context, docFile);
+                //_fStore.DeleteFile(_context, docFile);
             }
             catch (CannotAccessToFile ex)
             {

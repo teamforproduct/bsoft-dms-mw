@@ -460,6 +460,8 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
+                var maxDateTime = DateTime.Now.AddYears(50);
+
                 var doc = dbContext.DocumentWaitsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
                     .Where(x => x.OnEventId == eventId)
                     .Select(x => new InternalDocument
@@ -474,7 +476,7 @@ namespace BL.Database.Documents
                                             ParentId = x.ParentId,
                                             OnEventId = x.OnEventId,
                                             OffEventId = x.OffEventId,
-                                            DueDate = x.DueDate,
+                                            DueDate = x.DueDate > maxDateTime ? null : x.DueDate,
                                             AttentionDate = x.AttentionDate,
                                             OnEvent = new InternalDocumentEvent
                                             {
@@ -788,7 +790,7 @@ namespace BL.Database.Documents
                     }
                 }
                 #endregion
-
+                qry = qry.OrderByDescending(x => x.LastChangeDate);
                 if (paging != null)
                 {
                     if (paging.IsOnlyCounter ?? true)
@@ -816,10 +818,11 @@ namespace BL.Database.Documents
                         var skip = paging.PageSize * (paging.CurrentPage - 1);
                         var take = paging.PageSize;
 
-                        qry = qry.OrderByDescending(x => x.LastChangeDate)
-                            .Skip(() => skip).Take(() => take);
+                        qry = qry.Skip(() => skip).Take(() => take);
                     }
                 }
+
+                var maxDateTime = DateTime.Now.AddYears(50);
 
                 var qryFE = qry.Select(x => new FrontDocumentEvent
                 {
@@ -842,7 +845,7 @@ namespace BL.Database.Documents
                     RegistrationNumberSuffix = x.Document.LinkId.HasValue ? x.Document.RegistrationNumberSuffix : null,
                     RegistrationFullNumber = x.Document.LinkId.HasValue ? "#" + x.Document.Id : null,
 
-                    DueDate = x.OnWait.FirstOrDefault() != null ? x.OnWait.FirstOrDefault().DueDate : null,
+                    DueDate = x.OnWait.FirstOrDefault() != null ? x.OnWait.FirstOrDefault().DueDate > maxDateTime ? null : x.OnWait.FirstOrDefault().DueDate: null,
                     CloseDate = x.OnWait.FirstOrDefault() != null ? (DateTime?)x.OnWait.FirstOrDefault().OffEvent.Date : null,
                     IsOnEvent = x.OnWait.FirstOrDefault() != null,
 

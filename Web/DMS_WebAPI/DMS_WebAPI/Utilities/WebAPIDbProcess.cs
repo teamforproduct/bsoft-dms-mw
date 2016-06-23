@@ -352,12 +352,29 @@ namespace DMS_WebAPI.Utilities
         }
 
         public FrontAspNetClientLicence GetClientLicence(int id)
-        {
+        { 
             return GetClientLicences(new FilterAspNetClientLicences { ClientLicenceIds = new List<int> { id } }).FirstOrDefault();
         }
         public FrontAspNetClientLicence GetClientLicenceActive(int clientId)
         {
-            return GetClientLicences(new FilterAspNetClientLicences { ClientIds = new List<int> { clientId }, IsNowUsed = true }).FirstOrDefault();
+            var lic = GetClientLicences(new FilterAspNetClientLicences { ClientIds = new List<int> { clientId }, IsNowUsed = true }).FirstOrDefault();
+            if (lic == null)
+            {
+                lic = new FrontAspNetClientLicence
+                {
+                    Id = 0,
+                    ClientId = clientId,
+                    FirstStart = DateTime.MinValue,
+                    IsActive = false,
+                    LicenceId = 0,
+                    IsConcurenteLicence = false,
+                    IsDateLimit = false,
+                    IsFunctionals = false,
+                    IsNamedLicence = false,
+                    LicenceKey = null
+                };
+            }
+            return lic;
         }
 
         public IEnumerable<FrontAspNetClientLicence> GetClientLicences(FilterAspNetClientLicences filter)
@@ -372,22 +389,23 @@ namespace DMS_WebAPI.Utilities
                 {
                     Id = x.Id,
 
+                    LicenceId = x.LicenceId,
                     ClientId = x.ClientId,
                     ClientName = x.Client.Name,
 
                     FirstStart = x.FirstStart,
 
-                    IsDateLimit = x.DurationDay.HasValue,
-                    DateLimit = x.DurationDay,
+                    IsDateLimit = x.Licence.DurationDay.HasValue,
+                    DateLimit = x.Licence.DurationDay,
 
-                    IsConcurenteLicence = x.ConcurenteNumberOfConnections.HasValue,
-                    ConcurenteNumberOfConnections = x.ConcurenteNumberOfConnections,
+                    IsConcurenteLicence = x.Licence.ConcurenteNumberOfConnections.HasValue,
+                    ConcurenteNumberOfConnections = x.Licence.ConcurenteNumberOfConnections,
 
-                    IsNamedLicence = x.NamedNumberOfConnections.HasValue,
-                    NamedNumberOfConnections = x.NamedNumberOfConnections,
+                    IsNamedLicence = x.Licence.NamedNumberOfConnections.HasValue,
+                    NamedNumberOfConnections = x.Licence.NamedNumberOfConnections,
 
-                    IsFunctionals = x.Functionals != null,
-                    Functionals = x.Functionals,
+                    IsFunctionals = x.Licence.Functionals != null,
+                    Functionals = x.Licence.Functionals,
 
                     LicenceKey = x.LicenceKey,
 
@@ -404,18 +422,12 @@ namespace DMS_WebAPI.Utilities
             {
                 using (var dbContext = new ApplicationDbContext())
                 {
-                    var licence = GetLicence(licenceId);
-
                     var item = new AspNetClientLicences
                     {
                         ClientId = ctx.CurrentClientId,
                         FirstStart = DateTime.Now,
                         IsActive = false,
-                        IsTrial = false,
-                        NamedNumberOfConnections = licence.NamedNumberOfConnections,
-                        ConcurenteNumberOfConnections = licence.ConcurenteNumberOfConnections,
-                        DurationDay = licence.DateLimit,
-                        Functionals = licence.Functionals,
+                        LicenceId = licenceId
                     };
                     dbContext.AspNetClientLicencesSet.Add(item);
                     dbContext.SaveChanges();
@@ -468,26 +480,12 @@ namespace DMS_WebAPI.Utilities
                     var item = new AspNetClientLicences
                     {
                         Id = model.Id,
-                        ClientId = model.ClientId,
-                        FirstStart = model.FirstStart,
                         IsActive = model.IsActive,
-                        IsTrial = model.IsTrial,
-                        NamedNumberOfConnections = model.NamedNumberOfConnections,
-                        ConcurenteNumberOfConnections = model.ConcurenteNumberOfConnections,
-                        DurationDay = model.DurationDay,
-                        Functionals = model.Functionals,
                     };
                     dbContext.AspNetClientLicencesSet.Attach(item);
 
                     var entry = dbContext.Entry(item);
-                    entry.Property(p => p.ClientId).IsModified = true;
-                    entry.Property(p => p.FirstStart).IsModified = true;
                     entry.Property(p => p.IsActive).IsModified = true;
-                    entry.Property(p => p.IsTrial).IsModified = true;
-                    entry.Property(p => p.NamedNumberOfConnections).IsModified = true;
-                    entry.Property(p => p.ConcurenteNumberOfConnections).IsModified = true;
-                    entry.Property(p => p.DurationDay).IsModified = true;
-                    entry.Property(p => p.Functionals).IsModified = true;
 
                     dbContext.SaveChanges();
                 }
@@ -666,35 +664,20 @@ namespace DMS_WebAPI.Utilities
                         dbContext.SaveChanges();
 
                         AspNetClientLicences clientLicence;
-                        if (model.Licence != null)
-                        {
-                            clientLicence = new AspNetClientLicences
-                            {
-                                ClientId = client.Id,
-                                FirstStart = model.Licence.FirstStart,
-                                IsActive = model.Licence.IsActive,
-                                IsTrial = model.Licence.IsTrial,
-                                NamedNumberOfConnections = model.Licence.NamedNumberOfConnections,
-                                ConcurenteNumberOfConnections = model.Licence.ConcurenteNumberOfConnections,
-                                DurationDay = model.Licence.DurationDay,
-                                Functionals = model.Licence.Functionals,
-                                LicenceKey = null,
-                            };
-                        }
-                        else
+                        if (model.LicenceId > 0 )
                         {
                             clientLicence = new AspNetClientLicences
                             {
                                 ClientId = client.Id,
                                 FirstStart = DateTime.Now,
-                                IsActive = true,
-                                IsTrial = true,
+                                IsActive = false,
+                                LicenceId = model.LicenceId.GetValueOrDefault(),
                                 LicenceKey = null,
                             };
-                        }
 
-                        dbContext.AspNetClientLicencesSet.Add(clientLicence);
-                        dbContext.SaveChanges();
+                            dbContext.AspNetClientLicencesSet.Add(clientLicence);
+                            dbContext.SaveChanges();
+                        }
 
                         #endregion Create client 1
 
@@ -1320,10 +1303,10 @@ namespace DMS_WebAPI.Utilities
 
                 if (lic.IsNamedLicence)
                 {
-                    lic.ConcurenteNumberOfConnectionsNow++;
+                    lic.NamedNumberOfConnectionsNow++;
                 }
 
-                new Licences().Verify(regCode, lic, null);
+                new Licences().Verify(regCode, lic, null, true);
 
                 using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
                 {

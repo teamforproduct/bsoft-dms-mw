@@ -17,6 +17,22 @@ namespace BL.Model.DocumentCore.InternalModel
         }
 
         /// <summary>
+        /// Признак основная версия файла
+        /// </summary>
+        public bool IsMainVersion { get; set; }
+        /// <summary>
+        /// Признак последняя версия файла
+        /// </summary>
+        public bool IsLastVersion { get; set; }
+        /// <summary>
+        /// Признак удаленый файл или нет
+        /// </summary>
+        public bool IsDeleted { get; set; }
+        /// <summary>
+        /// Признак принята ли версия файла
+        /// </summary>
+        public bool? IsWorkedOut { get; set; }
+        /// <summary>
         /// Версия вложения
         /// </summary>
         public int Version { get; set; }

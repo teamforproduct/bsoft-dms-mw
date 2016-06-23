@@ -57,7 +57,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         public override bool CanExecute()
         {
             //TODO potential two user could add same new version in same time. Probably need to implement CheckOut flag in future
-            //_document = _operationDb.ModifyDocumentFilePrepare(_context, Model.DocumentId, Model.OrderInDocument);
+            _document = _operationDb.ModifyDocumentFilePrepare(_context, Model.DocumentId, Model.OrderInDocument, Model.Version);
             if (_document == null)
             {
                 throw new UserHasNoAccessToDocument();
@@ -68,15 +68,6 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             }
             _file = _document.DocumentFiles.First();
 
-            if (!Model.IsAdditional || !_file.IsAdditional)
-            {
-                _context.SetCurrentPosition(_document.ExecutorPositionId);
-            }
-            else
-            {
-                _context.SetCurrentPosition(_file.ExecutorPositionId);
-            }
-
             _admin.VerifyAccess(_context, CommandType);
 
             if (!CanBeDisplayed(_context.CurrentPositionId))
@@ -84,20 +75,13 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                 throw new CouldNotPerformOperation();
             }
 
-            //_file.FileContent = Convert.FromBase64String(Model.FileData);
-            _file.PostedFileData = Model.PostedFileData;
-            _file.FileType = Model.FileType;
-            _file.Extension = Path.GetExtension(Model.FileName).Replace(".", "");
-            _file.Name = Path.GetFileNameWithoutExtension(Model.FileName);
-            _file.IsAdditional = Model.IsAdditional;
-
             return true;
         }
 
         public override object Execute()
         {
-            //fl.Date = DateTime.Now;
-            _fStore.SaveFile(_context, _file);
+            _file.Description = Model.Description;
+
             CommonDocumentUtilities.SetLastChange(_context, _file);
             _file.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, _file.DocumentId, EnumEventTypes.ModifyDocumentFile, null, _file.Name + "." + _file.Extension);
             _operationDb.UpdateFileOrVersion(_context, _file);

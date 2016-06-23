@@ -28,7 +28,7 @@ namespace BL.Logic.DocumentCore
 
         public FrontDocumentAttachedFile GetUserFile(IContext ctx, FilterDocumentFileIdentity fileIdent)
         {
-            var fl = _dbProcess.GetDocumentFileVersion(ctx, fileIdent.DocumentId, fileIdent.OrderInDocument, 1);
+            var fl = _dbProcess.GetDocumentFileVersion(ctx, fileIdent.DocumentId, fileIdent.OrderInDocument, fileIdent.Version ?? 0);
             if (fl == null)
             {
                 throw new UnknownDocumentFile();

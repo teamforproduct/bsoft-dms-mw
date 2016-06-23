@@ -65,10 +65,11 @@ namespace DMS_WebAPI.Utilities
             {
                 var ctx = (IContext)contextValue.StoreObject;
 
-                if (!(ctx.ClientLicence?.IsActive ?? true))
-                {
-                    throw new LicenceError();
-                }
+                //TODO Licence
+                //if (ctx.ClientLicence?.LicenceError != null)
+                //{
+                //    throw ctx.ClientLicence.LicenceError as DmsExceptions;
+                //}
 
                 //VerifyNumberOfConnections(ctx, ctx.CurrentClientId);
 
@@ -178,7 +179,7 @@ namespace DMS_WebAPI.Utilities
 
             db.ClientId = clientId;
 
-            VerifyNumberOfConnectionsByNew(context, clientId,new List<DatabaseModel> { db });
+            VerifyNumberOfConnectionsByNew(context, clientId, new List<DatabaseModel> { db });
 
             contextValue.LastUsage = DateTime.Now;
 
@@ -258,11 +259,11 @@ namespace DMS_WebAPI.Utilities
 
             if (lic.IsConcurenteLicence)
             {
-                var now = DateTime.Now.AddMinutes(-5);
                 var qry = _casheContexts
-                    .Where(x => x.Value.LastUsage > now)
-                    .Select(x => (IContext)x.Value.StoreObject)
-                    .Where(x => x.CurrentClientId == clientId);
+                   .Select(x => (IContext)x.Value.StoreObject)
+                   .Where(x => x.CurrentClientId == clientId)
+                   .Select(x => x.CurrentEmployee.UserId)
+                   .Distinct();
 
                 lic.ConcurenteNumberOfConnectionsNow = qry.Count();
             }
@@ -271,36 +272,16 @@ namespace DMS_WebAPI.Utilities
 
             try
             {
-                new Licences().Verify(regCode, lic, dbs);
-            }
-            catch (LicenceError ex)
-            {
-                licenceError = ex;
-            }
-            catch (LicenceExpired ex)
-            {
-                licenceError = ex;
-            }
-            catch (LicenceExceededNumberOfRegisteredUsers ex)
-            {
-                licenceError = ex;
-            }
-            catch (LicenceExceededNumberOfConnectedUsers ex)
-            {
-                //TODO
-                licenceError = ex;
+                licenceError = new Licences().Verify(regCode, lic, dbs, false);
             }
             catch (Exception ex)
             {
                 licenceError = ex;
             }
 
-            if (licenceError != null)
+            foreach (var user in clientUsers)
             {
-                foreach (var user in clientUsers)
-                {
-                    user.ClientLicence.LicenceError = licenceError;
-                }
+                user.ClientLicence.LicenceError = licenceError;
             }
         }
 
@@ -332,22 +313,35 @@ namespace DMS_WebAPI.Utilities
 
             if (lic.IsConcurenteLicence)
             {
-                var now = DateTime.Now.AddMinutes(-5);
                 var qry = _casheContexts
-                    .Where(x => x.Value.LastUsage > now)
                     .Select(x => (IContext)x.Value.StoreObject)
-                    .Where(x => x.CurrentClientId == clientId);
-
-                qry = qry.Where(x => x.CurrentEmployee.Token != context.CurrentEmployee.Token);
+                    .Where(x => x.CurrentClientId == clientId)
+                    .Select(x => x.CurrentEmployee.UserId)
+                    .Distinct();
 
                 var count = qry.Count();
 
-                count++;
+                if (!qry.Any(x => x == context.CurrentEmployee.UserId))
+                {
+                    count++;
+                }
 
                 lic.ConcurenteNumberOfConnectionsNow = count;
             }
 
-            new Licences().Verify(regCode, lic, dbs);
+            var licenceError = new Licences().Verify(regCode, lic, dbs, false);
+
+            if (licenceError!=null)
+            {
+                if (licenceError is LicenceExceededNumberOfConnectedUsers)
+                {
+                    throw licenceError as LicenceExceededNumberOfConnectedUsers;
+                }
+                else
+                {
+                    context.ClientLicence.LicenceError = licenceError;
+                }
+            }
 
         }
 

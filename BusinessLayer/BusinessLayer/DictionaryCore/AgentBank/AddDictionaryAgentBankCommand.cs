@@ -36,10 +36,11 @@ namespace BL.Logic.DictionaryCore
             _admin.VerifyAccess(_context, CommandType, false, true);
             var agents = _dictDb.GetAgentBanks(_context, new FilterDictionaryAgentBank
             {
-                MFOCode = Model.MFOCode
+                MFOCodeExact = Model.MFOCode,
+                NameExact =  Model.Name
             },null);
 
-            if (agents.Count() > 0)
+            if (agents.Any())
             {
                 throw new DictionaryRecordNotUnique();
             }

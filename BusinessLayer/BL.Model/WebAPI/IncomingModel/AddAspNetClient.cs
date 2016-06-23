@@ -9,6 +9,6 @@ namespace BL.Model.WebAPI.IncomingModel
         public ModifyAspNetUser Admin { get; set; }
         public ModifyAspNetClient Client { get; set; }
         public ModifyAdminServer Server { get; set; }
-        public ModifyAspNetClientLicence Licence { get; set; }
+        public int? LicenceId { get; set; }
     }
 }

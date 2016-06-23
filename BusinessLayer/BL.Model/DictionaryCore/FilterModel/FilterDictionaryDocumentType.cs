@@ -7,6 +7,6 @@ namespace BL.Model.DictionaryCore.FilterModel
     /// </summary>
     public class FilterDictionaryDocumentType : DictionaryBaseFilterParameters
     {
-   
+        public string NameExact { get; set; }
     }
 }

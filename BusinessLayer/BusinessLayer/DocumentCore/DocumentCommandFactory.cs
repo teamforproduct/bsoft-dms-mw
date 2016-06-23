@@ -16,6 +16,11 @@ namespace BL.Logic.DocumentCore
     {
         public static IDocumentCommand GetDocumentCommand(EnumDocumentActions act, IContext ctx, InternalDocument doc, object param)
         {
+            if (ctx.ClientLicence?.LicenceError != null)
+            {
+                throw ctx.ClientLicence.LicenceError as DmsExceptions;
+            }
+
             IDocumentCommand cmd;
             switch (act)
             {
@@ -120,12 +125,27 @@ namespace BL.Logic.DocumentCore
                 case EnumDocumentActions.DeleteDocumentFile:
                     cmd = DmsResolver.Current.Get<DeleteDocumentFileCommand>();
                     break;
+                case EnumDocumentActions.AddDocumentFileUseMainNameFile:
                 case EnumDocumentActions.AddDocumentFile:
                     cmd = DmsResolver.Current.Get<AddDocumentFileCommand>();
                     break;
                 case EnumDocumentActions.ModifyDocumentFile:
                     cmd = DmsResolver.Current.Get<ModifyDocumentFileCommand>();
                     break;
+
+                case EnumDocumentActions.AcceptDocumentFile:
+                    cmd = DmsResolver.Current.Get<AcceptDocumentFileCommand>();
+                    break;
+                case EnumDocumentActions.RejectDocumentFile:
+                    cmd = DmsResolver.Current.Get<RejectDocumentFileCommand>();
+                    break;
+                case EnumDocumentActions.RenameDocumentFile:
+                    cmd = DmsResolver.Current.Get<RenameDocumentFileCommand>();
+                    break;
+                case EnumDocumentActions.DeleteDocumentFileVersion:
+                    cmd = DmsResolver.Current.Get<DeleteDocumentFileVersionCommand>();
+                    break;
+
                 case EnumDocumentActions.SendForInformationExternal:
                     cmd = DmsResolver.Current.Get<SendForInformationDocumentCommand>();
                     break;

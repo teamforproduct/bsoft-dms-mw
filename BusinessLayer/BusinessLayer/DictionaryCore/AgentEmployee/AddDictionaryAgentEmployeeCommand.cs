@@ -36,10 +36,14 @@ namespace BL.Logic.DictionaryCore
             var agents = _dictDb.GetAgentEmployees(_context, new FilterDictionaryAgentEmployee
             {
                 PersonnelNumber = Model.PersonnelNumber,
-                TaxCode=Model.TaxCode
+                TaxCode = Model.TaxCode,
+                FirstNameExact = Model.FirstName,
+                LastNameExact = Model.LastName,
+                PassportSerial = Model.PassportSerial,
+                PassportNumber = Model.PassportNumber
             },null);
 
-            if (agents.Count() > 0)
+            if (agents.Any())
             {
                 throw new DictionaryRecordNotUnique();
             }

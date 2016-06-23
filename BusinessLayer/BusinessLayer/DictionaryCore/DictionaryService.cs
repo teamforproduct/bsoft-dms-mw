@@ -271,8 +271,71 @@ namespace BL.Logic.DictionaryCore
         public IEnumerable<FrontDictionaryAgentCompany> GetDictionaryAgentCompanies(IContext context, FilterDictionaryAgentCompany filter, UIPaging paging)
         {
 
-            return _dictDb.GetAgentCompanies(context, filter,paging);
+            var newFilter = new FilterDictionaryAgentCompany();
+            if (!String.IsNullOrEmpty(filter.FullTextSearchString))
+            {
+
+                var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
+                var ftRes = ftService.SearchDictionary(context, filter.FullTextSearchString);
+                var ftClear = ResolveSearchResultAgentCompanies(context, ftRes);
+
+
+                var resWithRanges =
+                    ftClear.GroupBy(x => x.ObjectId)
+                        .Select(x => new { DocId = x.Key, Rate = x.Count() })
+                        .OrderByDescending(x => x.Rate);
+
+                newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId).Take(paging.PageSize * paging.CurrentPage));
+            }
+            else
+            {
+                newFilter = filter;
+            }
+
+            return _dictDb.GetAgentCompanies(context, newFilter, paging);
+
         }
+
+
+        private IEnumerable<FullTextSearchResult> ResolveSearchResultAgentCompanies(IContext ctx, IEnumerable<FullTextSearchResult> ftRes)
+        {
+
+            var agentTypes = new List<EnumObjects>
+            {
+                
+                EnumObjects.DictionaryAgentCompanies,
+                
+            };
+
+            var res = new List<FullTextSearchResult>();
+            res.AddRange(ftRes
+                .Where(x => agentTypes.Contains(x.ObjectType)));
+
+            var tmp = _dictDb.GetAgentsIDByAddress(ctx,
+                ftRes.Where(x => x.ObjectType == EnumObjects.DictionaryAgentAddresses).Select(y => y.ObjectId).ToList());
+
+            res.AddRange(tmp.Select(x => new FullTextSearchResult
+            {
+                DocumentId = 0,
+                ObjectId = x,
+                ObjectType = EnumObjects.DictionaryAgents,
+                Score = 0
+            }));
+
+            tmp = _dictDb.GetAgentsIDByContacts(ctx,
+                ftRes.Where(x => x.ObjectType == EnumObjects.DictionaryContacts).Select(y => y.ObjectId).ToList());
+
+            res.AddRange(tmp.Select(x => new FullTextSearchResult
+            {
+                DocumentId = 0,
+                ObjectId = x,
+                ObjectType = EnumObjects.DictionaryAgents,
+                Score = 0
+            }));
+
+            return res;
+        }
+
         #endregion DictionaryAgentCompanies
 
         #region DictionaryAgentBanks
@@ -284,9 +347,70 @@ namespace BL.Logic.DictionaryCore
 
         public IEnumerable<FrontDictionaryAgentBank> GetDictionaryAgentBanks(IContext context, FilterDictionaryAgentBank filter, UIPaging paging)
         {
+            var newFilter = new FilterDictionaryAgentBank();
+            if (!String.IsNullOrEmpty(filter.FullTextSearchString))
+            {
 
-            return _dictDb.GetAgentBanks(context, filter,paging);
+                var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
+                var ftRes = ftService.SearchDictionary(context, filter.FullTextSearchString);
+                var ftClear = ResolveSearchResultAgentBanks(context, ftRes);
+
+
+                var resWithRanges =
+                    ftClear.GroupBy(x => x.ObjectId)
+                        .Select(x => new { DocId = x.Key, Rate = x.Count() })
+                        .OrderByDescending(x => x.Rate);
+
+                newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId).Take(paging.PageSize * paging.CurrentPage));
+            }
+            else
+            {
+                newFilter = filter;
+            }
+
+            return _dictDb.GetAgentBanks(context, newFilter, paging);
+            
         }
+
+        private IEnumerable<FullTextSearchResult> ResolveSearchResultAgentBanks(IContext ctx, IEnumerable<FullTextSearchResult> ftRes)
+        {
+
+            var agentTypes = new List<EnumObjects>
+            {
+
+                EnumObjects.DictionaryAgentBanks,
+
+            };
+
+            var res = new List<FullTextSearchResult>();
+            res.AddRange(ftRes
+                .Where(x => agentTypes.Contains(x.ObjectType)));
+
+            var tmp = _dictDb.GetAgentsIDByAddress(ctx,
+                ftRes.Where(x => x.ObjectType == EnumObjects.DictionaryAgentAddresses).Select(y => y.ObjectId).ToList());
+
+            res.AddRange(tmp.Select(x => new FullTextSearchResult
+            {
+                DocumentId = 0,
+                ObjectId = x,
+                ObjectType = EnumObjects.DictionaryAgents,
+                Score = 0
+            }));
+
+            tmp = _dictDb.GetAgentsIDByContacts(ctx,
+                ftRes.Where(x => x.ObjectType == EnumObjects.DictionaryContacts).Select(y => y.ObjectId).ToList());
+
+            res.AddRange(tmp.Select(x => new FullTextSearchResult
+            {
+                DocumentId = 0,
+                ObjectId = x,
+                ObjectType = EnumObjects.DictionaryAgents,
+                Score = 0
+            }));
+
+            return res;
+        }
+
         #endregion DictionaryAgentCompanies
 
         #region DictionaryContacts
@@ -386,7 +510,31 @@ namespace BL.Logic.DictionaryCore
 
         public IEnumerable<FrontDictionaryDocumentType> GetDictionaryDocumentTypes(IContext context, FilterDictionaryDocumentType filter)
         {
-            return _dictDb.GetDocumentTypes(context, filter);
+
+            var newFilter = new FilterDictionaryDocumentType();
+
+            if (!String.IsNullOrEmpty(filter.FullTextSearchString))
+            {
+
+                var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
+                var ftRes = ftService.SearchDictionary(context, filter.FullTextSearchString)
+                    .Where(x => x.ObjectType == EnumObjects.DictionaryAddressType);
+
+                var resWithRanges =
+                    ftRes.GroupBy(x => x.ObjectId)
+                        .Select(x => new { DocId = x.Key, Rate = x.Count() })
+                        .OrderByDescending(x => x.Rate);
+
+                newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId));
+            }
+            else
+            {
+                newFilter = filter;
+            }
+
+
+            return _dictDb.GetDocumentTypes(context, newFilter);
+            
         }
 
         #endregion DictionaryDocumentTypes

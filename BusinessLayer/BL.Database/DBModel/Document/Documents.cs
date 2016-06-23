@@ -25,13 +25,19 @@ namespace BL.Database.DBModel.Document
             this.Links = new HashSet<Documents>();
         }
 
+        [Index("IX_IsRegistered", 2)]
         public int Id { get; set; }
+        [Index("IX_IsRegistered", 3)]
         public int TemplateDocumentId { get; set; }
+
+        [Index("IX_CreateDate")]
         public DateTime CreateDate { get; set; }
         public Nullable<int> DocumentSubjectId { get; set; }
         [MaxLength(2000)]
         public string Description { get; set; }
         public string AddDescription { get; set; }
+
+        [Index("IX_IsRegistered")]
         public bool? IsRegistered { get; set; }
         public Nullable<int> RegistrationJournalId { get; set; }
         [MaxLength(2000)]

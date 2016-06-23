@@ -17,7 +17,8 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// МФО
         /// </summary>
         public string MFOCode { get; set; }
-      
+        public string MFOCodeExact { get; set; }
+        public string NameExact { get; set; }
         /// <summary>
         /// Первая буква наименования
         /// </summary>
