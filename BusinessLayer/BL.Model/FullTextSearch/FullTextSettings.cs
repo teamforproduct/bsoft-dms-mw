@@ -18,5 +18,10 @@
         /// Key for searching DB
         /// </summary>
         public string DatabaseKey { get; set; }
+
+        /// <summary>
+        /// Indixate when full text database was initialized for current server and client
+        /// </summary>
+        public bool IsFullTextInitialized { get; set; }
     }
 }

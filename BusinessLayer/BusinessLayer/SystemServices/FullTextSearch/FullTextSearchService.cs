@@ -15,6 +15,8 @@ namespace BL.Logic.SystemServices.FullTextSearch
     public class FullTextSearchService : BaseSystemWorkerService, IFullTextSearchService
     {
         private const int MAX_ROW_PROCESS = 10000;
+        private const int MAX_ENTITY_FOR_THREAD = 1000000;
+
         private readonly Dictionary<FullTextSettings, Timer> _timers;
         private List<Timer> _stopTimersList = new List<Timer>();
         List<IFullTextIndexWorker> _workers;
@@ -32,8 +34,8 @@ namespace BL.Logic.SystemServices.FullTextSearch
             var offset = fromNumber;
             do
             {
-
-                var data = _systemDb.FullTextIndexDocumentsReindexDbPrepare(ctx, dataType, MAX_ROW_PROCESS, offset);
+                var selectCount = (offset + MAX_ROW_PROCESS < toNumber) ? MAX_ROW_PROCESS : toNumber - offset;
+                var data = _systemDb.FullTextIndexDocumentsReindexDbPrepare(ctx, dataType, selectCount, offset);
                 foreach (var itm in data)
                 {
                     worker.AddNewItem(itm);
@@ -72,7 +74,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 var currCashId = _systemDb.GetCurrentMaxCasheId(ctx);
                 var objToProcess = new EnumObjects[]
                 {
-                    /*EnumObjects.Documents, EnumObjects.DocumentEvents,*/ EnumObjects.DocumentSendLists,
+                    EnumObjects.Documents, /*EnumObjects.DocumentEvents, EnumObjects.DocumentSendLists,*/
                     EnumObjects.DocumentSubscriptions, EnumObjects.DocumentFiles
                 };
                 //delete all current document before reindexing
@@ -116,14 +118,14 @@ namespace BL.Logic.SystemServices.FullTextSearch
                     }
                 }));
 
-                int MAX_ENTITY_FOR_THREAD = 1000000;
-                var docCount = _systemDb.GetEntityNumbers(ctx, EnumObjects.Documents);
+                
+                var docSLCount = _systemDb.GetEntityNumbers(ctx, EnumObjects.DocumentSendLists);
                 int startFrom = 0;
-                while (startFrom< docCount)
+                while (startFrom< docSLCount)
                 {
                     tskList.Add(Task.Factory.StartNew(() =>
                     {
-                        ReindexPart(ctx, worker, EnumObjects.Documents, startFrom, startFrom + MAX_ENTITY_FOR_THREAD - 1);
+                        ReindexPart(ctx, worker, EnumObjects.DocumentSendLists, startFrom, startFrom + MAX_ENTITY_FOR_THREAD - 1);
                     }));
                     startFrom += MAX_ENTITY_FOR_THREAD;
                 }
@@ -143,6 +145,10 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
                 //delete cash in case we just processed all that documents
                 _systemDb.FullTextIndexDeleteCash(ctx, currCashId);
+
+                //set indicator that full text for the client available
+                _settings.SaveSetting(ctx, SettingConstants.FULLTEXT_WAS_INITIALIZED, true);
+                md.IsFullTextInitialized = true;
             }
             catch (Exception ex)
             {
@@ -196,6 +202,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                         TimeToUpdate = _settings.GetSetting<int>(keyValuePair.Value, SettingConstants.FULLTEXT_TIMEOUT_MIN),
                         DatabaseKey = keyValuePair.Key,
                         StorePath = _settings.GetSetting<string>(keyValuePair.Value, SettingConstants.FULLTEXT_INDEX_PATH),
+                        IsFullTextInitialized = _settings.GetSetting<bool>(keyValuePair.Value, SettingConstants.FULLTEXT_WAS_INITIALIZED, false)
                     };
                     var worker = new FullTextIndexWorker(ftsSetting.DatabaseKey, ftsSetting.StorePath);
                     _workers.Add(worker);
@@ -205,7 +212,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error(keyValuePair.Value, "Could not start MeilSender for server", ex);
+                    _logger.Error(keyValuePair.Value, "Could not initialize Full text service for server", ex);
                 }
             }
         }
@@ -330,8 +337,10 @@ namespace BL.Logic.SystemServices.FullTextSearch
         private void OnSinchronize(object state)
         {
             var md = state as FullTextSettings;
-
+           
             if (md == null) return;
+
+            if (!md.IsFullTextInitialized) return; //Full text was not initialized for that client and that server
 
             var tmr = GetTimer(md);
 
