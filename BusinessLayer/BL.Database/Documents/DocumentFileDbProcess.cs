@@ -62,6 +62,32 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
+                //TODO test insert
+                var time = new System.Diagnostics.Stopwatch();
+
+                time.Start();
+                var docIds = dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == ctx.CurrentClientId)
+                                    .OrderByDescending(x => x.CreateDate)
+                                    .Select(x => x.Id)
+                                    .ToList();
+                time.Stop();
+                BL.CrossCutting.Helpers.Logger.SaveToFile("DB: GetDocIds", time.Elapsed);
+                time.Reset();
+
+                time.Start();
+                var langs = docIds.Select(x => new DBModel.Admin.AdminLanguages { Code = x.ToString(), Name = x.ToString() }).ToList();
+                time.Stop();
+                BL.CrossCutting.Helpers.Logger.SaveToFile("DB: ConvertDocIds", time.Elapsed);
+                time.Reset();
+
+                time.Start();
+                dbContext.AdminLanguagesSet.AddRange(langs);
+                dbContext.SaveChanges();
+                time.Stop();
+                BL.CrossCutting.Helpers.Logger.SaveToFile("DB: SaveDocIds", time.Elapsed);
+                time.Reset();
+
+
                 return
                     dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
                         .Where(
