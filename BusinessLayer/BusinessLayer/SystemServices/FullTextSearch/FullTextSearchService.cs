@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using BL.CrossCutting.Interfaces;
 using BL.Database.SystemDb;
 using BL.Logic.Common;
@@ -26,6 +27,30 @@ namespace BL.Logic.SystemServices.FullTextSearch
             _systemDb = systemDb;
         }
 
+        private void ReindexPart(IContext ctx, IFullTextIndexWorker worker, EnumObjects dataType, int fromNumber,int toNumber)
+        {
+            var offset = fromNumber;
+            do
+            {
+
+                var data = _systemDb.FullTextIndexDocumentsReindexDbPrepare(ctx, dataType, MAX_ROW_PROCESS, offset);
+                foreach (var itm in data)
+                {
+                    worker.AddNewItem(itm);
+                }
+
+                if (data.Count() == MAX_ROW_PROCESS)
+                {
+                    offset += MAX_ROW_PROCESS;
+                }
+                else
+                {
+                    offset = 0;
+                }
+
+            } while (offset != 0 && offset< toNumber);
+        }
+
         public void ReindexDatabase(IContext ctx)
         {
             var dbKey = CommonSystemUtilities.GetServerKey(ctx);
@@ -43,46 +68,78 @@ namespace BL.Logic.SystemServices.FullTextSearch
             worker.StartUpdate();
             try
             {
-                int offset =0;
+                
                 var currCashId = _systemDb.GetCurrentMaxCasheId(ctx);
                 var objToProcess = new EnumObjects[]
                 {
-                    EnumObjects.Documents, EnumObjects.DocumentEvents, EnumObjects.DocumentSendLists,
+                    /*EnumObjects.Documents, EnumObjects.DocumentEvents,*/ EnumObjects.DocumentSendLists,
                     EnumObjects.DocumentSubscriptions, EnumObjects.DocumentFiles
                 };
                 //delete all current document before reindexing
                 worker.DeleteAllDocuments();
-
+                var tskList = new List<Task>();
                 //going through the documents objects and add it. Select max 1000 row for one processing
                 foreach (var dataType in objToProcess)
                 {
-                    do
+                    tskList.Add(Task.Factory.StartNew(() =>
                     {
-                        var data = _systemDb.FullTextIndexDocumentsReindexDbPrepare(ctx, dataType, MAX_ROW_PROCESS,offset);
-                        foreach (var itm in data)
+                        int offset = 0;
+                        do
                         {
-                            worker.AddNewItem(itm);
-                        }
 
-                        if (data.Count() == MAX_ROW_PROCESS)
-                        {
-                            offset += MAX_ROW_PROCESS;
-                        }
-                        else
-                        {
-                            offset = 0;
-                        }
+                            var data = _systemDb.FullTextIndexDocumentsReindexDbPrepare(ctx, dataType, MAX_ROW_PROCESS,offset);
+                            foreach (var itm in data)
+                            {
+                                worker.AddNewItem(itm);
+                            }
 
-                    } while (offset != 0);
+                            if (data.Count() == MAX_ROW_PROCESS)
+                            {
+                                offset += MAX_ROW_PROCESS;
+                            }
+                            else
+                            {
+                                offset = 0;
+                            }
 
+                        } while (offset != 0);
+                    }));
                 }
 
-                // add to index dictionaries and templates 
-                var additionaData = _systemDb.FullTextIndexNonDocumentsReindexDbPrepare(ctx);
-                foreach (var itm in additionaData)
+                tskList.Add(Task.Factory.StartNew(() =>
                 {
-                    worker.AddNewItem(itm);
+                    // add to index dictionaries and templates 
+                    var additionaData = _systemDb.FullTextIndexNonDocumentsReindexDbPrepare(ctx);
+                    foreach (var itm in additionaData)
+                    {
+                        worker.AddNewItem(itm);
+                    }
+                }));
+
+                int MAX_ENTITY_FOR_THREAD = 1000000;
+                var docCount = _systemDb.GetEntityNumbers(ctx, EnumObjects.Documents);
+                int startFrom = 0;
+                while (startFrom< docCount)
+                {
+                    tskList.Add(Task.Factory.StartNew(() =>
+                    {
+                        ReindexPart(ctx, worker, EnumObjects.Documents, startFrom, startFrom + MAX_ENTITY_FOR_THREAD - 1);
+                    }));
+                    startFrom += MAX_ENTITY_FOR_THREAD;
                 }
+
+                var eventCount = _systemDb.GetEntityNumbers(ctx, EnumObjects.DocumentEvents);
+                startFrom = 0;
+                while (startFrom < eventCount)
+                {
+                    tskList.Add(Task.Factory.StartNew(() =>
+                    {
+                        ReindexPart(ctx, worker, EnumObjects.DocumentEvents, startFrom, startFrom + MAX_ENTITY_FOR_THREAD - 1);
+                    }));
+                    startFrom += MAX_ENTITY_FOR_THREAD;
+                }
+
+                Task.WaitAll(tskList.ToArray());
 
                 //delete cash in case we just processed all that documents
                 _systemDb.FullTextIndexDeleteCash(ctx, currCashId);
