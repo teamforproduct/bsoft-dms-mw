@@ -35,7 +35,10 @@ namespace BL.Logic.DictionaryCore
         {
             _admin.VerifyAccess(_context, CommandType, false);
             // Находим запись с таким-же именем и индексом журнала в этом-же подразделении
-            if (_dictDb.ExistsDictionaryRegistrationJournal(_context, new FilterDictionaryRegistrationJournal { Name = Model.Name, Index = Model.Index, DepartmentIDs = new List<int> { Model.DepartmentId } }))
+            if (_dictDb.ExistsDictionaryRegistrationJournal(_context, new FilterDictionaryRegistrationJournal
+            {
+                NameExact = Model.Name, IndexExact = Model.Index, DepartmentIDs = new List<int> { Model.DepartmentId }
+            }))
             {
                 throw new DictionaryRecordNotUnique();
             }

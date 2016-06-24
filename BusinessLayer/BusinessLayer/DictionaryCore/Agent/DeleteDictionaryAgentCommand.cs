@@ -32,16 +32,16 @@ using BL.Model.SystemCore;
             {
                 _admin.VerifyAccess(_context, CommandType,false,true);
 
-                FrontDictionaryAgent tmp = _dictDb.GetAgent(_context, Model);
+//                FrontDictionaryAgent tmp = _dictDb.GetAgent(_context, Model);
 
             // Удалить можно только контрагента без роли. 
-            if (tmp != null)
-            {
-                if (tmp.IsBank || tmp.IsCompany || tmp.IsEmployee || tmp.IsIndividual)
-                {
-                    throw new DictionaryRecordCouldNotBeDeleted();
-                }
-            }   
+//            if (tmp != null)
+//            {
+//                if (tmp.IsBank || tmp.IsCompany || tmp.IsEmployee || tmp.IsIndividual)
+//                {
+//                    throw new DictionaryRecordCouldNotBeDeleted();
+//                }
+//            }   
                 return true;
             }
 

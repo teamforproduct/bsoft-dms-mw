@@ -53,6 +53,7 @@ namespace BL.Database.Dictionaries
                 var ddt = new DictionaryAgents
                 {
                     ClientId = context.CurrentClientId,
+                    Id=id,
                     Name = agent.Name,
                     ResidentTypeId = agent.ResidentTypeId,
                     IsBank = (role == EnumDictionaryAgentTypes.isBank ? !agent.IsBank : agent.IsBank),
@@ -530,6 +531,7 @@ namespace BL.Database.Dictionaries
                         {
                             Id = y.ContactType.Id,
                             Name = y.ContactType.Name,
+                            Code = y.ContactType.Code,
                             InputMask = y.ContactType.InputMask,
                             IsActive = y.ContactType.IsActive
                         },
@@ -563,6 +565,7 @@ namespace BL.Database.Dictionaries
                 var ddt = DictionaryModelConverter.GetDbAgentPerson(person);
 
                 dbContext.DictionaryAgentPersonsSet.Attach(ddt);
+                dbContext.SaveChanges();
                 var entity = dbContext.Entry(ddt);
                 CommonQueries.AddFullTextCashInfo(dbContext, ddt.Id, EnumObjects.DictionaryAgentPersons, EnumOperationType.Update);
 
@@ -689,6 +692,7 @@ namespace BL.Database.Dictionaries
                         {
                             Id = y.ContactType.Id,
                             Name = y.ContactType.Name,
+                            Code = y.ContactType.Code,
                             InputMask = y.ContactType.InputMask,
                             IsActive = y.ContactType.IsActive
                         },
@@ -821,7 +825,7 @@ namespace BL.Database.Dictionaries
                         IsCompany = agent.IsCompany,
                         IsEmployee = true,
                         IsIndividual = agent.IsIndividual,
-                        ResidentTypeId = agent.ResidentTypeId ?? 0,
+                        ResidentTypeId = agent.ResidentTypeId,
                         LastChangeDate = employee.LastChangeDate,
                         LastChangeUserId = employee.LastChangeUserId
                     });
@@ -838,6 +842,7 @@ namespace BL.Database.Dictionaries
                     IsActive = employee.IsActive
                 };
                 dbContext.DictionaryAgentEmployeesSet.Add(ddt);
+                UpdateAgentRole(context,ddt.Id,EnumDictionaryAgentTypes.isEmployee);
 
                 CommonQueries.AddFullTextCashInfo(dbContext, ddt.Id, EnumObjects.DictionaryAgentEmployees, EnumOperationType.AddNew);
                 dbContext.SaveChanges();
@@ -993,6 +998,7 @@ namespace BL.Database.Dictionaries
                         {
                             Id = y.ContactType.Id,
                             Name = y.ContactType.Name,
+                            Code = y.ContactType.Code,
                             InputMask = y.ContactType.InputMask,
                             IsActive = y.ContactType.IsActive
                         },
@@ -1353,6 +1359,7 @@ namespace BL.Database.Dictionaries
                             {
                                 Id = y.ContactType.Id,
                                 Name = y.ContactType.Name,
+                                Code = y.ContactType.Code,
                                 InputMask = y.ContactType.InputMask,
                                 IsActive = y.ContactType.IsActive
                             },
@@ -1516,6 +1523,7 @@ namespace BL.Database.Dictionaries
                         {
                             Id = y.ContactType.Id,
                             Name = y.ContactType.Name,
+                            Code = y.ContactType.Code,
                             InputMask = y.ContactType.InputMask,
                             IsActive = y.ContactType.IsActive
                         },
@@ -1679,6 +1687,7 @@ namespace BL.Database.Dictionaries
                             {
                                 Id = y.ContactType.Id,
                                 Name = y.ContactType.Name,
+                                Code = y.ContactType.Code,
                                 InputMask = y.ContactType.InputMask,
                                 IsActive = y.ContactType.IsActive
                             },
@@ -1911,6 +1920,7 @@ namespace BL.Database.Dictionaries
                         {
                             Id = y.ContactType.Id,
                             Name = y.ContactType.Name,
+                            Code = y.ContactType.Code,
                             InputMask = y.ContactType.InputMask,
                             IsActive = y.ContactType.IsActive
                         },
@@ -3906,6 +3916,18 @@ namespace BL.Database.Dictionaries
 
                 qry = RegistrationJournalGetWhere(ref qry, filter);
 
+                if (!string.IsNullOrEmpty(filter.NameExact))
+                {
+                    qry = qry.Where(x => x.Name == filter.NameExact);
+                }
+
+                if (!string.IsNullOrEmpty(filter.IndexExact))
+                {
+                    qry = qry.Where(x => x.Index == filter.IndexExact);
+                }
+
+
+
                 return qry.Select(x => new InternalDictionaryRegistrationJournal
                 {
                     // pss Перегонка значений DictionaryRegistrationJournals
@@ -3962,6 +3984,16 @@ namespace BL.Database.Dictionaries
                 var qry = dbContext.DictionaryRegistrationJournalsSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
 
                 qry = RegistrationJournalGetWhere(ref qry, filter);
+
+                if (!string.IsNullOrEmpty(filter.NameExact))
+                {
+                    qry = qry.Where(x => x.Name == filter.NameExact);
+                }
+
+                if (!string.IsNullOrEmpty(filter.IndexExact))
+                {
+                    qry = qry.Where(x => x.Index == filter.IndexExact);
+                }
 
                 var res = qry.Select(x => new FrontDictionaryRegistrationJournal
                 {
