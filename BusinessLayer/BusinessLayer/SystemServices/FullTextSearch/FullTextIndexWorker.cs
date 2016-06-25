@@ -29,7 +29,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
         private const string FIELD_OBJECT_ID = "ObjectId";
         private const string FIELD_BODY = "postBody";
         private const string FIELD_CLIENT_ID = "ClientId";
-        private const int MAX_DOCUMENT_COUNT_RETURN = 1000;
+        private const int MAX_DOCUMENT_COUNT_RETURN = 100000;
         IndexWriter _writer;
         object _lockObject;
 
@@ -133,10 +133,10 @@ namespace BL.Logic.SystemServices.FullTextSearch
             var idQry = NumericRangeQuery.NewIntRange(FIELD_DOC_ID, 1, null, true, true);
             var clientQry = new TermQuery(new Term(FIELD_CLIENT_ID, clientId.ToString()));
             var query = conditionQry.Combine(new [] {conditionQry, idQry, clientQry });
-            var qryRes = _searcher.Search(query, 100);
+            var qryRes = _searcher.Search(query, MAX_DOCUMENT_COUNT_RETURN);
             var searchResult = new List<FullTextSearchResult>();
 
-            foreach (var doc in qryRes.ScoreDocs.OrderByDescending(x=>x.Score))
+            foreach (var doc in qryRes.ScoreDocs.Where(x=>x.Score>0.1).OrderByDescending(x=>x.Score)) //x.Score>0.1 filtrate different "noise" from search.
             {
                 try
                 {
@@ -166,7 +166,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
             var idQry = new TermQuery(new Term(FIELD_DOC_ID, "0"));
             var clientQry = new TermQuery(new Term(FIELD_CLIENT_ID, clientId.ToString()));
             var query = conditionQry.Combine(new Query[] { conditionQry, idQry, clientQry });
-            var qryRes = _searcher.Search(query, 100);
+            var qryRes = _searcher.Search(query, MAX_DOCUMENT_COUNT_RETURN);
             var searchResult = new List<FullTextSearchResult>();
 
             foreach (var doc in qryRes.ScoreDocs.OrderByDescending(x => x.Score))
