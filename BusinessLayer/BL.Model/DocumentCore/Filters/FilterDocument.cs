@@ -24,6 +24,7 @@ namespace BL.Model.DocumentCore.Filters
         /// Массив ИД документов
         /// </summary>
         public List<int> DocumentId { get; set; }
+
         /// <summary>
         /// Массив ИД документов полученного из полнотекстового поиска
         /// </summary>
@@ -270,6 +271,11 @@ namespace BL.Model.DocumentCore.Filters
         /// В Моем управлении. true - выполнять поиск иначе ничего не делаеться
         /// </summary>
         public bool? IsInMyControl { get; set; }
+
+        /// <summary>
+        /// В избраном
+        /// </summary>
+        public bool? IsFavourite { get; set; }
 
         /// <summary>
         /// Массив ИД организаций
