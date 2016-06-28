@@ -167,7 +167,7 @@
     <Compile Include="DictionaryCore\DocumentSubject\DeleteDictionaryDocumentSubjectCommand.cs" />
     <Compile Include="DictionaryCore\DocumentSubject\ModifyDictionaryDocumentSubjectCommand.cs" />
     <Compile Include="DictionaryCore\DocumentType\DeleteDictionaryDocumentTypeCommand.cs" />
-    <Compile Include="DictionaryCore\StandartSendList\AddDictionaryStandartSendListtCommand.cs" />
+    <Compile Include="DictionaryCore\StandartSendList\AddDictionaryStandartSendListCommand.cs" />
     <Compile Include="DictionaryCore\StandartSendList\AddDictionaryStandartSendListContentCommand.cs" />
     <Compile Include="DictionaryCore\StandartSendList\DeleteDictionaryStandartSendListCommand.cs" />
     <Compile Include="DictionaryCore\StandartSendList\DeleteDictionaryStandartSendListContentCommand.cs" />

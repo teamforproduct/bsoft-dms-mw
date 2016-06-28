@@ -2135,6 +2135,15 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(filterContains);
                 }
 
+                if (filter.NotContainsIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<DictionaryContactTypes>();
+                    filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id != value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
                     foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))

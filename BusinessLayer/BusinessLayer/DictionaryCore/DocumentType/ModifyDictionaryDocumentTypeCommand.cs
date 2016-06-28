@@ -36,7 +36,7 @@ namespace BL.Logic.DictionaryCore
             {
                 NameExact = Model.Name,
                 IsActive =Model.IsActive,
-                NotContainsIDs = new List<int>(Model.Id)
+                NotContainsIDs = new List<int> { Model.Id}
             });
             if (spr != null)
             {

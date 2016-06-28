@@ -30,7 +30,7 @@ namespace BL.Logic.DictionaryCore
         public override bool CanExecute()
         {
             var spr = _dictDb.GetInternalDictionaryContactType(_context, new FilterDictionaryContactType
-                { NameExact = Model.Name, Code=Model.Code,IsActive=Model.IsActive});
+                { NameExact = Model.Name, Code=Model.Code,IsActive=Model.IsActive,NotContainsIDs = new List<int> {Model.Id} });
             if (spr != null)
             {
                 throw new DictionaryRecordNotUnique();
