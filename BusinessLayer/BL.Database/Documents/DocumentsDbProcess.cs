@@ -67,6 +67,12 @@ namespace BL.Database.Documents
                 {
                     acc = acc.Where(x => x.IsInWork == filters.IsInWork);
                 }
+
+                if (filters.IsFavourite.HasValue)
+                {
+                    acc = acc.Where(x => x.IsFavourite == filters.IsFavourite);
+                }
+
                 if (filters.AccessLevelId?.Count() > 0)
                 {
                     var filterContains = PredicateBuilder.False<FrontDocumentAccess>();
@@ -810,7 +816,38 @@ namespace BL.Database.Documents
                 #endregion Property
 
                 #endregion DocumentsSetFilter
-                qry = qry.OrderByDescending(x => x.CreateDate);
+
+                //TODO Sort
+                //TODO After ToList
+                if (paging != null && paging.Sort == EnumSort.IncomingIds && filters.DocumentId?.Count() > 0)
+                {
+                    var sortDocIds = filters.DocumentId.Select((x, i) => new { DocId = x, Index = i }).ToList();
+                    var docIds = qry.Select(x => x.Id).ToList();
+
+                    docIds = docIds.Join(sortDocIds, o => o, i => i.DocId, (o, i) => i)
+                        .OrderBy(x=>x.Index).Select(x=>x.DocId).ToList();
+
+                    if (!paging.IsAll)
+                    {
+                        var skip = paging.PageSize * (paging.CurrentPage - 1);
+                        var take = paging.PageSize;
+
+                        docIds = docIds.Skip(skip).Take(take).ToList();
+                    }
+
+                    var filterContains = PredicateBuilder.False<DBModel.Document.Documents>();
+                    filterContains = docIds.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    qry = dbContext.DocumentsSet.Where(filterContains);
+
+                    qry = qry.OrderByDescending(x => x.CreateDate);
+                }
+                else
+                {
+                    qry = qry.OrderByDescending(x => x.CreateDate);
+                }
+
 
                 if (filters.FullTextSearchDocumentId?.Count() > 0)
                 {
@@ -918,6 +955,12 @@ namespace BL.Database.Documents
                 });
 
                 var docs = res.ToList();
+
+                //TODO Sort
+                if (paging != null && paging.Sort == EnumSort.IncomingIds && filters.DocumentId?.Count() > 0)
+                {
+                    docs = docs.OrderBy(x => filters.DocumentId.IndexOf(x.Id)).ToList();
+                }
 
                 docs.ForEach(x => CommonQueries.ChangeRegistrationFullNumber(x));
 

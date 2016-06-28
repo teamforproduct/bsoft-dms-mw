@@ -1,4 +1,5 @@
-﻿using System.Xml.Serialization;
+﻿using BL.Model.Enums;
+using System.Xml.Serialization;
 
 namespace BL.Model.SystemCore
 {
@@ -30,5 +31,10 @@ namespace BL.Model.SystemCore
         public bool? IsOnlyCounter { get; set; }
         [XmlIgnore]
         public UICounters Counters { get; set; }
+
+        /// <summary>
+        /// Тип сортировки
+        /// </summary>
+        public EnumSort Sort { get; set; }
     }
 }
