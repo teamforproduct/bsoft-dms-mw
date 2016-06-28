@@ -197,9 +197,15 @@ namespace BL.Logic.DictionaryCore
             return _dictDb.GetAgentEmployees(context, newFilter,paging);
             
         }
-       
+
+        public FrontDictionaryAgentEmployee GetDictionaryAgentEmployeePersonnelNumber(IContext context)
+        {
+            return _dictDb.GetAgentEmployeePersonnelNumber(context);
+        }
+
+
         #endregion DictionaryAgentEmployees
-       
+
         #region DictionaryAgentAdress
         public FrontDictionaryAgentAddress GetDictionaryAgentAddress(IContext context, int id)
         {

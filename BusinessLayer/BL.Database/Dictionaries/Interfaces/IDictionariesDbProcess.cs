@@ -35,6 +35,7 @@ namespace BL.Database.Dictionaries.Interfaces
         void DeleteAgentEmployee(IContext context, InternalDictionaryAgentEmployee employee);
         int AddAgentEmployee(IContext context, InternalDictionaryAgentEmployee employee);
         IEnumerable<FrontDictionaryAgentEmployee> GetAgentEmployees(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging);
+        FrontDictionaryAgentEmployee GetAgentEmployeePersonnelNumber(IContext context);
         #endregion DictionaryAgentEmployee
 
         #region DictionaryAgentAddress

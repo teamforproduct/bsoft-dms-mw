@@ -43,6 +43,18 @@ namespace DMS_WebAPI.Controllers.Dictionaries
                 var tmpDict = tmpDictProc.GetDictionaryAgentEmployee(ctx, id);
                 return new JsonResult(tmpDict, this);
             }
+
+            /// <summary>
+            /// Получение нового табельного номера
+            /// </summary>
+            /// <returns></returns>
+            public IHttpActionResult GetPersonnelNumber(bool getNewNumber)
+            {
+                var ctx = DmsResolver.Current.Get<UserContext>().Get();
+                var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
+                var tmpDict = tmpDictProc.GetDictionaryAgentEmployeePersonnelNumber(ctx);
+                return new JsonResult(tmpDict, this);
+        }
             /// <summary>
             /// Добавление сотрудника
             /// </summary>

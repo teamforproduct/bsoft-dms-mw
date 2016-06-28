@@ -17,6 +17,7 @@ using BL.Model.FullTextSearch;
 using LinqKit;
 using BL.Database.DBModel.Document;
 using System.Data.Entity;
+using System.Data.Entity.SqlServer;
 
 namespace BL.Database.Dictionaries
 {
@@ -720,6 +721,16 @@ namespace BL.Database.Dictionaries
             }
         }
 
+        public FrontDictionaryAgentEmployee GetAgentEmployeePersonnelNumber(IContext context)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                return new FrontDictionaryAgentEmployee
+                {
+                    PersonnelNumber = (dbContext.DictionaryAgentEmployeesSet.AsEnumerable().Max(x => Convert.ToInt32(x.PersonnelNumber))+1).ToString()
+                };
+            }
+        }
 
         public void UpdateAgentEmployee(IContext context, InternalDictionaryAgentEmployee employee)
         {

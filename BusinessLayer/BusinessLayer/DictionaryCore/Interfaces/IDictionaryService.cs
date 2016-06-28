@@ -50,6 +50,8 @@ namespace BL.Logic.DictionaryCore.Interfaces
 
         IEnumerable<FrontDictionaryAgentEmployee> GetDictionaryAgentEmployees(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging);
 
+        FrontDictionaryAgentEmployee GetDictionaryAgentEmployeePersonnelNumber(IContext context);
+
         #endregion DictionaryAgentEmployees
 
         #region DictionaryAgentAdress
