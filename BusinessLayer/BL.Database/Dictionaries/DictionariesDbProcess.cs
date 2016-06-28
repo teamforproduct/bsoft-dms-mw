@@ -727,8 +727,9 @@ namespace BL.Database.Dictionaries
             {
                 return new FrontDictionaryAgentEmployee
                 {
-                    PersonnelNumber = (dbContext.DictionaryAgentEmployeesSet.AsEnumerable()
-                    .Where(x => x.Agent.ClientId == context.CurrentClientId)
+                    PersonnelNumber = (
+                    dbContext.DictionaryAgentEmployeesSet
+                    .AsEnumerable()
                     .Max(y => Convert.ToInt32(y.PersonnelNumber))+1).ToString()
                 };
             }
