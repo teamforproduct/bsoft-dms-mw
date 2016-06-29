@@ -36,14 +36,28 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override bool CanBeDisplayed(int positionId)
         {
-            _actionRecords =
+            if (CommandType == EnumDocumentActions.DeleteDocumentFileVersionRecord)
+            {
+                _actionRecords =
                           _document.DocumentFiles.Where(
-                              x =>
+                              x => x.IsDeleted &&
                                   x.ExecutorPositionId == positionId)
                                                           .Select(x => new InternalActionRecord
                                                           {
                                                               FileId = x.Id,
                                                           });
+            }
+            else
+            {
+                _actionRecords =
+                              _document.DocumentFiles.Where(
+                                  x => (!x.IsMainVersion && !x.IsDeleted) &&
+                                      x.ExecutorPositionId == positionId)
+                                                              .Select(x => new InternalActionRecord
+                                                              {
+                                                                  FileId = x.Id,
+                                                              });
+            }
             if (!_actionRecords.Any())
             {
                 return false;
@@ -87,7 +101,8 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             {
                 DocumentId = Model.DocumentId,
                 OrderInDocument = Model.OrderInDocument,
-                Version = Model.Version ?? 0
+                Version = Model.Version ?? 0,
+                IsDeleted = _file.IsDeleted
             };
 
             try
@@ -98,14 +113,12 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             {
 
             }
-            if (_document.IsRegistered.HasValue)
-            {
-                docFile.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, docFile.DocumentId, EnumEventTypes.DeleteDocumentFileVersion, null, null, _file.Name + "." + _file.Extension);
-            }
+            //if (_document.IsRegistered.HasValue)
+            //{
+            //    docFile.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, docFile.DocumentId, EnumEventTypes.DeleteDocumentFileVersion, null, null, _file.Name + "." + _file.Extension);
+            //}
             _operationDb.DeleteAttachedFile(_context, docFile);
             return null;
         }
-
-        public override EnumDocumentActions CommandType => EnumDocumentActions.DeleteDocumentFileVersion;
     }
 }

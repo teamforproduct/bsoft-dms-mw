@@ -156,5 +156,14 @@ namespace DMS_WebAPI.Controllers.Documents
             docProc.ExecuteAction(EnumDocumentActions.DeleteDocumentFileVersion, ctx, model);
             return new JsonResult(null, this);
         }
+        [Route("DeleteFileVersionRecord")]
+        [HttpDelete]
+        public IHttpActionResult DeleteFileVersionRecord([FromUri]FilterDocumentFileIdentity model)
+        {
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            docProc.ExecuteAction(EnumDocumentActions.DeleteDocumentFileVersionRecord, ctx, model);
+            return new JsonResult(null, this);
+        }
     }
 }

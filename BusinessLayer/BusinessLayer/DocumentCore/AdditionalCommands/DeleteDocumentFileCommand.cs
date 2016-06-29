@@ -37,9 +37,11 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         public override bool CanBeDisplayed(int positionId)
         {
             _actionRecords =
-                          _document.DocumentFiles.Where(
+                          _document.DocumentFiles.Where(x=>x.IsMainVersion)
+                            .Where(
                               x =>
-                                  x.ExecutorPositionId == positionId)
+                                  (x.IsAdditional && x.ExecutorPositionId == positionId)
+                                    || (!x.IsAdditional && _document.ExecutorPositionId == positionId))
                                                           .Select(x => new InternalActionRecord
                                                           {
                                                               FileId = x.Id,
@@ -68,7 +70,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                 throw new UnknownDocumentFile();
             }
 
-            _file = _document.DocumentFiles.First();
+            _file = _document.DocumentFiles.Where(x=>x.IsMainVersion).First();
 
             if (!_file.IsAdditional)
             {
@@ -111,7 +113,5 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             _operationDb.DeleteAttachedFile(_context, docFile);
             return null;
         }
-
-        public override EnumDocumentActions CommandType => EnumDocumentActions.DeleteDocumentFile;
     }
 }

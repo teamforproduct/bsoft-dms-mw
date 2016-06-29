@@ -40,7 +40,8 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         public override bool CanBeDisplayed(int positionId)
         {
             _actionRecords =
-                   _document.DocumentFiles.Where(
+                   _document.DocumentFiles
+                        .Where(
                        x =>
                            x.ExecutorPositionId == positionId)
                                                    .Select(x => new InternalActionRecord
@@ -56,6 +57,8 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override bool CanExecute()
         {
+            _admin.VerifyAccess(_context, CommandType);
+
             //TODO potential two user could add same new version in same time. Probably need to implement CheckOut flag in future
             _document = _operationDb.ModifyDocumentFilePrepare(_context, Model.DocumentId, Model.OrderInDocument, Model.Version);
             if (_document == null)
@@ -67,8 +70,6 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                 throw new UnknownDocumentFile();
             }
             _file = _document.DocumentFiles.First();
-
-            _admin.VerifyAccess(_context, CommandType);
 
             if (!CanBeDisplayed(_context.CurrentPositionId))
             {
@@ -83,11 +84,8 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             _file.Description = Model.Description;
 
             CommonDocumentUtilities.SetLastChange(_context, _file);
-            _file.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, _file.DocumentId, EnumEventTypes.ModifyDocumentFile, null, _file.Name + "." + _file.Extension);
             _operationDb.UpdateFileOrVersion(_context, _file);
             return _file.Id;
         }
-
-        public override EnumDocumentActions CommandType => EnumDocumentActions.ModifyDocumentFile;
     }
 }

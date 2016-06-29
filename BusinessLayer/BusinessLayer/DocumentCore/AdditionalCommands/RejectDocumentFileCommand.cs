@@ -36,16 +36,13 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override bool CanBeDisplayed(int positionId)
         {
-            if (_document.ExecutorPositionId == positionId)
-            {
-                _actionRecords =
-                       _document.DocumentFiles.Where(
-                           x => (x.IsWorkedOut ?? true))
-                                                       .Select(x => new InternalActionRecord
-                                                       {
-                                                           FileId = x.Id,
-                                                       });
-            }
+            _actionRecords =
+                  _document.DocumentFiles.Where(
+                      x => !(x.IsWorkedOut ?? true) && _document.ExecutorPositionId == positionId)
+                                                  .Select(x => new InternalActionRecord
+                                                  {
+                                                      FileId = x.Id,
+                                                  });
             if (!_actionRecords.Any())
             {
                 return false;
@@ -82,11 +79,9 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         {
             _file.IsWorkedOut = false;
             CommonDocumentUtilities.SetLastChange(_context, _file);
-            _file.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, _file.DocumentId, EnumEventTypes.RejectDocumentFile, null, _file.Name + "." + _file.Extension);
+            _file.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, _file.DocumentId, EnumEventTypes.RejectDocumentFile, null, _file.Name + "." + _file.Extension, null, null, false, _file.ExecutorPositionId);
             _operationDb.UpdateFileOrVersion(_context, _file);
             return _file.Id;
         }
-
-        public override EnumDocumentActions CommandType => EnumDocumentActions.RejectDocumentFile;
     }
 }

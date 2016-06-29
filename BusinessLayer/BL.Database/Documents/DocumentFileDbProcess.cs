@@ -181,6 +181,9 @@ namespace BL.Database.Documents
                             Version = x.fl.Version,
                             ExecutorPositionId = x.fl.ExecutorPositionId,
                             IsWorkedOut = x.fl.IsWorkedOut,
+                            IsAdditional = x.fl.IsAdditional,
+                            IsMainVersion = x.fl.IsMainVersion,
+                            IsLastVersion = x.fl.IsLastVersion,
                         }).ToList();
                 return doc;
             }
@@ -427,7 +430,8 @@ namespace BL.Database.Documents
                             Extension = x.Extension,
                             IsAdditional = x.IsAdditional,
                             IsMainVersion = x.IsMainVersion,
-                            Version = x.Version
+                            Version = x.Version,
+                            IsDeleted = x.IsDeleted,
                         }).ToList();
                 return doc;
             }
@@ -452,7 +456,7 @@ namespace BL.Database.Documents
                                         .Where(x => x.DocumentId == docFile.DocumentId && x.OrderNumber == docFile.OrderInDocument)
                                         .AsQueryable();
 
-                if (docFile.Version>0)
+                if (docFile.Version > 0)
                 {
                     docFileQry = docFileQry.Where(x => x.Version == docFile.Version);
                 }
@@ -467,7 +471,15 @@ namespace BL.Database.Documents
 
                     dbContext.DocumentFilesSet.Attach(file);
                     var entry = dbContext.Entry(file);
-                    entry.Property(x => x.IsDeleted).IsModified = true;
+
+                    if (docFile.Version > 0 && docFile.IsDeleted)
+                    {
+                        entry.State = System.Data.Entity.EntityState.Deleted;
+                    }
+                    else
+                    {
+                        entry.Property(x => x.IsDeleted).IsModified = true;
+                    }
                 }
 
                 dbContext.SaveChanges();

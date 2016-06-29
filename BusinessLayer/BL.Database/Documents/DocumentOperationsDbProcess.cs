@@ -209,7 +209,12 @@ namespace BL.Database.Documents
                         .Select(x => new InternalDocumentAttachedFile
                         {
                             Id = x.Id,
-                            ExecutorPositionId = x.ExecutorPositionId
+                            ExecutorPositionId = x.ExecutorPositionId,
+                            IsAdditional = x.IsAdditional,
+                            IsWorkedOut = x.IsWorkedOut,
+                            IsMainVersion = x.IsMainVersion,
+                            IsLastVersion = x.IsLastVersion,
+                            IsDeleted = x.IsDeleted,
                         }).ToList();
 
 

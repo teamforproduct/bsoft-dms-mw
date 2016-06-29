@@ -323,6 +323,10 @@
         /// Удалить версию файл
         /// </summary>
         DeleteDocumentFileVersion = 104014,
+        /// <summary>
+        /// Удалить запись о версим файла
+        /// </summary>
+        DeleteDocumentFileVersionRecord = 104015,
 
         /// <summary>
         /// Добавить связь между документами

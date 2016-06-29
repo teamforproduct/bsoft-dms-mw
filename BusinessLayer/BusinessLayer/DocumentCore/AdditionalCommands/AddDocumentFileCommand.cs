@@ -38,7 +38,26 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override bool CanBeDisplayed(int positionId)
         {
-            return true;
+            if (CommandType == EnumDocumentActions.AddDocumentFileUseMainNameFile)
+            {
+                _actionRecords =
+                  _document.DocumentFiles.Where(x => x.IsMainVersion)
+                            .Where(
+                      x =>
+                          x.IsAdditional && x.ExecutorPositionId == positionId
+                          || !x.IsAdditional)
+                                                  .Select(x => new InternalActionRecord
+                                                  {
+                                                      FileId = x.Id,
+                                                  });
+                if (!_actionRecords.Any())
+                {
+                    return false;
+                }
+                return true;
+            }
+            else
+                return true;
         }
 
         public override bool CanExecute()
@@ -72,15 +91,15 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                     throw new CannotAccessToFile();
                 }
             }
-            else
-            {
-                if (!Model.IsAdditional && _document.ExecutorPositionId != _context.CurrentPositionId)
-                {
-                    //TODO Саше проверить.
-                    Model.IsAdditional = true;
-                    //throw new CouldNotPerformOperation();
-                }
-            }
+            //else
+            //{
+            //    if (!Model.IsAdditional && _document.ExecutorPositionId != _context.CurrentPositionId)
+            //    {
+            //        //TODO Саше проверить.
+            //        Model.IsAdditional = true;
+            //        //throw new CouldNotPerformOperation();
+            //    }
+            //}
 
             return true;
         }
@@ -128,7 +147,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             CommonDocumentUtilities.SetLastChange(_context, att);
             if (_document.IsRegistered.HasValue)
             {
-                att.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, att.DocumentId, EnumEventTypes.AddDocumentFile, null, null, att.Name + "." + att.Extension, null, false, _document.ExecutorPositionId);
+                att.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, att.DocumentId, EnumEventTypes.AddDocumentFile, null, null, att.Name + "." + att.Extension, null, false, att.IsAdditional ? (int?)null : _document.ExecutorPositionId);
             }
             res.Add(_operationDb.AddNewFileOrVersion(_context, att));
             // Модель фронта содержит дополнительно только одно поле - пользователя, который последний модифицировал файл. 
@@ -139,7 +158,5 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
             return res;
         }
-
-        public override EnumDocumentActions CommandType => EnumDocumentActions.AddDocumentFile;
     }
 }
