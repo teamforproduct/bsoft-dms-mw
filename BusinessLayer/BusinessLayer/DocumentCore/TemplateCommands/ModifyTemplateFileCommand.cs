@@ -61,6 +61,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
             fl.Name = Path.GetFileNameWithoutExtension(Model.FileName);
             fl.IsAdditional = fl.IsAdditional;
             fl.PostedFileData = Model.PostedFileData;
+            fl.Description = Model.Description;
             _fStore.SaveFile(_context, fl);
             CommonDocumentUtilities.SetLastChange(_context, fl);
             _operationDb.UpdateFile(_context, fl);

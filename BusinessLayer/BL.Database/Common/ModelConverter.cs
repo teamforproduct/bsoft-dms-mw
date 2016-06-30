@@ -278,7 +278,7 @@ namespace BL.Database.Common
                 Name = docFile.Name,
                 Date = docFile.Date,
                 ExecutorPositionId = docFile.ExecutorPositionId,
-                ExecutorPositionExecutorAgentId = docFile.ExecutorPositionExecutorAgentId
+                ExecutorPositionExecutorAgentId = docFile.ExecutorPositionExecutorAgentId,
             };
         }
 
@@ -340,7 +340,8 @@ namespace BL.Database.Common
                 IsAdditional = docFile.IsAdditional,
                 LastChangeDate = docFile.LastChangeDate,
                 LastChangeUserId = docFile.LastChangeUserId,
-                Name = docFile.Name
+                Name = docFile.Name,
+                Description = docFile.Description,
 
             };
         }

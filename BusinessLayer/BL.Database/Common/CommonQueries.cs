@@ -175,6 +175,26 @@ namespace BL.Database.Common
                       };
 
             var files = qry.ToList();
+
+            if (files.Any(x => x.IsMainVersion))
+            {
+                var filterContains = PredicateBuilder.False<DocumentFiles>();
+                filterContains = files.Where(x => x.IsMainVersion).Select(x => new { x.DocumentId, x.OrderInDocument }).ToList()
+                                    .Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.DocumentId == value.DocumentId && e.OrderNumber == value.OrderInDocument).Expand());
+
+                var isNotAllWorkedOut = dbContext.DocumentFilesSet.Where(filterContains)
+                            .GroupBy(x => new { x.DocumentId, x.OrderNumber })
+                            .Select(x => new
+                            {
+                                DocumentId = x.Key.DocumentId,
+                                OrderNumber = x.Key.OrderNumber,
+                                IsNotAllWorkedOut = x.Any(y => !(y.IsWorkedOut ?? true))
+                            }).ToList();
+
+                files.ForEach(x => x.IsNotAllWorkedOut = isNotAllWorkedOut.FirstOrDefault(y => y.DocumentId == x.DocumentId && y.OrderNumber == x.OrderInDocument)?.IsNotAllWorkedOut ?? false);
+            }
+
             files.ForEach(x => CommonQueries.ChangeRegistrationFullNumber(x));
             return files;
         }
@@ -194,9 +214,12 @@ namespace BL.Database.Common
                     FileType = x.FileType,
                     FileSize = x.FileSize,
                     IsAdditional = x.IsAdditional,
-                    
+
                     IsMainVersion = x.IsMainVersion,
                     IsLastVersion = x.IsLastVersion,
+                    Description = x.Description,
+                    IsDeleted = x.IsDeleted,
+                    IsWorkedOut = x.IsWorkedOut,
 
                     Hash = x.Hash,
                     LastChangeDate = x.LastChangeDate,

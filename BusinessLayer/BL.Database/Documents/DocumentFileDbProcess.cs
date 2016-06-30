@@ -222,47 +222,6 @@ namespace BL.Database.Documents
             }
         }
 
-        public FrontDocumentAttachedFile GetDocumentFileLatestVersion(IContext ctx, int documentId, int orderNumber)
-        {
-            using (var dbContext = new DmsContext(ctx))
-            {
-                var maxVer =
-                    dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
-                        .Where(x => x.DocumentId == documentId && x.OrderNumber == orderNumber)
-                        .Max(m => m.Version);
-                if (maxVer > 0)
-                {
-                    return
-                        dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
-                            .Where(x => x.DocumentId == documentId && x.Version == maxVer && x.OrderNumber == orderNumber)
-                            .Join(dbContext.DictionaryAgentsSet, df => df.LastChangeUserId, da => da.Id,
-                                (d, a) => new { fl = d, agName = a.Name })
-                            .Select(x => new FrontDocumentAttachedFile
-                            {
-                                Id = x.fl.Id,
-                                Date = x.fl.Date,
-                                DocumentId = x.fl.DocumentId,
-                                Extension = x.fl.Extension,
-                                FileContent = x.fl.Content,
-                                IsAdditional = x.fl.IsAdditional,
-                                Hash = x.fl.Hash,
-                                LastChangeDate = x.fl.LastChangeDate,
-                                LastChangeUserId = x.fl.LastChangeUserId,
-                                LastChangeUserName = x.agName,
-                                Name = x.fl.Name,
-                                FileType = x.fl.FileType,
-                                FileSize = x.fl.FileSize,
-                                OrderInDocument = x.fl.OrderNumber,
-                                Version = x.fl.Version,
-                                WasChangedExternal = false,
-                                ExecutorPositionName = x.fl.ExecutorPosition.Name,
-                                ExecutorPositionExecutorAgentName = x.fl.ExecutorPositionExecutorAgent.Name
-                            }).FirstOrDefault();
-                }
-            }
-            return null;
-        }
-
         public InternalDocument AddDocumentFilePrepare(IContext ctx, int documentId)
         {
             using (var dbContext = new DmsContext(ctx))

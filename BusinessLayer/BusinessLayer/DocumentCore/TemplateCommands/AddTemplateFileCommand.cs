@@ -67,7 +67,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
                 Name = Path.GetFileNameWithoutExtension(Model.FileName),
                 Extension = Path.GetExtension(Model.FileName ?? "").Replace(".", ""),
                 PostedFileData = Model.PostedFileData,
-
+                Description = Model.Description
             };
             _fStore.SaveFile(_context, att);
             CommonDocumentUtilities.SetLastChange(_context, att);

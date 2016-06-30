@@ -4,18 +4,11 @@ using System.Web.Http;
 using BL.CrossCutting.DependencyInjection;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Model.DocumentCore.Filters;
-using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.Enums;
 using System.Collections.Generic;
 using BL.Model.SystemCore;
-using System.Threading.Tasks;
-using System.Net;
-using System.Net.Http;
 using System.Web;
-using System.IO;
-using Newtonsoft.Json;
-using System.Linq;
 
 namespace DMS_WebAPI.Controllers.Documents
 {
@@ -57,6 +50,12 @@ namespace DMS_WebAPI.Controllers.Documents
             return res;
         }
 
+        /// <summary>
+        /// Добавление нового файла
+        /// Если файл есть с таким именем создаться новая версия файла
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public IHttpActionResult Post([FromUri]AddDocumentFile model)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
@@ -73,7 +72,11 @@ namespace DMS_WebAPI.Controllers.Documents
             return GetFileList(new FilterDocumentAttachedFile { DocumentId = new List<int> { model.DocumentId } }, null);
         }
 
-        // PUT: api/Files/5
+        /// <summary>
+        /// Изменить описание(Description) файла
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public IHttpActionResult Put(ModifyDocumentFile model)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
@@ -84,7 +87,13 @@ namespace DMS_WebAPI.Controllers.Documents
             return GetFileList(new FilterDocumentAttachedFile { AttachedFileId = new List<int> { fileId }, IsDeleted = null, IsMainVersion = null }, null);
         }
 
-        // DELETE: api/Files
+
+        /// <summary>
+        /// Удаление основного файла
+        /// удаляются все версии этого файла
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public IHttpActionResult Delete([FromUri]FilterDocumentFileIdentity model)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
@@ -109,6 +118,11 @@ namespace DMS_WebAPI.Controllers.Documents
             return new JsonResult(actions, this);
         }
 
+        /// <summary>
+        /// Вставка версии файла к файлу
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [Route("AddUseMainNameFile/{id}")]
         [HttpPost]
         public IHttpActionResult PostAddUseMainNameFile([FromUri]AddDocumentFile model)
@@ -126,6 +140,11 @@ namespace DMS_WebAPI.Controllers.Documents
             return GetFileList(new FilterDocumentAttachedFile { DocumentId = new List<int> { model.DocumentId } }, null);
         }
 
+        /// <summary>
+        /// Принять версию файла
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [Route("Accept")]
         [HttpPost]
         public IHttpActionResult PostAccept(ChangeWorkOutDocumentFile model)
@@ -136,6 +155,12 @@ namespace DMS_WebAPI.Controllers.Documents
             docProc.ExecuteAction(EnumDocumentActions.AcceptDocumentFile, ctx, model);
             return GetFileList(new FilterDocumentAttachedFile { DocumentId = new List<int> { model.DocumentId } }, null);
         }
+
+        /// <summary>
+        /// Отклонить версию файла
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [Route("Reject")]
         [HttpPost]
         public IHttpActionResult PostReject(ChangeWorkOutDocumentFile model)
@@ -147,6 +172,11 @@ namespace DMS_WebAPI.Controllers.Documents
             return GetFileList(new FilterDocumentAttachedFile { DocumentId = new List<int> { model.DocumentId } }, null);
         }
 
+        /// <summary>
+        /// Удаление версии файла
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [Route("DeleteFileVersion")]
         [HttpDelete]
         public IHttpActionResult DeleteFileVersion([FromUri]FilterDocumentFileIdentity model)
@@ -156,6 +186,12 @@ namespace DMS_WebAPI.Controllers.Documents
             docProc.ExecuteAction(EnumDocumentActions.DeleteDocumentFileVersion, ctx, model);
             return new JsonResult(null, this);
         }
+
+        /// <summary>
+        /// Удаление версии файла из базы
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [Route("DeleteFileVersionRecord")]
         [HttpDelete]
         public IHttpActionResult DeleteFileVersionRecord([FromUri]FilterDocumentFileIdentity model)

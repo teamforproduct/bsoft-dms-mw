@@ -723,11 +723,10 @@ namespace BL.Database.Documents
                     || filters.FileCreateToDate.HasValue
                     || (filters.FileAgentId?.Count() > 0))
                 {
-                    var qryTmp = (from Doc in qry
-                                  join DocFile in dbContext.DocumentFilesSet on Doc.Id equals DocFile.DocumentId
-                                  select new { Doc, DocFile })
-                                 .GroupBy(g => new { g.Doc, g.DocFile.OrderNumber })
-                                 .Select(x => new { Doc = x.Key.Doc, DocFile = x.OrderByDescending(f => f.DocFile.Version).First().DocFile });
+                    var qryTmp = from Doc in qry
+                                 join DocFile in dbContext.DocumentFilesSet on Doc.Id equals DocFile.DocumentId
+                                 where DocFile.IsMainVersion && !DocFile.IsDeleted
+                                 select new { Doc, DocFile };
 
                     if (!string.IsNullOrEmpty(filters.FileName))
                     {
@@ -819,13 +818,28 @@ namespace BL.Database.Documents
 
                 //TODO Sort
                 //TODO After ToList
+                {
+                    qry = qry.OrderByDescending(x => x.CreateDate);
+                }
+
+
                 if (paging != null && paging.Sort == EnumSort.IncomingIds && filters.DocumentId?.Count() > 0)
                 {
                     var sortDocIds = filters.DocumentId.Select((x, i) => new { DocId = x, Index = i }).ToList();
                     var docIds = qry.Select(x => x.Id).ToList();
 
                     docIds = docIds.Join(sortDocIds, o => o, i => i.DocId, (o, i) => i)
-                        .OrderBy(x=>x.Index).Select(x=>x.DocId).ToList();
+                        .OrderBy(x => x.Index).Select(x => x.DocId).ToList();
+
+                    if (paging.IsOnlyCounter ?? true)
+                    {
+                        paging.TotalItemsCount = docIds.Count();
+                    }
+
+                    if (paging.IsOnlyCounter ?? false)
+                    {
+                        return new List<FrontDocument>();
+                    }
 
                     if (!paging.IsAll)
                     {
@@ -835,25 +849,26 @@ namespace BL.Database.Documents
                         docIds = docIds.Skip(skip).Take(take).ToList();
                     }
 
-                    var filterContains = PredicateBuilder.False<DBModel.Document.Documents>();
-                    filterContains = docIds.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.Id == value).Expand());
+                    if (docIds.Count > 0)
+                    {
+                        var filterContains = PredicateBuilder.False<DBModel.Document.Documents>();
+                        filterContains = docIds.Aggregate(filterContains,
+                            (current, value) => current.Or(e => e.Id == value).Expand());
 
-                    qry = dbContext.DocumentsSet.Where(filterContains);
-
-                    qry = qry.OrderByDescending(x => x.CreateDate);
+                        qry = dbContext.DocumentsSet.Where(filterContains);
+                    }
+                    else
+                    {
+                        qry = dbContext.DocumentsSet.Where(x => false);
+                    }
                 }
-                else
+                else if (filters.FullTextSearchDocumentId != null)
                 {
-                    qry = qry.OrderByDescending(x => x.CreateDate);
-                }
-
-
-                if (filters.FullTextSearchDocumentId?.Count() > 0)
-                {
+                    var sortDocIds = filters.FullTextSearchDocumentId.Select((x, i) => new { DocId = x, Index = i }).ToList();
                     var docIds = qry.Select(x => x.Id).ToList();
 
-                    docIds = docIds.Join(filters.FullTextSearchDocumentId, o => o, i => i, (o, i) => o).ToList();
+                    docIds = docIds.Join(sortDocIds, o => o, i => i.DocId, (o, i) => i)
+                        .OrderBy(x => x.Index).Select(x => x.DocId).ToList();
 
                     if (paging != null)
                     {
@@ -876,14 +891,18 @@ namespace BL.Database.Documents
                         }
                     }
 
-                    var filterContains = PredicateBuilder.False<DBModel.Document.Documents>();
-                    filterContains = docIds.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.Id == value).Expand());
+                    if (docIds.Count > 0)
+                    {
+                        var filterContains = PredicateBuilder.False<DBModel.Document.Documents>();
+                        filterContains = docIds.Aggregate(filterContains,
+                            (current, value) => current.Or(e => e.Id == value).Expand());
 
-                    qry = dbContext.DocumentsSet.Where(filterContains);
-
-                    qry = qry.OrderByDescending(x => x.CreateDate);
-
+                        qry = dbContext.DocumentsSet.Where(filterContains);
+                    }
+                    else
+                    {
+                        qry = dbContext.DocumentsSet.Where(x => false);
+                    }
                 }
                 else if (paging != null)
                 {
@@ -946,7 +965,7 @@ namespace BL.Database.Documents
 
                     NewEventCount = doc.Events.AsQueryable().Where(filterNewEventContains).Count(x => !x.ReadDate.HasValue && x.TargetPositionId != x.SourcePositionId),
 
-                    AttachedFilesCount = doc.Files.GroupBy(g => g.OrderNumber).Count(),
+                    AttachedFilesCount = doc.Files.Where(fl => fl.IsMainVersion && !fl.IsDeleted).Count(),
 
                     LinkedDocumentsCount = doc.Links
                     .GroupBy(x => x.LinkId)
@@ -960,6 +979,10 @@ namespace BL.Database.Documents
                 if (paging != null && paging.Sort == EnumSort.IncomingIds && filters.DocumentId?.Count() > 0)
                 {
                     docs = docs.OrderBy(x => filters.DocumentId.IndexOf(x.Id)).ToList();
+                }
+                else if (filters.FullTextSearchDocumentId.Count() > 0)
+                {
+                    docs = docs.OrderBy(x => filters.FullTextSearchDocumentId.IndexOf(x.Id)).ToList();
                 }
 
                 docs.ForEach(x => CommonQueries.ChangeRegistrationFullNumber(x));
@@ -1323,7 +1346,8 @@ namespace BL.Database.Documents
                     FileSize = x.FileSize,
                     OrderInDocument = x.OrderNumber,
                     IsAdditional = x.IsAdditional,
-                    Hash = x.Hash
+                    Hash = x.Hash,
+                    Description = x.Description,
                 }).ToList();
 
                 doc.Properties = CommonQueries.GetInternalPropertyValues(dbContext, context, new FilterPropertyValue { Object = new List<EnumObjects> { EnumObjects.TemplateDocument }, RecordId = new List<int> { templateDocumentId } }).ToList();

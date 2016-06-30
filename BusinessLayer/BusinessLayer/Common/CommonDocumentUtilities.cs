@@ -765,7 +765,8 @@ namespace BL.Logic.Common
                 IsAdditional = src.IsAdditional,
                 FileContent = src.FileContent,
                 OrderInDocument = newOrderNumber ?? src.OrderInDocument,
-                Hash = src.Hash
+                Hash = src.Hash,
+                Description = src.Description,
             };
         }
 
@@ -778,6 +779,11 @@ namespace BL.Logic.Common
                 FileType = src.FileType,
                 FileSize = src.FileSize,
                 IsAdditional = src.IsAdditional,
+                Description = src.Description,
+                IsLastVersion = true,
+                IsMainVersion = true,
+                IsWorkedOut = null,
+                IsDeleted = src.IsDeleted,
                 FileContent = src.FileContent,
                 Hash = src.Hash,
                 OrderInDocument = newOrderNumber ?? src.OrderInDocument,

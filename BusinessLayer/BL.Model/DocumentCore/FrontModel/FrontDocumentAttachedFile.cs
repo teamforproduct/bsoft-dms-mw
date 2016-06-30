@@ -37,6 +37,11 @@ namespace BL.Model.DocumentCore.FrontModel
         /// Признак последняя версия файла
         /// </summary>
         public bool IsLastVersion { get; set; }
+
+        /// <summary>
+        /// Есть ли необработанные версии файлов
+        /// </summary>
+        public bool IsNotAllWorkedOut { get; set; }
         /// <summary>
         /// содержимое файла
         /// </summary>

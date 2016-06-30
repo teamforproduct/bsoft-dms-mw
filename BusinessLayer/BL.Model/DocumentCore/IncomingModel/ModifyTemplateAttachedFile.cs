@@ -32,7 +32,10 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// Является ли файл дополнительным или основным. 
         /// </summary>
         public bool IsAdditional { get; set; }
-
+        /// <summary>
+        /// Описание файла
+        /// </summary>
+        public string Description { get; set; }
         /// <summary>
         /// Имя файла. Включая расширение
         /// </summary>

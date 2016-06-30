@@ -49,9 +49,13 @@ namespace BL.Logic.DocumentCore
                 {
                     var resWithRanges =
                         ftRes.GroupBy(x => x.DocumentId)
-                            .Select(x => new {DocId = x.Key, Rate = x.Count()})
+                            .Select(x => new { DocId = x.Key, Rate = x.Count() })
                             .OrderByDescending(x => x.Rate);
                     filters.FullTextSearchDocumentId = resWithRanges.Select(x => x.DocId).ToList();
+                }
+                else
+                {
+                    filters.FullTextSearchDocumentId = new List<int>();
                 }
             }
             return _documentDb.GetDocuments(ctx, filters, paging);

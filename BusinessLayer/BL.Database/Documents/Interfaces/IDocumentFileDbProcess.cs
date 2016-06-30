@@ -13,7 +13,6 @@ namespace BL.Database.Documents.Interfaces
         IEnumerable<FrontDocumentAttachedFile> GetDocumentFileVersions(IContext ctx, int documentId, int orderNumber);
         FrontDocumentAttachedFile GetDocumentFileVersion(IContext ctx, int documentId, int orderNumber, int versionNumber);
         FrontDocumentAttachedFile GetDocumentFileVersion(IContext ctx, int id);
-        FrontDocumentAttachedFile GetDocumentFileLatestVersion(IContext ctx, int documentId, int orderNumber);
         int CheckFileForDocument(IContext ctx, int documentId, string fileName, string fileExt);
         InternalDocument AddDocumentFilePrepare(IContext ctx, int documentId);
         int AddNewFileOrVersion(IContext ctx, InternalDocumentAttachedFile docFile);

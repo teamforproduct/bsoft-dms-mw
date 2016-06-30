@@ -631,7 +631,8 @@ namespace BL.Database.Documents
                             LastChangeUserId = x.fl.LastChangeUserId,
                             LastChangeUserName = x.agName,
                             Name = x.fl.Name,
-                            OrderInDocument = x.fl.OrderNumber
+                            OrderInDocument = x.fl.OrderNumber,
+                            Description = x.fl.Description,
 
                         }).ToList();
             }
@@ -661,7 +662,8 @@ namespace BL.Database.Documents
                             LastChangeUserId = x.fl.LastChangeUserId,
                             LastChangeUserName = x.agName,
                             Name = x.fl.Name,
-                            OrderInDocument = x.fl.OrderNumber
+                            OrderInDocument = x.fl.OrderNumber,
+                            Description = x.fl.Description
 
                         }).FirstOrDefault();
             }
@@ -712,6 +714,7 @@ namespace BL.Database.Documents
                 entry.Property(x => x.LastChangeDate).IsModified = true;
                 entry.Property(x => x.LastChangeUserId).IsModified = true;
                 entry.Property(x => x.Hash).IsModified = true;
+                entry.Property(x => x.Description).IsModified = true;
                 dbContext.SaveChanges();
             }
         }
