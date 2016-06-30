@@ -402,6 +402,10 @@
     <Compile Include="Migrations\201606210948462_TagIndex.Designer.cs">
       <DependentUpon>201606210948462_TagIndex.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201606301213210_IsLastVersion.cs" />
+    <Compile Include="Migrations\201606301213210_IsLastVersion.Designer.cs">
+      <DependentUpon>201606301213210_IsLastVersion.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SystemDb\ISystemDbProcess.cs" />
@@ -563,6 +567,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201606210948462_TagIndex.resx">
       <DependentUpon>201606210948462_TagIndex.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201606301213210_IsLastVersion.resx">
+      <DependentUpon>201606301213210_IsLastVersion.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

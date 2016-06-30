@@ -33,11 +33,16 @@ namespace BL.Model.DocumentCore.FrontModel
         /// Признак основная версия файла
         /// </summary>
         public bool IsMainVersion { get; set; }
-        /// <summary>
-        /// Признак последняя версия файла
-        /// </summary>
-        public bool IsLastVersion { get; set; }
 
+        /// <summary>
+        /// Признак удаленной версии файла
+        /// </summary>
+        public bool IsDeleted { get; set; }
+
+        /// <summary>
+        /// Признак обработаной версии файла
+        /// </summary>
+        public bool IsWorkedOut { get; set; }
         /// <summary>
         /// Есть ли необработанные версии файлов
         /// </summary>
@@ -54,6 +59,10 @@ namespace BL.Model.DocumentCore.FrontModel
         /// Расширение файла
         /// </summary>
         public string Extension { get; set; }
+        /// <summary>
+        /// Описание файла
+        /// </summary>
+        public string Description { get; set; }
         /// <summary>
         /// Тип файла
         /// </summary>

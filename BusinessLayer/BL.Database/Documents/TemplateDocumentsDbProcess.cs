@@ -15,6 +15,7 @@ using BL.Model.SystemCore.InternalModel;
 using System.Transactions;
 using BL.Model.FullTextSearch;
 using LinqKit;
+using System.IO;
 
 namespace BL.Database.Documents
 {
@@ -604,9 +605,9 @@ namespace BL.Database.Documents
                 var qry = dbContext.TemplateDocumentFilesSet.Where(x => x.Document.ClientId == ctx.CurrentClientId).AsQueryable();
                 qry = qry.Where(x => x.DocumentId == templateId);
 
-                if (filter.Id.HasValue)
+                if (filter.FileId.HasValue)
                 {
-                    qry = qry.Where(x => x.Id == filter.Id);
+                    qry = qry.Where(x => x.Id == filter.FileId);
                 }
 
                 if (!string.IsNullOrEmpty(filter.Name))
@@ -736,13 +737,16 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                var count = dbContext.TemplateDocumentFilesSet.Count(x =>
+                var fileName = Path.GetFileNameWithoutExtension(file.FileName);
+                var fileExtention = Path.GetExtension(file.FileName).Replace(".", "");
+
+                var res = dbContext.TemplateDocumentFilesSet.Any(x =>
                     x.Document.ClientId == ctx.CurrentClientId &&
                     ((x.DocumentId == file.DocumentId && x.OrderNumber == file.OrderInDocument) ||
-                    (x.DocumentId == file.DocumentId && x.Extention == file.FileType && x.Name == file.FileName))
+                    (x.DocumentId == file.DocumentId && x.Extention == fileExtention && x.Name == fileName))
                     );
 
-                return count == 0;
+                return !res;
             }
         }
 

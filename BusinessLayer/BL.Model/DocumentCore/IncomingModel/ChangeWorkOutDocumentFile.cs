@@ -7,7 +7,7 @@ namespace BL.Model.DocumentCore.IncomingModel
     /// <summary>
     /// Модель для изменения признака принятия файла
     /// </summary>
-    public class ChangeWorkOutDocumentFile : CurrentPosition
+    public class ChangeWorkOutDocumentFile
     {
         /// <summary>
         /// ИД документа

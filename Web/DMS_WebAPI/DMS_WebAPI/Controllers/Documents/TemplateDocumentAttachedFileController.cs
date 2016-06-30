@@ -53,7 +53,7 @@ namespace DMS_WebAPI.Controllers.Documents
        /// <returns></returns>
         public IHttpActionResult Post([FromUri]ModifyTemplateAttachedFile model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<ITemplateDocumentService>();
 
             HttpPostedFile file = HttpContext.Current.Request.Files[0];
@@ -72,7 +72,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns></returns>
         public IHttpActionResult Put([FromBody]ModifyTemplateAttachedFile model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<ITemplateDocumentService>();
 
             HttpPostedFile file = HttpContext.Current.Request.Files[0];
@@ -90,11 +90,11 @@ namespace DMS_WebAPI.Controllers.Documents
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public IHttpActionResult Delete([FromBody]ModifyTemplateAttachedFile model)
+        public IHttpActionResult Delete([FromUri]ModifyTemplateAttachedFile model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<ITemplateDocumentService>();
-            docProc.ExecuteAction(EnumDocumentActions.DeleteTemplateAttachedFile, ctx, model.Id);
+            docProc.ExecuteAction(EnumDocumentActions.DeleteTemplateAttachedFile, ctx, model);
             return new JsonResult(null, this);
         }
     }

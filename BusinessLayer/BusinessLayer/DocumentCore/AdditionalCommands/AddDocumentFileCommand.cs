@@ -118,7 +118,6 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                 Date = DateTime.Now,
                 PostedFileData = Model.PostedFileData,
                 IsAdditional = Model.IsAdditional,
-                IsLastVersion = true,
                 IsMainVersion = Model.IsAdditional || (!Model.IsAdditional && _document.ExecutorPositionId == _context.CurrentPositionId),
                 FileType = Model.FileType,
                 Name = Path.GetFileNameWithoutExtension(Model.FileName),

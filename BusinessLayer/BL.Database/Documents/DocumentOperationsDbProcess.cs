@@ -213,7 +213,6 @@ namespace BL.Database.Documents
                             IsAdditional = x.IsAdditional,
                             IsWorkedOut = x.IsWorkedOut,
                             IsMainVersion = x.IsMainVersion,
-                            IsLastVersion = x.IsLastVersion,
                             IsDeleted = x.IsDeleted,
                         }).ToList();
 

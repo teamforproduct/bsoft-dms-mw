@@ -63,6 +63,8 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                 throw new UnknownDocumentFile();
             }
 
+            _file = _document.DocumentFiles.First();
+
             _context.SetCurrentPosition(_document.ExecutorPositionId);
 
             _admin.VerifyAccess(_context, CommandType);

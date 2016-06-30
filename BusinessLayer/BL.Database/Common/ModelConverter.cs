@@ -269,7 +269,6 @@ namespace BL.Database.Common
                 FileSize = docFile.FileSize,
                 IsAdditional = docFile.IsAdditional,
                 IsDeleted = docFile.IsDeleted,
-                IsLastVersion = docFile.IsLastVersion,
                 IsMainVersion = docFile.IsMainVersion,
                 IsWorkedOut = docFile.IsWorkedOut,
                 Description = docFile.Description,

@@ -17,8 +17,6 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         private readonly IDocumentFileDbProcess _operationDb;
         private readonly IFileStore _fStore;
 
-        private IEnumerable<InternalDocumentAttachedFile> _files;
-
         public RenameDocumentFileCommand(IDocumentFileDbProcess operationDb, IFileStore fStore)
         {
             _operationDb = operationDb;
@@ -60,7 +58,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             _admin.VerifyAccess(_context, CommandType);
 
             //TODO potential two user could add same new version in same time. Probably need to implement CheckOut flag in future
-            _document = _operationDb.ModifyDocumentFilePrepare(_context, Model.DocumentId, Model.OrderInDocument, Model.Version);
+            _document = _operationDb.RenameDocumentFilePrepare(_context, Model.DocumentId, Model.OrderInDocument);
             if (_document == null)
             {
                 throw new UserHasNoAccessToDocument();
@@ -69,7 +67,6 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             {
                 throw new UnknownDocumentFile();
             }
-            _files = _document.DocumentFiles;
 
             if (!CanBeDisplayed(_context.CurrentPositionId))
             {
@@ -81,9 +78,12 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override object Execute()
         {
-            var oldName = _files.First().Name;
-            var extension = _files.First().Extension;
-            foreach (var file in _files)
+            var oldName = _document.DocumentFiles.First().Name;
+            var extension = _document.DocumentFiles.First().Extension;
+
+            Model.FileName = Path.GetFileNameWithoutExtension(Model.FileName);
+
+            foreach (var file in _document.DocumentFiles)
             {
                 _fStore.RenameFile(_context, file, Model.FileName);
 
@@ -93,7 +93,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
             var events = CommonDocumentUtilities.GetNewDocumentEvents(_context, Model.DocumentId, EnumEventTypes.RanameDocumentFile, null, oldName + "." + extension, Model.FileName + "." + extension);
 
-            _operationDb.RenameFile(_context, _files, events);
+            _operationDb.RenameFile(_context, _document.DocumentFiles, events);
 
             return null;
         }

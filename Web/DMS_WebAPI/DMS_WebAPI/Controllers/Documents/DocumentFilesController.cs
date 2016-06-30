@@ -45,6 +45,11 @@ namespace DMS_WebAPI.Controllers.Documents
             {
                 paging = new UIPaging();
             }
+
+            if (filter == null)
+            {
+                filter = new FilterDocumentAttachedFile();
+            }
             var res = new JsonResult(docFileProc.GetDocumentFiles(ctx, filter, paging), this);
             res.Paging = paging;
             return res;
@@ -84,9 +89,24 @@ namespace DMS_WebAPI.Controllers.Documents
 
             var fileId = (int)docProc.ExecuteAction(EnumDocumentActions.ModifyDocumentFile, ctx, model);
 
-            return GetFileList(new FilterDocumentAttachedFile { AttachedFileId = new List<int> { fileId }, IsDeleted = null, IsMainVersion = null }, null);
+            return GetFileList(new FilterDocumentAttachedFile { AttachedFileId = new List<int> { fileId }, IsAllDeleted = true, IsAllVersion = true }, null);
         }
 
+        /// <summary>
+        /// Изменить имя файла
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("RenameFile")]
+        public IHttpActionResult PutRenameFile(ModifyDocumentFile model)
+        {
+            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+
+            docProc.ExecuteAction(EnumDocumentActions.RenameDocumentFile, ctx, model);
+
+            return GetFileList(new FilterDocumentAttachedFile { DocumentId = new List<int> { model.DocumentId }, OrderInDocument = new List<int> { model.OrderInDocument }}, null);
+        }
 
         /// <summary>
         /// Удаление основного файла
@@ -123,7 +143,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [Route("AddUseMainNameFile/{id}")]
+        [Route("AddUseMainNameFile")]
         [HttpPost]
         public IHttpActionResult PostAddUseMainNameFile([FromUri]AddDocumentFile model)
         {
@@ -149,7 +169,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult PostAccept(ChangeWorkOutDocumentFile model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
 
             docProc.ExecuteAction(EnumDocumentActions.AcceptDocumentFile, ctx, model);
@@ -165,7 +185,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult PostReject(ChangeWorkOutDocumentFile model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
 
             docProc.ExecuteAction(EnumDocumentActions.RejectDocumentFile, ctx, model);

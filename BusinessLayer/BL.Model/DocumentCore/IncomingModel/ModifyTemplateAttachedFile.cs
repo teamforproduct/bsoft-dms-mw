@@ -12,7 +12,7 @@ namespace BL.Model.DocumentCore.IncomingModel
     /// <summary>
     /// Изменение файла, прикрепленного к шаблону документа
     /// </summary>
-    public class ModifyTemplateAttachedFile : CurrentPosition
+    public class ModifyTemplateAttachedFile
     {
         /// <summary>
         /// ИД

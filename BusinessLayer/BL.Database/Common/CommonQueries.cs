@@ -92,24 +92,33 @@ namespace BL.Database.Common
                     qry = qry.Where(filterContains);
                 }
 
+                if (filter.OrderInDocument?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<DocumentFiles>();
+                    filterContains = filter.OrderInDocument.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.OrderNumber == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
                 if (filter.IsAdditional.HasValue)
                 {
                     qry = qry.Where(x => x.IsAdditional == filter.IsAdditional);
                 }
 
-                if (filter.IsDeleted.HasValue)
+                if (filter.IsWorkedOut.HasValue)
+                {
+                    qry = qry.Where(x => (x.IsWorkedOut ?? true) == filter.IsWorkedOut);
+                }
+
+                if (!filter.IsAllDeleted)
                 {
                     qry = qry.Where(x => x.IsDeleted == filter.IsDeleted);
                 }
 
-                if (filter.IsMainVersion.HasValue)
+                if (!filter.IsAllVersion)
                 {
                     qry = qry.Where(x => x.IsMainVersion == filter.IsMainVersion);
-                }
-
-                if (filter.IsLastVersion.HasValue)
-                {
-                    qry = qry.Where(x => x.IsLastVersion == filter.IsLastVersion);
                 }
             }
 
@@ -155,7 +164,9 @@ namespace BL.Database.Common
                           FileSize = file.FileSize,
                           IsAdditional = file.IsAdditional,
                           IsMainVersion = file.IsMainVersion,
-                          IsLastVersion = file.IsLastVersion,
+                          IsDeleted = file.IsDeleted,
+                          IsWorkedOut = file.IsWorkedOut ?? true,
+                          Description = file.Description,
                           Hash = file.Hash,
                           LastChangeDate = file.LastChangeDate,
                           LastChangeUserId = file.LastChangeUserId,
@@ -216,7 +227,6 @@ namespace BL.Database.Common
                     IsAdditional = x.IsAdditional,
 
                     IsMainVersion = x.IsMainVersion,
-                    IsLastVersion = x.IsLastVersion,
                     Description = x.Description,
                     IsDeleted = x.IsDeleted,
                     IsWorkedOut = x.IsWorkedOut,

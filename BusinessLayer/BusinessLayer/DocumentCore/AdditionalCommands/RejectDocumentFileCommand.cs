@@ -63,6 +63,8 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                 throw new UnknownDocumentFile();
             }
 
+            _file = _document.DocumentFiles.First();
+
             _context.SetCurrentPosition(Document.ExecutorPositionId);
 
             _admin.VerifyAccess(_context, CommandType);
@@ -77,7 +79,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override object Execute()
         {
-            _file.IsWorkedOut = false;
+            _file.IsWorkedOut = true;
             CommonDocumentUtilities.SetLastChange(_context, _file);
             _file.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, _file.DocumentId, EnumEventTypes.RejectDocumentFile, null, _file.Name + "." + _file.Extension, null, null, false, _file.ExecutorPositionId);
             _operationDb.UpdateFileOrVersion(_context, _file);
