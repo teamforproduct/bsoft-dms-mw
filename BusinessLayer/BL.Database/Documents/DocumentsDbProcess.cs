@@ -980,7 +980,7 @@ namespace BL.Database.Documents
                 {
                     docs = docs.OrderBy(x => filters.DocumentId.IndexOf(x.Id)).ToList();
                 }
-                else if (filters.FullTextSearchDocumentId.Count() > 0)
+                else if (filters.FullTextSearchDocumentId?.Count() > 0)
                 {
                     docs = docs.OrderBy(x => filters.FullTextSearchDocumentId.IndexOf(x.Id)).ToList();
                 }
