@@ -643,14 +643,13 @@ namespace BL.Database.Common
                 {
                     var skip = paging.PageSize * (paging.CurrentPage - 1);
                     var take = paging.PageSize;
-                    var skip1 = 0;
                     var take1 = paging.PageSize * (paging.CurrentPage - 1) + paging.PageSize;
 
                     waitsRes = waitsRes
                         .Skip(() => skip).Take(() => take);
 
-                    waitsRes = waitsRes1.Skip(() => skip1).Take(() => take1)
-                        .Concat(waitsRes2.Skip(() => skip1).Take(() => take1))
+                    waitsRes = waitsRes1.Take(() => take1)
+                        .Concat(waitsRes2.Take(() => take1))
                         .OrderBy(x => x.DueDate).Skip(() => skip).Take(() => take);
 
                 }

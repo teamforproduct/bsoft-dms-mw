@@ -30,6 +30,7 @@ namespace BL.Model.DocumentCore.IncomingModel
         public string Description { get; set; }
         /// <summary>
         /// Название файла
+        /// Только для изменения имени файла
         /// </summary>
         public string FileName { get; set; }
     }

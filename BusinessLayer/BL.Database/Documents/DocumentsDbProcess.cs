@@ -843,10 +843,7 @@ namespace BL.Database.Documents
 
                     if (!paging.IsAll)
                     {
-                        var skip = paging.PageSize * (paging.CurrentPage - 1);
-                        var take = paging.PageSize;
-
-                        docIds = docIds.Skip(skip).Take(take).ToList();
+                        docIds = docIds.Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize).ToList();
                     }
 
                     if (docIds.Count > 0)
@@ -884,10 +881,7 @@ namespace BL.Database.Documents
 
                         if (!paging.IsAll)
                         {
-                            var skip = paging.PageSize * (paging.CurrentPage - 1);
-                            var take = paging.PageSize;
-
-                            docIds = docIds.Skip(skip).Take(take).ToList();
+                            docIds = docIds.Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize).ToList();
                         }
                     }
 

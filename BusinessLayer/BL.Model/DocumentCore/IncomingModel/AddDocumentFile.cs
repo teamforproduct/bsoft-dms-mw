@@ -25,9 +25,9 @@ namespace BL.Model.DocumentCore.IncomingModel
         [IgnoreDataMember]
         public bool IsUseMainNameFile { get; set; }
         /// <summary>
-        /// Имя файла. Включая расширение
-        /// Только для добавления версии файла к файлу
+        /// Имя файла.
         /// </summary>
+        [IgnoreDataMember]
         public string FileName { get; set; }
         /// <summary>
         /// Тип файла.

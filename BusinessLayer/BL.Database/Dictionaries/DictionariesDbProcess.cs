@@ -54,7 +54,7 @@ namespace BL.Database.Dictionaries
                 var ddt = new DictionaryAgents
                 {
                     ClientId = context.CurrentClientId,
-                    Id=id,
+                    Id = id,
                     Name = agent.Name,
                     ResidentTypeId = agent.ResidentTypeId,
                     IsBank = (role == EnumDictionaryAgentTypes.isBank ? !agent.IsBank : agent.IsBank),
@@ -134,7 +134,7 @@ namespace BL.Database.Dictionaries
             {
                 var qry = dbContext.DictionaryAgentsSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
 
-               
+
 
                 // Список первичных ключей
                 if (filter.IDs?.Count > 0)
@@ -196,7 +196,9 @@ namespace BL.Database.Dictionaries
 
                     if (!paging.IsAll)
                     {
-                        qry = qry.Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
+                        var skip = paging.PageSize * (paging.CurrentPage - 1);
+                        var take = paging.PageSize;
+                        qry = qry.Skip(() => skip).Take(() => take);
                     }
                 }
 
@@ -270,7 +272,7 @@ namespace BL.Database.Dictionaries
                 var ddt = new DictionaryAgents
                 {
                     ClientId = context.CurrentClientId,
-                    Id=id,
+                    Id = id,
                     Name = newName,
                     ResidentTypeId = agent.ResidentTypeId,
                     IsBank = agent.IsBank,
@@ -860,7 +862,7 @@ namespace BL.Database.Dictionaries
                     IsActive = employee.IsActive
                 };
                 dbContext.DictionaryAgentEmployeesSet.Add(ddt);
-                UpdateAgentRole(context,ddt.Id,EnumDictionaryAgentTypes.isEmployee);
+                UpdateAgentRole(context, ddt.Id, EnumDictionaryAgentTypes.isEmployee);
 
                 CommonQueries.AddFullTextCashInfo(dbContext, ddt.Id, EnumObjects.DictionaryAgentEmployees, EnumOperationType.AddNew);
                 dbContext.SaveChanges();
@@ -983,7 +985,9 @@ namespace BL.Database.Dictionaries
 
                     if (!paging.IsAll)
                     {
-                        qry = qry.Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize);
+                        var skip = paging.PageSize * (paging.CurrentPage - 1);
+                        var take = paging.PageSize;
+                        qry = qry.Skip(() => skip).Take(() => take);
                     }
                 }
 
@@ -1570,8 +1574,8 @@ namespace BL.Database.Dictionaries
                         FirstName = t.FirstName,
                         LastName = t.LastName,
                         MiddleName = t.MiddleName,
-                        IsActive=t.IsActive,
-                        IsMale=t.IsMale
+                        IsActive = t.IsActive,
+                        IsMale = t.IsMale
                     })
 
                 }).ToList();
@@ -1892,9 +1896,9 @@ namespace BL.Database.Dictionaries
 
                 if (!string.IsNullOrEmpty(filter.MFOCodeExact))
                 {
-                    
-                    qry = qry.Where(x => x.MFOCode==filter.MFOCodeExact);
-                    
+
+                    qry = qry.Where(x => x.MFOCode == filter.MFOCodeExact);
+
                 }
 
                 if (!string.IsNullOrEmpty(filter.NameExact))
