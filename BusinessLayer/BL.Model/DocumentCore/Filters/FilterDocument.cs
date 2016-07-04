@@ -104,7 +104,7 @@ namespace BL.Model.DocumentCore.Filters
         /// <summary>
         /// Массив ИД подписантов по документу
         /// </summary>
-        public List<int> SubscriptionrDepartmentId { get; set; }
+        public List<int> SubscriptionDepartmentId { get; set; }
 
         #region Event
         /// <summary>

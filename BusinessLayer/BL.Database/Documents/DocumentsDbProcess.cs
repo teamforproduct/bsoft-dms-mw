@@ -63,6 +63,8 @@ namespace BL.Database.Documents
             {
 
                 var acc = CommonQueries.GetDocumentAccesses(ctx, dbContext);
+
+                #region Base
                 if (filters.IsInWork.HasValue)
                 {
                     acc = acc.Where(x => x.IsInWork == filters.IsInWork);
@@ -81,8 +83,11 @@ namespace BL.Database.Documents
 
                     acc = acc.Where(filterContains);
                 }
+                #endregion Base
+
                 var qry = CommonQueries.GetDocumentQuery(dbContext, ctx, acc);
                 qry = qry.Where(x => x.IsRegistered.HasValue);
+
                 #region DocumentsSetFilter
 
                 #region Base
@@ -274,153 +279,151 @@ namespace BL.Database.Documents
                 #region Subscription
                 if ((filters.SubscriptionPositionId?.Count() > 0) ||
                     (filters.SubscriptionPositionExecutorAgentId?.Count() > 0) ||
-                    (filters.SubscriptionrDepartmentId?.Count() > 0))
+                    (filters.SubscriptionDepartmentId?.Count() > 0))
                 {
-                    //TODO Contains
-                    var qryTmp = from Doc in qry
-                                 join ds in dbContext.DocumentSubscriptionsSet on Doc.Id equals ds.DocumentId
-                                 join de in dbContext.DocumentEventsSet on ds.DoneEventId equals de.Id
-                                 join dpos in dbContext.DictionaryPositionsSet on de.SourcePositionId equals dpos.Id into dpos
-                                 from dp in dpos.DefaultIfEmpty()
-                                 where ds.DoneEventId.HasValue && ds.SubscriptionStateId == (int)EnumSubscriptionStates.Sign || ds.SubscriptionStateId == (int)EnumSubscriptionStates.Visa || ds.SubscriptionStateId == (int)EnumSubscriptionStates.Аgreement || ds.SubscriptionStateId == (int)EnumSubscriptionStates.Аpproval
-                                 select new { Doc, ds, de, dp };
+                    var filterContains = PredicateBuilder.False<DocumentSubscriptions>();
+                    filterContains = new List<int> { (int)EnumSubscriptionStates.Sign, (int)EnumSubscriptionStates.Visa, (int)EnumSubscriptionStates.Аgreement, (int)EnumSubscriptionStates.Аpproval }
+                        .Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.SubscriptionStateId == value).Expand());
+                    //TODO Проверить нужен ли параметр Subscription.DoneEventId.HasValue, Subscriptionю.SourcePositionId.HasValue
+                    //Не забывать про условие Subscription.DoneEventId.HasValue
 
                     if (filters.SubscriptionPositionId?.Count() > 0)
                     {
-                        //TODO Contains
-                        qryTmp = qryTmp.Where(x => x.de.SourcePositionId.HasValue && filters.SubscriptionPositionId.Contains(x.de.SourcePositionId.Value));
+                        var filterContainsSubscriptionPositionId = PredicateBuilder.False<DocumentSubscriptions>();
+                        filterContainsSubscriptionPositionId = filters.SubscriptionPositionId.Aggregate(filterContainsSubscriptionPositionId,
+                            (current, value) => current.Or(e => e.DoneEvent.SourcePositionId == value).Expand());
+
+                        qry = qry.Where(x =>
+                                    x.Subscriptions.AsQueryable().Where(filterContains)
+                                        .Any(filterContainsSubscriptionPositionId));
                     }
 
                     if (filters.SubscriptionPositionExecutorAgentId?.Count() > 0)
                     {
-                        //TODO Contains
-                        qryTmp = qryTmp.Where(x => x.de.SourcePositionExecutorAgentId.HasValue && filters.SubscriptionPositionExecutorAgentId.Contains(x.de.SourcePositionExecutorAgentId.Value));
+                        var filterContainsSubscriptionPositionExecutorAgentId = PredicateBuilder.False<DocumentSubscriptions>();
+                        filterContainsSubscriptionPositionExecutorAgentId = filters.SubscriptionPositionExecutorAgentId.Aggregate(filterContainsSubscriptionPositionExecutorAgentId,
+                            (current, value) => current.Or(e => e.DoneEvent.SourcePositionExecutorAgentId == value).Expand());
+
+                        qry = qry.Where(x =>
+                                    x.Subscriptions.AsQueryable().Where(filterContains)
+                                        .Any(filterContainsSubscriptionPositionExecutorAgentId));
                     }
 
-                    if (filters.SubscriptionrDepartmentId?.Count() > 0)
+                    if (filters.SubscriptionDepartmentId?.Count() > 0)
                     {
-                        //TODO Contains
-                        qryTmp = qryTmp.Where(x => x.de.SourcePositionId.HasValue && filters.SubscriptionrDepartmentId.Contains(x.dp.DepartmentId));
-                    }
+                        var filterContainsSubscriptionDepartmentId = PredicateBuilder.False<DocumentSubscriptions>();
+                        filterContainsSubscriptionDepartmentId = filters.SubscriptionDepartmentId.Aggregate(filterContainsSubscriptionDepartmentId,
+                            (current, value) => current.Or(e => e.DoneEvent.SourcePosition.DepartmentId == value).Expand());
 
-                    qry = qryTmp.GroupBy(x => x.Doc).Select(x => x.Key);
+                        qry = qry.Where(x =>
+                                    x.Subscriptions.AsQueryable().Where(filterContains)
+                                        .Any(filterContainsSubscriptionDepartmentId));
+                    }
                 }
                 #endregion Subscription
 
                 #region Event
-                if (filters.EventIsNew.HasValue
-                    || filters.EventFromDate.HasValue
-                    || filters.EventToDate.HasValue
-                    || (filters.EventTypeId?.Count() > 0)
-                    || (filters.EventImportanceEventTypeId?.Count() > 0)
-                    || !string.IsNullOrEmpty(filters.EventDescription)
-                    || (filters.EventPositionId?.Count() > 0)
-                    || (filters.EventPositionExecutorAgentId?.Count() > 0)
-                    || (filters.EventAgentId?.Count() > 0))
+                //Проверка как в дип евент на доступы
+
+                //TODO Должно соответсвовать всем или хотябы одному
+                if (filters.EventIsNew.HasValue)
                 {
-                    var qryTmp = from Doc in qry
-                                 join de in dbContext.DocumentEventsSet on Doc.Id equals de.DocumentId
-                                 join det in dbContext.DictionaryEventTypesSet on de.EventTypeId equals det.Id
-                                 join SourcePos in dbContext.DictionaryPositionsSet on de.SourcePositionId equals SourcePos.Id into SourcePos
-                                 from DSourcePos in SourcePos.DefaultIfEmpty()
-                                 join TargetPos in dbContext.DictionaryPositionsSet on de.TargetPositionId equals TargetPos.Id into TargetPos
-                                 from DTargetPos in TargetPos.DefaultIfEmpty()
-                                 select new { Doc, de, det, DSourcePos, DTargetPos };
-                    if (filters.EventIsNew.HasValue)
+                    //taget position curent position
+                    if (filters.EventIsNew.Value)
                     {
-                        if (filters.EventIsNew.Value)
-                        {
-                            qryTmp = qryTmp.Where(x => !x.de.ReadDate.HasValue);
-                        }
-                        else
-                        {
-                            qryTmp = qryTmp.Where(x => x.de.ReadDate.HasValue);
-                        }
+                        qry = qry.Where(x => x.Events.Any(y=>!y.ReadDate.HasValue));
                     }
-
-                    if (filters.EventFromDate.HasValue)
+                    else
                     {
-                        qryTmp = qryTmp.Where(x => x.de.CreateDate >= filters.EventFromDate.Value);
+                        qry = qry.Where(x => x.Events.Any(y => y.ReadDate.HasValue));
                     }
+                }
 
-                    if (filters.EventToDate.HasValue)
-                    {
-                        qryTmp = qryTmp.Where(x => x.de.CreateDate <= filters.EventToDate.Value);
-                    }
+                if (filters.EventFromDate.HasValue)
+                {
+                    qry = qry.Where(x => x.Events.Any(y => y.CreateDate >= filters.EventFromDate.Value));
+                }
 
-                    if (filters.EventTypeId?.Count() > 0)
-                    {
-                        //TODO Contains
-                        qryTmp = qryTmp.Where(x => filters.EventTypeId.Contains(x.de.EventTypeId));
-                    }
+                if (filters.EventToDate.HasValue)
+                {
+                    qry = qry.Where(x => x.Events.Any(y => y.CreateDate <= filters.EventToDate.Value));
+                }
 
-                    if (filters.EventImportanceEventTypeId?.Count() > 0)
-                    {
-                        //TODO Contains
-                        qryTmp = qryTmp.Where(x => filters.EventImportanceEventTypeId.Contains(x.det.ImportanceEventTypeId));
-                    }
+                if (filters.EventTypeId?.Count() > 0)
+                {
+                    var filterContains = PredicateBuilder.False<DocumentEvents>();
+                    filterContains = filters.EventTypeId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.EventTypeId == value).Expand());
 
-                    if (!string.IsNullOrEmpty(filters.EventDescription))
-                    {
-                        qryTmp = qryTmp.Where(x => x.de.Description.Contains(filters.EventDescription));
-                    }
+                    qry = qry.Where(x => x.Events.AsQueryable().Any(filterContains));
+                }
 
-                    if (filters.EventPositionId?.Count() > 0)
-                    {
-                        //TODO Contains
-                        qryTmp = qryTmp.Where(x =>
-                            (x.de.SourcePositionId.HasValue && filters.EventPositionId.Contains(x.de.SourcePositionId.Value))
-                            || (x.de.TargetPositionId.HasValue && filters.EventPositionId.Contains(x.de.TargetPositionId.Value)));
-                    }
+                if (filters.EventImportanceEventTypeId?.Count() > 0)
+                {
+                    var filterContains = PredicateBuilder.False<DocumentEvents>();
+                    filterContains = filters.EventImportanceEventTypeId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.EventType.ImportanceEventTypeId == value).Expand());
 
-                    if (filters.EventPositionExecutorAgentId?.Count() > 0)
-                    {
-                        //TODO Contains
-                        qryTmp = qryTmp.Where(x =>
-                            (x.de.SourcePositionExecutorAgentId.HasValue && filters.EventPositionExecutorAgentId.Contains(x.de.SourcePositionExecutorAgentId.Value))
-                            || (x.de.TargetPositionExecutorAgentId.HasValue && filters.EventPositionExecutorAgentId.Contains(x.de.TargetPositionExecutorAgentId.Value)));
-                    }
+                    qry = qry.Where(x => x.Events.AsQueryable().Any(filterContains));
+                }
 
-                    if (filters.EventDepartmentId?.Count() > 0)
-                    {
-                        //TODO Contains
-                        qryTmp = qryTmp.Where(x =>
-                            (x.de.SourcePositionId.HasValue && filters.EventDepartmentId.Contains(x.DSourcePos.DepartmentId))
-                            || (x.de.TargetPositionId.HasValue && filters.EventDepartmentId.Contains(x.DTargetPos.DepartmentId)));
-                    }
+                if (!string.IsNullOrEmpty(filters.EventDescription))
+                {
+                    qry = qry.Where(x => x.Events.Any(y=>y.Description.Contains(filters.EventDescription)));
+                }
 
-                    if (filters.EventAgentId?.Count() > 0)
-                    {
-                        //TODO Contains
-                        qryTmp = qryTmp.Where(x =>
-                            (x.de.TargetAgentId.HasValue && filters.EventAgentId.Contains(x.de.SourceAgentId.Value))
-                            || (x.de.TargetAgentId.HasValue && filters.EventAgentId.Contains(x.de.TargetAgentId.Value)));
-                    }
+                if (filters.EventPositionId?.Count() > 0)
+                {
+                    var filterContains = PredicateBuilder.False<DocumentEvents>();
+                    filterContains = filters.EventPositionId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.SourcePositionId == value || e.TargetPositionId == value).Expand());
 
-                    qry = qryTmp.GroupBy(x => x.Doc).Select(x => x.Key);
+                    qry = qry.Where(x => x.Events.AsQueryable().Any(filterContains));
+                }
+
+                if (filters.EventPositionExecutorAgentId?.Count() > 0)
+                {
+                    var filterContains = PredicateBuilder.False<DocumentEvents>();
+                    filterContains = filters.EventPositionExecutorAgentId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.SourcePositionExecutorAgentId == value || e.TargetPositionExecutorAgentId == value).Expand());
+
+                    qry = qry.Where(x => x.Events.AsQueryable().Any(filterContains));
+                }
+
+                if (filters.EventAgentId?.Count() > 0)
+                {
+                    var filterContains = PredicateBuilder.False<DocumentEvents>();
+                    filterContains = filters.EventAgentId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.TargetAgentId == value || e.TargetAgentId == value).Expand());
+
+                    qry = qry.Where(x => x.Events.AsQueryable().Any(filterContains));
+                }
+
+                if (filters.EventDepartmentId?.Count() > 0)
+                {
+                    var filterContains = PredicateBuilder.False<DocumentEvents>();
+                    filterContains = filters.EventDepartmentId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.SourcePosition.DepartmentId == value || e.TargetPosition.DepartmentId == value).Expand());
+
+                    qry = qry.Where(x => x.Events.AsQueryable().Any(filterContains));
                 }
                 #endregion Event
 
                 #region Task
-                if ((filters.TaskId?.Count() > 0) ||
-                    !string.IsNullOrEmpty(filters.TaskDescription))
+                //TODO Должно соответсвовать всем или хотябы одному
+                if (filters.TaskId?.Count() > 0)
                 {
-                    var qryTmp = from Doc in qry
-                                 join dt in dbContext.DocumentTasksSet on Doc.Id equals dt.DocumentId
-                                 select new { Doc, dt };
+                    var filterContains = PredicateBuilder.False<DocumentTasks>();
+                    filterContains = filters.TaskId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
 
-                    if (filters.TaskId?.Count() > 0)
-                    {
-                        //TODO Contains
-                        qryTmp = qryTmp.Where(x => filters.TaskId.Contains(x.dt.Id));
-                    }
+                    qry = qry.Where(x => x.Tasks.AsQueryable().Any(filterContains));
+                }
 
-                    if (!string.IsNullOrEmpty(filters.TaskDescription))
-                    {
-                        qryTmp = qryTmp.Where(x => x.dt.Task.Contains(filters.TaskDescription));
-                    }
-
-                    qry = qryTmp.GroupBy(x => x.Doc).Select(x => x.Key);
+                if (!string.IsNullOrEmpty(filters.TaskDescription))
+                {
+                    qry = qry.Where(x => x.Tasks.Any(y=>y.Task.Contains(filters.TaskDescription)));
                 }
                 #endregion Task
 
@@ -451,10 +454,28 @@ namespace BL.Database.Documents
 
                 //TODO Перепроверить
                 #region Wait
-                if (filters.WaitDueDateFromDate.HasValue
-                    || filters.WaitDueDateToDate.HasValue
-                    || filters.WaitCreateFromDate.HasValue
-                    || filters.WaitCreateToDate.HasValue)
+
+                if (filters.WaitDueDateFromDate.HasValue)
+                {
+                    qry = qry.Where(x => x.Waits.Any(y=>y.DueDate >= filters.WaitDueDateFromDate.Value));
+                }
+
+                if (filters.WaitDueDateToDate.HasValue)
+                {
+                    qry = qry.Where(x => x.Waits.Any(y => y.DueDate <= filters.WaitDueDateToDate.Value));
+                }
+
+                if (filters.WaitCreateFromDate.HasValue)
+                {
+                    qry = qry.Where(x => x.Waits.Any(y => y.OnEvent.Date >= filters.WaitCreateFromDate.Value));
+                }
+
+                if (filters.WaitCreateToDate.HasValue)
+                {
+                    qry = qry.Where(x => x.Waits.Any(y => y.OnEvent.Date <= filters.WaitCreateToDate.Value));
+                }
+
+                if (true)
                 {
                     var qryTmp = from Doc in qry
                                  join Wait in dbContext.DocumentWaitsSet on Doc.Id equals Wait.DocumentId
@@ -464,26 +485,6 @@ namespace BL.Database.Documents
                                  join WaitOnEventTargetPos in dbContext.DictionaryPositionsSet on WaitOnEvent.TargetPositionId equals WaitOnEventTargetPos.Id into WaitOnEventTargetPos
                                  from DWaitOnEventTargetPos in WaitOnEventTargetPos.DefaultIfEmpty()
                                  select new { Doc, Wait, WaitOnEvent, DWaitOnEventSourcePos, DWaitOnEventTargetPos };
-
-                    if (filters.WaitDueDateFromDate.HasValue)
-                    {
-                        qryTmp = qryTmp.Where(x => x.Wait.DueDate >= filters.WaitDueDateFromDate.Value);
-                    }
-
-                    if (filters.WaitDueDateToDate.HasValue)
-                    {
-                        qryTmp = qryTmp.Where(x => x.Wait.DueDate <= filters.WaitDueDateToDate.Value);
-                    }
-
-                    if (filters.WaitCreateFromDate.HasValue)
-                    {
-                        qryTmp = qryTmp.Where(x => x.WaitOnEvent.Date >= filters.WaitCreateFromDate.Value);
-                    }
-
-                    if (filters.WaitCreateToDate.HasValue)
-                    {
-                        qryTmp = qryTmp.Where(x => x.WaitOnEvent.Date <= filters.WaitCreateToDate.Value);
-                    }
 
                     #region Вид контроля
 
@@ -546,7 +547,7 @@ namespace BL.Database.Documents
                             }
                             else
                             {
-                                qryTmpUnion = qryTmpUnion.Union(qryTmpControl);
+                                qryTmpUnion = qryTmpUnion.Concat(qryTmpControl);
                             }
                         }
 
@@ -1004,10 +1005,10 @@ namespace BL.Database.Documents
                     }
                 }
 
-                docs.GroupJoin(CommonQueries.GetDocumentTags(dbContext, ctx, new FilterDocumentTag { DocumentId = docs.Select(x => x.Id).ToList(), CurrentPositionsId = ctx.CurrentPositionsIdList }),
+                docs = docs.GroupJoin(CommonQueries.GetDocumentTags(dbContext, ctx, new FilterDocumentTag { DocumentId = docs.Select(x => x.Id).ToList(), CurrentPositionsId = ctx.CurrentPositionsIdList }),
                     d => d.Id,
                     t => t.DocumentId,
-                    (d, t) => d.DocumentTags = t);
+                    (d, t) => { d.DocumentTags = t.ToList(); return d; }).ToList();
 
                 return docs;
             }
