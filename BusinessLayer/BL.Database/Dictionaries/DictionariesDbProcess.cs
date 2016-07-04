@@ -1198,7 +1198,11 @@ namespace BL.Database.Dictionaries
 
                 if (addresses.Any())
                 {
-                    qry = qry.Where(x => addresses.Contains(x.Id));
+                    var filterContains = PredicateBuilder.False<DictionaryAgentAddresses>();
+                    filterContains = addresses.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    qry = qry.Where(filterContains);
                 }
 
                 return qry.Select(x => x.AgentId).ToList();
@@ -2451,11 +2455,15 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context))
             {
-                var qry = dbContext.DictionaryAgentAddressesSet.Where(x => x.Agent.ClientId == context.CurrentClientId).AsQueryable();
+                var qry = dbContext.DictionaryAgentContactsSet.Where(x => x.Agent.ClientId == context.CurrentClientId).AsQueryable();
 
                 if (contacts.Any())
                 {
-                    qry = qry.Where(x => contacts.Contains(x.Id));
+                    var filterContains = PredicateBuilder.False<DictionaryAgentContacts>();
+                    filterContains = contacts.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    qry = qry.Where(filterContains);
                 }
 
                 return qry.Select(x => x.AgentId).ToList();
@@ -3537,7 +3545,6 @@ namespace BL.Database.Dictionaries
                     filterContains = filter.DocumentIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.DocumentId == value).Expand());
 
-                    //TODO Contains
                     qry = qry.Where(x =>
                             dbContext.DocumentEventsSet.Where(y => y.Document.TemplateDocument.ClientId == context.CurrentClientId)
                                 .Where(filterContains).Select(y => y.SourcePositionId).Contains(x.pos.Id)
@@ -3625,7 +3632,6 @@ namespace BL.Database.Dictionaries
                     filterContains = filter.DocumentIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.DocumentId == value).Expand());
 
-                    //TODO Contains
                     qry = qry.Where(x =>
                             dbContext.DocumentEventsSet.Where(y => y.Document.TemplateDocument.ClientId == context.CurrentClientId)
                                 .Where(filterContains).Select(y => y.SourcePositionId).Contains(x.pos.Id)

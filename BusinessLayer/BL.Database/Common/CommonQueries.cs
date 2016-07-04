@@ -732,12 +732,18 @@ namespace BL.Database.Common
                         ReadDate = x.OnEvent.ReadDate,
                         SourceAgentName = x.OffEvent.SourceAgent.Name,
 
-                        SourcePositionName = null,
-                        TargetPositionName = null,
-                        SourcePositionExecutorNowAgentName = null,
-                        TargetPositionExecutorNowAgentName = null,
-                        SourcePositionExecutorAgentPhoneNumber = null,
-                        TargetPositionExecutorAgentPhoneNumber = null,
+                        //SourcePositionName = null,
+                        //TargetPositionName = null,
+                        //SourcePositionExecutorNowAgentName = null,
+                        //TargetPositionExecutorNowAgentName = null,
+                        //SourcePositionExecutorAgentPhoneNumber = null,
+                        //TargetPositionExecutorAgentPhoneNumber = null,
+                        SourcePositionName = x.OffEvent.SourcePosition.Name,
+                        TargetPositionName = x.OffEvent.TargetPosition.Name,
+                        SourcePositionExecutorNowAgentName = x.OffEvent.SourcePosition.ExecutorAgent.Name,
+                        TargetPositionExecutorNowAgentName = x.OffEvent.TargetPosition.ExecutorAgent.Name,
+                        SourcePositionExecutorAgentPhoneNumber = "(888)888-88-88", //TODO 
+                        TargetPositionExecutorAgentPhoneNumber = "(888)888-88-88", //TODO 
 
                     }
                 });
