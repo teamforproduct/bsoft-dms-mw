@@ -727,12 +727,16 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context))
             {
+                var tmp = dbContext.DictionaryAgentEmployeesSet.AsEnumerable();
+                    
+                if (!tmp.Any())
+                {
+                    return new FrontDictionaryAgentEmployee {PersonnelNumber = "1"};
+                }
+
                 return new FrontDictionaryAgentEmployee
                 {
-                    PersonnelNumber = (
-                    dbContext.DictionaryAgentEmployeesSet
-                    .AsEnumerable()
-                    .Max(y => Convert.ToInt32(y.PersonnelNumber)) + 1).ToString()
+                    PersonnelNumber = (tmp.Max(y => Convert.ToInt32(y.PersonnelNumber))+1).ToString()
                 };
             }
         }
