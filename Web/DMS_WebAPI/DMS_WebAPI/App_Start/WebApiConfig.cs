@@ -37,7 +37,7 @@ namespace DMS_WebAPI
             //XmlDocumentationProvider модифицирован в ручную, при обновлении пакетов нужно следить за этим  класcом
             //Необходим для того что бы отображалась в Api Help полная документация
 
-            config.SetDocumentationProvider(new XmlDocumentationProvider(HttpContext.Current.Server.MapPath("~/bin"), new string[] { "BL.Model.XML", "DMS_WebAPI.XML" }));
+            config.SetDocumentationProvider(new XmlDocumentationProvider(HttpContext.Current.Server.MapPath("~/App_Data/Documentation/"), new string[] { "BL.Model.XML", "DMS_WebAPI.XML" }));
             //config.SetDocumentationProvider(new XmlDocumentationProvider(HttpContext.Current.Server.MapPath("~/bin")));
         }
     }
