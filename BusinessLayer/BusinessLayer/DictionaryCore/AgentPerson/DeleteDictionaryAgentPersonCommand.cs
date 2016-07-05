@@ -28,11 +28,11 @@ namespace BL.Logic.DictionaryCore
         public override bool CanExecute()
         {
 
-            var agent = _dictDb.GetAgent(_context, Model);
-            if (agent.IsEmployee )
-            {
-                throw new DictionaryRecordCouldNotBeDeleted();
-            }
+           // var agent = _dictDb.GetAgent(_context, Model);
+           // if (agent.IsEmployee )
+           // {
+           //     throw new DictionaryRecordCouldNotBeDeleted();
+           // }
 
             _admin.VerifyAccess(_context, CommandType,false,true);
             return true;

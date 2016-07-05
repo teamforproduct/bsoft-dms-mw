@@ -588,7 +588,15 @@ namespace BL.Database.Dictionaries
                 var ddt = dbContext.DictionaryAgentPersonsSet.Where(x => x.Agent.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == person.Id);
                 if (ddt != null)
                 {
-                    dbContext.DictionaryAgentPersonsSet.Remove(ddt);
+                    if (ddt.Agent.IsEmployee)
+                    {
+                        UpdateAgentRole(context, person.Id, EnumDictionaryAgentTypes.isIndividual);
+                    }
+                    else
+                    {
+                        dbContext.DictionaryAgentPersonsSet.Remove(ddt);
+                    }
+
                     dbContext.SaveChanges();
 
                     var agent = GetAgent(context, person.Id);
@@ -596,10 +604,6 @@ namespace BL.Database.Dictionaries
                     if ((!agent.IsCompany && !agent.IsEmployee && !agent.IsBank))
                     {
                         DeleteAgent(context, new InternalDictionaryAgent { Id = person.Id });
-                    }
-                    else
-                    {
-                        UpdateAgentRole(context, person.Id, EnumDictionaryAgentTypes.isIndividual);
                     }
 
                     CommonQueries.AddFullTextCashInfo(dbContext, person.Id, EnumObjects.DictionaryAgentPersons, EnumOperationType.Delete);
