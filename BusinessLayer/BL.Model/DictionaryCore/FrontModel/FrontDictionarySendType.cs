@@ -41,5 +41,9 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// Название типа субординации
         /// </summary>
         public string SubordinationTypeName { get; set; }
+        /// <summary>
+        /// Рассылка за пределы орагнизации
+        /// </summary>
+        public bool IsExternal { get; set; }
     }
 }

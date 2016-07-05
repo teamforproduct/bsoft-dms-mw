@@ -71,5 +71,10 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// Название уровня доступа
         /// </summary>
         public string AccessLevelName { get; set; }
+        /// <summary>
+        /// Тип рассылки
+        /// </summary>
+        public bool SendTypeIsExternal { get; set; }
+
     }
 }
