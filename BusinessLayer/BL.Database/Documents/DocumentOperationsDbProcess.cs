@@ -686,7 +686,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                return CommonQueries.GetDocumentEventsQuery(ctx, dbContext).Where(x => x.Id == eventId)
+                return CommonQueries.GetDocumentEventQuery(ctx, dbContext, new FilterDocumentEvent { EventId = new List<int> { eventId } })
                     .Select(x => new FrontDocumentEvent
                     {
                         Id = x.Id,
@@ -711,182 +711,15 @@ namespace BL.Database.Documents
             }
         }
 
-        public IEnumerable<FrontDocumentEvent> GetDocumentEvents(IContext ctx, FilterDocumentEvent filter, UIPaging paging)
+        public IEnumerable<FrontDocumentEvent> GetDocumentEvents(IContext ctx, FilterBase filter, UIPaging paging)
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                var qry = CommonQueries.GetDocumentEventsQuery(ctx, dbContext);
-
-                #region filters
-                if (filter != null)
-                {
-                    if (filter.EventId?.Count > 0)
-                    {
-                        var filterContains = PredicateBuilder.False<DocumentEvents>();
-                        filterContains = filter.EventId.Aggregate(filterContains,
-                            (current, value) => current.Or(e => e.Id == value).Expand());
-
-                        qry = qry.Where(filterContains);
-                    }
-
-                    if (filter.DocumentId.HasValue)
-                    {
-                        qry = qry.Where(x => filter.DocumentId.Value == x.DocumentId);
-                    }
-
-                    if (filter.ListDocumentId?.Count > 0)
-                    {
-                        var filterContains = PredicateBuilder.False<DocumentEvents>();
-                        filterContains = filter.ListDocumentId.Aggregate(filterContains,
-                            (current, value) => current.Or(e => e.DocumentId == value).Expand());
-
-                        qry = qry.Where(filterContains);
-                    }
-
-                    if (!String.IsNullOrEmpty(filter.Description))
-                    {
-                        qry = qry.Where(x => x.Description.Contains(filter.Description));
-                    }
-
-                    if (filter.EventType?.Count > 0)
-                    {
-                        var filterContains = PredicateBuilder.False<DocumentEvents>();
-                        filterContains = filter.EventType.Aggregate(filterContains,
-                            (current, value) => current.Or(e => (EnumEventTypes)e.EventTypeId == value).Expand());
-
-                        qry = qry.Where(filterContains);
-                    }
-
-                    if (filter.Importance?.Count > 0)
-                    {
-                        var filterContains = PredicateBuilder.False<DocumentEvents>();
-                        filterContains = filter.Importance.Aggregate(filterContains,
-                            (current, value) => current.Or(e => (EnumImportanceEventTypes)e.EventType.ImportanceEventTypeId == value).Expand());
-
-                        qry = qry.Where(filterContains);
-                    }
-
-                    if (filter.AgentId?.Count > 0)
-                    {
-                        var filterContains = PredicateBuilder.False<DocumentEvents>();
-                        filterContains = filter.AgentId.Aggregate(filterContains,
-                            (current, value) => current.Or(e =>
-                                e.TargetAgentId == value
-                                || e.SourceAgentId == value
-                                || e.ReadAgentId == value
-                                || e.SourcePositionExecutorAgentId == value
-                                || e.TargetPositionExecutorAgentId == value
-                                ).Expand());
-
-                        qry = qry.Where(filterContains);
-                    }
-
-                    if (filter.PositionId?.Count > 0)
-                    {
-                        var filterContains = PredicateBuilder.False<DocumentEvents>();
-                        filterContains = filter.PositionId.Aggregate(filterContains,
-                            (current, value) => current.Or(e =>
-                                e.SourcePositionId == value
-                                || e.TargetPositionId == value
-                                ).Expand());
-
-                        qry = qry.Where(filterContains);
-                    }
-                }
-                #endregion
-                qry = qry.OrderByDescending(x => x.LastChangeDate);
-                if (paging != null)
-                {
-                    if (paging.IsOnlyCounter ?? true)
-                    {
-                        var filterContains = PredicateBuilder.False<DocumentEvents>();
-                        filterContains = ctx.CurrentPositionsIdList.Aggregate(filterContains,
-                            (current, value) => current.Or(e => e.TargetPositionId == value).Expand());
-
-                        paging.Counters = new UICounters
-                        {
-                            Counter1 = qry.Where(filterContains).Count(x => !x.ReadDate.HasValue && x.TargetPositionId != x.SourcePositionId),
-                            Counter3 = qry.Count(),
-                        };
-
-                        paging.TotalItemsCount = paging.Counters.Counter3.GetValueOrDefault();
-                    }
-
-                    if (paging.IsOnlyCounter ?? false)
-                    {
-                        return new List<FrontDocumentEvent>();
-                    }
-
-                    if (!paging.IsAll)
-                    {
-                        var skip = paging.PageSize * (paging.CurrentPage - 1);
-                        var take = paging.PageSize;
-
-                        qry = qry.Skip(() => skip).Take(() => take);
-                    }
-                }
-
-                var maxDateTime = DateTime.Now.AddYears(50);
-
-                var qryFE = qry.Select(x => new FrontDocumentEvent
-                {
-                    Id = x.Id,
-                    DocumentId = x.DocumentId,
-                    EventType = x.EventTypeId,
-                    EventTypeName = x.EventType.Name,
-                    Date = x.Date,
-                    CreateDate = x.Date != x.CreateDate ? (DateTime?)x.CreateDate : null,
-                    Task = x.Task.Task,
-                    Description = x.Description,
-                    AddDescription = x.AddDescription,
-
-                    SourcePositionExecutorAgentName = x.SourcePositionExecutorAgent.Name,
-                    TargetPositionExecutorAgentName = x.TargetPositionExecutorAgent.Name ?? x.TargetAgent.Name,
-
-                    DocumentDate = x.Document.LinkId.HasValue ? x.Document.RegistrationDate ?? x.Document.CreateDate : (DateTime?)null,
-                    RegistrationNumber = x.Document.LinkId.HasValue ? x.Document.RegistrationNumber : null,
-                    RegistrationNumberPrefix = x.Document.LinkId.HasValue ? x.Document.RegistrationNumberPrefix : null,
-                    RegistrationNumberSuffix = x.Document.LinkId.HasValue ? x.Document.RegistrationNumberSuffix : null,
-                    RegistrationFullNumber = x.Document.LinkId.HasValue ? "#" + x.Document.Id : null,
-
-                    DueDate = x.OnWait.FirstOrDefault() != null ? x.OnWait.FirstOrDefault().DueDate > maxDateTime ? null : x.OnWait.FirstOrDefault().DueDate: null,
-                    CloseDate = x.OnWait.FirstOrDefault() != null ? (DateTime?)x.OnWait.FirstOrDefault().OffEvent.Date : null,
-                    IsOnEvent = x.OnWait.FirstOrDefault() != null,
-
-                    //For IsRead
-                    TargetPositionId = x.TargetPositionId,
-                    SourcePositionId = x.SourcePositionId,
-                    ReadDate = x.ReadDate,
-
-                    PaperId = x.Paper.Id,
-                    PaperName = x.Paper.Name,
-                    PaperIsMain = x.Paper.IsMain,
-                    PaperIsOriginal = x.Paper.IsOriginal,
-                    PaperIsCopy = x.Paper.IsCopy,
-                    PaperOrderNumber = x.Paper.OrderNumber,
-
-                    PaperPlanDate = x.PaperPlanDate,
-                    PaperSendDate = x.PaperSendDate,
-                    PaperRecieveDate = x.PaperRecieveDate,
-                });
-
-                var res = qryFE.ToList();
-
-                res.ForEach(x =>
-                {
-                    x.IsRead = !x.TargetPositionId.HasValue || x.TargetPositionId == x.SourcePositionId || !ctx.CurrentPositionsIdList.Contains(x.TargetPositionId ?? 0) ? null : (bool?)x.ReadDate.HasValue;
-                    x.TargetPositionId = null;
-                    x.SourcePositionId = null;
-                    x.ReadDate = null;
-
-                    CommonQueries.ChangeRegistrationFullNumber(x);
-                });
-
-                return res;
+                return CommonQueries.GetDocumentEvents(ctx, dbContext, filter, paging).ToList();
             }
         }
 
-        public IEnumerable<FrontDocumentWait> GetDocumentWaits(IContext ctx, FilterDocumentWait filter, UIPaging paging)
+        public IEnumerable<FrontDocumentWait> GetDocumentWaits(IContext ctx, FilterBase filter, UIPaging paging)
         {
             using (var dbContext = new DmsContext(ctx))
             {
@@ -909,17 +742,8 @@ namespace BL.Database.Documents
                 if (model.EventIds == null)
                     return new List<InternalDocumentEvent>();
 
-                var qry = CommonQueries.GetDocumentEventsQuery(ctx, dbContext)
-                    .Where(x => !x.ReadDate.HasValue
-                                && x.TargetPositionId.HasValue && x.TargetPositionId != x.SourcePositionId);
-
-                {
-                    var filterContains = PredicateBuilder.False<DocumentEvents>();
-                    filterContains = model.EventIds.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.Id == value).Expand());
-
-                    qry = qry.Where(filterContains);
-                }
+                var qry = CommonQueries.GetDocumentEventQuery(ctx, dbContext, new FilterDocumentEvent { IsNew = true, EventId = model.EventIds })
+                    .Where(x=> x.TargetPositionId.HasValue && !(x.TargetPositionId == x.SourcePositionId));
 
                 if (!ctx.IsAdmin)
                 {

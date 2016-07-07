@@ -37,7 +37,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns></returns>
         [Route("GetFileList")]
         [HttpGet]
-        public IHttpActionResult GetFileList([FromUri]FilterDocumentAttachedFile filter, [FromUri]UIPaging paging)
+        public IHttpActionResult GetFileList([FromUri]FilterBase filter, [FromUri]UIPaging paging)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docFileProc = DmsResolver.Current.Get<IDocumentFileService>();
@@ -46,10 +46,6 @@ namespace DMS_WebAPI.Controllers.Documents
                 paging = new UIPaging();
             }
 
-            if (filter == null)
-            {
-                filter = new FilterDocumentAttachedFile();
-            }
             var res = new JsonResult(docFileProc.GetDocumentFiles(ctx, filter, paging), this);
             res.Paging = paging;
             return res;
@@ -74,7 +70,7 @@ namespace DMS_WebAPI.Controllers.Documents
 
 
             docProc.ExecuteAction(EnumDocumentActions.AddDocumentFile, ctx, model);
-            return GetFileList(new FilterDocumentAttachedFile { DocumentId = new List<int> { model.DocumentId } }, null);
+            return GetFileList(new FilterBase { File = new FilterDocumentFile { DocumentId = new List<int> { model.DocumentId } } }, null);
         }
 
         /// <summary>
@@ -89,7 +85,7 @@ namespace DMS_WebAPI.Controllers.Documents
 
             var fileId = (int)docProc.ExecuteAction(EnumDocumentActions.ModifyDocumentFile, ctx, model);
 
-            return GetFileList(new FilterDocumentAttachedFile { AttachedFileId = new List<int> { fileId }, IsAllDeleted = true, IsAllVersion = true }, null);
+            return GetFileList(new FilterBase { File = new FilterDocumentFile { FileId = new List<int> { fileId }, IsAllDeleted = true, IsAllVersion = true } }, null);
         }
 
         /// <summary>
@@ -105,7 +101,7 @@ namespace DMS_WebAPI.Controllers.Documents
 
             docProc.ExecuteAction(EnumDocumentActions.RenameDocumentFile, ctx, model);
 
-            return GetFileList(new FilterDocumentAttachedFile { DocumentId = new List<int> { model.DocumentId }, OrderInDocument = new List<int> { model.OrderInDocument }}, null);
+            return GetFileList(new FilterBase { File = new FilterDocumentFile { DocumentId = new List<int> { model.DocumentId }, OrderInDocument = new List<int> { model.OrderInDocument } } }, null);
         }
 
         /// <summary>
@@ -157,7 +153,7 @@ namespace DMS_WebAPI.Controllers.Documents
             model.IsUseMainNameFile = true;
 
             docProc.ExecuteAction(EnumDocumentActions.AddDocumentFileUseMainNameFile, ctx, model);
-            return GetFileList(new FilterDocumentAttachedFile { DocumentId = new List<int> { model.DocumentId } }, null);
+            return GetFileList(new FilterBase { File = new FilterDocumentFile { DocumentId = new List<int> { model.DocumentId } } }, null);
         }
 
         /// <summary>
@@ -173,7 +169,7 @@ namespace DMS_WebAPI.Controllers.Documents
             var docProc = DmsResolver.Current.Get<IDocumentService>();
 
             docProc.ExecuteAction(EnumDocumentActions.AcceptDocumentFile, ctx, model);
-            return GetFileList(new FilterDocumentAttachedFile { DocumentId = new List<int> { model.DocumentId } }, null);
+            return GetFileList(new FilterBase { File = new FilterDocumentFile { DocumentId = new List<int> { model.DocumentId } } }, null);
         }
 
         /// <summary>
@@ -189,7 +185,7 @@ namespace DMS_WebAPI.Controllers.Documents
             var docProc = DmsResolver.Current.Get<IDocumentService>();
 
             docProc.ExecuteAction(EnumDocumentActions.RejectDocumentFile, ctx, model);
-            return GetFileList(new FilterDocumentAttachedFile { DocumentId = new List<int> { model.DocumentId } }, null);
+            return GetFileList(new FilterBase { File = new FilterDocumentFile { DocumentId = new List<int> { model.DocumentId } } }, null);
         }
 
         /// <summary>

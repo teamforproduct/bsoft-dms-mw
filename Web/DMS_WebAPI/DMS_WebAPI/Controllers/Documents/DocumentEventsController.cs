@@ -20,7 +20,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <param name="paging">paging</param>
         /// <returns>список ивентов</returns>
         [ResponseType(typeof(FrontDocumentEvent))]
-        public IHttpActionResult Get([FromUri] FilterDocumentEvent filter, [FromUri]UIPaging paging)
+        public IHttpActionResult Get([FromUri] FilterBase filter, [FromUri]UIPaging paging)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();

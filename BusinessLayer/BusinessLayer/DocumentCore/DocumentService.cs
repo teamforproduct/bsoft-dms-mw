@@ -39,26 +39,26 @@ namespace BL.Logic.DocumentCore
             _documentDb.GetCountDocuments(ctx, licence);
         }
 
-        public IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging)
+        public IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterBase filter, UIPaging paging)
         {
-            if (!String.IsNullOrEmpty(filters.FullTextSearch))
+            if (!String.IsNullOrEmpty(filter?.Document?.FullTextSearch))
             {
                 var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
-                var ftRes = ftService.SearchDocument(ctx, filters.FullTextSearch);
+                var ftRes = ftService.SearchDocument(ctx, filter.Document.FullTextSearch);
                 if (ftRes != null)
                 {
                     var resWithRanges =
                         ftRes.GroupBy(x => x.DocumentId)
                             .Select(x => new { DocId = x.Key, Rate = x.Count() })
                             .OrderByDescending(x => x.Rate);
-                    filters.FullTextSearchDocumentId = resWithRanges.Select(x => x.DocId).ToList();
+                    filter.Document.FullTextSearchDocumentId = resWithRanges.Select(x => x.DocId).ToList();
                 }
                 else
                 {
-                    filters.FullTextSearchDocumentId = new List<int>();
+                    filter.Document.FullTextSearchDocumentId = new List<int>();
                 }
             }
-            return _documentDb.GetDocuments(ctx, filters, paging);
+            return _documentDb.GetDocuments(ctx, filter, paging);
         }
 
         public FrontDocument GetDocument(IContext ctx, int documentId, FilterDocumentById filter)
@@ -94,12 +94,12 @@ namespace BL.Logic.DocumentCore
             return _operationDb.GetDocumentEvent(ctx, eventId);
         }
 
-        public IEnumerable<FrontDocumentEvent> GetDocumentEvents(IContext ctx, FilterDocumentEvent filter, UIPaging paging)
+        public IEnumerable<FrontDocumentEvent> GetDocumentEvents(IContext ctx, FilterBase filter, UIPaging paging)
         {
             return _operationDb.GetDocumentEvents(ctx, filter, paging);
         }
 
-        public IEnumerable<FrontDocumentWait> GetDocumentWaits(IContext ctx, FilterDocumentWait filter, UIPaging paging)
+        public IEnumerable<FrontDocumentWait> GetDocumentWaits(IContext ctx, FilterBase filter, UIPaging paging)
         {
             return _operationDb.GetDocumentWaits(ctx, filter, paging);
         }
@@ -107,11 +107,6 @@ namespace BL.Logic.DocumentCore
         public IEnumerable<FrontDocumentSubscription> GetDocumentSubscriptions(IContext ctx, FilterDocumentSubscription filter, UIPaging paging)
         {
             return _operationDb.GetDocumentSubscriptions(ctx, filter, paging);
-        }
-
-        public IEnumerable<FrontDocumentEvent> GetEventsForDocument(IContext ctx, int documentId, UIPaging paging)
-        {
-            return _operationDb.GetDocumentEvents(ctx, new FilterDocumentEvent { DocumentId = documentId }, paging);
         }
 
         public FrontRegistrationFullNumber GetNextRegisterDocumentNumber(IContext ctx, RegisterDocumentBase model)

@@ -171,8 +171,12 @@
     <Compile Include="DocumentCore\Actions\PlanMovementPaper.cs" />
     <Compile Include="DocumentCore\Actions\PaperEvent.cs" />
     <Compile Include="DocumentCore\Actions\RegisterDocumentBase.cs" />
+    <Compile Include="DocumentCore\Filters\FilterBase.cs" />
+    <Compile Include="DocumentCore\Filters\FilterDocumentWait.cs" />
+    <Compile Include="DocumentCore\Filters\FilterDocumentFile.cs" />
+    <Compile Include="DocumentCore\Filters\FilterDocumentEvent.cs" />
+    <Compile Include="DocumentCore\Filters\FilterDocument.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentAccess.cs" />
-    <Compile Include="DocumentCore\Filters\FilterDocumentAttachedFile.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentFileIdentity.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentPaper.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentRestrictedSendList.cs" />
@@ -198,7 +202,6 @@
     <Compile Include="DocumentCore\Filters\FilterDocumentPaperList.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentTask.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentSendList.cs" />
-    <Compile Include="DocumentCore\Filters\FilterDocumentWait.cs" />
     <Compile Include="AdminCore\VerifyAccess.cs" />
     <Compile Include="AdminCore\VerifySubordination.cs" />
     <Compile Include="Common\LastChangeInfo.cs" />
@@ -298,7 +301,6 @@
     <Compile Include="DocumentCore\InternalModel\InternalTemplateDocument.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalTemplateDocumentRestrictedSendList.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalTemplateDocumentSendList.cs" />
-    <Compile Include="DocumentCore\Filters\FilterDocumentEvent.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocument.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentSavedFilter.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentSendListStage.cs" />
@@ -344,7 +346,6 @@
     <Compile Include="DocumentCore\FrontModel\FrontTemplateDocumentRestrictedSendLists.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontTemplateDocumentSendLists.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentAccess.cs" />
-    <Compile Include="DocumentCore\Filters\FilterDocument.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocument.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentRestrictedSendListByStandartSendList.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentRestrictedSendList.cs" />

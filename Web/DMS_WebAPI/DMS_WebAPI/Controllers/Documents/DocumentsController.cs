@@ -24,7 +24,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <param name="paging">paging</param>
         /// <returns></returns>
         [ResponseType(typeof(List<FrontDocument>))]
-        public IHttpActionResult Get([FromUri] FilterDocument filter, [FromUri]UIPaging paging)
+        public IHttpActionResult Get([FromUri] FilterBase filter, [FromUri]UIPaging paging)
         {
             //var timeM = new System.Diagnostics.Stopwatch();
             //var timeDB = new System.Diagnostics.Stopwatch();

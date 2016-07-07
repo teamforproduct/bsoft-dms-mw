@@ -11,14 +11,7 @@ namespace BL.Model.DocumentCore.Filters
     /// </summary>
     public class FilterDocument
     {
-        /// <summary>
-        /// Default constructor
-        /// </summary>
-        public FilterDocument()
-        {
-            //IsInWork = true;
-            DocumentId = new List<int>();
-        }
+
 
         /// <summary>
         /// Массив ИД документов
@@ -105,50 +98,6 @@ namespace BL.Model.DocumentCore.Filters
         /// Массив ИД подписантов по документу
         /// </summary>
         public List<int> SubscriptionDepartmentId { get; set; }
-
-        #region Event
-        /// <summary>
-        /// Отбор по событиям признаку прочтения Все/Только новые
-        /// </summary>
-        public bool? EventIsNew { get; set; }
-        /// <summary>
-        /// Дата "с" для отбора по дате событий документа
-        /// </summary>
-        public DateTime? EventFromDate { get; set; }
-        /// <summary>
-        /// Дата "по" для отбора по дате событий документа
-        /// </summary>
-        public DateTime? EventToDate { get; set; }
-        /// <summary>
-        /// Массив ИД типов событий
-        /// </summary>
-        public List<int> EventTypeId { get; set; }
-        /// <summary>
-        /// Массив ИД важности событий
-        /// </summary>
-        public List<int> EventImportanceEventTypeId { get; set; }
-        /// <summary>
-        /// Отрывок краткого содержания по событиям
-        /// </summary>
-        public string EventDescription { get; set; }
-
-        /// <summary>
-        /// Массив ИД отправителей или получателей событий по документу
-        /// </summary>
-        public List<int> EventPositionId { get; set; }
-        /// <summary>
-        /// Массив ИД отправителей или получателей событий по документу
-        /// </summary>
-        public List<int> EventPositionExecutorAgentId { get; set; }
-        /// <summary>
-        /// Массив ИД отправителей или получателей событий по документу
-        /// </summary>
-        public List<int> EventDepartmentId { get; set; }
-        /// <summary>
-        /// Массив ИД отправителей или получателей событий по документу
-        /// </summary>
-        public List<int> EventAgentId { get; set; }
-        #endregion Event
         /// <summary>
         /// Массив ИД Task по документу
         /// </summary>
@@ -166,102 +115,6 @@ namespace BL.Model.DocumentCore.Filters
         /// </summary>
         public string TagDescription { get; set; }
 
-        #region Wait
-        /// <summary>
-        /// Дата "с" для отбора по дате срока исполнения контроля документа
-        /// </summary>
-        public DateTime? WaitDueDateFromDate { get; set; }
-        /// <summary>
-        /// Дата "по" для отбора по дате срока исполнения контроля документа
-        /// </summary>
-        public DateTime? WaitDueDateToDate { get; set; }
-        /// <summary>
-        /// Дата "с" для отбора по дате возникновения  контроля документа
-        /// </summary>
-        public DateTime? WaitCreateFromDate { get; set; }
-        /// <summary>
-        /// Дата "по" для отбора по дате возникновения  контроля документа
-        /// </summary>
-        public DateTime? WaitCreateToDate { get; set; }
-        /// <summary>
-        /// Массив ИД отправителей контроля по документу
-        /// </summary>
-        public List<int> WaitControlToMePositionId { get; set; }
-        /// <summary>
-        /// Массив ИД отправителей контроля по документу
-        /// </summary>
-        public List<int> WaitControlToMePositionExecutorAgentId { get; set; }
-        /// <summary>
-        /// Массив ИД отправителей контроля по документу
-        /// </summary>
-        public List<int> WaitControlToMeDepartmentId { get; set; }
-        /// <summary>
-        /// Массив ИД получателей контроля по документу
-        /// </summary>
-        public List<int> WaitControlFromMePositionId { get; set; }
-        /// <summary>
-        /// Массив ИД получателей контроля по документу
-        /// </summary>
-        public List<int> WaitControlFromMePositionExecutorAgentId { get; set; }
-        /// <summary>
-        /// Массив ИД получателей контроля по документу
-        /// </summary>
-        public List<int> WaitControlFromMeDepartmentId { get; set; }
-        /// <summary>
-        /// Массив ИД получателей контроля по документу
-        /// </summary>
-        public List<int> WaitControlFromMeAgentId { get; set; }
-
-        /// <summary>
-        /// Самоконтроль. true - выполнять поиск иначе ничего не делаеться
-        /// </summary>
-        public bool? WaitIsSelfControl { get; set; }
-        /// <summary>
-        /// Поступившие на визирование. true - выполнять поиск иначе ничего не делаеться
-        /// </summary>
-        public bool? WaitIsVisaingToMe { get; set; }
-
-        /// <summary>
-        /// Отправленные на визирование. true - выполнять поиск иначе ничего не делаеться
-        /// </summary>
-        public bool? WaitIsVisaingFromMe { get; set; }
-        /// <summary>
-        /// Отчеты о выполнении. true - выполнять поиск иначе ничего не делаеться
-        /// </summary>
-        public bool? WaitIsMarkExecution { get; set; }
-
-        #endregion Wait
-
-        #region File
-        /// <summary>
-        /// Отрывок названия по File
-        /// </summary>
-        public string FileName { get; set; }
-        /// <summary>
-        /// Отрывок расширения по File
-        /// </summary>
-        public string FileExtension { get; set; }
-        /// <summary>
-        /// Число "с" для отбора по размеру файла документа
-        /// </summary>
-        public int? FileSizeFrom { get; set; }
-        /// <summary>
-        /// Число "по" для отбора по размеру файла документа
-        /// </summary>
-        public int? FileSizeTo { get; set; }
-        /// <summary>
-        /// Дата "с" для отбора по дате создания файла документа
-        /// </summary>
-        public DateTime? FileCreateFromDate { get; set; }
-        /// <summary>
-        /// Дата "по" для отбора по дате создания файла документа
-        /// </summary>
-        public DateTime? FileCreateToDate { get; set; }
-        /// <summary>
-        /// Массив ИД пользователей по документу
-        /// </summary>
-        public List<int> FileAgentId { get; set; }
-        #endregion File
         /// <summary>
         /// Массив ИД уровней доступа по документу
         /// </summary>
@@ -311,6 +164,9 @@ namespace BL.Model.DocumentCore.Filters
         /// </summary>
         public string FullTextSearch { get; set; }
 
+        /// <summary>
+        /// Фильтр по динамическим свойствам
+        /// </summary>
         public List<FilterPropertyByRecord> FilterProperties { get; set; }
 
         /// <summary>

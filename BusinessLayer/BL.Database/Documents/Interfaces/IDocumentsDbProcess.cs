@@ -17,7 +17,7 @@ namespace BL.Database.Documents.Interfaces
         void DeleteDocument(IContext context, int id);
 
         void GetCountDocuments(IContext ctx, LicenceInfo licence);
-        IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging);
+        IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterBase filters, UIPaging paging);
         FrontDocument GetDocument(IContext ctx, int documentId, FilterDocumentById filter);
 
         InternalDocument ReportRegistrationCardDocumentPrepare(IContext ctx, int documentId);
