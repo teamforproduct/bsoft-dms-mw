@@ -15,6 +15,8 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// Наименование
         /// </summary>
         public string Name { get; set; }
+
+        public string NameExact { get; set; }
         
     }
 }

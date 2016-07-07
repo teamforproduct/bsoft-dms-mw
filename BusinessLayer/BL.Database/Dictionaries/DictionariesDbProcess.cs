@@ -4650,6 +4650,13 @@ namespace BL.Database.Dictionaries
                     }
                 }
 
+                if (!string.IsNullOrEmpty(filter.NameExact))
+                {
+                    
+                    qry = qry.Where(x => x.Name==filter.NameExact);
+                    
+                }
+
                 if (filter.PositionID != null)
                 {
                     qry = qry.Where(x => filter.PositionID == x.PositionId);
