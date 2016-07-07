@@ -4355,7 +4355,8 @@ namespace BL.Database.Dictionaries
                         SubordinationType = (EnumSubordinationTypes)x.SubordinationTypeId,
                         LastChangeUserId = x.LastChangeUserId,
                         LastChangeDate = x.LastChangeDate,
-                        SubordinationTypeName = x.SubordinationType.Name
+                        SubordinationTypeName = x.SubordinationType.Name,
+                        IsExternal = x.Id==45 
                     }).FirstOrDefault();
             }
         }
@@ -4402,7 +4403,8 @@ namespace BL.Database.Dictionaries
                     Name = x.Name,
                     IsImportant = x.IsImportant,
                     SubordinationType = (EnumSubordinationTypes)x.SubordinationTypeId,
-                    SubordinationTypeName = x.SubordinationType.Name
+                    SubordinationTypeName = x.SubordinationType.Name,
+                    IsExternal = x.Id == 45
                 }).ToList();
             }
         }
@@ -4606,7 +4608,8 @@ namespace BL.Database.Dictionaries
                                     SendTypeName = y.SendType.Name,
                                     TargetPositionName = y.TargetPosition.Name,
                                     TargetAgentName = y.TargetPosition.ExecutorAgent.Name ?? y.TargetAgent.Name,
-                                    AccessLevelName = y.AccessLevel.Name
+                                    AccessLevelName = y.AccessLevel.Name,
+                                    SendTypeIsExternal=y.Id==45
                                 })
                         }).FirstOrDefault();
             }
