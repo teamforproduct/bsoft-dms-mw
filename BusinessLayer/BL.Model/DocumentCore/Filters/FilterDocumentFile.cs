@@ -1,20 +1,53 @@
-﻿using System.Collections.Generic;
+﻿using BL.Model.SystemCore.Filters;
+using System;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
+using System.Xml.Serialization;
 
 namespace BL.Model.DocumentCore.Filters
 {
     /// <summary>
-    /// Фильтр событий документов
+    /// Фильтр файлов документов
     /// </summary>
-    public class FilterDocumentAttachedFile
+    public class FilterDocumentFile
     {
         /// <summary>
-        /// Массив ИД файлов документов
+        /// Отрывок названия по File
         /// </summary>
-        public List<int> AttachedFileId { get; set; }
+        public string Name { get; set; }
+        /// <summary>
+        /// Отрывок расширения по File
+        /// </summary>
+        public string Extension { get; set; }
+        /// <summary>
+        /// Число "с" для отбора по размеру файла документа
+        /// </summary>
+        public int? SizeFrom { get; set; }
+        /// <summary>
+        /// Число "по" для отбора по размеру файла документа
+        /// </summary>
+        public int? SizeTo { get; set; }
+        /// <summary>
+        /// Дата "с" для отбора по дате создания файла документа
+        /// </summary>
+        public DateTime? CreateFromDate { get; set; }
+        /// <summary>
+        /// Дата "по" для отбора по дате создания файла документа
+        /// </summary>
+        public DateTime? CreateToDate { get; set; }
+        /// <summary>
+        /// Массив ИД пользователей по файлу
+        /// </summary>
+        public List<int> AgentId { get; set; }
+
         /// <summary>
         /// Массив ИД документов
         /// </summary>
         public List<int> DocumentId { get; set; }
+        /// <summary>
+        /// Массив ИД файлов документов
+        /// </summary>
+        public List<int> FileId { get; set; }
         /// <summary>
         /// Массив порядковых номеров файлов в списке файлов документа
         /// </summary>
@@ -59,6 +92,5 @@ namespace BL.Model.DocumentCore.Filters
         /// По умолчанию false
         /// </summary>
         public bool IsAllVersion { get; set; }
-
     }
 }

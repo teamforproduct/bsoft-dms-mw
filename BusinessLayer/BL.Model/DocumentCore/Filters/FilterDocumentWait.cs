@@ -1,9 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using BL.Model.SystemCore.Filters;
+using System;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
+using System.Xml.Serialization;
 
 namespace BL.Model.DocumentCore.Filters
 {
     /// <summary>
-    ///Фильтр ожиданий по документу
+    /// Фильтр ожиданий документов
     /// </summary>
     public class FilterDocumentWait
     {
@@ -14,15 +18,79 @@ namespace BL.Model.DocumentCore.Filters
         /// <summary>
         /// ИД. инициирующего события
         /// </summary>
-        public int? OnEventId { get; set; }
+        public List<int> OnEventId { get; set; }
         /// <summary>
         /// ИД. закрывающего события. 
         /// </summary>
-        public int? OffEventId { get; set; }
+        public List<int> OffEventId { get; set; }
 
         /// <summary>
         ///Если истина, то фильтруются ожидания, где OffEvent = null
+        ///Если лож, то фильтруются ожидания, где OffEvent != null
+        ///Если null(не задан), то фильтр не применяется
         /// </summary>
-        public bool Opened { get; set; }
+        public bool? IsOpened { get; set; }
+        /// <summary>
+        /// Дата "с" для отбора по дате срока исполнения контроля документа
+        /// </summary>
+        public DateTime? DueDateFromDate { get; set; }
+        /// <summary>
+        /// Дата "по" для отбора по дате срока исполнения контроля документа
+        /// </summary>
+        public DateTime? DueDateToDate { get; set; }
+        /// <summary>
+        /// Дата "с" для отбора по дате возникновения  контроля документа
+        /// </summary>
+        public DateTime? CreateFromDate { get; set; }
+        /// <summary>
+        /// Дата "по" для отбора по дате возникновения  контроля документа
+        /// </summary>
+        public DateTime? CreateToDate { get; set; }
+        /// <summary>
+        /// Массив ИД отправителей контроля по документу
+        /// </summary>
+        public List<int> ControlToMePositionId { get; set; }
+        /// <summary>
+        /// Массив ИД отправителей контроля по документу
+        /// </summary>
+        public List<int> ControlToMePositionExecutorAgentId { get; set; }
+        /// <summary>
+        /// Массив ИД отправителей контроля по документу
+        /// </summary>
+        public List<int> ControlToMeDepartmentId { get; set; }
+        /// <summary>
+        /// Массив ИД получателей контроля по документу
+        /// </summary>
+        public List<int> ControlFromMePositionId { get; set; }
+        /// <summary>
+        /// Массив ИД получателей контроля по документу
+        /// </summary>
+        public List<int> ControlFromMePositionExecutorAgentId { get; set; }
+        /// <summary>
+        /// Массив ИД получателей контроля по документу
+        /// </summary>
+        public List<int> ControlFromMeDepartmentId { get; set; }
+        /// <summary>
+        /// Массив ИД получателей контроля по документу
+        /// </summary>
+        public List<int> ControlFromMeAgentId { get; set; }
+
+        /// <summary>
+        /// Самоконтроль. true - выполнять поиск иначе ничего не делаеться
+        /// </summary>
+        public bool? IsSelfControl { get; set; }
+        /// <summary>
+        /// Поступившие на визирование. true - выполнять поиск иначе ничего не делаеться
+        /// </summary>
+        public bool? IsVisaingToMe { get; set; }
+
+        /// <summary>
+        /// Отправленные на визирование. true - выполнять поиск иначе ничего не делаеться
+        /// </summary>
+        public bool? IsVisaingFromMe { get; set; }
+        /// <summary>
+        /// Отчеты о выполнении. true - выполнять поиск иначе ничего не делаеться
+        /// </summary>
+        public bool? IsMarkExecution { get; set; }
     }
 }

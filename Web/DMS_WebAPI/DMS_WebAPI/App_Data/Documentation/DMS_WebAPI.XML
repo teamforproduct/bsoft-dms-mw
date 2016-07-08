@@ -1413,7 +1413,7 @@
             <param name="paging">paging</param>
             <returns>список подписей</returns>
         </member>
-        <member name="M:DMS_WebAPI.Controllers.Documents.DocumentWaitsController.Get(BL.Model.DocumentCore.Filters.FilterDocumentWait,BL.Model.SystemCore.UIPaging)">
+        <member name="M:DMS_WebAPI.Controllers.Documents.DocumentWaitsController.Get(BL.Model.DocumentCore.Filters.FilterBase,BL.Model.SystemCore.UIPaging)">
             <summary>
             Получение списка ожиданий 
             </summary>
@@ -1421,7 +1421,7 @@
             <param name="paging">paging</param>
             <returns>список ожиданий</returns>
         </member>
-        <member name="M:DMS_WebAPI.Controllers.Documents.DocumentEventsController.Get(BL.Model.DocumentCore.Filters.FilterDocumentEvent,BL.Model.SystemCore.UIPaging)">
+        <member name="M:DMS_WebAPI.Controllers.Documents.DocumentEventsController.Get(BL.Model.DocumentCore.Filters.FilterBase,BL.Model.SystemCore.UIPaging)">
             <summary>
             Получение списка ивентов 
             </summary>
@@ -2085,7 +2085,7 @@
             <param name="model"></param>
             <returns></returns>
         </member>
-        <member name="M:DMS_WebAPI.Controllers.Documents.DocumentFilesController.GetFileList(BL.Model.DocumentCore.Filters.FilterDocumentAttachedFile,BL.Model.SystemCore.UIPaging)">
+        <member name="M:DMS_WebAPI.Controllers.Documents.DocumentFilesController.GetFileList(BL.Model.DocumentCore.Filters.FilterBase,BL.Model.SystemCore.UIPaging)">
             <summary>
             Общий список файлов
             </summary>
@@ -2199,7 +2199,7 @@
             <param name="id">ИД записи ограничительного списка</param>
             <returns></returns>
         </member>
-        <member name="M:DMS_WebAPI.Controllers.Documents.DocumentsController.Get(BL.Model.DocumentCore.Filters.FilterDocument,BL.Model.SystemCore.UIPaging)">
+        <member name="M:DMS_WebAPI.Controllers.Documents.DocumentsController.Get(BL.Model.DocumentCore.Filters.FilterBase,BL.Model.SystemCore.UIPaging)">
             <summary>
             Получение списка документов
             </summary>

@@ -22,8 +22,8 @@ namespace BL.Database.Documents.Interfaces
 
         void AddDocumentEvents(IContext ctx, InternalDocument document);
         FrontDocumentEvent GetDocumentEvent(IContext ctx, int eventId);
-        IEnumerable<FrontDocumentEvent> GetDocumentEvents(IContext ctx, FilterDocumentEvent filter, UIPaging paging);
-        IEnumerable<FrontDocumentWait> GetDocumentWaits(IContext ctx, FilterDocumentWait filter, UIPaging paging);
+        IEnumerable<FrontDocumentEvent> GetDocumentEvents(IContext ctx, FilterBase filter, UIPaging paging);
+        IEnumerable<FrontDocumentWait> GetDocumentWaits(IContext ctx, FilterBase filter, UIPaging paging);
         IEnumerable<FrontDocumentSubscription> GetDocumentSubscriptions(IContext ctx, FilterDocumentSubscription filter, UIPaging paging);
         IEnumerable<InternalDocumentEvent> MarkDocumentEventsAsReadPrepare(IContext ctx, MarkDocumentEventAsRead model);
         void MarkDocumentEventAsRead(IContext ctx, IEnumerable<InternalDocumentEvent> eventList);

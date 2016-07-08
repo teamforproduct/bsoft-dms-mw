@@ -9,7 +9,7 @@ namespace BL.Database.Documents.Interfaces
 {
     public interface IDocumentFileDbProcess
     {
-        IEnumerable<FrontDocumentAttachedFile> GetDocumentFiles(IContext ctx, FilterDocumentAttachedFile filter, UIPaging paging = null);
+        IEnumerable<FrontDocumentAttachedFile> GetDocumentFiles(IContext ctx, FilterBase filter, UIPaging paging = null);
         IEnumerable<FrontDocumentAttachedFile> GetDocumentFileVersions(IContext ctx, int documentId, int orderNumber);
         FrontDocumentAttachedFile GetDocumentFileVersion(IContext ctx, int documentId, int orderNumber, int versionNumber);
         FrontDocumentAttachedFile GetDocumentFileVersion(IContext ctx, int id);

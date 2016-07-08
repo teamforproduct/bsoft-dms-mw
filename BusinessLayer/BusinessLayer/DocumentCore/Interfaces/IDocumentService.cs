@@ -12,15 +12,14 @@ namespace BL.Logic.DocumentCore.Interfaces
     public interface IDocumentService
     {
         void GetCountDocuments(IContext ctx, LicenceInfo licence);
-        IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterDocument filters, UIPaging paging);
+        IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterBase filters, UIPaging paging);
         FrontDocument GetDocument(IContext ctx, int documentId, FilterDocumentById filter);
         IEnumerable<BaseSystemUIElement> GetModifyMetaData(IContext ctx, FrontDocument doc);
         object ExecuteAction(EnumDocumentActions act, IContext context, object param);
         FrontDocumentEvent GetDocumentEvent(IContext ctx, int eventId);
-        IEnumerable<FrontDocumentEvent> GetDocumentEvents(IContext ctx, FilterDocumentEvent filter, UIPaging paging);
-        IEnumerable<FrontDocumentWait> GetDocumentWaits(IContext ctx, FilterDocumentWait filter, UIPaging paging);
+        IEnumerable<FrontDocumentEvent> GetDocumentEvents(IContext ctx, FilterBase filter, UIPaging paging);
+        IEnumerable<FrontDocumentWait> GetDocumentWaits(IContext ctx, FilterBase filter, UIPaging paging);
         IEnumerable<FrontDocumentSubscription> GetDocumentSubscriptions(IContext ctx, FilterDocumentSubscription filter, UIPaging paging);
-        IEnumerable<FrontDocumentEvent> GetEventsForDocument(IContext ctx, int documentId, UIPaging paging);
         FrontRegistrationFullNumber GetNextRegisterDocumentNumber(IContext ctx, RegisterDocumentBase model);
 
         #region DocumentPapers

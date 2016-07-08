@@ -3551,6 +3551,497 @@
             Префикс для нумерации
             </summary>
         </member>
+        <member name="T:BL.Model.DocumentCore.Filters.FilterBase">
+            <summary>
+            Базовый фильтр
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterBase.Document">
+            <summary>
+            Фильтра по документам
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterBase.Event">
+            <summary>
+            Фильтра по событиям
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterBase.Wait">
+            <summary>
+            Фильтра по ожиданиям
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterBase.File">
+            <summary>
+            Фильтра по файлам
+            </summary>
+        </member>
+        <member name="T:BL.Model.DocumentCore.Filters.FilterDocumentWait">
+            <summary>
+            Фильтр ожиданий документов
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentWait.DocumentId">
+            <summary>
+            Массив ИД документов
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentWait.OnEventId">
+            <summary>
+            ИД. инициирующего события
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentWait.OffEventId">
+            <summary>
+            ИД. закрывающего события. 
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentWait.IsOpened">
+             <summary>
+            Если истина, то фильтруются ожидания, где OffEvent = null
+            Если лож, то фильтруются ожидания, где OffEvent != null
+            Если null(не задан), то фильтр не применяется
+             </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentWait.DueDateFromDate">
+            <summary>
+            Дата "с" для отбора по дате срока исполнения контроля документа
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentWait.DueDateToDate">
+            <summary>
+            Дата "по" для отбора по дате срока исполнения контроля документа
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentWait.CreateFromDate">
+            <summary>
+            Дата "с" для отбора по дате возникновения  контроля документа
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentWait.CreateToDate">
+            <summary>
+            Дата "по" для отбора по дате возникновения  контроля документа
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentWait.ControlToMePositionId">
+            <summary>
+            Массив ИД отправителей контроля по документу
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentWait.ControlToMePositionExecutorAgentId">
+            <summary>
+            Массив ИД отправителей контроля по документу
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentWait.ControlToMeDepartmentId">
+            <summary>
+            Массив ИД отправителей контроля по документу
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentWait.ControlFromMePositionId">
+            <summary>
+            Массив ИД получателей контроля по документу
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentWait.ControlFromMePositionExecutorAgentId">
+            <summary>
+            Массив ИД получателей контроля по документу
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentWait.ControlFromMeDepartmentId">
+            <summary>
+            Массив ИД получателей контроля по документу
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentWait.ControlFromMeAgentId">
+            <summary>
+            Массив ИД получателей контроля по документу
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentWait.IsSelfControl">
+            <summary>
+            Самоконтроль. true - выполнять поиск иначе ничего не делаеться
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentWait.IsVisaingToMe">
+            <summary>
+            Поступившие на визирование. true - выполнять поиск иначе ничего не делаеться
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentWait.IsVisaingFromMe">
+            <summary>
+            Отправленные на визирование. true - выполнять поиск иначе ничего не делаеться
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentWait.IsMarkExecution">
+            <summary>
+            Отчеты о выполнении. true - выполнять поиск иначе ничего не делаеться
+            </summary>
+        </member>
+        <member name="T:BL.Model.DocumentCore.Filters.FilterDocumentFile">
+            <summary>
+            Фильтр файлов документов
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentFile.Name">
+            <summary>
+            Отрывок названия по File
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentFile.Extension">
+            <summary>
+            Отрывок расширения по File
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentFile.SizeFrom">
+            <summary>
+            Число "с" для отбора по размеру файла документа
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentFile.SizeTo">
+            <summary>
+            Число "по" для отбора по размеру файла документа
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentFile.CreateFromDate">
+            <summary>
+            Дата "с" для отбора по дате создания файла документа
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentFile.CreateToDate">
+            <summary>
+            Дата "по" для отбора по дате создания файла документа
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentFile.AgentId">
+            <summary>
+            Массив ИД пользователей по файлу
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentFile.DocumentId">
+            <summary>
+            Массив ИД документов
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentFile.FileId">
+            <summary>
+            Массив ИД файлов документов
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentFile.OrderInDocument">
+            <summary>
+            Массив порядковых номеров файлов в списке файлов документа
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentFile.IsWorkedOut">
+            <summary>
+            true - Получить только обработаные файлы
+            false - Получить только не обработаные файлы
+            null - Не применять фильтер
+            По умолчанию null
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentFile.IsAdditional">
+            <summary>
+            true - Получить только дополнительные файлы
+            false - Получить только не дополнительные файлы
+            null - Не применять фильтер
+            По умолчанию null
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentFile.IsDeleted">
+            <summary>
+            true - Получить только удаленные файлы
+            false - Получить только не удаленные файлы
+            По умолчанию false
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentFile.IsAllDeleted">
+            <summary>
+            true - Игнорировать фильтр IsDeleted
+            false - Применять фильтр IsDeleted
+            По умолчанию false
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentFile.IsMainVersion">
+            <summary>
+            true - Получить только основные версии файлов
+            false - Получить не основные версии файлов
+            По умолчанию true
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentFile.IsAllVersion">
+            <summary>
+            true - Игнорировать фильтр IsMainVersion
+            false - Применять фильтр IsMainVersion
+            По умолчанию false
+            </summary>
+        </member>
+        <member name="T:BL.Model.DocumentCore.Filters.FilterDocumentEvent">
+            <summary>
+            Фильтр событий документов
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentEvent.IsNew">
+            <summary>
+            Отбор по событиям признаку прочтения Все/Только новые
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentEvent.FromDate">
+            <summary>
+            Дата "с" для отбора по дате событий документа
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentEvent.ToDate">
+            <summary>
+            Дата "по" для отбора по дате событий документа
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentEvent.TypeId">
+            <summary>
+            Массив ИД типов событий
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentEvent.ImportanceEventTypeId">
+            <summary>
+            Массив ИД важности событий
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentEvent.Description">
+            <summary>
+            Отрывок краткого содержания по событиям
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentEvent.PositionId">
+            <summary>
+            Массив ИД должностей отправителей или получателей событий по документу
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentEvent.PositionExecutorAgentId">
+            <summary>
+            Массив ИД агентов внутрених отправителей или получателей событий по документу
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentEvent.DepartmentId">
+            <summary>
+            Массив ИД  департаментов отправителей или получателей событий по документу
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentEvent.AgentId">
+            <summary>
+            Массив ИД агентов внутрених или внешних отправителей или получателей событий по документу
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentEvent.TargetAgentId">
+            <summary>
+            Массив ИД агентов внешних получателей событий по документу
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentEvent.DocumentId">
+            <summary>
+            Массив ИД документов
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentEvent.EventId">
+            <summary>
+            Массив ИД событий документов
+            </summary>
+        </member>
+        <member name="T:BL.Model.DocumentCore.Filters.FilterDocument">
+            <summary>
+            Фильтра документов
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.DocumentId">
+            <summary>
+            Массив ИД документов
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.FullTextSearchDocumentId">
+            <summary>
+            Массив ИД документов полученного из полнотекстового поиска
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.TemplateDocumentId">
+            <summary>
+            Массив ИД шаблонов документов
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.DocumentDirectionId">
+            <summary>
+            Массив ИД направлений документов
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.DocumentTypeId">
+            <summary>
+            Массив ИД типов документов
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.CreateFromDate">
+            <summary>
+            Дата "с" для отбора по дате создания
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.CreateToDate">
+            <summary>
+            Дата "по" для отбора по дате создания
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.DocumentSubjectId">
+            <summary>
+            Массив ИД тематик документов
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.Description">
+            <summary>
+            Отрывок краткого содержания
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.IsRegistered">
+            <summary>
+            Признак регистрации документа
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.RegistrationJournalId">
+            <summary>
+            Массив ИД журналов регистрации документов
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.RegistrationNumber">
+            <summary>
+            Отрывок полного регистрационного номера
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.RegistrationFromDate">
+            <summary>
+            Дата "с" для отбора по дате регистрации документа
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.RegistrationToDate">
+            <summary>
+            Дата "по" для отбора по дате регистрации документа
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.ExecutorPositionId">
+            <summary>
+            Массив ИД ответственного по документу
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.ExecutorPositionExecutorAgentId">
+            <summary>
+            Массив ИД ответственного по документу
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.ExecutorDepartmentId">
+            <summary>
+            Массив ИД ответственного по документу
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.SubscriptionPositionId">
+            <summary>
+            Массив ИД подписантов по документу
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.SubscriptionPositionExecutorAgentId">
+            <summary>
+            Массив ИД подписантов по документу
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.SubscriptionDepartmentId">
+            <summary>
+            Массив ИД подписантов по документу
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.TaskId">
+            <summary>
+            Массив ИД Task по документу
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.TaskDescription">
+            <summary>
+            Отрывок краткого содержания по Task
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.TagId">
+            <summary>
+            Массив ИД Tag по документу
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.TagDescription">
+            <summary>
+            Отрывок краткого содержания по Tag
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.AccessLevelId">
+            <summary>
+            Массив ИД уровней доступа по документу
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.IsInMyControl">
+            <summary>
+            В Моем управлении. true - выполнять поиск иначе ничего не делаеться
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.IsFavourite">
+            <summary>
+            В избраном
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.SenderAgentId">
+            <summary>
+            Массив ИД организаций
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.SenderAgentPersonId">
+            <summary>
+            Массив ИД контактов
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.SenderNumber">
+            <summary>
+            Отрывок входящего номера документа
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.SenderFromDate">
+            <summary>
+            Дата "с" для отбора по дате входящего документа
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.SenderToDate">
+            <summary>
+            Дата "по" для отбора по дате входящего документа
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.Addressee">
+            <summary>
+            Отрывок кому адресован документ
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.IsInWork">
+            <summary>
+            Признак в работе
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.FullTextSearch">
+            <summary>
+            Содержит строку для поиска по полнотекстовому поиску. 
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.FilterProperties">
+            <summary>
+            Фильтр по динамическим свойствам
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.DocumentFromDate">
+            <summary>
+            Дата "с" для отбора по дате документа
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.DocumentToDate">
+            <summary>
+            Дата "по" для отбора по дате документа
+            </summary>
+        </member>
         <member name="T:BL.Model.DocumentCore.Filters.FilterDocumentAccess">
             <summary>
             Фильтр доступов документа
@@ -3569,70 +4060,6 @@
         <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentAccess.IsInWork">
             <summary>
             Признак в работе
-            </summary>
-        </member>
-        <member name="T:BL.Model.DocumentCore.Filters.FilterDocumentAttachedFile">
-            <summary>
-            Фильтр событий документов
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentAttachedFile.AttachedFileId">
-            <summary>
-            Массив ИД файлов документов
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentAttachedFile.DocumentId">
-            <summary>
-            Массив ИД документов
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentAttachedFile.OrderInDocument">
-            <summary>
-            Массив порядковых номеров файлов в списке файлов документа
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentAttachedFile.IsWorkedOut">
-            <summary>
-            true - Получить только обработаные файлы
-            false - Получить только не обработаные файлы
-            null - Не применять фильтер
-            По умолчанию null
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentAttachedFile.IsAdditional">
-            <summary>
-            true - Получить только дополнительные файлы
-            false - Получить только не дополнительные файлы
-            null - Не применять фильтер
-            По умолчанию null
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentAttachedFile.IsDeleted">
-            <summary>
-            true - Получить только удаленные файлы
-            false - Получить только не удаленные файлы
-            По умолчанию false
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentAttachedFile.IsAllDeleted">
-            <summary>
-            true - Игнорировать фильтр IsDeleted
-            false - Применять фильтр IsDeleted
-            По умолчанию false
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentAttachedFile.IsMainVersion">
-            <summary>
-            true - Получить только основные версии файлов
-            false - Получить не основные версии файлов
-            По умолчанию true
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentAttachedFile.IsAllVersion">
-            <summary>
-            true - Игнорировать фильтр IsMainVersion
-            false - Применять фильтр IsMainVersion
-            По умолчанию false
             </summary>
         </member>
         <member name="T:BL.Model.DocumentCore.Filters.FilterDocumentFileIdentity">
@@ -3810,31 +4237,6 @@
             Массив ИД документов
             </summary>
         </member>
-        <member name="T:BL.Model.DocumentCore.Filters.FilterDocumentWait">
-             <summary>
-            Фильтр ожиданий по документу
-             </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentWait.DocumentId">
-            <summary>
-            Массив ИД документов
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentWait.OnEventId">
-            <summary>
-            ИД. инициирующего события
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentWait.OffEventId">
-            <summary>
-            ИД. закрывающего события. 
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentWait.Opened">
-             <summary>
-            Если истина, то фильтруются ожидания, где OffEvent = null
-             </summary>
-        </member>
         <member name="T:BL.Model.DocumentCore.Filters.FilterDocumentById">
             <summary>
             Фильтр документа
@@ -3863,406 +4265,6 @@
         <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentTag.CurrentPositionsId">
             <summary>
             Список ИД. Позиций
-            </summary>
-        </member>
-        <member name="T:BL.Model.DocumentCore.Filters.FilterDocumentEvent">
-            <summary>
-            Фильтр событий документов
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentEvent.EventId">
-            <summary>
-            Массив ИД событий документов
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentEvent.ListDocumentId">
-            <summary>
-            Массив ИД документов
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentEvent.DocumentId">
-            <summary>
-            when you want to get events from the one document, you can do it faster with that field
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentEvent.AgentId">
-            <summary>
-            список агентов, для которых ищуться ивенты
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentEvent.PositionId">
-            <summary>
-            список позиций, для которых ищеться ивенты
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentEvent.EventType">
-            <summary>
-            тип события
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentEvent.Importance">
-            <summary>
-            Тип важности события
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocumentEvent.Description">
-            <summary>
-            Поиск значения в описании ивента (по совпадению) 
-            </summary>
-        </member>
-        <member name="T:BL.Model.DocumentCore.Filters.FilterDocument">
-            <summary>
-            Фильтра документов
-            </summary>
-        </member>
-        <member name="M:BL.Model.DocumentCore.Filters.FilterDocument.#ctor">
-            <summary>
-            Default constructor
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.DocumentId">
-            <summary>
-            Массив ИД документов
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.FullTextSearchDocumentId">
-            <summary>
-            Массив ИД документов полученного из полнотекстового поиска
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.TemplateDocumentId">
-            <summary>
-            Массив ИД шаблонов документов
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.DocumentDirectionId">
-            <summary>
-            Массив ИД направлений документов
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.DocumentTypeId">
-            <summary>
-            Массив ИД типов документов
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.CreateFromDate">
-            <summary>
-            Дата "с" для отбора по дате создания
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.CreateToDate">
-            <summary>
-            Дата "по" для отбора по дате создания
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.DocumentSubjectId">
-            <summary>
-            Массив ИД тематик документов
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.Description">
-            <summary>
-            Отрывок краткого содержания
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.IsRegistered">
-            <summary>
-            Признак регистрации документа
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.RegistrationJournalId">
-            <summary>
-            Массив ИД журналов регистрации документов
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.RegistrationNumber">
-            <summary>
-            Отрывок полного регистрационного номера
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.RegistrationFromDate">
-            <summary>
-            Дата "с" для отбора по дате регистрации документа
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.RegistrationToDate">
-            <summary>
-            Дата "по" для отбора по дате регистрации документа
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.ExecutorPositionId">
-            <summary>
-            Массив ИД ответственного по документу
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.ExecutorPositionExecutorAgentId">
-            <summary>
-            Массив ИД ответственного по документу
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.ExecutorDepartmentId">
-            <summary>
-            Массив ИД ответственного по документу
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.SubscriptionPositionId">
-            <summary>
-            Массив ИД подписантов по документу
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.SubscriptionPositionExecutorAgentId">
-            <summary>
-            Массив ИД подписантов по документу
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.SubscriptionDepartmentId">
-            <summary>
-            Массив ИД подписантов по документу
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.EventIsNew">
-            <summary>
-            Отбор по событиям признаку прочтения Все/Только новые
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.EventFromDate">
-            <summary>
-            Дата "с" для отбора по дате событий документа
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.EventToDate">
-            <summary>
-            Дата "по" для отбора по дате событий документа
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.EventTypeId">
-            <summary>
-            Массив ИД типов событий
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.EventImportanceEventTypeId">
-            <summary>
-            Массив ИД важности событий
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.EventDescription">
-            <summary>
-            Отрывок краткого содержания по событиям
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.EventPositionId">
-            <summary>
-            Массив ИД отправителей или получателей событий по документу
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.EventPositionExecutorAgentId">
-            <summary>
-            Массив ИД отправителей или получателей событий по документу
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.EventDepartmentId">
-            <summary>
-            Массив ИД отправителей или получателей событий по документу
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.EventAgentId">
-            <summary>
-            Массив ИД отправителей или получателей событий по документу
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.TaskId">
-            <summary>
-            Массив ИД Task по документу
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.TaskDescription">
-            <summary>
-            Отрывок краткого содержания по Task
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.TagId">
-            <summary>
-            Массив ИД Tag по документу
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.TagDescription">
-            <summary>
-            Отрывок краткого содержания по Tag
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.WaitDueDateFromDate">
-            <summary>
-            Дата "с" для отбора по дате срока исполнения контроля документа
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.WaitDueDateToDate">
-            <summary>
-            Дата "по" для отбора по дате срока исполнения контроля документа
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.WaitCreateFromDate">
-            <summary>
-            Дата "с" для отбора по дате возникновения  контроля документа
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.WaitCreateToDate">
-            <summary>
-            Дата "по" для отбора по дате возникновения  контроля документа
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.WaitControlToMePositionId">
-            <summary>
-            Массив ИД отправителей контроля по документу
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.WaitControlToMePositionExecutorAgentId">
-            <summary>
-            Массив ИД отправителей контроля по документу
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.WaitControlToMeDepartmentId">
-            <summary>
-            Массив ИД отправителей контроля по документу
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.WaitControlFromMePositionId">
-            <summary>
-            Массив ИД получателей контроля по документу
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.WaitControlFromMePositionExecutorAgentId">
-            <summary>
-            Массив ИД получателей контроля по документу
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.WaitControlFromMeDepartmentId">
-            <summary>
-            Массив ИД получателей контроля по документу
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.WaitControlFromMeAgentId">
-            <summary>
-            Массив ИД получателей контроля по документу
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.WaitIsSelfControl">
-            <summary>
-            Самоконтроль. true - выполнять поиск иначе ничего не делаеться
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.WaitIsVisaingToMe">
-            <summary>
-            Поступившие на визирование. true - выполнять поиск иначе ничего не делаеться
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.WaitIsVisaingFromMe">
-            <summary>
-            Отправленные на визирование. true - выполнять поиск иначе ничего не делаеться
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.WaitIsMarkExecution">
-            <summary>
-            Отчеты о выполнении. true - выполнять поиск иначе ничего не делаеться
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.FileName">
-            <summary>
-            Отрывок названия по File
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.FileExtension">
-            <summary>
-            Отрывок расширения по File
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.FileSizeFrom">
-            <summary>
-            Число "с" для отбора по размеру файла документа
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.FileSizeTo">
-            <summary>
-            Число "по" для отбора по размеру файла документа
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.FileCreateFromDate">
-            <summary>
-            Дата "с" для отбора по дате создания файла документа
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.FileCreateToDate">
-            <summary>
-            Дата "по" для отбора по дате создания файла документа
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.FileAgentId">
-            <summary>
-            Массив ИД пользователей по документу
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.AccessLevelId">
-            <summary>
-            Массив ИД уровней доступа по документу
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.IsInMyControl">
-            <summary>
-            В Моем управлении. true - выполнять поиск иначе ничего не делаеться
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.IsFavourite">
-            <summary>
-            В избраном
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.SenderAgentId">
-            <summary>
-            Массив ИД организаций
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.SenderAgentPersonId">
-            <summary>
-            Массив ИД контактов
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.SenderNumber">
-            <summary>
-            Отрывок входящего номера документа
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.SenderFromDate">
-            <summary>
-            Дата "с" для отбора по дате входящего документа
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.SenderToDate">
-            <summary>
-            Дата "по" для отбора по дате входящего документа
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.Addressee">
-            <summary>
-            Отрывок кому адресован документ
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.IsInWork">
-            <summary>
-            Признак в работе
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.FullTextSearch">
-            <summary>
-            Содержит строку для поиска по полнотекстовому поиску. 
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.DocumentFromDate">
-            <summary>
-            Дата "с" для отбора по дате документа
-            </summary>
-        </member>
-        <member name="P:BL.Model.DocumentCore.Filters.FilterDocument.DocumentToDate">
-            <summary>
-            Дата "по" для отбора по дате документа
             </summary>
         </member>
         <member name="T:BL.Model.DocumentCore.FrontModel.FrontDocumentAttachedFile">

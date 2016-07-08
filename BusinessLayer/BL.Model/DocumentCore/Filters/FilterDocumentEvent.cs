@@ -1,5 +1,9 @@
-﻿using System.Collections.Generic;
-using BL.Model.Enums;
+﻿using BL.Model.Enums;
+using BL.Model.SystemCore.Filters;
+using System;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
+using System.Xml.Serialization;
 
 namespace BL.Model.DocumentCore.Filters
 {
@@ -9,42 +13,60 @@ namespace BL.Model.DocumentCore.Filters
     public class FilterDocumentEvent
     {
         /// <summary>
-        /// Массив ИД событий документов
+        /// Отбор по событиям признаку прочтения Все/Только новые
         /// </summary>
-        public List<int> EventId { get; set; }
+        public bool? IsNew { get; set; }
         /// <summary>
-        /// Массив ИД документов
+        /// Дата "с" для отбора по дате событий документа
         /// </summary>
-        public List<int> ListDocumentId { get; set; }
+        public DateTime? FromDate { get; set; }
+        /// <summary>
+        /// Дата "по" для отбора по дате событий документа
+        /// </summary>
+        public DateTime? ToDate { get; set; }
+        /// <summary>
+        /// Массив ИД типов событий
+        /// </summary>
+        public List<EnumEventTypes> TypeId { get; set; }
+        /// <summary>
+        /// Массив ИД важности событий
+        /// </summary>
+        public List<EnumImportanceEventTypes> ImportanceEventTypeId { get; set; }
+        /// <summary>
+        /// Отрывок краткого содержания по событиям
+        /// </summary>
+        public string Description { get; set; }
 
         /// <summary>
-        /// when you want to get events from the one document, you can do it faster with that field
+        /// Массив ИД должностей отправителей или получателей событий по документу
         /// </summary>
-        public int? DocumentId { get; set; }
-
+        public List<int> PositionId { get; set; }
         /// <summary>
-        /// список агентов, для которых ищуться ивенты
+        /// Массив ИД агентов внутрених отправителей или получателей событий по документу
+        /// </summary>
+        public List<int> PositionExecutorAgentId { get; set; }
+        /// <summary>
+        /// Массив ИД  департаментов отправителей или получателей событий по документу
+        /// </summary>
+        public List<int> DepartmentId { get; set; }
+        /// <summary>
+        /// Массив ИД агентов внутрених или внешних отправителей или получателей событий по документу
         /// </summary>
         public List<int> AgentId { get; set; }
 
         /// <summary>
-        /// список позиций, для которых ищеться ивенты
+        /// Массив ИД агентов внешних получателей событий по документу
         /// </summary>
-        public List<int> PositionId { get; set; }
+        public List<int> TargetAgentId { get; set; }
 
         /// <summary>
-        /// тип события
+        /// Массив ИД документов
         /// </summary>
-        public List<EnumEventTypes> EventType { get; set; }
+        public List<int> DocumentId { get; set; }
 
         /// <summary>
-        /// Тип важности события
+        /// Массив ИД событий документов
         /// </summary>
-        public List<EnumImportanceEventTypes> Importance { get; set; }
-
-        /// <summary>
-        /// Поиск значения в описании ивента (по совпадению) 
-        /// </summary>
-        public string Description { get; set; }
+        public List<int> EventId { get; set; }
     }
 }
