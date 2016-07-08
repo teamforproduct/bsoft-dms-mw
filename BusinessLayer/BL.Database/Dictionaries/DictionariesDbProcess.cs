@@ -4443,7 +4443,7 @@ namespace BL.Database.Dictionaries
                 var qry = dbContext.DictionaryStandartSendListContentsSet.Where(x => x.StandartSendList.ClientId == context.CurrentClientId).AsQueryable();
 
                 // Список первичных ключей
-                if (filter.StandartSendListId.Count > 0)
+                if (filter.StandartSendListId?.Count > 0)
                 {
                     var filterContains = PredicateBuilder.False<DictionaryStandartSendListContents>();
                     filterContains = filter.StandartSendListId.Aggregate(filterContains,
