@@ -2036,6 +2036,13 @@
             <param name="model"></param>
             <returns></returns>
         </member>
+        <member name="M:DMS_WebAPI.Controllers.Documents.DocumentActionsController.SelfAffixSigning(BL.Model.DocumentCore.Actions.SelfAffixSigning)">
+            <summary>
+            Самоподписание
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
         <member name="M:DMS_WebAPI.Controllers.Documents.DocumentActionsController.AffixVisaing(BL.Model.DocumentCore.Actions.AffixSigning)">
             <summary>
             Завизировать

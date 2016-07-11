@@ -29,6 +29,7 @@ namespace BL.Logic.Common
     new Dictionary<EnumDocumentActions, EnumSubscriptionStates>
         {
                 { EnumDocumentActions.AffixSigning, EnumSubscriptionStates.Sign },
+                { EnumDocumentActions.SelfAffixSigning, EnumSubscriptionStates.Sign },
                 { EnumDocumentActions.AffixАpproval, EnumSubscriptionStates.Аpproval },
                 { EnumDocumentActions.AffixVisaing, EnumSubscriptionStates.Visa },
                 { EnumDocumentActions.AffixАgreement, EnumSubscriptionStates.Аgreement },

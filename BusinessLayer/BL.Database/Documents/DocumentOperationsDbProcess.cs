@@ -460,6 +460,42 @@ namespace BL.Database.Documents
             }
         }
 
+        public void SelfAffixSigningDocument(IContext ctx, InternalDocument document)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
+                {
+                    var eventDb = ModelConverter.GetDbDocumentEvent(document.Events.First());
+
+                    var subscription = document.Subscriptions.First();
+
+                    var docHash = CommonQueries.GetDocumentHash(dbContext, ctx, document.Id,
+                                                                 subscription.SubscriptionStates == EnumSubscriptionStates.Sign ||
+                                                                 subscription.SubscriptionStates == EnumSubscriptionStates.Visa ||
+                                                                 subscription.SubscriptionStates == EnumSubscriptionStates.Аgreement ||
+                                                                 subscription.SubscriptionStates == EnumSubscriptionStates.Аpproval,
+                                                                 true);
+
+                    var subscriptionDb = ModelConverter.GetDbDocumentSubscription(subscription);
+
+                    subscriptionDb.Hash = docHash.Hash;
+                    subscriptionDb.FullHash = docHash.FullHash;
+
+                    dbContext.DocumentEventsSet.Add(eventDb);
+                    dbContext.SaveChanges();
+
+                    subscriptionDb.SendEventId = eventDb.Id;
+                    subscriptionDb.DoneEventId = eventDb.Id;
+
+                    dbContext.DocumentSubscriptionsSet.Add(subscriptionDb);
+                    dbContext.SaveChanges();
+
+                    transaction.Complete();
+                }
+            }
+        }
+
         public InternalDocument ControlChangeDocumentPrepare(IContext ctx, int eventId)
         {
             using (var dbContext = new DmsContext(ctx))
@@ -578,6 +614,23 @@ namespace BL.Database.Documents
                                         }
                                     }
                     }).FirstOrDefault();
+
+                return doc;
+
+            }
+        }
+
+        public InternalDocument SelfAffixSigningDocumentPrepare(IContext ctx, int documentId)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                var qry = CommonQueries.GetDocumentQuery(dbContext, ctx);
+                var doc = qry.Where(x => x.Id == documentId)
+                            .Select(x => new InternalDocument
+                            {
+                                Id = x.Id,
+                                ExecutorPositionId = x.ExecutorPositionId
+                            }).FirstOrDefault();
 
                 return doc;
 
@@ -743,7 +796,7 @@ namespace BL.Database.Documents
                     return new List<InternalDocumentEvent>();
 
                 var qry = CommonQueries.GetDocumentEventQuery(ctx, dbContext, new FilterDocumentEvent { IsNew = true, EventId = model.EventIds })
-                    .Where(x=> x.TargetPositionId.HasValue && !(x.TargetPositionId == x.SourcePositionId));
+                    .Where(x => x.TargetPositionId.HasValue && !(x.TargetPositionId == x.SourcePositionId));
 
                 if (!ctx.IsAdmin)
                 {
