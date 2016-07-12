@@ -4462,7 +4462,7 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(filterContains);
                 }
 
-                if (filter.SendTypeId.Count > 0)
+                if (filter.SendTypeId?.Count>0)
                 {
                     var filterContains = PredicateBuilder.False<DictionaryStandartSendListContents>();
                     filterContains = filter.SendTypeId.Aggregate(filterContains,
@@ -4666,7 +4666,28 @@ namespace BL.Database.Dictionaries
                     Id = x.Id,
                     Name = x.Name,
                     PositionId = x.PositionId,
+                    LastChangeUserId = x.LastChangeUserId,
+                    LastChangeDate = x.LastChangeDate,
                     PositionName = x.Position.Name,
+                    StandartSendListContents =
+                                x.StandartSendListContents.Select(y => new FrontDictionaryStandartSendListContent()
+                                {
+                                    Id = y.Id,
+                                    StandartSendListId = x.Id,
+                                    Stage = y.Stage,
+                                    SendTypeId = y.SendTypeId,
+                                    TargetPositionId = y.TargetPositionId,
+                                    Task = y.Task,
+                                    Description = y.Description,
+                                    DueDate = y.DueDate,
+                                    DueDay = y.DueDay,
+                                    AccessLevelId = y.AccessLevelId,
+                                    SendTypeName = y.SendType.Name,
+                                    TargetPositionName = y.TargetPosition.Name,
+                                    TargetAgentName = y.TargetPosition.ExecutorAgent.Name ?? y.TargetAgent.Name,
+                                    AccessLevelName = y.AccessLevel.Name,
+                                    SendTypeIsExternal = y.Id == 45
+                                })
                 }).ToList();
             }
         }
