@@ -228,6 +228,10 @@ namespace BL.Logic.DocumentCore
                     cmd = DmsResolver.Current.Get<AffixSigningDocumentCommand>();
                     break;
 
+                case EnumDocumentActions.SelfAffixSigning:
+                    cmd = DmsResolver.Current.Get<SelfAffixSigningDocumentCommand>();
+                    break;
+
                 case EnumDocumentActions.AddSavedFilter:
                     cmd = DmsResolver.Current.Get<AddSavedFilterCommand>();
                     break;

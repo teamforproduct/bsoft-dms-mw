@@ -163,6 +163,7 @@
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryPositionExecutorType.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryPositionExecutor.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryStandartSendList.cs" />
+    <Compile Include="DocumentCore\Actions\SelfAffixSigning.cs" />
     <Compile Include="DocumentCore\Actions\MarkDocumentEventAsRead.cs" />
     <Compile Include="DocumentCore\Actions\ChangePosition.cs" />
     <Compile Include="DocumentCore\Actions\ControlTargetChange.cs" />

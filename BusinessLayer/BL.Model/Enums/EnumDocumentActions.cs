@@ -190,6 +190,11 @@
         AffixSigning = 100054,
 
         /// <summary>
+        /// Самоподписание
+        /// </summary>
+        SelfAffixSigning = 100055,
+
+        /// <summary>
         /// Отказать в визирования 
         /// </summary>
         RejectVisaing = 100056,

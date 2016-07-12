@@ -3134,6 +3134,36 @@
             Признак активности
             </summary>
         </member>
+        <member name="T:BL.Model.DocumentCore.Actions.SelfAffixSigning">
+            <summary>
+            Модель подписания
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Actions.SelfAffixSigning.DocumentId">
+            <summary>
+            ИД документа
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Actions.SelfAffixSigning.Description">
+            <summary>
+            Примечание
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Actions.SelfAffixSigning.EventDate">
+            <summary>
+            Дата события
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Actions.SelfAffixSigning.VisaText">
+            <summary>
+            Текст визы
+            </summary>
+        </member>
+        <member name="P:BL.Model.DocumentCore.Actions.SelfAffixSigning.CurrentPositionId">
+            <summary>
+            ИД должности, от которой будет выполнятся действие
+            </summary>
+        </member>
         <member name="T:BL.Model.DocumentCore.Actions.MarkDocumentEventAsRead">
             <summary>
             Модель для отметки пользователем ивентов документа как прочитанные
@@ -5926,6 +5956,11 @@
         <member name="F:BL.Model.Enums.EnumDocumentActions.AffixSigning">
             <summary>
             Подписать
+            </summary>
+        </member>
+        <member name="F:BL.Model.Enums.EnumDocumentActions.SelfAffixSigning">
+            <summary>
+            Самоподписание
             </summary>
         </member>
         <member name="F:BL.Model.Enums.EnumDocumentActions.RejectVisaing">
