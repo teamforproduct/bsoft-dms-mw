@@ -9,14 +9,9 @@ namespace BL.Model.AdminCore.FilterModel
     /// <summary>
     /// Фильтры FilterAdminPositionRole
     /// </summary>
-    public class FilterAdminPositionRole
+    public class FilterAdminPositionRole: AdminBaseFilterParameters
     {
-
-        /// <summary>
-        /// Список ID
-        /// </summary>
-        public List<int> IDs { get; set; }
-
+        
         /// <summary>
         /// Список ролей
         /// </summary>

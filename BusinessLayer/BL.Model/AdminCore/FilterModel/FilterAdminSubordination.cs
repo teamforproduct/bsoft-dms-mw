@@ -9,13 +9,9 @@ namespace BL.Model.AdminCore.FilterModel
     /// <summary>
     /// Фильтры FilterAdminSubordination
     /// </summary>
-    public class FilterAdminSubordination
+    public class FilterAdminSubordination: AdminBaseFilterParameters
     {
-        /// <summary>
-        /// Список ID
-        /// </summary>
-        public List<int> IDs { get; set; }
-
+      
         /// <summary>
         /// SourcePosition
         /// </summary>

@@ -1,34 +1,46 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using BL.CrossCutting.Context;
-using BL.Logic.AdminCore.Interfaces;
+﻿using BL.CrossCutting.Context;
+using BL.CrossCutting.Interfaces;
 using BL.Database.Admins.Interfaces;
+using BL.Logic.AdminCore.Interfaces;
+using BL.Logic.Common;
+using BL.Logic.DocumentCore.Interfaces;
 using BL.Model.AdminCore;
 using BL.Model.AdminCore.FilterModel;
 using BL.Model.AdminCore.FrontModel;
-using BL.CrossCutting.Interfaces;
-using BL.Logic.Common;
 using BL.Model.Database;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Model.Users;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BL.Logic.AdminCore
 {
     public class AdminService : IAdminService
     {
         private readonly IAdminsDbProcess _adminDb;
+        private readonly ICommandService _commandService;
 
         private const int _MINUTES_TO_UPDATE_INFO = 5;
 
         private Dictionary<string, StoreInfo> accList;
 
-        public AdminService(IAdminsDbProcess adminDb)
+        public AdminService(IAdminsDbProcess adminDb, ICommandService commandService)
         {
             _adminDb = adminDb;
+            _commandService = commandService;
             accList = new Dictionary<string, StoreInfo>();
         }
+
+        public object ExecuteAction(EnumAdminActions act, IContext context, object param)
+        {
+            var cmd = AdminCommandFactory.GetAdminCommand(act, context, param);
+            var res = _commandService.ExecuteCommand(cmd);
+            return res;
+        }
+        
+        #region [+] General ...
 
         private AdminAccessInfo GetAccInfo(IContext context)
         {
@@ -54,11 +66,23 @@ namespace BL.Logic.AdminCore
             accList.Add(key, nso);
             return nlst;
         }
+        public Employee GetEmployee(IContext context, string userId)
+        {
+            return _adminDb.GetEmployee(context, userId);
+        }
+
+        public IEnumerable<CurrentPosition> GetPositionsByUser(Employee employee)
+        {
+            return _adminDb.GetPositionsByUser(employee);
+        }
 
         public IEnumerable<FrontAdminUserRole> GetPositionsByCurrentUser(IContext context)
         {
             return _adminDb.GetPositionsByUser(context, new FilterAdminUserRole() { IDs = new List<int>() { context.CurrentAgentId } });
         }
+        #endregion
+
+        #region [+] Verify ...
 
         /// <summary>
         /// Проверка доступа к должностям для текущего пользователя
@@ -121,16 +145,24 @@ namespace BL.Logic.AdminCore
             return VerifyAccess(context, new VerifyAccess { DocumentActionId = (int)action, IsPositionFromContext = isPositionFromContext }, isThrowExeception);
         }
 
-      
-
-        public Employee GetEmployee(IContext context, string userId)
+        public bool VerifyAccess(IContext context, EnumAdminActions action, bool isPositionFromContext = true, bool isThrowExeception = true)
         {
-            return _adminDb.GetEmployee(context, userId);
+            return VerifyAccess(context, new VerifyAccess { DocumentActionId = (int)action, IsPositionFromContext = isPositionFromContext }, isThrowExeception);
         }
 
-        public IEnumerable<CurrentPosition> GetPositionsByUser(Employee employee)
+        #endregion`
+
+        #region [+] PositionRoles ...
+        //public FrontAdminPositionRole GetAdminPositionRole(IContext context, int id)
+        //{
+        //    return _adminDb.GetPositionRoles(context, new FilterAdminPositionRole() { IDs = new List<int> { id } }).FirstOrDefault();
+        //}
+
+        public IEnumerable<FrontAdminPositionRole> GetAdminPositionRoles(IContext context, FilterAdminPositionRole filter)
         {
-            return _adminDb.GetPositionsByUser(employee);
+            return _adminDb.GetPositionRoles(context, filter);
         }
+        #endregion
+
     }
 }

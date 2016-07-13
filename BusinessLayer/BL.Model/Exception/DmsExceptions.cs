@@ -13,6 +13,8 @@
         }
     }
 
+
+    #region [+] LicenceError ... 
     /// <summary>
     /// Сообщение при ошибке проверки данных о лицензии
     /// </summary>
@@ -75,6 +77,7 @@
         {
         }
     }
+    #endregion
 
     /// <summary>
     /// Сообщение при ошибке регистрации нового клиента
@@ -159,6 +162,7 @@
         }
     }
 
+    #region [+] DatabaseError ...
     /// <summary>
     /// Сообщение при ошибке работы с базой данных
     /// </summary>
@@ -203,6 +207,7 @@
         {
         }
     }
+    #endregion
 
     /// <summary>
     /// Искомой комманды не существует или она не описана
@@ -695,18 +700,6 @@
         }
     }
 
-    public class DictionaryTagNotFoundOrUserHasNoAccess : DmsExceptions
-    {
-        private const string _MESSAGE = "##l@DmsExceptions:DictionaryTagNotFoundOrUserHasNoAccess@l##";
-        public DictionaryTagNotFoundOrUserHasNoAccess() : base(_MESSAGE)
-        {
-        }
-
-        public DictionaryTagNotFoundOrUserHasNoAccess(System.Exception ex) : base(_MESSAGE, ex)
-        {
-        }
-    }
-
     public class ExecutorAgentForPositionIsNotDefined : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:ExecutorAgentForPositionIsNotDefined@l##";
@@ -719,6 +712,7 @@
         }
     }
 
+    #region [+] Dictionary ...
     /// <summary>
     /// Сообщение об ошибке, когда невозможно добавить данные в справочник
     /// </summary>
@@ -749,7 +743,6 @@
         }
     }
 
-
     /// <summary>
     /// Сообщение об ошибке, когда пытаются обновить несуществующую строку справочника в БД
     /// </summary>
@@ -766,7 +759,7 @@
     }
 
     /// <summary>
-    /// Сообщение об ошибке, когда пытаются обновить несуществующую строку справочника в БД
+    /// Сообщение об ошибке, когда при добавлении или изменении строки в справочнике появится дубль
     /// </summary>
     public class DictionaryRecordNotUnique : DmsExceptions
     {
@@ -780,9 +773,65 @@
         }
     }
 
+    public class DictionaryTagNotFoundOrUserHasNoAccess : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:DictionaryTagNotFoundOrUserHasNoAccess@l##";
+        public DictionaryTagNotFoundOrUserHasNoAccess() : base(_MESSAGE)
+        {
+        }
+
+        public DictionaryTagNotFoundOrUserHasNoAccess(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+    /// <summary>
+    /// Сообщение об ошибке, когда при добавлении или изменении строки  появится дубль
+    /// </summary>
+    #endregion
+
+    #region [+] Admin ...
+    // pss добавить сообщения ошибки в локали
+    /// <summary>
+    /// Сообщение об ошибке, когда при добавлении или изменении строки появится дубль
+    /// </summary>
+    public class AdminRecordNotUnique : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:AdminRecordNotUnique@l##";
+        public AdminRecordNotUnique() : base(_MESSAGE) { }
+        public AdminRecordNotUnique(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
+
+    /// <summary>
+    /// Сообщение об ошибке, когда невозможно добавить данные в админку
+    /// </summary>
+    public class AdminRecordCouldNotBeAdded : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:AdminRecordCouldNotBeAdded@l##";
+        public AdminRecordCouldNotBeAdded() : base(_MESSAGE) { }
+        public AdminRecordCouldNotBeAdded(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
+
+    /// <summary>
+    /// Сообщение о невозможности удаления записи в админке
+    /// </summary>
+    public class AdminRecordCouldNotBeDeleted : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:AdminRecordCouldNotBeDeleted@l##";
+        public AdminRecordCouldNotBeDeleted() : base(_MESSAGE) { }
+        public AdminRecordCouldNotBeDeleted(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
+
     /// <summary>
     /// Сообщение об ошибке, когда пытаются обновить несуществующую строку справочника в БД
     /// </summary>
+    public class AdminRecordWasNotFound : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:AdminRecordWasNotFound@l##";
+        public AdminRecordWasNotFound() : base(_MESSAGE) { }
+        public AdminRecordWasNotFound(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
+    #endregion
+
     public class RecordNotUnique : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:RecordNotUnique@l##";

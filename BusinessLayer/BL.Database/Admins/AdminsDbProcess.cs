@@ -14,6 +14,8 @@ using BL.Model.Enums;
 using BL.Model.Users;
 using LinqKit;
 using BL.Database.DBModel.Admin;
+using BL.Model.AdminCore.InternalModel;
+using BL.Database.Common;
 
 namespace BL.Database.Admins
 {
@@ -134,6 +136,10 @@ namespace BL.Database.Admins
                 return res;
             }
         }
+        public IEnumerable<CurrentPosition> GetPositionsByUser(Employee employee)
+        {
+            return null;
+        }
 
         /// <summary>
         /// Проверка соблюдения субординации
@@ -171,9 +177,150 @@ namespace BL.Database.Admins
             }
         }
 
-        public IEnumerable<CurrentPosition> GetPositionsByUser(Employee employee)
+        #region [+] PositionRole ...
+        public int AddPositionRole(IContext context, InternalAdminPositionRole model)
         {
-            return null;
+            using (var dbContext = new DmsContext(context))
+            {
+                AdminPositionRoles dbModel = AdminModelConverter.GetDbPositionRole(model);
+                dbContext.AdminPositionRolesSet.Add(dbModel);
+                // pss CommonQueries.AddFullTextCashInfo(dbContext, drj.Id, EnumObjects.DictionaryRegistrationJournals, EnumOperationType.AddNew);
+                dbContext.SaveChanges();
+                model.Id = dbModel.Id;
+                return dbModel.Id;
+            }
         }
+        public void UpdatePositionRole(IContext context, InternalAdminPositionRole model)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                AdminPositionRoles dbModel = AdminModelConverter.GetDbPositionRole(model);
+                dbContext.AdminPositionRolesSet.Attach(dbModel);
+                //CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryRegistrationJournals, EnumOperationType.Update);
+                dbContext.Entry(dbModel).State = System.Data.Entity.EntityState.Modified;
+                dbContext.SaveChanges();
+            }
+        }
+        public void DeletePositionRole(IContext context, InternalAdminPositionRole model)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var dbModel = dbContext.AdminPositionRolesSet.FirstOrDefault(x => x.Id == model.Id);
+                if (dbModel != null)
+                {
+                    dbContext.AdminPositionRolesSet.Remove(dbModel);
+                    //CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryRegistrationJournals, EnumOperationType.Delete);
+                    dbContext.SaveChanges();
+                }
+            }
+        }
+
+        public InternalAdminPositionRole GetInternalPositionRole(IContext context, FilterAdminPositionRole filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.AdminPositionRolesSet.AsQueryable();
+
+                qry = GetWherePositionRole(ref qry, filter);
+
+                return qry.Select(x => new InternalAdminPositionRole
+                {
+                    Id = x.Id,
+                    PositionId = x.PositionId,
+                    RoleId = x.RoleId,
+                    LastChangeUserId = x.LastChangeUserId,
+                    LastChangeDate = x.LastChangeDate
+                }).FirstOrDefault();
+            }
+        }
+
+
+
+        public IEnumerable<FrontAdminPositionRole> GetPositionRoles(IContext context, FilterAdminPositionRole filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.AdminPositionRolesSet.AsQueryable();
+
+                qry = GetWherePositionRole(ref qry, filter);
+
+                //qry = qry.OrderBy(x => x.Name);
+
+                return qry.Select(x => new FrontAdminPositionRole
+                {
+                    Id = x.Id,
+                    PositionId = x.Position.Id,
+                    PositionName = x.Position.Name,
+                    RoleId = x.Role.Id,
+                    RoleName = x.Role.Name
+                }).ToList();
+            }
+        }
+
+        public bool ExistsPositionRole(IContext context, FilterAdminPositionRole filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.AdminPositionRolesSet.AsQueryable();
+
+                qry = GetWherePositionRole(ref qry, filter);
+
+                var res = qry.Select(x => new FrontAdminPositionRole
+                {
+                    Id = x.Id
+                }).FirstOrDefault();
+
+                return res != null;
+            }
+        }
+
+        private static IQueryable<AdminPositionRoles> GetWherePositionRole(ref IQueryable<AdminPositionRoles> qry, FilterAdminPositionRole filter)
+        {
+            // Список первичных ключей
+            if (filter.IDs?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.False<AdminPositionRoles>();
+
+                filterContains = filter.IDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Id == value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            // Исключение списка первичных ключей
+            if (filter.NotContainsIDs?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.False<AdminPositionRoles>();
+                filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Id != value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            if (filter.PositionIDs?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.False<AdminPositionRoles>();
+
+                filterContains = filter.PositionIDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Id == value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            if (filter.RoleIDs?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.False<AdminPositionRoles>();
+
+                filterContains = filter.RoleIDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Id == value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            return qry;
+        }
+
+        #endregion
+
     }
 }
