@@ -1795,7 +1795,9 @@ namespace BL.Database.Common
                         ReadDate = x.SendEvent.ReadDate,
                         SourceAgentName = x.SendEvent.SourceAgent.Name,
                         SourcePositionName = x.SendEvent.SourcePosition.Name,
+                        SourcePositionId = x.DoneEvent.SourcePositionId,
                         TargetPositionName = x.SendEvent.TargetPosition.Name,
+                        TargetPositionId = x.DoneEvent.TargetPositionId,
                         SourcePositionExecutorNowAgentName = x.SendEvent.SourcePosition.ExecutorAgent.Name,
                         TargetPositionExecutorNowAgentName = x.SendEvent.TargetPosition.ExecutorAgent.Name,
                         SourcePositionExecutorAgentPhoneNumber = "(888)888-88-88", //TODO 
@@ -1816,15 +1818,16 @@ namespace BL.Database.Common
                         Description = x.DoneEvent.Description,
                         AddDescription = x.DoneEvent.AddDescription,
 
-
                         ReadAgentName = x.SendEvent.ReadAgent.Name,
                         ReadDate = x.SendEvent.ReadDate,
                         SourceAgentName = x.SendEvent.SourceAgent.Name,
-
+                        //TODO Фронт очен хочет поля SourcePositionId, TargetPositionId
                         SourcePositionName = null,
+                        SourcePositionId = x.DoneEvent.SourcePositionId,
                         TargetPositionName = null,
+                        TargetPositionId = x.DoneEvent.TargetPositionId,
 
-                        SourcePositionExecutorNowAgentName = x.SendEvent.SourcePosition.ExecutorAgent.Name,
+                        SourcePositionExecutorNowAgentName = x.DoneEvent.SourcePosition.ExecutorAgent.Name,
                         TargetPositionExecutorNowAgentName = null,
                         SourcePositionExecutorAgentPhoneNumber = null,
                         TargetPositionExecutorAgentPhoneNumber = null,

@@ -620,6 +620,25 @@ namespace DMS_WebAPI.Controllers.Documents
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(docId);
         }
+
+        /// <summary>
+        /// Самоподписание
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("SelfAffixSigning")]
+        [HttpPost]
+        public IHttpActionResult SelfAffixSigning(SelfAffixSigning model)
+        {
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+
+            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.SelfAffixSigning, ctx, model);
+
+            var ctrl = new DocumentsController { ControllerContext = ControllerContext };
+            return ctrl.Get(docId);
+        }
+
         /// <summary>
         /// Завизировать
         ///  </summary>

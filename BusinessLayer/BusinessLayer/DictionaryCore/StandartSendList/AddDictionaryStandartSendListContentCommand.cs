@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using BL.Logic.Common;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.InternalModel;
@@ -36,11 +37,11 @@ namespace BL.Logic.DictionaryCore
             {
                 TargetAgentId = Model.TargetAgentId,
                 TargetPositionId = Model.TargetPositionId,
-                SendTypeId = new List<EnumSendTypes> { Model.SendTypeId},
-                IsActive = Model.IsActive
+                SendTypeId = new List<EnumSendTypes> { Model.SendTypeId}
+                
             
             });
-            if (spr != null)
+            if (spr.Any())
             {
                 throw new DictionaryRecordNotUnique();
             }
@@ -52,20 +53,7 @@ namespace BL.Logic.DictionaryCore
         {
             try
             {
-                var newCont = new InternalDictionaryStandartSendListContent()
-                {
-                    StandartSendListId=Model.StandartSendListId,
-                    Stage = Model.Stage,
-                    SendType = Model.SendTypeId,
-                    TargetPositionId = Model.TargetPositionId,
-                    TargetAgentId = Model.TargetAgentId,
-                    Task = Model.Task,
-                    Description = Model.Description,
-                    DueDate = Model.DueDate,
-                    DueDay = Model.DueDay,
-                    AccessLevel = Model.AccessLevelId
-
-                };
+                var newCont = new InternalDictionaryStandartSendListContent(Model);
                 CommonDocumentUtilities.SetLastChange(_context, newCont);
                 return _dictDb.AddStandartSendListContent(_context, newCont);
             }

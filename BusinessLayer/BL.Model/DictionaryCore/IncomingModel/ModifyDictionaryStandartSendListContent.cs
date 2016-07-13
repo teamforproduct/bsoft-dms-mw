@@ -57,7 +57,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// Уровень доступа (ссылка)
         /// </summary>
-        public EnumDocumentAccesses AccessLevelId { get; set; }
+        public EnumDocumentAccesses? AccessLevelId { get; set; }
         /// <summary>
         /// Признак активности
         /// </summary>
