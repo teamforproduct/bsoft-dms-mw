@@ -5011,7 +5011,7 @@
             Срок для самоконтроля (дни)
             </summary>
         </member>
-        <!-- Badly formed XML comment ignored for member "P:BL.Model.DocumentCore.IncomingModel.ModifyDocumentSendList.SelfAttentionDate" -->
+        <!-- Проигнорирован некорректный комментарий XML для члена "P:BL.Model.DocumentCore.IncomingModel.ModifyDocumentSendList.SelfAttentionDate" -->
         <member name="P:BL.Model.DocumentCore.IncomingModel.ModifyDocumentSendList.IsAvailableWithinTask">
             <summary>
             Событие доступно в рамках задачи
@@ -5602,7 +5602,7 @@
             Изменить запись в справочнике "Структура предприятия"
             </summary>
         </member>
-        <!-- Badly formed XML comment ignored for member "F:BL.Model.Enums.EnumDictionaryActions.DeleteDepartment" -->
+        <!-- Проигнорирован некорректный комментарий XML для члена "F:BL.Model.Enums.EnumDictionaryActions.DeleteDepartment" -->
         <member name="F:BL.Model.Enums.EnumDictionaryActions.AddPosition">
             <summary>
             Добавить запись в справочнике "Штатное расписание"

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using BL.Logic.Common;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.InternalModel;
@@ -34,11 +35,11 @@ namespace BL.Logic.DictionaryCore
             _admin.VerifyAccess(_context, CommandType, false);
             var spr = _dictDb.GetStandartSendLists(_context, new FilterDictionaryStandartSendList
             {
-               Name = Model.Name,
+               NameExact = Model.Name,
                PositionID = Model.PositionId,
                
             });
-            if (spr != null)
+            if (spr.Any())
             {
                 throw new DictionaryRecordNotUnique();
             }

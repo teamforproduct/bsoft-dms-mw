@@ -23,7 +23,7 @@ namespace BL.Database.DBModel.Dictionary
         public Nullable<int> PositionId { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
-
+        [ForeignKey("StandartSendListId")]
         public virtual ICollection<DictionaryStandartSendListContents> StandartSendListContents { get; set; }
         [ForeignKey("PositionId")]
         public virtual DictionaryPositions Position { get; set; }
