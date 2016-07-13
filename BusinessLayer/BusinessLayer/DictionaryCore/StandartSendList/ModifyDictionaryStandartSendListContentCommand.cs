@@ -39,7 +39,6 @@ namespace BL.Logic.DictionaryCore
                 TargetAgentId = Model.TargetAgentId,
                 TargetPositionId = Model.TargetPositionId,
                 SendTypeId = new List<EnumSendTypes> { Model.SendTypeId },
-                IsActive = Model.IsActive,
                 NotContainsIDs = new List<int> { Model.Id }
             });
 

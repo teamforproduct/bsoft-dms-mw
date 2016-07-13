@@ -36,7 +36,7 @@ namespace BL.Logic.DictionaryCore
             _admin.VerifyAccess(_context, CommandType, false);
             var contents = _dictDb.GetStandartSendLists(_context, new FilterDictionaryStandartSendList() 
             {
-                Name = Model.Name,
+                NameExact = Model.Name,
                 PositionID =  Model.PositionId ?? 0,
                 NotContainsIDs = new List<int> { Model.Id }
             });

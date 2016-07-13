@@ -69,6 +69,6 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// <summary>
         /// Уровень доступа
         /// </summary>
-        public EnumDocumentAccesses AccessLevel { get; set; }
+        public EnumDocumentAccesses? AccessLevel { get; set; }
     }
 }

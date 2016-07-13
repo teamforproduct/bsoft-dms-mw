@@ -267,6 +267,19 @@ namespace BL.Logic.DictionaryCore
                 #endregion DictionaryPositionExecutors
 
 
+
+                #region DictionaryStandartSendList
+                case EnumDictionaryActions.AddStandartSendList:
+                    cmd = DmsResolver.Current.Get<AddDictionaryStandartSendListCommand>();
+                    break;
+                case EnumDictionaryActions.ModifyStandartSendList:
+                    cmd = DmsResolver.Current.Get<ModifyDictionaryStandartSendListCommand>();
+                    break;
+                case EnumDictionaryActions.DeleteStandartSendList:
+                    cmd = DmsResolver.Current.Get<DeleteDictionaryStandartSendListCommand>();
+                    break;
+                #endregion DictionaryStandartSendList
+
                 #region DictionaryStandartSendListContent
                 case EnumDictionaryActions.AddStandartSendListContent:
                     cmd = DmsResolver.Current.Get<AddDictionaryStandartSendListContentCommand>();
