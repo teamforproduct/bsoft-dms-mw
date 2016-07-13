@@ -5,6 +5,8 @@ using BL.CrossCutting.Context;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Database.Admins.Interfaces;
 using BL.Model.AdminCore;
+using BL.Model.AdminCore.FilterModel;
+using BL.Model.AdminCore.FrontModel;
 using BL.CrossCutting.Interfaces;
 using BL.Logic.Common;
 using BL.Model.Database;
@@ -55,7 +57,7 @@ namespace BL.Logic.AdminCore
 
         public IEnumerable<FrontAdminUserRole> GetPositionsByCurrentUser(IContext context)
         {
-            return _adminDb.GetPositionsByUser(context, new FilterAdminUserRole() { UserId = new List<int>() { context.CurrentAgentId } });
+            return _adminDb.GetPositionsByUser(context, new FilterAdminUserRole() { IDs = new List<int>() { context.CurrentAgentId } });
         }
 
         /// <summary>

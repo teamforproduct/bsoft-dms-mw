@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using BL.CrossCutting.Interfaces;
 using BL.Model.AdminCore;
+using BL.Model.AdminCore.FilterModel;
+using BL.Model.AdminCore.FrontModel;
 using BL.Model.Users;
 
 namespace BL.Database.Admins.Interfaces

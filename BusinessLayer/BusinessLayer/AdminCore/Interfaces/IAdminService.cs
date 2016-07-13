@@ -1,4 +1,5 @@
 ﻿using BL.Model.AdminCore;
+using BL.Model.AdminCore.FrontModel;
 using System.Collections.Generic;
 using BL.CrossCutting.Interfaces;
 using BL.Model.Enums;

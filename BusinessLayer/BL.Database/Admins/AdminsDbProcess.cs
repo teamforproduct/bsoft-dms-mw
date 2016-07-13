@@ -5,6 +5,8 @@ using BL.CrossCutting.Interfaces;
 using BL.Database.Admins.Interfaces;
 using BL.Database.DatabaseContext;
 using BL.Model.AdminCore;
+using BL.Model.AdminCore.FilterModel;
+using BL.Model.AdminCore.FrontModel;
 using BL.Database.Dictionaries.Interfaces;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.InternalModel;
@@ -76,26 +78,26 @@ namespace BL.Database.Admins
             {
                 var qry = dbContext.AdminPositionRolesSet.Where(x => x.Role.ClientId == ctx.CurrentClientId).AsQueryable();
 
-                if (filter.UserRoleId?.Count > 0)
+                if (filter.IDs?.Count > 0)
                 {
                     var filterContains = PredicateBuilder.False<AdminUserRoles>();
-                    filterContains = filter.UserRoleId.Aggregate(filterContains,
+                    filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
                     qry = qry.Where(x => x.Role.UserRoles.AsQueryable().Any(filterContains));
                 }
-                if (filter.UserId?.Count > 0)
+                if (filter.UserIDs?.Count > 0)
                 {
                     var filterContains = PredicateBuilder.False<AdminUserRoles>();
-                    filterContains = filter.UserId.Aggregate(filterContains,
+                    filterContains = filter.UserIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.UserId == value).Expand());
 
                     qry = qry.Where(x => x.Role.UserRoles.AsQueryable().Any(filterContains));
                 }
-                if (filter.RoleId?.Count > 0)
+                if (filter.RoleIDs?.Count > 0)
                 {
                     var filterContains = PredicateBuilder.False<AdminPositionRoles>();
-                    filterContains = filter.RoleId.Aggregate(filterContains,
+                    filterContains = filter.RoleIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.RoleId == value).Expand());
 
                     qry = qry.Where(filterContains);
