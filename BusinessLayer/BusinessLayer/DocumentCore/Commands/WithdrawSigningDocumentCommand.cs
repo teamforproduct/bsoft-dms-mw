@@ -83,11 +83,19 @@ namespace BL.Logic.DocumentCore.Commands
                 sendList.StartEventId = null;
             }
             CommonDocumentUtilities.SetLastChange(Context, _document.SendLists);
+
             var subscription = _document.Subscriptions.First();
             subscription.Description = CommandType.ToString();
-            subscription.DoneEvent = null;
+            subscription.DoneEvent = _docWait.OffEvent;
             subscription.SubscriptionStates = EnumSubscriptionStates.No;
-            CommonDocumentUtilities.SetLastChange(Context, _document.Subscriptions);
+
+            //TODO null
+            //var subscription = _document.Subscriptions.First();
+            //subscription.Description = CommandType.ToString();
+            //subscription.DoneEvent = null;
+            //subscription.SubscriptionStates = EnumSubscriptionStates.No;
+            //CommonDocumentUtilities.SetLastChange(Context, _document.Subscriptions);
+
             using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
             {
                 _operationDb.CloseDocumentWait(_context, _document);
