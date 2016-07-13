@@ -12,8 +12,9 @@ namespace BL.Logic.AdminCore.Interfaces
         bool VerifyAccess(IContext context, VerifyAccess verifyAccess, bool isThrowExeception = true);
         bool VerifyAccess(IContext context, EnumDocumentActions action, bool isPositionFromContext = true, bool isThrowExeception = true);
         bool VerifyAccess(IContext context, EnumDictionaryActions action, bool isPositionFromContext = true, bool isThrowExeception = true);
+        bool VerifyAccess(IContext context, EnumEncryptionActions action, bool isPositionFromContext = true, bool isThrowExeception = true);
 
-   
+
         Employee GetEmployee(IContext context, string userId);
         IEnumerable<CurrentPosition> GetPositionsByUser(Employee employee);
     }

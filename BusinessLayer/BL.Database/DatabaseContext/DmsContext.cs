@@ -8,7 +8,7 @@ using System.Data.Entity.ModelConfiguration.Conventions;
 using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Helper;
-
+using BL.Database.DBModel.Encryption;
 
 namespace BL.Database.DatabaseContext
 {
@@ -144,6 +144,8 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<FullTextIndexCash> FullTextIndexCashSet { get; set; }
         public virtual DbSet<SystemLogs> LogSet { get; set; }
         public virtual DbSet<SystemSettings> SettingsSet { get; set; }
+
+        public virtual DbSet<EncryptionCertificates> EncryptionCertificatesSet { get; set; }
 
     }
 }
