@@ -15,7 +15,7 @@ namespace DMS_WebAPI.Controllers.Admins
     /// Соответствие ролей и должностей
     /// </summary>
     [Authorize]
-    public class AdminPositionRoles : ApiController
+    public class AdminPositionRolesController : ApiController
     {
         /// <summary>
         /// GetAdminPositionRoles

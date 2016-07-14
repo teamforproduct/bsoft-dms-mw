@@ -100,12 +100,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdminCore\AdminService.cs" />
+    <Compile Include="AdminCore\AdminCommandFactory.cs" />
     <Compile Include="AdminCore\Interfaces\IAdminService.cs" />
     <Compile Include="AdminCore\Interfaces\ILanguageService.cs" />
     <Compile Include="AdminCore\LanguageService.cs" />
+    <Compile Include="AdminCore\PositionRole\AddPositionRoleCommand.cs" />
+    <Compile Include="AdminCore\PositionRole\DeletePositionRoleCommand.cs" />
+    <Compile Include="AdminCore\PositionRole\ModifyPositionRoleCommand.cs" />
+    <Compile Include="Common\BaseAdminCommand.cs" />
     <Compile Include="Common\BasePropertCommand.cs" />
     <Compile Include="Common\BaseDictionaryCommand.cs" />
     <Compile Include="Common\BaseDocumentCommand.cs" />
+    <Compile Include="Common\CommonAdminUtilities.cs" />
     <Compile Include="Common\CommonDictionaryUtilities.cs" />
     <Compile Include="Common\CommonDocumentUtilities.cs" />
     <Compile Include="Common\CommonSystemUtilities.cs" />
@@ -399,6 +405,7 @@
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

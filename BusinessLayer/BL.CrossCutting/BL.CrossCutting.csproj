@@ -93,6 +93,7 @@
     <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="Interfaces\ICommandObserver.cs" />
     <Compile Include="Interfaces\IContext.cs" />
+    <Compile Include="Interfaces\IAdminCommand.cs" />
     <Compile Include="Interfaces\IPropertyCommand.cs" />
     <Compile Include="Interfaces\IDictionaryCommand.cs" />
     <Compile Include="Interfaces\IDocumentCommand.cs" />

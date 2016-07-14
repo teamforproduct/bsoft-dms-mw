@@ -206,12 +206,14 @@ namespace BL.Database.Admins
             using (var dbContext = new DmsContext(context))
             {
                 var dbModel = dbContext.AdminPositionRolesSet.FirstOrDefault(x => x.Id == model.Id);
-                if (dbModel != null)
-                {
-                    dbContext.AdminPositionRolesSet.Remove(dbModel);
-                    //CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryRegistrationJournals, EnumOperationType.Delete);
-                    dbContext.SaveChanges();
-                }
+                //pss Все проверки и перехват исключений должны быть на уровне логики!!!
+
+                //if (dbModel != null)
+                //{
+                dbContext.AdminPositionRolesSet.Remove(dbModel);
+                //CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryRegistrationJournals, EnumOperationType.Delete);
+                dbContext.SaveChanges();
+                //}
             }
         }
 
@@ -302,7 +304,7 @@ namespace BL.Database.Admins
                 var filterContains = PredicateBuilder.False<AdminPositionRoles>();
 
                 filterContains = filter.PositionIDs.Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.Id == value).Expand());
+                    (current, value) => current.Or(e => e.PositionId == value).Expand());
 
                 qry = qry.Where(filterContains);
             }
@@ -312,7 +314,7 @@ namespace BL.Database.Admins
                 var filterContains = PredicateBuilder.False<AdminPositionRoles>();
 
                 filterContains = filter.RoleIDs.Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.Id == value).Expand());
+                    (current, value) => current.Or(e => e.RoleId == value).Expand());
 
                 qry = qry.Where(filterContains);
             }
