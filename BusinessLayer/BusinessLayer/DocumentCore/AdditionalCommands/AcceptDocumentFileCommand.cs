@@ -38,7 +38,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         {
             _actionRecords =
                    _document.DocumentFiles.Where(
-                       x => !(x.IsWorkedOut ?? true) && _document.ExecutorPositionId == positionId)
+                       x => !(x.IsWorkedOut ?? true) && !x.IsDeleted && _document.ExecutorPositionId == positionId)
                                                    .Select(x => new InternalActionRecord
                                                    {
                                                        FileId = x.Id,

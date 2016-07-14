@@ -25,39 +25,6 @@ namespace BL.Database.Documents
             }
         }
 
-        public IEnumerable<FrontDocumentAttachedFile> GetDocumentFileVersions(IContext ctx, int documentId, int orderNumber)
-        {
-            using (var dbContext = new DmsContext(ctx))
-            {
-                return
-                    dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
-                        .Where(x => x.DocumentId == documentId && x.OrderNumber == orderNumber)
-                        .Join(dbContext.DictionaryAgentsSet, df => df.LastChangeUserId, da => da.Id,
-                            (d, a) => new { fl = d, agName = a.Name })
-                        .Select(x => new FrontDocumentAttachedFile
-                        {
-                            Id = x.fl.Id,
-                            Date = x.fl.Date,
-                            DocumentId = x.fl.DocumentId,
-                            Extension = x.fl.Extension,
-                            FileContent = x.fl.Content,
-                            IsAdditional = x.fl.IsAdditional,
-                            Hash = x.fl.Hash,
-                            LastChangeDate = x.fl.LastChangeDate,
-                            LastChangeUserId = x.fl.LastChangeUserId,
-                            LastChangeUserName = x.agName,
-                            Name = x.fl.Name,
-                            FileType = x.fl.FileType,
-                            FileSize = x.fl.FileSize,
-                            OrderInDocument = x.fl.OrderNumber,
-                            Version = x.fl.Version,
-                            WasChangedExternal = false,
-                            ExecutorPositionName = x.fl.ExecutorPosition.Name,
-                            ExecutorPositionExecutorAgentName = x.fl.ExecutorPositionExecutorAgent.Name
-                        }).ToList();
-            }
-        }
-
         public FrontDocumentAttachedFile GetDocumentFileVersion(IContext ctx, int documentId, int orderNumber, int versionNumber)
         {
             using (var dbContext = new DmsContext(ctx))
@@ -93,39 +60,6 @@ namespace BL.Database.Documents
             }
         }
 
-        public FrontDocumentAttachedFile GetDocumentFileVersion(IContext ctx, int id)
-        {
-            using (var dbContext = new DmsContext(ctx))
-            {
-                return
-                    dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
-                        .Where(x => x.Id == id)
-                        .Join(dbContext.DictionaryAgentsSet, df => df.LastChangeUserId, da => da.Id,
-                            (d, a) => new { fl = d, agName = a.Name })
-                        .Select(x => new FrontDocumentAttachedFile
-                        {
-                            Id = x.fl.Id,
-                            Date = x.fl.Date,
-                            DocumentId = x.fl.DocumentId,
-                            Extension = x.fl.Extension,
-                            FileContent = x.fl.Content,
-                            IsAdditional = x.fl.IsAdditional,
-                            Hash = x.fl.Hash,
-                            LastChangeDate = x.fl.LastChangeDate,
-                            LastChangeUserId = x.fl.LastChangeUserId,
-                            LastChangeUserName = x.agName,
-                            Name = x.fl.Name,
-                            FileType = x.fl.FileType,
-                            FileSize = x.fl.FileSize,
-                            OrderInDocument = x.fl.OrderNumber,
-                            Version = x.fl.Version,
-                            WasChangedExternal = false,
-                            ExecutorPositionName = x.fl.ExecutorPosition.Name,
-                            ExecutorPositionExecutorAgentName = x.fl.ExecutorPositionExecutorAgent.Name
-                        }).FirstOrDefault();
-            }
-        }
-
         public InternalDocument ModifyDocumentFilePrepare(IContext ctx, int documentId, int orderNumber, int version)
         {
             using (var dbContext = new DmsContext(ctx))
@@ -143,6 +77,7 @@ namespace BL.Database.Documents
                 doc.DocumentFiles = dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
                         .Where(
                             x => x.DocumentId == documentId && x.Version == version && x.OrderNumber == orderNumber)
+                        .Where(x => !x.IsDeleted)
                         .Join(dbContext.DictionaryAgentsSet, df => df.LastChangeUserId, da => da.Id,
                             (d, a) => new { fl = d, agName = a.Name })
                         .Select(x => new InternalDocumentAttachedFile
@@ -216,7 +151,7 @@ namespace BL.Database.Documents
                         Id = x.Id,
                         ExecutorPositionId = x.ExecutorPositionId,
                         IsRegistered = x.IsRegistered,
-                        DocumentFiles = x.Files.Where(y => y.IsMainVersion)
+                        DocumentFiles = x.Files.Where(y => y.IsMainVersion).Where(y => !y.IsDeleted)
                         .Select(y =>
                         new InternalDocumentAttachedFile
                         {
@@ -425,10 +360,11 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                if (dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Any(x => x.DocumentId == documentId && x.Name == fileName && x.Extension == fileExt))
+                if (dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => !x.IsDeleted).Any(x => x.DocumentId == documentId && x.Name == fileName && x.Extension == fileExt))
                 {
                     return
                         dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == documentId && x.Name == fileName && x.Extension == fileExt)
+                            .Where(x => !x.IsDeleted)
                             .Select(x => x.OrderNumber)
                             .First();
                 }

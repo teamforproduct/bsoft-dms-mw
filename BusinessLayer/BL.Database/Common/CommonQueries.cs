@@ -994,6 +994,7 @@ namespace BL.Database.Common
                     (current, value) => current.Or(e => e.DocumentId == value.DocumentId && e.OrderNumber == value.OrderInDocument).Expand());
 
                 var isNotAllWorkedOut = dbContext.DocumentFilesSet.Where(filterContains)
+                            .Where(x => !x.IsDeleted)
                             .GroupBy(x => new { x.DocumentId, x.OrderNumber })
                             .Select(x => new
                             {

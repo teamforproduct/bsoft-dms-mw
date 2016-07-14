@@ -41,7 +41,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             if (CommandType == EnumDocumentActions.AddDocumentFileUseMainNameFile)
             {
                 _actionRecords =
-                  _document.DocumentFiles.Where(x => x.IsMainVersion)
+                  _document.DocumentFiles.Where(x => x.IsMainVersion && !x.IsDeleted)
                             .Where(
                       x =>
                           x.IsAdditional && x.ExecutorPositionId == positionId
