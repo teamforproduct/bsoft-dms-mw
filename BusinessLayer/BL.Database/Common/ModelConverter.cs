@@ -6,6 +6,8 @@ using BL.Model.DocumentCore.InternalModel;
 using BL.Database.DBModel.System;
 using BL.Model.SystemCore.InternalModel;
 using System;
+using BL.Model.EncryptionCore.InternalModel;
+using BL.Database.DBModel.Encryption;
 
 namespace BL.Database.Common
 {
@@ -343,6 +345,30 @@ namespace BL.Database.Common
                 Description = docFile.Description,
 
             };
+        }
+
+        public static EncryptionCertificates GetDbEncryptionCertificate(InternalEncryptionCertificate item)
+        {
+            return new EncryptionCertificates
+            {
+                Id = item.Id,
+                Name = item.Name,
+                CreateDate = item.CreateDate,
+                ValidFromDate = item.ValidFromDate,
+                ValidToDate = item.ValidToDate,
+                IsPublic = item.IsPublic,
+                IsPrivate = item.IsPrivate,
+                AgentId = item.AgentId,
+                Certificate = item.Certificate,
+                Extension = item.Extension,
+                LastChangeDate = item.LastChangeDate,
+                LastChangeUserId = item.LastChangeUserId,
+            };
+        }
+
+        public static IEnumerable<EncryptionCertificates> GetDbEncryptionCertificates(IEnumerable<InternalEncryptionCertificate> items)
+        {
+            return items.Select(GetDbEncryptionCertificate);
         }
 
     }

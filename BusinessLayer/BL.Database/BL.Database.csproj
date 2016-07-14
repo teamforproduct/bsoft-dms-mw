@@ -82,6 +82,10 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DotNetZip, Version=1.10.1.0, Culture=neutral, PublicKeyToken=6583c7c814667745, processorArchitecture=MSIL">
+      <HintPath>..\..\Web\DMS_WebAPI\packages\DotNetZip.1.10.1\lib\net20\DotNetZip.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\..\Web\DMS_WebAPI\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
       <Private>True</Private>
@@ -110,6 +114,8 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Web" />
   </ItemGroup>
@@ -162,6 +168,7 @@
     <Compile Include="DBModel\Document\DocumentTaskAccesses.cs" />
     <Compile Include="DBModel\Document\DocumentTasks.cs" />
     <Compile Include="DBModel\Document\DocumentWaits.cs" />
+    <Compile Include="DBModel\Encryption\EncryptionCertificates.cs" />
     <Compile Include="DBModel\InternalModel\DocumentQuery.cs" />
     <Compile Include="DBModel\System\FullTextIndexCash.cs" />
     <Compile Include="DBModel\System\Properties.cs" />
@@ -203,6 +210,8 @@
     <Compile Include="Dictionaries\DictionariesDbProcess.cs" />
     <Compile Include="Dictionaries\Interfaces\IDictionariesDbProcess.cs" />
     <Compile Include="Common\CommonQueries.cs" />
+    <Compile Include="Encryption\EncryptionDbProcess.cs" />
+    <Compile Include="Encryption\Interfaces\IEncryptionDbProcess.cs" />
     <Compile Include="Documents\DocumentFileDbProcess.cs" />
     <Compile Include="Documents\DocumentFiltersDbProcess.cs" />
     <Compile Include="Documents\DocumentOperationsDbProcess.cs" />
@@ -407,6 +416,10 @@
     <Compile Include="Migrations\201606301213210_IsLastVersion.Designer.cs">
       <DependentUpon>201606301213210_IsLastVersion.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201607131132104_EncryptionCer.cs" />
+    <Compile Include="Migrations\201607131132104_EncryptionCer.Designer.cs">
+      <DependentUpon>201607131132104_EncryptionCer.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SystemDb\ISystemDbProcess.cs" />
@@ -571,6 +584,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201606301213210_IsLastVersion.resx">
       <DependentUpon>201606301213210_IsLastVersion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607131132104_EncryptionCer.resx">
+      <DependentUpon>201607131132104_EncryptionCer.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

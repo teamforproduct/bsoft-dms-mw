@@ -879,4 +879,28 @@
         {
         }
     }
+
+    public class EncryptionCertificateWasNotFound : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:EncryptionCertificateWasNotFound@l##";
+        public EncryptionCertificateWasNotFound() : base(_MESSAGE)
+        {
+        }
+
+        public EncryptionCertificateWasNotFound(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+    public class EncryptionCertificatePrivateKeyСanNotBeExported : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:EncryptionCertificatePrivateKeyСanNotBeExported@l##";
+        public EncryptionCertificatePrivateKeyСanNotBeExported() : base(_MESSAGE)
+        {
+        }
+
+        public EncryptionCertificatePrivateKeyСanNotBeExported(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
 }

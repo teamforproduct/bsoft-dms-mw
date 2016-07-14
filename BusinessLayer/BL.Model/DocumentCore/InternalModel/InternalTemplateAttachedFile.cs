@@ -1,5 +1,4 @@
 ﻿using BL.Model.Common;
-using System.IO;
 using System.Web;
 
 namespace BL.Model.DocumentCore.InternalModel

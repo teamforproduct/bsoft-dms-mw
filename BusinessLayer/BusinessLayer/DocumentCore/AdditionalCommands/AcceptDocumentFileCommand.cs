@@ -36,13 +36,27 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override bool CanBeDisplayed(int positionId)
         {
-            _actionRecords =
-                   _document.DocumentFiles.Where(
-                       x => !(x.IsWorkedOut ?? true) && _document.ExecutorPositionId == positionId)
-                                                   .Select(x => new InternalActionRecord
-                                                   {
-                                                       FileId = x.Id,
-                                                   });
+            if (CommandType == EnumDocumentActions.AcceptDocumentFile)
+            {
+                _actionRecords =
+                       _document.DocumentFiles.Where(
+                           x => !(x.IsWorkedOut ?? true) && !x.IsDeleted && _document.ExecutorPositionId == positionId)
+                                                       .Select(x => new InternalActionRecord
+                                                       {
+                                                           FileId = x.Id,
+                                                       });
+            }
+            else
+            {
+                _actionRecords =
+                       _document.DocumentFiles.Where(x => !x.IsDeleted && !x.IsMainVersion)
+                                .Where(x => (x.ExecutorPositionId == positionId && x.IsAdditional)
+                                            || (_document.ExecutorPositionId == positionId && !x.IsAdditional))
+                                                       .Select(x => new InternalActionRecord
+                                                       {
+                                                           FileId = x.Id,
+                                                       });
+            }
             if (!_actionRecords.Any())
             {
                 return false;

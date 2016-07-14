@@ -134,6 +134,7 @@ namespace BL.Logic.DocumentCore
                     break;
 
                 case EnumDocumentActions.AcceptDocumentFile:
+                case EnumDocumentActions.AcceptMainVersionDocumentFile:
                     cmd = DmsResolver.Current.Get<AcceptDocumentFileCommand>();
                     break;
                 case EnumDocumentActions.RejectDocumentFile:

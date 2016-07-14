@@ -715,7 +715,7 @@ namespace BL.Database.SystemDb
                     case EnumObjects.DocumentSendLists:
                         return dbContext.DocumentSendListsSet.Count(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId);
                     case EnumObjects.DocumentFiles:
-                        return dbContext.DocumentFilesSet.Count(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId);
+                        return dbContext.DocumentFilesSet.Count(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId && !x.IsDeleted);
                     case EnumObjects.DocumentEvents:
                         return dbContext.DocumentEventsSet.Count(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId);
                     case EnumObjects.DocumentSubscriptions:
@@ -767,7 +767,7 @@ namespace BL.Database.SystemDb
 
                 if (objType == EnumObjects.DocumentFiles)
                 {
-                    res.AddRange(dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).OrderBy(x => x.Id).Select(x => new FullTextIndexItem
+                    res.AddRange(dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => !x.IsDeleted).OrderBy(x => x.Id).Select(x => new FullTextIndexItem
                     {
                         DocumentId = x.DocumentId, ItemType = EnumObjects.DocumentFiles, OperationType = EnumOperationType.AddNew, ClientId = ctx.CurrentClientId, ObjectId = x.Id, ObjectText = x.Name + "." + x.Extension + " "
                     }).Skip(() => rowOffset).Take(() => rowToSelect).ToList());
@@ -984,7 +984,7 @@ namespace BL.Database.SystemDb
 
                 if (objType == EnumObjects.DocumentFiles)
                 {
-                    res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.Id <= selectBis && x.OperationType != (int) EnumOperationType.Delete && x.ObjectType == (int) EnumObjects.DocumentFiles).OrderBy(x => x.ObjectId).ThenBy(x => x.Id).Join(dbContext.DocumentFilesSet, i => i.ObjectId, d => d.Id, (i, d) => new {ind = i, fl = d}).Select(x => new FullTextIndexItem
+                    res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.Id <= selectBis && x.OperationType != (int) EnumOperationType.Delete && x.ObjectType == (int) EnumObjects.DocumentFiles).OrderBy(x => x.ObjectId).ThenBy(x => x.Id).Join(dbContext.DocumentFilesSet.Where(x => !x.IsDeleted), i => i.ObjectId, d => d.Id, (i, d) => new {ind = i, fl = d}).Select(x => new FullTextIndexItem
                     {
                         Id = x.ind.Id, DocumentId = x.fl.DocumentId, ItemType = (EnumObjects) x.ind.ObjectType, OperationType = (EnumOperationType) x.ind.OperationType, ClientId = ctx.CurrentClientId, ObjectId = x.fl.Id, ObjectText = x.fl.Name + "." + x.fl.Extension + " "
                     }).Take(() => rowToSelect).ToList());

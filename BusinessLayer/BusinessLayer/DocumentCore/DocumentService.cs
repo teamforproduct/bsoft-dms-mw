@@ -16,6 +16,7 @@ using BL.Model.DocumentCore.FrontModel;
 using BL.Model.SystemCore.Filters;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.Exception;
+using System.Transactions;
 
 namespace BL.Logic.DocumentCore
 {
@@ -41,24 +42,27 @@ namespace BL.Logic.DocumentCore
 
         public IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterBase filter, UIPaging paging)
         {
-            if (!String.IsNullOrEmpty(filter?.Document?.FullTextSearch))
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
-                var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
-                var ftRes = ftService.SearchDocument(ctx, filter.Document.FullTextSearch);
-                if (ftRes != null)
+                if (!String.IsNullOrEmpty(filter?.Document?.FullTextSearch))
                 {
-                    var resWithRanges =
-                        ftRes.GroupBy(x => x.DocumentId)
-                            .Select(x => new { DocId = x.Key, Rate = x.Count() })
-                            .OrderByDescending(x => x.Rate);
-                    filter.Document.FullTextSearchDocumentId = resWithRanges.Select(x => x.DocId).ToList();
+                    var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
+                    var ftRes = ftService.SearchDocument(ctx, filter.Document.FullTextSearch);
+                    if (ftRes != null)
+                    {
+                        var resWithRanges =
+                            ftRes.GroupBy(x => x.DocumentId)
+                                .Select(x => new { DocId = x.Key, Rate = x.Count() })
+                                .OrderByDescending(x => x.Rate);
+                        filter.Document.FullTextSearchDocumentId = resWithRanges.Select(x => x.DocId).ToList();
+                    }
+                    else
+                    {
+                        filter.Document.FullTextSearchDocumentId = new List<int>();
+                    }
                 }
-                else
-                {
-                    filter.Document.FullTextSearchDocumentId = new List<int>();
-                }
+                return _documentDb.GetDocuments(ctx, filter, paging);
             }
-            return _documentDb.GetDocuments(ctx, filter, paging);
         }
 
         public FrontDocument GetDocument(IContext ctx, int documentId, FilterDocumentById filter)
@@ -96,12 +100,18 @@ namespace BL.Logic.DocumentCore
 
         public IEnumerable<FrontDocumentEvent> GetDocumentEvents(IContext ctx, FilterBase filter, UIPaging paging)
         {
-            return _operationDb.GetDocumentEvents(ctx, filter, paging);
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            {
+                return _operationDb.GetDocumentEvents(ctx, filter, paging);
+            }
         }
 
         public IEnumerable<FrontDocumentWait> GetDocumentWaits(IContext ctx, FilterBase filter, UIPaging paging)
         {
-            return _operationDb.GetDocumentWaits(ctx, filter, paging);
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            {
+                return _operationDb.GetDocumentWaits(ctx, filter, paging);
+            }
         }
 
         public IEnumerable<FrontDocumentSubscription> GetDocumentSubscriptions(IContext ctx, FilterDocumentSubscription filter, UIPaging paging)

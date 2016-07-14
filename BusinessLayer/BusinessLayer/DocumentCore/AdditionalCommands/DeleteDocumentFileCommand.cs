@@ -37,7 +37,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         public override bool CanBeDisplayed(int positionId)
         {
             _actionRecords =
-                          _document.DocumentFiles.Where(x=>x.IsMainVersion)
+                          _document.DocumentFiles.Where(x=>x.IsMainVersion && !x.IsDeleted)
                             .Where(
                               x =>
                                   (x.IsAdditional && x.ExecutorPositionId == positionId)

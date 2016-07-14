@@ -41,6 +41,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         {
             _actionRecords =
                    _document.DocumentFiles
+                   .Where(x => !x.IsDeleted)
                         .Where(
                        x =>
                            x.ExecutorPositionId == positionId)
