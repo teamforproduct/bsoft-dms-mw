@@ -15,6 +15,7 @@ namespace BL.Model.DictionaryCore.FrontModel
         public DateTime LastChangeDate { get; set; }
 
         public string PositionName { get; set; }
+        public string PositionExecutorName { get; set; }
 
         public virtual IEnumerable<FrontDictionaryStandartSendListContent> StandartSendListContents { get; set; }
     }

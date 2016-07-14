@@ -4592,6 +4592,7 @@ namespace BL.Database.Dictionaries
                             LastChangeUserId = x.LastChangeUserId,
                             LastChangeDate = x.LastChangeDate,
                             PositionName = x.Position.Name,
+                            PositionExecutorName = x.Position.ExecutorAgent.Name,
                             StandartSendListContents =
                                 x.StandartSendListContents.Select(y => new FrontDictionaryStandartSendListContent()
                                 {
@@ -4669,6 +4670,7 @@ namespace BL.Database.Dictionaries
                     LastChangeUserId = x.LastChangeUserId,
                     LastChangeDate = x.LastChangeDate,
                     PositionName = x.Position.Name,
+                    PositionExecutorName = x.Position.ExecutorAgent.Name,
                     StandartSendListContents =
                                 x.StandartSendListContents.Select(y => new FrontDictionaryStandartSendListContent()
                                 {
