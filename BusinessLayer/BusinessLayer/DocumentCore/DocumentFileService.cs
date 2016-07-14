@@ -7,6 +7,7 @@ using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
+using System.Transactions;
 
 namespace BL.Logic.DocumentCore
 {
@@ -23,7 +24,10 @@ namespace BL.Logic.DocumentCore
 
         public IEnumerable<FrontDocumentAttachedFile> GetDocumentFiles(IContext ctx, FilterBase filter, UIPaging paging = null)
         {
-            return _dbProcess.GetDocumentFiles(ctx, filter, paging);
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            {
+                return _dbProcess.GetDocumentFiles(ctx, filter, paging);
+            }
         }
 
         public FrontDocumentAttachedFile GetUserFile(IContext ctx, FilterDocumentFileIdentity fileIdent)
