@@ -14,13 +14,17 @@
         /// </summary>
         ModifyEncryptionCertificate = 401002,
         /// <summary>
+        /// Экспорт сертификата
+        /// </summary>
+        ExportEncryptionCertificate = 401003,
+        /// <summary>
         /// Удалить сертификат
         /// </summary>
         DeleteEncryptionCertificate = 401004,
         /// <summary>
-        /// Экспорт сертификата
+        /// Сгенерировать сертификат
         /// </summary>
-        ExportEncryptionCertificate = 401003,
+        GenerateKeyEncryptionCertificate = 401005,
         #endregion EncryptionCertificates
     }
 }

@@ -184,6 +184,7 @@
     <Compile Include="DocumentCore\AdditionalCommands\RejectDocumentFileCommand.cs" />
     <Compile Include="DocumentCore\AdditionalCommands\AcceptDocumentFileCommand.cs" />
     <Compile Include="DocumentCore\AdditionalCommands\RenameDocumentFileCommand.cs" />
+    <Compile Include="EncryptionCore\Certificate\GenerateKeyEncryptionCertificateCommand.cs" />
     <Compile Include="EncryptionCore\Certificate\ExportEncryptionCertificateCommand.cs" />
     <Compile Include="EncryptionCore\EncryptionCommandFactory.cs" />
     <Compile Include="EncryptionCore\EncryptionService.cs" />

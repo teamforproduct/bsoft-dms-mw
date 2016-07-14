@@ -334,6 +334,12 @@
         DeleteDocumentFileVersionRecord = 104015,
 
         /// <summary>
+        /// Сделать основной версией
+        /// </summary>
+        AcceptMainVersionDocumentFile = 104016,
+
+
+        /// <summary>
         /// Добавить связь между документами
         /// </summary>
         AddDocumentLink = 105001,

@@ -165,6 +165,7 @@
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryStandartSendList.cs" />
     <Compile Include="EncryptionCore\Filters\FilterEncryptionCertificate.cs" />
     <Compile Include="EncryptionCore\FrontModel\FrontEncryptionCertificate.cs" />
+    <Compile Include="EncryptionCore\IncomingModel\GenerateKeyEncryptionCertificate.cs" />
     <Compile Include="EncryptionCore\IncomingModel\AddEncryptionCertificate.cs" />
     <Compile Include="EncryptionCore\IncomingModel\ModifyEncryptionCertificate.cs" />
     <Compile Include="EncryptionCore\InternalModel\InternalEncryptionCertificate.cs" />
