@@ -11,6 +11,9 @@ using BL.Logic.DocumentCore.PaperCommands;
 using BL.Logic.DocumentCore.ReportsCommands;
 using BL.Logic.DocumentCore.SendListCommands;
 using BL.Logic.DocumentCore.TemplateCommands;
+using BL.Logic.EncryptionCore;
+using BL.Logic.EncryptionCore.Certificate;
+using BL.Logic.EncryptionCore.Interfaces;
 using BL.Logic.Logging;
 using BL.Logic.Observers;
 using BL.Logic.PropertyCore;
@@ -39,6 +42,8 @@ namespace BL.Logic.DependencyInjection
             LoadObservers();
             LoadMailService();
             LoadReportCommands();
+            LoadEncryptionModule();
+            LoadEncryptionCommands();
         }
 
         private void LoadSystemModule()
@@ -222,6 +227,19 @@ namespace BL.Logic.DependencyInjection
             Bind<IDocumentCommand>().To<ReportRegistrationCardDocumentCommand>();
             Bind<IDocumentCommand>().To<ReportRegisterTransmissionDocumentsCommand>();
 
+        }
+
+        private void LoadEncryptionModule()
+        {
+            Bind<IEncryptionService>().To<EncryptionService>().InSingletonScope();
+        }
+
+        private void LoadEncryptionCommands()
+        {
+            Bind<IEncryptionCommand>().To<AddEncryptionCertificateCommand>();
+            Bind<IEncryptionCommand>().To<DeleteEncryptionCertificateCommand>();
+            Bind<IEncryptionCommand>().To<ExportEncryptionCertificateCommand>();
+            Bind<IEncryptionCommand>().To<ModifyEncryptionCertificateCommand>();
         }
 
     }

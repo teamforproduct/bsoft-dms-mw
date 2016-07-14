@@ -4,6 +4,8 @@ using BL.Database.Dictionaries;
 using BL.Database.Dictionaries.Interfaces;
 using BL.Database.Documents;
 using BL.Database.Documents.Interfaces;
+using BL.Database.Encryption;
+using BL.Database.Encryption.Interfaces;
 using BL.Database.FileWorker;
 using BL.Database.Helper;
 using BL.Database.SystemDb;
@@ -18,6 +20,7 @@ namespace BL.Database.DependencyInjection
             Bind<IConnectionHelper>().To<ConnectionHelper>().InSingletonScope();
             RegistrateSystemProcess();
             RegistrateDocumentProcess();
+            RegistrateEncryptionProcess();
         }
 
         private void RegistrateDocumentProcess()
@@ -43,6 +46,11 @@ namespace BL.Database.DependencyInjection
             Bind<ILanguagesDbProcess>().To<LanguagesDbProcess>().InSingletonScope();
             Bind<ISystemDbProcess>().To<SystemDbProcess>().InSingletonScope();
             Bind<IFileStore>().To<FileStore>().InSingletonScope();
+        }
+
+        private void RegistrateEncryptionProcess()
+        {
+            Bind<IEncryptionDbProcess>().To<EncryptionDbProcess>().InSingletonScope();
         }
 
     }

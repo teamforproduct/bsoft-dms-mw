@@ -1,4 +1,5 @@
 ﻿using BL.Database.DBModel.Admin;
+using BL.Database.DBModel.Encryption;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -14,6 +15,7 @@ namespace BL.Database.DBModel.Dictionary
             this.AgentAddresses = new HashSet<DictionaryAgentAddresses>();
             this.AgentContacts = new HashSet<DictionaryAgentContacts>();
             this.AgentAccounts = new HashSet<DictionaryAgentAccounts>();
+            this.Certificates = new HashSet<EncryptionCertificates>();
 
         }
 
@@ -57,6 +59,8 @@ namespace BL.Database.DBModel.Dictionary
         public virtual ICollection<DictionaryAgentContacts> AgentContacts { get; set; }
 
         public virtual ICollection<DictionaryAgentAccounts> AgentAccounts { get; set; }
+
+        public virtual ICollection<EncryptionCertificates> Certificates { get; set; }
 
         //[ForeignKey("AgentId")]
         //public virtual ICollection<DictionaryAgentPersons> AgentPersonsAgents { get; set; }

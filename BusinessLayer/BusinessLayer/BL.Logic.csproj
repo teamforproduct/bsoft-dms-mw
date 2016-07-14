@@ -103,6 +103,7 @@
     <Compile Include="AdminCore\Interfaces\IAdminService.cs" />
     <Compile Include="AdminCore\Interfaces\ILanguageService.cs" />
     <Compile Include="AdminCore\LanguageService.cs" />
+    <Compile Include="Common\BaseEncryptionCommand.cs" />
     <Compile Include="Common\BasePropertCommand.cs" />
     <Compile Include="Common\BaseDictionaryCommand.cs" />
     <Compile Include="Common\BaseDocumentCommand.cs" />
@@ -183,6 +184,14 @@
     <Compile Include="DocumentCore\AdditionalCommands\RejectDocumentFileCommand.cs" />
     <Compile Include="DocumentCore\AdditionalCommands\AcceptDocumentFileCommand.cs" />
     <Compile Include="DocumentCore\AdditionalCommands\RenameDocumentFileCommand.cs" />
+    <Compile Include="EncryptionCore\Certificate\GenerateKeyEncryptionCertificateCommand.cs" />
+    <Compile Include="EncryptionCore\Certificate\ExportEncryptionCertificateCommand.cs" />
+    <Compile Include="EncryptionCore\EncryptionCommandFactory.cs" />
+    <Compile Include="EncryptionCore\EncryptionService.cs" />
+    <Compile Include="EncryptionCore\Certificate\AddEncryptionCertificateCommand.cs" />
+    <Compile Include="EncryptionCore\Certificate\DeleteEncryptionCertificateCommand.cs" />
+    <Compile Include="EncryptionCore\Certificate\ModifyEncryptionCertificateCommand.cs" />
+    <Compile Include="EncryptionCore\Interfaces\IEncryptionService.cs" />
     <Compile Include="DocumentCore\Commands\SelfAffixSigningDocumentCommand.cs" />
     <Compile Include="SystemCore\Interfaces\ISystemService.cs" />
     <Compile Include="SystemCore\SystemService.cs" />

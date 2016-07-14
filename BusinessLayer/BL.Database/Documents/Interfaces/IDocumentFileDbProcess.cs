@@ -10,9 +10,7 @@ namespace BL.Database.Documents.Interfaces
     public interface IDocumentFileDbProcess
     {
         IEnumerable<FrontDocumentAttachedFile> GetDocumentFiles(IContext ctx, FilterBase filter, UIPaging paging = null);
-        IEnumerable<FrontDocumentAttachedFile> GetDocumentFileVersions(IContext ctx, int documentId, int orderNumber);
         FrontDocumentAttachedFile GetDocumentFileVersion(IContext ctx, int documentId, int orderNumber, int versionNumber);
-        FrontDocumentAttachedFile GetDocumentFileVersion(IContext ctx, int id);
         int CheckFileForDocument(IContext ctx, int documentId, string fileName, string fileExt);
         InternalDocument AddDocumentFilePrepare(IContext ctx, int documentId);
         int AddNewFileOrVersion(IContext ctx, InternalDocumentAttachedFile docFile);

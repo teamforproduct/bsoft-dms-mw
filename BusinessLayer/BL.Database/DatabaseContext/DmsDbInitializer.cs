@@ -200,6 +200,11 @@ namespace BL.Database.DatabaseContext
             items.Add(new AdminLanguageValues { Id = 169, LanguageId = 1, Label = "##l@DmsExceptions:ClientIsNotFound@l##", Value = "Клиент не найден" });
             items.Add(new AdminLanguageValues { Id = 170, LanguageId = 2, Label = "##l@DmsExceptions:ClientIsNotFound@l##", Value = "Client not found" });
 
+            items.Add(new AdminLanguageValues { Id = 171, LanguageId = 1, Label = "##l@DmsExceptions:EncryptionCertificatePrivateKeyСanNotBeExported@l##", Value = "Приватный ключ нельзя экспортировать" });
+            items.Add(new AdminLanguageValues { Id = 172, LanguageId = 2, Label = "##l@DmsExceptions:EncryptionCertificatePrivateKeyСanNotBeExported@l##", Value = "The private key can not be exported" });
+            items.Add(new AdminLanguageValues { Id = 173, LanguageId = 1, Label = "##l@DmsExceptions:EncryptionCertificateWasNotFound@l##", Value = "Сертификат не был найден" });
+            items.Add(new AdminLanguageValues { Id = 174, LanguageId = 2, Label = "##l@DmsExceptions:EncryptionCertificateWasNotFound@l##", Value = "The certificate was not found" });
+
             return items;
         }
     }

@@ -25,6 +25,8 @@ using BL.CrossCutting.CryptographicWorker;
 using LinqKit;
 using BL.Database.DBModel.Dictionary;
 using System.Data.Entity;
+using BL.Database.DBModel.Encryption;
+using BL.Model.EncryptionCore.Filters;
 
 namespace BL.Database.Common
 {
@@ -992,6 +994,7 @@ namespace BL.Database.Common
                     (current, value) => current.Or(e => e.DocumentId == value.DocumentId && e.OrderNumber == value.OrderInDocument).Expand());
 
                 var isNotAllWorkedOut = dbContext.DocumentFilesSet.Where(filterContains)
+                            .Where(x => !x.IsDeleted)
                             .GroupBy(x => new { x.DocumentId, x.OrderNumber })
                             .Select(x => new
                             {
@@ -2882,6 +2885,71 @@ namespace BL.Database.Common
 
             dbContext.DocumentTaskAccessesSet.AddRange(insTA.Select(x => new DocumentTaskAccesses { TaskId = x.TaskId, PositionId = x.PositionId }));
 
+        }
+        #endregion
+
+        #region Certificates
+        public static IQueryable<EncryptionCertificates> GetCertificatesQuery(DmsContext dbContext, IContext ctx, FilterEncryptionCertificate filter)
+        {
+            var qry = dbContext.EncryptionCertificatesSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).AsQueryable();
+            if (!ctx.IsAdmin)
+            {
+                qry = qry.Where(x => x.AgentId == ctx.CurrentAgentId);
+            }
+
+            if (filter != null)
+            {
+                if (filter.CertificateId?.Count() > 0)
+                {
+                    var filterContains = PredicateBuilder.False<EncryptionCertificates>();
+                    filterContains = filter.CertificateId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                if (!string.IsNullOrEmpty(filter.Name))
+                {
+                    qry = qry.Where(x => x.Name.Contains(filter.Name));
+                }
+
+                if (!string.IsNullOrEmpty(filter.Extension))
+                {
+                    qry = qry.Where(x => x.Extension.Contains(filter.Extension));
+                }
+
+                if (filter.CreateFromDate.HasValue)
+                {
+                    qry = qry.Where(x => filter.CreateFromDate.Value < x.CreateDate);
+                }
+
+                if (filter.CreateToDate.HasValue)
+                {
+                    qry = qry.Where(x => filter.CreateToDate.Value > x.CreateDate);
+                }
+
+
+                if (filter.ValidFromDate.HasValue)
+                {
+                    qry = qry.Where(x => filter.ValidFromDate.Value < x.ValidFromDate);
+                }
+
+                if (filter.ValidToDate.HasValue)
+                {
+                    qry = qry.Where(x => filter.ValidToDate.Value > x.ValidToDate);
+                }
+
+                if (filter.IsPublic.HasValue)
+                {
+                    qry = qry.Where(x => x.IsPublic == filter.IsPublic.Value);
+                }
+
+                if (filter.IsPrivate.HasValue)
+                {
+                    qry = qry.Where(x => x.IsPrivate == filter.IsPrivate.Value);
+                }
+            }
+            return qry;
         }
         #endregion
     }

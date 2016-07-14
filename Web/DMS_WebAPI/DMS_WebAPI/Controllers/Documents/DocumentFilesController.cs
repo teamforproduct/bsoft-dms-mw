@@ -189,6 +189,22 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
+        /// Сделать основной версией
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("AcceptMainVersion")]
+        [HttpPost]
+        public IHttpActionResult PostAcceptMainVersion(ChangeWorkOutDocumentFile model)
+        {
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+
+            docProc.ExecuteAction(EnumDocumentActions.AcceptMainVersionDocumentFile, ctx, model);
+            return GetFileList(new FilterBase { File = new FilterDocumentFile { DocumentId = new List<int> { model.DocumentId } } }, null);
+        }
+
+        /// <summary>
         /// Удаление версии файла
         /// </summary>
         /// <param name="model"></param>
