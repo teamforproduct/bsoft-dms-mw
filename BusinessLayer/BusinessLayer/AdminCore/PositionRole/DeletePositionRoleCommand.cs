@@ -39,6 +39,10 @@ namespace BL.Logic.AdminCore
                 _adminDb.DeletePositionRole(_context, filter);
                 return null;
             }
+            catch (ArgumentNullException ex)
+            {
+                throw new AdminRecordWasNotFound(ex);
+            }
             catch (Exception ex)
             {
                 throw new AdminRecordCouldNotBeDeleted(ex);
