@@ -6,8 +6,38 @@
     //pss назначить номера действиям
     public enum EnumAdminActions
     {
-        // Типы документов
-        #region PositionRole
+
+        #region [+] Roles ...
+        /// <summary>
+        /// Добавить
+        /// </summary>
+        AddRole,
+        /// <summary>
+        /// Изменить
+        /// </summary>
+        ModifyRole,
+        /// <summary>
+        /// Удалить 
+        /// </summary>
+        DeleteRole,
+        #endregion
+
+        #region [+] RoleActions ...
+        /// <summary>
+        /// Добавить
+        /// </summary>
+        AddRoleAction,
+        /// <summary>
+        /// Изменить
+        /// </summary>
+        ModifyRoleAction,
+        /// <summary>
+        /// Удалить 
+        /// </summary>
+        DeleteRoleAction,
+        #endregion
+
+        #region [+] PositionRole ...
         /// <summary>
         /// Добавить
         /// </summary>
@@ -22,6 +52,35 @@
         DeletePositionRole ,
         #endregion
 
-       
+        #region [+] UserRoles ...
+        /// <summary>
+        /// Добавить
+        /// </summary>
+        AddUserRole,
+        /// <summary>
+        /// Изменить
+        /// </summary>
+        ModifyUserRole,
+        /// <summary>
+        /// Удалить 
+        /// </summary>
+        DeleteUserRole,
+        #endregion
+
+        #region [+] Subordinations ...
+        /// <summary>
+        /// Добавить
+        /// </summary>
+        AddSubordination,
+        /// <summary>
+        /// Изменить
+        /// </summary>
+        ModifySubordinations,
+        /// <summary>
+        /// Удалить 
+        /// </summary>
+        DeleteSubordinations,
+        #endregion
+
     }
 }
