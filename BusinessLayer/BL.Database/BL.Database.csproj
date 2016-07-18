@@ -422,6 +422,10 @@
     <Compile Include="Migrations\201607131132104_EncryptionCer.Designer.cs">
       <DependentUpon>201607131132104_EncryptionCer.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201607181110155_RemoveFKLinks.cs" />
+    <Compile Include="Migrations\201607181110155_RemoveFKLinks.Designer.cs">
+      <DependentUpon>201607181110155_RemoveFKLinks.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SystemDb\ISystemDbProcess.cs" />
@@ -589,6 +593,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201607131132104_EncryptionCer.resx">
       <DependentUpon>201607131132104_EncryptionCer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607181110155_RemoveFKLinks.resx">
+      <DependentUpon>201607181110155_RemoveFKLinks.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
