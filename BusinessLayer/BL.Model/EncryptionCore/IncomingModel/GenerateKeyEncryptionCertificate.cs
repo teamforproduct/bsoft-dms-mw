@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Runtime.Serialization;
-using System.Web;
 using System.Xml.Serialization;
 
 namespace BL.Model.EncryptionCore.IncomingModel
 {
     /// <summary>
-    /// Сгенерировать сертификат
+    /// Генерация сертификата
     /// </summary>
     public class GenerateKeyEncryptionCertificate
     {
@@ -32,12 +31,6 @@ namespace BL.Model.EncryptionCore.IncomingModel
         /// </summary>
         public bool IsPrivate { get; set; }
 
-        /// <summary>
-        /// Данные файла
-        /// </summary>
-        [XmlIgnore]
-        [IgnoreDataMember]
-        public HttpPostedFile PostedFileData { get; set; }
         /// <summary>
         /// Данные файла
         /// </summary>

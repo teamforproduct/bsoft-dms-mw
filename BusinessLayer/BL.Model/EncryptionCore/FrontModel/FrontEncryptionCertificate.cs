@@ -1,4 +1,5 @@
 ﻿using BL.Model.EncryptionCore.InternalModel;
+using BL.Model.Enums;
 using System;
 
 namespace BL.Model.EncryptionCore.FrontModel
@@ -61,6 +62,15 @@ namespace BL.Model.EncryptionCore.FrontModel
         /// Имя агента
         /// </summary>
         public string AgentName { get; set; }
+
+        /// <summary>
+        /// Тип
+        /// </summary>
+        public EnumEncryptionCertificateTypes Type { get; set; }
+        /// <summary>
+        /// Имя типа
+        /// </summary>
+        public string TypeName { get; set; }
 
         /// <summary>
         /// Кто последний изменял

@@ -2,11 +2,7 @@
 using DMS_WebAPI.Utilities;
 using System.Web.Http;
 using BL.CrossCutting.DependencyInjection;
-using BL.Logic.DocumentCore.Interfaces;
-using BL.Model.DocumentCore.Filters;
-using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.Enums;
-using System.Collections.Generic;
 using BL.Model.SystemCore;
 using System.Web;
 using BL.Model.EncryptionCore.Filters;

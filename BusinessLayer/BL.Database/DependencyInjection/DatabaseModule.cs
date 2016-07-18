@@ -6,6 +6,7 @@ using BL.Database.Documents;
 using BL.Database.Documents.Interfaces;
 using BL.Database.Encryption;
 using BL.Database.Encryption.Interfaces;
+using BL.Database.EncryptionWorker;
 using BL.Database.FileWorker;
 using BL.Database.Helper;
 using BL.Database.SystemDb;
@@ -51,6 +52,7 @@ namespace BL.Database.DependencyInjection
         private void RegistrateEncryptionProcess()
         {
             Bind<IEncryptionDbProcess>().To<EncryptionDbProcess>().InSingletonScope();
+            Bind<IEncryptionGeneratorKey>().To<EncryptionGeneratorKey>().InSingletonScope();
         }
 
     }

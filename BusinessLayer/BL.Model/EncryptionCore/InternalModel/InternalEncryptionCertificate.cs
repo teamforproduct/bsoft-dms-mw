@@ -1,4 +1,5 @@
 ﻿using BL.Model.Common;
+using BL.Model.Enums;
 using System;
 using System.Web;
 
@@ -42,6 +43,11 @@ namespace BL.Model.EncryptionCore.InternalModel
         /// ИД агента
         /// </summary>
         public int AgentId { get; set; }
+
+        /// <summary>
+        /// Тип
+        /// </summary>
+        public EnumEncryptionCertificateTypes Type { get; set; }
 
         /// <summary>
         /// Cодержимое сертификата

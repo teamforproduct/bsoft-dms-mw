@@ -13,6 +13,9 @@ using System.IO;
 using System.IO.Compression;
 using BL.Database.DBModel.Encryption;
 using BL.Model.Exception;
+using BL.Model.Enums;
+using BL.Database.EncryptionWorker;
+using BL.CrossCutting.DependencyInjection;
 
 namespace BL.Database.Encryption
 {
@@ -23,6 +26,8 @@ namespace BL.Database.Encryption
         public EncryptionDbProcess()
         {
         }
+
+        #region Certificates
         public IEnumerable<FrontEncryptionCertificate> GetCertificates(IContext ctx, FilterEncryptionCertificate filter, UIPaging paging)
         {
             using (var dbContext = new DmsContext(ctx))
@@ -67,6 +72,9 @@ namespace BL.Database.Encryption
                     IsPrivate = x.IsPrivate,
                     AgentId = x.AgentId,
                     AgentName = x.Agent.Name,
+
+                    Type = (EnumEncryptionCertificateTypes)x.TypeId,
+                    TypeName = x.Type.Name,
 
                     Extension = x.Extension,
 
@@ -127,13 +135,17 @@ namespace BL.Database.Encryption
                 var itemDb = new EncryptionCertificates
                 {
                     Id = item.Id,
-                    Name = item.Name
+                    Name = item.Name,
+                    LastChangeUserId = item.LastChangeUserId,
+                    LastChangeDate = item.LastChangeDate,
                 };
 
                 dbContext.EncryptionCertificatesSet.Attach(itemDb);
 
                 var entry = dbContext.Entry(itemDb);
                 entry.Property(x => x.Name).IsModified = true;
+                entry.Property(x => x.LastChangeUserId).IsModified = true;
+                entry.Property(x => x.LastChangeDate).IsModified = true;
 
                 dbContext.SaveChanges();
 
@@ -155,11 +167,14 @@ namespace BL.Database.Encryption
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                var qry = CommonQueries.GetCertificatesQuery(dbContext, ctx, new FilterEncryptionCertificate { CertificateId = new List<int> { itemId }, IsPrivate = false, IsPublic = true });
+                var qry = CommonQueries.GetCertificatesQuery(dbContext, ctx, new FilterEncryptionCertificate { CertificateId = new List<int> { itemId }, IsPublic = true });
 
                 var item = qry.Select(x => new InternalEncryptionCertificate
                 {
                     Id = x.Id,
+                    IsPublic = x.IsPublic,
+                    IsPrivate = x.IsPrivate,
+                    Type = (EnumEncryptionCertificateTypes)x.TypeId,
                 }).FirstOrDefault();
 
                 return item;
@@ -182,14 +197,15 @@ namespace BL.Database.Encryption
                     IsPrivate = x.IsPrivate,
                     ValidFromDate = x.ValidFromDate,
                     ValidToDate = x.ValidToDate,
-                    CreateDate = x.CreateDate
+                    CreateDate = x.CreateDate,
+                    Type = (EnumEncryptionCertificateTypes)x.TypeId
                 }).FirstOrDefault();
 
                 if (itemDb == null)
                 {
                     throw new EncryptionCertificateWasNotFound();
                 }
-                else if (itemDb.IsPrivate || !itemDb.IsPublic)
+                else if (!(itemDb.IsPublic && ((itemDb.IsPrivate && new List<EnumEncryptionCertificateTypes> { EnumEncryptionCertificateTypes.RSA }.Contains(itemDb.Type)) || !itemDb.IsPrivate)))
                 {
                     throw new EncryptionCertificatePrivateKeyСanNotBeExported();
                 }
@@ -206,11 +222,134 @@ namespace BL.Database.Encryption
                     file.Password = _ZipCerPassword;
                     file.Encryption = Ionic.Zip.EncryptionAlgorithm.WinZipAes256;
                     file.Extract(streamReader);
-                    item.Content = System.Convert.ToBase64String(streamReader.ToArray());
+
+                    itemDb.Certificate = streamReader.ToArray();
+
+                    if (itemDb.IsPrivate && itemDb.Type == EnumEncryptionCertificateTypes.RSA)
+                    {
+                        var egk = DmsResolver.Current.Get<IEncryptionGeneratorKey>();
+                        itemDb.Certificate = egk.GetPublicKey(ctx, itemDb);
+                    }
+
+                    item.Content = System.Convert.ToBase64String(itemDb.Certificate);
                 }
 
                 return item;
             }
         }
+        #endregion
+
+        #region CertificateTypes
+        public IEnumerable<FrontEncryptionCertificateType> GetCertificateTypes(IContext ctx, FilterEncryptionCertificateType filter, UIPaging paging)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                var qry = CommonQueries.GetCertificateTypesQuery(dbContext, ctx, filter);
+
+                //TODO Sort
+                {
+                    qry = qry.OrderByDescending(x => x.LastChangeDate);
+                }
+
+
+                if (paging != null)
+                {
+                    if (paging.IsOnlyCounter ?? true)
+                    {
+                        paging.TotalItemsCount = qry.Count();
+                    }
+
+                    if (paging.IsOnlyCounter ?? false)
+                    {
+                        return new List<FrontEncryptionCertificateType>();
+                    }
+
+                    if (!paging.IsAll)
+                    {
+                        var skip = paging.PageSize * (paging.CurrentPage - 1);
+                        var take = paging.PageSize;
+
+                        qry = qry.Skip(() => skip).Take(() => take);
+                    }
+                }
+
+                var qryFE = qry.Select(x => new FrontEncryptionCertificateType
+                {
+                    Id = x.Id,
+                    Code = x.Code,
+                    Name = x.Name,
+                });
+
+                var res = qryFE.ToList();
+
+                return res;
+            }
+        }
+
+        public void AddCertificateType(IContext ctx, InternalEncryptionCertificateType item)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                var itemDb = ModelConverter.GetDbEncryptionCertificateType(item);
+
+                dbContext.EncryptionCertificateTypesSet.Add(itemDb);
+                dbContext.SaveChanges();
+
+                item.Id = itemDb.Id;
+            }
+        }
+
+        public InternalEncryptionCertificateType ModifyCertificateTypePrepare(IContext ctx, int itemId)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                var qry = CommonQueries.GetCertificateTypesQuery(dbContext, ctx, new FilterEncryptionCertificateType { TypeId = new List<int> { itemId } });
+
+                var item = qry.Select(x => new InternalEncryptionCertificateType
+                {
+                    Id = x.Id,
+                }).FirstOrDefault();
+
+                return item;
+            }
+        }
+
+        public void ModifyCertificateType(IContext ctx, InternalEncryptionCertificateType item)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                var itemDb = new EncryptionCertificateTypes
+                {
+                    Id = item.Id,
+                    Code = item.Code,
+                    Name = item.Name,
+                    LastChangeUserId = item.LastChangeUserId,
+                    LastChangeDate = item.LastChangeDate,
+                };
+
+                dbContext.EncryptionCertificateTypesSet.Attach(itemDb);
+
+                var entry = dbContext.Entry(itemDb);
+                entry.Property(x => x.Code).IsModified = true;
+                entry.Property(x => x.Name).IsModified = true;
+                entry.Property(x => x.LastChangeUserId).IsModified = true;
+                entry.Property(x => x.LastChangeDate).IsModified = true;
+
+                dbContext.SaveChanges();
+
+            }
+        }
+
+        public void DeleteCertificateType(IContext ctx, int itemId)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                var qry = CommonQueries.GetCertificateTypesQuery(dbContext, ctx, new FilterEncryptionCertificateType { TypeId = new List<int> { itemId } });
+
+                dbContext.EncryptionCertificateTypesSet.RemoveRange(qry);
+                dbContext.SaveChanges();
+            }
+        }
+        #endregion
     }
 }

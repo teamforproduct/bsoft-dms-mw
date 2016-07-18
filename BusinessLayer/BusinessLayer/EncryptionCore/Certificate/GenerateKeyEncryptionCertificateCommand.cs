@@ -1,14 +1,21 @@
-﻿using System;
-using BL.Logic.Common;
+﻿using BL.Logic.Common;
 using BL.Model.Exception;
 using BL.Model.EncryptionCore.IncomingModel;
 using BL.Model.EncryptionCore.InternalModel;
-using System.IO;
+using BL.Database.EncryptionWorker;
 
 namespace BL.Logic.EncryptionCore.Certificate
 {
     public class GenerateKeyEncryptionCertificateCommand : BaseEncryptionCommand
     {
+        private readonly IEncryptionGeneratorKey _eGeneratorKey;
+
+        private InternalEncryptionCertificate _certificate;
+
+        public GenerateKeyEncryptionCertificateCommand(IEncryptionGeneratorKey eGeneratorKey)
+        {
+            _eGeneratorKey = eGeneratorKey;
+        }
         private GenerateKeyEncryptionCertificate Model
         {
             get
@@ -30,29 +37,14 @@ namespace BL.Logic.EncryptionCore.Certificate
         {
             _admin.VerifyAccess(_context, CommandType, false);
 
+            _certificate = _eGeneratorKey.GenerateKey(_context, Model);
 
-            //if (!Model.IsPublic && !Model.IsPrivate)
-            //{
-            //    throw new WrongParameterTypeError();
-            //}
-            
             return true;
         }
 
         public override object Execute()
         {
-            var item = new InternalEncryptionCertificate
-            {
-                Name = Model.Name,
-                CreateDate = DateTime.Now,
-                ValidFromDate = Model.ValidFromDate,
-                ValidToDate = Model.ValidToDate,
-                IsPublic = Model.IsPublic,
-                IsPrivate = Model.IsPrivate,
-                AgentId = _context.CurrentAgentId,
-                PostedFileData = Model.PostedFileData,
-                Extension = Path.GetExtension(Model.PostedFileData.FileName).Replace(".", ""),
-            };
+            var item = _certificate;
 
             CommonDocumentUtilities.SetLastChange(_context, item);
             _encryptionDb.AddCertificate(_context, item);

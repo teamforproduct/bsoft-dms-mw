@@ -1,6 +1,7 @@
 ﻿using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
 using BL.Logic.EncryptionCore.Certificate;
+using BL.Logic.EncryptionCore.CertificateType;
 using BL.Model.Enums;
 using BL.Model.Exception;
 
@@ -18,7 +19,6 @@ namespace BL.Logic.EncryptionCore
             IEncryptionCommand cmd;
             switch (act)
             {
-                // Типы документов
                 #region EncryptionCertificates
                 case EnumEncryptionActions.AddEncryptionCertificate:
                     cmd = DmsResolver.Current.Get<AddEncryptionCertificateCommand>();
@@ -33,6 +33,18 @@ namespace BL.Logic.EncryptionCore
                     cmd = DmsResolver.Current.Get<ExportEncryptionCertificateCommand>();
                     break;
                 #endregion EncryptionCertificates
+
+                #region EncryptionCertificateTypes
+                case EnumEncryptionActions.AddEncryptionCertificateType:
+                    cmd = DmsResolver.Current.Get<AddEncryptionCertificateTypeCommand>();
+                    break;
+                case EnumEncryptionActions.ModifyEncryptionCertificateType:
+                    cmd = DmsResolver.Current.Get<ModifyEncryptionCertificateTypeCommand>();
+                    break;
+                case EnumEncryptionActions.DeleteEncryptionCertificateType:
+                    cmd = DmsResolver.Current.Get<DeleteEncryptionCertificateTypeCommand>();
+                    break;
+                #endregion EncryptionCertificateTypes
 
                 default:
                     throw new CommandNotDefinedError();

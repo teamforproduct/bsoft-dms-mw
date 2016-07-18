@@ -26,5 +26,20 @@
         /// </summary>
         GenerateKeyEncryptionCertificate = 401005,
         #endregion EncryptionCertificates
+
+        #region EncryptionCertificateTypes
+        /// <summary>
+        /// Добавить тип сертификат
+        /// </summary>
+        AddEncryptionCertificateType = 402001,
+        /// <summary>
+        /// Изменить тип сертификат
+        /// </summary>
+        ModifyEncryptionCertificateType = 402002,
+        /// <summary>
+        /// Удалить тип сертификат
+        /// </summary>
+        DeleteEncryptionCertificateType = 402003,
+        #endregion EncryptionCertificateTypes
     }
 }

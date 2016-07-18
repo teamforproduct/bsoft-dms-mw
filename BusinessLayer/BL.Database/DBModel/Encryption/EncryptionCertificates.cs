@@ -21,6 +21,10 @@ namespace BL.Database.DBModel.Encryption
         [ForeignKey("AgentId")]
         public virtual DictionaryAgents Agent { get; set; }
 
+        public int TypeId { get; set; }
+        [ForeignKey("TypeId")]
+        public virtual EncryptionCertificateTypes Type { get; set; }
+
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
     }

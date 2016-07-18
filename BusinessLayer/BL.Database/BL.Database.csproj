@@ -167,6 +167,7 @@
     <Compile Include="DBModel\Document\DocumentTaskAccesses.cs" />
     <Compile Include="DBModel\Document\DocumentTasks.cs" />
     <Compile Include="DBModel\Document\DocumentWaits.cs" />
+    <Compile Include="DBModel\Encryption\EncryptionCertificateTypes.cs" />
     <Compile Include="DBModel\Encryption\EncryptionCertificates.cs" />
     <Compile Include="DBModel\InternalModel\DocumentQuery.cs" />
     <Compile Include="DBModel\System\FullTextIndexCash.cs" />
@@ -209,6 +210,8 @@
     <Compile Include="Dictionaries\DictionariesDbProcess.cs" />
     <Compile Include="Dictionaries\Interfaces\IDictionariesDbProcess.cs" />
     <Compile Include="Common\CommonQueries.cs" />
+    <Compile Include="EncryptionWorker\EncryptionGeneratorKey.cs" />
+    <Compile Include="EncryptionWorker\IEncryptionGeneratorKey.cs" />
     <Compile Include="Encryption\EncryptionDbProcess.cs" />
     <Compile Include="Encryption\Interfaces\IEncryptionDbProcess.cs" />
     <Compile Include="Documents\DocumentFileDbProcess.cs" />

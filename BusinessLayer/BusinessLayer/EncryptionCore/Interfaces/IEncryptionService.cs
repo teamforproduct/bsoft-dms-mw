@@ -17,5 +17,12 @@ namespace BL.Logic.EncryptionCore.Interfaces
         IEnumerable<FrontEncryptionCertificate> GetCertificates(IContext ctx, FilterEncryptionCertificate filter, UIPaging paging);
 
         #endregion
+
+        #region EncryptionCertificateTypes
+        FrontEncryptionCertificateType GetCertificateType(IContext ctx, int id);
+
+        IEnumerable<FrontEncryptionCertificateType> GetCertificateTypes(IContext ctx, FilterEncryptionCertificateType filter, UIPaging paging);
+
+        #endregion
     }
 }

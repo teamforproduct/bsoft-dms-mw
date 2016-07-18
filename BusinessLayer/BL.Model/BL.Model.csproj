@@ -138,6 +138,7 @@
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentBank.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentCompany.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentEmployee.cs" />
+    <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentUser.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryCompany.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryPositionExecutorType.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryPositionExecutor.cs" />
@@ -163,11 +164,15 @@
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryPositionExecutorType.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryPositionExecutor.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryStandartSendList.cs" />
+    <Compile Include="EncryptionCore\Filters\FilterEncryptionCertificateType.cs" />
     <Compile Include="EncryptionCore\Filters\FilterEncryptionCertificate.cs" />
+    <Compile Include="EncryptionCore\FrontModel\FrontEncryptionCertificateType.cs" />
     <Compile Include="EncryptionCore\FrontModel\FrontEncryptionCertificate.cs" />
     <Compile Include="EncryptionCore\IncomingModel\GenerateKeyEncryptionCertificate.cs" />
     <Compile Include="EncryptionCore\IncomingModel\AddEncryptionCertificate.cs" />
+    <Compile Include="EncryptionCore\IncomingModel\ModifyEncryptionCertificateType.cs" />
     <Compile Include="EncryptionCore\IncomingModel\ModifyEncryptionCertificate.cs" />
+    <Compile Include="EncryptionCore\InternalModel\InternalEncryptionCertificateType.cs" />
     <Compile Include="EncryptionCore\InternalModel\InternalEncryptionCertificate.cs" />
     <Compile Include="DocumentCore\Actions\SelfAffixSigning.cs" />
     <Compile Include="DocumentCore\Actions\MarkDocumentEventAsRead.cs" />
@@ -324,6 +329,7 @@
     <Compile Include="DocumentCore\ReportModel\ReportDocumentSubscription.cs" />
     <Compile Include="DocumentCore\ReportModel\ReportDocumentWait.cs" />
     <Compile Include="DocumentCore\ReportModel\ReportDocument.cs" />
+    <Compile Include="Enums\EnumEncryptionCertificateTypes.cs" />
     <Compile Include="Enums\EnumEncryptionActions.cs" />
     <Compile Include="Enums\EnumFormulas.cs" />
     <Compile Include="Enums\EnumResultTypes.cs" />

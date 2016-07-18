@@ -1,10 +1,6 @@
 ﻿using System;
-using BL.Database.Dictionaries.Interfaces;
 using BL.Logic.Common;
-using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Exception;
-using BL.Model.SystemCore;
-using BL.Model.EncryptionCore.InternalModel;
 
 namespace BL.Logic.EncryptionCore.Certificate
 {
