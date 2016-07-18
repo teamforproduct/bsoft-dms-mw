@@ -32,6 +32,9 @@ namespace BL.Logic.EncryptionCore
                 case EnumEncryptionActions.ExportEncryptionCertificate:
                     cmd = DmsResolver.Current.Get<ExportEncryptionCertificateCommand>();
                     break;
+                case EnumEncryptionActions.GenerateKeyEncryptionCertificate:
+                    cmd = DmsResolver.Current.Get<GenerateKeyEncryptionCertificateCommand>();
+                    break;
                 #endregion EncryptionCertificates
 
                 #region EncryptionCertificateTypes

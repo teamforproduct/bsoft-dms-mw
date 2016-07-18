@@ -95,7 +95,17 @@ namespace BL.Database.Encryption
             {
                 zip.Password = _ZipCerPassword;
                 zip.Encryption = Ionic.Zip.EncryptionAlgorithm.WinZipAes256;
-                var file = zip.AddEntry($"{_ZipCerName}.{item.Extension}", item.PostedFileData.InputStream);
+
+                Ionic.Zip.ZipEntry file;
+                if (item.PostedFileData!=null)
+                {
+                    file = zip.AddEntry($"{_ZipCerName}.{item.Extension}", item.PostedFileData.InputStream);
+                }
+                else
+                {
+                    file = zip.AddEntry($"{_ZipCerName}.{item.Extension}", item.Certificate);
+                }
+
                 file.Password = _ZipCerPassword;
                 file.Encryption = Ionic.Zip.EncryptionAlgorithm.WinZipAes256;
                 zip.Save(memoryStream);

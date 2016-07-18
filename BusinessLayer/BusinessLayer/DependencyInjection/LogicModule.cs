@@ -241,6 +241,7 @@ namespace BL.Logic.DependencyInjection
             Bind<IEncryptionCommand>().To<DeleteEncryptionCertificateCommand>();
             Bind<IEncryptionCommand>().To<ExportEncryptionCertificateCommand>();
             Bind<IEncryptionCommand>().To<ModifyEncryptionCertificateCommand>();
+            Bind<IEncryptionCommand>().To<GenerateKeyEncryptionCertificateCommand>();
 
             Bind<IEncryptionCommand>().To<AddEncryptionCertificateTypeCommand>();
             Bind<IEncryptionCommand>().To<DeleteEncryptionCertificateTypeCommand>();

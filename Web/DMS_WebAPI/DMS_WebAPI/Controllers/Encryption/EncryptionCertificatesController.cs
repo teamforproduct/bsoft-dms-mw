@@ -115,5 +115,21 @@ namespace DMS_WebAPI.Controllers.Encryption
 
             return new JsonResult(item, this);
         }
+
+        /// <summary>
+        /// Генерация сертификата
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("GenerateKey")]
+        [HttpPost]
+        public IHttpActionResult PostGenerateKey(GenerateKeyEncryptionCertificate model)
+        {
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var encryptionProc = DmsResolver.Current.Get<IEncryptionService>();
+            var itemId = (int)encryptionProc.ExecuteAction(EnumEncryptionActions.GenerateKeyEncryptionCertificate, ctx, model);
+
+            return Get(itemId);
+        }
     }
 }

@@ -21,6 +21,7 @@ namespace BL.Model.EncryptionCore.FrontModel
             this.IsPrivate = model.IsPrivate;
             this.AgentId = model.AgentId;
             this.Extension = model.Extension;
+            this.Type = model.Type;
         }
         /// <summary>
         /// ИД сертификата
