@@ -4431,7 +4431,8 @@ namespace BL.Database.Dictionaries
                         SendTypeName = x.SendType.Name,
                         TargetPositionName = x.TargetPosition.Name,
                         TargetAgentName = x.TargetPosition.ExecutorAgent.Name ?? x.TargetAgent.Name,
-                        AccessLevelName = x.AccessLevel.Name
+                        AccessLevelName = x.AccessLevel.Name,
+                        SendTypeIsExternal = x.SendTypeId == 45
                     }).FirstOrDefault();
             }
         }
@@ -4529,7 +4530,8 @@ namespace BL.Database.Dictionaries
                     SendTypeName = x.SendType.Name,
                     TargetPositionName = x.TargetPosition.Name,
                     TargetAgentName = x.TargetPosition.ExecutorAgent.Name ?? x.TargetAgent.Name,
-                    AccessLevelName = x.AccessLevel.Name
+                    AccessLevelName = x.AccessLevel.Name,
+                    SendTypeIsExternal = x.SendTypeId==45
                 }).ToList();
             }
         }
@@ -4597,7 +4599,7 @@ namespace BL.Database.Dictionaries
                                 x.StandartSendListContents.Select(y => new FrontDictionaryStandartSendListContent()
                                 {
                                     Id = y.Id,
-                                    StandartSendListId = y.StandartSendListId,
+                                    StandartSendListId = x.Id,
                                     Stage = y.Stage,
                                     SendTypeId = y.SendTypeId,
                                     TargetPositionId = y.TargetPositionId,
@@ -4610,7 +4612,7 @@ namespace BL.Database.Dictionaries
                                     TargetPositionName = y.TargetPosition.Name,
                                     TargetAgentName = y.TargetPosition.ExecutorAgent.Name ?? y.TargetAgent.Name,
                                     AccessLevelName = y.AccessLevel.Name,
-                                    SendTypeIsExternal=y.Id==45
+                                    SendTypeIsExternal=y.SendTypeId==45
                                 })
                         }).FirstOrDefault();
             }
@@ -4688,7 +4690,7 @@ namespace BL.Database.Dictionaries
                                     TargetPositionName = y.TargetPosition.Name,
                                     TargetAgentName = y.TargetPosition.ExecutorAgent.Name ?? y.TargetAgent.Name,
                                     AccessLevelName = y.AccessLevel.Name,
-                                    SendTypeIsExternal = y.Id == 45
+                                    SendTypeIsExternal = y.SendTypeId == 45
                                 })
                 }).ToList();
             }
