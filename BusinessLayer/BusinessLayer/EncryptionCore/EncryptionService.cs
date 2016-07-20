@@ -41,5 +41,18 @@ namespace BL.Logic.EncryptionCore
         }
 
         #endregion
+
+        #region EncryptionCertificateTypes
+        public FrontEncryptionCertificateType GetCertificateType(IContext ctx, int id)
+        {
+            return _encryptionDb.GetCertificateTypes(ctx, new FilterEncryptionCertificateType { TypeId = new List<int> { id } }, null).FirstOrDefault();
+        }
+
+        public IEnumerable<FrontEncryptionCertificateType> GetCertificateTypes(IContext ctx, FilterEncryptionCertificateType filter, UIPaging paging)
+        {
+            return _encryptionDb.GetCertificateTypes(ctx, filter, paging);
+        }
+
+        #endregion
     }
 }

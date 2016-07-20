@@ -2908,6 +2908,15 @@ namespace BL.Database.Common
                     qry = qry.Where(filterContains);
                 }
 
+                if (filter.TypeId?.Count() > 0)
+                {
+                    var filterContains = PredicateBuilder.False<EncryptionCertificates>();
+                    filterContains = filter.TypeId.Select(x=>(int)x).ToList().Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.TypeId == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
                     qry = qry.Where(x => x.Name.Contains(filter.Name));
@@ -2947,6 +2956,34 @@ namespace BL.Database.Common
                 if (filter.IsPrivate.HasValue)
                 {
                     qry = qry.Where(x => x.IsPrivate == filter.IsPrivate.Value);
+                }
+            }
+            return qry;
+        }
+
+        public static IQueryable<EncryptionCertificateTypes> GetCertificateTypesQuery(DmsContext dbContext, IContext ctx, FilterEncryptionCertificateType filter)
+        {
+            var qry = dbContext.EncryptionCertificateTypesSet.AsQueryable();
+
+            if (filter != null)
+            {
+                if (filter.TypeId?.Count() > 0)
+                {
+                    var filterContains = PredicateBuilder.False<EncryptionCertificateTypes>();
+                    filterContains = filter.TypeId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                if (!string.IsNullOrEmpty(filter.Name))
+                {
+                    qry = qry.Where(x => x.Name.Contains(filter.Name));
+                }
+
+                if (!string.IsNullOrEmpty(filter.Code))
+                {
+                    qry = qry.Where(x => x.Name.Contains(filter.Code));
                 }
             }
             return qry;

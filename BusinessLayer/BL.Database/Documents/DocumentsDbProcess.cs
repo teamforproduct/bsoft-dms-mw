@@ -70,7 +70,7 @@ namespace BL.Database.Documents
                     qry = qry.Where(x => files.Select(y => y.DocumentId).Contains(x.Id));
                 }
 
-                if (filter?.Event!=null)
+                if (filter?.Event != null)
                 {
                     var events = CommonQueries.GetDocumentEventQuery(ctx, dbContext, filter?.Event);
                     qry = qry.Where(x => events.Select(y => y.DocumentId).Contains(x.Id));
@@ -81,7 +81,7 @@ namespace BL.Database.Documents
                     var waits = CommonQueries.GetDocumentWaitQuery(ctx, dbContext, filter?.Wait);
                     qry = qry.Where(x => waits.Select(y => y.DocumentId).Contains(x.Id));
                 }
-                
+
 
                 //TODO Sort
                 //TODO After ToList
@@ -228,10 +228,11 @@ namespace BL.Database.Documents
 
                     AttachedFilesCount = doc.Files.Where(fl => fl.IsMainVersion && !fl.IsDeleted).Count(),
 
-                    LinkedDocumentsCount = doc.Links
-                    .GroupBy(x => x.LinkId)
-                    .Select(x => x.Count())
-                    .Select(x => x < 2 ? 0 : x - 1).FirstOrDefault(),
+                    LinkId = doc.LinkId,
+                    //LinkedDocumentsCount = doc.Links
+                    //.GroupBy(x => x.LinkId)
+                    //.Select(x => x.Count())
+                    //.Select(x => x < 2 ? 0 : x - 1).FirstOrDefault(),
                 });
 
                 var docs = res.ToList();
@@ -246,6 +247,26 @@ namespace BL.Database.Documents
                     docs = docs.OrderBy(x => filter.Document.FullTextSearchDocumentId.IndexOf(x.Id)).ToList();
                 }
 
+                if (docs.Any(x => x.LinkId.HasValue))
+                {
+                    var filterContains = PredicateBuilder.False<DBModel.Document.Documents>();
+                    filterContains = docs.GroupBy(x=>x.LinkId).Where(x => x.Key.HasValue).Select(x => x.Key).Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.LinkId == value).Expand());
+
+                    var links = CommonQueries.GetDocumentQuery(dbContext, ctx)
+                        .Where(filterContains)
+                        .GroupBy(x => x.LinkId.Value)
+                        .Select(x => new { LinkId = x.Key, Count = x.Count() })
+                        .ToList();
+                    //.Select(x => x < 2 ? 0 : x - 1)
+
+                    docs.ForEach(x =>
+                    {
+                        x.LinkedDocumentsCount = links.FirstOrDefault(y => y.LinkId == x.LinkId)?.Count??0;
+                        x.LinkedDocumentsCount = x.LinkedDocumentsCount < 2 ? 0 : x.LinkedDocumentsCount - 1;
+                    });
+                }
+
                 docs.ForEach(x => CommonQueries.ChangeRegistrationFullNumber(x));
 
                 {
@@ -255,10 +276,11 @@ namespace BL.Database.Documents
 
                     var acc = CommonQueries.GetDocumentAccesses(ctx, dbContext)
                                         .Where(filterContains)
-                                        .GroupBy(x=>x.DocumentId)
-                                        .Select(x=>new {
+                                        .GroupBy(x => x.DocumentId)
+                                        .Select(x => new
+                                        {
                                             DocumentId = x.Key,
-                                            IsFavourite = x.Any(y=>y.IsFavourite),
+                                            IsFavourite = x.Any(y => y.IsFavourite),
                                             IsInWork = x.Any(y => y.IsInWork)
                                         }).ToList();
 
@@ -269,7 +291,7 @@ namespace BL.Database.Documents
                         {
                             doc.IsFavourite = docAccs.IsFavourite;
                             doc.IsInWork = docAccs.IsInWork;
-                        }                        
+                        }
                     }
                 }
 

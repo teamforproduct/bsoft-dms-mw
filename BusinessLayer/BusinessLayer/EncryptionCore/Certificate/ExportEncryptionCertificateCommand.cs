@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using BL.Logic.Common;
-using BL.Model.DictionaryCore.IncomingModel;
-using BL.Model.DictionaryCore.InternalModel;
+﻿using BL.Logic.Common;
 using BL.Model.Exception;
-using BL.Model.DictionaryCore.FilterModel;
 
 namespace BL.Logic.EncryptionCore.Certificate
 {

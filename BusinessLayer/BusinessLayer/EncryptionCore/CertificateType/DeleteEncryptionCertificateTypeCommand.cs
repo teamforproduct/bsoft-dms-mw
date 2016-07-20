@@ -1,10 +1,14 @@
 ﻿using System;
+using BL.Database.Dictionaries.Interfaces;
 using BL.Logic.Common;
+using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Exception;
+using BL.Model.SystemCore;
+using BL.Model.EncryptionCore.InternalModel;
 
-namespace BL.Logic.EncryptionCore.Certificate
+namespace BL.Logic.EncryptionCore.CertificateType
 {
-    public class DeleteEncryptionCertificateCommand : BaseEncryptionCommand
+    public class DeleteEncryptionCertificateTypeCommand : BaseEncryptionCommand
     {
 
         private int Model
@@ -29,7 +33,7 @@ namespace BL.Logic.EncryptionCore.Certificate
         {
             _admin.VerifyAccess(_context, CommandType, false);
 
-            var item = _encryptionDb.ModifyCertificatePrepare(_context, Model);
+            var item = _encryptionDb.ModifyCertificateTypePrepare(_context, Model);
             if (item == null)
             {
                 throw new EncryptionCertificateWasNotFound();
@@ -42,7 +46,7 @@ namespace BL.Logic.EncryptionCore.Certificate
         {
             try
             {
-                _encryptionDb.DeleteCertificate(_context, Model);
+                _encryptionDb.DeleteCertificateType(_context, Model);
 
                 return Model;
             }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BL.Model.Enums;
+using System;
 using System.Runtime.Serialization;
 using System.Web;
 using System.Xml.Serialization;
@@ -14,6 +15,11 @@ namespace BL.Model.EncryptionCore.IncomingModel
         /// Название сертификата
         /// </summary>
         public string Name { get; set; }
+
+        /// <summary>
+        /// Тип
+        /// </summary>
+        public EnumEncryptionCertificateTypes Type { get; set; }
 
         /// <summary>
         /// Действует с даты

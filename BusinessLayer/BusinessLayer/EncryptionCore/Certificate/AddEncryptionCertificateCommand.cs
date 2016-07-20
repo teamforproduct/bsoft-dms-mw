@@ -51,6 +51,7 @@ namespace BL.Logic.EncryptionCore.Certificate
                 AgentId = _context.CurrentAgentId,
                 PostedFileData = Model.PostedFileData,
                 Extension = Path.GetExtension(Model.PostedFileData.FileName).Replace(".", ""),
+                Type = Model.Type,
             };
 
             CommonDocumentUtilities.SetLastChange(_context, item);

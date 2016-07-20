@@ -146,6 +146,7 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<SystemSettings> SettingsSet { get; set; }
 
         public virtual DbSet<EncryptionCertificates> EncryptionCertificatesSet { get; set; }
+        public virtual DbSet<EncryptionCertificateTypes> EncryptionCertificateTypesSet { get; set; }
 
     }
 }

@@ -2,11 +2,7 @@
 using DMS_WebAPI.Utilities;
 using System.Web.Http;
 using BL.CrossCutting.DependencyInjection;
-using BL.Logic.DocumentCore.Interfaces;
-using BL.Model.DocumentCore.Filters;
-using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.Enums;
-using System.Collections.Generic;
 using BL.Model.SystemCore;
 using System.Web;
 using BL.Model.EncryptionCore.Filters;
@@ -118,6 +114,22 @@ namespace DMS_WebAPI.Controllers.Encryption
             var item = encryptionProc.ExecuteAction(EnumEncryptionActions.ExportEncryptionCertificate, ctx, id);
 
             return new JsonResult(item, this);
+        }
+
+        /// <summary>
+        /// Генерация сертификата
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("GenerateKey")]
+        [HttpPost]
+        public IHttpActionResult PostGenerateKey(GenerateKeyEncryptionCertificate model)
+        {
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var encryptionProc = DmsResolver.Current.Get<IEncryptionService>();
+            var itemId = (int)encryptionProc.ExecuteAction(EnumEncryptionActions.GenerateKeyEncryptionCertificate, ctx, model);
+
+            return Get(itemId);
         }
     }
 }

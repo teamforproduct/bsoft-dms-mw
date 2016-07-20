@@ -361,6 +361,7 @@ namespace BL.Database.Common
                 AgentId = item.AgentId,
                 Certificate = item.Certificate,
                 Extension = item.Extension,
+                TypeId = (int)item.Type,
                 LastChangeDate = item.LastChangeDate,
                 LastChangeUserId = item.LastChangeUserId,
             };
@@ -369,6 +370,23 @@ namespace BL.Database.Common
         public static IEnumerable<EncryptionCertificates> GetDbEncryptionCertificates(IEnumerable<InternalEncryptionCertificate> items)
         {
             return items.Select(GetDbEncryptionCertificate);
+        }
+
+        public static EncryptionCertificateTypes GetDbEncryptionCertificateType(InternalEncryptionCertificateType item)
+        {
+            return new EncryptionCertificateTypes
+            {
+                Id = item.Id,
+                Name = item.Name,
+                Code = item.Code,
+                LastChangeDate = item.LastChangeDate,
+                LastChangeUserId = item.LastChangeUserId,
+            };
+        }
+
+        public static IEnumerable<EncryptionCertificateTypes> GetDbEncryptionCertificateTypes(IEnumerable<InternalEncryptionCertificateType> items)
+        {
+            return items.Select(GetDbEncryptionCertificateType);
         }
 
     }

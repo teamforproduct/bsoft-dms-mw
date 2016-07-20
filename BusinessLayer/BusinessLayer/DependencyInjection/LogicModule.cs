@@ -13,6 +13,7 @@ using BL.Logic.DocumentCore.SendListCommands;
 using BL.Logic.DocumentCore.TemplateCommands;
 using BL.Logic.EncryptionCore;
 using BL.Logic.EncryptionCore.Certificate;
+using BL.Logic.EncryptionCore.CertificateType;
 using BL.Logic.EncryptionCore.Interfaces;
 using BL.Logic.Logging;
 using BL.Logic.Observers;
@@ -240,6 +241,11 @@ namespace BL.Logic.DependencyInjection
             Bind<IEncryptionCommand>().To<DeleteEncryptionCertificateCommand>();
             Bind<IEncryptionCommand>().To<ExportEncryptionCertificateCommand>();
             Bind<IEncryptionCommand>().To<ModifyEncryptionCertificateCommand>();
+            Bind<IEncryptionCommand>().To<GenerateKeyEncryptionCertificateCommand>();
+
+            Bind<IEncryptionCommand>().To<AddEncryptionCertificateTypeCommand>();
+            Bind<IEncryptionCommand>().To<DeleteEncryptionCertificateTypeCommand>();
+            Bind<IEncryptionCommand>().To<ModifyEncryptionCertificateTypeCommand>();
         }
 
     }

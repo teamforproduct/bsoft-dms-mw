@@ -3,19 +3,19 @@ using BL.Model.Exception;
 using BL.Model.EncryptionCore.IncomingModel;
 using BL.Model.EncryptionCore.InternalModel;
 
-namespace BL.Logic.EncryptionCore.Certificate
+namespace BL.Logic.EncryptionCore.CertificateType
 {
-    public class ModifyEncryptionCertificateCommand : BaseEncryptionCommand
+    public class ModifyEncryptionCertificateTypeCommand : BaseEncryptionCommand
     {
-        private ModifyEncryptionCertificate Model
+        private ModifyEncryptionCertificateType Model
         {
             get
             {
-                if (!(_param is ModifyEncryptionCertificate))
+                if (!(_param is ModifyEncryptionCertificateType))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ModifyEncryptionCertificate)_param;
+                return (ModifyEncryptionCertificateType)_param;
             }
         }
 
@@ -28,7 +28,7 @@ namespace BL.Logic.EncryptionCore.Certificate
         {
             _admin.VerifyAccess(_context, CommandType, false);
 
-            var item = _encryptionDb.ModifyCertificatePrepare(_context, Model.Id);
+            var item = _encryptionDb.ModifyCertificateTypePrepare(_context, Model.Id);
             if (item == null)
             {
                 throw new EncryptionCertificateWasNotFound();
@@ -39,12 +39,15 @@ namespace BL.Logic.EncryptionCore.Certificate
 
         public override object Execute()
         {
-            var item = new InternalEncryptionCertificate {
+            var item = new InternalEncryptionCertificateType {
                 Id = Model.Id,
-                Name = Model.Name
+                Name = Model.Name,
+                Code = Model.Code,
             };
+
             CommonDocumentUtilities.SetLastChange(_context, item);
-            _encryptionDb.ModifyCertificate(_context, item);
+
+            _encryptionDb.ModifyCertificateType(_context, item);
 
             return Model.Id;
         }

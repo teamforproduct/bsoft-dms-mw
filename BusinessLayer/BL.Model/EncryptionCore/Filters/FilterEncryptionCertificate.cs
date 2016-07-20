@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BL.Model.Enums;
+using System;
 using System.Collections.Generic;
 
 namespace BL.Model.EncryptionCore.Filters
@@ -12,6 +13,12 @@ namespace BL.Model.EncryptionCore.Filters
         /// Массив ИД сертификатов
         /// </summary>
         public List<int> CertificateId { get; set; }
+
+        /// <summary>
+        /// Массив типов
+        /// </summary>
+        public List<EnumEncryptionCertificateTypes> TypeId { get; set; }
+
         /// <summary>
         /// Отрывок названия
         /// </summary>
