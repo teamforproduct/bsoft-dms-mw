@@ -23,5 +23,42 @@ namespace BL.Logic.Common
 
             return internalModel;
         }
+
+        public static InternalAdminRoleAction RoleActionModifyToInternal(IContext context, ModifyAdminRoleAction modifyModel)
+        {
+            InternalAdminRoleAction internalModel = new InternalAdminRoleAction(modifyModel);
+
+            CommonDocumentUtilities.SetLastChange(context, internalModel);
+
+            return internalModel;
+        }
+
+        public static InternalAdminRole RoleModifyToInternal(IContext context, ModifyAdminRole modifyModel)
+        {
+            InternalAdminRole internalModel = new InternalAdminRole(modifyModel);
+
+            CommonDocumentUtilities.SetLastChange(context, internalModel);
+
+            return internalModel;
+        }
+
+        public static InternalAdminSubordination SubordinationModifyToInternal(IContext context, ModifyAdminSubordination modifyModel)
+        {
+            InternalAdminSubordination internalModel = new InternalAdminSubordination(modifyModel);
+
+            CommonDocumentUtilities.SetLastChange(context, internalModel);
+
+            return internalModel;
+        }
+
+        public static InternalAdminUserRole UserRoleModifyToInternal(IContext context, ModifyAdminUserRole modifyModel)
+        {
+            InternalAdminUserRole internalModel = new InternalAdminUserRole(modifyModel);
+
+            CommonDocumentUtilities.SetLastChange(context, internalModel);
+
+            return internalModel;
+        }
+
     }
 }

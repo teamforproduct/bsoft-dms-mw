@@ -3,9 +3,6 @@ using BL.Model.AdminCore.IncomingModel;
 
 namespace BL.Model.AdminCore.InternalModel
 {
-    /// <summary>
-    /// Internal элемент справочника "Штатное расписание"
-    /// </summary>
     public class InternalAdminPositionRole : LastChangeInfo
     {
         public InternalAdminPositionRole()
@@ -29,7 +26,7 @@ namespace BL.Model.AdminCore.InternalModel
         public int PositionId { get; set; }
 
         /// <summary>
-        /// Вышестоящая должность
+        /// Роль
         /// </summary>
         public int RoleId { get; set; }
 

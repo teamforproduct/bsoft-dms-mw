@@ -107,6 +107,9 @@
     <Compile Include="AdminCore\IncomingModel\ModifyAdminPositionRole.cs" />
     <Compile Include="AdminCore\InternalModel\InternalAdminLanguageValue.cs" />
     <Compile Include="AdminCore\InternalModel\InternalAdminLanguage.cs" />
+    <Compile Include="AdminCore\InternalModel\InternalUserRole.cs" />
+    <Compile Include="AdminCore\InternalModel\InternalSubordination.cs" />
+    <Compile Include="AdminCore\InternalModel\InternalRoleAction.cs" />
     <Compile Include="AdminCore\InternalModel\InternalRole.cs" />
     <Compile Include="AdminCore\InternalModel\InternalPositionRole.cs" />
     <Compile Include="ClearTrashDocuments\ClearTrashDocumentsSettings.cs" />
