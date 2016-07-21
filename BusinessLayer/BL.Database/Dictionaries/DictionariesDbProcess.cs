@@ -419,6 +419,16 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(filterContains);
                 }
 
+                // Список AgentCompanyId
+                if (filter.AgentCompanyId?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<DictionaryAgentPersons>();
+                    filterContains = filter.AgentCompanyId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.AgentCompanyId == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
                 // Исключение списка первичных ключей
                 if (filter.NotContainsIDs?.Count > 0)
                 {

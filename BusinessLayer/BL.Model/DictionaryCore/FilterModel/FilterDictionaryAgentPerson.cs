@@ -11,6 +11,11 @@ namespace BL.Model.DictionaryCore.FilterModel
     {
 
         /// <summary>
+        /// Список AgentCompanyId
+        /// </summary>
+        public List<int> AgentCompanyId { get; set; }
+
+        /// <summary>
         /// Отрывок из паспортных данных
         /// </summary>
         public string Passport { get; set; }
