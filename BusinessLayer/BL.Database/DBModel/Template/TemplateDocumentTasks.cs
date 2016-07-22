@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using BL.Database.DBModel.Dictionary;
 using System.ComponentModel.DataAnnotations;
 
@@ -20,7 +17,7 @@ namespace BL.Database.DBModel.Template
         [Index("IX_DocumentTask", 1, IsUnique = true)]
         public int DocumentId { get; set; }
         public Nullable<int> PositionId { get; set; }
-        [MaxLength(2000)]
+        [MaxLength(400)]
         [Index("IX_DocumentTask", 2, IsUnique = true)]
         public string Task { get; set; }
         [MaxLength(2000)]

@@ -14,7 +14,7 @@ namespace BL.Database.DBModel.Document
         [Index("IX_IconPosition", 2, IsUnique = true)]
         [Index("IX_PositionId", 1)]
         public Nullable<int> PositionId { get; set; }
-        [MaxLength(2000)]
+        [MaxLength(400)]
         [Index("IX_IconPosition", 1, IsUnique = true)]
         public string Icon { get; set; }
         [MaxLength(2000)]

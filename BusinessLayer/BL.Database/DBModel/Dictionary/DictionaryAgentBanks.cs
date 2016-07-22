@@ -11,7 +11,7 @@ namespace BL.Database.DBModel.Dictionary
     public partial class DictionaryAgentBanks
     {
         public int Id { get; set; }
-        [MaxLength(2000)]
+        [MaxLength(400)]
         [Index("IX_MFOCode", 1, IsUnique = true)]
         public string MFOCode { get; set; }
         [MaxLength(2000)]

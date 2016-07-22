@@ -18,7 +18,7 @@ namespace BL.Database.DBModel.Admin
         [Index("IX_Name", 2, IsUnique = true)]
         [Index("IX_ClientId", 1)]
         public int ClientId { get; set; }
-        [MaxLength(2000)]
+        [MaxLength(400)]
         [Index("IX_Name", 1, IsUnique = true)]
         public string Name { get; set; }
 //        public int PositionId { get; set; }

@@ -1,17 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BL.Database.DBModel.Dictionary
 {
     public class DictionaryAgentPersons
     {
+        public DictionaryAgentPersons(){
+            //this.AgentEmployees = new HashSet<DictionaryAgentEmployees>();
+        }
+
         public int Id { get; set; }
-        [MaxLength(2000)]
+        [MaxLength(400)]
         [Index("IX_FullName", 1, IsUnique = true)]
         public string FullName { get; set; }
         [MaxLength(2000)]
@@ -42,8 +42,8 @@ namespace BL.Database.DBModel.Dictionary
         [ForeignKey("AgentCompanyId")]
         public virtual DictionaryAgentCompanies AgentCompany { get; set; }
 
-
-      
+        //[ForeignKey("AgentPersonId")]
+        //public virtual ICollection<DictionaryAgentEmployees> AgentEmployees { get; set; }
 
         //     [ForeignKey("AgentId")]
         //     public virtual DictionaryAgents Agent { get; set; }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace BL.Database.DBModel.System
 {
     using global::System.ComponentModel.DataAnnotations;
@@ -15,10 +10,10 @@ namespace BL.Database.DBModel.System
         public int Id { get; set; }
         [Index("IX_ActionCode", 1, IsUnique = true)]
         public int ActionId { get; set; }
-        [MaxLength(2000)]
+        [MaxLength(400)]
         [Index("IX_ActionCode", 2, IsUnique = true)]
         public string Code { get; set; }
-        [MaxLength(2000)]
+        [MaxLength(400)]
         public string TypeCode { get; set; }
         [MaxLength(2000)]
         public string Description { get; set; }

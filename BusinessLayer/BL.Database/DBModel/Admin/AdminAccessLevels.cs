@@ -9,7 +9,7 @@ namespace BL.Database.DBModel.Admin
         public int Id { get; set; }
         [MaxLength(2000)]
         public string Code { get; set; }
-        [MaxLength(2000)]
+        [MaxLength(400)]
         [Index("IX_Name", 1, IsUnique = true)]
         public string Name { get; set; }
         public int LastChangeUserId { get; set; }

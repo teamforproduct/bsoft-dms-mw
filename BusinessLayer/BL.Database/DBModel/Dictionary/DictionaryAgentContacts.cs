@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BL.Database.DBModel.Dictionary
 {
@@ -16,7 +12,7 @@ namespace BL.Database.DBModel.Dictionary
         [Index("IX_AgentContactTypeContact", 2, IsUnique = true)]
         [Index("IX_ContactTypeId", 1)]
         public int ContactTypeId { get; set; }
-        [MaxLength(2000)]
+        [MaxLength(400)]
         [Index("IX_AgentContactTypeContact", 3, IsUnique = true)]
         public string Contact { get; set; }
         [MaxLength(2000)]

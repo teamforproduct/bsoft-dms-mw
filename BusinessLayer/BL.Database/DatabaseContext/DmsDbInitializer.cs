@@ -11,9 +11,6 @@ namespace BL.Database.DatabaseContext
 {
     public class DmsDbInitializer : CreateDatabaseIfNotExists<DmsContext>
     {
-        //TODO
-        //DictionaryAgentEmployees -> AgentPersonId
-        //DictionaryLinkTypes
         protected override void Seed(DmsContext context)
         {
             context.AdminLanguagesSet.AddRange(GetAdminLanguages());

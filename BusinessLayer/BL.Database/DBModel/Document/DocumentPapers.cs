@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BL.Database.DBModel.Document
 {
@@ -18,7 +15,7 @@ namespace BL.Database.DBModel.Document
         public int Id { get; set; }
         [Index("IX_DocumentNameOrderNumber", 1, IsUnique = true)]
         public int DocumentId { get; set; }
-        [MaxLength(2000)]
+        [MaxLength(400)]
         [Index("IX_DocumentNameOrderNumber", 2, IsUnique = true)]
         public string Name { get; set; }
         [MaxLength(2000)]
