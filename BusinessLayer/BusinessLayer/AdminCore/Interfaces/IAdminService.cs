@@ -29,10 +29,26 @@ namespace BL.Logic.AdminCore.Interfaces
         bool VerifyAccess(IContext context, EnumEncryptionActions action, bool isPositionFromContext = true, bool isThrowExeception = true);
         #endregion
 
-        #region [+] PositionRoles ...
-        //FrontAdminPositionRole GetAdminPositionRole(IContext context, int id);
+        #region [+] Roles ...
+        //FrontAdminRole GetAdminRole(IContext context, int id);
 
+        IEnumerable<FrontAdminRole> GetAdminRoles(IContext context, FilterAdminRole filter);
+        #endregion
+
+        #region [+] RoleActions ...
+        IEnumerable<FrontAdminRoleAction> GetAdminRoleActions(IContext context, FilterAdminRoleAction filter);
+        #endregion
+
+        #region [+] PositionRoles ...
         IEnumerable<FrontAdminPositionRole> GetAdminPositionRoles(IContext context, FilterAdminPositionRole filter);
+        #endregion
+
+        #region [+] UserRoles ...
+        IEnumerable<FrontAdminUserRole> GetAdminUserRoles(IContext context, FilterAdminUserRole filter);
+        #endregion
+
+        #region [+] Subordinations ...
+        IEnumerable<FrontAdminSubordination> GetAdminSubordinations(IContext context, FilterAdminSubordination filter);
         #endregion
 
     }

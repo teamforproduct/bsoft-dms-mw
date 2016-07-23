@@ -16,6 +16,7 @@ using LinqKit;
 using BL.Database.DBModel.Admin;
 using BL.Model.AdminCore.InternalModel;
 using BL.Database.Common;
+using System;
 
 namespace BL.Database.Admins
 {
@@ -25,6 +26,7 @@ namespace BL.Database.Admins
         {
         }
 
+        #region [+] General ...
         public AdminAccessInfo GetAdminAccesses(IContext context)
         {
             using (var dbContext = new DmsContext(context))
@@ -177,14 +179,288 @@ namespace BL.Database.Admins
             }
         }
 
+        #endregion
+
+        #region [+] Roles ...
+        public int AddRole(IContext context, InternalAdminRole model)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                AdminRoles dbModel = AdminModelConverter.GetDbRole(context, model);
+                dbContext.AdminRolesSet.Add(dbModel);
+                dbContext.SaveChanges();
+                model.Id = dbModel.Id;
+                return dbModel.Id;
+            }
+        }
+        public void UpdateRole(IContext context, InternalAdminRole model)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                AdminRoles dbModel = AdminModelConverter.GetDbRole(context, model);
+                dbContext.AdminRolesSet.Attach(dbModel);
+                dbContext.Entry(dbModel).State = System.Data.Entity.EntityState.Modified;
+                dbContext.SaveChanges();
+            }
+        }
+        public void DeleteRole(IContext context, InternalAdminRole model)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var dbModel = dbContext.AdminRolesSet.FirstOrDefault(x => x.Id == model.Id);
+                //pss Все проверки и перехват исключений должны быть на уровне логики!!!
+
+                //if (dbModel != null)
+                //{
+                dbContext.AdminRolesSet.Remove(dbModel);
+                dbContext.SaveChanges();
+                //}
+            }
+        }
+
+        public InternalAdminRole GetInternalRole(IContext context, FilterAdminRole filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.AdminRolesSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
+
+                qry = GetWhereRole(ref qry, filter);
+
+                return qry.Select(x => new InternalAdminRole
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    LastChangeUserId = x.LastChangeUserId,
+                    LastChangeDate = x.LastChangeDate
+                }).FirstOrDefault();
+            }
+        }
+
+
+        public IEnumerable<FrontAdminRole> GetRoles(IContext context, FilterAdminRole filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.AdminRolesSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
+
+                qry = GetWhereRole(ref qry, filter);
+
+                //qry = qry.OrderBy(x => x.Name);
+
+                return qry.Select(x => new FrontAdminRole
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                }).ToList();
+            }
+        }
+
+        public bool ExistsRole(IContext context, FilterAdminRole filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.AdminRolesSet.AsQueryable();
+
+                qry = GetWhereRole(ref qry, filter);
+
+                var res = qry.Select(x => new FrontAdminRole
+                {
+                    Id = x.Id
+                }).FirstOrDefault();
+
+                return res != null;
+            }
+        }
+
+        private static IQueryable<AdminRoles> GetWhereRole(ref IQueryable<AdminRoles> qry, FilterAdminRole filter)
+        {
+            // Список первичных ключей
+            if (filter.IDs?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.False<AdminRoles>();
+
+                filterContains = filter.IDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Id == value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            // Исключение списка первичных ключей
+            if (filter.NotContainsIDs?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.False<AdminRoles>();
+                filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Id != value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            // Поиск по наименованию
+            if (!string.IsNullOrEmpty(filter.Name))
+            {
+                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
+                {
+                    qry = qry.Where(x => x.Name.Contains(temp));
+                }
+            }
+
+            if (!string.IsNullOrEmpty(filter.NameExact))
+            {
+                qry = qry.Where(x => x.Name == filter.NameExact);
+            }
+
+            return qry;
+        }
+
+        #endregion
+
+        #region [+] RoleAction ...
+        public int AddRoleAction(IContext context, InternalAdminRoleAction model)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                AdminRoleActions dbModel = AdminModelConverter.GetDbRoleAction(context, model);
+                dbContext.AdminRoleActionsSet.Add(dbModel);
+                dbContext.SaveChanges();
+                model.Id = dbModel.Id;
+                return dbModel.Id;
+            }
+        }
+        public void UpdateRoleAction(IContext context, InternalAdminRoleAction model)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                AdminRoleActions dbModel = AdminModelConverter.GetDbRoleAction(context, model);
+                dbContext.AdminRoleActionsSet.Attach(dbModel);
+                dbContext.Entry(dbModel).State = System.Data.Entity.EntityState.Modified;
+                dbContext.SaveChanges();
+            }
+        }
+        public void DeleteRoleAction(IContext context, InternalAdminRoleAction model)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var dbModel = dbContext.AdminRoleActionsSet.FirstOrDefault(x => x.Id == model.Id);
+                dbContext.AdminRoleActionsSet.Remove(dbModel);
+                dbContext.SaveChanges();
+            }
+        }
+
+        public InternalAdminRoleAction GetInternalRoleAction(IContext context, FilterAdminRoleAction filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.AdminRoleActionsSet.AsQueryable();
+
+                qry = GetWhereRoleAction(ref qry, filter);
+
+                return qry.Select(x => new InternalAdminRoleAction
+                {
+                    Id = x.Id,
+                    RoleId = x.RoleId,
+                    ActionId = x.ActionId,
+                    RecordId = x.RecordId,
+                    LastChangeUserId = x.LastChangeUserId,
+                    LastChangeDate = x.LastChangeDate
+                }).FirstOrDefault();
+            }
+        }
+
+
+        public IEnumerable<FrontAdminRoleAction> GetRoleActions(IContext context, FilterAdminRoleAction filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.AdminRoleActionsSet.AsQueryable();
+
+                qry = GetWhereRoleAction(ref qry, filter);
+
+                //qry = qry.OrderBy(x => x.Name);
+
+                return qry.Select(x => new FrontAdminRoleAction
+                {
+                    Id = x.Id,
+                    RoleId = x.RoleId,
+                    RoleName = x.Role.Name,
+                    ActionId = x.ActionId,
+                    ActionDescription = x.Action.Description,
+                    RecordId = x.RecordId,
+                }).ToList();
+            }
+        }
+
+        public bool ExistsRoleAction(IContext context, FilterAdminRoleAction filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.AdminRoleActionsSet.AsQueryable();
+
+                qry = GetWhereRoleAction(ref qry, filter);
+
+                var res = qry.Select(x => new FrontAdminRoleAction
+                {
+                    Id = x.Id
+                }).FirstOrDefault();
+
+                return res != null;
+            }
+        }
+
+        private static IQueryable<AdminRoleActions> GetWhereRoleAction(ref IQueryable<AdminRoleActions> qry, FilterAdminRoleAction filter)
+        {
+            // Список первичных ключей
+            if (filter.IDs?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.False<AdminRoleActions>();
+
+                filterContains = filter.IDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Id == value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            // Исключение списка первичных ключей
+            if (filter.NotContainsIDs?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.False<AdminRoleActions>();
+                filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Id != value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            if (filter.RoleIDs?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.False<AdminRoleActions>();
+
+                filterContains = filter.RoleIDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.RoleId == value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            if (filter.ActionIDs?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.False<AdminRoleActions>();
+
+                filterContains = filter.ActionIDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.ActionId == value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            return qry;
+        }
+
+        #endregion
+
         #region [+] PositionRole ...
         public int AddPositionRole(IContext context, InternalAdminPositionRole model)
         {
             using (var dbContext = new DmsContext(context))
             {
-                AdminPositionRoles dbModel = AdminModelConverter.GetDbPositionRole(model);
+                AdminPositionRoles dbModel = AdminModelConverter.GetDbPositionRole(context, model);
                 dbContext.AdminPositionRolesSet.Add(dbModel);
-                // pss CommonQueries.AddFullTextCashInfo(dbContext, drj.Id, EnumObjects.DictionaryRegistrationJournals, EnumOperationType.AddNew);
                 dbContext.SaveChanges();
                 model.Id = dbModel.Id;
                 return dbModel.Id;
@@ -194,9 +470,8 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(context))
             {
-                AdminPositionRoles dbModel = AdminModelConverter.GetDbPositionRole(model);
+                AdminPositionRoles dbModel = AdminModelConverter.GetDbPositionRole(context, model);
                 dbContext.AdminPositionRolesSet.Attach(dbModel);
-                //CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryRegistrationJournals, EnumOperationType.Update);
                 dbContext.Entry(dbModel).State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
             }
@@ -206,14 +481,8 @@ namespace BL.Database.Admins
             using (var dbContext = new DmsContext(context))
             {
                 var dbModel = dbContext.AdminPositionRolesSet.FirstOrDefault(x => x.Id == model.Id);
-                //pss Все проверки и перехват исключений должны быть на уровне логики!!!
-
-                //if (dbModel != null)
-                //{
                 dbContext.AdminPositionRolesSet.Remove(dbModel);
-                //CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryRegistrationJournals, EnumOperationType.Delete);
                 dbContext.SaveChanges();
-                //}
             }
         }
 
@@ -315,6 +584,316 @@ namespace BL.Database.Admins
 
                 filterContains = filter.RoleIDs.Aggregate(filterContains,
                     (current, value) => current.Or(e => e.RoleId == value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            return qry;
+        }
+
+        #endregion
+
+        #region [+] UserRole ...
+        public int AddUserRole(IContext context, InternalAdminUserRole model)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                AdminUserRoles dbModel = AdminModelConverter.GetDbUserRole(context, model);
+                dbContext.AdminUserRolesSet.Add(dbModel);
+                dbContext.SaveChanges();
+                model.Id = dbModel.Id;
+                return dbModel.Id;
+            }
+        }
+        public void UpdateUserRole(IContext context, InternalAdminUserRole model)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                AdminUserRoles dbModel = AdminModelConverter.GetDbUserRole(context, model);
+                dbContext.AdminUserRolesSet.Attach(dbModel);
+                dbContext.Entry(dbModel).State = System.Data.Entity.EntityState.Modified;
+                dbContext.SaveChanges();
+            }
+        }
+        public void DeleteUserRole(IContext context, InternalAdminUserRole model)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var dbModel = dbContext.AdminUserRolesSet.FirstOrDefault(x => x.Id == model.Id);
+                dbContext.AdminUserRolesSet.Remove(dbModel);
+                dbContext.SaveChanges();
+            }
+        }
+
+        public InternalAdminUserRole GetInternalUserRole(IContext context, FilterAdminUserRole filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.AdminUserRolesSet.AsQueryable();
+
+                qry = GetWhereUserRole(ref qry, filter);
+
+                return qry.Select(x => new InternalAdminUserRole
+                {
+                    Id = x.Id,
+                    UserId = x.UserId,
+                    RoleId = x.RoleId,
+                    StartDate = x.StartDate,
+                    EndDate = x.EndDate,
+                    LastChangeUserId = x.LastChangeUserId,
+                    LastChangeDate = x.LastChangeDate
+                }).FirstOrDefault();
+            }
+        }
+
+
+
+        public IEnumerable<FrontAdminUserRole> GetUserRoles(IContext context, FilterAdminUserRole filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.AdminUserRolesSet.AsQueryable();
+
+                qry = GetWhereUserRole(ref qry, filter);
+
+                //qry = qry.OrderBy(x => x.Name);
+
+                return qry.Select(x => new FrontAdminUserRole
+                {
+                    Id = x.Id,
+                    UserId = x.UserId,
+                    UserName = x.Agent.Name,
+                    RoleId = x.RoleId,
+                    RoleName = x.Role.Name,
+                    StartDate = x.StartDate,
+                    EndDate = x.EndDate
+                }).ToList();
+            }
+        }
+
+        public bool ExistsUserRole(IContext context, FilterAdminUserRole filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.AdminUserRolesSet.AsQueryable();
+
+                qry = GetWhereUserRole(ref qry, filter);
+
+                var res = qry.Select(x => new FrontAdminUserRole
+                {
+                    Id = x.Id
+                }).FirstOrDefault();
+
+                return res != null;
+            }
+        }
+
+        private static IQueryable<AdminUserRoles> GetWhereUserRole(ref IQueryable<AdminUserRoles> qry, FilterAdminUserRole filter)
+        {
+            // Список первичных ключей
+            if (filter.IDs?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.False<AdminUserRoles>();
+
+                filterContains = filter.IDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Id == value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            // Исключение списка первичных ключей
+            if (filter.NotContainsIDs?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.False<AdminUserRoles>();
+                filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Id != value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            if (filter.UserIDs?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.False<AdminUserRoles>();
+
+                filterContains = filter.UserIDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.UserId == value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            if (filter.RoleIDs?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.False<AdminUserRoles>();
+
+                filterContains = filter.RoleIDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.RoleId == value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            if (filter.Period.IsActive)
+            {
+                qry = qry.Where(x => x.StartDate >= filter.Period.DateBeg);
+                qry = qry.Where(x => x.EndDate <= filter.Period.DateEnd);
+            }
+
+            if (filter.StartDate != null)
+            {
+                qry = qry.Where(x => x.StartDate == (filter.StartDate ?? DateTime.Now));
+            }
+
+            if (filter.EndDate != null)
+            {
+                qry = qry.Where(x => x.EndDate == (filter.EndDate ?? DateTime.Now));
+            }
+
+            return qry;
+        }
+
+        #endregion
+
+        #region [+] Subordination ...
+        public int AddSubordination(IContext context, InternalAdminSubordination model)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                AdminSubordinations dbModel = AdminModelConverter.GetDbSubordination(context, model);
+                dbContext.AdminSubordinationsSet.Add(dbModel);
+                dbContext.SaveChanges();
+                model.Id = dbModel.Id;
+                return dbModel.Id;
+            }
+        }
+        public void UpdateSubordination(IContext context, InternalAdminSubordination model)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                AdminSubordinations dbModel = AdminModelConverter.GetDbSubordination(context, model);
+                dbContext.AdminSubordinationsSet.Attach(dbModel);
+                dbContext.Entry(dbModel).State = System.Data.Entity.EntityState.Modified;
+                dbContext.SaveChanges();
+            }
+        }
+        public void DeleteSubordination(IContext context, InternalAdminSubordination model)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var dbModel = dbContext.AdminSubordinationsSet.FirstOrDefault(x => x.Id == model.Id);
+                dbContext.AdminSubordinationsSet.Remove(dbModel);
+                dbContext.SaveChanges();
+            }
+        }
+
+        public InternalAdminSubordination GetInternalSubordination(IContext context, FilterAdminSubordination filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.AdminSubordinationsSet.AsQueryable();
+
+                qry = GetWhereSubordination(ref qry, filter);
+
+                return qry.Select(x => new InternalAdminSubordination
+                {
+                    Id = x.Id,
+                    SourcePositionId = x.SourcePositionId,
+                    TargetPositionId = x.TargetPositionId,
+                    SubordinationTypeId = x.SubordinationTypeId,
+                    LastChangeUserId = x.LastChangeUserId,
+                    LastChangeDate = x.LastChangeDate
+                }).FirstOrDefault();
+            }
+        }
+
+
+        public IEnumerable<FrontAdminSubordination> GetSubordinations(IContext context, FilterAdminSubordination filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.AdminSubordinationsSet.AsQueryable();
+
+                qry = GetWhereSubordination(ref qry, filter);
+
+                //qry = qry.OrderBy(x => x.Name);
+
+                return qry.Select(x => new FrontAdminSubordination
+                {
+                    Id = x.Id,
+                    SourcePositionId = x.SourcePositionId,
+                    SourcePositionName = x.SourcePosition.Name,
+                    TargetPositionId = x.TargetPositionId,
+                    TargetPositionName = x.TargetPosition.Name,
+                    SubordinationTypeId = x.SubordinationTypeId,
+                    SubordinationTypeName = x.SubordinationType.Name
+                }).ToList();
+            }
+        }
+
+        public bool ExistsSubordination(IContext context, FilterAdminSubordination filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.AdminSubordinationsSet.AsQueryable();
+
+                qry = GetWhereSubordination(ref qry, filter);
+
+                var res = qry.Select(x => new FrontAdminSubordination
+                {
+                    Id = x.Id
+                }).FirstOrDefault();
+
+                return res != null;
+            }
+        }
+
+        private static IQueryable<AdminSubordinations> GetWhereSubordination(ref IQueryable<AdminSubordinations> qry, FilterAdminSubordination filter)
+        {
+            // Список первичных ключей
+            if (filter.IDs?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.False<AdminSubordinations>();
+
+                filterContains = filter.IDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Id == value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            // Исключение списка первичных ключей
+            if (filter.NotContainsIDs?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.False<AdminSubordinations>();
+                filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Id != value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            if (filter.SourcePositionIDs?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.False<AdminSubordinations>();
+
+                filterContains = filter.SourcePositionIDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.SourcePositionId == value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            if (filter.TargetPositionIDs?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.False<AdminSubordinations>();
+
+                filterContains = filter.TargetPositionIDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.TargetPositionId == value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            if (filter.SubordinationTypeIDs?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.False<AdminSubordinations>();
+
+                filterContains = filter.TargetPositionIDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.TargetPositionId == value).Expand());
 
                 qry = qry.Where(filterContains);
             }

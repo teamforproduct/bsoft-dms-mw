@@ -28,5 +28,15 @@ namespace BL.Model.AdminCore.FilterModel
         /// </summary>
         public Period Period { get; set; }
 
+        /// <summary>
+        /// Дата начала
+        /// </summary>
+        public DateTime? StartDate { get; set; }
+
+        /// <summary>
+        /// Дата окончания
+        /// </summary>
+        public DateTime? EndDate { get; set; }
+
     }
 }

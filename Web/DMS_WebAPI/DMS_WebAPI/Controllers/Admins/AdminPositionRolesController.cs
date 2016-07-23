@@ -44,7 +44,7 @@ namespace DMS_WebAPI.Controllers.Admins
         }
 
         /// <summary>
-        /// Add in GetAdminPositionRoles
+        /// Add in AdminPositionRoles
         /// </summary>
         /// <param name="model">ModifyAdminPositionRole</param>
         /// <returns>FrontAdminPositionRole</returns>
@@ -57,7 +57,7 @@ namespace DMS_WebAPI.Controllers.Admins
         }
 
         /// <summary>
-        /// Chg in GetAdminPositionRoles
+        /// Chg in AdminPositionRoles
         /// </summary>
         /// <param name="id">Record Id</param>
         /// <param name="model">ModifyAdminPositionRole</param>
@@ -72,7 +72,7 @@ namespace DMS_WebAPI.Controllers.Admins
         }
 
         /// <summary>
-        /// Del in GetAdminPositionRoles
+        /// Del in AdminPositionRoles
         /// </summary>
         /// <returns>FrontAdminPositionRole</returns> 
         public IHttpActionResult Delete([FromUri] int id)

@@ -159,15 +159,43 @@ namespace BL.Logic.AdminCore
 
         #endregion`
 
-        #region [+] PositionRoles ...
-        //public FrontAdminPositionRole GetAdminPositionRole(IContext context, int id)
+        #region [+] Role ...
+        //public FrontAdminPositionRole GetAdminRole(IContext context, int id)
         //{
-        //    return _adminDb.GetPositionRoles(context, new FilterAdminPositionRole() { IDs = new List<int> { id } }).FirstOrDefault();
+        //    return _adminDb.GetRole(context, new FilterAdminPositionRole() { IDs = new List<int> { id } }).FirstOrDefault();
         //}
 
+        public IEnumerable<FrontAdminRole> GetAdminRoles(IContext context, FilterAdminRole filter)
+        {
+            return _adminDb.GetRoles(context, filter);
+        }
+        #endregion
+
+        #region [+] RoleAction ...
+        public IEnumerable<FrontAdminRoleAction> GetAdminRoleActions(IContext context, FilterAdminRoleAction filter)
+        {
+            return _adminDb.GetRoleActions(context, filter);
+        }
+        #endregion
+
+        #region [+] PositionRoles ...
         public IEnumerable<FrontAdminPositionRole> GetAdminPositionRoles(IContext context, FilterAdminPositionRole filter)
         {
             return _adminDb.GetPositionRoles(context, filter);
+        }
+        #endregion
+
+        #region [+] UserRoles ...
+        public IEnumerable<FrontAdminUserRole> GetAdminUserRoles(IContext context, FilterAdminUserRole filter)
+        {
+            return _adminDb.GetUserRoles(context, filter);
+        }
+        #endregion
+
+        #region [+] Subordination ...
+        public IEnumerable<FrontAdminSubordination> GetAdminSubordinations(IContext context, FilterAdminSubordination filter)
+        {
+            return _adminDb.GetSubordinations(context, filter);
         }
         #endregion
 

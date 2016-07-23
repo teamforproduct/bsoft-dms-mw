@@ -75,11 +75,11 @@
         /// <summary>
         /// Изменить
         /// </summary>
-        ModifySubordinations,
+        ModifySubordination,
         /// <summary>
         /// Удалить 
         /// </summary>
-        DeleteSubordinations,
+        DeleteSubordination,
         #endregion
 
     }

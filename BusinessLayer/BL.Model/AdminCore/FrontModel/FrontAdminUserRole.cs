@@ -16,12 +16,12 @@ namespace BL.Model.AdminCore.FrontModel
         /// <summary>
         /// Пользователь
         /// </summary>
-        public int UserName { get; set; }
+        public string UserName { get; set; }
 
         /// <summary>
         /// Роль
         /// </summary>
-        public int RoleName { get; set; }
+        public string RoleName { get; set; }
 
 
         public int RolePositionId { get; set; }

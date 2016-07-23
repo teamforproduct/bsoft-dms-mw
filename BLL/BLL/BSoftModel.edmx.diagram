@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="4f11c7d7dc274565ad509383e1e50265" Name="Main" ZoomLevel="94" ShowGrid="true" DisplayType="true" >
+        <EntityTypeShape EntityType="bsoftModel.Documents" Width="2" PointX="13.75" PointY="22.25" />
+        <EntityTypeShape EntityType="bsoftModel.DocumentEvents" Width="2" PointX="19" PointY="24.125" IsExpanded="true" />
+        <AssociationConnector Association="bsoftModel.DocumentEventsDocuments" />
+        <EntityTypeShape EntityType="bsoftModel.DocumentAccesses" Width="2" PointX="16.375" PointY="23.5" />
+        <AssociationConnector Association="bsoftModel.DocumentAccessesDocuments" ></AssociationConnector>
+        <EntityTypeShape EntityType="bsoftModel.DictionaryDocumentTypes" Width="2" PointX="5.875" PointY="31.125" />
+        <EntityTypeShape EntityType="bsoftModel.DictionaryDocumentDirections" Width="2" PointX="5.875" PointY="28.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="bsoftModel.DictionaryDocumentSubjects" Width="2" PointX="5.875" PointY="25.375" IsExpanded="true" />
+        <AssociationConnector Association="bsoftModel.DocumentsDictionaryDocumentSubjects" ManuallyRouted="false" >
+        </AssociationConnector>
+        <EntityTypeShape EntityType="bsoftModel.DictionaryCompanies" Width="2" PointX="1.625" PointY="19.25" />
+        <EntityTypeShape EntityType="bsoftModel.DictionaryDepartments" Width="2" PointX="6.875" PointY="17.375" />
+        <AssociationConnector Association="bsoftModel.DictionaryDepartmentsDictionaryCompanies" />
+        <EntityTypeShape EntityType="bsoftModel.DictionaryPositions" Width="2" PointX="9.5" PointY="15.875" />
+        <AssociationConnector Association="bsoftModel.DictionaryPositionsDictionaryDepartments" />
+        <AssociationConnector Association="bsoftModel.DocumentAccessesDictionaryPositions" ManuallyRouted="false" >
+        </AssociationConnector>
+        <EntityTypeShape EntityType="bsoftModel.AdminAccessLevels" Width="2" PointX="16.875" PointY="7.75" />
+        <AssociationConnector Association="bsoftModel.DocumentAccessesAdminAccessLevels" />
+        <EntityTypeShape EntityType="bsoftModel.DictionaryRegistrationJournals" Width="2" PointX="5.875" PointY="21.875" />
+        <AssociationConnector Association="bsoftModel.DocumentsDictionaryRegistrationJournals" />
+        <AssociationConnector Association="bsoftModel.DictionaryDepartmentsDictionaryRegistrationJournals" />
+        <AssociationConnector Association="bsoftModel.DocumentEventsSourcePositions" />
+        <AssociationConnector Association="bsoftModel.DocumentEventsTargetPositions" />
+        <EntityTypeShape EntityType="bsoftModel.DictionaryEventTypes" Width="2" PointX="19" PointY="18.375" />
+        <AssociationConnector Association="bsoftModel.DocumentEventsDictionaryEventTypes" />
+        <EntityTypeShape EntityType="bsoftModel.DocumentFiles" Width="2" PointX="21.625" PointY="24.75" />
+        <AssociationConnector Association="bsoftModel.DocumentFilesDocuments" />
+        <EntityTypeShape EntityType="bsoftModel.DocumentLinks" Width="2" PointX="24.25" PointY="25.375" />
+        <AssociationConnector Association="bsoftModel.DocumentLinksDocuments" />
+        <EntityTypeShape EntityType="bsoftModel.DictionaryAgents" Width="2" PointX="12.125" PointY="11.25" />
+        <AssociationConnector Association="bsoftModel.DocumentEventsSourceAgents" />
+        <AssociationConnector Association="bsoftModel.DocumentEventsTargetAgents" />
+        <AssociationConnector Association="bsoftModel.DocumentLinksParentDocuments" />
+        <EntityTypeShape EntityType="bsoftModel.DictionaryLinkTypes" Width="2" PointX="24.25" PointY="18.375" />
+        <AssociationConnector Association="bsoftModel.DocumentLinksDictionaryLinkTypes" />
+        <EntityTypeShape EntityType="bsoftModel.DocumentWaits" Width="2" PointX="32.125" PointY="27.25" />
+        <AssociationConnector Association="bsoftModel.DocumentWaitsDocuments" />
+        <AssociationConnector Association="bsoftModel.DocumentWaitsOnEvents" />
+        <AssociationConnector Association="bsoftModel.DocumentWaitsOffEvents" />
+        <EntityTypeShape EntityType="bsoftModel.DocumentSubscriptions" Width="2" PointX="34.75" PointY="28" />
+        <AssociationConnector Association="bsoftModel.DocumentSubscriptionsDocuments" />
+        <AssociationConnector Association="bsoftModel.DocumentSubscriptionsSendEvents" />
+        <AssociationConnector Association="bsoftModel.DictionaryPositionsDictionaryAgents" />
+        <EntityTypeShape EntityType="bsoftModel.DocumentSendLists" Width="2" PointX="29.5" PointY="26.625" />
+        <AssociationConnector Association="bsoftModel.DocumentSendListsDocuments" />
+        <EntityTypeShape EntityType="bsoftModel.DictionaryImportanceEventTypes" Width="2" PointX="21.625" PointY="18.375" />
+        <AssociationConnector Association="bsoftModel.DictionaryEventTypesDictionaryImpotanceEventTypes" />
+        <EntityTypeShape EntityType="bsoftModel.DictionarySendTypes" Width="2" PointX="29.5" PointY="18.375" />
+        <AssociationConnector Association="bsoftModel.DocumentSendListsDictionarySendTypes" />
+        <AssociationConnector Association="bsoftModel.DocumentSendListsTargetPositions" ManuallyRouted="false" >
+        </AssociationConnector>
+        <AssociationConnector Association="bsoftModel.DocumentSendListsAdminAccessLevels" />
+        <EntityTypeShape EntityType="bsoftModel.DictionaryAgentUsers" Width="2" PointX="3" PointY="7" />
+        <EntityTypeShape EntityType="bsoftModel.AdminUserRoles" Width="2" PointX="5.625" PointY="7.625" />
+        <EntityTypeShape EntityType="bsoftModel.SystemObjects" Width="2" PointX="3" PointY="2.5" />
+        <EntityTypeShape EntityType="bsoftModel.SystemFields" Width="2" PointX="5.625" PointY="3.125" />
+        <AssociationConnector Association="bsoftModel.SystemColumnsSystemObjects" />
+        <EntityTypeShape EntityType="bsoftModel.CustomDictionaryTypes" Width="2" PointX="30.875" PointY="2.5" />
+        <EntityTypeShape EntityType="bsoftModel.CustomDictionaries" Width="2" PointX="33.5" PointY="3.125" />
+        <EntityTypeShape EntityType="bsoftModel.SystemValueTypes" Width="2" PointX="8.25" PointY="3.875" />
+        <AssociationConnector Association="bsoftModel.SystemColumnsSystemValueTypes" />
+        <AssociationConnector Association="bsoftModel.CustomDictionariesCustomDictionaryTypes" />
+        <EntityTypeShape EntityType="bsoftModel.Properties" Width="2" PointX="23" PointY="2.5" />
+        <AssociationConnector Association="bsoftModel.PropertiesSystemValueTypes" />
+        <EntityTypeShape EntityType="bsoftModel.PropertyValues" Width="2" PointX="28.25" PointY="3.75" />
+        <EntityTypeShape EntityType="bsoftModel.PropertyLinks" Width="2" PointX="25.625" PointY="3.125" />
+        <AssociationConnector Association="bsoftModel.PropertyLinksProperties" />
+        <AssociationConnector Association="bsoftModel.PropertyValuesPropertyLinks" />
+        <AssociationConnector Association="bsoftModel.PropertyLinksSystemObjects" />
+        <EntityTypeShape EntityType="bsoftModel.TemplateDocuments" Width="2" PointX="8.5" PointY="28.375" />
+        <AssociationConnector Association="bsoftModel.DictionaryPositionsDocuments" />
+        <EntityTypeShape EntityType="bsoftModel.TemplateDocumentSendLists" Width="2" PointX="11.125" PointY="32" />
+        <EntityTypeShape EntityType="bsoftModel.AdminSubordinations" Width="2" PointX="29.375" PointY="7" />
+        <EntityTypeShape EntityType="bsoftModel.AdminSubordinationTypes" Width="2" PointX="29.5" PointY="11.125" />
+        <AssociationConnector Association="bsoftModel.DictionarySendTypesAdminSubordinationTypes" />
+        <EntityTypeShape EntityType="bsoftModel.DictionaryResultTypes" Width="2" PointX="32.125" PointY="18.375" />
+        <AssociationConnector Association="bsoftModel.DocumentWaitsDictionaryResultTypes" />
+        <AssociationConnector Association="bsoftModel.DictionaryDocumentSubjectsParentDocumentSubjects" />
+        <AssociationConnector Association="bsoftModel.DictionaryPositionsParentPositions" />
+        <AssociationConnector Association="bsoftModel.DictionaryDepartmentsParentDepartments" />
+        <AssociationConnector Association="bsoftModel.DocumentWaitsParentWaits" />
+        <AssociationConnector Association="bsoftModel.AdminSubordinationDictionaryPositions" />
+        <AssociationConnector Association="bsoftModel.AdminSubordinationAddresseePositions" />
+        <AssociationConnector Association="bsoftModel.AdminSubordinationAdminSubordinationTypes" />
+        <AssociationConnector Association="bsoftModel.TemplateDocumentSendListsTemplateDocuments" />
+        <EntityTypeShape EntityType="bsoftModel.AdminSettings" Width="2" PointX="32.125" PointY="7" />
+        <EntityTypeShape EntityType="bsoftModel.AdninSettingTypes" Width="2" PointX="34.75" PointY="7.625" />
+        <AssociationConnector Association="bsoftModel.AdminSettingsAdminUsers" />
+        <AssociationConnector Association="bsoftModel.AdminSettingsDictionaryPositions" />
+        <AssociationConnector Association="bsoftModel.AdminSettingsAdninSettingTypes" />
+        <AssociationConnector Association="bsoftModel.AdninSettingTypesSystemValueTypes" />
+        <EntityTypeShape EntityType="bsoftModel.AdminRoleActions" Width="2" PointX="13.5" PointY="7" />
+        <EntityTypeShape EntityType="bsoftModel.SystemActions" Width="2" PointX="14.25" PointY="2.5" />
+        <AssociationConnector Association="bsoftModel.SystemActionsSystemObjects" />
+        <EntityTypeShape EntityType="bsoftModel.AdminRoles" Width="2" PointX="8.25" PointY="7" />
+        <AssociationConnector Association="bsoftModel.AdminUserRolesAdminUsers" />
+        <AssociationConnector Association="bsoftModel.AdminUserRolesAdminRoles" />
+        <AssociationConnector Association="bsoftModel.AdminRoleActionsAdminRoles" />
+        <AssociationConnector Association="bsoftModel.AdminRoleActionsSystemActions" />
+        <EntityTypeShape EntityType="bsoftModel.SystemCalculatedValues" Width="2" PointX="10.875" PointY="4.375" />
+        <AssociationConnector Association="bsoftModel.SystemCalculatedValuesSystemObjects" />
+        <AssociationConnector Association="bsoftModel.ChiefDepartmentsChiefPositions" />
+        <AssociationConnector Association="bsoftModel.DocumentsTemplateDocuments" />
+        <EntityTypeShape EntityType="bsoftModel.DictionaryStandartSendLists" Width="2" PointX="26.875" PointY="15.875" />
+        <EntityTypeShape EntityType="bsoftModel.DictionaryStandartSendListContents" Width="2" PointX="26.875" PointY="19" />
+        <AssociationConnector Association="bsoftModel.DocumentSendListsDocumentEvents" />
+        <AssociationConnector Association="bsoftModel.StandartSendListContentsDictionaryStandartSendLists" />
+        <AssociationConnector Association="bsoftModel.DictionaryStandartSendListsDictionaryPositions" />
+        <AssociationConnector Association="bsoftModel.DictionaryStandartSendListContentsDictionarySendTypes" />
+        <AssociationConnector Association="bsoftModel.DictionaryStandartSendListContentsTargetPositions" />
+        <AssociationConnector Association="bsoftModel.DictionaryStandartSendListContentsTargetAgents" />
+        <AssociationConnector Association="bsoftModel.DictionaryStandartSendListContentsAdminAccessLevels" />
+        <EntityTypeShape EntityType="bsoftModel.DictionarySubordinationTypes" Width="2" PointX="29.5" PointY="15.875" />
+        <AssociationConnector Association="bsoftModel.DictionarySendTypesDictionarySubordinationTypes" />
+        <AssociationConnector Association="bsoftModel.AdminSubordinationDictionarySubordinationTypes" />
+        <AssociationConnector Association="bsoftModel.DocumentsExecutorAgents" />
+        <AssociationConnector Association="bsoftModel.TemplateDocumentsDictionaryDocumentDirections" />
+        <AssociationConnector Association="bsoftModel.TemplateDocumentsDictionaryDocumentTypes" />
+        <AssociationConnector Association="bsoftModel.TemplateDocumentsDictionaryDocumentSubjects" />
+        <AssociationConnector Association="bsoftModel.TemplateDocumentsDictionaryRegistrationJournals" />
+        <EntityTypeShape EntityType="bsoftModel.DocumentRestrictedSendLists" Width="2" PointX="26.875" PointY="26" />
+        <AssociationConnector Association="bsoftModel.DocumentRestrictedSendListsDocuments" />
+        <AssociationConnector Association="bsoftModel.DocumentRestrictedSendListsAdminAccessLevels" />
+        <AssociationConnector Association="bsoftModel.DocumentRestrictedSendListsDictionaryPositions" />
+        <AssociationConnector Association="bsoftModel.DocumentRestrictedSendListsDictionaryAgents" />
+        <EntityTypeShape EntityType="bsoftModel.TemplateDocumentRestrictedSendLists" Width="2" PointX="11.125" PointY="37.875" />
+        <AssociationConnector Association="bsoftModel.TemplateDocumentRestrictedSendListsTemplateDocuments" />
+        <AssociationConnector Association="bsoftModel.TemplateDocumentRestrictedSendListsDictionaryPositions" />
+        <AssociationConnector Association="bsoftModel.TemplateDocumentRestrictedSendListsAdminAccessLevels" />
+        <EntityTypeShape EntityType="bsoftModel.SystemUIElements" Width="2" PointX="16.875" PointY="2.5" />
+        <EntityTypeShape EntityType="bsoftModel.DictionaryAgentPersons" Width="2" PointX="17.375" PointY="12.375" />
+        <AssociationConnector Association="bsoftModel.TemplateDocumentSendListsDictionarySendTypes" />
+        <AssociationConnector Association="bsoftModel.TemplateDocumentSendListsDictionaryPositions" />
+        <AssociationConnector Association="bsoftModel.TemplateDocumentSendListsAdminAccessLevels" />
+        <AssociationConnector Association="bsoftModel.DocumentsSenderAgents" />
+        <AssociationConnector Association="bsoftModel.TemplateDocumentsSenderAgents" />
+        <EntityTypeShape EntityType="bsoftModel.DocumentSavedFilters" Width="2" PointX="25.25" PointY="31.125" />
+        <AssociationConnector Association="bsoftModel.DocumentSavedFiltersDictionaryPositions" />
+        <AssociationConnector Association="bsoftModel.DocumentSubscriptionsDocumentEvents" />
+        <EntityTypeShape EntityType="bsoftModel.TemplateDocumentFiles" Width="2" PointX="8.5" PointY="34.5" />
+        <AssociationConnector Association="bsoftModel.TemplateDocumentFilesTemplateDocuments" />
+        <AssociationConnector Association="bsoftModel.SystemActionsSystemUIElements" />
+        <AssociationConnector Association="bsoftModel.SystemValueTypesSystemUIElements" />
+        <AssociationConnector Association="bsoftModel.DocumentEventsDocumentSendLists" />
+        <AssociationConnector Association="bsoftModel.SystemActionsSystemActions" />
+        <EntityTypeShape EntityType="bsoftModel.DictionaryTags" Width="2" PointX="37.375" PointY="18.375" />
+        <AssociationConnector Association="bsoftModel.DictionaryTagsDictionaryPositions" />
+        <EntityTypeShape EntityType="bsoftModel.DocumentTags" Width="2" PointX="37.375" PointY="28.625" />
+        <AssociationConnector Association="bsoftModel.DocumentTagsDocuments" />
+        <AssociationConnector Association="bsoftModel.DictionaryTagsDocumentTags" />
+        <AssociationConnector Association="bsoftModel.DocumentEventsReadAgents" />
+        <AssociationConnector Association="bsoftModel.TemplateDocumentSendListsSourcePositions" />
+        <AssociationConnector Association="bsoftModel.TemplateDocumentSendListsTargetAgents" />
+        <AssociationConnector Association="bsoftModel.DocumentSendListsSourcePositions" />
+        <AssociationConnector Association="bsoftModel.DocumentSendListsSourceAgents" />
+        <AssociationConnector Association="bsoftModel.DocumentSendListsTargetAgents" />
+        <EntityTypeShape EntityType="bsoftModel.DictionaryResidentTypes" Width="2" PointX="0.5" PointY="10.625" />
+        <AssociationConnector Association="bsoftModel.DictionaryAgentPersonsDictionaryAgents" />
+        <AssociationConnector Association="bsoftModel.DictionaryResidentTypesDictionaryAgents" />
+        <EntityTypeShape EntityType="bsoftModel.DictionaryAgentCompanies" Width="2" PointX="14.75" PointY="11.75" />
+        <EntityTypeShape EntityType="bsoftModel.DictionaryAgentEmploeyes" Width="2" PointX="20" PointY="13" />
+        <EntityTypeShape EntityType="bsoftModel.DictionaryAgentBanks" Width="2" PointX="22.625" PointY="13.625" />
+        <EntityTypeShape EntityType="bsoftModel.DictionaryAddressTypes" Width="2" PointX="2.875" PointY="11.25" />
+        <EntityTypeShape EntityType="bsoftModel.DictionaryContactTypes" Width="2" PointX="2.875" PointY="13.5" />
+        <EntityTypeShape EntityType="bsoftModel.DictionaryAgentAddresses" Width="2" PointX="7.375" PointY="12" />
+        <EntityTypeShape EntityType="bsoftModel.DictionaryContacts" Width="2" PointX="9.75" PointY="12.125" />
+        <AssociationConnector Association="bsoftModel.DictionaryAgentCompaniesDictionaryAgents" />
+        <AssociationConnector Association="bsoftModel.DictionaryAgentEmploeyesDictionaryAgents" />
+        <AssociationConnector Association="bsoftModel.DictionaryAgentBanksDictionaryAgents" />
+        <AssociationConnector Association="bsoftModel.DictionaryAgentPersonsDictionaryAgentCompanies" />
+        <AssociationConnector Association="bsoftModel.DictionaryAgentAddressesDictionaryAgents" />
+        <AssociationConnector Association="bsoftModel.DictionaryAgentPhoneNumbersDictionaryAgents" />
+        <AssociationConnector Association="bsoftModel.DictionaryAgentAddressesDictionaryAddressTypes" />
+        <AssociationConnector Association="bsoftModel.DictionaryAgentPhoneNumbersDictionaryPhoneNumberTypes" />
+        <AssociationConnector Association="bsoftModel.TemplateDocumentsDictionaryAgentPersons" />
+        <AssociationConnector Association="bsoftModel.DocumentsDictionaryAgentPersons" />
+        <EntityTypeShape EntityType="bsoftModel.DictionaryAgentAccounts" Width="2" PointX="5.25" PointY="11.5" />
+        <AssociationConnector Association="bsoftModel.DictionaryAgentAccountsDictionaryAgents" />
+        <AssociationConnector Association="bsoftModel.DictionaryAgentAccountsDictionaryAgentBanks" />
+        <AssociationConnector Association="bsoftModel.DictionaryPositionsMainExecutorAgent" />
+        <EntityTypeShape EntityType="bsoftModel.AdminPositionRoles" Width="2" PointX="10.875" PointY="7.625" />
+        <AssociationConnector Association="bsoftModel.AdminPositionRolesAdminRoles" />
+        <AssociationConnector Association="bsoftModel.AdminPositionRolesDictionaryPositions" />
+        <EntityTypeShape EntityType="bsoftModel.DictionarySubscriptionStates" Width="2.125" PointX="34.625" PointY="18.625" />
+        <AssociationConnector Association="bsoftModel.DocumentSubscriptionsDictionarySubscriptionStates" />
+        <EntityTypeShape EntityType="bsoftModel.DictionaryPositionExecutorTypes" Width="2" PointX="1.625" PointY="16.5" />
+        <EntityTypeShape EntityType="bsoftModel.DictionaryPositionExecutors" Width="2" PointX="4.375" PointY="16.625" />
+        <AssociationConnector Association="bsoftModel.DictionaryPositionExecutorsDictionaryPositions" />
+        <AssociationConnector Association="bsoftModel.DictionaryAgentsDictionaryPositionExecutors" />
+        <AssociationConnector Association="bsoftModel.DictionaryPositionExecutorTypesDictionaryPositionExecutors" />
+        <AssociationConnector Association="bsoftModel.AdminAccessLevelsDictionaryPositionExecutors" />
+        <EntityTypeShape EntityType="bsoftModel.DocumentEventReaders" Width="2" PointX="25.625" PointY="35.5" />
+        <AssociationConnector Association="bsoftModel.DocumentEventsDocumentEventReaders" />
+        <AssociationConnector Association="bsoftModel.DictionaryPositionsDocumentEventReaders" />
+        <AssociationConnector Association="bsoftModel.DictionaryAgentsDocumentEventReaders" />
+        <AssociationConnector Association="bsoftModel.DictionaryAgentsDocumentEventReaders1" />
+        <EntityTypeShape EntityType="bsoftModel.DocumentTasks" Width="2" PointX="21.625" PointY="28.75" />
+        <AssociationConnector Association="bsoftModel.DocumentTasksDocuments" />
+        <AssociationConnector Association="bsoftModel.DictionaryPositionsDocumentTasks" />
+        <AssociationConnector Association="bsoftModel.DocumentTasksDocumentEvents" />
+        <AssociationConnector Association="bsoftModel.DocumentTasksDocumentSendLists" />
+        <AssociationConnector Association="bsoftModel.DictionaryAgentsDocumentTasks" />
+        <AssociationConnector Association="bsoftModel.DocumentTasksPositionExecutorAgents" />
+        <EntityTypeShape EntityType="bsoftModel.TemplateDocumentTasks" Width="2" PointX="11.125" PointY="28.375" />
+        <AssociationConnector Association="bsoftModel.TemplateDocumentTasksTemplateDocuments" />
+        <AssociationConnector Association="bsoftModel.DictionaryPositionsTemplateDocumentTasks" />
+        <AssociationConnector Association="bsoftModel.TemplateDocumentSendListsTemplateDocumentTasks" />
+        <EntityTypeShape EntityType="bsoftModel.DocumentPaperEvents" Width="2" PointX="16.375" PointY="27" />
+        <EntityTypeShape EntityType="bsoftModel.DocumentPapers" Width="2" PointX="13.375" PointY="32.125" />
+        <AssociationConnector Association="bsoftModel.DocumentPaperEventsDocumentPapers" />
+        <AssociationConnector Association="bsoftModel.DocumentPapersDocuments" />
+        <EntityTypeShape EntityType="bsoftModel.DocumentPaperLists" Width="2" PointX="21.625" PointY="36.5" />
+        <AssociationConnector Association="bsoftModel.DocumentPaperEventsDocumentPaperLists" />
+        <AssociationConnector Association="bsoftModel.DocumentPaperEventsDictionaryEventTypes" />
+        <AssociationConnector Association="bsoftModel.DocumentPaperEventsDocumentEvents" />
+        <AssociationConnector Association="bsoftModel.DocumentPaperEventsSourcePositions" />
+        <AssociationConnector Association="bsoftModel.SourcePositionExecutorAgentsDocumentPaperEvents" />
+        <AssociationConnector Association="bsoftModel.DocumentPaperEventsSourceAgents" />
+        <AssociationConnector Association="bsoftModel.DocumentPaperEventsTargetPositions" />
+        <AssociationConnector Association="bsoftModel.DocumentPaperEventsTargetPositionExecutorAgents" />
+        <AssociationConnector Association="bsoftModel.DocumentPaperEventsTargetAgents" />
+        <AssociationConnector Association="bsoftModel.DocumentPaperEventsPlanAgents" />
+        <AssociationConnector Association="bsoftModel.DocumentPaperEventsSendAgents" />
+        <AssociationConnector Association="bsoftModel.DocumentPaperEventsRecieveAgents" />
+        <AssociationConnector Association="bsoftModel.DocumentSendListsDocumentPaperEvents" />
+        <AssociationConnector Association="bsoftModel.LastPaperEventsDocumentPapers" />
+        <AssociationConnector Association="bsoftModel.AdminUsersDictionaryAgents1" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

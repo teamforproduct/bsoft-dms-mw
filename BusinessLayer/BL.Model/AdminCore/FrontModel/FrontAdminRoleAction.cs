@@ -16,12 +16,12 @@ namespace BL.Model.AdminCore.FrontModel
         /// <summary>
         /// Действие
         /// </summary>
-        public int ActionName { get; set; }
+        public string ActionDescription{ get; set; }
 
         /// <summary>
         /// Роль
         /// </summary>
-        public int RoleName { get; set; }
+        public string RoleName { get; set; }
 
     }
 }

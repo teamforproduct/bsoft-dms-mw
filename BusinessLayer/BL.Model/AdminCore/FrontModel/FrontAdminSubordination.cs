@@ -16,17 +16,17 @@ namespace BL.Model.AdminCore.FrontModel
         /// <summary>
         /// Руководитель
         /// </summary>
-        public int SourcePositionName { get; set; }
+        public string SourcePositionName { get; set; }
 
         /// <summary>
         /// Исполнитель
         /// </summary>
-        public int TargetPositionName { get; set; }
+        public string TargetPositionName { get; set; }
 
         /// <summary>
         /// Тип рассылки (для исполнения, для сведения)
         /// </summary>
-        public int SubordinationTypeName { get; set; }
+        public string SubordinationTypeName { get; set; }
 
     }
 }

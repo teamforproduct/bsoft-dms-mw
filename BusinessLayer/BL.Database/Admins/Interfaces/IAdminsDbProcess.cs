@@ -10,12 +10,31 @@ namespace BL.Database.Admins.Interfaces
 {
     public interface IAdminsDbProcess
     {
+        #region [+] General ...
         AdminAccessInfo GetAdminAccesses(IContext context);
         Employee GetEmployee(IContext ctx, string userId);
 
         IEnumerable<FrontAdminUserRole> GetPositionsByUser(IContext ctx, FilterAdminUserRole filter);
         IEnumerable<CurrentPosition> GetPositionsByUser(Employee employee);
+        #endregion
 
+        #region [+] Roles ...
+        int AddRole(IContext context, InternalAdminRole model);
+        void UpdateRole(IContext context, InternalAdminRole model);
+        void DeleteRole(IContext context, InternalAdminRole model);
+        bool ExistsRole(IContext context, FilterAdminRole filter);
+        InternalAdminRole GetInternalRole(IContext context, FilterAdminRole filter);
+        IEnumerable<FrontAdminRole> GetRoles(IContext context, FilterAdminRole filter);
+        #endregion
+
+        #region [+] RoleAction ...
+        int AddRoleAction(IContext context, InternalAdminRoleAction model);
+        void UpdateRoleAction(IContext context, InternalAdminRoleAction model);
+        void DeleteRoleAction(IContext context, InternalAdminRoleAction model);
+        bool ExistsRoleAction(IContext context, FilterAdminRoleAction filter);
+        InternalAdminRoleAction GetInternalRoleAction(IContext context, FilterAdminRoleAction filter);
+        IEnumerable<FrontAdminRoleAction> GetRoleActions(IContext context, FilterAdminRoleAction filter);
+        #endregion
 
         #region [+] PositionRole ...
         int AddPositionRole(IContext context, InternalAdminPositionRole model);
@@ -24,6 +43,24 @@ namespace BL.Database.Admins.Interfaces
         bool ExistsPositionRole(IContext context, FilterAdminPositionRole filter);
         InternalAdminPositionRole GetInternalPositionRole(IContext context, FilterAdminPositionRole filter);
         IEnumerable<FrontAdminPositionRole> GetPositionRoles(IContext context, FilterAdminPositionRole filter);
+        #endregion
+
+        #region [+] UserRole ...
+        int AddUserRole(IContext context, InternalAdminUserRole model);
+        void UpdateUserRole(IContext context, InternalAdminUserRole model);
+        void DeleteUserRole(IContext context, InternalAdminUserRole model);
+        bool ExistsUserRole(IContext context, FilterAdminUserRole filter);
+        InternalAdminUserRole GetInternalUserRole(IContext context, FilterAdminUserRole filter);
+        IEnumerable<FrontAdminUserRole> GetUserRoles(IContext context, FilterAdminUserRole filter);
+        #endregion
+
+        #region [+] Subordination ...
+        int AddSubordination(IContext context, InternalAdminSubordination model);
+        void UpdateSubordination(IContext context, InternalAdminSubordination model);
+        void DeleteSubordination(IContext context, InternalAdminSubordination model);
+        bool ExistsSubordination(IContext context, FilterAdminSubordination filter);
+        InternalAdminSubordination GetInternalSubordination(IContext context, FilterAdminSubordination filter);
+        IEnumerable<FrontAdminSubordination> GetSubordinations(IContext context, FilterAdminSubordination filter);
         #endregion
 
     }
