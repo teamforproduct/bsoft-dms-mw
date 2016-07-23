@@ -21,7 +21,7 @@ namespace BL.Database.DBModel.Dictionary
         public int CompanyId { get; set; }
         [MaxLength(2000)]
         public string Code { get; set; }
-        [MaxLength(2000)]
+        [MaxLength(400)]
         [Index("IX_CompanyParentName", 3, IsUnique = false)]
         public string Name { get; set; }
         [MaxLength(2000)]

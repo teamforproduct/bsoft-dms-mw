@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BL.Database.DBModel.Dictionary
 {
@@ -13,7 +9,7 @@ namespace BL.Database.DBModel.Dictionary
         public int Id { get; set; }
         [Index("IX_AgentName", 1, IsUnique = true)]
         public int AgentId { get; set; }
-        [MaxLength(2000)]
+        [MaxLength(400)]
         [Index("IX_AgentName", 2, IsUnique = true)]
         public string Name { get; set; }
         public int AgentBankId { get; set; }

@@ -10,12 +10,12 @@ namespace BL.Database.DBModel.Template
         [Index("IX_DocumentNameExtention", 1, IsUnique = true)]
         [Index("IX_DocumentOrderNumber", 1, IsUnique = true)]
         public int DocumentId { get; set; }
-        [MaxLength(2000)]
+        [MaxLength(200)]
         [Index("IX_DocumentNameExtention", 2, IsUnique = true)]
         public string Name { get; set; }
         [Index("IX_DocumentOrderNumber", 2, IsUnique = true)]
         public int OrderNumber { get; set; }
-        [MaxLength(2000)]
+        [MaxLength(200)]
         [Index("IX_DocumentNameExtention", 3, IsUnique = true)]
         public string Extention { get; set; }
         [MaxLength(2000)]

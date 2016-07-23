@@ -11,7 +11,7 @@ namespace BL.Database.DBModel.Document
         [Index("IX_DocumentNameExtensionVersion", 1, IsUnique = true)]
         [Index("IX_DocumentOrderNumberVersion", 1, IsUnique = true)]
         public int DocumentId { get; set; }
-        [MaxLength(2000)]
+        [MaxLength(200)]
         [Index("IX_DocumentNameExtensionVersion", 2, IsUnique = true)]
         public string Name { get; set; }
         [Index("IX_DocumentOrderNumberVersion", 2, IsUnique = true)]
@@ -19,7 +19,7 @@ namespace BL.Database.DBModel.Document
         [Index("IX_DocumentNameExtensionVersion", 4, IsUnique = true)]
         [Index("IX_DocumentOrderNumberVersion", 3, IsUnique = true)]
         public int Version { get; set; }
-        [MaxLength(2000)]
+        [MaxLength(200)]
         [Index("IX_DocumentNameExtensionVersion", 3, IsUnique = true)]
         public string Extension { get; set; }
         [MaxLength(2000)]

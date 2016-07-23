@@ -13,22 +13,25 @@ namespace BL.Database.Migrations
                     {
                         Id = c.Int(nullable: false, identity: true),
                         Code = c.String(maxLength: 2000),
-                        Name = c.String(maxLength: 2000),
+                        Name = c.String(maxLength: 400),
                         LastChangeUserId = c.Int(nullable: false),
                         LastChangeDate = c.DateTime(nullable: false),
                     })
-                .PrimaryKey(t => t.Id);
+                .PrimaryKey(t => t.Id)
+                .Index(t => t.Name, unique: true);
             
             CreateTable(
                 "DMS.AdminLanguages",
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
-                        Code = c.String(maxLength: 2000),
-                        Name = c.String(maxLength: 2000),
+                        Code = c.String(maxLength: 400),
+                        Name = c.String(maxLength: 400),
                         IsDefault = c.Boolean(nullable: false),
                     })
-                .PrimaryKey(t => t.Id);
+                .PrimaryKey(t => t.Id)
+                .Index(t => t.Code, unique: true)
+                .Index(t => t.Name, unique: true);
             
             CreateTable(
                 "DMS.AdminLanguageValues",
@@ -36,11 +39,12 @@ namespace BL.Database.Migrations
                     {
                         Id = c.Int(nullable: false, identity: true),
                         LanguageId = c.Int(nullable: false),
-                        Label = c.String(maxLength: 2000),
+                        Label = c.String(maxLength: 400),
                         Value = c.String(maxLength: 2000),
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("DMS.AdminLanguages", t => t.LanguageId)
+                .Index(t => new { t.Label, t.LanguageId }, unique: true, name: "IX_Label")
                 .Index(t => t.LanguageId);
             
             CreateTable(
@@ -56,8 +60,8 @@ namespace BL.Database.Migrations
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("DMS.DictionaryPositions", t => t.PositionId)
                 .ForeignKey("DMS.AdminRoles", t => t.RoleId)
-                .Index(t => t.RoleId)
-                .Index(t => t.PositionId);
+                .Index(t => new { t.PositionId, t.RoleId }, unique: true, name: "IX_PositionRole")
+                .Index(t => t.RoleId);
             
             CreateTable(
                 "DMS.DictionaryPositions",
@@ -92,7 +96,7 @@ namespace BL.Database.Migrations
                         ParentId = c.Int(),
                         CompanyId = c.Int(nullable: false),
                         Code = c.String(maxLength: 2000),
-                        Name = c.String(maxLength: 2000),
+                        Name = c.String(maxLength: 400),
                         FullName = c.String(maxLength: 2000),
                         ChiefPositionId = c.Int(),
                         IsActive = c.Boolean(nullable: false),
@@ -103,8 +107,8 @@ namespace BL.Database.Migrations
                 .ForeignKey("DMS.DictionaryPositions", t => t.ChiefPositionId)
                 .ForeignKey("DMS.DictionaryDepartments", t => t.ParentId)
                 .ForeignKey("DMS.DictionaryCompanies", t => t.CompanyId)
+                .Index(t => new { t.CompanyId, t.ParentId, t.Name }, name: "IX_CompanyParentName")
                 .Index(t => t.ParentId)
-                .Index(t => t.CompanyId)
                 .Index(t => t.ChiefPositionId);
             
             CreateTable(
@@ -112,20 +116,24 @@ namespace BL.Database.Migrations
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
-                        Name = c.String(maxLength: 2000),
+                        ClientId = c.Int(nullable: false),
+                        Name = c.String(maxLength: 400),
                         IsActive = c.Boolean(nullable: false),
                         LastChangeUserId = c.Int(nullable: false),
                         LastChangeDate = c.DateTime(nullable: false),
                     })
-                .PrimaryKey(t => t.Id);
+                .PrimaryKey(t => t.Id)
+                .Index(t => t.ClientId)
+                .Index(t => new { t.Name, t.ClientId }, unique: true, name: "IX_Name");
             
             CreateTable(
                 "DMS.DocumentSavedFilters",
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
+                        ClientId = c.Int(nullable: false),
                         PositionId = c.Int(),
-                        Icon = c.String(maxLength: 2000),
+                        Icon = c.String(maxLength: 400),
                         Filter = c.String(maxLength: 2000),
                         IsCommon = c.Boolean(nullable: false),
                         LastChangeUserId = c.Int(nullable: false),
@@ -133,6 +141,8 @@ namespace BL.Database.Migrations
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("DMS.DictionaryPositions", t => t.PositionId)
+                .Index(t => t.ClientId)
+                .Index(t => new { t.Icon, t.PositionId, t.ClientId }, unique: true, name: "IX_IconPosition")
                 .Index(t => t.PositionId);
             
             CreateTable(
@@ -140,6 +150,7 @@ namespace BL.Database.Migrations
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
+                        ClientId = c.Int(nullable: false),
                         Name = c.String(maxLength: 2000),
                         ResidentTypeId = c.Int(),
                         IsCompany = c.Boolean(nullable: false),
@@ -156,6 +167,7 @@ namespace BL.Database.Migrations
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("DMS.AdminLanguages", t => t.LanguageId)
                 .ForeignKey("DMS.DictionaryResidentTypes", t => t.ResidentTypeId)
+                .Index(t => t.ClientId)
                 .Index(t => t.ResidentTypeId)
                 .Index(t => t.LanguageId);
             
@@ -165,7 +177,7 @@ namespace BL.Database.Migrations
                     {
                         Id = c.Int(nullable: false, identity: true),
                         AgentId = c.Int(nullable: false),
-                        Name = c.String(maxLength: 2000),
+                        Name = c.String(maxLength: 400),
                         AgentBankId = c.Int(nullable: false),
                         AccountNumber = c.String(maxLength: 2000),
                         IsMain = c.Boolean(nullable: false),
@@ -177,7 +189,7 @@ namespace BL.Database.Migrations
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("DMS.DictionaryAgents", t => t.AgentId)
                 .ForeignKey("DMS.DictionaryAgentBanks", t => t.AgentBankId)
-                .Index(t => t.AgentId)
+                .Index(t => new { t.AgentId, t.Name }, unique: true, name: "IX_AgentName")
                 .Index(t => t.AgentBankId);
             
             CreateTable(
@@ -185,7 +197,7 @@ namespace BL.Database.Migrations
                 c => new
                     {
                         Id = c.Int(nullable: false),
-                        MFOCode = c.String(maxLength: 2000),
+                        MFOCode = c.String(maxLength: 400),
                         Swift = c.String(maxLength: 2000),
                         Description = c.String(maxLength: 2000),
                         IsActive = c.Boolean(nullable: false),
@@ -194,7 +206,8 @@ namespace BL.Database.Migrations
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("DMS.DictionaryAgents", t => t.Id)
-                .Index(t => t.Id);
+                .Index(t => t.Id)
+                .Index(t => t.MFOCode, unique: true);
             
             CreateTable(
                 "DMS.DictionaryAgentAddresses",
@@ -213,7 +226,7 @@ namespace BL.Database.Migrations
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("DMS.DictionaryAddressTypes", t => t.AdressTypeId)
                 .ForeignKey("DMS.DictionaryAgents", t => t.AgentId)
-                .Index(t => t.AgentId)
+                .Index(t => new { t.AgentId, t.AdressTypeId }, unique: true, name: "IX_AdressType")
                 .Index(t => t.AdressTypeId);
             
             CreateTable(
@@ -221,20 +234,23 @@ namespace BL.Database.Migrations
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
-                        Name = c.String(maxLength: 2000),
+                        ClientId = c.Int(nullable: false),
+                        Name = c.String(maxLength: 400),
                         IsActive = c.Boolean(nullable: false),
                         LastChangeUserId = c.Int(nullable: false),
                         LastChangeDate = c.DateTime(nullable: false),
                     })
-                .PrimaryKey(t => t.Id);
+                .PrimaryKey(t => t.Id)
+                .Index(t => t.ClientId)
+                .Index(t => new { t.Name, t.ClientId }, unique: true, name: "IX_Name");
             
             CreateTable(
                 "DMS.DictionaryAgentCompanies",
                 c => new
                     {
                         Id = c.Int(nullable: false),
-                        FullName = c.String(maxLength: 2000),
-                        TaxCode = c.String(maxLength: 2000),
+                        FullName = c.String(maxLength: 400),
+                        TaxCode = c.String(maxLength: 400),
                         OKPOCode = c.String(maxLength: 2000),
                         VATCode = c.String(maxLength: 2000),
                         Description = c.String(maxLength: 2000),
@@ -244,14 +260,16 @@ namespace BL.Database.Migrations
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("DMS.DictionaryAgents", t => t.Id)
-                .Index(t => t.Id);
+                .Index(t => t.Id)
+                .Index(t => t.FullName, unique: true)
+                .Index(t => t.TaxCode, unique: true);
             
             CreateTable(
                 "DMS.DictionaryAgentPersons",
                 c => new
                     {
                         Id = c.Int(nullable: false),
-                        FullName = c.String(maxLength: 2000),
+                        FullName = c.String(maxLength: 400),
                         LastName = c.String(maxLength: 2000),
                         FirstName = c.String(maxLength: 2000),
                         MiddleName = c.String(maxLength: 2000),
@@ -272,6 +290,7 @@ namespace BL.Database.Migrations
                 .ForeignKey("DMS.DictionaryAgentCompanies", t => t.AgentCompanyId)
                 .ForeignKey("DMS.DictionaryAgents", t => t.Id)
                 .Index(t => t.Id)
+                .Index(t => t.FullName, unique: true)
                 .Index(t => t.AgentCompanyId);
             
             CreateTable(
@@ -281,7 +300,7 @@ namespace BL.Database.Migrations
                         Id = c.Int(nullable: false, identity: true),
                         AgentId = c.Int(nullable: false),
                         ContactTypeId = c.Int(nullable: false),
-                        Contact = c.String(maxLength: 2000),
+                        Contact = c.String(maxLength: 400),
                         Description = c.String(maxLength: 2000),
                         IsActive = c.Boolean(nullable: false),
                         LastChangeUserId = c.Int(nullable: false),
@@ -290,7 +309,7 @@ namespace BL.Database.Migrations
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("DMS.DictionaryAgents", t => t.AgentId)
                 .ForeignKey("DMS.DictionaryContactTypes", t => t.ContactTypeId)
-                .Index(t => t.AgentId)
+                .Index(t => new { t.AgentId, t.ContactTypeId, t.Contact }, unique: true, name: "IX_AgentContactTypeContact")
                 .Index(t => t.ContactTypeId);
             
             CreateTable(
@@ -298,21 +317,25 @@ namespace BL.Database.Migrations
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
-                        Code = c.String(maxLength: 2000),
-                        Name = c.String(maxLength: 2000),
+                        ClientId = c.Int(nullable: false),
+                        Code = c.String(maxLength: 400),
+                        Name = c.String(maxLength: 400),
                         InputMask = c.String(maxLength: 2000),
                         IsActive = c.Boolean(nullable: false),
                         LastChangeUserId = c.Int(nullable: false),
                         LastChangeDate = c.DateTime(nullable: false),
                     })
-                .PrimaryKey(t => t.Id);
+                .PrimaryKey(t => t.Id)
+                .Index(t => t.ClientId)
+                .Index(t => new { t.Code, t.ClientId }, unique: true, name: "IX_Code")
+                .Index(t => new { t.Name, t.ClientId }, unique: true, name: "IX_Name");
             
             CreateTable(
                 "DMS.DictionaryAgentEmployees",
                 c => new
                     {
                         Id = c.Int(nullable: false),
-                        PersonnelNumber = c.String(maxLength: 2000),
+                        PersonnelNumber = c.String(maxLength: 400),
                         AgentPersonId = c.Int(nullable: false),
                         Description = c.String(maxLength: 2000),
                         IsActive = c.Boolean(nullable: false),
@@ -321,7 +344,9 @@ namespace BL.Database.Migrations
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("DMS.DictionaryAgents", t => t.Id)
-                .Index(t => t.Id);
+                .Index(t => t.Id)
+                .Index(t => t.PersonnelNumber, unique: true)
+                .Index(t => t.AgentPersonId, unique: true);
             
             CreateTable(
                 "DMS.DictionaryAgentUsers",
@@ -334,19 +359,59 @@ namespace BL.Database.Migrations
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("DMS.DictionaryAgents", t => t.Id)
-                .Index(t => t.Id);
+                .Index(t => t.Id)
+                .Index(t => t.UserId, unique: true);
+            
+            CreateTable(
+                "DMS.EncryptionCertificates",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        Name = c.String(),
+                        Certificate = c.Binary(),
+                        Extension = c.String(),
+                        CreateDate = c.DateTime(nullable: false),
+                        ValidFromDate = c.DateTime(),
+                        ValidToDate = c.DateTime(),
+                        IsPublic = c.Boolean(nullable: false),
+                        IsPrivate = c.Boolean(nullable: false),
+                        AgentId = c.Int(nullable: false),
+                        TypeId = c.Int(nullable: false),
+                        LastChangeUserId = c.Int(nullable: false),
+                        LastChangeDate = c.DateTime(nullable: false),
+                    })
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("DMS.DictionaryAgents", t => t.AgentId)
+                .ForeignKey("DMS.EncryptionCertificateTypes", t => t.TypeId)
+                .Index(t => t.AgentId)
+                .Index(t => t.TypeId);
+            
+            CreateTable(
+                "DMS.EncryptionCertificateTypes",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        Code = c.String(maxLength: 2000),
+                        Name = c.String(maxLength: 2000),
+                        LastChangeUserId = c.Int(nullable: false),
+                        LastChangeDate = c.DateTime(nullable: false),
+                    })
+                .PrimaryKey(t => t.Id);
             
             CreateTable(
                 "DMS.DictionaryResidentTypes",
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
-                        Name = c.String(maxLength: 2000),
+                        ClientId = c.Int(nullable: false),
+                        Name = c.String(maxLength: 400),
                         IsActive = c.Boolean(nullable: false),
                         LastChangeUserId = c.Int(nullable: false),
                         LastChangeDate = c.DateTime(nullable: false),
                     })
-                .PrimaryKey(t => t.Id);
+                .PrimaryKey(t => t.Id)
+                .Index(t => t.ClientId)
+                .Index(t => new { t.Name, t.ClientId }, unique: true, name: "IX_Name");
             
             CreateTable(
                 "DMS.DictionaryPositionExecutors",
@@ -370,7 +435,7 @@ namespace BL.Database.Migrations
                 .ForeignKey("DMS.DictionaryPositions", t => t.PositionId)
                 .ForeignKey("DMS.DicPositionExecutorTypes", t => t.PositionExecutorTypeId)
                 .Index(t => t.AgentId)
-                .Index(t => t.PositionId)
+                .Index(t => new { t.PositionId, t.AgentId, t.StartDate }, unique: true, name: "IX_PositionAgentStartDate")
                 .Index(t => t.PositionExecutorTypeId)
                 .Index(t => t.AccessLevelId);
             
@@ -379,27 +444,64 @@ namespace BL.Database.Migrations
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
-                        Code = c.String(maxLength: 2000),
-                        Name = c.String(maxLength: 2000),
+                        Code = c.String(maxLength: 400),
+                        Name = c.String(maxLength: 400),
                         IsActive = c.Boolean(nullable: false),
                         LastChangeUserId = c.Int(nullable: false),
                         LastChangeDate = c.DateTime(nullable: false),
                     })
-                .PrimaryKey(t => t.Id);
+                .PrimaryKey(t => t.Id)
+                .Index(t => t.Code, unique: true)
+                .Index(t => t.Name, unique: true);
+            
+            CreateTable(
+                "DMS.AdminSubordinations",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        SourcePositionId = c.Int(nullable: false),
+                        TargetPositionId = c.Int(nullable: false),
+                        SubordinationTypeId = c.Int(nullable: false),
+                        LastChangeUserId = c.Int(nullable: false),
+                        LastChangeDate = c.DateTime(nullable: false),
+                    })
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("DMS.DictionaryPositions", t => t.SourcePositionId)
+                .ForeignKey("DMS.DictionarySubordinationTypes", t => t.SubordinationTypeId)
+                .ForeignKey("DMS.DictionaryPositions", t => t.TargetPositionId)
+                .Index(t => new { t.SourcePositionId, t.TargetPositionId, t.SubordinationTypeId }, unique: true, name: "IX_SourceTargetType")
+                .Index(t => t.TargetPositionId)
+                .Index(t => t.SubordinationTypeId);
+            
+            CreateTable(
+                "DMS.DictionarySubordinationTypes",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        Code = c.String(maxLength: 400),
+                        Name = c.String(maxLength: 400),
+                        LastChangeUserId = c.Int(nullable: false),
+                        LastChangeDate = c.DateTime(nullable: false),
+                    })
+                .PrimaryKey(t => t.Id)
+                .Index(t => t.Code, unique: true)
+                .Index(t => t.Name, unique: true);
             
             CreateTable(
                 "DMS.DictionaryStandartSendLists",
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
-                        Name = c.String(maxLength: 2000),
+                        ClientId = c.Int(nullable: false),
+                        Name = c.String(maxLength: 400),
                         PositionId = c.Int(),
                         LastChangeUserId = c.Int(nullable: false),
                         LastChangeDate = c.DateTime(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("DMS.DictionaryPositions", t => t.PositionId)
-                .Index(t => t.PositionId);
+                .Index(t => t.ClientId)
+                .Index(t => new { t.PositionId, t.Name, t.ClientId }, unique: true, name: "IX_PositionName");
             
             CreateTable(
                 "DMS.DicStandartSendListContents",
@@ -445,26 +547,16 @@ namespace BL.Database.Migrations
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("DMS.DictionarySubordinationTypes", t => t.SubordinationTypeId)
+                .Index(t => t.Name, unique: true)
                 .Index(t => t.SubordinationTypeId);
-            
-            CreateTable(
-                "DMS.DictionarySubordinationTypes",
-                c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        Code = c.String(maxLength: 2000),
-                        Name = c.String(maxLength: 2000),
-                        LastChangeUserId = c.Int(nullable: false),
-                        LastChangeDate = c.DateTime(nullable: false),
-                    })
-                .PrimaryKey(t => t.Id);
             
             CreateTable(
                 "DMS.DictionaryTags",
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
-                        Name = c.String(maxLength: 2000),
+                        ClientId = c.Int(nullable: false),
+                        Name = c.String(maxLength: 400),
                         PositionId = c.Int(),
                         Color = c.String(maxLength: 2000),
                         IsActive = c.Boolean(nullable: false),
@@ -473,7 +565,8 @@ namespace BL.Database.Migrations
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("DMS.DictionaryPositions", t => t.PositionId)
-                .Index(t => t.PositionId);
+                .Index(t => t.ClientId)
+                .Index(t => new { t.PositionId, t.Name, t.ClientId }, unique: true, name: "IX_PositionName");
             
             CreateTable(
                 "DMS.DocumentTags",
@@ -488,7 +581,7 @@ namespace BL.Database.Migrations
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("DMS.Documents", t => t.DocumentId)
                 .ForeignKey("DMS.DictionaryTags", t => t.TagId)
-                .Index(t => t.DocumentId)
+                .Index(t => new { t.DocumentId, t.TagId }, unique: true, name: "IX_DocumentTag")
                 .Index(t => t.TagId);
             
             CreateTable(
@@ -500,12 +593,13 @@ namespace BL.Database.Migrations
                         CreateDate = c.DateTime(nullable: false),
                         DocumentSubjectId = c.Int(),
                         Description = c.String(maxLength: 2000),
-                        IsRegistered = c.Boolean(nullable: false),
+                        AddDescription = c.String(),
+                        IsRegistered = c.Boolean(),
                         RegistrationJournalId = c.Int(),
                         NumerationPrefixFormula = c.String(maxLength: 2000),
                         RegistrationNumber = c.Int(),
-                        RegistrationNumberSuffix = c.String(maxLength: 2000),
-                        RegistrationNumberPrefix = c.String(maxLength: 2000),
+                        RegistrationNumberSuffix = c.String(maxLength: 100),
+                        RegistrationNumberPrefix = c.String(maxLength: 100),
                         RegistrationDate = c.DateTime(),
                         ExecutorPositionId = c.Int(nullable: false),
                         ExecutorPositionExeAgentId = c.Int(nullable: false),
@@ -527,7 +621,8 @@ namespace BL.Database.Migrations
                 .ForeignKey("DMS.DictionaryAgents", t => t.SenderAgentId)
                 .ForeignKey("DMS.DictionaryAgentPersons", t => t.SenderAgentPersonId)
                 .ForeignKey("DMS.TemplateDocuments", t => t.TemplateDocumentId)
-                .Index(t => t.TemplateDocumentId)
+                .Index(t => new { t.IsRegistered, t.Id, t.TemplateDocumentId }, name: "IX_IsRegistered")
+                .Index(t => t.CreateDate)
                 .Index(t => t.DocumentSubjectId)
                 .Index(t => t.RegistrationJournalId)
                 .Index(t => t.ExecutorPositionId)
@@ -552,8 +647,8 @@ namespace BL.Database.Migrations
                 .ForeignKey("DMS.AdminAccessLevels", t => t.AccessLevelId)
                 .ForeignKey("DMS.Documents", t => t.DocumentId)
                 .ForeignKey("DMS.DictionaryPositions", t => t.PositionId)
-                .Index(t => t.DocumentId)
-                .Index(t => t.PositionId)
+                .Index(t => new { t.DocumentId, t.PositionId }, unique: true, name: "IX_DocumentPosition")
+                .Index(t => new { t.PositionId, t.DocumentId }, unique: true, name: "IX_PositionDocument")
                 .Index(t => t.AccessLevelId);
             
             CreateTable(
@@ -561,14 +656,17 @@ namespace BL.Database.Migrations
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
+                        ClientId = c.Int(nullable: false),
                         ParentId = c.Int(),
-                        Name = c.String(maxLength: 2000),
+                        Name = c.String(maxLength: 400),
                         IsActive = c.Boolean(nullable: false),
                         LastChangeUserId = c.Int(nullable: false),
                         LastChangeDate = c.DateTime(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("DMS.DictionaryDocumentSubjects", t => t.ParentId)
+                .Index(t => t.ClientId)
+                .Index(t => new { t.Name, t.ClientId }, unique: true, name: "IX_Name")
                 .Index(t => t.ParentId);
             
             CreateTable(
@@ -582,9 +680,10 @@ namespace BL.Database.Migrations
                         Date = c.DateTime(nullable: false),
                         TaskId = c.Int(),
                         Description = c.String(maxLength: 2000),
+                        AddDescription = c.String(),
                         SourcePositionId = c.Int(),
                         SourcePositionExecutorAgentId = c.Int(),
-                        SourceAgentId = c.Int(nullable: false),
+                        SourceAgentId = c.Int(),
                         TargetPositionId = c.Int(),
                         TargetPositionExecutorAgentId = c.Int(),
                         TargetAgentId = c.Int(),
@@ -592,13 +691,30 @@ namespace BL.Database.Migrations
                         SendDate = c.DateTime(),
                         ReadDate = c.DateTime(),
                         ReadAgentId = c.Int(),
+                        PaperId = c.Int(),
+                        SendListId = c.Int(),
+                        ParentEventId = c.Int(),
+                        PaperListId = c.Int(),
+                        PaperPlanAgentId = c.Int(),
+                        PaperPlanDate = c.DateTime(),
+                        PaperSendAgentId = c.Int(),
+                        PaperSendDate = c.DateTime(),
+                        PaperRecieveAgentId = c.Int(),
+                        PaperRecieveDate = c.DateTime(),
                         LastChangeUserId = c.Int(nullable: false),
                         LastChangeDate = c.DateTime(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)
+                .ForeignKey("DMS.DocumentEvents", t => t.ParentEventId)
+                .ForeignKey("DMS.DocumentSendLists", t => t.SendListId)
                 .ForeignKey("DMS.DocumentTasks", t => t.TaskId)
                 .ForeignKey("DMS.Documents", t => t.DocumentId)
                 .ForeignKey("DMS.DictionaryEventTypes", t => t.EventTypeId)
+                .ForeignKey("DMS.DocumentPapers", t => t.PaperId)
+                .ForeignKey("DMS.DocumentPaperLists", t => t.PaperListId)
+                .ForeignKey("DMS.DictionaryAgents", t => t.PaperPlanAgentId)
+                .ForeignKey("DMS.DictionaryAgents", t => t.PaperRecieveAgentId)
+                .ForeignKey("DMS.DictionaryAgents", t => t.PaperSendAgentId)
                 .ForeignKey("DMS.DictionaryAgents", t => t.ReadAgentId)
                 .ForeignKey("DMS.DictionaryAgents", t => t.SourceAgentId)
                 .ForeignKey("DMS.DictionaryPositions", t => t.SourcePositionId)
@@ -606,16 +722,23 @@ namespace BL.Database.Migrations
                 .ForeignKey("DMS.DictionaryAgents", t => t.TargetAgentId)
                 .ForeignKey("DMS.DictionaryPositions", t => t.TargetPositionId)
                 .ForeignKey("DMS.DictionaryAgents", t => t.TargetPositionExecutorAgentId)
-                .Index(t => t.DocumentId)
+                .Index(t => new { t.ReadDate, t.TargetPositionId, t.DocumentId, t.SourcePositionId }, name: "IX_DocumentEvents_ReadDate")
                 .Index(t => t.EventTypeId)
-                .Index(t => t.TaskId)
-                .Index(t => t.SourcePositionId)
+                .Index(t => t.Date)
+                .Index(t => new { t.IsAvailableWithinTask, t.TaskId }, name: "IX_DocumentEvents_IsAvailableWithinTask")
                 .Index(t => t.SourcePositionExecutorAgentId)
                 .Index(t => t.SourceAgentId)
-                .Index(t => t.TargetPositionId)
                 .Index(t => t.TargetPositionExecutorAgentId)
                 .Index(t => t.TargetAgentId)
-                .Index(t => t.ReadAgentId);
+                .Index(t => t.ReadAgentId)
+                .Index(t => t.PaperId)
+                .Index(t => t.SendListId)
+                .Index(t => t.ParentEventId)
+                .Index(t => t.PaperListId)
+                .Index(t => t.PaperPlanAgentId)
+                .Index(t => t.PaperSendAgentId)
+                .Index(t => t.PaperRecieveAgentId)
+                .Index(t => t.LastChangeDate);
             
             CreateTable(
                 "DMS.DocumentSendLists",
@@ -633,11 +756,16 @@ namespace BL.Database.Migrations
                         TargetAgentId = c.Int(),
                         TaskId = c.Int(),
                         Description = c.String(maxLength: 2000),
+                        AddDescription = c.String(),
                         DueDate = c.DateTime(),
                         DueDay = c.Int(),
                         AccessLevelId = c.Int(nullable: false),
                         IsInitial = c.Boolean(nullable: false),
+                        IsWorkGroup = c.Boolean(nullable: false),
                         IsAddControl = c.Boolean(nullable: false),
+                        SelfDueDate = c.DateTime(),
+                        SelfDueDay = c.Int(),
+                        SelfAttentionDate = c.DateTime(),
                         IsAvailableWithinTask = c.Boolean(nullable: false),
                         StartEventId = c.Int(),
                         CloseEventId = c.Int(),
@@ -679,7 +807,7 @@ namespace BL.Database.Migrations
                         PositionId = c.Int(nullable: false),
                         PositionExecutorAgentId = c.Int(nullable: false),
                         AgentId = c.Int(nullable: false),
-                        Task = c.String(maxLength: 2000),
+                        Task = c.String(maxLength: 400),
                         Description = c.String(maxLength: 2000),
                         LastChangeUserId = c.Int(nullable: false),
                         LastChangeDate = c.DateTime(nullable: false),
@@ -689,10 +817,24 @@ namespace BL.Database.Migrations
                 .ForeignKey("DMS.Documents", t => t.DocumentId)
                 .ForeignKey("DMS.DictionaryPositions", t => t.PositionId)
                 .ForeignKey("DMS.DictionaryAgents", t => t.PositionExecutorAgentId)
-                .Index(t => t.DocumentId)
+                .Index(t => new { t.DocumentId, t.Task }, unique: true, name: "IX_DocumentTask")
                 .Index(t => t.PositionId)
                 .Index(t => t.PositionExecutorAgentId)
                 .Index(t => t.AgentId);
+            
+            CreateTable(
+                "DMS.DocumentTaskAccesses",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        TaskId = c.Int(nullable: false),
+                        PositionId = c.Int(nullable: false),
+                    })
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("DMS.DictionaryPositions", t => t.PositionId)
+                .ForeignKey("DMS.DocumentTasks", t => t.TaskId)
+                .Index(t => new { t.PositionId, t.TaskId }, unique: true, name: "IX_PositionTask")
+                .Index(t => new { t.TaskId, t.PositionId }, unique: true, name: "IX_TaskPosition");
             
             CreateTable(
                 "DMS.DocumentSubscriptions",
@@ -705,6 +847,7 @@ namespace BL.Database.Migrations
                         Description = c.String(maxLength: 2000),
                         SubscriptionStateId = c.Int(),
                         Hash = c.String(maxLength: 2000),
+                        FullHash = c.String(maxLength: 2000),
                         ChangedHash = c.String(maxLength: 2000),
                         LastChangeUserId = c.Int(nullable: false),
                         LastChangeDate = c.DateTime(nullable: false),
@@ -724,37 +867,15 @@ namespace BL.Database.Migrations
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
-                        Code = c.String(maxLength: 2000),
-                        Name = c.String(maxLength: 2000),
+                        Code = c.String(maxLength: 400),
+                        Name = c.String(maxLength: 400),
                         IsSuccess = c.Boolean(nullable: false),
                         LastChangeUserId = c.Int(nullable: false),
                         LastChangeDate = c.DateTime(nullable: false),
                     })
-                .PrimaryKey(t => t.Id);
-            
-            CreateTable(
-                "DMS.DocumentEventReaders",
-                c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        EventId = c.Int(nullable: false),
-                        PositionId = c.Int(),
-                        AgentId = c.Int(),
-                        SendDate = c.DateTime(),
-                        ReadDate = c.DateTime(),
-                        ReadAgentId = c.Int(),
-                        LastChangeUserId = c.Int(nullable: false),
-                        LastChangeDate = c.DateTime(nullable: false),
-                    })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("DMS.DictionaryAgents", t => t.AgentId)
-                .ForeignKey("DMS.DocumentEvents", t => t.EventId)
-                .ForeignKey("DMS.DictionaryPositions", t => t.PositionId)
-                .ForeignKey("DMS.DictionaryAgents", t => t.ReadAgentId)
-                .Index(t => t.EventId)
-                .Index(t => t.PositionId)
-                .Index(t => t.AgentId)
-                .Index(t => t.ReadAgentId);
+                .Index(t => t.Code, unique: true)
+                .Index(t => t.Name, unique: true);
             
             CreateTable(
                 "DMS.DictionaryEventTypes",
@@ -765,12 +886,14 @@ namespace BL.Database.Migrations
                         Name = c.String(maxLength: 2000),
                         SourceDescription = c.String(maxLength: 2000),
                         TargetDescription = c.String(maxLength: 2000),
+                        WaitDescription = c.String(maxLength: 2000),
                         ImportanceEventTypeId = c.Int(nullable: false),
                         LastChangeUserId = c.Int(nullable: false),
                         LastChangeDate = c.DateTime(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("DMS.DictionaryImportanceEventTypes", t => t.ImportanceEventTypeId)
+                .Index(t => t.Name, unique: true)
                 .Index(t => t.ImportanceEventTypeId);
             
             CreateTable(
@@ -783,7 +906,8 @@ namespace BL.Database.Migrations
                         LastChangeUserId = c.Int(nullable: false),
                         LastChangeDate = c.DateTime(nullable: false),
                     })
-                .PrimaryKey(t => t.Id);
+                .PrimaryKey(t => t.Id)
+                .Index(t => t.Name, unique: true);
             
             CreateTable(
                 "DMS.DocumentWaits",
@@ -798,7 +922,6 @@ namespace BL.Database.Migrations
                         DueDate = c.DateTime(),
                         AttentionDate = c.DateTime(),
                         TargetDescription = c.String(maxLength: 2000),
-                        TargetAttentionDate = c.DateTime(),
                         LastChangeUserId = c.Int(nullable: false),
                         LastChangeDate = c.DateTime(nullable: false),
                     })
@@ -812,7 +935,8 @@ namespace BL.Database.Migrations
                 .Index(t => t.ParentId)
                 .Index(t => t.OnEventId)
                 .Index(t => t.OffEventId)
-                .Index(t => t.ResultTypeId);
+                .Index(t => t.ResultTypeId)
+                .Index(t => t.DueDate);
             
             CreateTable(
                 "DMS.DictionaryResultTypes",
@@ -825,7 +949,46 @@ namespace BL.Database.Migrations
                         LastChangeUserId = c.Int(nullable: false),
                         LastChangeDate = c.DateTime(nullable: false),
                     })
-                .PrimaryKey(t => t.Id);
+                .PrimaryKey(t => t.Id)
+                .Index(t => t.Name, unique: true);
+            
+            CreateTable(
+                "DMS.DocumentPapers",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        DocumentId = c.Int(nullable: false),
+                        Name = c.String(maxLength: 400),
+                        Description = c.String(maxLength: 2000),
+                        IsMain = c.Boolean(nullable: false),
+                        IsOriginal = c.Boolean(nullable: false),
+                        IsCopy = c.Boolean(nullable: false),
+                        PageQuantity = c.Int(nullable: false),
+                        OrderNumber = c.Int(nullable: false),
+                        IsInWork = c.Boolean(nullable: false),
+                        LastPaperEventId = c.Int(),
+                        LastChangeUserId = c.Int(nullable: false),
+                        LastChangeDate = c.DateTime(nullable: false),
+                    })
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("DMS.Documents", t => t.DocumentId)
+                .ForeignKey("DMS.DocumentEvents", t => t.LastPaperEventId)
+                .Index(t => new { t.DocumentId, t.Name, t.IsMain, t.IsOriginal, t.IsCopy, t.OrderNumber }, unique: true, name: "IX_DocumentNameOrderNumber")
+                .Index(t => t.LastPaperEventId);
+            
+            CreateTable(
+                "DMS.DocumentPaperLists",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        ClientId = c.Int(nullable: false),
+                        Date = c.DateTime(nullable: false),
+                        Description = c.String(maxLength: 2000),
+                        LastChangeUserId = c.Int(nullable: false),
+                        LastChangeDate = c.DateTime(nullable: false),
+                    })
+                .PrimaryKey(t => t.Id)
+                .Index(t => t.ClientId);
             
             CreateTable(
                 "DMS.DocumentFiles",
@@ -833,22 +996,34 @@ namespace BL.Database.Migrations
                     {
                         Id = c.Int(nullable: false, identity: true),
                         DocumentId = c.Int(nullable: false),
-                        Name = c.String(maxLength: 2000),
+                        Name = c.String(maxLength: 200),
                         OrderNumber = c.Int(nullable: false),
                         Version = c.Int(nullable: false),
-                        Extension = c.String(maxLength: 2000),
+                        Extension = c.String(maxLength: 200),
                         FileType = c.String(maxLength: 2000),
-                        FileSize = c.Int(nullable: false),
+                        FileSize = c.Long(nullable: false),
                         Date = c.DateTime(nullable: false),
-                        Content = c.Binary(),
+                        Content = c.String(),
                         IsAdditional = c.Boolean(nullable: false),
+                        IsDeleted = c.Boolean(nullable: false),
+                        IsWorkedOut = c.Boolean(),
                         Hash = c.String(maxLength: 2000),
+                        Description = c.String(maxLength: 2000),
+                        IsMainVersion = c.Boolean(nullable: false),
+                        ExecutorPositionId = c.Int(nullable: false),
+                        ExecutorPositionExeAgentId = c.Int(nullable: false),
                         LastChangeUserId = c.Int(nullable: false),
                         LastChangeDate = c.DateTime(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("DMS.Documents", t => t.DocumentId)
-                .Index(t => t.DocumentId);
+                .ForeignKey("DMS.DictionaryPositions", t => t.ExecutorPositionId)
+                .ForeignKey("DMS.DictionaryAgents", t => t.ExecutorPositionExeAgentId)
+                .Index(t => new { t.DocumentId, t.Name, t.Extension, t.Version }, unique: true, name: "IX_DocumentNameExtensionVersion")
+                .Index(t => new { t.DocumentId, t.OrderNumber, t.Version }, unique: true, name: "IX_DocumentOrderNumberVersion")
+                .Index(t => t.ExecutorPositionId)
+                .Index(t => t.ExecutorPositionExeAgentId)
+                .Index(t => t.LastChangeDate);
             
             CreateTable(
                 "DMS.DocumentLinks",
@@ -865,7 +1040,7 @@ namespace BL.Database.Migrations
                 .ForeignKey("DMS.Documents", t => t.DocumentId)
                 .ForeignKey("DMS.DictionaryLinkTypes", t => t.LinkTypeId)
                 .ForeignKey("DMS.Documents", t => t.ParentDocumentId)
-                .Index(t => t.DocumentId)
+                .Index(t => new { t.DocumentId, t.ParentDocumentId }, unique: true, name: "IX_DocumentParentDocument")
                 .Index(t => t.ParentDocumentId)
                 .Index(t => t.LinkTypeId);
             
@@ -874,22 +1049,24 @@ namespace BL.Database.Migrations
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
-                        Name = c.String(maxLength: 2000),
+                        Name = c.String(maxLength: 400),
                         IsImportant = c.Boolean(nullable: false),
                         IsActive = c.Boolean(nullable: false),
                         LastChangeUserId = c.Int(nullable: false),
                         LastChangeDate = c.DateTime(nullable: false),
                     })
-                .PrimaryKey(t => t.Id);
+                .PrimaryKey(t => t.Id)
+                .Index(t => t.Name, unique: true);
             
             CreateTable(
                 "DMS.DictionaryRegistrationJournals",
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
-                        Name = c.String(maxLength: 2000),
+                        ClientId = c.Int(nullable: false),
+                        Name = c.String(maxLength: 200),
                         DepartmentId = c.Int(nullable: false),
-                        Index = c.String(maxLength: 2000),
+                        Index = c.String(maxLength: 200),
                         NumerationPrefixFormula = c.String(maxLength: 2000),
                         PrefixFormula = c.String(maxLength: 2000),
                         SuffixFormula = c.String(maxLength: 2000),
@@ -900,7 +1077,8 @@ namespace BL.Database.Migrations
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("DMS.DictionaryDepartments", t => t.DepartmentId)
-                .Index(t => t.DepartmentId);
+                .Index(t => t.ClientId)
+                .Index(t => new { t.Name, t.DepartmentId, t.Index, t.ClientId }, unique: true, name: "IX_Name");
             
             CreateTable(
                 "DMS.DocumentRestrictedSendLists",
@@ -917,7 +1095,7 @@ namespace BL.Database.Migrations
                 .ForeignKey("DMS.AdminAccessLevels", t => t.AccessLevelId)
                 .ForeignKey("DMS.Documents", t => t.DocumentId)
                 .ForeignKey("DMS.DictionaryPositions", t => t.PositionId)
-                .Index(t => t.DocumentId)
+                .Index(t => new { t.DocumentId, t.PositionId }, unique: true, name: "IX_DocumentPosition")
                 .Index(t => t.PositionId)
                 .Index(t => t.AccessLevelId);
             
@@ -926,7 +1104,8 @@ namespace BL.Database.Migrations
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
-                        Name = c.String(maxLength: 2000),
+                        ClientId = c.Int(nullable: false),
+                        Name = c.String(maxLength: 400),
                         IsHard = c.Boolean(nullable: false),
                         DocumentDirectionId = c.Int(nullable: false),
                         DocumentTypeId = c.Int(nullable: false),
@@ -947,6 +1126,8 @@ namespace BL.Database.Migrations
                 .ForeignKey("DMS.DictionaryRegistrationJournals", t => t.RegistrationJournalId)
                 .ForeignKey("DMS.DictionaryAgents", t => t.SenderAgentId)
                 .ForeignKey("DMS.DictionaryAgentPersons", t => t.SenderAgentPersonId)
+                .Index(t => t.ClientId)
+                .Index(t => new { t.Name, t.ClientId }, unique: true, name: "IX_Name")
                 .Index(t => t.DocumentDirectionId)
                 .Index(t => t.DocumentTypeId)
                 .Index(t => t.DocumentSubjectId)
@@ -959,12 +1140,14 @@ namespace BL.Database.Migrations
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
-                        Code = c.String(maxLength: 2000),
-                        Name = c.String(maxLength: 2000),
+                        Code = c.String(maxLength: 400),
+                        Name = c.String(maxLength: 400),
                         LastChangeUserId = c.Int(nullable: false),
                         LastChangeDate = c.DateTime(nullable: false),
                     })
-                .PrimaryKey(t => t.Id);
+                .PrimaryKey(t => t.Id)
+                .Index(t => t.Code, unique: true)
+                .Index(t => t.Name, unique: true);
             
             CreateTable(
                 "DMS.TemplateDocumentFiles",
@@ -972,32 +1155,36 @@ namespace BL.Database.Migrations
                     {
                         Id = c.Int(nullable: false, identity: true),
                         DocumentId = c.Int(nullable: false),
-                        Name = c.String(maxLength: 2000),
+                        Name = c.String(maxLength: 200),
                         OrderNumber = c.Int(nullable: false),
-                        Extention = c.String(maxLength: 2000),
+                        Extention = c.String(maxLength: 200),
                         FileType = c.String(maxLength: 2000),
-                        FileSize = c.Int(nullable: false),
-                        Content = c.Binary(),
+                        FileSize = c.Long(nullable: false),
                         IsAdditional = c.Boolean(nullable: false),
                         Hash = c.String(maxLength: 2000),
+                        Description = c.String(maxLength: 2000),
                         LastChangeUserId = c.Int(nullable: false),
                         LastChangeDate = c.DateTime(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("DMS.TemplateDocuments", t => t.DocumentId)
-                .Index(t => t.DocumentId);
+                .Index(t => new { t.DocumentId, t.Name, t.Extention }, unique: true, name: "IX_DocumentNameExtention")
+                .Index(t => new { t.DocumentId, t.OrderNumber }, unique: true, name: "IX_DocumentOrderNumber");
             
             CreateTable(
                 "DMS.DictionaryDocumentTypes",
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
-                        Name = c.String(maxLength: 2000),
+                        ClientId = c.Int(nullable: false),
+                        Name = c.String(maxLength: 400),
                         IsActive = c.Boolean(nullable: false),
                         LastChangeUserId = c.Int(nullable: false),
                         LastChangeDate = c.DateTime(nullable: false),
                     })
-                .PrimaryKey(t => t.Id);
+                .PrimaryKey(t => t.Id)
+                .Index(t => t.ClientId)
+                .Index(t => new { t.Name, t.ClientId }, unique: true, name: "IX_Name");
             
             CreateTable(
                 "DMS.TempDocRestrictedSendLists",
@@ -1014,7 +1201,7 @@ namespace BL.Database.Migrations
                 .ForeignKey("DMS.AdminAccessLevels", t => t.AccessLevelId)
                 .ForeignKey("DMS.TemplateDocuments", t => t.DocumentId)
                 .ForeignKey("DMS.DictionaryPositions", t => t.PositionId)
-                .Index(t => t.DocumentId)
+                .Index(t => new { t.DocumentId, t.PositionId }, unique: true, name: "IX_DocumentPosition")
                 .Index(t => t.PositionId)
                 .Index(t => t.AccessLevelId);
             
@@ -1033,7 +1220,11 @@ namespace BL.Database.Migrations
                         Stage = c.Int(nullable: false),
                         DueDay = c.Int(),
                         AccessLevelId = c.Int(nullable: false),
+                        IsWorkGroup = c.Boolean(nullable: false),
                         IsAddControl = c.Boolean(nullable: false),
+                        SelfDueDate = c.DateTime(),
+                        SelfDueDay = c.Int(),
+                        SelfAttentionDate = c.DateTime(),
                         IsAvailableWithinTask = c.Boolean(nullable: false),
                         LastChangeUserId = c.Int(nullable: false),
                         LastChangeDate = c.DateTime(nullable: false),
@@ -1061,7 +1252,7 @@ namespace BL.Database.Migrations
                         Id = c.Int(nullable: false, identity: true),
                         DocumentId = c.Int(nullable: false),
                         PositionId = c.Int(),
-                        Task = c.String(maxLength: 2000),
+                        Task = c.String(maxLength: 400),
                         Description = c.String(maxLength: 2000),
                         LastChangeUserId = c.Int(nullable: false),
                         LastChangeDate = c.DateTime(nullable: false),
@@ -1069,7 +1260,7 @@ namespace BL.Database.Migrations
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("DMS.TemplateDocuments", t => t.DocumentId)
                 .ForeignKey("DMS.DictionaryPositions", t => t.PositionId)
-                .Index(t => t.DocumentId)
+                .Index(t => new { t.DocumentId, t.Task }, unique: true, name: "IX_DocumentTask")
                 .Index(t => t.PositionId);
             
             CreateTable(
@@ -1077,13 +1268,14 @@ namespace BL.Database.Migrations
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
-                        Name = c.String(maxLength: 2000),
-                        PositionId = c.Int(nullable: false),
-                        AccessLevelId = c.Int(nullable: false),
+                        ClientId = c.Int(nullable: false),
+                        Name = c.String(maxLength: 400),
                         LastChangeUserId = c.Int(nullable: false),
                         LastChangeDate = c.DateTime(nullable: false),
                     })
-                .PrimaryKey(t => t.Id);
+                .PrimaryKey(t => t.Id)
+                .Index(t => t.ClientId)
+                .Index(t => new { t.Name, t.ClientId }, unique: true, name: "IX_Name");
             
             CreateTable(
                 "DMS.AdminRoleActions",
@@ -1099,8 +1291,8 @@ namespace BL.Database.Migrations
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("DMS.SystemActions", t => t.ActionId)
                 .ForeignKey("DMS.AdminRoles", t => t.RoleId)
-                .Index(t => t.RoleId)
-                .Index(t => t.ActionId);
+                .Index(t => new { t.ActionId, t.RoleId, t.RecordId }, unique: true, name: "IX_ActionRoleRecord")
+                .Index(t => t.RoleId);
             
             CreateTable(
                 "DMS.SystemActions",
@@ -1108,9 +1300,10 @@ namespace BL.Database.Migrations
                     {
                         Id = c.Int(nullable: false, identity: true),
                         ObjectId = c.Int(nullable: false),
-                        Code = c.String(maxLength: 2000),
+                        Code = c.String(maxLength: 400),
                         API = c.String(maxLength: 2000),
                         Description = c.String(maxLength: 2000),
+                        Category = c.String(maxLength: 2000),
                         IsGrantable = c.Boolean(nullable: false),
                         IsGrantableByRecordId = c.Boolean(nullable: false),
                         IsVisible = c.Boolean(nullable: false),
@@ -1119,7 +1312,7 @@ namespace BL.Database.Migrations
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("DMS.SystemActions", t => t.GrantId)
                 .ForeignKey("DMS.SystemObjects", t => t.ObjectId)
-                .Index(t => t.ObjectId)
+                .Index(t => new { t.ObjectId, t.Code }, unique: true, name: "IX_ObjectCode")
                 .Index(t => t.GrantId);
             
             CreateTable(
@@ -1127,10 +1320,11 @@ namespace BL.Database.Migrations
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
-                        Code = c.String(maxLength: 2000),
+                        Code = c.String(maxLength: 400),
                         Description = c.String(maxLength: 2000),
                     })
-                .PrimaryKey(t => t.Id);
+                .PrimaryKey(t => t.Id)
+                .Index(t => t.Code, unique: true);
             
             CreateTable(
                 "DMS.SystemFields",
@@ -1138,14 +1332,14 @@ namespace BL.Database.Migrations
                     {
                         Id = c.Int(nullable: false, identity: true),
                         ObjectId = c.Int(nullable: false),
-                        Code = c.String(maxLength: 2000),
+                        Code = c.String(maxLength: 400),
                         Description = c.String(maxLength: 2000),
                         ValueTypeId = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("DMS.SystemObjects", t => t.ObjectId)
                 .ForeignKey("DMS.SystemValueTypes", t => t.ValueTypeId)
-                .Index(t => t.ObjectId)
+                .Index(t => new { t.ObjectId, t.Code }, unique: true, name: "IX_ObjectCode")
                 .Index(t => t.ValueTypeId);
             
             CreateTable(
@@ -1153,10 +1347,11 @@ namespace BL.Database.Migrations
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
-                        Code = c.String(maxLength: 2000),
+                        Code = c.String(maxLength: 400),
                         Description = c.String(maxLength: 2000),
                     })
-                .PrimaryKey(t => t.Id);
+                .PrimaryKey(t => t.Id)
+                .Index(t => t.Code, unique: true);
             
             CreateTable(
                 "DMS.AdminUserRoles",
@@ -1165,33 +1360,16 @@ namespace BL.Database.Migrations
                         Id = c.Int(nullable: false, identity: true),
                         UserId = c.Int(nullable: false),
                         RoleId = c.Int(nullable: false),
+                        StartDate = c.DateTime(nullable: false),
+                        EndDate = c.DateTime(nullable: false),
                         LastChangeUserId = c.Int(nullable: false),
                         LastChangeDate = c.DateTime(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("DMS.DictionaryAgents", t => t.UserId)
                 .ForeignKey("DMS.AdminRoles", t => t.RoleId)
-                .Index(t => t.UserId)
+                .Index(t => new { t.UserId, t.RoleId, t.StartDate }, unique: true, name: "IX_UserRoleStartDate")
                 .Index(t => t.RoleId);
-            
-            CreateTable(
-                "DMS.AdminSubordinations",
-                c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        SourcePositionId = c.Int(nullable: false),
-                        TargetPositionId = c.Int(nullable: false),
-                        SubordinationTypeId = c.Int(nullable: false),
-                        LastChangeUserId = c.Int(nullable: false),
-                        LastChangeDate = c.DateTime(nullable: false),
-                    })
-                .PrimaryKey(t => t.Id)
-                .ForeignKey("DMS.DictionaryPositions", t => t.SourcePositionId)
-                .ForeignKey("DMS.DictionarySubordinationTypes", t => t.SubordinationTypeId)
-                .ForeignKey("DMS.DictionaryPositions", t => t.TargetPositionId)
-                .Index(t => t.SourcePositionId)
-                .Index(t => t.TargetPositionId)
-                .Index(t => t.SubordinationTypeId);
             
             CreateTable(
                 "DMS.CustomDictionaries",
@@ -1199,7 +1377,7 @@ namespace BL.Database.Migrations
                     {
                         Id = c.Int(nullable: false, identity: true),
                         DictionaryTypeId = c.Int(nullable: false),
-                        Code = c.String(maxLength: 2000),
+                        Code = c.String(maxLength: 400),
                         Description = c.String(maxLength: 2000),
                         IsActive = c.Boolean(nullable: false),
                         LastChangeUserId = c.Int(nullable: false),
@@ -1207,17 +1385,31 @@ namespace BL.Database.Migrations
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("DMS.CustomDictionaryTypes", t => t.DictionaryTypeId)
-                .Index(t => t.DictionaryTypeId);
+                .Index(t => new { t.DictionaryTypeId, t.Code }, unique: true, name: "IX_DictionaryTypeCode");
             
             CreateTable(
                 "DMS.CustomDictionaryTypes",
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
-                        Code = c.String(maxLength: 2000),
+                        ClientId = c.Int(nullable: false),
+                        Code = c.String(maxLength: 400),
                         Description = c.String(maxLength: 2000),
                         LastChangeUserId = c.Int(nullable: false),
                         LastChangeDate = c.DateTime(nullable: false),
+                    })
+                .PrimaryKey(t => t.Id)
+                .Index(t => t.ClientId)
+                .Index(t => new { t.Code, t.ClientId }, unique: true, name: "IX_Code");
+            
+            CreateTable(
+                "DMS.FullTextIndexCashes",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        ObjectId = c.Int(nullable: false),
+                        ObjectType = c.Int(nullable: false),
+                        OperationType = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.Id);
             
@@ -1226,6 +1418,7 @@ namespace BL.Database.Migrations
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
+                        ClientId = c.Int(nullable: false),
                         LogLevel = c.Int(nullable: false),
                         Message = c.String(maxLength: 2000),
                         LogTrace = c.String(maxLength: 2000),
@@ -1234,14 +1427,15 @@ namespace BL.Database.Migrations
                         LogDate = c.DateTime(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("DMS.DictionaryAgents", t => t.ExecutorAgentId)
-                .Index(t => t.ExecutorAgentId);
+                .Index(t => t.ClientId)
+                .Index(t => t.LogDate);
             
             CreateTable(
                 "DMS.Properties",
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
+                        ClientId = c.Int(nullable: false),
                         Code = c.String(maxLength: 2000),
                         TypeCode = c.String(maxLength: 2000),
                         Description = c.String(maxLength: 2000),
@@ -1254,11 +1448,14 @@ namespace BL.Database.Migrations
                         SelectFilter = c.String(maxLength: 2000),
                         SelectFieldCode = c.String(maxLength: 2000),
                         SelectDescriptionFieldCode = c.String(maxLength: 2000),
+                        SelectTable = c.String(maxLength: 2000),
                         LastChangeUserId = c.Int(nullable: false),
                         LastChangeDate = c.DateTime(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("DMS.SystemValueTypes", t => t.ValueTypeId)
+                .Index(t => t.ClientId)
+                .Index(t => new { t.Code, t.ClientId }, unique: true, name: "IX_Code")
                 .Index(t => t.ValueTypeId);
             
             CreateTable(
@@ -1268,7 +1465,7 @@ namespace BL.Database.Migrations
                         Id = c.Int(nullable: false, identity: true),
                         PropertyId = c.Int(nullable: false),
                         ObjectId = c.Int(nullable: false),
-                        Filers = c.String(maxLength: 2000),
+                        Filers = c.String(maxLength: 400),
                         IsMandatory = c.Boolean(nullable: false),
                         LastChangeUserId = c.Int(nullable: false),
                         LastChangeDate = c.DateTime(nullable: false),
@@ -1276,8 +1473,8 @@ namespace BL.Database.Migrations
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("DMS.SystemObjects", t => t.ObjectId)
                 .ForeignKey("DMS.Properties", t => t.PropertyId)
-                .Index(t => t.PropertyId)
-                .Index(t => t.ObjectId);
+                .Index(t => new { t.ObjectId, t.PropertyId, t.Filers }, unique: true, name: "IX_ObjectPropertyFilers")
+                .Index(t => t.PropertyId);
             
             CreateTable(
                 "DMS.PropertyValues",
@@ -1294,19 +1491,22 @@ namespace BL.Database.Migrations
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("DMS.PropertyLinks", t => t.PropertyLinkId)
-                .Index(t => t.PropertyLinkId);
+                .Index(t => new { t.PropertyLinkId, t.RecordId }, unique: true, name: "IX_PropertyLinkRecord");
             
             CreateTable(
                 "DMS.SystemSettings",
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
-                        Key = c.String(maxLength: 2000),
+                        ClientId = c.Int(nullable: false),
+                        Key = c.String(maxLength: 400),
                         Value = c.String(maxLength: 2000),
                         ExecutorAgentId = c.Int(),
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("DMS.DictionaryAgents", t => t.ExecutorAgentId)
+                .Index(t => t.ClientId)
+                .Index(t => new { t.Key, t.ExecutorAgentId, t.ClientId }, unique: true, name: "IX_KeyExecutorAgent")
                 .Index(t => t.ExecutorAgentId);
             
             CreateTable(
@@ -1315,8 +1515,8 @@ namespace BL.Database.Migrations
                     {
                         Id = c.Int(nullable: false, identity: true),
                         ActionId = c.Int(nullable: false),
-                        Code = c.String(maxLength: 2000),
-                        TypeCode = c.String(maxLength: 2000),
+                        Code = c.String(maxLength: 400),
+                        TypeCode = c.String(maxLength: 400),
                         Description = c.String(maxLength: 2000),
                         Label = c.String(maxLength: 2000),
                         Hint = c.String(maxLength: 2000),
@@ -1335,7 +1535,7 @@ namespace BL.Database.Migrations
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("DMS.SystemActions", t => t.ActionId)
                 .ForeignKey("DMS.SystemValueTypes", t => t.ValueTypeId)
-                .Index(t => t.ActionId)
+                .Index(t => new { t.ActionId, t.Code }, unique: true, name: "IX_ActionCode")
                 .Index(t => t.ValueTypeId);
             
         }
@@ -1345,15 +1545,11 @@ namespace BL.Database.Migrations
             DropForeignKey("DMS.SystemUIElements", "ValueTypeId", "DMS.SystemValueTypes");
             DropForeignKey("DMS.SystemUIElements", "ActionId", "DMS.SystemActions");
             DropForeignKey("DMS.SystemSettings", "ExecutorAgentId", "DMS.DictionaryAgents");
+            DropForeignKey("DMS.Properties", "ValueTypeId", "DMS.SystemValueTypes");
             DropForeignKey("DMS.PropertyValues", "PropertyLinkId", "DMS.PropertyLinks");
             DropForeignKey("DMS.PropertyLinks", "PropertyId", "DMS.Properties");
             DropForeignKey("DMS.PropertyLinks", "ObjectId", "DMS.SystemObjects");
-            DropForeignKey("DMS.Properties", "ValueTypeId", "DMS.SystemValueTypes");
-            DropForeignKey("DMS.SystemLogs", "ExecutorAgentId", "DMS.DictionaryAgents");
             DropForeignKey("DMS.CustomDictionaries", "DictionaryTypeId", "DMS.CustomDictionaryTypes");
-            DropForeignKey("DMS.AdminSubordinations", "TargetPositionId", "DMS.DictionaryPositions");
-            DropForeignKey("DMS.AdminSubordinations", "SubordinationTypeId", "DMS.DictionarySubordinationTypes");
-            DropForeignKey("DMS.AdminSubordinations", "SourcePositionId", "DMS.DictionaryPositions");
             DropForeignKey("DMS.AdminUserRoles", "RoleId", "DMS.AdminRoles");
             DropForeignKey("DMS.AdminUserRoles", "UserId", "DMS.DictionaryAgents");
             DropForeignKey("DMS.AdminRoleActions", "RoleId", "DMS.AdminRoles");
@@ -1396,6 +1592,8 @@ namespace BL.Database.Migrations
             DropForeignKey("DMS.DocumentLinks", "ParentDocumentId", "DMS.Documents");
             DropForeignKey("DMS.DocumentLinks", "LinkTypeId", "DMS.DictionaryLinkTypes");
             DropForeignKey("DMS.DocumentLinks", "DocumentId", "DMS.Documents");
+            DropForeignKey("DMS.DocumentFiles", "ExecutorPositionExeAgentId", "DMS.DictionaryAgents");
+            DropForeignKey("DMS.DocumentFiles", "ExecutorPositionId", "DMS.DictionaryPositions");
             DropForeignKey("DMS.DocumentFiles", "DocumentId", "DMS.Documents");
             DropForeignKey("DMS.Documents", "ExecutorPositionExeAgentId", "DMS.DictionaryAgents");
             DropForeignKey("DMS.Documents", "ExecutorPositionId", "DMS.DictionaryPositions");
@@ -1406,6 +1604,13 @@ namespace BL.Database.Migrations
             DropForeignKey("DMS.DocumentEvents", "SourcePositionId", "DMS.DictionaryPositions");
             DropForeignKey("DMS.DocumentEvents", "SourceAgentId", "DMS.DictionaryAgents");
             DropForeignKey("DMS.DocumentEvents", "ReadAgentId", "DMS.DictionaryAgents");
+            DropForeignKey("DMS.DocumentEvents", "PaperSendAgentId", "DMS.DictionaryAgents");
+            DropForeignKey("DMS.DocumentEvents", "PaperRecieveAgentId", "DMS.DictionaryAgents");
+            DropForeignKey("DMS.DocumentEvents", "PaperPlanAgentId", "DMS.DictionaryAgents");
+            DropForeignKey("DMS.DocumentEvents", "PaperListId", "DMS.DocumentPaperLists");
+            DropForeignKey("DMS.DocumentPapers", "LastPaperEventId", "DMS.DocumentEvents");
+            DropForeignKey("DMS.DocumentEvents", "PaperId", "DMS.DocumentPapers");
+            DropForeignKey("DMS.DocumentPapers", "DocumentId", "DMS.Documents");
             DropForeignKey("DMS.DocumentWaits", "ResultTypeId", "DMS.DictionaryResultTypes");
             DropForeignKey("DMS.DocumentWaits", "OnEventId", "DMS.DocumentEvents");
             DropForeignKey("DMS.DocumentWaits", "OffEventId", "DMS.DocumentEvents");
@@ -1413,15 +1618,13 @@ namespace BL.Database.Migrations
             DropForeignKey("DMS.DocumentWaits", "ParentId", "DMS.DocumentWaits");
             DropForeignKey("DMS.DocumentEvents", "EventTypeId", "DMS.DictionaryEventTypes");
             DropForeignKey("DMS.DictionaryEventTypes", "ImportanceEventTypeId", "DMS.DictionaryImportanceEventTypes");
-            DropForeignKey("DMS.DocumentEventReaders", "ReadAgentId", "DMS.DictionaryAgents");
-            DropForeignKey("DMS.DocumentEventReaders", "PositionId", "DMS.DictionaryPositions");
-            DropForeignKey("DMS.DocumentEventReaders", "EventId", "DMS.DocumentEvents");
-            DropForeignKey("DMS.DocumentEventReaders", "AgentId", "DMS.DictionaryAgents");
             DropForeignKey("DMS.DocumentSubscriptions", "SubscriptionStateId", "DMS.DictionarySubscriptionStates");
             DropForeignKey("DMS.DocumentSubscriptions", "SendEventId", "DMS.DocumentEvents");
             DropForeignKey("DMS.DocumentSubscriptions", "DoneEventId", "DMS.DocumentEvents");
             DropForeignKey("DMS.DocumentSubscriptions", "DocumentId", "DMS.Documents");
             DropForeignKey("DMS.DocumentEvents", "DocumentId", "DMS.Documents");
+            DropForeignKey("DMS.DocumentTaskAccesses", "TaskId", "DMS.DocumentTasks");
+            DropForeignKey("DMS.DocumentTaskAccesses", "PositionId", "DMS.DictionaryPositions");
             DropForeignKey("DMS.DocumentSendLists", "TaskId", "DMS.DocumentTasks");
             DropForeignKey("DMS.DocumentTasks", "PositionExecutorAgentId", "DMS.DictionaryAgents");
             DropForeignKey("DMS.DocumentTasks", "PositionId", "DMS.DictionaryPositions");
@@ -1436,9 +1639,11 @@ namespace BL.Database.Migrations
             DropForeignKey("DMS.DocumentSendLists", "SourcePositionId", "DMS.DictionaryPositions");
             DropForeignKey("DMS.DocumentSendLists", "SourceAgentId", "DMS.DictionaryAgents");
             DropForeignKey("DMS.DocumentSendLists", "SendTypeId", "DMS.DictionarySendTypes");
+            DropForeignKey("DMS.DocumentEvents", "SendListId", "DMS.DocumentSendLists");
             DropForeignKey("DMS.DocumentSendLists", "DocumentId", "DMS.Documents");
             DropForeignKey("DMS.DocumentSendLists", "CloseEventId", "DMS.DocumentEvents");
             DropForeignKey("DMS.DocumentSendLists", "AccessLevelId", "DMS.AdminAccessLevels");
+            DropForeignKey("DMS.DocumentEvents", "ParentEventId", "DMS.DocumentEvents");
             DropForeignKey("DMS.Documents", "DocumentSubjectId", "DMS.DictionaryDocumentSubjects");
             DropForeignKey("DMS.DictionaryDocumentSubjects", "ParentId", "DMS.DictionaryDocumentSubjects");
             DropForeignKey("DMS.DocumentAccesses", "PositionId", "DMS.DictionaryPositions");
@@ -1451,6 +1656,9 @@ namespace BL.Database.Migrations
             DropForeignKey("DMS.DictionarySendTypes", "SubordinationTypeId", "DMS.DictionarySubordinationTypes");
             DropForeignKey("DMS.DicStandartSendListContents", "AccessLevelId", "DMS.AdminAccessLevels");
             DropForeignKey("DMS.DictionaryStandartSendLists", "PositionId", "DMS.DictionaryPositions");
+            DropForeignKey("DMS.AdminSubordinations", "TargetPositionId", "DMS.DictionaryPositions");
+            DropForeignKey("DMS.AdminSubordinations", "SubordinationTypeId", "DMS.DictionarySubordinationTypes");
+            DropForeignKey("DMS.AdminSubordinations", "SourcePositionId", "DMS.DictionaryPositions");
             DropForeignKey("DMS.AdminPositionRoles", "PositionId", "DMS.DictionaryPositions");
             DropForeignKey("DMS.DictionaryPositionExecutors", "PositionExecutorTypeId", "DMS.DicPositionExecutorTypes");
             DropForeignKey("DMS.DictionaryPositionExecutors", "PositionId", "DMS.DictionaryPositions");
@@ -1460,6 +1668,8 @@ namespace BL.Database.Migrations
             DropForeignKey("DMS.DictionaryPositions", "ExecutorAgentId", "DMS.DictionaryAgents");
             DropForeignKey("DMS.DictionaryAgents", "ResidentTypeId", "DMS.DictionaryResidentTypes");
             DropForeignKey("DMS.DictionaryAgents", "LanguageId", "DMS.AdminLanguages");
+            DropForeignKey("DMS.EncryptionCertificates", "TypeId", "DMS.EncryptionCertificateTypes");
+            DropForeignKey("DMS.EncryptionCertificates", "AgentId", "DMS.DictionaryAgents");
             DropForeignKey("DMS.DictionaryAgentUsers", "Id", "DMS.DictionaryAgents");
             DropForeignKey("DMS.DictionaryAgentPersons", "Id", "DMS.DictionaryAgents");
             DropForeignKey("DMS.DictionaryAgentEmployees", "Id", "DMS.DictionaryAgents");
@@ -1480,27 +1690,35 @@ namespace BL.Database.Migrations
             DropForeignKey("DMS.DictionaryDepartments", "ChiefPositionId", "DMS.DictionaryPositions");
             DropForeignKey("DMS.AdminLanguageValues", "LanguageId", "DMS.AdminLanguages");
             DropIndex("DMS.SystemUIElements", new[] { "ValueTypeId" });
-            DropIndex("DMS.SystemUIElements", new[] { "ActionId" });
+            DropIndex("DMS.SystemUIElements", "IX_ActionCode");
             DropIndex("DMS.SystemSettings", new[] { "ExecutorAgentId" });
-            DropIndex("DMS.PropertyValues", new[] { "PropertyLinkId" });
-            DropIndex("DMS.PropertyLinks", new[] { "ObjectId" });
+            DropIndex("DMS.SystemSettings", "IX_KeyExecutorAgent");
+            DropIndex("DMS.SystemSettings", new[] { "ClientId" });
+            DropIndex("DMS.PropertyValues", "IX_PropertyLinkRecord");
             DropIndex("DMS.PropertyLinks", new[] { "PropertyId" });
+            DropIndex("DMS.PropertyLinks", "IX_ObjectPropertyFilers");
             DropIndex("DMS.Properties", new[] { "ValueTypeId" });
-            DropIndex("DMS.SystemLogs", new[] { "ExecutorAgentId" });
-            DropIndex("DMS.CustomDictionaries", new[] { "DictionaryTypeId" });
-            DropIndex("DMS.AdminSubordinations", new[] { "SubordinationTypeId" });
-            DropIndex("DMS.AdminSubordinations", new[] { "TargetPositionId" });
-            DropIndex("DMS.AdminSubordinations", new[] { "SourcePositionId" });
+            DropIndex("DMS.Properties", "IX_Code");
+            DropIndex("DMS.Properties", new[] { "ClientId" });
+            DropIndex("DMS.SystemLogs", new[] { "LogDate" });
+            DropIndex("DMS.SystemLogs", new[] { "ClientId" });
+            DropIndex("DMS.CustomDictionaryTypes", "IX_Code");
+            DropIndex("DMS.CustomDictionaryTypes", new[] { "ClientId" });
+            DropIndex("DMS.CustomDictionaries", "IX_DictionaryTypeCode");
             DropIndex("DMS.AdminUserRoles", new[] { "RoleId" });
-            DropIndex("DMS.AdminUserRoles", new[] { "UserId" });
+            DropIndex("DMS.AdminUserRoles", "IX_UserRoleStartDate");
+            DropIndex("DMS.SystemValueTypes", new[] { "Code" });
             DropIndex("DMS.SystemFields", new[] { "ValueTypeId" });
-            DropIndex("DMS.SystemFields", new[] { "ObjectId" });
+            DropIndex("DMS.SystemFields", "IX_ObjectCode");
+            DropIndex("DMS.SystemObjects", new[] { "Code" });
             DropIndex("DMS.SystemActions", new[] { "GrantId" });
-            DropIndex("DMS.SystemActions", new[] { "ObjectId" });
-            DropIndex("DMS.AdminRoleActions", new[] { "ActionId" });
+            DropIndex("DMS.SystemActions", "IX_ObjectCode");
             DropIndex("DMS.AdminRoleActions", new[] { "RoleId" });
+            DropIndex("DMS.AdminRoleActions", "IX_ActionRoleRecord");
+            DropIndex("DMS.AdminRoles", "IX_Name");
+            DropIndex("DMS.AdminRoles", new[] { "ClientId" });
             DropIndex("DMS.TemplateDocumentTasks", new[] { "PositionId" });
-            DropIndex("DMS.TemplateDocumentTasks", new[] { "DocumentId" });
+            DropIndex("DMS.TemplateDocumentTasks", "IX_DocumentTask");
             DropIndex("DMS.TemplateDocumentSendLists", new[] { "AccessLevelId" });
             DropIndex("DMS.TemplateDocumentSendLists", new[] { "TaskId" });
             DropIndex("DMS.TemplateDocumentSendLists", new[] { "TargetAgentId" });
@@ -1510,40 +1728,60 @@ namespace BL.Database.Migrations
             DropIndex("DMS.TemplateDocumentSendLists", new[] { "DocumentId" });
             DropIndex("DMS.TempDocRestrictedSendLists", new[] { "AccessLevelId" });
             DropIndex("DMS.TempDocRestrictedSendLists", new[] { "PositionId" });
-            DropIndex("DMS.TempDocRestrictedSendLists", new[] { "DocumentId" });
-            DropIndex("DMS.TemplateDocumentFiles", new[] { "DocumentId" });
+            DropIndex("DMS.TempDocRestrictedSendLists", "IX_DocumentPosition");
+            DropIndex("DMS.DictionaryDocumentTypes", "IX_Name");
+            DropIndex("DMS.DictionaryDocumentTypes", new[] { "ClientId" });
+            DropIndex("DMS.TemplateDocumentFiles", "IX_DocumentOrderNumber");
+            DropIndex("DMS.TemplateDocumentFiles", "IX_DocumentNameExtention");
+            DropIndex("DMS.DictionaryDocumentDirections", new[] { "Name" });
+            DropIndex("DMS.DictionaryDocumentDirections", new[] { "Code" });
             DropIndex("DMS.TemplateDocuments", new[] { "SenderAgentPersonId" });
             DropIndex("DMS.TemplateDocuments", new[] { "SenderAgentId" });
             DropIndex("DMS.TemplateDocuments", new[] { "RegistrationJournalId" });
             DropIndex("DMS.TemplateDocuments", new[] { "DocumentSubjectId" });
             DropIndex("DMS.TemplateDocuments", new[] { "DocumentTypeId" });
             DropIndex("DMS.TemplateDocuments", new[] { "DocumentDirectionId" });
+            DropIndex("DMS.TemplateDocuments", "IX_Name");
+            DropIndex("DMS.TemplateDocuments", new[] { "ClientId" });
             DropIndex("DMS.DocumentRestrictedSendLists", new[] { "AccessLevelId" });
             DropIndex("DMS.DocumentRestrictedSendLists", new[] { "PositionId" });
-            DropIndex("DMS.DocumentRestrictedSendLists", new[] { "DocumentId" });
-            DropIndex("DMS.DictionaryRegistrationJournals", new[] { "DepartmentId" });
+            DropIndex("DMS.DocumentRestrictedSendLists", "IX_DocumentPosition");
+            DropIndex("DMS.DictionaryRegistrationJournals", "IX_Name");
+            DropIndex("DMS.DictionaryRegistrationJournals", new[] { "ClientId" });
+            DropIndex("DMS.DictionaryLinkTypes", new[] { "Name" });
             DropIndex("DMS.DocumentLinks", new[] { "LinkTypeId" });
             DropIndex("DMS.DocumentLinks", new[] { "ParentDocumentId" });
-            DropIndex("DMS.DocumentLinks", new[] { "DocumentId" });
-            DropIndex("DMS.DocumentFiles", new[] { "DocumentId" });
+            DropIndex("DMS.DocumentLinks", "IX_DocumentParentDocument");
+            DropIndex("DMS.DocumentFiles", new[] { "LastChangeDate" });
+            DropIndex("DMS.DocumentFiles", new[] { "ExecutorPositionExeAgentId" });
+            DropIndex("DMS.DocumentFiles", new[] { "ExecutorPositionId" });
+            DropIndex("DMS.DocumentFiles", "IX_DocumentOrderNumberVersion");
+            DropIndex("DMS.DocumentFiles", "IX_DocumentNameExtensionVersion");
+            DropIndex("DMS.DocumentPaperLists", new[] { "ClientId" });
+            DropIndex("DMS.DocumentPapers", new[] { "LastPaperEventId" });
+            DropIndex("DMS.DocumentPapers", "IX_DocumentNameOrderNumber");
+            DropIndex("DMS.DictionaryResultTypes", new[] { "Name" });
+            DropIndex("DMS.DocumentWaits", new[] { "DueDate" });
             DropIndex("DMS.DocumentWaits", new[] { "ResultTypeId" });
             DropIndex("DMS.DocumentWaits", new[] { "OffEventId" });
             DropIndex("DMS.DocumentWaits", new[] { "OnEventId" });
             DropIndex("DMS.DocumentWaits", new[] { "ParentId" });
             DropIndex("DMS.DocumentWaits", new[] { "DocumentId" });
+            DropIndex("DMS.DictionaryImportanceEventTypes", new[] { "Name" });
             DropIndex("DMS.DictionaryEventTypes", new[] { "ImportanceEventTypeId" });
-            DropIndex("DMS.DocumentEventReaders", new[] { "ReadAgentId" });
-            DropIndex("DMS.DocumentEventReaders", new[] { "AgentId" });
-            DropIndex("DMS.DocumentEventReaders", new[] { "PositionId" });
-            DropIndex("DMS.DocumentEventReaders", new[] { "EventId" });
+            DropIndex("DMS.DictionaryEventTypes", new[] { "Name" });
+            DropIndex("DMS.DictionarySubscriptionStates", new[] { "Name" });
+            DropIndex("DMS.DictionarySubscriptionStates", new[] { "Code" });
             DropIndex("DMS.DocumentSubscriptions", new[] { "SubscriptionStateId" });
             DropIndex("DMS.DocumentSubscriptions", new[] { "DoneEventId" });
             DropIndex("DMS.DocumentSubscriptions", new[] { "SendEventId" });
             DropIndex("DMS.DocumentSubscriptions", new[] { "DocumentId" });
+            DropIndex("DMS.DocumentTaskAccesses", "IX_TaskPosition");
+            DropIndex("DMS.DocumentTaskAccesses", "IX_PositionTask");
             DropIndex("DMS.DocumentTasks", new[] { "AgentId" });
             DropIndex("DMS.DocumentTasks", new[] { "PositionExecutorAgentId" });
             DropIndex("DMS.DocumentTasks", new[] { "PositionId" });
-            DropIndex("DMS.DocumentTasks", new[] { "DocumentId" });
+            DropIndex("DMS.DocumentTasks", "IX_DocumentTask");
             DropIndex("DMS.DocumentSendLists", new[] { "CloseEventId" });
             DropIndex("DMS.DocumentSendLists", new[] { "StartEventId" });
             DropIndex("DMS.DocumentSendLists", new[] { "AccessLevelId" });
@@ -1556,75 +1794,120 @@ namespace BL.Database.Migrations
             DropIndex("DMS.DocumentSendLists", new[] { "SourcePositionId" });
             DropIndex("DMS.DocumentSendLists", new[] { "SendTypeId" });
             DropIndex("DMS.DocumentSendLists", new[] { "DocumentId" });
+            DropIndex("DMS.DocumentEvents", new[] { "LastChangeDate" });
+            DropIndex("DMS.DocumentEvents", new[] { "PaperRecieveAgentId" });
+            DropIndex("DMS.DocumentEvents", new[] { "PaperSendAgentId" });
+            DropIndex("DMS.DocumentEvents", new[] { "PaperPlanAgentId" });
+            DropIndex("DMS.DocumentEvents", new[] { "PaperListId" });
+            DropIndex("DMS.DocumentEvents", new[] { "ParentEventId" });
+            DropIndex("DMS.DocumentEvents", new[] { "SendListId" });
+            DropIndex("DMS.DocumentEvents", new[] { "PaperId" });
             DropIndex("DMS.DocumentEvents", new[] { "ReadAgentId" });
             DropIndex("DMS.DocumentEvents", new[] { "TargetAgentId" });
             DropIndex("DMS.DocumentEvents", new[] { "TargetPositionExecutorAgentId" });
-            DropIndex("DMS.DocumentEvents", new[] { "TargetPositionId" });
             DropIndex("DMS.DocumentEvents", new[] { "SourceAgentId" });
             DropIndex("DMS.DocumentEvents", new[] { "SourcePositionExecutorAgentId" });
-            DropIndex("DMS.DocumentEvents", new[] { "SourcePositionId" });
-            DropIndex("DMS.DocumentEvents", new[] { "TaskId" });
+            DropIndex("DMS.DocumentEvents", "IX_DocumentEvents_IsAvailableWithinTask");
+            DropIndex("DMS.DocumentEvents", new[] { "Date" });
             DropIndex("DMS.DocumentEvents", new[] { "EventTypeId" });
-            DropIndex("DMS.DocumentEvents", new[] { "DocumentId" });
+            DropIndex("DMS.DocumentEvents", "IX_DocumentEvents_ReadDate");
             DropIndex("DMS.DictionaryDocumentSubjects", new[] { "ParentId" });
+            DropIndex("DMS.DictionaryDocumentSubjects", "IX_Name");
+            DropIndex("DMS.DictionaryDocumentSubjects", new[] { "ClientId" });
             DropIndex("DMS.DocumentAccesses", new[] { "AccessLevelId" });
-            DropIndex("DMS.DocumentAccesses", new[] { "PositionId" });
-            DropIndex("DMS.DocumentAccesses", new[] { "DocumentId" });
+            DropIndex("DMS.DocumentAccesses", "IX_PositionDocument");
+            DropIndex("DMS.DocumentAccesses", "IX_DocumentPosition");
             DropIndex("DMS.Documents", new[] { "SenderAgentPersonId" });
             DropIndex("DMS.Documents", new[] { "SenderAgentId" });
             DropIndex("DMS.Documents", new[] { "ExecutorPositionExeAgentId" });
             DropIndex("DMS.Documents", new[] { "ExecutorPositionId" });
             DropIndex("DMS.Documents", new[] { "RegistrationJournalId" });
             DropIndex("DMS.Documents", new[] { "DocumentSubjectId" });
-            DropIndex("DMS.Documents", new[] { "TemplateDocumentId" });
+            DropIndex("DMS.Documents", new[] { "CreateDate" });
+            DropIndex("DMS.Documents", "IX_IsRegistered");
             DropIndex("DMS.DocumentTags", new[] { "TagId" });
-            DropIndex("DMS.DocumentTags", new[] { "DocumentId" });
-            DropIndex("DMS.DictionaryTags", new[] { "PositionId" });
+            DropIndex("DMS.DocumentTags", "IX_DocumentTag");
+            DropIndex("DMS.DictionaryTags", "IX_PositionName");
+            DropIndex("DMS.DictionaryTags", new[] { "ClientId" });
             DropIndex("DMS.DictionarySendTypes", new[] { "SubordinationTypeId" });
+            DropIndex("DMS.DictionarySendTypes", new[] { "Name" });
             DropIndex("DMS.DicStandartSendListContents", new[] { "AccessLevelId" });
             DropIndex("DMS.DicStandartSendListContents", new[] { "TargetAgentId" });
             DropIndex("DMS.DicStandartSendListContents", new[] { "TargetPositionId" });
             DropIndex("DMS.DicStandartSendListContents", new[] { "SendTypeId" });
             DropIndex("DMS.DicStandartSendListContents", new[] { "StandartSendListId" });
-            DropIndex("DMS.DictionaryStandartSendLists", new[] { "PositionId" });
+            DropIndex("DMS.DictionaryStandartSendLists", "IX_PositionName");
+            DropIndex("DMS.DictionaryStandartSendLists", new[] { "ClientId" });
+            DropIndex("DMS.DictionarySubordinationTypes", new[] { "Name" });
+            DropIndex("DMS.DictionarySubordinationTypes", new[] { "Code" });
+            DropIndex("DMS.AdminSubordinations", new[] { "SubordinationTypeId" });
+            DropIndex("DMS.AdminSubordinations", new[] { "TargetPositionId" });
+            DropIndex("DMS.AdminSubordinations", "IX_SourceTargetType");
+            DropIndex("DMS.DicPositionExecutorTypes", new[] { "Name" });
+            DropIndex("DMS.DicPositionExecutorTypes", new[] { "Code" });
             DropIndex("DMS.DictionaryPositionExecutors", new[] { "AccessLevelId" });
             DropIndex("DMS.DictionaryPositionExecutors", new[] { "PositionExecutorTypeId" });
-            DropIndex("DMS.DictionaryPositionExecutors", new[] { "PositionId" });
+            DropIndex("DMS.DictionaryPositionExecutors", "IX_PositionAgentStartDate");
             DropIndex("DMS.DictionaryPositionExecutors", new[] { "AgentId" });
+            DropIndex("DMS.DictionaryResidentTypes", "IX_Name");
+            DropIndex("DMS.DictionaryResidentTypes", new[] { "ClientId" });
+            DropIndex("DMS.EncryptionCertificates", new[] { "TypeId" });
+            DropIndex("DMS.EncryptionCertificates", new[] { "AgentId" });
+            DropIndex("DMS.DictionaryAgentUsers", new[] { "UserId" });
             DropIndex("DMS.DictionaryAgentUsers", new[] { "Id" });
+            DropIndex("DMS.DictionaryAgentEmployees", new[] { "AgentPersonId" });
+            DropIndex("DMS.DictionaryAgentEmployees", new[] { "PersonnelNumber" });
             DropIndex("DMS.DictionaryAgentEmployees", new[] { "Id" });
+            DropIndex("DMS.DictionaryContactTypes", "IX_Name");
+            DropIndex("DMS.DictionaryContactTypes", "IX_Code");
+            DropIndex("DMS.DictionaryContactTypes", new[] { "ClientId" });
             DropIndex("DMS.DictionaryAgentContacts", new[] { "ContactTypeId" });
-            DropIndex("DMS.DictionaryAgentContacts", new[] { "AgentId" });
+            DropIndex("DMS.DictionaryAgentContacts", "IX_AgentContactTypeContact");
             DropIndex("DMS.DictionaryAgentPersons", new[] { "AgentCompanyId" });
+            DropIndex("DMS.DictionaryAgentPersons", new[] { "FullName" });
             DropIndex("DMS.DictionaryAgentPersons", new[] { "Id" });
+            DropIndex("DMS.DictionaryAgentCompanies", new[] { "TaxCode" });
+            DropIndex("DMS.DictionaryAgentCompanies", new[] { "FullName" });
             DropIndex("DMS.DictionaryAgentCompanies", new[] { "Id" });
+            DropIndex("DMS.DictionaryAddressTypes", "IX_Name");
+            DropIndex("DMS.DictionaryAddressTypes", new[] { "ClientId" });
             DropIndex("DMS.DictionaryAgentAddresses", new[] { "AdressTypeId" });
-            DropIndex("DMS.DictionaryAgentAddresses", new[] { "AgentId" });
+            DropIndex("DMS.DictionaryAgentAddresses", "IX_AdressType");
+            DropIndex("DMS.DictionaryAgentBanks", new[] { "MFOCode" });
             DropIndex("DMS.DictionaryAgentBanks", new[] { "Id" });
             DropIndex("DMS.DictionaryAgentAccounts", new[] { "AgentBankId" });
-            DropIndex("DMS.DictionaryAgentAccounts", new[] { "AgentId" });
+            DropIndex("DMS.DictionaryAgentAccounts", "IX_AgentName");
             DropIndex("DMS.DictionaryAgents", new[] { "LanguageId" });
             DropIndex("DMS.DictionaryAgents", new[] { "ResidentTypeId" });
+            DropIndex("DMS.DictionaryAgents", new[] { "ClientId" });
             DropIndex("DMS.DocumentSavedFilters", new[] { "PositionId" });
+            DropIndex("DMS.DocumentSavedFilters", "IX_IconPosition");
+            DropIndex("DMS.DocumentSavedFilters", new[] { "ClientId" });
+            DropIndex("DMS.DictionaryCompanies", "IX_Name");
+            DropIndex("DMS.DictionaryCompanies", new[] { "ClientId" });
             DropIndex("DMS.DictionaryDepartments", new[] { "ChiefPositionId" });
-            DropIndex("DMS.DictionaryDepartments", new[] { "CompanyId" });
             DropIndex("DMS.DictionaryDepartments", new[] { "ParentId" });
+            DropIndex("DMS.DictionaryDepartments", "IX_CompanyParentName");
             DropIndex("DMS.DictionaryPositions", new[] { "MainExecutorAgentId" });
             DropIndex("DMS.DictionaryPositions", new[] { "ExecutorAgentId" });
             DropIndex("DMS.DictionaryPositions", new[] { "DepartmentId" });
             DropIndex("DMS.DictionaryPositions", new[] { "ParentId" });
-            DropIndex("DMS.AdminPositionRoles", new[] { "PositionId" });
             DropIndex("DMS.AdminPositionRoles", new[] { "RoleId" });
+            DropIndex("DMS.AdminPositionRoles", "IX_PositionRole");
             DropIndex("DMS.AdminLanguageValues", new[] { "LanguageId" });
+            DropIndex("DMS.AdminLanguageValues", "IX_Label");
+            DropIndex("DMS.AdminLanguages", new[] { "Name" });
+            DropIndex("DMS.AdminLanguages", new[] { "Code" });
+            DropIndex("DMS.AdminAccessLevels", new[] { "Name" });
             DropTable("DMS.SystemUIElements");
             DropTable("DMS.SystemSettings");
             DropTable("DMS.PropertyValues");
             DropTable("DMS.PropertyLinks");
             DropTable("DMS.Properties");
             DropTable("DMS.SystemLogs");
+            DropTable("DMS.FullTextIndexCashes");
             DropTable("DMS.CustomDictionaryTypes");
             DropTable("DMS.CustomDictionaries");
-            DropTable("DMS.AdminSubordinations");
             DropTable("DMS.AdminUserRoles");
             DropTable("DMS.SystemValueTypes");
             DropTable("DMS.SystemFields");
@@ -1644,13 +1927,15 @@ namespace BL.Database.Migrations
             DropTable("DMS.DictionaryLinkTypes");
             DropTable("DMS.DocumentLinks");
             DropTable("DMS.DocumentFiles");
+            DropTable("DMS.DocumentPaperLists");
+            DropTable("DMS.DocumentPapers");
             DropTable("DMS.DictionaryResultTypes");
             DropTable("DMS.DocumentWaits");
             DropTable("DMS.DictionaryImportanceEventTypes");
             DropTable("DMS.DictionaryEventTypes");
-            DropTable("DMS.DocumentEventReaders");
             DropTable("DMS.DictionarySubscriptionStates");
             DropTable("DMS.DocumentSubscriptions");
+            DropTable("DMS.DocumentTaskAccesses");
             DropTable("DMS.DocumentTasks");
             DropTable("DMS.DocumentSendLists");
             DropTable("DMS.DocumentEvents");
@@ -1659,13 +1944,16 @@ namespace BL.Database.Migrations
             DropTable("DMS.Documents");
             DropTable("DMS.DocumentTags");
             DropTable("DMS.DictionaryTags");
-            DropTable("DMS.DictionarySubordinationTypes");
             DropTable("DMS.DictionarySendTypes");
             DropTable("DMS.DicStandartSendListContents");
             DropTable("DMS.DictionaryStandartSendLists");
+            DropTable("DMS.DictionarySubordinationTypes");
+            DropTable("DMS.AdminSubordinations");
             DropTable("DMS.DicPositionExecutorTypes");
             DropTable("DMS.DictionaryPositionExecutors");
             DropTable("DMS.DictionaryResidentTypes");
+            DropTable("DMS.EncryptionCertificateTypes");
+            DropTable("DMS.EncryptionCertificates");
             DropTable("DMS.DictionaryAgentUsers");
             DropTable("DMS.DictionaryAgentEmployees");
             DropTable("DMS.DictionaryContactTypes");

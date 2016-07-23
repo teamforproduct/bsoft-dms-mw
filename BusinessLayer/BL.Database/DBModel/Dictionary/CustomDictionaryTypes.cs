@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BL.Database.DBModel.Dictionary
 {
@@ -19,7 +16,7 @@ namespace BL.Database.DBModel.Dictionary
         [Index("IX_Code", 2, IsUnique = true)]
         [Index("IX_ClientId", 1)]
         public int ClientId { get; set; }
-        [MaxLength(2000)]
+        [MaxLength(400)]
         [Index("IX_Code", 1, IsUnique = true)]
         public string Code { get; set; }
         [MaxLength(2000)]

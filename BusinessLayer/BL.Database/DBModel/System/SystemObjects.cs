@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BL.Database.DBModel.System
 {
@@ -19,7 +15,7 @@ namespace BL.Database.DBModel.System
         }
 
         public int Id { get; set; }
-        [MaxLength(2000)]
+        [MaxLength(400)]
         [Index("IX_Code", 1, IsUnique = true)]
         public string Code { get; set; }
         [MaxLength(2000)]

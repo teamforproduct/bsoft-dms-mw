@@ -11,7 +11,7 @@ namespace BL.Database.DBModel.Admin
         [Index("IX_Label", 2, IsUnique = true)]
         [Index("IX_LanguageId", 1)]
         public int LanguageId { get; set; }
-        [MaxLength(2000)]
+        [MaxLength(400)]
         [Index("IX_Label", 1, IsUnique = true)]
         public string Label { get; set; }
         [MaxLength(2000)]

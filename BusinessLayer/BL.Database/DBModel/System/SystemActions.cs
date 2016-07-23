@@ -19,7 +19,7 @@ namespace BL.Database.DBModel.System
         public int Id { get; set; }
         [Index("IX_ObjectCode", 1, IsUnique = true)]
         public int ObjectId { get; set; }
-        [MaxLength(2000)]
+        [MaxLength(400)]
         [Index("IX_ObjectCode", 2, IsUnique = true)]
         public string Code { get; set; }
         [MaxLength(2000)]

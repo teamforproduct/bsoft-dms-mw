@@ -22,7 +22,7 @@ namespace BL.Database.DBModel.Dictionary
         [Index("IX_ClientId", 1)]
         public int ClientId { get; set; }
         public Nullable<int> ParentId { get; set; }
-        [MaxLength(2000)]
+        [MaxLength(400)]
         [Index("IX_Name", 1, IsUnique = true)]
         public string Name { get; set; }
         public bool IsActive { get; set; }

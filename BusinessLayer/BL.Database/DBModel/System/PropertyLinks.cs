@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BL.Database.DBModel.System
 {
@@ -16,7 +13,7 @@ namespace BL.Database.DBModel.System
         public int PropertyId { get; set; }
         [Index("IX_ObjectPropertyFilers", 1, IsUnique = true)]
         public int ObjectId { get; set; }
-        [MaxLength(2000)]
+        [MaxLength(400)]
         [Index("IX_ObjectPropertyFilers", 3, IsUnique = true)]
         public string Filers { get; set; }
         public bool IsMandatory { get; set; }
