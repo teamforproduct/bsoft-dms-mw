@@ -11,75 +11,75 @@
         /// <summary>
         /// Добавить
         /// </summary>
-        AddRole,
+        AddRole = 700001,
         /// <summary>
         /// Изменить
         /// </summary>
-        ModifyRole,
+        ModifyRole = 700005,
         /// <summary>
         /// Удалить 
         /// </summary>
-        DeleteRole,
+        DeleteRole = 700009,
         #endregion
 
         #region [+] RoleActions ...
         /// <summary>
         /// Добавить
         /// </summary>
-        AddRoleAction,
+        AddRoleAction = 701001,
         /// <summary>
         /// Изменить
         /// </summary>
-        ModifyRoleAction,
+        ModifyRoleAction = 701005,
         /// <summary>
         /// Удалить 
         /// </summary>
-        DeleteRoleAction,
+        DeleteRoleAction = 701009,
         #endregion
 
         #region [+] PositionRole ...
         /// <summary>
         /// Добавить
         /// </summary>
-        AddPositionRole,
+        AddPositionRole = 702001,
         /// <summary>
         /// Изменить
         /// </summary>
-        ModifyPositionRole,
+        ModifyPositionRole = 702005,
         /// <summary>
         /// Удалить 
         /// </summary>
-        DeletePositionRole ,
+        DeletePositionRole = 702009,
         #endregion
 
         #region [+] UserRoles ...
         /// <summary>
         /// Добавить
         /// </summary>
-        AddUserRole,
+        AddUserRole = 703001,
         /// <summary>
         /// Изменить
         /// </summary>
-        ModifyUserRole,
+        ModifyUserRole = 703005,
         /// <summary>
         /// Удалить 
         /// </summary>
-        DeleteUserRole,
+        DeleteUserRole = 703009,
         #endregion
 
         #region [+] Subordinations ...
         /// <summary>
         /// Добавить
         /// </summary>
-        AddSubordination,
+        AddSubordination = 704001,
         /// <summary>
         /// Изменить
         /// </summary>
-        ModifySubordination,
+        ModifySubordination = 704005,
         /// <summary>
         /// Удалить 
         /// </summary>
-        DeleteSubordination,
+        DeleteSubordination = 704009
         #endregion
 
     }

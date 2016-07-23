@@ -29,10 +29,16 @@ namespace BL.Logic.AdminCore
         {
             _admin.VerifyAccess(_context, CommandType, false);
 
-            var filter = new FilterAdminRoleAction {
+            var filter = new FilterAdminRoleAction
+            {
                 ActionIDs = new List<int> { Model.ActionId },
-                RoleIDs = new List<int> { Model.RoleId },
-                RecordIDs = new List<int> { Model.RecordId ?? -1} };
+                RoleIDs = new List<int> { Model.RoleId }
+            };
+
+            if (Model.RecordId != null)
+            {
+                filter.RecordIDs = new List<int> { Model.RecordId ?? -1 };
+            }
 
             if (_adminDb.ExistsRoleAction(_context, filter)) throw new AdminRecordNotUnique();
 

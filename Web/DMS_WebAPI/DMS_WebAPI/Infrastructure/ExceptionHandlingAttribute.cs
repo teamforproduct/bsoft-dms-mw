@@ -40,7 +40,22 @@ namespace DMS_WebAPI.Infrastructure
 
             }
 
-            var json = JsonConvert.SerializeObject(new { success = false, msg = context.Exception.Message }, GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings);
+            
+            Exception exc = context.Exception;
+            string msgExp =string.Empty;
+#if DEBUG
+
+            while (exc != null)
+            {
+                msgExp += exc.Message;
+                exc = exc.InnerException;
+            };
+
+#else
+            msgExp = exc.Message;
+#endif
+
+            var json = JsonConvert.SerializeObject(new { success = false, msg = msgExp }, GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings);
             try
             {
                 IContext ctx = null;

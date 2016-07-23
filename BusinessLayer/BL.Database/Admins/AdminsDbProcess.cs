@@ -449,6 +449,16 @@ namespace BL.Database.Admins
                 qry = qry.Where(filterContains);
             }
 
+            if (filter.RecordIDs?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.False<AdminRoleActions>();
+
+                filterContains = filter.RecordIDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.RecordId == value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
             return qry;
         }
 
@@ -731,7 +741,7 @@ namespace BL.Database.Admins
                 qry = qry.Where(filterContains);
             }
 
-            if (filter.Period.IsActive)
+            if (filter.Period?.IsActive == true)
             {
                 qry = qry.Where(x => x.StartDate >= filter.Period.DateBeg);
                 qry = qry.Where(x => x.EndDate <= filter.Period.DateEnd);
