@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
-using BL.Database.DBModel.Dictionary;
 using System.ComponentModel.DataAnnotations;
 
 namespace DMS_WebAPI.DBModel

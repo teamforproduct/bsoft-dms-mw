@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project id="77d5fc4c-dd77-46e6-ac53-ce4c8b80614d" activeEnvironment="Default" name="Adminka" resourceRoot="" soapui-version="5.2.1" abortOnError="false" runType="SEQUENTIAL" lastOpened="2016-05-27T10:01:52.773+03:00" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:RestService" id="a4970681-4cfd-4305-bba0-f3791de732db" wadlVersion="http://wadl.dev.java.net/2009/02" name="Dictionary" type="rest" basePath="/" definitionUrl="C:\Users\pss\Documents\Dictionary_1.wadl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="file:/C:/Users/pss/Documents/Dictionary_1.wadl"><con:part><con:url>file:/C:/Users/pss/Documents/Dictionary_1.wadl</con:url><con:content><![CDATA[<application xmlns="http://wadl.dev.java.net/2009/02">
+  <doc xml:lang="en" title="Adminka"/>
+  <resources base="http://localhost:21182/">
+    <resource path="api/v2/DictionaryTags" id="DictionaryTags">
+      <doc xml:lang="en" title="DictionaryTags"/>
+      <param name="id" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      <method name="GET" id="Get">
+        <doc xml:lang="en" title="Get"/>
+        <request/>
+        <response status="200">
+          <representation mediaType="application/json; charset=utf-8"/>
+        </response>
+      </method>
+      <method name="POST" id="Post">
+        <doc xml:lang="en" title="Post"/>
+        <request>
+          <representation mediaType="application/json"/>
+        </request>
+        <response status="">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="200">
+          <representation mediaType="application/json; charset=utf-8"/>
+        </response>
+      </method>
+      <method name="PUT" id="Modify">
+        <doc xml:lang="en" title="Modify"/>
+        <request>
+          <representation mediaType="application/json"/>
+        </request>
+        <response status="405 500">
+          <representation mediaType="application/json; charset=utf-8"/>
+        </response>
+        <response status="">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="200">
+          <representation mediaType="application/json; charset=utf-8"/>
+        </response>
+      </method>
+    </resource>
+    <resource path="api/v2/DictionaryDocumentSubjects" id="DictionaryDocumentSubjects">
+      <doc xml:lang="en" title="DictionaryDocumentSubjects"/>
+      <method name="GET" id="Get">
+        <doc xml:lang="en" title="Get"/>
+        <request/>
+        <response status="401">
+          <representation mediaType="application/json; charset=utf-8"/>
+        </response>
+        <response status="200">
+          <representation mediaType="application/json; charset=utf-8"/>
+        </response>
+      </method>
+    </resource>
+    <resource path="api/v2/DictionaryResultTypes" id="DictionaryResultTypes">
+      <doc xml:lang="en" title="DictionaryResultTypes"/>
+      <method name="GET" id="Get">
+        <doc xml:lang="en" title="Get"/>
+        <request/>
+        <response status="200">
+          <representation mediaType="application/json; charset=utf-8"/>
+        </response>
+      </method>
+    </resource>
+    <resource path="api/v2/DictionaryRegistrationJournals" id="DictionaryRegistrationJournals">
+      <doc xml:lang="en" title="DictionaryRegistrationJournals"/>
+      <method name="GET" id="Get">
+        <doc xml:lang="en" title="Get"/>
+        <request/>
+        <response status="200">
+          <representation mediaType="application/json; charset=utf-8"/>
+        </response>
+      </method>
+    </resource>
+    <resource path="api/v2/DictionaryLinkTypes" id="DictionaryLinkTypes">
+      <doc xml:lang="en" title="DictionaryLinkTypes"/>
+      <method name="GET" id="Get">
+        <doc xml:lang="en" title="Get"/>
+        <request/>
+        <response status="200">
+          <representation mediaType="application/json; charset=utf-8"/>
+        </response>
+      </method>
+    </resource>
+    <resource path="api/v2/DictionarySendTypes" id="DictionarySendTypes">
+      <doc xml:lang="en" title="DictionarySendTypes"/>
+      <method name="GET" id="Get">
+        <doc xml:lang="en" title="Get"/>
+        <request/>
+        <response status="200">
+          <representation mediaType="application/json; charset=utf-8"/>
+        </response>
+      </method>
+    </resource>
+    <resource path="api/v2/DictionaryImportanceEventTypes" id="DictionaryImportanceEventTypes">
+      <doc xml:lang="en" title="DictionaryImportanceEventTypes"/>
+      <method name="GET" id="Get">
+        <doc xml:lang="en" title="Get"/>
+        <request/>
+        <response status="200">
+          <representation mediaType="application/json; charset=utf-8"/>
+        </response>
+      </method>
+    </resource>
+    <resource path="api/v2/DictionaryAgents?IsCompany=True" id="DictionaryAgents">
+      <doc xml:lang="en" title="DictionaryAgents"/>
+      <method name="GET" id="Get">
+        <doc xml:lang="en" title="Get"/>
+        <request/>
+        <response status="200">
+          <representation mediaType="application/json; charset=utf-8"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json; charset=utf-8"/>
+        </response>
+      </method>
+    </resource>
+    <resource path="api/v2/DictionaryCompanies" id="DictionaryCompanies">
+      <doc xml:lang="en" title="DictionaryCompanies"/>
+      <method name="GET" id="Get">
+        <doc xml:lang="en" title="Get"/>
+        <request/>
+        <response status="200">
+          <representation mediaType="application/json; charset=utf-8"/>
+        </response>
+      </method>
+    </resource>
+    <resource path="api/v2/DictionaryDepartments" id="DictionaryDepartments">
+      <doc xml:lang="en" title="DictionaryDepartments"/>
+      <method name="GET" id="Get">
+        <doc xml:lang="en" title="Get"/>
+        <request/>
+        <response status="200">
+          <representation mediaType="application/json; charset=utf-8"/>
+        </response>
+      </method>
+    </resource>
+    <resource path="api/v2/DictionaryStandartSendListContents" id="DictionaryStandartSendListContents">
+      <doc xml:lang="en" title="DictionaryStandartSendListContents"/>
+      <method name="GET" id="Get">
+        <doc xml:lang="en" title="Get"/>
+        <request/>
+        <response status="200">
+          <representation mediaType="application/json; charset=utf-8"/>
+        </response>
+      </method>
+    </resource>
+    <resource path="api/v2/DictionaryStandartSendLists" id="DictionaryStandartSendLists">
+      <doc xml:lang="en" title="DictionaryStandartSendLists"/>
+      <method name="GET" id="Get">
+        <doc xml:lang="en" title="Get"/>
+        <request/>
+        <response status="200">
+          <representation mediaType="application/json; charset=utf-8"/>
+        </response>
+      </method>
+    </resource>
+    <resource path="api/v2/DictionaryDocumentTypes" id="DictionaryDocumentTypes">
+      <doc xml:lang="en" title="DictionaryDocumentTypes"/>
+      <param name="id" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      <method name="GET" id="Get">
+        <doc xml:lang="en" title="Get"/>
+        <request/>
+        <response status="200">
+          <representation mediaType="application/json; charset=utf-8"/>
+        </response>
+      </method>
+      <method name="POST" id="Post">
+        <doc xml:lang="en" title="Post"/>
+        <request>
+          <representation mediaType="application/json"/>
+        </request>
+        <response status="200">
+          <representation mediaType="application/json; charset=utf-8"/>
+        </response>
+        <response status="">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="0">
+          <representation mediaType=""/>
+        </response>
+      </method>
+      <method name="PUT" id="Put">
+        <doc xml:lang="en" title="Put"/>
+        <request>
+          <representation mediaType="application/json"/>
+        </request>
+        <response status="200">
+          <representation mediaType="application/json; charset=utf-8"/>
+        </response>
+        <response status="">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json; charset=utf-8"/>
+        </response>
+        <response status="0">
+          <representation mediaType=""/>
+        </response>
+      </method>
+    </resource>
+    <resource path="api/v2/DictionaryAgentPersons" id="DictionaryAgentPersons">
+      <doc xml:lang="en" title="DictionaryAgentPersons"/>
+      <param name="AgentId" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      <method name="GET" id="Get">
+        <doc xml:lang="en" title="Get"/>
+        <request/>
+        <response status="200">
+          <representation mediaType="application/json; charset=utf-8"/>
+        </response>
+        <response status="500">
+          <representation mediaType="application/json; charset=utf-8"/>
+        </response>
+      </method>
+    </resource>
+    <resource path="api/v2/DictionaryPositions" id="DictionaryPositions">
+      <doc xml:lang="en" title="DictionaryPositions"/>
+      <method name="GET" id="Get">
+        <doc xml:lang="en" title="Get"/>
+        <request/>
+        <response status="200">
+          <representation mediaType="application/json; charset=utf-8"/>
+        </response>
+        <response status="500">
+          <representation mediaType="application/json; charset=utf-8"/>
+        </response>
+      </method>
+    </resource>
+    <resource path="api/v2/DictionaryDocumentDirections" id="DictionaryDocumentDirections">
+      <doc xml:lang="en" title="DictionaryDocumentDirections"/>
+      <method name="GET" id="Get">
+        <doc xml:lang="en" title="Get"/>
+        <request/>
+        <response status="200">
+          <representation mediaType="application/json; charset=utf-8"/>
+        </response>
+      </method>
+    </resource>
+    <resource path="api/v2/DictionarySubordinationTypes" id="DictionarySubordinationTypes">
+      <doc xml:lang="en" title="DictionarySubordinationTypes"/>
+      <method name="GET" id="Get">
+        <doc xml:lang="en" title="Get"/>
+        <request/>
+        <response status="200">
+          <representation mediaType="application/json; charset=utf-8"/>
+        </response>
+      </method>
+    </resource>
+    <resource path="api/v2/DictionaryEventTypes" id="DictionaryEventTypes">
+      <doc xml:lang="en" title="DictionaryEventTypes"/>
+      <method name="GET" id="Get">
+        <doc xml:lang="en" title="Get"/>
+        <request/>
+        <response status="200">
+          <representation mediaType="application/json; charset=utf-8"/>
+        </response>
+      </method>
+    </resource>
+  </resources>
+</application>]]></con:content><con:type>http://wadl.dev.java.net/2009/02</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:21182</con:endpoint></con:endpoints><con:resource name="Roles" path="api/v2/AdminRoles" id="8b27b76e-6694-41e5-a5ae-90c8c9cab75c"><con:settings/><con:parameters><con:parameter><con:name>Id</con:name><con:value/><con:style>QUERY</con:style><con:default/><con:description xsi:nil="true"/></con:parameter></con:parameters><con:method name="Get Items" id="1a20d0a2-1241-4d6f-b4c8-bc312fe4cfdf" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE" id=""><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>200</con:status><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:representation type="FAULT" id=""><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>500</con:status><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:request name="Get Roles" id="f0a79222-362d-47bd-be0e-c8a4d766a39f" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:21182</con:endpoint><con:request/><con:originalUri>http://localhost/api/v2/DictionaryPositions</con:originalUri><con:credentials><con:username/><con:password/><con:domain/><con:selectedAuthProfile>LocalHost</con:selectedAuthProfile><con:authType>OAuth 2.0</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder><con:entry/></con:parameterOrder></con:request></con:method><con:method name="Get Item" id="1a20d0a2-1241-4d6f-b4c8-bc312fe4cfdf" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE" id=""><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>200</con:status><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:representation type="FAULT" id=""><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>500</con:status><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:request name="Get Roles" id="f0a79222-362d-47bd-be0e-c8a4d766a39f" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:21182</con:endpoint><con:request/><con:originalUri>http://localhost/api/v2/DictionaryPositions</con:originalUri><con:credentials><con:username/><con:password/><con:domain/><con:selectedAuthProfile>LocalHost</con:selectedAuthProfile><con:authType>OAuth 2.0</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters><entry key="Id" value="1" xmlns="http://eviware.com/soapui/config"/></con:parameters><con:parameterOrder><con:entry>Id</con:entry></con:parameterOrder></con:request></con:method><con:method name="Add Item" id="1a20d0a2-1241-4d6f-b4c8-bc312fe4cfdf" method="POST"><con:settings/><con:parameters/><con:representation type="RESPONSE" id=""><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>200</con:status><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:representation type="FAULT" id=""><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>500</con:status><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:request name="Add Position" id="f0a79222-362d-47bd-be0e-c8a4d766a39f" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:21182</con:endpoint><con:request>{
+  "Name": "Role 1"
+}</con:request><con:originalUri>http://localhost/api/v2/DictionaryPositions</con:originalUri><con:credentials><con:username/><con:password/><con:domain/><con:selectedAuthProfile>LocalHost</con:selectedAuthProfile><con:authType>OAuth 2.0</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder><con:entry/></con:parameterOrder></con:request></con:method><con:method name="Chg Item" id="1a20d0a2-1241-4d6f-b4c8-bc312fe4cfdf" method="PUT"><con:settings/><con:parameters/><con:representation type="RESPONSE" id=""><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>200</con:status><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:representation type="FAULT" id=""><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>500</con:status><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:request name="Chg Position" id="f0a79222-362d-47bd-be0e-c8a4d766a39f" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:21182</con:endpoint><con:request>{
+  "Name": "Role 555"
+}</con:request><con:originalUri>http://localhost/api/v2/DictionaryPositions</con:originalUri><con:credentials><con:username/><con:password/><con:domain/><con:selectedAuthProfile>LocalHost</con:selectedAuthProfile><con:authType>OAuth 2.0</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder><con:entry/></con:parameterOrder></con:request></con:method><con:method name="Del Item" id="1a20d0a2-1241-4d6f-b4c8-bc312fe4cfdf" method="DELETE"><con:settings/><con:parameters/><con:representation type="RESPONSE" id=""><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>200</con:status><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:representation type="FAULT" id=""><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>500</con:status><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:request name="Del Position" id="f0a79222-362d-47bd-be0e-c8a4d766a39f" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:21182</con:endpoint><con:request/><con:originalUri>http://localhost/api/v2/DictionaryPositions</con:originalUri><con:credentials><con:username/><con:password/><con:domain/><con:selectedAuthProfile>LocalHost</con:selectedAuthProfile><con:authType>OAuth 2.0</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters><entry key="Id" value="5" xmlns="http://eviware.com/soapui/config"/></con:parameters><con:parameterOrder><con:entry/></con:parameterOrder></con:request></con:method></con:resource><con:resource name="RoleActions" path="api/v2/AdminRoleActions" id="8b27b76e-6694-41e5-a5ae-90c8c9cab75c"><con:settings/><con:parameters><con:parameter><con:name>Id</con:name><con:value/><con:style>QUERY</con:style><con:default/><con:description xsi:nil="true"/></con:parameter></con:parameters><con:method name="Get Items" id="1a20d0a2-1241-4d6f-b4c8-bc312fe4cfdf" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE" id=""><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>200</con:status><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:representation type="FAULT" id=""><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>500</con:status><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:request name="Get RoleActions" id="f0a79222-362d-47bd-be0e-c8a4d766a39f" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:21182</con:endpoint><con:request/><con:originalUri>http://localhost/api/v2/DictionaryPositions</con:originalUri><con:credentials><con:username/><con:password/><con:domain/><con:selectedAuthProfile>LocalHost</con:selectedAuthProfile><con:authType>OAuth 2.0</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder><con:entry/></con:parameterOrder></con:request></con:method><con:method name="Get Item" id="1a20d0a2-1241-4d6f-b4c8-bc312fe4cfdf" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE" id=""><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>200</con:status><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:representation type="FAULT" id=""><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>500</con:status><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:request name="Get RoleAction" id="f0a79222-362d-47bd-be0e-c8a4d766a39f" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:21182</con:endpoint><con:request/><con:originalUri>http://localhost/api/v2/DictionaryPositions</con:originalUri><con:credentials><con:username/><con:password/><con:domain/><con:selectedAuthProfile>LocalHost</con:selectedAuthProfile><con:authType>OAuth 2.0</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters><entry key="Id" value="1" xmlns="http://eviware.com/soapui/config"/></con:parameters><con:parameterOrder><con:entry>Id</con:entry></con:parameterOrder></con:request></con:method><con:method name="Add Item" id="1a20d0a2-1241-4d6f-b4c8-bc312fe4cfdf" method="POST"><con:settings/><con:parameters/><con:representation type="RESPONSE" id=""><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>200</con:status><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:representation type="FAULT" id=""><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>500</con:status><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:request name="Add RoleAction" id="f0a79222-362d-47bd-be0e-c8a4d766a39f" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:21182</con:endpoint><con:request>{
+  "RoleId": 1,
+  "ActionId": 700001
+}</con:request><con:originalUri>http://localhost/api/v2/DictionaryPositions</con:originalUri><con:credentials><con:username/><con:password/><con:domain/><con:selectedAuthProfile>LocalHost</con:selectedAuthProfile><con:authType>OAuth 2.0</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder><con:entry/></con:parameterOrder></con:request></con:method><con:method name="Chg Item" id="1a20d0a2-1241-4d6f-b4c8-bc312fe4cfdf" method="PUT"><con:settings/><con:parameters/><con:representation type="RESPONSE" id=""><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>200</con:status><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:representation type="FAULT" id=""><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>500</con:status><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:request name="Chg RoleAction" id="f0a79222-362d-47bd-be0e-c8a4d766a39f" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:21182</con:endpoint><con:request>{
+  "RoleId": 1,
+  "ActionId": 700001,
+  "RecordId": 3
+}</con:request><con:originalUri>http://localhost/api/v2/DictionaryPositions</con:originalUri><con:credentials><con:username/><con:password/><con:domain/><con:selectedAuthProfile>LocalHost</con:selectedAuthProfile><con:authType>OAuth 2.0</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters><entry key="Id" value="16283" xmlns="http://eviware.com/soapui/config"/></con:parameters><con:parameterOrder><con:entry/></con:parameterOrder></con:request></con:method><con:method name="Del Item" id="1a20d0a2-1241-4d6f-b4c8-bc312fe4cfdf" method="DELETE"><con:settings/><con:parameters/><con:representation type="RESPONSE" id=""><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>200</con:status><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:representation type="FAULT" id=""><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>500</con:status><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:request name="Del RoleAction" id="f0a79222-362d-47bd-be0e-c8a4d766a39f" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:21182</con:endpoint><con:request/><con:originalUri>http://localhost/api/v2/DictionaryPositions</con:originalUri><con:credentials><con:username/><con:password/><con:domain/><con:selectedAuthProfile>LocalHost</con:selectedAuthProfile><con:authType>OAuth 2.0</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters><entry key="Id" value="5" xmlns="http://eviware.com/soapui/config"/></con:parameters><con:parameterOrder><con:entry/></con:parameterOrder></con:request></con:method></con:resource><con:resource name="PositionRoles" path="api/v2/AdminPositionRoles" id="8b27b76e-6694-41e5-a5ae-90c8c9cab75c"><con:settings/><con:parameters><con:parameter><con:name>Id</con:name><con:value/><con:style>QUERY</con:style><con:default/><con:description xsi:nil="true"/></con:parameter></con:parameters><con:method name="Get Items" id="1a20d0a2-1241-4d6f-b4c8-bc312fe4cfdf" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE" id=""><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>200</con:status><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:representation type="FAULT" id=""><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>500</con:status><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:request name="Get PositionRoles" id="f0a79222-362d-47bd-be0e-c8a4d766a39f" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:21182</con:endpoint><con:request/><con:originalUri>http://localhost/api/v2/DictionaryPositions</con:originalUri><con:credentials><con:username/><con:password/><con:domain/><con:selectedAuthProfile>LocalHost</con:selectedAuthProfile><con:authType>OAuth 2.0</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder><con:entry/></con:parameterOrder></con:request></con:method><con:method name="Get Item" id="1a20d0a2-1241-4d6f-b4c8-bc312fe4cfdf" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE" id=""><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>200</con:status><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:representation type="FAULT" id=""><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>500</con:status><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:request name="Get PositionRole" id="f0a79222-362d-47bd-be0e-c8a4d766a39f" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:21182</con:endpoint><con:request/><con:originalUri>http://localhost/api/v2/DictionaryPositions</con:originalUri><con:credentials><con:username/><con:password/><con:domain/><con:selectedAuthProfile>LocalHost</con:selectedAuthProfile><con:authType>OAuth 2.0</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters><entry key="Id" value="1" xmlns="http://eviware.com/soapui/config"/></con:parameters><con:parameterOrder><con:entry>Id</con:entry></con:parameterOrder></con:request></con:method><con:method name="Add Item" id="1a20d0a2-1241-4d6f-b4c8-bc312fe4cfdf" method="POST"><con:settings/><con:parameters/><con:representation type="RESPONSE" id=""><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>200</con:status><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:representation type="FAULT" id=""><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>500</con:status><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:request name="Add PositionRole" id="f0a79222-362d-47bd-be0e-c8a4d766a39f" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:21182</con:endpoint><con:request>{
+  "PositionId": 1037,
+  "RoleId": 5
+}</con:request><con:originalUri>http://localhost/api/v2/DictionaryPositions</con:originalUri><con:credentials><con:username/><con:password/><con:domain/><con:selectedAuthProfile>LocalHost</con:selectedAuthProfile><con:authType>OAuth 2.0</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder><con:entry/></con:parameterOrder></con:request></con:method><con:method name="Chg Item" id="1a20d0a2-1241-4d6f-b4c8-bc312fe4cfdf" method="PUT"><con:settings/><con:parameters/><con:representation type="RESPONSE" id=""><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>200</con:status><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:representation type="FAULT" id=""><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>500</con:status><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:request name="Chg PositionRole" id="f0a79222-362d-47bd-be0e-c8a4d766a39f" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:21182</con:endpoint><con:request>{
+  "Name": "Role 555"
+}</con:request><con:originalUri>http://localhost/api/v2/DictionaryPositions</con:originalUri><con:credentials><con:username/><con:password/><con:domain/><con:selectedAuthProfile>LocalHost</con:selectedAuthProfile><con:authType>OAuth 2.0</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder><con:entry/></con:parameterOrder></con:request></con:method><con:method name="Del Item" id="1a20d0a2-1241-4d6f-b4c8-bc312fe4cfdf" method="DELETE"><con:settings/><con:parameters/><con:representation type="RESPONSE" id=""><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>200</con:status><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:representation type="FAULT" id=""><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>500</con:status><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:request name="Del PositionRole" id="f0a79222-362d-47bd-be0e-c8a4d766a39f" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:21182</con:endpoint><con:request/><con:originalUri>http://localhost/api/v2/DictionaryPositions</con:originalUri><con:credentials><con:username/><con:password/><con:domain/><con:selectedAuthProfile>LocalHost</con:selectedAuthProfile><con:authType>OAuth 2.0</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters><entry key="Id" value="5" xmlns="http://eviware.com/soapui/config"/></con:parameters><con:parameterOrder><con:entry/></con:parameterOrder></con:request></con:method></con:resource><con:resource name="UserRoles" path="api/v2/AdminUserRoles" id="8b27b76e-6694-41e5-a5ae-90c8c9cab75c"><con:settings/><con:parameters><con:parameter><con:name>Id</con:name><con:value/><con:style>QUERY</con:style><con:default/><con:description xsi:nil="true"/></con:parameter></con:parameters><con:method name="Get Items" id="1a20d0a2-1241-4d6f-b4c8-bc312fe4cfdf" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE" id=""><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>200</con:status><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:representation type="FAULT" id=""><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>500</con:status><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:request name="Get UserRoles" id="f0a79222-362d-47bd-be0e-c8a4d766a39f" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:21182</con:endpoint><con:request/><con:originalUri>http://localhost/api/v2/DictionaryPositions</con:originalUri><con:credentials><con:username/><con:password/><con:domain/><con:selectedAuthProfile>LocalHost</con:selectedAuthProfile><con:authType>OAuth 2.0</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder><con:entry/></con:parameterOrder></con:request></con:method><con:method name="Get Item" id="1a20d0a2-1241-4d6f-b4c8-bc312fe4cfdf" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE" id=""><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>200</con:status><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:representation type="FAULT" id=""><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>500</con:status><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:request name="Get UserRole" id="f0a79222-362d-47bd-be0e-c8a4d766a39f" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:21182</con:endpoint><con:request/><con:originalUri>http://localhost/api/v2/DictionaryPositions</con:originalUri><con:credentials><con:username/><con:password/><con:domain/><con:selectedAuthProfile>LocalHost</con:selectedAuthProfile><con:authType>OAuth 2.0</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters><entry key="Id" value="1" xmlns="http://eviware.com/soapui/config"/></con:parameters><con:parameterOrder><con:entry>Id</con:entry></con:parameterOrder></con:request></con:method><con:method name="Add Item" id="1a20d0a2-1241-4d6f-b4c8-bc312fe4cfdf" method="POST"><con:settings/><con:parameters/><con:representation type="RESPONSE" id=""><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>200</con:status><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:representation type="FAULT" id=""><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>500</con:status><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:request name="Add UserRole" id="f0a79222-362d-47bd-be0e-c8a4d766a39f" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:21182</con:endpoint><con:request>{
+  "UserId": 1040,
+  "RoleId": 7,
+  "StartDate": "1900-01-01T00:00:00",
+  "EndDate": "1900-01-01T00:00:00"
+}
+
+</con:request><con:originalUri>http://localhost/api/v2/DictionaryPositions</con:originalUri><con:credentials><con:username/><con:password/><con:domain/><con:selectedAuthProfile>LocalHost</con:selectedAuthProfile><con:authType>OAuth 2.0</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder><con:entry/></con:parameterOrder></con:request></con:method><con:method name="Chg Item" id="1a20d0a2-1241-4d6f-b4c8-bc312fe4cfdf" method="PUT"><con:settings/><con:parameters/><con:representation type="RESPONSE" id=""><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>200</con:status><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:representation type="FAULT" id=""><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>500</con:status><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:request name="Chg UserRole" id="f0a79222-362d-47bd-be0e-c8a4d766a39f" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:21182</con:endpoint><con:request>{
+  "UserId": 1040,
+  "RoleId":7,
+  "StartDate": "1900-01-01T00:00:00",
+  "EndDate": "1900-01-01T00:00:00"
+}</con:request><con:originalUri>http://localhost/api/v2/DictionaryPositions</con:originalUri><con:credentials><con:username/><con:password/><con:domain/><con:selectedAuthProfile>LocalHost</con:selectedAuthProfile><con:authType>OAuth 2.0</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters><entry key="Id" value="1011" xmlns="http://eviware.com/soapui/config"/></con:parameters><con:parameterOrder><con:entry/></con:parameterOrder></con:request></con:method><con:method name="Del Item" id="1a20d0a2-1241-4d6f-b4c8-bc312fe4cfdf" method="DELETE"><con:settings/><con:parameters/><con:representation type="RESPONSE" id=""><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>200</con:status><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:representation type="FAULT" id=""><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>500</con:status><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:request name="Del UserRole" id="f0a79222-362d-47bd-be0e-c8a4d766a39f" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:21182</con:endpoint><con:request/><con:originalUri>http://localhost/api/v2/DictionaryPositions</con:originalUri><con:credentials><con:username/><con:password/><con:domain/><con:selectedAuthProfile>LocalHost</con:selectedAuthProfile><con:authType>OAuth 2.0</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters><entry key="Id" value="1011" xmlns="http://eviware.com/soapui/config"/></con:parameters><con:parameterOrder><con:entry/></con:parameterOrder></con:request></con:method></con:resource><con:resource name="Subordinations" path="api/v2/AdminSubordinations" id="8b27b76e-6694-41e5-a5ae-90c8c9cab75c"><con:settings/><con:parameters><con:parameter><con:name>Id</con:name><con:value/><con:style>QUERY</con:style><con:default/><con:description xsi:nil="true"/></con:parameter></con:parameters><con:method name="Get Items" id="1a20d0a2-1241-4d6f-b4c8-bc312fe4cfdf" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE" id=""><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>200</con:status><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:representation type="FAULT" id=""><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>500</con:status><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:request name="Get Subordinations" id="f0a79222-362d-47bd-be0e-c8a4d766a39f" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:21182</con:endpoint><con:request/><con:originalUri>http://localhost/api/v2/DictionaryPositions</con:originalUri><con:credentials><con:username/><con:password/><con:domain/><con:selectedAuthProfile>LocalHost</con:selectedAuthProfile><con:authType>OAuth 2.0</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder><con:entry/></con:parameterOrder></con:request></con:method><con:method name="Get Item" id="1a20d0a2-1241-4d6f-b4c8-bc312fe4cfdf" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE" id=""><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>200</con:status><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:representation type="FAULT" id=""><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>500</con:status><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:request name="Get Subordination" id="f0a79222-362d-47bd-be0e-c8a4d766a39f" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:21182</con:endpoint><con:request/><con:originalUri>http://localhost/api/v2/DictionaryPositions</con:originalUri><con:credentials><con:username/><con:password/><con:domain/><con:selectedAuthProfile>LocalHost</con:selectedAuthProfile><con:authType>OAuth 2.0</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters><entry key="Id" value="1" xmlns="http://eviware.com/soapui/config"/></con:parameters><con:parameterOrder><con:entry>Id</con:entry></con:parameterOrder></con:request></con:method><con:method name="Add Item" id="1a20d0a2-1241-4d6f-b4c8-bc312fe4cfdf" method="POST"><con:settings/><con:parameters/><con:representation type="RESPONSE" id=""><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>200</con:status><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:representation type="FAULT" id=""><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>500</con:status><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:request name="Add Subordination" id="f0a79222-362d-47bd-be0e-c8a4d766a39f" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:21182</con:endpoint><con:request>{
+  "SourcePositionId": 1044,
+  "TargetPositionId": 1041,
+  "SubordinationTypeId": 1
+}</con:request><con:originalUri>http://localhost/api/v2/DictionaryPositions</con:originalUri><con:credentials><con:username/><con:password/><con:domain/><con:selectedAuthProfile>LocalHost</con:selectedAuthProfile><con:authType>OAuth 2.0</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder><con:entry/></con:parameterOrder></con:request></con:method><con:method name="Chg Item" id="1a20d0a2-1241-4d6f-b4c8-bc312fe4cfdf" method="PUT"><con:settings/><con:parameters/><con:representation type="RESPONSE" id=""><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>200</con:status><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:representation type="FAULT" id=""><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>500</con:status><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:request name="Chg Subordination" id="f0a79222-362d-47bd-be0e-c8a4d766a39f" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:21182</con:endpoint><con:request>{
+  "SourcePositionId": 1044,
+  "TargetPositionId": 1041,
+  "SubordinationTypeId": 2
+}</con:request><con:originalUri>http://localhost/api/v2/DictionaryPositions</con:originalUri><con:credentials><con:username/><con:password/><con:domain/><con:selectedAuthProfile>LocalHost</con:selectedAuthProfile><con:authType>OAuth 2.0</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters><entry key="Id" value="6" xmlns="http://eviware.com/soapui/config"/></con:parameters><con:parameterOrder><con:entry/></con:parameterOrder></con:request></con:method><con:method name="Del Item" id="1a20d0a2-1241-4d6f-b4c8-bc312fe4cfdf" method="DELETE"><con:settings/><con:parameters/><con:representation type="RESPONSE" id=""><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>200</con:status><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:representation type="FAULT" id=""><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>500</con:status><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:request name="Del Subordination" id="f0a79222-362d-47bd-be0e-c8a4d766a39f" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:21182</con:endpoint><con:request/><con:originalUri>http://localhost/api/v2/DictionaryPositions</con:originalUri><con:credentials><con:username/><con:password/><con:domain/><con:selectedAuthProfile>LocalHost</con:selectedAuthProfile><con:authType>OAuth 2.0</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters><entry key="Id" value="6" xmlns="http://eviware.com/soapui/config"/></con:parameters><con:parameterOrder><con:entry/></con:parameterOrder></con:request></con:method></con:resource></con:interface><con:savedRecentRuns>1</con:savedRecentRuns><con:properties/><con:wssContainer/><con:databaseConnectionContainer/><con:oAuth2ProfileContainer><con:oAuth2Profile><con:name>LocalHost</con:name><con:type>OAuth 2.0</con:type><con:clientID>t@t.t</con:clientID><con:clientSecret>P@ssw0rd</con:clientSecret><con:authorizationURI>t@t.t</con:authorizationURI><con:accessTokenURI>http://localhost:21182/api/v2/token</con:accessTokenURI><con:accessToken>UHNi_-8ZDrqOOuHcinyUq41lNqHjDt7HqlPrwx_6gfa9-fqhFsCr5X7B-JYtNvRhbnZJJnQ0WWZfHcKQc6cbl4f5QZpVb5yjZOQHVrnStZQrpPPtFwAk_t8Pz4abelfTEQIuT_VYp_xq0i4mli-aByuURoWj_kZ2rw5GwjKjmgIVDEmOXatuzG_jz6YR0k3eOhMIEgKjhB4eUrH6psAajO-BUgiTyCo9iYocvl-ZTiRNUejoIIneZJprzOUrXDgVUFL9QAY3snr3bQiqcorC9WCynqDpcHQ5gJrz5JSmiCeVvBsFsWNGDyifBrDwOzsbS7af-EXGDvfdByDZ7OGKXmBWnUbZy36DxYcyiP7kdP4LuLdmKJYmNpHdLnyY2rh_Sre895lnnBqYMcBPGZhc06b1czo4w-amchK29dov_ptktb4L7wKmopkqML73fjuvu7VlqhjXjR3ooFEmSaaSg4jLiAK7D5HKY0ud8PSdLjzpqYTSQMfPCRHf0ATohxO8yPyR-RknAZcP7ahmlKQDrA</con:accessToken><con:accessTokenPosition>HEADER</con:accessTokenPosition><con:oAuth2Flow>RESOURCE_OWNER_PASSWORD_CREDENTIALS</con:oAuth2Flow><con:refreshAccessTokenMethod>AUTOMATIC</con:refreshAccessTokenMethod><con:accessTokenStatus xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">EXPIRED</con:accessTokenStatus><con:accessTokenStartingStatus>EXPIRED</con:accessTokenStartingStatus><con:accessTokenExpirationTime>1209599</con:accessTokenExpirationTime><con:accessTokenIssuedTime>1464187829</con:accessTokenIssuedTime><con:resourceOwnerName>t@t.t</con:resourceOwnerName><con:resourceOwnerPassword>P@ssw0rd</con:resourceOwnerPassword></con:oAuth2Profile></con:oAuth2ProfileContainer><con:reporting><con:xmlTemplates/><con:parameters/></con:reporting><con:sensitiveInformation/><con:authRepository/><con:tags/></con:soapui-project>

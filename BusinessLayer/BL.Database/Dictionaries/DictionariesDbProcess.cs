@@ -3967,18 +3967,6 @@ namespace BL.Database.Dictionaries
 
                 qry = RegistrationJournalGetWhere(ref qry, filter);
 
-                if (!string.IsNullOrEmpty(filter.NameExact))
-                {
-                    qry = qry.Where(x => x.Name == filter.NameExact);
-                }
-
-                if (!string.IsNullOrEmpty(filter.IndexExact))
-                {
-                    qry = qry.Where(x => x.Index == filter.IndexExact);
-                }
-
-
-
                 return qry.Select(x => new InternalDictionaryRegistrationJournal
                 {
                     // pss Перегонка значений DictionaryRegistrationJournals
@@ -4036,16 +4024,6 @@ namespace BL.Database.Dictionaries
 
                 qry = RegistrationJournalGetWhere(ref qry, filter);
 
-                if (!string.IsNullOrEmpty(filter.NameExact))
-                {
-                    qry = qry.Where(x => x.Name == filter.NameExact);
-                }
-
-                if (!string.IsNullOrEmpty(filter.IndexExact))
-                {
-                    qry = qry.Where(x => x.Index == filter.IndexExact);
-                }
-
                 var res = qry.Select(x => new FrontDictionaryRegistrationJournal
                 {
                     Id = x.Id
@@ -4092,6 +4070,11 @@ namespace BL.Database.Dictionaries
                 }
             }
 
+            if (!string.IsNullOrEmpty(filter.NameExact))
+            {
+                qry = qry.Where(x => x.Name == filter.NameExact);
+            }
+
             // Условие по Index
             if (!string.IsNullOrEmpty(filter.Index))
             {
@@ -4099,6 +4082,11 @@ namespace BL.Database.Dictionaries
                 {
                     qry = qry.Where(x => x.Index.Contains(temp));
                 }
+            }
+
+            if (!string.IsNullOrEmpty(filter.IndexExact))
+            {
+                qry = qry.Where(x => x.Index == filter.IndexExact);
             }
 
             // Условие по DepartmentIDs
@@ -4969,6 +4957,7 @@ namespace BL.Database.Dictionaries
 
         #endregion DictionaryTags
 
+        // pss перенести в AdminCore
         #region AdminAccessLevels
         public FrontAdminAccessLevel GetAdminAccessLevel(IContext ctx, int id)
         {
