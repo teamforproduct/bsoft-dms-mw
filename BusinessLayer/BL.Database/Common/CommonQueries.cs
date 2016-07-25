@@ -93,7 +93,10 @@ namespace BL.Database.Common
 
             var qry = CommonQueries.GetDocumentQuery(dbContext, ctx, acc);
 
-            qry = qry.Where(x => x.IsRegistered.HasValue);
+            if (filter == null || !filter.IsIgnoreRegistered)
+            {
+                qry = qry.Where(x => x.IsRegistered.HasValue);
+            }
 
             if (filter != null)
             {
@@ -1682,6 +1685,34 @@ namespace BL.Database.Common
                 //PlanResponsibleExecutorPositionExecutorAgentName = x.Event.TargetPositionExecutorAgent.Name,
             }).ToList();
 
+            {
+                var filterContains = PredicateBuilder.False<DocumentSendLists>();
+                filterContains = tasks.Select(x => x.Id).Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.TaskId == value).Expand());
+
+                var sendLists = dbContext.DocumentSendListsSet.Where(filterContains)
+                                    .Where(x => x.SendTypeId == (int)EnumSendTypes.SendForResponsibleExecution)
+                                    .Select(x => new
+                                    {
+                                        TaskId = x.TaskId,
+                                        ResponsibleExecutorPositionName = x.TargetPosition.Name,
+                                        ResponsibleExecutorPositionExecutorAgentName = x.TargetPositionExecutorAgent.Name,
+                                        IsFactExecutor = x.StartEventId.HasValue,
+                                    }).ToList();
+
+                tasks.ForEach(x =>
+                {
+                    var sendList = sendLists.FirstOrDefault(y => y.TaskId == x.Id);
+                    if (sendList != null)
+                    {
+                        x.IsFactExecutor = sendList.IsFactExecutor;
+                        x.ResponsibleExecutorPositionName = sendList.ResponsibleExecutorPositionName;
+                        x.ResponsibleExecutorPositionExecutorAgentName = sendList.ResponsibleExecutorPositionExecutorAgentName;
+                    }
+                });
+
+            }
+
             tasks.ForEach(x => CommonQueries.ChangeRegistrationFullNumber(x));
 
             return tasks;
@@ -2911,7 +2942,7 @@ namespace BL.Database.Common
                 if (filter.TypeId?.Count() > 0)
                 {
                     var filterContains = PredicateBuilder.False<EncryptionCertificates>();
-                    filterContains = filter.TypeId.Select(x=>(int)x).ToList().Aggregate(filterContains,
+                    filterContains = filter.TypeId.Select(x => (int)x).ToList().Aggregate(filterContains,
                         (current, value) => current.Or(e => e.TypeId == value).Expand());
 
                     qry = qry.Where(filterContains);

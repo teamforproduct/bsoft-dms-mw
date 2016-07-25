@@ -177,5 +177,10 @@ namespace BL.Model.DocumentCore.Filters
         /// Дата "по" для отбора по дате документа
         /// </summary>
         public DateTime? DocumentToDate { get; set; }
+
+        /// <summary>
+        /// Отображать все документы
+        /// </summary>
+        public bool IsIgnoreRegistered { get; set; }
     }
 }

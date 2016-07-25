@@ -22,12 +22,10 @@ namespace BL.Model.DocumentCore.FrontModel
         public string PositionName { get; set; }
         public string PositionExecutorAgentPhoneNumber { get; set; }
 
-        public string PlanResponsibleExecutorPositionName { get; set; }
-        public string PlanResponsibleExecutorPositionExecutorAgentName { get; set; }
+        public bool IsFactExecutor { get; set; }
 
-        public string FactResponsibleExecutorPositionName { get; set; }
-        public string FactResponsibleExecutorPositionExecutorAgentName { get; set; }
-
+        public string ResponsibleExecutorPositionName { get; set; }
+        public string ResponsibleExecutorPositionExecutorAgentName { get; set; }
 
     }
 }
