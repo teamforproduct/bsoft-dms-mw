@@ -131,6 +131,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public int? WaitsCount { get; set; }
         public int? SendListsCount { get; set; }
         public int? SubscriptionsCount { get; set; }
+        public int? AccessesCount { get; set; }
         // public int EventsCount { get; set; }
         // public int NewEventCount { get; set; }
         // public int AttachedFilesCount { get; set; }

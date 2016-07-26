@@ -42,6 +42,7 @@ namespace BL.Database.Documents
                         IsLaunchPlan = x.IsLaunchPlan,
                         ExecutorPositionId = x.ExecutorPositionId,
                         LinkId = x.LinkId,
+                        AccessesCount = x.Accesses.Count(),
                     }).FirstOrDefault();
 
                 if (res.Document != null)
@@ -1152,9 +1153,11 @@ namespace BL.Database.Documents
                     .Select(x => new InternalDocument
                     {
                         Id = x.Id,
-                        ExecutorPositionId = x.ExecutorPositionId
+                        ExecutorPositionId = x.ExecutorPositionId,
+                        AccessesCount = x.Accesses.Count()
                     }).FirstOrDefault();
                 if (doc == null) return null;
+
                 doc.Tasks = dbContext.DocumentTasksSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
                     .Where(x => !string.IsNullOrEmpty(model.Task) && x.DocumentId == model.DocumentId && x.Task == model.Task)
                     .Select(x => new List<InternalDocumentTask>

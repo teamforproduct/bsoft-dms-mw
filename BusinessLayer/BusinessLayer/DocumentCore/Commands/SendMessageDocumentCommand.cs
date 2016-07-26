@@ -34,7 +34,10 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanBeDisplayed(int positionId)
         {
-            return true;
+            if (_document.AccessesCount > 1)
+                return true;
+            else
+                return false;
         }
 
         public override bool CanExecute()

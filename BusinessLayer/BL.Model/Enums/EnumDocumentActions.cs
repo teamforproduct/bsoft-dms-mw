@@ -263,6 +263,10 @@
         /// Добавить пункт плана
         /// </summary>
         AddDocumentSendList = 103001,
+        /// <summary>
+        /// Добавить пункт плана копированием
+        /// </summary>
+        CopyDocumentSendList = 103003,
 
         /// <summary>
         /// Добавить план работы по стандартному списку
