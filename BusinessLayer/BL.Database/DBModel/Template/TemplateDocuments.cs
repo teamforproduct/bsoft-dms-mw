@@ -25,6 +25,8 @@ namespace BL.Database.DBModel.Template
         [Index("IX_Name", 1, IsUnique = true)]
         public string Name { get; set; }
         public bool IsHard { get; set; }
+        public bool IsForProject { get; set; }
+        public bool IsForDocument { get; set; }
         public int DocumentDirectionId { get; set; }
         public int DocumentTypeId { get; set; }
         public Nullable<int> DocumentSubjectId { get; set; }

@@ -10,6 +10,8 @@ namespace BL.Model.DocumentCore.FrontModel
         public int Id { get; set; }
         public string Name { get; set; }
         public bool IsHard { get; set; }
+        public bool IsForProject { get; set; }
+        public bool IsForDocument { get; set; }
         public EnumDocumentDirections DocumentDirection { get; set; }
         public string DocumentDirectionName { get; set; }
 

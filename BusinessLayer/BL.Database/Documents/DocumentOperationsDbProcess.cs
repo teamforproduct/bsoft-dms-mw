@@ -594,6 +594,7 @@ namespace BL.Database.Documents
                     .Select(x => new InternalDocument
                     {
                         Id = x.DocumentId,
+                        IsLaunchPlan = x.Document.IsLaunchPlan,
                         Waits = new List<InternalDocumentWait>
                                     {
                                         new InternalDocumentWait

@@ -14,6 +14,8 @@ namespace BL.Model.DocumentCore.IncomingModel
         public int? Id { get; set; }
         public string Name { get; set; }
         public bool IsHard { get; set; }
+        public bool IsForProject { get; set; }
+        public bool IsForDocument { get; set; }
         public EnumDocumentDirections DocumentDirection { get; set; }
         public int DocumentTypeId { get; set; }
         public int? DocumentSubjectId { get; set; }

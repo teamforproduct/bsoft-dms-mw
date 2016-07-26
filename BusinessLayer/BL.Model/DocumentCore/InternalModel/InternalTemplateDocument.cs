@@ -12,6 +12,8 @@ namespace BL.Model.DocumentCore.InternalModel
         public int Id { get; set; }
         public string Name { get; set; }
         public bool IsHard { get; set; }
+        public bool IsForProject { get; set; }
+        public bool IsForDocument { get; set; }
         public EnumDocumentDirections DocumentDirection { get; set; }
         public int DocumentTypeId { get; set; }
         public int? DocumentSubjectId { get; set; }
@@ -35,6 +37,8 @@ namespace BL.Model.DocumentCore.InternalModel
             this.Id = model.Id ?? -1;
             this.Name = model.Name;
             this.IsHard = model.IsHard;
+            this.IsForProject = model.IsForProject;
+            this.IsForDocument = model.IsForDocument;
             this.DocumentDirection = model.DocumentDirection;
             this.DocumentTypeId = model.DocumentTypeId;
             this.DocumentSubjectId = model.DocumentSubjectId;

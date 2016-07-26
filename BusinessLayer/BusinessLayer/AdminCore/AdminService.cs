@@ -78,7 +78,7 @@ namespace BL.Logic.AdminCore
 
         public IEnumerable<FrontAdminUserRole> GetPositionsByCurrentUser(IContext context)
         {
-            return _adminDb.GetPositionsByUser(context, new FilterAdminUserRole() { IDs = new List<int>() { context.CurrentAgentId } });
+            return _adminDb.GetPositionsByUser(context, new FilterAdminUserRole() { UserIDs = new List<int>() { context.CurrentAgentId } });
         }
         #endregion
 

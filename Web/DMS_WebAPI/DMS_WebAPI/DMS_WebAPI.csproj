@@ -453,9 +453,16 @@
     <None Include="Project_Readme.html" />
   </ItemGroup>
   <ItemGroup>
+    <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\..\..\BusinessLayer\BL.CrossCutting\BL.CrossCutting.csproj">
       <Project>{4722ffa8-aa00-4202-a811-6ea91327ac6b}</Project>
       <Name>BL.CrossCutting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\BusinessLayer\BL.Database\BL.Database.csproj">
+      <Project>{1d06a1b8-1333-4a3a-b127-373415adc3d4}</Project>
+      <Name>BL.Database</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\BusinessLayer\BL.Model\BL.Model.csproj">
       <Project>{03391e8b-074e-4bed-ae8e-5fc4883aeddf}</Project>
@@ -466,10 +473,6 @@
       <Name>BL.Logic</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
-  </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201606162106554_InitialMigration.resx">
       <DependentUpon>201606162106554_InitialMigration.cs</DependentUpon>
