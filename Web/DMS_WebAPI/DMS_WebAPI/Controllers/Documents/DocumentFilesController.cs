@@ -9,6 +9,8 @@ using BL.Model.Enums;
 using System.Collections.Generic;
 using BL.Model.SystemCore;
 using System.Web;
+using BL.Model.DocumentCore.FrontModel;
+using System.Web.Http.Description;
 
 namespace DMS_WebAPI.Controllers.Documents
 {
@@ -34,6 +36,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// Общий список файлов
         /// </summary>
         /// <param name="filter">фильтр</param>
+        /// <param name="paging">paging</param>
         /// <returns></returns>
         [Route("GetFileList")]
         [HttpGet]
@@ -45,9 +48,40 @@ namespace DMS_WebAPI.Controllers.Documents
             {
                 paging = new UIPaging();
             }
+            if (filter == null)
+            {
+                filter = new FilterBase();
+            }
+            if (filter.File == null)
+            {
+                filter.File = new FilterDocumentFile();
+            }
 
             var res = new JsonResult(docFileProc.GetDocumentFiles(ctx, filter, paging), this);
             res.Paging = paging;
+            return res;
+        }
+
+
+        /// <summary>
+        /// Общий список файлов
+        /// </summary>
+        /// <param name="model">Входящая модель</param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("GetList")]
+        [ResponseType(typeof(List<FrontDocumentAttachedFile>))]
+        public IHttpActionResult PostGetList([FromBody]IncomingBase model)
+        {
+            if (model == null) model = new IncomingBase();
+            if (model.Filter == null) model.Filter = new FilterBase();
+            if (model.Filter.File == null) model.Filter.File = new FilterDocumentFile();
+            if (model.Paging == null) model.Paging = new UIPaging();
+
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var docFileProc = DmsResolver.Current.Get<IDocumentFileService>();
+            var res = new JsonResult(docFileProc.GetDocumentFiles(ctx, model.Filter, model.Paging), this);
+            res.Paging = model.Paging;
             return res;
         }
 

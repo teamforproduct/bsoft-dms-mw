@@ -14,6 +14,9 @@ namespace BL.Logic.DocumentCore.Interfaces
         void GetCountDocuments(IContext ctx, LicenceInfo licence);
         IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterBase filters, UIPaging paging);
         FrontDocument GetDocument(IContext ctx, int documentId, FilterDocumentById filter);
+
+        IEnumerable<int> GetLinkedDocumentIds(IContext ctx, int documentId);
+
         IEnumerable<BaseSystemUIElement> GetModifyMetaData(IContext ctx, FrontDocument doc);
         object ExecuteAction(EnumDocumentActions act, IContext context, object param);
         FrontDocumentEvent GetDocumentEvent(IContext ctx, int eventId);

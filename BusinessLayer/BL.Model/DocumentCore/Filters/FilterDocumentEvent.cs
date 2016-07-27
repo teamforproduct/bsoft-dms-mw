@@ -13,6 +13,21 @@ namespace BL.Model.DocumentCore.Filters
     public class FilterDocumentEvent
     {
         /// <summary>
+        /// Массив ИД документов
+        /// </summary>
+        public List<int> DocumentId { get; set; }
+        /// <summary>
+        /// Отобрать по связанным документам
+        /// Работает только если в DocumentId передан один ID
+        /// </summary>
+        public bool AllLinkedDocuments { get; set; }
+
+        /// <summary>
+        /// Массив ИД событий документов
+        /// </summary>
+        public List<int> EventId { get; set; }
+
+        /// <summary>
         /// Отбор по событиям признаку прочтения Все/Только новые
         /// </summary>
         public bool? IsNew { get; set; }
@@ -58,15 +73,5 @@ namespace BL.Model.DocumentCore.Filters
         /// Массив ИД агентов внешних получателей событий по документу
         /// </summary>
         public List<int> TargetAgentId { get; set; }
-
-        /// <summary>
-        /// Массив ИД документов
-        /// </summary>
-        public List<int> DocumentId { get; set; }
-
-        /// <summary>
-        /// Массив ИД событий документов
-        /// </summary>
-        public List<int> EventId { get; set; }
     }
 }

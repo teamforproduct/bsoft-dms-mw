@@ -8,10 +8,12 @@ using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
+using BL.Model.DocumentCore.IncomingModel;
 
 namespace DMS_WebAPI.Controllers.Documents
 {
     [Authorize]
+    [RoutePrefix("api/v2/DocumentWaits")]
     public class DocumentWaitsController : ApiController
     {
         /// <summary>
@@ -28,6 +30,28 @@ namespace DMS_WebAPI.Controllers.Documents
             var waits = docProc.GetDocumentWaits(ctx, filter, paging);
             var res = new JsonResult(waits, this);
             res.Paging = paging;
+            return res;
+        }
+
+        /// <summary>
+        /// Получение списка ожиданий 
+        /// </summary>
+        /// <param name="model">Входящая модель</param>
+        /// <returns>Список ожиданий</returns>
+        [HttpPost]
+        [Route("GetList")]
+        [ResponseType(typeof(List<FrontDocumentWait>))]
+        public IHttpActionResult PostGetList([FromBody]IncomingBase model)
+        {
+            if (model == null) model = new IncomingBase();
+            if (model.Filter == null) model.Filter = new FilterBase();
+            if (model.Paging == null) model.Paging = new UIPaging();
+
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            var waits = docProc.GetDocumentWaits(ctx, model.Filter, model.Paging);
+            var res = new JsonResult(waits, this);
+            res.Paging = model.Paging;
             return res;
         }
     }

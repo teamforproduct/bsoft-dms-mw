@@ -19,6 +19,12 @@ namespace BL.Model.DocumentCore.Filters
         public List<int> DocumentId { get; set; }
 
         /// <summary>
+        /// Отобрать по связанным документам
+        /// Работает только если в DocumentId передан один ID
+        /// </summary>
+        public bool AllLinkedDocuments { get; set; }
+
+        /// <summary>
         /// Массив ИД документов полученного из полнотекстового поиска
         /// </summary>
         [XmlIgnore]

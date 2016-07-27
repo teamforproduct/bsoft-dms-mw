@@ -102,6 +102,11 @@ namespace BL.Database.Common
             {
                 #region Base
 
+                if (filter.AllLinkedDocuments && filter.DocumentId?.Count() == 1)
+                {
+                    filter.DocumentId = GetLinkedDocumentIds(ctx, dbContext, filter.DocumentId.First(), false).ToList();
+                }
+
                 if (filter.DocumentId?.Count() > 0)
                 {
                     var filterContains = PredicateBuilder.False<DBModel.Document.Documents>();
@@ -465,6 +470,11 @@ namespace BL.Database.Common
                     qry = qry.Where(filterContains);
                 }
 
+                if (filter.AllLinkedDocuments && filter.DocumentId?.Count() == 1)
+                {
+                    filter.DocumentId = GetLinkedDocumentIds(ctx, dbContext, filter.DocumentId.First(), false).ToList();
+                }
+
                 if (filter.DocumentId?.Count() > 0)
                 {
                     var filterContains = PredicateBuilder.False<DocumentEvents>();
@@ -818,6 +828,11 @@ namespace BL.Database.Common
                     qry = qry.Where(filterContains);
                 }
 
+                if (filter.AllLinkedDocuments && filter.DocumentId?.Count() == 1)
+                {
+                    filter.DocumentId = GetLinkedDocumentIds(ctx, dbContext, filter.DocumentId.First(), false).ToList();
+                }
+
                 if (filter.DocumentId?.Count > 0)
                 {
                     var filterContains = PredicateBuilder.False<DocumentFiles>();
@@ -1064,6 +1079,10 @@ namespace BL.Database.Common
 
             if (filter != null)
             {
+                if (filter.AllLinkedDocuments && filter.DocumentId?.Count() == 1)
+                {
+                    filter.DocumentId = GetLinkedDocumentIds(ctx, dbContext, filter.DocumentId.First(), false).ToList();
+                }
 
                 if (filter.DocumentId?.Count() > 0)
                 {
@@ -2249,6 +2268,25 @@ namespace BL.Database.Common
             });
 
             return items;
+        }
+        public static IEnumerable<int> GetLinkedDocumentIds(IContext context, DmsContext dbContext, int documentId, bool isVerifyAccesses = true)
+        {
+            IQueryable<int?> docLinkId;
+            if (isVerifyAccesses)
+            {
+                docLinkId = CommonQueries.GetDocumentQuery(dbContext, context).Where(x => x.Id == documentId && x.LinkId.HasValue).Select(x => x.LinkId).AsQueryable();
+            }
+            else
+            {
+                docLinkId = dbContext.DocumentsSet.Where(y => y.LinkId.HasValue && y.Id == documentId).Select(y => y.LinkId).AsQueryable();
+            }
+
+            var docIds = dbContext.DocumentsSet.Where(x => x.LinkId.HasValue && docLinkId.Contains(x.LinkId)).Select(x => x.Id).ToList();
+
+            if (!docIds.Any())
+                docIds = new List<int> { documentId };
+
+            return docIds;
         }
         #endregion
 

@@ -12,6 +12,20 @@ namespace BL.Model.DocumentCore.Filters
     public class FilterDocumentFile
     {
         /// <summary>
+        /// Массив ИД документов
+        /// </summary>
+        public List<int> DocumentId { get; set; }
+        /// <summary>
+        /// Отобрать по связанным документам
+        /// Работает только если в DocumentId передан один ID
+        /// </summary>
+        public bool AllLinkedDocuments { get; set; }
+        /// <summary>
+        /// Массив ИД файлов документов
+        /// </summary>
+        public List<int> FileId { get; set; }
+
+        /// <summary>
         /// Отрывок названия по File
         /// </summary>
         public string Name { get; set; }
@@ -40,14 +54,6 @@ namespace BL.Model.DocumentCore.Filters
         /// </summary>
         public List<int> AgentId { get; set; }
 
-        /// <summary>
-        /// Массив ИД документов
-        /// </summary>
-        public List<int> DocumentId { get; set; }
-        /// <summary>
-        /// Массив ИД файлов документов
-        /// </summary>
-        public List<int> FileId { get; set; }
         /// <summary>
         /// Массив порядковых номеров файлов в списке файлов документа
         /// </summary>

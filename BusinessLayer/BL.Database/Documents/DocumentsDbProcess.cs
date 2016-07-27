@@ -250,7 +250,7 @@ namespace BL.Database.Documents
                 if (docs.Any(x => x.LinkId.HasValue))
                 {
                     var filterContains = PredicateBuilder.False<DBModel.Document.Documents>();
-                    filterContains = docs.GroupBy(x=>x.LinkId).Where(x => x.Key.HasValue).Select(x => x.Key).Aggregate(filterContains,
+                    filterContains = docs.GroupBy(x => x.LinkId).Where(x => x.Key.HasValue).Select(x => x.Key).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.LinkId == value).Expand());
 
                     var links = CommonQueries.GetDocumentQuery(dbContext, ctx)
@@ -262,7 +262,7 @@ namespace BL.Database.Documents
 
                     docs.ForEach(x =>
                     {
-                        x.LinkedDocumentsCount = links.FirstOrDefault(y => y.LinkId == x.LinkId)?.Count??0;
+                        x.LinkedDocumentsCount = links.FirstOrDefault(y => y.LinkId == x.LinkId)?.Count ?? 0;
                         x.LinkedDocumentsCount = x.LinkedDocumentsCount < 2 ? 0 : x.LinkedDocumentsCount - 1;
                     });
                 }
@@ -381,9 +381,13 @@ namespace BL.Database.Documents
                     var linkedDocumentsCount = res.LinkedDocuments.Count();
                     res.LinkedDocumentsCount = linkedDocumentsCount < 2 ? 0 : linkedDocumentsCount - 1;
 
-                    if ((filter?.DocumentsIdForAIP != null) && (filter.DocumentsIdForAIP.Any()))
+                    if (filter?.DocumentsIdForAIP?.Count() > 0)
                     {
-                        docIds = filter?.DocumentsIdForAIP;
+                        docIds = filter.DocumentsIdForAIP;
+                    }
+                    else
+                    {
+                        docIds = res.LinkedDocuments.Select(x => x.Id).ToList();
                     }
                 }
 
@@ -400,6 +404,13 @@ namespace BL.Database.Documents
                 res.Properties = CommonQueries.GetPropertyValues(dbContext, ctx, new FilterPropertyValue { RecordId = new List<int> { documentId }, Object = new List<EnumObjects> { EnumObjects.Documents } });
 
                 return res;
+            }
+        }
+        public IEnumerable<int> GetLinkedDocumentIds(IContext ctx, int documentId)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                return CommonQueries.GetLinkedDocumentIds(ctx, dbContext, documentId);
             }
         }
 

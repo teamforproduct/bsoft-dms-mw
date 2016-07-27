@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 namespace DMS_WebAPI.Controllers.Documents
 {
     [Authorize]
+    [RoutePrefix("api/v2/Documents")]
     public class DocumentsController : ApiController
     {
         /// <summary>
@@ -40,7 +41,30 @@ namespace DMS_WebAPI.Controllers.Documents
             //BL.CrossCutting.Helpers.Logger.SaveToFile("DB: IDocumentService GetDocuments User: " + ctx.CurrentAgentId, timeDB.Elapsed);
             //BL.CrossCutting.Helpers.Logger.SaveToFile("M:DocumentsController-GetList", timeM.Elapsed);
             return res;
-        }        
+        }
+
+
+        /// <summary>
+        /// Получение списка документов
+        /// </summary>
+        /// <param name="model">Входящая модель</param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("GetList")]
+        [ResponseType(typeof(List<FrontDocumentWait>))]
+        public IHttpActionResult PostGetList([FromBody]IncomingBase model)
+        {
+            if (model == null) model = new IncomingBase();
+            if (model.Filter == null) model.Filter = new FilterBase();
+            if (model.Paging == null) model.Paging = new UIPaging();
+
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            var docs = docProc.GetDocuments(ctx, model.Filter, model.Paging);
+            var res = new JsonResult(docs, this);
+            res.Paging = model.Paging;
+            return res;
+        }
 
         /// <summary>
         /// Получение документа по ИД

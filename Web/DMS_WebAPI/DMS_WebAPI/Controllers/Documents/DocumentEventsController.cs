@@ -7,10 +7,13 @@ using BL.Model.DocumentCore.FrontModel;
 using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
+using System.Collections.Generic;
+using BL.Model.DocumentCore.IncomingModel;
 
 namespace DMS_WebAPI.Controllers.Documents
 {
     [Authorize]
+    [RoutePrefix("api/v2/DocumentEvents")]
     public class DocumentEventsController : ApiController
     {
         /// <summary>
@@ -19,7 +22,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <param name="filter">модель фильтра ивентов</param>
         /// <param name="paging">paging</param>
         /// <returns>список ивентов</returns>
-        [ResponseType(typeof(FrontDocumentEvent))]
+        [ResponseType(typeof(List<FrontDocumentEvent>))]
         public IHttpActionResult Get([FromUri] FilterBase filter, [FromUri]UIPaging paging)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
@@ -27,6 +30,29 @@ namespace DMS_WebAPI.Controllers.Documents
             var events = docProc.GetDocumentEvents(ctx, filter, paging);
             var res = new JsonResult(events, this);
             res.Paging = paging;
+            return res;
+        }
+
+
+        /// <summary>
+        /// Получение списка ивентов 
+        /// </summary>
+        /// <param name="model">Входящая модель</param>
+        /// <returns>Список ивентов</returns>
+        [HttpPost]
+        [Route("GetList")]
+        [ResponseType(typeof(List<FrontDocumentWait>))]
+        public IHttpActionResult PostGetList([FromBody]IncomingBase model)
+        {
+            if (model == null) model = new IncomingBase();
+            if (model.Filter == null) model.Filter = new FilterBase();
+            if (model.Paging == null) model.Paging = new UIPaging();
+
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            var events = docProc.GetDocumentEvents(ctx, model.Filter, model.Paging);
+            var res = new JsonResult(events, this);
+            res.Paging = model.Paging;
             return res;
         }
 

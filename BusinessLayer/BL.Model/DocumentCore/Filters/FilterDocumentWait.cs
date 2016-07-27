@@ -16,6 +16,11 @@ namespace BL.Model.DocumentCore.Filters
         /// </summary>
         public List<int> DocumentId { get; set; }
         /// <summary>
+        /// Отобрать по связанным документам
+        /// Работает только если в DocumentId передан один ID
+        /// </summary>
+        public bool AllLinkedDocuments { get; set; }
+        /// <summary>
         /// ИД. инициирующего события
         /// </summary>
         public List<int> OnEventId { get; set; }

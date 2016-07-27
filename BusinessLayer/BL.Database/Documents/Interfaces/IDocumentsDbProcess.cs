@@ -20,6 +20,8 @@ namespace BL.Database.Documents.Interfaces
         IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterBase filters, UIPaging paging);
         FrontDocument GetDocument(IContext ctx, int documentId, FilterDocumentById filter);
 
+        IEnumerable<int> GetLinkedDocumentIds(IContext ctx, int documentId);
+
         InternalDocument ReportRegistrationCardDocumentPrepare(IContext ctx, int documentId);
         ReportDocument ReportRegistrationCardDocument(IContext ctx, int documentId);
 

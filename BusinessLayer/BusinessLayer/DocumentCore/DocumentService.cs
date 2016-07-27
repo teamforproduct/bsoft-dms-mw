@@ -73,6 +73,11 @@ namespace BL.Logic.DocumentCore
             return doc;
         }
 
+        public IEnumerable<int> GetLinkedDocumentIds(IContext ctx, int documentId)
+        {
+            return _documentDb.GetLinkedDocumentIds(ctx, documentId);
+        }
+
 
         public IEnumerable<BaseSystemUIElement> GetModifyMetaData(IContext ctx, FrontDocument doc)
         {
