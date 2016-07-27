@@ -1375,33 +1375,30 @@ namespace BL.Database.Common
                     return new List<FrontDocumentWait>();
                 }
 
-                if (!paging.IsAll)
+                var skip = paging.PageSize * (paging.CurrentPage - 1);
+                var take = paging.PageSize;
+
+                if (qrys.Count > 1)
                 {
-                    var skip = paging.PageSize * (paging.CurrentPage - 1);
-                    var take = paging.PageSize;
+                    var take1 = paging.PageSize * (paging.CurrentPage - 1) + paging.PageSize;
 
-                    if (qrys.Count > 1)
+                    qrys = qrys.Select(qry => qry.Take(() => take1)).ToList();
+
+                    var qryConcat = qrys.First();
+
+                    foreach (var qry in qrys.Skip(1).ToList())
                     {
-                        var take1 = paging.PageSize * (paging.CurrentPage - 1) + paging.PageSize;
-
-                        qrys = qrys.Select(qry => qry.Take(() => take1)).ToList();
-
-                        var qryConcat = qrys.First();
-
-                        foreach (var qry in qrys.Skip(1).ToList())
-                        {
-                            qryConcat = qryConcat.Concat(qry);
-                        }
-
-                        qrys.Clear();
-                        qrys.Add(qryConcat);
+                        qryConcat = qryConcat.Concat(qry);
                     }
 
-                    //TODO Sort
-                    qrys = qrys.Select(qry => { return qry.OrderBy(x => x.DueDate).AsQueryable(); }).ToList();
-
-                    qrys = qrys.Select(qry => qry.Skip(() => skip).Take(() => take)).ToList();
+                    qrys.Clear();
+                    qrys.Add(qryConcat);
                 }
+
+                //TODO Sort
+                qrys = qrys.Select(qry => { return qry.OrderBy(x => x.DueDate).AsQueryable(); }).ToList();
+
+                qrys = qrys.Select(qry => qry.Skip(() => skip).Take(() => take)).ToList();
             }
 
             IQueryable<DocumentWaits> qryRes = qrys.First();
