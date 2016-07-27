@@ -2216,7 +2216,7 @@ namespace BL.Database.Common
                 DepartmentName = x.Position.Department.Name,
                 ExecutorAgentName = x.Position.ExecutorAgent.Name,
                 PositionPhone = "(888)888-88-88"
-            }).ToList();
+            }).Distinct().ToList();
 
         }
         #endregion
