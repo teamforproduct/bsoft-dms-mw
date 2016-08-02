@@ -1,5 +1,4 @@
 ﻿using System;
-using BL.Model.Enums;
 
 namespace BL.Model.SystemCore
 {

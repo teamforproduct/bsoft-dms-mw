@@ -1,7 +1,4 @@
-﻿using BL.Model.Database;
-using BL.Model.SystemCore;
-
-namespace BL.Model.WebAPI.FrontModel
+﻿namespace BL.Model.WebAPI.FrontModel
 {
     public class FrontAspNetLicence
     {

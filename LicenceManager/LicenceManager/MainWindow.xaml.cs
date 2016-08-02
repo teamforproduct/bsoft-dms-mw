@@ -30,7 +30,8 @@ namespace LicenceManager
                     cbLicenceType.Items.Add(nm);
                 }
             }
-
+            DtStartDate.DisplayDate = DateTime.Now.Date;
+            DtStartDate.SelectedDate = DateTime.Now.Date;
             cbLicenceType.SelectedIndex = 0;
             RefreshClientsInfo();
         }
@@ -64,7 +65,7 @@ namespace LicenceManager
             using (var ctx = new LicenceManagerDb(GetConnectionString()))
             {
                 var clInfo = new ClientsInfo {Name = txtClientName.Text};
-                clInfo.Licences.Add(new ClientsLicence { IsTrial = false, LicenceKey = txtLicenceCode.Text, VerificationCode = txtClientCode.Text, StartDate = DateTime.Now,LicenceId = ctx.LicenceTypes.First(x => x.Name == cbLicenceType.Text).Id});
+                clInfo.Licences.Add(new ClientsLicence { IsTrial = false, LicenceKey = txtLicenceCode.Text, VerificationCode = txtClientCode.Text, StartDate = (DtStartDate.SelectedDate??DateTime.Now).Date,LicenceId = ctx.LicenceTypes.First(x => x.Name == cbLicenceType.Text).Id});
                 ctx.ClientsInfos.Add(clInfo);
                 ctx.SaveChanges();
             }
@@ -82,6 +83,7 @@ namespace LicenceManager
                     DateLimit = x.DurationDay,
                     ConcurenteNumberOfConnections = x.ConcurenteNumberOfConnections,
                     Functionals = x.Functionals,
+                    
                     NamedNumberOfConnections = x.NamedNumberOfConnections
                 }).First();
             }

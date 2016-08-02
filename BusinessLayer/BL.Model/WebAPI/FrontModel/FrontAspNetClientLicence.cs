@@ -1,6 +1,4 @@
-﻿using BL.Model.Database;
-using BL.Model.SystemCore;
-using System;
+﻿using BL.Model.SystemCore;
 
 namespace BL.Model.WebAPI.FrontModel
 {

@@ -355,6 +355,7 @@ namespace DMS_WebAPI.Utilities
         { 
             return GetClientLicences(new FilterAspNetClientLicences { ClientLicenceIds = new List<int> { id } }).FirstOrDefault();
         }
+
         public FrontAspNetClientLicence GetClientLicenceActive(int clientId)
         {
             var lic = GetClientLicences(new FilterAspNetClientLicences { ClientIds = new List<int> { clientId }, IsNowUsed = true }).FirstOrDefault();
@@ -425,7 +426,7 @@ namespace DMS_WebAPI.Utilities
                     var item = new AspNetClientLicences
                     {
                         ClientId = ctx.CurrentClientId,
-                        FirstStart = DateTime.Now,
+                        FirstStart = DateTime.Now.Date,
                         IsActive = false,
                         LicenceId = licenceId
                     };

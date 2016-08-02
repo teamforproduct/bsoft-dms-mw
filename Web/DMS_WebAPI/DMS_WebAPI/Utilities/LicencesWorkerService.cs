@@ -10,13 +10,16 @@ namespace DMS_WebAPI.Utilities
         private Task _initializeThread;
         private Timer _timer;
         private int _VERIFY_LICENCES_TIMEOUT_MIN = 1;
+
         public LicencesWorkerService()
         {
         }
+
         public void Initialize()
         {
             _initializeThread = Task.Factory.StartNew(InitializeServers);
         }
+
         protected void InitializeServers()
         {
             try
@@ -39,7 +42,7 @@ namespace DMS_WebAPI.Utilities
         }
 
         private void VerifyLicences(object param)
-       {
+        {
             try
             {
                 var webProc = new WebAPIDbProcess();
@@ -48,9 +51,13 @@ namespace DMS_WebAPI.Utilities
 
                 var clients = webProc.GetClients(null);
 
-                foreach(var client in clients)
+                foreach (var client in clients)
                 {
-                    var dbs = webProc.GetServersByAdmin(new BL.Model.WebAPI.Filters.FilterAdminServers { ClientIds = new System.Collections.Generic.List<int> { client.Id } });
+                    var dbs =
+                        webProc.GetServersByAdmin(new BL.Model.WebAPI.Filters.FilterAdminServers
+                        {
+                            ClientIds = new System.Collections.Generic.List<int> {client.Id}
+                        });
                     userContext.VerifyLicence(client.Id, dbs);
                 }
 
@@ -59,7 +66,7 @@ namespace DMS_WebAPI.Utilities
             catch (Exception ex)
             {
             }
-            _timer.Change(_VERIFY_LICENCES_TIMEOUT_MIN * 60000, Timeout.Infinite);//start new iteration of the timer
+            _timer.Change(_VERIFY_LICENCES_TIMEOUT_MIN*60000, Timeout.Infinite); //start new iteration of the timer
         }
 
         public void Dispose()
