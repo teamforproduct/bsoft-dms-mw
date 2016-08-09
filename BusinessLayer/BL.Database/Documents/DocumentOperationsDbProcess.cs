@@ -20,6 +20,8 @@ using DocumentAccesses = BL.Database.DBModel.Document.DocumentAccesses;
 using BL.Model.SystemCore.InternalModel;
 using BL.Model.Exception;
 using LinqKit;
+using BL.Model.DictionaryCore.FrontModel;
+using BL.Model.DictionaryCore.FilterModel;
 
 namespace BL.Database.Documents
 {
@@ -787,6 +789,14 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(ctx))
             {
                 return CommonQueries.GetDocumentSubscriptions(dbContext, filter, ctx, paging).ToList();
+            }
+        }
+
+        public IEnumerable<FrontDictionaryPosition> GetDocumentWorkGroup(IContext ctx, FilterDictionaryPosition filter, UIPaging paging)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                return CommonQueries.GetDocumentWorkGroup(dbContext, ctx, filter).ToList();
             }
         }
 

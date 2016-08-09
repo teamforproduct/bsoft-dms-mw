@@ -17,6 +17,8 @@ using BL.Model.SystemCore.Filters;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.Exception;
 using System.Transactions;
+using BL.Model.DictionaryCore.FilterModel;
+using BL.Model.DictionaryCore.FrontModel;
 
 namespace BL.Logic.DocumentCore
 {
@@ -122,6 +124,11 @@ namespace BL.Logic.DocumentCore
         public IEnumerable<FrontDocumentSubscription> GetDocumentSubscriptions(IContext ctx, FilterDocumentSubscription filter, UIPaging paging)
         {
             return _operationDb.GetDocumentSubscriptions(ctx, filter, paging);
+        }
+
+        public IEnumerable<FrontDictionaryPosition> GetDocumentWorkGroup(IContext ctx, FilterDictionaryPosition filter, UIPaging paging)
+        {
+            return _operationDb.GetDocumentWorkGroup(ctx, filter, paging);
         }
 
         public FrontRegistrationFullNumber GetNextRegisterDocumentNumber(IContext ctx, RegisterDocumentBase model)

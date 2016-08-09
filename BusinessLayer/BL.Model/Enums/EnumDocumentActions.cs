@@ -68,6 +68,8 @@
 
         SendForInformationExternal = 100015, // Направить для сведения внешнему агенту
 
+        SendDocument = 100018, // Направить документ
+
         /// <summary>
         /// Отметить прием
         /// </summary>
