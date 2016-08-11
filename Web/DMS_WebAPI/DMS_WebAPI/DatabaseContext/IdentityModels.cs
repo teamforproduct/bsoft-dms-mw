@@ -28,6 +28,10 @@ namespace DMS_WebAPI.Models
             : base("DefaultConnection", throwIfV1Schema: false)
         {
             Database.SetInitializer<ApplicationDbContext>(new ApplicationDbInitializer());
+            if (!this.Database.Exists())
+            {
+                this.Database.Initialize(true);
+            }
         }
 
         public static ApplicationDbContext Create()
@@ -55,6 +59,9 @@ namespace DMS_WebAPI.Models
                 using (var dbContext = new ApplicationDbContext())
                 {
                     //dbContext.Database.Delete();
+                }
+                using (var dbContext = new ApplicationDbContext())
+                {
                 }
             }
         }

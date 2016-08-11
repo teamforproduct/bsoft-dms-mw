@@ -27,6 +27,10 @@ namespace BL.Database.DatabaseContext
             _DefaultSchema = context.CurrentDB.DefaultSchema;
             this.Database.CommandTimeout = int.MaxValue;
             System.Data.Entity.Database.SetInitializer<DmsContext>(new DmsDbInitializer());
+            if (!this.Database.Exists())
+            {
+                this.Database.Initialize(true);
+            }
         }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
