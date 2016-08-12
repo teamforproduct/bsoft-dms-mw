@@ -27,7 +27,10 @@ namespace BL.Logic.DictionaryCore
 
         public override bool CanExecute()
         {
-            //TODO: Проверка возможности удаления записи
+            if (_dictDb.DocsWithTagCount(_context, Model) > 0)
+            {
+                throw new DictionaryRecordCouldNotBeDeleted();
+            }
             return true;
         }
 

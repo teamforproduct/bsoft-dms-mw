@@ -17,6 +17,7 @@ using BL.Model.FullTextSearch;
 using LinqKit;
 using BL.Database.DBModel.Document;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure.Interception;
 using System.Data.Entity.SqlServer;
 
 namespace BL.Database.Dictionaries
@@ -4842,6 +4843,12 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(filterContains);
                 }
 
+                if (!string.IsNullOrEmpty(filter.NameExact))
+                {
+                    qry = qry.Where(x => x.Name == filter.NameExact);
+                }
+
+
                 return qry.Select(x => new InternalDictionaryTag
                 {
                     Id = x.Id,
@@ -4876,6 +4883,12 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(filterContains);
                 }
 
+
+                if (!string.IsNullOrEmpty(filter.NameExact))
+                {
+                    qry = qry.Where(x => x.Name == filter.NameExact);
+                }
+
                 return qry.Select(x => new FrontDictionaryTag
                 {
                     Id = x.Id,
@@ -4883,8 +4896,21 @@ namespace BL.Database.Dictionaries
                     PositionId = x.PositionId,
                     IsSystem = !x.PositionId.HasValue,
                     Color = x.Color,
-                    PositionName = x.Position.Name
+                    PositionName = x.Position.Name,
+                    LastChangeDate = x.LastChangeDate,
+                    LastChangeUserId = x.LastChangeUserId,
+                    LastChangeUserName = dbContext.DictionaryAgentPersonsSet.FirstOrDefault(y => y.Id==x.LastChangeUserId).FullName,
+                    DocCount = filter.WithDocCount ? dbContext.DocumentTagsSet.Count(z => z.TagId==x.Id) : 0
                 }).ToList();
+            }
+        }
+
+
+        public int DocsWithTagCount(IContext context, int tagId)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                return dbContext.DocumentTagsSet.Count(y => y.TagId == tagId);
             }
         }
 

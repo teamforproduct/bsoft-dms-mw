@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using BL.Database.Dictionaries.Interfaces;
 using BL.Logic.Common;
+using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Enums;
@@ -38,7 +41,15 @@ namespace BL.Logic.DictionaryCore
 
         public override bool CanExecute()
         {
-            //TODO добавить проверки
+            var spr = _dictDb.GetTags(_context, new FilterDictionaryTag
+            {
+                NameExact = Model.Name,
+                NotContainsIDs = new List<int> {Model.Id}
+            });
+            if (spr.Any())
+            {
+                throw new DictionaryRecordNotUnique();
+            }
             return true;
         }
 

@@ -247,6 +247,7 @@ namespace BL.Database.Dictionaries.Interfaces
 
         InternalDictionaryTag GetInternalDictionaryTags(IContext context, FilterDictionaryTag filter);
         IEnumerable<FrontDictionaryTag> GetTags(IContext context, FilterDictionaryTag filter);
+        int DocsWithTagCount(IContext context, int tagId);
         int AddTag(IContext context, InternalDictionaryTag model);
         void UpdateTag(IContext context, InternalDictionaryTag model);
         void DeleteTag(IContext context, InternalDictionaryTag model);
