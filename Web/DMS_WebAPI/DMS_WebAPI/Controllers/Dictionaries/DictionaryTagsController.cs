@@ -48,7 +48,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns>Тег</returns>
         public IHttpActionResult Post([FromBody]ModifyDictionaryTag model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
             return Get((int)tmpDictProc.ExecuteAction(EnumDictionaryActions.AddTag, ctx, model));
         }
