@@ -4,11 +4,13 @@ using System.Runtime.Serialization;
 
 namespace BL.Model.DictionaryCore.IncomingModel
 {
-    public class ModifyDictionaryTag: CurrentPosition
+    public class ModifyDictionaryTag     //: CurrentPosition
     {
         [IgnoreDataMember]
         public int Id { get; set; }
         public string Name { get; set; }
         public string Color { get; set; }
+        public bool IsActive { get; set; }
+
     }
 }

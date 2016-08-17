@@ -15,24 +15,18 @@ namespace BL.Model.DictionaryCore.InternalModel
             Id = Model.Id;
             Name = Model.Name;
             Color = Model.Color;
+            IsActive = Model.IsActive;
         }
 
         public int Id { get; set; }
         public string Name { get; set; }
         public string Color { get; set; }
 
-        /// <summary>
-        /// ИД. должности
-        /// </summary>
         public int? PositionId { get; set; }
-        /// <summary>
-        /// ИД. пользователя, изменившего запись
-        /// </summary>
-        //public int LastChangeUserId { get; set; }
-
-        /// <summary>
-        /// Дата последнего изменения записи
-        /// </summary>
-        //public DateTime LastChangeDate { get; set; }
+        
+        public bool IsActive { get; set; }
+        public int LastChangeUserId { get; set; }
+        
+        public DateTime LastChangeDate { get; set; }
     }
 }

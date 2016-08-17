@@ -17,6 +17,7 @@ using BL.Model.FullTextSearch;
 using LinqKit;
 using BL.Database.DBModel.Document;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure.Interception;
 using System.Data.Entity.SqlServer;
 
 namespace BL.Database.Dictionaries
@@ -4842,6 +4843,12 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(filterContains);
                 }
 
+                if (!string.IsNullOrEmpty(filter.NameExact))
+                {
+                    qry = qry.Where(x => x.Name == filter.NameExact);
+                }
+
+
                 return qry.Select(x => new InternalDictionaryTag
                 {
                     Id = x.Id,
@@ -4857,7 +4864,7 @@ namespace BL.Database.Dictionaries
             using (var dbContext = new DmsContext(ctx))
             {
                 var qry = dbContext.DictionaryTagsSet.Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
-
+                qry = qry.OrderBy(x => x.Name);
                 if (!ctx.IsAdmin)
                 {
                     var filterContains = PredicateBuilder.False<DictionaryTags>();
@@ -4876,6 +4883,22 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(filterContains);
                 }
 
+
+                if (filter.NotContainsIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<DictionaryTags>();
+                    filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id != value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+
+                if (!string.IsNullOrEmpty(filter.NameExact))
+                {
+                    qry = qry.Where(x => x.Name == filter.NameExact);
+                }
+
                 return qry.Select(x => new FrontDictionaryTag
                 {
                     Id = x.Id,
@@ -4883,8 +4906,22 @@ namespace BL.Database.Dictionaries
                     PositionId = x.PositionId,
                     IsSystem = !x.PositionId.HasValue,
                     Color = x.Color,
-                    PositionName = x.Position.Name
+                    PositionName = x.Position.Name,
+                    IsActive = x.IsActive,
+                    LastChangeDate = x.LastChangeDate,
+                    LastChangeUserId = x.LastChangeUserId,
+                    LastChangeUserName = dbContext.DictionaryAgentPersonsSet.FirstOrDefault(y => y.Id==x.LastChangeUserId).FullName,
+                    DocCount = filter.WithDocCount ? dbContext.DocumentTagsSet.Count(z => z.TagId==x.Id) : 0
                 }).ToList();
+            }
+        }
+
+
+        public int DocsWithTagCount(IContext context, int tagId)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                return dbContext.DocumentTagsSet.Count(y => y.TagId == tagId);
             }
         }
 
@@ -4896,7 +4933,8 @@ namespace BL.Database.Dictionaries
                 {
                     ClientId = context.CurrentClientId,
                     Name = model.Name,
-                    PositionId = context.CurrentPositionId,
+                    PositionId = null,
+                    IsActive = model.IsActive,
                     Color = model.Color,
                     LastChangeUserId = context.CurrentAgentId,
                     LastChangeDate = DateTime.Now
@@ -4915,14 +4953,14 @@ namespace BL.Database.Dictionaries
                 var qry = dbContext.DictionaryTagsSet.Where(x => x.ClientId == ctx.CurrentClientId)
                             .Where(x => x.Id == model.Id).AsQueryable();
 
-                if (!ctx.IsAdmin)
-                {
-                    var filterContains = PredicateBuilder.False<DictionaryTags>();
-                    filterContains = ctx.CurrentPositionsIdList.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.PositionId == value).Expand());
-
-                    qry = qry.Where(filterContains);
-                }
+//                if (!ctx.IsAdmin)
+//                {
+//                    var filterContains = PredicateBuilder.False<DictionaryTags>();
+//                    filterContains = ctx.CurrentPositionsIdList.Aggregate(filterContains,
+//                        (current, value) => current.Or(e => e.PositionId == value).Expand());
+//
+//                    qry = qry.Where(filterContains);
+//                }
 
                 var savTag = qry.FirstOrDefault();
 
@@ -4930,6 +4968,7 @@ namespace BL.Database.Dictionaries
                 {
                     savTag.Name = model.Name;
                     savTag.Color = model.Color;
+                    savTag.IsActive = model.IsActive;
                     savTag.LastChangeUserId = ctx.CurrentAgentId;
                     savTag.LastChangeDate = DateTime.Now;
                     dbContext.SaveChanges();

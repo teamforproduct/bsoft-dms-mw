@@ -4,6 +4,8 @@ using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Exception;
 using System;
+using System.Linq;
+using BL.Model.DictionaryCore.FilterModel;
 using BaseDictionaryCommand = BL.Logic.Common.BaseDictionaryCommand;
 
 namespace BL.Logic.DictionaryCore
@@ -36,8 +38,18 @@ namespace BL.Logic.DictionaryCore
 
         public override bool CanExecute()
         {
-            //TODO добавить проверки
+            _admin.VerifyAccess(_context, CommandType, false);
+            var spr = _dictDb.GetTags(_context, new FilterDictionaryTag
+            {
+                NameExact = Model.Name
+            });
+            if (spr.Any())
+            {
+                throw new DictionaryRecordNotUnique();
+            }
+
             return true;
+         
         }
 
         public override object Execute()

@@ -27,7 +27,6 @@ namespace BL.Database.SystemDb
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                dbContext.SystemObjectsSet.Take(0).ToList();
             }
         }
 
