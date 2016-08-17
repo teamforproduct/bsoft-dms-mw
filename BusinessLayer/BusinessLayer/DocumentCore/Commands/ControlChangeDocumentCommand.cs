@@ -69,9 +69,9 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override object Execute()
         {
-            var addDescripton = (Model.DueDate != _docWait.DueDate ? "контрольный срок"+"," : "")
-                                + (Model.Description != _docWait.OnEvent.Description ? "формулировка задачи"+"," : "")
-                                + ((_eventType == EnumEventTypes.ControlChange && Model.AttentionDate != _docWait.AttentionDate ? "дата постоянного внимания"+"," : ""));
+            var addDescripton = (Model.DueDate != _docWait.DueDate ? "контрольный срок на ," : "")
+                                + (Model.Description != _docWait.OnEvent.Description ? "формулировка задачи," : "")
+                                + ((_eventType == EnumEventTypes.ControlChange && Model.AttentionDate != _docWait.AttentionDate ? ("дата постоянного внимания"+ (Model.AttentionDate.HasValue? ($" на {Model.AttentionDate.Value.ToString(@"dd.MM.yyyy")}") : "" ) + ",") : ""));
             addDescripton = addDescripton.Remove(addDescripton.Length - 1);
             if (!string.IsNullOrEmpty(addDescripton))
             {

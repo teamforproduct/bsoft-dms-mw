@@ -50,7 +50,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns></returns>
         [HttpPost]
         [Route("GetList")]
-        [ResponseType(typeof(List<FrontDocumentWait>))]
+        [ResponseType(typeof(List<FrontDocument>))]
         public IHttpActionResult PostGetList([FromBody]IncomingBase model)
         {
             if (model == null) model = new IncomingBase();

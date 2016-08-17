@@ -16,7 +16,8 @@ namespace BL.Logic.AdminCore.Interfaces
 
         IEnumerable<CurrentPosition> GetPositionsByUser(Employee employee);
         IEnumerable<FrontAdminUserRole> GetPositionsByCurrentUser(IContext context);
-           
+        Dictionary<int, int> GetCurrentPositionsAccessLevel(IContext context);
+
         Employee GetEmployee(IContext context, string userId);
 
         #endregion

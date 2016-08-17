@@ -123,6 +123,7 @@ namespace DMS_WebAPI.Utilities
             contextValue.LastUsage = DateTime.Now;
             var context = (IContext)contextValue.StoreObject;
             context.CurrentPositionsIdList = positionsIdList;
+            context.CurrentPositionsAccessLevel = DmsResolver.Current.Get<IAdminService>().GetCurrentPositionsAccessLevel(context);
         }
 
 

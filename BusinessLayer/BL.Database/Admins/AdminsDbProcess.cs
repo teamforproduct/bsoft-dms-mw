@@ -17,6 +17,7 @@ using BL.Database.DBModel.Admin;
 using BL.Model.AdminCore.InternalModel;
 using BL.Database.Common;
 using System;
+using BL.Database.DBModel.Dictionary;
 
 namespace BL.Database.Admins
 {
@@ -141,6 +142,24 @@ namespace BL.Database.Admins
         public IEnumerable<CurrentPosition> GetPositionsByUser(Employee employee)
         {
             return null;
+        }
+
+        public Dictionary<int, int> GetCurrentPositionsAccessLevel(IContext context)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var dateNow = DateTime.Now;
+                var qry = dbContext.DictionaryPositionExecutorsSet
+                    .Where(x => dateNow >= x.StartDate && dateNow <= x.EndDate && x.AgentId == context.CurrentAgentId);
+                var filterContains = PredicateBuilder.False<DictionaryPositionExecutors>();
+                filterContains = context.CurrentPositionsIdList.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.PositionId == value).Expand());
+                qry = qry.Where(filterContains);
+                var res = qry.GroupBy(x => x.PositionId)
+                        .Select(x => new { x.Key, maxAccessLevel = x.Max(y => y.AccessLevelId) })
+                        .ToDictionary(x => x.Key, z => z.maxAccessLevel);
+                return res;
+            }
         }
 
         /// <summary>

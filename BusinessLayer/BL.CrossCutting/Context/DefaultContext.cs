@@ -13,6 +13,8 @@ namespace BL.CrossCutting.Context
     {
         private int? _currentPositionId;
         private List<int> _currentPositionsIdList;
+        private Dictionary<int, int> _currentPositionsAccessLevel;
+
         private DatabaseModel _currentDb;
         public Employee CurrentEmployee { get; set; }
 
@@ -76,6 +78,15 @@ namespace BL.CrossCutting.Context
                 {
                     CurrentPositionsIdList = null;
                 }
+
+                try
+                {
+                    CurrentPositionsAccessLevel = ctx.CurrentPositionsAccessLevel?.ToDictionary(x=>x.Key,x=>x.Value);
+                }
+                catch (UserPositionIsNotDefined)
+                {
+                    CurrentPositionsAccessLevel = null;
+                }
             }
         }
 
@@ -96,6 +107,22 @@ namespace BL.CrossCutting.Context
             }
         }
 
+        public Dictionary<int, int> CurrentPositionsAccessLevel
+        {
+            get
+            {
+                if ((_currentPositionsAccessLevel == null) || !_currentPositionsAccessLevel.Any())
+                {
+                    throw new UserPositionIsNotDefined();
+                }
+                return _currentPositionsAccessLevel;
+            }
+            set
+            {
+                _currentPositionsAccessLevel = value;
+            }
+        }
+
         public int CurrentPositionId
         {
             get
@@ -107,9 +134,7 @@ namespace BL.CrossCutting.Context
                 return _currentPositionId.Value;
             }
         }
-
-
-
+        
         public int CurrentAgentId
         {
             get

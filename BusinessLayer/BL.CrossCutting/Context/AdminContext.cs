@@ -71,6 +71,13 @@ namespace BL.CrossCutting.Context
             get { return new List<int> { 0 }; }
             set { }
         }
+
+        public Dictionary<int, int> CurrentPositionsAccessLevel
+        {
+            get { return new Dictionary<int, int> { { 0, 0 } }; }
+            set { }
+        }
+
         public DatabaseModel CurrentDB { get; set; }
 
         public int CurrentPositionId => _currentPositionId ?? 0;
