@@ -4864,7 +4864,7 @@ namespace BL.Database.Dictionaries
             using (var dbContext = new DmsContext(ctx))
             {
                 var qry = dbContext.DictionaryTagsSet.Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
-
+                qry = qry.OrderBy(x => x.Name);
                 if (!ctx.IsAdmin)
                 {
                     var filterContains = PredicateBuilder.False<DictionaryTags>();
