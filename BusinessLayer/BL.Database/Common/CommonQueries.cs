@@ -2260,6 +2260,7 @@ namespace BL.Database.Common
                 var links = x.Links.ToList();
                 links.ForEach(y => CommonQueries.ChangeRegistrationFullNumber(y));
                 x.Links = links;
+                x.DocumentWorkGroup = CommonQueries.GetDocumentWorkGroup(dbContext, context, new FilterDictionaryPosition { DocumentIDs = new List<int> {x.Id} });
                 //TODO x.Accesses = acc.Where(y => y.DocumentId == x.Id).ToList();
             });
             return items;

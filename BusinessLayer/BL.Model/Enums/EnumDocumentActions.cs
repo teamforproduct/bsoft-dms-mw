@@ -7,6 +7,10 @@
     {
         Undefined = 0,
         /// <summary>
+        /// Просмотр документов
+        /// </summary>
+        ViewDocument = 100000,
+        /// <summary>
         /// Создать документ по шаблону
         /// </summary>
         AddDocument = 100001,
