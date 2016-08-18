@@ -21,10 +21,14 @@ namespace BL.Database.DBModel.Admin
         [MaxLength(400)]
         [Index("IX_Name", 1, IsUnique = true)]
         public string Name { get; set; }
-//        public int PositionId { get; set; }
-//        public int AccessLevelId { get; set; }
+        public int? RoleTypeId { get; set; }
+        //        public int PositionId { get; set; }
+        //        public int AccessLevelId { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
+
+        [ForeignKey("RoleTypeId")]
+        public virtual AdminRoleTypes RoleType { get; set; }
 
         public virtual ICollection<AdminUserRoles> UserRoles { get; set; }
         public virtual ICollection<AdminRoleActions> RoleActions { get; set; }

@@ -60,11 +60,16 @@ namespace BL.Database.DatabaseContext
             .HasOptional(f => f.AgentEmployee)
             .WithRequired(s => s.Agent);
 
+            modelBuilder.Entity<DictionaryAgents>()
+            .HasOptional(f => f.Company)
+            .WithRequired(s => s.Agent);
+
         }
 
         public virtual DbSet<AdminAccessLevels> AdminAccessLevelsSet { get; set; }
         public virtual DbSet<AdminRoleActions> AdminRoleActionsSet { get; set; }
         public virtual DbSet<AdminRoles> AdminRolesSet { get; set; }
+        public virtual DbSet<AdminRoleTypes> AdminRolesTypesSet { get; set; }
         public virtual DbSet<AdminPositionRoles> AdminPositionRolesSet { get; set; }
         public virtual DbSet<AdminUserRoles> AdminUserRolesSet { get; set; }
         public virtual DbSet<AdminSubordinations> AdminSubordinationsSet { get; set; }

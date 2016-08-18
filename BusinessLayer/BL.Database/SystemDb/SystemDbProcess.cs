@@ -870,7 +870,7 @@ namespace BL.Database.SystemDb
 
                 res.AddRange(dbContext.DictionaryDepartmentsSet.Where(x => x.Company.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
                 {
-                    DocumentId = 0, ItemType = EnumObjects.DictionaryDepartments, OperationType = EnumOperationType.AddNew, ClientId = ctx.CurrentClientId, ObjectId = x.Id, ObjectText = x.FullName + " " + x.Code + " " + x.Name + " " + x.Company.Name + " " + x.ChiefPosition.FullName
+                    DocumentId = 0, ItemType = EnumObjects.DictionaryDepartments, OperationType = EnumOperationType.AddNew, ClientId = ctx.CurrentClientId, ObjectId = x.Id, ObjectText = x.FullName + " " + x.Code + " " + x.Name + " " + x.Company.FullName + " " + x.ChiefPosition.FullName
                 }).ToList());
 
                 res.AddRange(dbContext.DictionaryPositionsSet.Where(x => x.Department.Company.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
@@ -890,7 +890,7 @@ namespace BL.Database.SystemDb
 
                 res.AddRange(dbContext.DictionaryCompaniesSet.Where(x => x.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
                 {
-                    DocumentId = 0, ItemType = EnumObjects.DictionaryCompanies, OperationType = EnumOperationType.AddNew, ClientId = ctx.CurrentClientId, ObjectId = x.Id, ObjectText = x.Name
+                    DocumentId = 0, ItemType = EnumObjects.DictionaryCompanies, OperationType = EnumOperationType.AddNew, ClientId = ctx.CurrentClientId, ObjectId = x.Id, ObjectText = x.FullName
                 }).ToList());
 
                 res.AddRange(dbContext.DictionaryPositionExecutorsSet.Where(x => x.Position.Department.Company.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
@@ -1128,7 +1128,7 @@ namespace BL.Database.SystemDb
                 {
                     res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int) EnumOperationType.Delete && x.ObjectType == (int) EnumObjects.DictionaryDepartments).Join(dbContext.DictionaryDepartmentsSet, i => i.ObjectId, d => d.Id, (i, d) => new {ind = i, doc = d, id = d.Id}).Select(x => new FullTextIndexItem
                     {
-                        Id = x.ind.Id, DocumentId = 0, ItemType = (EnumObjects) x.ind.ObjectType, OperationType = (EnumOperationType) x.ind.OperationType, ClientId = ctx.CurrentClientId, ObjectId = x.id, ObjectText = x.doc.FullName + " " + x.doc.Code + " " + x.doc.Name + " " + x.doc.Company.Name + " " + x.doc.ChiefPosition.FullName
+                        Id = x.ind.Id, DocumentId = 0, ItemType = (EnumObjects) x.ind.ObjectType, OperationType = (EnumOperationType) x.ind.OperationType, ClientId = ctx.CurrentClientId, ObjectId = x.id, ObjectText = x.doc.FullName + " " + x.doc.Code + " " + x.doc.Name + " " + x.doc.Company.FullName + " " + x.doc.ChiefPosition.FullName
                     }).ToList());
                 }
 
@@ -1160,7 +1160,7 @@ namespace BL.Database.SystemDb
                 {
                     res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int) EnumOperationType.Delete && x.ObjectType == (int) EnumObjects.DictionaryCompanies).Join(dbContext.DictionaryCompaniesSet, i => i.ObjectId, d => d.Id, (i, d) => new {ind = i, doc = d, id = d.Id}).Select(x => new FullTextIndexItem
                     {
-                        Id = x.ind.Id, DocumentId = 0, ItemType = (EnumObjects) x.ind.ObjectType, OperationType = (EnumOperationType) x.ind.OperationType, ClientId = ctx.CurrentClientId, ObjectId = x.id, ObjectText = x.doc.Name
+                        Id = x.ind.Id, DocumentId = 0, ItemType = (EnumObjects) x.ind.ObjectType, OperationType = (EnumOperationType) x.ind.OperationType, ClientId = ctx.CurrentClientId, ObjectId = x.id, ObjectText = x.doc.FullName
                     }).ToList());
                 }
 

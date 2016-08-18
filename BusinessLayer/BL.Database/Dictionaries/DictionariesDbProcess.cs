@@ -869,7 +869,7 @@ namespace BL.Database.Dictionaries
                 var ddt = new DictionaryAgentEmployees
                 {
                     Id = employee.Id,
-                    AgentPersonId = employee.Id,
+                    //AgentPersonId = employee.Id,
                     PersonnelNumber = employee.PersonnelNumber,
                     Description = employee.Description,
                     LastChangeDate = employee.LastChangeDate,
@@ -2569,7 +2569,7 @@ namespace BL.Database.Dictionaries
                     Name = x.Name,
                     FullName = x.FullName,
                     CompanyId = x.CompanyId,
-                    CompanyName = x.Company.Name,
+                    CompanyName = x.Company.FullName,
                     ChiefPositionId = x.ChiefPositionId,
                     ChiefPositionName = x.ChiefPosition.Name,
                     ParentDepartmentName = x.ParentDepartment.Name
@@ -3390,7 +3390,7 @@ namespace BL.Database.Dictionaries
                             FullName = y.FullName,
                             ChiefPositionId = y.ChiefPositionId,
                             ParentDepartmentName = y.ParentDepartment.Name,
-                            CompanyName = y.Company.Name,
+                            CompanyName = y.Company.FullName,
                             ChiefPositionName = y.ChiefPosition.Name
                         }),
                         StandartSendLists = x.StandartSendLists.Select(y => new FrontDictionaryStandartSendList
@@ -4177,7 +4177,7 @@ namespace BL.Database.Dictionaries
                     // pss Перегонка значений DictionaryCompany
                     Id = x.Id,
                     IsActive = x.IsActive,
-                    Name = x.Name,
+                    Name = x.FullName,
                     LastChangeUserId = x.LastChangeUserId,
                     LastChangeDate = x.LastChangeDate
                 }).FirstOrDefault();
@@ -4193,14 +4193,14 @@ namespace BL.Database.Dictionaries
 
                 qry = CompanyGetWhere(ref qry, filter);
 
-                qry = qry.OrderBy(x => x.Name);
+                qry = qry.OrderBy(x => x.FullName);
 
                 return qry.Select(x => new FrontDictionaryCompany
                 {
                     // pss Перегонка значений DictionaryCompany
                     Id = x.Id,
                     IsActive = x.IsActive,
-                    Name = x.Name
+                    Name = x.FullName
                 }).ToList();
             }
         }
@@ -4256,7 +4256,7 @@ namespace BL.Database.Dictionaries
             {
                 foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
                 {
-                    qry = qry.Where(x => x.Name.Contains(temp));
+                    qry = qry.Where(x => x.FullName.Contains(temp));
                 }
             }
 

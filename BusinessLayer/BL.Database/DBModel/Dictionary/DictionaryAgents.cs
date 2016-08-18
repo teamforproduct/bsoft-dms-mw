@@ -20,9 +20,11 @@ namespace BL.Database.DBModel.Dictionary
         }
 
         public int Id { get; set; }
+        [Index("IX_Name", 2, IsUnique = true)]
         [Index("IX_ClientId", 1)]
         public int ClientId { get; set; }
-        [MaxLength(2000)]
+        [Index("IX_Name", 1, IsUnique = true)]
+        [MaxLength(400)]
         public string Name { get; set; }
         public Nullable<int> ResidentTypeId { get; set; }
         public bool IsCompany { get; set; }
@@ -33,7 +35,7 @@ namespace BL.Database.DBModel.Dictionary
         [MaxLength(2000)]
         public string Description { get; set; }
         public bool IsActive { get; set; }
-        public Nullable<int> LanguageId { get; set; }
+
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
 
@@ -47,10 +49,11 @@ namespace BL.Database.DBModel.Dictionary
         public virtual DictionaryAgentBanks AgentBank { get; set; }
         [ForeignKey("Id")]
         public virtual DictionaryAgentEmployees AgentEmployee { get; set; }
-        [ForeignKey("LanguageId")]
-        public virtual AdminLanguages Language { get; set; }
+
         [ForeignKey("Id")]
         public virtual DictionaryAgentUsers AgentUser { get; set; }
+        [ForeignKey("Id")]
+        public virtual DictionaryCompanies Company { get; set; }
 
         public virtual DictionaryResidentTypes ResidentType { get; set; }
 

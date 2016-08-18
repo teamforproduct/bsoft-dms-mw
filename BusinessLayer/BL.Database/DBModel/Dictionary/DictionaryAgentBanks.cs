@@ -11,9 +11,16 @@ namespace BL.Database.DBModel.Dictionary
     public partial class DictionaryAgentBanks
     {
         public int Id { get; set; }
+        [Index("IX_FullName", 2, IsUnique = true)]
+        [Index("IX_MFOCode", 2, IsUnique = true)]
+        [Index("IX_ClientId", 1)]
+        public int ClientId { get; set; }
         [MaxLength(400)]
         [Index("IX_MFOCode", 1, IsUnique = true)]
         public string MFOCode { get; set; }
+        [MaxLength(400)]
+        [Index("IX_FullName", 1, IsUnique = true)]
+        public string FullName { get; set; }
         [MaxLength(2000)]
         public string Swift { get; set; }
         [MaxLength(2000)]

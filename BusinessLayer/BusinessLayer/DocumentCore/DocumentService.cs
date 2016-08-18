@@ -47,7 +47,7 @@ namespace BL.Logic.DocumentCore
 
         public IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterBase filter, UIPaging paging)
         {
-            _adminService.VerifyAccess(ctx, EnumDocumentActions.ViewDocument);
+//            _adminService.VerifyAccess(ctx, EnumDocumentActions.ViewDocument);
             using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 if (!String.IsNullOrEmpty(filter?.Document?.FullTextSearch))
@@ -73,7 +73,7 @@ namespace BL.Logic.DocumentCore
 
         public FrontDocument GetDocument(IContext ctx, int documentId, FilterDocumentById filter)
         {
-            _adminService.VerifyAccess(ctx, EnumDocumentActions.ViewDocument);
+//            _adminService.VerifyAccess(ctx, EnumDocumentActions.ViewDocument);
             var doc = _documentDb.GetDocument(ctx, documentId, filter);
             doc.SendListStages = CommonDocumentUtilities.GetSendListStage(doc.SendLists);
             doc.SendLists = null;
@@ -106,13 +106,13 @@ namespace BL.Logic.DocumentCore
 
         public FrontDocumentEvent GetDocumentEvent(IContext ctx, int eventId)
         {
-            _adminService.VerifyAccess(ctx, EnumDocumentActions.ViewDocument);
+//            _adminService.VerifyAccess(ctx, EnumDocumentActions.ViewDocument);
             return _operationDb.GetDocumentEvent(ctx, eventId);
         }
 
         public IEnumerable<FrontDocumentEvent> GetDocumentEvents(IContext ctx, FilterBase filter, UIPaging paging)
         {
-            _adminService.VerifyAccess(ctx, EnumDocumentActions.ViewDocument);
+//            _adminService.VerifyAccess(ctx, EnumDocumentActions.ViewDocument);
             using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 return _operationDb.GetDocumentEvents(ctx, filter, paging);
@@ -121,7 +121,7 @@ namespace BL.Logic.DocumentCore
 
         public IEnumerable<FrontDocumentWait> GetDocumentWaits(IContext ctx, FilterBase filter, UIPaging paging)
         {
-            _adminService.VerifyAccess(ctx, EnumDocumentActions.ViewDocument);
+//            _adminService.VerifyAccess(ctx, EnumDocumentActions.ViewDocument);
             using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 return _operationDb.GetDocumentWaits(ctx, filter, paging);
@@ -130,7 +130,7 @@ namespace BL.Logic.DocumentCore
 
         public IEnumerable<FrontDocumentSubscription> GetDocumentSubscriptions(IContext ctx, FilterDocumentSubscription filter, UIPaging paging)
         {
-            _adminService.VerifyAccess(ctx, EnumDocumentActions.ViewDocument);
+//            _adminService.VerifyAccess(ctx, EnumDocumentActions.ViewDocument);
             return _operationDb.GetDocumentSubscriptions(ctx, filter, paging);
         }
 
@@ -182,13 +182,13 @@ namespace BL.Logic.DocumentCore
         #region DocumentPapers
         public FrontDocumentPaper GetDocumentPaper(IContext context, int itemId)
         {
-            _adminService.VerifyAccess(context, EnumDocumentActions.ViewDocument);
+//            _adminService.VerifyAccess(context, EnumDocumentActions.ViewDocument);
             return _documentDb.GetDocumentPaper(context, itemId);
         }
 
         public IEnumerable<FrontDocumentPaper> GetDocumentPapers(IContext context, FilterDocumentPaper filter, UIPaging paging)
         {
-            _adminService.VerifyAccess(context, EnumDocumentActions.ViewDocument);
+//            _adminService.VerifyAccess(context, EnumDocumentActions.ViewDocument);
             return _documentDb.GetDocumentPapers(context, filter, paging);
         }
 

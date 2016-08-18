@@ -151,7 +151,7 @@ namespace BL.Database.Common
                 ClientId = context.CurrentClientId,
                 
                 Id = item.Id,
-                Name = item.Name,
+                FullName = item.Name,
                 IsActive = item.IsActive,
                 LastChangeDate = item.LastChangeDate,
                 LastChangeUserId = item.LastChangeUserId

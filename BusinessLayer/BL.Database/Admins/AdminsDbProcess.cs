@@ -193,7 +193,7 @@ namespace BL.Database.Admins
                     {
                         AgentId = x.Id,
                         Name = x.Agent.Name,
-                        LanguageId = x.Agent.LanguageId ?? 0
+                        LanguageId = /*x.Agent.LanguageId ??*/ 0
                     }).FirstOrDefault();
             }
         }

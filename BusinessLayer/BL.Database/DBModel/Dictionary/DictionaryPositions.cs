@@ -28,6 +28,7 @@ namespace BL.Database.DBModel.Dictionary
         public string Name { get; set; }
         [MaxLength(2000)]
         public string FullName { get; set; }
+        public int Order { get; set; }
         public int DepartmentId { get; set; }
         public Nullable<int> ExecutorAgentId { get; set; }
         public Nullable<int> MainExecutorAgentId { get; set; }
