@@ -36,7 +36,7 @@ namespace BL.Logic.Logging
             {
                 LogType = EnumLogTypes.Trace,
                 Message =  message,
-                LogObjects = string.Format("",args)
+                LogObjects = string.Join(" / ", args)
             });
         }
 
@@ -56,7 +56,7 @@ namespace BL.Logic.Logging
             {
                 LogType = EnumLogTypes.Warning,
                 Message = message,
-                LogObjects = string.Format("", args)
+                LogObjects = string.Join(" / ", args)
             });
         }
 
@@ -66,7 +66,7 @@ namespace BL.Logic.Logging
             {
                 LogType = EnumLogTypes.Error,
                 Message = message,
-                LogObjects = string.Format("", args)
+                LogObjects = string.Join(" / ", args)
             });
         }
 
@@ -77,7 +77,7 @@ namespace BL.Logic.Logging
                 LogType = EnumLogTypes.Error,
                 Message = message,
                 LogException = string.Format("{0} // {1} // {2} // {3}", exception.GetType(),exception.Message, exception.Data, exception.StackTrace),
-                LogObjects = string.Format("", args)
+                LogObjects = string.Join(" / ", args)
             });
         }
 
@@ -87,7 +87,7 @@ namespace BL.Logic.Logging
             {
                 LogType = EnumLogTypes.Fatal,
                 Message = message,
-                LogObjects = string.Format("", args)
+                LogObjects = string.Join(" / ", args)
             });
         }
 
@@ -98,7 +98,7 @@ namespace BL.Logic.Logging
                 LogType = EnumLogTypes.Fatal,
                 Message = message,
                 LogException = string.Format("{0} // {1} // {2} // {3}", exception.GetType(), exception.Message, exception.Data, exception.StackTrace),
-                LogObjects = string.Format("", args)
+                LogObjects = string.Join(" / ", args)
             });
         }
     }
