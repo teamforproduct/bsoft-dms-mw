@@ -249,6 +249,7 @@ namespace BL.Database.Admins
                 {
                     Id = x.Id,
                     Name = x.Name,
+                    RoleTypeId = x.RoleTypeId,
                     LastChangeUserId = x.LastChangeUserId,
                     LastChangeDate = x.LastChangeDate
                 }).FirstOrDefault();
@@ -270,6 +271,8 @@ namespace BL.Database.Admins
                 {
                     Id = x.Id,
                     Name = x.Name,
+                    RoleCode = x.RoleType.Code,
+                    RoleName = x.RoleType.Name
                 }).ToList();
             }
         }
@@ -310,6 +313,17 @@ namespace BL.Database.Admins
                 var filterContains = PredicateBuilder.False<AdminRoles>();
                 filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                     (current, value) => current.Or(e => e.Id != value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            // Список классификаторов
+            if (filter.RoleRypeIDs?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.False<AdminRoles>();
+
+                filterContains = filter.RoleRypeIDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.RoleTypeId == value).Expand());
 
                 qry = qry.Where(filterContains);
             }

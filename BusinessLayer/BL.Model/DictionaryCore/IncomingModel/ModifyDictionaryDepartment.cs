@@ -50,7 +50,5 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// </summary>
         public int? ChiefPositionId { get; set; }
 
-        // !!! После добавления полей внеси изменения в BL.Logic.Common.CommonDictionaryUtilities.DepartmentModifyToInternal
-
     }
 }

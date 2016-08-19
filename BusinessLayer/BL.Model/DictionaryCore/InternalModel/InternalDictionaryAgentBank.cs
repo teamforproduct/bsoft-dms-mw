@@ -14,9 +14,10 @@ namespace BL.Model.DictionaryCore.InternalModel
         public InternalDictionaryAgentBank(ModifyDictionaryAgentBank model)
         {
             Id = model.Id;
+            Name = model.Name;
+            FullName = model.FullName;
             MFOCode = model.MFOCode;
             Swift = model.Swift;
-            Name = model.Name;
             IsActive = model.IsActive;
             Description = model.Description;
         }
@@ -25,6 +26,17 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// Ид
         /// </summary>
         public int Id { get; set; }
+
+        /// <summary>
+        /// Название
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
+        /// Полное название
+        /// </summary>
+        public string FullName { get; set; }
+
         /// <summary>
         /// МФО
         /// </summary>
@@ -41,9 +53,6 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// Признак активности
         /// </summary>
         public bool IsActive { get; set; }
-        /// <summary>
-        /// Название
-        /// </summary>
-        public string Name { get; set; }
+        
     }
 }

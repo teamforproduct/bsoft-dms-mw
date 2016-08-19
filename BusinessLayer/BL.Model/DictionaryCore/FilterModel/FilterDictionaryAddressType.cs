@@ -7,6 +7,9 @@ namespace BL.Model.DictionaryCore.FilterModel
     /// </summary>
     public class FilterDictionaryAddressType : DictionaryBaseFilterParameters
     {
-        
+        /// <summary>
+        /// Сужение по краткому наименованию
+        /// </summary>
+        public string Code { get; set; }
     }
 }

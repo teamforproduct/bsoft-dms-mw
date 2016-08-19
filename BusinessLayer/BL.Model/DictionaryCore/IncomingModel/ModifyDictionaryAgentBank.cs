@@ -34,5 +34,11 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// Название
         /// </summary>
         public string Name { get; set; }
+
+        /// <summary>
+        /// Полное имя
+        /// </summary>
+        public string FullName { get; set; }
+
     }
 }

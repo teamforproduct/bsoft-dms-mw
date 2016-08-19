@@ -126,7 +126,7 @@ namespace BL.Database.Common
             };
         }
 
-        public static DictionaryPositions GetDbDictionaryPosition(InternalDictionaryPosition item)
+        public static DictionaryPositions GetDbPosition(InternalDictionaryPosition item)
         {
             return item == null ? null : new DictionaryPositions
             {
@@ -139,7 +139,8 @@ namespace BL.Database.Common
                 FullName = item.FullName,
                 DepartmentId = item.DepartmentId,
                 ExecutorAgentId = item.ExecutorAgentId,
-                MainExecutorAgentId = item.MainExecutorAgentId
+                MainExecutorAgentId = item.MainExecutorAgentId,
+                Order = item.Order
             };
         }
 
@@ -248,6 +249,7 @@ namespace BL.Database.Common
                 Id = item.Id,
                 LastChangeDate = item.LastChangeDate,
                 LastChangeUserId = item.LastChangeUserId,
+                Code = item.Code,
                 Name = item.Name,
                 IsActive = item.IsActive
             };
@@ -274,6 +276,7 @@ namespace BL.Database.Common
             return item == null ? null : new DictionaryAgentBanks
             {
                 Id = item.Id,
+                FullName = item.FullName,
                 MFOCode = item.MFOCode,
                 Swift = item.Swift,
                 Description = item.Description,
@@ -326,7 +329,8 @@ namespace BL.Database.Common
                 Description = item.Description,
                 LastChangeDate = item.LastChangeDate,
                 LastChangeUserId = item.LastChangeUserId,
-                IsActive = item.IsActive
+                IsActive = item.IsActive,
+                IsConfirmed = item.IsConfirmed
             };
         }
 

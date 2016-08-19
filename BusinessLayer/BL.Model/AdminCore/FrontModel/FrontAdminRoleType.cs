@@ -4,9 +4,9 @@ using System.Collections.Generic;
 namespace BL.Model.AdminCore.FrontModel
 {
     /// <summary>
-    /// "Список ролей", представление записи.
+    /// "Классификатор ролей".
     /// </summary>
-    public class FrontAdminRole : ModifyAdminRole
+    public class FrontAdminRoleType 
     {
         /// <summary>
         /// ID
@@ -14,14 +14,14 @@ namespace BL.Model.AdminCore.FrontModel
         public new int Id { get; set; }
 
         /// <summary>
-        /// Классификатор роли
+        /// Краткое наименование
         /// </summary>
-        public string RoleName { get; set; }
+        public string Code { get; set; }
 
         /// <summary>
-        /// Классификатор роли
+        /// Наименование
         /// </summary>
-        public string RoleCode { get; set; }
+        public string Name { get; set; }
 
     }
 }

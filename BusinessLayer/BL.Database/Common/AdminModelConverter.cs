@@ -18,6 +18,7 @@ namespace BL.Database.Common
                 Id = item.Id,
                 LastChangeDate = item.LastChangeDate,
                 LastChangeUserId = item.LastChangeUserId,
+                RoleTypeId = item.RoleTypeId,
                 Name = item.Name
             };
         }

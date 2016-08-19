@@ -29,11 +29,17 @@ namespace BL.Model.DictionaryCore.FrontModel
         public int? Rang { get; set; }
 
         /// <summary>
+        /// Исполнитель
+        /// </summary>
+        public string ExecutorAgentName { get; set; }
+
+
+        public string MainExecutorAgentName { get; set; }
+
+        /// <summary>
         /// Наименование вышестоящей должности
         /// </summary>
         public string ParentPositionName { get; set; }
-
-        public string ExecutorAgentName { get; set; }
 
         public int? MaxSubordinationTypeId { get; set; }
         public string PositionPhone { get; set; }
