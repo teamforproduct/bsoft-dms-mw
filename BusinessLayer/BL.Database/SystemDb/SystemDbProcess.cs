@@ -742,13 +742,29 @@ namespace BL.Database.SystemDb
                 dbContext.Database.CommandTimeout = 0;
                 if (objType == EnumObjects.Documents)
                 {
-                    res.AddRange(dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == ctx.CurrentClientId).OrderBy(x => x.Id).Select(x => new
-                    {
-                        DocumentId = x.Id, ItemType = EnumObjects.Documents, OperationType = EnumOperationType.AddNew, ObjectId = x.Id, regNr = (x.RegistrationNumber != null ? (x.RegistrationNumberPrefix ?? "") + x.RegistrationNumber + (x.RegistrationNumberSuffix ?? "") : "#" + x.Id) + " ", v1 = x.RegistrationJournal.Name + " " + x.RegistrationJournal.Department.Name + " ", v2 = x.Description + " ", v3 = x.ExecutorPositionExecutorAgent.Name + " ", v4 = x.TemplateDocument.DocumentType.Name + " " + x.TemplateDocument.DocumentDirection.Name + " ", v5 = x.DocumentSubject.Name + " ", v6 = x.SenderAgent.Name + " " + x.SenderAgentPerson.Agent.Name + " " + x.SenderNumber + " "
-                    }).Skip(() => rowOffset).Take(() => rowToSelect).ToList().Select(x => new FullTextIndexItem
-                    {
-                        DocumentId = x.DocumentId, ClientId = ctx.CurrentClientId, ItemType = x.ItemType, OperationType = x.OperationType, ObjectId = x.ObjectId, ObjectText = x.regNr + x.v1 + x.v2 + x.v3 + x.v4 + x.v5 + x.v6
-                    }));
+                    res.AddRange(dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == ctx.CurrentClientId)
+                        .OrderBy(x => x.Id)
+                        .Select(x => new FullTextIndexItem
+                        {
+                            DocumentId = x.Id,
+                            ClientId = ctx.CurrentClientId,
+                            ItemType = EnumObjects.Documents,
+                            OperationType = EnumOperationType.AddNew,
+                            ObjectId = x.Id,
+                            ObjectText = (x.RegistrationNumber != null
+                                ? (x.RegistrationNumberPrefix ?? "") + x.RegistrationNumber +
+                                  (x.RegistrationNumberSuffix ?? "")
+                                : "#" + x.Id) + " " + x.RegistrationJournal.Name + " " +
+                                         x.RegistrationJournal.Department.Name + " "
+                                         + x.Description + " "
+                                         + x.ExecutorPositionExecutorAgent.Name + " "
+                                         + x.TemplateDocument.DocumentType.Name + " " +
+                                         x.TemplateDocument.DocumentDirection.Name + " " +
+                                         x.DocumentSubject.Name + " "
+                                         + x.DocumentSubject.Name + " "
+                                         + x.SenderAgent.Name + " " + x.SenderAgentPerson.Agent.Name + " " +
+                                         x.SenderNumber + " "
+                        }).Skip(() => rowOffset).Take(() => rowToSelect).ToList());
                     return res;
                 }
 
@@ -961,13 +977,35 @@ namespace BL.Database.SystemDb
 
                 if (objType == EnumObjects.Documents)
                 {
-                    res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.Id <= selectBis && x.OperationType != (int) EnumOperationType.Delete && x.ObjectType == (int) EnumObjects.Documents).OrderBy(x => x.ObjectId).ThenBy(x => x.Id).Join(dbContext.DocumentsSet, i => i.ObjectId, d => d.Id, (i, d) => new {ind = i, doc = d}).Select(x => new
-                    {
-                        Id = x.ind.Id, DocumentId = x.doc.Id, ItemType = (EnumObjects) x.ind.ObjectType, OperationType = (EnumOperationType) x.ind.OperationType, ObjectId = x.doc.Id, v1 = (x.doc.RegistrationNumber != null ? (x.doc.RegistrationNumberPrefix ?? "") + x.doc.RegistrationNumber + (x.doc.RegistrationNumberSuffix ?? "") : "#" + x.doc.Id) + " ", v2 = x.doc.RegistrationJournal.Name + " " + x.doc.RegistrationJournal.Department.Name + " ", v3 = x.doc.Description + " ", v4 = x.doc.ExecutorPositionExecutorAgent.Name + " ", v5 = x.doc.TemplateDocument.DocumentType.Name + " " + x.doc.TemplateDocument.DocumentDirection.Name + " ", v6 = x.doc.DocumentSubject.Name + " ", v7 = x.doc.SenderAgent.Name + " " + x.doc.SenderAgentPerson.Agent.Name + " " + x.doc.SenderNumber + " ",
-                    }).Take(() => rowToSelect).ToList().Select(x => new FullTextIndexItem
-                    {
-                        Id = x.Id, DocumentId = x.DocumentId, ItemType = x.ItemType, OperationType = x.OperationType, ClientId = ctx.CurrentClientId, ObjectId = x.ObjectId, ObjectText = x.v1 + x.v2 + x.v3 + x.v4 + x.v5 + x.v6 + x.v7
-                    }));
+                    res.AddRange(dbContext.FullTextIndexCashSet.Where(
+                        x =>
+                            x.Id <= selectBis && x.OperationType != (int) EnumOperationType.Delete &&
+                            x.ObjectType == (int) EnumObjects.Documents)
+                        .OrderBy(x => x.ObjectId)
+                        .ThenBy(x => x.Id)
+                        .Join(dbContext.DocumentsSet, i => i.ObjectId, d => d.Id, (i, d) => new {ind = i, doc = d})
+                        .Select(x => new FullTextIndexItem
+                        {
+                            Id = x.ind.Id,
+                            DocumentId = x.doc.Id,
+                            ItemType = (EnumObjects) x.ind.ObjectType,
+                            OperationType = (EnumOperationType) x.ind.OperationType,
+                            ClientId = ctx.CurrentClientId,
+                            ObjectId = x.doc.Id,
+                            ObjectText = (x.doc.RegistrationNumber != null
+                                ? (x.doc.RegistrationNumberPrefix ?? "") + x.doc.RegistrationNumber +
+                                  (x.doc.RegistrationNumberSuffix ?? "")
+                                : "#" + x.doc.Id) + " " + x.doc.RegistrationJournal.Name + " " +
+                                         x.doc.RegistrationJournal.Department.Name + " "
+                                         + x.doc.Description + " "
+                                         + x.doc.ExecutorPositionExecutorAgent.Name + " "
+                                         + x.doc.TemplateDocument.DocumentType.Name + " " +
+                                         x.doc.TemplateDocument.DocumentDirection.Name + " " +
+                                         x.doc.DocumentSubject.Name + " "
+                                         + x.doc.DocumentSubject.Name + " "
+                                         + x.doc.SenderAgent.Name + " " + x.doc.SenderAgentPerson.Agent.Name + " " +
+                                         x.doc.SenderNumber + " "
+                        }).Take(() => rowToSelect).ToList());
                 }
 
                 if (objType == EnumObjects.DocumentEvents)
@@ -1003,6 +1041,14 @@ namespace BL.Database.SystemDb
                     {
                         Id = x.ind.Id, DocumentId = x.ss.DocumentId, ItemType = (EnumObjects) x.ind.ObjectType, OperationType = (EnumOperationType) x.ind.OperationType, ClientId = ctx.CurrentClientId, ObjectId = x.ss.Id, ObjectText = x.ss.Description + " " + x.ss.SubscriptionState.Name + " " + x.ss.DoneEvent.SourcePositionExecutorAgent.Name + " "
                     }).Take(() => rowToSelect).ToList());
+                }
+                var iDs = res.Select(x => x.Id);
+                var removedItems = dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)objType && !iDs.Contains(x.Id)).ToList();
+
+                if (removedItems.Any())
+                {
+                    dbContext.FullTextIndexCashSet.RemoveRange(removedItems);
+                    dbContext.SaveChanges();
                 }
             }
             return res;
@@ -1222,6 +1268,14 @@ namespace BL.Database.SystemDb
                     {
                         Id = x.ind.Id, DocumentId = 0, ItemType = (EnumObjects) x.ind.ObjectType, OperationType = (EnumOperationType) x.ind.OperationType, ClientId = ctx.CurrentClientId, ObjectId = x.id, ObjectText = x.doc.Document.Name + " " + x.doc.Extention + " " + x.doc.Name
                     }).ToList());
+                }
+                var iDs = res.Select(s => s.Id);
+                var removedItems = dbContext.FullTextIndexCashSet.Where(x => !iDs.Contains(x.Id)).ToList();
+
+                if (removedItems.Any())
+                {
+                    dbContext.FullTextIndexCashSet.RemoveRange(removedItems);
+                    dbContext.SaveChanges();
                 }
 
                 #endregion TemplateDocuments
