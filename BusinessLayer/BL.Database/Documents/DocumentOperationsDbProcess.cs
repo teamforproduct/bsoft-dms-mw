@@ -1369,8 +1369,8 @@ namespace BL.Database.Documents
                         .ForEach(x =>
                         {
                             x.LinkId = (x.Id == model.Id ? null : model.NewLinkId);
-                            x.LastChangeUserId = model.LastChangeUserId;
-                            x.LastChangeDate = model.LastChangeDate;
+                            //x.LastChangeUserId = model.LastChangeUserId;
+                            //x.LastChangeDate = model.LastChangeDate;
                         });
                 }
                 else
@@ -1380,8 +1380,8 @@ namespace BL.Database.Documents
                         .ForEach(x =>
                         {
                             x.LinkId = null;
-                            x.LastChangeUserId = model.LastChangeUserId;
-                            x.LastChangeDate = model.LastChangeDate;
+                            //x.LastChangeUserId = model.LastChangeUserId;
+                            //x.LastChangeDate = model.LastChangeDate;
                         });
                 }
                 dbContext.SaveChanges();
