@@ -141,12 +141,22 @@ namespace BL.Logic.SystemServices.AutoPlan
                     {
                         try
                         {
-                            var cmd = DocumentCommandFactory.GetDocumentCommand(Model.Enums.EnumDocumentActions.LaunchDocumentSendListItem, ctx, null, id);
+                            var cmd = DocumentCommandFactory.GetDocumentCommand(EnumDocumentActions.LaunchDocumentSendListItem, ctx, null, id);
                             _cmdService.ExecuteCommand(cmd);
                         }
                         catch (Exception ex)
                         {
                             _logger.Error(ctx, $"AutoPlanService cannot process SendList Id={id} ", ex);
+                            try
+                            {
+                                var cmd_Stop = DocumentCommandFactory.GetDocumentCommand(EnumDocumentActions.StopPlan, ctx, null, id);
+                                _cmdService.ExecuteCommand(cmd_Stop);
+                            }
+                            catch (Exception ex2)
+                            {
+                                _logger.Error(ctx, $"AutoPlanService cannot Stop plan for SendList Id={id} ", ex2);
+                            }
+
                         }
                     }
                 }
