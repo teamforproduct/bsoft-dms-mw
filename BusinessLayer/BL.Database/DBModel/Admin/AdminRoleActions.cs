@@ -18,6 +18,8 @@ namespace BL.Database.DBModel.Admin
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
 
+
+
         [ForeignKey("RoleId")]
         public virtual AdminRoles Role { get; set; }
         [ForeignKey("ActionId")]

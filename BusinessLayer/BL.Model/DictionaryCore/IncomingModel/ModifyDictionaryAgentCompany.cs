@@ -44,7 +44,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// Краткое наименование (поле Name из таблицы DictionaryAgents)
         /// </summary>
-        public string ShortName { get; set; }
+        public string Name { get; set; }
         /// <summary>
         /// Список контактных лиц
         /// </summary>
