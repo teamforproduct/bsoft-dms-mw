@@ -985,6 +985,7 @@ namespace BL.Database.Documents
                     }
                     var entry = dbContext.Entry(sendListDb);
                     //entry.Property(x => x.Id).IsModified = true;
+                    entry.Property(e => e.AddDescription).IsModified = true;
                     entry.Property(x => x.LastChangeDate).IsModified = true;
                     entry.Property(x => x.LastChangeUserId).IsModified = true;
                     dbContext.SaveChanges();
@@ -1614,6 +1615,18 @@ namespace BL.Database.Documents
             }
         }
 
+        public void ModifyDocumentSendListAddDescription(IContext context, InternalDocumentSendList sendList)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var sendListDb = ModelConverter.GetDbDocumentSendList(sendList);
+                dbContext.DocumentSendListsSet.Attach(sendListDb);
+                var entry = dbContext.Entry(sendListDb);
+                entry.Property(e => e.AddDescription).IsModified = true;
+                dbContext.SaveChanges();
+            }
+        }
+
         public void ModifyDocumentSendList(IContext context, InternalDocumentSendList sendList, IEnumerable<InternalDocumentTask> task = null, IEnumerable<InternalDocumentEvent> addPaperEvents = null, IEnumerable<int?> delPaperEvents = null)
         {
             using (var dbContext = new DmsContext(context))
@@ -1645,6 +1658,7 @@ namespace BL.Database.Documents
                     entry.Property(e => e.SelfAttentionDate).IsModified = true;
                     entry.Property(e => e.IsInitial).IsModified = true;
                     entry.Property(e => e.Description).IsModified = true;
+                    entry.Property(e => e.AddDescription).IsModified = true;
                     entry.Property(e => e.DueDate).IsModified = true;
                     entry.Property(e => e.DueDay).IsModified = true;
                     entry.Property(e => e.AccessLevelId).IsModified = true;

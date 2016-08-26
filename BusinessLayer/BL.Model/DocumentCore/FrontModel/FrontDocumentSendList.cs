@@ -38,6 +38,8 @@ namespace BL.Model.DocumentCore.FrontModel
 
         public string AccessLevelName { get; set; }
 
+        public string AddDescription { get; set; }
+
         public FrontDocumentEvent StartEvent { get; set; }
         public FrontDocumentEvent CloseEvent { get; set; }
     }

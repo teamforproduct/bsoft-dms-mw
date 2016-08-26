@@ -58,6 +58,14 @@ namespace BL.Database.Documents
             }
         }
 
+        public int GetDocumentIdBySendListId(IContext ctx, int id)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                return dbContext.DocumentSendListsSet.Where(x => x.Id == id).Select(x=>x.DocumentId).FirstOrDefault();
+            }
+        }
+
         public IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterBase filter, UIPaging paging)
         {
             using (var dbContext = new DmsContext(ctx))

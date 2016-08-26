@@ -20,6 +20,8 @@ namespace BL.Database.Admins.Interfaces
         IEnumerable<CurrentPosition> GetPositionsByUser(Employee employee);
         #endregion
 
+        bool VerifySubordination(IContext context, VerifySubordination model);
+
         #region [+] Roles ...
         int AddRole(IContext context, InternalAdminRole model);
         void UpdateRole(IContext context, InternalAdminRole model);

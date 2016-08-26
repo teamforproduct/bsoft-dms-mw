@@ -216,6 +216,7 @@ namespace BL.Database.Common
                     SelfAttentionDate = sendList.SelfAttentionDate,
 
                     Description = sendList.Description,
+                    AddDescription = sendList.AddDescription,
                     DueDate = sendList.DueDate,
                     DueDay = sendList.DueDay,
                     AccessLevelId = (int)sendList.AccessLevel,
