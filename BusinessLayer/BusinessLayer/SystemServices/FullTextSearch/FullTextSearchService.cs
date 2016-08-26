@@ -284,7 +284,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                     processedIds.Clear();
                 }
 
-                var objToProcess = new EnumObjects[]
+                var objToProcess = new[]
                 {
                     EnumObjects.Documents, EnumObjects.DocumentEvents, EnumObjects.DocumentSendLists,
                     EnumObjects.DocumentSubscriptions, EnumObjects.DocumentFiles
@@ -321,6 +321,26 @@ namespace BL.Logic.SystemServices.FullTextSearch
                         processedIds.Clear();
                         toUpdate = _systemDb.FullTextIndexDocumentsPrepare(ctx, objType, MAX_ROW_PROCESS, maxId);
                     }
+                }
+
+                processedIds.Clear();
+                var updateFullDoc = _systemDb.FullTextIndexOneDocumentReindexDbPrepare(ctx, maxId);
+                foreach (var itm in updateFullDoc)
+                {
+                    try
+                    {
+                        worker.UpdateItem(itm);
+
+                        processedIds.Add(itm.Id);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.Error(ctx, $"FullTextService cannot process docId={itm.DocumentId} ", ex);
+                    }
+                }
+                if (processedIds.Any())
+                {
+                    _systemDb.FullTextIndexDeleteProcessed(ctx, processedIds.Distinct());
                 }
 
             }
