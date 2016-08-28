@@ -28,7 +28,7 @@ namespace BL.Logic.DocumentCore
 
         public IEnumerable<FrontDocumentAttachedFile> GetDocumentFiles(IContext ctx, FilterBase filter, UIPaging paging = null)
         {
-//            _adminService.VerifyAccess(ctx, EnumDocumentActions.ViewDocument);
+            _adminService.VerifyAccess(ctx, EnumDocumentActions.ViewDocument, false);
             using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 return _dbProcess.GetDocumentFiles(ctx, filter, paging);

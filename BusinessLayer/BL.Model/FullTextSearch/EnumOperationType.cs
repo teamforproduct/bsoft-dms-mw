@@ -16,6 +16,11 @@
         /// <summary>
         /// delete element. We shoould remove it from index
         /// </summary>
-        Delete = 2     
+        Delete = 2,
+
+        /// <summary>
+        /// add/update all information about document (include SendLists, Files etc.)
+        /// </summary>
+        UpdateDocument = 3
     }
 }

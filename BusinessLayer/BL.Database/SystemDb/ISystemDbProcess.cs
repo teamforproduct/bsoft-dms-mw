@@ -76,6 +76,7 @@ namespace BL.Database.SystemDb
 
         int GetEntityNumbers(IContext ctx, EnumObjects objType);
         int GetCurrentMaxCasheId(IContext ctx);
+        IEnumerable<FullTextIndexItem> FullTextIndexOneDocumentReindexDbPrepare(IContext ctx, int selectBis);
         IEnumerable<FullTextIndexItem> FullTextIndexDocumentsReindexDbPrepare(IContext ctx, EnumObjects objType, int rowToSelect, int rowOffset);
         IEnumerable<FullTextIndexItem> FullTextIndexNonDocumentsReindexDbPrepare(IContext ctx);
         IEnumerable<FullTextIndexItem> FullTextIndexDocumentsPrepare(IContext ctx, EnumObjects objType, int rowToSelect, int selectBis);

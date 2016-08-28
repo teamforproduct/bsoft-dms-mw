@@ -32,6 +32,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public Nullable<DateTime> SelfAttentionDate { get; set; }
 
         public string Description { get; set; }
+        public string AddDescription { get; set; }
         public DateTime? DueDate { get; set; }
         public int? DueDay { get; set; }
         public EnumDocumentAccesses AccessLevel { get; set; }

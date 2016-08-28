@@ -616,6 +616,78 @@
         }
     }
 
+    public class TargetIsNotDefined : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:TargetIsNotDefined@l##";
+        public TargetIsNotDefined() : base(_MESSAGE)
+        {
+        }
+
+        public TargetIsNotDefined(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+    public class ResponsibleExecutorIsNotDefined : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:ResponsibleExecutorIsNotDefined@l##";
+        public ResponsibleExecutorIsNotDefined() : base(_MESSAGE)
+        {
+        }
+
+        public ResponsibleExecutorIsNotDefined(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+    public class ResponsibleExecutorHasAlreadyBeenDefined : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:ResponsibleExecutorHasAlreadyBeenDefined@l##";
+        public ResponsibleExecutorHasAlreadyBeenDefined() : base(_MESSAGE)
+        {
+        }
+
+        public ResponsibleExecutorHasAlreadyBeenDefined(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+    public class ControlerHasAlreadyBeenDefined : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:ControlerHasAlreadyBeenDefined@l##";
+        public ControlerHasAlreadyBeenDefined() : base(_MESSAGE)
+        {
+        }
+
+        public ControlerHasAlreadyBeenDefined(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+    public class TaskIsNotDefined : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:TaskIsNotDefined@l##";
+        public TaskIsNotDefined() : base(_MESSAGE)
+        {
+        }
+
+        public TaskIsNotDefined(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+    public class SubordinationHasBeenViolated : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:SubordinationHasBeenViolated@l##";
+        public SubordinationHasBeenViolated() : base(_MESSAGE)
+        {
+        }
+
+        public SubordinationHasBeenViolated(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
     public class DocumentSendListNotFoundInDocumentRestrictedSendList : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:DocumentSendListNotFoundInDocumentRestrictedSendList@l##";

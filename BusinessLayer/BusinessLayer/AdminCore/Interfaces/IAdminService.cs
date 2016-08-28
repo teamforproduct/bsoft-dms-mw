@@ -29,6 +29,7 @@ namespace BL.Logic.AdminCore.Interfaces
         bool VerifyAccess(IContext context, EnumDictionaryActions action, bool isPositionFromContext = true, bool isThrowExeception = true);
         bool VerifyAccess(IContext context, EnumAdminActions action, bool isPositionFromContext = true, bool isThrowExeception = true);
         bool VerifyAccess(IContext context, EnumEncryptionActions action, bool isPositionFromContext = true, bool isThrowExeception = true);
+        bool VerifySubordination(IContext context, VerifySubordination model);
         #endregion
 
         #region [+] Roles ...

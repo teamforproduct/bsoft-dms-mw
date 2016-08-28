@@ -4,6 +4,7 @@ using BL.CrossCutting.Interfaces;
 using BL.Model.AutoPlan;
 using System.Threading;
 using BL.CrossCutting.DependencyInjection;
+using BL.Database.Documents.Interfaces;
 using BL.Database.SystemDb;
 using BL.Logic.Common;
 using BL.Logic.DocumentCore;
@@ -18,6 +19,7 @@ namespace BL.Logic.SystemServices.AutoPlan
     {
         private readonly Dictionary<AutoPlanSettings, Timer> _timers;
         private ISystemDbProcess _sysDb;
+        private IDocumentsDbProcess _docDb;
         private ICommandService _cmdService;
         private Dictionary<string, QueueWorker.QueueWorker> _workers;
         protected object _lockObjectWorker;
@@ -25,6 +27,7 @@ namespace BL.Logic.SystemServices.AutoPlan
         public AutoPlanService(ISettings settings, ILogger logger, ICommandService cmdService) : base(settings, logger)
         {
             _sysDb = DmsResolver.Current.Get<ISystemDbProcess>();
+            _docDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
             _cmdService = cmdService;
             _timers = new Dictionary<AutoPlanSettings, Timer>();
             _workers = new Dictionary<string, QueueWorker.QueueWorker>();
@@ -141,12 +144,26 @@ namespace BL.Logic.SystemServices.AutoPlan
                     {
                         try
                         {
-                            var cmd = DocumentCommandFactory.GetDocumentCommand(Model.Enums.EnumDocumentActions.LaunchDocumentSendListItem, ctx, null, id);
+                            var cmd = DocumentCommandFactory.GetDocumentCommand(EnumDocumentActions.LaunchDocumentSendListItem, ctx, null, id);
                             _cmdService.ExecuteCommand(cmd);
                         }
                         catch (Exception ex)
                         {
                             _logger.Error(ctx, $"AutoPlanService cannot process SendList Id={id} ", ex);
+                            try
+                            {
+                                var docId = _docDb.GetDocumentIdBySendListId(ctx, id);
+                                if (docId > 0)
+                                {
+                                    var cmdStop = DocumentCommandFactory.GetDocumentCommand(EnumDocumentActions.StopPlan, ctx, null, docId);
+                                    _cmdService.ExecuteCommand(cmdStop);
+                                }
+                            }
+                            catch (Exception ex2)
+                            {
+                                _logger.Error(ctx, $"AutoPlanService cannot Stop plan for SendList Id={id} ", ex2);
+                            }
+
                         }
                     }
                 }

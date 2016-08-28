@@ -63,6 +63,8 @@ namespace BL.Database.Documents.Interfaces
 
         IEnumerable<InternalDocumentSendList> AddByStandartSendListDocumentSendListPrepare(IContext context, ModifyDocumentSendListByStandartSendList model);
 
+        void ModifyDocumentSendListAddDescription(IContext context, InternalDocumentSendList sendList);
+
         void ModifyDocumentSendList(IContext context, InternalDocumentSendList model, IEnumerable<InternalDocumentTask> task = null, IEnumerable<InternalDocumentEvent> addPaperEvents = null, IEnumerable<int?> delPaperEvents = null);
 
         InternalDocument DeleteDocumentSendListPrepare(IContext context, int sendListId);

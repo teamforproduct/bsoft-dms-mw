@@ -163,13 +163,18 @@ namespace BL.Logic.AdminCore
             return VerifyAccess(context, new VerifyAccess { DocumentActionId = (int)action, IsPositionFromContext = isPositionFromContext }, isThrowExeception);
         }
 
+        public bool VerifySubordination(IContext context, VerifySubordination model)
+        {
+            return _adminDb.VerifySubordination(context, model);
+        }
+
         #endregion`
 
-        #region [+] Role ...
-        //public FrontAdminPositionRole GetAdminRole(IContext context, int id)
-        //{
-        //    return _adminDb.GetRole(context, new FilterAdminPositionRole() { IDs = new List<int> { id } }).FirstOrDefault();
-        //}
+            #region [+] Role ...
+            //public FrontAdminPositionRole GetAdminRole(IContext context, int id)
+            //{
+            //    return _adminDb.GetRole(context, new FilterAdminPositionRole() { IDs = new List<int> { id } }).FirstOrDefault();
+            //}
 
         public IEnumerable<FrontAdminRole> GetAdminRoles(IContext context, FilterAdminRole filter)
         {

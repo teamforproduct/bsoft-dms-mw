@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using BL.Logic.Common;
 using BL.Database.Documents.Interfaces;
+using BL.Model.AdminCore;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
@@ -47,17 +48,46 @@ namespace BL.Logic.DocumentCore.Commands
             _context.SetCurrentPosition(Model.SourcePositionId);
             _admin.VerifyAccess(_context, CommandType);   //TODO без позиций
             _document = _operationDb.SendForExecutionDocumentPrepare(_context, Model);
+            DmsExceptions ex = null;
             if (_document == null)
             {
-                throw new DocumentNotFoundOrUserHasNoAccess();
+                ex = new DocumentNotFoundOrUserHasNoAccess();
             }
-            if (Model.StartEventId != null || Model.CloseEventId != null)
+            else if (Model.StartEventId != null || Model.CloseEventId != null)
             {
-                throw new PlanPointHasAlredyBeenLaunched();
+                ex = new PlanPointHasAlredyBeenLaunched();
             }
-            if (!Model.TargetPositionId.HasValue || !Model.TaskId.HasValue || (_document.Waits != null && _document.Waits.Any()) || (_document.Events != null && _document.Events.Any()))
+            else if (!Model.TargetPositionId.HasValue)
             {
-                throw new WrongDocumentSendListEntry();
+                ex = new TargetIsNotDefined();
+            }
+            else if (!Model.TaskId.HasValue)
+            {
+                ex = new TaskIsNotDefined();
+            }
+            else if (_document.Waits != null && _document.Waits.Any())
+            {
+                ex = new ResponsibleExecutorHasAlreadyBeenDefined();
+            }
+            else if (_document.Events != null && _document.Events.Any())
+            {
+                ex = new ControlerHasAlreadyBeenDefined();
+            }
+            if (Model.TargetPositionId.HasValue
+                && !_admin.VerifySubordination(_context, new VerifySubordination
+                {
+                    SubordinationType = EnumSubordinationTypes.Execution,
+                    TargetPosition = Model.TargetPositionId.Value,
+                    SourcePositions = new List<int> { Model.SourcePositionId },
+                }))
+            {
+                ex = new SubordinationHasBeenViolated();
+            }
+            if (ex != null)
+            {
+                Model.AddDescription = ex.Message;
+                _operationDb.ModifyDocumentSendListAddDescription(_context, Model);
+                throw ex;
             }
             CommonDocumentUtilities.PlanDocumentPaperFromSendList(_context, _document, Model);
             return true;
