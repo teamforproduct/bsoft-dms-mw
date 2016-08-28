@@ -916,7 +916,7 @@ namespace BL.Database.SystemDb
                 res.AddRange(dbContext.DictionaryAgentClientCompaniesSet.Where(x => x.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
                 {
                     DocumentId = 0,
-                    ItemType = EnumObjects.DictionaryCompanies,
+                    ItemType = EnumObjects.DictionaryAgentClientCompanies,
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
