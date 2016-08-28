@@ -34,6 +34,7 @@ namespace BL.Database.DBModel.Document
         public Nullable<int> DocumentSubjectId { get; set; }
         [MaxLength(2000)]
         public string Description { get; set; }
+        [MaxLength(2000)]
         public string AddDescription { get; set; }
 
         [Index("IX_IsRegistered")]

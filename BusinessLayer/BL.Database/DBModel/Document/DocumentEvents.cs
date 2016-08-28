@@ -32,6 +32,7 @@ namespace BL.Database.DBModel.Document
         //public string TaskName { get; set; }
         [MaxLength(2000)]
         public string Description { get; set; }
+        [MaxLength(2000)]
         public string AddDescription { get; set; }
         [Index("IX_DocumentEvents_ReadDate", 4)]
         public int? SourcePositionId { get; set; }
