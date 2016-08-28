@@ -157,7 +157,7 @@ namespace BL.Database.Common
         }
 
 
-        public static DictionaryCompanies GetDbCompany(IContext context, InternalDictionaryCompany item)
+        public static DictionaryCompanies GetDbAgentClientCompany(IContext context, InternalDictionaryAgentClientCompany item)
         {
             return item == null ? null : new DictionaryCompanies
             {
@@ -165,6 +165,7 @@ namespace BL.Database.Common
 
                 Id = item.Id,
                 FullName = item.Name,
+                Description = item.Description,
                 IsActive = item.IsActive,
                 LastChangeDate = item.LastChangeDate,
                 LastChangeUserId = item.LastChangeUserId
@@ -215,10 +216,6 @@ namespace BL.Database.Common
                 Id = item.Id,
                 Name = item.Name,
                 ResidentTypeId = item.ResidentTypeId,
-                IsBank = item.IsBank,
-                IsCompany = item.IsCompany,
-                IsEmployee = item.IsEmployee,
-                IsIndividual = item.IsIndividual,
                 Description = item.Description,
                 LastChangeDate = item.LastChangeDate,
                 LastChangeUserId = item.LastChangeUserId,
@@ -268,6 +265,22 @@ namespace BL.Database.Common
             };
 
         }
+
+        public static DictionaryAgentUsers GetDbAgentUser(IContext context, InternalDictionaryAgentUser item)
+        {
+            return item == null ? null : new DictionaryAgentUsers
+            {
+                //ClientId = context.CurrentClientId,
+
+                Id = item.Id,
+                LanguageId = item.LanguageId,
+                LastChangeDate = item.LastChangeDate,
+                LastChangeUserId = item.LastChangeUserId,
+            };
+
+        }
+
+        
 
         public static DictionaryAgentAddresses GetDbAgentAddress(IContext context, InternalDictionaryAgentAddress item)
         {

@@ -12,7 +12,7 @@ using System.Web.Http;
 namespace DMS_WebAPI.Controllers.Dictionaries
 {
     [Authorize]
-    public class DictionaryCompaniesController : ApiController
+    public class DictionaryAgentClientCompaniesController : ApiController
     {
         /// <summary>
         /// Возвращает записи из словаря "Компании"
@@ -20,11 +20,11 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="filter">Параметры для фильтрации записей в словаре "Компании"</param>
         /// <returns>FrontDictionaryCompanies</returns>
         // GET: api/DictionaryCompanies
-        public IHttpActionResult Get([FromUri] FilterDictionaryCompany filter)
+        public IHttpActionResult Get([FromUri] FilterDictionaryAgentClientCompany filter)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionaryCompanies(cxt, filter);
+            var tmpDicts = tmpDictProc.GetDictionaryAgentClientCompanies(cxt, filter);
             return new JsonResult(tmpDicts, this);
         }
 
@@ -38,7 +38,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDict = tmpDictProc.GetDictionaryCompany(cxt, id);
+            var tmpDict = tmpDictProc.GetDictionaryAgentClientCompany(cxt, id);
             return new JsonResult(tmpDict, this);
         }
 
@@ -48,7 +48,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="model">ModifyDictionaryCompany</param>
         /// <returns>DictionaryCompanies</returns>
-        public IHttpActionResult Post([FromBody]ModifyDictionaryCompany model)
+        public IHttpActionResult Post([FromBody]ModifyDictionaryAgentClientCompany model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
@@ -61,7 +61,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="id">int</param>
         /// <param name="model">ModifyDictionaryCompany</param>
         /// <returns>DictionaryCompanies</returns>
-        public IHttpActionResult Put(int id, [FromBody]ModifyDictionaryCompany model)
+        public IHttpActionResult Put(int id, [FromBody]ModifyDictionaryAgentClientCompany model)
         {
             // Спецификация REST требует отдельного указания ID, несмотря на то, что параметр ID есть в ModifyDictionaryCompany
 
@@ -82,7 +82,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
 
             tmpDict.ExecuteAction(EnumDictionaryActions.DeleteCompany, cxt, id);
-            FrontDictionaryCompany tmp = new FrontDictionaryCompany();
+            FrontDictionaryAgentClientCompany tmp = new FrontDictionaryAgentClientCompany();
             tmp.Id = id;
 
             return new JsonResult(tmp, this);

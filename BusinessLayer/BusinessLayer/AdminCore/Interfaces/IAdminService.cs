@@ -1,5 +1,6 @@
 ﻿using BL.CrossCutting.Interfaces;
 using BL.Model.AdminCore;
+using BL.Model.AdminCore.Actions;
 using BL.Model.AdminCore.FilterModel;
 using BL.Model.AdminCore.FrontModel;
 using BL.Model.Enums;
@@ -52,5 +53,8 @@ namespace BL.Logic.AdminCore.Interfaces
         IEnumerable<FrontAdminSubordination> GetAdminSubordinations(IContext context, FilterAdminSubordination filter);
         #endregion
 
+        #region [+] MainMenu ...
+        IEnumerable<MenuItem> GetAdminMainMenu(IContext context);
+        #endregion
     }
 }

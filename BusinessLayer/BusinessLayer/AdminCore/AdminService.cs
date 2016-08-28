@@ -5,6 +5,7 @@ using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.Common;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Model.AdminCore;
+using BL.Model.AdminCore.Actions;
 using BL.Model.AdminCore.FilterModel;
 using BL.Model.AdminCore.FrontModel;
 using BL.Model.Database;
@@ -201,6 +202,13 @@ namespace BL.Logic.AdminCore
         public IEnumerable<FrontAdminSubordination> GetAdminSubordinations(IContext context, FilterAdminSubordination filter)
         {
             return _adminDb.GetSubordinations(context, filter);
+        }
+        #endregion
+
+        #region [+] MainMenu ...
+        public IEnumerable<MenuItem> GetAdminMainMenu(IContext context)
+        {
+            return _adminDb.GetMainMenu(context);
         }
         #endregion
 

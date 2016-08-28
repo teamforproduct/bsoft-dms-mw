@@ -669,17 +669,17 @@ namespace BL.Logic.DictionaryCore
         #endregion DictionaryRegistrationJournals
 
         // Компании
-        #region DictionaryCompanies
-        public FrontDictionaryCompany GetDictionaryCompany(IContext context, int id)
+        #region DictionaryAgentClientCompanies
+        public FrontDictionaryAgentClientCompany GetDictionaryAgentClientCompany(IContext context, int id)
         {
 
-            return _dictDb.GetCompanies(context, new FilterDictionaryCompany { IDs = new List<int> { id } }).FirstOrDefault();
+            return _dictDb.GetAgentClientCompanies(context, new FilterDictionaryAgentClientCompany { IDs = new List<int> { id } }).FirstOrDefault();
         }
 
-        public IEnumerable<FrontDictionaryCompany> GetDictionaryCompanies(IContext context, FilterDictionaryCompany filter)
+        public IEnumerable<FrontDictionaryAgentClientCompany> GetDictionaryAgentClientCompanies(IContext context, FilterDictionaryAgentClientCompany filter)
         {
 
-            return _dictDb.GetCompanies(context, filter);
+            return _dictDb.GetAgentClientCompanies(context, filter);
         }
         #endregion DictionaryCompanies
         

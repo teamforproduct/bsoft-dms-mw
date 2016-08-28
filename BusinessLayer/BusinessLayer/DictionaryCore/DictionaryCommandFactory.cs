@@ -243,13 +243,13 @@ namespace BL.Logic.DictionaryCore
                 // Компании
                 #region DictionaryCompanies
                 case EnumDictionaryActions.AddCompany:
-                    cmd = DmsResolver.Current.Get<AddDictionaryCompanyCommand>();
+                    cmd = DmsResolver.Current.Get<AddDictionaryAgentClientCompanyCommand>();
                     break;
                 case EnumDictionaryActions.ModifyCompany:
-                    cmd = DmsResolver.Current.Get<ModifyDictionaryCompanyCommand>();
+                    cmd = DmsResolver.Current.Get<ModifyDictionaryAgentClientCompanyCommand>();
                     break;
                 case EnumDictionaryActions.DeleteCompany:
-                    cmd = DmsResolver.Current.Get<DeleteDictionaryCompanyCommand>();
+                    cmd = DmsResolver.Current.Get<DeleteDictionaryAgentClientCompanyCommand>();
                     break;
                 #endregion DictionaryCompanies
 

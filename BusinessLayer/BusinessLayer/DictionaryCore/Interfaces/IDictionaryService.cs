@@ -156,10 +156,10 @@ namespace BL.Logic.DictionaryCore.Interfaces
         #endregion DictionaryRegistrationJournals
 
         // Компании
-        #region DictionaryCompanies
-        FrontDictionaryCompany GetDictionaryCompany(IContext context, int id);
+        #region DictionaryAgentClientCompanies
+        FrontDictionaryAgentClientCompany GetDictionaryAgentClientCompany(IContext context, int id);
 
-        IEnumerable<FrontDictionaryCompany> GetDictionaryCompanies(IContext context, FilterDictionaryCompany filter);
+        IEnumerable<FrontDictionaryAgentClientCompany> GetDictionaryAgentClientCompanies(IContext context, FilterDictionaryAgentClientCompany filter);
         #endregion DictionaryCompanies
 
 

@@ -7,7 +7,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
     /// </summary>
     // В модели перечислены поля, на значения которых можно повлиять из интерфейса. Например поля таблицы LastChangeUserId и LastChangeDate в этой модели отсутствуют
     // Если в таблице поля объявлены как Nullable то поля в этом классе нужно объявлять Nullable
-    public class ModifyDictionaryCompany
+    public class ModifyDictionaryAgentClientCompany
     {
         /// <summary>
         /// ID
@@ -24,6 +24,17 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// Наименование компании
         /// </summary>
         public string Name { get; set; }
+
+        /// <summary>
+        /// Наименование компании
+        /// </summary>
+        public string FullName { get; set; }
+
+        /// <summary>
+        /// Примечание
+        /// </summary>
+        public string Description { get; set; }
+
 
     }
 }

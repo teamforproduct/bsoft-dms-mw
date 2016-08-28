@@ -5,7 +5,7 @@ using System;
 
 namespace BL.Logic.DictionaryCore
 {
-    public class DeleteDictionaryCompanyCommand : BaseDictionaryCommand
+    public class DeleteDictionaryAgentClientCompanyCommand : BaseDictionaryCommand
 
     {
       
@@ -37,12 +37,12 @@ namespace BL.Logic.DictionaryCore
         {
             try
             {
-                var dd = new InternalDictionaryCompany
+                var dd = new InternalDictionaryAgentClientCompany
                 {
                     Id = Model
 
                 };
-                _dictDb.DeleteCompany(_context, dd);
+                _dictDb.DeleteAgentClientCompany(_context, dd);
                 return null;
             }
             catch (Exception ex)
