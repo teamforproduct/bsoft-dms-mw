@@ -50,7 +50,7 @@ namespace BL.Database.Documents.Interfaces
         IEnumerable<InternalDocumentRestrictedSendList> AddByStandartSendListDocumentRestrictedSendListPrepare(IContext context, ModifyDocumentRestrictedSendListByStandartSendList model);
 
         InternalDocumentRestrictedSendList DeleteDocumentRestrictedSendListPrepare(IContext context, int restSendListId);
-        InternalDocument SendForSigningDocumentPrepare(IContext context, InternalDocumentSendList model);
+        InternalDocument SendForInformationDocumentPrepare(IContext context, InternalDocumentSendList model);
         void CloseDocumentWait(IContext context, InternalDocument document);
 
         void SelfAffixSigningDocument(IContext ctx, InternalDocument document);

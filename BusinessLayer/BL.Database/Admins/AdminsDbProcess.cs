@@ -176,7 +176,7 @@ namespace BL.Database.Admins
                 var pos = dictDb.GetPositions(context, new FilterDictionaryPosition() { IDs = new List<int> { model.TargetPosition }, SubordinatedPositions = model.SourcePositions })
                     .Select(x => new { MaxSubordinationTypeId = x.MaxSubordinationTypeId })
                     .FirstOrDefault();
-                if (pos == null || pos.MaxSubordinationTypeId < (int)model.SubordinationType)
+                if (pos?.MaxSubordinationTypeId == null || pos.MaxSubordinationTypeId < (int)model.SubordinationType)
                 {
                     return false;
                 }
