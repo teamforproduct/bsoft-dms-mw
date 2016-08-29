@@ -1206,11 +1206,11 @@ namespace BL.Database.Documents
                             Id = x.Id,
                             OnEvent = new InternalDocumentEvent
                             {
+                                SourcePositionId  = x.OnEvent.SourcePositionId,
                                 TargetPositionId = x.OnEvent.TargetPositionId,
                                 TargetPositionExecutorAgentId = x.OnEvent.TargetPositionExecutorAgentId,
                             }
-                        }
-                        ).ToList();
+                        }).ToList();
                 }
                 if (sendList.SendType == EnumSendTypes.SendForResponsibleExecution || sendList.SendType == EnumSendTypes.SendForControl)
                 {
@@ -1221,16 +1221,29 @@ namespace BL.Database.Documents
                         .Select(x => new InternalDocumentEvent
                         {
                             Id = x.Id,
+                            SourcePositionId = x.SourcePositionId,
                             TargetPositionId = x.TargetPositionId,
                             TargetPositionExecutorAgentId = x.TargetPositionExecutorAgentId,
-                        }
-                        ).ToList();
+                        }).ToList();
                 }
-                return doc;
+                if (sendList.IsInitial)
+                {
+                    doc.Subscriptions = dbContext.DocumentSubscriptionsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId)
+                        .Where(x => x.DocumentId == sendList.DocumentId && x.SubscriptionState.IsSuccess)
+                        .Select(x => new InternalDocumentSubscription
+                        {
+                            Id = x.Id,
+                            DoneEvent = new InternalDocumentEvent
+                            {
+                                SourcePositionId = x.DoneEvent.SourcePositionId,
+                            }
+                        }).ToList();
+                }
+            return doc;
             }
         }
 
-        public InternalDocument SendForSigningDocumentPrepare(IContext context, InternalDocumentSendList sendList)
+        public InternalDocument SendForInformationDocumentPrepare(IContext context, InternalDocumentSendList sendList)
         {
             using (var dbContext = new DmsContext(context))
             {
@@ -1241,9 +1254,20 @@ namespace BL.Database.Documents
                         Id = x.Id
                     }).FirstOrDefault();
                 if (doc == null) return null;
-
+                if (sendList.IsInitial)
+                {
+                    doc.Subscriptions = dbContext.DocumentSubscriptionsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId)
+                        .Where(x => x.DocumentId == sendList.DocumentId && x.SubscriptionState.IsSuccess)
+                        .Select(x => new InternalDocumentSubscription
+                        {
+                            Id = x.Id,
+                            DoneEvent = new InternalDocumentEvent
+                            {
+                                SourcePositionId = x.DoneEvent.SourcePositionId,
+                            }
+                        }).ToList();
+                }
                 return doc;
-
             }
         }
 

@@ -202,7 +202,7 @@ namespace BL.Logic.Common
                 DocumentId = model.DocumentId != 0 ? model.DocumentId : 0,
                 EventType = (EnumEventTypes)Enum.Parse(typeof(EnumEventTypes), model.SendType.ToString()),
                 TaskId = model.TaskId,
-                IsAvailableWithinTask = model.TaskId.HasValue ? model.IsAvailableWithinTask:false,
+                IsAvailableWithinTask = model.TaskId.HasValue ? model.IsAvailableWithinTask : false,
                 Description = model.Description,
                 SourceAgentId = model.SourceAgentId,
                 SourcePositionId = model.SourcePositionId,
@@ -232,7 +232,7 @@ namespace BL.Logic.Common
                 DocumentId = documentId ?? 0,
                 EventType = eventType,
                 TaskId = taskId,
-                IsAvailableWithinTask = taskId.HasValue?isAvailableWithinTask:false,
+                IsAvailableWithinTask = taskId.HasValue ? isAvailableWithinTask : false,
                 Description = description,
                 AddDescription = addDescription,
                 SourceAgentId = sourceAgentId ?? context.CurrentAgentId,
@@ -806,6 +806,24 @@ namespace BL.Logic.Common
                 return null;
         }
 
+        public static List<int> GetSourcePositionsForSubordinationVeification(IContext context, InternalDocumentSendList sendList, InternalDocument document)
+        {
+            var res = new List<int> { sendList.SourcePositionId };
+            if (document.Events?.Any() ?? false)
+            {
+                res.AddRange(document.Events.Select(x => x.SourcePositionId.Value));
+            }
+            if (document.Waits?.Any() ?? false)
+            {
+                res.AddRange(document.Waits.Select(x => x.OnEvent.SourcePositionId.Value));
+            }
+            if (document.Subscriptions?.Any() ?? false)
+            {
+                res.AddRange(document.Subscriptions.Select(x => x.DoneEvent.SourcePositionId.Value));
+            }
+            return res;
+        }
+
         public static void FormationRegistrationNumberByFormula(InternalDocument doc, InternalDocumnRegistration model)
         {
             doc.RegistrationJournalPrefixFormula = FormationRegistrationNumberByFormula(doc.RegistrationJournalPrefixFormula, doc, model);
@@ -918,15 +936,18 @@ namespace BL.Logic.Common
             }
             return res;
         }
+
         private static string GetPatternFilterSymbolReplace(string input, string symbol)
         {
             if (string.IsNullOrEmpty(input)) input = string.Empty;
             return input.Replace("{" + symbol + "/", string.Empty).Replace("/" + symbol + "}", "");
         }
+
         private static string GetPatternFilter(string symbol)
         {
             return "{" + symbol + "/(.*?)/" + symbol + "}";
         }
+
         /// <summary>
         /// Формирует список значений документа для фильтрации в динамических свойствах, формирование регистрационого номера по формуле
         /// </summary>

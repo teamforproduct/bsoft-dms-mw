@@ -78,7 +78,7 @@ namespace BL.Logic.DocumentCore.Commands
                 {
                     SubordinationType = EnumSubordinationTypes.Execution,
                     TargetPosition = Model.TargetPositionId.Value,
-                    SourcePositions = new List<int> { Model.SourcePositionId },
+                    SourcePositions = CommonDocumentUtilities.GetSourcePositionsForSubordinationVeification(_context, Model, _document),
                 }))
             {
                 ex = new SubordinationHasBeenViolated();
