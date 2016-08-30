@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
 
 namespace BL.Model.DictionaryCore.IncomingModel
 {
@@ -19,10 +20,11 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// Признак активности.
         /// </summary>
         public bool IsActive { get; set; }
-        
+
         /// <summary>
         /// Наименование компании
         /// </summary>
+        [Required]
         public string Name { get; set; }
 
         /// <summary>
@@ -34,7 +36,5 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// Примечание
         /// </summary>
         public string Description { get; set; }
-
-
     }
 }

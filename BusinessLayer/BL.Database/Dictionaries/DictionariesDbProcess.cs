@@ -19,6 +19,7 @@ using BL.Database.DBModel.Document;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure.Interception;
 using System.Data.Entity.SqlServer;
+using BL.Model.Common;
 
 namespace BL.Database.Dictionaries
 {
@@ -5231,5 +5232,30 @@ namespace BL.Database.Dictionaries
 
 
         #endregion CustomDictionaries
+
+
+        public IEnumerable<TreeItem> GetStaffList(IContext context, DictionaryBaseFilterParameters filter, int StartWithId)
+        {
+
+            IEnumerable<TreeItem> executors = (IEnumerable<TreeItem>)GetPositionExecutors(context, new FilterDictionaryPositionExecutor());// { Name = filter.Name });
+
+            IEnumerable<TreeItem> positions = (IEnumerable<TreeItem>)GetPositions(context, new FilterDictionaryPosition());// { Name = filter.Name });
+
+            IEnumerable<TreeItem> departments = (IEnumerable<TreeItem>)GetDepartments(context, new FilterDictionaryDepartment());
+
+            IEnumerable<TreeItem> companies = (IEnumerable<TreeItem>)GetAgentClientCompanies(context, new FilterDictionaryAgentClientCompany());
+
+            List<TreeItem> flatList = new List<TreeItem>();
+            
+            flatList.AddRange(executors);
+            flatList.AddRange(positions);
+            flatList.AddRange(departments);
+            flatList.AddRange(companies);
+
+            //List<TreeItem> staffList = new List<TreeItem>();
+
+            return flatList.SelectRecursive(c => companies);
+        }
+
     }
 }

@@ -126,6 +126,7 @@
     <Compile Include="Common\AdminModelConverter.cs" />
     <Compile Include="Common\DictionaryModelConverter.cs" />
     <Compile Include="Common\ModelConverter.cs" />
+    <Compile Include="Common\RecursiveExtension.cs" />
     <Compile Include="CoreDb\CoreDb.cs" />
     <Compile Include="DatabaseContext\DmsContext.cs" />
     <Compile Include="DatabaseContext\DmsDbInitializer.cs" />

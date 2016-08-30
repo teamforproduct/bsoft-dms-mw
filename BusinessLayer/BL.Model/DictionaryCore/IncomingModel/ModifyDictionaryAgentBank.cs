@@ -14,22 +14,27 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// </summary>
         [IgnoreDataMember]
         public int Id { get; set; }
+
         /// <summary>
         /// МФО
         /// </summary>
         public string MFOCode { get; set; }
+
         /// <summary>
         /// Код Свифт
         /// </summary>
         public string Swift { get; set; }
+
         /// <summary>
         /// Комментарии
         /// </summary>
         public string Description { get; set; }
+
         /// <summary>
         /// Признак активности
         /// </summary>
         public bool IsActive { get; set; }
+
         /// <summary>
         /// Название
         /// </summary>

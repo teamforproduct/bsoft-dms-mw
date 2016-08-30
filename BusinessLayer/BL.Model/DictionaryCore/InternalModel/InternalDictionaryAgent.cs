@@ -16,8 +16,8 @@ namespace BL.Model.DictionaryCore.InternalModel
         {
             Id = model.Id;
             Name = model.Name;
-            Description = model.Description;
-            IsActive = model.IsActive;
+            Description = string.Empty;// model.Description;
+            IsActive = true; //model.IsActive;
             ResidentTypeId = model.ResidentTypeId ?? null;
         }
 

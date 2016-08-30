@@ -1,4 +1,6 @@
-﻿using BL.Model.DictionaryCore.IncomingModel;
+﻿using BL.Model.Common;
+using BL.Model.DictionaryCore.IncomingModel;
+using BL.Model.Enums;
 using System.Collections.Generic;
 
 namespace BL.Model.DictionaryCore.FrontModel
@@ -6,8 +8,9 @@ namespace BL.Model.DictionaryCore.FrontModel
     /// <summary>
     /// Карточка элемента из справочника "Штатное расписание". 
     /// </summary>
-    public class FrontDictionaryPosition : ModifyDictionaryPosition
+    public class FrontDictionaryPosition : ModifyDictionaryPosition, ITreeItem
     {
+
         /// <summary>
         /// ID
         /// </summary>
@@ -47,6 +50,24 @@ namespace BL.Model.DictionaryCore.FrontModel
         public virtual IEnumerable<FrontDictionaryPosition> ChildPositions { get; set; }
         public virtual IEnumerable<FrontDictionaryDepartment> ChiefDepartments { get; set; }
         public virtual IEnumerable<FrontDictionaryStandartSendList> StandartSendLists { get; set; }
+
+        #region ITreeItem
+
+       
+
+        public int ObjectId
+        {
+            get { return (int)EnumObjects.DictionaryPositions; }
+        }
+
+        public ITreeItem Parent
+        {
+            get { return null; }
+        }
+
+        public IEnumerable<ITreeItem> Childs { get; set; }
+        
+        #endregion
 
     }
 }

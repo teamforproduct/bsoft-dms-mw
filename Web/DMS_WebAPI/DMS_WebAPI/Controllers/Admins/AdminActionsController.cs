@@ -9,6 +9,9 @@ using BL.Model.Enums;
 
 namespace DMS_WebAPI.Controllers.Admins
 {
+    /// <summary>
+    /// Действия связанные с пользовательской настройкой системы
+    /// </summary>
     [Authorize]
     [RoutePrefix("api/v2/AdminActions")]
     public class AdminActionsController : ApiController
@@ -18,7 +21,7 @@ namespace DMS_WebAPI.Controllers.Admins
         /// </summary>
         /// <returns>Меню</returns>
         [Route("GetMainMenu")]
-        [HttpPost]
+        [HttpGet]
         public IHttpActionResult GetMainMenu()
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
@@ -29,8 +32,7 @@ namespace DMS_WebAPI.Controllers.Admins
 
     }
 
-    // !!! Добавить логику связ с перездом companies в структуру агентов
-
+    
     // Добавить пользователя-сотрудника
     // Добавить администратора подразделения (AgentId, DepartmentId)
     // Удалить администратора подразделения (AgentId, DepartmentId)

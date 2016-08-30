@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
+using System.ComponentModel.DataAnnotations;
 
 namespace BL.Model.DictionaryCore.IncomingModel
 {
@@ -18,6 +19,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// ФИО, Название, ...
         /// </summary>
+        [Required]
         public string Name { get; set; }
 
        /// <summary>
@@ -28,10 +30,12 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// Дополнительная информация
         /// </summary>
+        [System.Obsolete("Договорились не использовать", true)]
         public string Description { get; set; }
         /// <summary>
         /// Признак активности
         /// </summary>
+        [System.Obsolete("Договорились не использовать", true)]
         public bool IsActive { get; set; }
        
     }

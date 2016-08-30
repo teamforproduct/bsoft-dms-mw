@@ -81,7 +81,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AdminCore\Actions\MenuItem.cs" />
+    <Compile Include="Common\MenuItem.cs" />
     <Compile Include="AdminCore\Actions\AddUser.cs" />
     <Compile Include="AdminCore\AdminLanguageInfo.cs" />
     <Compile Include="AdminCore\AdminAccessInfo.cs" />
@@ -116,6 +116,10 @@
     <Compile Include="AdminCore\InternalModel\InternalPositionRole.cs" />
     <Compile Include="ClearTrashDocuments\ClearTrashDocumentsSettings.cs" />
     <Compile Include="AutoPlan\AutoPlanSettings.cs" />
+    <Compile Include="Common\IDictionaryItem.cs" />
+    <Compile Include="Common\TreeItem.cs" />
+    <Compile Include="Common\ITreeItem.cs" />
+    <Compile Include="Common\IListItem.cs" />
     <Compile Include="Common\Period.cs" />
     <Compile Include="Constants\SettingConstants.cs" />
     <Compile Include="DictionaryCore\FilterModel\DictionaryBaseFilterParameters.cs" />

@@ -1,6 +1,6 @@
 ﻿using BL.CrossCutting.Interfaces;
 using BL.Model.AdminCore;
-using BL.Model.AdminCore.Actions;
+using BL.Model.Common;
 using BL.Model.AdminCore.FilterModel;
 using BL.Model.AdminCore.FrontModel;
 using BL.Model.Enums;

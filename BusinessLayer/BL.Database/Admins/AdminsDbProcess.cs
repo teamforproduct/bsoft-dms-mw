@@ -19,6 +19,7 @@ using BL.Database.Common;
 using System;
 using BL.Database.DBModel.Dictionary;
 using BL.Model.AdminCore.Actions;
+using BL.Model.Common;
 
 namespace BL.Database.Admins
 {
@@ -422,35 +423,7 @@ namespace BL.Database.Admins
                 }).ToList();
             }
         }
-        public IEnumerable<MenuItem> GetMainMenu(IContext context)
-        {
-            return new List<MenuItem> {
-                    new MenuItem {Id = 1, Name = "Сотрудники", InterfaceName = "agent-employees"},
-                    new MenuItem {Id = 2, Name = "Роли"},
-                    new MenuItem {Id = 3, Name = "Структура"},
-                    new MenuItem {Id = 4, Name = "Справочники"},
-                        new MenuItem {Id = 20, ParentId = 4, Name = "Документооборот"},
-                            new MenuItem {Id = 30, ParentId = 20, Name = "Типы документов", InterfaceName = "document-types"},
-                            new MenuItem {Id = 31, ParentId = 20, Name = "Журналы регистрации", InterfaceName = "journals"},
-                            new MenuItem {Id = 32, ParentId = 20, Name = "Тематики документов", InterfaceName = ""},
-                            new MenuItem {Id = 33, ParentId = 20, Name = "Шаблоны документов", InterfaceName = ""},
 
-                        
-                        new MenuItem {Id = 22, ParentId = 4, Name = "Физлица", InterfaceName = "agent-persons"},
-                        new MenuItem {Id = 23, ParentId = 4, Name = "Банки", InterfaceName = "agent-banks"},
-                        new MenuItem {Id = 24, ParentId = 4, Name = "Юрлица", InterfaceName = "agent-companies"},
-                        new MenuItem {Id = 25, ParentId = 4, Name = "-"},
-                        new MenuItem {Id = 26, ParentId = 4, Name = "Теги", InterfaceName = "tags"},
-                        new MenuItem {Id = 27, ParentId = 4, Name = "Клиентские справочники", InterfaceName = ""},
-
-
-                    new MenuItem {Id = 5, Name = "Документы", InterfaceName = "docs"},
-                    new MenuItem {Id = 6, Name = "События", InterfaceName = "events"},
-                    new MenuItem {Id = 7, Name = "Файлы", InterfaceName = "attachments"},
-                    new MenuItem {Id = 8, Name = "Ожидания", InterfaceName = "documentWaits"},
-            };
-
-        }
         public bool ExistsRoleAction(IContext context, FilterAdminRoleAction filter)
         {
             using (var dbContext = new DmsContext(context))
@@ -974,6 +947,46 @@ namespace BL.Database.Admins
         }
 
         #endregion
+
+        public IEnumerable<MenuItem> GetMainMenu(IContext context)
+        {
+
+            MenuItem itemDictDMS = new MenuItem { Id = 20, ParentId = 4, Name = "Документооборот" };
+
+            itemDictDMS.Childs = new List<ITreeItem> {
+                            new MenuItem { Id = 30, ParentId = 20, Name = "Типы документов", InterfaceName = "document-types" },
+                            new MenuItem { Id = 31, ParentId = 20, Name = "Журналы регистрации", InterfaceName = "journals" },
+                            new MenuItem { Id = 32, ParentId = 20, Name = "Тематики документов", InterfaceName = "" },
+                            new MenuItem { Id = 33, ParentId = 20, Name = "Шаблоны документов", InterfaceName = "" },
+                            };
+
+            MenuItem itemDict = new MenuItem { Id = 4, Name = "Справочники" };
+
+            itemDict.Childs = new List<ITreeItem> {
+                itemDictDMS,
+                new MenuItem { Id = 22, ParentId = 4, Name = "Физлица", InterfaceName = "agent-persons" },
+                new MenuItem { Id = 23, ParentId = 4, Name = "Банки", InterfaceName = "agent-banks" },
+                new MenuItem { Id = 24, ParentId = 4, Name = "Юрлица", InterfaceName = "agent-companies" },
+                new MenuItem { Id = 25, ParentId = 4, Name = "-" },
+                new MenuItem { Id = 26, ParentId = 4, Name = "Теги", InterfaceName = "tags" },
+                new MenuItem { Id = 27, ParentId = 4, Name = "Клиентские справочники", InterfaceName = "" }
+            };
+
+            List<MenuItem> menus = new List<MenuItem> {
+                    new MenuItem {Id = 1, Name = "Сотрудники", InterfaceName = "agent-employees"},
+                    new MenuItem {Id = 2, Name = "Роли"},
+                    new MenuItem {Id = 3, Name = "Структура"},
+                    itemDict,
+                    new MenuItem {Id = 5, Name = "Документы", InterfaceName = "docs"},
+                    new MenuItem {Id = 6, Name = "События", InterfaceName = "events"},
+                    new MenuItem {Id = 7, Name = "Файлы", InterfaceName = "attachments"},
+                    new MenuItem {Id = 8, Name = "Ожидания", InterfaceName = "documentWaits"}
+            };
+
+            return menus;
+        }
+
+        
 
     }
 }
