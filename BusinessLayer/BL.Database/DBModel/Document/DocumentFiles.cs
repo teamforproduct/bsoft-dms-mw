@@ -26,6 +26,7 @@ namespace BL.Database.DBModel.Document
         public string FileType { get; set; }
         public long FileSize { get; set; }
         public DateTime Date { get; set; }
+        [MaxLength(2000)]
         public string Content { get; set; }
         public bool IsAdditional { get; set; }
         public bool IsDeleted { get; set; }

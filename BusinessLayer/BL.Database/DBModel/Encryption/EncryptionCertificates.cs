@@ -1,5 +1,6 @@
 ﻿using BL.Database.DBModel.Dictionary;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BL.Database.DBModel.Encryption
@@ -7,8 +8,10 @@ namespace BL.Database.DBModel.Encryption
     public class EncryptionCertificates
     {
         public int Id { get; set; }
+        [MaxLength(400)]
         public string Name { get; set; }
         public byte[] Certificate { get; set; }
+        [MaxLength(400)]
         public string Extension { get; set; }
 
         public DateTime CreateDate { get; set; }

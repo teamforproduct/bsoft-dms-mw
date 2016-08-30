@@ -3519,7 +3519,7 @@ namespace BL.Database.Dictionaries
                 if (filter.SubordinatedPositions?.Count() > 0)
                 {
                     filterMaxSubordinationTypeContains = filter.SubordinatedPositions.Aggregate(filterMaxSubordinationTypeContains,
-                        (current, value) => current.Or(e => e.TargetPositionId == value).Expand());
+                        (current, value) => current.Or(e => e.SourcePositionId == value).Expand());
                 }
 
                 var qry2 = qry.Select(x => new FrontDictionaryPosition

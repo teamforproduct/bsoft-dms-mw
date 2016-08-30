@@ -48,7 +48,7 @@ namespace BL.Logic.DocumentCore.Commands
         {
             _context.SetCurrentPosition(Model.SourcePositionId);
             _admin.VerifyAccess(_context, CommandType);   //TODO без позиций
-            _document = _operationDb.SendForSigningDocumentPrepare(_context, Model);
+            _document = _operationDb.SendForInformationDocumentPrepare(_context, Model);
             DmsExceptions ex = null;
             if (_document == null)
             {
@@ -67,7 +67,7 @@ namespace BL.Logic.DocumentCore.Commands
                 {
                     SubordinationType = EnumSubordinationTypes.Informing,
                     TargetPosition = Model.TargetPositionId.Value,
-                    SourcePositions = new List<int> { Model.SourcePositionId }, 
+                    SourcePositions = CommonDocumentUtilities.GetSourcePositionsForSubordinationVeification(_context, Model, _document), 
                 }))
             {
                 ex = new SubordinationHasBeenViolated();

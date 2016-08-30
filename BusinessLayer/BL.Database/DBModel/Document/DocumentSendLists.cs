@@ -27,6 +27,7 @@ namespace BL.Database.DBModel.Document
         //public string TaskName { get; set; }
         [MaxLength(2000)]
         public string Description { get; set; }
+        [MaxLength(2000)]
         public string AddDescription { get; set; }
         public Nullable<DateTime> DueDate { get; set; }
         public int? DueDay { get; set; }
