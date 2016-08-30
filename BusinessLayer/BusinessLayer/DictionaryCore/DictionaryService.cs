@@ -58,6 +58,7 @@ namespace BL.Logic.DictionaryCore
                         .OrderByDescending(x => x.Rate);
                 if (resWithRanges.Any())
                 {
+                    newFilter.IDs = new List<int>();
                     newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId).Take(paging.PageSize*paging.CurrentPage));
                 }
             }
@@ -155,6 +156,7 @@ namespace BL.Logic.DictionaryCore
                         .OrderByDescending(x => x.Rate);
                 if (resWithRanges.Any())
                 {
+                    newFilter.IDs = new List<int>();
                     newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId));
                 }
             }
@@ -192,6 +194,7 @@ namespace BL.Logic.DictionaryCore
                         .OrderByDescending(x => x.Rate);
                 if (resWithRanges.Any())
                 {
+                    newFilter.IDs = new List<int>();
                     newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId));
                 }
             }
@@ -248,6 +251,7 @@ namespace BL.Logic.DictionaryCore
                         .OrderByDescending(x => x.Rate);
                 if (resWithRanges.Any())
                 {
+                    newFilter.IDs = new List<int>();
                     newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId));
                 }
             }
@@ -300,6 +304,7 @@ namespace BL.Logic.DictionaryCore
                         .OrderByDescending(x => x.Rate);
                 if (resWithRanges.Any())
                 {
+                    newFilter.IDs = new List<int>();
                     newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId).Take(paging.PageSize*paging.CurrentPage));
                 }
             }
@@ -383,6 +388,7 @@ namespace BL.Logic.DictionaryCore
             }
             else
             {
+                newFilter.IDs = new List<int>();
                 newFilter = filter;
             }
 
@@ -466,6 +472,7 @@ namespace BL.Logic.DictionaryCore
                         .OrderByDescending(x => x.Rate);
                 if (resWithRanges.Any())
                 {
+                    newFilter.IDs = new List<int>();
                     newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId));
                 }
             }
@@ -546,6 +553,7 @@ namespace BL.Logic.DictionaryCore
                         .OrderByDescending(x => x.Rate);
                 if (resWithRanges.Any())
                 {
+                    newFilter.IDs = new List<int>();
                     newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId));
                 }
             }
@@ -675,6 +683,7 @@ namespace BL.Logic.DictionaryCore
 
                 if (resWithRanges.Any())
                 {
+                    newFilter.IDs = new List<int>();
                     newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId));
                 }
 
