@@ -19,6 +19,7 @@ namespace BL.Model.DictionaryCore.InternalModel
             ContactTypeId = model.ContactTypeId;
             Value = model.Value;
             IsActive = model.IsActive;
+            IsConfirmed = model.IsConfirmed;
             Description = model.Description;
         }
 
@@ -42,6 +43,11 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// Признак активности
         /// </summary>
         public bool IsActive { get; set; }
+
+        /// <summary>
+        /// Признак подтверждения
+        /// </summary>
+        public bool IsConfirmed { get; set; }
         /// <summary>
         /// Дополнительная информация
         /// </summary>

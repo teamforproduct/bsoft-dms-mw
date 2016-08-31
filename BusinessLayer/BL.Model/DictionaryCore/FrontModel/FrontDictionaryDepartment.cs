@@ -1,5 +1,8 @@
-﻿using BL.Model.DictionaryCore.IncomingModel;
+﻿using BL.Model.Common;
+using BL.Model.DictionaryCore.IncomingModel;
+using BL.Model.Enums;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace BL.Model.DictionaryCore.FrontModel
 {
@@ -7,7 +10,7 @@ namespace BL.Model.DictionaryCore.FrontModel
     /// Карточка элемента из справочника "Структура предприятия"
     /// </summary>
     // 
-    public class FrontDictionaryDepartment: ModifyDictionaryDepartment
+    public class FrontDictionaryDepartment: ModifyDictionaryDepartment, ITreeItem
     {
         /// <summary>
         /// ID
@@ -34,6 +37,25 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// </summary>
         public virtual IEnumerable<FrontDictionaryDepartment> ChildDepartments { get; set; }
 
+        #region ITreeItem
+
+        [IgnoreDataMember]
+        public int? ParentItemId
+        {
+            get { return ParentId ?? CompanyId; }
+        }
+
+        public int? ObjectId
+        {
+            get { return (int)EnumObjects.DictionaryDepartments; }
+        }
+
+        [IgnoreDataMember]
+        public bool IsUsed { get; set; }
+
+        public IEnumerable<ITreeItem> Childs { get; set; }
+
+        #endregion
 
     }
 }

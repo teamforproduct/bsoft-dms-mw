@@ -17,7 +17,7 @@ namespace BL.Model.DictionaryCore.InternalModel
         {
             Id = model.Id;
             FullName = model.FullName;
-            ShortName = model.ShortName;
+            Name = model.Name;
             TaxCode = model.TaxCode;
             Description = model.Description;
             OKPOCode = model.OKPOCode;
@@ -37,7 +37,7 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// <summary>
         /// Краткое наименование
         /// </summary>
-        public string ShortName { get; set; }
+        public string Name { get; set; }
         /// <summary>
         /// ИНН
         /// </summary>

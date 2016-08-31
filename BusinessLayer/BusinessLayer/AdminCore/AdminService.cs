@@ -5,6 +5,7 @@ using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.Common;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Model.AdminCore;
+using BL.Model.Common;
 using BL.Model.AdminCore.FilterModel;
 using BL.Model.AdminCore.FrontModel;
 using BL.Model.Database;
@@ -169,11 +170,11 @@ namespace BL.Logic.AdminCore
 
         #endregion`
 
-            #region [+] Role ...
-            //public FrontAdminPositionRole GetAdminRole(IContext context, int id)
-            //{
-            //    return _adminDb.GetRole(context, new FilterAdminPositionRole() { IDs = new List<int> { id } }).FirstOrDefault();
-            //}
+        #region [+] Role ...
+        //public FrontAdminPositionRole GetAdminRole(IContext context, int id)
+        //{
+        //    return _adminDb.GetRole(context, new FilterAdminPositionRole() { IDs = new List<int> { id } }).FirstOrDefault();
+        //}
 
         public IEnumerable<FrontAdminRole> GetAdminRoles(IContext context, FilterAdminRole filter)
         {
@@ -208,6 +209,15 @@ namespace BL.Logic.AdminCore
             return _adminDb.GetSubordinations(context, filter);
         }
         #endregion
+
+        #region [+] MainMenu ...
+        public IEnumerable<MenuItem> GetAdminMainMenu(IContext context)
+        {
+            return _adminDb.GetMainMenu(context);
+        }
+        #endregion
+
+        
 
     }
 }

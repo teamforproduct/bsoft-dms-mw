@@ -3,7 +3,7 @@
     /// <summary>
     /// Фильтры FilterDictionaryCompany
     /// </summary>
-    public class FilterDictionaryCompany : DictionaryBaseFilterParameters
+    public class FilterDictionaryAgentClientCompany : DictionaryBaseFilterParameters
     {
  
     }

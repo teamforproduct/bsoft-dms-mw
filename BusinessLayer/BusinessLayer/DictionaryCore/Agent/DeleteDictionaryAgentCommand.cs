@@ -49,12 +49,7 @@ using BL.Model.SystemCore;
             {
                 try
                 {
-                    var newPers = new InternalDictionaryAgent
-                    {
-                        Id = Model
-
-                    };
-                    _dictDb.DeleteAgent(_context, newPers);
+                    _dictDb.DeleteAgent(_context, Model);
                     return null;
                 }
                 catch (Exception ex)

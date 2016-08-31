@@ -12,6 +12,7 @@ namespace BL.Model.DictionaryCore.InternalModel
         public InternalDictionaryAddressType(ModifyDictionaryAddressType model)
         {
             Id = model.Id;
+            Code = model.Code;
             Name = model.Name;
             IsActive = model.IsActive;
         }
@@ -22,9 +23,15 @@ namespace BL.Model.DictionaryCore.InternalModel
         public int Id { get; set; }
 
         /// <summary>
-        /// Название типа документа. Отображается в документе
+        /// Краткое наименование типа адреса.
+        /// </summary>
+        public string Code { get; set; }
+
+        /// <summary>
+        /// Название типа адреса.
         /// </summary>
         public string Name { get; set; }
+
         /// <summary>
         /// Признак активности
         /// </summary>

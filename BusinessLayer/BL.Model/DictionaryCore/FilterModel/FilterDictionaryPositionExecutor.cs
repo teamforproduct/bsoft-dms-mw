@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BL.Model.Common;
+using System;
 using System.Collections.Generic;
 
 namespace BL.Model.DictionaryCore.FilterModel
@@ -22,12 +23,7 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// <summary>
         /// Дата начала исполнения должностных обязанностей
         /// </summary>
-        public DateTime StartDate { get; set; }
-
-        /// <summary>
-        /// Дата окончания исполнения должностных обязанностей
-        /// </summary>
-        public DateTime EndDate { get; set; }
-
+        public Period Period { get; set; }
+        
     }
 }

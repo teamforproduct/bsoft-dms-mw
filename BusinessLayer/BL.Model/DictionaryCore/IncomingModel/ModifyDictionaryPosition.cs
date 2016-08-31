@@ -41,6 +41,11 @@ namespace BL.Model.DictionaryCore.IncomingModel
         public int DepartmentId { get; set; }
 
         /// <summary>
+        /// Порядковый номер должности в подразделении
+        /// </summary>
+        public int Order { get; set; }
+
+        /// <summary>
         /// Исполнитель
         /// </summary>
         public int? ExecutorAgentId { get; set; }

@@ -93,7 +93,7 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<DictionaryContactTypes> DictionaryContactTypesSet { get; set; }
         public virtual DbSet<DictionaryAddressTypes> DictionaryAddressTypesSet { get; set; }
 
-        public virtual DbSet<DictionaryCompanies> DictionaryCompaniesSet { get; set; }
+        public virtual DbSet<DictionaryCompanies> DictionaryAgentClientCompaniesSet { get; set; }
         public virtual DbSet<DictionaryDepartments> DictionaryDepartmentsSet { get; set; }
         public virtual DbSet<DictionaryDocumentDirections> DictionaryDocumentDirectionsSet { get; set; }
         public virtual DbSet<DictionaryDocumentSubjects> DictionaryDocumentSubjectsSet { get; set; }
