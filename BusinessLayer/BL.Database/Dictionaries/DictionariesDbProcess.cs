@@ -322,7 +322,7 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context))
             {
-                
+
                 var ddt = dbContext.DictionaryAgentsSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == agentId);
                 if (ddt != null)
                 {
@@ -382,7 +382,7 @@ namespace BL.Database.Dictionaries
                 }
                 else
                 {
-                    person.Id = AddAgent(context, new InternalDictionaryAgent(person) { IsActive = true, Description = string.Empty});
+                    person.Id = AddAgent(context, new InternalDictionaryAgent(person) { IsActive = true, Description = string.Empty });
                 };
 
                 var dbModel = DictionaryModelConverter.GetDbAgentPerson(context, person);
@@ -1341,6 +1341,7 @@ namespace BL.Database.Dictionaries
                 };
 
                 DictionaryCompanies dc = DictionaryModelConverter.GetDbAgentClientCompany(context, company);
+                dc.Id = 0;
                 dbContext.DictionaryAgentClientCompaniesSet.Add(dc);
                 CommonQueries.AddFullTextCashInfo(dbContext, dc.Id, EnumObjects.DictionaryAgentClientCompanies, EnumOperationType.AddNew);
                 dbContext.SaveChanges();
@@ -1784,7 +1785,7 @@ namespace BL.Database.Dictionaries
                     bank.Id = AddAgent(context, new InternalDictionaryAgent(bank) { IsActive = true, Description = string.Empty });
                     //AddAgentByName(context, bank.Name); 
                 };
-                                
+
 
                 var dbModel = DictionaryModelConverter.GetDbAgentBank(context, bank);
 
@@ -2599,11 +2600,7 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context))
             {
-                var qry = dbContext.DictionaryDepartmentsSet.Where(x => x.Company.ClientId == context.CurrentClientId).AsQueryable();
-
-                qry = DepartmentGetWhere(ref qry, filter);
-
-                qry = qry.OrderBy(x => x.Name);
+                var qry = GetPositionExecutorsQuery(context, dbContext, filter);
 
                 return qry.Select(x => new FrontDictionaryDepartment
                 {
@@ -2619,24 +2616,37 @@ namespace BL.Database.Dictionaries
                     ChiefPositionName = x.ChiefPosition.Name,
                     ParentDepartmentName = x.ParentDepartment.Name
                 }).ToList();
-
-                //ChildDepartments = x.ChildDepartments.Select(y => new InternalDictionaryDepartment
-                //{
-                //    Id = x.Id,
-                //    LastChangeDate = x.LastChangeDate,
-                //    LastChangeUserId = x.LastChangeUserId,
-                //    IsActive = x.IsActive,
-                //    ParentId = x.ParentId,
-                //    Code = x.Code,
-                //    Name = x.Name,
-                //    FullName = x.FullName,
-                //    CompanyId = x.CompanyId,
-                //    CompanyName = x.Company.Name,
-                //    ChiefPositionId = x.ChiefPositionId,
-                //    ChiefPositionName = x.ChiefPosition.Name,
-                //    ParentDepartmentName = x.ParentDepartment.Name
-                //})
             }
+        }
+
+        public IEnumerable<FrontDictionaryDepartment> GetDepartmentsForTree(IContext context, FilterDictionaryDepartment filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = GetPositionExecutorsQuery(context, dbContext, filter);
+
+                return qry.Select(x => new FrontDictionaryDepartment
+                {
+                    Id = x.Id,
+                    IsActive = x.IsActive,
+                    ParentId = x.ParentId,
+                    Code = x.Code,
+                    Name = x.Name,
+                    FullName = x.FullName,
+                    CompanyId = x.CompanyId
+                }).ToList();
+            }
+        }
+
+        public IQueryable<DictionaryDepartments> GetPositionExecutorsQuery(IContext context, DmsContext dbContext, FilterDictionaryDepartment filter)
+        {
+            var qry = dbContext.DictionaryDepartmentsSet.Where(x => x.Company.ClientId == context.CurrentClientId).AsQueryable();
+
+            qry = DepartmentGetWhere(ref qry, filter);
+
+            qry = qry.OrderBy(x => x.Name);
+
+            return qry;
         }
 
         // Для использования в коммандах метод CanExecute
@@ -3453,69 +3463,8 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context))
             {
-                // pss эта сборка Where-условий повторяется 3 раза (GetPositionsWithActions, ExistsPosition, GetPosition). У меня НЕ получается вынести Where в отдельную функцию.
-                var qry = dbContext.DictionaryPositionsSet.Where(x => x.Department.Company.ClientId == context.CurrentClientId).AsQueryable();
 
-                qry = qry.OrderBy(x => x.DepartmentId).ThenBy(x => x.Order).ThenBy(x => x.Name);
-
-                // Список первичных ключей
-                if (filter.IDs?.Count > 0)
-                {
-                    var filterContains = PredicateBuilder.False<DictionaryPositions>();
-                    filterContains = filter.IDs.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.Id == value).Expand());
-
-                    qry = qry.Where(filterContains);
-                }
-
-                // Исключение списка первичных ключей
-                if (filter.NotContainsIDs?.Count > 0)
-                {
-                    var filterContains = PredicateBuilder.False<DictionaryPositions>();
-                    filterContains = filter.NotContainsIDs.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.Id != value).Expand());
-
-                    qry = qry.Where(filterContains);
-                }
-
-                // Условие по IsActive
-                if (filter.IsActive != null)
-                {
-                    qry = qry.Where(x => filter.IsActive == x.IsActive);
-                }
-
-                // Поиск по наименованию
-                if (!string.IsNullOrEmpty(filter.Name))
-                {
-                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
-                    {
-                        qry = qry.Where(x => x.Name.Contains(temp));
-                    }
-                }
-
-                // Условие по полному имени
-                if (!string.IsNullOrEmpty(filter.FullName))
-                {
-                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.FullName))
-                    {
-                        qry = qry.Where(x => x.FullName.Contains(temp));
-                    }
-                }
-
-                if (filter.DocumentIDs?.Count > 0)
-                {
-                    var filterContains = PredicateBuilder.False<DBModel.Document.DocumentEvents>();
-                    filterContains = filter.DocumentIDs.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.DocumentId == value).Expand());
-
-                    qry = qry.Where(x =>
-                            dbContext.DocumentEventsSet.Where(y => y.Document.TemplateDocument.ClientId == context.CurrentClientId)
-                                .Where(filterContains).Select(y => y.SourcePositionId).Contains(x.Id)
-                                ||
-                                dbContext.DocumentEventsSet.Where(y => y.Document.TemplateDocument.ClientId == context.CurrentClientId)
-                                .Where(filterContains).Select(y => y.TargetPositionId).Contains(x.Id)
-                                );
-                }
+                var qry = GetPositionsQuery(context, dbContext, filter);
 
                 var filterMaxSubordinationTypeContains = PredicateBuilder.False<DBModel.Admin.AdminSubordinations>();
                 if (filter.SubordinatedPositions?.Count() > 0)
@@ -3523,8 +3472,6 @@ namespace BL.Database.Dictionaries
                     filterMaxSubordinationTypeContains = filter.SubordinatedPositions.Aggregate(filterMaxSubordinationTypeContains,
                         (current, value) => current.Or(e => e.SourcePositionId == value).Expand());
                 }
-
-
 
                 var qry2 = qry.Select(x => new FrontDictionaryPosition
                 {
@@ -3551,6 +3498,100 @@ namespace BL.Database.Dictionaries
 
                 return qry2.ToList();
             }
+        }
+
+        public IEnumerable<FrontDictionaryPosition> GetPositionsForTree(IContext context, FilterDictionaryPosition filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+
+                var qry = GetPositionsQuery(context, dbContext, filter);
+
+                var qry2 = qry.Select(x => new FrontDictionaryPosition
+                {
+                    Id = x.Id,
+                    IsActive = x.IsActive,
+                    ParentId = x.ParentId,
+                    Name = x.Name,
+                    FullName = x.FullName,
+                    DepartmentId = x.DepartmentId
+                });
+
+                if (filter.SubordinatedTypeId.HasValue)
+                {
+                    qry2 = qry2.Where(x => x.MaxSubordinationTypeId >= filter.SubordinatedTypeId);
+                }
+
+                return qry2.ToList();
+            }
+        }
+
+        public IQueryable<DictionaryPositions> GetPositionsQuery(IContext context, DmsContext dbContext, FilterDictionaryPosition filter)
+        {
+            var qry = dbContext.DictionaryPositionsSet.Where(x => x.Department.Company.ClientId == context.CurrentClientId).AsQueryable();
+
+            qry = qry.OrderBy(x => x.DepartmentId).ThenBy(x => x.Order).ThenBy(x => x.Name);
+
+            // Список первичных ключей
+            if (filter.IDs?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.False<DictionaryPositions>();
+                filterContains = filter.IDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Id == value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            // Исключение списка первичных ключей
+            if (filter.NotContainsIDs?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.False<DictionaryPositions>();
+                filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Id != value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            // Условие по IsActive
+            if (filter.IsActive != null)
+            {
+                qry = qry.Where(x => filter.IsActive == x.IsActive);
+            }
+
+            // Поиск по наименованию
+            if (!string.IsNullOrEmpty(filter.Name))
+            {
+                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
+                {
+                    qry = qry.Where(x => x.Name.Contains(temp));
+                }
+            }
+
+            // Условие по полному имени
+            if (!string.IsNullOrEmpty(filter.FullName))
+            {
+                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.FullName))
+                {
+                    qry = qry.Where(x => x.FullName.Contains(temp));
+                }
+            }
+
+            if (filter.DocumentIDs?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.False<DBModel.Document.DocumentEvents>();
+                filterContains = filter.DocumentIDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.DocumentId == value).Expand());
+
+                qry = qry.Where(x =>
+                        dbContext.DocumentEventsSet.Where(y => y.Document.TemplateDocument.ClientId == context.CurrentClientId)
+                            .Where(filterContains).Select(y => y.SourcePositionId).Contains(x.Id)
+                            ||
+                            dbContext.DocumentEventsSet.Where(y => y.Document.TemplateDocument.ClientId == context.CurrentClientId)
+                            .Where(filterContains).Select(y => y.TargetPositionId).Contains(x.Id)
+                            );
+            }
+
+            return qry;
         }
 
         // Для использования в коммандах метод CanExecute
@@ -3801,12 +3842,8 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context))
             {
-                var qry = dbContext.DictionaryPositionExecutorsSet.AsQueryable();
+                var qry = GetPositionExecutorsQuery(dbContext, filter);
 
-                qry = qry.OrderBy(x => x.Position.Order).ThenBy(x => x.Agent.Name);
-
-                qry = ExecutorGetWhere(ref qry, filter);
-                
                 return qry.Select(x => new FrontDictionaryPositionExecutor
                 {
                     // pss Перегонка значений DictionaryPositionExecutors
@@ -3826,6 +3863,35 @@ namespace BL.Database.Dictionaries
                     PositionExecutorTypeName = x.PositionExecutorType.Name
                 }).ToList();
             }
+        }
+
+        public IEnumerable<FrontDictionaryPositionExecutor> GetPositionExecutorsForTree(IContext context, FilterDictionaryPositionExecutor filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = GetPositionExecutorsQuery(dbContext, filter);
+
+                return qry.Select(x => new FrontDictionaryPositionExecutor
+                {
+                    Id = x.Id,
+                    IsActive = x.IsActive,
+                    PositionId = x.PositionId,
+                    PositionExecutorTypeId = x.PositionExecutorTypeId,
+                    AgentName = x.Agent.Name,
+                    AccessLevelName = x.AccessLevel.Name,
+                }).ToList();
+            }
+        }
+
+        public IQueryable<DictionaryPositionExecutors> GetPositionExecutorsQuery(DmsContext dbContext, FilterDictionaryPositionExecutor filter)
+        {
+            var qry = dbContext.DictionaryPositionExecutorsSet.AsQueryable();
+
+            qry = qry.OrderBy(x => x.Position.Order).ThenBy(x => x.Agent.Name);
+
+            qry = ExecutorGetWhere(ref qry, filter);
+
+            return qry;
         }
 
         // Для использования в коммандах метод CanExecute
@@ -3876,8 +3942,8 @@ namespace BL.Database.Dictionaries
 
             if (filter.Period.IsActive)
             {
-                qry = qry.Where(x => 
-                (x.StartDate > filter.Period.DateBeg && x.EndDate < filter.Period.DateEnd) || 
+                qry = qry.Where(x =>
+                (x.StartDate > filter.Period.DateBeg && x.EndDate < filter.Period.DateEnd) ||
                 (x.StartDate < filter.Period.DateBeg && x.EndDate > filter.Period.DateBeg) ||
                 (x.StartDate < filter.Period.DateEnd && x.EndDate > filter.Period.DateEnd)
                 );
@@ -5252,40 +5318,39 @@ namespace BL.Database.Dictionaries
         public IEnumerable<ITreeItem> GetStaffList(IContext context, DictionaryBaseFilterParameters filter, StartWith startWith)
         {
 
-            var executors = GetPositionExecutors(context, new FilterDictionaryPositionExecutor()
+            var executors = GetPositionExecutorsForTree(context, new FilterDictionaryPositionExecutor()
             {
-                Period =  new Period(DateTime.Now.StartOfDay(), DateTime.Now.EndOfDay()),
+                Period = new Period(DateTime.Now.StartOfDay(), DateTime.Now.EndOfDay()),
                 IsActive = true
                 // { Name = filter.Name });
             });
 
-            var positions = GetPositions(context, new FilterDictionaryPosition()
+            var positions = GetPositionsForTree(context, new FilterDictionaryPosition()
             {
                 IsActive = true
                 // { Name = filter.Name });
             });
 
-            var departments = GetDepartments(context, new FilterDictionaryDepartment()
+            var departments = GetDepartmentsForTree(context, new FilterDictionaryDepartment()
             {
                 IsActive = true
                 // { Name = filter.Name });
             }
             );
 
-            //var companies = GetAgentClientCompanies(context, new FilterDictionaryAgentClientCompany());
+            var companies = GetAgentClientCompanies(context, new FilterDictionaryAgentClientCompany());
 
             List<ITreeItem> flatList = new List<ITreeItem>();
 
             flatList.AddRange((IEnumerable<ITreeItem>)departments);
             flatList.AddRange((IEnumerable<ITreeItem>)positions);
             flatList.AddRange((IEnumerable<ITreeItem>)executors);
-            //flatList.AddRange(companies);
-
-
-            return QQQ(flatList, startWith);//.SelectRecursive(c => companies);
+            flatList.AddRange((IEnumerable<ITreeItem>)companies);
+            var res = QQQ(flatList, startWith);
+            return res;//.SelectRecursive(c => companies);
         }
 
-        private  IEnumerable<ITreeItem> QQQ(IEnumerable<ITreeItem> flatList, StartWith startWith)
+        private IEnumerable<ITreeItem> QQQ(IEnumerable<ITreeItem> flatList, StartWith startWith)
         {
             var list = new List<ITreeItem>();
 
@@ -5315,14 +5380,29 @@ namespace BL.Database.Dictionaries
                 if (item.ParentItemId == startWith.Id)
                 {
                     if (startWith.ObjectId == null) return true;
-                    if (startWith.ObjectId == (int)EnumObjects.DictionaryDepartments)
+
+                    switch (startWith.ObjectId)
                     {
-                        if ((item.ObjectId == (int)EnumObjects.DictionaryDepartments) || (item.ObjectId == (int)EnumObjects.DictionaryPositions)) return true;
-                    }
-                    else
-                    {
-                        if (startWith.ObjectId == item.ObjectId) return true;
-                    }
+                        
+                        case (int)EnumObjects.DictionaryAgentClientCompanies:
+
+                            if ((item.ObjectId == (int)EnumObjects.DictionaryAgentClientCompanies) || (item.ObjectId == (int)EnumObjects.DictionaryDepartments)) return true;
+                            break;
+
+                        case (int)EnumObjects.DictionaryDepartments:
+
+                            if ((item.ObjectId == (int)EnumObjects.DictionaryDepartments) || (item.ObjectId == (int)EnumObjects.DictionaryPositions)) return true;
+                            break;
+
+                        case (int)EnumObjects.DictionaryPositions:
+
+                            if ((item.ObjectId == (int)EnumObjects.DictionaryPositions) || (item.ObjectId == (int)EnumObjects.DictionaryPositionExecutors)) return true;
+                            break;
+
+                        default:
+                            if (startWith.ObjectId == item.ObjectId) return true;
+                            break;
+                    } 
                 }
             }
 

@@ -42,7 +42,7 @@ namespace BL.Model.DictionaryCore.FrontModel
         [IgnoreDataMember]
         public int? ParentItemId
         {
-            get { return ParentId; }
+            get { return ParentId ?? CompanyId; }
         }
 
         public int? ObjectId
