@@ -1,4 +1,5 @@
 ﻿using BL.Logic.Common;
+using BL.Model.Common;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.Exception;
@@ -32,7 +33,10 @@ namespace BL.Logic.DictionaryCore
 
             _admin.VerifyAccess(_context, CommandType, false);
 
-            var fd = new FilterDictionaryPositionExecutor { PositionIDs = new List<int> { Model.PositionId }, AgentIDs = new List<int> { Model.AgentId }, StartDate = Model.StartDate };
+            var fd = new FilterDictionaryPositionExecutor {
+                PositionIDs = new List<int> { Model.PositionId },
+                AgentIDs = new List<int> { Model.AgentId },
+                Period = new Period(Model.StartDate, Model.EndDate) };
 
             if (_dictDb.ExistsExecutor(_context, fd))
             {

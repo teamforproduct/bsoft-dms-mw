@@ -15,14 +15,22 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// ИД
         /// </summary>
         public int Id { get; set; }
+        
         /// <summary>
         /// ссылка на контрагента
         /// </summary>
         public List<int> AgentId { get; set; }
+
         /// <summary>
         /// ссылка на тип контакта
         /// </summary>
         public List<int> ContactTypeId { get; set; }
+
+        /// <summary>
+        /// Сужение по активности элементов
+        /// </summary>
+        public bool? IsConfirmed { get; set; }
+
         /// <summary>
         /// значение
         /// </summary>

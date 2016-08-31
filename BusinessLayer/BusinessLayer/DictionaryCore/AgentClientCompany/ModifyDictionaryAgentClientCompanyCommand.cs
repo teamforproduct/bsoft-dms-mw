@@ -1,25 +1,28 @@
-﻿using BL.Logic.Common;
-using BL.Model.DictionaryCore.FilterModel;
+﻿using System;
+using BL.Database.Dictionaries.Interfaces;
+using BL.Logic.Common;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Exception;
-using System;
+using BL.Model.DictionaryCore.FilterModel;
+using BL.Model.SystemCore;
 using System.Collections.Generic;
+
 
 namespace BL.Logic.DictionaryCore
 {
-    public class AddDictionaryCompanyCommand : BaseDictionaryCommand
+    public class ModifyDictionaryAgentClientCompanyCommand : BaseDictionaryCommand
     {
 
-        private ModifyDictionaryCompany Model
+        private ModifyDictionaryAgentClientCompany Model
         {
             get
             {
-                if (!(_param is ModifyDictionaryCompany))
+                if (!(_param is ModifyDictionaryAgentClientCompany))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ModifyDictionaryCompany)_param;
+                return (ModifyDictionaryAgentClientCompany)_param;
             }
         }
 
@@ -33,9 +36,9 @@ namespace BL.Logic.DictionaryCore
 
             _admin.VerifyAccess(_context, CommandType, false);
 
-            var fdd = new FilterDictionaryCompany { Name = Model.Name, NotContainsIDs = new List<int> { Model.Id } };
+            var fdd = new FilterDictionaryAgentClientCompany { Name = Model.Name, NotContainsIDs = new List<int> { Model.Id } };
 
-            if (_dictDb.ExistsCompany(_context, fdd))
+            if (_dictDb.ExistsAgentClientCompany(_context, fdd))
             {
                 throw new DictionaryRecordNotUnique();
             }
@@ -49,12 +52,17 @@ namespace BL.Logic.DictionaryCore
             {
                 var dp = CommonDictionaryUtilities.CompanyModifyToInternal(_context, Model);
 
-                return _dictDb.AddCompany(_context, dp);
+                _dictDb.UpdateAgentClientCompany(_context, dp);
+            }
+            catch (DictionaryRecordWasNotFound)
+            {
+                throw;
             }
             catch (Exception ex)
             {
-                throw new DictionaryRecordCouldNotBeAdded(ex);
+                throw new DatabaseError(ex);
             }
+            return null;
         }
     }
 }

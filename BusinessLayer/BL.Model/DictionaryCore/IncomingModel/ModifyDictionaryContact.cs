@@ -34,6 +34,12 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// Признак активности
         /// </summary>
         public bool IsActive { get; set; }
+
+        /// <summary>
+        /// Признак активности
+        /// </summary>
+        public bool IsConfirmed { get; set; }
+
         /// <summary>
         /// Дополнительная информация
         /// </summary>

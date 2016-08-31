@@ -10,7 +10,7 @@ namespace BL.Database.Common
     public static class DictionaryModelConverter
     {
 
-        public static DictionaryDepartments GetDbDepartments(InternalDictionaryDepartment item)
+        public static DictionaryDepartments GetDbDepartments(IContext context, InternalDictionaryDepartment item)
         {
             return item == null ? null : new DictionaryDepartments
             {
@@ -79,7 +79,7 @@ namespace BL.Database.Common
             };
         }
 
-        public static CustomDictionaries GetDbCustomDictionary(InternalCustomDictionary item)
+        public static CustomDictionaries GetDbCustomDictionary(IContext context, InternalCustomDictionary item)
         {
             return item == null ? null : new CustomDictionaries
             {
@@ -105,8 +105,20 @@ namespace BL.Database.Common
                 LastChangeUserId = item.LastChangeUserId,
             };
         }
+        public static DictionaryStandartSendLists GetDbStandartSendList(IContext context, InternalDictionaryStandartSendList item)
+        {
+            return item == null ? null : new DictionaryStandartSendLists
+            {
+                ClientId = context.CurrentClientId,
 
-        public static DictionaryStandartSendListContents GetDbStandartSendListContent(InternalDictionaryStandartSendListContent item)
+                Id = item.Id,
+                Name = item.Name,
+                PositionId = item.PositionId,
+                LastChangeDate = item.LastChangeDate,
+                LastChangeUserId = item.LastChangeUserId
+            };
+        }
+        public static DictionaryStandartSendListContents GetDbStandartSendListContent(IContext context, InternalDictionaryStandartSendListContent item)
         {
             return item == null ? null : new DictionaryStandartSendListContents
             {
@@ -126,7 +138,7 @@ namespace BL.Database.Common
             };
         }
 
-        public static DictionaryPositions GetDbDictionaryPosition(InternalDictionaryPosition item)
+        public static DictionaryPositions GetDbPosition(IContext context, InternalDictionaryPosition item)
         {
             return item == null ? null : new DictionaryPositions
             {
@@ -139,26 +151,44 @@ namespace BL.Database.Common
                 FullName = item.FullName,
                 DepartmentId = item.DepartmentId,
                 ExecutorAgentId = item.ExecutorAgentId,
-                MainExecutorAgentId = item.MainExecutorAgentId
+                MainExecutorAgentId = item.MainExecutorAgentId,
+                Order = item.Order
             };
         }
 
 
-        public static DictionaryCompanies GetDbCompany(IContext context, InternalDictionaryCompany item)
+        public static DictionaryCompanies GetDbAgentClientCompany(IContext context, InternalDictionaryAgentClientCompany item)
         {
             return item == null ? null : new DictionaryCompanies
             {
                 ClientId = context.CurrentClientId,
-                
+
                 Id = item.Id,
                 FullName = item.Name,
+                Description = item.Description,
                 IsActive = item.IsActive,
                 LastChangeDate = item.LastChangeDate,
                 LastChangeUserId = item.LastChangeUserId
             };
         }
 
-        public static DictionaryPositionExecutors GetDbExecutor(InternalDictionaryPositionExecutor item)
+        public static DictionaryTags GetDbTag(IContext context, InternalDictionaryTag item)
+        {
+            return item == null ? null : new DictionaryTags
+            {
+                ClientId = context.CurrentClientId,
+
+                Id = item.Id,
+                Name = item.Name,
+                PositionId = null,
+                IsActive = item.IsActive,
+                Color = item.Color,
+                LastChangeDate = item.LastChangeDate,
+                LastChangeUserId = item.LastChangeUserId
+            };
+        }
+
+        public static DictionaryPositionExecutors GetDbExecutor(IContext context, InternalDictionaryPositionExecutor item)
         {
             return item == null ? null : new DictionaryPositionExecutors
             {
@@ -186,10 +216,6 @@ namespace BL.Database.Common
                 Id = item.Id,
                 Name = item.Name,
                 ResidentTypeId = item.ResidentTypeId,
-                IsBank = item.IsBank,
-                IsCompany = item.IsCompany,
-                IsEmployee = item.IsEmployee,
-                IsIndividual = item.IsIndividual,
                 Description = item.Description,
                 LastChangeDate = item.LastChangeDate,
                 LastChangeUserId = item.LastChangeUserId,
@@ -198,10 +224,11 @@ namespace BL.Database.Common
 
         }
 
-        public static DictionaryAgentPersons GetDbAgentPerson(InternalDictionaryAgentPerson item)
+        public static DictionaryAgentPersons GetDbAgentPerson(IContext context, InternalDictionaryAgentPerson item)
         {
             return item == null ? null : new DictionaryAgentPersons
             {
+                ClientId = context.CurrentClientId,
 
                 Id = item.Id,
                 FirstName = item.FirstName,
@@ -219,11 +246,43 @@ namespace BL.Database.Common
                 LastChangeDate = item.LastChangeDate,
                 LastChangeUserId = item.LastChangeUserId,
                 IsActive = item.IsActive
-
             };
 
         }
-        public static DictionaryAgentAddresses GetDbAgentAddress(InternalDictionaryAgentAddress item)
+
+        public static DictionaryAgentEmployees GetDbAgentEmployee(IContext context, InternalDictionaryAgentEmployee item)
+        {
+            return item == null ? null : new DictionaryAgentEmployees
+            {
+                ClientId = context.CurrentClientId,
+
+                Id = item.Id,
+                PersonnelNumber = item.PersonnelNumber,
+                Description = item.Description,
+                LastChangeDate = item.LastChangeDate,
+                LastChangeUserId = item.LastChangeUserId,
+                IsActive = item.IsActive
+            };
+
+        }
+
+        public static DictionaryAgentUsers GetDbAgentUser(IContext context, InternalDictionaryAgentUser item)
+        {
+            return item == null ? null : new DictionaryAgentUsers
+            {
+                //ClientId = context.CurrentClientId,
+
+                Id = item.Id,
+                LanguageId = item.LanguageId,
+                LastChangeDate = item.LastChangeDate,
+                LastChangeUserId = item.LastChangeUserId,
+            };
+
+        }
+
+        
+
+        public static DictionaryAgentAddresses GetDbAgentAddress(IContext context, InternalDictionaryAgentAddress item)
         {
             return item == null ? null : new DictionaryAgentAddresses
             {
@@ -248,15 +307,18 @@ namespace BL.Database.Common
                 Id = item.Id,
                 LastChangeDate = item.LastChangeDate,
                 LastChangeUserId = item.LastChangeUserId,
+                Code = item.Code,
                 Name = item.Name,
                 IsActive = item.IsActive
             };
         }
 
-        public static DictionaryAgentCompanies GetDbAgentCompany(InternalDictionaryAgentCompany item)
+        public static DictionaryAgentCompanies GetDbAgentCompany(IContext context, InternalDictionaryAgentCompany item)
         {
             return item == null ? null : new DictionaryAgentCompanies
             {
+                ClientId = context.CurrentClientId,
+
                 Id = item.Id,
                 FullName = item.FullName,
                 OKPOCode = item.OKPOCode,
@@ -269,11 +331,14 @@ namespace BL.Database.Common
             };
         }
 
-        public static DictionaryAgentBanks GetDbAgentBank(InternalDictionaryAgentBank item)
+        public static DictionaryAgentBanks GetDbAgentBank(IContext context, InternalDictionaryAgentBank item)
         {
             return item == null ? null : new DictionaryAgentBanks
             {
+                ClientId = context.CurrentClientId,
+
                 Id = item.Id,
+                FullName = item.FullName,
                 MFOCode = item.MFOCode,
                 Swift = item.Swift,
                 Description = item.Description,
@@ -283,7 +348,7 @@ namespace BL.Database.Common
             };
         }
 
-        public static DictionaryAgentAccounts GetDbAgentAccount(InternalDictionaryAgentAccount item)
+        public static DictionaryAgentAccounts GetDbAgentAccount(IContext context, InternalDictionaryAgentAccount item)
         {
             return item == null ? null : new DictionaryAgentAccounts
             {
@@ -308,17 +373,21 @@ namespace BL.Database.Common
                 ClientId = context.CurrentClientId,
 
                 Id = item.Id,
-                LastChangeDate = item.LastChangeDate,
-                LastChangeUserId = item.LastChangeUserId,
+                InputMask = item.InputMask,
                 Name = item.Name,
-                IsActive = item.IsActive
+                Code = item.Code,
+                IsActive = item.IsActive,
+                LastChangeDate = item.LastChangeDate,
+                LastChangeUserId = item.LastChangeUserId
             };
         }
 
-        public static DictionaryAgentContacts GetDbContact(InternalDictionaryContact item)
+        public static DictionaryAgentContacts GetDbContact(IContext context, InternalDictionaryContact item)
         {
             return item == null ? null : new DictionaryAgentContacts
             {
+                ClientId = context.CurrentClientId,
+
                 Id = item.Id,
                 AgentId = item.AgentId,
                 ContactTypeId = item.ContactTypeId,
@@ -326,7 +395,8 @@ namespace BL.Database.Common
                 Description = item.Description,
                 LastChangeDate = item.LastChangeDate,
                 LastChangeUserId = item.LastChangeUserId,
-                IsActive = item.IsActive
+                IsActive = item.IsActive,
+                IsConfirmed = item.IsConfirmed
             };
         }
 

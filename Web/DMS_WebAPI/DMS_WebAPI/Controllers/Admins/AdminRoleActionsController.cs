@@ -12,7 +12,7 @@ using System.Collections.Generic;
 namespace DMS_WebAPI.Controllers.Admins
 {
     /// <summary>
-    /// Соответствие ролей и должностей
+    /// Создание ролей
     /// </summary>
     [Authorize]
     public class AdminRoleActionsController : ApiController

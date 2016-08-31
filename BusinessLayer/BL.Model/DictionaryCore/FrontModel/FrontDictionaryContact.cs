@@ -32,6 +32,12 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// Признак активности
         /// </summary>
         public bool IsActive { get; set; }
+
+        /// <summary>
+        /// Признак активности
+        /// </summary>
+        public bool IsConfirmed { get; set; }
+        
         /// <summary>
         /// Дополнительная информация
         /// </summary>
