@@ -951,25 +951,25 @@ namespace BL.Database.Admins
         public IEnumerable<MenuItem> GetMainMenu(IContext context)
         {
 
-            MenuItem itemDictDMS = new MenuItem { Id = 20, ParentId = 4, Name = "Документооборот" };
+            MenuItem itemDictDMS = new MenuItem { Id = 20, ParentItemId = 4, Name = "Документооборот" };
 
             itemDictDMS.Childs = new List<ITreeItem> {
-                            new MenuItem { Id = 30, ParentId = 20, Name = "Типы документов", InterfaceName = "document-types" },
-                            new MenuItem { Id = 31, ParentId = 20, Name = "Журналы регистрации", InterfaceName = "journals" },
-                            new MenuItem { Id = 32, ParentId = 20, Name = "Тематики документов", InterfaceName = "" },
-                            new MenuItem { Id = 33, ParentId = 20, Name = "Шаблоны документов", InterfaceName = "" },
+                            new MenuItem { Id = 30, ParentItemId = 20, Name = "Типы документов", InterfaceName = "document-types" },
+                            new MenuItem { Id = 31, ParentItemId = 20, Name = "Журналы регистрации", InterfaceName = "journals" },
+                            new MenuItem { Id = 32, ParentItemId = 20, Name = "Тематики документов", InterfaceName = "" },
+                            new MenuItem { Id = 33, ParentItemId = 20, Name = "Шаблоны документов", InterfaceName = "" },
                             };
 
             MenuItem itemDict = new MenuItem { Id = 4, Name = "Справочники" };
 
             itemDict.Childs = new List<ITreeItem> {
                 itemDictDMS,
-                new MenuItem { Id = 22, ParentId = 4, Name = "Физлица", InterfaceName = "agent-persons" },
-                new MenuItem { Id = 23, ParentId = 4, Name = "Банки", InterfaceName = "agent-banks" },
-                new MenuItem { Id = 24, ParentId = 4, Name = "Юрлица", InterfaceName = "agent-companies" },
-                new MenuItem { Id = 25, ParentId = 4, Name = "-" },
-                new MenuItem { Id = 26, ParentId = 4, Name = "Теги", InterfaceName = "tags" },
-                new MenuItem { Id = 27, ParentId = 4, Name = "Клиентские справочники", InterfaceName = "" }
+                new MenuItem { Id = 22, ParentItemId = 4, Name = "Физлица", InterfaceName = "agent-persons" },
+                new MenuItem { Id = 23, ParentItemId = 4, Name = "Банки", InterfaceName = "agent-banks" },
+                new MenuItem { Id = 24, ParentItemId = 4, Name = "Юрлица", InterfaceName = "agent-companies" },
+                new MenuItem { Id = 25, ParentItemId = 4, Name = "-" },
+                new MenuItem { Id = 26, ParentItemId = 4, Name = "Теги", InterfaceName = "tags" },
+                new MenuItem { Id = 27, ParentItemId = 4, Name = "Клиентские справочники", InterfaceName = "" }
             };
 
             List<MenuItem> menus = new List<MenuItem> {

@@ -6,6 +6,7 @@ using BL.Model.SystemCore;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.InternalModel;
+using BL.Model.Common;
 
 namespace BL.Database.Dictionaries.Interfaces
 {
@@ -288,5 +289,8 @@ namespace BL.Database.Dictionaries.Interfaces
 
         IEnumerable<FrontCustomDictionary> GetCustomDictionaries(IContext context, FilterCustomDictionary filter);
         #endregion CustomDictionaries
+
+
+        IEnumerable<ITreeItem> GetStaffList(IContext context, DictionaryBaseFilterParameters filter, StartWith startWith);
     }
 }

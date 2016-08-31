@@ -18,7 +18,7 @@ namespace BL.Model.Common
         /// <summary>
         /// ID
         /// </summary>
-        public int? ParentId { get; set; }
+        public int? ParentItemId { get; set; }
 
         /// <summary>
         /// Наименование
@@ -30,10 +30,10 @@ namespace BL.Model.Common
         /// </summary>
         public string InterfaceName { get; set; }
 
-        public int ObjectId { get; set; }
+        public int? ObjectId { get; set; }
 
-        public ITreeItem Parent { get; set; }
-      
+        public bool IsUsed { get; set; }
+
         public IEnumerable<ITreeItem> Childs { get; set; }
        
     }

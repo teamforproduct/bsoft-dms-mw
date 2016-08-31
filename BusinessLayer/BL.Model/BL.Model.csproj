@@ -117,6 +117,7 @@
     <Compile Include="ClearTrashDocuments\ClearTrashDocumentsSettings.cs" />
     <Compile Include="AutoPlan\AutoPlanSettings.cs" />
     <Compile Include="Common\IDictionaryItem.cs" />
+    <Compile Include="Common\StartWith.cs" />
     <Compile Include="Common\TreeItem.cs" />
     <Compile Include="Common\ITreeItem.cs" />
     <Compile Include="Common\IListItem.cs" />

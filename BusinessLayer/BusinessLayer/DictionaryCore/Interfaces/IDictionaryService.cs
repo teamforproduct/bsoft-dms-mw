@@ -7,6 +7,7 @@ using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Enums;
+using BL.Model.Common;
 
 namespace BL.Logic.DictionaryCore.Interfaces
 {
@@ -218,5 +219,8 @@ namespace BL.Logic.DictionaryCore.Interfaces
 
         FrontCustomDictionary GetCustomDictionary(IContext context, int id);
         #endregion CustomDictionaries
+
+        IEnumerable<ITreeItem> GetStaffList(IContext context, DictionaryBaseFilterParameters filter, StartWith startWith);
+
     }
 }

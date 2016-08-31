@@ -2603,7 +2603,7 @@ namespace BL.Database.Dictionaries
 
                 qry = DepartmentGetWhere(ref qry, filter);
 
-                qry = qry.OrderBy(x => x.ParentDepartment.Name).ThenBy(x => x.Name);
+                qry = qry.OrderBy(x => x.Name);
 
                 return qry.Select(x => new FrontDictionaryDepartment
                 {
@@ -3456,6 +3456,8 @@ namespace BL.Database.Dictionaries
                 // pss эта сборка Where-условий повторяется 3 раза (GetPositionsWithActions, ExistsPosition, GetPosition). У меня НЕ получается вынести Where в отдельную функцию.
                 var qry = dbContext.DictionaryPositionsSet.Where(x => x.Department.Company.ClientId == context.CurrentClientId).AsQueryable();
 
+                qry = qry.OrderBy(x => x.DepartmentId).ThenBy(x => x.Order).ThenBy(x => x.Name);
+
                 // Список первичных ключей
                 if (filter.IDs?.Count > 0)
                 {
@@ -3521,6 +3523,8 @@ namespace BL.Database.Dictionaries
                     filterMaxSubordinationTypeContains = filter.SubordinatedPositions.Aggregate(filterMaxSubordinationTypeContains,
                         (current, value) => current.Or(e => e.SourcePositionId == value).Expand());
                 }
+
+
 
                 var qry2 = qry.Select(x => new FrontDictionaryPosition
                 {
@@ -3799,8 +3803,10 @@ namespace BL.Database.Dictionaries
             {
                 var qry = dbContext.DictionaryPositionExecutorsSet.AsQueryable();
 
-                qry = ExecutorGetWhere(ref qry, filter);
+                qry = qry.OrderBy(x => x.Position.Order).ThenBy(x => x.Agent.Name);
 
+                qry = ExecutorGetWhere(ref qry, filter);
+                
                 return qry.Select(x => new FrontDictionaryPositionExecutor
                 {
                     // pss Перегонка значений DictionaryPositionExecutors
@@ -3866,6 +3872,15 @@ namespace BL.Database.Dictionaries
             if (filter.IsActive != null)
             {
                 qry = qry.Where(x => filter.IsActive == x.IsActive);
+            }
+
+            if (filter.Period.IsActive)
+            {
+                qry = qry.Where(x => 
+                (x.StartDate > filter.Period.DateBeg && x.EndDate < filter.Period.DateEnd) || 
+                (x.StartDate < filter.Period.DateBeg && x.EndDate > filter.Period.DateBeg) ||
+                (x.StartDate < filter.Period.DateEnd && x.EndDate > filter.Period.DateEnd)
+                );
             }
 
             return qry;
@@ -5234,27 +5249,84 @@ namespace BL.Database.Dictionaries
         #endregion CustomDictionaries
 
 
-        public IEnumerable<TreeItem> GetStaffList(IContext context, DictionaryBaseFilterParameters filter, int StartWithId)
+        public IEnumerable<ITreeItem> GetStaffList(IContext context, DictionaryBaseFilterParameters filter, StartWith startWith)
         {
 
-            IEnumerable<TreeItem> executors = (IEnumerable<TreeItem>)GetPositionExecutors(context, new FilterDictionaryPositionExecutor());// { Name = filter.Name });
+            var executors = GetPositionExecutors(context, new FilterDictionaryPositionExecutor()
+            {
+                Period =  new Period(DateTime.Now.StartOfDay(), DateTime.Now.EndOfDay()),
+                IsActive = true
+                // { Name = filter.Name });
+            });
 
-            IEnumerable<TreeItem> positions = (IEnumerable<TreeItem>)GetPositions(context, new FilterDictionaryPosition());// { Name = filter.Name });
+            var positions = GetPositions(context, new FilterDictionaryPosition()
+            {
+                IsActive = true
+                // { Name = filter.Name });
+            });
 
-            IEnumerable<TreeItem> departments = (IEnumerable<TreeItem>)GetDepartments(context, new FilterDictionaryDepartment());
+            var departments = GetDepartments(context, new FilterDictionaryDepartment()
+            {
+                IsActive = true
+                // { Name = filter.Name });
+            }
+            );
 
-            IEnumerable<TreeItem> companies = (IEnumerable<TreeItem>)GetAgentClientCompanies(context, new FilterDictionaryAgentClientCompany());
+            //var companies = GetAgentClientCompanies(context, new FilterDictionaryAgentClientCompany());
 
-            List<TreeItem> flatList = new List<TreeItem>();
-            
-            flatList.AddRange(executors);
-            flatList.AddRange(positions);
-            flatList.AddRange(departments);
-            flatList.AddRange(companies);
+            List<ITreeItem> flatList = new List<ITreeItem>();
 
-            //List<TreeItem> staffList = new List<TreeItem>();
+            flatList.AddRange((IEnumerable<ITreeItem>)departments);
+            flatList.AddRange((IEnumerable<ITreeItem>)positions);
+            flatList.AddRange((IEnumerable<ITreeItem>)executors);
+            //flatList.AddRange(companies);
 
-            return flatList.SelectRecursive(c => companies);
+
+            return QQQ(flatList, startWith);//.SelectRecursive(c => companies);
+        }
+
+        private  IEnumerable<ITreeItem> QQQ(IEnumerable<ITreeItem> flatList, StartWith startWith)
+        {
+            var list = new List<ITreeItem>();
+
+            if (flatList != null)
+            {
+                foreach (var item in flatList)
+                    if (IsNeighbourItem(item, startWith))
+                    {
+                        item.IsUsed = true;
+                        list.Add(item);
+                        item.Childs = QQQ(flatList, new StartWith() { Id = item.Id, ObjectId = item.ObjectId });
+                    }
+            }
+
+            return list;
+        }
+
+        private bool IsNeighbourItem(ITreeItem item, StartWith startWith)
+        {
+            if (item.IsUsed) return false;
+            if (startWith == null)
+            {
+                return (item.ParentItemId == null);
+            }
+            else
+            {
+                if (item.ParentItemId == startWith.Id)
+                {
+                    if (startWith.ObjectId == null) return true;
+                    if (startWith.ObjectId == (int)EnumObjects.DictionaryDepartments)
+                    {
+                        if ((item.ObjectId == (int)EnumObjects.DictionaryDepartments) || (item.ObjectId == (int)EnumObjects.DictionaryPositions)) return true;
+                    }
+                    else
+                    {
+                        if (startWith.ObjectId == item.ObjectId) return true;
+                    }
+                }
+            }
+
+            return false;
         }
 
     }

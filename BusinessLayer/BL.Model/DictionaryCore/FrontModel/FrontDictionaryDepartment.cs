@@ -2,6 +2,7 @@
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.Enums;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace BL.Model.DictionaryCore.FrontModel
 {
@@ -38,22 +39,21 @@ namespace BL.Model.DictionaryCore.FrontModel
 
         #region ITreeItem
 
-        public int ObjectId
+        [IgnoreDataMember]
+        public int? ParentItemId
+        {
+            get { return ParentId; }
+        }
+
+        public int? ObjectId
         {
             get { return (int)EnumObjects.DictionaryDepartments; }
         }
 
-        public ITreeItem Parent
-        {
-            get { return null; }
-        }
+        [IgnoreDataMember]
+        public bool IsUsed { get; set; }
 
         public IEnumerable<ITreeItem> Childs { get; set; }
-        //{
-        //    get { return ChildPositions; }
-        //    set { ChildPositions = (IEnumerable<FrontDictionaryPosition>)value; }
-        //}
-
 
         #endregion
 

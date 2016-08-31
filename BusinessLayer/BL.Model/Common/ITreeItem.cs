@@ -9,12 +9,12 @@ namespace BL.Model.Common
     public interface ITreeItem: IListItem
     {
     
-        int? ParentId { get;  }
+        int? ParentItemId { get;  }
 
-        int ObjectId { get;  }
+        int? ObjectId { get;  }
 
-        ITreeItem Parent { get; }
+        bool IsUsed { get; set; }
 
-        IEnumerable<ITreeItem> Childs { get; }
+        IEnumerable<ITreeItem> Childs { get; set; }
     }
 }

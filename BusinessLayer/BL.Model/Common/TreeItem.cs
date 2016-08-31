@@ -10,13 +10,13 @@ namespace BL.Model.Common
     {
         public int Id { get; set; }
 
-        public int? ParentId { get; set; }
+        public int? ParentItemId { get; set; }
 
-        public int ObjectId { get; set; }
+        public int? ObjectId { get; set; }
 
         public string Name { get; set; }
 
-        public ITreeItem Parent { get; set; }
+        public bool IsUsed { get; set; }
 
         public IEnumerable<ITreeItem> Childs { get; set; }
     }

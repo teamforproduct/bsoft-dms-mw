@@ -3,6 +3,7 @@ using BL.Model.DictionaryCore.IncomingModel;
 using System.Collections.Generic;
 using System;
 using BL.Model.Enums;
+using System.Runtime.Serialization;
 
 namespace BL.Model.DictionaryCore.FrontModel
 {
@@ -43,21 +44,20 @@ namespace BL.Model.DictionaryCore.FrontModel
         public string AccessLevelName { get; set; }
 
         #region ITreeItem
-
-        public int? ParentId
+        [IgnoreDataMember]
+        public int? ParentItemId 
         {
             get { return PositionId; }
+            
         }
 
-        public int ObjectId
+        public int? ObjectId
         {
             get { return (int)EnumObjects.DictionaryPositionExecutors; }
         }
 
-        public ITreeItem Parent
-        { 
-            get { return null; }
-        }
+        [IgnoreDataMember]
+        public bool IsUsed{ get; set; }
 
         public IEnumerable<ITreeItem> Childs { get; set; }
        

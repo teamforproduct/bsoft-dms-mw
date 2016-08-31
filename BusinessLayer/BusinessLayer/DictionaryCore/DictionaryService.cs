@@ -15,6 +15,7 @@ using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.Enums;
 using BL.Model.FullTextSearch;
+using BL.Model.Common;
 
 namespace BL.Logic.DictionaryCore
 {
@@ -830,5 +831,10 @@ namespace BL.Logic.DictionaryCore
             return _dictDb.GetCustomDictionary(context, id);
         }
         #endregion CustomDictionaries
+
+        public IEnumerable<ITreeItem> GetStaffList(IContext context, DictionaryBaseFilterParameters filter, StartWith startWith)
+        {
+            return _dictDb.GetStaffList(context, filter, startWith);
+        }
     }
 }
