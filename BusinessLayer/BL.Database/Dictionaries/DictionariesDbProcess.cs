@@ -20,6 +20,7 @@ using System.Data.Entity;
 using System.Data.Entity.Infrastructure.Interception;
 using System.Data.Entity.SqlServer;
 using BL.Model.Common;
+using System.Transactions;
 
 namespace BL.Database.Dictionaries
 {
@@ -1328,25 +1329,32 @@ namespace BL.Database.Dictionaries
             using (var dbContext = new DmsContext(context))
             {
 
-                if (ExistsAgent(context, company.Id))
+                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
                 {
-                    //pss Здесь перетирается имя сформированное предыдущей выноской 
-                    UpdateAgentName(context, company.Id, company.Name);
+
+                    if (ExistsAgent(context, company.Id))
+                    {
+                        //pss Здесь перетирается имя сформированное предыдущей выноской 
+                        UpdateAgentName(context, company.Id, company.Name);
+                    }
+                    else
+                    {
+                        company.Id = AddAgent(context, new InternalDictionaryAgent(company) { IsActive = true, Description = string.Empty });
+                    };
+
+                    DictionaryCompanies dc = DictionaryModelConverter.GetDbAgentClientCompany(context, company);
+                    dbContext.DictionaryAgentClientCompaniesSet.Add(dc);
+                    CommonQueries.AddFullTextCashInfo(dbContext, dc.Id, EnumObjects.DictionaryAgentClientCompanies, EnumOperationType.AddNew);
+                    dbContext.SaveChanges();
+
+                    transaction.Complete();
+
+                    company.Id = dc.Id;
                 }
-                else
-                {
 
-                    company.Id = AddAgent(context, new InternalDictionaryAgent(company) { IsActive = true, Description = string.Empty });
-                    //AddAgentByName(context, company.Name); 
-                };
 
-                DictionaryCompanies dc = DictionaryModelConverter.GetDbAgentClientCompany(context, company);
-                dc.Id = 0;
-                dbContext.DictionaryAgentClientCompaniesSet.Add(dc);
-                CommonQueries.AddFullTextCashInfo(dbContext, dc.Id, EnumObjects.DictionaryAgentClientCompanies, EnumOperationType.AddNew);
-                dbContext.SaveChanges();
-                company.Id = dc.Id;
-                return dc.Id;
+
+                return company.Id;
             }
         }
 
@@ -1354,24 +1362,35 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context))
             {
-                DictionaryCompanies drj = DictionaryModelConverter.GetDbAgentClientCompany(context, company);
-                dbContext.DictionaryAgentClientCompaniesSet.Attach(drj);
-                CommonQueries.AddFullTextCashInfo(dbContext, drj.Id, EnumObjects.DictionaryAgentClientCompanies, EnumOperationType.Update);
-                dbContext.Entry(drj).State = System.Data.Entity.EntityState.Modified;
-                dbContext.SaveChanges();
+                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
+                {
+                    UpdateAgentName(context, company.Id, company.Name);
+
+                    DictionaryCompanies drj = DictionaryModelConverter.GetDbAgentClientCompany(context, company);
+                    dbContext.DictionaryAgentClientCompaniesSet.Attach(drj);
+                    CommonQueries.AddFullTextCashInfo(dbContext, drj.Id, EnumObjects.DictionaryAgentClientCompanies, EnumOperationType.Update);
+                    dbContext.Entry(drj).State = System.Data.Entity.EntityState.Modified;
+                    dbContext.SaveChanges();
+
+                    transaction.Complete();
+                }
             }
         }
 
-        public void DeleteAgentClientCompany(IContext context, InternalDictionaryAgentClientCompany docSubject)
+        public void DeleteAgentClientCompany(IContext context, InternalDictionaryAgentClientCompany model)
         {
             using (var dbContext = new DmsContext(context))
             {
-                var drj = dbContext.DictionaryAgentClientCompaniesSet.FirstOrDefault(x => x.Id == docSubject.Id);
-                if (drj != null)
+                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
                 {
+                    var drj = dbContext.DictionaryAgentClientCompaniesSet.FirstOrDefault(x => x.Id == model.Id);
                     dbContext.DictionaryAgentClientCompaniesSet.Remove(drj);
                     CommonQueries.AddFullTextCashInfo(dbContext, drj.Id, EnumObjects.DictionaryAgentClientCompanies, EnumOperationType.Delete);
                     dbContext.SaveChanges();
+
+                    DeleteAgentIfNoAny(context, model.Id);
+
+                    transaction.Complete();
                 }
             }
         }
@@ -5383,7 +5402,7 @@ namespace BL.Database.Dictionaries
 
                     switch (startWith.ObjectId)
                     {
-                        
+
                         case (int)EnumObjects.DictionaryAgentClientCompanies:
 
                             if ((item.ObjectId == (int)EnumObjects.DictionaryAgentClientCompanies) || (item.ObjectId == (int)EnumObjects.DictionaryDepartments)) return true;
@@ -5402,7 +5421,7 @@ namespace BL.Database.Dictionaries
                         default:
                             if (startWith.ObjectId == item.ObjectId) return true;
                             break;
-                    } 
+                    }
                 }
             }
 
