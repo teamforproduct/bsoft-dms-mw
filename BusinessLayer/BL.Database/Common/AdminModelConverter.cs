@@ -9,6 +9,18 @@ namespace BL.Database.Common
 {
     public static class AdminModelConverter
     {
+
+        public static AdminRoleTypes GetDbRoleType(IContext context, InternalAdminRoleType item)
+        {
+            return item == null ? null : new AdminRoleTypes
+            {
+                Id = item.Id,
+                LastChangeDate = item.LastChangeDate,
+                LastChangeUserId = item.LastChangeUserId,
+                Code = item.Code,
+                Name = item.Name
+            };
+        }
         public static AdminRoles GetDbRole(IContext context, InternalAdminRole item)
         {
             return item == null ? null : new AdminRoles

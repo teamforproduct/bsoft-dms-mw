@@ -203,6 +203,45 @@ namespace BL.Database.Admins
         #endregion
 
         #region [+] Roles ...
+
+        public int AddRoleType(IContext context, InternalAdminRoleType model)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                AdminRoleTypes dbModel = AdminModelConverter.GetDbRoleType(context, model);
+                dbContext.AdminRolesTypesSet.Add(dbModel);
+                dbContext.SaveChanges();
+                model.Id = dbModel.Id;
+                return dbModel.Id;
+            }
+        }
+
+        public int AddNamedRole(IContext context, string code, string name, IEnumerable<InternalAdminRoleAction> roleActions)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                // Классификатор роли
+                var roleType = AddRoleType(context, new InternalAdminRoleType() { Code = code, Name = name });
+
+                // Новая роль со ссылкой на классификатор ролей.
+                var roleId = AddRole(context, new InternalAdminRole() { RoleTypeId = roleType, Name = name });
+
+                var ra = new List<AdminRoleActions>();
+
+                // Указание ид роли для предложенных действий
+                foreach (var item in roleActions)
+                {
+                    ra.Add(new AdminRoleActions() { ActionId = item.ActionId, RoleId = roleId });
+                }
+
+                // Запись списка соответствий роль-действие
+                dbContext.AdminRoleActionsSet.AddRange(ra);
+                dbContext.SaveChanges();
+
+                return roleId;
+            }
+        }
+
         public int AddRole(IContext context, InternalAdminRole model)
         {
             using (var dbContext = new DmsContext(context))
@@ -948,6 +987,7 @@ namespace BL.Database.Admins
 
         #endregion
 
+        #region [+] MainMenu ...
         public IEnumerable<MenuItem> GetMainMenu(IContext context)
         {
 
@@ -986,7 +1026,20 @@ namespace BL.Database.Admins
             return menus;
         }
 
-        
+        #endregion
 
+        #region [+] AddNewClient ...
+
+        public List<InternalAdminRoleAction> GetRoleActionsForAdmin(IContext context)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                return dbContext.SystemActionsSet.Select(x => new InternalAdminRoleAction { ActionId = x.Id }).ToList();
+            }
+        }
+
+        #endregion
     }
 }
+
+

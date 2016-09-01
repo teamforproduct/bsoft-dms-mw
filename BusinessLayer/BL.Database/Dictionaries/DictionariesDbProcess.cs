@@ -21,6 +21,7 @@ using System.Data.Entity.Infrastructure.Interception;
 using System.Data.Entity.SqlServer;
 using BL.Model.Common;
 using System.Transactions;
+using BL.Model.AdminCore.Clients;
 
 namespace BL.Database.Dictionaries
 {
@@ -5427,6 +5428,57 @@ namespace BL.Database.Dictionaries
 
             return false;
         }
+
+        #region [+] AddNewClient ...
+
+        public int AddAgentsForNewClient(IContext context, AddClientContent client)
+        {
+
+            //context.CurrentClientId = client.ClientId;
+
+            var agentUser = AddAgentEmployee(context, new InternalDictionaryAgentEmployee()
+            {
+                FirstName = client.Name,
+                LastName = client.LastName,
+                Login = client.Login,
+                PasswordHash = client.PasswordHash,
+                IsActive = true,
+                LanguageId = client.LanguageId
+            });
+
+            // Pss Локализация для типов контактов
+            var mobiContactType = AddContactType(context, new InternalDictionaryContactType() { Code = "МТ", Name = "Мобильный телефон", InputMask = "", IsActive = true });
+            AddContactType(context, new InternalDictionaryContactType() { Code = "РТ", Name = "Рабочий телефон", InputMask = "", IsActive = true });
+            AddContactType(context, new InternalDictionaryContactType() { Code = "ДТ", Name = "Домашний телефон", InputMask = "", IsActive = true });
+            AddContactType(context, new InternalDictionaryContactType() { Code = "ОТ", Name = "Основной телефон", InputMask = "", IsActive = true });
+            AddContactType(context, new InternalDictionaryContactType() { Code = "РФ", Name = "Рабочий факс", InputMask = "", IsActive = true });
+            AddContactType(context, new InternalDictionaryContactType() { Code = "ДФ", Name = "Домашний факс", InputMask = "", IsActive = true });
+            var emailContactType = AddContactType(context, new InternalDictionaryContactType() { Code = "ЛМ", Name = "Личный адрес", InputMask = "", IsActive = true });
+            AddContactType(context, new InternalDictionaryContactType() { Code = "РМ", Name = "Рабочий адрес", InputMask = "", IsActive = true });
+            AddContactType(context, new InternalDictionaryContactType() { Code = "П", Name = "Пейждер", InputMask = "", IsActive = true });
+            AddContactType(context, new InternalDictionaryContactType() { Code = "Др", Name = "Другой", InputMask = "", IsActive = true });
+            AddContactType(context, new InternalDictionaryContactType() { Code = "MVPN", Name = "MVPN", InputMask = "", IsActive = true });
+
+
+            AddContact(context, new InternalDictionaryContact() { AgentId = agentUser, ContactTypeId = mobiContactType, Value = client.PhoneNumber, IsActive = true, IsConfirmed = true});
+
+            AddContact(context, new InternalDictionaryContact() { AgentId = agentUser, ContactTypeId = emailContactType, Value = client.Email, IsActive = true, IsConfirmed = true });
+
+            ///-----------------------------------------------------------------------------
+
+            // Pss Локализация для названия компании
+            var companyId = AddAgentClientCompany(context, new InternalDictionaryAgentClientCompany() { Name ="Моя компания", FullName = "Моя компания", IsActive = true});
+
+            var departmentId = AddDepartment(context, new InternalDictionaryDepartment() { CompanyId = companyId , Code ="01", Name = "Мой отдел", FullName = "Мой отдел", IsActive = true });
+
+            var positionDirector = AddPosition(context, new InternalDictionaryPosition() { DepartmentId = departmentId, Name = "Директор", FullName = "Директор", Order = 1, IsActive = true });
+
+            var positionAdmin = AddPosition(context, new InternalDictionaryPosition() { DepartmentId = departmentId, Name = "Администратор системы", FullName = "Администратор системы", Order = 2, IsActive = true});
+
+            return 1;
+        }
+
+        #endregion
 
     }
 }

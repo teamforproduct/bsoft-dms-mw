@@ -14,8 +14,8 @@ namespace DMS_WebAPI.Controllers.D
     /// Действия связанные с пользовательской настройкой системы
     /// </summary>
     [Authorize]
-    [RoutePrefix("api/v2/DictionaryActions")]
-    public class DictionaryActionsController : ApiController
+    [RoutePrefix("api/v2/DictionaryStaffList")]
+    public class DictionaryStaffListController : ApiController
     {
         /// <summary>
         /// Список элементов меню, доступный пользователю

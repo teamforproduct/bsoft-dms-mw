@@ -24,6 +24,8 @@ namespace BL.Database.Admins.Interfaces
         bool VerifySubordination(IContext context, VerifySubordination model);
 
         #region [+] Roles ...
+        int AddRoleType(IContext context, InternalAdminRoleType model);
+        int AddNamedRole(IContext context, string code, string name, IEnumerable<InternalAdminRoleAction> roleActions);
         int AddRole(IContext context, InternalAdminRole model);
         void UpdateRole(IContext context, InternalAdminRole model);
         void DeleteRole(IContext context, InternalAdminRole model);
@@ -71,6 +73,12 @@ namespace BL.Database.Admins.Interfaces
         #region [+] MainMenu ...
         IEnumerable<MenuItem> GetMainMenu(IContext context);
         #endregion
-        
+
+        #region [+] AddNewClient ...
+
+        List<InternalAdminRoleAction> GetRoleActionsForAdmin(IContext context);
+
+        #endregion
+
     }
 }
