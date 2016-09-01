@@ -30,7 +30,7 @@ namespace BL.Database.DBModel.Dictionary
         public virtual DictionaryAgents Agent { get; set; }
 
         // Добавил Departments для выполнения субзапросов от DictionaryCompanies к DictionaryDepartments. В DictionaryDepartments это поле CompanyId
-        //[ForeignKey("CompanyId")]
+        [ForeignKey("CompanyId")]
         public virtual ICollection<DictionaryDepartments> Departments { get; set; }
     }
 
