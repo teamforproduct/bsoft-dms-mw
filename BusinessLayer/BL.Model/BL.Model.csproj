@@ -364,6 +364,7 @@
     <Compile Include="Enums\EnumResultTypes.cs" />
     <Compile Include="Enums\EnumReportTypes.cs" />
     <Compile Include="Enums\EnumSort.cs" />
+    <Compile Include="Enums\EnumSystemPositions.cs" />
     <Compile Include="Enums\EnumSystemUsers.cs" />
     <Compile Include="Enums\EnumContactTypes.cs" />
     <Compile Include="Enums\EnumDictionaryAgentTypes.cs" />

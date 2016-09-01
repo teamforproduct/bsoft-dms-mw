@@ -105,6 +105,8 @@ namespace BL.Logic.DocumentCore.Commands
 
             _document.Waits = new List<InternalDocumentWait> { waitTarget };
 
+            _document.Subscriptions = null;
+
             if (Model.IsAddControl)
             {
                 ((List<InternalDocumentWait>)_document.Waits).AddRange(CommonDocumentUtilities.GetNewDocumentWaits(_context, Model, EnumEventTypes.ControlOn, EnumEventCorrespondentType.FromSourceToSource));

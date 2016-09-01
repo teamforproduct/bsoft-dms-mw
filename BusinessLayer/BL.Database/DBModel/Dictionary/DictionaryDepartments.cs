@@ -39,6 +39,8 @@ namespace BL.Database.DBModel.Dictionary
         public virtual DictionaryPositions ChiefPosition { get; set; }
 
         public virtual ICollection<DictionaryDepartments> ChildDepartments { get; set; }
+        [ForeignKey("DepartmentId")]
+        public virtual ICollection<DictionaryPositions> Positions { get; set; }
         //public virtual DictionaryPositions ChiefPosition { get; set; }
     }
 }

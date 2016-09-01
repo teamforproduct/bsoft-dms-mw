@@ -104,6 +104,8 @@ namespace BL.Logic.DocumentCore.Commands
             //}
             //Model.CloseEvent = Model.StartEvent = waitTarget.OnEvent;
 
+            _document.Subscriptions = null;
+
             if (Model.IsAddControl)
             {
                 ((List<InternalDocumentWait>)_document.Waits).AddRange(CommonDocumentUtilities.GetNewDocumentWaits(_context, Model, EnumEventTypes.ControlOn, EnumEventCorrespondentType.FromSourceToSource));
