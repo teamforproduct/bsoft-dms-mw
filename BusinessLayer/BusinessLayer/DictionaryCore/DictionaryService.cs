@@ -61,6 +61,10 @@ namespace BL.Logic.DictionaryCore
                     newFilter.IDs = new List<int>();
                     newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId).Take(paging.PageSize*paging.CurrentPage));
                 }
+                else
+                {
+                    newFilter.IDs = new List<int> { -1 };
+                }
             }
             else
             {
@@ -159,6 +163,10 @@ namespace BL.Logic.DictionaryCore
                     newFilter.IDs = new List<int>();
                     newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId));
                 }
+                else
+                {
+                    newFilter.IDs = new List<int> { -1 };
+                }
             }
             else
             {
@@ -196,6 +204,10 @@ namespace BL.Logic.DictionaryCore
                 {
                     newFilter.IDs = new List<int>();
                     newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId));
+                }
+                else
+                {
+                    newFilter.IDs = new List<int> { -1 };
                 }
             }
             else
@@ -254,6 +266,10 @@ namespace BL.Logic.DictionaryCore
                     newFilter.IDs = new List<int>();
                     newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId));
                 }
+                else
+                {
+                    newFilter.IDs = new List<int> { -1 };
+                }
             }
             else
             {
@@ -306,6 +322,10 @@ namespace BL.Logic.DictionaryCore
                 {
                     newFilter.IDs = new List<int>();
                     newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId).Take(paging.PageSize*paging.CurrentPage));
+                }
+                else
+                {
+                    newFilter.IDs = new List<int> { -1 };
                 }
             }
             else
@@ -384,6 +404,10 @@ namespace BL.Logic.DictionaryCore
                 if (resWithRanges.Any())
                 {
                     newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId).Take(paging.PageSize*paging.CurrentPage));
+                }
+                else
+                {
+                    newFilter.IDs = new List<int> { -1 };
                 }
             }
             else
@@ -475,6 +499,10 @@ namespace BL.Logic.DictionaryCore
                     newFilter.IDs = new List<int>();
                     newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId));
                 }
+                else
+                {
+                    newFilter.IDs = new List<int> { -1 };
+                }
             }
             else
             {
@@ -555,6 +583,10 @@ namespace BL.Logic.DictionaryCore
                 {
                     newFilter.IDs = new List<int>();
                     newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId));
+                }
+                else
+                {
+                    newFilter.IDs = new List<int> { -1 };
                 }
             }
             else
@@ -685,6 +717,10 @@ namespace BL.Logic.DictionaryCore
                 {
                     newFilter.IDs = new List<int>();
                     newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId));
+                }
+                else
+                {
+                    newFilter.IDs = new List<int> {-1};
                 }
 
             }

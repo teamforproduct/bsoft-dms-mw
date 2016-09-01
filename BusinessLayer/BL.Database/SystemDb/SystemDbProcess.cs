@@ -870,7 +870,7 @@ namespace BL.Database.SystemDb
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
-                    ObjectText = x.Index + " " + x.Name + " " + x.Department.FullName
+                    ObjectText = x.Index + " " + x.Name + " " + x.Department.FullName + " " + x.Department.Name
                 }).ToList());
 
                 res.AddRange(dbContext.DictionaryDepartmentsSet.Where(x => x.Company.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
@@ -1372,7 +1372,7 @@ namespace BL.Database.SystemDb
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
-                        ObjectText = x.agent.Name + " " + x.agent.Description
+                        ObjectText = x.agent.Name.Trim() + " " + x.agent.Description.Trim()
                     }).ToList());
                 }
 
@@ -1386,7 +1386,7 @@ namespace BL.Database.SystemDb
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
-                        ObjectText = x.agent.PersonnelNumber + " " + x.agent.Description + " " + x.agent.Agent.Name
+                        ObjectText = x.agent.PersonnelNumber.Trim() + " " + x.agent.Description.Trim() + " " + x.agent.Agent.Name.Trim()
                     }).ToList());
                 }
 
@@ -1400,7 +1400,8 @@ namespace BL.Database.SystemDb
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
-                        ObjectText = x.agent.FullName + " " + x.agent.OKPOCode + " " + x.agent.Description + " " + x.agent.TaxCode + " " + x.agent.VATCode
+                        ObjectText = x.agent.FullName.Trim() + " " + x.agent.OKPOCode.Trim() + " " + x.agent.Description.Trim() + " "
+                                     + x.agent.TaxCode.Trim() + " " + x.agent.VATCode.Trim()
                     }).ToList());
                 }
 
@@ -1414,7 +1415,8 @@ namespace BL.Database.SystemDb
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
-                        ObjectText = x.agent.FullName + " " + x.agent.Description + " " + x.agent.TaxCode + " " + x.agent.BirthDate + " " + x.agent.PassportNumber + " " + x.agent.PassportSerial + " " + x.agent.PassportText
+                        ObjectText = x.agent.FullName.Trim() + " " + x.agent.Description.Trim() + " " + x.agent.TaxCode.Trim() + " " 
+                                     + x.agent.BirthDate + " " + x.agent.PassportNumber + " " + x.agent.PassportSerial.Trim() + " " + x.agent.PassportText.Trim()
                     }).ToList());
                 }
 
@@ -1428,7 +1430,7 @@ namespace BL.Database.SystemDb
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
-                        ObjectText = x.agent.Agent.Name + " " + x.agent.Description + " " + x.agent.MFOCode + " " + x.agent.Swift
+                        ObjectText = x.agent.Agent.Name.Trim() + " " + x.agent.Description.Trim() + " " + x.agent.MFOCode.Trim() + " " + x.agent.Swift.Trim()
                     }).ToList());
                 }
 
@@ -1442,7 +1444,8 @@ namespace BL.Database.SystemDb
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
-                        ObjectText = x.contact.Agent.Name + " " + x.contact.Description + " " + x.contact.Contact + " " + x.contact.ContactType.Code + " " + x.contact.ContactType.Name
+                        ObjectText = x.contact.Agent.Name.Trim() + " " + x.contact.Description.Trim() + " " + x.contact.Contact.Trim() + " " + x.contact.ContactType.Code.Trim() + " " 
+                        + x.contact.ContactType.Name.Trim()
                     }).ToList());
                 }
 
@@ -1456,7 +1459,7 @@ namespace BL.Database.SystemDb
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
-                        ObjectText = x.contact.Code + " " + x.contact.Name
+                        ObjectText = x.contact.Code.Trim() + " " + x.contact.Name.Trim()
                     }).ToList());
                 }
 
@@ -1470,7 +1473,8 @@ namespace BL.Database.SystemDb
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
-                        ObjectText = x.address.Agent.Name + " " + x.address.Description + " " + x.address.Address + " " + x.address.PostCode + " " + x.address.AddressType.Name
+                        ObjectText = x.address.Agent.Name.Trim() + " " + x.address.Description.Trim() + " " + x.address.Address.Trim() + " " + x.address.PostCode.Trim() + " " 
+                        + x.address.AddressType.Name.Trim()
                     }).ToList());
                 }
 
@@ -1484,7 +1488,7 @@ namespace BL.Database.SystemDb
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
-                        ObjectText = x.address.Name
+                        ObjectText = x.address.Name.Trim()
                     }).ToList());
                 }
 
@@ -1512,7 +1516,7 @@ namespace BL.Database.SystemDb
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
-                        ObjectText = x.doc.Name
+                        ObjectText = x.doc.Name.Trim()
                     }).ToList());
                 }
 
@@ -1526,7 +1530,7 @@ namespace BL.Database.SystemDb
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
-                        ObjectText = x.doc.Name
+                        ObjectText = x.doc.Name.Trim()
                     }).ToList());
                 }
 
@@ -1540,7 +1544,7 @@ namespace BL.Database.SystemDb
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
-                        ObjectText = x.doc.Index + " " + x.doc.Name + " " + x.doc.Department.FullName
+                        ObjectText = x.doc.Index.Trim() + " " + x.doc.Name.Trim() + " " + x.doc.Department.Name.Trim() + " " + x.doc.Department.FullName.Trim()
                     }).ToList());
                 }
 
