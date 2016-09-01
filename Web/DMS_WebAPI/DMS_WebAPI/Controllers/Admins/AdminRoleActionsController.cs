@@ -12,13 +12,13 @@ using System.Collections.Generic;
 namespace DMS_WebAPI.Controllers.Admins
 {
     /// <summary>
-    /// Создание ролей
+    /// Структура описывает действия, которые разрешены для ролей.
     /// </summary>
     [Authorize]
     public class AdminRoleActionsController : ApiController
     {
         /// <summary>
-        /// GetAdminRoleActions
+        /// Возвращает действия для ролей
         /// </summary>
         /// <param name="filter">Filter parms</param>
         /// <returns>FrontAdminPositions</returns>
@@ -31,7 +31,7 @@ namespace DMS_WebAPI.Controllers.Admins
         }
 
         /// <summary>
-        /// GetAdminRoleActions by ID 
+        /// Возвращает действия для ролей по Id записи
         /// </summary>
         /// <param name="id">Record Id</param>
         /// <returns>FrontAdminRoleAction</returns>
@@ -44,7 +44,7 @@ namespace DMS_WebAPI.Controllers.Admins
         }
 
         /// <summary>
-        /// Add in GetAdminRoleActions
+        /// Разрешает действие для роли
         /// </summary>
         /// <param name="model">ModifyAdminRoleAction</param>
         /// <returns>FrontAdminRoleAction</returns>
@@ -57,7 +57,7 @@ namespace DMS_WebAPI.Controllers.Admins
         }
 
         /// <summary>
-        /// Chg in GetAdminRoleActions
+        /// Изменяет действие для роли
         /// </summary>
         /// <param name="id">Record Id</param>
         /// <param name="model">ModifyAdminRoleAction</param>
@@ -72,7 +72,7 @@ namespace DMS_WebAPI.Controllers.Admins
         }
 
         /// <summary>
-        /// Del in GetAdminRoleActions
+        /// Запрещает действие для роли
         /// </summary>
         /// <returns>FrontAdminRoleAction</returns> 
         public IHttpActionResult Delete([FromUri] int id)

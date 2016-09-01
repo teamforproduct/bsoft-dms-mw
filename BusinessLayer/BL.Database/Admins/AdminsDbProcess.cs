@@ -20,6 +20,7 @@ using System;
 using BL.Database.DBModel.Dictionary;
 using BL.Model.AdminCore.Actions;
 using BL.Model.Common;
+using System.Transactions;
 
 namespace BL.Database.Admins
 {
@@ -267,14 +268,19 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(context))
             {
-                var dbModel = dbContext.AdminRolesSet.FirstOrDefault(x => x.Id == model.Id);
-                //pss Все проверки и перехват исключений должны быть на уровне логики!!!
+                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
+                {
 
-                //if (dbModel != null)
-                //{
-                dbContext.AdminRolesSet.Remove(dbModel);
-                dbContext.SaveChanges();
-                //}
+                    IEnumerable<AdminRoleActions> roleActions = dbContext.AdminRoleActionsSet.Where(x => x.RoleId == model.Id).Select(x => new AdminRoleActions { Id = x.Id }).ToList(); ;
+                    dbContext.AdminRoleActionsSet.RemoveRange(roleActions);
+                    dbContext.SaveChanges();
+
+                    var dbModel = dbContext.AdminRolesSet.FirstOrDefault(x => x.Id == model.Id);
+                    dbContext.AdminRolesSet.Remove(dbModel);
+                    dbContext.SaveChanges();
+
+                    transaction.Complete();
+                }
             }
         }
 
