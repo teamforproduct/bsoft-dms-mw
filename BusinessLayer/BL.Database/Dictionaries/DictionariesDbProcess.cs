@@ -189,14 +189,14 @@ namespace BL.Database.Dictionaries
                 }
 
                 // Сравнение по ИЛИ или не задано ни одно условие
-                qry = qry.Where(x => (
-                  (
-                    (filter.IsBank.HasValue && x.IsBank == filter.IsBank) ||
-                    (filter.IsIndividual.HasValue && x.IsIndividual == filter.IsIndividual) ||
-                    (filter.IsCompany.HasValue && x.IsBank == filter.IsCompany) ||
-                    (filter.IsEmployee.HasValue && x.IsBank == filter.IsEmployee)
-                   ) || (!filter.IsBank.HasValue && !filter.IsIndividual.HasValue && !filter.IsCompany.HasValue && !filter.IsEmployee.HasValue)
-                 ));
+                //qry = qry.Where(x => (
+                //  (
+                //    (filter.IsBank.HasValue && x.IsBank == filter.IsBank) ||
+                //    (filter.IsIndividual.HasValue && x.IsIndividual == filter.IsIndividual) ||
+                //    (filter.IsCompany.HasValue && x.IsBank == filter.IsCompany) ||
+                //    (filter.IsEmployee.HasValue && x.IsBank == filter.IsEmployee)
+                //   ) || (!filter.IsBank.HasValue && !filter.IsIndividual.HasValue && !filter.IsCompany.HasValue && !filter.IsEmployee.HasValue)
+                // ));
 
                 qry = qry.OrderBy(x => x.Name);
                 if (paging != null)
@@ -496,10 +496,7 @@ namespace BL.Database.Dictionaries
 
                 var qry = dbContext.DictionaryAgentPersonsSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
 
-                qry = qry.Where(x => x.Agent.IsIndividual);
-
-
-
+                //qry = qry.Where(x => x.Agent.IsIndividual);
 
                 // Список первичных ключей
                 if (filter.IDs?.Count > 0)
@@ -812,9 +809,7 @@ namespace BL.Database.Dictionaries
             {
                 var qry = dbContext.DictionaryAgentEmployeesSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
 
-                qry = qry.Where(x => x.Agent.IsEmployee);
-
-
+                //qry = qry.Where(x => x.Agent.IsEmployee);
 
                 // Список первичных ключей
                 if (filter.IDs?.Count > 0)
@@ -1420,21 +1415,47 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context))
             {
-
-                var qry = dbContext.DictionaryAgentClientCompaniesSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
-
-                qry = GetWhereAgentClientCompany(ref qry, filter);
-
-                qry = qry.OrderBy(x => x.FullName);
+                var qry = GetAgentClientCompaniesQuery(context, dbContext, filter);
 
                 return qry.Select(x => new FrontDictionaryAgentClientCompany
                 {
-                    // pss Перегонка значений DictionaryCompany
                     Id = x.Id,
                     IsActive = x.IsActive,
                     Name = x.FullName
                 }).ToList();
             }
+        }
+        public IEnumerable<TreeItem> GetAgentClientCompaniesForTree(IContext context, FilterDictionaryAgentClientCompany filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+
+                var qry = GetAgentClientCompaniesQuery(context, dbContext, filter);
+
+                var objId = ((int)EnumObjects.DictionaryAgentClientCompanies).ToString();
+
+                return qry.Select(x => new TreeItem
+                {
+                    Id = x.Id,
+                    Name = x.Agent.Name,
+                    ObjectId = (int)EnumObjects.DictionaryAgentClientCompanies,
+                    TreeId = string.Concat(x.Id.ToString(), "_", objId),
+                    TreeParentId = string.Empty,
+                    IsActive = x.IsActive,
+                    IsList = false
+                }).ToList();
+            }
+        }
+
+        public IQueryable<DictionaryCompanies> GetAgentClientCompaniesQuery(IContext context, DmsContext dbContext, FilterDictionaryAgentClientCompany filter)
+        {
+            var qry = dbContext.DictionaryAgentClientCompaniesSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
+
+            qry = GetWhereAgentClientCompany(ref qry, filter);
+
+            qry = qry.OrderBy(x => x.FullName);
+
+            return qry;
         }
 
         // Для использования в коммандах метод CanExecute
@@ -1707,6 +1728,7 @@ namespace BL.Database.Dictionaries
 
                 // Пагинация
                 qry = qry.OrderBy(x => x.FullName);
+
                 if (paging != null)
                 {
                     if (paging.IsOnlyCounter ?? true)
@@ -1912,8 +1934,9 @@ namespace BL.Database.Dictionaries
 
                 var qry = dbContext.DictionaryAgentBanksSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
 
-                qry = qry.Where(x => x.Agent.IsBank);
-                qry = qry.OrderBy(x => x.Agent.Name);
+                //qry = qry.Where(x => x.Agent.IsBank);
+                qry = qry.OrderBy(x => x.FullName); //Agent.Name
+
                 // Пагинация
                 if (paging != null)
                 {
@@ -2639,21 +2662,24 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<FrontDictionaryDepartment> GetDepartmentsForTree(IContext context, FilterDictionaryDepartment filter)
+        public IEnumerable<TreeItem> GetDepartmentsForTree(IContext context, FilterDictionaryDepartment filter)
         {
             using (var dbContext = new DmsContext(context))
             {
                 var qry = GetPositionExecutorsQuery(context, dbContext, filter);
 
-                return qry.Select(x => new FrontDictionaryDepartment
+                var objId = ((int)EnumObjects.DictionaryDepartments).ToString();
+                var companyObjId =((int)EnumObjects.DictionaryAgentClientCompanies).ToString();
+
+                return qry.Select(x => new TreeItem
                 {
                     Id = x.Id,
+                    Name = string.Concat(x.Code," ", x.Name),
+                    ObjectId = (int)EnumObjects.DictionaryDepartments,
+                    TreeId = string.Concat(x.Id.ToString(), "_", objId),
+                    TreeParentId = (x.ParentId == null) ? string.Concat(x.CompanyId,"_", companyObjId) : string.Concat(x.ParentId, "_", objId),
                     IsActive = x.IsActive,
-                    ParentId = x.ParentId,
-                    Code = x.Code,
-                    Name = x.Name,
-                    FullName = x.FullName,
-                    CompanyId = x.CompanyId
+                    IsList = false
                 }).ToList();
             }
         }
@@ -3520,29 +3546,25 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<FrontDictionaryPosition> GetPositionsForTree(IContext context, FilterDictionaryPosition filter)
+        public IEnumerable<TreeItem> GetPositionsForTree(IContext context, FilterDictionaryPosition filter)
         {
             using (var dbContext = new DmsContext(context))
             {
-
                 var qry = GetPositionsQuery(context, dbContext, filter);
 
-                var qry2 = qry.Select(x => new FrontDictionaryPosition
+                string objId = ((int)EnumObjects.DictionaryPositions).ToString();
+                string parObjId = ((int)EnumObjects.DictionaryDepartments).ToString();
+
+                return qry.Select(x => new TreeItem
                 {
                     Id = x.Id,
-                    IsActive = x.IsActive,
-                    ParentId = x.ParentId,
                     Name = x.Name,
-                    FullName = x.FullName,
-                    DepartmentId = x.DepartmentId
-                });
-
-                if (filter.SubordinatedTypeId.HasValue)
-                {
-                    qry2 = qry2.Where(x => x.MaxSubordinationTypeId >= filter.SubordinatedTypeId);
-                }
-
-                return qry2.ToList();
+                    ObjectId = (int)EnumObjects.DictionaryPositions,
+                    TreeId = string.Concat(x.Id.ToString(), "_", objId),
+                    TreeParentId = x.DepartmentId.ToString() + "_" + parObjId,
+                    IsActive = x.IsActive,
+                    IsList = false
+                }).ToList();
             }
         }
 
@@ -3885,20 +3907,24 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<FrontDictionaryPositionExecutor> GetPositionExecutorsForTree(IContext context, FilterDictionaryPositionExecutor filter)
+        public IEnumerable<TreeItem> GetPositionExecutorsForTree(IContext context, FilterDictionaryPositionExecutor filter)
         {
             using (var dbContext = new DmsContext(context))
             {
                 var qry = GetPositionExecutorsQuery(dbContext, filter);
 
-                return qry.Select(x => new FrontDictionaryPositionExecutor
+                string objId = ((int)EnumObjects.DictionaryPositionExecutors).ToString();
+                string parObjId = ((int)EnumObjects.DictionaryPositions).ToString();
+
+                return qry.Select(x => new TreeItem
                 {
                     Id = x.Id,
+                    Name = x.Agent.Name,
+                    ObjectId = (int)EnumObjects.DictionaryPositionExecutors,
+                    TreeId = string.Concat(x.Id.ToString() , "_" , objId),
+                    TreeParentId = x.PositionId.ToString() + "_" + parObjId,
                     IsActive = x.IsActive,
-                    PositionId = x.PositionId,
-                    PositionExecutorTypeId = x.PositionExecutorTypeId,
-                    AgentName = x.Agent.Name,
-                    AccessLevelName = x.AccessLevel.Name,
+                    IsList = true
                 }).ToList();
             }
         }
@@ -5335,148 +5361,81 @@ namespace BL.Database.Dictionaries
         #endregion CustomDictionaries
 
 
-        public IEnumerable<ITreeItem> GetStaffList(IContext context, DictionaryBaseFilterParameters filter, StartWith startWith)
+        public IEnumerable<ITreeItem> GetStaffList(IContext context, FilterTree filter)
         {
 
             var executors = GetPositionExecutorsForTree(context, new FilterDictionaryPositionExecutor()
             {
                 Period = new Period(DateTime.Now.StartOfDay(), DateTime.Now.EndOfDay()),
-                IsActive = true
-                // { Name = filter.Name });
+                IsActive = filter.IsActive,
+                Name = filter.Name 
             });
 
             var positions = GetPositionsForTree(context, new FilterDictionaryPosition()
             {
-                IsActive = true
-                // { Name = filter.Name });
+                IsActive = filter.IsActive,
+                Name = filter.Name
             });
 
             var departments = GetDepartmentsForTree(context, new FilterDictionaryDepartment()
             {
-                IsActive = true
-                // { Name = filter.Name });
+                IsActive = filter.IsActive,
+                Name = filter.Name
             }
             );
 
-            var companies = GetAgentClientCompanies(context, new FilterDictionaryAgentClientCompany());
+            var companies = GetAgentClientCompaniesForTree(context, new FilterDictionaryAgentClientCompany()
+            {
+                IsActive = filter.IsActive,
+                Name = filter.Name
+            }
+            );
 
-            List<ITreeItem> flatList = new List<ITreeItem>();
+            List<TreeItem> flatList = new List<TreeItem>();
 
-            flatList.AddRange((IEnumerable<ITreeItem>)departments);
-            flatList.AddRange((IEnumerable<ITreeItem>)positions);
-            flatList.AddRange((IEnumerable<ITreeItem>)executors);
-            flatList.AddRange((IEnumerable<ITreeItem>)companies);
-            var res = QQQ(flatList, startWith);
+            flatList.AddRange(departments);
+            flatList.AddRange(positions);
+            flatList.AddRange(executors);
+            flatList.AddRange(companies);
+
+            var res = GetTree(flatList, filter);
+
             return res;//.SelectRecursive(c => companies);
         }
 
-        private IEnumerable<ITreeItem> QQQ(IEnumerable<ITreeItem> flatList, StartWith startWith)
+        private IEnumerable<ITreeItem> GetTree(IEnumerable<ITreeItem> flatList, FilterTree filter)
         {
             var list = new List<ITreeItem>();
 
             if (flatList != null)
             {
                 foreach (var item in flatList)
-                    if (IsNeighbourItem(item, startWith))
+                    if (IsNeighbourItem(item, filter))
                     {
                         item.IsUsed = true;
                         list.Add(item);
-                        item.Childs = QQQ(flatList, new StartWith() { Id = item.Id, ObjectId = item.ObjectId });
+                        item.Childs = GetTree(flatList, new FilterTree() { StartWith = item.TreeId });
                     }
             }
 
             return list;
         }
 
-        private bool IsNeighbourItem(ITreeItem item, StartWith startWith)
+        private bool IsNeighbourItem(ITreeItem item, FilterTree filter)
         {
             if (item.IsUsed) return false;
-            if (startWith == null)
+            if (filter == null)
             {
-                return (item.ParentItemId == null);
+                return (item.TreeParentId == string.Empty);
             }
             else
             {
-                if (item.ParentItemId == startWith.Id)
-                {
-                    if (startWith.ObjectId == null) return true;
-
-                    switch (startWith.ObjectId)
-                    {
-
-                        case (int)EnumObjects.DictionaryAgentClientCompanies:
-
-                            if ((item.ObjectId == (int)EnumObjects.DictionaryAgentClientCompanies) || (item.ObjectId == (int)EnumObjects.DictionaryDepartments)) return true;
-                            break;
-
-                        case (int)EnumObjects.DictionaryDepartments:
-
-                            if ((item.ObjectId == (int)EnumObjects.DictionaryDepartments) || (item.ObjectId == (int)EnumObjects.DictionaryPositions)) return true;
-                            break;
-
-                        case (int)EnumObjects.DictionaryPositions:
-
-                            if ((item.ObjectId == (int)EnumObjects.DictionaryPositions) || (item.ObjectId == (int)EnumObjects.DictionaryPositionExecutors)) return true;
-                            break;
-
-                        default:
-                            if (startWith.ObjectId == item.ObjectId) return true;
-                            break;
-                    }
-                }
+                return (item.TreeParentId == (filter.StartWith ?? string.Empty));
             }
-
-            return false;
         }
 
         #region [+] AddNewClient ...
 
-        public int AddAgentsForNewClient(IContext context, AddClientContent client)
-        {
-
-            //context.CurrentClientId = client.ClientId;
-
-            var agentUser = AddAgentEmployee(context, new InternalDictionaryAgentEmployee()
-            {
-                FirstName = client.Name,
-                LastName = client.LastName,
-                Login = client.Login,
-                PasswordHash = client.PasswordHash,
-                IsActive = true,
-                LanguageId = client.LanguageId
-            });
-
-            // Pss Локализация для типов контактов
-            var mobiContactType = AddContactType(context, new InternalDictionaryContactType() { Code = "МТ", Name = "Мобильный телефон", InputMask = "", IsActive = true });
-            AddContactType(context, new InternalDictionaryContactType() { Code = "РТ", Name = "Рабочий телефон", InputMask = "", IsActive = true });
-            AddContactType(context, new InternalDictionaryContactType() { Code = "ДТ", Name = "Домашний телефон", InputMask = "", IsActive = true });
-            AddContactType(context, new InternalDictionaryContactType() { Code = "ОТ", Name = "Основной телефон", InputMask = "", IsActive = true });
-            AddContactType(context, new InternalDictionaryContactType() { Code = "РФ", Name = "Рабочий факс", InputMask = "", IsActive = true });
-            AddContactType(context, new InternalDictionaryContactType() { Code = "ДФ", Name = "Домашний факс", InputMask = "", IsActive = true });
-            var emailContactType = AddContactType(context, new InternalDictionaryContactType() { Code = "ЛМ", Name = "Личный адрес", InputMask = "", IsActive = true });
-            AddContactType(context, new InternalDictionaryContactType() { Code = "РМ", Name = "Рабочий адрес", InputMask = "", IsActive = true });
-            AddContactType(context, new InternalDictionaryContactType() { Code = "П", Name = "Пейждер", InputMask = "", IsActive = true });
-            AddContactType(context, new InternalDictionaryContactType() { Code = "Др", Name = "Другой", InputMask = "", IsActive = true });
-            AddContactType(context, new InternalDictionaryContactType() { Code = "MVPN", Name = "MVPN", InputMask = "", IsActive = true });
-
-
-            AddContact(context, new InternalDictionaryContact() { AgentId = agentUser, ContactTypeId = mobiContactType, Value = client.PhoneNumber, IsActive = true, IsConfirmed = true});
-
-            AddContact(context, new InternalDictionaryContact() { AgentId = agentUser, ContactTypeId = emailContactType, Value = client.Email, IsActive = true, IsConfirmed = true });
-
-            ///-----------------------------------------------------------------------------
-
-            // Pss Локализация для названия компании
-            var companyId = AddAgentClientCompany(context, new InternalDictionaryAgentClientCompany() { Name ="Моя компания", FullName = "Моя компания", IsActive = true});
-
-            var departmentId = AddDepartment(context, new InternalDictionaryDepartment() { CompanyId = companyId , Code ="01", Name = "Мой отдел", FullName = "Мой отдел", IsActive = true });
-
-            var positionDirector = AddPosition(context, new InternalDictionaryPosition() { DepartmentId = departmentId, Name = "Директор", FullName = "Директор", Order = 1, IsActive = true });
-
-            var positionAdmin = AddPosition(context, new InternalDictionaryPosition() { DepartmentId = departmentId, Name = "Администратор системы", FullName = "Администратор системы", Order = 2, IsActive = true});
-
-            return 1;
-        }
 
         #endregion
 

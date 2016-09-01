@@ -291,6 +291,6 @@ namespace BL.Database.Dictionaries.Interfaces
         #endregion CustomDictionaries
 
 
-        IEnumerable<ITreeItem> GetStaffList(IContext context, DictionaryBaseFilterParameters filter, StartWith startWith);
+        IEnumerable<ITreeItem> GetStaffList(IContext context, FilterTree filter);
     }
 }

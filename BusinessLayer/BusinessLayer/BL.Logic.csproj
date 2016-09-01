@@ -119,6 +119,8 @@
     <Compile Include="AdminCore\PositionRole\AddPositionRoleCommand.cs" />
     <Compile Include="AdminCore\PositionRole\DeletePositionRoleCommand.cs" />
     <Compile Include="AdminCore\PositionRole\ModifyPositionRoleCommand.cs" />
+    <Compile Include="ClientsCore\ClientService.cs" />
+    <Compile Include="ClientsCore\Interfaces\IClientService.cs" />
     <Compile Include="Common\BaseAdminCommand.cs" />
     <Compile Include="Common\BaseEncryptionCommand.cs" />
     <Compile Include="Common\BasePropertCommand.cs" />

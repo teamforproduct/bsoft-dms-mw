@@ -42,8 +42,7 @@ namespace BL.Logic.ClientCore
         public void AddNewClient(IContext context, AddClientContent client)
         {
             //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            //context.CurrentClientId = client.ClientId;
-
+            context.CurrentClientId = client.ClientId;
             #region [+] ContactsTypes ...
 
             // Pss Локализация для типов контактов
@@ -62,11 +61,9 @@ namespace BL.Logic.ClientCore
             #endregion
 
             #region [+] AddressTypes ...
-
             // Pss Локализация для типов адресов
-            _DictDb.AddAddressType(context, new InternalDictionaryAddressType { Code = "ДА", Name = "Домашний", IsActive = true });
+            _DictDb.AddAddressType(context, new InternalDictionaryAddressType() { Code = "ДА", Name = "Домашний", IsActive = true });
             _DictDb.AddAddressType(context, new InternalDictionaryAddressType() { Code = "РА", Name = "Рабочий", IsActive = true });
-
             #endregion
 
             #region [+] Agent-Employee ...
@@ -90,7 +87,7 @@ namespace BL.Logic.ClientCore
             #region [+] Agent-Company ....
             // Pss Локализация для названия компании
             var companyId = _DictDb.AddAgentClientCompany(context, new InternalDictionaryAgentClientCompany()
-            { Name = "Моя компания", FullName = "Моя компания", IsActive = true });
+            { Name = "Наша компания", FullName = "Наша компания", IsActive = true });
 
             //_DictDb.AddContact(context, new InternalDictionaryContact()
             //{ AgentId = companyId, ContactTypeId = mobiContactType, Value = client.PhoneNumber, IsActive = true, IsConfirmed = true });
@@ -104,11 +101,38 @@ namespace BL.Logic.ClientCore
             var positionDirector = _DictDb.AddPosition(context, new InternalDictionaryPosition()
             { DepartmentId = departmentId, Name = "Директор", FullName = "Директор", Order = 1, IsActive = true });
 
-            var positionAdmin = _DictDb.AddPosition(context, new InternalDictionaryPosition()
-            { DepartmentId = departmentId, Name = "Администратор системы", FullName = "Администратор системы", Order = 2, IsActive = true });
             #endregion
 
             AddClientRoles(context);
+
+            #region [+] DocumentsTypes ...
+
+            _DictDb.AddDocumentType(context, new InternalDictionaryDocumentType() { Name = "Письмо", IsActive = true });
+            _DictDb.AddDocumentType(context, new InternalDictionaryDocumentType() { Name = "Приказ", IsActive = true });
+            _DictDb.AddDocumentType(context, new InternalDictionaryDocumentType() { Name = "Распоряжение", IsActive = true });
+            _DictDb.AddDocumentType(context, new InternalDictionaryDocumentType() { Name = "Служебная записка", IsActive = true });
+            _DictDb.AddDocumentType(context, new InternalDictionaryDocumentType() { Name = "Поручение", IsActive = true });
+            _DictDb.AddDocumentType(context, new InternalDictionaryDocumentType() { Name = "Протокол", IsActive = true });
+            _DictDb.AddDocumentType(context, new InternalDictionaryDocumentType() { Name = "Договор", IsActive = true });
+
+            // добавить шаблоны под каждый тип
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            #endregion
+
+
         }
 
         /// <summary>

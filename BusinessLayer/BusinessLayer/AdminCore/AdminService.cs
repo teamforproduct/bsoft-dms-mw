@@ -211,7 +211,7 @@ namespace BL.Logic.AdminCore
         #endregion
 
         #region [+] MainMenu ...
-        public IEnumerable<MenuItem> GetAdminMainMenu(IContext context)
+        public IEnumerable<TreeItem> GetAdminMainMenu(IContext context)
         {
             return _adminDb.GetMainMenu(context);
         }

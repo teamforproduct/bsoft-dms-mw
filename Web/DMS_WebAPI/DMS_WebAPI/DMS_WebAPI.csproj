@@ -263,7 +263,7 @@
     <Compile Include="Controllers\Admins\AdminRolesController.cs" />
     <Compile Include="Controllers\Admins\AdminRoleActionsController.cs" />
     <Compile Include="Controllers\Admins\AdminPositionRolesController.cs" />
-    <Compile Include="Controllers\Dictionaries\DictionaryActionsController.cs" />
+    <Compile Include="Controllers\Dictionaries\DictionaryStaffListController.cs" />
     <Compile Include="Controllers\Dictionaries\CustomDictionaryTypesController.cs" />
     <Compile Include="Controllers\Dictionaries\CustomDictionariesController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryAddressTypesController.cs" />
@@ -354,6 +354,7 @@
       <DependentUpon>201606162106554_InitialMigration.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\AddClient.cs" />
     <Compile Include="Models\ClientViewModels.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="DatabaseContext\ApplicationDbInitializer.cs" />

@@ -43,17 +43,21 @@ namespace DMS_WebAPI.Infrastructure
             
             Exception exc = context.Exception;
             string msgExp =string.Empty;
-#if DEBUG
-
+//#if DEBUG
+//pss Убрать в продакшине, пока для понимания вопроса во время разработки пусть отображается полная информация!!!
             while (exc != null)
             {
-                msgExp += exc.Message;
+                var m = exc.Message;
+                if (!m.Contains("See the inner exception for details"))
+                {
+                    msgExp = msgExp + (msgExp == string.Empty ? string.Empty : ";    ") + m;
+                }
                 exc = exc.InnerException;
             };
 
-#else
-            msgExp = exc.Message;
-#endif
+//#else
+            //msgExp = exc.Message;
+//#endif
 
             var json = JsonConvert.SerializeObject(new { success = false, msg = msgExp }, GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings);
             try

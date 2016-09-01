@@ -71,7 +71,7 @@ namespace BL.Database.Admins.Interfaces
         #endregion
 
         #region [+] MainMenu ...
-        IEnumerable<MenuItem> GetMainMenu(IContext context);
+        IEnumerable<TreeItem> GetMainMenu(IContext context);
         #endregion
 
         #region [+] AddNewClient ...
