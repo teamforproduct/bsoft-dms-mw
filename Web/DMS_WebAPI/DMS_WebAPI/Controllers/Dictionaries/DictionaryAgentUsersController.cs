@@ -15,7 +15,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
     public class DictionaryAgentUsersController : ApiController
     {
         /// <summary>
-        /// Возвращает записи из словаря "AgentUsers"
+        /// Возвращает пользователей (агентов)
         /// </summary>
         /// <param name="filter">Параметры для фильтрации записей в словаре "Компании"</param>
         /// <returns>FrontDictionaryAgentUsers</returns>

@@ -64,10 +64,10 @@ namespace BL.Logic.Common
 
         }
 
-        public static InternalDictionaryCompany  CompanyModifyToInternal(IContext context, ModifyDictionaryCompany modifyModel)
+        public static InternalDictionaryAgentClientCompany  CompanyModifyToInternal(IContext context, ModifyDictionaryAgentClientCompany modifyModel)
         {
 
-            InternalDictionaryCompany internalModel = new InternalDictionaryCompany(modifyModel);
+            InternalDictionaryAgentClientCompany internalModel = new InternalDictionaryAgentClientCompany(modifyModel);
 
             CommonDocumentUtilities.SetLastChange(context, internalModel);
 

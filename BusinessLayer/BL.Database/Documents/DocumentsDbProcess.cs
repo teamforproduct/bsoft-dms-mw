@@ -457,8 +457,8 @@ namespace BL.Database.Documents
                     ExecutorPositionName = doc.ExecutorPosition.Name,
                     Addressee = doc.Addressee,
                     Description = doc.Description,
-                    SenderAgentName = doc.SenderAgent.Name,
-                    SenderAgentPersonName = doc.SenderAgentPerson.Agent.Name,
+                    SenderAgentName = doc.SenderAgent?.Name,
+                    SenderAgentPersonName = doc.SenderAgentPerson?.Agent.Name,
                 };
 
                 var docIds = new List<int> { res.Id };

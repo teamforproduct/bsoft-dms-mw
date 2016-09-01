@@ -25,5 +25,10 @@ namespace BL.Model.AdminCore.IncomingModel
         /// </summary>
         public string Name { get; set; }
 
+        /// <summary>
+        /// Классификатор роли
+        /// </summary>
+        public int? RoleTypeId { get; set; }
+
     }
 }

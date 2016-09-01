@@ -13,6 +13,7 @@ namespace BL.Model.AdminCore.InternalModel
         {
             Id = model.Id;
             Name = model.Name;
+            RoleTypeId = model.RoleTypeId;
         }
 
         /// <summary>
@@ -24,6 +25,11 @@ namespace BL.Model.AdminCore.InternalModel
         /// Наименование роли
         /// </summary>
         public string Name { get; set; }
+
+        /// <summary>
+        /// Классификатор роли
+        /// </summary>
+        public int? RoleTypeId { get; set; }
 
     }
 }

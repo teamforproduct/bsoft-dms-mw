@@ -55,9 +55,15 @@ namespace BL.Logic.DictionaryCore
         {
             try
             {
-                var newEmployee = new InternalDictionaryAgentEmployee(Model);
-                CommonDocumentUtilities.SetLastChange(_context, newEmployee);
-                return _dictDb.AddAgentEmployee(_context, newEmployee);
+                var item = new InternalDictionaryAgentEmployee(Model);
+
+                // Обрезаю время для даты рождения и даты получения паспорта
+                if (item.PassportDate != null) item.PassportDate = new DateTime(item.PassportDate?.Year ?? 0, item.PassportDate?.Month ?? 0, item.PassportDate?.Day ?? 0);
+
+                if (item.BirthDate != null) item.BirthDate = new DateTime(item.BirthDate?.Year ?? 0, item.BirthDate?.Month ?? 0, item.BirthDate?.Day ?? 0);
+
+                CommonDocumentUtilities.SetLastChange(_context, item);
+                return _dictDb.AddAgentEmployee(_context, item);
             }
             catch (Exception ex)
             {

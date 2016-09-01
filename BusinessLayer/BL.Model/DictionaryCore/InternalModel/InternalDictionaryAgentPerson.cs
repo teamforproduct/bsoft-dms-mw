@@ -28,7 +28,26 @@ namespace BL.Model.DictionaryCore.InternalModel
             IsActive = model.IsActive;
             BirthDate = model.BirthDate;
             Description = model.Description;
-        }      
+        }
+
+        public InternalDictionaryAgentPerson(InternalDictionaryAgentEmployee model)
+        {
+            Id = model.Id;
+            LastChangeDate = model.LastChangeDate;
+            LastChangeUserId = model.LastChangeUserId;
+            FirstName = model.FirstName;
+            LastName = model.LastName;
+            MiddleName = model.MiddleName;
+            TaxCode = model.TaxCode;
+            IsMale = model.IsMale;
+            PassportSerial = model.PassportSerial;
+            PassportNumber = model.PassportNumber;
+            PassportText = model.PassportText;
+            PassportDate = model.PassportDate;
+            IsActive = model.IsActive;
+            BirthDate = model.BirthDate;
+            Description = model.Description;
+        }
         /// <summary>
         /// ID
         /// </summary>
@@ -45,6 +64,8 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// Отчество
         /// </summary>
         public string MiddleName { get; set; }
+
+        public string Name { get { return LastName + " " + FirstName.Trim().Substring(1, 1) + "." + " " + MiddleName.Trim().Substring(1, 1) + "."; } }
         /// <summary>
         /// ИНН
         /// </summary>
@@ -81,6 +102,6 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// Признак активности
         /// </summary>
         public bool IsActive { get; set; }
-        
+
     }
 }

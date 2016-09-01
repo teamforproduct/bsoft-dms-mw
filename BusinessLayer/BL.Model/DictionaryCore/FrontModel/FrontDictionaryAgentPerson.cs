@@ -56,7 +56,7 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// Дата рождения
         /// </summary>
         public DateTime? BirthDate { get; set; }
-        
+
         /// <summary>
         /// Дополнительная информация
         /// </summary>
@@ -64,28 +64,33 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// <summary>
         /// Полное имя
         /// </summary>
-        public string FullName { get
-                {
-                return LastName?.Trim() + " " + FirstName?.Trim() + " " + MiddleName?.Trim();
-                }
-                               }
+        public string FullName
+        {
+            get { return LastName?.Trim() + " " + FirstName?.Trim() + " " + MiddleName?.Trim(); }
+        }
         /// <summary>
         /// Сокращенное имя
         /// </summary>
-        public string ShortName { get
-            {
-                return LastName?.Trim() + " " +FirstName?.Trim().Substring(0, 1) + "." + MiddleName?.Trim().Substring(0, 1) + ".";
-            }
-                }
+        public string ShortName
+        {
+            get { return LastName?.Trim() + " " + FirstName?.Trim().Substring(0, 1) + "." + MiddleName?.Trim().Substring(0, 1) + "."; }
+        }
         /// <summary>
         /// Паспортные данные
         /// </summary>
-        public string Passport  { get
-            {
-                return PassportSerial?.Trim() + " " + PassportNumber?.ToString() + " " + PassportText?.Trim() + " " + PassportDate?.ToString("dd.MM.yyyy");
-            }
-
+        public string Passport
+        {
+            get { return PassportSerial?.Trim() + " " + PassportNumber?.ToString() + " " + PassportText?.Trim() + " " + PassportDate?.ToString("dd.MM.yyyy"); }
         }
-       
+
+        /// <summary>
+        /// Список контактов контрагента
+        /// </summary>
+        public IEnumerable<FrontDictionaryContact> Contacts { get; set; }
+        /// <summary>
+        /// Список адресов контрагента
+        /// </summary>
+        public IEnumerable<FrontDictionaryAgentAddress> Addresses { get; set; }
+
     }
 }

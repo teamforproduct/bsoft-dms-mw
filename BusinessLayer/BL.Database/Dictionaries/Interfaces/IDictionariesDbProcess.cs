@@ -6,6 +6,7 @@ using BL.Model.SystemCore;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.InternalModel;
+using BL.Model.Common;
 
 namespace BL.Database.Dictionaries.Interfaces
 {
@@ -14,7 +15,7 @@ namespace BL.Database.Dictionaries.Interfaces
         #region DictionaryAgents
         FrontDictionaryAgent GetAgent(IContext context, int id);
         void UpdateAgent(IContext context, InternalDictionaryAgent addr);
-        void DeleteAgent(IContext context, InternalDictionaryAgent addr);
+        void DeleteAgent(IContext context, int agentId);
         int AddAgent(IContext context, InternalDictionaryAgent addr);
         IEnumerable<FrontDictionaryAgent> GetAgents(IContext context, FilterDictionaryAgent filter,UIPaging paging);
         #endregion DictionaryAgents
@@ -200,12 +201,12 @@ namespace BL.Database.Dictionaries.Interfaces
 
         // Компании
         #region DictionaryCompanies
-        int AddCompany(IContext context, InternalDictionaryCompany docType);
-        void UpdateCompany(IContext context, InternalDictionaryCompany docType);
-        void DeleteCompany(IContext context, InternalDictionaryCompany docType);
-        bool ExistsCompany(IContext context, FilterDictionaryCompany filter);
-        InternalDictionaryCompany GetInternalDictionaryCompany(IContext context, FilterDictionaryCompany filter);
-        IEnumerable<FrontDictionaryCompany> GetCompanies(IContext context, FilterDictionaryCompany filter);
+        int AddAgentClientCompany(IContext context, InternalDictionaryAgentClientCompany docType);
+        void UpdateAgentClientCompany(IContext context, InternalDictionaryAgentClientCompany docType);
+        void DeleteAgentClientCompany(IContext context, InternalDictionaryAgentClientCompany docType);
+        bool ExistsAgentClientCompany(IContext context, FilterDictionaryAgentClientCompany filter);
+        InternalDictionaryAgentClientCompany GetInternalAgentClientCompany(IContext context, FilterDictionaryAgentClientCompany filter);
+        IEnumerable<FrontDictionaryAgentClientCompany> GetAgentClientCompanies(IContext context, FilterDictionaryAgentClientCompany filter);
         #endregion DictionaryCompanies
 
         #region DictionaryResultTypes
@@ -288,5 +289,8 @@ namespace BL.Database.Dictionaries.Interfaces
 
         IEnumerable<FrontCustomDictionary> GetCustomDictionaries(IContext context, FilterCustomDictionary filter);
         #endregion CustomDictionaries
+
+
+        IEnumerable<ITreeItem> GetStaffList(IContext context, DictionaryBaseFilterParameters filter, StartWith startWith);
     }
 }

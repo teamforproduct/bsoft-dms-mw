@@ -81,6 +81,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\MenuItem.cs" />
+    <Compile Include="AdminCore\Actions\AddUser.cs" />
     <Compile Include="AdminCore\AdminLanguageInfo.cs" />
     <Compile Include="AdminCore\AdminAccessInfo.cs" />
     <Compile Include="AdminCore\FilterModel\AdminBaseFilterParameters.cs" />
@@ -114,6 +116,11 @@
     <Compile Include="AdminCore\InternalModel\InternalPositionRole.cs" />
     <Compile Include="ClearTrashDocuments\ClearTrashDocumentsSettings.cs" />
     <Compile Include="AutoPlan\AutoPlanSettings.cs" />
+    <Compile Include="Common\IDictionaryItem.cs" />
+    <Compile Include="Common\StartWith.cs" />
+    <Compile Include="Common\TreeItem.cs" />
+    <Compile Include="Common\ITreeItem.cs" />
+    <Compile Include="Common\IListItem.cs" />
     <Compile Include="Common\Period.cs" />
     <Compile Include="Constants\SettingConstants.cs" />
     <Compile Include="DictionaryCore\FilterModel\DictionaryBaseFilterParameters.cs" />
@@ -126,7 +133,7 @@
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryAgentEmployee.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryContact.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryContactType.cs" />
-    <Compile Include="DictionaryCore\FilterModel\FilterDictionaryCompany.cs" />
+    <Compile Include="DictionaryCore\FilterModel\FilterDictionaryAgentClientCompany.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryPositionExecutorType.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryPositionExecutor.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontCustomDictionary.cs" />
@@ -136,7 +143,7 @@
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentBank.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentCompany.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryDepartment.cs" />
-    <Compile Include="DictionaryCore\FrontModel\FrontDictionaryCompany.cs" />
+    <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentClientCompany.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryPositionExecutorType.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryPositionExecutor.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryPosition.cs" />
@@ -159,7 +166,7 @@
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentCompany.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentEmployee.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentUser.cs" />
-    <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryCompany.cs" />
+    <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentClientCompany.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryPositionExecutorType.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryPositionExecutor.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryPosition.cs" />
@@ -179,7 +186,8 @@
     <Compile Include="DictionaryCore\FrontModel\FrontAdminAccessLevel.cs" />
     <Compile Include="AdminCore\FilterAdminAccessLevel.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalCustomDictionaryType.cs" />
-    <Compile Include="DictionaryCore\InternalModel\InternalDictionaryCompany.cs" />
+    <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAgentClientCompany.cs" />
+    <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAgentUser.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryPositionExecutorType.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryPositionExecutor.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryStandartSendList.cs" />

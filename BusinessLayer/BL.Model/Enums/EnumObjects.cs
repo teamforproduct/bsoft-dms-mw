@@ -38,7 +38,7 @@
         DictionaryAgentAccounts = 215, // Расчетные счета
         DictionaryStandartSendListContent = 216, // Типовые списки рассылки (содержание)
         DictionaryStandartSendLists = 217, // Типовые списки рассылки
-        DictionaryCompanies = 218, // Компании
+        DictionaryAgentClientCompanies = 218, // Компании
         DictionaryPositionExecutorTypes = 219, // Типы исполнителей
         DictionaryPositionExecutors = 220, // Исполнители должности
         TemplateDocument = 251, // Шаблоны документов

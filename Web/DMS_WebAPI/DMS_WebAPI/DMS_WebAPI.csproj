@@ -258,10 +258,12 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\Admins\AdminSubordinationsController.cs" />
+    <Compile Include="Controllers\Admins\AdminActionsController.cs" />
     <Compile Include="Controllers\Admins\AdminUserRolesController.cs" />
     <Compile Include="Controllers\Admins\AdminRolesController.cs" />
     <Compile Include="Controllers\Admins\AdminRoleActionsController.cs" />
     <Compile Include="Controllers\Admins\AdminPositionRolesController.cs" />
+    <Compile Include="Controllers\Dictionaries\DictionaryActionsController.cs" />
     <Compile Include="Controllers\Dictionaries\CustomDictionaryTypesController.cs" />
     <Compile Include="Controllers\Dictionaries\CustomDictionariesController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryAddressTypesController.cs" />
@@ -537,7 +539,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>21182</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>

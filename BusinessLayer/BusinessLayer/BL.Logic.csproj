@@ -169,9 +169,9 @@
     <Compile Include="DictionaryCore\PositionExecutors\AddDictionaryPositionExecutorCommand.cs" />
     <Compile Include="DictionaryCore\PositionExecutors\DeleteDictionaryPositionExecutorCommand.cs" />
     <Compile Include="DictionaryCore\PositionExecutors\ModifyDictionaryPositionExecutorCommand.cs" />
-    <Compile Include="DictionaryCore\Companies\AddDictionaryCompanyCommand.cs" />
-    <Compile Include="DictionaryCore\Companies\DeleteDictionaryCompanyCommand.cs" />
-    <Compile Include="DictionaryCore\Companies\ModifyDictionaryCompanyCommand.cs" />
+    <Compile Include="DictionaryCore\AgentClientCompany\AddDictionaryAgentClientCompanyCommand.cs" />
+    <Compile Include="DictionaryCore\AgentClientCompany\DeleteDictionaryAgentClientCompanyCommand.cs" />
+    <Compile Include="DictionaryCore\AgentClientCompany\ModifyDictionaryAgentClientCompanyCommand.cs" />
     <Compile Include="DictionaryCore\Positions\AddDictionaryPositionCommand.cs" />
     <Compile Include="DictionaryCore\Positions\DeleteDictionaryPositionCommand.cs" />
     <Compile Include="DictionaryCore\Positions\ModifyDictionaryPositionCommand.cs" />

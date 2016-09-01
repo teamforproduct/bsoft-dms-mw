@@ -21,6 +21,8 @@ namespace BL.Model.DictionaryCore.InternalModel
             FullName = model.FullName;
             DepartmentId = model.DepartmentId;
             ExecutorAgentId = model.ExecutorAgentId;
+            MainExecutorAgentId = model.MainExecutorAgentId;
+            Order = model.Order;
         }
 
         /// <summary>
@@ -52,7 +54,7 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// Подразделение, в которое включена эта должность
         /// </summary>
         public int DepartmentId { get; set; }
-
+        
         /// <summary>
         /// Исполняющий обязанности, значения проставляются вертушкой
         /// </summary>
@@ -63,6 +65,10 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// </summary>
         public int? MainExecutorAgentId { get; set; }
 
-        // !!! После добавления полей внеси изменения в BL.Logic.Common.CommonDictionaryUtilities.PositionModifyToInternal
+        /// <summary>
+        /// Порядковый номер должности в подразделении
+        /// </summary>
+        public int Order { get; set; }
+
     }
 }

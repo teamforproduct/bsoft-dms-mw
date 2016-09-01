@@ -913,10 +913,10 @@ namespace BL.Database.SystemDb
                     ObjectText = x.Task + " " + x.Description + " " + x.SendType.Name + x.StandartSendList.Name + " " + x.TargetAgent.Name + " " + x.TargetPosition.Name
                 }).ToList());
 
-                res.AddRange(dbContext.DictionaryCompaniesSet.Where(x => x.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
+                res.AddRange(dbContext.DictionaryAgentClientCompaniesSet.Where(x => x.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
                 {
                     DocumentId = 0,
-                    ItemType = EnumObjects.DictionaryCompanies,
+                    ItemType = EnumObjects.DictionaryAgentClientCompanies,
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
@@ -1605,9 +1605,9 @@ namespace BL.Database.SystemDb
                     }).ToList());
                 }
 
-                if (objectTypesToProcess.Contains(EnumObjects.DictionaryCompanies))
+                if (objectTypesToProcess.Contains(EnumObjects.DictionaryAgentClientCompanies))
                 {
-                    res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.DictionaryCompanies).Join(dbContext.DictionaryCompaniesSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, doc = d, id = d.Id }).Select(x => new FullTextIndexItem
+                    res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int) EnumOperationType.Delete && x.ObjectType == (int) EnumObjects.DictionaryAgentClientCompanies).Join(dbContext.DictionaryAgentClientCompaniesSet, i => i.ObjectId, d => d.Id, (i, d) => new {ind = i, doc = d, id = d.Id}).Select(x => new FullTextIndexItem
                     {
                         Id = x.ind.Id,
                         DocumentId = 0,
