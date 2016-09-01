@@ -2,6 +2,8 @@
 using BL.Database.Documents.Interfaces;
 using BL.Model.Enums;
 using BL.Model.Exception;
+using BL.Model.DocumentCore.InternalModel;
+using System.Collections.Generic;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -46,7 +48,10 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
-            _context.SetCurrentPosition(_document.ExecutorPositionId);
+            if (!_context.IsAdmin)
+            {
+                _context.SetCurrentPosition(_document.ExecutorPositionId);
+            }
             _admin.VerifyAccess(_context, CommandType);
             if (!CanBeDisplayed(_context.CurrentPositionId))
             {
@@ -61,7 +66,8 @@ namespace BL.Logic.DocumentCore.Commands
         {
             CommonDocumentUtilities.SetLastChange(_context, _document);
             _document.IsLaunchPlan = false;
-            _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, _document.Id, EnumEventTypes.StopPlan);
+            var ev = CommonDocumentUtilities.GetNewDocumentEvent(_context, _document.Id, EnumEventTypes.StopPlan, null,null,null,null,false, _document.ExecutorPositionId);
+            _document.Events = new List<InternalDocumentEvent> { ev };
             _documentDb.ChangeIsLaunchPlanDocument(_context, _document);
             return Model;
         }
