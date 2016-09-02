@@ -10,7 +10,7 @@ namespace BL.Model.DictionaryCore.FrontModel
     /// <summary>
     /// Карточка элемента из справочника "Исполнители". 
     /// </summary>
-    public class FrontDictionaryPositionExecutor : ModifyDictionaryPositionExecutor, ITreeItem
+    public class FrontDictionaryPositionExecutor : ModifyDictionaryPositionExecutor
     {
 
         /// <summary>
@@ -43,29 +43,5 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// </summary>
         public string AccessLevelName { get; set; }
 
-        #region ITreeItem
-        [IgnoreDataMember]
-        public int? ParentItemId 
-        {
-            get { return PositionId; }
-            
-        }
-
-        public int? ObjectId
-        {
-            get { return (int)EnumObjects.DictionaryPositionExecutors; }
-        }
-
-        [IgnoreDataMember]
-        public bool IsUsed{ get; set; }
-
-        public IEnumerable<ITreeItem> Childs { get; set; }
-       
-        public string Name
-        {
-            get { return AgentName; }
-            set { AgentName = value; }
-        }
-        #endregion
     }
 }

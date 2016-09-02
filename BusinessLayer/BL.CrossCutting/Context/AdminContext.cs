@@ -68,19 +68,19 @@ namespace BL.CrossCutting.Context
         public Employee CurrentEmployee { get; set; }
         public List<int> CurrentPositionsIdList
         {
-            get { return new List<int> { 0 }; }
+            get { return new List<int> { (int)EnumSystemPositions.AdminPosition }; }
             set { }
         }
 
         public Dictionary<int, int> CurrentPositionsAccessLevel
         {
-            get { return new Dictionary<int, int> { { 0, 0 } }; }
+            get { return new Dictionary<int, int> { { (int)EnumSystemPositions.AdminPosition, 0 } }; }
             set { }
         }
 
         public DatabaseModel CurrentDB { get; set; }
 
-        public int CurrentPositionId => _currentPositionId ?? 0;
+        public int CurrentPositionId => _currentPositionId ?? (int)EnumSystemPositions.AdminPosition;
 
         public int CurrentAgentId => (int)EnumSystemUsers.AdminUser;
 

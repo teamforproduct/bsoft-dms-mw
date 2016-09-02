@@ -12,13 +12,16 @@ using System.Collections.Generic;
 namespace DMS_WebAPI.Controllers.Admins
 {
     /// <summary>
-    /// Соответствие ролей и должностей
+    /// Структура описывает роли, которые доступны должности. 
+    /// Структуру нужно воспринимать как набор шаблонов. 
+    /// Когда на должность назначается исполнитель, ио или референт, система задает вопрос: "Какие роли из шаблона может выполнять сотрудник. Референт может не иметь права подписания и тд..."
+    /// При изменнии ролей для должности возникает задача синхронизации шаблона и экземпляров
     /// </summary>
     [Authorize]
     public class AdminPositionRolesController : ApiController
     {
         /// <summary>
-        /// GetAdminPositionRoles
+        /// Возвращает роли должностей
         /// </summary>
         /// <param name="filter">Filter parms</param>
         /// <returns>FrontAdminPositions</returns>
@@ -44,7 +47,7 @@ namespace DMS_WebAPI.Controllers.Admins
         }
 
         /// <summary>
-        /// Add in AdminPositionRoles
+        /// Добавляет роль для должности
         /// </summary>
         /// <param name="model">ModifyAdminPositionRole</param>
         /// <returns>FrontAdminPositionRole</returns>
@@ -57,7 +60,7 @@ namespace DMS_WebAPI.Controllers.Admins
         }
 
         /// <summary>
-        /// Chg in AdminPositionRoles
+        /// Изменяет роль для должности
         /// </summary>
         /// <param name="id">Record Id</param>
         /// <param name="model">ModifyAdminPositionRole</param>
@@ -72,7 +75,7 @@ namespace DMS_WebAPI.Controllers.Admins
         }
 
         /// <summary>
-        /// Del in AdminPositionRoles
+        /// Удаляет роль для должности
         /// </summary>
         /// <returns>FrontAdminPositionRole</returns> 
         public IHttpActionResult Delete([FromUri] int id)

@@ -10,7 +10,7 @@ namespace BL.Model.DictionaryCore.FrontModel
     /// Карточка элемента из справочника "Структура предприятия"
     /// </summary>
     // 
-    public class FrontDictionaryDepartment: ModifyDictionaryDepartment, ITreeItem
+    public class FrontDictionaryDepartment: ModifyDictionaryDepartment
     {
         /// <summary>
         /// ID
@@ -36,26 +36,6 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// Список подчиненных подразделений
         /// </summary>
         public virtual IEnumerable<FrontDictionaryDepartment> ChildDepartments { get; set; }
-
-        #region ITreeItem
-
-        [IgnoreDataMember]
-        public int? ParentItemId
-        {
-            get { return ParentId ?? CompanyId; }
-        }
-
-        public int? ObjectId
-        {
-            get { return (int)EnumObjects.DictionaryDepartments; }
-        }
-
-        [IgnoreDataMember]
-        public bool IsUsed { get; set; }
-
-        public IEnumerable<ITreeItem> Childs { get; set; }
-
-        #endregion
 
     }
 }

@@ -74,15 +74,21 @@ namespace BL.Logic.DocumentCore
         public FrontDocument GetDocument(IContext ctx, int documentId, FilterDocumentById filter)
         {
             _adminService.VerifyAccess(ctx, EnumDocumentActions.ViewDocument, false);
-            var doc = _documentDb.GetDocument(ctx, documentId, filter);
-            doc.SendListStages = CommonDocumentUtilities.GetSendListStage(doc.SendLists);
-            doc.SendLists = null;
-            return doc;
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            {
+                var doc = _documentDb.GetDocument(ctx, documentId, filter);
+                doc.SendListStages = CommonDocumentUtilities.GetSendListStage(doc.SendLists);
+                doc.SendLists = null;
+                return doc;
+            }
         }
 
         public IEnumerable<int> GetLinkedDocumentIds(IContext ctx, int documentId)
         {
-            return _documentDb.GetLinkedDocumentIds(ctx, documentId);
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            {
+                return _documentDb.GetLinkedDocumentIds(ctx, documentId);
+            }
         }
 
         public IEnumerable<BaseSystemUIElement> GetModifyMetaData(IContext ctx, FrontDocument doc)
@@ -107,7 +113,10 @@ namespace BL.Logic.DocumentCore
         public FrontDocumentEvent GetDocumentEvent(IContext ctx, int eventId)
         {
             _adminService.VerifyAccess(ctx, EnumDocumentActions.ViewDocument, false);
-            return _operationDb.GetDocumentEvent(ctx, eventId);
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            {
+                return _operationDb.GetDocumentEvent(ctx, eventId);
+            }
         }
 
         public IEnumerable<FrontDocumentEvent> GetDocumentEvents(IContext ctx, FilterBase filter, UIPaging paging)
@@ -131,12 +140,18 @@ namespace BL.Logic.DocumentCore
         public IEnumerable<FrontDocumentSubscription> GetDocumentSubscriptions(IContext ctx, FilterDocumentSubscription filter, UIPaging paging)
         {
             _adminService.VerifyAccess(ctx, EnumDocumentActions.ViewDocument, false);
-            return _operationDb.GetDocumentSubscriptions(ctx, filter, paging);
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            {
+                return _operationDb.GetDocumentSubscriptions(ctx, filter, paging);
+            }
         }
 
         public IEnumerable<FrontDictionaryPosition> GetDocumentWorkGroup(IContext ctx, FilterDictionaryPosition filter, UIPaging paging)
         {
-            return _operationDb.GetDocumentWorkGroup(ctx, filter, paging);
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            {
+                return _operationDb.GetDocumentWorkGroup(ctx, filter, paging);
+            }
         }
 
         public FrontRegistrationFullNumber GetNextRegisterDocumentNumber(IContext ctx, RegisterDocumentBase model)
@@ -183,13 +198,19 @@ namespace BL.Logic.DocumentCore
         public FrontDocumentPaper GetDocumentPaper(IContext context, int itemId)
         {
             _adminService.VerifyAccess(context, EnumDocumentActions.ViewDocument, false);
-            return _documentDb.GetDocumentPaper(context, itemId);
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            {
+                return _documentDb.GetDocumentPaper(context, itemId);
+            }
         }
 
         public IEnumerable<FrontDocumentPaper> GetDocumentPapers(IContext context, FilterDocumentPaper filter, UIPaging paging)
         {
             _adminService.VerifyAccess(context, EnumDocumentActions.ViewDocument, false);
-            return _documentDb.GetDocumentPapers(context, filter, paging);
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            {
+                return _documentDb.GetDocumentPapers(context, filter, paging);
+            }
         }
 
         #endregion DocumentPapers    
@@ -197,12 +218,18 @@ namespace BL.Logic.DocumentCore
         #region DocumentPaperLists
         public FrontDocumentPaperList GetDocumentPaperList(IContext context, int itemId)
         {
-            return _documentDb.GetDocumentPaperList(context, itemId);
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            {
+                return _documentDb.GetDocumentPaperList(context, itemId);
+            }
         }
 
         public IEnumerable<FrontDocumentPaperList> GetDocumentPaperLists(IContext context, FilterDocumentPaperList filter)
         {
-            return _documentDb.GetDocumentPaperLists(context, filter).ToList();
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            {
+                return _documentDb.GetDocumentPaperLists(context, filter).ToList();
+            }
         }
 
         #endregion DocumentPaperLists        
@@ -211,7 +238,10 @@ namespace BL.Logic.DocumentCore
 
         public IEnumerable<FrontDocumentAccess> GetDocumentAccesses(IContext ctx, FilterDocumentAccess filters, UIPaging paging)
         {
-            return _documentDb.GetDocumentAccesses(ctx, filters, paging);
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            {
+                return _documentDb.GetDocumentAccesses(ctx, filters, paging);
+            }
         }
 
         #endregion DocumentAccesses 

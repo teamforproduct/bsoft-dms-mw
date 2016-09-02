@@ -869,9 +869,9 @@ namespace BL.Logic.DictionaryCore
         }
         #endregion CustomDictionaries
 
-        public IEnumerable<ITreeItem> GetStaffList(IContext context, DictionaryBaseFilterParameters filter, StartWith startWith)
+        public IEnumerable<ITreeItem> GetStaffList(IContext context, FilterTree filter)
         {
-            return _dictDb.GetStaffList(context, filter, startWith);
+            return _dictDb.GetStaffList(context, filter);
         }
     }
 }

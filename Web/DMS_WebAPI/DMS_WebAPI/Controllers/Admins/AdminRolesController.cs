@@ -12,13 +12,14 @@ using System.Collections.Generic;
 namespace DMS_WebAPI.Controllers.Admins
 {
     /// <summary>
-    /// Соответствие ролей и должностей
+    /// Описание ролей. Роли объединяют наборы действий: работа с документами, визирование, работа с бумагой, настройка справочников...  
+    /// Предустановленный роли имеют классификатор, для идентификации.
     /// </summary>
     [Authorize]
     public class AdminRolesController : ApiController
     {
         /// <summary>
-        /// GetAdminRoles
+        /// Возвращает списоок ролей
         /// </summary>
         /// <param name="filter">Filter parms</param>
         /// <returns>FrontAdminPositions</returns>
@@ -31,7 +32,7 @@ namespace DMS_WebAPI.Controllers.Admins
         }
 
         /// <summary>
-        /// GetAdminRoles by ID 
+        /// Возвращает роль
         /// </summary>
         /// <param name="id">Record Id</param>
         /// <returns>FrontAdminRole</returns>
@@ -44,7 +45,7 @@ namespace DMS_WebAPI.Controllers.Admins
         }
 
         /// <summary>
-        /// Add in GetAdminRoles
+        /// Добавляет новую роль. Роли нужно назначить действия AdminRoleActions.
         /// </summary>
         /// <param name="model">ModifyAdminRole</param>
         /// <returns>FrontAdminRole</returns>
@@ -57,7 +58,7 @@ namespace DMS_WebAPI.Controllers.Admins
         }
 
         /// <summary>
-        /// Chg in GetAdminRoles
+        /// Изменяет роль
         /// </summary>
         /// <param name="id">Record Id</param>
         /// <param name="model">ModifyAdminRole</param>
@@ -72,7 +73,7 @@ namespace DMS_WebAPI.Controllers.Admins
         }
 
         /// <summary>
-        /// Del in GetAdminRoles
+        /// Удаляет роль, отвязывает действия. Сами действия НЕ удаляются.
         /// </summary>
         /// <returns>FrontAdminRole</returns> 
         public IHttpActionResult Delete([FromUri] int id)

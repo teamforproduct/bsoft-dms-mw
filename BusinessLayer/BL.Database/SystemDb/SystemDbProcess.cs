@@ -658,7 +658,7 @@ namespace BL.Database.SystemDb
                 var res = qry2.ToList();
 
                 var qry3 = sendListsSet
-                    .Where(x => !x.IsInitial && !x.CloseEventId.HasValue && x.Document.IsLaunchPlan
+                    .Where(x => !x.IsInitial && !x.StartEventId.HasValue
                                 && !qry.Select(s => s.DocId).Contains(x.DocumentId))
                     .OrderBy(x => x.DocumentId)
                     .ThenBy(

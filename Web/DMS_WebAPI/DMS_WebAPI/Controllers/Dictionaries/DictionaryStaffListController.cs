@@ -8,31 +8,28 @@ using BL.Model.Enums;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.Common;
 
-namespace DMS_WebAPI.Controllers.D
+namespace DMS_WebAPI.Controllers.Dictionaries
 {
     /// <summary>
     /// Действия связанные с пользовательской настройкой системы
     /// </summary>
     [Authorize]
-    [RoutePrefix("api/v2/DictionaryActions")]
-    public class DictionaryActionsController : ApiController
+    public class DictionaryStaffListController : ApiController
     {
         /// <summary>
-        /// Список элементов меню, доступный пользователю
+        /// Возвращает штатное расписание. Компании -> Отделы -> Должности -> Исполнители
         /// </summary>
-        /// <returns>Меню</returns>
-        [Route("GetStaffList")]
-        [HttpGet]
-        public IHttpActionResult GetStaffList([FromUri] DictionaryBaseFilterParameters filter, [FromUri] StartWith startWith)
+        /// <param name="filter">Фильтрация элементов по названию</param>
+        /// <param name="startWith">Определяет с какого элемента построить дерево</param>
+        /// <returns></returns>
+        public IHttpActionResult Get([FromUri] FilterTree filter)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetStaffList(ctx, filter, startWith);
+            var tmpItems = tmpService.GetStaffList(ctx, filter);
             return new JsonResult(tmpItems, this);
         }
 
     }
 
-    
-  
 }

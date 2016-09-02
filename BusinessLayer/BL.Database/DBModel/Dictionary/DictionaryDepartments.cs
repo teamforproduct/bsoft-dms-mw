@@ -11,6 +11,7 @@ namespace BL.Database.DBModel.Dictionary
         public DictionaryDepartments()
         {
             this.ChildDepartments = new HashSet<DictionaryDepartments>();
+            this.Positions = new HashSet<DictionaryPositions>();
         }
 
         public int Id { get; set; }
@@ -39,6 +40,10 @@ namespace BL.Database.DBModel.Dictionary
         public virtual DictionaryPositions ChiefPosition { get; set; }
 
         public virtual ICollection<DictionaryDepartments> ChildDepartments { get; set; }
+        // Добавил Positions для выполнения субзапросов от DictionaryDepartments к DictionaryPositions. В DictionaryPositions это поле DepartmentId
+        [ForeignKey("DepartmentId")]
+        public virtual ICollection<DictionaryPositions> Positions { get; set; }
         //public virtual DictionaryPositions ChiefPosition { get; set; }
+
     }
 }

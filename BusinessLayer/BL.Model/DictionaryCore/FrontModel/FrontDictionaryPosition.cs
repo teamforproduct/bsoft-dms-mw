@@ -9,7 +9,7 @@ namespace BL.Model.DictionaryCore.FrontModel
     /// <summary>
     /// Карточка элемента из справочника "Штатное расписание". 
     /// </summary>
-    public class FrontDictionaryPosition : ModifyDictionaryPosition, ITreeItem
+    public class FrontDictionaryPosition : ModifyDictionaryPosition
     {
 
         /// <summary>
@@ -51,26 +51,6 @@ namespace BL.Model.DictionaryCore.FrontModel
         public virtual IEnumerable<FrontDictionaryPosition> ChildPositions { get; set; }
         public virtual IEnumerable<FrontDictionaryDepartment> ChiefDepartments { get; set; }
         public virtual IEnumerable<FrontDictionaryStandartSendList> StandartSendLists { get; set; }
-
-        #region ITreeItem
-
-        [IgnoreDataMember]
-        public int? ParentItemId
-        {
-           get { return DepartmentId; }
-        }
-
-        public int? ObjectId
-        {
-            get { return (int)EnumObjects.DictionaryPositions; }
-        }
-
-        [IgnoreDataMember]
-        public bool IsUsed { get; set; }
-
-        public IEnumerable<ITreeItem> Childs { get; set; }
-        
-        #endregion
 
     }
 }

@@ -12,13 +12,15 @@ using System.Collections.Generic;
 namespace DMS_WebAPI.Controllers.Admins
 {
     /// <summary>
-    /// Соответствие ролей и должностей
+    /// Описывает возможности должностей выполнять рассылку документов на другие должности
+    /// Рассылка бывает двух типов: для исполнения и для сведения
+    /// Этот функционал по умолчанию выключен для нового клиента, рассылка разрешена на все должности. 
     /// </summary>
     [Authorize]
     public class AdminSubordinationsController : ApiController
     {
         /// <summary>
-        /// GetAdminSubordinations
+        /// Возвращает список должностей на которых разрешена рассылка документов
         /// </summary>
         /// <param name="filter">Filter parms</param>
         /// <returns>FrontAdminPositions</returns>
@@ -44,7 +46,7 @@ namespace DMS_WebAPI.Controllers.Admins
         }
 
         /// <summary>
-        /// Add in GetAdminSubordinations
+        /// Разрешает должности выполнять рассылку на другую должность с учетом типа расслки
         /// </summary>
         /// <param name="model">ModifyAdminSubordination</param>
         /// <returns>FrontAdminSubordination</returns>
@@ -57,7 +59,7 @@ namespace DMS_WebAPI.Controllers.Admins
         }
 
         /// <summary>
-        /// Chg in GetAdminSubordinations
+        /// Изменяет возможность выполнения рассылки
         /// </summary>
         /// <param name="id">Record Id</param>
         /// <param name="model">ModifyAdminSubordination</param>
@@ -72,7 +74,7 @@ namespace DMS_WebAPI.Controllers.Admins
         }
 
         /// <summary>
-        /// Del in GetAdminSubordinations
+        /// Запрещает должности выполнять рассылку документов на другую должность
         /// </summary>
         /// <returns>FrontAdminSubordination</returns> 
         public IHttpActionResult Delete([FromUri] int id)

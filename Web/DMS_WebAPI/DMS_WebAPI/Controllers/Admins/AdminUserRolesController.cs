@@ -12,13 +12,14 @@ using System.Collections.Generic;
 namespace DMS_WebAPI.Controllers.Admins
 {
     /// <summary>
-    /// Соответствие ролей и должностей
+    /// Описывает список ролей, которые доступны конкретному сотруднику-пользователю.
+    /// При назначении сотрудника да должность роли, назначенные должности, передаются сотруднику (роли могут передаваться не в полном объеме - референт может не иметь права подписания)
     /// </summary>
     [Authorize]
     public class AdminUserRolesController : ApiController
     {
         /// <summary>
-        /// GetAdminUserRoles
+        /// Возвращает список ролей, которые доступны конкретному сотруднику-пользователю.
         /// </summary>
         /// <param name="filter">Filter parms</param>
         /// <returns>FrontAdminPositions</returns>
@@ -44,7 +45,7 @@ namespace DMS_WebAPI.Controllers.Admins
         }
 
         /// <summary>
-        /// Add in GetAdminUserRoles
+        /// Добавляет роль сотруднику-пользователю
         /// </summary>
         /// <param name="model">ModifyAdminUserRole</param>
         /// <returns>FrontAdminUserRole</returns>
@@ -57,7 +58,7 @@ namespace DMS_WebAPI.Controllers.Admins
         }
 
         /// <summary>
-        /// Chg in GetAdminUserRoles
+        /// Изменяет роль сотруднику-пользователю. Например, период исполнения роли
         /// </summary>
         /// <param name="id">Record Id</param>
         /// <param name="model">ModifyAdminUserRole</param>
@@ -72,7 +73,7 @@ namespace DMS_WebAPI.Controllers.Admins
         }
 
         /// <summary>
-        /// Del in GetAdminUserRoles
+        /// Отнимает роль у сотрудника-пользователя
         /// </summary>
         /// <returns>FrontAdminUserRole</returns> 
         public IHttpActionResult Delete([FromUri] int id)

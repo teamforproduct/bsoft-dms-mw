@@ -39,6 +39,8 @@ namespace BL.Model.DictionaryCore.InternalModel
             #region [+] AgentUser ...
             LanguageId = model.LanguageId;
             UserId = model.UserId;
+            Login = model.Login;
+            PasswordHash = model.PasswordHash;
             #endregion
 
         }
@@ -115,6 +117,16 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// Связь с WEB - USER
         /// </summary>
         public string UserId { get; set; }
+        
+        /// <summary>
+        /// Логин
+        /// </summary>
+        public string Login { get; set; }
+
+        /// <summary>
+        /// Пароль
+        /// </summary>
+        public string PasswordHash { get; set; }
 
         #endregion
 

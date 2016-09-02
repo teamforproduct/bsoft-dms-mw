@@ -6,15 +6,39 @@ using System.Threading.Tasks;
 
 namespace BL.Model.Common
 {
-    public interface ITreeItem: IListItem
+    /// <summary>
+    /// Контракт для построения деревьев
+    /// </summary>
+    public interface ITreeItem: IDictionaryItem
     {
-    
-        int? ParentItemId { get;  }
+        /// <summary>
+        /// Уникальный ключ элемента
+        /// </summary>
+        string TreeId { get; set; }
 
+        /// <summary>
+        /// Уникальный ключ родительского элемента
+        /// </summary>
+        string TreeParentId { get;  }
+
+        /// <summary>
+        /// Тип объекта для деревьев с разнородными сущностями. EnumSystemObject
+        /// </summary>
         int? ObjectId { get;  }
 
+        /// <summary>
+        /// Вспомагательный признак для ускорения построения дерева.
+        /// </summary>
         bool IsUsed { get; set; }
 
+        /// <summary>
+        /// Лист или группа. У листьев нет наследников
+        /// </summary>
+        bool IsList { get; set; }
+
+        /// <summary>
+        /// Список потомков, который формирует универсальная процедура построения дерева.
+        /// </summary>
         IEnumerable<ITreeItem> Childs { get; set; }
     }
 }

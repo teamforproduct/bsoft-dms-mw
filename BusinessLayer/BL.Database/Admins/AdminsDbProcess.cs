@@ -20,6 +20,7 @@ using System;
 using BL.Database.DBModel.Dictionary;
 using BL.Model.AdminCore.Actions;
 using BL.Model.Common;
+using System.Transactions;
 
 namespace BL.Database.Admins
 {
@@ -203,6 +204,45 @@ namespace BL.Database.Admins
         #endregion
 
         #region [+] Roles ...
+
+        public int AddRoleType(IContext context, InternalAdminRoleType model)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                AdminRoleTypes dbModel = AdminModelConverter.GetDbRoleType(context, model);
+                dbContext.AdminRolesTypesSet.Add(dbModel);
+                dbContext.SaveChanges();
+                model.Id = dbModel.Id;
+                return dbModel.Id;
+            }
+        }
+
+        public int AddNamedRole(IContext context, string code, string name, IEnumerable<InternalAdminRoleAction> roleActions)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                // Классификатор роли
+                var roleType = AddRoleType(context, new InternalAdminRoleType() { Code = code, Name = name });
+
+                // Новая роль со ссылкой на классификатор ролей.
+                var roleId = AddRole(context, new InternalAdminRole() { RoleTypeId = roleType, Name = name });
+
+                var ra = new List<AdminRoleActions>();
+
+                // Указание ид роли для предложенных действий
+                foreach (var item in roleActions)
+                {
+                    ra.Add(new AdminRoleActions() { ActionId = item.ActionId, RoleId = roleId });
+                }
+
+                // Запись списка соответствий роль-действие
+                dbContext.AdminRoleActionsSet.AddRange(ra);
+                dbContext.SaveChanges();
+
+                return roleId;
+            }
+        }
+
         public int AddRole(IContext context, InternalAdminRole model)
         {
             using (var dbContext = new DmsContext(context))
@@ -228,14 +268,19 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(context))
             {
-                var dbModel = dbContext.AdminRolesSet.FirstOrDefault(x => x.Id == model.Id);
-                //pss Все проверки и перехват исключений должны быть на уровне логики!!!
+                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
+                {
 
-                //if (dbModel != null)
-                //{
-                dbContext.AdminRolesSet.Remove(dbModel);
-                dbContext.SaveChanges();
-                //}
+                    IEnumerable<AdminRoleActions> roleActions = dbContext.AdminRoleActionsSet.Where(x => x.RoleId == model.Id).Select(x => new AdminRoleActions { Id = x.Id }).ToList(); ;
+                    dbContext.AdminRoleActionsSet.RemoveRange(roleActions);
+                    dbContext.SaveChanges();
+
+                    var dbModel = dbContext.AdminRolesSet.FirstOrDefault(x => x.Id == model.Id);
+                    dbContext.AdminRolesSet.Remove(dbModel);
+                    dbContext.SaveChanges();
+
+                    transaction.Complete();
+                }
             }
         }
 
@@ -948,45 +993,59 @@ namespace BL.Database.Admins
 
         #endregion
 
-        public IEnumerable<MenuItem> GetMainMenu(IContext context)
+        #region [+] MainMenu ...
+        public IEnumerable<TreeItem> GetMainMenu(IContext context)
         {
 
-            MenuItem itemDictDMS = new MenuItem { Id = 20, ParentItemId = 4, Name = "Документооборот" };
+            TreeItem itemDictDMS = new TreeItem { Id = 20, Name = "Документооборот" };
 
             itemDictDMS.Childs = new List<ITreeItem> {
-                            new MenuItem { Id = 30, ParentItemId = 20, Name = "Типы документов", InterfaceName = "document-types" },
-                            new MenuItem { Id = 31, ParentItemId = 20, Name = "Журналы регистрации", InterfaceName = "journals" },
-                            new MenuItem { Id = 32, ParentItemId = 20, Name = "Тематики документов", InterfaceName = "" },
-                            new MenuItem { Id = 33, ParentItemId = 20, Name = "Шаблоны документов", InterfaceName = "" },
+                            new TreeItem { Id = 30, Name = "Типы документов", Description = "document-types" },
+                            new TreeItem { Id = 31, Name = "Журналы регистрации", Description = "journals" },
+                            new TreeItem { Id = 32, Name = "Тематики документов", Description = "" },
+                            new TreeItem { Id = 33, Name = "Шаблоны документов", Description = "" },
                             };
 
-            MenuItem itemDict = new MenuItem { Id = 4, Name = "Справочники" };
+            TreeItem itemDict = new TreeItem { Id = 4, Name = "Справочники" };
 
             itemDict.Childs = new List<ITreeItem> {
                 itemDictDMS,
-                new MenuItem { Id = 22, ParentItemId = 4, Name = "Физлица", InterfaceName = "agent-persons" },
-                new MenuItem { Id = 23, ParentItemId = 4, Name = "Банки", InterfaceName = "agent-banks" },
-                new MenuItem { Id = 24, ParentItemId = 4, Name = "Юрлица", InterfaceName = "agent-companies" },
-                new MenuItem { Id = 25, ParentItemId = 4, Name = "-" },
-                new MenuItem { Id = 26, ParentItemId = 4, Name = "Теги", InterfaceName = "tags" },
-                new MenuItem { Id = 27, ParentItemId = 4, Name = "Клиентские справочники", InterfaceName = "" }
+                new TreeItem { Id = 22, Name = "Физлица", Description = "agent-persons" },
+                new TreeItem { Id = 23, Name = "Банки", Description = "agent-banks" },
+                new TreeItem { Id = 24, Name = "Юрлица", Description = "agent-companies" },
+                new TreeItem { Id = 25, Name = "-" },
+                new TreeItem { Id = 26, Name = "Теги", Description = "tags" },
+                new TreeItem { Id = 27, Name = "Клиентские справочники", Description = "" }
             };
 
-            List<MenuItem> menus = new List<MenuItem> {
-                    new MenuItem {Id = 1, Name = "Сотрудники", InterfaceName = "agent-employees"},
-                    new MenuItem {Id = 2, Name = "Роли"},
-                    new MenuItem {Id = 3, Name = "Структура"},
+            List<TreeItem> menus = new List<TreeItem> {
+                    new TreeItem {Id = 1, Name = "Сотрудники", Description = "agent-employees"},
+                    new TreeItem {Id = 2, Name = "Роли"},
+                    new TreeItem {Id = 3, Name = "Структура"},
                     itemDict,
-                    new MenuItem {Id = 5, Name = "Документы", InterfaceName = "docs"},
-                    new MenuItem {Id = 6, Name = "События", InterfaceName = "events"},
-                    new MenuItem {Id = 7, Name = "Файлы", InterfaceName = "attachments"},
-                    new MenuItem {Id = 8, Name = "Ожидания", InterfaceName = "documentWaits"}
+                    new TreeItem {Id = 5, Name = "Документы", Description = "docs"},
+                    new TreeItem {Id = 6, Name = "События", Description = "events"},
+                    new TreeItem {Id = 7, Name = "Файлы", Description = "attachments"},
+                    new TreeItem {Id = 8, Name = "Ожидания", Description = "documentWaits"}
             };
 
             return menus;
         }
 
-        
+        #endregion
 
+        #region [+] AddNewClient ...
+
+        public List<InternalAdminRoleAction> GetRoleActionsForAdmin(IContext context)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                return dbContext.SystemActionsSet.Select(x => new InternalAdminRoleAction { ActionId = x.Id }).ToList();
+            }
+        }
+
+        #endregion
     }
 }
+
+

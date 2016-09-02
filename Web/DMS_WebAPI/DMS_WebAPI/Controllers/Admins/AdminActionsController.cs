@@ -30,9 +30,24 @@ namespace DMS_WebAPI.Controllers.Admins
             return new JsonResult(tmpItems, this);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        //[Route("AddNewClient")]
+        //[HttpPost]
+        //public IHttpActionResult AddNewClient([FromBody]AddClient model)
+        //{
+        //    var cxt = DmsResolver.Current.Get<UserContext>().Get();
+        //    var tmpService = DmsResolver.Current.Get<IAdminService>();
+        //    var tmpItem = tmpService.ExecuteAction(EnumAdminActions.AddRole, cxt, model);
+        //    return Get((int)tmpItem);
+        //}
+
     }
 
-    
+
     // Добавить пользователя-сотрудника
     // Добавить администратора подразделения (AgentId, DepartmentId)
     // Удалить администратора подразделения (AgentId, DepartmentId)

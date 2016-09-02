@@ -55,7 +55,7 @@ namespace BL.Logic.AdminCore.Interfaces
         #endregion
 
         #region [+] MainMenu ...
-        IEnumerable<MenuItem> GetAdminMainMenu(IContext context);
+        IEnumerable<TreeItem> GetAdminMainMenu(IContext context);
         #endregion
     }
 }
