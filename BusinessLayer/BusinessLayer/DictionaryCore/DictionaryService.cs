@@ -404,6 +404,7 @@ namespace BL.Logic.DictionaryCore
                         .OrderByDescending(x => x.Rate);
                 if (resWithRanges.Any())
                 {
+                    newFilter.IDs = new List<int>();
                     newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId).Take(paging.PageSize*paging.CurrentPage));
                 }
                 else
@@ -413,7 +414,7 @@ namespace BL.Logic.DictionaryCore
             }
             else
             {
-                newFilter.IDs = new List<int>();
+                
                 newFilter = filter;
             }
 
