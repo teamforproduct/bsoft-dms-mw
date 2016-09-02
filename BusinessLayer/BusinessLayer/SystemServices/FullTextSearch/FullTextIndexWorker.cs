@@ -163,13 +163,14 @@ namespace BL.Logic.SystemServices.FullTextSearch
             var parser = new QueryParser(Version.LUCENE_30, FIELD_BODY, _analyzer);
 
             var conditionQry = parser.Parse(text);
-            var idQry = new TermQuery(new Term(FIELD_DOC_ID, "0"));
+            //var idQry = new TermQuery(new Term(FIELD_DOC_ID, "0"));
+            var idQry = NumericRangeQuery.NewIntRange(FIELD_DOC_ID, 0, 0, true, true);
             var clientQry = new TermQuery(new Term(FIELD_CLIENT_ID, clientId.ToString()));
             var query = conditionQry.Combine(new Query[] { conditionQry, idQry, clientQry });
             var qryRes = _searcher.Search(query, MAX_DOCUMENT_COUNT_RETURN);
             var searchResult = new List<FullTextSearchResult>();
 
-            foreach (var doc in qryRes.ScoreDocs.OrderByDescending(x => x.Score))
+            foreach (var doc in qryRes.ScoreDocs.Where(x => x.Score > 0.1).OrderByDescending(x => x.Score))
             {
                 try
                 {
