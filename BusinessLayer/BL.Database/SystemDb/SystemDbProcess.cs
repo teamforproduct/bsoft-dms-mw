@@ -870,7 +870,7 @@ namespace BL.Database.SystemDb
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
-                    ObjectText = x.Index + " " + x.Name + " " + x.Department.FullName
+                    ObjectText = x.Index + " " + x.Name + " " + x.Department.FullName + " " + x.Department.Name
                 }).ToList());
 
                 res.AddRange(dbContext.DictionaryDepartmentsSet.Where(x => x.Company.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
@@ -1540,7 +1540,7 @@ namespace BL.Database.SystemDb
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
-                        ObjectText = x.doc.Index + " " + x.doc.Name + " " + x.doc.Department.FullName
+                        ObjectText = x.doc.Index + " " + x.doc.Name + " " + x.doc.Department.FullName + " " + x.doc.Department.Name
                     }).ToList());
                 }
 
