@@ -160,7 +160,8 @@ namespace BL.Database.Dictionaries
                     //filterContains = filter.IDs.Aggregate(filterContains,
                     //    (current, value) => current.Or(e => e.Id == value).Expand());
 
-                    qry = qry.Where(filterContains);
+                    //qry = qry.Where(filterContains);
+                    qry = qry.Where(x => filter.IDs.Contains(x.Id));
                 }
 
                 // Исключение списка первичных ключей
