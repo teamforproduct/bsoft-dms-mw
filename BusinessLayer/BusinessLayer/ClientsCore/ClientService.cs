@@ -55,6 +55,8 @@ namespace BL.Logic.ClientCore
             var emailContactType = _DictDb.AddContactType(context, new InternalDictionaryContactType() { Code = "ЛМ", Name = "Личный адрес", InputMask = "", IsActive = true });
             _DictDb.AddContactType(context, new InternalDictionaryContactType() { Code = "РМ", Name = "Рабочий адрес", InputMask = "", IsActive = true });
             _DictDb.AddContactType(context, new InternalDictionaryContactType() { Code = "П", Name = "Пейждер", InputMask = "", IsActive = true });
+            _DictDb.AddContactType(context, new InternalDictionaryContactType() { Code = "Skype", Name = "Skype", InputMask = "", IsActive = true });
+            _DictDb.AddContactType(context, new InternalDictionaryContactType() { Code = "ICQ", Name = "ICQ", InputMask = "", IsActive = true });
             _DictDb.AddContactType(context, new InternalDictionaryContactType() { Code = "Др", Name = "Другой", InputMask = "", IsActive = true });
             _DictDb.AddContactType(context, new InternalDictionaryContactType() { Code = "MVPN", Name = "MVPN", InputMask = "", IsActive = true });
 

@@ -30,6 +30,14 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             return new JsonResult(tmpItems, this);
         }
 
+        public IHttpActionResult Post()
+        {
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            tmpService.AddStaffList(ctx);
+            return new JsonResult(new { success = true, msg = "Еще 10 000 ведер и золотой ключик наш" } , this);
+        }
+
     }
 
 }

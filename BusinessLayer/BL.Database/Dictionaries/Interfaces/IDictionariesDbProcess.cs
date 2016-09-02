@@ -290,7 +290,10 @@ namespace BL.Database.Dictionaries.Interfaces
         IEnumerable<FrontCustomDictionary> GetCustomDictionaries(IContext context, FilterCustomDictionary filter);
         #endregion CustomDictionaries
 
-
+        #region [+] StaffList ...
         IEnumerable<ITreeItem> GetStaffList(IContext context, FilterTree filter);
+
+        void AddStaffList(IContext context);
+        #endregion
     }
 }

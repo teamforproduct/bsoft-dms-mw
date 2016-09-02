@@ -5377,8 +5377,6 @@ namespace BL.Database.Dictionaries
         public IEnumerable<ITreeItem> GetStaffList(IContext context, FilterTree filter)
         {
 
-            AddStaffList(context);
-
             var executors = GetPositionExecutorsForTree(context, new FilterDictionaryPositionExecutor()
             {
                 Period = new Period(DateTime.Now.StartOfDay(), DateTime.Now.EndOfDay()),
@@ -5460,32 +5458,49 @@ namespace BL.Database.Dictionaries
             for (int c = 1; c <= 10; c++)
             {
                 int compID = AddAgentClientCompany(context, new InternalDictionaryAgentClientCompany()
-                { Name = string.Concat("Компания №", c.ToString()), IsActive = true });
+                { Name = string.Concat("Компания №", c.ToString()), IsActive = true, LastChangeDate = DateTime.Now, LastChangeUserId = context.CurrentAgentId });
 
                 for (int d = 1; d <= 100; d++)
                 {
                     int? depParId = null;
 
                     int depId = AddDepartment(context, new InternalDictionaryDepartment()
-                    {Name = string.Concat("Отдел №", d.ToString()), IsActive = true, CompanyId = compID, ParentId = depParId });
+                    {Name = string.Concat("Отдел №", d.ToString()), IsActive = true, CompanyId = compID, ParentId = depParId,
+                    LastChangeDate = DateTime.Now,                        LastChangeUserId = context.CurrentAgentId
+                    });
 
                     if ( d == 20 || d==50 || d==65 || d==93 ) depParId = depId;
 
                    
                     int posId = AddPosition(context, new InternalDictionaryPosition()
-                    {Name = "Начальник отдела", FullName = "Руководитель отдела", IsActive = true, DepartmentId = depId, Order = 1 });
+                    {Name = "Начальник отдела", FullName = "Руководитель отдела", IsActive = true, DepartmentId = depId, Order = 1,
+                        LastChangeDate = DateTime.Now,
+                        LastChangeUserId = context.CurrentAgentId
+                    });
 
                     posId = AddPosition(context, new InternalDictionaryPosition()
-                    { Name = "Менеджер по работе с клиентами", FullName = "Менеджер по работе с клиентами", IsActive = true, DepartmentId = depId, Order = 2 });
+                    { Name = "Менеджер по работе с клиентами", FullName = "Менеджер по работе с клиентами", IsActive = true, DepartmentId = depId, Order = 2,
+                        LastChangeDate = DateTime.Now,
+                        LastChangeUserId = context.CurrentAgentId
+                    });
 
                     posId = AddPosition(context, new InternalDictionaryPosition()
-                    { Name = "Менеджер по IT и дизайну", FullName = "Менеджер по IT и дизайну", IsActive = true, DepartmentId = depId, Order = 3 });
+                    { Name = "Менеджер по IT и дизайну", FullName = "Менеджер по IT и дизайну", IsActive = true, DepartmentId = depId, Order = 3 ,
+                        LastChangeDate = DateTime.Now,
+                        LastChangeUserId = context.CurrentAgentId
+                    });
 
                     posId = AddPosition(context, new InternalDictionaryPosition()
-                    { Name = "Менеджер по продажам", FullName = "Менеджер по продажам", IsActive = true, DepartmentId = depId, Order = 4 });
+                    { Name = "Менеджер по продажам", FullName = "Менеджер по продажам", IsActive = true, DepartmentId = depId, Order = 4 ,
+                        LastChangeDate = DateTime.Now,
+                        LastChangeUserId = context.CurrentAgentId
+                    });
 
                     posId = AddPosition(context, new InternalDictionaryPosition()
-                    { Name = "Рабочий", FullName = "Рабочий", IsActive = true, DepartmentId = depId, Order = 5 });
+                    { Name = "Рабочий", FullName = "Рабочий", IsActive = true, DepartmentId = depId, Order = 5,
+                        LastChangeDate = DateTime.Now,
+                        LastChangeUserId = context.CurrentAgentId
+                    });
 
 
                 }

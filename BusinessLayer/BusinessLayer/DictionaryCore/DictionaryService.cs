@@ -873,5 +873,10 @@ namespace BL.Logic.DictionaryCore
         {
             return _dictDb.GetStaffList(context, filter);
         }
+
+        public void AddStaffList(IContext context)
+        {
+            _dictDb.AddStaffList(context);
+        }
     }
 }

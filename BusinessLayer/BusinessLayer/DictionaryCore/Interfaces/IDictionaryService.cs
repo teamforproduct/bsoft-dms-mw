@@ -220,7 +220,9 @@ namespace BL.Logic.DictionaryCore.Interfaces
         FrontCustomDictionary GetCustomDictionary(IContext context, int id);
         #endregion CustomDictionaries
 
+        #region [+] StaffList ...
         IEnumerable<ITreeItem> GetStaffList(IContext context, FilterTree filter);
-
+        void AddStaffList(IContext context);
+        #endregion
     }
 }
