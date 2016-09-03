@@ -22,6 +22,7 @@ using System.Data.Entity.SqlServer;
 using BL.Model.Common;
 using System.Transactions;
 using BL.Model.AdminCore.Clients;
+using BL.Model.Tree;
 
 namespace BL.Database.Dictionaries
 {
@@ -327,21 +328,19 @@ namespace BL.Database.Dictionaries
             {
 
                 var ddt = dbContext.DictionaryAgentsSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == agentId);
-                if (ddt != null)
-                {
-                    dbContext.DictionaryAgentAddressesSet.RemoveRange(
-                    dbContext.DictionaryAgentAddressesSet.Where(x => x.Agent.ClientId == context.CurrentClientId).Where(x => x.AgentId == agentId)
-                    );
-                    dbContext.DictionaryAgentContactsSet.RemoveRange(
-                    dbContext.DictionaryAgentContactsSet.Where(x => x.Agent.ClientId == context.CurrentClientId).Where(x => x.AgentId == agentId)
-                    );
-                    dbContext.DictionaryAgentAccountsSet.RemoveRange(
-                    dbContext.DictionaryAgentAccountsSet.Where(x => x.Agent.ClientId == context.CurrentClientId).Where(x => x.AgentId == agentId)
-                    );
-                    dbContext.DictionaryAgentsSet.Remove(ddt);
-                    CommonQueries.AddFullTextCashInfo(dbContext, agentId, EnumObjects.DictionaryAgents, EnumOperationType.Delete);
-                    dbContext.SaveChanges();
-                }
+
+                dbContext.DictionaryAgentAddressesSet.RemoveRange(
+                dbContext.DictionaryAgentAddressesSet.Where(x => x.Agent.ClientId == context.CurrentClientId).Where(x => x.AgentId == agentId)
+                );
+                dbContext.DictionaryAgentContactsSet.RemoveRange(
+                dbContext.DictionaryAgentContactsSet.Where(x => x.Agent.ClientId == context.CurrentClientId).Where(x => x.AgentId == agentId)
+                );
+                dbContext.DictionaryAgentAccountsSet.RemoveRange(
+                dbContext.DictionaryAgentAccountsSet.Where(x => x.Agent.ClientId == context.CurrentClientId).Where(x => x.AgentId == agentId)
+                );
+                dbContext.DictionaryAgentsSet.Remove(ddt);
+                CommonQueries.AddFullTextCashInfo(dbContext, agentId, EnumObjects.DictionaryAgents, EnumOperationType.Delete);
+                dbContext.SaveChanges();
             }
         }
 
@@ -508,10 +507,10 @@ namespace BL.Database.Dictionaries
 
                     //qry = qry.Where(filterContains);
 
-                    
-                    
-                        qry = qry.Where(x => filter.IDs.Contains(x.Id));
-                    
+
+
+                    qry = qry.Where(x => filter.IDs.Contains(x.Id));
+
 
 
                 }
@@ -826,7 +825,7 @@ namespace BL.Database.Dictionaries
                     //filterContains = filter.IDs.Aggregate(filterContains,
                     //    (current, value) => current.Or(e => e.Id == value).Expand());
 
-//                    qry = qry.Where(filterContains);
+                    //                    qry = qry.Where(filterContains);
                     qry = qry.Where(x => filter.IDs.Contains(x.Id));
                 }
 
@@ -1087,12 +1086,9 @@ namespace BL.Database.Dictionaries
             {
 
                 var ddt = dbContext.DictionaryAgentAddressesSet.Where(x => x.Agent.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == addr.Id);
-                if (ddt != null)
-                {
-                    dbContext.DictionaryAgentAddressesSet.Remove(ddt);
-                    CommonQueries.AddFullTextCashInfo(dbContext, ddt.Id, EnumObjects.DictionaryAgentAddresses, EnumOperationType.Delete);
-                    dbContext.SaveChanges();
-                }
+                dbContext.DictionaryAgentAddressesSet.Remove(ddt);
+                CommonQueries.AddFullTextCashInfo(dbContext, ddt.Id, EnumObjects.DictionaryAgentAddresses, EnumOperationType.Delete);
+                dbContext.SaveChanges();
             }
         }
 
@@ -1236,12 +1232,9 @@ namespace BL.Database.Dictionaries
             {
 
                 var ddt = dbContext.DictionaryAddressTypesSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == addrType.Id);
-                if (ddt != null)
-                {
-                    dbContext.DictionaryAddressTypesSet.Remove(ddt);
-                    CommonQueries.AddFullTextCashInfo(dbContext, ddt.Id, EnumObjects.DictionaryAddressType, EnumOperationType.Delete);
-                    dbContext.SaveChanges();
-                }
+                dbContext.DictionaryAddressTypesSet.Remove(ddt);
+                CommonQueries.AddFullTextCashInfo(dbContext, ddt.Id, EnumObjects.DictionaryAddressType, EnumOperationType.Delete);
+                dbContext.SaveChanges();
             }
         }
 
@@ -1363,7 +1356,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        
+
 
         public void UpdateAgentClientCompany(IContext context, InternalDictionaryAgentClientCompany company)
         {
@@ -1453,7 +1446,7 @@ namespace BL.Database.Dictionaries
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = string.Empty,
                     IsActive = x.IsActive,
-                    IsList = false
+                    IsList = !(x.Departments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any())
                 }).ToList();
             }
         }
@@ -1974,11 +1967,11 @@ namespace BL.Database.Dictionaries
                 // Список первичных ключей
                 if (filter.IDs?.Count > 0)
                 {
-                   // var filterContains = PredicateBuilder.False<DictionaryAgentBanks>();
-                   // filterContains = filter.IDs.Aggregate(filterContains,
-                   //     (current, value) => current.Or(e => e.Id == value).Expand());
+                    // var filterContains = PredicateBuilder.False<DictionaryAgentBanks>();
+                    // filterContains = filter.IDs.Aggregate(filterContains,
+                    //     (current, value) => current.Or(e => e.Id == value).Expand());
 
-                   // qry = qry.Where(filterContains);
+                    // qry = qry.Where(filterContains);
                     qry = qry.Where(x => filter.IDs.Contains(x.Id));
                 }
 
@@ -2174,12 +2167,10 @@ namespace BL.Database.Dictionaries
             {
 
                 var dbModel = dbContext.DictionaryAgentAccountsSet.Where(x => x.Agent.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == account.Id);
-                if (dbModel != null)
-                {
-                    dbContext.DictionaryAgentAccountsSet.Remove(dbModel);
-                    CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAgentAccounts, EnumOperationType.Delete);
-                    dbContext.SaveChanges();
-                }
+                dbContext.DictionaryAgentAccountsSet.Remove(dbModel);
+                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAgentAccounts, EnumOperationType.Delete);
+                dbContext.SaveChanges();
+
             }
         }
 
@@ -2344,12 +2335,9 @@ namespace BL.Database.Dictionaries
             {
 
                 var ddt = dbContext.DictionaryContactTypesSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == contactType.Id);
-                if (ddt != null)
-                {
-                    dbContext.DictionaryContactTypesSet.Remove(ddt);
-                    CommonQueries.AddFullTextCashInfo(dbContext, ddt.Id, EnumObjects.DictionaryContactType, EnumOperationType.Delete);
-                    dbContext.SaveChanges();
-                }
+                dbContext.DictionaryContactTypesSet.Remove(ddt);
+                CommonQueries.AddFullTextCashInfo(dbContext, ddt.Id, EnumObjects.DictionaryContactType, EnumOperationType.Delete);
+                dbContext.SaveChanges();
             }
         }
         public int AddContactType(IContext context, InternalDictionaryContactType model)
@@ -2458,12 +2446,9 @@ namespace BL.Database.Dictionaries
             {
 
                 var ddt = dbContext.DictionaryAgentContactsSet.Where(x => x.Agent.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == contact.Id);
-                if (ddt != null)
-                {
-                    dbContext.DictionaryAgentContactsSet.Remove(ddt);
-                    CommonQueries.AddFullTextCashInfo(dbContext, ddt.Id, EnumObjects.DictionaryContacts, EnumOperationType.Delete);
-                    dbContext.SaveChanges();
-                }
+                dbContext.DictionaryAgentContactsSet.Remove(ddt);
+                CommonQueries.AddFullTextCashInfo(dbContext, ddt.Id, EnumObjects.DictionaryContacts, EnumOperationType.Delete);
+                dbContext.SaveChanges();
             }
         }
 
@@ -2617,12 +2602,9 @@ namespace BL.Database.Dictionaries
             using (var dbContext = new DmsContext(context))
             {
                 var dd = dbContext.DictionaryDepartmentsSet.Where(x => x.Company.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == department.Id);
-                if (dd != null)
-                {
-                    dbContext.DictionaryDepartmentsSet.Remove(dd);
-                    CommonQueries.AddFullTextCashInfo(dbContext, dd.Id, EnumObjects.DictionaryDepartments, EnumOperationType.Delete);
-                    dbContext.SaveChanges();
-                }
+                dbContext.DictionaryDepartmentsSet.Remove(dd);
+                CommonQueries.AddFullTextCashInfo(dbContext, dd.Id, EnumObjects.DictionaryDepartments, EnumOperationType.Delete);
+                dbContext.SaveChanges();
             }
         }
 
@@ -2682,17 +2664,17 @@ namespace BL.Database.Dictionaries
                 var qry = GetPositionExecutorsQuery(context, dbContext, filter);
 
                 var objId = ((int)EnumObjects.DictionaryDepartments).ToString();
-                var companyObjId =((int)EnumObjects.DictionaryAgentClientCompanies).ToString();
+                var companyObjId = ((int)EnumObjects.DictionaryAgentClientCompanies).ToString();
 
                 return qry.Select(x => new TreeItem
                 {
                     Id = x.Id,
-                    Name = string.Concat(x.Code," ", x.Name),
+                    Name = string.Concat(x.Code, " ", x.Name),
                     ObjectId = (int)EnumObjects.DictionaryDepartments,
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
-                    TreeParentId = (x.ParentId == null) ? string.Concat(x.CompanyId,"_", companyObjId) : string.Concat(x.ParentId, "_", objId),
+                    TreeParentId = (x.ParentId == null) ? string.Concat(x.CompanyId, "_", companyObjId) : string.Concat(x.ParentId, "_", objId),
                     IsActive = x.IsActive,
-                    IsList = false
+                    IsList = !(x.ChildDepartments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any() || x.Positions.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any())
                 }).ToList();
             }
         }
@@ -2703,7 +2685,7 @@ namespace BL.Database.Dictionaries
 
             qry = DepartmentGetWhere(ref qry, filter);
 
-            qry = qry.OrderBy(x => x.Name);
+            qry = qry.OrderBy(x => x.Code).ThenBy(x => x.Name);
 
             return qry;
         }
@@ -2915,12 +2897,9 @@ namespace BL.Database.Dictionaries
             using (var dbContext = new DmsContext(context))
             {
                 var ddt = dbContext.DictionaryDocumentSubjectsSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == docSubject.Id);
-                if (ddt != null)
-                {
-                    dbContext.DictionaryDocumentSubjectsSet.Remove(ddt);
-                    CommonQueries.AddFullTextCashInfo(dbContext, ddt.Id, EnumObjects.DictionaryDocumentSubjects, EnumOperationType.Delete);
-                    dbContext.SaveChanges();
-                }
+                dbContext.DictionaryDocumentSubjectsSet.Remove(ddt);
+                CommonQueries.AddFullTextCashInfo(dbContext, ddt.Id, EnumObjects.DictionaryDocumentSubjects, EnumOperationType.Delete);
+                dbContext.SaveChanges();
             }
         }
 
@@ -3081,12 +3060,9 @@ namespace BL.Database.Dictionaries
             {
 
                 var ddt = dbContext.DictionaryDocumentTypesSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == docType.Id);
-                if (ddt != null)
-                {
-                    dbContext.DictionaryDocumentTypesSet.Remove(ddt);
-                    CommonQueries.AddFullTextCashInfo(dbContext, ddt.Id, EnumObjects.DictionaryDocumentType, EnumOperationType.Delete);
-                    dbContext.SaveChanges();
-                }
+                dbContext.DictionaryDocumentTypesSet.Remove(ddt);
+                CommonQueries.AddFullTextCashInfo(dbContext, ddt.Id, EnumObjects.DictionaryDocumentType, EnumOperationType.Delete);
+                dbContext.SaveChanges();
             }
         }
 
@@ -3443,12 +3419,9 @@ namespace BL.Database.Dictionaries
             using (var dbContext = new DmsContext(context))
             {
                 var dp = dbContext.DictionaryPositionsSet.Where(x => x.Department.Company.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == position.Id);
-                if (dp != null)
-                {
-                    dbContext.DictionaryPositionsSet.Remove(dp);
-                    CommonQueries.AddFullTextCashInfo(dbContext, dp.Id, EnumObjects.DictionaryPositions, EnumOperationType.Delete);
-                    dbContext.SaveChanges();
-                }
+                dbContext.DictionaryPositionsSet.Remove(dp);
+                CommonQueries.AddFullTextCashInfo(dbContext, dp.Id, EnumObjects.DictionaryPositions, EnumOperationType.Delete);
+                dbContext.SaveChanges();
             }
         }
 
@@ -3576,7 +3549,7 @@ namespace BL.Database.Dictionaries
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = x.DepartmentId.ToString() + "_" + parObjId,
                     IsActive = x.IsActive,
-                    IsList = false
+                    IsList = !(x.PositionExecutors.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any())// || x.ChildPositions.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any())
                 }).ToList();
             }
         }
@@ -3858,12 +3831,9 @@ namespace BL.Database.Dictionaries
             using (var dbContext = new DmsContext(context))
             {
                 var drj = dbContext.DictionaryPositionExecutorsSet.FirstOrDefault(x => x.Id == docSubject.Id);
-                if (drj != null)
-                {
-                    dbContext.DictionaryPositionExecutorsSet.Remove(drj);
-                    CommonQueries.AddFullTextCashInfo(dbContext, drj.Id, EnumObjects.DictionaryPositionExecutors, EnumOperationType.Delete);
-                    dbContext.SaveChanges();
-                }
+                dbContext.DictionaryPositionExecutorsSet.Remove(drj);
+                CommonQueries.AddFullTextCashInfo(dbContext, drj.Id, EnumObjects.DictionaryPositionExecutors, EnumOperationType.Delete);
+                dbContext.SaveChanges();
             }
         }
 
@@ -3934,7 +3904,7 @@ namespace BL.Database.Dictionaries
                     Id = x.Id,
                     Name = x.Agent.Name,
                     ObjectId = (int)EnumObjects.DictionaryPositionExecutors,
-                    TreeId = string.Concat(x.Id.ToString() , "_" , objId),
+                    TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = x.PositionId.ToString() + "_" + parObjId,
                     IsActive = x.IsActive,
                     IsList = true
@@ -4134,12 +4104,9 @@ namespace BL.Database.Dictionaries
             using (var dbContext = new DmsContext(context))
             {
                 var drj = dbContext.DictionaryRegistrationJournalsSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == docSubject.Id);
-                if (drj != null)
-                {
-                    dbContext.DictionaryRegistrationJournalsSet.Remove(drj);
-                    CommonQueries.AddFullTextCashInfo(dbContext, drj.Id, EnumObjects.DictionaryRegistrationJournals, EnumOperationType.Delete);
-                    dbContext.SaveChanges();
-                }
+                dbContext.DictionaryRegistrationJournalsSet.Remove(drj);
+                CommonQueries.AddFullTextCashInfo(dbContext, drj.Id, EnumObjects.DictionaryRegistrationJournals, EnumOperationType.Delete);
+                dbContext.SaveChanges();
             }
         }
 
@@ -4595,9 +4562,7 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context))
             {
-
                 var ddt = dbContext.DictionaryStandartSendListContentsSet.Where(x => x.StandartSendList.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == content.Id);
-                if (ddt == null) return;
                 dbContext.DictionaryStandartSendListContentsSet.Remove(ddt);
                 CommonQueries.AddFullTextCashInfo(dbContext, ddt.Id, EnumObjects.DictionaryStandartSendListContent, EnumOperationType.Delete);
                 dbContext.SaveChanges();
@@ -4770,7 +4735,6 @@ namespace BL.Database.Dictionaries
             {
 
                 var ddt = dbContext.DictionaryStandartSendListsSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == list.Id);
-                if (ddt == null) return;
                 dbContext.DictionaryStandartSendListsSet.Remove(ddt);
                 CommonQueries.AddFullTextCashInfo(dbContext, ddt.Id, EnumObjects.DictionaryStandartSendLists, EnumOperationType.Delete);
                 dbContext.SaveChanges();
@@ -5005,11 +4969,8 @@ namespace BL.Database.Dictionaries
             {
 
                 var item = dbContext.DictionaryTagsSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == model.Id);
-                if (item != null)
-                {
-                    dbContext.DictionaryTagsSet.Remove(item);
-                    dbContext.SaveChanges();
-                }
+                dbContext.DictionaryTagsSet.Remove(item);
+                dbContext.SaveChanges();
             }
         }
 
@@ -5094,12 +5055,9 @@ namespace BL.Database.Dictionaries
             using (var dbContext = new DmsContext(context))
             {
                 var item = dbContext.CustomDictionaryTypesSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == id);
-                if (item != null)
-                {
-                    dbContext.CustomDictionariesSet.RemoveRange(item.CustomDictionaries);
-                    dbContext.CustomDictionaryTypesSet.Remove(item);
-                    dbContext.SaveChanges();
-                }
+                dbContext.CustomDictionariesSet.RemoveRange(item.CustomDictionaries);
+                dbContext.CustomDictionaryTypesSet.Remove(item);
+                dbContext.SaveChanges();
             }
         }
 
@@ -5250,11 +5208,8 @@ namespace BL.Database.Dictionaries
             using (var dbContext = new DmsContext(context))
             {
                 var item = dbContext.CustomDictionariesSet.Where(x => x.CustomDictionaryType.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == id);
-                if (item != null)
-                {
-                    dbContext.CustomDictionariesSet.Remove(item);
-                    dbContext.SaveChanges();
-                }
+                dbContext.CustomDictionariesSet.Remove(item);
+                dbContext.SaveChanges();
             }
         }
 
@@ -5373,141 +5328,9 @@ namespace BL.Database.Dictionaries
 
         #endregion CustomDictionaries
 
+        
 
-        public IEnumerable<ITreeItem> GetStaffList(IContext context, FilterTree filter)
-        {
-
-            var executors = GetPositionExecutorsForTree(context, new FilterDictionaryPositionExecutor()
-            {
-                Period = new Period(DateTime.Now.StartOfDay(), DateTime.Now.EndOfDay()),
-                IsActive = filter.IsActive,
-                Name = filter.Name 
-            });
-
-            var positions = GetPositionsForTree(context, new FilterDictionaryPosition()
-            {
-                IsActive = filter.IsActive,
-                Name = filter.Name
-            });
-
-            var departments = GetDepartmentsForTree(context, new FilterDictionaryDepartment()
-            {
-                IsActive = filter.IsActive,
-                Name = filter.Name
-            }
-            );
-
-            var companies = GetAgentClientCompaniesForTree(context, new FilterDictionaryAgentClientCompany()
-            {
-                IsActive = filter.IsActive,
-                Name = filter.Name
-            }
-            );
-
-            List<TreeItem> flatList = new List<TreeItem>();
-
-            flatList.AddRange(departments);
-            flatList.AddRange(positions);
-            flatList.AddRange(executors);
-            flatList.AddRange(companies);
-
-            var res = GetTree(flatList, filter);
-
-            return res;//.SelectRecursive(c => companies);
-        }
-
-        private IEnumerable<ITreeItem> GetTree(IEnumerable<ITreeItem> flatList, FilterTree filter)
-        {
-            var list = new List<ITreeItem>();
-
-            if (flatList != null)
-            {
-                foreach (var item in flatList)
-                    if (IsNeighbourItem(item, filter))
-                    {
-                        item.IsUsed = true;
-                        list.Add(item);
-                        item.Childs = GetTree(flatList, new FilterTree() { StartWith = item.TreeId });
-                    }
-            }
-
-            return list;
-        }
-
-        private bool IsNeighbourItem(ITreeItem item, FilterTree filter)
-        {
-            if (item.IsUsed) return false;
-            if (filter == null)
-            {
-                return (item.TreeParentId == string.Empty);
-            }
-            else
-            {
-                return (item.TreeParentId == (filter.StartWith ?? string.Empty));
-            }
-        }
-
-        #region [+] AddNewClient ...
-
-
-        #endregion
-
-
-        public void AddStaffList(IContext context)
-        {
-            for (int c = 1; c <= 10; c++)
-            {
-                int compID = AddAgentClientCompany(context, new InternalDictionaryAgentClientCompany()
-                { Name = string.Concat("Компания №", c.ToString()), IsActive = true, LastChangeDate = DateTime.Now, LastChangeUserId = context.CurrentAgentId });
-
-                for (int d = 1; d <= 100; d++)
-                {
-                    int? depParId = null;
-
-                    int depId = AddDepartment(context, new InternalDictionaryDepartment()
-                    {Name = string.Concat("Отдел №", d.ToString()), IsActive = true, CompanyId = compID, ParentId = depParId,
-                    LastChangeDate = DateTime.Now,                        LastChangeUserId = context.CurrentAgentId
-                    });
-
-                    if ( d == 20 || d==50 || d==65 || d==93 ) depParId = depId;
-
-                   
-                    int posId = AddPosition(context, new InternalDictionaryPosition()
-                    {Name = "Начальник отдела", FullName = "Руководитель отдела", IsActive = true, DepartmentId = depId, Order = 1,
-                        LastChangeDate = DateTime.Now,
-                        LastChangeUserId = context.CurrentAgentId
-                    });
-
-                    posId = AddPosition(context, new InternalDictionaryPosition()
-                    { Name = "Менеджер по работе с клиентами", FullName = "Менеджер по работе с клиентами", IsActive = true, DepartmentId = depId, Order = 2,
-                        LastChangeDate = DateTime.Now,
-                        LastChangeUserId = context.CurrentAgentId
-                    });
-
-                    posId = AddPosition(context, new InternalDictionaryPosition()
-                    { Name = "Менеджер по IT и дизайну", FullName = "Менеджер по IT и дизайну", IsActive = true, DepartmentId = depId, Order = 3 ,
-                        LastChangeDate = DateTime.Now,
-                        LastChangeUserId = context.CurrentAgentId
-                    });
-
-                    posId = AddPosition(context, new InternalDictionaryPosition()
-                    { Name = "Менеджер по продажам", FullName = "Менеджер по продажам", IsActive = true, DepartmentId = depId, Order = 4 ,
-                        LastChangeDate = DateTime.Now,
-                        LastChangeUserId = context.CurrentAgentId
-                    });
-
-                    posId = AddPosition(context, new InternalDictionaryPosition()
-                    { Name = "Рабочий", FullName = "Рабочий", IsActive = true, DepartmentId = depId, Order = 5,
-                        LastChangeDate = DateTime.Now,
-                        LastChangeUserId = context.CurrentAgentId
-                    });
-
-
-                }
-            }
-        }
-
-   
+        
 
     }
 }

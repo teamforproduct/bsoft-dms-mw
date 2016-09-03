@@ -8,6 +8,7 @@ using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Common;
+using BL.Model.Tree;
 
 namespace BL.Logic.DictionaryCore.Interfaces
 {

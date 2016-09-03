@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BL.Model.Common
+namespace BL.Model.Tree
 {
     /// <summary>
     /// Контракт для построения деревьев
@@ -30,6 +30,11 @@ namespace BL.Model.Common
         /// Вспомагательный признак для ускорения построения дерева.
         /// </summary>
         bool IsUsed { get; set; }
+
+        /// <summary>
+        /// Полный путь, который формирует универсальная процедура построения дерева.
+        /// </summary>
+        string Path { get; set; }
 
         /// <summary>
         /// Лист или группа. У листьев нет наследников

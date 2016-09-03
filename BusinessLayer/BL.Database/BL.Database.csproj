@@ -124,7 +124,6 @@
     <Compile Include="Admins\Interfaces\ILanguagesDbProcess.cs" />
     <Compile Include="Common\CommonFilterUtilites.cs" />
     <Compile Include="Common\AdminModelConverter.cs" />
-    <Compile Include="Common\DateExtensions.cs" />
     <Compile Include="Common\DictionaryModelConverter.cs" />
     <Compile Include="Common\ModelConverter.cs" />
     <Compile Include="Common\RecursiveExtension.cs" />

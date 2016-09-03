@@ -16,6 +16,9 @@ using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.Enums;
 using BL.Model.FullTextSearch;
 using BL.Model.Common;
+using BL.Model.Tree;
+using BL.Logic.TreeBuilder;
+using BL.CrossCutting.Extensions;
 
 namespace BL.Logic.DictionaryCore
 {
@@ -869,14 +872,146 @@ namespace BL.Logic.DictionaryCore
         }
         #endregion CustomDictionaries
 
-        public IEnumerable<ITreeItem> GetStaffList(IContext context, FilterTree filter)
-        {
-            return _dictDb.GetStaffList(context, filter);
-        }
+        //public IEnumerable<ITreeItem> GetStaffList(IContext context, FilterTree filter)
+        //{
+        //    return _dictDb.GetStaffList(context, filter);
+        //}
+
+        //public void AddStaffList(IContext context)
+        //{
+        //    _dictDb.AddStaffList(context);
+        //}
+
+        #region [+] StaffList ...
 
         public void AddStaffList(IContext context)
         {
-            _dictDb.AddStaffList(context);
+            for (int c = 1; c <= 10; c++)
+            {
+                int compID = _dictDb.AddAgentClientCompany(context, new InternalDictionaryAgentClientCompany()
+                {
+                    Name = string.Concat("Компания №", string.Format("{0:00}", c)),
+                    FullName = string.Concat("Компания номер ", string.Format("{0:00}", c)),
+                    IsActive = true,
+                    LastChangeDate = DateTime.Now,
+                    LastChangeUserId = context.CurrentAgentId
+                });
+
+                int? depParId = null;
+
+                for (int d = 1; d <= 100; d++)
+                {
+
+                    int depId = _dictDb.AddDepartment(context, new InternalDictionaryDepartment()
+                    {
+                        Code = string.Format("{0:000}", d),
+                        Name = string.Concat("Отдел №", string.Format("{0:000}", d)),
+                        FullName = string.Concat("Отдел номер ", string.Format("{0:000}", d)),
+                        IsActive = true,
+                        CompanyId = compID,
+                        ParentId = depParId,
+                        LastChangeDate = DateTime.Now,
+                        LastChangeUserId = context.CurrentAgentId
+                    });
+
+                    if (d == 20 || d == 50 || d == 65 || d == 93) depParId = depId;
+
+                    int posId = _dictDb.AddPosition(context, new InternalDictionaryPosition()
+                    {
+                        Name = "Руководитель отдела",
+                        FullName = "Руководитель отдела",
+                        IsActive = true,
+                        DepartmentId = depId,
+                        Order = 1,
+                        LastChangeDate = DateTime.Now,
+                        LastChangeUserId = context.CurrentAgentId
+                    });
+
+                    posId = _dictDb.AddPosition(context, new InternalDictionaryPosition()
+                    {
+                        Name = "Менеджер по работе с клиентами",
+                        FullName = "Менеджер по работе с клиентами",
+                        IsActive = true,
+                        DepartmentId = depId,
+                        Order = 2,
+                        LastChangeDate = DateTime.Now,
+                        LastChangeUserId = context.CurrentAgentId
+                    });
+
+                    posId = _dictDb.AddPosition(context, new InternalDictionaryPosition()
+                    {
+                        Name = "Менеджер по IT и дизайну",
+                        FullName = "Менеджер по IT и дизайну",
+                        IsActive = true,
+                        DepartmentId = depId,
+                        Order = 3,
+                        LastChangeDate = DateTime.Now,
+                        LastChangeUserId = context.CurrentAgentId
+                    });
+
+                    posId = _dictDb.AddPosition(context, new InternalDictionaryPosition()
+                    {
+                        Name = "Менеджер по продажам",
+                        FullName = "Менеджер по продажам",
+                        IsActive = true,
+                        DepartmentId = depId,
+                        Order = 4,
+                        LastChangeDate = DateTime.Now,
+                        LastChangeUserId = context.CurrentAgentId
+                    });
+
+                    posId = _dictDb.AddPosition(context, new InternalDictionaryPosition()
+                    {
+                        Name = "Рабочий",
+                        FullName = "Рабочий",
+                        IsActive = true,
+                        DepartmentId = depId,
+                        Order = 5,
+                        LastChangeDate = DateTime.Now,
+                        LastChangeUserId = context.CurrentAgentId
+                    });
+
+                }
+            }
         }
+
+        public IEnumerable<ITreeItem> GetStaffList(IContext context, FilterTree filter)
+        {
+
+            var executors = _dictDb.GetPositionExecutorsForTree(context, new FilterDictionaryPositionExecutor()
+            {
+                Period = new Period(DateTime.Now.StartOfDay(), DateTime.Now.EndOfDay()),
+                IsActive = filter.IsActive
+            });
+
+            var positions = _dictDb.GetPositionsForTree(context, new FilterDictionaryPosition()
+            {
+                IsActive = filter.IsActive
+            });
+
+            var departments = _dictDb.GetDepartmentsForTree(context, new FilterDictionaryDepartment()
+            {
+                IsActive = filter.IsActive
+            });
+
+            var companies = _dictDb.GetAgentClientCompaniesForTree(context, new FilterDictionaryAgentClientCompany()
+            {
+                IsActive = filter.IsActive
+            });
+
+            List<TreeItem> flatList = new List<TreeItem>();
+
+            flatList.AddRange(companies);
+            flatList.AddRange(positions);
+            flatList.AddRange(departments);
+            flatList.AddRange(executors);
+
+            var res = Tree.Get(flatList, filter);
+
+            return res;
+        }
+
+        #endregion
+
     }
 }

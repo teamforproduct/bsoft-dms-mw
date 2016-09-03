@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BL.Model.Common
+namespace BL.Model.Tree
 {
     /// <summary>
     /// Фильтр для иерархического списка
@@ -15,7 +15,7 @@ namespace BL.Model.Common
         /// <summary>
         /// Начинает построение дерева с указанного ID. Внимание! Нужно передавать уникальный TreeId.
         /// </summary>
-        public string StartWith { get; set; }
+        public string StartWithTreeId { get; set; }
 
         /// <summary>
         /// Сужение по наименованию

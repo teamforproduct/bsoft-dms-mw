@@ -7,6 +7,9 @@ using BL.Logic.SystemServices.AutoPlan;
 using BL.Model.Enums;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.Common;
+using System.Web.Http.Description;
+using System.Collections.Generic;
+using BL.Model.Tree;
 
 namespace DMS_WebAPI.Controllers.Dictionaries
 {
@@ -22,6 +25,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="filter">Фильтрация элементов по названию</param>
         /// <param name="startWith">Определяет с какого элемента построить дерево</param>
         /// <returns></returns>
+        [ResponseType(typeof(List<TreeItem>))]
         public IHttpActionResult Get([FromUri] FilterTree filter)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
