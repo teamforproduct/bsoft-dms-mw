@@ -15,10 +15,11 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// </summary>
         [IgnoreDataMember]
         public int Id { get; set; }
-        
+
         /// <summary>
         /// Признак активности.
         /// </summary>
+        [Required]
         public bool IsActive { get; set; }
 
         /// <summary>
@@ -30,6 +31,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// Наименование компании
         /// </summary>
+        [Required]
         public string FullName { get; set; }
 
         /// <summary>

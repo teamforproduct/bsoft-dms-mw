@@ -13,31 +13,40 @@ namespace BL.Model.DictionaryCore.FrontModel
     public class FrontDictionaryContact
     {
         /// <summary>
-        /// ИД
+        /// ИД контакта
         /// </summary>
         public int Id { get; set; }
+
         /// <summary>
-        /// ID агента
+        /// Агент (сотрудник, юр.лицо, банк, физ.лицо)
         /// </summary>
         public int AgentId { get; set; }
+
         /// <summary>
         /// Тип контакта
         /// </summary>
         public FrontDictionaryContactType ContactType { get; set; }
+        
         /// <summary>
         /// Значение
         /// </summary>
         public string Value { get; set; }
+
         /// <summary>
         /// Признак активности
         /// </summary>
         public bool IsActive { get; set; }
 
         /// <summary>
-        /// Признак активности
+        /// Признак подтверждения
         /// </summary>
         public bool IsConfirmed { get; set; }
-        
+
+        /// <summary>
+        /// Признак основного контакта
+        /// </summary>
+        public bool IsPrimary { get; set; }
+
         /// <summary>
         /// Дополнительная информация
         /// </summary>

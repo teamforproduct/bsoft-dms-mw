@@ -18,18 +18,15 @@ namespace BL.Model.DictionaryCore.FilterModel
         public string PersonnelNumber { get; set; }
 
         /// <summary>
-        /// Список AgentCompanyId
-        /// </summary>
-        public List<int> AgentCompanyId { get; set; }
-
-        /// <summary>
         /// Отрывок из паспортных данных
         /// </summary>
         public string Passport { get; set; }
+
         /// <summary>
         /// ИНН
         /// </summary>
         public string TaxCode { get; set; }
+
         /// <summary>
         /// Дата рождения
         /// </summary>

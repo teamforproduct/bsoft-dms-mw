@@ -11,30 +11,35 @@ namespace BL.Model.DictionaryCore.FilterModel
     /// </summary>
     public class FilterDictionaryContact : DictionaryBaseFilterParameters
     {
-        /// <summary>
-        /// ИД
-        /// </summary>
-        public int Id { get; set; }
-        
-        /// <summary>
-        /// ссылка на контрагента
-        /// </summary>
-        public List<int> AgentId { get; set; }
 
         /// <summary>
-        /// ссылка на тип контакта
+        /// Агент (сотрудник, юр.лицо, банк, физ.лицо, компания)
         /// </summary>
-        public List<int> ContactTypeId { get; set; }
+        public List<int> AgentIDs { get; set; }
 
         /// <summary>
-        /// Сужение по активности элементов
+        /// по типам контактов
+        /// </summary>
+        public List<int> ContactTypeIDs { get; set; }
+
+        /// <summary>
+        /// Сужение по подтвержденным контактам
         /// </summary>
         public bool? IsConfirmed { get; set; }
 
         /// <summary>
-        /// значение
+        /// основной контакт
+        /// </summary>
+        public bool? IsPrimary { get; set; }
+
+        /// <summary>
+        /// контакт (по вхождению)
         /// </summary>
         public string Contact { get; set; }
+
+        /// <summary>
+        /// контакт (по равенству)
+        /// </summary>
         public string ContactExact { get; set; }
     }
 }

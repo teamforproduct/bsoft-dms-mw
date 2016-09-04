@@ -20,8 +20,8 @@ namespace BL.Model.DictionaryCore.InternalModel
             Name = model.Name;
             FullName = model.FullName;
             DepartmentId = model.DepartmentId;
-            ExecutorAgentId = model.ExecutorAgentId;
-            MainExecutorAgentId = model.MainExecutorAgentId;
+            //ExecutorAgentId = model.ExecutorAgentId;
+            //MainExecutorAgentId = model.MainExecutorAgentId;
             Order = model.Order;
         }
 

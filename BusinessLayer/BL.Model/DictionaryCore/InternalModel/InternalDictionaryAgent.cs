@@ -17,7 +17,7 @@ namespace BL.Model.DictionaryCore.InternalModel
             Id = model.Id;
             Name = model.Name;
             Description = string.Empty;// model.Description;
-            IsActive = true; //model.IsActive;
+            IsActive = true;// model.IsActive;
             ResidentTypeId = model.ResidentTypeId ?? null;
         }
 
@@ -25,7 +25,7 @@ namespace BL.Model.DictionaryCore.InternalModel
         {
             Id = model.Id;
             Name = model.Name;
-            Description = model.Description;
+            Description =  model.Description;
             IsActive = model.IsActive;
             LastChangeUserId = model.LastChangeUserId;
             LastChangeDate = model.LastChangeDate;
@@ -35,7 +35,7 @@ namespace BL.Model.DictionaryCore.InternalModel
         {
             Id = model.Id;
             Name = model.Name;
-            Description = model.Description;
+            Description =  model.Description;
             IsActive = model.IsActive;
             LastChangeUserId = model.LastChangeUserId;
             LastChangeDate = model.LastChangeDate;
@@ -45,7 +45,7 @@ namespace BL.Model.DictionaryCore.InternalModel
         {
             Id = model.Id;
             Name = model.Name;
-            Description = model.Description;
+            Description =  model.Description;
             IsActive = model.IsActive;
             LastChangeUserId = model.LastChangeUserId;
             LastChangeDate = model.LastChangeDate;
@@ -54,7 +54,7 @@ namespace BL.Model.DictionaryCore.InternalModel
         {
             Id = model.Id;
             Name = model.Name;
-            Description = model.Description;
+            Description =  model.Description;
             IsActive = model.IsActive;
             LastChangeUserId = model.LastChangeUserId;
             LastChangeDate = model.LastChangeDate;

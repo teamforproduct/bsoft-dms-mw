@@ -1,4 +1,6 @@
-﻿using BL.Model.Common;
+﻿using BL.CrossCutting.Extensions;
+using BL.Database.Common;
+using BL.Model.Common;
 using BL.Model.Tree;
 using System;
 using System.Collections.Generic;
@@ -12,9 +14,12 @@ namespace BL.Logic.TreeBuilder
     {
         public static List<TreeItem> Get(List<TreeItem> flatList, FilterTree filter)
         {
-            var res = GetBranch(flatList, filter, string.Empty);
 
-            if ((filter.Name ?? "") != string.Empty)
+            bool startWithCondition = (filter.StartWithTreeId ?? string.Empty) != string.Empty;
+
+            var res = GetBranch(flatList, filter, string.Empty, startWithCondition);
+
+            if ((filter.Name ?? string.Empty) != string.Empty)
             {
                 var safeList = new List<string>();
 
@@ -23,27 +28,31 @@ namespace BL.Logic.TreeBuilder
                 if (safeList.Count > 0)
                 {
                     flatList.RemoveAll(r => !safeList.Contains(r.TreeId));
-                    res = GetBranch(flatList, filter);
+                    res = GetBranch(flatList, filter, string.Empty, startWithCondition);
+                }
+                else
+                {
+                    res = null;
                 }
             }
-
 
             return res;
         }
 
-        private static List<TreeItem> GetBranch(List<TreeItem> flatList, FilterTree filter, string path = "")
+
+        private static List<TreeItem> GetBranch(List<TreeItem> flatList, FilterTree filter, string path = "", bool startWithCondition = false)
         {
             var list = new List<TreeItem>();
 
             if (flatList != null)
             {
                 foreach (var item in flatList)
-                    if (IsNeighbourItem(item, filter))
+                    if (startWithCondition ? IsStartWithItem(item, filter) : IsNeighbourItem(item, filter))
                     {
                         item.IsUsed = true;
                         item.Path = ((path == string.Empty) ? "" : (path + "/")) + item.TreeId;
                         list.Add(item);
-                        item.Childs = GetBranch(flatList, new FilterTree() { StartWithParent = item.TreeId }, item.Path);
+                        item.Childs = GetBranch(flatList, new FilterTree() { StartWithTreeParentId = item.TreeId }, item.Path);
                     }
             }
 
@@ -54,9 +63,11 @@ namespace BL.Logic.TreeBuilder
         {
             if (tree != null)
             {
+                var arr = CommonFilterUtilites.GetWhereExpressions(filter.Name.ToLower());
+
                 foreach (var item in tree)
                 {
-                    if (item.Name.ToLower().Contains(filter.Name.ToLower()))
+                    if (item.Name.ToLower().ContainsArray(arr))
                     {
                         safeList.AddRange(item.Path.Split('/'));
                     }
@@ -74,7 +85,20 @@ namespace BL.Logic.TreeBuilder
             }
             else
             {
-                return (item.TreeParentId == (filter.StartWithParent ?? string.Empty));
+                return (item.TreeParentId == (filter.StartWithTreeParentId ?? string.Empty));
+            }
+        }
+
+        private static bool IsStartWithItem(TreeItem item, FilterTree filter)
+        {
+            //if (item.IsUsed) return false;
+            if (filter == null)
+            {
+                return (item.TreeId == string.Empty);
+            }
+            else
+            {
+                return (item.TreeId == (filter.StartWithTreeId ?? string.Empty));
             }
         }
 

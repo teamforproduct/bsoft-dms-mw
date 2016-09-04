@@ -34,8 +34,8 @@ namespace BL.Logic.DictionaryCore
             var spr = _dictDb.GetContacts(_context,Model.AgentId, 
                    new FilterDictionaryContact {
                        ContactExact = Model.Value,
-                       ContactTypeId = new List<int> { Model.ContactTypeId },
-                       AgentId =new List<int> { Model.AgentId }
+                       ContactTypeIDs = new List<int> { Model.ContactTypeId },
+                       AgentIDs =new List<int> { Model.AgentId }
                    });
 
             if (spr.Count() !=0)

@@ -26,9 +26,7 @@ namespace BL.Model.DictionaryCore.InternalModel
             PassportSerial = model.PassportSerial;
             PassportText = model.PassportText;
             Description = model.Description;
-            if (model.BirthDate != null)
-            { BirthDate = new DateTime(model.BirthDate?.Year ?? 0, model.BirthDate?.Month ?? 0, model.BirthDate?.Day ?? 0); ; }
-            //BirthDate = model.BirthDate;
+            BirthDate = model.BirthDate;
             IsActive = model.IsActive;
 
 
@@ -41,6 +39,8 @@ namespace BL.Model.DictionaryCore.InternalModel
             UserId = model.UserId;
             Login = model.Login;
             PasswordHash = model.PasswordHash;
+            Email = model.Email;
+            Phone = model.Phone;
             #endregion
 
         }
@@ -60,6 +60,7 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// </summary>
         public string MiddleName { get; set; }
 
+        //pss добавить проверку на Empty
         public string Name { get { return LastName + " " + FirstName.Trim().Substring(1, 1) + "." + " " + MiddleName.Trim().Substring(1, 1) + "."; } }
 
         /// <summary>
@@ -127,6 +128,17 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// Пароль
         /// </summary>
         public string PasswordHash { get; set; }
+
+        /// <summary>
+        /// Основной имейл, на который высылается письмо с приглашением
+        /// </summary>
+        public string Email { get; set; }
+
+        /// <summary>
+        /// Основной номер мобильного телефона
+        /// </summary>
+        public string Phone { get; set; }
+
 
         #endregion
 

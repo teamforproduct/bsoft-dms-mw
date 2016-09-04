@@ -12,29 +12,35 @@ namespace BL.Model.DictionaryCore.FrontModel
     public class FrontDictionaryAgentAddress
     {
         /// <summary>
-        /// ИД
+        /// ИД адреса
         /// </summary>
         public int Id { get; set; }
+        
         /// <summary>
-        /// ссылка на контрагента
+        /// Агент (сотрудник, юр.лицо, банк, физ.лицо)
         /// </summary>
         public int AgentId { get; set; }
+
         /// <summary>
-        /// тип адреса
+        /// Тип адреса
         /// </summary>
         public FrontDictionaryAddressType AddressType { get; set; }
+        
         /// <summary>
         /// Индекс
         /// </summary>
         public string PostCode { get; set; }
+
         /// <summary>
-        /// адрес
+        /// Адрес
         /// </summary>
         public string Address { get; set; }
+        
         /// <summary>
-        /// комментарии
+        /// Описание
         /// </summary>
         public string Description { get; set; }
+
         /// <summary>
         /// признак активности
         /// </summary>

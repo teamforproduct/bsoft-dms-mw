@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace BL.Model.DictionaryCore.IncomingModel
 {
     /// <summary>
-    /// Модель для добавления/редактирования записи справочника "Структура предприятия"
+    /// Модель для добавления/редактирования отдела в штатном расписании
     /// </summary>
     // В модели перечислены поля, на значения которых можно повлиять из интерфейса. Например поля таблицы LastChangeUserId и LastChangeDate в этой модели отсутствуют
     // Если в таблице поля объявлены как Nullable то поля в этом классе нужно объявлять Nullable
@@ -53,6 +53,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// Руководитель подразделения
         /// </summary>
+        [IgnoreDataMember]
         public int? ChiefPositionId { get; set; }
 
     }

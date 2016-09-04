@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
@@ -24,16 +25,19 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// Имя
         /// </summary>
+        [Required]
         public string FirstName { get; set; }
 
         /// <summary>
         /// Фамилия
         /// </summary>
+        [Required]
         public string LastName { get; set; }
 
         /// <summary>
         /// Отчество
         /// </summary>
+        [Required]
         public string MiddleName { get; set; }
 
         /// <summary>
@@ -78,6 +82,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         ///Признак активности
         /// </summary>
+        [Required]
         public bool IsActive { get; set; }
 #endregion
 
@@ -92,22 +97,37 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// Логин
         /// </summary>
+        [Required]
         public string Login { get; set; }
 
         /// <summary>
         /// Пароль
         /// </summary>
+        [IgnoreDataMember]
         public string PasswordHash { get; set; }
 
         /// <summary>
         /// Профиль пользователя. Язык интерфейса.
         /// </summary>
+        [Required]
         public int? LanguageId { get; set; }
 
         /// <summary>
         /// Связь с WEB - USER
         /// </summary>
+        [IgnoreDataMember]
         public string UserId { get; set; }
+
+        /// <summary>
+        /// Основной имейл, на который высылается письмо с приглашением
+        /// </summary>
+        [Required]
+        public string Email { get; set; }
+
+        /// <summary>
+        /// Основной номер мобильного телефона
+        /// </summary>
+        public string Phone { get; set; }
 
         #endregion
     }

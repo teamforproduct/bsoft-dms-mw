@@ -39,10 +39,11 @@ namespace BL.Logic.ClientCore
         //    return res;
         //}
 
-        private InternalDictionaryContactType GetNewContactType(IContext context, string code, string name, string inputMask = "")
+        private InternalDictionaryContactType GetNewContactType(IContext context, int id, string code, string name, string inputMask = "")
         {
             return new InternalDictionaryContactType()
             {
+                Id = id,
                 Code = code,
                 Name = name,
                 InputMask = inputMask,
@@ -57,7 +58,7 @@ namespace BL.Logic.ClientCore
             //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             context.CurrentClientId = client.ClientId;
             #region [+] ContactsTypes ...
-
+            // EnumDictionaryContactsTypes!!!!!!!!!!!!!!!!!!!!!!
             // Pss Локализация для типов контактов
             var mobiContactType = _DictDb.AddContactType(context, 
                 new InternalDictionaryContactType()

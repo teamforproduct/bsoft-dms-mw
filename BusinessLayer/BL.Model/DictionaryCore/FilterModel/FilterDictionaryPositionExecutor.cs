@@ -24,6 +24,20 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// Дата начала исполнения должностных обязанностей
         /// </summary>
         public Period Period { get; set; }
-        
+
+        /// <summary>
+        /// Тип исполнения: 
+        /// 1 - Назначен на должность;
+        /// 2 - Исполяет обязанности;
+        /// 3 - Является референтом;
+        /// </summary>
+        public List<int>  PositionExecutorTypeIDs { get; set; }
+
+        /// <summary>
+        /// Уровень доступа к документам: лично, референт, ио
+        /// При создании документов всегда указывается уровень доступа для ио и референтов
+        /// </summary>
+        public List<int> AccessLevelIDs { get; set; }
+
     }
 }
