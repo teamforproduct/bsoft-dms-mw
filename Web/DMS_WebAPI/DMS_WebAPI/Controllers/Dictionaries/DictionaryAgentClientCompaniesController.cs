@@ -7,10 +7,16 @@ using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.Enums;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
+using System.Collections.Generic;
 using System.Web.Http;
+using System.Web.Http.Description;
 
 namespace DMS_WebAPI.Controllers.Dictionaries
 {
+    /// <summary>
+    /// Описывает клиентские компании (филиалы, единицы учета)
+    /// Компании - рутовый элемент в иерархии штатного расписания
+    /// </summary>
     [Authorize]
     public class DictionaryAgentClientCompaniesController : ApiController
     {
@@ -19,7 +25,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="filter">Параметры для фильтрации записей в словаре "Компании"</param>
         /// <returns>FrontDictionaryCompanies</returns>
-        // GET: api/DictionaryCompanies
+        [ResponseType(typeof(List<FrontDictionaryAgentClientCompany>))]
         public IHttpActionResult Get([FromUri] FilterDictionaryAgentClientCompany filter)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
@@ -33,7 +39,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="id"></param>
         /// <returns>FrontDictionaryCompanies</returns>
-        // GET: api/DictionaryCompanies/5
+        [ResponseType(typeof(FrontDictionaryAgentClientCompany))]
         public IHttpActionResult Get(int id)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();

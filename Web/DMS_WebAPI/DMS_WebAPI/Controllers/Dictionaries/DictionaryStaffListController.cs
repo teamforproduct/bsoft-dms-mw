@@ -42,6 +42,14 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             return new JsonResult(new { success = true, msg = "Еще 10 000 ведер и золотой ключик наш" } , this);
         }
 
+
+        // Копирование настроек от одной должности к другой
+
+        // Правила рассылки с учетом флага используется на предприятии или нет
+
+        // Роли для должности (EditMode)
+
+        // Роли для сотрудника (EditMode)
     }
 
 }

@@ -7,22 +7,25 @@ using System.Web.Http;
 using BL.Model.Enums;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.CrossCutting.DependencyInjection;
+using System.Web.Http.Description;
+using System.Collections.Generic;
 
 namespace DMS_WebAPI.Controllers.Dictionaries
 {
     /// <summary>
-    /// Адреса контрагента
+    /// Адреса агента (сотрудника, пользователя, банка, юр.лиц и физ.лиц)
     /// </summary>
     [Authorize]
     public class DictionaryAgentAddressesController : ApiController
     {
-       
+
         /// <summary>
-        /// Список всех адресов агента
+        /// Возвращает список адресов агента
         /// </summary>
         /// <param name="agentId">ИД агента</param>
         /// <param name="filter">параметры фильтрации</param>
         /// <returns></returns>
+        [ResponseType(typeof(List<FrontDictionaryAgentAddress>))]
         public IHttpActionResult Get(int agentId,[FromUri] FilterDictionaryAgentAddress filter)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
@@ -32,10 +35,11 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         }
 
         /// <summary>
-        /// Запись из справочника адресов
+        /// Возвращает адрес агента по ID
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        [ResponseType(typeof(FrontDictionaryAgentAddress))]
         public IHttpActionResult Get(int id)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
