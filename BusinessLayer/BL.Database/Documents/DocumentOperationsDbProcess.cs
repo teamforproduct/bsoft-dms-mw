@@ -1239,7 +1239,14 @@ namespace BL.Database.Documents
                             }
                         }).ToList();
                 }
-            return doc;
+                doc.RestrictedSendLists = dbContext.DocumentRestrictedSendListsSet
+                    .Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId).Where(x => x.DocumentId == sendList.DocumentId)
+                    .GroupBy(x => x.PositionId)
+                    .Select(x => new InternalDocumentRestrictedSendList
+                    {
+                        PositionId = x.Key
+                    }).ToList();
+                return doc;
             }
         }
 
@@ -1267,6 +1274,13 @@ namespace BL.Database.Documents
                             }
                         }).ToList();
                 }
+                doc.RestrictedSendLists = dbContext.DocumentRestrictedSendListsSet
+                    .Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId).Where(x => x.DocumentId == sendList.DocumentId)
+                    .GroupBy(x=>x.PositionId)
+                    .Select(x => new InternalDocumentRestrictedSendList
+                    {
+                        PositionId = x.Key
+                    }).ToList();
                 return doc;
             }
         }

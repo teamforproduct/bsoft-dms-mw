@@ -6,6 +6,7 @@ using BL.Model.AdminCore;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
+using System.Linq;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -67,10 +68,17 @@ namespace BL.Logic.DocumentCore.Commands
                 {
                     SubordinationType = EnumSubordinationTypes.Informing,
                     TargetPosition = Model.TargetPositionId.Value,
-                    SourcePositions = CommonDocumentUtilities.GetSourcePositionsForSubordinationVeification(_context, Model, _document), 
+                    SourcePositions = CommonDocumentUtilities.GetSourcePositionsForSubordinationVeification(_context, Model, _document),
                 }))
             {
                 ex = new SubordinationHasBeenViolated();
+            }
+            if (Model.TargetPositionId.HasValue
+                && (_document.RestrictedSendLists?.Any() ?? false)
+                && !_document.RestrictedSendLists.Select(x => x.PositionId).Contains(Model.TargetPositionId.Value)
+                )
+            {
+                ex = new DocumentSendListNotFoundInDocumentRestrictedSendList();
             }
             if (ex != null)
             {
