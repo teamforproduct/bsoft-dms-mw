@@ -150,8 +150,8 @@ namespace BL.Database.Common
                 Name = item.Name,
                 FullName = item.FullName,
                 DepartmentId = item.DepartmentId,
-                ExecutorAgentId = item.ExecutorAgentId,
-                MainExecutorAgentId = item.MainExecutorAgentId,
+                //ExecutorAgentId = item.ExecutorAgentId,
+                //MainExecutorAgentId = item.MainExecutorAgentId,
                 Order = item.Order
             };
         }
@@ -164,7 +164,7 @@ namespace BL.Database.Common
                 ClientId = context.CurrentClientId,
 
                 Id = item.Id,
-                FullName = item.Name,
+                FullName = item.FullName,
                 Description = item.Description,
                 IsActive = item.IsActive,
                 LastChangeDate = item.LastChangeDate,
@@ -216,10 +216,10 @@ namespace BL.Database.Common
                 Id = item.Id,
                 Name = item.Name,
                 ResidentTypeId = item.ResidentTypeId,
-                Description = item.Description,
+                Description = string.Empty, // item.Description,
                 LastChangeDate = item.LastChangeDate,
                 LastChangeUserId = item.LastChangeUserId,
-                IsActive = item.IsActive
+                IsActive = true// item.IsActive
             };
 
         }

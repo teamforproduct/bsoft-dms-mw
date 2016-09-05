@@ -8,6 +8,7 @@ using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Common;
+using BL.Model.Tree;
 
 namespace BL.Logic.DictionaryCore.Interfaces
 {
@@ -220,7 +221,9 @@ namespace BL.Logic.DictionaryCore.Interfaces
         FrontCustomDictionary GetCustomDictionary(IContext context, int id);
         #endregion CustomDictionaries
 
+        #region [+] StaffList ...
         IEnumerable<ITreeItem> GetStaffList(IContext context, FilterTree filter);
-
+        void AddStaffList(IContext context);
+        #endregion
     }
 }

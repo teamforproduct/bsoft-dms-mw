@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BL.Model.Enums;
+using System.Runtime.Serialization;
 
 namespace BL.Model.DictionaryCore.FrontModel
 {
@@ -33,23 +34,32 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// <summary>
         /// является физлицом
         /// </summary>
+        [IgnoreDataMember]
+        [Obsolete("Признак не используется", true)]
         public virtual bool IsIndividual { get; set; }
         /// <summary>
         /// является сотрудником
         /// </summary>
+        [IgnoreDataMember]
+        [Obsolete("Признак не используется", true)]
         public virtual bool IsEmployee { get; set; }
         /// <summary>
         /// является банком
         /// </summary>
+        [IgnoreDataMember]
+        [Obsolete("Признак не используется", true)]
         public virtual bool IsBank { get; set; }
         /// <summary>
         /// является юрлицом
         /// </summary>
+        [IgnoreDataMember]
+        [Obsolete("Признак не используется", true)]
         public virtual bool IsCompany { get; set; }
 
         /// <summary>
         /// Резидентность
         /// </summary>
+        [IgnoreDataMember]
         public int? ResidentTypeId { get; set; }
         /// <summary>
         /// Дополнительная информация

@@ -80,6 +80,8 @@
     <Compile Include="Context\AdminContext.cs" />
     <Compile Include="CryptographicWorker\CryptoService.cs" />
     <Compile Include="CryptographicWorker\ICryptoService.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Extensions\DateExtensions.cs" />
     <Compile Include="Helpers\IConvertToDataSet.cs" />
     <Compile Include="Helpers\ConvertToDataSet.cs" />
     <Compile Include="Helpers\Logger.cs" />

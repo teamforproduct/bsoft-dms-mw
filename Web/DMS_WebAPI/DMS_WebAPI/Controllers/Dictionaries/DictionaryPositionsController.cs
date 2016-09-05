@@ -7,9 +7,17 @@ using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Web.Http;
 using BL.CrossCutting.DependencyInjection;
+using System.Collections.Generic;
+using System.Web.Http.Description;
 
 namespace DMS_WebAPI.Controllers.Dictionaries
 {
+
+    /// <summary>
+    /// Описывает должности в отделах.
+    /// Должности всегда подчинены отделам.
+    /// Значимость должносьти в отделе задается параметром Order
+    /// </summary>
     [Authorize]
     public class DictionaryPositionsController : ApiController
     {
@@ -18,7 +26,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="filter">Параметры для фильтрации записей в словаре "Должности"</param>
         /// <returns>FrontDictionaryPositions</returns>
-        // GET: api/DictionaryPositions
+        [ResponseType(typeof(List<FrontDictionaryPositions>))]
         public IHttpActionResult Get([FromUri] FilterDictionaryPosition filter)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
@@ -32,7 +40,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="id"></param>
         /// <returns>FrontDictionaryPositions</returns>
-        // GET: api/DictionaryPositions/5
+        [ResponseType(typeof(FrontDictionaryPositions))]
         public IHttpActionResult Get(int id)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();

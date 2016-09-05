@@ -7,6 +7,9 @@ using System.Web.Http;
 using BL.Model.Enums;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.CrossCutting.DependencyInjection;
+using System.Web.Http.Description;
+using System.Collections.Generic;
+
 namespace DMS_WebAPI.Controllers.Dictionaries
 
 {
@@ -14,7 +17,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
     /// Список контактов контрагента
     /// </summary>
     [Authorize]
-    public class DictionaryContactsController : ApiController
+    public class DictionaryAgentContactsController : ApiController
     {
 
         /// <summary>
@@ -24,6 +27,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="filter">Параметры для фильтрации контактов</param>
         /// <returns>Cписок контактов контрагента</returns>
         // GET: api/DictionaryContacts
+        [ResponseType(typeof(List<FrontDictionaryContact>))]
         public IHttpActionResult Get(int agentId,[FromUri] FilterDictionaryContact filter)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
@@ -35,7 +39,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <summary>
         /// Возвращает контакт
         /// </summary>
-        // GET: api/DictionaryAddressTypes/5
+        [ResponseType(typeof(FrontDictionaryContact))]
         public IHttpActionResult Get(int id)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();

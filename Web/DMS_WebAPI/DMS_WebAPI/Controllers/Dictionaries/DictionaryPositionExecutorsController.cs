@@ -7,19 +7,31 @@ using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.Enums;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
+using System.Collections.Generic;
 using System.Web.Http;
+using System.Web.Http.Description;
 
 namespace DMS_WebAPI.Controllers.Dictionaries
 {
+    /// <summary>
+    /// Описывает сроки и тип исполнения должностных обязанностей.
+    /// Одновременно на одну должность могут быть назначены несколько сотрудников. 
+    /// Один - назначен штатно, один - исполняет обязанности, несколько реферируют.
+    /// Кроме того, назначения могут находится в разных временных интервалах - известна история и план назначений.
+    /// 
+    /// В штатном расписании отображаются только те сотрудники, которые исполняют обязанности в данный момент по плану.
+    /// Вся история назначений отображается в панели "Назначения"
+    /// </summary>
     [Authorize]
     public class DictionaryPositionExecutorsController : ApiController
     {
         /// <summary>
-        /// Возвращает записи из словаря "Исполнители Исполнители должности"
+        /// Возвращает исполнителей должности
         /// </summary>
-        /// <param name="filter">Параметры для фильтрации записей в словаре "Исполнители должности"</param>
+        /// <param name="filter">Параметры для фильтрации записей "Исполнители должности"</param>
         /// <returns>FrontDictionaryPositionExecutors</returns>
         // GET: api/DictionaryPositionExecutors
+        [ResponseType(typeof(List<FrontDictionaryPositionExecutor>))]
         public IHttpActionResult Get([FromUri] FilterDictionaryPositionExecutor filter)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
@@ -33,7 +45,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="id"></param>
         /// <returns>FrontDictionaryPositionExecutors</returns>
-        // GET: api/DictionaryPositionExecutors/5
+        [ResponseType(typeof(FrontDictionaryPositionExecutor))]
         public IHttpActionResult Get(int id)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();

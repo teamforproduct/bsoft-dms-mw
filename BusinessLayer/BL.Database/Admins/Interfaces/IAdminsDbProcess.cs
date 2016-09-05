@@ -6,6 +6,7 @@ using BL.Model.AdminCore.FrontModel;
 using BL.Model.AdminCore.InternalModel;
 using BL.Model.Users;
 using System.Collections.Generic;
+using BL.Model.Tree;
 
 namespace BL.Database.Admins.Interfaces
 {

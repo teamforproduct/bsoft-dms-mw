@@ -6,6 +6,7 @@ using BL.Model.AdminCore.FrontModel;
 using BL.Model.Enums;
 using BL.Model.Users;
 using System.Collections.Generic;
+using BL.Model.Tree;
 
 namespace BL.Logic.AdminCore.Interfaces
 {

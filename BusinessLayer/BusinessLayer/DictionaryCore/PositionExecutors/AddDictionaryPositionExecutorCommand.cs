@@ -36,7 +36,12 @@ namespace BL.Logic.DictionaryCore
             var fd = new FilterDictionaryPositionExecutor {
                 PositionIDs = new List<int> { Model.PositionId },
                 AgentIDs = new List<int> { Model.AgentId },
-                Period = new Period(Model.StartDate, Model.EndDate) };
+                Period = new Period(Model.StartDate, Model.EndDate),
+                AccessLevelIDs = new List<int> { Model.AgentId },
+                PositionExecutorTypeIDs = new List < int > { Model.PositionExecutorTypeId }
+            };
+
+            
 
             if (_dictDb.ExistsExecutor(_context, fd))
             {

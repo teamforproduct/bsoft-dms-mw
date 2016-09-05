@@ -36,8 +36,8 @@ namespace BL.Logic.DictionaryCore
                    new FilterDictionaryContact
                    {
                        ContactExact = Model.Value,
-                       ContactTypeId = new List<int> { Model.ContactTypeId },
-                       AgentId = new List<int> { Model.AgentId },
+                       ContactTypeIDs = new List<int> { Model.ContactTypeId },
+                       AgentIDs = new List<int> { Model.AgentId },
                        IsActive=Model.IsActive,
                        NotContainsIDs = new List<int> {Model.Id}
                    });

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -61,7 +62,7 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// <summary>
         /// Полное имя
         /// </summary>
-        public string FullName { get; set; }
+        //public string FullName { get; set; }
         
      
         /// <summary>
@@ -77,7 +78,7 @@ namespace BL.Model.DictionaryCore.FrontModel
 
         #region [+] Employee ...
         /// <summary>
-        /// табельный номер
+        /// табельный номер сотрудника
         /// </summary>
         public string PersonnelNumber { get; set; }
         #endregion
@@ -86,6 +87,7 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// <summary>
         /// Наименование компании
         /// </summary>
+        [IgnoreDataMember]
         public string UserId { get; set; }
 
         /// <summary>
