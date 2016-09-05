@@ -8,6 +8,7 @@ using BL.Model.Exception;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.SystemCore;
 using System.Linq;
+using BL.Model.Enums;
 
 namespace BL.Logic.DictionaryCore
 {
@@ -63,7 +64,36 @@ namespace BL.Logic.DictionaryCore
                 if (item.BirthDate != null) item.BirthDate = new DateTime(item.BirthDate?.Year ?? 0, item.BirthDate?.Month ?? 0, item.BirthDate?.Day ?? 0);
 
                 CommonDocumentUtilities.SetLastChange(_context, item);
-                return _dictDb.AddAgentEmployee(_context, item);
+                int agent =_dictDb.AddAgentEmployee(_context, item);
+
+                if ((item.Email ?? string.Empty) != string.Empty)
+                {
+                    var contact = new InternalDictionaryContact()
+                    {
+                        AgentId = agent,
+                        ContactTypeId = (int)EnumDictionaryContactsTypes.Email,
+                        Value = item.Email,
+                        IsActive = true,
+                        IsPrimary = true };
+                    CommonDocumentUtilities.SetLastChange(_context, contact);
+                    _dictDb.AddContact(_context, contact);
+                }
+
+                if ((item.Phone ?? string.Empty) != string.Empty)
+                {
+                    var contact = new InternalDictionaryContact()
+                    {
+                        AgentId = agent,
+                        ContactTypeId = (int)EnumDictionaryContactsTypes.Phone,
+                        Value = item.Phone,
+                        IsActive = true,
+                        IsPrimary = true
+                    };
+                    CommonDocumentUtilities.SetLastChange(_context, contact);
+                    _dictDb.AddContact(_context, contact);
+                }
+
+                return agent;
             }
             catch (Exception ex)
             {

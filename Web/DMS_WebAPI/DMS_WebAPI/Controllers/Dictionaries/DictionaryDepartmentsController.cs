@@ -7,9 +7,15 @@ using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Web.Http;
 using BL.CrossCutting.DependencyInjection;
+using System.Web.Http.Description;
+using System.Collections.Generic;
 
 namespace DMS_WebAPI.Controllers.Dictionaries
 {
+    /// <summary>
+    /// Описывает отделы (подразделения) в компании.
+    /// Отделы всегда подчинены компаниям, могут подчиняться вышестоящим отделам.
+    /// </summary>
     [Authorize]
     public class DictionaryDepartmentsController : ApiController
     {
@@ -18,7 +24,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="filter">Параметры для фильтрации записей в словаре "Структура предприятия"</param>
         /// <returns>FrontDictionaryDictionaryDepartment</returns>
-        // GET: api/DictionaryDepartments
+        [ResponseType(typeof(List<FrontDictionaryDictionaryDepartment>))]
         public IHttpActionResult Get([FromUri] FilterDictionaryDepartment filter)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
@@ -32,7 +38,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="id"></param>
         /// <returns>FrontDictionaryDictionaryDepartment</returns>
-        // GET: api/DictionaryDepartments/5
+        [ResponseType(typeof(FrontDictionaryDictionaryDepartment))]
         public IHttpActionResult Get(int id)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();

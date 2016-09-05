@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
 
 namespace BL.Model.DictionaryCore.IncomingModel
 {
@@ -14,44 +15,42 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// </summary>
         [IgnoreDataMember]
         public int Id { get; set; }
-        
+
         /// <summary>
         /// Признак активности.
         /// </summary>
+        [Required]
         public bool IsActive { get; set; }
         
         /// <summary>
         /// Вышестоящая должность
         /// </summary>
+        [IgnoreDataMember]
         public int? ParentId { get; set; }
 
         /// <summary>
         /// Наименование должности
         /// </summary>
+        [Required]
         public string Name { get; set; }
 
         /// <summary>
         /// Полное наименование должности
         /// </summary>
+        [Required]
         public string FullName { get; set; }
 
         /// <summary>
         /// Подразделение, в которое включена должность
         /// </summary>
+        [Required]
         public int DepartmentId { get; set; }
 
         /// <summary>
-        /// Порядковый номер должности в подразделении
+        /// Порядковый номер (значимость) должности в подразделении
         /// </summary>
+        [Required]
         public int Order { get; set; }
-
-        /// <summary>
-        /// Исполнитель
-        /// </summary>
-        public int? ExecutorAgentId { get; set; }
-
-
-        public int? MainExecutorAgentId { get; set; }
 
     }
 }

@@ -11,27 +11,35 @@ namespace BL.Model.DictionaryCore.FilterModel
     /// </summary>
     public class FilterDictionaryAgentAddress : DictionaryBaseFilterParameters
     {
+
         /// <summary>
-        /// ИД
-        /// </summary>
-        public int Id { get; set; }
-        /// <summary>
-        /// ИД агента
+        /// Агент (сотрудник, юр.лицо, банк, физ.лицо)
         /// </summary>
         public int AgentId { get; set; }
+
         /// <summary>
-        /// ссылка на тип адреса
+        /// По типу адреса
         /// </summary>
         public List<int> AddressTypeId { get; set; }
+        
         /// <summary>
-        /// индекс
+        /// по индексу (вхождение)
         /// </summary>
         public string PostCode { get; set; }
-        public string PostCodeExact { get; set; }
+
         /// <summary>
-        /// адрес
+        /// по индексу (совпадение)
+        /// </summary>
+        public string PostCodeExact { get; set; }
+
+        /// <summary>
+        /// по адресу (вхождение)
         /// </summary>
         public string Address { get; set; }
+
+        /// <summary>
+        /// по адресу (совпадение)
+        /// </summary>
         public string AddressExact { get; set; }
 
     }

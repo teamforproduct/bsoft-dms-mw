@@ -39,25 +39,47 @@ namespace BL.Logic.ClientCore
         //    return res;
         //}
 
+        private InternalDictionaryContactType GetNewContactType(IContext context, int id, string code, string name, string inputMask = "")
+        {
+            return new InternalDictionaryContactType()
+            {
+                Id = id,
+                Code = code,
+                Name = name,
+                InputMask = inputMask,
+                IsActive = true,
+                LastChangeDate = DateTime.Now,
+                LastChangeUserId = context.CurrentAgentId
+            };
+        }
+
         public void AddNewClient(IContext context, AddClientContent client)
         {
             //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             context.CurrentClientId = client.ClientId;
             #region [+] ContactsTypes ...
-
+            // EnumDictionaryContactsTypes!!!!!!!!!!!!!!!!!!!!!!
             // Pss Локализация для типов контактов
-            var mobiContactType = _DictDb.AddContactType(context, new InternalDictionaryContactType() { Code = "МТ", Name = "Мобильный телефон", InputMask = "", IsActive = true });
+            var mobiContactType = _DictDb.AddContactType(context, 
+                new InternalDictionaryContactType()
+                { Code = "МТ", Name = "Мобильный телефон", InputMask = "", IsActive = true ,
+                LastChangeDate = DateTime.Now, LastChangeUserId = context.CurrentAgentId
+                });
             _DictDb.AddContactType(context, new InternalDictionaryContactType() { Code = "РТ", Name = "Рабочий телефон", InputMask = "", IsActive = true });
             _DictDb.AddContactType(context, new InternalDictionaryContactType() { Code = "ДТ", Name = "Домашний телефон", InputMask = "", IsActive = true });
             _DictDb.AddContactType(context, new InternalDictionaryContactType() { Code = "ОТ", Name = "Основной телефон", InputMask = "", IsActive = true });
             _DictDb.AddContactType(context, new InternalDictionaryContactType() { Code = "РФ", Name = "Рабочий факс", InputMask = "", IsActive = true });
             _DictDb.AddContactType(context, new InternalDictionaryContactType() { Code = "ДФ", Name = "Домашний факс", InputMask = "", IsActive = true });
-            var emailContactType = _DictDb.AddContactType(context, new InternalDictionaryContactType() { Code = "ЛМ", Name = "Личный адрес", InputMask = "", IsActive = true });
-            _DictDb.AddContactType(context, new InternalDictionaryContactType() { Code = "РМ", Name = "Рабочий адрес", InputMask = "", IsActive = true });
+            var emailContactType = _DictDb.AddContactType(context, new InternalDictionaryContactType() { Code = "ЛМ", Name = "Личный адрес", InputMask = "/@/", IsActive = true });
+            _DictDb.AddContactType(context, new InternalDictionaryContactType() { Code = "РМ", Name = "Рабочий адрес", InputMask = "/@/", IsActive = true });
             _DictDb.AddContactType(context, new InternalDictionaryContactType() { Code = "П", Name = "Пейждер", InputMask = "", IsActive = true });
+            _DictDb.AddContactType(context, new InternalDictionaryContactType() { Code = "Skype", Name = "Skype", InputMask = "", IsActive = true });
+            _DictDb.AddContactType(context, new InternalDictionaryContactType() { Code = "ICQ", Name = "ICQ", InputMask = "", IsActive = true });
+            _DictDb.AddContactType(context, new InternalDictionaryContactType() { Code = "Jab", Name = "Jabber", InputMask = "", IsActive = true });
+            _DictDb.AddContactType(context, new InternalDictionaryContactType() { Code = "Viber", Name = "Viber", InputMask = "", IsActive = true });
+            _DictDb.AddContactType(context, new InternalDictionaryContactType() { Code = "Tg", Name = "Telegram", InputMask = "", IsActive = true });
             _DictDb.AddContactType(context, new InternalDictionaryContactType() { Code = "Др", Name = "Другой", InputMask = "", IsActive = true });
             _DictDb.AddContactType(context, new InternalDictionaryContactType() { Code = "MVPN", Name = "MVPN", InputMask = "", IsActive = true });
-
             #endregion
 
             #region [+] AddressTypes ...

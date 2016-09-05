@@ -17,17 +17,23 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// </summary>
         [IgnoreDataMember]
         public int Id { get; set; }
+
         /// <summary>
-        /// Название типа документа. Отображается в документе
+        /// Название типа контакта
         /// </summary>
         public string Name { get; set; }
         /// <summary>
-        /// Признак активности
+        /// Маска ввода
         /// </summary>
         public string InputMask { get; set; }
-        public string Code { get; set; }
+
         /// <summary>
-        /// признак активности
+        /// Краткий идентификатор
+        /// </summary>
+        public string Code { get; set; }
+
+        /// <summary>
+        /// Признак активности
         /// </summary>
         public bool IsActive { get; set; }
     }

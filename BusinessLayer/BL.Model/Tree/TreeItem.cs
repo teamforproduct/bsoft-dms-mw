@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BL.Model.Common
+namespace BL.Model.Tree
 {
     /// <summary>
     /// Элемент дерева (Node)
@@ -30,6 +30,7 @@ namespace BL.Model.Common
         /// <summary>
         /// Уникальный ключ родительского элемента
         /// </summary>
+        [IgnoreDataMember]
         public string TreeParentId { get; set; }
 
         /// <summary>
@@ -42,6 +43,12 @@ namespace BL.Model.Common
         /// </summary>
         [IgnoreDataMember]
         public bool IsUsed { get; set; }
+
+        /// <summary>
+        /// Полный путь, который формирует универсальная процедура построения дерева.
+        /// </summary>
+        [IgnoreDataMember]
+        public string Path { get; set; }
 
         /// <summary>
         /// Лист или группа. У листьев нет наследников

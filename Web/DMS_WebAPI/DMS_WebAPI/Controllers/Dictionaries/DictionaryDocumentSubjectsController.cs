@@ -10,6 +10,10 @@ using BL.CrossCutting.DependencyInjection;
 
 namespace DMS_WebAPI.Controllers.Dictionaries
 {
+    /// <summary>
+    /// Тематика - необязательный реквизит документа, классификатор.
+    /// По функционалу пересекается с тегами.
+    /// </summary>
     [Authorize]
     public class DictionaryDocumentSubjectsController : ApiController
     {

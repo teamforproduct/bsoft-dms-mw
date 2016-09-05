@@ -271,12 +271,14 @@
     <Compile Include="Controllers\Dictionaries\DictionaryAgentAddressesController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryAgentBanksController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryAgentEmployeesController.cs" />
-    <Compile Include="Controllers\Dictionaries\DictionaryContactsController.cs" />
+    <Compile Include="Controllers\Dictionaries\DictionaryAgentContactsController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryContactTypesController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryPositionExecutorTypesController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryPositionExecutorsController.cs" />
-    <Compile Include="Controllers\Dictionaries\DictionaryCompaniesController.cs" />
+    <Compile Include="Controllers\Dictionaries\DictionaryAgentClientCompaniesController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryTagsController.cs" />
+    <Compile Include="Controllers\Dictionaries\FrontDictionaryDictionaryDepartment.cs" />
+    <Compile Include="Controllers\Dictionaries\FrontDictionaryPositions.cs" />
     <Compile Include="Controllers\Documents\DocumentAccessesController.cs" />
     <Compile Include="Controllers\Documents\DocumentWorkGroupController.cs" />
     <Compile Include="Controllers\Documents\DocumentSubscriptionsController.cs" />
