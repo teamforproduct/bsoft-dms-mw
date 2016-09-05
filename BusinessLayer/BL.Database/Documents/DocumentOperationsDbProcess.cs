@@ -807,8 +807,7 @@ namespace BL.Database.Documents
                 if (model.EventIds == null)
                     return new List<InternalDocumentEvent>();
 
-                var qry = CommonQueries.GetDocumentEventQuery(ctx, dbContext, new FilterDocumentEvent { IsNew = true, EventId = model.EventIds })
-                    .Where(x => x.TargetPositionId.HasValue && !(x.TargetPositionId == x.SourcePositionId));
+                var qry = CommonQueries.GetDocumentEventQuery(ctx, dbContext, new FilterDocumentEvent { IsNew = true, EventId = model.EventIds });
 
                 if (!ctx.IsAdmin)
                 {
