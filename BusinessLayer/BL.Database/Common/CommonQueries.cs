@@ -487,11 +487,11 @@ namespace BL.Database.Common
                 {
                     if (filter.IsNew.Value)
                     {
-                        qry = qry.Where(x => !x.ReadDate.HasValue);
+                        qry = qry.Where(x => !x.ReadDate.HasValue && x.TargetPositionId.HasValue && x.TargetPositionId != x.SourcePositionId);
                     }
                     else
                     {
-                        qry = qry.Where(x => x.ReadDate.HasValue);
+                        qry = qry.Where(x => x.ReadDate.HasValue && x.TargetPositionId.HasValue && x.TargetPositionId != x.SourcePositionId);
                     }
                 }
 

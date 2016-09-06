@@ -148,7 +148,7 @@ namespace DMS_WebAPI.Models
             items.Add(new AdminLanguageValues { Id = 102, LanguageId = 2, Label = "##l@DmsExceptions:DocumentRestrictedSendListDuplication@l##", Value = "Duplicate Entry DocumentRestrictSendList" });
             items.Add(new AdminLanguageValues { Id = 103, LanguageId = 1, Label = "##l@DmsExceptions:WrongDocumentSendListEntry@l##", Value = "Некорректный пункт плана" });
             items.Add(new AdminLanguageValues { Id = 104, LanguageId = 2, Label = "##l@DmsExceptions:WrongDocumentSendListEntry@l##", Value = "Plan item is wrong." });
-            items.Add(new AdminLanguageValues { Id = 105, LanguageId = 1, Label = "##l@DmsExceptions:DocumentSendListNotFoundInDocumentRestrictedSendList@l##", Value = "Список рассылок для документа не найден в разрешающем списке рассылок для документа" });
+            items.Add(new AdminLanguageValues { Id = 105, LanguageId = 1, Label = "##l@DmsExceptions:DocumentSendListNotFoundInDocumentRestrictedSendList@l##", Value = "Получатель не найден в разрешающем списке рассылок для документа" });
             items.Add(new AdminLanguageValues { Id = 106, LanguageId = 2, Label = "##l@DmsExceptions:DocumentSendListNotFoundInDocumentRestrictedSendList@l##", Value = "DocumentSendList not found in DocumentRestrictedSendList" });
             items.Add(new AdminLanguageValues { Id = 107, LanguageId = 1, Label = "##l@DmsExceptions:DocumentSendListDoesNotMatchTheTemplate@l##", Value = "Список рассылок для документа не соответствует шаблону" });
             items.Add(new AdminLanguageValues { Id = 108, LanguageId = 2, Label = "##l@DmsExceptions:DocumentSendListDoesNotMatchTheTemplate@l##", Value = "Document SendList does not match the template" });

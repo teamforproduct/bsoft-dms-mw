@@ -21,33 +21,37 @@ namespace BL.Database.DBModel.Document
         }
 
         public int Id { get; set; }
-        [Index("IX_DocumentEvents_ReadDate", 3)]
+        [Index("IX_ReadDate", 3)]
+        [Index("IX_DocumentId",1)]
         public int DocumentId { get; set; }
         public int EventTypeId { get; set; }
         public DateTime CreateDate { get; set; }
         [Index("IX_Date", 1)]
         public DateTime Date { get; set; }
-        [Index("IX_DocumentEvents_IsAvailableWithinTask", 2)]
+        [Index("IX_IsAvailableWithinTask", 2)]
+        [Index("IX_TaskId",1)]
         public Nullable<int> TaskId { get; set; }
         //public string TaskName { get; set; }
         [MaxLength(2000)]
         public string Description { get; set; }
         [MaxLength(2000)]
         public string AddDescription { get; set; }
-        [Index("IX_DocumentEvents_ReadDate", 4)]
+        [Index("IX_ReadDate", 4)]
+        [Index("IX_SourcePositionId",1)]
         public int? SourcePositionId { get; set; }
         public Nullable<int> SourcePositionExecutorAgentId { get; set; }
         public int? SourceAgentId { get; set; }
-        [Index("IX_DocumentEvents_ReadDate", 2)]
+        [Index("IX_ReadDate", 2)]
+        [Index("IX_TargetPositionId",1)]
         public Nullable<int> TargetPositionId { get; set; }
         public Nullable<int> TargetPositionExecutorAgentId { get; set; }
         public Nullable<int> TargetAgentId { get; set; }
 
-        [Index("IX_DocumentEvents_IsAvailableWithinTask", 1)]
+        [Index("IX_IsAvailableWithinTask", 1)]
         public bool IsAvailableWithinTask { get; set; }
         public Nullable<DateTime> SendDate { get; set; }
 
-        [Index("IX_DocumentEvents_ReadDate", 1)]
+        [Index("IX_ReadDate", 1)]
         public Nullable<DateTime> ReadDate { get; set; }
         public Nullable<int> ReadAgentId { get; set; }
 
@@ -64,7 +68,7 @@ namespace BL.Database.DBModel.Document
 
 
         public int LastChangeUserId { get; set; }
-        [Index("IX_LastChangeDate")]
+        [Index("IX_LastChangeDate",1)]
         public DateTime LastChangeDate { get; set; }
 
         [ForeignKey("DocumentId")]

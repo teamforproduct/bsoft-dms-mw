@@ -19,6 +19,7 @@ namespace BL.Database.DBModel.Dictionary
         [Index("IX_Name", 1, IsUnique = true)]
         public string Name { get; set; }
         [Index("IX_Name", 2, IsUnique = true)]
+        [Index("IX_DepartmentId", 1)]
         public int DepartmentId { get; set; }
         [Index("IX_Name", 3, IsUnique = true)]
         [MaxLength(200)]

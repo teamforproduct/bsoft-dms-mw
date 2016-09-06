@@ -42,7 +42,7 @@ namespace BL.Database.DBModel.Document
 
         public int LastChangeUserId { get; set; }
 
-        [Index("IX_LastChangeDate")]
+        [Index("IX_LastChangeDate",1)]
         public DateTime LastChangeDate { get; set; }
         [ForeignKey("DocumentId")]
         public virtual Documents Document { get; set; }
