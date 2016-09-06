@@ -1192,6 +1192,13 @@ namespace BL.Database.Documents
                     {
                         Id = x.Id,
                     }).ToList();
+                doc.RestrictedSendLists = dbContext.DocumentRestrictedSendListsSet
+                    .Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == model.DocumentId)
+                    .GroupBy(x => x.PositionId)
+                    .Select(x => new InternalDocumentRestrictedSendList
+                    {
+                        PositionId = x.Key
+                    }).ToList();
                 return doc;
             }
         }

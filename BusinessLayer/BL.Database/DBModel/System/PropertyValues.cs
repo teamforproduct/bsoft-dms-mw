@@ -12,8 +12,10 @@ namespace BL.Database.DBModel.System
     {
         public int Id { get; set; }
         [Index("IX_PropertyLinkRecord", 1, IsUnique = true)]
+        [Index("IX_RecordId", 2, IsUnique = true)]
         public int PropertyLinkId { get; set; }
         [Index("IX_PropertyLinkRecord", 2, IsUnique = true)]
+        [Index("IX_RecordId", 1, IsUnique = true)]
         public int RecordId { get; set; }
         [MaxLength(2000)]
         public string ValueString { get; set; }

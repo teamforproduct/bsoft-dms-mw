@@ -19,7 +19,7 @@ namespace BL.Database.DBModel.Document
         public Nullable<int> OffEventId { get; set; }
         public Nullable<int> ResultTypeId { get; set; }
 
-        [Index("IX_DueDate")]
+        [Index("IX_DueDate",1)]
         public Nullable<DateTime> DueDate { get; set; }
         public Nullable<DateTime> AttentionDate { get; set; }
         [MaxLength(2000)]

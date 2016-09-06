@@ -103,6 +103,19 @@ namespace BL.Logic.SystemServices.AutoPlan
                         catch (Exception ex)
                         {
                             _logger.Error(ctx, $"AutoPlanService cannot process SendList Id={id} ", ex);
+                            try
+                            {
+                                var docId = _docDb.GetDocumentIdBySendListId(ctx, id);
+                                if (docId > 0)
+                                {
+                                    var cmdStop = DocumentCommandFactory.GetDocumentCommand(EnumDocumentActions.StopPlan, ctx, null, docId);
+                                    _cmdService.ExecuteCommand(cmdStop);
+                                }
+                            }
+                            catch (Exception ex2)
+                            {
+                                _logger.Error(ctx, $"AutoPlanService cannot Stop plan for SendList Id={id} ", ex2);
+                            }
                         }
                     }
                 }

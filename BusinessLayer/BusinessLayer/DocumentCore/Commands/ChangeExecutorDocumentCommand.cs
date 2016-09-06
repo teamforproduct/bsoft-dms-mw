@@ -58,6 +58,13 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new CouldNotChangeAttributeLaunchPlan();
             }
+            if ((_document.RestrictedSendLists?.Any() ?? false)
+                && !_document.RestrictedSendLists.Select(x => x.PositionId).Contains(Model.PositionId)
+                )
+            {
+                throw new DocumentSendListNotFoundInDocumentRestrictedSendList();
+            }
+
             if (Model.PaperEvents != null && Model.PaperEvents.Any())
             {
                 _admin.VerifyAccess(_context, EnumDocumentActions.PlanDocumentPaperEvent);
@@ -77,6 +84,7 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new ExecutorAgentForPositionIsNotDefined();
             }
+
             return true;
         }
 

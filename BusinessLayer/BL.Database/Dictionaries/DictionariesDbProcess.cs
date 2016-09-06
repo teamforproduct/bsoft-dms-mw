@@ -3423,8 +3423,12 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context))
             {
-                return dbContext.DictionaryPositionsSet.Where(x => x.Department.Company.ClientId == context.CurrentClientId).Where(x => x.Id == id)
-                    .Select(x => x.ExecutorAgentId).FirstOrDefault();
+                var qry = dbContext.DictionaryPositionsSet.AsQueryable();
+                if (!context.IsAdmin)
+                {
+                    qry = qry.Where(x => x.Department.Company.ClientId == context.CurrentClientId);
+                }
+                return qry.Where(x => x.Id == id).Select(x => x.ExecutorAgentId).FirstOrDefault();
             }
         }
 

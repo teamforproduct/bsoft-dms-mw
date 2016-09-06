@@ -30,7 +30,7 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanBeDisplayed(int positionId)
         {
-            if (_document.ExecutorPositionId != positionId
+            if ((_document.ExecutorPositionId != positionId && !_context.IsAdmin)
                 || !_document.IsLaunchPlan
                 )
             {
@@ -48,7 +48,11 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
-            if (!_context.IsAdmin)
+            if (_context.IsAdmin)
+            {
+                _context.SetCurrentPosition((int)EnumSystemPositions.AdminPosition);
+            }
+            else
             {
                 _context.SetCurrentPosition(_document.ExecutorPositionId);
             }

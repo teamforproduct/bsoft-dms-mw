@@ -27,9 +27,10 @@ namespace BL.Database.DBModel.Document
         [Index("IX_IsRegistered", 2)]
         public int Id { get; set; }
         [Index("IX_IsRegistered", 3)]
+        [Index("IX_TemplateDocumentId", 1)]
         public int TemplateDocumentId { get; set; }
 
-        [Index("IX_CreateDate")]
+        [Index("IX_CreateDate",1)]
         public DateTime CreateDate { get; set; }
         public Nullable<int> DocumentSubjectId { get; set; }
         [MaxLength(2000)]
@@ -37,7 +38,7 @@ namespace BL.Database.DBModel.Document
         [MaxLength(2000)]
         public string AddDescription { get; set; }
 
-        [Index("IX_IsRegistered")]
+        [Index("IX_IsRegistered",1)]
         public bool? IsRegistered { get; set; }
         public Nullable<int> RegistrationJournalId { get; set; }
         [MaxLength(2000)]
