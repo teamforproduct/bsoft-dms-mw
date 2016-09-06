@@ -1388,7 +1388,6 @@ namespace BL.Database.Dictionaries
 
                 return qry.Select(x => new InternalDictionaryAgentClientCompany
                 {
-                    // pss Перегонка значений DictionaryCompany
                     Id = x.Id,
                     IsActive = x.IsActive,
                     Name = x.FullName,
@@ -3387,7 +3386,7 @@ namespace BL.Database.Dictionaries
             {
                 var dd = DictionaryModelConverter.GetDbPosition(context, position);
                 dbContext.DictionaryPositionsSet.Add(dd);
-                //pss нельзя зодифицировать поля, которые проставляет вертушка
+                //pss нельзя модифицировать поля, которые проставляет вертушка
 
                 CommonQueries.AddFullTextCashInfo(dbContext, dd.Id, EnumObjects.DictionaryPositions, EnumOperationType.AddNew);
                 dbContext.SaveChanges();
@@ -3841,7 +3840,6 @@ namespace BL.Database.Dictionaries
 
                 return qry.Select(x => new InternalDictionaryPositionExecutor
                 {
-                    // pss Перегонка значений DictionaryPositionExecutors
                     Id = x.Id,
                     IsActive = x.IsActive,
                     AgentId = x.AgentId,
@@ -3865,7 +3863,6 @@ namespace BL.Database.Dictionaries
 
                 return qry.Select(x => new FrontDictionaryPositionExecutor
                 {
-                    // pss Перегонка значений DictionaryPositionExecutors
                     Id = x.Id,
                     IsActive = x.IsActive,
                     AgentId = x.AgentId,
@@ -4133,7 +4130,6 @@ namespace BL.Database.Dictionaries
 
                 return qry.Select(x => new InternalDictionaryRegistrationJournal
                 {
-                    // pss Перегонка значений DictionaryRegistrationJournals
                     Id = x.Id,
                     IsActive = x.IsActive,
                     Name = x.Name,
@@ -4163,7 +4159,6 @@ namespace BL.Database.Dictionaries
 
                 return qry.Select(x => new FrontDictionaryRegistrationJournal
                 {
-                    // pss Перегонка значений DictionaryRegistrationJournals
                     Id = x.Id,
                     IsActive = x.IsActive,
                     Name = x.Name,
