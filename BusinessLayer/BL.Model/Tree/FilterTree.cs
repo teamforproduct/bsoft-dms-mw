@@ -19,6 +19,16 @@ namespace BL.Model.Tree
         public string StartWithTreeId { get; set; }
 
         /// <summary>
+        /// Исключение ветви, TreeId которойначинается на WithoutTreeId. 
+        /// </summary>
+        public string WithoutTreeId { get; set; }
+
+        /// <summary>
+        /// Ограничение количества уровней. Понятие уровня определяется конкретной процедурой.
+        /// </summary>
+        public int LevelCount { get; set; }
+
+        /// <summary>
         /// Начинает построение дерева с указанного ParentID. 
         /// </summary>
         [IgnoreDataMember]

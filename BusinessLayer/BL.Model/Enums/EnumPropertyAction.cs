@@ -8,5 +8,7 @@
         AddPropertyLink = 312001, // Добавить связь динамических аттрибутов
         ModifyPropertyLink = 312005, // Изменить связь динамических аттрибутов
         DeletePropertyLink = 312009, // Удалить связь динамических аттрибутов
+
+        ModifyPropertyValues = 313005
     }
 }

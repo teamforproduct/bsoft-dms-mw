@@ -110,15 +110,15 @@
         /// <summary>
         /// Добавить контакт
         /// </summary>
-        AddContact = 207001,
+        AddAgentContact = 207001,
         /// <summary>
         /// Изменить контакт
         /// </summary>
-        ModifyContact = 207005,
+        ModifyAgentContact = 207005,
         /// <summary>
         /// Удалить контакт
         /// </summary>
-        DeleteContact = 207009,
+        DeleteAgentContact = 207009,
         #endregion Contacts
 
         // Адреса
@@ -169,7 +169,10 @@
         /// </summary>
         DeleteDepartment = 210009,
         #endregion DictionaryDepartment
-     
+
+        AddExecutorType = 219001,
+        ModifyExecutorType = 219005,
+        DeleteExecutorType = 219009,
         // Штатное расписание
         #region DictionaryPositions
         /// <summary>
@@ -222,11 +225,10 @@
 
 
 
-
         /// <summary>
         /// добавить юрлицо
         /// </summary>
-        AddAgentCompany=213001,
+        AddAgentCompany =213001,
         /// <summary>
         /// изменить юрлицо
         /// </summary>
@@ -289,17 +291,17 @@
         /// <summary>
         /// Добавить запись в справочнике "Компании"
         /// </summary>
-        AddCompany = 218001,
+        AddAgentClientCompany = 218001,
 
         /// <summary>
         /// Изменить запись в справочнике "Компании"
         /// </summary>
-        ModifyCompany = 218005,
+        ModifyAgentClientCompany = 218005,
 
         /// <summary>
         /// Удалить запись в справочнике "Компании"
         /// </summary>
-        DeleteCompany = 218009,
+        DeleteAgentClientCompany = 218009,
         #endregion DictionaryCompanies
 
 
@@ -328,30 +330,30 @@
         /// <summary>
         /// Добавить тип пользовательского словаря
         /// </summary>
-        AddCustomDictionaryType,
+        AddCustomDictionaryType = 301001,
         /// <summary>
         /// Редактировать тип пользовательского словаря
         /// </summary>
-        ModifyCustomDictionaryType,
+        ModifyCustomDictionaryType = 301005,
         /// <summary>
         /// Удалить тип пользовательского словаря
         /// </summary>
-        DeleteCustomDictionaryType,
+        DeleteCustomDictionaryType = 301009,
         #endregion CustomDictionaryType
 
         #region CustomDictionary
         /// <summary>
         /// Добавит пользовательсткий словать
         /// </summary>
-        AddCustomDictionary,
+        AddCustomDictionary = 302001,
         /// <summary>
         /// Редактировать пользовательский словарь
         /// </summary>
-        ModifyCustomDictionary,
+        ModifyCustomDictionary = 302005,
         /// <summary>
         /// Удалить пользовательский словарь
         /// </summary>
-        DeleteCustomDictionary
+        DeleteCustomDictionary = 302009
         #endregion CustomDictionary
     }
 }

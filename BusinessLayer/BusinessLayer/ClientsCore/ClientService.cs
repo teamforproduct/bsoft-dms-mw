@@ -167,19 +167,25 @@ namespace BL.Logic.ClientCore
             //pss локализиция наименований ролей
             _AdminDb.AddNamedRole(context, "Admin", "Администратор", GetRoleActionsForAdmin(context));
 
-            _AdminDb.AddNamedRole(context, "DocumentActions", "Корректировка документов", GetRoleActionsForDocumentActions());
+            _AdminDb.AddNamedRole(context, "DocumentReview", "Просмотр документов", GetRoleActionsForDocumentReview());
 
-            _AdminDb.AddNamedRole(context, "ControlOfExecution", "Контроль", GetRoleActionsForControlOfExecution());
+            _AdminDb.AddNamedRole(context, "DocumentActions", "Выполнения действий по документу", GetRoleActionsForDocumentReview());
 
-            _AdminDb.AddNamedRole(context, "Signing", "Подпись", GetRoleActionsForSigning());
+            _AdminDb.AddNamedRole(context, "DocumentControl", "Управление контролем по документу", GetRoleActionsForDocumentControl());
 
-            _AdminDb.AddNamedRole(context, "ChangeExecutor", "Выбор исполнителя", GetRoleActionsForChangeExecutor());
+            _AdminDb.AddNamedRole(context, "DocumentSigning", "Подписание документа", GetRoleActionsForSigning());
 
-            _AdminDb.AddNamedRole(context, "DBN Control", "Управление ДБН", GetRoleActionsForDBNControl());
+            _AdminDb.AddNamedRole(context, "DocumentPapers", "Управление бумажными носителями по документу", GetRoleActionsForPapers());
 
-            _AdminDb.AddNamedRole(context, "Director", "Директор", GetRoleActionsForDirector());
+            _AdminDb.AddNamedRole(context, "DocumentAccess", "Управление доступом к документам", GetRoleActionsForDocumentAccess());
 
-            _AdminDb.AddNamedRole(context, "EmployeeDMS", "Сотрудник", GetRoleActionsForEmployeeDMS());
+            _AdminDb.AddNamedRole(context, "DictionariesDMS", "Управление справочниками документоооборота", GetRoleActionsForDictionaryDMS());
+
+            _AdminDb.AddNamedRole(context, "DictionaryAgents", "Управление справочником контрагентов", GetRoleActionsForDictionaryAgents());
+
+            _AdminDb.AddNamedRole(context, "DictionaryAgentContacts", "Управление справочником контактных лиц котрагентов", GetRoleActionsForDictionaryAgentContats());
+
+            _AdminDb.AddNamedRole(context, "DictionaryStaffList", "Управление структурой организации", GetRoleActionsForDictionaryStaffList());
 
             return true;
 
@@ -191,24 +197,107 @@ namespace BL.Logic.ClientCore
             return _AdminDb.GetRoleActionsForAdmin(context);
         }
 
+        private List<InternalAdminRoleAction> GetRoleActionsForDocumentReview()
+        {
+            var items = new List<InternalAdminRoleAction>();
+
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.ViewDocument });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.AddSavedFilter });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.ModifySavedFilter });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.DeleteSavedFilter });
+            return items;
+        }
+
         private List<InternalAdminRoleAction> GetRoleActionsForDocumentActions()
         {
             var items = new List<InternalAdminRoleAction>();
 
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.AddDocument });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.CopyDocument });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.ModifyDocument });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.DeleteDocument });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.LaunchPlan });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.AddDocumentSendListItem });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.StopPlan });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.ChangeExecutor });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.RegisterDocument });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.MarkDocumentEventAsRead });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.SendForInformation });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.SendForConsideration });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.SendForInformationExternal });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.SendDocument });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.SendForVisaing });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.SendForАgreement });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.SendForАpproval });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.SendForSigning });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.WithdrawVisaing });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.WithdrawАgreement });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.WithdrawАpproval });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.WithdrawSigning });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.SendMessage });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.AddNote });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.ReportRegistrationCardDocument });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.ПосмотретьPDFДокументаПередПодписанием });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.ПолучитьПодписаныйPDFДокумента });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.AddFavourite });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.DeleteFavourite });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.FinishWork });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.StartWork });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.AddDocumentRestrictedSendList });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.AddByStandartSendListDocumentRestrictedSendList });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.DeleteDocumentRestrictedSendList });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.AddDocumentSendList });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.CopyDocumentSendList });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.ModifyDocumentSendList });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.DeleteDocumentSendList });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.AddDocumentSendListStage });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.DeleteDocumentSendListStage });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.LaunchDocumentSendListItem });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.AddDocumentFile });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.ModifyDocumentFile });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.DeleteDocumentFile });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.AddDocumentFileUseMainNameFile });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.AcceptDocumentFile });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.RejectDocumentFile });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.RenameDocumentFile });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.DeleteDocumentFileVersion });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.DeleteDocumentFileVersionRecord });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.AcceptMainVersionDocumentFile });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.AddDocumentLink });
-            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.AddDocumentPaper });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.DeleteDocumentLink });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.AddDocumentTask });
-            ///...
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.ModifyDocumentTask });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.DeleteDocumentTask });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.ModifyDocumentTags });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.AddStandartSendListContent });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.ModifyStandartSendListContent });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.DeleteStandartSendListContent });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.AddStandartSendList });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.ModifyStandartSendList });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.DeleteStandartSendList });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.AddTag });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.ModifyTag });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.DeleteTag });
+
             return items;
         }
 
-        private List<InternalAdminRoleAction> GetRoleActionsForControlOfExecution()
+        private List<InternalAdminRoleAction> GetRoleActionsForDocumentControl()
         {
             var items = new List<InternalAdminRoleAction>();
 
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.ControlOn });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.ControlChange });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.SendForExecutionChange });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.SendForResponsibleExecutionChange });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.ControlTargetChange });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.ControlOff });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.SendForControl });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.SendForResponsibleExecution });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.SendForExecution });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.MarkExecution });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.AcceptResult });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.RejectResult });
 
             return items;
         }
@@ -221,20 +310,19 @@ namespace BL.Logic.ClientCore
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.AffixSigning });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.SelfAffixSigning });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.RejectSigning });
-            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.RejectVisaing });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.RejectАpproval });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.ПосмотретьPDFДокументаПередПодписанием });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.ПолучитьПодписаныйPDFДокумента });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumEncryptionActions.AddEncryptionCertificate });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumEncryptionActions.ModifyEncryptionCertificate });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumEncryptionActions.ExportEncryptionCertificate });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumEncryptionActions.DeleteEncryptionCertificate });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumEncryptionActions.GenerateKeyEncryptionCertificate });
+
             return items;
         }
 
-        private List<InternalAdminRoleAction> GetRoleActionsForChangeExecutor()
-        {
-            var items = new List<InternalAdminRoleAction>();
-
-            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.ChangeExecutor });
-
-            return items;
-        }
-
-        private List<InternalAdminRoleAction> GetRoleActionsForDBNControl()
+        private List<InternalAdminRoleAction> GetRoleActionsForPapers()
         {
             var items = new List<InternalAdminRoleAction>();
 
@@ -248,27 +336,156 @@ namespace BL.Logic.ClientCore
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.SendDocumentPaperEvent });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.CancelSendDocumentPaperEvent });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.RecieveDocumentPaperEvent });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.AddDocumentPaperList });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.ModifyDocumentPaperList });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.DeleteDocumentPaperList });
 
             return items;
         }
 
-        private List<InternalAdminRoleAction> GetRoleActionsForDirector()
+        private List<InternalAdminRoleAction> GetRoleActionsForDocumentAccess()
         {
             var items = new List<InternalAdminRoleAction>();
 
-            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumAdminActions.AddRole });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.ChangePosition });
 
             return items;
         }
 
-        private List<InternalAdminRoleAction> GetRoleActionsForEmployeeDMS()
+        private List<InternalAdminRoleAction> GetRoleActionsForDictionaryDMS()
         {
             var items = new List<InternalAdminRoleAction>();
 
-            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.AddNote });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.AddDocumentType });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.ModifyDocumentType });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.DeleteDocumentType });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.AddAddressType });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.ModifyAddressType });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.DeleteAddressType });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.AddDocumentSubject });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.ModifyDocumentSubject });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.DeleteDocumentSubject });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.AddRegistrationJournal });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.ModifyRegistrationJournal });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.DeleteRegistrationJournal });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.AddContactType });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.ModifyContactType });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.DeleteContactType });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.AddExecutorType });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.ModifyExecutorType });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.DeleteExecutorType });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.AddExecutor });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.ModifyExecutor });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.DeleteExecutor });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.AddTemplateDocument });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.ModifyTemplateDocument });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.DeleteTemplateDocument });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.AddTemplateDocumentSendList });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.ModifyTemplateDocumentSendList });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.DeleteTemplateDocumentSendList });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.AddTemplateDocumentRestrictedSendList });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.ModifyTemplateDocumentRestrictedSendList });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.DeleteTemplateDocumentRestrictedSendList });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.AddTemplateDocumentTask });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.ModifyTemplateDocumentTask });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.DeleteTemplateDocumentTask });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.AddTemplateAttachedFile });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.ModifyTemplateAttachedFile });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.DeleteTemplateAttachedFile });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.AddTag });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.ModifyTag });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.DeleteTag });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.AddCustomDictionaryType });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.ModifyCustomDictionaryType });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.DeleteCustomDictionaryType });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.AddCustomDictionary });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.ModifyCustomDictionary });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.DeleteCustomDictionary });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumPropertyAction.AddProperty });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumPropertyAction.ModifyProperty });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumPropertyAction.DeleteProperty });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumPropertyAction.AddPropertyLink });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumPropertyAction.ModifyPropertyLink });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumPropertyAction.DeletePropertyLink });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumPropertyAction.ModifyPropertyValues });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumEncryptionActions.AddEncryptionCertificateType });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumEncryptionActions.ModifyEncryptionCertificateType });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumEncryptionActions.DeleteEncryptionCertificateType });
 
             return items;
         }
+
+        private List<InternalAdminRoleAction> GetRoleActionsForDictionaryAgents()
+        {
+            var items = new List<InternalAdminRoleAction>();
+
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.AddAgent });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.ModifyAgent });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.DeleteAgent });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.AddAgentAddress });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.ModifyAgentAddress });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.DeleteAgentAddress });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.AddAgentPerson });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.ModifyAgentPerson });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.DeleteAgentPerson });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.AddAgentEmployee });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.ModifyAgentEmployee });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.DeleteAgentEmployee });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.AddAgentCompany });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.ModifyAgentCompany });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.DeleteAgentCompany });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.AddAgentBank });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.ModifyAgentBank });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.DeleteAgentBank });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.AddAgentAccount });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.ModifyAgentAccount });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.DeleteAgentAccount });
+
+
+            return items;
+        }
+
+        private List<InternalAdminRoleAction> GetRoleActionsForDictionaryAgentContats()
+        {
+            var items = new List<InternalAdminRoleAction>();
+
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.AddAgentContact });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.ModifyAgentContact });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.DeleteAgentContact });
+
+            return items;
+        }
+
+        private List<InternalAdminRoleAction> GetRoleActionsForDictionaryStaffList()
+        {
+            var items = new List<InternalAdminRoleAction>();
+
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.AddAgentPerson });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.ModifyAgentPerson });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.DeleteAgentPerson });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.AddDepartment });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.ModifyDepartment });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.DeleteDepartment });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.AddPosition });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.ModifyPosition });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.DeletePosition });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.AddAgentEmployee });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.ModifyAgentEmployee });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.DeleteAgentEmployee });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.AddStandartSendListContent });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.ModifyStandartSendListContent });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.DeleteStandartSendListContent });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.AddStandartSendList });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.ModifyStandartSendList });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.DeleteStandartSendList });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.AddAgentClientCompany });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.ModifyAgentClientCompany });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.DeleteAgentClientCompany });
+
+            return items;
+        }
+
+        
         #endregion
        
 

@@ -17,7 +17,11 @@ namespace BL.Logic.TreeBuilder
 
             bool startWithCondition = (filter.StartWithTreeId ?? string.Empty) != string.Empty;
 
-            var res = GetBranch(flatList, filter, string.Empty, startWithCondition);
+            bool notStartWithCondition = (filter.WithoutTreeId ?? string.Empty) != string.Empty;
+
+            int level = -1;
+
+            var res = GetBranch(flatList, filter, ref level, ref notStartWithCondition, string.Empty, startWithCondition);
 
             if ((filter.Name ?? string.Empty) != string.Empty)
             {
@@ -28,7 +32,7 @@ namespace BL.Logic.TreeBuilder
                 if (safeList.Count > 0)
                 {
                     flatList.RemoveAll(r => !safeList.Contains(r.TreeId));
-                    res = GetBranch(flatList, filter, string.Empty, startWithCondition);
+                    res = GetBranch(flatList, filter, ref level, ref notStartWithCondition, string.Empty,  startWithCondition);
                 }
                 else
                 {
@@ -40,23 +44,36 @@ namespace BL.Logic.TreeBuilder
         }
 
 
-        private static List<TreeItem> GetBranch(List<TreeItem> flatList, FilterTree filter, string path = "", bool startWithCondition = false)
+        private static List<TreeItem> GetBranch(List<TreeItem> flatList, FilterTree filter, ref int level, ref bool notStartWithCondition,  string path = "",  bool startWithCondition = false)
         {
             var list = new List<TreeItem>();
 
             if (flatList != null)
             {
+                level++;
+
                 foreach (var item in flatList)
+                {
+                    if (notStartWithCondition)
+                    {
+                        if (item.TreeId == filter.WithoutTreeId)  continue; 
+                    }
+
                     if (startWithCondition ? IsStartWithItem(item, filter) : IsNeighbourItem(item, filter))
                     {
                         item.IsUsed = true;
+                        item.Level = level;
                         item.Path = ((path == string.Empty) ? "" : (path + "/")) + item.TreeId;
                         list.Add(item);
-                        item.Childs = GetBranch(flatList, new FilterTree() { StartWithTreeParentId = item.TreeId }, item.Path);
+                        item.Childs = GetBranch(flatList, new FilterTree() { StartWithTreeParentId = item.TreeId , WithoutTreeId = filter.WithoutTreeId}, ref level, ref notStartWithCondition, item.Path);
                     }
+                }
+
+                level--;
             }
 
             return list;
+
         }
 
         private static void GetSafeList(List<TreeItem> tree, List<string> safeList, FilterTree filter)

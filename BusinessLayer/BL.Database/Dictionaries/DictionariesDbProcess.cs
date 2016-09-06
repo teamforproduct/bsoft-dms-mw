@@ -3897,12 +3897,13 @@ namespace BL.Database.Dictionaries
                 return qry.Select(x => new TreeItem
                 {
                     Id = x.Id,
-                    Name = string.Concat(x.Agent.Name, " - ", x.PositionExecutorType.Name),
+                    Name = x.Agent.Name,
                     ObjectId = (int)EnumObjects.DictionaryPositionExecutors,
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = x.PositionId.ToString() + "_" + parObjId,
                     IsActive = x.IsActive,
-                    IsList = true
+                    IsList = true,
+                    Description = x.PositionExecutorType.Code
                 }).ToList();
             }
         }
