@@ -161,9 +161,9 @@ namespace BL.Logic.SystemServices.FullTextSearch
         public IEnumerable<FullTextSearchResult> SearchDictionary(string text, int clientId)
         {
             var parser = new QueryParser(Version.LUCENE_30, FIELD_BODY, _analyzer);
-            parser.AllowLeadingWildcard = true;
-            //var conditionQry = parser.Parse(text);
-            var conditionQry=new FuzzyQuery(new Term(FIELD_BODY,text));
+            //parser.AllowLeadingWildcard = true;
+            var conditionQry = parser.Parse(text);
+            //var conditionQry=new FuzzyQuery(new Term(FIELD_BODY,text));
             
             var idQry = NumericRangeQuery.NewIntRange(FIELD_DOC_ID, 0, 0, true, true);
             var clientQry = new TermQuery(new Term(FIELD_CLIENT_ID, clientId.ToString()));
