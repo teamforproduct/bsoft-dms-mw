@@ -179,7 +179,7 @@ namespace BL.Database.Dictionaries.Interfaces
         int AddExecutor(IContext context, InternalDictionaryPositionExecutor docType);
         void UpdateExecutor(IContext context, InternalDictionaryPositionExecutor docType);
         void DeleteExecutor(IContext context, InternalDictionaryPositionExecutor docType);
-        bool ExistsExecutor(IContext context, FilterDictionaryPositionExecutor filter);
+        bool ExistsPositionExecutor(IContext context, FilterDictionaryPositionExecutor filter);
         InternalDictionaryPositionExecutor GetInternalDictionaryPositionExecutor(IContext context, FilterDictionaryPositionExecutor filter);
         IEnumerable<FrontDictionaryPositionExecutor> GetPositionExecutors(IContext context, FilterDictionaryPositionExecutor filter);
         IEnumerable<TreeItem> GetPositionExecutorsForTree(IContext context, FilterDictionaryPositionExecutor filter);

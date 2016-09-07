@@ -1099,7 +1099,33 @@ namespace BL.Database.Dictionaries
 
                 qry = qry.Where(x => x.AgentId == filter.AgentId);
 
-                qry = qry.OrderBy(x => x.Address);
+                qry = qry.OrderBy(x => x.AddressType.Code).ThenBy(x=> x.Address);
+
+                // Список первичных ключей
+                if (filter.IDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<DictionaryAgentAddresses>();
+                    filterContains = filter.IDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                // Исключение списка первичных ключей
+                if (filter.NotContainsIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<DictionaryAgentAddresses>();
+                    filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id != value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                // Тоько активные/неактивные
+                if (filter.IsActive != null)
+                {
+                    qry = qry.Where(x => filter.IsActive == x.IsActive);
+                }
 
                 if (filter.AddressTypeId?.Count > 0)
                 {
@@ -1140,16 +1166,13 @@ namespace BL.Database.Dictionaries
                     }
                 }
 
-                if (filter.IsActive != null)
-                {
-                    qry = qry.Where(x => x.IsActive == filter.IsActive);
-                }
+              
 
                 return qry.Select(x => new FrontDictionaryAgentAddress
                 {
                     Id = x.Id,
                     AgentId = x.AgentId,
-                    AddressType = new FrontDictionaryAddressType { Id = x.AddressType.Id, Name = x.AddressType.Name },
+                    AddressType = new FrontDictionaryAddressType { Id = x.AddressType.Id, Code = x.AddressType.Code, Name = x.AddressType.Name },
                     Address = x.Address,
                     PostCode = x.PostCode,
                     Description = x.Description,
@@ -1382,15 +1405,15 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context))
             {
-                var qry = dbContext.DictionaryAgentClientCompaniesSet.AsQueryable();
-
-                qry = GetWhereAgentClientCompany(ref qry, filter);
+                var qry = GetAgentClientCompaniesQuery(context, dbContext, filter);
 
                 return qry.Select(x => new InternalDictionaryAgentClientCompany
                 {
                     Id = x.Id,
                     IsActive = x.IsActive,
-                    Name = x.FullName,
+                    Name = x.Agent.Name,
+                    FullName = x.FullName,
+                    Description = x.Description,
                     LastChangeUserId = x.LastChangeUserId,
                     LastChangeDate = x.LastChangeDate
                 }).FirstOrDefault();
@@ -1441,31 +1464,24 @@ namespace BL.Database.Dictionaries
 
             qry = GetWhereAgentClientCompany(ref qry, filter);
 
-            qry = qry.OrderBy(x => x.FullName);
+            qry = qry.OrderBy(x => x.Agent.Name);
 
             return qry;
         }
 
-        // Для использования в коммандах метод CanExecute
         public bool ExistsAgentClientCompany(IContext context, FilterDictionaryAgentClientCompany filter)
         {
             using (var dbContext = new DmsContext(context))
             {
-                var qry = dbContext.DictionaryAgentClientCompaniesSet.AsQueryable();
+                var qry = GetAgentClientCompaniesQuery(context, dbContext, filter);
 
-                qry = GetWhereAgentClientCompany(ref qry, filter);
-
-                var res = qry.Select(x => new FrontDictionaryAgentClientCompany
-                {
-                    Id = x.Id
-                }).FirstOrDefault();
-
-                return res != null;
+                return qry.Select(x => new FrontDictionaryAgentClientCompany { Id = x.Id }).Any();
             }
         }
 
         private static IQueryable<DictionaryCompanies> GetWhereAgentClientCompany(ref IQueryable<DictionaryCompanies> qry, FilterDictionaryAgentClientCompany filter)
         {
+
             // Список первичных ключей
             if (filter.IDs?.Count > 0)
             {
@@ -2629,7 +2645,7 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context))
             {
-                var qry = GetPositionExecutorsQuery(context, dbContext, filter);
+                var qry = GetDepartmentsQuery(context, dbContext, filter);
 
                 return qry.Select(x => new FrontDictionaryDepartment
                 {
@@ -2652,7 +2668,7 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context))
             {
-                var qry = GetPositionExecutorsQuery(context, dbContext, filter);
+                var qry = GetDepartmentsQuery(context, dbContext, filter);
 
                 var objId = ((int)EnumObjects.DictionaryDepartments).ToString();
                 var companyObjId = ((int)EnumObjects.DictionaryAgentClientCompanies).ToString();
@@ -2670,7 +2686,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IQueryable<DictionaryDepartments> GetPositionExecutorsQuery(IContext context, DmsContext dbContext, FilterDictionaryDepartment filter)
+        public IQueryable<DictionaryDepartments> GetDepartmentsQuery(IContext context, DmsContext dbContext, FilterDictionaryDepartment filter)
         {
             var qry = dbContext.DictionaryDepartmentsSet.Where(x => x.Company.ClientId == context.CurrentClientId).AsQueryable();
 
@@ -2686,16 +2702,9 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context))
             {
-                var qry = dbContext.DictionaryDepartmentsSet.Where(x => x.Company.ClientId == context.CurrentClientId).AsQueryable();
+                var qry = GetDepartmentsQuery(context, dbContext, filter);
 
-                qry = DepartmentGetWhere(ref qry, filter);
-
-                var res = qry.Select(x => new FrontDictionaryDepartment
-                {
-                    Id = x.Id
-                }).FirstOrDefault();
-
-                return res != null;
+                return qry.Select(x => new FrontDictionaryDepartment { Id = x.Id }).Any();
             }
         }
 
@@ -3838,9 +3847,7 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context))
             {
-                var qry = dbContext.DictionaryPositionExecutorsSet.AsQueryable();
-
-                qry = ExecutorGetWhere(ref qry, filter);
+                var qry = GetPositionExecutorsQuery(context, dbContext, filter);
 
                 return qry.Select(x => new InternalDictionaryPositionExecutor
                 {
@@ -3863,7 +3870,7 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context))
             {
-                var qry = GetPositionExecutorsQuery(dbContext, filter);
+                var qry = GetPositionExecutorsQuery(context, dbContext, filter);
 
                 return qry.Select(x => new FrontDictionaryPositionExecutor
                 {
@@ -3889,7 +3896,7 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context))
             {
-                var qry = GetPositionExecutorsQuery(dbContext, filter);
+                var qry = GetPositionExecutorsQuery(context, dbContext, filter);
 
                 string objId = ((int)EnumObjects.DictionaryPositionExecutors).ToString();
                 string parObjId = ((int)EnumObjects.DictionaryPositions).ToString();
@@ -3908,9 +3915,9 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IQueryable<DictionaryPositionExecutors> GetPositionExecutorsQuery(DmsContext dbContext, FilterDictionaryPositionExecutor filter)
+        public IQueryable<DictionaryPositionExecutors> GetPositionExecutorsQuery(IContext context, DmsContext dbContext, FilterDictionaryPositionExecutor filter)
         {
-            var qry = dbContext.DictionaryPositionExecutorsSet.AsQueryable();
+            var qry = dbContext.DictionaryPositionExecutorsSet.Where(x => x.Position.Department.Company.ClientId == context.CurrentClientId).AsQueryable();
 
             qry = qry.OrderBy(x => x.Position.Order).ThenBy(x => x.Agent.Name);
 
@@ -3920,20 +3927,13 @@ namespace BL.Database.Dictionaries
         }
 
         // Для использования в коммандах метод CanExecute
-        public bool ExistsExecutor(IContext context, FilterDictionaryPositionExecutor filter)
+        public bool ExistsPositionExecutor(IContext context, FilterDictionaryPositionExecutor filter)
         {
             using (var dbContext = new DmsContext(context))
             {
-                var qry = dbContext.DictionaryPositionExecutorsSet.AsQueryable();
+                var qry = GetPositionExecutorsQuery(context, dbContext, filter);
 
-                qry = ExecutorGetWhere(ref qry, filter);
-
-                var res = qry.Select(x => new FrontDictionaryPositionExecutor
-                {
-                    Id = x.Id
-                }).FirstOrDefault();
-
-                return res != null;
+                return qry.Select(x => new FrontDictionaryPositionExecutor { Id = x.Id }).Any();
             }
         }
 

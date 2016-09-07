@@ -43,7 +43,7 @@ namespace BL.Logic.DictionaryCore
 
             
 
-            if (_dictDb.ExistsExecutor(_context, fd))
+            if (_dictDb.ExistsPositionExecutor(_context, fd))
             {
                 throw new DictionaryRecordNotUnique();
             }
