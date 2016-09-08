@@ -30,6 +30,9 @@ namespace BL.Logic.DictionaryCore
         public override bool CanExecute()
         {
             _admin.VerifyAccess(_context, CommandType, false);
+
+            //pss Исполнителя можно удалять, если он не породил ни одного события от этой должности
+
             return true;
         }
 
@@ -37,12 +40,7 @@ namespace BL.Logic.DictionaryCore
         {
             try
             {
-                var dd = new InternalDictionaryPositionExecutor
-                {
-                    Id = Model
-
-                };
-                _dictDb.DeleteExecutor(_context, dd);
+                _dictDb.DeleteExecutors(_context, new System.Collections.Generic.List<int> { Model });
                 return null;
             }
             catch (Exception ex)

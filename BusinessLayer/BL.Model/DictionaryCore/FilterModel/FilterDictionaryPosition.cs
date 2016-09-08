@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
@@ -12,6 +13,17 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// Сужение по полному наименованию подразделений
         /// </summary>
         public string FullName { get; set; }
+
+        /// <summary>
+        /// По отделам
+        /// </summary>
+        public List<int> DepartmentIDs { get; set; }
+
+        /// <summary>
+        /// по вышестоящей должности
+        /// </summary>
+        [IgnoreDataMember]
+        public List<int> DarentIDs { get; set; }
 
         /// <summary>
         /// Массив ИД документов для поиска корреспондентов в событиях
