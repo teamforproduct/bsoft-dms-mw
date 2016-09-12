@@ -62,6 +62,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         public override object Execute()
         {
             CommonDocumentUtilities.SetLastChange(_context, _document);
+            _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, _document.Id, EnumEventTypes.AddLink);
             _operationDb.AddDocumentLink(_context, _document);
             return null;
         }
