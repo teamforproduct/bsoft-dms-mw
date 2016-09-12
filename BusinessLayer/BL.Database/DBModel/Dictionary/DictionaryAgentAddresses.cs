@@ -11,11 +11,14 @@ namespace BL.Database.DBModel.Dictionary
     public partial class DictionaryAgentAddresses
     {
         public int Id { get; set; }
+
         [Index("IX_AdressType", 1, IsUnique = true)]
         public int AgentId { get; set; }
+
         [Index("IX_AdressType", 2, IsUnique = true)]
         [Index("IX_AdressTypeId", 1)]
         public int AdressTypeId { get; set; }
+
         [MaxLength(2000)]
         public string PostCode { get; set; }
         [MaxLength(2000)]

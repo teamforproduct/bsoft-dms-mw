@@ -40,12 +40,7 @@ namespace BL.Logic.DictionaryCore
         {
             try
             {
-                var dd = new InternalDictionaryDepartment
-                {
-                    Id = Model
-
-                };
-                _dictDb.DeleteDepartment(_context, dd);
+                _dictDb.DeleteDepartments(_context, new System.Collections.Generic.List<int>() { Model });
                 return null;
             }
             catch (Exception ex)

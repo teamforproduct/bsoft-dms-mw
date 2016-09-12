@@ -58,7 +58,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
-            return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.AddCompany, cxt, model));
+            return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.AddAgentClientCompany, cxt, model));
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             model.Id = id;
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
-            tmpDict.ExecuteAction(EnumDictionaryActions.ModifyCompany, cxt, model);
+            tmpDict.ExecuteAction(EnumDictionaryActions.ModifyAgentClientCompany, cxt, model);
             return Get(model.Id);
         }
 
@@ -87,7 +87,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
 
-            tmpDict.ExecuteAction(EnumDictionaryActions.DeleteCompany, cxt, id);
+            tmpDict.ExecuteAction(EnumDictionaryActions.DeleteAgentClientCompany, cxt, id);
             FrontDictionaryAgentClientCompany tmp = new FrontDictionaryAgentClientCompany();
             tmp.Id = id;
 

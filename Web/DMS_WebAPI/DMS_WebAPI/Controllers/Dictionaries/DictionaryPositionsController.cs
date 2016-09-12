@@ -26,7 +26,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="filter">Параметры для фильтрации записей в словаре "Должности"</param>
         /// <returns>FrontDictionaryPositions</returns>
-        [ResponseType(typeof(List<FrontDictionaryPositions>))]
+        [ResponseType(typeof(List<FrontDictionaryPosition>))]
         public IHttpActionResult Get([FromUri] FilterDictionaryPosition filter)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
@@ -40,7 +40,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="id"></param>
         /// <returns>FrontDictionaryPositions</returns>
-        [ResponseType(typeof(FrontDictionaryPositions))]
+        [ResponseType(typeof(FrontDictionaryPosition))]
         public IHttpActionResult Get(int id)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();

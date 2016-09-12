@@ -83,6 +83,5 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// резидентность
         /// </summary>
         public int? ResidentTypeId { get; set; }
-        //pss Уточниить ResidentTypeId это точно реквизит базовой сущности или выносок
     }
 }

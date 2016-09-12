@@ -39,6 +39,11 @@ namespace BL.Model.Tree
         public int? ObjectId { get; set; }
 
         /// <summary>
+        /// Уровень вложенности элемента
+        /// </summary>
+        public int Level { get; set; }
+
+        /// <summary>
         /// Вспомагательный признак для ускорения построения дерева.
         /// </summary>
         [IgnoreDataMember]

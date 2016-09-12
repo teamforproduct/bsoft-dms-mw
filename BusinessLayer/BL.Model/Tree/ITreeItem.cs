@@ -42,6 +42,11 @@ namespace BL.Model.Tree
         bool IsList { get; set; }
 
         /// <summary>
+        /// Уровень вложенности элемента
+        /// </summary>
+        int Level { get; set; }
+
+        /// <summary>
         /// Список потомков, который формирует универсальная процедура построения дерева.
         /// </summary>
         IEnumerable<ITreeItem> Childs { get; set; }

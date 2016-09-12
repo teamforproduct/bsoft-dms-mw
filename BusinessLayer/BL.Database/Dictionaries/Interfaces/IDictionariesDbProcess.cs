@@ -66,7 +66,7 @@ namespace BL.Database.Dictionaries.Interfaces
         #region DictionaryAgentCompanies
         FrontDictionaryAgentCompany GetAgentCompany(IContext context, int id);
         void UpdateAgentCompany(IContext context, InternalDictionaryAgentCompany company);
-        void DeleteAgentCompany(IContext context, InternalDictionaryAgentCompany company);
+        void DeleteAgentCompanies(IContext context, List<int> list);
         int AddAgentCompany(IContext context, InternalDictionaryAgentCompany company);
         IEnumerable<FrontDictionaryAgentCompany> GetAgentCompanies(IContext context, FilterDictionaryAgentCompany filter, UIPaging paging);
         #endregion DictionaryAgentCompanies
@@ -106,14 +106,17 @@ namespace BL.Database.Dictionaries.Interfaces
         #endregion
 
         #region [+] DictionaryDepartments ...
-        int AddDepartment(IContext context, InternalDictionaryDepartment docType);
-        void UpdateDepartment(IContext context, InternalDictionaryDepartment docType);
-        void DeleteDepartment(IContext context, InternalDictionaryDepartment docType);
+        int AddDepartment(IContext context, InternalDictionaryDepartment model);
+        void UpdateDepartment(IContext context, InternalDictionaryDepartment model);
+        void DeleteDepartments(IContext context, List<int> list);
         bool ExistsDictionaryDepartment(IContext context, FilterDictionaryDepartment filter);
         InternalDictionaryDepartment GetDepartment(IContext context, FilterDictionaryDepartment filter);
 
         IEnumerable<FrontDictionaryDepartment> GetDepartments(IContext context, FilterDictionaryDepartment filter);
-        IEnumerable<TreeItem> GetDepartmentsForTree(IContext context, FilterDictionaryDepartment filter);
+        IEnumerable<FrontDictionaryDepartmentTreeItem> GetDepartmentsForTree(IContext context, FilterDictionaryDepartment filter);
+
+        string GetDepartmentPrefix(IContext context, int parentId);
+
         #endregion DictionaryDepartments
 
         #region DictionaryDocumentDirections
@@ -163,7 +166,7 @@ namespace BL.Database.Dictionaries.Interfaces
 
         int AddPosition(IContext context, InternalDictionaryPosition position);
         void UpdatePosition(IContext context, InternalDictionaryPosition position);
-        void DeletePosition(IContext context, InternalDictionaryPosition position);
+        void DeletePositions(IContext context, List<int> list);
         bool ExistsPosition(IContext context, FilterDictionaryPosition filter);
 
         int? GetExecutorAgentIdByPositionId(IContext context, int id);
@@ -176,10 +179,10 @@ namespace BL.Database.Dictionaries.Interfaces
 
         // Исполнители
         #region [+] DictionaryPositionExecutors ...
-        int AddExecutor(IContext context, InternalDictionaryPositionExecutor docType);
-        void UpdateExecutor(IContext context, InternalDictionaryPositionExecutor docType);
-        void DeleteExecutor(IContext context, InternalDictionaryPositionExecutor docType);
-        bool ExistsExecutor(IContext context, FilterDictionaryPositionExecutor filter);
+        int AddExecutor(IContext context, InternalDictionaryPositionExecutor model);
+        void UpdateExecutor(IContext context, InternalDictionaryPositionExecutor model);
+        void DeleteExecutors(IContext context, List<int> list);
+        bool ExistsPositionExecutor(IContext context, FilterDictionaryPositionExecutor filter);
         InternalDictionaryPositionExecutor GetInternalDictionaryPositionExecutor(IContext context, FilterDictionaryPositionExecutor filter);
         IEnumerable<FrontDictionaryPositionExecutor> GetPositionExecutors(IContext context, FilterDictionaryPositionExecutor filter);
         IEnumerable<TreeItem> GetPositionExecutorsForTree(IContext context, FilterDictionaryPositionExecutor filter);
@@ -204,8 +207,8 @@ namespace BL.Database.Dictionaries.Interfaces
         #region [+] DictionaryAgentClientCompanies ...
         int AddAgentClientCompany(IContext context, InternalDictionaryAgentClientCompany docType);
         void UpdateAgentClientCompany(IContext context, InternalDictionaryAgentClientCompany docType);
-        void DeleteAgentClientCompany(IContext context, InternalDictionaryAgentClientCompany docType);
-        bool ExistsAgentClientCompany(IContext context, FilterDictionaryAgentClientCompany filter);
+        void DeleteAgentClientCompany(IContext context, List<int> list);
+        bool ExistsAgentClientCompanies(IContext context, FilterDictionaryAgentClientCompany filter);
         InternalDictionaryAgentClientCompany GetInternalAgentClientCompany(IContext context, FilterDictionaryAgentClientCompany filter);
         IEnumerable<FrontDictionaryAgentClientCompany> GetAgentClientCompanies(IContext context, FilterDictionaryAgentClientCompany filter);
         IEnumerable<TreeItem> GetAgentClientCompaniesForTree(IContext context, FilterDictionaryAgentClientCompany filter);

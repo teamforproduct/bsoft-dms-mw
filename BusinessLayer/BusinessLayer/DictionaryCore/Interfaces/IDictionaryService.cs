@@ -90,6 +90,8 @@ namespace BL.Logic.DictionaryCore.Interfaces
         FrontDictionaryDepartment GetDictionaryDepartment(IContext context, int id);
 
         IEnumerable<FrontDictionaryDepartment> GetDictionaryDepartments(IContext context, FilterDictionaryDepartment filter);
+
+        string GetDepartmentPrefix(IContext context, int parentId);
         #endregion DictionaryDepartments
 
         #region DictionaryDocumentDirections

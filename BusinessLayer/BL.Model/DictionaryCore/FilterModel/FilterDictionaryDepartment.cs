@@ -22,7 +22,7 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// <summary>
         /// Сужение по компании, которая представляет этот отдел
         /// </summary>
-        public int? CompanyId { get; set; }
+        public List<int> CompanyIDs { get; set; }
 
         /// <summary>
         /// Руководитель подразделения
