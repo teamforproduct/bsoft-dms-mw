@@ -527,15 +527,24 @@ namespace BL.Logic.DictionaryCore
         #region DictionaryDepartments
         public FrontDictionaryDepartment GetDictionaryDepartment(IContext context, int id)
         {
-
             return _dictDb.GetDepartments(context, new FilterDictionaryDepartment { IDs = new List<int> { id } }).FirstOrDefault();
+        }
+
+        public string GetDictionaryDepartmentPrefix(IContext context, int parentId)
+        {
+            return _dictDb.GetDepartmentPrefix(context, parentId);
         }
 
         public IEnumerable<FrontDictionaryDepartment> GetDictionaryDepartments(IContext context, FilterDictionaryDepartment filter)
         {
-
             return _dictDb.GetDepartments(context, filter);
         }
+
+        public string GetDepartmentPrefix(IContext context, int parentId)
+        {
+            return _dictDb.GetDepartmentPrefix(context, parentId);
+        }
+
         #endregion DictionaryDepartments
 
         #region DictionaryDocumentDirections
@@ -1032,7 +1041,27 @@ namespace BL.Logic.DictionaryCore
 
             var res = Tree.Get(flatList, filter);
 
+            AddCodePathDepartment(res);
+
             return res;
+        }
+
+        private void AddCodePathDepartment(IEnumerable<ITreeItem> treeItems, string path = "")
+        {
+            string prefix = "";
+
+            foreach (var item in treeItems)
+            {
+
+                if (item.ObjectId == (int)EnumObjects.DictionaryDepartments)
+                {
+                    prefix = ((path == string.Empty) ? "" : (path + "/")) + (item as FrontDictionaryDepartmentTreeItem).Code;
+                    item.Name = prefix + " " +  item.Name;
+                }
+                    
+                if (item.Childs.Count() > 0) AddCodePathDepartment(item.Childs, prefix);
+
+            }
         }
 
         #endregion

@@ -113,7 +113,10 @@ namespace BL.Database.Dictionaries.Interfaces
         InternalDictionaryDepartment GetDepartment(IContext context, FilterDictionaryDepartment filter);
 
         IEnumerable<FrontDictionaryDepartment> GetDepartments(IContext context, FilterDictionaryDepartment filter);
-        IEnumerable<TreeItem> GetDepartmentsForTree(IContext context, FilterDictionaryDepartment filter);
+        IEnumerable<FrontDictionaryDepartmentTreeItem> GetDepartmentsForTree(IContext context, FilterDictionaryDepartment filter);
+
+        string GetDepartmentPrefix(IContext context, int parentId);
+
         #endregion DictionaryDepartments
 
         #region DictionaryDocumentDirections

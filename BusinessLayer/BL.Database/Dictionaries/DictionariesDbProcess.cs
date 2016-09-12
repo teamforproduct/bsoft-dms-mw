@@ -2735,7 +2735,32 @@ namespace BL.Database.Dictionaries
                 return qry.Select(x => x.Id).ToList();
             }
         }
-        public IEnumerable<TreeItem> GetDepartmentsForTree(IContext context, FilterDictionaryDepartment filter)
+
+        public string GetDepartmentPrefix(IContext context, int parentId)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                string res = "";
+
+                int? id = parentId;
+
+                while (id != null)
+                {
+
+                    var qry = GetDepartmentsQuery(context, dbContext, new FilterDictionaryDepartment() { IDs = new List<int> { id ?? 0 } });
+                    var item = qry.Select(x => new FrontDictionaryDepartment() { Id = x.Id, ParentId = x.ParentId, Code = x.Code }).FirstOrDefault();
+
+                    if (item == null) break;
+
+                    res = item.Code + "/" + res;
+                    id = item.ParentId;
+                }
+
+                return res;
+
+            }
+        }
+        public IEnumerable<FrontDictionaryDepartmentTreeItem> GetDepartmentsForTree(IContext context, FilterDictionaryDepartment filter)
         {
             using (var dbContext = new DmsContext(context))
             {
@@ -2744,10 +2769,11 @@ namespace BL.Database.Dictionaries
                 var objId = ((int)EnumObjects.DictionaryDepartments).ToString();
                 var companyObjId = ((int)EnumObjects.DictionaryAgentClientCompanies).ToString();
 
-                return qry.Select(x => new TreeItem
+                return qry.Select(x => new FrontDictionaryDepartmentTreeItem
                 {
                     Id = x.Id,
-                    Name = string.Concat(x.Code, " ", x.Name),
+                    Code = x.Code,
+                    Name = x.Name,
                     ObjectId = (int)EnumObjects.DictionaryDepartments,
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = (x.ParentId == null) ? string.Concat(x.CompanyId, "_", companyObjId) : string.Concat(x.ParentId, "_", objId),
