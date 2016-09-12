@@ -26,7 +26,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="startWith">Определяет с какого элемента построить дерево</param>
         /// <returns></returns>
         [ResponseType(typeof(List<TreeItem>))]
-        public IHttpActionResult Get([FromUri] FilterTree filter)
+        public IHttpActionResult Get([FromUri] FilterDictionaryStaffList filter)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
