@@ -68,6 +68,8 @@
 
         MoveDocumentPaper = 510, //Переданы бумажные носители
 
+        AddLink = 550, //Добавлена связь
+        DeleteLink = 555, //Удалена связь
 
         AddDocumentFile = 115, //    Добавлен файл
         RanameDocumentFile = 116, //    Переименован файл
