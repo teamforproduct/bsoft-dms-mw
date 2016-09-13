@@ -990,7 +990,7 @@ namespace BL.Logic.DictionaryCore
             }
         }
 
-        public IEnumerable<ITreeItem> GetStaffList(IContext context, FilterTree filter)
+        public IEnumerable<ITreeItem> GetStaffList(IContext context, FilterDictionaryStaffList filter)
         {
 
             int levelCount = filter?.LevelCount ?? 0;
@@ -1020,7 +1020,8 @@ namespace BL.Logic.DictionaryCore
             {
                 departments = _dictDb.GetDepartmentsForTree(context, new FilterDictionaryDepartment()
                 {
-                    IsActive = filter.IsActive
+                    IsActive = filter.IsActive,
+                    IDs = filter.DepartmentIDs
                 });
             }
 

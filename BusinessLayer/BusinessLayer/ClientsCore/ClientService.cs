@@ -39,18 +39,37 @@ namespace BL.Logic.ClientCore
         //    return res;
         //}
 
-        private InternalDictionaryContactType GetNewContactType(IContext context, int id, string code, string name, string inputMask = "")
+        private InternalDictionaryContactType GetNewContactType(IContext context, string code, string name, string fullName, string inputMask = "")
         {
-            return new InternalDictionaryContactType()
+
+            var res = new InternalDictionaryContactType()
             {
-                Id = id,
                 Code = code,
                 Name = name,
+                //FullName = fullName,
                 InputMask = inputMask,
                 IsActive = true,
-                LastChangeDate = DateTime.Now,
-                LastChangeUserId = context.CurrentAgentId
             };
+
+            CommonDocumentUtilities.SetLastChange(context, res);
+
+            return res;
+
+        }
+
+        private InternalDictionaryAddressType GetNewAddressType(IContext context, string code, string name, string fullName)
+        {
+            var res = new InternalDictionaryAddressType()
+            {
+                Code = code,
+                Name = name,
+                //FullName = fullName,
+                IsActive = true
+            };
+
+            CommonDocumentUtilities.SetLastChange(context, res);
+
+            return res;
         }
 
         public void AddNewClient(IContext context, AddClientContent client)
@@ -60,32 +79,34 @@ namespace BL.Logic.ClientCore
             #region [+] ContactsTypes ...
             // EnumDictionaryContactsTypes!!!!!!!!!!!!!!!!!!!!!!
             // Pss Локализация для типов контактов
-            var mobiContactType = _DictDb.AddContactType(context, 
-                new InternalDictionaryContactType()
-                { Code = "МТ", Name = "Мобильный телефон", InputMask = "", IsActive = true ,
-                LastChangeDate = DateTime.Now, LastChangeUserId = context.CurrentAgentId
-                });
-            _DictDb.AddContactType(context, new InternalDictionaryContactType() { Code = "РТ", Name = "Рабочий телефон", InputMask = "", IsActive = true });
-            _DictDb.AddContactType(context, new InternalDictionaryContactType() { Code = "ДТ", Name = "Домашний телефон", InputMask = "", IsActive = true });
-            _DictDb.AddContactType(context, new InternalDictionaryContactType() { Code = "ОТ", Name = "Основной телефон", InputMask = "", IsActive = true });
-            _DictDb.AddContactType(context, new InternalDictionaryContactType() { Code = "РФ", Name = "Рабочий факс", InputMask = "", IsActive = true });
-            _DictDb.AddContactType(context, new InternalDictionaryContactType() { Code = "ДФ", Name = "Домашний факс", InputMask = "", IsActive = true });
-            var emailContactType = _DictDb.AddContactType(context, new InternalDictionaryContactType() { Code = "ЛМ", Name = "Личный адрес", InputMask = "/@/", IsActive = true });
-            _DictDb.AddContactType(context, new InternalDictionaryContactType() { Code = "РМ", Name = "Рабочий адрес", InputMask = "/@/", IsActive = true });
-            _DictDb.AddContactType(context, new InternalDictionaryContactType() { Code = "П", Name = "Пейждер", InputMask = "", IsActive = true });
-            _DictDb.AddContactType(context, new InternalDictionaryContactType() { Code = "Skype", Name = "Skype", InputMask = "", IsActive = true });
-            _DictDb.AddContactType(context, new InternalDictionaryContactType() { Code = "ICQ", Name = "ICQ", InputMask = "", IsActive = true });
-            _DictDb.AddContactType(context, new InternalDictionaryContactType() { Code = "Jab", Name = "Jabber", InputMask = "", IsActive = true });
-            _DictDb.AddContactType(context, new InternalDictionaryContactType() { Code = "Viber", Name = "Viber", InputMask = "", IsActive = true });
-            _DictDb.AddContactType(context, new InternalDictionaryContactType() { Code = "Tg", Name = "Telegram", InputMask = "", IsActive = true });
-            _DictDb.AddContactType(context, new InternalDictionaryContactType() { Code = "Др", Name = "Другой", InputMask = "", IsActive = true });
-            _DictDb.AddContactType(context, new InternalDictionaryContactType() { Code = "MVPN", Name = "MVPN", InputMask = "", IsActive = true });
+            // Контакты при отображении сортируются по Id ContactType. т.е. в порядке добавления типов
+            var mobiContactType = _DictDb.AddContactType(context, GetNewContactType(context, "MainPhone", "ОТ", "Основной телефон"));
+            _DictDb.AddContactType(context, GetNewContactType(context, "MobilePhone", "МТ", "Мобильный телефон"));
+            _DictDb.AddContactType(context, GetNewContactType(context, "WorkPhone", "РТ", "Рабочий телефон"));
+            _DictDb.AddContactType(context, GetNewContactType(context, "HomePhone", "ДТ", "Домашний телефон"));
+
+            _DictDb.AddContactType(context, GetNewContactType(context, "WorkFax", "РФ", "Рабочий факс"));
+            _DictDb.AddContactType(context, GetNewContactType(context, "HomeFax", "ДФ", "Домашний факс"));
+
+            var emailContactType = _DictDb.AddContactType(context, GetNewContactType(context, "MainEmail", "ЛМ", "Основной адрес", "/@/"));
+            _DictDb.AddContactType(context, GetNewContactType(context, "WorkEmail", "РМ", "Рабочий адрес", "/@/"));
+            _DictDb.AddContactType(context, GetNewContactType(context, "PersonalEmail", "ЛМ", "Личный адрес", "/@/"));
+
+            _DictDb.AddContactType(context, GetNewContactType(context, "SIP", "Вн", "Внутренний"));
+            _DictDb.AddContactType(context, GetNewContactType(context, "Skype", "Skype", "Skype"));
+            _DictDb.AddContactType(context, GetNewContactType(context, "Viber", "Viber", "Viber"));
+            _DictDb.AddContactType(context, GetNewContactType(context, "ICQ", "ICQ", "ICQ"));
+            _DictDb.AddContactType(context, GetNewContactType(context, "Jabber", "Jab", "Jabber"));
+            _DictDb.AddContactType(context, GetNewContactType(context, "Telegram", "Tg", "Telegram"));
+            _DictDb.AddContactType(context, GetNewContactType(context, "Pager", "П", "Пейждер"));
+            _DictDb.AddContactType(context, GetNewContactType(context, "Another", "Др", "Другой"));
             #endregion
 
             #region [+] AddressTypes ...
             // Pss Локализация для типов адресов
-            _DictDb.AddAddressType(context, new InternalDictionaryAddressType() { Code = "ДА", Name = "Домашний", IsActive = true });
-            _DictDb.AddAddressType(context, new InternalDictionaryAddressType() { Code = "РА", Name = "Рабочий", IsActive = true });
+            _DictDb.AddAddressType(context, GetNewAddressType(context, "MainAddress", "Осн", "Основной"));
+            _DictDb.AddAddressType(context, GetNewAddressType(context, "WorkAddress", "РА", "Рабочий"));
+            _DictDb.AddAddressType(context, GetNewAddressType(context, "HomeAddress", "ДА", "Домашний"));
             #endregion
 
             #region [+] Agent-Employee ...
@@ -108,20 +129,36 @@ namespace BL.Logic.ClientCore
 
             #region [+] Agent-Company ....
             // Pss Локализация для названия компании
-            var companyId = _DictDb.AddAgentClientCompany(context, new InternalDictionaryAgentClientCompany()
-            { Name = "Наша компания", FullName = "Наша компания", IsActive = true });
+            var company = new InternalDictionaryAgentClientCompany()
+            {
+                Name = "Наша компания",
+                FullName = "Наша компания"
+            };
+
+            CommonDocumentUtilities.SetLastChange(context, company);
+
+            var companyId = _DictDb.AddAgentClientCompany(context, company);
+
+
 
             //_DictDb.AddContact(context, new InternalDictionaryContact()
             //{ AgentId = companyId, ContactTypeId = mobiContactType, Value = client.PhoneNumber, IsActive = true, IsConfirmed = true });
 
             //_DictDb.AddContact(context, new InternalDictionaryContact()
             //{ AgentId = companyId, ContactTypeId = emailContactType, Value = client.Email, IsActive = true, IsConfirmed = true });
+            var department = new InternalDictionaryDepartment()
+            { CompanyId = companyId, Code = "01", Name = "Мой отдел", FullName = "Мой отдел", IsActive = true };
 
-            var departmentId = _DictDb.AddDepartment(context, new InternalDictionaryDepartment()
-            { CompanyId = companyId, Code = "01", Name = "Мой отдел", FullName = "Мой отдел", IsActive = true });
+            CommonDocumentUtilities.SetLastChange(context, department);
 
-            var positionDirector = _DictDb.AddPosition(context, new InternalDictionaryPosition()
-            { DepartmentId = departmentId, Name = "Директор", FullName = "Директор", Order = 1, IsActive = true });
+            var departmentId = _DictDb.AddDepartment(context, department);
+
+            var position = new InternalDictionaryPosition()
+            { DepartmentId = departmentId, Name = "Директор", FullName = "Директор", Order = 1, IsActive = true };
+
+            CommonDocumentUtilities.SetLastChange(context, position);
+
+            var positionDirector = _DictDb.AddPosition(context, position);
 
             #endregion
 
@@ -129,28 +166,37 @@ namespace BL.Logic.ClientCore
 
             #region [+] DocumentsTypes ...
 
-            _DictDb.AddDocumentType(context, new InternalDictionaryDocumentType() { Name = "Письмо", IsActive = true });
-            _DictDb.AddDocumentType(context, new InternalDictionaryDocumentType() { Name = "Приказ", IsActive = true });
-            _DictDb.AddDocumentType(context, new InternalDictionaryDocumentType() { Name = "Распоряжение", IsActive = true });
-            _DictDb.AddDocumentType(context, new InternalDictionaryDocumentType() { Name = "Служебная записка", IsActive = true });
-            _DictDb.AddDocumentType(context, new InternalDictionaryDocumentType() { Name = "Поручение", IsActive = true });
-            _DictDb.AddDocumentType(context, new InternalDictionaryDocumentType() { Name = "Протокол", IsActive = true });
-            _DictDb.AddDocumentType(context, new InternalDictionaryDocumentType() { Name = "Договор", IsActive = true });
+            InternalDictionaryDocumentType doctype = null;
+
+            doctype = new InternalDictionaryDocumentType() { Name = "Письмо", IsActive = true };
+            CommonDocumentUtilities.SetLastChange(context, doctype);
+            _DictDb.AddDocumentType(context, doctype);
+
+            doctype = new InternalDictionaryDocumentType() { Name = "Приказ", IsActive = true };
+            CommonDocumentUtilities.SetLastChange(context, doctype);
+            _DictDb.AddDocumentType(context, doctype);
+
+            doctype = new InternalDictionaryDocumentType() { Name = "Распоряжение", IsActive = true };
+            CommonDocumentUtilities.SetLastChange(context, doctype);
+            _DictDb.AddDocumentType(context, doctype);
+
+            doctype = new InternalDictionaryDocumentType() { Name = "Служебная записка", IsActive = true };
+            CommonDocumentUtilities.SetLastChange(context, doctype);
+            _DictDb.AddDocumentType(context, doctype);
+
+            doctype = new InternalDictionaryDocumentType() { Name = "Поручение", IsActive = true };
+            CommonDocumentUtilities.SetLastChange(context, doctype);
+            _DictDb.AddDocumentType(context, doctype);
+
+            doctype = new InternalDictionaryDocumentType() { Name = "Протокол", IsActive = true };
+            CommonDocumentUtilities.SetLastChange(context, doctype);
+            _DictDb.AddDocumentType(context, doctype);
+
+            doctype = new InternalDictionaryDocumentType() { Name = "Договор", IsActive = true };
+            CommonDocumentUtilities.SetLastChange(context, doctype);
+            _DictDb.AddDocumentType(context, doctype);
 
             // добавить шаблоны под каждый тип
-
-
-
-
-
-
-
-
-
-
-
-
-
 
             #endregion
 
@@ -485,9 +531,9 @@ namespace BL.Logic.ClientCore
             return items;
         }
 
-        
+
         #endregion
-       
+
 
 
     }

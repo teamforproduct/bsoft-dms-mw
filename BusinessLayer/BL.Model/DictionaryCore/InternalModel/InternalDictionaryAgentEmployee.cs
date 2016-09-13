@@ -16,6 +16,7 @@ namespace BL.Model.DictionaryCore.InternalModel
         public InternalDictionaryAgentEmployee(ModifyDictionaryAgentEmployee model)
         {
             Id = model.Id;
+            Name = model.Name;
             FirstName = model.FirstName;
             LastName = model.LastName;
             MiddleName = model.MiddleName;
@@ -61,7 +62,7 @@ namespace BL.Model.DictionaryCore.InternalModel
         public string MiddleName { get; set; }
 
         //pss добавить проверку на Empty
-        public string Name { get { return LastName + " " + FirstName.Trim().Substring(1, 1) + "." + " " + MiddleName.Trim().Substring(1, 1) + "."; } }
+        public string Name { get; set; }// { get { return LastName + " " + FirstName.Trim().Substring(1, 1) + "." + " " + MiddleName.Trim().Substring(1, 1) + "."; } }
 
         /// <summary>
         /// ИНН

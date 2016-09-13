@@ -2529,7 +2529,7 @@ namespace BL.Database.Dictionaries
                 var qry = dbContext.DictionaryAgentContactsSet.Where(x => x.Agent.ClientId == context.CurrentClientId).AsQueryable();
 
                 //pss возможно контакты нужно сортировать по важности( или сначала подтвержденные и основные)
-                qry = qry.OrderBy(x => x.ContactType.Name);
+                qry = qry.OrderBy(x => x.ContactType.Id).ThenBy(x => x.Contact);
 
 
                 qry = qry.Where(x => x.AgentId == agentId);
