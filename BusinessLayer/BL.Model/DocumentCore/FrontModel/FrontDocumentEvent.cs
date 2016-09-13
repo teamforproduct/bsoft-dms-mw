@@ -22,6 +22,7 @@ namespace BL.Model.DocumentCore.FrontModel
         public DateTime? CloseDate { get; set; }
         public bool? IsOnEvent { get; set; }
 
+        public DateTime? LastChangeDate { get; set; }
 
         public DateTime? ReadDate { get; set; }
         public string ReadAgentName { get; set; }
