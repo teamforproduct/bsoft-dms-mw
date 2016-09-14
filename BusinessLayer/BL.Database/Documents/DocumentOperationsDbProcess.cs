@@ -764,6 +764,7 @@ namespace BL.Database.Documents
                         PaperPlanAgentName = x.PaperPlanAgent.Name,
                         PaperSendAgentName = x.PaperSendAgent.Name,
                         PaperRecieveAgentName = x.PaperRecieveAgent.Name,
+                        LastChangeDate = x.LastChangeDate
                     }).FirstOrDefault();
             }
         }

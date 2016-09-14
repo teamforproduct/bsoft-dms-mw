@@ -646,7 +646,7 @@ namespace BL.Database.Common
             }
 
             //TODO Sort
-            qrys = qrys.Select(qry => { return qry.OrderByDescending(x => x.LastChangeDate).AsQueryable(); }).ToList();
+            qrys = qrys.Select(qry => { return qry.OrderByDescending(x => x.Date).AsQueryable(); }).ToList();
 
             if (paging != null)
             {
@@ -693,7 +693,7 @@ namespace BL.Database.Common
                     }
 
                     //TODO Sort
-                    qrys = qrys.Select(qry => { return qry.OrderByDescending(x => x.LastChangeDate).AsQueryable(); }).ToList();
+                    qrys = qrys.Select(qry => { return qry.OrderByDescending(x => x.Date).AsQueryable(); }).ToList();
 
                     qrys = qrys.Select(qry => qry.Skip(() => skip).Take(() => take)).ToList();
                 }
@@ -715,7 +715,7 @@ namespace BL.Database.Common
             var qryView = dbContext.DocumentEventsSet.Where(x => qryRes.Select(y => y.Id).Contains(x.Id))
 
                 //TODO Sort
-                .OrderByDescending(x => x.LastChangeDate)
+                .OrderByDescending(x => x.Date)
                 .Select(x => new
                 {
                     Id = x.Id,
