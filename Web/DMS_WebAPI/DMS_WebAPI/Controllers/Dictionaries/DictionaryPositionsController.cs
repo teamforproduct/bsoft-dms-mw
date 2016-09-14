@@ -19,6 +19,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
     /// Значимость должносьти в отделе задается параметром Order
     /// </summary>
     [Authorize]
+    [RoutePrefix("api/v2/DictionaryPositions")]
     public class DictionaryPositionsController : ApiController
     {
         /// <summary>
@@ -26,7 +27,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="filter">Параметры для фильтрации записей в словаре "Должности"</param>
         /// <returns>FrontDictionaryPositions</returns>
-        [ResponseType(typeof(List<FrontDictionaryPositions>))]
+        [ResponseType(typeof(List<FrontDictionaryPosition>))]
         public IHttpActionResult Get([FromUri] FilterDictionaryPosition filter)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
@@ -40,15 +41,31 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="id"></param>
         /// <returns>FrontDictionaryPositions</returns>
-        [ResponseType(typeof(FrontDictionaryPositions))]
+        [ResponseType(typeof(FrontDictionaryPosition))]
         public IHttpActionResult Get(int id)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = tmpService.GetDictionaryPosition(ctx, id);
+            var tmpItem = tmpService.GetDictionaryPositions(ctx, new FilterDictionaryPosition { IDs = new List<int> { id } });
             return new JsonResult(tmpItem, this);
         }
 
+        /// <summary>
+        /// Изменяет порядок следования должности в отделе (нумерация с 1)
+        /// </summary>
+        /// <param name="positionId"></param>
+        /// <param name="order"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("SetPositionOrder")]
+        public IHttpActionResult SetPositionOrder([FromUri] int positionId, [FromUri] int order)
+        {
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var tmpItem = DmsResolver.Current.Get<IDictionaryService>();
+            tmpItem.SetPositionOrder(cxt, positionId, order);
+
+            return new JsonResult(order, this);
+        }
 
         /// <summary>
         /// Добавление записи в словаре "Должности"

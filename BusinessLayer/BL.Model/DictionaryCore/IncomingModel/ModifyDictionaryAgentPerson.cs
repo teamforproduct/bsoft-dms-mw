@@ -17,6 +17,12 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// </summary>
         [IgnoreDataMember]
         public int Id { get; set; }
+
+        /// <summary>
+        /// Имя (кратко)
+        /// </summary>
+        public string Name { get; set; }
+
         /// <summary>
         /// Имя
         /// </summary>

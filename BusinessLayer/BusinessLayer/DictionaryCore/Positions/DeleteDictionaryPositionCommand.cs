@@ -40,12 +40,7 @@ namespace BL.Logic.DictionaryCore
         {
             try
             {
-                var dd = new InternalDictionaryPosition
-                {
-                    Id = Model
-
-                };
-                _dictDb.DeletePosition(_context, dd);
+                _dictDb.DeletePositions(_context, new System.Collections.Generic.List<int> { Model });
                 return null;
             }
             catch (Exception ex)

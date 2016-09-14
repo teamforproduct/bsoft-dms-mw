@@ -130,6 +130,7 @@
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryContact.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryContactType.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryAgentClientCompany.cs" />
+    <Compile Include="DictionaryCore\FilterModel\FilterDictionaryStaffList.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryPositionExecutorType.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryPositionExecutor.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontCustomDictionary.cs" />
@@ -138,6 +139,7 @@
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentAccount.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentBank.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentCompany.cs" />
+    <Compile Include="DictionaryCore\FrontModel\FrontDictionaryDepartmentTreeItem.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryDepartment.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentClientCompany.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryPositionExecutorType.cs" />
@@ -177,8 +179,6 @@
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryStandartSendList.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryStandartSendListContent.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalCustomDictionary.cs" />
-    <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAdminPositionRoles.cs" />
-    <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAdminRoleActions.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontAdminAccessLevel.cs" />
     <Compile Include="AdminCore\FilterAdminAccessLevel.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalCustomDictionaryType.cs" />
@@ -245,8 +245,6 @@
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryTag.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryTag.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryDocumentType.cs" />
-    <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAdminRoles.cs" />
-    <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAdminUserRoles.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryStandartSendListContent.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryPositionWithActions.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionarySystemActions.cs" />

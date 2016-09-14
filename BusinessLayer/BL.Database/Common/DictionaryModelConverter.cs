@@ -386,8 +386,6 @@ namespace BL.Database.Common
         {
             return item == null ? null : new DictionaryAgentContacts
             {
-                ClientId = context.CurrentClientId,
-
                 Id = item.Id,
                 AgentId = item.AgentId,
                 ContactTypeId = item.ContactTypeId,

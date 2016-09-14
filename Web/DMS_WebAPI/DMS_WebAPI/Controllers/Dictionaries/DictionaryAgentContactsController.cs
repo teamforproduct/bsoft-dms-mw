@@ -57,7 +57,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
-            return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.AddContact, ctx, model));
+            return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.AddAgentContact, ctx, model));
         }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             model.Id = id;
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
-            tmpDict.ExecuteAction(EnumDictionaryActions.ModifyContact, ctx, model);
+            tmpDict.ExecuteAction(EnumDictionaryActions.ModifyAgentContact, ctx, model);
             return Get(model.Id);
         }
 
@@ -84,7 +84,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
 
-            tmpDict.ExecuteAction(EnumDictionaryActions.DeleteContact, ctx, id);
+            tmpDict.ExecuteAction(EnumDictionaryActions.DeleteAgentContact, ctx, id);
             FrontDictionaryContact tmp = new FrontDictionaryContact();
             tmp.Id = id;
 

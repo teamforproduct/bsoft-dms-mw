@@ -37,12 +37,7 @@ namespace BL.Logic.DictionaryCore
         {
             try
             {
-                var dd = new InternalDictionaryAgentClientCompany
-                {
-                    Id = Model
-
-                };
-                _dictDb.DeleteAgentClientCompany(_context, dd);
+                _dictDb.DeleteAgentClientCompany(_context, new System.Collections.Generic.List<int>(){ Model });
                 return null;
             }
             catch (Exception ex)

@@ -14,14 +14,14 @@ namespace BL.Model.AdminCore.FrontModel
         public new int Id { get; set; }
 
         /// <summary>
-        /// Классификатор роли
+        /// Наименование роли
         /// </summary>
-        public string RoleName { get; set; }
+        public string Name { get; set; }
 
         /// <summary>
         /// Классификатор роли
         /// </summary>
-        public string RoleCode { get; set; }
+        public bool Checked { get; set; }
 
     }
 }

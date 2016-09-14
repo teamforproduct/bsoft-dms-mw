@@ -72,6 +72,15 @@ namespace BL.Logic.DocumentCore.SendListCommands
                 _context.SetCurrentPosition(_sendList.SourcePositionId);
             }
             _admin.VerifyAccess(_context, CommandType);
+
+            if (Model.TargetPositionId.HasValue
+                && (_document.RestrictedSendLists?.Any() ?? false)
+                && !_document.RestrictedSendLists.Select(x => x.PositionId).Contains(Model.TargetPositionId.Value)
+                )
+            {
+                throw new DocumentSendListNotFoundInDocumentRestrictedSendList();
+            }
+
             var tmpSendList = _document.SendLists;
             _document.SendLists = _document?.SendLists.Where(x => x.Id == Model.Id).ToList();
             if (!CanBeDisplayed(_context.CurrentPositionId))
@@ -79,7 +88,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
                 throw new CouldNotPerformOperation();
             }
             _document.SendLists = tmpSendList;
-
+            
             var taskId = CommonDocumentUtilities.GetDocumentTaskOrCreateNew(_context, _document, Model.Task); //TODO исправление от кого????
             _sendList.Stage = Model.Stage;
             _sendList.SendType = Model.SendType;

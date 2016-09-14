@@ -39,7 +39,7 @@ namespace BL.Logic.DictionaryCore
                 AgentIDs = new List<int> { Model.AgentId },
                 Period = new Period(Model.StartDate, Model.EndDate) };
 
-            if (_dictDb.ExistsExecutor(_context, fd))
+            if (_dictDb.ExistsPositionExecutor(_context, fd))
             {
                 throw new DictionaryRecordNotUnique();
             }

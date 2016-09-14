@@ -33,13 +33,14 @@ namespace BL.Logic.DictionaryCore
 
             _admin.VerifyAccess(_context, CommandType, false);
 
+            // отдел нельзя подчинить сасому себе и (дочерним отделам)
+            if ((Model.ParentId ?? -1) == Model.Id)
+            {
+                throw new DictionaryRecordCouldNotBeAdded();
+            }
+
             var fdd = new FilterDictionaryDepartment { Name = Model.Name, NotContainsIDs = new List<int> { Model.Id } };
 
-            if (Model.ParentId != null)
-            {
-                fdd.ParentIDs = new List<int> { Model.ParentId.Value };
-            }
-            // Находим запись с таким-же именем в этой-же папке
             if (_dictDb.ExistsDictionaryDepartment(_context, fdd))
             {
                 throw new DictionaryRecordNotUnique();

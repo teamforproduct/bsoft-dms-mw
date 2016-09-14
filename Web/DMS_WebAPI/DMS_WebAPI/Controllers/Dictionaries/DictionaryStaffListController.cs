@@ -10,6 +10,8 @@ using BL.Model.Common;
 using System.Web.Http.Description;
 using System.Collections.Generic;
 using BL.Model.Tree;
+using BL.Logic.AdminCore.Interfaces;
+using BL.Model.AdminCore.FilterModel;
 
 namespace DMS_WebAPI.Controllers.Dictionaries
 {
@@ -17,6 +19,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
     /// Действия связанные с пользовательской настройкой системы
     /// </summary>
     [Authorize]
+    [RoutePrefix("api/v2/DictionaryStaffList")]
     public class DictionaryStaffListController : ApiController
     {
         /// <summary>
@@ -26,7 +29,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="startWith">Определяет с какого элемента построить дерево</param>
         /// <returns></returns>
         [ResponseType(typeof(List<TreeItem>))]
-        public IHttpActionResult Get([FromUri] FilterTree filter)
+        public IHttpActionResult Get([FromUri] FilterDictionaryStaffList filter)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -42,6 +45,40 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             return new JsonResult(new { success = true, msg = "Еще 10 000 ведер и золотой ключик наш" } , this);
         }
 
+
+        //[HttpGet]
+        //[Route("GetPositionRoles")]
+        //public IHttpActionResult GetPositionRoles(int positionId, FilterAdminRole filter)
+        //{
+        //    if (filter == null) filter = new FilterAdminRole();
+
+        //    if (filter.PositionIDs == null)
+        //    { filter.PositionIDs = new List<int> { positionId }; }
+        //    else
+        //    { filter.PositionIDs.Add(positionId); }
+
+        //    var ctx = DmsResolver.Current.Get<UserContext>().Get();
+        //    var tmpService = DmsResolver.Current.Get<IAdminService>();
+        //    var tmpItems = tmpService.GetPositionRoles(ctx, filter);
+        //    return new JsonResult(tmpItems, this);
+        //}
+
+        //[HttpGet]
+        //[Route("GetPositionRolesEditMode")]
+        //public IHttpActionResult GetPositionRolesEditMode(int positionId, FilterAdminRole filter)
+        //{
+        //    if (filter == null) filter = new FilterAdminRole();
+
+        //    if (filter.PositionIDs == null)
+        //    { filter.PositionIDs = new List<int> { positionId }; }
+        //    else
+        //    { filter.PositionIDs.Add(positionId); }
+
+        //    var ctx = DmsResolver.Current.Get<UserContext>().Get();
+        //    var tmpService = DmsResolver.Current.Get<IAdminService>();
+        //    var tmpItems = tmpService.GetPositionRolesEditMode(ctx, filter);
+        //    return new JsonResult(tmpItems, this);
+        //}
 
         // Копирование настроек от одной должности к другой
 

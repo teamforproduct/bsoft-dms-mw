@@ -21,6 +21,11 @@ namespace BL.Model.DictionaryCore.IncomingModel
         [IgnoreDataMember]
         public int Id { get; set; }
 
+        /// <summary>
+        /// Имя (кратко)
+        /// </summary>
+        [Required]
+        public string Name { get; set; }
 
         /// <summary>
         /// Имя
@@ -37,7 +42,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// Отчество
         /// </summary>
-        [Required]
+        //[Required]
         public string MiddleName { get; set; }
 
         /// <summary>

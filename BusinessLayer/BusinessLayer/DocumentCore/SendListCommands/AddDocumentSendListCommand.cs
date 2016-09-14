@@ -68,6 +68,14 @@ namespace BL.Logic.DocumentCore.SendListCommands
                 throw new CouldNotPerformOperation();
             }
             //Model.IsInitial = !_document.IsLaunchPlan;
+            if (Model.TargetPositionId.HasValue
+                && (_document.RestrictedSendLists?.Any() ?? false)
+                && !_document.RestrictedSendLists.Select(x => x.PositionId).Contains(Model.TargetPositionId.Value)
+                )
+            {
+                throw new DocumentSendListNotFoundInDocumentRestrictedSendList();
+            }
+
             var taskId = CommonDocumentUtilities.GetDocumentTaskOrCreateNew(_context, _document, Model.Task); //TODO исправление от кого????
             _sendList = CommonDocumentUtilities.GetNewDocumentSendList(_context, Model, taskId);
             var sendLists = _document.SendLists.ToList();

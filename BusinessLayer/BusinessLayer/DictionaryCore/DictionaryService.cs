@@ -19,6 +19,7 @@ using BL.Model.Common;
 using BL.Model.Tree;
 using BL.Logic.TreeBuilder;
 using BL.CrossCutting.Extensions;
+using static BL.Database.Dictionaries.DictionariesDbProcess;
 
 namespace BL.Logic.DictionaryCore
 {
@@ -47,7 +48,7 @@ namespace BL.Logic.DictionaryCore
             return _dictDb.GetAgent(context, id);
         }
 
-        public IEnumerable<FrontDictionaryAgent> GetDictionaryAgents(IContext context, FilterDictionaryAgent filter,UIPaging paging)
+        public IEnumerable<FrontDictionaryAgent> GetDictionaryAgents(IContext context, FilterDictionaryAgent filter, UIPaging paging)
         {
             var newFilter = new FilterDictionaryAgent();
             if (!String.IsNullOrEmpty(filter.FullTextSearchString))
@@ -58,12 +59,12 @@ namespace BL.Logic.DictionaryCore
                 var ftClear = ResolveSearchResultAgents(context, ftRes);
                 var resWithRanges =
                     ftClear.GroupBy(x => x.ObjectId)
-                        .Select(x => new {DocId = x.Key, Rate = x.Count()})
+                        .Select(x => new { DocId = x.Key, Rate = x.Count() })
                         .OrderByDescending(x => x.Rate);
                 if (resWithRanges.Any())
                 {
                     newFilter.IDs = new List<int>();
-                    newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId).Take(paging.PageSize*paging.CurrentPage));
+                    newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId).Take(paging.PageSize * paging.CurrentPage));
                 }
                 else
                 {
@@ -75,10 +76,10 @@ namespace BL.Logic.DictionaryCore
                 newFilter = filter;
             }
 
-            return _dictDb.GetAgents(context, newFilter,paging);
+            return _dictDb.GetAgents(context, newFilter, paging);
         }
 
-        private IEnumerable<FullTextSearchResult> ResolveSearchResultAgents(IContext ctx,IEnumerable<FullTextSearchResult> ftRes)
+        private IEnumerable<FullTextSearchResult> ResolveSearchResultAgents(IContext ctx, IEnumerable<FullTextSearchResult> ftRes)
         {
 
             var agentTypes = new List<EnumObjects>
@@ -93,13 +94,16 @@ namespace BL.Logic.DictionaryCore
             var res = new List<FullTextSearchResult>();
             res.AddRange(ftRes
                 .Where(x => agentTypes.Contains(x.ObjectType)));
-                
+
             var tmp = _dictDb.GetAgentsIDByAddress(ctx,
                 ftRes.Where(x => x.ObjectType == EnumObjects.DictionaryAgentAddresses).Select(y => y.ObjectId).ToList());
 
             res.AddRange(tmp.Select(x => new FullTextSearchResult
             {
-                DocumentId = 0, ObjectId = x, ObjectType = EnumObjects.DictionaryAgents, Score = 0
+                DocumentId = 0,
+                ObjectId = x,
+                ObjectType = EnumObjects.DictionaryAgents,
+                Score = 0
             }));
 
             tmp = _dictDb.GetAgentsIDByContacts(ctx,
@@ -107,7 +111,10 @@ namespace BL.Logic.DictionaryCore
 
             res.AddRange(tmp.Select(x => new FullTextSearchResult
             {
-                DocumentId = 0,ObjectId = x,ObjectType = EnumObjects.DictionaryAgents,Score = 0
+                DocumentId = 0,
+                ObjectId = x,
+                ObjectType = EnumObjects.DictionaryAgents,
+                Score = 0
             }));
 
             return res;
@@ -177,7 +184,7 @@ namespace BL.Logic.DictionaryCore
                 newFilter = filter;
             }
 
-            return _dictDb.GetAgentPersons(context, newFilter,paging);
+            return _dictDb.GetAgentPersons(context, newFilter, paging);
         }
         #endregion DictionaryAgentPersons
 
@@ -219,8 +226,8 @@ namespace BL.Logic.DictionaryCore
                 newFilter = filter;
             }
 
-            return _dictDb.GetAgentEmployees(context, newFilter,paging);
-            
+            return _dictDb.GetAgentEmployees(context, newFilter, paging);
+
         }
 
         public FrontDictionaryAgentEmployee GetDictionaryAgentEmployeePersonnelNumber(IContext context)
@@ -237,9 +244,9 @@ namespace BL.Logic.DictionaryCore
             return _dictDb.GetAgentAddress(context, id);
         }
 
-        public IEnumerable<FrontDictionaryAgentAddress> GetDictionaryAgentAddresses(IContext context,int agentId, FilterDictionaryAgentAddress filter)
+        public IEnumerable<FrontDictionaryAgentAddress> GetDictionaryAgentAddresses(IContext context, int agentId, FilterDictionaryAgentAddress filter)
         {
-            return _dictDb.GetAgentAddresses(context, agentId,filter);
+            return _dictDb.GetAgentAddresses(context, agentId, filter);
         }
         #endregion
 
@@ -259,8 +266,8 @@ namespace BL.Logic.DictionaryCore
 
                 var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
                 var ftRes = ftService.SearchDictionary(context, filter.FullTextSearchString)
-                    .Where(x=>x.ObjectType==EnumObjects.DictionaryAddressType);
-                
+                    .Where(x => x.ObjectType == EnumObjects.DictionaryAddressType);
+
                 var resWithRanges =
                     ftRes.GroupBy(x => x.ObjectId)
                         .Select(x => new { DocId = x.Key, Rate = x.Count() })
@@ -293,9 +300,9 @@ namespace BL.Logic.DictionaryCore
             return _dictDb.GetAgentAccount(context, id);
         }
 
-        public IEnumerable<FrontDictionaryAgentAccount> GetDictionaryAgentAccounts(IContext context, int AgentId,FilterDictionaryAgentAccount filter)
+        public IEnumerable<FrontDictionaryAgentAccount> GetDictionaryAgentAccounts(IContext context, int AgentId, FilterDictionaryAgentAccount filter)
         {
-            return _dictDb.GetAgentAccounts(context, AgentId,filter);
+            return _dictDb.GetAgentAccounts(context, AgentId, filter);
         }
         #endregion DictionaryAgentAccounts
 
@@ -325,7 +332,7 @@ namespace BL.Logic.DictionaryCore
                 if (resWithRanges.Any())
                 {
                     newFilter.IDs = new List<int>();
-                    newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId).Take(paging.PageSize*paging.CurrentPage));
+                    newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId).Take(paging.PageSize * paging.CurrentPage));
                 }
                 else
                 {
@@ -347,9 +354,9 @@ namespace BL.Logic.DictionaryCore
 
             var agentTypes = new List<EnumObjects>
             {
-                
+
                 EnumObjects.DictionaryAgentCompanies,
-                
+
             };
 
             var res = new List<FullTextSearchResult>();
@@ -408,7 +415,7 @@ namespace BL.Logic.DictionaryCore
                 if (resWithRanges.Any())
                 {
                     newFilter.IDs = new List<int>();
-                    newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId).Take(paging.PageSize*paging.CurrentPage));
+                    newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId).Take(paging.PageSize * paging.CurrentPage));
                 }
                 else
                 {
@@ -417,12 +424,12 @@ namespace BL.Logic.DictionaryCore
             }
             else
             {
-                
+
                 newFilter = filter;
             }
 
             return _dictDb.GetAgentBanks(context, newFilter, paging);
-            
+
         }
 
         private IEnumerable<FullTextSearchResult> ResolveSearchResultAgentBanks(IContext ctx, IEnumerable<FullTextSearchResult> ftRes)
@@ -469,12 +476,12 @@ namespace BL.Logic.DictionaryCore
         #region DictionaryContacts
         public FrontDictionaryContact GetDictionaryContact(IContext context, int id)
         {
-            return _dictDb.GetContact(context,id);
+            return _dictDb.GetContact(context, id);
         }
 
-        public IEnumerable<FrontDictionaryContact> GetDictionaryContacts(IContext context,int agentId, FilterDictionaryContact filter)
+        public IEnumerable<FrontDictionaryContact> GetDictionaryContacts(IContext context, int agentId, FilterDictionaryContact filter)
         {
-            return _dictDb.GetContacts(context,agentId, filter);  
+            return _dictDb.GetContacts(context, agentId, filter);
         }
         #endregion
 
@@ -517,19 +524,28 @@ namespace BL.Logic.DictionaryCore
             return _dictDb.GetContactTypes(context, newFilter);
         }
         #endregion
-              
+
         #region DictionaryDepartments
         public FrontDictionaryDepartment GetDictionaryDepartment(IContext context, int id)
         {
-
             return _dictDb.GetDepartments(context, new FilterDictionaryDepartment { IDs = new List<int> { id } }).FirstOrDefault();
+        }
+
+        public string GetDictionaryDepartmentPrefix(IContext context, int parentId)
+        {
+            return _dictDb.GetDepartmentPrefix(context, parentId);
         }
 
         public IEnumerable<FrontDictionaryDepartment> GetDictionaryDepartments(IContext context, FilterDictionaryDepartment filter)
         {
-
             return _dictDb.GetDepartments(context, filter);
         }
+
+        public string GetDepartmentPrefix(IContext context, int parentId)
+        {
+            return _dictDb.GetDepartmentPrefix(context, parentId);
+        }
+
         #endregion DictionaryDepartments
 
         #region DictionaryDocumentDirections
@@ -551,7 +567,7 @@ namespace BL.Logic.DictionaryCore
         public FrontDictionaryDocumentSubject GetDictionaryDocumentSubject(IContext context, int id)
         {
 
-            return _dictDb.GetDocumentSubjects(context, new FilterDictionaryDocumentSubject {IDs = new List<int> {id}}).FirstOrDefault();
+            return _dictDb.GetDocumentSubjects(context, new FilterDictionaryDocumentSubject { IDs = new List<int> { id } }).FirstOrDefault();
         }
 
         public IEnumerable<FrontDictionaryDocumentSubject> GetDictionaryDocumentSubjects(IContext context, FilterDictionaryDocumentSubject filter)
@@ -601,7 +617,7 @@ namespace BL.Logic.DictionaryCore
 
 
             return _dictDb.GetDocumentTypes(context, newFilter);
-            
+
         }
 
         #endregion DictionaryDocumentTypes
@@ -650,17 +666,58 @@ namespace BL.Logic.DictionaryCore
 
         // Штатное расписание
         #region DictionaryPositions
-        public FrontDictionaryPosition GetDictionaryPosition(IContext context, int id)
-        {
+        //public FrontDictionaryPosition GetDictionaryPosition(IContext context, int id)
+        //{
 
-            return _dictDb.GetPosition(context, id);
-        }
+        //    return _dictDb.GetPosition(context, id);
+        //}
 
         public IEnumerable<FrontDictionaryPosition> GetDictionaryPositions(IContext context, FilterDictionaryPosition filter)
         {
 
             return _dictDb.GetPositions(context, filter);
         }
+
+        public void SetPositionOrder(IContext context, int positionId, int order)
+        {
+            var position = _dictDb.GetPosition(context, positionId);
+
+            if (position == null) return;
+
+            // список должностей, которые подчиненны томуже отделу
+            // сортировка Order, Name
+            List<SortPositoin> positions = (List<SortPositoin>) _dictDb.GetPositionsForSort(context, 
+                new FilterDictionaryPosition {
+                    DepartmentIDs = new List<int> { position.DepartmentId },
+                    NotContainsIDs = new List<int> { positionId }
+                });
+
+            SortPositoin sp = new SortPositoin() { Id = positionId, NewOrder = order };
+
+            if (order > positions.Count)
+            {
+                positions.Add(sp);
+            }
+            else if (order <= 1)
+            {
+                positions.Insert(0, sp);
+            }
+            else
+            {
+                positions.Insert(order-1, sp);
+            }
+
+            int i = 0;
+            foreach (var item in positions)
+            {
+                item.NewOrder = ++i;
+
+                if ( item.NewOrder != item.OldOrder )
+                { _dictDb.UpdatePositionOrder(context, item.Id, item.NewOrder); }
+            }
+
+        }
+
         #endregion DictionaryPositions
 
         // Исполнители
@@ -725,7 +782,7 @@ namespace BL.Logic.DictionaryCore
                 }
                 else
                 {
-                    newFilter.IDs = new List<int> {-1};
+                    newFilter.IDs = new List<int> { -1 };
                 }
 
             }
@@ -752,7 +809,7 @@ namespace BL.Logic.DictionaryCore
             return _dictDb.GetAgentClientCompanies(context, filter);
         }
         #endregion DictionaryCompanies
-        
+
         #region DictionaryResultTypes
         public FrontDictionaryResultType GetDictionaryResultType(IContext context, int id)
         {
@@ -975,40 +1032,79 @@ namespace BL.Logic.DictionaryCore
             }
         }
 
-        public IEnumerable<ITreeItem> GetStaffList(IContext context, FilterTree filter)
+        public IEnumerable<ITreeItem> GetStaffList(IContext context, FilterDictionaryStaffList filter)
         {
 
-            var executors = _dictDb.GetPositionExecutorsForTree(context, new FilterDictionaryPositionExecutor()
-            {
-                Period = new Period(DateTime.Now.StartOfDay(), DateTime.Now.EndOfDay()),
-                IsActive = filter.IsActive
-            });
+            int levelCount = filter?.LevelCount ?? 0;
+            IEnumerable<TreeItem> executors = null;
+            IEnumerable<TreeItem> positions = null;
+            IEnumerable<TreeItem> departments = null;
+            IEnumerable<TreeItem> companies = null;
 
-            var positions = _dictDb.GetPositionsForTree(context, new FilterDictionaryPosition()
+            if (levelCount >= 4 || levelCount == 0)
             {
-                IsActive = filter.IsActive
-            });
+                executors = _dictDb.GetPositionExecutorsForTree(context, new FilterDictionaryPositionExecutor()
+                {
+                    Period = new Period(DateTime.Now.StartOfDay(), DateTime.Now.EndOfDay()),
+                    IsActive = filter.IsActive
+                });
+            }
 
-            var departments = _dictDb.GetDepartmentsForTree(context, new FilterDictionaryDepartment()
+            if (levelCount >= 3 || levelCount == 0)
             {
-                IsActive = filter.IsActive
-            });
+                positions = _dictDb.GetPositionsForTree(context, new FilterDictionaryPosition()
+                {
+                    IsActive = filter.IsActive
+                });
+            }
 
-            var companies = _dictDb.GetAgentClientCompaniesForTree(context, new FilterDictionaryAgentClientCompany()
+            if (levelCount >= 2 || levelCount == 0)
             {
-                IsActive = filter.IsActive
-            });
+                departments = _dictDb.GetDepartmentsForTree(context, new FilterDictionaryDepartment()
+                {
+                    IsActive = filter.IsActive,
+                    IDs = filter.DepartmentIDs
+                });
+            }
+
+            if (levelCount >= 1 || levelCount == 0)
+            {
+                companies = _dictDb.GetAgentClientCompaniesForTree(context, new FilterDictionaryAgentClientCompany()
+                {
+                    IsActive = filter.IsActive
+                });
+            }
 
             List<TreeItem> flatList = new List<TreeItem>();
 
-            flatList.AddRange(companies);
-            flatList.AddRange(positions);
-            flatList.AddRange(departments);
-            flatList.AddRange(executors);
+            if (companies != null) flatList.AddRange(companies);
+            if (positions != null) flatList.AddRange(positions);
+            if (departments != null) flatList.AddRange(departments);
+            if (executors != null) flatList.AddRange(executors);
 
             var res = Tree.Get(flatList, filter);
 
+            AddCodePathDepartment(res);
+
             return res;
+        }
+
+        private void AddCodePathDepartment(IEnumerable<ITreeItem> treeItems, string path = "")
+        {
+            string prefix = "";
+
+            foreach (var item in treeItems)
+            {
+
+                if (item.ObjectId == (int)EnumObjects.DictionaryDepartments)
+                {
+                    prefix = ((path == string.Empty) ? "" : (path + "/")) + (item as FrontDictionaryDepartmentTreeItem).Code;
+                    item.Name = prefix + " " +  item.Name;
+                }
+                    
+                if (item.Childs.Count() > 0) AddCodePathDepartment(item.Childs, prefix);
+
+            }
         }
 
         #endregion

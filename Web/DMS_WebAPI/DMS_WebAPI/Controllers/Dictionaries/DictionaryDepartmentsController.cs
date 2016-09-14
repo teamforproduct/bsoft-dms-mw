@@ -17,6 +17,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
     /// Отделы всегда подчинены компаниям, могут подчиняться вышестоящим отделам.
     /// </summary>
     [Authorize]
+    [RoutePrefix("api/v2/DictionaryDepartments")]
     public class DictionaryDepartmentsController : ApiController
     {
         /// <summary>
@@ -24,7 +25,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="filter">Параметры для фильтрации записей в словаре "Структура предприятия"</param>
         /// <returns>FrontDictionaryDictionaryDepartment</returns>
-        [ResponseType(typeof(List<FrontDictionaryDictionaryDepartment>))]
+        [ResponseType(typeof(List<FrontDictionaryDepartment>))]
         public IHttpActionResult Get([FromUri] FilterDictionaryDepartment filter)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
@@ -37,8 +38,8 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// Возвращает запись из словаря "Структура предприятия" по ID 
         /// </summary>
         /// <param name="id"></param>
-        /// <returns>FrontDictionaryDictionaryDepartment</returns>
-        [ResponseType(typeof(FrontDictionaryDictionaryDepartment))]
+        /// <returns>FrontDictionaryDictionary</returns>
+        [ResponseType(typeof(FrontDictionaryDepartment))]
         public IHttpActionResult Get(int id)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
@@ -46,6 +47,22 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             var tmpDict = tmpDictProc.GetDictionaryDepartment(ctx, id);
             return new JsonResult(tmpDict, this);
         }
+        
+        /// <summary>
+        /// Возвращает префикс из котдов вышестоящих отделов для нового отдела 
+        /// </summary>
+        /// <param name="parentId">Вышестоящий отдел</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("GetPrefix")]
+        public IHttpActionResult GetPrefix(int parentId)
+        {
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpDict = tmpDictProc.GetDepartmentPrefix(ctx, parentId);
+            return new JsonResult(tmpDict, this);
+        }
+
 
         /// <summary>
         /// Добавление записи в словаре "Структура предприятия"
@@ -80,7 +97,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <summary>
         /// Удаление записи в словаре "Структура предприятия"
         /// </summary>
-        /// <returns>FrontDictionaryDictionaryDepartment</returns> 
+        /// <returns>FrontDictionaryDepartment</returns> 
         public IHttpActionResult Delete([FromUri] int id)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();

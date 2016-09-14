@@ -787,6 +787,7 @@ namespace BL.Database.Documents
                         PaperPlanAgentName = x.PaperPlanAgent.Name,
                         PaperSendAgentName = x.PaperSendAgent.Name,
                         PaperRecieveAgentName = x.PaperRecieveAgent.Name,
+                        LastChangeDate = x.LastChangeDate
                     }).FirstOrDefault();
             }
         }
@@ -1414,6 +1415,11 @@ namespace BL.Database.Documents
                             x.LastChangeDate = model.LastChangeDate;
                         });
                 }
+                if (model.Events != null && model.Events.Any(x => x.Id == 0))
+                {
+                    var eventsDb = ModelConverter.GetDbDocumentEvents(model.Events.Where(x => x.Id == 0).ToList());
+                    dbContext.DocumentEventsSet.AddRange(eventsDb);
+                }
                 dbContext.SaveChanges();
             }
         }
@@ -1444,6 +1450,11 @@ namespace BL.Database.Documents
                             //x.LastChangeUserId = model.LastChangeUserId;
                             //x.LastChangeDate = model.LastChangeDate;
                         });
+                }
+                if (model.Events != null && model.Events.Any(x => x.Id == 0))
+                {
+                    var eventsDb = ModelConverter.GetDbDocumentEvents(model.Events.Where(x => x.Id == 0).ToList());
+                    dbContext.DocumentEventsSet.AddRange(eventsDb);
                 }
                 dbContext.SaveChanges();
             }

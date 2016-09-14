@@ -651,7 +651,7 @@ namespace BL.Database.Common
             }
 
             //TODO Sort
-            qrys = qrys.Select(qry => { return qry.OrderByDescending(x => x.LastChangeDate).AsQueryable(); }).ToList();
+            qrys = qrys.Select(qry => { return qry.OrderByDescending(x => x.Date).AsQueryable(); }).ToList();
 
             if (paging != null)
             {
@@ -698,7 +698,7 @@ namespace BL.Database.Common
                     }
 
                     //TODO Sort
-                    qrys = qrys.Select(qry => { return qry.OrderByDescending(x => x.LastChangeDate).AsQueryable(); }).ToList();
+                    qrys = qrys.Select(qry => { return qry.OrderByDescending(x => x.Date).AsQueryable(); }).ToList();
 
                     qrys = qrys.Select(qry => qry.Skip(() => skip).Take(() => take)).ToList();
                 }
@@ -720,7 +720,7 @@ namespace BL.Database.Common
             var qryView = dbContext.DocumentEventsSet.Where(x => qryRes.Select(y => y.Id).Contains(x.Id))
 
                 //TODO Sort
-                .OrderByDescending(x => x.LastChangeDate)
+                .OrderByDescending(x => x.Date)
                 .Select(x => new
                 {
                     Id = x.Id,
@@ -2384,6 +2384,7 @@ namespace BL.Database.Common
                                             TargetPositionExecutorAgentName = y.StartEvent.TargetPositionExecutorAgent.Name ?? y.StartEvent.TargetAgent.Name,
                                             Description = y.StartEvent.Description,
                                             AddDescription = y.StartEvent.AddDescription,
+                                            DueDate = y.StartEvent.OnWait.Select(z=>z.DueDate).FirstOrDefault(),
                                         },
                 CloseEvent = y.CloseEvent == null || y.StartEventId == y.CloseEventId
                                         ? null
@@ -2396,6 +2397,7 @@ namespace BL.Database.Common
                                             TargetPositionExecutorAgentName = y.CloseEvent.TargetPositionExecutorAgent.Name ?? y.StartEvent.TargetAgent.Name,
                                             Description = y.CloseEvent.Description,
                                             AddDescription = y.CloseEvent.AddDescription,
+                                            DueDate = null,
                                         },
             }).ToList();
             return res;

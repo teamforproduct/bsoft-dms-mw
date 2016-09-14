@@ -51,12 +51,6 @@ namespace BL.Logic.DictionaryCore
             try
             {
                 var newAddrType = new InternalDictionaryAddressType(Model);
-                // pss в команде Modify Id передается но в Add НЕТ???????
-                //{
-                //    Id = Model.Id,
-                //    Name = Model.Name,
-                //    IsActive=Model.IsActive
-                //};
                 CommonDocumentUtilities.SetLastChange(_context, newAddrType);
                 _dictDb.UpdateAddressType(_context, newAddrType);
             }

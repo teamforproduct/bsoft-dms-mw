@@ -3,7 +3,6 @@
     /// <summary>
     /// Список экшенов по админке
     /// </summary>
-    //pss назначить номера действиям
     public enum EnumAdminActions
     {
 

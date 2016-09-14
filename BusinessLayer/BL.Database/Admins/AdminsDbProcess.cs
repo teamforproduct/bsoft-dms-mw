@@ -38,20 +38,20 @@ namespace BL.Database.Admins
             {
                 var res = new AdminAccessInfo();
 
-                res.UserRoles = dbContext.AdminUserRolesSet.Where(x => x.Role.ClientId == context.CurrentClientId).Select(x => new InternalDictionaryAdminUserRoles
+                res.UserRoles = dbContext.AdminUserRolesSet.Where(x => x.Role.ClientId == context.CurrentClientId).Select(x => new InternalAdminUserRole
                 {
                     Id = x.Id,
                     RoleId = x.RoleId,
                     UserId = x.UserId
                 }).ToList();
 
-                res.Roles = dbContext.AdminRolesSet.Where(x => x.ClientId == context.CurrentClientId).Select(x => new InternalDictionaryAdminRoles
+                res.Roles = dbContext.AdminRolesSet.Where(x => x.ClientId == context.CurrentClientId).Select(x => new InternalAdminRole
                 {
                     Id = x.Id
 
                 }).ToList();
 
-                res.PositionRoles = dbContext.AdminPositionRolesSet.Where(x => x.Role.ClientId == context.CurrentClientId).Select(x => new InternalDictionaryAdminPositionRoles
+                res.PositionRoles = dbContext.AdminPositionRolesSet.Where(x => x.Role.ClientId == context.CurrentClientId).Select(x => new InternalAdminPositionRole
                 {
                     PositionId = x.PositionId,
                     Id = x.Id,
@@ -69,7 +69,7 @@ namespace BL.Database.Admins
                     Object = (EnumObjects)x.ObjectId
                 }).ToList();
 
-                res.ActionAccess = dbContext.AdminRoleActionsSet.Where(x => x.Role.ClientId == context.CurrentClientId).Select(x => new InternalDictionaryAdminRoleActions
+                res.ActionAccess = dbContext.AdminRoleActionsSet.Where(x => x.Role.ClientId == context.CurrentClientId).Select(x => new InternalAdminRoleAction
                 {
                     Id = x.Id,
                     RecordId = x.RecordId,
@@ -318,9 +318,9 @@ namespace BL.Database.Admins
                 return qry.Select(x => new FrontAdminRole
                 {
                     Id = x.Id,
-                    Name = x.Name,
-                    RoleCode = x.RoleType.Code,
-                    RoleName = x.RoleType.Name
+                    Name = x.Name
+                    //RoleCode = x.RoleType.Code,
+                    //RoleName = x.RoleType.Name
                 }).ToList();
             }
         }
@@ -615,6 +615,25 @@ namespace BL.Database.Admins
                     PositionName = x.Position.Name,
                     RoleId = x.Role.Id,
                     RoleName = x.Role.Name
+                }).ToList();
+            }
+        }
+
+        public IEnumerable<FrontAdminRole> GetPositionRolesEditMode(IContext context, FilterAdminRole filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.AdminRolesSet.AsQueryable();
+
+                qry = GetWhereRole(ref qry, filter);
+
+                qry = qry.OrderBy(x => x.Name);
+
+                return qry.Select(x => new FrontAdminRole
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Checked = x.PositionRoles.Where(y => filter.PositionIDs.Contains( y.PositionId) ).Any(),
                 }).ToList();
             }
         }

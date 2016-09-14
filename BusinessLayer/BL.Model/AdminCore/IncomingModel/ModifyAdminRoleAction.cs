@@ -33,7 +33,6 @@ namespace BL.Model.AdminCore.IncomingModel
         /// <summary>
         /// RecordId
         /// </summary>
-        //pss Зачем это поле
         public int? RecordId { get; set; }
 
     }

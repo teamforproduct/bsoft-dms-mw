@@ -124,13 +124,13 @@ namespace BL.Logic.DictionaryCore
 
                 // Контакты
                 #region DictionaryContacts
-                case EnumDictionaryActions.AddContact:
+                case EnumDictionaryActions.AddAgentContact:
                     cmd = DmsResolver.Current.Get<AddDictionaryContactCommand>();
                     break;
-                case EnumDictionaryActions.ModifyContact:
+                case EnumDictionaryActions.ModifyAgentContact:
                     cmd = DmsResolver.Current.Get<ModifyDictionaryContactCommand>();
                     break;
-                case EnumDictionaryActions.DeleteContact:
+                case EnumDictionaryActions.DeleteAgentContact:
                     cmd = DmsResolver.Current.Get<DeleteDictionaryContactCommand>();
                     break;
                 #endregion DictionaryContacts
@@ -242,13 +242,13 @@ namespace BL.Logic.DictionaryCore
 
                 // Компании
                 #region DictionaryCompanies
-                case EnumDictionaryActions.AddCompany:
+                case EnumDictionaryActions.AddAgentClientCompany:
                     cmd = DmsResolver.Current.Get<AddDictionaryAgentClientCompanyCommand>();
                     break;
-                case EnumDictionaryActions.ModifyCompany:
+                case EnumDictionaryActions.ModifyAgentClientCompany:
                     cmd = DmsResolver.Current.Get<ModifyDictionaryAgentClientCompanyCommand>();
                     break;
-                case EnumDictionaryActions.DeleteCompany:
+                case EnumDictionaryActions.DeleteAgentClientCompany:
                     cmd = DmsResolver.Current.Get<DeleteDictionaryAgentClientCompanyCommand>();
                     break;
                 #endregion DictionaryCompanies

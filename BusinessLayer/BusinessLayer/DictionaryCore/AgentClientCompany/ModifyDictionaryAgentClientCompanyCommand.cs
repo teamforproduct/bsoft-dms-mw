@@ -38,7 +38,7 @@ namespace BL.Logic.DictionaryCore
 
             var fdd = new FilterDictionaryAgentClientCompany { Name = Model.Name, NotContainsIDs = new List<int> { Model.Id } };
 
-            if (_dictDb.ExistsAgentClientCompany(_context, fdd))
+            if (_dictDb.ExistsAgentClientCompanies(_context, fdd))
             {
                 throw new DictionaryRecordNotUnique();
             }

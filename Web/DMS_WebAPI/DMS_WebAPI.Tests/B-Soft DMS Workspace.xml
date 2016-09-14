@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <con:soapui-workspace name="B-Soft DMS Workspace" soapui-version="5.2.1" xmlns:con="http://eviware.com/soapui/config">
   <con:settings/>
-  <con:project name="BSOFT-BASE">C:/Repos/bsoft-dms-mw/Web/DMS_WebAPI/DMS_WebAPI.Tests/BSOFT-BASE-soapui-project.xml</con:project>
-  <con:project name="Dictionary">C:/Repos/bsoft-dms-mw/Web/DMS_WebAPI/DMS_WebAPI.Tests/DICTIONARY-soapui-project.xml</con:project>
-  <con:project name="Documents">C:/Repos/bsoft-dms-mw/Web/DMS_WebAPI/DMS_WebAPI.Tests/DOCUMENTS-soapui-project.xml</con:project>
-  <con:project name="Template">C:/Repos/bsoft-dms-mw/Web/DMS_WebAPI/DMS_WebAPI.Tests/TEMPLATE-soapui-project.xml</con:project>
-  <con:project name="Adminka">C:/Repos/bsoft-dms-mw/Web/DMS_WebAPI/DMS_WebAPI.Tests/ADMINKA-soapui-project.xml</con:project>
+  <con:project name="BSOFT-BASE">E:/Source/Repos/bsoft-dms-mw/Web/DMS_WebAPI/DMS_WebAPI.Tests/BSOFT-BASE-soapui-project.xml</con:project>
+  <con:project name="Dictionary">E:/Source/Repos/bsoft-dms-mw/Web/DMS_WebAPI/DMS_WebAPI.Tests/DICTIONARY-soapui-project.xml</con:project>
+  <con:project name="Documents">E:/Source/Repos/bsoft-dms-mw/Web/DMS_WebAPI/DMS_WebAPI.Tests/DOCUMENTS-soapui-project.xml</con:project>
+  <con:project name="Template">E:/Source/Repos/bsoft-dms-mw/Web/DMS_WebAPI/DMS_WebAPI.Tests/TEMPLATE-soapui-project.xml</con:project>
+  <con:project name="Adminka">E:/Source/Repos/bsoft-dms-mw/Web/DMS_WebAPI/DMS_WebAPI.Tests/ADMINKA-soapui-project.xml</con:project>
   <con:collectInfoForSupport>false</con:collectInfoForSupport>
 </con:soapui-workspace>
