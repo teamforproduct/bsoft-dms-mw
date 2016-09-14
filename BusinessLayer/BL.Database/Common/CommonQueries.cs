@@ -2363,6 +2363,7 @@ namespace BL.Database.Common
                                             TargetPositionExecutorAgentName = y.StartEvent.TargetPositionExecutorAgent.Name ?? y.StartEvent.TargetAgent.Name,
                                             Description = y.StartEvent.Description,
                                             AddDescription = y.StartEvent.AddDescription,
+                                            DueDate = y.StartEvent.OnWait.Select(z=>z.DueDate).FirstOrDefault(),
                                         },
                 CloseEvent = y.CloseEvent == null || y.StartEventId == y.CloseEventId
                                         ? null
@@ -2375,6 +2376,7 @@ namespace BL.Database.Common
                                             TargetPositionExecutorAgentName = y.CloseEvent.TargetPositionExecutorAgent.Name ?? y.StartEvent.TargetAgent.Name,
                                             Description = y.CloseEvent.Description,
                                             AddDescription = y.CloseEvent.AddDescription,
+                                            DueDate = null,
                                         },
             }).ToList();
             return res;
