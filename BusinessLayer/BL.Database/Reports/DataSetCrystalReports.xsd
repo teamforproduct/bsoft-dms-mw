@@ -1,0 +1,118 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="DataSetCrystalReports" targetNamespace="http://tempuri.org/DataSetCrystalReports.xsd" xmlns:mstns="http://tempuri.org/DataSetCrystalReports.xsd" xmlns="http://tempuri.org/DataSetCrystalReports.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="DataSetCrystalReports" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="DataSetCrystalReports" msprop:Generator_UserDSName="DataSetCrystalReports">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="InternalDocument" msprop:Generator_TableClassName="InternalDocumentDataTable" msprop:Generator_TableVarName="tableInternalDocument" msprop:Generator_TablePropName="InternalDocument" msprop:Generator_RowDeletingName="InternalDocumentRowDeleting" msprop:Generator_RowChangingName="InternalDocumentRowChanging" msprop:Generator_RowEvHandlerName="InternalDocumentRowChangeEventHandler" msprop:Generator_RowDeletedName="InternalDocumentRowDeleted" msprop:Generator_UserTableName="InternalDocument" msprop:Generator_RowChangedName="InternalDocumentRowChanged" msprop:Generator_RowEvArgName="InternalDocumentRowChangeEvent" msprop:Generator_RowClassName="InternalDocumentRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Id" msprop:Generator_ColumnVarNameInTable="columnId" msprop:Generator_ColumnPropNameInRow="Id" msprop:Generator_ColumnPropNameInTable="IdColumn" msprop:Generator_UserColumnName="Id" type="xs:int" />
+              <xs:element name="DocumentTypeName" msprop:Generator_ColumnVarNameInTable="columnDocumentTypeName" msprop:Generator_ColumnPropNameInRow="DocumentTypeName" msprop:Generator_ColumnPropNameInTable="DocumentTypeNameColumn" msprop:Generator_UserColumnName="DocumentTypeName" type="xs:string" minOccurs="0" />
+              <xs:element name="ExecutorPositionName" msprop:Generator_ColumnVarNameInTable="columnExecutorPositionName" msprop:Generator_ColumnPropNameInRow="ExecutorPositionName" msprop:Generator_ColumnPropNameInTable="ExecutorPositionNameColumn" msprop:Generator_UserColumnName="ExecutorPositionName" type="xs:string" minOccurs="0" />
+              <xs:element name="ExecutorPositionExecutorAgentName" msprop:Generator_ColumnVarNameInTable="columnExecutorPositionExecutorAgentName" msprop:Generator_ColumnPropNameInRow="ExecutorPositionExecutorAgentName" msprop:Generator_ColumnPropNameInTable="ExecutorPositionExecutorAgentNameColumn" msprop:Generator_UserColumnName="ExecutorPositionExecutorAgentName" type="xs:string" minOccurs="0" />
+              <xs:element name="Addressee" msprop:Generator_ColumnVarNameInTable="columnAddressee" msprop:Generator_ColumnPropNameInRow="Addressee" msprop:Generator_ColumnPropNameInTable="AddresseeColumn" msprop:Generator_UserColumnName="Addressee" type="xs:string" minOccurs="0" />
+              <xs:element name="Description" msprop:Generator_ColumnVarNameInTable="columnDescription" msprop:Generator_ColumnPropNameInRow="Description" msprop:Generator_ColumnPropNameInTable="DescriptionColumn" msprop:Generator_UserColumnName="Description" type="xs:string" minOccurs="0" />
+              <xs:element name="SenderAgentName" msprop:Generator_ColumnVarNameInTable="columnSenderAgentName" msprop:Generator_ColumnPropNameInRow="SenderAgentName" msprop:Generator_ColumnPropNameInTable="SenderAgentNameColumn" msprop:Generator_UserColumnName="SenderAgentName" type="xs:string" minOccurs="0" />
+              <xs:element name="SenderAgentPersonName" msprop:Generator_ColumnVarNameInTable="columnSenderAgentPersonName" msprop:Generator_ColumnPropNameInRow="SenderAgentPersonName" msprop:Generator_ColumnPropNameInTable="SenderAgentPersonNameColumn" msprop:Generator_UserColumnName="SenderAgentPersonName" type="xs:string" minOccurs="0" />
+              <xs:element name="RegistrationNumber" msprop:Generator_ColumnVarNameInTable="columnRegistrationNumber" msprop:Generator_ColumnPropNameInRow="RegistrationNumber" msprop:Generator_ColumnPropNameInTable="RegistrationNumberColumn" msprop:Generator_UserColumnName="RegistrationNumber" type="xs:int" minOccurs="0" />
+              <xs:element name="RegistrationNumberSuffix" msprop:Generator_ColumnVarNameInTable="columnRegistrationNumberSuffix" msprop:Generator_ColumnPropNameInRow="RegistrationNumberSuffix" msprop:Generator_ColumnPropNameInTable="RegistrationNumberSuffixColumn" msprop:Generator_UserColumnName="RegistrationNumberSuffix" type="xs:string" minOccurs="0" />
+              <xs:element name="RegistrationNumberPrefix" msprop:Generator_ColumnVarNameInTable="columnRegistrationNumberPrefix" msprop:Generator_ColumnPropNameInRow="RegistrationNumberPrefix" msprop:Generator_ColumnPropNameInTable="RegistrationNumberPrefixColumn" msprop:Generator_UserColumnName="RegistrationNumberPrefix" type="xs:string" minOccurs="0" />
+              <xs:element name="RegistrationFullNumber" msprop:Generator_ColumnVarNameInTable="columnRegistrationFullNumber" msprop:Generator_ColumnPropNameInRow="RegistrationFullNumber" msprop:Generator_ColumnPropNameInTable="RegistrationFullNumberColumn" msprop:Generator_UserColumnName="RegistrationFullNumber" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="InternalDocumentSubscription" msprop:Generator_TableClassName="InternalDocumentSubscriptionDataTable" msprop:Generator_TableVarName="tableInternalDocumentSubscription" msprop:Generator_TablePropName="InternalDocumentSubscription" msprop:Generator_RowDeletingName="InternalDocumentSubscriptionRowDeleting" msprop:Generator_RowChangingName="InternalDocumentSubscriptionRowChanging" msprop:Generator_RowEvHandlerName="InternalDocumentSubscriptionRowChangeEventHandler" msprop:Generator_RowDeletedName="InternalDocumentSubscriptionRowDeleted" msprop:Generator_UserTableName="InternalDocumentSubscription" msprop:Generator_RowChangedName="InternalDocumentSubscriptionRowChanged" msprop:Generator_RowEvArgName="InternalDocumentSubscriptionRowChangeEvent" msprop:Generator_RowClassName="InternalDocumentSubscriptionRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Id" msprop:Generator_ColumnVarNameInTable="columnId" msprop:Generator_ColumnPropNameInRow="Id" msprop:Generator_ColumnPropNameInTable="IdColumn" msprop:Generator_UserColumnName="Id" type="xs:int" />
+              <xs:element name="DocumentId" msprop:Generator_ColumnVarNameInTable="columnDocumentId" msprop:Generator_ColumnPropNameInRow="DocumentId" msprop:Generator_ColumnPropNameInTable="DocumentIdColumn" msprop:Generator_UserColumnName="DocumentId" type="xs:int" minOccurs="0" />
+              <xs:element name="SubscriptionStatesName" msprop:Generator_ColumnVarNameInTable="columnSubscriptionStatesName" msprop:Generator_ColumnPropNameInRow="SubscriptionStatesName" msprop:Generator_ColumnPropNameInTable="SubscriptionStatesNameColumn" msprop:Generator_UserColumnName="SubscriptionStatesName" type="xs:string" minOccurs="0" />
+              <xs:element name="DoneEventSourcePositionName" msprop:Generator_ColumnVarNameInTable="columnDoneEventSourcePositionName" msprop:Generator_ColumnPropNameInRow="DoneEventSourcePositionName" msprop:Generator_ColumnPropNameInTable="DoneEventSourcePositionNameColumn" msprop:Generator_UserColumnName="DoneEventSourcePositionName" type="xs:string" minOccurs="0" />
+              <xs:element name="DoneEventSourcePositionExecutorAgentName" msprop:Generator_ColumnVarNameInTable="columnDoneEventSourcePositionExecutorAgentName" msprop:Generator_ColumnPropNameInRow="DoneEventSourcePositionExecutorAgentName" msprop:Generator_ColumnPropNameInTable="DoneEventSourcePositionExecutorAgentNameColumn" msprop:Generator_UserColumnName="DoneEventSourcePositionExecutorAgentName" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="InternalDocumentEvent" msprop:Generator_TableClassName="InternalDocumentEventDataTable" msprop:Generator_TableVarName="tableInternalDocumentEvent" msprop:Generator_TablePropName="InternalDocumentEvent" msprop:Generator_RowDeletingName="InternalDocumentEventRowDeleting" msprop:Generator_RowChangingName="InternalDocumentEventRowChanging" msprop:Generator_RowEvHandlerName="InternalDocumentEventRowChangeEventHandler" msprop:Generator_RowDeletedName="InternalDocumentEventRowDeleted" msprop:Generator_UserTableName="InternalDocumentEvent" msprop:Generator_RowChangedName="InternalDocumentEventRowChanged" msprop:Generator_RowEvArgName="InternalDocumentEventRowChangeEvent" msprop:Generator_RowClassName="InternalDocumentEventRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Id" msprop:Generator_ColumnVarNameInTable="columnId" msprop:Generator_ColumnPropNameInRow="Id" msprop:Generator_ColumnPropNameInTable="IdColumn" msprop:Generator_UserColumnName="Id" type="xs:int" />
+              <xs:element name="DocumentId" msprop:Generator_ColumnVarNameInTable="columnDocumentId" msprop:Generator_ColumnPropNameInRow="DocumentId" msprop:Generator_ColumnPropNameInTable="DocumentIdColumn" msprop:Generator_UserColumnName="DocumentId" type="xs:int" minOccurs="0" />
+              <xs:element name="SourcePositionName" msprop:Generator_ColumnVarNameInTable="columnSourcePositionName" msprop:Generator_ColumnPropNameInRow="SourcePositionName" msprop:Generator_ColumnPropNameInTable="SourcePositionNameColumn" msprop:Generator_UserColumnName="SourcePositionName" type="xs:string" minOccurs="0" />
+              <xs:element name="SourcePositionExecutorAgentName" msprop:Generator_ColumnVarNameInTable="columnSourcePositionExecutorAgentName" msprop:Generator_ColumnPropNameInRow="SourcePositionExecutorAgentName" msprop:Generator_ColumnPropNameInTable="SourcePositionExecutorAgentNameColumn" msprop:Generator_UserColumnName="SourcePositionExecutorAgentName" type="xs:string" minOccurs="0" />
+              <xs:element name="TargetPositionName" msprop:Generator_ColumnVarNameInTable="columnTargetPositionName" msprop:Generator_ColumnPropNameInRow="TargetPositionName" msprop:Generator_ColumnPropNameInTable="TargetPositionNameColumn" msprop:Generator_UserColumnName="TargetPositionName" type="xs:string" minOccurs="0" />
+              <xs:element name="TargetPositionExecutorAgentName" msprop:Generator_ColumnVarNameInTable="columnTargetPositionExecutorAgentName" msprop:Generator_ColumnPropNameInRow="TargetPositionExecutorAgentName" msprop:Generator_ColumnPropNameInTable="TargetPositionExecutorAgentNameColumn" msprop:Generator_UserColumnName="TargetPositionExecutorAgentName" type="xs:string" minOccurs="0" />
+              <xs:element name="PaperId" msprop:Generator_ColumnVarNameInTable="columnPaperId" msprop:Generator_ColumnPropNameInRow="PaperId" msprop:Generator_ColumnPropNameInTable="PaperIdColumn" msprop:Generator_UserColumnName="PaperId" type="xs:int" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="InternalDocumentPaper" msprop:Generator_TableClassName="InternalDocumentPaperDataTable" msprop:Generator_TableVarName="tableInternalDocumentPaper" msprop:Generator_TablePropName="InternalDocumentPaper" msprop:Generator_RowDeletingName="InternalDocumentPaperRowDeleting" msprop:Generator_RowChangingName="InternalDocumentPaperRowChanging" msprop:Generator_RowEvHandlerName="InternalDocumentPaperRowChangeEventHandler" msprop:Generator_RowDeletedName="InternalDocumentPaperRowDeleted" msprop:Generator_UserTableName="InternalDocumentPaper" msprop:Generator_RowChangedName="InternalDocumentPaperRowChanged" msprop:Generator_RowEvArgName="InternalDocumentPaperRowChangeEvent" msprop:Generator_RowClassName="InternalDocumentPaperRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Id" msprop:Generator_ColumnVarNameInTable="columnId" msprop:Generator_ColumnPropNameInRow="Id" msprop:Generator_ColumnPropNameInTable="IdColumn" msprop:Generator_UserColumnName="Id" type="xs:int" />
+              <xs:element name="DocumentId" msprop:Generator_ColumnVarNameInTable="columnDocumentId" msprop:Generator_ColumnPropNameInRow="DocumentId" msprop:Generator_ColumnPropNameInTable="DocumentIdColumn" msprop:Generator_UserColumnName="DocumentId" type="xs:int" minOccurs="0" />
+              <xs:element name="Name" msprop:Generator_ColumnVarNameInTable="columnName" msprop:Generator_ColumnPropNameInRow="Name" msprop:Generator_ColumnPropNameInTable="NameColumn" msprop:Generator_UserColumnName="Name" type="xs:string" minOccurs="0" />
+              <xs:element name="Description" msprop:Generator_ColumnVarNameInTable="columnDescription" msprop:Generator_ColumnPropNameInRow="Description" msprop:Generator_ColumnPropNameInTable="DescriptionColumn" msprop:Generator_UserColumnName="Description" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="InternalDocumentWait" msprop:Generator_TableClassName="InternalDocumentWaitDataTable" msprop:Generator_TableVarName="tableInternalDocumentWait" msprop:Generator_TablePropName="InternalDocumentWait" msprop:Generator_RowDeletingName="InternalDocumentWaitRowDeleting" msprop:Generator_RowChangingName="InternalDocumentWaitRowChanging" msprop:Generator_RowEvHandlerName="InternalDocumentWaitRowChangeEventHandler" msprop:Generator_RowDeletedName="InternalDocumentWaitRowDeleted" msprop:Generator_UserTableName="InternalDocumentWait" msprop:Generator_RowChangedName="InternalDocumentWaitRowChanged" msprop:Generator_RowEvArgName="InternalDocumentWaitRowChangeEvent" msprop:Generator_RowClassName="InternalDocumentWaitRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Id" msprop:Generator_ColumnVarNameInTable="columnId" msprop:Generator_ColumnPropNameInRow="Id" msprop:Generator_ColumnPropNameInTable="IdColumn" msprop:Generator_UserColumnName="Id" type="xs:int" />
+              <xs:element name="DocumentId" msprop:Generator_ColumnVarNameInTable="columnDocumentId" msprop:Generator_ColumnPropNameInRow="DocumentId" msprop:Generator_ColumnPropNameInTable="DocumentIdColumn" msprop:Generator_UserColumnName="DocumentId" type="xs:int" minOccurs="0" />
+              <xs:element name="CreateDate" msprop:Generator_ColumnVarNameInTable="columnCreateDate" msprop:Generator_ColumnPropNameInRow="CreateDate" msprop:Generator_ColumnPropNameInTable="CreateDateColumn" msprop:Generator_UserColumnName="CreateDate" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="TargetPositionName" msprop:Generator_ColumnVarNameInTable="columnTargetPositionName" msprop:Generator_ColumnPropNameInRow="TargetPositionName" msprop:Generator_ColumnPropNameInTable="TargetPositionNameColumn" msprop:Generator_UserColumnName="TargetPositionName" type="xs:string" minOccurs="0" />
+              <xs:element name="SourcePositionName" msprop:Generator_ColumnVarNameInTable="columnSourcePositionName" msprop:Generator_ColumnPropNameInRow="SourcePositionName" msprop:Generator_ColumnPropNameInTable="SourcePositionNameColumn" msprop:Generator_UserColumnName="SourcePositionName" type="xs:string" minOccurs="0" />
+              <xs:element name="DueDate" msprop:Generator_ColumnVarNameInTable="columnDueDate" msprop:Generator_ColumnPropNameInRow="DueDate" msprop:Generator_ColumnPropNameInTable="DueDateColumn" msprop:Generator_UserColumnName="DueDate" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="IsClosed" msprop:Generator_ColumnVarNameInTable="columnIsClosed" msprop:Generator_ColumnPropNameInRow="IsClosed" msprop:Generator_ColumnPropNameInTable="IsClosedColumn" msprop:Generator_UserColumnName="IsClosed" type="xs:boolean" minOccurs="0" />
+              <xs:element name="ResultTypeName" msprop:Generator_ColumnVarNameInTable="columnResultTypeName" msprop:Generator_ColumnPropNameInRow="ResultTypeName" msprop:Generator_ColumnPropNameInTable="ResultTypeNameColumn" msprop:Generator_UserColumnName="ResultTypeName" type="xs:string" minOccurs="0" />
+              <xs:element name="TargetPositionExecutorAgentName" msprop:Generator_ColumnVarNameInTable="columnTargetPositionExecutorAgentName" msprop:Generator_ColumnPropNameInRow="TargetPositionExecutorAgentName" msprop:Generator_ColumnPropNameInTable="TargetPositionExecutorAgentNameColumn" msprop:Generator_UserColumnName="TargetPositionExecutorAgentName" type="xs:string" minOccurs="0" />
+              <xs:element name="SourcePositionExecutorAgentName" msprop:Generator_ColumnVarNameInTable="columnSourcePositionExecutorAgentName" msprop:Generator_ColumnPropNameInRow="SourcePositionExecutorAgentName" msprop:Generator_ColumnPropNameInTable="SourcePositionExecutorAgentNameColumn" msprop:Generator_UserColumnName="SourcePositionExecutorAgentName" type="xs:string" minOccurs="0" />
+              <xs:element name="AttentionDate" msprop:Generator_ColumnVarNameInTable="columnAttentionDate" msprop:Generator_ColumnPropNameInRow="AttentionDate" msprop:Generator_ColumnPropNameInTable="AttentionDateColumn" msprop:Generator_UserColumnName="AttentionDate" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="OnEventTypeName" msprop:Generator_ColumnVarNameInTable="columnOnEventTypeName" msprop:Generator_ColumnPropNameInRow="OnEventTypeName" msprop:Generator_ColumnPropNameInTable="OnEventTypeNameColumn" msprop:Generator_UserColumnName="OnEventTypeName" type="xs:string" minOccurs="0" />
+              <xs:element name="OffEventDate" msprop:Generator_ColumnVarNameInTable="columnOffEventDate" msprop:Generator_ColumnPropNameInRow="OffEventDate" msprop:Generator_ColumnPropNameInTable="OffEventDateColumn" msprop:Generator_UserColumnName="OffEventDate" type="xs:dateTime" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+    <xs:unique name="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:InternalDocument" />
+      <xs:field xpath="mstns:Id" />
+    </xs:unique>
+    <xs:unique name="InternalDocumentSubscription_Constraint1" msdata:ConstraintName="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:InternalDocumentSubscription" />
+      <xs:field xpath="mstns:Id" />
+    </xs:unique>
+    <xs:unique name="InternalDocumentEvent_Constraint1" msdata:ConstraintName="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:InternalDocumentEvent" />
+      <xs:field xpath="mstns:Id" />
+    </xs:unique>
+    <xs:unique name="InternalDocumentPaper_Constraint1" msdata:ConstraintName="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:InternalDocumentPaper" />
+      <xs:field xpath="mstns:Id" />
+    </xs:unique>
+    <xs:unique name="InternalDocumentWait_Constraint1" msdata:ConstraintName="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:InternalDocumentWait" />
+      <xs:field xpath="mstns:Id" />
+    </xs:unique>
+  </xs:element>
+  <xs:annotation>
+    <xs:appinfo>
+      <msdata:Relationship name="InternalDocument_InternalDocumentSubscription" msdata:parent="InternalDocument" msdata:child="InternalDocumentSubscription" msdata:parentkey="Id" msdata:childkey="DocumentId" msprop:Generator_UserChildTable="InternalDocumentSubscription" msprop:Generator_ChildPropName="GetInternalDocumentSubscriptionRows" msprop:Generator_UserRelationName="InternalDocument_InternalDocumentSubscription" msprop:Generator_ParentPropName="InternalDocumentRow" msprop:Generator_RelationVarName="relationInternalDocument_InternalDocumentSubscription" msprop:Generator_UserParentTable="InternalDocument" />
+      <msdata:Relationship name="InternalDocument_InternalDocumentEvent" msdata:parent="InternalDocument" msdata:child="InternalDocumentEvent" msdata:parentkey="Id" msdata:childkey="DocumentId" msprop:Generator_UserChildTable="InternalDocumentEvent" msprop:Generator_ChildPropName="GetInternalDocumentEventRows" msprop:Generator_UserRelationName="InternalDocument_InternalDocumentEvent" msprop:Generator_ParentPropName="InternalDocumentRow" msprop:Generator_RelationVarName="relationInternalDocument_InternalDocumentEvent" msprop:Generator_UserParentTable="InternalDocument" />
+      <msdata:Relationship name="InternalDocumentPaper_InternalDocumentEvent" msdata:parent="InternalDocumentPaper" msdata:child="InternalDocumentEvent" msdata:parentkey="Id" msdata:childkey="PaperId" msprop:Generator_UserChildTable="InternalDocumentEvent" msprop:Generator_ChildPropName="GetInternalDocumentEventRows" msprop:Generator_UserRelationName="InternalDocumentPaper_InternalDocumentEvent" msprop:Generator_RelationVarName="relationInternalDocumentPaper_InternalDocumentEvent" msprop:Generator_UserParentTable="InternalDocumentPaper" msprop:Generator_ParentPropName="InternalDocumentPaperRow" />
+      <msdata:Relationship name="InternalDocument_InternalDocumentPaper" msdata:parent="InternalDocument" msdata:child="InternalDocumentPaper" msdata:parentkey="Id" msdata:childkey="DocumentId" msprop:Generator_UserChildTable="InternalDocumentPaper" msprop:Generator_ChildPropName="GetInternalDocumentPaperRows" msprop:Generator_UserRelationName="InternalDocument_InternalDocumentPaper" msprop:Generator_ParentPropName="InternalDocumentRow" msprop:Generator_RelationVarName="relationInternalDocument_InternalDocumentPaper" msprop:Generator_UserParentTable="InternalDocument" />
+      <msdata:Relationship name="InternalDocument_InternalDocumentWait" msdata:parent="InternalDocument" msdata:child="InternalDocumentWait" msdata:parentkey="Id" msdata:childkey="DocumentId" msprop:Generator_UserChildTable="InternalDocumentWait" msprop:Generator_ChildPropName="GetInternalDocumentWaitRows" msprop:Generator_UserRelationName="InternalDocument_InternalDocumentWait" msprop:Generator_ParentPropName="InternalDocumentRow" msprop:Generator_RelationVarName="relationInternalDocument_InternalDocumentWait" msprop:Generator_UserParentTable="InternalDocument" />
+    </xs:appinfo>
+  </xs:annotation>
+</xs:schema>

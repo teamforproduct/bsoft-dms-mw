@@ -270,7 +270,7 @@ namespace BL.Database.Common
                 Hash = docFile.Hash,
                 FileType = docFile.FileType,
                 FileSize = docFile.FileSize,
-                IsAdditional = docFile.IsAdditional,
+                TypeId = (int)docFile.Type,
                 IsDeleted = docFile.IsDeleted,
                 IsMainVersion = docFile.IsMainVersion,
                 IsWorkedOut = docFile.IsWorkedOut,
@@ -339,7 +339,7 @@ namespace BL.Database.Common
                 Hash = docFile.Hash,
                 FileType = docFile.FileType,
                 FileSize = docFile.FileSize,
-                IsAdditional = docFile.IsAdditional,
+                TypeId = (int)docFile.Type,
                 LastChangeDate = docFile.LastChangeDate,
                 LastChangeUserId = docFile.LastChangeUserId,
                 Name = docFile.Name,
@@ -354,15 +354,12 @@ namespace BL.Database.Common
             {
                 Id = item.Id,
                 Name = item.Name,
+                Thumbprint = item.Thumbprint,
                 CreateDate = item.CreateDate,
-                ValidFromDate = item.ValidFromDate,
-                ValidToDate = item.ValidToDate,
-                IsPublic = item.IsPublic,
-                IsPrivate = item.IsPrivate,
+                NotBefore = item.NotBefore,
+                NotAfter = item.NotAfter,
                 AgentId = item.AgentId,
-                Certificate = item.Certificate,
-                Extension = item.Extension,
-                TypeId = (int)item.Type,
+                Certificate = item.CertificateZip,
                 LastChangeDate = item.LastChangeDate,
                 LastChangeUserId = item.LastChangeUserId,
             };
@@ -371,23 +368,6 @@ namespace BL.Database.Common
         public static IEnumerable<EncryptionCertificates> GetDbEncryptionCertificates(IEnumerable<InternalEncryptionCertificate> items)
         {
             return items.Select(GetDbEncryptionCertificate);
-        }
-
-        public static EncryptionCertificateTypes GetDbEncryptionCertificateType(InternalEncryptionCertificateType item)
-        {
-            return new EncryptionCertificateTypes
-            {
-                Id = item.Id,
-                Name = item.Name,
-                Code = item.Code,
-                LastChangeDate = item.LastChangeDate,
-                LastChangeUserId = item.LastChangeUserId,
-            };
-        }
-
-        public static IEnumerable<EncryptionCertificateTypes> GetDbEncryptionCertificateTypes(IEnumerable<InternalEncryptionCertificateType> items)
-        {
-            return items.Select(GetDbEncryptionCertificateType);
         }
 
     }

@@ -72,7 +72,7 @@ namespace BL.Logic.DocumentCore.Commands
             _docWait.ResultTypeId = (int)EnumResultTypes.CloseByRejecting;
             _docWait.OffEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, _docWait.DocumentId, EnumEventTypes.RejectResult, Model.EventDate, Model.Description, null, _docWait.OnEvent.TaskId, _docWait.OnEvent.IsAvailableWithinTask, _docWait.OnEvent.TargetPositionId, null, _docWait.OnEvent.SourcePositionId);
             CommonDocumentUtilities.SetLastChange(_context, _docWait);
-            _operationDb.CloseDocumentWait(_context, _document);
+            _operationDb.CloseDocumentWait(_context, _document, GetIsUseInternalSign(), GetIsUseCertificateSign());
             return _document.Id;
         }
 

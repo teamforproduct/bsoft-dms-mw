@@ -75,7 +75,10 @@ namespace BL.Database.FileWorker
                     File.Delete(localFilePath);
                 }
 
-                attFile.PostedFileData.SaveAs(localFilePath);
+                if (attFile.PostedFileData != null)
+                    attFile.PostedFileData.SaveAs(localFilePath);
+                else
+                    File.WriteAllBytes(localFilePath, attFile.FileData);
 
                 FileInfo fileInfo = new FileInfo(localFilePath);
 

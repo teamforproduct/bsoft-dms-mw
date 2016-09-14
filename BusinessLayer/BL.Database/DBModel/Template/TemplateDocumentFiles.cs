@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BL.Database.DBModel.Dictionary;
+using BL.Model.Enums;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -22,7 +24,7 @@ namespace BL.Database.DBModel.Template
         public string FileType { get; set; }
         public long FileSize { get; set; }
         //public byte[] Content { get; set; }
-        public bool IsAdditional { get; set; }
+        public int TypeId { get; set; }
         [MaxLength(2000)]
         public string Hash { get; set; }
         [MaxLength(2000)]
@@ -31,5 +33,7 @@ namespace BL.Database.DBModel.Template
         public DateTime LastChangeDate { get; set; }
         [ForeignKey("DocumentId")]
         public virtual TemplateDocuments Document { get; set; }
+        [ForeignKey("TypeId")]
+        public virtual DictionaryFileTypes Type { get; set; }
     }
 }

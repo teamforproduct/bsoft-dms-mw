@@ -1,4 +1,5 @@
 ﻿using BL.Model.Enums;
+using BL.Model.Users;
 using System;
 using System.Runtime.Serialization;
 using System.Web;
@@ -17,26 +18,18 @@ namespace BL.Model.EncryptionCore.IncomingModel
         public string Name { get; set; }
 
         /// <summary>
-        /// Тип
-        /// </summary>
-        public EnumEncryptionCertificateTypes Type { get; set; }
-
-        /// <summary>
         /// Действует с даты
         /// </summary>
-        public DateTime? ValidFromDate { get; set; }
+        public DateTime? NotBefore { get; set; }
         /// <summary>
         /// Действует по дату
         /// </summary>
-        public DateTime? ValidToDate { get; set; }
+        public DateTime? NotAfter { get; set; }
+
         /// <summary>
-        /// Признак публичного ключа
+        /// Password
         /// </summary>
-        public bool IsPublic { get; set; }
-        /// <summary>
-        /// Признак приватного ключа
-        /// </summary>
-        public bool IsPrivate { get; set; }
+        public string Password { get; set; }
 
         /// <summary>
         /// Данные файла
@@ -44,11 +37,5 @@ namespace BL.Model.EncryptionCore.IncomingModel
         [XmlIgnore]
         [IgnoreDataMember]
         public HttpPostedFile PostedFileData { get; set; }
-        /// <summary>
-        /// Данные файла
-        /// </summary>
-        [XmlIgnore]
-        [IgnoreDataMember]
-        public byte[] Certificate { get; set; }
     }
 }

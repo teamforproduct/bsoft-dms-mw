@@ -100,7 +100,7 @@ namespace BL.Logic.DocumentCore.Commands
             //CommonDocumentUtilities.SetLastChange(Context, _document.Subscriptions);
             using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
             {
-                _operationDb.CloseDocumentWait(_context, _document);
+                _operationDb.CloseDocumentWait(_context, _document, GetIsUseInternalSign(), GetIsUseCertificateSign());
                 if (sendList != null)
                 {
                     var docProc = DmsResolver.Current.Get<IDocumentService>();

@@ -61,7 +61,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
                 DocumentId = Model.DocumentId,
                 OrderInDocument = _operationDb.GetNextFileOrderNumber(_context, Model.DocumentId),
                 //FileContent = Convert.FromBase64String(Model.FileData),
-                IsAdditional = Model.IsAdditional,
+                Type = Model.Type,
                 FileType = Model.FileType,
                 //FileSize = Model.FileSize,
                 Name = Path.GetFileNameWithoutExtension(Model.FileName),

@@ -99,37 +99,5 @@ namespace DMS_WebAPI.Controllers.Encryption
             encryptionProc.ExecuteAction(EnumEncryptionActions.DeleteEncryptionCertificate, ctx, id);
             return new JsonResult(null, this);
         }
-
-        /// <summary>
-        /// Экспорт сертификата
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [Route("Export/{id}")]
-        [HttpPost]
-        public IHttpActionResult PostExport(int id)
-        {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
-            var encryptionProc = DmsResolver.Current.Get<IEncryptionService>();
-            var item = encryptionProc.ExecuteAction(EnumEncryptionActions.ExportEncryptionCertificate, ctx, id);
-
-            return new JsonResult(item, this);
-        }
-
-        /// <summary>
-        /// Генерация сертификата
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        [Route("GenerateKey")]
-        [HttpPost]
-        public IHttpActionResult PostGenerateKey(GenerateKeyEncryptionCertificate model)
-        {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
-            var encryptionProc = DmsResolver.Current.Get<IEncryptionService>();
-            var itemId = (int)encryptionProc.ExecuteAction(EnumEncryptionActions.GenerateKeyEncryptionCertificate, ctx, model);
-
-            return Get(itemId);
-        }
     }
 }

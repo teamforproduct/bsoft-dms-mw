@@ -964,6 +964,18 @@
         }
     }
 
+    public class EncryptionCertificateHasExpired : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:EncryptionCertificateHasExpired@l##";
+        public EncryptionCertificateHasExpired() : base(_MESSAGE)
+        {
+        }
+
+        public EncryptionCertificateHasExpired(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
     public class EncryptionCertificatePrivateKeyСanNotBeExported : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:EncryptionCertificatePrivateKeyСanNotBeExported@l##";

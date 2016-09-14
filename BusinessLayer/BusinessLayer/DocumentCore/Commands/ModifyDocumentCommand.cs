@@ -108,7 +108,7 @@ namespace BL.Logic.DocumentCore.Commands
                 CommonDocumentUtilities.SetLastChange(_context, _document.Properties);
             }
 
-            _documentDb.ModifyDocument(_context, _document);
+            _documentDb.ModifyDocument(_context, _document, GetIsUseInternalSign(), GetIsUseCertificateSign());
 
             return _document.Id;
         }

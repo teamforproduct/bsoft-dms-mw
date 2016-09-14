@@ -1,10 +1,11 @@
 ﻿using System;
 using BL.Model.Common;
 using BL.Model.Enums;
+using BL.Model.Reports.Interfaces;
 
 namespace BL.Model.DocumentCore.InternalModel
 {
-    public class InternalDocumentEvent : LastChangeInfo
+    public class InternalDocumentEvent : LastChangeInfo, IReports
     {
         public int Id { get; set; }
         public int DocumentId { get; set; }
@@ -41,5 +42,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public Nullable<DateTime> PaperSendDate { get; set; }
         public Nullable<int> PaperRecieveAgentId { get; set; }
         public Nullable<DateTime> PaperRecieveDate { get; set; }
+
+        public InternalDocumentPaper Paper { get; set; }
     }
 }

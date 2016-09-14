@@ -37,11 +37,11 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         public override bool CanBeDisplayed(int positionId)
         {
             _actionRecords =
-                          _document.DocumentFiles.Where(x=>x.IsMainVersion && !x.IsDeleted)
+                          _document.DocumentFiles.Where(x => x.IsMainVersion && !x.IsDeleted)
                             .Where(
                               x =>
-                                  (x.IsAdditional && x.ExecutorPositionId == positionId)
-                                    || (!x.IsAdditional && _document.ExecutorPositionId == positionId))
+                                  (x.Type == EnumFileTypes.Additional && x.ExecutorPositionId == positionId)
+                                    || (x.Type == EnumFileTypes.Main && _document.ExecutorPositionId == positionId))
                                                           .Select(x => new InternalActionRecord
                                                           {
                                                               FileId = x.Id,
@@ -55,7 +55,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override bool CanExecute()
         {
-            if (Model.DocumentId <= 0 || Model.OrderInDocument <= 0 || Model.Version.HasValue )
+            if (Model.DocumentId <= 0 || Model.OrderInDocument <= 0 || Model.Version.HasValue)
             {
                 throw new WrongParameterValueError();
             }
@@ -70,9 +70,9 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                 throw new UnknownDocumentFile();
             }
 
-            _file = _document.DocumentFiles.Where(x=>x.IsMainVersion).First();
+            _file = _document.DocumentFiles.Where(x => x.IsMainVersion).First();
 
-            if (!_file.IsAdditional)
+            if (_file.Type != EnumFileTypes.Additional)
             {
                 _context.SetCurrentPosition(_document.ExecutorPositionId);
             }

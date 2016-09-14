@@ -17,5 +17,16 @@ namespace BL.Model.DocumentCore.FrontModel
         public FrontDocumentEvent SendEvent { get; set; }
         public FrontDocumentEvent DoneEvent { get; set; }
 
+        public bool IsUseCertificateSign { get; set; }
+        public int? CertificateId { get; set; }
+        public string CertificateName { get; set; }
+
+        public int? CertificatePositionId { get; set; }
+        public int? CertificatePositionExecutorAgentId { get; set; }
+        public string CertificatePositionName { get; set; }
+        public string CertificatePositionExecutorAgentName { get; set; }
+
+        public DateTime? CertificateSignCreateDate { get; set; }
+
     }
 }

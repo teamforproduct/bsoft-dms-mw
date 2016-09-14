@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using BL.Model.Common;
 using BL.Model.Enums;
 using BL.Model.SystemCore.InternalModel;
+using BL.Model.Reports.Interfaces;
+using BL.Model.DocumentCore.Filters;
 
 namespace BL.Model.DocumentCore.InternalModel
 {
-    public class InternalDocument : LastChangeInfo
+    public class InternalDocument : LastChangeInfo, IReports
     {
         public InternalDocument()
         {
@@ -140,7 +142,9 @@ namespace BL.Model.DocumentCore.InternalModel
 
         public string Hash { get; set; }
         public string FullHash { get; set; }
-
+        public string InternalSign { get; set; }
+        public string CertificateSign { get; set; }
+        
         public InternalTemplateDocument TemplateDocument { get; set; }
         public IEnumerable<InternalDocumentRestrictedSendList> RestrictedSendLists { get; set; }
         public IEnumerable<InternalDocumentSendList> SendLists { get; set; }
@@ -159,5 +163,17 @@ namespace BL.Model.DocumentCore.InternalModel
         public IEnumerable<InternalDocumentPaper> Papers { get; set; }
         public int? MaxPaperOrderNumber { get; set; }
 
+        #region For Report
+        public string DocumentTypeName { get; set; }
+        public string ExecutorPositionName { get; set; }
+        public string ExecutorPositionExecutorAgentName { get; set; }
+        public string SenderAgentName { get; set; }
+        public string SenderAgentPersonName { get; set; }
+        public string RegistrationFullNumber { get; set; }
+        #endregion
+
+        #region
+        public FilterDocumentFileIdentity CertificateSignPdfFileIdentity { get; set; }
+        #endregion
     }
 }

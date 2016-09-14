@@ -20,24 +20,23 @@ namespace BL.Database.Encryption.Interfaces
 
         void DeleteCertificate(IContext ctx, int itemId);
 
-        InternalEncryptionCertificate ExportEncryptionCertificatePrepare(IContext ctx, int itemId);
-
-        FrontEncryptionCertificate ExportEncryptionCertificate(IContext ctx, int itemId);
-
         #endregion
 
-        #region CertificateTypes
+        #region CertificateSign
+        string GetCertificateSign(IContext ctx, int certificateId, string certificatePassword, string dataToSign);
 
-        IEnumerable<FrontEncryptionCertificateType> GetCertificateTypes(IContext ctx, FilterEncryptionCertificateType filter, UIPaging paging);
+        bool VerifyCertificateSign(IContext ctx, string dataToSign, string sign);
+        #endregion
 
-        void AddCertificateType(IContext ctx, InternalEncryptionCertificateType item);
+        #region CertificateSignPdf
+        byte[] GetCertificateSignPdf(IContext ctx, int certificateId, string certificatePassword, byte[] pdf);
+        bool VerifyCertificateSignPdf(IContext ctx, byte[] pdf);
+        #endregion
 
-        InternalEncryptionCertificateType ModifyCertificateTypePrepare(IContext ctx, int itemId);
+        #region InternalSign
+        string GetInternalSign(string dataToSign);
 
-        void ModifyCertificateType(IContext ctx, InternalEncryptionCertificateType item);
-
-        void DeleteCertificateType(IContext ctx, int itemId);
-
+        bool VerifyInternalSign(string dataToVerify, string signedData);
         #endregion
     }
 }

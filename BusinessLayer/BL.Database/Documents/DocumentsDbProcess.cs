@@ -19,7 +19,6 @@ using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.FullTextSearch;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.InternalModel;
-using BL.Model.DocumentCore.ReportModel;
 using LinqKit;
 using System.Data.Entity;
 
@@ -62,7 +61,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                return dbContext.DocumentSendListsSet.Where(x => x.Id == id).Select(x=>x.DocumentId).FirstOrDefault();
+                return dbContext.DocumentSendListsSet.Where(x => x.Id == id).Select(x => x.DocumentId).FirstOrDefault();
             }
         }
 
@@ -413,6 +412,30 @@ namespace BL.Database.Documents
                 return CommonQueries.GetLinkedDocumentIds(ctx, dbContext, documentId);
             }
         }
+        public InternalDocument ReportDocumentForDigitalSignaturePrepare(IContext ctx, DigitalSignatureDocumentPdf model)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                var doc = CommonQueries.GetDocumentDigitalSignaturePrepare(dbContext, ctx, model.DocumentId);
+
+                if (doc == null)
+                {
+                    throw new DocumentNotFoundOrUserHasNoAccess();
+                }
+
+                return doc;
+            }
+        }
+
+        public FilterDocumentFileIdentity ReportDocumentForDigitalSignature(IContext ctx, DigitalSignatureDocumentPdf model, bool isUseInternalSign, bool isUseCertificateSign)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                var doc = CommonQueries.GetDocumentHash(dbContext, ctx, model.DocumentId, isUseInternalSign, isUseCertificateSign, model.CertificateId, model.CertificatePassword, null, true, true, true);
+
+                return doc.CertificateSignPdfFileIdentity;
+            }
+        }
 
         public InternalDocument ReportRegistrationCardDocumentPrepare(IContext ctx, int documentId)
         {
@@ -437,7 +460,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public ReportDocument ReportRegistrationCardDocument(IContext ctx, int documentId)
+        public InternalDocument ReportRegistrationCardDocument(IContext ctx, int documentId)
         {
             using (var dbContext = new DmsContext(ctx))
             {
@@ -450,7 +473,7 @@ namespace BL.Database.Documents
                 }
                 //var accs = CommonQueries.GetDocumentAccesses(ctx, dbContext).Where(x => x.DocumentId == doc.Id).ToList();
 
-                var res = new ReportDocument
+                var res = new InternalDocument
                 {
                     Id = doc.Id,
                     DocumentTypeName = doc.TemplateDocument.DocumentType.Name,
@@ -465,8 +488,8 @@ namespace BL.Database.Documents
 
                 var maxDateTime = DateTime.Now.AddYears(50);
 
-                res.DocumentWaits = CommonQueries.GetDocumentWaitQuery(ctx, dbContext, new FilterDocumentWait { DocumentId = new List<int> { res.Id } })
-                    .Select(x => new ReportDocumentWait
+                res.Waits = CommonQueries.GetDocumentWaitQuery(ctx, dbContext, new FilterDocumentWait { DocumentId = new List<int> { res.Id } })
+                    .Select(x => new InternalDocumentWait
                     {
                         Id = x.Id,
                         DocumentId = x.DocumentId,
@@ -483,12 +506,11 @@ namespace BL.Database.Documents
                         OffEventDate = x.OffEventId.HasValue ? x.OffEvent.CreateDate : (DateTime?)null
                     }).ToList();
 
-                res.DocumentSubscriptions = CommonQueries.GetDocumentSubscriptionsQuery(dbContext, new FilterDocumentSubscription { DocumentId = new List<int> { res.Id }, SubscriptionStates = new List<EnumSubscriptionStates> { EnumSubscriptionStates.Sign } }, ctx)
-                    .Select(x => new ReportDocumentSubscription
+                res.Subscriptions = CommonQueries.GetDocumentSubscriptionsQuery(dbContext, new FilterDocumentSubscription { DocumentId = new List<int> { res.Id }, SubscriptionStates = new List<EnumSubscriptionStates> { EnumSubscriptionStates.Sign } }, ctx)
+                    .Select(x => new InternalDocumentSubscription
                     {
                         Id = x.Id,
                         DocumentId = x.DocumentId,
-                        SubscriptionStatesId = x.SubscriptionStateId,
                         SubscriptionStatesName = x.SubscriptionState.Name,
                         DoneEventSourcePositionName = x.DoneEventId.HasValue ? x.DoneEvent.SourcePosition.Name : string.Empty,
                         DoneEventSourcePositionExecutorAgentName = x.DoneEventId.HasValue ? x.DoneEvent.SourcePositionExecutorAgent.Name : string.Empty
@@ -519,7 +541,7 @@ namespace BL.Database.Documents
         //    }
         //}
 
-        public List<ReportDocument> ReportRegisterTransmissionDocuments(IContext ctx, int paperListId)
+        public List<InternalDocument> ReportRegisterTransmissionDocuments(IContext ctx, int paperListId)
         {
             using (var dbContext = new DmsContext(ctx))
             {
@@ -529,23 +551,23 @@ namespace BL.Database.Documents
 
                 var res = qry.GroupBy(x => x.Document)
                     .Select(x => x.Key)
-                    .Select(x => new ReportDocument
+                    .Select(x => new InternalDocument
                     {
                         Id = x.Id,
                         RegistrationNumber = x.RegistrationNumber,
                         RegistrationNumberPrefix = x.RegistrationNumberPrefix,
                         RegistrationNumberSuffix = x.RegistrationNumberSuffix,
                         Description = x.Description
-                        //DocumentTypeName = x.DocTypeName,
-                        //ExecutorPositionName = x.ExecutorPosName,
-                        //Addressee = x.Doc.Addressee,
-                        //SenderAgentName = doc.SenderAgentname,
-                        //SenderAgentPersonName = doc.SenderPersonName,
-                    }).ToList();
+                //DocumentTypeName = x.DocTypeName,
+                //ExecutorPositionName = x.ExecutorPosName,
+                //Addressee = x.Doc.Addressee,
+                //SenderAgentName = doc.SenderAgentname,
+                //SenderAgentPersonName = doc.SenderPersonName,
+            }).ToList();
 
-                res.ForEach(x => CommonQueries.ChangeRegistrationFullNumber(x));
+                res.ForEach(x => x.RegistrationFullNumber = CommonQueries.GetRegistrationFullNumber(x));
 
-                var events = qry.Select(x => new ReportDocumentEvent
+                var events = qry.Select(x => new InternalDocumentEvent
                 {
                     Id = x.Id,
                     DocumentId = x.DocumentId,
@@ -556,7 +578,7 @@ namespace BL.Database.Documents
                     PaperId = x.PaperId,
                     Paper = !x.PaperId.HasValue
                         ? null
-                        : new ReportDocumentPaper
+                        : new InternalDocumentPaper
                         {
                             Id = x.Paper.Id,
                             DocumentId = x.Paper.DocumentId,
@@ -565,7 +587,7 @@ namespace BL.Database.Documents
                         }
                 }).ToList();
 
-                res = res.GroupJoin(events, o => o.Id, i => i.DocumentId, (o, i) => { o.DocumentEvents = i.ToList(); return o; }).ToList();
+                res = res.GroupJoin(events, o => o.Id, i => i.DocumentId, (o, i) => { o.Events = i.ToList(); return o; }).ToList();
 
                 return res;
             }
@@ -640,7 +662,7 @@ namespace BL.Database.Documents
                     FileType = x.FileType,
                     FileSize = x.FileSize,
                     OrderInDocument = x.OrderNumber,
-                    IsAdditional = x.IsAdditional,
+                    Type = (EnumFileTypes)x.TypeId,
                     Hash = x.Hash,
                     Description = x.Description,
                 }).ToList();
@@ -712,7 +734,7 @@ namespace BL.Database.Documents
                             PositionId = y.PositionId,
                             AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
                         }).ToList();
-                doc.DocumentFiles = CommonQueries.GetInternalDocumentFiles(ctx, dbContext, documentId);
+                doc.DocumentFiles = CommonQueries.GetInternalDocumentFiles(ctx, dbContext, documentId).Where(x=>x.Type!=EnumFileTypes.SubscribePdf).ToList();
 
                 doc.Properties = CommonQueries.GetInternalPropertyValues(dbContext, ctx, new FilterPropertyValue { Object = new List<EnumObjects> { EnumObjects.Documents }, RecordId = new List<int> { documentId } }).ToList();
 
@@ -827,7 +849,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public void ModifyDocument(IContext ctx, InternalDocument document)
+        public void ModifyDocument(IContext ctx, InternalDocument document, bool isUseInternalSign, bool isUseCertificateSign)
         {
             using (var dbContext = new DmsContext(ctx))
             {
@@ -890,7 +912,7 @@ namespace BL.Database.Documents
                     }
 
                     CommonQueries.AddFullTextCashInfo(dbContext, document.Id, EnumObjects.Documents, EnumOperationType.Update);
-                    CommonQueries.GetDocumentHash(dbContext, ctx, document.Id, false, false);
+                    CommonQueries.GetDocumentHash(dbContext, ctx, document.Id, isUseInternalSign, isUseCertificateSign, null, null, null, false, false);
                     dbContext.SaveChanges();
                     transaction.Complete();
                 }
@@ -1181,7 +1203,7 @@ namespace BL.Database.Documents
                     }).FirstOrDefault();
                 if (doc == null) return null;
                 doc.DocumentFiles = dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
-                    .Where(x => x.DocumentId == model.DocumentId && x.ExecutorPositionId == doc.ExecutorPositionId && !x.IsAdditional)
+                    .Where(x => x.DocumentId == model.DocumentId && x.ExecutorPositionId == doc.ExecutorPositionId && x.TypeId == (int)EnumFileTypes.Main)// !x.IsAdditional)
                     .Select(x => new InternalDocumentAttachedFile
                     {
                         Id = x.Id,
@@ -1217,7 +1239,7 @@ namespace BL.Database.Documents
                     }).FirstOrDefault();
                 if (doc == null) return null;
                 doc.DocumentFiles = dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
-                    .Where(x => x.DocumentId == model.DocumentId && x.ExecutorPositionId == doc.ExecutorPositionId && !x.IsAdditional)
+                    .Where(x => x.DocumentId == model.DocumentId && x.ExecutorPositionId == doc.ExecutorPositionId && x.TypeId == (int)EnumFileTypes.Main) //!x.IsAdditional)
                     .Select(x => new InternalDocumentAttachedFile
                     {
                         Id = x.Id,

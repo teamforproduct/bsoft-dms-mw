@@ -403,6 +403,7 @@
         DeleteDocumentPaperList = 123009, // Удалить реестр
         ReportRegistrationCardDocument = 100085,
         ReportRegisterTransmissionDocuments = 100086,
+        ReportDocumentForDigitalSignature = 100087,
 
         AddTemplateDocument = 251001,
         ModifyTemplateDocument = 251005,

@@ -50,8 +50,8 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             {
                 _actionRecords =
                        _document.DocumentFiles.Where(x => !x.IsDeleted && !x.IsMainVersion)
-                                .Where(x => (x.ExecutorPositionId == positionId && x.IsAdditional)
-                                            || (_document.ExecutorPositionId == positionId && !x.IsAdditional))
+                                .Where(x => (x.ExecutorPositionId == positionId && x.Type == EnumFileTypes.Additional)
+                                            || (_document.ExecutorPositionId == positionId && x.Type == EnumFileTypes.Main))
                                                        .Select(x => new InternalActionRecord
                                                        {
                                                            FileId = x.Id,

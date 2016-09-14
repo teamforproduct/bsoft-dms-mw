@@ -15,7 +15,7 @@
         public static string FULLTEXT_WAS_INITIALIZED = "FULLTEXTSEARCH_WAS_INITIALIZED";
 
         public static string FILE_STORE_PATH = "IRF_DMS_FILESTORE_PATH";
-        public static string FILE_STORE_DEFAULT_PATH = @"c:\IRF_DMS_FILESTORE";
+        public static string FILE_STORE_DEFAULT_PATH = @"d:\IRF_DMS_FILESTORE";
         public static string FILE_STORE_DOCUMENT_FOLDER = @"DOCUMENT";
         public static string FILE_STORE_TEMPLATE_FOLDER = @"TEMPLATE";
 
@@ -33,5 +33,8 @@
 
         public static int LICENCE_TRIAL_DAY_LIMIT = 30;
         public static int LICENCE_TRIAL_NUMBER_OF_CONNECTIONS = 2;
+
+        public static string DIGITAL_SIGNATURE_IS_USE_INTERNAL_SIGN = "DIGITAL_SIGNATURE_IS_USE_INTERNAL_SIGN";
+        public static string DIGITAL_SIGNATURE_IS_USE_CERTIFICATE_SIGN = "DIGITAL_SIGNATURE_IS_USE_CERTIFICATE_SIGN";
     }
 }

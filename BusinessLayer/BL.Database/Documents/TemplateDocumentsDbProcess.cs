@@ -630,7 +630,8 @@ namespace BL.Database.Documents
                             DocumentId = x.fl.DocumentId,
                             Extension = x.fl.Extention,
                             //FileContent = x.fl.Content,
-                            IsAdditional = x.fl.IsAdditional,
+                            Type = (EnumFileTypes)x.fl.TypeId,
+                            TypeName = x.fl.Type.Name,
                             Hash = x.fl.Hash,
                             FileType = x.fl.FileType,
                             FileSize = x.fl.FileSize,
@@ -661,7 +662,8 @@ namespace BL.Database.Documents
                             DocumentId = x.fl.DocumentId,
                             Extension = x.fl.Extention,
                             //FileContent = x.fl.Content,
-                            IsAdditional = x.fl.IsAdditional,
+                            Type = (EnumFileTypes)x.fl.TypeId,
+                            TypeName = x.fl.Type.Name,
                             Hash = x.fl.Hash,
                             FileType = x.fl.FileType,
                             FileSize = x.fl.FileSize,
@@ -717,7 +719,7 @@ namespace BL.Database.Documents
                 entry.Property(x => x.Extention).IsModified = true;
                 entry.Property(x => x.FileType).IsModified = true;
                 entry.Property(x => x.FileSize).IsModified = true;
-                entry.Property(x => x.IsAdditional).IsModified = true;
+                entry.Property(x => x.TypeId).IsModified = true;
                 entry.Property(x => x.LastChangeDate).IsModified = true;
                 entry.Property(x => x.LastChangeUserId).IsModified = true;
                 entry.Property(x => x.Hash).IsModified = true;

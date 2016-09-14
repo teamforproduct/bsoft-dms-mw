@@ -5,6 +5,8 @@ using DMS_WebAPI.Areas.HelpPage;
 using System.Web;
 using DMS_WebAPI.Infrastructure;
 using System.Web.Http.Hosting;
+using System;
+using System.IO;
 
 namespace DMS_WebAPI
 {
@@ -37,7 +39,7 @@ namespace DMS_WebAPI
             //XmlDocumentationProvider модифицирован в ручную, при обновлении пакетов нужно следить за этим  класcом
             //Необходим для того что бы отображалась в Api Help полная документация
 
-            config.SetDocumentationProvider(new XmlDocumentationProvider(HttpContext.Current.Server.MapPath("~/App_Data/Documentation/"), new string[] { "BL.Model.XML", "DMS_WebAPI.XML" }));
+            config.SetDocumentationProvider(new XmlDocumentationProvider(Path.Combine(HttpContext.Current.Server.MapPath("~/App_Data/"), "Documentation"), new string[] { "BL.Model.XML", "DMS_WebAPI.XML" }));
             //config.SetDocumentationProvider(new XmlDocumentationProvider(HttpContext.Current.Server.MapPath("~/bin")));
         }
     }

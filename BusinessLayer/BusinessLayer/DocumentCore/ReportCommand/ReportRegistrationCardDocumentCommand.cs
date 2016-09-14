@@ -2,9 +2,10 @@
 using BL.Database.Documents.Interfaces;
 using BL.Model.Exception;
 using BL.Model.Enums;
-using BL.Logic.Reports;
 using BL.Database.FileWorker;
-using BL.Model.DocumentCore.ReportModel;
+using BL.Model.DocumentCore.InternalModel;
+using BL.CrossCutting.DependencyInjection;
+using BL.Database.Reports;
 
 namespace BL.Logic.DocumentCore.ReportsCommands
 {
@@ -14,7 +15,7 @@ namespace BL.Logic.DocumentCore.ReportsCommands
         private readonly IDocumentsDbProcess _documentDb;
         private readonly IFileStore _fileStore;
 
-        protected ReportDocument _reportDocument;
+        protected InternalDocument _reportDocument;
 
         public ReportRegistrationCardDocumentCommand(IDocumentsDbProcess documentDb, IFileStore fileStore)
         {
@@ -82,7 +83,7 @@ namespace BL.Logic.DocumentCore.ReportsCommands
                     break;
             }
 
-            return DmsReport.ReportExportToStream(_reportDocument, _fileStore.GetFullTemplateReportFilePath(_context, reportType));
+            return DmsResolver.Current.Get<DmsReport>().ReportExportToStream(_reportDocument, _fileStore.GetFullTemplateReportFilePath(_context, reportType));
         }
     }
 }

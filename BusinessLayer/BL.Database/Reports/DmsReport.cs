@@ -9,15 +9,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace BL.Logic.Reports
+namespace BL.Database.Reports
 {
-    public static class DmsReport
+    public class DmsReport
     {
-        public static FrontReport ReportExportToStream<T>(T data, string filePathCrystalReport) where T : class
+        public FrontReport ReportExportToStream<T>(T data, string filePathCrystalReport) where T : class
         {
             return ReportExportToStream(new List<T> { data }, filePathCrystalReport);
         }
-        public static FrontReport ReportExportToStream<T>(List<T> data, string filePathCrystalReport) where T : class
+        public FrontReport ReportExportToStream<T>(List<T> data, string filePathCrystalReport) where T : class
         {
             var ds = new DataSetCrystalReports();
 
@@ -45,7 +45,7 @@ namespace BL.Logic.Reports
                 {
                     ms.Write(buffer, 0, read);
                 }
-                res.FileContent = Convert.ToBase64String(ms.ToArray());
+                res.FileContent = ms.ToArray();
             }
 
             return res;

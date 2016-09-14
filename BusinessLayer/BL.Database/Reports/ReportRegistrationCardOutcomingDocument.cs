@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace BL.Logic.Reports {
+namespace BL.Database.Reports {
     using System;
     using System.ComponentModel;
     using CrystalDecisions.Shared;
@@ -41,7 +41,7 @@ namespace BL.Logic.Reports {
         
         public override string FullResourceName {
             get {
-                return "BL.Logic.Reports.ReportRegistrationCardOutcomingDocument.rpt";
+                return "BL.Database.Reports.ReportRegistrationCardOutcomingDocument.rpt";
             }
             set {
                 // Do nothing

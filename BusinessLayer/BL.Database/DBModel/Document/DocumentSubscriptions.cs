@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using BL.Database.DBModel.Dictionary;
 using System.ComponentModel.DataAnnotations;
+using BL.Database.DBModel.Encryption;
 
 namespace BL.Database.DBModel.Document
 {
@@ -30,5 +31,22 @@ namespace BL.Database.DBModel.Document
         public virtual DocumentEvents DoneEvent { get; set; }
         [ForeignKey("SubscriptionStateId")]
         public virtual DictionarySubscriptionStates SubscriptionState { get; set; }
+
+        public string InternalSign { get; set; }
+        public string CertificateSign { get; set; }
+        public int? CertificateId { get; set; }
+        [ForeignKey("CertificateId")]
+        public EncryptionCertificates Certificate { get; set; }
+
+        public DateTime? CertificateSignCreateDate { get; set; }
+
+        public int? CertificatePositionId { get; set; }
+        [Column("CertificatePositionExecutorAgentId")]
+        public int? CertificatePositionExecutorAgentId { get; set; }
+
+        [ForeignKey("CertificatePositionId")]
+        public virtual DictionaryPositions CertificatePosition { get; set; }
+        [ForeignKey("CertificatePositionExecutorAgentId")]
+        public virtual DictionaryAgents CertificatePositionExecutorAgent { get; set; }
     }
 }

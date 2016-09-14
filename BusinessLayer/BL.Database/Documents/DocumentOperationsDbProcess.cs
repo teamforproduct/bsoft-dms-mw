@@ -213,7 +213,7 @@ namespace BL.Database.Documents
                         {
                             Id = x.Id,
                             ExecutorPositionId = x.ExecutorPositionId,
-                            IsAdditional = x.IsAdditional,
+                            Type = (EnumFileTypes)x.TypeId,
                             IsWorkedOut = x.IsWorkedOut,
                             IsMainVersion = x.IsMainVersion,
                             IsDeleted = x.IsDeleted,
@@ -379,7 +379,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public void CloseDocumentWait(IContext ctx, InternalDocument document)
+        public void CloseDocumentWait(IContext ctx, InternalDocument document, bool isUseInternalSign, bool isUseCertificateSign)
         {
             using (var dbContext = new DmsContext(ctx))
             {
@@ -430,6 +430,7 @@ namespace BL.Database.Documents
                 if (subscription != null)
                 {
                     var docHash = CommonQueries.GetDocumentHash(dbContext, ctx, document.Id,
+                                                                isUseInternalSign, isUseCertificateSign, subscription.CertificateId, subscription.CertificatePassword, subscription.Id,
                                                                  subscription.SubscriptionStates == EnumSubscriptionStates.Sign ||
                                                                  subscription.SubscriptionStates == EnumSubscriptionStates.Visa ||
                                                                  subscription.SubscriptionStates == EnumSubscriptionStates.Аgreement ||
@@ -442,6 +443,14 @@ namespace BL.Database.Documents
                         SubscriptionStateId = (int)subscription.SubscriptionStates,
                         Hash = docHash?.Hash,
                         FullHash = docHash?.FullHash,
+
+                        InternalSign = docHash.InternalSign,
+                        CertificateSign = docHash.CertificateSign,
+                        CertificateId = subscription.CertificateId,
+                        CertificateSignCreateDate = DateTime.Now,
+                        CertificatePositionId = subscription.CertificatePositionId,
+                        CertificatePositionExecutorAgentId = subscription.CertificatePositionExecutorAgentId,
+
                         LastChangeDate = subscription.LastChangeDate,
                         LastChangeUserId = subscription.LastChangeUserId
                     };
@@ -458,12 +467,19 @@ namespace BL.Database.Documents
                     entry.Property(x => x.FullHash).IsModified = true;
                     entry.Property(x => x.LastChangeDate).IsModified = true;
                     entry.Property(x => x.LastChangeUserId).IsModified = true;
+
+                    entry.Property(x => x.InternalSign).IsModified = true;
+                    entry.Property(x => x.CertificateSign).IsModified = true;
+                    entry.Property(x => x.CertificateId).IsModified = true;
+                    entry.Property(x => x.CertificateSignCreateDate).IsModified = true;
+                    entry.Property(x => x.CertificatePositionId).IsModified = true;
+                    entry.Property(x => x.CertificatePositionExecutorAgentId).IsModified = true;
                 }
                 dbContext.SaveChanges();
             }
         }
 
-        public void SelfAffixSigningDocument(IContext ctx, InternalDocument document)
+        public void SelfAffixSigningDocument(IContext ctx, InternalDocument document, bool isUseInternalSign, bool isUseCertificateSign)
         {
             using (var dbContext = new DmsContext(ctx))
             {
@@ -474,6 +490,7 @@ namespace BL.Database.Documents
                     var subscription = document.Subscriptions.First();
 
                     var docHash = CommonQueries.GetDocumentHash(dbContext, ctx, document.Id,
+                                                                isUseInternalSign, isUseCertificateSign, subscription.CertificateId, subscription.CertificatePassword, 0,
                                                                  subscription.SubscriptionStates == EnumSubscriptionStates.Sign ||
                                                                  subscription.SubscriptionStates == EnumSubscriptionStates.Visa ||
                                                                  subscription.SubscriptionStates == EnumSubscriptionStates.Аgreement ||
@@ -484,6 +501,12 @@ namespace BL.Database.Documents
 
                     subscriptionDb.Hash = docHash.Hash;
                     subscriptionDb.FullHash = docHash.FullHash;
+                    subscriptionDb.InternalSign = docHash.InternalSign;
+                    subscriptionDb.CertificateSign = docHash.CertificateSign;
+                    subscriptionDb.CertificateId = subscription.CertificateId;
+                    subscriptionDb.CertificateSignCreateDate = DateTime.Now;
+                    subscriptionDb.CertificatePositionId = subscription.CertificatePositionId;
+                    subscriptionDb.CertificatePositionExecutorAgentId = subscription.CertificatePositionExecutorAgentId;
 
                     dbContext.DocumentEventsSet.Add(eventDb);
                     dbContext.SaveChanges();
@@ -1205,7 +1228,7 @@ namespace BL.Database.Documents
                             Id = x.Id,
                             OnEvent = new InternalDocumentEvent
                             {
-                                SourcePositionId  = x.OnEvent.SourcePositionId,
+                                SourcePositionId = x.OnEvent.SourcePositionId,
                                 TargetPositionId = x.OnEvent.TargetPositionId,
                                 TargetPositionExecutorAgentId = x.OnEvent.TargetPositionExecutorAgentId,
                             }
@@ -1275,7 +1298,7 @@ namespace BL.Database.Documents
                 }
                 doc.RestrictedSendLists = dbContext.DocumentRestrictedSendListsSet
                     .Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId).Where(x => x.DocumentId == sendList.DocumentId)
-                    .GroupBy(x=>x.PositionId)
+                    .GroupBy(x => x.PositionId)
                     .Select(x => new InternalDocumentRestrictedSendList
                     {
                         PositionId = x.Key

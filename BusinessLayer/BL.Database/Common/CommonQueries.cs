@@ -27,6 +27,11 @@ using BL.Database.DBModel.Dictionary;
 using System.Data.Entity;
 using BL.Database.DBModel.Encryption;
 using BL.Model.EncryptionCore.Filters;
+using BL.Database.Encryption.Interfaces;
+using BL.Database.Reports;
+using iTextSharp.text.pdf;
+using System.IO;
+using BL.Database.Documents.Interfaces;
 
 namespace BL.Database.Common
 {
@@ -850,9 +855,13 @@ namespace BL.Database.Common
                     qry = qry.Where(filterContains);
                 }
 
-                if (filter.IsAdditional.HasValue)
+                if (filter.Types?.Count() > 0)
                 {
-                    qry = qry.Where(x => x.IsAdditional == filter.IsAdditional);
+                    var filterContains = PredicateBuilder.False<DocumentFiles>();
+                    filterContains = filter.Types.Cast<int>().Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.TypeId == value).Expand());
+
+                    qry = qry.Where(filterContains);
                 }
 
                 if (filter.IsWorkedOut.HasValue)
@@ -979,7 +988,8 @@ namespace BL.Database.Common
                                 FileContent = file.Content,
                                 FileType = file.FileType,
                                 FileSize = file.FileSize,
-                                IsAdditional = file.IsAdditional,
+                                Type = (EnumFileTypes)file.TypeId,
+                                TypeName = file.Type.Name,
                                 IsMainVersion = file.IsMainVersion,
                                 IsDeleted = file.IsDeleted,
                                 IsWorkedOut = file.IsWorkedOut ?? true,
@@ -1043,7 +1053,7 @@ namespace BL.Database.Common
                     FileContent = x.Content,
                     FileType = x.FileType,
                     FileSize = x.FileSize,
-                    IsAdditional = x.IsAdditional,
+                    Type = (EnumFileTypes)x.TypeId,
 
                     IsMainVersion = x.IsMainVersion,
                     Description = x.Description,
@@ -1880,7 +1890,18 @@ namespace BL.Database.Common
                         TargetPositionExecutorNowAgentName = null,
                         SourcePositionExecutorAgentPhoneNumber = null,
                         TargetPositionExecutorAgentPhoneNumber = null,
-                    }
+                    },
+
+                IsUseCertificateSign = x.CertificateId.HasValue,
+                CertificateId = x.CertificateId,
+                CertificateName = x.Certificate.Name,
+                CertificatePositionId = x.CertificatePositionId,
+                CertificatePositionExecutorAgentId = x.CertificatePositionExecutorAgentId,
+                CertificatePositionName = x.CertificatePosition.Name,
+                CertificatePositionExecutorAgentName = x.CertificatePositionExecutorAgent.Name,
+                CertificateSignCreateDate = x.CertificateSignCreateDate,
+
+
             }).ToList();
 
             subscriptions.ForEach(x => CommonQueries.ChangeRegistrationFullNumber(x));
@@ -2260,7 +2281,7 @@ namespace BL.Database.Common
                 var links = x.Links.ToList();
                 links.ForEach(y => CommonQueries.ChangeRegistrationFullNumber(y));
                 x.Links = links;
-                x.DocumentWorkGroup = CommonQueries.GetDocumentWorkGroup(dbContext, context, new FilterDictionaryPosition { DocumentIDs = new List<int> {x.Id} });
+                x.DocumentWorkGroup = CommonQueries.GetDocumentWorkGroup(dbContext, context, new FilterDictionaryPosition { DocumentIDs = new List<int> { x.Id } });
                 //TODO x.Accesses = acc.Where(y => y.DocumentId == x.Id).ToList();
             });
             return items;
@@ -2673,9 +2694,9 @@ namespace BL.Database.Common
         #endregion
 
         #region Hash
-        public static InternalDocument GetDocumentHash(DmsContext dbContext, IContext ctx, int documentId, bool isAddSubscription = false, bool isFull = false)
+        public static InternalDocument GetDocumentHash(DmsContext dbContext, IContext ctx, int documentId, bool isUseInternalSign, bool isUseCertificateSign, int? certificateId, string certificatePassword, int? subscriptionId, bool isAddSubscription = false, bool isFull = false, bool isContinueIfEmptySubscriptions =false)
         {
-            var subscriptions = CommonQueries.GetInternalDocumentSubscriptions(dbContext, ctx,
+            List<InternalDocumentSubscription> subscriptions = CommonQueries.GetInternalDocumentSubscriptions(dbContext, ctx,
                 new FilterDocumentSubscription
                 {
                     DocumentId = new List<int> { documentId },
@@ -2685,16 +2706,24 @@ namespace BL.Database.Common
                         EnumSubscriptionStates.Аgreement,
                         EnumSubscriptionStates.Аpproval
                         }
-                });
+                }).ToList();
 
             if (!isAddSubscription)
             {
-                if (!subscriptions.Any())
+                if (!subscriptions.Any() && !isContinueIfEmptySubscriptions)
                     return null;
             }
 
-            var document = CommonQueries.GetDocumentHashPrepare(dbContext, ctx, documentId);
-            document.Subscriptions = subscriptions;
+            InternalDocument document;
+            if (isUseCertificateSign && isAddSubscription)
+            {
+                document = CommonQueries.GetDocumentDigitalSignaturePrepare(dbContext, ctx, documentId);
+            }
+            else
+            {
+                document = CommonQueries.GetDocumentHashPrepare(dbContext, ctx, documentId);
+                document.Subscriptions = subscriptions;
+            }
 
             var IsFilesIncorrect = false;
 
@@ -2719,18 +2748,37 @@ namespace BL.Database.Common
                 document.FullHash = CommonQueries.GetDocumentHash(document, true);
             }
 
+            //TODO is internal sign
+            if (isUseInternalSign)
+            {
+                document.InternalSign = CommonQueries.GetDocumentInternalSign(document);
+            }
+
+            //TODO is certificate sign
+            if (isUseCertificateSign && isAddSubscription && certificateId.HasValue)
+            {
+                document.CertificateSign = CommonQueries.GetDocumentCertificateSign(ctx, document, certificateId.Value, certificatePassword);
+            }
+
             if (subscriptions.Any())
             {
                 StringComparer comparer = StringComparer.OrdinalIgnoreCase;
                 foreach (var subscription in subscriptions)
                 {
                     if (IsFilesIncorrect || !VerifyDocumentHash(subscription.Hash, document) ||
-                        ((isFull || isAddSubscription) && !VerifyDocumentHash(subscription.FullHash, document, true)))
+                        ((isFull || isAddSubscription) && !VerifyDocumentHash(subscription.FullHash, document, true)) ||
+                        //TODO is internal sign
+                        (isUseInternalSign && isAddSubscription && !VerifyDocumentInternalSign(subscription.InternalSign, document)) ||
+                        //TODO is certificate sign
+                        (isUseCertificateSign && isAddSubscription && !string.IsNullOrEmpty(subscription.CertificateSign) && !VerifyDocumentCertificateSign(ctx, subscription.CertificateSign, document))
+                        )
                     {
+                        subscription.SubscriptionStates = EnumSubscriptionStates.Violated;
+
                         var subscriptionDb = new DocumentSubscriptions
                         {
                             Id = subscription.Id,
-                            SubscriptionStateId = (int)EnumSubscriptionStates.Violated,
+                            SubscriptionStateId = (int)subscription.SubscriptionStates,
                             LastChangeUserId = (int)EnumSystemUsers.AdminUser,
                             LastChangeDate = DateTime.Now
                         };
@@ -2778,6 +2826,16 @@ namespace BL.Database.Common
                 throw new DocumentFileWasChangedExternally();
             }
 
+            //TODO is certificate sign
+            if (isUseCertificateSign && isAddSubscription && certificateId.HasValue)
+            {
+                subscriptions = subscriptions.Where(x => x.SubscriptionStates == EnumSubscriptionStates.Sign).ToList();
+                if (subscriptionId.HasValue)
+                    subscriptions.Add(dbContext.DictionaryPositionsSet.Where(x => x.Id == ctx.CurrentPositionId).Select(x => new InternalDocumentSubscription { Id = subscriptionId.Value, DocumentId = documentId, DoneEventSourcePositionName = x.Name, DoneEventSourcePositionExecutorAgentName = x.ExecutorAgent.Name }).FirstOrDefault());
+                document.Subscriptions = subscriptions;
+                document.CertificateSignPdfFileIdentity = CommonQueries.GetDocumentCertificateSignPdf(dbContext, ctx, document, certificateId.Value, certificatePassword);
+            }
+
             return document;
         }
 
@@ -2796,9 +2854,81 @@ namespace BL.Database.Common
                 throw new Model.Exception.DocumentNotFoundOrUserHasNoAccess();
             }
 
-            doc.DocumentFiles = CommonQueries.GetInternalDocumentFiles(ctx, dbContext, documentId);
+            doc.DocumentFiles = CommonQueries.GetInternalDocumentFiles(ctx, dbContext, documentId).Where(x => x.Type != EnumFileTypes.SubscribePdf).ToList();
 
             doc.SendLists = CommonQueries.GetInternalDocumentSendList(dbContext, ctx, new FilterDocumentSendList { DocumentId = new List<int> { documentId } });
+
+            return doc;
+        }
+
+        public static InternalDocument GetDocumentDigitalSignaturePrepare(DmsContext dbContext, IContext ctx, int documentId)
+        {
+            var doc = CommonQueries.GetDocumentQuery(dbContext, ctx).Where(x => x.Id == documentId)
+                .Select(x => new InternalDocument
+                {
+                    Id = x.Id,
+                    DocumentTypeId = x.TemplateDocument.DocumentTypeId,
+                    ExecutorPositionId = x.ExecutorPositionId,
+                    DocumentTypeName = x.TemplateDocument.DocumentType.Name,
+                    Description = x.Description,
+                    ExecutorPositionName = x.ExecutorPosition.Name,
+                    Addressee = x.Addressee,
+                    SenderAgentName = x.SenderAgent.Name,
+                    SenderAgentPersonName = x.SenderAgentPerson.Agent.Name,
+                }).FirstOrDefault();
+
+            if (doc == null)
+            {
+                throw new Model.Exception.DocumentNotFoundOrUserHasNoAccess();
+            }
+
+            doc.DocumentFiles = CommonQueries.GetInternalDocumentFiles(ctx, dbContext, documentId).Where(x => x.Type != EnumFileTypes.SubscribePdf).ToList();
+
+            doc.SendLists = CommonQueries.GetInternalDocumentSendList(dbContext, ctx, new FilterDocumentSendList { DocumentId = new List<int> { documentId } });
+
+            var maxDateTime = DateTime.Now.AddYears(50);
+
+            doc.Waits = CommonQueries.GetDocumentWaitQuery(ctx, dbContext, new FilterDocumentWait { DocumentId = new List<int> { doc.Id } })
+                .Select(x => new InternalDocumentWait
+                {
+                    Id = x.Id,
+                    DocumentId = x.DocumentId,
+                    CreateDate = x.OnEvent.Date,
+                    TargetPositionName = x.OnEvent.TargetPosition.Name,
+                    TargetPositionExecutorAgentName = x.OnEvent.TargetPositionExecutorAgent.Name,
+                    SourcePositionName = x.OnEvent.SourcePosition.Name,
+                    SourcePositionExecutorAgentName = x.OnEvent.SourcePositionExecutorAgent.Name,
+                    DueDate = x.DueDate > maxDateTime ? null : x.DueDate,
+                    IsClosed = x.OffEventId != null,
+                    ResultTypeName = x.ResultType.Name,
+                    AttentionDate = x.AttentionDate,
+                    OnEventTypeName = x.OnEvent.EventType.Name,
+                    OffEventDate = x.OffEventId.HasValue ? x.OffEvent.CreateDate : (DateTime?)null
+                }).ToList();
+
+            doc.Subscriptions = CommonQueries.GetDocumentSubscriptionsQuery(dbContext,
+                new FilterDocumentSubscription
+                {
+                    DocumentId = new List<int> { doc.Id },
+                    SubscriptionStates = new List<EnumSubscriptionStates> {
+                        EnumSubscriptionStates.Sign,
+                        EnumSubscriptionStates.Visa,
+                        EnumSubscriptionStates.Аgreement,
+                        EnumSubscriptionStates.Аpproval }
+                }, ctx)
+                .Select(x => new InternalDocumentSubscription
+                {
+                    Id = x.Id,
+                    DocumentId = x.DocumentId,
+                    SubscriptionStatesName = x.SubscriptionState.Name,
+                    DoneEventSourcePositionName = x.DoneEventId.HasValue ? x.DoneEvent.SourcePosition.Name : string.Empty,
+                    DoneEventSourcePositionExecutorAgentName = x.DoneEventId.HasValue ? x.DoneEvent.SourcePositionExecutorAgent.Name : string.Empty,
+
+                    SendEventId = x.SendEventId,
+                    SubscriptionStates = (EnumSubscriptionStates)x.SubscriptionStateId,
+                    Hash = x.Hash,
+                    FullHash = x.FullHash
+                }).ToList();
 
             return doc;
         }
@@ -2856,11 +2986,120 @@ namespace BL.Database.Common
             return hash;
         }
 
+        public static string GetDocumentInternalSign(InternalDocument doc)
+        {
+            string stringDocument = GetStringDocumentForDocumentHash(doc, true);
+
+            string sign = DmsResolver.Current.Get<IEncryptionDbProcess>().GetInternalSign(stringDocument);
+
+            return sign;
+        }
+
+        public static string GetDocumentCertificateSign(IContext ctx, InternalDocument doc, int certificateId, string certificatePassword)
+        {
+            string stringDocument = GetStringDocumentForDocumentHash(doc, true);
+
+            string sign = DmsResolver.Current.Get<IEncryptionDbProcess>().GetCertificateSign(ctx, certificateId, certificatePassword, stringDocument);
+
+            return sign;
+        }
+
+        public static FilterDocumentFileIdentity GetDocumentCertificateSignPdf(DmsContext dbContext, IContext ctx, InternalDocument doc, int certificateId, string certificatePassword)
+        {
+            var fileStore = DmsResolver.Current.Get<IFileStore>();
+            var pdf = DmsResolver.Current.Get<DmsReport>().ReportExportToStream(doc, fileStore.GetFullTemplateReportFilePath(ctx, EnumReportTypes.DocumentForDigitalSignature));
+
+            using (PdfReader reader = new PdfReader(pdf.FileContent))
+            using (MemoryStream ms = new MemoryStream())
+            {
+                using (PdfStamper stamper = new PdfStamper(reader, ms))
+                {
+                    foreach (var file in doc.DocumentFiles.Where(x => x.IsMainVersion && x.Type != EnumFileTypes.SubscribePdf))
+                    {
+                        var fileBytes = fileStore.GetFile(ctx, new InternalDocumentAttachedFile
+                        {
+                            DocumentId = file.DocumentId,
+                            OrderInDocument = file.OrderInDocument,
+                            Version = file.Version,
+                            Name = file.Name,
+                            Extension = file.Extension,
+                            Hash = file.Hash
+                        });
+
+                        PdfFileSpecification pfs = PdfFileSpecification.FileEmbedded(stamper.Writer, null, $"{file.Name}.{file.Extension}", fileBytes);
+
+                        stamper.AddFileAttachment(file.Description, pfs);
+                    }
+                }
+                pdf.FileContent = ms.ToArray();
+            }
+
+            pdf.FileContent = DmsResolver.Current.Get<IEncryptionDbProcess>().GetCertificateSignPdf(ctx, certificateId, certificatePassword, pdf.FileContent);
+
+            var att = new InternalDocumentAttachedFile
+            {
+                DocumentId = doc.Id,
+                Date = DateTime.Now,
+                PostedFileData = null,
+                FileData = pdf.FileContent,
+                Type = EnumFileTypes.SubscribePdf,
+                IsMainVersion = true,
+                FileType = "",
+                Name = $"{doc.Id}.pdf",
+                Extension = "pdf",
+                Description = string.Empty,
+                IsWorkedOut = (bool?)null,
+
+                WasChangedExternal = false,
+                ExecutorPositionId = ctx.CurrentPositionId,
+                ExecutorPositionExecutorAgentId = dbContext.DictionaryPositionsSet.Where(x=>x.Id == ctx.CurrentPositionId).Select(x=>x.ExecutorAgentId).FirstOrDefault().GetValueOrDefault()
+            };
+
+            var operationDb = DmsResolver.Current.Get<IDocumentFileDbProcess>();
+
+            var ordInDoc = operationDb.CheckFileForDocument(ctx, att.DocumentId, att.Name, att.Extension);
+            if (ordInDoc == -1)
+            {
+                att.Version = 1;
+                att.OrderInDocument = operationDb.GetNextFileOrderNumber(ctx, att.DocumentId);
+            }
+            else
+            {
+                att.Version = operationDb.GetFileNextVersion(ctx, att.DocumentId, ordInDoc);
+                att.OrderInDocument = ordInDoc;
+            }
+
+            att.LastChangeDate = DateTime.Now;
+            att.LastChangeUserId = ctx.CurrentAgentId;
+
+            fileStore.SaveFile(ctx, att);
+
+            operationDb.AddNewFileOrVersion(ctx, att);
+
+            return new FilterDocumentFileIdentity { DocumentId = att.DocumentId, OrderInDocument = att.OrderInDocument, Version = att.Version };
+        }
+
         public static bool VerifyDocumentHash(string hash, InternalDocument doc, bool isFull = false)
         {
             string stringDocument = GetStringDocumentForDocumentHash(doc, isFull);
 
             return DmsResolver.Current.Get<ICryptoService>().VerifyHash(stringDocument, hash);
+        }
+
+        public static bool VerifyDocumentInternalSign(string sign, InternalDocument doc)
+        {
+            string stringDocument = GetStringDocumentForDocumentHash(doc, true);
+
+            return DmsResolver.Current.Get<IEncryptionDbProcess>().VerifyInternalSign(stringDocument, sign);
+        }
+
+        public static bool VerifyDocumentCertificateSign(IContext ctx, string sign, InternalDocument doc)
+        {
+            string stringDocument = GetStringDocumentForDocumentHash(doc, true);
+
+            var res = DmsResolver.Current.Get<IEncryptionDbProcess>().VerifyCertificateSign(ctx, stringDocument, sign);
+
+            return res;
         }
         #endregion
 
@@ -2971,7 +3210,7 @@ namespace BL.Database.Common
             var qry = dbContext.EncryptionCertificatesSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).AsQueryable();
             if (!ctx.IsAdmin)
             {
-                qry = qry.Where(x => x.AgentId == ctx.CurrentAgentId);
+                qry = qry.Where(x=>x.AgentId == ctx.CurrentAgentId);
             }
 
             if (filter != null)
@@ -2985,23 +3224,9 @@ namespace BL.Database.Common
                     qry = qry.Where(filterContains);
                 }
 
-                if (filter.TypeId?.Count() > 0)
-                {
-                    var filterContains = PredicateBuilder.False<EncryptionCertificates>();
-                    filterContains = filter.TypeId.Select(x => (int)x).ToList().Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.TypeId == value).Expand());
-
-                    qry = qry.Where(filterContains);
-                }
-
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
                     qry = qry.Where(x => x.Name.Contains(filter.Name));
-                }
-
-                if (!string.IsNullOrEmpty(filter.Extension))
-                {
-                    qry = qry.Where(x => x.Extension.Contains(filter.Extension));
                 }
 
                 if (filter.CreateFromDate.HasValue)
@@ -3015,52 +3240,27 @@ namespace BL.Database.Common
                 }
 
 
-                if (filter.ValidFromDate.HasValue)
+                if (filter.NotBefore.HasValue)
                 {
-                    qry = qry.Where(x => filter.ValidFromDate.Value < x.ValidFromDate);
+                    qry = qry.Where(x => filter.NotBefore.Value < x.NotBefore);
                 }
 
-                if (filter.ValidToDate.HasValue)
+                if (filter.NotAfter.HasValue)
                 {
-                    qry = qry.Where(x => filter.ValidToDate.Value > x.ValidToDate);
+                    qry = qry.Where(x => filter.NotAfter.Value > x.NotAfter);
                 }
 
-                if (filter.IsPublic.HasValue)
+                if (filter.IsActive.HasValue)
                 {
-                    qry = qry.Where(x => x.IsPublic == filter.IsPublic.Value);
-                }
-
-                if (filter.IsPrivate.HasValue)
-                {
-                    qry = qry.Where(x => x.IsPrivate == filter.IsPrivate.Value);
-                }
-            }
-            return qry;
-        }
-
-        public static IQueryable<EncryptionCertificateTypes> GetCertificateTypesQuery(DmsContext dbContext, IContext ctx, FilterEncryptionCertificateType filter)
-        {
-            var qry = dbContext.EncryptionCertificateTypesSet.AsQueryable();
-
-            if (filter != null)
-            {
-                if (filter.TypeId?.Count() > 0)
-                {
-                    var filterContains = PredicateBuilder.False<EncryptionCertificateTypes>();
-                    filterContains = filter.TypeId.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.Id == value).Expand());
-
-                    qry = qry.Where(filterContains);
-                }
-
-                if (!string.IsNullOrEmpty(filter.Name))
-                {
-                    qry = qry.Where(x => x.Name.Contains(filter.Name));
-                }
-
-                if (!string.IsNullOrEmpty(filter.Code))
-                {
-                    qry = qry.Where(x => x.Name.Contains(filter.Code));
+                    var now = DateTime.Now;
+                    if (filter.IsActive.Value)
+                    {
+                        qry = qry.Where(x => (!x.NotBefore.HasValue || x.NotBefore < now) && (!x.NotAfter.HasValue || x.NotAfter > now));
+                    }
+                    else
+                    {
+                        qry = qry.Where(x => (x.NotBefore.HasValue && x.NotBefore > now) || (x.NotAfter.HasValue || x.NotAfter < now));
+                    }
                 }
             }
             return qry;

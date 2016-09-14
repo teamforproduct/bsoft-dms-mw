@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace BL.Logic.Reports {
+namespace BL.Database.Reports {
     using System;
     using System.ComponentModel;
     using CrystalDecisions.Shared;
@@ -16,14 +16,14 @@ namespace BL.Logic.Reports {
     using CrystalDecisions.CrystalReports.Engine;
     
     
-    public class ReportRegistrationCardInternalDocument : ReportClass {
+    public class ReportDocumentForDigitalSignature : ReportClass {
         
-        public ReportRegistrationCardInternalDocument() {
+        public ReportDocumentForDigitalSignature() {
         }
         
         public override string ResourceName {
             get {
-                return "ReportRegistrationCardInternalDocument.rpt";
+                return "ReportDocumentForDigitalSignature.rpt";
             }
             set {
                 // Do nothing
@@ -41,7 +41,7 @@ namespace BL.Logic.Reports {
         
         public override string FullResourceName {
             get {
-                return "BL.Logic.Reports.ReportRegistrationCardInternalDocument.rpt";
+                return "BL.Database.Reports.ReportDocumentForDigitalSignature.rpt";
             }
             set {
                 // Do nothing
@@ -74,7 +74,7 @@ namespace BL.Logic.Reports {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section Section4 {
+        public CrystalDecisions.CrystalReports.Engine.Section DetailSection3 {
             get {
                 return this.ReportDefinition.Sections[3];
             }
@@ -82,17 +82,33 @@ namespace BL.Logic.Reports {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section Section5 {
+        public CrystalDecisions.CrystalReports.Engine.Section DetailSection4 {
             get {
                 return this.ReportDefinition.Sections[4];
+            }
+        }
+        
+        [Browsable(false)]
+        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        public CrystalDecisions.CrystalReports.Engine.Section Section4 {
+            get {
+                return this.ReportDefinition.Sections[5];
+            }
+        }
+        
+        [Browsable(false)]
+        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        public CrystalDecisions.CrystalReports.Engine.Section Section5 {
+            get {
+                return this.ReportDefinition.Sections[6];
             }
         }
     }
     
     [System.Drawing.ToolboxBitmapAttribute(typeof(CrystalDecisions.Shared.ExportOptions), "report.bmp")]
-    public class CachedReportRegistrationCardInternalDocument : Component, ICachedReport {
+    public class CachedReportDocumentForDigitalSignature : Component, ICachedReport {
         
-        public CachedReportRegistrationCardInternalDocument() {
+        public CachedReportDocumentForDigitalSignature() {
         }
         
         [Browsable(false)]
@@ -129,7 +145,7 @@ namespace BL.Logic.Reports {
         }
         
         public virtual CrystalDecisions.CrystalReports.Engine.ReportDocument CreateReport() {
-            ReportRegistrationCardInternalDocument rpt = new ReportRegistrationCardInternalDocument();
+            ReportDocumentForDigitalSignature rpt = new ReportDocumentForDigitalSignature();
             rpt.Site = this.Site;
             return rpt;
         }

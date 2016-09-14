@@ -1,4 +1,5 @@
 ﻿using BL.Model.Common;
+using BL.Model.Enums;
 using System.Web;
 
 namespace BL.Model.DocumentCore.InternalModel
@@ -24,7 +25,11 @@ namespace BL.Model.DocumentCore.InternalModel
         /// <summary>
         /// Признак дополнительный файл или основной
         /// </summary>
-        public bool IsAdditional { get; set; }
+        public EnumFileTypes Type { get; set; }
+        /// <summary>
+        /// Признак дополнительный файл или основной
+        /// </summary>
+        public string TypeName { get; set; }
         /// <summary>
         /// Описание файла
         /// </summary>
@@ -37,6 +42,10 @@ namespace BL.Model.DocumentCore.InternalModel
         /// содержимое файла
         /// </summary>
         public HttpPostedFile PostedFileData { get; set; }
+        /// <summary>
+        /// содержимое файла
+        /// </summary>
+        public byte[] FileData { get; set; }
         /// <summary>
         /// Название файла без расширения
         /// </summary>
