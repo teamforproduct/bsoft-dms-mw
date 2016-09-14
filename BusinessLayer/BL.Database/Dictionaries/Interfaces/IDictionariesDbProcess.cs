@@ -8,6 +8,7 @@ using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Common;
 using BL.Model.Tree;
+using static BL.Database.Dictionaries.DictionariesDbProcess;
 
 namespace BL.Database.Dictionaries.Interfaces
 {
@@ -169,12 +170,16 @@ namespace BL.Database.Dictionaries.Interfaces
         void DeletePositions(IContext context, List<int> list);
         bool ExistsPosition(IContext context, FilterDictionaryPosition filter);
 
+        void UpdatePositionOrder(IContext context, int positionId, int order);
+
         int? GetExecutorAgentIdByPositionId(IContext context, int id);
         FrontDictionaryPosition GetPosition(IContext context, int id);
 
         IEnumerable<FrontDictionaryPosition> GetPositions(IContext context, FilterDictionaryPosition filter);
         IEnumerable<InternalDictionaryPositionWithActions> GetPositionsWithActions(IContext context, FilterDictionaryPosition filter);
         IEnumerable<TreeItem> GetPositionsForTree(IContext context, FilterDictionaryPosition filter);
+
+        IEnumerable<SortPositoin> GetPositionsForSort(IContext context, FilterDictionaryPosition filter);
         #endregion DictionaryPositions
 
         // Исполнители

@@ -26,5 +26,10 @@ namespace BL.Model.AdminCore.FilterModel
         /// Сужение по клиентам
         /// </summary>
         public List<int> RoleRypeIDs { get; set; }
+
+        /// <summary>
+        /// Список должностей
+        /// </summary>
+        public List<int> PositionIDs { get; set; }
     }
 }

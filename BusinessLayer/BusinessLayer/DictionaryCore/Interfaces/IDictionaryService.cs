@@ -18,8 +18,8 @@ namespace BL.Logic.DictionaryCore.Interfaces
 
         #region DictionaryAgents
         FrontDictionaryAgent GetDictionaryAgent(IContext context, int id);
-        IEnumerable<FrontDictionaryAgent> GetDictionaryAgents(IContext context, FilterDictionaryAgent filter,UIPaging paging);
-       
+        IEnumerable<FrontDictionaryAgent> GetDictionaryAgents(IContext context, FilterDictionaryAgent filter, UIPaging paging);
+
         #endregion DictionaryAgents
 
         #region DictionaryAgentPersons
@@ -38,7 +38,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
         #region DictionaryAgentAccounts
         FrontDictionaryAgentAccount GetDictionaryAgentAccount(IContext context, int id);
 
-        IEnumerable<FrontDictionaryAgentAccount> GetDictionaryAgentAccounts(IContext context, int AgentId,FilterDictionaryAgentAccount filter);
+        IEnumerable<FrontDictionaryAgentAccount> GetDictionaryAgentAccounts(IContext context, int AgentId, FilterDictionaryAgentAccount filter);
         #endregion DictionaryAgentAccounts
 
         #region DictionaryAgentBanks
@@ -59,7 +59,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
         #region DictionaryAgentAdress
         FrontDictionaryAgentAddress GetDictionaryAgentAddress(IContext context, int id);
 
-        IEnumerable<FrontDictionaryAgentAddress> GetDictionaryAgentAddresses(IContext context,int agentId, FilterDictionaryAgentAddress filter);
+        IEnumerable<FrontDictionaryAgentAddress> GetDictionaryAgentAddresses(IContext context, int agentId, FilterDictionaryAgentAddress filter);
         #endregion
 
         #region DictionaryAddressTypes
@@ -71,7 +71,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
         #region DictionaryContacts
         FrontDictionaryContact GetDictionaryContact(IContext context, int id);
 
-        IEnumerable<FrontDictionaryContact> GetDictionaryContacts(IContext context, int agentId,FilterDictionaryContact filter);
+        IEnumerable<FrontDictionaryContact> GetDictionaryContacts(IContext context, int agentId, FilterDictionaryContact filter);
         #endregion
 
         #region DictionaryContactTypes
@@ -80,10 +80,10 @@ namespace BL.Logic.DictionaryCore.Interfaces
         IEnumerable<FrontDictionaryContactType> GetDictionaryContactTypes(IContext context, FilterDictionaryContactType filter);
         #endregion
 
-     //  #region DictionaryCompanies
-     //  BaseDictionaryCompany GetDictionaryCompany(IContext context, int id);
-     //  IEnumerable<BaseDictionaryCompany> GetDictionaryCompanies(IContext context, FilterDictionaryAgentCompany filter);
-     //  #endregion DictionaryCompanies
+        //  #region DictionaryCompanies
+        //  BaseDictionaryCompany GetDictionaryCompany(IContext context, int id);
+        //  IEnumerable<BaseDictionaryCompany> GetDictionaryCompanies(IContext context, FilterDictionaryAgentCompany filter);
+        //  #endregion DictionaryCompanies
 
         // Структура предприятия
         #region DictionaryDepartments
@@ -133,9 +133,12 @@ namespace BL.Logic.DictionaryCore.Interfaces
 
         // Штатное расписание
         #region DictionaryPositions
-        FrontDictionaryPosition GetDictionaryPosition(IContext context, int id);
+        //FrontDictionaryPosition GetDictionaryPosition(IContext context, int id);
 
         IEnumerable<FrontDictionaryPosition> GetDictionaryPositions(IContext context, FilterDictionaryPosition filter);
+
+        void SetPositionOrder(IContext context, int positionId, int order);
+
         #endregion DictionaryPositions
 
         // Исполнители
@@ -225,6 +228,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
 
         #region [+] StaffList ...
         IEnumerable<ITreeItem> GetStaffList(IContext context, FilterDictionaryStaffList filter);
+        
         void AddStaffList(IContext context);
         #endregion
     }

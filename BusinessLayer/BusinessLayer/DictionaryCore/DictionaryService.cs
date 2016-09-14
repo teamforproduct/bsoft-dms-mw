@@ -19,6 +19,7 @@ using BL.Model.Common;
 using BL.Model.Tree;
 using BL.Logic.TreeBuilder;
 using BL.CrossCutting.Extensions;
+using static BL.Database.Dictionaries.DictionariesDbProcess;
 
 namespace BL.Logic.DictionaryCore
 {
@@ -665,17 +666,58 @@ namespace BL.Logic.DictionaryCore
 
         // Штатное расписание
         #region DictionaryPositions
-        public FrontDictionaryPosition GetDictionaryPosition(IContext context, int id)
-        {
+        //public FrontDictionaryPosition GetDictionaryPosition(IContext context, int id)
+        //{
 
-            return _dictDb.GetPosition(context, id);
-        }
+        //    return _dictDb.GetPosition(context, id);
+        //}
 
         public IEnumerable<FrontDictionaryPosition> GetDictionaryPositions(IContext context, FilterDictionaryPosition filter)
         {
 
             return _dictDb.GetPositions(context, filter);
         }
+
+        public void SetPositionOrder(IContext context, int positionId, int order)
+        {
+            var position = _dictDb.GetPosition(context, positionId);
+
+            if (position == null) return;
+
+            // список должностей, которые подчиненны томуже отделу
+            // сортировка Order, Name
+            List<SortPositoin> positions = (List<SortPositoin>) _dictDb.GetPositionsForSort(context, 
+                new FilterDictionaryPosition {
+                    DepartmentIDs = new List<int> { position.DepartmentId },
+                    NotContainsIDs = new List<int> { positionId }
+                });
+
+            SortPositoin sp = new SortPositoin() { Id = positionId, NewOrder = order };
+
+            if (order > positions.Count)
+            {
+                positions.Add(sp);
+            }
+            else if (order <= 1)
+            {
+                positions.Insert(0, sp);
+            }
+            else
+            {
+                positions.Insert(order-1, sp);
+            }
+
+            int i = 0;
+            foreach (var item in positions)
+            {
+                item.NewOrder = ++i;
+
+                if ( item.NewOrder != item.OldOrder )
+                { _dictDb.UpdatePositionOrder(context, item.Id, item.NewOrder); }
+            }
+
+        }
+
         #endregion DictionaryPositions
 
         // Исполнители
