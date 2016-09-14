@@ -318,9 +318,9 @@ namespace BL.Database.Admins
                 return qry.Select(x => new FrontAdminRole
                 {
                     Id = x.Id,
-                    Name = x.Name,
-                    RoleCode = x.RoleType.Code,
-                    RoleName = x.RoleType.Name
+                    Name = x.Name
+                    //RoleCode = x.RoleType.Code,
+                    //RoleName = x.RoleType.Name
                 }).ToList();
             }
         }
@@ -615,6 +615,25 @@ namespace BL.Database.Admins
                     PositionName = x.Position.Name,
                     RoleId = x.Role.Id,
                     RoleName = x.Role.Name
+                }).ToList();
+            }
+        }
+
+        public IEnumerable<FrontAdminRole> GetPositionRolesEditMode(IContext context, FilterAdminRole filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.AdminRolesSet.AsQueryable();
+
+                qry = GetWhereRole(ref qry, filter);
+
+                qry = qry.OrderBy(x => x.Name);
+
+                return qry.Select(x => new FrontAdminRole
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Chacked = x.PositionRoles.Where(y => filter.PositionIDs.Contains( y.PositionId) ).Any(),
                 }).ToList();
             }
         }

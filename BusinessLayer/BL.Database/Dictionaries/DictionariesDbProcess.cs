@@ -3518,6 +3518,18 @@ namespace BL.Database.Dictionaries
             }
         }
 
+        public void UpdatePositionOrder(IContext context, int positionId, int order)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var dbModel = DictionaryModelConverter.GetDbPosition(context, new InternalDictionaryPosition() { Id = positionId, Order = order });
+                dbContext.DictionaryPositionsSet.Attach(dbModel);
+                var entity = dbContext.Entry(dbModel);
+                entity.Property(x => x.Order).IsModified = true;
+                dbContext.SaveChanges();
+            }
+        }
+
         public void DeletePositions(IContext context, List<int> list)
         {
             using (var dbContext = new DmsContext(context))
@@ -3540,6 +3552,10 @@ namespace BL.Database.Dictionaries
             }
         }
 
+        
+
+        
+
         public int? GetExecutorAgentIdByPositionId(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context))
@@ -3561,8 +3577,10 @@ namespace BL.Database.Dictionaries
                     .Select(x => new FrontDictionaryPosition
                     {
                         Id = x.Id,
+                        IsActive = x.IsActive,
                         ParentId = x.ParentId,
                         Name = x.Name,
+                        FullName = x.FullName,
                         DepartmentId = x.DepartmentId,
                         ExecutorAgentId = x.ExecutorAgentId,
                         ExecutorAgentName = x.ExecutorAgent.Name,
@@ -3571,20 +3589,6 @@ namespace BL.Database.Dictionaries
                         ParentPositionName = x.ParentPosition.Name,
                         DepartmentName = x.Department.Name,
                         Order = x.Order,
-                        //pss !!!!!!! GetPosition - ChildPositions
-                        //ChildPositions = x.ChildPositions.Select(y => new FrontDictionaryPosition
-                        //{
-                        //    Id = y.Id,
-                        //    IsActive = y.IsActive,
-                        //    ParentId = y.ParentId,
-                        //    Name = y.Name,
-                        //    FullName = x.pos.FullName,
-                        //    DepartmentId = y.DepartmentId,
-                        //    ExecutorAgentId = y.ExecutorAgentId,
-                        //    ParentPositionName = y.ParentPosition.Name,
-                        //    DepartmentName = y.Department.Name,
-                        //    ExecutorAgentName = y.ExecutorAgent.Name
-                        //}),
                         ChiefDepartments = x.ChiefDepartments.Select(y => new FrontDictionaryDepartment
                         {
                             Id = y.Id,
@@ -3679,6 +3683,36 @@ namespace BL.Database.Dictionaries
                     IsActive = x.IsActive,
                     IsList = !(x.PositionExecutors.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any())// || x.ChildPositions.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any())
                 }).ToList();
+            }
+        }
+
+        public IEnumerable<SortPositoin> GetPositionsForSort(IContext context, FilterDictionaryPosition filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = GetPositionsQuery(context, dbContext, filter);
+
+
+                return qry.Select(x => new SortPositoin
+                {
+                    Id = x.Id,
+                    OldOrder = x.Order,
+                    NewOrder = x.Order
+                }).ToList();
+            }
+        }
+
+        public class SortPositoin: IComparable
+        {
+            public int Id { get; set; }
+
+            public int OldOrder { get; set; }
+
+            public int NewOrder { get; set; }
+
+            public int CompareTo(object obj)
+            {
+                return NewOrder - (obj as SortPositoin).NewOrder;
             }
         }
 
@@ -5511,10 +5545,6 @@ namespace BL.Database.Dictionaries
 
 
         #endregion CustomDictionaries
-
-
-
-
 
     }
 }

@@ -197,6 +197,17 @@ namespace BL.Logic.AdminCore
         }
         #endregion
 
+        #region [+] PositionRole ...
+        public IEnumerable<ITreeItem> GetPositionRoles(IContext context, FilterAdminRole filter)
+        {
+            return null;//_adminDb.GetPositionRole(context, filter);
+        }
+        public IEnumerable<ITreeItem> GetPositionRolesEditMode(IContext context, FilterAdminRole filter)
+        {
+            return null;// _adminDb.GetPositionRolesEditMode(context, filter);
+        }
+        #endregion
+
         #region [+] UserRoles ...
         public IEnumerable<FrontAdminUserRole> GetAdminUserRoles(IContext context, FilterAdminUserRole filter)
         {
@@ -218,7 +229,6 @@ namespace BL.Logic.AdminCore
         }
         #endregion
 
-        
 
     }
 }
