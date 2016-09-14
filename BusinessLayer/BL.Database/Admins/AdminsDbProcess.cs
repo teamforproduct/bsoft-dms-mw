@@ -633,7 +633,7 @@ namespace BL.Database.Admins
                 {
                     Id = x.Id,
                     Name = x.Name,
-                    Chacked = x.PositionRoles.Where(y => filter.PositionIDs.Contains( y.PositionId) ).Any(),
+                    Checked = x.PositionRoles.Where(y => filter.PositionIDs.Contains( y.PositionId) ).Any(),
                 }).ToList();
             }
         }
