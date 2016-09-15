@@ -288,9 +288,14 @@ namespace BL.Database.DatabaseContext
             items.Add(new SystemObjects { Id = 311, Code = "Properties", Description = "Динамические аттрибуты" });
             items.Add(new SystemObjects { Id = 312, Code = "PropertyLinks", Description = "Связи динамических аттрибутов с объектами системы" });
             items.Add(new SystemObjects { Id = 313, Code = "PropertyValues", Description = "Значения динамических аттрибутов" });
-            items.Add(new SystemObjects { Id = 401, Code = "EncryptionCertificates", Description = "Хранилище сертификатов" });
+            items.Add(new SystemObjects { Id = (int)EnumObjects.EncryptionCertificates , Code = "EncryptionCertificates", Description = "Хранилище сертификатов" });
             items.Add(new SystemObjects { Id = 402, Code = "EncryptionCertificateTypes", Description = "Типы сертификатов" });
 
+
+            items.Add(new SystemObjects { Id = (int)EnumObjects.AdminRoles, Code = "AdminRoles", Description = "Роли" });
+            items.Add(new SystemObjects { Id = (int)EnumObjects.AdminPositionRoles, Code = "AdminPositionRoles", Description = "Роли" });
+            items.Add(new SystemObjects { Id = (int)EnumObjects.AdminUserRoles, Code = "AdminUserRoles", Description = "Роли" });
+                        
             return items;
         }
 
@@ -489,6 +494,22 @@ namespace BL.Database.DatabaseContext
             items.Add(new SystemActions { Id = 402001, ObjectId = 402, Code = "AddEncryptionCertificateType", API = "", Description = "Добавить тип сертификат", IsGrantable = false, IsGrantableByRecordId = false, IsVisible = false, GrantId = null, Category = null });
             items.Add(new SystemActions { Id = 402002, ObjectId = 402, Code = "ModifyEncryptionCertificateType", API = "", Description = "Изменить тип сертификат", IsGrantable = false, IsGrantableByRecordId = false, IsVisible = false, GrantId = null, Category = null });
             items.Add(new SystemActions { Id = 402003, ObjectId = 402, Code = "DeleteEncryptionCertificateType", API = "", Description = "Удалить тип сертификат", IsGrantable = false, IsGrantableByRecordId = false, IsVisible = false, GrantId = null, Category = null });
+
+            items.Add(new SystemActions { Id = (int)EnumAdminActions.AddRole, ObjectId = (int)EnumObjects.AdminRoles, Code = "AddRole", API = "", Description = "Добавить роль", IsGrantable = false, IsGrantableByRecordId = false, IsVisible = false, GrantId = null, Category = null });
+            items.Add(new SystemActions { Id = (int)EnumAdminActions.ModifyRole, ObjectId = (int)EnumObjects.AdminRoles, Code = "ModifyRole", API = "", Description = "Изменить роль", IsGrantable = false, IsGrantableByRecordId = false, IsVisible = false, GrantId = null, Category = null });
+            items.Add(new SystemActions { Id = (int)EnumAdminActions.DeleteRole, ObjectId = (int)EnumObjects.AdminRoles, Code = "AddRole", API = "", Description = "Удалить роль", IsGrantable = false, IsGrantableByRecordId = false, IsVisible = false, GrantId = null, Category = null });
+
+            items.Add(new SystemActions { Id = (int)EnumAdminActions.AddPositionRole, ObjectId = (int)EnumObjects.AdminPositionRoles , Code = "AddPositionRole", API = "", Description = "Добавить роль для должности", IsGrantable = false, IsGrantableByRecordId = false, IsVisible = false, GrantId = null, Category = null });
+            items.Add(new SystemActions { Id = (int)EnumAdminActions.ModifyPositionRole, ObjectId = (int)EnumObjects.AdminPositionRoles, Code = "ModifyPositionRole", API = "", Description = "Изменить роль для должности", IsGrantable = false, IsGrantableByRecordId = false, IsVisible = false, GrantId = null, Category = null });
+            items.Add(new SystemActions { Id = (int)EnumAdminActions.DeletePositionRole, ObjectId = (int)EnumObjects.AdminPositionRoles, Code = "DeletePositionRole", API = "", Description = "Удалить роль для должности", IsGrantable = false, IsGrantableByRecordId = false, IsVisible = false, GrantId = null, Category = null });
+
+            items.Add(new SystemActions { Id = (int)EnumAdminActions.AddUserRole, ObjectId = (int)EnumObjects.AdminUserRoles, Code = "AddUserRole", API = "", Description = "Добавить роль для пользователя", IsGrantable = false, IsGrantableByRecordId = false, IsVisible = false, GrantId = null, Category = null });
+            items.Add(new SystemActions { Id = (int)EnumAdminActions.ModifyUserRole, ObjectId = (int)EnumObjects.AdminUserRoles, Code = "ModifyUserRole", API = "", Description = "Изменить роль для пользователя", IsGrantable = false, IsGrantableByRecordId = false, IsVisible = false, GrantId = null, Category = null });
+            items.Add(new SystemActions { Id = (int)EnumAdminActions.DeleteUserRole, ObjectId = (int)EnumObjects.AdminUserRoles, Code = "DeleteUserRole", API = "", Description = "Удалить роль для пользователя", IsGrantable = false, IsGrantableByRecordId = false, IsVisible = false, GrantId = null, Category = null });
+
+            items.Add(new SystemActions { Id = (int)EnumAdminActions.AddSubordination, ObjectId = (int)EnumObjects.AdminSubordination, Code = "AddSubordination", API = "", Description = "Добавить правило рассылки", IsGrantable = false, IsGrantableByRecordId = false, IsVisible = false, GrantId = null, Category = null });
+            items.Add(new SystemActions { Id = (int)EnumAdminActions.ModifySubordination, ObjectId = (int)EnumObjects.AdminSubordination, Code = "ModifySubordination", API = "", Description = "Изменить правило рассылки", IsGrantable = false, IsGrantableByRecordId = false, IsVisible = false, GrantId = null, Category = null });
+            items.Add(new SystemActions { Id = (int)EnumAdminActions.DeleteSubordination, ObjectId = (int)EnumObjects.AdminSubordination, Code = "DeleteSubordination", API = "", Description = "Удалить правило рассылки", IsGrantable = false, IsGrantableByRecordId = false, IsVisible = false, GrantId = null, Category = null });
 
             return items;
         }

@@ -22,6 +22,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// Название типа контакта
         /// </summary>
         public string Name { get; set; }
+
         /// <summary>
         /// Маска ввода
         /// </summary>
