@@ -18,6 +18,8 @@ namespace BL.Database.DBModel.Dictionary
         [Index("IX_Name", 1, IsUnique = true)]
         public string Name { get; set; }
         [MaxLength(2000)]
+        public string SpecCode { get; set; }
+        [MaxLength(2000)]
         public string InputMask { get; set; }
         public bool IsActive { get; set; }
         public int LastChangeUserId { get; set; }

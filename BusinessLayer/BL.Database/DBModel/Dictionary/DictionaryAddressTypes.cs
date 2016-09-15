@@ -17,6 +17,8 @@ namespace BL.Database.DBModel.Dictionary
         [MaxLength(400)]
         [Index("IX_Name", 1, IsUnique = true)]
         public string Name { get; set; }
+        [MaxLength(2000)]
+        public string SpecCode { get; set; }
         public bool IsActive { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }

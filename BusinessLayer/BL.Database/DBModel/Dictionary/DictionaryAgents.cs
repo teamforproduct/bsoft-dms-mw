@@ -27,11 +27,11 @@ namespace BL.Database.DBModel.Dictionary
         [MaxLength(400)]
         public string Name { get; set; }
         public Nullable<int> ResidentTypeId { get; set; }
-        public bool IsCompany { get; set; }
-        public bool IsIndividual { get; set; }
-        public bool IsEmployee { get; set; }
-        public bool IsBank { get; set; }
-        public bool IsUser { get; set; }
+        //public bool IsCompany { get; set; }
+        //public bool IsIndividual { get; set; }
+        //public bool IsEmployee { get; set; }
+        //public bool IsBank { get; set; }
+        //public bool IsUser { get; set; }
         [MaxLength(2000)]
         public string Description { get; set; }
         public bool IsActive { get; set; }

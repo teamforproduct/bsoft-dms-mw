@@ -27,6 +27,8 @@ namespace BL.Database.DBModel.Dictionary
         public string Name { get; set; }
         [MaxLength(2000)]
         public string FullName { get; set; }
+        [MaxLength(2000)]
+        public string FullPath { get; set; }
         public int? ChiefPositionId { get; set; }
         public bool IsActive { get; set; }
         public int LastChangeUserId { get; set; }

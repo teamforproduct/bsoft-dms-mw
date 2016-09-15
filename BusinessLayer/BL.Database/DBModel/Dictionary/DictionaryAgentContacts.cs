@@ -7,9 +7,6 @@ namespace BL.Database.DBModel.Dictionary
     public class DictionaryAgentContacts
     {
         public int Id { get; set; }
-        [Index("IX_AgentContactTypeContact", 4, IsUnique = true)]
-        [Index("IX_ClientId", 1)]
-        public int ClientId { get; set; }
         [Index("IX_AgentContactTypeContact", 1, IsUnique = true)]
         public int AgentId { get; set; }
         [Index("IX_AgentContactTypeContact", 2, IsUnique = true)]
