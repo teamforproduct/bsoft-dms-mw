@@ -2,8 +2,8 @@
 {
     public enum EnumFileTypes
     {
-        Main = 1,
-        Additional = 2,
-        SubscribePdf = 3
+        Main = 0,
+        Additional = 1,
+        SubscribePdf = 2
     }
 }

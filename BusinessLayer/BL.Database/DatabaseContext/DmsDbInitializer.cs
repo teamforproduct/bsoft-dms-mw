@@ -521,6 +521,17 @@ namespace BL.Database.DatabaseContext
             return items;
         }
 
+        private List<DictionaryFileTypes> GetDictionaryFileTypes()
+        {
+            var items = new List<DictionaryFileTypes>();
+
+            items.Add(new DictionaryFileTypes { Id = 0, Name = "Main", LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now });
+            items.Add(new DictionaryFileTypes { Id = 1, Name = "Additional", LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now });
+            items.Add(new DictionaryFileTypes { Id = 2, Name = "SubscribePdf", LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now });
+
+            return items;
+        }
+
         private List<DictionaryDocumentDirections> GetDictionaryDocumentDirections()
         {
             var items = new List<DictionaryDocumentDirections>();
