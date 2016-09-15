@@ -4,18 +4,19 @@ using BL.Logic.Common;
 using BL.Model.AdminCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
+using BL.Model.AdminCore.IncomingModel;
 
 namespace BL.Logic.AdminCore
 {
     public class DeletePositionRoleCommand : BaseAdminCommand
     {
 
-        private int Model
+        private ModifyAdminPositionRole Model
         {
             get
             {
-                if (!(_param is int)) throw new WrongParameterTypeError();
-                return (int)_param;
+                if (!(_param is ModifyAdminPositionRole)) throw new WrongParameterTypeError();
+                return (ModifyAdminPositionRole)_param;
             }
         }
 
@@ -35,8 +36,8 @@ namespace BL.Logic.AdminCore
         {
             try
             {
-                var filter = new InternalAdminPositionRole() { Id = Model };
-                _adminDb.DeletePositionRole(_context, filter);
+                var model = CommonAdminUtilities.PositionRoleModifyToInternal(_context, Model);
+                _adminDb.DeletePositionRole(_context, model);
                 return null;
             }
             catch (ArgumentNullException ex)

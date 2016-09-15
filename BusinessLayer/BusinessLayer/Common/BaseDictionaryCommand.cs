@@ -4,6 +4,7 @@ using BL.Database.Dictionaries.Interfaces;
 using BL.Database.Documents.Interfaces;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.DependencyInjection;
+using BL.Logic.DictionaryCore.Interfaces;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 
@@ -15,6 +16,7 @@ namespace BL.Logic.Common
         protected object _param;
         private EnumDictionaryActions _action;
         protected IAdminService _admin;
+        protected IDictionaryService _dictionary;
         protected IDictionariesDbProcess _dictDb;
 
         public void InitializeCommand(EnumDictionaryActions action, IContext ctx)
@@ -29,6 +31,7 @@ namespace BL.Logic.Common
             _param = param;
             _dictDb = DmsResolver.Current.Get<IDictionariesDbProcess>();
             _admin = DmsResolver.Current.Get<IAdminService>();
+            _dictionary = DmsResolver.Current.Get<IDictionaryService>();
         }
 
         public InternalDocument Document => null;

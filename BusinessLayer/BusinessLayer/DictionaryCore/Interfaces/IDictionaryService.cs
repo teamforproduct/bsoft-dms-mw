@@ -133,7 +133,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
 
         // Штатное расписание
         #region DictionaryPositions
-        //FrontDictionaryPosition GetDictionaryPosition(IContext context, int id);
+        FrontDictionaryPosition GetDictionaryPosition(IContext context, int id);
 
         IEnumerable<FrontDictionaryPosition> GetDictionaryPositions(IContext context, FilterDictionaryPosition filter);
 

@@ -61,6 +61,8 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// Дополнительная информация
         /// </summary>
         public override string Description { get; set; }
+
+        //pss убрать вычисляемые свойства
         /// <summary>
         /// Полное имя
         /// </summary>
@@ -73,14 +75,15 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// </summary>
         public string ShortName
         {
-            get { return LastName?.Trim() + " " + FirstName?.Trim().Substring(0, 1) + "." + MiddleName?.Trim().Substring(0, 1) + "."; }
+            get { return LastName?.Trim() + " " + (string.IsNullOrEmpty(FirstName) ? "" : FirstName.Trim().Substring(0, 1) + ".") 
+                         + (string.IsNullOrEmpty(MiddleName) ? "": MiddleName.Trim().Substring(0, 1) + "."); }
         }
         /// <summary>
         /// Паспортные данные
         /// </summary>
         public string Passport
         {
-            get { return PassportSerial?.Trim() + " " + PassportNumber?.ToString() + " " + PassportText?.Trim() + " " + PassportDate?.ToString("dd.MM.yyyy"); }
+            get { return PassportSerial?.Trim() + " " + PassportNumber + " " + PassportText?.Trim() + " " + PassportDate?.ToString("dd.MM.yyyy"); }
         }
 
         /// <summary>
