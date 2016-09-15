@@ -309,20 +309,14 @@
       <DependentUpon>DataSetCrystalReports.xsd</DependentUpon>
     </Compile>
     <Compile Include="Reports\DmsReport.cs" />
-    <Compile Include="Reports\ReportDocumentForDigitalSignature2.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ReportDocumentForDigitalSignature.rpt</DependentUpon>
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Reports\ReportRegisterTransmissionDocuments.cs">
-      <DependentUpon>ReportRegisterTransmissionDocuments.rpt</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <SubType>Component</SubType>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <Compile Include="Reports\ReportRegistrationCardIncomingDocument.cs">
       <DependentUpon>ReportRegistrationCardIncomingDocument.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Reports\ReportRegistrationCardOutcomingDocument.cs">
+      <DependentUpon>ReportRegistrationCardOutcomingDocument.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
       <SubType>Component</SubType>
       <DesignTime>True</DesignTime>
@@ -333,8 +327,14 @@
       <SubType>Component</SubType>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Reports\ReportRegistrationCardOutcomingDocument.cs">
-      <DependentUpon>ReportRegistrationCardOutcomingDocument.rpt</DependentUpon>
+    <Compile Include="Reports\ReportDocumentForDigitalSignature2.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ReportDocumentForDigitalSignature.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\ReportRegisterTransmissionDocuments.cs">
+      <DependentUpon>ReportRegisterTransmissionDocuments.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
       <SubType>Component</SubType>
       <DesignTime>True</DesignTime>
@@ -411,25 +411,25 @@
     <EmbeddedResource Include="Migrations\201609131924312_digital_signature_2.resx">
       <DependentUpon>201609131924312_digital_signature_2.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Reports\ReportRegisterTransmissionDocuments.rpt">
-      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>ReportRegisterTransmissionDocuments.cs</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Include="Reports\ReportRegistrationCardIncomingDocument.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>ReportRegistrationCardIncomingDocument.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Reports\ReportDocumentForDigitalSignature.rpt">
+    <EmbeddedResource Include="Reports\ReportRegistrationCardOutcomingDocument.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>ReportDocumentForDigitalSignature2.cs</LastGenOutput>
+      <LastGenOutput>ReportRegistrationCardOutcomingDocument.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\ReportRegistrationCardInternalDocument.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>ReportRegistrationCardInternalDocument.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Reports\ReportRegistrationCardOutcomingDocument.rpt">
+    <EmbeddedResource Include="Reports\ReportRegisterTransmissionDocuments.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>ReportRegistrationCardOutcomingDocument.cs</LastGenOutput>
+      <LastGenOutput>ReportRegisterTransmissionDocuments.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\ReportDocumentForDigitalSignature.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>ReportDocumentForDigitalSignature2.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

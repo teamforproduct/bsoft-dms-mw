@@ -2528,7 +2528,6 @@ namespace BL.Database.Dictionaries
             {
                 var qry = dbContext.DictionaryAgentContactsSet.Where(x => x.Agent.ClientId == context.CurrentClientId).AsQueryable();
 
-                //pss возможно контакты нужно сортировать по важности( или сначала подтвержденные и основные)
                 qry = qry.OrderBy(x => x.ContactType.Id).ThenBy(x => x.Contact);
 
 
@@ -2567,7 +2566,7 @@ namespace BL.Database.Dictionaries
 
                 if (!String.IsNullOrEmpty(filter.ContactExact))
                 {
-                    //pss Здесь ContactExact нужно делать более умным в сранении телефонов
+                    //pss Здесь ContactExact нужно делать более умным в сравнении телефонов
                     qry = qry.Where(x => x.Contact == filter.ContactExact);
                 }
 
@@ -3589,6 +3588,18 @@ namespace BL.Database.Dictionaries
                         ParentPositionName = x.ParentPosition.Name,
                         DepartmentName = x.Department.Name,
                         Order = x.Order,
+                        PositionExecutors = x.PositionExecutors.
+                            Where(y=> DateTime.Now > y.StartDate).
+                            Where(y => DateTime.Now < y.EndDate).
+                            Where(y => y.IsActive == true).
+                            OrderBy(y=> y.PositionExecutorTypeId).ThenBy(y => y.Agent.Name).
+                            Select(y => new FrontDictionaryPositionExecutor
+                            {
+                                Id = y.Id,
+                                IsActive = y.IsActive,
+                                AgentName = y.Agent.Name,
+                                PositionExecutorTypeName = y.PositionExecutorType.Name
+                            }),
                         ChiefDepartments = x.ChiefDepartments.Select(y => new FrontDictionaryDepartment
                         {
                             Id = y.Id,
@@ -4106,7 +4117,7 @@ namespace BL.Database.Dictionaries
         {
             var qry = dbContext.DictionaryPositionExecutorsSet.Where(x => x.Position.Department.Company.ClientId == context.CurrentClientId).AsQueryable();
 
-            qry = qry.OrderBy(x => x.Position.Order).ThenBy(x => x.Agent.Name);
+            qry = qry.OrderBy(x => x.Position.Order).ThenBy(x=>x.PositionExecutorType.Id).ThenBy(x => x.Agent.Name);
 
             qry = ExecutorGetWhere(ref qry, filter);
 

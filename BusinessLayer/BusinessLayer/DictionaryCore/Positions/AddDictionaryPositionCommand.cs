@@ -33,17 +33,18 @@ namespace BL.Logic.DictionaryCore
 
             _admin.VerifyAccess(_context, CommandType, false);
 
-            var fdd = new FilterDictionaryPosition { Name = Model.Name, NotContainsIDs = new List<int> { Model.Id } };
+            //var fdd = new FilterDictionaryPosition { Name = Model.Name, NotContainsIDs = new List<int> { Model.Id } };
 
-            if (Model.ParentId != null)
-            {
-                fdd.ParentIDs = new List<int> { Model.ParentId.Value };
-            }
-            // Находим запись с таким-же именем в этой-же папке
-            if (_dictDb.ExistsPosition(_context, fdd))
-            {
-                throw new DictionaryRecordNotUnique();
-            }
+            //if (Model.DepartmentId != null)
+            //{
+            //    fdd.DepartmentIDs = new List<int> { Model.DepartmentId };
+            //}
+
+            //// Находим запись с таким-же именем в этой-же папке
+            //if (_dictDb.ExistsPosition(_context, fdd))
+            //{
+            //    throw new DictionaryRecordNotUnique();
+            //}
 
             return true;
         }
@@ -54,7 +55,13 @@ namespace BL.Logic.DictionaryCore
             {
                 var dp = CommonDictionaryUtilities.PositionModifyToInternal(_context, Model);
 
-                return _dictDb.AddPosition(_context, dp);
+                var positionId = _dictDb.AddPosition(_context, dp);
+
+                // Если order не задан, задаю максимальный.
+                if (Model.Order < 1)
+                { _dictionary.SetPositionOrder(_context, positionId, 100000000); }
+
+                return positionId;
             }
             catch (Exception ex)
             {

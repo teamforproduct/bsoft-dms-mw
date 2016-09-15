@@ -46,7 +46,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = tmpService.GetDictionaryPositions(ctx, new FilterDictionaryPosition { IDs = new List<int> { id } });
+            var tmpItem = tmpService.GetDictionaryPosition(ctx, id);
             return new JsonResult(tmpItem, this);
         }
 
@@ -76,7 +76,8 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpItem = DmsResolver.Current.Get<IDictionaryService>();
-            return Get((int)tmpItem.ExecuteAction(EnumDictionaryActions.AddPosition, cxt, model));
+            int Id = (int)tmpItem.ExecuteAction(EnumDictionaryActions.AddPosition, cxt, model);
+            return Get(new FilterDictionaryPosition { IDs = new List<int> { Id } });
         }
 
         /// <summary>
@@ -93,7 +94,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpItem = DmsResolver.Current.Get<IDictionaryService>();
             tmpItem.ExecuteAction(EnumDictionaryActions.ModifyPosition, cxt, model);
-            return Get(model.Id);
+            return Get(new FilterDictionaryPosition { IDs = new List<int> { model.Id } }); 
         }
 
         /// <summary>

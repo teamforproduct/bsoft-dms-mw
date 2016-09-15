@@ -13,6 +13,10 @@ using BL.Model.WebAPI.Filters;
 using System.Collections.Generic;
 using System.Data.Entity;
 using DMS_WebAPI.Models;
+using System;
+using System.Runtime.InteropServices;
+using System.IO;
+using System.Web;
 
 [assembly: OwinStartup(typeof(DMS_WebAPI.Startup))]
 
@@ -20,9 +24,14 @@ namespace DMS_WebAPI
 {
     public partial class Startup
     {
+        [DllImport("kernel32.dll")]
+        private static extern IntPtr LoadLibrary(string lpFileName);
+
         public void Configuration(IAppBuilder app)
         {
             ApplicationDbContext.CreateDatabaseIfNotExists();
+
+            LoadLibrary(Path.Combine(HttpContext.Current.Server.MapPath("~/"), "App_Data", "CryptoExts", "CryptoExts.dll"));
 
             ConfigureAuth(app);
 

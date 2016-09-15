@@ -43,8 +43,8 @@ namespace BL.Logic.AdminCore
         {
             try
             {
-                var dp = CommonAdminUtilities.PositionRoleModifyToInternal(_context, Model);
-                _adminDb.UpdatePositionRole(_context, dp);
+                var model = CommonAdminUtilities.PositionRoleModifyToInternal(_context, Model);
+                _adminDb.UpdatePositionRole(_context, model);
             }
             catch (AdminRecordWasNotFound)
             {

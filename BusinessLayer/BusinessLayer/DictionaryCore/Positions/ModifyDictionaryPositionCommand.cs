@@ -36,18 +36,18 @@ namespace BL.Logic.DictionaryCore
 
             _admin.VerifyAccess(_context, CommandType, false);
 
-            var fdd = new FilterDictionaryPosition { Name = Model.Name, NotContainsIDs = new List<int> { Model.Id } };
+            //var fdd = new FilterDictionaryPosition { Name = Model.Name, NotContainsIDs = new List<int> { Model.Id } };
 
-            if (Model.ParentId != null)
-            {
-                fdd.ParentIDs = new List<int> { Model.ParentId.Value };
-            }
+            //if (Model.ParentId != null)
+            //{
+            //    fdd.ParentIDs = new List<int> { Model.ParentId.Value };
+            //}
 
-            // Находим запись с таким-же именем в этой-же папке
-            if (_dictDb.ExistsPosition(_context, fdd))
-            {
-                throw new DictionaryRecordNotUnique();
-            }
+            //// Находим запись с таким-же именем в этой-же папке
+            //if (_dictDb.ExistsPosition(_context, fdd))
+            //{
+            //    throw new DictionaryRecordNotUnique();
+            //}
 
             return true;
         }

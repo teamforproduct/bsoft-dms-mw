@@ -44,12 +44,9 @@ namespace BL.Logic.AdminCore.Interfaces
         #endregion
 
         #region [+] PositionRoles ...
-        IEnumerable<FrontAdminPositionRole> GetAdminPositionRoles(IContext context, FilterAdminPositionRole filter);
-        #endregion
+        IEnumerable<FrontAdminPositionRole> GetPositionRoles(IContext context, FilterAdminRole filter);
 
-        #region [+] PositionRole ...
-        //IEnumerable<FrontAdminRole> GetPositionRoles(IContext context, FilterAdminRole filter);
-        //IEnumerable<FrontAdminRole> GetPositionRolesEditMode(IContext context, FilterAdminRole filter);
+        FrontAdminPositionRole GetPositionRole(IContext context, int id);
         #endregion
 
         #region [+] UserRoles ...
@@ -64,6 +61,5 @@ namespace BL.Logic.AdminCore.Interfaces
         IEnumerable<TreeItem> GetAdminMainMenu(IContext context);
         #endregion
 
- 
     }
 }

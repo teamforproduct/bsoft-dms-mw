@@ -666,11 +666,11 @@ namespace BL.Logic.DictionaryCore
 
         // Штатное расписание
         #region DictionaryPositions
-        //public FrontDictionaryPosition GetDictionaryPosition(IContext context, int id)
-        //{
+        public FrontDictionaryPosition GetDictionaryPosition(IContext context, int id)
+        {
 
-        //    return _dictDb.GetPosition(context, id);
-        //}
+            return _dictDb.GetPosition(context, id);
+        }
 
         public IEnumerable<FrontDictionaryPosition> GetDictionaryPositions(IContext context, FilterDictionaryPosition filter)
         {
