@@ -16,6 +16,12 @@ namespace BL.Database.DBModel.Dictionary
         [Index("IX_UserId", 1, IsUnique = true)]
         public string UserId { get; set; }
         public Nullable<int> LanguageId { get; set; }
+        [MaxLength(256)]
+        public string Login { get; set; }
+        [MaxLength(2000)]
+        public string PasswordHash { get; set; }
+        public byte[] Picture { get; set; }
+
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
 
