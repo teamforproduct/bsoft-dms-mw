@@ -1,9 +1,10 @@
 ﻿using System;
 using BL.Model.Common;
+using BL.Model.Reports.Interfaces;
 
 namespace BL.Model.DocumentCore.InternalModel
 {
-    public class InternalDocumentWait: LastChangeInfo
+    public class InternalDocumentWait : LastChangeInfo, IReports
     {
         public int Id { get; set; }
         public int DocumentId { get; set; }
@@ -17,6 +18,18 @@ namespace BL.Model.DocumentCore.InternalModel
         public InternalDocumentEvent OnEvent { get; set; }
         public InternalDocumentEvent OffEvent { get; set; }
         public InternalDocumentWait ParentWait { get; set; }
+
+        #region For Report
+        public DateTime CreateDate { get; set; }
+        public string TargetPositionName { get; set; }
+        public string TargetPositionExecutorAgentName { get; set; }
+        public string SourcePositionName { get; set; }
+        public string SourcePositionExecutorAgentName { get; set; }
+        public bool IsClosed { get; set; }
+        public string ResultTypeName { get; set; }
+        public string OnEventTypeName { get; set; }
+        public DateTime? OffEventDate { get; set; }
+        #endregion
 
     }
 }

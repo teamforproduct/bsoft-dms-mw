@@ -326,6 +326,9 @@ namespace BL.Logic.DocumentCore
                 case EnumDocumentActions.ReportRegisterTransmissionDocuments:
                     cmd = DmsResolver.Current.Get<ReportRegisterTransmissionDocumentsCommand>();
                     break;
+                case EnumDocumentActions.ReportDocumentForDigitalSignature:
+                    cmd = DmsResolver.Current.Get<ReportDocumentForDigitalSignature>();
+                    break;
 
                 case EnumDocumentActions.AddDocumentSendListItem:
                     return null;

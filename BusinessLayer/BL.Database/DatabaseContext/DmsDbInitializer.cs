@@ -20,7 +20,6 @@ namespace BL.Database.DatabaseContext
             context.SystemActionsSet.AddRange(GetSystemActions());
             context.SystemUIElementsSet.AddRange(GetSystemUIElements());
             context.SystemValueTypesSet.AddRange(GetSystemValueTypes());
-            context.EncryptionCertificateTypesSet.AddRange(GetEncryptionCertificateTypes());
             context.DictionaryDocumentDirectionsSet.AddRange(GetDictionaryDocumentDirections());
             context.DictionaryEventTypesSet.AddRange(GetDictionaryEventTypes());
             context.DictionaryImportanceEventTypesSet.AddRange(GetDictionaryImportanceEventTypes());
@@ -518,16 +517,6 @@ namespace BL.Database.DatabaseContext
             items.Add(new SystemValueTypes { Id = 1, Code = "text", Description = "text" });
             items.Add(new SystemValueTypes { Id = 2, Code = "number", Description = "number" });
             items.Add(new SystemValueTypes { Id = 3, Code = "date", Description = "date" });
-
-            return items;
-        }
-
-        private List<EncryptionCertificateTypes> GetEncryptionCertificateTypes()
-        {
-            var items = new List<EncryptionCertificateTypes>();
-
-            items.Add(new EncryptionCertificateTypes { Id = 1, Code = "RSA", Name = "RSA", LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now });
-            items.Add(new EncryptionCertificateTypes { Id = 2, Code = "X509", Name = "X509", LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now });
 
             return items;
         }

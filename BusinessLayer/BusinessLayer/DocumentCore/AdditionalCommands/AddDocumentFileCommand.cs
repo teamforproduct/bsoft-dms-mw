@@ -44,8 +44,8 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                   _document.DocumentFiles.Where(x => x.IsMainVersion && !x.IsDeleted)
                             .Where(
                       x =>
-                          x.IsAdditional && x.ExecutorPositionId == positionId
-                          || !x.IsAdditional)
+                          x.Type == EnumFileTypes.Additional && x.ExecutorPositionId == positionId
+                          || x.Type == EnumFileTypes.Main)
                                                   .Select(x => new InternalActionRecord
                                                   {
                                                       FileId = x.Id,
@@ -85,8 +85,10 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
             if (file != null)
             {
-                Model.IsAdditional = file.IsAdditional;
-                if (file.IsAdditional && file.ExecutorPositionId != _context.CurrentPositionId)
+                Model.Type = file.Type;
+                if ((file.Type == EnumFileTypes.Additional && file.ExecutorPositionId != _context.CurrentPositionId)
+                    || (!_context.IsAdmin && !new List<EnumFileTypes> { EnumFileTypes.Main, EnumFileTypes.Additional }.Contains(file.Type))
+                    )
                 {
                     throw new CannotAccessToFile();
                 }
@@ -117,13 +119,13 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                 DocumentId = Model.DocumentId,
                 Date = DateTime.Now,
                 PostedFileData = Model.PostedFileData,
-                IsAdditional = Model.IsAdditional,
-                IsMainVersion = Model.IsAdditional || (!Model.IsAdditional && _document.ExecutorPositionId == _context.CurrentPositionId),
+                Type = Model.Type,
+                IsMainVersion = Model.Type == EnumFileTypes.Additional || (Model.Type == EnumFileTypes.Main && _document.ExecutorPositionId == _context.CurrentPositionId) || _context.IsAdmin,
                 FileType = Model.FileType,
                 Name = Path.GetFileNameWithoutExtension(Model.FileName),
                 Extension = Path.GetExtension(Model.FileName).Replace(".", ""),
                 Description = Model.Description,
-                IsWorkedOut = (!Model.IsAdditional && _document.ExecutorPositionId != _context.CurrentPositionId) ? false : (bool?)null,
+                IsWorkedOut = (Model.Type == EnumFileTypes.Main && _document.ExecutorPositionId != _context.CurrentPositionId) ? false : (bool?)null,
 
                 WasChangedExternal = false,
                 ExecutorPositionId = _context.CurrentPositionId,
@@ -146,7 +148,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             CommonDocumentUtilities.SetLastChange(_context, att);
             if (_document.IsRegistered.HasValue)
             {
-                att.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, att.DocumentId, EnumEventTypes.AddDocumentFile, null, null, att.Name + "." + att.Extension, null, false, att.IsAdditional ? (int?)null : _document.ExecutorPositionId);
+                att.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, att.DocumentId, EnumEventTypes.AddDocumentFile, null, null, att.Name + "." + att.Extension, null, false, att.Type != EnumFileTypes.Additional ? (int?)null : _document.ExecutorPositionId);
             }
             res.Add(_operationDb.AddNewFileOrVersion(_context, att));
             // Модель фронта содержит дополнительно только одно поле - пользователя, который последний модифицировал файл. 

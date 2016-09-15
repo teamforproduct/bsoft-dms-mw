@@ -1,4 +1,5 @@
-﻿using BL.Model.SystemCore.Filters;
+﻿using BL.Model.Enums;
+using BL.Model.SystemCore.Filters;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
@@ -68,12 +69,9 @@ namespace BL.Model.DocumentCore.Filters
         public bool? IsWorkedOut { get; set; }
 
         /// <summary>
-        /// true - Получить только дополнительные файлы
-        /// false - Получить только не дополнительные файлы
-        /// null - Не применять фильтер
-        /// По умолчанию null
+        /// Типы файлов: основной, дополнительный, ...
         /// </summary>
-        public bool? IsAdditional { get; set; }
+        public List<EnumFileTypes> Types { get; set; }
         /// <summary>
         /// true - Получить только удаленные файлы
         /// false - Получить только не удаленные файлы

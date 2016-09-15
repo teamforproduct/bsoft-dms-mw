@@ -291,7 +291,6 @@
     <Compile Include="Controllers\Documents\TemplateDocumentsRestrictedSendListsController.cs" />
     <Compile Include="Controllers\Documents\TemplateDocumentsTasksController.cs" />
     <Compile Include="Controllers\Documents\TemplateDocumentsSendListsController.cs" />
-    <Compile Include="Controllers\Encryption\EncryptionCertificateTypesController.cs" />
     <Compile Include="Controllers\Encryption\EncryptionCertificatesController.cs" />
     <Compile Include="Controllers\Properties\FilterPropertiesController.cs" />
     <Compile Include="Controllers\Properties\PropertyLinksController.cs" />
@@ -375,6 +374,13 @@
     <Compile Include="Utilities\UserContext.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\CryptoExts\CryptoExts.dll" />
+    <Content Include="App_Data\CryptoExts\plugins\ambapi.jar" />
+    <Content Include="App_Data\CryptoExts\plugins\ambasn.jar" />
+    <Content Include="App_Data\CryptoExts\plugins\ambclient.jar" />
+    <Content Include="App_Data\CryptoExts\plugins\ambprovider.jar" />
+    <Content Include="App_Data\CryptoExts\plugins\caclient.jar" />
+    <Content Include="App_Data\CryptoExts\plugins\pdfapi.jar" />
     <Content Include="App_Data\Documentation\BL.Model.XML" />
     <Content Include="App_Data\Documentation\DMS_WebAPI.XML" />
     <Content Include="Areas\HelpPage\HelpPage.css" />

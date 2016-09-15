@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using BL.CrossCutting.DependencyInjection;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.DependencyInjection;
-
+using BL.Model.Constants;
 
 namespace BL.Logic.Common
 {
@@ -42,5 +42,32 @@ namespace BL.Logic.Common
         public abstract object Execute();
 
         public virtual EnumDocumentActions CommandType => _action;
+
+        protected bool GetIsUseInternalSign()
+        {
+            var sett = DmsResolver.Current.Get<ISettings>();
+            try
+            {
+                return sett.GetSetting<bool>(_context, SettingConstants.DIGITAL_SIGNATURE_IS_USE_INTERNAL_SIGN);
+            }
+            catch
+            {
+                sett.SaveSetting(_context, SettingConstants.DIGITAL_SIGNATURE_IS_USE_INTERNAL_SIGN, false);
+                return sett.GetSetting<bool>(_context, SettingConstants.DIGITAL_SIGNATURE_IS_USE_INTERNAL_SIGN);
+            }
+        }
+        protected bool GetIsUseCertificateSign()
+        {
+            var sett = DmsResolver.Current.Get<ISettings>();
+            try
+            {
+                return sett.GetSetting<bool>(_context, SettingConstants.DIGITAL_SIGNATURE_IS_USE_CERTIFICATE_SIGN);
+            }
+            catch
+            {
+                sett.SaveSetting(_context, SettingConstants.DIGITAL_SIGNATURE_IS_USE_CERTIFICATE_SIGN, false);
+                return sett.GetSetting<bool>(_context, SettingConstants.DIGITAL_SIGNATURE_IS_USE_CERTIFICATE_SIGN);
+            }
+        }
     }
 }

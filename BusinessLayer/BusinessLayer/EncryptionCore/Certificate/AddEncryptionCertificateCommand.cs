@@ -30,29 +30,30 @@ namespace BL.Logic.EncryptionCore.Certificate
         {
             _admin.VerifyAccess(_context, CommandType, false);
 
-            if (!Model.IsPublic && !Model.IsPrivate)
-            {
+            if (!Path.GetExtension(Model.PostedFileData.FileName).Replace(".", "").Equals("pfx", StringComparison.OrdinalIgnoreCase))
                 throw new WrongParameterTypeError();
-            }
-            
+
             return true;
         }
 
         public override object Execute()
         {
+
             var item = new InternalEncryptionCertificate
             {
                 Name = Model.Name,
                 CreateDate = DateTime.Now,
-                ValidFromDate = Model.ValidFromDate,
-                ValidToDate = Model.ValidToDate,
-                IsPublic = Model.IsPublic,
-                IsPrivate = Model.IsPrivate,
+                NotBefore = Model.NotBefore,
+                NotAfter = Model.NotAfter,
                 AgentId = _context.CurrentAgentId,
-                PostedFileData = Model.PostedFileData,
-                Extension = Path.GetExtension(Model.PostedFileData.FileName).Replace(".", ""),
-                Type = Model.Type,
+                Password = Model.Password,
             };
+
+            using (var memoryStream = new MemoryStream())
+            {
+                Model.PostedFileData.InputStream.CopyTo(memoryStream);
+                item.Certificate = memoryStream.ToArray();
+            }
 
             CommonDocumentUtilities.SetLastChange(_context, item);
             _encryptionDb.AddCertificate(_context, item);

@@ -6,14 +6,13 @@ using BL.Model.DocumentCore.InternalModel;
 using BL.Model.SystemCore;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.IncomingModel;
-using BL.Model.DocumentCore.ReportModel;
 
 namespace BL.Database.Documents.Interfaces
 {
     public interface IDocumentsDbProcess
     {
         void AddDocument(IContext ctx, InternalDocument document);
-        void ModifyDocument(IContext ctx, InternalDocument document);
+        void ModifyDocument(IContext ctx, InternalDocument document, bool isUseInternalSign, bool isUseCertificateSign);
         void DeleteDocument(IContext context, int id);
 
         void GetCountDocuments(IContext ctx, LicenceInfo licence);
@@ -23,11 +22,13 @@ namespace BL.Database.Documents.Interfaces
 
         IEnumerable<int> GetLinkedDocumentIds(IContext ctx, int documentId);
 
+        InternalDocument ReportDocumentForDigitalSignaturePrepare(IContext ctx, DigitalSignatureDocumentPdf model);
+        FilterDocumentFileIdentity ReportDocumentForDigitalSignature(IContext ctx, DigitalSignatureDocumentPdf model, bool isUseInternalSign, bool isUseCertificateSign);
         InternalDocument ReportRegistrationCardDocumentPrepare(IContext ctx, int documentId);
-        ReportDocument ReportRegistrationCardDocument(IContext ctx, int documentId);
+        InternalDocument ReportRegistrationCardDocument(IContext ctx, int documentId);
 
         //InternalDocument ReportTransmissionDocumentPaperEventPrepare(IContext ctx, int documentId)
-        List<ReportDocument> ReportRegisterTransmissionDocuments(IContext ctx, int paperListId);
+        List<InternalDocument> ReportRegisterTransmissionDocuments(IContext ctx, int paperListId);
 
         InternalDocument RegisterDocumentPrepare(IContext ctx, RegisterDocumentBase model);
         InternalDocumnRegistration RegisterModelDocumentPrepare(IContext context, RegisterDocumentBase model);

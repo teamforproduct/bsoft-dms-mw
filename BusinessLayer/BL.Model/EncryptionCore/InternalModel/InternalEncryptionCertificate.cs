@@ -17,6 +17,11 @@ namespace BL.Model.EncryptionCore.InternalModel
         /// </summary>
         public string Name { get; set; }
 
+        /// <summary>
+        /// Thumbprint
+        /// </summary>
+        public string Thumbprint { get; set; }
+
 
         /// <summary>
         /// Дата внесения сертификата в систему
@@ -26,40 +31,29 @@ namespace BL.Model.EncryptionCore.InternalModel
         /// <summary>
         /// Действует с даты
         /// </summary>
-        public DateTime? ValidFromDate { get; set; }
+        public DateTime? NotBefore { get; set; }
         /// <summary>
         /// Действует по дату
         /// </summary>
-        public DateTime? ValidToDate { get; set; }
+        public DateTime? NotAfter { get; set; }
         /// <summary>
-        /// Признак публичного ключа
-        /// </summary>
-        public bool IsPublic { get; set; }
-        /// <summary>
-        /// Признак приватного ключа
-        /// </summary>
-        public bool IsPrivate { get; set; }
-        /// <summary>
-        /// ИД агента
+        /// ИД Position
         /// </summary>
         public int AgentId { get; set; }
 
         /// <summary>
-        /// Тип
+        /// Cодержимое сертификата Zip
         /// </summary>
-        public EnumEncryptionCertificateTypes Type { get; set; }
+        public byte[] CertificateZip { get; set; }
 
         /// <summary>
         /// Cодержимое сертификата
         /// </summary>
         public byte[] Certificate { get; set; }
 
-        public HttpPostedFile PostedFileData { get; set; }
-
         /// <summary>
-        /// Расширение сертификата
+        /// Password
         /// </summary>
-        public string Extension { get; set; }
-
+        public string Password { get; set; }
     }
 }

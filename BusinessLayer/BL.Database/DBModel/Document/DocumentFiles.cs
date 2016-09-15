@@ -28,7 +28,7 @@ namespace BL.Database.DBModel.Document
         public DateTime Date { get; set; }
         [MaxLength(2000)]
         public string Content { get; set; }
-        public bool IsAdditional { get; set; }
+        public int TypeId { get; set; }
         public bool IsDeleted { get; set; }
         public bool? IsWorkedOut { get; set; }
         [MaxLength(2000)]
@@ -50,5 +50,8 @@ namespace BL.Database.DBModel.Document
         public virtual DictionaryPositions ExecutorPosition { get; set; }
         [ForeignKey("ExecutorPositionExecutorAgentId")]
         public virtual DictionaryAgents ExecutorPositionExecutorAgent { get; set; }
+
+        [ForeignKey("TypeId")]
+        public virtual DictionaryFileTypes Type { get; set; }
     }
 }

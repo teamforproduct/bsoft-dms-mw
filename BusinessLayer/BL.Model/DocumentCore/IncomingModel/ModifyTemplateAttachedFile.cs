@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using BL.Model.Enums;
+using System.Runtime.Serialization;
 using System.Web;
 
 namespace BL.Model.DocumentCore.IncomingModel
@@ -25,7 +26,7 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// <summary>
         /// Является ли файл дополнительным или основным. 
         /// </summary>
-        public bool IsAdditional { get; set; }
+        public EnumFileTypes Type { get; set; }
         /// <summary>
         /// Описание файла
         /// </summary>

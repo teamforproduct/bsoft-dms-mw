@@ -31,5 +31,7 @@ namespace BL.Model.DocumentCore.Actions
         /// </summary>
         public int? CurrentPositionId { get; set; }
 
+        public int? CertificateId { get; set; }
+        public string CertificatePassword { get; set; }
     }
 }

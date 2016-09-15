@@ -8,6 +8,7 @@ using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.SystemCore;
+using BL.Model.Enums;
 
 namespace BL.Database.Documents
 {
@@ -43,7 +44,8 @@ namespace BL.Database.Documents
                             DocumentId = x.fl.DocumentId,
                             Extension = x.fl.Extension,
                             FileContent = x.fl.Content,
-                            IsAdditional = x.fl.IsAdditional,
+                            Type = (EnumFileTypes)x.fl.TypeId,
+                            TypeName = x.fl.Type.Name,
                             Hash = x.fl.Hash,
                             FileType = x.fl.FileType,
                             FileSize = x.fl.FileSize,
@@ -90,7 +92,7 @@ namespace BL.Database.Documents
                             Version = x.fl.Version,
                             ExecutorPositionId = x.fl.ExecutorPositionId,
                             IsWorkedOut = x.fl.IsWorkedOut,
-                            IsAdditional = x.fl.IsAdditional,
+                            Type = (EnumFileTypes)x.fl.TypeId,
                             IsMainVersion = x.fl.IsMainVersion,
                             FileSize = x.fl.FileSize,
                             Extension = x.fl.Extension,
@@ -134,7 +136,7 @@ namespace BL.Database.Documents
                             ExecutorPositionId = x.fl.ExecutorPositionId,
                             IsWorkedOut = x.fl.IsWorkedOut,
                             IsMainVersion = x.fl.IsMainVersion,
-                            IsAdditional = x.fl.IsAdditional,
+                            Type = (EnumFileTypes)x.fl.TypeId,
                         }).ToList();
                 return doc;
             }
@@ -160,7 +162,7 @@ namespace BL.Database.Documents
                             Extension = y.Extension,
                             ExecutorPositionId = y.ExecutorPositionId,
                             FileType = y.FileType,
-                            IsAdditional = y.IsAdditional,
+                            Type = (EnumFileTypes)y.TypeId,
                             OrderInDocument = y.OrderNumber
                         })
                     }).FirstOrDefault();
@@ -233,7 +235,7 @@ namespace BL.Database.Documents
                 entry.Property(x => x.Extension).IsModified = true;
                 entry.Property(x => x.FileType).IsModified = true;
                 entry.Property(x => x.FileSize).IsModified = true;
-                entry.Property(x => x.IsAdditional).IsModified = true;
+                entry.Property(x => x.TypeId).IsModified = true;
                 entry.Property(x => x.LastChangeDate).IsModified = true;
                 entry.Property(x => x.LastChangeUserId).IsModified = true;
                 entry.Property(x => x.Hash).IsModified = true;
@@ -297,7 +299,7 @@ namespace BL.Database.Documents
                             ExecutorPositionId = x.ExecutorPositionId,
                             Name = x.Name,
                             Extension = x.Extension,
-                            IsAdditional = x.IsAdditional,
+                            Type=(EnumFileTypes)x.TypeId,
                             IsMainVersion = x.IsMainVersion,
                             Version = x.Version,
                             IsDeleted = x.IsDeleted,

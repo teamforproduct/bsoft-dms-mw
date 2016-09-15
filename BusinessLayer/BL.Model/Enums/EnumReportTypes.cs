@@ -11,6 +11,7 @@ namespace BL.Model.Enums
         RegistrationCardIncomingDocument = 1,
         RegistrationCardInternalDocument = 2,
         RegistrationCardOutcomingDocument = 3,
-        RegisterTransmissionDocuments = 4
+        RegisterTransmissionDocuments = 4,
+        DocumentForDigitalSignature = 5
     }
 }

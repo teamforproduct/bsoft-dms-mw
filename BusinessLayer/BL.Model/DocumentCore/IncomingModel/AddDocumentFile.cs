@@ -1,4 +1,5 @@
-﻿using BL.Model.Users;
+﻿using BL.Model.Enums;
+using BL.Model.Users;
 using System.Runtime.Serialization;
 using System.Web;
 
@@ -21,7 +22,7 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// <summary>
         /// Является ли файл дополнительным или основным.
         /// </summary>
-        public bool IsAdditional { get; set; }
+        public EnumFileTypes Type { get; set; }
         [IgnoreDataMember]
         public bool IsUseMainNameFile { get; set; }
         /// <summary>

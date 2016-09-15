@@ -1,5 +1,6 @@
 ﻿using System;
 using BL.Model.DocumentCore.InternalModel;
+using BL.Model.Enums;
 
 namespace BL.Model.DocumentCore.FrontModel
 {
@@ -28,7 +29,11 @@ namespace BL.Model.DocumentCore.FrontModel
         /// <summary>
         /// Признак дополнительный файл или основной
         /// </summary>
-        public bool IsAdditional { get; set; }
+        public EnumFileTypes Type { get; set; }
+        /// <summary>
+        /// Признак дополнительный файл или основной
+        /// </summary>
+        public string TypeName { get; set; }
         /// <summary>
         /// Признак основная версия файла
         /// </summary>

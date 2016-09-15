@@ -61,6 +61,15 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 ex = new TaskIsNotDefined();
             }
+
+            if (Model.TargetPositionId.HasValue
+                && (_document.RestrictedSendLists?.Any() ?? false)
+                && !_document.RestrictedSendLists.Select(x => x.PositionId).Contains(Model.TargetPositionId.Value)
+                )
+            {
+                ex = new DocumentSendListNotFoundInDocumentRestrictedSendList();
+            }
+
             if (Model.TargetPositionId.HasValue
                 && !_admin.VerifySubordination(_context, new VerifySubordination
                 {
@@ -71,13 +80,7 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 ex = new SubordinationHasBeenViolated();
             }
-            if (Model.TargetPositionId.HasValue
-                && (_document.RestrictedSendLists?.Any() ?? false)
-                && !_document.RestrictedSendLists.Select(x=>x.PositionId).Contains(Model.TargetPositionId.Value)
-                )
-            {
-                ex = new DocumentSendListNotFoundInDocumentRestrictedSendList();
-            }
+
             if (ex != null)
             {
                 Model.AddDescription = ex.Message;

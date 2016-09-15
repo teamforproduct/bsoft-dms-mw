@@ -101,6 +101,7 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<DictionaryEventTypes> DictionaryEventTypesSet { get; set; }
         public virtual DbSet<DictionaryImportanceEventTypes> DictionaryImportanceEventTypesSet { get; set; }
         public virtual DbSet<DictionaryLinkTypes> DictionaryLinkTypesSet { get; set; }
+        public virtual DbSet<DictionaryFileTypes> DictionaryFileTypesSet { get; set; }
         public virtual DbSet<DictionaryPositions> DictionaryPositionsSet { get; set; }
         public virtual DbSet<DictionaryPositionExecutors> DictionaryPositionExecutorsSet { get; set; }
         public virtual DbSet<DictionaryPositionExecutorTypes> DictionaryPositionExecutorTypesSet { get; set; }
@@ -155,7 +156,6 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<SystemSettings> SettingsSet { get; set; }
 
         public virtual DbSet<EncryptionCertificates> EncryptionCertificatesSet { get; set; }
-        public virtual DbSet<EncryptionCertificateTypes> EncryptionCertificateTypesSet { get; set; }
 
     }
 }

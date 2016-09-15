@@ -283,8 +283,8 @@ namespace BL.Logic.ClientCore
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.SendMessage });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.AddNote });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.ReportRegistrationCardDocument });
-            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.ПосмотретьPDFДокументаПередПодписанием });
-            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.ПолучитьПодписаныйPDFДокумента });
+            //items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.ПосмотретьPDFДокументаПередПодписанием });
+            //items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.ПолучитьПодписаныйPDFДокумента });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.AddFavourite });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.DeleteFavourite });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.FinishWork });
@@ -357,11 +357,11 @@ namespace BL.Logic.ClientCore
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.SelfAffixSigning });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.RejectSigning });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.RejectАpproval });
-            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.ПосмотретьPDFДокументаПередПодписанием });
-            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.ПолучитьПодписаныйPDFДокумента });
+            //items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.ПосмотретьPDFДокументаПередПодписанием });
+            //items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.ПолучитьПодписаныйPDFДокумента });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumEncryptionActions.AddEncryptionCertificate });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumEncryptionActions.ModifyEncryptionCertificate });
-            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumEncryptionActions.ExportEncryptionCertificate });
+            //items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumEncryptionActions.ExportEncryptionCertificate });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumEncryptionActions.DeleteEncryptionCertificate });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumEncryptionActions.GenerateKeyEncryptionCertificate });
 

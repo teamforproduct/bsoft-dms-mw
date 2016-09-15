@@ -28,7 +28,8 @@ namespace BL.Model.DocumentCore.FrontModel
             Extension = doc.Extension;
             FileType = doc.FileType;
             FileSize = doc.FileSize;
-            IsAdditional = doc.IsAdditional;
+            Type = doc.Type;
+            TypeName = doc.TypeName;
             Hash = doc.Hash;
         }
 

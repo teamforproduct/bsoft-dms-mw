@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BL.Model.Common;
+using BL.Model.Reports.Interfaces;
 
 namespace BL.Model.DocumentCore.InternalModel
 {
-    public class InternalDocumentPaper : LastChangeInfo
+    public class InternalDocumentPaper : LastChangeInfo, IReports
     {
         public int Id { get; set; }
         public int DocumentId { get; set; }

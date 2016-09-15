@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BL.Model.Common;
+﻿using BL.Model.Common;
 using BL.Model.Enums;
+using BL.Model.Reports.Interfaces;
 
 namespace BL.Model.DocumentCore.InternalModel
 {
-    public class InternalDocumentSubscription : LastChangeInfo
+    public class InternalDocumentSubscription : LastChangeInfo, IReports
     {
         public int Id { get; set; }
         public int DocumentId { get; set; }
@@ -21,5 +17,21 @@ namespace BL.Model.DocumentCore.InternalModel
         public InternalDocumentEvent SendEvent { get; set; }
         public InternalDocumentEvent DoneEvent { get; set; }
         public EnumSubscriptionStates SubscriptionStates { get; set; }
+
+        public string InternalSign { get; set; }
+        public string CertificateSign { get; set; }
+        public int? CertificateId { get; set; }
+        public string CertificatePassword { get; set; }
+
+        public int? CertificatePositionId { get; set; }
+        public int? CertificatePositionExecutorAgentId { get; set; }
+
+        #region For Report
+        public string SubscriptionStatesName { get; set; }
+
+        public string DoneEventSourcePositionName { get; set; }
+
+        public string DoneEventSourcePositionExecutorAgentName { get; set; }
+        #endregion
     }
 }

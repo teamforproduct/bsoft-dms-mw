@@ -90,7 +90,6 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
@@ -204,11 +203,7 @@
     <Compile Include="DocumentCore\AdditionalCommands\RejectDocumentFileCommand.cs" />
     <Compile Include="DocumentCore\AdditionalCommands\AcceptDocumentFileCommand.cs" />
     <Compile Include="DocumentCore\AdditionalCommands\RenameDocumentFileCommand.cs" />
-    <Compile Include="EncryptionCore\CertificateType\AddEncryptionCertificateTypeCommand.cs" />
-    <Compile Include="EncryptionCore\CertificateType\DeleteEncryptionCertificateTypeCommand.cs" />
-    <Compile Include="EncryptionCore\CertificateType\ModifyEncryptionCertificateTypeCommand.cs" />
-    <Compile Include="EncryptionCore\Certificate\GenerateKeyEncryptionCertificateCommand.cs" />
-    <Compile Include="EncryptionCore\Certificate\ExportEncryptionCertificateCommand.cs" />
+    <Compile Include="DocumentCore\ReportCommand\ReportDocumentForDigitalSignature.cs" />
     <Compile Include="EncryptionCore\EncryptionCommandFactory.cs" />
     <Compile Include="EncryptionCore\EncryptionService.cs" />
     <Compile Include="EncryptionCore\Certificate\AddEncryptionCertificateCommand.cs" />
@@ -319,36 +314,6 @@
     <Compile Include="DocumentCore\TemplateCommands\ModifyTemplateCommand.cs" />
     <Compile Include="DocumentCore\TemplateCommands\ModifyTemplateFileCommand.cs" />
     <Compile Include="DocumentCore\TemplateDocumentService.cs" />
-    <Compile Include="Reports\DataSetCrystalReports.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>DataSetCrystalReports.xsd</DependentUpon>
-    </Compile>
-    <Compile Include="Reports\DmsReport.cs" />
-    <Compile Include="Reports\ReportRegisterTransmissionDocuments.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ReportRegisterTransmissionDocuments.rpt</DependentUpon>
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Reports\ReportRegistrationCardIncomingDocument.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ReportRegistrationCardIncomingDocument.rpt</DependentUpon>
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Reports\ReportRegistrationCardOutcomingDocument.cs">
-      <DependentUpon>ReportRegistrationCardOutcomingDocument.rpt</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Reports\ReportRegistrationCardInternalDocument.cs">
-      <DependentUpon>ReportRegistrationCardInternalDocument.rpt</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="SystemServices\ClearTrashDocuments\ClearTrashDocumentsService.cs" />
     <Compile Include="SystemServices\ClearTrashDocuments\IClearTrashDocumentsService.cs" />
     <Compile Include="SystemServices\AutoPlan\AutoPlanService.cs" />
@@ -399,35 +364,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="Reports\DataSetCrystalReports.xsc">
-      <DependentUpon>DataSetCrystalReports.xsd</DependentUpon>
-    </None>
-    <None Include="Reports\DataSetCrystalReports.xsd">
-      <Generator>MSDataSetGenerator</Generator>
-      <LastGenOutput>DataSetCrystalReports.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Reports\DataSetCrystalReports.xss">
-      <DependentUpon>DataSetCrystalReports.xsd</DependentUpon>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Reports\ReportRegisterTransmissionDocuments.rpt">
-      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>ReportRegisterTransmissionDocuments.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Reports\ReportRegistrationCardIncomingDocument.rpt">
-      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>ReportRegistrationCardIncomingDocument.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Reports\ReportRegistrationCardOutcomingDocument.rpt">
-      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>ReportRegistrationCardOutcomingDocument.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Reports\ReportRegistrationCardInternalDocument.rpt">
-      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>ReportRegistrationCardInternalDocument.cs</LastGenOutput>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />

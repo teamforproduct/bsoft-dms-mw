@@ -59,7 +59,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
             fl.FileSize = Model.FileSize;
             fl.Extension = Path.GetExtension(Model.FileName ?? "").Replace(".", "");
             fl.Name = Path.GetFileNameWithoutExtension(Model.FileName);
-            fl.IsAdditional = fl.IsAdditional;
+            fl.Type = fl.Type;
             fl.PostedFileData = Model.PostedFileData;
             fl.Description = Model.Description;
             _fStore.SaveFile(_context, fl);

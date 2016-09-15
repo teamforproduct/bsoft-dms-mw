@@ -82,6 +82,18 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CrystalDecisions.CrystalReports.Engine, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Thirdparty\Crystal Reports\CrystalDecisions.CrystalReports.Engine.dll</HintPath>
+    </Reference>
+    <Reference Include="CrystalDecisions.ReportSource, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Thirdparty\Crystal Reports\CrystalDecisions.ReportSource.dll</HintPath>
+    </Reference>
+    <Reference Include="CrystalDecisions.Shared, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Thirdparty\Crystal Reports\CrystalDecisions.Shared.dll</HintPath>
+    </Reference>
     <Reference Include="DotNetZip, Version=1.10.1.0, Culture=neutral, PublicKeyToken=6583c7c814667745, processorArchitecture=MSIL">
       <HintPath>..\..\Web\DMS_WebAPI\packages\DotNetZip.1.10.1\lib\net20\DotNetZip.dll</HintPath>
       <Private>True</Private>
@@ -96,6 +108,9 @@
     </Reference>
     <Reference Include="LinqKit, Version=1.1.7.2, Culture=neutral, PublicKeyToken=bc217f8844052a91, processorArchitecture=MSIL">
       <HintPath>..\..\Web\DMS_WebAPI\packages\LinqKit.1.1.7.2\lib\net461\LinqKit.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp, Version=5.5.9.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\..\Web\DMS_WebAPI\packages\iTextSharp.5.5.9\lib\itextsharp.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Ninject, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
@@ -114,10 +129,13 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Admins\LanguagesDbProcess.cs" />
@@ -148,6 +166,7 @@
     <Compile Include="DBModel\Dictionary\DictionaryAgentUsers.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryAgentPersons.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryAgentContacts.cs" />
+    <Compile Include="DBModel\Dictionary\DictionaryFileTypes.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryLinkTypes.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryContactTypes.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryPositionExecutors.cs" />
@@ -170,7 +189,6 @@
     <Compile Include="DBModel\Document\DocumentTaskAccesses.cs" />
     <Compile Include="DBModel\Document\DocumentTasks.cs" />
     <Compile Include="DBModel\Document\DocumentWaits.cs" />
-    <Compile Include="DBModel\Encryption\EncryptionCertificateTypes.cs" />
     <Compile Include="DBModel\Encryption\EncryptionCertificates.cs" />
     <Compile Include="DBModel\InternalModel\DocumentQuery.cs" />
     <Compile Include="DBModel\System\FullTextIndexCash.cs" />
@@ -213,8 +231,6 @@
     <Compile Include="Dictionaries\DictionariesDbProcess.cs" />
     <Compile Include="Dictionaries\Interfaces\IDictionariesDbProcess.cs" />
     <Compile Include="Common\CommonQueries.cs" />
-    <Compile Include="EncryptionWorker\EncryptionGeneratorKey.cs" />
-    <Compile Include="EncryptionWorker\IEncryptionGeneratorKey.cs" />
     <Compile Include="Encryption\EncryptionDbProcess.cs" />
     <Compile Include="Encryption\Interfaces\IEncryptionDbProcess.cs" />
     <Compile Include="Documents\DocumentFileDbProcess.cs" />
@@ -277,8 +293,52 @@
     <Compile Include="Migrations\201609051528266_indexEvent1.Designer.cs">
       <DependentUpon>201609051528266_indexEvent1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201609131910125_digital_signature.cs" />
+    <Compile Include="Migrations\201609131910125_digital_signature.Designer.cs">
+      <DependentUpon>201609131910125_digital_signature.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201609131924312_digital_signature_2.cs" />
+    <Compile Include="Migrations\201609131924312_digital_signature_2.Designer.cs">
+      <DependentUpon>201609131924312_digital_signature_2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reports\DataSetCrystalReports.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DataSetCrystalReports.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Reports\DmsReport.cs" />
+    <Compile Include="Reports\ReportRegistrationCardIncomingDocument.cs">
+      <DependentUpon>ReportRegistrationCardIncomingDocument.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Reports\ReportRegistrationCardOutcomingDocument.cs">
+      <DependentUpon>ReportRegistrationCardOutcomingDocument.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Reports\ReportRegistrationCardInternalDocument.cs">
+      <DependentUpon>ReportRegistrationCardInternalDocument.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Reports\ReportDocumentForDigitalSignature2.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ReportDocumentForDigitalSignature.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\ReportRegisterTransmissionDocuments.cs">
+      <DependentUpon>ReportRegisterTransmissionDocuments.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="SystemDb\ISystemDbProcess.cs" />
     <Compile Include="SystemDb\SystemDbProcess.cs" />
   </ItemGroup>
@@ -295,6 +355,17 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="Reports\DataSetCrystalReports.xsc">
+      <DependentUpon>DataSetCrystalReports.xsd</DependentUpon>
+    </None>
+    <None Include="Reports\DataSetCrystalReports.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DataSetCrystalReports.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Reports\DataSetCrystalReports.xss">
+      <DependentUpon>DataSetCrystalReports.xsd</DependentUpon>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
@@ -334,6 +405,35 @@
     <EmbeddedResource Include="Migrations\201609051528266_indexEvent1.resx">
       <DependentUpon>201609051528266_indexEvent1.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201609131910125_digital_signature.resx">
+      <DependentUpon>201609131910125_digital_signature.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201609131924312_digital_signature_2.resx">
+      <DependentUpon>201609131924312_digital_signature_2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\ReportRegistrationCardIncomingDocument.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>ReportRegistrationCardIncomingDocument.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\ReportRegistrationCardOutcomingDocument.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>ReportRegistrationCardOutcomingDocument.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\ReportRegistrationCardInternalDocument.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>ReportRegistrationCardInternalDocument.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\ReportRegisterTransmissionDocuments.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>ReportRegisterTransmissionDocuments.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\ReportDocumentForDigitalSignature.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>ReportDocumentForDigitalSignature2.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

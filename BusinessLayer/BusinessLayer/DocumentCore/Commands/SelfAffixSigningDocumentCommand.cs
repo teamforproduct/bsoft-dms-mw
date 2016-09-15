@@ -71,11 +71,24 @@ namespace BL.Logic.DocumentCore.Commands
                 Description = Model.VisaText
             };
 
+            var isUseCertificateSign = GetIsUseCertificateSign();
+            if (isUseCertificateSign && Model.CertificateId.HasValue)
+            {
+                subscription.CertificateId = Model.CertificateId;
+                subscription.CertificatePassword = Model.CertificatePassword;
+                subscription.CertificatePositionId = _context.CurrentPositionId;
+                subscription.CertificatePositionExecutorAgentId = CommonDocumentUtilities.GetExecutorAgentIdByPositionId(_context, _context.CurrentPositionId);
+                if (!subscription.CertificatePositionExecutorAgentId.HasValue)
+                {
+                    throw new ExecutorAgentForPositionIsNotDefined();
+                }
+            }
+
             CommonDocumentUtilities.SetLastChange(Context, subscription);
 
             _document.Subscriptions = new List<InternalDocumentSubscription> { subscription };
 
-            _operationDb.SelfAffixSigningDocument(_context, _document);
+            _operationDb.SelfAffixSigningDocument(_context, _document, GetIsUseInternalSign(), isUseCertificateSign);
             return _document.Id;
         }
 
