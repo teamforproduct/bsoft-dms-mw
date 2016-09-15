@@ -80,26 +80,26 @@ namespace BL.Logic.ClientCore
             // EnumDictionaryContactsTypes!!!!!!!!!!!!!!!!!!!!!!
             // Pss Локализация для типов контактов
             // Контакты при отображении сортируются по Id ContactType. т.е. в порядке добавления типов
-            var mobiContactType = _DictDb.AddContactType(context, GetNewContactType(context, "MainPhone", "ОТ", "Основной телефон"));
-            _DictDb.AddContactType(context, GetNewContactType(context, "MobilePhone", "МТ", "Мобильный телефон"));
-            _DictDb.AddContactType(context, GetNewContactType(context, "WorkPhone", "РТ", "Рабочий телефон"));
-            _DictDb.AddContactType(context, GetNewContactType(context, "HomePhone", "ДТ", "Домашний телефон"));
+            var mobiContactType = _DictDb.AddContactType(context, GetNewContactType(context, EnumContactTypes.MainPhone.ToString(), "ОТ", "Основной телефон"));
+            _DictDb.AddContactType(context, GetNewContactType(context, EnumContactTypes.MobilePhone.ToString(), "МТ", "Мобильный телефон"));
+            _DictDb.AddContactType(context, GetNewContactType(context, EnumContactTypes.WorkPhone.ToString(), "РТ", "Рабочий телефон"));
+            _DictDb.AddContactType(context, GetNewContactType(context, EnumContactTypes.HomePhone.ToString(), "ДТ", "Домашний телефон"));
 
-            _DictDb.AddContactType(context, GetNewContactType(context, "WorkFax", "РФ", "Рабочий факс"));
-            _DictDb.AddContactType(context, GetNewContactType(context, "HomeFax", "ДФ", "Домашний факс"));
+            _DictDb.AddContactType(context, GetNewContactType(context, EnumContactTypes.WorkFax.ToString(), "РФ", "Рабочий факс"));
+            _DictDb.AddContactType(context, GetNewContactType(context, EnumContactTypes.HomeFax.ToString(), "ДФ", "Домашний факс"));
 
-            var emailContactType = _DictDb.AddContactType(context, GetNewContactType(context, "MainEmail", "ЛМ", "Основной адрес", "/@/"));
-            _DictDb.AddContactType(context, GetNewContactType(context, "WorkEmail", "РМ", "Рабочий адрес", "/@/"));
-            _DictDb.AddContactType(context, GetNewContactType(context, "PersonalEmail", "ЛМ", "Личный адрес", "/@/"));
+            var emailContactType = _DictDb.AddContactType(context, GetNewContactType(context, EnumContactTypes.MainEmail.ToString(), "ЛМ", "Основной адрес", "/@/"));
+            _DictDb.AddContactType(context, GetNewContactType(context, EnumContactTypes.WorkEmail.ToString(), "РМ", "Рабочий адрес", "/@/"));
+            _DictDb.AddContactType(context, GetNewContactType(context, EnumContactTypes.PersonalEmail.ToString(), "ЛМ", "Личный адрес", "/@/"));
 
-            _DictDb.AddContactType(context, GetNewContactType(context, "SIP", "Вн", "Внутренний"));
-            _DictDb.AddContactType(context, GetNewContactType(context, "Skype", "Skype", "Skype"));
-            _DictDb.AddContactType(context, GetNewContactType(context, "Viber", "Viber", "Viber"));
-            _DictDb.AddContactType(context, GetNewContactType(context, "ICQ", "ICQ", "ICQ"));
-            _DictDb.AddContactType(context, GetNewContactType(context, "Jabber", "Jab", "Jabber"));
-            _DictDb.AddContactType(context, GetNewContactType(context, "Telegram", "Tg", "Telegram"));
-            _DictDb.AddContactType(context, GetNewContactType(context, "Pager", "П", "Пейждер"));
-            _DictDb.AddContactType(context, GetNewContactType(context, "Another", "Др", "Другой"));
+            _DictDb.AddContactType(context, GetNewContactType(context, EnumContactTypes.SIP.ToString(), "Вн", "Внутренний"));
+            _DictDb.AddContactType(context, GetNewContactType(context, EnumContactTypes.Skype.ToString(), "Skype", "Skype"));
+            _DictDb.AddContactType(context, GetNewContactType(context, EnumContactTypes.Viber.ToString(), "Viber", "Viber"));
+            _DictDb.AddContactType(context, GetNewContactType(context, EnumContactTypes.ICQ.ToString(), "ICQ", "ICQ"));
+            _DictDb.AddContactType(context, GetNewContactType(context, EnumContactTypes.Jabber.ToString(), "Jab", "Jabber"));
+            _DictDb.AddContactType(context, GetNewContactType(context, EnumContactTypes.Telegram.ToString(), "Tg", "Telegram"));
+            _DictDb.AddContactType(context, GetNewContactType(context, EnumContactTypes.Pager.ToString(), "П", "Пейждер"));
+            _DictDb.AddContactType(context, GetNewContactType(context, EnumContactTypes.Another.ToString(), "Др", "Другой"));
             #endregion
 
             #region [+] AddressTypes ...

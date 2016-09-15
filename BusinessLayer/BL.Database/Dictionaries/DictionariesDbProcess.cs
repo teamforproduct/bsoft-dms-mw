@@ -844,7 +844,6 @@ namespace BL.Database.Dictionaries
                     //    },
                     //    Value = y.Contact,
                     //    IsActive = y.IsActive,
-                    //    IsPrimary = false,
                     //    Description = y.Description
                     //}),
                     //Addresses = x.Agent.AgentAddresses.Select(z => new FrontDictionaryAgentAddress

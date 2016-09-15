@@ -27,10 +27,6 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// </summary>
         public string AgentName { get; set; }
 
-        /// <summary>
-        /// Ранг
-        /// </summary>
-        public int? Rang { get; set; }
 
         /// <summary>
         /// Исполнитель
@@ -57,7 +53,11 @@ namespace BL.Model.DictionaryCore.FrontModel
         public string ParentPositionName { get; set; }
 
         public int? MaxSubordinationTypeId { get; set; }
-        public string PositionPhone { get; set; }
+
+        /// <summary>
+        /// Для отображения контактов в рабочей группе
+        /// </summary>
+        public string PositionContacts { get; set; }
 
         
 

@@ -11,13 +11,25 @@ namespace BL.Model.Enums
     /// </summary>
     public enum EnumContactTypes
     {
+        MainEmail,
+        WorkEmail,
+        PersonalEmail,
+
+        MainPhone,
+        MobilePhone,
         WorkPhone,
         HomePhone,
-        WorkEMail,
-        HomeEmail,
+
+        WorkFax,
+        HomeFax,
+
         SIP,
-        Skype
-
-
+        Skype,
+        Viber,
+        ICQ,
+        Jabber,
+        Telegram,
+        Pager,
+        Another
     }
 }
