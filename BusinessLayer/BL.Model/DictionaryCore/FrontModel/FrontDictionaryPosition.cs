@@ -31,24 +31,29 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// Ранг
         /// </summary>
         public int? Rang { get; set; }
-        
+
         /// <summary>
         /// Исполнитель
         /// </summary>
+        [IgnoreDataMember]
         public int? ExecutorAgentId { get; set; }
-       
+
         /// <summary>
         /// Исполнитель
         /// </summary>
+        [IgnoreDataMember]
         public string ExecutorAgentName { get; set; }
 
+        [IgnoreDataMember]
         public int? MainExecutorAgentId { get; set; }
 
+        [IgnoreDataMember]
         public string MainExecutorAgentName { get; set; }
 
         /// <summary>
         /// Наименование вышестоящей должности
         /// </summary>
+        [IgnoreDataMember]
         public string ParentPositionName { get; set; }
 
         public int? MaxSubordinationTypeId { get; set; }
@@ -61,6 +66,8 @@ namespace BL.Model.DictionaryCore.FrontModel
         public virtual IEnumerable<FrontDictionaryPosition> ChildPositions { get; set; }
         public virtual IEnumerable<FrontDictionaryDepartment> ChiefDepartments { get; set; }
         public virtual IEnumerable<FrontDictionaryStandartSendList> StandartSendLists { get; set; }
+
+        public virtual IEnumerable<FrontDictionaryPositionExecutor> PositionExecutors { get; set; }
 
     }
 }

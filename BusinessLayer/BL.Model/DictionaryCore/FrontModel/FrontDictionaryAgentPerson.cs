@@ -61,6 +61,8 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// Дополнительная информация
         /// </summary>
         public override string Description { get; set; }
+
+        //pss убрать вычисляемые свойства
         /// <summary>
         /// Полное имя
         /// </summary>

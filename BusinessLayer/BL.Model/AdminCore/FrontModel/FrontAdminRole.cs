@@ -18,10 +18,5 @@ namespace BL.Model.AdminCore.FrontModel
         /// </summary>
         public string Name { get; set; }
 
-        /// <summary>
-        /// Классификатор роли
-        /// </summary>
-        public bool Checked { get; set; }
-
     }
 }

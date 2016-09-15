@@ -8,6 +8,7 @@ using DMS_WebAPI.Utilities;
 using System.Web.Http;
 using BL.CrossCutting.DependencyInjection;
 using System.Collections.Generic;
+using System.Web.Http.Description;
 
 namespace DMS_WebAPI.Controllers.Admins
 {
@@ -25,11 +26,17 @@ namespace DMS_WebAPI.Controllers.Admins
         /// </summary>
         /// <param name="filter">Filter parms</param>
         /// <returns>FrontAdminPositions</returns>
-        public IHttpActionResult Get([FromUri] FilterAdminPositionRole filter)
+        [ResponseType(typeof(List<FrontAdminPositionRole>))]
+        public IHttpActionResult Get([FromUri] int positionId, [FromUri] FilterAdminRole filter)
         {
+
+            if (filter.PositionIDs == null) filter.PositionIDs = new List<int>();
+
+            filter.PositionIDs.Add(positionId);
+
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItems = tmpService.GetAdminPositionRoles(ctx, filter);
+            var tmpItems = tmpService.GetPositionRoles(ctx, filter);
             return new JsonResult(tmpItems, this);
         }
 
@@ -38,11 +45,12 @@ namespace DMS_WebAPI.Controllers.Admins
         /// </summary>
         /// <param name="id">Record Id</param>
         /// <returns>FrontAdminPositionRole</returns>
+        [ResponseType(typeof(FrontAdminPositionRole))]
         public IHttpActionResult Get(int id)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItem = tmpService.GetAdminPositionRoles(ctx, new FilterAdminPositionRole() { IDs = new List<int> { id } });
+            var tmpItem = tmpService.GetPositionRole(ctx, id);
             return new JsonResult(tmpItem, this);
         }
 
@@ -51,6 +59,7 @@ namespace DMS_WebAPI.Controllers.Admins
         /// </summary>
         /// <param name="model">ModifyAdminPositionRole</param>
         /// <returns>FrontAdminPositionRole</returns>
+        [ResponseType(typeof(FrontAdminPositionRole))]
         public IHttpActionResult Post([FromBody]ModifyAdminPositionRole model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
@@ -65,26 +74,26 @@ namespace DMS_WebAPI.Controllers.Admins
         /// <param name="id">Record Id</param>
         /// <param name="model">ModifyAdminPositionRole</param>
         /// <returns>FrontAdminPositionRole</returns>
-        public IHttpActionResult Put(int id, [FromBody]ModifyAdminPositionRole model)
-        {
-            model.Id = id;
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var tmpService = DmsResolver.Current.Get<IAdminService>();
-            tmpService.ExecuteAction(EnumAdminActions.ModifyPositionRole, cxt, model);
-            return Get(model.Id);
-        }
+        //[ResponseType(typeof(FrontAdminPositionRole))]
+        //public IHttpActionResult Put(int id, [FromBody]ModifyAdminPositionRole model)
+        //{
+        //    model.Id = id;
+        //    var cxt = DmsResolver.Current.Get<UserContext>().Get();
+        //    var tmpService = DmsResolver.Current.Get<IAdminService>();
+        //    tmpService.ExecuteAction(EnumAdminActions.ModifyPositionRole, cxt, model);
+        //    return Get(model.Id);
+        //}
 
         /// <summary>
         /// Удаляет роль для должности
         /// </summary>
         /// <returns>FrontAdminPositionRole</returns> 
-        public IHttpActionResult Delete([FromUri] int id)
+        public IHttpActionResult Delete([FromUri] int positionId, [FromUri] int roleId)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
-
-            tmpService.ExecuteAction(EnumAdminActions.DeletePositionRole, cxt, id);
-            FrontAdminPositionRole tmpItem = new FrontAdminPositionRole() { Id = id };
+            tmpService.ExecuteAction(EnumAdminActions.DeletePositionRole, cxt, new ModifyAdminPositionRole() { PositionId = positionId, RoleId = roleId });
+            FrontAdminPositionRole tmpItem = new FrontAdminPositionRole() { PositionId = positionId, RoleId = roleId };
             return new JsonResult(tmpItem, this);
         }
     }

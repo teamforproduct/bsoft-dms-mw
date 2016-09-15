@@ -191,20 +191,14 @@ namespace BL.Logic.AdminCore
         #endregion
 
         #region [+] PositionRoles ...
-        public IEnumerable<FrontAdminPositionRole> GetAdminPositionRoles(IContext context, FilterAdminPositionRole filter)
+        public IEnumerable<FrontAdminPositionRole> GetPositionRoles(IContext context, FilterAdminRole filter)
         {
             return _adminDb.GetPositionRoles(context, filter);
         }
-        #endregion
 
-        #region [+] PositionRole ...
-        public IEnumerable<ITreeItem> GetPositionRoles(IContext context, FilterAdminRole filter)
+        public FrontAdminPositionRole GetPositionRole(IContext context, int id)
         {
-            return null;//_adminDb.GetPositionRole(context, filter);
-        }
-        public IEnumerable<ITreeItem> GetPositionRolesEditMode(IContext context, FilterAdminRole filter)
-        {
-            return null;// _adminDb.GetPositionRolesEditMode(context, filter);
+            return _adminDb.GetPositionRole(context, id);
         }
         #endregion
 

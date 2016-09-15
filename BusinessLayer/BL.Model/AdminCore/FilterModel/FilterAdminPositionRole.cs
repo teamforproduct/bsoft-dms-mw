@@ -11,7 +11,8 @@ namespace BL.Model.AdminCore.FilterModel
     /// </summary>
     public class FilterAdminPositionRole: AdminBaseFilterParameters
     {
-        
+
+      
         /// <summary>
         /// Список ролей
         /// </summary>

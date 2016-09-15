@@ -313,7 +313,7 @@ namespace BL.Database.Admins
 
                 qry = GetWhereRole(ref qry, filter);
 
-                //qry = qry.OrderBy(x => x.Name);
+                qry = qry.OrderBy(x => x.Name);
 
                 return qry.Select(x => new FrontAdminRole
                 {
@@ -344,6 +344,7 @@ namespace BL.Database.Admins
 
         private static IQueryable<AdminRoles> GetWhereRole(ref IQueryable<AdminRoles> qry, FilterAdminRole filter)
         {
+
             // Список первичных ключей
             if (filter.IDs?.Count > 0)
             {
@@ -365,12 +366,13 @@ namespace BL.Database.Admins
                 qry = qry.Where(filterContains);
             }
 
+
             // Список классификаторов
-            if (filter.RoleRypeIDs?.Count > 0)
+            if (filter.RoleTypeIDs?.Count > 0)
             {
                 var filterContains = PredicateBuilder.False<AdminRoles>();
 
-                filterContains = filter.RoleRypeIDs.Aggregate(filterContains,
+                filterContains = filter.RoleTypeIDs.Aggregate(filterContains,
                     (current, value) => current.Or(e => e.RoleTypeId == value).Expand());
 
                 qry = qry.Where(filterContains);
@@ -571,7 +573,8 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(context))
             {
-                var dbModel = dbContext.AdminPositionRolesSet.FirstOrDefault(x => x.Id == model.Id);
+                // по полям RoleId и PositionId соблюдается уникальность, поэтому запись идентифицируется правильно (всегда одна)
+                var dbModel = dbContext.AdminPositionRolesSet.Where(x => x.RoleId == model.RoleId).Where(x => x.PositionId == model.PositionId).FirstOrDefault();
                 dbContext.AdminPositionRolesSet.Remove(dbModel);
                 dbContext.SaveChanges();
             }
@@ -596,44 +599,76 @@ namespace BL.Database.Admins
             }
         }
 
+        
 
-
-        public IEnumerable<FrontAdminPositionRole> GetPositionRoles(IContext context, FilterAdminPositionRole filter)
+        public List<int> GetRolesByPositions(IContext context, List<int> positionIDs)
         {
             using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.AdminPositionRolesSet.AsQueryable();
 
-                qry = GetWherePositionRole(ref qry, filter);
+                var filterContains = PredicateBuilder.False<AdminPositionRoles>();
 
-                //qry = qry.OrderBy(x => x.Name);
+                filterContains = positionIDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.PositionId == value).Expand());
+
+                qry = qry.Where(filterContains);
+
+                return qry.Select(x => x.RoleId).ToList();
+
+            }
+
+        }
+
+        public FrontAdminPositionRole GetPositionRole(IContext context, int id)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.AdminRolesSet.Where(x => x.Id == id).AsQueryable();
+
 
                 return qry.Select(x => new FrontAdminPositionRole
                 {
                     Id = x.Id,
-                    PositionId = x.Position.Id,
-                    PositionName = x.Position.Name,
-                    RoleId = x.Role.Id,
-                    RoleName = x.Role.Name
-                }).ToList();
+                    RoleName = x.Name,
+                }).FirstOrDefault();
             }
         }
 
-        public IEnumerable<FrontAdminRole> GetPositionRolesEditMode(IContext context, FilterAdminRole filter)
+        public IEnumerable<FrontAdminPositionRole> GetPositionRoles(IContext context, FilterAdminRole filter)
         {
             using (var dbContext = new DmsContext(context))
             {
                 var qry = dbContext.AdminRolesSet.AsQueryable();
 
+                if (filter.PositionIDs?.Count > 0)
+                {
+                    if (filter.IsChecked == true)
+                    {
+                        List<int> roles = GetRolesByPositions(context, filter.PositionIDs);
+
+                        if (filter.IDs == null) filter.IDs = new List<int>();
+
+                        filter.IDs.AddRange(roles);
+                    }
+                }
+
+                if (filter.LinkIDs?.Count > 0)
+                {
+                    List<int> roles = GetRolesByPositions(context, filter.LinkIDs);
+
+                    filter.IDs.AddRange(roles);
+                }
+
                 qry = GetWhereRole(ref qry, filter);
 
                 qry = qry.OrderBy(x => x.Name);
 
-                return qry.Select(x => new FrontAdminRole
+                return qry.Select(x => new FrontAdminPositionRole
                 {
                     Id = x.Id,
-                    Name = x.Name,
-                    Checked = x.PositionRoles.Where(y => filter.PositionIDs.Contains( y.PositionId) ).Any(),
+                    RoleName = x.Name,
+                    IsChecked = x.PositionRoles.Where(y => y.RoleId == x.Id).Where(y => filter.PositionIDs.Contains(y.PositionId)).Any()
                 }).ToList();
             }
         }
