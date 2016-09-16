@@ -57,7 +57,7 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// <summary>
         /// Для отображения контактов в рабочей группе
         /// </summary>
-        public string PositionContacts { get; set; }
+        public string PositionPhone { get; set; }
 
         
 

@@ -2234,7 +2234,7 @@ namespace BL.Database.Common
                 ExecutorAgentId = x.Position.ExecutorAgentId,
                 DepartmentName = x.Position.Department.Name,
                 ExecutorAgentName = x.Position.ExecutorAgent.Name,
-                PositionContacts = "Здесь нужно отображать основной номер или все контакты"// x.Position.ExecutorAgent.AgentContacts.Where(y => y.IsActive).Where(y => y.ContactType.SpecCode == EnumContactTypes.MainPhone.ToString()).ToString()
+                PositionPhone = "Здесь нужно отображать основной номер или все контакты"// x.Position.ExecutorAgent.AgentContacts.Where(y => y.IsActive).Where(y => y.ContactType.SpecCode == EnumContactTypes.MainPhone.ToString()).ToString()
             }).Distinct().ToList();
 
         }
