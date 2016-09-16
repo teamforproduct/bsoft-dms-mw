@@ -78,6 +78,5 @@ namespace BL.Logic.DocumentCore.Commands
             _operationDb.CloseDocumentWait(_context, _document, GetIsUseInternalSign(), GetIsUseCertificateSign());
             return _document.Id;
         }
-
     }
 }
