@@ -29,20 +29,26 @@ namespace BL.Model.DictionaryCore.FrontModel
 
 
         /// <summary>
-        /// Исполнитель
+        /// Текущий на должности (Выполняет действия в оперативной деятельности)
         /// </summary>
-        [IgnoreDataMember]
+        //[IgnoreDataMember]
         public int? ExecutorAgentId { get; set; }
 
         /// <summary>
-        /// Исполнитель
+        /// Выполняет действия в оперативной деятельности
         /// </summary>
-        [IgnoreDataMember]
+        //[IgnoreDataMember]
         public string ExecutorAgentName { get; set; }
 
+        /// <summary>
+        /// Агент, который штатно занимает должность.
+        /// </summary>
         [IgnoreDataMember]
         public int? MainExecutorAgentId { get; set; }
 
+        /// <summary>
+        /// Агент, который штатно занимает должность.
+        /// </summary>
         [IgnoreDataMember]
         public string MainExecutorAgentName { get; set; }
 

@@ -824,7 +824,7 @@ namespace BL.Database.Dictionaries
                     LastName = x.Agent.AgentPerson.LastName,
                     MiddleName = x.Agent.AgentPerson.MiddleName,
                     TaxCode = x.Agent.AgentPerson.TaxCode,
-                    //IsMale = x.Agent.AgentPerson.IsMale,
+                    IsMale = x.Agent.AgentPerson.IsMale,
                     PassportSerial = x.Agent.AgentPerson.PassportSerial,
                     PassportNumber = x.Agent.AgentPerson.PassportNumber,
                     PassportText = x.Agent.AgentPerson.PassportText,
@@ -3648,9 +3648,9 @@ namespace BL.Database.Dictionaries
                     FullName = x.FullName,
                     Order = x.Order,
                     DepartmentId = x.DepartmentId,
-                    ExecutorAgentId = x.ExecutorAgentId,
-                    ParentPositionName = x.ParentPosition.Name,
+                    //ParentPositionName = x.ParentPosition.Name,
                     DepartmentName = x.Department.Name,
+                    ExecutorAgentId = x.ExecutorAgentId,
                     ExecutorAgentName = x.ExecutorAgent.Name,
                     MaxSubordinationTypeId = x.TargetPositionSubordinations.AsQueryable()
                                                         .Where(filterMaxSubordinationTypeContains)
