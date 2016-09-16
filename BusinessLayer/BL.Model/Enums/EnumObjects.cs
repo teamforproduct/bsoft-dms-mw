@@ -54,5 +54,11 @@
         PropertyValues = 313, // Значения динамических аттрибутов
 
         EncryptionCertificates = 401, // Хранилище сертификатов
+
+        AdminRoles = 700,
+        AdminPositionRoles = 702,
+        AdminUserRoles = 703,
+        AdminSubordination = 704,
+
     }
 }

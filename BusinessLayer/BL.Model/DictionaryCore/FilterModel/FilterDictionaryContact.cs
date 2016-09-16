@@ -28,11 +28,6 @@ namespace BL.Model.DictionaryCore.FilterModel
         public bool? IsConfirmed { get; set; }
 
         /// <summary>
-        /// основной контакт
-        /// </summary>
-        public bool? IsPrimary { get; set; }
-
-        /// <summary>
         /// контакт (по вхождению)
         /// </summary>
         public string Contact { get; set; }

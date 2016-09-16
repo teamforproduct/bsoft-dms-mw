@@ -824,43 +824,43 @@ namespace BL.Database.Dictionaries
                     LastName = x.Agent.AgentPerson.LastName,
                     MiddleName = x.Agent.AgentPerson.MiddleName,
                     TaxCode = x.Agent.AgentPerson.TaxCode,
-                    IsMale = x.Agent.AgentPerson.IsMale,
+                    //IsMale = x.Agent.AgentPerson.IsMale,
                     PassportSerial = x.Agent.AgentPerson.PassportSerial,
                     PassportNumber = x.Agent.AgentPerson.PassportNumber,
                     PassportText = x.Agent.AgentPerson.PassportText,
                     PassportDate = x.Agent.AgentPerson.PassportDate,
-                    BirthDate = x.Agent.AgentPerson.BirthDate,
-                    Contacts = x.Agent.AgentContacts.Select(y => new FrontDictionaryContact
-                    {
-                        Id = y.Id,
-                        AgentId = y.AgentId,
-                        ContactType = new FrontDictionaryContactType
-                        {
-                            Id = y.ContactType.Id,
-                            Name = y.ContactType.Name,
-                            Code = y.ContactType.Code,
-                            InputMask = y.ContactType.InputMask,
-                            IsActive = y.ContactType.IsActive
-                        },
-                        Value = y.Contact,
-                        IsActive = y.IsActive,
-                        Description = y.Description
-                    }),
-                    Addresses = x.Agent.AgentAddresses.Select(z => new FrontDictionaryAgentAddress
-                    {
-                        Id = z.Id,
-                        AgentId = z.AgentId,
-                        AddressType = new FrontDictionaryAddressType
-                        {
-                            Id = z.AddressType.Id,
-                            Name = z.AddressType.Name,
-                            IsActive = z.AddressType.IsActive
-                        },
-                        PostCode = z.PostCode,
-                        Address = z.Address,
-                        IsActive = z.IsActive,
-                        Description = z.Description
-                    })
+                    BirthDate = x.Agent.AgentPerson.BirthDate//,
+                    //Contacts = x.Agent.AgentContacts.Select(y => new FrontDictionaryContact
+                    //{
+                    //    Id = y.Id,
+                    //    AgentId = y.AgentId,
+                    //    ContactType = new FrontDictionaryContactType
+                    //    {
+                    //        Id = y.ContactType.Id,
+                    //        Name = y.ContactType.Name,
+                    //        Code = y.ContactType.Code,
+                    //        InputMask = y.ContactType.InputMask,
+                    //        IsActive = y.ContactType.IsActive
+                    //    },
+                    //    Value = y.Contact,
+                    //    IsActive = y.IsActive,
+                    //    Description = y.Description
+                    //}),
+                    //Addresses = x.Agent.AgentAddresses.Select(z => new FrontDictionaryAgentAddress
+                    //{
+                    //    Id = z.Id,
+                    //    AgentId = z.AgentId,
+                    //    AddressType = new FrontDictionaryAddressType
+                    //    {
+                    //        Id = z.AddressType.Id,
+                    //        Name = z.AddressType.Name,
+                    //        IsActive = z.AddressType.IsActive
+                    //    },
+                    //    PostCode = z.PostCode,
+                    //    Address = z.Address,
+                    //    IsActive = z.IsActive,
+                    //    Description = z.Description
+                    //})
                 }).ToList();
             }
         }
