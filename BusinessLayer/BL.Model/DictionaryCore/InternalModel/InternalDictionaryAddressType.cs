@@ -22,6 +22,8 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// </summary>
         public int Id { get; set; }
 
+        
+
         /// <summary>
         /// Краткое наименование типа адреса.
         /// </summary>

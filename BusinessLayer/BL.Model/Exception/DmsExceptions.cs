@@ -828,6 +828,22 @@
     }
 
     /// <summary>
+    /// Сообщение о невозможности удаления системной записи из справочника
+    /// </summary>
+    public class DictionarySystemRecordCouldNotBeDeleted : DmsExceptions
+    {
+        // pss локализация
+        private const string _MESSAGE = "##l@DmsExceptions:DictionarySystemRecordCouldNotBeDeleted@l##";
+        public DictionarySystemRecordCouldNotBeDeleted() : base(_MESSAGE)
+        {
+        }
+
+        public DictionarySystemRecordCouldNotBeDeleted(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+    /// <summary>
     /// Сообщение об ошибке, когда пытаются обновить несуществующую строку справочника в БД
     /// </summary>
     public class DictionaryRecordWasNotFound : DmsExceptions

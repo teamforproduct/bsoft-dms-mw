@@ -31,9 +31,10 @@ namespace BL.Logic.DictionaryCore
         public override bool CanExecute()
         {
             _admin.VerifyAccess(_context, CommandType, false);
+
+            // У одного агента не должно быть два контакта одинакового типа
             var spr = _dictDb.GetContacts(_context,Model.AgentId, 
                    new FilterDictionaryContact {
-                       ContactExact = Model.Value,
                        ContactTypeIDs = new List<int> { Model.ContactTypeId },
                        AgentIDs =new List<int> { Model.AgentId }
                    });
@@ -43,7 +44,21 @@ namespace BL.Logic.DictionaryCore
                 throw new DictionaryRecordNotUnique();
             }
 
-           
+            // У одного агента не должно быть два контакта с одинаковыми значениями
+            spr = _dictDb.GetContacts(_context, Model.AgentId,
+                   new FilterDictionaryContact
+                   {
+                       ContactExact = Model.Value,
+                       ContactTypeIDs = new List<int> { Model.ContactTypeId },
+                       AgentIDs = new List<int> { Model.AgentId }
+                   });
+
+            if (spr.Count() != 0)
+            {
+                throw new DictionaryRecordNotUnique();
+            }
+
+
             return true;
         }
 
@@ -53,6 +68,9 @@ namespace BL.Logic.DictionaryCore
             {
                 var newContact = new InternalDictionaryContact(Model);                
                 CommonDocumentUtilities.SetLastChange(_context, newContact);
+
+                newContact.Value.Replace(" ",string.Empty);
+
                 return _dictDb.AddContact(_context, newContact);
             }
      

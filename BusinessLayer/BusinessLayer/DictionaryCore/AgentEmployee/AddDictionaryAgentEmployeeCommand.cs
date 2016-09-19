@@ -34,11 +34,13 @@ namespace BL.Logic.DictionaryCore
         public override bool CanExecute()
         {
             _admin.VerifyAccess(_context, CommandType, false, true);
+
             var agents = _dictDb.GetAgentEmployees(_context, new FilterDictionaryAgentEmployee
             {
                 PersonnelNumber = Model.PersonnelNumber,
                 TaxCode = Model.TaxCode,
-                FirstNameExact = Model.FirstName,
+                //FirstNameExact = Model.FirstName,
+                NameExact = Model.Name,
                 LastNameExact = Model.LastName,
                 PassportSerial = Model.PassportSerial,
                 PassportNumber = Model.PassportNumber
@@ -66,13 +68,13 @@ namespace BL.Logic.DictionaryCore
                 CommonDocumentUtilities.SetLastChange(_context, item);
                 int agent =_dictDb.AddAgentEmployee(_context, item);
 
-                if ((item.Email ?? string.Empty) != string.Empty)
+                if ((item.Login ?? string.Empty) != string.Empty)
                 {
                     var contact = new InternalDictionaryContact()
                     {
                         AgentId = agent,
-                        ContactTypeId = (int)EnumDictionaryContactsTypes.Email,
-                        Value = item.Email,
+                        ContactTypeId = _dictDb.GetContactsTypeId(_context, EnumContactTypes.MainEmail),
+                        Value = item.Login,
                         IsActive = true,
                         IsPrimary = true };
                     CommonDocumentUtilities.SetLastChange(_context, contact);
@@ -84,7 +86,7 @@ namespace BL.Logic.DictionaryCore
                     var contact = new InternalDictionaryContact()
                     {
                         AgentId = agent,
-                        ContactTypeId = (int)EnumDictionaryContactsTypes.Phone,
+                        ContactTypeId = _dictDb.GetContactsTypeId(_context, EnumContactTypes.MainPhone),
                         Value = item.Phone,
                         IsActive = true,
                         IsPrimary = true

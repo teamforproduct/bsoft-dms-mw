@@ -13,10 +13,14 @@ namespace BL.Model.DictionaryCore.FilterModel
     public class FilterDictionaryAgentEmployee : DictionaryBaseFilterParameters
     {
         /// <summary>
+        /// по имени (по равенству)
+        /// </summary>
+        public string NameExact { get; set; }
+
+        /// <summary>
         /// табельный номер
         /// </summary>
         public string PersonnelNumber { get; set; }
-
         /// <summary>
         /// Отрывок из паспортных данных
         /// </summary>

@@ -340,7 +340,7 @@ namespace BL.Database.Dictionaries
                 if (ExistsAgentClientCompanies(context, new FilterDictionaryAgentClientCompany() { IDs = new List<int>() { agentId } })) return;
 
                 if (ExistsAgentEmployees(context, new FilterDictionaryAgentEmployee() { IDs = new List<int>() { agentId } })) return;
-                
+
                 //if (ExistsAgentUsers(context, new FilterDictionaryAgentClientCompany() { IDs = new List<int>() { agentId } })) return;
 
                 //if (ExistsAgentPersons(context, new FilterDictionaryAgentClientCompany() { IDs = new List<int>() { agentId } })) return;
@@ -425,7 +425,7 @@ namespace BL.Database.Dictionaries
                 CommonQueries.AddFullTextCashInfo(dbContext, person.Id, EnumObjects.DictionaryAgentPersons, EnumOperationType.Delete);
                 dbContext.SaveChanges();
 
-                DeleteAgentIfNoAny(context, new List<int>(){ person.Id });
+                DeleteAgentIfNoAny(context, new List<int>() { person.Id });
             }
         }
 
@@ -902,7 +902,23 @@ namespace BL.Database.Dictionaries
                 foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
                 {
                     qry = qry.Where(x => x.Agent.AgentPerson.FullName.Contains(temp));
+                    //qry = qry.Where(x => x.Agent.Name.Contains(temp));
                 }
+            }
+
+            if (!string.IsNullOrEmpty(filter.NameExact))
+            {
+                    qry = qry.Where(x => x.Agent.Name == filter.NameExact);
+            }
+
+            if (!string.IsNullOrEmpty(filter.FirstNameExact))
+            {
+                qry = qry.Where(x => x.Agent.AgentPerson.FirstName == filter.FirstNameExact);
+            }
+
+            if (!string.IsNullOrEmpty(filter.LastNameExact))
+            {
+                qry = qry.Where(x => x.Agent.AgentPerson.LastName == filter.LastNameExact);
             }
 
             if (!string.IsNullOrEmpty(filter.PersonnelNumber))
@@ -938,15 +954,6 @@ namespace BL.Database.Dictionaries
                 }
             }
 
-            if (!string.IsNullOrEmpty(filter.FirstNameExact))
-            {
-                qry = qry.Where(x => x.Agent.AgentPerson.FirstName == filter.FirstNameExact);
-            }
-
-            if (!string.IsNullOrEmpty(filter.LastNameExact))
-            {
-                qry = qry.Where(x => x.Agent.AgentPerson.LastName == filter.LastNameExact);
-            }
 
             if (!string.IsNullOrEmpty(filter.PassportSerial))
             {
@@ -1623,7 +1630,7 @@ namespace BL.Database.Dictionaries
             {
                 dbContext.DictionaryAgentCompaniesSet.RemoveRange(dbContext.DictionaryAgentCompaniesSet.
                     Where(x => x.Agent.ClientId == context.CurrentClientId).
-                    Where(x=> list.Contains(x.Id)));
+                    Where(x => list.Contains(x.Id)));
                 CommonQueries.AddFullTextCashInfo(dbContext, list, EnumObjects.DictionaryAgentCompanies, EnumOperationType.Delete);
                 dbContext.SaveChanges();
 
@@ -2358,6 +2365,7 @@ namespace BL.Database.Dictionaries
                     Name = x.Name,
                     InputMask = x.InputMask,
                     Code = x.Code,
+                    SpecCode = x.SpecCode,
                     IsActive = x.IsActive
                 }).FirstOrDefault();
             }
@@ -2371,8 +2379,14 @@ namespace BL.Database.Dictionaries
 
                 dbContext.DictionaryContactTypesSet.Attach(dbModel);
                 var entity = dbContext.Entry(dbModel);
+                // Все поля кроме SpecCode
+                entity.Property(x => x.InputMask).IsModified = true;
+                entity.Property(x => x.Code).IsModified = true;
+                entity.Property(x => x.Name).IsModified = true;
+                entity.Property(x => x.IsActive).IsModified = true;
+                entity.Property(x => x.LastChangeDate).IsModified = true;
+                entity.Property(x => x.LastChangeUserId).IsModified = true;
                 CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryContactType, EnumOperationType.Update);
-                entity.State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
             }
         }
@@ -2452,8 +2466,22 @@ namespace BL.Database.Dictionaries
                     Name = x.Name,
                     InputMask = x.InputMask,
                     Code = x.Code,
+                    SpecCode = x.SpecCode,
                     IsActive = x.IsActive
                 }).ToList();
+            }
+        }
+
+        public string GetContactTypeSpecCode(IContext context, int id)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.DictionaryContactTypesSet.
+                    Where(x => x.ClientId == context.CurrentClientId).
+                    Where(x => x.Id == id).
+                    AsQueryable();
+
+                return qry.Select(x => x.SpecCode).FirstOrDefault();
             }
         }
         #endregion
@@ -2567,7 +2595,7 @@ namespace BL.Database.Dictionaries
                 if (!String.IsNullOrEmpty(filter.ContactExact))
                 {
                     //pss Здесь ContactExact нужно делать более умным в сравнении телефонов
-                    qry = qry.Where(x => x.Contact == filter.ContactExact);
+                    qry = qry.Where(x => x.Contact.Replace("-","").Replace(")", "").Replace("(", "").Replace("+", "") == filter.ContactExact.Replace("-", "").Replace(")", "").Replace("(", "").Replace("+", ""));
                 }
 
                 if (filter.IsActive != null)
@@ -2621,6 +2649,20 @@ namespace BL.Database.Dictionaries
                 return qry.Select(x => x.AgentId).ToList();
             }
         }
+
+        public int GetContactsTypeId(IContext context, EnumContactTypes type)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.DictionaryContactTypesSet.
+                    Where(x => x.ClientId == context.CurrentClientId).
+                    Where(x => x.SpecCode == type.ToString()).
+                    AsQueryable();
+
+                return qry.Select(x => x.Id).FirstOrDefault();
+
+            }
+        }
         #endregion
 
         #region [+] DictionaryDepartments ...
@@ -2663,7 +2705,7 @@ namespace BL.Database.Dictionaries
                 {
                     var positions = GetPositionsIDs(context, new FilterDictionaryPosition() { DepartmentIDs = list });
 
-                    if (positions.Count> 0) DeletePositions(context, positions);
+                    if (positions.Count > 0) DeletePositions(context, positions);
 
                     dbContext.DictionaryDepartmentsSet.RemoveRange(dbContext.DictionaryDepartmentsSet.
                         Where(x => x.Company.ClientId == context.CurrentClientId).
@@ -2773,6 +2815,7 @@ namespace BL.Database.Dictionaries
                     Id = x.Id,
                     Code = x.Code,
                     Name = x.Name,
+                    CompanyId = x.CompanyId,
                     ObjectId = (int)EnumObjects.DictionaryDepartments,
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = (x.ParentId == null) ? string.Concat(x.CompanyId, "_", companyObjId) : string.Concat(x.ParentId, "_", objId),
@@ -3551,9 +3594,9 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        
 
-        
+
+
 
         public int? GetExecutorAgentIdByPositionId(IContext context, int id)
         {
@@ -3589,10 +3632,10 @@ namespace BL.Database.Dictionaries
                         DepartmentName = x.Department.Name,
                         Order = x.Order,
                         PositionExecutors = x.PositionExecutors.
-                            Where(y=> DateTime.Now > y.StartDate).
+                            Where(y => DateTime.Now > y.StartDate).
                             Where(y => DateTime.Now < y.EndDate).
                             Where(y => y.IsActive == true).
-                            OrderBy(y=> y.PositionExecutorTypeId).ThenBy(y => y.Agent.Name).
+                            OrderBy(y => y.PositionExecutorTypeId).ThenBy(y => y.Agent.Name).
                             Select(y => new FrontDictionaryPositionExecutor
                             {
                                 Id = y.Id,
@@ -3713,7 +3756,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public class SortPositoin: IComparable
+        public class SortPositoin : IComparable
         {
             public int Id { get; set; }
 
@@ -4117,7 +4160,7 @@ namespace BL.Database.Dictionaries
         {
             var qry = dbContext.DictionaryPositionExecutorsSet.Where(x => x.Position.Department.Company.ClientId == context.CurrentClientId).AsQueryable();
 
-            qry = qry.OrderBy(x => x.Position.Order).ThenBy(x=>x.PositionExecutorType.Id).ThenBy(x => x.Agent.Name);
+            qry = qry.OrderBy(x => x.Position.Order).ThenBy(x => x.PositionExecutorType.Id).ThenBy(x => x.Agent.Name);
 
             qry = ExecutorGetWhere(ref qry, filter);
 

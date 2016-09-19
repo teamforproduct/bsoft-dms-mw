@@ -10,6 +10,7 @@ using BL.Model.SystemCore;
 using BL.CrossCutting.DependencyInjection;
 using System.Web.Http.Description;
 using System.Collections.Generic;
+using System;
 
 namespace DMS_WebAPI.Controllers.Dictionaries
 {/// <summary>

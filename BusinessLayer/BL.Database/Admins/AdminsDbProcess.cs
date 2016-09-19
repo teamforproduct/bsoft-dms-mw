@@ -624,7 +624,7 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(context))
             {
-                var qry = dbContext.AdminRolesSet.Where(x => x.Id == id).AsQueryable();
+                var qry = dbContext.AdminRolesSet.Where(x => x.Id == id).Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
 
 
                 return qry.Select(x => new FrontAdminPositionRole
@@ -667,6 +667,7 @@ namespace BL.Database.Admins
                 return qry.Select(x => new FrontAdminPositionRole
                 {
                     Id = x.Id,
+                    RoleId = x.Id,
                     RoleName = x.Name,
                     IsChecked = x.PositionRoles.Where(y => y.RoleId == x.Id).Where(y => filter.PositionIDs.Contains(y.PositionId)).Any()
                 }).ToList();

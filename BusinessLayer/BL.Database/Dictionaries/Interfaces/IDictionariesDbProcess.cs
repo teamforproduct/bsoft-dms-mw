@@ -9,6 +9,7 @@ using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Common;
 using BL.Model.Tree;
 using static BL.Database.Dictionaries.DictionariesDbProcess;
+using BL.Model.Enums;
 
 namespace BL.Database.Dictionaries.Interfaces
 {
@@ -99,6 +100,10 @@ namespace BL.Database.Dictionaries.Interfaces
         #endregion
         IEnumerable<int> GetAgentsIDByContacts(IContext context, IEnumerable<int> contacts);
         #region DictionaryContactTypes
+
+        string GetContactTypeSpecCode(IContext context, int id);
+
+        int GetContactsTypeId(IContext context, EnumContactTypes type);
         FrontDictionaryContactType GetInternalDictionaryContactType(IContext context, FilterDictionaryContactType filter);
         void UpdateContactType(IContext context, InternalDictionaryContactType contactType);
         void DeleteContactType(IContext context, InternalDictionaryContactType contactType);

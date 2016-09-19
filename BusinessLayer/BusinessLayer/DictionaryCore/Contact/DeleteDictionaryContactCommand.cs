@@ -4,7 +4,10 @@ using BL.Logic.Common;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
-
+using BL.Model.DictionaryCore.IncomingModel;
+using BL.Model.DictionaryCore.FilterModel;
+using System.Collections.Generic;
+using BL.Model.DictionaryCore.FrontModel;
 
 namespace BL.Logic.DictionaryCore
 {
@@ -31,6 +34,7 @@ namespace BL.Logic.DictionaryCore
         public override bool CanExecute()
         {
             _admin.VerifyAccess(_context, CommandType,false,true);
+
             return true;
         }
 
@@ -38,12 +42,8 @@ namespace BL.Logic.DictionaryCore
         {
             try
             {
-                var newContactType = new InternalDictionaryContact
-                {
-                    Id = Model
-
-                };
-                _dictDb.DeleteContact(_context, newContactType);
+                var item = new InternalDictionaryContact() { Id = Model };
+                _dictDb.DeleteContact(_context, item);
                 return null;
             }
             catch (Exception ex)

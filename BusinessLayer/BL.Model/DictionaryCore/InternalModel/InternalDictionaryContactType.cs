@@ -25,6 +25,12 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// ИД
         /// </summary>
         public int Id { get; set; }
+
+        /// <summary>
+        /// Внутренний код
+        /// </summary>
+        public string SpecCode { get; set; }
+
         /// <summary>
         /// Наименование
         /// </summary>
@@ -34,7 +40,9 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// Маска для ввода
         /// </summary>
         public string InputMask { get; set; }
+
         public string Code { get; set; }
+
         /// <summary>
         /// признак активности
         /// </summary>

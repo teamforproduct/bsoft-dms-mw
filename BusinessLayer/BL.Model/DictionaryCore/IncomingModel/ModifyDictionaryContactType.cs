@@ -34,6 +34,12 @@ namespace BL.Model.DictionaryCore.IncomingModel
         public string Code { get; set; }
 
         /// <summary>
+        /// Краткий идентификатор
+        /// </summary>
+        [IgnoreDataMember]
+        public string SpecCode { get; set; }
+
+        /// <summary>
         /// Признак активности
         /// </summary>
         public bool IsActive { get; set; }
