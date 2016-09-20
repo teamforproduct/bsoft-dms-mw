@@ -31,11 +31,6 @@ namespace BL.Model.AdminCore.Clients
         [Required]
         public string LastName { get; set; }
 
-        /// <summary>
-        /// Логин первого пользователя - директора, админа
-        /// </summary>
-        [Required]
-        public string Login { get; set; }
 
         /// <summary>
         /// Пароль первого пользователя - директора, админа

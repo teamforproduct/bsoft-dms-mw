@@ -32,20 +32,35 @@ namespace BL.Logic.DictionaryCore
         {
 
             _admin.VerifyAccess(_context, CommandType,false,true);
+
+            // У одного агента не должно быть два контакта одинакового типа
             var spr = _dictDb.GetContacts(_context, Model.AgentId,
                    new FilterDictionaryContact
                    {
-                       ContactExact = Model.Value,
+                       NotContainsIDs = new List<int> { Model.Id },
                        ContactTypeIDs = new List<int> { Model.ContactTypeId },
-                       AgentIDs = new List<int> { Model.AgentId },
-                       IsActive=Model.IsActive,
-                       NotContainsIDs = new List<int> {Model.Id}
+                       AgentIDs = new List<int> { Model.AgentId }
                    });
 
             if (spr.Count() != 0)
             {
-                throw new DictionaryRecordNotUnique();
+                throw new DictionaryRecordNotUnique(new System.Exception("Два контакта одинакового типа"));
             }
+
+            // У одного агента не должно быть два контакта с одинаковыми значениями
+            spr = _dictDb.GetContacts(_context, Model.AgentId,
+                   new FilterDictionaryContact
+                   {
+                       NotContainsIDs = new List<int> { Model.Id },
+                       ContactExact = Model.Value,
+                       AgentIDs = new List<int> { Model.AgentId }
+                   });
+
+            if (spr.Count() != 0)
+            {
+                throw new DictionaryRecordNotUnique(new System.Exception("Два контакта с одинаковыми значениями"));
+            }
+
             return true;
         }
 
