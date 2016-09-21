@@ -82,7 +82,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
 
-            tmpDict.ExecuteAction(EnumDictionaryActions.DeleteStandartSendListContent, ctx, id);
+            tmpDict.ExecuteAction(EnumDictionaryActions.DeleteStandartSendList, ctx, id);
             var tmp = new FrontDictionaryStandartSendList {Id = id};
 
             return new JsonResult(tmp, this);
