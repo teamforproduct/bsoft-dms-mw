@@ -22,22 +22,26 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// <summary>
         /// Для сведения
         /// </summary>
-        public int IsInforming { get; set; }
+        public int? IsInforming { get; set; }
 
         /// <summary>
         /// Для исполнения
         /// </summary>
-        public int IsExecution { get; set; }
+        public int? IsExecution { get; set; }
 
         /// <summary>
         /// Руководитель
         /// </summary>
-        public int SourcePositionId { get; set; }
+        public int? SourcePositionId { get; set; }
 
         /// <summary>
         /// Исполнитель
         /// </summary>
-        public int TargetPositionId { get; set; }
-
+        public int? TargetPositionId { get; set; }
+        
+        /// <summary>
+        /// Исполнитель
+        /// </summary>
+        public int? Order { get; set; }
     }
 }
