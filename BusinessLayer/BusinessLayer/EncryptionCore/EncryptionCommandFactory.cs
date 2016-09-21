@@ -32,7 +32,7 @@ namespace BL.Logic.EncryptionCore
                 #endregion EncryptionCertificates
 
                 case EnumEncryptionActions.VerifyPdf:
-                    cmd = DmsResolver.Current.Get<VerifyPdf>();
+                    cmd = DmsResolver.Current.Get<VerifyPdfCommand>();
                     break;
                 default:
                     throw new CommandNotDefinedError();

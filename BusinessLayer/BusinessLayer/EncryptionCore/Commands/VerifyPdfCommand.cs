@@ -4,12 +4,12 @@ using BL.Database.Encryption.Interfaces;
 
 namespace BL.Logic.EncryptionCore.Commands
 {
-    public class VerifyPdf : BaseEncryptionCommand
+    public class VerifyPdfCommand : BaseEncryptionCommand
     {
 
         private readonly IEncryptionDbProcess _encryptiontDb;
 
-        public VerifyPdf(IEncryptionDbProcess encryptiontDb)
+        public VerifyPdfCommand(IEncryptionDbProcess encryptiontDb)
         {
             _encryptiontDb = encryptiontDb;
         }
