@@ -483,6 +483,9 @@ namespace BL.Database.Encryption
         //возвращает - абсолютный путь подписанного PDF
         [DllImport("CryptoExts.dll", SetLastError = true, CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr SignFilePdfPath(char[] data);
+        //проверить подпись(и) PDF, подписанного в этом сеансе (контрольная проверка)
+        [DllImport("CryptoExts.dll", SetLastError = true, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int VerifyPdf(char[] data);
 
         public static string StringFromNativeUtf8(IntPtr nativeUtf8)
         {
@@ -757,7 +760,7 @@ namespace BL.Database.Encryption
             return res;
         }
 
-        public bool VerifyCertificateSignPdf(IContext ctx, byte[] pdf)
+        public bool VerifyCertificateSignPdf(byte[] pdf)
         {
             int res = -1;
 
@@ -770,13 +773,9 @@ namespace BL.Database.Encryption
                 {
                     File.WriteAllBytes(file, pdf);
 
-                    IntPtr downfile = Download(file.ToCharArray());
-                    string downPdfFile = StringFromNativeUtf8(downfile);
+                    file = file.Replace("\\", "/");
 
-                    if (downPdfFile.Length > 0)
-                    {
-                        res = VerifyPdf();
-                    }
+                    res = VerifyPdf(file.ToCharArray());
                 }
                 catch (CryptographicException e)
                 {

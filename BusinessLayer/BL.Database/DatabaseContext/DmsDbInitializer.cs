@@ -502,12 +502,8 @@ namespace BL.Database.DatabaseContext
 
             items.Add(GetSysAct(EnumEncryptionActions.AddEncryptionCertificate, EnumObjects.EncryptionCertificates, "Добавить сертификат"));
             items.Add(GetSysAct(EnumEncryptionActions.ModifyEncryptionCertificate, EnumObjects.EncryptionCertificates, "Изменить сертификат"));
-            items.Add(GetSysAct(EnumEncryptionActions.ExportEncryptionCertificate, EnumObjects.EncryptionCertificates, "Экспорт сертификата"));
+            items.Add(GetSysAct(EnumEncryptionActions.VerifyPdf, EnumObjects.EncryptionCertificates, "Проверка Pdf"));
             items.Add(GetSysAct(EnumEncryptionActions.DeleteEncryptionCertificate, EnumObjects.EncryptionCertificates, "Удалить сертификат"));
-            items.Add(GetSysAct(EnumEncryptionActions.GenerateKeyEncryptionCertificate, EnumObjects.EncryptionCertificates, "Сгенерировать сертификат"));
-            items.Add(GetSysAct(EnumEncryptionActions.AddEncryptionCertificateType, EnumObjects.EncryptionCertificateTypes, "Добавить тип сертификат"));
-            items.Add(GetSysAct(EnumEncryptionActions.ModifyEncryptionCertificateType, EnumObjects.EncryptionCertificateTypes, "Изменить тип сертификат"));
-            items.Add(GetSysAct(EnumEncryptionActions.DeleteEncryptionCertificateType, EnumObjects.EncryptionCertificateTypes, "Удалить тип сертификат"));
 
             items.Add(GetSysAct(EnumAdminActions.AddRole, EnumObjects.AdminRoles, "Добавить роль"));
             items.Add(GetSysAct(EnumAdminActions.ModifyRole, EnumObjects.AdminRoles, "Изменить роль"));

@@ -1,6 +1,7 @@
 ﻿using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
 using BL.Logic.EncryptionCore.Certificate;
+using BL.Logic.EncryptionCore.Commands;
 using BL.Model.Enums;
 using BL.Model.Exception;
 
@@ -30,6 +31,9 @@ namespace BL.Logic.EncryptionCore
                     break;
                 #endregion EncryptionCertificates
 
+                case EnumEncryptionActions.VerifyPdf:
+                    cmd = DmsResolver.Current.Get<VerifyPdf>();
+                    break;
                 default:
                     throw new CommandNotDefinedError();
             }

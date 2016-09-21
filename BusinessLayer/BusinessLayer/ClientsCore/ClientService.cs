@@ -363,7 +363,7 @@ namespace BL.Logic.ClientCore
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumEncryptionActions.ModifyEncryptionCertificate });
             //items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumEncryptionActions.ExportEncryptionCertificate });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumEncryptionActions.DeleteEncryptionCertificate });
-            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumEncryptionActions.GenerateKeyEncryptionCertificate });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumEncryptionActions.VerifyPdf });
 
             return items;
         }
@@ -454,9 +454,6 @@ namespace BL.Logic.ClientCore
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumPropertyAction.ModifyPropertyLink });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumPropertyAction.DeletePropertyLink });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumPropertyAction.ModifyPropertyValues });
-            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumEncryptionActions.AddEncryptionCertificateType });
-            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumEncryptionActions.ModifyEncryptionCertificateType });
-            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumEncryptionActions.DeleteEncryptionCertificateType });
 
             return items;
         }

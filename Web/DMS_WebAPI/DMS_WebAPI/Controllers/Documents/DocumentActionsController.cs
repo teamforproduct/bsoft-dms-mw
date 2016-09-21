@@ -725,13 +725,13 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <summary>
         /// Получить отчет pdf документа перед подписанием
         /// </summary>
-        /// <param name="id">ИД PaperList</param>>
+        /// <param name="model">model</param>>
         /// <returns></returns>
         [Route("ReportDocumentForDigitalSignature")]
         [HttpPost]
         public IHttpActionResult ReportDocumentForDigitalSignature(DigitalSignatureDocumentPdf model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var res = docProc.ExecuteAction(EnumDocumentActions.ReportDocumentForDigitalSignature, ctx, model);
 

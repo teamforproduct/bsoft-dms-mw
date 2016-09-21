@@ -30,7 +30,7 @@ namespace BL.Database.Encryption.Interfaces
 
         #region CertificateSignPdf
         byte[] GetCertificateSignPdf(IContext ctx, int certificateId, string certificatePassword, byte[] pdf);
-        bool VerifyCertificateSignPdf(IContext ctx, byte[] pdf);
+        bool VerifyCertificateSignPdf(byte[] pdf);
         #endregion
 
         #region InternalSign

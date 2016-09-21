@@ -22,7 +22,6 @@ namespace BL.Database.Documents.Interfaces
         FrontDocument GetDocument(IContext ctx, int documentId, FilterDocumentById filter);
 
         IEnumerable<int> GetLinkedDocumentIds(IContext ctx, int documentId);
-
         InternalDocument ReportDocumentForDigitalSignaturePrepare(IContext ctx, DigitalSignatureDocumentPdf model);
         FrontReport ReportDocumentForDigitalSignature(IContext ctx, DigitalSignatureDocumentPdf model, bool isUseInternalSign, bool isUseCertificateSign);
         InternalDocument ReportRegistrationCardDocumentPrepare(IContext ctx, int documentId);

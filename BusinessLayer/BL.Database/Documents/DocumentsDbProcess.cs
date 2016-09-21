@@ -413,6 +413,7 @@ namespace BL.Database.Documents
                 return CommonQueries.GetLinkedDocumentIds(ctx, dbContext, documentId);
             }
         }
+
         public InternalDocument ReportDocumentForDigitalSignaturePrepare(IContext ctx, DigitalSignatureDocumentPdf model)
         {
             using (var dbContext = new DmsContext(ctx))
