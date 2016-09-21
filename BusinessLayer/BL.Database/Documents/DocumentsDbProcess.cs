@@ -21,6 +21,7 @@ using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.InternalModel;
 using LinqKit;
 using System.Data.Entity;
+using BL.Model.Reports.FrontModel;
 
 namespace BL.Database.Documents
 {
@@ -412,11 +413,17 @@ namespace BL.Database.Documents
                 return CommonQueries.GetLinkedDocumentIds(ctx, dbContext, documentId);
             }
         }
+
         public InternalDocument ReportDocumentForDigitalSignaturePrepare(IContext ctx, DigitalSignatureDocumentPdf model)
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                var doc = CommonQueries.GetDocumentDigitalSignaturePrepare(dbContext, ctx, model.DocumentId);
+                var doc = CommonQueries.GetDocumentDigitalSignaturePrepare(dbContext, ctx, model.DocumentId, new List<EnumSubscriptionStates> {
+                        EnumSubscriptionStates.Sign,
+                        EnumSubscriptionStates.Visa,
+                        EnumSubscriptionStates.Аgreement,
+                        EnumSubscriptionStates.Аpproval
+                        });
 
                 if (doc == null)
                 {
@@ -427,13 +434,31 @@ namespace BL.Database.Documents
             }
         }
 
-        public FilterDocumentFileIdentity ReportDocumentForDigitalSignature(IContext ctx, DigitalSignatureDocumentPdf model, bool isUseInternalSign, bool isUseCertificateSign)
+        public FrontReport ReportDocumentForDigitalSignature(IContext ctx, DigitalSignatureDocumentPdf model, bool isUseInternalSign, bool isUseCertificateSign)
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                var doc = CommonQueries.GetDocumentHash(dbContext, ctx, model.DocumentId, isUseInternalSign, isUseCertificateSign, model.CertificateId, model.CertificatePassword, null, true, true, true);
+                CommonQueries.GetDocumentHash(dbContext, ctx, model.DocumentId, isUseInternalSign, isUseCertificateSign, null, false, false, false);
 
-                return doc.CertificateSignPdfFileIdentity;
+                var subscriptionStates = new List<EnumSubscriptionStates> {
+                        EnumSubscriptionStates.Sign,
+                        EnumSubscriptionStates.Visa,
+                        EnumSubscriptionStates.Аgreement,
+                        EnumSubscriptionStates.Аpproval
+                        };
+
+                InternalDocument doc = CommonQueries.GetDocumentDigitalSignaturePrepare(dbContext, ctx, model.DocumentId, subscriptionStates);
+
+                if (model.IsAddSubscription)
+                {
+                    var subscriptions = doc.Subscriptions.ToList();
+                    subscriptions.Add(dbContext.DictionaryPositionsSet.Where(x => x.Id == ctx.CurrentPositionId).Select(x => new InternalDocumentSubscription { Id = 0, DocumentId = model.DocumentId, DoneEventSourcePositionName = x.Name, DoneEventSourcePositionExecutorAgentName = x.ExecutorAgent.Name }).FirstOrDefault());
+                    doc.Subscriptions = subscriptions;
+                }
+
+                var pdf = CommonQueries.GetDocumentCertificateSignPdf(dbContext, ctx, doc);
+
+                return pdf;
             }
         }
 
@@ -558,12 +583,12 @@ namespace BL.Database.Documents
                         RegistrationNumberPrefix = x.RegistrationNumberPrefix,
                         RegistrationNumberSuffix = x.RegistrationNumberSuffix,
                         Description = x.Description
-                //DocumentTypeName = x.DocTypeName,
-                //ExecutorPositionName = x.ExecutorPosName,
-                //Addressee = x.Doc.Addressee,
-                //SenderAgentName = doc.SenderAgentname,
-                //SenderAgentPersonName = doc.SenderPersonName,
-            }).ToList();
+                        //DocumentTypeName = x.DocTypeName,
+                        //ExecutorPositionName = x.ExecutorPosName,
+                        //Addressee = x.Doc.Addressee,
+                        //SenderAgentName = doc.SenderAgentname,
+                        //SenderAgentPersonName = doc.SenderPersonName,
+                    }).ToList();
 
                 res.ForEach(x => x.RegistrationFullNumber = CommonQueries.GetRegistrationFullNumber(x));
 
@@ -734,7 +759,7 @@ namespace BL.Database.Documents
                             PositionId = y.PositionId,
                             AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
                         }).ToList();
-                doc.DocumentFiles = CommonQueries.GetInternalDocumentFiles(ctx, dbContext, documentId).Where(x=>x.Type!=EnumFileTypes.SubscribePdf).ToList();
+                doc.DocumentFiles = CommonQueries.GetInternalDocumentFiles(ctx, dbContext, documentId).Where(x => x.Type != EnumFileTypes.SubscribePdf).ToList();
 
                 doc.Properties = CommonQueries.GetInternalPropertyValues(dbContext, ctx, new FilterPropertyValue { Object = new List<EnumObjects> { EnumObjects.Documents }, RecordId = new List<int> { documentId } }).ToList();
 
@@ -912,7 +937,7 @@ namespace BL.Database.Documents
                     }
 
                     CommonQueries.AddFullTextCashInfo(dbContext, document.Id, EnumObjects.Documents, EnumOperationType.Update);
-                    CommonQueries.GetDocumentHash(dbContext, ctx, document.Id, isUseInternalSign, isUseCertificateSign, null, null, null, false, false);
+                    CommonQueries.GetDocumentHash(dbContext, ctx, document.Id, isUseInternalSign, isUseCertificateSign, null, false, false);
                     dbContext.SaveChanges();
                     transaction.Complete();
                 }

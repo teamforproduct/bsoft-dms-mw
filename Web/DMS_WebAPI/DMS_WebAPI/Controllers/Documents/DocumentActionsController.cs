@@ -6,6 +6,7 @@ using System.Web.Http;
 using BL.CrossCutting.DependencyInjection;
 using BL.Logic.SystemServices.AutoPlan;
 using BL.Model.Enums;
+using BL.Model.DocumentCore.IncomingModel;
 
 namespace DMS_WebAPI.Controllers.Documents
 {
@@ -640,6 +641,24 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
+        /// Проверить подписи
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("VerifySigning/{id}")]
+        [HttpPost]
+        public IHttpActionResult VerifySigning(int id)
+        {
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+
+            docProc.ExecuteAction(EnumDocumentActions.VerifySigning, ctx, id);
+
+            var ctrl = new DocumentsController { ControllerContext = ControllerContext };
+            return ctrl.Get(id);
+        }
+
+        /// <summary>
         /// Завизировать
         ///  </summary>
         /// <param name="model"></param>
@@ -718,6 +737,22 @@ namespace DMS_WebAPI.Controllers.Documents
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var res = docProc.ExecuteAction(EnumDocumentActions.ReportRegisterTransmissionDocuments, ctx, id);
             
+            return new JsonResult(res, this);
+        }
+
+        /// <summary>
+        /// Получить отчет pdf документа перед подписанием
+        /// </summary>
+        /// <param name="model">model</param>>
+        /// <returns></returns>
+        [Route("ReportDocumentForDigitalSignature")]
+        [HttpPost]
+        public IHttpActionResult ReportDocumentForDigitalSignature(DigitalSignatureDocumentPdf model)
+        {
+            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            var res = docProc.ExecuteAction(EnumDocumentActions.ReportDocumentForDigitalSignature, ctx, model);
+
             return new JsonResult(res, this);
         }
 

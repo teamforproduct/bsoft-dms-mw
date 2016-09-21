@@ -32,6 +32,16 @@ namespace BL.Model.EncryptionCore.IncomingModel
         public string Password { get; set; }
 
         /// <summary>
+        /// ID Агента. Используется только админом
+        /// </summary>
+        public int? AgentId { get; set; }
+
+        /// <summary>
+        /// Можно ли запомнить пароль к сертификату
+        /// </summary>
+        public bool IsRememberPassword { get; set; }
+
+        /// <summary>
         /// Данные файла
         /// </summary>
         [XmlIgnore]

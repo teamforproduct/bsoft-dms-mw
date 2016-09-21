@@ -28,7 +28,7 @@ namespace BL.Logic.EncryptionCore.Certificate
         {
             _admin.VerifyAccess(_context, CommandType, false);
 
-            var item = _encryptionDb.ModifyCertificatePrepare(_context, Model.Id);
+            var item = _encryptionDb.ModifyCertificatePrepare(_context, Model.Id, Model.AgentId);
             if (item == null)
             {
                 throw new EncryptionCertificateWasNotFound();

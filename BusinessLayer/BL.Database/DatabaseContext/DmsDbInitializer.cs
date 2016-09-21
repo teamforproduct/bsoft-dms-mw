@@ -29,6 +29,8 @@ namespace BL.Database.DatabaseContext
             context.DictionarySubscriptionStatesSet.AddRange(GetDictionarySubscriptionStates());
             context.DictionaryPositionExecutorTypesSet.AddRange(GetDictionaryPositionExecutorTypes());
             context.DictionaryLinkTypesSet.AddRange(GetDictionaryLinkTypes());
+            context.DictionaryFileTypesSet.AddRange(GetDictionaryFileTypes());
+            context.DictionarySigningTypesSet.AddRange(GetDictionarySigningTypes());
 
             base.Seed(context);
         }
@@ -500,12 +502,8 @@ namespace BL.Database.DatabaseContext
 
             items.Add(GetSysAct(EnumEncryptionActions.AddEncryptionCertificate, EnumObjects.EncryptionCertificates, "Добавить сертификат"));
             items.Add(GetSysAct(EnumEncryptionActions.ModifyEncryptionCertificate, EnumObjects.EncryptionCertificates, "Изменить сертификат"));
-            items.Add(GetSysAct(EnumEncryptionActions.ExportEncryptionCertificate, EnumObjects.EncryptionCertificates, "Экспорт сертификата"));
+            items.Add(GetSysAct(EnumEncryptionActions.VerifyPdf, EnumObjects.EncryptionCertificates, "Проверка Pdf"));
             items.Add(GetSysAct(EnumEncryptionActions.DeleteEncryptionCertificate, EnumObjects.EncryptionCertificates, "Удалить сертификат"));
-            items.Add(GetSysAct(EnumEncryptionActions.GenerateKeyEncryptionCertificate, EnumObjects.EncryptionCertificates, "Сгенерировать сертификат"));
-            items.Add(GetSysAct(EnumEncryptionActions.AddEncryptionCertificateType, EnumObjects.EncryptionCertificateTypes, "Добавить тип сертификат"));
-            items.Add(GetSysAct(EnumEncryptionActions.ModifyEncryptionCertificateType, EnumObjects.EncryptionCertificateTypes, "Изменить тип сертификат"));
-            items.Add(GetSysAct(EnumEncryptionActions.DeleteEncryptionCertificateType, EnumObjects.EncryptionCertificateTypes, "Удалить тип сертификат"));
 
             items.Add(GetSysAct(EnumAdminActions.AddRole, EnumObjects.AdminRoles, "Добавить роль"));
             items.Add(GetSysAct(EnumAdminActions.ModifyRole, EnumObjects.AdminRoles, "Изменить роль"));
@@ -594,6 +592,17 @@ namespace BL.Database.DatabaseContext
             items.Add(new DictionaryFileTypes { Id = 0, Name = "Main", LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now });
             items.Add(new DictionaryFileTypes { Id = 1, Name = "Additional", LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now });
             items.Add(new DictionaryFileTypes { Id = 2, Name = "SubscribePdf", LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now });
+
+            return items;
+        }
+
+        private List<DictionarySigningTypes> GetDictionarySigningTypes()
+        {
+            var items = new List<DictionarySigningTypes>();
+
+            items.Add(new DictionarySigningTypes { Id = 0, Name = "Hash", LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now });
+            items.Add(new DictionarySigningTypes { Id = 1, Name = "InternalSign", LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now });
+            items.Add(new DictionarySigningTypes { Id = 2, Name = "CertificateSign", LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now });
 
             return items;
         }

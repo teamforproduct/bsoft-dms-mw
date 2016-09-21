@@ -13,6 +13,7 @@ using BL.Logic.DocumentCore.SendListCommands;
 using BL.Logic.DocumentCore.TemplateCommands;
 using BL.Logic.EncryptionCore;
 using BL.Logic.EncryptionCore.Certificate;
+using BL.Logic.EncryptionCore.Commands;
 using BL.Logic.EncryptionCore.Interfaces;
 using BL.Logic.Logging;
 using BL.Logic.Observers;
@@ -167,6 +168,7 @@ namespace BL.Logic.DependencyInjection
             Bind<IDocumentCommand>().To<WithdrawSigningDocumentCommand>();
             Bind<IDocumentCommand>().To<AffixSigningDocumentCommand>();
             Bind<IDocumentCommand>().To<SelfAffixSigningDocumentCommand>();
+            Bind<IDocumentCommand>().To<VerifySigningDocumentCommand>();
 
             Bind<IDocumentCommand>().To<AddSavedFilterCommand>();
             Bind<IDocumentCommand>().To<DeleteSavedFilterCommand>();
@@ -239,6 +241,8 @@ namespace BL.Logic.DependencyInjection
             Bind<IEncryptionCommand>().To<AddEncryptionCertificateCommand>();
             Bind<IEncryptionCommand>().To<DeleteEncryptionCertificateCommand>();
             Bind<IEncryptionCommand>().To<ModifyEncryptionCertificateCommand>();
+
+            Bind<IEncryptionCommand>().To<VerifyPdfCommand>();
         }
 
     }

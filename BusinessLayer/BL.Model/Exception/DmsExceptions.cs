@@ -969,6 +969,18 @@
         }
     }
 
+    public class SigningTypeNotAllowed : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:SigningTypeNotAllowed@l##";
+        public SigningTypeNotAllowed() : base(_MESSAGE)
+        {
+        }
+
+        public SigningTypeNotAllowed(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
     public class EncryptionCertificateWasNotFound : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:EncryptionCertificateWasNotFound@l##";

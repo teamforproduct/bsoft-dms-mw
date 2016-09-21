@@ -29,7 +29,7 @@ namespace BL.Logic.EncryptionCore.Certificate
         {
             _admin.VerifyAccess(_context, CommandType, false);
 
-            var item = _encryptionDb.ModifyCertificatePrepare(_context, Model);
+            var item = _encryptionDb.ModifyCertificatePrepare(_context, Model, null);
             if (item == null)
             {
                 throw new EncryptionCertificateWasNotFound();

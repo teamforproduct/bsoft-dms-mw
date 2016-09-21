@@ -32,6 +32,10 @@ namespace BL.Database.DBModel.Document
         [ForeignKey("SubscriptionStateId")]
         public virtual DictionarySubscriptionStates SubscriptionState { get; set; }
 
+        public int SigningTypeId { get; set; }
+        [ForeignKey("SigningTypeId")]
+        public DictionarySigningTypes SigningType { get; set; }
+
         public string InternalSign { get; set; }
         public string CertificateSign { get; set; }
         public int? CertificateId { get; set; }

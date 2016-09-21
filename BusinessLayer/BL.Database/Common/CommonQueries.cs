@@ -32,6 +32,7 @@ using BL.Database.Reports;
 using iTextSharp.text.pdf;
 using System.IO;
 using BL.Database.Documents.Interfaces;
+using BL.Model.Reports.FrontModel;
 
 namespace BL.Database.Common
 {
@@ -1892,7 +1893,7 @@ namespace BL.Database.Common
                         TargetPositionExecutorAgentPhoneNumber = null,
                     },
 
-                IsUseCertificateSign = x.CertificateId.HasValue,
+                SigningType = (EnumSigningTypes)x.SigningTypeId,
                 CertificateId = x.CertificateId,
                 CertificateName = x.Certificate.Name,
                 CertificatePositionId = x.CertificatePositionId,
@@ -2384,7 +2385,7 @@ namespace BL.Database.Common
                                             TargetPositionExecutorAgentName = y.StartEvent.TargetPositionExecutorAgent.Name ?? y.StartEvent.TargetAgent.Name,
                                             Description = y.StartEvent.Description,
                                             AddDescription = y.StartEvent.AddDescription,
-                                            DueDate = y.StartEvent.OnWait.Select(z=>z.DueDate).FirstOrDefault(),
+                                            DueDate = y.StartEvent.OnWait.Select(z => z.DueDate).FirstOrDefault(),
                                         },
                 CloseEvent = y.CloseEvent == null || y.StartEventId == y.CloseEventId
                                         ? null
@@ -2696,18 +2697,20 @@ namespace BL.Database.Common
         #endregion
 
         #region Hash
-        public static InternalDocument GetDocumentHash(DmsContext dbContext, IContext ctx, int documentId, bool isUseInternalSign, bool isUseCertificateSign, int? certificateId, string certificatePassword, int? subscriptionId, bool isAddSubscription = false, bool isFull = false, bool isContinueIfEmptySubscriptions =false)
+        public static InternalDocument GetDocumentHash(DmsContext dbContext, IContext ctx, int documentId, bool isUseInternalSign, bool isUseCertificateSign, InternalDocumentSubscription newSubscription, bool isAddSubscription = false, bool isFull = false, bool isContinueIfEmptySubscriptions = false)
         {
-            List<InternalDocumentSubscription> subscriptions = CommonQueries.GetInternalDocumentSubscriptions(dbContext, ctx,
-                new FilterDocumentSubscription
-                {
-                    DocumentId = new List<int> { documentId },
-                    SubscriptionStates = new List<EnumSubscriptionStates> {
+            var subscriptionStates = new List<EnumSubscriptionStates> {
                         EnumSubscriptionStates.Sign,
                         EnumSubscriptionStates.Visa,
                         EnumSubscriptionStates.Аgreement,
                         EnumSubscriptionStates.Аpproval
-                        }
+                        };
+
+            List<InternalDocumentSubscription> subscriptions = CommonQueries.GetInternalDocumentSubscriptions(dbContext, ctx,
+                new FilterDocumentSubscription
+                {
+                    DocumentId = new List<int> { documentId },
+                    SubscriptionStates = subscriptionStates
                 }).ToList();
 
             if (!isAddSubscription)
@@ -2716,16 +2719,7 @@ namespace BL.Database.Common
                     return null;
             }
 
-            InternalDocument document;
-            if (isUseCertificateSign && isAddSubscription)
-            {
-                document = CommonQueries.GetDocumentDigitalSignaturePrepare(dbContext, ctx, documentId);
-            }
-            else
-            {
-                document = CommonQueries.GetDocumentHashPrepare(dbContext, ctx, documentId);
-                document.Subscriptions = subscriptions;
-            }
+            InternalDocument document = CommonQueries.GetDocumentDigitalSignaturePrepare(dbContext, ctx, documentId, subscriptionStates);
 
             var IsFilesIncorrect = false;
 
@@ -2743,38 +2737,58 @@ namespace BL.Database.Common
                 }
             }
 
-            document.Hash = CommonQueries.GetDocumentHash(document);
-
-            if (isFull || isAddSubscription)
+            switch (newSubscription?.SigningType)
             {
-                document.FullHash = CommonQueries.GetDocumentHash(document, true);
+                case EnumSigningTypes.Hash:
+                    document.Hash = CommonQueries.GetDocumentHash(document);
+
+                    if (isFull || isAddSubscription)
+                    {
+                        document.FullHash = CommonQueries.GetDocumentHash(document, true);
+                    }
+                    break;
+                case EnumSigningTypes.InternalSign:
+                    if (isAddSubscription)
+                    {
+                        if (isUseInternalSign)
+                        {
+                            document.InternalSign = CommonQueries.GetDocumentInternalSign(document);
+                        }
+                        else
+                            throw new SigningTypeNotAllowed();
+                    }
+                    break;
+                case EnumSigningTypes.CertificateSign:
+                    if (isAddSubscription)
+                    {
+                        if (isUseCertificateSign && (newSubscription?.CertificateId).HasValue)
+                        {
+                            document.CertificateSign = CommonQueries.GetDocumentCertificateSign(ctx, document, newSubscription.CertificateId.Value, newSubscription.CertificatePassword);
+                        }
+                        else
+                            throw new SigningTypeNotAllowed();
+                    }
+                    break;
             }
 
-            //TODO is internal sign
-            if (isUseInternalSign)
-            {
-                document.InternalSign = CommonQueries.GetDocumentInternalSign(document);
-            }
-
-            //TODO is certificate sign
-            if (isUseCertificateSign && isAddSubscription && certificateId.HasValue)
-            {
-                document.CertificateSign = CommonQueries.GetDocumentCertificateSign(ctx, document, certificateId.Value, certificatePassword);
-            }
+            bool IsVioalted = IsFilesIncorrect;
 
             if (subscriptions.Any())
             {
                 StringComparer comparer = StringComparer.OrdinalIgnoreCase;
                 foreach (var subscription in subscriptions)
                 {
-                    if (IsFilesIncorrect || !VerifyDocumentHash(subscription.Hash, document) ||
-                        ((isFull || isAddSubscription) && !VerifyDocumentHash(subscription.FullHash, document, true)) ||
+                    if (IsFilesIncorrect ||
+                        (subscription.SigningType == EnumSigningTypes.Hash && (!VerifyDocumentHash(subscription.Hash, document) || ((isFull || isAddSubscription) && !VerifyDocumentHash(subscription.FullHash, document, true))) ||
                         //TODO is internal sign
-                        (isUseInternalSign && isAddSubscription && !VerifyDocumentInternalSign(subscription.InternalSign, document)) ||
+                        (subscription.SigningType == EnumSigningTypes.InternalSign && !VerifyDocumentInternalSign(subscription.InternalSign, document)) ||
                         //TODO is certificate sign
-                        (isUseCertificateSign && isAddSubscription && !string.IsNullOrEmpty(subscription.CertificateSign) && !VerifyDocumentCertificateSign(ctx, subscription.CertificateSign, document))
-                        )
+                        (subscription.SigningType == EnumSigningTypes.CertificateSign && !VerifyDocumentCertificateSign(ctx, subscription.CertificateSign, document))
+                        ))
                     {
+                        if (subscription.SigningType == EnumSigningTypes.CertificateSign)
+                            IsVioalted = true;
+
                         subscription.SubscriptionStates = EnumSubscriptionStates.Violated;
 
                         var subscriptionDb = new DocumentSubscriptions
@@ -2822,20 +2836,19 @@ namespace BL.Database.Common
                     }
                 }
             }
+            //TODO is certificate sign
+            if (isUseCertificateSign && ((newSubscription?.SigningType == EnumSigningTypes.CertificateSign && isAddSubscription) || IsVioalted))
+            {
+                subscriptions = subscriptions.Where(x => subscriptionStates.Contains(x.SubscriptionStates)).ToList();
+                if (isAddSubscription)
+                    subscriptions.Add(dbContext.DictionaryPositionsSet.Where(x => x.Id == ctx.CurrentPositionId).Select(x => new InternalDocumentSubscription { Id = newSubscription != null ? newSubscription.Id : 0, DocumentId = documentId, DoneEventSourcePositionName = x.Name, DoneEventSourcePositionExecutorAgentName = x.ExecutorAgent.Name }).FirstOrDefault());
+                document.Subscriptions = subscriptions;
+                document.CertificateSignPdfFileIdentity = CommonQueries.GetDocumentCertificateSignPdf(dbContext, ctx, document, newSubscription?.CertificateId, newSubscription?.CertificatePassword);
+            }
 
             if (IsFilesIncorrect)
             {
                 throw new DocumentFileWasChangedExternally();
-            }
-
-            //TODO is certificate sign
-            if (isUseCertificateSign && isAddSubscription && certificateId.HasValue)
-            {
-                subscriptions = subscriptions.Where(x => x.SubscriptionStates == EnumSubscriptionStates.Sign).ToList();
-                if (subscriptionId.HasValue)
-                    subscriptions.Add(dbContext.DictionaryPositionsSet.Where(x => x.Id == ctx.CurrentPositionId).Select(x => new InternalDocumentSubscription { Id = subscriptionId.Value, DocumentId = documentId, DoneEventSourcePositionName = x.Name, DoneEventSourcePositionExecutorAgentName = x.ExecutorAgent.Name }).FirstOrDefault());
-                document.Subscriptions = subscriptions;
-                document.CertificateSignPdfFileIdentity = CommonQueries.GetDocumentCertificateSignPdf(dbContext, ctx, document, certificateId.Value, certificatePassword);
             }
 
             return document;
@@ -2863,7 +2876,7 @@ namespace BL.Database.Common
             return doc;
         }
 
-        public static InternalDocument GetDocumentDigitalSignaturePrepare(DmsContext dbContext, IContext ctx, int documentId)
+        public static InternalDocument GetDocumentDigitalSignaturePrepare(DmsContext dbContext, IContext ctx, int documentId, List<EnumSubscriptionStates> subscriptionStates)
         {
             var doc = CommonQueries.GetDocumentQuery(dbContext, ctx).Where(x => x.Id == documentId)
                 .Select(x => new InternalDocument
@@ -2912,11 +2925,7 @@ namespace BL.Database.Common
                 new FilterDocumentSubscription
                 {
                     DocumentId = new List<int> { doc.Id },
-                    SubscriptionStates = new List<EnumSubscriptionStates> {
-                        EnumSubscriptionStates.Sign,
-                        EnumSubscriptionStates.Visa,
-                        EnumSubscriptionStates.Аgreement,
-                        EnumSubscriptionStates.Аpproval }
+                    SubscriptionStates = subscriptionStates
                 }, ctx)
                 .Select(x => new InternalDocumentSubscription
                 {
@@ -2929,7 +2938,14 @@ namespace BL.Database.Common
                     SendEventId = x.SendEventId,
                     SubscriptionStates = (EnumSubscriptionStates)x.SubscriptionStateId,
                     Hash = x.Hash,
-                    FullHash = x.FullHash
+                    FullHash = x.FullHash,
+                    SigningType = (EnumSigningTypes)x.SigningTypeId,
+                    CertificateId = x.CertificateId,
+                    CertificatePositionId = x.CertificatePositionId,
+                    CertificatePositionExecutorAgentId = x.CertificatePositionExecutorAgentId,
+                    CertificateSign = x.CertificateSign,
+                    InternalSign = x.InternalSign,
+                    Description = x.Description
                 }).ToList();
 
             return doc;
@@ -3006,7 +3022,7 @@ namespace BL.Database.Common
             return sign;
         }
 
-        public static FilterDocumentFileIdentity GetDocumentCertificateSignPdf(DmsContext dbContext, IContext ctx, InternalDocument doc, int certificateId, string certificatePassword)
+        public static FrontReport GetDocumentCertificateSignPdf(DmsContext dbContext, IContext ctx, InternalDocument doc)
         {
             var fileStore = DmsResolver.Current.Get<IFileStore>();
             var pdf = DmsResolver.Current.Get<DmsReport>().ReportExportToStream(doc, fileStore.GetFullTemplateReportFilePath(ctx, EnumReportTypes.DocumentForDigitalSignature));
@@ -3036,7 +3052,16 @@ namespace BL.Database.Common
                 pdf.FileContent = ms.ToArray();
             }
 
-            pdf.FileContent = DmsResolver.Current.Get<IEncryptionDbProcess>().GetCertificateSignPdf(ctx, certificateId, certificatePassword, pdf.FileContent);
+            return pdf;
+        }
+
+        public static FilterDocumentFileIdentity GetDocumentCertificateSignPdf(DmsContext dbContext, IContext ctx, InternalDocument doc, int? certificateId, string certificatePassword)
+        {
+            var fileStore = DmsResolver.Current.Get<IFileStore>();
+            var pdf = GetDocumentCertificateSignPdf(dbContext, ctx, doc);
+
+            if (certificateId.HasValue)
+                pdf.FileContent = DmsResolver.Current.Get<IEncryptionDbProcess>().GetCertificateSignPdf(ctx, certificateId.Value, certificatePassword, pdf.FileContent);
 
             var att = new InternalDocumentAttachedFile
             {
@@ -3054,7 +3079,7 @@ namespace BL.Database.Common
 
                 WasChangedExternal = false,
                 ExecutorPositionId = ctx.CurrentPositionId,
-                ExecutorPositionExecutorAgentId = dbContext.DictionaryPositionsSet.Where(x=>x.Id == ctx.CurrentPositionId).Select(x=>x.ExecutorAgentId).FirstOrDefault().GetValueOrDefault()
+                ExecutorPositionExecutorAgentId = dbContext.DictionaryPositionsSet.Where(x => x.Id == ctx.CurrentPositionId).Select(x => x.ExecutorAgentId).FirstOrDefault().GetValueOrDefault()
             };
 
             var operationDb = DmsResolver.Current.Get<IDocumentFileDbProcess>();
@@ -3212,7 +3237,7 @@ namespace BL.Database.Common
             var qry = dbContext.EncryptionCertificatesSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).AsQueryable();
             if (!ctx.IsAdmin)
             {
-                qry = qry.Where(x=>x.AgentId == ctx.CurrentAgentId);
+                qry = qry.Where(x => x.AgentId == ctx.CurrentAgentId);
             }
 
             if (filter != null)
@@ -3222,6 +3247,15 @@ namespace BL.Database.Common
                     var filterContains = PredicateBuilder.False<EncryptionCertificates>();
                     filterContains = filter.CertificateId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                if (filter.AgentId?.Count() > 0 && ctx.IsAdmin)
+                {
+                    var filterContains = PredicateBuilder.False<EncryptionCertificates>();
+                    filterContains = filter.AgentId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.AgentId == value).Expand());
 
                     qry = qry.Where(filterContains);
                 }

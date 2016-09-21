@@ -55,5 +55,10 @@ namespace BL.Model.EncryptionCore.InternalModel
         /// Password
         /// </summary>
         public string Password { get; set; }
+
+        /// <summary>
+        /// Можно ли запомнить пароль к сертификату
+        /// </summary>
+        public bool IsRememberPassword { get; set; }
     }
 }

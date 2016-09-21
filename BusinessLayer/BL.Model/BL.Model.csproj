@@ -346,6 +346,7 @@
     <Compile Include="DocumentCore\InternalModel\InternalDocumentWait.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalTemplateDocumentTask.cs" />
     <Compile Include="Enums\EnumAdminActions.cs" />
+    <Compile Include="Enums\EnumSigningTypes.cs" />
     <Compile Include="Enums\EnumFileTypes.cs" />
     <Compile Include="Enums\EnumEncryptionActions.cs" />
     <Compile Include="Enums\EnumFormulas.cs" />

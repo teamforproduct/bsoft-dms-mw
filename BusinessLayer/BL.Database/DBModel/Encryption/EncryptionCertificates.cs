@@ -25,6 +25,9 @@ namespace BL.Database.DBModel.Encryption
 
         public DateTime? NotBefore { get; set; }
         public DateTime? NotAfter { get; set; }
+
+        public bool IsRememberPassword { get; set; }
+
         public int AgentId { get; set; }
         [ForeignKey("AgentId")]
         public virtual DictionaryAgents Agent { get; set; }
