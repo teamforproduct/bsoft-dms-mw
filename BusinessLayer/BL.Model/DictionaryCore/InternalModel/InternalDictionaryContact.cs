@@ -20,7 +20,6 @@ namespace BL.Model.DictionaryCore.InternalModel
             Value = model.Value;
             IsActive = model.IsActive;
             IsConfirmed = model.IsConfirmed;
-            IsPrimary = model.IsPrimary;
             Description = model.Description;
         }
 
@@ -49,11 +48,6 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// Признак подтверждения
         /// </summary>
         public bool IsConfirmed { get; set; }
-
-        /// <summary>
-        /// Основной
-        /// </summary>
-        public bool IsPrimary { get; set; }
 
         /// <summary>
         /// Дополнительная информация

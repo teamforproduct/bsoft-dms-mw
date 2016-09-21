@@ -82,6 +82,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdminCore\Clients\AddClientContent.cs" />
+    <Compile Include="AdminCore\IncomingModel\ModifyAdminSubordinations.cs" />
     <Compile Include="AdminCore\InternalModel\InternalRoleType.cs" />
     <Compile Include="AdminCore\Actions\AddUser.cs" />
     <Compile Include="AdminCore\AdminLanguageInfo.cs" />
@@ -130,6 +131,7 @@
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryContact.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryContactType.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryAgentClientCompany.cs" />
+    <Compile Include="AdminCore\FilterModel\FilterAdminSubordinationTree.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryStaffList.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryPositionExecutorType.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryPositionExecutor.cs" />
@@ -139,6 +141,7 @@
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentAccount.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentBank.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentCompany.cs" />
+    <Compile Include="DictionaryCore\FrontModel\FrontDictionaryPositionTreeItem.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryDepartmentTreeItem.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryDepartment.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentClientCompany.cs" />

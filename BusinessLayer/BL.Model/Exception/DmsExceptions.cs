@@ -871,6 +871,7 @@
         public DictionaryRecordNotUnique(System.Exception ex) : base(_MESSAGE, ex)
         {
         }
+
     }
 
     public class DictionaryTagNotFoundOrUserHasNoAccess : DmsExceptions

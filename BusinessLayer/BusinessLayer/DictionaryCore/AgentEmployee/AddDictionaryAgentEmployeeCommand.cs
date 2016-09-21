@@ -75,8 +75,8 @@ namespace BL.Logic.DictionaryCore
                         AgentId = agent,
                         ContactTypeId = _dictDb.GetContactsTypeId(_context, EnumContactTypes.MainEmail),
                         Value = item.Login,
-                        IsActive = true,
-                        IsPrimary = true };
+                        IsActive = true
+                    };
                     CommonDocumentUtilities.SetLastChange(_context, contact);
                     _dictDb.AddContact(_context, contact);
                 }
@@ -88,8 +88,7 @@ namespace BL.Logic.DictionaryCore
                         AgentId = agent,
                         ContactTypeId = _dictDb.GetContactsTypeId(_context, EnumContactTypes.MainPhone),
                         Value = item.Phone,
-                        IsActive = true,
-                        IsPrimary = true
+                        IsActive = true
                     };
                     CommonDocumentUtilities.SetLastChange(_context, contact);
                     _dictDb.AddContact(_context, contact);

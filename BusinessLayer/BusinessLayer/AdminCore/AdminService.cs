@@ -16,21 +16,26 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using BL.Model.Tree;
+using BL.Database.Dictionaries.Interfaces;
+using BL.Model.DictionaryCore.FilterModel;
+using BL.Logic.TreeBuilder;
 
 namespace BL.Logic.AdminCore
 {
     public class AdminService : IAdminService
     {
         private readonly IAdminsDbProcess _adminDb;
+        private readonly IDictionariesDbProcess _dictDb;
         private readonly ICommandService _commandService;
 
         private const int _MINUTES_TO_UPDATE_INFO = 5;
 
         private Dictionary<string, StoreInfo> accList;
 
-        public AdminService(IAdminsDbProcess adminDb, ICommandService commandService)
+        public AdminService(IAdminsDbProcess adminDb, IDictionariesDbProcess dictDb, ICommandService commandService)
         {
             _adminDb = adminDb;
+            _dictDb = dictDb;
             _commandService = commandService;
             accList = new Dictionary<string, StoreInfo>();
         }
@@ -214,6 +219,51 @@ namespace BL.Logic.AdminCore
         {
             return _adminDb.GetSubordinations(context, filter);
         }
+
+        public IEnumerable<ITreeItem> GetSubordinationsTree(IContext context, int positionId, FilterAdminSubordinationTree filter)
+        {
+
+            int levelCount = filter?.LevelCount ?? 0;
+            IEnumerable<TreeItem> positions = null;
+            IEnumerable<TreeItem> departments = null;
+            IEnumerable<TreeItem> companies = null;
+
+            if (levelCount >= 3 || levelCount == 0)
+            {
+                positions = _dictDb.GetPositionsForTreeSend(context, positionId, new FilterDictionaryPosition()
+                {
+                    IsActive = filter.IsActive
+                });
+            }
+
+            if (levelCount >= 2 || levelCount == 0)
+            {
+                departments = _dictDb.GetDepartmentsForTree(context, new FilterDictionaryDepartment()
+                {
+                    IsActive = filter.IsActive,
+                });
+            }
+
+            if (levelCount >= 1 || levelCount == 0)
+            {
+                companies = _dictDb.GetAgentClientCompaniesForTree(context, new FilterDictionaryAgentClientCompany()
+                {
+                    IsActive = filter.IsActive
+                });
+            }
+
+            List<TreeItem> flatList = new List<TreeItem>();
+
+            if (companies != null) flatList.AddRange(companies);
+            if (positions != null) flatList.AddRange(positions);
+            if (departments != null) flatList.AddRange(departments);
+
+            var res = Tree.Get(flatList, filter);
+
+            return res;
+        }
+
+
         #endregion
 
         #region [+] MainMenu ...

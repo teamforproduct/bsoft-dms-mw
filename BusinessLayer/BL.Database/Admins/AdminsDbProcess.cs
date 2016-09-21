@@ -924,7 +924,16 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(context))
             {
-                var dbModel = dbContext.AdminSubordinationsSet.FirstOrDefault(x => x.Id == model.Id);
+                AdminSubordinations dbModel = null;
+                if (model.Id == 0)
+                {
+                    dbModel = dbContext.AdminSubordinationsSet.
+                        FirstOrDefault(x => x.SourcePositionId == model.SourcePositionId && x.TargetPositionId == model.TargetPositionId && x.SubordinationTypeId == model.SubordinationTypeId);
+                }
+                else
+                {
+                    dbModel = dbContext.AdminSubordinationsSet.FirstOrDefault(x => x.Id == model.Id);
+                }
                 dbContext.AdminSubordinationsSet.Remove(dbModel);
                 dbContext.SaveChanges();
             }

@@ -243,63 +243,74 @@ namespace BL.Database.DatabaseContext
         {
             var items = new List<SystemObjects>();
 
-            items.Add(new SystemObjects { Id = 100, Code = "Documents", Description = "Документы" });
-            items.Add(new SystemObjects { Id = 101, Code = "DocumentAccesses", Description = "Документы - доступы" });
-            items.Add(new SystemObjects { Id = 102, Code = "DocumentRestrictedSendLists", Description = "Документы - ограничения рассылки" });
-            items.Add(new SystemObjects { Id = 103, Code = "DocumentSendLists", Description = "Документы - план работы" });
-            items.Add(new SystemObjects { Id = 104, Code = "DocumentFiles", Description = "Документы - файлы" });
-            items.Add(new SystemObjects { Id = 105, Code = "DocumentLinks", Description = "Документы - связи" });
-            items.Add(new SystemObjects { Id = 106, Code = "DocumentSendListStages", Description = "Документы - этапы плана работ" });
-            items.Add(new SystemObjects { Id = 111, Code = "DocumentEvents", Description = "Документы - события" });
-            items.Add(new SystemObjects { Id = 112, Code = "DocumentWaits", Description = "Документы - ожидания" });
-            items.Add(new SystemObjects { Id = 113, Code = "DocumentSubscriptions", Description = "Документы - подписи" });
-            items.Add(new SystemObjects { Id = 115, Code = "DocumentTasks", Description = "Документы - задачи" });
-            items.Add(new SystemObjects { Id = 121, Code = "DocumentPapers", Description = "Документы - бумажные носители" });
-            items.Add(new SystemObjects { Id = 122, Code = "DocumentPaperEvents", Description = "Документы - события по бумажным носителям" });
-            items.Add(new SystemObjects { Id = 123, Code = "DocumentPaperLists", Description = "Документы - реестры передачи бумажных носителей" });
-            items.Add(new SystemObjects { Id = 191, Code = "DocumentSavedFilters", Description = "Документы - сохраненные фильтры" });
-            items.Add(new SystemObjects { Id = 192, Code = "DocumentTags", Description = "Документы - тэги" });
-            items.Add(new SystemObjects { Id = 201, Code = "DictionaryDocumentType", Description = "Типы документов" });
-            items.Add(new SystemObjects { Id = 202, Code = "DictionaryAddressType", Description = "Типы адресов" });
-            items.Add(new SystemObjects { Id = 203, Code = "DictionaryDocumentSubjects", Description = "Тематики документов" });
-            items.Add(new SystemObjects { Id = 204, Code = "DictionaryRegistrationJournals", Description = "Журналы регистрации" });
-            items.Add(new SystemObjects { Id = 205, Code = "DictionaryContactType", Description = "Типы контактов" });
-            items.Add(new SystemObjects { Id = 206, Code = "DictionaryAgents", Description = "Контрагенты" });
-            items.Add(new SystemObjects { Id = 207, Code = "DictionaryContacts", Description = "Контакты" });
-            items.Add(new SystemObjects { Id = 208, Code = "DictionaryAgentAddresses", Description = "Адреса" });
-            items.Add(new SystemObjects { Id = 209, Code = "DictionaryAgentPersons", Description = "Физические лица" });
-            items.Add(new SystemObjects { Id = 210, Code = "DictionaryDepartments", Description = "Структура предприятия" });
-            items.Add(new SystemObjects { Id = 211, Code = "DictionaryPositions", Description = "Штатное расписание" });
-            items.Add(new SystemObjects { Id = 212, Code = "DictionaryAgentEmployees", Description = "Сотрудники" });
-            items.Add(new SystemObjects { Id = 213, Code = "DictionaryAgentCompanies", Description = "Юридические лица" });
-            items.Add(new SystemObjects { Id = 214, Code = "DictionaryAgentBanks", Description = "Контрагенты - банки" });
-            items.Add(new SystemObjects { Id = 215, Code = "DictionaryAgentAccounts", Description = "Расчетные счета" });
-            items.Add(new SystemObjects { Id = 216, Code = "DictionaryStandartSendListContent", Description = "Типовые списки рассылки (содержание)" });
-            items.Add(new SystemObjects { Id = 217, Code = "DictionaryStandartSendLists", Description = "Типовые списки рассылки" });
-            items.Add(new SystemObjects { Id = 218, Code = "DictionaryCompanies", Description = "Компании" });
-            items.Add(new SystemObjects { Id = 219, Code = "DictionaryPositionExecutorTypes", Description = "Типы исполнителей" });
-            items.Add(new SystemObjects { Id = 220, Code = "DictionaryPositionExecutors", Description = "Исполнители должности" });
-            items.Add(new SystemObjects { Id = 251, Code = "TemplateDocument", Description = "Шаблоны документов" });
-            items.Add(new SystemObjects { Id = 252, Code = "TemplateDocumentSendList", Description = "Списки рассылки в шаблонах" });
-            items.Add(new SystemObjects { Id = 253, Code = "TemplateDocumentRestrictedSendList", Description = "Ограничительные списки рассылки в шаблонах" });
-            items.Add(new SystemObjects { Id = 254, Code = "TemplateDocumentTask", Description = "Задачи в шаблонах" });
-            items.Add(new SystemObjects { Id = 255, Code = "TemplateDocumentAttachedFiles", Description = "Прикрепленные к шаблонам файлы" });
-            items.Add(new SystemObjects { Id = 291, Code = "DictionaryTag", Description = "Теги" });
-            items.Add(new SystemObjects { Id = 301, Code = "CustomDictionaryTypes", Description = "Типы пользовательских словарей" });
-            items.Add(new SystemObjects { Id = 302, Code = "CustomDictionaries", Description = "Пользовательские словари" });
-            items.Add(new SystemObjects { Id = 311, Code = "Properties", Description = "Динамические аттрибуты" });
-            items.Add(new SystemObjects { Id = 312, Code = "PropertyLinks", Description = "Связи динамических аттрибутов с объектами системы" });
-            items.Add(new SystemObjects { Id = 313, Code = "PropertyValues", Description = "Значения динамических аттрибутов" });
-            items.Add(new SystemObjects { Id = (int)EnumObjects.EncryptionCertificates , Code = "EncryptionCertificates", Description = "Хранилище сертификатов" });
-            items.Add(new SystemObjects { Id = 402, Code = "EncryptionCertificateTypes", Description = "Типы сертификатов" });
+            items.Add(GetSystemObjects(EnumObjects.Documents, "Документы"));
+            items.Add(GetSystemObjects(EnumObjects.DocumentAccesses, "Документы - доступы"));
+            items.Add(GetSystemObjects(EnumObjects.DocumentRestrictedSendLists, "Документы - ограничения рассылки"));
+            items.Add(GetSystemObjects(EnumObjects.DocumentSendLists, "Документы - план работы"));
+            items.Add(GetSystemObjects(EnumObjects.DocumentFiles, "Документы - файлы"));
+            items.Add(GetSystemObjects(EnumObjects.DocumentLinks, "Документы - связи"));
+            items.Add(GetSystemObjects(EnumObjects.DocumentSendListStages, "Документы - этапы плана работ"));
+            items.Add(GetSystemObjects(EnumObjects.DocumentEvents, "Документы - события"));
+            items.Add(GetSystemObjects(EnumObjects.DocumentWaits, "Документы - ожидания"));
+            items.Add(GetSystemObjects(EnumObjects.DocumentSubscriptions, "Документы - подписи"));
+            items.Add(GetSystemObjects(EnumObjects.DocumentTasks, "Документы - задачи"));
+            items.Add(GetSystemObjects(EnumObjects.DocumentPapers, "Документы - бумажные носители"));
+            items.Add(GetSystemObjects(EnumObjects.DocumentPaperEvents, "Документы - события по бумажным носителям"));
+            items.Add(GetSystemObjects(EnumObjects.DocumentPaperLists, "Документы - реестры передачи бумажных носителей"));
+            items.Add(GetSystemObjects(EnumObjects.DocumentSavedFilters, "Документы - сохраненные фильтры"));
+            items.Add(GetSystemObjects(EnumObjects.DocumentTags, "Документы - тэги"));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryDocumentType, "Типы документов"));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryAddressType, "Типы адресов"));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryDocumentSubjects, "Тематики документов"));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryRegistrationJournals, "Журналы регистрации"));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryContactType, "Типы контактов"));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryAgents, "Контрагенты"));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryContacts, "Контакты"));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryAgentAddresses, "Адреса"));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryAgentPersons, "Физические лица"));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryDepartments, "Структура предприятия"));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryPositions, "Штатное расписание"));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryAgentEmployees, "Сотрудники"));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryAgentCompanies, "Юридические лица"));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryAgentBanks, "Контрагенты - банки"));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryAgentAccounts, "Расчетные счета"));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryStandartSendListContent, "Типовые списки рассылки (содержание)"));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryStandartSendLists, "Типовые списки рассылки"));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryAgentClientCompanies, "Компании"));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryPositionExecutorTypes, "Типы исполнителей"));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryPositionExecutors, "Исполнители должности"));
+            items.Add(GetSystemObjects(EnumObjects.TemplateDocument, "Шаблоны документов"));
+            items.Add(GetSystemObjects(EnumObjects.TemplateDocumentSendList, "Списки рассылки в шаблонах"));
+            items.Add(GetSystemObjects(EnumObjects.TemplateDocumentRestrictedSendList, "Ограничительные списки рассылки в шаблонах"));
+            items.Add(GetSystemObjects(EnumObjects.TemplateDocumentTask, "Задачи в шаблонах"));
+            items.Add(GetSystemObjects(EnumObjects.TemplateDocumentAttachedFiles, "Прикрепленные к шаблонам файлы"));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryTag, "Теги"));
+            items.Add(GetSystemObjects(EnumObjects.CustomDictionaryTypes, "Типы пользовательских словарей"));
+            items.Add(GetSystemObjects(EnumObjects.CustomDictionaries, "Пользовательские словари"));
+            items.Add(GetSystemObjects(EnumObjects.Properties, "Динамические аттрибуты"));
+            items.Add(GetSystemObjects(EnumObjects.PropertyLinks, "Связи динамических аттрибутов с объектами системы"));
+            items.Add(GetSystemObjects(EnumObjects.PropertyValues, "Значения динамических аттрибутов"));
 
+            items.Add(GetSystemObjects(EnumObjects.EncryptionCertificates, "Хранилище сертификатов"));
+            items.Add(GetSystemObjects(EnumObjects.EncryptionCertificateTypes, "Типы сертификатов"));
 
-            items.Add(new SystemObjects { Id = (int)EnumObjects.AdminRoles, Code = "AdminRoles", Description = "Роли" });
-            items.Add(new SystemObjects { Id = (int)EnumObjects.AdminPositionRoles, Code = "AdminPositionRoles", Description = "Роли" });
-            items.Add(new SystemObjects { Id = (int)EnumObjects.AdminUserRoles, Code = "AdminUserRoles", Description = "Роли" });
-                        
+            items.Add(GetSystemObjects(EnumObjects.AdminRoles, "Роли"));
+            items.Add(GetSystemObjects(EnumObjects.AdminPositionRoles, "Роли"));
+            items.Add(GetSystemObjects(EnumObjects.AdminUserRoles, "Роли"));
+
             return items;
         }
+
+        private SystemObjects GetSystemObjects(EnumObjects id, string description)
+        {
+            return new SystemObjects()
+            {
+                Id = (int)id,
+                Code = id.ToString(),
+                Description = description
+            };
+        }
+
 
         private List<SystemActions> GetSystemActions()
         {
@@ -488,33 +499,67 @@ namespace BL.Database.DatabaseContext
             items.Add(new SystemActions { Id = 312005, ObjectId = 312, Code = "ModifyPropertyLink", API = "", Description = "Изменить связь динамических аттрибутов", IsGrantable = false, IsGrantableByRecordId = false, IsVisible = false, GrantId = null, Category = null });
             items.Add(new SystemActions { Id = 312009, ObjectId = 312, Code = "DeletePropertyLink", API = "", Description = "Удалить связь динамических аттрибутов", IsGrantable = false, IsGrantableByRecordId = false, IsVisible = false, GrantId = null, Category = null });
             items.Add(new SystemActions { Id = 313005, ObjectId = 313, Code = "ModifyPropertyValues", API = "", Description = "Изменить значение динамических аттрибутов", IsGrantable = false, IsGrantableByRecordId = false, IsVisible = false, GrantId = null, Category = null });
-            items.Add(new SystemActions { Id = 401001, ObjectId = 401, Code = "AddEncryptionCertificate", API = "", Description = "Добавить сертификат", IsGrantable = false, IsGrantableByRecordId = false, IsVisible = false, GrantId = null, Category = null });
-            items.Add(new SystemActions { Id = 401002, ObjectId = 401, Code = "ModifyEncryptionCertificate", API = "", Description = "Изменить сертификат", IsGrantable = false, IsGrantableByRecordId = false, IsVisible = false, GrantId = null, Category = null });
-            items.Add(new SystemActions { Id = 401003, ObjectId = 401, Code = "ExportEncryptionCertificate", API = "", Description = "Экспорт сертификата", IsGrantable = false, IsGrantableByRecordId = false, IsVisible = false, GrantId = null, Category = null });
-            items.Add(new SystemActions { Id = 401004, ObjectId = 401, Code = "DeleteEncryptionCertificate", API = "", Description = "Удалить сертификат", IsGrantable = false, IsGrantableByRecordId = false, IsVisible = false, GrantId = null, Category = null });
-            items.Add(new SystemActions { Id = 401005, ObjectId = 401, Code = "GenerateKeyEncryptionCertificate", API = "", Description = "Сгенерировать сертификат", IsGrantable = false, IsGrantableByRecordId = false, IsVisible = false, GrantId = null, Category = null });
-            items.Add(new SystemActions { Id = 402001, ObjectId = 402, Code = "AddEncryptionCertificateType", API = "", Description = "Добавить тип сертификат", IsGrantable = false, IsGrantableByRecordId = false, IsVisible = false, GrantId = null, Category = null });
-            items.Add(new SystemActions { Id = 402002, ObjectId = 402, Code = "ModifyEncryptionCertificateType", API = "", Description = "Изменить тип сертификат", IsGrantable = false, IsGrantableByRecordId = false, IsVisible = false, GrantId = null, Category = null });
-            items.Add(new SystemActions { Id = 402003, ObjectId = 402, Code = "DeleteEncryptionCertificateType", API = "", Description = "Удалить тип сертификат", IsGrantable = false, IsGrantableByRecordId = false, IsVisible = false, GrantId = null, Category = null });
 
-            items.Add(new SystemActions { Id = (int)EnumAdminActions.AddRole, ObjectId = (int)EnumObjects.AdminRoles, Code = "AddRole", API = "", Description = "Добавить роль", IsGrantable = false, IsGrantableByRecordId = false, IsVisible = false, GrantId = null, Category = null });
-            items.Add(new SystemActions { Id = (int)EnumAdminActions.ModifyRole, ObjectId = (int)EnumObjects.AdminRoles, Code = "ModifyRole", API = "", Description = "Изменить роль", IsGrantable = false, IsGrantableByRecordId = false, IsVisible = false, GrantId = null, Category = null });
-            items.Add(new SystemActions { Id = (int)EnumAdminActions.DeleteRole, ObjectId = (int)EnumObjects.AdminRoles, Code = "AddRole", API = "", Description = "Удалить роль", IsGrantable = false, IsGrantableByRecordId = false, IsVisible = false, GrantId = null, Category = null });
+            items.Add(GetSysAct(EnumEncryptionActions.AddEncryptionCertificate, EnumObjects.EncryptionCertificates, "Добавить сертификат"));
+            items.Add(GetSysAct(EnumEncryptionActions.ModifyEncryptionCertificate, EnumObjects.EncryptionCertificates, "Изменить сертификат"));
+            items.Add(GetSysAct(EnumEncryptionActions.ExportEncryptionCertificate, EnumObjects.EncryptionCertificates, "Экспорт сертификата"));
+            items.Add(GetSysAct(EnumEncryptionActions.DeleteEncryptionCertificate, EnumObjects.EncryptionCertificates, "Удалить сертификат"));
+            items.Add(GetSysAct(EnumEncryptionActions.GenerateKeyEncryptionCertificate, EnumObjects.EncryptionCertificates, "Сгенерировать сертификат"));
+            items.Add(GetSysAct(EnumEncryptionActions.AddEncryptionCertificateType, EnumObjects.EncryptionCertificateTypes, "Добавить тип сертификат"));
+            items.Add(GetSysAct(EnumEncryptionActions.ModifyEncryptionCertificateType, EnumObjects.EncryptionCertificateTypes, "Изменить тип сертификат"));
+            items.Add(GetSysAct(EnumEncryptionActions.DeleteEncryptionCertificateType, EnumObjects.EncryptionCertificateTypes, "Удалить тип сертификат"));
 
-            items.Add(new SystemActions { Id = (int)EnumAdminActions.AddPositionRole, ObjectId = (int)EnumObjects.AdminPositionRoles , Code = "AddPositionRole", API = "", Description = "Добавить роль для должности", IsGrantable = false, IsGrantableByRecordId = false, IsVisible = false, GrantId = null, Category = null });
-            items.Add(new SystemActions { Id = (int)EnumAdminActions.ModifyPositionRole, ObjectId = (int)EnumObjects.AdminPositionRoles, Code = "ModifyPositionRole", API = "", Description = "Изменить роль для должности", IsGrantable = false, IsGrantableByRecordId = false, IsVisible = false, GrantId = null, Category = null });
-            items.Add(new SystemActions { Id = (int)EnumAdminActions.DeletePositionRole, ObjectId = (int)EnumObjects.AdminPositionRoles, Code = "DeletePositionRole", API = "", Description = "Удалить роль для должности", IsGrantable = false, IsGrantableByRecordId = false, IsVisible = false, GrantId = null, Category = null });
+            items.Add(GetSysAct(EnumAdminActions.AddRole, EnumObjects.AdminRoles, "Добавить роль"));
+            items.Add(GetSysAct(EnumAdminActions.ModifyRole, EnumObjects.AdminRoles, "Изменить роль"));
+            items.Add(GetSysAct(EnumAdminActions.DeleteRole, EnumObjects.AdminRoles, "Удалить роль"));
 
-            items.Add(new SystemActions { Id = (int)EnumAdminActions.AddUserRole, ObjectId = (int)EnumObjects.AdminUserRoles, Code = "AddUserRole", API = "", Description = "Добавить роль для пользователя", IsGrantable = false, IsGrantableByRecordId = false, IsVisible = false, GrantId = null, Category = null });
-            items.Add(new SystemActions { Id = (int)EnumAdminActions.ModifyUserRole, ObjectId = (int)EnumObjects.AdminUserRoles, Code = "ModifyUserRole", API = "", Description = "Изменить роль для пользователя", IsGrantable = false, IsGrantableByRecordId = false, IsVisible = false, GrantId = null, Category = null });
-            items.Add(new SystemActions { Id = (int)EnumAdminActions.DeleteUserRole, ObjectId = (int)EnumObjects.AdminUserRoles, Code = "DeleteUserRole", API = "", Description = "Удалить роль для пользователя", IsGrantable = false, IsGrantableByRecordId = false, IsVisible = false, GrantId = null, Category = null });
+            items.Add(GetSysAct(EnumAdminActions.AddPositionRole, EnumObjects.AdminPositionRoles, "Добавить роль для должности"));
+            items.Add(GetSysAct(EnumAdminActions.ModifyPositionRole, EnumObjects.AdminPositionRoles, "Изменить роль для должности"));
+            items.Add(GetSysAct(EnumAdminActions.DeletePositionRole, EnumObjects.AdminPositionRoles, "Удалить роль для должности"));
 
-            items.Add(new SystemActions { Id = (int)EnumAdminActions.AddSubordination, ObjectId = (int)EnumObjects.AdminSubordination, Code = "AddSubordination", API = "", Description = "Добавить правило рассылки", IsGrantable = false, IsGrantableByRecordId = false, IsVisible = false, GrantId = null, Category = null });
-            items.Add(new SystemActions { Id = (int)EnumAdminActions.ModifySubordination, ObjectId = (int)EnumObjects.AdminSubordination, Code = "ModifySubordination", API = "", Description = "Изменить правило рассылки", IsGrantable = false, IsGrantableByRecordId = false, IsVisible = false, GrantId = null, Category = null });
-            items.Add(new SystemActions { Id = (int)EnumAdminActions.DeleteSubordination, ObjectId = (int)EnumObjects.AdminSubordination, Code = "DeleteSubordination", API = "", Description = "Удалить правило рассылки", IsGrantable = false, IsGrantableByRecordId = false, IsVisible = false, GrantId = null, Category = null });
+            items.Add(GetSysAct(EnumAdminActions.AddUserRole, EnumObjects.AdminUserRoles, "Добавить роль для пользователя"));
+            items.Add(GetSysAct(EnumAdminActions.ModifyUserRole, EnumObjects.AdminUserRoles, "Изменить роль для пользователя"));
+            items.Add(GetSysAct(EnumAdminActions.DeleteUserRole, EnumObjects.AdminUserRoles, "Удалить роль для пользователя"));
+
+            items.Add(GetSysAct(EnumAdminActions.SetSubordination, EnumObjects.AdminSubordination, "Управление правилами рассылки"));
 
             return items;
         }
+
+        #region GetSystemAction
+        private SystemActions GetSysAct(EnumAdminActions id, EnumObjects objId, string description, bool isGrantable = false, bool isGrantableByRecordId = false, bool isVisible = false, int? grantId = null, string category = null)
+        { return GetSystemAction((int)id, id.ToString(), objId, description, isGrantable, isGrantableByRecordId, isVisible, grantId, category); }
+
+        private SystemActions GetSysAct(EnumEncryptionActions id, EnumObjects objId, string description, bool isGrantable = false, bool isGrantableByRecordId = false, bool isVisible = false, int? grantId = null, string category = null)
+        { return GetSystemAction((int)id, id.ToString(), objId, description, isGrantable, isGrantableByRecordId, isVisible, grantId, category); }
+
+        private SystemActions GetSysAct(EnumPropertyAction id, EnumObjects objId, string description, bool isGrantable = false, bool isGrantableByRecordId = false, bool isVisible = false, int? grantId = null, string category = null)
+        { return GetSystemAction((int)id, id.ToString(), objId, description, isGrantable, isGrantableByRecordId, isVisible, grantId, category); }
+
+        private SystemActions GetSysAct(EnumDictionaryActions id, EnumObjects objId, string description, bool isGrantable = false, bool isGrantableByRecordId = false, bool isVisible = false, int? grantId = null, string category = null)
+        { return GetSystemAction((int)id, id.ToString(), objId, description, isGrantable, isGrantableByRecordId, isVisible, grantId, category); }
+
+        private SystemActions GetSysAct(EnumDocumentActions id, EnumObjects objId, string description, bool isGrantable = false, bool isGrantableByRecordId = false, bool isVisible = false, int? grantId = null, string category = null)
+        { return GetSystemAction((int)id, id.ToString(), objId, description, isGrantable, isGrantableByRecordId, isVisible, grantId, category); }
+
+        private SystemActions GetSystemAction(int id, string code, EnumObjects objId, string description, bool isGrantable = false, bool isGrantableByRecordId = false, bool isVisible = false, int? grantId = null, string category = null)
+        {
+            return new SystemActions()
+            {
+                Id = id,
+                ObjectId = (int)objId,
+                Code = code,
+                Description = description,
+                API = "",
+                IsGrantable = isGrantable,
+                IsGrantableByRecordId = isGrantableByRecordId,
+                IsVisible = isVisible,
+                GrantId = grantId,
+                Category = category
+            };
+        }
+        #endregion
+
 
         private List<SystemUIElements> GetSystemUIElements()
         {

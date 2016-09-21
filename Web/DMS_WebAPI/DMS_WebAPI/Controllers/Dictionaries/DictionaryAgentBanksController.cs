@@ -96,7 +96,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
 
-            tmpDict.ExecuteAction(EnumDictionaryActions.DeleteAgentCompany, ctx, id);
+            tmpDict.ExecuteAction(EnumDictionaryActions.DeleteAgentBank, ctx, id);
             FrontDictionaryAgentBank tmp = new FrontDictionaryAgentBank();
             tmp.Id = id;
 

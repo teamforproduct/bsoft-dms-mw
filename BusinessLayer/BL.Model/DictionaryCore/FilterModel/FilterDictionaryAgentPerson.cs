@@ -40,6 +40,8 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// </summary>
         public char FirstChar { get; set; }
 
+        public string NameExact { get; set; }
+
         public string FirstNameExact { get; set; }
         public string LastNameExact { get; set; }
         public string PassportSerial { get; set; }

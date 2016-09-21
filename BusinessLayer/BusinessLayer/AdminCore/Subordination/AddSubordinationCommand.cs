@@ -29,7 +29,8 @@ namespace BL.Logic.AdminCore
         {
             _admin.VerifyAccess(_context, CommandType, false);
 
-            var filter = new FilterAdminSubordination {
+            var filter = new FilterAdminSubordination
+            {
                 SourcePositionIDs = new List<int> { Model.SourcePositionId },
                 TargetPositionIDs = new List<int> { Model.TargetPositionId },
                 SubordinationTypeIDs = new List<int> { Model.SubordinationTypeId }
