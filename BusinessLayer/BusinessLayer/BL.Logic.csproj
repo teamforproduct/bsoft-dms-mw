@@ -204,6 +204,7 @@
     <Compile Include="DocumentCore\AdditionalCommands\RejectDocumentFileCommand.cs" />
     <Compile Include="DocumentCore\AdditionalCommands\AcceptDocumentFileCommand.cs" />
     <Compile Include="DocumentCore\AdditionalCommands\RenameDocumentFileCommand.cs" />
+    <Compile Include="DocumentCore\Commands\VerifySigningDocumentCommand.cs" />
     <Compile Include="DocumentCore\ReportCommand\ReportDocumentForDigitalSignature.cs" />
     <Compile Include="EncryptionCore\Commands\VerifyPdf.cs" />
     <Compile Include="EncryptionCore\EncryptionCommandFactory.cs" />

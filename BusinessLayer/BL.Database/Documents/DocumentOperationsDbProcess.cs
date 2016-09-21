@@ -449,7 +449,7 @@ namespace BL.Database.Documents
                         InternalSign = docHash.InternalSign,
                         CertificateSign = docHash.CertificateSign,
                         CertificateId = subscription.CertificateId,
-                        CertificateSignCreateDate = subscription.SigningType==EnumSigningTypes.CertificateSign? DateTime.Now: (DateTime?)null,
+                        CertificateSignCreateDate = subscription.SigningType == EnumSigningTypes.CertificateSign ? DateTime.Now : (DateTime?)null,
                         CertificatePositionId = subscription.CertificatePositionId,
                         CertificatePositionExecutorAgentId = subscription.CertificatePositionExecutorAgentId,
 
@@ -480,6 +480,14 @@ namespace BL.Database.Documents
                     entry.Property(x => x.CertificatePositionExecutorAgentId).IsModified = true;
                 }
                 dbContext.SaveChanges();
+            }
+        }
+
+        public void VerifySigningDocument(IContext ctx, int documentId, bool isUseInternalSign, bool isUseCertificateSign)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                var docHash = CommonQueries.GetDocumentHash(dbContext, ctx, documentId, isUseInternalSign, isUseCertificateSign, null, false);
             }
         }
 

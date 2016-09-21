@@ -220,6 +220,8 @@
         /// </summary>
         RejectSigning = 100059,
 
+        VerifySigning = 100060,
+
         /// <summary>
         /// Направить сообщение участникам рабочей группы
         /// </summary>

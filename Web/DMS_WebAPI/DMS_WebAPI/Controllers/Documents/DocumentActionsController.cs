@@ -641,6 +641,24 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
+        /// Проверить подписи
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("VerifySigning/{id}")]
+        [HttpPost]
+        public IHttpActionResult VerifySigning(int id)
+        {
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+
+            docProc.ExecuteAction(EnumDocumentActions.VerifySigning, ctx, id);
+
+            var ctrl = new DocumentsController { ControllerContext = ControllerContext };
+            return ctrl.Get(id);
+        }
+
+        /// <summary>
         /// Завизировать
         ///  </summary>
         /// <param name="model"></param>
