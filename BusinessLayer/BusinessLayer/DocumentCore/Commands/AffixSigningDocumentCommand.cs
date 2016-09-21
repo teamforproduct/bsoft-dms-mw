@@ -80,15 +80,16 @@ namespace BL.Logic.DocumentCore.Commands
             subscription.Description = Model.VisaText;
             subscription.DoneEvent = _docWait.OffEvent;
             subscription.SubscriptionStates = CommonDocumentUtilities.SubscriptionStatesForAction[CommandType];
+            subscription.SigningType = Model.SigningType;
 
 
             var isUseCertificateSign = GetIsUseCertificateSign();
-            if (isUseCertificateSign && Model.CertificateId.HasValue)
+            if (isUseCertificateSign && subscription.SigningType == EnumSigningTypes.CertificateSign)
             {
                 subscription.CertificateId = Model.CertificateId;
                 subscription.CertificatePassword = Model.CertificatePassword;
                 subscription.CertificatePositionId = _context.CurrentPositionId;
-                subscription.CertificatePositionExecutorAgentId  = CommonDocumentUtilities.GetExecutorAgentIdByPositionId(_context, _context.CurrentPositionId);
+                subscription.CertificatePositionExecutorAgentId = CommonDocumentUtilities.GetExecutorAgentIdByPositionId(_context, _context.CurrentPositionId);
                 if (!subscription.CertificatePositionExecutorAgentId.HasValue)
                 {
                     throw new ExecutorAgentForPositionIsNotDefined();

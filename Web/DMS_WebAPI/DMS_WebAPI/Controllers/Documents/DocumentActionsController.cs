@@ -6,6 +6,7 @@ using System.Web.Http;
 using BL.CrossCutting.DependencyInjection;
 using BL.Logic.SystemServices.AutoPlan;
 using BL.Model.Enums;
+using BL.Model.DocumentCore.IncomingModel;
 
 namespace DMS_WebAPI.Controllers.Documents
 {
@@ -718,6 +719,22 @@ namespace DMS_WebAPI.Controllers.Documents
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var res = docProc.ExecuteAction(EnumDocumentActions.ReportRegisterTransmissionDocuments, ctx, id);
             
+            return new JsonResult(res, this);
+        }
+
+        /// <summary>
+        /// Получить отчет pdf документа перед подписанием
+        /// </summary>
+        /// <param name="id">ИД PaperList</param>>
+        /// <returns></returns>
+        [Route("ReportDocumentForDigitalSignature")]
+        [HttpPost]
+        public IHttpActionResult ReportDocumentForDigitalSignature(DigitalSignatureDocumentPdf model)
+        {
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            var res = docProc.ExecuteAction(EnumDocumentActions.ReportDocumentForDigitalSignature, ctx, model);
+
             return new JsonResult(res, this);
         }
 

@@ -6,6 +6,7 @@ using BL.Model.DocumentCore.InternalModel;
 using BL.Model.SystemCore;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.IncomingModel;
+using BL.Model.Reports.FrontModel;
 
 namespace BL.Database.Documents.Interfaces
 {
@@ -23,7 +24,7 @@ namespace BL.Database.Documents.Interfaces
         IEnumerable<int> GetLinkedDocumentIds(IContext ctx, int documentId);
 
         InternalDocument ReportDocumentForDigitalSignaturePrepare(IContext ctx, DigitalSignatureDocumentPdf model);
-        FilterDocumentFileIdentity ReportDocumentForDigitalSignature(IContext ctx, DigitalSignatureDocumentPdf model, bool isUseInternalSign, bool isUseCertificateSign);
+        FrontReport ReportDocumentForDigitalSignature(IContext ctx, DigitalSignatureDocumentPdf model, bool isUseInternalSign, bool isUseCertificateSign);
         InternalDocument ReportRegistrationCardDocumentPrepare(IContext ctx, int documentId);
         InternalDocument ReportRegistrationCardDocument(IContext ctx, int documentId);
 

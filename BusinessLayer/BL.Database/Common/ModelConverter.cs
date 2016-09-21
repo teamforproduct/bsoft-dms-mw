@@ -189,6 +189,7 @@ namespace BL.Database.Common
                     SubscriptionStateId = (int)subscription.SubscriptionStates,
                     Hash = subscription.Hash,
                     ChangedHash = subscription.ChangedHash,
+                    SigningTypeId = (int)subscription.SigningType,
                 };
         }
 
@@ -360,6 +361,8 @@ namespace BL.Database.Common
                 NotAfter = item.NotAfter,
                 AgentId = item.AgentId,
                 Certificate = item.CertificateZip,
+                IsRememberPassword = item.IsRememberPassword,
+
                 LastChangeDate = item.LastChangeDate,
                 LastChangeUserId = item.LastChangeUserId,
             };

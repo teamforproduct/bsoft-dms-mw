@@ -29,6 +29,8 @@ namespace BL.Database.DatabaseContext
             context.DictionarySubscriptionStatesSet.AddRange(GetDictionarySubscriptionStates());
             context.DictionaryPositionExecutorTypesSet.AddRange(GetDictionaryPositionExecutorTypes());
             context.DictionaryLinkTypesSet.AddRange(GetDictionaryLinkTypes());
+            context.DictionaryFileTypesSet.AddRange(GetDictionaryFileTypes());
+            context.DictionarySigningTypesSet.AddRange(GetDictionarySigningTypes());
 
             base.Seed(context);
         }
@@ -549,6 +551,17 @@ namespace BL.Database.DatabaseContext
             items.Add(new DictionaryFileTypes { Id = 0, Name = "Main", LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now });
             items.Add(new DictionaryFileTypes { Id = 1, Name = "Additional", LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now });
             items.Add(new DictionaryFileTypes { Id = 2, Name = "SubscribePdf", LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now });
+
+            return items;
+        }
+
+        private List<DictionarySigningTypes> GetDictionarySigningTypes()
+        {
+            var items = new List<DictionarySigningTypes>();
+
+            items.Add(new DictionarySigningTypes { Id = 0, Name = "Hash", LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now });
+            items.Add(new DictionarySigningTypes { Id = 1, Name = "InternalSign", LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now });
+            items.Add(new DictionarySigningTypes { Id = 2, Name = "CertificateSign", LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now });
 
             return items;
         }

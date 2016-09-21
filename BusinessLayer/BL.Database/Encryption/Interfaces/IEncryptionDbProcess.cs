@@ -14,7 +14,7 @@ namespace BL.Database.Encryption.Interfaces
 
         void AddCertificate(IContext ctx, InternalEncryptionCertificate item);
 
-        InternalEncryptionCertificate ModifyCertificatePrepare(IContext ctx, int itemId);
+        InternalEncryptionCertificate ModifyCertificatePrepare(IContext ctx, int itemId, int? agentId);
 
         void ModifyCertificate(IContext ctx, InternalEncryptionCertificate item);
 

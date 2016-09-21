@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BL.Model.Enums;
+using System;
 
 namespace BL.Model.DocumentCore.FrontModel
 {
@@ -17,7 +18,8 @@ namespace BL.Model.DocumentCore.FrontModel
         public FrontDocumentEvent SendEvent { get; set; }
         public FrontDocumentEvent DoneEvent { get; set; }
 
-        public bool IsUseCertificateSign { get; set; }
+        public EnumSigningTypes SigningType { get; set; }
+
         public int? CertificateId { get; set; }
         public string CertificateName { get; set; }
 

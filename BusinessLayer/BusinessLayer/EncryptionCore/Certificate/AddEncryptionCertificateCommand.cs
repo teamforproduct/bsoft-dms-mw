@@ -45,8 +45,9 @@ namespace BL.Logic.EncryptionCore.Certificate
                 CreateDate = DateTime.Now,
                 NotBefore = Model.NotBefore,
                 NotAfter = Model.NotAfter,
-                AgentId = _context.CurrentAgentId,
+                AgentId = !_context.IsAdmin ? _context.CurrentAgentId : Model.AgentId ?? _context.CurrentAgentId,
                 Password = Model.Password,
+                IsRememberPassword = Model.IsRememberPassword
             };
 
             using (var memoryStream = new MemoryStream())

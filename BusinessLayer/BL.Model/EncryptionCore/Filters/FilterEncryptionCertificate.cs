@@ -36,7 +36,14 @@ namespace BL.Model.EncryptionCore.Filters
         /// Дата "по" для отбора по дате внесения сертификата в систему
         /// </summary>
         public DateTime? CreateToDate { get; set; }
+        /// <summary>
+        /// В информации о сертификате храняться данные с которых он валиден, если задан этот фильтр то соответственно отбираются активные или не активные сертификаты
+        /// </summary>
         public bool? IsActive { get; set; }
 
+        /// <summary>
+        /// Только для админа, фильтрация по списку агентов
+        /// </summary>
+        public List<int> AgentId { get; set; }
     }
 }

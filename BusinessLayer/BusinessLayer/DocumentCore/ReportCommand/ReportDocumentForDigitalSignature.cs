@@ -48,7 +48,6 @@ namespace BL.Logic.DocumentCore.ReportsCommands
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
-            _context.SetCurrentPosition(_document.ExecutorPositionId);
 
             _admin.VerifyAccess(_context, CommandType);
 
@@ -64,7 +63,7 @@ namespace BL.Logic.DocumentCore.ReportsCommands
         {
             var file = _documentDb.ReportDocumentForDigitalSignature(_context, Model, GetIsUseInternalSign(), GetIsUseCertificateSign());
 
-            return DmsResolver.Current.Get<IDocumentFileService>().GetUserFile(_context, file);
+            return file;
         }
     }
 }

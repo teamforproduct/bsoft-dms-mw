@@ -102,6 +102,7 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<DictionaryImportanceEventTypes> DictionaryImportanceEventTypesSet { get; set; }
         public virtual DbSet<DictionaryLinkTypes> DictionaryLinkTypesSet { get; set; }
         public virtual DbSet<DictionaryFileTypes> DictionaryFileTypesSet { get; set; }
+        public virtual DbSet<DictionarySigningTypes> DictionarySigningTypesSet { get; set; }
         public virtual DbSet<DictionaryPositions> DictionaryPositionsSet { get; set; }
         public virtual DbSet<DictionaryPositionExecutors> DictionaryPositionExecutorsSet { get; set; }
         public virtual DbSet<DictionaryPositionExecutorTypes> DictionaryPositionExecutorTypesSet { get; set; }
