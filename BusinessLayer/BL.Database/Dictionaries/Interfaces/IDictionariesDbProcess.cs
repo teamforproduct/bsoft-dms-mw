@@ -100,8 +100,9 @@ namespace BL.Database.Dictionaries.Interfaces
         void DeleteContact(IContext context, InternalDictionaryContact contact);
         int AddContact(IContext context, InternalDictionaryContact contact);
         IEnumerable<FrontDictionaryContact> GetContacts(IContext context, int agentId, FilterDictionaryContact filter);
-        #endregion
         IEnumerable<int> GetAgentsIDByContacts(IContext context, IEnumerable<int> contacts);
+        #endregion
+
         #region DictionaryContactTypes
 
         string GetContactTypeSpecCode(IContext context, int id);
@@ -186,6 +187,8 @@ namespace BL.Database.Dictionaries.Interfaces
         IEnumerable<FrontDictionaryPosition> GetPositions(IContext context, FilterDictionaryPosition filter);
         IEnumerable<InternalDictionaryPositionWithActions> GetPositionsWithActions(IContext context, FilterDictionaryPosition filter);
         IEnumerable<TreeItem> GetPositionsForTree(IContext context, FilterDictionaryPosition filter);
+
+        IEnumerable<FrontDictionaryPositionTreeItem> GetPositionsForTreeSend(IContext context, int sourcePositionId, FilterDictionaryPosition filter);
 
         IEnumerable<SortPositoin> GetPositionsForSort(IContext context, FilterDictionaryPosition filter);
         #endregion DictionaryPositions

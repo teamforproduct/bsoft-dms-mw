@@ -3686,10 +3686,6 @@ namespace BL.Database.Dictionaries
             }
         }
 
-
-
-
-
         public int? GetExecutorAgentIdByPositionId(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context))
@@ -3828,6 +3824,41 @@ namespace BL.Database.Dictionaries
                     TreeParentId = x.DepartmentId.ToString() + "_" + parObjId,
                     IsActive = x.IsActive,
                     IsList = !(x.PositionExecutors.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any())// || x.ChildPositions.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any())
+                }).ToList();
+            }
+        }
+
+        public IEnumerable<FrontDictionaryPositionTreeItem> GetPositionsForTreeSend(IContext context, int sourcePositionId, FilterDictionaryPosition filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = GetPositionsQuery(context, dbContext, filter);
+
+                string objId = ((int)EnumObjects.DictionaryPositions).ToString();
+                string parObjId = ((int)EnumObjects.DictionaryDepartments).ToString();
+
+                return qry.Select(x => new FrontDictionaryPositionTreeItem
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    ObjectId = (int)EnumObjects.DictionaryPositions,
+                    TreeId = string.Concat(x.Id.ToString(), "_", objId),
+                    TreeParentId = x.DepartmentId.ToString() + "_" + parObjId,
+                    IsActive = x.IsActive,
+                    IsList = !(x.PositionExecutors.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any()),// || x.ChildPositions.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any())
+                    ExecutorName = x.ExecutorAgent.Name,
+                    IsInforming = (x.TargetPositionSubordinations
+                        .Where(y => y.TargetPositionId == x.Id)
+                        .Where(y => y.SourcePositionId == sourcePositionId)
+                        .Where(y => y.SubordinationTypeId == (int)EnumSubordinationTypes.Informing)
+                        .Any() ? 1 : 0),
+                    IsExecution = (x.TargetPositionSubordinations
+                        .Where(y => y.TargetPositionId == x.Id)
+                        .Where(y => y.SourcePositionId == sourcePositionId)
+                        .Where(y => y.SubordinationTypeId == (int)EnumSubordinationTypes.Execution)
+                        .Any() ? 1 : 0),
+                    SourcePositionId = sourcePositionId,
+                    TargetPositionId = x.Id
                 }).ToList();
             }
         }

@@ -13,6 +13,8 @@
         /// Изменить сертификат
         /// </summary>
         ModifyEncryptionCertificate = 401002,
+
+        ExportEncryptionCertificate = 401003,
         /// <summary>
         /// Удалить сертификат
         /// </summary>

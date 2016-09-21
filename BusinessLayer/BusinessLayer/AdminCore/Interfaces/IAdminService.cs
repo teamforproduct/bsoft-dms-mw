@@ -7,6 +7,7 @@ using BL.Model.Enums;
 using BL.Model.Users;
 using System.Collections.Generic;
 using BL.Model.Tree;
+using BL.Model.DictionaryCore.FilterModel;
 
 namespace BL.Logic.AdminCore.Interfaces
 {
@@ -55,6 +56,8 @@ namespace BL.Logic.AdminCore.Interfaces
 
         #region [+] Subordinations ...
         IEnumerable<FrontAdminSubordination> GetAdminSubordinations(IContext context, FilterAdminSubordination filter);
+
+        IEnumerable<ITreeItem> GetSubordinationsTree(IContext context, int positionId, FilterAdminSubordinationTree filter);
         #endregion
 
         #region [+] MainMenu ...

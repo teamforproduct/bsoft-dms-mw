@@ -103,6 +103,7 @@
     <Compile Include="AdminCore\Interfaces\IAdminService.cs" />
     <Compile Include="AdminCore\Interfaces\ILanguageService.cs" />
     <Compile Include="AdminCore\LanguageService.cs" />
+    <Compile Include="AdminCore\Subordination\SetSubordinationCommand.cs" />
     <Compile Include="AdminCore\Subordination\AddSubordinationCommand.cs" />
     <Compile Include="AdminCore\Subordination\DeleteSubordinationCommand.cs" />
     <Compile Include="AdminCore\Subordination\ModifySubordinationCommand.cs" />
