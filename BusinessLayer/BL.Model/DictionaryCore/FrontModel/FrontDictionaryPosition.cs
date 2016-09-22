@@ -18,6 +18,11 @@ namespace BL.Model.DictionaryCore.FrontModel
         public new int Id { get; set; }
 
         /// <summary>
+        /// Код подразделения
+        /// </summary>
+        public string DepartmentCode { get; set; }
+
+        /// <summary>
         /// Наименование подразделения
         /// </summary>
         public string DepartmentName { get; set; }
