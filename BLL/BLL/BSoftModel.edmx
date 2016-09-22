@@ -687,6 +687,9 @@
             <End Role="AdminUsers" EntitySet="DictionaryAgentUsersSet" />
             <End Role="DictionaryAgents" EntitySet="DictionaryAgentsSet" />
           </AssociationSet>
+          <EntitySet Name="SystemPatternsSet" EntityType="bsoftModel.SystemPatterns" />
+          <EntitySet Name="SystemFormulasSet" EntityType="bsoftModel.SystemFormulas" />
+          <EntitySet Name="SystemFormatsSet" EntityType="bsoftModel.SystemFormats" />
         </EntityContainer>
         <EntityType Name="Documents">
           <Documentation>
@@ -3592,6 +3595,34 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="SystemPatterns">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Code" Type="String" Nullable="false" MaxLength="Max" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="Max" />
+          <Property Name="Description" Type="String" Nullable="false" MaxLength="Max" />
+        </EntityType>
+        <EntityType Name="SystemFormulas">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Code" Type="String" Nullable="false" MaxLength="Max" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="Max" />
+          <Property Name="Description" Type="String" Nullable="false" MaxLength="Max" />
+          <Property Name="Example" Type="String" Nullable="false" MaxLength="Max" />
+        </EntityType>
+        <EntityType Name="SystemFormats">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Code" Type="String" Nullable="false" MaxLength="Max" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="Max" />
+          <Property Name="Description" Type="String" Nullable="false" MaxLength="Max" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->

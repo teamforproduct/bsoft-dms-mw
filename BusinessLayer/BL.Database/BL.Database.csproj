@@ -201,6 +201,8 @@
     <Compile Include="DBModel\System\SystemLogs.cs" />
     <Compile Include="DBModel\System\SystemObjects.cs" />
     <Compile Include="DBModel\Admin\AdminLanguages.cs" />
+    <Compile Include="DBModel\System\SystemFormulas.cs" />
+    <Compile Include="DBModel\System\SystemFormats.cs" />
     <Compile Include="DBModel\System\SystemSettings.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryAgents.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryCompanies.cs" />
@@ -219,6 +221,7 @@
     <Compile Include="DBModel\Document\DocumentFiles.cs" />
     <Compile Include="DBModel\Document\Documents.cs" />
     <Compile Include="DBModel\System\SystemUIElements.cs" />
+    <Compile Include="DBModel\System\SystemPatterns.cs" />
     <Compile Include="DBModel\System\SystemValueTypes.cs" />
     <Compile Include="DBModel\Template\TemplateDocumentFiles.cs" />
     <Compile Include="DBModel\Template\TemplateDocumentRestrictedSendLists.cs" />

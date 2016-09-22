@@ -70,9 +70,9 @@ namespace BL.Logic.DocumentCore.Commands
         {
             var addDescripton = (Model.TargetDescription != _docWait.TargetDescription ? "формулировка задачи" + "," : "")
                     + ((Model.TargetAttentionDate != _docWait.AttentionDate ? "дата постоянного внимания" + "," : ""));
-            addDescripton = addDescripton.Remove(addDescripton.Length - 1);
             if (!string.IsNullOrEmpty(addDescripton))
             {
+                addDescripton = addDescripton.Remove(addDescripton.Length - 1);
                 var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, _docWait.DocumentId, EnumEventTypes.ControlTargetChange, Model.EventDate, Model.TargetDescription, addDescripton, _docWait.OnEvent.TaskId, _docWait.OnEvent.IsAvailableWithinTask);
                 _docWait.TargetDescription = Model.TargetDescription;
                 _docWait.AttentionDate = Model.TargetAttentionDate;

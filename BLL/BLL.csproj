@@ -255,7 +255,16 @@
     <Compile Include="BLL\SystemFields.cs">
       <DependentUpon>BSoftModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="BLL\SystemFormats.cs">
+      <DependentUpon>BSoftModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="BLL\SystemFormulas.cs">
+      <DependentUpon>BSoftModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="BLL\SystemObjects.cs">
+      <DependentUpon>BSoftModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="BLL\SystemPatterns.cs">
       <DependentUpon>BSoftModel.tt</DependentUpon>
     </Compile>
     <Compile Include="BLL\SystemUIElements.cs">
