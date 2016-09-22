@@ -186,7 +186,7 @@ namespace BL.Database.Dictionaries.Interfaces
 
         IEnumerable<FrontDictionaryPosition> GetPositions(IContext context, FilterDictionaryPosition filter);
         IEnumerable<InternalDictionaryPositionWithActions> GetPositionsWithActions(IContext context, FilterDictionaryPosition filter);
-        IEnumerable<TreeItem> GetPositionsForTree(IContext context, FilterDictionaryPosition filter);
+        IEnumerable<FrontDictionaryPositionTreeItem> GetPositionsForTree(IContext context, FilterDictionaryPosition filter);
 
         IEnumerable<FrontDictionaryPositionTreeItem> GetPositionsForTreeSend(IContext context, int sourcePositionId, FilterDictionaryPosition filter);
 

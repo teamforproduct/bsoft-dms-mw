@@ -3806,7 +3806,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<TreeItem> GetPositionsForTree(IContext context, FilterDictionaryPosition filter)
+        public IEnumerable<FrontDictionaryPositionTreeItem> GetPositionsForTree(IContext context, FilterDictionaryPosition filter)
         {
             using (var dbContext = new DmsContext(context))
             {
@@ -3815,7 +3815,7 @@ namespace BL.Database.Dictionaries
                 string objId = ((int)EnumObjects.DictionaryPositions).ToString();
                 string parObjId = ((int)EnumObjects.DictionaryDepartments).ToString();
 
-                return qry.Select(x => new TreeItem
+                return qry.Select(x => new FrontDictionaryPositionTreeItem
                 {
                     Id = x.Id,
                     Name = x.Name,
@@ -3823,7 +3823,8 @@ namespace BL.Database.Dictionaries
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = x.DepartmentId.ToString() + "_" + parObjId,
                     IsActive = x.IsActive,
-                    IsList = !(x.PositionExecutors.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any())// || x.ChildPositions.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any())
+                    IsList = !(x.PositionExecutors.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any()),// || x.ChildPositions.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any())
+                    Order = x.Order
                 }).ToList();
             }
         }
@@ -5128,6 +5129,9 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context))
             {
+
+                var contents = dbContext.DictionaryStandartSendListContentsSet.Where(y => y.StandartSendListId == list.Id);
+                dbContext.DictionaryStandartSendListContentsSet.RemoveRange(contents);
 
                 var ddt = dbContext.DictionaryStandartSendListsSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == list.Id);
                 dbContext.DictionaryStandartSendListsSet.Remove(ddt);
