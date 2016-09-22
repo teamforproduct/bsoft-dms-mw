@@ -54,6 +54,11 @@ namespace BL.Model.EncryptionCore.FrontModel
         public string AgentName { get; set; }
 
         /// <summary>
+        /// Можно ли запомнить пароль к сертификату
+        /// </summary>
+        public bool IsRememberPassword { get; set; }
+
+        /// <summary>
         /// Кто последний изменял
         /// </summary>
         public int? LastChangeUserId { get; set; }

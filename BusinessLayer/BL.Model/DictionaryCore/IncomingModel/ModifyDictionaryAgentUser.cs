@@ -1,4 +1,5 @@
 ﻿using System.Runtime.Serialization;
+using System.Web;
 
 namespace BL.Model.DictionaryCore.IncomingModel
 {
@@ -16,14 +17,36 @@ namespace BL.Model.DictionaryCore.IncomingModel
         public int Id { get; set; }
          
         /// <summary>
-        /// Наименование компании
+        /// Айдишник веб-юзера
         /// </summary>
         public string UserId { get; set; }
+        
+        /// <summary>
+        /// Осносной адрес пользователя, на который высылается письмо с приглашением
+        /// </summary>
+        public string Login { get; set; }
+
+        /// <summary>
+        /// Хеш пароля, пароль генерируется автоматически
+        /// </summary>
+        [IgnoreDataMember]
+        public string PasswordHash { get; set; }
 
         /// <summary>
         /// Профиль пользователя. Язык интерфейса.
         /// </summary>
         public int? LanguageId { get; set; }
 
-}
+        /// <summary>
+        /// Признак активности
+        /// </summary>
+        public bool IsActive { get; set; }
+
+        /// <summary>
+        /// Аватар
+        /// </summary>
+        //[IgnoreDataMember]
+        public HttpPostedFile Picture { get; set; }
+
+    }
 }

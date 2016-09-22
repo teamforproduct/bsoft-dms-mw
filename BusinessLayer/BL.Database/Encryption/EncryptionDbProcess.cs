@@ -25,7 +25,8 @@ namespace BL.Database.Encryption
     internal class EncryptionDbProcess : CoreDb.CoreDb, IEncryptionDbProcess
     {
         private string _ZipCerPassword { get; } = "Qk1ncZA|HzaNiQ?8*3QjCMHQqIXQMce6m0JDqup~Nh13#H6{~BG9v2@xIGFKa%Hq5T$kEDo{mYGtXWryVCoR2PtA}QSvG*zPe6%9Q{T?4T*NOM{R}LgLkThZRF$%tb#wEw@pU7${oJzbdSq{3LsM?SOH0GMnub@#N|PH$Z}8gh%c}Wpb8hf$AhMM0@4%cusABMiP}{wIl*QEtKzqS5TZnRHOt~k3uEBc9d6%vuX6UKD0@eithk%ACMkrtrfIpY";
-        private string _ZipCerName { get; } = "certificate";
+        private string _ZipCerFileName { get; } = "certificate";
+        private string _ZipCerPasswordFileName { get; } = "password.txt";
 
         private const string _RSAKeyXml = "<RSAKeyValue><Modulus>sBRZy9xvw7FWdb5EHd79H8f2D4+JP3yokrbKpCgFbcwCEPPZpGUj07poBM9MvrIXEIHoahIYVw3UqWCLvFFL6Cb+u3zrOTaNmCNyXdZ4H/28sskfuBtVzXjllzwEkrcJg0NfSmCbjw/9YFUYEdl1ZTUL40pN8Kuk1Wr1f/wP+wk=</Modulus><Exponent>AQAB</Exponent><P>twV17e14On7eLeKl46JRJnnXrvZp4tHj68iNFk/S8tK/uKj3b9xeTTqxI6S31xQ3mN26X54egttXNjQ7V9OUaQ==</P><Q>9kpHMG4hxQ3/q1FyPlLgNV1XPDyeGoNF1QQDZ7Te8xfWvPW1ildAYsCEJ91tZMstgJR7oojYPy7VTNDn8bndoQ==</Q><DP>SLy017Bu/eB58IaJI2TZF4+I9pIcFvcPvB9iYyGqVrMHWx5b6GsOV2ciC2ZlYec5CVnlviabPapqiLJNe2QtMQ==</DP><DQ>R++uF2Ezj+Dk2l8xpS6DulKHFlsGOuw4y10euX3E2PAPkqWZ3sxZS/67GwG74ALQSYwVCIY700iUmJk0BhCpwQ==</DQ><InverseQ>oN5Vlg5M68jAeeZRiduiyMBw/T+oZQ5zaxMlvqIhgF603xRjHTzcNaHZB9Kvn0YBnfcRx6F1PfSkJJl4rWAaDw==</InverseQ><D>AIZ3BBwquy82vlAsfNhS8frTOZWoh6d0C0f/T8EMzxiKMwm/LvXcRv/p2oXRyUnXtsVkb5iROQVCCqVOlWe6rbvUMU8P554u4t9g0y1oLJUQDbYmRBo6z0I31OTRNBb7nCI6/l01Vyq6Ju225EdOEL8EVNd/wkQXoYRbm7Mun4E=</D></RSAKeyValue>";
 
@@ -76,6 +77,7 @@ namespace BL.Database.Encryption
                     NotAfter = x.NotAfter,
                     AgentId = x.AgentId,
                     AgentName = x.Agent.Name,
+                    IsRememberPassword = x.IsRememberPassword,
 
                     LastChangeUserId = x.LastChangeUserId,
                     LastChangeDate = x.LastChangeDate,
@@ -102,6 +104,7 @@ namespace BL.Database.Encryption
                     AgentId = x.AgentId,
                     CertificateZip = x.Certificate,
                     Thumbprint = x.Thumbprint,
+                    IsRememberPassword = x.IsRememberPassword,
 
                     LastChangeUserId = x.LastChangeUserId,
                     LastChangeDate = x.LastChangeDate,
@@ -131,11 +134,13 @@ namespace BL.Database.Encryption
             }
         }
 
-        public InternalEncryptionCertificate ModifyCertificatePrepare(IContext ctx, int itemId)
+        public InternalEncryptionCertificate ModifyCertificatePrepare(IContext ctx, int itemId, int? agentId)
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                var qry = CommonQueries.GetCertificatesQuery(dbContext, ctx, new FilterEncryptionCertificate { CertificateId = new List<int> { itemId } });
+                var filter = new FilterEncryptionCertificate { CertificateId = new List<int> { itemId } };
+                if (ctx.IsAdmin && agentId.HasValue) filter.AgentId = new List<int> { agentId.Value };
+                var qry = CommonQueries.GetCertificatesQuery(dbContext, ctx, filter);
 
                 var item = qry.Select(x => new InternalEncryptionCertificate
                 {
@@ -229,16 +234,34 @@ namespace BL.Database.Encryption
 
             using (var memoryStream = new MemoryStream(item.CertificateZip))
             using (Ionic.Zip.ZipFile zip = Ionic.Zip.ZipFile.Read(memoryStream))
-            using (var streamReader = new MemoryStream())
             {
-                zip.Password = _ZipCerPassword;
-                zip.Encryption = Ionic.Zip.EncryptionAlgorithm.WinZipAes256;
-                var file = zip[$"{_ZipCerName}.pfx"];
-                file.Password = _ZipCerPassword;
-                file.Encryption = Ionic.Zip.EncryptionAlgorithm.WinZipAes256;
-                file.Extract(streamReader);
+                using (var streamReader = new MemoryStream())
+                {
+                    zip.Password = _ZipCerPassword;
+                    zip.Encryption = Ionic.Zip.EncryptionAlgorithm.WinZipAes256;
+                    var file = zip[$"{_ZipCerFileName}.pfx"];
+                    file.Password = _ZipCerPassword;
+                    file.Encryption = Ionic.Zip.EncryptionAlgorithm.WinZipAes256;
+                    file.Extract(streamReader);
 
-                item.Certificate = streamReader.ToArray();
+                    item.Certificate = streamReader.ToArray();
+                }
+
+                if (item.IsRememberPassword && zip.ContainsEntry($"{_ZipCerPasswordFileName}.txt"))
+                    using (var streamReader = new MemoryStream())
+                    {
+                        zip.Password = _ZipCerPassword;
+                        zip.Encryption = Ionic.Zip.EncryptionAlgorithm.WinZipAes256;
+                        var file = zip[$"{_ZipCerPasswordFileName}.txt"];
+                        file.Password = _ZipCerPassword;
+                        file.Encryption = Ionic.Zip.EncryptionAlgorithm.WinZipAes256;
+                        file.Extract(streamReader);
+
+                        streamReader.Position = 0;
+
+                        TextReader tr = new StreamReader(streamReader);
+                        item.Password = tr.ReadLine();
+                    }
             }
         }
 
@@ -250,16 +273,32 @@ namespace BL.Database.Encryption
             }
 
             using (var memoryStream = new MemoryStream())
+            using (var cerPasswordFile = new MemoryStream())
             using (Ionic.Zip.ZipFile zip = new Ionic.Zip.ZipFile())
             {
                 zip.Password = _ZipCerPassword;
                 zip.Encryption = Ionic.Zip.EncryptionAlgorithm.WinZipAes256;
 
                 Ionic.Zip.ZipEntry file;
-                file = zip.AddEntry($"{_ZipCerName}.pfx", item.Certificate);
+                file = zip.AddEntry($"{_ZipCerFileName}.pfx", item.Certificate);
 
                 file.Password = _ZipCerPassword;
                 file.Encryption = Ionic.Zip.EncryptionAlgorithm.WinZipAes256;
+
+                if (item.IsRememberPassword && !string.IsNullOrEmpty(item.Password))
+                {
+                    using (TextWriter tw = new StreamWriter(cerPasswordFile))
+                    {
+                        tw.WriteLine(item.Password);
+                        tw.Flush();
+                    }
+
+                    file = zip.AddEntry($"{_ZipCerPasswordFileName}.txt", cerPasswordFile.ToArray());
+
+                    file.Password = _ZipCerPassword;
+                    file.Encryption = Ionic.Zip.EncryptionAlgorithm.WinZipAes256;
+                }
+
                 zip.Save(memoryStream);
                 item.CertificateZip = memoryStream.ToArray();
             }
@@ -449,6 +488,9 @@ namespace BL.Database.Encryption
         //возвращает - абсолютный путь подписанного PDF
         [DllImport("CryptoExts.dll", SetLastError = true, CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr SignFilePdfPath(char[] data);
+        //проверить подпись(и) PDF, подписанного в этом сеансе (контрольная проверка)
+        [DllImport("CryptoExts.dll", SetLastError = true, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int VerifyPdf(char[] data);
 
         public static string StringFromNativeUtf8(IntPtr nativeUtf8)
         {
@@ -723,7 +765,7 @@ namespace BL.Database.Encryption
             return res;
         }
 
-        public bool VerifyCertificateSignPdf(IContext ctx, byte[] pdf)
+        public bool VerifyCertificateSignPdf(byte[] pdf)
         {
             int res = -1;
 
@@ -736,13 +778,9 @@ namespace BL.Database.Encryption
                 {
                     File.WriteAllBytes(file, pdf);
 
-                    IntPtr downfile = Download(file.ToCharArray());
-                    string downPdfFile = StringFromNativeUtf8(downfile);
+                    file = file.Replace("\\", "/");
 
-                    if (downPdfFile.Length > 0)
-                    {
-                        res = VerifyPdf();
-                    }
+                    res = VerifyPdf(file.ToCharArray());
                 }
                 catch (CryptographicException e)
                 {

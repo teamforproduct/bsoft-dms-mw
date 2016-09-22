@@ -67,14 +67,17 @@ namespace BL.Logic.AdminCore
                 #endregion
 
                 #region AdminSubordinations
-                case EnumAdminActions.AddSubordination:
-                    cmd = DmsResolver.Current.Get<AddSubordinationCommand>();
-                    break;
-                case EnumAdminActions.ModifySubordination:
-                    cmd = DmsResolver.Current.Get<ModifySubordinationCommand>();
-                    break;
-                case EnumAdminActions.DeleteSubordination:
-                    cmd = DmsResolver.Current.Get<DeleteSubordinationCommand>();
+                //case EnumAdminActions.AddSubordination:
+                //    cmd = DmsResolver.Current.Get<AddSubordinationCommand>();
+                //    break;
+                //case EnumAdminActions.ModifySubordination:
+                //    cmd = DmsResolver.Current.Get<ModifySubordinationCommand>();
+                //    break;
+                //case EnumAdminActions.DeleteSubordination:
+                //    cmd = DmsResolver.Current.Get<DeleteSubordinationCommand>();
+                //    break;
+                case EnumAdminActions.SetSubordination:
+                    cmd = DmsResolver.Current.Get<SetSubordinationCommand>();
                     break;
                 #endregion
 

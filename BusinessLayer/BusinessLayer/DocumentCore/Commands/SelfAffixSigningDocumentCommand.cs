@@ -68,11 +68,12 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 DocumentId = _document.Id,
                 SubscriptionStates = CommonDocumentUtilities.SubscriptionStatesForAction[CommandType],
-                Description = Model.VisaText
+                Description = Model.VisaText,
+                SigningType = Model.SigningType,
             };
 
             var isUseCertificateSign = GetIsUseCertificateSign();
-            if (isUseCertificateSign && Model.CertificateId.HasValue)
+            if (isUseCertificateSign && Model.SigningType == EnumSigningTypes.CertificateSign)
             {
                 subscription.CertificateId = Model.CertificateId;
                 subscription.CertificatePassword = Model.CertificatePassword;

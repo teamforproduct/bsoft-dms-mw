@@ -18,5 +18,10 @@ namespace BL.Model.EncryptionCore.IncomingModel
         /// Название сертификата
         /// </summary>
         public string Name { get; set; }
+
+        /// <summary>
+        /// ID Агента. Используется только админом
+        /// </summary>
+        public int? AgentId { get; set; }
     }
 }

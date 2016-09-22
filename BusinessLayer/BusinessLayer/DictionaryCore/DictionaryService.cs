@@ -664,8 +664,7 @@ namespace BL.Logic.DictionaryCore
         }
         #endregion DictionaryLinkTypes
 
-        // Штатное расписание
-        #region DictionaryPositions
+        #region [+] DictionaryPositions ...
         public FrontDictionaryPosition GetDictionaryPosition(IContext context, int id)
         {
 

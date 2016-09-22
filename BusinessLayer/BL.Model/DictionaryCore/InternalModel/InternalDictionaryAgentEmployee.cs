@@ -37,10 +37,10 @@ namespace BL.Model.DictionaryCore.InternalModel
 
             #region [+] AgentUser ...
             LanguageId = model.LanguageId;
-            UserId = model.UserId;
-            Login = model.Login;
+            //UserId = model.UserId;
+            //Login = model.Login;
             PasswordHash = model.PasswordHash;
-            Email = model.Email;
+            Login = model.Login;
             Phone = model.Phone;
             #endregion
 
@@ -118,12 +118,13 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// <summary>
         /// Связь с WEB - USER
         /// </summary>
-        public string UserId { get; set; }
+       // public string UserId { get; set; }
+
         
         /// <summary>
         /// Логин
         /// </summary>
-        public string Login { get; set; }
+        //public string PasswordHash { get; set; }
 
         /// <summary>
         /// Пароль
@@ -133,7 +134,7 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// <summary>
         /// Основной имейл, на который высылается письмо с приглашением
         /// </summary>
-        public string Email { get; set; }
+        public string Login { get; set; }
 
         /// <summary>
         /// Основной номер мобильного телефона

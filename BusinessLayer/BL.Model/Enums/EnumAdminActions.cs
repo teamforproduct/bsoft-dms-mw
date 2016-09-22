@@ -67,18 +67,23 @@
         #endregion
 
         #region [+] Subordinations ...
+        ///// <summary>
+        ///// Добавить
+        ///// </summary>
+        //AddSubordination = 704001,
+        ///// <summary>
+        ///// Изменить
+        ///// </summary>
+        //ModifySubordination = 704005,
+        ///// <summary>
+        ///// Удалить 
+        ///// </summary>
+        //DeleteSubordination = 704009,
+
         /// <summary>
-        /// Добавить
+        /// Совокупность действий по управлению субординацией
         /// </summary>
-        AddSubordination = 704001,
-        /// <summary>
-        /// Изменить
-        /// </summary>
-        ModifySubordination = 704005,
-        /// <summary>
-        /// Удалить 
-        /// </summary>
-        DeleteSubordination = 704009
+        SetSubordination = 704001,
         #endregion
 
     }

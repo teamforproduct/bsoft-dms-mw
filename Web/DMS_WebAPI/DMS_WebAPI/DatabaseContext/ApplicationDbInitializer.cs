@@ -172,7 +172,7 @@ namespace DMS_WebAPI.Models
             items.Add(new AdminLanguageValues { Id = 126, LanguageId = 2, Label = "##l@DmsExceptions:DictionaryRecordCouldNotBeDeleted@l##", Value = "You could not delete from this dictionary data!" });
             items.Add(new AdminLanguageValues { Id = 127, LanguageId = 1, Label = "##l@DmsExceptions:DictionaryRecordWasNotFound@l##", Value = "Невозможно обновить несуществующую строку справочника в БД" });
             items.Add(new AdminLanguageValues { Id = 128, LanguageId = 2, Label = "##l@DmsExceptions:DictionaryRecordWasNotFound@l##", Value = "Dictionary record was not found!" });
-            items.Add(new AdminLanguageValues { Id = 129, LanguageId = 1, Label = "##l@DmsExceptions:DictionaryRecordNotUnique@l##", Value = "Невозможно обновить несуществующую строку справочника в БД" });
+            items.Add(new AdminLanguageValues { Id = 129, LanguageId = 1, Label = "##l@DmsExceptions:DictionaryRecordNotUnique@l##", Value = "Запись не уникальна" });
             items.Add(new AdminLanguageValues { Id = 130, LanguageId = 2, Label = "##l@DmsExceptions:DictionaryRecordNotUnique@l##", Value = "Dictionary record should be unique!" });
             items.Add(new AdminLanguageValues { Id = 131, LanguageId = 1, Label = "##l@DmsExceptions:IncomingModelIsNotValid@l##", Value = "Входящая модель недействительна!" });
             items.Add(new AdminLanguageValues { Id = 132, LanguageId = 2, Label = "##l@DmsExceptions:IncomingModelIsNotValid@l##", Value = "Incoming Model is not valid!" });

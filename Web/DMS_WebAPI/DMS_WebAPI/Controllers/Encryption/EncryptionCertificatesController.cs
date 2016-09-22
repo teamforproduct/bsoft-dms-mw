@@ -54,7 +54,10 @@ namespace DMS_WebAPI.Controllers.Encryption
         }
 
         /// <summary>
-        /// Добавление нового сертификата
+        /// Добавление нового сертификата.
+        /// Из-за того что необходимо передать файл, все остальные параметры перадаються через GET параметры.
+        /// multipart/form-data
+        /// Все аналогично добавлению файла к документу
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>

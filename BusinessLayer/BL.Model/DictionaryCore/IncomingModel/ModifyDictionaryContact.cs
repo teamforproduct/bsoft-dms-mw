@@ -50,11 +50,6 @@ namespace BL.Model.DictionaryCore.IncomingModel
         public bool IsConfirmed { get; set; }
         
         /// <summary>
-        /// Основной
-        /// </summary>
-        public bool IsPrimary { get; set; }
-
-        /// <summary>
         /// Дополнительная информация. Сюда будут записывать контакт, если маска не пропустит :)
         /// </summary>
         public string Description { get; set; }

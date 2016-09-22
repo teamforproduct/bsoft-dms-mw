@@ -13,6 +13,16 @@ namespace BL.Model.AdminCore.FrontModel
         /// </summary>
         public new int Id { get; set; }
 
+        /// <summary>
+        /// Должность
+        /// </summary>
+        public new int? PositionId { get; set; }
+
+        /// <summary>
+        /// Роль
+        /// </summary>
+        public new int? RoleId { get; set; }
+
         ///// <summary>
         ///// Должность
         ///// </summary>

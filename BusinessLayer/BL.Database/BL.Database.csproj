@@ -166,6 +166,7 @@
     <Compile Include="DBModel\Dictionary\DictionaryAgentUsers.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryAgentPersons.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryAgentContacts.cs" />
+    <Compile Include="DBModel\Dictionary\DictionarySigningTypes.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryFileTypes.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryLinkTypes.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryContactTypes.cs" />
@@ -308,6 +309,14 @@
     <Compile Include="Migrations\201609151426266_dictChange.Designer.cs">
       <DependentUpon>201609151426266_dictChange.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201609192114336_SigningType.cs" />
+    <Compile Include="Migrations\201609192114336_SigningType.Designer.cs">
+      <DependentUpon>201609192114336_SigningType.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201609192127004_SigningType_2.cs" />
+    <Compile Include="Migrations\201609192127004_SigningType_2.Designer.cs">
+      <DependentUpon>201609192127004_SigningType_2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reports\DataSetCrystalReports.Designer.cs">
@@ -420,6 +429,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201609151426266_dictChange.resx">
       <DependentUpon>201609151426266_dictChange.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201609192114336_SigningType.resx">
+      <DependentUpon>201609192114336_SigningType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201609192127004_SigningType_2.resx">
+      <DependentUpon>201609192127004_SigningType_2.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\ReportRegistrationCardIncomingDocument.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

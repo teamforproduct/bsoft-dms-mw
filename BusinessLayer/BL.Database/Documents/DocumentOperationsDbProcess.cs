@@ -430,7 +430,7 @@ namespace BL.Database.Documents
                 if (subscription != null)
                 {
                     var docHash = CommonQueries.GetDocumentHash(dbContext, ctx, document.Id,
-                                                                isUseInternalSign, isUseCertificateSign, subscription.CertificateId, subscription.CertificatePassword, subscription.Id,
+                                                                isUseInternalSign, isUseCertificateSign, subscription,
                                                                  subscription.SubscriptionStates == EnumSubscriptionStates.Sign ||
                                                                  subscription.SubscriptionStates == EnumSubscriptionStates.Visa ||
                                                                  subscription.SubscriptionStates == EnumSubscriptionStates.Аgreement ||
@@ -444,10 +444,12 @@ namespace BL.Database.Documents
                         Hash = docHash?.Hash,
                         FullHash = docHash?.FullHash,
 
+                        SigningTypeId = (int)subscription.SigningType,
+
                         InternalSign = docHash.InternalSign,
                         CertificateSign = docHash.CertificateSign,
                         CertificateId = subscription.CertificateId,
-                        CertificateSignCreateDate = DateTime.Now,
+                        CertificateSignCreateDate = subscription.SigningType == EnumSigningTypes.CertificateSign ? DateTime.Now : (DateTime?)null,
                         CertificatePositionId = subscription.CertificatePositionId,
                         CertificatePositionExecutorAgentId = subscription.CertificatePositionExecutorAgentId,
 
@@ -468,6 +470,8 @@ namespace BL.Database.Documents
                     entry.Property(x => x.LastChangeDate).IsModified = true;
                     entry.Property(x => x.LastChangeUserId).IsModified = true;
 
+                    entry.Property(x => x.SigningTypeId).IsModified = true;
+
                     entry.Property(x => x.InternalSign).IsModified = true;
                     entry.Property(x => x.CertificateSign).IsModified = true;
                     entry.Property(x => x.CertificateId).IsModified = true;
@@ -476,6 +480,14 @@ namespace BL.Database.Documents
                     entry.Property(x => x.CertificatePositionExecutorAgentId).IsModified = true;
                 }
                 dbContext.SaveChanges();
+            }
+        }
+
+        public void VerifySigningDocument(IContext ctx, int documentId, bool isUseInternalSign, bool isUseCertificateSign)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                var docHash = CommonQueries.GetDocumentHash(dbContext, ctx, documentId, isUseInternalSign, isUseCertificateSign, null, false, true);
             }
         }
 
@@ -490,7 +502,7 @@ namespace BL.Database.Documents
                     var subscription = document.Subscriptions.First();
 
                     var docHash = CommonQueries.GetDocumentHash(dbContext, ctx, document.Id,
-                                                                isUseInternalSign, isUseCertificateSign, subscription.CertificateId, subscription.CertificatePassword, 0,
+                                                                isUseInternalSign, isUseCertificateSign, subscription,
                                                                  subscription.SubscriptionStates == EnumSubscriptionStates.Sign ||
                                                                  subscription.SubscriptionStates == EnumSubscriptionStates.Visa ||
                                                                  subscription.SubscriptionStates == EnumSubscriptionStates.Аgreement ||

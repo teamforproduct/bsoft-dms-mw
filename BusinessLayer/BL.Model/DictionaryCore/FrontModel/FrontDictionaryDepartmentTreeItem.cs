@@ -19,6 +19,11 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// </summary>
         [IgnoreDataMember]
         public string Code { get; set; }
+
+        /// <summary>
+        /// Id компании
+        /// </summary>
+        public int CompanyId { get; set; }
         
     }
 }

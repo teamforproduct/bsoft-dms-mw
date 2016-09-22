@@ -31,6 +31,15 @@ namespace BL.Logic.DictionaryCore
         public override bool CanExecute()
         {
             _admin.VerifyAccess(_context, CommandType,false,true);
+
+            string specCode = _dictDb.GetContactTypeSpecCode(_context, Model);
+
+            if (!string.IsNullOrEmpty(specCode))
+            {
+                throw new DictionarySystemRecordCouldNotBeDeleted();
+            }
+
+
             return true;
         }
 

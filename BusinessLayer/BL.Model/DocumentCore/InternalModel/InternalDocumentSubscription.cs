@@ -1,6 +1,7 @@
 ﻿using BL.Model.Common;
 using BL.Model.Enums;
 using BL.Model.Reports.Interfaces;
+using System;
 
 namespace BL.Model.DocumentCore.InternalModel
 {
@@ -17,6 +18,8 @@ namespace BL.Model.DocumentCore.InternalModel
         public InternalDocumentEvent SendEvent { get; set; }
         public InternalDocumentEvent DoneEvent { get; set; }
         public EnumSubscriptionStates SubscriptionStates { get; set; }
+
+        public EnumSigningTypes SigningType { get; set; }
 
         public string InternalSign { get; set; }
         public string CertificateSign { get; set; }

@@ -1,4 +1,5 @@
-﻿using BL.Model.Users;
+﻿using BL.Model.Enums;
+using BL.Model.Users;
 using System;
 using System.ComponentModel.DataAnnotations;
 
@@ -26,6 +27,12 @@ namespace BL.Model.DocumentCore.Actions
         /// Текст визы
         /// </summary>
         public string VisaText { get; set; }
+
+        /// <summary>
+        /// Тип подписи
+        /// </summary>
+        public EnumSigningTypes SigningType { get; set; }
+
         /// <summary>
         /// ИД должности, от которой будет выполнятся действие
         /// </summary>

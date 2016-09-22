@@ -14,7 +14,7 @@ namespace BL.Database.Encryption.Interfaces
 
         void AddCertificate(IContext ctx, InternalEncryptionCertificate item);
 
-        InternalEncryptionCertificate ModifyCertificatePrepare(IContext ctx, int itemId);
+        InternalEncryptionCertificate ModifyCertificatePrepare(IContext ctx, int itemId, int? agentId);
 
         void ModifyCertificate(IContext ctx, InternalEncryptionCertificate item);
 
@@ -30,7 +30,7 @@ namespace BL.Database.Encryption.Interfaces
 
         #region CertificateSignPdf
         byte[] GetCertificateSignPdf(IContext ctx, int certificateId, string certificatePassword, byte[] pdf);
-        bool VerifyCertificateSignPdf(IContext ctx, byte[] pdf);
+        bool VerifyCertificateSignPdf(byte[] pdf);
         #endregion
 
         #region InternalSign

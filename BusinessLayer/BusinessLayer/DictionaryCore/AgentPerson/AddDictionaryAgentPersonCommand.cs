@@ -33,12 +33,23 @@ namespace BL.Logic.DictionaryCore
         public override bool CanExecute()
         {
             _admin.VerifyAccess(_context, CommandType, false, true);
-            var agents = _dictDb.GetAgentPersons(_context, new FilterDictionaryAgentPerson
+
+            if (_dictDb.ExistsAgentPersons(_context,  new FilterDictionaryAgentPerson
             {
-                TaxCode = Model.TaxCode, FirstNameExact = Model.FirstName, LastNameExact = Model.LastName,PassportSerial = Model.PassportSerial, PassportNumber = Model.PassportNumber
-            },null);
-            
-            if (agents.Any())
+                NameExact = Model.Name,
+            }))
+            {
+                throw new DictionaryRecordNotUnique();
+            }
+
+            if (_dictDb.ExistsAgentPersons(_context, new FilterDictionaryAgentPerson
+            {
+                TaxCode = Model.TaxCode,
+                FirstNameExact = Model.FirstName,
+                LastNameExact = Model.LastName,
+                PassportSerial = Model.PassportSerial,
+                PassportNumber = Model.PassportNumber
+            }))
             {
                 throw new DictionaryRecordNotUnique();
             }

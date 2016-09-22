@@ -7,7 +7,7 @@ using System.Web.Http;
 using BL.Model.Enums;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.CrossCutting.DependencyInjection;
-
+using System.Collections.Generic;
 
 namespace DMS_WebAPI.Controllers.Dictionaries
 {
@@ -26,19 +26,24 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         public IHttpActionResult Get([FromUri] FilterDictionaryContactType filter)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
-            var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionaryContactTypes(ctx, filter);
-            return new JsonResult(tmpDicts, this);
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItems = tmpService.GetDictionaryContactTypes(ctx, filter);
+            return new JsonResult(tmpItems, this);
         }
 
+        /// <summary>
+        /// Возвращает тип контакта
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         // GET: api/DictionaryDocumentTypes/5
         public IHttpActionResult Get(int id)
         {
-            
+
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
-            var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDict = tmpDictProc.GetDictionaryContactType(ctx, id);
-            return new JsonResult(tmpDict, this);
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItem = tmpService.GetDictionaryContactType(ctx, id);
+            return new JsonResult(tmpItem, this);
         }
 
         /// <summary>
@@ -49,8 +54,9 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         public IHttpActionResult Post([FromBody]ModifyDictionaryContactType model)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
-            var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
-            return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.AddContactType, ctx, model));
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            int tmpId = (int)tmpService.ExecuteAction(EnumDictionaryActions.AddContactType, ctx, model);
+            return Get(new FilterDictionaryContactType() { IDs = new List<int>() { tmpId } });
         }
 
         /// <summary>
@@ -64,9 +70,9 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         {
             model.Id = id;
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
-            var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
-            tmpDict.ExecuteAction(EnumDictionaryActions.ModifyContactType, ctx, model);
-            return Get(model.Id);
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            tmpService.ExecuteAction(EnumDictionaryActions.ModifyContactType, ctx, model);
+            return Get(new FilterDictionaryContactType() { IDs = new List<int>() { model.Id } });
         }
 
         /// <summary>
@@ -76,9 +82,8 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         public IHttpActionResult Delete([FromUri] int id)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
-            var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
-
-            tmpDict.ExecuteAction(EnumDictionaryActions.DeleteContactType, ctx, id);
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            tmpService.ExecuteAction(EnumDictionaryActions.DeleteContactType, ctx, id);
             FrontDictionaryContactType tmp = new FrontDictionaryContactType();
             tmp.Id = id;
 

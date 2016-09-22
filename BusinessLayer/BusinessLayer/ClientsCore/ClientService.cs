@@ -39,14 +39,14 @@ namespace BL.Logic.ClientCore
         //    return res;
         //}
 
-        private InternalDictionaryContactType GetNewContactType(IContext context, string code, string name, string fullName, string inputMask = "")
+        private InternalDictionaryContactType GetNewContactType(IContext context, string specCode, string code, string name,  string inputMask = "")
         {
 
             var res = new InternalDictionaryContactType()
             {
+                SpecCode = specCode,
                 Code = code,
                 Name = name,
-                //FullName = fullName,
                 InputMask = inputMask,
                 IsActive = true,
             };
@@ -57,13 +57,13 @@ namespace BL.Logic.ClientCore
 
         }
 
-        private InternalDictionaryAddressType GetNewAddressType(IContext context, string code, string name, string fullName)
+        private InternalDictionaryAddressType GetNewAddressType(IContext context, string specCode, string code, string name)
         {
             var res = new InternalDictionaryAddressType()
             {
+                //SpecCode = specCode,
                 Code = code,
                 Name = name,
-                //FullName = fullName,
                 IsActive = true
             };
 
@@ -80,33 +80,33 @@ namespace BL.Logic.ClientCore
             // EnumDictionaryContactsTypes!!!!!!!!!!!!!!!!!!!!!!
             // Pss Локализация для типов контактов
             // Контакты при отображении сортируются по Id ContactType. т.е. в порядке добавления типов
-            var mobiContactType = _DictDb.AddContactType(context, GetNewContactType(context, EnumContactTypes.MainPhone.ToString(), "ОТ", "Основной телефон"));
-            _DictDb.AddContactType(context, GetNewContactType(context, EnumContactTypes.MobilePhone.ToString(), "МТ", "Мобильный телефон"));
-            _DictDb.AddContactType(context, GetNewContactType(context, EnumContactTypes.WorkPhone.ToString(), "РТ", "Рабочий телефон"));
-            _DictDb.AddContactType(context, GetNewContactType(context, EnumContactTypes.HomePhone.ToString(), "ДТ", "Домашний телефон"));
+            var mobiContactType = _DictDb.AddContactType(context, GetNewContactType(context, EnumContactTypes.MainPhone.ToString(), "т.осн.", "Основной телефон"));
+            _DictDb.AddContactType(context, GetNewContactType(context, EnumContactTypes.MobilePhone.ToString(), "т.моб.", "Мобильный телефон"));
+            _DictDb.AddContactType(context, GetNewContactType(context, EnumContactTypes.WorkPhone.ToString(), "т.раб.", "Рабочий телефон"));
+            _DictDb.AddContactType(context, GetNewContactType(context, EnumContactTypes.HomePhone.ToString(), "т.дом.", "Домашний телефон"));
+            _DictDb.AddContactType(context, GetNewContactType(context, EnumContactTypes.SIP.ToString(), "sip", "Sip телефон"));
 
-            _DictDb.AddContactType(context, GetNewContactType(context, EnumContactTypes.WorkFax.ToString(), "РФ", "Рабочий факс"));
-            _DictDb.AddContactType(context, GetNewContactType(context, EnumContactTypes.HomeFax.ToString(), "ДФ", "Домашний факс"));
+            _DictDb.AddContactType(context, GetNewContactType(context, EnumContactTypes.WorkFax.ToString(), "ф.раб.", "Рабочий факс"));
+            _DictDb.AddContactType(context, GetNewContactType(context, EnumContactTypes.HomeFax.ToString(), "ф.дом.", "Домашний факс"));
 
-            var emailContactType = _DictDb.AddContactType(context, GetNewContactType(context, EnumContactTypes.MainEmail.ToString(), "ЛМ", "Основной адрес", "/@/"));
-            _DictDb.AddContactType(context, GetNewContactType(context, EnumContactTypes.WorkEmail.ToString(), "РМ", "Рабочий адрес", "/@/"));
-            _DictDb.AddContactType(context, GetNewContactType(context, EnumContactTypes.PersonalEmail.ToString(), "ЛМ", "Личный адрес", "/@/"));
+            var emailContactType = _DictDb.AddContactType(context, GetNewContactType(context, EnumContactTypes.MainEmail.ToString(), "е.осн.", "Основной адрес", "/@/"));
+            _DictDb.AddContactType(context, GetNewContactType(context, EnumContactTypes.WorkEmail.ToString(), "е.раб.", "Рабочий адрес", "/@/"));
+            _DictDb.AddContactType(context, GetNewContactType(context, EnumContactTypes.PersonalEmail.ToString(), "е.личн.", "Личный адрес", "/@/"));
 
-            _DictDb.AddContactType(context, GetNewContactType(context, EnumContactTypes.SIP.ToString(), "Вн", "Внутренний"));
-            _DictDb.AddContactType(context, GetNewContactType(context, EnumContactTypes.Skype.ToString(), "Skype", "Skype"));
-            _DictDb.AddContactType(context, GetNewContactType(context, EnumContactTypes.Viber.ToString(), "Viber", "Viber"));
+            _DictDb.AddContactType(context, GetNewContactType(context, EnumContactTypes.Skype.ToString(), "skype", "Skype"));
+            _DictDb.AddContactType(context, GetNewContactType(context, EnumContactTypes.Viber.ToString(), "viber", "Viber"));
             _DictDb.AddContactType(context, GetNewContactType(context, EnumContactTypes.ICQ.ToString(), "ICQ", "ICQ"));
-            _DictDb.AddContactType(context, GetNewContactType(context, EnumContactTypes.Jabber.ToString(), "Jab", "Jabber"));
-            _DictDb.AddContactType(context, GetNewContactType(context, EnumContactTypes.Telegram.ToString(), "Tg", "Telegram"));
-            _DictDb.AddContactType(context, GetNewContactType(context, EnumContactTypes.Pager.ToString(), "П", "Пейждер"));
-            _DictDb.AddContactType(context, GetNewContactType(context, EnumContactTypes.Another.ToString(), "Др", "Другой"));
+            _DictDb.AddContactType(context, GetNewContactType(context, EnumContactTypes.Jabber.ToString(), "jab", "Jabber"));
+            _DictDb.AddContactType(context, GetNewContactType(context, EnumContactTypes.Telegram.ToString(), "tg", "Telegram"));
+            _DictDb.AddContactType(context, GetNewContactType(context, EnumContactTypes.Pager.ToString(), "п", "Пейждер"));
+            _DictDb.AddContactType(context, GetNewContactType(context, EnumContactTypes.Another.ToString(), "др", "Другой"));
             #endregion
 
             #region [+] AddressTypes ...
             // Pss Локализация для типов адресов
-            _DictDb.AddAddressType(context, GetNewAddressType(context, "MainAddress", "Осн", "Основной"));
-            _DictDb.AddAddressType(context, GetNewAddressType(context, "WorkAddress", "РА", "Рабочий"));
-            _DictDb.AddAddressType(context, GetNewAddressType(context, "HomeAddress", "ДА", "Домашний"));
+            _DictDb.AddAddressType(context, GetNewAddressType(context, "MainAddress", "а.осн.", "Основной"));
+            _DictDb.AddAddressType(context, GetNewAddressType(context, "WorkAddress", "а.раб.", "Рабочий"));
+            _DictDb.AddAddressType(context, GetNewAddressType(context, "HomeAddress", "а.дом.", "Домашний"));
             #endregion
 
             #region [+] Agent-Employee ...
@@ -115,7 +115,7 @@ namespace BL.Logic.ClientCore
             {
                 FirstName = client.Name,
                 LastName = client.LastName,
-                Login = client.Login,
+                Login = client.Email,
                 PasswordHash = client.PasswordHash,
                 IsActive = true,
                 LanguageId = client.LanguageId
@@ -363,7 +363,7 @@ namespace BL.Logic.ClientCore
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumEncryptionActions.ModifyEncryptionCertificate });
             //items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumEncryptionActions.ExportEncryptionCertificate });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumEncryptionActions.DeleteEncryptionCertificate });
-            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumEncryptionActions.GenerateKeyEncryptionCertificate });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumEncryptionActions.VerifyPdf });
 
             return items;
         }
@@ -454,9 +454,6 @@ namespace BL.Logic.ClientCore
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumPropertyAction.ModifyPropertyLink });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumPropertyAction.DeletePropertyLink });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumPropertyAction.ModifyPropertyValues });
-            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumEncryptionActions.AddEncryptionCertificateType });
-            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumEncryptionActions.ModifyEncryptionCertificateType });
-            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumEncryptionActions.DeleteEncryptionCertificateType });
 
             return items;
         }

@@ -66,18 +66,12 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// <summary>
         /// Полное имя
         /// </summary>
-        public string FullName
-        {
-            get { return LastName?.Trim() + " " + FirstName?.Trim() + " " + MiddleName?.Trim(); }
-        }
+        public string FullName { get; set; }
+
         /// <summary>
         /// Сокращенное имя
         /// </summary>
-        public string ShortName
-        {
-            get { return LastName?.Trim() + " " + (string.IsNullOrEmpty(FirstName) ? "" : FirstName.Trim().Substring(0, 1) + ".") 
-                         + (string.IsNullOrEmpty(MiddleName) ? "": MiddleName.Trim().Substring(0, 1) + "."); }
-        }
+        public string Name { get; set; }
         /// <summary>
         /// Паспортные данные
         /// </summary>
