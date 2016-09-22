@@ -31,7 +31,7 @@ namespace BL.Database.Reports
 
             //TODO Убрать в релизе
             //Сохраняем файл для проверок
-            //crystalReport.ExportToDisk(ExportFormatType.PortableDocFormat, Path.Combine(new string[] { SettingConstants.FILE_STORE_DEFAULT_PATH, "report.pdf" }));
+            crystalReport.ExportToDisk(ExportFormatType.PortableDocFormat, Path.Combine(new string[] { SettingConstants.FILE_STORE_DEFAULT_PATH, "report.pdf" }));
 
             var stream = crystalReport.ExportToStream(ExportFormatType.PortableDocFormat);
 

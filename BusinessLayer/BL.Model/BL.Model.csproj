@@ -399,6 +399,7 @@
     <Compile Include="Enums\EnumLogTypes.cs" />
     <Compile Include="Reports\FrontModel\FrontReport.cs" />
     <Compile Include="Reports\Interfaces\IReports.cs" />
+    <Compile Include="SystemCore\Filters\FilterDictionarySendType.cs" />
     <Compile Include="SystemCore\Filters\FilterProperties.cs" />
     <Compile Include="SystemCore\Filters\FilterPropertyByRecord.cs" />
     <Compile Include="SystemCore\Filters\FilterPropertyValue.cs" />
@@ -411,6 +412,10 @@
     <Compile Include="SystemCore\FrontModel\FrontSystemObject.cs" />
     <Compile Include="SystemCore\FrontModel\FrontPropertyLink.cs" />
     <Compile Include="SystemCore\FrontModel\FrontProperty.cs" />
+    <Compile Include="SystemCore\FrontModel\FrontSystemFormats.cs" />
+    <Compile Include="SystemCore\FrontModel\FrontSystemFormulas.cs" />
+    <Compile Include="SystemCore\FrontModel\FrontSystemPatterns.cs" />
+    <Compile Include="SystemCore\FrontModel\FrontSystemValueTypes.cs" />
     <Compile Include="SystemCore\IncomingModel\ModifyPropertyValue.cs" />
     <Compile Include="SystemCore\IncomingModel\ModifyPropertyLink.cs" />
     <Compile Include="SystemCore\IncomingModel\ModifyProperty.cs" />

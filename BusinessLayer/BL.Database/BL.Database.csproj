@@ -202,6 +202,8 @@
     <Compile Include="DBModel\System\SystemLogs.cs" />
     <Compile Include="DBModel\System\SystemObjects.cs" />
     <Compile Include="DBModel\Admin\AdminLanguages.cs" />
+    <Compile Include="DBModel\System\SystemFormulas.cs" />
+    <Compile Include="DBModel\System\SystemFormats.cs" />
     <Compile Include="DBModel\System\SystemSettings.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryAgents.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryCompanies.cs" />
@@ -220,6 +222,7 @@
     <Compile Include="DBModel\Document\DocumentFiles.cs" />
     <Compile Include="DBModel\Document\Documents.cs" />
     <Compile Include="DBModel\System\SystemUIElements.cs" />
+    <Compile Include="DBModel\System\SystemPatterns.cs" />
     <Compile Include="DBModel\System\SystemValueTypes.cs" />
     <Compile Include="DBModel\Template\TemplateDocumentFiles.cs" />
     <Compile Include="DBModel\Template\TemplateDocumentRestrictedSendLists.cs" />
@@ -313,6 +316,10 @@
     <Compile Include="Migrations\201609192127004_SigningType_2.cs" />
     <Compile Include="Migrations\201609192127004_SigningType_2.Designer.cs">
       <DependentUpon>201609192127004_SigningType_2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201609221710358_SysDict.cs" />
+    <Compile Include="Migrations\201609221710358_SysDict.Designer.cs">
+      <DependentUpon>201609221710358_SysDict.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -432,6 +439,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201609192127004_SigningType_2.resx">
       <DependentUpon>201609192127004_SigningType_2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201609221710358_SysDict.resx">
+      <DependentUpon>201609221710358_SysDict.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\ReportRegistrationCardIncomingDocument.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

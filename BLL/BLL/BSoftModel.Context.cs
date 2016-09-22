@@ -97,5 +97,8 @@ namespace BLL.BLL
         public virtual DbSet<DocumentPaperEvents> DocumentPaperEventsSet { get; set; }
         public virtual DbSet<DocumentPapers> DocumentPapersSet { get; set; }
         public virtual DbSet<DocumentPaperLists> DocumentPaperListsSet { get; set; }
+        public virtual DbSet<SystemPatterns> SystemPatternsSet { get; set; }
+        public virtual DbSet<SystemFormulas> SystemFormulasSet { get; set; }
+        public virtual DbSet<SystemFormats> SystemFormatsSet { get; set; }
     }
 }

@@ -233,6 +233,9 @@
         <AssociationConnector Association="bsoftModel.DocumentSendListsDocumentPaperEvents" />
         <AssociationConnector Association="bsoftModel.LastPaperEventsDocumentPapers" />
         <AssociationConnector Association="bsoftModel.AdminUsersDictionaryAgents1" />
+        <EntityTypeShape EntityType="bsoftModel.SystemPatterns" Width="2" PointX="0.5" PointY="2" />
+        <EntityTypeShape EntityType="bsoftModel.SystemFormulas" Width="2" PointX="0.5" PointY="4" />
+        <EntityTypeShape EntityType="bsoftModel.SystemFormats" Width="2" PointX="0.5" PointY="6.25" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

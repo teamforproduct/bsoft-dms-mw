@@ -148,6 +148,10 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<SystemValueTypes> SystemValueTypesSet { get; set; }
         public virtual DbSet<SystemUIElements> SystemUIElementsSet { get; set; }
 
+        public virtual DbSet<SystemPatterns> SystemPatternsSet { get; set; }
+        public virtual DbSet<SystemFormulas> SystemFormulasSet { get; set; }
+        public virtual DbSet<SystemFormats> SystemFormatsSet { get; set; }
+
         public virtual DbSet<PropertyValues> PropertyValuesSet { get; set; }
         public virtual DbSet<PropertyLinks> PropertyLinksSet { get; set; }
         public virtual DbSet<Properties> PropertiesSet { get; set; }

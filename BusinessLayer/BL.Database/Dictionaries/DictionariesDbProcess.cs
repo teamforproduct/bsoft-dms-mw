@@ -5173,6 +5173,9 @@ namespace BL.Database.Dictionaries
             using (var dbContext = new DmsContext(context))
             {
 
+                var contents = dbContext.DictionaryStandartSendListContentsSet.Where(y => y.StandartSendListId == list.Id);
+                dbContext.DictionaryStandartSendListContentsSet.RemoveRange(contents);
+
                 var ddt = dbContext.DictionaryStandartSendListsSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == list.Id);
                 dbContext.DictionaryStandartSendListsSet.Remove(ddt);
                 CommonQueries.AddFullTextCashInfo(dbContext, ddt.Id, EnumObjects.DictionaryStandartSendLists, EnumOperationType.Delete);

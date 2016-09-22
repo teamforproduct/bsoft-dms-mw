@@ -1937,6 +1937,7 @@ namespace BL.Database.Common
             var subscriptions = subscriptionsDb.Select(x => new InternalDocumentSubscription
             {
                 Id = x.Id,
+                DocumentId = x.DocumentId,
                 SendEventId = x.SendEventId,
                 SubscriptionStates = (EnumSubscriptionStates)x.SubscriptionStateId,
                 Hash = x.Hash,
@@ -2721,6 +2722,8 @@ namespace BL.Database.Common
 
             InternalDocument document = CommonQueries.GetDocumentDigitalSignaturePrepare(dbContext, ctx, documentId, subscriptionStates);
 
+            subscriptions = document.Subscriptions.ToList();
+
             var IsFilesIncorrect = false;
 
             if (isFull || isAddSubscription)
@@ -2737,16 +2740,15 @@ namespace BL.Database.Common
                 }
             }
 
+            document.Hash = CommonQueries.GetDocumentHash(document);
+
+            if (isFull || isAddSubscription)
+            {
+                document.FullHash = CommonQueries.GetDocumentHash(document, true);
+            }
+
             switch (newSubscription?.SigningType)
             {
-                case EnumSigningTypes.Hash:
-                    document.Hash = CommonQueries.GetDocumentHash(document);
-
-                    if (isFull || isAddSubscription)
-                    {
-                        document.FullHash = CommonQueries.GetDocumentHash(document, true);
-                    }
-                    break;
                 case EnumSigningTypes.InternalSign:
                     if (isAddSubscription)
                     {
@@ -2779,7 +2781,7 @@ namespace BL.Database.Common
                 foreach (var subscription in subscriptions)
                 {
                     if (IsFilesIncorrect ||
-                        (subscription.SigningType == EnumSigningTypes.Hash && (!VerifyDocumentHash(subscription.Hash, document) || ((isFull || isAddSubscription) && !VerifyDocumentHash(subscription.FullHash, document, true))) ||
+                        (!VerifyDocumentHash(subscription.Hash, document) || ((isFull || isAddSubscription) && !VerifyDocumentHash(subscription.FullHash, document, true)) ||
                         //TODO is internal sign
                         (subscription.SigningType == EnumSigningTypes.InternalSign && !VerifyDocumentInternalSign(subscription.InternalSign, document)) ||
                         //TODO is certificate sign
@@ -2837,11 +2839,20 @@ namespace BL.Database.Common
                 }
             }
             //TODO is certificate sign
-            if (isUseCertificateSign && ((newSubscription?.SigningType == EnumSigningTypes.CertificateSign && isAddSubscription) || IsVioalted))
+            if ((isUseCertificateSign && (newSubscription?.SigningType == EnumSigningTypes.CertificateSign && isAddSubscription)) || IsVioalted)
             {
                 subscriptions = subscriptions.Where(x => subscriptionStates.Contains(x.SubscriptionStates)).ToList();
                 if (isAddSubscription)
-                    subscriptions.Add(dbContext.DictionaryPositionsSet.Where(x => x.Id == ctx.CurrentPositionId).Select(x => new InternalDocumentSubscription { Id = newSubscription != null ? newSubscription.Id : 0, DocumentId = documentId, DoneEventSourcePositionName = x.Name, DoneEventSourcePositionExecutorAgentName = x.ExecutorAgent.Name }).FirstOrDefault());
+                {
+                    var sub = dbContext.DictionaryPositionsSet.Where(x => x.Id == ctx.CurrentPositionId)
+                        .Select(x => new InternalDocumentSubscription { DoneEventSourcePositionName = x.Name, DoneEventSourcePositionExecutorAgentName = x.ExecutorAgent.Name }).FirstOrDefault();
+                    if (sub != null)
+                    {
+                        sub.Id = newSubscription != null ? newSubscription.Id : 0;
+                        sub.DocumentId = documentId;
+                        subscriptions.Add(sub);
+                    }
+                }
                 document.Subscriptions = subscriptions;
                 document.CertificateSignPdfFileIdentity = CommonQueries.GetDocumentCertificateSignPdf(dbContext, ctx, document, newSubscription?.CertificateId, newSubscription?.CertificatePassword);
             }
@@ -2887,15 +2898,22 @@ namespace BL.Database.Common
                     DocumentTypeName = x.TemplateDocument.DocumentType.Name,
                     Description = x.Description,
                     ExecutorPositionName = x.ExecutorPosition.Name,
+                    ExecutorPositionExecutorAgentName = x.ExecutorPositionExecutorAgent.Name,
                     Addressee = x.Addressee,
                     SenderAgentName = x.SenderAgent.Name,
                     SenderAgentPersonName = x.SenderAgentPerson.Agent.Name,
+                    RegistrationNumber = x.RegistrationNumber,
+                    RegistrationNumberPrefix = x.RegistrationNumberPrefix,
+                    RegistrationNumberSuffix = x.RegistrationNumberSuffix,
+                    RegistrationFullNumber = "#" + x.Id
                 }).FirstOrDefault();
 
             if (doc == null)
             {
                 throw new Model.Exception.DocumentNotFoundOrUserHasNoAccess();
             }
+
+            doc.RegistrationFullNumber = GetRegistrationFullNumber(doc); 
 
             doc.DocumentFiles = CommonQueries.GetInternalDocumentFiles(ctx, dbContext, documentId).Where(x => x.Type != EnumFileTypes.SubscribePdf).ToList();
 
@@ -3063,6 +3081,13 @@ namespace BL.Database.Common
             if (certificateId.HasValue)
                 pdf.FileContent = DmsResolver.Current.Get<IEncryptionDbProcess>().GetCertificateSignPdf(ctx, certificateId.Value, certificatePassword, pdf.FileContent);
 
+            var positionId = (int)EnumSystemPositions.AdminPosition;
+            try
+            {
+                positionId = ctx.CurrentPositionId;
+            }
+            catch { }
+
             var att = new InternalDocumentAttachedFile
             {
                 DocumentId = doc.Id,
@@ -3072,14 +3097,14 @@ namespace BL.Database.Common
                 Type = EnumFileTypes.SubscribePdf,
                 IsMainVersion = true,
                 FileType = "",
-                Name = $"{doc.Id}.pdf",
+                Name = $"{doc.Id}",
                 Extension = "pdf",
                 Description = string.Empty,
                 IsWorkedOut = (bool?)null,
 
                 WasChangedExternal = false,
-                ExecutorPositionId = ctx.CurrentPositionId,
-                ExecutorPositionExecutorAgentId = dbContext.DictionaryPositionsSet.Where(x => x.Id == ctx.CurrentPositionId).Select(x => x.ExecutorAgentId).FirstOrDefault().GetValueOrDefault()
+                ExecutorPositionId = positionId,
+                ExecutorPositionExecutorAgentId = dbContext.DictionaryPositionsSet.Where(x => x.Id == positionId).Select(x => x.ExecutorAgentId).FirstOrDefault().GetValueOrDefault()
             };
 
             var operationDb = DmsResolver.Current.Get<IDocumentFileDbProcess>();
