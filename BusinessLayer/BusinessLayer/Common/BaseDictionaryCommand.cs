@@ -16,7 +16,7 @@ namespace BL.Logic.Common
         protected object _param;
         private EnumDictionaryActions _action;
         protected IAdminService _admin;
-        protected IDictionaryService _dictionary;
+        protected IDictionaryService _dictService;
         protected IDictionariesDbProcess _dictDb;
 
         public void InitializeCommand(EnumDictionaryActions action, IContext ctx)
@@ -31,7 +31,7 @@ namespace BL.Logic.Common
             _param = param;
             _dictDb = DmsResolver.Current.Get<IDictionariesDbProcess>();
             _admin = DmsResolver.Current.Get<IAdminService>();
-            _dictionary = DmsResolver.Current.Get<IDictionaryService>();
+            _dictService = DmsResolver.Current.Get<IDictionaryService>();
         }
 
         public InternalDocument Document => null;

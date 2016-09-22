@@ -34,15 +34,18 @@ namespace BL.Logic.DictionaryCore
         public override bool CanExecute()
         {
             _admin.VerifyAccess(_context, CommandType, false, true);
-            var agents = _dictDb.GetAgentBanks(_context, new FilterDictionaryAgentBank
-            {
-                MFOCodeExact = Model.MFOCode,
-                NameExact =  Model.Name
-            },null);
 
-            if (agents.Any())
+            if (_dictDb.ExistsAgents(_context, new FilterDictionaryAgent() { NameExact = Model.Name }))
             {
-                throw new DictionaryRecordNotUnique();
+                throw new DictionaryAgentNameNotUnique();
+            }
+
+            if (!string.IsNullOrEmpty(Model.MFOCode))
+            {
+                if (_dictDb.ExistsAgentBanks(_context, new FilterDictionaryAgentBank { MFOCodeExact = Model.MFOCode }))
+                {
+                    throw new DictionaryAgentBankMFOCodeNotUnique();
+                }
             }
 
             return true;

@@ -34,6 +34,12 @@ namespace BL.Logic.DictionaryCore
         {
            
             _admin.VerifyAccess(_context, CommandType,false,true);
+
+            if (_dictDb.ExistsAgents(_context, new FilterDictionaryAgent() { NameExact = Model.Name }))
+            {
+                throw new DictionaryAgentNameNotUnique();
+            }
+
             return true;
         }
 

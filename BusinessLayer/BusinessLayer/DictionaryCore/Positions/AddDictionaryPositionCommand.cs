@@ -59,7 +59,7 @@ namespace BL.Logic.DictionaryCore
 
                 // Если order не задан, задаю максимальный.
                 if (Model.Order < 1)
-                { _dictionary.SetPositionOrder(_context, positionId, 100000000); }
+                { _dictService.SetPositionOrder(_context, positionId, 100000000); }
 
                 return positionId;
             }

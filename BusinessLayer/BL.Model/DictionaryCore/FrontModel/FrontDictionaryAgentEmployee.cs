@@ -59,10 +59,11 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// Дополнительная информация
         /// </summary>
         public new string Description { get; set; }
+        
         /// <summary>
         /// Полное имя
         /// </summary>
-        //public string FullName { get; set; }
+        public string FullName { get; set; }
         
      
         /// <summary>

@@ -31,6 +31,12 @@ namespace BL.Logic.DictionaryCore
         public override bool CanExecute()
         {
             _admin.VerifyAccess(_context, CommandType,false,true);
+
+            if (_dictDb.ExistsAgents(_context, new FilterDictionaryAgent() { NameExact = Model.Name, NotContainsIDs = new List<int> { Model.Id } }))
+            {
+                throw new DictionaryAgentNameNotUnique();
+            }
+
             return true;
         }
 

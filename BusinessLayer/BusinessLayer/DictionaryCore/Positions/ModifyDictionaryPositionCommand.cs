@@ -59,6 +59,8 @@ namespace BL.Logic.DictionaryCore
                 var dp = CommonDictionaryUtilities.PositionModifyToInternal(_context, Model);
 
                 _dictDb.UpdatePosition(_context, dp);
+
+                _dictService.SetPositionOrder(_context, Model.Id, Model.Order);
             }
             catch (DictionaryRecordWasNotFound)
             {

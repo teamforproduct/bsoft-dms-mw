@@ -36,7 +36,8 @@ namespace BL.Logic.DictionaryCore
             var spr = _dictDb.GetAgentAccounts(_context, Model.AgentId, new FilterDictionaryAgentAccount
             {
                 AgentBankId = Model.AgentBankId,
-                AccountNumber = Model.AccountNumber
+                AccountNumber = Model.AccountNumber,
+                NotContainsIDs = new List<int> { Model.Id }
             });
             if (spr.Count() != 0)
             {

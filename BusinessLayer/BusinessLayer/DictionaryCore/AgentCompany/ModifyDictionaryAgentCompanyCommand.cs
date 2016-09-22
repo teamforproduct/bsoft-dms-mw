@@ -31,19 +31,42 @@ namespace BL.Logic.DictionaryCore
         public override bool CanExecute()
         {
             _admin.VerifyAccess(_context, CommandType, false);
-            var agents = _dictDb.GetAgentCompanies(_context, new FilterDictionaryAgentCompany
-            {
-                TaxCodeExact = Model.TaxCode,
-                OKPOCodeExact = Model.OKPOCode,
-                VATCodeExact = Model.VATCode,
-                IsActive=Model.IsActive,
-                NotContainsIDs=new List<int> { Model.Id}
-            },null);
 
-            if (agents.Any())
+            if (_dictDb.ExistsAgents(_context, new FilterDictionaryAgent() { NameExact = Model.Name, NotContainsIDs = new List<int> { Model.Id } }))
             {
-                throw new DictionaryRecordNotUnique();
+                throw new DictionaryAgentNameNotUnique();
             }
+
+            if (!string.IsNullOrEmpty(Model.TaxCode))
+            {
+                if (_dictDb.ExistsAgentCompanies(_context, new FilterDictionaryAgentCompany()
+                {
+                    TaxCodeExact = Model.TaxCode,
+                    NotContainsIDs = new List<int> { Model.Id }
+                }))
+                { throw new DictionaryAgentCompanyTaxCodeNotUnique(); }
+            }
+
+            if (!string.IsNullOrEmpty(Model.OKPOCode))
+            {
+                if (_dictDb.ExistsAgentCompanies(_context, new FilterDictionaryAgentCompany()
+                {
+                    OKPOCodeExact = Model.OKPOCode,
+                    NotContainsIDs = new List<int> { Model.Id }
+                }))
+                { throw new DictionaryAgentCompanyOKPOCodeNotUnique(); }
+            }
+
+            if (!string.IsNullOrEmpty(Model.VATCode))
+            {
+                if (_dictDb.ExistsAgentCompanies(_context, new FilterDictionaryAgentCompany()
+                {
+                    VATCodeExact = Model.VATCode,
+                    NotContainsIDs = new List<int> { Model.Id }
+                }))
+                { throw new DictionaryAgentCompanyVATCodeNotUnique(); }
+            }
+
             return true;
         }
 
@@ -51,7 +74,7 @@ namespace BL.Logic.DictionaryCore
         {
             try
             {
-                var newCompany = new InternalDictionaryAgentCompany(Model);;
+                var newCompany = new InternalDictionaryAgentCompany(Model); ;
                 CommonDocumentUtilities.SetLastChange(_context, newCompany);
                 _dictDb.UpdateAgentCompany(_context, newCompany);
             }

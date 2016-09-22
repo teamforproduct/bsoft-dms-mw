@@ -16,11 +16,12 @@ namespace BL.Database.Dictionaries.Interfaces
     public interface IDictionariesDbProcess
     {
         #region DictionaryAgents
-        FrontDictionaryAgent GetAgent(IContext context, int id);
+        int AddAgent(IContext context, InternalDictionaryAgent addr);
         void UpdateAgent(IContext context, InternalDictionaryAgent addr);
         void DeleteAgent(IContext context, int agentId);
-        int AddAgent(IContext context, InternalDictionaryAgent addr);
+        FrontDictionaryAgent GetAgent(IContext context, int id);
         IEnumerable<FrontDictionaryAgent> GetAgents(IContext context, FilterDictionaryAgent filter,UIPaging paging);
+        bool ExistsAgents(IContext context, FilterDictionaryAgent filter);
         #endregion DictionaryAgents
 
         #region DictionaryAgentPerson
@@ -68,11 +69,12 @@ namespace BL.Database.Dictionaries.Interfaces
         #endregion
 
         #region DictionaryAgentCompanies
-        FrontDictionaryAgentCompany GetAgentCompany(IContext context, int id);
+        int AddAgentCompany(IContext context, InternalDictionaryAgentCompany company);
         void UpdateAgentCompany(IContext context, InternalDictionaryAgentCompany company);
         void DeleteAgentCompanies(IContext context, List<int> list);
-        int AddAgentCompany(IContext context, InternalDictionaryAgentCompany company);
+        FrontDictionaryAgentCompany GetAgentCompany(IContext context, int id);
         IEnumerable<FrontDictionaryAgentCompany> GetAgentCompanies(IContext context, FilterDictionaryAgentCompany filter, UIPaging paging);
+        bool ExistsAgentCompanies(IContext context, FilterDictionaryAgentCompany filter);
         #endregion DictionaryAgentCompanies
 
         #region DictionaryAgentBanks

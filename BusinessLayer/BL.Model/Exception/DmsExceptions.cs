@@ -1,16 +1,16 @@
 ﻿namespace BL.Model.Exception
 {
-/*
-С точки зрения самой архитектуры важно чтобы соблюдался один закон - 
-все ошибки должны отлавливаться и обрабатываться на одном уровне (кроме возможно специфических каких-то случаев). 
-Это логический уровень - сервисы и команды. Уровень БД не генерирует ошибок, за исключением непредвиденных ситуаций. 
-На логическом уровне происходит отлов экспешенов нижнего уровня и преобразование их в человеческий формат (удобочитаемый для пользователя), 
-делаются все проверки и в случае неуспешности проверок генерируются наши ошибки.
-    
-второй момент архитектуры: проверки тоже должны быть только на одном уровне. 
-на всех более глубоких уровнях мы считаем что данные туда приходят уже проверенные и достоверные и дополнительно входящие данные уже не проверяем. 
-это делается для того чтобы избежать многочисленных проверок одного и того же. 
-*/
+    /*
+    С точки зрения самой архитектуры важно чтобы соблюдался один закон - 
+    все ошибки должны отлавливаться и обрабатываться на одном уровне (кроме возможно специфических каких-то случаев). 
+    Это логический уровень - сервисы и команды. Уровень БД не генерирует ошибок, за исключением непредвиденных ситуаций. 
+    На логическом уровне происходит отлов экспешенов нижнего уровня и преобразование их в человеческий формат (удобочитаемый для пользователя), 
+    делаются все проверки и в случае неуспешности проверок генерируются наши ошибки.
+
+    второй момент архитектуры: проверки тоже должны быть только на одном уровне. 
+    на всех более глубоких уровнях мы считаем что данные туда приходят уже проверенные и достоверные и дополнительно входящие данные уже не проверяем. 
+    это делается для того чтобы избежать многочисленных проверок одного и того же. 
+    */
 
     public class DmsExceptions : System.Exception
     {
@@ -872,6 +872,168 @@
         {
         }
 
+    }
+
+    /// <summary>
+    /// Ошибка возникает при попытке задублировать имя агента
+    /// </summary>
+    // pss ЛОКАЛИЗАЦИЯ
+    public class DictionaryAgentNameNotUnique : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:DictionaryAgentNameNotUnique@l##";
+        public DictionaryAgentNameNotUnique() : base(_MESSAGE)
+        {
+        }
+
+        public DictionaryAgentNameNotUnique(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+
+    }
+
+    /// <summary>
+    /// Ошибка возникает при попытке задублировать паспортные данные физлица
+    /// </summary>
+    // pss ЛОКАЛИЗАЦИЯ
+    public class DictionaryAgentPersonPassportNotUnique : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:DictionaryAgentPersonPassportNotUnique@l##";
+        public DictionaryAgentPersonPassportNotUnique() : base(_MESSAGE)
+        {
+        }
+
+        public DictionaryAgentPersonPassportNotUnique(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+    /// <summary>
+    /// Ошибка возникает при попытке задублировать ИНН физлица
+    /// </summary>
+    // pss ЛОКАЛИЗАЦИЯ
+    public class DictionaryAgentPersonTaxCodeNotUnique : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:DictionaryAgentPersonTaxCodeNotUnique@l##";
+        public DictionaryAgentPersonTaxCodeNotUnique() : base(_MESSAGE)
+        {
+        }
+
+        public DictionaryAgentPersonTaxCodeNotUnique(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+    /// <summary>
+    /// Ошибка возникает при попытке задублировать паспортные данные сотрудника
+    /// </summary>
+    // pss ЛОКАЛИЗАЦИЯ
+    public class DictionaryAgentEmployeePassportNotUnique : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:DictionaryAgentEmployeePassportNotUnique@l##";
+        public DictionaryAgentEmployeePassportNotUnique() : base(_MESSAGE)
+        {
+        }
+
+        public DictionaryAgentEmployeePassportNotUnique(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+    /// <summary>
+    /// Ошибка возникает при попытке задублировать ИНН сотрудника
+    /// </summary>
+    // pss ЛОКАЛИЗАЦИЯ
+    public class DictionaryAgentEmployeeTaxCodeNotUnique : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:DictionaryAgentEmployeeTaxCodeNotUnique@l##";
+        public DictionaryAgentEmployeeTaxCodeNotUnique() : base(_MESSAGE)
+        {
+        }
+
+        public DictionaryAgentEmployeeTaxCodeNotUnique(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+    /// <summary>
+    /// Ошибка возникает при попытке задублировать ИНН сотрудника
+    /// </summary>
+    // pss ЛОКАЛИЗАЦИЯ
+    public class DictionaryAgentEmployeePersonnelNumberNotUnique : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:DictionaryAgentEmployeePersonnelNumberNotUnique@l##";
+        public DictionaryAgentEmployeePersonnelNumberNotUnique() : base(_MESSAGE)
+        {
+        }
+
+        public DictionaryAgentEmployeePersonnelNumberNotUnique(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+
+    /// <summary>
+    /// Ошибка возникает при попытке задублировать ИНН сотрудника
+    /// </summary>
+    // pss ЛОКАЛИЗАЦИЯ
+    public class DictionaryAgentBankMFOCodeNotUnique : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:DictionaryAgentBankMFOCodeNotUnique@l##";
+        public DictionaryAgentBankMFOCodeNotUnique() : base(_MESSAGE)
+        {
+        }
+
+        public DictionaryAgentBankMFOCodeNotUnique(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+    /// <summary>
+    /// Ошибка возникает при попытке задублировать ИНН юрлица
+    /// </summary>
+    // pss ЛОКАЛИЗАЦИЯ
+    public class DictionaryAgentCompanyTaxCodeNotUnique : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:DictionaryAgentCompanyTaxCodeNotUnique@l##";
+        public DictionaryAgentCompanyTaxCodeNotUnique() : base(_MESSAGE)
+        {
+        }
+
+        public DictionaryAgentCompanyTaxCodeNotUnique(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+    /// <summary>
+    /// Ошибка возникает при попытке задублировать VATCode юрлица
+    /// </summary>
+    // pss ЛОКАЛИЗАЦИЯ
+    public class DictionaryAgentCompanyVATCodeNotUnique : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:DictionaryAgentCompanyVATCodeNotUnique@l##";
+        public DictionaryAgentCompanyVATCodeNotUnique() : base(_MESSAGE)
+        {
+        }
+
+        public DictionaryAgentCompanyVATCodeNotUnique(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
+    }
+
+    /// <summary>
+    /// Ошибка возникает при попытке задублировать VATCode юрлица
+    /// </summary>
+    // pss ЛОКАЛИЗАЦИЯ
+    public class DictionaryAgentCompanyOKPOCodeNotUnique : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:DictionaryAgentCompanyOKPOCodeNotUnique@l##";
+        public DictionaryAgentCompanyOKPOCodeNotUnique() : base(_MESSAGE)
+        {
+        }
+
+        public DictionaryAgentCompanyOKPOCodeNotUnique(System.Exception ex) : base(_MESSAGE, ex)
+        {
+        }
     }
 
     public class DictionaryTagNotFoundOrUserHasNoAccess : DmsExceptions

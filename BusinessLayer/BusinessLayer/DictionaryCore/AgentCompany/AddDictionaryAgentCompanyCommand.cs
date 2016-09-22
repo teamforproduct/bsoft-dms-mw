@@ -33,17 +33,37 @@ namespace BL.Logic.DictionaryCore
         public override bool CanExecute()
         {
             _admin.VerifyAccess(_context, CommandType, false, true);
-            var agents = _dictDb.GetAgentCompanies(_context, new FilterDictionaryAgentCompany
-            {
-                NameExact = Model.FullName,
-                TaxCodeExact = Model.TaxCode,
-                OKPOCodeExact=Model.OKPOCode,
-                VATCodeExact= Model.VATCode
-            },null);
 
-            if (agents.Any())
+            if (_dictDb.ExistsAgents(_context, new FilterDictionaryAgent() { NameExact = Model.Name }))
             {
-                throw new DictionaryRecordNotUnique();
+                throw new DictionaryAgentNameNotUnique();
+            }
+
+            if (!string.IsNullOrEmpty(Model.TaxCode))
+            {
+                if (_dictDb.ExistsAgentCompanies(_context, new FilterDictionaryAgentCompany()
+                {
+                    TaxCodeExact = Model.TaxCode,
+                }))
+                { throw new DictionaryAgentCompanyTaxCodeNotUnique(); }
+            }
+
+            if (!string.IsNullOrEmpty(Model.OKPOCode))
+            {
+                if (_dictDb.ExistsAgentCompanies(_context, new FilterDictionaryAgentCompany()
+                {
+                    OKPOCodeExact = Model.OKPOCode,
+                }))
+                { throw new DictionaryAgentCompanyOKPOCodeNotUnique(); }
+            }
+
+            if (!string.IsNullOrEmpty(Model.VATCode))
+            {
+                if (_dictDb.ExistsAgentCompanies(_context, new FilterDictionaryAgentCompany()
+                {
+                    VATCodeExact = Model.VATCode
+                }))
+                { throw new DictionaryAgentCompanyVATCodeNotUnique(); }
             }
 
             return true;
@@ -53,7 +73,7 @@ namespace BL.Logic.DictionaryCore
         {
             try
             {
-                var newCompany = new InternalDictionaryAgentCompany(Model);;
+                var newCompany = new InternalDictionaryAgentCompany(Model); ;
                 CommonDocumentUtilities.SetLastChange(_context, newCompany);
                 return _dictDb.AddAgentCompany(_context, newCompany);
             }

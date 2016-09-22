@@ -77,190 +77,18 @@ namespace BL.Database.Dictionaries
         //    }
         //}
 
-
-
-        public FrontDictionaryAgent GetAgent(IContext context, int id)
+        public int AddAgent(IContext context, InternalDictionaryAgent newAgent)
         {
             using (var dbContext = new DmsContext(context))
             {
+                var dbModel = DictionaryModelConverter.GetDbAgent(context, newAgent);
 
-                return dbContext.DictionaryAgentsSet.Where(x => x.ClientId == context.CurrentClientId)
-                    .Where(x => x.Id == id).Select(x => new FrontDictionaryAgent
-                    {
-                        Id = x.Id,
-                        Name = x.Name,
-                        //IsIndividual = x.IsIndividual,
-                        //IsEmployee = x.IsEmployee,
-                        //IsCompany = x.IsCompany,
-                        //IsBank = x.IsBank,
-                        IsActive = x.IsActive,
-                        ResidentTypeId = x.ResidentTypeId,
-                        Description = x.Description,
-                        Contacts = x.AgentContacts.Select(y => new FrontDictionaryContact
-                        {
-                            Id = y.Id,
-                            AgentId = y.AgentId,
-                            ContactType = new FrontDictionaryContactType
-                            {
-                                Id = y.ContactType.Id,
-                                Code = y.ContactType.Code,
-                                Name = y.ContactType.Name,
-                                IsActive = y.ContactType.IsActive
-                            },
-                            Value = y.Contact,
-                            IsActive = y.IsActive,
-                            Description = y.Description
-                        }),
+                dbContext.DictionaryAgentsSet.Add(dbModel);
 
-                        Addresses = x.AgentAddresses.Select(z => new FrontDictionaryAgentAddress
-                        {
-                            Id = z.Id,
-                            AgentId = z.AgentId,
-                            AddressType = new FrontDictionaryAddressType
-                            {
-                                Id = z.AddressType.Id,
-                                Name = z.AddressType.Name,
-                                IsActive = z.AddressType.IsActive
-                            },
-                            PostCode = z.PostCode,
-                            Address = z.Address,
-                            IsActive = z.IsActive,
-                            Description = z.Description
-                        })
-
-                    })
-                .FirstOrDefault();
-            }
-        }
-
-        public bool ExistsAgent(IContext context, int id)
-        {
-            using (var dbContext = new DmsContext(context))
-            {
-
-                var res = dbContext.DictionaryAgentsSet.Where(x => x.ClientId == context.CurrentClientId)
-                    .Where(x => x.Id == id).Select(x => new FrontDictionaryAgent { Id = x.Id }).FirstOrDefault();
-
-                return res != null;
-
-            }
-        }
-
-        public IEnumerable<FrontDictionaryAgent> GetAgents(IContext context, FilterDictionaryAgent filter, UIPaging paging)
-        {
-            using (var dbContext = new DmsContext(context))
-            {
-                var qry = dbContext.DictionaryAgentsSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
-
-
-
-                // Список первичных ключей
-                if (filter.IDs?.Count > 0)
-                {
-                    //var filterContains = PredicateBuilder.False<DictionaryAgents>();
-                    //filterContains = filter.IDs.Aggregate(filterContains,
-                    //    (current, value) => current.Or(e => e.Id == value).Expand());
-
-                    //qry = qry.Where(filterContains);
-                    qry = qry.Where(x => filter.IDs.Contains(x.Id));
-                }
-
-                // Исключение списка первичных ключей
-                if (filter.NotContainsIDs?.Count > 0)
-                {
-                    var filterContains = PredicateBuilder.False<DictionaryAgents>();
-                    filterContains = filter.NotContainsIDs.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.Id != value).Expand());
-
-                    qry = qry.Where(filterContains);
-                }
-
-                // Тоько активные/неактивные
-                if (filter.IsActive != null)
-                {
-                    qry = qry.Where(x => filter.IsActive == x.IsActive);
-                }
-
-                // Поиск по наименованию
-                if (!string.IsNullOrEmpty(filter.Name))
-                {
-                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
-                    {
-                        qry = qry.Where(x => x.Name.Contains(temp));
-                    }
-                }
-
-                // Сравнение по ИЛИ или не задано ни одно условие
-                //qry = qry.Where(x => (
-                //  (
-                //    (filter.IsBank.HasValue && x.IsBank == filter.IsBank) ||
-                //    (filter.IsIndividual.HasValue && x.IsIndividual == filter.IsIndividual) ||
-                //    (filter.IsCompany.HasValue && x.IsBank == filter.IsCompany) ||
-                //    (filter.IsEmployee.HasValue && x.IsBank == filter.IsEmployee)
-                //   ) || (!filter.IsBank.HasValue && !filter.IsIndividual.HasValue && !filter.IsCompany.HasValue && !filter.IsEmployee.HasValue)
-                // ));
-
-                qry = qry.OrderBy(x => x.Name);
-                if (paging != null)
-                {
-                    if (paging.IsOnlyCounter ?? true)
-                    {
-                        paging.TotalItemsCount = qry.Count();
-                    }
-
-                    if (paging.IsOnlyCounter ?? false)
-                    {
-                        return new List<FrontDictionaryAgent>();
-                    }
-
-                    if (!paging.IsAll)
-                    {
-                        var skip = paging.PageSize * (paging.CurrentPage - 1);
-                        var take = paging.PageSize;
-                        qry = qry.Skip(() => skip).Take(() => take);
-                    }
-                }
-
-                return qry.Select(x => new FrontDictionaryAgent
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    IsActive = x.IsActive,
-                    ResidentTypeId = x.ResidentTypeId,
-                    Description = x.Description,
-                    Contacts = x.AgentContacts.Select(y => new FrontDictionaryContact
-                    {
-                        Id = y.Id,
-                        AgentId = y.AgentId,
-                        Value = y.Contact,
-                        IsActive = y.IsActive,
-                        Description = y.Description,
-                        ContactType = new FrontDictionaryContactType
-                        {
-                            Id = y.ContactType.Id,
-                            Name = y.ContactType.Name,
-                            Code = y.ContactType.Code,
-                            InputMask = y.ContactType.InputMask,
-                            IsActive = y.ContactType.IsActive
-                        }
-                    }),
-                    Addresses = x.AgentAddresses.Select(z => new FrontDictionaryAgentAddress
-                    {
-                        Id = z.Id,
-                        AgentId = z.AgentId,
-                        AddressType = new FrontDictionaryAddressType
-                        {
-                            Id = z.AddressType.Id,
-                            Name = z.AddressType.Name,
-                            IsActive = z.AddressType.IsActive
-                        },
-                        PostCode = z.PostCode,
-                        Address = z.Address,
-                        IsActive = z.IsActive,
-                        Description = z.Description
-                    })
-
-                }).ToList();
+                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAgents, EnumOperationType.AddNew);
+                dbContext.SaveChanges();
+                newAgent.Id = dbModel.Id;
+                return dbModel.Id;
             }
         }
 
@@ -348,18 +176,191 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public int AddAgent(IContext context, InternalDictionaryAgent newAgent)
+        public FrontDictionaryAgent GetAgent(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context))
             {
-                var dbModel = DictionaryModelConverter.GetDbAgent(context, newAgent);
 
-                dbContext.DictionaryAgentsSet.Add(dbModel);
+                return dbContext.DictionaryAgentsSet.Where(x => x.ClientId == context.CurrentClientId)
+                    .Where(x => x.Id == id).Select(x => new FrontDictionaryAgent
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        IsActive = x.IsActive,
+                        ResidentTypeId = x.ResidentTypeId,
+                        Description = x.Description,
+                        Contacts = x.AgentContacts.Select(y => new FrontDictionaryContact
+                        {
+                            Id = y.Id,
+                            AgentId = y.AgentId,
+                            ContactType = new FrontDictionaryContactType
+                            {
+                                Id = y.ContactType.Id,
+                                Code = y.ContactType.Code,
+                                Name = y.ContactType.Name,
+                                IsActive = y.ContactType.IsActive
+                            },
+                            Value = y.Contact,
+                            IsActive = y.IsActive,
+                            Description = y.Description
+                        }),
 
-                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAgents, EnumOperationType.AddNew);
-                dbContext.SaveChanges();
-                newAgent.Id = dbModel.Id;
-                return dbModel.Id;
+                        Addresses = x.AgentAddresses.Select(z => new FrontDictionaryAgentAddress
+                        {
+                            Id = z.Id,
+                            AgentId = z.AgentId,
+                            AddressType = new FrontDictionaryAddressType
+                            {
+                                Id = z.AddressType.Id,
+                                Name = z.AddressType.Name,
+                                IsActive = z.AddressType.IsActive
+                            },
+                            PostCode = z.PostCode,
+                            Address = z.Address,
+                            IsActive = z.IsActive,
+                            Description = z.Description
+                        })
+
+                    })
+                .FirstOrDefault();
+            }
+        }
+
+        
+
+        public IEnumerable<FrontDictionaryAgent> GetAgents(IContext context, FilterDictionaryAgent filter, UIPaging paging)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = GetAgentsQuery(context, dbContext, filter, paging);
+
+                return qry.Select(x => new FrontDictionaryAgent
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    IsActive = x.IsActive,
+                    ResidentTypeId = x.ResidentTypeId,
+                    Description = x.Description,
+                    Contacts = x.AgentContacts.Select(y => new FrontDictionaryContact
+                    {
+                        Id = y.Id,
+                        AgentId = y.AgentId,
+                        Value = y.Contact,
+                        IsActive = y.IsActive,
+                        Description = y.Description,
+                        ContactType = new FrontDictionaryContactType
+                        {
+                            Id = y.ContactType.Id,
+                            Name = y.ContactType.Name,
+                            Code = y.ContactType.Code,
+                            InputMask = y.ContactType.InputMask,
+                            IsActive = y.ContactType.IsActive
+                        }
+                    }),
+                    Addresses = x.AgentAddresses.Select(z => new FrontDictionaryAgentAddress
+                    {
+                        Id = z.Id,
+                        AgentId = z.AgentId,
+                        AddressType = new FrontDictionaryAddressType
+                        {
+                            Id = z.AddressType.Id,
+                            Name = z.AddressType.Name,
+                            IsActive = z.AddressType.IsActive
+                        },
+                        PostCode = z.PostCode,
+                        Address = z.Address,
+                        IsActive = z.IsActive,
+                        Description = z.Description
+                    })
+
+                }).ToList();
+            }
+        }
+
+        private IQueryable<DictionaryAgents> GetWhereAgents(ref IQueryable<DictionaryAgents> qry, FilterDictionaryAgent filter, UIPaging paging)
+        {
+            // Список первичных ключей
+            if (filter.IDs?.Count > 0)
+            {
+                //var filterContains = PredicateBuilder.False<DictionaryAgents>();
+                //filterContains = filter.IDs.Aggregate(filterContains,
+                //    (current, value) => current.Or(e => e.Id == value).Expand());
+
+                //qry = qry.Where(filterContains);
+                qry = qry.Where(x => filter.IDs.Contains(x.Id));
+            }
+
+            // Исключение списка первичных ключей
+            if (filter.NotContainsIDs?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.False<DictionaryAgents>();
+                filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Id != value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            // Тоько активные/неактивные
+            if (filter.IsActive != null)
+            {
+                qry = qry.Where(x => filter.IsActive == x.IsActive);
+            }
+
+            // Поиск по наименованию
+            if (!string.IsNullOrEmpty(filter.Name))
+            {
+                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
+                {
+                    qry = qry.Where(x => x.Name.Contains(temp));
+                }
+            }
+
+            // Поиск по наименованию
+            if (!string.IsNullOrEmpty(filter.NameExact))
+            {
+                qry = qry.Where(x => x.Name == filter.NameExact);
+            }
+
+            if (paging != null)
+            {
+                if (paging.IsOnlyCounter ?? true)
+                {
+                    paging.TotalItemsCount = qry.Count();
+                }
+
+                if (paging.IsOnlyCounter ?? false)
+                {
+                    //pss Разобраться зачем это
+                    //return new List<FrontDictionaryAgent>();
+                }
+
+                if (!paging.IsAll)
+                {
+                    var skip = paging.PageSize * (paging.CurrentPage - 1);
+                    var take = paging.PageSize;
+                    qry = qry.Skip(() => skip).Take(() => take);
+                }
+            }
+
+            return qry;
+        }
+
+        public IQueryable<DictionaryAgents> GetAgentsQuery(IContext context, DmsContext dbContext, FilterDictionaryAgent filter, UIPaging paging)
+        {
+            var qry = dbContext.DictionaryAgentsSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
+
+            qry = qry.OrderBy(x => x.Name);
+
+            qry = GetWhereAgents(ref qry, filter, paging);
+
+            return qry;
+        }
+
+        public bool ExistsAgents(IContext context, FilterDictionaryAgent filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                return GetAgentsQuery(context, dbContext, filter, null).Any();
             }
         }
 
@@ -372,7 +373,7 @@ namespace BL.Database.Dictionaries
             {
                 using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
                 {
-                    if (ExistsAgent(context, person.Id))
+                    if (ExistsAgents(context, new FilterDictionaryAgent() { IDs = new List<int> { person.Id } }))
                     {
                         //pss Здесь перетирается имя сформированное предыдущей выноской (для персон и пользователей оно формируется по разному)
                         UpdateAgentName(context, person.Id, new InternalDictionaryAgent(person));
@@ -451,6 +452,8 @@ namespace BL.Database.Dictionaries
                         FirstName = x.FirstName,
                         LastName = x.LastName,
                         MiddleName = x.MiddleName,
+                        Name = x.Agent.Name,
+                        FullName = x.FullName,
                         TaxCode = x.TaxCode,
                         IsMale = x.IsMale,
                         PassportSerial = x.PassportSerial,
@@ -506,6 +509,7 @@ namespace BL.Database.Dictionaries
                 {
                     Id = x.Id,
                     Name = x.Agent.Name,
+                    FullName = x.FullName,
                     FirstName = x.FirstName,
                     LastName = x.LastName,
                     MiddleName = x.MiddleName,
@@ -613,6 +617,15 @@ namespace BL.Database.Dictionaries
                 qry = qry.Where(x => x.IsActive == filter.IsActive);
             }
 
+            // Поиск по полному наименованию
+            if (!string.IsNullOrEmpty(filter.FullName))
+            {
+                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.FullName))
+                {
+                    qry = qry.Where(x => x.Agent.AgentPerson.FullName.Contains(temp));
+                }
+            }
+
             // Поиск по наименованию
             if (!string.IsNullOrEmpty(filter.Name))
             {
@@ -640,7 +653,10 @@ namespace BL.Database.Dictionaries
             // Поиск по паспортным данным
             if (!string.IsNullOrEmpty(filter.Passport))
             {
-                qry = qry.Where(x => (x.PassportSerial + "-" + x.PassportNumber + " " + x.PassportDate.ToString() + " " + x.PassportText).Contains(filter.Passport));
+                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Passport))
+                {
+                    qry = qry.Where(x => (x.PassportSerial + "-" + x.PassportNumber + " " + x.PassportDate.ToString() + " " + x.PassportText).Contains(temp));
+                }
             }
 
             // Поиск по ИНН
@@ -652,6 +668,11 @@ namespace BL.Database.Dictionaries
                 }
             }
 
+            if (!string.IsNullOrEmpty(filter.TaxCodeExact))
+            {
+                qry = qry.Where(x => x.TaxCode == filter.TaxCodeExact);
+            }
+
             // Поиск по дате рождения
             if (filter.BirthPeriod?.IsActive ?? false)
             {
@@ -659,18 +680,22 @@ namespace BL.Database.Dictionaries
                 qry = qry.Where(x => x.BirthDate <= filter.BirthPeriod.DateEnd);
             }
 
-           
-
-            if (!string.IsNullOrEmpty(filter.PassportSerial))
+            // Поиск по дате рождения
+            if (filter.BirthDateExact != null)
             {
-                qry = qry.Where(x => x.PassportSerial == filter.PassportSerial);
+                qry = qry.Where(x => x.BirthDate == filter.BirthDateExact);
             }
 
-            if (filter.PassportNumber != null)
+            if (!string.IsNullOrEmpty(filter.PassportSerialExact))
             {
-                qry = qry.Where(x => x.PassportNumber == filter.PassportNumber);
+                qry = qry.Where(x => x.PassportSerial == filter.PassportSerialExact);
             }
-            qry = qry.OrderBy(x => x.LastName);
+
+            if (filter.PassportNumberExact != null)
+            {
+                qry = qry.Where(x => x.PassportNumber == filter.PassportNumberExact);
+            }
+
             if (paging != null)
             {
                 if (paging.IsOnlyCounter ?? true)
@@ -775,6 +800,8 @@ namespace BL.Database.Dictionaries
                     PersonnelNumber = x.PersonnelNumber,
                     IsActive = x.IsActive,
                     Description = x.Description,
+                    Name = x.Agent.Name,
+                    FullName = x.Agent.AgentPerson.FullName,
                     FirstName = x.Agent.AgentPerson.FirstName,
                     LastName = x.Agent.AgentPerson.LastName,
                     MiddleName = x.Agent.AgentPerson.MiddleName,
@@ -848,12 +875,15 @@ namespace BL.Database.Dictionaries
                 return qry.Select(x => new FrontDictionaryAgentEmployee
                 {
                     Id = x.Id,
-                    PersonnelNumber = x.PersonnelNumber,
                     IsActive = x.IsActive,
                     Description = x.Description,
+                    PersonnelNumber = x.PersonnelNumber,
+                    Name = x.Agent.Name,
+                    FullName = x.Agent.AgentPerson.FullName,
                     FirstName = x.Agent.AgentPerson.FirstName,
                     LastName = x.Agent.AgentPerson.LastName,
                     MiddleName = x.Agent.AgentPerson.MiddleName,
+                    
                     TaxCode = x.Agent.AgentPerson.TaxCode,
                     IsMale = x.Agent.AgentPerson.IsMale,
                     PassportSerial = x.Agent.AgentPerson.PassportSerial,
@@ -927,19 +957,27 @@ namespace BL.Database.Dictionaries
                 qry = qry.Where(x => filter.IsActive == x.IsActive);
             }
 
+            // Поиск по полному наименованию
+            if (!string.IsNullOrEmpty(filter.FullName))
+            {
+                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.FullName))
+                {
+                    qry = qry.Where(x => x.Agent.AgentPerson.FullName.Contains(temp));
+                }
+            }
+
             // Поиск по наименованию
             if (!string.IsNullOrEmpty(filter.Name))
             {
                 foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
                 {
-                    qry = qry.Where(x => x.Agent.AgentPerson.FullName.Contains(temp));
-                    //qry = qry.Where(x => x.Agent.Name.Contains(temp));
+                    qry = qry.Where(x => x.Agent.Name.Contains(temp));
                 }
             }
 
             if (!string.IsNullOrEmpty(filter.NameExact))
             {
-                    qry = qry.Where(x => x.Agent.Name == filter.NameExact);
+                qry = qry.Where(x => x.Agent.Name == filter.NameExact);
             }
 
             if (!string.IsNullOrEmpty(filter.FirstNameExact))
@@ -975,6 +1013,11 @@ namespace BL.Database.Dictionaries
                 }
             }
 
+            if (!string.IsNullOrEmpty(filter.TaxCodeExact))
+            {
+                qry = qry.Where(x => x.Agent.AgentPerson.TaxCode == filter.TaxCodeExact);
+            }
+
             // Поиск по дате рождения
             if (filter.BirthPeriod != null)
             {
@@ -985,15 +1028,21 @@ namespace BL.Database.Dictionaries
                 }
             }
 
-
-            if (!string.IsNullOrEmpty(filter.PassportSerial))
+            // Поиск по дате рождения
+            if (filter.BirthDateExact != null)
             {
-                qry = qry.Where(x => x.Agent.AgentPerson.PassportSerial == filter.PassportSerial);
+                qry = qry.Where(x => x.Agent.AgentPerson.BirthDate == filter.BirthDateExact);
             }
 
-            if (filter.PassportNumber != null)
+
+            if (!string.IsNullOrEmpty(filter.PassportSerialExact))
             {
-                qry = qry.Where(x => x.Agent.AgentPerson.PassportNumber == filter.PassportNumber);
+                qry = qry.Where(x => x.Agent.AgentPerson.PassportSerial == filter.PassportSerialExact);
+            }
+
+            if (filter.PassportNumberExact != null)
+            {
+                qry = qry.Where(x => x.Agent.AgentPerson.PassportNumber == filter.PassportNumberExact);
             }
 
             if (paging != null)
@@ -1409,7 +1458,7 @@ namespace BL.Database.Dictionaries
                 using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
                 {
 
-                    if (ExistsAgent(context, company.Id))
+                    if (ExistsAgents(context, new FilterDictionaryAgent() { IDs = new List<int> { company.Id } }))
                     {
                         //pss Здесь перетирается имя сформированное предыдущей выноской 
                         UpdateAgentName(context, company.Id, new InternalDictionaryAgent(company));
@@ -1552,8 +1601,6 @@ namespace BL.Database.Dictionaries
             using (var dbContext = new DmsContext(context))
             {
                 return GetAgentClientCompaniesQuery(context, dbContext, filter).Any();
-
-                //return qry.Select(x => new FrontDictionaryAgentClientCompany { Id = x.Id }).Any();
             }
         }
 
@@ -1609,7 +1656,7 @@ namespace BL.Database.Dictionaries
                 using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
                 {
 
-                    if (ExistsAgent(context, company.Id))
+                    if (ExistsAgents(context, new FilterDictionaryAgent() { IDs = new List<int> { company.Id } }))
                     {
                         //pss Здесь перетирается имя сформированное предыдущей выноской 
                         UpdateAgentName(context, company.Id, new InternalDictionaryAgent(company));
@@ -1684,10 +1731,6 @@ namespace BL.Database.Dictionaries
                     dbContext.DictionaryAgentCompaniesSet.Where(x => x.ClientId == context.CurrentClientId).Where(x => x.Id == id).Select(x => new FrontDictionaryAgentCompany
                     {
                         Id = x.Id,
-                        //IsCompany = x.Agent.IsCompany,
-                        //IsIndividual = x.Agent.IsIndividual,
-                        //IsBank = x.Agent.IsBank,
-                        //IsEmployee = x.Agent.IsEmployee,
                         ResidentTypeId = x.Agent.ResidentTypeId,
                         FullName = x.FullName,
                         Name = x.Agent.Name,
@@ -1941,7 +1984,7 @@ namespace BL.Database.Dictionaries
                 using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
                 {
 
-                    if (ExistsAgent(context, bank.Id))
+                    if (ExistsAgents(context, new FilterDictionaryAgent() { IDs = new List<int> { bank.Id } }))
                     {
                         //pss Здесь перетирается имя сформированное предыдущей выноской
                         UpdateAgentName(context, bank.Id, new InternalDictionaryAgent(bank));
@@ -2685,8 +2728,8 @@ namespace BL.Database.Dictionaries
                 if (!String.IsNullOrEmpty(filter.ContactExact))
                 {
                     //pss Здесь ContactExact нужно делать более умным в сравнении телефонов
-                    qry = qry.Where(x => 
-                    x.Contact.Replace("-","").Replace(")", "").Replace("(", "").Replace("+", "").Replace(" ","") == 
+                    qry = qry.Where(x =>
+                    x.Contact.Replace("-", "").Replace(")", "").Replace("(", "").Replace("+", "").Replace(" ", "") ==
                     filter.ContactExact.Replace("-", "").Replace(")", "").Replace("(", "").Replace("+", "").Replace(" ", ""));
                 }
 

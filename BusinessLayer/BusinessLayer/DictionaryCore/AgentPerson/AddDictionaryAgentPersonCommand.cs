@@ -34,24 +34,34 @@ namespace BL.Logic.DictionaryCore
         {
             _admin.VerifyAccess(_context, CommandType, false, true);
 
-            if (_dictDb.ExistsAgentPersons(_context,  new FilterDictionaryAgentPerson
+            if (_dictDb.ExistsAgents(_context, new FilterDictionaryAgent { NameExact = Model.Name, }))
             {
-                NameExact = Model.Name,
-            }))
-            {
-                throw new DictionaryRecordNotUnique();
+                throw new DictionaryAgentNameNotUnique();
             }
 
-            if (_dictDb.ExistsAgentPersons(_context, new FilterDictionaryAgentPerson
+            // Если указаны необязательные паспортные данные, проверяю нет ли таких уже
+            if (!string.IsNullOrEmpty(Model.PassportSerial + Model.PassportNumber))
             {
-                TaxCode = Model.TaxCode,
-                FirstNameExact = Model.FirstName,
-                LastNameExact = Model.LastName,
-                PassportSerial = Model.PassportSerial,
-                PassportNumber = Model.PassportNumber
-            }))
+                if (_dictDb.ExistsAgentPersons(_context, new FilterDictionaryAgentPerson
+                {
+                    PassportSerialExact = Model.PassportSerial,
+                    PassportNumberExact = Model.PassportNumber
+                }))
+                {
+                    throw new DictionaryAgentPersonPassportNotUnique();
+                }
+            }
+
+            // Если указан необязательный ИНН, проверяю нет ли такого уже
+            if (!string.IsNullOrEmpty(Model.TaxCode))
             {
-                throw new DictionaryRecordNotUnique();
+                if (_dictDb.ExistsAgentPersons(_context, new FilterDictionaryAgentPerson
+                {
+                    TaxCodeExact = Model.TaxCode
+                }))
+                {
+                    throw new DictionaryAgentPersonTaxCodeNotUnique();
+                }
             }
 
             return true;

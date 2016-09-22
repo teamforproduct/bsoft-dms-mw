@@ -31,30 +31,6 @@ namespace BL.Model.DictionaryCore.FrontModel
          /// Список адресов контрагента
          /// </summary>
         public IEnumerable<FrontDictionaryAgentAddress> Addresses { get; set; }
-        /// <summary>
-        /// является физлицом
-        /// </summary>
-        [IgnoreDataMember]
-        [Obsolete("Признак не используется", true)]
-        public virtual bool IsIndividual { get; set; }
-        /// <summary>
-        /// является сотрудником
-        /// </summary>
-        [IgnoreDataMember]
-        [Obsolete("Признак не используется", true)]
-        public virtual bool IsEmployee { get; set; }
-        /// <summary>
-        /// является банком
-        /// </summary>
-        [IgnoreDataMember]
-        [Obsolete("Признак не используется", true)]
-        public virtual bool IsBank { get; set; }
-        /// <summary>
-        /// является юрлицом
-        /// </summary>
-        [IgnoreDataMember]
-        [Obsolete("Признак не используется", true)]
-        public virtual bool IsCompany { get; set; }
 
         /// <summary>
         /// Резидентность

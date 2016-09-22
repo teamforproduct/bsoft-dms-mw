@@ -36,11 +36,9 @@ namespace BL.Logic.DictionaryCore
 
             _admin.VerifyAccess(_context, CommandType, false);
 
-            var fdd = new FilterDictionaryAgentClientCompany { Name = Model.Name, NotContainsIDs = new List<int> { Model.Id } };
-
-            if (_dictDb.ExistsAgentClientCompanies(_context, fdd))
+            if (_dictDb.ExistsAgents(_context, new FilterDictionaryAgent() { NameExact = Model.Name, NotContainsIDs = new List<int> { Model.Id } }))
             {
-                throw new DictionaryRecordNotUnique();
+                throw new DictionaryAgentNameNotUnique();
             }
 
             return true;

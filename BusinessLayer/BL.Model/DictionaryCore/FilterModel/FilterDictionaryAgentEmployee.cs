@@ -21,6 +21,12 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// табельный номер
         /// </summary>
         public string PersonnelNumber { get; set; }
+
+        /// <summary>
+        /// табельный номер
+        /// </summary>
+        public string PersonnelNumberExact { get; set; }
+
         /// <summary>
         /// Отрывок из паспортных данных
         /// </summary>
@@ -30,6 +36,11 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// ИНН
         /// </summary>
         public string TaxCode { get; set; }
+
+        /// <summary>
+        /// ИНН
+        /// </summary>
+        public string TaxCodeExact { get; set; }
 
         /// <summary>
         /// Дата рождения
@@ -48,10 +59,12 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// </summary>
         public char FirstChar { get; set; }
 
+        public string FullName { get; set; }
+
         public string FirstNameExact { get; set; }
         public string LastNameExact { get; set; }
-        public string PassportSerial { get; set; }
-        public int? PassportNumber { get; set; }
-        public DateTime? BirthDate { get; set; }
+        public string PassportSerialExact { get; set; }
+        public int? PassportNumberExact { get; set; }
+        public DateTime? BirthDateExact { get; set; }
     }
 }

@@ -35,20 +35,42 @@ namespace BL.Logic.DictionaryCore
         {
             _admin.VerifyAccess(_context, CommandType, false, true);
 
-            var agents = _dictDb.GetAgentEmployees(_context, new FilterDictionaryAgentEmployee
+            if (_dictDb.ExistsAgents(_context, new FilterDictionaryAgent() { NameExact = Model.Name }))
             {
-                PersonnelNumber = Model.PersonnelNumber,
-                TaxCode = Model.TaxCode,
-                //FirstNameExact = Model.FirstName,
-                NameExact = Model.Name,
-                LastNameExact = Model.LastName,
-                PassportSerial = Model.PassportSerial,
-                PassportNumber = Model.PassportNumber
-            },null);
+                throw new DictionaryAgentNameNotUnique();
+            }
 
-            if (agents.Any())
+            if (_dictDb.ExistsAgentEmployees(_context, new FilterDictionaryAgentEmployee()
             {
-                throw new DictionaryRecordNotUnique();
+                PersonnelNumberExact = Model.PersonnelNumber,
+            }))
+            {
+                throw new DictionaryAgentEmployeePersonnelNumberNotUnique();
+            }
+
+            // Если указаны необязательные паспортные данные, проверяю нет ли таких уже
+            if (!string.IsNullOrEmpty(Model.PassportSerial + Model.PassportNumber))
+            {
+                if (_dictDb.ExistsAgentPersons(_context, new FilterDictionaryAgentPerson
+                {
+                    PassportSerialExact = Model.PassportSerial,
+                    PassportNumberExact = Model.PassportNumber,
+                }))
+                {
+                    throw new DictionaryAgentEmployeePassportNotUnique();
+                }
+            }
+
+            // Если указан необязательный ИНН, проверяю нет ли такого уже
+            if (!string.IsNullOrEmpty(Model.TaxCode))
+            {
+                if (_dictDb.ExistsAgentPersons(_context, new FilterDictionaryAgentPerson
+                {
+                    TaxCodeExact = Model.TaxCode,
+                }))
+                {
+                    throw new DictionaryAgentEmployeeTaxCodeNotUnique();
+                }
             }
 
             return true;

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
+using System.ComponentModel.DataAnnotations;
 
 namespace BL.Model.DictionaryCore.IncomingModel
 {
@@ -33,16 +34,19 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// Признак активности
         /// </summary>
+        [Required]
         public bool IsActive { get; set; }
 
         /// <summary>
         /// Название
         /// </summary>
+        [Required]
         public string Name { get; set; }
 
         /// <summary>
         /// Полное имя
         /// </summary>
+        [Required]
         public string FullName { get; set; }
 
     }

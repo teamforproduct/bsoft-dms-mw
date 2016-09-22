@@ -32,26 +32,34 @@ namespace BL.Logic.DictionaryCore
 
         public override bool CanExecute()
         {
-             _admin.VerifyAccess(_context, CommandType,false,true);
+            _admin.VerifyAccess(_context, CommandType, false, true);
 
-            if (_dictDb.ExistsAgentPersons(_context, new FilterDictionaryAgentPerson
+            if (_dictDb.ExistsAgents(_context, new FilterDictionaryAgent { NameExact = Model.Name, NotContainsIDs = new List<int> { Model.Id } }))
             {
-                NameExact = Model.Name,
-            }))
-            {
-                throw new DictionaryRecordNotUnique();
+                throw new DictionaryAgentNameNotUnique();
             }
 
-            if (_dictDb.ExistsAgentPersons(_context, new FilterDictionaryAgentPerson
+            // Если указаны необязательные паспортные данные, проверяю нет ли таких уже
+            if (!string.IsNullOrEmpty(Model.PassportSerial + Model.PassportNumber))
             {
-                TaxCode = Model.TaxCode,
-                FirstNameExact = Model.FirstName,
-                LastNameExact = Model.LastName,
-                PassportSerial = Model.PassportSerial,
-                PassportNumber = Model.PassportNumber
-            }))
+                if (_dictDb.ExistsAgentPersons(_context, new FilterDictionaryAgentPerson
+                {
+                    PassportSerialExact = Model.PassportSerial,
+                    PassportNumberExact = Model.PassportNumber,
+                    NotContainsIDs = new List<int> { Model.Id }
+                }))
+                { throw new DictionaryAgentPersonPassportNotUnique(); }
+            }
+
+            // Если указан необязательный ИНН, проверяю нет ли такого уже
+            if (!string.IsNullOrEmpty(Model.TaxCode))
             {
-                throw new DictionaryRecordNotUnique();
+                if (_dictDb.ExistsAgentPersons(_context, new FilterDictionaryAgentPerson
+                {
+                    TaxCodeExact = Model.TaxCode,
+                    NotContainsIDs = new List<int> { Model.Id }
+                }))
+                { throw new DictionaryAgentPersonTaxCodeNotUnique(); }
             }
 
             return true;
@@ -64,7 +72,7 @@ namespace BL.Logic.DictionaryCore
                 var newPerson = new InternalDictionaryAgentPerson(Model);
                 CommonDocumentUtilities.SetLastChange(_context, newPerson);
                 _dictDb.UpdateAgentPerson(_context, newPerson);
-                
+
 
             }
             catch (DictionaryRecordWasNotFound)
