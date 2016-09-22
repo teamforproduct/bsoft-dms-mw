@@ -487,7 +487,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                var docHash = CommonQueries.GetDocumentHash(dbContext, ctx, documentId, isUseInternalSign, isUseCertificateSign, null, false);
+                var docHash = CommonQueries.GetDocumentHash(dbContext, ctx, documentId, isUseInternalSign, isUseCertificateSign, null, false, true);
             }
         }
 

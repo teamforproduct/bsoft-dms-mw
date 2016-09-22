@@ -257,6 +257,8 @@ namespace BL.Database.Encryption
                         file.Encryption = Ionic.Zip.EncryptionAlgorithm.WinZipAes256;
                         file.Extract(streamReader);
 
+                        streamReader.Position = 0;
+
                         TextReader tr = new StreamReader(streamReader);
                         item.Password = tr.ReadLine();
                     }
@@ -271,6 +273,7 @@ namespace BL.Database.Encryption
             }
 
             using (var memoryStream = new MemoryStream())
+            using (var cerPasswordFile = new MemoryStream())
             using (Ionic.Zip.ZipFile zip = new Ionic.Zip.ZipFile())
             {
                 zip.Password = _ZipCerPassword;
@@ -284,11 +287,13 @@ namespace BL.Database.Encryption
 
                 if (item.IsRememberPassword && !string.IsNullOrEmpty(item.Password))
                 {
-                    MemoryStream cerPasswordFile = new MemoryStream();
-                    TextWriter tw = new StreamWriter(cerPasswordFile);
-                    tw.WriteLine(item.Password);
+                    using (TextWriter tw = new StreamWriter(cerPasswordFile))
+                    {
+                        tw.WriteLine(item.Password);
+                        tw.Flush();
+                    }
 
-                    file = zip.AddEntry($"{_ZipCerPasswordFileName}.txt", cerPasswordFile);
+                    file = zip.AddEntry($"{_ZipCerPasswordFileName}.txt", cerPasswordFile.ToArray());
 
                     file.Password = _ZipCerPassword;
                     file.Encryption = Ionic.Zip.EncryptionAlgorithm.WinZipAes256;
