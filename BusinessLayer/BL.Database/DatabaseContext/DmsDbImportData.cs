@@ -78,17 +78,18 @@ namespace BL.Database.DatabaseContext
             AddALV(list, "##l@DictionarySubscriptionStates:Visa@l##", "Visa", "Виза");
             AddALV(list, "##l@DictionarySubscriptionStates:Аgreement@l##", "Аgreement", "Согласование");
             AddALV(list, "##l@DictionarySubscriptionStates:Аpproval@l##", "Аpproval", "Утверждение");
-            AddALV(list, "##l@DmsExceptions:AccessIsDenied@l##", "Access is Denied!", "В доступе отказано!");
-            AddALV(list, "##l@DmsExceptions:CannotAccessToFile@l##", "Cannot access to user file!", "Нет доступ к файлу пользователя!");
+
+            AddALV(list, "##l@DmsExceptions:AccessIsDenied@l##", "Access is Denied!", "Отказано в доступе!");
+            AddALV(list, "##l@DmsExceptions:CannotAccessToFile@l##", "Cannot access to user file!", "Файл пользователя не доступен!");
             AddALV(list, "##l@DmsExceptions:CannotSaveFile@l##", "Error when save user file!", "Ошибка при сохранения файла пользователя!");
             AddALV(list, "##l@DmsExceptions:ClientIsNotFound@l##", "Client not found", "Клиент не найден");
             AddALV(list, "##l@DmsExceptions:ClientNameAlreadyExists@l##", "Client Name already exists", "Имя клиента уже существует");
             AddALV(list, "##l@DmsExceptions:ClientVerificationCodeIncorrect@l##", "Verification code is invalid", "Проверочный код неверен");
-            AddALV(list, "##l@DmsExceptions:CommandNotDefinedError@l##", "The desired commands not found", "Искомой комманды не найдено");
+            AddALV(list, "##l@DmsExceptions:CommandNotDefinedError@l##", "The desired commands not found", "Команда не найдена");
             AddALV(list, "##l@DmsExceptions:CouldNotChangeAttributeLaunchPlan@l##", "Couldn\"t change attribute LaunchPlan", "Невозможно изменить атрибут LaunchPlan");
             AddALV(list, "##l@DmsExceptions:CouldNotChangeFavourite@l##", "Couldn\"t change attribute Favourite", "Невозможно изменить атрибут Favourite");
             AddALV(list, "##l@DmsExceptions:CouldNotChangeIsInWork@l##", "Couldn\"t change attribute IsInWork", "Невозможно изменить атрибут IsInWork");
-            AddALV(list, "##l@DmsExceptions:CouldNotPerformThisOperation@l##", "Could Not Perform This Operation!", "Не удалось выполнить эту операцию!");
+            AddALV(list, "##l@DmsExceptions:CouldNotPerformThisOperation@l##", "Could Not Perform This Operation!", "Операция не выполнена!");
             AddALV(list, "##l@DmsExceptions:CryptographicError@l##", "Encryption Error", "Ошибка шифрования");
             AddALV(list, "##l@DmsExceptions:DatabaseError@l##", "An error occurred while accessing the database!", "Ошибка при обращении к базе данных!");
             AddALV(list, "##l@DmsExceptions:DatabaseIsNotFound@l##", "Database not found", "База данных не найдена");
@@ -120,7 +121,7 @@ namespace BL.Database.DatabaseContext
             AddALV(list, "##l@DmsExceptions:DocumentFileWasChangedExternally@l##", "The document file has been modified from the outside", "Файл документа был изменен извне");
             AddALV(list, "##l@DmsExceptions:DocumentHasAlreadyHasLink@l##", "Document has already has link!", "Документ уже имеет ссылку!");
             AddALV(list, "##l@DmsExceptions:DocumentHasAlredyBeenRegistered@l##", "Document has already been registered!", "Документ уже зарегистрирован!");
-            AddALV(list, "##l@DmsExceptions:DocumentNotFoundOrUserHasNoAccess@l##", "User could not access this document!", "Пользователь не имеет доступ к этот документ!");
+            AddALV(list, "##l@DmsExceptions:DocumentNotFoundOrUserHasNoAccess@l##", "User could not access this document!", "Документ не доступен!");
             AddALV(list, "##l@DmsExceptions:DocumentRestrictedSendListDoesNotMatchTheTemplate@l##", "Document Restricted SendList does not match the template", "Разрешающий список рассылок для документа не соответствует шаблону");
             AddALV(list, "##l@DmsExceptions:DocumentRestrictedSendListDuplication@l##", "Duplicate Entry DocumentRestrictSendList", "Дублирование записей в разрешающем списке рассылке для документа");
             AddALV(list, "##l@DmsExceptions:DocumentSendListDoesNotMatchTheTemplate@l##", "Document SendList does not match the template", "Список рассылок для документа не соответствует шаблону");
@@ -128,11 +129,11 @@ namespace BL.Database.DatabaseContext
             AddALV(list, "##l@DmsExceptions:EncryptionCertificatePrivateKeyСanNotBeExported@l##", "The private key can not be exported", "Приватный ключ нельзя экспортировать");
             AddALV(list, "##l@DmsExceptions:EncryptionCertificateWasNotFound@l##", "The certificate was not found", "Сертификат не был найден");
             AddALV(list, "##l@DmsExceptions:EventNotFoundOrUserHasNoAccess@l##", "User could not access this event!", "Пользователь не имеет доступа к этому событию!");
-            AddALV(list, "##l@DmsExceptions:ExecutorAgentForPositionIsNotDefined@l##", "Executor agent for position is not defined!", "Исполняющий агент для позиции не определен!");
-            AddALV(list, "##l@DmsExceptions:IncomingModelIsNotvalid@l##", "Incoming Model is not valid!", "Входящая модель недействительна!");
+            AddALV(list, "##l@DmsExceptions:ExecutorAgentForPositionIsNotDefined@l##", "Executor agent for position is not defined!", "Исполнитель для должности не определен!");
+            AddALV(list, "##l@DmsExceptions:IncomingModelIsNotvalid@l##", "Incoming Model is not valid!", "Входящая модель недействительна! Проверь REQUIRED поля");
             AddALV(list, "##l@DmsExceptions:LicenceExceededNumberOfConnectedUsers@l##", "You have exceeded the allowed number of connected users", "Превышено разрешенное количество подключенных пользователей");
             AddALV(list, "##l@DmsExceptions:LicenceExceededNumberOfRegisteredUsers@l##", "You have exceeded the allowed number of registered users", "Превышено разрешенное количество зарегистрированных пользователей");
-            AddALV(list, "##l@DmsExceptions:LicenceExpired@l##", "Licence expired", "Лицензия истекла");
+            AddALV(list, "##l@DmsExceptions:LicenceExpired@l##", "Licence expired", "Срок лицензии истек");
             AddALV(list, "##l@DmsExceptions:LicenceInformationError@l##", "The licence is not valid", "Лицензия недействительна");
             AddALV(list, "##l@DmsExceptions:NeedInformationAboutCorrespondent@l##", "Need information about correspondent!", "Нужна информация о корреспонденте!");
             AddALV(list, "##l@DmsExceptions:NotFilledWithAdditionalRequiredAttributes@l##", "Not filled with additional required attributes!", "Не заполнены обязательные дополнительные атрибуты!");
@@ -156,6 +157,22 @@ namespace BL.Database.DatabaseContext
             AddALV(list, "##l@DmsExceptions:WrongParameterTypeError@l##", "Parameter type commands is incorrect!", "Тип параметра комманды указан неверно!");
             AddALV(list, "##l@DmsExceptions:WrongParametervalueError@l##", "Parameters commands incorrect!", "Параметры комманды неверные!");
 
+
+            //pss 23.09.2016 Выявил DmsExceptions которые не имели перевода 
+            //TODO Требуется локализация (перевод ошибок)
+            AddALV(list, "##l@DmsExceptions:ControlerHasAlreadyBeenDefined@l##", "NO TRANSLATE", "NO TRANSLATE");
+            AddALV(list, "##l@DmsExceptions:CouldNotModifyTemplateDocument@l##", "NO TRANSLATE", "NO TRANSLATE");
+            AddALV(list, "##l@DmsExceptions:CouldNotPerformOperationWithPaper@l##", "NO TRANSLATE", "NO TRANSLATE");
+            AddALV(list, "##l@DmsExceptions:EncryptionCertificateHasExpired@l##", "NO TRANSLATE", "NO TRANSLATE");
+            AddALV(list, "##l@DmsExceptions:NobodyIsChosen@l##", "NO TRANSLATE", "NO TRANSLATE");
+            AddALV(list, "##l@DmsExceptions:ResponsibleExecutorHasAlreadyBeenDefined@l##", "NO TRANSLATE", "NO TRANSLATE");
+            AddALV(list, "##l@DmsExceptions:ResponsibleExecutorIsNotDefined@l##", "NO TRANSLATE", "NO TRANSLATE");
+            AddALV(list, "##l@DmsExceptions:SigningTypeNotAllowed@l##", "NO TRANSLATE", "NO TRANSLATE");
+            AddALV(list, "##l@DmsExceptions:SubordinationHasBeenViolated@l##", "NO TRANSLATE", "NO TRANSLATE");
+            AddALV(list, "##l@DmsExceptions:TargetIsNotDefined@l##", "NO TRANSLATE", "NO TRANSLATE");
+            AddALV(list, "##l@DmsExceptions:TaskIsNotDefined@l##", "NO TRANSLATE", "NO TRANSLATE");
+
+            // после добавления переводов можно обновить их в базе api/v2/Languages/RefreshLanguageValues
 
             return list;
         }

@@ -983,6 +983,20 @@ namespace BL.Database.Admins
             }
         }
 
+        public List<int> GetSubordinationTargetIDs(IContext context, FilterAdminSubordination filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.AdminSubordinationsSet.AsQueryable();
+
+                qry = GetWhereSubordination(ref qry, filter);
+
+                //qry = qry.OrderBy(x => x.Name);
+
+                return qry.Select(x => x.TargetPositionId).ToList();
+            }
+        }
+
         public bool ExistsSubordination(IContext context, FilterAdminSubordination filter)
         {
             using (var dbContext = new DmsContext(context))

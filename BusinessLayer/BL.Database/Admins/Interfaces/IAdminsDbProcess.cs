@@ -69,6 +69,7 @@ namespace BL.Database.Admins.Interfaces
         void UpdateSubordination(IContext context, InternalAdminSubordination model);
         void DeleteSubordination(IContext context, InternalAdminSubordination model);
         bool ExistsSubordination(IContext context, FilterAdminSubordination filter);
+        List<int> GetSubordinationTargetIDs(IContext context, FilterAdminSubordination filter);
         InternalAdminSubordination GetInternalSubordination(IContext context, FilterAdminSubordination filter);
         IEnumerable<FrontAdminSubordination> GetSubordinations(IContext context, FilterAdminSubordination filter);
         #endregion

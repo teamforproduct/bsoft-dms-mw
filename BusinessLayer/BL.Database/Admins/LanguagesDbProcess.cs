@@ -240,6 +240,15 @@ namespace BL.Database.Admins
             }
         }
 
+        public void AddAdminLanguageValues(IContext context, List<AdminLanguageValues> list)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                dbContext.AdminLanguageValuesSet.AddRange(list);
+                dbContext.SaveChanges();
+            }
+        }
+
         public void UpdateAdminLanguageValue(IContext context, InternalAdminLanguageValue model)
         {
             using (var dbContext = new DmsContext(context))
@@ -271,7 +280,7 @@ namespace BL.Database.Admins
             }
         }
 
-        public void DeleteAllAdminLanguageValue(IContext context)
+        public void DeleteAllAdminLanguageValues(IContext context)
         {
             using (var dbContext = new DmsContext(context))
             {

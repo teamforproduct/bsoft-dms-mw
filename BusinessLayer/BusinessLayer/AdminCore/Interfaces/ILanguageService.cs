@@ -16,6 +16,7 @@ namespace BL.Logic.AdminCore.Interfaces
         FrontAdminLanguageValue GetAdminLanguageValue(IContext context, int id);
         IEnumerable<FrontAdminLanguageValue> GetAdminLanguageValues(IContext context, FilterAdminLanguageValue filter);
         string ReplaceLanguageLabel(IContext context, string text);
+        void RefreshLanguageValues(IContext context);
         #endregion AdminLanguageValues
     }
 }

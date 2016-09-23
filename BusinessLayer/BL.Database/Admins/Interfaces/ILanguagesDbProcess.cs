@@ -4,6 +4,7 @@ using BL.Model.AdminCore;
 using BL.Model.AdminCore.FrontModel;
 using BL.Model.AdminCore.InternalModel;
 using BL.Model.AdminCore.FilterModel;
+using BL.Database.DBModel.Admin;
 
 namespace BL.Database.Admins.Interfaces
 {
@@ -23,9 +24,10 @@ namespace BL.Database.Admins.Interfaces
         IEnumerable<FrontAdminLanguageValue> GetAdminLanguageValues(IContext context, FilterAdminLanguageValue filter);
         InternalAdminLanguageValue GetInternalAdminLanguageValue(IContext context, FilterAdminLanguageValue filter);
         int AddAdminLanguageValue(IContext context, InternalAdminLanguageValue model);
+        void AddAdminLanguageValues(IContext context, List<AdminLanguageValues> list);
         void UpdateAdminLanguageValue(IContext context, InternalAdminLanguageValue model);
         void DeleteAdminLanguageValue(IContext context, InternalAdminLanguageValue model);
-        void DeleteAllAdminLanguageValue(IContext context);
+        void DeleteAllAdminLanguageValues(IContext context);
         #endregion AdminLanguageValues
     }
 }

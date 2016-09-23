@@ -11,6 +11,7 @@ using BL.Model.AdminCore.FrontModel;
 using BL.Model.AdminCore.FilterModel;
 using System.Text.RegularExpressions;
 using BL.Model.AdminCore.InternalModel;
+using BL.Database.DatabaseContext;
 
 namespace BL.Logic.AdminCore
 {
@@ -106,6 +107,13 @@ namespace BL.Logic.AdminCore
         public IEnumerable<FrontAdminLanguageValue> GetAdminLanguageValues(IContext context, FilterAdminLanguageValue filter)
         {
             return _languageDb.GetAdminLanguageValues(context, filter);
+        }
+
+
+        public void RefreshLanguageValues(IContext context)
+        {
+            _languageDb.DeleteAllAdminLanguageValues(context);
+            _languageDb.AddAdminLanguageValues(context, DmsDbImportData.GetAdminLanguageValues());
         }
         #endregion AdminLanguageValues
     }
