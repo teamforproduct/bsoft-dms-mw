@@ -402,7 +402,7 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context))
             {
-                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
+              using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
                 {
                     UpdateAgentName(context, person.Id, new InternalDictionaryAgent(person));
 
@@ -415,6 +415,8 @@ namespace BL.Database.Dictionaries
 
                     entity.State = System.Data.Entity.EntityState.Modified;
                     dbContext.SaveChanges();
+
+                    transaction.Complete();
 
                 }
             }
