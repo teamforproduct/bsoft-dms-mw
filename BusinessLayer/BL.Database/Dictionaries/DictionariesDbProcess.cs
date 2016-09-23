@@ -2891,6 +2891,7 @@ namespace BL.Database.Dictionaries
                     IsActive = x.IsActive,
                     ParentId = x.ParentId,
                     Code = x.Code,
+                    CodePath = x.FullPath,
                     Name = x.Name,
                     FullName = x.FullName,
                     CompanyId = x.CompanyId,
@@ -3761,6 +3762,7 @@ namespace BL.Database.Dictionaries
                         //ParentPositionName = x.ParentPosition.Name,
                         DepartmentId = x.DepartmentId,
                         DepartmentCode = x.Department.Code,
+                        DepartmentCodePath = x.Department.FullPath,
                         DepartmentName = x.Department.Name,
                         Order = x.Order,
                         PositionExecutors = x.PositionExecutors.
@@ -3825,6 +3827,7 @@ namespace BL.Database.Dictionaries
                     //ParentPositionName = x.ParentPosition.Name,
                     DepartmentId = x.DepartmentId,
                     DepartmentCode = x.Department.Code,
+                    DepartmentCodePath = x.Department.FullPath,
                     DepartmentName = x.Department.Name,
                     ExecutorAgentId = x.ExecutorAgentId,
                     ExecutorAgentName = x.ExecutorAgent.Name,

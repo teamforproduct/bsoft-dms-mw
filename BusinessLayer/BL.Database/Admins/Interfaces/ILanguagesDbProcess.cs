@@ -25,6 +25,7 @@ namespace BL.Database.Admins.Interfaces
         int AddAdminLanguageValue(IContext context, InternalAdminLanguageValue model);
         void UpdateAdminLanguageValue(IContext context, InternalAdminLanguageValue model);
         void DeleteAdminLanguageValue(IContext context, InternalAdminLanguageValue model);
+        void DeleteAllAdminLanguageValue(IContext context);
         #endregion AdminLanguageValues
     }
 }

@@ -19,6 +19,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// МФО
         /// </summary>
+        [Required]
         public string MFOCode { get; set; }
 
         /// <summary>

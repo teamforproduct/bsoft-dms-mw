@@ -270,6 +270,15 @@ namespace BL.Database.Admins
                 dbContext.SaveChanges();
             }
         }
+
+        public void DeleteAllAdminLanguageValue(IContext context)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                dbContext.AdminLanguageValuesSet.RemoveRange(dbContext.AdminLanguageValuesSet);
+                dbContext.SaveChanges();
+            }
+        }
         #endregion AdminLanguageValues
     }
 }

@@ -25,7 +25,6 @@ namespace BL.Logic.AdminCore
             return true;
         }
 
-
         public override bool CanExecute()
         {
             _admin.VerifyAccess(_context, CommandType, false);

@@ -147,6 +147,7 @@
     <Compile Include="Common\RecursiveExtension.cs" />
     <Compile Include="CoreDb\CoreDb.cs" />
     <Compile Include="DatabaseContext\DmsContext.cs" />
+    <Compile Include="DatabaseContext\DmsDbImportData.cs" />
     <Compile Include="DatabaseContext\DmsDbInitializer.cs" />
     <Compile Include="DBModel\Admin\AdminAccessLevels.cs" />
     <Compile Include="DBModel\Admin\AdminPositionRoles.cs" />
