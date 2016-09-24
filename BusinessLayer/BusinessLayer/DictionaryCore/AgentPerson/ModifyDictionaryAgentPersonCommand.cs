@@ -32,35 +32,9 @@ namespace BL.Logic.DictionaryCore
 
         public override bool CanExecute()
         {
-            _admin.VerifyAccess(_context, CommandType, false, true);
+            _adminService.VerifyAccess(_context, CommandType, false, true);
 
-            if (_dictDb.ExistsAgents(_context, new FilterDictionaryAgent { NameExact = Model.Name, NotContainsIDs = new List<int> { Model.Id } }))
-            {
-                throw new DictionaryAgentNameNotUnique();
-            }
-
-            // Если указаны необязательные паспортные данные, проверяю нет ли таких уже
-            if (!string.IsNullOrEmpty(Model.PassportSerial + Model.PassportNumber))
-            {
-                if (_dictDb.ExistsAgentPersons(_context, new FilterDictionaryAgentPerson
-                {
-                    PassportSerialExact = Model.PassportSerial,
-                    PassportNumberExact = Model.PassportNumber,
-                    NotContainsIDs = new List<int> { Model.Id }
-                }))
-                { throw new DictionaryAgentPersonPassportNotUnique(); }
-            }
-
-            // Если указан необязательный ИНН, проверяю нет ли такого уже
-            if (!string.IsNullOrEmpty(Model.TaxCode))
-            {
-                if (_dictDb.ExistsAgentPersons(_context, new FilterDictionaryAgentPerson
-                {
-                    TaxCodeExact = Model.TaxCode,
-                    NotContainsIDs = new List<int> { Model.Id }
-                }))
-                { throw new DictionaryAgentPersonTaxCodeNotUnique(); }
-            }
+            DictionaryModelVerifying.VerifyAgentPerson(_context, _dictDb, Model);
 
             return true;
         }

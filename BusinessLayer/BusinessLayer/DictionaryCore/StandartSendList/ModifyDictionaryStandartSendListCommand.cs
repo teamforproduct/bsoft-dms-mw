@@ -33,18 +33,10 @@ namespace BL.Logic.DictionaryCore
 
         public override bool CanExecute()
         {
-            _admin.VerifyAccess(_context, CommandType, false);
-            var contents = _dictDb.GetStandartSendLists(_context, new FilterDictionaryStandartSendList() 
-            {
-                NameExact = Model.Name,
-                PositionID =  Model.PositionId ?? 0,
-                NotContainsIDs = new List<int> { Model.Id }
-            });
+            _adminService.VerifyAccess(_context, CommandType, false);
 
-            if (contents.Any())
-            {
-                throw new DictionaryRecordNotUnique();
-            }
+            DictionaryModelVerifying.VerifyStandartSendList(_context, _dictDb, Model);
+            
             return true;
         }
 

@@ -30,61 +30,9 @@ namespace BL.Logic.DictionaryCore
 
         public override bool CanExecute()
         {
-            _admin.VerifyAccess(_context, CommandType, false);
+            _adminService.VerifyAccess(_context, CommandType, false);
 
-            if (_dictDb.ExistsAgents(_context, new FilterDictionaryAgent() { NameExact = Model.Name, NotContainsIDs = new List<int> { Model.Id } }))
-            {
-                throw new DictionaryAgentNameNotUnique();
-            }
-
-            if (_dictDb.ExistsAgentEmployees(_context, new FilterDictionaryAgentEmployee()
-            {
-                PersonnelNumberExact = Model.PersonnelNumber,
-                NotContainsIDs = new List<int> { Model.Id }
-            }))
-            {
-                throw new DictionaryAgentEmployeePersonnelNumberNotUnique();
-            }
-
-            // Если указаны необязательные паспортные данные, проверяю нет ли таких уже
-            if (!string.IsNullOrEmpty(Model.PassportSerial + Model.PassportNumber))
-            {
-                if (_dictDb.ExistsAgentPersons(_context, new FilterDictionaryAgentPerson
-                {
-                    PassportSerialExact = Model.PassportSerial,
-                    PassportNumberExact = Model.PassportNumber,
-                    NotContainsIDs = new List<int> { Model.Id }
-                }))
-                {
-                    throw new DictionaryAgentEmployeePassportNotUnique();
-                }
-            }
-
-            // Если указан необязательный ИНН, проверяю нет ли такого уже
-            if (!string.IsNullOrEmpty(Model.TaxCode))
-            {
-                if (_dictDb.ExistsAgentPersons(_context, new FilterDictionaryAgentPerson
-                {
-                    TaxCodeExact = Model.TaxCode,
-                    NotContainsIDs = new List<int> { Model.Id }
-                }))
-                {
-                    throw new DictionaryAgentEmployeeTaxCodeNotUnique();
-                }
-            }
-
-
-            //var agents = _dictDb.GetAgentEmployees(_context, new FilterDictionaryAgentEmployee
-            //{
-            //    PersonnelNumber = Model.PersonnelNumber,
-            //    TaxCode = Model.TaxCode,
-            //    IsActive=Model.IsActive,
-            //    FirstNameExact = Model.FirstName,
-            //    LastNameExact = Model.LastName,
-            //    PassportSerial = Model.PassportSerial,
-            //    PassportNumber = Model.PassportNumber,
-
-            //},null);
+            DictionaryModelVerifying.VerifyAgentEmployee(_context, _dictDb, Model);
 
             return true;
         }

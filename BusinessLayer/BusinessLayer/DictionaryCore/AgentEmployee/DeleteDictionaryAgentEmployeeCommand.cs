@@ -30,7 +30,7 @@ namespace BL.Logic.DictionaryCore
 
         public override bool CanExecute()
         {
-            _admin.VerifyAccess(_context, CommandType, false, true);
+            _adminService.VerifyAccess(_context, CommandType, false, true);
             return true;
         }
 

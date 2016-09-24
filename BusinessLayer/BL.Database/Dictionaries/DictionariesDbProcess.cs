@@ -1447,6 +1447,27 @@ namespace BL.Database.Dictionaries
                 }
             }
 
+            // Поиск по наименованию
+            if (!string.IsNullOrEmpty(filter.NameExact))
+            {
+                qry = qry.Where(x => x.Name == filter.NameExact);
+            }
+
+            // Поиск по наименованию
+            if (!string.IsNullOrEmpty(filter.Code))
+            {
+                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Code))
+                {
+                    qry = qry.Where(x => x.Code.Contains(temp));
+                }
+            }
+
+            // Поиск по наименованию
+            if (!string.IsNullOrEmpty(filter.CodeExact))
+            {
+                qry = qry.Where(x => x.Code == filter.CodeExact);
+            }
+
             return qry;
         }
         #endregion
@@ -2409,6 +2430,11 @@ namespace BL.Database.Dictionaries
                     }
                 }
 
+                if (!string.IsNullOrEmpty(filter.AccountNumberExact))
+                {
+                    qry = qry.Where(x => x.AccountNumber == filter.AccountNumberExact);
+                }
+
                 if (filter.AgentBankId.HasValue)
                 {
                     qry = qry.Where(x => x.AgentBankId == filter.AgentBankId);
@@ -2477,8 +2503,16 @@ namespace BL.Database.Dictionaries
 
                 if (!String.IsNullOrEmpty(filter.Code))
                 {
+                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Code))
+                    {
+                        qry = qry.Where(x => x.Code.Contains(temp));
+                    }
+                }
 
-                    qry = qry.Where(x => x.Code == filter.Code);
+                if (!String.IsNullOrEmpty(filter.CodeExact))
+                {
+
+                    qry = qry.Where(x => x.Code == filter.CodeExact);
 
                 }
 
@@ -3030,7 +3064,11 @@ namespace BL.Database.Dictionaries
                 {
                     qry = qry.Where(x => x.Name.Contains(temp));
                 }
+            }
 
+            if (!string.IsNullOrEmpty(filter.NameExact))
+            {
+                qry = qry.Where(x => x.Name == filter.NameExact);
             }
 
             // Условие по FullName
@@ -3292,6 +3330,12 @@ namespace BL.Database.Dictionaries
                 {
                     qry = qry.Where(x => x.Name.Contains(temp));
                 }
+            }
+
+            // Поиск по наименованию
+            if (!string.IsNullOrEmpty(filter.NameExact))
+            {
+                qry = qry.Where(x => x.Name == filter.NameExact);
             }
 
             // Условие по ParentId
@@ -5529,6 +5573,14 @@ namespace BL.Database.Dictionaries
 
                     if (!string.IsNullOrEmpty(filter.Code))
                     {
+                        foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Code))
+                        {
+                            qry = qry.Where(x => x.Code.Contains(temp));
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(filter.CodeExact))
+                    {
                         qry = qry.Where(x => filter.Code.Equals(x.Code, StringComparison.OrdinalIgnoreCase));
                     }
                 }
@@ -5680,6 +5732,14 @@ namespace BL.Database.Dictionaries
                     }
 
                     if (!string.IsNullOrEmpty(filter.Code))
+                    {
+                        foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Code))
+                        {
+                            qry = qry.Where(x => x.Code.Contains(temp));
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(filter.CodeExact))
                     {
                         qry = qry.Where(x => filter.Code.Equals(x.Code, StringComparison.OrdinalIgnoreCase));
                     }

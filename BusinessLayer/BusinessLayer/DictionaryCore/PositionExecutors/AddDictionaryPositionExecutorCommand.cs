@@ -30,23 +30,9 @@ namespace BL.Logic.DictionaryCore
 
         public override bool CanExecute()
         {
+            _adminService.VerifyAccess(_context, CommandType, false);
 
-            _admin.VerifyAccess(_context, CommandType, false);
-
-            var fd = new FilterDictionaryPositionExecutor {
-                PositionIDs = new List<int> { Model.PositionId },
-                AgentIDs = new List<int> { Model.AgentId },
-                Period = new Period(Model.StartDate, Model.EndDate),
-                AccessLevelIDs = new List<int> { Model.AgentId },
-                PositionExecutorTypeIDs = new List < int > { Model.PositionExecutorTypeId }
-            };
-
-            
-
-            if (_dictDb.ExistsPositionExecutor(_context, fd))
-            {
-                throw new DictionaryRecordNotUnique();
-            }
+            DictionaryModelVerifying.VerifyPositionExecutor(_context, _dictDb, Model);
 
             return true;
         }

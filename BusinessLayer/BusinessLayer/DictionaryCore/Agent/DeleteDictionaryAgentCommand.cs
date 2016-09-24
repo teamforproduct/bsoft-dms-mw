@@ -30,7 +30,7 @@ using BL.Model.SystemCore;
 
             public override bool CanExecute()
             {
-                _admin.VerifyAccess(_context, CommandType,false,true);
+                _adminService.VerifyAccess(_context, CommandType,false,true);
 
 //                FrontDictionaryAgent tmp = _dictDb.GetAgent(_context, Model);
 

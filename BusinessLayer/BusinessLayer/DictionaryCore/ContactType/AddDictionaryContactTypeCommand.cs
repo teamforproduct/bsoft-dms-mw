@@ -28,13 +28,9 @@ namespace BL.Logic.DictionaryCore
 
         public override bool CanExecute()
         {
-            _admin.VerifyAccess(_context, CommandType,false,true);
-            var spr = _dictDb.GetInternalDictionaryContactType(_context, 
-                   new FilterDictionaryContactType { NameExact = Model.Name, Code=Model.Code });
-            if (spr != null)
-            {
-                throw new DictionaryRecordNotUnique();
-            }
+            _adminService.VerifyAccess(_context, CommandType,false,true);
+
+            DictionaryModelVerifying.VerifyContactType(_context, _dictDb, Model);
 
             return true;
         }

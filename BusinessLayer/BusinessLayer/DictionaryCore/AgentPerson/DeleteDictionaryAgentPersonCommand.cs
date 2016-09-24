@@ -34,7 +34,7 @@ namespace BL.Logic.DictionaryCore
            //     throw new DictionaryRecordCouldNotBeDeleted();
            // }
 
-            _admin.VerifyAccess(_context, CommandType,false,true);
+            _adminService.VerifyAccess(_context, CommandType,false,true);
             return true;
         }
 

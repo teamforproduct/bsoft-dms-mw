@@ -88,12 +88,14 @@ namespace DMS_WebAPI.Utilities
 
         public string ReplaceLanguageLabel(string userLanguage, string text)
         {
+            string errorMessage = text;
+
             try
             {
                 using (var dbContext = new ApplicationDbContext())
                 {
                     var labelsInText = new List<string>();
-                    foreach (Match label in Regex.Matches(text, "##l@(.*?)@l##"))
+                    foreach (Match label in Regex.Matches(errorMessage, "##l@(.*?)@l##"))
                     {
                         labelsInText.Add(label.Value);
                     }
@@ -107,10 +109,14 @@ namespace DMS_WebAPI.Utilities
 
                         for (int i = 0, l = labels.Length; i < l; i++)
                         {
-                            text = text.Replace(labels[i].Label, labels[i].Value);
+                            errorMessage = errorMessage.Replace(labels[i].Label, labels[i].Value);
                         }
                     }
-                    return text;
+
+                    // Еслли в переводе пусто...
+                    if (errorMessage == string.Empty) errorMessage = "Empty translation for label: " + text;
+
+                    return errorMessage;
                 }
             }
             catch (Exception ex) { }

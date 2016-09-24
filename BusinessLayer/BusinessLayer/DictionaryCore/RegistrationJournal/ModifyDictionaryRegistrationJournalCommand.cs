@@ -33,15 +33,9 @@ namespace BL.Logic.DictionaryCore
 
         public override bool CanExecute()
         {
-            _admin.VerifyAccess(_context, CommandType, false);
-            // Находим запись с таким-же именем и индексом журнала в этом-же подразделении
-            if (_dictDb.ExistsDictionaryRegistrationJournal(_context, new FilterDictionaryRegistrationJournal
-            {
-                NameExact = Model.Name, IndexExact = Model.Index, DepartmentIDs = new List<int> { Model.DepartmentId },NotContainsIDs = new List<int> {Model.Id}
-            }))
-            {
-                throw new DictionaryRecordNotUnique();
-            }
+            _adminService.VerifyAccess(_context, CommandType, false);
+
+            DictionaryModelVerifying.VerifyRegistrationJournal(_context, _dictDb, Model);
             
             return true;
         }

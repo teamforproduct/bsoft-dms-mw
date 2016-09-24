@@ -38,15 +38,9 @@ namespace BL.Logic.DictionaryCore
 
         public override bool CanExecute()
         {
-            _admin.VerifyAccess(_context, CommandType, false);
-            var spr = _dictDb.GetTags(_context, new FilterDictionaryTag
-            {
-                NameExact = Model.Name
-            });
-            if (spr.Any())
-            {
-                throw new DictionaryRecordNotUnique();
-            }
+            _adminService.VerifyAccess(_context, CommandType, false);
+
+            DictionaryModelVerifying.VerifyTag(_context, _dictDb, Model);
 
             return true;
          

@@ -30,20 +30,10 @@ namespace BL.Logic.DictionaryCore
 
         public override bool CanExecute()
         {
-            if (_dictDb.ExistsAgents(_context, new FilterDictionaryAgent() { NameExact = Model.Name, NotContainsIDs = new List<int> { Model.Id } }))
-            {
-                throw new DictionaryAgentNameNotUnique();
-            }
+            _adminService.VerifyAccess(_context, CommandType, false, true);
 
-            if (!string.IsNullOrEmpty(Model.MFOCode))
-            {
-                if (_dictDb.ExistsAgentBanks(_context, new FilterDictionaryAgentBank { MFOCodeExact = Model.MFOCode, NotContainsIDs = new List<int> { Model.Id } }))
-                {
-                    throw new DictionaryAgentBankMFOCodeNotUnique();
-                }
-            }
+            DictionaryModelVerifying.VerifyAgentBank(_context, _dictDb, Model);
 
-            _admin.VerifyAccess(_context, CommandType, false, true);
             return true;
         }
 

@@ -29,19 +29,9 @@ namespace BL.Logic.DictionaryCore
 
         public override bool CanExecute()
         {
+            _adminService.VerifyAccess(_context, CommandType, false);
 
-            _admin.VerifyAccess(_context, CommandType, false);
-
-            var spr = _dictDb.GetInternalDictionaryDocumentType(_context, new FilterDictionaryDocumentType
-            {
-                NameExact = Model.Name,
-                IsActive =Model.IsActive,
-                NotContainsIDs = new List<int> { Model.Id}
-            });
-            if (spr != null)
-            {
-                throw new DictionaryRecordNotUnique();
-            }
+            DictionaryModelVerifying.VerifyDocumentType(_context, _dictDb, Model);
 
             return true;
         }

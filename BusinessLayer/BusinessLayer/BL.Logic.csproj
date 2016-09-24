@@ -158,9 +158,9 @@
     <Compile Include="DictionaryCore\ContactType\AddDictionaryContactTypeCommand.cs" />
     <Compile Include="DictionaryCore\ContactType\DeleteDictionaryContactTypeCommand.cs" />
     <Compile Include="DictionaryCore\ContactType\ModifyDictionaryContactTypeCommand.cs" />
-    <Compile Include="DictionaryCore\Contact\AddDictionaryContactCommand.cs" />
-    <Compile Include="DictionaryCore\Contact\DeleteDictionaryContactCommand.cs" />
-    <Compile Include="DictionaryCore\Contact\ModifyDictionaryContactCommand.cs" />
+    <Compile Include="DictionaryCore\AgentContact\AddDictionaryContactCommand.cs" />
+    <Compile Include="DictionaryCore\AgentContact\DeleteDictionaryContactCommand.cs" />
+    <Compile Include="DictionaryCore\AgentContact\ModifyDictionaryContactCommand.cs" />
     <Compile Include="DictionaryCore\CustomDictionary\DeleteCustomDictionaryCommand.cs" />
     <Compile Include="DictionaryCore\CustomDictionary\AddCustomDictionaryCommand.cs" />
     <Compile Include="DictionaryCore\CustomDictionary\DeleteCustomDictionaryTypeCommand.cs" />
@@ -168,6 +168,7 @@
     <Compile Include="DictionaryCore\CustomDictionary\ModifyCustomDictionaryCommand.cs" />
     <Compile Include="DictionaryCore\CustomDictionary\ModifyCustomDictionaryTypeCommand.cs" />
     <Compile Include="DictionaryCore\DictionaryCommandFactory.cs" />
+    <Compile Include="DictionaryCore\DictionaryModelVerifying.cs" />
     <Compile Include="DictionaryCore\PositionExecutors\AddDictionaryPositionExecutorCommand.cs" />
     <Compile Include="DictionaryCore\PositionExecutors\DeleteDictionaryPositionExecutorCommand.cs" />
     <Compile Include="DictionaryCore\PositionExecutors\ModifyDictionaryPositionExecutorCommand.cs" />

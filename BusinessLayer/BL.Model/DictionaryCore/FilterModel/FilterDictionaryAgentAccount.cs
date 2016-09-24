@@ -16,6 +16,12 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// номер счета
         /// </summary>
         public string AccountNumber { get; set; }
+
+        /// <summary>
+        /// номер счета
+        /// </summary>
+        public string AccountNumberExact { get; set; }
+
         /// <summary>
         /// банк
         /// </summary>

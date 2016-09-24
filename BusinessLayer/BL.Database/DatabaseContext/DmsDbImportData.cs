@@ -100,6 +100,11 @@ namespace BL.Database.DatabaseContext
             AddALV(list, "##l@DmsExceptions:AdminRecordCouldNotBeDeleted@l##", "You could not delete from this dictionary data!", "Вы не можете удалить настроечные данные");
             AddALV(list, "##l@DmsExceptions:AdminRecordWasNotFound@l##", "Dictionary record was not found!", "Элемент справочника не найден!");
 
+            AddALV(list, "##l@DmsExceptions:DictionaryAddressTypeCodeNotUnique@l##", "", "");
+            AddALV(list, "##l@DmsExceptions:DictionaryAddressTypeNameNotUnique@l##", "", "");
+            AddALV(list, "##l@DmsExceptions:DictionaryContactTypeCodeNotUnique@l##", "", "");
+            AddALV(list, "##l@DmsExceptions:DictionaryContactTypeNameNotUnique@l##", "", "");
+
             AddALV(list, "##l@DmsExceptions:DictionaryAgentBankMFOCodeNotUnique@l##", "Bank MFO сode should be unique!", "Банк с указанным МФО уже есть в справочнике");
             AddALV(list, "##l@DmsExceptions:DictionaryAgentCompanyOKPOCodeNotUnique@l##", "Company OKPO сode should be unique!", "Юридическое лицо с указанным ОКПО уже есть в справочнике");
             AddALV(list, "##l@DmsExceptions:DictionaryAgentCompanyTaxCodeNotUnique@l##", "Company tax сode should be unique!", "Юридическое лицо с указанным ИНН уже есть в справочнике");
@@ -107,9 +112,28 @@ namespace BL.Database.DatabaseContext
             AddALV(list, "##l@DmsExceptions:DictionaryAgentEmployeePassportNotUnique@l##", "Employee passport should be unique!", "Сотрудник с указанными паспортными данными уже есть в справочнике");
             AddALV(list, "##l@DmsExceptions:DictionaryAgentEmployeePersonnelNumberNotUnique@l##", "Employee personnel number should be unique!", "Сотрудник с указанным табельным номером уже есть в справочнике");
             AddALV(list, "##l@DmsExceptions:DictionaryAgentEmployeeTaxCodeNotUnique@l##", "Employee tax code should be unique!", "Сотрудник с указанным ИНН уже есть в справочнике");
-            AddALV(list, "##l@DmsExceptions:DictionaryAgentNameNotUnique@l##", "Agent name should be unique!", "Агент с указанным кратким именем уже есть в справочнике");
+            AddALV(list, "##l@DmsExceptions:DictionaryAgentNameNotUnique@l##", "Agent name should be unique!", "Агент \"{0}\" уже есть в справочнике");
             AddALV(list, "##l@DmsExceptions:DictionaryAgentPersonPassportNotUnique@l##", "Person passport should be unique!", "Физлицо с указанными паспортными данными уже есть в справочнике");
             AddALV(list, "##l@DmsExceptions:DictionaryAgentPersonTaxCodeNotUnique@l##", "Person tax code should be unique!", "Физлицо с указанным ИНН уже есть в справочнике");
+            AddALV(list, "##l@DmsExceptions:DictionaryAgentContactTypeNotUnique@l##", "Agent contact type should be unique!", "Контакт с указанным типом уже есть у этого агента");
+            AddALV(list, "##l@DmsExceptions:DictionaryAgentContactNotUnique@l##", "Agent contact should be unique!", "Указанный контакт уже есть у этого агента");
+            AddALV(list, "##l@DmsExceptions:DictionaryAgentAddressTypeNotUnique@l##", "", "");
+            AddALV(list, "##l@DmsExceptions:DictionaryAgentAccountNumberNotUnique@l##", "", "");
+            
+            AddALV(list, "##l@DmsExceptions:DictionaryCostomDictionaryNotUnique@l##", "", "");
+            AddALV(list, "##l@DmsExceptions:DictionaryCostomDictionaryTypeNotUnique@l##", "", "");
+            AddALV(list, "##l@DmsExceptions:DictionarysdDepartmentNotBeSubordinated@l##", "", "");
+            AddALV(list, "##l@DmsExceptions:DictionaryDepartmentNameNotUnique@l##", "", "");
+            AddALV(list, "##l@DmsExceptions:DictionaryDocumentSubjectNameNotUnique@l##", "", "");
+            AddALV(list, "##l@DmsExceptions:DictionaryDocumentTypeNameNotUnique@l##", "", "");
+            AddALV(list, "##l@DmsExceptions:DictionaryPositionExecutorNotUnique@l##", "", "");
+            AddALV(list, "##l@DmsExceptions:DictionaryRegistrationJournalNotUnique@l##", "", "");
+            AddALV(list, "##l@DmsExceptions:DictionaryStandartSendListNotUnique@l##", "", "");
+            AddALV(list, "##l@DmsExceptions:DictionaryStandartSendListContentNotUnique@l##", "", "");
+            AddALV(list, "##l@DmsExceptions:DictionaryTagNotUnique@l##", "", "");
+
+
+
             AddALV(list, "##l@DmsExceptions:DictionaryRecordCouldNotBeAdded@l##", "You could not add this dictionary data!", "Вы не можете добавить данные в этот справочник");
             AddALV(list, "##l@DmsExceptions:DictionaryRecordCouldNotBeDeleted@l##", "You could not delete from this dictionary data!", "Вы не можете удалить данные из этого справочника");
             AddALV(list, "##l@DmsExceptions:DictionaryRecordNotUnique@l##", "Dictionary record should be unique!", "Элемент справочника должен быть уникален!");
@@ -160,17 +184,17 @@ namespace BL.Database.DatabaseContext
 
             //pss 23.09.2016 Выявил DmsExceptions которые не имели перевода 
             //TODO Требуется локализация (перевод ошибок)
-            AddALV(list, "##l@DmsExceptions:ControlerHasAlreadyBeenDefined@l##", "NO TRANSLATE", "NO TRANSLATE");
-            AddALV(list, "##l@DmsExceptions:CouldNotModifyTemplateDocument@l##", "NO TRANSLATE", "NO TRANSLATE");
-            AddALV(list, "##l@DmsExceptions:CouldNotPerformOperationWithPaper@l##", "NO TRANSLATE", "NO TRANSLATE");
-            AddALV(list, "##l@DmsExceptions:EncryptionCertificateHasExpired@l##", "NO TRANSLATE", "NO TRANSLATE");
-            AddALV(list, "##l@DmsExceptions:NobodyIsChosen@l##", "NO TRANSLATE", "NO TRANSLATE");
-            AddALV(list, "##l@DmsExceptions:ResponsibleExecutorHasAlreadyBeenDefined@l##", "NO TRANSLATE", "NO TRANSLATE");
-            AddALV(list, "##l@DmsExceptions:ResponsibleExecutorIsNotDefined@l##", "NO TRANSLATE", "NO TRANSLATE");
-            AddALV(list, "##l@DmsExceptions:SigningTypeNotAllowed@l##", "NO TRANSLATE", "NO TRANSLATE");
-            AddALV(list, "##l@DmsExceptions:SubordinationHasBeenViolated@l##", "NO TRANSLATE", "NO TRANSLATE");
-            AddALV(list, "##l@DmsExceptions:TargetIsNotDefined@l##", "NO TRANSLATE", "NO TRANSLATE");
-            AddALV(list, "##l@DmsExceptions:TaskIsNotDefined@l##", "NO TRANSLATE", "NO TRANSLATE");
+            AddALV(list, "##l@DmsExceptions:ControlerHasAlreadyBeenDefined@l##", "", "");
+            AddALV(list, "##l@DmsExceptions:CouldNotModifyTemplateDocument@l##", "", "");
+            AddALV(list, "##l@DmsExceptions:CouldNotPerformOperationWithPaper@l##", "", "");
+            AddALV(list, "##l@DmsExceptions:EncryptionCertificateHasExpired@l##", "", "");
+            AddALV(list, "##l@DmsExceptions:NobodyIsChosen@l##", "", "");
+            AddALV(list, "##l@DmsExceptions:ResponsibleExecutorHasAlreadyBeenDefined@l##", "", "");
+            AddALV(list, "##l@DmsExceptions:ResponsibleExecutorIsNotDefined@l##", "", "");
+            AddALV(list, "##l@DmsExceptions:SigningTypeNotAllowed@l##", "", "");
+            AddALV(list, "##l@DmsExceptions:SubordinationHasBeenViolated@l##", "", "");
+            AddALV(list, "##l@DmsExceptions:TargetIsNotDefined@l##", "", "");
+            AddALV(list, "##l@DmsExceptions:TaskIsNotDefined@l##", "", "");
 
             // после добавления переводов можно обновить их в базе api/v2/Languages/RefreshLanguageValues
 

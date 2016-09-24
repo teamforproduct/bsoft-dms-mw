@@ -30,42 +30,9 @@ namespace BL.Logic.DictionaryCore
 
         public override bool CanExecute()
         {
-            _admin.VerifyAccess(_context, CommandType, false);
+            _adminService.VerifyAccess(_context, CommandType, false);
 
-            if (_dictDb.ExistsAgents(_context, new FilterDictionaryAgent() { NameExact = Model.Name, NotContainsIDs = new List<int> { Model.Id } }))
-            {
-                throw new DictionaryAgentNameNotUnique();
-            }
-
-            if (!string.IsNullOrEmpty(Model.TaxCode))
-            {
-                if (_dictDb.ExistsAgentCompanies(_context, new FilterDictionaryAgentCompany()
-                {
-                    TaxCodeExact = Model.TaxCode,
-                    NotContainsIDs = new List<int> { Model.Id }
-                }))
-                { throw new DictionaryAgentCompanyTaxCodeNotUnique(); }
-            }
-
-            if (!string.IsNullOrEmpty(Model.OKPOCode))
-            {
-                if (_dictDb.ExistsAgentCompanies(_context, new FilterDictionaryAgentCompany()
-                {
-                    OKPOCodeExact = Model.OKPOCode,
-                    NotContainsIDs = new List<int> { Model.Id }
-                }))
-                { throw new DictionaryAgentCompanyOKPOCodeNotUnique(); }
-            }
-
-            if (!string.IsNullOrEmpty(Model.VATCode))
-            {
-                if (_dictDb.ExistsAgentCompanies(_context, new FilterDictionaryAgentCompany()
-                {
-                    VATCodeExact = Model.VATCode,
-                    NotContainsIDs = new List<int> { Model.Id }
-                }))
-                { throw new DictionaryAgentCompanyVATCodeNotUnique(); }
-            }
+            DictionaryModelVerifying.VerifyAgentCompany(_context, _dictDb, Model);
 
             return true;
         }

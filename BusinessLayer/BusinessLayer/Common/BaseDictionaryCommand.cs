@@ -15,7 +15,7 @@ namespace BL.Logic.Common
         protected IContext _context;
         protected object _param;
         private EnumDictionaryActions _action;
-        protected IAdminService _admin;
+        protected IAdminService _adminService;
         protected IDictionaryService _dictService;
         protected IDictionariesDbProcess _dictDb;
 
@@ -30,7 +30,7 @@ namespace BL.Logic.Common
             _context = ctx;
             _param = param;
             _dictDb = DmsResolver.Current.Get<IDictionariesDbProcess>();
-            _admin = DmsResolver.Current.Get<IAdminService>();
+            _adminService = DmsResolver.Current.Get<IAdminService>();
             _dictService = DmsResolver.Current.Get<IDictionaryService>();
         }
 

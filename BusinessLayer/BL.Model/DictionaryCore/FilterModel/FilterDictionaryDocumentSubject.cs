@@ -8,7 +8,7 @@ namespace BL.Model.DictionaryCore.FilterModel
     // В этой модели целесообразно все поля, объявленные простыми типами, делать Nullable, чтобы при формировании Where можно было проверить на if != null
     public class FilterDictionaryDocumentSubject : DictionaryBaseFilterParameters
     {
-        
+        public string NameExact { set; get; }
                
     }
 }

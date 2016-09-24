@@ -31,20 +31,9 @@ namespace BL.Logic.DictionaryCore
         public override bool CanExecute()
         {
 
-            _admin.VerifyAccess(_context, CommandType, false);
+            _adminService.VerifyAccess(_context, CommandType, false);
 
-            //var fdd = new FilterDictionaryPosition { Name = Model.Name, NotContainsIDs = new List<int> { Model.Id } };
-
-            //if (Model.DepartmentId != null)
-            //{
-            //    fdd.DepartmentIDs = new List<int> { Model.DepartmentId };
-            //}
-
-            //// Находим запись с таким-же именем в этой-же папке
-            //if (_dictDb.ExistsPosition(_context, fdd))
-            //{
-            //    throw new DictionaryRecordNotUnique();
-            //}
+            DictionaryModelVerifying.VerifyPosition(_context, _dictDb, Model);
 
             return true;
         }
