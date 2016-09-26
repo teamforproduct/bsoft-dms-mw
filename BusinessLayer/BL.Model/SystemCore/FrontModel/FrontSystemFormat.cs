@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace BL.Model.SystemCore.FrontModel
 {
 
-    public class FrontSystemPatterns
+    public class FrontSystemFormat
     {
         public int Id { get; set; }
         public string Code { get; set; }

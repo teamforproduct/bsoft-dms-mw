@@ -187,6 +187,68 @@ namespace BL.Database.SystemDb
         }
 
 
+        public IEnumerable<FrontSystemFormat> GetSystemFormats(IContext ctx, FilterSystemFormat filter)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                var qry = dbContext.SystemFormatsSet.AsQueryable();
+
+                return qry.Select(x => new FrontSystemFormat
+                {
+                    Id = x.Id,
+                    Code = x.Code,
+                    Name = x.Name,
+                    Description = x.Description,
+                }).ToList();
+            }
+        }
+
+        public IEnumerable<FrontSystemFormula> GetSystemFormulas(IContext ctx, FilterSystemFormula filter)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                var qry = dbContext.SystemFormulasSet.AsQueryable();
+
+                return qry.Select(x => new FrontSystemFormula
+                {
+                    Id = x.Id,
+                    Code = x.Code,
+                    Name = x.Name,
+                    Description = x.Description,
+                    Example = x.Example
+                }).ToList();
+            }
+        }
+        public IEnumerable<FrontSystemPattern> GetSystemPatterns(IContext ctx, FilterSystemPattern filter)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                var qry = dbContext.SystemPatternsSet.AsQueryable();
+
+                return qry.Select(x => new FrontSystemPattern
+                {
+                    Id = x.Id,
+                    Code = x.Code,
+                    Name = x.Name,
+                    Description = x.Description,
+                }).ToList();
+            }
+        }
+        public IEnumerable<FrontSystemValueType> GetSystemValueTypes(IContext ctx, FilterSystemValueType filter)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                var qry = dbContext.SystemValueTypesSet.AsQueryable();
+
+                return qry.Select(x => new FrontSystemValueType
+                {
+                    Id = x.Id,
+                    Code = x.Code,
+                    Description = x.Description,
+                }).ToList();
+            }
+        }
+
         #endregion SystemObjects
 
         #region Properties

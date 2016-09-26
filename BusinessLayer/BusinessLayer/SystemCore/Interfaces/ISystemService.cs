@@ -13,6 +13,9 @@ namespace BL.Logic.SystemCore.Interfaces
     public interface ISystemService
     {
         void InitializerDatabase(IContext ctx);
-        IEnumerable<FrontSystemFormats> GetSystemFormats(IContext context, FilterSystemFormat filter);
+        IEnumerable<FrontSystemFormat> GetSystemFormats(IContext context, FilterSystemFormat filter);
+        IEnumerable<FrontSystemFormula> GetSystemFormulas(IContext context, FilterSystemFormula filter);
+        IEnumerable<FrontSystemPattern> GetSystemPatterns(IContext context, FilterSystemPattern filter);
+        IEnumerable<FrontSystemValueType> GetSystemValueTypes(IContext context, FilterSystemValueType filter);
     }
 }
