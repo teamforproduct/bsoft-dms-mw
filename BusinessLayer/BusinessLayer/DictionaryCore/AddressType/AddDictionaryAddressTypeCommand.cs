@@ -32,12 +32,8 @@ namespace BL.Logic.DictionaryCore
 
         public override bool CanExecute()
         {
-            var spr = _dictDb.GetInternalDictionaryAddressType(_context, new FilterDictionaryAddressType { Name = Model.Name });
-            if (spr != null)
-            {
-                throw new DictionaryRecordNotUnique();
-            }
-            _admin.VerifyAccess(_context, CommandType,false,true);
+            _adminService.VerifyAccess(_context, CommandType,false,true);
+            DictionaryModelVerifying.VerifyAddressType(_context, _dictDb, Model);
             return true;
         }
 

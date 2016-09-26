@@ -19,6 +19,7 @@ using BL.Model.Tree;
 using BL.Database.Dictionaries.Interfaces;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Logic.TreeBuilder;
+using BL.Model.DictionaryCore.FrontModel;
 
 namespace BL.Logic.AdminCore
 {
@@ -46,7 +47,7 @@ namespace BL.Logic.AdminCore
             var res = _commandService.ExecuteCommand(cmd);
             return res;
         }
-        
+
         #region [+] General ...
 
         private AdminAccessInfo GetAccInfo(IContext context)
@@ -230,9 +231,22 @@ namespace BL.Logic.AdminCore
 
             if (levelCount >= 3 || levelCount == 0)
             {
+                //List<int> targetPositions = null;
+
+                //if (filter.IsChecked)
+                //{
+                //    targetPositions = _adminDb.GetSubordinationTargetIDs(context,
+                //        new FilterAdminSubordination()
+                //        {
+                //            SourcePositionIDs = new List<int> { positionId }
+                //        });
+                //}
+
+
                 positions = _dictDb.GetPositionsForTreeSend(context, positionId, new FilterDictionaryPosition()
                 {
-                    IsActive = filter.IsActive
+                    IsActive = filter.IsActive,
+                    //IDs = targetPositions
                 });
             }
 
@@ -260,7 +274,46 @@ namespace BL.Logic.AdminCore
 
             var res = Tree.Get(flatList, filter);
 
+            if (filter.IsChecked)
+            {
+                var safeList = new List<string>();
+
+                FormSafeList(res, safeList, filter);
+
+                if (safeList.Count > 0)
+                {
+                    flatList.RemoveAll(r => !safeList.Contains(r.TreeId));
+                    res = Tree.Get(flatList, filter);
+                }
+                else
+                {
+                    res = null;
+                }
+            }
+
+
             return res;
+        }
+
+        private void FormSafeList(List<TreeItem> tree, List<string> safeList, FilterTree filter)
+        {
+            if (tree != null)
+            {
+                foreach (var item in tree)
+                {
+                    if (item.ObjectId == (int)EnumObjects.DictionaryPositions)
+                    {
+                        var pos = (FrontDictionaryPositionTreeItem)item;
+
+                        if (pos.IsExecution == 1 || pos.IsInforming == 1)
+                        {
+                            safeList.AddRange(item.Path.Split('/'));
+                        }
+                    }
+
+                    FormSafeList((List<TreeItem>)item.Childs, safeList, filter);
+                }
+            }
         }
 
 

@@ -53,11 +53,11 @@ namespace DMS_WebAPI
             //TODO
             var indexService = DmsResolver.Current.Get<IFullTextSearchService>();
             indexService.Initialize(dbs);
-
             //TODO
+            #if !DEBUG
             var autoPlanService = DmsResolver.Current.Get<IAutoPlanService>();
             autoPlanService.Initialize(dbs);
-
+            #endif
             //TODO
             var clearTrashDocumentsService = DmsResolver.Current.Get<IClearTrashDocumentsService>();
             clearTrashDocumentsService.Initialize(dbs);
@@ -67,6 +67,7 @@ namespace DMS_WebAPI
 
             var licencesService = DmsResolver.Current.Get<LicencesWorkerService>();
             licencesService.Initialize();
+
         }
     }
 }

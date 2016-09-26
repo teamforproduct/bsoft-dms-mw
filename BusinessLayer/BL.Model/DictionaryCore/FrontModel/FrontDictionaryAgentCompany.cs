@@ -39,10 +39,7 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// Признак активности
         /// </summary>
         public bool IsActive { get; set; }
-        /// <summary>
-        /// Краткое наименование (поле Name из таблицы DictionaryAgents)
-        /// </summary>
-        public string ShortName { get; set; }
+        
         /// <summary>
         /// Список контактных лиц
         /// </summary>

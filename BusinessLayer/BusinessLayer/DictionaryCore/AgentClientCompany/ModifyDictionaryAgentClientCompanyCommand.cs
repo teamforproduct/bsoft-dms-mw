@@ -34,14 +34,9 @@ namespace BL.Logic.DictionaryCore
         public override bool CanExecute()
         {
 
-            _admin.VerifyAccess(_context, CommandType, false);
+            _adminService.VerifyAccess(_context, CommandType, false);
 
-            var fdd = new FilterDictionaryAgentClientCompany { Name = Model.Name, NotContainsIDs = new List<int> { Model.Id } };
-
-            if (_dictDb.ExistsAgentClientCompanies(_context, fdd))
-            {
-                throw new DictionaryRecordNotUnique();
-            }
+            DictionaryModelVerifying.VerifyAgentClientCompany(_context, _dictDb, Model);
 
             return true;
         }

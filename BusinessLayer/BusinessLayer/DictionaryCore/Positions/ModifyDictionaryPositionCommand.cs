@@ -34,20 +34,9 @@ namespace BL.Logic.DictionaryCore
         public override bool CanExecute()
         {
 
-            _admin.VerifyAccess(_context, CommandType, false);
+            _adminService.VerifyAccess(_context, CommandType, false);
 
-            //var fdd = new FilterDictionaryPosition { Name = Model.Name, NotContainsIDs = new List<int> { Model.Id } };
-
-            //if (Model.ParentId != null)
-            //{
-            //    fdd.ParentIDs = new List<int> { Model.ParentId.Value };
-            //}
-
-            //// Находим запись с таким-же именем в этой-же папке
-            //if (_dictDb.ExistsPosition(_context, fdd))
-            //{
-            //    throw new DictionaryRecordNotUnique();
-            //}
+            DictionaryModelVerifying.VerifyPosition(_context, _dictDb, Model);
 
             return true;
         }
@@ -59,6 +48,8 @@ namespace BL.Logic.DictionaryCore
                 var dp = CommonDictionaryUtilities.PositionModifyToInternal(_context, Model);
 
                 _dictDb.UpdatePosition(_context, dp);
+
+                _dictService.SetPositionOrder(_context, Model.Id, Model.Order);
             }
             catch (DictionaryRecordWasNotFound)
             {

@@ -33,21 +33,10 @@ namespace BL.Logic.DictionaryCore
 
         public override bool CanExecute()
         {
-            _admin.VerifyAccess(_context, CommandType, false, true);
-            var contents = _dictDb.GetStandartSendListContents(_context, new FilterDictionaryStandartSendListContent() 
-            {
-                StandartSendListId = new List<int> { Model.StandartSendListId},
-                TargetAgentId = Model.TargetAgentId,
-                TargetPositionId = Model.TargetPositionId,
-                Task=Model.Task,
-                SendTypeId = new List<EnumSendTypes> { Model.SendTypeId },
-                NotContainsIDs = new List<int> { Model.Id }
-            });
+            _adminService.VerifyAccess(_context, CommandType, false, true);
 
-            if (contents.Any())
-            {
-                throw new DictionaryRecordNotUnique();
-            }
+            DictionaryModelVerifying.VerifyStandartSendListContent(_context, _dictDb, Model);
+            
             return true;
         }
 

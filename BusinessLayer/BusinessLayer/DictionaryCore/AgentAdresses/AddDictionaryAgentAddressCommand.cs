@@ -30,20 +30,10 @@ namespace BL.Logic.DictionaryCore
 
         public override bool CanExecute()
         {
-            _admin.VerifyAccess(_context, CommandType, false);
-            var spr = _dictDb.GetAgentAddresses(_context, Model.AgentId,new FilterDictionaryAgentAddress
-            {
-                PostCodeExact = Model.PostCode,
-                AddressExact = Model.Address,
-                AddressTypeId = new List<int> { Model.AddressTypeId },
-                AgentId = Model.AgentId
-            });
-            if (spr.Count() != 0)
-            {
-                throw new DictionaryRecordNotUnique();
-            }
+            _adminService.VerifyAccess(_context, CommandType, false);
 
-            _admin.VerifyAccess(_context, CommandType,false,true);
+            DictionaryModelVerifying.VerifyAgentAddress(_context, _dictDb, Model);
+
             return true;
         }
 

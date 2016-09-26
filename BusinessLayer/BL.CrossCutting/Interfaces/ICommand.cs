@@ -10,6 +10,8 @@ namespace BL.CrossCutting.Interfaces
         object Parameters { get; }
 
         bool CanBeDisplayed(int positionId);
+        
+        
         bool CanExecute();
         object Execute();
         

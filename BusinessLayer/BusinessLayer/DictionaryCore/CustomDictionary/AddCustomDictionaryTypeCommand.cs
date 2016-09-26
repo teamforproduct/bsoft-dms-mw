@@ -28,11 +28,10 @@ namespace BL.Logic.DictionaryCore
 
         public override bool CanExecute()
         {
-            var cdt = _dictDb.GetInternalCustomDictionaryType(_context, new FilterCustomDictionaryType { Code = Model.Code });
-            if (cdt != null)
-            {
-                throw new DictionaryRecordNotUnique();
-            }
+            //pss А где _adminService.VerifyAccess(_context, CommandType, false);
+
+            DictionaryModelVerifying.VerifyCostomDictionaryType(_context, _dictDb, Model);
+
             return true;
         }
 

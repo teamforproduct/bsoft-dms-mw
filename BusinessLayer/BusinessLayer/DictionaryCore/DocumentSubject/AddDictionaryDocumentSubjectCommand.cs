@@ -30,13 +30,9 @@ namespace BL.Logic.DictionaryCore
 
         public override bool CanExecute()
         {
+            _adminService.VerifyAccess(_context, CommandType, false);
 
-            _admin.VerifyAccess(_context, CommandType, false);
-            // Находим запись с таким-же именем в этой-же папке
-            if (_dictDb.ExistsDictionaryDocumentSubject(_context, new FilterDictionaryDocumentSubject { Name = Model.Name, ParentIDs = new List<int> { Model.ParentId ?? -1 }, NotContainsIDs = new List<int> { Model.Id } }))
-            {
-                throw new DictionaryRecordNotUnique();
-            }
+            DictionaryModelVerifying.VerifyDocumentSubject(_context, _dictDb, Model);
          
             return true;
         }

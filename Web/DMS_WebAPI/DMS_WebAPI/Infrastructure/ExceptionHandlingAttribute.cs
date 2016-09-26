@@ -11,6 +11,7 @@ using System.Web;
 using System.Web.Http;
 using System.Web.Http.Filters;
 using BL.CrossCutting.DependencyInjection;
+using System.Collections.Generic;
 
 namespace DMS_WebAPI.Infrastructure
 {
@@ -40,14 +41,24 @@ namespace DMS_WebAPI.Infrastructure
 
             }
 
-            
-            Exception exc = context.Exception;
-            string msgExp =string.Empty;
-//#if DEBUG
-//pss Убрать в продакшине, пока для понимания вопроса во время разработки пусть отображается полная информация!!!
+            var exc = context.Exception;
+
+            string msgExp = string.Empty;
+            //#if DEBUG
+            //pss Убрать в продакшине, пока для понимания вопроса во время разработки пусть отображается полная информация!!!
             while (exc != null)
             {
                 var m = exc.Message;
+
+                m = ReplaceLanguageLabel(currentContext, m);
+
+                if (exc is DmsExceptions)
+                {
+                    var p = (exc as DmsExceptions).Parameters;
+
+                    if (p?.Count > 0) m = InsertValues(m, p);
+                }
+
                 if (!m.Contains("See the inner exception for details"))
                 {
                     msgExp = msgExp + (msgExp == string.Empty ? string.Empty : ";    ") + m;
@@ -55,28 +66,13 @@ namespace DMS_WebAPI.Infrastructure
                 exc = exc.InnerException;
             };
 
-//#else
+            //#else
             //msgExp = exc.Message;
-//#endif
+            //#endif
 
             var json = JsonConvert.SerializeObject(new { success = false, msg = msgExp }, GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings);
-            try
-            {
-                IContext ctx = null;
-                try
-                {
-                    ctx = DmsResolver.Current.Get<UserContext>().GetByLanguage();
-                    if (currentContext.User.Identity.IsAuthenticated && ctx != null)
-                    {
-                        var service = DmsResolver.Current.Get<ILanguageService>();
-                        json = service.ReplaceLanguageLabel(ctx, json);
-                    }
-                }
-                catch { }
-                var languageService = DmsResolver.Current.Get<Languages>();
-                json = languageService.ReplaceLanguageLabel(currentContext.Request.UserLanguages?[0], json);
-            }
-            catch { }
+            //json = ReplaceLanguageLabel(currentContext, json);
+
 
             currentContext.Response.Write(json);
             currentContext.Response.End();
@@ -148,6 +144,77 @@ namespace DMS_WebAPI.Infrastructure
             }
             catch { }
             #endregion log to file
+        }
+
+        private string ReplaceLanguageLabel(HttpContext Context, string Label)
+        {
+            string res = Label;
+
+            try
+            {
+                IContext ctx = null;
+                try
+                {
+                    ctx = DmsResolver.Current.Get<UserContext>().GetByLanguage();
+                    if (Context.User.Identity.IsAuthenticated && ctx != null)
+                    {
+                        var service = DmsResolver.Current.Get<ILanguageService>();
+                        //Перевод ошибки
+                        res = service.ReplaceLanguageLabel(ctx, res);
+                    }
+                }
+                catch { }
+                var languageService = DmsResolver.Current.Get<Languages>();
+                //Перевод ошибки на русский
+                res = languageService.ReplaceLanguageLabel(Context.Request.UserLanguages?[0], res);
+            }
+            catch { }
+
+            return res;
+        }
+
+        private string InsertValues(string Message, List<string> Paramenters)
+        {
+            try
+            {
+                //pss До война дракона еще далеко... написал case в лоб
+                switch (Paramenters.Count)
+                {
+                    case 1:
+                        return string.Format(Message, Paramenters[0]);
+
+                    case 2:
+                        return string.Format(Message, Paramenters[0], Paramenters[1]);
+
+                    case 3:
+                        return string.Format(Message, Paramenters[0], Paramenters[1], Paramenters[2]);
+
+                    case 4:
+                        return string.Format(Message, Paramenters[0], Paramenters[1], Paramenters[2], Paramenters[3]);
+
+                    case 5:
+                        return string.Format(Message, Paramenters[0], Paramenters[1], Paramenters[2], Paramenters[3], Paramenters[4]);
+
+                    case 6:
+                        return string.Format(Message, Paramenters[0], Paramenters[1], Paramenters[2], Paramenters[3], Paramenters[4], Paramenters[5]);
+
+                    case 7:
+                        return string.Format(Message, Paramenters[0], Paramenters[1], Paramenters[2], Paramenters[3], Paramenters[4], Paramenters[5], Paramenters[6]);
+
+                    case 8:
+                        return string.Format(Message, Paramenters[0], Paramenters[1], Paramenters[2], Paramenters[3], Paramenters[4], Paramenters[5], Paramenters[6], Paramenters[7]);
+
+                    case 9:
+                        return string.Format(Message, Paramenters[0], Paramenters[1], Paramenters[2], Paramenters[3], Paramenters[4], Paramenters[5], Paramenters[6], Paramenters[7], Paramenters[8]);
+
+                    default:
+                        return Message;
+                }
+
+            }
+            catch
+            { }
+            return Message;
         }
     }
 }

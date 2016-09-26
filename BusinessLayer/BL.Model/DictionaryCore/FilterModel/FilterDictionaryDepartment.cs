@@ -15,6 +15,11 @@ namespace BL.Model.DictionaryCore.FilterModel
         public string FullName { get; set; }
 
         /// <summary>
+        /// Сужение по наименованию подразделения (равенство)
+        /// </summary>
+        public string NameExact { get; set; }
+
+        /// <summary>
         /// Индекс подразделения
         /// </summary>
         public string Code { get; set; }

@@ -1092,6 +1092,8 @@ namespace BL.Logic.DictionaryCore
         {
             string prefix = "";
 
+            if (treeItems == null) return;
+
             foreach (var item in treeItems)
             {
 

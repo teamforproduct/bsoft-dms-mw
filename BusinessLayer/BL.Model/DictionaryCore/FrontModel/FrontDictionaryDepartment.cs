@@ -33,6 +33,11 @@ namespace BL.Model.DictionaryCore.FrontModel
         public string CompanyName { get; set; }
 
         /// <summary>
+        /// Индекс подразделения
+        /// </summary>
+        public string CodePath { get; set; }
+
+        /// <summary>
         /// Список подчиненных подразделений
         /// </summary>
         public virtual IEnumerable<FrontDictionaryDepartment> ChildDepartments { get; set; }

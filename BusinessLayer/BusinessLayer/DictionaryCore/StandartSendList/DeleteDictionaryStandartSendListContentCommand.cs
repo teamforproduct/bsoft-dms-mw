@@ -31,7 +31,7 @@ namespace BL.Logic.DictionaryCore
         {
 
           
-            _admin.VerifyAccess(_context, CommandType, false);
+            _adminService.VerifyAccess(_context, CommandType, false);
             return true;
         }
 

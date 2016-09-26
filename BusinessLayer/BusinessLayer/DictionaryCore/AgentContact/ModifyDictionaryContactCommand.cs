@@ -5,20 +5,21 @@ using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.DictionaryCore.FilterModel;
+using System.Linq;
 
 namespace BL.Logic.DictionaryCore
 {
-    public class ModifyDictionaryContactTypeCommand : BaseDictionaryCommand
+    public class ModifyDictionaryContactCommand : BaseDictionaryCommand
     {
-        private ModifyDictionaryContactType Model
+        private ModifyDictionaryContact Model
         {
             get
             {
-                if (!(_param is ModifyDictionaryContactType))
+                if (!(_param is ModifyDictionaryContact))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ModifyDictionaryContactType)_param;
+                return (ModifyDictionaryContact)_param;
             }
         }
 
@@ -31,7 +32,7 @@ namespace BL.Logic.DictionaryCore
         {
             _adminService.VerifyAccess(_context, CommandType,false,true);
 
-            DictionaryModelVerifying.VerifyContactType(_context, _dictDb, Model);
+            DictionaryModelVerifying.VerifyAgentContact(_context, _dictDb, Model);
 
             return true;
         }
@@ -40,9 +41,9 @@ namespace BL.Logic.DictionaryCore
         {
             try
             {
-                var newContactType = new InternalDictionaryContactType(Model);
-                CommonDocumentUtilities.SetLastChange(_context, newContactType);
-                _dictDb.UpdateContactType(_context, newContactType);
+                var newContact = new InternalDictionaryContact(Model);
+                CommonDocumentUtilities.SetLastChange(_context, newContact);
+                _dictDb.UpdateContact(_context, newContact);
             }
             catch (DictionaryRecordWasNotFound)
             {

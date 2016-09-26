@@ -33,21 +33,9 @@ namespace BL.Logic.DictionaryCore
 
         public override bool CanExecute()
         {
+            _adminService.VerifyAccess(_context, CommandType, false);
 
-            _admin.VerifyAccess(_context, CommandType, false);
-
-            // отдел нельзя подчинить сасому себе и (дочерним отделам)
-            if ((Model.ParentId ?? -1) == Model.Id)
-            {
-                throw new DictionaryRecordCouldNotBeAdded();
-            }
-
-            var fdd = new FilterDictionaryDepartment { Name = Model.Name, NotContainsIDs = new List<int> { Model.Id } };
-
-            if (_dictDb.ExistsDictionaryDepartment(_context, fdd))
-            {
-                throw new DictionaryRecordNotUnique();
-            }
+            DictionaryModelVerifying.VerifyDepartment(_context, _dictDb, Model);
 
             return true;
         }

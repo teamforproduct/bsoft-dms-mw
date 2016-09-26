@@ -30,18 +30,10 @@ namespace BL.Logic.DictionaryCore
 
         public override bool CanExecute()
         {
+            _adminService.VerifyAccess(_context, CommandType, false);
 
-       
-            _admin.VerifyAccess(_context, CommandType, false);
-            var spr = _dictDb.GetAgentAccounts(_context, Model.AgentId, new FilterDictionaryAgentAccount
-            {
-                AgentBankId = Model.AgentBankId,
-                AccountNumber = Model.AccountNumber
-            });
-            if (spr.Count() != 0)
-            {
-                throw new DictionaryRecordNotUnique();
-            }
+            DictionaryModelVerifying.VerifyAgentAccount(_context, _dictDb, Model);
+            
             return true;
         }
 

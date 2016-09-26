@@ -32,27 +32,9 @@ namespace BL.Logic.DictionaryCore
 
         public override bool CanExecute()
         {
-             _admin.VerifyAccess(_context, CommandType,false,true);
+            _adminService.VerifyAccess(_context, CommandType, false, true);
 
-            if (_dictDb.ExistsAgentPersons(_context, new FilterDictionaryAgentPerson
-            {
-                NameExact = Model.Name,
-            }))
-            {
-                throw new DictionaryRecordNotUnique();
-            }
-
-            if (_dictDb.ExistsAgentPersons(_context, new FilterDictionaryAgentPerson
-            {
-                TaxCode = Model.TaxCode,
-                FirstNameExact = Model.FirstName,
-                LastNameExact = Model.LastName,
-                PassportSerial = Model.PassportSerial,
-                PassportNumber = Model.PassportNumber
-            }))
-            {
-                throw new DictionaryRecordNotUnique();
-            }
+            DictionaryModelVerifying.VerifyAgentPerson(_context, _dictDb, Model);
 
             return true;
         }
@@ -64,7 +46,7 @@ namespace BL.Logic.DictionaryCore
                 var newPerson = new InternalDictionaryAgentPerson(Model);
                 CommonDocumentUtilities.SetLastChange(_context, newPerson);
                 _dictDb.UpdateAgentPerson(_context, newPerson);
-                
+
 
             }
             catch (DictionaryRecordWasNotFound)
@@ -77,5 +59,7 @@ namespace BL.Logic.DictionaryCore
             }
             return null;
         }
+
+        
     }
 }

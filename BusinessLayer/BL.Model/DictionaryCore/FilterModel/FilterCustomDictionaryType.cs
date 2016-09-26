@@ -5,5 +5,7 @@ namespace BL.Model.DictionaryCore.FilterModel
     public class FilterCustomDictionaryType : DictionaryBaseFilterParameters
     {
         public string Code { get; set; }
+
+        public string CodeExact { get; set; }
     }
 }

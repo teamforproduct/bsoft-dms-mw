@@ -30,20 +30,10 @@ namespace BL.Logic.DictionaryCore
 
         public override bool CanExecute()
         {
-            _admin.VerifyAccess(_context, CommandType, false);
-            var agents = _dictDb.GetAgentCompanies(_context, new FilterDictionaryAgentCompany
-            {
-                TaxCodeExact = Model.TaxCode,
-                OKPOCodeExact = Model.OKPOCode,
-                VATCodeExact = Model.VATCode,
-                IsActive=Model.IsActive,
-                NotContainsIDs=new List<int> { Model.Id}
-            },null);
+            _adminService.VerifyAccess(_context, CommandType, false);
 
-            if (agents.Any())
-            {
-                throw new DictionaryRecordNotUnique();
-            }
+            DictionaryModelVerifying.VerifyAgentCompany(_context, _dictDb, Model);
+
             return true;
         }
 
@@ -51,7 +41,7 @@ namespace BL.Logic.DictionaryCore
         {
             try
             {
-                var newCompany = new InternalDictionaryAgentCompany(Model);;
+                var newCompany = new InternalDictionaryAgentCompany(Model); ;
                 CommonDocumentUtilities.SetLastChange(_context, newCompany);
                 _dictDb.UpdateAgentCompany(_context, newCompany);
             }

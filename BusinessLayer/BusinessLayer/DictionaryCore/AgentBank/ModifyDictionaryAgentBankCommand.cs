@@ -30,19 +30,10 @@ namespace BL.Logic.DictionaryCore
 
         public override bool CanExecute()
         {
-            var agents = _dictDb.GetAgentBanks(_context, new FilterDictionaryAgentBank
-            {
-                MFOCodeExact = Model.MFOCode,
-                NameExact=Model.Name,
-                IsActive=Model.IsActive,
-                NotContainsIDs=new List<int> { Model.Id }
-            },null);
+            _adminService.VerifyAccess(_context, CommandType, false, true);
 
-            if (agents.Count() > 0)
-            {
-                throw new DictionaryRecordNotUnique();
-            }
-            _admin.VerifyAccess(_context, CommandType, false, true);
+            DictionaryModelVerifying.VerifyAgentBank(_context, _dictDb, Model);
+
             return true;
         }
 
