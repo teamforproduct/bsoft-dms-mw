@@ -599,7 +599,7 @@ namespace BL.Database.Admins
             }
         }
 
-        
+
 
         public List<int> GetRolesByPositions(IContext context, List<int> positionIDs)
         {
@@ -935,6 +935,26 @@ namespace BL.Database.Admins
                     dbModel = dbContext.AdminSubordinationsSet.FirstOrDefault(x => x.Id == model.Id);
                 }
                 dbContext.AdminSubordinationsSet.Remove(dbModel);
+                dbContext.SaveChanges();
+            }
+        }
+
+        public void DeleteSubordinationsBySourcePositionId(IContext context, InternalAdminSubordination model)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var list = dbContext.AdminSubordinationsSet.Where(x => x.SourcePositionId == model.SourcePositionId);
+                dbContext.AdminSubordinationsSet.RemoveRange(list);
+                dbContext.SaveChanges();
+            }
+        }
+
+        public void DeleteSubordinationsByTargetPositionId(IContext context, InternalAdminSubordination model)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var list = dbContext.AdminSubordinationsSet.Where(x => x.TargetPositionId == model.TargetPositionId);
+                dbContext.AdminSubordinationsSet.RemoveRange(list);
                 dbContext.SaveChanges();
             }
         }

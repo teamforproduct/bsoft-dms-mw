@@ -38,7 +38,7 @@ namespace BL.Logic.AdminCore
                 var row = new InternalAdminSubordination()
                 {
                     SourcePositionId = Model.SourcePositionId,
-                    SubordinationTypeId = Model.SubordinationTypeId
+                    SubordinationTypeId = (int)Model.SubordinationTypeId
                 };
 
                 CommonDocumentUtilities.SetLastChange(_context, row);
@@ -51,7 +51,7 @@ namespace BL.Logic.AdminCore
                     {
                         SourcePositionIDs = new List<int>() { Model.SourcePositionId },
                         TargetPositionIDs = new List<int>() { item },
-                        SubordinationTypeIDs = new List<int>() { Model.SubordinationTypeId }
+                        SubordinationTypeIDs = new List<int>() { (int)Model.SubordinationTypeId }
                     });
 
                     if (exists && !Model.IsChecked) _adminDb.DeleteSubordination(_context, row);

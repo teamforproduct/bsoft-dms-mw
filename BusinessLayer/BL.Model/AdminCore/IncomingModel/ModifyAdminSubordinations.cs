@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Runtime.Serialization;
 using BL.Model.DictionaryCore.FrontModel;
 using System.ComponentModel.DataAnnotations;
+using BL.Model.Enums;
 
 namespace BL.Model.AdminCore.IncomingModel
 {
@@ -38,7 +39,7 @@ namespace BL.Model.AdminCore.IncomingModel
         /// Тип рассылки (для исполнения, для сведения)
         /// </summary>
         [Required]
-        public int SubordinationTypeId { get; set; }
+        public EnumSubordinationTypes SubordinationTypeId { get; set; }
 
         /// <summary>
         /// Установить галочку

@@ -8,6 +8,7 @@ using BL.Model.Users;
 using System.Collections.Generic;
 using BL.Model.Tree;
 using BL.Model.DictionaryCore.FilterModel;
+using BL.Model.AdminCore.IncomingModel;
 
 namespace BL.Logic.AdminCore.Interfaces
 {

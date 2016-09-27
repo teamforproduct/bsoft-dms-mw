@@ -803,7 +803,7 @@ namespace BL.Model.Exception
     public class IncomingModelIsNotValid : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:IncomingModelIsNotValid@l##";
-        public IncomingModelIsNotValid() : base(_MESSAGE) { }
+        public IncomingModelIsNotValid(string Text) : base(_MESSAGE) { Parameters = new List<string> { Text }; }
         public IncomingModelIsNotValid(System.Exception ex) : base(_MESSAGE, ex) { }
     }
     public class NotFilledWithAdditionalRequiredAttributes : DmsExceptions

@@ -154,7 +154,7 @@ namespace BL.Database.DatabaseContext
             AddALV(list, "##l@DmsExceptions:EncryptionCertificateWasNotFound@l##", "The certificate was not found", "Сертификат не был найден");
             AddALV(list, "##l@DmsExceptions:EventNotFoundOrUserHasNoAccess@l##", "User could not access this event!", "Пользователь не имеет доступа к этому событию!");
             AddALV(list, "##l@DmsExceptions:ExecutorAgentForPositionIsNotDefined@l##", "Executor agent for position is not defined!", "Исполнитель для должности не определен!");
-            AddALV(list, "##l@DmsExceptions:IncomingModelIsNotvalid@l##", "Incoming Model is not valid!", "Входящая модель недействительна! Проверь REQUIRED поля");
+            AddALV(list, "##l@DmsExceptions:IncomingModelIsNotvalid@l##", "Incoming Model is not valid! {0}", "Входящая модель недействительна! {0}");
             AddALV(list, "##l@DmsExceptions:LicenceExceededNumberOfConnectedUsers@l##", "You have exceeded the allowed number of connected users", "Превышено разрешенное количество подключенных пользователей");
             AddALV(list, "##l@DmsExceptions:LicenceExceededNumberOfRegisteredUsers@l##", "You have exceeded the allowed number of registered users", "Превышено разрешенное количество зарегистрированных пользователей");
             AddALV(list, "##l@DmsExceptions:LicenceExpired@l##", "Licence expired", "Срок лицензии истек");

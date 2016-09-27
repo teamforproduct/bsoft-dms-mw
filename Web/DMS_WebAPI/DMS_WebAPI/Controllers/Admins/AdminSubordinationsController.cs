@@ -60,13 +60,18 @@ namespace DMS_WebAPI.Controllers.Admins
             return new JsonResult(tmpItems, this);
         }
 
+        /// <summary>
+        /// Копирует настроки рассылки от Source к Target должности
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("DuplicateSubordinations")]
-        public IHttpActionResult DuplicateSubordinations([FromBody] ModifyAdminSubordinations model)
+        public IHttpActionResult DuplicateSubordinations([FromBody] CopyAdminSubordinations model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItem = tmpService.ExecuteAction(EnumAdminActions.SetSubordination, cxt, model);
+            var tmpItem = tmpService.ExecuteAction(EnumAdminActions.DuplicateSubordinations, cxt, model);
             return new JsonResult(tmpItem, this);
         }
 

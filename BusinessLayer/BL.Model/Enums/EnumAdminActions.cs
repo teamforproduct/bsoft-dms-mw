@@ -84,6 +84,11 @@
         /// Совокупность действий по управлению субординацией
         /// </summary>
         SetSubordination = 704001,
+
+        /// <summary>
+        /// Копирование рассылки
+        /// </summary>
+        DuplicateSubordinations = 704002,
         #endregion
 
     }
