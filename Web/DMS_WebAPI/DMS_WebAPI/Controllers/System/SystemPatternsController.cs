@@ -10,22 +10,22 @@ using BL.Model.SystemCore.Filters;
 namespace DMS_WebAPI.Controllers
 {
     /// <summary>
-    /// Форматы значений для формул
+    /// Элементы для формул
     /// </summary>
     [Authorize]
-    public class SystemFormatsController : ApiController
+    public class SystemPatternsController : ApiController
     {
         /// <summary>
-        /// Список форматов значений для формул
+        /// Список элементов для формул
         /// </summary>
         /// <param name="filter"></param>
         /// <returns></returns>
         // GET: api/SystemFormats
-        public IHttpActionResult Get([FromUri] FilterSystemFormat filter)
+        public IHttpActionResult Get([FromUri] FilterSystemPattern filter)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpSysProc = DmsResolver.Current.Get<ISystemService>();
-            var tmpDicts = tmpSysProc.GetSystemFormats(ctx, filter);
+            var tmpDicts = tmpSysProc.GetSystemPatterns(ctx, filter);
             return new JsonResult(tmpDicts, this);
         }
 

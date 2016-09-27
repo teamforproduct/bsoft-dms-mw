@@ -20,10 +20,25 @@ namespace BL.Logic.SystemCore
             _systemDb.InitializerDatabase(ctx);
         }
 
-        public IEnumerable<FrontSystemFormats> GetSystemFormats(IContext context, FilterSystemFormat filter)
+        public IEnumerable<FrontSystemFormat> GetSystemFormats(IContext context, FilterSystemFormat filter)
         {
 
-            return null;// _dictDb.GetSendTypes(context, filter);
+            return _systemDb.GetSystemFormats(context, filter);
+        }
+        public IEnumerable<FrontSystemFormula> GetSystemFormulas(IContext context, FilterSystemFormula filter)
+        {
+
+            return _systemDb.GetSystemFormulas(context, filter);
+        }
+        public IEnumerable<FrontSystemPattern> GetSystemPatterns(IContext context, FilterSystemPattern filter)
+        {
+
+            return _systemDb.GetSystemPatterns(context, filter);
+        }
+        public IEnumerable<FrontSystemValueType> GetSystemValueTypes(IContext context, FilterSystemValueType filter)
+        {
+
+            return _systemDb.GetSystemValueTypes(context, filter);
         }
     }
 }

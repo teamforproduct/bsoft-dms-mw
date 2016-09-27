@@ -23,8 +23,14 @@ namespace BL.Database.SystemDb
         #endregion
 
         #region SystemObjects
+        IEnumerable<FrontSystemFormat> GetSystemFormats(IContext context, FilterSystemFormat filter);
+        IEnumerable<FrontSystemFormula> GetSystemFormulas(IContext context, FilterSystemFormula filter);
+        IEnumerable<FrontSystemPattern> GetSystemPatterns(IContext context, FilterSystemPattern filter);
+        IEnumerable<FrontSystemValueType> GetSystemValueTypes(IContext context, FilterSystemValueType filter);
+
         IEnumerable<FrontSystemObject> GetSystemObjects(IContext context, FilterSystemObject filter);
         IEnumerable<BaseSystemUIElement> GetSystemUIElements(IContext ctx, FilterSystemUIElement filter);
+
         #endregion SystemObjects
 
         #region Properties

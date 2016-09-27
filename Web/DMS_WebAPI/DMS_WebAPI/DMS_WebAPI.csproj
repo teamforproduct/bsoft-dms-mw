@@ -324,6 +324,9 @@
     <Compile Include="Controllers\Documents\DocumentsController.cs" />
     <Compile Include="Controllers\Documents\DocumentSendListStagesController.cs" />
     <Compile Include="Controllers\Documents\DocumentSendListsController.cs" />
+    <Compile Include="Controllers\System\SystemValueTypesController.cs" />
+    <Compile Include="Controllers\System\SystemPatternsController.cs" />
+    <Compile Include="Controllers\System\SystemFormulasController.cs" />
     <Compile Include="Controllers\System\SystemFormatsController.cs" />
     <Compile Include="Controllers\System\HomeController.cs" />
     <Compile Include="Controllers\Documents\TemplateDocumentsController.cs" />
