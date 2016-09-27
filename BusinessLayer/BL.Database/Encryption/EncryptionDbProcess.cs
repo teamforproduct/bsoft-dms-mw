@@ -377,6 +377,8 @@ namespace BL.Database.Encryption
 
         #endregion Convert
 
+        #endregion
+
         #region CertificateSign
 
         // функции CryptoExts.dll
@@ -490,7 +492,7 @@ namespace BL.Database.Encryption
         public static extern IntPtr SignFilePdfPath(char[] data);
         //проверить подпись(и) PDF, подписанного в этом сеансе (контрольная проверка)
         [DllImport("CryptoExts.dll", SetLastError = true, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int VerifyPdf(char[] data);
+        public static extern int SignFilePdfVerify(char[] data);
 
         public static string StringFromNativeUtf8(IntPtr nativeUtf8)
         {
@@ -505,134 +507,6 @@ namespace BL.Database.Encryption
             }
             return "";
         }
-
-        //#region CryptoExts.dll kernel32.dll
-        //[DllImport("kernel32.dll", CharSet = CharSet.Auto)]
-        //public static extern Int32 GetLastError();
-
-        //// функции CryptoExts.dll
-
-        ////получить сообщение об ошибке в модуле CryptoExts.dll, 
-        ////ошибки в Java выводятся в окно (клиентское приложение) и в лог-файл (лог для серверного) (см. silentMode для управления)
-        //[DllImport("CryptoExts.dll", SetLastError = true, CallingConvention = CallingConvention.Cdecl)]
-        //public static extern IntPtr GetMessageError();
-
-        ////старт Java JVM
-        ////installDir - абсолютный путь к CryptoExts.dll
-        //[DllImport("CryptoExts.dll", SetLastError = true, CallingConvention = CallingConvention.Cdecl)]
-        //public static extern bool StartJVM(char[] installDir);
-
-        ////получить список валидных сертификатов пользователя как CN (ФИО для физ.лиц), разделитель "|"
-        //[DllImport("CryptoExts.dll", SetLastError = true, CallingConvention = CallingConvention.Cdecl)]
-        //public static extern IntPtr GetCNString();
-
-        ////получить число валидных сертификатов пользователя
-        //[DllImport("CryptoExts.dll", SetLastError = true, CallingConvention = CallingConvention.Cdecl)]
-        //public static extern int GetCertCount();
-
-        ////получить список дат окончания валидных сертификатов пользователя, разделитель "|"
-        //[DllImport("CryptoExts.dll", SetLastError = true, CallingConvention = CallingConvention.Cdecl)]
-        //public static extern IntPtr GetDateToAsString();
-
-        ////выбрать файл pfx
-        ////возвращает 0, если успешно (и записывает путь к pfx в конфиг файл, при следующем запуске выбирать не надо, а только ввести ПИН)
-        //[DllImport("CryptoExts.dll", SetLastError = true, CallingConvention = CallingConvention.Cdecl)]
-        //public static extern int SelectPfxPathInt();
-
-        ////очистить в файле конфигурации запись о выбранном раньше файле pfx, после чего его сертификат не отображается в списке сертификатов
-        //[DllImport("CryptoExts.dll", SetLastError = true, CallingConvention = CallingConvention.Cdecl)]
-        //public static extern int ClearPfxProperties();
-
-        //[DllImport("CryptoExts.dll", SetLastError = true, CallingConvention = CallingConvention.Cdecl)]
-        //public static extern void ViewCert(char[] index);
-
-        ////выбрать документ PDF для подписи
-        //[DllImport("CryptoExts.dll", SetLastError = true, CallingConvention = CallingConvention.Cdecl)]
-        //public static extern IntPtr SelectPdfFile();
-
-        ////показать/открыть выбранный PDF
-        //[DllImport("CryptoExts.dll", SetLastError = true, CallingConvention = CallingConvention.Cdecl)]
-        //public static extern void ViewPdf(char[] fileName);
-
-        ////подписать выбранный PDF, возвращает путь+имя подписанного (в той же папке, но к имени добавляется *.sign.pdf)
-        //[DllImport("CryptoExts.dll", SetLastError = true, CallingConvention = CallingConvention.Cdecl)]
-        //public static extern IntPtr SignFilePdf(char[] data);
-
-        ////проверить подпись(и) PDF, подписанного в этом сеансе (контрольная проверка)
-        //[DllImport("CryptoExts.dll", SetLastError = true, CallingConvention = CallingConvention.Cdecl)]
-        //public static extern int VerifyPdf();
-
-        ////получить число подписей PDF, вызывать после проверки подписи
-        ////иначе вернет -1, для не подписанного вернет 0
-        //[DllImport("CryptoExts.dll", SetLastError = true, CallingConvention = CallingConvention.Cdecl)]
-        //public static extern int GetSignCountPdf();
-
-        ////получить ссертификат подписи PDF, заданного индекса подписи (от 0); возвращает сертификат в Base64
-        ////вызывать после проверки подписи
-        ////иначе вернет пустую строку, как для не подписанного
-        //[DllImport("CryptoExts.dll", SetLastError = true, CallingConvention = CallingConvention.Cdecl)]
-        //public static extern IntPtr GetSignCertPdf(char[] index);
-
-        ////загрузить PDF документ с заданного URL, возвращает путь+имя загруженного
-        //[DllImport("CryptoExts.dll", SetLastError = true, CallingConvention = CallingConvention.Cdecl)]
-        //public static extern IntPtr Download(char[] data);
-
-        ////установить режим вывода сообщений во всплывающих окнах
-        //// true - подавить об успешном завершении, выводить только об ошибках
-        //// true - выводить и об успешном завершении, и об ошибках
-        //// null - не выводить никаких сообщений во всплывающих окнах (для операций сервера)
-        //[DllImport("CryptoExts.dll", SetLastError = true, CallingConvention = CallingConvention.Cdecl)]
-        //public static extern IntPtr SetSilentMode(char[] mode);
-
-        ////подписать данные (заданы в Base64) в формате PKCS#7
-        ////возвращает - подпись в Base64
-        //[DllImport("CryptoExts.dll", SetLastError = true, CallingConvention = CallingConvention.Cdecl)]
-        //public static extern IntPtr GetSignP7(char[] data);
-
-        ////проверить подпись данных (заданы в Base64) в формате PKCS#7
-        ////возвращает - true/false
-        //[DllImport("CryptoExts.dll", SetLastError = true, CallingConvention = CallingConvention.Cdecl)]
-        //public static extern bool SignVerify(char[] data);
-
-        ////получить число подписей PKCS#7, вызывать после проверки подписи
-        ////иначе вернет -1, для не подписанного вернет 0
-        //[DllImport("CryptoExts.dll", SetLastError = true, CallingConvention = CallingConvention.Cdecl)]
-        //public static extern int GetSignCountP7();
-
-        ////получить ссертификат подписи PKCS#7, заданного индекса подписи (от 0); возвращает сертификат в Base64
-        ////вызывать после проверки подписи
-        ////иначе вернет пустую строку, как для не подписанного
-        //[DllImport("CryptoExts.dll", SetLastError = true, CallingConvention = CallingConvention.Cdecl)]
-        //public static extern IntPtr GetSignCertP7(char[] index);
-
-        ////подписать данные (заданы в локальным файлом, путь абсолюный) в формате PKCS#7
-        ////возвращает - подпись в Base64
-        //[DllImport("CryptoExts.dll", SetLastError = true, CallingConvention = CallingConvention.Cdecl)]
-        //public static extern IntPtr GetSignP7File(char[] data);
-
-        ////проверить подпись данных (заданы в локальным файлом, путь абсолюный) в формате PKCS#7
-        ////возвращает - true/false
-        //[DllImport("CryptoExts.dll", SetLastError = true, CallingConvention = CallingConvention.Cdecl)]
-        //public static extern bool SignVerifyFile(char[] data);
-
-        ////Destroy Java JVM
-        //[DllImport("CryptoExts.dll", SetLastError = true, CallingConvention = CallingConvention.Cdecl)]
-        //private static extern bool DestroyJVM();
-
-        //private static string StringFromNativeUtf8(IntPtr nativeUtf8)
-        //{
-        //    //Native UTF-8 -> Windows-1251
-        //    int len = 0;
-        //    while (Marshal.ReadByte(nativeUtf8, len) != 0) ++len;
-        //    if (len > 0)
-        //    {
-        //        byte[] buffer = new byte[len];
-        //        Marshal.Copy(nativeUtf8, buffer, 0, buffer.Length);
-        //        return Encoding.UTF8.GetString(buffer);
-        //    }
-        //    return "";
-        //}
-        //#endregion
 
         public string GetCertificateSign(IContext ctx, int certificateId, string certificatePassword, string dataToSign)
         {
@@ -780,7 +654,7 @@ namespace BL.Database.Encryption
 
                     file = file.Replace("\\", "/");
 
-                    res = VerifyPdf(file.ToCharArray());
+                    res = SignFilePdfVerify(file.ToCharArray());
                 }
                 catch (CryptographicException e)
                 {
@@ -797,8 +671,6 @@ namespace BL.Database.Encryption
             }
             return res == 0;
         }
-        #endregion
-
         #endregion
 
         #region InternalSign
