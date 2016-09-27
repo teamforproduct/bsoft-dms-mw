@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
 using BL.Model.Enums;
-//using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace BL.Model.AdminCore.IncomingModel
 {
@@ -18,19 +18,19 @@ namespace BL.Model.AdminCore.IncomingModel
         /// <summary>
         /// Должность, с которой скопировать настройку 
         /// </summary>
-        //[Required]
+        [Required]
         public int SourcePositionId { get; set; }
 
         /// <summary>
         /// Должность, которой применить настройку 
         /// </summary>
-        //[Required]
+        [Required]
         public int TargetPositionId { get; set; }
 
         /// <summary>
         /// Режим копирования
         /// </summary>
-        //[Required]
+        [Required]
         public EnumCopyMode CopyMode { get; set; }
 
     }
