@@ -223,7 +223,7 @@ namespace BL.Logic.DictionaryCore
                        AgentIDs = new List<int> { Model.AgentId }
                    });
 
-            if (spr.Count() != 0) throw new DictionaryAgentContactTypeNotUnique(Model.Value);
+            if (spr.Count() != 0) throw new DictionaryAgentContactTypeNotUnique(Model.AgentId.ToString(), Model.Value);
 
             // У одного агента не должно быть два контакта с одинаковыми значениями
             spr = dictDb.GetContacts(context, Model.AgentId,
@@ -292,8 +292,6 @@ namespace BL.Logic.DictionaryCore
 
         public static void VerifyAgentPerson(IContext context, IDictionariesDbProcess dictDb, ModifyDictionaryAgentPerson Model)
         {
-            //Model.Name = "Галповский  В.П.";
-
             Model.Name?.Trim();
             Model.PassportSerial?.Trim();
             Model.TaxCode?.Trim();

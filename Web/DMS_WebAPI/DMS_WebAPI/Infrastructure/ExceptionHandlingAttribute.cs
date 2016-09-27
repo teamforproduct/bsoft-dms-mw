@@ -177,40 +177,7 @@ namespace DMS_WebAPI.Infrastructure
         {
             try
             {
-                //pss До война дракона еще далеко... написал case в лоб
-                switch (Paramenters.Count)
-                {
-                    case 1:
-                        return string.Format(Message, Paramenters[0]);
-
-                    case 2:
-                        return string.Format(Message, Paramenters[0], Paramenters[1]);
-
-                    case 3:
-                        return string.Format(Message, Paramenters[0], Paramenters[1], Paramenters[2]);
-
-                    case 4:
-                        return string.Format(Message, Paramenters[0], Paramenters[1], Paramenters[2], Paramenters[3]);
-
-                    case 5:
-                        return string.Format(Message, Paramenters[0], Paramenters[1], Paramenters[2], Paramenters[3], Paramenters[4]);
-
-                    case 6:
-                        return string.Format(Message, Paramenters[0], Paramenters[1], Paramenters[2], Paramenters[3], Paramenters[4], Paramenters[5]);
-
-                    case 7:
-                        return string.Format(Message, Paramenters[0], Paramenters[1], Paramenters[2], Paramenters[3], Paramenters[4], Paramenters[5], Paramenters[6]);
-
-                    case 8:
-                        return string.Format(Message, Paramenters[0], Paramenters[1], Paramenters[2], Paramenters[3], Paramenters[4], Paramenters[5], Paramenters[6], Paramenters[7]);
-
-                    case 9:
-                        return string.Format(Message, Paramenters[0], Paramenters[1], Paramenters[2], Paramenters[3], Paramenters[4], Paramenters[5], Paramenters[6], Paramenters[7], Paramenters[8]);
-
-                    default:
-                        return Message;
-                }
-
+                return string.Format(Message, Paramenters.ToArray());
             }
             catch
             { }

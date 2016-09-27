@@ -1061,8 +1061,8 @@ namespace BL.Database.Admins
             {
                 var filterContains = PredicateBuilder.False<AdminSubordinations>();
 
-                filterContains = filter.TargetPositionIDs.Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.TargetPositionId == value).Expand());
+                filterContains = filter.SubordinationTypeIDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.SubordinationTypeId == value).Expand());
 
                 qry = qry.Where(filterContains);
             }

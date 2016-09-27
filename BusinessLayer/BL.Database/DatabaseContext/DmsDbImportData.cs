@@ -105,16 +105,16 @@ namespace BL.Database.DatabaseContext
             AddALV(list, "##l@DmsExceptions:DictionaryContactTypeCodeNotUnique@l##", "", "");
             AddALV(list, "##l@DmsExceptions:DictionaryContactTypeNameNotUnique@l##", "", "");
 
-            AddALV(list, "##l@DmsExceptions:DictionaryAgentBankMFOCodeNotUnique@l##", "Bank MFO сode should be unique!", "Банк с указанным МФО уже есть в справочнике");
-            AddALV(list, "##l@DmsExceptions:DictionaryAgentCompanyOKPOCodeNotUnique@l##", "Company OKPO сode should be unique!", "Юридическое лицо с указанным ОКПО уже есть в справочнике");
-            AddALV(list, "##l@DmsExceptions:DictionaryAgentCompanyTaxCodeNotUnique@l##", "Company tax сode should be unique!", "Юридическое лицо с указанным ИНН уже есть в справочнике");
-            AddALV(list, "##l@DmsExceptions:DictionaryAgentCompanyVATCodeNotUnique@l##", "Company VAT сode should be unique!", "Юридическое лицо с указанным номером свидетельства НДС уже есть в справочнике");
-            AddALV(list, "##l@DmsExceptions:DictionaryAgentEmployeePassportNotUnique@l##", "Employee passport should be unique!", "Сотрудник с указанными паспортными данными уже есть в справочнике");
-            AddALV(list, "##l@DmsExceptions:DictionaryAgentEmployeePersonnelNumberNotUnique@l##", "Employee personnel number should be unique!", "Сотрудник с указанным табельным номером уже есть в справочнике");
-            AddALV(list, "##l@DmsExceptions:DictionaryAgentEmployeeTaxCodeNotUnique@l##", "Employee tax code should be unique!", "Сотрудник с указанным ИНН уже есть в справочнике");
-            AddALV(list, "##l@DmsExceptions:DictionaryAgentNameNotUnique@l##", "Agent name should be unique!", "Агент \"{0}\" уже есть в справочнике");
-            AddALV(list, "##l@DmsExceptions:DictionaryAgentPersonPassportNotUnique@l##", "Person passport should be unique!", "Физлицо с указанными паспортными данными уже есть в справочнике");
-            AddALV(list, "##l@DmsExceptions:DictionaryAgentPersonTaxCodeNotUnique@l##", "Person tax code should be unique!", "Физлицо с указанным ИНН уже есть в справочнике");
+            AddALV(list, "##l@DmsExceptions:DictionaryAgentBankMFOCodeNotUnique@l##", "Bank \"{0}\" MFO \"{1}\" сode should be unique!", "Банк \"{0}\" c МФО \"{1}\" уже есть в справочнике");
+            AddALV(list, "##l@DmsExceptions:DictionaryAgentCompanyOKPOCodeNotUnique@l##", "Company \"{0}\" OKPO сode should be unique!", "Юридическое лицо с указанным ОКПО уже есть в справочнике");
+            AddALV(list, "##l@DmsExceptions:DictionaryAgentCompanyTaxCodeNotUnique@l##", "Company \"{0}\" tax сode should be unique!", "Юридическое лицо с указанным ИНН уже есть в справочнике");
+            AddALV(list, "##l@DmsExceptions:DictionaryAgentCompanyVATCodeNotUnique@l##", "Company \"{0}\" VAT сode should be unique!", "Юридическое лицо с указанным номером свидетельства НДС уже есть в справочнике");
+            AddALV(list, "##l@DmsExceptions:DictionaryAgentEmployeePassportNotUnique@l##", "Employee \"{0}\" passport should be unique!", "Сотрудник с указанными паспортными данными уже есть в справочнике");
+            AddALV(list, "##l@DmsExceptions:DictionaryAgentEmployeePersonnelNumberNotUnique@l##", "Employee \"{0}\" personnel number should be unique!", "Сотрудник с указанным табельным номером уже есть в справочнике");
+            AddALV(list, "##l@DmsExceptions:DictionaryAgentEmployeeTaxCodeNotUnique@l##", "Employee \"{0}\" tax code should be unique!", "Сотрудник с указанным ИНН уже есть в справочнике");
+            AddALV(list, "##l@DmsExceptions:DictionaryAgentNameNotUnique@l##", "Agent name \"{0}\" should be unique!", "Агент \"{0}\" уже есть в справочнике");
+            AddALV(list, "##l@DmsExceptions:DictionaryAgentPersonPassportNotUnique@l##", "Person \"{0}\" passport should be unique!", "Физлицо с указанными паспортными данными уже есть в справочнике");
+            AddALV(list, "##l@DmsExceptions:DictionaryAgentPersonTaxCodeNotUnique@l##", "Person \"{0}\" tax code should be unique!", "Физлицо с указанным ИНН уже есть в справочнике");
             AddALV(list, "##l@DmsExceptions:DictionaryAgentContactTypeNotUnique@l##", "Agent contact type should be unique!", "Контакт с указанным типом уже есть у этого агента");
             AddALV(list, "##l@DmsExceptions:DictionaryAgentContactNotUnique@l##", "Agent contact should be unique!", "Указанный контакт уже есть у этого агента");
             AddALV(list, "##l@DmsExceptions:DictionaryAgentAddressTypeNotUnique@l##", "", "");
@@ -278,8 +278,7 @@ namespace BL.Database.DatabaseContext
         }
         #endregion
 
-
-        #region [+] SystemActions
+        #region [+] SystemActions ...
         public static List<SystemActions> GetSystemActions()
         {
             var items = new List<SystemActions>();
@@ -713,7 +712,6 @@ namespace BL.Database.DatabaseContext
             };
         }
         #endregion
-
 
         public static List<AdminAccessLevels> GetAdminAccessLevels()
         {

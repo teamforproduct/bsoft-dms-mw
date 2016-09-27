@@ -576,13 +576,10 @@ namespace BL.Model.Exception
         public DictionaryAgentContactNotUnique(System.Exception ex) : base(_MESSAGE, ex) { } 
     }
 
-    /// <summary>
-    /// Ошибка возникает при попытке добавить контакт агенту с и  имя агента
-    /// </summary>
     public class DictionaryAgentContactTypeNotUnique : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:DictionaryAgentContactTypeNotUnique@l##";
-        public DictionaryAgentContactTypeNotUnique(string value) : base(_MESSAGE) { Parameters = new List<string> { value }; }
+        public DictionaryAgentContactTypeNotUnique(string AgentName, string Value) : base(_MESSAGE) { Parameters = new List<string> { AgentName, Value }; }
         public DictionaryAgentContactTypeNotUnique(System.Exception ex) : base(_MESSAGE, ex) { }
     }
 

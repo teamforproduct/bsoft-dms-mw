@@ -60,6 +60,16 @@ namespace DMS_WebAPI.Controllers.Admins
             return new JsonResult(tmpItems, this);
         }
 
+        [HttpPost]
+        [Route("DuplicateSubordinations")]
+        public IHttpActionResult DuplicateSubordinations([FromBody] ModifyAdminSubordinations model)
+        {
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var tmpService = DmsResolver.Current.Get<IAdminService>();
+            var tmpItem = tmpService.ExecuteAction(EnumAdminActions.SetSubordination, cxt, model);
+            return new JsonResult(tmpItem, this);
+        }
+
         /// <summary>
         /// Разрешает должности выполнять рассылку на другую должность с учетом типа расслки
         /// </summary>
