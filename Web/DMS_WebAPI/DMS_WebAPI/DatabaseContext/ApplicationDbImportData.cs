@@ -94,6 +94,12 @@ namespace DMS_WebAPI.Models
 
             var list = new List<AdminLanguageValues>();
 
+            AddALV(list, "##l@DmsExceptions:IncomingModelIsNotValid@l##", "Incoming Model is not valid! {0}", "Входящая модель недействительна! {0}");
+            AddALV(list, "##l@DmsExceptions:WrongParameterTypeError@l##", "Parameter type commands is incorrect!", "Тип параметра комманды указан неверно!");
+            AddALV(list, "##l@DmsExceptions:WrongParameterValueError@l##", "Parameters commands incorrect!", "Параметры комманды неверные!");
+            AddALV(list, "##l@DmsExceptions:UserUnauthorized@l##", "Authorization has been denied for this request.", "Пользователь не авторизован");
+            AddALV(list, "##l@DmsExceptions:RecordNotUnique@l##", "Record is not Unique", "Запись не уникальна");
+
             AddALV(list, "##l@DictionaryDocumentDirections:Incoming@l##", "Incoming", "Входящий");
             AddALV(list, "##l@DictionaryDocumentDirections:Internal@l##", "Internal", "Собственный");
             AddALV(list, "##l@DictionaryDocumentDirections:Outcoming@l##", "Outcoming", "Иcходящий");
@@ -160,6 +166,7 @@ namespace DMS_WebAPI.Models
             AddALV(list, "##l@DmsExceptions:DictionaryAgentPersonTaxCodeNotUnique@l##", "Person \"{0}\" tax code should be unique!", "Физлицо с указанным ИНН уже есть в справочнике");
             AddALV(list, "##l@DmsExceptions:DictionaryAgentContactTypeNotUnique@l##", "Agent contact type should be unique!", "Контакт с указанным типом уже есть у этого агента");
             AddALV(list, "##l@DmsExceptions:DictionaryAgentContactNotUnique@l##", "Agent contact should be unique!", "Указанный контакт уже есть у этого агента");
+            AddALV(list, "##l@DmsExceptions:DictionaryAgentAddressNameNotUnique@l##", "", "");
             AddALV(list, "##l@DmsExceptions:DictionaryAgentAddressTypeNotUnique@l##", "", "");
             AddALV(list, "##l@DmsExceptions:DictionaryAgentAccountNumberNotUnique@l##", "", "");
 
@@ -197,7 +204,6 @@ namespace DMS_WebAPI.Models
             AddALV(list, "##l@DmsExceptions:EncryptionCertificateWasNotFound@l##", "The certificate was not found", "Сертификат не был найден");
             AddALV(list, "##l@DmsExceptions:EventNotFoundOrUserHasNoAccess@l##", "User could not access this event!", "Пользователь не имеет доступа к этому событию!");
             AddALV(list, "##l@DmsExceptions:ExecutorAgentForPositionIsNotDefined@l##", "Executor agent for position is not defined!", "Исполнитель для должности не определен!");
-            AddALV(list, "##l@DmsExceptions:IncomingModelIsNotValid@l##", "Incoming Model is not valid! {0}", "Входящая модель недействительна! {0}");
             AddALV(list, "##l@DmsExceptions:LicenceExceededNumberOfConnectedUsers@l##", "You have exceeded the allowed number of connected users", "Превышено разрешенное количество подключенных пользователей");
             AddALV(list, "##l@DmsExceptions:LicenceExceededNumberOfRegisteredUsers@l##", "You have exceeded the allowed number of registered users", "Превышено разрешенное количество зарегистрированных пользователей");
             AddALV(list, "##l@DmsExceptions:LicenceExpired@l##", "Licence expired", "Срок лицензии истек");
@@ -207,9 +213,8 @@ namespace DMS_WebAPI.Models
             AddALV(list, "##l@DmsExceptions:PaperListNotFoundOrUserHasNoAccess@l##", "Paper list not found or user has no access", "Список бумага не найдена или пользователь не имеет доступа");
             AddALV(list, "##l@DmsExceptions:PaperNotFoundOrUserHasNoAccess@l##", "Paper not found or user has no access", "Бумага не найдена или пользователь не имеет доступа");
             AddALV(list, "##l@DmsExceptions:PlanPointHasAlredyBeenLaunched@l##", "Plan Point has already been Launched!", "Пункт плана уже запущен!");
-            AddALV(list, "##l@DmsExceptions:RecordNotUnique@l##", "Record is not Unique", "Запись не уникальна");
             AddALV(list, "##l@DmsExceptions:TaskNotFoundOrUserHasNoAccess@l##", "Task not found", "Task не найден");
-            AddALV(list, "##l@DmsExceptions:TemplateDocumentIsNotvalid@l##", "The document template is not valid", "Шаблон документа не корректен");
+            AddALV(list, "##l@DmsExceptions:TemplateDocumentIsNotValid@l##", "The document template is not valid", "Шаблон документа не корректен");
             AddALV(list, "##l@DmsExceptions:TemplateDocumentNotFoundOrUserHasNoAccess@l##", "User could not access this template document!", "Пользователь не имеет доступ к этот шаблону документа!");
             AddALV(list, "##l@DmsExceptions:UnknownDocumentFile@l##", "Could not find appropriate document file!", "Не удалось найти соответствующий файл документа!");
             AddALV(list, "##l@DmsExceptions:UserFileNotExists@l##", "User file does not exists on Filestore!", "Пользовательский файл не существует в файловом хранилище");
@@ -217,12 +222,10 @@ namespace DMS_WebAPI.Models
             AddALV(list, "##l@DmsExceptions:UserNameAlreadyExists@l##", "User Name already exists", "Имя пользователя уже существует");
             AddALV(list, "##l@DmsExceptions:UserNameIsNotDefined@l##", "Employee for the current user could not be defined!", "Сотрудник для текущего пользователя не может быть определен!");
             AddALV(list, "##l@DmsExceptions:UserPositionIsNotDefined@l##", "Position for the current user could not be defined!", "Позиция для текущего пользователя не может быть определена!");
-            AddALV(list, "##l@DmsExceptions:UserUnauthorized@l##", "Authorization has been denied for this request.", "Пользователь не авторизован");
             AddALV(list, "##l@DmsExceptions:WaitHasAlreadyClosed@l##", "Wait has already closed!", "Ожидание уже закрыто!");
             AddALV(list, "##l@DmsExceptions:WaitNotFoundOrUserHasNoAccess@l##", "User could not access this wait!", "Пользователь не имеет доступа к этим ожиданиям!");
             AddALV(list, "##l@DmsExceptions:WrongDocumentSendListEntry@l##", "Plan item is wrong.", "Некорректный пункт плана");
-            AddALV(list, "##l@DmsExceptions:WrongParameterTypeError@l##", "Parameter type commands is incorrect!", "Тип параметра комманды указан неверно!");
-            AddALV(list, "##l@DmsExceptions:WrongParametervalueError@l##", "Parameters commands incorrect!", "Параметры комманды неверные!");
+            
 
 
             //pss 23.09.2016 Выявил DmsExceptions которые не имели перевода 
