@@ -1,4 +1,5 @@
-﻿using BL.Logic.Common;
+﻿using BL.CrossCutting.DependencyInjection;
+using BL.Logic.Common;
 using BL.Model.AdminCore.FilterModel;
 using BL.Model.AdminCore.IncomingModel;
 using BL.Model.AdminCore.InternalModel;
@@ -6,6 +7,8 @@ using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.Exception;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Transactions;
 
 namespace BL.Logic.AdminCore
 {
@@ -24,35 +27,59 @@ namespace BL.Logic.AdminCore
         {
             try
             {
-
-                var departments = _dictDb.GetDepartments(_context, new FilterDictionaryDepartment() { ParentIDs = new List<int> { Model.DepartmentId } });
-
-                var row = new InternalAdminSubordination()
+                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
                 {
-                    SourcePositionId = Model.SourcePositionId,
-                    //TargetPositionId = Model.TargetPositionId,
-                    SubordinationTypeId = (int)Model.SubordinationTypeId
-                };
+                    // Устанавливаю рассылку для должностей заданного отдела
+                    SetSubordinationByDepartment(Model.DepartmentId);
 
-                CommonDocumentUtilities.SetLastChange(_context, row);
+                    // Устанавливаю рассылку для должностей дочерних отделов
+                    SetSubordinationByChildDepartments(Model.DepartmentId);
 
-                var exists = _adminDb.ExistsSubordination(_context, new FilterAdminSubordination()
-                {
-                    SourcePositionIDs = new List<int>() { row.SourcePositionId },
-                    TargetPositionIDs = new List<int>() { row.TargetPositionId },
-                    SubordinationTypeIDs = new List<int>() { row.SubordinationTypeId }
-                });
+                    transaction.Complete();
+                }
 
-                if (exists && !Model.IsChecked) _adminDb.DeleteSubordination(_context, row);
-                else if (!exists && Model.IsChecked) _adminDb.AddSubordination(_context, row);
-
-                return Model.IsChecked;
-                //var model = CommonAdminUtilities.SubordinationModifyToInternal(_context, Model);
-                //return _adminDb.AddSubordination(_context, model);
+                return "Done";
             }
             catch (Exception ex)
             {
                 throw new AdminRecordCouldNotBeAdded(ex);
+            }
+        }
+
+        private void SetSubordination(ModifyAdminSubordination model)
+        {
+            _adminService.ExecuteAction(BL.Model.Enums.EnumAdminActions.SetSubordination, _context, model);
+        }
+        private void SetSubordinationByDepartment(int departmentId)
+        {
+            var positions = _dictDb.GetPositions(_context, new FilterDictionaryPosition() { DepartmentIDs = new List<int> { departmentId } });
+
+            if (positions.Count() > 0)
+            {
+                foreach (var position in positions)
+                {
+                    SetSubordination(new ModifyAdminSubordination()
+                    {
+                        IsChecked = Model.IsChecked,
+                        SourcePositionId = Model.SourcePositionId,
+                        TargetPositionId = position.Id,
+                        SubordinationTypeId = Model.SubordinationTypeId
+                    });
+                }
+            }
+        }
+
+        private void SetSubordinationByChildDepartments(int departmentId)
+        {
+            var departments = _dictDb.GetDepartments(_context, new FilterDictionaryDepartment() { ParentIDs = new List<int> { departmentId } });
+
+            if (departments.Count() > 0)
+            {
+                foreach (var department in departments)
+                {
+                    SetSubordinationByDepartment(department.Id);
+                    SetSubordinationByChildDepartments(department.Id);
+                }
             }
         }
     }
