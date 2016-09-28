@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
-using BL.Model.DictionaryCore.FrontModel;
 using System.ComponentModel.DataAnnotations;
 using BL.Model.Enums;
 
@@ -15,8 +14,9 @@ namespace BL.Model.AdminCore.IncomingModel
     /// </summary>
     // В модели перечислены поля, значения которых можно изменить из интерфейса. Например поля таблицы LastChangeUserId и LastChangeDate в этой модели отсутствуют
     // Если в таблице поля объявлены как Nullable то поля в этом классе нужно объявлять Nullable
-    public class ModifyAdminSubordinations
+    public class ModifyAdminSubordinationByDepartment
     {
+
         /// <summary>
         /// ID
         /// </summary>
@@ -30,10 +30,10 @@ namespace BL.Model.AdminCore.IncomingModel
         public int SourcePositionId { get; set; }
 
         /// <summary>
-        /// Исполнитель
+        /// Подразделение
         /// </summary>
         [Required]
-        public List<int> TargetPositionIDs { get; set; }
+        public int DepartmentId { get; set; }
 
         /// <summary>
         /// Тип рассылки (для исполнения, для сведения)

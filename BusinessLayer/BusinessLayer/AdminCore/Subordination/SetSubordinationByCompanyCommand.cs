@@ -8,14 +8,14 @@ using System.Collections.Generic;
 
 namespace BL.Logic.AdminCore
 {
-    public class SetSubordinationCommand : BaseSubordinationCommand
+    public class SetSubordinationByCompanyCommand : BaseSubordinationCommand
     {
-        private ModifyAdminSubordination Model
+        private ModifyAdminSubordinationByCompany Model
         {
             get
             {
-                if (!(_param is ModifyAdminSubordination)) throw new WrongParameterTypeError();
-                return (ModifyAdminSubordination)_param;
+                if (!(_param is ModifyAdminSubordinationByCompany)) throw new WrongParameterTypeError();
+                return (ModifyAdminSubordinationByCompany)_param;
             }
         }
 
@@ -28,7 +28,7 @@ namespace BL.Logic.AdminCore
                     var row = new InternalAdminSubordination()
                     {
                         SourcePositionId = Model.SourcePositionId,
-                        TargetPositionId = Model.TargetPositionId,
+                        //TargetPositionId = Model.TargetPositionId,
                         SubordinationTypeId = (int)Model.SubordinationTypeId
                     };
 
@@ -45,6 +45,8 @@ namespace BL.Logic.AdminCore
                     else if (!exists && Model.IsChecked) _adminDb.AddSubordination(_context, row);
 
                     return Model.IsChecked;
+                    //var model = CommonAdminUtilities.SubordinationModifyToInternal(_context, Model);
+                    //return _adminDb.AddSubordination(_context, model);
                 }
                 catch (Exception ex)
                 {

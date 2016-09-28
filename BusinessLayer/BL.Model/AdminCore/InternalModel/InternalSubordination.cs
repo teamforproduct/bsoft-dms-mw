@@ -13,7 +13,7 @@ namespace BL.Model.AdminCore.InternalModel
             Id = model.Id;
             SourcePositionId = model.SourcePositionId;
             TargetPositionId = model.TargetPositionId;
-            SubordinationTypeId = model.SubordinationTypeId;
+            SubordinationTypeId = (int)model.SubordinationTypeId;
         }
 
         /// <summary>

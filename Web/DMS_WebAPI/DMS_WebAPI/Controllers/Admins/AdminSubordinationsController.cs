@@ -51,12 +51,12 @@ namespace DMS_WebAPI.Controllers.Admins
 
 
         [HttpGet]
-        [Route("GetSubordinationsTree")]
-        public IHttpActionResult GetSubordinationsTree([FromUri] int positionId, [FromUri] FilterAdminSubordinationTree filter)
+        [Route("GetSubordinationsDIP")]
+        public IHttpActionResult GetSubordinationsDIP([FromUri] int positionId, [FromUri] FilterAdminSubordinationTree filter)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItems = tmpService.GetSubordinationsTree(ctx, positionId, filter);
+            var tmpItems = tmpService.GetSubordinationsDIP(ctx, positionId, filter);
             return new JsonResult(tmpItems, this);
         }
 
@@ -80,13 +80,15 @@ namespace DMS_WebAPI.Controllers.Admins
         /// </summary>
         /// <param name="model">ModifyAdminSubordination</param>
         /// <returns>FrontAdminSubordination</returns>
-        //public IHttpActionResult Post([FromBody] ModifyAdminSubordination model)
-        //{
-        //    var cxt = DmsResolver.Current.Get<UserContext>().Get();
-        //    var tmpService = DmsResolver.Current.Get<IAdminService>();
-        //    var tmpItem = tmpService.ExecuteAction(EnumAdminActions.AddSubordination, cxt, model);
-        //    return Get((int)tmpItem);
-        //}
+        //[HttpPost]
+        //[Route("AddMany")]
+        public IHttpActionResult Post([FromBody] ModifyAdminSubordination model)
+        {
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var tmpService = DmsResolver.Current.Get<IAdminService>();
+            var tmpItem = tmpService.ExecuteAction(EnumAdminActions.SetSubordination, cxt, model);
+            return new JsonResult(tmpItem, this);
+        }
 
         /// <summary>
         /// Разрешает должности выполнять рассылку на другую должность с учетом типа расслки
@@ -95,11 +97,26 @@ namespace DMS_WebAPI.Controllers.Admins
         /// <returns>FrontAdminSubordination</returns>
         //[HttpPost]
         //[Route("AddMany")]
-        public IHttpActionResult Post([FromBody] ModifyAdminSubordinations model)
+        public IHttpActionResult SetByDepartment([FromBody] ModifyAdminSubordinationByDepartment model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItem = tmpService.ExecuteAction(EnumAdminActions.SetSubordination, cxt, model);
+            var tmpItem = tmpService.ExecuteAction(EnumAdminActions.SetSubordinationByDepartment, cxt, model);
+            return new JsonResult(tmpItem, this);
+        }
+
+        /// <summary>
+        /// Разрешает должности выполнять рассылку на другую должность с учетом типа расслки
+        /// </summary>
+        /// <param name="model">ModifyAdminSubordination</param>
+        /// <returns>FrontAdminSubordination</returns>
+        //[HttpPost]
+        //[Route("AddMany")]
+        public IHttpActionResult SetByCompany([FromBody] ModifyAdminSubordinationByCompany model)
+        {
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var tmpService = DmsResolver.Current.Get<IAdminService>();
+            var tmpItem = tmpService.ExecuteAction(EnumAdminActions.SetSubordinationByCompany, cxt, model);
             return new JsonResult(tmpItem, this);
         }
 

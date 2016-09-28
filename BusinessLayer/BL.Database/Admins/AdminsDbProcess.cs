@@ -997,7 +997,7 @@ namespace BL.Database.Admins
                     SourcePositionName = x.SourcePosition.Name,
                     TargetPositionId = x.TargetPositionId,
                     TargetPositionName = x.TargetPosition.Name,
-                    SubordinationTypeId = x.SubordinationTypeId,
+                    SubordinationTypeId = (EnumSubordinationTypes)x.SubordinationTypeId,
                     SubordinationTypeName = x.SubordinationType.Name
                 }).ToList();
             }

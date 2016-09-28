@@ -82,8 +82,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdminCore\Clients\AddClientContent.cs" />
-    <Compile Include="AdminCore\IncomingModel\ModifyAdminSubordinations.cs" />
     <Compile Include="AdminCore\IncomingModel\CopyAdminSubordinations.cs" />
+    <Compile Include="AdminCore\IncomingModel\ModifyAdminSubordinationByCompany.cs" />
+    <Compile Include="AdminCore\IncomingModel\ModifyAdminSubordinationByDepartment.cs" />
     <Compile Include="AdminCore\InternalModel\InternalRoleType.cs" />
     <Compile Include="AdminCore\Actions\AddUser.cs" />
     <Compile Include="AdminCore\AdminLanguageInfo.cs" />

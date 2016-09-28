@@ -164,7 +164,7 @@ namespace BL.Model.Exception
     public class CommandNotDefinedError : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:CommandNotDefinedError@l##";
-        public CommandNotDefinedError() : base(_MESSAGE) { }
+        public CommandNotDefinedError(string ActionName) : base(_MESSAGE) { Parameters = new List<string> { ActionName }; }
         public CommandNotDefinedError(System.Exception ex) : base(_MESSAGE, ex) { }
     }
 
@@ -192,6 +192,7 @@ namespace BL.Model.Exception
         private const string _MESSAGE = "##l@DmsExceptions:AccessIsDenied@l##";
         //TODO: DmsExceptions:передавать параметры
         public AccessIsDenied() : base(_MESSAGE) { }
+        public AccessIsDenied(string ObjectName, string ActionName) : base(_MESSAGE) { Parameters = new List<string> { ObjectName, ActionName }; }
         public AccessIsDenied(System.Exception ex) : base(_MESSAGE, ex) { }
     }
     public class DocumentHasAlreadyHasLink : DmsExceptions

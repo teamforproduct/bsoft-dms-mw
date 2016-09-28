@@ -339,6 +339,7 @@
     <Compile Include="Controllers\WebAPI\ClientsController.cs" />
     <Compile Include="Controllers\WebAPI\ClientLicencesController.cs" />
     <Compile Include="Controllers\WebAPI\ServersController.cs" />
+    <Compile Include="DatabaseContext\ApplicationDbImportData.cs" />
     <Compile Include="DBModel\AdminLanguages.cs" />
     <Compile Include="DBModel\AdminLanguageValues.cs" />
     <Compile Include="DBModel\AdminServers.cs" />

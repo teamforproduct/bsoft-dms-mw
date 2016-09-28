@@ -2,6 +2,7 @@
 using BL.Model.AdminCore.FilterModel;
 using BL.Model.AdminCore.InternalModel;
 using BL.Model.Database;
+using DMS_WebAPI.DBModel;
 using DMS_WebAPI.Models;
 using System;
 using System.Collections.Generic;
@@ -109,12 +110,13 @@ namespace DMS_WebAPI.Utilities
 
                         for (int i = 0, l = labels.Length; i < l; i++)
                         {
-                            errorMessage = errorMessage.Replace(labels[i].Label, labels[i].Value);
+                            string val = labels[i].Value;
+                            if (string.IsNullOrEmpty(val)) val = "Empty translation for label: " + labels[i].Label;
+                            errorMessage = errorMessage.Replace(labels[i].Label, val);
+
+                            //errorMessage = errorMessage.Replace(labels[i].Label, labels[i].Value);
                         }
                     }
-
-                    // Еслли в переводе пусто...
-                    if (errorMessage == string.Empty) errorMessage = "Empty translation for label: " + text;
 
                     return errorMessage;
                 }
@@ -122,5 +124,27 @@ namespace DMS_WebAPI.Utilities
             catch (Exception ex) { }
             return text;
         }
+
+        public void AddAdminLanguageValues(List<AdminLanguageValues> list)
+        {
+            using (var dbContext = new ApplicationDbContext())
+            {
+                dbContext.AdminLanguageValuesSet.AddRange(list);
+                dbContext.SaveChanges();
+            }
+        }
+
+        public void DeleteAllAdminLanguageValues()
+        {
+            using (var dbContext = new ApplicationDbContext())
+            {
+                dbContext.AdminLanguageValuesSet.RemoveRange(dbContext.AdminLanguageValuesSet);
+                dbContext.SaveChanges();
+            }
+        }
+
+
+
+
     }
 }
