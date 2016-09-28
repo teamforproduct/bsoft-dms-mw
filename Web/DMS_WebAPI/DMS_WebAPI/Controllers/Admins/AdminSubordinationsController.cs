@@ -49,7 +49,12 @@ namespace DMS_WebAPI.Controllers.Admins
             return new JsonResult(tmpItem, this);
         }
 
-
+        /// <summary>
+        /// Возвращает список должностей с пычками для управления рассылкой для сведения и для исполнения
+        /// </summary>
+        /// <param name="positionId"></param>
+        /// <param name="filter"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("GetSubordinationsDIP")]
         public IHttpActionResult GetSubordinationsDIP([FromUri] int positionId, [FromUri] FilterAdminSubordinationTree filter)
