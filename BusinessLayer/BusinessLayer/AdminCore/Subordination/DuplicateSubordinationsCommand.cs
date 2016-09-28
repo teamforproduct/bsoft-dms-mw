@@ -27,52 +27,52 @@ namespace BL.Logic.AdminCore
 
         public override bool CanExecute()
         {
-            _admin.VerifyAccess(_context, CommandType, false);
+            _adminService.VerifyAccess(_context, CommandType, false);
             return true;
         }
 
-        public override object Execute
+        public override object Execute()
         {
-   
-                try
+
+            try
+            {
+
+                if (Model.CopyMode == BL.Model.Enums.EnumCopyMode.Сoverage)
                 {
-
-                    if (Model.CopyMode == BL.Model.Enums.EnumCopyMode.Сoverage)
-                    {
-                        // ощищаю настроки для Model.TargetPositionId
-                        _adminDb.DeleteSubordinationsBySourcePositionId(_context, new InternalAdminSubordination() { SourcePositionId = Model.TargetPositionId });
-                    }
-
-                    // выгребаю все настройки для Model.SourcePosition
-                    var items = _adminDb.GetSubordinations(_context, new FilterAdminSubordination() { SourcePositionIDs = new List<int> { Model.SourcePositionId } });
-
-                    // добавляю 
-                    foreach (var item in items)
-                    {
-                        // подменил SourcePosition
-                        var model = new ModifyAdminSubordination()
-                        {
-                            SourcePositionId = Model.TargetPositionId,
-                            TargetPositionId = item.TargetPositionId,
-                            SubordinationTypeId = item.SubordinationTypeId
-                        };
-
-                        if (!_adminDb.ExistsSubordination(_context, new FilterAdminSubordination()
-                        {
-                            SourcePositionIDs = new List<int> { model.SourcePositionId },
-                            TargetPositionIDs = new List<int> { model.TargetPositionId },
-                            SubordinationTypeIDs = new List<int> { (int)model.SubordinationTypeId },
-                        }))
-                            _adminDb.AddSubordination(_context, CommonAdminUtilities.SubordinationModifyToInternal(_context, model));
-                    }
-
-                    return "Done";
+                    // ощищаю настроки для Model.TargetPositionId
+                    _adminDb.DeleteSubordinationsBySourcePositionId(_context, new InternalAdminSubordination() { SourcePositionId = Model.TargetPositionId });
                 }
-                catch (Exception ex)
+
+                // выгребаю все настройки для Model.SourcePosition
+                var items = _adminDb.GetSubordinations(_context, new FilterAdminSubordination() { SourcePositionIDs = new List<int> { Model.SourcePositionId } });
+
+                // добавляю 
+                foreach (var item in items)
                 {
-                    throw new AdminRecordCouldNotBeAdded(ex);
+                    // подменил SourcePosition
+                    var model = new ModifyAdminSubordination()
+                    {
+                        SourcePositionId = Model.TargetPositionId,
+                        TargetPositionId = item.TargetPositionId,
+                        SubordinationTypeId = item.SubordinationTypeId
+                    };
+
+                    if (!_adminDb.ExistsSubordination(_context, new FilterAdminSubordination()
+                    {
+                        SourcePositionIDs = new List<int> { model.SourcePositionId },
+                        TargetPositionIDs = new List<int> { model.TargetPositionId },
+                        SubordinationTypeIDs = new List<int> { (int)model.SubordinationTypeId },
+                    }))
+                        _adminDb.AddSubordination(_context, CommonAdminUtilities.SubordinationModifyToInternal(_context, model));
                 }
-   
+
+                return "Done";
+            }
+            catch (Exception ex)
+            {
+                throw new AdminRecordCouldNotBeAdded(ex);
+            }
+
         }
     }
 }

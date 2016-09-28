@@ -30,12 +30,14 @@ namespace BL.Logic.AdminCore
 
         public override bool CanExecute()
         {
-            _admin.VerifyAccess(_context, CommandType, false);
+            _adminService.VerifyAccess(_context, CommandType, false);
 
-            var filter = new FilterAdminSubordination { NotContainsIDs = new List<int> { Model.Id },
+            var filter = new FilterAdminSubordination
+            {
+                NotContainsIDs = new List<int> { Model.Id },
                 SourcePositionIDs = new List<int> { Model.SourcePositionId },
                 TargetPositionIDs = new List<int> { Model.TargetPositionId },
-                SubordinationTypeIDs = new List<int> { Model.SubordinationTypeId }
+                SubordinationTypeIDs = new List<int> { (int)Model.SubordinationTypeId }
             };
 
             if (_adminDb.ExistsSubordination(_context, filter)) throw new AdminRecordNotUnique();
@@ -45,20 +47,20 @@ namespace BL.Logic.AdminCore
 
         public override object Execute()
         {
-            try
-            {
+                try
+                {
                 var dp = CommonAdminUtilities.SubordinationModifyToInternal(_context, Model);
                 _adminDb.UpdateSubordination(_context, dp);
             }
-            catch (AdminRecordWasNotFound)
-            {
+                catch (AdminRecordWasNotFound)
+                {
                 throw;
             }
-            catch (Exception ex)
-            {
+                catch (Exception ex)
+                {
                 throw new DatabaseError(ex);
             }
-            return null;
+                return null;
         }
     }
 }

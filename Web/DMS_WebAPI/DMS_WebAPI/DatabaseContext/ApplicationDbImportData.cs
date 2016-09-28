@@ -14,6 +14,8 @@ namespace DMS_WebAPI.Models
 
         private static int IdSequence = 0;
 
+        // этот метод-подпорка пока не решены вопросы локализации полностью
+        // достаю переводы из функции инициализации переводов при первом старте
         public static string ReplaceLanguageLabel(string userLanguage, string text)
         {
             string errorMessage = text;
@@ -32,9 +34,9 @@ namespace DMS_WebAPI.Models
 
                     if (string.IsNullOrEmpty(userLanguage)) userLanguage = string.Empty;
 
-                    LanguageId = GetAdminLanguages().Where(x => x.Name == userLanguage).FirstOrDefault().Id;
+                    //var lang =  GetAdminLanguages().Where(x => x.Name == userLanguage).FirstOrDefault();
 
-                    if (LanguageId == 0)
+                    if (userLanguage == string.Empty )
                     {
                         LanguageId = GetAdminLanguages().Where(x => x.IsDefault == true).FirstOrDefault().Id;
                     }

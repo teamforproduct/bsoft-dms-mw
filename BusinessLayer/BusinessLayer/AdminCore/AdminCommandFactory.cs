@@ -92,7 +92,7 @@ namespace BL.Logic.AdminCore
                 #endregion
 
                 default:
-                    throw new CommandNotDefinedError(act.ToString());
+                    throw new CommandNotDefinedError();
             }
             cmd.InitializeCommand(act, ctx, param);
             return cmd;

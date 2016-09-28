@@ -2,6 +2,7 @@
 using BL.Model.AdminCore.FilterModel;
 using BL.Model.AdminCore.IncomingModel;
 using BL.Model.AdminCore.InternalModel;
+using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.Exception;
 using System;
 using System.Collections.Generic;
@@ -19,39 +20,39 @@ namespace BL.Logic.AdminCore
             }
         }
 
-        public override object Execute
+        public override object Execute()
         {
-            get
+            try
             {
-                try
+
+                var departments = _dictDb.GetDepartments(_context, new FilterDictionaryDepartment() { ParentIDs = new List<int> { Model.DepartmentId } });
+
+                var row = new InternalAdminSubordination()
                 {
-                    var row = new InternalAdminSubordination()
-                    {
-                        SourcePositionId = Model.SourcePositionId,
-                        //TargetPositionId = Model.TargetPositionId,
-                        SubordinationTypeId = (int)Model.SubordinationTypeId
-                    };
+                    SourcePositionId = Model.SourcePositionId,
+                    //TargetPositionId = Model.TargetPositionId,
+                    SubordinationTypeId = (int)Model.SubordinationTypeId
+                };
 
-                    CommonDocumentUtilities.SetLastChange(_context, row);
+                CommonDocumentUtilities.SetLastChange(_context, row);
 
-                    var exists = _adminDb.ExistsSubordination(_context, new FilterAdminSubordination()
-                    {
-                        SourcePositionIDs = new List<int>() { row.SourcePositionId },
-                        TargetPositionIDs = new List<int>() { row.TargetPositionId },
-                        SubordinationTypeIDs = new List<int>() { row.SubordinationTypeId }
-                    });
-
-                    if (exists && !Model.IsChecked) _adminDb.DeleteSubordination(_context, row);
-                    else if (!exists && Model.IsChecked) _adminDb.AddSubordination(_context, row);
-
-                    return Model.IsChecked;
-                    //var model = CommonAdminUtilities.SubordinationModifyToInternal(_context, Model);
-                    //return _adminDb.AddSubordination(_context, model);
-                }
-                catch (Exception ex)
+                var exists = _adminDb.ExistsSubordination(_context, new FilterAdminSubordination()
                 {
-                    throw new AdminRecordCouldNotBeAdded(ex);
-                }
+                    SourcePositionIDs = new List<int>() { row.SourcePositionId },
+                    TargetPositionIDs = new List<int>() { row.TargetPositionId },
+                    SubordinationTypeIDs = new List<int>() { row.SubordinationTypeId }
+                });
+
+                if (exists && !Model.IsChecked) _adminDb.DeleteSubordination(_context, row);
+                else if (!exists && Model.IsChecked) _adminDb.AddSubordination(_context, row);
+
+                return Model.IsChecked;
+                //var model = CommonAdminUtilities.SubordinationModifyToInternal(_context, Model);
+                //return _adminDb.AddSubordination(_context, model);
+            }
+            catch (Exception ex)
+            {
+                throw new AdminRecordCouldNotBeAdded(ex);
             }
         }
     }

@@ -27,13 +27,13 @@ namespace BL.Logic.AdminCore
 
         public override bool CanExecute()
         {
-            _admin.VerifyAccess(_context, CommandType, false);
+            _adminService.VerifyAccess(_context, CommandType, false);
 
             var filter = new FilterAdminSubordination
             {
                 SourcePositionIDs = new List<int> { Model.SourcePositionId },
                 TargetPositionIDs = new List<int> { Model.TargetPositionId },
-                SubordinationTypeIDs = new List<int> { Model.SubordinationTypeId }
+                SubordinationTypeIDs = new List<int> { (int)Model.SubordinationTypeId }
             };
 
             if (_adminDb.ExistsSubordination(_context, filter)) throw new AdminRecordNotUnique();

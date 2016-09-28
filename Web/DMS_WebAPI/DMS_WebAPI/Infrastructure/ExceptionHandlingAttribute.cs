@@ -12,6 +12,7 @@ using System.Web.Http;
 using System.Web.Http.Filters;
 using BL.CrossCutting.DependencyInjection;
 using System.Collections.Generic;
+using DMS_WebAPI.Models;
 
 namespace DMS_WebAPI.Infrastructure
 {
@@ -149,6 +150,10 @@ namespace DMS_WebAPI.Infrastructure
         private string ReplaceLanguageLabel(HttpContext Context, string Label)
         {
             string res = Label;
+
+            // pss временно беру переводы из функции для инициализации переводов.
+
+            return ApplicationDbImportData.ReplaceLanguageLabel(Context.Request.UserLanguages?[0], res);
 
             try
             {
