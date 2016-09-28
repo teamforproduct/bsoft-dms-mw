@@ -61,6 +61,7 @@ namespace BL.Logic.TreeBuilder
                 {
                     list.Add(item);
                     TreeToList(item.Childs, list);
+                    item.Childs = null;
                 }
 
             }
