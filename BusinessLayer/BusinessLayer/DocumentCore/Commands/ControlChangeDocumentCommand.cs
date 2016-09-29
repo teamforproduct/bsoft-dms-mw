@@ -100,6 +100,8 @@ namespace BL.Logic.DocumentCore.Commands
 
                 _operationDb.ChangeDocumentWait(_context, newWait);
             }
+            else
+                throw new ContriolHasNotBeenChanged();
             return _docWait.DocumentId;
         }
 

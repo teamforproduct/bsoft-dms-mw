@@ -383,13 +383,20 @@
     <Compile Include="Utilities\UserContext.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\CryptoExts\CryptoExts.dll" />
-    <Content Include="App_Data\CryptoExts\plugins\ambapi.jar" />
-    <Content Include="App_Data\CryptoExts\plugins\ambasn.jar" />
-    <Content Include="App_Data\CryptoExts\plugins\ambclient.jar" />
-    <Content Include="App_Data\CryptoExts\plugins\ambprovider.jar" />
-    <Content Include="App_Data\CryptoExts\plugins\caclient.jar" />
-    <Content Include="App_Data\CryptoExts\plugins\pdfapi.jar" />
+    <Content Include="App_Data\CryptoExts\x64\CryptoExts.dll" />
+    <Content Include="App_Data\CryptoExts\x64\plugins\ambapi.jar" />
+    <Content Include="App_Data\CryptoExts\x64\plugins\ambasn.jar" />
+    <Content Include="App_Data\CryptoExts\x64\plugins\ambclient.jar" />
+    <Content Include="App_Data\CryptoExts\x64\plugins\ambprovider.jar" />
+    <Content Include="App_Data\CryptoExts\x64\plugins\caclient.jar" />
+    <Content Include="App_Data\CryptoExts\x64\plugins\pdfapi.jar" />
+    <Content Include="App_Data\CryptoExts\x86\CryptoExts.dll" />
+    <Content Include="App_Data\CryptoExts\x86\plugins\ambapi.jar" />
+    <Content Include="App_Data\CryptoExts\x86\plugins\ambasn.jar" />
+    <Content Include="App_Data\CryptoExts\x86\plugins\ambclient.jar" />
+    <Content Include="App_Data\CryptoExts\x86\plugins\ambprovider.jar" />
+    <Content Include="App_Data\CryptoExts\x86\plugins\caclient.jar" />
+    <Content Include="App_Data\CryptoExts\x86\plugins\pdfapi.jar" />
     <Content Include="App_Data\Documentation\BL.Model.XML" />
     <Content Include="App_Data\Documentation\DMS_WebAPI.XML" />
     <Content Include="Areas\HelpPage\HelpPage.css" />
