@@ -71,23 +71,9 @@ namespace DMS_WebAPI.Results
         {
             var json = JsonConvert.SerializeObject(new { success = _success, data = _data, msg = _msg, meta = _meta, paging = _paging }, GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings);
 
-            try
-            {
-                IContext ctx = null;
-                try
-                {
-                    ctx = DmsResolver.Current.Get<UserContext>().GetByLanguage();
-                    if (HttpContext.Current.User.Identity.IsAuthenticated && ctx != null)
-                    {
-                        var service = DmsResolver.Current.Get<ILanguageService>();
-                        json = service.ReplaceLanguageLabel(ctx, json);
-                    }
-                }
-                catch { }
-                var languageService = DmsResolver.Current.Get<Languages>();
-                json = languageService.ReplaceLanguageLabel(HttpContext.Current.Request.UserLanguages?[0], json);
-            }
-            catch { }
+            var languageService = DmsResolver.Current.Get<Languages>();
+
+            json = languageService.ReplaceLanguageLabel(HttpContext.Current, json);
 
             HttpResponseMessage response = _request.CreateResponse(HttpStatusCode.OK);
             response.Content = new StringContent(json, Encoding.UTF8, "application/json");

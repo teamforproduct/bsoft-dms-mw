@@ -31,9 +31,9 @@ namespace DMS_WebAPI.Controllers.Admins
         [Route("RefreshLanguageValues")]
         public IHttpActionResult RefreshLanguageValues()
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var tmpService = DmsResolver.Current.Get<ILanguageService>();
-            tmpService.RefreshLanguageValues(cxt);
+            //var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var tmpService = DmsResolver.Current.Get<Languages>();
+            tmpService.RefreshLanguageValues();
             return new JsonResult("Done", this);
         }
 
