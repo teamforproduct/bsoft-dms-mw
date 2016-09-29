@@ -2,6 +2,7 @@
 using BL.Database.Dictionaries.Interfaces;
 using BL.Model.Common;
 using BL.Model.DictionaryCore.FilterModel;
+using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
@@ -410,24 +411,53 @@ namespace BL.Logic.DictionaryCore
 
         public static void VerifyPositionExecutor(IContext context, IDictionariesDbProcess dictDb, ModifyDictionaryPositionExecutor Model)
         {
-            //pss здесь нужно обиграть логику 1 на должн, 1 ио, несколько реф
-            if (dictDb.ExistsPositionExecutor(context, new FilterDictionaryPositionExecutor
-            {
-                NotContainsIDs = new List<int> { Model.Id },
-                PositionIDs = new List<int> { Model.PositionId },
-                AgentIDs = new List<int> { Model.AgentId },
-                Period = new Period(Model.StartDate, Model.EndDate)
 
-                //PositionIDs = new List<int> { Model.PositionId },
-                //AgentIDs = new List<int> { Model.AgentId },
-                //Period = new Period(Model.StartDate, Model.EndDate),
-                //AccessLevelIDs = new List<int> { Model.AgentId },
-                //PositionExecutorTypeIDs = new List<int> { Model.PositionExecutorTypeId }
+            FrontDictionaryPositionExecutor executor = null;
 
-            }))
+            switch (Model.PositionExecutorTypeId)
             {
-                throw new DictionaryPositionExecutorNotUnique(Model.AgentId.ToString(), Model.StartDate, Model.EndDate);
+                case EnumPositionExecutionTypes.Personal:
+                    // Personal может быть только один на должности за период
+                    executor = dictDb.GetPositionExecutors(context, new FilterDictionaryPositionExecutor
+                    {
+                        NotContainsIDs = new List<int> { Model.Id },
+                        PositionIDs = new List<int> { Model.PositionId },
+                        Period = new Period(Model.StartDate, Model.EndDate),
+                        PositionExecutorTypeIDs = new List<EnumPositionExecutionTypes> { (EnumPositionExecutionTypes)Model.PositionExecutorTypeId },
+                    }).FirstOrDefault();
+
+                    if (executor != null)
+                    { throw new DictionaryPositionExecutorPersonalNotUnique(executor.PositionName, executor.AgentName, executor.StartDate, executor.EndDate); }
+                    break;
+                case EnumPositionExecutionTypes.IO:
+                    // IO может быть только один на должности за период
+                    executor = dictDb.GetPositionExecutors(context, new FilterDictionaryPositionExecutor
+                    {
+                        NotContainsIDs = new List<int> { Model.Id },
+                        PositionIDs = new List<int> { Model.PositionId },
+                        Period = new Period(Model.StartDate, Model.EndDate),
+                        PositionExecutorTypeIDs = new List<EnumPositionExecutionTypes> { (EnumPositionExecutionTypes)Model.PositionExecutorTypeId },
+                    }).FirstOrDefault();
+
+                    if (executor != null)
+                    { throw new DictionaryPositionExecutorIONotUnique(executor.PositionName, executor.AgentName, executor.StartDate, executor.EndDate); }
+                    break;
+                default:
+                    executor = dictDb.GetPositionExecutors(context, new FilterDictionaryPositionExecutor
+                    {
+                        NotContainsIDs = new List<int> { Model.Id },
+                        PositionIDs = new List<int> { Model.PositionId },
+                        Period = new Period(Model.StartDate, Model.EndDate),
+                        PositionExecutorTypeIDs = new List<EnumPositionExecutionTypes> { (EnumPositionExecutionTypes)Model.PositionExecutorTypeId },
+                        AgentIDs = new List<int> { Model.AgentId },
+                    }).FirstOrDefault();
+
+                    if (executor != null)
+                    { throw new DictionaryPositionExecutorReferentNotUnique(executor.PositionName, executor.AgentName, executor.StartDate, executor.EndDate); }
+
+                    break;
             }
+
         }
 
         public static void VerifyPosition(IContext context, IDictionariesDbProcess dictDb, ModifyDictionaryPosition Model)

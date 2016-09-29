@@ -4327,7 +4327,7 @@ namespace BL.Database.Dictionaries
                     IsActive = x.IsActive,
                     AgentId = x.AgentId,
                     PositionId = x.PositionId,
-                    PositionExecutorTypeId = x.PositionExecutorTypeId,
+                    PositionExecutorTypeId = (EnumPositionExecutionTypes)x.PositionExecutorTypeId,
                     AccessLevelId = x.AccessLevelId,
                     Description = x.Description,
                     StartDate = x.StartDate,
@@ -4431,7 +4431,7 @@ namespace BL.Database.Dictionaries
             {
                 var filterContains = PredicateBuilder.False<DictionaryPositionExecutors>();
                 filterContains = filter.PositionExecutorTypeIDs.Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.PositionExecutorTypeId == value).Expand());
+                    (current, value) => current.Or(e => e.PositionExecutorTypeId == (int)value).Expand());
 
                 qry = qry.Where(filterContains);
             }
@@ -4451,15 +4451,7 @@ namespace BL.Database.Dictionaries
                                 );
             }
 
-            // Список 
-            if (filter.PositionExecutorTypeIDs?.Count > 0)
-            {
-                var filterContains = PredicateBuilder.False<DictionaryPositionExecutors>();
-                filterContains = filter.PositionExecutorTypeIDs.Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.PositionExecutorTypeId == value).Expand());
-
-                qry = qry.Where(filterContains);
-            }
+            
 
             if (filter.AccessLevelIDs?.Count > 0)
             {

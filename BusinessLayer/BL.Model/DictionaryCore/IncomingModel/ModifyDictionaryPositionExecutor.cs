@@ -1,4 +1,5 @@
 ﻿using BL.Model.DictionaryCore.FrontModel;
+using BL.Model.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -39,12 +40,9 @@ namespace BL.Model.DictionaryCore.IncomingModel
 
         /// <summary>
         /// Тип исполнения: 
-        /// 1 - Назначен на должность;
-        /// 2 - Исполяет обязанности;
-        /// 3 - Является референтом;
         /// </summary>
         [Required]
-        public int PositionExecutorTypeId { get; set; }
+        public EnumPositionExecutionTypes PositionExecutorTypeId { get; set; }
 
         /// <summary>
         /// Уровень доступа к документам: лично, референт, ио

@@ -13,5 +13,10 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// </summary>
         public string Code { get; set; }
 
+        /// <summary>
+        /// Оставляет только те типы, которые можно применить к текущей должности
+        /// </summary>
+        public int PositionId { get; set; }
+
     }
 }
