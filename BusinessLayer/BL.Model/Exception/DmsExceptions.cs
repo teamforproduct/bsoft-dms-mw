@@ -720,13 +720,32 @@ namespace BL.Model.Exception
         public DictionaryDocumentTypeNameNotUnique(System.Exception ex) : base(_MESSAGE, ex) { }
     }
 
-    public class DictionaryPositionExecutorNotUnique : DmsExceptions
-    {
-        private const string _MESSAGE = "##l@DmsExceptions:DictionaryPositionExecutorNotUnique@l##";
-        public DictionaryPositionExecutorNotUnique(string AgentName, DateTime StartDate, DateTime EndDate) : base(_MESSAGE)
-        { Parameters = new List<string> { AgentName, StartDate.ToString() , EndDate.ToString() }; }
-        public DictionaryPositionExecutorNotUnique(System.Exception ex) : base(_MESSAGE, ex) { }
+
+    public class DictionaryPositionExecutorPersonalNotUnique : DmsExceptions
+    {//На должность \"{0}\" штатно назначен \"{1}\" c {2} по {3}
+        private const string _MESSAGE = "##l@DmsExceptions:DictionaryPositionExecutorPersonalNotUnique@l##";
+        public DictionaryPositionExecutorPersonalNotUnique(string PositionName, string AgentName, DateTime StartDate, DateTime EndDate) : base(_MESSAGE)
+        { Parameters = new List<string> { PositionName, AgentName, StartDate.ToString(), EndDate.ToString() }; }
+        public DictionaryPositionExecutorPersonalNotUnique(System.Exception ex) : base(_MESSAGE, ex) { }
     }
+
+    public class DictionaryPositionExecutorIONotUnique : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:DictionaryPositionExecutorIONotUnique@l##";
+        public DictionaryPositionExecutorIONotUnique(string PositionName, string AgentName, DateTime StartDate, DateTime EndDate) : base(_MESSAGE)
+        { Parameters = new List<string> { PositionName, AgentName, StartDate.ToString(), EndDate.ToString() }; }
+        public DictionaryPositionExecutorIONotUnique(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
+
+    public class DictionaryPositionExecutorReferentNotUnique : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:DictionaryPositionExecutorReferentNotUnique@l##";
+        public DictionaryPositionExecutorReferentNotUnique(string PositionName, string AgentName, DateTime StartDate, DateTime EndDate) : base(_MESSAGE)
+        { Parameters = new List<string> { PositionName, AgentName, StartDate.ToString(), EndDate.ToString() }; }
+        public DictionaryPositionExecutorReferentNotUnique(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
+
+
     public class DictionaryRegistrationJournalNotUnique : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:DictionaryRegistrationJournalNotUnique@l##";

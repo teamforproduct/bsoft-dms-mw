@@ -1,4 +1,5 @@
 ﻿using BL.Model.Common;
+using BL.Model.Enums;
 using System;
 using System.Collections.Generic;
 
@@ -31,7 +32,7 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// 2 - Исполяет обязанности;
         /// 3 - Является референтом;
         /// </summary>
-        public List<int>  PositionExecutorTypeIDs { get; set; }
+        public List<EnumPositionExecutionTypes>  PositionExecutorTypeIDs { get; set; }
 
         /// <summary>
         /// Уровень доступа к документам: лично, референт, ио

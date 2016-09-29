@@ -685,8 +685,9 @@ namespace BL.Logic.DictionaryCore
 
             // список должностей, которые подчиненны томуже отделу
             // сортировка Order, Name
-            List<SortPositoin> positions = (List<SortPositoin>) _dictDb.GetPositionsForSort(context, 
-                new FilterDictionaryPosition {
+            List<SortPositoin> positions = (List<SortPositoin>)_dictDb.GetPositionsForSort(context,
+                new FilterDictionaryPosition
+                {
                     DepartmentIDs = new List<int> { position.DepartmentId },
                     NotContainsIDs = new List<int> { positionId }
                 });
@@ -703,7 +704,7 @@ namespace BL.Logic.DictionaryCore
             }
             else
             {
-                positions.Insert(order-1, sp);
+                positions.Insert(order - 1, sp);
             }
 
             int i = 0;
@@ -711,7 +712,7 @@ namespace BL.Logic.DictionaryCore
             {
                 item.NewOrder = ++i;
 
-                if ( item.NewOrder != item.OldOrder )
+                if (item.NewOrder != item.OldOrder)
                 { _dictDb.UpdatePositionOrder(context, item.Id, item.NewOrder); }
             }
 
@@ -1100,9 +1101,9 @@ namespace BL.Logic.DictionaryCore
                 if (item.ObjectId == (int)EnumObjects.DictionaryDepartments)
                 {
                     prefix = ((path == string.Empty) ? "" : (path + "/")) + (item as FrontDictionaryDepartmentTreeItem).Code;
-                    item.Name = prefix + " " +  item.Name;
+                    item.Name = prefix + " " + item.Name;
                 }
-                    
+
                 if (item.Childs.Count() > 0) AddCodePathDepartment(item.Childs, prefix);
 
             }
