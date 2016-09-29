@@ -362,6 +362,13 @@ namespace BL.Model.Exception
         public DocumentRestrictedSendListDuplication() : base(_MESSAGE) { }
         public DocumentRestrictedSendListDuplication(System.Exception ex) : base(_MESSAGE, ex) { }
     }
+    public class ContriolHasNotBeenChanged : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:ContriolHasNotBeenChanged@l##";
+        public ContriolHasNotBeenChanged() : base(_MESSAGE) { }
+        public ContriolHasNotBeenChanged(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
+
     public class WrongDocumentSendListEntry : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:WrongDocumentSendListEntry@l##";
