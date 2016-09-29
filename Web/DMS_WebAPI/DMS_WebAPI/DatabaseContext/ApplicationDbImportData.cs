@@ -230,17 +230,18 @@ namespace DMS_WebAPI.Models
 
             //pss 23.09.2016 Выявил DmsExceptions которые не имели перевода 
             //TODO Требуется локализация (перевод ошибок)
-            AddALV(list, "##l@DmsExceptions:ControlerHasAlreadyBeenDefined@l##", "", "");
+            AddALV(list, "##l@DmsExceptions:ControlerHasAlreadyBeenDefined@l##", "Controler Has Already Been Defined", "Контролер уже определен");
             AddALV(list, "##l@DmsExceptions:CouldNotModifyTemplateDocument@l##", "", "");
-            AddALV(list, "##l@DmsExceptions:CouldNotPerformOperationWithPaper@l##", "", "");
-            AddALV(list, "##l@DmsExceptions:EncryptionCertificateHasExpired@l##", "", "");
-            AddALV(list, "##l@DmsExceptions:NobodyIsChosen@l##", "", "");
-            AddALV(list, "##l@DmsExceptions:ResponsibleExecutorHasAlreadyBeenDefined@l##", "", "");
-            AddALV(list, "##l@DmsExceptions:ResponsibleExecutorIsNotDefined@l##", "", "");
-            AddALV(list, "##l@DmsExceptions:SigningTypeNotAllowed@l##", "", "");
-            AddALV(list, "##l@DmsExceptions:SubordinationHasBeenViolated@l##", "", "");
-            AddALV(list, "##l@DmsExceptions:TargetIsNotDefined@l##", "", "");
-            AddALV(list, "##l@DmsExceptions:TaskIsNotDefined@l##", "", "");
+            AddALV(list, "##l@DmsExceptions:CouldNotPerformOperationWithPaper@l##", "Could Not Perform Operation With Paper", "Невозможно осуществить операцию с бумажными носителями");
+            AddALV(list, "##l@DmsExceptions:EncryptionCertificateHasExpired@l##", "Encryption Certificate Has Been Expired", "Сертификат просрочен");
+            AddALV(list, "##l@DmsExceptions:NobodyIsChosen@l##", "NobodyIsChosen", "Никто не выбран");
+            AddALV(list, "##l@DmsExceptions:ResponsibleExecutorHasAlreadyBeenDefined@l##", "Responsible Executor Has Already Been Defined", "Ответственный исполнитель уже определен");
+            AddALV(list, "##l@DmsExceptions:ResponsibleExecutorIsNotDefined@l##", "Responsible Executor Is Not Defined", "Ответственный исполнитель не определен");
+            AddALV(list, "##l@DmsExceptions:SigningTypeNotAllowed@l##", "Signing Type Is Not Allowed", "Недопустимый тип подписи");
+            AddALV(list, "##l@DmsExceptions:SubordinationHasBeenViolated@l##", "Subordination Has Been Violated", "Нарушена субординация");
+            AddALV(list, "##l@DmsExceptions:TargetIsNotDefined@l##", "Target Is Not Defined", "Получатель не определен");
+            AddALV(list, "##l@DmsExceptions:TaskIsNotDefined@l##", "Task Is Not Defined", "Задача не определена");
+            AddALV(list, "##l@DmsExceptions:ContriolHasNotBeenChanged@l##", "Contriol Has Not Been Changed", "Параметры контроля не изменены");
 
             // после добавления переводов можно обновить их в базе api/v2/Languages/RefreshLanguageValues
 
