@@ -191,10 +191,19 @@ namespace BL.Database.Encryption
 
         private void InitJVM()
         {
+            string installDir = string.Empty;
+            if (IntPtr.Size == 4)
+            {
+                // 32-bit
+                installDir = Path.Combine(HttpContext.Current.Server.MapPath("~/"), "App_Data", "CryptoExts", "x86", "CryptoExts.dll");
+            }
+            else if (IntPtr.Size == 8)
+            {
+                // 64-bit
+                installDir = Path.Combine(HttpContext.Current.Server.MapPath("~/"), "App_Data", "CryptoExts", "x64", "CryptoExts.dll");
+            }
             try
             {
-                var installDir = Path.Combine(HttpContext.Current.Server.MapPath("~/App_Data/"), "CryptoExts", "CryptoExts.dll");
-
                 var isStart = StartJVM(installDir.ToCharArray());
                 if (isStart)
                 {
@@ -208,8 +217,6 @@ namespace BL.Database.Encryption
             {
                 try
                 {
-                    var installDir = Path.Combine(HttpContext.Current.Server.MapPath("~/App_Data/"), "CryptoExts", "CryptoExts.dll");
-
                     StartJVM(installDir.ToCharArray());
 
                     SetSilentMode("null".ToCharArray());//не выводить никаких сообщений во всплывающих окнах (для операций сервера)

@@ -31,7 +31,16 @@ namespace DMS_WebAPI
         {
             ApplicationDbContext.CreateDatabaseIfNotExists();
 
-            LoadLibrary(Path.Combine(HttpContext.Current.Server.MapPath("~/"), "App_Data", "CryptoExts", "CryptoExts.dll"));
+            if (IntPtr.Size == 4)
+            {
+                // 32-bit
+                LoadLibrary(Path.Combine(HttpContext.Current.Server.MapPath("~/"), "App_Data", "CryptoExts", "x86", "CryptoExts.dll"));
+            }
+            else if (IntPtr.Size == 8)
+            {
+                // 64-bit
+                LoadLibrary(Path.Combine(HttpContext.Current.Server.MapPath("~/"), "App_Data",  "CryptoExts", "x64", "CryptoExts.dll"));
+            }
 
             ConfigureAuth(app);
 
