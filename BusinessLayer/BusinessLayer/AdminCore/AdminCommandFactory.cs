@@ -79,6 +79,16 @@ namespace BL.Logic.AdminCore
                 case EnumAdminActions.SetSubordination:
                     cmd = DmsResolver.Current.Get<SetSubordinationCommand>();
                     break;
+                case EnumAdminActions.DuplicateSubordinations:
+                    cmd = DmsResolver.Current.Get<DuplicateSubordinationsCommand>();
+                    break;
+                case EnumAdminActions.SetSubordinationByDepartment:
+                    cmd = DmsResolver.Current.Get<SetSubordinationByDepartmentCommand>();
+                    break;
+                case EnumAdminActions.SetSubordinationByCompany:
+                    cmd = DmsResolver.Current.Get<SetSubordinationByCompanyCommand>();
+                    break;
+
                 #endregion
 
                 default:

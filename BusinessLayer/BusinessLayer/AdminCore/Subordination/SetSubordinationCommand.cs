@@ -8,27 +8,15 @@ using System.Collections.Generic;
 
 namespace BL.Logic.AdminCore
 {
-    public class SetSubordinationCommand : BaseAdminCommand
+    public class SetSubordinationCommand : BaseSubordinationCommand
     {
-
-        private ModifyAdminSubordinations Model
+        private ModifyAdminSubordination Model
         {
             get
             {
-                if (!(_param is ModifyAdminSubordinations)) throw new WrongParameterTypeError();
-                return (ModifyAdminSubordinations)_param;
+                if (!(_param is ModifyAdminSubordination)) throw new WrongParameterTypeError();
+                return (ModifyAdminSubordination)_param;
             }
-        }
-
-        public override bool CanBeDisplayed(int Id)
-        {
-            return true;
-        }
-
-        public override bool CanExecute()
-        {
-            _admin.VerifyAccess(_context, CommandType, false);
-            return true;
         }
 
         public override object Execute()
@@ -38,29 +26,23 @@ namespace BL.Logic.AdminCore
                 var row = new InternalAdminSubordination()
                 {
                     SourcePositionId = Model.SourcePositionId,
-                    SubordinationTypeId = Model.SubordinationTypeId
+                    TargetPositionId = Model.TargetPositionId,
+                    SubordinationTypeId = (int)Model.SubordinationTypeId
                 };
 
                 CommonDocumentUtilities.SetLastChange(_context, row);
 
-                foreach (var item in Model.TargetPositionIDs)
+                var exists = _adminDb.ExistsSubordination(_context, new FilterAdminSubordination()
                 {
-                    row.TargetPositionId = item;
+                    SourcePositionIDs = new List<int>() { row.SourcePositionId },
+                    TargetPositionIDs = new List<int>() { row.TargetPositionId },
+                    SubordinationTypeIDs = new List<int>() { row.SubordinationTypeId }
+                });
 
-                    var exists = _adminDb.ExistsSubordination(_context, new FilterAdminSubordination()
-                    {
-                        SourcePositionIDs = new List<int>() { Model.SourcePositionId },
-                        TargetPositionIDs = new List<int>() { item },
-                        SubordinationTypeIDs = new List<int>() { Model.SubordinationTypeId }
-                    });
-
-                    if (exists && !Model.IsChecked) _adminDb.DeleteSubordination(_context, row);
-                    else if (!exists && Model.IsChecked) _adminDb.AddSubordination(_context, row);
-                }
+                if (exists && !Model.IsChecked) _adminDb.DeleteSubordination(_context, row);
+                else if (!exists && Model.IsChecked) _adminDb.AddSubordination(_context, row);
 
                 return Model.IsChecked;
-                //var model = CommonAdminUtilities.SubordinationModifyToInternal(_context, Model);
-                //return _adminDb.AddSubordination(_context, model);
             }
             catch (Exception ex)
             {

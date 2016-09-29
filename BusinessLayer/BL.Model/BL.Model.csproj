@@ -82,7 +82,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdminCore\Clients\AddClientContent.cs" />
-    <Compile Include="AdminCore\IncomingModel\ModifyAdminSubordinations.cs" />
+    <Compile Include="AdminCore\IncomingModel\CopyAdminSubordinations.cs" />
+    <Compile Include="AdminCore\IncomingModel\ModifyAdminSubordinationByCompany.cs" />
+    <Compile Include="AdminCore\IncomingModel\ModifyAdminSubordinationByDepartment.cs" />
     <Compile Include="AdminCore\InternalModel\InternalRoleType.cs" />
     <Compile Include="AdminCore\Actions\AddUser.cs" />
     <Compile Include="AdminCore\AdminLanguageInfo.cs" />
@@ -153,7 +155,6 @@
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryDocumentSubject.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgent.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentAddress.cs" />
-    <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentType.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryContact.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentPerson.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryContactType.cs" />
@@ -353,10 +354,10 @@
     <Compile Include="Enums\EnumResultTypes.cs" />
     <Compile Include="Enums\EnumReportTypes.cs" />
     <Compile Include="Enums\EnumSort.cs" />
+    <Compile Include="Enums\EnumCopyMode.cs" />
     <Compile Include="Enums\EnumSystemPositions.cs" />
     <Compile Include="Enums\EnumSystemUsers.cs" />
     <Compile Include="Enums\EnumContactTypes.cs" />
-    <Compile Include="Enums\EnumDictionaryAgentTypes.cs" />
     <Compile Include="Enums\EnumPropertyAction.cs" />
     <Compile Include="Enums\EnumDictionaryActions.cs" />
     <Compile Include="Enums\EnumDocumentActions.cs" />

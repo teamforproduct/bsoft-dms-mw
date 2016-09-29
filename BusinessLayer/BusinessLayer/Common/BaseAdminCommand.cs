@@ -1,6 +1,7 @@
 ﻿using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Admins.Interfaces;
+using BL.Database.Dictionaries.Interfaces;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.DependencyInjection;
 using BL.Model.DocumentCore.InternalModel;
@@ -13,8 +14,9 @@ namespace BL.Logic.Common
         protected IContext _context;
         protected object _param;
         private EnumAdminActions _action;
-        protected IAdminService _admin;
+        protected IAdminService _adminService;
         protected IAdminsDbProcess _adminDb;
+        protected IDictionariesDbProcess _dictDb;
 
         public void InitializeCommand(EnumAdminActions action, IContext ctx)
         {
@@ -27,7 +29,8 @@ namespace BL.Logic.Common
             _context = ctx;
             _param = param;
             _adminDb = DmsResolver.Current.Get<IAdminsDbProcess>();
-            _admin = DmsResolver.Current.Get<IAdminService>();
+            _dictDb = DmsResolver.Current.Get<IDictionariesDbProcess>();
+            _adminService = DmsResolver.Current.Get<IAdminService>();
         }
 
         public InternalDocument Document => null;

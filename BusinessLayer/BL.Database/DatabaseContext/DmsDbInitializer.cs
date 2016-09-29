@@ -13,8 +13,8 @@ namespace BL.Database.DatabaseContext
     {
         protected override void Seed(DmsContext context)
         {
-            context.AdminLanguagesSet.AddRange(DmsDbImportData.GetAdminLanguages());
-            context.AdminLanguageValuesSet.AddRange(DmsDbImportData.GetAdminLanguageValues());
+            //context.AdminLanguagesSet.AddRange(DmsDbImportData.GetAdminLanguages());
+            //context.AdminLanguageValuesSet.AddRange(DmsDbImportData.GetAdminLanguageValues());
             context.AdminAccessLevelsSet.AddRange(DmsDbImportData.GetAdminAccessLevels());
             context.SystemObjectsSet.AddRange(DmsDbImportData.GetSystemObjects());
             context.SystemActionsSet.AddRange(DmsDbImportData.GetSystemActions());

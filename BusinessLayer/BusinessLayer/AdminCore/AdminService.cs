@@ -221,7 +221,7 @@ namespace BL.Logic.AdminCore
             return _adminDb.GetSubordinations(context, filter);
         }
 
-        public IEnumerable<ITreeItem> GetSubordinationsTree(IContext context, int positionId, FilterAdminSubordinationTree filter)
+        public IEnumerable<ITreeItem> GetSubordinationsDIP(IContext context, int positionId, FilterAdminSubordinationTree filter)
         {
 
             int levelCount = filter?.LevelCount ?? 0;
@@ -241,7 +241,6 @@ namespace BL.Logic.AdminCore
                 //            SourcePositionIDs = new List<int> { positionId }
                 //        });
                 //}
-
 
                 positions = _dictDb.GetPositionsForTreeSend(context, positionId, new FilterDictionaryPosition()
                 {
@@ -291,8 +290,7 @@ namespace BL.Logic.AdminCore
                 }
             }
 
-
-            return res;
+            return Tree.GetList(res);
         }
 
         private void FormSafeList(List<TreeItem> tree, List<string> safeList, FilterTree filter)

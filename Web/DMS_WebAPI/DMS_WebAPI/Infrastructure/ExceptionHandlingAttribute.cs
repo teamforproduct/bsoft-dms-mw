@@ -12,6 +12,7 @@ using System.Web.Http;
 using System.Web.Http.Filters;
 using BL.CrossCutting.DependencyInjection;
 using System.Collections.Generic;
+using DMS_WebAPI.Models;
 
 namespace DMS_WebAPI.Infrastructure
 {
@@ -42,6 +43,7 @@ namespace DMS_WebAPI.Infrastructure
             }
 
             var exc = context.Exception;
+            var languageService = DmsResolver.Current.Get<Languages>();
 
             string msgExp = string.Empty;
             //#if DEBUG
@@ -50,7 +52,7 @@ namespace DMS_WebAPI.Infrastructure
             {
                 var m = exc.Message;
 
-                m = ReplaceLanguageLabel(currentContext, m);
+                m = languageService.ReplaceLanguageLabel(currentContext, m);
 
                 if (exc is DmsExceptions)
                 {
@@ -146,32 +148,7 @@ namespace DMS_WebAPI.Infrastructure
             #endregion log to file
         }
 
-        private string ReplaceLanguageLabel(HttpContext Context, string Label)
-        {
-            string res = Label;
-
-            try
-            {
-                IContext ctx = null;
-                try
-                {
-                    ctx = DmsResolver.Current.Get<UserContext>().GetByLanguage();
-                    if (Context.User.Identity.IsAuthenticated && ctx != null)
-                    {
-                        var service = DmsResolver.Current.Get<ILanguageService>();
-                        //Перевод ошибки
-                        res = service.ReplaceLanguageLabel(ctx, res);
-                    }
-                }
-                catch { }
-                var languageService = DmsResolver.Current.Get<Languages>();
-                //Перевод ошибки на русский
-                res = languageService.ReplaceLanguageLabel(Context.Request.UserLanguages?[0], res);
-            }
-            catch { }
-
-            return res;
-        }
+        
 
         private string InsertValues(string Message, List<string> Paramenters)
         {

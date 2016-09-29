@@ -599,7 +599,7 @@ namespace BL.Database.Admins
             }
         }
 
-        
+
 
         public List<int> GetRolesByPositions(IContext context, List<int> positionIDs)
         {
@@ -939,6 +939,26 @@ namespace BL.Database.Admins
             }
         }
 
+        public void DeleteSubordinationsBySourcePositionId(IContext context, InternalAdminSubordination model)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var list = dbContext.AdminSubordinationsSet.Where(x => x.SourcePositionId == model.SourcePositionId);
+                dbContext.AdminSubordinationsSet.RemoveRange(list);
+                dbContext.SaveChanges();
+            }
+        }
+
+        public void DeleteSubordinationsByTargetPositionId(IContext context, InternalAdminSubordination model)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var list = dbContext.AdminSubordinationsSet.Where(x => x.TargetPositionId == model.TargetPositionId);
+                dbContext.AdminSubordinationsSet.RemoveRange(list);
+                dbContext.SaveChanges();
+            }
+        }
+
         public InternalAdminSubordination GetInternalSubordination(IContext context, FilterAdminSubordination filter)
         {
             using (var dbContext = new DmsContext(context))
@@ -977,7 +997,7 @@ namespace BL.Database.Admins
                     SourcePositionName = x.SourcePosition.Name,
                     TargetPositionId = x.TargetPositionId,
                     TargetPositionName = x.TargetPosition.Name,
-                    SubordinationTypeId = x.SubordinationTypeId,
+                    SubordinationTypeId = (EnumSubordinationTypes)x.SubordinationTypeId,
                     SubordinationTypeName = x.SubordinationType.Name
                 }).ToList();
             }

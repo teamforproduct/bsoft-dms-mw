@@ -30,7 +30,7 @@ namespace BL.Logic.AdminCore
 
         public override bool CanExecute()
         {
-            _admin.VerifyAccess(_context, CommandType, false);
+            _adminService.VerifyAccess(_context, CommandType, false);
 
             var filter = new FilterAdminPositionRole { NotContainsIDs = new List<int> { Model.Id }, PositionIDs = new List<int> { Model.PositionId }, RoleIDs = new List<int> { Model.RoleId } };
 

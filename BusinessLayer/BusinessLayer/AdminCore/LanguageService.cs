@@ -109,12 +109,12 @@ namespace BL.Logic.AdminCore
             return _languageDb.GetAdminLanguageValues(context, filter);
         }
 
-
         public void RefreshLanguageValues(IContext context)
         {
             _languageDb.DeleteAllAdminLanguageValues(context);
-            _languageDb.AddAdminLanguageValues(context, DmsDbImportData.GetAdminLanguageValues());
+            //_languageDb.AddAdminLanguageValues(context, DmsDbImportData.GetAdminLanguageValues());
         }
+
         #endregion AdminLanguageValues
     }
 }
