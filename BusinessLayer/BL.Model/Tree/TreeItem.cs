@@ -23,6 +23,12 @@ namespace BL.Model.Tree
         public string Name { get; set; }
 
         /// <summary>
+        /// Текст для поиска
+        /// </summary>
+        [IgnoreDataMember]
+        public string SearchText { get; set; }
+
+        /// <summary>
         /// Уникальный ключ элемента
         /// </summary>
         public string TreeId { get; set; }

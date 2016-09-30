@@ -727,6 +727,13 @@ namespace BL.Model.Exception
         public DictionaryDocumentTypeNameNotUnique(System.Exception ex) : base(_MESSAGE, ex) { }
     }
 
+    public class DictionaryPositionExecutorNotUnique : DmsExceptions
+    {//Сотрудник \"{1}\" не может быть назначен на должность повторно \"{0}\" c {2} по {3}
+        private const string _MESSAGE = "##l@DmsExceptions:DictionaryPositionExecutorNotUnique@l##";
+        public DictionaryPositionExecutorNotUnique(string PositionName, string AgentName, DateTime StartDate, DateTime EndDate) : base(_MESSAGE)
+        { Parameters = new List<string> { PositionName, AgentName, StartDate.ToString(), EndDate.ToString() }; }
+        public DictionaryPositionExecutorNotUnique(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
 
     public class DictionaryPositionExecutorPersonalNotUnique : DmsExceptions
     {//На должность \"{0}\" штатно назначен \"{1}\" c {2} по {3}

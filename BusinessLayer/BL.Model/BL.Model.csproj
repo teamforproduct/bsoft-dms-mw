@@ -143,7 +143,10 @@
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentAccount.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentBank.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentCompany.cs" />
-    <Compile Include="DictionaryCore\FrontModel\FrontDictionaryPositionTreeItem.cs" />
+    <Compile Include="DictionaryCore\FrontModel\FrontDIPSubordinationsClientCompany.cs" />
+    <Compile Include="DictionaryCore\FrontModel\FrontDIPSubordinationsDepartment.cs" />
+    <Compile Include="DictionaryCore\FrontModel\FrontDIPSubordinationsBase.cs" />
+    <Compile Include="DictionaryCore\FrontModel\FrontDIPSubordinationsPosition.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryDepartmentTreeItem.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryDepartment.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentClientCompany.cs" />

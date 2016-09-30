@@ -1599,6 +1599,7 @@ namespace BL.Database.Dictionaries
                 {
                     Id = x.Id,
                     Name = x.Agent.Name,
+                    SearchText = x.Agent.Name,
                     ObjectId = (int)EnumObjects.DictionaryAgentClientCompanies,
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = string.Empty,
@@ -1607,6 +1608,32 @@ namespace BL.Database.Dictionaries
                 }).ToList();
             }
         }
+
+        public IEnumerable<FrontDIPSubordinationsClientCompany> GetAgentClientCompaniesForDIPSubordinations(IContext context, int sourcePositionId, FilterDictionaryAgentClientCompany filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+
+                var qry = GetAgentClientCompaniesQuery(context, dbContext, filter);
+
+                var objId = ((int)EnumObjects.DictionaryAgentClientCompanies).ToString();
+
+                return qry.Select(x => new FrontDIPSubordinationsClientCompany
+                {
+                    Id = x.Id,
+                    Name = x.Agent.Name,
+                    SearchText = x.Agent.Name,
+                    ObjectId = (int)EnumObjects.DictionaryAgentClientCompanies,
+                    TreeId = string.Concat(x.Id.ToString(), "_", objId),
+                    TreeParentId = string.Empty,
+                    IsActive = x.IsActive,
+                    IsList = !(x.Departments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any()),
+                    SourcePositionId = sourcePositionId,
+                    CompanyId = x.Id
+                }).ToList();
+            }
+        }
+
 
         public IQueryable<DictionaryCompanies> GetAgentClientCompaniesQuery(IContext context, DmsContext dbContext, FilterDictionaryAgentClientCompany filter)
         {
@@ -2973,6 +3000,7 @@ namespace BL.Database.Dictionaries
 
             }
         }
+        
         public IEnumerable<FrontDictionaryDepartmentTreeItem> GetDepartmentsForTree(IContext context, FilterDictionaryDepartment filter)
         {
             using (var dbContext = new DmsContext(context))
@@ -2987,12 +3015,39 @@ namespace BL.Database.Dictionaries
                     Id = x.Id,
                     Code = x.Code,
                     Name = x.Name,
+                    SearchText = x.Name,
                     CompanyId = x.CompanyId,
                     ObjectId = (int)EnumObjects.DictionaryDepartments,
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = (x.ParentId == null) ? string.Concat(x.CompanyId, "_", companyObjId) : string.Concat(x.ParentId, "_", objId),
                     IsActive = x.IsActive,
                     IsList = !(x.ChildDepartments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any() || x.Positions.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any())
+                }).ToList();
+            }
+        }
+
+        public IEnumerable<FrontDIPSubordinationsDepartment> GetDepartmentsForDIPSubordinations(IContext context, int sourcePositionId, FilterDictionaryDepartment filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = GetDepartmentsQuery(context, dbContext, filter);
+
+                var objId = ((int)EnumObjects.DictionaryDepartments).ToString();
+                var companyObjId = ((int)EnumObjects.DictionaryAgentClientCompanies).ToString();
+
+                return qry.Select(x => new FrontDIPSubordinationsDepartment
+                {
+                    Id = x.Id,
+                    CodePath = x.FullPath,
+                    Name = x.Name,
+                    SearchText = x.Name,
+                    ObjectId = (int)EnumObjects.DictionaryDepartments,
+                    TreeId = string.Concat(x.Id.ToString(), "_", objId),
+                    TreeParentId = (x.ParentId == null) ? string.Concat(x.CompanyId, "_", companyObjId) : string.Concat(x.ParentId, "_", objId),
+                    IsActive = x.IsActive,
+                    IsList = !(x.ChildDepartments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any() || x.Positions.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any()),
+                    SourcePositionId = sourcePositionId,
+                    DepartmentId = x.Id,
                 }).ToList();
             }
         }
@@ -3900,7 +3955,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<FrontDictionaryPositionTreeItem> GetPositionsForTree(IContext context, FilterDictionaryPosition filter)
+        public IEnumerable<FrontDIPSubordinationsPosition> GetPositionsForTree(IContext context, FilterDictionaryPosition filter)
         {
             using (var dbContext = new DmsContext(context))
             {
@@ -3909,10 +3964,11 @@ namespace BL.Database.Dictionaries
                 string objId = ((int)EnumObjects.DictionaryPositions).ToString();
                 string parObjId = ((int)EnumObjects.DictionaryDepartments).ToString();
 
-                return qry.Select(x => new FrontDictionaryPositionTreeItem
+                return qry.Select(x => new FrontDIPSubordinationsPosition
                 {
                     Id = x.Id,
                     Name = x.Name,
+                    SearchText = x.Name,
                     ObjectId = (int)EnumObjects.DictionaryPositions,
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = x.DepartmentId.ToString() + "_" + parObjId,
@@ -3923,7 +3979,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<FrontDictionaryPositionTreeItem> GetPositionsForTreeSend(IContext context, int sourcePositionId, FilterDictionaryPosition filter)
+        public IEnumerable<FrontDIPSubordinationsPosition> GetPositionsForDIPSubordinations(IContext context, int sourcePositionId, FilterDictionaryPosition filter)
         {
             using (var dbContext = new DmsContext(context))
             {
@@ -3932,15 +3988,16 @@ namespace BL.Database.Dictionaries
                 string objId = ((int)EnumObjects.DictionaryPositions).ToString();
                 string parObjId = ((int)EnumObjects.DictionaryDepartments).ToString();
 
-                return qry.Select(x => new FrontDictionaryPositionTreeItem
+                return qry.Select(x => new FrontDIPSubordinationsPosition
                 {
                     Id = x.Id,
                     Name = x.Name,
+                    SearchText = string.Concat(x.Name , " ", x.ExecutorAgent.Name),
                     ObjectId = (int)EnumObjects.DictionaryPositions,
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = x.DepartmentId.ToString() + "_" + parObjId,
                     IsActive = x.IsActive,
-                    IsList = !(x.PositionExecutors.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any()),// || x.ChildPositions.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any())
+                    IsList = true,
                     ExecutorName = x.ExecutorAgent.Name,
                     IsInforming = (x.TargetPositionSubordinations
                         .Where(y => y.TargetPositionId == x.Id)
@@ -4364,6 +4421,7 @@ namespace BL.Database.Dictionaries
                 {
                     Id = x.Id,
                     Name = x.Agent.Name,
+                    SearchText = x.Agent.Name, 
                     ObjectId = (int)EnumObjects.DictionaryPositionExecutors,
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = x.PositionId.ToString() + "_" + parObjId,

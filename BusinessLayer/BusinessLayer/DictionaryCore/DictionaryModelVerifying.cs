@@ -414,6 +414,18 @@ namespace BL.Logic.DictionaryCore
 
             FrontDictionaryPositionExecutor executor = null;
 
+            executor = dictDb.GetPositionExecutors(context, new FilterDictionaryPositionExecutor
+            {
+                NotContainsIDs = new List<int> { Model.Id },
+                PositionIDs = new List<int> { Model.PositionId },
+                Period = new Period(Model.StartDate, Model.EndDate),
+                AgentIDs = new List<int> { Model.AgentId },
+            }).FirstOrDefault();
+
+            if (executor != null)
+            { throw new DictionaryPositionExecutorNotUnique(executor.PositionName, executor.AgentName, executor.StartDate, executor.EndDate); }
+
+
             switch (Model.PositionExecutorTypeId)
             {
                 case EnumPositionExecutionTypes.Personal:
@@ -441,6 +453,21 @@ namespace BL.Logic.DictionaryCore
 
                     if (executor != null)
                     { throw new DictionaryPositionExecutorIONotUnique(executor.PositionName, executor.AgentName, executor.StartDate, executor.EndDate); }
+                    break;
+                case EnumPositionExecutionTypes.Referent:
+                    // Референтов может быть несколько может быть н на должности за период
+                    executor = dictDb.GetPositionExecutors(context, new FilterDictionaryPositionExecutor
+                    {
+                        NotContainsIDs = new List<int> { Model.Id },
+                        PositionIDs = new List<int> { Model.PositionId },
+                        Period = new Period(Model.StartDate, Model.EndDate),
+                        PositionExecutorTypeIDs = new List<EnumPositionExecutionTypes> { (EnumPositionExecutionTypes)Model.PositionExecutorTypeId },
+                        AgentIDs = new List<int> { Model.AgentId },
+                    }).FirstOrDefault();
+
+                    if (executor != null)
+                    { throw new DictionaryPositionExecutorReferentNotUnique(executor.PositionName, executor.AgentName, executor.StartDate, executor.EndDate); }
+
                     break;
                 default:
                     executor = dictDb.GetPositionExecutors(context, new FilterDictionaryPositionExecutor
