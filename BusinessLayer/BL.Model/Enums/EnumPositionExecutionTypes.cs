@@ -3,7 +3,7 @@
     public enum EnumPositionExecutionTypes
     {
         Personal = 1,
-        Referent = 2,
-        IO =3,
+        IO =2,
+        Referent = 3,
     }
 }

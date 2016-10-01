@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using BL.Model.Common;
+using System.Collections.Generic;
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
@@ -14,9 +15,14 @@ namespace BL.Model.DictionaryCore.FilterModel
         public string Code { get; set; }
 
         /// <summary>
-        /// Оставляет только те типы, которые можно применить к текущей должности
+        /// Оставляет только те типы, которые можно применить к текущей должности за указанный период
         /// </summary>
-        public int PositionId { get; set; }
+        public int? PositionId { get; set; }
+
+        /// <summary>
+        /// Оставляет только те типы, которые можно применить к текущей должности за указанный период
+        /// </summary>
+        public Period Period { get; set; }
 
     }
 }

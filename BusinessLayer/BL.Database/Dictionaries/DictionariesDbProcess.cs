@@ -226,7 +226,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        
+
 
         public IEnumerable<FrontDictionaryAgent> GetAgents(IContext context, FilterDictionaryAgent filter, UIPaging paging)
         {
@@ -309,10 +309,11 @@ namespace BL.Database.Dictionaries
             // Поиск по наименованию
             if (!string.IsNullOrEmpty(filter.Name))
             {
-                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
-                {
-                    qry = qry.Where(x => x.Name.Contains(temp));
-                }
+                var filterContains = PredicateBuilder.False<DictionaryAgents>();
+                filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Name == value).Expand());
+
+                qry = qry.Where(filterContains);
             }
 
             // Поиск по наименованию
@@ -402,7 +403,7 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context))
             {
-              using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
+                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
                 {
                     UpdateAgentName(context, person.Id, new InternalDictionaryAgent(person));
 
@@ -622,19 +623,21 @@ namespace BL.Database.Dictionaries
             // Поиск по полному наименованию
             if (!string.IsNullOrEmpty(filter.FullName))
             {
-                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.FullName))
-                {
-                    qry = qry.Where(x => x.Agent.AgentPerson.FullName.Contains(temp));
-                }
+                var filterContains = PredicateBuilder.False<DictionaryAgentPersons>();
+                filterContains = CommonFilterUtilites.GetWhereExpressions(filter.FullName).Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.FullName == value).Expand());
+
+                qry = qry.Where(filterContains);
             }
 
             // Поиск по наименованию
             if (!string.IsNullOrEmpty(filter.Name))
             {
-                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
-                {
-                    qry = qry.Where(x => x.FullName.Contains(temp));
-                }
+                var filterContains = PredicateBuilder.False<DictionaryAgentPersons>();
+                filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Agent.Name == value).Expand());
+
+                qry = qry.Where(filterContains);
             }
 
             if (!string.IsNullOrEmpty(filter.NameExact))
@@ -655,19 +658,22 @@ namespace BL.Database.Dictionaries
             // Поиск по паспортным данным
             if (!string.IsNullOrEmpty(filter.Passport))
             {
-                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Passport))
-                {
-                    qry = qry.Where(x => (x.PassportSerial + "-" + x.PassportNumber + " " + x.PassportDate.ToString() + " " + x.PassportText).Contains(temp));
-                }
+                var filterContains = PredicateBuilder.False<DictionaryAgentPersons>();
+                filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Passport).Aggregate(filterContains,
+                    (current, value) => current.Or(e => (e.PassportSerial + "-" + e.PassportNumber + " " + e.PassportDate.ToString() + " " + e.PassportText) == value).Expand());
+
+                qry = qry.Where(filterContains);
+
             }
 
             // Поиск по ИНН
             if (!string.IsNullOrEmpty(filter.TaxCode))
             {
-                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.TaxCode))
-                {
-                    qry = qry.Where(x => x.TaxCode.Contains(temp));
-                }
+                var filterContains = PredicateBuilder.False<DictionaryAgentPersons>();
+                filterContains = CommonFilterUtilites.GetWhereExpressions(filter.TaxCode).Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.TaxCode == value).Expand());
+
+                qry = qry.Where(filterContains);
             }
 
             if (!string.IsNullOrEmpty(filter.TaxCodeExact))
@@ -885,7 +891,7 @@ namespace BL.Database.Dictionaries
                     FirstName = x.Agent.AgentPerson.FirstName,
                     LastName = x.Agent.AgentPerson.LastName,
                     MiddleName = x.Agent.AgentPerson.MiddleName,
-                    
+
                     TaxCode = x.Agent.AgentPerson.TaxCode,
                     IsMale = x.Agent.AgentPerson.IsMale,
                     PassportSerial = x.Agent.AgentPerson.PassportSerial,
@@ -962,19 +968,21 @@ namespace BL.Database.Dictionaries
             // Поиск по полному наименованию
             if (!string.IsNullOrEmpty(filter.FullName))
             {
-                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.FullName))
-                {
-                    qry = qry.Where(x => x.Agent.AgentPerson.FullName.Contains(temp));
-                }
+                var filterContains = PredicateBuilder.False<DictionaryAgentEmployees>();
+                filterContains = CommonFilterUtilites.GetWhereExpressions(filter.FullName).Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Agent.AgentPerson.FullName == value).Expand());
+
+                qry = qry.Where(filterContains);
             }
 
             // Поиск по наименованию
             if (!string.IsNullOrEmpty(filter.Name))
             {
-                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
-                {
-                    qry = qry.Where(x => x.Agent.Name.Contains(temp));
-                }
+                var filterContains = PredicateBuilder.False<DictionaryAgentEmployees>();
+                filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Agent.Name == value).Expand());
+
+                qry = qry.Where(filterContains);
             }
 
             if (!string.IsNullOrEmpty(filter.NameExact))
@@ -994,25 +1002,31 @@ namespace BL.Database.Dictionaries
 
             if (!string.IsNullOrEmpty(filter.PersonnelNumber))
             {
-                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.PersonnelNumber))
-                {
-                    qry = qry.Where(x => x.PersonnelNumber.Contains(temp));
-                }
+                var filterContains = PredicateBuilder.False<DictionaryAgentEmployees>();
+                filterContains = CommonFilterUtilites.GetWhereExpressions(filter.PersonnelNumber).Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.PersonnelNumber == value).Expand());
+
+                qry = qry.Where(filterContains);
             }
 
             if (!string.IsNullOrEmpty(filter.Passport))
             {
-                qry = qry.Where(x => (x.Agent.AgentPerson.PassportSerial + "-" + x.Agent.AgentPerson.PassportNumber + " " +
-                                      x.Agent.AgentPerson.PassportDate.ToString() + " " +
-                                      x.Agent.AgentPerson.PassportText).Contains(filter.Passport));
+                var filterContains = PredicateBuilder.False<DictionaryAgentEmployees>();
+                filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Passport).Aggregate(filterContains,
+                    (current, value) => current.Or(e => (e.Agent.AgentPerson.PassportSerial + "-" + e.Agent.AgentPerson.PassportNumber + " " +
+                                      e.Agent.AgentPerson.PassportDate.ToString() + " " +
+                                      e.Agent.AgentPerson.PassportText) == value).Expand());
+
+                qry = qry.Where(filterContains);
             }
 
             if (!string.IsNullOrEmpty(filter.TaxCode))
             {
-                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.TaxCode))
-                {
-                    qry = qry.Where(x => x.Agent.AgentPerson.TaxCode.Contains(temp));
-                }
+                var filterContains = PredicateBuilder.False<DictionaryAgentEmployees>();
+                filterContains = CommonFilterUtilites.GetWhereExpressions(filter.TaxCode).Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Agent.AgentPerson.TaxCode == value).Expand());
+
+                qry = qry.Where(filterContains);
             }
 
             if (!string.IsNullOrEmpty(filter.TaxCodeExact))
@@ -1264,10 +1278,11 @@ namespace BL.Database.Dictionaries
 
                 if (!string.IsNullOrEmpty(filter.PostCode))
                 {
-                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.PostCode))
-                    {
-                        qry = qry.Where(x => x.PostCode.Contains(temp));
-                    }
+                    var filterContains = PredicateBuilder.False<DictionaryAgentAddresses>();
+                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.PostCode).Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.PostCode == value).Expand());
+
+                    qry = qry.Where(filterContains);
                 }
 
                 if (!String.IsNullOrEmpty(filter.PostCodeExact))
@@ -1286,13 +1301,12 @@ namespace BL.Database.Dictionaries
 
                 if (!String.IsNullOrEmpty(filter.Address))
                 {
-                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Address))
-                    {
-                        qry = qry.Where(x => x.Address.Contains(temp));
-                    }
+                    var filterContains = PredicateBuilder.False<DictionaryAgentAddresses>();
+                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Address).Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Address == value).Expand());
+
+                    qry = qry.Where(filterContains);
                 }
-
-
 
                 return qry.Select(x => new FrontDictionaryAgentAddress
                 {
@@ -1441,10 +1455,11 @@ namespace BL.Database.Dictionaries
             // Поиск по наименованию
             if (!string.IsNullOrEmpty(filter.Name))
             {
-                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
-                {
-                    qry = qry.Where(x => x.Name.Contains(temp));
-                }
+                var filterContains = PredicateBuilder.False<DictionaryAddressTypes>();
+                filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Name == value).Expand());
+
+                qry = qry.Where(filterContains);
             }
 
             // Поиск по наименованию
@@ -1456,10 +1471,11 @@ namespace BL.Database.Dictionaries
             // Поиск по наименованию
             if (!string.IsNullOrEmpty(filter.Code))
             {
-                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Code))
-                {
-                    qry = qry.Where(x => x.Code.Contains(temp));
-                }
+                var filterContains = PredicateBuilder.False<DictionaryAddressTypes>();
+                filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Code).Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Code == value).Expand());
+
+                qry = qry.Where(filterContains);
             }
 
             // Поиск по наименованию
@@ -1686,10 +1702,21 @@ namespace BL.Database.Dictionaries
             // Поиск по наименованию
             if (!string.IsNullOrEmpty(filter.Name))
             {
-                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
-                {
-                    qry = qry.Where(x => x.FullName.Contains(temp));
-                }
+                var filterContains = PredicateBuilder.False<DictionaryCompanies>();
+                filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Agent.Name == value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            // Поиск по наименованию
+            if (!string.IsNullOrEmpty(filter.FullName))
+            {
+                var filterContains = PredicateBuilder.False<DictionaryCompanies>();
+                filterContains = CommonFilterUtilites.GetWhereExpressions(filter.FullName).Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.FullName == value).Expand());
+
+                qry = qry.Where(filterContains);
             }
 
             return qry;
@@ -1947,32 +1974,45 @@ namespace BL.Database.Dictionaries
             // Поиск по наименованию
             if (!string.IsNullOrEmpty(filter.Name))
             {
-                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
-                {
-                    qry = qry.Where(x => x.FullName.Contains(temp));
-                }
+                var filterContains = PredicateBuilder.False<DictionaryAgentCompanies>();
+                filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Agent.Name == value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            if (!string.IsNullOrEmpty(filter.FullName))
+            {
+                var filterContains = PredicateBuilder.False<DictionaryAgentCompanies>();
+                filterContains = CommonFilterUtilites.GetWhereExpressions(filter.FullName).Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.FullName == value).Expand());
+
+                qry = qry.Where(filterContains);
             }
 
             if (!string.IsNullOrEmpty(filter.TaxCode))
             {
-                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.TaxCode))
-                {
-                    qry = qry.Where(x => x.TaxCode.Contains(temp));
-                }
+                var filterContains = PredicateBuilder.False<DictionaryAgentCompanies>();
+                filterContains = CommonFilterUtilites.GetWhereExpressions(filter.TaxCode).Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.TaxCode == value).Expand());
+
+                qry = qry.Where(filterContains);
             }
             if (!string.IsNullOrEmpty(filter.OKPOCode))
             {
-                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.OKPOCode))
-                {
-                    qry = qry.Where(x => x.OKPOCode.Contains(temp));
-                }
+                var filterContains = PredicateBuilder.False<DictionaryAgentCompanies>();
+                filterContains = CommonFilterUtilites.GetWhereExpressions(filter.OKPOCode).Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.OKPOCode == value).Expand());
+
+                qry = qry.Where(filterContains);
             }
             if (!string.IsNullOrEmpty(filter.VATCode))
             {
-                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.VATCode))
-                {
-                    qry = qry.Where(x => x.VATCode.Contains(temp));
-                }
+                var filterContains = PredicateBuilder.False<DictionaryAgentCompanies>();
+                filterContains = CommonFilterUtilites.GetWhereExpressions(filter.VATCode).Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.VATCode == value).Expand());
+
+                qry = qry.Where(filterContains);
             }
 
             if (!string.IsNullOrEmpty(filter.TaxCodeExact))
@@ -2255,10 +2295,11 @@ namespace BL.Database.Dictionaries
             // Поиск по наименованию
             if (!string.IsNullOrEmpty(filter.Name))
             {
-                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
-                {
-                    qry = qry.Where(x => x.Agent.Name.Contains(temp));
-                }
+                var filterContains = PredicateBuilder.False<DictionaryAgentBanks>();
+                filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Agent.Name == value).Expand());
+
+                qry = qry.Where(filterContains);
             }
 
             if (!string.IsNullOrEmpty(filter.NameExact))
@@ -2268,10 +2309,11 @@ namespace BL.Database.Dictionaries
 
             if (!string.IsNullOrEmpty(filter.MFOCode))
             {
-                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.MFOCode))
-                {
-                    qry = qry.Where(x => x.MFOCode.Contains(temp));
-                }
+                var filterContains = PredicateBuilder.False<DictionaryAgentBanks>();
+                filterContains = CommonFilterUtilites.GetWhereExpressions(filter.MFOCode).Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.MFOCode == value).Expand());
+
+                qry = qry.Where(filterContains);
             }
 
             if (!string.IsNullOrEmpty(filter.MFOCodeExact))
@@ -2440,21 +2482,43 @@ namespace BL.Database.Dictionaries
 
                 qry = qry.Where(x => x.AgentId == AgentId);
 
+                // Список первичных ключей
+                if (filter.IDs?.Count > 0)
+                {
+                    // var filterContains = PredicateBuilder.False<DictionaryAgentAccounts>();
+                    // filterContains = filter.IDs.Aggregate(filterContains,
+                    //     (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    // qry = qry.Where(filterContains);
+                    qry = qry.Where(x => filter.IDs.Contains(x.Id));
+                }
+
+                // Исключение списка первичных ключей
+                if (filter.NotContainsIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<DictionaryAgentAccounts>();
+                    filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id != value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
 
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
-                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
-                    {
-                        qry = qry.Where(x => x.Name.Contains(temp));
-                    }
+                    var filterContains = PredicateBuilder.False<DictionaryAgentAccounts>();
+                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Name == value).Expand());
+
+                    qry = qry.Where(filterContains);
                 }
 
                 if (!string.IsNullOrEmpty(filter.AccountNumber))
                 {
-                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.AccountNumber))
-                    {
-                        qry = qry.Where(x => x.AccountNumber.Contains(temp));
-                    }
+                    var filterContains = PredicateBuilder.False<DictionaryAgentAccounts>();
+                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.AccountNumber).Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.AccountNumber == value).Expand());
+
+                    qry = qry.Where(filterContains);
                 }
 
                 if (!string.IsNullOrEmpty(filter.AccountNumberExact))
@@ -2522,25 +2586,25 @@ namespace BL.Database.Dictionaries
 
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
-                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
-                    {
-                        qry = qry.Where(x => x.Name.Contains(temp));
-                    }
+                    var filterContains = PredicateBuilder.False<DictionaryContactTypes>();
+                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Name == value).Expand());
+
+                    qry = qry.Where(filterContains);
                 }
 
                 if (!String.IsNullOrEmpty(filter.Code))
                 {
-                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Code))
-                    {
-                        qry = qry.Where(x => x.Code.Contains(temp));
-                    }
+                    var filterContains = PredicateBuilder.False<DictionaryContactTypes>();
+                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Code).Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Code == value).Expand());
+
+                    qry = qry.Where(filterContains);
                 }
 
                 if (!String.IsNullOrEmpty(filter.CodeExact))
                 {
-
                     qry = qry.Where(x => x.Code == filter.CodeExact);
-
                 }
 
                 if (!String.IsNullOrEmpty(filter.NameExact))
@@ -2645,17 +2709,32 @@ namespace BL.Database.Dictionaries
                 // Поиск по наименованию
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
-                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
-                    {
-                        qry = qry.Where(x => x.Name.Contains(temp));
-                    }
+                    var filterContains = PredicateBuilder.False<DictionaryContactTypes>();
+                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Name == value).Expand());
+
+                    qry = qry.Where(filterContains);
                 }
-                if (!String.IsNullOrEmpty(filter.Code))
+
+                if (!String.IsNullOrEmpty(filter.NameExact))
                 {
-
-                    qry = qry.Where(x => x.Code == filter.Code);
-
+                    qry = qry.Where(x => x.Name == filter.NameExact);
                 }
+
+                if (!string.IsNullOrEmpty(filter.Code))
+                {
+                    var filterContains = PredicateBuilder.False<DictionaryContactTypes>();
+                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Code).Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Code == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                if (!String.IsNullOrEmpty(filter.CodeExact))
+                {
+                    qry = qry.Where(x => x.Code == filter.CodeExact);
+                }
+
                 return qry.Select(x => new FrontDictionaryContactType
                 {
                     Id = x.Id,
@@ -2782,10 +2861,11 @@ namespace BL.Database.Dictionaries
 
                     string searchExpression = filter.Contact.Replace('-', ' ').Replace('(', ' ').Replace(')', ' ');
 
-                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(searchExpression))
-                    {
-                        qry = qry.Where(x => x.Contact.Contains(temp));
-                    }
+                    var filterContains = PredicateBuilder.False<DictionaryAgentContacts>();
+                    filterContains = CommonFilterUtilites.GetWhereExpressions(searchExpression).Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Contact == value).Expand());
+
+                    qry = qry.Where(filterContains);
                 }
 
                 if (!String.IsNullOrEmpty(filter.ContactExact))
@@ -3000,7 +3080,7 @@ namespace BL.Database.Dictionaries
 
             }
         }
-        
+
         public IEnumerable<FrontDictionaryDepartmentTreeItem> GetDepartmentsForTree(IContext context, FilterDictionaryDepartment filter)
         {
             using (var dbContext = new DmsContext(context))
@@ -3115,10 +3195,11 @@ namespace BL.Database.Dictionaries
             // Условие по Name
             if (!string.IsNullOrEmpty(filter.Name))
             {
-                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
-                {
-                    qry = qry.Where(x => x.Name.Contains(temp));
-                }
+                var filterContains = PredicateBuilder.False<DictionaryDepartments>();
+                filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Name == value).Expand());
+
+                qry = qry.Where(filterContains);
             }
 
             if (!string.IsNullOrEmpty(filter.NameExact))
@@ -3129,19 +3210,21 @@ namespace BL.Database.Dictionaries
             // Условие по FullName
             if (!string.IsNullOrEmpty(filter.FullName))
             {
-                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.FullName))
-                {
-                    qry = qry.Where(x => x.FullName.Contains(temp));
-                }
+                var filterContains = PredicateBuilder.False<DictionaryDepartments>();
+                filterContains = CommonFilterUtilites.GetWhereExpressions(filter.FullName).Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.FullName == value).Expand());
+
+                qry = qry.Where(filterContains);
             }
 
             // Условие по Code
             if (!string.IsNullOrEmpty(filter.Code))
             {
-                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Code))
-                {
-                    qry = qry.Where(x => x.Code.Contains(temp));
-                }
+                var filterContains = PredicateBuilder.False<DictionaryDepartments>();
+                filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Code).Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Code == value).Expand());
+
+                qry = qry.Where(filterContains);
             }
 
             // Условие по CompanyId
@@ -3381,10 +3464,11 @@ namespace BL.Database.Dictionaries
             // Поиск по наименованию
             if (!string.IsNullOrEmpty(filter.Name))
             {
-                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
-                {
-                    qry = qry.Where(x => x.Name.Contains(temp));
-                }
+                var filterContains = PredicateBuilder.False<DictionaryDocumentSubjects>();
+                filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Name == value).Expand());
+
+                qry = qry.Where(filterContains);
             }
 
             // Поиск по наименованию
@@ -3517,10 +3601,11 @@ namespace BL.Database.Dictionaries
             // Поиск по наименованию
             if (!string.IsNullOrEmpty(filter.Name))
             {
-                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
-                {
-                    qry = qry.Where(x => x.Name.Contains(temp));
-                }
+                var filterContains = PredicateBuilder.False<DictionaryDocumentTypes>();
+                filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Name == value).Expand());
+
+                qry = qry.Where(filterContains);
             }
 
             if (!string.IsNullOrEmpty(filter.NameExact))
@@ -3580,10 +3665,11 @@ namespace BL.Database.Dictionaries
                 // Поиск по наименованию
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
-                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
-                    {
-                        qry = qry.Where(x => x.Name.Contains(temp));
-                    }
+                    var filterContains = PredicateBuilder.False<DictionaryEventTypes>();
+                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Name == value).Expand());
+
+                    qry = qry.Where(filterContains);
                 }
 
                 if (filter.ImportanceEventTypeIDs?.Count > 0)
@@ -3669,10 +3755,11 @@ namespace BL.Database.Dictionaries
                 // Поиск по наименованию
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
-                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
-                    {
-                        qry = qry.Where(x => x.Name.Contains(temp));
-                    }
+                    var filterContains = PredicateBuilder.False<DictionaryImportanceEventTypes>();
+                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Name == value).Expand());
+
+                    qry = qry.Where(filterContains);
                 }
 
                 if (filter.DocumentIDs?.Count > 0)
@@ -3751,10 +3838,11 @@ namespace BL.Database.Dictionaries
                 // Поиск по наименованию
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
-                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
-                    {
-                        qry = qry.Where(x => x.Name.Contains(temp));
-                    }
+                    var filterContains = PredicateBuilder.False<DictionaryLinkTypes>();
+                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Name == value).Expand());
+
+                    qry = qry.Where(filterContains);
                 }
 
                 return qry.Select(x => new FrontDictionaryLinkType
@@ -3992,7 +4080,7 @@ namespace BL.Database.Dictionaries
                 {
                     Id = x.Id,
                     Name = x.Name,
-                    SearchText = string.Concat(x.Name , " ", x.ExecutorAgent.Name),
+                    SearchText = string.Concat(x.Name, " ", x.ExecutorAgent.Name),
                     ObjectId = (int)EnumObjects.DictionaryPositions,
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = x.DepartmentId.ToString() + "_" + parObjId,
@@ -4100,19 +4188,21 @@ namespace BL.Database.Dictionaries
             // Поиск по наименованию
             if (!string.IsNullOrEmpty(filter.Name))
             {
-                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
-                {
-                    qry = qry.Where(x => x.Name.Contains(temp));
-                }
+                var filterContains = PredicateBuilder.False<DictionaryPositions>();
+                filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Name == value).Expand());
+
+                qry = qry.Where(filterContains);
             }
 
             // Условие по полному имени
             if (!string.IsNullOrEmpty(filter.FullName))
             {
-                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.FullName))
-                {
-                    qry = qry.Where(x => x.FullName.Contains(temp));
-                }
+                var filterContains = PredicateBuilder.False<DictionaryPositions>();
+                filterContains = CommonFilterUtilites.GetWhereExpressions(filter.FullName).Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.FullName == value).Expand());
+
+                qry = qry.Where(filterContains);
             }
 
             if (filter.DocumentIDs?.Count > 0)
@@ -4385,7 +4475,7 @@ namespace BL.Database.Dictionaries
                     AgentId = x.AgentId,
                     PositionId = x.PositionId,
                     PositionExecutorTypeId = (EnumPositionExecutionTypes)x.PositionExecutorTypeId,
-                    AccessLevelId = x.AccessLevelId,
+                    AccessLevelId = (EnumAccessLevels)x.AccessLevelId,
                     Description = x.Description,
                     StartDate = x.StartDate,
                     EndDate = x.EndDate,
@@ -4421,7 +4511,7 @@ namespace BL.Database.Dictionaries
                 {
                     Id = x.Id,
                     Name = x.Agent.Name,
-                    SearchText = x.Agent.Name, 
+                    SearchText = x.Agent.Name,
                     ObjectId = (int)EnumObjects.DictionaryPositionExecutors,
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = x.PositionId.ToString() + "_" + parObjId,
@@ -4518,13 +4608,13 @@ namespace BL.Database.Dictionaries
                                 );
             }
 
-            
+
 
             if (filter.AccessLevelIDs?.Count > 0)
             {
                 var filterContains = PredicateBuilder.False<DictionaryPositionExecutors>();
                 filterContains = filter.AccessLevelIDs.Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.AccessLevelId == value).Expand());
+                    (current, value) => current.Or(e => e.AccessLevelId == (int)value).Expand());
 
                 qry = qry.Where(filterContains);
             }
@@ -4559,9 +4649,7 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context))
             {
-                var qry = dbContext.DictionaryPositionExecutorTypesSet.AsQueryable();
-
-                qry = ExecutorTypeGetWhere(ref qry, filter);
+                var qry = GetPositionExecutorTypesQuery(context, dbContext, filter);
 
                 return qry.Select(x => new FrontDictionaryPositionExecutorType
                 {
@@ -4572,6 +4660,34 @@ namespace BL.Database.Dictionaries
                 }).ToList();
             }
         }
+
+        public IQueryable<DictionaryPositionExecutorTypes> GetPositionExecutorTypesQuery(IContext context, DmsContext dbContext, FilterDictionaryPositionExecutorType filter)
+        {
+            var qry = dbContext.DictionaryPositionExecutorTypesSet.AsQueryable();
+
+            if (filter.Period?.IsActive == true && filter.PositionId != null)
+            {
+
+                // достаю всех исполнителей переданной должности в указанный срок
+                var executors = GetPositionExecutors(context, new FilterDictionaryPositionExecutor()
+                {
+                    Period = filter.Period,
+                    PositionIDs = new List<int> { filter.PositionId ?? -1 }
+                });
+
+                if (filter.NotContainsIDs == null) filter.NotContainsIDs = new List<int>();
+
+                // вычитаю Personal и IO если они уже есть
+                filter.NotContainsIDs.AddRange(executors.Where(x => x.PositionExecutorTypeId == EnumPositionExecutionTypes.Personal || x.PositionExecutorTypeId == EnumPositionExecutionTypes.IO).Select(x => (int)x.PositionExecutorTypeId));
+
+            }
+
+            qry = ExecutorTypeGetWhere(ref qry, filter);
+
+            return qry;
+        }
+
+
 
         private static IQueryable<DictionaryPositionExecutorTypes> ExecutorTypeGetWhere(ref IQueryable<DictionaryPositionExecutorTypes> qry, FilterDictionaryPositionExecutorType filter)
         {
@@ -4588,11 +4704,21 @@ namespace BL.Database.Dictionaries
             // Исключение списка первичных ключей
             if (filter.NotContainsIDs?.Count > 0)
             {
-                var filterContains = PredicateBuilder.False<DictionaryPositionExecutorTypes>();
-                filterContains = filter.NotContainsIDs.Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.Id != value).Expand());
 
-                qry = qry.Where(filterContains);
+                // TODO !!!!  NotContainsIDs НЕ работает для нескольких значений !!!!
+                // WHERE (([Extent1].[Id] <> @p__linq__0) OR ([Extent1].[Id] <> @p__linq__1))
+                // вместо
+                // ( NOT ([Extent1].[Id] IN (@p__linq__0, @p__linq__1)))
+
+                //var filterContains = PredicateBuilder.False<DictionaryPositionExecutorTypes>();
+
+                //filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                //    (current, value) => current.Or(e => e.Id == value).Expand());
+
+                //qry = qry.Where(filterContains);
+
+                qry = qry.Where(x => !filter.NotContainsIDs.Contains(x.Id));
+
             }
 
             // Тоько активные/неактивные
@@ -4604,19 +4730,21 @@ namespace BL.Database.Dictionaries
             // Поиск по наименованию
             if (!string.IsNullOrEmpty(filter.Name))
             {
-                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
-                {
-                    qry = qry.Where(x => x.Name.Contains(temp));
-                }
+                var filterContains = PredicateBuilder.False<DictionaryPositionExecutorTypes>();
+                filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Name == value).Expand());
+
+                qry = qry.Where(filterContains);
             }
 
             // Поиск по наименованию
             if (!string.IsNullOrEmpty(filter.Code))
             {
-                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Code))
-                {
-                    qry = qry.Where(x => x.Code.Contains(temp));
-                }
+                var filterContains = PredicateBuilder.False<DictionaryPositionExecutorTypes>();
+                filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Code).Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Code == value).Expand());
+
+                qry = qry.Where(filterContains);
             }
 
             return qry;
@@ -4764,10 +4892,11 @@ namespace BL.Database.Dictionaries
             // Поиск по наименованию
             if (!string.IsNullOrEmpty(filter.Name))
             {
-                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
-                {
-                    qry = qry.Where(x => x.Name.Contains(temp));
-                }
+                var filterContains = PredicateBuilder.False<DictionaryRegistrationJournals>();
+                filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Name == value).Expand());
+
+                qry = qry.Where(filterContains);
             }
 
             if (!string.IsNullOrEmpty(filter.NameExact))
@@ -4778,10 +4907,11 @@ namespace BL.Database.Dictionaries
             // Условие по Index
             if (!string.IsNullOrEmpty(filter.Index))
             {
-                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Index))
-                {
-                    qry = qry.Where(x => x.Index.Contains(temp));
-                }
+                var filterContains = PredicateBuilder.False<DictionaryRegistrationJournals>();
+                filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Index).Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Index == value).Expand());
+
+                qry = qry.Where(filterContains);
             }
 
             if (!string.IsNullOrEmpty(filter.IndexExact))
@@ -4879,10 +5009,11 @@ namespace BL.Database.Dictionaries
                 // Поиск по наименованию
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
-                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
-                    {
-                        qry = qry.Where(x => x.Name.Contains(temp));
-                    }
+                    var filterContains = PredicateBuilder.False<DictionaryResultTypes>();
+                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Name == value).Expand());
+
+                    qry = qry.Where(filterContains);
                 }
 
                 return qry.Select(x => new FrontDictionaryResultType
@@ -4945,10 +5076,11 @@ namespace BL.Database.Dictionaries
                 // Поиск по наименованию
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
-                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
-                    {
-                        qry = qry.Where(x => x.Name.Contains(temp));
-                    }
+                    var filterContains = PredicateBuilder.False<DictionarySendTypes>();
+                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Name == value).Expand());
+
+                    qry = qry.Where(filterContains);
                 }
 
                 return qry.Select(x => new FrontDictionarySendType
@@ -5046,27 +5178,29 @@ namespace BL.Database.Dictionaries
 
                 if (!string.IsNullOrEmpty(filter.SendTypeName))
                 {
+                    var filterContains = PredicateBuilder.False<DictionaryStandartSendListContents>();
+                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.SendTypeName).Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.SendType.Name == value).Expand());
 
-                    foreach (string str in CommonFilterUtilites.GetWhereExpressions(filter.SendTypeName))
-                    {
-                        qry = qry.Where(x => x.SendType.Name.Contains(str));
-                    }
+                    qry = qry.Where(filterContains);
                 }
 
                 if (!string.IsNullOrEmpty(filter.TargetPositionName))
                 {
-                    foreach (string str in CommonFilterUtilites.GetWhereExpressions(filter.TargetPositionName))
-                    {
-                        qry = qry.Where(x => x.TargetPosition.Name.Contains(str));
-                    }
+                    var filterContains = PredicateBuilder.False<DictionaryStandartSendListContents>();
+                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.TargetPositionName).Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.TargetPosition.Name == value).Expand());
+
+                    qry = qry.Where(filterContains);
                 }
 
                 if (!string.IsNullOrEmpty(filter.TargetAgentName))
                 {
-                    foreach (string str in CommonFilterUtilites.GetWhereExpressions(filter.TargetAgentName))
-                    {
-                        qry = qry.Where(x => x.TargetAgent.Name.Contains(str));
-                    }
+                    var filterContains = PredicateBuilder.False<DictionaryStandartSendListContents>();
+                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.TargetAgentName).Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.TargetAgent.Name == value).Expand());
+
+                    qry = qry.Where(filterContains);
                 }
 
 
@@ -5200,10 +5334,11 @@ namespace BL.Database.Dictionaries
                 // Поиск по наименованию
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
-                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
-                    {
-                        qry = qry.Where(x => x.Name.Contains(temp));
-                    }
+                    var filterContains = PredicateBuilder.False<DictionaryStandartSendLists>();
+                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Name == value).Expand());
+
+                    qry = qry.Where(filterContains);
                 }
 
                 if (!string.IsNullOrEmpty(filter.NameExact))
@@ -5342,10 +5477,11 @@ namespace BL.Database.Dictionaries
                 // Поиск по наименованию
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
-                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
-                    {
-                        qry = qry.Where(x => x.Name.Contains(temp));
-                    }
+                    var filterContains = PredicateBuilder.False<DictionarySubordinationTypes>();
+                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Name == value).Expand());
+
+                    qry = qry.Where(filterContains);
                 }
 
                 return qry.Select(x => new FrontDictionarySubordinationType
@@ -5632,10 +5768,11 @@ namespace BL.Database.Dictionaries
 
                     if (!string.IsNullOrEmpty(filter.Code))
                     {
-                        foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Code))
-                        {
-                            qry = qry.Where(x => x.Code.Contains(temp));
-                        }
+                        var filterContains = PredicateBuilder.False<CustomDictionaryTypes>();
+                        filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Code).Aggregate(filterContains,
+                            (current, value) => current.Or(e => e.Code == value).Expand());
+
+                        qry = qry.Where(filterContains);
                     }
 
                     if (!string.IsNullOrEmpty(filter.CodeExact))
@@ -5716,10 +5853,11 @@ namespace BL.Database.Dictionaries
                 // Поиск но Code
                 if (!string.IsNullOrEmpty(filter.Code))
                 {
-                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Code))
-                    {
-                        qry = qry.Where(x => x.Code.Contains(temp));
-                    }
+                    var filterContains = PredicateBuilder.False<CustomDictionaryTypes>();
+                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Code).Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Code == value).Expand());
+
+                    qry = qry.Where(filterContains);
                 }
 
                 var items = qry.Select(x => new FrontCustomDictionaryType
@@ -5792,10 +5930,11 @@ namespace BL.Database.Dictionaries
 
                     if (!string.IsNullOrEmpty(filter.Code))
                     {
-                        foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Code))
-                        {
-                            qry = qry.Where(x => x.Code.Contains(temp));
-                        }
+                        var filterContains = PredicateBuilder.False<CustomDictionaries>();
+                        filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Code).Aggregate(filterContains,
+                            (current, value) => current.Or(e => e.Code == value).Expand());
+
+                        qry = qry.Where(filterContains);
                     }
 
                     if (!string.IsNullOrEmpty(filter.CodeExact))
@@ -5874,10 +6013,11 @@ namespace BL.Database.Dictionaries
                 // Поиск по Code
                 if (!string.IsNullOrEmpty(filter.Code))
                 {
-                    foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Code))
-                    {
-                        qry = qry.Where(x => x.Code.Contains(temp));
-                    }
+                    var filterContains = PredicateBuilder.False<CustomDictionaries>();
+                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Code).Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Code == value).Expand());
+
+                    qry = qry.Where(filterContains);
                 }
 
                 var items = qry.Select(x => new FrontCustomDictionary

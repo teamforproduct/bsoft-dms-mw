@@ -20,7 +20,7 @@ namespace BL.Model.DictionaryCore.InternalModel
             AgentId = model.AgentId;
             PositionId = model.PositionId;
             PositionExecutorTypeId = (int)model.PositionExecutorTypeId;
-            AccessLevelId = model.AccessLevelId;
+            AccessLevelId = (int)model.AccessLevelId;
             Description = model.Description;
             StartDate = model.StartDate;
             EndDate = model.EndDate;

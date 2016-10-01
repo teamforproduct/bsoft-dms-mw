@@ -529,9 +529,9 @@ namespace BL.Database.DatabaseContext
         {
             var items = new List<AdminAccessLevels>();
 
-            items.Add(new AdminAccessLevels { Id = 10, Code = null, Name = "Только лично", LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now });
-            items.Add(new AdminAccessLevels { Id = 20, Code = null, Name = "Лично+референты", LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now });
-            items.Add(new AdminAccessLevels { Id = 30, Code = null, Name = "Лично+референты+ИО", LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now });
+            items.Add(new AdminAccessLevels { Id = (int)EnumAccessLevels.Personally, Code = null, Name = "Только лично", LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now });
+            items.Add(new AdminAccessLevels { Id = (int)EnumAccessLevels.PersonallyAndReferents, Code = null, Name = "Лично+референты", LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now });
+            items.Add(new AdminAccessLevels { Id = (int)EnumAccessLevels.PersonallyAndIOAndReferents, Code = null, Name = "Лично+ИО+референты", LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now });
 
             return items;
         }

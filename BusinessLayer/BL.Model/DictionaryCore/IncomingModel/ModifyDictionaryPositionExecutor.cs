@@ -49,7 +49,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// При создании документов всегда указывается уровень доступа для ио и референтов
         /// </summary>
         [Required]
-        public int AccessLevelId { get; set; }
+        public EnumAccessLevels AccessLevelId { get; set; }
 
         /// <summary>
         /// Описание

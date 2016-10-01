@@ -27,10 +27,7 @@ namespace BL.Model.DictionaryCore.FilterModel
         public Period Period { get; set; }
 
         /// <summary>
-        /// Тип исполнения: 
-        /// 1 - Назначен на должность;
-        /// 2 - Исполяет обязанности;
-        /// 3 - Является референтом;
+        /// Тип исполнения
         /// </summary>
         public List<EnumPositionExecutionTypes>  PositionExecutorTypeIDs { get; set; }
 
@@ -38,7 +35,7 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// Уровень доступа к документам: лично, референт, ио
         /// При создании документов всегда указывается уровень доступа для ио и референтов
         /// </summary>
-        public List<int> AccessLevelIDs { get; set; }
+        public List<EnumAccessLevels> AccessLevelIDs { get; set; }
 
     }
 }
