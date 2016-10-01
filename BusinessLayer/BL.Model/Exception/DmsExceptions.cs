@@ -79,6 +79,12 @@ namespace BL.Model.Exception
         public ClientNameAlreadyExists() : base(_MESSAGE) { }
         public ClientNameAlreadyExists(System.Exception ex) : base(_MESSAGE, ex) { }
     }
+    public class ClientCodeAlreadyExists : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:ClientCodeAlreadyExists@l##";
+        public ClientCodeAlreadyExists(string Code) : base(_MESSAGE) { Parameters = new List<string> { Code }; }
+        public ClientCodeAlreadyExists(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
 
     /// <summary>
     /// Сообщение при проверке проверочного кода клиента

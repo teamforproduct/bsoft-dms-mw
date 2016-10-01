@@ -4485,6 +4485,15 @@ namespace BL.Database.Dictionaries
                 qry = qry.Where(filterContains);
             }
 
+            if (filter.AgentIDs?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.False<DictionaryPositionExecutors>();
+                filterContains = filter.AgentIDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.AgentId == value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
             if (filter.PositionExecutorTypeIDs?.Count > 0)
             {
                 var filterContains = PredicateBuilder.False<DictionaryPositionExecutors>();

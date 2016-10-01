@@ -342,7 +342,7 @@ namespace BL.Logic.AdminCore
 
                 GetCheckCount((List<TreeItem>)child.Childs, out allCount, out infCount, out excCount, out infGr, out excGr);
 
-                if (excGr) { child.IsExecution = 2; }
+                if (infGr) { child.IsExecution = 2; }
                 else { child.IsExecution = (allCount == excCount) ? 1 : (excCount == 0) ? 0 : 2; }
 
                 if (infGr) { child.IsInforming = 2; }
