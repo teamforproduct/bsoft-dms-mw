@@ -15,6 +15,7 @@
         public static string FULLTEXT_WAS_INITIALIZED = "FULLTEXTSEARCH_WAS_INITIALIZED";
 
         public static string FILE_STORE_PATH = "IRF_DMS_FILESTORE_PATH";
+        public static string FILE_STORE_PATH_TMP = "Temp";
         public static string FILE_STORE_DEFAULT_PATH = @"d:\IRF_DMS_FILESTORE";
         public static string FILE_STORE_DOCUMENT_FOLDER = @"DOCUMENT";
         public static string FILE_STORE_TEMPLATE_FOLDER = @"TEMPLATE";

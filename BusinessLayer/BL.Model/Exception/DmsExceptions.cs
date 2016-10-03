@@ -570,7 +570,7 @@ namespace BL.Model.Exception
     public class DictionaryAgentAddressNameNotUnique : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:DictionaryAgentAddressNameNotUnique@l##";
-        public DictionaryAgentAddressNameNotUnique(string PostCode, string Address) : base(_MESSAGE) { Parameters = new List<string> { PostCode, Address}; }
+        public DictionaryAgentAddressNameNotUnique(string PostCode, string Address) : base(_MESSAGE) { Parameters = new List<string> { PostCode, Address }; }
         public DictionaryAgentAddressNameNotUnique(System.Exception ex) : base(_MESSAGE, ex) { }
     }
 
@@ -581,7 +581,7 @@ namespace BL.Model.Exception
     {
         private const string _MESSAGE = "##l@DmsExceptions:DictionaryAgentContactNotUnique@l##";
         public DictionaryAgentContactNotUnique(string value) : base(_MESSAGE) { Parameters = new List<string> { value }; }
-        public DictionaryAgentContactNotUnique(System.Exception ex) : base(_MESSAGE, ex) { } 
+        public DictionaryAgentContactNotUnique(System.Exception ex) : base(_MESSAGE, ex) { }
     }
 
     public class DictionaryAgentContactTypeNotUnique : DmsExceptions
@@ -657,7 +657,7 @@ namespace BL.Model.Exception
     public class DictionaryAgentCompanyTaxCodeNotUnique : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:DictionaryAgentCompanyTaxCodeNotUnique@l##";
-        public DictionaryAgentCompanyTaxCodeNotUnique(string Name, string TaxCode) : base(_MESSAGE) { Parameters = new List<string> { Name, TaxCode}; }
+        public DictionaryAgentCompanyTaxCodeNotUnique(string Name, string TaxCode) : base(_MESSAGE) { Parameters = new List<string> { Name, TaxCode }; }
         public DictionaryAgentCompanyTaxCodeNotUnique(System.Exception ex) : base(_MESSAGE, ex) { }
     }
 
@@ -731,7 +731,7 @@ namespace BL.Model.Exception
     {
         private const string _MESSAGE = "##l@DmsExceptions:DictionaryPositionExecutorNotUnique@l##";
         public DictionaryPositionExecutorNotUnique(string AgentName, DateTime StartDate, DateTime EndDate) : base(_MESSAGE)
-        { Parameters = new List<string> { AgentName, StartDate.ToString() , EndDate.ToString() }; }
+        { Parameters = new List<string> { AgentName, StartDate.ToString(), EndDate.ToString() }; }
         public DictionaryPositionExecutorNotUnique(System.Exception ex) : base(_MESSAGE, ex) { }
     }
     public class DictionaryRegistrationJournalNotUnique : DmsExceptions
@@ -832,6 +832,14 @@ namespace BL.Model.Exception
         public EncryptionCertificateWasNotFound() : base(_MESSAGE) { }
         public EncryptionCertificateWasNotFound(System.Exception ex) : base(_MESSAGE, ex) { }
     }
+
+    public class EncryptionCertificateDigitalSignatureFailed : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:EncryptionCertificateDigitalSignatureFailed@l##";
+        public EncryptionCertificateDigitalSignatureFailed() : base(_MESSAGE) { }
+        public EncryptionCertificateDigitalSignatureFailed(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
+
     public class EncryptionCertificateHasExpired : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:EncryptionCertificateHasExpired@l##";

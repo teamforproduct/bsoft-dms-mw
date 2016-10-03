@@ -1941,7 +1941,12 @@ namespace BL.Database.Common
                 SendEventId = x.SendEventId,
                 SubscriptionStates = (EnumSubscriptionStates)x.SubscriptionStateId,
                 Hash = x.Hash,
-                FullHash = x.FullHash
+                FullHash = x.FullHash,
+                SigningType = (EnumSigningTypes)x.SigningTypeId,
+                CertificateId = x.CertificateId,
+                CertificateSign = x.CertificateSign,
+                InternalSign = x.InternalSign,
+
             }).ToList();
 
             return subscriptions;
@@ -2817,6 +2822,9 @@ namespace BL.Database.Common
                             sendList.LastChangeUserId = ctx.CurrentAgentId;
                             sendList.LastChangeDate = DateTime.Now;
                         }
+
+                        dbContext.SaveChanges();
+
                         //TODO проверить поля
                         //var eventDb = new DocumentEvents
                         //{
@@ -2913,7 +2921,7 @@ namespace BL.Database.Common
                 throw new Model.Exception.DocumentNotFoundOrUserHasNoAccess();
             }
 
-            doc.RegistrationFullNumber = GetRegistrationFullNumber(doc); 
+            doc.RegistrationFullNumber = GetRegistrationFullNumber(doc);
 
             doc.DocumentFiles = CommonQueries.GetInternalDocumentFiles(ctx, dbContext, documentId).Where(x => x.Type != EnumFileTypes.SubscribePdf).ToList();
 
@@ -3088,6 +3096,10 @@ namespace BL.Database.Common
             }
             catch { }
 
+            var executorPositionExecutorAgentId = dbContext.DictionaryPositionsSet.Where(x => x.Id == positionId).Select(x => x.ExecutorAgentId).FirstOrDefault().GetValueOrDefault();
+            if (executorPositionExecutorAgentId == 0)
+                executorPositionExecutorAgentId = ctx.CurrentAgentId;
+
             var att = new InternalDocumentAttachedFile
             {
                 DocumentId = doc.Id,
@@ -3104,7 +3116,7 @@ namespace BL.Database.Common
 
                 WasChangedExternal = false,
                 ExecutorPositionId = positionId,
-                ExecutorPositionExecutorAgentId = dbContext.DictionaryPositionsSet.Where(x => x.Id == positionId).Select(x => x.ExecutorAgentId).FirstOrDefault().GetValueOrDefault()
+                ExecutorPositionExecutorAgentId = executorPositionExecutorAgentId
             };
 
             var operationDb = DmsResolver.Current.Get<IDocumentFileDbProcess>();

@@ -8,6 +8,28 @@ namespace BL.CrossCutting.Helpers
 {
     public class Logger
     {
+        public static void SaveToFile2(string text)
+        {
+            try
+            {
+                System.IO.StreamWriter sw = System.IO.File.AppendText(System.Web.HttpContext.Current.Server.MapPath("~/SiteLog.txt"));
+                try
+                {
+                    string line = $"{System.DateTime.Now.ToString("o")};{text};";
+                    sw.WriteLine(line);
+                }
+                catch
+                {
+                }
+                finally
+                {
+                    sw.Close();
+                }
+            }
+            catch
+            {
+            }
+        }
         public static void SaveToFile(string method, TimeSpan elapsed)
         {
             SaveToFile(method, String.Format("{0:0.00000000}", elapsed.TotalSeconds));
