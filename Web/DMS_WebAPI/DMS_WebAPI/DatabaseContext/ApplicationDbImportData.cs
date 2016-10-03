@@ -133,6 +133,7 @@ namespace DMS_WebAPI.Models
             AddALV(list, "##l@DmsExceptions:CannotSaveFile@l##", "Error when save user file!", "Ошибка при сохранения файла пользователя!");
             AddALV(list, "##l@DmsExceptions:ClientIsNotFound@l##", "Client not found", "Клиент не найден");
             AddALV(list, "##l@DmsExceptions:ClientNameAlreadyExists@l##", "Client Name already exists", "Имя клиента уже существует");
+            AddALV(list, "##l@DmsExceptions:ClientCodeAlreadyExists@l##", "Domain \"{0}\" already exists", "Доменное имя \"{0}\" уже занято");
             AddALV(list, "##l@DmsExceptions:ClientVerificationCodeIncorrect@l##", "Verification code is invalid", "Проверочный код неверен");
             AddALV(list, "##l@DmsExceptions:CommandNotDefinedError@l##", "The desired command for \"{0}\" not found", "Команда для \"{0}\" не найдена");
             AddALV(list, "##l@DmsExceptions:CouldNotChangeAttributeLaunchPlan@l##", "Couldn\"t change attribute LaunchPlan", "Невозможно изменить атрибут LaunchPlan");
@@ -176,7 +177,10 @@ namespace DMS_WebAPI.Models
             AddALV(list, "##l@DmsExceptions:DictionaryDepartmentNameNotUnique@l##", "", "");
             AddALV(list, "##l@DmsExceptions:DictionaryDocumentSubjectNameNotUnique@l##", "", "");
             AddALV(list, "##l@DmsExceptions:DictionaryDocumentTypeNameNotUnique@l##", "", "");
-            AddALV(list, "##l@DmsExceptions:DictionaryPositionExecutorNotUnique@l##", "", "");
+            AddALV(list, "##l@DmsExceptions:DictionaryPositionExecutorNotUnique@l##", "", "Сотрудник \"{1}\" не может быть назначен на должность повторно \"{0}\" c {2} по {3}");
+            AddALV(list, "##l@DmsExceptions:DictionaryPositionExecutorPersonalNotUnique@l##", "", "На должность \"{0}\" штатно назначен \"{1}\" c {2} по {3}");
+            AddALV(list, "##l@DmsExceptions:DictionaryPositionExecutorIONotUnique@l##", "", "На должность \"{0}\" назначен исполняющий обязанности \"{1}\" c {2} по {3}");
+            AddALV(list, "##l@DmsExceptions:DictionaryPositionExecutorReferentNotUnique@l##", "", "На должность \"{0}\" назначен референт \"{1}\" c {2} по {3}");
             AddALV(list, "##l@DmsExceptions:DictionaryRegistrationJournalNotUnique@l##", "", "");
             AddALV(list, "##l@DmsExceptions:DictionaryStandartSendListNotUnique@l##", "", "");
             AddALV(list, "##l@DmsExceptions:DictionaryStandartSendListContentNotUnique@l##", "", "");
@@ -230,17 +234,18 @@ namespace DMS_WebAPI.Models
 
             //pss 23.09.2016 Выявил DmsExceptions которые не имели перевода 
             //TODO Требуется локализация (перевод ошибок)
-            AddALV(list, "##l@DmsExceptions:ControlerHasAlreadyBeenDefined@l##", "", "");
+            AddALV(list, "##l@DmsExceptions:ControlerHasAlreadyBeenDefined@l##", "Controler Has Already Been Defined", "Контролер уже определен");
             AddALV(list, "##l@DmsExceptions:CouldNotModifyTemplateDocument@l##", "", "");
-            AddALV(list, "##l@DmsExceptions:CouldNotPerformOperationWithPaper@l##", "", "");
-            AddALV(list, "##l@DmsExceptions:EncryptionCertificateHasExpired@l##", "", "");
-            AddALV(list, "##l@DmsExceptions:NobodyIsChosen@l##", "", "");
-            AddALV(list, "##l@DmsExceptions:ResponsibleExecutorHasAlreadyBeenDefined@l##", "", "");
-            AddALV(list, "##l@DmsExceptions:ResponsibleExecutorIsNotDefined@l##", "", "");
-            AddALV(list, "##l@DmsExceptions:SigningTypeNotAllowed@l##", "", "");
-            AddALV(list, "##l@DmsExceptions:SubordinationHasBeenViolated@l##", "", "");
-            AddALV(list, "##l@DmsExceptions:TargetIsNotDefined@l##", "", "");
-            AddALV(list, "##l@DmsExceptions:TaskIsNotDefined@l##", "", "");
+            AddALV(list, "##l@DmsExceptions:CouldNotPerformOperationWithPaper@l##", "Could Not Perform Operation With Paper", "Невозможно осуществить операцию с бумажными носителями");
+            AddALV(list, "##l@DmsExceptions:EncryptionCertificateHasExpired@l##", "Encryption Certificate Has Been Expired", "Сертификат просрочен");
+            AddALV(list, "##l@DmsExceptions:NobodyIsChosen@l##", "NobodyIsChosen", "Никто не выбран");
+            AddALV(list, "##l@DmsExceptions:ResponsibleExecutorHasAlreadyBeenDefined@l##", "Responsible Executor Has Already Been Defined", "Ответственный исполнитель уже определен");
+            AddALV(list, "##l@DmsExceptions:ResponsibleExecutorIsNotDefined@l##", "Responsible Executor Is Not Defined", "Ответственный исполнитель не определен");
+            AddALV(list, "##l@DmsExceptions:SigningTypeNotAllowed@l##", "Signing Type Is Not Allowed", "Недопустимый тип подписи");
+            AddALV(list, "##l@DmsExceptions:SubordinationHasBeenViolated@l##", "Subordination Has Been Violated", "Нарушена субординация");
+            AddALV(list, "##l@DmsExceptions:TargetIsNotDefined@l##", "Target Is Not Defined", "Получатель не определен");
+            AddALV(list, "##l@DmsExceptions:TaskIsNotDefined@l##", "Task Is Not Defined", "Задача не определена");
+            AddALV(list, "##l@DmsExceptions:ContriolHasNotBeenChanged@l##", "Contriol Has Not Been Changed", "Параметры контроля не изменены");
 
             // после добавления переводов можно обновить их в базе api/v2/Languages/RefreshLanguageValues
 

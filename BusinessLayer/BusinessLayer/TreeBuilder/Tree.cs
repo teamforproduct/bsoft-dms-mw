@@ -108,7 +108,8 @@ namespace BL.Logic.TreeBuilder
 
                 foreach (var item in tree)
                 {
-                    if (item.Name.ToLower().ContainsArray(arr))
+                    // Поиск присходит по специальному полю для поиска
+                    if (item.SearchText.ToLower().ContainsArray(arr))
                     {
                         safeList.AddRange(item.Path.Split('/'));
                     }

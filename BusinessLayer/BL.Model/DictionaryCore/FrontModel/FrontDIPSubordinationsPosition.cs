@@ -11,23 +11,13 @@ namespace BL.Model.DictionaryCore.FrontModel
     /// 
     /// </summary>
     // 
-    public class FrontDictionaryPositionTreeItem: TreeItem
+    public class FrontDIPSubordinationsPosition: FrontDIPSubordinationsBase
     {
   
         /// <summary>
         /// Сотрудник на должности
         /// </summary>
         public string ExecutorName { get; set; }
-
-        /// <summary>
-        /// Для сведения
-        /// </summary>
-        public int? IsInforming { get; set; }
-
-        /// <summary>
-        /// Для исполнения
-        /// </summary>
-        public int? IsExecution { get; set; }
 
         /// <summary>
         /// Руководитель

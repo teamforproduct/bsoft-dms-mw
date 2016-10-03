@@ -143,7 +143,10 @@
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentAccount.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentBank.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentCompany.cs" />
-    <Compile Include="DictionaryCore\FrontModel\FrontDictionaryPositionTreeItem.cs" />
+    <Compile Include="DictionaryCore\FrontModel\FrontDIPSubordinationsClientCompany.cs" />
+    <Compile Include="DictionaryCore\FrontModel\FrontDIPSubordinationsDepartment.cs" />
+    <Compile Include="DictionaryCore\FrontModel\FrontDIPSubordinationsBase.cs" />
+    <Compile Include="DictionaryCore\FrontModel\FrontDIPSubordinationsPosition.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryDepartmentTreeItem.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryDepartment.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentClientCompany.cs" />
@@ -347,6 +350,7 @@
     <Compile Include="DocumentCore\InternalModel\InternalDocumentWait.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalTemplateDocumentTask.cs" />
     <Compile Include="Enums\EnumAdminActions.cs" />
+    <Compile Include="Enums\EnumAccessLevels.cs" />
     <Compile Include="Enums\EnumSigningTypes.cs" />
     <Compile Include="Enums\EnumFileTypes.cs" />
     <Compile Include="Enums\EnumEncryptionActions.cs" />
@@ -355,6 +359,7 @@
     <Compile Include="Enums\EnumReportTypes.cs" />
     <Compile Include="Enums\EnumSort.cs" />
     <Compile Include="Enums\EnumCopyMode.cs" />
+    <Compile Include="Enums\EnumPositionExecutionTypes.cs" />
     <Compile Include="Enums\EnumSystemPositions.cs" />
     <Compile Include="Enums\EnumSystemUsers.cs" />
     <Compile Include="Enums\EnumContactTypes.cs" />

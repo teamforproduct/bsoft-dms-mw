@@ -5,6 +5,6 @@
     /// </summary>
     public class FilterDictionaryAgentClientCompany : DictionaryBaseFilterParameters
     {
- 
+        public string FullName { get; set; }
     }
 }

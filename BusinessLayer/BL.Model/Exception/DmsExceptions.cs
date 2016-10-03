@@ -79,6 +79,12 @@ namespace BL.Model.Exception
         public ClientNameAlreadyExists() : base(_MESSAGE) { }
         public ClientNameAlreadyExists(System.Exception ex) : base(_MESSAGE, ex) { }
     }
+    public class ClientCodeAlreadyExists : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:ClientCodeAlreadyExists@l##";
+        public ClientCodeAlreadyExists(string Code) : base(_MESSAGE) { Parameters = new List<string> { Code }; }
+        public ClientCodeAlreadyExists(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
 
     /// <summary>
     /// Сообщение при проверке проверочного кода клиента
@@ -728,12 +734,38 @@ namespace BL.Model.Exception
     }
 
     public class DictionaryPositionExecutorNotUnique : DmsExceptions
-    {
+    {//Сотрудник \"{1}\" не может быть назначен на должность повторно \"{0}\" c {2} по {3}
         private const string _MESSAGE = "##l@DmsExceptions:DictionaryPositionExecutorNotUnique@l##";
-        public DictionaryPositionExecutorNotUnique(string AgentName, DateTime StartDate, DateTime EndDate) : base(_MESSAGE)
-        { Parameters = new List<string> { AgentName, StartDate.ToString(), EndDate.ToString() }; }
+        public DictionaryPositionExecutorNotUnique(string PositionName, string AgentName, DateTime StartDate, DateTime EndDate) : base(_MESSAGE)
+        { Parameters = new List<string> { PositionName, AgentName, StartDate.ToString(), EndDate.ToString() }; }
         public DictionaryPositionExecutorNotUnique(System.Exception ex) : base(_MESSAGE, ex) { }
     }
+
+    public class DictionaryPositionExecutorPersonalNotUnique : DmsExceptions
+    {//На должность \"{0}\" штатно назначен \"{1}\" c {2} по {3}
+        private const string _MESSAGE = "##l@DmsExceptions:DictionaryPositionExecutorPersonalNotUnique@l##";
+        public DictionaryPositionExecutorPersonalNotUnique(string PositionName, string AgentName, DateTime StartDate, DateTime EndDate) : base(_MESSAGE)
+        { Parameters = new List<string> { PositionName, AgentName, StartDate.ToString(), EndDate.ToString() }; }
+        public DictionaryPositionExecutorPersonalNotUnique(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
+
+    public class DictionaryPositionExecutorIONotUnique : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:DictionaryPositionExecutorIONotUnique@l##";
+        public DictionaryPositionExecutorIONotUnique(string PositionName, string AgentName, DateTime StartDate, DateTime EndDate) : base(_MESSAGE)
+        { Parameters = new List<string> { PositionName, AgentName, StartDate.ToString(), EndDate.ToString() }; }
+        public DictionaryPositionExecutorIONotUnique(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
+
+    public class DictionaryPositionExecutorReferentNotUnique : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:DictionaryPositionExecutorReferentNotUnique@l##";
+        public DictionaryPositionExecutorReferentNotUnique(string PositionName, string AgentName, DateTime StartDate, DateTime EndDate) : base(_MESSAGE)
+        { Parameters = new List<string> { PositionName, AgentName, StartDate.ToString(), EndDate.ToString() }; }
+        public DictionaryPositionExecutorReferentNotUnique(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
+
+
     public class DictionaryRegistrationJournalNotUnique : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:DictionaryRegistrationJournalNotUnique@l##";

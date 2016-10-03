@@ -27,6 +27,7 @@ namespace DMS_WebAPI.Results
         string _msg;
         object _meta;
         UIPaging _paging;
+        string _spentTime; // время выполнения запроса
 
         public UIPaging Paging { set { _paging = value; } }
 
@@ -38,7 +39,14 @@ namespace DMS_WebAPI.Results
             _msg = string.Empty;
             _meta = null;
             _paging = null;
+            _spentTime = null;
         }
+
+        public JsonResult(object data, ApiController controller, TimeSpan SpentTime) : this(data, controller)
+        {
+            SetSpentTime(SpentTime);
+        }
+
         public JsonResult(object data, object meta, ApiController controller) : this(data, controller)
         {
             _meta = meta;
@@ -69,7 +77,7 @@ namespace DMS_WebAPI.Results
         }
         public Task<HttpResponseMessage> ExecuteAsync(CancellationToken cancellationToken)
         {
-            var json = JsonConvert.SerializeObject(new { success = _success, data = _data, msg = _msg, meta = _meta, paging = _paging }, GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings);
+            var json = JsonConvert.SerializeObject(new { success = _success, data = _data, msg = _msg, meta = _meta, paging = _paging, spentTime = _spentTime }, GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings);
 
             var languageService = DmsResolver.Current.Get<Languages>();
 
@@ -79,6 +87,12 @@ namespace DMS_WebAPI.Results
             response.Content = new StringContent(json, Encoding.UTF8, "application/json");
 
             return Task.FromResult(response);
+        }
+
+        private void SetSpentTime(TimeSpan SpentTime)
+        {
+            _spentTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
+        SpentTime.Hours, SpentTime.Minutes, SpentTime.Seconds, SpentTime.Milliseconds / 10);
         }
     }
 }

@@ -116,7 +116,7 @@ namespace BL.Logic.ClientCore
                 FirstName = client.Name,
                 LastName = client.LastName,
                 Login = client.Email,
-                PasswordHash = client.PasswordHash,
+                //PasswordHash = client.PasswordHash,
                 IsActive = true,
                 LanguageId = client.LanguageId
             });

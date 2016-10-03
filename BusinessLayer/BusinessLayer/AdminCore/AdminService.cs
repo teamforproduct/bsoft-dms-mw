@@ -242,7 +242,7 @@ namespace BL.Logic.AdminCore
                 //        });
                 //}
 
-                positions = _dictDb.GetPositionsForTreeSend(context, positionId, new FilterDictionaryPosition()
+                positions = _dictDb.GetPositionsForDIPSubordinations(context, positionId, new FilterDictionaryPosition()
                 {
                     IsActive = filter.IsActive,
                     //IDs = targetPositions
@@ -251,7 +251,7 @@ namespace BL.Logic.AdminCore
 
             if (levelCount >= 2 || levelCount == 0)
             {
-                departments = _dictDb.GetDepartmentsForTree(context, new FilterDictionaryDepartment()
+                departments = _dictDb.GetDepartmentsForDIPSubordinations(context, positionId, new FilterDictionaryDepartment()
                 {
                     IsActive = filter.IsActive,
                 });
@@ -259,7 +259,7 @@ namespace BL.Logic.AdminCore
 
             if (levelCount >= 1 || levelCount == 0)
             {
-                companies = _dictDb.GetAgentClientCompaniesForTree(context, new FilterDictionaryAgentClientCompany()
+                companies = _dictDb.GetAgentClientCompaniesForDIPSubordinations(context, positionId, new FilterDictionaryAgentClientCompany()
                 {
                     IsActive = filter.IsActive
                 });
@@ -271,7 +271,11 @@ namespace BL.Logic.AdminCore
             if (positions != null) flatList.AddRange(positions);
             if (departments != null) flatList.AddRange(departments);
 
-            var res = Tree.Get(flatList, filter);
+            // для растановки галочек дерево нельзя сужать
+            var res = Tree.Get(flatList, new FilterTree() { });
+
+            // растановка галочек для групп(компании, отделы)
+            SetCheckForDepartmentsAndCompanies(res);
 
             if (filter.IsChecked)
             {
@@ -289,6 +293,10 @@ namespace BL.Logic.AdminCore
                     res = null;
                 }
             }
+            else
+            {
+                res = Tree.Get(flatList, filter);
+            }
 
             return Tree.GetList(res);
         }
@@ -299,20 +307,103 @@ namespace BL.Logic.AdminCore
             {
                 foreach (var item in tree)
                 {
-                    if (item.ObjectId == (int)EnumObjects.DictionaryPositions)
-                    {
-                        var pos = (FrontDictionaryPositionTreeItem)item;
+                    //if (item.ObjectId == (int)EnumObjects.DictionaryPositions)
+                    //{
+                    var pos = (FrontDIPSubordinationsBase)item;
 
-                        if (pos.IsExecution == 1 || pos.IsInforming == 1)
-                        {
-                            safeList.AddRange(item.Path.Split('/'));
-                        }
+                    if (pos.IsExecution > 0 || pos.IsInforming > 0)
+                    {
+                        safeList.AddRange(item.Path.Split('/'));
                     }
+                    //}
 
                     FormSafeList((List<TreeItem>)item.Childs, safeList, filter);
                 }
             }
         }
+
+        private void SetCheckForDepartmentsAndCompanies(List<TreeItem> tree)
+        {
+            if (tree == null) return;
+
+            foreach (var item in tree)
+            {
+                if (item.IsList) continue;
+
+                SetCheckForDepartmentsAndCompanies((List<TreeItem>)item.Childs);
+
+                var child = (FrontDIPSubordinationsBase)item;
+
+                int allCount = 0;
+                int infCount = 0;
+                int excCount = 0;
+                bool infGr = false;
+                bool excGr = false;
+
+                GetCheckCount((List<TreeItem>)child.Childs, out allCount, out infCount, out excCount, out infGr, out excGr);
+
+                if (infGr) { child.IsExecution = 2; }
+                else { child.IsExecution = (allCount == excCount) ? 1 : (excCount == 0) ? 0 : 2; }
+
+                if (infGr) { child.IsInforming = 2; }
+                else { child.IsInforming = (allCount == infCount) ? 1 : (infCount == 0) ? 0 : 2; }
+
+            }
+        }
+
+        private void GetCheckCount(List<TreeItem> tree, out int AllCount, out int InfCount, out int ExcCount, out bool InfGr, out bool ExcGr)
+        {
+            int allCount = 0;
+            int infCount = 0;
+            int excCount = 0;
+            bool infGr = false;
+            bool excGr = false;
+
+            foreach (var item in tree)
+            {
+                var child = (FrontDIPSubordinationsBase)item;
+
+                allCount++;
+                if (child.IsInforming > 0) infCount++;
+                if (child.IsExecution > 0) excCount++;
+
+                if (child.IsInforming == 2) infGr = true;
+                if (child.IsExecution == 2) excGr = true;
+
+            }
+
+            AllCount = allCount;
+            InfCount = infCount;
+            ExcCount = excCount;
+            InfGr = infGr;
+            ExcGr = excGr;
+        }
+
+        //foreach (var item in tree)
+        //{
+        //    if (item.IsList) continue;
+
+        //    SetCheckForDepartmentsAndCompanies((List<TreeItem>)item.Childs);
+
+        //    int posCount = 0;
+        //    int posInfCount = 0;
+        //    int posExcCount = 0;
+
+        //    foreach (var c in item.Childs)
+        //    {
+        //        var child = (FrontDIPSubordinationsBase)c;
+
+        //        posCount++;
+        //        if (child.IsInforming == 1) posInfCount++;
+        //        if (child.IsExecution == 1) posExcCount++;
+        //    }
+
+        //    (item as FrontDIPSubordinationsBase).IsExecution = (posCount == posExcCount) ? 1 : (posExcCount == 0) ? 0 : 2;
+        //    (item as FrontDIPSubordinationsBase).IsInforming = (posCount == posInfCount) ? 1 : (posInfCount == 0) ? 0 : 2;
+
+        //}
+
+
 
 
         #endregion

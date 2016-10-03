@@ -19,8 +19,8 @@ namespace BL.Model.DictionaryCore.InternalModel
             IsActive = model.IsActive;
             AgentId = model.AgentId;
             PositionId = model.PositionId;
-            PositionExecutorTypeId = model.PositionExecutorTypeId;
-            AccessLevelId = model.AccessLevelId;
+            PositionExecutorTypeId = (int)model.PositionExecutorTypeId;
+            AccessLevelId = (int)model.AccessLevelId;
             Description = model.Description;
             StartDate = model.StartDate;
             EndDate = model.EndDate;

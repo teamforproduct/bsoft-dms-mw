@@ -46,6 +46,7 @@ namespace DMS_WebAPI.Providers
                 var dic = HttpUtility.ParseQueryString(bodyStr);
                 var clientCode = dic["ClientCode"] ?? string.Empty;
 
+                // если фронт передал код (доменное имя) клиента
                 if (!string.IsNullOrEmpty(clientCode))
                 {
                     var dbProc = new WebAPIDbProcess();

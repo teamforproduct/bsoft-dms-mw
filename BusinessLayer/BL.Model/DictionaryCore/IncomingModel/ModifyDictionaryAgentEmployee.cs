@@ -128,6 +128,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// Основной имейл, на который высылается письмо с приглашением
         /// </summary>
         [Required]
+        [EmailAddress]
         public string Login { get; set; }
 
         /// <summary>

@@ -2,6 +2,7 @@
 using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
 using BL.Logic.SystemCore.Interfaces;
+using BL.Model.AdminCore.Clients;
 using BL.Model.Database;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
@@ -44,7 +45,7 @@ namespace DMS_WebAPI.Utilities
                     filterContains = filter.ClientIds.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.ClientId == value).Expand());
 
-                    qry = qry.Where(x=>x.ClientServers.AsQueryable().Any(filterContains));
+                    qry = qry.Where(x => x.ClientServers.AsQueryable().Any(filterContains));
                 }
 
                 if (filter.ServerIds?.Count > 0)
@@ -352,7 +353,7 @@ namespace DMS_WebAPI.Utilities
         }
 
         public FrontAspNetClientLicence GetClientLicence(int id)
-        { 
+        {
             return GetClientLicences(new FilterAspNetClientLicences { ClientLicenceIds = new List<int> { id } }).FirstOrDefault();
         }
 
@@ -610,11 +611,11 @@ namespace DMS_WebAPI.Utilities
                                     .AsQueryable();
 
                 var itemsRes = from userClient in userClients
-                                join client in dbContext.AspNetClientsSet on userClient.ClientId equals client.Id
-                                select new
-                                {
-                                    Client = client,
-                                };
+                               join client in dbContext.AspNetClientsSet on userClient.ClientId equals client.Id
+                               select new
+                               {
+                                   Client = client,
+                               };
 
 
                 var item = itemsRes.Select(x => new FrontAspNetClient
@@ -626,6 +627,174 @@ namespace DMS_WebAPI.Utilities
 
                 return item;
             }
+        }
+
+        public string AddClient(AddClientContent model)
+        {
+            try
+            {
+                var owinContext = HttpContext.Current.Request.GetOwinContext();
+                var userManager = owinContext.GetUserManager<ApplicationUserManager>();
+
+                // определяю сервер для клиента
+                // сервер может определяться более сложным образом: с учетом нагрузки, количества клиентов
+                int serverId = GetServers(new FilterAdminServers()).FirstOrDefault().Id;
+                //if (model.Server.Id <= 0)
+                //{
+                //    var server = new AdminServers
+                //    {
+                //        Name = model.Server.Name,
+                //        Address = model.Server.Address,
+                //        ConnectionString = model.Server.ConnectionString,
+                //        DefaultDatabase = model.Server.DefaultDatabase,
+                //        DefaultSchema = model.Server.DefaultSchema,
+                //        IntegrateSecurity = model.Server.IntegrateSecurity,
+                //        ServerType = model.Server.ServerType.ToString(),
+                //        UserName = model.Server.UserName,
+                //        UserPassword = model.Server.UserPassword,
+                //    };
+
+                //    dbContext.AdminServersSet.Add(server);
+                //    dbContext.SaveChanges();
+
+                //    model.Server.Id = server.Id;
+                //}
+
+
+                using (var dbContext = new ApplicationDbContext())
+                {
+                    var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(dbContext));
+
+                    using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+                    {
+                        #region Create client 1 
+
+                        // Проверка уникальности доменного имени
+                        if (dbContext.AspNetClientsSet.Any(x => x.Code.Equals(model.Domain)))
+                        {
+                            transaction.Dispose();
+                            throw new ClientCodeAlreadyExists(model.Domain);
+                        }
+
+                        var client = new AspNetClients
+                        {
+                            Name = model.Domain,
+                            Code = model.Domain,
+                        };
+
+                        dbContext.AspNetClientsSet.Add(client);
+                        dbContext.SaveChanges();
+
+                        //pss какую лицензию здесь подставлять???
+                        //AspNetClientLicences clientLicence;
+                        //if (model.LicenceId > 0)
+                        //{
+                        //    clientLicence = new AspNetClientLicences
+                        //    {
+                        //        ClientId = client.Id,
+                        //        FirstStart = DateTime.Now,
+                        //        IsActive = false,
+                        //        LicenceId = model.LicenceId.GetValueOrDefault(),
+                        //        LicenceKey = null,
+                        //    };
+
+                        //    dbContext.AspNetClientLicencesSet.Add(clientLicence);
+                        //    dbContext.SaveChanges();
+                        //}
+
+                        #endregion Create client 1
+
+                        #region Create DB
+
+                        var clientServer = new AspNetClientServers
+                        {
+                            ClientId = client.Id,
+                            ServerId = serverId,
+                        };
+
+                        dbContext.AspNetClientServersSet.Add(clientServer);
+
+                        #endregion Create DB
+
+                        #region Create user                        
+
+                        //if (!string.IsNullOrEmpty(model.Client.Code))
+                        //{
+                        //    email = $"Client_{client.Id}_{email}";
+                        //}
+
+                        var user = userManager.FindByName(model.Email);
+
+                        if (user == null)
+                        {
+                            user = new ApplicationUser() { UserName = model.Email, Email = model.Email };
+
+                            IdentityResult result = userManager.Create(user, "P@ssw0rd");
+
+                            if (!result.Succeeded)
+                            {
+                                transaction.Dispose();
+                                throw new DictionaryRecordCouldNotBeAdded();
+                            }
+                        }
+
+                        var userClient = new AspNetUserClients
+                        {
+                            UserId = user.Id,
+                            ClientId = client.Id
+                        };
+
+                        dbContext.AspNetUserClientsSet.Add(userClient);
+                        dbContext.SaveChanges();
+
+                        var userServer = new AspNetUserServers
+                        {
+                            ClientId = client.Id,
+                            ServerId = serverId,
+                            UserId = user.Id,
+                        };
+
+                        dbContext.AspNetUserServersSet.Add(userServer);
+                        dbContext.SaveChanges();
+
+                        #endregion Create user
+
+                        #region add user to role admin
+
+                        var role = $"Admin_Client_{client.Id}";
+
+                        var roleDb = roleManager.FindByName(role);
+
+                        if (roleDb == null || string.IsNullOrEmpty(roleDb.Id))
+                        {
+                            roleManager.Create(new IdentityRole { Name = role });
+                        }
+
+                        userManager.AddToRole(user.Id, role);
+
+                        #endregion add user to role admin
+
+
+
+                        transaction.Complete();
+
+                        return "token";
+                    }
+                }
+            }
+            catch (UserNameAlreadyExists)
+            {
+                throw new UserNameAlreadyExists();
+            }
+            catch (ClientNameAlreadyExists)
+            {
+                throw new ClientNameAlreadyExists();
+            }
+            catch (Exception ex)
+            {
+                throw new DictionaryRecordCouldNotBeAdded();
+            }
+
         }
 
         public int AddClient(AddAspNetClient model)
@@ -642,7 +811,7 @@ namespace DMS_WebAPI.Utilities
                 }
 
 
-                    using (var dbContext = new ApplicationDbContext())
+                using (var dbContext = new ApplicationDbContext())
                 {
                     var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(dbContext));
 
@@ -665,7 +834,7 @@ namespace DMS_WebAPI.Utilities
                         dbContext.SaveChanges();
 
                         AspNetClientLicences clientLicence;
-                        if (model.LicenceId > 0 )
+                        if (model.LicenceId > 0)
                         {
                             clientLicence = new AspNetClientLicences
                             {
