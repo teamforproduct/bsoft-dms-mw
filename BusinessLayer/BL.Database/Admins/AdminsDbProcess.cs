@@ -361,7 +361,7 @@ namespace BL.Database.Admins
             {
                 var filterContains = PredicateBuilder.False<AdminRoles>();
                 filterContains = filter.NotContainsIDs.Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.Id != value).Expand());
+                    (current, value) => current.And(e => e.Id != value).Expand());
 
                 qry = qry.Where(filterContains);
             }
@@ -507,7 +507,7 @@ namespace BL.Database.Admins
             {
                 var filterContains = PredicateBuilder.False<AdminRoleActions>();
                 filterContains = filter.NotContainsIDs.Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.Id != value).Expand());
+                    (current, value) => current.And(e => e.Id != value).Expand());
 
                 qry = qry.Where(filterContains);
             }
@@ -709,7 +709,7 @@ namespace BL.Database.Admins
             {
                 var filterContains = PredicateBuilder.False<AdminPositionRoles>();
                 filterContains = filter.NotContainsIDs.Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.Id != value).Expand());
+                    (current, value) => current.And(e => e.Id != value).Expand());
 
                 qry = qry.Where(filterContains);
             }
@@ -852,7 +852,7 @@ namespace BL.Database.Admins
             {
                 var filterContains = PredicateBuilder.False<AdminUserRoles>();
                 filterContains = filter.NotContainsIDs.Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.Id != value).Expand());
+                    (current, value) => current.And(e => e.Id != value).Expand());
 
                 qry = qry.Where(filterContains);
             }
@@ -1052,7 +1052,7 @@ namespace BL.Database.Admins
             {
                 var filterContains = PredicateBuilder.False<AdminSubordinations>();
                 filterContains = filter.NotContainsIDs.Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.Id != value).Expand());
+                    (current, value) => current.And(e => e.Id != value).Expand());
 
                 qry = qry.Where(filterContains);
             }

@@ -42,6 +42,7 @@ namespace DMS_WebAPI
                 LoadLibrary(Path.Combine(HttpContext.Current.Server.MapPath("~/"), "App_Data",  "CryptoExts", "x64", "CryptoExts.dll"));
             }
 
+            // Конфигурация авторзационного провайдера
             ConfigureAuth(app);
 
             //Database.SetInitializer(new CreateDatabaseIfNotExists<ApplicationDbContext>());
@@ -62,11 +63,13 @@ namespace DMS_WebAPI
             //TODO
             var indexService = DmsResolver.Current.Get<IFullTextSearchService>();
             indexService.Initialize(dbs);
+
             //TODO
             #if !DEBUG
             var autoPlanService = DmsResolver.Current.Get<IAutoPlanService>();
             autoPlanService.Initialize(dbs);
             #endif
+
             //TODO
             var clearTrashDocumentsService = DmsResolver.Current.Get<IClearTrashDocumentsService>();
             clearTrashDocumentsService.Initialize(dbs);

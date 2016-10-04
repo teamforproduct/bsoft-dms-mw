@@ -280,7 +280,7 @@ namespace BL.Database.DatabaseContext
             //items.Add(new SystemActions { Id = 312009, ObjectId = 312, Code = "DeletePropertyLink", API = "", Description = "Удалить связь динамических аттрибутов", IsGrantable = false, IsGrantableByRecordId = false, IsVisible = false, GrantId = null, Category = null });
             //items.Add(new SystemActions { Id = 313005, ObjectId = 313, Code = "ModifyPropertyValues", API = "", Description = "Изменить значение динамических аттрибутов", IsGrantable = false, IsGrantableByRecordId = false, IsVisible = false, GrantId = null, Category = null });
             #endregion
-
+            //pss локализация
             items.Add(GetSysAct(EnumDocumentActions.AddDocument, EnumObjects.Documents, "Создать документ по шаблону", "Документ"));
             items.Add(GetSysAct(EnumDocumentActions.CopyDocument, EnumObjects.Documents, "Создать документ копированием", "Документ"));
             items.Add(GetSysAct(EnumDocumentActions.ModifyDocument, EnumObjects.Documents, "Изменить документ", "Документ"));

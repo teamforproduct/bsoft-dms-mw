@@ -11,39 +11,8 @@ using System.Collections.Generic;
 
 namespace BL.Logic.AdminCore
 {
-    public class ModifyRoleActionCommand : BaseAdminCommand
+    public class ModifyRoleActionCommand : BaseRoleActionCommand
     {
-
-        private ModifyAdminRoleAction Model
-        {
-            get
-            {
-                if (!(_param is ModifyAdminRoleAction)) throw new WrongParameterTypeError();
-                return (ModifyAdminRoleAction)_param;
-            }
-        }
-
-        public override bool CanBeDisplayed(int Id)
-        {
-            return true;
-        }
-
-        public override bool CanExecute()
-        {
-            _adminService.VerifyAccess(_context, CommandType, false);
-
-            var filter = new FilterAdminRoleAction {
-                NotContainsIDs = new List<int> { Model.Id },
-                ActionIDs = new List<int> { Model.ActionId },
-                RoleIDs = new List<int> { Model.RoleId },
-                RecordIDs = new List<int> { Model.RecordId ?? -1 }
-            };
-
-            if (_adminDb.ExistsRoleAction(_context, filter)) throw new AdminRecordNotUnique();
-
-            return true;
-        }
-
         public override object Execute()
         {
             try

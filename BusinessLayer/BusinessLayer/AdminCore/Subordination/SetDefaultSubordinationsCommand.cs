@@ -8,19 +8,29 @@ using System.Collections.Generic;
 
 namespace BL.Logic.AdminCore
 {
-    public class AddRoleActionCommand : BaseRoleActionCommand
+    public class SetDefaultSubordinationsCommand : BaseSubordinationCommand
     {
+        private int Model
+        {
+            get
+            {
+                if (!(_param is int)) throw new WrongParameterTypeError();
+                return (int)_param;
+            }
+        }
+
         public override object Execute()
         {
             try
             {
-                var model = CommonAdminUtilities.RoleActionModifyToInternal(_context, Model);
-                return _adminDb.AddRoleAction(_context, model);
+
+                return "Done";
             }
             catch (Exception ex)
             {
                 throw new AdminRecordCouldNotBeAdded(ex);
             }
+
         }
     }
 }

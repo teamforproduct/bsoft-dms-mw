@@ -638,7 +638,9 @@ namespace DMS_WebAPI.Utilities
 
                 // определяю сервер для клиента
                 // сервер может определяться более сложным образом: с учетом нагрузки, количества клиентов
-                int serverId = GetServers(new FilterAdminServers()).FirstOrDefault().Id;
+                var server = GetServers(new FilterAdminServers()).FirstOrDefault();
+
+                int serverId = server.Id;
                 //if (model.Server.Id <= 0)
                 //{
                 //    var server = new AdminServers
@@ -685,7 +687,10 @@ namespace DMS_WebAPI.Utilities
                         dbContext.AspNetClientsSet.Add(client);
                         dbContext.SaveChanges();
 
+                        model.ClientId = client.Id;
+
                         //pss какую лицензию здесь подставлять???
+                        // PSS выяснил, что отсутствие лицензии приравнивается к дефолтной
                         //AspNetClientLicences clientLicence;
                         //if (model.LicenceId > 0)
                         //{
@@ -729,6 +734,7 @@ namespace DMS_WebAPI.Utilities
                         {
                             user = new ApplicationUser() { UserName = model.Email, Email = model.Email };
 
+                            // pss Здесь нужно дописать генерацию пароля и отправку письма с паролем и рекламой
                             IdentityResult result = userManager.Create(user, "P@ssw0rd");
 
                             if (!result.Succeeded)
@@ -761,6 +767,7 @@ namespace DMS_WebAPI.Utilities
 
                         #region add user to role admin
 
+                        // PSS 
                         var role = $"Admin_Client_{client.Id}";
 
                         var roleDb = roleManager.FindByName(role);
@@ -774,7 +781,7 @@ namespace DMS_WebAPI.Utilities
 
                         #endregion add user to role admin
 
-
+                        var ctx = new AdminContext(server);
 
                         transaction.Complete();
 

@@ -35,9 +35,9 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         public IHttpActionResult Get([FromUri] FilterDictionaryPositionExecutor filter)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionaryPositionExecutors(cxt, filter);
-            return new JsonResult(tmpDicts, this);
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItems = tmpService.GetDictionaryPositionExecutors(cxt, filter);
+            return new JsonResult(tmpItems, this);
         }
 
         /// <summary>
@@ -49,9 +49,9 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         public IHttpActionResult Get(int id)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDict = tmpDictProc.GetDictionaryPositionExecutor(cxt, id);
-            return new JsonResult(tmpDict, this);
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItem = tmpService.GetDictionaryPositionExecutor(cxt, id);
+            return new JsonResult(tmpItem, this);
         }
 
 
@@ -63,8 +63,9 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         public IHttpActionResult Post([FromBody]ModifyDictionaryPositionExecutor model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
-            return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.AddExecutor, cxt, model));
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItem = (int)tmpService.ExecuteAction(EnumDictionaryActions.AddExecutor, cxt, model);
+            return Get( new FilterDictionaryPositionExecutor() { IDs = new List<int> { tmpItem } });
         }
 
         /// <summary>
@@ -79,9 +80,9 @@ namespace DMS_WebAPI.Controllers.Dictionaries
 
             model.Id = id;
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
-            tmpDict.ExecuteAction(EnumDictionaryActions.ModifyExecutor, cxt, model);
-            return Get(model.Id);
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItem = (int)tmpService.ExecuteAction(EnumDictionaryActions.ModifyExecutor, cxt, model);
+            return Get(new FilterDictionaryPositionExecutor() { IDs = new List<int> { model.Id } });
         }
 
         /// <summary>
@@ -91,9 +92,9 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         public IHttpActionResult Delete([FromUri] int id)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
 
-            tmpDict.ExecuteAction(EnumDictionaryActions.DeleteExecutor, cxt, id);
+            tmpService.ExecuteAction(EnumDictionaryActions.DeleteExecutor, cxt, id);
             FrontDictionaryPositionExecutor tmp = new FrontDictionaryPositionExecutor();
             tmp.Id = id;
 

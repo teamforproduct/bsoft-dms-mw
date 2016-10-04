@@ -8,9 +8,8 @@ using System.Collections.Generic;
 
 namespace BL.Logic.AdminCore
 {
-    public class DuplicateSubordinationsCommand : BaseAdminCommand
+    public class DuplicateSubordinationsCommand : BaseSubordinationCommand
     {
-
         private CopyAdminSubordinations Model
         {
             get
@@ -20,23 +19,10 @@ namespace BL.Logic.AdminCore
             }
         }
 
-        public override bool CanBeDisplayed(int Id)
-        {
-            return true;
-        }
-
-        public override bool CanExecute()
-        {
-            _adminService.VerifyAccess(_context, CommandType, false);
-            return true;
-        }
-
         public override object Execute()
         {
-
             try
             {
-
                 if (Model.CopyMode == BL.Model.Enums.EnumCopyMode.Сoverage)
                 {
                     // ощищаю настроки для Model.TargetPositionId
