@@ -44,6 +44,8 @@ namespace BL.Logic.DictionaryCore
                 var dp = CommonDictionaryUtilities.PositionExecutorModifyToInternal(_context, Model);
 
                 _dictDb.UpdateExecutor(_context, dp);
+
+                return Model.Id;
             }
             catch (DictionaryRecordWasNotFound)
             {
@@ -53,7 +55,6 @@ namespace BL.Logic.DictionaryCore
             {
                 throw new DatabaseError(ex);
             }
-            return null;
         }
     }
 }

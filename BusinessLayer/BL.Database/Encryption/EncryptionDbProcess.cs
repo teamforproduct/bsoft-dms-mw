@@ -12,7 +12,7 @@ using BL.Model.EncryptionCore.InternalModel;
 using System.IO;
 using BL.Database.DBModel.Encryption;
 using BL.Model.Exception;
-using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Transliteration;
 using System.Security.Cryptography.X509Certificates;
 using System;
 using System.Security.Cryptography;
@@ -32,6 +32,13 @@ namespace BL.Database.Encryption
 
         public EncryptionDbProcess()
         {
+        }
+
+        private string GetTempPath()
+        {
+            var path = Path.GetTempPath();
+
+            return path;
         }
 
         #region Certificates
@@ -88,6 +95,7 @@ namespace BL.Database.Encryption
                 return res;
             }
         }
+
         private InternalEncryptionCertificate GetCertificate(IContext ctx, int certificateId)
         {
             using (var dbContext = new DmsContext(ctx))
@@ -189,49 +197,6 @@ namespace BL.Database.Encryption
 
         #region Utilities
 
-        private void InitJVM()
-        {
-            string installDir = string.Empty;
-            if (IntPtr.Size == 4)
-            {
-                // 32-bit
-                installDir = Path.Combine(HttpContext.Current.Server.MapPath("~/"), "App_Data", "CryptoExts", "x86", "CryptoExts.dll");
-            }
-            else if (IntPtr.Size == 8)
-            {
-                // 64-bit
-                installDir = Path.Combine(HttpContext.Current.Server.MapPath("~/"), "App_Data", "CryptoExts", "x64", "CryptoExts.dll");
-            }
-            try
-            {
-                var isStart = StartJVM(installDir.ToCharArray());
-                if (isStart)
-                {
-                    IntPtr cnstring = GetCNString();
-                    string[] certs = StringFromNativeUtf8(cnstring).Split('|');
-
-                    SetSilentMode("null".ToCharArray());//не выводить никаких сообщений во всплывающих окнах (для операций сервера)
-                }
-            }
-            catch (Exception ex)
-            {
-                try
-                {
-                    StartJVM(installDir.ToCharArray());
-
-                    SetSilentMode("null".ToCharArray());//не выводить никаких сообщений во всплывающих окнах (для операций сервера)
-
-                    IntPtr cnstring = GetCNString();
-                    string[] certs = StringFromNativeUtf8(cnstring).Split('|');
-
-                }
-                catch (Exception ex2)
-                {
-
-                }
-            }
-        }
-
         private void UnZipCertificate(InternalEncryptionCertificate item)
         {
             if (item == null || item.CertificateZip == null)
@@ -313,11 +278,14 @@ namespace BL.Database.Encryption
 
         private void ReadDetailsAboutCertificate(InternalEncryptionCertificate item)
         {
-            var file = Path.Combine(Path.GetTempPath(), "DMS-CERTIFICATE-" + Guid.NewGuid());
+            var file = Path.Combine(GetTempPath(), "DMS-CERTIFICATE-" + Guid.NewGuid() + ".tmp");
             try
             {
                 //Если в X509Certificate2 передавать byte[] он все ровно его сохранит на диск и не факт что удалит
-                File.WriteAllBytes(file, item.Certificate);
+                using (FileStream fs = File.Create(file))
+                {
+                    fs.Write(item.Certificate, 0, item.Certificate.Length);
+                }
 
                 var certificate = new X509Certificate2(file, item.Password, X509KeyStorageFlags.UserKeySet | X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.Exportable);
 
@@ -337,7 +305,7 @@ namespace BL.Database.Encryption
 
         private void AddCertificateInWindowsCertificateStores(InternalEncryptionCertificate item)
         {
-            var file = Path.Combine(Path.GetTempPath(), "DMS-CERTIFICATE-" + Guid.NewGuid());
+            var file = Path.Combine(GetTempPath(), "DMS-CERTIFICATE-" + Guid.NewGuid() + ".tmp");
             try
             {
 
@@ -384,11 +352,7 @@ namespace BL.Database.Encryption
 
         #endregion Convert
 
-        #endregion
-
-        #region CertificateSign
-
-        // функции CryptoExts.dll
+        #region функции CryptoExts.dll
 
         //получить сообщение об ошибке в модуле CryptoExts.dll, 
         //ошибки в Java выводятся в окно (клиентское приложение) и в лог-файл (лог для серверного) (см. silentMode для управления)
@@ -515,6 +479,58 @@ namespace BL.Database.Encryption
             return "";
         }
 
+        private void InitJVM()
+        {
+            string installDir = string.Empty;
+            if (IntPtr.Size == 4)
+            {
+                // 32-bit
+                installDir = Path.Combine(HttpContext.Current.Server.MapPath("~/"), "App_Data", "CryptoExts", "x86", "CryptoExts.dll");
+            }
+            else if (IntPtr.Size == 8)
+            {
+                // 64-bit
+                installDir = Path.Combine(HttpContext.Current.Server.MapPath("~/"), "App_Data", "CryptoExts", "x64", "CryptoExts.dll");
+            }
+            try
+            {
+
+                installDir += '\0';
+
+                var isStart = StartJVM(installDir.ToCharArray());
+                if (isStart)
+                {
+                    IntPtr cnstring = GetCNString();
+                    string[] certs = StringFromNativeUtf8(cnstring).Split('|');
+
+                    SetSilentMode("null".ToCharArray());//не выводить никаких сообщений во всплывающих окнах (для операций сервера)
+                }
+            }
+            catch (Exception ex)
+            {
+                try
+                {
+                    StartJVM(installDir.ToCharArray());
+
+                    SetSilentMode("null".ToCharArray());//не выводить никаких сообщений во всплывающих окнах (для операций сервера)
+
+                    IntPtr cnstring = GetCNString();
+                    string[] certs = StringFromNativeUtf8(cnstring).Split('|');
+
+                }
+                catch (Exception ex2)
+                {
+
+                }
+            }
+        }
+
+        #endregion
+
+        #endregion
+
+        #region CertificateSign
+
         public string GetCertificateSign(IContext ctx, int certificateId, string certificatePassword, string dataToSign)
         {
             var res = string.Empty;
@@ -534,19 +550,44 @@ namespace BL.Database.Encryption
 
                 InitJVM();
 
+                //BL.CrossCutting.Helpers.Logger.SaveToFile("E GetCertificateSign " + dataToSign);
+                dataToSign = dataToSign.ToTransliteration();
                 var base64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(dataToSign));
 
                 string data = "{\"indata\":\"" + base64 + "\",\"inindex\":" + certificate.Thumbprint.ToLower() + ",\"intspUrl\":\"http://cesaris.itsway.kiev.ua/tsa/srv/\",\"incrl\":true,\"inisDetached\":true}";
 
+                data += '\0';
+
                 IntPtr signed = GetSignP7(data.ToCharArray());
                 res = StringFromNativeUtf8(signed);
+
+                //BL.CrossCutting.Helpers.Logger.SaveToFile("E GetCertificateSign SIGN " + res);
 
                 if (string.IsNullOrEmpty(res))
                 {
                     throw new EncryptionCertificateWasNotFound();
                 }
+
+                res = res.Replace("\r\n", string.Empty).Replace("\r", string.Empty).Replace("\n", string.Empty);
+
+                data = "{ \"data\":\"" + base64 + "\",\"sign\":\"" + res + "\"}";
+
+                data += '\0';
+
+                var res2 = SignVerify(data.ToCharArray());
+
+                if (!res2)
+                    throw new EncryptionCertificateDigitalSignatureFailed();
             }
             catch (EncryptionCertificateWasNotFound ex)
+            {
+                throw ex;
+            }
+            catch (EncryptionCertificateHasExpired ex)
+            {
+                throw ex;
+            }
+            catch (EncryptionCertificateDigitalSignatureFailed ex)
             {
                 throw ex;
             }
@@ -563,10 +604,15 @@ namespace BL.Database.Encryption
             try
             {
                 InitJVM();
+                dataToSign = dataToSign.ToTransliteration();
+
+                sign = sign.Replace("\r\n", string.Empty).Replace("\r", string.Empty).Replace("\n", string.Empty);
 
                 var dataToSignBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(dataToSign));
 
                 string data = "{ \"data\":\"" + dataToSignBase64 + "\",\"sign\":\"" + sign + "\"}";
+
+                data += '\0';
 
                 res = SignVerify(data.ToCharArray());
             }
@@ -595,8 +641,7 @@ namespace BL.Database.Encryption
                     throw new EncryptionCertificateHasExpired();
 
                 InitJVM();
-
-                var file = Path.Combine(Path.GetTempPath(), "DMS-PDF-" + Guid.NewGuid() + ".pdf");
+                var file = Path.Combine(GetTempPath(), "DMS-PDF-" + Guid.NewGuid() + ".pdf");
                 //var file = "c://tmp//DMS.PDF";
                 var signedPdf = string.Empty;
                 try
@@ -606,6 +651,8 @@ namespace BL.Database.Encryption
 
                     //silentMode = null - подавить все сообщения
                     string data = "{\"setSilentMode\":null,\"inindex\":" + certificate.Thumbprint.ToLower() + ",\"intsaUrl\":\"http://cesaris.itsway.kiev.ua/tsa/srv/\",\"incrl\":true,\"file\":\"" + file + "\"}";
+
+                    data += '\0';
 
                     IntPtr ptrpdf = SignFilePdfPath(data.ToCharArray());
                     signedPdf = StringFromNativeUtf8(ptrpdf);
@@ -626,7 +673,15 @@ namespace BL.Database.Encryption
                 {
                     throw e;
                 }
+                catch (EncryptionCertificateHasExpired e)
+                {
+                    throw e;
+                }
                 catch (EncryptionCertificateWasNotFound e)
+                {
+                    throw e;
+                }
+                catch (Exception e)
                 {
                     throw e;
                 }
@@ -653,13 +708,21 @@ namespace BL.Database.Encryption
             try
             {
                 InitJVM();
-
-                var file = Path.Combine(Path.GetTempPath(), "DMS-PDF-SIGNED" + Guid.NewGuid() + ".pdf");
+                var file = Path.Combine(GetTempPath(), "DMS-SIGN-"+ Guid.NewGuid() + ".pdf");
                 try
                 {
                     File.WriteAllBytes(file, pdf);
 
-                    file = file.Replace("\\", "/");
+                    file = file.Replace("\\", "/").ToLower();
+
+                    file += '\0';
+
+                    var fileArray = file.ToCharArray();
+                    var tmp = string.Empty;
+                    foreach (var tFileArray in fileArray)
+                    {
+                        tmp += tFileArray;
+                    }
 
                     res = SignFilePdfVerify(file.ToCharArray());
                 }

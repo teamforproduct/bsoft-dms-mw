@@ -204,6 +204,7 @@ namespace BL.Database.Dictionaries.Interfaces
         bool ExistsPositionExecutor(IContext context, FilterDictionaryPositionExecutor filter);
         InternalDictionaryPositionExecutor GetInternalDictionaryPositionExecutor(IContext context, FilterDictionaryPositionExecutor filter);
         IEnumerable<FrontDictionaryPositionExecutor> GetPositionExecutors(IContext context, FilterDictionaryPositionExecutor filter);
+        FrontDictionaryPositionExecutor GetPositionExecutor(IContext context, int id);
         IEnumerable<TreeItem> GetPositionExecutorsForTree(IContext context, FilterDictionaryPositionExecutor filter);
         #endregion DictionaryPositionExecutors
 

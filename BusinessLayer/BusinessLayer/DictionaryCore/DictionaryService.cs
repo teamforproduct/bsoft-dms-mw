@@ -724,13 +724,11 @@ namespace BL.Logic.DictionaryCore
         #region DictionaryPositinExecutors
         public FrontDictionaryPositionExecutor GetDictionaryPositionExecutor(IContext context, int id)
         {
-
-            return _dictDb.GetPositionExecutors(context, new FilterDictionaryPositionExecutor { IDs = new List<int> { id } }).FirstOrDefault();
+            return _dictDb.GetPositionExecutor(context, id);
         }
 
         public IEnumerable<FrontDictionaryPositionExecutor> GetDictionaryPositionExecutors(IContext context, FilterDictionaryPositionExecutor filter)
         {
-
             return _dictDb.GetPositionExecutors(context, filter);
         }
         #endregion DictionaryPositinExecutors
