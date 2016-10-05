@@ -17,7 +17,7 @@ namespace DMS_WebAPI.Controllers.Admins
     /// Описывает список сотрудников, которые являются администраторами подразделения.
     /// </summary>
     [Authorize]
-    public class AdminDepartmentAdminController : ApiController
+    public class AdminDepartmentAdminsController : ApiController
     {
         /// <summary>
         /// Возвращает список имен сотрудников-администраторов для подразделения
@@ -38,7 +38,7 @@ namespace DMS_WebAPI.Controllers.Admins
         /// </summary>
         /// <param name="model">ModifyAdminUserRole</param>
         /// <returns>FrontAdminUserRole</returns>
-        public IHttpActionResult Post([FromBody]ModifyAdminUserRole model)
+        public IHttpActionResult Post([FromBody]ModifyAdminDepartmentAdmin model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
@@ -50,13 +50,13 @@ namespace DMS_WebAPI.Controllers.Admins
         /// Удаляет сотрудника с роли администратора подразделения
         /// </summary>
         /// <returns>FrontAdminUserRole</returns> 
-        public IHttpActionResult Delete([FromUri] int id)
+        public IHttpActionResult Delete([FromBody]ModifyAdminDepartmentAdmin model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
 
-            tmpService.ExecuteAction(EnumAdminActions.DeleteDepartmentAdmin, cxt, id);
-            FrontAdminUserRole tmpItem = new FrontAdminUserRole() { Id = id };
+            tmpService.ExecuteAction(EnumAdminActions.DeleteDepartmentAdmin, cxt, model);
+            FrontDictionaryAgentEmployee tmpItem = new FrontDictionaryAgentEmployee() { Id = model.EmployeeId };
             return new JsonResult(tmpItem, this);
         }
     }

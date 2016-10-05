@@ -89,5 +89,9 @@ namespace BL.Database.Admins.Interfaces
 
         #endregion
 
+        int AddDepartmentAdmin(IContext context, InternalDepartmentAdmin model);
+
+        void DeleteDepartmentAdmin(IContext context, InternalDepartmentAdmin model);
+
     }
 }

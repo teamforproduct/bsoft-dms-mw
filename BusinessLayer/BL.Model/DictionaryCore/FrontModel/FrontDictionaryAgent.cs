@@ -37,13 +37,15 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// </summary>
         [IgnoreDataMember]
         public int? ResidentTypeId { get; set; }
+        
         /// <summary>
         /// Дополнительная информация
         /// </summary>
-        public virtual string Description { get; set; }
+        public string Description { get; set; }
+        
         /// <summary>
         /// Признак активности
         /// </summary>
-        public virtual bool IsActive { get; set; }
+        public bool? IsActive { get; set; }
     }
 }

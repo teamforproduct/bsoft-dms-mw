@@ -2377,7 +2377,7 @@ namespace BL.Database.Dictionaries
                         AccountNumber = x.AccountNumber,
                         Name = x.Name,
                         IsMain = x.IsMain,
-                        AgentBankId = x.AgentBankId,
+                        AgentId = x.AgentId,
                         Description = x.Description,
                         IsActive = x.IsActive,
                         Bank = new FrontDictionaryAgentBank
@@ -2392,34 +2392,6 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public void SetMainAgentAccount(IContext context, int AgentId, int AccountId)
-        {
-            using (var dbContext = new DmsContext(context))
-            {
-                var accounts = GetAgentAccounts(context, AgentId, new FilterDictionaryAgentAccount());
-                foreach (FrontDictionaryAgentAccount account in accounts)
-                {
-                    if (account.Id != AccountId)
-                    {
-                        var newAcc = new InternalDictionaryAgentAccount
-                        {
-                            Id = account.Id,
-                            Name = account.Name,
-                            AgentId = account.AgentId,
-                            AgentBankId = account.AgentBankId,
-                            AccountNumber = account.AccountNumber,
-                            Description = account.Description,
-                            IsActive = account.IsActive,
-                            LastChangeDate = DateTime.Now,
-                            LastChangeUserId = context.CurrentAgentId,
-                            IsMain = false
-                        };
-                        UpdateAgentAccount(context, newAcc);
-                    }
-                }
-            }
-        }
-
         public void UpdateAgentAccount(IContext context, InternalDictionaryAgentAccount account)
         {
             using (var dbContext = new DmsContext(context))
@@ -2431,12 +2403,6 @@ namespace BL.Database.Dictionaries
                 CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAgentAccounts, EnumOperationType.Update);
                 entity.State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
-
-                if (account.IsMain)
-                {
-                    SetMainAgentAccount(context, account.AgentId, account.Id);
-                }
-
             }
         }
 
@@ -2464,78 +2430,36 @@ namespace BL.Database.Dictionaries
                 CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAgentAccounts, EnumOperationType.AddNew);
                 dbContext.SaveChanges();
 
-                if (account.IsMain)
-                {
-                    SetMainAgentAccount(context, account.AgentId, account.Id);
-                }
-
                 return account.Id;
             }
         }
 
-        public IEnumerable<FrontDictionaryAgentAccount> GetAgentAccounts(IContext context, int AgentId, FilterDictionaryAgentAccount filter)
+        public IEnumerable<InternalDictionaryAgentAccount> GetInternalAgentAccounts(IContext context, FilterDictionaryAgentAccount filter)
         {
             using (var dbContext = new DmsContext(context))
             {
+                var qry = GetAgentAccountsQuery(context, dbContext, filter);
 
-                var qry = dbContext.DictionaryAgentAccountsSet.Where(x => x.Agent.ClientId == context.CurrentClientId).AsQueryable();
-
-                qry = qry.Where(x => x.AgentId == AgentId);
-
-                // Список первичных ключей
-                if (filter.IDs?.Count > 0)
+                return qry.Select(x => new InternalDictionaryAgentAccount
                 {
-                    // var filterContains = PredicateBuilder.False<DictionaryAgentAccounts>();
-                    // filterContains = filter.IDs.Aggregate(filterContains,
-                    //     (current, value) => current.Or(e => e.Id == value).Expand());
+                    Id = x.Id,
+                    AccountNumber = x.AccountNumber,
+                    Name = x.Name,
+                    IsMain = x.IsMain,
+                    AgentId = x.AgentId,
+                    Description = x.Description,
+                    IsActive = x.IsActive,
+                    LastChangeDate = x.LastChangeDate,
+                    LastChangeUserId = x.LastChangeUserId,
+                }).ToList();
+            }
+        }
 
-                    // qry = qry.Where(filterContains);
-                    qry = qry.Where(x => filter.IDs.Contains(x.Id));
-                }
-
-                // Исключение списка первичных ключей
-                if (filter.NotContainsIDs?.Count > 0)
-                {
-                    var filterContains = PredicateBuilder.False<DictionaryAgentAccounts>();
-                    filterContains = filter.NotContainsIDs.Aggregate(filterContains,
-                        (current, value) => current.And(e => e.Id != value).Expand());
-
-                    qry = qry.Where(filterContains);
-                }
-
-                if (!string.IsNullOrEmpty(filter.Name))
-                {
-                    var filterContains = PredicateBuilder.False<DictionaryAgentAccounts>();
-                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.Name == value).Expand());
-
-                    qry = qry.Where(filterContains);
-                }
-
-                if (!string.IsNullOrEmpty(filter.AccountNumber))
-                {
-                    var filterContains = PredicateBuilder.False<DictionaryAgentAccounts>();
-                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.AccountNumber).Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.AccountNumber == value).Expand());
-
-                    qry = qry.Where(filterContains);
-                }
-
-                if (!string.IsNullOrEmpty(filter.AccountNumberExact))
-                {
-                    qry = qry.Where(x => x.AccountNumber == filter.AccountNumberExact);
-                }
-
-                if (filter.AgentBankId.HasValue)
-                {
-                    qry = qry.Where(x => x.AgentBankId == filter.AgentBankId);
-                }
-
-                if (filter.IsActive.HasValue)
-                {
-                    qry = qry.Where(x => x.IsActive == filter.IsActive);
-                }
-
+        public IEnumerable<FrontDictionaryAgentAccount> GetAgentAccounts(IContext context, FilterDictionaryAgentAccount filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = GetAgentAccountsQuery(context, dbContext, filter);
 
                 return qry.Select(x => new FrontDictionaryAgentAccount
                 {
@@ -2543,7 +2467,7 @@ namespace BL.Database.Dictionaries
                     AccountNumber = x.AccountNumber,
                     Name = x.Name,
                     IsMain = x.IsMain,
-                    AgentBankId = x.AgentBankId,
+                    AgentId = x.AgentId,
                     Description = x.Description,
                     IsActive = x.IsActive,
                     Bank = new FrontDictionaryAgentBank
@@ -2557,6 +2481,88 @@ namespace BL.Database.Dictionaries
                 }).ToList();
             }
         }
+
+        public IQueryable<DictionaryAgentAccounts> GetAgentAccountsQuery(IContext context, DmsContext dbContext, FilterDictionaryAgentAccount filter)
+        {
+            var qry = dbContext.DictionaryAgentAccountsSet.Where(x => x.Agent.ClientId == context.CurrentClientId).AsQueryable();
+
+            qry = AgentAccountsGetWhere(ref qry, filter);
+
+            return qry;
+        }
+
+        // Для использования в коммандах метод CanExecute
+        public bool ExistsAgentAccounts(IContext context, FilterDictionaryAgentAccount filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = GetAgentAccountsQuery(context, dbContext, filter);
+
+                return qry.Select(x => new FrontDictionaryAgentAccount { Id = x.Id }).Any();
+            }
+        }
+
+        private static IQueryable<DictionaryAgentAccounts> AgentAccountsGetWhere(ref IQueryable<DictionaryAgentAccounts> qry, FilterDictionaryAgentAccount filter)
+        {
+            // Список первичных ключей
+            if (filter.IDs?.Count > 0)
+            {
+                // var filterContains = PredicateBuilder.False<DictionaryAgentAccounts>();
+                // filterContains = filter.IDs.Aggregate(filterContains,
+                //     (current, value) => current.Or(e => e.Id == value).Expand());
+
+                // qry = qry.Where(filterContains);
+                qry = qry.Where(x => filter.IDs.Contains(x.Id));
+            }
+
+            // Исключение списка первичных ключей
+            if (filter.NotContainsIDs?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.False<DictionaryAgentAccounts>();
+                filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                    (current, value) => current.And(e => e.Id != value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            if (filter.AgentId.HasValue)
+            {
+                qry = qry.Where(x => x.AgentId == filter.AgentId);
+            }
+
+            if (!string.IsNullOrEmpty(filter.Name))
+            {
+                var filterContains = PredicateBuilder.False<DictionaryAgentAccounts>();
+                filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Name == value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            if (!string.IsNullOrEmpty(filter.AccountNumber))
+            {
+                var filterContains = PredicateBuilder.False<DictionaryAgentAccounts>();
+                filterContains = CommonFilterUtilites.GetWhereExpressions(filter.AccountNumber).Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.AccountNumber == value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            if (!string.IsNullOrEmpty(filter.AccountNumberExact))
+            {
+                qry = qry.Where(x => x.AccountNumber == filter.AccountNumberExact);
+            }
+
+            
+
+            if (filter.IsActive.HasValue)
+            {
+                qry = qry.Where(x => x.IsActive == filter.IsActive);
+            }
+
+            return qry;
+        }
+
         #endregion DictionaryAgentAccounts
 
         #region [+] DictionaryContactTypes ...

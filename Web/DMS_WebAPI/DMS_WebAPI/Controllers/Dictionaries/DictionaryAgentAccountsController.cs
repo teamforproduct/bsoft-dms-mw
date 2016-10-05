@@ -28,11 +28,12 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         // GET: api/DictionaryAgentAccounts
         public IHttpActionResult Get(int agentId,[FromUri] FilterDictionaryAgentAccount filter)
         {
-           
+            if (filter == null) filter = new FilterDictionaryAgentAccount();
+            filter.AgentId = agentId;
 
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionaryAgentAccounts(ctx, agentId,filter);
+            var tmpDicts = tmpDictProc.GetDictionaryAgentAccounts(ctx, filter);
             return new JsonResult(tmpDicts, this);
         }
 

@@ -91,7 +91,8 @@ namespace BL.Database.Dictionaries.Interfaces
         void UpdateAgentAccount(IContext context, InternalDictionaryAgentAccount account);
         void DeleteAgentAccount(IContext context, InternalDictionaryAgentAccount account);
         int AddAgentAccount(IContext context, InternalDictionaryAgentAccount account);
-        IEnumerable<FrontDictionaryAgentAccount> GetAgentAccounts(IContext context, int AgentId, FilterDictionaryAgentAccount filter);
+        IEnumerable<FrontDictionaryAgentAccount> GetAgentAccounts(IContext context, FilterDictionaryAgentAccount filter);
+        IEnumerable<InternalDictionaryAgentAccount> GetInternalAgentAccounts(IContext context, FilterDictionaryAgentAccount filter);
         #endregion DictionaryAgentAccounts
 
         #region DictionaryContacts

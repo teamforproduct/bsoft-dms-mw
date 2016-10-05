@@ -28,6 +28,9 @@ namespace BL.Database.Admins
 {
     public class AdminsDbProcess : CoreDb.CoreDb, IAdminsDbProcess
     {
+
+        private List<InternalDepartmentAdmin> DepartmentAdminsSet = new List<InternalDepartmentAdmin>();
+
         public AdminsDbProcess()
         {
         }
@@ -900,15 +903,30 @@ namespace BL.Database.Admins
         #endregion
 
         #region [+] DepartmentAdmin ...
+
+        public int AddDepartmentAdmin(IContext context, InternalDepartmentAdmin model)
+        {
+            DepartmentAdminsSet.Add(model);
+            return model.EmployeeId;
+        }
+
+        public void DeleteDepartmentAdmin(IContext context, InternalDepartmentAdmin model)
+        {
+            var da = DepartmentAdminsSet.Where(x => x.DepartmentId == model.DepartmentId & x.EmployeeId == model.EmployeeId);
+            foreach (var item in da)
+            {
+                DepartmentAdminsSet.Remove(item);
+                break;
+            }
+        }
+
         public IEnumerable<FrontDictionaryAgentEmployee> GetDepartmentAdmins(IContext context, int departmentId)
         {
-            var list = new List<FrontDictionaryAgentEmployee>();
-
-            list.Add(new FrontDictionaryAgentEmployee { Id = 1, Name = "Иванов П.Н."});
-            list.Add(new FrontDictionaryAgentEmployee { Id = 2, Name = "Казынкин С.С." });
-            list.Add(new FrontDictionaryAgentEmployee { Id = 3, Name = "Петров Ф.К." });
-
-            return list;
+            return DepartmentAdminsSet.Where(x => x.DepartmentId == departmentId).Select(x => new FrontDictionaryAgentEmployee()
+            {
+                Id = x.EmployeeId,
+                Name = x.EmployeeName
+            });
         }
         #endregion
 

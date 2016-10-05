@@ -20,17 +20,13 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// </summary>
         public string Name { get; set; }
         /// <summary>
-        /// Ссылка на банк
-        /// </summary>
-        public int AgentBankId { get; set; }
-        /// <summary>
         /// Банк, в котором открыт счет
         /// </summary>
         public FrontDictionaryAgentBank Bank { get; set; }
         /// <summary>
         /// ССылка на контрагента
         /// </summary>
-        public int AgentId {get; set;}
+        public int? AgentId {get; set;}
         /// <summary>
         /// номер счета
         /// </summary>
@@ -38,7 +34,7 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// <summary>
         /// является основным
         /// </summary>
-        public bool IsMain { get; set; }
+        public bool? IsMain { get; set; }
         /// <summary>
         /// комментарии
         /// </summary>
@@ -46,6 +42,6 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// <summary>
         /// признак активности
         /// </summary>
-        public bool IsActive { get; set; }
+        public bool? IsActive { get; set; }
     }
 }

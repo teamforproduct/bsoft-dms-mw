@@ -19,7 +19,7 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// <summary>
         /// Агент (сотрудник, юр.лицо, банк, физ.лицо)
         /// </summary>
-        public int AgentId { get; set; }
+        public int? AgentId { get; set; }
 
         /// <summary>
         /// Тип адреса
@@ -44,6 +44,6 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// <summary>
         /// признак активности
         /// </summary>
-        public bool IsActive { get; set; }
+        public bool? IsActive { get; set; }
     }
 }

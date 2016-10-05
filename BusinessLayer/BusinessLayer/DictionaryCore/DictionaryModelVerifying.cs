@@ -79,23 +79,6 @@ namespace BL.Logic.DictionaryCore
             }
         }
 
-        public static void VerifyAgentAccount(IContext context, IDictionariesDbProcess dictDb, ModifyDictionaryAgentAccount Model)
-        {
-            Model.AccountNumber?.Trim();
-
-            var spr = dictDb.GetAgentAccounts(context, Model.AgentId, new FilterDictionaryAgentAccount
-            {
-                AgentBankId = Model.AgentBankId,
-                AccountNumber = Model.AccountNumber,
-                NotContainsIDs = new List<int> { Model.Id }
-            });
-            if (spr.Count() != 0)
-            {
-                throw new DictionaryAgentAccountNumberNotUnique(Model.AccountNumber);
-            }
-
-        }
-
         public static void VerifyAgentAddress(IContext context, IDictionariesDbProcess dictDb, ModifyDictionaryAgentAddress Model)
         {
             Model.PostCode?.Trim();

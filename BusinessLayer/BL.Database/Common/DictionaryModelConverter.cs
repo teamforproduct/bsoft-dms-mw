@@ -359,7 +359,6 @@ namespace BL.Database.Common
                 Id = item.Id,
                 AccountNumber = item.AccountNumber,
                 AgentId = item.AgentId,
-                AgentBankId = item.AgentBankId,
                 IsMain = item.IsMain,
                 Name = item.Name,
                 Description = item.Description,

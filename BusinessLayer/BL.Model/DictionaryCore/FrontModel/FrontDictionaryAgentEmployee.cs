@@ -33,7 +33,7 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// <summary>
         /// Пол (true - мужской)
         /// </summary>
-        public bool IsMale { get; set; }
+        public bool? IsMale { get; set; }
         /// <summary>
         /// Серия паспорта
         /// </summary>
@@ -72,7 +72,7 @@ namespace BL.Model.DictionaryCore.FrontModel
         public string Passport
         {
             // pss  проверить сериализуется ли поведение, либо результат
-            get { return PassportSerial?.Trim() + " " + PassportNumber?.ToString() + " " + PassportText?.Trim() + " " + PassportDate?.ToString("dd.MM.yyyy"); }
+            get { string pass =  PassportSerial?.Trim() + " " + PassportNumber?.ToString() + " " + PassportText?.Trim() + " " + PassportDate?.ToString("dd.MM.yyyy"); return pass.Trim(); }
         }
 
 #endregion

@@ -17,8 +17,9 @@ namespace BL.Logic.AdminCore
         {
             try
             {
-                //var model = CommonAdminUtilities.PositionRoleModifyToInternal(_context, Model);
-                //_adminDb.UpdatePositionRole(_context, model);
+                var da = new InternalDepartmentAdmin(Model);
+
+                _adminDb.DeleteDepartmentAdmin(_context, da);
             }
             catch (AdminRecordWasNotFound)
             {

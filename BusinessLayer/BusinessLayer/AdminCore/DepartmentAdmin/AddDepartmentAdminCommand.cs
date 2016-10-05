@@ -14,8 +14,11 @@ namespace BL.Logic.AdminCore
         {
             try
             {
-                //var model = CommonAdminUtilities.PositionRoleModifyToInternal(_context, Model);
-                return 1;//_adminDb.AddPositionRole(_context, model);
+                var da = new InternalDepartmentAdmin(Model);
+                da.EmployeeName = _dictDb.GetAgent(_context, Model.EmployeeId).Name;
+
+
+                return _adminDb.AddDepartmentAdmin(_context, da);
             }
             catch (Exception ex)
             {

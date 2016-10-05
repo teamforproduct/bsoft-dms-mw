@@ -38,7 +38,7 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// <summary>
         /// Признак активности
         /// </summary>
-        public bool IsActive { get; set; }
+        public bool? IsActive { get; set; }
         
         /// <summary>
         /// Список контактных лиц

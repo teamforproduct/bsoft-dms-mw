@@ -35,7 +35,7 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// <summary>
         /// Пол (true - мужской)
         /// </summary>
-        public bool IsMale { get; set; }
+        public bool? IsMale { get; set; }
         /// <summary>
         /// Серия паспорта
         /// </summary>
@@ -58,12 +58,6 @@ namespace BL.Model.DictionaryCore.FrontModel
         public DateTime? BirthDate { get; set; }
 
         /// <summary>
-        /// Дополнительная информация
-        /// </summary>
-        public override string Description { get; set; }
-
-        //pss убрать вычисляемые свойства
-        /// <summary>
         /// Полное имя
         /// </summary>
         public string FullName { get; set; }
@@ -77,7 +71,7 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// </summary>
         public string Passport
         {
-            get { return PassportSerial?.Trim() + " " + PassportNumber + " " + PassportText?.Trim() + " " + PassportDate?.ToString("dd.MM.yyyy"); }
+            get { string pass = PassportSerial?.Trim() + " " + PassportNumber + " " + PassportText?.Trim() + " " + PassportDate?.ToString("dd.MM.yyyy"); return pass.Trim(); }
         }
 
         /// <summary>
