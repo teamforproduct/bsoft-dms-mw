@@ -40,7 +40,7 @@ namespace BL.Logic.AdminCore
                     transaction.Complete();
                 }
 
-                return "Done";
+                return null;
             }
             catch (Exception ex)
             {

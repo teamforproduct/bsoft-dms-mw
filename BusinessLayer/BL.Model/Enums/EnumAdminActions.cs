@@ -99,7 +99,14 @@
         /// </summary>
         SetSubordinationByCompany = 704004,
 
+        /// <summary>
+        /// Совокупность действий по управлению субординацией для всей компании
+        /// </summary>
+        SetDefaultSubordination = 704005
+
         #endregion
+
+        // При добавлении действия не забудь добавить действие в ImportData: BL.Database.DatabaseContext.DmsDbImportData!!!
 
     }
 }

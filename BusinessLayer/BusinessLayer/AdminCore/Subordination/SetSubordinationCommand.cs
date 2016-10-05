@@ -42,7 +42,7 @@ namespace BL.Logic.AdminCore
                 if (exists && !Model.IsChecked) _adminDb.DeleteSubordination(_context, row);
                 else if (!exists && Model.IsChecked) _adminDb.AddSubordination(_context, row);
 
-                return Model.IsChecked;
+                return null;
             }
             catch (Exception ex)
             {

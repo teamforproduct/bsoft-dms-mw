@@ -23,5 +23,8 @@
         /// VerifyPdf
         /// </summary>
         VerifyPdf = 401006
+       
+        // При добавлении действия не забудь добавить действие в ImportData: BL.Database.DatabaseContext.DmsDbImportData!!!
+
     }
 }

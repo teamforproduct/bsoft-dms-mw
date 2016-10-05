@@ -423,5 +423,7 @@
         ModifyTemplateAttachedFile = 255005,
         DeleteTemplateAttachedFile = 255009
 
+        // При добавлении действия не забудь добавить действие в ImportData: BL.Database.DatabaseContext.DmsDbImportData!!!
+
     }
 }

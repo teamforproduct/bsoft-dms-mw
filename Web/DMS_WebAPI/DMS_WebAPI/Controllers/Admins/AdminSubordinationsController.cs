@@ -129,6 +129,25 @@ namespace DMS_WebAPI.Controllers.Admins
         }
 
         /// <summary>
+        /// Управление рассылкой для должности в масштабах компании
+        /// Разрешает выполнять рассылку для сведения или исполнения для всех сотрудников компании
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("SetDefault")]
+        public IHttpActionResult SetDefault([FromBody] ModifyAdminDefaultSubordination model)
+        {
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var tmpService = DmsResolver.Current.Get<IAdminService>();
+            var tmpItem = tmpService.ExecuteAction(EnumAdminActions.SetDefaultSubordination, cxt, model);
+            stopWatch.Stop();
+            return new JsonResult(tmpItem, this, stopWatch.Elapsed);
+        }
+
+        /// <summary>
         /// Разрешает должности выполнять рассылку на другую должность с учетом типа расслки
         /// </summary>
         /// <param name="model">ModifyAdminSubordination</param>

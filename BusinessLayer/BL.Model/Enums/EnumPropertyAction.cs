@@ -10,5 +10,7 @@
         DeletePropertyLink = 312009, // Удалить связь динамических аттрибутов
 
         ModifyPropertyValues = 313005
+
+        // При добавлении действия не забудь добавить действие в ImportData: BL.Database.DatabaseContext.DmsDbImportData!!!
     }
 }

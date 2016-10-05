@@ -3967,10 +3967,10 @@ namespace BL.Database.Dictionaries
                                 AgentName = y.Agent.Name,
                                 PositionExecutorTypeName = y.PositionExecutorType.Name,
                                 PositionExecutorTypeId = (EnumPositionExecutionTypes)y.PositionExecutorType.Id,
-                                StartDate = y.StartDate,
-                                EndDate = y.EndDate,
-                                AccessLevelName = y.AccessLevel.Name,
-                                Description = y.Description,
+                                //StartDate = y.StartDate,
+                                //EndDate = y.EndDate,
+                                //AccessLevelName = y.AccessLevel.Name,
+                                //Description = y.Description,
                             }),
                         ChiefDepartments = x.ChiefDepartments.Select(y => new FrontDictionaryDepartment
                         {

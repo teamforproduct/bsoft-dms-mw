@@ -52,7 +52,7 @@ namespace BL.Logic.AdminCore
                         _adminDb.AddSubordination(_context, CommonAdminUtilities.SubordinationModifyToInternal(_context, model));
                 }
 
-                return "Done";
+                return null;
             }
             catch (Exception ex)
             {

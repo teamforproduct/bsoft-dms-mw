@@ -355,5 +355,7 @@
         /// </summary>
         DeleteCustomDictionary = 302009
         #endregion CustomDictionary
+
+        // При добавлении действия не забудь добавить действие в ImportData: BL.Database.DatabaseContext.DmsDbImportData!!!
     }
 }
