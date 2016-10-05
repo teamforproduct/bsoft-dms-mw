@@ -33,6 +33,8 @@ using iTextSharp.text.pdf;
 using System.IO;
 using BL.Database.Documents.Interfaces;
 using BL.Model.Reports.FrontModel;
+using System.Data.Entity.Core.Objects;
+using System.Threading.Tasks;
 
 namespace BL.Database.Common
 {
@@ -1370,13 +1372,39 @@ namespace BL.Database.Common
 
             if (paging != null)
             {
+                var isDetail = (filter?.Wait?.DocumentId == null) && (paging.IsOnlyCounter ?? false);
+                List<FrontDocumentWait> groupsCounter = null;
                 if (paging.IsOnlyCounter ?? true)
                 {
+                    groupsCounter = qrys.Select(qry => qry.GroupBy(y => new
+                    {
+                        IsClosed = y.OffEventId.HasValue,
+                        IsOverDue = !y.OffEventId.HasValue && y.DueDate.HasValue && y.DueDate.Value < DateTime.Now,
+                        DueDate = isDetail ? DbFunctions.TruncateTime(y.DueDate) : null,
+                        SourcePositionExecutorAgentName = isDetail ? y.OnEvent.SourcePositionExecutorAgent.Name : null,
+                        TargetPositionExecutorAgentName = isDetail ? y.OnEvent.TargetPositionExecutorAgent.Name : null,
+                    })
+                    .Select(y => new { Group = y.Key, RecordCount = y.Count() }).ToList()
+                                        ).ToList()
+                                        .SelectMany(z => z)
+                                        .GroupBy(z => z.Group)
+                                        .Select(z => new FrontDocumentWait
+                                        {
+                                            IsClosed = z.Key.IsClosed,
+                                            IsOverDue = z.Key.IsOverDue,
+                                            DueDate = z.Key.DueDate,
+                                            SourcePositionExecutorAgentName = z.Key.SourcePositionExecutorAgentName,
+                                            TargetPositionExecutorAgentName = z.Key.TargetPositionExecutorAgentName,
+                                            RecordCount = z.Sum(c => c.RecordCount)
+                                        }).ToList();
                     paging.Counters = new UICounters
                     {
-                        Counter1 = qrys.Sum(qry => qry.Count(y => !y.OffEventId.HasValue)),
-                        Counter2 = qrys.Sum(qry => qry.Count(s => !s.OffEventId.HasValue && s.DueDate.HasValue && s.DueDate.Value < DateTime.Now)),
-                        Counter3 = qrys.Sum(qry => qry.Count()),
+                        //Counter1 = qrys.Sum(qry => qry.Count(y => !y.OffEventId.HasValue)),
+                        //Counter2 = qrys.Sum(qry => qry.Count(s => !s.OffEventId.HasValue && s.DueDate.HasValue && s.DueDate.Value < DateTime.Now)),
+                        //Counter3 = qrys.Sum(qry => qry.Count()),
+                        Counter1 = groupsCounter.Where(y => !y.IsClosed).Sum(y => y.RecordCount),
+                        Counter2 = groupsCounter.Where(y => y.IsOverDue).Sum(y => y.RecordCount),
+                        Counter3 = groupsCounter.Sum(y => y.RecordCount),
                     };
 
                     paging.TotalItemsCount = paging.Counters.Counter3.GetValueOrDefault();
@@ -1384,7 +1412,7 @@ namespace BL.Database.Common
 
                 if (paging.IsOnlyCounter ?? false)
                 {
-                    return new List<FrontDocumentWait>();
+                    return isDetail && groupsCounter != null ? groupsCounter : new List<FrontDocumentWait>();
                 }
 
                 var skip = paging.PageSize * (paging.CurrentPage - 1);
