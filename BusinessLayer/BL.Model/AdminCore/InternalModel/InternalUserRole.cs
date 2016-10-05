@@ -1,6 +1,7 @@
 ﻿using BL.Model.Common;
 using BL.Model.AdminCore.IncomingModel;
 using System;
+using BL.Model.Enums;
 
 namespace BL.Model.AdminCore.InternalModel
 {
@@ -16,6 +17,8 @@ namespace BL.Model.AdminCore.InternalModel
             RoleId = model.RoleId;
             StartDate = model.StartDate;
             EndDate = model.EndDate;
+            ObjectId = model.ObjectId;
+            EntityId = model.EntityId;
         }
 
         /// <summary>
@@ -30,6 +33,16 @@ namespace BL.Model.AdminCore.InternalModel
         public DateTime StartDate { get; set; }
 
         public DateTime EndDate { get; set; }
+        
+        /// <summary>
+        /// Тип объекта. Например: Конкретному сотруднику на конр должности разрешены действия (роль) над конкретным объектом.
+        /// </summary>
+        public EnumObjects ObjectId { get; set; }
+
+        /// <summary>
+        /// Id сущности. Например отдел...
+        /// </summary>
+        public int EntityId { get; set; }
 
     }
 }

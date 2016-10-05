@@ -102,7 +102,21 @@
         /// <summary>
         /// Совокупность действий по управлению субординацией для всей компании
         /// </summary>
-        SetDefaultSubordination = 704005
+        SetDefaultSubordination = 704005,
+
+        #endregion
+
+        #region [+] DepartmentAdmin ...
+
+        /// <summary>
+        /// Добавить администратора подразделения
+        /// </summary>
+        AddDepartmentAdmin = 705001,
+
+        /// <summary>
+        /// Удалить администратора подразделения
+        /// </summary>
+        DeleteDepartmentAdmin = 705002,
 
         #endregion
 

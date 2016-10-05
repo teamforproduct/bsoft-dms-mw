@@ -460,6 +460,9 @@ namespace DMS_WebAPI.Models
             AddALV(list, "##l@AdminActions:SetDefaultSubordination@l##", "Set default subordination", "Управление правилами рассылки");
             AddALV(list, "##l@AdminActions:DuplicateSubordinations@l##", "Duplicate subordinations", "Управление правилами рассылки");
 
+            AddALV(list, "##l@AdminActions:AddDepartmentAdmin@l##", "Add department admin", "Добавить администратора подразделения");
+            AddALV(list, "##l@AdminActions:DeleteDepartmentAdmin@l##", "Delete department admin", "Удалить администратора подразделения");
+
             return list;
         }
 

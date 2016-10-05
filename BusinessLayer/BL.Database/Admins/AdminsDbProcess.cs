@@ -22,6 +22,7 @@ using BL.Model.AdminCore.Actions;
 using BL.Model.Common;
 using System.Transactions;
 using BL.Model.Tree;
+using BL.Model.DictionaryCore.FrontModel;
 
 namespace BL.Database.Admins
 {
@@ -896,6 +897,19 @@ namespace BL.Database.Admins
             return qry;
         }
 
+        #endregion
+
+        #region [+] DepartmentAdmin ...
+        public IEnumerable<FrontDictionaryAgentEmployee> GetDepartmentAdmins(IContext context, int departmentId)
+        {
+            var list = new List<FrontDictionaryAgentEmployee>();
+
+            list.Add(new FrontDictionaryAgentEmployee { Id = 1, Name = "Иванов П.Н."});
+            list.Add(new FrontDictionaryAgentEmployee { Id = 2, Name = "Казынкин С.С." });
+            list.Add(new FrontDictionaryAgentEmployee { Id = 3, Name = "Петров Ф.К." });
+
+            return list;
+        }
         #endregion
 
         #region [+] Subordination ...

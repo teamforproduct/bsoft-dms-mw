@@ -215,6 +215,13 @@ namespace BL.Logic.AdminCore
         }
         #endregion
 
+        #region [+] DepartmentAdmin ...
+        public IEnumerable<FrontDictionaryAgentEmployee> GetDepartmentAdmins(IContext context, int departmentId)
+        {
+            return _adminDb.GetDepartmentAdmins(context, departmentId);
+        }
+        #endregion
+
         #region [+] Subordination ...
         public IEnumerable<FrontAdminSubordination> GetAdminSubordinations(IContext context, FilterAdminSubordination filter)
         {
