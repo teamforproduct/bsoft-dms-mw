@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
+using BL.Model.Enums;
 
 namespace BL.Model.AdminCore.IncomingModel
 {
@@ -39,6 +40,16 @@ namespace BL.Model.AdminCore.IncomingModel
         /// Дата снятия роли
         /// </summary>
         public DateTime EndDate { get; set; }
+
+        /// <summary>
+        /// Тип объекта. Например: Конкретному сотруднику на конр должности разрешены действия (роль) над конкретным объектом.
+        /// </summary>
+        public EnumObjects ObjectId { get; set; }
+
+        /// <summary>
+        /// Id сущности. Например отдел...
+        /// </summary>
+        public int EntityId { get; set; }
 
     }
 }

@@ -303,6 +303,9 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSysAct(EnumAdminActions.SetDefaultSubordination, EnumObjects.AdminSubordination, "##l@AdminActions:SetDefaultSubordination@l##"));
             items.Add(GetSysAct(EnumAdminActions.DuplicateSubordinations, EnumObjects.AdminSubordination, "##l@AdminActions:DuplicateSubordinations@l##"));
 
+            items.Add(GetSysAct(EnumAdminActions.AddDepartmentAdmin, EnumObjects.DictionaryDepartments, "##l@AdminActions:AddDepartmentAdmin@l##"));
+            items.Add(GetSysAct(EnumAdminActions.DeleteDepartmentAdmin, EnumObjects.DictionaryDepartments, "##l@AdminActions:DeleteDepartmentAdmin@l##"));
+
             // при добавлении действия не забудь добавить перевод! DMS_WebAPI.Models.ApplicationDbImportData GetAdminLanguageValuesForActions
 
             return items;

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using BL.Model.Tree;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.AdminCore.IncomingModel;
+using BL.Model.DictionaryCore.FrontModel;
 
 namespace BL.Logic.AdminCore.Interfaces
 {
@@ -53,6 +54,10 @@ namespace BL.Logic.AdminCore.Interfaces
 
         #region [+] UserRoles ...
         IEnumerable<FrontAdminUserRole> GetAdminUserRoles(IContext context, FilterAdminUserRole filter);
+        #endregion
+
+        #region [+] DepartmentAdmins ...
+        IEnumerable<FrontDictionaryAgentEmployee> GetDepartmentAdmins(IContext context, int departmentId);
         #endregion
 
         #region [+] Subordinations ...

@@ -91,6 +91,13 @@ namespace BL.Logic.AdminCore
                 case EnumAdminActions.SetDefaultSubordination:
                     cmd = DmsResolver.Current.Get<SetDefaultSubordinationsCommand>();
                     break;
+                case EnumAdminActions.AddDepartmentAdmin:
+                    cmd = DmsResolver.Current.Get<AddDepartmentAdminCommand>();
+                    break;
+                case EnumAdminActions.DeleteDepartmentAdmin:
+                    cmd = DmsResolver.Current.Get<DeleteDepartmentAdminCommand>();
+                    break;
+
 
                 #endregion
 

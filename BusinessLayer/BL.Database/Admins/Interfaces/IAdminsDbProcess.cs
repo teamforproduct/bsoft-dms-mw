@@ -7,6 +7,7 @@ using BL.Model.AdminCore.InternalModel;
 using BL.Model.Users;
 using System.Collections.Generic;
 using BL.Model.Tree;
+using BL.Model.DictionaryCore.FrontModel;
 
 namespace BL.Database.Admins.Interfaces
 {
@@ -63,6 +64,8 @@ namespace BL.Database.Admins.Interfaces
         InternalAdminUserRole GetInternalUserRole(IContext context, FilterAdminUserRole filter);
         IEnumerable<FrontAdminUserRole> GetUserRoles(IContext context, FilterAdminUserRole filter);
         #endregion
+
+        IEnumerable<FrontDictionaryAgentEmployee> GetDepartmentAdmins(IContext context, int departmentId);
 
         #region [+] Subordination ...
         int AddSubordination(IContext context, InternalAdminSubordination model);

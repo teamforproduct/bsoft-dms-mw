@@ -173,6 +173,7 @@
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentEmployee.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentUser.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentClientCompany.cs" />
+    <Compile Include="AdminCore\IncomingModel\ModifyAdminDepartmentAdmin.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryPositionExecutorType.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryPositionExecutor.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryPosition.cs" />
