@@ -11,5 +11,6 @@ namespace BL.Model.DocumentCore.FrontModel
         public string Name { get; set; }
         public string Color { get; set; }
         public bool IsSystem { get; set; }
+        public int? DocCount { get; set; }
     }
 }
