@@ -50,7 +50,7 @@ namespace DMS_WebAPI.Controllers.Admins
         /// Удаляет сотрудника с роли администратора подразделения
         /// </summary>
         /// <returns>FrontAdminUserRole</returns> 
-        public IHttpActionResult Delete([FromBody]ModifyAdminDepartmentAdmin model)
+        public IHttpActionResult Delete([FromUri]ModifyAdminDepartmentAdmin model)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();

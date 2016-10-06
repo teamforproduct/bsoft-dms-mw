@@ -741,6 +741,13 @@ namespace BL.Model.Exception
         public DictionaryPositionExecutorNotUnique(System.Exception ex) : base(_MESSAGE, ex) { }
     }
 
+    public class DictionaryPositionExecutorIsInvalidPeriod : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:DictionaryPositionExecutorIsInvalidPeriod@l##";
+        public DictionaryPositionExecutorIsInvalidPeriod() : base(_MESSAGE) { }
+        public DictionaryPositionExecutorIsInvalidPeriod(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
+
     public class DictionaryPositionExecutorPersonalNotUnique : DmsExceptions
     {//На должность \"{0}\" штатно назначен \"{1}\" c {2} по {3}
         private const string _MESSAGE = "##l@DmsExceptions:DictionaryPositionExecutorPersonalNotUnique@l##";

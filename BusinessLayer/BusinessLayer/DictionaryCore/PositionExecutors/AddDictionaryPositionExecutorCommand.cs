@@ -8,35 +8,8 @@ using System.Collections.Generic;
 
 namespace BL.Logic.DictionaryCore
 {
-    public class AddDictionaryPositionExecutorCommand : BaseDictionaryCommand
+    public class AddDictionaryPositionExecutorCommand : BaseDictionaryPositionExecutorCommand
     {
-
-        private ModifyDictionaryPositionExecutor Model
-        {
-            get
-            {
-                if (!(_param is ModifyDictionaryPositionExecutor))
-                {
-                    throw new WrongParameterTypeError();
-                }
-                return (ModifyDictionaryPositionExecutor)_param;
-            }
-        }
-
-        public override bool CanBeDisplayed(int positionId)
-        {
-            return true;
-        }
-
-        public override bool CanExecute()
-        {
-            _adminService.VerifyAccess(_context, CommandType, false);
-
-            DictionaryModelVerifying.VerifyPositionExecutor(_context, _dictDb, Model);
-
-            return true;
-        }
-
         public override object Execute()
         {
             try

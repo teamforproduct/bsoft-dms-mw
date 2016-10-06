@@ -4601,6 +4601,17 @@ namespace BL.Database.Dictionaries
                 qry = qry.Where(filterContains);
             }
 
+            // Исключение списка сотрудников
+            if (filter.NotContainsAgentIDs?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.False<DictionaryPositionExecutors>();
+                filterContains = filter.NotContainsAgentIDs.Aggregate(filterContains,
+                    (current, value) => current.And(e => e.AgentId != value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+
             if (filter.PositionExecutorTypeIDs?.Count > 0)
             {
                 var filterContains = PredicateBuilder.False<DictionaryPositionExecutors>();

@@ -37,6 +37,22 @@ namespace DMS_WebAPI.Controllers.Admins
         }
 
         /// <summary>
+        /// Разрешает должности выполнять рассылку на другую должность с учетом типа расслки
+        /// </summary>
+        /// <param name="model">ModifyAdminSubordination</param>
+        /// <returns>FrontAdminSubordination</returns>
+        public IHttpActionResult Post([FromBody] ModifyAdminSubordination model)
+        {
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var tmpService = DmsResolver.Current.Get<IAdminService>();
+            var tmpItem = tmpService.ExecuteAction(EnumAdminActions.SetSubordination, cxt, model);
+            stopWatch.Stop();
+            return new JsonResult(tmpItem, this, stopWatch.Elapsed);
+        }
+
+        /// <summary>
         /// GetAdminSubordinations by ID 
         /// </summary>
         /// <param name="id">Record Id</param>
@@ -148,19 +164,27 @@ namespace DMS_WebAPI.Controllers.Admins
         }
 
         /// <summary>
-        /// Разрешает должности выполнять рассылку на другую должность с учетом типа расслки
+        /// Возвращает значение настройки: устанавливать рассылку по умолчанию для исполнения при создании новой должности
         /// </summary>
-        /// <param name="model">ModifyAdminSubordination</param>
-        /// <returns>FrontAdminSubordination</returns>
-        public IHttpActionResult Post([FromBody] ModifyAdminSubordination model)
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("IsSetDefaultsForExecution")]
+        public IHttpActionResult IsSetDefaultsForExecution()
         {
-            Stopwatch stopWatch = new Stopwatch();
-            stopWatch.Start();
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItem = tmpService.ExecuteAction(EnumAdminActions.SetSubordination, cxt, model);
-            stopWatch.Stop();
-            return new JsonResult(tmpItem, this, stopWatch.Elapsed);
+            return new JsonResult(new {Value = false }, this);
+        }
+
+        /// <summary>
+        /// Возвращает значение настройки: устанавливать рассылку по умолчанию для сведения при создании новой должности
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("IsSetDefaultsForInforming")]
+        public IHttpActionResult IsSetDefaultsForInforming()
+        {
+            return new JsonResult(new { Value = true }, this);
         }
 
     }

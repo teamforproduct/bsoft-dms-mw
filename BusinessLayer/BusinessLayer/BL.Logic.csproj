@@ -181,6 +181,7 @@
     <Compile Include="DictionaryCore\DictionaryModelVerifying.cs" />
     <Compile Include="DictionaryCore\PositionExecutors\AddDictionaryPositionExecutorCommand.cs" />
     <Compile Include="DictionaryCore\PositionExecutors\DeleteDictionaryPositionExecutorCommand.cs" />
+    <Compile Include="DictionaryCore\PositionExecutors\BaseDictionaryPositionExecutorCommand.cs" />
     <Compile Include="DictionaryCore\PositionExecutors\ModifyDictionaryPositionExecutorCommand.cs" />
     <Compile Include="DictionaryCore\AgentClientCompany\AddDictionaryAgentClientCompanyCommand.cs" />
     <Compile Include="DictionaryCore\AgentClientCompany\DeleteDictionaryAgentClientCompanyCommand.cs" />

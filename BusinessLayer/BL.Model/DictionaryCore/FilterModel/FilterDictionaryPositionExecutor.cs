@@ -17,9 +17,14 @@ namespace BL.Model.DictionaryCore.FilterModel
         public List<int> PositionIDs { get; set; }
 
         /// <summary>
-        /// Список агентов
+        /// Список сотрудников
         /// </summary>
         public List<int> AgentIDs { get; set; }
+
+        /// <summary>
+        /// Исключение сотрудников
+        /// </summary>
+        public List<int> NotContainsAgentIDs { get; set; }
 
         /// <summary>
         /// Дата начала исполнения должностных обязанностей
