@@ -4858,6 +4858,7 @@ namespace BL.Database.Dictionaries
                     Index = x.Index,
                     PrefixFormula = x.PrefixFormula,
                     SuffixFormula = x.SuffixFormula,
+                    NumerationPrefixFormula = x.NumerationPrefixFormula,
                     IsIncoming = x.DirectionCodes.Contains(EnumDocumentDirections.Incoming.ToString()),
                     IsOutcoming = x.DirectionCodes.Contains(EnumDocumentDirections.Outcoming.ToString()),
                     IsInternal = x.DirectionCodes.Contains(EnumDocumentDirections.Internal.ToString()),

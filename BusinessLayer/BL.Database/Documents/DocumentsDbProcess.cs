@@ -22,6 +22,7 @@ using BL.Model.SystemCore.InternalModel;
 using LinqKit;
 using System.Data.Entity;
 using BL.Model.Reports.FrontModel;
+using BL.Model.DictionaryCore.FrontModel;
 
 namespace BL.Database.Documents
 {
@@ -151,7 +152,18 @@ namespace BL.Database.Documents
 
                         if (paging.IsOnlyCounter ?? false)
                         {
-                            return new List<FrontDocument>();
+                            var tagCounters = dbContext.DocumentTagsSet.Join(qry, x => x.DocumentId, y => y.Id, (x, y) => x.Tag).GroupBy(x => x)
+                                .Select(x => new FrontDocumentTag
+                                {
+                                    TagId = x.Key.Id,
+                                    PositionId = x.Key.PositionId,
+                                    PositionName = x.Key.Position.Name,
+                                    Color = x.Key.Color,
+                                    Name = x.Key.Name,
+                                    IsSystem = !x.Key.PositionId.HasValue,
+                                    DocCount = x.Count(),
+                                }).ToList();
+                            return new List<FrontDocument> { new FrontDocument { DocumentTags = tagCounters } };
                         }
 
                         if (!paging.IsAll)
@@ -182,7 +194,18 @@ namespace BL.Database.Documents
 
                     if (paging.IsOnlyCounter ?? false)
                     {
-                        return new List<FrontDocument>();
+                        var tagCounters = dbContext.DocumentTagsSet.Join(qry, x => x.DocumentId, y => y.Id, (x, y) => x.Tag).GroupBy(x=>x)
+                            .Select( x=> new FrontDocumentTag
+                                {
+                                    TagId = x.Key.Id,
+                                    PositionId = x.Key.PositionId,
+                                    PositionName = x.Key.Position.Name,
+                                    Color = x.Key.Color,
+                                    Name = x.Key.Name,
+                                    IsSystem = !x.Key.PositionId.HasValue,
+                                    DocCount = x.Count(),
+                                }).ToList();
+                        return new List<FrontDocument> { new FrontDocument { DocumentTags = tagCounters } };
                     }
 
                     if (!paging.IsAll)
