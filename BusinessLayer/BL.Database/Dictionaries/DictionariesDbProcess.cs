@@ -293,7 +293,7 @@ namespace BL.Database.Dictionaries
             // Исключение списка первичных ключей
             if (filter.NotContainsIDs?.Count > 0)
             {
-                var filterContains = PredicateBuilder.False<DictionaryAgents>();
+                var filterContains = PredicateBuilder.True<DictionaryAgents>();
                 filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                     (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -607,7 +607,7 @@ namespace BL.Database.Dictionaries
             // Исключение списка первичных ключей
             if (filter.NotContainsIDs?.Count > 0)
             {
-                var filterContains = PredicateBuilder.False<DictionaryAgentPersons>();
+                var filterContains = PredicateBuilder.True<DictionaryAgentPersons>();
                 filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                     (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -952,7 +952,7 @@ namespace BL.Database.Dictionaries
             // Исключение списка первичных ключей
             if (filter.NotContainsIDs?.Count > 0)
             {
-                var filterContains = PredicateBuilder.False<DictionaryAgentEmployees>();
+                var filterContains = PredicateBuilder.True<DictionaryAgentEmployees>();
                 filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                     (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -1254,7 +1254,7 @@ namespace BL.Database.Dictionaries
                 // Исключение списка первичных ключей
                 if (filter.NotContainsIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryAgentAddresses>();
+                    var filterContains = PredicateBuilder.True<DictionaryAgentAddresses>();
                     filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -1439,7 +1439,7 @@ namespace BL.Database.Dictionaries
             // Исключение списка первичных ключей
             if (filter.NotContainsIDs?.Count > 0)
             {
-                var filterContains = PredicateBuilder.False<DictionaryAddressTypes>();
+                var filterContains = PredicateBuilder.True<DictionaryAddressTypes>();
                 filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                     (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -1686,7 +1686,7 @@ namespace BL.Database.Dictionaries
             // Исключение списка первичных ключей
             if (filter.NotContainsIDs?.Count > 0)
             {
-                var filterContains = PredicateBuilder.False<DictionaryCompanies>();
+                var filterContains = PredicateBuilder.True<DictionaryCompanies>();
                 filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                     (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -1958,7 +1958,7 @@ namespace BL.Database.Dictionaries
             // Исключение списка первичных ключей
             if (filter.NotContainsIDs?.Count > 0)
             {
-                var filterContains = PredicateBuilder.False<DictionaryAgentCompanies>();
+                var filterContains = PredicateBuilder.True<DictionaryAgentCompanies>();
                 filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                     (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -2279,7 +2279,7 @@ namespace BL.Database.Dictionaries
             // Исключение списка первичных ключей
             if (filter.NotContainsIDs?.Count > 0)
             {
-                var filterContains = PredicateBuilder.False<DictionaryAgentBanks>();
+                var filterContains = PredicateBuilder.True<DictionaryAgentBanks>();
                 filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                     (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -2518,7 +2518,7 @@ namespace BL.Database.Dictionaries
             // Исключение списка первичных ключей
             if (filter.NotContainsIDs?.Count > 0)
             {
-                var filterContains = PredicateBuilder.False<DictionaryAgentAccounts>();
+                var filterContains = PredicateBuilder.True<DictionaryAgentAccounts>();
                 filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                     (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -2583,7 +2583,7 @@ namespace BL.Database.Dictionaries
 
                 if (filter.NotContainsIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryContactTypes>();
+                    var filterContains = PredicateBuilder.True<DictionaryContactTypes>();
                     filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -2699,7 +2699,7 @@ namespace BL.Database.Dictionaries
                 // Исключение списка первичных ключей
                 if (filter.NotContainsIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryContactTypes>();
+                    var filterContains = PredicateBuilder.True<DictionaryContactTypes>();
                     filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -2894,7 +2894,7 @@ namespace BL.Database.Dictionaries
 
                 if (filter.NotContainsIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryAgentContacts>();
+                    var filterContains = PredicateBuilder.True<DictionaryAgentContacts>();
                     filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -3175,7 +3175,7 @@ namespace BL.Database.Dictionaries
             // Исключение списка первичных ключей
             if (filter.NotContainsIDs?.Count > 0)
             {
-                var filterContains = PredicateBuilder.False<DictionaryDepartments>();
+                var filterContains = PredicateBuilder.True<DictionaryDepartments>();
                 filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                     (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -3454,7 +3454,7 @@ namespace BL.Database.Dictionaries
             // Исключение списка первичных ключей
             if (filter.NotContainsIDs?.Count > 0)
             {
-                var filterContains = PredicateBuilder.False<DictionaryDocumentSubjects>();
+                var filterContains = PredicateBuilder.True<DictionaryDocumentSubjects>();
                 filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                     (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -3591,7 +3591,7 @@ namespace BL.Database.Dictionaries
             // Исключение списка первичных ключей
             if (filter.NotContainsIDs?.Count > 0)
             {
-                var filterContains = PredicateBuilder.False<DictionaryDocumentTypes>();
+                var filterContains = PredicateBuilder.True<DictionaryDocumentTypes>();
                 filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                     (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -3661,7 +3661,7 @@ namespace BL.Database.Dictionaries
                 // Исключение списка первичных ключей
                 if (filter.NotContainsIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryEventTypes>();
+                    var filterContains = PredicateBuilder.True<DictionaryEventTypes>();
                     filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -3751,7 +3751,7 @@ namespace BL.Database.Dictionaries
                 // Исключение списка первичных ключей
                 if (filter.NotContainsIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryImportanceEventTypes>();
+                    var filterContains = PredicateBuilder.True<DictionaryImportanceEventTypes>();
                     filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -3828,7 +3828,7 @@ namespace BL.Database.Dictionaries
                 // Исключение списка первичных ключей
                 if (filter.NotContainsIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryLinkTypes>();
+                    var filterContains = PredicateBuilder.True<DictionaryLinkTypes>();
                     filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -4164,13 +4164,11 @@ namespace BL.Database.Dictionaries
             // Исключение списка первичных ключей
             if (filter.NotContainsIDs?.Count > 0)
             {
-                //var filterContains = PredicateBuilder.False<DictionaryPositions>();
-                //filterContains = filter.NotContainsIDs.Aggregate(filterContains,
-                //    (current, value) => current.Or(e => e.Id != value).Expand());
+                var filterContains = PredicateBuilder.True<DictionaryPositions>();
+                filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                    (current, value) => current.And(e => e.Id != value).Expand());
 
-                //qry = qry.Where(filterContains);
-
-                qry = qry.Where(x => !filter.NotContainsIDs.Contains(x.Id));
+                qry = qry.Where(filterContains);
             }
 
             // по вышестоящим отделам
@@ -4459,7 +4457,7 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetPositionExecutorsQuery(context, dbContext, filter);
 
-                var maxDateTime = DateTime.Now.AddYears(50);
+                DateTime? maxDateTime = DateTime.Now.AddYears(50);
 
                 return qry.Select(x => new InternalDictionaryPositionExecutor
                 {
@@ -4471,7 +4469,7 @@ namespace BL.Database.Dictionaries
                     AccessLevelId = x.AccessLevelId,
                     Description = x.Description,
                     StartDate = x.StartDate,
-                    EndDate = x.EndDate,//(x.EndDate > maxDateTime ? null : x.EndDate),
+                    EndDate = x.EndDate > maxDateTime ? (DateTime?)null : x.EndDate,
                     LastChangeUserId = x.LastChangeUserId,
                     LastChangeDate = x.LastChangeDate
                 }).FirstOrDefault();
@@ -4489,6 +4487,8 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetPositionExecutorsQuery(context, dbContext, filter);
 
+                DateTime? maxDateTime = DateTime.Now.AddYears(50);
+
                 return qry.Select(x => new FrontDictionaryPositionExecutor
                 {
                     Id = x.Id,
@@ -4499,7 +4499,7 @@ namespace BL.Database.Dictionaries
                     AccessLevelId = (EnumAccessLevels)x.AccessLevelId,
                     Description = x.Description,
                     StartDate = x.StartDate,
-                    EndDate = x.EndDate,//(x.EndDate > maxDateTime ? null : x.EndDate),
+                    EndDate = x.EndDate > maxDateTime ? (DateTime?)null : x.EndDate,
                     AgentName = x.Agent.Name,
                     PositionName = x.Position.Name,
                     PositionFullName = x.Position.FullName,
@@ -4580,7 +4580,7 @@ namespace BL.Database.Dictionaries
             // Исключение списка первичных ключей
             if (filter.NotContainsIDs?.Count > 0)
             {
-                var filterContains = PredicateBuilder.False<DictionaryPositionExecutors>();
+                var filterContains = PredicateBuilder.True<DictionaryPositionExecutors>();
                 filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                     (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -4736,7 +4736,7 @@ namespace BL.Database.Dictionaries
             // Исключение списка первичных ключей
             if (filter.NotContainsIDs?.Count > 0)
             {
-                var filterContains = PredicateBuilder.False<DictionaryPositionExecutorTypes>();
+                var filterContains = PredicateBuilder.True<DictionaryPositionExecutorTypes>();
 
                 filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                     (current, value) => current.And(e => e.Id != value).Expand());
@@ -4900,7 +4900,7 @@ namespace BL.Database.Dictionaries
             // Исключение списка первичных ключей
             if (filter.NotContainsIDs?.Count > 0)
             {
-                var filterContains = PredicateBuilder.False<DictionaryRegistrationJournals>();
+                var filterContains = PredicateBuilder.True<DictionaryRegistrationJournals>();
                 filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                     (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -5017,7 +5017,7 @@ namespace BL.Database.Dictionaries
                 // Исключение списка первичных ключей
                 if (filter.NotContainsIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryResultTypes>();
+                    var filterContains = PredicateBuilder.True<DictionaryResultTypes>();
                     filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -5090,7 +5090,7 @@ namespace BL.Database.Dictionaries
                 // Исключение списка первичных ключей
                 if (filter.NotContainsIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionarySendTypes>();
+                    var filterContains = PredicateBuilder.True<DictionarySendTypes>();
                     filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -5167,7 +5167,7 @@ namespace BL.Database.Dictionaries
                 // Исключение списка первичных ключей
                 if (filter.NotContainsIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryStandartSendListContents>();
+                    var filterContains = PredicateBuilder.True<DictionaryStandartSendListContents>();
                     filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -5348,7 +5348,7 @@ namespace BL.Database.Dictionaries
                 // Исключение списка первичных ключей
                 if (filter.NotContainsIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryStandartSendLists>();
+                    var filterContains = PredicateBuilder.True<DictionaryStandartSendLists>();
                     filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -5491,7 +5491,7 @@ namespace BL.Database.Dictionaries
                 // Исключение списка первичных ключей
                 if (filter.NotContainsIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionarySubordinationTypes>();
+                    var filterContains = PredicateBuilder.True<DictionarySubordinationTypes>();
                     filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -5588,7 +5588,7 @@ namespace BL.Database.Dictionaries
 
                 if (filter.NotContainsIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryTags>();
+                    var filterContains = PredicateBuilder.True<DictionaryTags>();
                     filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -5866,7 +5866,7 @@ namespace BL.Database.Dictionaries
                 // Исключение списка первичных ключей
                 if (filter.NotContainsIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<CustomDictionaryTypes>();
+                    var filterContains = PredicateBuilder.True<CustomDictionaryTypes>();
                     filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -6021,7 +6021,7 @@ namespace BL.Database.Dictionaries
                 // Исключение списка первичных ключей
                 if (filter.NotContainsIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<CustomDictionaries>();
+                    var filterContains = PredicateBuilder.True<CustomDictionaries>();
                     filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.Id != value).Expand());
 

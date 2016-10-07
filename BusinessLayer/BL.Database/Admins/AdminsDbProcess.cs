@@ -363,7 +363,7 @@ namespace BL.Database.Admins
             // Исключение списка первичных ключей
             if (filter.NotContainsIDs?.Count > 0)
             {
-                var filterContains = PredicateBuilder.False<AdminRoles>();
+                var filterContains = PredicateBuilder.True<AdminRoles>();
                 filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                     (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -509,7 +509,7 @@ namespace BL.Database.Admins
             // Исключение списка первичных ключей
             if (filter.NotContainsIDs?.Count > 0)
             {
-                var filterContains = PredicateBuilder.False<AdminRoleActions>();
+                var filterContains = PredicateBuilder.True<AdminRoleActions>();
                 filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                     (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -711,7 +711,7 @@ namespace BL.Database.Admins
             // Исключение списка первичных ключей
             if (filter.NotContainsIDs?.Count > 0)
             {
-                var filterContains = PredicateBuilder.False<AdminPositionRoles>();
+                var filterContains = PredicateBuilder.True<AdminPositionRoles>();
                 filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                     (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -854,7 +854,7 @@ namespace BL.Database.Admins
             // Исключение списка первичных ключей
             if (filter.NotContainsIDs?.Count > 0)
             {
-                var filterContains = PredicateBuilder.False<AdminUserRoles>();
+                var filterContains = PredicateBuilder.True<AdminUserRoles>();
                 filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                     (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -1115,7 +1115,7 @@ namespace BL.Database.Admins
             // Исключение списка первичных ключей
             if (filter.NotContainsIDs?.Count > 0)
             {
-                var filterContains = PredicateBuilder.False<AdminSubordinations>();
+                var filterContains = PredicateBuilder.True<AdminSubordinations>();
                 filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                     (current, value) => current.And(e => e.Id != value).Expand());
 
