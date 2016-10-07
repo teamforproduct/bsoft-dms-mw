@@ -65,7 +65,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// Дата окончания исполнения должности
         /// </summary>
-        [Required]
+        //[Required]
         public DateTime? EndDate { get; set; }
 
     }
