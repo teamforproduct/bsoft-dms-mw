@@ -4164,11 +4164,13 @@ namespace BL.Database.Dictionaries
             // Исключение списка первичных ключей
             if (filter.NotContainsIDs?.Count > 0)
             {
-                var filterContains = PredicateBuilder.False<DictionaryPositions>();
-                filterContains = filter.NotContainsIDs.Aggregate(filterContains,
-                    (current, value) => current.And(e => e.Id != value).Expand());
+                //var filterContains = PredicateBuilder.False<DictionaryPositions>();
+                //filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                //    (current, value) => current.Or(e => e.Id != value).Expand());
 
-                qry = qry.Where(filterContains);
+                //qry = qry.Where(filterContains);
+
+                qry = qry.Where(x => !filter.NotContainsIDs.Contains(x.Id));
             }
 
             // по вышестоящим отделам
@@ -4457,6 +4459,8 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetPositionExecutorsQuery(context, dbContext, filter);
 
+                var maxDateTime = DateTime.Now.AddYears(50);
+
                 return qry.Select(x => new InternalDictionaryPositionExecutor
                 {
                     Id = x.Id,
@@ -4467,7 +4471,7 @@ namespace BL.Database.Dictionaries
                     AccessLevelId = x.AccessLevelId,
                     Description = x.Description,
                     StartDate = x.StartDate,
-                    EndDate = x.EndDate,
+                    EndDate = x.EndDate,//(x.EndDate > maxDateTime ? null : x.EndDate),
                     LastChangeUserId = x.LastChangeUserId,
                     LastChangeDate = x.LastChangeDate
                 }).FirstOrDefault();
@@ -4495,7 +4499,7 @@ namespace BL.Database.Dictionaries
                     AccessLevelId = (EnumAccessLevels)x.AccessLevelId,
                     Description = x.Description,
                     StartDate = x.StartDate,
-                    EndDate = x.EndDate,
+                    EndDate = x.EndDate,//(x.EndDate > maxDateTime ? null : x.EndDate),
                     AgentName = x.Agent.Name,
                     PositionName = x.Position.Name,
                     PositionFullName = x.Position.FullName,

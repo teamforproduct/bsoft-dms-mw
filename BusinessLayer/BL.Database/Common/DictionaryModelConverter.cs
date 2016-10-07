@@ -4,6 +4,7 @@ using BL.Model.DictionaryCore.InternalModel;
 using BL.Database.DBModel.Dictionary;
 using BL.Model.Enums;
 using BL.CrossCutting.Interfaces;
+using System;
 
 namespace BL.Database.Common
 {
@@ -200,7 +201,7 @@ namespace BL.Database.Common
                 PositionExecutorTypeId = item.PositionExecutorTypeId,
                 AccessLevelId = item.AccessLevelId,
                 StartDate = item.StartDate,
-                EndDate = item.EndDate,
+                EndDate = item.EndDate ?? DateTime.MaxValue,
                 LastChangeDate = item.LastChangeDate,
                 LastChangeUserId = item.LastChangeUserId
             };

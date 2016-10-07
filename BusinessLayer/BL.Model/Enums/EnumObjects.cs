@@ -61,5 +61,8 @@
         AdminUserRoles = 703,
         AdminSubordination = 704,
 
+
+        SystemSettings = 900,
+
     }
 }

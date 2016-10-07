@@ -460,9 +460,15 @@ namespace DMS_WebAPI.Models
             AddALV(list, "##l@AdminActions:SetSubordinationByDepartment@l##", "Set subordination by department", "Управление правилами рассылки");
             AddALV(list, "##l@AdminActions:SetDefaultSubordination@l##", "Set default subordination", "Управление правилами рассылки");
             AddALV(list, "##l@AdminActions:DuplicateSubordinations@l##", "Duplicate subordinations", "Управление правилами рассылки");
+            AddALV(list, "##l@AdminActions:SetAllSubordination@l##", "Allow all subordinations", "Разрешить рассылку без ограничений");
 
             AddALV(list, "##l@AdminActions:AddDepartmentAdmin@l##", "Add department admin", "Добавить администратора подразделения");
             AddALV(list, "##l@AdminActions:DeleteDepartmentAdmin@l##", "Delete department admin", "Удалить администратора подразделения");
+
+
+            AddALV(list, "##l@SystemActions:SetSetting@l##", "Add setting", "Добавить настройку");
+
+            // Спасибо за то, что добавил перевод! Удачных идей и быстрого кода.
 
             return list;
         }

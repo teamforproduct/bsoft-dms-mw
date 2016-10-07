@@ -69,6 +69,6 @@ namespace BL.Logic.PropertyCore.Commands
             }
         }
 
-        public override EnumPropertyAction CommandType => EnumPropertyAction.AddProperty;
+        public override EnumPropertyActions CommandType => EnumPropertyActions.AddProperty;
     }
 }

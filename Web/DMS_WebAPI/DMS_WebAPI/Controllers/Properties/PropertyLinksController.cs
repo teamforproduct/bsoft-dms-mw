@@ -34,7 +34,7 @@ namespace DMS_WebAPI.Controllers.Properties
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpServ = DmsResolver.Current.Get<IPropertyService>();
-            return Get((int)tmpServ.ExecuteAction(EnumPropertyAction.AddPropertyLink,  ctx, model));
+            return Get((int)tmpServ.ExecuteAction(EnumPropertyActions.AddPropertyLink,  ctx, model));
         }
 
         public IHttpActionResult Put(int id, [FromBody]ModifyPropertyLink model)
@@ -42,7 +42,7 @@ namespace DMS_WebAPI.Controllers.Properties
             model.Id = id;
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpServ = DmsResolver.Current.Get<IPropertyService>();
-            tmpServ.ExecuteAction(EnumPropertyAction.ModifyPropertyLink, ctx, model);
+            tmpServ.ExecuteAction(EnumPropertyActions.ModifyPropertyLink, ctx, model);
             return Get(model.Id);
         }
 
@@ -51,7 +51,7 @@ namespace DMS_WebAPI.Controllers.Properties
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpServ = DmsResolver.Current.Get<IPropertyService>();
 
-            tmpServ.ExecuteAction(EnumPropertyAction.DeletePropertyLink, ctx, id);
+            tmpServ.ExecuteAction(EnumPropertyActions.DeletePropertyLink, ctx, id);
             FrontPropertyLink tmp = new FrontPropertyLink();
             tmp.Id = id;
 

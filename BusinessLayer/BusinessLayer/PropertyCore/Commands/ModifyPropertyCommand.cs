@@ -74,6 +74,6 @@ namespace BL.Logic.PropertyCore.Commands
             return null;
         }
 
-        public override EnumPropertyAction CommandType => EnumPropertyAction.ModifyProperty;
+        public override EnumPropertyActions CommandType => EnumPropertyActions.ModifyProperty;
     }
 }

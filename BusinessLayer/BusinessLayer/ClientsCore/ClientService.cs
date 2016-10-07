@@ -16,6 +16,8 @@ using BL.Database.Admins.Interfaces;
 using BL.Model.AdminCore.Clients;
 using BL.Model.AdminCore.InternalModel;
 using BL.Model.DictionaryCore.InternalModel;
+using BL.Database.DBModel.System;
+using BL.Model.Constants;
 
 namespace BL.Logic.ClientCore
 {
@@ -72,10 +74,30 @@ namespace BL.Logic.ClientCore
             return res;
         }
 
+        public static List<SystemSettings> GetSystemSettings()
+        {
+            var items = new List<SystemSettings>();
+
+            items.Add(new SystemSettings()
+            {
+                Key = SettingConstants.SUBORDINATIONS_ADD_DEFAULT_FOR_EXECUTION,
+                Value = SettingConstants.SUBORDINATIONS_ADD_DEFAULT_FOR_EXECUTION_DEFAULT.ToString(),
+            });
+
+            items.Add(new SystemSettings()
+            {
+                Key = SettingConstants.SUBORDINATIONS_ADD_DEFAULT_FOR_INFORMING,
+                Value = SettingConstants.SUBORDINATIONS_ADD_DEFAULT_FOR_INFORMING_DEFAULT.ToString(),
+            });
+
+            return items;
+        }
+
+
         public void AddNewClient(IContext context, AddClientContent client)
         {
-            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            context.CurrentClientId = client.ClientId;
+            //GetSystemSettings
+
             #region [+] ContactsTypes ...
             // EnumDictionaryContactsTypes!!!!!!!!!!!!!!!!!!!!!!
             // Pss Локализация для типов контактов
@@ -447,13 +469,13 @@ namespace BL.Logic.ClientCore
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.AddCustomDictionary });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.ModifyCustomDictionary });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.DeleteCustomDictionary });
-            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumPropertyAction.AddProperty });
-            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumPropertyAction.ModifyProperty });
-            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumPropertyAction.DeleteProperty });
-            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumPropertyAction.AddPropertyLink });
-            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumPropertyAction.ModifyPropertyLink });
-            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumPropertyAction.DeletePropertyLink });
-            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumPropertyAction.ModifyPropertyValues });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumPropertyActions.AddProperty });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumPropertyActions.ModifyProperty });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumPropertyActions.DeleteProperty });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumPropertyActions.AddPropertyLink });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumPropertyActions.ModifyPropertyLink });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumPropertyActions.DeletePropertyLink });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumPropertyActions.ModifyPropertyValues });
 
             return items;
         }

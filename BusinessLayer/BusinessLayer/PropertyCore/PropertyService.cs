@@ -22,7 +22,7 @@ namespace BL.Logic.PropertyCore
             _commandService = commandService;
         }
 
-        public object ExecuteAction(EnumPropertyAction act, IContext context, object param)
+        public object ExecuteAction(EnumPropertyActions act, IContext context, object param)
         {
             var cmd = PropertyCommandFactory.GetPropertyCommand(act, context, param);
             var res = _commandService.ExecuteCommand(cmd);

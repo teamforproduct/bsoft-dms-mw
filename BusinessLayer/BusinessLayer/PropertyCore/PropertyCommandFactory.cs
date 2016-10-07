@@ -9,27 +9,27 @@ namespace BL.Logic.PropertyCore
 {
     public static class PropertyCommandFactory
     {
-        public static IPropertyCommand GetPropertyCommand(EnumPropertyAction act, IContext ctx, object param)
+        public static IPropertyCommand GetPropertyCommand(EnumPropertyActions act, IContext ctx, object param)
         {
             IPropertyCommand cmd;
             switch (act)
             {
-                case EnumPropertyAction.AddProperty:
+                case EnumPropertyActions.AddProperty:
                     cmd = DmsResolver.Current.Get<AddPropertyCommand>();
                     break;
-                case EnumPropertyAction.DeleteProperty:
+                case EnumPropertyActions.DeleteProperty:
                     cmd = DmsResolver.Current.Get<DeletePropertyCommand>();
                     break;
-                case EnumPropertyAction.ModifyProperty:
+                case EnumPropertyActions.ModifyProperty:
                     cmd = DmsResolver.Current.Get<ModifyPropertyCommand>();
                     break;
-                case EnumPropertyAction.AddPropertyLink:
+                case EnumPropertyActions.AddPropertyLink:
                     cmd = DmsResolver.Current.Get<AddPropertyLinkCommand>();
                     break;
-                case EnumPropertyAction.DeletePropertyLink:
+                case EnumPropertyActions.DeletePropertyLink:
                     cmd = DmsResolver.Current.Get<DeletePropertyLinkCommand>();
                     break;
-                case EnumPropertyAction.ModifyPropertyLink:
+                case EnumPropertyActions.ModifyPropertyLink:
                     cmd = DmsResolver.Current.Get<ModifyPropertyLinkCommand>();
                     break;
                 default:

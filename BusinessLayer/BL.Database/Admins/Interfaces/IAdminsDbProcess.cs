@@ -69,6 +69,7 @@ namespace BL.Database.Admins.Interfaces
 
         #region [+] Subordination ...
         int AddSubordination(IContext context, InternalAdminSubordination model);
+        void AddSubordinations(IContext context, List<InternalAdminSubordination> list);
         void UpdateSubordination(IContext context, InternalAdminSubordination model);
         void DeleteSubordination(IContext context, InternalAdminSubordination model);
         void DeleteSubordinationsBySourcePositionId(IContext context, InternalAdminSubordination model);
@@ -77,6 +78,7 @@ namespace BL.Database.Admins.Interfaces
         List<int> GetSubordinationTargetIDs(IContext context, FilterAdminSubordination filter);
         InternalAdminSubordination GetInternalSubordination(IContext context, FilterAdminSubordination filter);
         IEnumerable<FrontAdminSubordination> GetSubordinations(IContext context, FilterAdminSubordination filter);
+        IEnumerable<InternalAdminSubordination> GetInternalSubordinations(IContext context, FilterAdminSubordination filter);
         #endregion
 
         #region [+] MainMenu ...

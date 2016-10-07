@@ -32,7 +32,9 @@ namespace BL.Logic.DictionaryCore
         {
             _adminService.VerifyAccess(_context, CommandType, false);
 
-            if (Model.StartDate > Model.EndDate) throw new DictionaryPositionExecutorIsInvalidPeriod();
+           
+
+            if (Model.StartDate > (Model.EndDate ?? DateTime.MaxValue)) throw new DictionaryPositionExecutorIsInvalidPeriod();
 
             FrontDictionaryPositionExecutor executor = null;
 
@@ -40,12 +42,12 @@ namespace BL.Logic.DictionaryCore
             {
                 NotContainsIDs = new List<int> { Model.Id },
                 PositionIDs = new List<int> { Model.PositionId },
-                Period = new Period(Model.StartDate, Model.EndDate),
+                Period = new Period(Model.StartDate, Model.EndDate ?? DateTime.MaxValue),
                 AgentIDs = new List<int> { Model.AgentId },
             }).FirstOrDefault();
 
             if (executor != null)
-            { throw new DictionaryPositionExecutorNotUnique(executor.PositionName, executor.AgentName, executor.StartDate, executor.EndDate); }
+            { throw new DictionaryPositionExecutorNotUnique(executor.PositionName, executor.AgentName, executor.StartDate, executor.EndDate ?? DateTime.MaxValue); }
 
 
             switch (Model.PositionExecutorTypeId)
@@ -56,12 +58,12 @@ namespace BL.Logic.DictionaryCore
                     {
                         NotContainsIDs = new List<int> { Model.Id },
                         PositionIDs = new List<int> { Model.PositionId },
-                        Period = new Period(Model.StartDate, Model.EndDate),
+                        Period = new Period(Model.StartDate, Model.EndDate ?? DateTime.MaxValue),
                         PositionExecutorTypeIDs = new List<EnumPositionExecutionTypes> { (EnumPositionExecutionTypes)Model.PositionExecutorTypeId },
                     }).FirstOrDefault();
 
                     if (executor != null)
-                    { throw new DictionaryPositionExecutorPersonalNotUnique(executor.PositionName, executor.AgentName, executor.StartDate, executor.EndDate); }
+                    { throw new DictionaryPositionExecutorPersonalNotUnique(executor.PositionName, executor.AgentName, executor.StartDate, executor.EndDate ?? DateTime.MaxValue); }
                     break;
                 case EnumPositionExecutionTypes.IO:
                     // IO может быть только один на должности за период
@@ -69,12 +71,12 @@ namespace BL.Logic.DictionaryCore
                     {
                         NotContainsIDs = new List<int> { Model.Id },
                         PositionIDs = new List<int> { Model.PositionId },
-                        Period = new Period(Model.StartDate, Model.EndDate),
+                        Period = new Period(Model.StartDate, Model.EndDate ?? DateTime.MaxValue),
                         PositionExecutorTypeIDs = new List<EnumPositionExecutionTypes> { (EnumPositionExecutionTypes)Model.PositionExecutorTypeId },
                     }).FirstOrDefault();
 
                     if (executor != null)
-                    { throw new DictionaryPositionExecutorIONotUnique(executor.PositionName, executor.AgentName, executor.StartDate, executor.EndDate); }
+                    { throw new DictionaryPositionExecutorIONotUnique(executor.PositionName, executor.AgentName, executor.StartDate, executor.EndDate ?? DateTime.MaxValue); }
                     break;
                 case EnumPositionExecutionTypes.Referent:
                     // Референтов может быть несколько может быть н на должности за период
@@ -82,13 +84,13 @@ namespace BL.Logic.DictionaryCore
                     {
                         NotContainsIDs = new List<int> { Model.Id },
                         PositionIDs = new List<int> { Model.PositionId },
-                        Period = new Period(Model.StartDate, Model.EndDate),
+                        Period = new Period(Model.StartDate, Model.EndDate ?? DateTime.MaxValue),
                         PositionExecutorTypeIDs = new List<EnumPositionExecutionTypes> { (EnumPositionExecutionTypes)Model.PositionExecutorTypeId },
                         AgentIDs = new List<int> { Model.AgentId },
                     }).FirstOrDefault();
 
                     if (executor != null)
-                    { throw new DictionaryPositionExecutorReferentNotUnique(executor.PositionName, executor.AgentName, executor.StartDate, executor.EndDate); }
+                    { throw new DictionaryPositionExecutorReferentNotUnique(executor.PositionName, executor.AgentName, executor.StartDate, executor.EndDate ?? DateTime.MaxValue); }
 
                     break;
                 default:
@@ -96,13 +98,13 @@ namespace BL.Logic.DictionaryCore
                     {
                         NotContainsIDs = new List<int> { Model.Id },
                         PositionIDs = new List<int> { Model.PositionId },
-                        Period = new Period(Model.StartDate, Model.EndDate),
+                        Period = new Period(Model.StartDate, Model.EndDate ?? DateTime.MaxValue),
                         PositionExecutorTypeIDs = new List<EnumPositionExecutionTypes> { (EnumPositionExecutionTypes)Model.PositionExecutorTypeId },
                         AgentIDs = new List<int> { Model.AgentId },
                     }).FirstOrDefault();
 
                     if (executor != null)
-                    { throw new DictionaryPositionExecutorReferentNotUnique(executor.PositionName, executor.AgentName, executor.StartDate, executor.EndDate); }
+                    { throw new DictionaryPositionExecutorReferentNotUnique(executor.PositionName, executor.AgentName, executor.StartDate, executor.EndDate ?? DateTime.MaxValue); }
 
                     break;
             }

@@ -104,6 +104,10 @@
         /// </summary>
         SetDefaultSubordination = 704005,
 
+        /// <summary>
+        /// Разрешить все
+        /// </summary>
+        SetAllSubordination = 704006,
         #endregion
 
         #region [+] DepartmentAdmin ...

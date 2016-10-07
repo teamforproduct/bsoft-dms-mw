@@ -1,6 +1,7 @@
 ﻿using BL.Database.DBModel.Admin;
 using BL.Database.DBModel.Dictionary;
 using BL.Database.DBModel.System;
+using BL.Model.Constants;
 using BL.Model.Enums;
 using System;
 using System.Collections.Generic;
@@ -75,6 +76,8 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSystemObjects(EnumObjects.AdminRoles, "Роли"));
             items.Add(GetSystemObjects(EnumObjects.AdminPositionRoles, "Роли"));
             items.Add(GetSystemObjects(EnumObjects.AdminUserRoles, "Роли"));
+
+            items.Add(GetSystemObjects(EnumObjects.SystemSettings, "Системные настройки"));
 
             return items;
         }
@@ -272,13 +275,13 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSysAct(EnumDictionaryActions.AddCustomDictionary, EnumObjects.CustomDictionaries, "##l@DictionaryActions:AddCustomDictionary@l##"));
             items.Add(GetSysAct(EnumDictionaryActions.ModifyCustomDictionary, EnumObjects.CustomDictionaries, "##l@DictionaryActions:ModifyCustomDictionary@l##"));
             items.Add(GetSysAct(EnumDictionaryActions.DeleteCustomDictionary, EnumObjects.CustomDictionaries, "##l@DictionaryActions:DeleteCustomDictionary@l##"));
-            items.Add(GetSysAct(EnumPropertyAction.AddProperty, EnumObjects.Properties, "##l@PropertyAction:AddProperty@l##"));
-            items.Add(GetSysAct(EnumPropertyAction.ModifyProperty, EnumObjects.Properties, "##l@PropertyAction:ModifyProperty@l##"));
-            items.Add(GetSysAct(EnumPropertyAction.DeleteProperty, EnumObjects.Properties, "##l@PropertyAction:DeleteProperty@l##"));
-            items.Add(GetSysAct(EnumPropertyAction.AddPropertyLink, EnumObjects.PropertyLinks, "##l@PropertyAction:AddPropertyLink@l##"));
-            items.Add(GetSysAct(EnumPropertyAction.ModifyPropertyLink, EnumObjects.PropertyLinks, "##l@PropertyAction:ModifyPropertyLink@l##"));
-            items.Add(GetSysAct(EnumPropertyAction.DeletePropertyLink, EnumObjects.PropertyLinks, "##l@PropertyAction:DeletePropertyLink@l##"));
-            items.Add(GetSysAct(EnumPropertyAction.ModifyPropertyValues, EnumObjects.PropertyValues, "##l@PropertyAction:ModifyPropertyValues@l##"));
+            items.Add(GetSysAct(EnumPropertyActions.AddProperty, EnumObjects.Properties, "##l@PropertyAction:AddProperty@l##"));
+            items.Add(GetSysAct(EnumPropertyActions.ModifyProperty, EnumObjects.Properties, "##l@PropertyAction:ModifyProperty@l##"));
+            items.Add(GetSysAct(EnumPropertyActions.DeleteProperty, EnumObjects.Properties, "##l@PropertyAction:DeleteProperty@l##"));
+            items.Add(GetSysAct(EnumPropertyActions.AddPropertyLink, EnumObjects.PropertyLinks, "##l@PropertyAction:AddPropertyLink@l##"));
+            items.Add(GetSysAct(EnumPropertyActions.ModifyPropertyLink, EnumObjects.PropertyLinks, "##l@PropertyAction:ModifyPropertyLink@l##"));
+            items.Add(GetSysAct(EnumPropertyActions.DeletePropertyLink, EnumObjects.PropertyLinks, "##l@PropertyAction:DeletePropertyLink@l##"));
+            items.Add(GetSysAct(EnumPropertyActions.ModifyPropertyValues, EnumObjects.PropertyValues, "##l@PropertyAction:ModifyPropertyValues@l##"));
 
             items.Add(GetSysAct(EnumEncryptionActions.AddEncryptionCertificate, EnumObjects.EncryptionCertificates, "##l@EncryptionActions:AddEncryptionCertificate@l##"));
             items.Add(GetSysAct(EnumEncryptionActions.ModifyEncryptionCertificate, EnumObjects.EncryptionCertificates, "##l@EncryptionActions:ModifyEncryptionCertificate@l##"));
@@ -302,9 +305,12 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSysAct(EnumAdminActions.SetSubordinationByDepartment, EnumObjects.AdminSubordination, "##l@AdminActions:SetSubordinationByDepartment@l##"));
             items.Add(GetSysAct(EnumAdminActions.SetDefaultSubordination, EnumObjects.AdminSubordination, "##l@AdminActions:SetDefaultSubordination@l##"));
             items.Add(GetSysAct(EnumAdminActions.DuplicateSubordinations, EnumObjects.AdminSubordination, "##l@AdminActions:DuplicateSubordinations@l##"));
+            items.Add(GetSysAct(EnumAdminActions.SetAllSubordination, EnumObjects.AdminSubordination, "##l@AdminActions:SetAllSubordination@l##"));
 
             items.Add(GetSysAct(EnumAdminActions.AddDepartmentAdmin, EnumObjects.DictionaryDepartments, "##l@AdminActions:AddDepartmentAdmin@l##"));
             items.Add(GetSysAct(EnumAdminActions.DeleteDepartmentAdmin, EnumObjects.DictionaryDepartments, "##l@AdminActions:DeleteDepartmentAdmin@l##"));
+
+            items.Add(GetSysAct(EnumSystemActions.SetSetting, EnumObjects.SystemSettings, "##l@SystemActions:SetSetting@l##"));
 
             // при добавлении действия не забудь добавить перевод! DMS_WebAPI.Models.ApplicationDbImportData GetAdminLanguageValuesForActions
 
@@ -317,13 +323,16 @@ namespace BL.Database.DatabaseContext
         private static SystemActions GetSysAct(EnumEncryptionActions id, EnumObjects objId, string description, string category = null, bool isGrantable = true, bool isGrantableByRecordId = false, bool isVisible = true, int? grantId = null)
         { return GetSystemAction((int)id, id.ToString(), objId, description, category, isGrantable, isGrantableByRecordId, isVisible, grantId); }
 
-        private static SystemActions GetSysAct(EnumPropertyAction id, EnumObjects objId, string description, string category = null, bool isGrantable = true, bool isGrantableByRecordId = false, bool isVisible = true, int? grantId = null)
+        private static SystemActions GetSysAct(EnumPropertyActions id, EnumObjects objId, string description, string category = null, bool isGrantable = true, bool isGrantableByRecordId = false, bool isVisible = true, int? grantId = null)
         { return GetSystemAction((int)id, id.ToString(), objId, description, category, isGrantable, isGrantableByRecordId, isVisible, grantId); }
 
         private static SystemActions GetSysAct(EnumDictionaryActions id, EnumObjects objId, string description, string category = null, bool isGrantable = true, bool isGrantableByRecordId = false, bool isVisible = true, int? grantId = null)
         { return GetSystemAction((int)id, id.ToString(), objId, description, category, isGrantable, isGrantableByRecordId, isVisible, grantId); }
 
         private static SystemActions GetSysAct(EnumDocumentActions id, EnumObjects objId, string description, string category = null, bool isGrantable = true, bool isGrantableByRecordId = false, bool isVisible = true, int? grantId = null)
+        { return GetSystemAction((int)id, id.ToString(), objId, description, category, isGrantable, isGrantableByRecordId, isVisible, grantId); }
+
+        private static SystemActions GetSysAct(EnumSystemActions id, EnumObjects objId, string description, string category = null, bool isGrantable = true, bool isGrantableByRecordId = false, bool isVisible = true, int? grantId = null)
         { return GetSystemAction((int)id, id.ToString(), objId, description, category, isGrantable, isGrantableByRecordId, isVisible, grantId); }
 
         private static SystemActions GetSystemAction(int id, string code, EnumObjects objId, string description, string category = null, bool isGrantable = true, bool isGrantableByRecordId = false, bool isVisible = true, int? grantId = null)

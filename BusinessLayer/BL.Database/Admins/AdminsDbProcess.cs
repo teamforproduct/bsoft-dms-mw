@@ -942,6 +942,17 @@ namespace BL.Database.Admins
                 return dbModel.Id;
             }
         }
+
+        public void AddSubordinations(IContext context, List<InternalAdminSubordination> list)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var items = AdminModelConverter.GetDbSubordinations(context, list);
+                dbContext.AdminSubordinationsSet.AddRange(items);
+                dbContext.SaveChanges();
+            }
+        }
+
         public void UpdateSubordination(IContext context, InternalAdminSubordination model)
         {
             using (var dbContext = new DmsContext(context))
@@ -1035,6 +1046,28 @@ namespace BL.Database.Admins
             }
         }
 
+        public IEnumerable<InternalAdminSubordination> GetInternalSubordinations(IContext context, FilterAdminSubordination filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.AdminSubordinationsSet.AsQueryable();
+
+                qry = GetWhereSubordination(ref qry, filter);
+
+                //qry = qry.OrderBy(x => x.Name);
+
+                return qry.Select(x => new InternalAdminSubordination
+                {
+                    Id = x.Id,
+                    SourcePositionId = x.SourcePositionId,
+                    TargetPositionId = x.TargetPositionId,
+                    SubordinationTypeId = x.SubordinationTypeId,
+                    LastChangeDate = x.LastChangeDate,
+                    LastChangeUserId = x.LastChangeUserId,
+                }).ToList();
+            }
+        }
+
         public List<int> GetSubordinationTargetIDs(IContext context, FilterAdminSubordination filter)
         {
             using (var dbContext = new DmsContext(context))
@@ -1107,6 +1140,17 @@ namespace BL.Database.Admins
                     (current, value) => current.Or(e => e.TargetPositionId == value).Expand());
 
                 qry = qry.Where(filterContains);
+            }
+
+            if (filter.PositionIDs?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.False<AdminSubordinations>();
+
+                filterContains = filter.PositionIDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.SourcePositionId == value || e.TargetPositionId == value).Expand());
+
+                qry = qry.Where(filterContains);
+
             }
 
             if (filter.SubordinationTypeIDs?.Count > 0)

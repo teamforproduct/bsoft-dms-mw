@@ -18,8 +18,9 @@ namespace BL.Database.SystemDb
         #endregion
 
         #region Settings
-        int AddSetting(IContext ctx, string name, string value, int? agentId = null);
-        string GetSettingValue(IContext ctx, string name, int? agentId = null);
+        int AddSetting(IContext ctx, InternalSystemSetting model);
+        string GetSettingValue(IContext ctx, FilterSystemSetting filter);
+        IEnumerable<FrontSystemSetting> GetSystemSettings(IContext ctx, FilterSystemSetting filter);
         #endregion
 
         #region SystemObjects

@@ -299,6 +299,7 @@
     <Compile Include="Controllers\Properties\FilterPropertiesController.cs" />
     <Compile Include="Controllers\Properties\PropertyLinksController.cs" />
     <Compile Include="Controllers\Properties\PropertiesController.cs" />
+    <Compile Include="Controllers\System\SystemSettingsController.cs" />
     <Compile Include="Controllers\System\VersionController.cs" />
     <Compile Include="Controllers\System\AccountController.cs" />
     <Compile Include="Controllers\Admins\AdminAccessLevelsController.cs" />

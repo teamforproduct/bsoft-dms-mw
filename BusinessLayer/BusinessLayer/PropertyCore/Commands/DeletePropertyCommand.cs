@@ -58,7 +58,7 @@ namespace BL.Logic.PropertyCore.Commands
             }
         }
 
-        public override EnumPropertyAction CommandType => EnumPropertyAction.DeleteProperty;
+        public override EnumPropertyActions CommandType => EnumPropertyActions.DeleteProperty;
     }
 
 }

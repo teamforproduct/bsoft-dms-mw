@@ -109,6 +109,7 @@
     <Compile Include="AdminCore\PositionRole\BasePositionRoleCommand.cs" />
     <Compile Include="AdminCore\RoleAction\BaseRoleActionCommand.cs" />
     <Compile Include="AdminCore\Role\BaseRoleCommand.cs" />
+    <Compile Include="AdminCore\Subordination\SetAllSubordinationsCommand.cs" />
     <Compile Include="AdminCore\Subordination\SetDefaultSubordinationsCommand.cs" />
     <Compile Include="AdminCore\Subordination\DuplicateSubordinationsCommand.cs" />
     <Compile Include="AdminCore\Subordination\SetSubordinationByCompanyCommand.cs" />
@@ -130,6 +131,7 @@
     <Compile Include="AdminCore\PositionRole\ModifyPositionRoleCommand.cs" />
     <Compile Include="ClientsCore\ClientService.cs" />
     <Compile Include="ClientsCore\Interfaces\IClientService.cs" />
+    <Compile Include="Common\BaseSystemCommand.cs" />
     <Compile Include="Common\BaseAdminCommand.cs" />
     <Compile Include="Common\BaseEncryptionCommand.cs" />
     <Compile Include="Common\BasePropertCommand.cs" />
@@ -226,6 +228,9 @@
     <Compile Include="EncryptionCore\Certificate\ModifyEncryptionCertificateCommand.cs" />
     <Compile Include="EncryptionCore\Interfaces\IEncryptionService.cs" />
     <Compile Include="DocumentCore\Commands\SelfAffixSigningDocumentCommand.cs" />
+    <Compile Include="SystemCore\Settings\SetSettingCommand.cs" />
+    <Compile Include="SystemCore\Settings\BaseSettingCommand.cs" />
+    <Compile Include="SystemCore\SystemCommandFactory.cs" />
     <Compile Include="SystemCore\Interfaces\ISystemService.cs" />
     <Compile Include="SystemCore\SystemService.cs" />
     <Compile Include="DocumentCore\AdditionalCommands\DeleteDocumentLinkCommand.cs" />

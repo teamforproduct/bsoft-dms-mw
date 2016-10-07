@@ -83,6 +83,7 @@
   <ItemGroup>
     <Compile Include="AdminCore\Clients\AddClientContent.cs" />
     <Compile Include="AdminCore\IncomingModel\CopyAdminSubordinations.cs" />
+    <Compile Include="AdminCore\IncomingModel\ModifyAdminSubordinations.cs" />
     <Compile Include="AdminCore\IncomingModel\ModifyAdminDefaultSubordination.cs" />
     <Compile Include="AdminCore\IncomingModel\ModifyAdminSubordinationByCompany.cs" />
     <Compile Include="AdminCore\IncomingModel\ModifyAdminSubordinationByDepartment.cs" />
@@ -354,6 +355,7 @@
     <Compile Include="DocumentCore\InternalModel\InternalTemplateDocumentTask.cs" />
     <Compile Include="Enums\EnumAdminActions.cs" />
     <Compile Include="Enums\EnumAccessLevels.cs" />
+    <Compile Include="Enums\EnumSystemActions.cs" />
     <Compile Include="Enums\EnumSigningTypes.cs" />
     <Compile Include="Enums\EnumFileTypes.cs" />
     <Compile Include="Enums\EnumEncryptionActions.cs" />
@@ -366,7 +368,7 @@
     <Compile Include="Enums\EnumSystemPositions.cs" />
     <Compile Include="Enums\EnumSystemUsers.cs" />
     <Compile Include="Enums\EnumContactTypes.cs" />
-    <Compile Include="Enums\EnumPropertyAction.cs" />
+    <Compile Include="Enums\EnumPropertyActions.cs" />
     <Compile Include="Enums\EnumDictionaryActions.cs" />
     <Compile Include="Enums\EnumDocumentActions.cs" />
     <Compile Include="Enums\EnumObjects.cs" />
@@ -409,6 +411,7 @@
     <Compile Include="Reports\FrontModel\FrontReport.cs" />
     <Compile Include="Reports\Interfaces\IReports.cs" />
     <Compile Include="SystemCore\Filters\FilterSystemPattern.cs" />
+    <Compile Include="SystemCore\Filters\FilterSystemSetting.cs" />
     <Compile Include="SystemCore\Filters\FilterSystemValueType.cs" />
     <Compile Include="SystemCore\Filters\FilterSystemFormula.cs" />
     <Compile Include="SystemCore\Filters\FilterSystemFormat.cs" />
@@ -428,6 +431,8 @@
     <Compile Include="SystemCore\FrontModel\FrontSystemFormula.cs" />
     <Compile Include="SystemCore\FrontModel\FrontSystemPattern.cs" />
     <Compile Include="SystemCore\FrontModel\FrontSystemValueType.cs" />
+    <Compile Include="SystemCore\FrontModel\FrontSystemSetting.cs" />
+    <Compile Include="SystemCore\IncomingModel\ModifySystemSetting.cs" />
     <Compile Include="SystemCore\IncomingModel\ModifyPropertyValue.cs" />
     <Compile Include="SystemCore\IncomingModel\ModifyPropertyLink.cs" />
     <Compile Include="SystemCore\IncomingModel\ModifyProperty.cs" />
@@ -436,6 +441,7 @@
     <Compile Include="SystemCore\InternalModel\InternalPropertyValues.cs" />
     <Compile Include="SystemCore\InternalModel\InternalPropertyValue.cs" />
     <Compile Include="SystemCore\InternalModel\InternalSendMailServerParameters.cs" />
+    <Compile Include="SystemCore\InternalModel\InternalSystemSetting.cs" />
     <Compile Include="SystemCore\InternalModel\InternalSystemObject.cs" />
     <Compile Include="SystemCore\InternalModel\InternalPropertyLink.cs" />
     <Compile Include="SystemCore\InternalModel\InternalProperty.cs" />

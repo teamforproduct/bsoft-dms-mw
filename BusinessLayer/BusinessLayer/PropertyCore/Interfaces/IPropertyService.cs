@@ -9,7 +9,7 @@ namespace BL.Logic.PropertyCore.Interfaces
 {
     public interface IPropertyService
     {
-        object ExecuteAction(EnumPropertyAction act, IContext context, object param);
+        object ExecuteAction(EnumPropertyActions act, IContext context, object param);
 
         #region SystemObjects
         FrontSystemObject GetSystemObject(IContext context, int id);

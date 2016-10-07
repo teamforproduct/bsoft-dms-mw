@@ -56,50 +56,78 @@ namespace BL.Database.SystemDb
 
         #region Settings
 
-        public int AddSetting(IContext ctx, string name, string value, int? agentId = null)
+        public int AddSetting(IContext ctx, InternalSystemSetting model)
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                var cset = dbContext.SettingsSet.FirstOrDefault(x => ctx.CurrentClientId == x.ClientId && x.Key == name);
+                var cset = dbContext.SettingsSet.FirstOrDefault(x => ctx.CurrentClientId == x.ClientId && x.Key == model.Key);
                 if (cset == null)
                 {
                     var nsett = new SystemSettings
                     {
                         ClientId = ctx.CurrentClientId,
-                        ExecutorAgentId = agentId,
-                        Key = name,
-                        Value = value
+                        ExecutorAgentId = model.AgentId,
+                        Key = model.Key,
+                        Value = model.Value
                     };
                     dbContext.SettingsSet.Add(nsett);
                     dbContext.SaveChanges();
                     return nsett.Id;
                 }
 
-                cset.Value = value;
-                cset.ExecutorAgentId = agentId;
+                cset.Value = model.Value;
+                cset.ExecutorAgentId = model.AgentId;
                 dbContext.SaveChanges();
                 return cset.Id;
             }
         }
 
-        public string GetSettingValue(IContext ctx, string name, int? agentId = null)
+        public string GetSettingValue(IContext ctx, FilterSystemSetting filter)
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                if (agentId.HasValue)
+                if (filter.AgentId.HasValue)
                 {
                     return
                         dbContext.SettingsSet.Where(
                             x =>
-                                ctx.CurrentClientId == x.ClientId && x.Key == name && x.ExecutorAgentId == agentId.Value)
+                                ctx.CurrentClientId == x.ClientId && x.Key == filter.Key && x.ExecutorAgentId == filter.AgentId.Value)
                             .Select(x => x.Value)
                             .FirstOrDefault();
                 }
                 return
-                    dbContext.SettingsSet.Where(x => ctx.CurrentClientId == x.ClientId && x.Key == name)
+                    dbContext.SettingsSet.Where(x => ctx.CurrentClientId == x.ClientId && x.Key == filter.Key)
                         .OrderBy(x => x.ExecutorAgentId)
                         .Select(x => x.Value)
                         .FirstOrDefault();
+            }
+        }
+
+        public IEnumerable<FrontSystemSetting> GetSystemSettings(IContext ctx, FilterSystemSetting filter)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+
+                var qry = dbContext.SettingsSet.Where(x => ctx.CurrentClientId == x.ClientId).AsQueryable();
+
+                if (!string.IsNullOrEmpty(filter.Value))
+                {
+                    qry = qry.Where(x => x.Value == filter.Value);
+                }
+                
+                if (filter.AgentId.HasValue)
+                {
+                    qry = qry.Where(x => x.ExecutorAgentId == filter.AgentId.Value);
+                }
+
+                return qry.Select(x => new FrontSystemSetting()
+                {
+                    Id = x.Id,
+                    Key = x.Key,
+                    Value = x.Value,
+                    AgentId = x.ExecutorAgentId,
+                }).ToList();
+
             }
         }
 

@@ -86,6 +86,7 @@
     <Compile Include="Helpers\ConvertToDataSet.cs" />
     <Compile Include="Helpers\Logger.cs" />
     <Compile Include="Helpers\VerifyLicence.cs" />
+    <Compile Include="Interfaces\ISystemCommand.cs" />
     <Compile Include="Interfaces\ICommand.cs" />
     <Compile Include="Context\DefaultContext.cs" />
     <Compile Include="DependencyInjection\CrossCuttingModule.cs" />

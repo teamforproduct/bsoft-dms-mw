@@ -69,7 +69,7 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// <summary>
         /// Дата окончания исполнения должности
         /// </summary>
-        public DateTime EndDate { get; set; }
+        public DateTime? EndDate { get; set; }
 
 
     }

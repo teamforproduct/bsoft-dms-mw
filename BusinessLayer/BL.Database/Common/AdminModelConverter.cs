@@ -88,5 +88,17 @@ namespace BL.Database.Common
             };
         }
 
+        public static List<AdminSubordinations> GetDbSubordinations(IContext context, List<InternalAdminSubordination> list)
+        {
+            var items = new List<AdminSubordinations>();
+
+            foreach (var item in list)
+            {
+                items.Add(GetDbSubordination(context, item));
+            }
+
+            return items;
+        }
+
     }
 }

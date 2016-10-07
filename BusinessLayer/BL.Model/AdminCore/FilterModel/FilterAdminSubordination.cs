@@ -23,6 +23,11 @@ namespace BL.Model.AdminCore.FilterModel
         public List<int> TargetPositionIDs { get; set; }
 
         /// <summary>
+        /// записи в которых должность как Source или Target
+        /// </summary>
+        public List<int> PositionIDs { get; set; }
+
+        /// <summary>
         /// SubordinationType
         /// </summary>
         public List<int> SubordinationTypeIDs { get; set; }

@@ -10,6 +10,9 @@ using BL.CrossCutting.DependencyInjection;
 using System.Collections.Generic;
 using System.Web.Http.Description;
 using System.Diagnostics;
+using BL.Logic.SystemCore.Interfaces;
+using BL.Model.SystemCore.Filters;
+using BL.Model.Constants;
 
 namespace DMS_WebAPI.Controllers.Admins
 {
@@ -164,6 +167,25 @@ namespace DMS_WebAPI.Controllers.Admins
         }
 
         /// <summary>
+        /// Управление рассылкой для должности в масштабах компании
+        /// Разрешает выполнять рассылку для сведения или исполнения для всех сотрудников компании
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("SetAll")]
+        public IHttpActionResult SetAll([FromBody] ModifyAdminSubordinations model)
+        {
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var tmpService = DmsResolver.Current.Get<IAdminService>();
+            var tmpItem = tmpService.ExecuteAction(EnumAdminActions.SetAllSubordination, cxt, model);
+            stopWatch.Stop();
+            return new JsonResult(tmpItem, this, stopWatch.Elapsed);
+        }
+
+        /// <summary>
         /// Возвращает значение настройки: устанавливать рассылку по умолчанию для исполнения при создании новой должности
         /// </summary>
         /// <param name="model"></param>
@@ -172,8 +194,28 @@ namespace DMS_WebAPI.Controllers.Admins
         [Route("IsSetDefaultsForExecution")]
         public IHttpActionResult IsSetDefaultsForExecution()
         {
-            return new JsonResult(new {Value = false }, this);
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var tmpService = DmsResolver.Current.Get<ISystemService>();
+            var tmpItems = tmpService.GetSystemSettings(cxt, new FilterSystemSetting() { Key = SettingConstants.SUBORDINATIONS_ADD_DEFAULT_FOR_EXECUTION });
+            return new JsonResult(tmpItems, this);
         }
+
+        /// <summary>
+        /// Разрешает устанавливать рассылку по умолчанию для исполнения при создании новой должности
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("IsSetDefaultsForExecution")]
+        public IHttpActionResult AllowDefaultsForExecution()
+        {
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var tmpService = DmsResolver.Current.Get<ISystemService>();
+            var tmpItems = tmpService.GetSystemSettings(cxt, new FilterSystemSetting() { Key = SettingConstants.SUBORDINATIONS_ADD_DEFAULT_FOR_EXECUTION });
+            return new JsonResult(tmpItems, this);
+        }
+
+
 
         /// <summary>
         /// Возвращает значение настройки: устанавливать рассылку по умолчанию для сведения при создании новой должности
@@ -184,7 +226,10 @@ namespace DMS_WebAPI.Controllers.Admins
         [Route("IsSetDefaultsForInforming")]
         public IHttpActionResult IsSetDefaultsForInforming()
         {
-            return new JsonResult(new { Value = true }, this);
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var tmpService = DmsResolver.Current.Get<ISystemService>();
+            var tmpItems = tmpService.GetSystemSettings(cxt, new FilterSystemSetting() { Key = SettingConstants.SUBORDINATIONS_ADD_DEFAULT_FOR_INFORMING });
+            return new JsonResult(tmpItems, this);
         }
 
     }

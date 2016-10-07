@@ -1,6 +1,6 @@
 ﻿namespace BL.Model.Enums
 {
-    public enum EnumPropertyAction
+    public enum EnumPropertyActions
     {
         AddProperty = 311001, // Добавить динамический аттрибут
         ModifyProperty = 311005, // Изменить динамический аттрибут

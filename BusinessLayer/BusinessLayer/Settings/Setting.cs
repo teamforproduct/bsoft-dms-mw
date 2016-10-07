@@ -6,7 +6,8 @@ using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
 using BL.Logic.DependencyInjection;
 using BL.Database.SystemDb;
-
+using BL.Model.SystemCore.Filters;
+using BL.Model.SystemCore.InternalModel;
 
 namespace BL.Logic.Settings
 {
@@ -27,7 +28,7 @@ namespace BL.Logic.Settings
             if (!_casheSettings.ContainsKey(MakeKey(settingName, ctx)))
             {
                 var db = DmsResolver.Current.Get<ISystemDbProcess>();
-                var val = db.GetSettingValue(ctx, settingName);
+                var val = db.GetSettingValue(ctx, new FilterSystemSetting { Key = settingName });
                 if (string.IsNullOrEmpty(val))
                 {
                     throw new ConfigurationErrorsException(string.Format("Configuration parameter {0} is not specified in configuration file.", settingName));
@@ -59,7 +60,7 @@ namespace BL.Logic.Settings
             if (!_casheSettings.ContainsKey(MakeKey(settingName, ctx)))
             {
                 var db = DmsResolver.Current.Get<ISystemDbProcess>();
-                var val = db.GetSettingValue(ctx, settingName);
+                var val = db.GetSettingValue(ctx, new FilterSystemSetting { Key = settingName });
                 if (string.IsNullOrEmpty(val))
                 {
                     return defaulValue;
@@ -83,12 +84,12 @@ namespace BL.Logic.Settings
             var db = DmsResolver.Current.Get<ISystemDbProcess>();
             if (_casheSettings.ContainsKey(MakeKey(key, ctx)))
             {
-                db.AddSetting(ctx, key, val.ToString());
+                db.AddSetting(ctx, new InternalSystemSetting() { Key = key, Value = val.ToString() });
                 _casheSettings[MakeKey(key, ctx)] = val;
             }
             else
             {
-                db.AddSetting(ctx, key, val.ToString());
+                db.AddSetting(ctx, new InternalSystemSetting() { Key = key, Value = val.ToString() });
                 _casheSettings.Add(MakeKey(key, ctx), val);
             }
 
