@@ -1918,6 +1918,7 @@ namespace BL.Database.Documents
                 {
                     ClientId = context.CurrentClientId,
                     PositionId = x.PositionId,
+                    Name = x.Name,
                     Icon = x.Icon,
                     Filter = x.Filter,
                     IsCommon = x.IsCommon,
@@ -1940,6 +1941,7 @@ namespace BL.Database.Documents
                 {
                     Id = model.Id,
                     PositionId = model.PositionId,
+                    Name = model.Name,
                     Icon = model.Icon,
                     Filter = model.Filter,
                     IsCommon = model.IsCommon,
@@ -1950,6 +1952,7 @@ namespace BL.Database.Documents
 
                 var entry = dbContext.Entry(item);
                 entry.Property(e => e.PositionId).IsModified = true;
+                entry.Property(e => e.Name).IsModified = true;
                 entry.Property(e => e.Icon).IsModified = true;
                 entry.Property(e => e.Filter).IsModified = true;
                 entry.Property(e => e.IsCommon).IsModified = true;

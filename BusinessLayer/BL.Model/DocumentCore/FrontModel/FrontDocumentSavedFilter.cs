@@ -6,6 +6,7 @@ namespace BL.Model.DocumentCore.FrontModel
     {
         public int Id { get; set; }
         public Nullable<int> PositionId { get; set; }
+        public string Name { get; set; }
         public string Icon { get; set; }
         public object Filter { get; set; }
         public bool IsCommon { get; set; }

@@ -45,6 +45,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             {
                 Id = Model.Id,
                 PositionId = _context.CurrentPositionId,
+                Name = Model.Name,
                 Icon = Model.Icon,
                 Filter = Model.Filter.ToString(),
                 IsCommon = Model.IsCommon

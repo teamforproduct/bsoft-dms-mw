@@ -46,6 +46,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             DocSavedFilter = new InternalDocumentSavedFilter
             {
                 PositionId = _context.CurrentPositionId,
+                Name = Model.Name,
                 Icon = Model.Icon,
                 Filter = Model.Filter.ToString(),
                 IsCommon = Model.IsCommon

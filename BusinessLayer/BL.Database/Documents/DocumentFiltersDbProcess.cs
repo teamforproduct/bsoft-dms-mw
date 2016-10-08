@@ -28,6 +28,7 @@ namespace BL.Database.Documents
                 {
                     Id = x.Id,
                     PositionId = x.PositionId,
+                    Name = x.Name,
                     Icon = x.Icon,
                     Filter = x.Filter,
                     IsCommon = x.IsCommon,
@@ -50,6 +51,7 @@ namespace BL.Database.Documents
                         {
                             Id = x.Id,
                             PositionId = x.PositionId,
+                            Name = x.Name,
                             Icon = x.Icon,
                             Filter = x.Filter,
                             IsCommon = x.IsCommon,
