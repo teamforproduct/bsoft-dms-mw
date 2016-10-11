@@ -19,6 +19,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Runtime.InteropServices;
 using System.Web;
+using System.Transactions;
 
 namespace BL.Database.Encryption
 {
@@ -45,6 +46,7 @@ namespace BL.Database.Encryption
         public IEnumerable<FrontEncryptionCertificate> GetCertificates(IContext ctx, FilterEncryptionCertificate filter, UIPaging paging)
         {
             using (var dbContext = new DmsContext(ctx))
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var qry = CommonQueries.GetCertificatesQuery(dbContext, ctx, filter);
 
@@ -99,6 +101,7 @@ namespace BL.Database.Encryption
         private InternalEncryptionCertificate GetCertificate(IContext ctx, int certificateId)
         {
             using (var dbContext = new DmsContext(ctx))
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var qry = CommonQueries.GetCertificatesQuery(dbContext, ctx, new FilterEncryptionCertificate { CertificateId = new List<int> { certificateId } });
 
@@ -145,6 +148,7 @@ namespace BL.Database.Encryption
         public InternalEncryptionCertificate ModifyCertificatePrepare(IContext ctx, int itemId, int? agentId)
         {
             using (var dbContext = new DmsContext(ctx))
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var filter = new FilterEncryptionCertificate { CertificateId = new List<int> { itemId } };
                 if (ctx.IsAdmin && agentId.HasValue) filter.AgentId = new List<int> { agentId.Value };

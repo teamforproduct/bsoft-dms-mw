@@ -8,6 +8,7 @@ using BL.Model.DocumentCore.FrontModel;
 using BL.Model.Enums;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.SystemCore;
+using System.Transactions;
 
 namespace BL.Database.Documents
 {
@@ -21,6 +22,7 @@ namespace BL.Database.Documents
         public IEnumerable<FrontDocumentTask> GetDocumentTasks(IContext ctx, FilterDocumentTask filter, UIPaging paging)
         {
             using (var dbContext = new DmsContext(ctx))
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 return CommonQueries.GetDocumentTasks(dbContext, ctx, filter, paging);
             }
@@ -29,6 +31,7 @@ namespace BL.Database.Documents
         public FrontDocumentTask GetDocumentTask(IContext ctx, int id)
         {
             using (var dbContext = new DmsContext(ctx))
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 return CommonQueries.GetDocumentTasks(dbContext, ctx, new FilterDocumentTask { Id = new List<int> { id } }, null).FirstOrDefault();
             }
